@@ -10,8 +10,8 @@ import { generateWeeklyProgram } from "@/lib/program";
 import {
   normalizeEquipmentSelection,
   normalizeEquipmentSelectionValues,
+  type Equipment,
 } from "@/lib/equipment";
-import type { Equipment } from "@/lib/equipment";
 import { usePhotoContext } from "@/components/PhotoContext";
 import {
   analyzeImagePose,
