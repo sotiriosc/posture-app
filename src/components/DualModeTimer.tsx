@@ -44,6 +44,7 @@ export default function DualModeTimer({
   );
   const lastRunningRef = useRef(false);
   const lastRemainingRef = useRef(remainingSeconds);
+  const autoSwitchRef = useRef(false);
 
   const activeSelectedSeconds =
     mode === "exercise" ? selectedExerciseSeconds : selectedRestSeconds;
@@ -54,6 +55,10 @@ export default function DualModeTimer({
     mode === "exercise"
       ? "border-emerald-300/60 bg-emerald-100 text-emerald-900"
       : "border-sky-300/60 bg-sky-100 text-sky-900";
+  const modeBackground =
+    mode === "exercise"
+      ? "border-emerald-200/70 bg-emerald-50/80"
+      : "border-sky-200/70 bg-sky-50/80";
   const runningAccent =
     mode === "exercise"
       ? "shadow-emerald-500/20 ring-emerald-400/30"
@@ -87,8 +92,16 @@ export default function DualModeTimer({
   }, [running, remainingSeconds]);
 
   useEffect(() => {
-    if (remainingSeconds === 0) setRunning(false);
-  }, [remainingSeconds]);
+    if (remainingSeconds !== 0) return;
+    if (mode === "exercise") {
+      autoSwitchRef.current = true;
+      setMode("rest");
+      setRemainingSeconds(selectedRestSeconds);
+      setRunning(true);
+      return;
+    }
+    setRunning(false);
+  }, [mode, remainingSeconds, selectedRestSeconds]);
 
   useEffect(() => {
     const wasRunning = lastRunningRef.current;
@@ -108,7 +121,14 @@ export default function DualModeTimer({
 
   const handleModeChange = (nextMode: TimerMode) => {
     if (nextMode === mode) return;
+    autoSwitchRef.current = false;
+    setRunning(false);
     setMode(nextMode);
+    setRemainingSeconds(
+      nextMode === "exercise"
+        ? selectedExerciseSeconds
+        : selectedRestSeconds
+    );
   };
 
   const applyExerciseSeconds = (seconds: number) => {
@@ -137,6 +157,16 @@ export default function DualModeTimer({
     setRunning(false);
     setRemainingSeconds(activeSelectedSeconds);
   };
+
+  useEffect(() => {
+    if (autoSwitchRef.current) {
+      autoSwitchRef.current = false;
+      return;
+    }
+    if (!running) {
+      setRemainingSeconds(activeSelectedSeconds);
+    }
+  }, [activeSelectedSeconds, running]);
 
   const playBeep = (type: "start" | "finish") => {
     if (typeof window === "undefined") return;
@@ -182,7 +212,9 @@ export default function DualModeTimer({
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+    <div
+      className={`rounded-2xl border p-4 shadow-sm transition ${modeBackground}`}
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-sm">
           {(["exercise", "rest"] as TimerMode[]).map((value) => (
