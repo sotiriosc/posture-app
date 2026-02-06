@@ -54,15 +54,15 @@ export default function DualModeTimer({
   const accentClasses =
     mode === "exercise"
       ? "border-emerald-300/60 bg-emerald-100 text-emerald-900"
-      : "border-sky-300/60 bg-sky-100 text-sky-900";
+      : "border-violet-300/60 bg-violet-100 text-violet-900";
   const modeBackground =
     mode === "exercise"
       ? "border-emerald-200/70 bg-emerald-50/80"
-      : "border-sky-200/70 bg-sky-50/80";
+      : "border-violet-200/70 bg-violet-50/80";
   const runningAccent =
     mode === "exercise"
       ? "shadow-emerald-500/20 ring-emerald-400/30"
-      : "shadow-sky-500/20 ring-sky-400/30";
+      : "shadow-violet-500/20 ring-violet-400/30";
 
   useEffect(() => {
     setSelectedExerciseSeconds(initialExerciseSeconds);
