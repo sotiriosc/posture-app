@@ -79,6 +79,10 @@ export default function DualModeTimer({
   }, [initialRestSeconds, mode, running]);
 
   useEffect(() => {
+    if (autoSwitchRef.current) {
+      autoSwitchRef.current = false;
+      return;
+    }
     setRunning(false);
     setRemainingSeconds(activeSelectedSeconds);
   }, [mode, activeSelectedSeconds]);
