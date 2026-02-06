@@ -242,7 +242,7 @@ export default function DualModeTimer({
       <button
         type="button"
         onClick={() => setRunning((prev) => !prev)}
-        className={`relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-full border-4 border-slate-900 bg-white py-10 text-6xl font-semibold text-slate-900 shadow-sm transition ${
+        className={`relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-full border-4 border-slate-900 py-10 text-6xl font-semibold text-slate-900 shadow-sm transition ${modeBackground} ${
           running ? `ring-4 motion-safe:animate-pulse ${runningAccent}` : ""
         }`}
       >
