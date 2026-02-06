@@ -11,6 +11,13 @@ import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import DualModeTimer from "@/components/DualModeTimer";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import { saveAppState } from "@/lib/appState";
+import {
+  clearDraft,
+  loadDraft,
+  saveDraft,
+  type SessionDraft,
+} from "@/lib/sessionDraftStore";
 import type {
   ExerciseFeedback,
   ExerciseLog,
@@ -169,6 +176,7 @@ export default function SessionClient() {
 
       const programId = searchParams.get("programId");
       const dayIndexRaw = searchParams.get("dayIndex");
+      const resumeId = searchParams.get("resumeSessionId");
       const dayIndex = dayIndexRaw ? Number(dayIndexRaw) : null;
       if (programId) {
         const loadedProgram = await getProgram(programId);
@@ -181,9 +189,34 @@ export default function SessionClient() {
           setProgramProgress(progress);
         }
       }
+
+      if (resumeId) {
+        const draft = await loadDraft(resumeId);
+        if (draft) {
+          applyDraft(draft);
+        }
+      }
     };
     load();
   }, [searchParams]);
+
+  const applyDraft = (draft: SessionDraft) => {
+    setSessionId(draft.sessionId);
+    setSessionStartedAt(draft.startedAt ?? null);
+    setActiveIndex(draft.currentExerciseIndex ?? 0);
+    setCompletedSets(draft.entries.completedSets ?? {});
+    setSelectedSets(draft.entries.selectedSets ?? {});
+    setWeightByExercise(draft.entries.weightByExercise ?? {});
+    setRepsByExercise(draft.entries.repsByExercise ?? {});
+    setRepsBySetByExercise(draft.entries.repsBySetByExercise ?? {});
+    setUnitByExercise(draft.entries.unitByExercise ?? {});
+    setNotesByExercise(draft.entries.notesByExercise ?? {});
+    setFeedback(draft.entries.feedbackByExercise ?? {});
+    if (draft.timerState) {
+      setWorkSeconds(draft.timerState.workSeconds);
+      setRestSeconds(draft.timerState.restSeconds);
+    }
+  };
 
   const routine = useMemo(() => {
     if (!data) return null;
@@ -473,6 +506,9 @@ export default function SessionClient() {
       await saveProgramProgress(progress);
       setProgramProgress(progress);
     }
+
+    await clearDraft(sessionIdValue);
+    saveAppState({ activeSessionId: undefined });
   };
 
   const { minSets, maxSets } = parseSetsRange(currentItem?.sets);
@@ -539,6 +575,73 @@ export default function SessionClient() {
     if (!sessionId) setSessionId(uuid());
     if (!sessionStartedAt) setSessionStartedAt(nowIso());
   }, [sessionId, sessionStartedAt]);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    if (!program || programDayIndex === null) return;
+    saveAppState({
+      activeSessionId: sessionId,
+      programId: program.id,
+      selectedDay: programDayIndex,
+      lastRoute: `/session?programId=${program.id}&dayIndex=${programDayIndex}`,
+    });
+  }, [sessionId, program, programDayIndex]);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    if (!program) return;
+    if (sessionComplete) return;
+    const currentExerciseId = flatItems[activeIndex]?.id ?? "";
+    const sets = completedSets[currentExerciseId] ?? [];
+    const currentSetIndex = Math.max(
+      0,
+      sets.findIndex((value) => !value)
+    );
+    const timer = window.setTimeout(() => {
+      saveDraft({
+        sessionId,
+        programId: program.id,
+        dayIndex: programDayIndex,
+        currentExerciseIndex: activeIndex,
+        currentSetIndex,
+        entries: {
+          completedSets,
+          selectedSets,
+          weightByExercise,
+          repsByExercise,
+          repsBySetByExercise,
+          unitByExercise,
+          notesByExercise,
+          feedbackByExercise: feedback,
+        },
+        timerState: {
+          workSeconds,
+          restSeconds,
+        },
+        startedAt: sessionStartedAt,
+        updatedAt: nowIso(),
+      });
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [
+    sessionId,
+    program,
+    programDayIndex,
+    activeIndex,
+    completedSets,
+    selectedSets,
+    weightByExercise,
+    repsByExercise,
+    repsBySetByExercise,
+    unitByExercise,
+    notesByExercise,
+    feedback,
+    workSeconds,
+    restSeconds,
+    sessionStartedAt,
+    flatItems,
+  ]);
 
   if (!data || !routine) {
     return (

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   init,
   listAllExerciseLogs,
@@ -14,6 +16,10 @@ import {
   SCHEMA_VERSION,
 } from "@/lib/logStore";
 import type { ExerciseLog, LogPrefs, Program, SessionRecord } from "@/lib/types";
+import { resetAllAppData } from "@/lib/resetAppData";
+import BackgroundShell from "@/components/BackgroundShell";
+import OnImage from "@/components/OnImage";
+import Button from "@/components/ui/Button";
 
 const toCsv = (rows: Record<string, string | number | null>[]) => {
   const headers = Object.keys(rows[0] ?? {});
@@ -45,8 +51,11 @@ const downloadFile = (content: string, filename: string, type: string) => {
 };
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
 
   const handleDownloadJson = async () => {
     setLoading(true);
@@ -213,19 +222,26 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen page-shell">
+    <BackgroundShell>
       <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
-        <header className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-            Settings
-          </p>
-          <h1 className="text-3xl font-semibold text-slate-900">
-            Backup & restore
-          </h1>
-          <p className="text-sm text-slate-600">
-            Export or restore your local program data.
-          </p>
-        </header>
+        <OnImage>
+          <header className="flex flex-wrap items-center justify-between gap-4">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+                Settings
+              </p>
+              <h1 className="text-3xl font-semibold text-white">
+                Backup & restore
+              </h1>
+              <p className="text-sm text-slate-200">
+                Export or restore your local program data.
+              </p>
+            </div>
+            <Link href="/results">
+              <Button variant="secondary">Back</Button>
+            </Link>
+          </header>
+        </OnImage>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="text-sm font-semibold text-slate-900">
@@ -289,7 +305,71 @@ export default function SettingsPage() {
             </div>
           ) : null}
         </div>
+
+        <div className="rounded-3xl border border-rose-200 bg-rose-50/40 p-6 shadow-sm">
+          <h2 className="text-sm font-semibold text-rose-700">Danger zone</h2>
+          <p className="mt-2 text-xs text-rose-700/80">
+            Resetting removes all programs, logs, photos, and in-progress
+            sessions from this device.
+          </p>
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setShowResetConfirm(true)}
+              className="rounded-full bg-rose-600 px-5 py-2 text-xs font-semibold text-white hover:bg-rose-700"
+            >
+              Reset app data
+            </button>
+          </div>
+
+          {showResetConfirm ? (
+            <div className="mt-4 rounded-2xl border border-rose-200 bg-white px-4 py-3 text-xs text-rose-900">
+              <p className="text-sm font-semibold text-rose-700">
+                Delete all app data?
+              </p>
+              <p className="mt-1 text-xs text-rose-700/80">
+                This will permanently delete your programs, logs, photos, and
+                in-progress sessions from this device. This can’t be undone.
+              </p>
+              <label className="mt-3 block text-xs font-semibold text-rose-700">
+                Type DELETE to confirm
+                <input
+                  type="text"
+                  value={confirmText}
+                  onChange={(event) => setConfirmText(event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-rose-200 px-3 py-2 text-xs text-rose-900"
+                />
+              </label>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowResetConfirm(false);
+                    setConfirmText("");
+                  }}
+                  className="rounded-full border border-rose-200 px-4 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={confirmText.trim().toUpperCase() !== "DELETE"}
+                  onClick={async () => {
+                    await resetAllAppData();
+                    setShowResetConfirm(false);
+                    setConfirmText("");
+                    router.replace("/");
+                    window.location.reload();
+                  }}
+                  className="rounded-full bg-rose-600 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+                >
+                  Delete everything
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </BackgroundShell>
   );
 }

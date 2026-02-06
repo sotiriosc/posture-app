@@ -18,9 +18,14 @@ export default function ResultsPage() {
                 Your results
               </h1>
             </div>
-            <Link href="/questionnaire">
-              <Button variant="secondary">Edit questionnaire</Button>
-            </Link>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link href="/questionnaire">
+                <Button variant="secondary">Edit questionnaire</Button>
+              </Link>
+              <Link href="/settings">
+                <Button variant="secondary">Settings</Button>
+              </Link>
+            </div>
           </header>
 
           <p className="max-w-2xl text-sm text-slate-200">

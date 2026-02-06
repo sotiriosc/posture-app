@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { PhotoProvider } from "@/components/PhotoContext";
 import InstallApp from "@/components/InstallApp";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import ResumeSessionBanner from "@/components/ResumeSessionBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <PhotoProvider>{children}</PhotoProvider>
+        <ResumeSessionBanner />
         <InstallApp />
         <ServiceWorkerRegister />
       </body>

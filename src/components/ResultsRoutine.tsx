@@ -27,6 +27,7 @@ import {
 } from "@/lib/assessmentEngine";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import { loadAppState, saveAppState } from "@/lib/appState";
 import type { Exercise } from "@/lib/exercises";
 import type {
   ExerciseFeedback,
@@ -299,6 +300,23 @@ export default function ResultsRoutine() {
     };
     loadProgram();
   }, [data]);
+
+  useEffect(() => {
+    if (!program) return;
+    const state = loadAppState();
+    if (state?.programId === program.id && typeof state.selectedDay === "number") {
+      setSelectedDay(state.selectedDay);
+    }
+  }, [program]);
+
+  useEffect(() => {
+    if (!program) return;
+    saveAppState({
+      programId: program.id,
+      selectedDay,
+      lastRoute: "/results",
+    });
+  }, [program, selectedDay]);
 
   const completedByDay = useMemo(() => {
     const map = new Map<number, SessionRecord[]>();
@@ -619,9 +637,9 @@ export default function ResultsRoutine() {
         ) : poseState.report ? (
           <>
             <div className="mt-4 space-y-3 text-sm text-slate-700">
-              {poseState.report.observations.map((item) => (
+              {poseState.report.observations.map((item, index) => (
                 <div
-                  key={item.id}
+                  key={`${item.id}-${index}`}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2"
                 >
                   <div className="flex items-start justify-between gap-2">
