@@ -15,13 +15,13 @@ export default function Home() {
             <span className="hero-pill rounded-full px-3 py-1 text-slate-200">
               Private by design
             </span>
-            <Link
-              href="/settings"
-              className="hero-pill rounded-full px-3 py-1 text-slate-100 hover:text-white"
-            >
-              Settings
-            </Link>
           </div>
+          <Link
+            href="/settings"
+            className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
+          >
+            Settings
+          </Link>
         </header>
 
         <main className="flex flex-1 flex-col justify-center gap-10">
