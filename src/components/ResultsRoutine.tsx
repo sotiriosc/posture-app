@@ -613,22 +613,20 @@ export default function ResultsRoutine() {
                 <Button variant="secondary">Start Selected Day</Button>
               </Link>
             </div>
-            {process.env.NODE_ENV !== "production" ? (
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-200">
-                <label className="flex items-center gap-2 rounded-full border border-white/20 px-3 py-1">
-                  <input
-                    type="checkbox"
-                    checked={showDebug}
-                    onChange={() => setShowDebug((prev) => !prev)}
-                    className="h-3 w-3 accent-white"
-                  />
-                  Why this exercise was picked
-                </label>
-                <span className="text-[11px] text-slate-200">
-                  Shows equipment match (dev only)
-                </span>
-              </div>
-            ) : null}
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-200">
+              <label className="flex items-center gap-2 rounded-full border border-white/20 px-3 py-1">
+                <input
+                  type="checkbox"
+                  checked={showDebug}
+                  onChange={() => setShowDebug((prev) => !prev)}
+                  className="h-3 w-3 accent-white"
+                />
+                Why this exercise was picked
+              </label>
+              <span className="text-[11px] text-slate-200">
+                Tap to see quick rationale
+              </span>
+            </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {program.week.map((day) => (
                 <button
