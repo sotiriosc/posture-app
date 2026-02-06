@@ -23,7 +23,6 @@ import {
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import type { Exercise } from "@/lib/exercises";
-import type { Equipment } from "@/lib/equipment";
 import type { Program, ProgramProgress, SessionRecord } from "@/lib/types";
 import {
   getProgramProgress,
