@@ -211,7 +211,12 @@ export default function SessionClient() {
     setRepsBySetByExercise(draft.entries.repsBySetByExercise ?? {});
     setUnitByExercise(draft.entries.unitByExercise ?? {});
     setNotesByExercise(draft.entries.notesByExercise ?? {});
-    setFeedback(draft.entries.feedbackByExercise ?? {});
+    setFeedback(
+      (draft.entries.feedbackByExercise ?? {}) as Record<
+        string,
+        ExerciseFeedback
+      >
+    );
     if (draft.timerState) {
       setWorkSeconds(draft.timerState.workSeconds);
       setRestSeconds(draft.timerState.restSeconds);
