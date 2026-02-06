@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Body Alignment Coach
 
-## Getting Started
+Local-first posture and strength coaching app. Users complete an assessment and questionnaire, receive a multi-day program, run guided sessions, and review history with progression cues. All data is stored on-device (no login required).
 
-First, run the development server:
+## Overview
+- Assessment: optional posture scan + questionnaire
+- Program: weekly split with day preview, coaching cues, and progression
+- Session: guided workout with dual-mode timer, feedback, and substitution
+- History: coach-grade logs, last sessions, next-time targets
+- Local-first: IndexedDB + localStorage; no cloud required
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Core Features
+- Program generation with equipment-aware filtering
+- Phased programming (Restore & Control → Strength & Capacity → Performance)
+- Guided sessions with timer, logging, and feedback
+- Progression engine for next-time recommendations
+- Exercise library with cues and video placeholders
+- Resume where you left off (session drafts)
+- Backup/restore + Reset app data (danger zone)
+
+## Project Structure
+```
+src/
+  app/                 Next.js app routes
+  components/          UI + layout components
+  lib/                 Core logic, storage, generators, progression
+  tests/               Unit + e2e tests
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Key Modules
+- `src/lib/program.ts` — weekly program generator
+- `src/lib/phases.ts` — phase selection + next-week plan
+- `src/lib/progression.ts` — next-time recommendations
+- `src/lib/assessmentEngine.ts` — structured observations
+- `src/lib/logStore.ts` — IndexedDB logs/programs/prefs
+- `src/lib/sessionDraftStore.ts` — resume-in-progress sessions
+- `src/lib/appState.ts` — last route / active session tracking
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Routes
+- `/` — landing
+- `/assessment` — photo upload + posture scan
+- `/questionnaire` — user inputs
+- `/results` — program dashboard
+- `/session` — guided session
+- `/program/[programId]/day/[dayIndex]` — day details + history
+- `/exercise/[id]` — exercise detail
+- `/progress` — progress overview
+- `/settings` — backup/restore + reset
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Data Storage
+LocalStorage
+- `posture_questionnaire`
+- `posture_photo_meta`
+- `app_state_v1`
+- legacy keys for migration (logs/session/prefs)
 
-## Learn More
+IndexedDB
+- `bodycoach-logs` (sessions, logs, programs, prefs, progress)
+- `bodycoach-drafts` (session drafts)
 
-To learn more about Next.js, take a look at the following resources:
+## Running Locally
+```
+npm install
+npm run dev
+```
+Open `http://localhost:3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Build
+```
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tests
+```
+npm test
+npm run test:e2e
+```
+Note: Playwright uses a web server on port 3000 in config; update if needed.
 
-## Deploy on Vercel
+## Reset App Data
+Settings → Danger zone → Reset app data.
+This clears localStorage + IndexedDB and reloads the app as a fresh install.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Future Plans (Roadmap)
+1. Cloud sync + login (optional): cross-device restore
+2. Wearable integration: HR/sleep insights to adjust weekly plan
+3. Adaptive periodization: auto-adjust phase based on readiness
+4. Movement scoring: real-time camera feedback in session (browser-only)
+5. Expanded exercise library: progression ladders and alternatives
+6. Coach review mode: shared links for remote feedback
+7. Notifications: weekly prompts and missed-session nudges
+8. Localization: multi-language support
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Design Principles
+- Mobile-first, high-contrast UI over a background image
+- Local-first storage (privacy by default)
+- Progressive disclosure: keep screens clean, show details on demand
+
+## Contributing
+Keep changes scoped, avoid heavy dependencies, and preserve local-first behavior.
