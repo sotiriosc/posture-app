@@ -9,6 +9,7 @@ import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import DualModeTimer from "@/components/DualModeTimer";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import type {
   ExerciseLog,
@@ -61,12 +62,8 @@ export default function SessionClient() {
   const searchParams = useSearchParams();
   const [data, setData] = useState<QuestionnaireData | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [timerSecondsLeft, setTimerSecondsLeft] = useState(0);
   const [workSeconds, setWorkSeconds] = useState(60);
   const [restSeconds, setRestSeconds] = useState(60);
-  const [restRunning, setRestRunning] = useState(false);
-  const [restSecondsLeft, setRestSecondsLeft] = useState(60);
   const [completedSets, setCompletedSets] = useState<Record<string, boolean[]>>(
     {}
   );
@@ -217,38 +214,6 @@ export default function SessionClient() {
     return () => window.clearInterval(timer);
   }, [tips.length]);
 
-  useEffect(() => {
-    if (!currentItem) return;
-    if (currentItem.durationSec) {
-      setTimerSecondsLeft(workSeconds);
-      setTimerRunning(false);
-    } else {
-      setTimerSecondsLeft(0);
-      setTimerRunning(false);
-    }
-  }, [currentItem, workSeconds]);
-
-  useEffect(() => {
-    if (!timerRunning || timerSecondsLeft <= 0) return;
-    const timer = window.setInterval(() => {
-      setTimerSecondsLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
-    return () => window.clearInterval(timer);
-  }, [timerRunning, timerSecondsLeft]);
-
-  useEffect(() => {
-    if (!restRunning || restSecondsLeft <= 0) return;
-    const timer = window.setInterval(() => {
-      setRestSecondsLeft((prev) => Math.max(prev - 1, 0));
-    }, 1000);
-    return () => window.clearInterval(timer);
-  }, [restRunning, restSecondsLeft]);
-
-  useEffect(() => {
-    setRestSecondsLeft(restSeconds);
-    setRestRunning(false);
-  }, [restSeconds]);
-
   const toggleSetComplete = (exerciseId: string, index: number) => {
     setCompletedSets((prev) => {
       const current = prev[exerciseId] ?? [];
@@ -293,7 +258,6 @@ export default function SessionClient() {
   };
 
   const handleNext = () => {
-    setRestRunning(false);
     if (activeIndex < totalItems - 1) {
       setActiveIndex((prev) => prev + 1);
     } else {
@@ -302,7 +266,6 @@ export default function SessionClient() {
   };
 
   const handleBack = () => {
-    setRestRunning(false);
     setActiveIndex((prev) => Math.max(prev - 1, 0));
   };
 
@@ -451,36 +414,6 @@ export default function SessionClient() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentItem?.id, currentSelectedSets]);
 
-  const adjustTimer = (
-    type: "work" | "rest",
-    delta: number,
-    fallback: number
-  ) => {
-    if (type === "work") {
-      const next = Math.max(15, (workSeconds || fallback) + delta);
-      setWorkSeconds(next);
-      setTimerSecondsLeft(next);
-      updateTimerPrefs({ workSeconds: next, restSeconds });
-      return;
-    }
-    const next = Math.max(15, (restSeconds || fallback) + delta);
-    setRestSeconds(next);
-    setRestSecondsLeft(next);
-    updateTimerPrefs({ workSeconds, restSeconds: next });
-  };
-
-  const applyTimerPreset = (type: "work" | "rest", value: number) => {
-    if (type === "work") {
-      setWorkSeconds(value);
-      setTimerSecondsLeft(value);
-      updateTimerPrefs({ workSeconds: value, restSeconds });
-      return;
-    }
-    setRestSeconds(value);
-    setRestSecondsLeft(value);
-    updateTimerPrefs({ workSeconds, restSeconds: value });
-  };
-
   useEffect(() => {
     if (!currentItem) return;
     updateSelectedSets(currentItem.id, currentSelectedSets);
@@ -594,67 +527,19 @@ export default function SessionClient() {
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          {currentItem.durationSec ? (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-              <div className="flex items-center justify-between text-sm font-semibold text-slate-900">
-                <span>Exercise timer</span>
-                <span>
-                  {Math.floor(timerSecondsLeft / 60)
-                    .toString()
-                    .padStart(1, "0")}
-                  :
-                  {(timerSecondsLeft % 60).toString().padStart(2, "0")}
-                </span>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setTimerRunning((prev) => !prev)}
-                  className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
-                >
-                  {timerRunning ? "Pause" : "Start timer"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTimerSecondsLeft(workSeconds)}
-                  className="rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700"
-                >
-                  Reset
-                </button>
-              </div>
-              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                <span className="font-semibold text-slate-900">Work timer</span>
-                <button
-                  type="button"
-                  onClick={() => adjustTimer("work", -15, 60)}
-                  className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700"
-                >
-                  -15s
-                </button>
-                <button
-                  type="button"
-                  onClick={() => adjustTimer("work", 15, 60)}
-                  className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700"
-                >
-                  +15s
-                </button>
-                {[30, 45, 60, 90, 120].map((value) => (
-                  <button
-                    key={`work-${value}`}
-                    type="button"
-                    onClick={() => applyTimerPreset("work", value)}
-                    className={`rounded-full border px-3 py-1 font-semibold ${
-                      workSeconds === value
-                        ? "border-slate-900 bg-slate-900 text-white"
-                        : "border-slate-200 text-slate-700"
-                    }`}
-                  >
-                    {value}s
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : null}
+          <DualModeTimer
+            initialExerciseSeconds={workSeconds}
+            initialRestSeconds={restSeconds}
+            onExerciseDurationChange={(seconds) => {
+              setWorkSeconds(seconds);
+              updateTimerPrefs({ workSeconds: seconds, restSeconds });
+            }}
+            onRestDurationChange={(seconds) => {
+              setRestSeconds(seconds);
+              updateTimerPrefs({ workSeconds, restSeconds: seconds });
+            }}
+            defaultMode="exercise"
+          />
 
           <div className="mt-6 space-y-2 text-sm text-slate-700">
             <p className="font-semibold text-slate-900">Cues</p>
@@ -935,74 +820,6 @@ export default function SessionClient() {
             </div>
           </div>
         ) : null}
-
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-slate-900">Rest timer</p>
-              <p className="text-xs text-slate-500">
-                Default {restSeconds}s between sets
-              </p>
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between text-sm font-semibold text-slate-900">
-            <span>Rest countdown</span>
-            <span>
-              {Math.floor(restSecondsLeft / 60)
-                .toString()
-                .padStart(1, "0")}
-              :
-              {(restSecondsLeft % 60).toString().padStart(2, "0")}
-            </span>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setRestRunning((prev) => !prev)}
-              className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
-            >
-              {restRunning ? "Pause rest" : "Start rest"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setRestSecondsLeft(restSeconds)}
-              className="rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700"
-            >
-              Reset rest
-            </button>
-          </div>
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-            <span className="font-semibold text-slate-900">Rest timer</span>
-            <button
-              type="button"
-              onClick={() => adjustTimer("rest", -15, 60)}
-              className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700"
-            >
-              -15s
-            </button>
-            <button
-              type="button"
-              onClick={() => adjustTimer("rest", 15, 60)}
-              className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700"
-            >
-              +15s
-            </button>
-            {[30, 45, 60, 90, 120].map((value) => (
-              <button
-                key={`rest-${value}`}
-                type="button"
-                onClick={() => applyTimerPreset("rest", value)}
-                className={`rounded-full border px-3 py-1 font-semibold ${
-                  restSeconds === value
-                    ? "border-slate-900 bg-slate-900 text-white"
-                    : "border-slate-200 text-slate-700"
-                }`}
-              >
-                {value}s
-              </button>
-            ))}
-          </div>
-        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <OnImage className="flex flex-wrap items-center gap-3">
