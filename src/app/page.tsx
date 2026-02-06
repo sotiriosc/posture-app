@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ContinueProgramCTA from "@/components/ContinueProgramCTA";
 
 export default function Home() {
   return (
@@ -68,6 +69,7 @@ export default function Home() {
           </div>
         </main>
       </div>
+      <ContinueProgramCTA />
     </div>
   );
 }
