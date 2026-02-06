@@ -89,6 +89,7 @@ export default function QuestionnaireForm() {
 
   return (
     <form
+      data-testid="questionnaire-form"
       className="space-y-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg"
       onSubmit={(event) => {
         event.preventDefault();
@@ -105,6 +106,7 @@ export default function QuestionnaireForm() {
             <button
               type="button"
               key={days}
+              data-testid={`days-${days}`}
               onClick={() =>
                 updateData({ daysPerWeek: days as QuestionnaireData["daysPerWeek"] })
               }
@@ -189,6 +191,7 @@ export default function QuestionnaireForm() {
             >
               <input
                 type="checkbox"
+                data-testid={`equipment-${item.value}`}
                 checked={data.equipment.includes(item.value)}
                 onChange={() => toggleArrayValue("equipment", item.value)}
                 className="h-4 w-4 accent-slate-900"
@@ -201,6 +204,7 @@ export default function QuestionnaireForm() {
 
       <button
         type="submit"
+        data-testid="generate-routine"
         className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
       >
         Generate routine

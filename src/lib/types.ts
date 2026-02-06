@@ -8,15 +8,31 @@ export type SessionRecord = {
   routineId: string | null;
   durationSec: number | null;
   notes: string | null;
+  sessionFeedback?: "easy" | "moderate" | "hard" | "pain" | null;
+  sessionPainLocation?: PainLocation | null;
+  sessionFeedbackNotes?: string | null;
   source: "local" | "cloud";
   deletedAt: string | null;
 };
+
+export type PainLocation =
+  | "neck"
+  | "shoulder"
+  | "upper back"
+  | "lower back"
+  | "hips"
+  | "knees"
+  | "other";
 
 export type ExerciseLog = {
   id: string;
   userId: string | null;
   sessionId: string;
   exerciseId: string;
+  originalExerciseId?: string | null;
+  substitutedExerciseId?: string | null;
+  programId?: string | null;
+  dayIndex?: number | null;
   createdAt: string;
   updatedAt: string;
   loadType: "weighted" | "bodyweight" | "timed" | "assisted";
@@ -28,17 +44,26 @@ export type ExerciseLog = {
   setsCompleted: number | null;
   durationSec: number | null;
   rpe: number | null;
-  felt: "easy" | "good" | "hard" | null;
+  felt: "easy" | "moderate" | "hard" | "pain" | null;
+  painLocation?: PainLocation | null;
+  feedbackNotes?: string | null;
   notes: string | null;
   computedVolume: number | null;
   source: "local" | "cloud";
   deletedAt: string | null;
 };
 
+export type ExerciseFeedback = {
+  rating: "easy" | "moderate" | "hard" | "pain";
+  painLocation?: PainLocation | null;
+  notes?: string | null;
+};
+
 export type LogPrefs = {
   schemaVersion: number;
   timerPrefs?: { workSeconds: number; restSeconds: number };
-  feedbackByExercise?: Record<string, "easy" | "good" | "hard">;
+  feedbackByExercise?: Record<string, ExerciseFeedback>;
+  substitutionByExercise?: Record<string, string>;
 };
 
 export type ProgramRoutineItem = {
@@ -67,6 +92,17 @@ export type Program = {
   goalTrack: string | null;
   daysPerWeek: 3 | 4 | 5;
   estimatedSessionMinutesRange: { min: 45; max: 60 };
+  phase?: {
+    name: string;
+    weekIndex: number;
+    weekCount: number;
+    goal: string;
+  };
+  nextWeekPlan?: {
+    summary: string;
+    change: string;
+    reason: string;
+  };
   week: ProgramDay[];
   source: "local" | "cloud";
   deletedAt: string | null;

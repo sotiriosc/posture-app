@@ -151,6 +151,12 @@ const migrateFromLocalStorage = async () => {
       "Easy" | "Good" | "Hard"
     >;
 
+  const mapLegacyFeedback = (value?: "Easy" | "Good" | "Hard") => {
+    if (!value) return null;
+    if (value === "Good") return "moderate";
+    return value.toLowerCase() as "easy" | "hard";
+  };
+
   const logs: ExerciseLog[] = [];
   if (legacyLogsRaw) {
     const legacyLogs = JSON.parse(legacyLogsRaw) as Array<{
@@ -201,11 +207,7 @@ const migrateFromLocalStorage = async () => {
         setsCompleted: log.setsCompleted ?? null,
         durationSec: null,
         rpe: null,
-        felt: feedback[log.exerciseId]?.toLowerCase() as
-          | "easy"
-          | "good"
-          | "hard"
-          | null,
+        felt: mapLegacyFeedback(feedback[log.exerciseId]),
         notes: log.notes ?? null,
         computedVolume: log.computedVolume ?? null,
         source: "local",
@@ -241,10 +243,22 @@ const migrateFromLocalStorage = async () => {
         }
       : undefined,
     feedbackByExercise: Object.fromEntries(
-      Object.entries(feedback).map(([key, value]) => [
-        key,
-        value.toLowerCase() as "easy" | "good" | "hard",
-      ])
+      Object.entries(feedback)
+        .map(([key, value]) => {
+          const rating = mapLegacyFeedback(value);
+          if (!rating) return null;
+          return [
+            key,
+            {
+              rating,
+              painLocation: null,
+              notes: null,
+            },
+          ] as const;
+        })
+        .filter((entry): entry is [string, { rating: "easy" | "moderate" | "hard"; painLocation: null; notes: null }] =>
+          Boolean(entry)
+        )
     ),
   });
 

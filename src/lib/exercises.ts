@@ -9,6 +9,8 @@ export type Exercise = {
   equipment: Equipment[];
   movementPattern: string[];
   muscleGroups: string[];
+  focusTags?: string[];
+  swapOptions?: string[];
   loadType: "weighted" | "bodyweight" | "timed" | "assisted";
   durationOrReps: string;
   cues: string[];
@@ -18,7 +20,7 @@ export type Exercise = {
   tags: string[];
 };
 
-export const exercises: Exercise[] = [
+const rawExercises: Exercise[] = [
   {
     id: "cat-cow",
     name: "Cat-Cow Flow",
@@ -560,6 +562,32 @@ export const exercises: Exercise[] = [
     tags: ["pull", "band"],
   },
 ];
+
+const pickSwapOptions = (exercise: Exercise, list: Exercise[]) => {
+  const matches = list.filter((candidate) => {
+    if (candidate.id === exercise.id) return false;
+    const patternOverlap = candidate.movementPattern.some((tag) =>
+      exercise.movementPattern.includes(tag)
+    );
+    const tagOverlap = candidate.tags.some((tag) =>
+      exercise.tags.includes(tag)
+    );
+    const loadCompatible =
+      candidate.loadType === exercise.loadType ||
+      (exercise.loadType !== "weighted" && candidate.loadType !== "weighted");
+    return (patternOverlap || tagOverlap) && loadCompatible;
+  });
+  return matches.slice(0, 5).map((item) => item.id);
+};
+
+export const exercises: Exercise[] = rawExercises.map((exercise) => ({
+  ...exercise,
+  focusTags: exercise.focusTags ?? exercise.tags ?? [],
+  swapOptions:
+    exercise.swapOptions && exercise.swapOptions.length
+      ? exercise.swapOptions
+      : pickSwapOptions(exercise, rawExercises),
+}));
 
 const normalizeId = (id?: string) => (id ?? "").trim().toLowerCase();
 

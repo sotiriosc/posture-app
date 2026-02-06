@@ -4,6 +4,7 @@ import type { Exercise, ExerciseCategory } from "@/lib/exercises";
 import { exerciseById, exercises } from "@/lib/exercises";
 import type { Equipment } from "@/lib/equipment";
 import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
+import { buildNextWeekPlan, getPhaseForWeekIndex } from "@/lib/phases";
 
 const nowIso = () => new Date().toISOString();
 
@@ -334,6 +335,13 @@ export const generateWeeklyProgram = (
     });
 
   const timestamp = nowIso();
+  const phase = getPhaseForWeekIndex(1, data.goals ?? "Improve posture");
+  const nextWeekPlan = buildNextWeekPlan({
+    complianceRate: 0,
+    painFlag: data.painAreas.length > 0,
+    fatigueFlag: false,
+    phaseName: phase.name,
+  });
   return {
     id: programId,
     userId: null,
@@ -342,6 +350,8 @@ export const generateWeeklyProgram = (
     goalTrack: data.goals ?? null,
     daysPerWeek: data.daysPerWeek,
     estimatedSessionMinutesRange: { min: 45, max: 60 },
+    phase,
+    nextWeekPlan,
     week: eligibleDays,
     source: "local",
     deletedAt: null,

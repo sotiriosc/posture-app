@@ -12,8 +12,10 @@ import Button from "@/components/ui/Button";
 import DualModeTimer from "@/components/DualModeTimer";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import type {
+  ExerciseFeedback,
   ExerciseLog,
   LogPrefs,
+  PainLocation,
   Program,
   ProgramProgress,
   ProgramRoutineItem,
@@ -29,13 +31,14 @@ import {
   saveExerciseLog,
   savePrefs,
   saveProgramProgress,
+  updateSession,
   uuid,
   nowIso,
 } from "@/lib/logStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 
-type FeedbackEntry = "easy" | "good" | "hard";
+type FeedbackEntry = "easy" | "moderate" | "hard" | "pain";
 
 const parseSetsRange = (sets?: string | number) => {
   if (typeof sets === "number") {
@@ -74,7 +77,11 @@ export default function SessionClient() {
     completedExercises: number;
     estimatedMinutes: number;
   } | null>(null);
-  const [feedback, setFeedback] = useState<Record<string, FeedbackEntry>>({});
+  const [feedback, setFeedback] = useState<Record<string, ExerciseFeedback>>(
+    {}
+  );
+  const [sessionFeedback, setSessionFeedback] =
+    useState<ExerciseFeedback | null>(null);
   const [prefs, setPrefs] = useState<LogPrefs | null>(null);
   const [lastLog, setLastLog] = useState<ExerciseLog | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -101,6 +108,9 @@ export default function SessionClient() {
   );
   const [repsBySetByExercise, setRepsBySetByExercise] = useState<
     Record<string, string[]>
+  >({});
+  const [substitutionByExercise, setSubstitutionByExercise] = useState<
+    Record<string, string>
   >({});
 
   useEffect(() => {
@@ -129,7 +139,32 @@ export default function SessionClient() {
         setRestSeconds(storedPrefs.timerPrefs.restSeconds);
       }
       if (storedPrefs.feedbackByExercise) {
-        setFeedback(storedPrefs.feedbackByExercise);
+        const normalized = Object.fromEntries(
+          Object.entries(storedPrefs.feedbackByExercise).map(([key, value]) => {
+            if (typeof value === "string") {
+              const rating =
+                value === "good"
+                  ? "moderate"
+                  : (value as FeedbackEntry);
+              return [
+                key,
+                { rating, painLocation: null, notes: "" } as ExerciseFeedback,
+              ];
+            }
+            return [
+              key,
+              {
+                rating: value.rating,
+                painLocation: value.painLocation ?? null,
+                notes: value.notes ?? "",
+              } as ExerciseFeedback,
+            ];
+          })
+        );
+        setFeedback(normalized);
+      }
+      if (storedPrefs.substitutionByExercise) {
+        setSubstitutionByExercise(storedPrefs.substitutionByExercise);
       }
 
       const programId = searchParams.get("programId");
@@ -160,10 +195,13 @@ export default function SessionClient() {
       const day = program.week.find((entry) => entry.dayIndex === programDayIndex);
       if (!day) return [];
       return day.routine.map((item) => {
-        const exercise = exerciseById(item.exerciseId);
+        const substitutedId = substitutionByExercise[item.exerciseId];
+        const effectiveExerciseId = substitutedId ?? item.exerciseId;
+        const exercise = exerciseById(effectiveExerciseId);
         const routineItem = item as ProgramRoutineItem;
         return {
-          exerciseId: routineItem.exerciseId,
+          exerciseId: effectiveExerciseId,
+          originalExerciseId: routineItem.exerciseId,
           sets: routineItem.sets ?? "1",
           reps: routineItem.reps ?? "",
           durationSec: routineItem.durationSec ?? undefined,
@@ -182,11 +220,15 @@ export default function SessionClient() {
     if (!routine) return [];
     return routine.sections.flatMap((section) =>
       section.items.map((item) => {
-        const exercise = exerciseById(item.exerciseId);
+        const substitutedId = substitutionByExercise[item.exerciseId];
+        const effectiveExerciseId = substitutedId ?? item.exerciseId;
+        const exercise = exerciseById(effectiveExerciseId);
         return {
           ...item,
           section: section.title,
           id: `${section.title}-${item.exerciseId}`,
+          exerciseId: effectiveExerciseId,
+          originalExerciseId: item.exerciseId,
           name: exercise?.name ?? "Exercise",
           cues: exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
@@ -195,7 +237,7 @@ export default function SessionClient() {
         };
       })
     );
-  }, [program, programDayIndex, routine]);
+  }, [program, programDayIndex, routine, substitutionByExercise]);
 
   const currentItem = flatItems[activeIndex];
   const totalItems = flatItems.length;
@@ -233,12 +275,26 @@ export default function SessionClient() {
     });
   };
 
-  const saveFeedback = async (next: Record<string, FeedbackEntry>) => {
+  const saveFeedback = async (next: Record<string, ExerciseFeedback>) => {
     setFeedback(next);
     const nextPrefs: LogPrefs = {
       ...(prefs ?? { schemaVersion: 1 }),
       timerPrefs: prefs?.timerPrefs,
       feedbackByExercise: next,
+      substitutionByExercise: substitutionByExercise,
+    };
+    setPrefs(nextPrefs);
+    await savePrefs(nextPrefs);
+  };
+
+  const saveSubstitution = async (originalId: string, substituteId: string) => {
+    const nextMap = { ...substitutionByExercise, [originalId]: substituteId };
+    setSubstitutionByExercise(nextMap);
+    const nextPrefs: LogPrefs = {
+      ...(prefs ?? { schemaVersion: 1 }),
+      timerPrefs: prefs?.timerPrefs,
+      feedbackByExercise: feedback,
+      substitutionByExercise: nextMap,
     };
     setPrefs(nextPrefs);
     await savePrefs(nextPrefs);
@@ -255,6 +311,20 @@ export default function SessionClient() {
     };
     setPrefs(nextPrefs);
     await savePrefs(nextPrefs);
+  };
+
+  const saveSessionFeedback = async (next: ExerciseFeedback) => {
+    setSessionFeedback(next);
+    if (!summary) return;
+    const updated: SessionRecord = {
+      ...summary,
+      sessionFeedback: next.rating,
+      sessionPainLocation: next.painLocation ?? null,
+      sessionFeedbackNotes: next.notes ?? null,
+      updatedAt: nowIso(),
+    };
+    setSummary(updated);
+    await updateSession(updated);
   };
 
   const handleNext = () => {
@@ -305,6 +375,9 @@ export default function SessionClient() {
         program && programDayIndex !== null
           ? `dayIndex:${programDayIndex}`
           : null,
+      sessionFeedback: sessionFeedback?.rating ?? null,
+      sessionPainLocation: sessionFeedback?.painLocation ?? null,
+      sessionFeedbackNotes: sessionFeedback?.notes ?? null,
       source: "local",
       deletedAt: null,
     };
@@ -313,6 +386,8 @@ export default function SessionClient() {
 
     const logsToSave: ExerciseLog[] = flatItems.map((item) => {
       const exerciseId = item.exerciseId;
+      const originalExerciseId =
+        "originalExerciseId" in item ? item.originalExerciseId : null;
       const unit = unitByExercise[exerciseId] ?? "lb";
       const weightValue = weightByExercise[exerciseId];
       const weight =
@@ -343,6 +418,14 @@ export default function SessionClient() {
         userId: null,
         sessionId: sessionIdValue,
         exerciseId,
+        originalExerciseId:
+          originalExerciseId && originalExerciseId !== exerciseId
+            ? originalExerciseId
+            : null,
+        substitutedExerciseId:
+          originalExerciseId && originalExerciseId !== exerciseId
+            ? exerciseId
+            : null,
         createdAt: completedAt,
         updatedAt: completedAt,
         loadType: item.loadType,
@@ -354,8 +437,12 @@ export default function SessionClient() {
         setsCompleted,
         durationSec: item.durationSec ?? null,
         rpe: null,
-        felt: feedback[item.id] ?? null,
+        felt: feedback[item.id]?.rating ?? null,
+        painLocation: feedback[item.id]?.painLocation ?? null,
+        feedbackNotes: feedback[item.id]?.notes ?? null,
         notes: notesByExercise[exerciseId]?.trim() || null,
+        programId: program?.id ?? null,
+        dayIndex: programDayIndex ?? null,
         computedVolume: volumeFromReps ?? volumeFromSets ?? null,
         source: "local",
         deletedAt: null,
@@ -491,6 +578,93 @@ export default function SessionClient() {
             <p className="mt-2 text-sm text-slate-600">
               Great work staying consistent today.
             </p>
+          </div>
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="text-sm font-semibold text-slate-900">
+              How did the workout feel?
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(
+                [
+                  { value: "easy", label: "Easy" },
+                  { value: "moderate", label: "Moderate" },
+                  { value: "hard", label: "Hard" },
+                  { value: "pain", label: "Pain / discomfort" },
+                ] as Array<{ value: FeedbackEntry; label: string }>
+              ).map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() =>
+                    saveSessionFeedback({
+                      rating: option.value,
+                      painLocation: sessionFeedback?.painLocation ?? null,
+                      notes: sessionFeedback?.notes ?? "",
+                    })
+                  }
+                  className={`rounded-full border px-4 py-2 text-xs font-semibold ${
+                    sessionFeedback?.rating === option.value
+                      ? "border-slate-900 bg-slate-900 text-white"
+                      : "border-slate-200 text-slate-700"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            {sessionFeedback?.rating === "pain" ? (
+              <div className="mt-4 grid gap-3 text-xs">
+                <label className="flex flex-col gap-2">
+                  <span className="font-semibold text-slate-700">Location</span>
+                  <select
+                    value={sessionFeedback?.painLocation ?? ""}
+                    onChange={(event) =>
+                      saveSessionFeedback({
+                        rating: "pain",
+                        painLocation: event.target.value
+                          ? (event.target.value as PainLocation)
+                          : null,
+                        notes: sessionFeedback?.notes ?? "",
+                      })
+                    }
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
+                  >
+                    <option value="">Select location</option>
+                    {[
+                      "neck",
+                      "shoulder",
+                      "upper back",
+                      "lower back",
+                      "hips",
+                      "knees",
+                      "other",
+                    ].map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="font-semibold text-slate-700">
+                    Notes (optional)
+                  </span>
+                  <input
+                    type="text"
+                    value={sessionFeedback?.notes ?? ""}
+                    onChange={(event) =>
+                      saveSessionFeedback({
+                        rating: "pain",
+                        painLocation: sessionFeedback?.painLocation ?? null,
+                        notes: event.target.value,
+                      })
+                    }
+                    placeholder="Short note"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
+                  />
+                </label>
+              </div>
+            ) : null}
           </div>
           <OnImage className="flex flex-wrap gap-3">
             <Button variant="primary" onClick={handleStartNewSession}>
@@ -795,29 +969,146 @@ export default function SessionClient() {
         {allSetsCompleted ? (
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <p className="text-sm font-semibold text-slate-900">
-              How did that feel?
+              How did it feel?
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {(["easy", "good", "hard"] as FeedbackEntry[]).map((option) => (
+              {(
+                [
+                  { value: "easy", label: "Easy" },
+                  { value: "moderate", label: "Moderate" },
+                  { value: "hard", label: "Hard" },
+                  { value: "pain", label: "Pain / discomfort" },
+                ] as Array<{ value: FeedbackEntry; label: string }>
+              ).map((option) => (
                 <button
-                  key={option}
+                  key={option.value}
                   type="button"
                   onClick={() =>
                     saveFeedback({
                       ...feedback,
-                      [currentItem.id]: option,
+                      [currentItem.id]: {
+                        rating: option.value,
+                        painLocation:
+                          feedback[currentItem.id]?.painLocation ?? null,
+                        notes: feedback[currentItem.id]?.notes ?? "",
+                      },
                     })
                   }
                   className={`rounded-full border px-4 py-2 text-xs font-semibold ${
-                    feedback[currentItem.id] === option
+                    feedback[currentItem.id]?.rating === option.value
                       ? "border-slate-900 bg-slate-900 text-white"
                       : "border-slate-200 text-slate-700"
                   }`}
                 >
-                  {option.charAt(0).toUpperCase() + option.slice(1)}
+                  {option.label}
                 </button>
               ))}
             </div>
+            {feedback[currentItem.id]?.rating === "pain" ? (
+              <div className="mt-4 grid gap-3 text-xs">
+                <label className="flex flex-col gap-2">
+                  <span className="font-semibold text-slate-700">Location</span>
+                  <select
+                    value={feedback[currentItem.id]?.painLocation ?? ""}
+                    onChange={(event) =>
+                      saveFeedback({
+                        ...feedback,
+                        [currentItem.id]: {
+                          rating: "pain",
+                          painLocation: event.target.value
+                            ? (event.target.value as PainLocation)
+                            : null,
+                          notes: feedback[currentItem.id]?.notes ?? "",
+                        },
+                      })
+                    }
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
+                  >
+                    <option value="">Select location</option>
+                    {[
+                      "neck",
+                      "shoulder",
+                      "upper back",
+                      "lower back",
+                      "hips",
+                      "knees",
+                      "other",
+                    ].map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="font-semibold text-slate-700">
+                    Notes (optional)
+                  </span>
+                  <input
+                    type="text"
+                    value={feedback[currentItem.id]?.notes ?? ""}
+                    onChange={(event) =>
+                      saveFeedback({
+                        ...feedback,
+                        [currentItem.id]: {
+                          rating: "pain",
+                          painLocation:
+                            feedback[currentItem.id]?.painLocation ?? null,
+                          notes: event.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Short note"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
+                  />
+                </label>
+                {(() => {
+                  const baseOriginalId =
+                    "originalExerciseId" in currentItem && currentItem.originalExerciseId
+                      ? currentItem.originalExerciseId
+                      : currentItem.exerciseId;
+                  const exercise = exerciseById(currentItem.exerciseId);
+                  const options = exercise?.swapOptions ?? [];
+                  if (!options.length) return null;
+                  return (
+                    <div className="grid gap-2">
+                      <p className="font-semibold text-slate-700">
+                        Try this instead
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {options.map((optionId) => {
+                          const option = exerciseById(optionId);
+                          if (!option) return null;
+                          const isSelected =
+                            substitutionByExercise[baseOriginalId] === optionId;
+                          return (
+                            <button
+                              key={optionId}
+                              type="button"
+                              onClick={() =>
+                                saveSubstitution(baseOriginalId, optionId)
+                              }
+                              className={`rounded-full border px-3 py-1 text-[11px] font-semibold ${
+                                isSelected
+                                  ? "border-slate-900 bg-slate-900 text-white"
+                                  : "border-slate-200 text-slate-700"
+                              }`}
+                            >
+                              {option.name}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {substitutionByExercise[baseOriginalId] ? (
+                        <p className="text-[11px] text-slate-500">
+                          Substitution saved for next session.
+                        </p>
+                      ) : null}
+                    </div>
+                  );
+                })()}
+              </div>
+            ) : null}
           </div>
         ) : null}
 
@@ -838,7 +1129,12 @@ export default function SessionClient() {
           <div className="text-xs font-semibold text-slate-500">
             {activeIndex + 1} / {totalItems}
           </div>
-          <Button type="button" variant="primary" onClick={handleNext}>
+          <Button
+            type="button"
+            variant="primary"
+            data-testid="session-next"
+            onClick={handleNext}
+          >
             {activeIndex === totalItems - 1 ? "Finish session" : "Next"}
           </Button>
         </div>

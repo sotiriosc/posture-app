@@ -21,18 +21,34 @@ import {
   type PoseAnalysis,
   type PoseMetrics,
 } from "@/lib/poseAnalyzer";
+import {
+  buildAssessmentReport,
+  type AssessmentReport,
+} from "@/lib/assessmentEngine";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import type { Exercise } from "@/lib/exercises";
-import type { Program, ProgramProgress, SessionRecord } from "@/lib/types";
+import type {
+  ExerciseFeedback,
+  ExerciseLog,
+  Program,
+  ProgramProgress,
+  ProgramRoutineItem,
+  SessionRecord,
+} from "@/lib/types";
 import {
   getProgramProgress,
   getLatestProgram,
   listSessionsByProgramId,
+  listExerciseLogsByExercise,
+  listExerciseLogsBySessionIds,
+  loadPrefs,
   saveProgram,
   saveProgramProgress,
   uuid,
 } from "@/lib/logStore";
+import { getProgressionRecommendation } from "@/lib/progression";
+import { buildNextWeekPlan, getPhaseForWeekIndex } from "@/lib/phases";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -67,12 +83,18 @@ export default function ResultsRoutine() {
   const [showDebug, setShowDebug] = useState(false);
   const [progress, setProgress] = useState<ProgramProgress | null>(null);
   const [programSessions, setProgramSessions] = useState<SessionRecord[]>([]);
+  const [latestLogsByExercise, setLatestLogsByExercise] = useState<
+    Record<string, ExerciseLog | null>
+  >({});
+  const [substitutionByExercise, setSubstitutionByExercise] = useState<
+    Record<string, string>
+  >({});
   const [isReady, setIsReady] = useState(false);
   const { photos } = usePhotoContext();
   const [poseState, setPoseState] = useState<{
     loading: boolean;
     error: string | null;
-    report: PoseAnalysis | null;
+    report: AssessmentReport | null;
   }>({ loading: false, error: null, report: null });
 
   useEffect(() => {
@@ -90,12 +112,76 @@ export default function ResultsRoutine() {
       });
     }
     setIsReady(true);
+    const loadPrefsData = async () => {
+      const prefs = await loadPrefs();
+      if (prefs.substitutionByExercise) {
+        setSubstitutionByExercise(prefs.substitutionByExercise);
+      }
+    };
+    loadPrefsData();
   }, []);
+
+  useEffect(() => {
+    const loadLogs = async () => {
+      if (!program) return;
+      const day = program.week[selectedDay];
+      if (!day) return;
+      const ids = Array.from(new Set(day.routine.map((item) => item.exerciseId)));
+      const entries = await Promise.all(
+        ids.map(async (id) => {
+          const effectiveId = substitutionByExercise[id] ?? id;
+          const logs = await listExerciseLogsByExercise(effectiveId, 1);
+          return [id, logs[0] ?? null] as const;
+        })
+      );
+      setLatestLogsByExercise(Object.fromEntries(entries));
+    };
+    loadLogs();
+  }, [program, selectedDay, substitutionByExercise]);
 
   const routine = useMemo(() => {
     if (!data) return defaultRoutine;
     return generateRoutine(data);
   }, [data]);
+
+  const dayPreviewRecommendations = useMemo(() => {
+    if (!program) return [];
+    const day = program.week[selectedDay];
+    if (!day) return [];
+    return day.routine
+      .map((item) => {
+        const effectiveId = substitutionByExercise[item.exerciseId] ?? item.exerciseId;
+        const exercise = exerciseById(effectiveId);
+        if (!exercise) return null;
+        const latestLog = latestLogsByExercise[item.exerciseId] ?? null;
+        if (!latestLog) return null;
+        const feedback: ExerciseFeedback | null = latestLog.felt
+          ? {
+              rating: latestLog.felt,
+              painLocation: latestLog.painLocation ?? null,
+              notes: latestLog.feedbackNotes ?? null,
+            }
+          : null;
+        const rec = getProgressionRecommendation({
+          exercise,
+          logs: [latestLog],
+          feedback,
+          prescription: {
+            sets: item.sets,
+            reps: item.reps ?? exercise.durationOrReps,
+            durationSec: item.durationSec ?? null,
+            restSec: item.restSec ?? null,
+          },
+        });
+        if (!rec) return null;
+        return { item, exercise, rec };
+      })
+      .filter(Boolean) as Array<{
+      item: ProgramRoutineItem;
+      exercise: Exercise;
+      rec: ReturnType<typeof getProgressionRecommendation>;
+    }>;
+  }, [program, selectedDay, latestLogsByExercise]);
 
   const equipmentContext = useMemo(() => {
     if (!data) {
@@ -181,6 +267,18 @@ export default function ResultsRoutine() {
       progressions: progressions.length ? progressions : undefined,
       regressions: regressions.length ? regressions : undefined,
     };
+  };
+
+  const formatRecommendation = (rec: ReturnType<typeof getProgressionRecommendation>) => {
+    if (!rec) return "";
+    const { recommendedNext } = rec;
+    const parts: string[] = [];
+    if (recommendedNext.weight) parts.push(`${recommendedNext.weight} lb`);
+    if (recommendedNext.reps) parts.push(`${recommendedNext.reps} reps`);
+    if (recommendedNext.sets) parts.push(`${recommendedNext.sets} sets`);
+    if (recommendedNext.tempo) parts.push(`tempo ${recommendedNext.tempo}`);
+    if (!parts.length) return "Keep targets consistent";
+    return parts.join(" • ");
   };
 
   useEffect(() => {
@@ -281,13 +379,88 @@ export default function ResultsRoutine() {
   }, [program, completedByDay, nextDayIndex]);
 
   useEffect(() => {
+    if (!program) return;
+    const updatePhasePlan = async () => {
+      const completedSessions = programSessions.filter(
+        (session) => session.completedAt
+      );
+      const weekIndex =
+        Math.floor(completedSessions.length / program.daysPerWeek) + 1;
+      const phase = getPhaseForWeekIndex(
+        weekIndex,
+        program.goalTrack ?? data?.goals ?? "Improve posture"
+      );
+
+      const now = Date.now();
+      const recentSessions = completedSessions.filter((session) => {
+        if (!session.completedAt) return false;
+        const timestamp = Date.parse(session.completedAt);
+        if (Number.isNaN(timestamp)) return false;
+        return now - timestamp <= 7 * 24 * 60 * 60 * 1000;
+      });
+
+      const recentLogs = await listExerciseLogsBySessionIds(
+        recentSessions.map((session) => session.id)
+      );
+
+      const feedbackRatings = [
+        ...recentSessions
+          .map((session) => session.sessionFeedback)
+          .filter(Boolean),
+        ...recentLogs.map((log) => log.felt).filter(Boolean),
+      ];
+
+      const painFlag = feedbackRatings.includes("pain");
+      const hardCount = feedbackRatings.filter((rating) => rating === "hard")
+        .length;
+      const fatigueFlag =
+        feedbackRatings.length >= 3 &&
+        hardCount / feedbackRatings.length >= 0.5;
+      const complianceRate = Math.min(
+        1,
+        recentSessions.length / program.daysPerWeek
+      );
+
+      const nextWeekPlan = buildNextWeekPlan({
+        complianceRate,
+        painFlag,
+        fatigueFlag,
+        phaseName: phase.name,
+      });
+
+      const needsUpdate =
+        program.phase?.weekIndex !== phase.weekIndex ||
+        program.phase?.name !== phase.name ||
+        program.nextWeekPlan?.summary !== nextWeekPlan.summary;
+
+      if (needsUpdate) {
+        const updatedProgram = {
+          ...program,
+          phase,
+          nextWeekPlan,
+          updatedAt: new Date().toISOString(),
+        };
+        await saveProgram(updatedProgram);
+        setProgram(updatedProgram);
+      }
+    };
+
+    updatePhasePlan();
+  }, [program, programSessions, data]);
+
+  useEffect(() => {
     const runPoseAnalysis = async () => {
+      if (!data) return;
       const entries = Object.entries(photos).filter(
         ([, value]) => value !== null
       ) as [string, File][];
 
       if (!entries.length) {
-        setPoseState((prev) => ({ ...prev, report: null, error: null }));
+        setPoseState({
+          loading: false,
+          error: null,
+          report: buildAssessmentReport({ questionnaire: data }),
+        });
         return;
       }
 
@@ -335,7 +508,11 @@ export default function ResultsRoutine() {
             : 0.4,
         };
 
-        setPoseState({ loading: false, error: null, report: combined });
+        const report = buildAssessmentReport({
+          questionnaire: data,
+          poseAnalysis: combined,
+        });
+        setPoseState({ loading: false, error: null, report });
       } catch (error) {
         setPoseState({
           loading: false,
@@ -343,13 +520,13 @@ export default function ResultsRoutine() {
             error instanceof Error
               ? error.message
               : "Pose detection failed. Try clearer photos.",
-          report: null,
+          report: buildAssessmentReport({ questionnaire: data }),
         });
       }
     };
 
     runPoseAnalysis();
-  }, [photos]);
+  }, [photos, data]);
 
 
   if (!isReady) {
@@ -419,7 +596,16 @@ export default function ResultsRoutine() {
           </div>
           {poseState.report ? (
             <div className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600">
-              Confidence: {Math.round(poseState.report.confidenceScore * 100)}%
+              Confidence:{" "}
+              {poseState.report.observations.some(
+                (obs) => obs.confidence === "high"
+              )
+                ? "High"
+                : poseState.report.observations.some(
+                    (obs) => obs.confidence === "medium"
+                  )
+                ? "Medium"
+                : "Low"}
             </div>
           ) : null}
         </div>
@@ -432,13 +618,24 @@ export default function ResultsRoutine() {
           <p className="mt-4 text-sm text-rose-600">{poseState.error}</p>
         ) : poseState.report ? (
           <>
-            <div className="mt-4 space-y-2 text-sm text-slate-700">
+            <div className="mt-4 space-y-3 text-sm text-slate-700">
               {poseState.report.observations.map((item) => (
                 <div
-                  key={item}
+                  key={item.id}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2"
                 >
-                  {item}
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-semibold text-slate-900">{item.title}</p>
+                    <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                      {item.confidence}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-600">
+                    {item.description}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    Evidence: {item.evidence.join(", ")}
+                  </p>
                 </div>
               ))}
             </div>
@@ -449,7 +646,12 @@ export default function ResultsRoutine() {
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
                 {Array.from(
                   new Set([
-                    ...poseState.report.priorities,
+                    ...poseState.report.priorities.map((id) => {
+                      const match = poseState.report?.observations.find(
+                        (obs) => obs.id === id
+                      );
+                      return match?.title ?? id;
+                    }),
                     ...routine.priorities,
                   ])
                 )
@@ -464,6 +666,9 @@ export default function ResultsRoutine() {
                   ))}
               </div>
             </div>
+            <p className="mt-4 text-xs text-slate-500">
+              {poseState.report.summary}
+            </p>
           </>
         ) : (
           <p className="mt-4 text-sm text-slate-600">
@@ -471,9 +676,15 @@ export default function ResultsRoutine() {
           </p>
         )}
 
-        <p className="mt-6 text-xs text-slate-500">
-          This scan estimates posture patterns — not a medical diagnosis.
-        </p>
+        {poseState.report?.disclaimers?.length ? (
+          <p className="mt-6 text-xs text-slate-500">
+            {poseState.report.disclaimers.join(" ")}
+          </p>
+        ) : (
+          <p className="mt-6 text-xs text-slate-500">
+            This scan estimates posture patterns — not a medical diagnosis.
+          </p>
+        )}
       </div>
 
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -498,6 +709,19 @@ export default function ResultsRoutine() {
             <h3 className="mt-2 text-lg font-semibold text-slate-900">
               {data.daysPerWeek}-day split • Estimated 45–60 minutes
             </h3>
+            {program.phase ? (
+              <p className="mt-2 text-sm text-slate-600">
+                {program.phase.name} • Week {program.phase.weekIndex}
+                {program.phase.weekCount
+                  ? `/${program.phase.weekCount}`
+                  : " (ongoing)"}
+              </p>
+            ) : null}
+            {program.nextWeekPlan ? (
+              <p className="mt-2 text-sm text-slate-600">
+                {program.nextWeekPlan.summary}
+              </p>
+            ) : null}
           </div>
           <Link
             href={`/session?programId=${program?.id ?? ""}&dayIndex=${nextDayIndex}`}
@@ -514,7 +738,10 @@ export default function ResultsRoutine() {
           <span className="rounded-full border border-slate-200 px-3 py-1">
             Day {nextDayIndex + 1} of {data.daysPerWeek}
           </span>
-          <span className="rounded-full border border-slate-200 px-3 py-1">
+          <span
+            data-testid="completed-count"
+            className="rounded-full border border-slate-200 px-3 py-1"
+          >
             {completedCount} completed
           </span>
         </div>
@@ -591,21 +818,11 @@ export default function ResultsRoutine() {
                             `/program/${program.id}/day/${day.dayIndex}`
                           );
                         }}
-                        className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700 shadow-sm hover:bg-slate-100"
+                        aria-label={`View Day ${day.dayIndex + 1} history`}
+                        title="History"
+                        className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-slate-700 shadow-sm hover:bg-slate-100"
                       >
                         History
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          router.push(
-                            `/session?programId=${program.id}&dayIndex=${day.dayIndex}`
-                          );
-                        }}
-                        className="rounded-full border border-slate-900 bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white shadow-sm hover:bg-slate-800"
-                      >
-                        Start
                       </button>
                     </div>
                   </div>
@@ -615,159 +832,199 @@ export default function ResultsRoutine() {
           </div>
 
           <OnImage>
-          <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-200">
-                  Day Preview
-                </p>
-                <h3 className="mt-1 text-lg font-semibold text-white">
-                  Day {selectedDay + 1}: {program.week[selectedDay].title}
-                </h3>
-                <p className="mt-1 text-xs text-slate-200">
-                  Focus: {program.week[selectedDay].focusTags.join(", ")}
-                </p>
-              </div>
-              <Link href={`/session?programId=${program.id}&dayIndex=${selectedDay}`}>
-                <Button variant="secondary">Start Selected Day</Button>
-              </Link>
-            </div>
-            <div className="mt-2">
-              <button
-                type="button"
-                onClick={() =>
-                  router.push(`/program/${program.id}/day/${selectedDay}`)
-                }
-                className="text-xs font-semibold text-slate-200 underline-offset-4 hover:underline"
-              >
-                View Day {selectedDay + 1} history
-              </button>
-            </div>
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-200">
-              <label className="flex items-center gap-2 rounded-full border border-white/20 px-3 py-1">
-                <input
-                  type="checkbox"
-                  checked={showDebug}
-                  onChange={() => setShowDebug((prev) => !prev)}
-                  className="h-3 w-3 accent-white"
-                />
-                Why this exercise was picked
-              </label>
-              <span className="text-[11px] text-slate-200">
-                Tap to see quick rationale
-              </span>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {program.week.map((day) => (
-                <button
-                  key={day.dayIndex}
-                  type="button"
-                  onClick={() => setSelectedDay(day.dayIndex)}
-                  className={`rounded-full border px-3 py-1 text-xs font-semibold ${
-                    selectedDay === day.dayIndex
-                      ? "border-white/40 bg-white/20 text-white"
-                      : "border-white/20 text-slate-200"
-                  }`}
-                >
-                  Day {day.dayIndex + 1}
-                </button>
-              ))}
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-200">
-              {program.week[selectedDay].routine.slice(0, 5).map((item, index) => {
-                const exercise = exerciseById(item.exerciseId);
-                return (
-                  <span
-                    key={`${item.exerciseId}-${index}-${selectedDay}`}
-                    className="rounded-full border border-white/20 bg-white/10 px-3 py-1"
-                  >
-                    {exercise?.name ?? "Exercise"}
-                  </span>
-                );
-              })}
-            </div>
-            {showDebug ? (
-              <div className="mt-4 space-y-2 text-xs text-slate-200">
-                {program.week[selectedDay].routine.map((item, index) => {
-                  const exercise = exerciseById(item.exerciseId);
-                  if (!exercise) return null;
-                  const why = buildWhyPicked(exercise);
-                  return (
-                    <div
-                      key={`debug-${item.exerciseId}-${index}-${selectedDay}`}
-                      className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
-                    >
-                      <p className="font-semibold text-white">
-                        {exercise.name}
-                      </p>
-                      <ul className="mt-2 space-y-1 text-[11px] text-slate-200">
-                        <li>Slot: {why.slot}</li>
-                        <li>Goal match: {why.goalMatch.join(", ")}</li>
-                        <li>Trains: {why.trains.join(", ")}</li>
-                        <li>Purpose: {why.purpose}</li>
-                        <li>Setup: {why.setup}</li>
-                        {why.progressions?.length ? (
-                          <li>Progression: {why.progressions.join(" / ")}</li>
-                        ) : null}
-                        {why.regressions?.length ? (
-                          <li>Regression: {why.regressions.join(" / ")}</li>
-                        ) : null}
-                      </ul>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : null}
-            <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-200">
-              <span className="rounded-full border border-white/20 px-3 py-1">
-                {completedByDay.has(selectedDay) ? "Completed" : "Pending"}
-              </span>
-              <span className="rounded-full border border-white/20 px-3 py-1">
-                Sessions: {completedByDay.get(selectedDay)?.length ?? 0}
-              </span>
-            </div>
-
-            <div className="mt-6 border-t border-white/10 pt-5">
+            <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm flex h-[640px] flex-col">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h4 className="text-sm font-semibold text-white">
-                    Coach&apos;s Corner
-                  </h4>
-                  <p className="text-xs text-slate-200">
-                    Tap an exercise to see form cues + demo video
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-200">
+                    Day Preview
+                  </p>
+                  <h3 className="mt-1 text-lg font-semibold text-white">
+                    Day {selectedDay + 1}: {program.week[selectedDay].title}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-200">
+                    Focus: {program.week[selectedDay].focusTags.join(", ")}
                   </p>
                 </div>
-                <a
-                  href="#coachs-corner-list"
-                  className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/15"
+                <Link
+                  href={`/session?programId=${program.id}&dayIndex=${selectedDay}`}
                 >
-                  Get form help
-                </a>
+                  <Button variant="secondary" data-testid="start-selected-day">
+                    Start Selected Day
+                  </Button>
+                </Link>
+              </div>
+              <div className="mt-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    router.push(`/program/${program.id}/day/${selectedDay}`)
+                  }
+                  className="text-xs font-semibold text-slate-200 underline-offset-4 hover:underline"
+                >
+                  View Day {selectedDay + 1} history
+                </button>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-200">
+                <label className="flex items-center gap-2 rounded-full border border-white/20 px-3 py-1">
+                  <input
+                    type="checkbox"
+                    checked={showDebug}
+                    onChange={() => setShowDebug((prev) => !prev)}
+                    className="h-3 w-3 accent-white"
+                  />
+                  Why this exercise was picked
+                </label>
+                <span className="text-[11px] text-slate-200">
+                  Tap to see quick rationale
+                </span>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {program.week.map((day) => (
+                  <button
+                    key={day.dayIndex}
+                    type="button"
+                    onClick={() => setSelectedDay(day.dayIndex)}
+                    className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+                      selectedDay === day.dayIndex
+                        ? "border-white/40 bg-white/20 text-white"
+                        : "border-white/20 text-slate-200"
+                    }`}
+                  >
+                    Day {day.dayIndex + 1}
+                  </button>
+                ))}
               </div>
 
-              <div
-                id="coachs-corner-list"
-                className="mt-4 flex flex-wrap gap-2 text-xs"
-              >
-                {program.week[selectedDay].routine.map((item, index) => {
-                  const exercise = exerciseById(item.exerciseId);
-                  if (!exercise) return null;
-                  return (
-                    <Link
-                      key={`${item.exerciseId}-coach-${index}`}
-                      href={`/exercise/${exercise.id}`}
-                      className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-white transition hover:bg-white/15"
+              <div className="mt-4 flex-1 overflow-y-auto pr-1">
+                <div className="flex flex-wrap gap-2 text-xs text-slate-200">
+                  {program.week[selectedDay].routine
+                    .slice(0, 5)
+                    .map((item, index) => {
+                      const exercise = exerciseById(item.exerciseId);
+                      return (
+                        <span
+                          key={`${item.exerciseId}-${index}-${selectedDay}`}
+                          className="rounded-full border border-white/20 bg-white/10 px-3 py-1"
+                        >
+                          {exercise?.name ?? "Exercise"}
+                        </span>
+                      );
+                    })}
+                </div>
+                {dayPreviewRecommendations.length ? (
+                  <div className="mt-4 space-y-2 text-xs text-slate-200">
+                    {dayPreviewRecommendations.map(({ exercise, rec }, index) => (
+                      <div
+                        key={`${exercise.id}-next-${index}`}
+                        className="rounded-2xl border border-white/15 bg-white/10 px-3 py-2"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-semibold text-white">
+                            {exercise.name}
+                          </p>
+                          {rec?.safetyFlag ? (
+                            <span className="rounded-full border border-amber-200/60 bg-amber-50/10 px-2 py-0.5 text-[10px] font-semibold text-amber-200">
+                              Safety
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="mt-1 text-[11px] text-white/90">
+                          Next time: {formatRecommendation(rec)}
+                        </p>
+                        <p className="text-[11px] text-white/70">
+                          {rec?.reason}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {showDebug ? (
+                  <div className="mt-4 space-y-2 text-xs text-slate-200">
+                    {program.week[selectedDay].routine.map((item, index) => {
+                      const exercise = exerciseById(item.exerciseId);
+                      if (!exercise) return null;
+                      const why = buildWhyPicked(exercise);
+                      return (
+                        <div
+                          key={`debug-${item.exerciseId}-${index}-${selectedDay}`}
+                          className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
+                        >
+                          <p className="font-semibold text-white">
+                            {exercise.name}
+                          </p>
+                          <ul className="mt-2 space-y-1 text-[11px] text-slate-200">
+                            <li>Slot: {why.slot}</li>
+                            <li>Goal match: {why.goalMatch.join(", ")}</li>
+                            <li>Trains: {why.trains.join(", ")}</li>
+                            <li>Purpose: {why.purpose}</li>
+                            <li>Setup: {why.setup}</li>
+                            {why.progressions?.length ? (
+                              <li>
+                                Progression: {why.progressions.join(" / ")}
+                              </li>
+                            ) : null}
+                            {why.regressions?.length ? (
+                              <li>
+                                Regression: {why.regressions.join(" / ")}
+                              </li>
+                            ) : null}
+                          </ul>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
+                <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-200">
+                  <span className="rounded-full border border-white/20 px-3 py-1">
+                    {completedByDay.has(selectedDay) ? "Completed" : "Pending"}
+                  </span>
+                  <span className="rounded-full border border-white/20 px-3 py-1">
+                    Sessions: {completedByDay.get(selectedDay)?.length ?? 0}
+                  </span>
+                </div>
+
+                <div className="mt-6 border-t border-white/10 pt-5">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h4 className="text-sm font-semibold text-white">
+                        Coach&apos;s Corner
+                      </h4>
+                      <p className="text-xs text-slate-200">
+                        Tap an exercise to see form cues + demo video
+                      </p>
+                    </div>
+                    <a
+                      href="#coachs-corner-list"
+                      className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/15"
                     >
-                      <span>{exercise.name}</span>
-                      <span className="rounded-full border border-white/20 px-2 py-0.5 text-[10px] text-white/90">
-                        Video
-                      </span>
-                    </Link>
-                  );
-                })}
+                      Get form help
+                    </a>
+                  </div>
+
+                  <div
+                    id="coachs-corner-list"
+                    className="mt-4 flex flex-wrap gap-2 text-xs"
+                  >
+                    {program.week[selectedDay].routine.map((item, index) => {
+                      const exercise = exerciseById(item.exerciseId);
+                      if (!exercise) return null;
+                      return (
+                        <Link
+                          key={`${item.exerciseId}-coach-${index}`}
+                          href={`/exercise/${exercise.id}`}
+                          className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-white transition hover:bg-white/15"
+                        >
+                          <span>{exercise.name}</span>
+                          <span className="rounded-full border border-white/20 px-2 py-0.5 text-[10px] text-white/90">
+                            Video
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
           </OnImage>
 
         </div>

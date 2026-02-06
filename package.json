@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.3",
@@ -17,12 +20,14 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@playwright/test": "^1.52.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.5"
   }
 }

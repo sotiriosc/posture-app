@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { exerciseById } from "@/lib/exercises";
+import { getProgressionRecommendation } from "@/lib/progression";
 import type { ExerciseLog, Program, ProgramRoutineItem } from "@/lib/types";
 import {
   getProgram,
@@ -182,6 +183,72 @@ export default function ProgramDayPage({ params }: Props) {
     return formatBodyweightLabel(log) ?? "—";
   };
 
+  const formatFeedbackBadge = (log: ExerciseLog) => {
+    if (!log.felt) return null;
+    const label =
+      log.felt === "moderate"
+        ? "Moderate"
+        : log.felt === "pain"
+        ? "Pain"
+        : log.felt.charAt(0).toUpperCase() + log.felt.slice(1);
+    const tone =
+      log.felt === "pain"
+        ? "border-amber-300 bg-amber-50 text-amber-900"
+        : log.felt === "hard"
+        ? "border-rose-200 bg-rose-50 text-rose-900"
+        : "border-slate-200 bg-white text-slate-600";
+    return (
+      <span
+        className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${tone}`}
+      >
+        {label}
+      </span>
+    );
+  };
+
+  const formatLogSummary = (
+    log: ExerciseLog,
+    exerciseLoadType: ExerciseLog["loadType"]
+  ) => {
+    const date = log.createdAt.slice(0, 10);
+    const sets = formatSets(log);
+    const reps = repsPerSet(log) ?? totalReps(log);
+    const weight =
+      exerciseLoadType === "weighted" && log.weight
+        ? `${log.weight}${log.unit ?? ""}`
+        : null;
+    const summary = [weight, reps ? `${reps} reps` : null, sets ? `${sets} sets` : null]
+      .filter(Boolean)
+      .join(" • ");
+    return { date, summary };
+  };
+
+  const formatRecommendation = (
+    rec: ReturnType<typeof getProgressionRecommendation>
+  ) => {
+    if (!rec) return "Keep targets consistent";
+    const parts: string[] = [];
+    if (rec.recommendedNext.weight) parts.push(`${rec.recommendedNext.weight} lb`);
+    if (rec.recommendedNext.reps) parts.push(`${rec.recommendedNext.reps} reps`);
+    if (rec.recommendedNext.sets) parts.push(`${rec.recommendedNext.sets} sets`);
+    if (rec.recommendedNext.tempo) parts.push(`tempo ${rec.recommendedNext.tempo}`);
+    if (!parts.length) return "Keep targets consistent";
+    return parts.join(" • ");
+  };
+
+  const formatFeedback = (log: ExerciseLog | null) => {
+    if (!log?.felt) return null;
+    const label =
+      log.felt === "moderate"
+        ? "Moderate"
+        : log.felt === "pain"
+        ? "Pain / discomfort"
+        : log.felt.charAt(0).toUpperCase() + log.felt.slice(1);
+    const location = log.painLocation ? ` • ${log.painLocation}` : "";
+    const notes = log.feedbackNotes ? ` — ${log.feedbackNotes}` : "";
+    return `${label}${location}${notes}`;
+  };
+
   const getDelta = (last: ExerciseLog | null, prev: ExerciseLog | null) => {
     if (!last || !prev) return null;
     if (last.loadType === "timed") {
@@ -232,54 +299,128 @@ export default function ProgramDayPage({ params }: Props) {
             No exercises in this section.
           </div>
         ) : (
-          items.map((item) => {
+          items.map((item, index) => {
             const exercise = exerciseById(item.exerciseId);
             const exerciseLogs = logMap.get(item.exerciseId) ?? [];
             const lastLog = exerciseLogs[0] ?? null;
             const prevLog = exerciseLogs[1] ?? null;
             const delta = getDelta(lastLog, prevLog);
+            const recentLogs = exerciseLogs.slice(0, 3);
+            const recommendation =
+              exercise && lastLog
+                ? getProgressionRecommendation({
+                    exercise,
+                    logs: [lastLog],
+                    feedback: lastLog.felt
+                      ? {
+                          rating: lastLog.felt,
+                          painLocation: lastLog.painLocation ?? null,
+                          notes: lastLog.feedbackNotes ?? null,
+                        }
+                      : null,
+                    prescription: {
+                      sets: item.sets,
+                      reps: item.reps ?? exercise.durationOrReps,
+                      durationSec: item.durationSec ?? null,
+                      restSec: item.restSec ?? null,
+                    },
+                  })
+                : null;
+            const metaLabel =
+              item.loadType === "weighted"
+                ? "WEIGHTED"
+                : item.loadType === "timed"
+                ? "TIMED"
+                : item.loadType === "assisted"
+                ? "ASSISTED"
+                : "BODYWEIGHT";
+            const repHint = item.durationSec
+              ? `${item.durationSec} sec`
+              : item.reps
+              ? item.reps
+              : null;
+            const nextLine = recommendation
+              ? `Next: ${formatRecommendation(recommendation)}`
+              : "Next: Keep targets consistent";
             return (
-              <div
-                key={item.exerciseId}
-                className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
+              <details
+                key={`${item.exerciseId}-${index}`}
+                className="group rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-sm font-semibold text-slate-900">
-                    {exercise?.name ?? "Exercise"}
-                  </p>
-                  <span className="text-xs font-semibold text-slate-500">
-                    {item.sets ?? "-"} sets •{" "}
-                    {item.durationSec ? `${item.durationSec} sec` : item.reps}
+                <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-slate-900">
+                      {exercise?.name ?? "Exercise"}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-600">{nextLine}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold text-slate-500">
+                    <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">
+                      {metaLabel}
+                    </span>
+                    {repHint ? (
+                      <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">
+                        {repHint}
+                      </span>
+                    ) : null}
+                  </div>
+                  <span className="ml-2 text-[11px] font-semibold text-slate-400">
+                    Tap for history
                   </span>
-                </div>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                  <span>Rest: {item.restSec ?? 60}s</span>
-                  <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                    {item.loadType === "weighted"
-                      ? "Weighted"
-                      : item.loadType === "timed"
-                      ? "Timed"
-                      : item.loadType === "assisted"
-                      ? "Assisted"
-                      : "Bodyweight"}
+                  <span className="ml-auto text-slate-400 transition group-open:rotate-180">
+                    ▾
                   </span>
-                </div>
-                <div className="mt-2 text-xs text-slate-700">
-                  {lastLog ? (
-                    <>
-                      <p>Last: {formatPerformance(lastLog)}</p>
-                      <p className="text-slate-600">
-                        Prev: {prevLog ? formatPerformance(prevLog) : "—"}
+                </summary>
+
+                <div className="mt-3 border-t border-slate-200/70 pt-3 text-xs text-slate-700">
+                  {recentLogs.length ? (
+                    <div>
+                      <p className="text-[11px] font-semibold text-slate-700">
+                        Last 3 sessions
                       </p>
-                      <p className="text-slate-500">
-                        Δ: {delta ?? "—"}
-                      </p>
-                    </>
+                      <div className="mt-2 space-y-2 text-[11px] text-slate-600">
+                        {recentLogs.map((log, index) => {
+                          const { date, summary } = formatLogSummary(
+                            log,
+                            exercise?.loadType ?? log.loadType
+                          );
+                          return (
+                            <div
+                              key={`${log.exerciseId}-${log.createdAt}-${index}`}
+                              className="flex flex-wrap items-center justify-between gap-2"
+                            >
+                              <span className="text-slate-500">{date}</span>
+                              <span className="text-slate-700">{summary || "—"}</span>
+                              {formatFeedbackBadge(log)}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   ) : (
-                    <p className="text-slate-500">No logs yet</p>
+                    <p className="text-[11px] text-slate-500">No logs yet.</p>
                   )}
+
+                  {recommendation ? (
+                    <div className="mt-3 border-t border-slate-200/70 pt-3">
+                      {recommendation.safetyFlag ? (
+                        <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-900">
+                          Safety
+                        </span>
+                      ) : null}
+                      <p className="mt-2 text-[11px] font-semibold text-slate-900">
+                        Next time
+                      </p>
+                      <p className="text-[11px] text-slate-700">
+                        {formatRecommendation(recommendation)}
+                      </p>
+                      <p className="text-[11px] text-slate-500">
+                        {recommendation.reason}
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
-              </div>
+              </details>
             );
           })
         )}
