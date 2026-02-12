@@ -144,7 +144,7 @@ const rawExercises: Exercise[] = [
   {
     id: "prone-ytw",
     name: "Prone Y-T-W Raises",
-    category: "main",
+    category: "activation",
     equipment: ["none"],
     movementPattern: ["pull", "scapular"],
     muscleGroups: ["upper back", "rear delts"],
@@ -170,6 +170,81 @@ const rawExercises: Exercise[] = [
     contraindications: ["Acute shoulder pain"],
     videoUrl: "https://example.com/video/split-stance-row",
     tags: ["scap", "core"],
+  },
+  {
+    id: "dumbbell-bench-press",
+    name: "Dumbbell Bench Press",
+    category: "main",
+    equipment: ["dumbbells", "bench"],
+    movementPattern: ["push"],
+    muscleGroups: ["chest", "triceps", "shoulders"],
+    loadType: "weighted",
+    durationOrReps: "6-12 reps",
+    cues: ["Shoulders down and back", "Press in a slight arc"],
+    mistakes: ["Flaring elbows", "Bouncing at bottom"],
+    contraindications: ["Shoulder pain (use neutral grip)"],
+    videoUrl: "https://example.com/video/dumbbell-bench-press",
+    tags: ["push", "chest", "upper"],
+  },
+  {
+    id: "dumbbell-floor-press",
+    name: "Dumbbell Floor Press",
+    category: "main",
+    equipment: ["dumbbells"],
+    movementPattern: ["push"],
+    muscleGroups: ["chest", "triceps", "shoulders"],
+    loadType: "weighted",
+    durationOrReps: "6-12 reps",
+    cues: ["Ribs down", "Pause elbows softly on floor"],
+    mistakes: ["Overarching low back", "Pressing unevenly"],
+    contraindications: ["Acute shoulder pain (reduce load)"],
+    videoUrl: "https://example.com/video/dumbbell-floor-press",
+    tags: ["push", "chest", "core"],
+  },
+  {
+    id: "dumbbell-chest-fly",
+    name: "Dumbbell Chest Fly",
+    category: "main",
+    equipment: ["dumbbells", "bench"],
+    movementPattern: ["push"],
+    muscleGroups: ["chest", "shoulders"],
+    loadType: "weighted",
+    durationOrReps: "8-15 reps",
+    cues: ["Soft elbows", "Stretch with control"],
+    mistakes: ["Dropping too deep", "Shrugging shoulders"],
+    contraindications: ["Shoulder instability (shorten range)"],
+    videoUrl: "https://example.com/video/dumbbell-chest-fly",
+    tags: ["push", "chest", "shoulders"],
+  },
+  {
+    id: "dumbbell-lateral-raise",
+    name: "Dumbbell Lateral Raise",
+    category: "main",
+    equipment: ["dumbbells"],
+    movementPattern: ["push"],
+    muscleGroups: ["shoulders"],
+    loadType: "weighted",
+    durationOrReps: "10-15 reps",
+    cues: ["Lead with elbows", "Pause at shoulder height"],
+    mistakes: ["Swinging torso", "Shrugging traps"],
+    contraindications: ["Shoulder pain (reduce ROM)"],
+    videoUrl: "https://example.com/video/dumbbell-lateral-raise",
+    tags: ["push", "shoulders", "upper"],
+  },
+  {
+    id: "dumbbell-shoulder-press",
+    name: "Dumbbell Shoulder Press",
+    category: "main",
+    equipment: ["dumbbells"],
+    movementPattern: ["push"],
+    muscleGroups: ["shoulders", "triceps", "upper chest"],
+    loadType: "weighted",
+    durationOrReps: "6-12 reps",
+    cues: ["Brace core", "Press straight up"],
+    mistakes: ["Overarching back", "Uneven lockout"],
+    contraindications: ["Shoulder pain (use neutral grip)"],
+    videoUrl: "https://example.com/video/dumbbell-shoulder-press",
+    tags: ["push", "shoulders", "upper"],
   },
   {
     id: "incline-pushup",
@@ -457,6 +532,36 @@ const rawExercises: Exercise[] = [
     tags: ["hinge", "posterior"],
   },
   {
+    id: "bodyweight-good-morning",
+    name: "Bodyweight Good Morning",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["hinge"],
+    muscleGroups: ["hamstrings", "glutes", "lower back"],
+    loadType: "bodyweight",
+    durationOrReps: "8-15 reps",
+    cues: ["Soft knees", "Hinge hips back with long spine"],
+    mistakes: ["Rounding back", "Collapsing chest"],
+    contraindications: ["Acute low-back pain (regress)"],
+    videoUrl: "https://example.com/video/bodyweight-good-morning",
+    tags: ["hinge", "posterior", "control"],
+  },
+  {
+    id: "back-extension",
+    name: "Back Extension",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["hinge"],
+    muscleGroups: ["lower back", "glutes", "hamstrings"],
+    loadType: "bodyweight",
+    durationOrReps: "10-15 reps",
+    cues: ["Lift chest with neutral spine", "Squeeze glutes at the top"],
+    mistakes: ["Overextending low back", "Using momentum"],
+    contraindications: ["Acute low-back pain (shorten range)"],
+    videoUrl: "https://example.com/video/back-extension",
+    tags: ["hinge", "posterior", "lower-back"],
+  },
+  {
     id: "single-leg-rdl",
     name: "Single-Leg RDL (Bodyweight)",
     category: "main",
@@ -502,6 +607,171 @@ const rawExercises: Exercise[] = [
     tags: ["push", "shoulders"],
   },
   {
+    id: "archer-pushup",
+    name: "Archer Push-Up",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["push"],
+    muscleGroups: ["chest", "triceps", "shoulders", "core"],
+    loadType: "bodyweight",
+    durationOrReps: "5-8 per side",
+    cues: ["Shift weight with control", "Keep ribs and hips aligned"],
+    mistakes: ["Dropping chest too fast", "Twisting torso"],
+    contraindications: ["Wrist pain (use handles or regress)"],
+    videoUrl: "https://example.com/video/archer-pushup",
+    tags: ["push", "advanced", "unilateral"],
+  },
+  {
+    id: "pseudo-planche-pushup",
+    name: "Pseudo Planche Push-Up",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["push"],
+    muscleGroups: ["chest", "shoulders", "triceps", "core"],
+    loadType: "bodyweight",
+    durationOrReps: "4-8 reps",
+    cues: ["Lean shoulders forward", "Keep hollow body tension"],
+    mistakes: ["Losing lean", "Sagging low back"],
+    contraindications: ["Wrist/shoulder pain (regress)"],
+    videoUrl: "https://example.com/video/pseudo-planche-pushup",
+    tags: ["push", "advanced", "strength"],
+  },
+  {
+    id: "cossack-squat",
+    name: "Cossack Squat",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["squat", "single-leg", "mobility"],
+    muscleGroups: ["quads", "adductors", "glutes"],
+    loadType: "bodyweight",
+    durationOrReps: "6-10 per side",
+    cues: ["Keep heel down", "Sit into one hip with control"],
+    mistakes: ["Collapsing chest", "Knee caving"],
+    contraindications: ["Knee pain (reduce depth)"],
+    videoUrl: "https://example.com/video/cossack-squat",
+    tags: ["legs", "advanced", "mobility"],
+  },
+  {
+    id: "shrimp-squat",
+    name: "Shrimp Squat",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["squat", "single-leg"],
+    muscleGroups: ["quads", "glutes", "core"],
+    loadType: "bodyweight",
+    durationOrReps: "4-8 per side",
+    cues: ["Stay tall", "Control the bottom position"],
+    mistakes: ["Dropping fast", "Losing balance"],
+    contraindications: ["Knee pain (regress)"],
+    videoUrl: "https://example.com/video/shrimp-squat",
+    tags: ["legs", "advanced", "balance"],
+  },
+  {
+    id: "single-leg-hip-thrust",
+    name: "Single-Leg Hip Thrust",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["hinge", "single-leg"],
+    muscleGroups: ["glutes", "hamstrings", "core"],
+    loadType: "bodyweight",
+    durationOrReps: "8-12 per side",
+    cues: ["Drive through heel", "Keep pelvis level"],
+    mistakes: ["Overextending low back", "Dropping hip"],
+    contraindications: ["Acute low-back pain"],
+    videoUrl: "https://example.com/video/single-leg-hip-thrust",
+    tags: ["hinge", "advanced", "posterior"],
+  },
+  {
+    id: "hollow-body-hold",
+    name: "Hollow Body Hold",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["core", "anti-extension"],
+    muscleGroups: ["core", "hip flexors"],
+    loadType: "timed",
+    durationOrReps: "20-40 sec",
+    cues: ["Press low back to floor", "Reach long through arms and legs"],
+    mistakes: ["Arching back", "Neck strain"],
+    contraindications: ["Low-back pain (regress)"],
+    videoUrl: "https://example.com/video/hollow-body-hold",
+    tags: ["core", "advanced", "stability"],
+  },
+  {
+    id: "side-plank-star",
+    name: "Side Plank Star",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["core", "anti-rotation", "single-leg"],
+    muscleGroups: ["obliques", "glute med", "shoulders"],
+    loadType: "timed",
+    durationOrReps: "15-30 sec per side",
+    cues: ["Stack shoulders/hips", "Lift top leg without rotating"],
+    mistakes: ["Dropping hips", "Shrugging shoulder"],
+    contraindications: ["Shoulder pain (regress)"],
+    videoUrl: "https://example.com/video/side-plank-star",
+    tags: ["core", "advanced", "balance"],
+  },
+  {
+    id: "prone-swimmer",
+    name: "Prone Swimmer",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["pull", "scapular"],
+    muscleGroups: ["upper back", "rear delts", "rotator cuff"],
+    loadType: "bodyweight",
+    durationOrReps: "6-10 reps",
+    cues: ["Lift lightly, then sweep arms overhead with control", "Keep neck long"],
+    mistakes: ["Shrugging up", "Rushing through sweep"],
+    contraindications: ["Shoulder pain (shorten range)"],
+    videoUrl: "https://example.com/video/prone-swimmer",
+    tags: ["pull", "scap", "advanced"],
+  },
+  {
+    id: "back-widow",
+    name: "Back Widow Pulls",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["pull", "scapular"],
+    muscleGroups: ["upper back", "lats", "rear delts"],
+    loadType: "bodyweight",
+    durationOrReps: "8-12 reps",
+    cues: ["Drive elbows into floor", "Lift chest with control"],
+    mistakes: ["Pushing through neck", "Using momentum"],
+    contraindications: ["Neck pain (reduce range)"],
+    videoUrl: "https://example.com/video/back-widow",
+    tags: ["pull", "upper-back", "strength"],
+  },
+  {
+    id: "heels-elevated-squat",
+    name: "Heels-Elevated Tempo Squat",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["squat"],
+    muscleGroups: ["quads", "glutes", "core"],
+    loadType: "bodyweight",
+    durationOrReps: "8-12 reps",
+    cues: ["Slow 3-second lower", "Stay tall with knees tracking"],
+    mistakes: ["Bouncing at bottom", "Collapsing knees"],
+    contraindications: ["Knee pain (reduce depth)"],
+    videoUrl: "https://example.com/video/heels-elevated-tempo-squat",
+    tags: ["legs", "strength", "control"],
+  },
+  {
+    id: "single-leg-glute-bridge-hold",
+    name: "Single-Leg Glute Bridge Hold",
+    category: "main",
+    equipment: ["none"],
+    movementPattern: ["hinge", "single-leg"],
+    muscleGroups: ["glutes", "hamstrings", "core"],
+    loadType: "timed",
+    durationOrReps: "20-35 sec per side",
+    cues: ["Keep hips level", "Push through heel and brace abs"],
+    mistakes: ["Low-back arching", "Hip drop"],
+    contraindications: ["Acute low-back pain"],
+    videoUrl: "https://example.com/video/single-leg-glute-bridge-hold",
+    tags: ["hinge", "balance", "stability"],
+  },
+  {
     id: "reverse-snow-angel",
     name: "Reverse Snow Angels",
     category: "main",
@@ -545,6 +815,81 @@ const rawExercises: Exercise[] = [
     contraindications: ["Shoulder pain (light band)"],
     videoUrl: "https://example.com/video/band-chest-press",
     tags: ["push", "band"],
+  },
+  {
+    id: "band-overhead-press",
+    name: "Band Overhead Press",
+    category: "main",
+    equipment: ["bands"],
+    movementPattern: ["push"],
+    muscleGroups: ["shoulders", "triceps", "upper chest"],
+    loadType: "assisted",
+    durationOrReps: "6-12 reps",
+    cues: ["Brace core", "Press straight up without leaning back"],
+    mistakes: ["Overarching low back", "Shrugging shoulders"],
+    contraindications: ["Shoulder pain (light band)"],
+    videoUrl: "https://example.com/video/band-overhead-press",
+    tags: ["push", "band", "shoulders"],
+  },
+  {
+    id: "band-lat-pulldown",
+    name: "Band Lat Pulldown",
+    category: "main",
+    equipment: ["bands"],
+    movementPattern: ["pull"],
+    muscleGroups: ["lats", "upper back", "biceps"],
+    loadType: "assisted",
+    durationOrReps: "8-14 reps",
+    cues: ["Keep ribs stacked", "Drive elbows down to sides"],
+    mistakes: ["Leaning back", "Pulling with neck tension"],
+    contraindications: ["Shoulder pain (reduce ROM)"],
+    videoUrl: "https://example.com/video/band-lat-pulldown",
+    tags: ["pull", "band", "lats"],
+  },
+  {
+    id: "band-rdl",
+    name: "Band Romanian Deadlift",
+    category: "main",
+    equipment: ["bands"],
+    movementPattern: ["hinge"],
+    muscleGroups: ["hamstrings", "glutes", "lower back"],
+    loadType: "assisted",
+    durationOrReps: "8-12 reps",
+    cues: ["Push hips back", "Keep shins mostly vertical"],
+    mistakes: ["Rounding back", "Bending knees too much"],
+    contraindications: ["Acute low-back pain (light tension)"],
+    videoUrl: "https://example.com/video/band-rdl",
+    tags: ["hinge", "band", "posterior"],
+  },
+  {
+    id: "band-front-squat",
+    name: "Band Front Squat",
+    category: "main",
+    equipment: ["bands"],
+    movementPattern: ["squat"],
+    muscleGroups: ["quads", "glutes", "core"],
+    loadType: "assisted",
+    durationOrReps: "8-15 reps",
+    cues: ["Stay tall", "Knees track over toes"],
+    mistakes: ["Collapsing chest", "Knees caving in"],
+    contraindications: ["Knee pain (reduce depth)"],
+    videoUrl: "https://example.com/video/band-front-squat",
+    tags: ["squat", "band", "legs"],
+  },
+  {
+    id: "band-woodchop",
+    name: "Band Woodchop",
+    category: "main",
+    equipment: ["bands"],
+    movementPattern: ["core", "anti-rotation"],
+    muscleGroups: ["obliques", "core", "shoulders"],
+    loadType: "assisted",
+    durationOrReps: "8-12 per side",
+    cues: ["Rotate through torso with control", "Keep hips stable"],
+    mistakes: ["Twisting knees", "Using momentum"],
+    contraindications: ["Acute low-back pain (light band)"],
+    videoUrl: "https://example.com/video/band-woodchop",
+    tags: ["core", "band", "rotation"],
   },
   {
     id: "band-row",
@@ -595,4 +940,77 @@ export const exerciseById = (id?: string) => {
   const normalized = normalizeId(id);
   if (!normalized) return undefined;
   return exercises.find((exercise) => normalizeId(exercise.id) === normalized);
+};
+
+const historyLineageGroups: string[][] = [
+  ["incline-pushup", "pushup", "band-chest-press", "dumbbell-floor-press", "dumbbell-bench-press", "dumbbell-chest-fly"],
+  ["dumbbell-rows", "split-stance-row", "band-row", "band-lat-pulldown", "back-widow", "prone-ytw", "face-pull", "band-pull-aparts"],
+  ["dead-bug", "bird-dog", "plank", "side-plank-star", "pallof-press", "band-woodchop"],
+  [
+    "glute-bridges",
+    "single-leg-hip-thrust",
+    "single-leg-rdl",
+    "bodyweight-good-morning",
+    "back-extension",
+    "band-rdl",
+    "hip-hinge-drill",
+  ],
+  ["bodyweight-squat", "split-squat", "heels-elevated-squat", "cossack-squat", "band-front-squat"],
+  ["scapular-pushups", "wall-slides", "reverse-snow-angel"],
+  ["band-overhead-press", "dumbbell-shoulder-press", "dumbbell-lateral-raise", "pike-pushup"],
+];
+
+const historyNeighborsByExerciseId: Map<string, Set<string>> = (() => {
+  const map = new Map<string, Set<string>>();
+  const connect = (left: string, right: string) => {
+    if (!map.has(left)) map.set(left, new Set());
+    map.get(left)?.add(right);
+  };
+
+  for (const exercise of exercises) {
+    for (const swapId of exercise.swapOptions ?? []) {
+      if (!exerciseById(swapId)) continue;
+      connect(exercise.id, swapId);
+      connect(swapId, exercise.id);
+    }
+  }
+
+  for (const group of historyLineageGroups) {
+    const existing = group.filter((id) => Boolean(exerciseById(id)));
+    for (let i = 0; i < existing.length; i += 1) {
+      for (let j = i + 1; j < existing.length; j += 1) {
+        connect(existing[i], existing[j]);
+        connect(existing[j], existing[i]);
+      }
+    }
+  }
+
+  return map;
+})();
+
+export const resolveExerciseHistoryIds = (exerciseId?: string, maxHops = 1) => {
+  const seed = normalizeId(exerciseId);
+  if (!seed) return [];
+  const normalizedExercise = exerciseById(seed);
+  const rootId = normalizedExercise?.id ?? seed;
+
+  const visited = new Set<string>([rootId]);
+  let frontier = new Set<string>([rootId]);
+
+  for (let hop = 0; hop < maxHops; hop += 1) {
+    const next = new Set<string>();
+    for (const id of frontier) {
+      const neighbors = historyNeighborsByExerciseId.get(id);
+      if (!neighbors) continue;
+      for (const neighborId of neighbors) {
+        if (visited.has(neighborId)) continue;
+        visited.add(neighborId);
+        next.add(neighborId);
+      }
+    }
+    if (!next.size) break;
+    frontier = next;
+  }
+
+  return Array.from(visited);
 };

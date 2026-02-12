@@ -5,6 +5,7 @@ import type {
   ProgramProgress,
   SessionRecord,
 } from "@/lib/types";
+import { resolveExerciseHistoryIds } from "@/lib/exercises";
 
 const DB_NAME = "bodycoach-logs";
 const DB_VERSION = 2;
@@ -412,6 +413,30 @@ export const listExerciseLogsByExercise = async (
       .sort((a, b) => (b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""))
       .slice(0, limit);
   });
+};
+
+export const listExerciseLogsByExerciseHistory = async (
+  exerciseId: string,
+  limit = 10,
+  maxHops = 0
+) => {
+  const historyIds = new Set(resolveExerciseHistoryIds(exerciseId, maxHops));
+  if (!historyIds.size) {
+    return listExerciseLogsByExercise(exerciseId, limit);
+  }
+
+  const allLogs = await listAllExerciseLogs();
+  const filtered = allLogs.filter((log) => {
+    if (historyIds.has(log.exerciseId)) return true;
+    if (log.originalExerciseId && historyIds.has(log.originalExerciseId)) return true;
+    if (log.substitutedExerciseId && historyIds.has(log.substitutedExerciseId))
+      return true;
+    return false;
+  });
+
+  return filtered
+    .sort((a, b) => (b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""))
+    .slice(0, limit);
 };
 
 export const listExerciseLogsBySession = async (sessionId: string) => {

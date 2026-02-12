@@ -24,8 +24,8 @@ export default function AssessmentPage() {
           </header>
 
           <p className="max-w-2xl text-sm text-slate-200">
-            We only store these photos on your device using local storage. Capture
-            natural posture in good lighting for the clearest results.
+            Photos are stored on your device. Capture natural posture in good
+            lighting for the clearest results.
           </p>
         </OnImage>
 

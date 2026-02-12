@@ -11,7 +11,8 @@ import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import DualModeTimer from "@/components/DualModeTimer";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import { saveAppState } from "@/lib/appState";
+import { loadAppState, saveAppState } from "@/lib/appState";
+import { getEffectiveTimer } from "@/lib/timerRules";
 import {
   clearDraft,
   loadDraft,
@@ -30,10 +31,10 @@ import type {
 } from "@/lib/types";
 import {
   createSession,
-  getLatestExerciseLog,
   getProgram,
   init,
   getProgramProgress,
+  listExerciseLogsByExerciseHistory,
   loadPrefs,
   saveExerciseLog,
   savePrefs,
@@ -68,12 +69,29 @@ const parseFirstNumber = (value?: string) => {
   return match ? Number(match[0]) : null;
 };
 
+const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+      ? Number(value)
+      : NaN;
+  return parsed === 4 || parsed === 5 ? parsed : 3;
+};
+
 export default function SessionClient() {
   const searchParams = useSearchParams();
   const [data, setData] = useState<QuestionnaireData | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [workSeconds, setWorkSeconds] = useState(60);
   const [restSeconds, setRestSeconds] = useState(60);
+  const [timerConfig, setTimerConfig] = useState<{ workSeconds: number; restSeconds: number }>({
+    workSeconds: 60,
+    restSeconds: 60,
+  });
+  const [timerByExercise, setTimerByExercise] = useState<
+    Record<string, { workSeconds: number; restSeconds: number }>
+  >({});
   const [completedSets, setCompletedSets] = useState<Record<string, boolean[]>>(
     {}
   );
@@ -107,15 +125,9 @@ export default function SessionClient() {
   const [notesByExercise, setNotesByExercise] = useState<Record<string, string>>(
     {}
   );
-  const [repsModeByExercise, setRepsModeByExercise] = useState<
-    Record<string, "single" | "per-set">
-  >({});
   const [repsByExercise, setRepsByExercise] = useState<Record<string, string>>(
     {}
   );
-  const [repsBySetByExercise, setRepsBySetByExercise] = useState<
-    Record<string, string[]>
-  >({});
   const [substitutionByExercise, setSubstitutionByExercise] = useState<
     Record<string, string>
   >({});
@@ -133,7 +145,7 @@ export default function SessionClient() {
           equipment: normalizeEquipmentSelectionValues(
             parsed.equipment ?? ["none"]
           ),
-          daysPerWeek: parsed.daysPerWeek ?? 3,
+          daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
         });
       }
 
@@ -144,6 +156,33 @@ export default function SessionClient() {
       }
       if (storedPrefs.timerPrefs?.restSeconds) {
         setRestSeconds(storedPrefs.timerPrefs.restSeconds);
+      }
+      if (storedPrefs.timerPrefsByExercise) {
+        setTimerByExercise(storedPrefs.timerPrefsByExercise);
+      }
+      if (storedPrefs.loadPrefsByExercise) {
+        const entries = Object.entries(storedPrefs.loadPrefsByExercise);
+        setUnitByExercise(
+          Object.fromEntries(
+            entries
+              .filter(([, value]) => value.unit === "lb" || value.unit === "kg")
+              .map(([key, value]) => [key, value.unit as "lb" | "kg"])
+          )
+        );
+        setWeightByExercise(
+          Object.fromEntries(
+            entries
+              .filter(([, value]) => typeof value.weight === "string")
+              .map(([key, value]) => [key, value.weight as string])
+          )
+        );
+        setRepsByExercise(
+          Object.fromEntries(
+            entries
+              .filter(([, value]) => typeof value.reps === "string")
+              .map(([key, value]) => [key, value.reps as string])
+          )
+        );
       }
       if (storedPrefs.feedbackByExercise) {
         const normalized = Object.fromEntries(
@@ -181,11 +220,18 @@ export default function SessionClient() {
       if (programId) {
         const loadedProgram = await getProgram(programId);
         if (loadedProgram) {
-          setProgram(loadedProgram);
-          setProgramDayIndex(
-            Number.isFinite(dayIndex) ? (dayIndex as number) : 0
-          );
           const progress = await getProgramProgress(loadedProgram.id);
+          const fallbackDayIndex =
+            progress && Number.isFinite(progress.nextDayIndex)
+              ? progress.nextDayIndex
+              : 0;
+          const requestedDayIndex = Number.isFinite(dayIndex) ? (dayIndex as number) : fallbackDayIndex;
+          const boundedDayIndex = Math.min(
+            Math.max(0, requestedDayIndex),
+            Math.max(0, loadedProgram.week.length - 1)
+          );
+          setProgram(loadedProgram);
+          setProgramDayIndex(boundedDayIndex);
           setProgramProgress(progress);
         }
       }
@@ -208,7 +254,6 @@ export default function SessionClient() {
     setSelectedSets(draft.entries.selectedSets ?? {});
     setWeightByExercise(draft.entries.weightByExercise ?? {});
     setRepsByExercise(draft.entries.repsByExercise ?? {});
-    setRepsBySetByExercise(draft.entries.repsBySetByExercise ?? {});
     setUnitByExercise(draft.entries.unitByExercise ?? {});
     setNotesByExercise(draft.entries.notesByExercise ?? {});
     setFeedback(
@@ -220,6 +265,9 @@ export default function SessionClient() {
     if (draft.timerState) {
       setWorkSeconds(draft.timerState.workSeconds);
       setRestSeconds(draft.timerState.restSeconds);
+    }
+    if (draft.timerByExercise) {
+      setTimerByExercise(draft.timerByExercise);
     }
   };
 
@@ -244,7 +292,7 @@ export default function SessionClient() {
           reps: routineItem.reps ?? "",
           durationSec: routineItem.durationSec ?? undefined,
           restSec: routineItem.restSec ?? 60,
-          section: day.title,
+          section: routineItem.section ?? day.title,
           id: `${day.title}-${routineItem.exerciseId}`,
           name: exercise?.name ?? "Exercise",
           cues: routineItem.cues ?? exercise?.cues ?? [],
@@ -267,6 +315,7 @@ export default function SessionClient() {
           id: `${section.title}-${item.exerciseId}`,
           exerciseId: effectiveExerciseId,
           originalExerciseId: item.exerciseId,
+          restSec: 60,
           name: exercise?.name ?? "Exercise",
           cues: exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
@@ -286,6 +335,22 @@ export default function SessionClient() {
     "Relax your jaw and neck",
     "Smooth tempo over speed",
   ];
+  const activeTip = tips[tipIndex] ?? "";
+  const tipTone = (() => {
+    if (/breathe|breath/i.test(activeTip)) {
+      return "border-sky-200 bg-sky-50 text-sky-900";
+    }
+    if (/move|control|tempo/i.test(activeTip)) {
+      return "border-amber-200 bg-amber-50 text-amber-900";
+    }
+    if (/posture/i.test(activeTip)) {
+      return "border-indigo-200 bg-indigo-50 text-indigo-900";
+    }
+    if (/relax|jaw|neck/i.test(activeTip)) {
+      return "border-rose-200 bg-rose-50 text-rose-900";
+    }
+    return "border-slate-200 bg-slate-50 text-slate-900";
+  })();
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -313,11 +378,46 @@ export default function SessionClient() {
     });
   };
 
+  const applySelectedSets = (
+    itemId: string,
+    exerciseId: string,
+    nextCount: number
+  ) => {
+    updateSelectedSets(itemId, nextCount);
+    void persistLoadPref(exerciseId, { selectedSets: nextCount });
+  };
+
+  const applyWeight = (exerciseId: string, value: string) => {
+    setWeightByExercise((prev) => ({
+      ...prev,
+      [exerciseId]: value,
+    }));
+    void persistLoadPref(exerciseId, { weight: value });
+  };
+
+  const applyUnit = (exerciseId: string, unit: "lb" | "kg") => {
+    setUnitByExercise((prev) => ({
+      ...prev,
+      [exerciseId]: unit,
+    }));
+    void persistLoadPref(exerciseId, { unit });
+  };
+
+  const applySingleReps = (exerciseId: string, reps: string) => {
+    setRepsByExercise((prev) => ({
+      ...prev,
+      [exerciseId]: reps,
+    }));
+    void persistLoadPref(exerciseId, { reps });
+  };
+
   const saveFeedback = async (next: Record<string, ExerciseFeedback>) => {
     setFeedback(next);
     const nextPrefs: LogPrefs = {
       ...(prefs ?? { schemaVersion: 1 }),
       timerPrefs: prefs?.timerPrefs,
+      timerPrefsByExercise: prefs?.timerPrefsByExercise,
+      loadPrefsByExercise: prefs?.loadPrefsByExercise,
       feedbackByExercise: next,
       substitutionByExercise: substitutionByExercise,
     };
@@ -331,6 +431,8 @@ export default function SessionClient() {
     const nextPrefs: LogPrefs = {
       ...(prefs ?? { schemaVersion: 1 }),
       timerPrefs: prefs?.timerPrefs,
+      timerPrefsByExercise: prefs?.timerPrefsByExercise,
+      loadPrefsByExercise: prefs?.loadPrefsByExercise,
       feedbackByExercise: feedback,
       substitutionByExercise: nextMap,
     };
@@ -338,17 +440,87 @@ export default function SessionClient() {
     await savePrefs(nextPrefs);
   };
 
-  const updateTimerPrefs = async (next: {
-    workSeconds: number;
-    restSeconds: number;
-  }) => {
+  const persistLoadPref = async (
+    exerciseId: string,
+    partial: NonNullable<LogPrefs["loadPrefsByExercise"]>[string]
+  ) => {
+    const nextByExercise = {
+      ...(prefs?.loadPrefsByExercise ?? {}),
+      [exerciseId]: {
+        ...(prefs?.loadPrefsByExercise?.[exerciseId] ?? {}),
+        ...partial,
+      },
+    };
     const nextPrefs: LogPrefs = {
       ...(prefs ?? { schemaVersion: 1 }),
-      timerPrefs: next,
-      feedbackByExercise: prefs?.feedbackByExercise,
+      timerPrefs: prefs?.timerPrefs,
+      timerPrefsByExercise: prefs?.timerPrefsByExercise,
+      loadPrefsByExercise: nextByExercise,
+      feedbackByExercise: feedback,
+      substitutionByExercise: substitutionByExercise,
     };
     setPrefs(nextPrefs);
     await savePrefs(nextPrefs);
+  };
+
+  const updateTimerPrefs = async (
+    next: {
+      workSeconds: number;
+      restSeconds: number;
+    },
+    exerciseId?: string
+  ) => {
+    const nextByExercise = exerciseId
+      ? {
+          ...(prefs?.timerPrefsByExercise ?? timerByExercise),
+          [exerciseId]: next,
+        }
+      : prefs?.timerPrefsByExercise ?? timerByExercise;
+    setTimerByExercise(nextByExercise);
+    setWorkSeconds(next.workSeconds);
+    setRestSeconds(next.restSeconds);
+
+    const nextPrefs: LogPrefs = {
+      ...(prefs ?? { schemaVersion: 1 }),
+      timerPrefs: next,
+      timerPrefsByExercise: nextByExercise,
+      loadPrefsByExercise: prefs?.loadPrefsByExercise,
+      feedbackByExercise: feedback,
+      substitutionByExercise: substitutionByExercise,
+    };
+    setPrefs(nextPrefs);
+    await savePrefs(nextPrefs);
+  };
+
+  const getTimerForExercise = (params: {
+    exerciseId: string;
+    durationSec?: number | null;
+    restSec?: number | null;
+    sets: string | number | null;
+    reps?: string | null;
+    loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+  }) => {
+    const exerciseTimerPref =
+      timerByExercise[params.exerciseId] ??
+      prefs?.timerPrefsByExercise?.[params.exerciseId];
+    if (exerciseTimerPref) {
+      return {
+        workSeconds: exerciseTimerPref.workSeconds,
+        restSeconds: exerciseTimerPref.restSeconds,
+      };
+    }
+
+    return getEffectiveTimer(
+      {
+        exerciseId: params.exerciseId,
+        durationSec: params.durationSec ?? null,
+        restSec: params.restSec ?? null,
+        sets: params.sets,
+        reps: params.reps ?? null,
+        loadType: params.loadType,
+      },
+      prefs?.timerPrefs
+    );
   };
 
   const saveSessionFeedback = async (next: ExerciseFeedback) => {
@@ -391,13 +563,31 @@ export default function SessionClient() {
     const sessionIdValue = sessionId ?? uuid();
     const startedAt = sessionStartedAt ?? nowIso();
     const completedAt = nowIso();
-    const totalSeconds = flatItems.reduce(
-      (sum, item) => sum + (item.durationSec ?? 60),
-      0
-    );
+    const totalSeconds = flatItems.reduce((sum, item) => {
+      const timer = getTimerForExercise({
+        exerciseId: item.exerciseId,
+        durationSec: item.durationSec,
+        restSec: item.restSec,
+        sets: item.sets,
+        reps: item.reps,
+        loadType: item.loadType,
+      });
+      return sum + timer.workSeconds;
+    }, 0);
+    const totalRestSeconds = flatItems.reduce((sum, item) => {
+      const timer = getTimerForExercise({
+        exerciseId: item.exerciseId,
+        durationSec: item.durationSec,
+        restSec: item.restSec,
+        sets: item.sets,
+        reps: item.reps,
+        loadType: item.loadType,
+      });
+      return sum + timer.restSeconds;
+    }, 0);
     const estimatedMinutes = Math.max(
       1,
-      Math.round((totalSeconds + restSeconds * totalItems) / 60)
+      Math.round((totalSeconds + totalRestSeconds) / 60)
     );
 
     const sessionRecord: SessionRecord = {
@@ -430,15 +620,10 @@ export default function SessionClient() {
       const weightValue = weightByExercise[exerciseId];
       const weight =
         item.loadType === "weighted" && weightValue ? Number(weightValue) : null;
-      const repsMode = repsModeByExercise[exerciseId] ?? "single";
       const repsValue = repsByExercise[exerciseId];
-      const reps = repsValue ? Number(repsValue) : null;
-      const repsBySet =
-        repsMode === "per-set"
-          ? (repsBySetByExercise[exerciseId] ?? []).map((value) =>
-              value ? Number(value) : 0
-            )
-          : null;
+      const fallbackReps =
+        !item.durationSec && item.reps ? parseFirstNumber(item.reps) : null;
+      const reps = repsValue ? Number(repsValue) : fallbackReps;
       const setsPlanned = selectedSets[item.id] ?? parseSetsRange(item.sets).minSets;
       const setsCompleted = (completedSets[item.id] ?? []).filter(Boolean)
         .length;
@@ -447,9 +632,15 @@ export default function SessionClient() {
           ? weight * reps * Math.max(1, setsCompleted)
           : null;
       const volumeFromSets =
-        weight && repsBySet
-          ? repsBySet.reduce((sum, value) => sum + value, 0) * weight
-          : null;
+        null;
+      const timer = getTimerForExercise({
+        exerciseId: item.exerciseId,
+        durationSec: item.durationSec,
+        restSec: item.restSec,
+        sets: item.sets,
+        reps: item.reps,
+        loadType: item.loadType,
+      });
 
       return {
         id: uuid(),
@@ -469,15 +660,26 @@ export default function SessionClient() {
         loadType: item.loadType,
         unit: item.loadType === "weighted" ? unit : null,
         weight,
-        reps: repsMode === "single" ? reps : null,
-        repsBySet: repsMode === "per-set" ? repsBySet : null,
+        reps,
+        repsBySet: null,
         setsPlanned,
         setsCompleted,
-        durationSec: item.durationSec ?? null,
+        durationSec:
+          item.loadType === "timed"
+            ? timer.workSeconds
+            : item.durationSec ?? null,
+        workSecondsUsed: timer.workSeconds,
+        restSecondsUsed: timer.restSeconds,
         rpe: null,
-        felt: feedback[item.id]?.rating ?? null,
-        painLocation: feedback[item.id]?.painLocation ?? null,
-        feedbackNotes: feedback[item.id]?.notes ?? null,
+        felt: feedback[item.exerciseId]?.rating ?? feedback[item.id]?.rating ?? null,
+        painLocation:
+          feedback[item.exerciseId]?.painLocation ??
+          feedback[item.id]?.painLocation ??
+          null,
+        feedbackNotes:
+          feedback[item.exerciseId]?.notes ??
+          feedback[item.id]?.notes ??
+          null,
         notes: notesByExercise[exerciseId]?.trim() || null,
         programId: program?.id ?? null,
         dayIndex: programDayIndex ?? null,
@@ -510,6 +712,9 @@ export default function SessionClient() {
       };
       await saveProgramProgress(progress);
       setProgramProgress(progress);
+      saveAppState({
+        selectedDay: nextIndex,
+      });
     }
 
     await clearDraft(sessionIdValue);
@@ -526,11 +731,41 @@ export default function SessionClient() {
     Array.from({ length: currentSelectedSets }, () => false);
   const allSetsCompleted =
     checks.length > 0 && checks.every((value) => Boolean(value));
+  const currentFeedbackKey = currentItem?.exerciseId ?? "";
+  const currentFeedback = feedback[currentFeedbackKey] ?? null;
+  const currentTimer = currentItem
+    ? getTimerForExercise({
+        exerciseId: currentItem.exerciseId,
+        durationSec: currentItem.durationSec ?? null,
+        restSec: currentItem.restSec ?? null,
+        sets: currentItem.sets,
+        reps: currentItem.reps ?? null,
+        loadType: currentItem.loadType,
+      })
+    : { workSeconds: 60, restSeconds: 60 };
+  const previewWeight =
+    currentItem?.loadType === "weighted" && currentItem
+      ? weightByExercise[currentItem.exerciseId] || "-"
+      : "-";
+  const previewUnit =
+    currentItem?.loadType === "weighted" && currentItem
+      ? unitByExercise[currentItem.exerciseId] ?? "lb"
+      : null;
+  const previewReps =
+    currentItem && currentItem.loadType !== "timed"
+      ? repsByExercise[currentItem.exerciseId] ||
+        String(parseFirstNumber(currentItem.reps) ?? "-")
+      : "-";
+  const previewSetsPlanned = currentSelectedSets;
+  const previewSetsCompleted = checks.filter(Boolean).length;
 
   useEffect(() => {
     if (!currentItem) return;
     const loadLast = async () => {
-      const latest = await getLatestExerciseLog(currentItem.exerciseId);
+      const [latest] = await listExerciseLogsByExerciseHistory(
+        currentItem.exerciseId,
+        1
+      );
       setLastLog(latest);
     };
     loadLast();
@@ -544,14 +779,32 @@ export default function SessionClient() {
 
   useEffect(() => {
     if (!currentItem) return;
-    updateSelectedSets(currentItem.id, currentSelectedSets);
-
     const exerciseId = currentItem.exerciseId;
-    if (!unitByExercise[exerciseId]) {
-      setUnitByExercise((prev) => ({ ...prev, [exerciseId]: "lb" }));
+    const loadPref = prefs?.loadPrefsByExercise?.[exerciseId];
+
+    if (selectedSets[currentItem.id] === undefined) {
+      const preferred =
+        loadPref?.selectedSets ??
+        lastLog?.setsCompleted ??
+        lastLog?.setsPlanned ??
+        minSets;
+      const bounded = Math.min(maxSets, Math.max(minSets, preferred ?? minSets));
+      updateSelectedSets(currentItem.id, bounded);
     }
 
-    if (lastLog && !weightByExercise[exerciseId] && lastLog.weight) {
+    if (!unitByExercise[exerciseId]) {
+      setUnitByExercise((prev) => ({
+        ...prev,
+        [exerciseId]: loadPref?.unit ?? "lb",
+      }));
+    }
+
+    if (!weightByExercise[exerciseId] && loadPref?.weight) {
+      setWeightByExercise((prev) => ({
+        ...prev,
+        [exerciseId]: loadPref.weight ?? "",
+      }));
+    } else if (lastLog && !weightByExercise[exerciseId] && lastLog.weight) {
       setWeightByExercise((prev) => ({
         ...prev,
         [exerciseId]: String(lastLog.weight),
@@ -559,22 +812,42 @@ export default function SessionClient() {
     }
 
     if (!repsByExercise[exerciseId] && !currentItem.durationSec) {
-      const defaultReps = parseFirstNumber(currentItem.reps);
-      if (defaultReps) {
+      if (loadPref?.reps) {
         setRepsByExercise((prev) => ({
           ...prev,
-          [exerciseId]: String(defaultReps),
+          [exerciseId]: loadPref.reps ?? "",
         }));
+      } else if (lastLog?.reps) {
+        setRepsByExercise((prev) => ({
+          ...prev,
+          [exerciseId]: String(lastLog.reps),
+        }));
+      } else {
+        const defaultReps = parseFirstNumber(currentItem.reps);
+        if (defaultReps) {
+          setRepsByExercise((prev) => ({
+            ...prev,
+            [exerciseId]: String(defaultReps),
+          }));
+        }
       }
     }
+  }, [currentItem?.id, currentSelectedSets, lastLog, prefs?.loadPrefsByExercise, repsByExercise, selectedSets, minSets, maxSets]);
 
-    if (!repsModeByExercise[exerciseId]) {
-      setRepsModeByExercise((prev) => ({
-        ...prev,
-        [exerciseId]: "single",
-      }));
-    }
-  }, [currentItem?.id, currentSelectedSets, lastLog]);
+  useEffect(() => {
+    if (!currentItem) return;
+    const next = getTimerForExercise({
+      exerciseId: currentItem.exerciseId,
+      sets: currentItem.sets,
+      reps: currentItem.reps ?? null,
+      durationSec: currentItem.durationSec ?? null,
+      restSec: currentItem.restSec ?? null,
+      loadType: currentItem.loadType,
+    });
+    setTimerConfig(next);
+    setWorkSeconds(next.workSeconds);
+    setRestSeconds(next.restSeconds);
+  }, [currentItem?.id, timerByExercise, prefs?.timerPrefs, prefs?.timerPrefsByExercise]);
 
   useEffect(() => {
     if (!sessionId) setSessionId(uuid());
@@ -584,10 +857,15 @@ export default function SessionClient() {
   useEffect(() => {
     if (!sessionId) return;
     if (!program || programDayIndex === null) return;
+    const state = loadAppState();
     saveAppState({
       activeSessionId: sessionId,
       programId: program.id,
+      activeProgramId: program.id,
       selectedDay: programDayIndex,
+      activePhaseIndex: program.phaseIndex ?? 1,
+      activeCycleIndex: program.cycleIndex ?? 1,
+      programVersion: state?.programVersion ?? 0,
       lastRoute: `/session?programId=${program.id}&dayIndex=${programDayIndex}`,
     });
   }, [sessionId, program, programDayIndex]);
@@ -596,6 +874,8 @@ export default function SessionClient() {
     if (!sessionId) return;
     if (!program) return;
     if (sessionComplete) return;
+    const state = loadAppState();
+    const programVersion = state?.programVersion ?? 0;
     const currentExerciseId = flatItems[activeIndex]?.id ?? "";
     const sets = completedSets[currentExerciseId] ?? [];
     const currentSetIndex = Math.max(
@@ -607,6 +887,9 @@ export default function SessionClient() {
         sessionId,
         programId: program.id,
         dayIndex: programDayIndex,
+        programVersion,
+        phaseIndex: program.phaseIndex ?? program.phase?.weekIndex ?? 1,
+        cycleIndex: program.cycleIndex ?? 1,
         currentExerciseIndex: activeIndex,
         currentSetIndex,
         entries: {
@@ -614,7 +897,7 @@ export default function SessionClient() {
           selectedSets,
           weightByExercise,
           repsByExercise,
-          repsBySetByExercise,
+          repsBySetByExercise: {},
           unitByExercise,
           notesByExercise,
           feedbackByExercise: feedback,
@@ -623,6 +906,7 @@ export default function SessionClient() {
           workSeconds,
           restSeconds,
         },
+        timerByExercise,
         startedAt: sessionStartedAt,
         updatedAt: nowIso(),
       });
@@ -638,12 +922,12 @@ export default function SessionClient() {
     selectedSets,
     weightByExercise,
     repsByExercise,
-    repsBySetByExercise,
     unitByExercise,
     notesByExercise,
     feedback,
     workSeconds,
     restSeconds,
+    timerByExercise,
     sessionStartedAt,
     flatItems,
   ]);
@@ -732,7 +1016,7 @@ export default function SessionClient() {
                         painLocation: event.target.value
                           ? (event.target.value as PainLocation)
                           : null,
-                        notes: sessionFeedback?.notes ?? "",
+                        notes: sessionFeedback?.notes ?? null,
                       })
                     }
                     className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
@@ -752,24 +1036,6 @@ export default function SessionClient() {
                       </option>
                     ))}
                   </select>
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="font-semibold text-slate-700">
-                    Notes (optional)
-                  </span>
-                  <input
-                    type="text"
-                    value={sessionFeedback?.notes ?? ""}
-                    onChange={(event) =>
-                      saveSessionFeedback({
-                        rating: "pain",
-                        painLocation: sessionFeedback?.painLocation ?? null,
-                        notes: event.target.value,
-                      })
-                    }
-                    placeholder="Short note"
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
-                  />
                 </label>
               </div>
             ) : null}
@@ -798,27 +1064,40 @@ export default function SessionClient() {
             <h1 className="text-3xl font-semibold text-white">
               {currentItem.section}: {currentItem.name}
             </h1>
+            {program && programDayIndex !== null ? (
+              <p className="text-xs font-semibold text-slate-200">
+                Schedule day {programDayIndex + 1} of {program.daysPerWeek}
+              </p>
+            ) : null}
             <p className="text-sm text-slate-200">
               {currentItem.sets} sets • {currentItem.duration ?? currentItem.reps}
             </p>
           </header>
         </OnImage>
 
-        <div className="sticky top-3 z-10 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-900 shadow-lg coach-tip-pulse">
-          Coaching tip: <span className="text-slate-900">{tips[tipIndex]}</span>
+        <div
+          className={`sticky top-3 z-20 rounded-2xl border px-5 py-4 text-[1.2rem] font-semibold leading-tight shadow-lg coach-tip-pulse ${tipTone}`}
+        >
+          Coaching tip:{" "}
+          <span>{activeTip}</span>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <DualModeTimer
-            initialExerciseSeconds={workSeconds}
-            initialRestSeconds={restSeconds}
+            key={currentItem.id}
+            initialExerciseSeconds={timerConfig.workSeconds}
+            initialRestSeconds={timerConfig.restSeconds}
             onExerciseDurationChange={(seconds) => {
-              setWorkSeconds(seconds);
-              updateTimerPrefs({ workSeconds: seconds, restSeconds });
+              updateTimerPrefs(
+                { workSeconds: seconds, restSeconds: timerConfig.restSeconds },
+                currentItem.exerciseId
+              );
             }}
             onRestDurationChange={(seconds) => {
-              setRestSeconds(seconds);
-              updateTimerPrefs({ workSeconds, restSeconds: seconds });
+              updateTimerPrefs(
+                { workSeconds: timerConfig.workSeconds, restSeconds: seconds },
+                currentItem.exerciseId
+              );
             }}
             defaultMode="exercise"
           />
@@ -855,6 +1134,38 @@ export default function SessionClient() {
               </p>
             ) : null}
           </div>
+          <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+              About to record
+            </p>
+            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-700">
+              <p>
+                <span className="font-semibold text-slate-900">Load:</span>{" "}
+                {currentItem.loadType === "weighted"
+                  ? `${previewWeight}${previewUnit ? ` ${previewUnit}` : ""}`
+                  : currentItem.loadType}
+              </p>
+              <p>
+                <span className="font-semibold text-slate-900">Reps/set:</span>{" "}
+                {previewReps}
+              </p>
+              <p>
+                <span className="font-semibold text-slate-900">Sets:</span>{" "}
+                {previewSetsCompleted}/{previewSetsPlanned}
+              </p>
+              <p>
+                <span className="font-semibold text-slate-900">Timer:</span>{" "}
+                {currentTimer.workSeconds}s work • {currentTimer.restSeconds}s rest
+              </p>
+              <p className="col-span-2">
+                <span className="font-semibold text-slate-900">Feedback:</span>{" "}
+                {currentFeedback?.rating ?? "not set"}
+                {currentFeedback?.rating === "pain" && currentFeedback?.painLocation
+                  ? ` (${currentFeedback.painLocation})`
+                  : ""}
+              </p>
+            </div>
+          </div>
 
           <div className="mt-4 grid gap-3">
             {currentItem.loadType === "weighted" ? (
@@ -867,10 +1178,7 @@ export default function SessionClient() {
                   min={0}
                   value={weightByExercise[currentItem.exerciseId] ?? ""}
                   onChange={(event) =>
-                    setWeightByExercise((prev) => ({
-                      ...prev,
-                      [currentItem.exerciseId]: event.target.value,
-                    }))
+                    applyWeight(currentItem.exerciseId, event.target.value)
                   }
                   className="w-28 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
                 />
@@ -879,12 +1187,7 @@ export default function SessionClient() {
                     <button
                       key={unit}
                       type="button"
-                      onClick={() =>
-                        setUnitByExercise((prev) => ({
-                          ...prev,
-                          [currentItem.exerciseId]: unit,
-                        }))
-                      }
+                      onClick={() => applyUnit(currentItem.exerciseId, unit)}
                       className={`rounded-full px-3 py-1 font-semibold ${
                         (unitByExercise[currentItem.exerciseId] ?? "lb") === unit
                           ? "bg-slate-900 text-white"
@@ -907,114 +1210,6 @@ export default function SessionClient() {
               </p>
             )}
 
-            {!currentItem.durationSec ? (
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                  <span className="font-semibold text-slate-700">Reps</span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setRepsModeByExercise((prev) => ({
-                        ...prev,
-                        [currentItem.exerciseId]: "single",
-                      }))
-                    }
-                    className={`rounded-full border px-3 py-1 font-semibold ${
-                      (repsModeByExercise[currentItem.exerciseId] ?? "single") ===
-                      "single"
-                        ? "border-slate-900 bg-slate-900 text-white"
-                        : "border-slate-200 text-slate-700"
-                    }`}
-                  >
-                    Same for all sets
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setRepsModeByExercise((prev) => ({
-                        ...prev,
-                        [currentItem.exerciseId]: "per-set",
-                      }))
-                    }
-                    className={`rounded-full border px-3 py-1 font-semibold ${
-                      repsModeByExercise[currentItem.exerciseId] === "per-set"
-                        ? "border-slate-900 bg-slate-900 text-white"
-                        : "border-slate-200 text-slate-700"
-                    }`}
-                  >
-                    Per set
-                  </button>
-                </div>
-
-                {(repsModeByExercise[currentItem.exerciseId] ?? "single") ===
-                "single" ? (
-                  <input
-                    type="number"
-                    min={1}
-                    value={repsByExercise[currentItem.exerciseId] ?? ""}
-                    onChange={(event) =>
-                      setRepsByExercise((prev) => ({
-                        ...prev,
-                        [currentItem.exerciseId]: event.target.value,
-                      }))
-                    }
-                    className="w-28 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
-                  />
-                ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {Array.from({ length: currentSelectedSets }).map(
-                      (_, index) => {
-                        const values =
-                          repsBySetByExercise[currentItem.exerciseId] ?? [];
-                        return (
-                          <input
-                            key={`${currentItem.exerciseId}-reps-${index}`}
-                            type="number"
-                            min={1}
-                            value={values[index] ?? ""}
-                            onChange={(event) =>
-                              setRepsBySetByExercise((prev) => {
-                                const current = prev[currentItem.exerciseId]
-                                  ? [...prev[currentItem.exerciseId]]
-                                  : Array.from(
-                                      { length: currentSelectedSets },
-                                      () => ""
-                                    );
-                                current[index] = event.target.value;
-                                return {
-                                  ...prev,
-                                  [currentItem.exerciseId]: current,
-                                };
-                              })
-                            }
-                            className="w-20 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
-                            placeholder={`Set ${index + 1}`}
-                          />
-                        );
-                      }
-                    )}
-                  </div>
-                )}
-              </div>
-            ) : null}
-
-            <div>
-              <label className="text-xs font-semibold text-slate-700">
-                Notes (optional)
-              </label>
-              <textarea
-                value={notesByExercise[currentItem.exerciseId] ?? ""}
-                onChange={(event) =>
-                  setNotesByExercise((prev) => ({
-                    ...prev,
-                    [currentItem.exerciseId]: event.target.value,
-                  }))
-                }
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
-                rows={2}
-                placeholder="How did it feel?"
-              />
-            </div>
           </div>
         </div>
 
@@ -1027,8 +1222,9 @@ export default function SessionClient() {
                 <button
                   type="button"
                   onClick={() =>
-                    updateSelectedSets(
+                    applySelectedSets(
                       currentItem.id,
+                      currentItem.exerciseId,
                       Math.max(minSets, currentSelectedSets - 1)
                     )
                   }
@@ -1042,8 +1238,9 @@ export default function SessionClient() {
                 <button
                   type="button"
                   onClick={() =>
-                    updateSelectedSets(
+                    applySelectedSets(
                       currentItem.id,
+                      currentItem.exerciseId,
                       Math.min(maxSets, currentSelectedSets + 1)
                     )
                   }
@@ -1055,6 +1252,23 @@ export default function SessionClient() {
             ) : null}
           </div>
           <div className="mt-3 flex flex-wrap gap-3">
+            {currentItem.loadType !== "timed" ? (
+              <div className="w-full space-y-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                  <span className="font-semibold text-slate-700">Reps</span>
+                </div>
+                <input
+                  type="number"
+                  min={1}
+                  value={repsByExercise[currentItem.exerciseId] ?? ""}
+                  onChange={(event) =>
+                    applySingleReps(currentItem.exerciseId, event.target.value)
+                  }
+                  className="w-32 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
+                  placeholder="Reps per set"
+                />
+              </div>
+            ) : null}
             {Array.from({ length: currentSelectedSets }).map((_, index) => (
               <label
                 key={`${currentItem.id}-set-${index}`}
@@ -1094,16 +1308,16 @@ export default function SessionClient() {
                   onClick={() =>
                     saveFeedback({
                       ...feedback,
-                      [currentItem.id]: {
+                      [currentFeedbackKey]: {
                         rating: option.value,
                         painLocation:
-                          feedback[currentItem.id]?.painLocation ?? null,
-                        notes: feedback[currentItem.id]?.notes ?? "",
+                          currentFeedback?.painLocation ?? null,
+                        notes: currentFeedback?.notes ?? "",
                       },
                     })
                   }
                   className={`rounded-full border px-4 py-2 text-xs font-semibold ${
-                    feedback[currentItem.id]?.rating === option.value
+                    currentFeedback?.rating === option.value
                       ? "border-slate-900 bg-slate-900 text-white"
                       : "border-slate-200 text-slate-700"
                   }`}
@@ -1112,21 +1326,21 @@ export default function SessionClient() {
                 </button>
               ))}
             </div>
-            {feedback[currentItem.id]?.rating === "pain" ? (
+            {currentFeedback?.rating === "pain" ? (
               <div className="mt-4 grid gap-3 text-xs">
                 <label className="flex flex-col gap-2">
                   <span className="font-semibold text-slate-700">Location</span>
                   <select
-                    value={feedback[currentItem.id]?.painLocation ?? ""}
+                    value={currentFeedback?.painLocation ?? ""}
                     onChange={(event) =>
                       saveFeedback({
                         ...feedback,
-                        [currentItem.id]: {
+                        [currentFeedbackKey]: {
                           rating: "pain",
                           painLocation: event.target.value
                             ? (event.target.value as PainLocation)
                             : null,
-                          notes: feedback[currentItem.id]?.notes ?? "",
+                          notes: currentFeedback?.notes ?? null,
                         },
                       })
                     }
@@ -1147,28 +1361,6 @@ export default function SessionClient() {
                       </option>
                     ))}
                   </select>
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="font-semibold text-slate-700">
-                    Notes (optional)
-                  </span>
-                  <input
-                    type="text"
-                    value={feedback[currentItem.id]?.notes ?? ""}
-                    onChange={(event) =>
-                      saveFeedback({
-                        ...feedback,
-                        [currentItem.id]: {
-                          rating: "pain",
-                          painLocation:
-                            feedback[currentItem.id]?.painLocation ?? null,
-                          notes: event.target.value,
-                        },
-                      })
-                    }
-                    placeholder="Short note"
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
-                  />
                 </label>
                 {(() => {
                   const baseOriginalId =

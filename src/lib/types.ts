@@ -43,6 +43,8 @@ export type ExerciseLog = {
   setsPlanned: number | null;
   setsCompleted: number | null;
   durationSec: number | null;
+  workSecondsUsed?: number | null;
+  restSecondsUsed?: number | null;
   rpe: number | null;
   felt: "easy" | "moderate" | "hard" | "pain" | null;
   painLocation?: PainLocation | null;
@@ -62,12 +64,28 @@ export type ExerciseFeedback = {
 export type LogPrefs = {
   schemaVersion: number;
   timerPrefs?: { workSeconds: number; restSeconds: number };
+  timerPrefsByExercise?: Record<
+    string,
+    { workSeconds: number; restSeconds: number }
+  >;
+  loadPrefsByExercise?: Record<
+    string,
+    {
+      unit?: "lb" | "kg";
+      weight?: string;
+      repsMode?: "single" | "per-set";
+      reps?: string;
+      repsBySet?: string[];
+      selectedSets?: number;
+    }
+  >;
   feedbackByExercise?: Record<string, ExerciseFeedback>;
   substitutionByExercise?: Record<string, string>;
 };
 
 export type ProgramRoutineItem = {
   exerciseId: string;
+  section?: "warmup" | "activation" | "main" | "accessory" | "cooldown";
   sets: string | number | null;
   reps?: string | null;
   durationSec?: number | null;
@@ -89,11 +107,21 @@ export type Program = {
   userId: string | null;
   createdAt: string;
   updatedAt: string;
+  templateVersion?: number;
   goalTrack: string | null;
   daysPerWeek: 3 | 4 | 5;
   estimatedSessionMinutesRange: { min: 45; max: 60 };
+  phaseIndex?: number;
+  phaseName?: string;
+  // Week index within the current phase.
+  weekIndex?: number;
+  // Absolute week counter across a user's full training history.
+  totalWeekIndex?: number;
+  cycleIndex?: number;
   phase?: {
     name: string;
+    phaseIndex: number;
+    cycleIndex: number;
     weekIndex: number;
     weekCount: number;
     goal: string;
@@ -102,6 +130,51 @@ export type Program = {
     summary: string;
     change: string;
     reason: string;
+  };
+  phaseOptimizerReport?: {
+    summary: string;
+    priorities: string[];
+    changedSlots: number;
+    totalSlots: number;
+    exerciseReasons: Record<string, string[]>;
+  };
+  movementProfile?: {
+    generatedAt: string;
+    readiness: number;
+    recovery: number;
+    consistency: number;
+    painRisk: number;
+    confidence: number;
+    asymmetry: number;
+    painSensitivity: Record<string, number>;
+    skillScores: Record<string, number>;
+    priorities: string[];
+  };
+  phaseObjective?: {
+    title: string;
+    objective: string;
+    phaseFocus: string;
+    primaryPatterns: string[];
+    successMarkers: string[];
+    guardrail: string;
+    weekIntent: string;
+    whyNow: string;
+    riskWatchouts: string[];
+    coachingPrompts: string[];
+    metrics: {
+      readiness: number;
+      consistency: number;
+      painRisk: number;
+      asymmetry: number;
+    };
+  };
+  sessionAdaptation?: {
+    summary: string;
+    reasons: string[];
+    appliedChanges: string[];
+    masteryNext: string[];
+    dataSignals: string[];
+    masteryChecks: string[];
   };
   week: ProgramDay[];
   source: "local" | "cloud";
@@ -114,4 +187,26 @@ export type ProgramProgress = {
   nextDayIndex: number;
   completedDayIndices: number[];
   updatedAt: string;
+};
+
+export type TrainingStage =
+  | "onramp"
+  | "build"
+  | "push"
+  | "deload"
+  | "rebuild";
+
+export type TrainingTrend = "up" | "flat" | "down";
+
+export type UserTrainingState = {
+  stage: TrainingStage;
+  readiness: number;
+  consistency: number;
+  painRisk: number;
+  fatigueRisk: number;
+  movementQuality: number;
+  capacity: number;
+  confidence: number;
+  trend: TrainingTrend;
+  reason: string;
 };

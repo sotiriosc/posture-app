@@ -40,13 +40,26 @@ const toConfidence = (score?: number | null): ObservationConfidence => {
   return "low";
 };
 
+const toPercent = (value: number | null | undefined) => {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  return Math.round(value * 100);
+};
+
+const viewPrefix = (item: string) => {
+  const match = item.match(/^([a-z]+):\s*/i);
+  if (!match) return null;
+  return match[1].toLowerCase();
+};
+
+const unique = (values: string[]) => Array.from(new Set(values));
+
 const buildPoseObservations = (
   poseAnalysis: PoseAnalysis
 ): AssessmentObservation[] => {
   const confidence = toConfidence(poseAnalysis.confidenceScore);
-  const observations: AssessmentObservation[] = [];
+  const byId = new Map<string, AssessmentObservation>();
 
-  const add = (
+  const addOrMerge = (
     id: string,
     title: string,
     description: string,
@@ -55,27 +68,42 @@ const buildPoseObservations = (
     focusTags: FocusTag[],
     suggestion: AssessmentObservation["recommendedInterventions"]
   ) => {
-    observations.push({
-      id,
-      title,
-      description,
-      confidence,
-      evidence,
-      likelyDrivers,
-      riskIfIgnored: "May slow progress or increase stiffness over time.",
-      primaryFocusTags: focusTags,
-      recommendedInterventions: suggestion,
-    });
+    const existing = byId.get(id);
+    if (!existing) {
+      byId.set(id, {
+        id,
+        title,
+        description,
+        confidence,
+        evidence: unique(evidence),
+        likelyDrivers: unique(likelyDrivers),
+        riskIfIgnored: "May slow progress or increase stiffness over time.",
+        primaryFocusTags: focusTags,
+        recommendedInterventions: suggestion,
+      });
+      return;
+    }
+    existing.evidence = unique([...existing.evidence, ...evidence]);
+    existing.likelyDrivers = unique([...existing.likelyDrivers, ...likelyDrivers]);
   };
 
   poseAnalysis.observations.forEach((item) => {
     const lower = item.toLowerCase();
+    const view = viewPrefix(item);
+    const viewEvidence = view ? [`View: ${view}`] : [];
     if (lower.includes("shoulder height")) {
-      add(
+      const shoulderDelta = toPercent(poseAnalysis.metrics.shoulderHeightDelta);
+      addOrMerge(
         "pose-shoulder-asymmetry",
         "Shoulder height asymmetry",
-        "Pattern suggests uneven shoulder positioning; we’ll even out upper-back control.",
-        ["Scan: shoulder height difference"],
+        "Pattern shows uneven shoulder position, often linked with one-side dominant posture and reduced scapular control.",
+        unique([
+          "Scan: shoulder height difference",
+          ...(shoulderDelta !== null
+            ? [`Metric: shoulder height delta ${shoulderDelta}% of torso height`]
+            : []),
+          ...viewEvidence,
+        ]),
         ["scapular control", "upper-back endurance"],
         ["scap_control", "posture_endurance", "pull_strength"],
         [
@@ -93,11 +121,18 @@ const buildPoseObservations = (
       );
     }
     if (lower.includes("forward head")) {
-      add(
+      const headOffset = toPercent(poseAnalysis.metrics.headForwardOffset);
+      addOrMerge(
         "pose-forward-head",
         "Forward head tendency",
-        "Pattern suggests forward head bias; we’ll focus on neck endurance and rib alignment.",
-        ["Scan: head position offset"],
+        "Pattern shows a forward head bias, which can increase neck strain and make upright posture harder to maintain.",
+        unique([
+          "Scan: head position offset",
+          ...(headOffset !== null
+            ? [`Metric: head forward offset ${headOffset}% of torso height`]
+            : []),
+          ...viewEvidence,
+        ]),
         ["limited T-spine extension", "neck flexor endurance"],
         ["neck_endurance", "tspine_extension", "posture_endurance"],
         [
@@ -115,11 +150,22 @@ const buildPoseObservations = (
       );
     }
     if (lower.includes("hip")) {
-      add(
+      const hipDelta = toPercent(poseAnalysis.metrics.hipHeightDelta);
+      const hipShift = toPercent(poseAnalysis.metrics.hipShift);
+      addOrMerge(
         "pose-hip-shift",
         "Hip balance asymmetry",
-        "Pattern suggests hip loading bias; we’ll reinforce balanced hip control.",
-        ["Scan: hip height or shift difference"],
+        "Pattern suggests uneven hip loading and side-to-side balance drift, which can affect squat and gait control.",
+        unique([
+          "Scan: hip height or lateral shift difference",
+          ...(hipDelta !== null
+            ? [`Metric: hip height delta ${hipDelta}% of torso height`]
+            : []),
+          ...(hipShift !== null
+            ? [`Metric: lateral hip shift ${hipShift}% of torso height`]
+            : []),
+          ...viewEvidence,
+        ]),
         ["hip stability", "single-leg control"],
         ["glute_medius", "hip_extension", "core_anti_rotation"],
         [
@@ -137,11 +183,18 @@ const buildPoseObservations = (
       );
     }
     if (lower.includes("knee")) {
-      add(
+      const kneeDelta = toPercent(poseAnalysis.metrics.kneeAlignmentDelta);
+      addOrMerge(
         "pose-knee-alignment",
         "Knee alignment offset",
-        "Pattern suggests knee tracking bias; we’ll reinforce alignment and control.",
-        ["Scan: knee tracking offset"],
+        "Pattern shows knee tracking bias, usually tied to hip stability and ankle mobility limits.",
+        unique([
+          "Scan: knee tracking offset",
+          ...(kneeDelta !== null
+            ? [`Metric: knee tracking delta ${kneeDelta}% of torso height`]
+            : []),
+          ...viewEvidence,
+        ]),
         ["hip stability", "ankle mobility"],
         ["squat_pattern", "ankle_mobility", "glute_medius"],
         [
@@ -158,9 +211,42 @@ const buildPoseObservations = (
         ]
       );
     }
+    if (lower.includes("torso lean") || lower.includes("shoulder-to-hip")) {
+      const leanAngle = poseAnalysis.metrics.torsoLeanAngle;
+      const trunkOffset = toPercent(poseAnalysis.metrics.hipToShoulderAlignment);
+      addOrMerge(
+        "pose-trunk-bias",
+        "Trunk alignment bias",
+        "Pattern suggests torso alignment drift, which can reduce efficient force transfer and make posture less stable.",
+        unique([
+          "Scan: torso lean or shoulder-to-hip offset",
+          ...(typeof leanAngle === "number" && Number.isFinite(leanAngle)
+            ? [`Metric: torso lean angle ${Math.round(leanAngle)}°`]
+            : []),
+          ...(trunkOffset !== null
+            ? [`Metric: shoulder-to-hip offset ${trunkOffset}% of torso height`]
+            : []),
+          ...viewEvidence,
+        ]),
+        ["core bracing", "trunk alignment control"],
+        ["core_stability", "posture_endurance", "core_anti_extension"],
+        [
+          {
+            type: "motorControl",
+            target: "trunk alignment",
+            suggestion: "tempo squats and wall-supported upright holds",
+          },
+          {
+            type: "activation",
+            target: "core brace",
+            suggestion: "dead bug + breathing + anti-rotation holds",
+          },
+        ]
+      );
+    }
   });
 
-  return observations;
+  return Array.from(byId.values());
 };
 
 const buildSelfReportObservations = (
@@ -297,8 +383,25 @@ export const buildAssessmentReport = ({
     userNotes
   );
 
-  const combined = [...poseObservations, ...selfReportObservations].slice(0, 6);
-  const observations = [...combined];
+  const mergedById = new Map<string, AssessmentObservation>();
+  [...poseObservations, ...selfReportObservations].forEach((obs) => {
+    const existing = mergedById.get(obs.id);
+    if (!existing) {
+      mergedById.set(obs.id, {
+        ...obs,
+        evidence: unique(obs.evidence),
+        likelyDrivers: unique(obs.likelyDrivers),
+      });
+      return;
+    }
+    existing.evidence = unique([...existing.evidence, ...obs.evidence]);
+    existing.likelyDrivers = unique([
+      ...existing.likelyDrivers,
+      ...obs.likelyDrivers,
+    ]);
+  });
+
+  const observations = Array.from(mergedById.values()).slice(0, 6);
 
   while (observations.length < 3) {
     observations.push({

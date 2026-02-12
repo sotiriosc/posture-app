@@ -47,6 +47,16 @@ const emptyData: QuestionnaireData = {
   daysPerWeek: 3,
 };
 
+const normalizeDaysPerWeek = (value: unknown): QuestionnaireData["daysPerWeek"] => {
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+      ? Number(value)
+      : NaN;
+  return parsed === 4 || parsed === 5 ? parsed : 3;
+};
+
 export default function QuestionnaireForm() {
   const [data, setData] = useState<QuestionnaireData>(() => {
     if (typeof window === "undefined") return emptyData;
@@ -57,7 +67,7 @@ export default function QuestionnaireForm() {
       ...emptyData,
       ...parsed,
       equipment: normalizeEquipmentSelectionValues(parsed.equipment ?? ["none"]),
-      daysPerWeek: parsed.daysPerWeek ?? 3,
+      daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
     };
   });
   const router = useRouter();

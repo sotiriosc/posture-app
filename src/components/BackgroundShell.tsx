@@ -1,5 +1,3 @@
-"use client";
-
 import type { ReactNode } from "react";
 
 type BackgroundShellProps = {
@@ -14,13 +12,14 @@ export default function BackgroundShell({
   overlayClassName = "",
 }: BackgroundShellProps) {
   return (
-    <div
-      className={`relative min-h-screen bg-[url('/landing-bg.png')] bg-cover bg-center ${className}`}
-    >
+    <div className={`relative min-h-screen min-h-[100svh] ${className}`}>
+      <div className="pointer-events-none fixed inset-0 -z-20 bg-[url('/landing-bg.png')] bg-cover bg-center bg-no-repeat" />
       <div
-        className={`pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/55 to-slate-950/70 backdrop-blur-sm ${overlayClassName}`}
+        className={`pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-slate-950/70 via-slate-950/55 to-slate-950/70 backdrop-blur-sm ${overlayClassName}`}
       />
-      <div className="relative z-10 text-white">{children}</div>
+      <div className="relative z-10 min-h-screen min-h-[100svh] text-white">
+        {children}
+      </div>
     </div>
   );
 }

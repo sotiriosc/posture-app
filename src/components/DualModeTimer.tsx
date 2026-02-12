@@ -66,26 +66,25 @@ export default function DualModeTimer({
 
   useEffect(() => {
     setSelectedExerciseSeconds(initialExerciseSeconds);
-    if (mode === "exercise" && !running) {
-      setRemainingSeconds(initialExerciseSeconds);
-    }
-  }, [initialExerciseSeconds, mode, running]);
+  }, [initialExerciseSeconds]);
 
   useEffect(() => {
     setSelectedRestSeconds(initialRestSeconds);
-    if (mode === "rest" && !running) {
-      setRemainingSeconds(initialRestSeconds);
-    }
-  }, [initialRestSeconds, mode, running]);
+  }, [initialRestSeconds]);
 
   useEffect(() => {
-    if (autoSwitchRef.current) {
-      autoSwitchRef.current = false;
-      return;
-    }
+    // When parent switches exercise/context, hard-reset local timer state
+    // so the previous exercise timer cannot bleed into the next one.
     setRunning(false);
-    setRemainingSeconds(activeSelectedSeconds);
-  }, [mode, activeSelectedSeconds]);
+    autoSwitchRef.current = false;
+    setMode(defaultMode);
+    setRemainingSeconds(
+      defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds
+    );
+    lastRunningRef.current = false;
+    lastRemainingRef.current =
+      defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds;
+  }, [defaultMode, initialExerciseSeconds, initialRestSeconds]);
 
   useEffect(() => {
     if (!running || remainingSeconds <= 0) return;
@@ -138,14 +137,14 @@ export default function DualModeTimer({
   const applyExerciseSeconds = (seconds: number) => {
     const next = clampDuration(seconds, "exercise");
     setSelectedExerciseSeconds(next);
-    if (mode === "exercise") setRemainingSeconds(next);
+    if (mode === "exercise" && !running) setRemainingSeconds(next);
     onExerciseDurationChange?.(next);
   };
 
   const applyRestSeconds = (seconds: number) => {
     const next = clampDuration(seconds, "rest");
     setSelectedRestSeconds(next);
-    if (mode === "rest") setRemainingSeconds(next);
+    if (mode === "rest" && !running) setRemainingSeconds(next);
     onRestDurationChange?.(next);
   };
 
@@ -161,16 +160,6 @@ export default function DualModeTimer({
     setRunning(false);
     setRemainingSeconds(activeSelectedSeconds);
   };
-
-  useEffect(() => {
-    if (autoSwitchRef.current) {
-      autoSwitchRef.current = false;
-      return;
-    }
-    if (!running) {
-      setRemainingSeconds(activeSelectedSeconds);
-    }
-  }, [activeSelectedSeconds, running]);
 
   const playBeep = (type: "start" | "finish") => {
     if (typeof window === "undefined") return;

@@ -1,4 +1,4 @@
-const CACHE_NAME = "body-coach-v1";
+const CACHE_NAME = "body-coach-v2";
 const CORE_ASSETS = [
   "/",
   "/offline",

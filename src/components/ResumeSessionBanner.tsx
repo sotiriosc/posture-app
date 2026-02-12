@@ -1,16 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { clearDraft, loadDraft } from "@/lib/sessionDraftStore";
 
+const dismissedKey = (sessionId: string) => `resume_banner_dismissed_${sessionId}`;
+
 export default function ResumeSessionBanner() {
   const router = useRouter();
+  const pathname = usePathname();
   const [ready, setReady] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [programId, setProgramId] = useState<string | null>(null);
   const [dayIndex, setDayIndex] = useState<number | null>(null);
+  const [originPath, setOriginPath] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -25,6 +29,13 @@ export default function ResumeSessionBanner() {
         setReady(true);
         return;
       }
+      if (
+        typeof window !== "undefined" &&
+        sessionStorage.getItem(dismissedKey(draft.sessionId)) === "1"
+      ) {
+        setReady(true);
+        return;
+      }
       setSessionId(draft.sessionId);
       setProgramId(draft.programId ?? state.programId ?? null);
       setDayIndex(
@@ -32,12 +43,21 @@ export default function ResumeSessionBanner() {
           ? (draft.dayIndex as number)
           : state.selectedDay ?? null
       );
+      setOriginPath(pathname);
       setReady(true);
     };
     load();
   }, []);
 
+  useEffect(() => {
+    if (!sessionId || !originPath) return;
+    if (pathname !== originPath) {
+      setSessionId(null);
+    }
+  }, [pathname, originPath, sessionId]);
+
   if (!ready || !sessionId) return null;
+  if (pathname.startsWith("/session")) return null;
 
   return (
     <div className="fixed bottom-4 left-1/2 z-50 w-[min(92vw,560px)] -translate-x-1/2 rounded-2xl border border-white/20 bg-slate-950/80 px-4 py-3 text-white shadow-lg backdrop-blur">
@@ -49,6 +69,18 @@ export default function ResumeSessionBanner() {
           </p>
         </div>
         <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                sessionStorage.setItem(dismissedKey(sessionId), "1");
+              }
+              setSessionId(null);
+            }}
+            className="rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-white/80 hover:bg-white/10"
+          >
+            Close
+          </button>
           <button
             type="button"
             onClick={async () => {

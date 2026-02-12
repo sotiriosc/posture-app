@@ -3,7 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { exerciseById } from "@/lib/exercises";
 import type { ExerciseFeedback, ExerciseLog } from "@/lib/types";
-import { init, listExerciseLogsByExercise, loadPrefs, savePrefs } from "@/lib/logStore";
+import {
+  init,
+  listExerciseLogsByExerciseHistory,
+  loadPrefs,
+  savePrefs,
+} from "@/lib/logStore";
 import { getProgressionRecommendation } from "@/lib/progression";
 
 type Props = {
@@ -20,7 +25,7 @@ export default function ExerciseHistory({ exerciseId }: Props) {
   useEffect(() => {
     const load = async () => {
       await init();
-      const items = await listExerciseLogsByExercise(exerciseId, 10);
+      const items = await listExerciseLogsByExerciseHistory(exerciseId, 12);
       setLogs(items);
       const prefs = await loadPrefs();
       if (prefs.substitutionByExercise) {
@@ -98,6 +103,25 @@ export default function ExerciseHistory({ exerciseId }: Props) {
     return parts.join(" • ");
   };
 
+  const formatTopline = (log: ExerciseLog, loadType: ExerciseLog["loadType"]) => {
+    if (loadType === "timed") {
+      const work = log.workSecondsUsed ?? log.durationSec ?? null;
+      const rest = log.restSecondsUsed ?? null;
+      if (work !== null && rest !== null) {
+        return `${work}s work • ${rest}s rest`;
+      }
+      if (work !== null) return `${work}s work`;
+      return "Timed";
+    }
+    if (log.repsBySet?.length) {
+      return `${log.repsBySet.join(", ")} reps`;
+    }
+    if (log.reps) {
+      return `${log.reps} reps`;
+    }
+    return "No rep data";
+  };
+
   if (!exerciseLogs.length) {
     return (
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -170,13 +194,13 @@ export default function ExerciseHistory({ exerciseId }: Props) {
               <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
                 <span>{log.createdAt.slice(0, 10)}</span>
                 <span>
-                  {log.setsCompleted} sets •{" "}
-                  {log.repsBySet
-                    ? log.repsBySet.join(", ")
-                    : log.reps ?? "--"}{" "}
-                  reps
+                  {log.setsCompleted ?? log.setsPlanned ?? "--"} sets •{" "}
+                  {formatTopline(log, loadType)}
                 </span>
               </div>
+              <p className="mt-1 text-xs font-semibold text-slate-700">
+                {exercise?.name ?? log.exerciseId}
+              </p>
               <p className="mt-2 text-sm font-semibold text-slate-900">
                 {log.weight
                   ? `${log.weight} ${log.unit}`

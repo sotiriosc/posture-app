@@ -7,7 +7,12 @@ import type { QuestionnaireData } from "./QuestionnaireForm";
 import { exerciseById } from "@/lib/exercises";
 import type { Routine } from "@/lib/routine";
 import { generateRoutine } from "@/lib/routine";
-import { generateWeeklyProgram } from "@/lib/program";
+import {
+  generateNextCycleProgram,
+  generateNextPhaseProgram,
+  generateWeeklyProgram,
+  PROGRAM_TEMPLATE_VERSION,
+} from "@/lib/program";
 import {
   normalizeEquipmentSelection,
   normalizeEquipmentSelectionValues,
@@ -40,6 +45,7 @@ import type {
 import {
   getProgramProgress,
   getLatestProgram,
+  getProgram,
   listSessionsByProgramId,
   listExerciseLogsByExercise,
   listExerciseLogsBySessionIds,
@@ -49,7 +55,12 @@ import {
   uuid,
 } from "@/lib/logStore";
 import { getProgressionRecommendation } from "@/lib/progression";
-import { buildNextWeekPlan, getPhaseForWeekIndex } from "@/lib/phases";
+import {
+  buildNextWeekPlan,
+  getPhaseMetaByIndex,
+  getPhaseProfile,
+} from "@/lib/phases";
+import { clearDraftsByProgramId } from "@/lib/sessionDraftStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -76,6 +87,42 @@ const loadImageFromFile = (file: File) =>
     img.src = url;
   });
 
+const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+      ? Number(value)
+      : NaN;
+  return parsed === 4 || parsed === 5 ? parsed : 3;
+};
+
+const hasValidWeekStructure = (program: Program) => {
+  const targetDays = program.daysPerWeek;
+  if (!Array.isArray(program.week) || program.week.length !== targetDays) {
+    return false;
+  }
+  const dayIndexes = new Set(program.week.map((day) => day.dayIndex));
+  if (dayIndexes.size !== targetDays) return false;
+  for (let index = 0; index < targetDays; index += 1) {
+    if (!dayIndexes.has(index)) return false;
+  }
+  return true;
+};
+
+const isProgramCompatibleWithQuestionnaire = (
+  candidate: Program | null,
+  questionnaire: QuestionnaireData
+) => {
+  if (!candidate) return false;
+  return (
+    candidate.templateVersion === PROGRAM_TEMPLATE_VERSION &&
+    candidate.daysPerWeek === questionnaire.daysPerWeek &&
+    candidate.goalTrack === questionnaire.goals &&
+    hasValidWeekStructure(candidate)
+  );
+};
+
 export default function ResultsRoutine() {
   const router = useRouter();
   const [data, setData] = useState<QuestionnaireData | null>(null);
@@ -91,6 +138,10 @@ export default function ResultsRoutine() {
     Record<string, string>
   >({});
   const [isReady, setIsReady] = useState(false);
+  const [advanceOpen, setAdvanceOpen] = useState(false);
+  const [advanceConfirm, setAdvanceConfirm] = useState(false);
+  const [advanceMessage, setAdvanceMessage] = useState<string | null>(null);
+  const [lastTwoLogs, setLastTwoLogs] = useState<ExerciseLog[]>([]);
   const { photos } = usePhotoContext();
   const [poseState, setPoseState] = useState<{
     loading: boolean;
@@ -109,7 +160,7 @@ export default function ResultsRoutine() {
         equipment: normalizeEquipmentSelectionValues(
           parsed.equipment ?? ["none"]
         ),
-        daysPerWeek: parsed.daysPerWeek ?? 3,
+        daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
       });
     }
     setIsReady(true);
@@ -183,6 +234,36 @@ export default function ResultsRoutine() {
       rec: ReturnType<typeof getProgressionRecommendation>;
     }>;
   }, [program, selectedDay, latestLogsByExercise]);
+
+  const optimizerReasonsByExercise = useMemo(
+    () => program?.phaseOptimizerReport?.exerciseReasons ?? {},
+    [program]
+  );
+
+  const selectedDayMastery = useMemo(() => {
+    if (!program) return [];
+    const day = program.week[selectedDay];
+    if (!day) return [];
+    return day.routine.slice(0, 4).map((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      const cue = (exercise?.cues?.[0] ?? "Control each rep").replace(/\.$/, "");
+      const checkpoint = (() => {
+        if (item.section === "main") return "last 2 reps stay clean";
+        if (item.section === "accessory") return "tempo stays steady";
+        if (item.section === "warmup") return "breathing stays calm";
+        return "range stays smooth";
+      })();
+      return `Day ${day.dayIndex + 1} ${day.title}: ${exercise?.name ?? "Exercise"} - ${cue}; check: ${checkpoint}.`;
+    });
+  }, [program, selectedDay]);
+  const masteryItems = useMemo(() => {
+    if (selectedDayMastery.length) return selectedDayMastery.slice(0, 4);
+    return (
+      program?.sessionAdaptation?.masteryNext ??
+      program?.phaseObjective?.successMarkers ??
+      []
+    ).slice(0, 4);
+  }, [selectedDayMastery, program]);
 
   const equipmentContext = useMemo(() => {
     if (!data) {
@@ -277,20 +358,91 @@ export default function ResultsRoutine() {
     if (recommendedNext.weight) parts.push(`${recommendedNext.weight} lb`);
     if (recommendedNext.reps) parts.push(`${recommendedNext.reps} reps`);
     if (recommendedNext.sets) parts.push(`${recommendedNext.sets} sets`);
+    if (recommendedNext.durationSeconds) {
+      parts.push(`${recommendedNext.durationSeconds} sec`);
+    }
     if (recommendedNext.tempo) parts.push(`tempo ${recommendedNext.tempo}`);
     if (!parts.length) return "Keep targets consistent";
     return parts.join(" • ");
   };
 
+  const nextPhaseButtonLabel = `Advance to Phase ${(program?.phaseIndex ?? 1) + 1}`;
+  const nextCycleButtonLabel = `Start Cycle ${(program?.cycleIndex ?? 1) + 1}`;
+
+  const previewSummary = () => {
+    const currentPhaseIndex = program?.phaseIndex ?? 1;
+    const nextPhaseIndex = currentPhaseIndex + 1;
+    const nextProfile = getPhaseProfile(nextPhaseIndex);
+    return `Next phase focuses on ${nextProfile.label.toLowerCase()}. ${nextProfile.description}`;
+  };
+
+  const handleAdvanceProgram = async (mode: "phase" | "cycle") => {
+    if (!program || !data) return;
+    setAdvanceMessage(null);
+    const state = loadAppState();
+    const nextProgramVersion =
+      typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
+    const result =
+      mode === "phase"
+        ? generateNextPhaseProgram({
+            currentProgram: program,
+            questionnaire: data,
+            painFlag: Boolean(advanceStatus.painFlag),
+            complianceRate: advanceStatus.complianceRate ?? 0,
+            fatigueFlag: Boolean(advanceStatus.fatigueFlag),
+            completedSessionsCount: completedSessions.length,
+            completedWeeksCount: completedWeeks,
+            recentLogs: lastTwoLogs,
+            nextProgramId: uuid(),
+          })
+        : generateNextCycleProgram({
+            currentProgram: program,
+            questionnaire: data,
+            painFlag: Boolean(advanceStatus.painFlag),
+            complianceRate: advanceStatus.complianceRate ?? 0,
+            fatigueFlag: Boolean(advanceStatus.fatigueFlag),
+            completedSessionsCount: completedSessions.length,
+            completedWeeksCount: completedWeeks,
+            recentLogs: lastTwoLogs,
+            nextProgramId: uuid(),
+          });
+
+    if (result.status === "advanced") {
+      await saveProgram(result.program);
+      setProgram(result.program);
+      setSelectedDay(0);
+      await clearDraftsByProgramId(program.id);
+      saveAppState({
+        programId: result.program.id,
+        activeProgramId: result.program.id,
+        selectedDay: 0,
+        activePhaseIndex: result.program.phaseIndex ?? 1,
+        activeCycleIndex: result.program.cycleIndex ?? 1,
+        programVersion: nextProgramVersion,
+        activeSessionId: undefined,
+        lastRoute: "/results",
+      });
+      setAdvanceOpen(false);
+      setAdvanceConfirm(false);
+      return;
+    }
+
+    setAdvanceMessage(result.message);
+  };
+
   useEffect(() => {
     if (!data) return;
     const loadProgram = async () => {
+      const state = loadAppState();
+      if (state?.activeProgramId) {
+        const active = await getProgram(state.activeProgramId);
+        if (isProgramCompatibleWithQuestionnaire(active, data)) {
+          setProgram(active);
+          return;
+        }
+      }
       const latest = await getLatestProgram();
-      if (
-        latest &&
-        latest.daysPerWeek === data.daysPerWeek &&
-        latest.goalTrack === data.goals
-      ) {
+      if (isProgramCompatibleWithQuestionnaire(latest, data)) {
         setProgram(latest);
         return;
       }
@@ -302,18 +454,55 @@ export default function ResultsRoutine() {
   }, [data]);
 
   useEffect(() => {
+    if (!program || !data) return;
+    if (isProgramCompatibleWithQuestionnaire(program, data)) return;
+
+    const reconcileProgram = async () => {
+      const reconciled = generateWeeklyProgram(data, uuid(), {
+        phaseIndex: program.phaseIndex ?? 1,
+        weekIndex: program.weekIndex ?? 1,
+        cycleIndex: program.cycleIndex ?? 1,
+        totalWeekIndex: program.totalWeekIndex ?? program.weekIndex ?? 1,
+      });
+      await saveProgram(reconciled);
+      setProgram(reconciled);
+      setSelectedDay(0);
+      saveAppState({
+        programId: reconciled.id,
+        activeProgramId: reconciled.id,
+        selectedDay: 0,
+        activePhaseIndex: reconciled.phaseIndex ?? 1,
+        activeCycleIndex: reconciled.cycleIndex ?? 1,
+      });
+    };
+
+    reconcileProgram();
+  }, [program, data]);
+
+  useEffect(() => {
     if (!program) return;
     const state = loadAppState();
     if (state?.programId === program.id && typeof state.selectedDay === "number") {
-      setSelectedDay(state.selectedDay);
+      const maxIndex = Math.max(0, program.week.length - 1);
+      const next = Math.min(Math.max(0, state.selectedDay), maxIndex);
+      setSelectedDay(next);
     }
   }, [program]);
 
   useEffect(() => {
     if (!program) return;
+    const state = loadAppState();
+    const nextVersion =
+      typeof state?.programVersion === "number"
+        ? state.programVersion
+        : 0;
     saveAppState({
       programId: program.id,
+      activeProgramId: program.id,
       selectedDay,
+      activePhaseIndex: program.phaseIndex ?? 1,
+      activeCycleIndex: program.cycleIndex ?? 1,
+      programVersion: nextVersion,
       lastRoute: "/results",
     });
   }, [program, selectedDay]);
@@ -334,15 +523,196 @@ export default function ResultsRoutine() {
 
   const nextDayIndex = useMemo(() => {
     if (!program) return 0;
+    if (progress && Number.isFinite(progress.nextDayIndex)) {
+      return Math.min(
+        Math.max(0, progress.nextDayIndex),
+        Math.max(0, program.week.length - 1)
+      );
+    }
     const completedDays = Array.from(completedByDay.keys()).sort((a, b) => a - b);
     if (!completedDays.length) return 0;
     const last = completedDays[completedDays.length - 1];
     return last + 1 < program.daysPerWeek ? last + 1 : 0;
-  }, [program, completedByDay]);
+  }, [program, progress, completedByDay]);
 
   const completedCount = useMemo(() => {
     return Array.from(completedByDay.keys()).length;
   }, [completedByDay]);
+
+  const activeDaysPerWeek = program?.daysPerWeek ?? data?.daysPerWeek ?? 3;
+
+  const completedSessions = useMemo(() => {
+    return programSessions
+      .filter((session) => session.completedAt)
+      .sort(
+        (a, b) =>
+          (b.completedAt ?? "").localeCompare(a.completedAt ?? "")
+      );
+  }, [programSessions]);
+
+  const completedWeeks = useMemo(() => {
+    if (!program || !completedSessions.length) return 0;
+    return Math.floor(completedSessions.length / program.daysPerWeek);
+  }, [program, completedSessions]);
+
+  useEffect(() => {
+    const loadLastTwo = async () => {
+      if (!completedSessions.length) {
+        setLastTwoLogs([]);
+        return;
+      }
+      const lastTwo = completedSessions.slice(0, 2);
+      const logs = await listExerciseLogsBySessionIds(
+        lastTwo.map((session) => session.id)
+      );
+      setLastTwoLogs(logs);
+    };
+    loadLastTwo();
+  }, [completedSessions]);
+
+  const advanceStatus = useMemo(() => {
+    if (!program) {
+      const fallback = getPhaseMetaByIndex(1);
+      return {
+        canAdvance: false,
+        reason: "Program not ready yet.",
+        phaseLabel: fallback.phaseName,
+        cycleIndex: 1,
+        isPhaseBoundary: false,
+        completedSessionsCount: 0,
+        requiredSessionsCount: 0,
+        completedWeeksCount: 0,
+        requiredWeeksCount: 0,
+      };
+    }
+
+    if (!completedSessions.length) {
+      const fallback = getPhaseMetaByIndex(program.phaseIndex ?? 1);
+      return {
+        canAdvance: false,
+        reason: "Complete at least 1 session to unlock progression.",
+        phaseLabel: program.phaseName ?? fallback.phaseName,
+        cycleIndex: program.cycleIndex ?? 1,
+        isPhaseBoundary: false,
+        completedSessionsCount: 0,
+        requiredSessionsCount: program.daysPerWeek,
+        completedWeeksCount: 0,
+        requiredWeeksCount: 1,
+      };
+    }
+
+    const now = Date.now();
+    const recentSessions = completedSessions.filter((session) => {
+      if (!session.completedAt) return false;
+      const timestamp = Date.parse(session.completedAt);
+      if (Number.isNaN(timestamp)) return false;
+      return now - timestamp <= 7 * 24 * 60 * 60 * 1000;
+    });
+    const complianceRate = Math.min(
+      1,
+      recentSessions.length / program.daysPerWeek
+    );
+
+    const painFlag =
+      lastTwoLogs.some((log) => log.felt === "pain") ||
+      completedSessions.slice(0, 2).some((session) => session.sessionFeedback === "pain");
+
+    const hardCount = lastTwoLogs.filter((log) => log.felt === "hard").length;
+    const fatigueFlag =
+      lastTwoLogs.length > 0 && hardCount / lastTwoLogs.length >= 0.5;
+
+    if (painFlag) {
+      const fallback = getPhaseMetaByIndex(program.phaseIndex ?? 1);
+      return {
+        canAdvance: false,
+        reason: "Address pain first before advancing.",
+        phaseLabel: program.phaseName ?? fallback.phaseName,
+        complianceRate,
+        painFlag,
+        fatigueFlag,
+        cycleIndex: program.cycleIndex ?? 1,
+        isPhaseBoundary: false,
+        completedSessionsCount: completedSessions.length,
+        requiredSessionsCount: completedSessions.length,
+        completedWeeksCount: completedWeeks,
+        requiredWeeksCount: 0,
+      };
+    }
+
+    if (complianceRate < 0.85) {
+      const fallback = getPhaseMetaByIndex(program.phaseIndex ?? 1);
+      return {
+        canAdvance: false,
+        reason: "Hit at least 85% weekly compliance to advance.",
+        phaseLabel: program.phaseName ?? fallback.phaseName,
+        complianceRate,
+        painFlag,
+        fatigueFlag,
+        cycleIndex: program.cycleIndex ?? 1,
+        isPhaseBoundary: false,
+        completedSessionsCount: completedSessions.length,
+        requiredSessionsCount: Math.max(program.daysPerWeek, completedSessions.length),
+        completedWeeksCount: completedWeeks,
+        requiredWeeksCount: 1,
+      };
+    }
+
+    const minWeeksForPhaseAdvance = 2;
+    const canAdvancePhase = completedWeeks >= minWeeksForPhaseAdvance;
+    const requiredWeeksForCurrentCycle = 1;
+    const requiredSessionsForCurrentCycle = program.daysPerWeek;
+    if (completedSessions.length < requiredSessionsForCurrentCycle) {
+      return {
+        canAdvance: false,
+        reason: `Complete ${requiredSessionsForCurrentCycle} sessions before starting the next cycle.`,
+        phaseLabel:
+          program.phaseName ?? getPhaseMetaByIndex(program.phaseIndex ?? 1).phaseName,
+        complianceRate,
+        painFlag,
+        fatigueFlag,
+        cycleIndex: program.cycleIndex ?? 1,
+        isPhaseBoundary: false,
+        completedSessionsCount: completedSessions.length,
+        requiredSessionsCount: requiredSessionsForCurrentCycle,
+        completedWeeksCount: completedWeeks,
+        requiredWeeksCount: requiredWeeksForCurrentCycle,
+      };
+    }
+
+    if ((program.cycleIndex ?? 1) % 4 === 0 && !canAdvancePhase) {
+      return {
+        canAdvance: false,
+        reason: `Complete at least ${minWeeksForPhaseAdvance} full weeks before advancing phase.`,
+        phaseLabel:
+          program.phaseName ?? getPhaseMetaByIndex(program.phaseIndex ?? 1).phaseName,
+        complianceRate,
+        painFlag,
+        fatigueFlag,
+        cycleIndex: program.cycleIndex ?? 1,
+        isPhaseBoundary: true,
+        completedSessionsCount: completedSessions.length,
+        requiredSessionsCount: requiredSessionsForCurrentCycle,
+        completedWeeksCount: completedWeeks,
+        requiredWeeksCount: minWeeksForPhaseAdvance,
+      };
+    }
+
+    return {
+      canAdvance: true,
+      reason: "You’re ready to progress to the next phase/week.",
+      phaseLabel:
+        program.phaseName ?? getPhaseMetaByIndex(program.phaseIndex ?? 1).phaseName,
+      complianceRate,
+      painFlag,
+      fatigueFlag,
+      cycleIndex: program.cycleIndex ?? 1,
+      isPhaseBoundary: (program.cycleIndex ?? 1) % 4 === 0 && canAdvancePhase,
+      completedSessionsCount: completedSessions.length,
+      requiredSessionsCount: requiredSessionsForCurrentCycle,
+      completedWeeksCount: completedWeeks,
+      requiredWeeksCount: (program.cycleIndex ?? 1) % 4 === 0 ? minWeeksForPhaseAdvance : requiredWeeksForCurrentCycle,
+    };
+  }, [program, completedSessions, completedWeeks, lastTwoLogs]);
 
 
   useEffect(() => {
@@ -402,12 +772,21 @@ export default function ResultsRoutine() {
       const completedSessions = programSessions.filter(
         (session) => session.completedAt
       );
-      const weekIndex =
+      const computedWeekIndex =
         Math.floor(completedSessions.length / program.daysPerWeek) + 1;
-      const phase = getPhaseForWeekIndex(
+      const weekIndex = Math.max(program.weekIndex ?? 1, computedWeekIndex);
+      const phaseIndex = program.phaseIndex ?? 1;
+      const phaseMeta = getPhaseMetaByIndex(phaseIndex);
+      const phaseName = program.phaseName ?? phaseMeta.phaseName;
+      const phaseProfile = getPhaseProfile(phaseIndex);
+      const phase = {
+        name: phaseName,
+        phaseIndex,
+        cycleIndex: program.cycleIndex ?? 1,
         weekIndex,
-        program.goalTrack ?? data?.goals ?? "Improve posture"
-      );
+        weekCount: weekIndex,
+        goal: phaseProfile.description,
+      };
 
       const now = Date.now();
       const recentSessions = completedSessions.filter((session) => {
@@ -443,10 +822,12 @@ export default function ResultsRoutine() {
         complianceRate,
         painFlag,
         fatigueFlag,
-        phaseName: phase.name,
+        phaseName,
       });
 
       const needsUpdate =
+        program.weekIndex !== weekIndex ||
+        program.phaseName !== phaseName ||
         program.phase?.weekIndex !== phase.weekIndex ||
         program.phase?.name !== phase.name ||
         program.nextWeekPlan?.summary !== nextWeekPlan.summary;
@@ -454,6 +835,9 @@ export default function ResultsRoutine() {
       if (needsUpdate) {
         const updatedProgram = {
           ...program,
+          phaseIndex,
+          phaseName,
+          weekIndex,
           phase,
           nextWeekPlan,
           updatedAt: new Date().toISOString(),
@@ -602,6 +986,158 @@ export default function ResultsRoutine() {
         </div>
       </div>
 
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            This Week Objective
+          </p>
+          <h3 className="mt-2 text-lg font-semibold text-slate-900">
+            {program.phaseObjective?.title ?? "Movement Quality Week"}
+          </h3>
+          <p className="mt-2 text-xs font-medium text-slate-600">
+            {program.phaseObjective?.weekIntent ?? "Build clean movement quality."}
+          </p>
+          <p className="mt-2 text-sm text-slate-700">
+            {program.phaseObjective?.objective ??
+              "Move with clean mechanics and consistent effort across all planned days."}
+          </p>
+          <p className="mt-2 text-xs text-slate-500">
+            {program.phaseObjective?.phaseFocus ??
+              `Phase ${program.phaseIndex ?? 1} • Cycle ${program.cycleIndex ?? 1}`}
+          </p>
+          {program.phaseObjective?.primaryPatterns?.length ? (
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-600">
+              {program.phaseObjective.primaryPatterns.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          ) : null}
+          {program.phaseObjective?.metrics ? (
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-600">
+              <span className="rounded-full border border-slate-200 px-2.5 py-1">
+                Readiness {Math.round(program.phaseObjective.metrics.readiness * 100)}%
+              </span>
+              <span className="rounded-full border border-slate-200 px-2.5 py-1">
+                Consistency {Math.round(program.phaseObjective.metrics.consistency * 100)}%
+              </span>
+              <span className="rounded-full border border-slate-200 px-2.5 py-1">
+                Pain risk {Math.round(program.phaseObjective.metrics.painRisk * 100)}%
+              </span>
+            </div>
+          ) : null}
+          <div className="mt-3 space-y-1 text-xs text-slate-600">
+            {(program.phaseObjective?.successMarkers ?? []).slice(0, 3).map((item) => (
+              <p key={item}>• {item}</p>
+            ))}
+          </div>
+          {program.phaseObjective?.guardrail ? (
+            <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900">
+              Guardrail: {program.phaseObjective.guardrail}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Why This Changed
+            </p>
+            {program.phaseOptimizerReport ? (
+              <span className="rounded-full border border-slate-200 px-2 py-0.5 text-[11px] text-slate-600">
+                {program.phaseOptimizerReport.changedSlots}/
+                {program.phaseOptimizerReport.totalSlots} slots changed
+              </span>
+            ) : null}
+          </div>
+          <p className="mt-2 text-sm text-slate-700">
+            {program.sessionAdaptation?.summary ??
+              program.phaseOptimizerReport?.summary ??
+              "Progression was tuned using your recent training response."}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-600">
+            {(program.sessionAdaptation?.dataSignals ?? []).slice(0, 4).map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-600">
+            <p>
+              <span className="font-semibold text-slate-700">Readiness</span>:
+              how prepared your body is to progress this week.
+            </p>
+            <p>
+              <span className="font-semibold text-slate-700">Consistency</span>:
+              how regularly you completed planned sessions.
+            </p>
+            <p>
+              <span className="font-semibold text-slate-700">Recovery</span>:
+              how well you bounced back from recent sessions.
+            </p>
+            <p>
+              <span className="font-semibold text-slate-700">Pain risk</span>:
+              how likely current loading could flare symptoms.
+            </p>
+          </div>
+          <div className="mt-3 space-y-1 text-xs text-slate-600">
+            {(program.sessionAdaptation?.reasons ?? []).slice(0, 3).map((item) => (
+              <p key={item}>• {item}</p>
+            ))}
+          </div>
+          <div className="mt-3 space-y-1 text-[11px] text-slate-500">
+            {(program.sessionAdaptation?.appliedChanges ?? []).slice(0, 3).map((item) => (
+              <p key={item}>- {item}</p>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            What To Master Next
+          </p>
+          <h3 className="mt-2 text-lg font-semibold text-slate-900">
+            Priority execution cues
+          </h3>
+          <p className="mt-1 text-xs font-medium text-slate-700">
+            Viewing Day {selectedDay + 1}: {program.week[selectedDay]?.title ?? "Current day"}
+          </p>
+          <p className="mt-2 text-[11px] text-slate-500">
+            Click any day in Program Dashboard below and this list updates for that day.
+          </p>
+          <p className="mt-1 text-[11px] text-slate-500">
+            This is the exact day this card is coaching right now.
+          </p>
+          <Link
+            href={`/session?programId=${program.id}&dayIndex=${selectedDay}`}
+            className="mt-3 inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-100"
+          >
+            Start Day {selectedDay + 1} now
+          </Link>
+          <div className="mt-3 space-y-2 text-xs text-slate-700">
+            {masteryItems.map((item) => (
+              <div key={item} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                <p className="font-medium text-slate-800">{item}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 space-y-1 text-[11px] text-slate-600">
+            {(program.sessionAdaptation?.masteryChecks ??
+              program.phaseObjective?.coachingPrompts ??
+              []).slice(0, 3).map((item) => (
+              <p key={item}>• {item}</p>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -654,6 +1190,17 @@ export default function ResultsRoutine() {
                   <p className="mt-1 text-[11px] text-slate-500">
                     Evidence: {item.evidence.join(", ")}
                   </p>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    Likely drivers: {item.likelyDrivers.join(", ")}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    Why it matters: {item.riskIfIgnored}
+                  </p>
+                  {item.recommendedInterventions.length ? (
+                    <p className="mt-1 text-[11px] font-medium text-slate-600">
+                      Next action: {item.recommendedInterventions[0].suggestion}
+                    </p>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -725,14 +1272,11 @@ export default function ResultsRoutine() {
               Your weekly program
             </p>
             <h3 className="mt-2 text-lg font-semibold text-slate-900">
-              {data.daysPerWeek}-day split • Estimated 45–60 minutes
+              {activeDaysPerWeek}-day split • Estimated 45–60 minutes
             </h3>
-            {program.phase ? (
+            {program.phaseIndex ? (
               <p className="mt-2 text-sm text-slate-600">
-                {program.phase.name} • Week {program.phase.weekIndex}
-                {program.phase.weekCount
-                  ? `/${program.phase.weekCount}`
-                  : " (ongoing)"}
+                Phase {program.phaseIndex} • Cycle {program.cycleIndex ?? 1}
               </p>
             ) : null}
             {program.nextWeekPlan ? (
@@ -745,7 +1289,7 @@ export default function ResultsRoutine() {
             href={`/session?programId=${program?.id ?? ""}&dayIndex=${nextDayIndex}`}
             className="rounded-full bg-slate-900 px-5 py-2 text-xs font-semibold text-white"
           >
-            {completedCount >= data.daysPerWeek
+            {completedCount >= activeDaysPerWeek
               ? "Continue Program"
               : completedCount
               ? "Continue Program"
@@ -754,7 +1298,10 @@ export default function ResultsRoutine() {
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-600">
           <span className="rounded-full border border-slate-200 px-3 py-1">
-            Day {nextDayIndex + 1} of {data.daysPerWeek}
+            Day {nextDayIndex + 1} of {activeDaysPerWeek}
+          </span>
+          <span className="rounded-full border border-slate-200 px-3 py-1">
+            You are on Week {completedWeeks + 1}, Day {nextDayIndex + 1}
           </span>
           <span
             data-testid="completed-count"
@@ -914,23 +1461,36 @@ export default function ResultsRoutine() {
               </div>
 
               <div className="mt-4 flex-1 overflow-y-auto pr-1">
-                <div className="flex flex-wrap gap-2 text-xs text-slate-200">
-                  {program.week[selectedDay].routine
-                    .slice(0, 5)
-                    .map((item, index) => {
-                      const exercise = exerciseById(item.exerciseId);
-                      return (
-                        <span
-                          key={`${item.exerciseId}-${index}-${selectedDay}`}
-                          className="rounded-full border border-white/20 bg-white/10 px-3 py-1"
-                        >
-                          {exercise?.name ?? "Exercise"}
-                        </span>
-                      );
-                    })}
+                <div className="space-y-2 text-xs text-slate-200">
+                  {program.week[selectedDay].routine.map((item, index) => {
+                    const exercise = exerciseById(item.exerciseId);
+                    if (!exercise) return null;
+                    const reason =
+                      optimizerReasonsByExercise[item.exerciseId]?.[0] ??
+                      buildWhyPicked(exercise).purpose;
+                    return (
+                      <div
+                        key={`${item.exerciseId}-${index}-${selectedDay}`}
+                        className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="font-semibold text-white">{exercise.name}</p>
+                          {item.section ? (
+                            <span className="rounded-full border border-white/20 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/80">
+                              {item.section}
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="mt-1 text-[11px] text-slate-200">{reason}</p>
+                      </div>
+                    );
+                  })}
                 </div>
                 {dayPreviewRecommendations.length ? (
                   <div className="mt-4 space-y-2 text-xs text-slate-200">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-300">
+                      Next-time recommendations
+                    </p>
                     {dayPreviewRecommendations.map(({ exercise, rec }, index) => (
                       <div
                         key={`${exercise.id}-next-${index}`}
@@ -1099,6 +1659,139 @@ export default function ResultsRoutine() {
           ))}
         </div>
       )}
+
+      <OnImage>
+        <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-white">
+                Progressive Plan
+              </h3>
+              <p className="mt-2 text-sm text-slate-200">
+                {program?.phaseName ?? "Phase 1"} is focused on{" "}
+                {getPhaseProfile(program?.phaseIndex ?? 1).label.toLowerCase()}
+                . Each phase adjusts volume, intensity, and variations in a
+                safe, progressive way.
+              </p>
+              <ul className="mt-3 space-y-1 text-xs text-slate-200">
+                <li>
+                  Advance when you complete 3–5 sessions or a full week.
+                </li>
+                <li>No pain flags in the last 2 sessions.</li>
+                <li>Most exercises feel Easy or Moderate.</li>
+              </ul>
+              <p className="mt-3 text-xs text-slate-200">
+                Advancing creates the next progressive week while preserving
+                your history and logs.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => setAdvanceOpen(true)}
+                disabled={!advanceStatus.canAdvance}
+                className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 disabled:opacity-50"
+              >
+                {advanceStatus.isPhaseBoundary
+                  ? nextPhaseButtonLabel
+                  : nextCycleButtonLabel}
+              </button>
+              <button
+                type="button"
+                onClick={() => setAdvanceMessage(previewSummary())}
+                className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
+              >
+                {advanceStatus.isPhaseBoundary
+                  ? "Preview next phase"
+                  : "Preview next cycle"}
+              </button>
+            </div>
+          </div>
+          <div className="mt-4 text-xs text-slate-200">
+            {advanceStatus.reason}
+          </div>
+          <div className="mt-2 text-[11px] text-slate-300">
+            Sessions: {advanceStatus.completedSessionsCount ?? 0}/
+            {advanceStatus.requiredSessionsCount ?? 0} • Weeks:{" "}
+            {advanceStatus.completedWeeksCount ?? 0}/
+            {advanceStatus.requiredWeeksCount ?? 0}
+          </div>
+          {advanceMessage ? (
+            <div className="mt-3 rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-xs text-slate-200">
+              {advanceMessage}
+            </div>
+          ) : null}
+        </div>
+      </OnImage>
+
+      {advanceOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => {
+              setAdvanceOpen(false);
+              setAdvanceConfirm(false);
+            }}
+          />
+          <div className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-950/90 p-6 text-white shadow-xl">
+            <h3 className="text-lg font-semibold">
+              {advanceStatus.isPhaseBoundary
+                ? `Advance to Phase ${(program?.phaseIndex ?? 1) + 1}?`
+                : `Start Cycle ${(program?.cycleIndex ?? 1) + 1}?`}
+            </h3>
+            <p className="mt-2 text-sm text-slate-200">
+              This will generate a new progressive plan. Your past logs stay
+              saved.
+            </p>
+            {!advanceStatus.canAdvance ? (
+              <div className="mt-3 rounded-2xl border border-amber-200/30 bg-amber-50/10 px-3 py-2 text-xs text-amber-100">
+                {advanceStatus.reason} Sessions {advanceStatus.completedSessionsCount ?? 0}/
+                {advanceStatus.requiredSessionsCount ?? 0}, Weeks{" "}
+                {advanceStatus.completedWeeksCount ?? 0}/
+                {advanceStatus.requiredWeeksCount ?? 0}.
+              </div>
+            ) : null}
+            {advanceMessage ? (
+              <div className="mt-3 rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-xs text-slate-200">
+                {advanceMessage}
+              </div>
+            ) : null}
+            <label className="mt-4 flex items-center gap-2 text-xs text-slate-200">
+              <input
+                type="checkbox"
+                checked={advanceConfirm}
+                onChange={(event) => setAdvanceConfirm(event.target.checked)}
+                className="h-4 w-4 accent-white"
+              />
+              I’m ready to progress
+            </label>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setAdvanceOpen(false);
+                  setAdvanceConfirm(false);
+                }}
+                className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/90 hover:bg-white/10"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={!advanceConfirm}
+                onClick={() =>
+                  handleAdvanceProgram(
+                    advanceStatus.isPhaseBoundary ? "phase" : "cycle"
+                  )
+                }
+                className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 disabled:opacity-50"
+              >
+                {advanceStatus.isPhaseBoundary ? "Advance phase" : "Start cycle"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <OnImage className="flex flex-wrap gap-3">
         <Link href="/assessment">

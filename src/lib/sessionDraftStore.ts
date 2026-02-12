@@ -2,6 +2,9 @@ export type SessionDraft = {
   sessionId: string;
   programId: string | null;
   dayIndex: number | null;
+  programVersion?: number | null;
+  phaseIndex?: number | null;
+  cycleIndex?: number | null;
   currentExerciseIndex: number;
   currentSetIndex: number;
   entries: {
@@ -21,6 +24,7 @@ export type SessionDraft = {
     workSeconds: number;
     restSeconds: number;
   } | null;
+  timerByExercise?: Record<string, { workSeconds: number; restSeconds: number }>;
   startedAt?: string | null;
   updatedAt: string;
 };
@@ -100,5 +104,16 @@ export const clearDraft = async (sessionId?: string | null) => {
       return;
     }
     await requestToPromise(store.clear());
+  });
+};
+
+export const clearDraftsByProgramId = async (programId: string) => {
+  if (!programId) return;
+  await withStore("readwrite", async (store) => {
+    const items = (await requestToPromise(store.getAll())) as SessionDraft[];
+    const matches = items.filter((item) => item.programId === programId);
+    await Promise.all(
+      matches.map((draft) => requestToPromise(store.delete(draft.sessionId)))
+    );
   });
 };

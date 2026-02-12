@@ -7,6 +7,7 @@ export type RecommendedNext = {
   sets?: number;
   reps?: number;
   weight?: number;
+  durationSeconds?: number;
   tempo?: string;
   restSeconds?: number;
 };
@@ -42,6 +43,39 @@ const parseRange = (value?: string | number | null): Range => {
   return { min: nums[0], max: nums[1] };
 };
 
+const parseDurationRange = (
+  prescriptionDuration?: number | null,
+  exerciseDurationOrReps?: string | null
+): Range => {
+  if (!exerciseDurationOrReps) {
+    if (typeof prescriptionDuration === "number" && Number.isFinite(prescriptionDuration)) {
+      return { min: prescriptionDuration, max: prescriptionDuration + 10 };
+    }
+    return { min: null, max: null };
+  }
+  const lower = exerciseDurationOrReps.toLowerCase();
+  const isTimeLike =
+    lower.includes("sec") || lower.includes("second") || lower.includes("min");
+  if (!isTimeLike) return { min: null, max: null };
+  const nums = lower.match(/\d+/g)?.map(Number).filter(Number.isFinite) ?? [];
+  if (!nums.length) return { min: null, max: null };
+  const toSeconds = (value: number) =>
+    lower.includes("min") && !lower.includes("sec") ? value * 60 : value;
+  if (nums.length === 1) {
+    const seconds = toSeconds(nums[0]);
+    if (typeof prescriptionDuration === "number" && Number.isFinite(prescriptionDuration)) {
+      return { min: prescriptionDuration, max: Math.max(seconds, prescriptionDuration + 10) };
+    }
+    return { min: seconds, max: seconds };
+  }
+  const parsedMin = toSeconds(nums[0]);
+  const parsedMax = toSeconds(nums[1]);
+  if (typeof prescriptionDuration === "number" && Number.isFinite(prescriptionDuration)) {
+    return { min: prescriptionDuration, max: Math.max(parsedMax, prescriptionDuration + 5) };
+  }
+  return { min: parsedMin, max: parsedMax };
+};
+
 const totalReps = (log: ExerciseLog) => {
   if (log.repsBySet?.length) {
     return log.repsBySet.reduce((sum, value) => sum + value, 0);
@@ -50,10 +84,12 @@ const totalReps = (log: ExerciseLog) => {
 };
 
 const repsPerSet = (log: ExerciseLog) => {
-  const reps = totalReps(log);
-  const sets = log.setsCompleted ?? log.setsPlanned ?? null;
-  if (!reps || !sets) return reps;
-  return Math.round(reps / sets);
+  if (log.repsBySet?.length) {
+    const total = log.repsBySet.reduce((sum, value) => sum + value, 0);
+    const sets = log.repsBySet.length;
+    return sets > 0 ? Math.round(total / sets) : null;
+  }
+  return log.reps ?? null;
 };
 
 const clampToRange = (value: number, range: Range) => {
@@ -64,6 +100,15 @@ const clampToRange = (value: number, range: Range) => {
 
 const roundToNearest = (value: number, step = 2.5) =>
   Math.round(value / step) * step;
+
+const formatTargetLabel = (range: Range, unit: string, fallback: string) => {
+  if (range.min === null && range.max === null) return fallback;
+  if (range.min !== null && range.max !== null) {
+    if (range.min === range.max) return `${range.min} ${unit}`;
+    return `${range.min}-${range.max} ${unit}`;
+  }
+  return `${range.min ?? range.max} ${unit}`;
+};
 
 export const getProgressionRecommendation = ({
   exercise,
@@ -76,11 +121,22 @@ export const getProgressionRecommendation = ({
   const rating = feedback?.rating ?? latest.felt ?? null;
   const setRange = parseRange(prescription?.sets ?? latest.setsPlanned);
   const repRange = parseRange(prescription?.reps ?? exercise.durationOrReps);
+  const durationRange = parseDurationRange(
+    prescription?.durationSec,
+    exercise.durationOrReps
+  );
+  const repTargetLabel = formatTargetLabel(repRange, "reps", "prescribed reps");
+  const setTargetLabel = formatTargetLabel(setRange, "sets", "prescribed sets");
 
   if (rating === "pain") {
+    const isTimed = exercise.loadType === "timed";
     return {
       recommendedNext: {
-        reps: repRange.min ?? undefined,
+        reps: isTimed ? undefined : repRange.min ?? undefined,
+        durationSeconds:
+          isTimed && durationRange.min !== null
+            ? Math.max(15, durationRange.min - 5)
+            : undefined,
         sets: setRange.min ?? undefined,
         tempo: "slow and controlled",
       },
@@ -92,17 +148,35 @@ export const getProgressionRecommendation = ({
   const completedSets =
     latest.setsCompleted ?? latest.setsPlanned ?? setRange.min ?? 0;
   const repsCompleted = repsPerSet(latest);
-  const completedAllSets =
-    setRange.min === null ? true : completedSets >= setRange.min;
+  const completedAllSets = setRange.min === null ? true : completedSets >= setRange.min;
   const completedReps =
-    repRange.min === null || repsCompleted === null
-      ? true
-      : repsCompleted >= repRange.min;
+    repRange.min === null || repsCompleted === null ? true : repsCompleted >= repRange.min;
+  const overshotRepsTarget =
+    repRange.max !== null && repsCompleted !== null ? repsCompleted > repRange.max : false;
   const completedAll = completedAllSets && completedReps;
 
   if (exercise.loadType === "weighted") {
     const weight = latest.weight ?? 0;
+    if (completedAllSets && overshotRepsTarget) {
+      const increase =
+        weight >= 150 ? weight * 0.025 : weight >= 50 ? 5 : 2.5;
+      const nextWeight = roundToNearest(weight + increase, 2.5);
+      return {
+        recommendedNext: {
+          weight: nextWeight,
+          reps: repRange.min ?? undefined,
+          sets: setRange.min ?? undefined,
+        },
+        reason: `You overshot the prescribed target (${repsCompleted} reps vs ${repTargetLabel}, ${setTargetLabel}). Next progression: increase weight from ${weight} to ${nextWeight} and reset near the lower rep target.`,
+      };
+    }
+
     if (!completedAll) {
+      const missReason = !completedAllSets
+        ? `you completed ${completedSets} set${completedSets === 1 ? "" : "s"} and target starts at ${setRange.min}`
+        : repRange.min !== null && repsCompleted !== null
+        ? `you completed ${repsCompleted} reps and target starts at ${repRange.min}`
+        : "the target wasn't fully met";
       return {
         recommendedNext: {
           weight: weight || undefined,
@@ -111,7 +185,7 @@ export const getProgressionRecommendation = ({
               ? clampToRange((repsCompleted ?? repRange.min) - 1, repRange)
               : undefined,
         },
-        reason: "Last session was short of the target—ease reps and focus on control.",
+        reason: `Last session was short of the prescribed target (${repTargetLabel}, ${setTargetLabel}; ${missReason}). Ease reps and focus on control.`,
       };
     }
 
@@ -137,12 +211,17 @@ export const getProgressionRecommendation = ({
         reps: repRange.min ?? undefined,
         sets: setRange.min ?? undefined,
       },
-      reason: "You hit the target cleanly—adding a small load bump.",
+      reason: `You hit target reps and sets. Next progression: increase weight from ${weight} to ${nextWeight} and keep form strict.`,
     };
   }
 
   if (exercise.loadType === "bodyweight" || exercise.loadType === "assisted") {
     if (!completedAll) {
+      const missReason = !completedAllSets
+        ? `you completed ${completedSets} set${completedSets === 1 ? "" : "s"} and target starts at ${setRange.min}`
+        : repRange.min !== null && repsCompleted !== null
+        ? `you completed ${repsCompleted} reps and target starts at ${repRange.min}`
+        : "the target wasn't fully met";
       return {
         recommendedNext: {
           reps:
@@ -151,7 +230,7 @@ export const getProgressionRecommendation = ({
               : undefined,
           tempo: "slow and controlled",
         },
-        reason: "Keep it smooth—slightly lower reps and control the tempo.",
+        reason: `Next progression step is quality first (${repTargetLabel}, ${setTargetLabel}; ${missReason}). Reduce reps slightly and use slower tempo to rebuild control.`,
       };
     }
 
@@ -161,7 +240,7 @@ export const getProgressionRecommendation = ({
           reps: repsCompleted ?? repRange.min ?? undefined,
           tempo: "2-1-2",
         },
-        reason: "Hold reps steady and improve control before pushing volume.",
+        reason: "Keep reps the same next session and clean up tempo before adding more volume.",
       };
     }
 
@@ -170,7 +249,7 @@ export const getProgressionRecommendation = ({
       if (nextReps < repRange.max) {
         return {
           recommendedNext: { reps: nextReps },
-          reason: "Add a rep to keep building momentum.",
+          reason: `Next progression: add 1 rep (to ${nextReps}) while keeping the same quality.`,
         };
       }
     }
@@ -180,8 +259,54 @@ export const getProgressionRecommendation = ({
         reps: repRange.max ?? repsCompleted ?? undefined,
         tempo: "3-1-3",
       },
-      reason: "At the top of the range—add tempo or pause for progression.",
+      reason: "You are near the top of the rep range. Next progression: keep reps steady and increase time under tension with 3-1-3 tempo.",
     };
+  }
+
+  if (exercise.loadType === "timed") {
+    const currentDuration =
+      latest.durationSec ?? durationRange.min ?? durationRange.max ?? null;
+    const sets = latest.setsCompleted ?? latest.setsPlanned ?? setRange.min ?? null;
+    const completedAllSets = setRange.min === null || (sets ?? 0) >= setRange.min;
+
+    if (!completedAllSets) {
+      return {
+        recommendedNext: {
+          durationSeconds:
+            currentDuration !== null ? Math.max(15, currentDuration - 5) : undefined,
+          sets: setRange.min ?? undefined,
+          tempo: "controlled",
+        },
+        reason: "Next progression step is regression for quality: reduce work time slightly and complete all sets with control.",
+      };
+    }
+
+    if (rating === "hard") {
+      return {
+        recommendedNext: {
+          durationSeconds: currentDuration ?? durationRange.min ?? undefined,
+          sets: setRange.min ?? undefined,
+          restSeconds:
+            typeof prescription?.restSec === "number"
+              ? prescription.restSec + 10
+              : undefined,
+        },
+        reason: "Keep work duration steady next session and add more rest to protect movement quality.",
+      };
+    }
+
+    if (currentDuration !== null) {
+      const bumped = currentDuration + 5;
+      const nextDuration =
+        durationRange.max !== null ? Math.min(bumped, durationRange.max) : bumped;
+      return {
+        recommendedNext: {
+          durationSeconds: nextDuration,
+          sets: setRange.min ?? undefined,
+        },
+        reason: `You controlled the current interval well. Next progression: increase work time by 5s (to ${nextDuration}s).`,
+      };
+    }
   }
 
   return {

@@ -1,8 +1,12 @@
 export type AppState = {
   lastRoute?: string;
   programId?: string;
+  activeProgramId?: string;
   selectedDay?: number;
   activeSessionId?: string;
+  programVersion?: number;
+  activePhaseIndex?: number;
+  activeCycleIndex?: number;
   updatedAt: number;
 };
 

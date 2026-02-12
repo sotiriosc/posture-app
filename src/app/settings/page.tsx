@@ -102,6 +102,8 @@ export default function SettingsPage() {
       setsPlanned: log.setsPlanned,
       setsCompleted: log.setsCompleted,
       durationSec: log.durationSec,
+      workSecondsUsed: log.workSecondsUsed ?? null,
+      restSecondsUsed: log.restSecondsUsed ?? null,
       rpe: log.rpe,
       felt: log.felt,
       painLocation: log.painLocation ?? null,

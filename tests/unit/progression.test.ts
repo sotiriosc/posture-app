@@ -59,6 +59,46 @@ describe("progression engine", () => {
     expect(rec?.recommendedNext.reps).toBeGreaterThanOrEqual(8);
   });
 
+  test("weighted overshoot -> increase weight and reset near lower target reps", () => {
+    const exercise = exerciseById("dumbbell-rows");
+    if (!exercise) throw new Error("Missing exercise");
+    const log = baseLog({
+      weight: 50,
+      reps: 10,
+      setsPlanned: 3,
+      setsCompleted: 3,
+      felt: "easy",
+    });
+    const rec = getProgressionRecommendation({
+      exercise,
+      logs: [log],
+      feedback: { rating: "easy" },
+      prescription: { sets: "3", reps: "6-8" },
+    });
+    expect(rec?.reason.toLowerCase()).toContain("overshot");
+    expect((rec?.recommendedNext.weight ?? 0)).toBeGreaterThan(50);
+    expect(rec?.recommendedNext.reps).toBe(6);
+  });
+
+  test("missed set target -> reason reflects set shortfall", () => {
+    const exercise = exerciseById("dumbbell-rows");
+    if (!exercise) throw new Error("Missing exercise");
+    const log = baseLog({
+      weight: 50,
+      reps: 10,
+      setsPlanned: 3,
+      setsCompleted: 2,
+      felt: "moderate",
+    });
+    const rec = getProgressionRecommendation({
+      exercise,
+      logs: [log],
+      feedback: { rating: "moderate" },
+      prescription: { sets: "3", reps: "6-8" },
+    });
+    expect(rec?.reason.toLowerCase()).toContain("completed 2 sets");
+  });
+
   test("bodyweight moderate -> add reps", () => {
     const exercise = exerciseById("pushup");
     if (!exercise) throw new Error("Missing exercise");
@@ -91,5 +131,29 @@ describe("progression engine", () => {
       prescription: { sets: "3", reps: "8-12" },
     });
     expect(rec?.safetyFlag).toBe(true);
+  });
+
+  test("timed moderate -> increase duration slightly", () => {
+    const exercise = exerciseById("plank");
+    if (!exercise) throw new Error("Missing exercise");
+    const log = baseLog({
+      exerciseId: "plank",
+      loadType: "timed",
+      unit: null,
+      weight: null,
+      reps: null,
+      repsBySet: null,
+      setsPlanned: 3,
+      setsCompleted: 3,
+      durationSec: 30,
+      felt: "moderate",
+    });
+    const rec = getProgressionRecommendation({
+      exercise,
+      logs: [log],
+      feedback: { rating: "moderate" },
+      prescription: { sets: "3", durationSec: 30 },
+    });
+    expect(rec?.recommendedNext.durationSeconds).toBeGreaterThanOrEqual(35);
   });
 });

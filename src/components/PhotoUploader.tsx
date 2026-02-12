@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePhotoContext } from "@/components/PhotoContext";
 
 const META_KEY = "posture_photo_meta";
@@ -18,12 +18,13 @@ const emptyMeta: PhotoMeta = { front: false, side: false, back: false };
 
 export default function PhotoUploader() {
   const { photos, setPhoto } = usePhotoContext();
-  const [meta, setMeta] = useState<PhotoMeta>(() => {
-    if (typeof window === "undefined") return emptyMeta;
-    const saved = localStorage.getItem(META_KEY);
-    return saved ? JSON.parse(saved) : emptyMeta;
-  });
+  const [meta, setMeta] = useState<PhotoMeta>(emptyMeta);
   const [objectUrls, setObjectUrls] = useState<Record<PhotoKey, string | null>>({
+    front: null,
+    side: null,
+    back: null,
+  });
+  const lastFilesRef = useRef<Record<PhotoKey, File | null>>({
     front: null,
     side: null,
     back: null,
@@ -42,23 +43,48 @@ export default function PhotoUploader() {
     localStorage.setItem(META_KEY, JSON.stringify(next));
   };
 
-  const handleFile = (key: PhotoKey, file: File) => {
-    setPhoto(key, file);
+  useEffect(() => {
+    setObjectUrls((prev) => {
+      const next = { ...prev };
+      (Object.keys(photos) as PhotoKey[]).forEach((key) => {
+        const file = photos[key];
+        const lastFile = lastFilesRef.current[key];
+        if (file !== lastFile) {
+          if (prev[key]) URL.revokeObjectURL(prev[key] as string);
+          next[key] = file ? URL.createObjectURL(file) : null;
+          lastFilesRef.current[key] = file ?? null;
+        }
+      });
+      return next;
+    });
+  }, [photos]);
 
+  useEffect(() => {
+    const nextMeta: PhotoMeta = {
+      front: Boolean(photos.front),
+      side: Boolean(photos.side),
+      back: Boolean(photos.back),
+    };
+    saveMeta(nextMeta);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [photos.front, photos.side, photos.back]);
+
+  const handleFile = async (key: PhotoKey, file: File) => {
     setObjectUrls((prev) => {
       if (prev[key]) URL.revokeObjectURL(prev[key] as string);
       return { ...prev, [key]: URL.createObjectURL(file) };
     });
-    saveMeta({ ...meta, [key]: true });
+    lastFilesRef.current[key] = file;
+    await setPhoto(key, file);
   };
 
-  const handleDelete = (key: PhotoKey) => {
-    if (objectUrls[key]) {
-      URL.revokeObjectURL(objectUrls[key] as string);
-    }
-    setPhoto(key, null);
-    setObjectUrls({ ...objectUrls, [key]: null });
-    saveMeta({ ...meta, [key]: false });
+  const handleDelete = async (key: PhotoKey) => {
+    setObjectUrls((prev) => {
+      if (prev[key]) URL.revokeObjectURL(prev[key] as string);
+      return { ...prev, [key]: null };
+    });
+    lastFilesRef.current[key] = null;
+    await setPhoto(key, null);
   };
 
   const filledCount = useMemo(
@@ -71,7 +97,7 @@ export default function PhotoUploader() {
       <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900">
         <p className="font-semibold">Note</p>
         <p className="mt-1">
-          Photos won&apos;t persist after refresh until cloud storage is added.
+          Photos are stored on this device. Clearing site data will remove them.
         </p>
       </div>
 
@@ -83,7 +109,7 @@ export default function PhotoUploader() {
           </span>
         </p>
         <p className="text-slate-500">
-          Only lightweight metadata is saved in local storage.
+          Lightweight metadata is saved locally for quick status.
         </p>
       </div>
 
@@ -123,9 +149,7 @@ export default function PhotoUploader() {
                 />
               ) : (
                 <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-xs text-slate-400">
-                  {meta[slot.key]
-                    ? "Previously uploaded (needs re-upload)"
-                    : "No photo yet"}
+                  No photo yet
                 </div>
               )}
             </div>
