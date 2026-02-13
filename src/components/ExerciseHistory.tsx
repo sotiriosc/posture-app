@@ -124,14 +124,14 @@ export default function ExerciseHistory({ exerciseId }: Props) {
 
   if (!exerciseLogs.length) {
     return (
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="ui-card p-6">
         <p className="text-sm text-slate-600">No history yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="ui-card p-6">
       <h2 className="text-sm font-semibold text-slate-900">History</h2>
       {recommendation ? (
         <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700">

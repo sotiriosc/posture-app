@@ -388,7 +388,7 @@ export default function SettingsPage() {
 
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
+      <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
           <header className="flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-2">
@@ -417,7 +417,7 @@ export default function SettingsPage() {
           </header>
         </OnImage>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Download data
           </h2>
@@ -445,7 +445,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Restore from JSON
           </h2>
@@ -480,7 +480,7 @@ export default function SettingsPage() {
           ) : null}
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-sm font-semibold text-slate-900">
@@ -555,7 +555,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Real-device QA pass
           </h2>

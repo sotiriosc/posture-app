@@ -6,9 +6,9 @@ import ResumeSessionBanner from "@/components/ResumeSessionBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Body Alignment Coach",
-  description: "Health, strength, posture, and recovery guidance.",
-  applicationName: "Body Alignment Coach",
+  title: "Praxis - Personal Trainer App",
+  description: "Personal training for strength, posture, and movement quality.",
+  applicationName: "Praxis",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: "/icons/icon-192.svg",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f172a",
+  themeColor: "#0a0f19",
 };
 
 export default function RootLayout({

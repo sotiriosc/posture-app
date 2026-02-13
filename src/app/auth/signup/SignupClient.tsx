@@ -51,13 +51,13 @@ export default function SignupClient() {
 
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-xl flex-col gap-6 px-6 py-16">
+      <div className="ui-shell flex max-w-xl flex-col gap-6 py-12 sm:py-16">
         <OnImage>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+          <p className="ui-kicker">
             Account
           </p>
           <h1 className="mt-2 text-3xl font-semibold text-white">Create account</h1>
-          <p className="mt-2 text-sm text-slate-200">
+          <p className="mt-2 text-sm text-slate-300">
             Start free. Upgrade anytime when you want full access.
           </p>
         </OnImage>
@@ -69,7 +69,7 @@ export default function SignupClient() {
               autoComplete="name"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900"
+              className="ui-input mt-2"
             />
           </label>
           <label className="mt-3 block text-xs font-semibold text-slate-700">
@@ -79,7 +79,7 @@ export default function SignupClient() {
               autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900"
+              className="ui-input mt-2"
               required
             />
           </label>
@@ -90,7 +90,7 @@ export default function SignupClient() {
               autoComplete="new-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900"
+              className="ui-input mt-2"
               minLength={8}
               required
             />
@@ -102,7 +102,7 @@ export default function SignupClient() {
               autoComplete="new-password"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900"
+              className="ui-input mt-2"
               minLength={8}
               required
             />
@@ -119,7 +119,7 @@ export default function SignupClient() {
             </span>
           </label>
           {error ? (
-            <p className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+            <p className="ui-feedback-error mt-3">
               {error}
             </p>
           ) : null}
@@ -127,7 +127,7 @@ export default function SignupClient() {
             <Button type="submit" disabled={loading}>
               {loading ? "Creating account..." : "Create account"}
             </Button>
-            <Link href="/auth/login" className="text-xs font-semibold text-slate-600 hover:text-slate-900">
+            <Link href="/auth/login" className="text-xs font-semibold text-slate-300 hover:text-white">
               I already have an account
             </Link>
           </div>

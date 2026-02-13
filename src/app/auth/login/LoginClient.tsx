@@ -43,13 +43,13 @@ export default function LoginClient() {
 
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-xl flex-col gap-6 px-6 py-16">
+      <div className="ui-shell flex max-w-xl flex-col gap-6 py-12 sm:py-16">
         <OnImage>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+          <p className="ui-kicker">
             Account
           </p>
           <h1 className="mt-2 text-3xl font-semibold text-white">Log in</h1>
-          <p className="mt-2 text-sm text-slate-200">
+          <p className="mt-2 text-sm text-slate-300">
             Sign in to access your program and subscription.
           </p>
         </OnImage>
@@ -61,7 +61,7 @@ export default function LoginClient() {
               autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900"
+              className="ui-input mt-2"
               required
             />
           </label>
@@ -72,12 +72,12 @@ export default function LoginClient() {
               autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900"
+              className="ui-input mt-2"
               required
             />
           </label>
           {error ? (
-            <p className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+            <p className="ui-feedback-error mt-3">
               {error}
             </p>
           ) : null}
@@ -87,11 +87,11 @@ export default function LoginClient() {
             </Button>
             <Link
               href={`/auth/signup?next=${encodeURIComponent(next)}`}
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900"
+              className="text-xs font-semibold text-slate-300 hover:text-white"
             >
               Create account
             </Link>
-            <Link href="/" className="text-xs font-semibold text-slate-600 hover:text-slate-900">
+            <Link href="/" className="text-xs font-semibold text-slate-300 hover:text-white">
               Back home
             </Link>
           </div>

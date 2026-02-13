@@ -6,7 +6,7 @@ export default function SessionPage() {
     <Suspense
       fallback={
         <div className="min-h-screen page-shell">
-          <div className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-12">
+          <div className="ui-shell flex max-w-4xl flex-col gap-6 py-8 sm:py-12">
             <p className="text-sm text-slate-200">Loading session...</p>
           </div>
         </div>

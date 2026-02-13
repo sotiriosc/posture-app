@@ -42,18 +42,15 @@ export default function AuthControls() {
   if (session?.enabled === false) return null;
   if (!session?.authenticated) {
     return (
-      <Link
-        href="/auth/login"
-        className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
-      >
-        Log in
+      <Link href="/auth/login">
+        <Button variant="secondary">Log in</Button>
       </Link>
     );
   }
 
   return (
     <div className="flex items-center gap-2">
-      <span className="hero-pill rounded-full px-3 py-1 text-[11px] font-semibold text-slate-100">
+      <span className="ui-chip">
         {session.user?.plan === "pro" ? "Pro" : "Free"}
       </span>
       <Button type="button" variant="secondary" onClick={logout}>

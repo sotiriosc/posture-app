@@ -1006,7 +1006,7 @@ export default function SessionClient() {
   if (!data || !routine) {
     return (
       <BackgroundShell>
-        <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
+        <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
           <OnImage>
             <h1 className="text-2xl font-semibold text-white">
               We need your questionnaire first
@@ -1027,7 +1027,7 @@ export default function SessionClient() {
   if (sessionComplete && summary && summaryStats) {
     return (
       <BackgroundShell>
-        <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
+        <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
           <OnImage>
             <h1 className="text-3xl font-semibold text-white">
               Session complete
@@ -1090,7 +1090,7 @@ export default function SessionClient() {
                         notes: sessionFeedback?.notes ?? null,
                       })
                     }
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
+                    className="ui-select"
                   >
                     <option value="">Select location</option>
                     {[
@@ -1126,7 +1126,7 @@ export default function SessionClient() {
 
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
+      <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
           <header className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
@@ -1263,7 +1263,7 @@ export default function SessionClient() {
                   onChange={(event) =>
                     applyWeight(currentItem.exerciseId, event.target.value)
                   }
-                  className="w-28 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
+                  className="ui-input w-28"
                 />
                 <div className="flex rounded-full border border-slate-200 p-1 text-xs">
                   {(["lb", "kg"] as const).map((unit) => (
@@ -1311,7 +1311,7 @@ export default function SessionClient() {
                       Math.max(minSets, currentSelectedSets - 1)
                     )
                   }
-                  className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700"
+                  className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-700 hover:bg-slate-100"
                 >
                   -
                 </button>
@@ -1327,7 +1327,7 @@ export default function SessionClient() {
                       Math.min(maxSets, currentSelectedSets + 1)
                     )
                   }
-                  className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-700"
+                  className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-700 hover:bg-slate-100"
                 >
                   +
                 </button>
@@ -1347,7 +1347,7 @@ export default function SessionClient() {
                   onChange={(event) =>
                     applySingleReps(currentItem.exerciseId, event.target.value)
                   }
-                  className="w-32 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
+                  className="ui-input w-32 text-xs"
                   placeholder="Reps per set"
                 />
               </div>
@@ -1427,7 +1427,7 @@ export default function SessionClient() {
                         },
                       })
                     }
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900"
+                    className="ui-select"
                   >
                     <option value="">Select location</option>
                     {[

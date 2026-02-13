@@ -54,7 +54,7 @@ export default function AppMenuClient({
           type="button"
           aria-label="Open menu"
           onClick={() => setOpen(true)}
-          className="fixed right-4 top-4 z-[70] rounded-full border border-white/25 bg-slate-950/70 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur"
+          className="fixed right-4 top-4 z-[70] rounded-full border border-slate-400/30 bg-slate-950/72 px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur"
         >
           Menu
         </button>
@@ -68,7 +68,7 @@ export default function AppMenuClient({
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/55"
           />
-          <aside className="absolute right-0 top-0 h-full w-[min(88vw,360px)] border-l border-white/15 bg-slate-950/95 p-5 text-white shadow-2xl">
+          <aside className="absolute right-0 top-0 h-full w-[min(88vw,360px)] border-l border-slate-400/25 bg-slate-950/95 p-5 text-white shadow-2xl">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300">
                 Navigation
@@ -87,8 +87,8 @@ export default function AppMenuClient({
                     onClick={() => setOpen(false)}
                     className={`block rounded-xl border px-4 py-3 text-sm font-semibold transition ${
                       active
-                        ? "border-white/50 bg-white/20 text-white"
-                        : "border-white/15 bg-white/5 text-slate-100 hover:bg-white/10"
+                        ? "border-sky-300/45 bg-sky-500/15 text-white"
+                        : "border-slate-300/25 bg-slate-900/35 text-slate-100 hover:bg-slate-800/45"
                     }`}
                   >
                     {link.label}

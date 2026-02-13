@@ -79,7 +79,7 @@ export default function ProgressPage() {
 
   return (
     <div className="min-h-screen page-shell">
-      <div className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-12">
+      <div className="ui-shell flex max-w-4xl flex-col gap-6 py-8 sm:py-12">
         <header className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
             Progress
@@ -92,7 +92,7 @@ export default function ProgressPage() {
           </p>
         </header>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Top exercises
           </h2>
@@ -115,7 +115,7 @@ export default function ProgressPage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">Recent PRs</h2>
           <div className="mt-4 space-y-3 text-sm text-slate-700">
             {recentPRs.length ? (
@@ -138,7 +138,7 @@ export default function ProgressPage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Last 7 sessions
           </h2>
@@ -168,7 +168,7 @@ export default function ProgressPage() {
 
         <Link
           href="/results"
-          className="rounded-full border border-slate-200 px-5 py-2 text-xs font-semibold text-slate-700"
+          className="rounded-full border border-slate-300 bg-white px-5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
         >
           Back to results
         </Link>

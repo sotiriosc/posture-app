@@ -26,11 +26,11 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
   const isPro = session?.plan === "pro";
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
+      <div className="ui-shell flex max-w-6xl flex-col gap-8 py-8 sm:py-12">
         <OnImage>
           <header className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+              <p className="ui-kicker">
                 Step 3
               </p>
               <h1 className="text-3xl font-semibold text-white">
@@ -65,7 +65,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
           ) : null}
           {authEnabled && isPro ? <ManageSubscriptionButton /> : null}
           {authEnabled && showPaywallNotice && !isPro ? (
-            <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">
+            <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">
               Free plan only unlocks Day 1 workout execution. Upgrade to access all days.
             </div>
           ) : null}

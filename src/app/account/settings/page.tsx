@@ -126,11 +126,11 @@ export default function AccountSettingsPage() {
 
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
+      <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
           <header className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+              <p className="ui-kicker">
                 Account
               </p>
               <h1 className="text-3xl font-semibold text-white">Settings</h1>
@@ -171,17 +171,17 @@ export default function AccountSettingsPage() {
               </Button>
             </div>
           ) : (
-            <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-rose-700">
+            <div className="mt-4 rounded-2xl border border-rose-300/35 bg-rose-900/20 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-rose-100">
                 Confirm reset
               </p>
-              <p className="mt-1 text-sm text-rose-700">
+              <p className="mt-1 text-sm text-rose-100">
                 Type <span className="font-semibold">RESET</span> to continue.
               </p>
               <input
                 value={confirmText}
                 onChange={(event) => setConfirmText(event.target.value)}
-                className="mt-3 w-full rounded-xl border border-rose-200 px-3 py-2 text-sm text-slate-900 outline-none focus:border-rose-400"
+                className="ui-input mt-3 border-rose-300/45"
                 placeholder="Type RESET"
               />
               <div className="mt-3 flex gap-2">

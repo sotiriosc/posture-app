@@ -10,7 +10,7 @@ type OnImageProps = {
 export default function OnImage({ children, className = "" }: OnImageProps) {
   return (
     <div
-      className={`text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_p]:text-slate-200 [&_span]:text-slate-200 [&_label]:text-slate-200 [&_a]:text-slate-100 ${className}`}
+      className={`text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_p]:text-slate-200 [&_span]:text-slate-200 [&_label]:text-slate-200 [&_a]:text-slate-100 [&_.ui-kicker]:text-slate-300 [&_.ui-body]:text-slate-300 ${className}`}
     >
       {children}
     </div>

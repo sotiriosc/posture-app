@@ -16,7 +16,7 @@ export default async function ExerciseDetailPage({ params }: Props) {
   if (!exercise) {
     return (
       <BackgroundShell>
-        <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
+        <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
           <OnImage>
             <h1 className="text-2xl font-semibold text-white">
               Exercise not found
@@ -36,7 +36,7 @@ export default async function ExerciseDetailPage({ params }: Props) {
 
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
+      <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
           <header className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
@@ -51,7 +51,7 @@ export default async function ExerciseDetailPage({ params }: Props) {
           </header>
         </OnImage>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           {exercise.videoUrl ? (
             <>
               <div className="aspect-video w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-xs text-slate-400 flex items-center justify-center">
@@ -68,7 +68,7 @@ export default async function ExerciseDetailPage({ params }: Props) {
           )}
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">Cues</h2>
           <ul className="mt-3 list-disc pl-5 text-sm text-slate-600">
             {exercise.cues.map((cue) => (
@@ -77,7 +77,7 @@ export default async function ExerciseDetailPage({ params }: Props) {
           </ul>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">Mistakes</h2>
           <ul className="mt-3 list-disc pl-5 text-sm text-slate-600">
             {exercise.mistakes.map((mistake) => (

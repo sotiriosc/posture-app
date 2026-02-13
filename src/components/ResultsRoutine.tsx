@@ -974,7 +974,7 @@ export default function ResultsRoutine() {
 
   if (!isReady) {
     return (
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="ui-card p-6">
         <p className="text-sm text-slate-600">Loading your program...</p>
       </div>
     );
@@ -998,7 +998,7 @@ export default function ResultsRoutine() {
 
   if (!program) {
     return (
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="ui-card p-6">
         <p className="text-sm text-slate-600">Loading your weekly program...</p>
       </div>
     );
@@ -1006,7 +1006,7 @@ export default function ResultsRoutine() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="ui-card p-6">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
           Summary
         </p>
@@ -1028,7 +1028,7 @@ export default function ResultsRoutine() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
             This Week Objective
           </p>
@@ -1083,7 +1083,7 @@ export default function ResultsRoutine() {
           ) : null}
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
               Why This Changed
@@ -1140,7 +1140,7 @@ export default function ResultsRoutine() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
             What To Master Next
           </p>
@@ -1179,7 +1179,7 @@ export default function ResultsRoutine() {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="ui-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -1293,7 +1293,7 @@ export default function ResultsRoutine() {
         )}
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="ui-card p-6">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
           Observed patterns
         </p>
@@ -1306,7 +1306,7 @@ export default function ResultsRoutine() {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="ui-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -1355,7 +1355,7 @@ export default function ResultsRoutine() {
 
       {program ? (
         <div className="space-y-6">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="ui-card p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -1678,7 +1678,7 @@ export default function ResultsRoutine() {
           {routine.sections.map((section) => (
             <div
               key={section.title}
-              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+              className="ui-card p-6"
             >
               <h3 className="text-lg font-semibold text-slate-900">
                 {section.title}
