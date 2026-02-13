@@ -8,6 +8,9 @@ import Button from "@/components/ui/Button";
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type ResultsProps = {
   searchParams: Promise<{ paywall?: string }>;
 };
@@ -28,29 +31,31 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
     <BackgroundShell>
       <div className="ui-shell flex max-w-6xl flex-col gap-8 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="ui-kicker">
-                Step 3
-              </p>
-              <h1 className="text-3xl font-semibold text-white">
-                Results Dashboard
-              </h1>
-              {session ? (
-                <p className="mt-1 text-sm font-semibold text-slate-100">
-                  Hey {displayName}, welcome back. How are you feeling today?
+          <header className="rounded-2xl border border-slate-300/20 bg-slate-900/35 p-4 sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="ui-kicker">
+                  Step 3
                 </p>
-              ) : null}
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Link href="/questionnaire">
-                <Button variant="secondary">Edit questionnaire</Button>
-              </Link>
-              {authEnabled ? (
-                <Link href="/account/billing">
-                  <Button variant="secondary">Billing status</Button>
+                <h1 className="text-4xl font-semibold text-white sm:text-5xl">
+                  Results Dashboard
+                </h1>
+                {session ? (
+                  <p className="mt-2 text-base font-semibold text-slate-100 sm:text-lg">
+                    Hey {displayName}, welcome back. How are you feeling today?
+                  </p>
+                ) : null}
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Link href="/questionnaire">
+                  <Button variant="secondary">Edit questionnaire</Button>
                 </Link>
-              ) : null}
+                {authEnabled ? (
+                  <Link href="/account/billing">
+                    <Button variant="secondary">Billing status</Button>
+                  </Link>
+                ) : null}
+              </div>
             </div>
           </header>
 
@@ -63,7 +68,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
               Plan: {isPro ? "Pro (full access)" : "Free (day 1 workout access)"}
             </p>
           ) : null}
-          {authEnabled && isPro ? <ManageSubscriptionButton /> : null}
+          {authEnabled && isPro ? <ManageSubscriptionButton showRefreshAction={false} /> : null}
           {authEnabled && showPaywallNotice && !isPro ? (
             <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">
               Free plan only unlocks Day 1 workout execution. Upgrade to access all days.

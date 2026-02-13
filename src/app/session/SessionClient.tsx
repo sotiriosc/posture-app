@@ -44,6 +44,7 @@ import {
   uuid,
   nowIso,
 } from "@/lib/logStore";
+import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -154,6 +155,22 @@ export default function SessionClient() {
           ),
           daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
         });
+      } else {
+        const snapshot = await loadTrainingSnapshot();
+        const remote = snapshot?.questionnaire as Partial<QuestionnaireData> | undefined;
+        if (remote) {
+          const next = {
+            goals: remote.goals ?? "Improve posture",
+            painAreas: remote.painAreas ?? [],
+            experience: remote.experience ?? "Beginner",
+            equipment: normalizeEquipmentSelectionValues(
+              remote.equipment ?? ["none"]
+            ),
+            daysPerWeek: normalizeDaysPerWeek(remote.daysPerWeek),
+          };
+          setData(next);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        }
       }
 
       const storedPrefs = await loadPrefs();

@@ -3,7 +3,13 @@
 import { useState } from "react";
 import Button from "@/components/ui/Button";
 
-export default function ManageSubscriptionButton() {
+type ManageSubscriptionButtonProps = {
+  showRefreshAction?: boolean;
+};
+
+export default function ManageSubscriptionButton({
+  showRefreshAction = true,
+}: ManageSubscriptionButtonProps) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -12,7 +18,11 @@ export default function ManageSubscriptionButton() {
     setLoading(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/billing/portal-session", { method: "POST" });
+      const res = await fetch("/api/billing/portal-session", {
+        method: "POST",
+        cache: "no-store",
+        credentials: "include",
+      });
       const data = (await res.json().catch(() => null)) as {
         ok?: boolean;
         url?: string;
@@ -42,14 +52,16 @@ export default function ManageSubscriptionButton() {
       <Button type="button" variant="primary" onClick={openPortal} disabled={loading}>
         {loading ? "Opening..." : "Manage subscription"}
       </Button>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <Button type="button" variant="primary" onClick={refreshStatus} disabled={refreshing}>
-          {refreshing ? "Refreshing..." : "I finished in Stripe"}
-        </Button>
-        <p className="text-xs text-slate-600">
-          After changes in Stripe, click here to refresh this page.
-        </p>
-      </div>
+      {showRefreshAction ? (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <Button type="button" variant="primary" onClick={refreshStatus} disabled={refreshing}>
+            {refreshing ? "Refreshing..." : "I finished in Stripe"}
+          </Button>
+          <p className="text-xs text-slate-600">
+            After changes in Stripe, click here to refresh this page.
+          </p>
+        </div>
+      ) : null}
       {message ? <p className="mt-1 text-xs text-slate-600">{message}</p> : null}
     </div>
   );

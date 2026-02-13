@@ -123,7 +123,10 @@ export default function ProgramDayPage({ params }: Props) {
   useEffect(() => {
     const loadSession = async () => {
       try {
-        const response = await fetch("/api/auth/session");
+        const response = await fetch("/api/auth/session", {
+          cache: "no-store",
+          credentials: "include",
+        });
         const payload = (await response.json()) as {
           enabled?: boolean;
           user?: { plan?: SubscriptionPlan } | null;

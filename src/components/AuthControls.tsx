@@ -21,7 +21,10 @@ export default function AuthControls() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch("/api/auth/session");
+        const res = await fetch("/api/auth/session", {
+          cache: "no-store",
+          credentials: "include",
+        });
         const data = (await res.json()) as SessionPayload;
         setSession(data);
       } catch {
@@ -34,7 +37,11 @@ export default function AuthControls() {
   }, []);
 
   const logout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      cache: "no-store",
+      credentials: "include",
+    }).catch(() => null);
     window.location.href = "/";
   };
 

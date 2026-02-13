@@ -127,7 +127,10 @@ export default function SignupClient() {
             <Button type="submit" disabled={loading}>
               {loading ? "Creating account..." : "Create account"}
             </Button>
-            <Link href="/auth/login" className="text-xs font-semibold text-slate-300 hover:text-white">
+            <Link
+              href="/auth/login"
+              className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+            >
               I already have an account
             </Link>
           </div>

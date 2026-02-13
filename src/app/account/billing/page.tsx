@@ -6,6 +6,9 @@ import { readServerSession } from "@/lib/serverAuth";
 import { getUserRepository } from "@/lib/userRepository";
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const formatDate = (iso: string | null | undefined) =>
   iso ? iso.slice(0, 10) : "--";
 

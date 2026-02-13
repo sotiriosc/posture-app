@@ -55,6 +55,7 @@ import {
   uuid,
 } from "@/lib/logStore";
 import type { SubscriptionPlan } from "@/lib/authTypes";
+import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
 import { getProgressionRecommendation } from "@/lib/progression";
 import {
   buildNextWeekPlan,
@@ -153,33 +154,54 @@ export default function ResultsRoutine() {
   }>({ loading: false, error: null, report: null });
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
-      setData({
-        goals: parsed.goals ?? "Improve posture",
-        painAreas: parsed.painAreas ?? [],
-        experience: parsed.experience ?? "Beginner",
-        equipment: normalizeEquipmentSelectionValues(
-          parsed.equipment ?? ["none"]
-        ),
-        daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
-      });
-    }
-    setIsReady(true);
+    const loadBootstrap = async () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
+        setData({
+          goals: parsed.goals ?? "Improve posture",
+          painAreas: parsed.painAreas ?? [],
+          experience: parsed.experience ?? "Beginner",
+          equipment: normalizeEquipmentSelectionValues(
+            parsed.equipment ?? ["none"]
+          ),
+          daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
+        });
+      } else {
+        const snapshot = await loadTrainingSnapshot();
+        const remote = snapshot?.questionnaire as Partial<QuestionnaireData> | undefined;
+        if (remote) {
+          const next = {
+            goals: remote.goals ?? "Improve posture",
+            painAreas: remote.painAreas ?? [],
+            experience: remote.experience ?? "Beginner",
+            equipment: normalizeEquipmentSelectionValues(
+              remote.equipment ?? ["none"]
+            ),
+            daysPerWeek: normalizeDaysPerWeek(remote.daysPerWeek),
+          };
+          setData(next);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        }
+      }
+      setIsReady(true);
+    };
     const loadPrefsData = async () => {
       const prefs = await loadPrefs();
       if (prefs.substitutionByExercise) {
         setSubstitutionByExercise(prefs.substitutionByExercise);
       }
     };
-    loadPrefsData();
+    loadBootstrap().finally(() => loadPrefsData());
   }, []);
 
   useEffect(() => {
     const loadSession = async () => {
       try {
-        const response = await fetch("/api/auth/session");
+        const response = await fetch("/api/auth/session", {
+          cache: "no-store",
+          credentials: "include",
+        });
         const payload = (await response.json()) as {
           enabled?: boolean;
           authenticated?: boolean;
@@ -899,11 +921,13 @@ export default function ResultsRoutine() {
       ) as [string, File][];
 
       if (!entries.length) {
+        const fallbackReport = buildAssessmentReport({ questionnaire: data });
         setPoseState({
           loading: false,
           error: null,
-          report: buildAssessmentReport({ questionnaire: data }),
+          report: fallbackReport,
         });
+        void pushTrainingPatch({ assessment: fallbackReport as unknown as Record<string, unknown> });
         return;
       }
 
@@ -956,15 +980,18 @@ export default function ResultsRoutine() {
           poseAnalysis: combined,
         });
         setPoseState({ loading: false, error: null, report });
+        void pushTrainingPatch({ assessment: report as unknown as Record<string, unknown> });
       } catch (error) {
+        const fallbackReport = buildAssessmentReport({ questionnaire: data });
         setPoseState({
           loading: false,
           error:
             error instanceof Error
               ? error.message
               : "Pose detection failed. Try clearer photos.",
-          report: buildAssessmentReport({ questionnaire: data }),
+          report: fallbackReport,
         });
+        void pushTrainingPatch({ assessment: fallbackReport as unknown as Record<string, unknown> });
       }
     };
 

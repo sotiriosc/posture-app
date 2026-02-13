@@ -11,7 +11,10 @@ export default function UpgradePrompt() {
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch("/api/billing/status");
+        const res = await fetch("/api/billing/status", {
+          cache: "no-store",
+          credentials: "include",
+        });
         const data = (await res.json().catch(() => null)) as {
           stripeConfigured?: boolean;
         } | null;
@@ -26,7 +29,11 @@ export default function UpgradePrompt() {
     setStripeLoading(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/billing/checkout-session", { method: "POST" });
+      const res = await fetch("/api/billing/checkout-session", {
+        method: "POST",
+        cache: "no-store",
+        credentials: "include",
+      });
       const data = (await res.json().catch(() => null)) as {
         ok?: boolean;
         url?: string;

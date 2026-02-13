@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
 
 export type QuestionnaireData = {
   goals: string;
@@ -71,11 +72,40 @@ export default function QuestionnaireForm() {
     };
   });
   const router = useRouter();
+  const [hydratedServerSnapshot, setHydratedServerSnapshot] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    const hydrate = async () => {
+      const snapshot = await loadTrainingSnapshot();
+      const remote = snapshot?.questionnaire as Partial<QuestionnaireData> | undefined;
+      if (!active || !remote) {
+        setHydratedServerSnapshot(true);
+        return;
+      }
+      const merged: QuestionnaireData = {
+        ...emptyData,
+        ...remote,
+        equipment: normalizeEquipmentSelectionValues(remote.equipment ?? ["none"]),
+        daysPerWeek: normalizeDaysPerWeek(remote.daysPerWeek),
+      };
+      setData(merged);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      setHydratedServerSnapshot(true);
+    };
+    hydrate().catch(() => setHydratedServerSnapshot(true));
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const updateData = (updates: Partial<QuestionnaireData>) => {
     const next = { ...data, ...updates };
     setData(next);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    if (hydratedServerSnapshot) {
+      void pushTrainingPatch({ questionnaire: next });
+    }
   };
 
   const toggleArrayValue = (key: "painAreas" | "equipment", value: string) => {
@@ -104,6 +134,7 @@ export default function QuestionnaireForm() {
       onSubmit={(event) => {
         event.preventDefault();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        void pushTrainingPatch({ questionnaire: data });
         router.push("/results");
       }}
     >

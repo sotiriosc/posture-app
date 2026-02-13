@@ -87,11 +87,14 @@ export default function LoginClient() {
             </Button>
             <Link
               href={`/auth/signup?next=${encodeURIComponent(next)}`}
-              className="text-xs font-semibold text-slate-300 hover:text-white"
+              className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100"
             >
               Create account
             </Link>
-            <Link href="/" className="text-xs font-semibold text-slate-300 hover:text-white">
+            <Link
+              href="/"
+              className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+            >
               Back home
             </Link>
           </div>

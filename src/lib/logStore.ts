@@ -6,6 +6,11 @@ import type {
   SessionRecord,
 } from "@/lib/types";
 import { resolveExerciseHistoryIds } from "@/lib/exercises";
+import {
+  loadTrainingSnapshot,
+  pushTrainingPatch,
+  type TrainingSnapshot,
+} from "@/lib/trainingSyncClient";
 
 const DB_NAME = "bodycoach-logs";
 const DB_VERSION = 2;
@@ -23,6 +28,9 @@ const LEGACY_PREFS_KEY = "timer_prefs";
 const LEGACY_FEEDBACK_KEY = "session_feedback";
 
 let dbPromise: Promise<IDBDatabase> | null = null;
+let serverHydrationPromise: Promise<void> | null = null;
+let lastServerHydratedAt = 0;
+const SERVER_HYDRATION_TTL_MS = 12_000;
 
 const openDb = () => {
   if (dbPromise) return dbPromise;
@@ -269,25 +277,95 @@ const migrateFromLocalStorage = async () => {
   localStorage.removeItem(LEGACY_FEEDBACK_KEY);
 };
 
+const hydrateFromServerSnapshot = async (snapshot: TrainingSnapshot | null) => {
+  if (!snapshot) return;
+
+  if (snapshot.questionnaire !== undefined && snapshot.questionnaire !== null) {
+    localStorage.setItem("posture_questionnaire", JSON.stringify(snapshot.questionnaire));
+  }
+
+  if (snapshot.prefs) {
+    await savePrefsRecord(snapshot.prefs);
+  }
+
+  if (snapshot.programs?.length) {
+    await withStore(STORE_PROGRAMS, "readwrite", async (store) => {
+      for (const program of snapshot.programs ?? []) {
+        await requestToPromise(store.put(program));
+      }
+      return true;
+    });
+  }
+
+  if (snapshot.programProgress?.length) {
+    await withStore(STORE_PROGRESS, "readwrite", async (store) => {
+      for (const progress of snapshot.programProgress ?? []) {
+        await requestToPromise(store.put(progress));
+      }
+      return true;
+    });
+  }
+
+  if (snapshot.sessions?.length) {
+    await withStore(STORE_SESSIONS, "readwrite", async (store) => {
+      for (const session of snapshot.sessions ?? []) {
+        await requestToPromise(store.put(session));
+      }
+      return true;
+    });
+  }
+
+  if (snapshot.exerciseLogs?.length) {
+    await withStore(STORE_LOGS, "readwrite", async (store) => {
+      for (const log of snapshot.exerciseLogs ?? []) {
+        await requestToPromise(store.put(log));
+      }
+      return true;
+    });
+  }
+};
+
+const ensureServerHydrated = async () => {
+  if (typeof window === "undefined") return;
+  const now = Date.now();
+  if (now - lastServerHydratedAt < SERVER_HYDRATION_TTL_MS) return;
+  if (serverHydrationPromise) return serverHydrationPromise;
+  serverHydrationPromise = (async () => {
+    const snapshot = await loadTrainingSnapshot();
+    await hydrateFromServerSnapshot(snapshot);
+    lastServerHydratedAt = Date.now();
+  })()
+    .catch(() => {})
+    .finally(() => {
+      serverHydrationPromise = null;
+    });
+  await serverHydrationPromise;
+};
+
 export const init = async () => {
   await openDb();
   await migrateFromLocalStorage();
+  await ensureServerHydrated();
 };
 
 export const createSession = async (session: SessionRecord) => {
   await init();
-  return withStore(STORE_SESSIONS, "readwrite", async (store) => {
+  const saved = await withStore(STORE_SESSIONS, "readwrite", async (store) => {
     await requestToPromise(store.put(session));
     return session;
   });
+  void pushTrainingPatch({ sessions: [saved] });
+  return saved;
 };
 
 export const updateSession = async (session: SessionRecord) => {
   await init();
-  return withStore(STORE_SESSIONS, "readwrite", async (store) => {
+  const saved = await withStore(STORE_SESSIONS, "readwrite", async (store) => {
     await requestToPromise(store.put(session));
     return session;
   });
+  void pushTrainingPatch({ sessions: [saved] });
+  return saved;
 };
 
 export const listSessions = async (limit = 20) => {
@@ -336,10 +414,12 @@ export const listExerciseLogsByProgramDay = async (
 
 export const saveProgram = async (program: Program) => {
   await init();
-  return withStore(STORE_PROGRAMS, "readwrite", async (store) => {
+  const saved = await withStore(STORE_PROGRAMS, "readwrite", async (store) => {
     await requestToPromise(store.put(program));
     return program;
   });
+  void pushTrainingPatch({ programs: [saved] });
+  return saved;
 };
 
 export const getLatestProgram = async () => {
@@ -376,10 +456,12 @@ export const listAllPrograms = async () => {
 
 export const saveProgramProgress = async (progress: ProgramProgress) => {
   await init();
-  return withStore(STORE_PROGRESS, "readwrite", async (store) => {
+  const saved = await withStore(STORE_PROGRESS, "readwrite", async (store) => {
     await requestToPromise(store.put(progress));
     return progress;
   });
+  void pushTrainingPatch({ programProgress: [saved] });
+  return saved;
 };
 
 export const getProgramProgress = async (programId: string) => {
@@ -393,10 +475,12 @@ export const getProgramProgress = async (programId: string) => {
 
 export const saveExerciseLog = async (log: ExerciseLog) => {
   await init();
-  return withStore(STORE_LOGS, "readwrite", async (store) => {
+  const saved = await withStore(STORE_LOGS, "readwrite", async (store) => {
     await requestToPromise(store.put(log));
     return log;
   });
+  void pushTrainingPatch({ exerciseLogs: [saved] });
+  return saved;
 };
 
 export const listExerciseLogsByExercise = async (
@@ -473,7 +557,9 @@ export const getLatestExerciseLog = async (exerciseId: string) => {
 
 export const savePrefs = async (prefs: LogPrefs) => {
   await init();
-  return savePrefsRecord(prefs);
+  const saved = await savePrefsRecord(prefs);
+  void pushTrainingPatch({ prefs: saved });
+  return saved;
 };
 
 export const loadPrefs = async () => {

@@ -12,9 +12,27 @@ const deriveHash = (password: string, salt: string) =>
 let pool: Pool | null = null;
 let initialized = false;
 
+const normalizeDatabaseUrlSslMode = (raw: string) => {
+  try {
+    const parsed = new URL(raw);
+    const sslmode = parsed.searchParams.get("sslmode")?.toLowerCase();
+    if (sslmode === "prefer" || sslmode === "require" || sslmode === "verify-ca") {
+      // Keep current secure behavior explicit and silence pg v9 migration warning.
+      parsed.searchParams.set("sslmode", "verify-full");
+      return parsed.toString();
+    }
+    return raw;
+  } catch {
+    return raw;
+  }
+};
+
 const getPool = () => {
   if (pool) return pool;
-  const connectionString = process.env.DATABASE_URL?.trim();
+  const connectionStringRaw = process.env.DATABASE_URL?.trim();
+  const connectionString = connectionStringRaw
+    ? normalizeDatabaseUrlSslMode(connectionStringRaw)
+    : "";
   if (!connectionString) {
     throw new Error("DATABASE_URL is required for USER_STORE_DRIVER=db.");
   }
