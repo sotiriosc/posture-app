@@ -17,7 +17,7 @@
   --accent-strong: #0e8de8;
   --accent-glow: rgba(35, 166, 255, 0.35);
   --danger: #f97373;
-  --hero-image: url("/images/landing-bg.png"), url("/landing-bg.png");
+  --hero-image: url("/landing-bg.png");
   --ui-card-radius: 1.1rem;
   --ui-card-border: rgba(113, 136, 168, 0.3);
   --ui-card-surface: linear-gradient(

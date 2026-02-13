@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import AuthControls from "@/components/AuthControls";
 import Button from "@/components/ui/Button";
 
@@ -7,12 +8,19 @@ export default async function Home() {
     <div className="hero-bg min-h-screen text-white">
       <div className="ui-shell flex max-w-6xl flex-col py-8 sm:py-12">
         <header className="flex flex-wrap items-center justify-between gap-4">
-          <div className="text-sm font-semibold tracking-[0.08em] text-slate-100">
-            Praxis
+          <div className="flex items-center">
+            <Image
+              src="/icons/praxis-logo-full.png"
+              alt="Praxis"
+              width={440}
+              height={132}
+              className="h-12 w-[210px] object-cover object-center sm:h-14 sm:w-[260px] lg:h-16 lg:w-[320px]"
+              priority
+            />
           </div>
           <div className="flex flex-wrap items-center gap-3 text-xs">
             <span className="hero-pill rounded-full px-3 py-1 text-slate-100">
-              Personal Trainer App
+              Praxis Personal Trainer App
             </span>
             <span className="hero-pill rounded-full px-3 py-1 text-slate-200">
               Structured. Adaptive. Clear.

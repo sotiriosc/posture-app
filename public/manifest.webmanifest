@@ -1,12 +1,24 @@
 {
-  "name": "Body Alignment Coach",
-  "short_name": "Body Coach",
+  "name": "Praxis Personal Trainer App",
+  "short_name": "Praxis",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "description": "Health, strength, posture, and recovery guidance.",
+  "background_color": "#0a0f19",
+  "theme_color": "#0a0f19",
+  "description": "Personal training for strength, posture, and movement quality.",
   "icons": [
+    {
+      "src": "/icons/praxis-mark-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/praxis-mark-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/icons/icon-192.svg",
       "sizes": "192x192",

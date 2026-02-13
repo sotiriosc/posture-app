@@ -2,17 +2,31 @@ import type { Metadata, Viewport } from "next";
 import { PhotoProvider } from "@/components/PhotoContext";
 import AppMenu from "@/components/AppMenu";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
-import ResumeSessionBanner from "@/components/ResumeSessionBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Praxis - Personal Trainer App",
+  title: "Praxis Personal Trainer App",
   description: "Personal training for strength, posture, and movement quality.",
-  applicationName: "Praxis",
+  applicationName: "Praxis Personal Trainer App",
   manifest: "/manifest.webmanifest",
+  openGraph: {
+    title: "Praxis Personal Trainer App",
+    description: "Personal training for strength, posture, and movement quality.",
+    images: [{ url: "/icons/praxis-logo-full.png" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Praxis Personal Trainer App",
+    description: "Personal training for strength, posture, and movement quality.",
+    images: ["/icons/praxis-logo-full.png"],
+  },
   icons: {
-    icon: "/icons/icon-192.svg",
-    apple: "/icons/icon-192.svg",
+    icon: [
+      { url: "/icons/praxis-favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/praxis-mark-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: [{ url: "/icons/praxis-favicon-32.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: "/icons/praxis-mark-192.png", sizes: "192x192", type: "image/png" }],
   },
 };
 
@@ -30,7 +44,6 @@ export default function RootLayout({
       <body className="antialiased">
         <AppMenu />
         <PhotoProvider>{children}</PhotoProvider>
-        <ResumeSessionBanner />
         <ServiceWorkerRegister />
       </body>
     </html>
