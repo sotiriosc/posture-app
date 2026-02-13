@@ -6,10 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { exerciseById, resolveExerciseHistoryIds } from "@/lib/exercises";
 import { getProgressionRecommendation } from "@/lib/progression";
+import { formatHistorySchemaRow, getHistoryDeltaPills } from "@/lib/historyView";
 import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
+import type { SubscriptionPlan } from "@/lib/authTypes";
 import {
   getProgram,
-  listAllExerciseLogs,
+  listExerciseLogsBySessionIds,
   listSessionsByProgramId,
 } from "@/lib/logStore";
 import BackgroundShell from "@/components/BackgroundShell";
@@ -79,6 +81,9 @@ export default function ProgramDayPage({ params }: Props) {
   const [isLoading, setIsLoading] = useState(true);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [historyIndex, setHistoryIndex] = useState(0);
+  const [authEnabled, setAuthEnabled] = useState(false);
+  const [plan, setPlan] = useState<SubscriptionPlan>("free");
+  const [sessionResolved, setSessionResolved] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -91,8 +96,10 @@ export default function ProgramDayPage({ params }: Props) {
       setDayIndex(Number.isFinite(numericDay) ? numericDay : 0);
       setProgram(loaded);
       if (loaded) {
-        const logsBySession = await listAllExerciseLogs();
         const programSessions = await listSessionsByProgramId(loaded.id);
+        const logsBySession = await listExerciseLogsBySessionIds(
+          programSessions.map((session) => session.id)
+        );
         if (!isMounted) return;
         setLogs(logsBySession);
         setSessions(programSessions);
@@ -113,7 +120,28 @@ export default function ProgramDayPage({ params }: Props) {
     };
   }, [params]);
 
+  useEffect(() => {
+    const loadSession = async () => {
+      try {
+        const response = await fetch("/api/auth/session");
+        const payload = (await response.json()) as {
+          enabled?: boolean;
+          user?: { plan?: SubscriptionPlan } | null;
+        };
+        setAuthEnabled(Boolean(payload.enabled));
+        setPlan(payload.user?.plan === "pro" ? "pro" : "free");
+      } catch {
+        setAuthEnabled(false);
+        setPlan("free");
+      } finally {
+        setSessionResolved(true);
+      }
+    };
+    loadSession();
+  }, []);
+
   const day = program?.week[dayIndex] ?? null;
+  const isFreePlan = authEnabled && plan !== "pro";
   const sections = day
     ? groupBySection(day.routine)
     : { warmup: [], activation: [], main: [], cooldown: [] };
@@ -136,111 +164,13 @@ export default function ProgramDayPage({ params }: Props) {
     setHistoryIndex(0);
   }, [dayIndex, daySessions.length]);
 
-  const formatSets = (log: ExerciseLog) =>
-    log.setsCompleted ?? log.setsPlanned ?? null;
-
-  const totalReps = (log: ExerciseLog) => {
-    if (log.repsBySet?.length) {
-      return log.repsBySet.reduce((sum, value) => sum + value, 0);
+  useEffect(() => {
+    if (!program) return;
+    if (isFreePlan && dayIndex > 0) {
+      setDayIndex(0);
+      router.replace(`/program/${program.id}/day/0`);
     }
-    return log.reps ?? null;
-  };
-
-  const repsPerSet = (log: ExerciseLog) => {
-    if (log.repsBySet?.length) {
-      const [first, ...rest] = log.repsBySet;
-      if (rest.every((value) => value === first)) return first;
-      return null;
-    }
-    return log.reps ?? null;
-  };
-
-  const formatWeightedLabel = (log: ExerciseLog) => {
-    const weight = log.weight ?? null;
-    const unit = log.unit ?? "";
-    const reps = repsPerSet(log);
-    const sets = formatSets(log);
-    if (weight === null) return null;
-    if (reps !== null && sets !== null) {
-      return `${weight}${unit} × ${reps} × ${sets}`;
-    }
-    if (reps !== null) return `${weight}${unit} × ${reps}`;
-    return `${weight}${unit}`;
-  };
-
-  const formatBodyweightLabel = (log: ExerciseLog) => {
-    const reps = repsPerSet(log) ?? totalReps(log);
-    const sets = formatSets(log);
-    if (reps === null) return null;
-    if (sets !== null) return `${reps} reps × ${sets}`;
-    return `${reps} reps`;
-  };
-
-  const formatTimedLabel = (log: ExerciseLog) => {
-    const duration = log.workSecondsUsed ?? log.durationSec ?? null;
-    const sets = formatSets(log);
-    if (duration === null) return null;
-    if (sets !== null) return `${duration}s × ${sets}`;
-    return `${duration}s`;
-  };
-
-  const formatPerformance = (log: ExerciseLog | null) => {
-    if (!log) return "No logs yet";
-    if (log.loadType === "timed") return formatTimedLabel(log) ?? "—";
-    if (log.loadType === "weighted") return formatWeightedLabel(log) ?? "—";
-    return formatBodyweightLabel(log) ?? "—";
-  };
-
-  const formatFeedbackBadge = (log: ExerciseLog) => {
-    if (!log.felt) return null;
-    const label =
-      log.felt === "moderate"
-        ? "Moderate"
-        : log.felt === "pain"
-        ? "Pain"
-        : log.felt.charAt(0).toUpperCase() + log.felt.slice(1);
-    const tone =
-      log.felt === "pain"
-        ? "border-amber-300 bg-amber-50 text-amber-900"
-        : log.felt === "hard"
-        ? "border-rose-200 bg-rose-50 text-rose-900"
-        : "border-slate-200 bg-white text-slate-600";
-    return (
-      <span
-        className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${tone}`}
-      >
-        {label}
-      </span>
-    );
-  };
-
-  const formatLogSummary = (
-    log: ExerciseLog,
-    exerciseLoadType: ExerciseLog["loadType"]
-  ) => {
-    const date = log.createdAt.slice(0, 10);
-    const sets = formatSets(log);
-    const reps = repsPerSet(log) ?? totalReps(log);
-    const weight =
-      log.weight !== null && log.weight !== undefined
-        ? `${log.weight}${log.unit ?? ""}`
-        : null;
-    const timedSummary =
-      log.workSecondsUsed || log.restSecondsUsed || exerciseLoadType === "timed"
-        ? `${log.workSecondsUsed ?? log.durationSec ?? "--"}s work${
-            log.restSecondsUsed ? ` • ${log.restSecondsUsed}s rest` : ""
-          }`
-        : null;
-    const summary = [
-      weight,
-      reps ? `${reps} reps` : null,
-      sets ? `${sets} sets` : null,
-      timedSummary,
-    ]
-      .filter(Boolean)
-      .join(" • ");
-    return { date, summary };
-  };
+  }, [isFreePlan, dayIndex, program, router]);
 
   const formatRecommendation = (
     rec: ReturnType<typeof getProgressionRecommendation>
@@ -255,52 +185,6 @@ export default function ProgramDayPage({ params }: Props) {
     return parts.join(" • ");
   };
 
-  const formatFeedback = (log: ExerciseLog | null) => {
-    if (!log?.felt) return null;
-    const label =
-      log.felt === "moderate"
-        ? "Moderate"
-        : log.felt === "pain"
-        ? "Pain / discomfort"
-        : log.felt.charAt(0).toUpperCase() + log.felt.slice(1);
-    const location = log.painLocation ? ` • ${log.painLocation}` : "";
-    const notes = log.feedbackNotes ? ` — ${log.feedbackNotes}` : "";
-    return `${label}${location}${notes}`;
-  };
-
-  const getDeltaPills = (last: ExerciseLog | null, prev: ExerciseLog | null) => {
-    if (!last || !prev) return [] as string[];
-    const deltas: string[] = [];
-    const labelWithSign = (diff: number) => (diff >= 0 ? `+${diff}` : `${diff}`);
-
-    if (last.loadType === "weighted" && last.weight !== null && prev.weight !== null) {
-      const diff = Number((last.weight - prev.weight).toFixed(2));
-      if (diff !== 0) {
-        deltas.push(`${labelWithSign(diff)} ${last.unit ?? ""} wt`);
-      }
-    }
-
-    const lastPerSet = repsPerSet(last);
-    const prevPerSet = repsPerSet(prev);
-    if (lastPerSet !== null && prevPerSet !== null) {
-      const diff = lastPerSet - prevPerSet;
-      if (diff !== 0) {
-        deltas.push(`${labelWithSign(diff)} reps`);
-      }
-    }
-
-    const lastDuration = last.workSecondsUsed ?? last.durationSec ?? null;
-    const prevDuration = prev.workSecondsUsed ?? prev.durationSec ?? null;
-    if (lastDuration !== null && prevDuration !== null) {
-      const diff = lastDuration - prevDuration;
-      if (diff !== 0 && last.loadType === "timed") {
-        deltas.push(`${labelWithSign(diff)}s work`);
-      }
-    }
-
-    return deltas;
-  };
-
   const sectionGroups = useMemo(
     () =>
       [
@@ -312,6 +196,7 @@ export default function ProgramDayPage({ params }: Props) {
 
   const navigateDay = (targetIndex: number) => {
     if (!program) return;
+    if (isFreePlan) return;
     const bounded = Math.max(0, Math.min(targetIndex, program.week.length - 1));
     if (bounded === dayIndex) return;
     setDayIndex(bounded);
@@ -339,13 +224,13 @@ export default function ProgramDayPage({ params }: Props) {
     setTouchStartX(null);
   };
 
-  if (!program || !day) {
+  if (!sessionResolved || !program || !day) {
     return (
       <BackgroundShell>
         <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
           <OnImage>
             <h1 className="text-2xl font-semibold text-white">
-              Program not found
+              {!sessionResolved ? "Loading access..." : "Program not found"}
             </h1>
             <Link href="/results">
               <Button variant="secondary">Back to program</Button>
@@ -404,20 +289,26 @@ export default function ProgramDayPage({ params }: Props) {
                       ? "border-white bg-white text-slate-900"
                       : "border-slate-300/80 bg-slate-900/20 text-slate-100 hover:border-white"
                   }`}
+                  disabled={isFreePlan}
                 >
                   {programDay.title}
                 </button>
               ))}
             </div>
+            {isFreePlan ? (
+              <p className="text-xs text-slate-200">
+                Free plan shows Day 1 history only. Upgrade to switch days.
+              </p>
+            ) : null}
           </header>
         </OnImage>
-        <div className="rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-lg backdrop-blur">
+        <div className="ui-card p-5 backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <p className="ui-kicker">
                 Day Performance
               </p>
-              <p className="text-sm text-slate-600">
+              <p className="ui-body">
                 {activeSessionDate
                   ? `Recorded session: ${activeSessionDate}`
                   : "No completed session yet for this day."}
@@ -459,7 +350,7 @@ export default function ProgramDayPage({ params }: Props) {
             })}
           </div>
           {!daySessions.length ? (
-            <p className="mt-3 text-xs text-slate-500">
+            <p className="mt-3 ui-body">
               No recorded workouts yet for this day. Start this day to create the first dated entry.
             </p>
           ) : null}
@@ -471,7 +362,7 @@ export default function ProgramDayPage({ params }: Props) {
           >
             {sectionGroups.map((group) => (
               <section key={group.sectionKey} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <h3 className="text-sm font-semibold text-slate-900">{group.sectionTitle}</h3>
+                <h3 className="ui-title">{group.sectionTitle}</h3>
                 <div className="mt-3 space-y-3">
                   {group.items.map((item, index) => {
                     const exercise = exerciseById(item.exerciseId);
@@ -521,9 +412,9 @@ export default function ProgramDayPage({ params }: Props) {
                     const nextLine = recommendation
                       ? `Next: ${formatRecommendation(recommendation)}`
                       : "Next: Keep targets consistent";
-                    const deltaPills = getDeltaPills(lastLog, prevLog);
-                    const lastLabel = formatPerformance(lastLog);
-                    const previousLabel = formatPerformance(prevLog);
+                    const deltaPills = getHistoryDeltaPills(lastLog, prevLog);
+                    const thisSessionRow = formatHistorySchemaRow(lastLog);
+                    const previousSessionRow = formatHistorySchemaRow(prevLog);
                     return (
                       <article
                         key={`${group.sectionKey}-${item.exerciseId}-${index}`}
@@ -531,11 +422,11 @@ export default function ProgramDayPage({ params }: Props) {
                       >
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold text-slate-900">
+                            <p className="truncate ui-title">
                               {exercise?.name ?? "Exercise"}
                             </p>
-                            <p className="mt-1 text-xs font-semibold text-slate-700">{nextLine}</p>
-                            <p className="mt-1 text-xs text-slate-500">Prescribed: {prescribedLine}</p>
+                            <p className="mt-1 ui-body font-semibold text-slate-700">{nextLine}</p>
+                            <p className="mt-1 ui-body">Prescribed: {prescribedLine}</p>
                           </div>
                           <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold text-slate-500">
                             <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">
@@ -544,15 +435,13 @@ export default function ProgramDayPage({ params }: Props) {
                           </div>
                         </div>
 
-                        <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
-                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-600">
-                            This session: {lastLabel}
+                        <div className="mt-2 flex flex-col gap-1.5">
+                          <span className="ui-row-schema" data-testid="history-row-current">
+                            This session: {thisSessionRow}
                           </span>
-                          {prevLog ? (
-                            <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-600">
-                              Previous: {previousLabel}
-                            </span>
-                          ) : null}
+                          <span className="ui-row-schema" data-testid="history-row-previous">
+                            Previous: {previousSessionRow}
+                          </span>
                         </div>
                         <div className="mt-2 flex flex-wrap gap-2">
                           {deltaPills.length ? (

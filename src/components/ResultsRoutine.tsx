@@ -54,6 +54,7 @@ import {
   saveProgramProgress,
   uuid,
 } from "@/lib/logStore";
+import type { SubscriptionPlan } from "@/lib/authTypes";
 import { getProgressionRecommendation } from "@/lib/progression";
 import {
   buildNextWeekPlan,
@@ -142,6 +143,8 @@ export default function ResultsRoutine() {
   const [advanceConfirm, setAdvanceConfirm] = useState(false);
   const [advanceMessage, setAdvanceMessage] = useState<string | null>(null);
   const [lastTwoLogs, setLastTwoLogs] = useState<ExerciseLog[]>([]);
+  const [authEnabled, setAuthEnabled] = useState(false);
+  const [plan, setPlan] = useState<SubscriptionPlan>("free");
   const { photos } = usePhotoContext();
   const [poseState, setPoseState] = useState<{
     loading: boolean;
@@ -174,9 +177,29 @@ export default function ResultsRoutine() {
   }, []);
 
   useEffect(() => {
+    const loadSession = async () => {
+      try {
+        const response = await fetch("/api/auth/session");
+        const payload = (await response.json()) as {
+          enabled?: boolean;
+          authenticated?: boolean;
+          user?: { plan?: SubscriptionPlan } | null;
+        };
+        setAuthEnabled(Boolean(payload.enabled));
+        setPlan(payload.user?.plan === "pro" ? "pro" : "free");
+      } catch {
+        setAuthEnabled(false);
+        setPlan("free");
+      }
+    };
+    loadSession();
+  }, []);
+
+  useEffect(() => {
     const loadLogs = async () => {
       if (!program) return;
-      const day = program.week[selectedDay];
+      const dayIndex = authEnabled && plan !== "pro" ? 0 : selectedDay;
+      const day = program.week[dayIndex];
       if (!day) return;
       const ids = Array.from(new Set(day.routine.map((item) => item.exerciseId)));
       const entries = await Promise.all(
@@ -189,7 +212,7 @@ export default function ResultsRoutine() {
       setLatestLogsByExercise(Object.fromEntries(entries));
     };
     loadLogs();
-  }, [program, selectedDay, substitutionByExercise]);
+  }, [program, selectedDay, substitutionByExercise, authEnabled, plan]);
 
   const routine = useMemo(() => {
     if (!data) return defaultRoutine;
@@ -198,7 +221,8 @@ export default function ResultsRoutine() {
 
   const dayPreviewRecommendations = useMemo(() => {
     if (!program) return [];
-    const day = program.week[selectedDay];
+    const dayIndex = authEnabled && plan !== "pro" ? 0 : selectedDay;
+    const day = program.week[dayIndex];
     if (!day) return [];
     return day.routine
       .map((item) => {
@@ -233,7 +257,7 @@ export default function ResultsRoutine() {
       exercise: Exercise;
       rec: ReturnType<typeof getProgressionRecommendation>;
     }>;
-  }, [program, selectedDay, latestLogsByExercise]);
+  }, [program, selectedDay, latestLogsByExercise, authEnabled, plan]);
 
   const optimizerReasonsByExercise = useMemo(
     () => program?.phaseOptimizerReport?.exerciseReasons ?? {},
@@ -242,7 +266,8 @@ export default function ResultsRoutine() {
 
   const selectedDayMastery = useMemo(() => {
     if (!program) return [];
-    const day = program.week[selectedDay];
+    const dayIndex = authEnabled && plan !== "pro" ? 0 : selectedDay;
+    const day = program.week[dayIndex];
     if (!day) return [];
     return day.routine.slice(0, 4).map((item) => {
       const exercise = exerciseById(item.exerciseId);
@@ -255,7 +280,7 @@ export default function ResultsRoutine() {
       })();
       return `Day ${day.dayIndex + 1} ${day.title}: ${exercise?.name ?? "Exercise"} - ${cue}; check: ${checkpoint}.`;
     });
-  }, [program, selectedDay]);
+  }, [program, selectedDay, authEnabled, plan]);
   const masteryItems = useMemo(() => {
     if (selectedDayMastery.length) return selectedDayMastery.slice(0, 4);
     return (
@@ -491,6 +516,18 @@ export default function ResultsRoutine() {
 
   useEffect(() => {
     if (!program) return;
+    if (!authEnabled || plan === "pro") return;
+    if (selectedDay > 0) {
+      setSelectedDay(0);
+    }
+  }, [program, authEnabled, plan, selectedDay]);
+
+  useEffect(() => {
+    if (!program) return;
+    const stateDay =
+      authEnabled && plan !== "pro"
+        ? 0
+        : Math.min(Math.max(0, selectedDay), Math.max(0, program.week.length - 1));
     const state = loadAppState();
     const nextVersion =
       typeof state?.programVersion === "number"
@@ -499,13 +536,13 @@ export default function ResultsRoutine() {
     saveAppState({
       programId: program.id,
       activeProgramId: program.id,
-      selectedDay,
+      selectedDay: stateDay,
       activePhaseIndex: program.phaseIndex ?? 1,
       activeCycleIndex: program.cycleIndex ?? 1,
       programVersion: nextVersion,
       lastRoute: "/results",
     });
-  }, [program, selectedDay]);
+  }, [program, selectedDay, authEnabled, plan]);
 
   const completedByDay = useMemo(() => {
     const map = new Map<number, SessionRecord[]>();
@@ -540,6 +577,10 @@ export default function ResultsRoutine() {
   }, [completedByDay]);
 
   const activeDaysPerWeek = program?.daysPerWeek ?? data?.daysPerWeek ?? 3;
+  const isFreePlan = authEnabled && plan !== "pro";
+  const isDayLocked = (dayIndex: number) => isFreePlan && dayIndex > 0;
+  const effectiveSelectedDay = isDayLocked(selectedDay) ? 0 : selectedDay;
+  const effectiveNextDayIndex = isDayLocked(nextDayIndex) ? 0 : nextDayIndex;
 
   const completedSessions = useMemo(() => {
     return programSessions
@@ -1107,7 +1148,7 @@ export default function ResultsRoutine() {
             Priority execution cues
           </h3>
           <p className="mt-1 text-xs font-medium text-slate-700">
-            Viewing Day {selectedDay + 1}: {program.week[selectedDay]?.title ?? "Current day"}
+            Viewing Day {effectiveSelectedDay + 1}: {program.week[effectiveSelectedDay]?.title ?? "Current day"}
           </p>
           <p className="mt-2 text-[11px] text-slate-500">
             Click any day in Program Dashboard below and this list updates for that day.
@@ -1116,10 +1157,10 @@ export default function ResultsRoutine() {
             This is the exact day this card is coaching right now.
           </p>
           <Link
-            href={`/session?programId=${program.id}&dayIndex=${selectedDay}`}
+            href={`/session?programId=${program.id}&dayIndex=${effectiveSelectedDay}`}
             className="mt-3 inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-100"
           >
-            Start Day {selectedDay + 1} now
+            Start Day {effectiveSelectedDay + 1} now
           </Link>
           <div className="mt-3 space-y-2 text-xs text-slate-700">
             {masteryItems.map((item) => (
@@ -1286,7 +1327,7 @@ export default function ResultsRoutine() {
             ) : null}
           </div>
           <Link
-            href={`/session?programId=${program?.id ?? ""}&dayIndex=${nextDayIndex}`}
+            href={`/session?programId=${program?.id ?? ""}&dayIndex=${effectiveNextDayIndex}`}
             className="rounded-full bg-slate-900 px-5 py-2 text-xs font-semibold text-white"
           >
             {completedCount >= activeDaysPerWeek
@@ -1298,10 +1339,10 @@ export default function ResultsRoutine() {
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-600">
           <span className="rounded-full border border-slate-200 px-3 py-1">
-            Day {nextDayIndex + 1} of {activeDaysPerWeek}
+            Day {effectiveNextDayIndex + 1} of {activeDaysPerWeek}
           </span>
           <span className="rounded-full border border-slate-200 px-3 py-1">
-            You are on Week {completedWeeks + 1}, Day {nextDayIndex + 1}
+            You are on Week {completedWeeks + 1}, Day {effectiveNextDayIndex + 1}
           </span>
           <span
             data-testid="completed-count"
@@ -1332,22 +1373,27 @@ export default function ResultsRoutine() {
               {program.week.map((day) => {
                 const isCompleted = completedByDay.has(day.dayIndex);
                 const isNext = day.dayIndex === nextDayIndex;
-                const isSelected = day.dayIndex === selectedDay;
+                const isSelected = day.dayIndex === effectiveSelectedDay;
+                const isLocked = isDayLocked(day.dayIndex);
                 return (
                   <div
                     key={day.dayIndex}
-                    className={`relative rounded-2xl border bg-slate-50 px-4 py-3 text-left transition ${
+                    className={`relative overflow-hidden rounded-2xl border bg-slate-50 px-4 py-3 text-left transition ${
                       isSelected
                         ? "border-slate-900 ring-2 ring-slate-900/20"
                         : "border-slate-200"
-                    }`}
+                    } ${isLocked ? "opacity-85" : ""}`}
                   >
                     <button
                       type="button"
                       aria-label={`Select Day ${day.dayIndex + 1}`}
                       aria-pressed={isSelected}
-                      onClick={() => setSelectedDay(day.dayIndex)}
-                      className="absolute inset-0 rounded-2xl"
+                      onClick={() => {
+                        if (isLocked) return;
+                        setSelectedDay(day.dayIndex);
+                      }}
+                      className="absolute inset-0 rounded-2xl disabled:cursor-not-allowed"
+                      disabled={isLocked}
                     />
                     <div className="relative z-10 pointer-events-none">
                       <div className="flex items-start justify-between gap-2">
@@ -1375,21 +1421,33 @@ export default function ResultsRoutine() {
                       </div>
                     </div>
                     <div className="absolute right-2 top-2 z-20 flex gap-2">
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          router.push(
-                            `/program/${program.id}/day/${day.dayIndex}`
-                          );
-                        }}
-                        aria-label={`View Day ${day.dayIndex + 1} history`}
-                        title="History"
-                        className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-slate-700 shadow-sm hover:bg-slate-100"
-                      >
-                        History
-                      </button>
+                      {!isLocked ? (
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            router.push(
+                              `/program/${program.id}/day/${day.dayIndex}`
+                            );
+                          }}
+                          aria-label={`View Day ${day.dayIndex + 1} history`}
+                          title="History"
+                          className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-slate-700 shadow-sm hover:bg-slate-100"
+                        >
+                          History
+                        </button>
+                      ) : null}
                     </div>
+                    {isLocked ? (
+                      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center backdrop-blur-[2px]">
+                        <span className="rounded-full border border-slate-300 bg-white/85 px-3 py-1 text-[10px] font-semibold text-slate-700">
+                          Pro required
+                        </span>
+                      </div>
+                    ) : null}
+                    {isLocked ? (
+                      <div className="pointer-events-none absolute inset-0 z-[9] bg-gradient-to-r from-slate-100/20 via-slate-100/35 to-slate-100/20" />
+                    ) : null}
                   </div>
                 );
               })}
@@ -1404,14 +1462,14 @@ export default function ResultsRoutine() {
                     Day Preview
                   </p>
                   <h3 className="mt-1 text-lg font-semibold text-white">
-                    Day {selectedDay + 1}: {program.week[selectedDay].title}
+                    Day {effectiveSelectedDay + 1}: {program.week[effectiveSelectedDay].title}
                   </h3>
                   <p className="mt-1 text-xs text-slate-200">
-                    Focus: {program.week[selectedDay].focusTags.join(", ")}
+                    Focus: {program.week[effectiveSelectedDay].focusTags.join(", ")}
                   </p>
                 </div>
                 <Link
-                  href={`/session?programId=${program.id}&dayIndex=${selectedDay}`}
+                  href={`/session?programId=${program.id}&dayIndex=${effectiveSelectedDay}`}
                 >
                   <Button variant="secondary" data-testid="start-selected-day">
                     Start Selected Day
@@ -1422,11 +1480,11 @@ export default function ResultsRoutine() {
                 <button
                   type="button"
                   onClick={() =>
-                    router.push(`/program/${program.id}/day/${selectedDay}`)
+                    router.push(`/program/${program.id}/day/${effectiveSelectedDay}`)
                   }
                   className="text-xs font-semibold text-slate-200 underline-offset-4 hover:underline"
                 >
-                  View Day {selectedDay + 1} history
+                  View Day {effectiveSelectedDay + 1} history
                 </button>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-200">
@@ -1448,21 +1506,30 @@ export default function ResultsRoutine() {
                   <button
                     key={day.dayIndex}
                     type="button"
-                    onClick={() => setSelectedDay(day.dayIndex)}
-                    className={`rounded-full border px-3 py-1 text-xs font-semibold ${
-                      selectedDay === day.dayIndex
+                    onClick={() => {
+                      if (isDayLocked(day.dayIndex)) return;
+                      setSelectedDay(day.dayIndex);
+                    }}
+                    className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                      effectiveSelectedDay === day.dayIndex
                         ? "border-white/40 bg-white/20 text-white"
                         : "border-white/20 text-slate-200"
-                    }`}
+                    } ${isDayLocked(day.dayIndex) ? "opacity-60 blur-[1px] cursor-not-allowed" : ""}`}
+                    disabled={isDayLocked(day.dayIndex)}
                   >
-                    Day {day.dayIndex + 1}
+                    Day {day.dayIndex + 1}{isDayLocked(day.dayIndex) ? " (Pro)" : ""}
                   </button>
                 ))}
               </div>
+              {isFreePlan ? (
+                <p className="mt-2 text-[11px] text-slate-200">
+                  Free plan preview is limited to Day 1. Upgrade to unlock Day 2–{program.daysPerWeek}.
+                </p>
+              ) : null}
 
               <div className="mt-4 flex-1 overflow-y-auto pr-1">
                 <div className="space-y-2 text-xs text-slate-200">
-                  {program.week[selectedDay].routine.map((item, index) => {
+                  {program.week[effectiveSelectedDay].routine.map((item, index) => {
                     const exercise = exerciseById(item.exerciseId);
                     if (!exercise) return null;
                     const reason =
@@ -1470,7 +1537,7 @@ export default function ResultsRoutine() {
                       buildWhyPicked(exercise).purpose;
                     return (
                       <div
-                        key={`${item.exerciseId}-${index}-${selectedDay}`}
+                        key={`${item.exerciseId}-${index}-${effectiveSelectedDay}`}
                         className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -1518,13 +1585,13 @@ export default function ResultsRoutine() {
                 ) : null}
                 {showDebug ? (
                   <div className="mt-4 space-y-2 text-xs text-slate-200">
-                    {program.week[selectedDay].routine.map((item, index) => {
+                    {program.week[effectiveSelectedDay].routine.map((item, index) => {
                       const exercise = exerciseById(item.exerciseId);
                       if (!exercise) return null;
                       const why = buildWhyPicked(exercise);
                       return (
                         <div
-                          key={`debug-${item.exerciseId}-${index}-${selectedDay}`}
+                          key={`debug-${item.exerciseId}-${index}-${effectiveSelectedDay}`}
                           className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
                         >
                           <p className="font-semibold text-white">
@@ -1554,10 +1621,10 @@ export default function ResultsRoutine() {
                 ) : null}
                 <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-200">
                   <span className="rounded-full border border-white/20 px-3 py-1">
-                    {completedByDay.has(selectedDay) ? "Completed" : "Pending"}
+                    {completedByDay.has(effectiveSelectedDay) ? "Completed" : "Pending"}
                   </span>
                   <span className="rounded-full border border-white/20 px-3 py-1">
-                    Sessions: {completedByDay.get(selectedDay)?.length ?? 0}
+                    Sessions: {completedByDay.get(effectiveSelectedDay)?.length ?? 0}
                   </span>
                 </div>
 
@@ -1583,7 +1650,7 @@ export default function ResultsRoutine() {
                     id="coachs-corner-list"
                     className="mt-4 flex flex-wrap gap-2 text-xs"
                   >
-                    {program.week[selectedDay].routine.map((item, index) => {
+                    {program.week[effectiveSelectedDay].routine.map((item, index) => {
                       const exercise = exerciseById(item.exerciseId);
                       if (!exercise) return null;
                       return (

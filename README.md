@@ -45,7 +45,8 @@ src/
 - `/program/[programId]/day/[dayIndex]` — day details + history
 - `/exercise/[id]` — exercise detail
 - `/progress` — progress overview
-- `/settings` — backup/restore + reset
+- `/settings` — admin-only backup/restore + telemetry + reset
+- `/admin/access` — admin unlock page (not linked in UI)
 
 ## Data Storage
 LocalStorage
@@ -65,10 +66,47 @@ npm run dev
 ```
 Open `http://localhost:3000`.
 
+Admin gate:
+```
+ADMIN_ACCESS_KEY=your-secret-key
+```
+Set this in your environment before running. Use `/admin/access` to unlock admin cookie, then `/settings` becomes available.
+
+Auth + subscription gate:
+```
+AUTH_SECRET=your-long-random-secret
+AUTH_USER_EMAIL=you@example.com
+AUTH_USER_PASSWORD=your-password
+AUTH_USER_PLAN=free
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PRICE_ID=price_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+APP_URL=http://localhost:3000
+```
+- `/auth/login` handles sign-in.
+- Protected routes: `/results`, `/session`, `/program`, `/progress`.
+- Entitlement rule: `free` can execute only Day 1 workouts; `pro` unlocks all days.
+- Users are stored server-side in `data/users.json` with salted+hashed passwords.
+- `AUTH_USER_*` values act as bootstrap credentials: first run seeds the initial user in storage.
+- `USER_STORE_DRIVER` controls storage backend (`file` default, `db` reserved for upcoming database adapter).
+- With `USER_STORE_DRIVER=db`, users are stored in Postgres table `app_users` (auto-created on first use).
+- Stripe endpoints:
+  - `POST /api/billing/checkout-session`
+  - `POST /api/billing/portal-session`
+  - `POST /api/billing/webhook`
+- Security:
+  - rotate Stripe/API secrets before production
+  - never use `sk_live_...` in local/dev environments
+
 ## Build
 ```
 npm run build
 ```
+
+## Vercel Deployment
+- Use `Preview` as staging and keep Stripe in test mode there.
+- Use `Production` for live traffic with live Stripe keys.
+- Full setup guide: `docs/vercel-deployment.md`.
 
 ## Tests
 ```

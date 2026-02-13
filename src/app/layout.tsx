@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { PhotoProvider } from "@/components/PhotoContext";
-import InstallApp from "@/components/InstallApp";
+import AppMenu from "@/components/AppMenu";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import ResumeSessionBanner from "@/components/ResumeSessionBanner";
 import "./globals.css";
@@ -28,9 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <AppMenu />
         <PhotoProvider>{children}</PhotoProvider>
         <ResumeSessionBanner />
-        <InstallApp />
         <ServiceWorkerRegister />
       </body>
     </html>

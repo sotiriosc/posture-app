@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -17,9 +17,54 @@ import {
 } from "@/lib/logStore";
 import type { ExerciseLog, LogPrefs, Program, SessionRecord } from "@/lib/types";
 import { resetAllAppData } from "@/lib/resetAppData";
+import {
+  listSessionDropoffTelemetry,
+  type SessionDropoffEvent,
+} from "@/lib/telemetry";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+
+type QaChecklistItem = {
+  id: string;
+  label: string;
+  detail: string;
+};
+
+const QA_CHECKLIST_ITEMS: QaChecklistItem[] = [
+  {
+    id: "qa-flow-questionnaire",
+    label: "Questionnaire flow",
+    detail: "Complete questionnaire and confirm correct 3/4/5 day split output.",
+  },
+  {
+    id: "qa-flow-session",
+    label: "Session flow",
+    detail: "Run full session, save data, and ensure progress advances to next day.",
+  },
+  {
+    id: "qa-flow-history",
+    label: "History correctness",
+    detail: "Verify date • load • reps×sets • timer • feedback lines match last log.",
+  },
+  {
+    id: "qa-mobile-touch",
+    label: "Mobile touch/swipe",
+    detail: "Check day/session history swipes and controls on phone and tablet.",
+  },
+  {
+    id: "qa-resume-draft",
+    label: "Resume + autosave",
+    detail: "Exit during session and confirm resume draft restores exact state.",
+  },
+  {
+    id: "qa-offline-recovery",
+    label: "Offline recovery",
+    detail: "Toggle offline/online and confirm data sync state is consistent.",
+  },
+];
+
+const QA_STORAGE_KEY = "device_qa_checklist_v1";
 
 const toCsv = (rows: Record<string, string | number | null>[]) => {
   const headers = Object.keys(rows[0] ?? {});
@@ -50,12 +95,130 @@ const downloadFile = (content: string, filename: string, type: string) => {
   URL.revokeObjectURL(url);
 };
 
+const loadQaChecklistState = () => {
+  if (typeof window === "undefined") return {} as Record<string, boolean>;
+  const raw = window.localStorage.getItem(QA_STORAGE_KEY);
+  if (!raw) return {} as Record<string, boolean>;
+  try {
+    const parsed = JSON.parse(raw) as Record<string, boolean>;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+};
+
+const saveQaChecklistState = (state: Record<string, boolean>) => {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(QA_STORAGE_KEY, JSON.stringify(state));
+};
+
 export default function SettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [confirmText, setConfirmText] = useState("");
+  const [dropoffEvents, setDropoffEvents] = useState<SessionDropoffEvent[]>([]);
+  const [qaChecklist, setQaChecklist] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setDropoffEvents(listSessionDropoffTelemetry());
+    setQaChecklist(loadQaChecklistState());
+  }, []);
+
+  const telemetrySummary = useMemo(() => {
+    const now = Date.now();
+    const oneDayAgo = now - 24 * 60 * 60 * 1000;
+    const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const inLast24h = dropoffEvents.filter(
+      (event) => new Date(event.at).getTime() >= oneDayAgo
+    );
+    const inLast7d = dropoffEvents.filter(
+      (event) => new Date(event.at).getTime() >= sevenDaysAgo
+    );
+    const reasonCounts = inLast7d.reduce((acc, event) => {
+      acc[event.reason] = (acc[event.reason] ?? 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    const earlyDropoffCount = inLast7d.filter((event) => event.exerciseIndex <= 1).length;
+    const earlyDropoffPct = inLast7d.length
+      ? Math.round((earlyDropoffCount / inLast7d.length) * 100)
+      : 0;
+    const perDayDropoffs = inLast7d.reduce((acc, event) => {
+      const key = event.dayIndex === null ? "unknown" : `Day ${event.dayIndex + 1}`;
+      acc[key] = (acc[key] ?? 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    const topDay = Object.entries(perDayDropoffs).sort((a, b) => b[1] - a[1])[0] ?? null;
+
+    const alerts: string[] = [];
+    if (inLast7d.length >= 10 && earlyDropoffPct >= 45) {
+      alerts.push(
+        `High early drop-off: ${earlyDropoffPct}% of exits happen in the first two exercises.`
+      );
+    }
+    if ((reasonCounts.exit_button ?? 0) >= 8) {
+      alerts.push("Exit button is used frequently. Review session friction around first half.");
+    }
+    if ((reasonCounts.pagehide ?? 0) >= 8) {
+      alerts.push("Many pagehide exits detected. Check interruptions/background behavior.");
+    }
+    if (!alerts.length && inLast7d.length > 0) {
+      alerts.push("No major telemetry alert in the last 7 days.");
+    }
+    if (!inLast7d.length) {
+      alerts.push("No telemetry events yet. Run sessions on real devices to populate data.");
+    }
+
+    return {
+      inLast24h,
+      inLast7d,
+      reasonCounts,
+      earlyDropoffPct,
+      topDay,
+      alerts,
+    };
+  }, [dropoffEvents]);
+
+  const diagnostics = useMemo(() => {
+    if (typeof window === "undefined") {
+      return {
+        isTouchCapable: false,
+        isStandalone: false,
+        serviceWorkerReady: false,
+        online: true,
+      };
+    }
+    const nav = window.navigator as Navigator & { standalone?: boolean };
+    const isStandalone =
+      window.matchMedia?.("(display-mode: standalone)").matches || Boolean(nav.standalone);
+    return {
+      isTouchCapable:
+        "ontouchstart" in window || (navigator.maxTouchPoints ?? 0) > 0,
+      isStandalone,
+      serviceWorkerReady: Boolean(navigator.serviceWorker?.controller),
+      online: navigator.onLine,
+    };
+  }, []);
+
+  const qaProgress = useMemo(() => {
+    const completed = QA_CHECKLIST_ITEMS.filter((item) => qaChecklist[item.id]).length;
+    return { completed, total: QA_CHECKLIST_ITEMS.length };
+  }, [qaChecklist]);
+
+  const toggleQaItem = (id: string) => {
+    setQaChecklist((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      saveQaChecklistState(next);
+      return next;
+    });
+  };
+
+  const handleLockAdmin = async () => {
+    await fetch("/api/admin/access", { method: "DELETE" }).catch(() => null);
+    router.replace("/");
+    router.refresh();
+  };
 
   const handleDownloadJson = async () => {
     setLoading(true);
@@ -239,9 +402,18 @@ export default function SettingsPage() {
                 Export or restore your local program data.
               </p>
             </div>
-            <Link href="/results">
-              <Button variant="secondary">Back</Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/results">
+                <Button variant="secondary">Back</Button>
+              </Link>
+              <button
+                type="button"
+                onClick={handleLockAdmin}
+                className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white hover:bg-white/15"
+              >
+                Lock Admin
+              </button>
+            </div>
           </header>
         </OnImage>
 
@@ -306,6 +478,132 @@ export default function SettingsPage() {
               {message}
             </div>
           ) : null}
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900">
+                Telemetry dashboard (local)
+              </h2>
+              <p className="mt-1 text-xs text-slate-600">
+                Drop-off visibility: where users leave sessions and which day is at risk.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDropoffEvents(listSessionDropoffTelemetry())}
+              className="rounded-full border border-slate-200 px-4 py-1.5 text-xs font-semibold text-slate-700"
+            >
+              Refresh
+            </button>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs">
+              <p className="font-semibold text-slate-900">Last 24h</p>
+              <p className="mt-1 text-slate-700">{telemetrySummary.inLast24h.length} exits</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs">
+              <p className="font-semibold text-slate-900">Last 7d</p>
+              <p className="mt-1 text-slate-700">{telemetrySummary.inLast7d.length} exits</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs">
+              <p className="font-semibold text-slate-900">Early drop-off</p>
+              <p className="mt-1 text-slate-700">{telemetrySummary.earlyDropoffPct}%</p>
+            </div>
+          </div>
+
+          <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs text-slate-700">
+            <p className="font-semibold text-slate-900">Reason mix (7d)</p>
+            <p className="mt-1">
+              exit_button: {telemetrySummary.reasonCounts.exit_button ?? 0} • pagehide:{" "}
+              {telemetrySummary.reasonCounts.pagehide ?? 0} • route_change:{" "}
+              {telemetrySummary.reasonCounts.route_change ?? 0} • hidden:{" "}
+              {telemetrySummary.reasonCounts.visibility_hidden ?? 0}
+            </p>
+            <p className="mt-1">
+              Top drop-off day: {telemetrySummary.topDay ? `${telemetrySummary.topDay[0]} (${telemetrySummary.topDay[1]})` : "--"}
+            </p>
+          </div>
+
+          <div className="mt-3 space-y-2">
+            {telemetrySummary.alerts.map((alert) => (
+              <div
+                key={alert}
+                className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
+              >
+                {alert}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 text-xs text-slate-700">
+            <p className="font-semibold text-slate-900">Recent exits</p>
+            {dropoffEvents.length === 0 ? (
+              <p className="mt-1 text-slate-500">No events logged yet.</p>
+            ) : (
+              <ul className="mt-2 space-y-1">
+                {dropoffEvents.slice(0, 8).map((event) => (
+                  <li key={event.id} className="rounded-xl bg-slate-50 px-2 py-1">
+                    {event.at.slice(0, 16).replace("T", " ")} • {event.reason} •{" "}
+                    {event.dayIndex === null ? "Day ?" : `Day ${event.dayIndex + 1}`} •{" "}
+                    {event.exerciseId ?? "unknown"} • {event.progressPct}%
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-900">
+            Real-device QA pass
+          </h2>
+          <p className="mt-2 text-xs text-slate-600">
+            Track actual device validation before release. Keep this checklist green.
+          </p>
+          <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs text-slate-700">
+            Completed {qaProgress.completed}/{qaProgress.total}
+          </div>
+
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs text-slate-700">
+              <p className="font-semibold text-slate-900">Diagnostics</p>
+              <p className="mt-1">Touch capable: {diagnostics.isTouchCapable ? "Yes" : "No"}</p>
+              <p className="mt-1">Standalone mode: {diagnostics.isStandalone ? "Yes" : "No"}</p>
+              <p className="mt-1">
+                Service worker active: {diagnostics.serviceWorkerReady ? "Yes" : "No"}
+              </p>
+              <p className="mt-1">Online: {diagnostics.online ? "Yes" : "No"}</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs text-slate-700">
+              <p className="font-semibold text-slate-900">Recommended run order</p>
+              <p className="mt-1">1. Phone (iOS + Android)</p>
+              <p className="mt-1">2. Tablet (touch + rotation)</p>
+              <p className="mt-1">3. Desktop (Chrome + Safari)</p>
+              <p className="mt-1">4. Offline/online interruption test</p>
+            </div>
+          </div>
+
+          <div className="mt-3 space-y-2">
+            {QA_CHECKLIST_ITEMS.map((item) => (
+              <label
+                key={item.id}
+                className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 text-xs"
+              >
+                <input
+                  type="checkbox"
+                  checked={Boolean(qaChecklist[item.id])}
+                  onChange={() => toggleQaItem(item.id)}
+                  className="mt-0.5 h-4 w-4 accent-slate-900"
+                />
+                <span>
+                  <span className="font-semibold text-slate-900">{item.label}</span>
+                  <span className="mt-0.5 block text-slate-600">{item.detail}</span>
+                </span>
+              </label>
+            ))}
+          </div>
         </div>
 
         <div className="rounded-3xl border border-rose-200 bg-rose-50/40 p-6 shadow-sm">

@@ -1,7 +1,7 @@
 import Link from "next/link";
-import ContinueProgramCTA from "@/components/ContinueProgramCTA";
+import AuthControls from "@/components/AuthControls";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="hero-bg min-h-screen text-white">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-12">
@@ -17,12 +17,9 @@ export default function Home() {
               Private by design
             </span>
           </div>
-          <Link
-            href="/settings"
-            className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
-          >
-            Settings
-          </Link>
+          <div className="flex items-center gap-2">
+            <AuthControls />
+          </div>
         </header>
 
         <main className="flex flex-1 flex-col justify-center gap-10">
@@ -69,7 +66,6 @@ export default function Home() {
           </div>
         </main>
       </div>
-      <ContinueProgramCTA />
     </div>
   );
 }

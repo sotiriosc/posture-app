@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { exerciseById } from "@/lib/exercises";
@@ -13,6 +13,7 @@ import DualModeTimer from "@/components/DualModeTimer";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
+import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
 import {
   clearDraft,
   loadDraft,
@@ -131,6 +132,12 @@ export default function SessionClient() {
   const [substitutionByExercise, setSubstitutionByExercise] = useState<
     Record<string, string>
   >({});
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const saveStateTimerRef = useRef<number | null>(null);
+  const dropoffTrackedRef = useRef(false);
+  const sessionCompleteRef = useRef(false);
+  const activeIndexRef = useRef(0);
+  const sessionIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -327,6 +334,43 @@ export default function SessionClient() {
   }, [program, programDayIndex, routine, substitutionByExercise]);
 
   const currentItem = flatItems[activeIndex];
+  activeIndexRef.current = activeIndex;
+  sessionIdRef.current = sessionId;
+
+  useEffect(() => {
+    if (saveState !== "saved") return;
+    if (saveStateTimerRef.current) {
+      window.clearTimeout(saveStateTimerRef.current);
+    }
+    saveStateTimerRef.current = window.setTimeout(() => {
+      setSaveState("idle");
+    }, 1100);
+    return () => {
+      if (saveStateTimerRef.current) {
+        window.clearTimeout(saveStateTimerRef.current);
+      }
+    };
+  }, [saveState]);
+
+  const trackDropoff = (reason: "exit_button" | "pagehide" | "route_change" | "visibility_hidden") => {
+    if (dropoffTrackedRef.current) return;
+    if (sessionCompleteRef.current) return;
+    if (!sessionIdRef.current) return;
+    if (!flatItems.length) return;
+    const item = flatItems[activeIndexRef.current] ?? null;
+    const progressPct = ((activeIndexRef.current + 1) / flatItems.length) * 100;
+    saveSessionDropoffTelemetry({
+      sessionId: sessionIdRef.current,
+      programId: program?.id ?? null,
+      dayIndex: programDayIndex ?? null,
+      exerciseId: item?.exerciseId ?? null,
+      exerciseIndex: activeIndexRef.current,
+      totalExercises: flatItems.length,
+      progressPct,
+      reason,
+    });
+    dropoffTrackedRef.current = true;
+  };
   const totalItems = flatItems.length;
   const tips = [
     "Breathe steadily",
@@ -422,7 +466,9 @@ export default function SessionClient() {
       substitutionByExercise: substitutionByExercise,
     };
     setPrefs(nextPrefs);
+    setSaveState("saving");
     await savePrefs(nextPrefs);
+    setSaveState("saved");
   };
 
   const saveSubstitution = async (originalId: string, substituteId: string) => {
@@ -437,7 +483,9 @@ export default function SessionClient() {
       substitutionByExercise: nextMap,
     };
     setPrefs(nextPrefs);
+    setSaveState("saving");
     await savePrefs(nextPrefs);
+    setSaveState("saved");
   };
 
   const persistLoadPref = async (
@@ -460,7 +508,9 @@ export default function SessionClient() {
       substitutionByExercise: substitutionByExercise,
     };
     setPrefs(nextPrefs);
+    setSaveState("saving");
     await savePrefs(nextPrefs);
+    setSaveState("saved");
   };
 
   const updateTimerPrefs = async (
@@ -489,7 +539,9 @@ export default function SessionClient() {
       substitutionByExercise: substitutionByExercise,
     };
     setPrefs(nextPrefs);
+    setSaveState("saving");
     await savePrefs(nextPrefs);
+    setSaveState("saved");
   };
 
   const getTimerForExercise = (params: {
@@ -553,6 +605,8 @@ export default function SessionClient() {
     setSessionId(uuid());
     setSessionStartedAt(nowIso());
     setSessionComplete(false);
+    sessionCompleteRef.current = false;
+    dropoffTrackedRef.current = false;
     setSummary(null);
     setSummaryStats(null);
     setActiveIndex(0);
@@ -695,6 +749,7 @@ export default function SessionClient() {
     setSummary(sessionRecord);
     setSummaryStats({ completedExercises, estimatedMinutes });
     setSessionComplete(true);
+    sessionCompleteRef.current = true;
 
     if (program && programDayIndex !== null) {
       const completed = new Set(
@@ -855,6 +910,22 @@ export default function SessionClient() {
   }, [sessionId, sessionStartedAt]);
 
   useEffect(() => {
+    const onPageHide = () => trackDropoff("pagehide");
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        trackDropoff("visibility_hidden");
+      }
+    };
+    window.addEventListener("pagehide", onPageHide);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.removeEventListener("pagehide", onPageHide);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      trackDropoff("route_change");
+    };
+  }, [flatItems.length, program?.id, programDayIndex]);
+
+  useEffect(() => {
     if (!sessionId) return;
     if (!program || programDayIndex === null) return;
     const state = loadAppState();
@@ -962,7 +1033,7 @@ export default function SessionClient() {
               Session complete
             </h1>
           </OnImage>
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="ui-card p-6">
             <p className="text-sm text-slate-600">
               You completed {summaryStats.completedExercises} exercises in about{" "}
               {summaryStats.estimatedMinutes} minutes.
@@ -971,7 +1042,7 @@ export default function SessionClient() {
               Great work staying consistent today.
             </p>
           </div>
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="ui-card p-6">
             <p className="text-sm font-semibold text-slate-900">
               How did the workout feel?
             </p>
@@ -1082,7 +1153,7 @@ export default function SessionClient() {
           <span>{activeTip}</span>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <DualModeTimer
             key={currentItem.id}
             initialExerciseSeconds={timerConfig.workSeconds}
@@ -1115,24 +1186,36 @@ export default function SessionClient() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-slate-900">
+            <p className="ui-title">
               Log this exercise
             </p>
-            {lastLog ? (
-              <p className="text-xs text-slate-500">
-                Last time:{" "}
-                {lastLog.weight
-                  ? `${lastLog.weight}${lastLog.unit ?? ""}`
-                  : currentItem.loadType === "timed"
-                  ? "Timed"
-                  : currentItem.loadType === "assisted"
-                  ? "Assisted"
-                  : "Bodyweight"}{" "}
-                {lastLog.reps ? `x ${lastLog.reps} reps` : ""}
-              </p>
-            ) : null}
+            <div className="flex items-center gap-3">
+              {lastLog ? (
+                <p className="ui-body">
+                  Last time:{" "}
+                  {lastLog.weight
+                    ? `${lastLog.weight}${lastLog.unit ?? ""}`
+                    : currentItem.loadType === "timed"
+                    ? "Timed"
+                    : currentItem.loadType === "assisted"
+                    ? "Assisted"
+                    : "Bodyweight"}{" "}
+                  {lastLog.reps ? `x ${lastLog.reps} reps` : ""}
+                </p>
+              ) : null}
+              <span
+                className="ui-saving-indicator rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600"
+                data-state={saveState}
+              >
+                {saveState === "saving"
+                  ? "Saving..."
+                  : saveState === "saved"
+                  ? "Saved"
+                  : "Autosave on"}
+              </span>
+            </div>
           </div>
           <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
@@ -1213,7 +1296,7 @@ export default function SessionClient() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="ui-card p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm font-semibold text-slate-900">Sets</p>
             {maxSets > minSets ? (
@@ -1289,7 +1372,7 @@ export default function SessionClient() {
         </div>
 
         {allSetsCompleted ? (
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="ui-card p-6">
             <p className="text-sm font-semibold text-slate-900">
               How did it feel?
             </p>
@@ -1414,7 +1497,7 @@ export default function SessionClient() {
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <OnImage className="flex flex-wrap items-center gap-3">
-            <Link href="/results">
+            <Link href="/results" onClick={() => trackDropoff("exit_button")}>
               <Button variant="secondary">Exit session</Button>
             </Link>
             <Button
