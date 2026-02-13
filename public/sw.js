@@ -1,4 +1,4 @@
-const CACHE_NAME = "body-coach-v2";
+const CACHE_NAME = "body-coach-v3";
 const CORE_ASSETS = [
   "/",
   "/offline",
@@ -31,8 +31,15 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   const { request } = event;
+  const url = new URL(request.url);
   const isNavigation = request.mode === "navigate";
   const isImage = request.destination === "image";
+  const isApiRequest = url.pathname.startsWith("/api/");
+
+  if (isApiRequest) {
+    event.respondWith(fetch(request));
+    return;
+  }
 
   if (isNavigation) {
     event.respondWith(
