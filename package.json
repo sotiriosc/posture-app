@@ -9,7 +9,15 @@
     "lint": "eslint",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:engine": "node --import tsx src/lib/__debug__/engineMatrixTest.ts",
+    "audit:catalog": "node --import tsx src/lib/__debug__/catalogAudit.ts",
+    "audit:store": "node --import tsx src/lib/__debug__/storeIntegritySmoke.ts",
+    "audit:phase-matrix": "node --import tsx src/lib/__debug__/phaseMatrixProgramPrint.ts",
+    "audit:coverage-matrix": "node --import tsx src/lib/__debug__/coverageContractAudit.ts",
+    "audit:decision-trace": "node --import tsx src/lib/__debug__/decisionTraceAudit.ts",
+    "smoke:photo-ns": "node --import tsx src/lib/__debug__/photoNamespaceSmoke.ts",
+    "smoke:phase": "node --import tsx src/lib/__debug__/phaseEligibilitySmoke.ts"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.3",

@@ -1,0 +1,323 @@
+import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import { requireExerciseById } from "@/lib/exerciseCatalog";
+import { computeEquipmentCapability } from "@/lib/engine/equipmentCapability";
+import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import {
+  buildProgramIntentProfile,
+  daySatisfiesSpec,
+  deriveExerciseRole,
+  getPainSeverity,
+  getWeeklyCoverageContract,
+  resolveDayConstraintSpec,
+  summarizeWeekCoverage,
+  type WeekCoverageSummary,
+} from "@/lib/program";
+import type { ProgramConstraintWarning } from "@/lib/program";
+import type { Program } from "@/lib/types";
+
+type CoverageMetricKey =
+  | "calvesDays"
+  | "bicepsDays"
+  | "tricepsDays"
+  | "squatDays"
+  | "hingeDays"
+  | "pullDays"
+  | "pushDays";
+
+export type DayContractAudit = {
+  dayTitle: string;
+  ok: boolean;
+  missing: string[];
+  violations: string[];
+  optionalMissing: string[];
+};
+
+export type CoverageContractAuditResult = {
+  profile: string;
+  phase: string;
+  daysPerWeek: 3 | 4 | 5;
+  equipment: string[];
+  capabilityMode: "noneOnly" | "bandOnly" | "hasLoad";
+  ok: boolean;
+  dayContracts: DayContractAudit[];
+  weekly: WeekCoverageSummary;
+  weeklyMinima: Record<CoverageMetricKey, number>;
+  weeklyFailures: string[];
+  intelligenceFailures: string[];
+  unresolvedBudgetViolations: string[];
+  relaxedBudgetReasons: string[];
+  invalidRelaxations: string[];
+};
+
+const isArmIsolationExercise = (exerciseId: string) => {
+  const exercise = requireExerciseById(exerciseId);
+  const role = deriveExerciseRole(exercise);
+  if (role !== "accessoryIsolation") return false;
+  const tags = new Set(exercise.tags.map((tag) => tag.toLowerCase()));
+  return tags.has("biceps") || tags.has("triceps") || exercise.muscleGroups.some((group) => {
+    const token = group.toLowerCase();
+    return token.includes("biceps") || token.includes("triceps");
+  });
+};
+
+const isRowMainExercise = (exerciseId: string) => {
+  const exercise = requireExerciseById(exerciseId);
+  const idName = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return idName.includes("row");
+};
+
+const isShoulderIsolationMain = (exerciseId: string) => {
+  const exercise = requireExerciseById(exerciseId);
+  const tags = new Set(exercise.tags.map((tag) => tag.toLowerCase()));
+  return tags.has("lateral-delt") || tags.has("shoulders-isolation");
+};
+
+const toPhaseStage = (phase: string): "activation" | "skill" | "growth" => {
+  if (phase === "growth") return "growth";
+  if (phase === "skill") return "skill";
+  return "activation";
+};
+
+const toExperienceLevel = (
+  value: string
+): "beginner" | "intermediate" | "advanced" => {
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "advanced") return "advanced";
+  if (normalized === "intermediate") return "intermediate";
+  return "beginner";
+};
+
+const isUpperIntentDay = (title: string) => {
+  const normalized = title.toLowerCase();
+  return (
+    normalized.includes("upper") ||
+    normalized.includes("back + chest") ||
+    normalized.includes("shoulders + arms") ||
+    normalized.includes("arms + posture")
+  );
+};
+
+export function auditCoverageContract(args: {
+  profile: string;
+  phase: string;
+  daysPerWeek: 3 | 4 | 5;
+  equipment: string[];
+  questionnaire: QuestionnaireData;
+  program: Program;
+  warnings?: ProgramConstraintWarning[];
+}): CoverageContractAuditResult {
+  const { profile, phase, daysPerWeek, equipment, questionnaire, program, warnings = [] } = args;
+  const normalizedEquipment = normalizeEquipmentSelectionValues(equipment);
+  const capability = computeEquipmentCapability(normalizedEquipment);
+  const capabilityMode: "noneOnly" | "bandOnly" | "hasLoad" = capability.hasLoad
+    ? "hasLoad"
+    : capability.hasBand
+    ? "bandOnly"
+    : "noneOnly";
+
+  const dayContracts: DayContractAudit[] = program.week.map((day) => {
+    const spec = resolveDayConstraintSpec({ day, daysPerWeek, capabilityMode });
+    if (!spec) {
+      return {
+        dayTitle: day.title,
+        ok: false,
+        missing: ["No day contract spec found"],
+        violations: [],
+        optionalMissing: [],
+      };
+    }
+
+    const validation = daySatisfiesSpec(day, spec);
+    return {
+      dayTitle: day.title,
+      ok: validation.ok,
+      missing: validation.missing.map((rule) => rule.description || rule.id),
+      violations: validation.violations.map(
+        (violation) => `${violation.exerciseName} -> ${violation.rule.description || violation.rule.id}`
+      ),
+      optionalMissing: validation.optionalMissing.map((rule) => rule.description || rule.id),
+    };
+  });
+
+  const weekly = summarizeWeekCoverage(program.week);
+  const weeklyMinima = getWeeklyCoverageContract(daysPerWeek);
+  const weeklyFailures: string[] = [];
+
+  (Object.keys(weeklyMinima) as CoverageMetricKey[]).forEach((metric) => {
+    const current = weekly[metric];
+    const required = weeklyMinima[metric];
+    if (current < required) {
+      weeklyFailures.push(`${metric} ${current}/${required}`);
+    }
+  });
+
+  const intentProfile = buildProgramIntentProfile({
+    questionnaire,
+    painSeverity: getPainSeverity(questionnaire),
+    phaseStage: toPhaseStage(phase),
+    experienceLevel: toExperienceLevel(questionnaire.experience),
+    capabilityMode,
+  });
+
+  const intelligenceFailures: string[] = [];
+  const unresolvedBudgetViolations: string[] = [];
+  const relaxedBudgetReasons: string[] = [];
+  const invalidRelaxations: string[] = [];
+  const parsedRelaxations: Array<{
+    dayTitle: string;
+    pattern: string;
+    fromMax: number;
+    toMax: number;
+    reason: string;
+  }> = [];
+
+  const parseBudgetPayload = (message: string, marker: "[budget_unresolved]" | "[budget_relaxed]") => {
+    if (!message.startsWith(marker)) return null;
+    const raw = message.slice(marker.length).trim();
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as Record<string, unknown>;
+    } catch {
+      return null;
+    }
+  };
+
+  warnings.forEach((warning) => {
+    const unresolvedPayload = parseBudgetPayload(warning.message, "[budget_unresolved]");
+    if (unresolvedPayload) {
+      const pattern = String(unresolvedPayload.pattern ?? "unknown");
+      const slotId = String(unresolvedPayload.slotId ?? "unknown");
+      const reason = String(unresolvedPayload.reason ?? "unknown");
+      unresolvedBudgetViolations.push(`${warning.dayTitle}:${pattern}:${slotId}:${reason}`);
+      return;
+    }
+    const relaxedPayload = parseBudgetPayload(warning.message, "[budget_relaxed]");
+    if (relaxedPayload) {
+      const pattern = String(relaxedPayload.pattern ?? "unknown");
+      const fromMax = Number(relaxedPayload.fromMax ?? NaN);
+      const toMax = Number(relaxedPayload.toMax ?? NaN);
+      const reason = String(relaxedPayload.reason ?? "");
+      parsedRelaxations.push({
+        dayTitle: warning.dayTitle,
+        pattern,
+        fromMax,
+        toMax,
+        reason,
+      });
+      relaxedBudgetReasons.push(`${warning.dayTitle}:${pattern}:${fromMax}->${toMax}:${reason}`);
+      const validReason = reason === "no eligible candidates for replacement";
+      const validStep = Number.isFinite(fromMax) && Number.isFinite(toMax) && toMax - fromMax === 1;
+      if (!validReason || !validStep) {
+        invalidRelaxations.push(`${warning.dayTitle}:${pattern}:${fromMax}->${toMax}:${reason}`);
+      }
+    }
+  });
+
+  const hasHipKneePain = (questionnaire.painAreas ?? []).some((entry) => {
+    const token = entry.toLowerCase();
+    return token.includes("hip") || token.includes("knee");
+  });
+
+  parsedRelaxations.forEach((entry) => {
+    const disallowForRecovery = intentProfile.recoveryBudget === "low";
+    const laneToken = entry.pattern.toLowerCase();
+    const disallowForPain =
+      (laneToken === "squat" || laneToken === "hinge") &&
+      intentProfile.painSeverity === "high" &&
+      hasHipKneePain;
+    if (disallowForRecovery || disallowForPain) {
+      invalidRelaxations.push(
+        `${entry.dayTitle}:${entry.pattern}:${entry.fromMax}->${entry.toMax}:relax policy disallowed`
+      );
+    }
+  });
+
+  if (daysPerWeek === 3 && weekly.calvesDays === 0) {
+    intelligenceFailures.push("3-day plan has zero calf exposure");
+  }
+
+  if (weekly.carryDays === 0) {
+    intelligenceFailures.push("Carry exposure missing for the week");
+  }
+
+  program.week.forEach((day) => {
+    const mainItems = day.routine.filter((item) => item.section === "main");
+
+    if (
+      day.title === "Back + Chest" &&
+      mainItems.some((item) => isShoulderIsolationMain(item.exerciseId))
+    ) {
+      intelligenceFailures.push(
+        `${day.title}: lateral/shoulder isolation appeared as MAIN`
+      );
+    }
+
+    if (day.title === "Shoulders + Arms") {
+      const hasRowMain = mainItems.some((item) => isRowMainExercise(item.exerciseId));
+      const hasArmIsolation = day.routine.some((item) => isArmIsolationExercise(item.exerciseId));
+      if (hasRowMain && !hasArmIsolation) {
+        intelligenceFailures.push(
+          `${day.title}: row MAIN present without biceps/triceps isolation`
+        );
+      }
+    }
+
+    if (isUpperIntentDay(day.title)) {
+      const squatMains = mainItems.filter((item) => {
+        const ex = requireExerciseById(item.exerciseId);
+        return ex.movementPattern.some((pattern) => pattern.toLowerCase() === "squat");
+      });
+      if (squatMains.length > 0) {
+        intelligenceFailures.push(`${day.title}: upper day includes squat MAIN`);
+      }
+
+      const hingeMains = mainItems.filter((item) => {
+        const ex = requireExerciseById(item.exerciseId);
+        return ex.movementPattern.some((pattern) => pattern.toLowerCase() === "hinge");
+      });
+
+      if (hingeMains.length > 0) {
+        const allowSingleControlHinge =
+          intentProfile.primaryGoal === "posture" &&
+          intentProfile.experienceLevel === "beginner" &&
+          intentProfile.phase === "activation";
+
+        const invalidHinge = hingeMains.some((item) => {
+          const ex = requireExerciseById(item.exerciseId);
+          return deriveExerciseRole(ex) !== "mainControl";
+        });
+
+        if (!allowSingleControlHinge || hingeMains.length > 1 || invalidHinge) {
+          intelligenceFailures.push(
+            `${day.title}: upper day hinge MAIN violates control exception`
+          );
+        }
+      }
+    }
+  });
+
+  const dayFailures = dayContracts.some((entry) => !entry.ok);
+  const ok =
+    !dayFailures &&
+    weeklyFailures.length === 0 &&
+    intelligenceFailures.length === 0 &&
+    unresolvedBudgetViolations.length === 0 &&
+    invalidRelaxations.length === 0;
+
+  return {
+    profile,
+    phase,
+    daysPerWeek,
+    equipment: normalizedEquipment,
+    capabilityMode,
+    ok,
+    dayContracts,
+    weekly,
+    weeklyMinima,
+    weeklyFailures,
+    intelligenceFailures,
+    unresolvedBudgetViolations,
+    relaxedBudgetReasons,
+    invalidRelaxations,
+  };
+}
