@@ -3,7 +3,11 @@ import type { Program, ProgramDay, ProgramRoutineItem } from "@/lib/types";
 import type { Exercise, ExerciseCategory } from "@/lib/exercises";
 import { exerciseById, exercises } from "@/lib/exercises";
 import type { Equipment } from "@/lib/equipment";
-import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
+import {
+  isExerciseEligible,
+  normalizeEquipmentSelection,
+} from "@/lib/equipment";
+import { computeEquipmentCapability } from "@/lib/engine/equipmentCapability";
 import {
   buildNextWeekPlan,
   decideProgramProgression,
@@ -58,7 +62,7 @@ type SelectionContext = {
   goal: string;
 };
 
-const PAIN_RULES: Record<
+export const PAIN_RULES: Record<
   string,
   {
     preferredTags: string[];
@@ -1387,6 +1391,151 @@ const chooseAccessoryId = (
   );
 
 type MainLane = "push" | "verticalPush" | "pull" | "squat" | "hinge";
+type EquipmentCapabilityMode = "noneOnly" | "bandOnly" | "hasLoad";
+type PlannedMainSlot = {
+  lane: MainLane;
+  isExtraMain: boolean;
+};
+const DEBUG_ENGINE_ASSERTS = false;
+
+const appendNote = (notes: string | null | undefined, text: string) => {
+  const current = (notes ?? "").trim();
+  if (!current) return text;
+  if (current.toLowerCase().includes(text.toLowerCase())) return current;
+  return `${current} ${text}`;
+};
+
+const expandRepRangeForExtraMain = (reps?: string | null) => {
+  if (!reps) return reps ?? null;
+  const cleaned = reps.replace("–", "-");
+  const match = cleaned.match(/(\d+)\s*-\s*(\d+)/);
+  if (!match) return reps;
+  const min = Number(match[1]);
+  const max = Number(match[2]);
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return reps;
+  const nextMax = Math.min(max + 4, min + 6);
+  return cleaned.replace(match[0], `${min}-${nextMax}`);
+};
+
+const applyCapabilityMainPrescription = (params: {
+  item: ProgramRoutineItem;
+  slot: PlannedMainSlot;
+  capabilityMode: EquipmentCapabilityMode;
+}) => {
+  const { item, slot, capabilityMode } = params;
+  if (capabilityMode === "hasLoad") return item;
+
+  if (capabilityMode === "noneOnly" && slot.isExtraMain) {
+    return {
+      ...item,
+      reps: expandRepRangeForExtraMain(item.reps),
+      durationSec:
+        typeof item.durationSec === "number"
+          ? Math.min(60, item.durationSec + 10)
+          : item.durationSec,
+      restSec: Math.max(30, (item.restSec ?? 60) - 15),
+      notes: appendNote(item.notes, "3 sec eccentric"),
+    };
+  }
+
+  if (
+    capabilityMode === "bandOnly" &&
+    (slot.lane === "pull" || slot.lane === "hinge")
+  ) {
+    return {
+      ...item,
+      notes: appendNote(
+        item.notes,
+        "When you hit the top of the rep range, increase band tension or step farther from anchor."
+      ),
+    };
+  }
+
+  return item;
+};
+
+const isLowerFocusedDay = (title: string, focusTags: string[]) => {
+  const lowerTitle = title.toLowerCase().includes("leg");
+  const lowerTags = focusTags.some((tag) => {
+    const normalized = tag.trim().toLowerCase();
+    return normalized === "legs" || normalized === "lower";
+  });
+  return lowerTitle || lowerTags;
+};
+
+const ensurePullLaneBandOnly = (
+  lanes: MainLane[],
+  dayTitle: string,
+  focusTags: string[]
+) => {
+  if (lanes.includes("pull")) return lanes;
+
+  const next = [...lanes];
+  const lowerDay = isLowerFocusedDay(dayTitle, focusTags);
+
+  if (lowerDay) {
+    const hasHinge = next.includes("hinge");
+    if (hasHinge) {
+      // Preserve lower-day posterior-chain intent: never replace hinge to force pull.
+      const pushIndex = next.findIndex(
+        (lane) => lane === "push" || lane === "verticalPush"
+      );
+      if (pushIndex >= 0) {
+        next[pushIndex] = "pull";
+        return next;
+      }
+      const nonLowerIndex = next.findIndex(
+        (lane) => lane !== "hinge" && lane !== "squat"
+      );
+      if (nonLowerIndex >= 0) {
+        next[nonLowerIndex] = "pull";
+      }
+      return next;
+    }
+
+    if (next.includes("squat")) {
+      // On lower days with no hinge, prefer restoring hinge balance over forcing pull.
+      const pushIndex = next.findIndex(
+        (lane) => lane === "push" || lane === "verticalPush"
+      );
+      if (pushIndex >= 0) {
+        next[pushIndex] = "hinge";
+        return next;
+      }
+      const nonLowerIndex = next.findIndex(
+        (lane) => lane !== "squat" && lane !== "hinge"
+      );
+      if (nonLowerIndex >= 0) {
+        next[nonLowerIndex] = "hinge";
+        return next;
+      }
+      const squatIndex = next.findIndex((lane) => lane === "squat");
+      if (squatIndex >= 0) {
+        next[squatIndex] = "hinge";
+      }
+      return next;
+    }
+
+    const nonHingeIndex = next.findIndex((lane) => lane !== "hinge");
+    if (nonHingeIndex >= 0) {
+      next[nonHingeIndex] = "hinge";
+    }
+    return next;
+  }
+
+  const pushIndex = next.findIndex(
+    (lane) => lane === "push" || lane === "verticalPush"
+  );
+  if (pushIndex >= 0) {
+    next[pushIndex] = "pull";
+    return next;
+  }
+  const replaceIndex = next.findIndex((lane) => lane !== "pull");
+  if (replaceIndex >= 0) {
+    next[replaceIndex] = "pull";
+  }
+  return next;
+};
 
 const buildStructuredDay = (params: {
   title: string;
@@ -1398,6 +1547,7 @@ const buildStructuredDay = (params: {
   lanes: MainLane[];
   warmupFocus: "upper" | "lower" | "core";
   cooldownFocus: "upper" | "lower" | "core";
+  capabilityMode: EquipmentCapabilityMode;
 }) => {
   const {
     title,
@@ -1409,6 +1559,7 @@ const buildStructuredDay = (params: {
     lanes,
     warmupFocus,
     cooldownFocus,
+    capabilityMode,
   } = params;
   const used = new Set<string>();
   const pickUnique = (
@@ -1467,13 +1618,47 @@ const buildStructuredDay = (params: {
     : lanes.includes("squat")
     ? ["squat", "hinge", "pull", "push", "verticalPush"]
     : ["hinge", "squat", "pull", "push", "verticalPush"];
+  // None-only users need extra main work to drive sufficient training stimulus.
+  const additionalMainSlots =
+    capabilityMode === "noneOnly"
+      ? 2
+      : capabilityMode === "bandOnly" && lanes.length <= 1
+      ? 1
+      : 0;
+  const baseMainSlotCount = Math.max(lanes.length, experienceProfile.mainLaneCount);
+  const targetMainSlots = baseMainSlotCount + additionalMainSlots;
   let laneCursor = 0;
-  while (expandedLanes.length < experienceProfile.mainLaneCount) {
+  if (capabilityMode === "noneOnly") {
+    for (const candidate of laneOrder) {
+      if (expandedLanes.length >= targetMainSlots) break;
+      if (expandedLanes.includes(candidate)) continue;
+      expandedLanes.push(candidate);
+    }
+  }
+  while (expandedLanes.length < targetMainSlots) {
     expandedLanes.push(laneOrder[laneCursor % laneOrder.length]);
     laneCursor += 1;
   }
+  const plannedLanes =
+    capabilityMode === "bandOnly"
+      ? ensurePullLaneBandOnly(expandedLanes, title, focusTags)
+      : expandedLanes;
+  const plannedMainSlots: PlannedMainSlot[] = plannedLanes.map((lane, index) => ({
+    lane,
+    isExtraMain: capabilityMode === "noneOnly" && index >= baseMainSlotCount,
+  }));
+  if (process.env.NODE_ENV !== "production" || DEBUG_ENGINE_ASSERTS) {
+    const extraCount = plannedMainSlots.filter((slot) => slot.isExtraMain).length;
+    const expectedExtraCount = capabilityMode === "noneOnly" ? 2 : 0;
+    if (extraCount !== expectedExtraCount) {
+      throw new Error(
+        `[program] extra-main invariant failed for "${title}" (${capabilityMode}): expected ${expectedExtraCount}, got ${extraCount}`
+      );
+    }
+  }
 
-  const mainIds = expandedLanes.map((lane) => {
+  const mainIds = plannedMainSlots.map((slot) => {
+    const lane = slot.lane;
     if (lane === "push")
       return choosePushCompoundId(
         phaseIndex,
@@ -1581,49 +1766,51 @@ const buildStructuredDay = (params: {
       30,
       "activation"
     ),
-    ...ensureMainEquipmentBalance(mainIds)
-      .map((id) =>
-        pickUnique(
-          id,
-          [
-            choosePullCompoundId(
-              phaseIndex,
-              available,
-              experienceProfile,
-              selectionContext
-            ),
-            chooseHingeCompoundId(
-              phaseIndex,
-              available,
-              experienceProfile,
-              selectionContext
-            ),
-            chooseSquatCompoundId(
-              phaseIndex,
-              available,
-              experienceProfile,
-              selectionContext
-            ),
-            choosePushCompoundId(
-              phaseIndex,
-              available,
-              experienceProfile,
-              selectionContext
-            ),
-          ],
-          "main"
-        )
-      )
-      .map((id) =>
-        makeItem(
-          id,
-          experienceProfile.mainSets,
-          experienceProfile.mainRepRange,
-          90,
-          experienceProfile.mainRestSec,
-          "main"
-        )
-      ),
+    ...ensureMainEquipmentBalance(mainIds).map((id, index) => {
+      const uniqueId = pickUnique(
+        id,
+        [
+          choosePullCompoundId(
+            phaseIndex,
+            available,
+            experienceProfile,
+            selectionContext
+          ),
+          chooseHingeCompoundId(
+            phaseIndex,
+            available,
+            experienceProfile,
+            selectionContext
+          ),
+          chooseSquatCompoundId(
+            phaseIndex,
+            available,
+            experienceProfile,
+            selectionContext
+          ),
+          choosePushCompoundId(
+            phaseIndex,
+            available,
+            experienceProfile,
+            selectionContext
+          ),
+        ],
+        "main"
+      );
+      const item = makeItem(
+        uniqueId,
+        experienceProfile.mainSets,
+        experienceProfile.mainRepRange,
+        90,
+        experienceProfile.mainRestSec,
+        "main"
+      );
+      return applyCapabilityMainPrescription({
+        item,
+        slot: plannedMainSlots[index] ?? { lane: "pull", isExtraMainSlot: false },
+        capabilityMode,
+      });
+    }),
     makeItem(
       accessoryA,
       experienceProfile.accessorySets,
@@ -1681,7 +1868,8 @@ const buildSplitTemplates = (
   experienceProfile: ExperienceProfile,
   phaseIndex: number,
   available: Set<Equipment>,
-  selectionContext: SelectionContext
+  selectionContext: SelectionContext,
+  capabilityMode: EquipmentCapabilityMode
 ) => {
   if (daysPerWeek === 3) {
     return [
@@ -1695,6 +1883,7 @@ const buildSplitTemplates = (
         lanes: ["pull", "push"],
         warmupFocus: "upper",
         cooldownFocus: "upper",
+        capabilityMode,
       }),
       buildStructuredDay({
         title: "Shoulders + Arms",
@@ -1706,6 +1895,7 @@ const buildSplitTemplates = (
         lanes: ["verticalPush", "pull"],
         warmupFocus: "upper",
         cooldownFocus: "upper",
+        capabilityMode,
       }),
       buildStructuredDay({
         title: "Legs + Abs",
@@ -1717,6 +1907,7 @@ const buildSplitTemplates = (
         lanes: ["squat", "hinge"],
         warmupFocus: "lower",
         cooldownFocus: "core",
+        capabilityMode,
       }),
     ];
   }
@@ -1732,6 +1923,7 @@ const buildSplitTemplates = (
         lanes: ["push", "verticalPush"],
         warmupFocus: "upper",
         cooldownFocus: "upper",
+        capabilityMode,
       }),
       buildStructuredDay({
         title: "Pull",
@@ -1743,6 +1935,7 @@ const buildSplitTemplates = (
         lanes: ["pull", "pull"],
         warmupFocus: "upper",
         cooldownFocus: "core",
+        capabilityMode,
       }),
       buildStructuredDay({
         title: "Legs + Abs",
@@ -1754,6 +1947,7 @@ const buildSplitTemplates = (
         lanes: ["squat", "hinge"],
         warmupFocus: "lower",
         cooldownFocus: "core",
+        capabilityMode,
       }),
       buildStructuredDay({
         title: "Push B",
@@ -1765,6 +1959,7 @@ const buildSplitTemplates = (
         lanes: ["verticalPush", "push"],
         warmupFocus: "upper",
         cooldownFocus: "upper",
+        capabilityMode,
       }),
     ];
   }
@@ -1779,6 +1974,7 @@ const buildSplitTemplates = (
       lanes: ["push", "verticalPush"],
       warmupFocus: "upper",
       cooldownFocus: "upper",
+      capabilityMode,
     }),
     buildStructuredDay({
       title: "Pull",
@@ -1790,6 +1986,7 @@ const buildSplitTemplates = (
       lanes: ["pull", "pull"],
       warmupFocus: "upper",
       cooldownFocus: "core",
+      capabilityMode,
     }),
     buildStructuredDay({
       title: "Legs (Quads + Abs)",
@@ -1801,6 +1998,7 @@ const buildSplitTemplates = (
       lanes: ["squat", "squat"],
       warmupFocus: "lower",
       cooldownFocus: "core",
+      capabilityMode,
     }),
     buildStructuredDay({
       title: "Upper Mix",
@@ -1812,6 +2010,7 @@ const buildSplitTemplates = (
       lanes: ["push", "pull"],
       warmupFocus: "upper",
       cooldownFocus: "upper",
+      capabilityMode,
     }),
     buildStructuredDay({
       title: "Legs (Posterior Chain)",
@@ -1823,6 +2022,7 @@ const buildSplitTemplates = (
       lanes: ["hinge", "hinge"],
       warmupFocus: "lower",
       cooldownFocus: "core",
+      capabilityMode,
     }),
   ];
 };
@@ -1840,6 +2040,12 @@ export const generateWeeklyProgram = (
 ): Program => {
   const normalizedDaysPerWeek = normalizeDaysPerWeek(data.daysPerWeek);
   const equipmentContext = normalizeEquipmentSelection(data.equipment);
+  const capability = computeEquipmentCapability(data.equipment);
+  const capabilityMode: EquipmentCapabilityMode = capability.hasLoad
+    ? "hasLoad"
+    : capability.hasBand
+    ? "bandOnly"
+    : "noneOnly";
   const phaseIndex = options?.phaseIndex ?? 1;
   const experienceProfile = getExperienceProfile(
     data.experience,
@@ -1853,7 +2059,8 @@ export const generateWeeklyProgram = (
     experienceProfile,
     phaseIndex,
     equipmentContext.available,
-    selectionContext
+    selectionContext,
+    capabilityMode
   );
   days = splitTemplates.map((template, dayIndex) => ({ dayIndex, ...template }));
 

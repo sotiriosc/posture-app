@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   const userId = resolveUserIdFromEvent(event);
   const email = resolveEmailFromEvent(event);
   const billingPatch = resolveBillingPatch(event);
-  let user =
+  const user =
     (userId ? await repo.findUserById(String(userId)) : null) ??
     (email ? await repo.findUserByEmail(String(email)) : null) ??
     (billingPatch.stripeCustomerId

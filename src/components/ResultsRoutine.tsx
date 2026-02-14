@@ -664,7 +664,7 @@ export default function ResultsRoutine() {
       };
     }
 
-    const now = Date.now();
+    const now = Date.parse(new Date().toISOString());
     const recentSessions = completedSessions.filter((session) => {
       if (!session.completedAt) return false;
       const timestamp = Date.parse(session.completedAt);

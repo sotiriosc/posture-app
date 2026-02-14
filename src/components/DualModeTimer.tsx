@@ -106,22 +106,6 @@ export default function DualModeTimer({
     setRunning(false);
   }, [mode, remainingSeconds, selectedRestSeconds]);
 
-  useEffect(() => {
-    const wasRunning = lastRunningRef.current;
-    const wasRemaining = lastRemainingRef.current;
-
-    if (!wasRunning && running && remainingSeconds > 0) {
-      playBeep("start");
-    }
-
-    if (wasRemaining > 0 && remainingSeconds === 0) {
-      playBeep("finish");
-    }
-
-    lastRunningRef.current = running;
-    lastRemainingRef.current = remainingSeconds;
-  }, [running, remainingSeconds]);
-
   const handleModeChange = (nextMode: TimerMode) => {
     if (nextMode === mode) return;
     autoSwitchRef.current = false;
@@ -203,6 +187,22 @@ export default function DualModeTimer({
       // no-op
     }
   };
+
+  useEffect(() => {
+    const wasRunning = lastRunningRef.current;
+    const wasRemaining = lastRemainingRef.current;
+
+    if (!wasRunning && running && remainingSeconds > 0) {
+      playBeep("start");
+    }
+
+    if (wasRemaining > 0 && remainingSeconds === 0) {
+      playBeep("finish");
+    }
+
+    lastRunningRef.current = running;
+    lastRemainingRef.current = remainingSeconds;
+  }, [running, remainingSeconds]);
 
   return (
     <div

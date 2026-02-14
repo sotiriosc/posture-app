@@ -47,16 +47,10 @@ export default function ResumeSessionBanner() {
       setReady(true);
     };
     load();
-  }, []);
-
-  useEffect(() => {
-    if (!sessionId || !originPath) return;
-    if (pathname !== originPath) {
-      setSessionId(null);
-    }
-  }, [pathname, originPath, sessionId]);
+  }, [pathname]);
 
   if (!ready || !sessionId) return null;
+  if (originPath && pathname !== originPath) return null;
   if (pathname.startsWith("/session")) return null;
 
   return (

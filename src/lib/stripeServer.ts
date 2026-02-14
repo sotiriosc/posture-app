@@ -12,7 +12,7 @@ type StripeEvent = {
   id: string;
   type: string;
   data: {
-    object: any;
+    object: Record<string, unknown>;
   };
 };
 
@@ -48,7 +48,9 @@ const callStripe = async <T>(
     },
     body: encodeForm(params),
   });
-  const data = (await response.json().catch(() => null)) as any;
+  const data = (await response.json().catch(() => null)) as
+    | { error?: { message?: string } }
+    | null;
   if (!response.ok) {
     throw new Error(data?.error?.message ?? "Stripe request failed.");
   }

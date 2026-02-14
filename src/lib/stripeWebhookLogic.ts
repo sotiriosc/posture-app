@@ -1,5 +1,24 @@
 import type { StripeWebhookEvent } from "@/lib/stripeServer";
 
+type StripeEventObject = {
+  metadata?: { userId?: string; email?: string };
+  client_reference_id?: string;
+  subscription_details?: { metadata?: { userId?: string } };
+  customer_details?: { email?: string };
+  customer_email?: string;
+  payment_status?: string;
+  status?: string;
+  customer?: string;
+  customer_id?: string;
+  subscription?: string;
+  id?: string;
+  object?: string;
+  items?: { data?: Array<{ price?: { id?: string } }> };
+  plan?: { id?: string };
+  current_period_end?: number;
+  cancel_at_period_end?: boolean;
+};
+
 const mapSubscriptionStatusToPlan = (statusRaw: unknown) => {
   const status = String(statusRaw ?? "").toLowerCase();
   if (status === "active" || status === "trialing" || status === "past_due") return "pro" as const;
@@ -14,7 +33,7 @@ const mapSubscriptionStatusToPlan = (statusRaw: unknown) => {
 };
 
 export const resolveUserIdFromEvent = (event: StripeWebhookEvent) => {
-  const object = event.data?.object ?? {};
+  const object = (event.data?.object ?? {}) as StripeEventObject;
   return (
     object?.metadata?.userId ??
     object?.client_reference_id ??
@@ -24,7 +43,7 @@ export const resolveUserIdFromEvent = (event: StripeWebhookEvent) => {
 };
 
 export const resolveEmailFromEvent = (event: StripeWebhookEvent) => {
-  const object = event.data?.object ?? {};
+  const object = (event.data?.object ?? {}) as StripeEventObject;
   return (
     object?.customer_details?.email ??
     object?.customer_email ??
@@ -34,7 +53,7 @@ export const resolveEmailFromEvent = (event: StripeWebhookEvent) => {
 };
 
 export const mapPlanFromEvent = (event: StripeWebhookEvent) => {
-  const object = event.data?.object ?? {};
+  const object = (event.data?.object ?? {}) as StripeEventObject;
   if (event.type === "checkout.session.completed") {
     const paymentStatus = String(object.payment_status ?? "").toLowerCase();
     return paymentStatus === "paid" || paymentStatus === "no_payment_required"
@@ -52,7 +71,7 @@ export const mapPlanFromEvent = (event: StripeWebhookEvent) => {
 };
 
 export const resolveBillingPatch = (event: StripeWebhookEvent) => {
-  const object = event.data?.object ?? {};
+  const object = (event.data?.object ?? {}) as StripeEventObject;
   const stripeCustomerId =
     (typeof object.customer === "string" ? object.customer : null) ??
     (typeof object.customer_id === "string" ? object.customer_id : null);
