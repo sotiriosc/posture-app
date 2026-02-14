@@ -86,10 +86,10 @@ describe("program generation slot coverage", () => {
     expect(program.daysPerWeek).toBe(4);
     expect(program.week).toHaveLength(4);
     expect(program.week.map((day) => day.title)).toEqual([
-      "Push A",
-      "Pull",
-      "Legs + Abs",
-      "Push B",
+      "Upper Push + Scapular Control",
+      "Lower (Squat Emphasis) + Core",
+      "Upper Pull + Thoracic Posture",
+      "Lower (Hinge Emphasis) + Carry/Anti-rotation",
     ]);
   });
 
@@ -115,11 +115,11 @@ describe("program generation slot coverage", () => {
     expect(program.daysPerWeek).toBe(5);
     expect(program.week).toHaveLength(5);
     expect(program.week.map((day) => day.title)).toEqual([
-      "Push",
-      "Pull",
-      "Legs (Quads + Abs)",
-      "Upper Mix",
-      "Legs (Posterior Chain)",
+      "Upper Push",
+      "Lower Squat",
+      "Upper Pull",
+      "Lower Hinge + Posterior Chain",
+      "Arms + Posture + Conditioning",
     ]);
   });
 

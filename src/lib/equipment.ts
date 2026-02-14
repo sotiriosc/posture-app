@@ -9,12 +9,13 @@ export const EQUIPMENT_ENUM = [
   "cables",
   "machines",
   "bench",
+  "gym",
   "pullup_bar",
   "foam_roller",
 ] as const;
 
 export type Equipment = (typeof EQUIPMENT_ENUM)[number];
-export type EquipmentSelection = Equipment | "gym";
+export type EquipmentSelection = Equipment;
 
 const selectionMap: Record<string, EquipmentSelection> = {
   none: "none",
@@ -65,7 +66,7 @@ export const normalizeEquipmentSelection = (selection: string[]) => {
   });
 
   if (hasGym) {
-    ["dumbbells", "barbell", "cables", "machines", "bench"].forEach((item) =>
+    ["gym", "dumbbells", "barbell", "kettlebell", "cables", "machines", "bench"].forEach((item) =>
       normalized.add(item as Equipment)
     );
   }
@@ -82,7 +83,19 @@ export const isExerciseEligible = (
   available: Set<Equipment>
 ) => {
   if (exercise.equipment.includes("none")) return true;
-  return exercise.equipment.every((item) => available.has(item));
+  const required = exercise.equipment.filter((item) => item !== "gym");
+  const benchOnlyBodyweightPushupFallback =
+    required.length === 1 &&
+    required[0] === "bench" &&
+    exercise.loadType === "bodyweight" &&
+    exercise.id.toLowerCase().includes("pushup");
+  if (benchOnlyBodyweightPushupFallback && available.has("bands")) {
+    return true;
+  }
+  if (required.length === 0) {
+    return available.has("gym");
+  }
+  return required.every((item) => available.has(item));
 };
 
 export const describeEquipmentMatch = (

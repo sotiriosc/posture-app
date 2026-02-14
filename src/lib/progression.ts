@@ -16,6 +16,7 @@ export type ProgressionResult = {
   recommendedNext: RecommendedNext;
   reason: string;
   safetyFlag?: boolean;
+  coachNote?: string;
 };
 
 export type ProgressionInput = {
@@ -110,6 +111,33 @@ const formatTargetLabel = (range: Range, unit: string, fallback: string) => {
   return `${range.min ?? range.max} ${unit}`;
 };
 
+const isPainPresent = (
+  latest: ExerciseLog,
+  feedback?: ExerciseFeedback | null
+) => {
+  if (feedback?.rating === "pain") return true;
+  if (latest.felt === "pain") return true;
+  if (feedback?.painLocation) return true;
+  if (latest.painLocation) return true;
+  return false;
+};
+
+const isEasyOrModerate = (log: ExerciseLog) =>
+  log.felt === "easy" || log.felt === "moderate";
+
+const isBandExercise = (exercise: Exercise) =>
+  exercise.equipment.some((entry) => {
+    const token = String(entry).toLowerCase();
+    return token === "band" || token === "bands";
+  });
+
+const getCoachNoteForLowReadiness = (latest: ExerciseLog, rating: ExerciseFeedback["rating"] | null) => {
+  if (rating === "hard" || (typeof latest.rpe === "number" && latest.rpe >= 8)) {
+    return "Hold steady this session—quality > load.";
+  }
+  return null;
+};
+
 export const getProgressionRecommendation = ({
   exercise,
   logs,
@@ -127,21 +155,42 @@ export const getProgressionRecommendation = ({
   );
   const repTargetLabel = formatTargetLabel(repRange, "reps", "prescribed reps");
   const setTargetLabel = formatTargetLabel(setRange, "sets", "prescribed sets");
+  const lowReadinessCoachNote = getCoachNoteForLowReadiness(latest, rating);
 
-  if (rating === "pain") {
+  if (isPainPresent(latest, feedback)) {
     const isTimed = exercise.loadType === "timed";
+    const currentWeight = latest.weight ?? null;
+    const reducedWeight =
+      currentWeight !== null && Number.isFinite(currentWeight)
+        ? roundToNearest(Math.max(0, currentWeight * 0.85), 2.5)
+        : undefined;
+    const reducedReps =
+      !isTimed && repRange.min !== null
+        ? Math.max(1, repRange.min - 2)
+        : !isTimed && repsPerSet(latest) !== null
+        ? Math.max(1, (repsPerSet(latest) ?? 0) - 2)
+        : undefined;
+    const reducedDuration =
+      isTimed && durationRange.min !== null
+        ? Math.max(15, Math.round(durationRange.min * 0.85))
+        : isTimed && latest.durationSec !== null
+        ? Math.max(15, Math.round(latest.durationSec * 0.85))
+        : undefined;
     return {
       recommendedNext: {
-        reps: isTimed ? undefined : repRange.min ?? undefined,
-        durationSeconds:
-          isTimed && durationRange.min !== null
-            ? Math.max(15, durationRange.min - 5)
-            : undefined,
+        weight: isTimed ? undefined : reducedWeight,
+        reps: isTimed ? undefined : reducedReps,
+        durationSeconds: reducedDuration,
         sets: setRange.min ?? undefined,
         tempo: "slow and controlled",
+        restSeconds:
+          typeof prescription?.restSec === "number"
+            ? prescription.restSec + 15
+            : undefined,
       },
       reason: "Pain flagged last time—regressing to keep this smooth.",
       safetyFlag: true,
+      coachNote: "Stay smooth—leave 2 reps in reserve and own the range.",
     };
   }
 
@@ -168,6 +217,8 @@ export const getProgressionRecommendation = ({
           sets: setRange.min ?? undefined,
         },
         reason: `You overshot the prescribed target (${repsCompleted} reps vs ${repTargetLabel}, ${setTargetLabel}). Next progression: increase weight from ${weight} to ${nextWeight} and reset near the lower rep target.`,
+        coachNote:
+          lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
       };
     }
 
@@ -186,19 +237,27 @@ export const getProgressionRecommendation = ({
               : undefined,
         },
         reason: `Last session was short of the prescribed target (${repTargetLabel}, ${setTargetLabel}; ${missReason}). Ease reps and focus on control.`,
+        coachNote:
+          lowReadinessCoachNote ?? "Hold steady this session—quality > load.",
       };
     }
 
     if (rating === "hard") {
+      const nextRepTarget =
+        repRange.max !== null && repsCompleted !== null
+          ? clampToRange(repsCompleted + 1, repRange)
+          : undefined;
       return {
         recommendedNext: {
           weight: weight || undefined,
-          reps:
-            repRange.max !== null && repsCompleted !== null
-              ? clampToRange(repsCompleted + 1, repRange)
+          reps: nextRepTarget,
+          restSeconds:
+            typeof prescription?.restSec === "number"
+              ? prescription.restSec + 10
               : undefined,
         },
-        reason: "Keep the load and build a little more volume next time.",
+        reason: "Keep the load and nudge volume with +1 rep or a touch more rest.",
+        coachNote: "Hold steady this session—quality > load.",
       };
     }
 
@@ -212,10 +271,23 @@ export const getProgressionRecommendation = ({
         sets: setRange.min ?? undefined,
       },
       reason: `You hit target reps and sets. Next progression: increase weight from ${weight} to ${nextWeight} and keep form strict.`,
+      coachNote:
+        lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
     };
   }
 
   if (exercise.loadType === "bodyweight" || exercise.loadType === "assisted") {
+    const bandExercise = isBandExercise(exercise);
+    const topRepTarget = repRange.max;
+    const bandGatePassed =
+      bandExercise &&
+      topRepTarget !== null &&
+      logs.slice(0, 2).length >= 2 &&
+      logs.slice(0, 2).every((log) => {
+        const perSet = repsPerSet(log);
+        return perSet !== null && perSet >= topRepTarget && isEasyOrModerate(log);
+      });
+
     if (!completedAll) {
       const missReason = !completedAllSets
         ? `you completed ${completedSets} set${completedSets === 1 ? "" : "s"} and target starts at ${setRange.min}`
@@ -231,16 +303,59 @@ export const getProgressionRecommendation = ({
           tempo: "slow and controlled",
         },
         reason: `Next progression step is quality first (${repTargetLabel}, ${setTargetLabel}; ${missReason}). Reduce reps slightly and use slower tempo to rebuild control.`,
+        coachNote:
+          lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
       };
     }
 
     if (rating === "hard") {
+      const nextRepTarget =
+        repRange.max !== null && repsCompleted !== null
+          ? clampToRange(repsCompleted + 1, repRange)
+          : repsCompleted ?? repRange.min ?? undefined;
       return {
         recommendedNext: {
-          reps: repsCompleted ?? repRange.min ?? undefined,
+          reps: nextRepTarget,
+          tempo: "2-1-2",
+          restSeconds:
+            typeof prescription?.restSec === "number"
+              ? prescription.restSec + 10
+              : undefined,
+        },
+        reason: "Keep effort controlled and add just +1 rep or a little more rest.",
+        coachNote: "Hold steady this session—quality > load.",
+      };
+    }
+
+    if (bandExercise && !bandGatePassed) {
+      const nextRepTarget =
+        topRepTarget !== null && repsCompleted !== null
+          ? clampToRange(repsCompleted + 1, repRange)
+          : topRepTarget ?? repsCompleted ?? undefined;
+      return {
+        recommendedNext: {
+          reps: nextRepTarget,
+          tempo: "3-1-2",
+        },
+        reason:
+          "Band progression gate not yet met: build reps toward the top target for 2 consecutive easy/moderate sessions before increasing tension.",
+        coachNote:
+          lowReadinessCoachNote ??
+          "Increase band tension only if pain-free and form stays crisp.",
+      };
+    }
+
+    if (bandExercise && bandGatePassed) {
+      return {
+        recommendedNext: {
+          reps: repRange.min ?? repsCompleted ?? undefined,
           tempo: "2-1-2",
         },
-        reason: "Keep reps the same next session and clean up tempo before adding more volume.",
+        reason:
+          "You hit top reps twice at easy/moderate effort. Progress by increasing band tension or stepping farther from anchor, then reset reps lower.",
+        coachNote:
+          lowReadinessCoachNote ??
+          "Increase band tension only if pain-free and form stays crisp.",
       };
     }
 
@@ -250,6 +365,8 @@ export const getProgressionRecommendation = ({
         return {
           recommendedNext: { reps: nextReps },
           reason: `Next progression: add 1 rep (to ${nextReps}) while keeping the same quality.`,
+          coachNote:
+            lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
         };
       }
     }
@@ -260,6 +377,8 @@ export const getProgressionRecommendation = ({
         tempo: "3-1-3",
       },
       reason: "You are near the top of the rep range. Next progression: keep reps steady and increase time under tension with 3-1-3 tempo.",
+      coachNote:
+        lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
     };
   }
 
@@ -268,6 +387,15 @@ export const getProgressionRecommendation = ({
       latest.durationSec ?? durationRange.min ?? durationRange.max ?? null;
     const sets = latest.setsCompleted ?? latest.setsPlanned ?? setRange.min ?? null;
     const completedAllSets = setRange.min === null || (sets ?? 0) >= setRange.min;
+    const targetDuration =
+      prescription?.durationSec ?? durationRange.max ?? durationRange.min ?? currentDuration;
+    const timedGatePassed =
+      targetDuration !== null &&
+      logs.slice(0, 2).length >= 2 &&
+      logs.slice(0, 2).every((log) => {
+        const duration = log.durationSec ?? null;
+        return duration !== null && duration >= targetDuration && isEasyOrModerate(log);
+      });
 
     if (!completedAllSets) {
       return {
@@ -278,6 +406,8 @@ export const getProgressionRecommendation = ({
           tempo: "controlled",
         },
         reason: "Next progression step is regression for quality: reduce work time slightly and complete all sets with control.",
+        coachNote:
+          lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
       };
     }
 
@@ -292,10 +422,40 @@ export const getProgressionRecommendation = ({
               : undefined,
         },
         reason: "Keep work duration steady next session and add more rest to protect movement quality.",
+        coachNote: "Hold steady this session—quality > load.",
       };
     }
 
     if (currentDuration !== null) {
+      if (rating === "moderate") {
+        const bumpedModerate = Math.max(
+          currentDuration + 5,
+          Math.round(currentDuration * 1.15)
+        );
+        const nextDuration =
+          durationRange.max !== null ? Math.min(bumpedModerate, durationRange.max) : bumpedModerate;
+        return {
+          recommendedNext: {
+            durationSeconds: nextDuration,
+            sets: setRange.min ?? undefined,
+          },
+          reason: `You completed the timed work with moderate effort. Next progression: increase interval duration (to ${nextDuration}s).`,
+          coachNote:
+            lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
+        };
+      }
+      if (!timedGatePassed) {
+        return {
+          recommendedNext: {
+            durationSeconds: currentDuration,
+            sets: setRange.min ?? undefined,
+          },
+          reason:
+            "Timed progression gate not yet met: complete 2 consecutive sessions at target duration with easy/moderate effort before adding 5s.",
+          coachNote:
+            lowReadinessCoachNote ?? "Hold steady this session—quality > load.",
+        };
+      }
       const bumped = currentDuration + 5;
       const nextDuration =
         durationRange.max !== null ? Math.min(bumped, durationRange.max) : bumped;
@@ -305,6 +465,8 @@ export const getProgressionRecommendation = ({
           sets: setRange.min ?? undefined,
         },
         reason: `You controlled the current interval well. Next progression: increase work time by 5s (to ${nextDuration}s).`,
+        coachNote:
+          lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
       };
     }
   }
@@ -312,5 +474,6 @@ export const getProgressionRecommendation = ({
   return {
     recommendedNext: {},
     reason: "Keep the same target and focus on consistency.",
+    coachNote: lowReadinessCoachNote ?? undefined,
   };
 };
