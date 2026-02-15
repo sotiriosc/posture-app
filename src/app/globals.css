@@ -173,6 +173,12 @@ textarea {
   padding: clamp(1rem, 2vw, 1.6rem);
 }
 
+@media (max-width: 767px) {
+  .ui-shell {
+    padding-bottom: calc(1rem + 88px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .ui-chip {
   border-radius: var(--radius-pill);
   border: 1px solid var(--border-soft);
