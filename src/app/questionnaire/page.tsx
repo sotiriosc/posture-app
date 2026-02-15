@@ -3,6 +3,7 @@ import QuestionnaireForm from "@/components/QuestionnaireForm";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 
 export default function QuestionnairePage() {
   return (
@@ -31,6 +32,7 @@ export default function QuestionnairePage() {
 
         <QuestionnaireForm />
       </div>
+      <OnboardingInfoButton page="questionnaire" />
     </BackgroundShell>
   );
 }

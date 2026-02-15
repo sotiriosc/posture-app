@@ -1,7 +1,6 @@
 import Link from "next/link";
 import ReadinessIndicator from "@/components/dashboard/ReadinessIndicator";
 import ProgressBar from "@/components/ui/ProgressBar";
-import { primaryActionBtn } from "@/components/ui/buttonStyles";
 
 type DashboardHeroProps = {
   greeting: string;
@@ -18,6 +17,7 @@ type DashboardHeroProps = {
   metricChips: string[];
   ctaLabel: "Start Today's Session" | "Continue Session";
   ctaHref: string;
+  ctaPulse?: boolean;
 };
 
 export default function DashboardHero({
@@ -35,6 +35,7 @@ export default function DashboardHero({
   metricChips,
   ctaLabel,
   ctaHref,
+  ctaPulse = false,
 }: DashboardHeroProps) {
   return (
     <section className="ui-card p-5">
@@ -93,13 +94,15 @@ export default function DashboardHero({
           ) : null}
         </div>
 
-        <div className="flex w-full flex-col gap-3 lg:min-w-[240px] lg:max-w-[320px] lg:basis-[30%]">
+        <div className="flex w-full flex-col gap-3 lg:min-w-[280px] lg:max-w-[420px] lg:basis-[35%]">
           <div className="hidden rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 shadow-sm lg:block">
             <ReadinessIndicator score={readinessScore} />
           </div>
           <Link
             href={ctaHref}
-            className={`${primaryActionBtn} mt-1 h-12 w-full justify-between gap-3 px-5 text-sm lg:min-w-[240px]`}
+            className={`mt-1 flex h-[52px] w-full items-center justify-between gap-3 rounded-[12px] bg-[linear-gradient(135deg,#3B82F6_0%,#2563EB_100%)] px-5 text-base font-semibold text-white shadow-[0_4px_12px_rgba(37,99,235,0.25)] transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_10px_24px_rgba(37,99,235,0.35)] active:translate-y-0 active:shadow-[0_4px_12px_rgba(37,99,235,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
+              ctaPulse ? "hero-cta-pulse" : ""
+            }`}
           >
             <span>{ctaLabel}</span>
             <span aria-hidden="true">→</span>

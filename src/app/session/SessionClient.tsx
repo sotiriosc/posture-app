@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { exerciseById } from "@/lib/exercises";
@@ -11,7 +11,13 @@ import { generateNextTimeGuidance } from "@/lib/progression";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
-import DualModeTimer from "@/components/DualModeTimer";
+import { primaryActionBtn } from "@/components/ui/buttonStyles";
+import DualModeTimer, {
+  type DualModeTimerRuntimeState,
+} from "@/components/DualModeTimer";
+import ExerciseCard from "@/components/ExerciseCard";
+import SessionProgressHeader from "@/components/session/SessionProgressHeader";
+import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
@@ -50,6 +56,7 @@ import {
   nowIso,
 } from "@/lib/logStore";
 import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
+import { markSessionComplete } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -260,6 +267,9 @@ export default function SessionClient() {
   const [timerByExercise, setTimerByExercise] = useState<
     Record<string, { workSeconds: number; restSeconds: number }>
   >({});
+  const [timerRuntimeByItemId, setTimerRuntimeByItemId] = useState<
+    Record<string, DualModeTimerRuntimeState>
+  >({});
   const [completedSets, setCompletedSets] = useState<Record<string, boolean[]>>(
     {}
   );
@@ -312,16 +322,34 @@ export default function SessionClient() {
     Record<string, PainLevel>
   >({});
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const [exerciseCompleteFlashVisible, setExerciseCompleteFlashVisible] =
+    useState(false);
   const saveStateTimerRef = useRef<number | null>(null);
+  const exerciseCompleteFlashTimerRef = useRef<number | null>(null);
   const dropoffTrackedRef = useRef(false);
   const sessionCompleteRef = useRef(false);
   const activeIndexRef = useRef(0);
   const sessionIdRef = useRef<string | null>(null);
+  const lastExerciseCompletionRef = useRef<{
+    itemId: string | null;
+    allSetsCompleted: boolean;
+  }>({
+    itemId: null,
+    allSetsCompleted: false,
+  });
+  const previousActiveIndexRef = useRef(0);
+  const exerciseCardRef = useRef<HTMLDivElement | null>(null);
+  const weightInputRef = useRef<HTMLInputElement | null>(null);
+  const repsInputRef = useRef<HTMLInputElement | null>(null);
+  const rpeInputRef = useRef<HTMLInputElement | null>(null);
+  const setCheckboxRefs = useRef<Record<number, HTMLInputElement | null>>({});
+  const feedbackButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const nextButtonRef = useRef<HTMLButtonElement | null>(null);
 
   function applyDraft(draft: SessionDraft) {
     setSessionId(draft.sessionId);
     setSessionStartedAt(draft.startedAt ?? null);
-    setActiveIndex(draft.currentExerciseIndex ?? 0);
+    setActiveIndex(Math.max(0, draft.currentExerciseIndex ?? 0));
     setCompletedSets(draft.entries.completedSets ?? {});
     setSelectedSets(draft.entries.selectedSets ?? {});
     setWeightByExercise(draft.entries.weightByExercise ?? {});
@@ -343,6 +371,7 @@ export default function SessionClient() {
     if (draft.timerByExercise) {
       setTimerByExercise(draft.timerByExercise);
     }
+    setTimerRuntimeByItemId(draft.timerRuntimeByItemId ?? {});
   }
 
   useEffect(() => {
@@ -444,24 +473,20 @@ export default function SessionClient() {
 
       const programId = searchParams.get("programId");
       const dayIndexRaw = searchParams.get("dayIndex");
-      const resumeId = searchParams.get("resumeSessionId");
-      const dayIndex = dayIndexRaw ? Number(dayIndexRaw) : null;
+      const resumeId =
+        searchParams.get("resumeSessionId") ?? searchParams.get("sessionId");
+      const requestedDayIndex = dayIndexRaw ? Number(dayIndexRaw) : null;
+
+      let resolvedProgram: Program | null = null;
+      let resolvedProgress: ProgramProgress | null = null;
+      let resolvedDayIndex: number | null = Number.isFinite(requestedDayIndex)
+        ? (requestedDayIndex as number)
+        : null;
+
       if (programId) {
-        const loadedProgram = await getProgram(programId);
-        if (loadedProgram) {
-          const progress = await getProgramProgress(loadedProgram.id);
-          const fallbackDayIndex =
-            progress && Number.isFinite(progress.nextDayIndex)
-              ? progress.nextDayIndex
-              : 0;
-          const requestedDayIndex = Number.isFinite(dayIndex) ? (dayIndex as number) : fallbackDayIndex;
-          const boundedDayIndex = Math.min(
-            Math.max(0, requestedDayIndex),
-            Math.max(0, loadedProgram.week.length - 1)
-          );
-          setProgram(loadedProgram);
-          setProgramDayIndex(boundedDayIndex);
-          setProgramProgress(progress);
+        resolvedProgram = await getProgram(programId);
+        if (resolvedProgram) {
+          resolvedProgress = await getProgramProgress(resolvedProgram.id);
         }
       }
 
@@ -469,7 +494,35 @@ export default function SessionClient() {
         const draft = await loadDraft(resumeId);
         if (draft) {
           applyDraft(draft);
+          if (!resolvedProgram && draft.programId) {
+            resolvedProgram = await getProgram(draft.programId);
+            if (resolvedProgram) {
+              resolvedProgress = await getProgramProgress(resolvedProgram.id);
+            }
+          }
+          if (!Number.isFinite(resolvedDayIndex) && Number.isFinite(draft.dayIndex)) {
+            resolvedDayIndex = draft.dayIndex as number;
+          }
         }
+      }
+
+      if (resolvedProgram) {
+        const fallbackDayIndex =
+          resolvedProgress && Number.isFinite(resolvedProgress.nextDayIndex)
+            ? resolvedProgress.nextDayIndex
+            : 0;
+        const boundedDayIndex = Math.min(
+          Math.max(
+            0,
+            Number.isFinite(resolvedDayIndex)
+              ? (resolvedDayIndex as number)
+              : fallbackDayIndex
+          ),
+          Math.max(0, resolvedProgram.week.length - 1)
+        );
+        setProgram(resolvedProgram);
+        setProgramDayIndex(boundedDayIndex);
+        setProgramProgress(resolvedProgress);
       }
     };
     load();
@@ -537,6 +590,7 @@ export default function SessionClient() {
     );
   }, [program, programDayIndex, routine, substitutionByExercise, sessionSwapByItemId]);
 
+  const totalItems = flatItems.length;
   const currentItem = flatItems[activeIndex];
   const currentItemId = currentItem?.id ?? null;
   const currentExerciseId = currentItem?.exerciseId ?? null;
@@ -544,7 +598,28 @@ export default function SessionClient() {
   const currentReps = currentItem?.reps ?? null;
 
   useEffect(() => {
+    if (!totalItems) {
+      if (activeIndex !== 0) setActiveIndex(0);
+      return;
+    }
+    if (activeIndex > totalItems - 1) {
+      setActiveIndex(totalItems - 1);
+    }
+  }, [activeIndex, totalItems]);
+
+  useEffect(() => {
     activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  useEffect(() => {
+    if (previousActiveIndexRef.current === activeIndex) return;
+    previousActiveIndexRef.current = activeIndex;
+    if (!exerciseCardRef.current) return;
+    if (typeof exerciseCardRef.current.scrollIntoView !== "function") return;
+    exerciseCardRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   }, [activeIndex]);
 
   useEffect(() => {
@@ -588,7 +663,6 @@ export default function SessionClient() {
     },
     [flatItems, program?.id, programDayIndex]
   );
-  const totalItems = flatItems.length;
   const tips = [
     "Breathe steadily",
     "Move with control",
@@ -620,13 +694,54 @@ export default function SessionClient() {
     return () => window.clearInterval(timer);
   }, [tips.length]);
 
-  const toggleSetComplete = (exerciseId: string, index: number) => {
-    setCompletedSets((prev) => {
-      const current = prev[exerciseId] ?? [];
-      const next = [...current];
-      next[index] = !next[index];
-      return { ...prev, [exerciseId]: next };
-    });
+  const queueFocus = useCallback(
+    (element: HTMLInputElement | HTMLButtonElement | null | undefined) => {
+      if (!element) return;
+      if (typeof window !== "undefined" && typeof window.requestAnimationFrame === "function") {
+        window.requestAnimationFrame(() => {
+          element.focus();
+        });
+        return;
+      }
+      element.focus();
+    },
+    []
+  );
+
+  const focusNextStepAfterSet = useCallback(
+    (toggledIndex: number, setStates: boolean[]) => {
+      const nextIncomplete = setStates.findIndex(
+        (isComplete, index) => index > toggledIndex && !isComplete
+      );
+      if (nextIncomplete >= 0) {
+        queueFocus(setCheckboxRefs.current[nextIncomplete]);
+        return;
+      }
+      const firstIncomplete = setStates.findIndex((isComplete) => !isComplete);
+      if (firstIncomplete >= 0) {
+        queueFocus(setCheckboxRefs.current[firstIncomplete]);
+        return;
+      }
+      queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
+    },
+    [queueFocus]
+  );
+
+  const toggleSetComplete = (
+    itemId: string,
+    index: number,
+    targetSetCount: number
+  ) => {
+    const current =
+      completedSets[itemId] ?? Array.from({ length: targetSetCount }, () => false);
+    const next = current.slice(0, targetSetCount);
+    while (next.length < targetSetCount) next.push(false);
+    next[index] = !next[index];
+    setCompletedSets((prev) => ({
+      ...prev,
+      [itemId]: next,
+    }));
+    focusNextStepAfterSet(index, next);
   };
 
   const updateSelectedSets = useCallback((exerciseId: string, nextCount: number) => {
@@ -841,6 +956,7 @@ export default function SessionClient() {
         restSeconds,
       },
       timerByExercise,
+      timerRuntimeByItemId,
       startedAt: nextStartedAt,
       updatedAt: nowIso(),
     });
@@ -958,15 +1074,20 @@ export default function SessionClient() {
     setPainModalOpen(false);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    if (!currentItem) return;
+    await persistSessionDraftNow();
+    setExerciseCompleteFlashVisible(false);
     if (activeIndex < totalItems - 1) {
       setActiveIndex((prev) => prev + 1);
-    } else {
-      handleCompleteSession();
+      return;
     }
+    await handleCompleteSession();
   };
 
-  const handleBack = () => {
+  const handleBack = async () => {
+    await persistSessionDraftNow();
+    setExerciseCompleteFlashVisible(false);
     setActiveIndex((prev) => Math.max(prev - 1, 0));
   };
 
@@ -980,6 +1101,8 @@ export default function SessionClient() {
     setSummaryStats(null);
     setActiveIndex(0);
     setCompletedSets({});
+    setSelectedSets({});
+    setTimerRuntimeByItemId({});
     setSessionSwapByItemId({});
     setPainLevelByExercise({});
     setPainModalOpen(false);
@@ -1185,6 +1308,12 @@ export default function SessionClient() {
 
     await clearDraft(sessionIdValue);
     saveAppState({ activeSessionId: undefined });
+    markSessionComplete({
+      sessionId: sessionIdValue,
+      programId: program?.id ?? null,
+      dayIndex: programDayIndex ?? null,
+      completedAt,
+    });
   };
 
   const { minSets, maxSets } = parseSetsRange(currentItem?.sets);
@@ -1204,9 +1333,9 @@ export default function SessionClient() {
     currentItemId && selectedSets[currentItemId] !== undefined
       ? selectedSets[currentItemId]
       : boundedPreferredSets;
-  const checks =
-    completedSets[currentItemId ?? ""] ??
-    Array.from({ length: currentSelectedSets }, () => false);
+  const checks = Array.from({ length: currentSelectedSets }, (_, index) =>
+    Boolean(completedSets[currentItemId ?? ""]?.[index])
+  );
   const allSetsCompleted =
     checks.length > 0 && checks.every((value) => Boolean(value));
   const currentFeedbackKey = currentItem?.exerciseId ?? "";
@@ -1257,6 +1386,116 @@ export default function SessionClient() {
       : "-";
   const previewSetsPlanned = currentSelectedSets;
   const previewSetsCompleted = checks.filter(Boolean).length;
+  const currentExerciseMeta = currentExerciseId
+    ? exerciseById(currentExerciseId)
+    : null;
+  const phaseLabel = program?.phaseName ?? program?.phase?.name ?? "Guided session";
+  const dayPositionLabel =
+    program && programDayIndex !== null
+      ? `Day ${programDayIndex + 1} of ${program.daysPerWeek}`
+      : "Day 1 of 1";
+  const dayTitle =
+    (program &&
+      programDayIndex !== null &&
+      program.week.find((entry) => entry.dayIndex === programDayIndex)?.title) ||
+    currentItem?.dayTitle ||
+    "Today";
+  const exercisePositionLabel = `Exercise ${Math.min(
+    totalItems,
+    activeIndex + 1
+  )} of ${Math.max(1, totalItems)}`;
+  const sessionProgressPercent = totalItems
+    ? ((activeIndex + 1) / totalItems) * 100
+    : 0;
+  const persistedTimerRuntime = currentItemId
+    ? timerRuntimeByItemId[currentItemId] ?? null
+    : null;
+  const hasWeightedInput = currentItem?.loadType === "weighted";
+  const hasRepsInput = currentItem?.loadType !== "timed";
+
+  const focusFirstIncompleteSet = useCallback(() => {
+    const nextSetIndex = checks.findIndex((isComplete) => !isComplete);
+    if (nextSetIndex < 0) return false;
+    queueFocus(setCheckboxRefs.current[nextSetIndex]);
+    return true;
+  }, [checks, queueFocus]);
+
+  const handleTrackingEnter = useCallback(
+    (field: "weight" | "reps" | "rpe") =>
+      (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        if (field === "weight") {
+          if (hasRepsInput) {
+            queueFocus(repsInputRef.current);
+            return;
+          }
+          queueFocus(rpeInputRef.current);
+          return;
+        }
+        if (field === "reps") {
+          queueFocus(rpeInputRef.current);
+          return;
+        }
+        if (focusFirstIncompleteSet()) return;
+        queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
+      },
+    [focusFirstIncompleteSet, hasRepsInput, queueFocus]
+  );
+
+  const handleTimerRuntimeChange = useCallback(
+    (nextState: DualModeTimerRuntimeState) => {
+      if (!currentItemId) return;
+      setTimerRuntimeByItemId((prev) => {
+        const existing = prev[currentItemId];
+        if (
+          existing &&
+          existing.mode === nextState.mode &&
+          existing.running === nextState.running &&
+          existing.remainingSeconds === nextState.remainingSeconds &&
+          existing.exerciseSeconds === nextState.exerciseSeconds &&
+          existing.restSeconds === nextState.restSeconds
+        ) {
+          return prev;
+        }
+        return {
+          ...prev,
+          [currentItemId]: nextState,
+        };
+      });
+    },
+    [currentItemId]
+  );
+
+  useEffect(() => {
+    setCheckboxRefs.current = {};
+    feedbackButtonRefs.current = [];
+  }, [currentItemId]);
+
+  useEffect(() => {
+    if (!currentItemId) return;
+    if (painModalOpen) return;
+    if (hasWeightedInput && weightInputRef.current) {
+      queueFocus(weightInputRef.current);
+      return;
+    }
+    if (hasRepsInput && repsInputRef.current) {
+      queueFocus(repsInputRef.current);
+      return;
+    }
+    if (rpeInputRef.current) {
+      queueFocus(rpeInputRef.current);
+      return;
+    }
+    focusFirstIncompleteSet();
+  }, [
+    currentItemId,
+    hasWeightedInput,
+    hasRepsInput,
+    painModalOpen,
+    queueFocus,
+    focusFirstIncompleteSet,
+  ]);
 
   useEffect(() => {
     if (!currentExerciseId) return;
@@ -1338,6 +1577,7 @@ export default function SessionClient() {
           restSeconds,
         },
         timerByExercise,
+        timerRuntimeByItemId,
         startedAt: sessionStartedAt,
         updatedAt: nowIso(),
       });
@@ -1362,9 +1602,53 @@ export default function SessionClient() {
     workSeconds,
     restSeconds,
     timerByExercise,
+    timerRuntimeByItemId,
     sessionStartedAt,
     flatItems,
   ]);
+
+  useEffect(() => {
+    if (!currentItemId) {
+      setExerciseCompleteFlashVisible(false);
+      lastExerciseCompletionRef.current = {
+        itemId: null,
+        allSetsCompleted: false,
+      };
+      return;
+    }
+    const previous = lastExerciseCompletionRef.current;
+    if (previous.itemId !== currentItemId) {
+      setExerciseCompleteFlashVisible(false);
+      lastExerciseCompletionRef.current = {
+        itemId: currentItemId,
+        allSetsCompleted,
+      };
+      return;
+    }
+    if (!previous.allSetsCompleted && allSetsCompleted) {
+      setExerciseCompleteFlashVisible(true);
+      if (exerciseCompleteFlashTimerRef.current) {
+        window.clearTimeout(exerciseCompleteFlashTimerRef.current);
+      }
+      exerciseCompleteFlashTimerRef.current = window.setTimeout(() => {
+        setExerciseCompleteFlashVisible(false);
+      }, 800);
+    } else if (previous.allSetsCompleted && !allSetsCompleted) {
+      setExerciseCompleteFlashVisible(false);
+    }
+    lastExerciseCompletionRef.current = {
+      itemId: currentItemId,
+      allSetsCompleted,
+    };
+  }, [allSetsCompleted, currentItemId]);
+
+  useEffect(() => {
+    return () => {
+      if (exerciseCompleteFlashTimerRef.current) {
+        window.clearTimeout(exerciseCompleteFlashTimerRef.current);
+      }
+    };
+  }, []);
 
   if (!data || !routine) {
     return (
@@ -1387,14 +1671,36 @@ export default function SessionClient() {
     );
   }
 
-  if (sessionComplete && summary && summaryStats) {
+  if (!currentItem) {
     return (
       <BackgroundShell>
         <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
           <OnImage>
-            <h1 className="text-3xl font-semibold text-white">
-              Session complete
+            <h1 className="text-2xl font-semibold text-white">
+              No session items available
             </h1>
+            <p className="text-sm text-slate-200">
+              Return to results and start a planned day to continue.
+            </p>
+            <Link href="/results">
+              <Button variant="secondary">Back to results</Button>
+            </Link>
+          </OnImage>
+        </div>
+      </BackgroundShell>
+    );
+  }
+
+  if (sessionComplete && summary && summaryStats) {
+    return (
+      <BackgroundShell>
+        <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+          <OnImage className="space-y-3">
+            <h1 className="text-3xl font-semibold text-white">Session complete</h1>
+            <p className="text-sm text-slate-200">
+              Excellent work. Your program will adapt based on today&apos;s
+              performance.
+            </p>
           </OnImage>
           <div className="ui-card p-6">
             <p className="text-sm text-slate-600">
@@ -1438,13 +1744,23 @@ export default function SessionClient() {
               ))}
             </div>
           </div>
-          <OnImage className="flex flex-wrap gap-3">
-            <Button variant="primary" onClick={handleStartNewSession}>
+          <OnImage className="flex flex-col gap-3 sm:flex-row">
+            <Link href="/results">
+              <Button
+                variant="primary"
+                aria-label="Back to results"
+                className="h-12 w-full rounded-xl text-base font-semibold sm:min-w-[220px]"
+              >
+                Return to Dashboard
+              </Button>
+            </Link>
+            <Button
+              variant="secondary"
+              onClick={handleStartNewSession}
+              className="h-12 w-full rounded-xl text-sm font-semibold"
+            >
               Start another session
             </Button>
-            <Link href="/results">
-              <Button variant="secondary">Back to results</Button>
-            </Link>
           </OnImage>
         </div>
       </BackgroundShell>
@@ -1453,68 +1769,91 @@ export default function SessionClient() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
-        <OnImage>
-          <header className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
-              Guided session
-            </p>
-            <h1 className="text-3xl font-semibold text-white">
-              {currentItem.section}: {currentItem.name}
-            </h1>
-            <span
-              className="sr-only"
-              data-testid="current-exercise-id"
-              data-exercise-id={currentItem.exerciseId}
-            />
-            {program && programDayIndex !== null ? (
-              <p className="text-xs font-semibold text-slate-200">
-                Schedule day {programDayIndex + 1} of {program.daysPerWeek}
-              </p>
-            ) : null}
-            <p className="text-sm text-slate-200">
-              {currentItem.sets} sets • {currentItem.duration ?? currentItem.reps}
-            </p>
-          </header>
+      <div className="ui-shell flex max-w-4xl flex-col gap-4 py-6 sm:py-8">
+        <span
+          className="sr-only"
+          data-testid="current-exercise-id"
+          data-exercise-id={currentItem.exerciseId}
+        />
+
+        <OnImage className="py-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+            Guided session
+          </p>
         </OnImage>
 
-        <div
-          className={`sticky top-3 z-20 rounded-2xl border px-5 py-4 text-[1.2rem] font-semibold leading-tight shadow-lg coach-tip-pulse ${tipTone}`}
-        >
-          Coaching tip:{" "}
-          <span>{activeTip}</span>
-        </div>
-
-        <div className="ui-card p-6">
-          <DualModeTimer
-            key={currentItem.id}
-            initialExerciseSeconds={currentTimer.workSeconds}
-            initialRestSeconds={currentTimer.restSeconds}
-            onExerciseDurationChange={(seconds) => {
-              updateTimerPrefs(
-                { workSeconds: seconds, restSeconds: currentTimer.restSeconds },
-                currentItem.exerciseId
-              );
-            }}
-            onRestDurationChange={(seconds) => {
-              updateTimerPrefs(
-                { workSeconds: currentTimer.workSeconds, restSeconds: seconds },
-                currentItem.exerciseId
-              );
-            }}
-            defaultMode="exercise"
+        <div className="sticky top-2 z-30 space-y-2">
+          <SessionProgressHeader
+            phaseName={phaseLabel}
+            dayPositionLabel={dayPositionLabel}
+            dayTitle={dayTitle}
+            exercisePositionLabel={exercisePositionLabel}
+            progressPercent={sessionProgressPercent}
           />
 
-          <div className="mt-6 space-y-2 text-sm text-slate-700">
-            <p className="font-semibold text-slate-900">Cues</p>
-            <ul className="list-disc pl-5">
-              {currentItem.cues.map((cue) => (
-                <li key={cue}>{cue}</li>
-              ))}
-            </ul>
-            <p className="mt-3 text-xs text-slate-500">
-              Common mistake: {currentItem.mistake}
-            </p>
+          <div
+            className={`ui-card rounded-2xl border px-4 py-3 text-sm font-semibold shadow-sm transition-colors ${tipTone}`}
+          >
+            Coaching tip: <span>{activeTip}</span>
+          </div>
+        </div>
+
+        <div ref={exerciseCardRef}>
+          <ExerciseCard
+            name={currentItem.name}
+            targetMuscles={currentExerciseMeta?.muscleGroups ?? []}
+            cue={
+              currentItem.cues[0] ??
+              "Move with control, breathe steadily, and keep posture stacked."
+            }
+            sets={checks}
+            onToggleSet={(index) =>
+              toggleSetComplete(currentItem.id, index, currentSelectedSets)
+            }
+            onSetEnter={(index) =>
+              toggleSetComplete(currentItem.id, index, currentSelectedSets)
+            }
+            setCheckboxRef={(index, element) => {
+              setCheckboxRefs.current[index] = element;
+            }}
+            completionFlashVisible={exerciseCompleteFlashVisible}
+          />
+        </div>
+
+        <div className="ui-card p-4 sm:p-5">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-start">
+            <DualModeTimer
+              key={currentItem.id}
+              initialExerciseSeconds={currentTimer.workSeconds}
+              initialRestSeconds={currentTimer.restSeconds}
+              onExerciseDurationChange={(seconds) => {
+                void updateTimerPrefs(
+                  { workSeconds: seconds, restSeconds: currentTimer.restSeconds },
+                  currentItem.exerciseId
+                );
+              }}
+              onRestDurationChange={(seconds) => {
+                void updateTimerPrefs(
+                  { workSeconds: currentTimer.workSeconds, restSeconds: seconds },
+                  currentItem.exerciseId
+                );
+              }}
+              defaultMode="exercise"
+              persistedState={persistedTimerRuntime}
+              onStateChange={handleTimerRuntimeChange}
+            />
+
+            <div className="space-y-2 text-sm text-slate-700 lg:pt-1">
+              <p className="font-semibold text-slate-900">Cues</p>
+              <ul className="list-disc pl-5">
+                {currentItem.cues.map((cue) => (
+                  <li key={cue}>{cue}</li>
+                ))}
+              </ul>
+              <p className="mt-3 text-xs text-slate-500">
+                Common mistake: {currentItem.mistake}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -1547,10 +1886,10 @@ export default function SessionClient() {
                     {lastLog.weight
                       ? `${lastLog.weight}${lastLog.unit ?? ""}`
                       : currentItem.loadType === "timed"
-                      ? "Timed"
-                      : currentItem.loadType === "assisted"
-                      ? "Assisted"
-                      : "Bodyweight"}{" "}
+                        ? "Timed"
+                        : currentItem.loadType === "assisted"
+                          ? "Assisted"
+                          : "Bodyweight"}{" "}
                     {lastLog.reps ? `x ${lastLog.reps} reps` : ""}
                   </p>
                   {lastLog.nextTimeGuidance ? (
@@ -1570,8 +1909,8 @@ export default function SessionClient() {
                 {saveState === "saving"
                   ? "Saving..."
                   : saveState === "saved"
-                  ? "Saved"
-                  : "Autosave on"}
+                    ? "Saved"
+                    : "Autosave on"}
               </span>
             </div>
           </div>
@@ -1609,72 +1948,6 @@ export default function SessionClient() {
           </div>
 
           <div className="mt-4 grid gap-3">
-            {currentItem.loadType === "weighted" ? (
-              <div className="flex flex-wrap items-center gap-2">
-                <label className="text-xs font-semibold text-slate-700" htmlFor="weight-input">
-                  Weight
-                </label>
-                <input
-                  id="weight-input"
-                  data-testid="weight-input"
-                  type="number"
-                  min={0}
-                  value={currentWeightValue}
-                  onChange={(event) =>
-                    applyWeight(currentItem.exerciseId, event.target.value)
-                  }
-                  className="ui-input w-28"
-                />
-                <div className="flex rounded-full border border-slate-200 p-1 text-xs">
-                  {(["lb", "kg"] as const).map((unit) => (
-                    <button
-                      key={unit}
-                      type="button"
-                      onClick={() => applyUnit(currentItem.exerciseId, unit)}
-                      className={`rounded-full px-3 py-1 font-semibold ${
-                        currentUnitValue === unit
-                          ? "bg-slate-900 text-white"
-                          : "text-slate-600"
-                      }`}
-                    >
-                      {unit}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p className="text-xs font-semibold text-slate-600">
-                Load:{" "}
-                {currentItem.loadType === "timed"
-                  ? "Timed"
-                  : currentItem.loadType === "assisted"
-                  ? "Assisted"
-                  : "Bodyweight"}
-              </p>
-            )}
-            <div className="flex flex-wrap items-center gap-2">
-              <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
-                RPE (1-10)
-              </label>
-              <input
-                id="rpe-input"
-                data-testid="rpe-input"
-                type="number"
-                min={1}
-                max={10}
-                value={currentRpeValue}
-                onChange={(event) => applyRpe(currentItem.exerciseId, event.target.value)}
-                className="ui-input w-24"
-                placeholder="RPE"
-              />
-            </div>
-
-          </div>
-        </div>
-
-        <div className="ui-card p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-slate-900">Sets</p>
             {maxSets > minSets ? (
               <div className="flex items-center gap-2 text-xs text-slate-600">
                 <span className="font-semibold text-slate-900">Sets</span>
@@ -1709,53 +1982,97 @@ export default function SessionClient() {
                 </button>
               </div>
             ) : null}
-          </div>
-          <div className="mt-3 flex flex-wrap gap-3">
-            {currentItem.loadType !== "timed" ? (
-              <div className="w-full space-y-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                  <label className="font-semibold text-slate-700" htmlFor="reps-input">
-                    Reps
-                  </label>
+
+            {currentItem.loadType === "weighted" ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="text-xs font-semibold text-slate-700" htmlFor="weight-input">
+                  Weight
+                </label>
+                <input
+                  id="weight-input"
+                  data-testid="weight-input"
+                  type="number"
+                  min={0}
+                  ref={weightInputRef}
+                  value={currentWeightValue}
+                  onChange={(event) =>
+                    applyWeight(currentItem.exerciseId, event.target.value)
+                  }
+                  onKeyDown={handleTrackingEnter("weight")}
+                  className="ui-input w-28"
+                />
+                <div className="flex rounded-full border border-slate-200 p-1 text-xs">
+                  {(["lb", "kg"] as const).map((unit) => (
+                    <button
+                      key={unit}
+                      type="button"
+                      onClick={() => applyUnit(currentItem.exerciseId, unit)}
+                      className={`rounded-full px-3 py-1 font-semibold ${
+                        currentUnitValue === unit
+                          ? "bg-slate-900 text-white"
+                          : "text-slate-600"
+                      }`}
+                    >
+                      {unit}
+                    </button>
+                  ))}
                 </div>
+              </div>
+            ) : (
+              <p className="text-xs font-semibold text-slate-600">
+                Load:{" "}
+                {currentItem.loadType === "timed"
+                  ? "Timed"
+                  : currentItem.loadType === "assisted"
+                    ? "Assisted"
+                    : "Bodyweight"}
+              </p>
+            )}
+            {currentItem.loadType !== "timed" ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="text-xs font-semibold text-slate-700" htmlFor="reps-input">
+                  Reps
+                </label>
                 <input
                   id="reps-input"
                   data-testid="reps-input"
                   type="number"
                   min={1}
+                  ref={repsInputRef}
                   value={currentRepsValue}
                   onChange={(event) =>
                     applySingleReps(currentItem.exerciseId, event.target.value)
                   }
+                  onKeyDown={handleTrackingEnter("reps")}
                   className="ui-input w-32 text-xs"
                   placeholder="Reps per set"
                 />
               </div>
             ) : null}
-            {Array.from({ length: currentSelectedSets }).map((_, index) => (
-              <label
-                key={`${currentItem.id}-set-${index}`}
-                className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700"
-              >
-                <input
-                  type="checkbox"
-                  checked={Boolean(checks[index])}
-                  onChange={() =>
-                    toggleSetComplete(currentItem.id, index)
-                  }
-                  className="h-4 w-4 accent-slate-900"
-                />
-                Set {index + 1}
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
+                RPE (1-10)
               </label>
-            ))}
+              <input
+                id="rpe-input"
+                data-testid="rpe-input"
+                type="number"
+                min={1}
+                max={10}
+                ref={rpeInputRef}
+                value={currentRpeValue}
+                onChange={(event) => applyRpe(currentItem.exerciseId, event.target.value)}
+                onKeyDown={handleTrackingEnter("rpe")}
+                className="ui-input w-24"
+                placeholder="RPE"
+              />
+            </div>
           </div>
         </div>
 
         {allSetsCompleted ? (
           <div className="ui-card p-6">
-            <p className="text-sm font-semibold text-slate-900">
-              How did it feel?
-            </p>
+            <p className="text-sm font-semibold text-slate-900">How did it feel?</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {(
                 [
@@ -1763,17 +2080,19 @@ export default function SessionClient() {
                   { value: "moderate", label: "Moderate" },
                   { value: "hard", label: "Hard" },
                 ] as Array<{ value: FeedbackEntry; label: string }>
-              ).map((option) => (
+              ).map((option, index) => (
                 <button
                   key={option.value}
                   type="button"
+                  ref={(element) => {
+                    feedbackButtonRefs.current[index] = element;
+                  }}
                   onClick={() =>
                     saveFeedback({
                       ...feedback,
                       [currentFeedbackKey]: {
                         rating: option.value,
-                        painLocation:
-                          currentFeedback?.painLocation ?? null,
+                        painLocation: currentFeedback?.painLocation ?? null,
                         notes: currentFeedback?.notes ?? "",
                       },
                     })
@@ -1824,9 +2143,7 @@ export default function SessionClient() {
             </div>
             <div className="mt-3 grid gap-3 text-xs">
               <label className="flex flex-col gap-2">
-                <span className="font-semibold text-slate-700">
-                  Location (optional)
-                </span>
+                <span className="font-semibold text-slate-700">Location (optional)</span>
                 <select
                   data-testid="pain-report-location"
                   value={painModalLocation}
@@ -1854,9 +2171,7 @@ export default function SessionClient() {
                 </select>
               </label>
               <label className="flex flex-col gap-2">
-                <span className="font-semibold text-slate-700">
-                  Notes (optional)
-                </span>
+                <span className="font-semibold text-slate-700">Notes (optional)</span>
                 <textarea
                   data-testid="pain-report-notes"
                   value={painModalNotes}
@@ -1912,33 +2227,46 @@ export default function SessionClient() {
           </div>
         ) : null}
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <OnImage className="flex flex-wrap items-center gap-3">
-            <Link href="/results" onClick={() => trackDropoff("exit_button")}>
-              <Button variant="secondary">Exit session</Button>
-            </Link>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleBack}
-              disabled={activeIndex === 0}
-            >
-              Back
-            </Button>
-          </OnImage>
-          <div className="text-xs font-semibold text-slate-500">
-            {activeIndex + 1} / {totalItems}
+        <OnImage className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Link href="/results" onClick={() => trackDropoff("exit_button")}>
+                <Button variant="secondary" className="min-h-11 rounded-xl px-4 text-xs">
+                  Exit session
+                </Button>
+              </Link>
+              <Button
+                type="button"
+                variant="secondary"
+                className="min-h-11 rounded-xl px-4 text-xs"
+                onClick={() => {
+                  void handleBack();
+                }}
+                disabled={activeIndex === 0}
+              >
+                Back
+              </Button>
+            </div>
+            <div className="text-xs font-semibold text-slate-200">
+              {activeIndex + 1} / {totalItems}
+            </div>
           </div>
-          <Button
+          <button
             type="button"
-            variant="primary"
             data-testid="session-next"
-            onClick={handleNext}
+            ref={nextButtonRef}
+            onClick={() => {
+              void handleNext();
+            }}
+            className={`${primaryActionBtn} h-14 w-full min-w-0 rounded-xl px-6 text-base font-semibold ${
+              sessionComplete ? "" : "motion-safe:animate-[pulse_6s_ease-in-out_infinite]"
+            }`}
           >
-            {activeIndex === totalItems - 1 ? "Finish session" : "Next"}
-          </Button>
-        </div>
+            {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next Exercise \u2192"}
+          </button>
+        </OnImage>
       </div>
+      <OnboardingInfoButton page="session" />
     </BackgroundShell>
   );
 }

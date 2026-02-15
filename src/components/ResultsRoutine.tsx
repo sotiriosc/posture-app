@@ -117,6 +117,13 @@ const toEpochMs = (value: string | null | undefined) => {
   return Number.isNaN(parsed) ? NaN : parsed;
 };
 
+const parseDayIndexFromSession = (session: SessionRecord) => {
+  const match = session.notes?.match(/dayIndex:(\d+)/);
+  if (!match) return null;
+  const parsed = Number(match[1]);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
 const hasValidWeekStructure = (program: Program) => {
   const targetDays = program.daysPerWeek;
   if (!Array.isArray(program.week) || program.week.length !== targetDays) {
@@ -181,6 +188,7 @@ export default function ResultsRoutine() {
     compensation: false,
     adaptation: false,
   });
+  const [nowAnchor, setNowAnchor] = useState(() => Date.now());
   const [lastTwoLogs, setLastTwoLogs] = useState<ExerciseLog[]>([]);
   const [authEnabled, setAuthEnabled] = useState(false);
   const [plan, setPlan] = useState<SubscriptionPlan>("free");
@@ -258,6 +266,14 @@ export default function ResultsRoutine() {
       }
     };
     loadSession();
+  }, []);
+
+  useEffect(() => {
+    const tick = () => setNowAnchor(Date.now());
+    const timer = window.setInterval(tick, 60 * 1000);
+    return () => {
+      window.clearInterval(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -685,80 +701,113 @@ export default function ResultsRoutine() {
     return Number.isNaN(parsedProgramCreatedAt) ? 0 : parsedProgramCreatedAt;
   }, [activeProgramBaselineAt, program?.createdAt]);
 
+  const activeProgramId = useMemo(() => {
+    if (!program) return null;
+    const stored = loadAppState()?.activeProgramId;
+    if (!stored) return program.id;
+    return stored === program.id ? stored : program.id;
+  }, [program?.id, activeProgramBaselineAt]);
+
+  const activeSessionId = useMemo(() => {
+    return loadAppState()?.activeSessionId ?? null;
+  }, [activeProgramId, activeProgramBaselineAt, allSessions.length, nowAnchor]);
+
+  const activeDaysPerWeek = program?.daysPerWeek ?? data?.daysPerWeek ?? 3;
+
   const sessionsSinceBaseline = useMemo(() => {
-    if (!program) return [] as SessionRecord[];
+    if (!activeProgramId) return [] as SessionRecord[];
     return allSessions.filter((session) => {
-      if (session.routineId !== program.id) return false;
+      if (session.routineId !== activeProgramId) return false;
       const parsedSessionAt = toEpochMs(session.startedAt ?? session.createdAt);
       const sessionAt = Number.isNaN(parsedSessionAt) ? 0 : parsedSessionAt;
       return sessionAt >= baselineForActiveProgram;
     });
-  }, [allSessions, program?.id, baselineForActiveProgram]);
+  }, [allSessions, activeProgramId, baselineForActiveProgram]);
 
   const completedDaySet = useMemo(() => {
     const set = new Set<number>();
-    if (!program) return set;
-
-    if (progress?.programId === program.id) {
-      const fromProgress = Array.isArray(progress.completedDayIndices)
-        ? progress.completedDayIndices
-        : [];
-      fromProgress.forEach((dayIndex) => {
-        if (
-          Number.isFinite(dayIndex) &&
-          dayIndex >= 0 &&
-          dayIndex < program.daysPerWeek
-        ) {
-          set.add(dayIndex);
-        }
-      });
-      return set;
-    }
-
     sessionsSinceBaseline.forEach((session) => {
       if (!session.completedAt) return;
-      const match = session.notes?.match(/dayIndex:(\d+)/);
-      if (!match) return;
-      const dayIndex = Number(match[1]);
+      const dayIndex = parseDayIndexFromSession(session);
+      if (dayIndex === null) return;
       if (
-        Number.isFinite(dayIndex) &&
         dayIndex >= 0 &&
-        dayIndex < program.daysPerWeek
+        dayIndex < activeDaysPerWeek
       ) {
         set.add(dayIndex);
       }
     });
     return set;
-  }, [
-    program,
-    progress?.programId,
-    progress?.completedDayIndices,
-    sessionsSinceBaseline,
-  ]);
+  }, [sessionsSinceBaseline, activeDaysPerWeek]);
+
+  const inProgressDaySet = useMemo(() => {
+    const set = new Set<number>();
+    sessionsSinceBaseline.forEach((session) => {
+      if (session.completedAt) return;
+      const dayIndex = parseDayIndexFromSession(session);
+      if (dayIndex === null) return;
+      if (dayIndex < 0 || dayIndex >= activeDaysPerWeek) return;
+      if (completedDaySet.has(dayIndex)) return;
+      set.add(dayIndex);
+    });
+    return set;
+  }, [sessionsSinceBaseline, activeDaysPerWeek, completedDaySet]);
+
+  const latestInProgressDayIndex = useMemo(() => {
+    let latest: { dayIndex: number; timestamp: number } | null = null;
+    for (const session of sessionsSinceBaseline) {
+      if (session.completedAt) continue;
+      const dayIndex = parseDayIndexFromSession(session);
+      if (dayIndex === null || dayIndex < 0 || dayIndex >= activeDaysPerWeek) continue;
+      const parsedTimestamp = toEpochMs(session.startedAt ?? session.createdAt);
+      const timestamp = Number.isNaN(parsedTimestamp) ? 0 : parsedTimestamp;
+      if (!latest || timestamp > latest.timestamp) {
+        latest = { dayIndex, timestamp };
+      }
+    }
+    return latest?.dayIndex ?? null;
+  }, [sessionsSinceBaseline, activeDaysPerWeek]);
 
   const nextDayIndex = useMemo(() => {
     if (!program) return 0;
-    if (progress && Number.isFinite(progress.nextDayIndex)) {
-      return Math.min(
-        Math.max(0, progress.nextDayIndex),
-        Math.max(0, program.week.length - 1)
-      );
+    if (
+      latestInProgressDayIndex !== null &&
+      latestInProgressDayIndex >= 0 &&
+      latestInProgressDayIndex < program.week.length &&
+      !completedDaySet.has(latestInProgressDayIndex)
+    ) {
+      return latestInProgressDayIndex;
     }
-    const completedDays = Array.from(completedDaySet).sort((a, b) => a - b);
-    if (!completedDays.length) return 0;
-    const last = completedDays[completedDays.length - 1];
-    return last + 1 < program.daysPerWeek ? last + 1 : 0;
-  }, [program, progress, completedDaySet]);
+    const firstPending = program.week.find(
+      (day) => !completedDaySet.has(day.dayIndex)
+    )?.dayIndex;
+    if (typeof firstPending === "number") {
+      return firstPending;
+    }
+    // Calendar fallback keeps session targeting fresh at week rollover.
+    return new Date(nowAnchor).getDay() % Math.max(1, program.daysPerWeek);
+  }, [program, latestInProgressDayIndex, completedDaySet, nowAnchor]);
 
   const completedCount = useMemo(() => {
     return completedDaySet.size;
   }, [completedDaySet]);
 
-  const activeDaysPerWeek = program?.daysPerWeek ?? data?.daysPerWeek ?? 3;
   const isFreePlan = authEnabled && plan !== "pro";
   const isDayLocked = (dayIndex: number) => isFreePlan && dayIndex > 0;
   const effectiveSelectedDay = isDayLocked(selectedDay) ? 0 : selectedDay;
   const effectiveNextDayIndex = isDayLocked(nextDayIndex) ? 0 : nextDayIndex;
+  const effectiveInProgressDaySet = useMemo(() => {
+    const set = new Set<number>();
+    inProgressDaySet.forEach((dayIndex) => {
+      if (isFreePlan && dayIndex > 0) return;
+      set.add(dayIndex);
+    });
+    return set;
+  }, [inProgressDaySet, isFreePlan]);
+  const inProgressCount = useMemo(
+    () => effectiveInProgressDaySet.size,
+    [effectiveInProgressDaySet]
+  );
 
   const completedSessions = useMemo(
     () =>
@@ -870,7 +919,7 @@ export default function ResultsRoutine() {
   useEffect(() => {
     setWeekViewDetailsOpen(false);
     setWeekViewSelectedDay(null);
-  }, [program?.id]);
+  }, [program?.id, baselineForActiveProgram]);
 
   const phaseGate = useMemo(() => {
     return canAdvancePhase({
@@ -916,15 +965,15 @@ export default function ResultsRoutine() {
     return Math.round(Math.min(1, (cycleRatio + dayRatio) / 2) * 100);
   }, [phaseGate]);
 
+  const resolvedSessionProgramId = activeProgramId ?? program?.id ?? null;
+
   const heroCta = useMemo(() => {
-    if (!program) {
+    if (!resolvedSessionProgramId) {
       return {
         label: "Start Today's Session" as const,
         href: "/session",
       };
     }
-    const state = loadAppState();
-    const activeSessionId = state?.activeSessionId;
     if (activeSessionId) {
       return {
         label: "Continue Session" as const,
@@ -933,9 +982,9 @@ export default function ResultsRoutine() {
     }
     return {
       label: "Start Today's Session" as const,
-      href: `/session?programId=${program.id}&dayIndex=${effectiveNextDayIndex}`,
+      href: `/session?programId=${resolvedSessionProgramId}&dayIndex=${effectiveNextDayIndex}`,
     };
-  }, [program, effectiveNextDayIndex]);
+  }, [resolvedSessionProgramId, activeSessionId, effectiveNextDayIndex]);
 
   const dailyInsight = useMemo(() => {
     const seed = questionnaireSignature ?? program?.id ?? "insight";
@@ -1084,9 +1133,9 @@ export default function ResultsRoutine() {
     if (!baselineForActiveProgram) return;
     // eslint-disable-next-line no-console
     console.log(
-      `[Week View] baseline=${new Date(baselineForActiveProgram).toISOString()} programId=${program.id}`
+      `[Week View] baseline=${new Date(baselineForActiveProgram).toISOString()} programId=${activeProgramId ?? program.id}`
     );
-  }, [program?.id, baselineForActiveProgram]);
+  }, [program?.id, activeProgramId, baselineForActiveProgram]);
 
   useEffect(() => {
     const runPoseAnalysis = async () => {
@@ -1217,7 +1266,12 @@ export default function ResultsRoutine() {
   );
   const weekProgressPercent = Math.max(
     0,
-    Math.min(100, Math.round((completedCount / Math.max(1, activeDaysPerWeek)) * 100))
+    Math.min(
+      100,
+      Math.round(
+        ((completedCount + inProgressCount * 0.5) / Math.max(1, activeDaysPerWeek)) * 100
+      )
+    )
   );
   const phaseGoalText =
     program.phaseObjective?.weekIntent ??
@@ -1349,7 +1403,7 @@ export default function ResultsRoutine() {
       : movementQualityPercent < 60
       ? "Biggest risk: Movement quality is inconsistent under fatigue."
       : "Biggest risk: Keep recovery habits steady to avoid regression.";
-  const coachAction = loadAppState()?.activeSessionId
+  const coachAction = activeSessionId
     ? "Next best action: Resume your active session and finish today's key movements."
     : `Next best action: Complete Day ${effectiveNextDayIndex + 1} with controlled tempo and clean reps.`;
   const coachNotes: [string, string, string] = [
@@ -1463,6 +1517,9 @@ export default function ResultsRoutine() {
 
   const readinessLabel =
     readinessScore >= 80 ? "Ready" : readinessScore >= 55 ? "Good" : "Caution";
+  const shouldPulsePrimaryCta =
+    heroCta.label === "Start Today's Session" &&
+    !completedDaySet.has(effectiveNextDayIndex);
 
   const heroMetricChips = [
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
@@ -1628,83 +1685,44 @@ export default function ResultsRoutine() {
   };
 
   return (
-    <div className="space-y-5">
-      <DashboardHero
-        greeting={heroGreeting}
-        phaseName={phaseName}
-        cycleCurrent={cycleCurrent}
-        cycleTarget={cycleTarget}
-        weekCompletedDays={completedCount}
-        weekTargetDays={activeDaysPerWeek}
-        cycleProgressPercent={cycleProgressPercent}
-        weekProgressPercent={weekProgressPercent}
-        readinessScore={readinessScore}
-        phaseGoal={phaseGoalText}
-        encouragement={encouragementMessage}
-        metricChips={heroMetricChips}
-        ctaLabel={heroCta.label}
-        ctaHref={heroCta.href}
-      />
+    <div className="flex flex-col gap-5">
+      <div className="order-1">
+        <DashboardHero
+          greeting={heroGreeting}
+          phaseName={phaseName}
+          cycleCurrent={cycleCurrent}
+          cycleTarget={cycleTarget}
+          weekCompletedDays={completedCount}
+          weekTargetDays={activeDaysPerWeek}
+          cycleProgressPercent={cycleProgressPercent}
+          weekProgressPercent={weekProgressPercent}
+          readinessScore={readinessScore}
+          phaseGoal={phaseGoalText}
+          encouragement={encouragementMessage}
+          metricChips={heroMetricChips}
+          ctaLabel={heroCta.label}
+          ctaHref={heroCta.href}
+          ctaPulse={shouldPulsePrimaryCta}
+        />
+      </div>
 
-      <section className="ui-card p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          Coach Summary
-        </h2>
-        <div className="mt-2 space-y-1.5">
-          {coachSummaryBullets.map((item) => (
-            <p key={item.label} className="text-sm text-slate-700">
-              <span className="font-medium text-slate-900">{item.label}:</span>{" "}
-              {item.text}
-            </p>
-          ))}
-        </div>
-        {hasAdaptationCallout ? (
-          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
-            <p>
-              System adapted this week to improve stability and execution quality.
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={openKnowledgeAnalysis}
-                className={secondaryActionBtn}
-              >
-                Why
-              </button>
-              <button
-                type="button"
-                onClick={openSystemAdjustments}
-                className={secondaryActionBtn}
-              >
-                Adjustments
-              </button>
-            </div>
-          </div>
-        ) : null}
-        <p className="mt-3 text-xs text-slate-500">Plan adapts as you log sessions.</p>
-      </section>
-
-      <DailyInsightCard
-        insight={dailyInsight}
-        coachNotes={coachNotes}
-        priorities={weeklyPriorities}
-      />
-
-      <section id="week-view" ref={weekViewSectionRef} className="ui-card p-5">
+      <section id="week-view" ref={weekViewSectionRef} className="ui-card order-2 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-base font-semibold text-slate-900">Week View</h3>
           <div className="flex items-center gap-2">
             <Button variant="secondary" onClick={focusTodayPlanInWeekView}>
               View today&apos;s plan
             </Button>
-            <Link href={`/session?programId=${program.id}&dayIndex=${weekViewStartDay}`}>
+            <Link
+              href={`/session?programId=${resolvedSessionProgramId ?? program.id}&dayIndex=${weekViewStartDay}`}
+            >
               <Button variant="secondary" data-testid="start-selected-day">
                 Start Selected Day
               </Button>
             </Link>
           </div>
         </div>
-        <div className="mt-2">
+        <div className="mt-2 flex flex-wrap items-center gap-2">
           <span
             data-testid="completed-count"
             title={weekViewBaselineDebugTitle}
@@ -1712,16 +1730,27 @@ export default function ResultsRoutine() {
           >
             {completedCount}/{activeDaysPerWeek} completed
           </span>
+          <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs text-blue-700">
+            {inProgressCount} in progress
+          </span>
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
+            Current day: {effectiveNextDayIndex + 1}
+          </span>
         </div>
-        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
           {program.week.map((day) => {
             const isCompleted = completedDaySet.has(day.dayIndex);
+            const isInProgress =
+              !isCompleted && effectiveInProgressDaySet.has(day.dayIndex);
             const isSelected = day.dayIndex === weekViewStartDay;
             const isLocked = isDayLocked(day.dayIndex);
-            const isNext = day.dayIndex === effectiveNextDayIndex && !isCompleted;
             const isToday = day.dayIndex === effectiveNextDayIndex;
-            const stateLabel = isCompleted ? "Completed" : isNext ? "Next" : "Pending";
-            const statePercent = isCompleted ? 100 : 0;
+            const stateLabel = isCompleted
+              ? "Completed"
+              : isInProgress
+              ? "In progress"
+              : "Not started";
+            const statePercent = isCompleted ? 100 : isInProgress ? 50 : 0;
             return (
               <button
                 key={day.dayIndex}
@@ -1737,38 +1766,38 @@ export default function ResultsRoutine() {
                   setWeekViewDetailsOpen(true);
                 }}
                 disabled={isLocked}
-                className={`rounded-2xl border px-3 py-2.5 text-left transition ${
-                  isSelected
-                    ? "border-slate-950 bg-slate-100 ring-1 ring-slate-300"
-                    : isNext
-                    ? "border-slate-700 bg-slate-50"
+                className={`min-h-[88px] rounded-2xl border px-3 py-2.5 text-left transition ${
+                  isCompleted
+                    ? "border-emerald-300 bg-emerald-50"
+                    : isInProgress
+                    ? "border-blue-300 bg-blue-50"
                     : "border-slate-200 bg-white"
-                } ${isLocked ? "opacity-60" : "hover:bg-slate-50"}`}
+                } ${isSelected ? "ring-1 ring-slate-300" : ""} ${
+                  isLocked ? "opacity-60" : "hover:-translate-y-px hover:shadow-sm"
+                }`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-xs font-semibold text-slate-600">Day {day.dayIndex + 1}</p>
                   <div className="flex items-center gap-1">
                     {isCompleted ? (
-                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 transition-opacity duration-300">
-                        Completed
+                      <span className="rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                        ✓ Completed
                       </span>
                     ) : null}
-                    {isNext ? (
-                      <span className="rounded-full border border-slate-400 bg-slate-200 px-2 py-0.5 text-[10px] font-semibold text-slate-800 transition-opacity duration-300">
-                        Next
+                    {isInProgress ? (
+                      <span className="rounded-full border border-blue-300 bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-800">
+                        In progress
                       </span>
                     ) : null}
                     {isToday ? (
-                      <span className="rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 transition-opacity duration-300">
+                      <span className="rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
                         Today
                       </span>
                     ) : null}
                   </div>
                 </div>
                 <p className="mt-1 text-sm font-semibold text-slate-900">{day.title}</p>
-                <p className="mt-1 text-xs text-slate-500">
-                  {isCompleted ? "Done" : stateLabel}
-                </p>
+                <p className="mt-1 text-xs text-slate-500">{stateLabel}</p>
                 <div className="mt-2">
                   <ProgressBar
                     label={stateLabel}
@@ -1783,7 +1812,7 @@ export default function ResultsRoutine() {
             );
           })}
         </div>
-        {weekViewDetailsOpen && selectedDayProgram ? (
+        {weekViewDetailsOpen && program.week[weekViewStartDay] ? (
           <div
             ref={weekViewDetailsRef}
             className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3"
@@ -1801,10 +1830,10 @@ export default function ResultsRoutine() {
               </button>
             </div>
             <p className="mt-1 text-sm font-semibold text-slate-900">
-              Day {effectiveSelectedDay + 1} • {selectedDayProgram.title}
+              Day {weekViewStartDay + 1} • {program.week[weekViewStartDay].title}
             </p>
             <div className="mt-3 space-y-2">
-              {selectedDayProgram.routine.map((item, index) => {
+              {program.week[weekViewStartDay].routine.map((item, index) => {
                 const exercise = exerciseById(item.exerciseId);
                 if (!exercise) return null;
                 const rationale =
@@ -1853,13 +1882,60 @@ export default function ResultsRoutine() {
         ) : null}
       </section>
 
-      <ExpandableSection
-        title="Your Current Plan"
-        subtitle="Phase intent, weekly objective, and adaptive guidance."
-        previewLines={planPreviewLines}
-        previewChips={planPreviewChips}
-      >
-        <div className="space-y-3 text-sm text-slate-700">
+      <div className="order-3">
+        <DailyInsightCard
+          insight={dailyInsight}
+          coachNotes={coachNotes}
+          priorities={weeklyPriorities}
+        />
+      </div>
+
+      <section className="ui-card order-4 p-5">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Coach Summary
+        </h2>
+        <div className="mt-2 space-y-1.5">
+          {coachSummaryBullets.map((item) => (
+            <p key={item.label} className="text-sm text-slate-700">
+              <span className="font-medium text-slate-900">{item.label}:</span>{" "}
+              {item.text}
+            </p>
+          ))}
+        </div>
+        {hasAdaptationCallout ? (
+          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+            <p>
+              System adapted this week to improve stability and execution quality.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={openKnowledgeAnalysis}
+                className={secondaryActionBtn}
+              >
+                Why
+              </button>
+              <button
+                type="button"
+                onClick={openSystemAdjustments}
+                className={secondaryActionBtn}
+              >
+                Adjustments
+              </button>
+            </div>
+          </div>
+        ) : null}
+        <p className="mt-3 text-xs text-slate-500">Plan adapts as you log sessions.</p>
+      </section>
+
+      <div className="order-8">
+        <ExpandableSection
+          title="Your Current Plan"
+          subtitle="Phase intent, weekly objective, and adaptive guidance."
+          previewLines={planPreviewLines}
+          previewChips={planPreviewChips}
+        >
+          <div className="space-y-3 text-sm text-slate-700">
           <p>
             <span className="font-semibold text-slate-900">Phase:</span> {phaseName}
           </p>
@@ -1941,11 +2017,12 @@ export default function ResultsRoutine() {
               )}
             </div>
           </details>
-        </div>
-      </ExpandableSection>
+          </div>
+        </ExpandableSection>
+      </div>
 
       {hasSystemAdjustments ? (
-        <div ref={systemAdjustmentsSectionRef} className="scroll-mt-24">
+        <div ref={systemAdjustmentsSectionRef} className="order-6 scroll-mt-24">
           <ExpandableSection
             title="System Adjustments"
             subtitle="What the system changed and why."
@@ -1974,7 +2051,7 @@ export default function ResultsRoutine() {
 
       <div
         ref={knowledgeSectionRef}
-        className={`scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
+        className={`order-7 scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
           knowledgeHighlighted
             ? "bg-slate-50/50 ring-2 ring-slate-300 ring-offset-2"
             : "bg-transparent"
@@ -2133,79 +2210,80 @@ export default function ResultsRoutine() {
         </ExpandableSection>
       </div>
 
-      <ExpandableSection
-        title="Progress Summary"
-        subtitle="How your consistency, completion, pain, and quality are trending."
-        previewLines={progressPreviewLines}
-        previewChips={progressPreviewChips}
-      >
-        <ProgressSummary
-          cyclesCompleted={phaseGate.cyclesCompletedInPhase}
-          cycleTarget={phaseGate.minCycles}
-          consistencyPercent={consistencyPercent}
-          completionPercent={adherencePercent}
-          painTrend={painTrendLabel}
-          painTrendPercent={painTrendPercent}
-          movementQualityTrend={movementQualityTrend}
-          movementQualityPercent={movementQualityPercent}
-        />
-      </ExpandableSection>
+      <div className="order-5">
+        <ExpandableSection
+          title="Progress Summary"
+          subtitle="How your consistency, completion, pain, and quality are trending."
+          previewLines={progressPreviewLines}
+          previewChips={progressPreviewChips}
+        >
+          <ProgressSummary
+            cyclesCompleted={phaseGate.cyclesCompletedInPhase}
+            cycleTarget={phaseGate.minCycles}
+            consistencyPercent={consistencyPercent}
+            completionPercent={adherencePercent}
+            painTrend={painTrendLabel}
+            painTrendPercent={painTrendPercent}
+            movementQualityTrend={movementQualityTrend}
+            movementQualityPercent={movementQualityPercent}
+          />
+        </ExpandableSection>
+      </div>
 
-      <ExpandableSection
-        title="Phase Progression"
-        subtitle="Requirements and readiness to move ahead."
-        previewLines={[
-          phaseRequirementsText,
-          phaseGateReason,
-        ]}
-        previewChips={[
-          `${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} cycles`,
-          `${phaseGate.daysSincePhaseStart}/${phaseGate.minDays} days`,
-          readinessEstimate,
-        ]}
-      >
-        <PhaseProgressCard
-          phaseName={phaseName}
-          phaseDescription={phaseDescription}
-          requirementsText={phaseRequirementsText}
-          gateReason={phaseGateReason}
-          gateProgressText={phaseProgressText}
-          moveButtonLabel={movePhaseButtonLabel}
-          canMove={phaseControlUi.canMoveNextPhase}
-          showSkip={phaseControlUi.showSkipPhaseOne}
-          phaseProgressPercent={phaseProgressPercent}
-          cycleProgressPercent={cycleProgressPercent}
-          readinessEstimate={readinessEstimate}
-          onOpenMove={() => {
-            setAdvanceMessage(previewSummary());
-            setAdvanceOpen(true);
-          }}
-          onOpenSkip={() => setSkipPhaseOneOpen(true)}
-          uploadControl={
-            phaseControlUi.canUploadPhotos ? (
-              <Link href="/assessment">
-                <Button variant="secondary" data-testid="upload-photos-button">
+      <div className="order-9">
+        <ExpandableSection
+          title="Phase Progression"
+          subtitle="Requirements and readiness to move ahead."
+          previewLines={[phaseRequirementsText, phaseGateReason]}
+          previewChips={[
+            `${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} cycles`,
+            `${phaseGate.daysSincePhaseStart}/${phaseGate.minDays} days`,
+            readinessEstimate,
+          ]}
+        >
+          <PhaseProgressCard
+            phaseName={phaseName}
+            phaseDescription={phaseDescription}
+            requirementsText={phaseRequirementsText}
+            gateReason={phaseGateReason}
+            gateProgressText={phaseProgressText}
+            moveButtonLabel={movePhaseButtonLabel}
+            canMove={phaseControlUi.canMoveNextPhase}
+            showSkip={phaseControlUi.showSkipPhaseOne}
+            phaseProgressPercent={phaseProgressPercent}
+            cycleProgressPercent={cycleProgressPercent}
+            readinessEstimate={readinessEstimate}
+            onOpenMove={() => {
+              setAdvanceMessage(previewSummary());
+              setAdvanceOpen(true);
+            }}
+            onOpenSkip={() => setSkipPhaseOneOpen(true)}
+            uploadControl={
+              phaseControlUi.canUploadPhotos ? (
+                <Link href="/assessment">
+                  <Button variant="secondary" data-testid="upload-photos-button">
+                    Upload new photos
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  variant="secondary"
+                  disabled
+                  data-testid="upload-photos-button"
+                  title={phaseGateReason}
+                >
                   Upload new photos
                 </Button>
-              </Link>
-            ) : (
-              <Button
-                variant="secondary"
-                disabled
-                data-testid="upload-photos-button"
-                title={phaseGateReason}
-              >
-                Upload new photos
-              </Button>
-            )
-          }
-        />
-        <div className="mt-3">
-          <Link href="/questionnaire">
-            <Button variant="secondary">Edit answers</Button>
-          </Link>
-        </div>
-      </ExpandableSection>
+              )
+            }
+          />
+          <div className="mt-3">
+            <Link href="/questionnaire">
+              <Button variant="secondary">Edit answers</Button>
+            </Link>
+          </div>
+        </ExpandableSection>
+      </div>
 
       {advanceOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">

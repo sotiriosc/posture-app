@@ -27,6 +27,16 @@ export type SessionDraft = {
     restSeconds: number;
   } | null;
   timerByExercise?: Record<string, { workSeconds: number; restSeconds: number }>;
+  timerRuntimeByItemId?: Record<
+    string,
+    {
+      mode: "exercise" | "rest";
+      running: boolean;
+      remainingSeconds: number;
+      exerciseSeconds: number;
+      restSeconds: number;
+    }
+  >;
   startedAt?: string | null;
   updatedAt: string;
 };

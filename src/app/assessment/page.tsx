@@ -3,6 +3,7 @@ import PhotoUploader from "@/components/PhotoUploader";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 
 export default function AssessmentPage() {
   return (
@@ -33,6 +34,9 @@ export default function AssessmentPage() {
         </OnImage>
 
         <PhotoUploader />
+        <p className="max-w-3xl text-sm text-slate-200">
+          These images help the system detect posture imbalances and automatically adjust your program for better alignment, strength, and long-term progression.
+        </p>
 
         <OnImage className="flex flex-wrap gap-3">
           <Link href="/">
@@ -43,6 +47,7 @@ export default function AssessmentPage() {
           </Link>
         </OnImage>
       </div>
+      <OnboardingInfoButton page="assessment" />
     </BackgroundShell>
   );
 }

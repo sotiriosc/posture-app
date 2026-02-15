@@ -270,6 +270,21 @@ textarea {
   animation: coachPulse 4s ease-in-out infinite;
 }
 
+@keyframes heroCtaPulse {
+  0%,
+  82%,
+  100% {
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+  88% {
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.33);
+  }
+}
+
+.hero-cta-pulse {
+  animation: heroCtaPulse 6s ease-in-out infinite;
+}
+
 .slide-up-in {
   animation: slideUpIn 520ms cubic-bezier(0.2, 0.78, 0.2, 1) both;
 }
@@ -287,6 +302,10 @@ textarea {
 
 @media (prefers-reduced-motion: reduce) {
   .coach-tip-pulse {
+    animation: none;
+  }
+
+  .hero-cta-pulse {
     animation: none;
   }
 

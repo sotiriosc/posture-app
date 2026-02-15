@@ -2,7 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type TimerMode = "exercise" | "rest";
+export type TimerMode = "exercise" | "rest";
+
+export type DualModeTimerRuntimeState = {
+  mode: TimerMode;
+  running: boolean;
+  remainingSeconds: number;
+  exerciseSeconds: number;
+  restSeconds: number;
+};
 
 type DualModeTimerProps = {
   initialExerciseSeconds?: number;
@@ -10,6 +18,8 @@ type DualModeTimerProps = {
   onExerciseDurationChange?: (seconds: number) => void;
   onRestDurationChange?: (seconds: number) => void;
   defaultMode?: TimerMode;
+  persistedState?: DualModeTimerRuntimeState | null;
+  onStateChange?: (state: DualModeTimerRuntimeState) => void;
 };
 
 const formatTime = (seconds: number) => {
@@ -30,17 +40,22 @@ export default function DualModeTimer({
   onExerciseDurationChange,
   onRestDurationChange,
   defaultMode = "exercise",
+  persistedState = null,
+  onStateChange,
 }: DualModeTimerProps) {
-  const [mode, setMode] = useState<TimerMode>(defaultMode);
-  const [running, setRunning] = useState(false);
+  const [mode, setMode] = useState<TimerMode>(
+    persistedState?.mode ?? defaultMode
+  );
+  const [running, setRunning] = useState(persistedState?.running ?? false);
   const [selectedExerciseSeconds, setSelectedExerciseSeconds] = useState(
-    initialExerciseSeconds
+    persistedState?.exerciseSeconds ?? initialExerciseSeconds
   );
   const [selectedRestSeconds, setSelectedRestSeconds] = useState(
-    initialRestSeconds
+    persistedState?.restSeconds ?? initialRestSeconds
   );
   const [remainingSeconds, setRemainingSeconds] = useState(
-    defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds
+    persistedState?.remainingSeconds ??
+      (defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds)
   );
   const lastRunningRef = useRef(false);
   const lastRemainingRef = useRef(remainingSeconds);
@@ -63,28 +78,49 @@ export default function DualModeTimer({
     mode === "exercise"
       ? "shadow-emerald-500/20 ring-emerald-400/30"
       : "shadow-violet-500/20 ring-violet-400/30";
+  const ringGradient =
+    mode === "exercise"
+      ? "conic-gradient(from 180deg at 50% 50%, rgba(16,185,129,0.92), rgba(52,211,153,0.42), rgba(59,130,246,0.52), rgba(16,185,129,0.92))"
+      : "conic-gradient(from 180deg at 50% 50%, rgba(124,58,237,0.88), rgba(167,139,250,0.42), rgba(59,130,246,0.5), rgba(124,58,237,0.88))";
+  const ringShadow =
+    mode === "exercise"
+      ? "0 10px 24px rgba(16,185,129,0.24)"
+      : "0 10px 24px rgba(124,58,237,0.22)";
 
   useEffect(() => {
+    if (persistedState) return;
     setSelectedExerciseSeconds(initialExerciseSeconds);
-  }, [initialExerciseSeconds]);
+  }, [initialExerciseSeconds, persistedState]);
 
   useEffect(() => {
+    if (persistedState) return;
     setSelectedRestSeconds(initialRestSeconds);
-  }, [initialRestSeconds]);
+  }, [initialRestSeconds, persistedState]);
 
   useEffect(() => {
-    // When parent switches exercise/context, hard-reset local timer state
-    // so the previous exercise timer cannot bleed into the next one.
-    setRunning(false);
-    autoSwitchRef.current = false;
-    setMode(defaultMode);
-    setRemainingSeconds(
-      defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds
-    );
+    if (persistedState) {
+      setMode(persistedState.mode);
+      setRunning(persistedState.running);
+      setRemainingSeconds(persistedState.remainingSeconds);
+      setSelectedExerciseSeconds(persistedState.exerciseSeconds);
+      setSelectedRestSeconds(persistedState.restSeconds);
+    } else {
+      setRunning(false);
+      autoSwitchRef.current = false;
+      setMode(defaultMode);
+      setRemainingSeconds(
+        defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds
+      );
+      setSelectedExerciseSeconds(initialExerciseSeconds);
+      setSelectedRestSeconds(initialRestSeconds);
+    }
     lastRunningRef.current = false;
-    lastRemainingRef.current =
-      defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds;
-  }, [defaultMode, initialExerciseSeconds, initialRestSeconds]);
+    lastRemainingRef.current = persistedState
+      ? persistedState.remainingSeconds
+      : defaultMode === "exercise"
+      ? initialExerciseSeconds
+      : initialRestSeconds;
+  }, [defaultMode, initialExerciseSeconds, initialRestSeconds, persistedState]);
 
   useEffect(() => {
     if (!running || remainingSeconds <= 0) return;
@@ -204,6 +240,23 @@ export default function DualModeTimer({
     lastRemainingRef.current = remainingSeconds;
   }, [running, remainingSeconds]);
 
+  useEffect(() => {
+    onStateChange?.({
+      mode,
+      running,
+      remainingSeconds,
+      exerciseSeconds: selectedExerciseSeconds,
+      restSeconds: selectedRestSeconds,
+    });
+  }, [
+    mode,
+    running,
+    remainingSeconds,
+    selectedExerciseSeconds,
+    selectedRestSeconds,
+    onStateChange,
+  ]);
+
   return (
     <div
       className={`rounded-2xl border p-4 shadow-sm transition ${modeBackground}`}
@@ -232,24 +285,33 @@ export default function DualModeTimer({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setRunning((prev) => !prev)}
-        className={`relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-full border-4 border-slate-900 py-10 text-6xl font-semibold text-slate-900 shadow-sm transition ${modeBackground} ${
-          running ? `ring-4 motion-safe:animate-pulse ${runningAccent}` : ""
-        }`}
-      >
-        <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+      <div className="mt-4 flex justify-center">
+        <div className="relative h-56 w-56 sm:h-64 sm:w-64">
           <span
-            className={`h-48 w-48 rounded-full border-2 border-dashed border-slate-300 ${
+            className={`pointer-events-none absolute inset-0 rounded-full transition ${
               running ? "motion-safe:animate-spin" : ""
             }`}
-            style={{ animationDuration: "6s" }}
+            style={{
+              background: ringGradient,
+              boxShadow: ringShadow,
+              animationDuration: "4s",
+            }}
           />
-        </span>
-        <span className="pointer-events-none absolute top-6 h-2 w-2 rounded-full bg-slate-900" />
-        {formatTime(remainingSeconds)}
-      </button>
+          <span
+            className={`pointer-events-none absolute inset-[4px] rounded-full border border-white/70 ${modeBackground}`}
+          />
+          <button
+            type="button"
+            onClick={() => setRunning((prev) => !prev)}
+            className={`relative z-10 m-[10px] flex h-[calc(100%-20px)] w-[calc(100%-20px)] items-center justify-center overflow-hidden rounded-full border-4 border-slate-900 text-5xl font-semibold text-slate-900 shadow-sm transition sm:text-6xl ${
+              mode === "exercise" ? "bg-emerald-50/95" : "bg-violet-50/95"
+            } ${running ? `ring-4 motion-safe:animate-pulse ${runningAccent}` : ""}`}
+          >
+            <span className="pointer-events-none absolute top-5 h-2 w-2 rounded-full bg-slate-900" />
+            {formatTime(remainingSeconds)}
+          </button>
+        </div>
+      </div>
 
       <div className="mt-3 flex items-center justify-between text-xs font-semibold text-slate-600">
         <span>{running ? "Tap to pause" : "Tap to start"}</span>

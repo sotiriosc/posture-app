@@ -7,6 +7,7 @@ import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
+import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -79,6 +80,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
 
         <ResultsRoutine />
       </div>
+      <OnboardingInfoButton page="results" />
     </BackgroundShell>
   );
 }
