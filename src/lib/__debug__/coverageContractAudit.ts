@@ -1,19 +1,38 @@
-import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import { requireExerciseById } from "@/lib/exerciseCatalog";
-import { computeEquipmentCapability } from "@/lib/engine/equipmentCapability";
-import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import { exerciseById } from "../exercises";
+import { pathToFileURL } from "node:url";
+import { computeEquipmentCapability } from "../engine/equipmentCapability";
+import { normalizeEquipmentSelectionValues } from "../equipment";
 import {
   buildProgramIntentProfile,
+  clearProgramConstraintWarningBuffer,
   daySatisfiesSpec,
   deriveExerciseRole,
+  generateWeeklyProgram,
   getPainSeverity,
+  getProgramConstraintWarningBuffer,
   getWeeklyCoverageContract,
   resolveDayConstraintSpec,
   summarizeWeekCoverage,
   type WeekCoverageSummary,
-} from "@/lib/program";
-import type { ProgramConstraintWarning } from "@/lib/program";
-import type { Program } from "@/lib/types";
+} from "../program";
+import type { ProgramConstraintWarning } from "../program";
+import type { Program } from "../types";
+
+type AuditQuestionnaireData = {
+  goals: "Improve posture" | "Reduce pain" | "Athletic performance" | "General fitness";
+  painAreas: string[];
+  experience: "Beginner" | "Intermediate" | "Advanced";
+  daysPerWeek: 3 | 4 | 5;
+  equipment: string[];
+};
+
+const requireExerciseById = (exerciseId: string) => {
+  const exercise = exerciseById(exerciseId);
+  if (!exercise) {
+    throw new Error(`[coverageContractAudit] Unknown exercise: ${exerciseId}`);
+  }
+  return exercise;
+};
 
 type CoverageMetricKey =
   | "calvesDays"
@@ -102,7 +121,7 @@ export function auditCoverageContract(args: {
   phase: string;
   daysPerWeek: 3 | 4 | 5;
   equipment: string[];
-  questionnaire: QuestionnaireData;
+  questionnaire: AuditQuestionnaireData;
   program: Program;
   warnings?: ProgramConstraintWarning[];
 }): CoverageContractAuditResult {
@@ -320,4 +339,163 @@ export function auditCoverageContract(args: {
     relaxedBudgetReasons,
     invalidRelaxations,
   };
+}
+
+type AuditScenario = {
+  profile: string;
+  phase: "activation" | "skill" | "growth";
+  phaseIndex: 1 | 2 | 3;
+  questionnaire: AuditQuestionnaireData;
+};
+
+const TWO_SCENARIOS: AuditScenario[] = [
+  {
+    profile: "normal beginner",
+    phase: "activation",
+    phaseIndex: 1,
+    questionnaire: {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Beginner",
+      daysPerWeek: 3,
+      equipment: ["bands"],
+    },
+  },
+  {
+    profile: "pain advanced",
+    phase: "growth",
+    phaseIndex: 3,
+    questionnaire: {
+      goals: "Reduce pain",
+      painAreas: ["low_back", "neck"],
+      experience: "Advanced",
+      daysPerWeek: 5,
+      equipment: ["gym"],
+    },
+  },
+];
+
+const resolvePreset = () => {
+  const envPreset = String(process.env.AUDIT_PRESET ?? "")
+    .trim()
+    .toLowerCase();
+  const inlineArg = process.argv.find((arg) => arg.startsWith("--preset="));
+  if (inlineArg) {
+    return inlineArg.split("=")[1]?.trim().toLowerCase() ?? "";
+  }
+  const presetIndex = process.argv.findIndex((arg) => arg === "--preset");
+  if (presetIndex >= 0) {
+    return String(process.argv[presetIndex + 1] ?? "")
+      .trim()
+      .toLowerCase();
+  }
+  return envPreset;
+};
+
+const collectAuditMissingDetails = (audit: CoverageContractAuditResult) => {
+  const details: string[] = [];
+  audit.dayContracts
+    .filter((entry) => !entry.ok)
+    .forEach((entry) => {
+      if (entry.missing.length) {
+        details.push(`${entry.dayTitle}:missing=${entry.missing.join(",")}`);
+      }
+      if (entry.violations.length) {
+        details.push(`${entry.dayTitle}:violations=${entry.violations.join(",")}`);
+      }
+    });
+  if (audit.weeklyFailures.length) {
+    details.push(`weekly=${audit.weeklyFailures.join(",")}`);
+  }
+  if (audit.intelligenceFailures.length) {
+    details.push(`intelligence=${audit.intelligenceFailures.join(",")}`);
+  }
+  if (audit.unresolvedBudgetViolations.length) {
+    details.push(`budget_unresolved=${audit.unresolvedBudgetViolations.join(",")}`);
+  }
+  if (audit.invalidRelaxations.length) {
+    details.push(`budget_invalid_relax=${audit.invalidRelaxations.join(",")}`);
+  }
+  return details;
+};
+
+const printAuditBlock = (params: {
+  scenario: AuditScenario;
+  audit: CoverageContractAuditResult;
+  program: Program;
+}) => {
+  const { scenario, audit, program } = params;
+  console.log(
+    `PROFILE=${scenario.profile} | PHASE=${scenario.phase} | days=${scenario.questionnaire.daysPerWeek} | equipment=${scenario.questionnaire.equipment.join(",")} | capability=${audit.capabilityMode}`
+  );
+  program.week.forEach((day) => {
+    const mainIds = day.routine
+      .filter((item) => item.section === "main")
+      .map((item) => item.exerciseId);
+    console.log(`- ${day.title}`);
+    console.log(`  MAIN: ${mainIds.length ? mainIds.join(", ") : "(none)"}`);
+  });
+  console.log(
+    `WEEKLY COVERAGE: calves=${audit.weekly.calvesDays} biceps=${audit.weekly.bicepsDays} triceps=${audit.weekly.tricepsDays} squat=${audit.weekly.squatDays} hinge=${audit.weekly.hingeDays} pull=${audit.weekly.pullDays} push=${audit.weekly.pushDays} antiRotation=${audit.weekly.antiRotationDays} carry=${audit.weekly.carryDays} scapular=${audit.weekly.scapularDays}`
+  );
+  const missing = collectAuditMissingDetails(audit);
+  if (audit.ok) {
+    console.log("CONTRACT AUDIT: PASS");
+  } else {
+    console.log(
+      `CONTRACT AUDIT: FAIL${missing.length ? ` | missing=${missing.join(" ; ")}` : ""}`
+    );
+  }
+  console.log("");
+};
+
+const runCoverageAuditCli = async () => {
+  const preset = resolvePreset();
+  const scenarios = preset === "two" || !preset ? TWO_SCENARIOS : TWO_SCENARIOS;
+
+  scenarios.forEach((scenario) => {
+    const programId = [
+      "coverage-audit",
+      scenario.profile.replace(/\s+/g, "-"),
+      scenario.phase,
+      `${scenario.questionnaire.daysPerWeek}d`,
+      scenario.questionnaire.equipment.join("-"),
+    ].join("-");
+
+    clearProgramConstraintWarningBuffer();
+    const program = generateWeeklyProgram(scenario.questionnaire, programId, {
+      phaseIndex: scenario.phaseIndex,
+      seed: `coverage-audit-${scenario.profile}-${scenario.phase}-${scenario.questionnaire.daysPerWeek}`,
+    });
+    const warnings = getProgramConstraintWarningBuffer().filter(
+      (warning) => warning.programId === program.id
+    );
+    const audit = auditCoverageContract({
+      profile: scenario.profile,
+      phase: scenario.phase,
+      daysPerWeek: scenario.questionnaire.daysPerWeek,
+      equipment: scenario.questionnaire.equipment,
+      questionnaire: scenario.questionnaire,
+      program,
+      warnings,
+    });
+    printAuditBlock({ scenario, audit, program });
+  });
+};
+
+const isDirectExecution = (() => {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return import.meta.url === pathToFileURL(entry).href;
+  } catch {
+    return false;
+  }
+})();
+
+if (isDirectExecution) {
+  runCoverageAuditCli().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 }

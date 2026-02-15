@@ -529,13 +529,20 @@ const buildSelectionContext = (
   const deprioritizeTags = new Set<string>();
   const deprioritizePatterns = new Set<string>();
   const poseFocusTags = new Set<string>();
+  const shouldDeprioritizeAdvancedTag =
+    questionnaire.goals === "Reduce pain" || questionnaire.experience === "Beginner";
 
   painAreas.forEach((area) => {
     const rules = PAIN_RULES[area];
     if (!rules) return;
     rules.preferredTags.forEach((tag) => preferredTags.add(tag));
     rules.preferredPatterns.forEach((pattern) => preferredPatterns.add(pattern));
-    rules.deprioritizeTags.forEach((tag) => deprioritizeTags.add(tag));
+    rules.deprioritizeTags.forEach((tag) => {
+      if (tag.toLowerCase() === "advanced" && !shouldDeprioritizeAdvancedTag) {
+        return;
+      }
+      deprioritizeTags.add(tag);
+    });
     rules.deprioritizePatterns.forEach((pattern) =>
       deprioritizePatterns.add(pattern)
     );
