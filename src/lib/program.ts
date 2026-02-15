@@ -1,8 +1,8 @@
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import type { AssessmentReport } from "@/lib/assessmentEngine";
-import type { Program, ProgramDay, ProgramRoutineItem } from "@/lib/types";
+import type { ExerciseLog, Program, ProgramDay, ProgramRoutineItem } from "@/lib/types";
 import type { Exercise, ExerciseCategory } from "@/lib/exercises";
-import { exerciseById, exercises } from "@/lib/exercises";
+import { exerciseById, exercises, resolveExerciseHistoryIds } from "@/lib/exercises";
 import type { Equipment } from "@/lib/equipment";
 import {
   isExerciseEligible,
@@ -22,6 +22,7 @@ import type { UserTrainingState } from "@/lib/phases";
 import { optimizePhaseWeek } from "@/lib/phaseOptimizer";
 import { buildMovementProfile } from "@/lib/movementProfile";
 import { buildPhaseObjective } from "@/lib/phaseObjectives";
+import type { ExerciseFeedbackSummary } from "@/lib/logStore";
 import type { PoseAnalysis, PoseMetrics } from "@/lib/poseAnalyzer";
 import { createSeededRng, type RandomFn } from "@/lib/seededRng";
 import { buildSessionAdaptation } from "@/lib/sessionAdaptation";
@@ -116,6 +117,12 @@ type SelectionContext = {
   experienceLevel: NormalizedExperienceLevel;
   capabilityMode: EquipmentCapabilityMode;
   intentProfile: ProgramIntentProfile;
+  feedbackSummaryByExercise: Map<string, ExerciseFeedbackSummary>;
+  feedbackPenaltyHints: Array<{
+    exerciseId: string;
+    movementPatterns: Set<string>;
+    movementSignature: string;
+  }>;
 };
 
 const normalizeTagToken = (value: string) =>
@@ -236,6 +243,144 @@ const normalizePhaseMin = (
 ): ProgramPhaseStage => {
   if (value === "skill" || value === "growth") return value;
   return "activation";
+};
+
+const feedbackPainRank: Record<ExerciseFeedbackSummary["pain"], number> = {
+  none: 0,
+  mild: 1,
+  moderate: 2,
+  severe: 3,
+};
+
+const feedbackDifficultyRank: Record<ExerciseFeedbackSummary["difficulty"], number> = {
+  easy: 0,
+  normal: 1,
+  hard: 2,
+  failed: 3,
+};
+
+const clampFeedbackCompletionRate = (value: number) => {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(1, value));
+};
+
+const deriveMovementSignature = (exercise: Exercise) => {
+  const text = `${exercise.id} ${exercise.name}`.toLowerCase();
+  if (text.includes("row")) return "row";
+  if (
+    text.includes("pulldown") ||
+    text.includes("pull-up") ||
+    text.includes("pullup") ||
+    text.includes("chin-up") ||
+    text.includes("chinup") ||
+    text.includes("lat")
+  ) {
+    return "vertical_pull";
+  }
+  if (text.includes("pushup") || text.includes("push-up")) return "pushup";
+  if (text.includes("overhead") || text.includes("shoulder-press")) return "vertical_press";
+  if (text.includes("bench") || text.includes("floor-press") || text.includes("chest-press")) {
+    return "horizontal_press";
+  }
+  if (text.includes("fly")) return "fly";
+  if (text.includes("rdl") || text.includes("good-morning") || text.includes("hip-thrust")) {
+    return "hinge_loaded";
+  }
+  if (text.includes("squat")) return "squat";
+  if (text.includes("lunge") || text.includes("split-squat") || text.includes("step-up")) {
+    return "single_leg";
+  }
+  return normalizeTagToken(exercise.id);
+};
+
+const completionRateFromExerciseLog = (log: ExerciseLog) => {
+  const planned = log.setsPlanned ?? 0;
+  const completed = log.setsCompleted ?? 0;
+  if (planned > 0) {
+    return clampFeedbackCompletionRate(completed / planned);
+  }
+  if (completed > 0) return 1;
+  return 0;
+};
+
+const painFromExerciseLog = (log: ExerciseLog): ExerciseFeedbackSummary["pain"] => {
+  if (log.felt !== "pain") return "none";
+  const completionRate = completionRateFromExerciseLog(log);
+  const rpe = log.rpe ?? 0;
+  if (completionRate <= 0.5 || rpe >= 9) return "severe";
+  if (completionRate < 1 || rpe >= 8) return "moderate";
+  return "mild";
+};
+
+const difficultyFromExerciseLog = (
+  log: ExerciseLog,
+  pain: ExerciseFeedbackSummary["pain"]
+): ExerciseFeedbackSummary["difficulty"] => {
+  const completionRate = completionRateFromExerciseLog(log);
+  if (completionRate < 0.6) return "failed";
+  if (pain === "moderate" || pain === "severe") return "failed";
+  if (log.felt === "hard") return "hard";
+  if (log.felt === "easy") return "easy";
+  return "normal";
+};
+
+const summarizeFeedbackFromLogs = (logs: ExerciseLog[]) => {
+  const grouped = new Map<string, ExerciseLog[]>();
+  logs
+    .filter((log) => !log.deletedAt)
+    .sort((left, right) => {
+      const updatedOrder = (right.updatedAt ?? "").localeCompare(left.updatedAt ?? "");
+      if (updatedOrder !== 0) return updatedOrder;
+      const createdOrder = (right.createdAt ?? "").localeCompare(left.createdAt ?? "");
+      if (createdOrder !== 0) return createdOrder;
+      return left.id.localeCompare(right.id);
+    })
+    .forEach((log) => {
+      const key = log.exerciseId;
+      const list = grouped.get(key) ?? [];
+      if (list.length < 3) {
+        list.push(log);
+        grouped.set(key, list);
+      }
+    });
+
+  const summaries = new Map<string, ExerciseFeedbackSummary>();
+  Array.from(grouped.keys())
+    .sort((left, right) => left.localeCompare(right))
+    .forEach((exerciseId) => {
+      const recent = grouped.get(exerciseId) ?? [];
+      if (!recent.length) return;
+
+      let worstPain: ExerciseFeedbackSummary["pain"] = "none";
+      let completionTotal = 0;
+      const difficultyCounts = new Map<ExerciseFeedbackSummary["difficulty"], number>();
+
+      recent.forEach((log) => {
+        const pain = painFromExerciseLog(log);
+        if (feedbackPainRank[pain] > feedbackPainRank[worstPain]) {
+          worstPain = pain;
+        }
+        const difficulty = difficultyFromExerciseLog(log, pain);
+        difficultyCounts.set(difficulty, (difficultyCounts.get(difficulty) ?? 0) + 1);
+        completionTotal += completionRateFromExerciseLog(log);
+      });
+
+      const difficulty = Array.from(difficultyCounts.entries()).sort((left, right) => {
+        if (right[1] !== left[1]) return right[1] - left[1];
+        const rankDelta = feedbackDifficultyRank[right[0]] - feedbackDifficultyRank[left[0]];
+        if (rankDelta !== 0) return rankDelta;
+        return left[0].localeCompare(right[0]);
+      })[0]?.[0] ?? "normal";
+
+      summaries.set(exerciseId, {
+        exerciseId,
+        pain: worstPain,
+        difficulty,
+        completionRate: clampFeedbackCompletionRate(completionTotal / recent.length),
+      });
+    });
+
+  return summaries;
 };
 
 export const getPainSeverity = (questionnaire: QuestionnaireData): PainSeverity => {
@@ -520,6 +665,7 @@ const buildSelectionContext = (
     phaseIndex?: number;
     phaseName?: string | null;
     capabilityMode?: EquipmentCapabilityMode;
+    feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
   }
 ): SelectionContext => {
   const painAreas = questionnaire.painAreas.map(canonicalizePainArea);
@@ -579,6 +725,37 @@ const buildSelectionContext = (
     experienceLevel,
     capabilityMode,
   });
+  const feedbackSummaryByExercise = new Map(
+    options?.feedbackSummaryByExercise ? Array.from(options.feedbackSummaryByExercise.entries()) : []
+  );
+  const feedbackPenaltyHints = Array.from(feedbackSummaryByExercise.values())
+    .filter(
+      (summary) =>
+        summary.pain === "moderate" ||
+        summary.pain === "severe" ||
+        summary.difficulty === "failed"
+    )
+    .map((summary) => {
+      const exercise = exerciseById(summary.exerciseId);
+      if (!exercise) return null;
+      return {
+        exerciseId: summary.exerciseId,
+        movementPatterns: new Set(
+          exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
+        ),
+        movementSignature: deriveMovementSignature(exercise),
+      };
+    })
+    .filter(
+      (
+        hint
+      ): hint is {
+        exerciseId: string;
+        movementPatterns: Set<string>;
+        movementSignature: string;
+      } => Boolean(hint)
+    )
+    .sort((left, right) => left.exerciseId.localeCompare(right.exerciseId));
 
   return {
     painAreas,
@@ -594,6 +771,8 @@ const buildSelectionContext = (
     experienceLevel,
     capabilityMode,
     intentProfile,
+    feedbackSummaryByExercise,
+    feedbackPenaltyHints,
   };
 };
 
@@ -6181,6 +6360,169 @@ const getMainVarietyScoreBonus = (params: {
   return { score, reasons };
 };
 
+const hasPatternIntersection = (left: Set<string>, right: Set<string>) =>
+  Array.from(left).some((token) => right.has(token));
+
+const resolveFeedbackSummariesForExercise = (
+  exercise: Exercise,
+  context: SelectionContext
+) => {
+  if (!context.feedbackSummaryByExercise.size) return [] as ExerciseFeedbackSummary[];
+  const historyIds = Array.from(
+    new Set(resolveExerciseHistoryIds(exercise.id, 1))
+  ).sort((left, right) => left.localeCompare(right));
+  return historyIds
+    .map((id) => context.feedbackSummaryByExercise.get(id))
+    .filter((summary): summary is ExerciseFeedbackSummary => Boolean(summary));
+};
+
+const hasEligibleFeedbackAlternative = (params: {
+  exercise: Exercise;
+  section: ProgramRoutineItem["section"] | undefined;
+  context: SelectionContext;
+  available: Set<Equipment>;
+  auditMeta?: SelectionAuditMeta;
+}) => {
+  const { exercise, section, context, available, auditMeta } = params;
+  if (section !== "main") return false;
+
+  const candidatePatterns = new Set(
+    exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
+  );
+  const candidateSignature = deriveMovementSignature(exercise);
+
+  return exercises.some((alternative) => {
+    if (alternative.id === exercise.id) return false;
+    if (
+      !isExerciseEligibleForProgramContext({
+        exercise: alternative,
+        available,
+        section,
+        context,
+      })
+    ) {
+      return false;
+    }
+    if (auditMeta?.slotLane && !matchesMainLanePattern(alternative, auditMeta.slotLane)) {
+      return false;
+    }
+    const alternativePatterns = new Set(
+      alternative.movementPattern.map((pattern) => normalizeTagToken(pattern))
+    );
+    if (!hasPatternIntersection(candidatePatterns, alternativePatterns)) {
+      return false;
+    }
+    return deriveMovementSignature(alternative) !== candidateSignature;
+  });
+};
+
+const shouldAvoidFeedbackRiskCandidate = (params: {
+  exercise: Exercise;
+  section: ProgramRoutineItem["section"] | undefined;
+  context: SelectionContext;
+  available: Set<Equipment>;
+  auditMeta?: SelectionAuditMeta;
+}) => {
+  const { exercise, section, context, available, auditMeta } = params;
+  if (section !== "main") return false;
+  const feedbackSummaries = resolveFeedbackSummariesForExercise(exercise, context);
+  if (!feedbackSummaries.length) return false;
+  const hasPainOrFailure = feedbackSummaries.some(
+    (summary) =>
+      summary.pain === "moderate" ||
+      summary.pain === "severe" ||
+      summary.difficulty === "failed"
+  );
+  if (!hasPainOrFailure) return false;
+  return hasEligibleFeedbackAlternative({
+    exercise,
+    section,
+    context,
+    available,
+    auditMeta,
+  });
+};
+
+const getFeedbackSelectionScoreBonus = (params: {
+  exercise: Exercise;
+  section: ProgramRoutineItem["section"] | undefined;
+  context: SelectionContext;
+  available: Set<Equipment>;
+  auditMeta?: SelectionAuditMeta;
+}) => {
+  const { exercise, section, context, available, auditMeta } = params;
+  if (section !== "main") {
+    return { score: 0, reasons: [] as string[] };
+  }
+
+  const feedbackSummaries = resolveFeedbackSummariesForExercise(exercise, context);
+  const hasPainPenalty = feedbackSummaries.some(
+    (summary) => summary.pain === "moderate" || summary.pain === "severe"
+  );
+  const hasFailurePenalty = feedbackSummaries.some(
+    (summary) => summary.difficulty === "failed"
+  );
+  const hasHardPenalty = feedbackSummaries.some(
+    (summary) => summary.difficulty === "hard"
+  );
+  const hasEasyReadyBonus = feedbackSummaries.some(
+    (summary) => summary.difficulty === "easy" && summary.completionRate >= 1
+  );
+
+  let score = 0;
+  const reasons: string[] = [];
+
+  if (hasPainPenalty) {
+    score -= 4;
+    reasons.push("-4 feedback pain penalty");
+  }
+  if (hasFailurePenalty) {
+    score -= 2.5;
+    reasons.push("-2.5 feedback failure penalty");
+  } else if (hasHardPenalty) {
+    score -= 0.75;
+    reasons.push("-0.75 feedback hard-session penalty");
+  }
+  if (!hasPainPenalty && !hasFailurePenalty && hasEasyReadyBonus) {
+    score += 0.5;
+    reasons.push("+0.5 feedback progression readiness bonus");
+  }
+
+  const hasSubstituteOption =
+    (hasPainPenalty || hasFailurePenalty) &&
+    hasEligibleFeedbackAlternative({
+      exercise,
+      section,
+      context,
+      available,
+      auditMeta,
+    });
+  if (hasSubstituteOption) {
+    score -= 6;
+    reasons.push("-6 feedback substitute-available penalty");
+  }
+
+  const candidatePatterns = new Set(
+    exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
+  );
+  const candidateSignature = deriveMovementSignature(exercise);
+  const shouldPreferSafeAlternative =
+    !hasPainPenalty &&
+    !hasFailurePenalty &&
+    context.feedbackPenaltyHints.some((hint) => {
+      if (hint.exerciseId === exercise.id) return false;
+      if (hint.movementSignature === candidateSignature) return false;
+      return hasPatternIntersection(candidatePatterns, hint.movementPatterns);
+    });
+
+  if (shouldPreferSafeAlternative) {
+    score += 1.5;
+    reasons.push("+1.5 feedback safe-substitution pattern bonus");
+  }
+
+  return { score, reasons };
+};
+
 const getIntentSlotScoreBonus = (params: {
   exercise: Exercise;
   section: ProgramRoutineItem["section"] | undefined;
@@ -6570,6 +6912,16 @@ const scoreExerciseForContextDetailed = (
   score += intentSlotBonus.score;
   reasons.push(...intentSlotBonus.reasons);
 
+  const feedbackBonus = getFeedbackSelectionScoreBonus({
+    exercise,
+    section,
+    context,
+    available,
+    auditMeta,
+  });
+  score += feedbackBonus.score;
+  reasons.push(...feedbackBonus.reasons);
+
   return { score, reasons };
 };
 
@@ -6630,6 +6982,23 @@ const pickFirstEligibleId = (
           : [...detail.reasons, ...capabilityBonus.reasons];
       return { ...entry, baseScore, score, reasons };
     })
+    .sort((left, right) => right.score - left.score);
+
+  const safeEligible =
+    section === "main"
+      ? eligible.filter(
+          (entry) =>
+            !shouldAvoidFeedbackRiskCandidate({
+              exercise: entry.exercise,
+              section,
+              context,
+              available,
+              auditMeta,
+            })
+        )
+      : eligible;
+
+  const rankedEligible = (safeEligible.length ? safeEligible : eligible)
     .sort((left, right) => {
       return right.score - left.score;
     });
@@ -6640,14 +7009,14 @@ const pickFirstEligibleId = (
     Boolean(auditMeta) &&
     (DEBUG_AUDIT_SELECTION || Boolean(auditMeta?.selectionAuditHook));
 
-  if (!eligible.length) return candidates[candidates.length - 1];
+  if (!rankedEligible.length) return candidates[candidates.length - 1];
 
   const maybeSeededTiePick = () => {
     const rng = auditMeta?.selectionRng;
     if (!rng) return null;
-    const topBaseScore = eligible[0]?.baseScore;
+    const topBaseScore = rankedEligible[0]?.baseScore;
     if (typeof topBaseScore !== "number") return null;
-    const tied = eligible.filter(
+    const tied = rankedEligible.filter(
       (entry) => Math.abs(entry.baseScore - topBaseScore) < 1e-9
     );
     if (tied.length <= 1) return null;
@@ -6655,10 +7024,10 @@ const pickFirstEligibleId = (
     return tied[Math.max(0, Math.min(tied.length - 1, selectedIndex))] ?? null;
   };
 
-  const chosenEntry = maybeSeededTiePick() ?? eligible[0];
+  const chosenEntry = maybeSeededTiePick() ?? rankedEligible[0];
 
   if (canCaptureAudit && auditMeta) {
-    const top = eligible.slice(0, 5).map((entry) => ({
+    const top = rankedEligible.slice(0, 5).map((entry) => ({
       exerciseId: entry.id,
       name: entry.exercise.name,
       score: Number(entry.score.toFixed(2)),
@@ -8256,6 +8625,8 @@ export const generateWeeklyProgram = (
     seed?: string;
     poseAnalysis?: PoseAnalysis | null;
     assessmentReport?: AssessmentReport | null;
+    recentLogs?: ExerciseLog[];
+    feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
   }
 ): Program => {
   const normalizedDaysPerWeek = normalizeDaysPerWeek(data.daysPerWeek);
@@ -8266,6 +8637,9 @@ export const generateWeeklyProgram = (
     : capability.hasBand
     ? "bandOnly"
     : "noneOnly";
+  const feedbackSummaryByExercise =
+    options?.feedbackSummaryByExercise ??
+    summarizeFeedbackFromLogs(options?.recentLogs ?? []);
   const phaseIndex = options?.phaseIndex ?? 1;
   const experienceProfile = getExperienceProfile(
     data.experience,
@@ -8279,6 +8653,7 @@ export const generateWeeklyProgram = (
       phaseIndex,
       capabilityMode,
       phaseName: getPhaseMetaByIndex(phaseIndex).phaseName,
+      feedbackSummaryByExercise,
     }
   );
   const selectionRng = options?.seed ? createSeededRng(options.seed) : undefined;
@@ -8504,6 +8879,7 @@ export const generateNextPhaseProgram = (params: {
   const nextWeekIndex = 1;
   const nextCycleIndex = 1;
   const nextTotalWeekIndex = totalWeekIndex + 1;
+  const feedbackSummaryByExercise = summarizeFeedbackFromLogs(recentLogs);
 
   const program = generateWeeklyProgram(questionnaire, nextProgramId, {
     phaseIndex: nextPhaseIndex,
@@ -8511,16 +8887,20 @@ export const generateNextPhaseProgram = (params: {
     cycleIndex: nextCycleIndex,
     totalWeekIndex: nextTotalWeekIndex,
     trainingState,
+    recentLogs,
+    feedbackSummaryByExercise,
   });
   const hasSameWeekTemplate =
     JSON.stringify(program.week) === JSON.stringify(currentProgram.week);
   const phaseProgram = hasSameWeekTemplate
-    ? generateWeeklyProgram(questionnaire, nextProgramId, {
+      ? generateWeeklyProgram(questionnaire, nextProgramId, {
         phaseIndex: nextPhaseIndex,
         weekIndex: nextWeekIndex,
         cycleIndex: 2,
         totalWeekIndex: nextTotalWeekIndex,
         trainingState,
+        recentLogs,
+        feedbackSummaryByExercise,
       })
     : program;
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
@@ -8540,6 +8920,7 @@ export const generateNextPhaseProgram = (params: {
         phaseProgram.phaseName ??
         getPhaseMetaByIndex(phaseProgram.phaseIndex ?? nextPhaseIndex).phaseName,
       capabilityMode: phaseCapabilityMode,
+      feedbackSummaryByExercise,
     }
   );
   const phaseWeek = enforceMaterialWeekChange({
@@ -8756,6 +9137,7 @@ export const generateNextCycleProgram = (params: {
       message: transition.message ?? trainingState.reason,
     };
   }
+  const feedbackSummaryByExercise = summarizeFeedbackFromLogs(recentLogs);
 
   const program = generateWeeklyProgram(questionnaire, nextProgramId, {
     phaseIndex: transition.next.phaseIndex,
@@ -8763,6 +9145,8 @@ export const generateNextCycleProgram = (params: {
     cycleIndex: transition.next.cycleIndex,
     totalWeekIndex: transition.next.totalWeekIndex,
     trainingState,
+    recentLogs,
+    feedbackSummaryByExercise,
   });
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
   const cycleCapability = computeEquipmentCapability(questionnaire.equipment);
@@ -8781,6 +9165,7 @@ export const generateNextCycleProgram = (params: {
         program.phaseName ??
         getPhaseMetaByIndex(program.phaseIndex ?? transition.next.phaseIndex).phaseName,
       capabilityMode: cycleCapabilityMode,
+      feedbackSummaryByExercise,
     }
   );
   const nextWeek = enforceMaterialWeekChange({

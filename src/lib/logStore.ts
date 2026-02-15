@@ -32,6 +32,128 @@ let serverHydrationPromise: Promise<void> | null = null;
 let lastServerHydratedAt = 0;
 const SERVER_HYDRATION_TTL_MS = 12_000;
 
+export type ExerciseFeedbackSummary = {
+  exerciseId: string;
+  pain: "none" | "mild" | "moderate" | "severe";
+  difficulty: "easy" | "normal" | "hard" | "failed";
+  completionRate: number;
+};
+
+const painRank: Record<ExerciseFeedbackSummary["pain"], number> = {
+  none: 0,
+  mild: 1,
+  moderate: 2,
+  severe: 3,
+};
+
+const difficultyRank: Record<ExerciseFeedbackSummary["difficulty"], number> = {
+  easy: 0,
+  normal: 1,
+  hard: 2,
+  failed: 3,
+};
+
+const clampRate = (value: number) => {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(1, value));
+};
+
+const completionRateFromLog = (log: ExerciseLog) => {
+  const planned = log.setsPlanned ?? 0;
+  const completed = log.setsCompleted ?? 0;
+  if (planned > 0) return clampRate(completed / planned);
+  if (completed > 0) return 1;
+  return 0;
+};
+
+const painFromLog = (log: ExerciseLog): ExerciseFeedbackSummary["pain"] => {
+  if (log.felt !== "pain") return "none";
+  const completionRate = completionRateFromLog(log);
+  const rpe = log.rpe ?? 0;
+  if (completionRate <= 0.5 || rpe >= 9) return "severe";
+  if (completionRate < 1 || rpe >= 8) return "moderate";
+  return "mild";
+};
+
+const difficultyFromLog = (
+  log: ExerciseLog,
+  pain: ExerciseFeedbackSummary["pain"]
+): ExerciseFeedbackSummary["difficulty"] => {
+  const completionRate = completionRateFromLog(log);
+  if (completionRate < 0.6) return "failed";
+  if (pain === "severe" || pain === "moderate") return "failed";
+  if (log.felt === "hard") return "hard";
+  if (log.felt === "easy") return "easy";
+  return "normal";
+};
+
+export const summarizeExerciseFeedbackFromLogs = (
+  logs: ExerciseLog[],
+  userId: string
+): Map<string, ExerciseFeedbackSummary> => {
+  const relevant = logs
+    .filter((log) => {
+      if (log.deletedAt) return false;
+      if (!userId) return true;
+      if (userId === "local") return log.userId === null || log.userId === "local";
+      return log.userId === userId;
+    })
+    .sort((left, right) => {
+      const updatedOrder = (right.updatedAt ?? "").localeCompare(left.updatedAt ?? "");
+      if (updatedOrder !== 0) return updatedOrder;
+      const createdOrder = (right.createdAt ?? "").localeCompare(left.createdAt ?? "");
+      if (createdOrder !== 0) return createdOrder;
+      return left.id.localeCompare(right.id);
+    });
+
+  const grouped = new Map<string, ExerciseLog[]>();
+  relevant.forEach((log) => {
+    const list = grouped.get(log.exerciseId) ?? [];
+    if (list.length < 3) {
+      list.push(log);
+      grouped.set(log.exerciseId, list);
+    }
+  });
+
+  const summaries = new Map<string, ExerciseFeedbackSummary>();
+  Array.from(grouped.keys())
+    .sort((left, right) => left.localeCompare(right))
+    .forEach((exerciseId) => {
+      const recentLogs = grouped.get(exerciseId) ?? [];
+      if (!recentLogs.length) return;
+
+      let worstPain: ExerciseFeedbackSummary["pain"] = "none";
+      let completionTotal = 0;
+      const difficultyCounts = new Map<ExerciseFeedbackSummary["difficulty"], number>();
+
+      recentLogs.forEach((log) => {
+        const pain = painFromLog(log);
+        if (painRank[pain] > painRank[worstPain]) {
+          worstPain = pain;
+        }
+        const difficulty = difficultyFromLog(log, pain);
+        difficultyCounts.set(difficulty, (difficultyCounts.get(difficulty) ?? 0) + 1);
+        completionTotal += completionRateFromLog(log);
+      });
+
+      const difficulty = Array.from(difficultyCounts.entries()).sort((left, right) => {
+        if (right[1] !== left[1]) return right[1] - left[1];
+        const rankDelta = difficultyRank[right[0]] - difficultyRank[left[0]];
+        if (rankDelta !== 0) return rankDelta;
+        return left[0].localeCompare(right[0]);
+      })[0]?.[0] ?? "normal";
+
+      summaries.set(exerciseId, {
+        exerciseId,
+        pain: worstPain,
+        difficulty,
+        completionRate: clampRate(completionTotal / recentLogs.length),
+      });
+    });
+
+  return summaries;
+};
+
 const openDb = () => {
   if (dbPromise) return dbPromise;
   dbPromise = new Promise((resolve, reject) => {
@@ -553,6 +675,11 @@ export const listAllExerciseLogs = async () => {
 export const getLatestExerciseLog = async (exerciseId: string) => {
   const items = await listExerciseLogsByExercise(exerciseId, 1);
   return items[0] ?? null;
+};
+
+export const summarizeExerciseFeedback = async (userId: string) => {
+  const logs = await listAllExerciseLogs();
+  return summarizeExerciseFeedbackFromLogs(logs, userId);
 };
 
 export const savePrefs = async (prefs: LogPrefs) => {
