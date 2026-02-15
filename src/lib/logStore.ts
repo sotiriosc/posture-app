@@ -745,6 +745,64 @@ export const listExerciseLogsBySessionIds = async (sessionIds: string[]) => {
   return logsBySession.flat();
 };
 
+const compareSessionRecencyDeterministic = (
+  left: SessionRecord,
+  right: SessionRecord
+) => {
+  const rightAnchor = right.completedAt ?? right.updatedAt ?? right.createdAt ?? "";
+  const leftAnchor = left.completedAt ?? left.updatedAt ?? left.createdAt ?? "";
+  const anchorOrder = rightAnchor.localeCompare(leftAnchor);
+  if (anchorOrder !== 0) return anchorOrder;
+  return left.id.localeCompare(right.id);
+};
+
+const compareExerciseLogRecencyDeterministic = (
+  left: ExerciseLog,
+  right: ExerciseLog
+) => {
+  const updatedOrder = (right.updatedAt ?? "").localeCompare(left.updatedAt ?? "");
+  if (updatedOrder !== 0) return updatedOrder;
+  const createdOrder = (right.createdAt ?? "").localeCompare(left.createdAt ?? "");
+  if (createdOrder !== 0) return createdOrder;
+  return left.id.localeCompare(right.id);
+};
+
+export const listRecentExerciseLogsForProgram = async (params: {
+  programId: string;
+  lookbackDays?: number;
+  limit?: number;
+  nowIso?: string;
+}) => {
+  const { programId, lookbackDays = 14, limit = 250, nowIso: nowIsoOverride } = params;
+  if (!programId) return [] as ExerciseLog[];
+
+  const boundedLookbackDays = Math.max(7, Math.min(21, Math.round(lookbackDays)));
+  const nowMs = Date.parse(nowIsoOverride ?? nowIso());
+  const safeNowMs = Number.isFinite(nowMs) ? nowMs : Date.now();
+  const cutoffMs = safeNowMs - boundedLookbackDays * 24 * 60 * 60 * 1000;
+
+  const sessions = await listSessionsByProgramId(programId);
+  const recentSessionIds = sessions
+    .filter((session) => !session.deletedAt)
+    .filter((session) => {
+      const anchor = session.completedAt ?? session.updatedAt ?? session.createdAt;
+      if (!anchor) return false;
+      const timestamp = Date.parse(anchor);
+      if (!Number.isFinite(timestamp)) return false;
+      return timestamp >= cutoffMs;
+    })
+    .sort(compareSessionRecencyDeterministic)
+    .map((session) => session.id);
+
+  if (!recentSessionIds.length) return [] as ExerciseLog[];
+
+  const logs = await listExerciseLogsBySessionIds(recentSessionIds);
+  return logs
+    .filter((log) => !log.deletedAt)
+    .sort(compareExerciseLogRecencyDeterministic)
+    .slice(0, Math.max(1, limit));
+};
+
 export const listAllExerciseLogs = async () => {
   await init();
   return withStore(STORE_LOGS, "readonly", async (store) => {

@@ -313,6 +313,28 @@ const painFromExerciseLog = (log: ExerciseLog): ExerciseFeedbackSummary["pain"] 
   return "mild";
 };
 
+const guidanceSignalsDeload = (guidance?: string | null) => {
+  const normalized = String(guidance ?? "").toLowerCase();
+  if (!normalized) return false;
+  return (
+    normalized.includes("reduce") ||
+    normalized.includes("lighter load") ||
+    normalized.includes("drop 1 set") ||
+    normalized.includes("drop one set")
+  );
+};
+
+const guidanceSignalsProgressionReadiness = (guidance?: string | null) => {
+  const normalized = String(guidance ?? "").toLowerCase();
+  if (!normalized) return false;
+  return (
+    normalized.includes("add small load") ||
+    normalized.includes("add load") ||
+    normalized.includes("add small") ||
+    normalized.includes("add reps")
+  );
+};
+
 const difficultyFromExerciseLog = (
   log: ExerciseLog,
   pain: ExerciseFeedbackSummary["pain"]
@@ -320,8 +342,13 @@ const difficultyFromExerciseLog = (
   const completionRate = completionRateFromExerciseLog(log);
   if (completionRate < 0.6) return "failed";
   if (pain === "moderate" || pain === "severe") return "failed";
+  if (guidanceSignalsDeload(log.nextTimeGuidance)) {
+    return completionRate < 1 ? "failed" : "hard";
+  }
   if (log.felt === "hard") return "hard";
-  if (log.felt === "easy") return "easy";
+  if (log.felt === "easy" || guidanceSignalsProgressionReadiness(log.nextTimeGuidance)) {
+    return "easy";
+  }
   return "normal";
 };
 
@@ -355,6 +382,8 @@ const summarizeFeedbackFromLogs = (logs: ExerciseLog[]) => {
       let worstPain: ExerciseFeedbackSummary["pain"] = "none";
       let completionTotal = 0;
       const difficultyCounts = new Map<ExerciseFeedbackSummary["difficulty"], number>();
+      let hardOrFailedCount = 0;
+      let failedCount = 0;
 
       recent.forEach((log) => {
         const pain = painFromExerciseLog(log);
@@ -363,15 +392,29 @@ const summarizeFeedbackFromLogs = (logs: ExerciseLog[]) => {
         }
         const difficulty = difficultyFromExerciseLog(log, pain);
         difficultyCounts.set(difficulty, (difficultyCounts.get(difficulty) ?? 0) + 1);
+        if (difficulty === "hard" || difficulty === "failed") {
+          hardOrFailedCount += 1;
+        }
+        if (difficulty === "failed") {
+          failedCount += 1;
+        }
         completionTotal += completionRateFromExerciseLog(log);
       });
 
-      const difficulty = Array.from(difficultyCounts.entries()).sort((left, right) => {
+      const majorityDifficulty = Array.from(difficultyCounts.entries()).sort((left, right) => {
         if (right[1] !== left[1]) return right[1] - left[1];
         const rankDelta = feedbackDifficultyRank[right[0]] - feedbackDifficultyRank[left[0]];
         if (rankDelta !== 0) return rankDelta;
         return left[0].localeCompare(right[0]);
       })[0]?.[0] ?? "normal";
+      const hasModerateOrWorsePain =
+        feedbackPainRank[worstPain] >= feedbackPainRank.moderate;
+      const difficulty: ExerciseFeedbackSummary["difficulty"] =
+        hasModerateOrWorsePain || failedCount >= 2
+          ? "failed"
+          : hardOrFailedCount >= 2
+          ? "hard"
+          : majorityDifficulty;
 
       summaries.set(exerciseId, {
         exerciseId,
@@ -5027,6 +5070,21 @@ const resolveSectionFocusForDay = (params: {
   return inferSectionFocusFromDayTitle(day.title);
 };
 
+const adjacentMainLaneByPainRisk: Record<MainLane, MainLane[]> = {
+  push: ["pull", "verticalPush"],
+  verticalPush: ["push", "pull"],
+  pull: ["push", "verticalPush"],
+  squat: ["hinge"],
+  hinge: ["squat"],
+};
+
+const adjacentAccessoryLaneByPainRisk: Record<AccessoryLane, AccessoryLane[]> = {
+  push: ["pull", "core"],
+  pull: ["core", "push"],
+  lower: ["core"],
+  core: ["pull", "lower"],
+};
+
 const findFeedbackReplacementForRoutineItem = (params: {
   day: ProgramDay;
   item: ProgramRoutineItem;
@@ -5050,6 +5108,10 @@ const findFeedbackReplacementForRoutineItem = (params: {
   const current = exerciseById(item.exerciseId);
   if (!current) return null;
   if (!hasFeedbackRiskSignalForExercise(current, context.selectionContext)) return null;
+  const highPainRisk = resolveFeedbackSummariesForExercise(
+    current,
+    context.selectionContext
+  ).some((summary) => summary.pain === "moderate" || summary.pain === "severe");
 
   const usedWithoutCurrent = new Set(usedIds);
   usedWithoutCurrent.delete(current.id);
@@ -5064,30 +5126,13 @@ const findFeedbackReplacementForRoutineItem = (params: {
       ? `${item.section}FeedbackSwap`
       : "feedbackSwap";
 
-  const ranked = rankSubstitutionCandidates({
+  const rankedCandidates = rankSubstitutionCandidates({
     current,
     section: item.section,
     available: context.available,
     context: context.selectionContext,
   })
     .filter((entry) => !usedWithoutCurrent.has(entry.exercise.id))
-    .filter((entry) => {
-      if (item.section === "main" && mainLane) {
-        return matchesMainLanePattern(entry.exercise, mainLane);
-      }
-      if (item.section === "accessory" && accessoryLane) {
-        return matchesAccessoryLanePattern(entry.exercise, accessoryLane);
-      }
-      if (
-        (item.section === "activation" ||
-          item.section === "warmup" ||
-          item.section === "cooldown") &&
-        sectionFocus
-      ) {
-        return matchesSectionFocus(entry.exercise, sectionFocus);
-      }
-      return true;
-    })
     .map((entry) => {
       const detail = scoreExerciseForContextDetailed(
         entry.exercise,
@@ -5129,6 +5174,78 @@ const findFeedbackReplacementForRoutineItem = (params: {
       return left.exercise.id.localeCompare(right.exercise.id);
     });
 
+  const matchesPrimaryConstraint = (exercise: Exercise) => {
+    if (item.section === "main" && mainLane) {
+      return matchesMainLanePattern(exercise, mainLane);
+    }
+    if (item.section === "accessory" && accessoryLane) {
+      return matchesAccessoryLanePattern(exercise, accessoryLane);
+    }
+    if (
+      (item.section === "activation" ||
+        item.section === "warmup" ||
+        item.section === "cooldown") &&
+      sectionFocus
+    ) {
+      return matchesSectionFocus(exercise, sectionFocus);
+    }
+    return true;
+  };
+
+  const strictMatches = rankedCandidates.filter((entry) =>
+    matchesPrimaryConstraint(entry.exercise)
+  );
+
+  const selectBestAdjacentFallback = () => {
+    if (!highPainRisk) return [] as typeof rankedCandidates;
+    if (item.section === "main" && mainLane) {
+      const adjacentLanes = adjacentMainLaneByPainRisk[mainLane] ?? [];
+      return rankedCandidates
+        .map((entry) => ({
+          ...entry,
+          adjacentLaneIndex: adjacentLanes.findIndex((lane) =>
+            matchesMainLanePattern(entry.exercise, lane)
+          ),
+        }))
+        .filter((entry) => entry.adjacentLaneIndex >= 0)
+        .sort((left, right) => {
+          if (left.risky !== right.risky) return left.risky ? 1 : -1;
+          if (left.adjacentLaneIndex !== right.adjacentLaneIndex) {
+            return left.adjacentLaneIndex - right.adjacentLaneIndex;
+          }
+          if (left.signatureChanged !== right.signatureChanged) {
+            return left.signatureChanged ? -1 : 1;
+          }
+          if (right.score !== left.score) return right.score - left.score;
+          return left.exercise.id.localeCompare(right.exercise.id);
+        });
+    }
+    if (item.section === "accessory" && accessoryLane) {
+      const adjacentLanes = adjacentAccessoryLaneByPainRisk[accessoryLane] ?? [];
+      return rankedCandidates
+        .map((entry) => ({
+          ...entry,
+          adjacentLaneIndex: adjacentLanes.findIndex((lane) =>
+            matchesAccessoryLanePattern(entry.exercise, lane)
+          ),
+        }))
+        .filter((entry) => entry.adjacentLaneIndex >= 0)
+        .sort((left, right) => {
+          if (left.risky !== right.risky) return left.risky ? 1 : -1;
+          if (left.adjacentLaneIndex !== right.adjacentLaneIndex) {
+            return left.adjacentLaneIndex - right.adjacentLaneIndex;
+          }
+          if (left.signatureChanged !== right.signatureChanged) {
+            return left.signatureChanged ? -1 : 1;
+          }
+          if (right.score !== left.score) return right.score - left.score;
+          return left.exercise.id.localeCompare(right.exercise.id);
+        });
+    }
+    return [] as typeof rankedCandidates;
+  };
+
+  const ranked = strictMatches.length ? strictMatches : selectBestAdjacentFallback();
   const replacement = ranked[0]?.exercise ?? null;
   if (!replacement) return null;
   if (replacement.id === current.id) return null;
@@ -9255,6 +9372,7 @@ export const generateNextPhaseProgram = (params: {
   capacity?: number;
   recentLogs?: import("@/lib/types").ExerciseLog[];
   nextProgramId: string;
+  seed?: string;
 }) => {
   const {
     currentProgram,
@@ -9269,6 +9387,7 @@ export const generateNextPhaseProgram = (params: {
     capacity,
     recentLogs = [],
     nextProgramId,
+    seed,
   } = params;
 
   const phaseIndex = currentProgram.phaseIndex ?? 1;
@@ -9334,6 +9453,7 @@ export const generateNextPhaseProgram = (params: {
     cycleIndex: nextCycleIndex,
     totalWeekIndex: nextTotalWeekIndex,
     trainingState,
+    seed,
     recentLogs,
     feedbackSummaryByExercise,
   });
@@ -9346,6 +9466,7 @@ export const generateNextPhaseProgram = (params: {
         cycleIndex: 2,
         totalWeekIndex: nextTotalWeekIndex,
         trainingState,
+        seed,
         recentLogs,
         feedbackSummaryByExercise,
       })
@@ -9506,6 +9627,7 @@ export const generateNextCycleProgram = (params: {
   capacity?: number;
   recentLogs?: import("@/lib/types").ExerciseLog[];
   nextProgramId: string;
+  seed?: string;
 }) => {
   const {
     currentProgram,
@@ -9520,6 +9642,7 @@ export const generateNextCycleProgram = (params: {
     capacity,
     recentLogs = [],
     nextProgramId,
+    seed,
   } = params;
 
   const phaseIndex = currentProgram.phaseIndex ?? 1;
@@ -9592,6 +9715,7 @@ export const generateNextCycleProgram = (params: {
     cycleIndex: transition.next.cycleIndex,
     totalWeekIndex: transition.next.totalWeekIndex,
     trainingState,
+    seed,
     recentLogs,
     feedbackSummaryByExercise,
   });

@@ -8,6 +8,7 @@ import {
   resolveDayConstraintSpec,
 } from "@/lib/program";
 import type { ExerciseFeedbackSummary } from "@/lib/logStore";
+import type { ExerciseLog } from "@/lib/types";
 
 const questionnaire: QuestionnaireData = {
   goals: "Improve posture",
@@ -55,7 +56,14 @@ const assertContractsHold = (
     });
     if (!spec) return;
     const result = daySatisfiesSpec(day, spec);
-    expect(result.ok).toBe(true);
+    expect(
+      result.ok,
+      `${day.title} missing=[${result.missing
+        .map((rule) => rule.id)
+        .join(",")}] violations=[${result.violations
+        .map((entry) => `${entry.exerciseId}:${entry.section}`)
+        .join(",")}]`
+    ).toBe(true);
   });
 };
 
@@ -124,5 +132,121 @@ describe("feedback-driven substitution", () => {
       });
 
     assertContractsHold(questionnaire, adjusted.week);
+  });
+
+  test("next week uses recent logs + guidance to move risky main out of lead while preserving contracts", () => {
+    const current = generateWeeklyProgram(questionnaire, "substitution-next-cycle-current", {
+      seed: "feedback-next-cycle-seed",
+      phaseIndex: 1,
+      weekIndex: 1,
+      cycleIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const targetDayIndex = current.week.findIndex((day) =>
+      day.title.toLowerCase().includes("upper pull")
+    );
+    expect(targetDayIndex).toBeGreaterThanOrEqual(0);
+    const currentDay = current.week[targetDayIndex];
+    const currentMainItems = currentDay.routine.filter((item) => item.section === "main");
+    expect(currentMainItems.length).toBeGreaterThan(0);
+    const riskyExerciseId = currentMainItems[0].exerciseId;
+
+    const recentLogs: ExerciseLog[] = [
+      {
+        id: "feedback-log-1",
+        userId: "local",
+        sessionId: "session-1",
+        exerciseId: riskyExerciseId,
+        originalExerciseId: null,
+        substitutedExerciseId: null,
+        programId: current.id,
+        dayIndex: targetDayIndex,
+        createdAt: "2026-02-10T10:00:00.000Z",
+        updatedAt: "2026-02-10T10:00:00.000Z",
+        loadType: "weighted",
+        unit: "lb",
+        weight: 50,
+        reps: 6,
+        repsBySet: [6, 6],
+        setsPlanned: 3,
+        setsCompleted: 2,
+        durationSec: null,
+        workSecondsUsed: null,
+        restSecondsUsed: null,
+        rpe: 9,
+        felt: "pain",
+        painLevel: "severe",
+        painLocation: "shoulder",
+        nextTimeGuidance: "Next time: reduce load 5-10% or drop 1 set.",
+        feedbackNotes: null,
+        notes: null,
+        computedVolume: 600,
+        source: "local",
+        deletedAt: null,
+      },
+      {
+        id: "feedback-log-2",
+        userId: "local",
+        sessionId: "session-2",
+        exerciseId: riskyExerciseId,
+        originalExerciseId: null,
+        substitutedExerciseId: null,
+        programId: current.id,
+        dayIndex: targetDayIndex,
+        createdAt: "2026-02-12T10:00:00.000Z",
+        updatedAt: "2026-02-12T10:00:00.000Z",
+        loadType: "weighted",
+        unit: "lb",
+        weight: 50,
+        reps: 7,
+        repsBySet: [7, 7],
+        setsPlanned: 3,
+        setsCompleted: 2,
+        durationSec: null,
+        workSecondsUsed: null,
+        restSecondsUsed: null,
+        rpe: 8,
+        felt: "hard",
+        painLevel: "moderate",
+        painLocation: "shoulder",
+        nextTimeGuidance: "Next time: reduce range + use lighter load.",
+        feedbackNotes: null,
+        notes: null,
+        computedVolume: 700,
+        source: "local",
+        deletedAt: null,
+      },
+    ];
+
+    const nextWeek = generateWeeklyProgram(questionnaire, "substitution-next-week", {
+      phaseIndex: current.phaseIndex ?? 1,
+      weekIndex: (current.weekIndex ?? 1) + 1,
+      cycleIndex: current.cycleIndex ?? 1,
+      totalWeekIndex: (current.totalWeekIndex ?? current.weekIndex ?? 1) + 1,
+      recentLogs,
+      seed: "feedback-next-cycle-seed",
+    });
+
+    const nextDay = nextWeek.week[targetDayIndex];
+    const nextMainIds = nextDay.routine
+      .filter((item) => item.section === "main")
+      .map((item) => item.exerciseId);
+    expect(nextMainIds.length).toBe(currentMainItems.length);
+    expect(nextMainIds[0]).not.toBe(riskyExerciseId);
+    expect(new Set(nextMainIds).size).toBe(nextMainIds.length);
+
+    const expectedMainCount = questionnaire.experience === "Beginner" ? 2 : 3;
+    nextWeek.week.forEach((day) => {
+      const mainIds = day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId);
+      expect(mainIds.length).toBe(expectedMainCount);
+      expect(new Set(day.routine.map((item) => item.exerciseId)).size).toBe(day.routine.length);
+      mainIds.forEach((id) => {
+        expect(exerciseById(id)?.category).toBe("main");
+      });
+    });
+
+    assertContractsHold(questionnaire, nextWeek.week);
   });
 });

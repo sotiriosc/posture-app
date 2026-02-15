@@ -49,6 +49,7 @@ import {
   getProgram,
   listSessionsByProgramId,
   listExerciseLogsByExercise,
+  listRecentExerciseLogsForProgram,
   listExerciseLogsBySessionIds,
   loadPrefs,
   saveProgram,
@@ -435,6 +436,13 @@ export default function ResultsRoutine() {
     const state = loadAppState();
     const nextProgramVersion =
       typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
+    const recentLogsForProgression = await listRecentExerciseLogsForProgram({
+      programId: program.id,
+      lookbackDays: 14,
+      limit: 250,
+    });
+    const progressionLogs =
+      recentLogsForProgression.length > 0 ? recentLogsForProgression : lastTwoLogs;
     const result =
       mode === "phase"
         ? generateNextPhaseProgram({
@@ -445,7 +453,7 @@ export default function ResultsRoutine() {
             fatigueFlag: Boolean(advanceStatus.fatigueFlag),
             completedSessionsCount: completedSessions.length,
             completedWeeksCount: completedWeeks,
-            recentLogs: lastTwoLogs,
+            recentLogs: progressionLogs,
             nextProgramId: uuid(),
           })
         : generateNextCycleProgram({
@@ -456,7 +464,7 @@ export default function ResultsRoutine() {
             fatigueFlag: Boolean(advanceStatus.fatigueFlag),
             completedSessionsCount: completedSessions.length,
             completedWeeksCount: completedWeeks,
-            recentLogs: lastTwoLogs,
+            recentLogs: progressionLogs,
             nextProgramId: uuid(),
           });
 
