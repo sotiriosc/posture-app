@@ -1,5 +1,5 @@
 import type { Exercise } from "@/lib/exercises";
-import type { ExerciseFeedback, ExerciseLog } from "@/lib/types";
+import type { ExerciseFeedback, ExerciseLog, PainLevel } from "@/lib/types";
 
 type Range = { min: number | null; max: number | null };
 
@@ -29,6 +29,72 @@ export type ProgressionInput = {
     durationSec?: number | null;
     restSec?: number | null;
   };
+};
+
+export type NextTimeGuidanceInput = {
+  loadType?: ExerciseLog["loadType"] | null;
+  prescribedSets?: number | null;
+  prescribedRepsPerSet?: number | null;
+  prescribedDurationSec?: number | null;
+  actualSets?: number | null;
+  actualRepsPerSet?: number | null;
+  actualDurationSec?: number | null;
+  difficulty?: "easy" | "moderate" | "hard" | "failed" | null;
+  painLevel?: PainLevel | null;
+};
+
+export const generateNextTimeGuidance = (
+  input: NextTimeGuidanceInput
+): string => {
+  const painLevel = input.painLevel ?? "none";
+  if (painLevel === "moderate" || painLevel === "severe") {
+    return "Next time: reduce range + use lighter load.";
+  }
+
+  const prescribedSets = input.prescribedSets ?? null;
+  const prescribedRepsPerSet = input.prescribedRepsPerSet ?? null;
+  const prescribedDurationSec = input.prescribedDurationSec ?? null;
+  const actualSets = input.actualSets ?? null;
+  const actualRepsPerSet = input.actualRepsPerSet ?? null;
+  const actualDurationSec = input.actualDurationSec ?? null;
+
+  const setsMet =
+    prescribedSets === null || (actualSets !== null && actualSets >= prescribedSets);
+
+  const repsTargetTotal =
+    prescribedSets !== null && prescribedRepsPerSet !== null
+      ? prescribedSets * prescribedRepsPerSet
+      : null;
+  const repsActualTotal =
+    actualSets !== null && actualRepsPerSet !== null
+      ? actualSets * actualRepsPerSet
+      : null;
+  const repsMet =
+    repsTargetTotal === null ||
+    (repsActualTotal !== null && repsActualTotal >= repsTargetTotal);
+  const durationMet =
+    prescribedDurationSec === null ||
+    (actualDurationSec !== null && actualDurationSec >= prescribedDurationSec);
+  const underTarget =
+    input.loadType === "timed" ? !(setsMet && durationMet) : !(setsMet && repsMet);
+
+  if (input.difficulty === "failed" || input.difficulty === "hard") {
+    return "Next time: reduce load 5-10% or drop 1 set.";
+  }
+
+  if (input.difficulty === "easy" && !underTarget) {
+    return "Next time: add small load or reps.";
+  }
+
+  if (input.difficulty === "moderate" && underTarget) {
+    return "Next time: keep load, aim for +2 reps total.";
+  }
+
+  if (underTarget) {
+    return "Next time: keep load, aim for +2 reps total.";
+  }
+
+  return "Next time: repeat with clean form and steady tempo.";
 };
 
 const parseRange = (value?: string | number | null): Range => {

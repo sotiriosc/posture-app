@@ -239,6 +239,15 @@ describe("session tracking integration flow", () => {
     expect(savedLog.rpe).toBe(8);
     expect(savedLog.felt).toBe("pain");
     expect(savedLog.painLocation).toBe("shoulder");
+    expect(savedLog.nextTimeGuidance).toBeTruthy();
+
+    cleanup();
+    mocks.searchParams = "programId=program-strength&dayIndex=0";
+    render(React.createElement(SessionClient));
+    await waitFor(() => {
+      expect(screen.getByTestId("next-time-guidance")).toBeTruthy();
+    });
+    expect(screen.getByTestId("next-time-guidance").textContent).toContain("Next time:");
 
     cleanup();
     render(React.createElement(ExerciseHistory, { exerciseId: "dumbbell-rows" }));

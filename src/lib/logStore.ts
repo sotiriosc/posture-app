@@ -343,6 +343,8 @@ const migrateFromLocalStorage = async () => {
         durationSec: null,
         rpe: null,
         felt: mapLegacyFeedback(feedback[log.exerciseId]),
+        painLevel: null,
+        nextTimeGuidance: null,
         notes: log.notes ?? null,
         computedVolume: log.computedVolume ?? null,
         source: "local",
@@ -671,6 +673,7 @@ export const saveExerciseSwapEvent = async (params: {
     felt,
     painLevel,
     painLocation,
+    nextTimeGuidance: null,
     feedbackNotes:
       swappedExerciseId && swappedExerciseId !== originalExerciseId
         ? "pain-trigger swap event"

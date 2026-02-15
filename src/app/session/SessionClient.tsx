@@ -7,6 +7,7 @@ import { exerciseById } from "@/lib/exercises";
 import { generateRoutine } from "@/lib/routine";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import { previewPainSubstitutionChoices } from "@/lib/program";
+import { generateNextTimeGuidance } from "@/lib/progression";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
@@ -72,6 +73,14 @@ const parseFirstNumber = (value?: string) => {
   if (!value) return null;
   const match = value.match(/\d+/);
   return match ? Number(match[0]) : null;
+};
+
+const parseRangeFromString = (value?: string | null) => {
+  if (!value) return { min: null as number | null, max: null as number | null };
+  const parts = value.match(/\d+/g)?.map(Number).filter(Number.isFinite) ?? [];
+  if (!parts.length) return { min: null as number | null, max: null as number | null };
+  if (parts.length === 1) return { min: parts[0], max: parts[0] };
+  return { min: parts[0], max: parts[1] };
 };
 
 const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
@@ -290,6 +299,9 @@ export default function SessionClient() {
   const [painModalLocation, setPainModalLocation] = useState<PainLocation | "">("");
   const [painModalNotes, setPainModalNotes] = useState("");
   const [painModalMessage, setPainModalMessage] = useState<string | null>(null);
+  const [painLevelByExercise, setPainLevelByExercise] = useState<
+    Record<string, PainLevel>
+  >({});
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const saveStateTimerRef = useRef<number | null>(null);
   const dropoffTrackedRef = useRef(false);
@@ -842,6 +854,10 @@ export default function SessionClient() {
   }) => {
     if (!currentItem) return;
     const currentFeedbackKey = currentItem.exerciseId;
+    setPainLevelByExercise((prev) => ({
+      ...prev,
+      [currentFeedbackKey]: params.painLevel,
+    }));
     const mappedRating: FeedbackEntry =
       params.painLevel === "none"
         ? "easy"
@@ -949,6 +965,7 @@ export default function SessionClient() {
     setActiveIndex(0);
     setCompletedSets({});
     setSessionSwapByItemId({});
+    setPainLevelByExercise({});
     setPainModalOpen(false);
     setPainModalLocation("");
     setPainModalNotes("");
@@ -1028,6 +1045,8 @@ export default function SessionClient() {
       const setsPlanned = selectedSets[item.id] ?? parseSetsRange(item.sets).minSets;
       const setsCompleted = (completedSets[item.id] ?? []).filter(Boolean)
         .length;
+      const prescribedRepsRange = parseRangeFromString(item.reps ?? null);
+      const prescribedRepsPerSet = prescribedRepsRange.min;
       const volumeFromReps =
         weight && reps
           ? weight * reps * Math.max(1, setsCompleted)
@@ -1041,6 +1060,29 @@ export default function SessionClient() {
         sets: item.sets,
         reps: item.reps,
         loadType: item.loadType,
+      });
+      const felt = feedback[item.exerciseId]?.rating ?? feedback[item.id]?.rating ?? null;
+      const painLevel =
+        painLevelByExercise[item.exerciseId] ??
+        painLevelByExercise[item.id] ??
+        (felt === "pain" ? "moderate" : "none");
+      const guidanceDifficulty: "easy" | "moderate" | "hard" | "failed" | null =
+        setsPlanned > 0 && setsCompleted < setsPlanned
+          ? "failed"
+          : felt === "easy" || felt === "moderate" || felt === "hard"
+          ? felt
+          : null;
+      const nextTimeGuidance = generateNextTimeGuidance({
+        loadType: item.loadType,
+        prescribedSets: setsPlanned,
+        prescribedRepsPerSet,
+        prescribedDurationSec:
+          item.loadType === "timed" ? timer.workSeconds : item.durationSec ?? null,
+        actualSets: setsCompleted,
+        actualRepsPerSet: reps,
+        actualDurationSec: item.loadType === "timed" ? timer.workSeconds : null,
+        difficulty: guidanceDifficulty,
+        painLevel,
       });
 
       return {
@@ -1072,11 +1114,13 @@ export default function SessionClient() {
         workSecondsUsed: timer.workSeconds,
         restSecondsUsed: timer.restSeconds,
         rpe,
-        felt: feedback[item.exerciseId]?.rating ?? feedback[item.id]?.rating ?? null,
+        felt,
+        painLevel,
         painLocation:
           feedback[item.exerciseId]?.painLocation ??
           feedback[item.id]?.painLocation ??
           null,
+        nextTimeGuidance,
         feedbackNotes:
           feedback[item.exerciseId]?.notes ??
           feedback[item.id]?.notes ??
@@ -1535,17 +1579,27 @@ export default function SessionClient() {
             </div>
             <div className="flex items-center gap-3">
               {lastLog ? (
-                <p className="ui-body">
-                  Last time:{" "}
-                  {lastLog.weight
-                    ? `${lastLog.weight}${lastLog.unit ?? ""}`
-                    : currentItem.loadType === "timed"
-                    ? "Timed"
-                    : currentItem.loadType === "assisted"
-                    ? "Assisted"
-                    : "Bodyweight"}{" "}
-                  {lastLog.reps ? `x ${lastLog.reps} reps` : ""}
-                </p>
+                <div className="ui-body">
+                  <p>
+                    Last time:{" "}
+                    {lastLog.weight
+                      ? `${lastLog.weight}${lastLog.unit ?? ""}`
+                      : currentItem.loadType === "timed"
+                      ? "Timed"
+                      : currentItem.loadType === "assisted"
+                      ? "Assisted"
+                      : "Bodyweight"}{" "}
+                    {lastLog.reps ? `x ${lastLog.reps} reps` : ""}
+                  </p>
+                  {lastLog.nextTimeGuidance ? (
+                    <p
+                      className="mt-1 text-[11px] text-slate-600"
+                      data-testid="next-time-guidance"
+                    >
+                      {lastLog.nextTimeGuidance}
+                    </p>
+                  ) : null}
+                </div>
               ) : null}
               <span
                 className="ui-saving-indicator rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600"

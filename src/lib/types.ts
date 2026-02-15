@@ -51,6 +51,7 @@ export type ExerciseLog = {
   felt: "easy" | "moderate" | "hard" | "pain" | null;
   painLevel?: PainLevel | null;
   painLocation?: PainLocation | null;
+  nextTimeGuidance?: string | null;
   feedbackNotes?: string | null;
   notes: string | null;
   computedVolume: number | null;
