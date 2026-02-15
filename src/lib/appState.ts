@@ -7,6 +7,7 @@ export type AppState = {
   programVersion?: number;
   activePhaseIndex?: number;
   activeCycleIndex?: number;
+  questionnaireSignature?: string;
   updatedAt: number;
 };
 

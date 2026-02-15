@@ -33,6 +33,7 @@ import {
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import { loadAppState, saveAppState } from "@/lib/appState";
+import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import type { Exercise } from "@/lib/exercises";
 import type {
   ExerciseFeedback,
@@ -239,6 +240,11 @@ export default function ResultsRoutine() {
   const routine = useMemo(() => {
     if (!data) return defaultRoutine;
     return generateRoutine(data);
+  }, [data]);
+
+  const questionnaireSignature = useMemo(() => {
+    if (!data) return null;
+    return buildQuestionnaireSignature(data);
   }, [data]);
 
   const dayPreviewRecommendations = useMemo(() => {
@@ -467,6 +473,7 @@ export default function ResultsRoutine() {
         activeCycleIndex: result.program.cycleIndex ?? 1,
         programVersion: nextProgramVersion,
         activeSessionId: undefined,
+        questionnaireSignature: questionnaireSignature ?? undefined,
         lastRoute: "/results",
       });
       setAdvanceOpen(false);
@@ -478,31 +485,36 @@ export default function ResultsRoutine() {
   };
 
   useEffect(() => {
-    if (!data) return;
+    if (!data || !questionnaireSignature) return;
     const loadProgram = async () => {
       const state = loadAppState();
-      if (state?.activeProgramId) {
+      const questionnaireMatches = state?.questionnaireSignature === questionnaireSignature;
+      if (questionnaireMatches && state?.activeProgramId) {
         const active = await getProgram(state.activeProgramId);
         if (isProgramCompatibleWithQuestionnaire(active, data)) {
           setProgram(active);
           return;
         }
       }
-      const latest = await getLatestProgram();
-      if (isProgramCompatibleWithQuestionnaire(latest, data)) {
-        setProgram(latest);
-        return;
+      if (questionnaireMatches) {
+        const latest = await getLatestProgram();
+        if (isProgramCompatibleWithQuestionnaire(latest, data)) {
+          setProgram(latest);
+          return;
+        }
       }
       const newProgram = generateWeeklyProgram(data, uuid());
       await saveProgram(newProgram);
       setProgram(newProgram);
     };
     loadProgram();
-  }, [data]);
+  }, [data, questionnaireSignature]);
 
   useEffect(() => {
-    if (!program || !data) return;
-    if (isProgramCompatibleWithQuestionnaire(program, data)) return;
+    if (!program || !data || !questionnaireSignature) return;
+    const state = loadAppState();
+    const signatureMatches = state?.questionnaireSignature === questionnaireSignature;
+    if (signatureMatches && isProgramCompatibleWithQuestionnaire(program, data)) return;
 
     const reconcileProgram = async () => {
       const reconciled = generateWeeklyProgram(data, uuid(), {
@@ -520,11 +532,12 @@ export default function ResultsRoutine() {
         selectedDay: 0,
         activePhaseIndex: reconciled.phaseIndex ?? 1,
         activeCycleIndex: reconciled.cycleIndex ?? 1,
+        questionnaireSignature,
       });
     };
 
     reconcileProgram();
-  }, [program, data]);
+  }, [program, data, questionnaireSignature]);
 
   useEffect(() => {
     if (!program) return;
@@ -545,7 +558,7 @@ export default function ResultsRoutine() {
   }, [program, authEnabled, plan, selectedDay]);
 
   useEffect(() => {
-    if (!program) return;
+    if (!program || !questionnaireSignature) return;
     const stateDay =
       authEnabled && plan !== "pro"
         ? 0
@@ -562,9 +575,10 @@ export default function ResultsRoutine() {
       activePhaseIndex: program.phaseIndex ?? 1,
       activeCycleIndex: program.cycleIndex ?? 1,
       programVersion: nextVersion,
+      questionnaireSignature,
       lastRoute: "/results",
     });
-  }, [program, selectedDay, authEnabled, plan]);
+  }, [program, selectedDay, authEnabled, plan, questionnaireSignature]);
 
   const completedByDay = useMemo(() => {
     const map = new Map<number, SessionRecord[]>();

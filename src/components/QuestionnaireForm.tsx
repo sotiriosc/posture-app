@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import { loadAppState, saveAppState } from "@/lib/appState";
+import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
+import { clearDraft } from "@/lib/sessionDraftStore";
+import { generateWeeklyProgram } from "@/lib/program";
+import { saveProgram, uuid } from "@/lib/logStore";
 
 export type QuestionnaireData = {
   goals: string;
@@ -58,21 +63,122 @@ const normalizeDaysPerWeek = (value: unknown): QuestionnaireData["daysPerWeek"] 
   return parsed === 4 || parsed === 5 ? parsed : 3;
 };
 
+const normalizeQuestionnaireData = (
+  input?: Partial<QuestionnaireData> | null
+): QuestionnaireData => ({
+  ...emptyData,
+  ...(input ?? {}),
+  equipment: normalizeEquipmentSelectionValues(input?.equipment ?? ["none"]),
+  daysPerWeek: normalizeDaysPerWeek(input?.daysPerWeek),
+});
+
+const hasProgramAffectingChange = (
+  next: QuestionnaireData,
+  baseline: QuestionnaireData
+) =>
+  buildQuestionnaireSignature(next) !== buildQuestionnaireSignature(baseline);
+
 export default function QuestionnaireForm() {
   const [data, setData] = useState<QuestionnaireData>(() => {
     if (typeof window === "undefined") return emptyData;
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return emptyData;
     const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
-    return {
-      ...emptyData,
-      ...parsed,
-      equipment: normalizeEquipmentSelectionValues(parsed.equipment ?? ["none"]),
-      daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
-    };
+    return normalizeQuestionnaireData(parsed);
+  });
+  const [committedData, setCommittedData] = useState<QuestionnaireData>(() => {
+    if (typeof window === "undefined") return emptyData;
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return emptyData;
+    const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
+    return normalizeQuestionnaireData(parsed);
+  });
+  const [pendingData, setPendingData] = useState<QuestionnaireData | null>(null);
+  const [showChangeConfirm, setShowChangeConfirm] = useState(false);
+  const [isApplyingChange, setIsApplyingChange] = useState(false);
+  const [changeWarning, setChangeWarning] = useState<string | null>(null);
+  const [requiresChangeConfirmation, setRequiresChangeConfirmation] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const state = loadAppState();
+    return Boolean(saved || state?.activeProgramId || state?.programId);
   });
   const router = useRouter();
   const [hydratedServerSnapshot, setHydratedServerSnapshot] = useState(false);
+
+  const persistQuestionnaire = (next: QuestionnaireData) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    if (hydratedServerSnapshot) {
+      void pushTrainingPatch({ questionnaire: next });
+    }
+  };
+
+  const openChangeConfirm = (next: QuestionnaireData) => {
+    setPendingData(next);
+    setShowChangeConfirm(true);
+    const state = loadAppState();
+    setChangeWarning(
+      state?.activeSessionId
+        ? "An active session is in progress. Confirming will end it and load a new program."
+        : null
+    );
+  };
+
+  const commitAndRegenerateProgram = async (next: QuestionnaireData) => {
+    setIsApplyingChange(true);
+    const state = loadAppState();
+    const nextProgramVersion =
+      typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
+    const questionnaireSignature = buildQuestionnaireSignature(next);
+
+    persistQuestionnaire(next);
+    setCommittedData(next);
+    setData(next);
+    setRequiresChangeConfirmation(true);
+    setPendingData(null);
+    setShowChangeConfirm(false);
+
+    if (state?.activeSessionId) {
+      await clearDraft(state.activeSessionId).catch(() => undefined);
+    }
+
+    try {
+      const nextProgram = generateWeeklyProgram(next, uuid());
+      await saveProgram(nextProgram);
+      saveAppState({
+        programId: nextProgram.id,
+        activeProgramId: nextProgram.id,
+        selectedDay: 0,
+        activeSessionId: undefined,
+        programVersion: nextProgramVersion,
+        activePhaseIndex: nextProgram.phaseIndex ?? 1,
+        activeCycleIndex: nextProgram.cycleIndex ?? 1,
+        questionnaireSignature,
+        lastRoute: "/results",
+      });
+    } catch {
+      // If local DB writes fail, still invalidate active routing state so Results regenerates.
+      saveAppState({
+        programId: undefined,
+        activeProgramId: undefined,
+        selectedDay: 0,
+        activeSessionId: undefined,
+        programVersion: nextProgramVersion,
+        questionnaireSignature,
+        lastRoute: "/results",
+      });
+    } finally {
+      setIsApplyingChange(false);
+      router.push("/results");
+    }
+  };
+
+  const cancelPendingChange = () => {
+    setData(committedData);
+    setPendingData(null);
+    setShowChangeConfirm(false);
+    setChangeWarning(null);
+  };
 
   useEffect(() => {
     let active = true;
@@ -83,14 +189,11 @@ export default function QuestionnaireForm() {
         setHydratedServerSnapshot(true);
         return;
       }
-      const merged: QuestionnaireData = {
-        ...emptyData,
-        ...remote,
-        equipment: normalizeEquipmentSelectionValues(remote.equipment ?? ["none"]),
-        daysPerWeek: normalizeDaysPerWeek(remote.daysPerWeek),
-      };
+      const merged = normalizeQuestionnaireData(remote);
       setData(merged);
+      setCommittedData(merged);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      setRequiresChangeConfirmation(true);
       setHydratedServerSnapshot(true);
     };
     hydrate().catch(() => setHydratedServerSnapshot(true));
@@ -102,10 +205,21 @@ export default function QuestionnaireForm() {
   const updateData = (updates: Partial<QuestionnaireData>) => {
     const next = { ...data, ...updates };
     setData(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    if (hydratedServerSnapshot) {
-      void pushTrainingPatch({ questionnaire: next });
+
+    if (!requiresChangeConfirmation) {
+      setCommittedData(next);
+      persistQuestionnaire(next);
+      return;
     }
+
+    if (!hasProgramAffectingChange(next, committedData)) {
+      setPendingData(null);
+      setShowChangeConfirm(false);
+      setChangeWarning(null);
+      return;
+    }
+
+    openChangeConfirm(next);
   };
 
   const toggleArrayValue = (key: "painAreas" | "equipment", value: string) => {
@@ -133,8 +247,17 @@ export default function QuestionnaireForm() {
       className="space-y-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg"
       onSubmit={(event) => {
         event.preventDefault();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        void pushTrainingPatch({ questionnaire: data });
+        if (requiresChangeConfirmation && hasProgramAffectingChange(data, committedData)) {
+          openChangeConfirm(data);
+          return;
+        }
+
+        if (!requiresChangeConfirmation) {
+          void commitAndRegenerateProgram(data);
+          return;
+        }
+
+        persistQuestionnaire(data);
         router.push("/results");
       }}
     >
@@ -246,10 +369,59 @@ export default function QuestionnaireForm() {
       <button
         type="submit"
         data-testid="generate-routine"
+        disabled={isApplyingChange}
         className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
       >
         Generate routine
       </button>
+
+      {showChangeConfirm ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Questionnaire change confirmation"
+          data-testid="questionnaire-change-confirm-modal"
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+        >
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          <div className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-950/95 p-6 text-white shadow-xl">
+            <p className="text-lg font-semibold">
+              Your selection changed. Your workout will update.
+            </p>
+            <p className="mt-2 text-sm text-slate-200">
+              Cancel keeps your current plan. Confirm regenerates your workout now.
+            </p>
+            {changeWarning ? (
+              <p className="mt-3 rounded-2xl border border-amber-200/40 bg-amber-50/10 px-3 py-2 text-xs text-amber-100">
+                {changeWarning}
+              </p>
+            ) : null}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                data-testid="questionnaire-change-cancel"
+                onClick={cancelPendingChange}
+                disabled={isApplyingChange}
+                className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/90 hover:bg-white/10 disabled:opacity-60"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                data-testid="questionnaire-change-confirm"
+                onClick={() => {
+                  const next = pendingData ?? data;
+                  void commitAndRegenerateProgram(next);
+                }}
+                disabled={isApplyingChange}
+                className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 disabled:opacity-60"
+              >
+                {isApplyingChange ? "Updating..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </form>
   );
 }
