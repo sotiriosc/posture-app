@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => ({
   pushTrainingPatch: vi.fn(),
   generateWeeklyProgram: vi.fn(),
   saveProgram: vi.fn(),
+  saveProgramProgress: vi.fn(),
   getProgram: vi.fn(),
   uuid: vi.fn(),
   clearDraft: vi.fn(),
@@ -41,6 +42,7 @@ vi.mock("@/lib/program", () => ({
 
 vi.mock("@/lib/logStore", () => ({
   saveProgram: mocks.saveProgram,
+  saveProgramProgress: mocks.saveProgramProgress,
   getProgram: mocks.getProgram,
   uuid: mocks.uuid,
 }));
@@ -127,6 +129,7 @@ describe("questionnaire -> confirm -> program view connection", () => {
     mocks.pushTrainingPatch.mockReset();
     mocks.generateWeeklyProgram.mockReset();
     mocks.saveProgram.mockReset();
+    mocks.saveProgramProgress.mockReset();
     mocks.getProgram.mockReset();
     mocks.uuid.mockReset();
     mocks.clearDraft.mockReset();
@@ -146,6 +149,7 @@ describe("questionnaire -> confirm -> program view connection", () => {
       mocks.programsById.set(program.id, program);
       return program;
     });
+    mocks.saveProgramProgress.mockImplementation(async (progress: unknown) => progress);
     mocks.getProgram.mockImplementation(
       async (programId: string) => mocks.programsById.get(programId) ?? null
     );
@@ -179,6 +183,7 @@ describe("questionnaire -> confirm -> program view connection", () => {
 
     await waitFor(() => {
       expect(mocks.saveProgram).toHaveBeenCalledTimes(1);
+      expect(mocks.saveProgramProgress).toHaveBeenCalledTimes(1);
       expect(mocks.routerPush).toHaveBeenCalledWith("/results");
     });
 

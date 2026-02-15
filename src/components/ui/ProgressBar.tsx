@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type ProgressBarProps = {
   label: string;
@@ -8,6 +8,7 @@ type ProgressBarProps = {
   showPercent?: boolean;
   compact?: boolean;
   variant?: "default" | "mini";
+  animate?: boolean;
 };
 
 export default function ProgressBar({
@@ -18,11 +19,45 @@ export default function ProgressBar({
   showPercent = true,
   compact = false,
   variant = "default",
+  animate = true,
 }: ProgressBarProps) {
   const percent = useMemo(() => {
     if (!Number.isFinite(value) || !Number.isFinite(max) || max <= 0) return 0;
     return Math.max(0, Math.min(100, Math.round((value / max) * 100)));
   }, [value, max]);
+  const [displayedPercent, setDisplayedPercent] = useState(animate ? 0 : percent);
+  const [flashProgress, setFlashProgress] = useState(false);
+  const hasMountedRef = useRef(false);
+  const previousPercentRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!animate) {
+      setDisplayedPercent(percent);
+      return;
+    }
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      const raf = window.requestAnimationFrame(() => {
+        setDisplayedPercent(percent);
+      });
+      return () => window.cancelAnimationFrame(raf);
+    }
+    setDisplayedPercent(percent);
+  }, [percent, animate]);
+
+  useEffect(() => {
+    const previousPercent = previousPercentRef.current;
+    previousPercentRef.current = percent;
+    if (previousPercent === null) return;
+    if (percent <= previousPercent) return;
+
+    setFlashProgress(true);
+    const timer = window.setTimeout(() => {
+      setFlashProgress(false);
+    }, 800);
+
+    return () => window.clearTimeout(timer);
+  }, [percent]);
 
   return (
     <div className={compact ? "space-y-1" : "space-y-1.5"}>
@@ -36,11 +71,27 @@ export default function ProgressBar({
         }`}
       >
         <div
-          className="h-full rounded-full bg-gradient-to-r from-slate-600 via-slate-500 to-slate-400 transition-[width] duration-300 ease-out"
-          style={{ width: `${percent}%` }}
+          className={`progress-fill h-full rounded-full bg-gradient-to-r from-slate-600 via-slate-500 to-slate-400 transition-[width,filter] duration-[700ms] ease-[cubic-bezier(.22,1,.36,1)] ${
+            flashProgress ? "progress-flash" : ""
+          }`}
+          style={{ width: `${displayedPercent}%` }}
         />
       </div>
       {subtitle ? <p className="text-[11px] text-slate-500">{subtitle}</p> : null}
+      <style jsx>{`
+        .progress-flash {
+          animation: progressFlash 800ms ease-out;
+        }
+
+        @keyframes progressFlash {
+          0% {
+            filter: brightness(1.24) saturate(1.2);
+          }
+          100% {
+            filter: brightness(1) saturate(1);
+          }
+        }
+      `}</style>
     </div>
   );
 }

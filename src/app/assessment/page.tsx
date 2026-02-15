@@ -17,6 +17,9 @@ export default function AssessmentPage() {
               <h1 className="text-3xl font-semibold text-white">
                 Upload your posture photos
               </h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-200">
+                These photos help the system detect posture imbalances and adapt your training automatically.
+              </p>
             </div>
             <Link href="/questionnaire">
               <Button variant="secondary">Skip to questionnaire</Button>

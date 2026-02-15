@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   pushTrainingPatch: vi.fn(),
   generateWeeklyProgram: vi.fn(),
   saveProgram: vi.fn(),
+  saveProgramProgress: vi.fn(),
   uuid: vi.fn(),
   clearDraft: vi.fn(),
 }));
@@ -37,6 +38,7 @@ vi.mock("@/lib/program", () => ({
 
 vi.mock("@/lib/logStore", () => ({
   saveProgram: mocks.saveProgram,
+  saveProgramProgress: mocks.saveProgramProgress,
   uuid: mocks.uuid,
 }));
 
@@ -77,6 +79,7 @@ describe("questionnaire change confirmation flow", () => {
     mocks.pushTrainingPatch.mockReset();
     mocks.generateWeeklyProgram.mockReset();
     mocks.saveProgram.mockReset();
+    mocks.saveProgramProgress.mockReset();
     mocks.uuid.mockReset();
     mocks.clearDraft.mockReset();
 
@@ -103,6 +106,7 @@ describe("questionnaire change confirmation flow", () => {
       })
     );
     mocks.saveProgram.mockImplementation(async (program: unknown) => program);
+    mocks.saveProgramProgress.mockImplementation(async (progress: unknown) => progress);
 
     render(React.createElement(QuestionnaireForm));
   });
@@ -149,6 +153,7 @@ describe("questionnaire change confirmation flow", () => {
 
     await waitFor(() => {
       expect(mocks.saveProgram).toHaveBeenCalledTimes(1);
+      expect(mocks.saveProgramProgress).toHaveBeenCalledTimes(1);
     });
 
     expect(mocks.clearDraft).toHaveBeenCalledWith("session-live");

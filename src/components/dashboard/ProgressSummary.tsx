@@ -27,18 +27,20 @@ export default function ProgressSummary({
         Cycles completed: <span className="font-semibold">{cyclesCompleted}/{cycleTarget}</span>
       </p>
 
-      <ProgressBar label="Consistency" value={consistencyPercent} max={100} />
-      <ProgressBar label="Completion" value={completionPercent} max={100} />
+      <ProgressBar label="Consistency" value={consistencyPercent} max={100} animate />
+      <ProgressBar label="Completion" value={completionPercent} max={100} animate />
       <ProgressBar
         label="Pain trend"
         value={painTrendPercent}
         max={100}
+        animate
         subtitle={painTrend}
       />
       <ProgressBar
         label="Movement quality trend"
         value={movementQualityPercent}
         max={100}
+        animate
         subtitle={movementQualityTrend}
       />
     </div>

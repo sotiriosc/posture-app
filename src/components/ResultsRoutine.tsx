@@ -43,7 +43,7 @@ import {
   getProgramProgress,
   getLatestProgram,
   getProgram,
-  listSessionsByProgramId,
+  listSessions,
   listExerciseLogsByExercise,
   listRecentExerciseLogsForProgram,
   listExerciseLogsBySessionIds,
@@ -111,6 +111,12 @@ const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
   return parsed === 4 || parsed === 5 ? parsed : 3;
 };
 
+const toEpochMs = (value: string | null | undefined) => {
+  if (!value) return NaN;
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? NaN : parsed;
+};
+
 const hasValidWeekStructure = (program: Program) => {
   const targetDays = program.daysPerWeek;
   if (!Array.isArray(program.week) || program.week.length !== targetDays) {
@@ -144,7 +150,8 @@ export default function ResultsRoutine() {
   const [selectedDay, setSelectedDay] = useState(0);
   const [showDebug, setShowDebug] = useState(false);
   const [progress, setProgress] = useState<ProgramProgress | null>(null);
-  const [programSessions, setProgramSessions] = useState<SessionRecord[]>([]);
+  const [allSessions, setAllSessions] = useState<SessionRecord[]>([]);
+  const [activeProgramBaselineAt, setActiveProgramBaselineAt] = useState(0);
   const [latestLogsByExercise, setLatestLogsByExercise] = useState<
     Record<string, ExerciseLog | null>
   >({});
@@ -475,6 +482,7 @@ export default function ResultsRoutine() {
 
     if (result.status === "advanced") {
       const nowIso = new Date().toISOString();
+      const activationBaselineAt = Date.now();
       const nextProgress: ProgramProgress = {
         programId: result.program.id,
         lastCompletedDayIndex: null,
@@ -497,6 +505,7 @@ export default function ResultsRoutine() {
       saveAppState({
         programId: result.program.id,
         activeProgramId: result.program.id,
+        activeProgramBaselineAt: activationBaselineAt,
         selectedDay: 0,
         activePhaseIndex: result.program.phaseIndex ?? 1,
         activeCycleIndex: result.program.cycleIndex ?? 1,
@@ -524,6 +533,7 @@ export default function ResultsRoutine() {
     const nextProgramVersion =
       typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
     const nowIso = new Date().toISOString();
+    const activationBaselineAt = Date.now();
     const nextProgram = generateWeeklyProgram(data, uuid(), {
       phaseIndex: 2,
       weekIndex: 1,
@@ -562,6 +572,7 @@ export default function ResultsRoutine() {
     saveAppState({
       programId: nextProgram.id,
       activeProgramId: nextProgram.id,
+      activeProgramBaselineAt: activationBaselineAt,
       selectedDay: 0,
       activePhaseIndex: nextProgram.phaseIndex ?? 2,
       activeCycleIndex: nextProgram.cycleIndex ?? 1,
@@ -577,14 +588,14 @@ export default function ResultsRoutine() {
     if (!data || !questionnaireSignature) return;
     const loadProgram = async () => {
       const state = loadAppState();
-      const questionnaireMatches = state?.questionnaireSignature === questionnaireSignature;
-      if (questionnaireMatches && state?.activeProgramId) {
+      if (state?.activeProgramId) {
         const active = await getProgram(state.activeProgramId);
-        if (isProgramCompatibleWithQuestionnaire(active, data)) {
+        if (active) {
           setProgram(active);
           return;
         }
       }
+      const questionnaireMatches = state?.questionnaireSignature === questionnaireSignature;
       if (questionnaireMatches) {
         const latest = await getLatestProgram();
         if (isProgramCompatibleWithQuestionnaire(latest, data)) {
@@ -602,6 +613,7 @@ export default function ResultsRoutine() {
   useEffect(() => {
     if (!program || !data || !questionnaireSignature) return;
     const state = loadAppState();
+    if (state?.activeProgramId && state.activeProgramId !== program.id) return;
     const signatureMatches = state?.questionnaireSignature === questionnaireSignature;
     if (signatureMatches && isProgramCompatibleWithQuestionnaire(program, data)) return;
 
@@ -618,6 +630,7 @@ export default function ResultsRoutine() {
       saveAppState({
         programId: reconciled.id,
         activeProgramId: reconciled.id,
+        activeProgramBaselineAt: Date.now(),
         selectedDay: 0,
         activePhaseIndex: reconciled.phaseIndex ?? 1,
         activeCycleIndex: reconciled.cycleIndex ?? 1,
@@ -639,9 +652,24 @@ export default function ResultsRoutine() {
       typeof state?.programVersion === "number"
         ? state.programVersion
         : 0;
+    const parsedProgramCreatedAt = toEpochMs(program.createdAt);
+    const fallbackBaselineAt = Number.isNaN(parsedProgramCreatedAt)
+      ? Date.now()
+      : parsedProgramCreatedAt;
+    const sameActiveProgram = state?.activeProgramId === program.id;
+    const storedBaselineAt =
+      typeof state?.activeProgramBaselineAt === "number" &&
+      Number.isFinite(state.activeProgramBaselineAt)
+        ? state.activeProgramBaselineAt
+        : null;
+    const nextBaselineAt = sameActiveProgram
+      ? (storedBaselineAt ?? fallbackBaselineAt)
+      : fallbackBaselineAt;
+    setActiveProgramBaselineAt(nextBaselineAt);
     saveAppState({
       programId: program.id,
       activeProgramId: program.id,
+      activeProgramBaselineAt: nextBaselineAt,
       selectedDay: stateDay,
       activePhaseIndex: program.phaseIndex ?? 1,
       activeCycleIndex: program.cycleIndex ?? 1,
@@ -651,19 +679,62 @@ export default function ResultsRoutine() {
     });
   }, [program, selectedDay, authEnabled, plan, questionnaireSignature]);
 
-  const completedByDay = useMemo(() => {
-    const map = new Map<number, SessionRecord[]>();
-    programSessions.forEach((session) => {
+  const baselineForActiveProgram = useMemo(() => {
+    if (activeProgramBaselineAt > 0) return activeProgramBaselineAt;
+    const parsedProgramCreatedAt = toEpochMs(program?.createdAt);
+    return Number.isNaN(parsedProgramCreatedAt) ? 0 : parsedProgramCreatedAt;
+  }, [activeProgramBaselineAt, program?.createdAt]);
+
+  const sessionsSinceBaseline = useMemo(() => {
+    if (!program) return [] as SessionRecord[];
+    return allSessions.filter((session) => {
+      if (session.routineId !== program.id) return false;
+      const parsedSessionAt = toEpochMs(session.startedAt ?? session.createdAt);
+      const sessionAt = Number.isNaN(parsedSessionAt) ? 0 : parsedSessionAt;
+      return sessionAt >= baselineForActiveProgram;
+    });
+  }, [allSessions, program?.id, baselineForActiveProgram]);
+
+  const completedDaySet = useMemo(() => {
+    const set = new Set<number>();
+    if (!program) return set;
+
+    if (progress?.programId === program.id) {
+      const fromProgress = Array.isArray(progress.completedDayIndices)
+        ? progress.completedDayIndices
+        : [];
+      fromProgress.forEach((dayIndex) => {
+        if (
+          Number.isFinite(dayIndex) &&
+          dayIndex >= 0 &&
+          dayIndex < program.daysPerWeek
+        ) {
+          set.add(dayIndex);
+        }
+      });
+      return set;
+    }
+
+    sessionsSinceBaseline.forEach((session) => {
       if (!session.completedAt) return;
       const match = session.notes?.match(/dayIndex:(\d+)/);
       if (!match) return;
       const dayIndex = Number(match[1]);
-      const list = map.get(dayIndex) ?? [];
-      list.push(session);
-      map.set(dayIndex, list);
+      if (
+        Number.isFinite(dayIndex) &&
+        dayIndex >= 0 &&
+        dayIndex < program.daysPerWeek
+      ) {
+        set.add(dayIndex);
+      }
     });
-    return map;
-  }, [programSessions]);
+    return set;
+  }, [
+    program,
+    progress?.programId,
+    progress?.completedDayIndices,
+    sessionsSinceBaseline,
+  ]);
 
   const nextDayIndex = useMemo(() => {
     if (!program) return 0;
@@ -673,15 +744,15 @@ export default function ResultsRoutine() {
         Math.max(0, program.week.length - 1)
       );
     }
-    const completedDays = Array.from(completedByDay.keys()).sort((a, b) => a - b);
+    const completedDays = Array.from(completedDaySet).sort((a, b) => a - b);
     if (!completedDays.length) return 0;
     const last = completedDays[completedDays.length - 1];
     return last + 1 < program.daysPerWeek ? last + 1 : 0;
-  }, [program, progress, completedByDay]);
+  }, [program, progress, completedDaySet]);
 
   const completedCount = useMemo(() => {
-    return Array.from(completedByDay.keys()).length;
-  }, [completedByDay]);
+    return completedDaySet.size;
+  }, [completedDaySet]);
 
   const activeDaysPerWeek = program?.daysPerWeek ?? data?.daysPerWeek ?? 3;
   const isFreePlan = authEnabled && plan !== "pro";
@@ -691,10 +762,10 @@ export default function ResultsRoutine() {
 
   const completedSessions = useMemo(
     () =>
-      programSessions
+      sessionsSinceBaseline
         .filter((session) => session.completedAt)
         .toSorted((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? "")),
-    [programSessions]
+    [sessionsSinceBaseline]
   );
 
   const completedWeeks =
@@ -704,21 +775,18 @@ export default function ResultsRoutine() {
 
   useEffect(() => {
     const loadLastTwo = async () => {
-      const sortedCompleted = programSessions
-        .filter((session) => session.completedAt)
-        .toSorted((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? ""));
-      if (!sortedCompleted.length) {
+      if (!completedSessions.length) {
         setLastTwoLogs((prev) => (prev.length ? [] : prev));
         return;
       }
-      const lastTwo = sortedCompleted.slice(0, 2);
+      const lastTwo = completedSessions.slice(0, 2);
       const logs = await listExerciseLogsBySessionIds(
         lastTwo.map((session) => session.id)
       );
       setLastTwoLogs(logs);
     };
     loadLastTwo();
-  }, [programSessions]);
+  }, [completedSessions]);
 
   useEffect(() => {
     if (!program) return;
@@ -787,8 +855,9 @@ export default function ResultsRoutine() {
   useEffect(() => {
     if (!program) return;
     const loadSessions = () => {
-      listSessionsByProgramId(program.id).then(setProgramSessions);
+      listSessions(500).then(setAllSessions);
     };
+    setAllSessions([]);
     loadSessions();
     window.addEventListener("focus", loadSessions);
     window.addEventListener("visibilitychange", loadSessions);
@@ -796,7 +865,12 @@ export default function ResultsRoutine() {
       window.removeEventListener("focus", loadSessions);
       window.removeEventListener("visibilitychange", loadSessions);
     };
-  }, [program]);
+  }, [program?.id]);
+
+  useEffect(() => {
+    setWeekViewDetailsOpen(false);
+    setWeekViewSelectedDay(null);
+  }, [program?.id]);
 
   const phaseGate = useMemo(() => {
     return canAdvancePhase({
@@ -927,9 +1001,6 @@ export default function ResultsRoutine() {
   useEffect(() => {
     if (!program) return;
     const updatePhasePlan = async () => {
-      const completedSessions = programSessions.filter(
-        (session) => session.completedAt
-      );
       const computedWeekIndex =
         Math.floor(completedSessions.length / program.daysPerWeek) + 1;
       const weekIndex = Math.max(program.weekIndex ?? 1, computedWeekIndex);
@@ -1006,7 +1077,16 @@ export default function ResultsRoutine() {
     };
 
     updatePhasePlan();
-  }, [program, programSessions, data]);
+  }, [program, completedSessions, data]);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development" || !program) return;
+    if (!baselineForActiveProgram) return;
+    // eslint-disable-next-line no-console
+    console.log(
+      `[Week View] baseline=${new Date(baselineForActiveProgram).toISOString()} programId=${program.id}`
+    );
+  }, [program?.id, baselineForActiveProgram]);
 
   useEffect(() => {
     const runPoseAnalysis = async () => {
@@ -1333,17 +1413,61 @@ export default function ResultsRoutine() {
     "Adaptation/progression",
   ];
 
+  const readinessScore = (() => {
+    if (heroCta.label === "Continue Session") return 70;
+
+    const now = Date.now();
+    let score = 75;
+
+    const completedSessionTimestamps = completedSessions
+      .map((session) => {
+        const parsed = Date.parse(
+          session.completedAt ?? session.updatedAt ?? session.createdAt
+        );
+        return Number.isNaN(parsed) ? null : parsed;
+      })
+      .filter((timestamp): timestamp is number => timestamp !== null);
+
+    if (completedSessionTimestamps.length > 0) {
+      const latestSessionAt = Math.max(...completedSessionTimestamps);
+      const hoursSinceLatest = (now - latestSessionAt) / (60 * 60 * 1000);
+      if (hoursSinceLatest < 18) {
+        score -= 10;
+      }
+      if (hoursSinceLatest >= 24 * 7) {
+        score -= 5;
+      }
+
+      const sessionsInLast3Days = completedSessionTimestamps.filter(
+        (timestamp) => now - timestamp <= 24 * 3 * 60 * 60 * 1000
+      ).length;
+      if (sessionsInLast3Days >= 2) {
+        score -= 10;
+      }
+    }
+
+    const hasPainFlagToday = lastTwoLogs.some((log) => {
+      const hasPainSignal =
+        (log.painLevel && log.painLevel !== "none") || log.felt === "pain";
+      if (!hasPainSignal) return false;
+      const parsed = Date.parse(log.createdAt ?? "");
+      if (Number.isNaN(parsed)) return false;
+      return now - parsed <= 24 * 60 * 60 * 1000;
+    });
+    if (hasPainFlagToday) {
+      score -= 15;
+    }
+
+    return Math.max(0, Math.min(100, Math.round(score)));
+  })();
+
   const readinessLabel =
-    painTrendLabel === "Needs caution"
-      ? "Recovery"
-      : painTrendLabel === "Mild signals" || adherencePercent < 60 || !phaseGate.ok
-      ? "Caution"
-      : "Ready";
+    readinessScore >= 80 ? "Ready" : readinessScore >= 55 ? "Good" : "Caution";
 
   const heroMetricChips = [
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
     `Cycle: ${program.cycleIndex ?? cycleCurrent}`,
-    `Readiness: ${readinessLabel}`,
+    `Readiness: ${readinessScore}% (${readinessLabel})`,
     phaseGate.minCycles > 0 && phaseGate.minDays > 0
       ? `Phase gate: ${phaseGate.minCycles} cycles + ${phaseGate.minDays} days`
       : "Phase gate: Progressing normally",
@@ -1443,16 +1567,20 @@ export default function ResultsRoutine() {
     },
   ];
 
+  const todayPlanDayIndex = Math.min(
+    Math.max(0, effectiveNextDayIndex),
+    Math.max(0, program.week.length - 1)
+  );
   const weekViewStartDay =
     weekViewSelectedDay !== null &&
     weekViewSelectedDay >= 0 &&
     weekViewSelectedDay < program.week.length
       ? weekViewSelectedDay
-      : null;
-  const todayPlanDayIndex = Math.min(
-    Math.max(0, effectiveNextDayIndex),
-    Math.max(0, program.week.length - 1)
-  );
+      : todayPlanDayIndex;
+  const weekViewBaselineDebugTitle =
+    process.env.NODE_ENV === "development" && baselineForActiveProgram
+      ? `Baseline: ${new Date(baselineForActiveProgram).toISOString()}`
+      : undefined;
 
   const openKnowledgeAnalysis = () => {
     setKnowledgeExpanded(true);
@@ -1510,6 +1638,7 @@ export default function ResultsRoutine() {
         weekTargetDays={activeDaysPerWeek}
         cycleProgressPercent={cycleProgressPercent}
         weekProgressPercent={weekProgressPercent}
+        readinessScore={readinessScore}
         phaseGoal={phaseGoalText}
         encouragement={encouragementMessage}
         metricChips={heroMetricChips}
@@ -1528,15 +1657,6 @@ export default function ResultsRoutine() {
               {item.text}
             </p>
           ))}
-        </div>
-        <div className="mt-3 border-t border-slate-200 pt-3">
-          <button
-            type="button"
-            onClick={focusTodayPlanInWeekView}
-            className="inline-flex rounded-full bg-slate-950 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-slate-900"
-          >
-            View today&apos;s plan
-          </button>
         </div>
         {hasAdaptationCallout ? (
           <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
@@ -1561,6 +1681,7 @@ export default function ResultsRoutine() {
             </div>
           </div>
         ) : null}
+        <p className="mt-3 text-xs text-slate-500">Plan adapts as you log sessions.</p>
       </section>
 
       <DailyInsightCard
@@ -1569,321 +1690,38 @@ export default function ResultsRoutine() {
         priorities={weeklyPriorities}
       />
 
-      <ExpandableSection
-        title="Your Current Plan"
-        subtitle="Phase intent, weekly objective, and adaptive guidance."
-        previewLines={planPreviewLines}
-        previewChips={planPreviewChips}
-      >
-        <div className="space-y-3 text-sm text-slate-700">
-          <p>
-            <span className="font-semibold text-slate-900">Phase:</span> {phaseName}
-          </p>
-          <p>
-            <span className="font-semibold text-slate-900">Cycle:</span> {program.cycleIndex ?? 1}
-          </p>
-          <p>
-            <span className="font-semibold text-slate-900">Weekly objective:</span>{" "}
-            {program.phaseObjective?.weekIntent ?? phaseGoalText}
-          </p>
-          <p>
-            <span className="font-semibold text-slate-900">Weekly structure:</span> {weeklyStructure}
-          </p>
-          <p>
-            <span className="font-semibold text-slate-900">Primary adaptation goal:</span>{" "}
-            {adaptationPriority}
-          </p>
-          <div>
-            <p className="font-semibold text-slate-900">Focus areas:</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {focusAreas.map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-          <ProgressBar
-            label="Plan completion"
-            value={weekProgressPercent}
-            max={100}
-            subtitle={`${completedCount}/${activeDaysPerWeek} week days completed`}
-          />
-          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-            <p className="text-xs font-semibold text-slate-800">Why this week changed</p>
-            <p className="mt-1 text-xs text-slate-700">{whyChangedLine}</p>
-            {program.phaseOptimizerReport ? (
-              <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-slate-600">
-                <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">
-                  {program.phaseOptimizerReport.changedSlots}/{program.phaseOptimizerReport.totalSlots} slots changed
-                </span>
-                {(program.sessionAdaptation?.dataSignals ?? [])
-                  .slice(0, 3)
-                  .map((signal) => (
-                    <span
-                      key={signal}
-                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5"
-                    >
-                      {signal}
-                    </span>
-                  ))}
-              </div>
-            ) : null}
-          </div>
-          <p className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700">
-            Your nervous system is adapting to improve coordination, stability, and movement confidence.
-          </p>
-          <details className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-            <summary className={`${secondaryActionBtn} list-none cursor-pointer`}>
-              View details: Recent exercise signals
-            </summary>
-            <div className="mt-3 space-y-2">
-              {recentExerciseSignals.length ? (
-                recentExerciseSignals.map((entry) => (
-                  <div key={entry.exerciseName} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs">
-                    <p className="font-semibold text-slate-800">{entry.exerciseName}</p>
-                    <p className="mt-1 text-slate-600">Last session: {entry.status}</p>
-                    <p className="text-slate-600">Guidance: {entry.guidance}</p>
-                  </div>
-                ))
-              ) : (
-                <p className="text-xs text-slate-500">
-                  No exercise signals yet. Complete one session and log difficulty/pain to unlock guidance.
-                </p>
-              )}
-            </div>
-          </details>
-        </div>
-      </ExpandableSection>
-
-      <ExpandableSection
-        title="Progress Summary"
-        subtitle="How your consistency, completion, pain, and quality are trending."
-        previewLines={progressPreviewLines}
-        previewChips={progressPreviewChips}
-      >
-        <ProgressSummary
-          cyclesCompleted={phaseGate.cyclesCompletedInPhase}
-          cycleTarget={phaseGate.minCycles}
-          consistencyPercent={consistencyPercent}
-          completionPercent={adherencePercent}
-          painTrend={painTrendLabel}
-          painTrendPercent={painTrendPercent}
-          movementQualityTrend={movementQualityTrend}
-          movementQualityPercent={movementQualityPercent}
-        />
-      </ExpandableSection>
-
-      {hasSystemAdjustments ? (
-        <div ref={systemAdjustmentsSectionRef} className="scroll-mt-24">
-          <ExpandableSection
-            title="System Adjustments"
-            subtitle="What the system changed and why."
-            previewLines={[systemAdjustmentSummary]}
-            previewChips={systemAdjustmentChips}
-            expanded={systemAdjustmentsExpanded}
-            onExpandedChange={setSystemAdjustmentsExpanded}
-          >
-            <div className="space-y-2 text-sm text-slate-700">
-              <p>
-                <span className="font-medium text-slate-900">What changed:</span>{" "}
-                {systemAdjustmentChanged}
-              </p>
-              <p>
-                <span className="font-medium text-slate-900">Why it changed:</span>{" "}
-                {systemAdjustmentWhy}
-              </p>
-              <p>
-                <span className="font-medium text-slate-900">Focus now:</span>{" "}
-                {systemAdjustmentFocus}
-              </p>
-            </div>
-          </ExpandableSection>
-        </div>
-      ) : null}
-
-      <div
-        ref={knowledgeSectionRef}
-        className={`scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
-          knowledgeHighlighted
-            ? "bg-slate-50/50 ring-2 ring-slate-300 ring-offset-2"
-            : "bg-transparent"
-        }`}
-      >
-        <ExpandableSection
-          title="Knowledge & Analysis"
-          subtitle="Structured movement and adaptation analysis."
-          previewLines={knowledgePreviewLines}
-          previewChips={knowledgePreviewChips}
-          expanded={knowledgeExpanded}
-          onExpandedChange={setKnowledgeExpanded}
-        >
-          <div className="space-y-3">
-            {knowledgeCards.map((card) => {
-              const isCardExpanded = knowledgeDetailExpanded[card.key];
-              return (
-                <div
-                  key={card.key}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-slate-900">{card.title}</p>
-                    <button
-                      type="button"
-                      className={secondaryActionBtn}
-                      onClick={() =>
-                        setKnowledgeDetailExpanded((prev) => ({
-                          ...prev,
-                          [card.key]: !prev[card.key],
-                        }))
-                      }
-                    >
-                      {isCardExpanded ? "Hide details" : "View details"}
-                    </button>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-600">{card.summary}</p>
-                  <div
-                    className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-200 ${
-                      isCardExpanded
-                        ? "mt-2 grid-rows-[1fr] opacity-100"
-                        : "mt-0 grid-rows-[0fr] opacity-0"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <div className="space-y-1 pt-1 text-xs text-slate-700">
-                        {card.items.map((item) => (
-                          <p key={`${card.key}-${item}`}>• {item}</p>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            <details className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-              <summary className={`${secondaryActionBtn} list-none cursor-pointer`}>
-                View details: Day {effectiveSelectedDay + 1} plan reasoning
-              </summary>
-              <div className="mt-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-xs font-semibold text-slate-700">
-                    {selectedDayProgram?.title}
-                  </p>
-                  <Link href={`/session?programId=${program.id}&dayIndex=${effectiveSelectedDay}`}>
-                    <Button variant="secondary" data-testid="start-selected-day">
-                      Start Selected Day
-                    </Button>
-                  </Link>
-                </div>
-                <div
-                  id={showDebug ? "exercise-rationale" : undefined}
-                  className="mt-2 space-y-2"
-                >
-                  {selectedDayProgram?.routine.map((item, index) => {
-                    const exercise = exerciseById(item.exerciseId);
-                    if (!exercise) return null;
-                    const richRationale = exerciseRationaleById.get(item.exerciseId);
-                    const reason =
-                      optimizerReasonsByExercise[item.exerciseId]?.[0] ??
-                      buildWhyPicked(exercise).purpose;
-                    return (
-                      <div key={`${item.exerciseId}-${index}`} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-xs font-semibold text-slate-900">{exercise.name}</p>
-                          <span className="text-[11px] uppercase text-slate-500">{item.section}</span>
-                        </div>
-                        {!showDebug ? (
-                          <p className="mt-1 text-xs text-slate-600">{reason}</p>
-                        ) : (
-                          <div className="mt-1 space-y-1">
-                            <p className="text-[11px] text-slate-500">
-                              Why:{" "}
-                              {richRationale?.primaryReason ??
-                                "Rationale isn\u2019t available for this exercise yet."}
-                            </p>
-                            <p className="text-[11px] text-slate-500">
-                              Setup: {richRationale?.setup ?? "Control each rep, steady tempo."}
-                            </p>
-                            {richRationale?.progressions.length ? (
-                              <p className="text-[11px] text-slate-500">
-                                Progression: {richRationale.progressions.join(" / ")}
-                              </p>
-                            ) : null}
-                            {richRationale?.regressions.length ? (
-                              <p className="text-[11px] text-slate-500">
-                                Regression: {richRationale.regressions.join(" / ")}
-                              </p>
-                            ) : null}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-                {showDebug && (!selectedDayProgram?.routine || selectedDayProgram.routine.length === 0) ? (
-                  <p className="mt-2 text-xs text-slate-500">
-                    No exercises found for today yet.
-                  </p>
-                ) : null}
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                  <button
-                    type="button"
-                    onClick={() => setShowDebug((prev) => !prev)}
-                    className={secondaryActionBtn}
-                  >
-                    {showDebug ? "Hide exercise rationale" : "Show exercise rationale"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => router.push(`/program/${program.id}/day/${effectiveSelectedDay}`)}
-                    className={secondaryActionBtn}
-                  >
-                    View day history
-                  </button>
-                </div>
-              </div>
-            </details>
-          </div>
-        </ExpandableSection>
-      </div>
-
       <section id="week-view" ref={weekViewSectionRef} className="ui-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-base font-semibold text-slate-900">Week View</h3>
           <div className="flex items-center gap-2">
-            <span
-              data-testid="completed-count"
-              className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-600"
-            >
-              {completedCount}/{activeDaysPerWeek} completed
-            </span>
-            {weekViewStartDay !== null ? (
-              <Link href={`/session?programId=${program.id}&dayIndex=${weekViewStartDay}`}>
-                <Button variant="secondary">Start Selected Day</Button>
-              </Link>
-            ) : (
-              <Button variant="secondary" disabled className="disabled:opacity-35">
+            <Button variant="secondary" onClick={focusTodayPlanInWeekView}>
+              View today&apos;s plan
+            </Button>
+            <Link href={`/session?programId=${program.id}&dayIndex=${weekViewStartDay}`}>
+              <Button variant="secondary" data-testid="start-selected-day">
                 Start Selected Day
               </Button>
-            )}
+            </Link>
           </div>
         </div>
-        {weekViewStartDay === null ? (
-          <p className="mt-2 text-xs text-slate-500">Select a day to start.</p>
-        ) : null}
+        <div className="mt-2">
+          <span
+            data-testid="completed-count"
+            title={weekViewBaselineDebugTitle}
+            className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-600"
+          >
+            {completedCount}/{activeDaysPerWeek} completed
+          </span>
+        </div>
         <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {program.week.map((day) => {
-            const isCompleted = completedByDay.has(day.dayIndex);
+            const isCompleted = completedDaySet.has(day.dayIndex);
             const isSelected = day.dayIndex === weekViewStartDay;
             const isLocked = isDayLocked(day.dayIndex);
             const isNext = day.dayIndex === effectiveNextDayIndex && !isCompleted;
             const isToday = day.dayIndex === effectiveNextDayIndex;
             const stateLabel = isCompleted ? "Completed" : isNext ? "Next" : "Pending";
-            const statePercent = isCompleted ? 100 : isNext ? 55 : 15;
+            const statePercent = isCompleted ? 100 : 0;
             return (
               <button
                 key={day.dayIndex}
@@ -1972,11 +1810,14 @@ export default function ResultsRoutine() {
                 const rationale =
                   optimizerReasonsByExercise[item.exerciseId]?.[0] ??
                   exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
-                  "Rationale isn\u2019t available for this exercise yet.";
-                const detailParts: string[] = [];
-                if (item.sets) detailParts.push(`${item.sets} sets`);
-                if (item.reps) detailParts.push(`${item.reps} reps`);
-                if (item.durationSec) detailParts.push(`${item.durationSec}s`);
+                  "Rationale isn’t available for this exercise yet.";
+                const prescription = item.durationSec
+                  ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
+                  : item.reps
+                  ? `${item.sets ?? 1} x ${item.reps}`
+                  : item.sets
+                  ? `${item.sets} sets`
+                  : null;
                 return (
                   <div
                     key={`${item.exerciseId}-${index}`}
@@ -1995,8 +1836,8 @@ export default function ResultsRoutine() {
                         ) : null}
                       </div>
                     </div>
-                    {detailParts.length ? (
-                      <p className="mt-1 text-xs text-slate-600">{detailParts.join(" • ")}</p>
+                    {prescription ? (
+                      <p className="mt-1 text-xs text-slate-600">{prescription}</p>
                     ) : null}
                     <p className="mt-1 text-xs text-slate-600">{rationale}</p>
                   </div>
@@ -2011,6 +1852,304 @@ export default function ResultsRoutine() {
           </p>
         ) : null}
       </section>
+
+      <ExpandableSection
+        title="Your Current Plan"
+        subtitle="Phase intent, weekly objective, and adaptive guidance."
+        previewLines={planPreviewLines}
+        previewChips={planPreviewChips}
+      >
+        <div className="space-y-3 text-sm text-slate-700">
+          <p>
+            <span className="font-semibold text-slate-900">Phase:</span> {phaseName}
+          </p>
+          <p>
+            <span className="font-semibold text-slate-900">Cycle:</span> {program.cycleIndex ?? 1}
+          </p>
+          <p>
+            <span className="font-semibold text-slate-900">Weekly objective:</span>{" "}
+            {program.phaseObjective?.weekIntent ?? phaseGoalText}
+          </p>
+          <p>
+            <span className="font-semibold text-slate-900">Weekly structure:</span> {weeklyStructure}
+          </p>
+          <p>
+            <span className="font-semibold text-slate-900">Primary adaptation goal:</span>{" "}
+            {adaptationPriority}
+          </p>
+          <div>
+            <p className="font-semibold text-slate-900">Focus areas:</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {focusAreas.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+          <ProgressBar
+            label="Plan completion"
+            value={weekProgressPercent}
+            max={100}
+            animate
+            subtitle={`${completedCount}/${activeDaysPerWeek} week days completed`}
+          />
+          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+            <p className="text-xs font-semibold text-slate-800">Why this week changed</p>
+            <p className="mt-1 text-xs text-slate-700">{whyChangedLine}</p>
+            {program.phaseOptimizerReport ? (
+              <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-slate-600">
+                <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">
+                  {program.phaseOptimizerReport.changedSlots}/{program.phaseOptimizerReport.totalSlots} slots changed
+                </span>
+                {(program.sessionAdaptation?.dataSignals ?? [])
+                  .slice(0, 3)
+                  .map((signal) => (
+                    <span
+                      key={signal}
+                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5"
+                    >
+                      {signal}
+                    </span>
+                  ))}
+              </div>
+            ) : null}
+          </div>
+          <p className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700">
+            Your nervous system is adapting to improve coordination, stability, and movement confidence.
+          </p>
+          <details className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+            <summary className={`${secondaryActionBtn} list-none cursor-pointer`}>
+              View details: Recent exercise signals
+            </summary>
+            <div className="mt-3 space-y-2">
+              {recentExerciseSignals.length ? (
+                recentExerciseSignals.map((entry) => (
+                  <div key={entry.exerciseName} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs">
+                    <p className="font-semibold text-slate-800">{entry.exerciseName}</p>
+                    <p className="mt-1 text-slate-600">Last session: {entry.status}</p>
+                    <p className="text-slate-600">Guidance: {entry.guidance}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-slate-500">
+                  No exercise signals yet. Complete one session and log difficulty/pain to unlock guidance.
+                </p>
+              )}
+            </div>
+          </details>
+        </div>
+      </ExpandableSection>
+
+      {hasSystemAdjustments ? (
+        <div ref={systemAdjustmentsSectionRef} className="scroll-mt-24">
+          <ExpandableSection
+            title="System Adjustments"
+            subtitle="What the system changed and why."
+            previewLines={[systemAdjustmentSummary]}
+            previewChips={systemAdjustmentChips}
+            expanded={systemAdjustmentsExpanded}
+            onExpandedChange={setSystemAdjustmentsExpanded}
+          >
+            <div className="space-y-2 text-sm text-slate-700">
+              <p>
+                <span className="font-medium text-slate-900">What changed:</span>{" "}
+                {systemAdjustmentChanged}
+              </p>
+              <p>
+                <span className="font-medium text-slate-900">Why it changed:</span>{" "}
+                {systemAdjustmentWhy}
+              </p>
+              <p>
+                <span className="font-medium text-slate-900">Focus now:</span>{" "}
+                {systemAdjustmentFocus}
+              </p>
+            </div>
+          </ExpandableSection>
+        </div>
+      ) : null}
+
+      <div
+        ref={knowledgeSectionRef}
+        className={`scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
+          knowledgeHighlighted
+            ? "bg-slate-50/50 ring-2 ring-slate-300 ring-offset-2"
+            : "bg-transparent"
+        }`}
+      >
+        <ExpandableSection
+          title="Knowledge & Analysis"
+          subtitle="Structured movement and adaptation analysis."
+          previewLines={knowledgePreviewLines}
+          previewChips={knowledgePreviewChips}
+          expanded={knowledgeExpanded}
+          onExpandedChange={setKnowledgeExpanded}
+        >
+          <div className="space-y-3">
+            {knowledgeCards.map((card) => {
+              const isCardExpanded = knowledgeDetailExpanded[card.key];
+              return (
+                <div
+                  key={card.key}
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-medium text-slate-900">{card.title}</p>
+                    <button
+                      type="button"
+                      className={secondaryActionBtn}
+                      onClick={() =>
+                        setKnowledgeDetailExpanded((prev) => ({
+                          ...prev,
+                          [card.key]: !prev[card.key],
+                        }))
+                      }
+                    >
+                      {isCardExpanded ? "Hide details" : "View details"}
+                    </button>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-600">{card.summary}</p>
+                  <div
+                    className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-200 ${
+                      isCardExpanded
+                        ? "mt-2 grid-rows-[1fr] opacity-100"
+                        : "mt-0 grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="space-y-1 pt-1 text-xs text-slate-700">
+                        {card.items.map((item) => (
+                          <p key={`${card.key}-${item}`}>• {item}</p>
+                        ))}
+                      </div>
+                      <div
+                        className={`mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 transition-[opacity,transform] duration-200 ${
+                          isCardExpanded
+                            ? "translate-y-0 opacity-100"
+                            : "translate-y-1 opacity-0"
+                        }`}
+                      >
+                        <p className="font-semibold text-slate-900">Why this matters</p>
+                        <div className="mt-1.5 space-y-1.5">
+                          <p>
+                            This system continuously monitors your movement quality, fatigue patterns, and structural balance.
+                          </p>
+                          <p>
+                            Your current plan reflects what your body is ready to improve safely and efficiently.
+                          </p>
+                          <p>
+                            As your execution improves, the system will automatically increase complexity and progression.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            <details className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+              <summary className={`${secondaryActionBtn} list-none cursor-pointer`}>
+                View details: Day {effectiveSelectedDay + 1} plan reasoning
+              </summary>
+              <div className="mt-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs font-semibold text-slate-700">
+                    {selectedDayProgram?.title}
+                  </p>
+                </div>
+                <div
+                  id={showDebug ? "exercise-rationale" : undefined}
+                  className="mt-2 space-y-2"
+                >
+                  {selectedDayProgram?.routine.map((item, index) => {
+                    const exercise = exerciseById(item.exerciseId);
+                    if (!exercise) return null;
+                    const richRationale = exerciseRationaleById.get(item.exerciseId);
+                    const reason =
+                      optimizerReasonsByExercise[item.exerciseId]?.[0] ??
+                      buildWhyPicked(exercise).purpose;
+                    return (
+                      <div key={`${item.exerciseId}-${index}`} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-semibold text-slate-900">{exercise.name}</p>
+                          <span className="text-[11px] uppercase text-slate-500">{item.section}</span>
+                        </div>
+                        {!showDebug ? (
+                          <p className="mt-1 text-xs text-slate-600">{reason}</p>
+                        ) : (
+                          <div className="mt-1 space-y-1">
+                            <p className="text-[11px] text-slate-500">
+                              Why:{" "}
+                              {richRationale?.primaryReason ??
+                                "Rationale isn\u2019t available for this exercise yet."}
+                            </p>
+                            <p className="text-[11px] text-slate-500">
+                              Setup: {richRationale?.setup ?? "Control each rep, steady tempo."}
+                            </p>
+                            {richRationale?.progressions.length ? (
+                              <p className="text-[11px] text-slate-500">
+                                Progression: {richRationale.progressions.join(" / ")}
+                              </p>
+                            ) : null}
+                            {richRationale?.regressions.length ? (
+                              <p className="text-[11px] text-slate-500">
+                                Regression: {richRationale.regressions.join(" / ")}
+                              </p>
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                {showDebug && (!selectedDayProgram?.routine || selectedDayProgram.routine.length === 0) ? (
+                  <p className="mt-2 text-xs text-slate-500">
+                    No exercises found for today yet.
+                  </p>
+                ) : null}
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                  <button
+                    type="button"
+                    onClick={() => setShowDebug((prev) => !prev)}
+                    className={secondaryActionBtn}
+                  >
+                    {showDebug ? "Hide exercise rationale" : "Show exercise rationale"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/program/${program.id}/day/${effectiveSelectedDay}`)}
+                    className={secondaryActionBtn}
+                  >
+                    View day history
+                  </button>
+                </div>
+              </div>
+            </details>
+          </div>
+        </ExpandableSection>
+      </div>
+
+      <ExpandableSection
+        title="Progress Summary"
+        subtitle="How your consistency, completion, pain, and quality are trending."
+        previewLines={progressPreviewLines}
+        previewChips={progressPreviewChips}
+      >
+        <ProgressSummary
+          cyclesCompleted={phaseGate.cyclesCompletedInPhase}
+          cycleTarget={phaseGate.minCycles}
+          consistencyPercent={consistencyPercent}
+          completionPercent={adherencePercent}
+          painTrend={painTrendLabel}
+          painTrendPercent={painTrendPercent}
+          movementQualityTrend={movementQualityTrend}
+          movementQualityPercent={movementQualityPercent}
+        />
+      </ExpandableSection>
 
       <ExpandableSection
         title="Phase Progression"
@@ -2167,4 +2306,13 @@ export default function ResultsRoutine() {
       ) : null}
     </div>
   );
+
+  // QA checklist:
+  // - No duplicate start CTAs above the fold.
+  // - View today's plan never routes.
+  // - Start Selected Day routes.
+  // - Selected Day Details shows full routine list.
+  // - Readiness renders safely with missing data.
+  // - Progress animations do not cause hydration mismatch.
+  // - No maximum update depth regressions.
 }

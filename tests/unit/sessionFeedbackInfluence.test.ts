@@ -71,7 +71,7 @@ const findNonFinalAuditEntry = (
 describe("session feedback influences main selection", () => {
   test("painful exercise receives strong penalties and yields to safer alternatives when available", () => {
     const baselineAudit: ProgramSelectionAuditEntry[] = [];
-    const baseline = generateWeeklyProgram(baseQuestionnaire, "feedback-pain-baseline", {
+    generateWeeklyProgram(baseQuestionnaire, "feedback-pain-baseline", {
       seed: "feedback-pain-seed",
       selectionAuditHook: (entry) => baselineAudit.push(entry),
     });
@@ -146,7 +146,7 @@ describe("session feedback influences main selection", () => {
 
   test("failed exercise gets deprioritized", () => {
     const baselineAudit: ProgramSelectionAuditEntry[] = [];
-    const baseline = generateWeeklyProgram(baseQuestionnaire, "feedback-failure-baseline", {
+    generateWeeklyProgram(baseQuestionnaire, "feedback-failure-baseline", {
       seed: "feedback-failure-seed",
       selectionAuditHook: (entry) => baselineAudit.push(entry),
     });

@@ -2,6 +2,7 @@ export type AppState = {
   lastRoute?: string;
   programId?: string;
   activeProgramId?: string;
+  activeProgramBaselineAt?: number;
   selectedDay?: number;
   activeSessionId?: string;
   programVersion?: number;
@@ -31,9 +32,30 @@ export const loadAppState = (): AppState | null => {
 export const saveAppState = (partial: Partial<AppState>) => {
   if (!isBrowser()) return null;
   const current = loadAppState() ?? { updatedAt: 0 };
+  const includesActiveProgramId = Object.prototype.hasOwnProperty.call(
+    partial,
+    "activeProgramId"
+  );
+  const includesActiveProgramBaselineAt = Object.prototype.hasOwnProperty.call(
+    partial,
+    "activeProgramBaselineAt"
+  );
+  const activeProgramChanged =
+    includesActiveProgramId && partial.activeProgramId !== current.activeProgramId;
+  const normalizedPartial: Partial<AppState> = {
+    ...partial,
+  };
+
+  // Keep baseline aligned with active program switches even when callers only set id.
+  if (activeProgramChanged && !includesActiveProgramBaselineAt) {
+    normalizedPartial.activeProgramBaselineAt = partial.activeProgramId
+      ? Date.now()
+      : undefined;
+  }
+
   const next: AppState = {
     ...current,
-    ...partial,
+    ...normalizedPartial,
     updatedAt: Date.now(),
   };
   Object.keys(next).forEach((key) => {

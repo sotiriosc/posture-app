@@ -145,9 +145,13 @@ export default function ProgramDayPage({ params }: Props) {
 
   const day = program?.week[dayIndex] ?? null;
   const isFreePlan = authEnabled && plan !== "pro";
-  const sections = day
-    ? groupBySection(day.routine)
-    : { warmup: [], activation: [], main: [], cooldown: [] };
+  const sections = useMemo(
+    () =>
+      day
+        ? groupBySection(day.routine)
+        : { warmup: [], activation: [], main: [], cooldown: [] },
+    [day]
+  );
   const daySessions = useMemo(() => {
     if (!program) return [] as SessionRecord[];
     return sessions

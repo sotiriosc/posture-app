@@ -143,13 +143,6 @@ const parseDurationRange = (
   return { min: parsedMin, max: parsedMax };
 };
 
-const totalReps = (log: ExerciseLog) => {
-  if (log.repsBySet?.length) {
-    return log.repsBySet.reduce((sum, value) => sum + value, 0);
-  }
-  return log.reps ?? null;
-};
-
 const repsPerSet = (log: ExerciseLog) => {
   if (log.repsBySet?.length) {
     const total = log.repsBySet.reduce((sum, value) => sum + value, 0);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { exerciseById } from "@/lib/exercises";
@@ -257,10 +257,6 @@ export default function SessionClient() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [workSeconds, setWorkSeconds] = useState(60);
   const [restSeconds, setRestSeconds] = useState(60);
-  const [timerConfig, setTimerConfig] = useState<{ workSeconds: number; restSeconds: number }>({
-    workSeconds: 60,
-    restSeconds: 60,
-  });
   const [timerByExercise, setTimerByExercise] = useState<
     Record<string, { workSeconds: number; restSeconds: number }>
   >({});
@@ -281,8 +277,8 @@ export default function SessionClient() {
     useState<ExerciseFeedback | null>(null);
   const [prefs, setPrefs] = useState<LogPrefs | null>(null);
   const [lastLog, setLastLog] = useState<ExerciseLog | null>(null);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [sessionStartedAt, setSessionStartedAt] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(() => uuid());
+  const [sessionStartedAt, setSessionStartedAt] = useState<string | null>(() => nowIso());
   const [program, setProgram] = useState<Program | null>(null);
   const [programDayIndex, setProgramDayIndex] = useState<number | null>(null);
   const [programProgress, setProgramProgress] =
@@ -321,6 +317,33 @@ export default function SessionClient() {
   const sessionCompleteRef = useRef(false);
   const activeIndexRef = useRef(0);
   const sessionIdRef = useRef<string | null>(null);
+
+  function applyDraft(draft: SessionDraft) {
+    setSessionId(draft.sessionId);
+    setSessionStartedAt(draft.startedAt ?? null);
+    setActiveIndex(draft.currentExerciseIndex ?? 0);
+    setCompletedSets(draft.entries.completedSets ?? {});
+    setSelectedSets(draft.entries.selectedSets ?? {});
+    setWeightByExercise(draft.entries.weightByExercise ?? {});
+    setRepsByExercise(draft.entries.repsByExercise ?? {});
+    setUnitByExercise(draft.entries.unitByExercise ?? {});
+    setNotesByExercise(draft.entries.notesByExercise ?? {});
+    setRpeByExercise(draft.entries.rpeByExercise ?? {});
+    setFeedback(
+      (draft.entries.feedbackByExercise ?? {}) as Record<
+        string,
+        ExerciseFeedback
+      >
+    );
+    setSessionSwapByItemId(draft.entries.substitutionByItemId ?? {});
+    if (draft.timerState) {
+      setWorkSeconds(draft.timerState.workSeconds);
+      setRestSeconds(draft.timerState.restSeconds);
+    }
+    if (draft.timerByExercise) {
+      setTimerByExercise(draft.timerByExercise);
+    }
+  }
 
   useEffect(() => {
     const load = async () => {
@@ -452,33 +475,6 @@ export default function SessionClient() {
     load();
   }, [searchParams]);
 
-  const applyDraft = (draft: SessionDraft) => {
-    setSessionId(draft.sessionId);
-    setSessionStartedAt(draft.startedAt ?? null);
-    setActiveIndex(draft.currentExerciseIndex ?? 0);
-    setCompletedSets(draft.entries.completedSets ?? {});
-    setSelectedSets(draft.entries.selectedSets ?? {});
-    setWeightByExercise(draft.entries.weightByExercise ?? {});
-    setRepsByExercise(draft.entries.repsByExercise ?? {});
-    setUnitByExercise(draft.entries.unitByExercise ?? {});
-    setNotesByExercise(draft.entries.notesByExercise ?? {});
-    setRpeByExercise(draft.entries.rpeByExercise ?? {});
-    setFeedback(
-      (draft.entries.feedbackByExercise ?? {}) as Record<
-        string,
-        ExerciseFeedback
-      >
-    );
-    setSessionSwapByItemId(draft.entries.substitutionByItemId ?? {});
-    if (draft.timerState) {
-      setWorkSeconds(draft.timerState.workSeconds);
-      setRestSeconds(draft.timerState.restSeconds);
-    }
-    if (draft.timerByExercise) {
-      setTimerByExercise(draft.timerByExercise);
-    }
-  };
-
   const routine = useMemo(() => {
     if (!data) return null;
     return generateRoutine(data);
@@ -542,8 +538,18 @@ export default function SessionClient() {
   }, [program, programDayIndex, routine, substitutionByExercise, sessionSwapByItemId]);
 
   const currentItem = flatItems[activeIndex];
-  activeIndexRef.current = activeIndex;
-  sessionIdRef.current = sessionId;
+  const currentItemId = currentItem?.id ?? null;
+  const currentExerciseId = currentItem?.exerciseId ?? null;
+  const currentDurationSec = currentItem?.durationSec ?? null;
+  const currentReps = currentItem?.reps ?? null;
+
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  useEffect(() => {
+    sessionIdRef.current = sessionId;
+  }, [sessionId]);
 
   useEffect(() => {
     if (saveState !== "saved") return;
@@ -560,25 +566,28 @@ export default function SessionClient() {
     };
   }, [saveState]);
 
-  const trackDropoff = (reason: "exit_button" | "pagehide" | "route_change" | "visibility_hidden") => {
-    if (dropoffTrackedRef.current) return;
-    if (sessionCompleteRef.current) return;
-    if (!sessionIdRef.current) return;
-    if (!flatItems.length) return;
-    const item = flatItems[activeIndexRef.current] ?? null;
-    const progressPct = ((activeIndexRef.current + 1) / flatItems.length) * 100;
-    saveSessionDropoffTelemetry({
-      sessionId: sessionIdRef.current,
-      programId: program?.id ?? null,
-      dayIndex: programDayIndex ?? null,
-      exerciseId: item?.exerciseId ?? null,
-      exerciseIndex: activeIndexRef.current,
-      totalExercises: flatItems.length,
-      progressPct,
-      reason,
-    });
-    dropoffTrackedRef.current = true;
-  };
+  const trackDropoff = useCallback(
+    (reason: "exit_button" | "pagehide" | "route_change" | "visibility_hidden") => {
+      if (dropoffTrackedRef.current) return;
+      if (sessionCompleteRef.current) return;
+      if (!sessionIdRef.current) return;
+      if (!flatItems.length) return;
+      const item = flatItems[activeIndexRef.current] ?? null;
+      const progressPct = ((activeIndexRef.current + 1) / flatItems.length) * 100;
+      saveSessionDropoffTelemetry({
+        sessionId: sessionIdRef.current,
+        programId: program?.id ?? null,
+        dayIndex: programDayIndex ?? null,
+        exerciseId: item?.exerciseId ?? null,
+        exerciseIndex: activeIndexRef.current,
+        totalExercises: flatItems.length,
+        progressPct,
+        reason,
+      });
+      dropoffTrackedRef.current = true;
+    },
+    [flatItems, program?.id, programDayIndex]
+  );
   const totalItems = flatItems.length;
   const tips = [
     "Breathe steadily",
@@ -620,7 +629,7 @@ export default function SessionClient() {
     });
   };
 
-  const updateSelectedSets = (exerciseId: string, nextCount: number) => {
+  const updateSelectedSets = useCallback((exerciseId: string, nextCount: number) => {
     setSelectedSets((prev) => ({ ...prev, [exerciseId]: nextCount }));
     setCompletedSets((prev) => {
       const current = prev[exerciseId] ?? [];
@@ -628,7 +637,7 @@ export default function SessionClient() {
       while (next.length < nextCount) next.push(false);
       return { ...prev, [exerciseId]: next };
     });
-  };
+  }, []);
 
   const applySelectedSets = (
     itemId: string,
@@ -1035,11 +1044,12 @@ export default function SessionClient() {
     const logsToSave: ExerciseLog[] = flatItems.map((item) => {
       const exerciseId = item.exerciseId;
       const originalExerciseId = item.originalExerciseId ?? null;
-      const unit = unitByExercise[exerciseId] ?? "lb";
-      const weightValue = weightByExercise[exerciseId];
+      const loadPref = prefs?.loadPrefsByExercise?.[exerciseId];
+      const unit = unitByExercise[exerciseId] ?? loadPref?.unit ?? "lb";
+      const weightValue = weightByExercise[exerciseId] ?? loadPref?.weight ?? "";
       const weight =
         item.loadType === "weighted" && weightValue ? Number(weightValue) : null;
-      const repsValue = repsByExercise[exerciseId];
+      const repsValue = repsByExercise[exerciseId] ?? loadPref?.reps ?? "";
       const fallbackReps =
         !item.durationSec && item.reps ? parseFirstNumber(item.reps) : null;
       const reps = repsValue ? Number(repsValue) : fallbackReps;
@@ -1049,7 +1059,13 @@ export default function SessionClient() {
         rpeRaw && Number.isFinite(rpeParsed)
           ? Math.min(10, Math.max(1, rpeParsed))
           : null;
-      const setsPlanned = selectedSets[item.id] ?? parseSetsRange(item.sets).minSets;
+      const { minSets: itemMinSets, maxSets: itemMaxSets } = parseSetsRange(item.sets);
+      const preferredSets = loadPref?.selectedSets;
+      const setsPlanned =
+        selectedSets[item.id] ??
+        (typeof preferredSets === "number" && Number.isFinite(preferredSets)
+          ? Math.min(itemMaxSets, Math.max(itemMinSets, preferredSets))
+          : itemMinSets);
       const setsCompleted = (completedSets[item.id] ?? []).filter(Boolean)
         .length;
       const prescribedRepsRange = parseRangeFromString(item.reps ?? null);
@@ -1172,17 +1188,50 @@ export default function SessionClient() {
   };
 
   const { minSets, maxSets } = parseSetsRange(currentItem?.sets);
+  const currentLoadPref = currentExerciseId
+    ? prefs?.loadPrefsByExercise?.[currentExerciseId]
+    : undefined;
+  const preferredSets =
+    currentLoadPref?.selectedSets ??
+    lastLog?.setsCompleted ??
+    lastLog?.setsPlanned ??
+    minSets;
+  const boundedPreferredSets = Math.min(
+    maxSets,
+    Math.max(minSets, preferredSets ?? minSets)
+  );
   const currentSelectedSets =
-    currentItem && selectedSets[currentItem.id]
-      ? selectedSets[currentItem.id]
-      : minSets;
+    currentItemId && selectedSets[currentItemId] !== undefined
+      ? selectedSets[currentItemId]
+      : boundedPreferredSets;
   const checks =
-    completedSets[currentItem?.id ?? ""] ??
+    completedSets[currentItemId ?? ""] ??
     Array.from({ length: currentSelectedSets }, () => false);
   const allSetsCompleted =
     checks.length > 0 && checks.every((value) => Boolean(value));
   const currentFeedbackKey = currentItem?.exerciseId ?? "";
   const currentFeedback = feedback[currentFeedbackKey] ?? null;
+  const currentUnitValue = currentExerciseId
+    ? unitByExercise[currentExerciseId] ?? currentLoadPref?.unit ?? "lb"
+    : "lb";
+  const currentWeightValue = currentExerciseId
+    ? weightByExercise[currentExerciseId] ??
+      currentLoadPref?.weight ??
+      (lastLog?.weight ? String(lastLog.weight) : "")
+    : "";
+  const currentRepsValue = currentExerciseId
+    ? repsByExercise[currentExerciseId] ??
+      currentLoadPref?.reps ??
+      (lastLog?.reps
+        ? String(lastLog.reps)
+        : currentDurationSec
+        ? ""
+        : String(parseFirstNumber(currentReps ?? undefined) ?? ""))
+    : "";
+  const currentRpeValue = currentExerciseId
+    ? rpeByExercise[currentExerciseId] ??
+      (lastLog?.rpe ? String(lastLog.rpe) : "")
+    : "";
   const currentTimer = currentItem
     ? getTimerForExercise({
         exerciseId: currentItem.exerciseId,
@@ -1195,120 +1244,28 @@ export default function SessionClient() {
     : { workSeconds: 60, restSeconds: 60 };
   const previewWeight =
     currentItem?.loadType === "weighted" && currentItem
-      ? weightByExercise[currentItem.exerciseId] || "-"
+      ? currentWeightValue || "-"
       : "-";
   const previewUnit =
     currentItem?.loadType === "weighted" && currentItem
-      ? unitByExercise[currentItem.exerciseId] ?? "lb"
+      ? currentUnitValue
       : null;
   const previewReps =
     currentItem && currentItem.loadType !== "timed"
-      ? repsByExercise[currentItem.exerciseId] ||
+      ? currentRepsValue ||
         String(parseFirstNumber(currentItem.reps) ?? "-")
       : "-";
   const previewSetsPlanned = currentSelectedSets;
   const previewSetsCompleted = checks.filter(Boolean).length;
 
   useEffect(() => {
-    if (!currentItem) return;
+    if (!currentExerciseId) return;
     const loadLast = async () => {
-      const [latest] = await listExerciseLogsByExerciseHistory(
-        currentItem.exerciseId,
-        1
-      );
+      const [latest] = await listExerciseLogsByExerciseHistory(currentExerciseId, 1);
       setLastLog(latest);
     };
     loadLast();
-  }, [currentItem?.exerciseId]);
-
-  useEffect(() => {
-    if (!currentItem) return;
-    updateSelectedSets(currentItem.id, currentSelectedSets);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentItem?.id, currentSelectedSets]);
-
-  useEffect(() => {
-    if (!currentItem) return;
-    const exerciseId = currentItem.exerciseId;
-    const loadPref = prefs?.loadPrefsByExercise?.[exerciseId];
-
-    if (selectedSets[currentItem.id] === undefined) {
-      const preferred =
-        loadPref?.selectedSets ??
-        lastLog?.setsCompleted ??
-        lastLog?.setsPlanned ??
-        minSets;
-      const bounded = Math.min(maxSets, Math.max(minSets, preferred ?? minSets));
-      updateSelectedSets(currentItem.id, bounded);
-    }
-
-    if (!unitByExercise[exerciseId]) {
-      setUnitByExercise((prev) => ({
-        ...prev,
-        [exerciseId]: loadPref?.unit ?? "lb",
-      }));
-    }
-
-    if (!weightByExercise[exerciseId] && loadPref?.weight) {
-      setWeightByExercise((prev) => ({
-        ...prev,
-        [exerciseId]: loadPref.weight ?? "",
-      }));
-    } else if (lastLog && !weightByExercise[exerciseId] && lastLog.weight) {
-      setWeightByExercise((prev) => ({
-        ...prev,
-        [exerciseId]: String(lastLog.weight),
-      }));
-    }
-
-    if (!repsByExercise[exerciseId] && !currentItem.durationSec) {
-      if (loadPref?.reps) {
-        setRepsByExercise((prev) => ({
-          ...prev,
-          [exerciseId]: loadPref.reps ?? "",
-        }));
-      } else if (lastLog?.reps) {
-        setRepsByExercise((prev) => ({
-          ...prev,
-          [exerciseId]: String(lastLog.reps),
-        }));
-      } else {
-        const defaultReps = parseFirstNumber(currentItem.reps);
-        if (defaultReps) {
-          setRepsByExercise((prev) => ({
-            ...prev,
-            [exerciseId]: String(defaultReps),
-          }));
-        }
-      }
-    }
-    if (!rpeByExercise[exerciseId] && lastLog?.rpe) {
-      setRpeByExercise((prev) => ({
-        ...prev,
-        [exerciseId]: String(lastLog.rpe),
-      }));
-    }
-  }, [currentItem?.id, currentSelectedSets, lastLog, prefs?.loadPrefsByExercise, repsByExercise, rpeByExercise, selectedSets, minSets, maxSets]);
-
-  useEffect(() => {
-    if (!currentItem) return;
-    const next = getTimerForExercise({
-      exerciseId: currentItem.exerciseId,
-      sets: currentItem.sets,
-      reps: currentItem.reps ?? null,
-      durationSec: currentItem.durationSec ?? null,
-      restSec: currentItem.restSec ?? null,
-      loadType: currentItem.loadType,
-    });
-    setTimerConfig(next);
-    setWorkSeconds(next.workSeconds);
-    setRestSeconds(next.restSeconds);
-  }, [currentItem?.id, timerByExercise, prefs?.timerPrefs, prefs?.timerPrefsByExercise]);
-
-  useEffect(() => {
-    if (!sessionId) setSessionId(uuid());
-    if (!sessionStartedAt) setSessionStartedAt(nowIso());
-  }, [sessionId, sessionStartedAt]);
+  }, [currentExerciseId]);
 
   useEffect(() => {
     const onPageHide = () => trackDropoff("pagehide");
@@ -1324,7 +1281,7 @@ export default function SessionClient() {
       document.removeEventListener("visibilitychange", onVisibilityChange);
       trackDropoff("route_change");
     };
-  }, [flatItems.length, program?.id, programDayIndex]);
+  }, [trackDropoff]);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -1391,6 +1348,7 @@ export default function SessionClient() {
     sessionId,
     program,
     programDayIndex,
+    sessionComplete,
     activeIndex,
     completedSets,
     selectedSets,
@@ -1530,17 +1488,17 @@ export default function SessionClient() {
         <div className="ui-card p-6">
           <DualModeTimer
             key={currentItem.id}
-            initialExerciseSeconds={timerConfig.workSeconds}
-            initialRestSeconds={timerConfig.restSeconds}
+            initialExerciseSeconds={currentTimer.workSeconds}
+            initialRestSeconds={currentTimer.restSeconds}
             onExerciseDurationChange={(seconds) => {
               updateTimerPrefs(
-                { workSeconds: seconds, restSeconds: timerConfig.restSeconds },
+                { workSeconds: seconds, restSeconds: currentTimer.restSeconds },
                 currentItem.exerciseId
               );
             }}
             onRestDurationChange={(seconds) => {
               updateTimerPrefs(
-                { workSeconds: timerConfig.workSeconds, restSeconds: seconds },
+                { workSeconds: currentTimer.workSeconds, restSeconds: seconds },
                 currentItem.exerciseId
               );
             }}
@@ -1661,7 +1619,7 @@ export default function SessionClient() {
                   data-testid="weight-input"
                   type="number"
                   min={0}
-                  value={weightByExercise[currentItem.exerciseId] ?? ""}
+                  value={currentWeightValue}
                   onChange={(event) =>
                     applyWeight(currentItem.exerciseId, event.target.value)
                   }
@@ -1674,7 +1632,7 @@ export default function SessionClient() {
                       type="button"
                       onClick={() => applyUnit(currentItem.exerciseId, unit)}
                       className={`rounded-full px-3 py-1 font-semibold ${
-                        (unitByExercise[currentItem.exerciseId] ?? "lb") === unit
+                        currentUnitValue === unit
                           ? "bg-slate-900 text-white"
                           : "text-slate-600"
                       }`}
@@ -1704,7 +1662,7 @@ export default function SessionClient() {
                 type="number"
                 min={1}
                 max={10}
-                value={rpeByExercise[currentItem.exerciseId] ?? ""}
+                value={currentRpeValue}
                 onChange={(event) => applyRpe(currentItem.exerciseId, event.target.value)}
                 className="ui-input w-24"
                 placeholder="RPE"
@@ -1765,7 +1723,7 @@ export default function SessionClient() {
                   data-testid="reps-input"
                   type="number"
                   min={1}
-                  value={repsByExercise[currentItem.exerciseId] ?? ""}
+                  value={currentRepsValue}
                   onChange={(event) =>
                     applySingleReps(currentItem.exerciseId, event.target.value)
                   }

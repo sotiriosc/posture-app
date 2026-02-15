@@ -1343,110 +1343,6 @@ const ensureEligibleItem = (
   };
 };
 
-const patternPriority = [
-  "squat",
-  "hinge",
-  "push",
-  "pull",
-  "core",
-  "mobility",
-];
-
-const defaultPrescriptionByPattern = (pattern: string) => {
-  if (pattern === "mobility") return { sets: "2", reps: "6-8", duration: 60 };
-  if (pattern === "core") return { sets: "2-3", reps: "8-12", duration: 60 };
-  return { sets: "3", reps: "8-12", duration: 75 };
-};
-
-const chooseExerciseForPattern = (
-  pattern: string,
-  available: Set<Equipment>,
-  preferBands: boolean,
-  usedIds: Set<string>
-) => {
-  const eligible = exercises.filter(
-    (exercise) =>
-      exercise.movementPattern.includes(pattern) &&
-      isExerciseEligible(exercise, available) &&
-      !usedIds.has(exercise.id)
-  );
-
-  if (preferBands && ["pull", "push", "core"].includes(pattern)) {
-    const bandFirst = eligible.filter((exercise) =>
-      exercise.equipment.includes("bands")
-    );
-    if (bandFirst.length) return bandFirst[0];
-  }
-
-  if (eligible.length) return eligible[0];
-
-  const noneFallback = exercises.filter(
-    (exercise) =>
-      exercise.movementPattern.includes(pattern) &&
-      exercise.equipment.includes("none") &&
-      !usedIds.has(exercise.id)
-  );
-  return noneFallback[0] ?? null;
-};
-
-const ensureSlotCoverage = (
-  day: ProgramDay,
-  available: Set<Equipment>,
-  preferBands: boolean,
-  targetCount: number
-) => {
-  const usedIds = new Set(day.routine.map((item) => item.exerciseId));
-  const existingPatterns = new Set<string>();
-
-  day.routine.forEach((item) => {
-    const exercise = exerciseById(item.exerciseId);
-    exercise?.movementPattern.forEach((pattern) =>
-      existingPatterns.add(pattern)
-    );
-  });
-
-  const needed = Math.max(0, targetCount - day.routine.length);
-  if (needed === 0) return day;
-
-  const dayHint = `${day.title} ${day.focusTags.join(" ")}`.toLowerCase();
-  const patternBias = (pattern: string) => {
-    if (dayHint.includes("upper") && (pattern === "push" || pattern === "pull")) return 3;
-    if (dayHint.includes("lower") && (pattern === "squat" || pattern === "hinge")) return 3;
-    if (dayHint.includes("push") && pattern === "push") return 4;
-    if (dayHint.includes("pull") && pattern === "pull") return 4;
-    if (dayHint.includes("core") && pattern === "core") return 4;
-    return 0;
-  };
-
-  const missing = patternPriority
-    .filter((pattern) => !existingPatterns.has(pattern))
-    .sort((left, right) => patternBias(right) - patternBias(left))
-    .slice(0, needed);
-
-  if (!missing.length) return day;
-
-  const additions: ProgramRoutineItem[] = [];
-  missing.forEach((pattern) => {
-    const exercise = chooseExerciseForPattern(
-      pattern,
-      available,
-      preferBands,
-      usedIds
-    );
-    if (!exercise) return;
-    usedIds.add(exercise.id);
-    const defaultRx = defaultPrescriptionByPattern(pattern);
-    additions.push(
-      makeItem(exercise.id, defaultRx.sets, defaultRx.reps, defaultRx.duration, 60)
-    );
-  });
-
-  return {
-    ...day,
-    routine: [...day.routine, ...additions],
-  };
-};
-
 const pickDistinctReplacement = (params: {
   item: ProgramRoutineItem;
   usedIds: Set<string>;
@@ -2327,11 +2223,6 @@ const carryOrAntiRotationRule = anyOfRule(
   "carry or anti-rotation",
   [carryRule, antiRotationRule]
 );
-
-const lateralIsolationRule = rule("lateral_isolation", "lateral-delt isolation", {
-  tagsAny: ["lateral-delt", "shoulders-isolation"],
-  isIsolation: true,
-});
 
 const upperPushPullRule = anyOfRule("upper_push_pull", "upper push/pull drift", [
   rule("upper_push", "upper push", { movementPatternsAny: ["push", "verticalpush"] }),
@@ -7896,7 +7787,6 @@ type DayPatternBudget = {
   requiresArmIsolation?: boolean;
 };
 
-const DEBUG_ENGINE_ASSERTS = false;
 const DEBUG_AUDIT_SELECTION = false;
 
 export type ProgramSelectionAuditCandidate = {
@@ -8237,33 +8127,6 @@ const resolveDayPatternBudget = (params: {
   }
 
   return null;
-};
-
-const buildNoneOnlyExtraLanes = (
-  baseLanes: MainLane[],
-  currentLanes: MainLane[],
-  extraCount: number
-) => {
-  const normalizedBase = baseLanes.length ? [...baseLanes] : (["pull"] as MainLane[]);
-  const uniquePool = Array.from(new Set(normalizedBase));
-  const counts = new Map<MainLane, number>();
-  currentLanes.forEach((lane) => {
-    counts.set(lane, (counts.get(lane) ?? 0) + 1);
-  });
-
-  const extras: MainLane[] = [];
-  for (let index = 0; index < extraCount; index += 1) {
-    const nextLane =
-      [...uniquePool].sort((left, right) => {
-        const leftCount = counts.get(left) ?? 0;
-        const rightCount = counts.get(right) ?? 0;
-        if (leftCount !== rightCount) return leftCount - rightCount;
-        return normalizedBase.indexOf(left) - normalizedBase.indexOf(right);
-      })[0] ?? normalizedBase[0];
-    extras.push(nextLane);
-    counts.set(nextLane, (counts.get(nextLane) ?? 0) + 1);
-  }
-  return extras;
 };
 
 const slotKindByMainLane: Record<MainLane, string> = {

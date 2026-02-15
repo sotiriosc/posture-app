@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import type { AuthUser, SessionTokenPayload, SubscriptionPlan } from "@/lib/authTypes";
+import type { AuthUser, SessionTokenPayload } from "@/lib/authTypes";
 import { AUTH_COOKIE_NAME } from "@/lib/authTypes";
 import { createSessionToken, verifySessionToken } from "@/lib/authToken";
 import { getUserRepository } from "@/lib/userRepository";

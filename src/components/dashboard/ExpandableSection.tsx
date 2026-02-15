@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 
 type ExpandableSectionProps = {
@@ -27,11 +27,64 @@ export default function ExpandableSection({
   previewChips = [],
 }: ExpandableSectionProps) {
   const [localExpanded, setLocalExpanded] = useState(defaultExpanded);
+  const [contentHeight, setContentHeight] = useState(0);
+  const [programmaticFlash, setProgrammaticFlash] = useState(false);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const userToggleRef = useRef(false);
+  const previousExpandedRef = useRef(defaultExpanded);
   const isControlled = typeof controlledExpanded === "boolean";
   const isExpanded = isControlled ? controlledExpanded : localExpanded;
 
+  useEffect(() => {
+    previousExpandedRef.current = isExpanded;
+  }, []);
+
+  useEffect(() => {
+    const node = contentRef.current;
+    if (!node) return;
+
+    const measure = () => {
+      setContentHeight(node.scrollHeight);
+    };
+
+    measure();
+
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      measure();
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [children, isExpanded]);
+
+  useEffect(() => {
+    let timer: number | null = null;
+    const wasExpanded = previousExpandedRef.current;
+    const openedProgrammatically =
+      !wasExpanded && isExpanded && isControlled && !userToggleRef.current;
+
+    if (openedProgrammatically) {
+      setProgrammaticFlash(true);
+      timer = window.setTimeout(() => {
+        setProgrammaticFlash(false);
+      }, 600);
+    } else if (!isExpanded) {
+      setProgrammaticFlash(false);
+    }
+
+    previousExpandedRef.current = isExpanded;
+    userToggleRef.current = false;
+
+    return () => {
+      if (timer !== null) {
+        window.clearTimeout(timer);
+      }
+    };
+  }, [isExpanded, isControlled]);
+
   const handleToggle = () => {
     const next = !isExpanded;
+    userToggleRef.current = true;
     if (!isControlled) {
       setLocalExpanded(next);
     }
@@ -39,7 +92,13 @@ export default function ExpandableSection({
   };
 
   return (
-    <section className="ui-card p-5">
+    <section
+      className={`ui-card p-5 transition-all duration-[180ms] ease-out hover:-translate-y-px hover:shadow-[0_10px_24px_rgba(15,23,42,0.09)] ${
+        programmaticFlash
+          ? "bg-sky-50/55 ring-1 ring-sky-200"
+          : ""
+      }`}
+    >
       <button
         type="button"
         className="flex w-full items-center justify-between gap-3 text-left"
@@ -81,14 +140,15 @@ export default function ExpandableSection({
         </div>
       ) : null}
       <div
-        className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin,transform] duration-200 ease-out ${
+        className={`overflow-hidden transition-[max-height,opacity,margin,transform] duration-[180ms] ease-out ${
           isExpanded
-            ? "mt-3 grid-rows-[1fr] translate-y-0 opacity-100"
-            : "mt-0 grid-rows-[0fr] -translate-y-0.5 opacity-0"
+            ? "mt-3 translate-y-0 opacity-100"
+            : "mt-0 -translate-y-1 opacity-0"
         }`}
+        style={{ maxHeight: isExpanded ? `${Math.max(contentHeight, 1)}px` : "0px" }}
         aria-hidden={!isExpanded}
       >
-        <div className="overflow-hidden">{children}</div>
+        <div ref={contentRef}>{children}</div>
       </div>
     </section>
   );

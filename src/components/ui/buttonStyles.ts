@@ -1,2 +1,5 @@
+export const primaryActionBtn =
+  "inline-flex h-10 items-center justify-center rounded-full border border-sky-300/45 bg-[linear-gradient(135deg,#26a6ff,#0e8de8)] px-4 py-2 text-xs font-semibold text-slate-950 shadow-[0_10px_28px_rgba(35,166,255,0.28)] transition-[transform,box-shadow,filter] duration-[120ms] ease-out hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(59,130,246,.15),0_4px_16px_rgba(59,130,246,.12)] hover:brightness-105 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-50";
+
 export const secondaryActionBtn =
   "inline-flex h-8 items-center justify-center rounded-lg border border-slate-300 bg-white/85 px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:border-slate-400 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300/60 disabled:pointer-events-none disabled:opacity-50";

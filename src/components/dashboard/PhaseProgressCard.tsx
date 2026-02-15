@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import ProgressBar from "@/components/ui/ProgressBar";
-import { secondaryActionBtn } from "@/components/ui/buttonStyles";
+import { primaryActionBtn, secondaryActionBtn } from "@/components/ui/buttonStyles";
 
 type PhaseProgressCardProps = {
   phaseName: string;
@@ -48,12 +48,14 @@ export default function PhaseProgressCard({
           value={phaseProgressPercent}
           max={100}
           compact
+          animate
         />
         <ProgressBar
           label="Cycle progress"
           value={cycleProgressPercent}
           max={100}
           compact
+          animate
         />
       </div>
 
@@ -75,7 +77,7 @@ export default function PhaseProgressCard({
           data-testid="move-phase-trigger"
           onClick={onOpenMove}
           disabled={!canMove}
-          className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+          className={`${primaryActionBtn} disabled:opacity-50`}
         >
           {moveButtonLabel}
         </button>

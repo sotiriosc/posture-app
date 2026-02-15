@@ -14,11 +14,9 @@ const slots: { key: PhotoKey; title: string; hint: string }[] = [
 ];
 
 type PhotoMeta = Record<PhotoKey, boolean>;
-const emptyMeta: PhotoMeta = { front: false, side: false, back: false };
 
 export default function PhotoUploader() {
   const { photos, setPhoto } = usePhotoContext();
-  const [meta, setMeta] = useState<PhotoMeta>(emptyMeta);
   const [objectUrls, setObjectUrls] = useState<Record<PhotoKey, string | null>>({
     front: null,
     side: null,
@@ -39,7 +37,6 @@ export default function PhotoUploader() {
   }, [objectUrls]);
 
   const saveMeta = (next: PhotoMeta) => {
-    setMeta(next);
     localStorage.setItem(META_KEY, JSON.stringify(next));
   };
 
@@ -66,7 +63,6 @@ export default function PhotoUploader() {
       back: Boolean(photos.back),
     };
     saveMeta(nextMeta);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photos.front, photos.side, photos.back]);
 
   const handleFile = async (key: PhotoKey, file: File) => {
@@ -117,58 +113,60 @@ export default function PhotoUploader() {
         {slots.map((slot) => {
           const value = photos[slot.key];
           const previewUrl = objectUrls[slot.key];
-        return (
-          <div
-            key={slot.key}
-            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-slate-800">
-                  {slot.title} photo
-                </p>
-                <p className="text-xs text-slate-500">{slot.hint}</p>
-              </div>
-              {value ? (
-                <button
-                  type="button"
-                  onClick={() => handleDelete(slot.key)}
-                  className="text-xs font-semibold text-rose-600"
-                >
-                  Delete
-                </button>
-              ) : null}
-            </div>
-
-            <div className="mt-4">
-              {value && previewUrl ? (
-                <img
-                  src={previewUrl}
-                  alt={`${slot.title} preview`}
-                  className="h-48 w-full rounded-xl object-cover"
-                />
-              ) : (
-                <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-xs text-slate-400">
-                  No photo yet
+          return (
+            <div
+              key={slot.key}
+              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-800">
+                    {slot.title} photo
+                  </p>
+                  <p className="text-xs text-slate-500">{slot.hint}</p>
                 </div>
-              )}
-            </div>
+                {value ? (
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(slot.key)}
+                    className="text-xs font-semibold text-rose-600"
+                  >
+                    Delete
+                  </button>
+                ) : null}
+              </div>
 
-            <label className="mt-4 flex cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800">
-              {value ? "Replace photo" : "Upload photo"}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (file) handleFile(slot.key, file);
-                }}
-              />
-            </label>
-          </div>
-        );
-      })}
+              <div className="mt-4">
+                {value && previewUrl ? (
+                  // Blob/object URLs are local previews and cannot use next/image optimization.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={previewUrl}
+                    alt={`${slot.title} preview`}
+                    className="h-48 w-full rounded-xl object-cover"
+                  />
+                ) : (
+                  <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-xs text-slate-400">
+                    No photo yet
+                  </div>
+                )}
+              </div>
+
+              <label className="mt-4 flex cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800">
+                {value ? "Replace photo" : "Upload photo"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) handleFile(slot.key, file);
+                  }}
+                />
+              </label>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

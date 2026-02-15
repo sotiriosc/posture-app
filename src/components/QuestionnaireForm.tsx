@@ -8,7 +8,8 @@ import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
 import { clearDraft } from "@/lib/sessionDraftStore";
 import { generateWeeklyProgram } from "@/lib/program";
-import { saveProgram, uuid } from "@/lib/logStore";
+import { saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
+import type { ProgramProgress } from "@/lib/types";
 
 export type QuestionnaireData = {
   goals: string;
@@ -79,30 +80,13 @@ const hasProgramAffectingChange = (
   buildQuestionnaireSignature(next) !== buildQuestionnaireSignature(baseline);
 
 export default function QuestionnaireForm() {
-  const [data, setData] = useState<QuestionnaireData>(() => {
-    if (typeof window === "undefined") return emptyData;
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return emptyData;
-    const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
-    return normalizeQuestionnaireData(parsed);
-  });
-  const [committedData, setCommittedData] = useState<QuestionnaireData>(() => {
-    if (typeof window === "undefined") return emptyData;
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return emptyData;
-    const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
-    return normalizeQuestionnaireData(parsed);
-  });
+  const [data, setData] = useState<QuestionnaireData>(emptyData);
+  const [committedData, setCommittedData] = useState<QuestionnaireData>(emptyData);
   const [pendingData, setPendingData] = useState<QuestionnaireData | null>(null);
   const [showChangeConfirm, setShowChangeConfirm] = useState(false);
   const [isApplyingChange, setIsApplyingChange] = useState(false);
   const [changeWarning, setChangeWarning] = useState<string | null>(null);
-  const [requiresChangeConfirmation, setRequiresChangeConfirmation] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const saved = localStorage.getItem(STORAGE_KEY);
-    const state = loadAppState();
-    return Boolean(saved || state?.activeProgramId || state?.programId);
-  });
+  const [requiresChangeConfirmation, setRequiresChangeConfirmation] = useState(false);
   const router = useRouter();
   const [hydratedServerSnapshot, setHydratedServerSnapshot] = useState(false);
 
@@ -144,10 +128,26 @@ export default function QuestionnaireForm() {
 
     try {
       const nextProgram = generateWeeklyProgram(next, uuid());
+      const nowIso = new Date().toISOString();
+      const nextProgress: ProgramProgress = {
+        programId: nextProgram.id,
+        lastCompletedDayIndex: null,
+        nextDayIndex: 0,
+        completedDayIndices: [],
+        phaseIndex: nextProgram.phaseIndex ?? 1,
+        phaseStartedAt: nowIso,
+        cyclesCompletedInPhase: 0,
+        daysPerWeek: nextProgram.daysPerWeek,
+        weekIndex: 1,
+        countedWeekKeys: [],
+        updatedAt: nowIso,
+      };
       await saveProgram(nextProgram);
+      await saveProgramProgress(nextProgress);
       saveAppState({
         programId: nextProgram.id,
         activeProgramId: nextProgram.id,
+        activeProgramBaselineAt: Date.now(),
         selectedDay: 0,
         activeSessionId: undefined,
         programVersion: nextProgramVersion,
@@ -161,6 +161,7 @@ export default function QuestionnaireForm() {
       saveAppState({
         programId: undefined,
         activeProgramId: undefined,
+        activeProgramBaselineAt: undefined,
         selectedDay: 0,
         activeSessionId: undefined,
         programVersion: nextProgramVersion,
@@ -179,6 +180,29 @@ export default function QuestionnaireForm() {
     setShowChangeConfirm(false);
     setChangeWarning(null);
   };
+
+  useEffect(() => {
+    const state = loadAppState();
+
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        setRequiresChangeConfirmation(Boolean(state?.activeProgramId || state?.programId));
+        return;
+      }
+
+      const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
+      const normalized = normalizeQuestionnaireData(parsed);
+      setData(normalized);
+      setCommittedData(normalized);
+      setRequiresChangeConfirmation(true);
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+      setData(emptyData);
+      setCommittedData(emptyData);
+      setRequiresChangeConfirmation(Boolean(state?.activeProgramId || state?.programId));
+    }
+  }, []);
 
   useEffect(() => {
     let active = true;

@@ -55,20 +55,28 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
-            {[
-              "Capture movement baseline with front, side, and back photos",
-              "Set goals for strength, mobility, and pain management",
-              "Execute a day-by-day plan with cues and progression",
-            ].map((text) => (
-              <div
-                key={text}
-                className="hero-pill slide-up-in rounded-2xl p-4 text-sm text-slate-100"
-              >
-                {text}
-              </div>
-            ))}
-          </div>
+          <section className="hero-pill slide-up-in w-full max-w-3xl rounded-2xl p-4 sm:p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
+              How it works
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-slate-100 sm:grid-cols-3">
+              {[
+                "Assess: photos + questionnaire",
+                "Generate: your weekly plan + phase",
+                "Adapt: updates automatically as you progress",
+              ].map((text) => (
+                <p
+                  key={text}
+                  className="flex h-full min-h-11 items-center justify-center rounded-xl border border-slate-300/20 bg-slate-950/25 px-3 py-2 text-center"
+                >
+                  {text}
+                </p>
+              ))}
+            </div>
+            <p className="mt-3 text-center text-sm text-slate-100">
+              Not static workouts — the plan evolves with you.
+            </p>
+          </section>
         </main>
       </div>
     </div>
