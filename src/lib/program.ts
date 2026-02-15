@@ -3502,8 +3502,21 @@ const appendCoverageAccessory = (params: {
   exerciseId: string;
   painSeverity: PainSeverity;
   note: string;
+  context: DayConstraintRepairContext;
+  daysPerWeek: 3 | 4 | 5;
+  accessoryCapacity: number;
+  preserveRules?: RequirementRule[];
 }) => {
-  const { day, exerciseId, painSeverity, note } = params;
+  const {
+    day,
+    exerciseId,
+    painSeverity,
+    note,
+    context,
+    daysPerWeek,
+    accessoryCapacity,
+    preserveRules = [],
+  } = params;
   if (day.routine.some((item) => item.exerciseId === exerciseId)) return day;
   const highPain = painSeverity === "high";
   const base = makeItem(
@@ -3523,7 +3536,66 @@ const appendCoverageAccessory = (params: {
         )
       : appendNote(base.notes, note),
   };
-  return { ...day, routine: [...day.routine, next] };
+  const accessoryIndexes = day.routine
+    .map((item, index) => ({ item, index }))
+    .filter((entry) => entry.item.section === "accessory")
+    .map((entry) => entry.index);
+  if (accessoryIndexes.length < Math.max(0, accessoryCapacity)) {
+    return { ...day, routine: [...day.routine, next] };
+  }
+
+  const daySpec = resolveDayConstraintSpec({
+    day,
+    daysPerWeek,
+    capabilityMode: context.capabilityMode,
+  });
+  const protectedRules = (daySpec?.mustInclude ?? []).filter((rule) =>
+    rule.sections?.includes("accessory")
+  );
+  const protectedIndexes = new Set(
+    accessoryIndexes.filter((index) => {
+      const item = day.routine[index];
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return false;
+      const mustKeepForDaySpec = protectedRules.some((rule) =>
+        matchesRule(exercise, rule, "accessory")
+      );
+      const mustKeepByPreserveRule = preserveRules.some((rule) =>
+        matchesRule(exercise, rule, "accessory")
+      );
+      return mustKeepForDaySpec || mustKeepByPreserveRule;
+    })
+  );
+
+  const replacementTarget = accessoryIndexes
+    .filter((index) => !protectedIndexes.has(index))
+    .map((index) => {
+      const item = day.routine[index];
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) {
+        return { index, score: Number.NEGATIVE_INFINITY };
+      }
+      const score =
+        scoreExerciseForContext(
+          exercise,
+          "accessory",
+          context.selectionContext,
+          context.available
+        ) + focusOverlapScore(exercise, day.focusTags);
+      return { index, score };
+    })
+    .sort((left, right) => {
+      if (left.score !== right.score) return left.score - right.score;
+      return left.index - right.index;
+    })[0];
+
+  if (!replacementTarget) {
+    return day;
+  }
+
+  const routine = [...day.routine];
+  routine[replacementTarget.index] = next;
+  return { ...day, routine };
 };
 
 const pickCoverageExerciseId = (params: {
@@ -3695,11 +3767,26 @@ const enforceCoverageRuleByAccessory = (params: {
   minDays: number;
   preferredIds: string[];
   dayIndexes: number[];
+  daysPerWeek: 3 | 4 | 5;
+  accessoryCapacityByDayIndex: Map<number, number>;
+  preserveRules?: RequirementRule[];
   context: DayConstraintRepairContext;
   note: string;
   warningLabel: string;
 }) => {
-  const { rule, metric, minDays, preferredIds, dayIndexes, context, note, warningLabel } =
+  const {
+    rule,
+    metric,
+    minDays,
+    preferredIds,
+    dayIndexes,
+    daysPerWeek,
+    accessoryCapacityByDayIndex,
+    preserveRules = [],
+    context,
+    note,
+    warningLabel,
+  } =
     params;
   const warnings: Array<{
     dayTitle: string;
@@ -3709,11 +3796,13 @@ const enforceCoverageRuleByAccessory = (params: {
   const nextWeek = [...params.week];
   let summary = summarizeWeekCoverage(nextWeek);
   const currentCount = (coverage: WeekCoverageSummary) => coverage[metric];
+  const blockedDayIndexes = new Set<number>();
 
   let guard = 0;
   while (currentCount(summary) < minDays && guard < 20) {
     guard += 1;
     const targetDayIndex = dayIndexes.find((index) => {
+      if (blockedDayIndexes.has(index)) return false;
       const day = nextWeek[index];
       if (!day) return false;
       const entries = buildDayEntries(day).map((entry) => ({
@@ -3736,14 +3825,32 @@ const enforceCoverageRuleByAccessory = (params: {
         kind: "coverage",
         message: `${warningLabel} coverage missing: no eligible accessory found for ${day.title}.`,
       });
+      blockedDayIndexes.add(targetDayIndex);
       break;
     }
-    nextWeek[targetDayIndex] = appendCoverageAccessory({
+    const patchedDay = appendCoverageAccessory({
       day,
       exerciseId,
       painSeverity: context.selectionContext.painSeverity,
       note,
+      context,
+      daysPerWeek,
+      accessoryCapacity:
+        accessoryCapacityByDayIndex.get(targetDayIndex) ?? Number.POSITIVE_INFINITY,
+      preserveRules,
     });
+    const patchedSignatures = patchedDay.routine.map((item) => item.exerciseId).join("|");
+    const previousSignatures = day.routine.map((item) => item.exerciseId).join("|");
+    if (patchedSignatures === previousSignatures) {
+      blockedDayIndexes.add(targetDayIndex);
+      warnings.push({
+        dayTitle: day.title,
+        kind: "coverage",
+        message: `${warningLabel} coverage missing: no accessory slot can be replaced on ${day.title}.`,
+      });
+      continue;
+    }
+    nextWeek[targetDayIndex] = patchedDay;
     summary = summarizeWeekCoverage(nextWeek);
   }
 
@@ -3770,6 +3877,12 @@ const applyWeeklyCoverageRepairs = (params: {
     kind: "missing" | "violation" | "coverage";
     message: string;
   }> = [];
+  const baselineAccessoryCapacity = new Map<number, number>(
+    nextWeek.map((day, index) => [
+      index,
+      Math.max(3, day.routine.filter((item) => item.section === "accessory").length),
+    ])
+  );
 
   const contract = getWeeklyCoverageContract(daysPerWeek);
   const intentProfile = context.selectionContext.intentProfile;
@@ -3807,6 +3920,16 @@ const applyWeeklyCoverageRepairs = (params: {
     preferLower: false,
     preferArms: false,
   });
+  const armDayIndexes = nextWeek
+    .map((day, index) => ({ day, index }))
+    .filter(({ day }) => {
+      const normalized = day.title.toLowerCase();
+      return (
+        normalized.includes("shoulders + arms") ||
+        normalized.includes("arms + posture + conditioning")
+      );
+    })
+    .map((entry) => entry.index);
 
   const carryMinDays =
     intentProfile.recoveryBudget === "low"
@@ -3839,12 +3962,54 @@ const applyWeeklyCoverageRepairs = (params: {
     minDays: carryMinDays,
     preferredIds: carryPreferredIds,
     dayIndexes: [...lowerDayIndexes, ...corePriorityIndexes],
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
     note: "Smart patch: weekly carry exposure.",
     warningLabel: "Carry",
   });
   nextWeek = carryRepair.week;
   warnings.push(...carryRepair.warnings);
+
+  if (armDayIndexes.length > 0) {
+    const armBicepsRepair = enforceCoverageRuleByAccessory({
+      week: nextWeek,
+      rule: bicepsIsolationRule,
+      metric: "bicepsDays",
+      minDays: armDayIndexes.length,
+      preferredIds: ["db-biceps-curl", "band-biceps-curl", "towel-biceps-curl-hold"],
+      dayIndexes: armDayIndexes,
+      daysPerWeek,
+      accessoryCapacityByDayIndex: baselineAccessoryCapacity,
+      preserveRules: [tricepsIsolationRule],
+      context,
+      note: "Arms contract: add biceps isolation.",
+      warningLabel: "Arms day biceps",
+    });
+    nextWeek = armBicepsRepair.week;
+    warnings.push(...armBicepsRepair.warnings);
+
+    const armTricepsRepair = enforceCoverageRuleByAccessory({
+      week: nextWeek,
+      rule: tricepsIsolationRule,
+      metric: "tricepsDays",
+      minDays: armDayIndexes.length,
+      preferredIds: [
+        "db-triceps-extension",
+        "band-triceps-pressdown",
+        "bodyweight-triceps-extension",
+      ],
+      dayIndexes: armDayIndexes,
+      daysPerWeek,
+      accessoryCapacityByDayIndex: baselineAccessoryCapacity,
+      preserveRules: [bicepsIsolationRule],
+      context,
+      note: "Arms contract: add triceps isolation.",
+      warningLabel: "Arms day triceps",
+    });
+    nextWeek = armTricepsRepair.week;
+    warnings.push(...armTricepsRepair.warnings);
+  }
 
   const antiRotationRepair = enforceCoverageRuleByAccessory({
     week: nextWeek,
@@ -3860,6 +4025,8 @@ const applyWeeklyCoverageRepairs = (params: {
       "dead-bug",
     ],
     dayIndexes: [...corePriorityIndexes, ...lowerDayIndexes, ...upperDayIndexes],
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
     note: "Smart patch: weekly anti-rotation exposure.",
     warningLabel: "Anti-rotation",
@@ -3879,6 +4046,8 @@ const applyWeeklyCoverageRepairs = (params: {
       "db-calf-raise",
     ],
     dayIndexes: [...lowerDayIndexes, ...upperDayIndexes],
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
     note: "Coverage add: weekly calves minimum.",
     warningLabel: "Calves",
@@ -3893,6 +4062,9 @@ const applyWeeklyCoverageRepairs = (params: {
     minDays: contract.bicepsDays,
     preferredIds: ["db-biceps-curl", "band-biceps-curl", "towel-biceps-curl-hold"],
     dayIndexes: armCoverageIndexes,
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
+    preserveRules: [tricepsIsolationRule],
     context,
     note: "Coverage add: weekly biceps minimum.",
     warningLabel: "Biceps",
@@ -3911,6 +4083,9 @@ const applyWeeklyCoverageRepairs = (params: {
       "bodyweight-triceps-extension",
     ],
     dayIndexes: armCoverageIndexes,
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
+    preserveRules: [bicepsIsolationRule],
     context,
     note: "Coverage add: weekly triceps minimum.",
     warningLabel: "Triceps",
@@ -3925,6 +4100,8 @@ const applyWeeklyCoverageRepairs = (params: {
     minDays: contract.pullDays,
     preferredIds: ["split-stance-row", "band-row", "dumbbell-rows", "lat-pulldown"],
     dayIndexes: upperDayIndexes,
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
     note: "Coverage add: weekly pull minimum.",
     warningLabel: "Pull",
@@ -3944,6 +4121,8 @@ const applyWeeklyCoverageRepairs = (params: {
       "dumbbell-floor-press",
     ],
     dayIndexes: upperDayIndexes,
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
     note: "Coverage add: weekly push minimum.",
     warningLabel: "Push",
@@ -3958,6 +4137,8 @@ const applyWeeklyCoverageRepairs = (params: {
     minDays: contract.squatDays,
     preferredIds: ["bodyweight-squat", "split-squat", "band-front-squat", "goblet-squat"],
     dayIndexes: [...lowerDayIndexes, ...upperDayIndexes],
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
     note: "Coverage add: weekly squat minimum.",
     warningLabel: "Squat",
@@ -3972,6 +4153,8 @@ const applyWeeklyCoverageRepairs = (params: {
     minDays: contract.hingeDays,
     preferredIds: ["hip-hinge-drill", "glute-bridges", "back-extension", "band-rdl"],
     dayIndexes: [...lowerDayIndexes, ...upperDayIndexes],
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
     note: "Coverage add: weekly hinge minimum.",
     warningLabel: "Hinge",
@@ -3986,6 +4169,8 @@ const applyWeeklyCoverageRepairs = (params: {
     minDays: scapularMinDays,
     preferredIds: ["face-pull", "prone-ytw", "band-pull-aparts", "scapular-pushups"],
     dayIndexes: [...upperDayIndexes, ...armCoverageIndexes, ...corePriorityIndexes],
+    daysPerWeek,
+    accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
     note: "Smart patch: weekly scapular/posture exposure.",
     warningLabel: "Scapular control",
@@ -6807,11 +6992,12 @@ const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] => {
         lanes: ["squat", "hinge"],
         warmupFocus: "lower",
         cooldownFocus: "core",
-        constraints: {
-          requiredMainPatterns: [{ pattern: "squat", min: 1 }],
-          requiredMainRules: [coreRule],
-          optionalRules: [calvesRule],
-        },
+      constraints: {
+        requiredMainPatterns: [{ pattern: "squat", min: 1 }],
+        requiredMainRules: [coreRule],
+        forbiddenMainTags: ["push", "chest"],
+        optionalRules: [calvesRule],
+      },
       },
       {
         title: "Upper Pull + Thoracic Posture",
@@ -6841,11 +7027,12 @@ const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] => {
         lanes: ["hinge", "squat"],
         warmupFocus: "lower",
         cooldownFocus: "core",
-        constraints: {
-          requiredMainPatterns: [{ pattern: "hinge", min: 1 }],
-          requiredAccessories: [withAccessorySection(carryOrAntiRotationRule, 1)],
-          optionalRules: [calvesRule],
-        },
+      constraints: {
+        requiredMainPatterns: [{ pattern: "hinge", min: 1 }],
+        forbiddenMainTags: ["push", "chest"],
+        requiredAccessories: [withAccessorySection(carryOrAntiRotationRule, 1)],
+        optionalRules: [calvesRule],
+      },
       },
     ];
   }
@@ -6871,6 +7058,7 @@ const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] => {
       cooldownFocus: "core",
       constraints: {
         requiredMainPatterns: [{ pattern: "squat", min: 1 }],
+        forbiddenMainTags: ["push", "chest"],
         optionalRules: [calvesRule],
       },
     },
@@ -6893,6 +7081,7 @@ const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] => {
       cooldownFocus: "core",
       constraints: {
         requiredMainPatterns: [{ pattern: "hinge", min: 1 }],
+        forbiddenMainTags: ["push", "chest"],
         optionalRules: [calvesRule],
       },
     },
