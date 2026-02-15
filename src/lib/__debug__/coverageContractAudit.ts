@@ -375,6 +375,81 @@ const TWO_SCENARIOS: AuditScenario[] = [
   },
 ];
 
+const COACH6_SCENARIOS: AuditScenario[] = [
+  {
+    profile: "normal beginner",
+    phase: "activation",
+    phaseIndex: 1,
+    questionnaire: {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Beginner",
+      daysPerWeek: 3,
+      equipment: ["bands"],
+    },
+  },
+  {
+    profile: "normal beginner",
+    phase: "growth",
+    phaseIndex: 3,
+    questionnaire: {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Beginner",
+      daysPerWeek: 4,
+      equipment: ["gym"],
+    },
+  },
+  {
+    profile: "intermediate",
+    phase: "growth",
+    phaseIndex: 3,
+    questionnaire: {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Intermediate",
+      daysPerWeek: 5,
+      equipment: ["gym"],
+    },
+  },
+  {
+    profile: "pain beginner",
+    phase: "activation",
+    phaseIndex: 1,
+    questionnaire: {
+      goals: "Reduce pain",
+      painAreas: ["low_back", "shoulders"],
+      experience: "Beginner",
+      daysPerWeek: 3,
+      equipment: ["bands"],
+    },
+  },
+  {
+    profile: "pain advanced",
+    phase: "skill",
+    phaseIndex: 2,
+    questionnaire: {
+      goals: "Reduce pain",
+      painAreas: ["low_back", "neck"],
+      experience: "Advanced",
+      daysPerWeek: 4,
+      equipment: ["gym"],
+    },
+  },
+  {
+    profile: "pain advanced",
+    phase: "growth",
+    phaseIndex: 3,
+    questionnaire: {
+      goals: "Reduce pain",
+      painAreas: ["low_back", "neck"],
+      experience: "Advanced",
+      daysPerWeek: 5,
+      equipment: ["gym"],
+    },
+  },
+];
+
 const resolvePreset = () => {
   const envPreset = String(process.env.AUDIT_PRESET ?? "")
     .trim()
@@ -390,6 +465,12 @@ const resolvePreset = () => {
       .toLowerCase();
   }
   return envPreset;
+};
+
+const resolveScenariosForPreset = (preset: string): AuditScenario[] => {
+  if (preset === "coach6") return COACH6_SCENARIOS;
+  if (preset === "two" || !preset) return TWO_SCENARIOS;
+  return TWO_SCENARIOS;
 };
 
 const collectAuditMissingDetails = (audit: CoverageContractAuditResult) => {
@@ -451,7 +532,8 @@ const printAuditBlock = (params: {
 
 const runCoverageAuditCli = async () => {
   const preset = resolvePreset();
-  const scenarios = preset === "two" || !preset ? TWO_SCENARIOS : TWO_SCENARIOS;
+  const scenarios = resolveScenariosForPreset(preset);
+  let failedCount = 0;
 
   scenarios.forEach((scenario) => {
     const programId = [
@@ -480,7 +562,14 @@ const runCoverageAuditCli = async () => {
       warnings,
     });
     printAuditBlock({ scenario, audit, program });
+    if (!audit.ok) {
+      failedCount += 1;
+    }
   });
+
+  if (failedCount > 0) {
+    process.exitCode = 1;
+  }
 };
 
 const isDirectExecution = (() => {
