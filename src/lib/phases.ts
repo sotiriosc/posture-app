@@ -37,6 +37,9 @@ export type PhaseProfile = {
   controlFocus: boolean;
 };
 
+export const MIN_PHASE_INDEX = 1;
+export const MAX_PHASE_INDEX = 3;
+
 const PHASE_PROFILES: PhaseProfile[] = [
   {
     key: "control",
@@ -88,9 +91,16 @@ const PHASE_PROFILES: PhaseProfile[] = [
   },
 ];
 
+const ACTIVE_PHASE_PROFILES = PHASE_PROFILES.slice(0, MAX_PHASE_INDEX);
+
+const clampPhaseIndex = (phaseIndex: number) => {
+  if (!Number.isFinite(phaseIndex)) return MIN_PHASE_INDEX;
+  return Math.min(MAX_PHASE_INDEX, Math.max(MIN_PHASE_INDEX, Math.floor(phaseIndex)));
+};
+
 export const getPhaseProfile = (phaseIndex: number) => {
-  const index = Math.max(1, phaseIndex);
-  return PHASE_PROFILES[(index - 1) % PHASE_PROFILES.length];
+  const index = clampPhaseIndex(phaseIndex);
+  return ACTIVE_PHASE_PROFILES[index - 1] ?? ACTIVE_PHASE_PROFILES[0];
 };
 
 export const getCycleLadder = (cycleIndex: number) => {
@@ -279,6 +289,10 @@ export const decideProgramProgression = (params: {
     totalWeekIndex,
     minimumWeeksForPhaseAdvance = 2,
   } = params;
+  const normalizedPhaseIndex = clampPhaseIndex(phaseIndex);
+  const normalizedCycleIndex = Math.max(1, cycleIndex);
+  const normalizedPhaseWeekIndex = Math.max(1, phaseWeekIndex);
+  const normalizedTotalWeekIndex = Math.max(1, totalWeekIndex);
   if (state.painRisk >= 0.65) {
     return {
       status: "blocked" as const,
@@ -299,18 +313,30 @@ export const decideProgramProgression = (params: {
   }
 
   const shouldAdvancePhase =
-    cycleIndex >= 3 &&
+    normalizedCycleIndex >= 3 &&
     state.readiness >= 0.75 &&
-    totalWeekIndex >= minimumWeeksForPhaseAdvance;
+    normalizedTotalWeekIndex >= minimumWeeksForPhaseAdvance;
   if (shouldAdvancePhase) {
+    if (normalizedPhaseIndex >= MAX_PHASE_INDEX) {
+      return {
+        status: "advanced" as const,
+        message: null,
+        next: {
+          phaseIndex: MAX_PHASE_INDEX,
+          cycleIndex: normalizedCycleIndex + 1,
+          weekIndex: normalizedPhaseWeekIndex + 1,
+          totalWeekIndex: normalizedTotalWeekIndex + 1,
+        },
+      };
+    }
     return {
       status: "advanced" as const,
       message: null,
       next: {
-        phaseIndex: phaseIndex + 1,
+        phaseIndex: normalizedPhaseIndex + 1,
         cycleIndex: 1,
         weekIndex: 1,
-        totalWeekIndex: totalWeekIndex + 1,
+        totalWeekIndex: normalizedTotalWeekIndex + 1,
       },
     };
   }
@@ -319,16 +345,16 @@ export const decideProgramProgression = (params: {
     status: "advanced" as const,
     message: null,
     next: {
-      phaseIndex,
-      cycleIndex: cycleIndex + 1,
-      weekIndex: phaseWeekIndex + 1,
-      totalWeekIndex: totalWeekIndex + 1,
+      phaseIndex: normalizedPhaseIndex,
+      cycleIndex: normalizedCycleIndex + 1,
+      weekIndex: normalizedPhaseWeekIndex + 1,
+      totalWeekIndex: normalizedTotalWeekIndex + 1,
     },
   };
 };
 
 export const getPhaseMetaByIndex = (phaseIndex: number) => {
-  const index = Math.max(1, phaseIndex);
+  const index = clampPhaseIndex(phaseIndex);
   const profile = getPhaseProfile(index);
   return {
     phaseIndex: index,

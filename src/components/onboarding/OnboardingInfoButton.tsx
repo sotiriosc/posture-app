@@ -102,18 +102,18 @@ export default function OnboardingInfoButton({
             aria-modal="true"
             aria-label="Onboarding guide"
             style={panelSafeAreaStyle}
-            className="absolute inset-x-0 bottom-[calc(16px+var(--guide-safe-inset))] max-h-[calc(100vh-24px-var(--guide-safe-inset))] overflow-hidden rounded-t-2xl p-[2px] shadow-[0_22px_52px_rgba(2,132,199,0.3)] sm:inset-x-auto sm:bottom-4 sm:right-4 sm:max-h-[calc(100vh-2rem)] sm:w-[min(92vw,560px)] sm:rounded-2xl"
+            className="absolute inset-x-3 top-4 bottom-[calc(16px+var(--guide-safe-inset)+env(safe-area-inset-bottom,0px))] overflow-hidden rounded-2xl p-[2px] shadow-[0_22px_52px_rgba(2,132,199,0.3)] sm:inset-x-auto sm:top-auto sm:bottom-4 sm:right-4 sm:max-h-[calc(100vh-2rem)] sm:w-[min(92vw,560px)]"
           >
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 rounded-t-2xl opacity-100 motion-safe:animate-spin sm:rounded-2xl"
+              className="pointer-events-none absolute inset-0 rounded-2xl opacity-100 motion-safe:animate-spin"
               style={{
                 animationDuration: "14s",
                 background:
-                  "conic-gradient(from 180deg at 50% 50%, rgba(125,211,252,.95), rgba(56,189,248,.45), rgba(59,130,246,.48), rgba(167,139,250,.5), rgba(125,211,252,.95))",
+                  "conic-gradient(from 180deg at 50% 50%, rgba(125,211,252,.98), rgba(56,189,248,.52), rgba(59,130,246,.56), rgba(167,139,250,.56), rgba(125,211,252,.98))",
               }}
             />
-            <div className="relative flex max-h-[calc(100vh-24px-var(--guide-safe-inset))] flex-col rounded-t-2xl border border-slate-300/25 bg-slate-900/86 text-white sm:max-h-[calc(100vh-2rem)] sm:rounded-2xl">
+            <div className="relative flex h-full min-h-0 flex-col rounded-2xl border border-slate-300/25 bg-slate-900/86 text-white sm:max-h-[calc(100vh-2rem)]">
               <header className="border-b border-slate-700/60 px-4 py-3 sm:px-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -134,7 +134,10 @@ export default function OnboardingInfoButton({
                 </div>
               </header>
 
-              <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-4 pb-4 text-sm text-slate-100 [scrollbar-gutter:stable] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-5">
+              <div
+                className="min-h-0 flex-1 touch-pan-y space-y-5 overflow-y-auto overscroll-contain px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] text-sm text-slate-100 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-5 sm:pb-4"
+                style={{ WebkitOverflowScrolling: "touch" }}
+              >
                 {guide.sections.map((section, index) => {
                   if (section.type === "text") {
                     return (

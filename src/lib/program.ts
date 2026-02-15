@@ -11,6 +11,7 @@ import {
 import { computeEquipmentCapability } from "@/lib/engine/equipmentCapability";
 import { derivePoseFocus } from "@/lib/engine/poseFocus";
 import {
+  MAX_PHASE_INDEX,
   buildNextWeekPlan,
   decideProgramProgression,
   deriveUserTrainingState,
@@ -30,6 +31,8 @@ import { buildSessionAdaptation } from "@/lib/sessionAdaptation";
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
 export const PROGRAM_TEMPLATE_VERSION = 11;
+const clampPhaseIndexToSupportedRange = (phaseIndex: number) =>
+  Math.min(MAX_PHASE_INDEX, Math.max(1, Math.floor(phaseIndex)));
 
 type ExperienceLevel = "Beginner" | "Intermediate" | "Advanced";
 
@@ -757,7 +760,7 @@ const buildSelectionContext = (
     poseFocusTags.add(normalizeTagToken(tag));
   });
 
-  const phaseIndex = options?.phaseIndex ?? 1;
+  const phaseIndex = clampPhaseIndexToSupportedRange(options?.phaseIndex ?? 1);
   const phaseName = options?.phaseName ?? `Phase ${phaseIndex}`;
   const phaseStage = phaseStageFromName(phaseName, phaseIndex);
   const capabilityMode = options?.capabilityMode ?? "noneOnly";
@@ -5143,6 +5146,66 @@ const findFeedbackReplacementForRoutineItem = (params: {
   return replacement;
 };
 
+const findFallbackReplacementForStickyRiskMain = (params: {
+  day: ProgramDay;
+  item: ProgramRoutineItem;
+  itemIndex: number;
+  context: DayConstraintRepairContext;
+  usedIds: Set<string>;
+  mainLane: MainLane | null;
+}): Exercise | null => {
+  const { day, item, itemIndex, context, usedIds, mainLane } = params;
+  if (item.section !== "main") return null;
+
+  const current = exerciseById(item.exerciseId);
+  if (!current) return null;
+  if (!hasFeedbackRiskSignalForExercise(current, context.selectionContext)) return null;
+
+  const usedWithoutCurrent = new Set(usedIds);
+  usedWithoutCurrent.delete(current.id);
+  const currentSignature = deriveMovementSignature(current);
+
+  const ranked = rankSubstitutionCandidates({
+    current,
+    section: "main",
+    available: context.available,
+    context: context.selectionContext,
+  })
+    .filter((entry) => !usedWithoutCurrent.has(entry.exercise.id))
+    .filter((entry) => (mainLane ? matchesMainLanePattern(entry.exercise, mainLane) : true))
+    .filter(
+      (entry) => deriveMovementSignature(entry.exercise) !== currentSignature
+    )
+    .map((entry) => {
+      const detail = scoreExerciseForContextDetailed(
+        entry.exercise,
+        "main",
+        context.selectionContext,
+        context.available,
+        {
+          slotId: makeDaySlotId(day, itemIndex, "main"),
+          dayTitle: day.title,
+          dayFocusTags: day.focusTags,
+          slotKind: mainLane ? slotKindByMainLane[mainLane] : "mainRepair",
+          slotLane: mainLane ?? undefined,
+          capabilityMode: context.capabilityMode,
+        }
+      );
+      return {
+        exercise: entry.exercise,
+        score: entry.score + detail.score,
+      };
+    })
+    .sort((left, right) => {
+      if (right.score !== left.score) return right.score - left.score;
+      return left.exercise.id.localeCompare(right.exercise.id);
+    });
+
+  const replacement = ranked[0]?.exercise ?? null;
+  if (!replacement || replacement.id === current.id) return null;
+  return replacement;
+};
+
 const applyFeedbackDrivenSubstitutions = (params: {
   week: ProgramDay[];
   daysPerWeek: 3 | 4 | 5;
@@ -5207,6 +5270,91 @@ const applyFeedbackDrivenSubstitutions = (params: {
         mainLane,
         accessoryLane,
         sectionFocus,
+      });
+      if (!replacement) return item;
+
+      usedIds.delete(current.id);
+      usedIds.add(replacement.id);
+      return {
+        ...item,
+        exerciseId: replacement.id,
+        loadType: replacement.loadType,
+        cues: replacement.cues ?? null,
+      };
+    });
+
+    let fallbackMainIndex = 0;
+    const stabilizedRoutine = routine.map((item, itemIndex) => {
+      if (item.section !== "main") return item;
+      const current = exerciseById(item.exerciseId);
+      const mainLane =
+        mainLanes[fallbackMainIndex++] ?? (current ? getMainLaneHits(current)[0] ?? null : null);
+      if (!current) return item;
+      if (!hasFeedbackRiskSignalForExercise(current, context.selectionContext)) {
+        return item;
+      }
+      const replacement = findFallbackReplacementForStickyRiskMain({
+        day,
+        item,
+        itemIndex,
+        context,
+        usedIds,
+        mainLane,
+      });
+      if (!replacement) return item;
+      usedIds.delete(current.id);
+      usedIds.add(replacement.id);
+      return {
+        ...item,
+        exerciseId: replacement.id,
+        loadType: replacement.loadType,
+        cues: replacement.cues ?? null,
+      };
+    });
+
+    return ensureDistinctRoutine(
+      { ...day, routine: stabilizedRoutine },
+      context.available,
+      context.selectionContext
+    );
+  });
+};
+
+const applyFinalFeedbackSafetyPass = (params: {
+  week: ProgramDay[];
+  daysPerWeek: 3 | 4 | 5;
+  context: DayConstraintRepairContext;
+}): ProgramDay[] => {
+  const { week, daysPerWeek, context } = params;
+  if (!context.selectionContext.feedbackSummaryByExercise.size) return week;
+
+  return week.map((day) => {
+    const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+    const mainLanes = resolvePlannedMainLanesForDay({
+      day,
+      daysPerWeek,
+      capabilityMode: context.capabilityMode,
+    });
+    let mainIndex = 0;
+
+    const routine = day.routine.map((item, itemIndex) => {
+      if (item.section !== "main") return item;
+      const current = exerciseById(item.exerciseId);
+      if (!current) return item;
+      const mainLane =
+        mainLanes[mainIndex++] ?? getMainLaneHits(current)[0] ?? null;
+
+      if (!hasFeedbackRiskSignalForExercise(current, context.selectionContext)) {
+        return item;
+      }
+
+      const replacement = findFallbackReplacementForStickyRiskMain({
+        day,
+        item,
+        itemIndex,
+        context,
+        usedIds,
+        mainLane,
       });
       if (!replacement) return item;
 
@@ -9173,8 +9321,18 @@ export const generateWeeklyProgram = (
     .map((day) =>
       ensureDistinctRoutine(day, equipmentContext.available, selectionContext)
     );
-  emitFinalSelectionTraceForWeek({
+  const feedbackSafetyWeek = applyFinalFeedbackSafetyPass({
     week: finalizedWeek,
+    daysPerWeek: normalizedDaysPerWeek,
+    context: dayRepairContext,
+  }).map((day) => ({
+    ...day,
+    routine: day.routine.map((item) =>
+      ensureEligibleItem(item, equipmentContext.available, selectionContext)
+    ),
+  }));
+  emitFinalSelectionTraceForWeek({
+    week: feedbackSafetyWeek,
     selectionContext,
     available: equipmentContext.available,
     capabilityMode,
@@ -9194,7 +9352,7 @@ export const generateWeeklyProgram = (
     phaseIndex,
     cycleIndex,
     weekIndex,
-    week: finalizedWeek,
+    week: feedbackSafetyWeek,
     consistencyRate: 0,
     trainingState,
   });
@@ -9216,7 +9374,7 @@ export const generateWeeklyProgram = (
     phase,
     nextWeekPlan,
     ...intelligence,
-    week: finalizedWeek,
+    week: feedbackSafetyWeek,
     source: "local",
     deletedAt: null,
   };
@@ -9253,7 +9411,13 @@ export const generateNextPhaseProgram = (params: {
     seed,
   } = params;
 
-  const phaseIndex = currentProgram.phaseIndex ?? 1;
+  const phaseIndex = clampPhaseIndexToSupportedRange(currentProgram.phaseIndex ?? 1);
+  if (phaseIndex >= MAX_PHASE_INDEX) {
+    return {
+      status: "repeat" as const,
+      message: `You are already in Phase ${MAX_PHASE_INDEX}. Continue progressing through cycles for variation.`,
+    };
+  }
   const totalWeekIndex =
     currentProgram.totalWeekIndex ?? currentProgram.weekIndex ?? 1;
   const priorReadiness =
@@ -9304,7 +9468,7 @@ export const generateNextPhaseProgram = (params: {
     };
   }
 
-  const nextPhaseIndex = phaseIndex + 1;
+  const nextPhaseIndex = clampPhaseIndexToSupportedRange(phaseIndex + 1);
   const nextWeekIndex = 1;
   const nextCycleIndex = 1;
   const nextTotalWeekIndex = totalWeekIndex + 1;
@@ -9508,7 +9672,7 @@ export const generateNextCycleProgram = (params: {
     seed,
   } = params;
 
-  const phaseIndex = currentProgram.phaseIndex ?? 1;
+  const phaseIndex = clampPhaseIndexToSupportedRange(currentProgram.phaseIndex ?? 1);
   const phaseWeekIndex = currentProgram.weekIndex ?? 1;
   const totalWeekIndex =
     currentProgram.totalWeekIndex ?? currentProgram.weekIndex ?? 1;

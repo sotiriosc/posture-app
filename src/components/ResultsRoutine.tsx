@@ -8,6 +8,7 @@ import { exerciseById } from "@/lib/exercises";
 import type { Routine } from "@/lib/routine";
 import { generateRoutine } from "@/lib/routine";
 import {
+  generateNextCycleProgram,
   generateNextPhaseProgram,
   generateWeeklyProgram,
   PROGRAM_TEMPLATE_VERSION,
@@ -56,6 +57,7 @@ import type { SubscriptionPlan } from "@/lib/authTypes";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
 import { getProgressionRecommendation } from "@/lib/progression";
 import {
+  MAX_PHASE_INDEX,
   buildNextWeekPlan,
   getPhaseMetaByIndex,
   getPhaseProfile,
@@ -139,6 +141,20 @@ const hasValidWeekStructure = (program: Program) => {
   return true;
 };
 
+const hasRoutableWorkoutDay = (program: Program | null, dayIndex: number) => {
+  if (!program) return false;
+  const day = program.week.find((entry) => entry.dayIndex === dayIndex);
+  return Boolean(day && Array.isArray(day.routine) && day.routine.length > 0);
+};
+
+const resolveFirstRoutableDay = (program: Program | null) => {
+  if (!program) return 0;
+  const first = program.week.find(
+    (day) => Array.isArray(day.routine) && day.routine.length > 0
+  );
+  return first?.dayIndex ?? 0;
+};
+
 const isProgramCompatibleWithQuestionnaire = (
   candidate: Program | null,
   questionnaire: QuestionnaireData
@@ -203,6 +219,7 @@ export default function ResultsRoutine() {
   const knowledgeHighlightTimeoutRef = useRef<number | null>(null);
   const sessionCompleteNoticeFadeTimeoutRef = useRef<number | null>(null);
   const sessionCompleteNoticeTimeoutRef = useRef<number | null>(null);
+  const missingWorkoutRepairAttemptRef = useRef(new Set<string>());
   const { photos } = usePhotoContext();
   const [poseState, setPoseState] = useState<{
     loading: boolean;
@@ -454,10 +471,16 @@ export default function ResultsRoutine() {
     return parts.join(" • ");
   };
 
-  const movePhaseButtonLabel = `Move to Phase ${(program?.phaseIndex ?? 1) + 1}`;
+  const movePhaseButtonLabel =
+    (program?.phaseIndex ?? 1) >= MAX_PHASE_INDEX
+      ? `Phase ${MAX_PHASE_INDEX} is active`
+      : `Move to Phase ${(program?.phaseIndex ?? 1) + 1}`;
 
   const previewSummary = () => {
     const currentPhaseIndex = program?.phaseIndex ?? 1;
+    if (currentPhaseIndex >= MAX_PHASE_INDEX) {
+      return `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue cycles to keep progression and variation moving.`;
+    }
     const nextPhaseIndex = currentPhaseIndex + 1;
     const nextProfile = getPhaseProfile(nextPhaseIndex);
     return `Next phase focuses on ${nextProfile.label.toLowerCase()}. ${nextProfile.description}`;
@@ -465,6 +488,12 @@ export default function ResultsRoutine() {
 
   const handleAdvanceProgram = async () => {
     if (!program || !data) return;
+    if ((program.phaseIndex ?? 1) >= MAX_PHASE_INDEX) {
+      setAdvanceMessage(
+        `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue cycles to keep progressing.`
+      );
+      return;
+    }
     setAdvanceMessage(null);
     const state = loadAppState();
     const nextProgramVersion =
@@ -806,6 +835,13 @@ export default function ResultsRoutine() {
   const isDayLocked = (dayIndex: number) => isFreePlan && dayIndex > 0;
   const effectiveSelectedDay = isDayLocked(selectedDay) ? 0 : selectedDay;
   const effectiveNextDayIndex = isDayLocked(nextDayIndex) ? 0 : nextDayIndex;
+  const sessionLaunchDayIndex = useMemo(() => {
+    if (!program) return 0;
+    if (hasRoutableWorkoutDay(program, effectiveNextDayIndex)) {
+      return effectiveNextDayIndex;
+    }
+    return resolveFirstRoutableDay(program);
+  }, [program, effectiveNextDayIndex]);
   const effectiveInProgressDaySet = useMemo(() => {
     const set = new Set<number>();
     inProgressDaySet.forEach((dayIndex) => {
@@ -846,6 +882,145 @@ export default function ResultsRoutine() {
       return parsed >= weekStartMs;
     }).length;
   }, [completedSessions, nowAnchor]);
+
+  useEffect(() => {
+    if (!program || !data || !activeProgramId) return;
+    if (activeProgramId !== program.id) return;
+    if (hasRoutableWorkoutDay(program, effectiveNextDayIndex)) return;
+    if (missingWorkoutRepairAttemptRef.current.has(program.id)) return;
+
+    missingWorkoutRepairAttemptRef.current.add(program.id);
+    let cancelled = false;
+
+    const repairMissingNextWorkout = async () => {
+      const state = loadAppState();
+      const nextProgramVersion =
+        typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
+      const sevenDaysAgoMs = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const sessionsForCurrentProgram = allSessions.filter((session) => {
+        if (session.routineId !== program.id) return false;
+        const parsed = toEpochMs(session.startedAt ?? session.createdAt);
+        const sessionAt = Number.isNaN(parsed) ? 0 : parsed;
+        return sessionAt >= baselineForActiveProgram;
+      });
+      const completedForCurrentProgram = sessionsForCurrentProgram.filter(
+        (session) => Boolean(session.completedAt)
+      );
+      const recentSessions = completedForCurrentProgram.filter((session) => {
+        const parsed = toEpochMs(session.completedAt ?? session.updatedAt ?? session.createdAt);
+        if (Number.isNaN(parsed)) return false;
+        return parsed >= sevenDaysAgoMs;
+      });
+      const recentLogs = await listExerciseLogsBySessionIds(
+        completedForCurrentProgram
+          .slice(0, Math.max(program.daysPerWeek * 2, 6))
+          .map((session) => session.id)
+      );
+      const feedbackRatings = [
+        ...completedForCurrentProgram
+          .map((session) => session.sessionFeedback)
+          .filter((rating): rating is "easy" | "moderate" | "hard" | "pain" =>
+            Boolean(rating)
+          ),
+        ...recentLogs
+          .map((log) => log.felt)
+          .filter((rating): rating is "easy" | "moderate" | "hard" | "pain" =>
+            Boolean(rating)
+          ),
+      ];
+      const painFlag = feedbackRatings.includes("pain");
+      const hardCount = feedbackRatings.filter((rating) => rating === "hard").length;
+      const fatigueFlag =
+        feedbackRatings.length > 0 && hardCount / feedbackRatings.length >= 0.5;
+      const complianceRate = Math.min(
+        1,
+        recentSessions.length / Math.max(1, program.daysPerWeek)
+      );
+
+      const nextCycleResult = generateNextCycleProgram({
+        currentProgram: program,
+        questionnaire: data,
+        painFlag,
+        complianceRate,
+        fatigueFlag,
+        completedSessionsCount: completedForCurrentProgram.length,
+        completedWeeksCount: completedWeeks,
+        recentLogs,
+        nextProgramId: uuid(),
+      });
+
+      const nextProgram =
+        nextCycleResult.status === "advanced"
+          ? nextCycleResult.program
+          : generateWeeklyProgram(data, uuid(), {
+              phaseIndex: program.phaseIndex ?? 1,
+              weekIndex: Math.max(1, (program.weekIndex ?? 1) + 1),
+              cycleIndex: Math.max(1, (program.cycleIndex ?? 1) + 1),
+              totalWeekIndex: Math.max(
+                1,
+                (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1
+              ),
+              recentLogs,
+            });
+      const nowIso = new Date().toISOString();
+      const nextPhaseIndex = nextProgram.phaseIndex ?? 1;
+      const previousPhaseIndex = program.phaseIndex ?? 1;
+      const phaseChanged = nextPhaseIndex !== previousPhaseIndex;
+      const nextProgress: ProgramProgress = {
+        programId: nextProgram.id,
+        lastCompletedDayIndex: null,
+        nextDayIndex: 0,
+        completedDayIndices: [],
+        phaseIndex: nextPhaseIndex,
+        phaseStartedAt: phaseChanged
+          ? nowIso
+          : progress?.phaseStartedAt ?? program.createdAt ?? nowIso,
+        cyclesCompletedInPhase: phaseChanged
+          ? 0
+          : Math.max(progress?.cyclesCompletedInPhase ?? 0, completedWeeks),
+        daysPerWeek: nextProgram.daysPerWeek,
+        weekIndex: Math.max(1, nextProgram.weekIndex ?? 1),
+        countedWeekKeys: [],
+        updatedAt: nowIso,
+      };
+      await saveProgram(nextProgram);
+      await saveProgramProgress(nextProgress);
+      if (cancelled) return;
+      setProgram(nextProgram);
+      setProgress(nextProgress);
+      setSelectedDay(0);
+      setWeekViewSelectedDay(0);
+      setWeekViewDetailsOpen(false);
+      saveAppState({
+        programId: nextProgram.id,
+        activeProgramId: nextProgram.id,
+        activeProgramBaselineAt: Date.now(),
+        selectedDay: 0,
+        activePhaseIndex: nextProgram.phaseIndex ?? 1,
+        activeCycleIndex: nextProgram.cycleIndex ?? 1,
+        activeSessionId: undefined,
+        programVersion: nextProgramVersion,
+        questionnaireSignature: questionnaireSignature ?? undefined,
+        lastRoute: "/results",
+      });
+    };
+
+    void repairMissingNextWorkout();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    program,
+    data,
+    activeProgramId,
+    effectiveNextDayIndex,
+    allSessions,
+    baselineForActiveProgram,
+    completedWeeks,
+    progress?.cyclesCompletedInPhase,
+    progress?.phaseStartedAt,
+    questionnaireSignature,
+  ]);
 
   useEffect(() => {
     const loadLastTwo = async () => {
@@ -1023,8 +1198,12 @@ export default function ResultsRoutine() {
   ]);
 
   const phaseGateReason = useMemo(() => {
+    const phaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
+    if (phaseIndex >= MAX_PHASE_INDEX) {
+      return `Phase ${MAX_PHASE_INDEX} is active. Continue progressing through cycles and execution quality.`;
+    }
     return formatPhaseGateReason(phaseGate);
-  }, [phaseGate]);
+  }, [phaseGate, progress?.phaseIndex, program?.phaseIndex]);
 
   const currentPhaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
   const phaseControlUi = useMemo(
@@ -1069,9 +1248,9 @@ export default function ResultsRoutine() {
     }
     return {
       label: "Start Today's Session" as const,
-      href: `/session?programId=${resolvedSessionProgramId}&dayIndex=${effectiveNextDayIndex}`,
+      href: `/session?programId=${resolvedSessionProgramId}&dayIndex=${sessionLaunchDayIndex}`,
     };
-  }, [resolvedSessionProgramId, activeSessionId, effectiveNextDayIndex]);
+  }, [resolvedSessionProgramId, activeSessionId, sessionLaunchDayIndex]);
 
   const dailyInsight = useMemo(() => {
     const seed = questionnaireSignature ?? program?.id ?? "insight";
@@ -1140,7 +1319,10 @@ export default function ResultsRoutine() {
       const computedWeekIndex =
         Math.floor(completedSessions.length / program.daysPerWeek) + 1;
       const weekIndex = Math.max(program.weekIndex ?? 1, computedWeekIndex);
-      const phaseIndex = program.phaseIndex ?? 1;
+      const phaseIndex = Math.min(
+        MAX_PHASE_INDEX,
+        Math.max(1, program.phaseIndex ?? 1)
+      );
       const phaseMeta = getPhaseMetaByIndex(phaseIndex);
       const phaseName = program.phaseName ?? phaseMeta.phaseName;
       const phaseProfile = getPhaseProfile(phaseIndex);
@@ -1715,7 +1897,7 @@ export default function ResultsRoutine() {
   ];
 
   const todayPlanDayIndex = Math.min(
-    Math.max(0, effectiveNextDayIndex),
+    Math.max(0, sessionLaunchDayIndex),
     Math.max(0, program.week.length - 1)
   );
   const weekViewStartDay =
@@ -1846,7 +2028,7 @@ export default function ResultsRoutine() {
             {inProgressCount} in progress
           </span>
           <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
-            Current day: {effectiveNextDayIndex + 1}
+            Current day: {sessionLaunchDayIndex + 1}
           </span>
         </div>
         <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
@@ -1856,7 +2038,7 @@ export default function ResultsRoutine() {
               !isCompleted && effectiveInProgressDaySet.has(day.dayIndex);
             const isSelected = day.dayIndex === weekViewStartDay;
             const isLocked = isDayLocked(day.dayIndex);
-            const isToday = day.dayIndex === effectiveNextDayIndex;
+            const isToday = day.dayIndex === sessionLaunchDayIndex;
             const stateLabel = isCompleted
               ? "Completed"
               : isInProgress
@@ -2408,7 +2590,9 @@ export default function ResultsRoutine() {
           />
           <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl">
             <h3 className="text-lg font-semibold text-slate-900">
-              Move to Phase {(program?.phaseIndex ?? 1) + 1}?
+              {(program?.phaseIndex ?? 1) >= MAX_PHASE_INDEX
+                ? `Phase ${MAX_PHASE_INDEX} is active`
+                : `Move to Phase ${(program?.phaseIndex ?? 1) + 1}?`}
             </h3>
             <p className="mt-2 text-sm text-slate-600">
               This creates your next progressive plan. Your logs and history stay saved.

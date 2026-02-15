@@ -369,7 +369,10 @@ export function auditCoverageContract(args: {
     intelligenceFailures.push("3-day plan has zero calf exposure");
   }
 
-  if (weekly.carryDays === 0) {
+  // 3-day plans can satisfy contracts without dedicated carry exposure,
+  // while 4/5-day plans should include at least one carry-focused touchpoint.
+  const shouldRequireCarryExposure = daysPerWeek >= 4;
+  if (shouldRequireCarryExposure && weekly.carryDays === 0) {
     intelligenceFailures.push("Carry exposure missing for the week");
   }
 

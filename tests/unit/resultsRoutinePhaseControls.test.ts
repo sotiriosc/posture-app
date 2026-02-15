@@ -96,5 +96,21 @@ describe("results routine phase controls", () => {
       getPhaseControlUiState({ phaseIndex: 3, gate: blockedPhase3 }).showSkipPhaseOne
     ).toBe(false);
   });
-});
 
+  test("phase 3 does not allow manual phase move even when gate passes", () => {
+    const passedPhase3Gate = canAdvancePhase(
+      {
+        phaseIndex: 3,
+        phaseStartedAt: "2025-10-01T00:00:00.000Z",
+        cyclesCompletedInPhase: 8,
+      },
+      "2026-02-01T00:00:00.000Z"
+    );
+    expect(passedPhase3Gate.ok).toBe(true);
+    const ui = getPhaseControlUiState({
+      phaseIndex: 3,
+      gate: passedPhase3Gate,
+    });
+    expect(ui.canMoveNextPhase).toBe(false);
+  });
+});

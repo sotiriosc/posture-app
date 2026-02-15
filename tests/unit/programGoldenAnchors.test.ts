@@ -349,7 +349,7 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
-              "machine-seated-row",
+              "cable-seated-row",
               "db-triceps-extension",
             ],
             "activationBlockFirst2": [
@@ -369,7 +369,7 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "barbell-landmine-pulldown",
+              "seated-lat-sweep-pulse",
             ],
           },
           {
@@ -488,7 +488,7 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-rows",
               "dumbbell-chest-supported-row",
-              "barbell-landmine-pulldown",
+              "seated-lat-sweep-pulse",
             ],
           },
           {
@@ -538,9 +538,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "machine-seated-row",
-              "dumbbell-shoulder-press",
               "dumbbell-chest-supported-row",
+              "dumbbell-shoulder-press",
+              "machine-seated-row",
             ],
           },
         ],
@@ -726,9 +726,9 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "reverse-snow-angel",
-              "prone-swimmer",
-              "back-widow",
+              "supine-elbow-drive-row",
+              "prone-elbow-row",
+              "seated-lat-sweep-pulse",
             ],
           },
           {
@@ -851,8 +851,8 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-rows",
               "dumbbell-pullover",
-              "barbell-landmine-pulldown",
               "cable-seated-row",
+              "seated-lat-sweep-pulse",
             ],
           },
           {

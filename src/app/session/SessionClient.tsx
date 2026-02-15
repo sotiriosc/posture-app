@@ -101,6 +101,43 @@ const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
   return parsed === 4 || parsed === 5 ? parsed : 3;
 };
 
+const hasRoutableProgramDay = (program: Program, dayIndex: number) => {
+  const day = program.week.find((entry) => entry.dayIndex === dayIndex);
+  return Boolean(day && Array.isArray(day.routine) && day.routine.length > 0);
+};
+
+const resolveRoutableProgramDayIndex = (
+  program: Program,
+  preferredDayIndex: number | null,
+  fallbackDayIndex: number
+) => {
+  const boundedFallbackDayIndex = Math.min(
+    Math.max(0, fallbackDayIndex),
+    Math.max(0, program.week.length - 1)
+  );
+  const boundedPreferredDayIndex =
+    typeof preferredDayIndex === "number" && Number.isFinite(preferredDayIndex)
+      ? Math.min(
+          Math.max(0, preferredDayIndex),
+          Math.max(0, program.week.length - 1)
+        )
+      : boundedFallbackDayIndex;
+
+  if (hasRoutableProgramDay(program, boundedPreferredDayIndex)) {
+    return boundedPreferredDayIndex;
+  }
+  if (hasRoutableProgramDay(program, boundedFallbackDayIndex)) {
+    return boundedFallbackDayIndex;
+  }
+
+  const firstRoutableDay = program.week.find(
+    (day) => Array.isArray(day.routine) && day.routine.length > 0
+  );
+  return typeof firstRoutableDay?.dayIndex === "number"
+    ? firstRoutableDay.dayIndex
+    : null;
+};
+
 const normalizeLogSection = (
   section: string
 ): ProgramRoutineItem["section"] | null => {
@@ -511,17 +548,13 @@ export default function SessionClient() {
           resolvedProgress && Number.isFinite(resolvedProgress.nextDayIndex)
             ? resolvedProgress.nextDayIndex
             : 0;
-        const boundedDayIndex = Math.min(
-          Math.max(
-            0,
-            Number.isFinite(resolvedDayIndex)
-              ? (resolvedDayIndex as number)
-              : fallbackDayIndex
-          ),
-          Math.max(0, resolvedProgram.week.length - 1)
+        const routableDayIndex = resolveRoutableProgramDayIndex(
+          resolvedProgram,
+          Number.isFinite(resolvedDayIndex) ? (resolvedDayIndex as number) : null,
+          fallbackDayIndex
         );
         setProgram(resolvedProgram);
-        setProgramDayIndex(boundedDayIndex);
+        setProgramDayIndex(routableDayIndex);
         setProgramProgress(resolvedProgress);
       }
     };

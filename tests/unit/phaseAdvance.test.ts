@@ -219,4 +219,54 @@ describe("phase progression changes program output", () => {
       ).toBe(true);
     }
   });
+
+  test("manual phase advance does not create phase 4", () => {
+    const current = generateWeeklyProgram(baseData, "phase3-current", {
+      phaseIndex: 3,
+      weekIndex: 6,
+      cycleIndex: 3,
+      totalWeekIndex: 6,
+    });
+    const result = generateNextPhaseProgram({
+      currentProgram: current,
+      questionnaire: baseData,
+      painFlag: false,
+      complianceRate: 1,
+      fatigueFlag: false,
+      completedSessionsCount: 18,
+      completedWeeksCount: 6,
+      nextProgramId: "phase4-attempt",
+    });
+
+    expect(result.status).toBe("repeat");
+  });
+
+  test("phase 3 progression continues through cycles instead of phase 4", () => {
+    const current = generateWeeklyProgram(baseData, "phase3-cycle", {
+      phaseIndex: 3,
+      weekIndex: 3,
+      cycleIndex: 3,
+      totalWeekIndex: 7,
+    });
+    const result = generateNextCycleProgram({
+      currentProgram: current,
+      questionnaire: baseData,
+      painFlag: false,
+      complianceRate: 1,
+      fatigueFlag: false,
+      completedSessionsCount: 21,
+      completedWeeksCount: 7,
+      movementQuality: 0.9,
+      confidence: 0.85,
+      capacity: 0.85,
+      nextProgramId: "phase3-next-cycle",
+    });
+
+    expect(result.status).toBe("advanced");
+    if (result.status === "advanced") {
+      expect(result.program.phaseIndex).toBe(3);
+      expect(result.program.cycleIndex).toBe(4);
+      expect(result.program.weekIndex).toBe(4);
+    }
+  });
 });

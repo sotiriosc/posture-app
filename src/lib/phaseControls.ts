@@ -1,4 +1,5 @@
 import type { PhaseAdvanceGateResult } from "@/lib/phaseGating";
+import { MAX_PHASE_INDEX } from "@/lib/phases";
 
 export type PhaseControlUiState = {
   showSkipPhaseOne: boolean;
@@ -12,7 +13,7 @@ export const getPhaseControlUiState = (params: {
 }): PhaseControlUiState => {
   const { phaseIndex, gate } = params;
   const showSkipPhaseOne = phaseIndex === 1;
-  const canMoveNextPhase = gate.ok;
+  const canMoveNextPhase = phaseIndex < MAX_PHASE_INDEX && gate.ok;
   const canUploadPhotos = phaseIndex > 1 || gate.ok;
   return {
     showSkipPhaseOne,
@@ -37,4 +38,3 @@ export const evaluateSkipPhaseOneAction = (params: {
     nextPhaseIndex: 2,
   };
 };
-
