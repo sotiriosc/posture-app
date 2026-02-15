@@ -31,6 +31,7 @@ export type ExerciseLog = {
   userId: string | null;
   sessionId: string;
   exerciseId: string;
+  section?: ProgramRoutineItem["section"] | null;
   originalExerciseId?: string | null;
   substitutedExerciseId?: string | null;
   programId?: string | null;
@@ -190,6 +191,12 @@ export type ProgramProgress = {
   lastCompletedDayIndex: number | null;
   nextDayIndex: number;
   completedDayIndices: number[];
+  phaseIndex?: number;
+  phaseStartedAt?: string | null;
+  cyclesCompletedInPhase?: number;
+  daysPerWeek?: number;
+  weekIndex?: number;
+  countedWeekKeys?: string[];
   updatedAt: string;
 };
 

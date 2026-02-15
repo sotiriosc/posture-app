@@ -16,6 +16,7 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
 import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
+import { applyCompletedDayToProgramProgress } from "@/lib/programProgress";
 import {
   clearDraft,
   loadDraft,
@@ -91,6 +92,18 @@ const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
       ? Number(value)
       : NaN;
   return parsed === 4 || parsed === 5 ? parsed : 3;
+};
+
+const normalizeLogSection = (
+  section: string
+): ProgramRoutineItem["section"] | null => {
+  const normalized = section.trim().toLowerCase().replace(/[\s_-]+/g, "");
+  if (normalized.includes("warmup")) return "warmup";
+  if (normalized.includes("activation")) return "activation";
+  if (normalized.includes("accessory")) return "accessory";
+  if (normalized.includes("cooldown")) return "cooldown";
+  if (normalized.includes("main")) return "main";
+  return null;
 };
 
 type SessionPainLevel = PainLevel;
@@ -876,12 +889,6 @@ export default function SessionClient() {
   };
 
   const handleSavePainReportOnly = async () => {
-    await recordPainReportEvent({
-      painLevel: painModalLevel,
-      swappedExerciseId: null,
-      painLocation: painModalLocation ? (painModalLocation as PainLocation) : null,
-      notes: painModalNotes.trim() || null,
-    });
     await persistPainLevelFeedback({
       painLevel: painModalLevel,
       painLocation: painModalLocation ? (painModalLocation as PainLocation) : null,
@@ -1090,6 +1097,7 @@ export default function SessionClient() {
         userId: null,
         sessionId: sessionIdValue,
         exerciseId,
+        section: normalizeLogSection(item.section),
         originalExerciseId:
           originalExerciseId && originalExerciseId !== exerciseId
             ? originalExerciseId
@@ -1143,23 +1151,19 @@ export default function SessionClient() {
     sessionCompleteRef.current = true;
 
     if (program && programDayIndex !== null) {
-      const completed = new Set(
-        programProgress?.completedDayIndices ?? []
-      );
-      completed.add(programDayIndex);
-      const nextIndex =
-        programDayIndex + 1 < program.daysPerWeek ? programDayIndex + 1 : 0;
-      const progress: ProgramProgress = {
+      const progress = applyCompletedDayToProgramProgress({
+        priorProgress: programProgress,
         programId: program.id,
-        lastCompletedDayIndex: programDayIndex,
-        nextDayIndex: nextIndex,
-        completedDayIndices: Array.from(completed),
-        updatedAt: completedAt,
-      };
+        phaseIndex: program.phaseIndex ?? 1,
+        daysPerWeek: program.daysPerWeek,
+        completedDayIndex: programDayIndex,
+        completedAtIso: completedAt,
+        phaseStartedAtFallback: program.createdAt ?? completedAt,
+      }).progress;
       await saveProgramProgress(progress);
       setProgramProgress(progress);
       saveAppState({
-        selectedDay: nextIndex,
+        selectedDay: progress.nextDayIndex,
       });
     }
 

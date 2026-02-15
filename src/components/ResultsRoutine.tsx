@@ -8,7 +8,6 @@ import { exerciseById } from "@/lib/exercises";
 import type { Routine } from "@/lib/routine";
 import { generateRoutine } from "@/lib/routine";
 import {
-  generateNextCycleProgram,
   generateNextPhaseProgram,
   generateWeeklyProgram,
   PROGRAM_TEMPLATE_VERSION,
@@ -65,6 +64,12 @@ import {
   getPhaseProfile,
 } from "@/lib/phases";
 import { clearDraftsByProgramId } from "@/lib/sessionDraftStore";
+import {
+  canAdvancePhase,
+  formatPhaseGateReason,
+  skipPhase1,
+} from "@/lib/phaseGating";
+import { getPhaseControlUiState } from "@/lib/phaseControls";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -145,6 +150,7 @@ export default function ResultsRoutine() {
   const [advanceOpen, setAdvanceOpen] = useState(false);
   const [advanceConfirm, setAdvanceConfirm] = useState(false);
   const [advanceMessage, setAdvanceMessage] = useState<string | null>(null);
+  const [skipPhaseOneOpen, setSkipPhaseOneOpen] = useState(false);
   const [lastTwoLogs, setLastTwoLogs] = useState<ExerciseLog[]>([]);
   const [authEnabled, setAuthEnabled] = useState(false);
   const [plan, setPlan] = useState<SubscriptionPlan>("free");
@@ -420,8 +426,7 @@ export default function ResultsRoutine() {
     return parts.join(" • ");
   };
 
-  const nextPhaseButtonLabel = `Advance to Phase ${(program?.phaseIndex ?? 1) + 1}`;
-  const nextCycleButtonLabel = `Start Cycle ${(program?.cycleIndex ?? 1) + 1}`;
+  const movePhaseButtonLabel = `Move to Phase ${(program?.phaseIndex ?? 1) + 1}`;
 
   const previewSummary = () => {
     const currentPhaseIndex = program?.phaseIndex ?? 1;
@@ -430,7 +435,7 @@ export default function ResultsRoutine() {
     return `Next phase focuses on ${nextProfile.label.toLowerCase()}. ${nextProfile.description}`;
   };
 
-  const handleAdvanceProgram = async (mode: "phase" | "cycle") => {
+  const handleAdvanceProgram = async () => {
     if (!program || !data) return;
     setAdvanceMessage(null);
     const state = loadAppState();
@@ -443,34 +448,55 @@ export default function ResultsRoutine() {
     });
     const progressionLogs =
       recentLogsForProgression.length > 0 ? recentLogsForProgression : lastTwoLogs;
-    const result =
-      mode === "phase"
-        ? generateNextPhaseProgram({
-            currentProgram: program,
-            questionnaire: data,
-            painFlag: Boolean(advanceStatus.painFlag),
-            complianceRate: advanceStatus.complianceRate ?? 0,
-            fatigueFlag: Boolean(advanceStatus.fatigueFlag),
-            completedSessionsCount: completedSessions.length,
-            completedWeeksCount: completedWeeks,
-            recentLogs: progressionLogs,
-            nextProgramId: uuid(),
-          })
-        : generateNextCycleProgram({
-            currentProgram: program,
-            questionnaire: data,
-            painFlag: Boolean(advanceStatus.painFlag),
-            complianceRate: advanceStatus.complianceRate ?? 0,
-            fatigueFlag: Boolean(advanceStatus.fatigueFlag),
-            completedSessionsCount: completedSessions.length,
-            completedWeeksCount: completedWeeks,
-            recentLogs: progressionLogs,
-            nextProgramId: uuid(),
-          });
+    const now = Date.parse(new Date().toISOString());
+    const recentSessions = completedSessions.filter((session) => {
+      if (!session.completedAt) return false;
+      const timestamp = Date.parse(session.completedAt);
+      if (Number.isNaN(timestamp)) return false;
+      return now - timestamp <= 7 * 24 * 60 * 60 * 1000;
+    });
+    const complianceRate = Math.min(
+      1,
+      recentSessions.length / Math.max(1, program.daysPerWeek)
+    );
+    const painFlag =
+      lastTwoLogs.some((log) => log.felt === "pain") ||
+      completedSessions.slice(0, 2).some((session) => session.sessionFeedback === "pain");
+    const hardCount = lastTwoLogs.filter((log) => log.felt === "hard").length;
+    const fatigueFlag =
+      lastTwoLogs.length > 0 && hardCount / lastTwoLogs.length >= 0.5;
+
+    const result = generateNextPhaseProgram({
+      currentProgram: program,
+      questionnaire: data,
+      painFlag,
+      complianceRate,
+      fatigueFlag,
+      completedSessionsCount: completedSessions.length,
+      completedWeeksCount: completedWeeks,
+      recentLogs: progressionLogs,
+      nextProgramId: uuid(),
+    });
 
     if (result.status === "advanced") {
+      const nowIso = new Date().toISOString();
+      const nextProgress: ProgramProgress = {
+        programId: result.program.id,
+        lastCompletedDayIndex: null,
+        nextDayIndex: 0,
+        completedDayIndices: [],
+        phaseIndex: result.program.phaseIndex ?? 2,
+        phaseStartedAt: nowIso,
+        cyclesCompletedInPhase: 0,
+        daysPerWeek: result.program.daysPerWeek,
+        weekIndex: 1,
+        countedWeekKeys: [],
+        updatedAt: nowIso,
+      };
       await saveProgram(result.program);
+      await saveProgramProgress(nextProgress);
       setProgram(result.program);
+      setProgress(nextProgress);
       setSelectedDay(0);
       await clearDraftsByProgramId(program.id);
       saveAppState({
@@ -490,6 +516,66 @@ export default function ResultsRoutine() {
     }
 
     setAdvanceMessage(result.message);
+  };
+
+  const handleSkipPhaseOne = async () => {
+    if (!program || !data) return;
+    const currentPhaseIndex = progress?.phaseIndex ?? program.phaseIndex ?? 1;
+    if (currentPhaseIndex !== 1) {
+      setSkipPhaseOneOpen(false);
+      return;
+    }
+    const state = loadAppState();
+    const nextProgramVersion =
+      typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
+    const nowIso = new Date().toISOString();
+    const nextProgram = generateWeeklyProgram(data, uuid(), {
+      phaseIndex: 2,
+      weekIndex: 1,
+      cycleIndex: 1,
+      totalWeekIndex: (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1,
+    });
+    const baseProgress: ProgramProgress = {
+      programId: nextProgram.id,
+      lastCompletedDayIndex: null,
+      nextDayIndex: 0,
+      completedDayIndices: [],
+      phaseIndex: currentPhaseIndex,
+      phaseStartedAt: progress?.phaseStartedAt ?? program.createdAt ?? nowIso,
+      cyclesCompletedInPhase: progress?.cyclesCompletedInPhase ?? 0,
+      daysPerWeek: nextProgram.daysPerWeek,
+      weekIndex: progress?.weekIndex ?? 1,
+      countedWeekKeys: progress?.countedWeekKeys ?? [],
+      updatedAt: nowIso,
+    };
+    const skipped = skipPhase1(baseProgress, nowIso);
+    const nextProgress: ProgramProgress = {
+      ...skipped,
+      programId: nextProgram.id,
+      lastCompletedDayIndex: null,
+      nextDayIndex: 0,
+      completedDayIndices: [],
+      daysPerWeek: nextProgram.daysPerWeek,
+      updatedAt: nowIso,
+    };
+    await saveProgram(nextProgram);
+    await saveProgramProgress(nextProgress);
+    setProgram(nextProgram);
+    setProgress(nextProgress);
+    setSelectedDay(0);
+    await clearDraftsByProgramId(program.id);
+    saveAppState({
+      programId: nextProgram.id,
+      activeProgramId: nextProgram.id,
+      selectedDay: 0,
+      activePhaseIndex: nextProgram.phaseIndex ?? 2,
+      activeCycleIndex: nextProgram.cycleIndex ?? 1,
+      programVersion: nextProgramVersion,
+      activeSessionId: undefined,
+      questionnaireSignature: questionnaireSignature ?? undefined,
+      lastRoute: "/results",
+    });
+    setSkipPhaseOneOpen(false);
   };
 
   useEffect(() => {
@@ -655,164 +741,54 @@ export default function ResultsRoutine() {
     loadLastTwo();
   }, [completedSessions]);
 
-  const advanceStatus = useMemo(() => {
-    if (!program) {
-      const fallback = getPhaseMetaByIndex(1);
-      return {
-        canAdvance: false,
-        reason: "Program not ready yet.",
-        phaseLabel: fallback.phaseName,
-        cycleIndex: 1,
-        isPhaseBoundary: false,
-        completedSessionsCount: 0,
-        requiredSessionsCount: 0,
-        completedWeeksCount: 0,
-        requiredWeeksCount: 0,
-      };
-    }
-
-    if (!completedSessions.length) {
-      const fallback = getPhaseMetaByIndex(program.phaseIndex ?? 1);
-      return {
-        canAdvance: false,
-        reason: "Complete at least 1 session to unlock progression.",
-        phaseLabel: program.phaseName ?? fallback.phaseName,
-        cycleIndex: program.cycleIndex ?? 1,
-        isPhaseBoundary: false,
-        completedSessionsCount: 0,
-        requiredSessionsCount: program.daysPerWeek,
-        completedWeeksCount: 0,
-        requiredWeeksCount: 1,
-      };
-    }
-
-    const now = Date.parse(new Date().toISOString());
-    const recentSessions = completedSessions.filter((session) => {
-      if (!session.completedAt) return false;
-      const timestamp = Date.parse(session.completedAt);
-      if (Number.isNaN(timestamp)) return false;
-      return now - timestamp <= 7 * 24 * 60 * 60 * 1000;
-    });
-    const complianceRate = Math.min(
-      1,
-      recentSessions.length / program.daysPerWeek
-    );
-
-    const painFlag =
-      lastTwoLogs.some((log) => log.felt === "pain") ||
-      completedSessions.slice(0, 2).some((session) => session.sessionFeedback === "pain");
-
-    const hardCount = lastTwoLogs.filter((log) => log.felt === "hard").length;
-    const fatigueFlag =
-      lastTwoLogs.length > 0 && hardCount / lastTwoLogs.length >= 0.5;
-
-    if (painFlag) {
-      const fallback = getPhaseMetaByIndex(program.phaseIndex ?? 1);
-      return {
-        canAdvance: false,
-        reason: "Address pain first before advancing.",
-        phaseLabel: program.phaseName ?? fallback.phaseName,
-        complianceRate,
-        painFlag,
-        fatigueFlag,
-        cycleIndex: program.cycleIndex ?? 1,
-        isPhaseBoundary: false,
-        completedSessionsCount: completedSessions.length,
-        requiredSessionsCount: completedSessions.length,
-        completedWeeksCount: completedWeeks,
-        requiredWeeksCount: 0,
-      };
-    }
-
-    if (complianceRate < 0.85) {
-      const fallback = getPhaseMetaByIndex(program.phaseIndex ?? 1);
-      return {
-        canAdvance: false,
-        reason: "Hit at least 85% weekly compliance to advance.",
-        phaseLabel: program.phaseName ?? fallback.phaseName,
-        complianceRate,
-        painFlag,
-        fatigueFlag,
-        cycleIndex: program.cycleIndex ?? 1,
-        isPhaseBoundary: false,
-        completedSessionsCount: completedSessions.length,
-        requiredSessionsCount: Math.max(program.daysPerWeek, completedSessions.length),
-        completedWeeksCount: completedWeeks,
-        requiredWeeksCount: 1,
-      };
-    }
-
-    const minWeeksForPhaseAdvance = 2;
-    const canAdvancePhase = completedWeeks >= minWeeksForPhaseAdvance;
-    const requiredWeeksForCurrentCycle = 1;
-    const requiredSessionsForCurrentCycle = program.daysPerWeek;
-    if (completedSessions.length < requiredSessionsForCurrentCycle) {
-      return {
-        canAdvance: false,
-        reason: `Complete ${requiredSessionsForCurrentCycle} sessions before starting the next cycle.`,
-        phaseLabel:
-          program.phaseName ?? getPhaseMetaByIndex(program.phaseIndex ?? 1).phaseName,
-        complianceRate,
-        painFlag,
-        fatigueFlag,
-        cycleIndex: program.cycleIndex ?? 1,
-        isPhaseBoundary: false,
-        completedSessionsCount: completedSessions.length,
-        requiredSessionsCount: requiredSessionsForCurrentCycle,
-        completedWeeksCount: completedWeeks,
-        requiredWeeksCount: requiredWeeksForCurrentCycle,
-      };
-    }
-
-    if ((program.cycleIndex ?? 1) % 4 === 0 && !canAdvancePhase) {
-      return {
-        canAdvance: false,
-        reason: `Complete at least ${minWeeksForPhaseAdvance} full weeks before advancing phase.`,
-        phaseLabel:
-          program.phaseName ?? getPhaseMetaByIndex(program.phaseIndex ?? 1).phaseName,
-        complianceRate,
-        painFlag,
-        fatigueFlag,
-        cycleIndex: program.cycleIndex ?? 1,
-        isPhaseBoundary: true,
-        completedSessionsCount: completedSessions.length,
-        requiredSessionsCount: requiredSessionsForCurrentCycle,
-        completedWeeksCount: completedWeeks,
-        requiredWeeksCount: minWeeksForPhaseAdvance,
-      };
-    }
-
-    return {
-      canAdvance: true,
-      reason: "You’re ready to progress to the next phase/week.",
-      phaseLabel:
-        program.phaseName ?? getPhaseMetaByIndex(program.phaseIndex ?? 1).phaseName,
-      complianceRate,
-      painFlag,
-      fatigueFlag,
-      cycleIndex: program.cycleIndex ?? 1,
-      isPhaseBoundary: (program.cycleIndex ?? 1) % 4 === 0 && canAdvancePhase,
-      completedSessionsCount: completedSessions.length,
-      requiredSessionsCount: requiredSessionsForCurrentCycle,
-      completedWeeksCount: completedWeeks,
-      requiredWeeksCount: (program.cycleIndex ?? 1) % 4 === 0 ? minWeeksForPhaseAdvance : requiredWeeksForCurrentCycle,
-    };
-  }, [program, completedSessions, completedWeeks, lastTwoLogs]);
-
-
   useEffect(() => {
     if (!program) return;
     getProgramProgress(program.id).then((stored) => {
       if (stored) {
-        setProgress(stored);
-        setSelectedDay(stored.nextDayIndex ?? 0);
+        const nowIso = new Date().toISOString();
+        const normalized: ProgramProgress = {
+          ...stored,
+          phaseIndex: stored.phaseIndex ?? (program.phaseIndex ?? 1),
+          phaseStartedAt:
+            stored.phaseStartedAt ?? program.createdAt ?? nowIso,
+          cyclesCompletedInPhase:
+            typeof stored.cyclesCompletedInPhase === "number"
+              ? stored.cyclesCompletedInPhase
+              : 0,
+          daysPerWeek: stored.daysPerWeek ?? program.daysPerWeek,
+          weekIndex: Math.max(1, stored.weekIndex ?? 1),
+          countedWeekKeys: Array.isArray(stored.countedWeekKeys)
+            ? stored.countedWeekKeys
+            : [],
+          updatedAt: stored.updatedAt ?? nowIso,
+        };
+        setProgress(normalized);
+        setSelectedDay(normalized.nextDayIndex ?? 0);
+        if (
+          stored.phaseStartedAt !== normalized.phaseStartedAt ||
+          stored.cyclesCompletedInPhase !== normalized.cyclesCompletedInPhase ||
+          stored.phaseIndex !== normalized.phaseIndex ||
+          stored.daysPerWeek !== normalized.daysPerWeek ||
+          stored.weekIndex !== normalized.weekIndex ||
+          JSON.stringify(stored.countedWeekKeys ?? []) !==
+            JSON.stringify(normalized.countedWeekKeys ?? [])
+        ) {
+          void saveProgramProgress(normalized);
+        }
       } else {
+        const nowIso = new Date().toISOString();
         const initial: ProgramProgress = {
           programId: program.id,
           lastCompletedDayIndex: null,
           nextDayIndex: 0,
           completedDayIndices: [],
-          updatedAt: new Date().toISOString(),
+          phaseIndex: program.phaseIndex ?? 1,
+          phaseStartedAt: program.createdAt ?? nowIso,
+          cyclesCompletedInPhase: 0,
+          daysPerWeek: program.daysPerWeek,
+          weekIndex: 1,
+          countedWeekKeys: [],
+          updatedAt: nowIso,
         };
         saveProgramProgress(initial);
         setProgress(initial);
@@ -835,21 +811,33 @@ export default function ResultsRoutine() {
     };
   }, [program]);
 
-  useEffect(() => {
-    if (!program) return;
-    const completedIndices = Array.from(completedByDay.keys());
-    const updated: ProgramProgress = {
-      programId: program.id,
-      lastCompletedDayIndex: completedIndices.length
-        ? completedIndices.sort((a, b) => a - b)[completedIndices.length - 1]
-        : null,
-      nextDayIndex,
-      completedDayIndices: completedIndices,
-      updatedAt: new Date().toISOString(),
-    };
-    saveProgramProgress(updated);
-    setProgress(updated);
-  }, [program, completedByDay, nextDayIndex]);
+  const phaseGate = useMemo(() => {
+    return canAdvancePhase({
+      phaseIndex: progress?.phaseIndex ?? program?.phaseIndex ?? 1,
+      phaseStartedAt: progress?.phaseStartedAt ?? program?.createdAt ?? null,
+      cyclesCompletedInPhase: progress?.cyclesCompletedInPhase ?? 0,
+    });
+  }, [
+    program?.phaseIndex,
+    program?.createdAt,
+    progress?.phaseIndex,
+    progress?.phaseStartedAt,
+    progress?.cyclesCompletedInPhase,
+  ]);
+
+  const phaseGateReason = useMemo(() => {
+    return formatPhaseGateReason(phaseGate);
+  }, [phaseGate]);
+
+  const currentPhaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
+  const phaseControlUi = useMemo(
+    () =>
+      getPhaseControlUiState({
+        phaseIndex: currentPhaseIndex,
+        gate: phaseGate,
+      }),
+    [currentPhaseIndex, phaseGate]
+  );
 
   useEffect(() => {
     if (!program) return;
@@ -1784,53 +1772,45 @@ export default function ResultsRoutine() {
                 Progressive Plan
               </h3>
               <p className="mt-2 text-sm text-slate-200">
-                {program?.phaseName ?? "Phase 1"} is focused on{" "}
-                {getPhaseProfile(program?.phaseIndex ?? 1).label.toLowerCase()}
-                . Each phase adjusts volume, intensity, and variations in a
-                safe, progressive way.
+                {program?.phaseName ?? "Phase 1"} sharpens{" "}
+                {getPhaseProfile(program?.phaseIndex ?? 1).label.toLowerCase()}{" "}
+                with steady, measurable progression.
               </p>
-              <ul className="mt-3 space-y-1 text-xs text-slate-200">
-                <li>
-                  Advance when you complete 3–5 sessions or a full week.
-                </li>
-                <li>No pain flags in the last 2 sessions.</li>
-                <li>Most exercises feel Easy or Moderate.</li>
-              </ul>
-              <p className="mt-3 text-xs text-slate-200">
-                Advancing creates the next progressive week while preserving
-                your history and logs.
+              <p className="mt-2 text-xs text-slate-200">
+                A cycle equals one full week: complete all {program?.daysPerWeek ?? 3} days.
               </p>
             </div>
             <div className="flex flex-col gap-2">
               <button
                 type="button"
-                onClick={() => setAdvanceOpen(true)}
-                disabled={!advanceStatus.canAdvance}
+                data-testid="move-phase-trigger"
+                onClick={() => {
+                  setAdvanceMessage(previewSummary());
+                  setAdvanceOpen(true);
+                }}
+                disabled={!phaseControlUi.canMoveNextPhase}
                 className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 disabled:opacity-50"
               >
-                {advanceStatus.isPhaseBoundary
-                  ? nextPhaseButtonLabel
-                  : nextCycleButtonLabel}
+                {movePhaseButtonLabel}
               </button>
-              <button
-                type="button"
-                onClick={() => setAdvanceMessage(previewSummary())}
-                className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
-              >
-                {advanceStatus.isPhaseBoundary
-                  ? "Preview next phase"
-                  : "Preview next cycle"}
-              </button>
+              {phaseControlUi.showSkipPhaseOne ? (
+                <button
+                  type="button"
+                  data-testid="skip-phase-one-trigger"
+                  onClick={() => setSkipPhaseOneOpen(true)}
+                  className="rounded-full border border-amber-300/40 bg-amber-100/10 px-4 py-2 text-xs font-semibold text-amber-100 hover:bg-amber-100/15"
+                >
+                  Skip Phase 1
+                </button>
+              ) : null}
             </div>
           </div>
-          <div className="mt-4 text-xs text-slate-200">
-            {advanceStatus.reason}
+          <div className="mt-4 text-xs text-slate-200" data-testid="phase-gate-reason">
+            {phaseGateReason}
           </div>
-          <div className="mt-2 text-[11px] text-slate-300">
-            Sessions: {advanceStatus.completedSessionsCount ?? 0}/
-            {advanceStatus.requiredSessionsCount ?? 0} • Weeks:{" "}
-            {advanceStatus.completedWeeksCount ?? 0}/
-            {advanceStatus.requiredWeeksCount ?? 0}
+          <div className="mt-2 text-[11px] text-slate-300" data-testid="phase-gate-progress">
+            Cycles: {phaseGate.cyclesCompletedInPhase}/{phaseGate.minCycles} • Days:{" "}
+            {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}
           </div>
           {advanceMessage ? (
             <div className="mt-3 rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-xs text-slate-200">
@@ -1851,20 +1831,14 @@ export default function ResultsRoutine() {
           />
           <div className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-950/90 p-6 text-white shadow-xl">
             <h3 className="text-lg font-semibold">
-              {advanceStatus.isPhaseBoundary
-                ? `Advance to Phase ${(program?.phaseIndex ?? 1) + 1}?`
-                : `Start Cycle ${(program?.cycleIndex ?? 1) + 1}?`}
+              Move to Phase {(program?.phaseIndex ?? 1) + 1}?
             </h3>
             <p className="mt-2 text-sm text-slate-200">
-              This will generate a new progressive plan. Your past logs stay
-              saved.
+              This creates your next progressive plan. Your logs and history stay saved.
             </p>
-            {!advanceStatus.canAdvance ? (
+            {!phaseGate.ok ? (
               <div className="mt-3 rounded-2xl border border-amber-200/30 bg-amber-50/10 px-3 py-2 text-xs text-amber-100">
-                {advanceStatus.reason} Sessions {advanceStatus.completedSessionsCount ?? 0}/
-                {advanceStatus.requiredSessionsCount ?? 0}, Weeks{" "}
-                {advanceStatus.completedWeeksCount ?? 0}/
-                {advanceStatus.requiredWeeksCount ?? 0}.
+                {phaseGateReason}
               </div>
             ) : null}
             {advanceMessage ? (
@@ -1894,15 +1868,50 @@ export default function ResultsRoutine() {
               </button>
               <button
                 type="button"
-                disabled={!advanceConfirm}
-                onClick={() =>
-                  handleAdvanceProgram(
-                    advanceStatus.isPhaseBoundary ? "phase" : "cycle"
-                  )
-                }
+                disabled={!advanceConfirm || !phaseGate.ok}
+                onClick={() => handleAdvanceProgram()}
                 className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 disabled:opacity-50"
               >
-                {advanceStatus.isPhaseBoundary ? "Advance phase" : "Start cycle"}
+                Move phase
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {skipPhaseOneOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setSkipPhaseOneOpen(false)}
+          />
+          <div
+            className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-950/90 p-6 text-white shadow-xl"
+            data-testid="skip-phase-one-modal"
+          >
+            <h3 className="text-lg font-semibold">Skip Phase 1?</h3>
+            <p className="mt-2 text-sm text-slate-200">
+              Phase 1 builds control and tolerance. Skipping can make Phase 2 feel sharper and less stable.
+            </p>
+            <p className="mt-2 text-xs text-slate-300">
+              You can continue now, but expect stricter loading and technique demands.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                data-testid="skip-phase-one-cancel"
+                onClick={() => setSkipPhaseOneOpen(false)}
+                className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/90 hover:bg-white/10"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                data-testid="skip-phase-one-confirm"
+                onClick={handleSkipPhaseOne}
+                className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900"
+              >
+                Confirm skip
               </button>
             </div>
           </div>
@@ -1910,9 +1919,22 @@ export default function ResultsRoutine() {
       ) : null}
 
       <OnImage className="flex flex-wrap gap-3">
-        <Link href="/assessment">
-          <Button variant="secondary">Update photos</Button>
-        </Link>
+        {!phaseControlUi.canUploadPhotos ? (
+          <Button
+            variant="secondary"
+            disabled
+            data-testid="upload-photos-button"
+            title={phaseGateReason}
+          >
+            Upload new photos
+          </Button>
+        ) : (
+          <Link href="/assessment">
+            <Button variant="secondary" data-testid="upload-photos-button">
+              Upload new photos
+            </Button>
+          </Link>
+        )}
         <Link href="/questionnaire">
           <Button variant="secondary">Edit answers</Button>
         </Link>
