@@ -23,10 +23,12 @@ const STORE_PHOTOS = "photos";
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
-const openDb = () => {
-  if (dbPromise) return dbPromise;
-  dbPromise = new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+const openDbRequest = (version?: number) =>
+  new Promise<IDBDatabase>((resolve, reject) => {
+    const request =
+      typeof version === "number"
+        ? indexedDB.open(DB_NAME, version)
+        : indexedDB.open(DB_NAME);
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains(STORE_PHOTOS)) {
@@ -35,6 +37,16 @@ const openDb = () => {
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
+  });
+
+const openDb = () => {
+  if (dbPromise) return dbPromise;
+  dbPromise = openDbRequest(DB_VERSION).catch((error) => {
+    // Recover when local browser already has a newer photo DB schema version.
+    if (error instanceof DOMException && error.name === "VersionError") {
+      return openDbRequest();
+    }
+    throw error;
   });
   return dbPromise;
 };
