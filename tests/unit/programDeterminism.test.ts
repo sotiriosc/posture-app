@@ -109,4 +109,91 @@ describe("program determinism", () => {
       );
     }
   });
+
+  test("generation remains deterministic across pain/equipment/capability/phase matrix", () => {
+    const scenarios: Array<{
+      id: string;
+      input: QuestionnaireData;
+      phaseIndex: 1 | 2 | 3;
+      cycleIndex: number;
+      weekIndex: number;
+      totalWeekIndex: number;
+    }> = [
+      {
+        id: "none-beginner-p1",
+        input: {
+          goals: "Improve posture",
+          painAreas: [],
+          experience: "Beginner",
+          equipment: ["none"],
+          daysPerWeek: 3,
+        },
+        phaseIndex: 1,
+        cycleIndex: 1,
+        weekIndex: 1,
+        totalWeekIndex: 1,
+      },
+      {
+        id: "bands-pain-p3",
+        input: {
+          goals: "Reduce pain",
+          painAreas: ["Shoulders", "Lower back"],
+          experience: "Beginner",
+          equipment: ["bands"],
+          daysPerWeek: 3,
+        },
+        phaseIndex: 3,
+        cycleIndex: 2,
+        weekIndex: 2,
+        totalWeekIndex: 4,
+      },
+      {
+        id: "mixed-equip-p2",
+        input: {
+          goals: "General fitness",
+          painAreas: ["Hips"],
+          experience: "Intermediate",
+          equipment: ["dumbbells", "bands"],
+          daysPerWeek: 4,
+        },
+        phaseIndex: 2,
+        cycleIndex: 2,
+        weekIndex: 1,
+        totalWeekIndex: 3,
+      },
+      {
+        id: "loaded-advanced-p3",
+        input: {
+          goals: "Athletic performance",
+          painAreas: [],
+          experience: "Advanced",
+          equipment: ["dumbbells", "bands", "bench"],
+          daysPerWeek: 5,
+        },
+        phaseIndex: 3,
+        cycleIndex: 3,
+        weekIndex: 2,
+        totalWeekIndex: 7,
+      },
+    ];
+
+    scenarios.forEach((scenario) => {
+      const a = generateWeeklyProgram(scenario.input, `${scenario.id}-a`, {
+        phaseIndex: scenario.phaseIndex,
+        cycleIndex: scenario.cycleIndex,
+        weekIndex: scenario.weekIndex,
+        totalWeekIndex: scenario.totalWeekIndex,
+      });
+      const b = generateWeeklyProgram(scenario.input, `${scenario.id}-b`, {
+        phaseIndex: scenario.phaseIndex,
+        cycleIndex: scenario.cycleIndex,
+        weekIndex: scenario.weekIndex,
+        totalWeekIndex: scenario.totalWeekIndex,
+      });
+
+      expect(comparableWeek(a)).toEqual(comparableWeek(b));
+      expect(a.phaseIndex).toBe(b.phaseIndex);
+      expect(a.daysPerWeek).toBe(b.daysPerWeek);
+    });
+  });
 });

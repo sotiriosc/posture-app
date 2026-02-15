@@ -2266,7 +2266,7 @@ export default function SessionClient() {
           </button>
         </OnImage>
       </div>
-      <OnboardingInfoButton page="session" />
+      <OnboardingInfoButton onboardingKey="session" />
     </BackgroundShell>
   );
 }

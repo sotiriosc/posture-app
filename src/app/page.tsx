@@ -108,7 +108,7 @@ export default async function Home() {
           </section>
         </main>
       </div>
-      <OnboardingInfoButton page="home" />
+      <OnboardingInfoButton onboardingKey="home" />
     </div>
   );
 }

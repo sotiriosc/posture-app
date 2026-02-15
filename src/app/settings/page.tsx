@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { loadAppState } from "@/lib/appState";
 import {
   init,
   listAllExerciseLogs,
@@ -120,10 +121,43 @@ export default function SettingsPage() {
   const [confirmText, setConfirmText] = useState("");
   const [dropoffEvents, setDropoffEvents] = useState<SessionDropoffEvent[]>([]);
   const [qaChecklist, setQaChecklist] = useState<Record<string, boolean>>({});
+  const [systemStatus, setSystemStatus] = useState<{
+    activeProgramId: string;
+    baselineDate: string;
+    sessionsTracked: number;
+  }>({
+    activeProgramId: "--",
+    baselineDate: "--",
+    sessionsTracked: 0,
+  });
 
   useEffect(() => {
     setDropoffEvents(listSessionDropoffTelemetry());
     setQaChecklist(loadQaChecklistState());
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadSystemStatus = async () => {
+      await init();
+      const sessions = await listSessions(1000);
+      const appState = loadAppState();
+      const baselineAt =
+        typeof appState?.activeProgramBaselineAt === "number" &&
+        Number.isFinite(appState.activeProgramBaselineAt)
+          ? appState.activeProgramBaselineAt
+          : 0;
+      if (cancelled) return;
+      setSystemStatus({
+        activeProgramId: appState?.activeProgramId ?? "--",
+        baselineDate: baselineAt > 0 ? new Date(baselineAt).toISOString().slice(0, 10) : "--",
+        sessionsTracked: sessions.length,
+      });
+    };
+    void loadSystemStatus();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const telemetrySummary = useMemo(() => {
@@ -419,6 +453,18 @@ export default function SettingsPage() {
 
         <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">
+            Training settings note
+          </h2>
+          <p className="mt-2 text-xs text-amber-700">
+            Changing these settings generates a new training plan.
+          </p>
+          <p className="mt-1 text-xs text-amber-700">
+            Previous sessions remain saved.
+          </p>
+        </div>
+
+        <div className="ui-card p-6">
+          <h2 className="text-sm font-semibold text-slate-900">
             Download data
           </h2>
           <p className="mt-2 text-xs text-slate-600">
@@ -620,6 +666,15 @@ export default function SettingsPage() {
             >
               Reset app data
             </button>
+            <div className="mt-3 rounded-2xl border border-rose-200 bg-white/80 px-3 py-3 text-xs text-rose-800">
+              <p>This does NOT affect your subscription.</p>
+              <p className="mt-2">This removes:</p>
+              <ul className="mt-1 list-disc space-y-1 pl-5">
+                <li>Local workout logs</li>
+                <li>Photos</li>
+                <li>In-progress drafts</li>
+              </ul>
+            </div>
           </div>
 
           {showResetConfirm ? (
@@ -668,6 +723,30 @@ export default function SettingsPage() {
               </div>
             </div>
           ) : null}
+        </div>
+
+        <div className="ui-card p-6">
+          <h2 className="text-sm font-semibold text-slate-900">System status</h2>
+          <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs text-slate-700">
+            <p>
+              Active program ID:{" "}
+              <span className="font-semibold text-slate-900">
+                {systemStatus.activeProgramId}
+              </span>
+            </p>
+            <p className="mt-1">
+              Baseline start date:{" "}
+              <span className="font-semibold text-slate-900">
+                {systemStatus.baselineDate}
+              </span>
+            </p>
+            <p className="mt-1">
+              Sessions tracked:{" "}
+              <span className="font-semibold text-slate-900">
+                {systemStatus.sessionsTracked}
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </BackgroundShell>

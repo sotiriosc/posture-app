@@ -6,6 +6,7 @@ import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import { markSignupWalkthroughPending } from "@/components/onboarding/onboardingConfig";
 
 export default function SignupClient() {
   const router = useRouter();
@@ -42,6 +43,7 @@ export default function SignupClient() {
         setError(payload?.error ?? "Signup failed.");
         return;
       }
+      markSignupWalkthroughPending();
       router.replace(next);
       router.refresh();
     } finally {

@@ -53,6 +53,37 @@ const getDateRow = (params: {
   return { label: "Renewal date", value: date };
 };
 
+type PlanStatusChip = {
+  label: "Active" | "Trial" | "Expired";
+  className: string;
+};
+
+const getPlanStatusChip = (params: {
+  plan?: "free" | "pro";
+  stripeStatus?: string | null;
+}): PlanStatusChip => {
+  const stripeStatus = (params.stripeStatus ?? "").toLowerCase();
+  if (stripeStatus === "trialing") {
+    return {
+      label: "Trial",
+      className: "border-blue-200 bg-blue-50 text-blue-700",
+    };
+  }
+  if (
+    params.plan === "pro" &&
+    (stripeStatus === "active" || stripeStatus === "past_due" || stripeStatus === "")
+  ) {
+    return {
+      label: "Active",
+      className: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    };
+  }
+  return {
+    label: "Expired",
+    className: "border-rose-200 bg-rose-50 text-rose-700",
+  };
+};
+
 export default async function BillingAccountPage() {
   const session = await readServerSession();
   const repo = getUserRepository();
@@ -61,6 +92,10 @@ export default async function BillingAccountPage() {
     plan: user?.plan,
     stripeStatus: user?.stripeSubscriptionStatus,
     renewalDate: user?.stripeCurrentPeriodEnd,
+  });
+  const statusChip = getPlanStatusChip({
+    plan: user?.plan,
+    stripeStatus: user?.stripeSubscriptionStatus,
   });
 
   return (
@@ -87,6 +122,11 @@ export default async function BillingAccountPage() {
           <h2 className="ui-title mt-1">
             {user?.plan === "pro" ? "Pro" : "Free"}
           </h2>
+          <span
+            className={`mt-3 inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${statusChip.className}`}
+          >
+            {statusChip.label}
+          </span>
           <div className="mt-3 space-y-2 text-xs text-slate-700">
             <p>Email: {session?.email ?? "Unknown"}</p>
             <p>
@@ -112,7 +152,28 @@ export default async function BillingAccountPage() {
             <p>Stripe customer: {user?.stripeCustomerId ?? "--"}</p>
             <p>Stripe subscription: {user?.stripeSubscriptionId ?? "--"}</p>
           </div>
-          {user?.stripeCustomerId ? <ManageSubscriptionButton /> : null}
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
+              Your Pro plan includes:
+            </p>
+            <ul className="mt-2 space-y-1 text-xs text-slate-700">
+              <li>Adaptive program generation</li>
+              <li>Automatic weekly progression</li>
+              <li>Session tracking and analytics</li>
+              <li>Continuous system adjustments</li>
+            </ul>
+          </div>
+          {user?.stripeCustomerId ? (
+            <div className="mt-4 space-y-3">
+              <ManageSubscriptionButton />
+              <p className="text-xs text-slate-600">
+                You can cancel or modify your subscription anytime.
+              </p>
+              <p className="text-xs text-slate-600">
+                Your training data remains accessible.
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
     </BackgroundShell>

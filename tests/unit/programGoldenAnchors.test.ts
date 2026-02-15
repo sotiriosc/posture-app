@@ -319,7 +319,7 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-floor-press",
-              "dumbbell-shoulder-press",
+              "dumbbell-arnold-press",
             ],
           },
           {
@@ -349,8 +349,8 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
+              "machine-seated-row",
               "db-triceps-extension",
-              "farmers-carry",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -369,7 +369,7 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "prone-swimmer",
+              "barbell-landmine-pulldown",
             ],
           },
           {
@@ -461,13 +461,13 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "goblet-squat",
-              "db-rdl",
-              "prone-swimmer",
+              "dumbbell-step-up-loaded",
+              "barbell-bent-over-row",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "reverse-snow-angel",
+              "cable-seated-row",
               "farmers-carry",
             ],
             "activationBlockFirst2": [
@@ -487,8 +487,8 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "prone-swimmer",
-              "back-widow",
+              "dumbbell-chest-supported-row",
+              "barbell-landmine-pulldown",
             ],
           },
           {
@@ -512,9 +512,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "db-rdl",
               "goblet-squat",
-              "single-leg-rdl",
+              "barbell-bent-over-row",
+              "pendlay-row",
             ],
           },
           {
@@ -538,9 +538,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "prone-swimmer",
+              "machine-seated-row",
               "dumbbell-shoulder-press",
-              "back-widow",
+              "dumbbell-chest-supported-row",
             ],
           },
         ],
@@ -823,9 +823,9 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "goblet-squat",
-              "db-rdl",
+              "dumbbell-step-up-loaded",
+              "barbell-hip-thrust",
               "farmers-carry",
-              "cossack-squat",
             ],
           },
           {
@@ -850,9 +850,9 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "reverse-snow-angel",
-              "prone-swimmer",
-              "back-widow",
+              "dumbbell-pullover",
+              "barbell-landmine-pulldown",
+              "cable-seated-row",
             ],
           },
           {
@@ -876,10 +876,10 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "db-rdl",
-              "bodyweight-good-morning",
-              "farmers-carry",
               "goblet-squat",
+              "barbell-hip-thrust",
+              "machine-glute-drive",
+              "farmers-carry",
             ],
           },
           {
@@ -905,7 +905,7 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-rows",
               "dumbbell-shoulder-press",
-              "reverse-snow-angel",
+              "dumbbell-pullover",
               "dumbbell-floor-press",
             ],
           },

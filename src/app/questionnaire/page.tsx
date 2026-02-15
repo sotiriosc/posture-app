@@ -32,7 +32,7 @@ export default function QuestionnairePage() {
 
         <QuestionnaireForm />
       </div>
-      <OnboardingInfoButton page="questionnaire" />
+      <OnboardingInfoButton onboardingKey="questionnaire" />
     </BackgroundShell>
   );
 }

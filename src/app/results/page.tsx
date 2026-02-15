@@ -80,7 +80,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
 
         <ResultsRoutine />
       </div>
-      <OnboardingInfoButton page="results" />
+      <OnboardingInfoButton onboardingKey="results" />
     </BackgroundShell>
   );
 }

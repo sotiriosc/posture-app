@@ -47,7 +47,7 @@ export default function AssessmentPage() {
           </Link>
         </OnImage>
       </div>
-      <OnboardingInfoButton page="assessment" />
+      <OnboardingInfoButton onboardingKey="assessment" />
     </BackgroundShell>
   );
 }

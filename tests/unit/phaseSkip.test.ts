@@ -52,4 +52,23 @@ describe("phase skip", () => {
     expect(gate.ok).toBe(false);
     expect(gate.reasons).toContain("Phase initialization incomplete");
   });
+
+  test("phase remains unchanged until explicit skip action is invoked", () => {
+    const progress = makeProgress({
+      phaseIndex: 1,
+      phaseStartedAt: "2026-01-01T00:00:00.000Z",
+      cyclesCompletedInPhase: 3,
+    });
+    const gate = canAdvancePhase(
+      {
+        phaseIndex: progress.phaseIndex,
+        phaseStartedAt: progress.phaseStartedAt,
+        cyclesCompletedInPhase: progress.cyclesCompletedInPhase,
+      },
+      "2026-02-15T00:00:00.000Z"
+    );
+    expect(gate.ok).toBe(true);
+    // Passing the gate alone is not a skip; explicit manual action (skipPhase1) is required.
+    expect(progress.phaseIndex).toBe(1);
+  });
 });

@@ -12,6 +12,8 @@ type DashboardHeroProps = {
   cycleProgressPercent: number;
   weekProgressPercent: number;
   readinessScore: number;
+  weeklyConsistencyCount: number;
+  weeklyConsistencyTarget?: number | null;
   phaseGoal: string;
   encouragement?: string | null;
   metricChips: string[];
@@ -30,6 +32,8 @@ export default function DashboardHero({
   cycleProgressPercent,
   weekProgressPercent,
   readinessScore,
+  weeklyConsistencyCount,
+  weeklyConsistencyTarget,
   phaseGoal,
   encouragement,
   metricChips,
@@ -37,6 +41,14 @@ export default function DashboardHero({
   ctaHref,
   ctaPulse = false,
 }: DashboardHeroProps) {
+  const hasWeeklyTarget =
+    typeof weeklyConsistencyTarget === "number" &&
+    Number.isFinite(weeklyConsistencyTarget) &&
+    weeklyConsistencyTarget > 0;
+  const consistencyText = hasWeeklyTarget
+    ? `Consistency: ${weeklyConsistencyCount}/${weeklyConsistencyTarget} this week`
+    : `Consistency: ${weeklyConsistencyCount} sessions this week`;
+
   return (
     <section className="ui-card p-5">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
@@ -45,6 +57,12 @@ export default function DashboardHero({
           <h1 className="mt-1 text-2xl font-semibold text-slate-900">{phaseName}</h1>
           <div className="mt-3 rounded-2xl border border-slate-200 bg-white/70 px-3 py-2 shadow-sm lg:hidden">
             <ReadinessIndicator score={readinessScore} />
+            <p className="mt-2 text-xs font-medium text-slate-600">
+              {consistencyText}
+            </p>
+            <p className="mt-1 text-[11px] text-slate-500">
+              Based on your current plan week.
+            </p>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {metricChips.slice(0, 4).map((chip) => (
@@ -97,6 +115,12 @@ export default function DashboardHero({
         <div className="flex w-full flex-col gap-3 lg:min-w-[280px] lg:max-w-[420px] lg:basis-[35%]">
           <div className="hidden rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 shadow-sm lg:block">
             <ReadinessIndicator score={readinessScore} />
+            <p className="mt-2 text-xs font-medium text-slate-600">
+              {consistencyText}
+            </p>
+            <p className="mt-1 text-[11px] text-slate-500">
+              Based on your current plan week.
+            </p>
           </div>
           <Link
             href={ctaHref}

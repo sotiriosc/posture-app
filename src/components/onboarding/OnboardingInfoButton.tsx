@@ -1,117 +1,53 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-
-type OnboardingInfoPage =
-  | "home"
-  | "assessment"
-  | "questionnaire"
-  | "results"
-  | "session";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import {
+  type OnboardingKey,
+  type OnboardingGuide,
+  onboardingGuides,
+  markOnboardingPageSeen,
+  shouldAutoOpenOnboarding,
+} from "@/components/onboarding/onboardingConfig";
 
 type OnboardingInfoButtonProps = {
-  page: OnboardingInfoPage;
+  onboardingKey: OnboardingKey;
   autoOpen?: boolean;
 };
 
-type PageGuide = {
-  heading: string;
-  summary: string;
-  pageSteps: string[];
+const MOBILE_GUIDE_FOOTPRINT_PX = 72;
+
+const isAutomationEnvironment = () => {
+  if (process.env.NODE_ENV === "test") return true;
+  if (typeof navigator === "undefined") return false;
+  return Boolean((navigator as Navigator & { webdriver?: boolean }).webdriver);
 };
-
-const pageGuides: Record<OnboardingInfoPage, PageGuide> = {
-  home: {
-    heading: "Start here: what this system does",
-    summary:
-      "You are not getting a static template. The app analyzes inputs, builds a weekly structure, and updates your plan as you train.",
-    pageSteps: [
-      "Tap Start Assessment to begin posture + training baseline capture.",
-      "Use Skip to questionnaire only if you already know your training inputs.",
-      "Review How the system builds your program so you know what adapts over time.",
-    ],
-  },
-  assessment: {
-    heading: "Photo step: why it matters",
-    summary:
-      "Your photos help detect posture patterns and movement risks, so training emphasis and coaching cues can be more accurate.",
-    pageSteps: [
-      "Upload clear front/side photos in neutral posture.",
-      "Continue to questionnaire to pair image signals with goals, experience, and equipment.",
-      "You can move forward without photos, but recommendations are stronger with them.",
-    ],
-  },
-  questionnaire: {
-    heading: "Questionnaire step: decision inputs",
-    summary:
-      "This page sets your training constraints and capabilities. Those answers control weekly structure, exercise selection, and progression safety.",
-    pageSteps: [
-      "Complete goals, pain areas, experience level, equipment, and days per week.",
-      "Generate your plan to produce the initial phase and schedule.",
-      "If you change settings later, a new active plan is generated and progress restarts for that plan.",
-    ],
-  },
-  results: {
-    heading: "Results dashboard: your command center",
-    summary:
-      "This page shows today’s best action, your current phase status, and how the system is adapting from logs and feedback.",
-    pageSteps: [
-      "Use the primary session CTA first for today’s execution.",
-      "Use Week View for day-by-day context and selected-day details.",
-      "Review Coach Summary and System Adjustments to understand what changed and why.",
-    ],
-  },
-  session: {
-    heading: "Session flow: guided execution",
-    summary:
-      "This page is built to reduce friction. You always see where you are, what to do next, and how to log quickly with minimal taps.",
-    pageSteps: [
-      "Follow the sticky header for phase/day/exercise orientation.",
-      "Use the timer + cues, complete sets, and log quality/pain signals.",
-      "Finish session to update progress and feed adaptation into future plan updates.",
-    ],
-  },
-};
-
-const globalFeatures = [
-  "Adaptive program generation from your inputs and ongoing logs",
-  "Week/day structure with clear next action",
-  "Session feedback and pain signals that influence safer substitutions",
-  "Persistent draft resume so unfinished sessions can continue",
-];
-
-const automaticInputFlow = [
-  "In session logging, Enter moves focus Weight → Reps → RPE → first incomplete set.",
-  "Completing Set 1 auto-focuses the next incomplete set.",
-  "When all sets are complete, focus shifts to workout feedback, then Next Exercise.",
-  "On phones, the keyboard Next/Done action follows the same order for faster logging.",
-];
-
-const mobileTips = [
-  "The help button stays compact in the corner so it never blocks the main CTA.",
-  "The guide opens as a bottom sheet on mobile for thumb-friendly reading.",
-  "Touch targets stay large, and you can dismiss by tapping outside or Close.",
-];
-
-const seenKey = (page: OnboardingInfoPage) => `onboarding_guide_seen_v1_${page}`;
 
 export default function OnboardingInfoButton({
-  page,
+  onboardingKey,
   autoOpen = true,
 }: OnboardingInfoButtonProps) {
   const [open, setOpen] = useState(false);
   const [ready, setReady] = useState(false);
-  const guide = useMemo(() => pageGuides[page], [page]);
+  const panelSafeAreaStyle = useMemo(
+    () =>
+      ({
+        "--guide-safe-inset": `${MOBILE_GUIDE_FOOTPRINT_PX}px`,
+      }) as CSSProperties,
+    []
+  );
+  const guide = useMemo<OnboardingGuide>(
+    () => onboardingGuides[onboardingKey],
+    [onboardingKey]
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const isAutomatedBrowser = Boolean((navigator as Navigator & { webdriver?: boolean }).webdriver);
-    if (!autoOpen || isAutomatedBrowser) {
+    if (!autoOpen || isAutomationEnvironment()) {
       setReady(true);
       return;
     }
-    const hasSeen = localStorage.getItem(seenKey(page)) === "1";
-    if (!hasSeen) {
+    const shouldAutoOpen = shouldAutoOpenOnboarding(onboardingKey);
+    if (shouldAutoOpen) {
       const timer = window.setTimeout(() => {
         setOpen(true);
         setReady(true);
@@ -119,12 +55,10 @@ export default function OnboardingInfoButton({
       return () => window.clearTimeout(timer);
     }
     setReady(true);
-  }, [autoOpen, page]);
+  }, [autoOpen, onboardingKey]);
 
   const closeGuide = () => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(seenKey(page), "1");
-    }
+    markOnboardingPageSeen(onboardingKey);
     setOpen(false);
   };
 
@@ -161,24 +95,25 @@ export default function OnboardingInfoButton({
             type="button"
             aria-label="Close onboarding guide"
             onClick={closeGuide}
-            className="absolute inset-0 bg-slate-950/60 backdrop-blur-[1px]"
+            className="absolute inset-0 bg-slate-900/45 backdrop-blur-[1px]"
           />
           <section
             role="dialog"
             aria-modal="true"
             aria-label="Onboarding guide"
-            className="absolute inset-x-0 bottom-0 max-h-[88vh] overflow-hidden rounded-t-2xl p-[1px] shadow-[0_20px_50px_rgba(2,132,199,0.25)] sm:inset-x-auto sm:bottom-20 sm:right-6 sm:w-[min(92vw,560px)] sm:rounded-2xl"
+            style={panelSafeAreaStyle}
+            className="absolute inset-x-0 bottom-[calc(16px+var(--guide-safe-inset))] max-h-[calc(100vh-24px-var(--guide-safe-inset))] overflow-hidden rounded-t-2xl p-[2px] shadow-[0_22px_52px_rgba(2,132,199,0.3)] sm:inset-x-auto sm:bottom-4 sm:right-4 sm:max-h-[calc(100vh-2rem)] sm:w-[min(92vw,560px)] sm:rounded-2xl"
           >
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 rounded-t-2xl opacity-85 motion-safe:animate-spin sm:rounded-2xl"
+              className="pointer-events-none absolute inset-0 rounded-t-2xl opacity-100 motion-safe:animate-spin sm:rounded-2xl"
               style={{
                 animationDuration: "14s",
                 background:
-                  "conic-gradient(from 180deg at 50% 50%, rgba(125,211,252,.65), rgba(56,189,248,.24), rgba(99,102,241,.28), rgba(167,139,250,.28), rgba(125,211,252,.65))",
+                  "conic-gradient(from 180deg at 50% 50%, rgba(125,211,252,.95), rgba(56,189,248,.45), rgba(59,130,246,.48), rgba(167,139,250,.5), rgba(125,211,252,.95))",
               }}
             />
-            <div className="relative h-full rounded-t-2xl border border-slate-300/25 bg-slate-950/95 text-white sm:rounded-2xl">
+            <div className="relative flex max-h-[calc(100vh-24px-var(--guide-safe-inset))] flex-col rounded-t-2xl border border-slate-300/25 bg-slate-900/86 text-white sm:max-h-[calc(100vh-2rem)] sm:rounded-2xl">
               <header className="border-b border-slate-700/60 px-4 py-3 sm:px-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -186,7 +121,7 @@ export default function OnboardingInfoButton({
                       Onboarding Guide
                     </p>
                     <h2 className="mt-1 text-lg font-semibold text-white">
-                      {guide.heading}
+                      {guide.title}
                     </h2>
                   </div>
                   <button
@@ -199,54 +134,49 @@ export default function OnboardingInfoButton({
                 </div>
               </header>
 
-              <div className="space-y-5 overflow-y-auto px-4 py-4 text-sm text-slate-100 sm:max-h-[74vh] sm:px-5">
-                <section className="rounded-xl border border-slate-700/70 bg-slate-900/70 p-3">
-                  <p>{guide.summary}</p>
-                </section>
-
-                <section>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
-                    What To Do On This Page
-                  </p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5">
-                    {guide.pageSteps.map((step) => (
-                      <li key={step}>{step}</li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
-                    Full Feature Map
-                  </p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5">
-                    {globalFeatures.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
-                    Automatic Input Flow
-                  </p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5">
-                    {automaticInputFlow.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
-                    Mobile Usage Notes
-                  </p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5">
-                    {mobileTips.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </section>
+              <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-4 pb-4 text-sm text-slate-100 [scrollbar-gutter:stable] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-5">
+                {guide.sections.map((section, index) => {
+                  if (section.type === "text") {
+                    return (
+                      <section
+                        key={`text-${index}`}
+                        className="rounded-xl border border-slate-700/70 bg-slate-900/70 p-3"
+                      >
+                        <p>{section.text}</p>
+                      </section>
+                    );
+                  }
+                  if (section.type === "bullets") {
+                    return (
+                      <section key={`bullets-${index}`}>
+                        {section.title ? (
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
+                            {section.title}
+                          </p>
+                        ) : null}
+                        <ul className="mt-2 list-disc space-y-1 pl-5">
+                          {section.items.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </section>
+                    );
+                  }
+                  return (
+                    <section key={`steps-${index}`}>
+                      {section.title ? (
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
+                          {section.title}
+                        </p>
+                      ) : null}
+                      <ol className="mt-2 list-decimal space-y-1 pl-5">
+                        {section.items.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ol>
+                    </section>
+                  );
+                })}
               </div>
             </div>
           </section>

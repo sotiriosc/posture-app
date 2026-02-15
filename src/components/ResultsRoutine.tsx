@@ -75,8 +75,10 @@ import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import PhaseProgressCard from "@/components/dashboard/PhaseProgressCard";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
+import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
+const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
 
 const defaultRoutine: Routine = {
   summary:
@@ -173,6 +175,8 @@ export default function ResultsRoutine() {
   const [knowledgeExpanded, setKnowledgeExpanded] = useState(false);
   const [knowledgeHighlighted, setKnowledgeHighlighted] = useState(false);
   const [systemAdjustmentsExpanded, setSystemAdjustmentsExpanded] = useState(false);
+  const [showSessionCompleteNotice, setShowSessionCompleteNotice] = useState(false);
+  const [sessionCompleteNoticeFading, setSessionCompleteNoticeFading] = useState(false);
   const [weekViewDetailsOpen, setWeekViewDetailsOpen] = useState(false);
   const [weekViewSelectedDay, setWeekViewSelectedDay] = useState<number | null>(
     null
@@ -197,12 +201,18 @@ export default function ResultsRoutine() {
   const weekViewSectionRef = useRef<HTMLElement | null>(null);
   const weekViewDetailsRef = useRef<HTMLDivElement | null>(null);
   const knowledgeHighlightTimeoutRef = useRef<number | null>(null);
+  const sessionCompleteNoticeFadeTimeoutRef = useRef<number | null>(null);
+  const sessionCompleteNoticeTimeoutRef = useRef<number | null>(null);
   const { photos } = usePhotoContext();
   const [poseState, setPoseState] = useState<{
     loading: boolean;
     error: string | null;
     report: AssessmentReport | null;
   }>({ loading: false, error: null, report: null });
+  const triggerSessionCompleteNotice = () => {
+    setSessionCompleteNoticeFading(false);
+    setShowSessionCompleteNotice(true);
+  };
 
   useEffect(() => {
     const loadBootstrap = async () => {
@@ -822,6 +832,21 @@ export default function ResultsRoutine() {
       ? 0
       : Math.floor(completedSessions.length / program.daysPerWeek);
 
+  const workoutsThisWeek = useMemo(() => {
+    const weekStart = new Date(nowAnchor);
+    weekStart.setHours(0, 0, 0, 0);
+    const mondayOffset = (weekStart.getDay() + 6) % 7;
+    weekStart.setDate(weekStart.getDate() - mondayOffset);
+    const weekStartMs = weekStart.getTime();
+    return completedSessions.filter((session) => {
+      const parsed = Date.parse(
+        session.completedAt ?? session.updatedAt ?? session.createdAt
+      );
+      if (Number.isNaN(parsed)) return false;
+      return parsed >= weekStartMs;
+    }).length;
+  }, [completedSessions, nowAnchor]);
+
   useEffect(() => {
     const loadLastTwo = async () => {
       if (!completedSessions.length) {
@@ -898,8 +923,68 @@ export default function ResultsRoutine() {
       if (knowledgeHighlightTimeoutRef.current !== null) {
         window.clearTimeout(knowledgeHighlightTimeoutRef.current);
       }
+      if (sessionCompleteNoticeFadeTimeoutRef.current !== null) {
+        window.clearTimeout(sessionCompleteNoticeFadeTimeoutRef.current);
+      }
+      if (sessionCompleteNoticeTimeoutRef.current !== null) {
+        window.clearTimeout(sessionCompleteNoticeTimeoutRef.current);
+      }
     };
   }, []);
+
+  useEffect(() => {
+    const maybeShowSessionCompleteNotice = (completedAtIso: string | null | undefined) => {
+      if (!completedAtIso) return;
+      const completedAtMs = Date.parse(completedAtIso);
+      if (Number.isNaN(completedAtMs)) return;
+      const seenRaw = localStorage.getItem(SESSION_COMPLETE_ACK_KEY);
+      const seenMs = seenRaw ? Number(seenRaw) : 0;
+      const parsedSeenMs = Number.isFinite(seenMs) ? seenMs : 0;
+      if (completedAtMs <= parsedSeenMs) return;
+      localStorage.setItem(SESSION_COMPLETE_ACK_KEY, String(completedAtMs));
+      triggerSessionCompleteNotice();
+    };
+
+    maybeShowSessionCompleteNotice(localStorage.getItem("session_last_completed_at"));
+    const onSessionCompleted = (event: Event) => {
+      const detail = (event as CustomEvent<{ completedAt?: string }>).detail;
+      maybeShowSessionCompleteNotice(
+        detail?.completedAt ?? localStorage.getItem("session_last_completed_at")
+      );
+    };
+    window.addEventListener(SESSION_COMPLETE_EVENT, onSessionCompleted as EventListener);
+    return () => {
+      window.removeEventListener(
+        SESSION_COMPLETE_EVENT,
+        onSessionCompleted as EventListener
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!showSessionCompleteNotice) return;
+    if (sessionCompleteNoticeFadeTimeoutRef.current !== null) {
+      window.clearTimeout(sessionCompleteNoticeFadeTimeoutRef.current);
+    }
+    if (sessionCompleteNoticeTimeoutRef.current !== null) {
+      window.clearTimeout(sessionCompleteNoticeTimeoutRef.current);
+    }
+    sessionCompleteNoticeFadeTimeoutRef.current = window.setTimeout(() => {
+      setSessionCompleteNoticeFading(true);
+    }, 3600);
+    sessionCompleteNoticeTimeoutRef.current = window.setTimeout(() => {
+      setShowSessionCompleteNotice(false);
+      setSessionCompleteNoticeFading(false);
+    }, 4000);
+    return () => {
+      if (sessionCompleteNoticeFadeTimeoutRef.current !== null) {
+        window.clearTimeout(sessionCompleteNoticeFadeTimeoutRef.current);
+      }
+      if (sessionCompleteNoticeTimeoutRef.current !== null) {
+        window.clearTimeout(sessionCompleteNoticeTimeoutRef.current);
+      }
+    };
+  }, [showSessionCompleteNotice]);
 
   useEffect(() => {
     if (!program) return;
@@ -910,9 +995,11 @@ export default function ResultsRoutine() {
     loadSessions();
     window.addEventListener("focus", loadSessions);
     window.addEventListener("visibilitychange", loadSessions);
+    window.addEventListener(SESSION_COMPLETE_EVENT, loadSessions as EventListener);
     return () => {
       window.removeEventListener("focus", loadSessions);
       window.removeEventListener("visibilitychange", loadSessions);
+      window.removeEventListener(SESSION_COMPLETE_EVENT, loadSessions as EventListener);
     };
   }, [program?.id]);
 
@@ -1520,6 +1607,9 @@ export default function ResultsRoutine() {
   const shouldPulsePrimaryCta =
     heroCta.label === "Start Today's Session" &&
     !completedDaySet.has(effectiveNextDayIndex);
+  const showWeeklyCompletionNudge =
+    completedCount < activeDaysPerWeek &&
+    !completedDaySet.has(effectiveNextDayIndex);
 
   const heroMetricChips = [
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
@@ -1697,6 +1787,8 @@ export default function ResultsRoutine() {
           cycleProgressPercent={cycleProgressPercent}
           weekProgressPercent={weekProgressPercent}
           readinessScore={readinessScore}
+          weeklyConsistencyCount={workoutsThisWeek}
+          weeklyConsistencyTarget={program?.daysPerWeek ?? data?.daysPerWeek ?? null}
           phaseGoal={phaseGoalText}
           encouragement={encouragementMessage}
           metricChips={heroMetricChips}
@@ -1705,6 +1797,26 @@ export default function ResultsRoutine() {
           ctaPulse={shouldPulsePrimaryCta}
         />
       </div>
+
+      {showSessionCompleteNotice ? (
+        <section
+          className={`order-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-900 transition-opacity duration-300 ${
+            sessionCompleteNoticeFading ? "opacity-0" : "opacity-100"
+          }`}
+          aria-live="polite"
+        >
+          <p className="text-sm font-semibold">Session Complete</p>
+          <p className="mt-1 text-xs text-emerald-800">
+            Your program has been updated based on today&apos;s performance.
+          </p>
+        </section>
+      ) : null}
+
+      {showWeeklyCompletionNudge ? (
+        <section className="order-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700">
+          Complete today&apos;s session to maintain progression.
+        </section>
+      ) : null}
 
       <section id="week-view" ref={weekViewSectionRef} className="ui-card order-2 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
