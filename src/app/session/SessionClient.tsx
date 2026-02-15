@@ -287,6 +287,8 @@ export default function SessionClient() {
   >({});
   const [painModalOpen, setPainModalOpen] = useState(false);
   const [painModalLevel, setPainModalLevel] = useState<SessionPainLevel>("none");
+  const [painModalLocation, setPainModalLocation] = useState<PainLocation | "">("");
+  const [painModalNotes, setPainModalNotes] = useState("");
   const [painModalMessage, setPainModalMessage] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const saveStateTimerRef = useRef<number | null>(null);
@@ -659,23 +661,6 @@ export default function SessionClient() {
     setSaveState("saved");
   };
 
-  const saveSubstitution = async (originalId: string, substituteId: string) => {
-    const nextMap = { ...substitutionByExercise, [originalId]: substituteId };
-    setSubstitutionByExercise(nextMap);
-    const nextPrefs: LogPrefs = {
-      ...(prefs ?? { schemaVersion: 1 }),
-      timerPrefs: prefs?.timerPrefs,
-      timerPrefsByExercise: prefs?.timerPrefsByExercise,
-      loadPrefsByExercise: prefs?.loadPrefsByExercise,
-      feedbackByExercise: feedback,
-      substitutionByExercise: nextMap,
-    };
-    setPrefs(nextPrefs);
-    setSaveState("saving");
-    await savePrefs(nextPrefs);
-    setSaveState("saved");
-  };
-
   const persistLoadPref = async (
     exerciseId: string,
     partial: NonNullable<LogPrefs["loadPrefsByExercise"]>[string]
@@ -830,6 +815,8 @@ export default function SessionClient() {
   const recordPainReportEvent = async (params: {
     painLevel: SessionPainLevel;
     swappedExerciseId?: string | null;
+    painLocation?: PainLocation | null;
+    notes?: string | null;
   }) => {
     if (!currentItem) return;
     const { nextSessionId } = ensureSessionIdentity();
@@ -842,25 +829,32 @@ export default function SessionClient() {
       programId: program?.id ?? null,
       dayIndex: programDayIndex ?? null,
       loadType: currentItem.loadType,
+      painLocation: params.painLocation ?? null,
+      notes: params.notes ?? null,
       timestamp: nowIso(),
     });
   };
 
-  const persistPainLevelFeedback = async (painLevel: SessionPainLevel) => {
+  const persistPainLevelFeedback = async (params: {
+    painLevel: SessionPainLevel;
+    painLocation?: PainLocation | null;
+    notes?: string | null;
+  }) => {
     if (!currentItem) return;
     const currentFeedbackKey = currentItem.exerciseId;
     const mappedRating: FeedbackEntry =
-      painLevel === "none"
+      params.painLevel === "none"
         ? "easy"
-        : painLevel === "mild"
+        : params.painLevel === "mild"
         ? "moderate"
         : "pain";
     await saveFeedback({
       ...feedback,
       [currentFeedbackKey]: {
         rating: mappedRating,
-        painLocation: feedback[currentFeedbackKey]?.painLocation ?? null,
-        notes: feedback[currentFeedbackKey]?.notes ?? "",
+        painLocation:
+          params.painLocation ?? feedback[currentFeedbackKey]?.painLocation ?? null,
+        notes: params.notes ?? feedback[currentFeedbackKey]?.notes ?? "",
       },
     });
   };
@@ -869,9 +863,17 @@ export default function SessionClient() {
     await recordPainReportEvent({
       painLevel: painModalLevel,
       swappedExerciseId: null,
+      painLocation: painModalLocation ? (painModalLocation as PainLocation) : null,
+      notes: painModalNotes.trim() || null,
     });
-    await persistPainLevelFeedback(painModalLevel);
+    await persistPainLevelFeedback({
+      painLevel: painModalLevel,
+      painLocation: painModalLocation ? (painModalLocation as PainLocation) : null,
+      notes: painModalNotes.trim() || null,
+    });
     setPainModalMessage(null);
+    setPainModalLocation("");
+    setPainModalNotes("");
     setPainModalOpen(false);
   };
 
@@ -909,10 +911,18 @@ export default function SessionClient() {
     await recordPainReportEvent({
       painLevel: painModalLevel,
       swappedExerciseId: candidateId,
+      painLocation: painModalLocation ? (painModalLocation as PainLocation) : null,
+      notes: painModalNotes.trim() || null,
     });
-    await persistPainLevelFeedback(painModalLevel);
+    await persistPainLevelFeedback({
+      painLevel: painModalLevel,
+      painLocation: painModalLocation ? (painModalLocation as PainLocation) : null,
+      notes: painModalNotes.trim() || null,
+    });
     await persistSessionDraftNow(nextSubstitution);
     setPainModalMessage(null);
+    setPainModalLocation("");
+    setPainModalNotes("");
     setPainModalOpen(false);
   };
 
@@ -940,6 +950,8 @@ export default function SessionClient() {
     setCompletedSets({});
     setSessionSwapByItemId({});
     setPainModalOpen(false);
+    setPainModalLocation("");
+    setPainModalNotes("");
     setPainModalMessage(null);
   };
 
@@ -1397,7 +1409,6 @@ export default function SessionClient() {
                   { value: "easy", label: "Easy" },
                   { value: "moderate", label: "Moderate" },
                   { value: "hard", label: "Hard" },
-                  { value: "pain", label: "Pain / discomfort" },
                 ] as Array<{ value: FeedbackEntry; label: string }>
               ).map((option) => (
                 <button
@@ -1420,41 +1431,6 @@ export default function SessionClient() {
                 </button>
               ))}
             </div>
-            {sessionFeedback?.rating === "pain" ? (
-              <div className="mt-4 grid gap-3 text-xs">
-                <label className="flex flex-col gap-2">
-                  <span className="font-semibold text-slate-700">Location</span>
-                  <select
-                    value={sessionFeedback?.painLocation ?? ""}
-                    onChange={(event) =>
-                      saveSessionFeedback({
-                        rating: "pain",
-                        painLocation: event.target.value
-                          ? (event.target.value as PainLocation)
-                          : null,
-                        notes: sessionFeedback?.notes ?? null,
-                      })
-                    }
-                    className="ui-select"
-                  >
-                    <option value="">Select location</option>
-                    {[
-                      "neck",
-                      "shoulder",
-                      "upper back",
-                      "lower back",
-                      "hips",
-                      "knees",
-                      "other",
-                    ].map((value) => (
-                      <option key={value} value={value}>
-                        {value}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-            ) : null}
           </div>
           <OnImage className="flex flex-wrap gap-3">
             <Button variant="primary" onClick={handleStartNewSession}>
@@ -1545,6 +1521,10 @@ export default function SessionClient() {
                 data-testid="report-pain-trigger"
                 onClick={() => {
                   setPainModalLevel("none");
+                  setPainModalLocation(
+                    (currentFeedback?.painLocation as PainLocation | undefined) ?? ""
+                  );
+                  setPainModalNotes(currentFeedback?.notes ?? "");
                   setPainModalMessage(null);
                   setPainModalOpen(true);
                 }}
@@ -1766,7 +1746,6 @@ export default function SessionClient() {
                   { value: "easy", label: "Easy" },
                   { value: "moderate", label: "Moderate" },
                   { value: "hard", label: "Hard" },
-                  { value: "pain", label: "Pain / discomfort" },
                 ] as Array<{ value: FeedbackEntry; label: string }>
               ).map((option) => (
                 <button
@@ -1793,86 +1772,6 @@ export default function SessionClient() {
                 </button>
               ))}
             </div>
-            {currentFeedback?.rating === "pain" ? (
-              <div className="mt-4 grid gap-3 text-xs">
-                <label className="flex flex-col gap-2">
-                  <span className="font-semibold text-slate-700">Location</span>
-                  <select
-                    value={currentFeedback?.painLocation ?? ""}
-                    onChange={(event) =>
-                      saveFeedback({
-                        ...feedback,
-                        [currentFeedbackKey]: {
-                          rating: "pain",
-                          painLocation: event.target.value
-                            ? (event.target.value as PainLocation)
-                            : null,
-                          notes: currentFeedback?.notes ?? null,
-                        },
-                      })
-                    }
-                    className="ui-select"
-                  >
-                    <option value="">Select location</option>
-                    {[
-                      "neck",
-                      "shoulder",
-                      "upper back",
-                      "lower back",
-                      "hips",
-                      "knees",
-                      "other",
-                    ].map((value) => (
-                      <option key={value} value={value}>
-                        {value}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {(() => {
-                  const baseOriginalId = currentItem.originalExerciseId;
-                  const exercise = exerciseById(currentItem.exerciseId);
-                  const options = exercise?.swapOptions ?? [];
-                  if (!options.length) return null;
-                  return (
-                    <div className="grid gap-2">
-                      <p className="font-semibold text-slate-700">
-                        Try this instead
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {options.map((optionId) => {
-                          const option = exerciseById(optionId);
-                          if (!option) return null;
-                          const isSelected =
-                            substitutionByExercise[baseOriginalId] === optionId;
-                          return (
-                            <button
-                              key={optionId}
-                              type="button"
-                              onClick={() =>
-                                saveSubstitution(baseOriginalId, optionId)
-                              }
-                              className={`rounded-full border px-3 py-1 text-[11px] font-semibold ${
-                                isSelected
-                                  ? "border-slate-900 bg-slate-900 text-white"
-                                  : "border-slate-200 text-slate-700"
-                              }`}
-                            >
-                              {option.name}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      {substitutionByExercise[baseOriginalId] ? (
-                        <p className="text-[11px] text-slate-500">
-                          Substitution saved for next session.
-                        </p>
-                      ) : null}
-                    </div>
-                  );
-                })()}
-              </div>
-            ) : null}
           </div>
         ) : null}
 
@@ -1907,6 +1806,51 @@ export default function SessionClient() {
                 </button>
               ))}
             </div>
+            <div className="mt-3 grid gap-3 text-xs">
+              <label className="flex flex-col gap-2">
+                <span className="font-semibold text-slate-700">
+                  Location (optional)
+                </span>
+                <select
+                  data-testid="pain-report-location"
+                  value={painModalLocation}
+                  onChange={(event) =>
+                    setPainModalLocation(
+                      event.target.value ? (event.target.value as PainLocation) : ""
+                    )
+                  }
+                  className="ui-select"
+                >
+                  <option value="">Select location</option>
+                  {[
+                    "neck",
+                    "shoulder",
+                    "upper back",
+                    "lower back",
+                    "hips",
+                    "knees",
+                    "other",
+                  ].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col gap-2">
+                <span className="font-semibold text-slate-700">
+                  Notes (optional)
+                </span>
+                <textarea
+                  data-testid="pain-report-notes"
+                  value={painModalNotes}
+                  onChange={(event) => setPainModalNotes(event.target.value)}
+                  rows={2}
+                  className="ui-input"
+                  placeholder="What did you feel?"
+                />
+              </label>
+            </div>
             {painModalMessage ? (
               <p className="mt-3 text-xs font-semibold text-rose-700">
                 {painModalMessage}
@@ -1919,6 +1863,8 @@ export default function SessionClient() {
                 data-testid="pain-report-cancel"
                 onClick={() => {
                   setPainModalMessage(null);
+                  setPainModalLocation("");
+                  setPainModalNotes("");
                   setPainModalOpen(false);
                 }}
               >

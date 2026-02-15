@@ -210,9 +210,17 @@ describe("session tracking integration flow", () => {
     });
     fireEvent.click(screen.getByLabelText("Set 1"));
     fireEvent.click(screen.getByLabelText("Set 2"));
-    fireEvent.click(screen.getByRole("button", { name: "Pain / discomfort" }));
-    fireEvent.change(screen.getByRole("combobox"), {
+    fireEvent.click(screen.getByTestId("report-pain-trigger"));
+    fireEvent.click(screen.getByTestId("pain-level-moderate"));
+    fireEvent.change(screen.getByTestId("pain-report-location"), {
       target: { value: "shoulder" },
+    });
+    fireEvent.change(screen.getByTestId("pain-report-notes"), {
+      target: { value: "pinch on last reps" },
+    });
+    fireEvent.click(screen.getByTestId("pain-report-save"));
+    await waitFor(() => {
+      expect(screen.queryByTestId("pain-report-modal")).toBeNull();
     });
 
     fireEvent.click(screen.getByTestId("session-next"));
