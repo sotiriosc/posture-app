@@ -11,6 +11,9 @@ export type Exercise = {
   muscleGroups: string[];
   focusTags?: string[];
   swapOptions?: string[];
+  phaseMin?: "activation" | "skill" | "growth";
+  movementIntensity?: "pattern" | "load" | "mobility";
+  difficultyTier?: "easy" | "moderate" | "hard";
   loadType: "weighted" | "bodyweight" | "timed" | "assisted";
   durationOrReps: string;
   cues: string[];

@@ -1981,6 +1981,58 @@ const conditioningRule = anyOfRule("conditioning", "conditioning", [
   }),
 ]);
 
+const horizontalPushMainRule = rule("required_main_horizontal_push", "main horizontal push", {
+  movementPatternsAny: ["push"],
+  muscleGroupsAny: ["chest"],
+  sections: ["main"],
+});
+
+const verticalPushMainRule: RequirementRule = {
+  ...shoulderVerticalRule,
+  id: "required_main_vertical_push_coherence",
+  description: "main vertical push variety",
+  sections: ["main"],
+  minCount: 1,
+};
+
+const rowPullMainRule = rule("required_main_row_pull", "main row pull", {
+  movementPatternsAny: ["pull"],
+  nameIncludesAny: ["row"],
+  sections: ["main"],
+});
+
+const verticalPullMainRule = anyOfRule("required_main_vertical_pull", "main vertical pull", [
+  rule("vertical_pull_name", "vertical pull name", {
+    movementPatternsAny: ["pull"],
+    nameIncludesAny: ["pulldown", "pull-up", "pullup", "chin-up", "chinup"],
+  }),
+  rule("vertical_pull_lat", "lat-focused pull", {
+    movementPatternsAny: ["pull"],
+    tagsAny: ["lats"],
+    nameIncludesAny: ["lat"],
+  }),
+]);
+verticalPullMainRule.sections = ["main"];
+verticalPullMainRule.minCount = 1;
+
+const secondaryPullAngleMainRule = anyOfRule(
+  "required_main_pull_angle_variety",
+  "main secondary pull angle",
+  [
+    rule("scapular_pull_name", "scapular/rear-delt pull name", {
+      movementPatternsAny: ["pull"],
+      nameIncludesAny: ["face pull", "snow angel", "ytw", "swimmer", "widow"],
+    }),
+    rule("scapular_pull_tags", "scapular/rear-delt pull tags", {
+      movementPatternsAny: ["pull"],
+      tagsAny: ["scap", "upper-back"],
+      muscleGroupsAny: ["upper back", "rear delts"],
+    }),
+  ]
+);
+secondaryPullAngleMainRule.sections = ["main"];
+secondaryPullAngleMainRule.minCount = 1;
+
 const mainPatternRuleByLane: Record<MainLane, RequirementRule> = {
   push: rule("required_main_push", "main push pattern", {
     movementPatternsAny: ["push"],
@@ -2004,6 +2056,20 @@ const mainPatternRuleByLane: Record<MainLane, RequirementRule> = {
     movementPatternsAny: ["hinge"],
     sections: ["main"],
   }),
+};
+
+const lowerSquatMainRule: RequirementRule = {
+  ...mainPatternRuleByLane.squat,
+  id: "required_main_squat_coherence",
+  description: "main squat variety",
+  minCount: 1,
+};
+
+const lowerHingeMainRule: RequirementRule = {
+  ...mainPatternRuleByLane.hinge,
+  id: "required_main_hinge_coherence",
+  description: "main hinge variety",
+  minCount: 1,
 };
 
 const buildConstraintSpecFromTemplate = (params: {
@@ -2959,10 +3025,14 @@ const findBestMainCandidateForRequiredPattern = (params: {
   context: DayConstraintRepairContext;
   budget: DayPatternBudget | null;
   contract: DayConstraintSpec;
+  complementaryRules?: RequirementRule[];
 }): Exercise | null => {
-  const { day, requiredRule, context, budget, contract } = params;
+  const { day, requiredRule, context, budget, contract, complementaryRules } = params;
   const lane = laneForRequiredMainPatternRule(requiredRule) ?? "pull";
   const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+  const laneCounts = countMainLanes(day);
+  const coherenceRules =
+    complementaryRules && complementaryRules.length ? complementaryRules : [requiredRule];
 
   const candidates = exercises
     .filter((exercise) => {
@@ -3020,15 +3090,32 @@ const findBestMainCandidateForRequiredPattern = (params: {
       });
       return {
         exercise,
-        score:
-          detail.score +
-          capabilityBonus.bonus +
-          focusOverlapScore(exercise, day.focusTags) +
-          getPatternRepairPriorityBonus({
-            exercise,
-            lane,
-            context,
-          }),
+        score: (() => {
+          const candidateLaneHits = getMainLaneHits(exercise);
+          const redundancyPenalty = candidateLaneHits.reduce((sum, hitLane) => {
+            const projected = laneCounts[hitLane] + 1;
+            if (projected <= 1) return sum;
+            return sum + (projected - 1) * 1.5;
+          }, 0);
+          const complementaryBonus = coherenceRules.reduce((sum, coherenceRule) => {
+            const isMissing =
+              countMainMatchesForRule(day, coherenceRule) < requiredRuleCount(coherenceRule);
+            if (!isMissing) return sum;
+            return sum + (matchesRule(exercise, coherenceRule, "main") ? 2 : 0);
+          }, 0);
+          return (
+            detail.score +
+            capabilityBonus.bonus +
+            focusOverlapScore(exercise, day.focusTags) +
+            getPatternRepairPriorityBonus({
+              exercise,
+              lane,
+              context,
+            }) +
+            complementaryBonus -
+            redundancyPenalty
+          );
+        })(),
       };
     })
     .sort((left, right) => {
@@ -3147,6 +3234,7 @@ const enforceDayContract = (params: {
         context,
         budget,
         contract,
+        complementaryRules: requiredPatternRules,
       });
       if (!candidate) {
         warnings.push({
@@ -3199,6 +3287,221 @@ const enforceDayContract = (params: {
     day: updatedDay,
     warnings: collectDedupedWarnings(warnings),
   };
+};
+
+const isUpperPushDayTitle = (title: string) => title.toLowerCase().includes("upper push");
+
+const isUpperPullDayTitle = (title: string) => title.toLowerCase().includes("upper pull");
+
+const uniqueRulesById = (rules: RequirementRule[]) => {
+  const map = new Map<string, RequirementRule>();
+  rules.forEach((rule) => {
+    if (!map.has(rule.id)) {
+      map.set(rule.id, rule);
+    }
+  });
+  return Array.from(map.values());
+};
+
+const EMPTY_DAY_CONTRACT: DayConstraintSpec = {
+  id: "coherence_fallback_contract",
+  mustInclude: [],
+  mustNotInclude: [],
+  optionalInclude: [],
+};
+
+const canSatisfyMainRule = (params: {
+  day: ProgramDay;
+  rule: RequirementRule;
+  preserveRules: RequirementRule[];
+  context: DayConstraintRepairContext;
+  budget: DayPatternBudget | null;
+  contract: DayConstraintSpec;
+}) => {
+  const { day, rule, preserveRules, context, budget, contract } = params;
+  if (countMainMatchesForRule(day, rule) >= requiredRuleCount(rule)) return true;
+  return Boolean(
+    findBestMainCandidateForRequiredPattern({
+      day,
+      requiredRule: rule,
+      context,
+      budget,
+      contract,
+      complementaryRules: preserveRules,
+    })
+  );
+};
+
+const enforceMainRulesBySwap = (params: {
+  day: ProgramDay;
+  rules: RequirementRule[];
+  preserveRules: RequirementRule[];
+  context: DayConstraintRepairContext;
+  budget: DayPatternBudget | null;
+  contract: DayConstraintSpec;
+  warningPrefix: string;
+}) => {
+  const { day, rules, preserveRules, context, budget, contract, warningPrefix } = params;
+  if (!rules.length) {
+    return { day, warnings: [] as DayConstraintRepairWarning[] };
+  }
+  let updatedDay = { ...day, routine: [...day.routine] };
+  const warnings: DayConstraintRepairWarning[] = [];
+  const allRules = uniqueRulesById([...preserveRules, ...rules]);
+
+  rules.forEach((requiredRule) => {
+    let guard = 0;
+    const targetCount = requiredRuleCount(requiredRule);
+    while (countMainMatchesForRule(updatedDay, requiredRule) < targetCount && guard < 8) {
+      guard += 1;
+      const currentlyCovered = allRules.filter((rule) => {
+        if (rule.id === requiredRule.id) return true;
+        return countMainMatchesForRule(updatedDay, rule) >= requiredRuleCount(rule);
+      });
+      const candidate = findBestMainCandidateForRequiredPattern({
+        day: updatedDay,
+        requiredRule,
+        context,
+        budget,
+        contract,
+        complementaryRules: allRules,
+      });
+      if (!candidate) {
+        warnings.push({
+          kind: "missing",
+          message: `${warningPrefix}: no eligible main for "${ruleLabel(requiredRule)}".`,
+        });
+        break;
+      }
+      const replacementTarget = findReplacementTargetForRequiredPattern({
+        day: updatedDay,
+        requiredRule,
+        requiredRules: currentlyCovered.length ? currentlyCovered : [requiredRule],
+        context,
+        budget,
+      });
+      if (!replacementTarget) {
+        warnings.push({
+          kind: "missing",
+          message: `${warningPrefix}: cannot replace MAIN for "${ruleLabel(requiredRule)}".`,
+        });
+        break;
+      }
+      updatedDay = replaceDayItemExercise(updatedDay, replacementTarget.index, candidate);
+    }
+  });
+
+  return {
+    day: updatedDay,
+    warnings: collectDedupedWarnings(warnings),
+  };
+};
+
+const enforceDayMainCoherence = (params: {
+  day: ProgramDay;
+  daysPerWeek: 3 | 4 | 5;
+  context: DayConstraintRepairContext;
+  budget: DayPatternBudget | null;
+}) => {
+  const { day, daysPerWeek, context, budget } = params;
+  const contract =
+    resolveDayConstraintSpec({
+      day,
+      daysPerWeek,
+      capabilityMode: context.capabilityMode,
+    }) ?? EMPTY_DAY_CONTRACT;
+  const preserveRules = getRequiredMainPatternRules(contract);
+  const desiredRules: RequirementRule[] = [];
+
+  if (isUpperPushDayTitle(day.title)) {
+    const canHorizontal = canSatisfyMainRule({
+      day,
+      rule: horizontalPushMainRule,
+      preserveRules,
+      context,
+      budget,
+      contract,
+    });
+    const canVertical = canSatisfyMainRule({
+      day,
+      rule: verticalPushMainRule,
+      preserveRules,
+      context,
+      budget,
+      contract,
+    });
+    if (canHorizontal && canVertical) {
+      desiredRules.push(horizontalPushMainRule, verticalPushMainRule);
+    }
+  }
+
+  if (isUpperPullDayTitle(day.title)) {
+    const canRow = canSatisfyMainRule({
+      day,
+      rule: rowPullMainRule,
+      preserveRules,
+      context,
+      budget,
+      contract,
+    });
+    const canVertical = canSatisfyMainRule({
+      day,
+      rule: verticalPullMainRule,
+      preserveRules,
+      context,
+      budget,
+      contract,
+    });
+    if (canRow && canVertical) {
+      desiredRules.push(rowPullMainRule, verticalPullMainRule);
+    } else if (canRow) {
+      desiredRules.push(rowPullMainRule, secondaryPullAngleMainRule);
+    }
+  }
+
+  if (isLowerDayForCoverage(day)) {
+    const painBlocksHingeRequirement =
+      context.selectionContext.painSeverity === "high" &&
+      context.selectionContext.intentProfile.avoidPatterns.includes("heavy_hinge") &&
+      context.selectionContext.painAreas.some((area) => {
+        const token = normalizeTagToken(area);
+        return token.includes("hip") || token.includes("knee") || token.includes("low_back");
+      }) &&
+      context.selectionContext.phaseStage !== "growth";
+
+    const canSquat = canSatisfyMainRule({
+      day,
+      rule: lowerSquatMainRule,
+      preserveRules,
+      context,
+      budget,
+      contract,
+    });
+    const canHinge = !painBlocksHingeRequirement
+      ? canSatisfyMainRule({
+          day,
+          rule: lowerHingeMainRule,
+          preserveRules,
+          context,
+          budget,
+          contract,
+        })
+      : false;
+
+    if (canSquat && canHinge) {
+      desiredRules.push(lowerSquatMainRule, lowerHingeMainRule);
+    }
+  }
+
+  return enforceMainRulesBySwap({
+    day,
+    rules: uniqueRulesById(desiredRules),
+    preserveRules,
+    context,
+    budget,
+    contract,
+    warningPrefix: `${day.title} coherence`,
+  });
 };
 
 const ensureDayHasDumbbellMain = (params: {
@@ -4230,6 +4533,12 @@ const applyDayCurriculumConstraints = (params: {
         context,
         budget: dayBudget,
       });
+      const coherenceEnforced = enforceDayMainCoherence({
+        day: contractEnforced.day,
+        daysPerWeek,
+        context,
+        budget: dayBudget,
+      });
       accumulatedWarnings.push(
         ...budgetOnly.warnings.map((warning) => ({
           dayTitle: day.title,
@@ -4240,10 +4549,15 @@ const applyDayCurriculumConstraints = (params: {
           dayTitle: day.title,
           kind: warning.kind,
           message: warning.message,
+        })),
+        ...coherenceEnforced.warnings.map((warning) => ({
+          dayTitle: day.title,
+          kind: warning.kind,
+          message: warning.message,
         }))
       );
       return ensureDayHasDumbbellMain({
-        day: contractEnforced.day,
+        day: coherenceEnforced.day,
         context,
         budget: dayBudget,
       });
@@ -4258,6 +4572,12 @@ const applyDayCurriculumConstraints = (params: {
     const contractEnforced = enforceDayContract({
       day: budgetAdjusted.day,
       contract: spec,
+      context,
+      budget: dayBudget,
+    });
+    const coherenceEnforced = enforceDayMainCoherence({
+      day: contractEnforced.day,
+      daysPerWeek,
       context,
       budget: dayBudget,
     });
@@ -4276,10 +4596,15 @@ const applyDayCurriculumConstraints = (params: {
         dayTitle: day.title,
         kind: warning.kind,
         message: warning.message,
+      })),
+      ...coherenceEnforced.warnings.map((warning) => ({
+        dayTitle: day.title,
+        kind: warning.kind,
+        message: warning.message,
       }))
     );
     return ensureDayHasDumbbellMain({
-      day: contractEnforced.day,
+      day: coherenceEnforced.day,
       context,
       budget: dayBudget,
     });
@@ -5342,15 +5667,29 @@ const getIntentSlotScoreBonus = (params: {
 
   if (context.phaseStage === "activation") {
     if (role === "mainControl" || role === "postureCorrective" || role === "core") {
-      score += 1.5;
-      reasons.push("+1.5 activation control bias");
+      score += 2;
+      reasons.push("+2 activation control bias");
+    }
+    if (
+      tags.has("scap") ||
+      tags.has("core") ||
+      tags.has("tva") ||
+      tags.has("stability") ||
+      tags.has("control")
+    ) {
+      score += 1;
+      reasons.push("+1 activation stability/control emphasis");
     }
     if (
       role === "mainStrength" &&
       (exercise.loadType === "weighted" || exercise.movementIntensity === "load")
     ) {
-      score -= context.experienceLevel === "beginner" ? 3 : 2;
-      reasons.push("-2 to -3 activation load penalty");
+      score -= context.experienceLevel === "beginner" ? 4 : 3;
+      reasons.push("-3 to -4 activation load penalty");
+      if (exercise.difficultyTier === "hard" || tags.has("advanced") || tags.has("strength")) {
+        score -= 1;
+        reasons.push("-1 activation max-strength style de-priority");
+      }
     }
   } else if (context.phaseStage === "skill") {
     if (role === "mainStrength") {
@@ -5360,10 +5699,36 @@ const getIntentSlotScoreBonus = (params: {
       score += 0.5;
       reasons.push("+0.5 skill control exposure");
     }
+    if (
+      patterns.has("single_leg") ||
+      patterns.has("mobility") ||
+      tags.has("balance") ||
+      tags.has("unilateral")
+    ) {
+      const delta = context.painSeverity === "high" ? 0.5 : 1;
+      score += delta;
+      reasons.push(`+${delta} skill unilateral/coordination exposure`);
+    }
   } else {
     if (role === "mainStrength") {
-      score += 1.5;
-      reasons.push("+1.5 growth strength exposure");
+      score += 2;
+      reasons.push("+2 growth strength exposure");
+    }
+    if (
+      section === "main" &&
+      context.capabilityMode === "hasLoad" &&
+      exercise.loadType === "weighted" &&
+      (patterns.has("push") ||
+        patterns.has("pull") ||
+        patterns.has("squat") ||
+        patterns.has("hinge"))
+    ) {
+      score += 1.2;
+      reasons.push("+1.2 growth loaded compound bias");
+    }
+    if (section === "main" && role === "accessoryIsolation") {
+      score -= 0.8;
+      reasons.push("-0.8 growth de-priority for isolation as MAIN");
     }
   }
 
