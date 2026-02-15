@@ -109,6 +109,7 @@ vi.mock("@/lib/logStore", () => ({
     mocks.logs = [log, ...mocks.logs];
     return log;
   }),
+  saveExerciseSwapEvent: vi.fn(async (log: ExerciseLog) => log),
   savePrefs: vi.fn(async (prefs: LogPrefs) => {
     mocks.prefs = prefs;
     return prefs;

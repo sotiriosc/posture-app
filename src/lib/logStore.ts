@@ -1,6 +1,7 @@
 import type {
   ExerciseLog,
   LogPrefs,
+  PainLevel,
   Program,
   ProgramProgress,
   SessionRecord,
@@ -67,6 +68,9 @@ const completionRateFromLog = (log: ExerciseLog) => {
 };
 
 const painFromLog = (log: ExerciseLog): ExerciseFeedbackSummary["pain"] => {
+  if (log.painLevel && log.painLevel !== "none") {
+    return log.painLevel;
+  }
   if (log.felt !== "pain") return "none";
   const completionRate = completionRateFromLog(log);
   const rpe = log.rpe ?? 0;
@@ -603,6 +607,81 @@ export const saveExerciseLog = async (log: ExerciseLog) => {
   });
   void pushTrainingPatch({ exerciseLogs: [saved] });
   return saved;
+};
+
+export const saveExerciseSwapEvent = async (params: {
+  sessionId: string;
+  originalExerciseId: string;
+  swappedExerciseId?: string | null;
+  painLevel: PainLevel;
+  programId?: string | null;
+  dayIndex?: number | null;
+  loadType?: ExerciseLog["loadType"];
+  painLocation?: ExerciseLog["painLocation"];
+  notes?: string | null;
+  userId?: string | null;
+  timestamp?: string;
+}) => {
+  const {
+    sessionId,
+    originalExerciseId,
+    swappedExerciseId = null,
+    painLevel,
+    programId = null,
+    dayIndex = null,
+    loadType = "bodyweight",
+    painLocation = null,
+    notes = null,
+    userId = null,
+    timestamp,
+  } = params;
+
+  const createdAt = timestamp ?? nowIso();
+  const felt: ExerciseLog["felt"] =
+    painLevel === "none"
+      ? "easy"
+      : painLevel === "mild"
+      ? "moderate"
+      : "pain";
+  const log: ExerciseLog = {
+    id: uuid(),
+    userId,
+    sessionId,
+    exerciseId: originalExerciseId,
+    originalExerciseId,
+    substitutedExerciseId:
+      swappedExerciseId && swappedExerciseId !== originalExerciseId
+        ? swappedExerciseId
+        : null,
+    programId,
+    dayIndex,
+    createdAt,
+    updatedAt: createdAt,
+    loadType,
+    unit: null,
+    weight: null,
+    reps: null,
+    repsBySet: null,
+    setsPlanned: null,
+    setsCompleted: null,
+    durationSec: null,
+    workSecondsUsed: null,
+    restSecondsUsed: null,
+    rpe: null,
+    felt,
+    painLevel,
+    painLocation,
+    feedbackNotes:
+      swappedExerciseId && swappedExerciseId !== originalExerciseId
+        ? "pain-trigger swap event"
+        : "pain report event",
+    notes,
+    computedVolume: null,
+    source: "local",
+    deletedAt: null,
+  };
+
+  return saveExerciseLog(log);
 };
 
 export const listExerciseLogsByExercise = async (

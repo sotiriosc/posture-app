@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { exerciseById } from "@/lib/exercises";
 import { generateRoutine } from "@/lib/routine";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import { previewPainSubstitutionChoices } from "@/lib/program";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
@@ -24,6 +25,7 @@ import type {
   ExerciseFeedback,
   ExerciseLog,
   LogPrefs,
+  PainLevel,
   PainLocation,
   Program,
   ProgramProgress,
@@ -38,6 +40,7 @@ import {
   listExerciseLogsByExerciseHistory,
   loadPrefs,
   saveExerciseLog,
+  saveExerciseSwapEvent,
   savePrefs,
   saveProgramProgress,
   updateSession,
@@ -79,6 +82,151 @@ const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
       ? Number(value)
       : NaN;
   return parsed === 4 || parsed === 5 ? parsed : 3;
+};
+
+type SessionPainLevel = PainLevel;
+
+type SessionRoutineViewItem = {
+  id: string;
+  dayTitle: string;
+  section: string;
+  exerciseId: string;
+  originalExerciseId: string;
+};
+
+const toPatternTokens = (exerciseId: string) =>
+  new Set(
+    (exerciseById(exerciseId)?.movementPattern ?? []).map((pattern) =>
+      pattern.trim().toLowerCase().replace(/[\s-]+/g, "")
+    )
+  );
+
+const inferMainLaneForSessionExercise = (
+  exerciseId: string
+): "push" | "verticalpush" | "pull" | "squat" | "hinge" | null => {
+  const patterns = toPatternTokens(exerciseId);
+  if (patterns.has("verticalpush")) return "verticalpush";
+  if (patterns.has("push")) return "push";
+  if (patterns.has("pull")) return "pull";
+  if (patterns.has("squat")) return "squat";
+  if (patterns.has("hinge")) return "hinge";
+  return null;
+};
+
+const inferAccessoryLaneForSessionExercise = (
+  exerciseId: string
+): "push" | "pull" | "lower" | "core" => {
+  const patterns = toPatternTokens(exerciseId);
+  if (patterns.has("push") || patterns.has("verticalpush")) return "push";
+  if (patterns.has("pull")) return "pull";
+  if (patterns.has("squat") || patterns.has("hinge") || patterns.has("singleleg")) {
+    return "lower";
+  }
+  if (
+    patterns.has("core") ||
+    patterns.has("antirotation") ||
+    patterns.has("antiextension") ||
+    patterns.has("carry")
+  ) {
+    return "core";
+  }
+  return "core";
+};
+
+const inferSessionFocusFromDayTitle = (dayTitle: string): "upper" | "lower" | "core" => {
+  const normalized = dayTitle.toLowerCase();
+  if (
+    normalized.includes("legs") ||
+    normalized.includes("lower") ||
+    normalized.includes("squat") ||
+    normalized.includes("hinge")
+  ) {
+    return "lower";
+  }
+  if (normalized.includes("core") || normalized.includes("abs")) {
+    return "core";
+  }
+  return "upper";
+};
+
+const matchesSessionFocus = (
+  exerciseId: string,
+  focus: "upper" | "lower" | "core"
+) => {
+  const patterns = toPatternTokens(exerciseId);
+  if (focus === "upper") {
+    return (
+      patterns.has("push") ||
+      patterns.has("verticalpush") ||
+      patterns.has("pull") ||
+      patterns.has("scapular")
+    );
+  }
+  if (focus === "lower") {
+    return (
+      patterns.has("squat") ||
+      patterns.has("hinge") ||
+      patterns.has("singleleg")
+    );
+  }
+  return (
+    patterns.has("core") ||
+    patterns.has("antirotation") ||
+    patterns.has("antiextension") ||
+    patterns.has("carry")
+  );
+};
+
+const findPainSwapAlternativeExerciseId = (params: {
+  questionnaire: QuestionnaireData;
+  currentItem: SessionRoutineViewItem;
+  usedExerciseIds: Set<string>;
+}): string | null => {
+  const { questionnaire, currentItem, usedExerciseIds } = params;
+  const currentSection = currentItem.section as ProgramRoutineItem["section"];
+  const ranked = previewPainSubstitutionChoices({
+    questionnaire,
+    exerciseId: currentItem.exerciseId,
+    section: currentSection,
+    limit: 10,
+  });
+  if (!ranked.length) return null;
+
+  const mainLane =
+    currentSection === "main"
+      ? inferMainLaneForSessionExercise(currentItem.exerciseId)
+      : null;
+  const accessoryLane =
+    currentSection === "accessory"
+      ? inferAccessoryLaneForSessionExercise(currentItem.exerciseId)
+      : null;
+  const sectionFocus =
+    currentSection === "activation" ||
+    currentSection === "warmup" ||
+    currentSection === "cooldown"
+      ? inferSessionFocusFromDayTitle(currentItem.dayTitle)
+      : null;
+  const usedWithoutCurrent = new Set(usedExerciseIds);
+  usedWithoutCurrent.delete(currentItem.exerciseId);
+
+  const candidate = ranked
+    .map((entry) => entry.exerciseId)
+    .filter((exerciseId) => !usedWithoutCurrent.has(exerciseId))
+    .filter((exerciseId) => {
+      if (currentSection === "main" && mainLane) {
+        const candidateLane = inferMainLaneForSessionExercise(exerciseId);
+        return candidateLane === mainLane;
+      }
+      if (currentSection === "accessory" && accessoryLane) {
+        return inferAccessoryLaneForSessionExercise(exerciseId) === accessoryLane;
+      }
+      if (sectionFocus) {
+        return matchesSessionFocus(exerciseId, sectionFocus);
+      }
+      return true;
+    })[0];
+
+  return candidate ?? null;
 };
 
 export default function SessionClient() {
@@ -134,6 +282,12 @@ export default function SessionClient() {
   const [substitutionByExercise, setSubstitutionByExercise] = useState<
     Record<string, string>
   >({});
+  const [sessionSwapByItemId, setSessionSwapByItemId] = useState<
+    Record<string, string>
+  >({});
+  const [painModalOpen, setPainModalOpen] = useState(false);
+  const [painModalLevel, setPainModalLevel] = useState<SessionPainLevel>("none");
+  const [painModalMessage, setPainModalMessage] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const saveStateTimerRef = useRef<number | null>(null);
   const dropoffTrackedRef = useRef(false);
@@ -288,6 +442,7 @@ export default function SessionClient() {
         ExerciseFeedback
       >
     );
+    setSessionSwapByItemId(draft.entries.substitutionByItemId ?? {});
     if (draft.timerState) {
       setWorkSeconds(draft.timerState.workSeconds);
       setRestSeconds(draft.timerState.restSeconds);
@@ -307,10 +462,13 @@ export default function SessionClient() {
       const day = program.week.find((entry) => entry.dayIndex === programDayIndex);
       if (!day) return [];
       return day.routine.map((item) => {
-        const substitutedId = substitutionByExercise[item.exerciseId];
-        const effectiveExerciseId = substitutedId ?? item.exerciseId;
-        const exercise = exerciseById(effectiveExerciseId);
         const routineItem = item as ProgramRoutineItem;
+        const itemId = `${day.title}-${routineItem.exerciseId}`;
+        const sessionSwapId = sessionSwapByItemId[itemId];
+        const substitutedId = substitutionByExercise[item.exerciseId];
+        const effectiveExerciseId =
+          sessionSwapId ?? substitutedId ?? routineItem.exerciseId;
+        const exercise = exerciseById(effectiveExerciseId);
         return {
           exerciseId: effectiveExerciseId,
           originalExerciseId: routineItem.exerciseId,
@@ -319,7 +477,8 @@ export default function SessionClient() {
           durationSec: routineItem.durationSec ?? undefined,
           restSec: routineItem.restSec ?? 60,
           section: routineItem.section ?? day.title,
-          id: `${day.title}-${routineItem.exerciseId}`,
+          dayTitle: day.title,
+          id: itemId,
           name: exercise?.name ?? "Exercise",
           cues: routineItem.cues ?? exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
@@ -332,13 +491,16 @@ export default function SessionClient() {
     if (!routine) return [];
     return routine.sections.flatMap((section) =>
       section.items.map((item) => {
+        const itemId = `${section.title}-${item.exerciseId}`;
+        const sessionSwapId = sessionSwapByItemId[itemId];
         const substitutedId = substitutionByExercise[item.exerciseId];
-        const effectiveExerciseId = substitutedId ?? item.exerciseId;
+        const effectiveExerciseId = sessionSwapId ?? substitutedId ?? item.exerciseId;
         const exercise = exerciseById(effectiveExerciseId);
         return {
           ...item,
           section: section.title,
-          id: `${section.title}-${item.exerciseId}`,
+          dayTitle: section.title,
+          id: itemId,
           exerciseId: effectiveExerciseId,
           originalExerciseId: item.exerciseId,
           restSec: 60,
@@ -350,7 +512,7 @@ export default function SessionClient() {
         };
       })
     );
-  }, [program, programDayIndex, routine, substitutionByExercise]);
+  }, [program, programDayIndex, routine, substitutionByExercise, sessionSwapByItemId]);
 
   const currentItem = flatItems[activeIndex];
   activeIndexRef.current = activeIndex;
@@ -615,6 +777,145 @@ export default function SessionClient() {
     await updateSession(updated);
   };
 
+  const ensureSessionIdentity = () => {
+    const nextSessionId = sessionId ?? uuid();
+    const nextStartedAt = sessionStartedAt ?? nowIso();
+    if (!sessionId) setSessionId(nextSessionId);
+    if (!sessionStartedAt) setSessionStartedAt(nextStartedAt);
+    return { nextSessionId, nextStartedAt };
+  };
+
+  const persistSessionDraftNow = async (nextSubstitutionByItemId?: Record<string, string>) => {
+    if (!program) return;
+    const { nextSessionId, nextStartedAt } = ensureSessionIdentity();
+    const state = loadAppState();
+    const programVersion = state?.programVersion ?? 0;
+    const currentExerciseId = flatItems[activeIndex]?.id ?? "";
+    const sets = completedSets[currentExerciseId] ?? [];
+    const currentSetIndex = Math.max(
+      0,
+      sets.findIndex((value) => !value)
+    );
+    await saveDraft({
+      sessionId: nextSessionId,
+      programId: program.id,
+      dayIndex: programDayIndex,
+      programVersion,
+      phaseIndex: program.phaseIndex ?? program.phase?.weekIndex ?? 1,
+      cycleIndex: program.cycleIndex ?? 1,
+      currentExerciseIndex: activeIndex,
+      currentSetIndex,
+      entries: {
+        completedSets,
+        selectedSets,
+        weightByExercise,
+        repsByExercise,
+        rpeByExercise,
+        repsBySetByExercise: {},
+        unitByExercise,
+        notesByExercise,
+        substitutionByItemId: nextSubstitutionByItemId ?? sessionSwapByItemId,
+        feedbackByExercise: feedback,
+      },
+      timerState: {
+        workSeconds,
+        restSeconds,
+      },
+      timerByExercise,
+      startedAt: nextStartedAt,
+      updatedAt: nowIso(),
+    });
+  };
+
+  const recordPainReportEvent = async (params: {
+    painLevel: SessionPainLevel;
+    swappedExerciseId?: string | null;
+  }) => {
+    if (!currentItem) return;
+    const { nextSessionId } = ensureSessionIdentity();
+    const originalExerciseId = currentItem.originalExerciseId;
+    await saveExerciseSwapEvent({
+      sessionId: nextSessionId,
+      originalExerciseId,
+      swappedExerciseId: params.swappedExerciseId ?? null,
+      painLevel: params.painLevel,
+      programId: program?.id ?? null,
+      dayIndex: programDayIndex ?? null,
+      loadType: currentItem.loadType,
+      timestamp: nowIso(),
+    });
+  };
+
+  const persistPainLevelFeedback = async (painLevel: SessionPainLevel) => {
+    if (!currentItem) return;
+    const currentFeedbackKey = currentItem.exerciseId;
+    const mappedRating: FeedbackEntry =
+      painLevel === "none"
+        ? "easy"
+        : painLevel === "mild"
+        ? "moderate"
+        : "pain";
+    await saveFeedback({
+      ...feedback,
+      [currentFeedbackKey]: {
+        rating: mappedRating,
+        painLocation: feedback[currentFeedbackKey]?.painLocation ?? null,
+        notes: feedback[currentFeedbackKey]?.notes ?? "",
+      },
+    });
+  };
+
+  const handleSavePainReportOnly = async () => {
+    await recordPainReportEvent({
+      painLevel: painModalLevel,
+      swappedExerciseId: null,
+    });
+    await persistPainLevelFeedback(painModalLevel);
+    setPainModalMessage(null);
+    setPainModalOpen(false);
+  };
+
+  const handleSwapFromPainReport = async () => {
+    if (!data || !currentItem) return;
+    const shouldSwap =
+      painModalLevel === "moderate" || painModalLevel === "severe";
+    if (!shouldSwap) {
+      await handleSavePainReportOnly();
+      return;
+    }
+
+    const candidateId = findPainSwapAlternativeExerciseId({
+      questionnaire: data,
+      currentItem: {
+        id: currentItem.id,
+        dayTitle: currentItem.dayTitle,
+        section: currentItem.section,
+        exerciseId: currentItem.exerciseId,
+        originalExerciseId: currentItem.originalExerciseId,
+      },
+      usedExerciseIds: new Set(flatItems.map((item) => item.exerciseId)),
+    });
+    if (!candidateId || candidateId === currentItem.exerciseId) {
+      setPainModalMessage("No safe same-lane substitute found for this exercise.");
+      await handleSavePainReportOnly();
+      return;
+    }
+
+    const nextSubstitution = {
+      ...sessionSwapByItemId,
+      [currentItem.id]: candidateId,
+    };
+    setSessionSwapByItemId(nextSubstitution);
+    await recordPainReportEvent({
+      painLevel: painModalLevel,
+      swappedExerciseId: candidateId,
+    });
+    await persistPainLevelFeedback(painModalLevel);
+    await persistSessionDraftNow(nextSubstitution);
+    setPainModalMessage(null);
+    setPainModalOpen(false);
+  };
+
   const handleNext = () => {
     if (activeIndex < totalItems - 1) {
       setActiveIndex((prev) => prev + 1);
@@ -637,6 +938,9 @@ export default function SessionClient() {
     setSummaryStats(null);
     setActiveIndex(0);
     setCompletedSets({});
+    setSessionSwapByItemId({});
+    setPainModalOpen(false);
+    setPainModalMessage(null);
   };
 
   const handleCompleteSession = async () => {
@@ -694,8 +998,7 @@ export default function SessionClient() {
 
     const logsToSave: ExerciseLog[] = flatItems.map((item) => {
       const exerciseId = item.exerciseId;
-      const originalExerciseId =
-        "originalExerciseId" in item ? item.originalExerciseId : null;
+      const originalExerciseId = item.originalExerciseId ?? null;
       const unit = unitByExercise[exerciseId] ?? "lb";
       const weightValue = weightByExercise[exerciseId];
       const weight =
@@ -1010,6 +1313,7 @@ export default function SessionClient() {
           repsBySetByExercise: {},
           unitByExercise,
           notesByExercise,
+          substitutionByItemId: sessionSwapByItemId,
           feedbackByExercise: feedback,
         },
         timerState: {
@@ -1035,6 +1339,7 @@ export default function SessionClient() {
     rpeByExercise,
     unitByExercise,
     notesByExercise,
+    sessionSwapByItemId,
     feedback,
     workSeconds,
     restSeconds,
@@ -1175,6 +1480,11 @@ export default function SessionClient() {
             <h1 className="text-3xl font-semibold text-white">
               {currentItem.section}: {currentItem.name}
             </h1>
+            <span
+              className="sr-only"
+              data-testid="current-exercise-id"
+              data-exercise-id={currentItem.exerciseId}
+            />
             {program && programDayIndex !== null ? (
               <p className="text-xs font-semibold text-slate-200">
                 Schedule day {programDayIndex + 1} of {program.daysPerWeek}
@@ -1228,9 +1538,21 @@ export default function SessionClient() {
 
         <div className="ui-card p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="ui-title">
-              Log this exercise
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="ui-title">Log this exercise</p>
+              <button
+                type="button"
+                data-testid="report-pain-trigger"
+                onClick={() => {
+                  setPainModalLevel("none");
+                  setPainModalMessage(null);
+                  setPainModalOpen(true);
+                }}
+                className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-700"
+              >
+                Report pain
+              </button>
+            </div>
             <div className="flex items-center gap-3">
               {lastLog ? (
                 <p className="ui-body">
@@ -1508,10 +1830,7 @@ export default function SessionClient() {
                   </select>
                 </label>
                 {(() => {
-                  const baseOriginalId =
-                    "originalExerciseId" in currentItem && currentItem.originalExerciseId
-                      ? currentItem.originalExerciseId
-                      : currentItem.exerciseId;
+                  const baseOriginalId = currentItem.originalExerciseId;
                   const exercise = exerciseById(currentItem.exerciseId);
                   const options = exercise?.swapOptions ?? [];
                   if (!options.length) return null;
@@ -1554,6 +1873,80 @@ export default function SessionClient() {
                 })()}
               </div>
             ) : null}
+          </div>
+        ) : null}
+
+        {painModalOpen ? (
+          <div
+            className="ui-card border-rose-200 bg-rose-50 p-6"
+            data-testid="pain-report-modal"
+          >
+            <p className="text-sm font-semibold text-slate-900">
+              Pain check-in for {currentItem.name}
+            </p>
+            <p className="mt-1 text-xs text-slate-600">
+              Select the level you felt on this exercise.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(["none", "mild", "moderate", "severe"] as const).map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  data-testid={`pain-level-${level}`}
+                  onClick={() => {
+                    setPainModalLevel(level);
+                    setPainModalMessage(null);
+                  }}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+                    painModalLevel === level
+                      ? "border-slate-900 bg-slate-900 text-white"
+                      : "border-slate-200 bg-white text-slate-700"
+                  }`}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+            {painModalMessage ? (
+              <p className="mt-3 text-xs font-semibold text-rose-700">
+                {painModalMessage}
+              </p>
+            ) : null}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                data-testid="pain-report-cancel"
+                onClick={() => {
+                  setPainModalMessage(null);
+                  setPainModalOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                data-testid="pain-report-save"
+                onClick={() => {
+                  void handleSavePainReportOnly();
+                }}
+              >
+                Save pain report
+              </Button>
+              {painModalLevel === "moderate" || painModalLevel === "severe" ? (
+                <Button
+                  type="button"
+                  variant="primary"
+                  data-testid="pain-report-swap"
+                  onClick={() => {
+                    void handleSwapFromPainReport();
+                  }}
+                >
+                  Swap exercise
+                </Button>
+              ) : null}
+            </div>
           </div>
         ) : null}
 

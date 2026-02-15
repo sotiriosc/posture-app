@@ -24,6 +24,8 @@ export type PainLocation =
   | "knees"
   | "other";
 
+export type PainLevel = "none" | "mild" | "moderate" | "severe";
+
 export type ExerciseLog = {
   id: string;
   userId: string | null;
@@ -47,6 +49,7 @@ export type ExerciseLog = {
   restSecondsUsed?: number | null;
   rpe: number | null;
   felt: "easy" | "moderate" | "hard" | "pain" | null;
+  painLevel?: PainLevel | null;
   painLocation?: PainLocation | null;
   feedbackNotes?: string | null;
   notes: string | null;

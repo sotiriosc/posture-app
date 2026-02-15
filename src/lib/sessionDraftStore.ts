@@ -16,6 +16,7 @@ export type SessionDraft = {
     repsBySetByExercise: Record<string, string[]>;
     unitByExercise: Record<string, "lb" | "kg">;
     notesByExercise: Record<string, string>;
+    substitutionByItemId?: Record<string, string>;
     feedbackByExercise: Record<
       string,
       { rating: "easy" | "moderate" | "hard" | "pain"; painLocation?: string | null; notes?: string | null }
