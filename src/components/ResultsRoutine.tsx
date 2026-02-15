@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { QuestionnaireData } from "./QuestionnaireForm";
@@ -13,9 +13,7 @@ import {
   PROGRAM_TEMPLATE_VERSION,
 } from "@/lib/program";
 import {
-  normalizeEquipmentSelection,
   normalizeEquipmentSelectionValues,
-  type Equipment,
 } from "@/lib/equipment";
 import { usePhotoContext } from "@/components/PhotoContext";
 import {
@@ -29,7 +27,6 @@ import {
   buildAssessmentReport,
   type AssessmentReport,
 } from "@/lib/assessmentEngine";
-import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
@@ -70,6 +67,14 @@ import {
   skipPhase1,
 } from "@/lib/phaseGating";
 import { getPhaseControlUiState } from "@/lib/phaseControls";
+import { getDailyInsight } from "@/lib/insightGenerator";
+import DashboardHero from "@/components/dashboard/DashboardHero";
+import DailyInsightCard from "@/components/dashboard/DailyInsightCard";
+import ProgressSummary from "@/components/dashboard/ProgressSummary";
+import ExpandableSection from "@/components/dashboard/ExpandableSection";
+import PhaseProgressCard from "@/components/dashboard/PhaseProgressCard";
+import ProgressBar from "@/components/ui/ProgressBar";
+import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -151,9 +156,32 @@ export default function ResultsRoutine() {
   const [advanceConfirm, setAdvanceConfirm] = useState(false);
   const [advanceMessage, setAdvanceMessage] = useState<string | null>(null);
   const [skipPhaseOneOpen, setSkipPhaseOneOpen] = useState(false);
+  const [knowledgeExpanded, setKnowledgeExpanded] = useState(false);
+  const [knowledgeHighlighted, setKnowledgeHighlighted] = useState(false);
+  const [systemAdjustmentsExpanded, setSystemAdjustmentsExpanded] = useState(false);
+  const [weekViewDetailsOpen, setWeekViewDetailsOpen] = useState(false);
+  const [weekViewSelectedDay, setWeekViewSelectedDay] = useState<number | null>(
+    null
+  );
+  const [knowledgeDetailExpanded, setKnowledgeDetailExpanded] = useState<{
+    movement: boolean;
+    stability: boolean;
+    compensation: boolean;
+    adaptation: boolean;
+  }>({
+    movement: false,
+    stability: false,
+    compensation: false,
+    adaptation: false,
+  });
   const [lastTwoLogs, setLastTwoLogs] = useState<ExerciseLog[]>([]);
   const [authEnabled, setAuthEnabled] = useState(false);
   const [plan, setPlan] = useState<SubscriptionPlan>("free");
+  const knowledgeSectionRef = useRef<HTMLDivElement | null>(null);
+  const systemAdjustmentsSectionRef = useRef<HTMLDivElement | null>(null);
+  const weekViewSectionRef = useRef<HTMLElement | null>(null);
+  const weekViewDetailsRef = useRef<HTMLDivElement | null>(null);
+  const knowledgeHighlightTimeoutRef = useRef<number | null>(null);
   const { photos } = usePhotoContext();
   const [poseState, setPoseState] = useState<{
     loading: boolean;
@@ -254,7 +282,7 @@ export default function ResultsRoutine() {
     return buildQuestionnaireSignature(data);
   }, [data]);
 
-  const dayPreviewRecommendations = useMemo(() => {
+  const dayPreviewRecommendations = (() => {
     if (!program) return [];
     const dayIndex = authEnabled && plan !== "pro" ? 0 : selectedDay;
     const day = program.week[dayIndex];
@@ -292,45 +320,12 @@ export default function ResultsRoutine() {
       exercise: Exercise;
       rec: ReturnType<typeof getProgressionRecommendation>;
     }>;
-  }, [program, selectedDay, latestLogsByExercise, authEnabled, plan]);
+  })();
 
   const optimizerReasonsByExercise = useMemo(
     () => program?.phaseOptimizerReport?.exerciseReasons ?? {},
     [program]
   );
-
-  const selectedDayMastery = useMemo(() => {
-    if (!program) return [];
-    const dayIndex = authEnabled && plan !== "pro" ? 0 : selectedDay;
-    const day = program.week[dayIndex];
-    if (!day) return [];
-    return day.routine.slice(0, 4).map((item) => {
-      const exercise = exerciseById(item.exerciseId);
-      const cue = (exercise?.cues?.[0] ?? "Control each rep").replace(/\.$/, "");
-      const checkpoint = (() => {
-        if (item.section === "main") return "last 2 reps stay clean";
-        if (item.section === "accessory") return "tempo stays steady";
-        if (item.section === "warmup") return "breathing stays calm";
-        return "range stays smooth";
-      })();
-      return `Day ${day.dayIndex + 1} ${day.title}: ${exercise?.name ?? "Exercise"} - ${cue}; check: ${checkpoint}.`;
-    });
-  }, [program, selectedDay, authEnabled, plan]);
-  const masteryItems = useMemo(() => {
-    if (selectedDayMastery.length) return selectedDayMastery.slice(0, 4);
-    return (
-      program?.sessionAdaptation?.masteryNext ??
-      program?.phaseObjective?.successMarkers ??
-      []
-    ).slice(0, 4);
-  }, [selectedDayMastery, program]);
-
-  const equipmentContext = useMemo(() => {
-    if (!data) {
-      return { available: new Set<Equipment>(), hasGym: false };
-    }
-    return normalizeEquipmentSelection(data.equipment);
-  }, [data]);
 
   const buildWhyPicked = (exercise: Exercise) => {
     const patterns = exercise.movementPattern;
@@ -634,24 +629,6 @@ export default function ResultsRoutine() {
   }, [program, data, questionnaireSignature]);
 
   useEffect(() => {
-    if (!program) return;
-    const state = loadAppState();
-    if (state?.programId === program.id && typeof state.selectedDay === "number") {
-      const maxIndex = Math.max(0, program.week.length - 1);
-      const next = Math.min(Math.max(0, state.selectedDay), maxIndex);
-      setSelectedDay(next);
-    }
-  }, [program]);
-
-  useEffect(() => {
-    if (!program) return;
-    if (!authEnabled || plan === "pro") return;
-    if (selectedDay > 0) {
-      setSelectedDay(0);
-    }
-  }, [program, authEnabled, plan, selectedDay]);
-
-  useEffect(() => {
     if (!program || !questionnaireSignature) return;
     const stateDay =
       authEnabled && plan !== "pro"
@@ -712,34 +689,36 @@ export default function ResultsRoutine() {
   const effectiveSelectedDay = isDayLocked(selectedDay) ? 0 : selectedDay;
   const effectiveNextDayIndex = isDayLocked(nextDayIndex) ? 0 : nextDayIndex;
 
-  const completedSessions = useMemo(() => {
-    return programSessions
-      .filter((session) => session.completedAt)
-      .sort(
-        (a, b) =>
-          (b.completedAt ?? "").localeCompare(a.completedAt ?? "")
-      );
-  }, [programSessions]);
+  const completedSessions = useMemo(
+    () =>
+      programSessions
+        .filter((session) => session.completedAt)
+        .toSorted((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? "")),
+    [programSessions]
+  );
 
-  const completedWeeks = useMemo(() => {
-    if (!program || !completedSessions.length) return 0;
-    return Math.floor(completedSessions.length / program.daysPerWeek);
-  }, [program, completedSessions]);
+  const completedWeeks =
+    !program || !completedSessions.length
+      ? 0
+      : Math.floor(completedSessions.length / program.daysPerWeek);
 
   useEffect(() => {
     const loadLastTwo = async () => {
-      if (!completedSessions.length) {
-        setLastTwoLogs([]);
+      const sortedCompleted = programSessions
+        .filter((session) => session.completedAt)
+        .toSorted((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? ""));
+      if (!sortedCompleted.length) {
+        setLastTwoLogs((prev) => (prev.length ? [] : prev));
         return;
       }
-      const lastTwo = completedSessions.slice(0, 2);
+      const lastTwo = sortedCompleted.slice(0, 2);
       const logs = await listExerciseLogsBySessionIds(
         lastTwo.map((session) => session.id)
       );
       setLastTwoLogs(logs);
     };
     loadLastTwo();
-  }, [completedSessions]);
+  }, [programSessions]);
 
   useEffect(() => {
     if (!program) return;
@@ -798,6 +777,14 @@ export default function ResultsRoutine() {
   }, [program]);
 
   useEffect(() => {
+    return () => {
+      if (knowledgeHighlightTimeoutRef.current !== null) {
+        window.clearTimeout(knowledgeHighlightTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (!program) return;
     const loadSessions = () => {
       listSessionsByProgramId(program.id).then(setProgramSessions);
@@ -838,6 +825,104 @@ export default function ResultsRoutine() {
       }),
     [currentPhaseIndex, phaseGate]
   );
+
+  const heroGreeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  }, []);
+
+  const phaseProgressPercent = useMemo(() => {
+    const cycleRatio =
+      phaseGate.minCycles > 0
+        ? phaseGate.cyclesCompletedInPhase / phaseGate.minCycles
+        : 0;
+    const dayRatio = phaseGate.minDays > 0 ? phaseGate.daysSincePhaseStart / phaseGate.minDays : 0;
+    return Math.round(Math.min(1, (cycleRatio + dayRatio) / 2) * 100);
+  }, [phaseGate]);
+
+  const heroCta = useMemo(() => {
+    if (!program) {
+      return {
+        label: "Start Today's Session" as const,
+        href: "/session",
+      };
+    }
+    const state = loadAppState();
+    const activeSessionId = state?.activeSessionId;
+    if (activeSessionId) {
+      return {
+        label: "Continue Session" as const,
+        href: `/session?sessionId=${encodeURIComponent(activeSessionId)}`,
+      };
+    }
+    return {
+      label: "Start Today's Session" as const,
+      href: `/session?programId=${program.id}&dayIndex=${effectiveNextDayIndex}`,
+    };
+  }, [program, effectiveNextDayIndex]);
+
+  const dailyInsight = useMemo(() => {
+    const seed = questionnaireSignature ?? program?.id ?? "insight";
+    return getDailyInsight(seed, currentPhaseIndex);
+  }, [questionnaireSignature, program?.id, currentPhaseIndex]);
+
+  const weeklyStructure = useMemo(() => {
+    if (!program) return "";
+    return program.week.map((day) => `Day ${day.dayIndex + 1}: ${day.title}`).join(" • ");
+  }, [program]);
+
+  const adherencePercent = useMemo(() => {
+    if (!activeDaysPerWeek) return 0;
+    return Math.round((completedCount / activeDaysPerWeek) * 100);
+  }, [completedCount, activeDaysPerWeek]);
+
+  const consistencyPercent = useMemo(() => {
+    const fromMetrics = program?.phaseObjective?.metrics?.consistency;
+    if (typeof fromMetrics === "number") {
+      return Math.round(Math.max(0, Math.min(1, fromMetrics)) * 100);
+    }
+    return adherencePercent;
+  }, [program?.phaseObjective?.metrics?.consistency, adherencePercent]);
+
+  const painTrendLabel = useMemo(() => {
+    const logs = lastTwoLogs.filter((entry) => entry.felt);
+    if (!logs.length) return "No pain signals";
+    if (logs.some((entry) => entry.painLevel === "severe" || entry.painLevel === "moderate")) {
+      return "Needs caution";
+    }
+    if (logs.some((entry) => entry.painLevel === "mild" || entry.felt === "pain")) {
+      return "Mild signals";
+    }
+    return "Stable";
+  }, [lastTwoLogs]);
+
+  const painTrendPercent = useMemo(() => {
+    if (painTrendLabel === "Needs caution") return 30;
+    if (painTrendLabel === "Mild signals") return 58;
+    if (painTrendLabel === "Stable") return 82;
+    return 74;
+  }, [painTrendLabel]);
+
+  const movementQualityPercent = useMemo(() => {
+    const readiness = program?.phaseObjective?.metrics?.readiness;
+    const consistency = program?.phaseObjective?.metrics?.consistency;
+    if (typeof readiness === "number" && typeof consistency === "number") {
+      return Math.round(((readiness + consistency) / 2) * 100);
+    }
+    return Math.max(55, consistencyPercent - 5);
+  }, [
+    program?.phaseObjective?.metrics?.readiness,
+    program?.phaseObjective?.metrics?.consistency,
+    consistencyPercent,
+  ]);
+
+  const movementQualityTrend = useMemo(() => {
+    if (movementQualityPercent >= 78) return "Stable and improving";
+    if (movementQualityPercent >= 62) return "Improving";
+    return "Needs more consistency";
+  }, [movementQualityPercent]);
 
   useEffect(() => {
     if (!program) return;
@@ -1041,784 +1126,947 @@ export default function ResultsRoutine() {
     );
   }
 
+  const selectedDayProgram = program.week[effectiveSelectedDay];
+  const phaseName = program.phaseName ?? getPhaseMetaByIndex(currentPhaseIndex).phaseName;
+  const phaseDescription = getPhaseProfile(currentPhaseIndex).description;
+  const cycleCurrent = Math.max(1, phaseGate.cyclesCompletedInPhase + 1);
+  const cycleTarget = Math.max(1, phaseGate.minCycles);
+  const cycleProgressPercent = Math.max(
+    0,
+    Math.min(100, Math.round((phaseGate.cyclesCompletedInPhase / Math.max(1, phaseGate.minCycles)) * 100))
+  );
+  const weekProgressPercent = Math.max(
+    0,
+    Math.min(100, Math.round((completedCount / Math.max(1, activeDaysPerWeek)) * 100))
+  );
+  const phaseGoalText =
+    program.phaseObjective?.weekIntent ??
+    program.phaseObjective?.objective ??
+    "Build movement control and clean execution.";
+  const focusAreas =
+    program.phaseObjective?.primaryPatterns?.slice(0, 4) ??
+    routine.priorities.slice(0, 4);
+  const adaptationPriority =
+    program.sessionAdaptation?.summary ??
+    "Build control before intensity";
+  const encouragementMessage =
+    consistencyPercent >= 72 && (painTrendLabel === "Stable" || painTrendLabel === "No pain signals")
+      ? "Your consistency is accelerating adaptation."
+      : consistencyPercent >= 62
+      ? "Steady consistency is building durable progress."
+      : painTrendLabel === "Needs caution"
+      ? "Stay controlled this week and prioritize clean reps."
+      : null;
+
+  const cyclesRemaining = Math.max(0, phaseGate.minCycles - phaseGate.cyclesCompletedInPhase);
+  const daysRemaining = Math.max(0, phaseGate.minDays - phaseGate.daysSincePhaseStart);
+  const readinessLow = Math.max(daysRemaining, cyclesRemaining * 6);
+  const readinessHigh = Math.max(daysRemaining, cyclesRemaining * 8);
+  const readinessEstimate =
+    readinessHigh <= 0 ? "Ready now" : `${readinessLow}-${readinessHigh} days remaining`;
+
+  const phaseProgressText = `Cycles: ${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} • Days: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
+  const phaseRequirementsText = `Complete ${phaseGate.minCycles} cycles and spend at least ${phaseGate.minDays} days in this phase.`;
+  const movementPatternItems =
+    routine.observed.slice(0, 4).length > 0
+      ? routine.observed.slice(0, 4)
+      : ["Movement patterns will populate as your sessions complete."];
+  const stabilityPatternItems =
+    poseState.report?.observations
+      .filter((item) =>
+        /stability|alignment|control|scap|hip|core/i.test(
+          `${item.title} ${item.description}`
+        )
+      )
+      .slice(0, 3)
+      .map((item) => `${item.title} - ${item.description}`) ?? [
+      "Trunk alignment improving - core stabilization is becoming more consistent.",
+    ];
+  const compensationPatternItems =
+    poseState.report?.observations
+      .filter((item) =>
+        /forward|tilt|shift|asym|compens|flare|lean/i.test(
+          `${item.title} ${item.description}`
+        )
+      )
+      .slice(0, 3)
+      .map((item) => `${item.title} - ${item.description}`) ?? [
+      "Compensation signals are monitored and adjusted through movement quality.",
+    ];
+  const adaptationTrendItems = [
+    ...(program.sessionAdaptation?.reasons ?? []),
+    ...(program.sessionAdaptation?.appliedChanges ?? []),
+    ...(program.sessionAdaptation?.masteryChecks ?? []),
+  ]
+    .filter(Boolean)
+    .slice(0, 4);
+
+  const recByExerciseId = new Map(
+    dayPreviewRecommendations.map(({ exercise, rec }) => [exercise.id, rec])
+  );
+  const recentExerciseSignals = (selectedDayProgram?.routine ?? [])
+    .map((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return null;
+      const latestLog = latestLogsByExercise[item.exerciseId] ?? null;
+      const rec = recByExerciseId.get(exercise.id);
+      const status = latestLog?.painLevel === "moderate" || latestLog?.painLevel === "severe"
+        ? "Needs caution"
+        : latestLog?.felt === "easy" || latestLog?.felt === "moderate"
+        ? "Improving"
+        : latestLog?.felt === "hard" || latestLog?.felt === "pain"
+        ? "Stable with effort"
+        : "Stable";
+      const guidance =
+        latestLog?.nextTimeGuidance ??
+        (rec ? `Next time: ${formatRecommendation(rec)}` : "Maintain load and improve control.");
+      return {
+        exerciseName: exercise.name,
+        status,
+        guidance,
+      };
+    })
+    .filter((entry): entry is { exerciseName: string; status: string; guidance: string } => Boolean(entry))
+    .slice(0, 4);
+
+  const exerciseRationaleItems = (selectedDayProgram?.routine ?? []).flatMap(
+    (item) => {
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return [];
+      const why = buildWhyPicked(exercise);
+      const primaryReason = optimizerReasonsByExercise[item.exerciseId]?.[0] ?? null;
+      return [
+        {
+          exerciseId: item.exerciseId,
+          exerciseName: exercise.name,
+          section: item.section ?? "support",
+          primaryReason,
+          contextReason: why.purpose,
+          setup: why.setup,
+          progressions: why.progressions ?? [],
+          regressions: why.regressions ?? [],
+        },
+      ];
+    }
+  );
+  const exerciseRationaleById = new Map(
+    exerciseRationaleItems.map((item) => [item.exerciseId, item] as const)
+  );
+
+  const coachWin =
+    movementQualityPercent >= 75
+      ? "Biggest win: Movement quality is climbing with cleaner execution."
+      : consistencyPercent >= 70
+      ? "Biggest win: Consistency is strong and adaptation is compounding."
+      : adherencePercent >= 65
+      ? "Biggest win: Completion is trending up this week."
+      : "Biggest win: You are building momentum by staying engaged.";
+  const coachRisk =
+    painTrendLabel === "Needs caution"
+      ? "Biggest risk: Pain trend is elevated; keep range and load conservative."
+      : adherencePercent < 50
+      ? "Biggest risk: Missed sessions can slow progression and recovery."
+      : movementQualityPercent < 60
+      ? "Biggest risk: Movement quality is inconsistent under fatigue."
+      : "Biggest risk: Keep recovery habits steady to avoid regression.";
+  const coachAction = loadAppState()?.activeSessionId
+    ? "Next best action: Resume your active session and finish today's key movements."
+    : `Next best action: Complete Day ${effectiveNextDayIndex + 1} with controlled tempo and clean reps.`;
+  const coachNotes: [string, string, string] = [
+    coachWin,
+    coachRisk,
+    coachAction,
+  ];
+
+  const postureCue =
+    routine.priorities[0] ??
+    program.phaseObjective?.primaryPatterns?.[0] ??
+    "Posture cue: stack ribs over pelvis";
+  const mainFocus =
+    focusAreas[1] ?? focusAreas[0] ?? "Main focus: controlled compound reps";
+  const recoveryCue =
+    painTrendLabel === "Needs caution"
+      ? "Recovery cue: lower intensity and protect range"
+      : "Recovery cue: easy walk + mobility after sessions";
+  const weeklyPriorities = [postureCue, mainFocus, recoveryCue];
+
+  const phaseSummaryLine =
+    program.phaseObjective?.title ??
+    `${phaseName} focus: ${getPhaseProfile(currentPhaseIndex).label}`;
+  const whyChangedLine =
+    program.sessionAdaptation?.summary ??
+    program.phaseOptimizerReport?.summary ??
+    "Program adjusted from recent performance signals.";
+  const hasRecentLogs = recentExerciseSignals.length > 0;
+
+  const planPreviewLines = [
+    phaseSummaryLine,
+    hasRecentLogs
+      ? `Recent signals available for ${recentExerciseSignals.length} exercises.`
+      : "No recent logs yet. Complete your next session to unlock tailored signals.",
+  ];
+  const planPreviewChips = [
+    ...focusAreas.slice(0, 3),
+    program.phaseObjective?.weekIntent ?? "Control before intensity",
+  ].filter(Boolean);
+
+  const progressPreviewLines = [
+    `Consistency ${consistencyPercent}% • Completion ${adherencePercent}%`,
+    `Pain trend: ${painTrendLabel} • Movement quality: ${movementQualityTrend}`,
+  ];
+  const progressPreviewChips = [
+    `${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} cycles`,
+    `${completedCount}/${activeDaysPerWeek} days`,
+    encouragementMessage ?? "Keep steady progress",
+  ];
+
+  const knowledgePreviewLines = [
+    whyChangedLine,
+    poseState.report
+      ? "Assessment details are grouped by pattern and trend."
+      : "Upload posture photos to add deeper movement analysis.",
+  ];
+  const knowledgePreviewChips = [
+    "Movement patterns",
+    "Stability/control",
+    "Compensation tendencies",
+    "Adaptation/progression",
+  ];
+
+  const readinessLabel =
+    painTrendLabel === "Needs caution"
+      ? "Recovery"
+      : painTrendLabel === "Mild signals" || adherencePercent < 60 || !phaseGate.ok
+      ? "Caution"
+      : "Ready";
+
+  const heroMetricChips = [
+    `Week: ${completedCount}/${activeDaysPerWeek} days`,
+    `Cycle: ${program.cycleIndex ?? cycleCurrent}`,
+    `Readiness: ${readinessLabel}`,
+    phaseGate.minCycles > 0 && phaseGate.minDays > 0
+      ? `Phase gate: ${phaseGate.minCycles} cycles + ${phaseGate.minDays} days`
+      : "Phase gate: Progressing normally",
+  ].filter((chip): chip is string => Boolean(chip));
+
+  const coachToday = (() => {
+    if (heroCta.label === "Continue Session") return "Today: Continue your active session.";
+    return `Today: Start Day ${effectiveNextDayIndex + 1} and finish all planned sections.`;
+  })();
+  const coachFocus =
+    focusAreas[0] ??
+    program.phaseObjective?.primaryPatterns?.[0] ??
+    "Control and alignment";
+  const coachWatch =
+    painTrendLabel === "Needs caution"
+      ? "Watch: Keep pain below moderate and reduce range/load if needed."
+      : adherencePercent < 60
+      ? "Watch: Protect consistency by completing the next planned day."
+      : "Watch: Stay smooth and pain-free; prioritize control over load.";
+  const coachSummaryBullets: Array<{ label: string; text: string }> = [
+    { label: "Today", text: coachToday.replace(/^Today:\s*/i, "") },
+    { label: "Focus", text: coachFocus },
+    { label: "Watch", text: coachWatch.replace(/^Watch:\s*/i, "") },
+  ];
+
+  const hasAdaptationCallout = Boolean(
+    program.phaseOptimizerReport ||
+      program.sessionAdaptation?.summary ||
+      adaptationTrendItems.length
+  );
+  const hasSystemAdjustments = hasAdaptationCallout;
+  const systemAdjustmentSummary =
+    program.sessionAdaptation?.summary ??
+    program.phaseOptimizerReport?.summary ??
+    "System updated your plan from recent completion and pain signals.";
+  const systemAdjustmentChanged = program.phaseOptimizerReport
+    ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} slots were adjusted.`
+    : program.sessionAdaptation?.appliedChanges?.[0] ??
+      "Session focus and progression guidance were tuned.";
+  const systemAdjustmentWhy =
+    program.sessionAdaptation?.reasons?.[0] ??
+    program.sessionAdaptation?.summary ??
+    "Adjustments reflect recent completion pace and pain feedback.";
+  const systemAdjustmentFocus =
+    program.sessionAdaptation?.masteryChecks?.[0] ??
+    program.phaseObjective?.weekIntent ??
+    "Focus now on clean execution and stable control.";
+  const systemAdjustmentChips = [
+    program.phaseOptimizerReport
+      ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} changed`
+      : null,
+    ...(program.sessionAdaptation?.dataSignals ?? []).slice(0, 2),
+  ].filter((chip): chip is string => Boolean(chip));
+
+  const movementSummary =
+    movementPatternItems[0] ?? "Movement patterns will populate as sessions complete.";
+  const stabilitySummary =
+    stabilityPatternItems[0] ?? "Control trends will populate from logs and assessments.";
+  const compensationSummary =
+    compensationPatternItems[0] ??
+    "Compensation tendencies will appear as movement data accumulates.";
+  const adaptationSummary =
+    adaptationTrendItems[0] ??
+    "Complete one full week to unlock richer adaptation trends.";
+
+  const knowledgeCards: Array<{
+    key: "movement" | "stability" | "compensation" | "adaptation";
+    title: string;
+    summary: string;
+    items: string[];
+  }> = [
+    {
+      key: "movement",
+      title: "Movement patterns",
+      summary: movementSummary,
+      items: movementPatternItems,
+    },
+    {
+      key: "stability",
+      title: "Stability/control",
+      summary: stabilitySummary,
+      items: stabilityPatternItems,
+    },
+    {
+      key: "compensation",
+      title: "Compensation tendencies",
+      summary: compensationSummary,
+      items: compensationPatternItems,
+    },
+    {
+      key: "adaptation",
+      title: "Adaptation/progression",
+      summary: adaptationSummary,
+      items: adaptationTrendItems.length
+        ? adaptationTrendItems
+        : ["Complete one full week to unlock richer adaptation trends."],
+    },
+  ];
+
+  const weekViewStartDay =
+    weekViewSelectedDay !== null &&
+    weekViewSelectedDay >= 0 &&
+    weekViewSelectedDay < program.week.length
+      ? weekViewSelectedDay
+      : null;
+  const todayPlanDayIndex = Math.min(
+    Math.max(0, effectiveNextDayIndex),
+    Math.max(0, program.week.length - 1)
+  );
+
+  const openKnowledgeAnalysis = () => {
+    setKnowledgeExpanded(true);
+    setKnowledgeHighlighted(true);
+    window.requestAnimationFrame(() => {
+      knowledgeSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+    if (knowledgeHighlightTimeoutRef.current !== null) {
+      window.clearTimeout(knowledgeHighlightTimeoutRef.current);
+    }
+    knowledgeHighlightTimeoutRef.current = window.setTimeout(() => {
+      setKnowledgeHighlighted(false);
+    }, 900);
+  };
+
+  const openSystemAdjustments = () => {
+    setSystemAdjustmentsExpanded(true);
+    window.requestAnimationFrame(() => {
+      systemAdjustmentsSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  };
+
+  const focusTodayPlanInWeekView = () => {
+    setSelectedDay(todayPlanDayIndex);
+    setWeekViewSelectedDay(todayPlanDayIndex);
+    setWeekViewDetailsOpen(true);
+    window.requestAnimationFrame(() => {
+      weekViewSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      window.requestAnimationFrame(() => {
+        weekViewDetailsRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      });
+    });
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="ui-card p-6">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-          Summary
-        </p>
-        <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-          Weekly posture reset
+    <div className="space-y-5">
+      <DashboardHero
+        greeting={heroGreeting}
+        phaseName={phaseName}
+        cycleCurrent={cycleCurrent}
+        cycleTarget={cycleTarget}
+        weekCompletedDays={completedCount}
+        weekTargetDays={activeDaysPerWeek}
+        cycleProgressPercent={cycleProgressPercent}
+        weekProgressPercent={weekProgressPercent}
+        phaseGoal={phaseGoalText}
+        encouragement={encouragementMessage}
+        metricChips={heroMetricChips}
+        ctaLabel={heroCta.label}
+        ctaHref={heroCta.href}
+      />
+
+      <section className="ui-card p-5">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Coach Summary
         </h2>
-        <p className="mt-2 text-sm text-slate-600">{routine.summary}</p>
-        <div className="mt-4 space-y-2 text-sm text-slate-700">
-          {routine.priorities.map((item) => (
-            <div
-              key={item}
-              className="flex items-center gap-2 rounded-2xl bg-slate-50 px-3 py-2"
-            >
-              <span className="h-2 w-2 rounded-full bg-slate-900" />
-              <span>{item}</span>
-            </div>
+        <div className="mt-2 space-y-1.5">
+          {coachSummaryBullets.map((item) => (
+            <p key={item.label} className="text-sm text-slate-700">
+              <span className="font-medium text-slate-900">{item.label}:</span>{" "}
+              {item.text}
+            </p>
           ))}
         </div>
-      </div>
+        <div className="mt-3 border-t border-slate-200 pt-3">
+          <button
+            type="button"
+            onClick={focusTodayPlanInWeekView}
+            className="inline-flex rounded-full bg-slate-950 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-slate-900"
+          >
+            View today&apos;s plan
+          </button>
+        </div>
+        {hasAdaptationCallout ? (
+          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+            <p>
+              System adapted this week to improve stability and execution quality.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={openKnowledgeAnalysis}
+                className={secondaryActionBtn}
+              >
+                Why
+              </button>
+              <button
+                type="button"
+                onClick={openSystemAdjustments}
+                className={secondaryActionBtn}
+              >
+                Adjustments
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </section>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="ui-card p-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-            This Week Objective
+      <DailyInsightCard
+        insight={dailyInsight}
+        coachNotes={coachNotes}
+        priorities={weeklyPriorities}
+      />
+
+      <ExpandableSection
+        title="Your Current Plan"
+        subtitle="Phase intent, weekly objective, and adaptive guidance."
+        previewLines={planPreviewLines}
+        previewChips={planPreviewChips}
+      >
+        <div className="space-y-3 text-sm text-slate-700">
+          <p>
+            <span className="font-semibold text-slate-900">Phase:</span> {phaseName}
           </p>
-          <h3 className="mt-2 text-lg font-semibold text-slate-900">
-            {program.phaseObjective?.title ?? "Movement Quality Week"}
-          </h3>
-          <p className="mt-2 text-xs font-medium text-slate-600">
-            {program.phaseObjective?.weekIntent ?? "Build clean movement quality."}
+          <p>
+            <span className="font-semibold text-slate-900">Cycle:</span> {program.cycleIndex ?? 1}
           </p>
-          <p className="mt-2 text-sm text-slate-700">
-            {program.phaseObjective?.objective ??
-              "Move with clean mechanics and consistent effort across all planned days."}
+          <p>
+            <span className="font-semibold text-slate-900">Weekly objective:</span>{" "}
+            {program.phaseObjective?.weekIntent ?? phaseGoalText}
           </p>
-          <p className="mt-2 text-xs text-slate-500">
-            {program.phaseObjective?.phaseFocus ??
-              `Phase ${program.phaseIndex ?? 1} • Cycle ${program.cycleIndex ?? 1}`}
+          <p>
+            <span className="font-semibold text-slate-900">Weekly structure:</span> {weeklyStructure}
           </p>
-          {program.phaseObjective?.primaryPatterns?.length ? (
-            <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-600">
-              {program.phaseObjective.primaryPatterns.map((item) => (
+          <p>
+            <span className="font-semibold text-slate-900">Primary adaptation goal:</span>{" "}
+            {adaptationPriority}
+          </p>
+          <div>
+            <p className="font-semibold text-slate-900">Focus areas:</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {focusAreas.map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1"
+                  className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700"
                 >
                   {item}
                 </span>
               ))}
             </div>
-          ) : null}
-          {program.phaseObjective?.metrics ? (
-            <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-600">
-              <span className="rounded-full border border-slate-200 px-2.5 py-1">
-                Readiness {Math.round(program.phaseObjective.metrics.readiness * 100)}%
-              </span>
-              <span className="rounded-full border border-slate-200 px-2.5 py-1">
-                Consistency {Math.round(program.phaseObjective.metrics.consistency * 100)}%
-              </span>
-              <span className="rounded-full border border-slate-200 px-2.5 py-1">
-                Pain risk {Math.round(program.phaseObjective.metrics.painRisk * 100)}%
-              </span>
-            </div>
-          ) : null}
-          <div className="mt-3 space-y-1 text-xs text-slate-600">
-            {(program.phaseObjective?.successMarkers ?? []).slice(0, 3).map((item) => (
-              <p key={item}>• {item}</p>
-            ))}
           </div>
-          {program.phaseObjective?.guardrail ? (
-            <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900">
-              Guardrail: {program.phaseObjective.guardrail}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="ui-card p-6">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Why This Changed
-            </p>
+          <ProgressBar
+            label="Plan completion"
+            value={weekProgressPercent}
+            max={100}
+            subtitle={`${completedCount}/${activeDaysPerWeek} week days completed`}
+          />
+          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+            <p className="text-xs font-semibold text-slate-800">Why this week changed</p>
+            <p className="mt-1 text-xs text-slate-700">{whyChangedLine}</p>
             {program.phaseOptimizerReport ? (
-              <span className="rounded-full border border-slate-200 px-2 py-0.5 text-[11px] text-slate-600">
-                {program.phaseOptimizerReport.changedSlots}/
-                {program.phaseOptimizerReport.totalSlots} slots changed
-              </span>
-            ) : null}
-          </div>
-          <p className="mt-2 text-sm text-slate-700">
-            {program.sessionAdaptation?.summary ??
-              program.phaseOptimizerReport?.summary ??
-              "Progression was tuned using your recent training response."}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-600">
-            {(program.sessionAdaptation?.dataSignals ?? []).slice(0, 4).map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-600">
-            <p>
-              <span className="font-semibold text-slate-700">Readiness</span>:
-              how prepared your body is to progress this week.
-            </p>
-            <p>
-              <span className="font-semibold text-slate-700">Consistency</span>:
-              how regularly you completed planned sessions.
-            </p>
-            <p>
-              <span className="font-semibold text-slate-700">Recovery</span>:
-              how well you bounced back from recent sessions.
-            </p>
-            <p>
-              <span className="font-semibold text-slate-700">Pain risk</span>:
-              how likely current loading could flare symptoms.
-            </p>
-          </div>
-          <div className="mt-3 space-y-1 text-xs text-slate-600">
-            {(program.sessionAdaptation?.reasons ?? []).slice(0, 3).map((item) => (
-              <p key={item}>• {item}</p>
-            ))}
-          </div>
-          <div className="mt-3 space-y-1 text-[11px] text-slate-500">
-            {(program.sessionAdaptation?.appliedChanges ?? []).slice(0, 3).map((item) => (
-              <p key={item}>- {item}</p>
-            ))}
-          </div>
-        </div>
-
-        <div className="ui-card p-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-            What To Master Next
-          </p>
-          <h3 className="mt-2 text-lg font-semibold text-slate-900">
-            Priority execution cues
-          </h3>
-          <p className="mt-1 text-xs font-medium text-slate-700">
-            Viewing Day {effectiveSelectedDay + 1}: {program.week[effectiveSelectedDay]?.title ?? "Current day"}
-          </p>
-          <p className="mt-2 text-[11px] text-slate-500">
-            Click any day in Program Dashboard below and this list updates for that day.
-          </p>
-          <p className="mt-1 text-[11px] text-slate-500">
-            This is the exact day this card is coaching right now.
-          </p>
-          <Link
-            href={`/session?programId=${program.id}&dayIndex=${effectiveSelectedDay}`}
-            className="mt-3 inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-100"
-          >
-            Start Day {effectiveSelectedDay + 1} now
-          </Link>
-          <div className="mt-3 space-y-2 text-xs text-slate-700">
-            {masteryItems.map((item) => (
-              <div key={item} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-                <p className="font-medium text-slate-800">{item}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 space-y-1 text-[11px] text-slate-600">
-            {(program.sessionAdaptation?.masteryChecks ??
-              program.phaseObjective?.coachingPrompts ??
-              []).slice(0, 3).map((item) => (
-              <p key={item}>• {item}</p>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="ui-card p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Posture scan
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-              What we observed
-            </h2>
-          </div>
-          {poseState.report ? (
-            <div className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600">
-              Confidence:{" "}
-              {poseState.report.observations.some(
-                (obs) => obs.confidence === "high"
-              )
-                ? "High"
-                : poseState.report.observations.some(
-                    (obs) => obs.confidence === "medium"
-                  )
-                ? "Medium"
-                : "Low"}
-            </div>
-          ) : null}
-        </div>
-
-        {poseState.loading ? (
-          <p className="mt-4 text-sm text-slate-600">
-            Analyzing your posture photos…
-          </p>
-        ) : poseState.error ? (
-          <p className="mt-4 text-sm text-rose-600">{poseState.error}</p>
-        ) : poseState.report ? (
-          <>
-            <div className="mt-4 space-y-3 text-sm text-slate-700">
-              {poseState.report.observations.map((item, index) => (
-                <div
-                  key={`${item.id}-${index}`}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-semibold text-slate-900">{item.title}</p>
-                    <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-500">
-                      {item.confidence}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-xs text-slate-600">
-                    {item.description}
-                  </p>
-                  <p className="mt-1 text-[11px] text-slate-500">
-                    Evidence: {item.evidence.join(", ")}
-                  </p>
-                  <p className="mt-1 text-[11px] text-slate-500">
-                    Likely drivers: {item.likelyDrivers.join(", ")}
-                  </p>
-                  <p className="mt-1 text-[11px] text-slate-500">
-                    Why it matters: {item.riskIfIgnored}
-                  </p>
-                  {item.recommendedInterventions.length ? (
-                    <p className="mt-1 text-[11px] font-medium text-slate-600">
-                      Next action: {item.recommendedInterventions[0].suggestion}
-                    </p>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-            <div className="mt-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                What we’ll focus on
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-600">
-                {Array.from(
-                  new Set([
-                    ...poseState.report.priorities.map((id) => {
-                      const match = poseState.report?.observations.find(
-                        (obs) => obs.id === id
-                      );
-                      return match?.title ?? id;
-                    }),
-                    ...routine.priorities,
-                  ])
-                )
-                  .slice(0, 5)
-                  .map((item) => (
+              <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-slate-600">
+                <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">
+                  {program.phaseOptimizerReport.changedSlots}/{program.phaseOptimizerReport.totalSlots} slots changed
+                </span>
+                {(program.sessionAdaptation?.dataSignals ?? [])
+                  .slice(0, 3)
+                  .map((signal) => (
                     <span
-                      key={item}
-                      className="rounded-full border border-slate-200 bg-white px-3 py-1"
+                      key={signal}
+                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5"
                     >
-                      {item}
+                      {signal}
                     </span>
                   ))}
               </div>
-            </div>
-            <p className="mt-4 text-xs text-slate-500">
-              {poseState.report.summary}
-            </p>
-          </>
-        ) : (
-          <p className="mt-4 text-sm text-slate-600">
-            Upload posture photos to see observations here.
-          </p>
-        )}
-
-        {poseState.report?.disclaimers?.length ? (
-          <p className="mt-6 text-xs text-slate-500">
-            {poseState.report.disclaimers.join(" ")}
-          </p>
-        ) : (
-          <p className="mt-6 text-xs text-slate-500">
-            This scan estimates posture patterns — not a medical diagnosis.
-          </p>
-        )}
-      </div>
-
-      <div className="ui-card p-6">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-          Observed patterns
-        </p>
-        <div className="mt-3 space-y-2 text-sm text-slate-700">
-          {routine.observed.map((item) => (
-            <div key={item} className="rounded-2xl bg-slate-50 px-3 py-2">
-              {item}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="ui-card p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Your weekly program
-            </p>
-            <h3 className="mt-2 text-lg font-semibold text-slate-900">
-              {activeDaysPerWeek}-day split • Estimated 45–60 minutes
-            </h3>
-            {program.phaseIndex ? (
-              <p className="mt-2 text-sm text-slate-600">
-                Phase {program.phaseIndex} • Cycle {program.cycleIndex ?? 1}
-              </p>
-            ) : null}
-            {program.nextWeekPlan ? (
-              <p className="mt-2 text-sm text-slate-600">
-                {program.nextWeekPlan.summary}
-              </p>
             ) : null}
           </div>
-          <Link
-            href={`/session?programId=${program?.id ?? ""}&dayIndex=${effectiveNextDayIndex}`}
-            className="rounded-full bg-slate-900 px-5 py-2 text-xs font-semibold text-white"
-          >
-            {completedCount >= activeDaysPerWeek
-              ? "Continue Program"
-              : completedCount
-              ? "Continue Program"
-              : "Continue Program"}
-          </Link>
-        </div>
-        <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-600">
-          <span className="rounded-full border border-slate-200 px-3 py-1">
-            Day {effectiveNextDayIndex + 1} of {activeDaysPerWeek}
-          </span>
-          <span className="rounded-full border border-slate-200 px-3 py-1">
-            You are on Week {completedWeeks + 1}, Day {effectiveNextDayIndex + 1}
-          </span>
-          <span
-            data-testid="completed-count"
-            className="rounded-full border border-slate-200 px-3 py-1"
-          >
-            {completedCount} completed
-          </span>
-        </div>
-      </div>
-
-      {program ? (
-        <div className="space-y-6">
-          <div className="ui-card p-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  Program Dashboard
+          <p className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700">
+            Your nervous system is adapting to improve coordination, stability, and movement confidence.
+          </p>
+          <details className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+            <summary className={`${secondaryActionBtn} list-none cursor-pointer`}>
+              View details: Recent exercise signals
+            </summary>
+            <div className="mt-3 space-y-2">
+              {recentExerciseSignals.length ? (
+                recentExerciseSignals.map((entry) => (
+                  <div key={entry.exerciseName} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs">
+                    <p className="font-semibold text-slate-800">{entry.exerciseName}</p>
+                    <p className="mt-1 text-slate-600">Last session: {entry.status}</p>
+                    <p className="text-slate-600">Guidance: {entry.guidance}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-slate-500">
+                  No exercise signals yet. Complete one session and log difficulty/pain to unlock guidance.
                 </p>
-                <h3 className="mt-2 text-lg font-semibold text-slate-900">
-                  Weekly calendar
-                </h3>
-              </div>
-              <span className="text-xs text-slate-500">
-                Tap a day to view details
-              </span>
+              )}
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {program.week.map((day) => {
-                const isCompleted = completedByDay.has(day.dayIndex);
-                const isNext = day.dayIndex === nextDayIndex;
-                const isSelected = day.dayIndex === effectiveSelectedDay;
-                const isLocked = isDayLocked(day.dayIndex);
-                return (
-                  <div
-                    key={day.dayIndex}
-                    className={`relative overflow-hidden rounded-2xl border bg-slate-50 px-4 py-3 text-left transition ${
-                      isSelected
-                        ? "border-slate-900 ring-2 ring-slate-900/20"
-                        : "border-slate-200"
-                    } ${isLocked ? "opacity-85" : ""}`}
-                  >
+          </details>
+        </div>
+      </ExpandableSection>
+
+      <ExpandableSection
+        title="Progress Summary"
+        subtitle="How your consistency, completion, pain, and quality are trending."
+        previewLines={progressPreviewLines}
+        previewChips={progressPreviewChips}
+      >
+        <ProgressSummary
+          cyclesCompleted={phaseGate.cyclesCompletedInPhase}
+          cycleTarget={phaseGate.minCycles}
+          consistencyPercent={consistencyPercent}
+          completionPercent={adherencePercent}
+          painTrend={painTrendLabel}
+          painTrendPercent={painTrendPercent}
+          movementQualityTrend={movementQualityTrend}
+          movementQualityPercent={movementQualityPercent}
+        />
+      </ExpandableSection>
+
+      {hasSystemAdjustments ? (
+        <div ref={systemAdjustmentsSectionRef} className="scroll-mt-24">
+          <ExpandableSection
+            title="System Adjustments"
+            subtitle="What the system changed and why."
+            previewLines={[systemAdjustmentSummary]}
+            previewChips={systemAdjustmentChips}
+            expanded={systemAdjustmentsExpanded}
+            onExpandedChange={setSystemAdjustmentsExpanded}
+          >
+            <div className="space-y-2 text-sm text-slate-700">
+              <p>
+                <span className="font-medium text-slate-900">What changed:</span>{" "}
+                {systemAdjustmentChanged}
+              </p>
+              <p>
+                <span className="font-medium text-slate-900">Why it changed:</span>{" "}
+                {systemAdjustmentWhy}
+              </p>
+              <p>
+                <span className="font-medium text-slate-900">Focus now:</span>{" "}
+                {systemAdjustmentFocus}
+              </p>
+            </div>
+          </ExpandableSection>
+        </div>
+      ) : null}
+
+      <div
+        ref={knowledgeSectionRef}
+        className={`scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
+          knowledgeHighlighted
+            ? "bg-slate-50/50 ring-2 ring-slate-300 ring-offset-2"
+            : "bg-transparent"
+        }`}
+      >
+        <ExpandableSection
+          title="Knowledge & Analysis"
+          subtitle="Structured movement and adaptation analysis."
+          previewLines={knowledgePreviewLines}
+          previewChips={knowledgePreviewChips}
+          expanded={knowledgeExpanded}
+          onExpandedChange={setKnowledgeExpanded}
+        >
+          <div className="space-y-3">
+            {knowledgeCards.map((card) => {
+              const isCardExpanded = knowledgeDetailExpanded[card.key];
+              return (
+                <div
+                  key={card.key}
+                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-medium text-slate-900">{card.title}</p>
                     <button
                       type="button"
-                      aria-label={`Select Day ${day.dayIndex + 1}`}
-                      aria-pressed={isSelected}
-                      onClick={() => {
-                        if (isLocked) return;
-                        setSelectedDay(day.dayIndex);
-                      }}
-                      className="absolute inset-0 rounded-2xl disabled:cursor-not-allowed"
-                      disabled={isLocked}
-                    />
-                    <div className="relative z-10 pointer-events-none">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
-                            Day {day.dayIndex + 1}
-                          </p>
-                          <p className="mt-1 text-sm font-semibold text-slate-900">
-                            {day.title}
-                          </p>
+                      className={secondaryActionBtn}
+                      onClick={() =>
+                        setKnowledgeDetailExpanded((prev) => ({
+                          ...prev,
+                          [card.key]: !prev[card.key],
+                        }))
+                      }
+                    >
+                      {isCardExpanded ? "Hide details" : "View details"}
+                    </button>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-600">{card.summary}</p>
+                  <div
+                    className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-200 ${
+                      isCardExpanded
+                        ? "mt-2 grid-rows-[1fr] opacity-100"
+                        : "mt-0 grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="space-y-1 pt-1 text-xs text-slate-700">
+                        {card.items.map((item) => (
+                          <p key={`${card.key}-${item}`}>• {item}</p>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            <details className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+              <summary className={`${secondaryActionBtn} list-none cursor-pointer`}>
+                View details: Day {effectiveSelectedDay + 1} plan reasoning
+              </summary>
+              <div className="mt-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs font-semibold text-slate-700">
+                    {selectedDayProgram?.title}
+                  </p>
+                  <Link href={`/session?programId=${program.id}&dayIndex=${effectiveSelectedDay}`}>
+                    <Button variant="secondary" data-testid="start-selected-day">
+                      Start Selected Day
+                    </Button>
+                  </Link>
+                </div>
+                <div
+                  id={showDebug ? "exercise-rationale" : undefined}
+                  className="mt-2 space-y-2"
+                >
+                  {selectedDayProgram?.routine.map((item, index) => {
+                    const exercise = exerciseById(item.exerciseId);
+                    if (!exercise) return null;
+                    const richRationale = exerciseRationaleById.get(item.exerciseId);
+                    const reason =
+                      optimizerReasonsByExercise[item.exerciseId]?.[0] ??
+                      buildWhyPicked(exercise).purpose;
+                    return (
+                      <div key={`${item.exerciseId}-${index}`} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-semibold text-slate-900">{exercise.name}</p>
+                          <span className="text-[11px] uppercase text-slate-500">{item.section}</span>
                         </div>
-                        {isCompleted ? (
-                          <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600">
-                            ✓
+                        {!showDebug ? (
+                          <p className="mt-1 text-xs text-slate-600">{reason}</p>
+                        ) : (
+                          <div className="mt-1 space-y-1">
+                            <p className="text-[11px] text-slate-500">
+                              Why:{" "}
+                              {richRationale?.primaryReason ??
+                                "Rationale isn\u2019t available for this exercise yet."}
+                            </p>
+                            <p className="text-[11px] text-slate-500">
+                              Setup: {richRationale?.setup ?? "Control each rep, steady tempo."}
+                            </p>
+                            {richRationale?.progressions.length ? (
+                              <p className="text-[11px] text-slate-500">
+                                Progression: {richRationale.progressions.join(" / ")}
+                              </p>
+                            ) : null}
+                            {richRationale?.regressions.length ? (
+                              <p className="text-[11px] text-slate-500">
+                                Regression: {richRationale.regressions.join(" / ")}
+                              </p>
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                {showDebug && (!selectedDayProgram?.routine || selectedDayProgram.routine.length === 0) ? (
+                  <p className="mt-2 text-xs text-slate-500">
+                    No exercises found for today yet.
+                  </p>
+                ) : null}
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                  <button
+                    type="button"
+                    onClick={() => setShowDebug((prev) => !prev)}
+                    className={secondaryActionBtn}
+                  >
+                    {showDebug ? "Hide exercise rationale" : "Show exercise rationale"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/program/${program.id}/day/${effectiveSelectedDay}`)}
+                    className={secondaryActionBtn}
+                  >
+                    View day history
+                  </button>
+                </div>
+              </div>
+            </details>
+          </div>
+        </ExpandableSection>
+      </div>
+
+      <section id="week-view" ref={weekViewSectionRef} className="ui-card p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 className="text-base font-semibold text-slate-900">Week View</h3>
+          <div className="flex items-center gap-2">
+            <span
+              data-testid="completed-count"
+              className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-600"
+            >
+              {completedCount}/{activeDaysPerWeek} completed
+            </span>
+            {weekViewStartDay !== null ? (
+              <Link href={`/session?programId=${program.id}&dayIndex=${weekViewStartDay}`}>
+                <Button variant="secondary">Start Selected Day</Button>
+              </Link>
+            ) : (
+              <Button variant="secondary" disabled className="disabled:opacity-35">
+                Start Selected Day
+              </Button>
+            )}
+          </div>
+        </div>
+        {weekViewStartDay === null ? (
+          <p className="mt-2 text-xs text-slate-500">Select a day to start.</p>
+        ) : null}
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {program.week.map((day) => {
+            const isCompleted = completedByDay.has(day.dayIndex);
+            const isSelected = day.dayIndex === weekViewStartDay;
+            const isLocked = isDayLocked(day.dayIndex);
+            const isNext = day.dayIndex === effectiveNextDayIndex && !isCompleted;
+            const isToday = day.dayIndex === effectiveNextDayIndex;
+            const stateLabel = isCompleted ? "Completed" : isNext ? "Next" : "Pending";
+            const statePercent = isCompleted ? 100 : isNext ? 55 : 15;
+            return (
+              <button
+                key={day.dayIndex}
+                type="button"
+                onClick={() => {
+                  if (isLocked) return;
+                  if (day.dayIndex === weekViewStartDay && weekViewDetailsOpen) {
+                    setWeekViewDetailsOpen(false);
+                    return;
+                  }
+                  setSelectedDay(day.dayIndex);
+                  setWeekViewSelectedDay(day.dayIndex);
+                  setWeekViewDetailsOpen(true);
+                }}
+                disabled={isLocked}
+                className={`rounded-2xl border px-3 py-2.5 text-left transition ${
+                  isSelected
+                    ? "border-slate-950 bg-slate-100 ring-1 ring-slate-300"
+                    : isNext
+                    ? "border-slate-700 bg-slate-50"
+                    : "border-slate-200 bg-white"
+                } ${isLocked ? "opacity-60" : "hover:bg-slate-50"}`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-semibold text-slate-600">Day {day.dayIndex + 1}</p>
+                  <div className="flex items-center gap-1">
+                    {isCompleted ? (
+                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 transition-opacity duration-300">
+                        Completed
+                      </span>
+                    ) : null}
+                    {isNext ? (
+                      <span className="rounded-full border border-slate-400 bg-slate-200 px-2 py-0.5 text-[10px] font-semibold text-slate-800 transition-opacity duration-300">
+                        Next
+                      </span>
+                    ) : null}
+                    {isToday ? (
+                      <span className="rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 transition-opacity duration-300">
+                        Today
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+                <p className="mt-1 text-sm font-semibold text-slate-900">{day.title}</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  {isCompleted ? "Done" : stateLabel}
+                </p>
+                <div className="mt-2">
+                  <ProgressBar
+                    label={stateLabel}
+                    value={statePercent}
+                    max={100}
+                    compact
+                    variant="mini"
+                    showPercent={false}
+                  />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        {weekViewDetailsOpen && selectedDayProgram ? (
+          <div
+            ref={weekViewDetailsRef}
+            className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Selected Day Details
+              </p>
+              <button
+                type="button"
+                onClick={() => setWeekViewDetailsOpen(false)}
+                className={secondaryActionBtn}
+              >
+                Hide details
+              </button>
+            </div>
+            <p className="mt-1 text-sm font-semibold text-slate-900">
+              Day {effectiveSelectedDay + 1} • {selectedDayProgram.title}
+            </p>
+            <div className="mt-3 space-y-2">
+              {selectedDayProgram.routine.map((item, index) => {
+                const exercise = exerciseById(item.exerciseId);
+                if (!exercise) return null;
+                const rationale =
+                  optimizerReasonsByExercise[item.exerciseId]?.[0] ??
+                  exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
+                  "Rationale isn\u2019t available for this exercise yet.";
+                const detailParts: string[] = [];
+                if (item.sets) detailParts.push(`${item.sets} sets`);
+                if (item.reps) detailParts.push(`${item.reps} reps`);
+                if (item.durationSec) detailParts.push(`${item.durationSec}s`);
+                return (
+                  <div
+                    key={`${item.exerciseId}-${index}`}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-semibold text-slate-900">{exercise.name}</p>
+                      <div className="flex flex-wrap items-center gap-1">
+                        <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] uppercase text-slate-600">
+                          {item.section}
+                        </span>
+                        {exercise.category ? (
+                          <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-600">
+                            {exercise.category}
                           </span>
                         ) : null}
                       </div>
-                      <div className="mt-2 flex flex-wrap gap-2 text-[11px]">
-                        <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-slate-500">
-                          {isNext ? "Next" : isCompleted ? "Completed" : "Pending"}
-                        </span>
-                        <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-slate-500">
-                          {day.routine.length} exercises
-                        </span>
-                      </div>
                     </div>
-                    <div className="absolute right-2 top-2 z-20 flex gap-2">
-                      {!isLocked ? (
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            router.push(
-                              `/program/${program.id}/day/${day.dayIndex}`
-                            );
-                          }}
-                          aria-label={`View Day ${day.dayIndex + 1} history`}
-                          title="History"
-                          className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-slate-700 shadow-sm hover:bg-slate-100"
-                        >
-                          History
-                        </button>
-                      ) : null}
-                    </div>
-                    {isLocked ? (
-                      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center backdrop-blur-[2px]">
-                        <span className="rounded-full border border-slate-300 bg-white/85 px-3 py-1 text-[10px] font-semibold text-slate-700">
-                          Pro required
-                        </span>
-                      </div>
+                    {detailParts.length ? (
+                      <p className="mt-1 text-xs text-slate-600">{detailParts.join(" • ")}</p>
                     ) : null}
-                    {isLocked ? (
-                      <div className="pointer-events-none absolute inset-0 z-[9] bg-gradient-to-r from-slate-100/20 via-slate-100/35 to-slate-100/20" />
-                    ) : null}
+                    <p className="mt-1 text-xs text-slate-600">{rationale}</p>
                   </div>
                 );
               })}
             </div>
           </div>
+        ) : null}
+        {isFreePlan ? (
+          <p className="mt-2 text-xs text-slate-500">
+            Free plan preview is limited to Day 1. Upgrade to unlock Day 2–{program.daysPerWeek}.
+          </p>
+        ) : null}
+      </section>
 
-          <OnImage>
-            <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm flex h-[640px] flex-col">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-200">
-                    Day Preview
-                  </p>
-                  <h3 className="mt-1 text-lg font-semibold text-white">
-                    Day {effectiveSelectedDay + 1}: {program.week[effectiveSelectedDay].title}
-                  </h3>
-                  <p className="mt-1 text-xs text-slate-200">
-                    Focus: {program.week[effectiveSelectedDay].focusTags.join(", ")}
-                  </p>
-                </div>
-                <Link
-                  href={`/session?programId=${program.id}&dayIndex=${effectiveSelectedDay}`}
-                >
-                  <Button variant="secondary" data-testid="start-selected-day">
-                    Start Selected Day
-                  </Button>
-                </Link>
-              </div>
-              <div className="mt-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    router.push(`/program/${program.id}/day/${effectiveSelectedDay}`)
-                  }
-                  className="text-xs font-semibold text-slate-200 underline-offset-4 hover:underline"
-                >
-                  View Day {effectiveSelectedDay + 1} history
-                </button>
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-200">
-                <label className="flex items-center gap-2 rounded-full border border-white/20 px-3 py-1">
-                  <input
-                    type="checkbox"
-                    checked={showDebug}
-                    onChange={() => setShowDebug((prev) => !prev)}
-                    className="h-3 w-3 accent-white"
-                  />
-                  Why this exercise was picked
-                </label>
-                <span className="text-[11px] text-slate-200">
-                  Tap to see quick rationale
-                </span>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {program.week.map((day) => (
-                  <button
-                    key={day.dayIndex}
-                    type="button"
-                    onClick={() => {
-                      if (isDayLocked(day.dayIndex)) return;
-                      setSelectedDay(day.dayIndex);
-                    }}
-                    className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-                      effectiveSelectedDay === day.dayIndex
-                        ? "border-white/40 bg-white/20 text-white"
-                        : "border-white/20 text-slate-200"
-                    } ${isDayLocked(day.dayIndex) ? "opacity-60 blur-[1px] cursor-not-allowed" : ""}`}
-                    disabled={isDayLocked(day.dayIndex)}
-                  >
-                    Day {day.dayIndex + 1}{isDayLocked(day.dayIndex) ? " (Pro)" : ""}
-                  </button>
-                ))}
-              </div>
-              {isFreePlan ? (
-                <p className="mt-2 text-[11px] text-slate-200">
-                  Free plan preview is limited to Day 1. Upgrade to unlock Day 2–{program.daysPerWeek}.
-                </p>
-              ) : null}
-
-              <div className="mt-4 flex-1 overflow-y-auto pr-1">
-                <div className="space-y-2 text-xs text-slate-200">
-                  {program.week[effectiveSelectedDay].routine.map((item, index) => {
-                    const exercise = exerciseById(item.exerciseId);
-                    if (!exercise) return null;
-                    const reason =
-                      optimizerReasonsByExercise[item.exerciseId]?.[0] ??
-                      buildWhyPicked(exercise).purpose;
-                    return (
-                      <div
-                        key={`${item.exerciseId}-${index}-${effectiveSelectedDay}`}
-                        className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="font-semibold text-white">{exercise.name}</p>
-                          {item.section ? (
-                            <span className="rounded-full border border-white/20 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/80">
-                              {item.section}
-                            </span>
-                          ) : null}
-                        </div>
-                        <p className="mt-1 text-[11px] text-slate-200">{reason}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-                {dayPreviewRecommendations.length ? (
-                  <div className="mt-4 space-y-2 text-xs text-slate-200">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-300">
-                      Next-time recommendations
-                    </p>
-                    {dayPreviewRecommendations.map(({ exercise, rec }, index) => (
-                      <div
-                        key={`${exercise.id}-next-${index}`}
-                        className="rounded-2xl border border-white/15 bg-white/10 px-3 py-2"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="font-semibold text-white">
-                            {exercise.name}
-                          </p>
-                          {rec?.safetyFlag ? (
-                            <span className="rounded-full border border-amber-200/60 bg-amber-50/10 px-2 py-0.5 text-[10px] font-semibold text-amber-200">
-                              Safety
-                            </span>
-                          ) : null}
-                        </div>
-                        <p className="mt-1 text-[11px] text-white/90">
-                          Next time: {formatRecommendation(rec)}
-                        </p>
-                        <p className="text-[11px] text-white/70">
-                          {rec?.reason}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
-                {showDebug ? (
-                  <div className="mt-4 space-y-2 text-xs text-slate-200">
-                    {program.week[effectiveSelectedDay].routine.map((item, index) => {
-                      const exercise = exerciseById(item.exerciseId);
-                      if (!exercise) return null;
-                      const why = buildWhyPicked(exercise);
-                      return (
-                        <div
-                          key={`debug-${item.exerciseId}-${index}-${effectiveSelectedDay}`}
-                          className="rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
-                        >
-                          <p className="font-semibold text-white">
-                            {exercise.name}
-                          </p>
-                          <ul className="mt-2 space-y-1 text-[11px] text-slate-200">
-                            <li>Slot: {why.slot}</li>
-                            <li>Goal match: {why.goalMatch.join(", ")}</li>
-                            <li>Trains: {why.trains.join(", ")}</li>
-                            <li>Purpose: {why.purpose}</li>
-                            <li>Setup: {why.setup}</li>
-                            {why.progressions?.length ? (
-                              <li>
-                                Progression: {why.progressions.join(" / ")}
-                              </li>
-                            ) : null}
-                            {why.regressions?.length ? (
-                              <li>
-                                Regression: {why.regressions.join(" / ")}
-                              </li>
-                            ) : null}
-                          </ul>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : null}
-                <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-200">
-                  <span className="rounded-full border border-white/20 px-3 py-1">
-                    {completedByDay.has(effectiveSelectedDay) ? "Completed" : "Pending"}
-                  </span>
-                  <span className="rounded-full border border-white/20 px-3 py-1">
-                    Sessions: {completedByDay.get(effectiveSelectedDay)?.length ?? 0}
-                  </span>
-                </div>
-
-                <div className="mt-6 border-t border-white/10 pt-5">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <h4 className="text-sm font-semibold text-white">
-                        Coach&apos;s Corner
-                      </h4>
-                      <p className="text-xs text-slate-200">
-                        Tap an exercise to see form cues + demo video
-                      </p>
-                    </div>
-                    <a
-                      href="#coachs-corner-list"
-                      className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/15"
-                    >
-                      Get form help
-                    </a>
-                  </div>
-
-                  <div
-                    id="coachs-corner-list"
-                    className="mt-4 flex flex-wrap gap-2 text-xs"
-                  >
-                    {program.week[effectiveSelectedDay].routine.map((item, index) => {
-                      const exercise = exerciseById(item.exerciseId);
-                      if (!exercise) return null;
-                      return (
-                        <Link
-                          key={`${item.exerciseId}-coach-${index}`}
-                          href={`/exercise/${exercise.id}`}
-                          className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-white transition hover:bg-white/15"
-                        >
-                          <span>{exercise.name}</span>
-                          <span className="rounded-full border border-white/20 px-2 py-0.5 text-[10px] text-white/90">
-                            Video
-                          </span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </OnImage>
-
-        </div>
-      ) : (
-        <div className="grid gap-6 lg:grid-cols-2">
-          {routine.sections.map((section) => (
-            <div
-              key={section.title}
-              className="ui-card p-6"
-            >
-              <h3 className="text-lg font-semibold text-slate-900">
-                {section.title}
-              </h3>
-              <div className="mt-4 space-y-4">
-                {section.items.map((item) => {
-                  const exercise = exerciseById(item.exerciseId);
-                  return (
-                    <div
-                      key={item.exerciseId}
-                      className="rounded-2xl bg-slate-50 p-4"
-                    >
-                      <p className="text-sm font-semibold text-slate-900">
-                        {exercise ? (
-                          <Link
-                            href={`/exercise/${exercise.id}`}
-                            className="hover:underline"
-                          >
-                            {exercise.name}
-                          </Link>
-                        ) : (
-                          "Exercise"
-                        )}
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        {item.sets} sets • {item.reps} reps
-                      </p>
-                      <div className="mt-3 text-xs text-slate-600">
-                        <p className="font-semibold text-slate-700">Cues</p>
-                        <ul className="list-disc pl-4">
-                          {(exercise?.cues ?? []).map((cue) => (
-                            <li key={cue}>{cue}</li>
-                          ))}
-                        </ul>
-                        <p className="mt-2 text-slate-500">
-                          Common mistake:{" "}
-                          {exercise?.mistakes?.[0] ?? "Keep form controlled"}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <OnImage>
-        <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h3 className="text-lg font-semibold text-white">
-                Progressive Plan
-              </h3>
-              <p className="mt-2 text-sm text-slate-200">
-                {program?.phaseName ?? "Phase 1"} sharpens{" "}
-                {getPhaseProfile(program?.phaseIndex ?? 1).label.toLowerCase()}{" "}
-                with steady, measurable progression.
-              </p>
-              <p className="mt-2 text-xs text-slate-200">
-                A cycle equals one full week: complete all {program?.daysPerWeek ?? 3} days.
-              </p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <button
-                type="button"
-                data-testid="move-phase-trigger"
-                onClick={() => {
-                  setAdvanceMessage(previewSummary());
-                  setAdvanceOpen(true);
-                }}
-                disabled={!phaseControlUi.canMoveNextPhase}
-                className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 disabled:opacity-50"
+      <ExpandableSection
+        title="Phase Progression"
+        subtitle="Requirements and readiness to move ahead."
+        previewLines={[
+          phaseRequirementsText,
+          phaseGateReason,
+        ]}
+        previewChips={[
+          `${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} cycles`,
+          `${phaseGate.daysSincePhaseStart}/${phaseGate.minDays} days`,
+          readinessEstimate,
+        ]}
+      >
+        <PhaseProgressCard
+          phaseName={phaseName}
+          phaseDescription={phaseDescription}
+          requirementsText={phaseRequirementsText}
+          gateReason={phaseGateReason}
+          gateProgressText={phaseProgressText}
+          moveButtonLabel={movePhaseButtonLabel}
+          canMove={phaseControlUi.canMoveNextPhase}
+          showSkip={phaseControlUi.showSkipPhaseOne}
+          phaseProgressPercent={phaseProgressPercent}
+          cycleProgressPercent={cycleProgressPercent}
+          readinessEstimate={readinessEstimate}
+          onOpenMove={() => {
+            setAdvanceMessage(previewSummary());
+            setAdvanceOpen(true);
+          }}
+          onOpenSkip={() => setSkipPhaseOneOpen(true)}
+          uploadControl={
+            phaseControlUi.canUploadPhotos ? (
+              <Link href="/assessment">
+                <Button variant="secondary" data-testid="upload-photos-button">
+                  Upload new photos
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                variant="secondary"
+                disabled
+                data-testid="upload-photos-button"
+                title={phaseGateReason}
               >
-                {movePhaseButtonLabel}
-              </button>
-              {phaseControlUi.showSkipPhaseOne ? (
-                <button
-                  type="button"
-                  data-testid="skip-phase-one-trigger"
-                  onClick={() => setSkipPhaseOneOpen(true)}
-                  className="rounded-full border border-amber-300/40 bg-amber-100/10 px-4 py-2 text-xs font-semibold text-amber-100 hover:bg-amber-100/15"
-                >
-                  Skip Phase 1
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <div className="mt-4 text-xs text-slate-200" data-testid="phase-gate-reason">
-            {phaseGateReason}
-          </div>
-          <div className="mt-2 text-[11px] text-slate-300" data-testid="phase-gate-progress">
-            Cycles: {phaseGate.cyclesCompletedInPhase}/{phaseGate.minCycles} • Days:{" "}
-            {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}
-          </div>
-          {advanceMessage ? (
-            <div className="mt-3 rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-xs text-slate-200">
-              {advanceMessage}
-            </div>
-          ) : null}
+                Upload new photos
+              </Button>
+            )
+          }
+        />
+        <div className="mt-3">
+          <Link href="/questionnaire">
+            <Button variant="secondary">Edit answers</Button>
+          </Link>
         </div>
-      </OnImage>
+      </ExpandableSection>
 
       {advanceOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -1829,29 +2077,29 @@ export default function ResultsRoutine() {
               setAdvanceConfirm(false);
             }}
           />
-          <div className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-950/90 p-6 text-white shadow-xl">
-            <h3 className="text-lg font-semibold">
+          <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl">
+            <h3 className="text-lg font-semibold text-slate-900">
               Move to Phase {(program?.phaseIndex ?? 1) + 1}?
             </h3>
-            <p className="mt-2 text-sm text-slate-200">
+            <p className="mt-2 text-sm text-slate-600">
               This creates your next progressive plan. Your logs and history stay saved.
             </p>
             {!phaseGate.ok ? (
-              <div className="mt-3 rounded-2xl border border-amber-200/30 bg-amber-50/10 px-3 py-2 text-xs text-amber-100">
+              <div className="mt-3 rounded-2xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
                 {phaseGateReason}
               </div>
             ) : null}
             {advanceMessage ? (
-              <div className="mt-3 rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-xs text-slate-200">
+              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
                 {advanceMessage}
               </div>
             ) : null}
-            <label className="mt-4 flex items-center gap-2 text-xs text-slate-200">
+            <label className="mt-4 flex items-center gap-2 text-xs text-slate-600">
               <input
                 type="checkbox"
                 checked={advanceConfirm}
                 onChange={(event) => setAdvanceConfirm(event.target.checked)}
-                className="h-4 w-4 accent-white"
+                className="h-4 w-4 accent-foreground"
               />
               I’m ready to progress
             </label>
@@ -1862,7 +2110,7 @@ export default function ResultsRoutine() {
                   setAdvanceOpen(false);
                   setAdvanceConfirm(false);
                 }}
-                className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/90 hover:bg-white/10"
+                className={secondaryActionBtn}
               >
                 Cancel
               </button>
@@ -1870,7 +2118,7 @@ export default function ResultsRoutine() {
                 type="button"
                 disabled={!advanceConfirm || !phaseGate.ok}
                 onClick={() => handleAdvanceProgram()}
-                className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 disabled:opacity-50"
+                className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
               >
                 Move phase
               </button>
@@ -1886,14 +2134,14 @@ export default function ResultsRoutine() {
             onClick={() => setSkipPhaseOneOpen(false)}
           />
           <div
-            className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-950/90 p-6 text-white shadow-xl"
+            className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl"
             data-testid="skip-phase-one-modal"
           >
-            <h3 className="text-lg font-semibold">Skip Phase 1?</h3>
-            <p className="mt-2 text-sm text-slate-200">
+            <h3 className="text-lg font-semibold text-slate-900">Skip Phase 1?</h3>
+            <p className="mt-2 text-sm text-slate-600">
               Phase 1 builds control and tolerance. Skipping can make Phase 2 feel sharper and less stable.
             </p>
-            <p className="mt-2 text-xs text-slate-300">
+            <p className="mt-2 text-xs text-slate-600">
               You can continue now, but expect stricter loading and technique demands.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -1901,7 +2149,7 @@ export default function ResultsRoutine() {
                 type="button"
                 data-testid="skip-phase-one-cancel"
                 onClick={() => setSkipPhaseOneOpen(false)}
-                className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/90 hover:bg-white/10"
+                className={secondaryActionBtn}
               >
                 Cancel
               </button>
@@ -1909,7 +2157,7 @@ export default function ResultsRoutine() {
                 type="button"
                 data-testid="skip-phase-one-confirm"
                 onClick={handleSkipPhaseOne}
-                className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900"
+                className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
               >
                 Confirm skip
               </button>
@@ -1917,28 +2165,6 @@ export default function ResultsRoutine() {
           </div>
         </div>
       ) : null}
-
-      <OnImage className="flex flex-wrap gap-3">
-        {!phaseControlUi.canUploadPhotos ? (
-          <Button
-            variant="secondary"
-            disabled
-            data-testid="upload-photos-button"
-            title={phaseGateReason}
-          >
-            Upload new photos
-          </Button>
-        ) : (
-          <Link href="/assessment">
-            <Button variant="secondary" data-testid="upload-photos-button">
-              Upload new photos
-            </Button>
-          </Link>
-        )}
-        <Link href="/questionnaire">
-          <Button variant="secondary">Edit answers</Button>
-        </Link>
-      </OnImage>
     </div>
   );
 }

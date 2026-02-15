@@ -3201,7 +3201,7 @@ const applyDayPatternBudget = (params: {
   };
 
   (Object.keys(effectiveMax) as MainLane[]).forEach((lane) => {
-    let maxAllowed = effectiveMax[lane];
+    const maxAllowed = effectiveMax[lane];
     if (typeof maxAllowed !== "number") return;
     let resolvedMaxAllowed = maxAllowed;
     let guard = 0;
