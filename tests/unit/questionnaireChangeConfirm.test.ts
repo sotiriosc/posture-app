@@ -113,8 +113,12 @@ describe("questionnaire change confirmation flow", () => {
     vi.clearAllMocks();
   });
 
-  test("changing a field opens confirmation and cancel restores prior values", async () => {
+  test("confirmation appears on submit and cancel restores prior values", async () => {
     fireEvent.click(screen.getByTestId("days-4"));
+
+    expect(screen.queryByTestId("questionnaire-change-confirm-modal")).toBeNull();
+
+    fireEvent.click(screen.getByTestId("generate-routine"));
 
     expect(screen.getByTestId("questionnaire-change-confirm-modal")).toBeTruthy();
     expect(screen.getByTestId("questionnaire-change-confirm-modal").textContent).toContain(
@@ -140,6 +144,7 @@ describe("questionnaire change confirmation flow", () => {
 
   test("confirm commits questionnaire and regenerates active program", async () => {
     fireEvent.click(screen.getByTestId("days-4"));
+    fireEvent.click(screen.getByTestId("generate-routine"));
     fireEvent.click(screen.getByTestId("questionnaire-change-confirm"));
 
     await waitFor(() => {

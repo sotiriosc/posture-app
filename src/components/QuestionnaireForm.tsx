@@ -211,15 +211,9 @@ export default function QuestionnaireForm() {
       persistQuestionnaire(next);
       return;
     }
-
-    if (!hasProgramAffectingChange(next, committedData)) {
-      setPendingData(null);
-      setShowChangeConfirm(false);
-      setChangeWarning(null);
-      return;
-    }
-
-    openChangeConfirm(next);
+    setPendingData(next);
+    setShowChangeConfirm(false);
+    setChangeWarning(null);
   };
 
   const toggleArrayValue = (key: "painAreas" | "equipment", value: string) => {

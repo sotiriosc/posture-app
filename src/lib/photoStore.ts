@@ -39,15 +39,30 @@ const openDbRequest = (version?: number) =>
     request.onerror = () => reject(request.error);
   });
 
+const ensurePhotoStore = async (db: IDBDatabase) => {
+  if (db.objectStoreNames.contains(STORE_PHOTOS)) {
+    return db;
+  }
+  const targetVersion = Math.max(db.version, DB_VERSION) + 1;
+  db.close();
+  return openDbRequest(targetVersion);
+};
+
 const openDb = () => {
   if (dbPromise) return dbPromise;
-  dbPromise = openDbRequest(DB_VERSION).catch((error) => {
-    // Recover when local browser already has a newer photo DB schema version.
-    if (error instanceof DOMException && error.name === "VersionError") {
-      return openDbRequest();
+  dbPromise = (async () => {
+    try {
+      const db = await openDbRequest(DB_VERSION);
+      return ensurePhotoStore(db);
+    } catch (error) {
+      // Recover when local browser already has a newer photo DB schema version.
+      if (error instanceof DOMException && error.name === "VersionError") {
+        const db = await openDbRequest();
+        return ensurePhotoStore(db);
+      }
+      throw error;
     }
-    throw error;
-  });
+  })();
   return dbPromise;
 };
 
@@ -55,17 +70,36 @@ const withStore = async <T>(
   mode: IDBTransactionMode,
   handler: (store: IDBObjectStore) => Promise<T>
 ) => {
-  const db = await openDb();
-  return new Promise<T>((resolve, reject) => {
-    const tx = db.transaction(STORE_PHOTOS, mode);
-    const store = tx.objectStore(STORE_PHOTOS);
-    handler(store)
-      .then((result) => {
-        tx.oncomplete = () => resolve(result);
-      })
-      .catch((error) => reject(error));
-    tx.onerror = () => reject(tx.error);
-  });
+  const runWithDb = async (db: IDBDatabase) =>
+    new Promise<T>((resolve, reject) => {
+      let tx: IDBTransaction;
+      try {
+        tx = db.transaction(STORE_PHOTOS, mode);
+      } catch (error) {
+        reject(error);
+        return;
+      }
+      const store = tx.objectStore(STORE_PHOTOS);
+      handler(store)
+        .then((result) => {
+          tx.oncomplete = () => resolve(result);
+        })
+        .catch((error) => reject(error));
+      tx.onerror = () => reject(tx.error);
+    });
+
+  let db = await openDb();
+  try {
+    return await runWithDb(db);
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "NotFoundError") {
+      db.close();
+      dbPromise = null;
+      db = await openDb();
+      return runWithDb(db);
+    }
+    throw error;
+  }
 };
 
 const requestToPromise = <T>(request: IDBRequest<T>) =>

@@ -43,6 +43,43 @@ type CoverageMetricKey =
   | "pullDays"
   | "pushDays";
 
+type VerboseCoverageBucketKey =
+  | CoverageMetricKey
+  | "antiRotationDays"
+  | "carryDays"
+  | "scapularDays";
+
+let stdoutClosed = false;
+
+const isBrokenStdoutPipeError = (error: unknown) => {
+  if (!error || typeof error !== "object") return false;
+  const code = (error as { code?: unknown }).code;
+  return code === "EPIPE" || code === "ERR_STREAM_DESTROYED";
+};
+
+const installStdoutPipeHandler = () => {
+  process.stdout.on("error", (error) => {
+    if (isBrokenStdoutPipeError(error)) {
+      stdoutClosed = true;
+      return;
+    }
+    throw error;
+  });
+};
+
+const safeLog = (line = "") => {
+  if (stdoutClosed) return;
+  try {
+    process.stdout.write(`${line}\n`);
+  } catch (error) {
+    if (isBrokenStdoutPipeError(error)) {
+      stdoutClosed = true;
+      return;
+    }
+    throw error;
+  }
+};
+
 export type DayContractAudit = {
   dayTitle: string;
   ok: boolean;
@@ -114,6 +151,83 @@ const isUpperIntentDay = (title: string) => {
     normalized.includes("shoulders + arms") ||
     normalized.includes("arms + posture")
   );
+};
+
+const isVerboseMode = () => String(process.env.AUDIT_VERBOSE ?? "").trim() === "1";
+
+const collectCoverageSatisfierIds = (program: Program) => {
+  const bucketIds: Record<VerboseCoverageBucketKey, Set<string>> = {
+    calvesDays: new Set<string>(),
+    bicepsDays: new Set<string>(),
+    tricepsDays: new Set<string>(),
+    squatDays: new Set<string>(),
+    hingeDays: new Set<string>(),
+    pullDays: new Set<string>(),
+    pushDays: new Set<string>(),
+    antiRotationDays: new Set<string>(),
+    carryDays: new Set<string>(),
+    scapularDays: new Set<string>(),
+  };
+
+  program.week.forEach((day) => {
+    day.routine.forEach((item) => {
+      const exercise = requireExerciseById(item.exerciseId);
+      const patterns = new Set(exercise.movementPattern.map((pattern) => pattern.toLowerCase()));
+      const tags = new Set((exercise.tags ?? []).map((tag) => tag.toLowerCase()));
+      const muscles = new Set((exercise.muscleGroups ?? []).map((group) => group.toLowerCase()));
+      const idName = `${exercise.id} ${exercise.name}`.toLowerCase();
+
+      if (patterns.has("calf") || tags.has("calves") || muscles.has("calves")) {
+        bucketIds.calvesDays.add(exercise.id);
+      }
+      if (patterns.has("curl") || tags.has("biceps") || muscles.has("biceps")) {
+        bucketIds.bicepsDays.add(exercise.id);
+      }
+      if (patterns.has("extension") || tags.has("triceps") || muscles.has("triceps")) {
+        bucketIds.tricepsDays.add(exercise.id);
+      }
+      if (patterns.has("squat")) {
+        bucketIds.squatDays.add(exercise.id);
+      }
+      if (patterns.has("hinge")) {
+        bucketIds.hingeDays.add(exercise.id);
+      }
+      if (patterns.has("pull")) {
+        bucketIds.pullDays.add(exercise.id);
+      }
+      if (patterns.has("push")) {
+        bucketIds.pushDays.add(exercise.id);
+      }
+      if (patterns.has("anti-rotation") || tags.has("anti-rotation")) {
+        bucketIds.antiRotationDays.add(exercise.id);
+      }
+      if (
+        patterns.has("carry") ||
+        tags.has("carry") ||
+        idName.includes("carry") ||
+        idName.includes("suitcase")
+      ) {
+        bucketIds.carryDays.add(exercise.id);
+      }
+      if (
+        patterns.has("scapular") ||
+        tags.has("scap") ||
+        tags.has("upper-back") ||
+        tags.has("posture") ||
+        tags.has("t-spine") ||
+        tags.has("thoracic")
+      ) {
+        bucketIds.scapularDays.add(exercise.id);
+      }
+    });
+  });
+
+  return Object.fromEntries(
+    (Object.keys(bucketIds) as VerboseCoverageBucketKey[]).map((key) => [
+      key,
+      Array.from(bucketIds[key]).sort(),
+    ])
+  ) as Record<VerboseCoverageBucketKey, string[]>;
 };
 
 export function auditCoverageContract(args: {
@@ -506,28 +620,50 @@ const printAuditBlock = (params: {
   program: Program;
 }) => {
   const { scenario, audit, program } = params;
-  console.log(
+  safeLog(
     `PROFILE=${scenario.profile} | PHASE=${scenario.phase} | days=${scenario.questionnaire.daysPerWeek} | equipment=${scenario.questionnaire.equipment.join(",")} | capability=${audit.capabilityMode}`
   );
   program.week.forEach((day) => {
     const mainIds = day.routine
       .filter((item) => item.section === "main")
       .map((item) => item.exerciseId);
-    console.log(`- ${day.title}`);
-    console.log(`  MAIN: ${mainIds.length ? mainIds.join(", ") : "(none)"}`);
+    safeLog(`- ${day.title}`);
+    safeLog(`  MAIN: ${mainIds.length ? mainIds.join(", ") : "(none)"}`);
   });
-  console.log(
+  safeLog(
     `WEEKLY COVERAGE: calves=${audit.weekly.calvesDays} biceps=${audit.weekly.bicepsDays} triceps=${audit.weekly.tricepsDays} squat=${audit.weekly.squatDays} hinge=${audit.weekly.hingeDays} pull=${audit.weekly.pullDays} push=${audit.weekly.pushDays} antiRotation=${audit.weekly.antiRotationDays} carry=${audit.weekly.carryDays} scapular=${audit.weekly.scapularDays}`
   );
+  if (isVerboseMode()) {
+    const satisfiers = collectCoverageSatisfierIds(program);
+    (
+      [
+        "calvesDays",
+        "bicepsDays",
+        "tricepsDays",
+        "squatDays",
+        "hingeDays",
+        "pullDays",
+        "pushDays",
+        "antiRotationDays",
+        "carryDays",
+        "scapularDays",
+      ] as VerboseCoverageBucketKey[]
+    ).forEach((bucket) => {
+      const ids = satisfiers[bucket];
+      safeLog(
+        `COVERAGE SATISFIERS ${bucket}: ${ids.length ? ids.join(", ") : "(none)"}`
+      );
+    });
+  }
   const missing = collectAuditMissingDetails(audit);
   if (audit.ok) {
-    console.log("CONTRACT AUDIT: PASS");
+    safeLog("CONTRACT AUDIT: PASS");
   } else {
-    console.log(
+    safeLog(
       `CONTRACT AUDIT: FAIL${missing.length ? ` | missing=${missing.join(" ; ")}` : ""}`
     );
   }
-  console.log("");
+  safeLog("");
 };
 
 const runCoverageAuditCli = async () => {
@@ -583,6 +719,7 @@ const isDirectExecution = (() => {
 })();
 
 if (isDirectExecution) {
+  installStdoutPipeHandler();
   runCoverageAuditCli().catch((error) => {
     console.error(error);
     process.exitCode = 1;
