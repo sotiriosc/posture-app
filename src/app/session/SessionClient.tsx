@@ -127,6 +127,7 @@ export default function SessionClient() {
   const [notesByExercise, setNotesByExercise] = useState<Record<string, string>>(
     {}
   );
+  const [rpeByExercise, setRpeByExercise] = useState<Record<string, string>>({});
   const [repsByExercise, setRepsByExercise] = useState<Record<string, string>>(
     {}
   );
@@ -280,6 +281,7 @@ export default function SessionClient() {
     setRepsByExercise(draft.entries.repsByExercise ?? {});
     setUnitByExercise(draft.entries.unitByExercise ?? {});
     setNotesByExercise(draft.entries.notesByExercise ?? {});
+    setRpeByExercise(draft.entries.rpeByExercise ?? {});
     setFeedback(
       (draft.entries.feedbackByExercise ?? {}) as Record<
         string,
@@ -470,6 +472,13 @@ export default function SessionClient() {
       [exerciseId]: reps,
     }));
     void persistLoadPref(exerciseId, { reps });
+  };
+
+  const applyRpe = (exerciseId: string, rpe: string) => {
+    setRpeByExercise((prev) => ({
+      ...prev,
+      [exerciseId]: rpe,
+    }));
   };
 
   const saveFeedback = async (next: Record<string, ExerciseFeedback>) => {
@@ -695,6 +704,12 @@ export default function SessionClient() {
       const fallbackReps =
         !item.durationSec && item.reps ? parseFirstNumber(item.reps) : null;
       const reps = repsValue ? Number(repsValue) : fallbackReps;
+      const rpeRaw = rpeByExercise[exerciseId];
+      const rpeParsed = Number(rpeRaw);
+      const rpe =
+        rpeRaw && Number.isFinite(rpeParsed)
+          ? Math.min(10, Math.max(1, rpeParsed))
+          : null;
       const setsPlanned = selectedSets[item.id] ?? parseSetsRange(item.sets).minSets;
       const setsCompleted = (completedSets[item.id] ?? []).filter(Boolean)
         .length;
@@ -741,7 +756,7 @@ export default function SessionClient() {
             : item.durationSec ?? null,
         workSecondsUsed: timer.workSeconds,
         restSecondsUsed: timer.restSeconds,
-        rpe: null,
+        rpe,
         felt: feedback[item.exerciseId]?.rating ?? feedback[item.id]?.rating ?? null,
         painLocation:
           feedback[item.exerciseId]?.painLocation ??
@@ -904,7 +919,13 @@ export default function SessionClient() {
         }
       }
     }
-  }, [currentItem?.id, currentSelectedSets, lastLog, prefs?.loadPrefsByExercise, repsByExercise, selectedSets, minSets, maxSets]);
+    if (!rpeByExercise[exerciseId] && lastLog?.rpe) {
+      setRpeByExercise((prev) => ({
+        ...prev,
+        [exerciseId]: String(lastLog.rpe),
+      }));
+    }
+  }, [currentItem?.id, currentSelectedSets, lastLog, prefs?.loadPrefsByExercise, repsByExercise, rpeByExercise, selectedSets, minSets, maxSets]);
 
   useEffect(() => {
     if (!currentItem) return;
@@ -985,6 +1006,7 @@ export default function SessionClient() {
           selectedSets,
           weightByExercise,
           repsByExercise,
+          rpeByExercise,
           repsBySetByExercise: {},
           unitByExercise,
           notesByExercise,
@@ -1010,6 +1032,7 @@ export default function SessionClient() {
     selectedSets,
     weightByExercise,
     repsByExercise,
+    rpeByExercise,
     unitByExercise,
     notesByExercise,
     feedback,
@@ -1270,10 +1293,12 @@ export default function SessionClient() {
           <div className="mt-4 grid gap-3">
             {currentItem.loadType === "weighted" ? (
               <div className="flex flex-wrap items-center gap-2">
-                <label className="text-xs font-semibold text-slate-700">
+                <label className="text-xs font-semibold text-slate-700" htmlFor="weight-input">
                   Weight
                 </label>
                 <input
+                  id="weight-input"
+                  data-testid="weight-input"
                   type="number"
                   min={0}
                   value={weightByExercise[currentItem.exerciseId] ?? ""}
@@ -1309,6 +1334,22 @@ export default function SessionClient() {
                   : "Bodyweight"}
               </p>
             )}
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
+                RPE (1-10)
+              </label>
+              <input
+                id="rpe-input"
+                data-testid="rpe-input"
+                type="number"
+                min={1}
+                max={10}
+                value={rpeByExercise[currentItem.exerciseId] ?? ""}
+                onChange={(event) => applyRpe(currentItem.exerciseId, event.target.value)}
+                className="ui-input w-24"
+                placeholder="RPE"
+              />
+            </div>
 
           </div>
         </div>
@@ -1355,9 +1396,13 @@ export default function SessionClient() {
             {currentItem.loadType !== "timed" ? (
               <div className="w-full space-y-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
                 <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                  <span className="font-semibold text-slate-700">Reps</span>
+                  <label className="font-semibold text-slate-700" htmlFor="reps-input">
+                    Reps
+                  </label>
                 </div>
                 <input
+                  id="reps-input"
+                  data-testid="reps-input"
                   type="number"
                   min={1}
                   value={repsByExercise[currentItem.exerciseId] ?? ""}

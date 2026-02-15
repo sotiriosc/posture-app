@@ -12,6 +12,7 @@ export type SessionDraft = {
     selectedSets: Record<string, number>;
     weightByExercise: Record<string, string>;
     repsByExercise: Record<string, string>;
+    rpeByExercise?: Record<string, string>;
     repsBySetByExercise: Record<string, string[]>;
     unitByExercise: Record<string, "lb" | "kg">;
     notesByExercise: Record<string, string>;

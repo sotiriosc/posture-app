@@ -1428,6 +1428,150 @@ export type WeekCoverageSummary = {
   scapularDays: number;
 };
 
+type PrimaryMotorPattern =
+  | "squat"
+  | "hinge"
+  | "horizontalPush"
+  | "verticalPush"
+  | "pull";
+
+const PRIMARY_MOTOR_PATTERNS: PrimaryMotorPattern[] = [
+  "squat",
+  "hinge",
+  "horizontalPush",
+  "verticalPush",
+  "pull",
+];
+
+const getExercisePrimaryMotorPatterns = (
+  exercise: Exercise
+): PrimaryMotorPattern[] => {
+  const movementPatterns = new Set(
+    exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
+  );
+  const primary: PrimaryMotorPattern[] = [];
+  if (movementPatterns.has("squat")) primary.push("squat");
+  if (movementPatterns.has("hinge")) primary.push("hinge");
+  if (movementPatterns.has("push")) primary.push("horizontalPush");
+  if (movementPatterns.has("verticalpush")) primary.push("verticalPush");
+  if (movementPatterns.has("pull")) primary.push("pull");
+  return primary;
+};
+
+const summarizeDayMainPrimaryPatternCounts = (
+  day: Pick<ProgramDay, "routine">
+) => {
+  const counts = new Map<PrimaryMotorPattern, number>();
+  PRIMARY_MOTOR_PATTERNS.forEach((pattern) => {
+    counts.set(pattern, 0);
+  });
+  day.routine.forEach((item) => {
+    if (item.section !== "main") return;
+    const exercise = exerciseById(item.exerciseId);
+    if (!exercise) return;
+    getExercisePrimaryMotorPatterns(exercise).forEach((pattern) => {
+      counts.set(pattern, (counts.get(pattern) ?? 0) + 1);
+    });
+  });
+  return counts;
+};
+
+const deriveHeavyPrimaryPatternsForDay = (
+  day: Pick<ProgramDay, "routine">
+): PrimaryMotorPattern[] => {
+  const counts = summarizeDayMainPrimaryPatternCounts(day);
+  return PRIMARY_MOTOR_PATTERNS.filter((pattern) => (counts.get(pattern) ?? 0) >= 2);
+};
+
+const deriveDominantPrimaryPatternsForDay = (
+  day: Pick<ProgramDay, "routine">
+): PrimaryMotorPattern[] => {
+  const counts = summarizeDayMainPrimaryPatternCounts(day);
+  const maxCount = Math.max(
+    0,
+    ...PRIMARY_MOTOR_PATTERNS.map((pattern) => counts.get(pattern) ?? 0)
+  );
+  if (maxCount <= 0) return [];
+  return PRIMARY_MOTOR_PATTERNS.filter(
+    (pattern) => (counts.get(pattern) ?? 0) === maxCount
+  );
+};
+
+const hasPushPrimaryPattern = (patterns: Set<PrimaryMotorPattern>) =>
+  patterns.has("horizontalPush") || patterns.has("verticalPush");
+
+const deriveWeekPatternDayCounts = (week: ProgramDay[]) => {
+  const counts = new Map<PrimaryMotorPattern, number>();
+  PRIMARY_MOTOR_PATTERNS.forEach((pattern) => {
+    counts.set(pattern, 0);
+  });
+  week.forEach((day) => {
+    const dayPatterns = new Set<PrimaryMotorPattern>();
+    day.routine.forEach((item) => {
+      if (item.section !== "main") return;
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return;
+      getExercisePrimaryMotorPatterns(exercise).forEach((pattern) => {
+        dayPatterns.add(pattern);
+      });
+    });
+    dayPatterns.forEach((pattern) => {
+      counts.set(pattern, (counts.get(pattern) ?? 0) + 1);
+    });
+  });
+  return counts;
+};
+
+export const weeklyPatternSpacingScore = (week: ProgramDay[]) => {
+  if (week.length <= 1) return 0;
+
+  let score = 0;
+  for (let index = 1; index < week.length; index += 1) {
+    const previousDominant = new Set(
+      deriveDominantPrimaryPatternsForDay(week[index - 1])
+    );
+    const currentDominant = new Set(deriveDominantPrimaryPatternsForDay(week[index]));
+    const clusteredOverlap = Array.from(currentDominant).filter((pattern) =>
+      previousDominant.has(pattern)
+    ).length;
+    if (clusteredOverlap > 0) {
+      score -= clusteredOverlap * 1.25;
+    }
+
+    const alternatesPushPull =
+      (hasPushPrimaryPattern(previousDominant) && currentDominant.has("pull")) ||
+      (previousDominant.has("pull") && hasPushPrimaryPattern(currentDominant));
+    if (alternatesPushPull) {
+      score += 1;
+    }
+
+    const alternatesLowerPattern =
+      (previousDominant.has("squat") && currentDominant.has("hinge")) ||
+      (previousDominant.has("hinge") && currentDominant.has("squat"));
+    if (alternatesLowerPattern) {
+      score += 0.9;
+    }
+  }
+
+  const patternDayCounts = deriveWeekPatternDayCounts(week);
+  const allCounts = PRIMARY_MOTOR_PATTERNS.map(
+    (pattern) => patternDayCounts.get(pattern) ?? 0
+  );
+  const nonZeroCounts = allCounts.filter((value) => value > 0);
+  if (nonZeroCounts.length >= 2) {
+    const maxCount = Math.max(...nonZeroCounts);
+    const minCount = Math.min(...nonZeroCounts);
+    const spread = maxCount - minCount;
+    if (spread <= 1) {
+      score += 1.5;
+    } else {
+      score -= Math.min(2, (spread - 1) * 0.75);
+    }
+  }
+
+  return score;
+};
+
 const normalizeRuleTokens = (values?: string[]) =>
   (values ?? []).map((value) => normalizeTagToken(value));
 
@@ -4065,6 +4209,8 @@ const getWeekBalanceTieBreakerScore = (params: {
     score += coverage.carryDays >= 1 ? 1 : -1;
   }
 
+  score += weeklyPatternSpacingScore(week);
+
   return score;
 };
 
@@ -5708,6 +5854,14 @@ const laneFromPatternToken = (token: string): MainLane | null => {
   return null;
 };
 
+const mainLaneToPrimaryPattern = (
+  lane: MainLane
+): PrimaryMotorPattern => {
+  if (lane === "push") return "horizontalPush";
+  if (lane === "verticalPush") return "verticalPush";
+  return lane;
+};
+
 const hasRowPullSignature = (exercise: Exercise) => {
   const hasPullPattern = exercise.movementPattern.some(
     (pattern) => normalizeTagToken(pattern) === "pull"
@@ -6047,6 +6201,77 @@ const getIntentSlotScoreBonus = (params: {
     } else {
       score -= 2;
       reasons.push(`-2 lane mismatch (${auditMeta.slotLane})`);
+    }
+  }
+
+  const priorDayHeavyPatterns = new Set(auditMeta?.priorDayHeavyPatterns ?? []);
+  if (section === "main" && auditMeta?.slotLane && priorDayHeavyPatterns.size) {
+    const currentMainPattern = mainLaneToPrimaryPattern(auditMeta.slotLane);
+    const stackedSamePattern = priorDayHeavyPatterns.has(currentMainPattern);
+    if (stackedSamePattern) {
+      const heavyMain =
+        exercise.loadType === "weighted" ||
+        exercise.movementIntensity === "load" ||
+        role === "mainStrength";
+      const stackedPenalty = heavyMain ? 0.35 : 0.15;
+      score -= stackedPenalty;
+      reasons.push(
+        `-${stackedPenalty.toFixed(1)} consecutive-day ${currentMainPattern} fatigue stacking penalty`
+      );
+    }
+
+    const priorPushHeavy =
+      priorDayHeavyPatterns.has("horizontalPush") ||
+      priorDayHeavyPatterns.has("verticalPush");
+    const currentPushPattern =
+      currentMainPattern === "horizontalPush" || currentMainPattern === "verticalPush";
+    if (
+      (priorPushHeavy && currentMainPattern === "pull") ||
+      (priorDayHeavyPatterns.has("pull") && currentPushPattern)
+    ) {
+      score += 0.2;
+      reasons.push("+0.2 push/pull alternation bonus");
+    }
+
+    if (
+      (priorDayHeavyPatterns.has("squat") && currentMainPattern === "hinge") ||
+      (priorDayHeavyPatterns.has("hinge") && currentMainPattern === "squat")
+    ) {
+      score += 0.2;
+      reasons.push("+0.2 squat/hinge alternation bonus");
+    }
+  }
+
+  if (section === "accessory" && priorDayHeavyPatterns.size) {
+    if (priorDayHeavyPatterns.has("hinge")) {
+      const recoveryAccessoryMatch =
+        role === "core" ||
+        role === "postureCorrective" ||
+        patterns.has("anti_rotation") ||
+        patterns.has("core") ||
+        tags.has("anti_rotation") ||
+        tags.has("scap") ||
+        tags.has("posture");
+      if (recoveryAccessoryMatch) {
+        score += 0.2;
+        reasons.push("+0.2 hinge-recovery accessory bias (core/scap/anti-rotation)");
+      }
+    }
+
+    const priorPushHeavy =
+      priorDayHeavyPatterns.has("horizontalPush") ||
+      priorDayHeavyPatterns.has("verticalPush");
+    if (priorPushHeavy) {
+      const pullPostureAccessoryMatch =
+        patterns.has("pull") ||
+        tags.has("scap") ||
+        tags.has("posture") ||
+        tags.has("upper_back") ||
+        role === "postureCorrective";
+      if (pullPostureAccessoryMatch) {
+        score += 0.2;
+        reasons.push("+0.2 post-push accessory bias (pull/posture/scap)");
+      }
     }
   }
 
@@ -6682,7 +6907,8 @@ const chooseHingeCompoundId = (
 const chooseAccessoryId = (
   lane: "push" | "pull" | "lower" | "core",
   available: Set<Equipment>,
-  context: SelectionContext
+  context: SelectionContext,
+  auditMeta?: SelectionAuditMeta
 ) =>
   pickFirstEligibleId(
     lane === "push"
@@ -6718,7 +6944,8 @@ const chooseAccessoryId = (
         ],
     available,
     context,
-    "accessory"
+    "accessory",
+    auditMeta
   );
 
 type MainLane = "push" | "verticalPush" | "pull" | "squat" | "hinge";
@@ -6810,6 +7037,7 @@ type SelectionAuditMeta = {
   expectedLaneCounts?: Partial<Record<MainLane, number>>;
   capabilityMode: EquipmentCapabilityMode;
   dayBudget?: DayPatternBudget | null;
+  priorDayHeavyPatterns?: PrimaryMotorPattern[];
   selectionAuditHook?: ProgramSelectionAuditHook;
   selectionRng?: RandomFn;
 };
@@ -7131,6 +7359,7 @@ const buildStructuredDay = (params: {
   warmupFocus: "upper" | "lower" | "core";
   cooldownFocus: "upper" | "lower" | "core";
   capabilityMode: EquipmentCapabilityMode;
+  priorDayHeavyPatterns?: PrimaryMotorPattern[];
   selectionAuditHook?: ProgramSelectionAuditHook;
   selectionRng?: RandomFn;
 }) => {
@@ -7145,6 +7374,7 @@ const buildStructuredDay = (params: {
     warmupFocus,
     cooldownFocus,
     capabilityMode,
+    priorDayHeavyPatterns,
     selectionAuditHook,
     selectionRng,
   } = params;
@@ -7257,6 +7487,7 @@ const buildStructuredDay = (params: {
       selectedMainExerciseIds: [...mainIds],
       expectedLaneCounts,
       dayBudget,
+      priorDayHeavyPatterns,
       selectionAuditHook,
       selectionRng,
     };
@@ -7364,6 +7595,7 @@ const buildStructuredDay = (params: {
         slotLane: slot.lane,
         capabilityMode,
         dayBudget,
+        priorDayHeavyPatterns,
       }
     ).score;
     const capability = getCapabilitySlotBonus({
@@ -7375,6 +7607,7 @@ const buildStructuredDay = (params: {
         dayFocusTags: focusTags,
         slotKind,
         capabilityMode,
+        priorDayHeavyPatterns,
       },
     }).bonus;
     return base + capability;
@@ -7477,8 +7710,29 @@ const buildStructuredDay = (params: {
     ? "lower"
     : "core";
   const activationId = chooseActivationId(primaryAccessoryLane, available, selectionContext);
-  const accessoryA = chooseAccessoryId(primaryAccessoryLane, available, selectionContext);
-  const accessoryB = chooseAccessoryId("core", available, selectionContext);
+  const accessoryAuditMeta = (
+    slotId: string,
+    slotKind: string
+  ): SelectionAuditMeta => ({
+    slotId,
+    dayTitle: title,
+    dayFocusTags: focusTags,
+    slotKind,
+    capabilityMode,
+    priorDayHeavyPatterns,
+  });
+  const accessoryA = chooseAccessoryId(
+    primaryAccessoryLane,
+    available,
+    selectionContext,
+    accessoryAuditMeta(`${normalizedTitle}-accessory-1`, `accessory${primaryAccessoryLane}`)
+  );
+  const accessoryB = chooseAccessoryId(
+    "core",
+    available,
+    selectionContext,
+    accessoryAuditMeta(`${normalizedTitle}-accessory-2`, "accessoryCore")
+  );
   const accessoryCLane: "push" | "pull" | "lower" | "core" =
     primaryAccessoryLane === "push"
       ? "pull"
@@ -7492,7 +7746,8 @@ const buildStructuredDay = (params: {
       ? chooseAccessoryId(
           accessoryCLane,
           available,
-          selectionContext
+          selectionContext,
+          accessoryAuditMeta(`${normalizedTitle}-accessory-3`, `accessory${accessoryCLane}`)
         )
       : null;
   const cooldownId = chooseCooldownId(cooldownFocus, available, selectionContext);
@@ -7945,9 +8200,13 @@ const buildSplitTemplates = (
   capabilityMode: EquipmentCapabilityMode,
   selectionAuditHook?: ProgramSelectionAuditHook,
   selectionRng?: RandomFn
-) =>
-  getSplitTemplateSpecs(daysPerWeek).map((template) =>
-    buildStructuredDay({
+) => {
+  const templates = getSplitTemplateSpecs(daysPerWeek);
+  const builtDays: ReturnType<typeof buildStructuredDay>[] = [];
+  let priorDayHeavyPatterns: PrimaryMotorPattern[] = [];
+
+  templates.forEach((template) => {
+    const builtDay = buildStructuredDay({
       title: template.title,
       focusTags: template.focusTags,
       experienceProfile,
@@ -7958,10 +8217,16 @@ const buildSplitTemplates = (
       warmupFocus: template.warmupFocus,
       cooldownFocus: template.cooldownFocus,
       capabilityMode,
+      priorDayHeavyPatterns,
       selectionAuditHook,
       selectionRng,
-    })
-  );
+    });
+    builtDays.push(builtDay);
+    priorDayHeavyPatterns = deriveHeavyPrimaryPatternsForDay(builtDay);
+  });
+
+  return builtDays;
+};
 
 const HIGH_PAIN_SUMMARY_CLAUSE =
   "This plan prioritizes comfortable range of motion and control to restore movement before growth.";
