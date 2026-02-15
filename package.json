@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
+    "test:golden": "vitest --run tests/unit/programGoldenAnchors.test.ts tests/unit/questionnaireGoldenFlow.test.ts",
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test",
     "test:engine": "node --import tsx src/lib/__debug__/engineMatrixTest.ts",
