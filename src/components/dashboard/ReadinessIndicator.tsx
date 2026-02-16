@@ -65,7 +65,7 @@ export default function ReadinessIndicator({ score }: ReadinessIndicatorProps) {
           height={SIZE}
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           className="-rotate-90"
-          aria-label={`Readiness ${animatedScore}%`}
+          aria-label={`Readiness for corrective progress ${animatedScore}%`}
         >
           <circle
             cx={SIZE / 2}
@@ -90,7 +90,7 @@ export default function ReadinessIndicator({ score }: ReadinessIndicatorProps) {
       </div>
       <div className="space-y-0.5">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-          Readiness
+          Readiness for Corrective Progress
         </p>
         <p className="text-xl font-semibold text-slate-900">{animatedScore}%</p>
         <p className="text-xs text-slate-600">{getReadinessLabel(safeScore)}</p>

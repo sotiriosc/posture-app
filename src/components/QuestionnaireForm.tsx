@@ -262,7 +262,7 @@ export default function QuestionnaireForm() {
   return (
     <form
       data-testid="questionnaire-form"
-      className="space-y-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg"
+      className="ui-card space-y-8 rounded-3xl bg-white/95 p-6 shadow-lg"
       onSubmit={(event) => {
         event.preventDefault();
         if (requiresChangeConfirmation && hasProgramAffectingChange(data, committedData)) {

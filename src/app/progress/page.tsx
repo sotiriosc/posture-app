@@ -27,9 +27,9 @@ import type { ExerciseLog, SessionRecord } from "@/lib/types";
 const DAY_MS = 86_400_000;
 
 type DifficultyTrendLabel =
-  | "Capacity improving"
+  | "Pattern quality improving"
   | "Stable performance"
-  | "Load tolerance building";
+  | "Corrective strength trend";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -406,8 +406,8 @@ export default function ProgressPage() {
       chronologicalScores[chronologicalScores.length - 1].score -
       chronologicalScores[0].score;
 
-    if (delta <= -0.35) return "Capacity improving";
-    if (delta >= 0.35) return "Load tolerance building";
+    if (delta <= -0.35) return "Pattern quality improving";
+    if (delta >= 0.35) return "Corrective strength trend";
     return "Stable performance";
   }, [logsBySessionId, sessions]);
 
@@ -427,10 +427,10 @@ export default function ProgressPage() {
       insights.push("Log your first session to unlock adaptive trend insights.");
     }
 
-    if (difficultyTrendLabel === "Capacity improving") {
-      insights.push("Session intensity tolerance improving.");
-    } else if (difficultyTrendLabel === "Load tolerance building") {
-      insights.push("Load tolerance building steadily across recent sessions.");
+    if (difficultyTrendLabel === "Pattern quality improving") {
+      insights.push("Movement quality emphasis is improving across recent sessions.");
+    } else if (difficultyTrendLabel === "Corrective strength trend") {
+      insights.push("Corrective strength trend is building steadily across recent sessions.");
     } else {
       insights.push("Session effort is stable and repeatable.");
     }
@@ -477,7 +477,7 @@ export default function ProgressPage() {
             </p>
             <h1 className="text-3xl font-semibold text-white">Training insights</h1>
             <p className="text-sm text-slate-200">
-              Review performance trends, movement frequency, and personal records.
+              Review corrective performance trends, movement frequency, and personal records.
             </p>
           </header>
         </OnImage>

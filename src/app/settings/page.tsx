@@ -453,13 +453,10 @@ export default function SettingsPage() {
 
         <div className="ui-card p-6">
           <h2 className="text-sm font-semibold text-slate-900">
-            Training settings note
+            Corrective settings note
           </h2>
           <p className="mt-2 text-xs text-amber-700">
-            Changing these settings generates a new training plan.
-          </p>
-          <p className="mt-1 text-xs text-amber-700">
-            Previous sessions remain saved.
+            Changing corrective emphasis reshapes focus areas — your movement history remains intact.
           </p>
         </div>
 

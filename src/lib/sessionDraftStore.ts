@@ -35,6 +35,7 @@ export type SessionDraft = {
       remainingSeconds: number;
       exerciseSeconds: number;
       restSeconds: number;
+      updatedAtMs?: number;
     }
   >;
   startedAt?: string | null;

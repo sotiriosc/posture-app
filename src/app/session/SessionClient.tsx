@@ -1,6 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FocusEvent,
+  type KeyboardEvent,
+} from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { exerciseById } from "@/lib/exercises";
@@ -382,6 +390,21 @@ export default function SessionClient() {
   const setCheckboxRefs = useRef<Record<number, HTMLInputElement | null>>({});
   const feedbackButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const nextButtonRef = useRef<HTMLButtonElement | null>(null);
+  const prefsRef = useRef<LogPrefs | null>(null);
+  const timerByExerciseRef = useRef<
+    Record<string, { workSeconds: number; restSeconds: number }>
+  >({});
+  const timerPrefsSaveSeqRef = useRef(0);
+  const focusedItemIdRef = useRef<string | null>(null);
+  const wasPainModalOpenRef = useRef(false);
+
+  useEffect(() => {
+    prefsRef.current = prefs;
+  }, [prefs]);
+
+  useEffect(() => {
+    timerByExerciseRef.current = timerByExercise;
+  }, [timerByExercise]);
 
   function applyDraft(draft: SessionDraft) {
     setSessionId(draft.sessionId);
@@ -588,7 +611,7 @@ export default function SessionClient() {
           section: routineItem.section ?? day.title,
           dayTitle: day.title,
           id: itemId,
-          name: exercise?.name ?? "Exercise",
+          name: exercise?.name ?? "Movement pattern focus",
           cues: routineItem.cues ?? exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
           duration: exercise?.durationOrReps ?? routineItem.reps ?? "",
@@ -613,7 +636,7 @@ export default function SessionClient() {
           exerciseId: effectiveExerciseId,
           originalExerciseId: item.exerciseId,
           restSec: 60,
-          name: exercise?.name ?? "Exercise",
+          name: exercise?.name ?? "Movement pattern focus",
           cues: exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
           duration: exercise?.durationOrReps ?? item.reps,
@@ -644,16 +667,35 @@ export default function SessionClient() {
     activeIndexRef.current = activeIndex;
   }, [activeIndex]);
 
-  useEffect(() => {
-    if (previousActiveIndexRef.current === activeIndex) return;
-    previousActiveIndexRef.current = activeIndex;
+  const scrollSessionTop = useCallback((behavior: ScrollBehavior = "smooth") => {
+    if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
+      return;
+    }
+    if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
+      try {
+        window.scrollTo({ top: 0, behavior });
+        return;
+      } catch {
+        // JSDOM and some embedded browsers can throw on scrollTo.
+      }
+    }
     if (!exerciseCardRef.current) return;
     if (typeof exerciseCardRef.current.scrollIntoView !== "function") return;
     exerciseCardRef.current.scrollIntoView({
-      behavior: "smooth",
+      behavior,
       block: "start",
     });
-  }, [activeIndex]);
+  }, []);
+
+  useEffect(() => {
+    if (previousActiveIndexRef.current === activeIndex) return;
+    previousActiveIndexRef.current = activeIndex;
+    scrollSessionTop();
+  }, [activeIndex, scrollSessionTop]);
+
+  useEffect(() => {
+    scrollSessionTop("auto");
+  }, [scrollSessionTop]);
 
   useEffect(() => {
     sessionIdRef.current = sessionId;
@@ -730,13 +772,27 @@ export default function SessionClient() {
   const queueFocus = useCallback(
     (element: HTMLInputElement | HTMLButtonElement | null | undefined) => {
       if (!element) return;
+      const shouldSelectInput =
+        element instanceof HTMLInputElement &&
+        ["text", "search", "tel", "url", "password", "number"].includes(
+          element.type
+        );
+      const focusAction = () => {
+        element.focus();
+        if (!shouldSelectInput) return;
+        try {
+          (element as HTMLInputElement).select();
+        } catch {
+          // Some input types do not support selection.
+        }
+      };
       if (typeof window !== "undefined" && typeof window.requestAnimationFrame === "function") {
         window.requestAnimationFrame(() => {
-          element.focus();
+          focusAction();
         });
         return;
       }
-      element.focus();
+      focusAction();
     },
     []
   );
@@ -755,9 +811,24 @@ export default function SessionClient() {
         queueFocus(setCheckboxRefs.current[firstIncomplete]);
         return;
       }
+      const weightFieldValue = weightInputRef.current?.value.trim() ?? "";
+      const repsFieldValue = repsInputRef.current?.value.trim() ?? "";
+      const rpeFieldValue = rpeInputRef.current?.value.trim() ?? "";
+      if (currentItem?.loadType === "weighted" && !weightFieldValue) {
+        queueFocus(weightInputRef.current);
+        return;
+      }
+      if (currentItem?.loadType !== "timed" && !repsFieldValue) {
+        queueFocus(repsInputRef.current);
+        return;
+      }
+      if (!rpeFieldValue) {
+        queueFocus(rpeInputRef.current);
+        return;
+      }
       queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
     },
-    [queueFocus]
+    [currentItem, queueFocus]
   );
 
   const toggleSetComplete = (
@@ -769,12 +840,17 @@ export default function SessionClient() {
       completedSets[itemId] ?? Array.from({ length: targetSetCount }, () => false);
     const next = current.slice(0, targetSetCount);
     while (next.length < targetSetCount) next.push(false);
-    next[index] = !next[index];
+    const isNowComplete = !next[index];
+    next[index] = isNowComplete;
     setCompletedSets((prev) => ({
       ...prev,
       [itemId]: next,
     }));
-    focusNextStepAfterSet(index, next);
+    if (isNowComplete) {
+      focusNextStepAfterSet(index, next);
+      return;
+    }
+    queueFocus(setCheckboxRefs.current[index]);
   };
 
   const updateSelectedSets = useCallback((exerciseId: string, nextCount: number) => {
@@ -875,27 +951,34 @@ export default function SessionClient() {
     },
     exerciseId?: string
   ) => {
+    const currentPrefs = prefsRef.current;
+    const currentTimerByExercise = timerByExerciseRef.current;
     const nextByExercise = exerciseId
       ? {
-          ...(prefs?.timerPrefsByExercise ?? timerByExercise),
+          ...(currentPrefs?.timerPrefsByExercise ?? currentTimerByExercise),
           [exerciseId]: next,
         }
-      : prefs?.timerPrefsByExercise ?? timerByExercise;
+      : currentPrefs?.timerPrefsByExercise ?? currentTimerByExercise;
     setTimerByExercise(nextByExercise);
+    timerByExerciseRef.current = nextByExercise;
     setWorkSeconds(next.workSeconds);
     setRestSeconds(next.restSeconds);
 
     const nextPrefs: LogPrefs = {
-      ...(prefs ?? { schemaVersion: 1 }),
+      ...(currentPrefs ?? { schemaVersion: 1 }),
       timerPrefs: next,
       timerPrefsByExercise: nextByExercise,
-      loadPrefsByExercise: prefs?.loadPrefsByExercise,
+      loadPrefsByExercise: currentPrefs?.loadPrefsByExercise,
       feedbackByExercise: feedback,
       substitutionByExercise: substitutionByExercise,
     };
     setPrefs(nextPrefs);
+    prefsRef.current = nextPrefs;
+    const saveSeq = timerPrefsSaveSeqRef.current + 1;
+    timerPrefsSaveSeqRef.current = saveSeq;
     setSaveState("saving");
     await savePrefs(nextPrefs);
+    if (timerPrefsSaveSeqRef.current !== saveSeq) return;
     setSaveState("saved");
   };
 
@@ -929,6 +1012,41 @@ export default function SessionClient() {
       prefs?.timerPrefs
     );
   };
+
+  const getRecordedTimerForItem = useCallback(
+    (item: {
+      id: string;
+      exerciseId: string;
+      durationSec?: number | null;
+      restSec?: number | null;
+      sets: string | number | null;
+      reps?: string | null;
+      loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+    }) => {
+      const runtime = timerRuntimeByItemId[item.id];
+      if (
+        runtime &&
+        Number.isFinite(runtime.exerciseSeconds) &&
+        runtime.exerciseSeconds > 0 &&
+        Number.isFinite(runtime.restSeconds) &&
+        runtime.restSeconds > 0
+      ) {
+        return {
+          workSeconds: runtime.exerciseSeconds,
+          restSeconds: runtime.restSeconds,
+        };
+      }
+      return getTimerForExercise({
+        exerciseId: item.exerciseId,
+        durationSec: item.durationSec ?? null,
+        restSec: item.restSec ?? null,
+        sets: item.sets,
+        reps: item.reps ?? null,
+        loadType: item.loadType,
+      });
+    },
+    [getTimerForExercise, timerRuntimeByItemId]
+  );
 
   const saveSessionFeedback = async (next: ExerciseFeedback) => {
     setSessionFeedback(next);
@@ -1079,7 +1197,7 @@ export default function SessionClient() {
       usedExerciseIds: new Set(flatItems.map((item) => item.exerciseId)),
     });
     if (!candidateId || candidateId === currentItem.exerciseId) {
-      setPainModalMessage("No safe same-lane substitute found for this exercise.");
+      setPainModalMessage("No safe same-lane substitute found for this movement pattern focus.");
       await handleSavePainReportOnly();
       return;
     }
@@ -1142,6 +1260,7 @@ export default function SessionClient() {
     setPainModalLocation("");
     setPainModalNotes("");
     setPainModalMessage(null);
+    scrollSessionTop("auto");
   };
 
   const handleCompleteSession = async () => {
@@ -1149,25 +1268,11 @@ export default function SessionClient() {
     const startedAt = sessionStartedAt ?? nowIso();
     const completedAt = nowIso();
     const totalSeconds = flatItems.reduce((sum, item) => {
-      const timer = getTimerForExercise({
-        exerciseId: item.exerciseId,
-        durationSec: item.durationSec,
-        restSec: item.restSec,
-        sets: item.sets,
-        reps: item.reps,
-        loadType: item.loadType,
-      });
+      const timer = getRecordedTimerForItem(item);
       return sum + timer.workSeconds;
     }, 0);
     const totalRestSeconds = flatItems.reduce((sum, item) => {
-      const timer = getTimerForExercise({
-        exerciseId: item.exerciseId,
-        durationSec: item.durationSec,
-        restSec: item.restSec,
-        sets: item.sets,
-        reps: item.reps,
-        loadType: item.loadType,
-      });
+      const timer = getRecordedTimerForItem(item);
       return sum + timer.restSeconds;
     }, 0);
     const estimatedMinutes = Math.max(
@@ -1232,14 +1337,7 @@ export default function SessionClient() {
           : null;
       const volumeFromSets =
         null;
-      const timer = getTimerForExercise({
-        exerciseId: item.exerciseId,
-        durationSec: item.durationSec,
-        restSec: item.restSec,
-        sets: item.sets,
-        reps: item.reps,
-        loadType: item.loadType,
-      });
+      const timer = getRecordedTimerForItem(item);
       const felt = feedback[item.exerciseId]?.rating ?? feedback[item.id]?.rating ?? null;
       const painLevel =
         painLevelByExercise[item.exerciseId] ??
@@ -1417,6 +1515,7 @@ export default function SessionClient() {
       ? currentRepsValue ||
         String(parseFirstNumber(currentItem.reps) ?? "-")
       : "-";
+  const previewRpe = currentRpeValue || "-";
   const previewSetsPlanned = currentSelectedSets;
   const previewSetsCompleted = checks.filter(Boolean).length;
   const currentExerciseMeta = currentExerciseId
@@ -1433,16 +1532,25 @@ export default function SessionClient() {
       program.week.find((entry) => entry.dayIndex === programDayIndex)?.title) ||
     currentItem?.dayTitle ||
     "Today";
-  const exercisePositionLabel = `Exercise ${Math.min(
+  const exercisePositionLabel = `Movement pattern focus ${Math.min(
     totalItems,
     activeIndex + 1
   )} of ${Math.max(1, totalItems)}`;
   const sessionProgressPercent = totalItems
     ? ((activeIndex + 1) / totalItems) * 100
     : 0;
-  const persistedTimerRuntime = currentItemId
+  const runningTimerRuntime = Object.values(timerRuntimeByItemId)
+    .filter((runtime) => runtime.running)
+    .sort(
+      (a, b) => (b.updatedAtMs ?? 0) - (a.updatedAtMs ?? 0)
+    )[0] ?? null;
+  const currentItemRuntime = currentItemId
     ? timerRuntimeByItemId[currentItemId] ?? null
     : null;
+  const persistedTimerRuntime =
+    currentItemRuntime?.running
+      ? currentItemRuntime
+      : runningTimerRuntime ?? currentItemRuntime;
   const hasWeightedInput = currentItem?.loadType === "weighted";
   const hasRepsInput = currentItem?.loadType !== "timed";
 
@@ -1476,6 +1584,30 @@ export default function SessionClient() {
     [focusFirstIncompleteSet, hasRepsInput, queueFocus]
   );
 
+  const handleTrackingBlur = useCallback(
+    (field: "weight" | "reps" | "rpe") =>
+      (event: FocusEvent<HTMLInputElement>) => {
+        if (!allSetsCompleted) return;
+        if (painModalOpen) return;
+        if (!(event.currentTarget.value ?? "").trim()) return;
+        if (event.relatedTarget instanceof HTMLElement) return;
+        if (field === "weight") {
+          if (hasRepsInput) {
+            queueFocus(repsInputRef.current);
+            return;
+          }
+          queueFocus(rpeInputRef.current);
+          return;
+        }
+        if (field === "reps") {
+          queueFocus(rpeInputRef.current);
+          return;
+        }
+        queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
+      },
+    [allSetsCompleted, hasRepsInput, painModalOpen, queueFocus]
+  );
+
   const handleTimerRuntimeChange = useCallback(
     (nextState: DualModeTimerRuntimeState) => {
       if (!currentItemId) return;
@@ -1491,10 +1623,21 @@ export default function SessionClient() {
         ) {
           return prev;
         }
-        return {
+        const nextRuntimeByItemId = {
           ...prev,
           [currentItemId]: nextState,
         };
+        if (!nextState.running) {
+          return nextRuntimeByItemId;
+        }
+        for (const [itemId, runtime] of Object.entries(nextRuntimeByItemId)) {
+          if (itemId === currentItemId || !runtime.running) continue;
+          nextRuntimeByItemId[itemId] = {
+            ...runtime,
+            running: false,
+          };
+        }
+        return nextRuntimeByItemId;
       });
     },
     [currentItemId]
@@ -1506,28 +1649,47 @@ export default function SessionClient() {
   }, [currentItemId]);
 
   useEffect(() => {
-    if (!currentItemId) return;
+    const itemChanged = focusedItemIdRef.current !== currentItemId;
+    const modalJustClosed = wasPainModalOpenRef.current && !painModalOpen;
+    wasPainModalOpenRef.current = painModalOpen;
+    if (!currentItemId) {
+      focusedItemIdRef.current = null;
+      return;
+    }
     if (painModalOpen) return;
-    if (hasWeightedInput && weightInputRef.current) {
+    if (!itemChanged && !modalJustClosed) return;
+    focusedItemIdRef.current = currentItemId;
+
+    if (focusFirstIncompleteSet()) return;
+
+    if (allSetsCompleted && hasWeightedInput && !currentWeightValue.trim()) {
       queueFocus(weightInputRef.current);
       return;
     }
-    if (hasRepsInput && repsInputRef.current) {
+    if (allSetsCompleted && hasRepsInput && !currentRepsValue.trim()) {
       queueFocus(repsInputRef.current);
       return;
     }
-    if (rpeInputRef.current) {
+    if (allSetsCompleted && !currentRpeValue.trim()) {
       queueFocus(rpeInputRef.current);
       return;
     }
-    focusFirstIncompleteSet();
+    if (allSetsCompleted) {
+      queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
+      return;
+    }
+    queueFocus(setCheckboxRefs.current[0]);
   }, [
+    allSetsCompleted,
     currentItemId,
-    hasWeightedInput,
+    currentRepsValue,
+    currentRpeValue,
+    currentWeightValue,
+    focusFirstIncompleteSet,
     hasRepsInput,
+    hasWeightedInput,
     painModalOpen,
     queueFocus,
-    focusFirstIncompleteSet,
   ]);
 
   useEffect(() => {
@@ -1535,6 +1697,15 @@ export default function SessionClient() {
     const loadLast = async () => {
       const [latest] = await listExerciseLogsByExerciseHistory(currentExerciseId, 1);
       setLastLog(latest);
+      if (typeof latest?.rpe === "number") {
+        setRpeByExercise((prev) => {
+          if (prev[currentExerciseId] !== undefined) return prev;
+          return {
+            ...prev,
+            [currentExerciseId]: String(latest.rpe),
+          };
+        });
+      }
     };
     loadLast();
   }, [currentExerciseId]);
@@ -1676,6 +1847,35 @@ export default function SessionClient() {
   }, [allSetsCompleted, currentItemId]);
 
   useEffect(() => {
+    if (!allSetsCompleted) return;
+    if (painModalOpen) return;
+    if (!currentItemId) return;
+    if (hasWeightedInput && !currentWeightValue.trim()) {
+      queueFocus(weightInputRef.current);
+      return;
+    }
+    if (hasRepsInput && !currentRepsValue.trim()) {
+      queueFocus(repsInputRef.current);
+      return;
+    }
+    if (!currentRpeValue.trim()) {
+      queueFocus(rpeInputRef.current);
+      return;
+    }
+    queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
+  }, [
+    allSetsCompleted,
+    currentItemId,
+    currentRepsValue,
+    currentRpeValue,
+    currentWeightValue,
+    hasRepsInput,
+    hasWeightedInput,
+    painModalOpen,
+    queueFocus,
+  ]);
+
+  useEffect(() => {
     return () => {
       if (exerciseCompleteFlashTimerRef.current) {
         window.clearTimeout(exerciseCompleteFlashTimerRef.current);
@@ -1737,7 +1937,7 @@ export default function SessionClient() {
           </OnImage>
           <div className="ui-card p-6">
             <p className="text-sm text-slate-600">
-              You completed {summaryStats.completedExercises} exercises in about{" "}
+              You completed {summaryStats.completedExercises} movement pattern focuses in about{" "}
               {summaryStats.estimatedMinutes} minutes.
             </p>
             <p className="mt-2 text-sm text-slate-600">
@@ -1766,10 +1966,18 @@ export default function SessionClient() {
                       notes: sessionFeedback?.notes ?? "",
                     })
                   }
-                  className={`rounded-full border px-4 py-2 text-xs font-semibold ${
+                  className={`rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
                     sessionFeedback?.rating === option.value
-                      ? "border-slate-900 bg-slate-900 text-white"
-                      : "border-slate-200 text-slate-700"
+                      ? option.value === "easy"
+                        ? "border-emerald-600 bg-emerald-600 text-white"
+                        : option.value === "moderate"
+                        ? "border-sky-600 bg-sky-600 text-white"
+                        : "border-amber-600 bg-amber-500 text-slate-950"
+                      : option.value === "easy"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                      : option.value === "moderate"
+                      ? "border-sky-200 bg-sky-50 text-sky-800"
+                      : "border-amber-200 bg-amber-50 text-amber-800"
                   }`}
                 >
                   {option.label}
@@ -1827,7 +2035,7 @@ export default function SessionClient() {
           <div
             className={`ui-card rounded-2xl border px-4 py-3 text-sm font-semibold shadow-sm transition-colors ${tipTone}`}
           >
-            Coaching tip: <span>{activeTip}</span>
+            Corrective guidance: <span>{activeTip}</span>
           </div>
         </div>
 
@@ -1853,7 +2061,7 @@ export default function SessionClient() {
           />
         </div>
 
-        <div className="ui-card p-4 sm:p-5">
+        <div className="ui-card border-indigo-200/70 bg-[linear-gradient(135deg,rgba(238,242,255,0.9),rgba(255,255,255,0.96))] p-4 sm:p-5">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-start">
             <DualModeTimer
               key={currentItem.id}
@@ -1876,24 +2084,24 @@ export default function SessionClient() {
               onStateChange={handleTimerRuntimeChange}
             />
 
-            <div className="space-y-2 text-sm text-slate-700 lg:pt-1">
-              <p className="font-semibold text-slate-900">Cues</p>
+            <div className="space-y-2 rounded-xl border border-indigo-200/80 bg-indigo-50/70 p-3 text-sm text-indigo-900 lg:pt-1">
+              <p className="font-semibold text-indigo-900">Cues</p>
               <ul className="list-disc pl-5">
                 {currentItem.cues.map((cue) => (
                   <li key={cue}>{cue}</li>
                 ))}
               </ul>
-              <p className="mt-3 text-xs text-slate-500">
+              <p className="mt-3 text-xs text-indigo-700/85">
                 Common mistake: {currentItem.mistake}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="ui-card p-6">
+        <div className="ui-card border-sky-200/75 bg-[linear-gradient(135deg,rgba(240,249,255,0.95),rgba(255,255,255,0.98))] p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <p className="ui-title">Log this exercise</p>
+              <p className="ui-title">Log this movement pattern focus</p>
               <button
                 type="button"
                 data-testid="report-pain-trigger"
@@ -1906,7 +2114,7 @@ export default function SessionClient() {
                   setPainModalMessage(null);
                   setPainModalOpen(true);
                 }}
-                className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-700"
+                className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-700 shadow-sm"
               >
                 Report pain
               </button>
@@ -1936,7 +2144,7 @@ export default function SessionClient() {
                 </div>
               ) : null}
               <span
-                className="ui-saving-indicator rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600"
+                className="ui-saving-indicator rounded-full border border-sky-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-sky-700"
                 data-state={saveState}
               >
                 {saveState === "saving"
@@ -1947,31 +2155,34 @@ export default function SessionClient() {
               </span>
             </div>
           </div>
-          <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+          <div className="mt-3 rounded-2xl border border-indigo-200/75 bg-indigo-50/70 px-3 py-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-700/90">
               About to record
             </p>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-700">
+            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-indigo-900/90">
               <p>
-                <span className="font-semibold text-slate-900">Load:</span>{" "}
+                <span className="font-semibold text-indigo-900">Load:</span>{" "}
                 {currentItem.loadType === "weighted"
                   ? `${previewWeight}${previewUnit ? ` ${previewUnit}` : ""}`
                   : currentItem.loadType}
               </p>
               <p>
-                <span className="font-semibold text-slate-900">Reps/set:</span>{" "}
+                <span className="font-semibold text-indigo-900">Reps/set:</span>{" "}
                 {previewReps}
               </p>
+              <p data-testid="about-to-record-rpe">
+                <span className="font-semibold text-indigo-900">RPE:</span> {previewRpe}
+              </p>
               <p>
-                <span className="font-semibold text-slate-900">Sets:</span>{" "}
+                <span className="font-semibold text-indigo-900">Sets:</span>{" "}
                 {previewSetsCompleted}/{previewSetsPlanned}
               </p>
               <p>
-                <span className="font-semibold text-slate-900">Timer:</span>{" "}
+                <span className="font-semibold text-indigo-900">Timer:</span>{" "}
                 {currentTimer.workSeconds}s work • {currentTimer.restSeconds}s rest
               </p>
               <p className="col-span-2">
-                <span className="font-semibold text-slate-900">Feedback:</span>{" "}
+                <span className="font-semibold text-indigo-900">Feedback:</span>{" "}
                 {currentFeedback?.rating ?? "not set"}
                 {currentFeedback?.rating === "pain" && currentFeedback?.painLocation
                   ? ` (${currentFeedback.painLocation})`
@@ -1982,8 +2193,8 @@ export default function SessionClient() {
 
           <div className="mt-4 grid gap-3">
             {maxSets > minSets ? (
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <span className="font-semibold text-slate-900">Sets</span>
+              <div className="flex items-center gap-2 text-xs text-sky-700">
+                <span className="font-semibold text-sky-900">Sets</span>
                 <button
                   type="button"
                   onClick={() =>
@@ -1993,11 +2204,11 @@ export default function SessionClient() {
                       Math.max(minSets, currentSelectedSets - 1)
                     )
                   }
-                  className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-700 hover:bg-slate-100"
+                  className="rounded-full border border-sky-300 bg-white px-3 py-1 font-semibold text-sky-700 transition-colors hover:bg-sky-50"
                 >
                   -
                 </button>
-                <span className="w-6 text-center font-semibold text-slate-900">
+                <span className="w-6 text-center font-semibold text-sky-900">
                   {currentSelectedSets}
                 </span>
                 <button
@@ -2009,7 +2220,7 @@ export default function SessionClient() {
                       Math.min(maxSets, currentSelectedSets + 1)
                     )
                   }
-                  className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-700 hover:bg-slate-100"
+                  className="rounded-full border border-sky-300 bg-white px-3 py-1 font-semibold text-sky-700 transition-colors hover:bg-sky-50"
                 >
                   +
                 </button>
@@ -2032,9 +2243,10 @@ export default function SessionClient() {
                     applyWeight(currentItem.exerciseId, event.target.value)
                   }
                   onKeyDown={handleTrackingEnter("weight")}
+                  onBlur={handleTrackingBlur("weight")}
                   className="ui-input w-28"
                 />
-                <div className="flex rounded-full border border-slate-200 p-1 text-xs">
+                <div className="flex rounded-full border border-indigo-200 bg-white/80 p-1 text-xs">
                   {(["lb", "kg"] as const).map((unit) => (
                     <button
                       key={unit}
@@ -2042,8 +2254,8 @@ export default function SessionClient() {
                       onClick={() => applyUnit(currentItem.exerciseId, unit)}
                       className={`rounded-full px-3 py-1 font-semibold ${
                         currentUnitValue === unit
-                          ? "bg-slate-900 text-white"
-                          : "text-slate-600"
+                          ? "bg-indigo-600 text-white"
+                          : "text-indigo-700 hover:bg-indigo-50"
                       }`}
                     >
                       {unit}
@@ -2077,6 +2289,7 @@ export default function SessionClient() {
                     applySingleReps(currentItem.exerciseId, event.target.value)
                   }
                   onKeyDown={handleTrackingEnter("reps")}
+                  onBlur={handleTrackingBlur("reps")}
                   className="ui-input w-32 text-xs"
                   placeholder="Reps per set"
                 />
@@ -2096,6 +2309,7 @@ export default function SessionClient() {
                 value={currentRpeValue}
                 onChange={(event) => applyRpe(currentItem.exerciseId, event.target.value)}
                 onKeyDown={handleTrackingEnter("rpe")}
+                onBlur={handleTrackingBlur("rpe")}
                 className="ui-input w-24"
                 placeholder="RPE"
               />
@@ -2104,7 +2318,7 @@ export default function SessionClient() {
         </div>
 
         {allSetsCompleted ? (
-          <div className="ui-card p-6">
+          <div className="ui-card border-amber-200/80 bg-[linear-gradient(135deg,rgba(255,251,235,0.95),rgba(255,255,255,0.98))] p-6">
             <p className="text-sm font-semibold text-slate-900">How did it feel?</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {(
@@ -2120,20 +2334,29 @@ export default function SessionClient() {
                   ref={(element) => {
                     feedbackButtonRefs.current[index] = element;
                   }}
-                  onClick={() =>
-                    saveFeedback({
+                  onClick={() => {
+                    void saveFeedback({
                       ...feedback,
                       [currentFeedbackKey]: {
                         rating: option.value,
                         painLocation: currentFeedback?.painLocation ?? null,
                         notes: currentFeedback?.notes ?? "",
                       },
-                    })
-                  }
-                  className={`rounded-full border px-4 py-2 text-xs font-semibold ${
+                    });
+                    queueFocus(nextButtonRef.current);
+                  }}
+                  className={`rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
                     currentFeedback?.rating === option.value
-                      ? "border-slate-900 bg-slate-900 text-white"
-                      : "border-slate-200 text-slate-700"
+                      ? option.value === "easy"
+                        ? "border-emerald-600 bg-emerald-600 text-white"
+                        : option.value === "moderate"
+                        ? "border-sky-600 bg-sky-600 text-white"
+                        : "border-amber-600 bg-amber-500 text-slate-950"
+                      : option.value === "easy"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                      : option.value === "moderate"
+                      ? "border-sky-200 bg-sky-50 text-sky-800"
+                      : "border-amber-200 bg-amber-50 text-amber-800"
                   }`}
                 >
                   {option.label}
@@ -2152,7 +2375,7 @@ export default function SessionClient() {
               Pain check-in for {currentItem.name}
             </p>
             <p className="mt-1 text-xs text-slate-600">
-              Select the level you felt on this exercise.
+              Select the level you felt on this movement pattern focus.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {(["none", "mild", "moderate", "severe"] as const).map((level) => (
@@ -2253,7 +2476,7 @@ export default function SessionClient() {
                     void handleSwapFromPainReport();
                   }}
                 >
-                  Swap exercise
+                  Swap movement pattern
                 </Button>
               ) : null}
             </div>
@@ -2295,7 +2518,7 @@ export default function SessionClient() {
               sessionComplete ? "" : "motion-safe:animate-[pulse_6s_ease-in-out_infinite]"
             }`}
           >
-            {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next Exercise \u2192"}
+            {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next Movement Pattern \u2192"}
           </button>
         </OnImage>
       </div>

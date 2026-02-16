@@ -16,7 +16,7 @@ export default function QuestionnairePage() {
                 Step 2
               </p>
               <h1 className="text-3xl font-semibold text-white">
-                Quick questionnaire
+                Structured movement profile assessment
               </h1>
             </div>
             <Link href="/assessment">
@@ -25,8 +25,7 @@ export default function QuestionnairePage() {
           </header>
 
           <p className="max-w-2xl text-sm text-slate-200">
-            Answer a few questions to personalize the routine. You can edit these
-            later anytime.
+            Your answers help identify movement priorities and constraints for better corrective programming.
           </p>
         </OnImage>
 

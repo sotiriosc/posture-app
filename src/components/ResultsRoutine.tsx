@@ -1796,7 +1796,7 @@ export default function ResultsRoutine() {
   const heroMetricChips = [
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
     `Cycle: ${program.cycleIndex ?? cycleCurrent}`,
-    `Readiness: ${readinessScore}% (${readinessLabel})`,
+    `Readiness for Corrective Progress: ${readinessScore}% (${readinessLabel})`,
     phaseGate.minCycles > 0 && phaseGate.minDays > 0
       ? `Phase gate: ${phaseGate.minCycles} cycles + ${phaseGate.minDays} days`
       : "Phase gate: Progressing normally",
@@ -2186,7 +2186,7 @@ export default function ResultsRoutine() {
 
       <section className="ui-card order-4 p-5">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          Coach Summary
+          Corrective Focus Summary
         </h2>
         <div className="mt-2 space-y-1.5">
           {coachSummaryBullets.map((item) => (

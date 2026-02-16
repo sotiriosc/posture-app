@@ -19,7 +19,7 @@ export default function DailyInsightCard({
       <p className="mt-2 text-sm text-slate-700">{insight.text}</p>
       <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Coach Notes
+          Corrective Guidance Notes
         </p>
         <div className="mt-2 space-y-1 text-xs text-slate-700">
           <p>1. {coachNotes[0]}</p>

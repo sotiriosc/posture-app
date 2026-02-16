@@ -46,8 +46,8 @@ export default function DashboardHero({
     Number.isFinite(weeklyConsistencyTarget) &&
     weeklyConsistencyTarget > 0;
   const consistencyText = hasWeeklyTarget
-    ? `Consistency: ${weeklyConsistencyCount}/${weeklyConsistencyTarget} this week`
-    : `Consistency: ${weeklyConsistencyCount} sessions this week`;
+    ? `Corrective consistency: ${weeklyConsistencyCount}/${weeklyConsistencyTarget} this week`
+    : `Corrective consistency: ${weeklyConsistencyCount} sessions this week`;
 
   return (
     <section className="ui-card p-5">
@@ -69,7 +69,7 @@ export default function DashboardHero({
               <span
                 key={chip}
                 title={
-                  chip.startsWith("Readiness:")
+                  chip.startsWith("Readiness for Corrective Progress:")
                     ? "Based on recent completion + pain signals"
                     : undefined
                 }

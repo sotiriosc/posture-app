@@ -19,9 +19,9 @@ export default function PerformanceOverview({
 }: PerformanceOverviewProps) {
   const weekLabel = weeklyGoalStreak === 1 ? "week" : "weeks";
   const trendTone =
-    trendLabel === "Capacity improving"
+    trendLabel === "Pattern quality improving"
       ? "text-emerald-700"
-      : trendLabel === "Load tolerance building"
+      : trendLabel === "Corrective strength trend"
         ? "text-blue-700"
         : "text-slate-700";
 
@@ -39,7 +39,7 @@ export default function PerformanceOverview({
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <article className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
           <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
-            Consistency
+            Corrective Consistency
           </p>
           <p className="mt-2 text-2xl font-semibold text-slate-900">
             <AnimatedCount value={consistencyPercent} suffix="%" />

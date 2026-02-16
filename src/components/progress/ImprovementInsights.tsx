@@ -17,7 +17,7 @@ export default function ImprovementInsights({ insights }: ImprovementInsightsPro
         className="flex w-full items-center justify-between gap-3 text-left"
         aria-expanded={open}
       >
-        <h2 className="text-sm font-semibold text-slate-900">What improved recently</h2>
+        <h2 className="text-sm font-semibold text-slate-900">Movement quality trends</h2>
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
           {open ? "Hide" : "Show"}
         </span>

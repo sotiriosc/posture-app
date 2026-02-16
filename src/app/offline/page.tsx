@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="app-bg min-h-screen text-white">
       <div className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-6 px-6 py-12 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
           Offline mode

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export type TimerMode = "exercise" | "rest";
 
@@ -10,6 +10,7 @@ export type DualModeTimerRuntimeState = {
   remainingSeconds: number;
   exerciseSeconds: number;
   restSeconds: number;
+  updatedAtMs?: number;
 };
 
 type DualModeTimerProps = {
@@ -34,6 +35,90 @@ const clampDuration = (value: number, mode: TimerMode) => {
   return Math.min(max, Math.max(min, value));
 };
 
+const reconcileRuntimeState = (
+  state: DualModeTimerRuntimeState | null | undefined
+): DualModeTimerRuntimeState | null => {
+  if (!state) return null;
+
+  const exerciseSeconds = clampDuration(state.exerciseSeconds, "exercise");
+  const restSeconds = clampDuration(state.restSeconds, "rest");
+  const now = Date.now();
+  const baseline = Math.max(0, Math.floor(state.remainingSeconds));
+
+  if (!state.running || !state.updatedAtMs) {
+    return {
+      ...state,
+      remainingSeconds: baseline,
+      exerciseSeconds,
+      restSeconds,
+      updatedAtMs: now,
+    };
+  }
+
+  const elapsedSeconds = Math.max(0, Math.floor((now - state.updatedAtMs) / 1000));
+  if (elapsedSeconds <= 0) {
+    return {
+      ...state,
+      remainingSeconds: baseline,
+      exerciseSeconds,
+      restSeconds,
+      updatedAtMs: now,
+    };
+  }
+
+  if (state.mode === "exercise") {
+    if (elapsedSeconds < baseline) {
+      return {
+        ...state,
+        remainingSeconds: baseline - elapsedSeconds,
+        exerciseSeconds,
+        restSeconds,
+        updatedAtMs: now,
+      };
+    }
+    const elapsedIntoRest = elapsedSeconds - baseline;
+    if (elapsedIntoRest < restSeconds) {
+      return {
+        ...state,
+        mode: "rest",
+        running: true,
+        remainingSeconds: restSeconds - elapsedIntoRest,
+        exerciseSeconds,
+        restSeconds,
+        updatedAtMs: now,
+      };
+    }
+    return {
+      ...state,
+      mode: "rest",
+      running: false,
+      remainingSeconds: 0,
+      exerciseSeconds,
+      restSeconds,
+      updatedAtMs: now,
+    };
+  }
+
+  if (elapsedSeconds < baseline) {
+    return {
+      ...state,
+      remainingSeconds: baseline - elapsedSeconds,
+      exerciseSeconds,
+      restSeconds,
+      updatedAtMs: now,
+    };
+  }
+  return {
+    ...state,
+    mode: "rest",
+    running: false,
+    remainingSeconds: 0,
+    exerciseSeconds,
+    restSeconds,
+    updatedAtMs: now,
+  };
+};
+
 export default function DualModeTimer({
   initialExerciseSeconds = 60,
   initialRestSeconds = 60,
@@ -43,108 +128,227 @@ export default function DualModeTimer({
   persistedState = null,
   onStateChange,
 }: DualModeTimerProps) {
-  const [mode, setMode] = useState<TimerMode>(
-    persistedState?.mode ?? defaultMode
+  const reconciledPersistedState = useMemo(
+    () => reconcileRuntimeState(persistedState),
+    [persistedState]
   );
-  const [running, setRunning] = useState(persistedState?.running ?? false);
+  const [mode, setMode] = useState<TimerMode>(
+    reconciledPersistedState?.mode ?? defaultMode
+  );
+  const [running, setRunning] = useState(reconciledPersistedState?.running ?? false);
   const [selectedExerciseSeconds, setSelectedExerciseSeconds] = useState(
-    persistedState?.exerciseSeconds ?? initialExerciseSeconds
+    reconciledPersistedState?.exerciseSeconds ?? initialExerciseSeconds
   );
   const [selectedRestSeconds, setSelectedRestSeconds] = useState(
-    persistedState?.restSeconds ?? initialRestSeconds
+    reconciledPersistedState?.restSeconds ?? initialRestSeconds
   );
   const [remainingSeconds, setRemainingSeconds] = useState(
-    persistedState?.remainingSeconds ??
+    reconciledPersistedState?.remainingSeconds ??
       (defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds)
+  );
+  const modeRef = useRef<TimerMode>(
+    reconciledPersistedState?.mode ?? defaultMode
+  );
+  const runningRef = useRef<boolean>(
+    reconciledPersistedState?.running ?? false
+  );
+  const remainingRef = useRef<number>(
+    reconciledPersistedState?.remainingSeconds ??
+      (defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds)
+  );
+  const selectedExerciseRef = useRef<number>(
+    reconciledPersistedState?.exerciseSeconds ?? initialExerciseSeconds
+  );
+  const selectedRestRef = useRef<number>(
+    reconciledPersistedState?.restSeconds ?? initialRestSeconds
   );
   const lastRunningRef = useRef(false);
   const lastRemainingRef = useRef(remainingSeconds);
   const autoSwitchRef = useRef(false);
+  const runtimeAnchorMsRef = useRef<number>(
+    reconciledPersistedState?.updatedAtMs ?? Date.now()
+  );
 
   const activeSelectedSeconds =
     mode === "exercise" ? selectedExerciseSeconds : selectedRestSeconds;
+  const safeSelectedSeconds = Math.max(1, activeSelectedSeconds);
+  const completionRatio = Math.min(
+    1,
+    Math.max(0, 1 - remainingSeconds / safeSelectedSeconds)
+  );
+  const progressPercent = Math.round(completionRatio * 100);
   const sliderMin = mode === "exercise" ? 15 : 30;
   const sliderMax = mode === "exercise" ? 180 : 300;
+  const isExerciseMode = mode === "exercise";
 
   const accentClasses =
-    mode === "exercise"
-      ? "border-emerald-300/60 bg-emerald-100 text-emerald-900"
-      : "border-violet-300/60 bg-violet-100 text-violet-900";
-  const modeBackground =
-    mode === "exercise"
-      ? "border-emerald-200/70 bg-emerald-50/80"
-      : "border-violet-200/70 bg-violet-50/80";
-  const runningAccent =
-    mode === "exercise"
-      ? "shadow-emerald-500/20 ring-emerald-400/30"
-      : "shadow-violet-500/20 ring-violet-400/30";
-  const ringGradient =
-    mode === "exercise"
-      ? "conic-gradient(from 180deg at 50% 50%, rgba(16,185,129,0.92), rgba(52,211,153,0.42), rgba(59,130,246,0.52), rgba(16,185,129,0.92))"
-      : "conic-gradient(from 180deg at 50% 50%, rgba(124,58,237,0.88), rgba(167,139,250,0.42), rgba(59,130,246,0.5), rgba(124,58,237,0.88))";
-  const ringShadow =
-    mode === "exercise"
-      ? "0 10px 24px rgba(16,185,129,0.24)"
-      : "0 10px 24px rgba(124,58,237,0.22)";
+    isExerciseMode
+      ? "border-sky-300/60 bg-sky-100 text-sky-900"
+      : "border-amber-300/60 bg-amber-100 text-amber-900";
+  const modeBackground = isExerciseMode
+    ? "border-sky-200/70 bg-sky-50/80"
+    : "border-amber-200/80 bg-amber-50/85";
+  const runningAccent = isExerciseMode
+    ? "shadow-sky-500/28 ring-sky-400/40"
+    : "shadow-yellow-500/38 ring-yellow-300/55";
+  const activeModeButtonClasses =
+    isExerciseMode
+      ? "bg-sky-600 text-white shadow-[0_6px_16px_rgba(2,132,199,0.28)]"
+      : "bg-amber-500 text-slate-900 shadow-[0_6px_16px_rgba(245,158,11,0.26)]";
+  const sliderAccentClass = isExerciseMode ? "accent-sky-600" : "accent-amber-500";
+  const timerFaceBackground = isExerciseMode
+    ? "bg-[radial-gradient(circle_at_30%_24%,rgba(255,255,255,.98)_0%,rgba(224,242,254,.96)_46%,rgba(125,211,252,.9)_70%,rgba(30,64,175,.58)_100%)]"
+    : "bg-[radial-gradient(circle_at_28%_22%,rgba(255,255,255,.99)_0%,rgba(255,247,214,.98)_36%,rgba(253,224,71,.95)_58%,rgba(251,146,60,.88)_78%,rgba(172,94,35,.74)_100%)]";
+  const ringGradient = isExerciseMode
+    ? "conic-gradient(from 180deg at 50% 50%, rgba(191,219,254,0.98), rgba(56,189,248,0.96), rgba(37,99,235,0.92), rgba(15,23,42,0.9), rgba(191,219,254,0.98))"
+    : "conic-gradient(from 180deg at 50% 50%, rgba(255,254,240,0.99), rgba(250,204,21,0.98), rgba(245,158,11,0.95), rgba(236,72,153,0.75), rgba(124,58,237,0.62), rgba(255,254,240,0.99))";
+  const ringProgress = isExerciseMode
+    ? `conic-gradient(from -90deg at 50% 50%, rgba(14,116,234,0.99) 0 ${progressPercent}%, rgba(15,23,42,0.34) ${progressPercent}% 100%)`
+    : `conic-gradient(from -90deg at 50% 50%, rgba(255,215,64,0.99) 0 ${progressPercent}%, rgba(30,27,45,0.34) ${progressPercent}% 100%)`;
+  const ringShadow = isExerciseMode
+    ? "0 14px 30px rgba(14,116,234,0.34)"
+    : "0 16px 32px rgba(234,179,8,0.36), 0 0 22px rgba(236,72,153,0.2)";
+  const polarShellClasses =
+    isExerciseMode
+      ? "border-sky-500/45 bg-[linear-gradient(145deg,rgba(2,6,23,0.97),rgba(7,25,51,0.95))] text-sky-50"
+      : "border-amber-500/60 bg-[linear-gradient(145deg,rgba(24,14,5,0.97),rgba(58,32,8,0.95))] text-amber-50";
+  const secondaryTextClass = isExerciseMode ? "text-sky-100/95" : "text-amber-100/95";
+  const neutralPillClasses =
+    isExerciseMode
+      ? "border-slate-700 bg-slate-950/60"
+      : "border-amber-900/50 bg-slate-950/45";
+  const inactiveModeButtonClasses =
+    isExerciseMode
+      ? "text-slate-300 hover:bg-slate-800 hover:text-sky-100"
+      : "text-amber-100/85 hover:bg-amber-950/35 hover:text-amber-50";
+  const timerButtonFrameClasses = isExerciseMode
+    ? "border-[5px] border-sky-900/80 text-sky-950 shadow-[0_14px_30px_rgba(14,116,234,0.24)]"
+    : "border-[5px] border-amber-900/80 text-amber-950 shadow-[0_14px_30px_rgba(234,179,8,0.3)]";
+  const timerInnerRingClasses = isExerciseMode
+    ? "border border-sky-900/35"
+    : "border border-amber-900/35";
+  const timerInnerShadeClasses = isExerciseMode
+    ? "shadow-[inset_0_8px_14px_rgba(255,255,255,0.2),inset_0_-12px_16px_rgba(2,6,23,0.24)]"
+    : "shadow-[inset_0_8px_14px_rgba(255,255,255,0.32),inset_0_-12px_16px_rgba(120,53,15,0.24)]";
+  const timerTopGlowClasses = isExerciseMode
+    ? "bg-white/22"
+    : "bg-white/36";
+  const timerNeedleDotClasses = isExerciseMode
+    ? "bg-sky-950/90"
+    : "bg-amber-950/90";
+  const progressBadgeClasses = isExerciseMode
+    ? "rounded-full border border-sky-300/70 bg-sky-100/95 px-2 py-0.5 text-[11px] font-semibold text-sky-900"
+    : "rounded-full border border-amber-300/80 bg-amber-200/95 px-2 py-0.5 text-[11px] font-semibold text-amber-950";
 
   useEffect(() => {
-    if (persistedState) return;
-    setSelectedExerciseSeconds(initialExerciseSeconds);
-  }, [initialExerciseSeconds, persistedState]);
-
-  useEffect(() => {
-    if (persistedState) return;
-    setSelectedRestSeconds(initialRestSeconds);
-  }, [initialRestSeconds, persistedState]);
-
-  useEffect(() => {
-    if (persistedState) {
-      setMode(persistedState.mode);
-      setRunning(persistedState.running);
-      setRemainingSeconds(persistedState.remainingSeconds);
-      setSelectedExerciseSeconds(persistedState.exerciseSeconds);
-      setSelectedRestSeconds(persistedState.restSeconds);
-    } else {
-      setRunning(false);
-      autoSwitchRef.current = false;
-      setMode(defaultMode);
-      setRemainingSeconds(
-        defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds
-      );
-      setSelectedExerciseSeconds(initialExerciseSeconds);
-      setSelectedRestSeconds(initialRestSeconds);
-    }
+    if (!reconciledPersistedState) return;
+    setMode(reconciledPersistedState.mode);
+    setRunning(reconciledPersistedState.running);
+    setRemainingSeconds(reconciledPersistedState.remainingSeconds);
+    setSelectedExerciseSeconds(reconciledPersistedState.exerciseSeconds);
+    setSelectedRestSeconds(reconciledPersistedState.restSeconds);
+    modeRef.current = reconciledPersistedState.mode;
+    runningRef.current = reconciledPersistedState.running;
+    remainingRef.current = reconciledPersistedState.remainingSeconds;
+    selectedExerciseRef.current = reconciledPersistedState.exerciseSeconds;
+    selectedRestRef.current = reconciledPersistedState.restSeconds;
+    runtimeAnchorMsRef.current = reconciledPersistedState.updatedAtMs ?? Date.now();
     lastRunningRef.current = false;
-    lastRemainingRef.current = persistedState
-      ? persistedState.remainingSeconds
-      : defaultMode === "exercise"
-      ? initialExerciseSeconds
-      : initialRestSeconds;
-  }, [defaultMode, initialExerciseSeconds, initialRestSeconds, persistedState]);
+    lastRemainingRef.current = reconciledPersistedState.remainingSeconds;
+  }, [reconciledPersistedState]);
+
+  useEffect(() => {
+    modeRef.current = mode;
+    runningRef.current = running;
+    remainingRef.current = remainingSeconds;
+    selectedExerciseRef.current = selectedExerciseSeconds;
+    selectedRestRef.current = selectedRestSeconds;
+  }, [mode, running, remainingSeconds, selectedExerciseSeconds, selectedRestSeconds]);
+
+  const reconcileElapsedRuntime = () => {
+    const runningNow = runningRef.current;
+    const remainingNow = remainingRef.current;
+    if (!runningNow || remainingNow <= 0) return;
+    const anchorMs = runtimeAnchorMsRef.current;
+    const elapsedSeconds = Math.max(0, Math.floor((Date.now() - anchorMs) / 1000));
+    if (elapsedSeconds <= 0) return;
+
+    const reconciled = reconcileRuntimeState({
+      mode: modeRef.current,
+      running: runningNow,
+      remainingSeconds: remainingNow,
+      exerciseSeconds: selectedExerciseRef.current,
+      restSeconds: selectedRestRef.current,
+      updatedAtMs: anchorMs,
+    });
+    if (!reconciled) return;
+
+    runtimeAnchorMsRef.current = reconciled.updatedAtMs ?? Date.now();
+    if (reconciled.mode !== modeRef.current) {
+      modeRef.current = reconciled.mode;
+      setMode(reconciled.mode);
+    }
+    if (reconciled.running !== runningRef.current) {
+      runningRef.current = reconciled.running;
+      setRunning(reconciled.running);
+    }
+    if (reconciled.remainingSeconds !== remainingRef.current) {
+      remainingRef.current = reconciled.remainingSeconds;
+      setRemainingSeconds(reconciled.remainingSeconds);
+    }
+  };
 
   useEffect(() => {
     if (!running || remainingSeconds <= 0) return;
     const timer = window.setInterval(() => {
-      setRemainingSeconds((prev) => Math.max(prev - 1, 0));
-    }, 1000);
+      reconcileElapsedRuntime();
+    }, 250);
     return () => window.clearInterval(timer);
   }, [running, remainingSeconds]);
+
+  useEffect(() => {
+    const syncIfVisible = () => {
+      if (document.visibilityState === "visible") {
+        reconcileElapsedRuntime();
+      }
+    };
+    const syncOnFocus = () => reconcileElapsedRuntime();
+    document.addEventListener("visibilitychange", syncIfVisible);
+    window.addEventListener("focus", syncOnFocus);
+    return () => {
+      document.removeEventListener("visibilitychange", syncIfVisible);
+      window.removeEventListener("focus", syncOnFocus);
+    };
+  }, []);
 
   useEffect(() => {
     if (remainingSeconds !== 0) return;
     if (mode === "exercise") {
       autoSwitchRef.current = true;
+      runtimeAnchorMsRef.current = Date.now();
+      modeRef.current = "rest";
+      runningRef.current = true;
+      remainingRef.current = selectedRestSeconds;
       setMode("rest");
       setRemainingSeconds(selectedRestSeconds);
       setRunning(true);
       return;
     }
+    runtimeAnchorMsRef.current = Date.now();
+    runningRef.current = false;
     setRunning(false);
   }, [mode, remainingSeconds, selectedRestSeconds]);
 
   const handleModeChange = (nextMode: TimerMode) => {
     if (nextMode === mode) return;
     autoSwitchRef.current = false;
+    runtimeAnchorMsRef.current = Date.now();
+    modeRef.current = nextMode;
+    runningRef.current = false;
+    remainingRef.current =
+      nextMode === "exercise"
+        ? selectedExerciseRef.current
+        : selectedRestRef.current;
     setRunning(false);
     setMode(nextMode);
     setRemainingSeconds(
@@ -157,15 +361,25 @@ export default function DualModeTimer({
   const applyExerciseSeconds = (seconds: number) => {
     const next = clampDuration(seconds, "exercise");
     setSelectedExerciseSeconds(next);
+    selectedExerciseRef.current = next;
     if (mode === "exercise" && !running) setRemainingSeconds(next);
-    onExerciseDurationChange?.(next);
+    if (mode === "exercise" && !running) {
+      remainingRef.current = next;
+      runtimeAnchorMsRef.current = Date.now();
+    }
+    return next;
   };
 
   const applyRestSeconds = (seconds: number) => {
     const next = clampDuration(seconds, "rest");
     setSelectedRestSeconds(next);
+    selectedRestRef.current = next;
     if (mode === "rest" && !running) setRemainingSeconds(next);
-    onRestDurationChange?.(next);
+    if (mode === "rest" && !running) {
+      remainingRef.current = next;
+      runtimeAnchorMsRef.current = Date.now();
+    }
+    return next;
   };
 
   const applyForMode = (seconds: number) => {
@@ -176,7 +390,18 @@ export default function DualModeTimer({
     }
   };
 
+  const persistForMode = () => {
+    if (mode === "exercise") {
+      onExerciseDurationChange?.(selectedExerciseSeconds);
+      return;
+    }
+    onRestDurationChange?.(selectedRestSeconds);
+  };
+
   const resetTimer = () => {
+    runtimeAnchorMsRef.current = Date.now();
+    runningRef.current = false;
+    remainingRef.current = activeSelectedSeconds;
     setRunning(false);
     setRemainingSeconds(activeSelectedSeconds);
   };
@@ -247,6 +472,7 @@ export default function DualModeTimer({
       remainingSeconds,
       exerciseSeconds: selectedExerciseSeconds,
       restSeconds: selectedRestSeconds,
+      updatedAtMs: Date.now(),
     });
   }, [
     mode,
@@ -259,10 +485,10 @@ export default function DualModeTimer({
 
   return (
     <div
-      className={`rounded-2xl border p-4 shadow-sm transition ${modeBackground}`}
+      className={`rounded-2xl border p-4 shadow-sm transition ${polarShellClasses}`}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-sm">
+        <div className={`inline-flex rounded-full border p-1 shadow-sm ${neutralPillClasses}`}>
           {(["exercise", "rest"] as TimerMode[]).map((value) => (
             <button
               key={value}
@@ -270,18 +496,18 @@ export default function DualModeTimer({
               onClick={() => handleModeChange(value)}
               className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
                 mode === value
-                  ? "bg-slate-900 text-white"
-                  : "text-slate-700 hover:text-slate-900"
+                  ? activeModeButtonClasses
+                  : inactiveModeButtonClasses
               }`}
             >
-              {value === "exercise" ? "Exercise" : "Rest"}
+              {value === "exercise" ? "Movement pattern focus" : "Rest"}
             </button>
           ))}
         </div>
         <div
           className={`rounded-full border px-3 py-1 text-xs font-semibold ${accentClasses}`}
         >
-          {mode === "exercise" ? "Exercise mode" : "Rest mode"}
+          {mode === "exercise" ? "Movement pattern focus mode" : "Rest mode"}
         </div>
       </div>
 
@@ -298,34 +524,59 @@ export default function DualModeTimer({
             }}
           />
           <span
+            className="pointer-events-none absolute inset-[2px] rounded-full transition-[opacity] duration-300"
+            style={{
+              background: ringProgress,
+              opacity: running ? 1 : 0.88,
+            }}
+          />
+          <span
             className={`pointer-events-none absolute inset-[4px] rounded-full border border-white/70 ${modeBackground}`}
           />
           <button
             type="button"
-            onClick={() => setRunning((prev) => !prev)}
-            className={`relative z-10 m-[10px] flex h-[calc(100%-20px)] w-[calc(100%-20px)] items-center justify-center overflow-hidden rounded-full border-4 border-slate-900 text-5xl font-semibold text-slate-900 shadow-sm transition sm:text-6xl ${
-              mode === "exercise" ? "bg-emerald-50/95" : "bg-violet-50/95"
-            } ${running ? `ring-4 motion-safe:animate-pulse ${runningAccent}` : ""}`}
+            onClick={() =>
+              setRunning((prev) => {
+                runtimeAnchorMsRef.current = Date.now();
+                const next = !prev;
+                runningRef.current = next;
+                return next;
+              })
+            }
+          className={`relative z-10 m-[10px] flex h-[calc(100%-20px)] w-[calc(100%-20px)] items-center justify-center overflow-hidden rounded-full text-5xl font-semibold transition sm:text-6xl ${timerButtonFrameClasses} ${timerFaceBackground} ${
+            running ? `ring-4 motion-safe:animate-pulse ${runningAccent}` : ""
+          }`}
           >
-            <span className="pointer-events-none absolute top-5 h-2 w-2 rounded-full bg-slate-900" />
+            <span className={`pointer-events-none absolute inset-[6px] rounded-full ${timerInnerRingClasses}`} />
+            <span className={`pointer-events-none absolute inset-[9px] rounded-full ${timerInnerShadeClasses}`} />
+            <span className={`pointer-events-none absolute top-8 left-10 h-6 w-20 rounded-full blur-sm ${timerTopGlowClasses}`} />
+            <span className={`pointer-events-none absolute top-5 h-2 w-2 rounded-full ${timerNeedleDotClasses}`} />
             {formatTime(remainingSeconds)}
           </button>
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between text-xs font-semibold text-slate-600">
+      <div className={`mt-3 flex items-center justify-between text-xs font-semibold ${secondaryTextClass}`}>
         <span>{running ? "Tap to pause" : "Tap to start"}</span>
+        <span
+          className={progressBadgeClasses}
+        >
+          Pattern proficiency {progressPercent}%
+        </span>
         <button
           type="button"
           onClick={resetTimer}
-          className="text-slate-700 underline-offset-4 hover:text-slate-900 hover:underline"
+          className={`${secondaryTextClass} underline-offset-4 hover:underline`}
         >
           Reset
         </button>
       </div>
+      <p className={`mt-2 text-center text-[11px] font-medium ${secondaryTextClass}`}>
+        Stay controlled and aligned.
+      </p>
 
       <div className="mt-4">
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+        <div className={`flex items-center justify-between text-xs font-semibold ${secondaryTextClass}`}>
           <span>Duration</span>
           <span>{formatTime(activeSelectedSeconds)}</span>
         </div>
@@ -336,12 +587,28 @@ export default function DualModeTimer({
           step={15}
           value={activeSelectedSeconds}
           onChange={(event) => applyForMode(Number(event.target.value))}
-          className="mt-3 w-full accent-slate-900"
+          onMouseUp={persistForMode}
+          onTouchEnd={persistForMode}
+          onKeyUp={(event) => {
+            if (
+              event.key === "ArrowLeft" ||
+              event.key === "ArrowRight" ||
+              event.key === "ArrowUp" ||
+              event.key === "ArrowDown" ||
+              event.key === "Home" ||
+              event.key === "End" ||
+              event.key === "PageUp" ||
+              event.key === "PageDown"
+            ) {
+              persistForMode();
+            }
+          }}
+          className={`mt-3 w-full ${sliderAccentClass}`}
         />
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-3 text-xs font-semibold text-slate-600">
-        <span>Exercise: {formatTime(selectedExerciseSeconds)}</span>
+      <div className={`mt-4 flex flex-wrap gap-3 text-xs font-semibold ${secondaryTextClass}`}>
+        <span>Movement pattern focus: {formatTime(selectedExerciseSeconds)}</span>
         <span>Rest: {formatTime(selectedRestSeconds)}</span>
       </div>
     </div>

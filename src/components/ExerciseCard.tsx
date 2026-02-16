@@ -30,15 +30,15 @@ export default function ExerciseCard({
         </p>
       </div>
 
-      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Coaching cue
+      <div className="mt-4 rounded-xl border border-sky-200/80 bg-sky-50/75 px-4 py-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-sky-700/80">
+          Corrective guidance cue
         </p>
-        <p className="mt-1 text-sm text-slate-700">{cue}</p>
+        <p className="mt-1 text-sm text-slate-800">{cue}</p>
       </div>
 
-      <div className="mt-4 space-y-2 rounded-xl border border-slate-200 bg-white px-4 py-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <div className="mt-4 space-y-2 rounded-xl border border-indigo-200/75 bg-white px-4 py-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700/85">
           Set tracking
         </p>
         {sets.map((completed, index) => (
@@ -46,8 +46,8 @@ export default function ExerciseCard({
             key={`set-${index}`}
             className={`flex min-h-11 items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm transition ${
               completed
-                ? "border-emerald-300 bg-emerald-50 text-emerald-900 opacity-80"
-                : "border-slate-200 bg-slate-50 text-slate-800"
+                ? "border-sky-300 bg-sky-50 text-sky-900 opacity-90"
+                : "border-amber-200 bg-amber-50/75 text-amber-900"
             }`}
           >
             <span className="flex items-center gap-2 font-medium">
@@ -68,18 +68,18 @@ export default function ExerciseCard({
                 onSetEnter?.(index);
               }}
               ref={(node) => setCheckboxRef?.(index, node)}
-              className="h-4 w-4 accent-emerald-600"
+              className="h-4 w-4 accent-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1"
             />
           </label>
         ))}
       </div>
 
       <div
-        className={`mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800 transition-[opacity,transform] duration-200 ${
+        className={`mt-3 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-800 transition-[opacity,transform] duration-200 ${
           completionFlashVisible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-1 opacity-0"
         }`}
       >
-        ✓ Exercise Complete
+        ✓ Movement Pattern Complete
       </div>
     </section>
   );

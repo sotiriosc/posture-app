@@ -208,6 +208,7 @@ describe("session tracking integration flow", () => {
     fireEvent.change(screen.getByTestId("rpe-input"), {
       target: { value: "8" },
     });
+    expect(screen.getByTestId("about-to-record-rpe").textContent).toContain("8");
     fireEvent.click(screen.getByLabelText("Set 1"));
     fireEvent.click(screen.getByLabelText("Set 2"));
     fireEvent.click(screen.getByTestId("report-pain-trigger"));
@@ -304,6 +305,46 @@ describe("session tracking integration flow", () => {
     });
     expect(screen.getByTestId("reps-input")).toBeTruthy();
     expect(screen.getByRole("button", { name: "0:40" })).toBeTruthy();
+  });
+
+  test("auto-advances focus through logging inputs once all sets are complete", async () => {
+    render(React.createElement(SessionClient));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Guided session/i)).toBeTruthy();
+      expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
+    });
+
+    fireEvent.click(screen.getByLabelText("Set 1"));
+    fireEvent.click(screen.getByLabelText("Set 2"));
+
+    await waitFor(() => {
+      expect((document.activeElement as HTMLElement | null)?.id).toBe("weight-input");
+    });
+
+    fireEvent.change(screen.getByTestId("weight-input"), {
+      target: { value: "55" },
+    });
+    fireEvent.blur(screen.getByTestId("weight-input"), { relatedTarget: null });
+    await waitFor(() => {
+      expect((document.activeElement as HTMLElement | null)?.id).toBe("reps-input");
+    });
+
+    fireEvent.change(screen.getByTestId("reps-input"), {
+      target: { value: "10" },
+    });
+    fireEvent.blur(screen.getByTestId("reps-input"), { relatedTarget: null });
+    await waitFor(() => {
+      expect((document.activeElement as HTMLElement | null)?.id).toBe("rpe-input");
+    });
+
+    fireEvent.change(screen.getByTestId("rpe-input"), {
+      target: { value: "8" },
+    });
+    fireEvent.blur(screen.getByTestId("rpe-input"), { relatedTarget: null });
+    await waitFor(() => {
+      expect(document.activeElement).toBe(screen.getByRole("button", { name: "Easy" }));
+    });
   });
 
   test("timer start/pause/resume/reset does not auto-reset on pause", () => {

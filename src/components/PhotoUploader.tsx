@@ -90,14 +90,14 @@ export default function PhotoUploader() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900">
+      <div className="ui-card rounded-2xl border-amber-200 bg-amber-50/95 p-4 text-xs text-amber-900">
         <p className="font-semibold">Note</p>
         <p className="mt-1">
           Photos are stored on this device. Clearing site data will remove them.
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-600">
+      <div className="ui-card flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/95 px-4 py-3 text-xs text-slate-600">
         <p>
           Filled slots:{" "}
           <span className="font-semibold text-slate-900">
@@ -116,7 +116,7 @@ export default function PhotoUploader() {
           return (
             <div
               key={slot.key}
-              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="ui-card rounded-2xl bg-white/95 p-4 shadow-sm"
             >
               <div className="flex items-center justify-between">
                 <div>

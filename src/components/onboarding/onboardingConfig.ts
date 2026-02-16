@@ -36,28 +36,28 @@ export const onboardingPageOrder: OnboardingKey[] = [
 
 export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
   home: {
-    title: "Start here: How this system works",
+    title: "Start here: How this movement system works",
     sections: [
       {
         type: "text",
-        text: "This is not a static workout app.",
+        text: "This movement system is built for corrective performance, not generic workouts.",
       },
       {
         type: "bullets",
         title: "The system:",
         items: [
-          "Analyzes your posture and inputs",
-          "Builds your weekly structure automatically",
-          "Adapts your program based on performance",
+          "Detects tendencies that undermine movement quality.",
+          "Builds structured corrective progression around pattern balance.",
+          "Adapts corrective guidance based on movement performance and recovery.",
         ],
       },
       {
         type: "steps",
         title: "You’ll complete:",
         items: [
-          "Photo assessment",
-          "Quick questionnaire",
-          "Personalized program generation",
+          "Movement & posture baseline",
+          "Structured movement profile assessment",
+          "Corrective program generation",
         ],
       },
       {
@@ -67,7 +67,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
     ],
   },
   assessment: {
-    title: "How to take effective posture photos",
+    title: "How to capture a movement & posture baseline",
     sections: [
       {
         type: "bullets",
@@ -83,16 +83,16 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "These images allow the system to detect structural imbalances and movement tendencies.",
+        text: "These images help detect structural imbalances that influence movement mechanics and corrective focus.",
       },
       {
         type: "text",
-        text: "Do not try to “correct” posture in the photo — stand as you normally would.",
+        text: "Do not try to correct posture in the photo; stand as you normally would.",
       },
     ],
   },
   questionnaire: {
-    title: "How to answer accurately",
+    title: "How to answer the structured movement profile assessment",
     sections: [
       {
         type: "bullets",
@@ -114,57 +114,57 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "The more accurate your inputs, the more precise your program.",
+        text: "Your answers help identify movement priorities and constraints for better corrective programming.",
       },
     ],
   },
   results: {
-    title: "How to use your program",
+    title: "How to use your corrective dashboard",
     sections: [
       {
         type: "bullets",
         title: "Your dashboard shows:",
         items: [
-          "Phase: where you are in progression",
-          "Week View: your weekly structure",
-          "Readiness: how prepared you are",
-          "System Adjustments: how the plan adapts",
+          "Phase: where you are in pattern mastery",
+          "Week View: your weekly corrective structure",
+          "Readiness for Corrective Progress: how prepared you are",
+          "System Adjustments: what the plan changed and why",
         ],
       },
       {
         type: "text",
-        text: "Start each session using: “Start Today’s Session”",
+        text: "This dashboard shows where you are in pattern mastery and what to prioritize next.",
       },
       {
         type: "text",
-        text: "After each workout, the system updates automatically.",
+        text: "After each session, the movement system updates automatically.",
       },
     ],
   },
   session: {
-    title: "How to complete a session",
+    title: "How to complete a corrective session",
     sections: [
       {
         type: "bullets",
         title: "Flow:",
         items: [
-          "Follow exercise order",
+          "Follow movement pattern focus order",
           "Log weight / reps",
           "Complete sets in sequence",
-          "Provide honest difficulty feedback",
+          "Focus on executed movement quality, not just load.",
         ],
       },
       {
         type: "text",
-        text: "Use the timer when appropriate.",
+        text: "Use the timer when appropriate and stay controlled and aligned.",
       },
       {
         type: "text",
-        text: "When finished: Press “Next Exercise” until session completes.",
+        text: "When finished: Press \"Next Movement Pattern\" until session completes.",
       },
       {
         type: "text",
-        text: "The system adjusts difficulty based on your feedback.",
+        text: "The system adjusts movement quality emphasis based on your feedback.",
       },
     ],
   },
@@ -259,4 +259,3 @@ export const markSignupWalkthroughPending = () => {
   state.signupWalkthroughPageSeen = {};
   writeOnboardingState(state);
 };
-

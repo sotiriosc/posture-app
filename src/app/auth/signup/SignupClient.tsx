@@ -60,7 +60,7 @@ export default function SignupClient() {
           </p>
           <h1 className="mt-2 text-3xl font-semibold text-white">Create account</h1>
           <p className="mt-2 text-sm text-slate-300">
-            Start free. Upgrade anytime when you want full access.
+            Start free. Upgrade anytime for full corrective performance access.
           </p>
         </OnImage>
         <form onSubmit={submit} className="ui-card p-6">
@@ -117,7 +117,7 @@ export default function SignupClient() {
               className="mt-0.5 h-4 w-4 accent-slate-900"
             />
             <span>
-              Email me product updates and training tips. You can unsubscribe anytime.
+              Email me movement system updates and corrective guidance tips. You can unsubscribe anytime.
             </span>
           </label>
           {error ? (

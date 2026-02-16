@@ -4,6 +4,9 @@ import AppMenu from "@/components/AppMenu";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
+const GLOBAL_CARD_STYLE = "shaded";
+const GLOBAL_INPUT_STYLE = "shaded";
+
 const resolveMetadataBase = () => {
   const raw =
     process.env.NEXT_PUBLIC_APP_URL ??
@@ -54,7 +57,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body
+        className="antialiased"
+        data-card-style={GLOBAL_CARD_STYLE}
+        data-input-style={GLOBAL_INPUT_STYLE}
+      >
         <AppMenu />
         <PhotoProvider>{children}</PhotoProvider>
         <ServiceWorkerRegister />

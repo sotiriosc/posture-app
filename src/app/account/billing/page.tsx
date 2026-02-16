@@ -157,8 +157,8 @@ export default async function BillingAccountPage() {
               Your Pro plan includes:
             </p>
             <ul className="mt-2 space-y-1 text-xs text-slate-700">
-              <li>Adaptive program generation</li>
-              <li>Automatic weekly progression</li>
+              <li>Structured corrective progression built around movement quality and pattern balance</li>
+              <li>Weekly progression driven by movement performance and recovery data</li>
               <li>Session tracking and analytics</li>
               <li>Continuous system adjustments</li>
             </ul>

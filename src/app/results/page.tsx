@@ -61,8 +61,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
           </header>
 
           <p className="max-w-2xl text-sm text-slate-200">
-            Your routine is generated locally using simple rules based on your
-            answers. Ready to start your next session and build momentum?
+            Your routine is generated locally from your movement profile and corrective priorities. Ready to start your next session and build pattern quality?
           </p>
           {authEnabled ? (
             <p className="text-xs font-semibold text-slate-200">
