@@ -232,6 +232,26 @@ describe("program generation slot coverage", () => {
     });
   });
 
+  test("accessory section only uses main-category exercises", () => {
+    const program = generateWeeklyProgram(
+      { ...baseData, equipment: ["none", "bands", "dumbbells"], experience: "Intermediate" },
+      "accessory-category-integrity"
+    );
+    program.week.forEach((day) => {
+      day.routine
+        .filter((item) => item.section === "accessory")
+        .forEach((item) => {
+          const category = exerciseById(item.exerciseId)?.category;
+          if (category !== "main") {
+            throw new Error(
+              `Non-main exercise in accessory section: ${item.exerciseId} (${category ?? "unknown"})`
+            );
+          }
+          expect(category).toBe("main");
+        });
+    });
+  });
+
   test("exercise library includes back extension", () => {
     expect(exerciseById("back-extension")).toBeDefined();
   });

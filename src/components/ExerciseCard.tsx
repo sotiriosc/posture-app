@@ -46,7 +46,7 @@ export default function ExerciseCard({
             key={`set-${index}`}
             className={`flex min-h-11 items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm transition ${
               completed
-                ? "border-sky-300 bg-sky-50 text-sky-900 opacity-90"
+                ? "border-sky-300 bg-sky-50 text-slate-900"
                 : "border-amber-200 bg-amber-50/75 text-amber-900"
             }`}
           >

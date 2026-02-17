@@ -27,10 +27,14 @@ import type { ExerciseFeedbackSummary } from "@/lib/logStore";
 import type { PoseAnalysis, PoseMetrics } from "@/lib/poseAnalyzer";
 import { createSeededRng, type RandomFn } from "@/lib/seededRng";
 import { buildSessionAdaptation } from "@/lib/sessionAdaptation";
+import {
+  buildWarmupForDay,
+  deriveDayIntentFromProgramDay,
+} from "@/lib/program/warmupPlanner";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
-export const PROGRAM_TEMPLATE_VERSION = 11;
+export const PROGRAM_TEMPLATE_VERSION = 13;
 const clampPhaseIndexToSupportedRange = (phaseIndex: number) =>
   Math.min(MAX_PHASE_INDEX, Math.max(1, Math.floor(phaseIndex)));
 
@@ -333,6 +337,7 @@ const guidanceSignalsProgressionReadiness = (guidance?: string | null) => {
   return (
     normalized.includes("add small load") ||
     normalized.includes("add load") ||
+    normalized.includes("add weight") ||
     normalized.includes("add small") ||
     normalized.includes("add reps")
   );
@@ -825,7 +830,8 @@ const buildSelectionContext = (
 
 const getExperienceProfile = (
   experience: string,
-  goal: string
+  goal: string,
+  phaseIndex = 1
 ): ExperienceProfile => {
   const level: ExperienceLevel =
     experience === "Advanced"
@@ -835,16 +841,41 @@ const getExperienceProfile = (
       : "Beginner";
 
   const painBias = goal === "Reduce pain";
+  const phaseStage = phaseStageFromIndex(phaseIndex);
 
   if (level === "Advanced") {
+    const mainSets = painBias
+      ? phaseStage === "growth"
+        ? "3-4"
+        : "3"
+      : phaseStage === "activation"
+      ? "3-4"
+      : "4-5";
+    const accessorySets = painBias ? "2-3" : phaseStage === "growth" ? "3" : "3-4";
+    const mainRepRange = painBias
+      ? phaseStage === "growth"
+        ? "5-8"
+        : "6-10"
+      : phaseStage === "growth"
+      ? "4-6"
+      : phaseStage === "skill"
+      ? "5-8"
+      : "6-10";
+    const accessoryRepRange = painBias
+      ? "8-12"
+      : phaseStage === "growth"
+      ? "6-10"
+      : "8-12";
+    const mainRestSec = painBias ? (phaseStage === "growth" ? 100 : 90) : phaseStage === "growth" ? 120 : 105;
+    const accessoryRestSec = painBias ? 60 : phaseStage === "growth" ? 75 : 65;
     return {
       level,
-      mainSets: painBias ? "3" : "4-5",
-      accessorySets: painBias ? "2-3" : "3-4",
-      mainRepRange: painBias ? "6-10" : "4-8",
-      accessoryRepRange: painBias ? "8-12" : "8-15",
-      mainRestSec: painBias ? 90 : 105,
-      accessoryRestSec: painBias ? 60 : 75,
+      mainSets,
+      accessorySets,
+      mainRepRange,
+      accessoryRepRange,
+      mainRestSec,
+      accessoryRestSec,
       warmupSets: "2",
       cooldownSets: "2",
       mainLaneCount: 4,
@@ -854,14 +885,32 @@ const getExperienceProfile = (
   }
 
   if (level === "Intermediate") {
+    const mainSets = painBias
+      ? phaseStage === "growth"
+        ? "3"
+        : "2-3"
+      : phaseStage === "growth"
+      ? "3-4"
+      : "3";
+    const accessorySets = painBias ? "2" : phaseStage === "growth" ? "2-3" : "2";
+    const mainRepRange = painBias
+      ? "6-10"
+      : phaseStage === "growth"
+      ? "5-8"
+      : phaseStage === "skill"
+      ? "6-10"
+      : "8-12";
+    const accessoryRepRange = painBias ? "8-12" : phaseStage === "growth" ? "8-12" : "10-15";
+    const mainRestSec = painBias ? 90 : phaseStage === "growth" ? 105 : 90;
+    const accessoryRestSec = painBias ? 60 : phaseStage === "growth" ? 65 : 55;
     return {
       level,
-      mainSets: painBias ? "2-3" : "3-4",
-      accessorySets: "2-3",
-      mainRepRange: "6-10",
-      accessoryRepRange: "8-12",
-      mainRestSec: 90,
-      accessoryRestSec: 60,
+      mainSets,
+      accessorySets,
+      mainRepRange,
+      accessoryRepRange,
+      mainRestSec,
+      accessoryRestSec,
       warmupSets: "2",
       cooldownSets: "2",
       mainLaneCount: 3,
@@ -870,13 +919,23 @@ const getExperienceProfile = (
     };
   }
 
+  const beginnerMainSets = painBias
+    ? "2"
+    : phaseStage === "growth"
+    ? "2-3"
+    : "2";
+  const beginnerMainReps = painBias
+    ? "8-12"
+    : phaseStage === "growth"
+    ? "6-10"
+    : "8-12";
   return {
     level,
-    mainSets: "2-3",
+    mainSets: beginnerMainSets,
     accessorySets: "2",
-    mainRepRange: "8-12",
-    accessoryRepRange: "10-15",
-    mainRestSec: 75,
+    mainRepRange: beginnerMainReps,
+    accessoryRepRange: phaseStage === "growth" ? "8-12" : "10-15",
+    mainRestSec: painBias ? 80 : phaseStage === "growth" ? 85 : 75,
     accessoryRestSec: 50,
     warmupSets: "2",
     cooldownSets: "1-2",
@@ -1342,7 +1401,7 @@ const ensureEligibleItem = (
     ...item,
     exerciseId: fallback.id,
     loadType: fallback.loadType,
-    cues: fallback.cues ?? null,
+    cues: buildProgramCues(fallback, item.section),
   };
 };
 
@@ -1425,10 +1484,66 @@ const ensureDistinctRoutine = (
       ...item,
       exerciseId: replacement.id,
       loadType: replacement.loadType,
-      cues: replacement.cues,
+      cues: buildProgramCues(replacement, item.section),
     };
   });
   return { ...day, routine };
+};
+
+const dedupeCues = (cues: string[]) => {
+  const seen = new Set<string>();
+  const next: string[] = [];
+  cues.forEach((cue) => {
+    const normalized = cue.trim().toLowerCase();
+    if (!normalized || seen.has(normalized)) return;
+    seen.add(normalized);
+    next.push(cue.trim());
+  });
+  return next;
+};
+
+const buildProgramCues = (
+  exercise: Exercise | undefined,
+  section?: ProgramRoutineItem["section"]
+) => {
+  if (!exercise) return null;
+  const cues = [...(exercise.cues ?? [])];
+  const patternTokens = new Set(
+    (exercise.movementPattern ?? []).map((pattern) => normalizeTagToken(pattern))
+  );
+  const tagTokens = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+
+  if (section === "main" || section === "accessory") {
+    if (descriptor.includes("lateral-raise") || descriptor.includes("lateral raise")) {
+      cues.push("Use light dumbbells; stop before torso swing or shrugging.");
+      cues.push("Raise in a smooth arc and lower for a full 2 seconds.");
+    } else if (
+      patternTokens.has("verticalpush") ||
+      ((descriptor.includes("shoulder press") || descriptor.includes("overhead press")) &&
+        tagTokens.has("shoulders"))
+    ) {
+      cues.push("Pick a load you can control without arching your lower back.");
+      cues.push("Press straight up while keeping ribs stacked and neck relaxed.");
+    } else if (patternTokens.has("push")) {
+      cues.push("Control the lowering phase and stop 1-2 reps before form breaks.");
+    } else if (patternTokens.has("pull")) {
+      cues.push("Lead with elbows and pause briefly without shrugging.");
+    } else if (patternTokens.has("squat") || patternTokens.has("hinge")) {
+      cues.push("Own each eccentric with a steady brace and pain-free range.");
+    } else if (
+      patternTokens.has("core") ||
+      patternTokens.has("anti_rotation") ||
+      patternTokens.has("anti_extension") ||
+      patternTokens.has("carry")
+    ) {
+      cues.push("Breathe behind the brace and keep ribcage stacked over pelvis.");
+    }
+  } else if (section === "warmup" || section === "activation") {
+    cues.push("Move slowly enough to feel alignment, not momentum.");
+  }
+
+  return dedupeCues(cues).slice(0, 3);
 };
 
 const makeItem = (
@@ -1449,7 +1564,7 @@ const makeItem = (
     restSec: restSec ?? 60,
     loadType: exercise?.loadType ?? "bodyweight",
     notes: null,
-    cues: exercise?.cues ?? null,
+    cues: buildProgramCues(exercise, section),
   };
 };
 
@@ -1725,7 +1840,7 @@ const isIsolationExercise = (exercise: Exercise) => {
   const isoPatterns = ["curl", "extension", "calf"];
   const isoNameTokens = [
     "curl",
-    "extension",
+    "triceps extension",
     "pressdown",
     "kickback",
     "lateral raise",
@@ -2091,7 +2206,7 @@ const replaceDayItemExercise = (
     ...current,
     exerciseId: replacement.id,
     loadType: replacement.loadType,
-    cues: replacement.cues,
+    cues: buildProgramCues(replacement, current.section),
   };
   return { ...day, routine };
 };
@@ -3716,7 +3831,12 @@ const enforceDayMainCoherence = (params: {
     if (canRow && canVertical) {
       desiredRules.push(rowPullMainRule, verticalPullMainRule);
     } else if (canRow) {
-      desiredRules.push(rowPullMainRule, secondaryPullAngleMainRule);
+      if (context.capabilityMode === "hasLoad") {
+        // In loaded contexts, avoid forcing low-load scap drills into MAIN pull slots.
+        desiredRules.push(rowPullMainRule);
+      } else {
+        desiredRules.push(rowPullMainRule, secondaryPullAngleMainRule);
+      }
     }
   }
 
@@ -4345,8 +4465,8 @@ export const getWeeklyCoverageContract = (daysPerWeek: 3 | 4 | 5): WeeklyCoverag
   if (daysPerWeek === 3) {
     return {
       calvesDays: 1,
-      bicepsDays: 2,
-      tricepsDays: 2,
+      bicepsDays: 1,
+      tricepsDays: 1,
       squatDays: 1,
       hingeDays: 1,
       pullDays: 2,
@@ -4543,7 +4663,7 @@ const applyWeeklyCoverageRepairs = (params: {
   const baselineAccessoryCapacity = new Map<number, number>(
     nextWeek.map((day, index) => [
       index,
-      Math.max(3, day.routine.filter((item) => item.section === "accessory").length),
+      Math.max(1, day.routine.filter((item) => item.section === "accessory").length),
     ])
   );
 
@@ -4554,7 +4674,7 @@ const applyWeeklyCoverageRepairs = (params: {
     matchRule: calvesRule,
     preferLower: true,
     preferArms: false,
-  });
+  }).filter((index) => isLowerDayForCoverage(nextWeek[index]!));
   const upperDayIndexesRaw = pickCoverageDayIndexes({
     week: nextWeek,
     matchRule: pullBackRule,
@@ -4635,7 +4755,7 @@ const applyWeeklyCoverageRepairs = (params: {
     metric: "carryDays",
     minDays: carryMinDays,
     preferredIds: carryPreferredIds,
-    dayIndexes: [...lowerDayIndexes, ...corePriorityIndexes],
+    dayIndexes: [...lowerCoverageIndexes, ...corePriorityIndexes],
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
@@ -4698,7 +4818,7 @@ const applyWeeklyCoverageRepairs = (params: {
       "suitcase-hold-march",
       "dead-bug",
     ],
-    dayIndexes: [...corePriorityIndexes, ...lowerDayIndexes, ...upperDayIndexes],
+    dayIndexes: [...corePriorityIndexes, ...lowerCoverageIndexes, ...upperDayIndexes],
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
@@ -4910,7 +5030,7 @@ const applyWeeklyCoverageRepairs = (params: {
       metric: "carryDays",
       minDays: carryMinDays,
       preferredIds: carryPreferredIds,
-      dayIndexes: [...lowerDayIndexes, ...corePriorityIndexes, ...upperDayIndexes],
+      dayIndexes: [...lowerCoverageIndexes, ...corePriorityIndexes, ...upperDayIndexes],
       daysPerWeek,
       accessoryCapacityByDayIndex: baselineAccessoryCapacity,
       preserveRules: [bicepsIsolationRule, tricepsIsolationRule, calvesRule, pullBackRule],
@@ -4930,7 +5050,7 @@ const applyWeeklyCoverageRepairs = (params: {
       metric: "pullDays",
       minDays: contract.pullDays,
       preferredIds: ["split-stance-row", "band-row", "dumbbell-rows", "lat-pulldown"],
-      dayIndexes: [...upperDayIndexes, ...corePriorityIndexes, ...lowerDayIndexes],
+      dayIndexes: [...upperDayIndexes, ...corePriorityIndexes, ...lowerCoverageIndexes],
       daysPerWeek,
       accessoryCapacityByDayIndex: baselineAccessoryCapacity,
       preserveRules: [bicepsIsolationRule, tricepsIsolationRule, calvesRule, carryRule],
@@ -5294,7 +5414,7 @@ const applyFeedbackDrivenSubstitutions = (params: {
         ...item,
         exerciseId: replacement.id,
         loadType: replacement.loadType,
-        cues: replacement.cues ?? null,
+        cues: buildProgramCues(replacement, item.section),
       };
     });
 
@@ -5323,7 +5443,7 @@ const applyFeedbackDrivenSubstitutions = (params: {
         ...item,
         exerciseId: replacement.id,
         loadType: replacement.loadType,
-        cues: replacement.cues ?? null,
+        cues: buildProgramCues(replacement, item.section),
       };
     });
 
@@ -5379,7 +5499,7 @@ const applyFinalFeedbackSafetyPass = (params: {
         ...item,
         exerciseId: replacement.id,
         loadType: replacement.loadType,
-        cues: replacement.cues ?? null,
+        cues: buildProgramCues(replacement, item.section),
       };
     });
 
@@ -5617,11 +5737,16 @@ const phaseUpgradeMap: Record<string, { phase2?: string; phase3?: string }> = {
   "prone-ytw": { phase2: "band-row", phase3: "dumbbell-rows" },
   "band-pull-aparts": { phase3: "face-pull" },
   "glute-bridges": { phase2: "single-leg-hip-thrust", phase3: "single-leg-rdl" },
+  "single-leg-glute-bridge-hold": { phase2: "back-extension-hold", phase3: "db-rdl" },
+  "back-extension-hold": { phase2: "back-extension", phase3: "db-rdl" },
   "dead-bug": { phase2: "plank", phase3: "plank" },
   "bird-dog": { phase3: "plank" },
-  "bodyweight-squat": { phase2: "split-squat", phase3: "split-squat" },
+  "bodyweight-squat": { phase2: "split-squat", phase3: "machine-leg-press" },
+  "cossack-squat": { phase2: "machine-leg-press", phase3: "dumbbell-step-up-loaded" },
   "incline-pushup": { phase2: "dumbbell-floor-press", phase3: "dumbbell-bench-press" },
   "band-chest-press": { phase2: "dumbbell-floor-press", phase3: "dumbbell-bench-press" },
+  "band-overhead-press": { phase2: "machine-shoulder-press", phase3: "dumbbell-shoulder-press" },
+  "machine-seated-row": { phase2: "machine-lat-pulldown", phase3: "dumbbell-chest-supported-row" },
   pushup: { phase2: "dumbbell-floor-press", phase3: "dumbbell-bench-press" },
 };
 
@@ -5656,19 +5781,28 @@ const upgradeExerciseId = (
 
 const cycleVariationMap: Record<string, string[]> = {
   "dumbbell-rows": ["split-stance-row", "band-row", "prone-ytw"],
+  "machine-seated-row": ["dumbbell-rows", "machine-lat-pulldown", "split-stance-row"],
+  "machine-leg-press": ["split-squat", "heels-elevated-squat", "dumbbell-step-up-loaded"],
   "glute-bridges": ["hip-hinge-drill", "single-leg-rdl"],
+  "db-rdl": ["back-extension", "back-extension-hold", "single-leg-rdl"],
+  "back-extension-hold": ["back-extension", "db-rdl", "single-leg-rdl"],
   "dead-bug": ["bird-dog", "plank"],
   "face-pull": ["reverse-snow-angel", "band-pull-aparts"],
   "pallof-press": ["plank", "dead-bug"],
   "bodyweight-squat": ["split-squat"],
   "dumbbell-floor-press": ["dumbbell-bench-press", "dumbbell-chest-fly"],
   "dumbbell-bench-press": ["dumbbell-chest-fly", "dumbbell-shoulder-press"],
+  "machine-shoulder-press": ["dumbbell-shoulder-press", "dumbbell-arnold-press"],
   "dumbbell-shoulder-press": ["dumbbell-lateral-raise", "pike-pushup"],
   "band-chest-press": ["incline-pushup", "pushup", "dumbbell-floor-press"],
-  "band-overhead-press": ["dumbbell-shoulder-press", "pike-pushup"],
-  "band-rdl": ["single-leg-rdl", "bodyweight-good-morning"],
-  "back-extension": ["bodyweight-good-morning", "single-leg-rdl"],
-  "band-front-squat": ["split-squat", "heels-elevated-squat"],
+  "band-overhead-press": [
+    "machine-shoulder-press",
+    "dumbbell-shoulder-press",
+    "dumbbell-arnold-press",
+  ],
+  "band-rdl": ["single-leg-rdl", "back-extension-hold", "back-extension"],
+  "back-extension": ["single-leg-rdl", "band-rdl", "back-extension-hold"],
+  "band-front-squat": ["machine-leg-press", "split-squat", "heels-elevated-squat"],
   "band-lat-pulldown": ["band-row", "dumbbell-rows", "back-widow"],
   "band-woodchop": ["pallof-press", "side-plank-star"],
   pushup: ["incline-pushup", "pike-pushup"],
@@ -5684,8 +5818,7 @@ const isExerciseAllowedForSection = (
     return exercise.category === "activation" || exercise.category === "warmup";
   if (section === "warmup")
     return exercise.category === "warmup" || exercise.category === "activation";
-  if (section === "accessory")
-    return exercise.category === "activation" || exercise.category === "main";
+  if (section === "accessory") return exercise.category === "main";
   if (section === "cooldown")
     return exercise.category === "cooldown" || exercise.category === "warmup";
   return true;
@@ -5731,12 +5864,21 @@ export const isEligibleForPhase = (
     return false;
   }
 
+  const isBeginner = context.experienceLevel === "beginner";
   const isBeginnerOrIntermediate =
-    context.experienceLevel === "beginner" ||
-    context.experienceLevel === "intermediate";
+    isBeginner || context.experienceLevel === "intermediate";
   if (inActivation && isBeginnerOrIntermediate) {
     if (exercise.difficultyTier === "hard") return false;
-    if (isHingeLoadPatternExercise(exercise)) return false;
+  }
+
+  const blockActivationHingeLoad =
+    inActivation &&
+    isHingeLoadPatternExercise(exercise) &&
+    (isBeginner ||
+      context.capabilityMode !== "hasLoad" ||
+      context.painSeverity !== "low");
+  if (blockActivationHingeLoad) {
+    return false;
   }
 
   return true;
@@ -5750,6 +5892,25 @@ const isExerciseEligibleForProgramContext = (params: {
 }) => {
   const { exercise, available, section, context } = params;
   const intent = context.intentProfile;
+  if (section === "main" && exercise.id === "goblet-squat" && available.has("machines")) {
+    return false;
+  }
+  if (
+    section === "main" &&
+    context.capabilityMode === "hasLoad" &&
+    context.experienceLevel !== "beginner" &&
+    context.painSeverity === "low" &&
+    [
+      "seated-lat-sweep-pulse",
+      "prone-elbow-row",
+      "supine-elbow-drive-row",
+      "back-widow",
+      "prone-swimmer",
+      "reverse-snow-angel",
+    ].includes(exercise.id)
+  ) {
+    return false;
+  }
   const equipmentEligible =
     isExerciseEligible(exercise, available) ||
     (context.capabilityMode === "bandOnly" &&
@@ -5761,7 +5922,16 @@ const isExerciseEligibleForProgramContext = (params: {
     exercise.loadType === "weighted" &&
     context.phaseStage !== "growth"
   ) {
-    return false;
+    const allowMachinePrimerInSkill =
+      exercise.id === "machine-shoulder-press" &&
+      context.phaseStage === "skill" &&
+      context.capabilityMode === "hasLoad" &&
+      context.painSeverity !== "high";
+    if (allowMachinePrimerInSkill) {
+      // Controlled machine path can be used as a primer before free-weight overhead loading.
+    } else {
+      return false;
+    }
   }
   if (
     section === "main" &&
@@ -5860,11 +6030,22 @@ const progressionCandidatesMap: Record<string, string[]> = {
   "incline-pushup": ["band-chest-press", "dumbbell-floor-press", "dumbbell-bench-press"],
   pushup: ["band-chest-press", "dumbbell-floor-press", "dumbbell-bench-press"],
   "band-chest-press": ["dumbbell-floor-press", "dumbbell-bench-press", "dumbbell-chest-fly"],
+  "band-overhead-press": ["machine-shoulder-press", "dumbbell-shoulder-press", "dumbbell-arnold-press"],
+  "machine-shoulder-press": ["dumbbell-shoulder-press", "dumbbell-arnold-press"],
+  "dumbbell-shoulder-press": ["dumbbell-arnold-press"],
   "dumbbell-floor-press": ["dumbbell-bench-press", "dumbbell-chest-fly"],
-  "dumbbell-rows": ["split-stance-row", "band-row"],
+  "dumbbell-rows": ["machine-seated-row", "machine-lat-pulldown", "dumbbell-chest-supported-row"],
+  "machine-seated-row": ["machine-lat-pulldown", "dumbbell-chest-supported-row", "barbell-bent-over-row"],
   "glute-bridges": ["single-leg-hip-thrust", "single-leg-rdl"],
-  "back-extension": ["single-leg-rdl", "band-rdl"],
-  "bodyweight-squat": ["split-squat"],
+  "single-leg-glute-bridge-hold": ["back-extension-hold", "db-rdl", "machine-seated-hamstring-curl"],
+  "back-extension-hold": ["back-extension", "db-rdl", "machine-seated-hamstring-curl"],
+  "back-extension": ["db-rdl", "dumbbell-sumo-rdl", "machine-seated-hamstring-curl"],
+  "db-rdl": ["dumbbell-sumo-rdl", "barbell-romanian-deadlift", "machine-glute-drive"],
+  "bodyweight-squat": ["split-squat", "machine-leg-press"],
+  "split-squat": ["machine-leg-press", "dumbbell-step-up-loaded", "machine-hack-squat"],
+  "machine-leg-press": ["dumbbell-step-up-loaded", "machine-hack-squat", "barbell-back-squat"],
+  "heels-elevated-squat": ["machine-leg-press", "dumbbell-step-up-loaded"],
+  "cossack-squat": ["split-squat", "machine-leg-press"],
   "dead-bug": ["plank"],
 };
 
@@ -5894,6 +6075,12 @@ const pickProgressiveVariant = (params: {
   for (const candidateId of orderedIds) {
     const candidate = exerciseById(candidateId);
     if (!candidate) continue;
+    if (context?.capabilityMode === "hasLoad" && candidate.id === "goblet-squat") {
+      continue;
+    }
+    if (candidate.id === "bodyweight-good-morning") {
+      continue;
+    }
     if (usedIds.has(candidate.id)) continue;
     if (
       context
@@ -5980,7 +6167,7 @@ const enforceProgressiveDemand = (params: {
         ...item,
         exerciseId: upgrade.id,
         loadType: upgrade.loadType,
-        cues: upgrade.cues,
+        cues: buildProgramCues(upgrade, item.section),
       };
     });
 
@@ -6127,7 +6314,7 @@ const enforceMaterialWeekChange = (params: {
       ...item,
       exerciseId: variantId,
       loadType: variant?.loadType ?? item.loadType,
-      cues: variant?.cues ?? item.cues,
+      cues: buildProgramCues(variant ?? undefined, item.section) ?? item.cues,
     };
     return { ...day, routine };
   });
@@ -6269,7 +6456,7 @@ const remapWeekForProgressiveNovelty = (params: {
         ...item,
         exerciseId: nextExercise.id,
         loadType: nextExercise.loadType,
-        cues: nextExercise.cues,
+        cues: buildProgramCues(nextExercise, item.section),
       };
     });
 
@@ -6345,7 +6532,7 @@ const adjustRoutineForPhase = (
       ...item,
       exerciseId: variedId,
       loadType: upgradedExercise?.loadType ?? item.loadType,
-      cues: upgradedExercise?.cues ?? item.cues,
+      cues: buildProgramCues(upgradedExercise ?? undefined, item.section) ?? item.cues,
       notes: item.notes ?? tempoNote,
       sets: adjustSets(item.sets, isProgressionSection ? policy.setsDelta : 0),
       reps: nextReps,
@@ -7144,14 +7331,173 @@ const getIntentSlotScoreBonus = (params: {
   const role = deriveExerciseRole(exercise);
   const patterns = new Set(exercise.movementPattern.map(normalizeTagToken));
   const tags = new Set((exercise.tags ?? []).map(normalizeTagToken));
+  const lane = auditMeta?.slotLane;
+  const gymLoadReadyMain =
+    section === "main" &&
+    context.capabilityMode === "hasLoad" &&
+    context.experienceLevel !== "beginner" &&
+    context.painSeverity !== "high" &&
+    Boolean(lane);
 
-  if (section === "main" && auditMeta?.slotLane) {
-    if (matchesMainLanePattern(exercise, auditMeta.slotLane)) {
+  if (section === "main" && lane) {
+    if (matchesMainLanePattern(exercise, lane)) {
       score += 3;
-      reasons.push(`+3 lane match (${auditMeta.slotLane})`);
+      reasons.push(`+3 lane match (${lane})`);
     } else {
       score -= 2;
-      reasons.push(`-2 lane mismatch (${auditMeta.slotLane})`);
+      reasons.push(`-2 lane mismatch (${lane})`);
+    }
+  }
+
+  if (gymLoadReadyMain && lane) {
+    const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+    const hingeControlException =
+      lane === "hinge" &&
+      (exercise.id === "back-extension-hold" || exercise.id === "back-extension");
+    const lowDemandMain =
+      (exercise.loadType === "bodyweight" ||
+        exercise.loadType === "assisted" ||
+        exercise.loadType === "timed") &&
+      !hingeControlException;
+    if (exercise.loadType === "weighted") {
+      const bonus =
+        context.phaseStage === "activation" ? 1.5 : context.phaseStage === "skill" ? 2 : 2.5;
+      score += bonus;
+      reasons.push(`+${bonus} gym loaded-main progression bias`);
+    }
+    if (lowDemandMain) {
+      const penalty =
+        context.phaseStage === "activation" ? 1.5 : context.phaseStage === "skill" ? 2.5 : 4;
+      score -= penalty;
+      reasons.push(`-${penalty} gym low-load main de-priority`);
+    }
+    if (
+      (lane === "push" || lane === "verticalPush") &&
+      descriptor.includes("pushup") &&
+      !descriptor.includes("scapular")
+    ) {
+      const penalty = context.phaseStage === "activation" ? 1 : 2.5;
+      score -= penalty;
+      reasons.push(`-${penalty} gym pushup fallback penalty`);
+    }
+  }
+
+  if (section === "main" && role === "accessoryIsolation") {
+    const penalty = context.phaseStage === "growth" ? 2 : 4;
+    score -= penalty;
+    reasons.push(`-${penalty} isolation movement de-prioritized as main`);
+  }
+
+  if (section === "main" && auditMeta?.slotLane === "verticalPush") {
+    const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+    const shoulderPressPattern =
+      descriptor.includes("press") && (tags.has("shoulders") || patterns.has("verticalpush"));
+    const lateralRaisePattern =
+      descriptor.includes("lateral-raise") || descriptor.includes("lateral raise");
+
+    if (shoulderPressPattern) {
+      score += 1.25;
+      reasons.push("+1.25 vertical slot shoulder-press specificity");
+    }
+    if (lateralRaisePattern) {
+      score -= 1.25;
+      reasons.push("-1.25 lateral raise de-prioritized as primary vertical slot");
+    }
+    if (
+      context.capabilityMode === "hasLoad" &&
+      context.phaseStage !== "growth" &&
+      descriptor.includes("machine")
+    ) {
+      score += 0.8;
+      reasons.push("+0.8 machine-guided shoulder press bias in early phases");
+    }
+    if (
+      context.phaseStage === "growth" &&
+      shoulderPressPattern &&
+      exercise.equipment.includes("dumbbells")
+    ) {
+      score += 0.4;
+      reasons.push("+0.4 dumbbell shoulder-press progression bias in growth");
+    }
+  }
+
+  if (section === "main" && auditMeta?.slotLane === "push" && context.capabilityMode === "hasLoad") {
+    const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+    const loadedPressPattern =
+      exercise.loadType === "weighted" &&
+      (descriptor.includes("press") ||
+        descriptor.includes("bench") ||
+        descriptor.includes("floor") ||
+        descriptor.includes("chest"));
+    if (loadedPressPattern) {
+      const delta = context.phaseStage === "activation" ? 1 : 1.75;
+      score += delta;
+      reasons.push(`+${delta} loaded horizontal push specificity`);
+    }
+  }
+
+  if (section === "main" && auditMeta?.slotLane === "pull" && context.capabilityMode === "hasLoad") {
+    const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+    const loadedPullPattern =
+      (exercise.loadType === "weighted" || exercise.loadType === "assisted") &&
+      (descriptor.includes("row") ||
+        descriptor.includes("pulldown") ||
+        descriptor.includes("lat") ||
+        exercise.equipment.includes("machines") ||
+        exercise.equipment.includes("cables"));
+    if (loadedPullPattern) {
+      const delta = context.phaseStage === "activation" ? 1.25 : 2;
+      score += delta;
+      reasons.push(`+${delta} loaded pull specificity`);
+    }
+    const lowValuePull =
+      descriptor.includes("prone-elbow-row") ||
+      descriptor.includes("supine-elbow-drive-row") ||
+      descriptor.includes("lat-sweep") ||
+      descriptor.includes("snow angel");
+    if (lowValuePull) {
+      const penalty = context.phaseStage === "activation" ? 0.75 : 2;
+      score -= penalty;
+      reasons.push(`-${penalty} low-progressive pull de-priority`);
+    }
+  }
+
+  if (section === "main" && auditMeta?.slotLane === "squat") {
+    if (exercise.id === "machine-leg-press" && context.capabilityMode === "hasLoad") {
+      const bonus = context.phaseStage === "growth" ? 4.5 : 4;
+      score += bonus;
+      reasons.push(`+${bonus} machine leg-press lower-body primer bias`);
+    }
+    if (exercise.id === "goblet-squat" && context.capabilityMode === "hasLoad") {
+      const penalty = context.phaseStage === "growth" ? 2 : 2.5;
+      score -= penalty;
+      reasons.push(`-${penalty} goblet squat de-prioritized when loaded options are available`);
+    }
+    if (
+      context.capabilityMode === "hasLoad" &&
+      (exercise.id === "cossack-squat" || exercise.id === "shrimp-squat" || patterns.has("mobility"))
+    ) {
+      const penalty = context.phaseStage === "activation" ? 1 : 2.5;
+      score -= penalty;
+      reasons.push(`-${penalty} gym squat slot avoids mobility-first main`);
+    }
+  }
+
+  if (section === "main" && auditMeta?.slotLane === "hinge") {
+    if (exercise.id === "back-extension-hold") {
+      const delta = context.phaseStage === "growth" ? 0.5 : 1.25;
+      score += delta;
+      reasons.push(`+${delta} back-extension hold hinge-control bias`);
+    }
+    if (exercise.id === "bodyweight-good-morning") {
+      const penalty = context.phaseStage === "growth" ? 1 : 2;
+      score -= penalty;
+      reasons.push(`-${penalty} good-morning de-prioritized for hinge safety`);
+    }
+    if (context.capabilityMode === "hasLoad" && exercise.id === "db-rdl") {
+      const bonus = context.phaseStage === "activation" ? 1 : 2;
+      score += bonus;
+      reasons.push(`+${bonus} loaded hinge progression bias`);
     }
   }
 
@@ -7253,8 +7599,9 @@ const getIntentSlotScoreBonus = (params: {
 
   if (context.phaseStage === "activation") {
     if (role === "mainControl" || role === "postureCorrective" || role === "core") {
-      score += 2;
-      reasons.push("+2 activation control bias");
+      const controlBias = gymLoadReadyMain ? 0.75 : 2;
+      score += controlBias;
+      reasons.push(`+${controlBias} activation control bias`);
     }
     if (
       tags.has("scap") ||
@@ -7263,15 +7610,24 @@ const getIntentSlotScoreBonus = (params: {
       tags.has("stability") ||
       tags.has("control")
     ) {
-      score += 1;
-      reasons.push("+1 activation stability/control emphasis");
+      const stabilityBias = gymLoadReadyMain ? 0.35 : 1;
+      score += stabilityBias;
+      reasons.push(`+${stabilityBias} activation stability/control emphasis`);
     }
     if (
       role === "mainStrength" &&
       (exercise.loadType === "weighted" || exercise.movementIntensity === "load")
     ) {
-      score -= context.experienceLevel === "beginner" ? 4 : 3;
-      reasons.push("-3 to -4 activation load penalty");
+      const activationLoadPenalty =
+        context.capabilityMode === "hasLoad"
+          ? context.experienceLevel === "beginner" || context.painSeverity === "high"
+            ? 4
+            : 1
+          : context.experienceLevel === "beginner"
+          ? 4
+          : 3;
+      score -= activationLoadPenalty;
+      reasons.push(`-${activationLoadPenalty} activation load penalty`);
       if (exercise.difficultyTier === "hard" || tags.has("advanced") || tags.has("strength")) {
         score -= 1;
         reasons.push("-1 activation max-strength style de-priority");
@@ -7348,6 +7704,10 @@ const getIntentSlotScoreBonus = (params: {
     if (dayTitle.includes("back + chest") && isShoulderIsolationExercise(exercise)) {
       score -= 8;
       reasons.push("-8 misplaced shoulder isolation main on Back + Chest");
+    }
+    if (dayTitle.includes("shoulders + arms") && isChestDominantHorizontalPush(exercise)) {
+      score -= 12;
+      reasons.push("-12 chest-dominant push blocked on Shoulders + Arms");
     }
 
     const isUpperDay = isUpperIntentDayTitle(auditMeta.dayTitle);
@@ -7718,6 +8078,321 @@ const chooseActivationId = (
     "activation"
   );
 
+const getPushCompoundCandidateIds = (
+  phaseIndex: number,
+  experience: ExperienceProfile,
+  context: SelectionContext
+) => {
+  if (context.capabilityMode === "hasLoad") {
+    if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+      return [
+        "machine-chest-press",
+        "dumbbell-incline-press",
+        "dumbbell-bench-press",
+        "barbell-bench-press-paused",
+        "barbell-floor-press",
+        "dumbbell-floor-press",
+        "dumbbell-chest-fly",
+        "machine-pec-deck-press",
+        "band-chest-press",
+        "incline-pushup",
+      ];
+    }
+    if (phaseIndex >= 2) {
+      return [
+        "dumbbell-bench-press",
+        "dumbbell-floor-press",
+        "machine-chest-press",
+        "dumbbell-incline-press",
+        "dumbbell-chest-fly",
+        "band-chest-press",
+        "incline-pushup",
+        "pushup",
+      ];
+    }
+    return [
+      "dumbbell-floor-press",
+      "dumbbell-bench-press",
+      "band-chest-press",
+      "incline-pushup",
+      "pushup",
+      "dumbbell-lateral-raise",
+    ];
+  }
+
+  if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+    return [
+      "dumbbell-bench-press",
+      "dumbbell-floor-press",
+      "band-chest-press",
+      "band-overhead-press",
+      "pushup",
+      "incline-pushup",
+    ];
+  }
+  if (phaseIndex >= 2) {
+    return [
+      "dumbbell-floor-press",
+      "dumbbell-bench-press",
+      "band-overhead-press",
+      "band-chest-press",
+      "pushup",
+      "incline-pushup",
+    ];
+  }
+  return [
+    "dumbbell-floor-press",
+    "dumbbell-bench-press",
+    "band-chest-press",
+    "pushup",
+    "incline-pushup",
+  ];
+};
+
+const getVerticalPushCandidateIds = (
+  phaseIndex: number,
+  experience: ExperienceProfile,
+  context: SelectionContext
+) => {
+  if (context.capabilityMode === "hasLoad") {
+    if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+      return [
+        "machine-shoulder-press",
+        "dumbbell-shoulder-press",
+        "dumbbell-arnold-press",
+        "barbell-strict-press",
+        "barbell-push-press",
+        "band-overhead-press",
+        "pike-pushup",
+        "scapular-pushups",
+      ];
+    }
+    if (phaseIndex >= 2) {
+      return [
+        "machine-shoulder-press",
+        "dumbbell-shoulder-press",
+        "band-overhead-press",
+        "dumbbell-arnold-press",
+        "pike-pushup",
+        "scapular-pushups",
+        "incline-pushup",
+      ];
+    }
+    return [
+      "dumbbell-shoulder-press",
+      "band-overhead-press",
+      "machine-shoulder-press",
+      "pike-pushup",
+      "scapular-pushups",
+      "incline-pushup",
+    ];
+  }
+
+  if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+    return [
+      "dumbbell-shoulder-press",
+      "dumbbell-arnold-press",
+      "band-overhead-press",
+      "pike-pushup",
+      "scapular-pushups",
+    ];
+  }
+  return [
+    "dumbbell-shoulder-press",
+    "band-overhead-press",
+    "pike-pushup",
+    "scapular-pushups",
+    "incline-pushup",
+  ];
+};
+
+const getPullCompoundCandidateIds = (
+  phaseIndex: number,
+  experience: ExperienceProfile,
+  context: SelectionContext
+) => {
+  if (context.capabilityMode === "hasLoad") {
+    if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+      return [
+        "machine-lat-pulldown",
+        "machine-seated-row",
+        "dumbbell-chest-supported-row",
+        "barbell-bent-over-row",
+        "cable-seated-row",
+        "cable-lat-pulldown",
+        "dumbbell-rows",
+        "barbell-landmine-pulldown",
+        "band-lat-pulldown",
+        "face-pull",
+      ];
+    }
+    if (phaseIndex >= 2) {
+      return [
+        "machine-seated-row",
+        "dumbbell-rows",
+        "machine-lat-pulldown",
+        "band-lat-pulldown",
+        "band-row",
+        "split-stance-row",
+        "face-pull",
+        "prone-swimmer",
+      ];
+    }
+    return [
+      "dumbbell-rows",
+      "machine-seated-row",
+      "band-lat-pulldown",
+      "band-row",
+      "split-stance-row",
+      "back-widow",
+      "face-pull",
+      "supine-elbow-drive-row",
+      "prone-elbow-row",
+    ];
+  }
+
+  if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+    return [
+      "dumbbell-rows",
+      "split-stance-row",
+      "band-lat-pulldown",
+      "band-row",
+      "face-pull",
+      "reverse-snow-angel",
+    ];
+  }
+  return [
+    "dumbbell-rows",
+    "band-lat-pulldown",
+    "band-row",
+    "split-stance-row",
+    "back-widow",
+    "face-pull",
+    "reverse-snow-angel",
+    "prone-swimmer",
+  ];
+};
+
+const getSquatCompoundCandidateIds = (
+  phaseIndex: number,
+  experience: ExperienceProfile,
+  context: SelectionContext
+) => {
+  if (context.capabilityMode === "hasLoad") {
+    if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+      return [
+        "machine-hack-squat",
+        "machine-leg-press",
+        "dumbbell-step-up-loaded",
+        "barbell-back-squat",
+        "split-squat",
+        "heels-elevated-squat",
+        "bodyweight-squat",
+      ];
+    }
+    if (phaseIndex >= 2) {
+      return [
+        "machine-leg-press",
+        "split-squat",
+        "dumbbell-step-up-loaded",
+        "machine-hack-squat",
+        "heels-elevated-squat",
+        "bodyweight-squat",
+        "band-front-squat",
+      ];
+    }
+    return [
+      "machine-leg-press",
+      "split-squat",
+      "heels-elevated-squat",
+      "bodyweight-squat",
+      "band-front-squat",
+      "cossack-squat",
+    ];
+  }
+
+  if (phaseIndex >= 2 && experience.allowAdvancedCompounds) {
+    return [
+      "split-squat",
+      "bodyweight-squat",
+      "band-front-squat",
+      "heels-elevated-squat",
+      "cossack-squat",
+      "shrimp-squat",
+    ];
+  }
+  return [
+    "split-squat",
+    "bodyweight-squat",
+    "band-front-squat",
+    "heels-elevated-squat",
+    "cossack-squat",
+  ];
+};
+
+const getHingeCompoundCandidateIds = (
+  phaseIndex: number,
+  experience: ExperienceProfile,
+  context: SelectionContext
+) => {
+  if (context.capabilityMode === "hasLoad") {
+    if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+      return [
+        "machine-seated-hamstring-curl",
+        "dumbbell-sumo-rdl",
+        "barbell-romanian-deadlift",
+        "barbell-hip-thrust",
+        "machine-glute-drive",
+        "db-rdl",
+        "back-extension",
+        "single-leg-rdl",
+      ];
+    }
+    if (phaseIndex >= 2) {
+      return [
+        "db-rdl",
+        "back-extension",
+        "back-extension-hold",
+        "single-leg-rdl",
+        "machine-seated-hamstring-curl",
+        "machine-glute-drive",
+        "barbell-hip-thrust",
+        "band-rdl",
+      ];
+    }
+    return [
+      "back-extension-hold",
+      "db-rdl",
+      "back-extension",
+      "single-leg-hip-thrust",
+      "single-leg-glute-bridge-hold",
+      "band-rdl",
+      "single-leg-rdl",
+    ];
+  }
+
+  if (phaseIndex >= 2 && experience.allowAdvancedCompounds) {
+    return [
+      "back-extension-hold",
+      "back-extension",
+      "single-leg-hip-thrust",
+      "single-leg-glute-bridge-hold",
+      "single-leg-rdl",
+      "band-rdl",
+      "db-rdl",
+    ];
+  }
+  return [
+    "back-extension-hold",
+    "back-extension",
+    "single-leg-glute-bridge-hold",
+    "single-leg-hip-thrust",
+    "single-leg-rdl",
+    "band-rdl",
+    "db-rdl",
+  ];
+};
+
 const choosePushCompoundId = (
   phaseIndex: number,
   available: Set<Equipment>,
@@ -7726,31 +8401,7 @@ const choosePushCompoundId = (
   auditMeta?: SelectionAuditMeta
 ) =>
   pickFirstEligibleId(
-    phaseIndex >= 3 && experience.allowAdvancedCompounds
-      ? [
-          "db-bench-press",
-          "incline-db-press",
-          "dumbbell-bench-press",
-          "dumbbell-floor-press",
-          "band-overhead-press",
-          "pseudo-planche-pushup",
-          "archer-pushup",
-          "band-chest-press",
-          "pushup",
-          "incline-pushup",
-        ]
-      : phaseIndex >= 2
-      ? [
-          "db-bench-press",
-          "incline-db-press",
-          "dumbbell-floor-press",
-          "dumbbell-bench-press",
-          "band-overhead-press",
-          "band-chest-press",
-          "pushup",
-          "incline-pushup",
-        ]
-      : ["db-bench-press", "incline-db-press", "incline-pushup", "band-chest-press", "pushup"],
+    getPushCompoundCandidateIds(phaseIndex, experience, context),
     available,
     context,
     "main",
@@ -7765,9 +8416,7 @@ const chooseVerticalPushId = (
   auditMeta?: SelectionAuditMeta
 ) =>
   pickFirstEligibleId(
-    phaseIndex >= 2 && experience.allowAdvancedCompounds
-      ? ["db-overhead-press", "dumbbell-shoulder-press", "pike-pushup", "scapular-pushups"]
-      : ["db-overhead-press", "pike-pushup", "scapular-pushups", "incline-pushup"],
+    getVerticalPushCandidateIds(phaseIndex, experience, context),
     available,
     context,
     "main",
@@ -7782,30 +8431,7 @@ const choosePullCompoundId = (
   auditMeta?: SelectionAuditMeta
 ) =>
   pickFirstEligibleId(
-    phaseIndex >= 2 && experience.allowAdvancedCompounds
-      ? [
-          "lat-pulldown",
-          "seated-cable-row",
-          "dumbbell-rows",
-          "band-lat-pulldown",
-          "band-row",
-          "split-stance-row",
-          "prone-swimmer",
-          "back-widow",
-          "reverse-snow-angel",
-          "face-pull",
-        ]
-      : [
-          "lat-pulldown",
-          "seated-cable-row",
-          "band-lat-pulldown",
-          "band-row",
-          "split-stance-row",
-          "dumbbell-rows",
-          "back-widow",
-          "face-pull",
-          "reverse-snow-angel",
-        ],
+    getPullCompoundCandidateIds(phaseIndex, experience, context),
     available,
     context,
     "main",
@@ -7820,27 +8446,7 @@ const chooseSquatCompoundId = (
   auditMeta?: SelectionAuditMeta
 ) =>
   pickFirstEligibleId(
-    phaseIndex >= 2 && experience.allowAdvancedCompounds
-      ? [
-          "goblet-squat",
-          "db-split-squat",
-          "db-step-up",
-          "shrimp-squat",
-          "cossack-squat",
-          "split-squat",
-          "heels-elevated-squat",
-          "bodyweight-squat",
-        ]
-      : [
-          "goblet-squat",
-          "db-split-squat",
-          "db-step-up",
-          "band-front-squat",
-          "bodyweight-squat",
-          "split-squat",
-          "heels-elevated-squat",
-          "cossack-squat",
-        ],
+    getSquatCompoundCandidateIds(phaseIndex, experience, context),
     available,
     context,
     "main",
@@ -7855,27 +8461,7 @@ const chooseHingeCompoundId = (
   auditMeta?: SelectionAuditMeta
 ) =>
   pickFirstEligibleId(
-    phaseIndex >= 2 && experience.allowAdvancedCompounds
-      ? [
-          "db-rdl",
-          "hip-thrust",
-          "band-rdl",
-          "back-extension",
-          "single-leg-rdl",
-          "single-leg-hip-thrust",
-          "single-leg-glute-bridge-hold",
-          "bodyweight-good-morning",
-        ]
-      : [
-          "db-rdl",
-          "hip-thrust",
-          "band-rdl",
-          "back-extension",
-          "bodyweight-good-morning",
-          "single-leg-rdl",
-          "single-leg-hip-thrust",
-          "single-leg-glute-bridge-hold",
-        ],
+    getHingeCompoundCandidateIds(phaseIndex, experience, context),
     available,
     context,
     "main",
@@ -7890,9 +8476,20 @@ const chooseAccessoryId = (
 ) =>
   pickFirstEligibleId(
     lane === "push"
-      ? ["dumbbell-lateral-raise", "dumbbell-chest-fly", "band-pull-aparts", "scapular-pushups"]
+      ? [
+          "db-triceps-extension",
+          "bodyweight-triceps-extension",
+          "dumbbell-chest-fly",
+          "dumbbell-lateral-raise",
+        ]
       : lane === "pull"
-      ? ["face-pull", "prone-ytw", "band-lat-pulldown", "band-pull-aparts", "reverse-snow-angel"]
+      ? [
+          "face-pull",
+          "band-lat-pulldown",
+          "reverse-snow-angel",
+          "db-biceps-curl",
+          "band-biceps-curl",
+        ]
       : lane === "lower"
       ? [
           "suitcase-carry",
@@ -7907,19 +8504,23 @@ const chooseAccessoryId = (
           "cossack-squat",
         ]
       : [
-          "suitcase-carry",
-          "farmers-carry",
-          "band-suitcase-march",
-          "suitcase-hold-march",
-          "band-woodchop",
-          "side-plank",
-          "side-plank-star",
-          "hollow-body-hold",
-          "pallof-press",
-          "dead-bug",
-          "plank",
-          "bird-dog",
-        ],
+        "suitcase-carry",
+        "farmers-carry",
+        "band-suitcase-march",
+        "suitcase-hold-march",
+        "band-woodchop",
+        "pallof-press",
+        "dead-bug",
+        "bird-dog",
+        "standing-brace-march",
+        "marching-brace-hold",
+        "wall-braced-single-leg-march",
+        "contralateral-reach-march",
+        "hollow-body-hold",
+        "plank",
+        "side-plank",
+        "side-plank-star",
+      ],
     available,
     context,
     "accessory",
@@ -8226,6 +8827,7 @@ const resolveDayPatternBudget = (params: {
     return {
       mainMin: { verticalPush: 1, pull: 1 },
       mainMax: {
+        pull: 1,
         squat: 0,
         hinge: postureActivationBeginner ? 1 : 0,
       },
@@ -8638,7 +9240,13 @@ const buildStructuredDay = (params: {
         (slot) => slot.lane === "squat" || slot.lane === "hinge"
       );
       if (targetIndex >= 0) {
-        attemptSlotSwap(targetIndex, (candidate) => candidate.loadType === "weighted");
+        const targetLane = plannedMainSlots[targetIndex]?.lane;
+        const preferMachineSquat = targetLane === "squat" && available.has("machines");
+        attemptSlotSwap(targetIndex, (candidate) => {
+          if (candidate.loadType !== "weighted") return false;
+          if (!preferMachineSquat) return true;
+          return candidate.equipment.includes("machines");
+        });
       }
     }
 
@@ -8726,61 +9334,52 @@ const buildStructuredDay = (params: {
       };
       const slotFallbackCandidates =
         slot.lane === "push"
-          ? [
-              choosePushCompoundId(
-                phaseIndex,
-                available,
-                experienceProfile,
-                selectionContext
-              ),
-              chooseVerticalPushId(
-                phaseIndex,
-                available,
-                experienceProfile,
-                selectionContext
-              ),
-            ]
+          ? Array.from(
+              new Set([
+                ...getPushCompoundCandidateIds(
+                  phaseIndex,
+                  experienceProfile,
+                  selectionContext
+                ),
+                ...getVerticalPushCandidateIds(
+                  phaseIndex,
+                  experienceProfile,
+                  selectionContext
+                ),
+              ])
+            )
           : slot.lane === "verticalPush"
-          ? [
-              chooseVerticalPushId(
-                phaseIndex,
-                available,
-                experienceProfile,
-                selectionContext
-              ),
-              choosePushCompoundId(
-                phaseIndex,
-                available,
-                experienceProfile,
-                selectionContext
-              ),
-            ]
+          ? Array.from(
+              new Set([
+                ...getVerticalPushCandidateIds(
+                  phaseIndex,
+                  experienceProfile,
+                  selectionContext
+                ),
+                ...getPushCompoundCandidateIds(
+                  phaseIndex,
+                  experienceProfile,
+                  selectionContext
+                ),
+              ])
+            )
           : slot.lane === "pull"
-          ? [
-              choosePullCompoundId(
-                phaseIndex,
-                available,
-                experienceProfile,
-                selectionContext
-              ),
-            ]
+          ? getPullCompoundCandidateIds(
+              phaseIndex,
+              experienceProfile,
+              selectionContext
+            )
           : slot.lane === "squat"
-          ? [
-              chooseSquatCompoundId(
-                phaseIndex,
-                available,
-                experienceProfile,
-                selectionContext
-              ),
-            ]
-          : [
-              chooseHingeCompoundId(
-                phaseIndex,
-                available,
-                experienceProfile,
-                selectionContext
-              ),
-            ];
+          ? getSquatCompoundCandidateIds(
+              phaseIndex,
+              experienceProfile,
+              selectionContext
+            )
+          : getHingeCompoundCandidateIds(
+              phaseIndex,
+              experienceProfile,
+              selectionContext
+            );
       const uniqueId = pickUnique(
         id,
         slotFallbackCandidates,
@@ -8790,7 +9389,7 @@ const buildStructuredDay = (params: {
         uniqueId,
         experienceProfile.mainSets,
         experienceProfile.mainRepRange,
-        90,
+        undefined,
         experienceProfile.mainRestSec,
         "main"
       );
@@ -8808,7 +9407,7 @@ const buildStructuredDay = (params: {
       accessoryA,
       experienceProfile.accessorySets,
       experienceProfile.accessoryRepRange,
-      75,
+      undefined,
       experienceProfile.accessoryRestSec,
       "accessory"
     ),
@@ -8816,7 +9415,7 @@ const buildStructuredDay = (params: {
       accessoryB,
       experienceProfile.accessorySets,
       experienceProfile.accessoryRepRange,
-      75,
+      undefined,
       experienceProfile.accessoryRestSec,
       "accessory"
     ),
@@ -8826,7 +9425,7 @@ const buildStructuredDay = (params: {
             accessoryC,
             experienceProfile.accessorySets,
             experienceProfile.accessoryRepRange,
-            75,
+            undefined,
             experienceProfile.accessoryRestSec,
             "accessory"
           ),
@@ -9133,10 +9732,22 @@ const applyAdaptiveWeakpointTemplateOverlay = (params: {
 
   const targetTitlePriority =
     daysPerWeek === 3
-      ? ["Shoulders + Arms"]
-      : daysPerWeek === 5
-      ? ["Arms + Posture + Conditioning"]
-      : ["Upper Push + Scapular Control"];
+      ? adaptivePlan.domain === "lowerStability"
+        ? ["Legs + Abs", "Shoulders + Arms"]
+        : adaptivePlan.domain === "upperPosture"
+        ? ["Back + Chest", "Shoulders + Arms"]
+        : ["Legs + Abs", "Shoulders + Arms"]
+      : daysPerWeek === 4
+      ? adaptivePlan.domain === "lowerStability"
+        ? ["Lower (Squat Emphasis) + Core", "Lower (Hinge Emphasis) + Carry/Anti-rotation"]
+        : adaptivePlan.domain === "upperPosture"
+        ? ["Upper Pull + Thoracic Posture", "Upper Push + Scapular Control"]
+        : ["Lower (Hinge Emphasis) + Carry/Anti-rotation", "Lower (Squat Emphasis) + Core"]
+      : adaptivePlan.domain === "lowerStability"
+      ? ["Lower Hinge + Posterior Chain", "Lower Squat"]
+      : adaptivePlan.domain === "upperPosture"
+      ? ["Arms + Posture + Conditioning", "Upper Pull"]
+      : ["Arms + Posture + Conditioning", "Lower Hinge + Posterior Chain"];
 
   const targetIndex = targetTitlePriority
     .map((title) => templates.findIndex((template) => template.title === title))
@@ -9228,6 +9839,7 @@ const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] => {
             { pattern: "pull", min: 1 },
           ],
           requiredMainRules: [bicepsIsolationRule, tricepsIsolationRule],
+          forbiddenMainTags: ["chest"],
           optionalRules: [scapPostureRule],
         },
       },
@@ -9491,6 +10103,38 @@ const applyHighPainSummaryClause = (
   };
 };
 
+const attachStructuredPrepBlocksToWeek = (params: {
+  week: ProgramDay[];
+  available: Set<Equipment>;
+  capabilityMode: EquipmentCapabilityMode;
+  painAreas: string[];
+  painSeverity: PainSeverity;
+  goal: string;
+  experienceLevel: SelectionContext["experienceLevel"];
+  poseFocusTags: Set<string>;
+}) =>
+  params.week.map((day) => {
+    const dayIntent = deriveDayIntentFromProgramDay(day);
+    const { warmupBlock, activationBlock, cooldownBlock } = buildWarmupForDay(
+      dayIntent,
+      params.available,
+      params.capabilityMode,
+      params.painAreas,
+      {
+        goal: params.goal,
+        experienceLevel: params.experienceLevel,
+        poseFocusTags: params.poseFocusTags,
+        painSeverity: params.painSeverity,
+      }
+    );
+    return {
+      ...day,
+      warmup: warmupBlock,
+      activation: activationBlock,
+      cooldown: cooldownBlock,
+    };
+  });
+
 export const generateWeeklyProgram = (
   data: QuestionnaireData,
   programId: string,
@@ -9522,7 +10166,8 @@ export const generateWeeklyProgram = (
   const phaseIndex = options?.phaseIndex ?? 1;
   const experienceProfile = getExperienceProfile(
     data.experience,
-    data.goals ?? "Improve posture"
+    data.goals ?? "Improve posture",
+    phaseIndex
   );
   const selectionContext = buildSelectionContext(
     data,
@@ -9642,8 +10287,18 @@ export const generateWeeklyProgram = (
       ensureEligibleItem(item, equipmentContext.available, selectionContext)
     ),
   }));
-  emitFinalSelectionTraceForWeek({
+  const structuredPrepWeek = attachStructuredPrepBlocksToWeek({
     week: feedbackSafetyWeek,
+    available: equipmentContext.available,
+    capabilityMode,
+    painAreas: selectionContext.painAreas,
+    painSeverity: selectionContext.painSeverity,
+    goal: selectionContext.goal,
+    experienceLevel: selectionContext.experienceLevel,
+    poseFocusTags: selectionContext.poseFocusTags,
+  });
+  emitFinalSelectionTraceForWeek({
+    week: structuredPrepWeek,
     selectionContext,
     available: equipmentContext.available,
     capabilityMode,
@@ -9663,7 +10318,7 @@ export const generateWeeklyProgram = (
     phaseIndex,
     cycleIndex,
     weekIndex,
-    week: feedbackSafetyWeek,
+    week: structuredPrepWeek,
     consistencyRate: 0,
     trainingState,
   });
@@ -9685,7 +10340,7 @@ export const generateWeeklyProgram = (
     phase,
     nextWeekPlan,
     ...intelligence,
-    week: feedbackSafetyWeek,
+    week: structuredPrepWeek,
     source: "local",
     deletedAt: null,
   };
@@ -9893,6 +10548,16 @@ export const generateNextPhaseProgram = (params: {
     capabilityMode: phaseCapabilityMode,
     phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
   });
+  const structuredPhaseWeek = attachStructuredPrepBlocksToWeek({
+    week: progressedChestPushWeek,
+    available: equipmentContext.available,
+    capabilityMode: phaseCapabilityMode,
+    painAreas: phaseSelectionContext.painAreas,
+    painSeverity: phaseSelectionContext.painSeverity,
+    goal: phaseSelectionContext.goal,
+    experienceLevel: phaseSelectionContext.experienceLevel,
+    poseFocusTags: phaseSelectionContext.poseFocusTags,
+  });
   pushProgramConstraintWarnings(
     constrainedPhaseWeekResult.warnings.map((warning) => ({
       programId: phaseProgram.id,
@@ -9924,7 +10589,7 @@ export const generateNextPhaseProgram = (params: {
     phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
     cycleIndex: phaseProgram.cycleIndex ?? nextCycleIndex,
     weekIndex: phaseProgram.weekIndex ?? nextWeekIndex,
-    week: progressedChestPushWeek,
+    week: structuredPhaseWeek,
     consistencyRate: complianceRate,
     recentLogs,
     trainingState,
@@ -9938,7 +10603,7 @@ export const generateNextPhaseProgram = (params: {
     status: "advanced" as const,
     program: {
       ...phaseProgram,
-      week: progressedChestPushWeek,
+      week: structuredPhaseWeek,
       nextWeekPlan: enhancedNextWeekPlan,
       ...intelligence,
       phaseOptimizerReport: {
@@ -10133,6 +10798,16 @@ export const generateNextCycleProgram = (params: {
     .map((day) =>
       ensureDistinctRoutine(day, equipmentContext.available, cycleSelectionContext)
     );
+  const structuredCycleWeek = attachStructuredPrepBlocksToWeek({
+    week: constrainedCycleWeek,
+    available: equipmentContext.available,
+    capabilityMode: cycleCapabilityMode,
+    painAreas: cycleSelectionContext.painAreas,
+    painSeverity: cycleSelectionContext.painSeverity,
+    goal: cycleSelectionContext.goal,
+    experienceLevel: cycleSelectionContext.experienceLevel,
+    poseFocusTags: cycleSelectionContext.poseFocusTags,
+  });
   pushProgramConstraintWarnings(
     constrainedCycleWeekResult.warnings.map((warning) => ({
       programId: program.id,
@@ -10164,7 +10839,7 @@ export const generateNextCycleProgram = (params: {
     phaseIndex: program.phaseIndex ?? transition.next.phaseIndex,
     cycleIndex: program.cycleIndex ?? transition.next.cycleIndex,
     weekIndex: program.weekIndex ?? transition.next.weekIndex,
-    week: constrainedCycleWeek,
+    week: structuredCycleWeek,
     consistencyRate: complianceRate,
     recentLogs,
     trainingState,
@@ -10178,7 +10853,7 @@ export const generateNextCycleProgram = (params: {
     status: "advanced" as const,
     program: {
       ...program,
-      week: constrainedCycleWeek,
+      week: structuredCycleWeek,
       nextWeekPlan: enhancedNextWeekPlan,
       ...intelligence,
       phaseOptimizerReport: {

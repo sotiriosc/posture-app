@@ -124,6 +124,7 @@ export default function DashboardHero({
           </div>
           <Link
             href={ctaHref}
+            scroll
             className={`mt-1 flex h-[52px] w-full items-center justify-between gap-3 rounded-[12px] bg-[linear-gradient(135deg,#3B82F6_0%,#2563EB_100%)] px-5 text-base font-semibold text-white shadow-[0_4px_12px_rgba(37,99,235,0.25)] transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_10px_24px_rgba(37,99,235,0.35)] active:translate-y-0 active:shadow-[0_4px_12px_rgba(37,99,235,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
               ctaPulse ? "hero-cta-pulse" : ""
             }`}

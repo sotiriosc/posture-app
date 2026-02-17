@@ -81,6 +81,7 @@ import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
+const SHOW_TEMP_PROGRAM_REFERENCE_CARD = true;
 
 const defaultRoutine: Routine = {
   summary:
@@ -88,6 +89,60 @@ const defaultRoutine: Routine = {
   priorities: [],
   observed: [],
   sections: [],
+};
+
+type ProgramWeekDay = Program["week"][number];
+
+const formatReferencePrepItems = (
+  items?: Array<{ name: string; reps?: string; durationSec?: number }>
+) => {
+  if (!items?.length) return "none";
+  return items
+    .map((item) => {
+      const prescription = item.reps ?? (item.durationSec ? `${item.durationSec}s` : null);
+      return prescription ? `${item.name} (${prescription})` : item.name;
+    })
+    .join(", ");
+};
+
+const formatReferenceRoutineItems = (items: ProgramRoutineItem[]) => {
+  if (!items.length) return "none";
+  return items
+    .map((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      const name = exercise?.name ?? item.exerciseId;
+      const prescription = item.reps
+        ? `${item.sets ?? 1}x${item.reps}`
+        : item.durationSec
+        ? `${item.sets ? `${item.sets}x` : ""}${item.durationSec}s`
+        : item.sets
+        ? `${item.sets} sets`
+        : null;
+      return prescription ? `${name} [${prescription}]` : name;
+    })
+    .join(", ");
+};
+
+const buildReferenceLineForDay = (day: ProgramWeekDay) => {
+  const warmupText =
+    day.warmup?.items?.length
+      ? formatReferencePrepItems(day.warmup.items)
+      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "warmup"));
+  const activationText =
+    day.activation?.items?.length
+      ? formatReferencePrepItems(day.activation.items)
+      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "activation"));
+  const cooldownText =
+    day.cooldown?.items?.length
+      ? formatReferencePrepItems(day.cooldown.items)
+      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "cooldown"));
+  const mainText = formatReferenceRoutineItems(
+    day.routine.filter((item) => item.section === "main")
+  );
+  const accessoryText = formatReferenceRoutineItems(
+    day.routine.filter((item) => item.section === "accessory")
+  );
+  return `D${day.dayIndex + 1} ${day.title} | W: ${warmupText} | A: ${activationText} | M: ${mainText} | X: ${accessoryText} | C: ${cooldownText}`;
 };
 
 const loadImageFromFile = (file: File) =>
@@ -1262,6 +1317,60 @@ export default function ResultsRoutine() {
     return program.week.map((day) => `Day ${day.dayIndex + 1}: ${day.title}`).join(" • ");
   }, [program]);
 
+  const temporaryProgramReferenceText = useMemo(() => {
+    if (!data || !program) return "";
+
+    const referenceQuestionnaire: QuestionnaireData = {
+      ...data,
+      daysPerWeek: normalizeDaysPerWeek(data.daysPerWeek),
+    };
+    const referenceSeedBase = questionnaireSignature ?? program.id ?? "program-reference";
+    const lines: string[] = [];
+
+    lines.push("ACTIVE WEEK (CURRENT PROGRAM)");
+    lines.push(
+      `${program.phaseName ?? `Phase ${program.phaseIndex ?? 1}`} | Cycle ${program.cycleIndex ?? 1} | Week ${program.weekIndex ?? 1}`
+    );
+    program.week.forEach((day) => {
+      lines.push(buildReferenceLineForDay(day));
+    });
+
+    lines.push("");
+    lines.push("PHASE MATRIX PREVIEW (CYCLE 1 / WEEK 1)");
+    for (let phaseIndex = 1; phaseIndex <= MAX_PHASE_INDEX; phaseIndex += 1) {
+      const phaseMeta = getPhaseMetaByIndex(phaseIndex);
+      const profile = getPhaseProfile(phaseIndex);
+      lines.push(
+        `${phaseMeta.phaseName} | ${profile.description}`
+      );
+      try {
+        const phaseProgram = generateWeeklyProgram(
+          referenceQuestionnaire,
+          `${program.id}-reference-phase-${phaseIndex}`,
+          {
+            phaseIndex,
+            cycleIndex: 1,
+            weekIndex: 1,
+            totalWeekIndex: 1,
+            seed: `${referenceSeedBase}-reference-phase-${phaseIndex}`,
+          }
+        );
+        phaseProgram.week.forEach((day) => {
+          lines.push(buildReferenceLineForDay(day));
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Unable to generate phase preview.";
+        lines.push(`(preview unavailable) ${message}`);
+      }
+      if (phaseIndex < MAX_PHASE_INDEX) {
+        lines.push("");
+      }
+    }
+
+    return lines.join("\n");
+  }, [data, program, questionnaireSignature]);
+
   const adherencePercent = useMemo(() => {
     if (!activeDaysPerWeek) return 0;
     return Math.round((completedCount / activeDaysPerWeek) * 100);
@@ -1906,6 +2015,94 @@ export default function ResultsRoutine() {
     weekViewSelectedDay < program.week.length
       ? weekViewSelectedDay
       : todayPlanDayIndex;
+  const weekViewDay = program.week[weekViewStartDay];
+  const weekViewMainAccessoryRoutine = weekViewDay.routine.filter(
+    (item) => item.section === "main" || item.section === "accessory"
+  );
+  const weekViewStructuredPrepEntries = [
+    ...(weekViewDay.warmup?.items.map((item, index) => ({
+      key: `structured-warmup-${item.id}-${index}`,
+      name: item.name,
+      sectionLabel: "warmup",
+      prescription: item.reps ?? (item.durationSec ? `${item.durationSec}s` : null),
+      rationale: item.cue ?? "Prepare range and control before loaded work.",
+    })) ?? []),
+    ...(weekViewDay.activation?.items.map((item, index) => ({
+      key: `structured-activation-${item.id}-${index}`,
+      name: item.name,
+      sectionLabel: "activation",
+      prescription: item.reps ?? (item.durationSec ? `${item.durationSec}s` : null),
+      rationale: item.cue ?? "Prime movement quality before main sets.",
+    })) ?? []),
+  ];
+  const weekViewStructuredCooldownEntries =
+    weekViewDay.cooldown?.items.map((item, index) => ({
+      key: `structured-cooldown-${item.id}-${index}`,
+      name: item.name,
+      sectionLabel: "cooldown",
+      prescription: item.reps ?? (item.durationSec ? `${item.durationSec}s` : null),
+      rationale: item.cue ?? "Downshift and recover after the session.",
+    })) ?? [];
+  const weekViewMainAccessoryEntries = weekViewMainAccessoryRoutine.flatMap((item, index) => {
+    const exercise = exerciseById(item.exerciseId);
+    if (!exercise) return [];
+    const rationale =
+      optimizerReasonsByExercise[item.exerciseId]?.[0] ??
+      exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
+      exerciseRationaleById.get(item.exerciseId)?.contextReason ??
+      buildWhyPicked(exercise).purpose ??
+      "Rationale isn’t available for this exercise yet.";
+    const prescription = item.reps
+      ? `${item.sets ?? 1} x ${item.reps}`
+      : item.durationSec
+      ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
+      : item.sets
+      ? `${item.sets} sets`
+      : null;
+    return [
+      {
+        key: `routine-main-${item.exerciseId}-${index}`,
+        name: exercise.name,
+        sectionLabel: item.section ?? "support",
+        prescription,
+        rationale,
+      },
+    ];
+  });
+  const weekViewFallbackRoutineEntries = weekViewDay.routine.flatMap((item, index) => {
+    const exercise = exerciseById(item.exerciseId);
+    if (!exercise) return [];
+    const rationale =
+      optimizerReasonsByExercise[item.exerciseId]?.[0] ??
+      exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
+      exerciseRationaleById.get(item.exerciseId)?.contextReason ??
+      buildWhyPicked(exercise).purpose ??
+      "Rationale isn’t available for this exercise yet.";
+    const prescription = item.reps
+      ? `${item.sets ?? 1} x ${item.reps}`
+      : item.durationSec
+      ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
+      : item.sets
+      ? `${item.sets} sets`
+      : null;
+    return [
+      {
+        key: `routine-fallback-${item.exerciseId}-${index}`,
+        name: exercise.name,
+        sectionLabel: item.section ?? "support",
+        prescription,
+        rationale,
+      },
+    ];
+  });
+  const weekViewDetailEntries =
+    weekViewStructuredPrepEntries.length > 0 || weekViewStructuredCooldownEntries.length > 0
+      ? [
+          ...weekViewStructuredPrepEntries,
+          ...weekViewMainAccessoryEntries,
+          ...weekViewStructuredCooldownEntries,
+        ]
+      : weekViewFallbackRoutineEntries;
   const weekViewBaselineDebugTitle =
     process.env.NODE_ENV === "development" && baselineForActiveProgram
       ? `Baseline: ${new Date(baselineForActiveProgram).toISOString()}`
@@ -1938,20 +2135,46 @@ export default function ResultsRoutine() {
     });
   };
 
-  const focusTodayPlanInWeekView = () => {
-    setSelectedDay(todayPlanDayIndex);
-    setWeekViewSelectedDay(todayPlanDayIndex);
+  const scrollWeekViewDetailsIntoView = (
+    behavior: ScrollBehavior = "smooth",
+    block: ScrollLogicalPosition = "nearest"
+  ) => {
+    if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
+      return;
+    }
+    if (!weekViewDetailsRef.current) return;
+    try {
+      weekViewDetailsRef.current.scrollIntoView({
+        behavior,
+        block,
+      });
+    } catch {
+      weekViewDetailsRef.current.scrollIntoView();
+    }
+  };
+
+  const openWeekViewDayDetails = (
+    dayIndex: number,
+    options?: { scrollToDetails?: boolean }
+  ) => {
+    setSelectedDay(dayIndex);
+    setWeekViewSelectedDay(dayIndex);
     setWeekViewDetailsOpen(true);
+    if (!options?.scrollToDetails) return;
+    window.requestAnimationFrame(() => {
+      scrollWeekViewDetailsIntoView("smooth", "start");
+    });
+  };
+
+  const focusTodayPlanInWeekView = () => {
+    openWeekViewDayDetails(todayPlanDayIndex);
     window.requestAnimationFrame(() => {
       weekViewSectionRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
       window.requestAnimationFrame(() => {
-        weekViewDetailsRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-        });
+        scrollWeekViewDetailsIntoView("smooth", "nearest");
       });
     });
   };
@@ -2000,6 +2223,30 @@ export default function ResultsRoutine() {
         </section>
       ) : null}
 
+      {SHOW_TEMP_PROGRAM_REFERENCE_CARD && temporaryProgramReferenceText ? (
+        <section
+          className="ui-card order-2 p-5"
+          data-testid="temporary-program-reference-card"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-base font-semibold text-slate-900">
+              Temporary Program Reference
+            </h3>
+            <span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
+              TEMP
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-slate-600">
+            Plain reference output for screenshot review across all phases and days.
+          </p>
+          <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <pre className="whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
+              {temporaryProgramReferenceText}
+            </pre>
+          </div>
+        </section>
+      ) : null}
+
       <section id="week-view" ref={weekViewSectionRef} className="ui-card order-2 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-base font-semibold text-slate-900">Week View</h3>
@@ -2009,6 +2256,7 @@ export default function ResultsRoutine() {
             </Button>
             <Link
               href={`/session?programId=${resolvedSessionProgramId ?? program.id}&dayIndex=${weekViewStartDay}`}
+              scroll
             >
               <Button variant="secondary" data-testid="start-selected-day">
                 Start Selected Day
@@ -2039,12 +2287,28 @@ export default function ResultsRoutine() {
             const isSelected = day.dayIndex === weekViewStartDay;
             const isLocked = isDayLocked(day.dayIndex);
             const isToday = day.dayIndex === sessionLaunchDayIndex;
+            const shouldDimLockedCard = isLocked && !isCompleted;
             const stateLabel = isCompleted
               ? "Completed"
               : isInProgress
               ? "In progress"
               : "Not started";
             const statePercent = isCompleted ? 100 : isInProgress ? 50 : 0;
+            const dayIndexTextClass = isCompleted
+              ? "text-emerald-900"
+              : isInProgress
+              ? "text-blue-900"
+              : "text-slate-600";
+            const dayTitleTextClass = isCompleted
+              ? "text-emerald-950"
+              : isInProgress
+              ? "text-blue-950"
+              : "text-slate-900";
+            const stateLabelClass = isCompleted
+              ? "text-emerald-800"
+              : isInProgress
+              ? "text-blue-700"
+              : "text-slate-500";
             return (
               <button
                 key={day.dayIndex}
@@ -2055,9 +2319,7 @@ export default function ResultsRoutine() {
                     setWeekViewDetailsOpen(false);
                     return;
                   }
-                  setSelectedDay(day.dayIndex);
-                  setWeekViewSelectedDay(day.dayIndex);
-                  setWeekViewDetailsOpen(true);
+                  openWeekViewDayDetails(day.dayIndex, { scrollToDetails: true });
                 }}
                 disabled={isLocked}
                 className={`min-h-[88px] rounded-2xl border px-3 py-2.5 text-left transition ${
@@ -2067,11 +2329,15 @@ export default function ResultsRoutine() {
                     ? "border-blue-300 bg-blue-50"
                     : "border-slate-200 bg-white"
                 } ${isSelected ? "ring-1 ring-slate-300" : ""} ${
-                  isLocked ? "opacity-60" : "hover:-translate-y-px hover:shadow-sm"
+                  shouldDimLockedCard
+                    ? "opacity-60"
+                    : "hover:-translate-y-px hover:shadow-sm"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-semibold text-slate-600">Day {day.dayIndex + 1}</p>
+                  <p className={`text-xs font-semibold ${dayIndexTextClass}`}>
+                    Day {day.dayIndex + 1}
+                  </p>
                   <div className="flex items-center gap-1">
                     {isCompleted ? (
                       <span className="rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
@@ -2090,23 +2356,27 @@ export default function ResultsRoutine() {
                     ) : null}
                   </div>
                 </div>
-                <p className="mt-1 text-sm font-semibold text-slate-900">{day.title}</p>
-                <p className="mt-1 text-xs text-slate-500">{stateLabel}</p>
+                <p className={`mt-1 text-sm font-semibold ${dayTitleTextClass}`}>{day.title}</p>
+                <p className={`mt-1 text-xs ${stateLabelClass}`}>{stateLabel}</p>
                 <div className="mt-2">
-                  <ProgressBar
-                    label={stateLabel}
-                    value={statePercent}
-                    max={100}
-                    compact
-                    variant="mini"
-                    showPercent={false}
-                  />
+                  <div className="h-2 w-full overflow-hidden rounded-full border border-slate-300/70 bg-slate-200/80">
+                    <div
+                      className={`h-full rounded-full transition-[width] duration-[700ms] ease-[cubic-bezier(.22,1,.36,1)] ${
+                        isCompleted
+                          ? "bg-emerald-500"
+                          : isInProgress
+                          ? "bg-blue-500"
+                          : "bg-slate-400"
+                      }`}
+                      style={{ width: `${statePercent}%` }}
+                    />
+                  </div>
                 </div>
               </button>
             );
           })}
         </div>
-        {weekViewDetailsOpen && program.week[weekViewStartDay] ? (
+        {weekViewDetailsOpen && weekViewDay ? (
           <div
             ref={weekViewDetailsRef}
             className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3"
@@ -2124,45 +2394,27 @@ export default function ResultsRoutine() {
               </button>
             </div>
             <p className="mt-1 text-sm font-semibold text-slate-900">
-              Day {weekViewStartDay + 1} • {program.week[weekViewStartDay].title}
+              Day {weekViewStartDay + 1} • {weekViewDay.title}
             </p>
             <div className="mt-3 space-y-2">
-              {program.week[weekViewStartDay].routine.map((item, index) => {
-                const exercise = exerciseById(item.exerciseId);
-                if (!exercise) return null;
-                const rationale =
-                  optimizerReasonsByExercise[item.exerciseId]?.[0] ??
-                  exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
-                  "Rationale isn’t available for this exercise yet.";
-                const prescription = item.durationSec
-                  ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
-                  : item.reps
-                  ? `${item.sets ?? 1} x ${item.reps}`
-                  : item.sets
-                  ? `${item.sets} sets`
-                  : null;
+              {weekViewDetailEntries.map((item) => {
                 return (
                   <div
-                    key={`${item.exerciseId}-${index}`}
+                    key={item.key}
                     className="rounded-lg border border-slate-200 bg-white px-3 py-2"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-semibold text-slate-900">{exercise.name}</p>
+                      <p className="text-sm font-semibold text-slate-900">{item.name}</p>
                       <div className="flex flex-wrap items-center gap-1">
                         <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] uppercase text-slate-600">
-                          {item.section}
+                          {item.sectionLabel}
                         </span>
-                        {exercise.category ? (
-                          <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-600">
-                            {exercise.category}
-                          </span>
-                        ) : null}
                       </div>
                     </div>
-                    {prescription ? (
-                      <p className="mt-1 text-xs text-slate-600">{prescription}</p>
+                    {item.prescription ? (
+                      <p className="mt-1 text-xs text-slate-600">{item.prescription}</p>
                     ) : null}
-                    <p className="mt-1 text-xs text-slate-600">{rationale}</p>
+                    <p className="mt-1 text-xs text-slate-600">{item.rationale}</p>
                   </div>
                 );
               })}
@@ -2456,6 +2708,7 @@ export default function ResultsRoutine() {
                             <p className="text-[11px] text-slate-500">
                               Why:{" "}
                               {richRationale?.primaryReason ??
+                                richRationale?.contextReason ??
                                 "Rationale isn\u2019t available for this exercise yet."}
                             </p>
                             <p className="text-[11px] text-slate-500">

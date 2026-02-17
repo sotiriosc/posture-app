@@ -46,6 +46,19 @@ export type NextTimeGuidanceInput = {
 export const generateNextTimeGuidance = (
   input: NextTimeGuidanceInput
 ): string => {
+  const getDynamicLoadIncreasePercent = (params: {
+    prescribedRepsPerSet: number;
+    actualRepsPerSet: number;
+  }) => {
+    const { prescribedRepsPerSet, actualRepsPerSet } = params;
+    if (!Number.isFinite(prescribedRepsPerSet) || prescribedRepsPerSet <= 0) return 5;
+    if (!Number.isFinite(actualRepsPerSet)) return 5;
+    const overshootPercent =
+      ((actualRepsPerSet - prescribedRepsPerSet) / prescribedRepsPerSet) * 100;
+    const scaled = Math.round(overshootPercent / 25) * 5;
+    return Math.max(5, Math.min(20, scaled));
+  };
+
   const painLevel = input.painLevel ?? "none";
   if (painLevel === "moderate" || painLevel === "severe") {
     return "Next time: reduce range + use lighter load.";
@@ -80,6 +93,24 @@ export const generateNextTimeGuidance = (
 
   if (input.difficulty === "failed" || input.difficulty === "hard") {
     return "Next time: reduce load 5-10% or drop 1 set.";
+  }
+
+  const repOvershotPerSet =
+    input.loadType !== "timed" &&
+    setsMet &&
+    prescribedRepsPerSet !== null &&
+    actualRepsPerSet !== null &&
+    actualRepsPerSet > prescribedRepsPerSet;
+
+  if (repOvershotPerSet && prescribedRepsPerSet !== null && actualRepsPerSet !== null) {
+    const loadIncreasePercent = getDynamicLoadIncreasePercent({
+      prescribedRepsPerSet,
+      actualRepsPerSet,
+    });
+    const loadWord = input.loadType === "weighted" ? "weight" : "load";
+    const repFloor = Math.max(1, prescribedRepsPerSet);
+    const repCeiling = Math.max(repFloor + 2, Math.round(repFloor * 1.25));
+    return `Next time: add ${loadIncreasePercent}% ${loadWord} and work in the ${repFloor}-${repCeiling} rep range.`;
   }
 
   if (input.difficulty === "easy" && !underTarget) {

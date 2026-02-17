@@ -69,6 +69,7 @@ import { markSessionComplete } from "@/lib/sessionStore";
 const STORAGE_KEY = "posture_questionnaire";
 
 type FeedbackEntry = "easy" | "moderate" | "hard" | "pain";
+type TrackingField = "weight" | "reps" | "rpe";
 
 const parseSetsRange = (sets?: string | number) => {
   if (typeof sets === "number") {
@@ -367,6 +368,8 @@ export default function SessionClient() {
     Record<string, PainLevel>
   >({});
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const [activeTrackingField, setActiveTrackingField] =
+    useState<TrackingField | null>(null);
   const [exerciseCompleteFlashVisible, setExerciseCompleteFlashVisible] =
     useState(false);
   const saveStateTimerRef = useRef<number | null>(null);
@@ -384,6 +387,7 @@ export default function SessionClient() {
   });
   const previousActiveIndexRef = useRef(0);
   const exerciseCardRef = useRef<HTMLDivElement | null>(null);
+  const trackingPanelRef = useRef<HTMLDivElement | null>(null);
   const weightInputRef = useRef<HTMLInputElement | null>(null);
   const repsInputRef = useRef<HTMLInputElement | null>(null);
   const rpeInputRef = useRef<HTMLInputElement | null>(null);
@@ -778,7 +782,11 @@ export default function SessionClient() {
           element.type
         );
       const focusAction = () => {
-        element.focus();
+        try {
+          element.focus({ preventScroll: true });
+        } catch {
+          element.focus();
+        }
         if (!shouldSelectInput) return;
         try {
           (element as HTMLInputElement).select();
@@ -797,6 +805,22 @@ export default function SessionClient() {
     []
   );
 
+  const scrollTrackingPanelIntoView = useCallback(
+    (behavior: ScrollBehavior = "smooth") => {
+      if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
+        return;
+      }
+      const panel = trackingPanelRef.current;
+      if (!panel || typeof panel.scrollIntoView !== "function") return;
+      try {
+        panel.scrollIntoView({ behavior, block: "center" });
+      } catch {
+        panel.scrollIntoView();
+      }
+    },
+    []
+  );
+
   const focusNextStepAfterSet = useCallback(
     (toggledIndex: number, setStates: boolean[]) => {
       const nextIncomplete = setStates.findIndex(
@@ -811,18 +835,15 @@ export default function SessionClient() {
         queueFocus(setCheckboxRefs.current[firstIncomplete]);
         return;
       }
-      const weightFieldValue = weightInputRef.current?.value.trim() ?? "";
-      const repsFieldValue = repsInputRef.current?.value.trim() ?? "";
-      const rpeFieldValue = rpeInputRef.current?.value.trim() ?? "";
-      if (currentItem?.loadType === "weighted" && !weightFieldValue) {
+      if (currentItem?.loadType === "weighted" && weightInputRef.current) {
         queueFocus(weightInputRef.current);
         return;
       }
-      if (currentItem?.loadType !== "timed" && !repsFieldValue) {
+      if (currentItem?.loadType !== "timed" && repsInputRef.current) {
         queueFocus(repsInputRef.current);
         return;
       }
-      if (!rpeFieldValue) {
+      if (rpeInputRef.current) {
         queueFocus(rpeInputRef.current);
         return;
       }
@@ -1228,6 +1249,7 @@ export default function SessionClient() {
   const handleNext = async () => {
     if (!currentItem) return;
     await persistSessionDraftNow();
+    setActiveTrackingField(null);
     setExerciseCompleteFlashVisible(false);
     if (activeIndex < totalItems - 1) {
       setActiveIndex((prev) => prev + 1);
@@ -1238,6 +1260,7 @@ export default function SessionClient() {
 
   const handleBack = async () => {
     await persistSessionDraftNow();
+    setActiveTrackingField(null);
     setExerciseCompleteFlashVisible(false);
     setActiveIndex((prev) => Math.max(prev - 1, 0));
   };
@@ -1250,6 +1273,7 @@ export default function SessionClient() {
     dropoffTrackedRef.current = false;
     setSummary(null);
     setSummaryStats(null);
+    setActiveTrackingField(null);
     setActiveIndex(0);
     setCompletedSets({});
     setSelectedSets({});
@@ -1553,6 +1577,46 @@ export default function SessionClient() {
       : runningTimerRuntime ?? currentItemRuntime;
   const hasWeightedInput = currentItem?.loadType === "weighted";
   const hasRepsInput = currentItem?.loadType !== "timed";
+  const trackingFieldOrder = useMemo<TrackingField[]>(() => {
+    const fields: TrackingField[] = [];
+    if (hasWeightedInput) fields.push("weight");
+    if (hasRepsInput) fields.push("reps");
+    fields.push("rpe");
+    return fields;
+  }, [hasRepsInput, hasWeightedInput]);
+
+  const getTrackingFieldElement = useCallback((field: TrackingField) => {
+    if (field === "weight") return weightInputRef.current;
+    if (field === "reps") return repsInputRef.current;
+    return rpeInputRef.current;
+  }, []);
+
+  const focusFirstTrackingField = useCallback(() => {
+    for (const field of trackingFieldOrder) {
+      const element = getTrackingFieldElement(field);
+      if (!element) continue;
+      scrollTrackingPanelIntoView();
+      queueFocus(element);
+      return true;
+    }
+    return false;
+  }, [getTrackingFieldElement, queueFocus, scrollTrackingPanelIntoView, trackingFieldOrder]);
+
+  const focusNextTrackingField = useCallback(
+    (field: TrackingField) => {
+      const currentIndex = trackingFieldOrder.indexOf(field);
+      if (currentIndex < 0) return false;
+      for (let index = currentIndex + 1; index < trackingFieldOrder.length; index += 1) {
+        const element = getTrackingFieldElement(trackingFieldOrder[index]);
+        if (!element) continue;
+        scrollTrackingPanelIntoView();
+        queueFocus(element);
+        return true;
+      }
+      return false;
+    },
+    [getTrackingFieldElement, queueFocus, scrollTrackingPanelIntoView, trackingFieldOrder]
+  );
 
   const focusFirstIncompleteSet = useCallback(() => {
     const nextSetIndex = checks.findIndex((isComplete) => !isComplete);
@@ -1562,50 +1626,28 @@ export default function SessionClient() {
   }, [checks, queueFocus]);
 
   const handleTrackingEnter = useCallback(
-    (field: "weight" | "reps" | "rpe") =>
+    (field: TrackingField) =>
       (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key !== "Enter") return;
         event.preventDefault();
-        if (field === "weight") {
-          if (hasRepsInput) {
-            queueFocus(repsInputRef.current);
-            return;
-          }
-          queueFocus(rpeInputRef.current);
-          return;
-        }
-        if (field === "reps") {
-          queueFocus(rpeInputRef.current);
-          return;
-        }
+        if (focusNextTrackingField(field)) return;
         if (focusFirstIncompleteSet()) return;
         queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
       },
-    [focusFirstIncompleteSet, hasRepsInput, queueFocus]
+    [focusFirstIncompleteSet, focusNextTrackingField, queueFocus]
   );
 
   const handleTrackingBlur = useCallback(
-    (field: "weight" | "reps" | "rpe") =>
+    (field: TrackingField) =>
       (event: FocusEvent<HTMLInputElement>) => {
         if (!allSetsCompleted) return;
         if (painModalOpen) return;
         if (!(event.currentTarget.value ?? "").trim()) return;
         if (event.relatedTarget instanceof HTMLElement) return;
-        if (field === "weight") {
-          if (hasRepsInput) {
-            queueFocus(repsInputRef.current);
-            return;
-          }
-          queueFocus(rpeInputRef.current);
-          return;
-        }
-        if (field === "reps") {
-          queueFocus(rpeInputRef.current);
-          return;
-        }
+        if (focusNextTrackingField(field)) return;
         queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
       },
-    [allSetsCompleted, hasRepsInput, painModalOpen, queueFocus]
+    [allSetsCompleted, focusNextTrackingField, painModalOpen, queueFocus]
   );
 
   const handleTimerRuntimeChange = useCallback(
@@ -1662,19 +1704,8 @@ export default function SessionClient() {
 
     if (focusFirstIncompleteSet()) return;
 
-    if (allSetsCompleted && hasWeightedInput && !currentWeightValue.trim()) {
-      queueFocus(weightInputRef.current);
-      return;
-    }
-    if (allSetsCompleted && hasRepsInput && !currentRepsValue.trim()) {
-      queueFocus(repsInputRef.current);
-      return;
-    }
-    if (allSetsCompleted && !currentRpeValue.trim()) {
-      queueFocus(rpeInputRef.current);
-      return;
-    }
     if (allSetsCompleted) {
+      if (focusFirstTrackingField()) return;
       queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
       return;
     }
@@ -1682,12 +1713,8 @@ export default function SessionClient() {
   }, [
     allSetsCompleted,
     currentItemId,
-    currentRepsValue,
-    currentRpeValue,
-    currentWeightValue,
     focusFirstIncompleteSet,
-    hasRepsInput,
-    hasWeightedInput,
+    focusFirstTrackingField,
     painModalOpen,
     queueFocus,
   ]);
@@ -1845,35 +1872,6 @@ export default function SessionClient() {
       allSetsCompleted,
     };
   }, [allSetsCompleted, currentItemId]);
-
-  useEffect(() => {
-    if (!allSetsCompleted) return;
-    if (painModalOpen) return;
-    if (!currentItemId) return;
-    if (hasWeightedInput && !currentWeightValue.trim()) {
-      queueFocus(weightInputRef.current);
-      return;
-    }
-    if (hasRepsInput && !currentRepsValue.trim()) {
-      queueFocus(repsInputRef.current);
-      return;
-    }
-    if (!currentRpeValue.trim()) {
-      queueFocus(rpeInputRef.current);
-      return;
-    }
-    queueFocus(feedbackButtonRefs.current[0] ?? nextButtonRef.current);
-  }, [
-    allSetsCompleted,
-    currentItemId,
-    currentRepsValue,
-    currentRpeValue,
-    currentWeightValue,
-    hasRepsInput,
-    hasWeightedInput,
-    painModalOpen,
-    queueFocus,
-  ]);
 
   useEffect(() => {
     return () => {
@@ -2098,7 +2096,10 @@ export default function SessionClient() {
           </div>
         </div>
 
-        <div className="ui-card border-sky-200/75 bg-[linear-gradient(135deg,rgba(240,249,255,0.95),rgba(255,255,255,0.98))] p-6">
+        <div
+          ref={trackingPanelRef}
+          className="ui-card border-sky-200/75 bg-[linear-gradient(135deg,rgba(240,249,255,0.95),rgba(255,255,255,0.98))] p-6"
+        >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <p className="ui-title">Log this movement pattern focus</p>
@@ -2242,9 +2243,23 @@ export default function SessionClient() {
                   onChange={(event) =>
                     applyWeight(currentItem.exerciseId, event.target.value)
                   }
+                  onFocus={() => {
+                    setActiveTrackingField("weight");
+                    scrollTrackingPanelIntoView();
+                  }}
                   onKeyDown={handleTrackingEnter("weight")}
-                  onBlur={handleTrackingBlur("weight")}
-                  className="ui-input w-28"
+                  onBlur={(event) => {
+                    setActiveTrackingField((current) =>
+                      current === "weight" ? null : current
+                    );
+                    handleTrackingBlur("weight")(event);
+                  }}
+                  enterKeyHint={hasRepsInput ? "next" : "done"}
+                  className={`ui-input w-28 ${
+                    activeTrackingField === "weight"
+                      ? "border-sky-400 ring-2 ring-sky-400/60"
+                      : ""
+                  }`}
                 />
                 <div className="flex rounded-full border border-indigo-200 bg-white/80 p-1 text-xs">
                   {(["lb", "kg"] as const).map((unit) => (
@@ -2288,9 +2303,23 @@ export default function SessionClient() {
                   onChange={(event) =>
                     applySingleReps(currentItem.exerciseId, event.target.value)
                   }
+                  onFocus={() => {
+                    setActiveTrackingField("reps");
+                    scrollTrackingPanelIntoView();
+                  }}
                   onKeyDown={handleTrackingEnter("reps")}
-                  onBlur={handleTrackingBlur("reps")}
-                  className="ui-input w-32 text-xs"
+                  onBlur={(event) => {
+                    setActiveTrackingField((current) =>
+                      current === "reps" ? null : current
+                    );
+                    handleTrackingBlur("reps")(event);
+                  }}
+                  enterKeyHint="next"
+                  className={`ui-input w-32 text-xs ${
+                    activeTrackingField === "reps"
+                      ? "border-sky-400 ring-2 ring-sky-400/60"
+                      : ""
+                  }`}
                   placeholder="Reps per set"
                 />
               </div>
@@ -2308,12 +2337,38 @@ export default function SessionClient() {
                 ref={rpeInputRef}
                 value={currentRpeValue}
                 onChange={(event) => applyRpe(currentItem.exerciseId, event.target.value)}
+                onFocus={() => {
+                  setActiveTrackingField("rpe");
+                  scrollTrackingPanelIntoView();
+                }}
                 onKeyDown={handleTrackingEnter("rpe")}
-                onBlur={handleTrackingBlur("rpe")}
-                className="ui-input w-24"
+                onBlur={(event) => {
+                  setActiveTrackingField((current) =>
+                    current === "rpe" ? null : current
+                  );
+                  handleTrackingBlur("rpe")(event);
+                }}
+                enterKeyHint="done"
+                className={`ui-input w-24 ${
+                  activeTrackingField === "rpe"
+                    ? "border-sky-400 ring-2 ring-sky-400/60"
+                    : ""
+                }`}
                 placeholder="RPE"
               />
             </div>
+            <p className="text-[11px] text-slate-600" aria-live="polite">
+              {activeTrackingField
+                ? `Active input: ${
+                    activeTrackingField === "rpe"
+                      ? "RPE"
+                      : activeTrackingField === "reps"
+                      ? "Reps"
+                      : "Weight"
+                  }.`
+                : null}{" "}
+              Values may be prefilled from history. Press Enter/Go on each field to confirm or edit.
+            </p>
           </div>
         </div>
 

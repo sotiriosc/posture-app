@@ -1,3 +1,5 @@
+import type { WarmupBlock } from "@/lib/program/warmupLibrary";
+
 export type SessionRecord = {
   id: string;
   userId: string | null;
@@ -105,6 +107,9 @@ export type ProgramDay = {
   title: string;
   focusTags: string[];
   routine: ProgramRoutineItem[];
+  warmup?: WarmupBlock;
+  activation?: WarmupBlock;
+  cooldown?: WarmupBlock;
 };
 
 export type Program = {

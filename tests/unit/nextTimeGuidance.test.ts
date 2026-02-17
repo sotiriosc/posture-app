@@ -52,6 +52,21 @@ describe("next time guidance mapping", () => {
     expect(output).toBe("Next time: add small load or reps.");
   });
 
+  test("rep overshoot suggests dynamic load increase percentage", () => {
+    const output = generateNextTimeGuidance({
+      loadType: "weighted",
+      prescribedSets: 3,
+      prescribedRepsPerSet: 8,
+      actualSets: 3,
+      actualRepsPerSet: 30,
+      difficulty: "moderate",
+      painLevel: "none",
+    });
+    expect(output).toBe(
+      "Next time: add 20% weight and work in the 8-10 rep range."
+    );
+  });
+
   test("moderate + under target suggests adding reps at same load", () => {
     const output = generateNextTimeGuidance({
       loadType: "bodyweight",

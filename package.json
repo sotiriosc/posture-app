@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
+    "test:benchmark": "vitest --run tests/unit/competitiveBenchmark.test.ts",
     "test:golden": "vitest --run tests/unit/programGoldenAnchors.test.ts tests/unit/questionnaireGoldenFlow.test.ts",
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test",

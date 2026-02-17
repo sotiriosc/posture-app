@@ -51,6 +51,24 @@ const expectDayHasRequiredMainPatterns = (params: {
   });
 };
 
+const isChestDominantMain = (exerciseId: string) => {
+  const exercise = exerciseById(exerciseId);
+  if (!exercise) return false;
+  const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+  if (!patterns.has("push")) return false;
+  const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+  const muscles = new Set((exercise.muscleGroups ?? []).map(normalizePattern));
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    tags.has("chest") ||
+    muscles.has("chest") ||
+    descriptor.includes("chest") ||
+    descriptor.includes("bench") ||
+    descriptor.includes("floor press") ||
+    descriptor.includes("floor-press")
+  );
+};
+
 describe("split contract repair enforcement", () => {
   test("3-day split enforces required main patterns per day", () => {
     const input: QuestionnaireData = {
@@ -80,6 +98,104 @@ describe("split contract repair enforcement", () => {
       dayTitle: "Legs + Abs",
       requiredPatterns: ["squat", "hinge"],
     });
+  });
+
+  test("3-day Shoulders + Arms keeps shoulders/pull emphasis and rep-based prescriptions", () => {
+    const input: QuestionnaireData = {
+      goals: "Reduce pain",
+      painAreas: ["Shoulders", "Upper back"],
+      experience: "Beginner",
+      equipment: ["dumbbells", "bands", "machines"],
+      daysPerWeek: 3,
+    };
+    const program = generateWeeklyProgram(input, "split-3-day-shoulders-safety", {
+      phaseIndex: 2,
+      seed: "split-3-day-shoulders-safety",
+    });
+
+    const shoulderDay = program.week.find((day) => day.title === "Shoulders + Arms");
+    expect(shoulderDay).toBeTruthy();
+    if (!shoulderDay) return;
+
+    const mainItems = shoulderDay.routine.filter((item) => item.section === "main");
+    expect(mainItems.length).toBeGreaterThan(0);
+    expect(mainItems.some((item) => isChestDominantMain(item.exerciseId))).toBe(false);
+
+    const hasShoulderPressMain = mainItems.some((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return false;
+      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+      const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+      return descriptor.includes("press") && tags.has("shoulders");
+    });
+    expect(hasShoulderPressMain).toBe(true);
+    const hasCalvesOnShoulderDay = shoulderDay.routine.some((item) => {
+      if (item.section !== "accessory") return false;
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return false;
+      const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+      const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+      const muscles = new Set((exercise.muscleGroups ?? []).map(normalizePattern));
+      return patterns.has("calf") || tags.has("calves") || muscles.has("calves");
+    });
+    expect(hasCalvesOnShoulderDay).toBe(false);
+
+    shoulderDay.routine.forEach((item) => {
+      if (item.section !== "main" && item.section !== "accessory") return;
+      expect(item.reps).toBeTruthy();
+      expect(item.durationSec ?? null).toBeNull();
+    });
+  });
+
+  test("vertical pressing progression avoids chest-dominant push and advances to dumbbells in growth", () => {
+    const input: QuestionnaireData = {
+      goals: "Reduce pain",
+      painAreas: ["Shoulders"],
+      experience: "Beginner",
+      equipment: ["gym"],
+      daysPerWeek: 3,
+    };
+
+    const skillProgram = generateWeeklyProgram(input, "split-3-day-vertical-progress-skill", {
+      phaseIndex: 2,
+      seed: "split-3-day-vertical-progress",
+    });
+    const growthProgram = generateWeeklyProgram(input, "split-3-day-vertical-progress-growth", {
+      phaseIndex: 3,
+      seed: "split-3-day-vertical-progress",
+    });
+
+    const skillShoulderDay = skillProgram.week.find((day) => day.title === "Shoulders + Arms");
+    const growthShoulderDay = growthProgram.week.find((day) => day.title === "Shoulders + Arms");
+    expect(skillShoulderDay).toBeTruthy();
+    expect(growthShoulderDay).toBeTruthy();
+    if (!skillShoulderDay || !growthShoulderDay) return;
+
+    const skillMainIds = skillShoulderDay.routine
+      .filter((item) => item.section === "main")
+      .map((item) => item.exerciseId);
+    const growthMainIds = growthShoulderDay.routine
+      .filter((item) => item.section === "main")
+      .map((item) => item.exerciseId);
+
+    expect(
+      skillMainIds.some((id) =>
+        ["machine-shoulder-press", "band-overhead-press", "pike-pushup", "dumbbell-shoulder-press"].includes(id)
+      )
+    ).toBe(true);
+    expect(
+      skillMainIds.some((id) => isChestDominantMain(id)),
+      `skill mains=${JSON.stringify(skillMainIds)}`
+    ).toBe(false);
+    expect(
+      growthMainIds.some(
+        (id) => id === "dumbbell-shoulder-press" || id === "dumbbell-arnold-press"
+      )
+    ).toBe(true);
+    expect(
+      growthMainIds.some((id) => isChestDominantMain(id)),
+      `growth mains=${JSON.stringify(growthMainIds)}`
+    ).toBe(false);
   });
 
   test("4-day split enforces required main patterns per day", () => {
