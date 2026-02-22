@@ -33,6 +33,20 @@ const expectedMainCount = (experience: QuestionnaireData["experience"]) => {
   return 2;
 };
 
+const expectedMainCountForDay = (params: {
+  experience: QuestionnaireData["experience"];
+  daysPerWeek: QuestionnaireData["daysPerWeek"];
+  dayTitle: string;
+}) => {
+  const { experience, daysPerWeek, dayTitle } = params;
+  if (daysPerWeek === 3 && dayTitle === "Back + Chest") {
+    if (experience === "Advanced") return 5;
+    if (experience === "Intermediate") return 4;
+    return 3;
+  }
+  return expectedMainCount(experience);
+};
+
 describe("scenario matrix reliability", () => {
   test("all day/experience/equipment/pain combinations produce valid structured programs", () => {
     let scenarios = 0;
@@ -58,7 +72,13 @@ describe("scenario matrix reliability", () => {
               expect(new Set(ids).size).toBe(ids.length);
 
               const mains = day.routine.filter((item) => item.section === "main");
-              expect(mains.length).toBe(expectedMainCount(experience));
+              expect(mains.length).toBe(
+                expectedMainCountForDay({
+                  experience,
+                  daysPerWeek,
+                  dayTitle: day.title,
+                })
+              );
 
               day.routine.forEach((item) => {
                 const exercise = exerciseById(item.exerciseId);

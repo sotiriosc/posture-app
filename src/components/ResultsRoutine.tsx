@@ -123,15 +123,21 @@ const formatReferenceRoutineItems = (items: ProgramRoutineItem[]) => {
     .join(", ");
 };
 
-const buildReferenceLineForDay = (day: ProgramWeekDay) => {
+type ProgramPrepItem = { name: string; reps?: string; durationSec?: number };
+
+const buildReferenceLinesForDay = (day: ProgramWeekDay) => {
+  const dayWithCorrective = day as ProgramWeekDay & {
+    corrective?: { items?: ProgramPrepItem[] };
+  };
   const warmupText =
     day.warmup?.items?.length
       ? formatReferencePrepItems(day.warmup.items)
       : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "warmup"));
-  const activationText =
-    day.activation?.items?.length
-      ? formatReferencePrepItems(day.activation.items)
-      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "activation"));
+  const correctiveText = dayWithCorrective.corrective?.items?.length
+    ? formatReferencePrepItems(dayWithCorrective.corrective.items)
+    : day.activation?.items?.length
+    ? formatReferencePrepItems(day.activation.items)
+    : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "activation"));
   const cooldownText =
     day.cooldown?.items?.length
       ? formatReferencePrepItems(day.cooldown.items)
@@ -142,7 +148,14 @@ const buildReferenceLineForDay = (day: ProgramWeekDay) => {
   const accessoryText = formatReferenceRoutineItems(
     day.routine.filter((item) => item.section === "accessory")
   );
-  return `D${day.dayIndex + 1} ${day.title} | W: ${warmupText} | A: ${activationText} | M: ${mainText} | X: ${accessoryText} | C: ${cooldownText}`;
+  return [
+    `Day ${day.dayIndex + 1}: ${day.title}`,
+    `Warm-up: ${warmupText}`,
+    `Corrective: ${correctiveText}`,
+    `Routine: ${mainText}`,
+    `Accessory: ${accessoryText}`,
+    `Cooldown: ${cooldownText}`,
+  ];
 };
 
 const loadImageFromFile = (file: File) =>
@@ -1318,31 +1331,33 @@ export default function ResultsRoutine() {
   }, [program]);
 
   const temporaryProgramReferenceText = useMemo(() => {
-    if (!data || !program) return "";
+    if (!program) return "";
 
-    const referenceQuestionnaire: QuestionnaireData = {
-      ...data,
-      daysPerWeek: normalizeDaysPerWeek(data.daysPerWeek),
-    };
-    const referenceSeedBase = questionnaireSignature ?? program.id ?? "program-reference";
     const lines: string[] = [];
 
     lines.push("ACTIVE WEEK (CURRENT PROGRAM)");
     lines.push(
       `${program.phaseName ?? `Phase ${program.phaseIndex ?? 1}`} | Cycle ${program.cycleIndex ?? 1} | Week ${program.weekIndex ?? 1}`
     );
-    program.week.forEach((day) => {
-      lines.push(buildReferenceLineForDay(day));
-    });
+    const activeDayOne = program.week.find((day) => day.dayIndex === 0) ?? program.week[0];
+    if (activeDayOne) {
+      lines.push(...buildReferenceLinesForDay(activeDayOne));
+    }
+
+    if (!data) return lines.join("\n");
+
+    const referenceQuestionnaire: QuestionnaireData = {
+      ...data,
+      daysPerWeek: normalizeDaysPerWeek(data.daysPerWeek),
+    };
+    const referenceSeedBase = questionnaireSignature ?? program.id ?? "program-reference";
 
     lines.push("");
-    lines.push("PHASE MATRIX PREVIEW (CYCLE 1 / WEEK 1)");
+    lines.push("PHASE PREVIEW (DAY 1 ONLY)");
     for (let phaseIndex = 1; phaseIndex <= MAX_PHASE_INDEX; phaseIndex += 1) {
       const phaseMeta = getPhaseMetaByIndex(phaseIndex);
       const profile = getPhaseProfile(phaseIndex);
-      lines.push(
-        `${phaseMeta.phaseName} | ${profile.description}`
-      );
+      lines.push(`${phaseMeta.phaseName} | ${profile.description}`);
       try {
         const phaseProgram = generateWeeklyProgram(
           referenceQuestionnaire,
@@ -1355,9 +1370,13 @@ export default function ResultsRoutine() {
             seed: `${referenceSeedBase}-reference-phase-${phaseIndex}`,
           }
         );
-        phaseProgram.week.forEach((day) => {
-          lines.push(buildReferenceLineForDay(day));
-        });
+        const phaseDayOne =
+          phaseProgram.week.find((day) => day.dayIndex === 0) ?? phaseProgram.week[0];
+        if (phaseDayOne) {
+          lines.push(...buildReferenceLinesForDay(phaseDayOne));
+        } else {
+          lines.push("(day 1 unavailable)");
+        }
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unable to generate phase preview.";
@@ -2237,7 +2256,7 @@ export default function ResultsRoutine() {
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-600">
-            Plain reference output for screenshot review across all phases and days.
+            Plain reference output for screenshot review of Day 1 for active week and all phases.
           </p>
           <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
             <pre className="whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
