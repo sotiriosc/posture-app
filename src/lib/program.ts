@@ -216,6 +216,12 @@ const normalizeExperienceLevel = (value: string): NormalizedExperienceLevel => {
   return "beginner";
 };
 
+const experienceRankByLevel: Record<NormalizedExperienceLevel, number> = {
+  beginner: 1,
+  intermediate: 2,
+  advanced: 3,
+};
+
 const phaseStageRank: Record<ProgramPhaseStage, number> = {
   activation: 0,
   skill: 1,
@@ -5572,10 +5578,12 @@ type BackChestAccessoryArchitectureStatus = {
 };
 
 type BackChestAccessoryIntelligenceStatus = BackChestAccessoryArchitectureStatus & {
-  hasRearDeltOrExternalAccessory: boolean;
+  hasRearDeltAccessory: boolean;
+  hasExternalScapAccessory: boolean;
   repeatedPriorPhaseAccessoryPairing: boolean;
-  chestIsolationInActivationPhase: boolean;
-  chestIsolationWithoutPosteriorSupport: boolean;
+  chestIsolationOutsidePhase2: boolean;
+  chestIsolationWithoutRearDeltSupport: boolean;
+  chestIsolationWithoutExternalScapSupport: boolean;
   chestIsolationBeyondDailyCap: boolean;
   chestIsolationSlotConflict: boolean;
   previousAccessorySignature: string | null;
@@ -5629,16 +5637,37 @@ const isPosteriorShoulderAccessory = (exercise: Exercise) => {
   );
 };
 
+const isBackChestPosteriorDeltIsolationDescriptor = (descriptor: string) =>
+  descriptor.includes("rear-delt-fly") ||
+  descriptor.includes("rear delt fly") ||
+  descriptor.includes("reverse-pec-deck") ||
+  descriptor.includes("reverse pec deck");
+
 const isChestDominantIsolationAccessory = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  if (isBackChestPosteriorDeltIsolationDescriptor(descriptor)) return false;
   const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
   const muscles = new Set((exercise.muscleGroups ?? []).map((muscle) => normalizeTagToken(muscle)));
+  const chestFlyDescriptor =
+    descriptor.includes("chest-fly") ||
+    descriptor.includes("chest fly") ||
+    ((descriptor.includes("pec-deck") || descriptor.includes("pec deck")) &&
+      !descriptor.includes("reverse"));
   return (
-    descriptor.includes("fly") ||
-    descriptor.includes("pec-deck") ||
-    descriptor.includes("pec deck") ||
+    chestFlyDescriptor ||
     (isIsolationExercise(exercise) &&
       (tags.has("chest") || muscles.has("chest") || descriptor.includes("chest")))
+  );
+};
+
+const isBackChestChestFlyAccessory = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  if (isBackChestPosteriorDeltIsolationDescriptor(descriptor)) return false;
+  return (
+    descriptor.includes("chest-fly") ||
+    descriptor.includes("chest fly") ||
+    ((descriptor.includes("pec-deck") || descriptor.includes("pec deck")) &&
+      !descriptor.includes("reverse"))
   );
 };
 
@@ -5694,14 +5723,22 @@ const evaluateBackChestAccessoryArchitecture = (params: {
 const evaluateBackChestAccessoryIntelligence = (params: {
   day: ProgramDay;
   context: DayConstraintRepairContext;
+  daysPerWeek: 3 | 4 | 5;
   mainExercises: Exercise[];
   accessoryExercises: Exercise[];
 }): BackChestAccessoryIntelligenceStatus => {
-  const { day, context, mainExercises, accessoryExercises } = params;
+  const { day, context, daysPerWeek, mainExercises, accessoryExercises } = params;
   const architecture = evaluateBackChestAccessoryArchitecture({
     mainExercises,
     accessoryExercises,
   });
+  const enforceThreeDayBackChestRules = daysPerWeek === 3 && isBackChestDayTitle(day.title);
+  const hasRearDeltAccessory = accessoryExercises.some((exercise) =>
+    isBackChestRearDeltDominantAccessory(exercise)
+  );
+  const hasExternalScapAccessory = accessoryExercises.some((exercise) =>
+    isBackChestRequiredExternalScapAccessory(exercise)
+  );
   const hasRearDeltOrExternalAccessory = accessoryExercises.some((exercise) =>
     isRearDeltOrExternalRotationPattern(exercise)
   );
@@ -5722,14 +5759,21 @@ const evaluateBackChestAccessoryIntelligence = (params: {
     Boolean(previousAccessorySignature) &&
     previousAccessorySignature === currentAccessorySignature;
 
-  const accessoryChestIsolationCount = accessoryExercises.filter((exercise) =>
-    isChestDominantIsolationAccessory(exercise)
+  const accessoryChestIsolationCount = accessoryExercises.filter(
+    isBackChestChestFlyAccessory
   ).length;
-  const chestIsolationInActivationPhase =
-    context.selectionContext.phaseStage === "activation" &&
+  const chestIsolationOutsidePhase2 =
+    enforceThreeDayBackChestRules &&
+    context.selectionContext.phaseStage !== "skill" &&
     accessoryChestIsolationCount > 0;
-  const chestIsolationWithoutPosteriorSupport =
-    accessoryChestIsolationCount > 0 && architecture.posteriorAccessoryCount < 1;
+  const chestIsolationWithoutRearDeltSupport =
+    enforceThreeDayBackChestRules &&
+    accessoryChestIsolationCount > 0 &&
+    !hasRearDeltAccessory;
+  const chestIsolationWithoutExternalScapSupport =
+    enforceThreeDayBackChestRules &&
+    accessoryChestIsolationCount > 0 &&
+    !hasExternalScapAccessory;
   const chestIsolationBeyondDailyCap = architecture.chestIsolationCount > 1;
   const firstAccessoryId = day.routine.find(
     (item) => item.section === "accessory"
@@ -5739,20 +5783,26 @@ const evaluateBackChestAccessoryIntelligence = (params: {
     firstAccessoryExercise &&
       isChestDominantIsolationAccessory(firstAccessoryExercise)
   );
+  const roleCoverageOk = enforceThreeDayBackChestRules
+    ? hasRearDeltAccessory && hasExternalScapAccessory
+    : hasRearDeltOrExternalAccessory;
   const ok =
     architecture.ok &&
-    hasRearDeltOrExternalAccessory &&
+    roleCoverageOk &&
     !repeatedPriorPhaseAccessoryPairing &&
-    !chestIsolationInActivationPhase &&
-    !chestIsolationWithoutPosteriorSupport &&
+    !chestIsolationOutsidePhase2 &&
+    !chestIsolationWithoutRearDeltSupport &&
+    !chestIsolationWithoutExternalScapSupport &&
     !chestIsolationBeyondDailyCap &&
     !chestIsolationSlotConflict;
   return {
     ...architecture,
-    hasRearDeltOrExternalAccessory,
+    hasRearDeltAccessory,
+    hasExternalScapAccessory,
     repeatedPriorPhaseAccessoryPairing,
-    chestIsolationInActivationPhase,
-    chestIsolationWithoutPosteriorSupport,
+    chestIsolationOutsidePhase2,
+    chestIsolationWithoutRearDeltSupport,
+    chestIsolationWithoutExternalScapSupport,
     chestIsolationBeyondDailyCap,
     chestIsolationSlotConflict,
     previousAccessorySignature,
@@ -6038,32 +6088,476 @@ const chooseBackChestAccessoryCandidate = (params: {
   return allowBodyweightPool[0]?.exercise ?? null;
 };
 
+type BackChestAccessoryRole = "rearDelt" | "externalScap" | "posterior";
+
+const BACK_CHEST_ACCESSORY_REAR_DELT_POOLS: Record<ProgramPhaseStage, string[]> = {
+  activation: [
+    "machine-rear-delt-row",
+    "prone-y-raise",
+    "machine-reverse-pec-deck",
+    "dumbbell-rear-delt-fly",
+    "cable-rear-delt-fly",
+    "suspension-rear-delt-row",
+    "prone-swimmer",
+    "reverse-snow-angel",
+  ],
+  skill: [
+    "dumbbell-rear-delt-fly",
+    "cable-rear-delt-fly",
+    "prone-y-raise",
+    "machine-reverse-pec-deck",
+    "machine-rear-delt-row",
+    "suspension-rear-delt-row",
+    "reverse-snow-angel",
+    "prone-swimmer",
+  ],
+  growth: [
+    "cable-rear-delt-fly",
+    "prone-y-raise",
+    "machine-reverse-pec-deck",
+    "machine-rear-delt-row",
+    "dumbbell-rear-delt-fly",
+    "suspension-rear-delt-row",
+    "prone-swimmer",
+    "reverse-snow-angel",
+  ],
+};
+
+const BACK_CHEST_ACCESSORY_EXTERNAL_SCAP_POOLS: Record<ProgramPhaseStage, string[]> = {
+  activation: [
+    "cable-face-pull",
+    "cable-external-rotation",
+    "cable-external-rotation-pressout",
+    "prone-y-raise",
+    "face-pull",
+    "suspension-face-pull",
+    "band-pull-apart",
+    "dumbbell-pullover",
+    "suspension-row-upright",
+    "back-widow",
+  ],
+  skill: [
+    "cable-external-rotation",
+    "cable-face-pull",
+    "cable-external-rotation-pressout",
+    "prone-y-raise",
+    "face-pull",
+    "suspension-face-pull",
+    "dumbbell-chest-fly",
+    "band-pull-apart",
+    "dumbbell-pullover",
+    "suspension-row-upright",
+    "back-widow",
+  ],
+  growth: [
+    "cable-face-pull",
+    "cable-external-rotation",
+    "cable-external-rotation-pressout",
+    "prone-y-raise",
+    "face-pull",
+    "band-pull-apart",
+    "suspension-row-upright",
+    "dumbbell-pullover",
+    "suspension-face-pull",
+    "back-widow",
+  ],
+};
+
+const BACK_CHEST_ACCESSORY_TERTIARY_POOLS: Record<ProgramPhaseStage, string[]> = {
+  activation: [
+    "dumbbell-pullover",
+    "suspension-row-upright",
+    "machine-rear-delt-row",
+    "prone-y-raise",
+    "machine-reverse-pec-deck",
+    "dumbbell-rear-delt-fly",
+    "cable-rear-delt-fly",
+    "cable-face-pull",
+    "cable-external-rotation",
+    "cable-external-rotation-pressout",
+    "face-pull",
+    "band-pull-apart",
+    "prone-swimmer",
+  ],
+  skill: [
+    "dumbbell-pullover",
+    "suspension-row-upright",
+    "dumbbell-rear-delt-fly",
+    "cable-rear-delt-fly",
+    "prone-y-raise",
+    "machine-reverse-pec-deck",
+    "machine-rear-delt-row",
+    "cable-external-rotation",
+    "cable-external-rotation-pressout",
+    "cable-face-pull",
+    "face-pull",
+    "band-pull-apart",
+    "reverse-snow-angel",
+  ],
+  growth: [
+    "suspension-row-upright",
+    "dumbbell-pullover",
+    "dumbbell-rear-delt-fly",
+    "cable-rear-delt-fly",
+    "prone-y-raise",
+    "machine-rear-delt-row",
+    "machine-reverse-pec-deck",
+    "cable-external-rotation",
+    "cable-external-rotation-pressout",
+    "cable-face-pull",
+    "face-pull",
+    "band-pull-apart",
+    "prone-swimmer",
+  ],
+};
+
+const isBackChestRearDeltDominantAccessory = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+  const muscles = new Set(
+    (exercise.muscleGroups ?? []).map((muscle) => normalizeTagToken(muscle))
+  );
+  return (
+    descriptor.includes("rear-delt") ||
+    descriptor.includes("rear delt") ||
+    descriptor.includes("reverse-pec-deck") ||
+    descriptor.includes("reverse pec deck") ||
+    descriptor.includes("rear-delt-fly") ||
+    descriptor.includes("rear delt fly") ||
+    descriptor.includes("reverse snow angel") ||
+    descriptor.includes("prone swimmer") ||
+    tags.has("rear_delt") ||
+    tags.has("rear-delt") ||
+    tags.has("reardelt") ||
+    muscles.has("rear_delts")
+  );
+};
+
+const isBackChestRequiredExternalScapAccessory = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+  const patterns = new Set(
+    exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
+  );
+  return (
+    descriptor.includes("face-pull") ||
+    descriptor.includes("face pull") ||
+    descriptor.includes("external rotation") ||
+    descriptor.includes("external-rotation") ||
+    descriptor.includes("pull-apart") ||
+    descriptor.includes("rear-delt") ||
+    descriptor.includes("rear delt") ||
+    tags.has("scap") ||
+    tags.has("scapular") ||
+    tags.has("rotator_cuff") ||
+    tags.has("external_rotation") ||
+    tags.has("externalrotation") ||
+    patterns.has("externalrotation")
+  );
+};
+
+const evaluateBackChestAccessoryRoleCoverage = (accessoryExercises: Exercise[]) => ({
+  hasRearDeltAccessory: accessoryExercises.some((exercise) =>
+    isBackChestRearDeltDominantAccessory(exercise)
+  ),
+  hasExternalScapAccessory: accessoryExercises.some((exercise) =>
+    isBackChestRequiredExternalScapAccessory(exercise)
+  ),
+  chestFlyCount: accessoryExercises.filter((exercise) =>
+    isBackChestChestFlyAccessory(exercise)
+  ).length,
+});
+
+const isBackChestAccessoryRoleCoverageSatisfied = (accessoryExercises: Exercise[]) => {
+  const coverage = evaluateBackChestAccessoryRoleCoverage(accessoryExercises);
+  return coverage.hasRearDeltAccessory && coverage.hasExternalScapAccessory;
+};
+
+const isBackChestPhase2ChestFlyWindowOpen = (params: {
+  context: DayConstraintRepairContext;
+  daysPerWeek: 3 | 4 | 5;
+}) => {
+  const { context, daysPerWeek } = params;
+  if (daysPerWeek !== 3) return false;
+  if (context.selectionContext.phaseStage !== "skill") return false;
+  if (context.selectionContext.painSeverity !== "low") return false;
+  return !context.selectionContext.goal.toLowerCase().includes("reduce pain");
+};
+
+const isBackChestExternalOrScapSupportAccessory = (exercise: Exercise) => {
+  if (isBackChestRequiredExternalScapAccessory(exercise)) return true;
+  if (isRearDeltOrExternalRotationPattern(exercise)) return true;
+  if (isLowerTrapUpwardOrSerratusPattern(exercise)) return true;
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+  return (
+    descriptor.includes("face-pull") ||
+    descriptor.includes("face pull") ||
+    descriptor.includes("external rotation") ||
+    descriptor.includes("pullover") ||
+    descriptor.includes("upright") ||
+    descriptor.includes("widow") ||
+    descriptor.includes("swimmer") ||
+    descriptor.includes("snow angel") ||
+    tags.has("scap") ||
+    tags.has("scapular") ||
+    tags.has("rotator_cuff") ||
+    tags.has("external_rotation") ||
+    tags.has("externalrotation")
+  );
+};
+
+const getBackChestAccessoryRoleOrder = (
+  accessoryCount: number
+): BackChestAccessoryRole[] => {
+  if (accessoryCount <= 0) return [];
+  const base: BackChestAccessoryRole[] = ["rearDelt", "externalScap"];
+  while (base.length < accessoryCount) {
+    base.push("posterior");
+  }
+  return base.slice(0, accessoryCount);
+};
+
+const getBackChestAccessoryPoolForRole = (
+  role: BackChestAccessoryRole,
+  phaseStage: ProgramPhaseStage
+) => {
+  if (role === "rearDelt") return BACK_CHEST_ACCESSORY_REAR_DELT_POOLS[phaseStage];
+  if (role === "externalScap") return BACK_CHEST_ACCESSORY_EXTERNAL_SCAP_POOLS[phaseStage];
+  return BACK_CHEST_ACCESSORY_TERTIARY_POOLS[phaseStage];
+};
+
+const matchesBackChestAccessoryRole = (
+  exercise: Exercise,
+  role: BackChestAccessoryRole
+) => {
+  if (role === "rearDelt") return isBackChestRearDeltDominantAccessory(exercise);
+  if (role === "externalScap") return isBackChestExternalOrScapSupportAccessory(exercise);
+  return (
+    isBackChestRearDeltDominantAccessory(exercise) ||
+    isBackChestExternalOrScapSupportAccessory(exercise) ||
+    isPosteriorShoulderAccessory(exercise)
+  );
+};
+
+const prioritizeNovelAccessoryIds = (ids: string[], priorIds: Set<string>) => {
+  const uniqueIds = Array.from(new Set(ids));
+  const novel = uniqueIds.filter((id) => !priorIds.has(id));
+  const repeated = uniqueIds.filter((id) => priorIds.has(id));
+  return [...novel, ...repeated];
+};
+
+const isBackChestFacePullFamilyAccessory = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return descriptor.includes("face-pull") || descriptor.includes("face pull");
+};
+
+const promoteBackChestPhase2ChestFlyCandidate = (params: {
+  orderedIds: string[];
+  role: BackChestAccessoryRole;
+  selectedAccessoryExercises: Exercise[];
+  accessoryTargetCount: number;
+  daysPerWeek: 3 | 4 | 5;
+  priorPhaseAccessoryIds: Set<string>;
+  context: DayConstraintRepairContext;
+}) => {
+  const {
+    orderedIds,
+    role,
+    selectedAccessoryExercises,
+    accessoryTargetCount,
+    daysPerWeek,
+    priorPhaseAccessoryIds,
+    context,
+  } = params;
+  if (role !== "externalScap") return orderedIds;
+  if (accessoryTargetCount !== 2) return orderedIds;
+  if (!isBackChestPhase2ChestFlyWindowOpen({ context, daysPerWeek })) return orderedIds;
+  const roleCoverageSatisfied =
+    isBackChestAccessoryRoleCoverageSatisfied(selectedAccessoryExercises);
+  if (!roleCoverageSatisfied) return orderedIds;
+  if (!orderedIds.includes("dumbbell-chest-fly")) return orderedIds;
+  const otherAccessoryIsFacePull = selectedAccessoryExercises.some(
+    isBackChestFacePullFamilyAccessory
+  );
+  if (!otherAccessoryIsFacePull && !priorPhaseAccessoryIds.size) return orderedIds;
+  return [
+    "dumbbell-chest-fly",
+    ...orderedIds.filter((id) => id !== "dumbbell-chest-fly"),
+  ];
+};
+
+const prioritizeBackChestPhase3RearDeltRotation = (params: {
+  orderedIds: string[];
+  role: BackChestAccessoryRole;
+  usedIds: Set<string>;
+  selectedAccessoryIds: string[];
+  priorPhaseAccessoryIds: Set<string>;
+  allowBodyweightFallback: boolean;
+  context: DayConstraintRepairContext;
+}) => {
+  const {
+    orderedIds,
+    role,
+    usedIds,
+    selectedAccessoryIds,
+    priorPhaseAccessoryIds,
+    allowBodyweightFallback,
+    context,
+  } = params;
+  if (role !== "rearDelt") return orderedIds;
+  if (context.selectionContext.phaseStage !== "growth") return orderedIds;
+  if (!priorPhaseAccessoryIds.has("dumbbell-rear-delt-fly")) return orderedIds;
+
+  const hasLoad = context.selectionContext.capabilityMode === "hasLoad";
+  const highPain = context.selectionContext.painSeverity === "high";
+  const candidateIds = orderedIds.filter((id) => id !== "dumbbell-rear-delt-fly");
+  const hasEligibleAlternative = candidateIds.some((id) => {
+    const exercise = exerciseById(id);
+    if (!exercise) return false;
+    if (usedIds.has(exercise.id) || selectedAccessoryIds.includes(exercise.id)) return false;
+    if (!matchesBackChestAccessoryRole(exercise, role)) return false;
+    if (isBackChestRedundantAccessoryPattern(exercise)) return false;
+    if (
+      !allowBodyweightFallback &&
+      hasLoad &&
+      !highPain &&
+      isBodyweightFallbackAccessory(exercise)
+    ) {
+      return false;
+    }
+    return isExerciseEligibleForProgramContext({
+      exercise,
+      available: context.available,
+      section: "accessory",
+      context: context.selectionContext,
+    });
+  });
+  if (!hasEligibleAlternative) return orderedIds;
+  return [...candidateIds, "dumbbell-rear-delt-fly"];
+};
+
+const resolveBackChestAccessoryRepRange = (params: {
+  daysPerWeek: 3 | 4 | 5;
+  phaseStage: ProgramPhaseStage;
+  exercise: Exercise;
+  fallbackReps: string | null | undefined;
+}) => {
+  const { daysPerWeek, phaseStage, fallbackReps } = params;
+  if (daysPerWeek !== 3) return fallbackReps ?? null;
+  if (phaseStage === "growth") {
+    return "8-12";
+  }
+  return "10-15";
+};
+
+const pickBackChestAccessoryForRole = (params: {
+  role: BackChestAccessoryRole;
+  day: ProgramDay;
+  usedIds: Set<string>;
+  selectedMainExerciseIds: string[];
+  selectedAccessoryIds: string[];
+  accessoryTargetCount: number;
+  daysPerWeek: 3 | 4 | 5;
+  priorPhaseAccessoryIds: Set<string>;
+  avoidPriorIds: boolean;
+  allowBodyweightFallback: boolean;
+  context: DayConstraintRepairContext;
+}): Exercise | null => {
+  const {
+    role,
+    day,
+    usedIds,
+    selectedMainExerciseIds,
+    selectedAccessoryIds,
+    accessoryTargetCount,
+    daysPerWeek,
+    priorPhaseAccessoryIds,
+    avoidPriorIds,
+    allowBodyweightFallback,
+    context,
+  } = params;
+  const phaseStage = context.selectionContext.phaseStage;
+  const selectedMainExercises = selectedMainExerciseIds
+    .map((id) => exerciseById(id))
+    .filter((entry): entry is Exercise => Boolean(entry));
+  const selectedAccessoryExercises = selectedAccessoryIds
+    .map((id) => exerciseById(id))
+    .filter((entry): entry is Exercise => Boolean(entry));
+  const existingChestIsolationCount = [...selectedMainExercises, ...selectedAccessoryExercises]
+    .filter((exercise) => isChestDominantIsolationAccessory(exercise))
+    .length;
+  const laneCandidates = getAccessoryCandidateIds({
+    lane: "back",
+    available: context.available,
+    context: context.selectionContext,
+    dayTitle: day.title,
+  });
+  const rolePool = getBackChestAccessoryPoolForRole(role, phaseStage);
+  const prioritizedIds = prioritizeNovelAccessoryIds(
+    [...rolePool, ...laneCandidates],
+    priorPhaseAccessoryIds
+  );
+  const chestFlyPrioritizedIds = promoteBackChestPhase2ChestFlyCandidate({
+    orderedIds: prioritizedIds,
+    role,
+    selectedAccessoryExercises,
+    accessoryTargetCount,
+    daysPerWeek,
+    priorPhaseAccessoryIds,
+    context,
+  });
+  const orderedIds = prioritizeBackChestPhase3RearDeltRotation({
+    orderedIds: chestFlyPrioritizedIds,
+    role,
+    usedIds,
+    selectedAccessoryIds,
+    priorPhaseAccessoryIds,
+    allowBodyweightFallback,
+    context,
+  });
+  return pickFirstBackChestCandidateByIds({
+    candidateIds: orderedIds,
+    section: "accessory",
+    usedIds,
+    context,
+    allowBodyweightFallback,
+    predicate: (exercise) => {
+      const chestIsolationCandidate = isChestDominantIsolationAccessory(exercise);
+      if (!chestIsolationCandidate && !matchesBackChestAccessoryRole(exercise, role)) {
+        return false;
+      }
+      if (selectedAccessoryIds.includes(exercise.id)) return false;
+      if (isBackChestRedundantAccessoryPattern(exercise)) return false;
+      if (chestIsolationCandidate) {
+        if (!isBackChestChestFlyAccessory(exercise)) return false;
+        if (role !== "externalScap") return false;
+        if (!isBackChestPhase2ChestFlyWindowOpen({ context, daysPerWeek })) return false;
+        if (accessoryTargetCount !== 2) return false;
+        if (existingChestIsolationCount >= 1) return false;
+        const projectedAccessoryExercises = [...selectedAccessoryExercises, exercise];
+        if (!isBackChestAccessoryRoleCoverageSatisfied(projectedAccessoryExercises)) {
+          return false;
+        }
+      }
+      if (avoidPriorIds && priorPhaseAccessoryIds.has(exercise.id)) return false;
+      return true;
+    },
+  });
+};
+
 const repairBackChestAccessoryArchitecture = (params: {
   day: ProgramDay;
+  daysPerWeek: 3 | 4 | 5;
   context: DayConstraintRepairContext;
 }): { day: ProgramDay; warning?: string } => {
-  const { day, context } = params;
+  const { day, daysPerWeek, context } = params;
   if (!isBackChestDayTitle(day.title)) return { day };
 
   const accessoryEntries = day.routine
     .map((item, index) => ({ item, index }))
     .filter((entry) => entry.item.section === "accessory");
   if (!accessoryEntries.length) return { day };
-
-  const mainExercises = day.routine
-    .filter((item) => item.section === "main")
-    .map((item) => exerciseById(item.exerciseId))
-    .filter((exercise): exercise is Exercise => Boolean(exercise));
-  const currentAccessoryExercises = accessoryEntries
-    .map((entry) => exerciseById(entry.item.exerciseId))
-    .filter((exercise): exercise is Exercise => Boolean(exercise));
-  const baselineStatus = evaluateBackChestAccessoryIntelligence({
-    day,
-    context,
-    mainExercises,
-    accessoryExercises: currentAccessoryExercises,
-  });
-  if (baselineStatus.ok) return { day };
 
   const previousBackChestDay = getBackChestDayFromWeek(context.previousWeek);
   const priorPhaseAccessoryIds = new Set(
@@ -6073,207 +6567,265 @@ const repairBackChestAccessoryArchitecture = (params: {
           .map((item) => item.exerciseId)
       : []
   );
+  const mainExercises = day.routine
+    .filter((item) => item.section === "main")
+    .map((item) => exerciseById(item.exerciseId))
+    .filter((exercise): exercise is Exercise => Boolean(exercise));
   const selectedMainExerciseIds = mainExercises.map((exercise) => exercise.id);
-  const mainHasPullPattern =
-    mainExercises.some(hasHorizontalPullSignature) || mainExercises.some(hasVerticalPullSignature);
-  const hasLoad = context.selectionContext.capabilityMode === "hasLoad";
-  const highPain = context.selectionContext.painSeverity === "high";
+  const previousSignature = previousBackChestDay
+    ? buildExerciseIdSignature(
+        previousBackChestDay.routine
+          .filter((item) => item.section === "accessory")
+          .map((item) => item.exerciseId)
+      )
+    : null;
+  const enforceThreeDayBackChestRules = daysPerWeek === 3;
 
-  const canUseAccessoryFallback = (params: {
-    exercise: Exercise;
-    slotIndex: number;
-    usedIds: Set<string>;
-    selectedAccessoryIds: string[];
-    strictAvoidPriorPhaseIds: boolean;
-  }) => {
-    const { exercise, slotIndex, usedIds, selectedAccessoryIds, strictAvoidPriorPhaseIds } =
-      params;
-    if (usedIds.has(exercise.id)) return false;
-    if (strictAvoidPriorPhaseIds && priorPhaseAccessoryIds.has(exercise.id)) return false;
+  const backChestAccessorySetSatisfiesRules = (accessoryIds: string[]) => {
+    if (!enforceThreeDayBackChestRules) return true;
+    const selectedAccessories = accessoryIds
+      .map((id) => exerciseById(id))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+    if (!selectedAccessories.length) return false;
+    if (selectedAccessories.length < Math.min(2, accessoryEntries.length)) return false;
+    const coverage = evaluateBackChestAccessoryRoleCoverage(selectedAccessories);
+    if (!coverage.hasRearDeltAccessory || !coverage.hasExternalScapAccessory) return false;
+    if (coverage.chestFlyCount > 1) return false;
     if (
-      !isExerciseEligibleForProgramContext({
-        exercise,
-        available: context.available,
-        section: "accessory",
-        context: context.selectionContext,
-      })
+      coverage.chestFlyCount > 0 &&
+      !isBackChestPhase2ChestFlyWindowOpen({ context, daysPerWeek })
     ) {
       return false;
-    }
-    if (!highPain && hasLoad && isBodyweightFallbackAccessory(exercise)) {
-      return false;
-    }
-    if (mainHasPullPattern && isBackChestRedundantAccessoryPattern(exercise)) {
-      return false;
-    }
-    const selectedAccessoryExercises = selectedAccessoryIds
-      .map((id) => exerciseById(id))
-      .filter((entry): entry is Exercise => Boolean(entry));
-    const existingChestIsolationCount = [...mainExercises, ...selectedAccessoryExercises].filter(
-      isChestDominantIsolationAccessory
-    ).length;
-    const posteriorSatisfiedBySelected = selectedAccessoryExercises.some(
-      isPosteriorShoulderAccessory
-    );
-    if (isChestDominantIsolationAccessory(exercise)) {
-      if (context.selectionContext.phaseStage === "activation") return false;
-      if (slotIndex === 0) return false;
-      if (!posteriorSatisfiedBySelected) return false;
-      if (existingChestIsolationCount >= 1) return false;
     }
     return true;
   };
 
-  const pickGenericFallback = (params: {
-    slotIndex: number;
-    usedIds: Set<string>;
-    selectedAccessoryIds: string[];
-    strictAvoidPriorPhaseIds: boolean;
-  }) => {
-    const { slotIndex, usedIds, selectedAccessoryIds, strictAvoidPriorPhaseIds } = params;
-    return exercises
-      .filter((exercise) => exercise.category === "main")
-      .filter((exercise) =>
-        canUseAccessoryFallback({
-          exercise,
-          slotIndex,
-          usedIds,
-          selectedAccessoryIds,
-          strictAvoidPriorPhaseIds,
-        })
-      )
-      .map((exercise) => {
-        const detail = scoreExerciseForContextDetailed(
-          exercise,
-          "accessory",
-          context.selectionContext,
-          context.available,
-          {
-            slotId: `${normalizeSlotToken(day.title)}-accessory-fallback-${slotIndex + 1}`,
-            dayTitle: day.title,
-            dayFocusTags: day.focusTags,
-            slotKind: "accessoryback",
-            selectedMainExerciseIds,
-            capabilityMode: context.capabilityMode,
-          }
-        );
-        return { exercise, score: detail.score };
-      })
-      .sort((left, right) => {
-        if (right.score !== left.score) return right.score - left.score;
-        return left.exercise.id.localeCompare(right.exercise.id);
-      })[0]?.exercise;
-  };
-
-  const buildReplacements = (strictAvoidPriorPhaseIds: boolean) => {
+  const buildAccessoryIds = (avoidPriorIds: boolean) => {
     const usedIds = new Set(
       day.routine
         .filter((item) => item.section !== "accessory")
         .map((item) => item.exerciseId)
     );
     const selectedAccessoryIds: string[] = [];
-    const replacements = new Map<number, Exercise>();
+    const roleOrder = getBackChestAccessoryRoleOrder(accessoryEntries.length);
 
-    accessoryEntries.forEach((entry, slotIndex) => {
-      const candidate = chooseBackChestAccessoryCandidate({
-        day,
-        slotIndex,
-        usedIds,
-        selectedMainExerciseIds,
-        selectedAccessoryIds,
-        priorPhaseAccessoryIds,
-        strictAvoidPriorPhaseIds,
-        context,
-      });
-      const fallback = exerciseById(entry.item.exerciseId);
-      const fallbackEligible = Boolean(
-        fallback &&
-          canUseAccessoryFallback({
-            exercise: fallback,
-            slotIndex,
-            usedIds,
-            selectedAccessoryIds,
-            strictAvoidPriorPhaseIds,
-          })
+    roleOrder.forEach((role, slotIndex) => {
+      const candidate =
+        pickBackChestAccessoryForRole({
+          role,
+          day,
+          usedIds,
+          selectedMainExerciseIds,
+          selectedAccessoryIds,
+          accessoryTargetCount: accessoryEntries.length,
+          daysPerWeek,
+          priorPhaseAccessoryIds,
+          avoidPriorIds,
+          allowBodyweightFallback: false,
+          context,
+        }) ??
+        pickBackChestAccessoryForRole({
+          role,
+          day,
+          usedIds,
+          selectedMainExerciseIds,
+          selectedAccessoryIds,
+          accessoryTargetCount: accessoryEntries.length,
+          daysPerWeek,
+          priorPhaseAccessoryIds,
+          avoidPriorIds,
+          allowBodyweightFallback: true,
+          context,
+        }) ??
+        pickBackChestAccessoryForRole({
+          role: "posterior",
+          day,
+          usedIds,
+          selectedMainExerciseIds,
+          selectedAccessoryIds,
+          accessoryTargetCount: accessoryEntries.length,
+          daysPerWeek,
+          priorPhaseAccessoryIds,
+          avoidPriorIds,
+          allowBodyweightFallback: true,
+          context,
+        });
+
+      const fallback = exerciseById(accessoryEntries[slotIndex]?.item.exerciseId ?? "");
+      const selectedAccessoryExercises = selectedAccessoryIds
+        .map((id) => exerciseById(id))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      const fallbackChestIsolationCount = [...mainExercises, ...selectedAccessoryExercises]
+        .filter((exercise) => isChestDominantIsolationAccessory(exercise))
+        .length;
+      const fallbackChestIsolation = Boolean(
+        fallback && isChestDominantIsolationAccessory(fallback)
       );
-      const genericFallback = pickGenericFallback({
-        slotIndex,
-        usedIds,
-        selectedAccessoryIds,
-        strictAvoidPriorPhaseIds,
-      });
-      const selected = candidate ?? (fallbackEligible ? fallback : null) ?? genericFallback;
+      const fallbackChestFlyAllowed =
+        Boolean(fallback) &&
+        fallbackChestIsolation &&
+        isBackChestChestFlyAccessory(fallback!) &&
+        role !== "rearDelt" &&
+        isBackChestPhase2ChestFlyWindowOpen({ context, daysPerWeek }) &&
+        accessoryEntries.length === 2 &&
+        fallbackChestIsolationCount < 1 &&
+        isBackChestAccessoryRoleCoverageSatisfied([
+          ...selectedAccessoryExercises,
+          fallback!,
+        ]);
+      const fallbackEligible =
+        Boolean(fallback) &&
+        !usedIds.has(fallback!.id) &&
+        matchesBackChestAccessoryRole(fallback!, role) &&
+        !isBackChestRedundantAccessoryPattern(fallback!) &&
+        (!fallbackChestIsolation || fallbackChestFlyAllowed) &&
+        (!avoidPriorIds || !priorPhaseAccessoryIds.has(fallback!.id)) &&
+        isExerciseEligibleForProgramContext({
+          exercise: fallback!,
+          available: context.available,
+          section: "accessory",
+          context: context.selectionContext,
+        });
+      const selected = candidate ?? (fallbackEligible ? fallback! : null);
       if (!selected) return;
-      replacements.set(entry.index, selected);
       usedIds.add(selected.id);
       selectedAccessoryIds.push(selected.id);
     });
 
-    return replacements;
+    return selectedAccessoryIds;
   };
 
-  const applyReplacements = (replacements: Map<number, Exercise>) =>
+  const applyAccessoryIds = (accessoryIds: string[]) =>
     ({
       ...day,
       routine: day.routine.map((item, index) => {
-        const replacement = replacements.get(index);
-        if (!replacement) return item;
+        if (item.section !== "accessory") return item;
+        const accessoryPosition = accessoryEntries.findIndex(
+          (entry) => entry.index === index
+        );
+        const selectedId =
+          accessoryPosition >= 0 ? accessoryIds[accessoryPosition] : null;
+        const selectedExercise = selectedId ? exerciseById(selectedId) : null;
+        if (!selectedExercise) return item;
         return {
           ...item,
-          exerciseId: replacement.id,
-          loadType: replacement.loadType,
-          cues: buildProgramCues(replacement, item.section),
+          exerciseId: selectedExercise.id,
+          loadType: selectedExercise.loadType,
+          reps: resolveBackChestAccessoryRepRange({
+            daysPerWeek,
+            phaseStage: context.selectionContext.phaseStage,
+            exercise: selectedExercise,
+            fallbackReps: item.reps,
+          }),
+          cues: buildProgramCues(selectedExercise, item.section),
         };
       }),
     }) as ProgramDay;
 
-  const replacements = buildReplacements(false);
-  if (!replacements.size) {
-    return {
-      day,
-      warning: "Back + Chest accessory repair could not find eligible replacements.",
-    };
+  let selectedAccessoryIds = buildAccessoryIds(false);
+  let repairedDay = applyAccessoryIds(selectedAccessoryIds);
+
+  const trySwapSingleAccessorySlotForNovelPairing = (currentIds: string[]) => {
+    if (!previousSignature) return currentIds;
+    if (buildExerciseIdSignature(currentIds) !== previousSignature) return currentIds;
+
+    const roleOrder = getBackChestAccessoryRoleOrder(accessoryEntries.length);
+    const nonAccessoryUsedIds = new Set(
+      day.routine
+        .filter((item) => item.section !== "accessory")
+        .map((item) => item.exerciseId)
+    );
+    const swapIndexes = Array.from({ length: currentIds.length }, (_, index) => index).sort(
+      (left, right) => right - left
+    );
+
+    for (const swapIndex of swapIndexes) {
+      const role = roleOrder[swapIndex] ?? "posterior";
+      const lockedAccessoryIds = currentIds.filter((_, index) => index !== swapIndex);
+      const usedIds = new Set(nonAccessoryUsedIds);
+      lockedAccessoryIds.forEach((id) => usedIds.add(id));
+
+      const replacement =
+        pickBackChestAccessoryForRole({
+          role,
+          day,
+          usedIds,
+          selectedMainExerciseIds,
+          selectedAccessoryIds: lockedAccessoryIds,
+          accessoryTargetCount: accessoryEntries.length,
+          daysPerWeek,
+          priorPhaseAccessoryIds,
+          avoidPriorIds: true,
+          allowBodyweightFallback: false,
+          context,
+        }) ??
+        pickBackChestAccessoryForRole({
+          role,
+          day,
+          usedIds,
+          selectedMainExerciseIds,
+          selectedAccessoryIds: lockedAccessoryIds,
+          accessoryTargetCount: accessoryEntries.length,
+          daysPerWeek,
+          priorPhaseAccessoryIds,
+          avoidPriorIds: true,
+          allowBodyweightFallback: true,
+          context,
+        });
+      if (!replacement) continue;
+      if (replacement.id === currentIds[swapIndex]) continue;
+
+      const swappedIds = [...currentIds];
+      swappedIds[swapIndex] = replacement.id;
+      if (buildExerciseIdSignature(swappedIds) === previousSignature) continue;
+      if (!backChestAccessorySetSatisfiesRules(swappedIds)) continue;
+      return swappedIds;
+    }
+
+    return currentIds;
+  };
+
+  const ensureNovelPairing = () => {
+    const signature = buildExerciseIdSignature(selectedAccessoryIds);
+    if (!previousSignature || signature !== previousSignature) return;
+    const swappedIds = trySwapSingleAccessorySlotForNovelPairing(selectedAccessoryIds);
+    if (buildExerciseIdSignature(swappedIds) !== previousSignature) {
+      selectedAccessoryIds = swappedIds;
+      repairedDay = applyAccessoryIds(selectedAccessoryIds);
+      return;
+    }
+    const strictIds = buildAccessoryIds(true);
+    const strictSignature = buildExerciseIdSignature(strictIds);
+    if (
+      strictSignature !== previousSignature &&
+      backChestAccessorySetSatisfiesRules(strictIds)
+    ) {
+      selectedAccessoryIds = strictIds;
+      repairedDay = applyAccessoryIds(selectedAccessoryIds);
+    }
+  };
+
+  if (!backChestAccessorySetSatisfiesRules(selectedAccessoryIds)) {
+    const strictIds = buildAccessoryIds(true);
+    if (backChestAccessorySetSatisfiesRules(strictIds)) {
+      selectedAccessoryIds = strictIds;
+      repairedDay = applyAccessoryIds(selectedAccessoryIds);
+    }
   }
 
-  let repairedDay = applyReplacements(replacements);
-  let repairedAccessoryExercises = repairedDay.routine
+  ensureNovelPairing();
+
+  const repairedAccessoryExercises = repairedDay.routine
     .filter((item) => item.section === "accessory")
     .map((item) => exerciseById(item.exerciseId))
     .filter((exercise): exercise is Exercise => Boolean(exercise));
-  let repairedStatus = evaluateBackChestAccessoryIntelligence({
+  const repairedStatus = evaluateBackChestAccessoryIntelligence({
     day: repairedDay,
     context,
+    daysPerWeek,
     mainExercises,
     accessoryExercises: repairedAccessoryExercises,
   });
-
-  if (
-    priorPhaseAccessoryIds.size &&
-    repairedStatus.repeatedPriorPhaseAccessoryPairing
-  ) {
-    const strictReplacements = buildReplacements(true);
-    if (strictReplacements.size) {
-      const strictDay = applyReplacements(strictReplacements);
-      const strictAccessoryExercises = strictDay.routine
-        .filter((item) => item.section === "accessory")
-        .map((item) => exerciseById(item.exerciseId))
-        .filter((exercise): exercise is Exercise => Boolean(exercise));
-      const strictStatus = evaluateBackChestAccessoryIntelligence({
-        day: strictDay,
-        context,
-        mainExercises,
-        accessoryExercises: strictAccessoryExercises,
-      });
-      const strictImprovesNovelty =
-        !strictStatus.repeatedPriorPhaseAccessoryPairing &&
-        repairedStatus.repeatedPriorPhaseAccessoryPairing;
-      if (strictStatus.ok || strictImprovesNovelty) {
-        repairedDay = strictDay;
-        repairedAccessoryExercises = strictAccessoryExercises;
-        repairedStatus = strictStatus;
-      }
-    }
-  }
 
   if (repairedStatus.ok) return { day: repairedDay };
 
@@ -6341,7 +6893,12 @@ const backChestRowAngleSignature = (exercise: Exercise) => {
 const hasDuplicateBackChestRowAngles = (exercisesForDay: Exercise[]) => {
   const signatures = exercisesForDay
     .map((exercise) => backChestRowAngleSignature(exercise))
-    .filter((entry): entry is string => Boolean(entry));
+    .filter(
+      (
+        entry
+      ): entry is Exclude<ReturnType<typeof backChestRowAngleSignature>, null> =>
+        entry !== null
+    );
   return new Set(signatures).size !== signatures.length;
 };
 
@@ -6352,13 +6909,17 @@ const hasEligibleBackChestMainCandidate = (params: {
   predicate: (exercise: Exercise) => boolean;
 }) => {
   const { slotKind, slotLane, context, predicate } = params;
+  const availableForBackChest = resolveBackChestMainAvailableSet(context.available);
   return exercises.some((exercise) => {
     if (exercise.category !== "main") return false;
     if (!predicate(exercise)) return false;
+    if (slotKind.startsWith("mainPull") && isBackChestScapularAccessoryPullExercise(exercise)) {
+      return false;
+    }
     if (
       !isExerciseEligibleForProgramContext({
         exercise,
-        available: context.available,
+        available: availableForBackChest,
         section: "main",
         context: context.selectionContext,
       })
@@ -6396,6 +6957,674 @@ const isBackChestIntermediateRowForLadder = (exercise: Exercise) => {
 const isBackChestAdvancedRowForLadder = (exercise: Exercise) =>
   exercise.equipment.includes("barbell") || isBackChestUnsupportedHingeRowExercise(exercise);
 
+type BackChestAnchorRole = "horizontalPull" | "verticalPull" | "horizontalPush";
+
+type BackChestTierProfile = {
+  equipmentCeiling: BackChestEquipmentTier;
+  painCapTier: BackChestEquipmentTier;
+  tierCeiling: BackChestEquipmentTier;
+  painCapActive: boolean;
+};
+
+const BACK_CHEST_HORIZONTAL_PULL_LADDER: Record<BackChestEquipmentTier, string[]> = {
+  1: [
+    "machine-seated-row",
+    "cable-seated-row",
+    "band-row",
+    "split-stance-row",
+    "suspension-row-incline",
+    "suspension-row-upright",
+    "supine-elbow-drive-row",
+    "prone-elbow-row",
+    "back-widow",
+  ],
+  2: [
+    "dumbbell-chest-supported-row",
+    "dumbbell-rows",
+    "suspension-row-parallel",
+    "suspension-row-feet-elevated",
+    "suspension-archer-row",
+    "suspension-one-arm-row-assisted",
+  ],
+  3: ["barbell-bent-over-row", "pendlay-row"],
+};
+
+const BACK_CHEST_VERTICAL_PULL_PULLUP_LADDER: Record<BackChestEquipmentTier, string[]> = {
+  1: [
+    "machine-assisted-pullup",
+    "band-assisted-pullup",
+    "scap-pullup",
+    "machine-lat-pulldown",
+    "kneeling-prayer-lat-pulldown",
+    "prone-lat-sweep",
+    "supine-lat-pulldown-isometric",
+    "band-lat-pulldown",
+  ],
+  2: [
+    "neutral-grip-pullup",
+    "chinup-strict",
+    "chest-to-bar-pullup",
+    "cable-lat-pulldown",
+    "dumbbell-pullover",
+  ],
+  3: ["weighted-pullup", "barbell-landmine-pulldown"],
+};
+
+const BACK_CHEST_VERTICAL_PULL_PULLDOWN_LADDER: Record<BackChestEquipmentTier, string[]> = {
+  1: [
+    "machine-lat-pulldown",
+    "kneeling-prayer-lat-pulldown",
+    "seated-lat-sweep-pulse",
+    "prone-lat-sweep",
+    "supine-lat-pulldown-isometric",
+    "band-lat-pulldown",
+  ],
+  2: ["cable-lat-pulldown", "dumbbell-pullover", "machine-assisted-pullup"],
+  3: ["barbell-landmine-pulldown"],
+};
+
+const BACK_CHEST_HORIZONTAL_PUSH_LADDER: Record<BackChestEquipmentTier, string[]> = {
+  1: ["machine-chest-press", "band-chest-press", "incline-pushup", "pushup"],
+  2: ["dumbbell-bench-press", "dumbbell-incline-press", "dumbbell-floor-press"],
+  3: ["barbell-bench-press-paused", "barbell-floor-press"],
+};
+
+const BACK_CHEST_VERTICAL_PUSH_LADDER: Record<BackChestEquipmentTier, string[]> = {
+  1: ["machine-shoulder-press", "band-overhead-press", "pike-pushup"],
+  2: ["dumbbell-shoulder-press", "dumbbell-arnold-press"],
+  3: ["barbell-strict-press", "barbell-push-press"],
+};
+
+const BACK_CHEST_SUPPORT_PULL_PHASE_POOLS: Record<ProgramPhaseStage, string[]> = {
+  activation: [
+    "cable-lat-pulldown",
+    "machine-lat-pulldown",
+    "machine-assisted-pullup",
+    "band-assisted-pullup",
+    "cable-seated-row",
+    "dumbbell-chest-supported-row",
+    "dumbbell-rows",
+    "split-stance-row",
+    "band-lat-pulldown",
+    "band-row",
+  ],
+  skill: [
+    "cable-lat-pulldown",
+    "machine-lat-pulldown",
+    "neutral-grip-pullup",
+    "machine-assisted-pullup",
+    "dumbbell-chest-supported-row",
+    "dumbbell-rows",
+    "cable-seated-row",
+    "split-stance-row",
+    "band-lat-pulldown",
+    "barbell-landmine-pulldown",
+  ],
+  growth: [
+    "weighted-pullup",
+    "barbell-landmine-pulldown",
+    "cable-lat-pulldown",
+    "barbell-bent-over-row",
+    "pendlay-row",
+    "dumbbell-chest-supported-row",
+    "dumbbell-rows",
+    "machine-lat-pulldown",
+    "cable-seated-row",
+  ],
+};
+
+const toBackChestTier = (value: number): BackChestEquipmentTier => {
+  if (value >= 3) return 3;
+  if (value <= 1) return 1;
+  return 2;
+};
+
+const resolveBackChestEquipmentCeiling = (
+  available: Set<Equipment>
+): BackChestEquipmentTier => {
+  if (
+    available.has("gym") ||
+    available.has("barbell") ||
+    (available.has("pullup_bar") && available.has("dumbbells"))
+  ) {
+    return 3;
+  }
+  if (
+    available.has("dumbbells") ||
+    available.has("bands") ||
+    available.has("machines") ||
+    available.has("cables") ||
+    available.has("pullup_bar")
+  ) {
+    return 2;
+  }
+  return 1;
+};
+
+const resolveBackChestPainCapTier = (painSeverity: PainSeverity): BackChestEquipmentTier =>
+  painSeverity === "high" ? 1 : painSeverity === "medium" ? 2 : 3;
+
+const resolveBackChestTierProfile = (
+  context: DayConstraintRepairContext
+): BackChestTierProfile => {
+  const equipmentCeiling = resolveBackChestEquipmentCeiling(context.available);
+  const painCapTier = resolveBackChestPainCapTier(context.selectionContext.painSeverity);
+  const tierCeiling = toBackChestTier(Math.min(equipmentCeiling, painCapTier));
+  return {
+    equipmentCeiling,
+    painCapTier,
+    tierCeiling,
+    painCapActive: tierCeiling < equipmentCeiling,
+  };
+};
+
+const resolveBackChestMainAvailableSet = (available: Set<Equipment>) => {
+  if (!available.has("gym")) return available;
+  const withPullupBar = new Set(available);
+  withPullupBar.add("pullup_bar");
+  return withPullupBar;
+};
+
+const isBackChestFloorPress = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    descriptor.includes("floor-press") ||
+    descriptor.includes("floor press") ||
+    exercise.id === "dumbbell-floor-press" ||
+    exercise.id === "barbell-floor-press"
+  );
+};
+
+const isBackChestFloorPressAllowed = (
+  exercise: Exercise,
+  context: DayConstraintRepairContext,
+  tierProfile: BackChestTierProfile
+) => {
+  if (!isBackChestFloorPress(exercise)) return true;
+  if (tierProfile.painCapActive) return true;
+  return context.selectionContext.experienceLevel === "beginner";
+};
+
+const backChestExperienceRankByLevel: Record<NormalizedExperienceLevel, number> = {
+  beginner: 1,
+  intermediate: 2,
+  advanced: 3,
+};
+
+const backChestExperienceRankByMinimum: Record<
+  NonNullable<Exercise["experienceMin"]>,
+  number
+> = {
+  Beginner: 1,
+  Intermediate: 2,
+  Advanced: 3,
+};
+
+const isBackChestExperienceEligible = (
+  exercise: Exercise,
+  experienceLevel: NormalizedExperienceLevel
+) => {
+  if (!exercise.experienceMin) return true;
+  return (
+    backChestExperienceRankByLevel[experienceLevel] >=
+    backChestExperienceRankByMinimum[exercise.experienceMin]
+  );
+};
+
+const resolveBackChestDesiredAnchorRung = (params: {
+  context: DayConstraintRepairContext;
+  tierProfile: BackChestTierProfile;
+}): BackChestEquipmentTier => {
+  const { context, tierProfile } = params;
+  if (context.selectionContext.phaseStage === "activation") {
+    return toBackChestTier(Math.min(1, tierProfile.tierCeiling));
+  }
+  if (context.selectionContext.phaseStage === "skill") {
+    return toBackChestTier(Math.min(2, tierProfile.tierCeiling));
+  }
+  return tierProfile.tierCeiling;
+};
+
+const matchesBackChestAnchorRole = (
+  exercise: Exercise,
+  role: BackChestAnchorRole
+) => {
+  if (role === "horizontalPull") return hasHorizontalPullSignature(exercise);
+  if (role === "verticalPull") return hasVerticalPullSignature(exercise);
+  return hasHorizontalPushSignature(exercise);
+};
+
+const resolveBackChestAnchorRung = (
+  _role: BackChestAnchorRole,
+  exercise: Exercise,
+  _hasPullupBar: boolean
+): BackChestEquipmentTier => resolveBackChestEquipmentTier(exercise);
+
+const buildBackChestRungOrder = (params: {
+  targetRung: BackChestEquipmentTier;
+  minRung: BackChestEquipmentTier;
+  maxRung: BackChestEquipmentTier;
+}) => {
+  const { targetRung, minRung, maxRung } = params;
+  const ordered: BackChestEquipmentTier[] = [];
+  const append = (candidate: number) => {
+    const tier = toBackChestTier(candidate);
+    if (tier < minRung || tier > maxRung) return;
+    if (!ordered.includes(tier)) ordered.push(tier);
+  };
+  append(targetRung);
+  for (let rung = targetRung + 1; rung <= maxRung; rung += 1) append(rung);
+  for (let rung = targetRung - 1; rung >= minRung; rung -= 1) append(rung);
+  return ordered;
+};
+
+const pickFirstBackChestCandidateByIds = (params: {
+  candidateIds: string[];
+  section: ProgramRoutineItem["section"];
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+  tierCeiling?: BackChestEquipmentTier;
+  allowBodyweightFallback?: boolean;
+  predicate?: (exercise: Exercise) => boolean;
+}): Exercise | null => {
+  const {
+    candidateIds,
+    section,
+    usedIds,
+    context,
+    tierCeiling,
+    allowBodyweightFallback = false,
+    predicate,
+  } = params;
+  const availableForBackChest = resolveBackChestMainAvailableSet(context.available);
+  const hasLoad = context.selectionContext.capabilityMode === "hasLoad";
+  const needsLoadedBias = hasLoad && context.selectionContext.painSeverity === "low";
+  for (const id of Array.from(new Set(candidateIds))) {
+    const exercise = exerciseById(id);
+    if (!exercise) continue;
+    if (usedIds.has(exercise.id)) continue;
+    if (
+      !isExerciseEligibleForProgramContext({
+        exercise,
+        available: availableForBackChest,
+        section,
+        context: context.selectionContext,
+      })
+    ) {
+      continue;
+    }
+    if (
+      section === "accessory" &&
+      needsLoadedBias &&
+      !allowBodyweightFallback &&
+      isBodyweightFallbackAccessory(exercise)
+    ) {
+      continue;
+    }
+    if (
+      section === "main" &&
+      needsLoadedBias &&
+      !allowBodyweightFallback &&
+      isBodyweightFallbackAccessory(exercise)
+    ) {
+      continue;
+    }
+    if (
+      section === "main" &&
+      !isBackChestExperienceEligible(
+        exercise,
+        context.selectionContext.experienceLevel
+      )
+    ) {
+      continue;
+    }
+    if (section === "main" && isBackChestScapularAccessoryPullExercise(exercise)) {
+      continue;
+    }
+    if (tierCeiling && resolveBackChestEquipmentTier(exercise) > tierCeiling) continue;
+    if (predicate && !predicate(exercise)) continue;
+    return exercise;
+  }
+  return null;
+};
+
+const getBackChestAnchorLadderIdsForRung = (params: {
+  role: BackChestAnchorRole;
+  rung: BackChestEquipmentTier;
+  hasPullupBar: boolean;
+}) => {
+  const { role, rung, hasPullupBar } = params;
+  const ladderByTier =
+    role === "horizontalPull"
+      ? BACK_CHEST_HORIZONTAL_PULL_LADDER
+      : role === "horizontalPush"
+      ? BACK_CHEST_HORIZONTAL_PUSH_LADDER
+      : hasPullupBar
+      ? BACK_CHEST_VERTICAL_PULL_PULLUP_LADDER
+      : BACK_CHEST_VERTICAL_PULL_PULLDOWN_LADDER;
+
+  const sourceIds = [
+    ...(ladderByTier[1] ?? []),
+    ...(ladderByTier[2] ?? []),
+    ...(ladderByTier[3] ?? []),
+  ];
+  const candidateIds = Array.from(
+    new Set(
+      sourceIds.filter((id) => {
+        const exercise = exerciseById(id);
+        if (!exercise) return false;
+        return resolveBackChestEquipmentTier(exercise) === rung;
+      })
+    )
+  );
+
+  if (role !== "verticalPull") return candidateIds;
+
+  const verticalPriority = (id: string) => {
+    const exercise = exerciseById(id);
+    if (!exercise) return Number.MAX_SAFE_INTEGER;
+    const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+    if (exercise.id === "weighted-pullup") return 0;
+    if (exercise.id === "neutral-grip-pullup") return 1;
+    if (
+      descriptor.includes("pullup") ||
+      descriptor.includes("pull-up") ||
+      descriptor.includes("chinup") ||
+      descriptor.includes("chin-up")
+    ) {
+      return 2;
+    }
+    if (exercise.id === "cable-lat-pulldown") return 3;
+    if (exercise.id === "machine-lat-pulldown") return 4;
+    if (descriptor.includes("pulldown")) return 5;
+    if (descriptor.includes("pullover")) return 7;
+    return 6;
+  };
+
+  return candidateIds.sort((left, right) => {
+    const rankDelta = verticalPriority(left) - verticalPriority(right);
+    if (rankDelta !== 0) return rankDelta;
+    return left.localeCompare(right);
+  });
+};
+
+const getBackChestAnchorFromMain = (
+  exercisesForDay: Exercise[],
+  role: BackChestAnchorRole
+) =>
+  exercisesForDay.find((exercise) => matchesBackChestAnchorRole(exercise, role)) ?? null;
+
+const getBackChestEligibleAnchorCandidates = (params: {
+  role: BackChestAnchorRole;
+  context: DayConstraintRepairContext;
+  tierProfile: BackChestTierProfile;
+}): Exercise[] => {
+  const { role, context, tierProfile } = params;
+  const availableForBackChest = resolveBackChestMainAvailableSet(context.available);
+  return exercises
+    .filter((exercise) => exercise.category === "main")
+    .filter((exercise) => matchesBackChestAnchorRole(exercise, role))
+    .filter((exercise) => !isIsolationExercise(exercise))
+    .filter((exercise) => !isBackChestScapularAccessoryPullExercise(exercise))
+    .filter((exercise) =>
+      isExerciseEligibleForProgramContext({
+        exercise,
+        available: availableForBackChest,
+        section: "main",
+        context: context.selectionContext,
+      })
+    )
+    .filter((exercise) =>
+      isBackChestExperienceEligible(exercise, context.selectionContext.experienceLevel)
+    )
+    .filter((exercise) =>
+      role === "horizontalPush"
+        ? isBackChestFloorPressAllowed(exercise, context, tierProfile)
+        : true
+    )
+    .filter((exercise) => resolveBackChestEquipmentTier(exercise) <= tierProfile.tierCeiling)
+    .sort((left, right) => left.id.localeCompare(right.id));
+};
+
+const selectBackChestAnchorExercise = (params: {
+  role: BackChestAnchorRole;
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+  tierProfile: BackChestTierProfile;
+  previousAnchor: Exercise | null;
+}): Exercise | null => {
+  const { role, usedIds, context, tierProfile, previousAnchor } = params;
+  const availableForBackChest = resolveBackChestMainAvailableSet(context.available);
+  const hasPullupBar = availableForBackChest.has("pullup_bar");
+  const previousRung = previousAnchor
+    ? resolveBackChestAnchorRung(role, previousAnchor, hasPullupBar)
+    : null;
+  const rungFloor =
+    previousRung && !tierProfile.painCapActive
+      ? toBackChestTier(Math.min(previousRung, tierProfile.tierCeiling))
+      : (1 as BackChestEquipmentTier);
+  const eligibleAnchorCandidates = getBackChestEligibleAnchorCandidates({
+    role,
+    context,
+    tierProfile,
+  }).filter((candidate) => !usedIds.has(candidate.id));
+  const hasTier2OrHigherCandidate = eligibleAnchorCandidates.some(
+    (candidate) => resolveBackChestEquipmentTier(candidate) >= 2
+  );
+  const highestEligibleTier = eligibleAnchorCandidates.reduce<BackChestEquipmentTier | null>(
+    (highest, candidate) => {
+      const tier = resolveBackChestEquipmentTier(candidate);
+      if (!highest || tier > highest) return tier;
+      return highest;
+    },
+    null
+  );
+
+  const phaseStage = context.selectionContext.phaseStage;
+  const desiredRung = resolveBackChestDesiredAnchorRung({
+    context,
+    tierProfile,
+  });
+  const minAllowedRung = tierProfile.painCapActive ? 1 : rungFloor;
+  let strictRungOrder: BackChestEquipmentTier[];
+  if (phaseStage === "activation") {
+    const activationMaxRung = toBackChestTier(Math.min(2, tierProfile.tierCeiling));
+    const activationMinRung = toBackChestTier(Math.min(minAllowedRung, activationMaxRung));
+    strictRungOrder = buildBackChestRungOrder({
+      targetRung: activationMinRung,
+      minRung: activationMinRung,
+      maxRung: activationMaxRung,
+    });
+  } else if (phaseStage === "skill") {
+    const enforceTier2Floor = !tierProfile.painCapActive && hasTier2OrHigherCandidate;
+    const skillMinRung = enforceTier2Floor
+      ? toBackChestTier(Math.max(2, minAllowedRung))
+      : minAllowedRung;
+    const skillTarget = toBackChestTier(Math.max(skillMinRung, desiredRung));
+    strictRungOrder = buildBackChestRungOrder({
+      targetRung: skillTarget,
+      minRung: skillMinRung,
+      maxRung: tierProfile.tierCeiling,
+    });
+  } else {
+    const growthTarget = toBackChestTier(
+      Math.max(minAllowedRung, Math.min(highestEligibleTier ?? desiredRung, tierProfile.tierCeiling))
+    );
+    strictRungOrder = [growthTarget];
+  }
+
+  const relaxedRungOrder = ([3, 2, 1] as BackChestEquipmentTier[])
+    .filter((rung) => rung <= tierProfile.tierCeiling)
+    .filter((rung) => rung >= minAllowedRung);
+  const rungOrder = Array.from(new Set([...strictRungOrder, ...relaxedRungOrder]));
+  for (const rung of rungOrder) {
+    const candidate = pickFirstBackChestCandidateByIds({
+      candidateIds: getBackChestAnchorLadderIdsForRung({
+        role,
+        rung,
+        hasPullupBar,
+      }),
+      section: "main",
+      usedIds,
+      context,
+      tierCeiling: tierProfile.tierCeiling,
+      allowBodyweightFallback: role === "verticalPull",
+      predicate: (exercise) => {
+        if (!matchesBackChestAnchorRole(exercise, role)) return false;
+        if (isIsolationExercise(exercise)) return false;
+        if (isBackChestScapularAccessoryPullExercise(exercise)) return false;
+        if (
+          !isBackChestExperienceEligible(
+            exercise,
+            context.selectionContext.experienceLevel
+          )
+        ) {
+          return false;
+        }
+        if (
+          role === "horizontalPush" &&
+          !isBackChestFloorPressAllowed(exercise, context, tierProfile)
+        ) {
+          return false;
+        }
+        const candidateRung = resolveBackChestAnchorRung(role, exercise, hasPullupBar);
+        return candidateRung >= rungFloor && candidateRung === rung;
+      },
+    });
+    if (candidate) return candidate;
+  }
+
+  for (const rung of rungOrder) {
+    const rungFallback = exercises
+      .filter((exercise) => exercise.category === "main")
+      .filter((exercise) => !usedIds.has(exercise.id))
+      .filter((exercise) =>
+        isExerciseEligibleForProgramContext({
+          exercise,
+          available: availableForBackChest,
+          section: "main",
+          context: context.selectionContext,
+        })
+      )
+      .filter((exercise) => matchesBackChestAnchorRole(exercise, role))
+      .filter((exercise) => !isIsolationExercise(exercise))
+      .filter((exercise) => !isBackChestScapularAccessoryPullExercise(exercise))
+      .filter((exercise) =>
+        isBackChestExperienceEligible(
+          exercise,
+          context.selectionContext.experienceLevel
+        )
+      )
+      .filter((exercise) =>
+        role === "horizontalPush"
+          ? isBackChestFloorPressAllowed(exercise, context, tierProfile)
+          : true
+      )
+      .filter((exercise) => resolveBackChestEquipmentTier(exercise) <= tierProfile.tierCeiling)
+      .filter((exercise) => resolveBackChestAnchorRung(role, exercise, hasPullupBar) === rung)
+      .sort((left, right) => left.id.localeCompare(right.id))[0];
+    if (rungFallback) return rungFallback;
+  }
+
+  const generic = exercises
+    .filter((exercise) => exercise.category === "main")
+    .filter((exercise) => !usedIds.has(exercise.id))
+    .filter((exercise) =>
+      isExerciseEligibleForProgramContext({
+        exercise,
+        available: availableForBackChest,
+        section: "main",
+        context: context.selectionContext,
+      })
+    )
+    .filter((exercise) => matchesBackChestAnchorRole(exercise, role))
+    .filter((exercise) => !isIsolationExercise(exercise))
+    .filter((exercise) => !isBackChestScapularAccessoryPullExercise(exercise))
+    .filter((exercise) =>
+      isBackChestExperienceEligible(
+        exercise,
+        context.selectionContext.experienceLevel
+      )
+    )
+    .filter((exercise) =>
+      role === "horizontalPush"
+        ? isBackChestFloorPressAllowed(exercise, context, tierProfile)
+        : true
+    )
+    .filter((exercise) => resolveBackChestEquipmentTier(exercise) <= tierProfile.tierCeiling)
+    .sort((left, right) => left.id.localeCompare(right.id))[0];
+
+  return generic ?? null;
+};
+
+const selectBackChestSupportPullExercise = (params: {
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+  tierProfile: BackChestTierProfile;
+}): Exercise | null => {
+  const { usedIds, context, tierProfile } = params;
+  const phasePool = BACK_CHEST_SUPPORT_PULL_PHASE_POOLS[context.selectionContext.phaseStage] ?? [];
+  const candidate = pickFirstBackChestCandidateByIds({
+    candidateIds: phasePool,
+    section: "main",
+    usedIds,
+    context,
+    tierCeiling: tierProfile.tierCeiling,
+    predicate: (exercise) =>
+      matchesBackChestMainSlotKind({
+        exercise,
+        slotKind: "mainPullSupport",
+        slotLane: "pull",
+      }) &&
+      !isIsolationExercise(exercise),
+  });
+  if (candidate) return candidate;
+
+  return pickFirstBackChestCandidateByIds({
+    candidateIds: phasePool,
+    section: "main",
+    usedIds,
+    context,
+    tierCeiling: tierProfile.tierCeiling,
+    allowBodyweightFallback: true,
+    predicate: (exercise) =>
+      matchesBackChestMainSlotKind({
+        exercise,
+        slotKind: "mainPullSupport",
+        slotLane: "pull",
+      }) &&
+      !isIsolationExercise(exercise),
+  });
+};
+
+const selectBackChestVerticalPushExercise = (params: {
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+  tierProfile: BackChestTierProfile;
+}): Exercise | null => {
+  const { usedIds, context, tierProfile } = params;
+  const desiredRung = resolveBackChestDesiredAnchorRung({ context, tierProfile });
+  const rungOrder = buildBackChestRungOrder({
+    targetRung: desiredRung,
+    minRung: 1,
+    maxRung: tierProfile.tierCeiling,
+  });
+  for (const rung of rungOrder) {
+    const candidate = pickFirstBackChestCandidateByIds({
+      candidateIds: BACK_CHEST_VERTICAL_PUSH_LADDER[rung],
+      section: "main",
+      usedIds,
+      context,
+      tierCeiling: tierProfile.tierCeiling,
+      predicate: (exercise) =>
+        matchesMainLanePattern(exercise, "verticalPush") &&
+        !isIsolationExercise(exercise),
+    });
+    if (candidate) return candidate;
+  }
+  return null;
+};
+
 const evaluateBackChestMainIntelligence = (params: {
   day: ProgramDay;
   context: DayConstraintRepairContext;
@@ -6424,10 +7653,6 @@ const evaluateBackChestMainIntelligence = (params: {
     .filter((exercise): exercise is Exercise => Boolean(exercise));
 
   const mainCount = mainExercises.length;
-  const slotPlan = getBackChestMainSlotPlan({
-    mainCount,
-    selectionContext: context.selectionContext,
-  });
   const horizontalPullCount = mainExercises.filter((exercise) =>
     hasHorizontalPullSignature(exercise)
   ).length;
@@ -6438,7 +7663,7 @@ const evaluateBackChestMainIntelligence = (params: {
     hasVerticalPullSignature(exercise)
   ).length;
   const anchorIntegrityOk =
-    horizontalPullCount === 1 && horizontalPushCount === 1 && verticalPullCount >= 1;
+    horizontalPullCount === 1 && horizontalPushCount === 1 && verticalPullCount === 1;
   const pullVolume = [...mainExercises, ...accessoryExercises].filter((exercise) =>
     isBackChestMainPull(exercise)
   ).length;
@@ -6447,7 +7672,9 @@ const evaluateBackChestMainIntelligence = (params: {
   ).length;
   const pullBiasOk = pullVolume >= pushVolume;
   const noDuplicateRowAngles = !hasDuplicateBackChestRowAngles(mainExercises);
-  const noIsolationMains = !mainExercises.some((exercise) => isIsolationExercise(exercise));
+  const noIsolationMains =
+    !mainExercises.some((exercise) => isIsolationExercise(exercise)) &&
+    !mainExercises.some((exercise) => isBackChestScapularAccessoryPullExercise(exercise));
 
   const pressMainCount = mainExercises.filter((exercise) =>
     isBackChestMainPress(exercise)
@@ -6459,215 +7686,99 @@ const evaluateBackChestMainIntelligence = (params: {
     context.selectionContext.experienceLevel !== "advanced" || mainCount < 5
       ? true
       : pressMainCount <= 2 &&
-        pullMainCount >= 3 &&
+        pullMainCount >= Math.max(3, pressMainCount * 2) &&
         verticalPullCount >= 1 &&
         horizontalPullCount >= 1 &&
         noDuplicateRowAngles;
 
-  const slotTiers = slotPlan
-    .map((slot, index) => {
-      const exercise = mainExercises[index];
-      if (!exercise) return null;
-      return {
-        slot,
-        exercise,
-        tier: resolveBackChestEquipmentTier(exercise),
-        highestTierForSlot: resolveHighestBackChestTierForSlot({
-          slotKind: slot.slotKind,
-          slotLane: slot.lane,
-          available: context.available,
-          context: context.selectionContext,
-        }),
-      };
-    })
-    .filter(
-      (
-        entry
-      ): entry is {
-        slot: { lane: MainLane; slotKind: string; slotId: string };
-        exercise: Exercise;
-        tier: BackChestEquipmentTier;
-        highestTierForSlot: BackChestEquipmentTier;
-      } => Boolean(entry)
+  const tierProfile = resolveBackChestTierProfile(context);
+  const hasPullupBar = context.available.has("pullup_bar");
+  const horizontalPullExercise = getBackChestAnchorFromMain(
+    mainExercises,
+    "horizontalPull"
+  );
+  const verticalPullExercise = getBackChestAnchorFromMain(mainExercises, "verticalPull");
+  const horizontalPushExercise = getBackChestAnchorFromMain(
+    mainExercises,
+    "horizontalPush"
+  );
+  const phaseStage = context.selectionContext.phaseStage;
+  const previousBackChestDay = getBackChestDayFromWeek(context.previousWeek);
+  const previousMainExercises = previousBackChestDay
+    ? previousBackChestDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    : [];
+  const anchorRoles: BackChestAnchorRole[] = [
+    "horizontalPull",
+    "verticalPull",
+    "horizontalPush",
+  ];
+  const anchorTierWithinCeiling = anchorRoles.every((role) => {
+    const anchor = getBackChestAnchorFromMain(mainExercises, role);
+    if (!anchor) return false;
+    return resolveBackChestEquipmentTier(anchor) <= tierProfile.tierCeiling;
+  });
+  const noAnchorRegression = anchorRoles.every((role) => {
+    const currentAnchor = getBackChestAnchorFromMain(mainExercises, role);
+    if (!currentAnchor) return false;
+    if (tierProfile.painCapActive) return true;
+    const previousAnchor = getBackChestAnchorFromMain(previousMainExercises, role);
+    if (!previousAnchor) return true;
+    const currentRung = resolveBackChestAnchorRung(role, currentAnchor, hasPullupBar);
+    const previousRung = resolveBackChestAnchorRung(role, previousAnchor, hasPullupBar);
+    return currentRung >= toBackChestTier(Math.min(previousRung, tierProfile.tierCeiling));
+  });
+  const equipmentTierEscalationOk = anchorTierWithinCeiling && noAnchorRegression;
+
+  const anchorTierRuleOk = (role: BackChestAnchorRole, selected: Exercise | null) => {
+    if (!selected) return false;
+    const selectedTier = resolveBackChestAnchorRung(role, selected, hasPullupBar);
+    const eligibleCandidates = getBackChestEligibleAnchorCandidates({
+      role,
+      context,
+      tierProfile,
+    });
+    const highestTier = eligibleCandidates.reduce<BackChestEquipmentTier>((highest, candidate) => {
+      const tier = resolveBackChestEquipmentTier(candidate);
+      return tier > highest ? tier : highest;
+    }, 1);
+    const hasTier2OrHigher = eligibleCandidates.some(
+      (candidate) => resolveBackChestEquipmentTier(candidate) >= 2
+    );
+    const hasTier1Or2 = eligibleCandidates.some(
+      (candidate) => resolveBackChestEquipmentTier(candidate) <= 2
     );
 
-  let equipmentTierEscalationOk = true;
-  if (context.selectionContext.phaseStage === "activation") {
-    equipmentTierEscalationOk = slotTiers.every(
-      (entry) => entry.tier <= 2 || context.selectionContext.painSeverity !== "low"
-    );
-  } else if (
-    context.selectionContext.phaseStage === "skill" &&
-    context.selectionContext.capabilityMode === "hasLoad" &&
-    context.selectionContext.painSeverity === "low"
-  ) {
-    const tier2PlusCount = slotTiers.filter((entry) => entry.tier >= 2).length;
-    equipmentTierEscalationOk =
-      tier2PlusCount >= Math.max(1, Math.floor(slotTiers.length / 2));
-  } else if (
-    context.selectionContext.phaseStage === "growth" &&
-    context.selectionContext.painSeverity === "low"
-  ) {
-    equipmentTierEscalationOk = slotTiers
-      .filter((entry) => entry.slot.slotKind !== "mainPullVertical")
-      .every((entry) => entry.tier >= entry.highestTierForSlot);
-  }
-
-  const horizontalRowSlotIndex = slotPlan.findIndex(
-    (slot) => slot.slotKind === "mainPullHorizontal"
-  );
-  const verticalPullSlotIndex = slotPlan.findIndex(
-    (slot) => slot.slotKind === "mainPullVertical"
-  );
-  const pushSlotIndex = slotPlan.findIndex((slot) => slot.lane === "push");
-  const horizontalRowExercise =
-    horizontalRowSlotIndex >= 0 ? mainExercises[horizontalRowSlotIndex] : null;
-  const verticalPullExercise =
-    verticalPullSlotIndex >= 0 ? mainExercises[verticalPullSlotIndex] : null;
-  const pushExercise = pushSlotIndex >= 0 ? mainExercises[pushSlotIndex] : null;
-
-  let rowLadderOk = true;
-  if (horizontalRowExercise) {
-    if (context.selectionContext.experienceLevel === "beginner") {
-      rowLadderOk =
-        isBackChestSupportedRowForLadder(horizontalRowExercise) &&
-        !isBackChestUnsupportedHingeRowExercise(horizontalRowExercise);
-    } else if (
-      context.selectionContext.experienceLevel === "intermediate" &&
-      context.selectionContext.phaseStage !== "activation" &&
-      context.selectionContext.painSeverity === "low" &&
-      hasEligibleBackChestMainCandidate({
-        slotKind: "mainPullHorizontal",
-        slotLane: "pull",
-        context,
-        predicate: (exercise) => isBackChestIntermediateRowForLadder(exercise),
-      })
-    ) {
-      rowLadderOk = isBackChestIntermediateRowForLadder(horizontalRowExercise);
-    } else if (
-      context.selectionContext.experienceLevel === "advanced" &&
-      context.selectionContext.phaseStage === "growth" &&
-      context.selectionContext.painSeverity === "low" &&
-      hasEligibleBackChestMainCandidate({
-        slotKind: "mainPullHorizontal",
-        slotLane: "pull",
-        context,
-        predicate: (exercise) => isBackChestAdvancedRowForLadder(exercise),
-      })
-    ) {
-      rowLadderOk = isBackChestAdvancedRowForLadder(horizontalRowExercise);
+    if (phaseStage === "activation") {
+      if (hasTier1Or2) return selectedTier <= Math.min(2, tierProfile.tierCeiling);
+      return selectedTier >= 1;
     }
-  }
 
-  let pressLadderOk = true;
-  if (pushExercise) {
-    const descriptor = `${pushExercise.id} ${pushExercise.name}`.toLowerCase();
-    const floorPressPattern =
-      descriptor.includes("floor-press") ||
-      descriptor.includes("floor press") ||
-      pushExercise.id === "dumbbell-floor-press" ||
-      pushExercise.id === "barbell-floor-press";
-    const beginnerSafePress =
-      pushExercise.id === "machine-chest-press" ||
-      pushExercise.id === "incline-pushup" ||
-      pushExercise.id === "band-chest-press";
-    const intermediatePress =
-      pushExercise.id === "dumbbell-bench-press" ||
-      pushExercise.id === "dumbbell-incline-press";
-    const advancedPress =
-      pushExercise.id === "barbell-bench-press-paused" ||
-      (pushExercise.equipment.includes("barbell") && descriptor.includes("bench"));
-
-    if (context.selectionContext.experienceLevel === "beginner") {
-      if (
-        context.selectionContext.capabilityMode === "hasLoad" &&
-        hasEligibleBackChestMainCandidate({
-          slotKind: "mainPush",
-          slotLane: "push",
-          context,
-          predicate: (exercise) =>
-            exercise.id === "machine-chest-press" || exercise.id === "incline-pushup",
-        })
-      ) {
-        pressLadderOk = beginnerSafePress;
-      }
-    } else if (context.selectionContext.experienceLevel === "intermediate") {
-      if (floorPressPattern && context.selectionContext.painSeverity === "low") {
-        pressLadderOk = false;
-      } else if (
-        context.selectionContext.phaseStage !== "activation" &&
-        context.selectionContext.capabilityMode === "hasLoad" &&
-        context.selectionContext.painSeverity === "low" &&
-        hasEligibleBackChestMainCandidate({
-          slotKind: "mainPush",
-          slotLane: "push",
-          context,
-          predicate: (exercise) =>
-            exercise.id === "dumbbell-bench-press" ||
-            exercise.id === "dumbbell-incline-press",
-        })
-      ) {
-        pressLadderOk = intermediatePress;
-      }
-    } else {
-      if (floorPressPattern && context.selectionContext.painSeverity === "low") {
-        pressLadderOk = false;
-      } else if (
-        context.selectionContext.phaseStage === "growth" &&
-        context.selectionContext.painSeverity === "low" &&
-        hasEligibleBackChestMainCandidate({
-          slotKind: "mainPush",
-          slotLane: "push",
-          context,
-          predicate: (exercise) =>
-            exercise.id === "barbell-bench-press-paused" ||
-            (exercise.equipment.includes("barbell") &&
-              `${exercise.id} ${exercise.name}`.toLowerCase().includes("bench")),
-        })
-      ) {
-        pressLadderOk = advancedPress;
-      }
+    if (phaseStage === "skill") {
+      if (tierProfile.painCapActive) return selectedTier >= 1;
+      if (hasTier2OrHigher) return selectedTier >= 2;
+      return selectedTier >= 1;
     }
-  }
 
-  let pullupLadderOk = true;
-  if (verticalPullExercise && context.available.has("pullup_bar")) {
-    const assistedEligible = hasEligibleBackChestMainCandidate({
-      slotKind: "mainPullVertical",
-      slotLane: "pull",
-      context,
-      predicate: (exercise) => isAssistedPullupExercise(exercise),
-    });
-    const bodyweightEligible = hasEligibleBackChestMainCandidate({
-      slotKind: "mainPullVertical",
-      slotLane: "pull",
-      context,
-      predicate: (exercise) => isBodyweightPullupExercise(exercise),
-    });
-    const weightedEligible = hasEligibleBackChestMainCandidate({
-      slotKind: "mainPullVertical",
-      slotLane: "pull",
-      context,
-      predicate: (exercise) => isWeightedPullupExercise(exercise),
-    });
-    if (context.selectionContext.experienceLevel === "beginner") {
-      if (assistedEligible) {
-        pullupLadderOk = isAssistedPullupExercise(verticalPullExercise);
-      }
-    } else if (context.selectionContext.experienceLevel === "intermediate") {
-      if (bodyweightEligible && context.selectionContext.painSeverity === "low") {
-        pullupLadderOk = isBodyweightPullupExercise(verticalPullExercise);
-      }
-    } else if (
-      context.selectionContext.phaseStage === "growth" &&
-      weightedEligible &&
-      context.selectionContext.painSeverity === "low"
-    ) {
-      pullupLadderOk = isWeightedPullupExercise(verticalPullExercise);
+    if (tierProfile.painCapActive) {
+      const safetyFloor = toBackChestTier(Math.max(1, highestTier - 1));
+      return selectedTier >= safetyFloor;
     }
-  }
+    return selectedTier >= highestTier;
+  };
 
-  const movementLadderOk = rowLadderOk && pressLadderOk && pullupLadderOk;
+  const experienceMinOk = anchorRoles.every((role) => {
+    const anchor = getBackChestAnchorFromMain(mainExercises, role);
+    if (!anchor) return false;
+    return isBackChestExperienceEligible(anchor, context.selectionContext.experienceLevel);
+  });
+  const rowLadderOk = anchorTierRuleOk("horizontalPull", horizontalPullExercise);
+  const pullupLadderOk = anchorTierRuleOk("verticalPull", verticalPullExercise);
+  const pressLadderOk = anchorTierRuleOk("horizontalPush", horizontalPushExercise);
+  const movementLadderOk =
+    rowLadderOk && pullupLadderOk && pressLadderOk && experienceMinOk;
   const ok =
     anchorIntegrityOk &&
     pullBiasOk &&
@@ -6700,9 +7811,6 @@ const repairBackChestMainIntelligence = (params: {
   const { day, context } = params;
   if (!isBackChestDayTitle(day.title)) return { day };
 
-  const baseline = evaluateBackChestMainIntelligence({ day, context });
-  if (baseline.ok) return { day };
-
   const mainEntries = day.routine
     .map((item, index) => ({ item, index }))
     .filter((entry) => entry.item.section === "main");
@@ -6713,178 +7821,170 @@ const repairBackChestMainIntelligence = (params: {
     };
   }
 
-  const phaseIndex = phaseIndexFromStage(context.selectionContext.phaseStage);
-  const experience = getExperienceProfile(
-    toExperienceLevelLabel(context.selectionContext.experienceLevel),
-    context.selectionContext.goal,
-    phaseIndex
-  );
+  const tierProfile = resolveBackChestTierProfile(context);
+  const availableForBackChest = resolveBackChestMainAvailableSet(context.available);
   const mainSlotPlan = getBackChestMainSlotPlan({
     mainCount: mainEntries.length,
     selectionContext: context.selectionContext,
   });
-  const expectedLaneCounts = mainSlotPlan.reduce((acc, slot) => {
-    acc[slot.lane] = (acc[slot.lane] ?? 0) + 1;
-    return acc;
-  }, {} as Partial<Record<MainLane, number>>);
+  const previousBackChestDay = getBackChestDayFromWeek(context.previousWeek);
+  const previousMainExercises = previousBackChestDay
+    ? previousBackChestDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    : [];
   const usedIds = new Set(
     day.routine
       .filter((item) => item.section !== "main")
       .map((item) => item.exerciseId)
   );
-  const selectedMainIds: string[] = [];
+  const repairedMainIds = mainSlotPlan.map((slot, slotIndex) => {
+    let selectedExercise: Exercise | null = null;
+    if (slot.slotKind === "mainPullHorizontal") {
+      selectedExercise = selectBackChestAnchorExercise({
+        role: "horizontalPull",
+        usedIds,
+        context,
+        tierProfile,
+        previousAnchor: getBackChestAnchorFromMain(previousMainExercises, "horizontalPull"),
+      });
+    } else if (slot.slotKind === "mainPullVertical") {
+      selectedExercise = selectBackChestAnchorExercise({
+        role: "verticalPull",
+        usedIds,
+        context,
+        tierProfile,
+        previousAnchor: getBackChestAnchorFromMain(previousMainExercises, "verticalPull"),
+      });
+    } else if (slot.lane === "push") {
+      selectedExercise = selectBackChestAnchorExercise({
+        role: "horizontalPush",
+        usedIds,
+        context,
+        tierProfile,
+        previousAnchor: getBackChestAnchorFromMain(previousMainExercises, "horizontalPush"),
+      });
+    } else if (slot.slotKind === "mainPullSupport") {
+      selectedExercise = selectBackChestSupportPullExercise({
+        usedIds,
+        context,
+        tierProfile,
+      });
+    } else if (slot.lane === "verticalPush") {
+      selectedExercise = selectBackChestVerticalPushExercise({
+        usedIds,
+        context,
+        tierProfile,
+      });
+    }
 
-  const pickUniqueMainCandidate = (params: {
-    preferredId: string;
-    fallbackIds: string[];
-    slot: { lane: MainLane; slotKind: string; slotId: string };
-  }) => {
-    const { preferredId, fallbackIds, slot } = params;
-    const candidateIds = Array.from(new Set([preferredId, ...fallbackIds]));
-    const scored = candidateIds
-      .map((id, order) => ({ id, order, exercise: exerciseById(id) }))
-      .filter(
-        (entry): entry is { id: string; order: number; exercise: Exercise } =>
-          Boolean(entry.exercise)
-      )
-      .filter((entry) => !usedIds.has(entry.id))
-      .filter((entry) =>
-        isExerciseEligibleForProgramContext({
-          exercise: entry.exercise,
-          available: context.available,
-          section: "main",
-          context: context.selectionContext,
-        })
-      )
-      .filter((entry) =>
+    if (!selectedExercise) {
+      const fallbackCurrentId = mainEntries[slotIndex]?.item.exerciseId;
+      const fallbackCurrent = fallbackCurrentId ? exerciseById(fallbackCurrentId) : null;
+      const fallbackCurrentEligible =
+        Boolean(fallbackCurrent) &&
+        !usedIds.has(fallbackCurrent!.id) &&
+        !isIsolationExercise(fallbackCurrent!) &&
+        !isBackChestScapularAccessoryPullExercise(fallbackCurrent!) &&
+        isBackChestExperienceEligible(
+          fallbackCurrent!,
+          context.selectionContext.experienceLevel
+        ) &&
+        resolveBackChestEquipmentTier(fallbackCurrent!) <= tierProfile.tierCeiling &&
         matchesBackChestMainSlotKind({
-          exercise: entry.exercise,
+          exercise: fallbackCurrent!,
           slotKind: slot.slotKind,
           slotLane: slot.lane,
-        })
-      )
-      .map((entry) => {
-        const detail = scoreExerciseForContextDetailed(
-          entry.exercise,
-          "main",
-          context.selectionContext,
-          context.available,
-          {
-            slotId: slot.slotId,
-            dayTitle: day.title,
-            dayFocusTags: day.focusTags,
-            slotKind: slot.slotKind,
-            slotLane: slot.lane,
-            selectedMainExerciseIds: [...selectedMainIds],
-            expectedLaneCounts,
-            capabilityMode: context.capabilityMode,
-          }
-        );
-        const capabilityBonus = getCapabilitySlotBonus({
-          exercise: entry.exercise,
+        }) &&
+        isExerciseEligibleForProgramContext({
+          exercise: fallbackCurrent!,
+          available: availableForBackChest,
           section: "main",
-          auditMeta: {
-            slotId: slot.slotId,
-            dayTitle: day.title,
-            dayFocusTags: day.focusTags,
-            slotKind: slot.slotKind,
-            slotLane: slot.lane,
-            selectedMainExerciseIds: [...selectedMainIds],
-            expectedLaneCounts,
-            capabilityMode: context.capabilityMode,
-          },
-        });
-        return {
-          id: entry.id,
-          order: entry.order,
-          score: detail.score + capabilityBonus.bonus,
-        };
-      })
-      .sort((left, right) => {
-        if (right.score !== left.score) return right.score - left.score;
-        return left.order - right.order;
-      });
-    return scored[0]?.id ?? null;
-  };
+          context: context.selectionContext,
+        }) &&
+        (slot.lane !== "push" ||
+          isBackChestFloorPressAllowed(fallbackCurrent!, context, tierProfile));
+      if (fallbackCurrentEligible) {
+        selectedExercise = fallbackCurrent!;
+      }
+    }
 
-  const repairedMainIds = mainSlotPlan.map((slot, slotIndex) => {
-    const auditMeta: SelectionAuditMeta = {
-      slotId: slot.slotId,
-      dayTitle: day.title,
-      dayFocusTags: day.focusTags,
-      slotKind: slot.slotKind,
-      slotLane: slot.lane,
-      selectedMainExerciseIds: [...selectedMainIds],
-      expectedLaneCounts,
-      capabilityMode: context.capabilityMode,
-    };
-    const preferredId =
-      slot.lane === "push"
-        ? choosePushCompoundId(
-            phaseIndex,
-            context.available,
-            experience,
-            context.selectionContext,
-            auditMeta
+    if (!selectedExercise) {
+      selectedExercise =
+        exercises
+          .filter((exercise) => exercise.category === "main")
+          .filter((exercise) => !usedIds.has(exercise.id))
+          .filter((exercise) =>
+            isExerciseEligibleForProgramContext({
+              exercise,
+              available: availableForBackChest,
+              section: "main",
+              context: context.selectionContext,
+            })
           )
-        : slot.lane === "verticalPush"
-        ? chooseVerticalPushId(
-            phaseIndex,
-            context.available,
-            experience,
-            context.selectionContext,
-            auditMeta
+          .filter((exercise) =>
+            matchesBackChestMainSlotKind({
+              exercise,
+              slotKind: slot.slotKind,
+              slotLane: slot.lane,
+            })
           )
-        : slot.slotKind === "mainPullVertical"
-        ? chooseBackChestVerticalPullId(
-            phaseIndex,
-            context.available,
-            experience,
-            context.selectionContext,
-            auditMeta
+          .filter((exercise) => !isIsolationExercise(exercise))
+          .filter((exercise) => !isBackChestScapularAccessoryPullExercise(exercise))
+          .filter((exercise) =>
+            isBackChestExperienceEligible(
+              exercise,
+              context.selectionContext.experienceLevel
+            )
           )
-        : slot.slotKind === "mainPullSupport"
-        ? chooseBackChestSupportPullId(
-            phaseIndex,
-            context.available,
-            experience,
-            context.selectionContext,
-            auditMeta
+          .filter((exercise) => resolveBackChestEquipmentTier(exercise) <= tierProfile.tierCeiling)
+          .filter((exercise) =>
+            slot.lane === "push"
+              ? isBackChestFloorPressAllowed(exercise, context, tierProfile)
+              : true
           )
-        : choosePullCompoundId(
-            phaseIndex,
-            context.available,
-            experience,
-            context.selectionContext,
-            auditMeta
-          );
-    const fallbackIds =
-      slot.lane === "push"
-        ? getPushCompoundCandidateIds(phaseIndex, experience, context.selectionContext)
-        : slot.lane === "verticalPush"
-        ? getVerticalPushCandidateIds(phaseIndex, experience, context.selectionContext)
-        : slot.slotKind === "mainPullVertical"
-        ? getBackChestVerticalPullCandidateIds(
-            phaseIndex,
-            experience,
-            context.selectionContext
+          .sort((left, right) => left.id.localeCompare(right.id))[0] ?? null;
+    }
+
+    let selectedId =
+      selectedExercise?.id ?? mainEntries[slotIndex]?.item.exerciseId ?? "machine-seated-row";
+    const selectedFallbackExercise = exerciseById(selectedId);
+    if (selectedFallbackExercise && isBackChestScapularAccessoryPullExercise(selectedFallbackExercise)) {
+      const structuralFallback =
+        exercises
+          .filter((exercise) => exercise.category === "main")
+          .filter((exercise) => !usedIds.has(exercise.id))
+          .filter((exercise) =>
+            isExerciseEligibleForProgramContext({
+              exercise,
+              available: availableForBackChest,
+              section: "main",
+              context: context.selectionContext,
+            })
           )
-        : slot.slotKind === "mainPullSupport"
-        ? getBackChestSupportPullCandidateIds(
-            phaseIndex,
-            experience,
-            context.selectionContext
+          .filter((exercise) =>
+            matchesBackChestMainSlotKind({
+              exercise,
+              slotKind: slot.slotKind,
+              slotLane: slot.lane,
+            })
           )
-        : getPullCompoundCandidateIds(phaseIndex, experience, context.selectionContext);
-    const uniqueId = pickUniqueMainCandidate({
-      preferredId,
-      fallbackIds,
-      slot,
-    });
-    const fallbackCurrentId = mainEntries[slotIndex]?.item.exerciseId;
-    const selectedId = uniqueId ?? fallbackCurrentId ?? preferredId;
+          .filter((exercise) => !isIsolationExercise(exercise))
+          .filter((exercise) => !isBackChestScapularAccessoryPullExercise(exercise))
+          .filter((exercise) =>
+            isBackChestExperienceEligible(
+              exercise,
+              context.selectionContext.experienceLevel
+            )
+          )
+          .filter((exercise) => resolveBackChestEquipmentTier(exercise) <= tierProfile.tierCeiling)
+          .sort((left, right) => left.id.localeCompare(right.id))[0] ?? null;
+      if (structuralFallback) {
+        selectedId = structuralFallback.id;
+      }
+    }
     usedIds.add(selectedId);
-    selectedMainIds.push(selectedId);
     return selectedId;
   });
 
@@ -6918,26 +8018,25 @@ const repairBackChestMainIntelligence = (params: {
 
 const repairBackChestDayIntelligence = (params: {
   day: ProgramDay;
+  daysPerWeek: 3 | 4 | 5;
   context: DayConstraintRepairContext;
 }): { day: ProgramDay; warnings: string[] } => {
-  const { day, context } = params;
+  const { day, daysPerWeek, context } = params;
   if (!isBackChestDayTitle(day.title)) return { day, warnings: [] };
 
   const warnings: string[] = [];
   let updatedDay = day;
 
-  const mainStatus = evaluateBackChestMainIntelligence({ day: updatedDay, context });
-  if (!mainStatus.ok) {
-    const repairedMain = repairBackChestMainIntelligence({
-      day: updatedDay,
-      context,
-    });
-    if (repairedMain.warning) warnings.push(repairedMain.warning);
-    updatedDay = repairedMain.day;
-  }
+  const repairedMain = repairBackChestMainIntelligence({
+    day: updatedDay,
+    context,
+  });
+  if (repairedMain.warning) warnings.push(repairedMain.warning);
+  updatedDay = repairedMain.day;
 
   const repairedAccessory = repairBackChestAccessoryArchitecture({
     day: updatedDay,
+    daysPerWeek,
     context,
   });
   if (repairedAccessory.warning) warnings.push(repairedAccessory.warning);
@@ -6964,6 +8063,7 @@ const repairBackChestDayIntelligence = (params: {
   const finalAccessoryStatus = evaluateBackChestAccessoryIntelligence({
     day: updatedDay,
     context,
+    daysPerWeek,
     mainExercises: finalMainExercises,
     accessoryExercises: finalAccessoryExercises,
   });
@@ -7096,7 +8196,11 @@ const applyDayCurriculumConstraints = (params: {
     context,
   });
   const architectureAdjustedWeek = weeklyRepaired.week.map((day) => {
-    const repaired = repairBackChestDayIntelligence({ day, context });
+    const repaired = repairBackChestDayIntelligence({
+      day,
+      daysPerWeek,
+      context,
+    });
     repaired.warnings.forEach((message) => {
       accumulatedWarnings.push({
         dayTitle: day.title,
@@ -7443,6 +8547,12 @@ const isExerciseEligibleForProgramContext = (params: {
   context: SelectionContext;
 }) => {
   const { exercise, available, section, context } = params;
+  if (exercise.experienceMin) {
+    const minimumExperience = normalizeExperienceLevel(exercise.experienceMin);
+    if (experienceRankByLevel[context.experienceLevel] < experienceRankByLevel[minimumExperience]) {
+      return false;
+    }
+  }
   const intent = context.intentProfile;
   if (section === "main" && exercise.id === "goblet-squat" && available.has("machines")) {
     return false;
@@ -8546,6 +9656,77 @@ const hasVerticalPullSignature = (exercise: Exercise) => {
   );
 };
 
+const BACK_CHEST_MAIN_SCAPULAR_PULL_BLOCKLIST = new Set([
+  "cable-face-pull",
+  "face-pull",
+  "suspension-face-pull",
+  "machine-rear-delt-row",
+  "machine-reverse-pec-deck",
+  "dumbbell-rear-delt-fly",
+  "cable-rear-delt-fly",
+  "prone-y-raise",
+  "cable-external-rotation",
+  "cable-external-rotation-pressout",
+  "suspension-rear-delt-row",
+  "prone-swimmer",
+  "reverse-snow-angel",
+  "prone-ytw",
+  "band-pull-aparts",
+  "band-pull-apart",
+  "back-widow",
+  "scap-pullup",
+]);
+
+const isBackChestScapularAccessoryPullExercise = (exercise: Exercise) => {
+  const patterns = new Set(exercise.movementPattern.map((pattern) => normalizeTagToken(pattern)));
+  if (!patterns.has("pull")) return false;
+  if (BACK_CHEST_MAIN_SCAPULAR_PULL_BLOCKLIST.has(exercise.id)) return true;
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    descriptor.includes("face-pull") ||
+    descriptor.includes("face pull") ||
+    descriptor.includes("rear-delt") ||
+    descriptor.includes("rear delt") ||
+    descriptor.includes("reverse-pec-deck") ||
+    descriptor.includes("reverse pec deck") ||
+    descriptor.includes("rear-delt-fly") ||
+    descriptor.includes("rear delt fly") ||
+    descriptor.includes("pull-apart") ||
+    descriptor.includes("pull apart") ||
+    descriptor.includes("snow angel") ||
+    descriptor.includes("swimmer") ||
+    descriptor.includes("ytw") ||
+    descriptor.includes("y-raise") ||
+    descriptor.includes("y raise") ||
+    descriptor.includes("external-rotation") ||
+    descriptor.includes("external rotation") ||
+    descriptor.includes("scap-pullup") ||
+    descriptor.includes("scap pullup")
+  );
+};
+
+const isBackChestCompoundPullMainCandidate = (exercise: Exercise) => {
+  const hasPullPattern = exercise.movementPattern.some(
+    (pattern) => normalizeTagToken(pattern) === "pull"
+  );
+  if (!hasPullPattern) return false;
+  if (isIsolationExercise(exercise)) return false;
+  if (isBackChestScapularAccessoryPullExercise(exercise)) return false;
+  return hasHorizontalPullSignature(exercise) || hasVerticalPullSignature(exercise);
+};
+
+const isBackChestMainScapularPullDisallowedForSlot = (params: {
+  exercise: Exercise;
+  section?: ProgramRoutineItem["section"];
+  auditMeta?: SelectionAuditMeta;
+}) => {
+  const { exercise, section, auditMeta } = params;
+  if (section !== "main" || !auditMeta) return false;
+  if (!isBackChestDayTitle(auditMeta.dayTitle)) return false;
+  if (!auditMeta.slotKind.startsWith("mainPull")) return false;
+  return isBackChestScapularAccessoryPullExercise(exercise);
+};
+
 type BackChestEquipmentTier = 1 | 2 | 3;
 
 const isPullupDescriptor = (exercise: Exercise) => {
@@ -8580,25 +9761,12 @@ const isBackChestUnsupportedHingeRowExercise = (exercise: Exercise) => {
 };
 
 const resolveBackChestEquipmentTier = (exercise: Exercise): BackChestEquipmentTier => {
-  const token = `${exercise.id} ${exercise.name}`.toLowerCase();
-  if (exercise.equipment.includes("barbell")) return 3;
-  if (isWeightedPullupExercise(exercise)) return 3;
-  if (exercise.loadType === "weighted" && (token.includes("weighted pull-up") || token.includes("weighted pullup"))) {
-    return 3;
-  }
-  if (
-    exercise.loadType === "assisted" ||
-    exercise.equipment.includes("machines") ||
-    exercise.equipment.includes("bands") ||
-    exercise.equipment.includes("cables")
-  ) {
-    return 1;
-  }
-  if (exercise.equipment.includes("dumbbells") || exercise.loadType === "bodyweight") {
-    return 2;
-  }
-  if (exercise.loadType === "weighted") return 2;
-  return 1;
+  if (exercise.tier) return exercise.tier;
+  const weightedWithDbOrBb =
+    exercise.loadType === "weighted" &&
+    (exercise.equipment.includes("dumbbells") ||
+      exercise.equipment.includes("barbell"));
+  return weightedWithDbOrBb ? 2 : 1;
 };
 
 const matchesBackChestMainSlotKind = (params: {
@@ -8610,11 +9778,7 @@ const matchesBackChestMainSlotKind = (params: {
   if (slotKind === "mainPullVertical") return hasVerticalPullSignature(exercise);
   if (slotKind === "mainPullHorizontal") return hasHorizontalPullSignature(exercise);
   if (slotKind === "mainPullSupport") {
-    return (
-      exercise.movementPattern.some((pattern) => normalizeTagToken(pattern) === "pull") &&
-      !hasVerticalPullSignature(exercise) &&
-      !hasHorizontalPullSignature(exercise)
-    );
+    return isBackChestCompoundPullMainCandidate(exercise);
   }
   if (slotLane) return matchesMainLanePattern(exercise, slotLane);
   return true;
@@ -8627,8 +9791,15 @@ const resolveHighestBackChestTierForSlot = (params: {
   context: SelectionContext;
 }) => {
   const { slotKind, slotLane, available, context } = params;
+  const isBackChestPullSlot = slotKind.startsWith("mainPull");
+  const availableForSlot = isBackChestPullSlot
+    ? resolveBackChestMainAvailableSet(available)
+    : available;
   const eligiblePool = exercises
     .filter((exercise) => exercise.category === "main")
+    .filter((exercise) =>
+      isBackChestPullSlot ? !isBackChestScapularAccessoryPullExercise(exercise) : true
+    )
     .filter((exercise) =>
       matchesBackChestMainSlotKind({
         exercise,
@@ -8639,7 +9810,7 @@ const resolveHighestBackChestTierForSlot = (params: {
     .filter((exercise) =>
       isExerciseEligibleForProgramContext({
         exercise,
-        available,
+        available: availableForSlot,
         section: "main",
         context,
       })
@@ -8717,6 +9888,11 @@ const isBodyweightFallbackAccessory = (exercise: Exercise) =>
 
 const isBackChestDayTitle = (dayTitle?: string | null) =>
   normalizeSlotToken(dayTitle ?? "") === "back_chest";
+
+const resolveEligibilityAvailabilityForDay = (
+  dayTitle: string,
+  available: Set<Equipment>
+) => (isBackChestDayTitle(dayTitle) ? resolveBackChestMainAvailableSet(available) : available);
 
 const getCapabilitySlotBonus = (params: {
   exercise: Exercise;
@@ -9527,7 +10703,6 @@ const getIntentSlotScoreBonus = (params: {
   }
 
   if (section === "main" && auditMeta?.slotKind === "mainPullSupport") {
-    const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
     const horizontalPull = hasHorizontalPullSignature(exercise);
     const verticalPull = hasVerticalPullSignature(exercise);
     const selectedMainExercises = (auditMeta?.selectedMainExerciseIds ?? [])
@@ -9535,31 +10710,48 @@ const getIntentSlotScoreBonus = (params: {
       .filter((entry): entry is Exercise => Boolean(entry));
     const hasSelectedHorizontalPull = selectedMainExercises.some(hasHorizontalPullSignature);
     const hasSelectedVerticalPull = selectedMainExercises.some(hasVerticalPullSignature);
-    const scapSupportPattern =
-      descriptor.includes("face-pull") ||
-      descriptor.includes("face pull") ||
-      descriptor.includes("rear-delt") ||
-      descriptor.includes("rear delt") ||
-      descriptor.includes("pullover");
-    if (horizontalPull && hasSelectedHorizontalPull) {
+    if (isBackChestScapularAccessoryPullExercise(exercise)) {
+      score -= 20;
+      reasons.push("-20 Back + Chest extra pull main blocks scapular accessory patterns");
+    } else if (horizontalPull || verticalPull) {
+      score += 4;
+      reasons.push("+4 Back + Chest extra pull main favors compound pull expansion");
+    } else {
       score -= 12;
-      reasons.push("-12 Back + Chest support pull slot avoids duplicate horizontal row angles");
+      reasons.push("-12 Back + Chest extra pull main requires horizontal or vertical pull pattern");
+    }
+
+    if (horizontalPull && hasSelectedHorizontalPull) {
+      score -= 6;
+      reasons.push("-6 Back + Chest extra pull main de-prioritizes second horizontal pull by default");
     }
     if (verticalPull && hasSelectedVerticalPull) {
-      score -= 12;
-      reasons.push("-12 Back + Chest support pull slot avoids duplicate vertical-pull angles");
+      score -= 2;
+      reasons.push("-2 Back + Chest extra pull main lightly de-prioritizes repeated vertical-pull loading");
     }
-    if (scapSupportPattern) {
+
+    if (horizontalPull) {
+      const candidateAngle = backChestRowAngleSignature(exercise);
+      if (
+        candidateAngle &&
+        selectedMainExercises.some(
+          (selectedExercise) => backChestRowAngleSignature(selectedExercise) === candidateAngle
+        )
+      ) {
+        score -= 10;
+        reasons.push("-10 Back + Chest extra pull main avoids duplicate row-angle stacking");
+      } else {
+        score += 1.5;
+        reasons.push("+1.5 Back + Chest extra pull main supports additional row loading");
+      }
+    }
+    if (verticalPull) {
       score += 2.5;
-      reasons.push("+2.5 Back + Chest support pull slot scapular support preference");
-    }
-    if (descriptor.includes("row")) {
-      score -= 8;
-      reasons.push("-8 Back + Chest support pull slot avoids row stacking");
+      reasons.push("+2.5 Back + Chest extra pull main favors secondary vertical pull reinforcement");
     }
     if (context.phaseStage !== "activation" && exercise.loadType === "weighted") {
       score += 0.75;
-      reasons.push("+0.75 Back + Chest support slot higher-tension pull progression bonus");
+      reasons.push("+0.75 Back + Chest extra pull main higher-tension progression bonus");
     }
   }
 
@@ -10317,6 +11509,14 @@ const pickFirstEligibleId = (
           context,
         })
     )
+    .filter(
+      (entry) =>
+        !isBackChestMainScapularPullDisallowedForSlot({
+          exercise: entry.exercise,
+          section,
+          auditMeta,
+        })
+    )
     .map((entry) => {
       const detail = scoreExerciseForContextDetailed(
         entry.exercise,
@@ -10756,26 +11956,17 @@ const getBackChestVerticalPullCandidateIds = (
 
 const getBackChestSupportPullCandidateIds = (
   phaseIndex: number,
-  _experience: ExperienceProfile,
+  experience: ExperienceProfile,
   context: SelectionContext
 ) => {
-  const baseSupport = [
-    "cable-face-pull",
-    "face-pull",
-    "prone-swimmer",
-    "reverse-snow-angel",
-    "back-widow",
+  const merged = [
+    ...getBackChestVerticalPullCandidateIds(phaseIndex, experience, context),
+    ...getPullCompoundCandidateIds(phaseIndex, experience, context),
   ];
-  if (context.capabilityMode === "hasLoad" && phaseIndex >= 2) {
-    return [
-      "cable-face-pull",
-      "prone-swimmer",
-      "reverse-snow-angel",
-      "back-widow",
-      "face-pull",
-    ];
-  }
-  return baseSupport;
+  return Array.from(new Set(merged)).filter((id) => {
+    const exercise = exerciseById(id);
+    return Boolean(exercise && isBackChestCompoundPullMainCandidate(exercise));
+  });
 };
 
 const getSquatCompoundCandidateIds = (
@@ -12969,12 +14160,18 @@ export const generateWeeklyProgram = (
   });
 
   const eligibleDays = feedbackSubstitutedDays
-    .map((day) => ({
-      ...day,
-      routine: day.routine.map((item) =>
-        ensureEligibleItem(item, equipmentContext.available, selectionContext)
-      ),
-    }))
+    .map((day) => {
+      const availableForDay = resolveEligibilityAvailabilityForDay(
+        day.title,
+        equipmentContext.available
+      );
+      return {
+        ...day,
+        routine: day.routine.map((item) =>
+          ensureEligibleItem(item, availableForDay, selectionContext)
+        ),
+      };
+    })
     .map((day) =>
       ensureDistinctRoutine(day, equipmentContext.available, selectionContext)
     );
@@ -12984,12 +14181,18 @@ export const generateWeeklyProgram = (
     context: dayRepairContext,
   });
   const finalizedWeek = constraintAdjusted.week
-    .map((day) => ({
-      ...day,
-      routine: day.routine.map((item) =>
-        ensureEligibleItem(item, equipmentContext.available, selectionContext)
-      ),
-    }))
+    .map((day) => {
+      const availableForDay = resolveEligibilityAvailabilityForDay(
+        day.title,
+        equipmentContext.available
+      );
+      return {
+        ...day,
+        routine: day.routine.map((item) =>
+          ensureEligibleItem(item, availableForDay, selectionContext)
+        ),
+      };
+    })
     .map((day) =>
       ensureDistinctRoutine(day, equipmentContext.available, selectionContext)
     );
@@ -12997,12 +14200,18 @@ export const generateWeeklyProgram = (
     week: finalizedWeek,
     daysPerWeek: normalizedDaysPerWeek,
     context: dayRepairContext,
-  }).map((day) => ({
-    ...day,
-    routine: day.routine.map((item) =>
-      ensureEligibleItem(item, equipmentContext.available, selectionContext)
-    ),
-  }));
+  }).map((day) => {
+    const availableForDay = resolveEligibilityAvailabilityForDay(
+      day.title,
+      equipmentContext.available
+    );
+    return {
+      ...day,
+      routine: day.routine.map((item) =>
+        ensureEligibleItem(item, availableForDay, selectionContext)
+      ),
+    };
+  });
   const dedupedFeedbackSafetyWeek = feedbackSafetyWeek.map((day) =>
     ensureDistinctRoutine(day, equipmentContext.available)
   );
@@ -13251,12 +14460,18 @@ export const generateNextPhaseProgram = (params: {
     },
   });
   const constrainedPhaseWeek = constrainedPhaseWeekResult.week
-    .map((day) => ({
-      ...day,
-      routine: day.routine.map((item) =>
-        ensureEligibleItem(item, equipmentContext.available, phaseSelectionContext)
-      ),
-    }))
+    .map((day) => {
+      const availableForDay = resolveEligibilityAvailabilityForDay(
+        day.title,
+        equipmentContext.available
+      );
+      return {
+        ...day,
+        routine: day.routine.map((item) =>
+          ensureEligibleItem(item, availableForDay, phaseSelectionContext)
+        ),
+      };
+    })
     .map((day) =>
       ensureDistinctRoutine(day, equipmentContext.available, phaseSelectionContext)
     );
@@ -13510,12 +14725,18 @@ export const generateNextCycleProgram = (params: {
     },
   });
   const constrainedCycleWeek = constrainedCycleWeekResult.week
-    .map((day) => ({
-      ...day,
-      routine: day.routine.map((item) =>
-        ensureEligibleItem(item, equipmentContext.available, cycleSelectionContext)
-      ),
-    }))
+    .map((day) => {
+      const availableForDay = resolveEligibilityAvailabilityForDay(
+        day.title,
+        equipmentContext.available
+      );
+      return {
+        ...day,
+        routine: day.routine.map((item) =>
+          ensureEligibleItem(item, availableForDay, cycleSelectionContext)
+        ),
+      };
+    })
     .map((day) =>
       ensureDistinctRoutine(day, equipmentContext.available, cycleSelectionContext)
     );

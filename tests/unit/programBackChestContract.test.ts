@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import { exerciseById, type Exercise } from "@/lib/exercises";
+import { exerciseById, exercises, type Exercise } from "@/lib/exercises";
+import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
 import { generateNextPhaseProgram, generateWeeklyProgram } from "@/lib/program";
 
 const isVerticalPullMain = (exercise: Exercise) =>
@@ -122,7 +123,10 @@ const rowAngleSignature = (exercise: Exercise) => {
 const hasDuplicateRowAngles = (exercises: Exercise[]) => {
   const signatures = exercises
     .map((exercise) => rowAngleSignature(exercise))
-    .filter((entry): entry is string => Boolean(entry));
+    .filter(
+      (entry): entry is Exclude<ReturnType<typeof rowAngleSignature>, null> =>
+        entry !== null
+    );
   return new Set(signatures).size !== signatures.length;
 };
 
@@ -131,6 +135,30 @@ const hasPullPattern = (exercise: Exercise) =>
 
 const hasPushPattern = (exercise: Exercise) =>
   exercise.movementPattern.some((entry) => normalizeToken(entry) === "push");
+
+const resolveTierForTest = (exercise: Exercise) => {
+  if (exercise.tier) return exercise.tier;
+  const weightedWithDbOrBb =
+    exercise.loadType === "weighted" &&
+    (exercise.equipment.includes("dumbbells") || exercise.equipment.includes("barbell"));
+  return weightedWithDbOrBb ? 2 : 1;
+};
+
+const phaseRankForTest = {
+  activation: 1,
+  skill: 2,
+  growth: 3,
+} as const;
+
+const minPhaseForTest = (exercise: Exercise) => exercise.phaseMin ?? "activation";
+
+const isEligibleForSkillPhaseInTest = (exercise: Exercise) =>
+  phaseRankForTest[minPhaseForTest(exercise)] <= phaseRankForTest.skill;
+
+const meetsExperienceMinIntermediateInTest = (exercise: Exercise) => {
+  if (!exercise.experienceMin) return true;
+  return exercise.experienceMin === "Beginner" || exercise.experienceMin === "Intermediate";
+};
 
 const pullVsPushVolume = (exercises: Exercise[]) => {
   const pull = exercises.filter((exercise) => hasPullPattern(exercise)).length;
@@ -380,6 +408,76 @@ describe("back + chest contract regression", () => {
     expect(
       mainExercises.some((exercise) => exercise.id === "dumbbell-floor-press")
     ).toBe(false);
+  });
+
+  test("intermediate phase 2 gym Back + Chest required mains avoid tier 1 when tier 2 options exist for the same slot", () => {
+    const questionnaire: QuestionnaireData = {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Intermediate",
+      daysPerWeek: 3,
+      equipment: ["gym"],
+    };
+
+    const program = generateWeeklyProgram(
+      questionnaire,
+      "regression-back-chest-intermediate-skill-tier2-floor",
+      {
+        phaseIndex: 2,
+        seed: "regression-back-chest-intermediate-skill-tier2-floor",
+      }
+    );
+    const backChestDay = program.week.find((day) => day.title === "Back + Chest");
+    expect(backChestDay).toBeTruthy();
+    if (!backChestDay) return;
+
+    const mainExercises = backChestDay.routine
+      .filter((item) => item.section === "main")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+
+    const horizontalPullMain = mainExercises.find((exercise) => hasHorizontalPullMain(exercise));
+    const horizontalPushMain = mainExercises.find((exercise) => hasHorizontalPushMain(exercise));
+    const verticalPullMain = mainExercises.find((exercise) => isVerticalPullMain(exercise));
+    expect(horizontalPullMain).toBeTruthy();
+    expect(horizontalPushMain).toBeTruthy();
+    expect(verticalPullMain).toBeTruthy();
+    if (!horizontalPullMain || !horizontalPushMain || !verticalPullMain) return;
+
+    const available = normalizeEquipmentSelection(["gym"]).available;
+    const hasTier2ForHorizontalPull = exercises
+      .filter((exercise) => exercise.category === "main")
+      .filter((exercise) => hasHorizontalPullMain(exercise))
+      .filter((exercise) => !isChestIsolationAccessory(exercise))
+      .filter((exercise) => isExerciseEligible(exercise, available))
+      .filter((exercise) => isEligibleForSkillPhaseInTest(exercise))
+      .filter((exercise) => meetsExperienceMinIntermediateInTest(exercise))
+      .some((exercise) => resolveTierForTest(exercise) >= 2);
+    const hasTier2ForHorizontalPush = exercises
+      .filter((exercise) => exercise.category === "main")
+      .filter((exercise) => hasHorizontalPushMain(exercise))
+      .filter((exercise) => !isChestIsolationAccessory(exercise))
+      .filter((exercise) => isExerciseEligible(exercise, available))
+      .filter((exercise) => isEligibleForSkillPhaseInTest(exercise))
+      .filter((exercise) => meetsExperienceMinIntermediateInTest(exercise))
+      .some((exercise) => resolveTierForTest(exercise) >= 2);
+    const hasTier2ForVerticalPull = exercises
+      .filter((exercise) => exercise.category === "main")
+      .filter((exercise) => isVerticalPullMain(exercise))
+      .filter((exercise) => isExerciseEligible(exercise, available))
+      .filter((exercise) => isEligibleForSkillPhaseInTest(exercise))
+      .filter((exercise) => meetsExperienceMinIntermediateInTest(exercise))
+      .some((exercise) => resolveTierForTest(exercise) >= 2);
+
+    if (hasTier2ForHorizontalPull) {
+      expect(resolveTierForTest(horizontalPullMain)).toBeGreaterThanOrEqual(2);
+    }
+    if (hasTier2ForHorizontalPush) {
+      expect(resolveTierForTest(horizontalPushMain)).toBeGreaterThanOrEqual(2);
+    }
+    if (hasTier2ForVerticalPull) {
+      expect(resolveTierForTest(verticalPullMain)).toBeGreaterThanOrEqual(2);
+    }
   });
 
   test("phase progression rotates Back + Chest accessory pairing", () => {

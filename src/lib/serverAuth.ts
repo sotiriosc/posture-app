@@ -47,17 +47,24 @@ export const buildUserToken = async (user: Pick<AuthUser, "id" | "email" | "plan
 export const readServerSession = async () => {
   const secret = getAuthSecret();
   if (!secret) return null;
-  await repo.ensureBootstrapUser();
   const cookieStore = await cookies();
   const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
   if (!token) return null;
   const payload = await verifySessionToken(token, secret);
   if (!payload) return null;
-  const stored = await repo.findUserById(payload.sub);
+  let stored: StoredUser | null = null;
+  try {
+    // Passive session reads should not force bootstrap writes.
+    stored = await repo.findUserById(payload.sub);
+  } catch (error) {
+    console.error("[auth] readServerSession failed to load user", error);
+    return null;
+  }
+  if (!stored) return null;
   return {
-    id: payload.sub,
-    email: payload.email,
-    plan: stored?.plan ?? payload.plan,
+    id: stored.id,
+    email: stored.email,
+    plan: stored.plan,
   } as AuthUser;
 };
 

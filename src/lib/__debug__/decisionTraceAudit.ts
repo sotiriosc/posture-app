@@ -31,12 +31,34 @@ const PROFILES: TraceProfile[] = [
     phaseIndex: 2,
   },
   {
+    label: "intermediate-gym-3day-skill",
+    questionnaire: {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      daysPerWeek: 3,
+      equipment: ["gym"],
+    },
+    phaseIndex: 2,
+  },
+  {
     label: "advanced-gym-growth",
     questionnaire: {
       goals: "Athletic performance",
       painAreas: [],
       experience: "Advanced",
       daysPerWeek: 5,
+      equipment: ["gym"],
+    },
+    phaseIndex: 3,
+  },
+  {
+    label: "advanced-gym-3day-growth",
+    questionnaire: {
+      goals: "Athletic performance",
+      painAreas: [],
+      experience: "Advanced",
+      daysPerWeek: 3,
       equipment: ["gym"],
     },
     phaseIndex: 3,

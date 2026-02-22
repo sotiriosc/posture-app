@@ -183,6 +183,21 @@ const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
   return parsed === 4 || parsed === 5 ? parsed : 3;
 };
 
+const formatQuestionnaireToken = (value: string) =>
+  value
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+const formatQuestionnaireList = (values: string[] | null | undefined) => {
+  if (!values?.length) return "none";
+  const formatted = values
+    .map((entry) => formatQuestionnaireToken(entry))
+    .filter((entry) => entry.length > 0);
+  return formatted.length ? formatted.join(", ") : "none";
+};
+
 const toEpochMs = (value: string | null | undefined) => {
   if (!value) return NaN;
   const parsed = Date.parse(value);
@@ -1334,6 +1349,23 @@ export default function ResultsRoutine() {
     if (!program) return "";
 
     const lines: string[] = [];
+    const referenceQuestionnaire = data
+      ? {
+          ...data,
+          daysPerWeek: normalizeDaysPerWeek(data.daysPerWeek),
+          equipment: normalizeEquipmentSelectionValues(data.equipment),
+        }
+      : null;
+
+    if (referenceQuestionnaire) {
+      lines.push("QUESTIONNAIRE INPUTS");
+      lines.push(`Goal: ${referenceQuestionnaire.goals}`);
+      lines.push(`Experience: ${referenceQuestionnaire.experience}`);
+      lines.push(`Days Per Week: ${referenceQuestionnaire.daysPerWeek}`);
+      lines.push(`Equipment: ${formatQuestionnaireList(referenceQuestionnaire.equipment)}`);
+      lines.push(`Pain Areas: ${formatQuestionnaireList(referenceQuestionnaire.painAreas)}`);
+      lines.push("");
+    }
 
     lines.push("ACTIVE WEEK (CURRENT PROGRAM)");
     lines.push(
@@ -1344,12 +1376,7 @@ export default function ResultsRoutine() {
       lines.push(...buildReferenceLinesForDay(activeDayOne));
     }
 
-    if (!data) return lines.join("\n");
-
-    const referenceQuestionnaire: QuestionnaireData = {
-      ...data,
-      daysPerWeek: normalizeDaysPerWeek(data.daysPerWeek),
-    };
+    if (!referenceQuestionnaire) return lines.join("\n");
     const referenceSeedBase = questionnaireSignature ?? program.id ?? "program-reference";
 
     lines.push("");
