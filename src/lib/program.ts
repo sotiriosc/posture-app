@@ -14900,6 +14900,15 @@ const hasEligibleFeedbackAlternative = (params: {
   const { exercise, section, context, available, auditMeta } = params;
   if (section !== "main") return false;
 
+  const hasPainOrFailureRisk = resolveFeedbackSummariesForExercise(
+    exercise,
+    context
+  ).some(
+    (summary) =>
+      summary.difficulty === "failed" ||
+      summary.pain === "moderate" ||
+      summary.pain === "severe"
+  );
   const candidatePatterns = new Set(
     exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
   );
@@ -14925,6 +14934,9 @@ const hasEligibleFeedbackAlternative = (params: {
     );
     if (!hasPatternIntersection(candidatePatterns, alternativePatterns)) {
       return false;
+    }
+    if (hasPainOrFailureRisk) {
+      return true;
     }
     return deriveMovementSignature(alternative) !== candidateSignature;
   });
@@ -16318,10 +16330,114 @@ const pickFirstEligibleId = (
         )
       : eligible;
 
-  const rankedEligible = (safeEligible.length ? safeEligible : eligible)
-    .sort((left, right) => {
-      return right.score - left.score;
-    });
+  const riskyEligible =
+    section === "main"
+      ? eligible.filter((entry) =>
+          shouldAvoidFeedbackRiskCandidate({
+            exercise: entry.exercise,
+            section,
+            context,
+            available,
+            auditMeta,
+          })
+        )
+      : [];
+
+  const feedbackFallbackEligible =
+    section === "main" && !safeEligible.length && riskyEligible.length
+      ? exercises
+          .filter((exercise) => !eligible.some((entry) => entry.id === exercise.id))
+          .filter((exercise) =>
+            isExerciseEligibleForProgramContext({
+              exercise,
+              available,
+              section,
+              context,
+              dayTitle: auditMeta?.dayTitle,
+            })
+          )
+          .filter((exercise) =>
+            !isBackChestMainScapularPullDisallowedForSlot({
+              exercise,
+              section,
+              auditMeta,
+            })
+          )
+          .filter((exercise) =>
+            auditMeta?.slotLane
+              ? matchesMainLanePattern(exercise, auditMeta.slotLane)
+              : true
+          )
+          .filter((exercise) =>
+            riskyEligible.some((entry) =>
+              hasPatternIntersection(
+                new Set(
+                  entry.exercise.movementPattern.map((pattern) =>
+                    normalizeTagToken(pattern)
+                  )
+                ),
+                new Set(
+                  exercise.movementPattern.map((pattern) =>
+                    normalizeTagToken(pattern)
+                  )
+                )
+              )
+            )
+          )
+          .filter(
+            (exercise) =>
+              !shouldAvoidFeedbackRiskCandidate({
+                exercise,
+                section,
+                context,
+                available,
+                auditMeta,
+              })
+          )
+          .map((exercise, index) => {
+            const detail = scoreExerciseForContextDetailed(
+              exercise,
+              section,
+              context,
+              available,
+              auditMeta
+            );
+            const capabilityBonus = getCapabilitySlotBonus({
+              exercise,
+              section,
+              auditMeta,
+            });
+            const baseScore = detail.score + capabilityBonus.bonus;
+            const tieBreakerPenalty = (eligible.length + index) * 0.01;
+            const score = baseScore - tieBreakerPenalty;
+            const reasons =
+              tieBreakerPenalty > 0
+                ? [
+                    ...detail.reasons,
+                    ...capabilityBonus.reasons,
+                    `-${tieBreakerPenalty.toFixed(2)} candidate order tie-break`,
+                  ]
+                : [...detail.reasons, ...capabilityBonus.reasons];
+            return {
+              id: exercise.id,
+              index: eligible.length + index,
+              exercise,
+              baseScore,
+              score,
+              reasons,
+            };
+          })
+          .sort((left, right) => right.score - left.score)
+      : [];
+
+  const choicePool = safeEligible.length
+    ? safeEligible
+    : feedbackFallbackEligible.length
+    ? feedbackFallbackEligible
+    : eligible;
+  const rankedChoicePool = [...choicePool].sort((left, right) => {
+    return right.score - left.score;
+  });
 
   const canCaptureAudit =
     process.env.NODE_ENV !== "production" &&
@@ -16329,7 +16445,7 @@ const pickFirstEligibleId = (
     Boolean(auditMeta) &&
     (DEBUG_AUDIT_SELECTION || Boolean(auditMeta?.selectionAuditHook));
 
-  if (!rankedEligible.length) return candidates[candidates.length - 1];
+  if (!rankedChoicePool.length) return candidates[candidates.length - 1];
 
   const maybeStochasticMainPick = () => {
     if (section !== "main") return null;
@@ -16337,9 +16453,9 @@ const pickFirstEligibleId = (
     const rng = seededRng ?? (ENABLE_UNSEEDED_MAIN_RANDOMNESS ? Math.random : null);
     if (!rng) return null;
 
-    const topScore = rankedEligible[0]?.score;
+    const topScore = rankedChoicePool[0]?.score;
     if (typeof topScore !== "number") return null;
-    const closeTop = rankedEligible
+    const closeTop = rankedChoicePool
       .slice(0, MAIN_SELECTION_RANDOM_TOP_LIMIT)
       .filter((entry) => topScore - entry.score <= MAIN_SELECTION_RANDOM_SCORE_WINDOW);
     if (closeTop.length >= MAIN_SELECTION_RANDOM_MIN_POOL) {
@@ -16349,9 +16465,9 @@ const pickFirstEligibleId = (
 
     // Keep existing seeded tie behavior for exact-score ties when pool is smaller.
     if (!seededRng) return null;
-    const topBaseScore = rankedEligible[0]?.baseScore;
+    const topBaseScore = rankedChoicePool[0]?.baseScore;
     if (typeof topBaseScore !== "number") return null;
-    const tied = rankedEligible.filter(
+    const tied = rankedChoicePool.filter(
       (entry) => Math.abs(entry.baseScore - topBaseScore) < 1e-9
     );
     if (tied.length <= 1) return null;
@@ -16359,10 +16475,10 @@ const pickFirstEligibleId = (
     return tied[Math.max(0, Math.min(tied.length - 1, selectedIndex))] ?? null;
   };
 
-  const chosenEntry = maybeStochasticMainPick() ?? rankedEligible[0];
+  const chosenEntry = maybeStochasticMainPick() ?? rankedChoicePool[0];
 
   if (canCaptureAudit && auditMeta) {
-    const top = rankedEligible.slice(0, 5).map((entry) => ({
+    const top = eligible.slice(0, 5).map((entry) => ({
       exerciseId: entry.id,
       name: entry.exercise.name,
       score: Number(entry.score.toFixed(2)),
