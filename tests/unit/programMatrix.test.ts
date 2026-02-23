@@ -43,20 +43,6 @@ const expectedMainCount = (experience: QuestionnaireData["experience"]) => {
   return 2;
 };
 
-const expectedMainCountForDay = (params: {
-  experience: QuestionnaireData["experience"];
-  daysPerWeek: QuestionnaireData["daysPerWeek"];
-  dayTitle: string;
-}) => {
-  const { experience, daysPerWeek, dayTitle } = params;
-  if (daysPerWeek === 3 && dayTitle === "Back + Chest") {
-    if (experience === "Advanced") return 5;
-    if (experience === "Intermediate") return 4;
-    return 3;
-  }
-  return expectedMainCount(experience);
-};
-
 const hasSections = (day: ReturnType<typeof generateWeeklyProgram>["week"][number]) => {
   const sections = new Set(day.routine.map((item) => item.section));
   return (
@@ -95,13 +81,7 @@ describe("program matrix quality", () => {
                 expect(new Set(ids).size).toBe(ids.length);
 
                 const mains = day.routine.filter((item) => item.section === "main");
-                expect(mains.length).toBe(
-                  expectedMainCountForDay({
-                    experience,
-                    daysPerWeek,
-                    dayTitle: day.title,
-                  })
-                );
+                expect(mains.length).toBe(expectedMainCount(experience));
                 mains.forEach((item) => {
                   expect(exerciseById(item.exerciseId)?.category).toBe("main");
                 });

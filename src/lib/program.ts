@@ -3978,12 +3978,10 @@ const ensureDayHasDumbbellMain = (params: {
   budget: DayPatternBudget | null;
 }) => {
   const { day, context, budget } = params;
-  if (context.selectionContext.phaseStage === "activation") {
-    // Control & Technique now prioritizes machine-guided mains when load is available.
-    return day;
-  }
   if (context.capabilityMode !== "hasLoad") return day;
   if (!context.available.has("dumbbells")) return day;
+  const availableForDay = resolveEligibilityAvailabilityForDay(day.title, context.available);
+  const benchUnavailable = !availableForDay.has("bench");
 
   const mainEntries = buildDayEntries(day).filter((entry) => entry.item.section === "main");
   if (!mainEntries.length) return day;
@@ -3999,12 +3997,24 @@ const ensureDayHasDumbbellMain = (params: {
       usedWithoutCurrent.delete(entry.exercise.id);
       const slotLane = getMainLaneHits(entry.exercise)[0] ?? "pull";
       const slotKind = slotKindByMainLane[slotLane];
+      const preferredNoBenchIdsForLane =
+        slotLane === "push"
+          ? ["dumbbell-floor-press", "dumbbell-shoulder-press", "dumbbell-arnold-press"]
+          : slotLane === "pull"
+          ? ["dumbbell-rows", "dumbbell-chest-supported-row", "single-arm-dumbbell-row"]
+          : slotLane === "squat"
+          ? ["goblet-squat", "dumbbell-squat"]
+          : slotLane === "hinge"
+          ? ["dumbbell-rdl", "dumbbell-romanian-deadlift"]
+          : [];
 
       const bestCandidate = exercises
         .filter((candidate) => {
           if (candidate.category !== "main") return false;
           if (!candidate.equipment.includes("dumbbells")) return false;
           if (usedWithoutCurrent.has(candidate.id)) return false;
+          const candidateLanes = getMainLaneHits(candidate);
+          if (candidateLanes.length && !candidateLanes.includes(slotLane)) return false;
           if (
             !candidate.movementPattern.some((pattern) =>
               overlapPatterns.has(normalizeTagToken(pattern))
@@ -4014,7 +4024,7 @@ const ensureDayHasDumbbellMain = (params: {
           }
           return isExerciseEligibleForProgramContext({
             exercise: candidate,
-            available: context.available,
+            available: availableForDay,
             section: "main",
             context: context.selectionContext,
           });
@@ -4024,7 +4034,7 @@ const ensureDayHasDumbbellMain = (params: {
             candidate,
             "main",
             context.selectionContext,
-            context.available,
+            availableForDay,
             {
               slotId: entry.slotId,
               dayTitle: day.title,
@@ -4048,12 +4058,22 @@ const ensureDayHasDumbbellMain = (params: {
               dayBudget: budget,
             },
           });
+          const noBenchBonus =
+            benchUnavailable && !candidate.equipment.includes("bench")
+              ? 2
+              : benchUnavailable && candidate.equipment.includes("bench")
+              ? -2
+              : 0;
+          const noBenchLanePreferenceBonus =
+            benchUnavailable && preferredNoBenchIdsForLane.includes(candidate.id) ? 2 : 0;
           return {
             candidate,
             score:
               detail.score +
               capabilityBonus.bonus +
-              focusOverlapScore(candidate, day.focusTags),
+              focusOverlapScore(candidate, day.focusTags) +
+              noBenchBonus +
+              noBenchLanePreferenceBonus,
           };
         })
         .sort((left, right) => {
@@ -7749,10 +7769,7 @@ const resolveBackChestGoalAdjustedTierCeiling = (params: {
 };
 
 const resolveBackChestMainAvailableSet = (available: Set<Equipment>) => {
-  if (!available.has("gym")) return available;
-  const withPullupBar = new Set(available);
-  withPullupBar.add("pullup_bar");
-  return withPullupBar;
+  return available;
 };
 
 const isBackChestFloorPress = (exercise: Exercise) => {
@@ -12232,7 +12249,8 @@ const repairShouldersArmsDayIntelligence = (params: {
   const warnings: string[] = [];
   const phaseStage = context.selectionContext.phaseStage;
   const experienceLevel = context.selectionContext.experienceLevel;
-  const targetMainCount = resolveShouldersArmsTargetMainCount(experienceLevel);
+  const baselineMainCount = day.routine.filter((item) => item.section === "main").length;
+  const targetMainCount = Math.max(1, baselineMainCount);
   const phaseIndex = phaseIndexFromStage(phaseStage);
   const experienceForProfile: ExperienceLevel =
     experienceLevel === "advanced"
@@ -12264,7 +12282,16 @@ const repairShouldersArmsDayIntelligence = (params: {
 
   const usedMainIds = new Set<string>();
   const selectedMainExercises: Exercise[] = [];
-  const anchorRoles: ShouldersArmsAnchorRole[] = ["ohp", "lateral", "biceps", "triceps"];
+  const anchorRoleSequence: ShouldersArmsAnchorRole[] = [
+    "ohp",
+    "lateral",
+    "biceps",
+    "triceps",
+  ];
+  const anchorRoles = anchorRoleSequence.slice(
+    0,
+    Math.min(targetMainCount, anchorRoleSequence.length)
+  );
   const categoryCounts: Record<Exclude<ShouldersArmsMainCategory, "other">, number> = {
     ohp: 0,
     lateral: 0,
@@ -12635,6 +12662,10 @@ const applyDayCurriculumConstraints = (params: {
     context,
   });
   const architectureAdjustedWeek = weeklyRepaired.week.map((day) => {
+    const dayBudget = resolveDayPatternBudget({
+      title: day.title,
+      selectionContext: context.selectionContext,
+    });
     const repairedBackChest = repairBackChestDayIntelligence({
       day,
       daysPerWeek,
@@ -12659,7 +12690,11 @@ const applyDayCurriculumConstraints = (params: {
         message,
       });
     });
-    return repairedShouldersArms.day;
+    return ensureDayHasDumbbellMain({
+      day: repairedShouldersArms.day,
+      context,
+      budget: dayBudget,
+    });
   });
   const persistentWarnings: WeekConstraintRepairResult["warnings"] = [];
   architectureAdjustedWeek.forEach((day) => {
@@ -17586,10 +17621,7 @@ const buildStructuredDay = (params: {
     title,
     selectionContext,
   });
-  const targetMainSlotCount =
-    normalizedTitle === "back_chest"
-      ? resolveBackChestTargetMainCount(selectionContext.experienceLevel)
-      : Math.max(seedLanes.length, experienceProfile.mainLaneCount);
+  const targetMainSlotCount = Math.max(1, experienceProfile.mainLaneCount);
   const expandedLanes =
     normalizedTitle === "back_chest"
       ? resolveBackChestMainLanePlan({
@@ -17610,8 +17642,11 @@ const buildStructuredDay = (params: {
     normalizedTitle === "back_chest"
       ? expandedLanes.slice(0, targetMainSlotCount)
       : capabilityMode === "bandOnly"
-      ? ensurePullLaneBandOnly(expandedLanes, title, focusTags)
-      : expandedLanes;
+      ? ensurePullLaneBandOnly(expandedLanes, title, focusTags).slice(
+          0,
+          targetMainSlotCount
+        )
+      : expandedLanes.slice(0, targetMainSlotCount);
   const plannedMainSlots: PlannedMainSlot[] = plannedLanes.map((lane, index) => ({
     slotId: `${normalizedTitle}-main-${index + 1}`,
     lane,
@@ -18975,18 +19010,22 @@ export const generateWeeklyProgram = (
     daysPerWeek: normalizedDaysPerWeek,
     context: dayRepairContext,
   });
-  const stabilizedWeek = stabilizedWeekResult.week.map((day) => {
-    const availableForDay = resolveEligibilityAvailabilityForDay(
-      day.title,
-      equipmentContext.available
+  const stabilizedWeek = stabilizedWeekResult.week
+    .map((day) => {
+      const availableForDay = resolveEligibilityAvailabilityForDay(
+        day.title,
+        equipmentContext.available
+      );
+      return {
+        ...day,
+        routine: day.routine.map((item) =>
+          ensureEligibleItem(item, availableForDay, selectionContext)
+        ),
+      };
+    })
+    .map((day) =>
+      ensureDistinctRoutine(day, equipmentContext.available, selectionContext)
     );
-    return {
-      ...day,
-      routine: day.routine.map((item) =>
-        ensureEligibleItem(item, availableForDay, selectionContext)
-      ),
-    };
-  });
   const structuredPrepWeek = attachStructuredPrepBlocksToWeek({
     week: stabilizedWeek,
     available: equipmentContext.available,
