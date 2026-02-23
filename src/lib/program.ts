@@ -125,6 +125,7 @@ type SelectionContext = {
   capabilityMode: EquipmentCapabilityMode;
   intentProfile: ProgramIntentProfile;
   feedbackSummaryByExercise: Map<string, ExerciseFeedbackSummary>;
+  recentlyUsedExerciseIds: Set<string>;
   feedbackPenaltyHints: Array<{
     exerciseId: string;
     movementPatterns: Set<string>;
@@ -745,6 +746,7 @@ const buildSelectionContext = (
     phaseName?: string | null;
     capabilityMode?: EquipmentCapabilityMode;
     feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
+    recentlyUsedExerciseIds?: Set<string>;
   }
 ): SelectionContext => {
   const painAreas = questionnaire.painAreas.map(canonicalizePainArea);
@@ -807,6 +809,11 @@ const buildSelectionContext = (
   const feedbackSummaryByExercise = new Map(
     options?.feedbackSummaryByExercise ? Array.from(options.feedbackSummaryByExercise.entries()) : []
   );
+  const recentlyUsedExerciseIds = new Set(
+    options?.recentlyUsedExerciseIds
+      ? Array.from(options.recentlyUsedExerciseIds.values())
+      : []
+  );
   const feedbackPenaltyHints = Array.from(feedbackSummaryByExercise.values())
     .filter(
       (summary) =>
@@ -851,8 +858,29 @@ const buildSelectionContext = (
     capabilityMode,
     intentProfile,
     feedbackSummaryByExercise,
+    recentlyUsedExerciseIds,
     feedbackPenaltyHints,
   };
+};
+
+const buildRecentlyUsedExerciseIdSet = (params?: {
+  recentLogs?: ExerciseLog[];
+  previousWeek?: ProgramDay[];
+}) => {
+  const recentlyUsedExerciseIds = new Set<string>();
+  (params?.recentLogs ?? []).forEach((log) => {
+    if (typeof log.exerciseId === "string" && log.exerciseId.length) {
+      recentlyUsedExerciseIds.add(log.exerciseId);
+    }
+  });
+  (params?.previousWeek ?? []).forEach((day) => {
+    day.routine.forEach((item) => {
+      if (typeof item.exerciseId === "string" && item.exerciseId.length) {
+        recentlyUsedExerciseIds.add(item.exerciseId);
+      }
+    });
+  });
+  return recentlyUsedExerciseIds;
 };
 
 const getExperienceProfile = (
@@ -12968,8 +12996,9 @@ const isExerciseEligibleForProgramContext = (params: {
   available: Set<Equipment>;
   section?: ProgramRoutineItem["section"];
   context: SelectionContext;
+  dayTitle?: string;
 }) => {
-  const { exercise, available, section, context } = params;
+  const { exercise, available, section, context, dayTitle } = params;
   if (exercise.experienceMin) {
     const minimumExperience = normalizeExperienceLevel(exercise.experienceMin);
     if (experienceRankByLevel[context.experienceLevel] < experienceRankByLevel[minimumExperience]) {
@@ -12995,6 +13024,29 @@ const isExerciseEligibleForProgramContext = (params: {
     ].includes(exercise.id)
   ) {
     return false;
+  }
+  if (section === "main" && dayTitle) {
+    const upperIntentDay = isUpperIntentDayTitle(dayTitle);
+    const lowerIntentDay = isLowerIntentDayTitle(dayTitle);
+    const patterns = new Set(exercise.movementPattern.map((pattern) => normalizeTagToken(pattern)));
+    const postureActivationBeginnerHingeControl =
+      upperIntentDay &&
+      context.intentProfile.primaryGoal === "posture" &&
+      context.phaseStage === "activation" &&
+      context.experienceLevel === "beginner" &&
+      patterns.has("hinge") &&
+      !patterns.has("squat");
+
+    if (
+      upperIntentDay &&
+      exerciseHasLowerMainPattern(exercise) &&
+      !postureActivationBeginnerHingeControl
+    ) {
+      return false;
+    }
+    if (lowerIntentDay && exerciseHasUpperMainPattern(exercise)) {
+      return false;
+    }
   }
   const equipmentEligible =
     isExerciseEligible(exercise, available) ||
@@ -13661,6 +13713,28 @@ const isUpperIntentDayTitle = (title: string) => {
     normalized.includes("shoulders + arms") ||
     normalized.includes("arms + posture")
   );
+};
+
+const isLowerIntentDayTitle = (title: string) => {
+  const normalized = title.toLowerCase();
+  return (
+    normalized.includes("lower") ||
+    normalized.includes("legs") ||
+    normalized.includes("squat") ||
+    normalized.includes("hinge") ||
+    normalized.includes("posterior") ||
+    normalized.includes("abs")
+  );
+};
+
+const exerciseHasLowerMainPattern = (exercise: Exercise) => {
+  const patterns = new Set(exercise.movementPattern.map((pattern) => normalizeTagToken(pattern)));
+  return patterns.has("squat") || patterns.has("hinge");
+};
+
+const exerciseHasUpperMainPattern = (exercise: Exercise) => {
+  const patterns = new Set(exercise.movementPattern.map((pattern) => normalizeTagToken(pattern)));
+  return patterns.has("push") || patterns.has("pull") || patterns.has("verticalpush");
 };
 
 const matchesMainLanePattern = (exercise: Exercise, lane: MainLane) => {
@@ -15985,10 +16059,12 @@ const scoreExerciseForContextDetailed = (
   section: ProgramRoutineItem["section"] | undefined,
   context: SelectionContext,
   available: Set<Equipment>,
-  auditMeta?: SelectionAuditMeta
+  auditMeta?: SelectionAuditMeta,
+  recentlyUsedIds?: Set<string>
 ): ScoreWithReasons => {
   let score = 0;
   const reasons: string[] = [];
+  const recentExerciseIds = recentlyUsedIds ?? context.recentlyUsedExerciseIds;
 
   const preferredTagHits = exercise.tags.filter((tag) =>
     context.preferredTags.has(tag.toLowerCase())
@@ -16042,6 +16118,16 @@ const scoreExerciseForContextDetailed = (
   if (section === "main" && exercise.loadType === "weighted") {
     score += 2;
     reasons.push("+2 weighted main bias");
+  }
+
+  if (recentExerciseIds.has(exercise.id)) {
+    if (section === "main") {
+      score -= 4;
+      reasons.push("-4 recently used main penalty");
+    } else if (section === "accessory") {
+      score -= 1.5;
+      reasons.push("-1.5 recently used accessory penalty");
+    }
   }
 
   if (section === "main" && available.has("dumbbells")) {
@@ -16117,6 +16203,13 @@ const scoreExerciseForContext = (
   return scoreExerciseForContextDetailed(exercise, section, context, available).score;
 };
 
+const MAIN_SELECTION_RANDOM_SCORE_WINDOW = 1.5;
+const MAIN_SELECTION_RANDOM_TOP_LIMIT = 5;
+const MAIN_SELECTION_RANDOM_MIN_POOL = 3;
+const ENABLE_UNSEEDED_MAIN_RANDOMNESS =
+  process.env.NODE_ENV === "development" ||
+  process.env.PROGRAM_ENABLE_UNSEEDED_MAIN_RANDOMNESS === "1";
+
 const pickFirstEligibleId = (
   candidates: string[],
   available: Set<Equipment>,
@@ -16137,6 +16230,7 @@ const pickFirstEligibleId = (
           available,
           section,
           context,
+          dayTitle: auditMeta?.dayTitle,
         })
     )
     .filter(
@@ -16202,20 +16296,35 @@ const pickFirstEligibleId = (
 
   if (!rankedEligible.length) return candidates[candidates.length - 1];
 
-  const maybeSeededTiePick = () => {
-    const rng = auditMeta?.selectionRng;
+  const maybeStochasticMainPick = () => {
+    if (section !== "main") return null;
+    const seededRng = auditMeta?.selectionRng;
+    const rng = seededRng ?? (ENABLE_UNSEEDED_MAIN_RANDOMNESS ? Math.random : null);
     if (!rng) return null;
+
+    const topScore = rankedEligible[0]?.score;
+    if (typeof topScore !== "number") return null;
+    const closeTop = rankedEligible
+      .slice(0, MAIN_SELECTION_RANDOM_TOP_LIMIT)
+      .filter((entry) => topScore - entry.score <= MAIN_SELECTION_RANDOM_SCORE_WINDOW);
+    if (closeTop.length >= MAIN_SELECTION_RANDOM_MIN_POOL) {
+      const selectedIndex = Math.floor(rng() * closeTop.length);
+      return closeTop[Math.max(0, Math.min(closeTop.length - 1, selectedIndex))] ?? null;
+    }
+
+    // Keep existing seeded tie behavior for exact-score ties when pool is smaller.
+    if (!seededRng) return null;
     const topBaseScore = rankedEligible[0]?.baseScore;
     if (typeof topBaseScore !== "number") return null;
     const tied = rankedEligible.filter(
       (entry) => Math.abs(entry.baseScore - topBaseScore) < 1e-9
     );
     if (tied.length <= 1) return null;
-    const selectedIndex = Math.floor(rng() * tied.length);
+    const selectedIndex = Math.floor(seededRng() * tied.length);
     return tied[Math.max(0, Math.min(tied.length - 1, selectedIndex))] ?? null;
   };
 
-  const chosenEntry = maybeSeededTiePick() ?? rankedEligible[0];
+  const chosenEntry = maybeStochasticMainPick() ?? rankedEligible[0];
 
   if (canCaptureAudit && auditMeta) {
     const top = rankedEligible.slice(0, 5).map((entry) => ({
@@ -17422,6 +17531,7 @@ const buildStructuredDay = (params: {
           available,
           section,
           context: selectionContext,
+          dayTitle: title,
         })
       ) {
         return false;
@@ -17442,6 +17552,7 @@ const buildStructuredDay = (params: {
             available,
             section,
             context: selectionContext,
+            dayTitle: title,
           })
         ) {
           return false;
@@ -17631,6 +17742,7 @@ const buildStructuredDay = (params: {
           available,
           section: "main",
           context: selectionContext,
+          dayTitle: title,
         })
       ) {
         mainIds[primaryRowSlotIndex] = machineRow.id;
@@ -17663,6 +17775,7 @@ const buildStructuredDay = (params: {
             available,
             section: "main",
             context: selectionContext,
+            dayTitle: title,
           })
         ) {
           return false;
@@ -17757,6 +17870,7 @@ const buildStructuredDay = (params: {
               available,
               section: "main",
               context: selectionContext,
+              dayTitle: title,
             })
           ) {
             return false;
@@ -18690,6 +18804,7 @@ export const generateWeeklyProgram = (
     poseAnalysis?: PoseAnalysis | null;
     assessmentReport?: AssessmentReport | null;
     recentLogs?: ExerciseLog[];
+    previousWeek?: ProgramDay[];
     feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
   }
 ): Program => {
@@ -18704,6 +18819,10 @@ export const generateWeeklyProgram = (
   const feedbackSummaryByExercise =
     options?.feedbackSummaryByExercise ??
     summarizeFeedbackFromLogs(options?.recentLogs ?? []);
+  const recentlyUsedExerciseIds = buildRecentlyUsedExerciseIdSet({
+    recentLogs: options?.recentLogs,
+    previousWeek: options?.previousWeek,
+  });
   const phaseIndex = options?.phaseIndex ?? 1;
   const experienceProfile = getExperienceProfile(
     data.experience,
@@ -18719,6 +18838,7 @@ export const generateWeeklyProgram = (
       capabilityMode,
       phaseName: getPhaseMetaByIndex(phaseIndex).phaseName,
       feedbackSummaryByExercise,
+      recentlyUsedExerciseIds,
     }
   );
   const selectionRng = options?.seed ? createSeededRng(options.seed) : undefined;
@@ -19019,6 +19139,10 @@ export const generateNextPhaseProgram = (params: {
   const nextCycleIndex = 1;
   const nextTotalWeekIndex = totalWeekIndex + 1;
   const feedbackSummaryByExercise = summarizeFeedbackFromLogs(recentLogs);
+  const recentlyUsedExerciseIds = buildRecentlyUsedExerciseIdSet({
+    recentLogs,
+    previousWeek: currentProgram.week,
+  });
 
   const program = generateWeeklyProgram(questionnaire, nextProgramId, {
     phaseIndex: nextPhaseIndex,
@@ -19028,6 +19152,7 @@ export const generateNextPhaseProgram = (params: {
     trainingState,
     seed,
     recentLogs,
+    previousWeek: currentProgram.week,
     feedbackSummaryByExercise,
   });
   const hasSameWeekTemplate =
@@ -19041,6 +19166,7 @@ export const generateNextPhaseProgram = (params: {
         trainingState,
         seed,
         recentLogs,
+        previousWeek: currentProgram.week,
         feedbackSummaryByExercise,
       })
     : program;
@@ -19062,6 +19188,7 @@ export const generateNextPhaseProgram = (params: {
         getPhaseMetaByIndex(phaseProgram.phaseIndex ?? nextPhaseIndex).phaseName,
       capabilityMode: phaseCapabilityMode,
       feedbackSummaryByExercise,
+      recentlyUsedExerciseIds,
     }
   );
   const phaseWeek = enforceMaterialWeekChange({
@@ -19298,6 +19425,10 @@ export const generateNextCycleProgram = (params: {
     };
   }
   const feedbackSummaryByExercise = summarizeFeedbackFromLogs(recentLogs);
+  const recentlyUsedExerciseIds = buildRecentlyUsedExerciseIdSet({
+    recentLogs,
+    previousWeek: currentProgram.week,
+  });
 
   const program = generateWeeklyProgram(questionnaire, nextProgramId, {
     phaseIndex: transition.next.phaseIndex,
@@ -19307,6 +19438,7 @@ export const generateNextCycleProgram = (params: {
     trainingState,
     seed,
     recentLogs,
+    previousWeek: currentProgram.week,
     feedbackSummaryByExercise,
   });
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
@@ -19327,6 +19459,7 @@ export const generateNextCycleProgram = (params: {
         getPhaseMetaByIndex(program.phaseIndex ?? transition.next.phaseIndex).phaseName,
       capabilityMode: cycleCapabilityMode,
       feedbackSummaryByExercise,
+      recentlyUsedExerciseIds,
     }
   );
   const nextWeek = enforceMaterialWeekChange({

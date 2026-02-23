@@ -48,6 +48,27 @@ describe("program determinism", () => {
     expect(a.phaseName).toBe(b.phaseName);
   });
 
+  test("seeded main-slot stochastic picks remain deterministic", () => {
+    const seededInput: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["gym"],
+      daysPerWeek: 3,
+    };
+    const options = {
+      phaseIndex: 2 as const,
+      weekIndex: 1,
+      cycleIndex: 1,
+      totalWeekIndex: 1,
+      seed: "main-window-seed",
+    };
+    const a = generateWeeklyProgram(seededInput, "seeded-main-window-a", options);
+    const b = generateWeeklyProgram(seededInput, "seeded-main-window-b", options);
+
+    expect(comparableWeek(a)).toEqual(comparableWeek(b));
+  });
+
   test("next-cycle generation is deterministic from same state and signals", () => {
     const current = generateWeeklyProgram(input, "det-current", {
       phaseIndex: 1,

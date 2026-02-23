@@ -51,6 +51,23 @@ const expectDayHasRequiredMainPatterns = (params: {
   });
 };
 
+const expectDayLacksMainPatterns = (params: {
+  program: ReturnType<typeof generateWeeklyProgram>;
+  dayTitle: string;
+  forbiddenPatterns: MainPattern[];
+}) => {
+  const { program, dayTitle, forbiddenPatterns } = params;
+  const day = program.week.find((entry) => entry.title === dayTitle);
+  expect(day).toBeTruthy();
+  if (!day) return;
+  forbiddenPatterns.forEach((pattern) => {
+    expect(
+      hasMainPattern(day, pattern),
+      `${dayTitle} should not include main ${pattern}`
+    ).toBe(false);
+  });
+};
+
 const isChestDominantMain = (exerciseId: string) => {
   const exercise = exerciseById(exerciseId);
   if (!exercise) return false;
@@ -88,10 +105,20 @@ describe("split contract repair enforcement", () => {
       dayTitle: "Back + Chest",
       requiredPatterns: ["pull", "push"],
     });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Back + Chest",
+      forbiddenPatterns: ["squat", "hinge"],
+    });
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Shoulders + Arms",
       requiredPatterns: ["verticalPush"],
+    });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Shoulders + Arms",
+      forbiddenPatterns: ["squat", "hinge"],
     });
     const shouldersDay = program.week.find((entry) => entry.title === "Shoulders + Arms");
     expect(shouldersDay).toBeTruthy();
@@ -124,6 +151,11 @@ describe("split contract repair enforcement", () => {
       program,
       dayTitle: "Legs + Abs",
       requiredPatterns: ["squat", "hinge"],
+    });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Legs + Abs",
+      forbiddenPatterns: ["push", "pull", "verticalPush"],
     });
   });
 
@@ -243,20 +275,40 @@ describe("split contract repair enforcement", () => {
       dayTitle: "Upper Push + Scapular Control",
       requiredPatterns: ["push"],
     });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Upper Push + Scapular Control",
+      forbiddenPatterns: ["squat", "hinge"],
+    });
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Lower (Squat Emphasis) + Core",
       requiredPatterns: ["squat"],
+    });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Lower (Squat Emphasis) + Core",
+      forbiddenPatterns: ["push", "pull", "verticalPush"],
     });
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Upper Pull + Thoracic Posture",
       requiredPatterns: ["pull"],
     });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Upper Pull + Thoracic Posture",
+      forbiddenPatterns: ["squat", "hinge"],
+    });
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Lower (Hinge Emphasis) + Carry/Anti-rotation",
       requiredPatterns: ["hinge"],
+    });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Lower (Hinge Emphasis) + Carry/Anti-rotation",
+      forbiddenPatterns: ["push", "pull", "verticalPush"],
     });
   });
 
@@ -278,25 +330,50 @@ describe("split contract repair enforcement", () => {
       dayTitle: "Upper Push",
       requiredPatterns: ["push"],
     });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Upper Push",
+      forbiddenPatterns: ["squat", "hinge"],
+    });
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Lower Squat",
       requiredPatterns: ["squat"],
+    });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Lower Squat",
+      forbiddenPatterns: ["push", "pull", "verticalPush"],
     });
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Upper Pull",
       requiredPatterns: ["pull"],
     });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Upper Pull",
+      forbiddenPatterns: ["squat", "hinge"],
+    });
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Lower Hinge + Posterior Chain",
       requiredPatterns: ["hinge"],
     });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Lower Hinge + Posterior Chain",
+      forbiddenPatterns: ["push", "pull", "verticalPush"],
+    });
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Arms + Posture + Conditioning",
       requiredPatterns: ["pull", "verticalPush"],
+    });
+    expectDayLacksMainPatterns({
+      program,
+      dayTitle: "Arms + Posture + Conditioning",
+      forbiddenPatterns: ["squat", "hinge"],
     });
   });
 });
