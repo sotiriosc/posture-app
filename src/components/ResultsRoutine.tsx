@@ -1367,15 +1367,6 @@ export default function ResultsRoutine() {
       lines.push("");
     }
 
-    lines.push("ACTIVE WEEK (CURRENT PROGRAM)");
-    lines.push(
-      `${program.phaseName ?? `Phase ${program.phaseIndex ?? 1}`} | Cycle ${program.cycleIndex ?? 1} | Week ${program.weekIndex ?? 1}`
-    );
-    const activeDayOne = program.week.find((day) => day.dayIndex === 0) ?? program.week[0];
-    if (activeDayOne) {
-      lines.push(...buildReferenceLinesForDay(activeDayOne));
-    }
-
     if (!referenceQuestionnaire) return lines.join("\n");
     const referenceSeedBase = questionnaireSignature ?? program.id ?? "program-reference";
 
