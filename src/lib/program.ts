@@ -11702,6 +11702,797 @@ const repairBackChestDayIntelligence = (params: {
   };
 };
 
+const isShouldersArmsDayTitle = (dayTitle?: string | null) =>
+  normalizeSlotToken(dayTitle ?? "") === "shoulders_arms";
+
+type ShouldersArmsAnchorRole = "ohp" | "lateral" | "biceps" | "triceps";
+type ShouldersArmsSecondaryRole = "biceps" | "triceps" | "rearDeltMain";
+type ShouldersArmsAccessoryRole = "rearDelt" | "externalScap";
+type ShouldersArmsMainCategory =
+  | "ohp"
+  | "lateral"
+  | "biceps"
+  | "triceps"
+  | "rearDeltMain"
+  | "uprightRow"
+  | "other";
+
+const SHOULDERS_ARMS_MAIN_CATEGORY_CAPS: Record<
+  Exclude<ShouldersArmsMainCategory, "other">,
+  number
+> = {
+  ohp: 1,
+  lateral: 1,
+  biceps: 2,
+  triceps: 2,
+  rearDeltMain: 1,
+  uprightRow: 0,
+};
+
+const normalizeShouldersArmsGoal = (goal: string) => {
+  const normalized = goal.trim().toLowerCase();
+  if (normalized.includes("posture")) return "improvePosture";
+  if (normalized.includes("pain")) return "reducePain";
+  if (normalized.includes("athletic")) return "athleticPerformance";
+  return "generalFitness";
+};
+
+const resolveShouldersArmsTargetMainCount = (experienceLevel: NormalizedExperienceLevel) =>
+  experienceLevel === "advanced" ? 6 : experienceLevel === "intermediate" ? 5 : 4;
+
+const resolveShouldersArmsExerciseFamilyKey = (exercise: Exercise) => {
+  if (exercise.familyKey?.trim()) return normalizeTagToken(exercise.familyKey);
+  if (resolveShouldersArmsMainCategory(exercise) === "rearDeltMain") return "rear_delt_main";
+  return normalizeTagToken(exercise.id);
+};
+
+const resolveShouldersArmsExerciseVariantKey = (exercise: Exercise) => {
+  if (exercise.variantKey?.trim()) return normalizeTagToken(exercise.variantKey);
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  if (descriptor.includes("single-arm") || descriptor.includes("single arm")) return "single_arm";
+  if (descriptor.includes("split-stance") || descriptor.includes("split stance"))
+    return "split_stance";
+  if (descriptor.includes("kneeling")) return "kneeling";
+  if (descriptor.includes("iso") || exercise.loadType === "timed") return "iso_hold";
+  return "standard";
+};
+
+const isShouldersArmsRearDeltMainExercise = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+  const muscles = new Set(
+    (exercise.muscleGroups ?? []).map((muscle) => normalizeTagToken(muscle))
+  );
+  return (
+    descriptor.includes("rear-delt") ||
+    descriptor.includes("rear delt") ||
+    descriptor.includes("reverse pec deck") ||
+    descriptor.includes("reverse-pec-deck") ||
+    tags.has("reardelt") ||
+    tags.has("rear_delt") ||
+    muscles.has("rear_delts")
+  );
+};
+
+const isShouldersArmsSafeUprightRowExercise = (exercise: Exercise) => {
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+  return tags.has("safe_upright_row") || tags.has("shoulder_safe");
+};
+
+const resolveShouldersArmsMainCategory = (
+  exercise: Exercise
+): ShouldersArmsMainCategory => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const patterns = new Set(
+    (exercise.movementPattern ?? []).map((pattern) => normalizeTagToken(pattern))
+  );
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+
+  if (descriptor.includes("upright row")) return "uprightRow";
+  if (patterns.has("curl") || tags.has("biceps") || descriptor.includes("biceps"))
+    return "biceps";
+  if (
+    patterns.has("extension") ||
+    tags.has("triceps") ||
+    descriptor.includes("triceps") ||
+    descriptor.includes("pressdown")
+  ) {
+    return "triceps";
+  }
+  if (
+    descriptor.includes("lateral raise") ||
+    descriptor.includes("lateral-raise") ||
+    tags.has("lateraldelt") ||
+    tags.has("lateral_delt")
+  ) {
+    return "lateral";
+  }
+  if (
+    patterns.has("verticalpush") ||
+    descriptor.includes("shoulder press") ||
+    descriptor.includes("overhead press") ||
+    descriptor.includes("pike push-up") ||
+    descriptor.includes("pike-pushup")
+  ) {
+    return "ohp";
+  }
+  if (isShouldersArmsRearDeltMainExercise(exercise)) return "rearDeltMain";
+  return "other";
+};
+
+const isShouldersArmsMainBoundaryEligible = (exercise: Exercise) => {
+  if (exercise.category !== "main") return false;
+  if (isBackChestLowerBodyLeakExercise(exercise)) return false;
+  if (hasVerticalPullSignature(exercise)) return false;
+  if (hasHorizontalPullSignature(exercise) && !isShouldersArmsRearDeltMainExercise(exercise)) {
+    return false;
+  }
+  const category = resolveShouldersArmsMainCategory(exercise);
+  if (category === "other") return false;
+  if (category === "uprightRow") return isShouldersArmsSafeUprightRowExercise(exercise);
+  if (isChestDominantHorizontalPush(exercise) && category !== "triceps") return false;
+  return true;
+};
+
+const isShouldersArmsAccessoryRearDelt = (exercise: Exercise) =>
+  isShouldersArmsRearDeltMainExercise(exercise);
+
+const isShouldersArmsAccessoryExternalScap = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const patterns = new Set(
+    (exercise.movementPattern ?? []).map((pattern) => normalizeTagToken(pattern))
+  );
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+  return (
+    descriptor.includes("face pull") ||
+    descriptor.includes("face-pull") ||
+    descriptor.includes("external rotation") ||
+    descriptor.includes("external-rotation") ||
+    descriptor.includes("pull-apart") ||
+    descriptor.includes("pull apart") ||
+    patterns.has("scapular") ||
+    patterns.has("externalrotation") ||
+    tags.has("scapular") ||
+    tags.has("external_rotation") ||
+    tags.has("externalrotation")
+  );
+};
+
+const resolveShouldersArmsAccessoryFamilyKey = (exercise: Exercise) => {
+  if (exercise.familyKey?.trim()) return normalizeTagToken(exercise.familyKey);
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  if (descriptor.includes("face pull") || descriptor.includes("face-pull")) return "face_pull";
+  if (descriptor.includes("rear delt") || descriptor.includes("rear-delt")) return "rear_delt";
+  if (descriptor.includes("external rotation") || descriptor.includes("external-rotation")) {
+    return "external_rotation";
+  }
+  if (descriptor.includes("pull-apart") || descriptor.includes("pull apart")) return "pull_apart";
+  return normalizeTagToken(exercise.id);
+};
+
+const SHOULDERS_ARMS_ANCHOR_POOLS: Record<
+  ShouldersArmsAnchorRole,
+  Record<ProgramPhaseStage, string[]>
+> = {
+  ohp: {
+    activation: [
+      "machine-shoulder-press",
+      "dumbbell-shoulder-press",
+      "band-overhead-press",
+      "pike-pushup",
+      "suspension-pike-press-upright",
+    ],
+    skill: [
+      "dumbbell-shoulder-press",
+      "machine-shoulder-press",
+      "dumbbell-arnold-press",
+      "band-overhead-press",
+      "suspension-pike-press-incline",
+      "pike-pushup",
+    ],
+    growth: [
+      "barbell-strict-press",
+      "barbell-push-press",
+      "dumbbell-shoulder-press",
+      "dumbbell-arnold-press",
+      "machine-shoulder-press",
+      "suspension-pike-press-deep",
+      "pike-pushup",
+      "band-overhead-press",
+    ],
+  },
+  lateral: {
+    activation: [
+      "dumbbell-lateral-raise",
+      "band-lateral-raise",
+      "prone-t-raise",
+    ],
+    skill: [
+      "cable-lateral-raise",
+      "dumbbell-lateral-raise",
+      "band-lateral-raise",
+      "prone-t-raise",
+    ],
+    growth: [
+      "cable-lateral-raise",
+      "dumbbell-lateral-raise",
+      "band-lateral-raise",
+      "prone-t-raise",
+    ],
+  },
+  biceps: {
+    activation: [
+      "db-biceps-curl",
+      "band-biceps-curl",
+      "towel-biceps-curl-hold",
+    ],
+    skill: [
+      "hammer-curl",
+      "db-biceps-curl",
+      "single-arm-band-biceps-curl",
+      "band-biceps-curl",
+      "towel-biceps-curl-hold",
+    ],
+    growth: [
+      "hammer-curl",
+      "cable-biceps-curl",
+      "db-biceps-curl",
+      "single-arm-band-biceps-curl",
+      "band-biceps-curl",
+      "towel-biceps-curl-hold",
+    ],
+  },
+  triceps: {
+    activation: [
+      "band-triceps-pressdown",
+      "db-triceps-extension",
+      "bodyweight-triceps-extension",
+      "close-grip-pushup",
+    ],
+    skill: [
+      "db-triceps-extension",
+      "band-triceps-pressdown",
+      "band-overhead-triceps-extension",
+      "overhead-cable-triceps-extension",
+      "bodyweight-triceps-extension",
+      "close-grip-pushup",
+    ],
+    growth: [
+      "overhead-cable-triceps-extension",
+      "db-triceps-extension",
+      "band-overhead-triceps-extension",
+      "band-triceps-pressdown",
+      "bodyweight-triceps-extension",
+      "close-grip-pushup",
+    ],
+  },
+};
+
+const SHOULDERS_ARMS_REAR_DELT_MAIN_POOL = [
+  "machine-reverse-pec-deck",
+  "machine-rear-delt-row",
+  "cable-rear-delt-fly",
+  "dumbbell-rear-delt-fly",
+  "band-rear-delt-fly",
+  "suspension-rear-delt-row",
+  "reverse-snow-angel",
+];
+
+const SHOULDERS_ARMS_ACCESSORY_POOL: Record<ShouldersArmsAccessoryRole, string[]> = {
+  rearDelt: [
+    "machine-reverse-pec-deck",
+    "machine-rear-delt-row",
+    "cable-rear-delt-fly",
+    "dumbbell-rear-delt-fly",
+    "band-rear-delt-fly",
+    "suspension-rear-delt-row",
+    "reverse-snow-angel",
+  ],
+  externalScap: [
+    "cable-face-pull",
+    "face-pull",
+    "band-face-pull-high-anchor",
+    "suspension-face-pull",
+    "cable-external-rotation-pressout",
+    "cable-external-rotation",
+    "band-external-rotation",
+    "machine-shoulder-external-rotation",
+    "dumbbell-side-lying-external-rotation",
+    "prone-y-raise",
+    "band-pull-aparts",
+  ],
+};
+
+const resolveShouldersArmsRoleFromCategory = (
+  category: ShouldersArmsMainCategory
+): ShouldersArmsAnchorRole | null => {
+  if (category === "ohp") return "ohp";
+  if (category === "lateral") return "lateral";
+  if (category === "biceps") return "biceps";
+  if (category === "triceps") return "triceps";
+  return null;
+};
+
+const getShouldersArmsDayFromWeek = (week?: ProgramDay[]) =>
+  week?.find((entry) => isShouldersArmsDayTitle(entry.title)) ?? null;
+
+const selectShouldersArmsMainExercise = (params: {
+  role: ShouldersArmsAnchorRole | ShouldersArmsSecondaryRole;
+  day: ProgramDay;
+  context: DayConstraintRepairContext;
+  usedIds: Set<string>;
+  disallowIds?: Set<string>;
+  preferredCategory?: ShouldersArmsMainCategory;
+}): Exercise | null => {
+  const { role, day, context, usedIds, disallowIds, preferredCategory } = params;
+  const phaseStage = context.selectionContext.phaseStage;
+  const goalType = normalizeShouldersArmsGoal(context.selectionContext.goal);
+  const anchorRole =
+    role === "rearDeltMain" ? null : (role as ShouldersArmsAnchorRole);
+  const seedBase = context.selectionSeed ?? "shoulders-arms";
+  const phaseIds =
+    role === "rearDeltMain"
+      ? SHOULDERS_ARMS_REAR_DELT_MAIN_POOL
+      : SHOULDERS_ARMS_ANCHOR_POOLS[role as ShouldersArmsAnchorRole][phaseStage];
+
+  const fromSeedPool = phaseIds
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise));
+  const fallbackPool = exercises.filter((exercise) => {
+    if (!isShouldersArmsMainBoundaryEligible(exercise)) return false;
+    const category = resolveShouldersArmsMainCategory(exercise);
+    if (role === "rearDeltMain") return category === "rearDeltMain";
+    return resolveShouldersArmsRoleFromCategory(category) === anchorRole;
+  });
+
+  const orderedPool = Array.from(new Set([...fromSeedPool, ...fallbackPool]));
+  const candidates = orderedPool
+    .filter((exercise) => !usedIds.has(exercise.id))
+    .filter((exercise) => !disallowIds?.has(exercise.id))
+    .filter((exercise) =>
+      isExerciseEligibleForProgramContext({
+        exercise,
+        available: context.available,
+        section: "main",
+        context: context.selectionContext,
+      })
+    );
+
+  const pickFrom = (pool: Exercise[]) => {
+    if (!pool.length) return null;
+    const hasHighImplementAvailability =
+      context.available.has("machines") ||
+      context.available.has("cables") ||
+      context.available.has("dumbbells");
+    return [...pool]
+      .map((exercise) => {
+        const category = resolveShouldersArmsMainCategory(exercise);
+        const orderedIndex = Math.max(0, phaseIds.indexOf(exercise.id));
+        let score = scoreExerciseForContext(
+          exercise,
+          "main",
+          context.selectionContext,
+          context.available
+        );
+        score += phaseIds.includes(exercise.id) ? (phaseIds.length - orderedIndex) * 4 : 0;
+        if (preferredCategory && category === preferredCategory) score += 2;
+        if (goalType === "improvePosture") {
+          if (
+            category === "triceps" &&
+            (exercise.id.includes("pressdown") || exercise.id.includes("extension"))
+          ) {
+            score += 1;
+          }
+          if (category === "rearDeltMain") score += 1.5;
+        }
+        if (goalType === "reducePain") {
+          const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+          if (exercise.equipment.includes("machines")) score += 2;
+          if (descriptor.includes("single-arm") || descriptor.includes("single arm")) score -= 1;
+          if (descriptor.includes("iso")) score += 0.5;
+        }
+        if (goalType === "athleticPerformance") {
+          const variant = resolveShouldersArmsExerciseVariantKey(exercise);
+          if (variant === "single_arm" || variant === "split_stance") score += 1.25;
+          if (variant === "iso_hold") score -= 0.5;
+        }
+        if (hasHighImplementAvailability) {
+          const usesOnlyBands =
+            exercise.equipment.includes("bands") &&
+            !exercise.equipment.includes("dumbbells") &&
+            !exercise.equipment.includes("machines") &&
+            !exercise.equipment.includes("cables");
+          if (usesOnlyBands) score -= 1;
+          if (exercise.equipment.includes("machines")) score += 0.75;
+          if (exercise.equipment.includes("dumbbells")) score += 0.5;
+        }
+        if (phaseStage === "activation" && exercise.tier && exercise.tier > 2) score -= 2;
+        if (phaseStage === "growth" && exercise.tier && exercise.tier >= 2) score += 1;
+        const tie = stableHashUnit(
+          `${seedBase}|sa-main|${day.title}|${role}|${phaseStage}|${exercise.id}`
+        );
+        return { exercise, score, tie };
+      })
+      .sort((left, right) => {
+        if (right.score !== left.score) return right.score - left.score;
+        return right.tie - left.tie;
+      })[0]?.exercise;
+  };
+
+  const best = pickFrom(candidates);
+  if (best) return best;
+  if (disallowIds?.size) {
+    const relaxed = orderedPool
+      .filter((exercise) => !usedIds.has(exercise.id))
+      .filter((exercise) =>
+        isExerciseEligibleForProgramContext({
+          exercise,
+          available: context.available,
+          section: "main",
+          context: context.selectionContext,
+        })
+      );
+    return pickFrom(relaxed);
+  }
+  return null;
+};
+
+const selectShouldersArmsAccessoryExercise = (params: {
+  role: ShouldersArmsAccessoryRole;
+  day: ProgramDay;
+  context: DayConstraintRepairContext;
+  usedIds: Set<string>;
+  usedFamilyKeys: Set<string>;
+  disallowIds?: Set<string>;
+}): Exercise | null => {
+  const { role, day, context, usedIds, usedFamilyKeys, disallowIds } = params;
+  const poolIds = SHOULDERS_ARMS_ACCESSORY_POOL[role];
+  const pool = poolIds
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise))
+    .filter((exercise) => !usedIds.has(exercise.id))
+    .filter((exercise) => !disallowIds?.has(exercise.id))
+    .filter((exercise) => {
+      const family = resolveShouldersArmsAccessoryFamilyKey(exercise);
+      return !usedFamilyKeys.has(family);
+    })
+    .filter((exercise) =>
+      isExerciseEligibleForProgramContext({
+        exercise,
+        available: context.available,
+        section: "accessory",
+        context: context.selectionContext,
+      })
+    );
+  if (!pool.length) return null;
+  const seedBase = context.selectionSeed ?? "shoulders-arms-accessory";
+  return [...pool]
+    .map((exercise) => {
+      let score = scoreExerciseForContext(
+        exercise,
+        "accessory",
+        context.selectionContext,
+        context.available
+      );
+      if (role === "rearDelt" && isShouldersArmsAccessoryRearDelt(exercise)) score += 2;
+      if (role === "externalScap" && isShouldersArmsAccessoryExternalScap(exercise)) score += 2;
+      if (context.selectionContext.phaseStage === "growth" && exercise.loadType === "weighted") {
+        score += 1;
+      }
+      const tie = stableHashUnit(
+        `${seedBase}|sa-accessory|${day.title}|${role}|${context.selectionContext.phaseStage}|${exercise.id}`
+      );
+      return { exercise, score, tie };
+    })
+    .sort((left, right) => {
+      if (right.score !== left.score) return right.score - left.score;
+      return right.tie - left.tie;
+    })[0]?.exercise;
+};
+
+const resolveShouldersArmsAccessoryRepRange = (phaseStage: ProgramPhaseStage) =>
+  phaseStage === "growth" ? "8-12" : "10-15";
+
+const repairShouldersArmsDayIntelligence = (params: {
+  day: ProgramDay;
+  daysPerWeek: 3 | 4 | 5;
+  context: DayConstraintRepairContext;
+}): { day: ProgramDay; warnings: string[] } => {
+  const { day, daysPerWeek, context } = params;
+  if (daysPerWeek !== 3 || !isShouldersArmsDayTitle(day.title)) return { day, warnings: [] };
+
+  const warnings: string[] = [];
+  const phaseStage = context.selectionContext.phaseStage;
+  const experienceLevel = context.selectionContext.experienceLevel;
+  const targetMainCount = resolveShouldersArmsTargetMainCount(experienceLevel);
+  const phaseIndex = phaseIndexFromStage(phaseStage);
+  const experienceForProfile: ExperienceLevel =
+    experienceLevel === "advanced"
+      ? "Advanced"
+      : experienceLevel === "intermediate"
+      ? "Intermediate"
+      : "Beginner";
+  const profile = getExperienceProfile(
+    experienceForProfile,
+    context.selectionContext.goal,
+    phaseIndex
+  );
+  const previousDay = getShouldersArmsDayFromWeek(context.previousWeek);
+  const previousMainByRole = new Map<ShouldersArmsAnchorRole | ShouldersArmsSecondaryRole, string>();
+  const previousMainExercises = previousDay
+    ? previousDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    : [];
+  previousMainExercises.forEach((exercise) => {
+    const category = resolveShouldersArmsMainCategory(exercise);
+    const role = resolveShouldersArmsRoleFromCategory(category);
+    if (role && !previousMainByRole.has(role)) previousMainByRole.set(role, exercise.id);
+    if (category === "rearDeltMain" && !previousMainByRole.has("rearDeltMain")) {
+      previousMainByRole.set("rearDeltMain", exercise.id);
+    }
+  });
+
+  const usedMainIds = new Set<string>();
+  const selectedMainExercises: Exercise[] = [];
+  const anchorRoles: ShouldersArmsAnchorRole[] = ["ohp", "lateral", "biceps", "triceps"];
+  const categoryCounts: Record<Exclude<ShouldersArmsMainCategory, "other">, number> = {
+    ohp: 0,
+    lateral: 0,
+    biceps: 0,
+    triceps: 0,
+    rearDeltMain: 0,
+    uprightRow: 0,
+  };
+  const stimulusKeys = new Set<string>();
+  const familyVariantKeys = new Set<string>();
+
+  anchorRoles.forEach((role) => {
+    const previousId = previousMainByRole.get(role);
+    const exercise = selectShouldersArmsMainExercise({
+      role,
+      day,
+      context,
+      usedIds: usedMainIds,
+      disallowIds: previousId ? new Set([previousId]) : undefined,
+    });
+    if (!exercise) {
+      warnings.push(`Shoulders + Arms missing ${role} anchor candidate.`);
+      return;
+    }
+    const category = resolveShouldersArmsMainCategory(exercise);
+    if (category in categoryCounts) {
+      categoryCounts[category as Exclude<ShouldersArmsMainCategory, "other">] += 1;
+    }
+    usedMainIds.add(exercise.id);
+    selectedMainExercises.push(exercise);
+    const family = resolveShouldersArmsExerciseFamilyKey(exercise);
+    const variant = resolveShouldersArmsExerciseVariantKey(exercise);
+    familyVariantKeys.add(`${family}::${variant}`);
+    stimulusKeys.add(`${family}::${category}::${variant}::${exercise.loadType}`);
+  });
+
+  const extrasToAdd = Math.max(0, targetMainCount - selectedMainExercises.length);
+  const goalType = normalizeShouldersArmsGoal(context.selectionContext.goal);
+  const hasScapControlFocus =
+    context.selectionContext.poseFocusTags.has("scapular_control") ||
+    context.selectionContext.poseFocusTags.has("scap_control") ||
+    context.selectionContext.poseFocusTags.has("external_rotation");
+
+  const secondaryRoleOrder: ShouldersArmsSecondaryRole[] =
+    extrasToAdd <= 0
+      ? []
+      : experienceLevel === "intermediate"
+      ? goalType === "improvePosture" || goalType === "reducePain"
+        ? ["triceps", "biceps", "rearDeltMain"]
+        : ["biceps", "triceps", "rearDeltMain"]
+      : hasScapControlFocus && goalType === "improvePosture"
+      ? ["rearDeltMain", "triceps", "biceps"]
+      : ["biceps", "triceps", "rearDeltMain"];
+
+  for (let slotIndex = 0; slotIndex < extrasToAdd; slotIndex += 1) {
+    const role =
+      secondaryRoleOrder[slotIndex] ??
+      secondaryRoleOrder[secondaryRoleOrder.length - 1] ??
+      "triceps";
+    const roleCandidates = [role, "triceps", "biceps", "rearDeltMain"] as const;
+    let picked: Exercise | null = null;
+    for (const candidateRole of roleCandidates) {
+      const candidate = selectShouldersArmsMainExercise({
+        role: candidateRole,
+        day,
+        context,
+        usedIds: usedMainIds,
+        disallowIds: previousMainByRole.get(candidateRole)
+          ? new Set([previousMainByRole.get(candidateRole)!])
+          : undefined,
+        preferredCategory:
+          candidateRole === "rearDeltMain"
+            ? "rearDeltMain"
+            : (candidateRole as ShouldersArmsMainCategory),
+      });
+      if (!candidate) continue;
+      const category = resolveShouldersArmsMainCategory(candidate);
+      if (category === "other") continue;
+      const categoryKey = category as Exclude<ShouldersArmsMainCategory, "other">;
+      const cap = SHOULDERS_ARMS_MAIN_CATEGORY_CAPS[categoryKey];
+      if ((categoryCounts[categoryKey] ?? 0) >= cap) continue;
+      const family = resolveShouldersArmsExerciseFamilyKey(candidate);
+      const variant = resolveShouldersArmsExerciseVariantKey(candidate);
+      const familyVariant = `${family}::${variant}`;
+      const stimulusKey = `${family}::${category}::${variant}::${candidate.loadType}`;
+      if (familyVariantKeys.has(familyVariant) || stimulusKeys.has(stimulusKey)) continue;
+      picked = candidate;
+      break;
+    }
+    if (!picked) continue;
+    const pickedCategory = resolveShouldersArmsMainCategory(picked);
+    if (pickedCategory in categoryCounts) {
+      categoryCounts[pickedCategory as Exclude<ShouldersArmsMainCategory, "other">] += 1;
+    }
+    usedMainIds.add(picked.id);
+    selectedMainExercises.push(picked);
+    const pickedFamily = resolveShouldersArmsExerciseFamilyKey(picked);
+    const pickedVariant = resolveShouldersArmsExerciseVariantKey(picked);
+    familyVariantKeys.add(`${pickedFamily}::${pickedVariant}`);
+    stimulusKeys.add(
+      `${pickedFamily}::${pickedCategory}::${pickedVariant}::${picked.loadType}`
+    );
+  }
+
+  const accessoryExistingCount = day.routine.filter(
+    (item) => item.section === "accessory"
+  ).length;
+  const accessoryCount = Math.max(2, Math.max(accessoryExistingCount, profile.accessoryCount));
+  const previousAccessoryIds = previousDay
+    ? previousDay.routine
+        .filter((item) => item.section === "accessory")
+        .map((item) => item.exerciseId)
+    : [];
+  const usedAccessoryIds = new Set<string>();
+  const usedAccessoryFamilies = new Set<string>();
+  const accessoryExercises: Exercise[] = [];
+  const accessoryRoleOrder: ShouldersArmsAccessoryRole[] = [
+    "rearDelt",
+    "externalScap",
+  ];
+  while (accessoryRoleOrder.length < accessoryCount) {
+    accessoryRoleOrder.push(accessoryRoleOrder.length % 2 === 0 ? "rearDelt" : "externalScap");
+  }
+
+  accessoryRoleOrder.forEach((role, index) => {
+    const previousId = previousAccessoryIds[index];
+    const picked = selectShouldersArmsAccessoryExercise({
+      role,
+      day,
+      context,
+      usedIds: usedAccessoryIds,
+      usedFamilyKeys: usedAccessoryFamilies,
+      disallowIds: previousId ? new Set([previousId]) : undefined,
+    });
+    if (!picked) return;
+    usedAccessoryIds.add(picked.id);
+    usedAccessoryFamilies.add(resolveShouldersArmsAccessoryFamilyKey(picked));
+    accessoryExercises.push(picked);
+  });
+
+  if (!accessoryExercises.some((exercise) => isShouldersArmsAccessoryRearDelt(exercise))) {
+    warnings.push("Shoulders + Arms accessory repair missing rear-delt slot.");
+  }
+  if (!accessoryExercises.some((exercise) => isShouldersArmsAccessoryExternalScap(exercise))) {
+    warnings.push("Shoulders + Arms accessory repair missing scap/external-rotation slot.");
+  }
+
+  const warmupItems = day.routine.filter((item) => item.section === "warmup");
+  const activationItems = day.routine.filter((item) => item.section === "activation");
+  const cooldownItems = day.routine.filter((item) => item.section === "cooldown");
+  const otherItems = day.routine.filter(
+    (item) =>
+      item.section !== "warmup" &&
+      item.section !== "activation" &&
+      item.section !== "main" &&
+      item.section !== "accessory" &&
+      item.section !== "cooldown"
+  );
+
+  const mainItems = selectedMainExercises.map((exercise) =>
+    makeItem(
+      exercise.id,
+      profile.mainSets,
+      profile.mainRepRange,
+      undefined,
+      profile.mainRestSec,
+      "main"
+    )
+  );
+  const accessoryRepRange = resolveShouldersArmsAccessoryRepRange(phaseStage);
+  const accessoryItems = accessoryExercises.map((exercise) =>
+    makeItem(
+      exercise.id,
+      profile.accessorySets,
+      accessoryRepRange,
+      undefined,
+      profile.accessoryRestSec,
+      "accessory"
+    )
+  );
+
+  const rebuiltDay: ProgramDay = {
+    ...day,
+    routine: [
+      ...warmupItems,
+      ...activationItems,
+      ...mainItems,
+      ...accessoryItems,
+      ...otherItems,
+      ...cooldownItems,
+    ],
+  };
+
+  const rebuiltMainExercises = rebuiltDay.routine
+    .filter((item) => item.section === "main")
+    .map((item) => exerciseById(item.exerciseId))
+    .filter((exercise): exercise is Exercise => Boolean(exercise));
+  const rebuiltMainIds = rebuiltMainExercises.map((exercise) => exercise.id);
+  if (new Set(rebuiltMainIds).size !== rebuiltMainIds.length) {
+    warnings.push("Shoulders + Arms main repair found duplicate IDs after rebuild.");
+  }
+  const categorySummary = rebuiltMainExercises.reduce(
+    (acc, exercise) => {
+      const category = resolveShouldersArmsMainCategory(exercise);
+      if (category in acc) {
+        acc[category as keyof typeof acc] += 1;
+      }
+      return acc;
+    },
+    {
+      ohp: 0,
+      lateral: 0,
+      biceps: 0,
+      triceps: 0,
+      rearDeltMain: 0,
+      uprightRow: 0,
+    }
+  );
+  if (categorySummary.ohp !== 1) warnings.push("Shoulders + Arms requires exactly 1 OHP main.");
+  if (categorySummary.lateral !== 1) {
+    warnings.push("Shoulders + Arms requires exactly 1 lateral-delt main.");
+  }
+  if (categorySummary.biceps < 1) warnings.push("Shoulders + Arms requires at least 1 biceps main.");
+  if (categorySummary.triceps < 1) {
+    warnings.push("Shoulders + Arms requires at least 1 triceps main.");
+  }
+  if (categorySummary.ohp > SHOULDERS_ARMS_MAIN_CATEGORY_CAPS.ohp) {
+    warnings.push("Shoulders + Arms OHP cap exceeded.");
+  }
+  if (categorySummary.lateral > SHOULDERS_ARMS_MAIN_CATEGORY_CAPS.lateral) {
+    warnings.push("Shoulders + Arms lateral cap exceeded.");
+  }
+  if (categorySummary.biceps > SHOULDERS_ARMS_MAIN_CATEGORY_CAPS.biceps) {
+    warnings.push("Shoulders + Arms biceps cap exceeded.");
+  }
+  if (categorySummary.triceps > SHOULDERS_ARMS_MAIN_CATEGORY_CAPS.triceps) {
+    warnings.push("Shoulders + Arms triceps cap exceeded.");
+  }
+  if (
+    rebuiltMainExercises.some((exercise) => !isShouldersArmsMainBoundaryEligible(exercise))
+  ) {
+    warnings.push("Shoulders + Arms boundary violation remained after repair.");
+  }
+  const accessoryFamilies = accessoryExercises.map((exercise) =>
+    resolveShouldersArmsAccessoryFamilyKey(exercise)
+  );
+  if (new Set(accessoryFamilies).size !== accessoryFamilies.length) {
+    warnings.push("Shoulders + Arms accessory family de-dup failed.");
+  }
+
+  return {
+    day: rebuiltDay,
+    warnings,
+  };
+};
+
 const applyDayCurriculumConstraints = (params: {
   week: ProgramDay[];
   daysPerWeek: 3 | 4 | 5;
@@ -11816,19 +12607,31 @@ const applyDayCurriculumConstraints = (params: {
     context,
   });
   const architectureAdjustedWeek = weeklyRepaired.week.map((day) => {
-    const repaired = repairBackChestDayIntelligence({
+    const repairedBackChest = repairBackChestDayIntelligence({
       day,
       daysPerWeek,
       context,
     });
-    repaired.warnings.forEach((message) => {
+    repairedBackChest.warnings.forEach((message) => {
       accumulatedWarnings.push({
         dayTitle: day.title,
         kind: "violation",
         message,
       });
     });
-    return repaired.day;
+    const repairedShouldersArms = repairShouldersArmsDayIntelligence({
+      day: repairedBackChest.day,
+      daysPerWeek,
+      context,
+    });
+    repairedShouldersArms.warnings.forEach((message) => {
+      accumulatedWarnings.push({
+        dayTitle: day.title,
+        kind: "violation",
+        message,
+      });
+    });
+    return repairedShouldersArms.day;
   });
   const persistentWarnings: WeekConstraintRepairResult["warnings"] = [];
   architectureAdjustedWeek.forEach((day) => {

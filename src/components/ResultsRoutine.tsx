@@ -1371,7 +1371,7 @@ export default function ResultsRoutine() {
     const referenceSeedBase = questionnaireSignature ?? program.id ?? "program-reference";
 
     lines.push("");
-    lines.push("PHASE PREVIEW (DAY 1 ONLY)");
+    lines.push("PHASE PREVIEW (DAY 2 ONLY)");
     for (let phaseIndex = 1; phaseIndex <= MAX_PHASE_INDEX; phaseIndex += 1) {
       const phaseMeta = getPhaseMetaByIndex(phaseIndex);
       const profile = getPhaseProfile(phaseIndex);
@@ -1388,12 +1388,12 @@ export default function ResultsRoutine() {
             seed: `${referenceSeedBase}-reference-phase-${phaseIndex}`,
           }
         );
-        const phaseDayOne =
-          phaseProgram.week.find((day) => day.dayIndex === 0) ?? phaseProgram.week[0];
-        if (phaseDayOne) {
-          lines.push(...buildReferenceLinesForDay(phaseDayOne));
+        const phaseDayTwo =
+          phaseProgram.week.find((day) => day.dayIndex === 1) ?? phaseProgram.week[1];
+        if (phaseDayTwo) {
+          lines.push(...buildReferenceLinesForDay(phaseDayTwo));
         } else {
-          lines.push("(day 1 unavailable)");
+          lines.push("(day 2 unavailable)");
         }
       } catch (error) {
         const message =
@@ -2274,7 +2274,7 @@ export default function ResultsRoutine() {
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-600">
-            Plain reference output for screenshot review of Day 1 for active week and all phases.
+            Plain reference output for screenshot review of Day 2 for active week and all phases.
           </p>
           <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
             <pre className="whitespace-pre-wrap text-[11px] leading-5 text-slate-700">

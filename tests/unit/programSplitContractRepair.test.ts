@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import { exerciseById } from "@/lib/exercises";
+import { exerciseById, type Exercise } from "@/lib/exercises";
 import { generateWeeklyProgram } from "@/lib/program";
 
 type MainPattern = "push" | "verticalPush" | "pull" | "squat" | "hinge";
@@ -91,8 +91,35 @@ describe("split contract repair enforcement", () => {
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Shoulders + Arms",
-      requiredPatterns: ["verticalPush", "pull"],
+      requiredPatterns: ["verticalPush"],
     });
+    const shouldersDay = program.week.find((entry) => entry.title === "Shoulders + Arms");
+    expect(shouldersDay).toBeTruthy();
+    if (shouldersDay) {
+      const shoulderMainExercises = shouldersDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      const hasBiceps = shoulderMainExercises.some((exercise) => {
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        return patterns.has("curl") || tags.has("biceps") || descriptor.includes("biceps");
+      });
+      const hasTriceps = shoulderMainExercises.some((exercise) => {
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        return (
+          patterns.has("extension") ||
+          tags.has("triceps") ||
+          descriptor.includes("triceps") ||
+          descriptor.includes("pressdown")
+        );
+      });
+      expect(hasBiceps).toBe(true);
+      expect(hasTriceps).toBe(true);
+    }
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Legs + Abs",
