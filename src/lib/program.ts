@@ -31,6 +31,11 @@ import {
   buildWarmupForDay,
   deriveDayIntentFromProgramDay,
 } from "@/lib/program/warmupPlanner";
+import {
+  get3DayBackChestVerticalFallbackIds,
+  get3DayMainLanePlan,
+  get3DayTemplateCounts,
+} from "@/lib/program/dayTemplates";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
@@ -7298,6 +7303,20 @@ const getBackChestMainSlotPlan = (params: {
   daysPerWeek: 3 | 4 | 5;
 }) => {
   const { mainCount, selectionContext, daysPerWeek } = params;
+  if (daysPerWeek === 3) {
+    const plannedFromTemplate = get3DayMainLanePlan(
+      "Back + Chest",
+      Math.max(1, mainCount)
+    );
+    if (plannedFromTemplate?.length) {
+      return plannedFromTemplate.map((slot, index) => ({
+        lane: slot.lane as MainLane,
+        slotKind: slot.slotKind,
+        slotId: `back_chest-main-repair-${index + 1}`,
+      }));
+    }
+  }
+
   const lanes = resolveBackChestMainLanePlan({
     targetMainCount: Math.max(1, mainCount),
     selectionContext,
@@ -8461,17 +8480,21 @@ const resolveBackChestAnchorRoleForSlot = (
 ): BackChestAnchorRole | null => {
   if (slotKind === "mainPullHorizontal") return "horizontalPull";
   if (slotKind === "mainPullVertical") return "verticalPull";
+  if (slotKind === "mainPushFly" || slotKind === "mainPushCompound") {
+    return "horizontalPush";
+  }
   if (slotLane === "push") return "horizontalPush";
   return null;
 };
 
 const isBackChestIntermediateFlyExpansionSlotByIndex = (params: {
-  slot: { lane: MainLane };
+  slot: { lane: MainLane; slotKind?: string };
   slotIndex: number;
   context: DayConstraintRepairContext;
   daysPerWeek: 3 | 4 | 5;
 }) => {
   const { slot, slotIndex, context, daysPerWeek } = params;
+  if (slot.slotKind === "mainPushFly") return true;
   if (daysPerWeek !== 3) return false;
   if (context.selectionContext.experienceLevel !== "intermediate") return false;
   if (context.selectionContext.phaseStage !== "skill") return false;
@@ -9072,12 +9095,45 @@ const evaluateBackChestMainIntelligence = (params: {
   const horizontalPushCount = mainExercises.filter((exercise) =>
     hasHorizontalPushSignature(exercise)
   ).length;
+  const horizontalCompoundPressCount = mainExercises.filter(
+    (exercise) => hasHorizontalPushSignature(exercise) && !isBackChestFlyPatternExercise(exercise)
+  ).length;
   const verticalPullCount = mainExercises.filter((exercise) =>
     hasVerticalPullSignature(exercise)
   ).length;
   const flyMainCount = mainExercises.filter((exercise) =>
     isBackChestFlyPatternExercise(exercise)
   ).length;
+  const pressMainCount = mainExercises.filter((exercise) =>
+    isBackChestMainPress(exercise)
+  ).length;
+  const pullMainCount = mainExercises.filter((exercise) =>
+    isBackChestMainPull(exercise)
+  ).length;
+  const hasLowerOrVerticalPushLeak = mainExercises.some(
+    (exercise) =>
+      isBackChestLowerBodyLeakExercise(exercise) ||
+      isBackChestVerticalPushLeakExercise(exercise)
+  );
+  const availableForBackChest = resolveBackChestMainAvailableSet(context.available);
+  const hasEligibleFlyMainCandidate = exercises.some((exercise) => {
+    if (exercise.category !== "main") return false;
+    if (!isBackChestFlyPatternExercise(exercise)) return false;
+    if (
+      !isExerciseEligibleForProgramContext({
+        exercise,
+        available: availableForBackChest,
+        section: "main",
+        context: context.selectionContext,
+      })
+    ) {
+      return false;
+    }
+    return isBackChestMainBoundaryEligible({ exercise, allowChestFly: true });
+  });
+  const flyAnchorSatisfied = flyMainCount >= 1 || !hasEligibleFlyMainCandidate;
+  const compoundPressSatisfied = mainCount < 4 || horizontalCompoundPressCount >= 1;
+  const pressMainCapOk = pressMainCount <= 2;
   const latAccentMainCount = mainExercises.filter((exercise) =>
     isBackChestLatAccentExercise(exercise)
   ).length;
@@ -9089,16 +9145,19 @@ const evaluateBackChestMainIntelligence = (params: {
     latAccentMainCount <= BACK_CHEST_SECONDARY_CATEGORY_CAPS.latAccent;
   const anchorIntegrityOk =
     horizontalPullCount >= 1 &&
-    horizontalPushCount >= 1 &&
     verticalPullCount === 1 &&
-    categoryCapsOk;
+    flyAnchorSatisfied &&
+    compoundPressSatisfied &&
+    categoryCapsOk &&
+    !hasLowerOrVerticalPushLeak &&
+    pressMainCapOk;
   const pullVolume = [...mainExercises, ...accessoryExercises].filter((exercise) =>
     isBackChestMainPull(exercise)
   ).length;
   const pushVolume = [...mainExercises, ...accessoryExercises].filter((exercise) =>
     exercise.movementPattern.some((pattern) => normalizeTagToken(pattern) === "push")
   ).length;
-  const pullBiasOk = pullVolume >= pushVolume;
+  const pullBiasOk = pullVolume >= pushVolume && pullMainCount >= pressMainCount;
   const noDuplicateRowAngles = !hasDuplicateBackChestRowAngles(mainExercises);
   const chestFlyIsolationMainCount = mainExercises.filter(
     (exercise) =>
@@ -9113,12 +9172,6 @@ const evaluateBackChestMainIntelligence = (params: {
     chestFlyIsolationMainCount <= 1 &&
     !mainExercises.some((exercise) => isBackChestScapularAccessoryPullExercise(exercise));
 
-  const pressMainCount = mainExercises.filter((exercise) =>
-    isBackChestMainPress(exercise)
-  ).length;
-  const pullMainCount = mainExercises.filter((exercise) =>
-    isBackChestMainPull(exercise)
-  ).length;
   const advancedStructureOk =
     context.selectionContext.experienceLevel !== "advanced" || mainCount < 5
       ? true
@@ -9126,7 +9179,7 @@ const evaluateBackChestMainIntelligence = (params: {
         pullMainCount >= 3 &&
         verticalPullCount === 1 &&
         horizontalPullCount >= 1 &&
-        horizontalPushCount >= 1 &&
+        horizontalCompoundPressCount >= 1 &&
         horizontalPushCount <= 2 &&
         noDuplicateRowAngles;
 
@@ -10230,6 +10283,9 @@ const repairBackChestMainIntelligence = (params: {
       context,
       daysPerWeek,
     });
+    const flyAnchorSlot = slot.slotKind === "mainPushFly";
+    const slotAllowsChestFly = flyAnchorSlot || intermediateFlyExpansionSlot;
+    const slotPrefersFly = flyAnchorSlot || intermediateFlyExpansionSlot;
     const shouldPreferDumbbellPulloverVerticalAnchor =
       slot.slotKind === "mainPullVertical" &&
       context.available.has("dumbbells") &&
@@ -10270,8 +10326,8 @@ const repairBackChestMainIntelligence = (params: {
         tierProfile,
         goalModifier,
         previousAnchor: getBackChestAnchorFromMain(previousMainExercises, "horizontalPush"),
-        allowChestIsolation: intermediateFlyExpansionSlot,
-        preferFlyPattern: intermediateFlyExpansionSlot,
+        allowChestIsolation: slotAllowsChestFly,
+        preferFlyPattern: slotPrefersFly,
       });
     } else if (slot.slotKind === "mainPullSupport") {
       selectedExercise = selectBackChestSupportPullExercise({
@@ -10287,6 +10343,22 @@ const repairBackChestMainIntelligence = (params: {
       });
     }
 
+    if (!selectedExercise && slot.slotKind === "mainPullVertical") {
+      selectedExercise = pickFirstBackChestCandidateByIds({
+        candidateIds: get3DayBackChestVerticalFallbackIds(),
+        section: "main",
+        usedIds,
+        context,
+        tierCeiling: tierProfile.tierCeiling,
+        allowBodyweightFallback: true,
+        predicate: (exercise) =>
+          !isBackChestScapularAccessoryPullExercise(exercise) &&
+          (hasVerticalPullSignature(exercise) ||
+            exercise.id === "supine-elbow-drive-row" ||
+            exercise.id === "prone-elbow-row"),
+      });
+    }
+
     if (!selectedExercise) {
       const fallbackCurrentId = mainEntries[slotIndex]?.item.exerciseId;
       const fallbackCurrent = fallbackCurrentId ? exerciseById(fallbackCurrentId) : null;
@@ -10295,10 +10367,10 @@ const repairBackChestMainIntelligence = (params: {
         !usedIds.has(fallbackCurrent!.id) &&
         isBackChestMainBoundaryEligible({
           exercise: fallbackCurrent!,
-          allowChestFly: intermediateFlyExpansionSlot,
+          allowChestFly: slotAllowsChestFly,
         }) &&
         (!isIsolationExercise(fallbackCurrent!) ||
-          (intermediateFlyExpansionSlot &&
+          (slotAllowsChestFly &&
             isBackChestFlyPatternExercise(fallbackCurrent!))) &&
         !isBackChestScapularAccessoryPullExercise(fallbackCurrent!) &&
         isBackChestExperienceEligible(
@@ -10356,13 +10428,13 @@ const repairBackChestMainIntelligence = (params: {
           .filter((exercise) =>
             isBackChestMainBoundaryEligible({
               exercise,
-              allowChestFly: intermediateFlyExpansionSlot,
+              allowChestFly: slotAllowsChestFly,
             })
           )
           .filter(
             (exercise) =>
               !isIsolationExercise(exercise) ||
-              (intermediateFlyExpansionSlot && isBackChestFlyPatternExercise(exercise))
+              (slotAllowsChestFly && isBackChestFlyPatternExercise(exercise))
           )
           .filter((exercise) => !isBackChestScapularAccessoryPullExercise(exercise))
           .filter((exercise) =>
@@ -10468,7 +10540,7 @@ const repairBackChestMainIntelligence = (params: {
           .filter((exercise) =>
             isBackChestMainBoundaryEligible({
               exercise,
-              allowChestFly: false,
+              allowChestFly: slotAllowsChestFly,
             })
           )
           .filter((exercise) => !isIsolationExercise(exercise))
@@ -13989,6 +14061,16 @@ const resolveBackChestMainLanePlan = (params: {
   daysPerWeek?: 3 | 4 | 5;
 }): MainLane[] => {
   const { targetMainCount, selectionContext, daysPerWeek = 3 } = params;
+  if (daysPerWeek === 3) {
+    const plannedFromTemplate = get3DayMainLanePlan(
+      "Back + Chest",
+      Math.max(1, targetMainCount)
+    );
+    if (plannedFromTemplate?.length) {
+      return plannedFromTemplate.map((slot) => slot.lane as MainLane);
+    }
+  }
+
   const goalType = resolveBackChestGoalType(selectionContext.goal);
   const anchors: MainLane[] = ["pull", "push", "pull"];
   if (targetMainCount <= anchors.length) {
@@ -14459,6 +14541,10 @@ const matchesBackChestMainSlotKind = (params: {
   slotLane?: MainLane;
 }) => {
   const { exercise, slotKind, slotLane } = params;
+  if (slotKind === "mainPushFly") return isBackChestFlyPatternExercise(exercise);
+  if (slotKind === "mainPushCompound") {
+    return hasHorizontalPushSignature(exercise) && !isBackChestFlyPatternExercise(exercise);
+  }
   if (slotKind === "mainPullVertical") return hasVerticalPullSignature(exercise);
   if (slotKind === "mainPullHorizontal") return hasHorizontalPullSignature(exercise);
   if (slotKind === "mainPullSupport") {
@@ -15173,6 +15259,9 @@ const getIntentSlotScoreBonus = (params: {
       auditMeta,
       context,
     });
+    const backChestFlyAnchorSlot = backChestMainDay && auditMeta?.slotKind === "mainPushFly";
+    const allowBackChestFlyMainSlot =
+      intermediateBackChestExpansionPushSlot || backChestFlyAnchorSlot;
     const shoulderPainProfile =
       context.painSeverity !== "low" ||
       context.painAreas.some((area) => {
@@ -15250,16 +15339,21 @@ const getIntentSlotScoreBonus = (params: {
       reasons.push("-12 Back + Chest push anchor requires horizontal press (not vertical push)");
     }
     if (backChestMainDay && chestIsolationMainPattern) {
-      if (intermediateBackChestExpansionPushSlot) {
+      if (allowBackChestFlyMainSlot) {
         score += 9;
-        reasons.push("+9 Back + Chest intermediate expansion push slot prioritizes fly pattern");
+        reasons.push("+9 Back + Chest fly-enabled push slot prioritizes fly pattern");
       } else {
         score -= 12;
         reasons.push("-12 Back + Chest push anchor blocks chest-isolation mains");
       }
-    } else if (backChestMainDay && intermediateBackChestExpansionPushSlot) {
-      score -= 1.5;
-      reasons.push("-1.5 Back + Chest intermediate expansion push slot nudges toward fly variation");
+    } else if (backChestMainDay && allowBackChestFlyMainSlot) {
+      if (backChestFlyAnchorSlot) {
+        score -= 8;
+        reasons.push("-8 Back + Chest fly-first slot requires chest-fly pattern");
+      } else {
+        score -= 1.5;
+        reasons.push("-1.5 Back + Chest intermediate expansion push slot nudges toward fly variation");
+      }
     }
     if (backChestMainDay && floorPressPattern) {
       const beginnerShoulderProtectionCase =
@@ -16011,13 +16105,17 @@ const getIntentSlotScoreBonus = (params: {
       auditMeta,
       context,
     });
+    const backChestFlyAnchorSlot =
+      dayTitle.includes("back + chest") && auditMeta.slotKind === "mainPushFly";
+    const allowBackChestFlyMainSlot =
+      intermediateBackChestExpansionPushSlot || backChestFlyAnchorSlot;
     if (dayTitle.includes("back + chest") && isIsolationExercise(exercise)) {
       if (
-        intermediateBackChestExpansionPushSlot &&
+        allowBackChestFlyMainSlot &&
         isBackChestFlyPatternExercise(exercise)
       ) {
         score += 5;
-        reasons.push("+5 Back + Chest intermediate expansion push slot allows fly variation");
+        reasons.push("+5 Back + Chest fly-enabled slot allows fly variation");
       } else {
         score -= 12;
         reasons.push("-12 isolation blocked in Back + Chest main slots");
@@ -16757,9 +16855,14 @@ const getBackChestVerticalPullCandidateIds = (
   experience: ExperienceProfile,
   context: SelectionContext
 ) => {
+  const verticalIntentFallbackIds = get3DayBackChestVerticalFallbackIds().filter(
+    (id) => id !== "supine-elbow-drive-row" && id !== "prone-elbow-row"
+  );
+  const withVerticalFallbacks = (ids: string[]) =>
+    Array.from(new Set([...ids, ...verticalIntentFallbackIds]));
   if (context.capabilityMode === "hasLoad") {
     if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
-      return [
+      return withVerticalFallbacks([
         "weighted-pullup",
         "machine-lat-pulldown",
         "cable-lat-pulldown",
@@ -16771,10 +16874,10 @@ const getBackChestVerticalPullCandidateIds = (
         "chest-to-bar-pullup",
         "band-lat-pulldown",
         "dumbbell-pullover",
-      ];
+      ]);
     }
     if (phaseIndex >= 2) {
-      return [
+      return withVerticalFallbacks([
         "machine-lat-pulldown",
         "cable-lat-pulldown",
         "machine-assisted-pullup",
@@ -16785,9 +16888,9 @@ const getBackChestVerticalPullCandidateIds = (
         "band-lat-pulldown",
         "dumbbell-pullover",
         "kneeling-prayer-lat-pulldown",
-      ];
+      ]);
     }
-    return [
+    return withVerticalFallbacks([
       "machine-lat-pulldown",
       "band-lat-pulldown",
       "machine-assisted-pullup",
@@ -16796,12 +16899,12 @@ const getBackChestVerticalPullCandidateIds = (
       "kneeling-prayer-lat-pulldown",
       "supine-lat-pulldown-isometric",
       "prone-lat-sweep",
-    ];
+    ]);
   }
 
   if (context.capabilityMode === "bandOnly") {
     if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
-      return [
+      return withVerticalFallbacks([
         "weighted-pullup",
         "band-lat-pulldown",
         "band-assisted-pullup",
@@ -16811,20 +16914,20 @@ const getBackChestVerticalPullCandidateIds = (
         "scap-pullup",
         "kneeling-prayer-lat-pulldown",
         "supine-lat-pulldown-isometric",
-      ];
+      ]);
     }
-    return [
+    return withVerticalFallbacks([
       "band-lat-pulldown",
       "band-assisted-pullup",
       "scap-pullup",
       "kneeling-prayer-lat-pulldown",
       "supine-lat-pulldown-isometric",
       "prone-lat-sweep",
-    ];
+    ]);
   }
 
   if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
-    return [
+    return withVerticalFallbacks([
       "weighted-pullup",
       "kneeling-prayer-lat-pulldown",
       "supine-lat-pulldown-isometric",
@@ -16833,15 +16936,15 @@ const getBackChestVerticalPullCandidateIds = (
       "neutral-grip-pullup",
       "chinup-strict",
       "chest-to-bar-pullup",
-    ];
+    ]);
   }
-  return [
+  return withVerticalFallbacks([
     "kneeling-prayer-lat-pulldown",
     "supine-lat-pulldown-isometric",
     "prone-lat-sweep",
     "scap-pullup",
     "band-assisted-pullup",
-  ];
+  ]);
 };
 
 const getBackChestSupportPullCandidateIds = (
@@ -17054,6 +17157,35 @@ const chooseBackChestSupportPullId = (
     auditMeta
   );
 
+const getBackChestFlyMainCandidateIds = (
+  phaseIndex: number,
+  experience: ExperienceProfile,
+  context: SelectionContext
+) => {
+  const flyFirst = [
+    "machine-pec-deck-press",
+    "dumbbell-chest-fly",
+    "suspension-chest-fly",
+  ];
+  const safePressFallback = getPushCompoundCandidateIds(phaseIndex, experience, context);
+  return Array.from(new Set([...flyFirst, ...safePressFallback]));
+};
+
+const chooseBackChestFlyMainId = (
+  phaseIndex: number,
+  available: Set<Equipment>,
+  experience: ExperienceProfile,
+  context: SelectionContext,
+  auditMeta?: SelectionAuditMeta
+) =>
+  pickFirstEligibleId(
+    getBackChestFlyMainCandidateIds(phaseIndex, experience, context),
+    available,
+    context,
+    "main",
+    auditMeta
+  );
+
 const chooseSquatCompoundId = (
   phaseIndex: number,
   available: Set<Equipment>,
@@ -17259,6 +17391,7 @@ type PlannedMainSlot = {
   slotId: string;
   lane: MainLane;
   isExtraMain: boolean;
+  slotKind?: string;
 };
 
 type DayPatternBudget = {
@@ -17545,7 +17678,9 @@ const resolveDayPatternBudget = (params: {
       mainMax: {
         pull: advanced ? 4 : intermediate ? 3 : 2,
         push: advanced || intermediate ? 2 : 1,
-        verticalPush: advanced ? 1 : intermediate ? 1 : 0,
+        verticalPush: 0,
+        squat: 0,
+        hinge: 0,
       },
     };
   }
@@ -17729,6 +17864,10 @@ const buildStructuredDay = (params: {
     "warmup"
   );
   const normalizedTitle = normalizeSlotToken(title);
+  const threeDayTemplateCounts =
+    daysPerWeek === 3
+      ? get3DayTemplateCounts(title, selectionContext.experienceLevel)
+      : null;
   const seedLanes =
     capabilityMode === "bandOnly"
       ? ensurePullLaneBandOnly([...lanes], title, focusTags)
@@ -17737,7 +17876,12 @@ const buildStructuredDay = (params: {
     title,
     selectionContext,
   });
-  const targetMainSlotCount = Math.max(1, experienceProfile.mainLaneCount);
+  const targetMainSlotCount = Math.max(
+    1,
+    normalizedTitle === "back_chest" && threeDayTemplateCounts
+      ? threeDayTemplateCounts.mainCount
+      : experienceProfile.mainLaneCount
+  );
   const expandedLanes =
     normalizedTitle === "back_chest"
       ? resolveBackChestMainLanePlan({
@@ -17763,10 +17907,15 @@ const buildStructuredDay = (params: {
           targetMainSlotCount
         )
       : expandedLanes.slice(0, targetMainSlotCount);
+  const backChestTemplateLanePlan =
+    normalizedTitle === "back_chest" && daysPerWeek === 3
+      ? get3DayMainLanePlan(title, targetMainSlotCount)
+      : null;
   const plannedMainSlots: PlannedMainSlot[] = plannedLanes.map((lane, index) => ({
     slotId: `${normalizedTitle}-main-${index + 1}`,
     lane,
     isExtraMain: false,
+    slotKind: backChestTemplateLanePlan?.[index]?.slotKind,
   }));
   const backChestPullSlotKindById = new Map<
     string,
@@ -17775,6 +17924,18 @@ const buildStructuredDay = (params: {
   if (normalizedTitle === "back_chest") {
     let pullOrdinal = 0;
     plannedMainSlots.forEach((slot) => {
+      if (slot.slotKind === "mainPullHorizontal") {
+        backChestPullSlotKindById.set(slot.slotId, "mainPullHorizontal");
+        return;
+      }
+      if (slot.slotKind === "mainPullVertical") {
+        backChestPullSlotKindById.set(slot.slotId, "mainPullVertical");
+        return;
+      }
+      if (slot.slotKind === "mainPullSupport") {
+        backChestPullSlotKindById.set(slot.slotId, "mainPullSupport");
+        return;
+      }
       if (slot.lane !== "pull") return;
       pullOrdinal += 1;
       if (pullOrdinal === 1) {
@@ -17788,10 +17949,11 @@ const buildStructuredDay = (params: {
       backChestPullSlotKindById.set(slot.slotId, "mainPullSupport");
     });
   }
-  const getPullSlotKind = (slotId: string, lane: MainLane) =>
-    lane === "pull"
-      ? backChestPullSlotKindById.get(slotId) ?? slotKindByMainLane[lane]
-      : slotKindByMainLane[lane];
+  const getSlotKindForSlot = (slot: PlannedMainSlot) =>
+    slot.slotKind ??
+    (slot.lane === "pull"
+      ? backChestPullSlotKindById.get(slot.slotId) ?? slotKindByMainLane[slot.lane]
+      : slotKindByMainLane[slot.lane]);
   const expectedLaneCounts = plannedLanes.reduce((map, lane) => {
     map[lane] = (map[lane] ?? 0) + 1;
     return map;
@@ -17800,7 +17962,7 @@ const buildStructuredDay = (params: {
   const mainIds: string[] = [];
   plannedMainSlots.forEach((slot) => {
     const lane = slot.lane;
-    const slotKind = getPullSlotKind(slot.slotId, lane);
+    const slotKind = getSlotKindForSlot(slot);
     const auditMeta: SelectionAuditMeta = {
       slotId: slot.slotId,
       dayTitle: title,
@@ -17817,13 +17979,21 @@ const buildStructuredDay = (params: {
     };
     const selectedId =
       lane === "push"
-        ? choosePushCompoundId(
-            phaseIndex,
-            available,
-            experienceProfile,
-            selectionContext,
-            auditMeta
-          )
+        ? slotKind === "mainPushFly"
+          ? chooseBackChestFlyMainId(
+              phaseIndex,
+              available,
+              experienceProfile,
+              selectionContext,
+              auditMeta
+            )
+          : choosePushCompoundId(
+              phaseIndex,
+              available,
+              experienceProfile,
+              selectionContext,
+              auditMeta
+            )
         : lane === "verticalPush"
         ? chooseVerticalPushId(
             phaseIndex,
@@ -17882,7 +18052,7 @@ const buildStructuredDay = (params: {
     const primaryRowSlotIndex = plannedMainSlots.findIndex(
       (slot) =>
         slot.lane === "pull" &&
-        getPullSlotKind(slot.slotId, slot.lane) === "mainPullHorizontal"
+        getSlotKindForSlot(slot) === "mainPullHorizontal"
     );
     if (primaryRowSlotIndex >= 0) {
       const machineRow = exerciseById("machine-seated-row");
@@ -17949,7 +18119,7 @@ const buildStructuredDay = (params: {
   };
 
   const scoreMainCandidateForSlot = (candidate: Exercise, slot: PlannedMainSlot) => {
-    const slotKind = getPullSlotKind(slot.slotId, slot.lane);
+    const slotKind = getSlotKindForSlot(slot);
     const base = scoreExerciseForContextDetailed(
       candidate,
       "main",
@@ -18080,7 +18250,10 @@ const buildStructuredDay = (params: {
   const plannedAccessoryLanes = resolvePlannedAccessoryLanesFromTemplate({
     dayTitle: title,
     dayLanes: seedLanes,
-    accessoryCount: experienceProfile.accessoryCount,
+    accessoryCount:
+      normalizedTitle === "back_chest" && threeDayTemplateCounts
+        ? threeDayTemplateCounts.accessoryCount
+        : experienceProfile.accessoryCount,
   });
   const activationLane = accessoryLaneToActivationLane(plannedAccessoryLanes[0] ?? "core");
   const activationId = chooseActivationId(activationLane, available, selectionContext);
@@ -18170,13 +18343,13 @@ const buildStructuredDay = (params: {
               ])
             )
           : slot.lane === "pull"
-          ? getPullSlotKind(slot.slotId, slot.lane) === "mainPullVertical"
+          ? getSlotKindForSlot(slot) === "mainPullVertical"
             ? getBackChestVerticalPullCandidateIds(
                 phaseIndex,
                 experienceProfile,
                 selectionContext
               )
-            : getPullSlotKind(slot.slotId, slot.lane) === "mainPullSupport"
+            : getSlotKindForSlot(slot) === "mainPullSupport"
             ? getBackChestSupportPullCandidateIds(
                 phaseIndex,
                 experienceProfile,

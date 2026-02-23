@@ -207,9 +207,9 @@ describe("program generation slot coverage", () => {
     const countMain = (program: ReturnType<typeof generateWeeklyProgram>) =>
       program.week[0].routine.filter((item) => item.section === "main").length;
 
-    expect(countMain(beginner)).toBe(2);
-    expect(countMain(intermediate)).toBe(3);
-    expect(countMain(advanced)).toBe(4);
+    expect(countMain(beginner)).toBe(3);
+    expect(countMain(intermediate)).toBe(4);
+    expect(countMain(advanced)).toBe(5);
   });
 
   test("main section never receives non-main exercises", () => {

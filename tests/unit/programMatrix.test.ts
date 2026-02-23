@@ -37,7 +37,16 @@ const painProfiles: Array<{
   { label: "lower-back-hips", painAreas: ["Lower back", "Hips"] },
 ];
 
-const expectedMainCount = (experience: QuestionnaireData["experience"]) => {
+const expectedMainCount = (
+  experience: QuestionnaireData["experience"],
+  daysPerWeek: QuestionnaireData["daysPerWeek"],
+  dayTitle: string
+) => {
+  if (daysPerWeek === 3 && dayTitle === "Back + Chest") {
+    if (experience === "Advanced") return 5;
+    if (experience === "Intermediate") return 4;
+    return 3;
+  }
   if (experience === "Advanced") return 4;
   if (experience === "Intermediate") return 3;
   return 2;
@@ -81,7 +90,9 @@ describe("program matrix quality", () => {
                 expect(new Set(ids).size).toBe(ids.length);
 
                 const mains = day.routine.filter((item) => item.section === "main");
-                expect(mains.length).toBe(expectedMainCount(experience));
+                expect(mains.length).toBe(
+                  expectedMainCount(experience, daysPerWeek, day.title)
+                );
                 mains.forEach((item) => {
                   expect(exerciseById(item.exerciseId)?.category).toBe("main");
                 });

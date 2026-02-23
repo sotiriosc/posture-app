@@ -461,8 +461,8 @@ const resolveBackChestMainCategoryForTest = (
   exercise: Exercise
 ): BackChestMainCategoryForTest => {
   if (isBackChestFlyPatternForTest(exercise)) return "fly";
-  if (isBackChestLatAccentForTest(exercise)) return "latAccent";
   if (isVerticalPullMain(exercise)) return "vertical";
+  if (isBackChestLatAccentForTest(exercise)) return "latAccent";
   if (hasHorizontalPullMain(exercise)) return "row";
   if (hasHorizontalPushMain(exercise)) return "press";
   return "other";
@@ -835,7 +835,7 @@ describe("back + chest contract regression", () => {
     }> = [
       { experience: "Beginner", expectedMain: 3, expectedAccessory: 2 },
       { experience: "Intermediate", expectedMain: 4, expectedAccessory: 2 },
-      { experience: "Advanced", expectedMain: 5, expectedAccessory: 3 },
+      { experience: "Advanced", expectedMain: 5, expectedAccessory: 2 },
     ];
 
     cases.forEach(({ experience, expectedMain, expectedAccessory }) => {
@@ -1186,7 +1186,7 @@ describe("back + chest contract regression", () => {
     expect(phase3Signature).not.toBe(phase2Signature);
   });
 
-  test("gym phase 2 chest-fly cycle can appear and remains structurally valid", () => {
+  test("gym phase 2 Back + Chest keeps fly-first main slot while accessories remain structural", () => {
     const questionnaire: QuestionnaireData = {
       goals: "Improve posture",
       painAreas: [],
@@ -1222,20 +1222,29 @@ describe("back + chest contract regression", () => {
       .filter((item) => item.section === "accessory")
       .map((item) => exerciseById(item.exerciseId))
       .filter((exercise): exercise is Exercise => Boolean(exercise));
+    const withoutFlyMainExercises = withoutFlyDay.routine
+      .filter((item) => item.section === "main")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
     const withoutFlyAccessoryExercises = withoutFlyDay.routine
       .filter((item) => item.section === "accessory")
       .map((item) => exerciseById(item.exerciseId))
       .filter((exercise): exercise is Exercise => Boolean(exercise));
-    const withFlyHasFlyAccessory = withFlyAccessoryExercises.some(hasChestFlyAccessory);
-    const withoutFlyHasFlyAccessory = withoutFlyAccessoryExercises.some(hasChestFlyAccessory);
+    const withFlyHasFlyMain = withFlyMainExercises.some(hasChestFlyAccessory);
+    const withoutFlyHasFlyMain = withoutFlyMainExercises.some(hasChestFlyAccessory);
 
-    expect(withFlyHasFlyAccessory).toBe(true);
-    expect(withoutFlyHasFlyAccessory).toBe(false);
-    expect(withFlyMainExercises.some(hasChestFlyAccessory)).toBe(false);
+    expect(withFlyHasFlyMain).toBe(true);
+    expect(withoutFlyHasFlyMain).toBe(true);
     expect(withFlyAccessoryExercises.some((exercise) => isRearDeltAccessory(exercise))).toBe(true);
     expect(withFlyAccessoryExercises.some((exercise) => isScapOrExternalAccessory(exercise))).toBe(
       true
     );
+    expect(withoutFlyAccessoryExercises.some((exercise) => isRearDeltAccessory(exercise))).toBe(
+      true
+    );
+    expect(
+      withoutFlyAccessoryExercises.some((exercise) => isScapOrExternalAccessory(exercise))
+    ).toBe(true);
   });
 
   test("improve posture phase 2 Back + Chest keeps posterior bias when chest fly is cycled", () => {
