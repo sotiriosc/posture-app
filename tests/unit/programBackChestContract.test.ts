@@ -621,6 +621,39 @@ const countSameTierAnchorAlternatives = (params: {
     );
 };
 
+const getBackChestFullRoutineIds = (program: ReturnType<typeof generateWeeklyProgram>) =>
+  getBackChestDayFromProgram(program).routine.map((item) => item.exerciseId);
+
+const countEligibleBackChestSecondaryCandidatesForTest = (params: {
+  questionnaire: QuestionnaireData;
+  category: "row" | "press";
+}) => {
+  const { questionnaire, category } = params;
+  const available = normalizeEquipmentSelection(questionnaire.equipment).available;
+  if (questionnaire.equipment.includes("gym")) {
+    available.add("machines");
+    available.add("cables");
+    available.add("pullup_bar");
+  }
+  return exercises
+    .filter((exercise) => exercise.category === "main")
+    .filter((exercise) => isExerciseEligible(exercise, available))
+    .filter((exercise) => meetsExperienceMinForTest(exercise, questionnaire.experience))
+    .filter((exercise) => isBackChestMainBoundaryAllowedForTest(exercise))
+    .filter((exercise) => {
+      if (category === "row") return resolveBackChestMainCategoryForTest(exercise) === "row";
+      return resolveBackChestMainCategoryForTest(exercise) === "press";
+    }).length;
+};
+
+const isBandPressForTest = (exercise: Exercise) =>
+  `${exercise.id} ${exercise.name}`.toLowerCase().includes("band chest press");
+
+const isSuspensionRowLikeAccessoryForTest = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return descriptor.includes("suspension-row") || descriptor.includes("suspension row");
+};
+
 const advanceToNextPhaseForBackChest = (params: {
   currentProgram: ReturnType<typeof generateWeeklyProgram>;
   questionnaire: QuestionnaireData;
@@ -2899,6 +2932,157 @@ describe("back + chest contract regression", () => {
     expect(firstMainIds).toEqual(secondMainIds);
     expect(new Set(firstMainIds).size).toBe(firstMainIds.length);
     expect(new Set(secondMainIds).size).toBe(secondMainIds.length);
+  });
+
+  test("intermediate dumbbells Back + Chest rotates full day routine IDs across phases when secondary alternatives exist", () => {
+    const questionnaire: QuestionnaireData = {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Intermediate",
+      daysPerWeek: 3,
+      equipment: ["dumbbells"],
+    };
+    const phase1 = generateWeeklyProgram(questionnaire, "full-routine-db-p1", {
+      phaseIndex: 1,
+      seed: "full-routine-db-seed",
+    });
+    const phase2 = advanceToNextPhaseForBackChest({
+      currentProgram: phase1,
+      questionnaire,
+      nextProgramId: "full-routine-db-p2",
+      seed: "full-routine-db-seed",
+    });
+    const phase3 = advanceToNextPhaseForBackChest({
+      currentProgram: phase2,
+      questionnaire,
+      nextProgramId: "full-routine-db-p3",
+      seed: "full-routine-db-seed",
+    });
+
+    const phase1Ids = getBackChestFullRoutineIds(phase1);
+    const phase2Ids = getBackChestFullRoutineIds(phase2);
+    const phase3Ids = getBackChestFullRoutineIds(phase3);
+    const hasSecondaryAlternatives =
+      countEligibleBackChestSecondaryCandidatesForTest({
+        questionnaire,
+        category: "press",
+      }) > 1 ||
+      countEligibleBackChestSecondaryCandidatesForTest({
+        questionnaire,
+        category: "row",
+      }) > 1;
+
+    if (hasSecondaryAlternatives) {
+      expect(phase1Ids).not.toEqual(phase2Ids);
+      expect(phase2Ids).not.toEqual(phase3Ids);
+    }
+  });
+
+  test("intermediate none Back + Chest phase 1 and phase 2 are not identical when alternatives exist", () => {
+    const questionnaire: QuestionnaireData = {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Intermediate",
+      daysPerWeek: 3,
+      equipment: ["none"],
+    };
+    const phase1 = generateWeeklyProgram(questionnaire, "full-routine-none-p1", {
+      phaseIndex: 1,
+      seed: "full-routine-none-seed",
+    });
+    const phase2 = advanceToNextPhaseForBackChest({
+      currentProgram: phase1,
+      questionnaire,
+      nextProgramId: "full-routine-none-p2",
+      seed: "full-routine-none-seed",
+    });
+    const phase1Ids = getBackChestFullRoutineIds(phase1);
+    const phase2Ids = getBackChestFullRoutineIds(phase2);
+    const hasSecondaryAlternatives =
+      countEligibleBackChestSecondaryCandidatesForTest({
+        questionnaire,
+        category: "press",
+      }) > 1 ||
+      countEligibleBackChestSecondaryCandidatesForTest({
+        questionnaire,
+        category: "row",
+      }) > 1;
+
+    if (hasSecondaryAlternatives) {
+      expect(phase1Ids).not.toEqual(phase2Ids);
+    }
+  });
+
+  test("mixed gym + bands + dumbbells Back + Chest phase 1 prefers non-band press anchor when load options exist", () => {
+    const questionnaire: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      daysPerWeek: 3,
+      equipment: ["gym", "bands", "dumbbells"],
+    };
+    const program = generateWeeklyProgram(questionnaire, "mixed-gym-prefer-load-press", {
+      phaseIndex: 1,
+      seed: "mixed-gym-prefer-load-press",
+    });
+    const anchorIds = getBackChestAnchorIds(program, "mixed-gym-prefer-load-press");
+    const anchorPress = exerciseById(anchorIds.horizontalPush);
+    expect(anchorPress).toBeTruthy();
+    if (!anchorPress) return;
+
+    const available = normalizeEquipmentSelection(questionnaire.equipment).available;
+    available.add("machines");
+    available.add("cables");
+    const hasMachineOrDbPress = exercises
+      .filter((exercise) => exercise.category === "main")
+      .filter((exercise) => isExerciseEligible(exercise, available))
+      .filter((exercise) => hasHorizontalPushMain(exercise))
+      .some(
+        (exercise) =>
+          exercise.equipment.includes("machines") ||
+          exercise.equipment.includes("cables") ||
+          exercise.equipment.includes("dumbbells")
+      );
+
+    if (hasMachineOrDbPress) {
+      expect(isBandPressForTest(anchorPress)).toBe(false);
+    }
+  });
+
+  test("Back + Chest accessory tightening avoids suspension-row accessories when scap/rear options are available", () => {
+    const questionnaire: QuestionnaireData = {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Intermediate",
+      daysPerWeek: 3,
+      equipment: ["gym", "bands", "dumbbells"],
+    };
+    const program = generateWeeklyProgram(questionnaire, "accessory-row-tightening", {
+      phaseIndex: 2,
+      seed: "accessory-row-tightening",
+    });
+    const available = normalizeEquipmentSelection(questionnaire.equipment).available;
+    available.add("machines");
+    available.add("cables");
+    const hasScapRearAlternatives = exercises
+      .filter((exercise) => exercise.category === "main")
+      .filter((exercise) => isExerciseEligible(exercise, available))
+      .filter(
+        (exercise) =>
+          isRearDeltAccessory(exercise) || isScapOrExternalAccessory(exercise)
+      )
+      .filter((exercise) => !isSuspensionRowLikeAccessoryForTest(exercise)).length;
+
+    const accessoryExercises = getBackChestDayFromProgram(program).routine
+      .filter((item) => item.section === "accessory")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+
+    if (hasScapRearAlternatives >= 2) {
+      expect(
+        accessoryExercises.some((exercise) => isSuspensionRowLikeAccessoryForTest(exercise))
+      ).toBe(false);
+    }
   });
 
   test("intermediate dumbbells Back + Chest anchors are globally non-static across phases when alternatives exist", () => {
