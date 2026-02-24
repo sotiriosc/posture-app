@@ -87,6 +87,34 @@ const resolveMainCategory = (exercise: Exercise) => {
   return "other";
 };
 
+const isShouldersArmsPullMain = (exercise: Exercise) =>
+  hasHorizontalPullSignature(exercise) ||
+  exercise.movementPattern.some((pattern) => normalizeToken(pattern) === "pull");
+
+const isShouldersArmsVerticalPushMain = (exercise: Exercise) =>
+  resolveMainCategory(exercise) === "ohp";
+
+const isChestDominantPushMain = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const patterns = new Set(exercise.movementPattern.map((pattern) => normalizeToken(pattern)));
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeToken(tag)));
+  const muscles = new Set((exercise.muscleGroups ?? []).map((muscle) => normalizeToken(muscle)));
+  return (
+    patterns.has("push") &&
+    (descriptor.includes("chest") ||
+      descriptor.includes("bench") ||
+      tags.has("chest") ||
+      muscles.has("chest"))
+  );
+};
+
+const resolveArmStimulusKey = (exercise: Exercise) => {
+  const family = normalizeToken(exercise.familyKey ?? exercise.id);
+  const variant = normalizeToken(exercise.variantKey ?? "standard");
+  const category = resolveMainCategory(exercise);
+  return `${category}::${family}::${variant}::${exercise.loadType}`;
+};
+
 const isRearDeltAccessory = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
   const tags = new Set((exercise.tags ?? []).map((tag) => normalizeToken(tag)));
@@ -208,7 +236,7 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
       expect(
         descriptor.includes("bench press") ||
           descriptor.includes("chest press") ||
-          descriptor.includes("pec deck") ||
+          (descriptor.includes("pec deck") && !descriptor.includes("reverse")) ||
           descriptor.includes("chest fly")
       ).toBe(false);
     });
@@ -235,30 +263,32 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
     const intermediateMain = getMainExercises(intermediate);
     const advancedMain = getMainExercises(advanced);
 
-    expect(beginnerMain.length).toBe(4);
-    expect(intermediateMain.length).toBe(5);
-    expect(advancedMain.length).toBe(6);
+    expect(beginnerMain.length).toBe(3);
+    expect(intermediateMain.length).toBe(4);
+    expect(advancedMain.length).toBe(4);
 
-    const assertHasAnchors = (mainExercises: Exercise[]) => {
-      const categories = mainExercises.map((exercise) => resolveMainCategory(exercise));
-      expect(
-        categories.filter((category) => category === "ohp").length,
-        `categories=${JSON.stringify(categories)}`
-      ).toBe(1);
-      expect(
-        categories.filter((category) => category === "lateral").length,
-        `categories=${JSON.stringify(categories)}`
-      ).toBe(1);
-      expect(categories.filter((category) => category === "biceps").length).toBeGreaterThanOrEqual(
-        1
+    const assertCoreConstraints = (mainExercises: Exercise[]) => {
+      expect(mainExercises.some((exercise) => isShouldersArmsVerticalPushMain(exercise))).toBe(
+        true
       );
-      expect(categories.filter((category) => category === "triceps").length).toBeGreaterThanOrEqual(
-        1
-      );
+      expect(mainExercises.some((exercise) => isShouldersArmsPullMain(exercise))).toBe(true);
+      expect(mainExercises.some((exercise) => isChestDominantPushMain(exercise))).toBe(false);
     };
-    assertHasAnchors(beginnerMain);
-    assertHasAnchors(intermediateMain);
-    assertHasAnchors(advancedMain);
+    assertCoreConstraints(beginnerMain);
+    assertCoreConstraints(intermediateMain);
+    assertCoreConstraints(advancedMain);
+    expect(
+      intermediateMain.filter((exercise) => resolveMainCategory(exercise) === "triceps").length
+    ).toBeGreaterThanOrEqual(1);
+    expect(
+      intermediateMain.filter((exercise) => resolveMainCategory(exercise) === "biceps").length
+    ).toBeGreaterThanOrEqual(1);
+    expect(
+      advancedMain.filter((exercise) => resolveMainCategory(exercise) === "triceps").length
+    ).toBeGreaterThanOrEqual(1);
+    expect(
+      advancedMain.filter((exercise) => resolveMainCategory(exercise) === "biceps").length
+    ).toBeGreaterThanOrEqual(1);
   });
 
   test("category caps and uniqueness hold on Day 2 mains", () => {
@@ -280,6 +310,8 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
     expect(categories.filter((category) => category === "lateral").length).toBeLessThanOrEqual(1);
     expect(categories.filter((category) => category === "biceps").length).toBeLessThanOrEqual(2);
     expect(categories.filter((category) => category === "triceps").length).toBeLessThanOrEqual(2);
+    expect(mains.some((exercise) => isShouldersArmsPullMain(exercise))).toBe(true);
+    expect(mains.some((exercise) => isShouldersArmsVerticalPushMain(exercise))).toBe(true);
 
     mains.forEach((exercise) => {
       expect(hasVerticalPullSignature(exercise)).toBe(false);
@@ -321,16 +353,16 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
       });
 
       const phases = [p1, p2, p3].map((program) => getMainExercises(program));
-      const byRole = (role: "ohp" | "lateral" | "biceps" | "triceps") =>
+      const byRole = (role: "ohp" | "biceps" | "triceps") =>
         phases.map((mains) => mains.find((exercise) => resolveMainCategory(exercise) === role)?.id);
 
-      (["ohp", "lateral", "biceps", "triceps"] as const).forEach((role) => {
+      (["ohp", "biceps", "triceps"] as const).forEach((role) => {
         const alternatives = eligibleRoleAlternatives({
           role,
           questionnaire: scenario.questionnaire,
         });
         const selected = byRole(role).filter((id): id is string => Boolean(id));
-        if (alternatives.length > 1) {
+        if (alternatives.length > 1 && selected.length >= 2) {
           expect(
             new Set(selected).size,
             `scenario=${scenario.label}, role=${role}, selected=${JSON.stringify(selected)}, alternatives=${alternatives
@@ -342,22 +374,91 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
     });
   });
 
-  test("accessory requirements and family de-dup hold for Day 2", () => {
+  test("arm accessory structure follows triceps/biceps layout and advanced variants stay unique", () => {
     const questionnaire = buildQuestionnaire({
-      goals: "Improve posture",
-      experience: "Intermediate",
+      goals: "Athletic performance",
+      experience: "Advanced",
       equipment: ["gym"],
     });
     const program = generateWeeklyProgram(questionnaire, "sa-accessory-p2", {
-      phaseIndex: 2,
+      phaseIndex: 3,
       seed: "sa-accessory-p2",
     });
     const accessories = getAccessoryExercises(program);
-    expect(accessories.length).toBeGreaterThanOrEqual(2);
-    expect(accessories.some((exercise) => isRearDeltAccessory(exercise))).toBe(true);
-    expect(accessories.some((exercise) => isScapExternalAccessory(exercise))).toBe(true);
+    expect(accessories.length).toBe(4);
+    const accessoryIds = accessories.map((exercise) => exercise.id);
+    expect(resolveMainCategory(accessories[0]), `ids=${JSON.stringify(accessoryIds)}`).toBe(
+      "triceps"
+    );
+    expect(resolveMainCategory(accessories[1]), `ids=${JSON.stringify(accessoryIds)}`).toBe(
+      "biceps"
+    );
+    expect(resolveMainCategory(accessories[2]), `ids=${JSON.stringify(accessoryIds)}`).toBe(
+      "triceps"
+    );
+    expect(resolveMainCategory(accessories[3]), `ids=${JSON.stringify(accessoryIds)}`).toBe(
+      "biceps"
+    );
+    const tricepsStimulus = accessories
+      .filter((exercise) => resolveMainCategory(exercise) === "triceps")
+      .map((exercise) => resolveArmStimulusKey(exercise));
+    const bicepsStimulus = accessories
+      .filter((exercise) => resolveMainCategory(exercise) === "biceps")
+      .map((exercise) => resolveArmStimulusKey(exercise));
+    expect(new Set(tricepsStimulus).size).toBe(tricepsStimulus.length);
+    expect(new Set(bicepsStimulus).size).toBe(bicepsStimulus.length);
+  });
 
-    const families = accessories.map((exercise) => accessoryFamilyKey(exercise));
-    expect(new Set(families).size).toBe(families.length);
+  test("beginner and intermediate accessory counts remain 2 with triceps then biceps", () => {
+    const beginner = generateWeeklyProgram(
+      buildQuestionnaire({
+        goals: "General fitness",
+        experience: "Beginner",
+        equipment: ["gym"],
+      }),
+      "sa-accessory-beginner",
+      { phaseIndex: 1, seed: "sa-accessory-beginner" }
+    );
+    const intermediate = generateWeeklyProgram(
+      buildQuestionnaire({
+        goals: "General fitness",
+        experience: "Intermediate",
+        equipment: ["gym"],
+      }),
+      "sa-accessory-intermediate",
+      { phaseIndex: 2, seed: "sa-accessory-intermediate" }
+    );
+    const beginnerAccessories = getAccessoryExercises(beginner);
+    const intermediateAccessories = getAccessoryExercises(intermediate);
+    expect(beginnerAccessories.length).toBe(2);
+    expect(intermediateAccessories.length).toBe(2);
+    expect(resolveMainCategory(beginnerAccessories[0])).toBe("triceps");
+    expect(resolveMainCategory(beginnerAccessories[1])).toBe("biceps");
+    expect(resolveMainCategory(intermediateAccessories[0])).toBe("triceps");
+    expect(resolveMainCategory(intermediateAccessories[1])).toBe("biceps");
+  });
+
+  test("same seed remains deterministic for Shoulders + Arms day", () => {
+    const questionnaire = buildQuestionnaire({
+      goals: "Improve posture",
+      experience: "Advanced",
+      equipment: ["bands", "dumbbells"],
+    });
+    const seed = "sa-deterministic";
+    const runA = generateWeeklyProgram(questionnaire, "sa-deterministic-a", {
+      phaseIndex: 3,
+      seed,
+    });
+    const runB = generateWeeklyProgram(questionnaire, "sa-deterministic-b", {
+      phaseIndex: 3,
+      seed,
+    });
+    const dayA = getShouldersArmsDay(runA).routine
+      .filter((item) => item.section === "main" || item.section === "accessory")
+      .map((item) => `${item.section}:${item.exerciseId}`);
+    const dayB = getShouldersArmsDay(runB).routine
+      .filter((item) => item.section === "main" || item.section === "accessory")
+      .map((item) => `${item.section}:${item.exerciseId}`);
+    expect(dayA).toEqual(dayB);
   });
 });

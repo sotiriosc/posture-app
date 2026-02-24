@@ -15,7 +15,11 @@ export type ThreeDayMainLanePlanEntry = {
     | "horizontal_pull"
     | "vertical_pull"
     | "horizontal_press_compound"
-    | "pull_secondary";
+    | "pull_secondary"
+    | "vertical_push"
+    | "shoulder_pull"
+    | "arm_primary"
+    | "arm_secondary";
 };
 
 const normalizeToken = (value: string) =>
@@ -35,10 +39,23 @@ const isBackChest3DayTitle = (dayTitle: string) =>
   normalizeToken(dayTitle) === "back_+_chest" ||
   normalizeToken(dayTitle) === "back_chest";
 
+const isShouldersArms3DayTitle = (dayTitle: string) =>
+  normalizeToken(dayTitle) === "shoulders_+_arms" ||
+  normalizeToken(dayTitle) === "shoulders_arms";
+
 const BACK_CHEST_3_DAY_COUNTS: Record<ThreeDayExperienceLevel, ThreeDayTemplateCounts> = {
   beginner: { mainCount: 3, accessoryCount: 2 },
   intermediate: { mainCount: 4, accessoryCount: 2 },
   advanced: { mainCount: 5, accessoryCount: 2 },
+};
+
+const SHOULDERS_ARMS_3_DAY_COUNTS: Record<
+  ThreeDayExperienceLevel,
+  ThreeDayTemplateCounts
+> = {
+  beginner: { mainCount: 3, accessoryCount: 2 },
+  intermediate: { mainCount: 4, accessoryCount: 2 },
+  advanced: { mainCount: 4, accessoryCount: 4 },
 };
 
 const BACK_CHEST_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
@@ -49,21 +66,43 @@ const BACK_CHEST_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
   { lane: "pull", slotKind: "mainPullSupport", family: "pull_secondary" },
 ];
 
+const SHOULDERS_ARMS_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
+  { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
+  { lane: "pull", slotKind: "mainPullPrimary", family: "shoulder_pull" },
+  { lane: "push", slotKind: "mainArmPrimary", family: "arm_primary" },
+  { lane: "push", slotKind: "mainArmSecondary", family: "arm_secondary" },
+];
+
 export const get3DayTemplateCounts = (
   dayTitle: string,
   experienceLevel?: string
 ): ThreeDayTemplateCounts | null => {
-  if (!isBackChest3DayTitle(dayTitle)) return null;
-  return BACK_CHEST_3_DAY_COUNTS[normalizeExperienceLevel(experienceLevel)];
+  const normalizedExperience = normalizeExperienceLevel(experienceLevel);
+  if (isBackChest3DayTitle(dayTitle)) {
+    return BACK_CHEST_3_DAY_COUNTS[normalizedExperience];
+  }
+  if (isShouldersArms3DayTitle(dayTitle)) {
+    return SHOULDERS_ARMS_3_DAY_COUNTS[normalizedExperience];
+  }
+  return null;
 };
 
 export const get3DayMainLanePlan = (
   dayTitle: string,
   mainCount: number
 ): ThreeDayMainLanePlanEntry[] | null => {
-  if (!isBackChest3DayTitle(dayTitle)) return null;
-  const clampedCount = Math.max(1, Math.min(BACK_CHEST_3_DAY_MAIN_PLAN.length, mainCount));
-  return BACK_CHEST_3_DAY_MAIN_PLAN.slice(0, clampedCount);
+  if (isBackChest3DayTitle(dayTitle)) {
+    const clampedCount = Math.max(1, Math.min(BACK_CHEST_3_DAY_MAIN_PLAN.length, mainCount));
+    return BACK_CHEST_3_DAY_MAIN_PLAN.slice(0, clampedCount);
+  }
+  if (isShouldersArms3DayTitle(dayTitle)) {
+    const clampedCount = Math.max(
+      1,
+      Math.min(SHOULDERS_ARMS_3_DAY_MAIN_PLAN.length, mainCount)
+    );
+    return SHOULDERS_ARMS_3_DAY_MAIN_PLAN.slice(0, clampedCount);
+  }
+  return null;
 };
 
 export const get3DayBackChestVerticalFallbackIds = () => [
