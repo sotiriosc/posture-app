@@ -17,9 +17,13 @@ export type ThreeDayMainLanePlanEntry = {
     | "horizontal_press_compound"
     | "pull_secondary"
     | "vertical_push"
+    | "lateral_delt"
     | "shoulder_pull"
-    | "arm_primary"
-    | "arm_secondary";
+    | "shoulder_structural_secondary"
+    | "squat_primary"
+    | "hinge_primary"
+    | "single_leg_or_secondary_squat"
+    | "lower_secondary";
 };
 
 const normalizeToken = (value: string) =>
@@ -43,6 +47,10 @@ const isShouldersArms3DayTitle = (dayTitle: string) =>
   normalizeToken(dayTitle) === "shoulders_+_arms" ||
   normalizeToken(dayTitle) === "shoulders_arms";
 
+const isLegsAbs3DayTitle = (dayTitle: string) =>
+  normalizeToken(dayTitle) === "legs_+_abs" ||
+  normalizeToken(dayTitle) === "legs_abs";
+
 const BACK_CHEST_3_DAY_COUNTS: Record<ThreeDayExperienceLevel, ThreeDayTemplateCounts> = {
   beginner: { mainCount: 3, accessoryCount: 2 },
   intermediate: { mainCount: 4, accessoryCount: 2 },
@@ -58,6 +66,12 @@ const SHOULDERS_ARMS_3_DAY_COUNTS: Record<
   advanced: { mainCount: 4, accessoryCount: 4 },
 };
 
+const LEGS_ABS_3_DAY_COUNTS: Record<ThreeDayExperienceLevel, ThreeDayTemplateCounts> = {
+  beginner: { mainCount: 3, accessoryCount: 2 },
+  intermediate: { mainCount: 4, accessoryCount: 2 },
+  advanced: { mainCount: 4, accessoryCount: 3 },
+};
+
 const BACK_CHEST_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
   { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
   { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
@@ -68,9 +82,24 @@ const BACK_CHEST_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
 
 const SHOULDERS_ARMS_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
   { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-  { lane: "pull", slotKind: "mainPullPrimary", family: "shoulder_pull" },
-  { lane: "push", slotKind: "mainArmPrimary", family: "arm_primary" },
-  { lane: "push", slotKind: "mainArmSecondary", family: "arm_secondary" },
+  { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
+  { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+  {
+    lane: "pull",
+    slotKind: "mainShoulderStructuralSecondary",
+    family: "shoulder_structural_secondary",
+  },
+];
+
+const LEGS_ABS_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
+  { lane: "squat", slotKind: "mainSquatPrimary", family: "squat_primary" },
+  { lane: "hinge", slotKind: "mainHingePrimary", family: "hinge_primary" },
+  {
+    lane: "squat",
+    slotKind: "mainSingleLegOrSecondarySquat",
+    family: "single_leg_or_secondary_squat",
+  },
+  { lane: "hinge", slotKind: "mainLowerSecondary", family: "lower_secondary" },
 ];
 
 export const get3DayTemplateCounts = (
@@ -83,6 +112,9 @@ export const get3DayTemplateCounts = (
   }
   if (isShouldersArms3DayTitle(dayTitle)) {
     return SHOULDERS_ARMS_3_DAY_COUNTS[normalizedExperience];
+  }
+  if (isLegsAbs3DayTitle(dayTitle)) {
+    return LEGS_ABS_3_DAY_COUNTS[normalizedExperience];
   }
   return null;
 };
@@ -101,6 +133,10 @@ export const get3DayMainLanePlan = (
       Math.min(SHOULDERS_ARMS_3_DAY_MAIN_PLAN.length, mainCount)
     );
     return SHOULDERS_ARMS_3_DAY_MAIN_PLAN.slice(0, clampedCount);
+  }
+  if (isLegsAbs3DayTitle(dayTitle)) {
+    const clampedCount = Math.max(1, Math.min(LEGS_ABS_3_DAY_MAIN_PLAN.length, mainCount));
+    return LEGS_ABS_3_DAY_MAIN_PLAN.slice(0, clampedCount);
   }
   return null;
 };

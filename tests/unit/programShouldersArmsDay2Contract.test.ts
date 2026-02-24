@@ -189,7 +189,7 @@ const buildQuestionnaire = (
 });
 
 const eligibleRoleAlternatives = (params: {
-  role: "ohp" | "lateral" | "biceps" | "triceps";
+  role: "ohp" | "lateral" | "rearDeltMain";
   questionnaire: QuestionnaireData;
 }) => {
   const { role, questionnaire } = params;
@@ -271,24 +271,21 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
       expect(mainExercises.some((exercise) => isShouldersArmsVerticalPushMain(exercise))).toBe(
         true
       );
+      expect(
+        mainExercises.some((exercise) => resolveMainCategory(exercise) === "lateral")
+      ).toBe(true);
       expect(mainExercises.some((exercise) => isShouldersArmsPullMain(exercise))).toBe(true);
       expect(mainExercises.some((exercise) => isChestDominantPushMain(exercise))).toBe(false);
+      expect(
+        mainExercises.some((exercise) => {
+          const category = resolveMainCategory(exercise);
+          return category === "biceps" || category === "triceps";
+        })
+      ).toBe(false);
     };
     assertCoreConstraints(beginnerMain);
     assertCoreConstraints(intermediateMain);
     assertCoreConstraints(advancedMain);
-    expect(
-      intermediateMain.filter((exercise) => resolveMainCategory(exercise) === "triceps").length
-    ).toBeGreaterThanOrEqual(1);
-    expect(
-      intermediateMain.filter((exercise) => resolveMainCategory(exercise) === "biceps").length
-    ).toBeGreaterThanOrEqual(1);
-    expect(
-      advancedMain.filter((exercise) => resolveMainCategory(exercise) === "triceps").length
-    ).toBeGreaterThanOrEqual(1);
-    expect(
-      advancedMain.filter((exercise) => resolveMainCategory(exercise) === "biceps").length
-    ).toBeGreaterThanOrEqual(1);
   });
 
   test("category caps and uniqueness hold on Day 2 mains", () => {
@@ -353,10 +350,10 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
       });
 
       const phases = [p1, p2, p3].map((program) => getMainExercises(program));
-      const byRole = (role: "ohp" | "biceps" | "triceps") =>
+      const byRole = (role: "ohp" | "lateral") =>
         phases.map((mains) => mains.find((exercise) => resolveMainCategory(exercise) === role)?.id);
 
-      (["ohp", "biceps", "triceps"] as const).forEach((role) => {
+      (["ohp", "lateral"] as const).forEach((role) => {
         const alternatives = eligibleRoleAlternatives({
           role,
           questionnaire: scenario.questionnaire,

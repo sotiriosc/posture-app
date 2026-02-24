@@ -131,6 +131,18 @@ describe("split contract repair enforcement", () => {
         const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
         return patterns.has("pull") || patterns.has("horizontalpull");
       });
+      const hasLateralMain = shoulderMainExercises.some((exercise) => {
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        return (
+          patterns.has("lateralraise") ||
+          tags.has("lateraldelt") ||
+          tags.has("lateral_delt") ||
+          descriptor.includes("lateral raise") ||
+          descriptor.includes("lateral-raise")
+        );
+      });
       const hasArmMain = shoulderMainExercises.some((exercise) => {
         const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
         const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
@@ -146,7 +158,8 @@ describe("split contract repair enforcement", () => {
         );
       });
       expect(hasPullMain).toBe(true);
-      expect(hasArmMain).toBe(true);
+      expect(hasLateralMain).toBe(true);
+      expect(hasArmMain).toBe(false);
       const accessories = shouldersDay.routine
         .filter((item) => item.section === "accessory")
         .map((item) => exerciseById(item.exerciseId))
@@ -182,6 +195,140 @@ describe("split contract repair enforcement", () => {
       dayTitle: "Legs + Abs",
       forbiddenPatterns: ["push", "pull", "verticalPush"],
     });
+  });
+
+  test("3-day beginner main/accessory counts follow day templates", () => {
+    const input: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Beginner",
+      equipment: ["bands"],
+      daysPerWeek: 3,
+    };
+    const program = generateWeeklyProgram(input, "split-3-day-beginner-template-counts", {
+      phaseIndex: 2,
+      seed: "split-3-day-beginner-template-counts",
+    });
+
+    const expectedByTitle: Record<string, { mains: number; accessory: number }> = {
+      "Back + Chest": { mains: 3, accessory: 2 },
+      "Shoulders + Arms": { mains: 3, accessory: 2 },
+      "Legs + Abs": { mains: 3, accessory: 2 },
+    };
+
+    program.week.forEach((day) => {
+      const expected = expectedByTitle[day.title];
+      if (!expected) return;
+      const mainItems = day.routine.filter((item) => item.section === "main");
+      const accessoryItems = day.routine.filter((item) => item.section === "accessory");
+      expect(mainItems.length).toBe(expected.mains);
+      expect(accessoryItems.length).toBe(expected.accessory);
+      expect(new Set(mainItems.map((item) => item.exerciseId)).size).toBe(mainItems.length);
+    });
+  });
+
+  test("3-day Legs + Abs accessories include core + calves and cap carry usage", () => {
+    const beginner = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Beginner",
+        equipment: ["bands", "dumbbells"],
+        daysPerWeek: 3,
+      },
+      "split-3-day-legs-accessory-beginner",
+      {
+        phaseIndex: 2,
+        seed: "split-3-day-legs-accessory-beginner",
+      }
+    );
+    const advanced = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Advanced",
+        equipment: ["gym"],
+        daysPerWeek: 3,
+      },
+      "split-3-day-legs-accessory-advanced",
+      {
+        phaseIndex: 3,
+        seed: "split-3-day-legs-accessory-advanced",
+      }
+    );
+
+    const assertLegsAccessoryContract = (
+      program: ReturnType<typeof generateWeeklyProgram>,
+      expectedAccessoryCount: number,
+      expectExtraAb: boolean
+    ) => {
+      const legsDay = program.week.find((entry) => entry.title === "Legs + Abs");
+      expect(legsDay).toBeTruthy();
+      if (!legsDay) return;
+      const accessories = legsDay.routine
+        .filter((item) => item.section === "accessory")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      expect(accessories.length).toBe(expectedAccessoryCount);
+      const hasCore = accessories.some((exercise) => {
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+        return (
+          patterns.has("core") ||
+          patterns.has("antirotation") ||
+          tags.has("core") ||
+          tags.has("anti_rotation") ||
+          descriptor.includes("plank") ||
+          descriptor.includes("dead bug") ||
+          descriptor.includes("dead-bug") ||
+          descriptor.includes("pallof") ||
+          descriptor.includes("woodchop")
+        );
+      });
+      const calvesCount = accessories.filter((exercise) => {
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        const muscles = new Set((exercise.muscleGroups ?? []).map(normalizePattern));
+        return patterns.has("calf") || tags.has("calves") || muscles.has("calves");
+      }).length;
+      const carryCount = accessories.filter((exercise) => {
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+        return (
+          patterns.has("carry") ||
+          tags.has("carry") ||
+          descriptor.includes("carry") ||
+          descriptor.includes("suitcase")
+        );
+      }).length;
+      expect(hasCore).toBe(true);
+      expect(calvesCount).toBeGreaterThanOrEqual(1);
+      expect(carryCount).toBeLessThanOrEqual(1);
+      if (expectExtraAb) {
+        const coreCount = accessories.filter((exercise) => {
+          const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+          const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+          const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+          return (
+            patterns.has("core") ||
+            patterns.has("antirotation") ||
+            tags.has("core") ||
+            tags.has("anti_rotation") ||
+            descriptor.includes("plank") ||
+            descriptor.includes("dead bug") ||
+            descriptor.includes("dead-bug") ||
+            descriptor.includes("pallof") ||
+            descriptor.includes("woodchop")
+          );
+        }).length;
+        expect(coreCount).toBeGreaterThanOrEqual(2);
+      }
+    };
+
+    assertLegsAccessoryContract(beginner, 2, false);
+    assertLegsAccessoryContract(advanced, 3, true);
   });
 
   test("3-day Shoulders + Arms keeps shoulders/pull emphasis and rep-based prescriptions", () => {

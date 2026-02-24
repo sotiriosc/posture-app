@@ -2,6 +2,10 @@ import { describe, expect, test } from "vitest";
 import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById } from "@/lib/exercises";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import {
+  expectedAccessoryCountForDayTitle,
+  expectedMainCountForDayTitle,
+} from "./_helpers/expectedCounts";
 
 type AnchorScenario = {
   key: string;
@@ -24,6 +28,7 @@ type GoldenDaySummary = {
   invariants: {
     uniqueExerciseIds: boolean;
     mainCountMatchesExpected: boolean;
+    accessoryCountMatchesExpected?: boolean;
     mainSectionHasOnlyMainCategory: boolean;
   };
 };
@@ -120,24 +125,32 @@ const COACH6_ANCHORS: AnchorScenario[] = [
   },
 ];
 
-const expectedMainCount = (experience: QuestionnaireData["experience"]) => {
-  if (experience === "Advanced") return 4;
-  if (experience === "Intermediate") return 3;
-  return 2;
-};
-
 const buildGoldenSummary = (scenario: AnchorScenario): GoldenSummary => {
-  const expectedMainPerDay = expectedMainCount(scenario.questionnaire.experience);
   const seed = `${GOLDEN_SEED_BASE}:${scenario.key}`;
   const program = generateWeeklyProgram(scenario.questionnaire, `golden-${scenario.key}`, {
     phaseIndex: scenario.phaseIndex,
     seed,
+  });
+  const expectedMainPerDay = expectedMainCountForDayTitle({
+    daysPerWeek: scenario.questionnaire.daysPerWeek,
+    dayTitle: program.week[0]?.title ?? "Back + Chest",
+    experience: scenario.questionnaire.experience,
   });
 
   const days: GoldenDaySummary[] = program.week.map((day) => {
     const routineIds = day.routine.map((item) => item.exerciseId);
     const mainItems = day.routine.filter((item) => item.section === "main");
     const accessoryItems = day.routine.filter((item) => item.section === "accessory");
+    const expectedMainCount = expectedMainCountForDayTitle({
+      daysPerWeek: scenario.questionnaire.daysPerWeek,
+      dayTitle: day.title,
+      experience: scenario.questionnaire.experience,
+    });
+    const expectedAccessoryCount = expectedAccessoryCountForDayTitle({
+      daysPerWeek: scenario.questionnaire.daysPerWeek,
+      dayTitle: day.title,
+      experience: scenario.questionnaire.experience,
+    });
     const activationBlockFirst2 = day.routine
       .filter((item) => item.section === "warmup" || item.section === "activation")
       .slice(0, 2)
@@ -158,7 +171,10 @@ const buildGoldenSummary = (scenario: AnchorScenario): GoldenSummary => {
       },
       invariants: {
         uniqueExerciseIds: new Set(routineIds).size === routineIds.length,
-        mainCountMatchesExpected: mainItems.length === expectedMainPerDay,
+        mainCountMatchesExpected: mainItems.length === expectedMainCount,
+        ...(scenario.questionnaire.daysPerWeek === 3
+          ? { accessoryCountMatchesExpected: accessoryItems.length === expectedAccessoryCount }
+          : {}),
         mainSectionHasOnlyMainCategory,
       },
     };
@@ -186,6 +202,9 @@ const expectGoldenInvariants = (summary: GoldenSummary) => {
   summary.days.forEach((day) => {
     expect(day.invariants.uniqueExerciseIds).toBe(true);
     expect(day.invariants.mainCountMatchesExpected).toBe(true);
+    if (typeof day.invariants.accessoryCountMatchesExpected === "boolean") {
+      expect(day.invariants.accessoryCountMatchesExpected).toBe(true);
+    }
     expect(day.invariants.mainSectionHasOnlyMainCategory).toBe(true);
   });
 };
@@ -218,23 +237,25 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Back + Chest",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "split-stance-row",
               "split-stance-band-chest-press",
+              "split-stance-row",
+              "band-lat-pulldown-neutral-grip",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "reverse-snow-angel",
-              "band-face-pull-high-anchor",
+              "band-overhead-triceps-extension",
+              "self-resisted-biceps-curl",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -243,10 +264,11 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Shoulders + Arms",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
@@ -254,12 +276,13 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "band-overhead-press",
               "prone-t-raise",
+              "band-rear-delt-fly",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "band-suitcase-march",
-              "band-woodchop",
+              "side-plank",
+              "single-leg-calf-raise",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -268,10 +291,11 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Legs + Abs",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
@@ -279,11 +303,12 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "bodyweight-squat",
               "back-extension-hold",
+              "cossack-squat",
             ],
           },
         ],
         "daysPerWeek": 3,
-        "expectedMainPerDay": 2,
+        "expectedMainPerDay": 3,
         "phase": "activation",
         "profile": "normal beginner",
       }
@@ -571,23 +596,25 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Back + Chest",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "split-stance-row",
               "band-chest-press",
+              "split-stance-row",
+              "band-lat-pulldown-neutral-grip",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "band-rear-delt-fly",
-              "band-face-pull-high-anchor",
+              "band-triceps-pressdown",
+              "self-resisted-biceps-curl",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -596,23 +623,25 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Shoulders + Arms",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
               "band-overhead-press",
-              "prone-t-raise",
+              "band-lateral-raise",
+              "band-rear-delt-fly",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "band-suitcase-march",
               "pallof-press",
+              "band-calf-raise",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -621,22 +650,24 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Legs + Abs",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "band-front-squat",
+              "bodyweight-squat",
               "back-extension-hold",
+              "heels-elevated-squat",
             ],
           },
         ],
         "daysPerWeek": 3,
-        "expectedMainPerDay": 2,
+        "expectedMainPerDay": 3,
         "phase": "activation",
         "profile": "pain beginner",
       }
