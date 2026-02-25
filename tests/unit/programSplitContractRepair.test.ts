@@ -86,6 +86,18 @@ const isChestDominantMain = (exerciseId: string) => {
   );
 };
 
+const isCarryLikeExercise = (exercise: Exercise) => {
+  const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+  const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    patterns.has("carry") ||
+    tags.has("carry") ||
+    descriptor.includes("carry") ||
+    descriptor.includes("suitcase")
+  );
+};
+
 describe("split contract repair enforcement", () => {
   test("3-day split enforces required main patterns per day", () => {
     const input: QuestionnaireData = {
@@ -182,8 +194,12 @@ describe("split contract repair enforcement", () => {
         const tags = new Set((exercise.tags ?? []).map(normalizePattern));
         return patterns.has("curl") || tags.has("biceps") || descriptor.includes("biceps");
       });
+      const hasCarryAccessory = accessories.some((exercise) => isCarryLikeExercise(exercise));
       expect(hasTricepsAccessory).toBe(true);
       expect(hasBicepsAccessory).toBe(true);
+      if (hasCarryAccessory) {
+        expect(accessories.length).toBeGreaterThanOrEqual(3);
+      }
     }
     expectDayHasRequiredMainPatterns({
       program,
@@ -210,9 +226,9 @@ describe("split contract repair enforcement", () => {
       seed: "split-3-day-beginner-template-counts",
     });
 
-    const expectedByTitle: Record<string, { mains: number; accessory: number }> = {
+    const expectedByTitle: Record<string, { mains: number; accessory: number | [number, number] }> = {
       "Back + Chest": { mains: 3, accessory: 2 },
-      "Shoulders + Arms": { mains: 3, accessory: 2 },
+      "Shoulders + Arms": { mains: 3, accessory: [2, 3] },
       "Legs + Abs": { mains: 3, accessory: 2 },
     };
 
@@ -222,7 +238,12 @@ describe("split contract repair enforcement", () => {
       const mainItems = day.routine.filter((item) => item.section === "main");
       const accessoryItems = day.routine.filter((item) => item.section === "accessory");
       expect(mainItems.length).toBe(expected.mains);
-      expect(accessoryItems.length).toBe(expected.accessory);
+      if (Array.isArray(expected.accessory)) {
+        expect(accessoryItems.length).toBeGreaterThanOrEqual(expected.accessory[0]);
+        expect(accessoryItems.length).toBeLessThanOrEqual(expected.accessory[1]);
+      } else {
+        expect(accessoryItems.length).toBe(expected.accessory);
+      }
       expect(new Set(mainItems.map((item) => item.exerciseId)).size).toBe(mainItems.length);
     });
   });
@@ -380,8 +401,89 @@ describe("split contract repair enforcement", () => {
 
     shoulderDay.routine.forEach((item) => {
       if (item.section !== "main" && item.section !== "accessory") return;
-      expect(item.reps).toBeTruthy();
-      expect(item.durationSec ?? null).toBeNull();
+      const exercise = exerciseById(item.exerciseId);
+      const descriptor = `${exercise?.id ?? ""} ${exercise?.name ?? ""}`.toLowerCase();
+      const isCarryAccessory =
+        item.section === "accessory" &&
+        (descriptor.includes("carry") || descriptor.includes("suitcase"));
+      if (isCarryAccessory) {
+        expect(item.durationSec).toBeTruthy();
+      } else {
+        expect(item.reps).toBeTruthy();
+        expect(item.durationSec ?? null).toBeNull();
+      }
+    });
+  });
+
+  test("3-day Shoulders + Arms beginner/intermediate always includes a lateral-delt main", () => {
+    const buildProgram = (experience: QuestionnaireData["experience"]) =>
+      generateWeeklyProgram(
+        {
+          goals: "General fitness",
+          painAreas: [],
+          experience,
+          equipment: ["gym"],
+          daysPerWeek: 3,
+        },
+        `split-3-day-shoulders-lateral-${experience.toLowerCase()}`,
+        {
+          phaseIndex: 2,
+          seed: `split-3-day-shoulders-lateral-${experience.toLowerCase()}`,
+        }
+      );
+
+    const beginner = buildProgram("Beginner");
+    const intermediate = buildProgram("Intermediate");
+
+    [beginner, intermediate].forEach((program) => {
+      const shoulderDay = program.week.find((day) => day.title === "Shoulders + Arms");
+      expect(shoulderDay).toBeTruthy();
+      if (!shoulderDay) return;
+      const mainExercises = shoulderDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      const hasLateralMain = mainExercises.some((exercise) => {
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        return (
+          patterns.has("lateralraise") ||
+          tags.has("lateraldelt") ||
+          tags.has("lateral_delt") ||
+          descriptor.includes("lateral raise") ||
+          descriptor.includes("lateral-raise")
+        );
+      });
+      expect(hasLateralMain).toBe(true);
+    });
+  });
+
+  test("3-day split keeps carry usage capped with no duplicate carries on any day", () => {
+    const program = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Advanced",
+        equipment: ["gym", "dumbbells", "bands"],
+        daysPerWeek: 3,
+      },
+      "split-3-day-carry-governance",
+      {
+        phaseIndex: 3,
+        seed: "split-3-day-carry-governance",
+      }
+    );
+
+    program.week.forEach((day) => {
+      const carryAccessories = day.routine
+        .filter((item) => item.section === "accessory")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+        .filter((exercise) => isCarryLikeExercise(exercise));
+      expect(carryAccessories.length).toBeLessThanOrEqual(1);
+      const carryIds = carryAccessories.map((exercise) => exercise.id);
+      expect(new Set(carryIds).size).toBe(carryIds.length);
     });
   });
 
@@ -434,6 +536,160 @@ describe("split contract repair enforcement", () => {
       growthMainIds.some((id) => isChestDominantMain(id)),
       `growth mains=${JSON.stringify(growthMainIds)}`
     ).toBe(false);
+  });
+
+  test("3-day beginner safety gates keep Back + Chest and Legs progression conservative", () => {
+    const beginnerGymInput: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Beginner",
+      equipment: ["gym"],
+      daysPerWeek: 3,
+    };
+
+    const phase1 = generateWeeklyProgram(beginnerGymInput, "split-3-day-beginner-safety-p1", {
+      phaseIndex: 1,
+      seed: "split-3-day-beginner-safety",
+    });
+    const phase3 = generateWeeklyProgram(beginnerGymInput, "split-3-day-beginner-safety-p3", {
+      phaseIndex: 3,
+      seed: "split-3-day-beginner-safety",
+    });
+
+    const phase1BackChest = phase1.week.find((entry) => entry.title === "Back + Chest");
+    expect(phase1BackChest).toBeTruthy();
+    if (phase1BackChest) {
+      const phase1MainIds = phase1BackChest.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId);
+      expect(phase1MainIds).not.toContain("dumbbell-bench-press");
+      expect(phase1MainIds).not.toContain("dumbbell-incline-press");
+    }
+
+    const phase3BackChest = phase3.week.find((entry) => entry.title === "Back + Chest");
+    expect(phase3BackChest).toBeTruthy();
+    if (phase3BackChest) {
+      const phase3MainIds = phase3BackChest.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId);
+      const firstMainExercise = phase3MainIds[0] ? exerciseById(phase3MainIds[0]) : null;
+      expect(firstMainExercise).toBeTruthy();
+      if (firstMainExercise) {
+        const descriptor = `${firstMainExercise.id} ${firstMainExercise.name}`.toLowerCase();
+        expect(descriptor.includes("fly")).toBe(false);
+        expect(hasMainPattern(phase3BackChest, "push")).toBe(true);
+      }
+    }
+
+    const phase3Legs = phase3.week.find((entry) => entry.title === "Legs + Abs");
+    expect(phase3Legs).toBeTruthy();
+    if (phase3Legs) {
+      const phase3LegMainIds = phase3Legs.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId);
+      expect(phase3LegMainIds).not.toContain("barbell-back-squat");
+    }
+  });
+
+  test("3-day beginner Back + Chest phase 2 rotates chest stimulus to press when phase 1 chest lane is fly", () => {
+    const input: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Beginner",
+      equipment: ["gym"],
+      daysPerWeek: 3,
+    };
+
+    const seed = "split-3-day-back-chest-phase-family";
+    const phase1 = generateWeeklyProgram(input, "split-3-day-back-chest-phase-family-p1", {
+      phaseIndex: 1,
+      seed,
+    });
+    const phase2 = generateWeeklyProgram(input, "split-3-day-back-chest-phase-family-p2", {
+      phaseIndex: 2,
+      seed,
+      previousWeek: phase1.week,
+    });
+
+    const phase1BackChest = phase1.week.find((entry) => entry.title === "Back + Chest");
+    const phase2BackChest = phase2.week.find((entry) => entry.title === "Back + Chest");
+    expect(phase1BackChest).toBeTruthy();
+    expect(phase2BackChest).toBeTruthy();
+    if (!phase1BackChest || !phase2BackChest) return;
+
+    const phase1ChestMain = exerciseById(
+      phase1BackChest.routine.find((item) => item.section === "main")?.exerciseId ?? ""
+    );
+    const phase2ChestMain = exerciseById(
+      phase2BackChest.routine.find((item) => item.section === "main")?.exerciseId ?? ""
+    );
+    expect(phase1ChestMain).toBeTruthy();
+    expect(phase2ChestMain).toBeTruthy();
+    if (!phase1ChestMain || !phase2ChestMain) return;
+
+    const phase1ChestDescriptor = `${phase1ChestMain.id} ${phase1ChestMain.name}`.toLowerCase();
+    const phase2ChestDescriptor = `${phase2ChestMain.id} ${phase2ChestMain.name}`.toLowerCase();
+    const phase1IsFly = phase1ChestDescriptor.includes("fly") || phase1ChestDescriptor.includes("pec deck");
+    if (phase1IsFly) {
+      expect(phase2ChestDescriptor.includes("fly")).toBe(false);
+      const phase2Patterns = new Set(
+        (phase2ChestMain.movementPattern ?? []).map((pattern) => normalizePattern(pattern))
+      );
+      expect(phase2Patterns.has("push") || phase2Patterns.has("horizontalpush")).toBe(true);
+    }
+  });
+
+  test("3-day beginner Legs + Abs phase 1 enforces squat + hinge + single-leg lanes", () => {
+    const input: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Beginner",
+      equipment: ["gym"],
+      daysPerWeek: 3,
+    };
+
+    const program = generateWeeklyProgram(input, "split-3-day-legs-phase1-lane-integrity", {
+      phaseIndex: 1,
+      seed: "split-3-day-legs-phase1-lane-integrity",
+    });
+    const legsDay = program.week.find((entry) => entry.title === "Legs + Abs");
+    expect(legsDay).toBeTruthy();
+    if (!legsDay) return;
+
+    const mainExercises = legsDay.routine
+      .filter((item) => item.section === "main")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+    const isSingleLegMain = (exercise: Exercise) => {
+      const patterns = new Set((exercise.movementPattern ?? []).map((pattern) => normalizePattern(pattern)));
+      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+      return (
+        patterns.has("singleleg") ||
+        patterns.has("single_leg") ||
+        descriptor.includes("split-squat") ||
+        descriptor.includes("split squat") ||
+        descriptor.includes("step-up") ||
+        descriptor.includes("step up") ||
+        descriptor.includes("lunge")
+      );
+    };
+    const isSquatPrimaryMain = (exercise: Exercise) => {
+      const patterns = new Set((exercise.movementPattern ?? []).map((pattern) => normalizePattern(pattern)));
+      return patterns.has("squat") && !isSingleLegMain(exercise);
+    };
+    const isHingeMain = (exercise: Exercise) => {
+      const patterns = new Set((exercise.movementPattern ?? []).map((pattern) => normalizePattern(pattern)));
+      return patterns.has("hinge");
+    };
+
+    const squatPrimaryCount = mainExercises.filter(isSquatPrimaryMain).length;
+    const hingeCount = mainExercises.filter(isHingeMain).length;
+    const singleLegCount = mainExercises.filter(isSingleLegMain).length;
+
+    expect(squatPrimaryCount).toBeGreaterThanOrEqual(1);
+    expect(hingeCount).toBeGreaterThanOrEqual(1);
+    expect(singleLegCount).toBeGreaterThanOrEqual(1);
+    expect(squatPrimaryCount).toBe(1);
   });
 
   test("4-day split enforces required main patterns per day", () => {

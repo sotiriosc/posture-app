@@ -254,15 +254,15 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
-              "band-overhead-triceps-extension",
-              "self-resisted-biceps-curl",
+              "band-triceps-pressdown",
+              "towel-biceps-curl-hold",
             ],
             "activationBlockFirst2": [
               "wall-slides",
               "wall-angel-hold",
             ],
             "counts": {
-              "accessory": 2,
+              "accessory": 3,
               "activation": 1,
               "main": 3,
             },
@@ -286,7 +286,7 @@ describe("program golden anchor fingerprints", () => {
             ],
             "activationBlockFirst2": [
               "cat-cow",
-              "dead-bug",
+              "wall-angel-hold",
             ],
             "counts": {
               "accessory": 2,
@@ -301,9 +301,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "bodyweight-squat",
+              "band-front-squat",
               "back-extension-hold",
-              "cossack-squat",
+              "split-squat",
             ],
           },
         ],
@@ -614,14 +614,14 @@ describe("program golden anchor fingerprints", () => {
           {
             "accessoryFirst2Ids": [
               "band-triceps-pressdown",
-              "self-resisted-biceps-curl",
+              "single-arm-band-biceps-curl",
             ],
             "activationBlockFirst2": [
               "wall-slides",
               "band-pull-aparts",
             ],
             "counts": {
-              "accessory": 2,
+              "accessory": 3,
               "activation": 1,
               "main": 3,
             },
@@ -645,7 +645,7 @@ describe("program golden anchor fingerprints", () => {
             ],
             "activationBlockFirst2": [
               "cat-cow",
-              "hip-hinge-drill",
+              "dead-bug",
             ],
             "counts": {
               "accessory": 2,
@@ -660,9 +660,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "bodyweight-squat",
+              "band-front-squat",
               "back-extension-hold",
-              "heels-elevated-squat",
+              "split-squat",
             ],
           },
         ],

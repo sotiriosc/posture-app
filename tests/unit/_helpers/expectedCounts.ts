@@ -53,7 +53,7 @@ export const expectedAccessoryCountForDayTitle = ({
     if (dayTitle === "Back + Chest") return 2;
     if (dayTitle === "Shoulders + Arms") {
       if (experience === "Advanced") return 4;
-      return 2;
+      return 3;
     }
     if (dayTitle === "Legs + Abs") {
       if (experience === "Advanced") return 3;

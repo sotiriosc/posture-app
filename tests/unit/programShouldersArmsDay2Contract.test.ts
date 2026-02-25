@@ -159,6 +159,18 @@ const accessoryFamilyKey = (exercise: Exercise) => {
   return normalizeToken(exercise.id);
 };
 
+const isCarryAccessory = (exercise: Exercise) => {
+  const patterns = new Set((exercise.movementPattern ?? []).map((pattern) => normalizeToken(pattern)));
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeToken(tag)));
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    patterns.has("carry") ||
+    tags.has("carry") ||
+    descriptor.includes("carry") ||
+    descriptor.includes("suitcase")
+  );
+};
+
 const getShouldersArmsDay = (program: ReturnType<typeof generateWeeklyProgram>) => {
   const day = program.week.find((entry) => entry.title === "Shoulders + Arms");
   if (!day) throw new Error("Shoulders + Arms day not found");
@@ -406,7 +418,7 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
     expect(new Set(bicepsStimulus).size).toBe(bicepsStimulus.length);
   });
 
-  test("beginner and intermediate accessory counts remain 2 with triceps then biceps", () => {
+  test("beginner and intermediate keep triceps+biceps accessories; carry is additive when present", () => {
     const beginner = generateWeeklyProgram(
       buildQuestionnaire({
         goals: "General fitness",
@@ -427,12 +439,34 @@ describe("Shoulders + Arms Day 2 (3-day split) contract", () => {
     );
     const beginnerAccessories = getAccessoryExercises(beginner);
     const intermediateAccessories = getAccessoryExercises(intermediate);
-    expect(beginnerAccessories.length).toBe(2);
-    expect(intermediateAccessories.length).toBe(2);
+    expect(beginnerAccessories.length).toBeGreaterThanOrEqual(2);
+    expect(intermediateAccessories.length).toBeGreaterThanOrEqual(2);
     expect(resolveMainCategory(beginnerAccessories[0])).toBe("triceps");
-    expect(resolveMainCategory(beginnerAccessories[1])).toBe("biceps");
+    expect(beginnerAccessories.some((exercise) => resolveMainCategory(exercise) === "biceps")).toBe(
+      true
+    );
+    if (beginnerAccessories.some((exercise) => isCarryAccessory(exercise))) {
+      expect(beginnerAccessories.length).toBeGreaterThanOrEqual(3);
+    }
+    expect(
+      beginnerAccessories.some(
+        (exercise) =>
+          exercise.id === "self-resisted-biceps-curl" || exercise.id === "towel-biceps-curl-hold"
+      )
+    ).toBe(false);
     expect(resolveMainCategory(intermediateAccessories[0])).toBe("triceps");
-    expect(resolveMainCategory(intermediateAccessories[1])).toBe("biceps");
+    expect(
+      intermediateAccessories.some((exercise) => resolveMainCategory(exercise) === "biceps")
+    ).toBe(true);
+    if (intermediateAccessories.some((exercise) => isCarryAccessory(exercise))) {
+      expect(intermediateAccessories.length).toBeGreaterThanOrEqual(3);
+    }
+    expect(
+      intermediateAccessories.some(
+        (exercise) =>
+          exercise.id === "self-resisted-biceps-curl" || exercise.id === "towel-biceps-curl-hold"
+      )
+    ).toBe(false);
   });
 
   test("same seed remains deterministic for Shoulders + Arms day", () => {

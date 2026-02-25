@@ -1186,7 +1186,7 @@ describe("back + chest contract regression", () => {
     expect(phase3Signature).not.toBe(phase2Signature);
   });
 
-  test("gym phase 2 Back + Chest keeps fly-first main slot while accessories remain structural", () => {
+  test("gym phase 2 Back + Chest keeps structural accessory architecture when chest lane rotates", () => {
     const questionnaire: QuestionnaireData = {
       goals: "Improve posture",
       painAreas: [],
@@ -1230,11 +1230,6 @@ describe("back + chest contract regression", () => {
       .filter((item) => item.section === "accessory")
       .map((item) => exerciseById(item.exerciseId))
       .filter((exercise): exercise is Exercise => Boolean(exercise));
-    const withFlyHasFlyMain = withFlyMainExercises.some(hasChestFlyAccessory);
-    const withoutFlyHasFlyMain = withoutFlyMainExercises.some(hasChestFlyAccessory);
-
-    expect(withFlyHasFlyMain).toBe(true);
-    expect(withoutFlyHasFlyMain).toBe(true);
     expect(withFlyAccessoryExercises.some((exercise) => isRearDeltAccessory(exercise))).toBe(true);
     expect(withFlyAccessoryExercises.some((exercise) => isScapOrExternalAccessory(exercise))).toBe(
       true
