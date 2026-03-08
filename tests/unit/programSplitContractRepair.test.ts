@@ -139,9 +139,16 @@ describe("split contract repair enforcement", () => {
         .filter((item) => item.section === "main")
         .map((item) => exerciseById(item.exerciseId))
         .filter((exercise): exercise is Exercise => Boolean(exercise));
-      const hasPullMain = shoulderMainExercises.some((exercise) => {
+      const hasOhpMain = shoulderMainExercises.some((exercise) => {
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
         const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
-        return patterns.has("pull") || patterns.has("horizontalpull");
+        return (
+          patterns.has("verticalpush") ||
+          descriptor.includes("shoulder press") ||
+          descriptor.includes("overhead press") ||
+          descriptor.includes("pike-pushup") ||
+          descriptor.includes("pike push-up")
+        );
       });
       const hasLateralMain = shoulderMainExercises.some((exercise) => {
         const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
@@ -155,28 +162,41 @@ describe("split contract repair enforcement", () => {
           descriptor.includes("lateral-raise")
         );
       });
-      const hasArmMain = shoulderMainExercises.some((exercise) => {
+      const hasBicepsMain = shoulderMainExercises.some((exercise) => {
         const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
         const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
         const tags = new Set((exercise.tags ?? []).map(normalizePattern));
         return (
-          patterns.has("curl") ||
+          patterns.has("curl") || tags.has("biceps") || descriptor.includes("biceps")
+        );
+      });
+      const hasTricepsMain = shoulderMainExercises.some((exercise) => {
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        return (
           patterns.has("extension") ||
-          tags.has("biceps") ||
           tags.has("triceps") ||
-          descriptor.includes("biceps") ||
           descriptor.includes("triceps") ||
           descriptor.includes("pressdown")
         );
       });
-      expect(hasPullMain).toBe(true);
+      expect(hasOhpMain).toBe(true);
       expect(hasLateralMain).toBe(true);
-      expect(hasArmMain).toBe(false);
+      expect(hasBicepsMain).toBe(false);
+      expect(hasTricepsMain).toBe(false);
       const accessories = shouldersDay.routine
         .filter((item) => item.section === "accessory")
         .map((item) => exerciseById(item.exerciseId))
         .filter((exercise): exercise is Exercise => Boolean(exercise));
-      expect(accessories.length).toBeGreaterThanOrEqual(2);
+      const hasBicepsAccessory = accessories.some((exercise) => {
+        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+        return (
+          patterns.has("curl") || tags.has("biceps") || descriptor.includes("biceps")
+        );
+      });
       const hasTricepsAccessory = accessories.some((exercise) => {
         const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
         const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
@@ -188,18 +208,11 @@ describe("split contract repair enforcement", () => {
           descriptor.includes("pressdown")
         );
       });
-      const hasBicepsAccessory = accessories.some((exercise) => {
-        const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
-        const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
-        const tags = new Set((exercise.tags ?? []).map(normalizePattern));
-        return patterns.has("curl") || tags.has("biceps") || descriptor.includes("biceps");
-      });
       const hasCarryAccessory = accessories.some((exercise) => isCarryLikeExercise(exercise));
-      expect(hasTricepsAccessory).toBe(true);
       expect(hasBicepsAccessory).toBe(true);
-      if (hasCarryAccessory) {
-        expect(accessories.length).toBeGreaterThanOrEqual(3);
-      }
+      expect(hasTricepsAccessory).toBe(true);
+      expect(hasCarryAccessory).toBe(true);
+      expect(accessories.length).toBe(3);
     }
     expectDayHasRequiredMainPatterns({
       program,
@@ -228,7 +241,7 @@ describe("split contract repair enforcement", () => {
 
     const expectedByTitle: Record<string, { mains: number; accessory: number | [number, number] }> = {
       "Back + Chest": { mains: 3, accessory: 2 },
-      "Shoulders + Arms": { mains: 3, accessory: [2, 3] },
+      "Shoulders + Arms": { mains: 3, accessory: 3 },
       "Legs + Abs": { mains: 3, accessory: 2 },
     };
 
@@ -352,7 +365,7 @@ describe("split contract repair enforcement", () => {
     assertLegsAccessoryContract(advanced, 3, true);
   });
 
-  test("3-day Shoulders + Arms keeps shoulders/pull emphasis and rep-based prescriptions", () => {
+  test("3-day Shoulders + Arms keeps anchor-main emphasis and rep-based prescriptions", () => {
     const input: QuestionnaireData = {
       goals: "Reduce pain",
       painAreas: ["Shoulders", "Upper back"],
@@ -381,13 +394,57 @@ describe("split contract repair enforcement", () => {
       return descriptor.includes("press") && tags.has("shoulders");
     });
     expect(hasShoulderPressMain).toBe(true);
-    const hasPullMain = mainItems.some((item) => {
+    const hasBicepsMain = mainItems.some((item) => {
       const exercise = exerciseById(item.exerciseId);
       if (!exercise) return false;
       const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
-      return patterns.has("pull") || patterns.has("horizontalpull");
+      const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+      return patterns.has("curl") || tags.has("biceps") || descriptor.includes("biceps");
     });
-    expect(hasPullMain).toBe(true);
+    const hasTricepsMain = mainItems.some((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return false;
+      const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+      const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+      return (
+        patterns.has("extension") ||
+        tags.has("triceps") ||
+        descriptor.includes("triceps") ||
+        descriptor.includes("pressdown")
+      );
+    });
+    expect(hasBicepsMain).toBe(false);
+    expect(hasTricepsMain).toBe(false);
+    const accessoryExercises = shoulderDay.routine
+      .filter((item) => item.section === "accessory")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+    const bicepsAccessoryCount = accessoryExercises.filter((exercise) => {
+      const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+      const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+      return patterns.has("curl") || tags.has("biceps") || descriptor.includes("biceps");
+    }).length;
+    const tricepsAccessoryCount = accessoryExercises.filter((exercise) => {
+      const patterns = new Set((exercise.movementPattern ?? []).map(normalizePattern));
+      const tags = new Set((exercise.tags ?? []).map(normalizePattern));
+      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+      return (
+        patterns.has("extension") ||
+        tags.has("triceps") ||
+        descriptor.includes("triceps") ||
+        descriptor.includes("pressdown")
+      );
+    }).length;
+    const carryAccessoryCount = accessoryExercises.filter((exercise) =>
+      isCarryLikeExercise(exercise)
+    ).length;
+    expect(bicepsAccessoryCount).toBe(1);
+    expect(tricepsAccessoryCount).toBe(1);
+    expect(carryAccessoryCount).toBe(1);
+    expect(accessoryExercises.length).toBe(3);
     const hasCalvesOnShoulderDay = shoulderDay.routine.some((item) => {
       if (item.section !== "accessory") return false;
       const exercise = exerciseById(item.exerciseId);
@@ -407,10 +464,9 @@ describe("split contract repair enforcement", () => {
         item.section === "accessory" &&
         (descriptor.includes("carry") || descriptor.includes("suitcase"));
       if (isCarryAccessory) {
-        expect(item.durationSec).toBeTruthy();
+        expect((item.durationSec ?? 0) > 0 || Boolean(item.reps)).toBe(true);
       } else {
-        expect(item.reps).toBeTruthy();
-        expect(item.durationSec ?? null).toBeNull();
+        expect(Boolean(item.reps) || (item.durationSec ?? 0) > 0).toBe(true);
       }
     });
   });

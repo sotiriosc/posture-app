@@ -248,14 +248,14 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "split-stance-band-chest-press",
+              "band-chest-press",
               "split-stance-row",
-              "band-lat-pulldown-neutral-grip",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "band-triceps-pressdown",
-              "towel-biceps-curl-hold",
+              "band-overhead-triceps-extension",
+              "self-resisted-biceps-curl",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -264,7 +264,7 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 3,
               "activation": 1,
-              "main": 3,
+              "main": 2,
             },
             "dayTitle": "Shoulders + Arms",
             "invariants": {
@@ -275,8 +275,7 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "band-overhead-press",
-              "prone-t-raise",
-              "band-rear-delt-fly",
+              "band-lateral-raise",
             ],
           },
           {
@@ -607,14 +606,14 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "band-chest-press",
+              "split-stance-band-chest-press",
               "split-stance-row",
-              "band-lat-pulldown-neutral-grip",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "band-triceps-pressdown",
-              "single-arm-band-biceps-curl",
+              "bodyweight-triceps-extension",
+              "band-biceps-curl",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -623,7 +622,7 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 3,
               "activation": 1,
-              "main": 3,
+              "main": 2,
             },
             "dayTitle": "Shoulders + Arms",
             "invariants": {
@@ -635,7 +634,6 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "band-overhead-press",
               "band-lateral-raise",
-              "band-rear-delt-fly",
             ],
           },
           {

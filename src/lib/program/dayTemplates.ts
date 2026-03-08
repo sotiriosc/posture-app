@@ -72,11 +72,21 @@ const LEGS_ABS_3_DAY_COUNTS: Record<ThreeDayExperienceLevel, ThreeDayTemplateCou
   advanced: { mainCount: 4, accessoryCount: 3 },
 };
 
-const BACK_CHEST_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
+const BACK_CHEST_3_DAY_BEGINNER_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
+  { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
+  { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+  { lane: "pull", slotKind: "mainPullSupport", family: "pull_secondary" },
+];
+
+const BACK_CHEST_3_DAY_INTERMEDIATE_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
+  { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
   { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
   { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
   { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
-  { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
+];
+
+const BACK_CHEST_3_DAY_ADVANCED_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
+  ...BACK_CHEST_3_DAY_INTERMEDIATE_MAIN_PLAN,
   { lane: "pull", slotKind: "mainPullSupport", family: "pull_secondary" },
 ];
 
@@ -124,8 +134,14 @@ export const get3DayMainLanePlan = (
   mainCount: number
 ): ThreeDayMainLanePlanEntry[] | null => {
   if (isBackChest3DayTitle(dayTitle)) {
-    const clampedCount = Math.max(1, Math.min(BACK_CHEST_3_DAY_MAIN_PLAN.length, mainCount));
-    return BACK_CHEST_3_DAY_MAIN_PLAN.slice(0, clampedCount);
+    const normalizedCount = Math.max(1, mainCount);
+    if (normalizedCount >= 5) return BACK_CHEST_3_DAY_ADVANCED_MAIN_PLAN;
+    if (normalizedCount >= 4) return BACK_CHEST_3_DAY_INTERMEDIATE_MAIN_PLAN;
+    const clampedCount = Math.max(
+      1,
+      Math.min(BACK_CHEST_3_DAY_BEGINNER_MAIN_PLAN.length, normalizedCount)
+    );
+    return BACK_CHEST_3_DAY_BEGINNER_MAIN_PLAN.slice(0, clampedCount);
   }
   if (isShouldersArms3DayTitle(dayTitle)) {
     const clampedCount = Math.max(
