@@ -255,7 +255,7 @@ describe("program golden anchor fingerprints", () => {
           {
             "accessoryFirst2Ids": [
               "band-overhead-triceps-extension",
-              "self-resisted-biceps-curl",
+              "band-biceps-curl",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -264,7 +264,7 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 3,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Shoulders + Arms",
             "invariants": {
@@ -275,7 +275,8 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "band-overhead-press",
-              "band-lateral-raise",
+              "prone-t-raise",
+              "band-rear-delt-fly",
             ],
           },
           {
@@ -511,8 +512,8 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "machine-lat-pulldown",
               "dumbbell-chest-supported-row",
+              "machine-lat-pulldown",
             ],
           },
           {
@@ -564,7 +565,7 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "db-triceps-extension",
               "dumbbell-shoulder-press",
-              "machine-lat-pulldown",
+              "dumbbell-chest-supported-row",
             ],
           },
         ],
@@ -612,7 +613,7 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
+              "band-triceps-pressdown",
               "band-biceps-curl",
             ],
             "activationBlockFirst2": [
@@ -622,7 +623,7 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 3,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Shoulders + Arms",
             "invariants": {
@@ -633,7 +634,8 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "band-overhead-press",
-              "band-lateral-raise",
+              "prone-t-raise",
+              "band-rear-delt-fly",
             ],
           },
           {
@@ -827,7 +829,7 @@ describe("program golden anchor fingerprints", () => {
               "dumbbell-floor-press",
               "dumbbell-shoulder-press",
               "machine-chest-press",
-              "dumbbell-bench-press",
+              "dumbbell-arnold-press",
             ],
           },
           {
@@ -880,8 +882,8 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-rows",
               "machine-rear-delt-row",
-              "barbell-landmine-pulldown",
-              "single-arm-dumbbell-row",
+              "cable-seated-row",
+              "cable-lat-pulldown",
             ],
           },
           {
@@ -905,10 +907,10 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "barbell-hip-thrust",
               "dumbbell-step-up-loaded",
-              "farmers-carry",
               "machine-glute-drive",
+              "barbell-hip-thrust",
+              "farmers-carry",
             ],
           },
           {
@@ -935,7 +937,7 @@ describe("program golden anchor fingerprints", () => {
               "dumbbell-rows",
               "dumbbell-shoulder-press",
               "machine-rear-delt-row",
-              "dumbbell-floor-press",
+              "dumbbell-arnold-press",
             ],
           },
         ],

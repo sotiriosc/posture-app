@@ -43,6 +43,9 @@ const isBackMain = (exercise: Exercise) =>
   isVerticalPullMain(exercise) ||
   `${exercise.id} ${exercise.name}`.toLowerCase().includes("pullover");
 
+const isPulloverLatAccentMain = (exercise: Exercise) =>
+  `${exercise.id} ${exercise.name}`.toLowerCase().includes("pullover");
+
 const isBackFocusedAccessory = (exercise: Exercise) => {
   const patterns = new Set((exercise.movementPattern ?? []).map(normalizeToken));
   const tags = new Set((exercise.tags ?? []).map(normalizeToken));
@@ -97,13 +100,15 @@ const getAccessoryExercises = (program: ReturnType<typeof generateWeeklyProgram>
     .filter((exercise): exercise is Exercise => Boolean(exercise));
 
 const buildQuestionnaire = (
-  experience: QuestionnaireData["experience"]
+  experience: QuestionnaireData["experience"],
+  overrides: Partial<QuestionnaireData> = {}
 ): QuestionnaireData => ({
   goals: "Improve posture",
   painAreas: [],
   experience,
   daysPerWeek: 3,
   equipment: ["gym"],
+  ...overrides,
 });
 
 const advanceToNextPhase = (params: {
@@ -162,6 +167,36 @@ describe("back + chest 3-day final contract", () => {
     expect(new Set(mains.map((entry) => entry.id)).size).toBe(mains.length);
   });
 
+  test("mixed equipment keeps chest slot 2 as fly when any fly is eligible", () => {
+    const cases: QuestionnaireData["equipment"][] = [
+      ["gym", "bands"],
+      ["gym", "bands", "none"],
+      ["gym", "dumbbells"],
+    ];
+
+    cases.forEach((equipment, index) => {
+      const questionnaire = buildQuestionnaire("Intermediate", { equipment });
+      const seed = `back-chest-mixed-fly-slot-enforcement-${index + 1}`;
+      const program = generateWeeklyProgram(questionnaire, seed, {
+        phaseIndex: 2,
+        seed,
+      });
+      const mains = getMainExercises(program);
+      const chestMains = mains.filter((exercise) => hasHorizontalPushMain(exercise));
+      const available = normalizeEquipmentSelection(questionnaire.equipment).available;
+      const hasEligibleFly = exercises
+        .filter((exercise) => exercise.category === "main")
+        .filter((exercise) => isFlyMain(exercise) && hasHorizontalPushMain(exercise))
+        .some((exercise) => isExerciseEligible(exercise, available));
+
+      expect(chestMains.length).toBe(2);
+      if (hasEligibleFly) {
+        expect(isFlyMain(chestMains[1]!)).toBe(true);
+        expect(chestMains.filter((exercise) => isPressMain(exercise)).length).toBe(1);
+      }
+    });
+  });
+
   test("advanced day 1 has 5 mains with exactly 2 chest and 3 back", () => {
     const questionnaire = buildQuestionnaire("Advanced");
     const program = generateWeeklyProgram(questionnaire, "back-chest-advanced-day1-final", {
@@ -185,6 +220,48 @@ describe("back + chest 3-day final contract", () => {
     expect(rowCount).toBeLessThanOrEqual(3);
     expect(verticalCount).toBeLessThanOrEqual(2);
     expect(new Set(mains.map((entry) => entry.id)).size).toBe(mains.length);
+  });
+
+  test("advanced day 1 extra back slot prefers pullover/lat-accent when eligible", () => {
+    const cases: Array<{
+      label: string;
+      equipment: QuestionnaireData["equipment"];
+      phaseIndex: 2 | 3;
+    }> = [
+      { label: "dumbbells-only", equipment: ["dumbbells"], phaseIndex: 2 },
+      { label: "gym", equipment: ["gym"], phaseIndex: 3 },
+    ];
+
+    cases.forEach(({ label, equipment, phaseIndex }) => {
+      const questionnaire = buildQuestionnaire("Advanced", {
+        goals: "General fitness",
+        equipment,
+      });
+      const seed = `back-chest-advanced-pullover-priority-${label}`;
+      const program = generateWeeklyProgram(questionnaire, seed, {
+        phaseIndex,
+        seed,
+      });
+      const mains = getMainExercises(program);
+      const backMains = mains.filter((exercise) => isBackMain(exercise));
+      const pulloverCount = backMains.filter((exercise) => isPulloverLatAccentMain(exercise)).length;
+      const rowCount = backMains.filter((exercise) => isHorizontalPullMain(exercise)).length;
+      const available = normalizeEquipmentSelection(equipment).available;
+      const pulloverEligible = exercises
+        .filter((exercise) => exercise.category === "main")
+        .filter((exercise) => isPulloverLatAccentMain(exercise))
+        .some((exercise) => isExerciseEligible(exercise, available));
+
+      expect(mains.length).toBe(5);
+      expect(backMains.length).toBe(3);
+      expect(pulloverEligible).toBe(true);
+      if (pulloverEligible) {
+        expect(pulloverCount).toBeGreaterThanOrEqual(1);
+        if (label === "gym") {
+          expect(rowCount).toBeLessThanOrEqual(1);
+        }
+      }
+    });
   });
 
   test("day 1 accessories are exactly 2, both back-focused, no duplicate familyKey", () => {

@@ -13,30 +13,16 @@ const resolveMainCategory = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
   const patterns = new Set((exercise.movementPattern ?? []).map((pattern) => normalizeToken(pattern)));
   const tags = new Set((exercise.tags ?? []).map((tag) => normalizeToken(tag)));
-  const hasPullPattern =
-    patterns.has("pull") ||
-    patterns.has("horizontalpull") ||
-    patterns.has("verticalpull");
-  const descriptorIndicatesPull =
+  const family = normalizeToken(exercise.familyKey ?? "");
+  const descriptorIndicatesBackPull =
     descriptor.includes("row") ||
-    descriptor.includes("pull") ||
     descriptor.includes("pulldown") ||
     descriptor.includes("pullup") ||
     descriptor.includes("chinup");
 
   if (
-    descriptor.includes("reardelt") ||
-    descriptor.includes("rear delt") ||
-    descriptor.includes("reverse pec deck") ||
-    descriptor.includes("reverse-pec-deck") ||
-    tags.has("reardelt")
-  ) {
-    return "rearDeltMain";
-  }
-  if (
-    (patterns.has("curl") || descriptor.includes("curl")) &&
-    !hasPullPattern &&
-    !descriptorIndicatesPull
+    (patterns.has("curl") || descriptor.includes("curl") || tags.has("biceps")) &&
+    !descriptorIndicatesBackPull
   ) {
     return "biceps";
   }
@@ -46,7 +32,7 @@ const resolveMainCategory = (exercise: Exercise) => {
       descriptor.includes("triceps") ||
       descriptor.includes("pressdown") ||
       descriptor.includes("extension")) &&
-    !descriptorIndicatesPull
+    !descriptorIndicatesBackPull
   ) {
     return "triceps";
   }
@@ -56,6 +42,34 @@ const resolveMainCategory = (exercise: Exercise) => {
     tags.has("lateraldelt")
   ) {
     return "lateral";
+  }
+  if (
+    descriptor.includes("y raise") ||
+    descriptor.includes("y-raise") ||
+    descriptor.includes("t raise") ||
+    descriptor.includes("t-raise") ||
+    descriptor.includes("prone t") ||
+    descriptor.includes("prone-t") ||
+    descriptor.includes("snow angel") ||
+    descriptor.includes("snow-angel") ||
+    descriptor.includes("swimmer") ||
+    descriptor.includes("scaption") ||
+    descriptor.includes("shoulder plane raise") ||
+    descriptor.includes("shoulder-plane raise") ||
+    descriptor.includes("arnold press") ||
+    descriptor.includes("landmine press") ||
+    family === "scapsupport"
+  ) {
+    return "shoulderSupport";
+  }
+  if (
+    descriptor.includes("reardelt") ||
+    descriptor.includes("rear delt") ||
+    descriptor.includes("reverse pec deck") ||
+    descriptor.includes("reverse-pec-deck") ||
+    tags.has("reardelt")
+  ) {
+    return "rearDeltMain";
   }
   if (
     patterns.has("verticalpush") ||
@@ -79,6 +93,43 @@ const isCarryExercise = (exercise: Exercise) => {
     descriptor.includes("carry") ||
     descriptor.includes("suitcase") ||
     descriptor.includes("farmer")
+  );
+};
+
+const isRowMainLeak = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return descriptor.includes("row");
+};
+
+const isExternalRotationMainLeak = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const family = normalizeToken(exercise.familyKey ?? "");
+  return (
+    descriptor.includes("external rotation") ||
+    descriptor.includes("external-rotation") ||
+    family === "externalrotation"
+  );
+};
+
+const isFacePullMainLeak = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const family = normalizeToken(exercise.familyKey ?? "");
+  return (
+    descriptor.includes("face pull") ||
+    descriptor.includes("face-pull") ||
+    family === "facepull"
+  );
+};
+
+const isBackPullMainLeak = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    descriptor.includes("pulldown") ||
+    descriptor.includes("pull-down") ||
+    descriptor.includes("pullup") ||
+    descriptor.includes("pull-up") ||
+    descriptor.includes("chinup") ||
+    descriptor.includes("chin-up")
   );
 };
 
@@ -154,20 +205,71 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       );
       const mains = getMainExercises(program);
       const categories = mains.map((exercise) => resolveMainCategory(exercise));
+      const rearDeltCount = categories.filter((category) => category === "rearDeltMain").length;
+      const shoulderSupportCount = categories.filter(
+        (category) => category === "shoulderSupport"
+      ).length;
+      const supplementalShoulderCount = expectedMainCount - 2;
 
       expect(mains.length).toBe(expectedMainCount);
       expect(categories.filter((category) => category === "ohp").length).toBe(1);
       expect(categories.filter((category) => category === "lateral").length).toBe(1);
-      expect(categories.filter((category) => category === "rearDeltMain").length).toBe(
-        expectedMainCount - 2
-      );
+      expect(rearDeltCount + shoulderSupportCount).toBe(supplementalShoulderCount);
+      if (expectedMainCount >= 4) {
+        expect(rearDeltCount).toBeLessThanOrEqual(1);
+        expect(shoulderSupportCount).toBeGreaterThanOrEqual(1);
+      }
       expect(categories.filter((category) => category === "biceps").length).toBe(0);
       expect(categories.filter((category) => category === "triceps").length).toBe(0);
       expect(mains.some((exercise) => isCarryExercise(exercise))).toBe(false);
+      expect(mains.some((exercise) => isRowMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isExternalRotationMainLeak(exercise))).toBe(false);
       expect(categories.filter((category) => category === "ohp").length).toBeLessThanOrEqual(1);
       expect(categories.filter((category) => category === "lateral").length).toBeLessThanOrEqual(1);
       expect(new Set(mains.map((exercise) => exercise.id)).size).toBe(mains.length);
     });
+  });
+
+  test("intermediate/advanced gym extra shoulders include non-machine complementary support", () => {
+    (["Intermediate", "Advanced"] as const).forEach((experience) => {
+      const seed = `day2-complementary-support-${experience.toLowerCase()}`;
+      const program = generateWeeklyProgram(
+        buildQuestionnaire({ experience, equipment: ["gym"] }),
+        seed,
+        { phaseIndex: experience === "Advanced" ? 3 : 2, seed }
+      );
+      const mains = getMainExercises(program);
+      const support = mains.find((exercise) => resolveMainCategory(exercise) === "shoulderSupport");
+      expect(support).toBeTruthy();
+      if (!support) return;
+      const machineOnly =
+        support.equipment.includes("machines") &&
+        support.equipment.every((equipment) => equipment === "machines");
+      expect(machineOnly).toBe(false);
+    });
+  });
+
+  test("mixed equipment day 2 mains stay shoulder-only (no row/back-pull/face-pull/external-rotation leaks)", () => {
+    const seed = "day2-mixed-shoulder-only-main-boundary";
+    const program = generateWeeklyProgram(
+      buildQuestionnaire({
+        experience: "Intermediate",
+        equipment: ["gym", "bands", "none"],
+      }),
+      seed,
+      { phaseIndex: 2, seed }
+    );
+    const mains = getMainExercises(program);
+    const allowedCategories = new Set(["ohp", "lateral", "rearDeltMain", "shoulderSupport"]);
+    const categories = mains.map((exercise) => resolveMainCategory(exercise));
+
+    expect(mains.length).toBe(4);
+    expect(categories.every((category) => allowedCategories.has(category))).toBe(true);
+    expect(mains.some((exercise) => isRowMainLeak(exercise))).toBe(false);
+    expect(mains.some((exercise) => isBackPullMainLeak(exercise))).toBe(false);
+    expect(mains.some((exercise) => isFacePullMainLeak(exercise))).toBe(false);
+    expect(mains.some((exercise) => isExternalRotationMainLeak(exercise))).toBe(false);
+    expect(mains.some((exercise) => isCarryExercise(exercise))).toBe(false);
   });
 
   test("beginner has 2 arm accessories + 1 carry finisher", () => {
