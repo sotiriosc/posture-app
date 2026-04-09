@@ -118,14 +118,68 @@ export type ProgramIntentProfile = {
 
 export type ProgramVariationOptions = {
   seed?: string;
+  variationIndex?: number;
   index?: number;
   useRecentMemory?: boolean;
   settingsHash?: string;
-  recentGenerationSummary?: {
-    exerciseIds?: string[];
-    familyKeys?: string[];
-    dayTemplateKeys?: Record<string, string>;
-  };
+  recentGenerationSummary?: ProgramRecentGenerationSummary;
+};
+
+export type ProgramDayKey =
+  | "day1_back_chest"
+  | "day2_shoulders_arms"
+  | "day3_legs_abs";
+
+export type GenerationContext = {
+  settingsHash: string;
+  variationIndex: number;
+  recent?: ProgramRecentGenerationSummary | null;
+};
+
+export type GenerationSettingsFingerprint = {
+  goal: string;
+  experience: string;
+  daysPerWeek: number;
+  equipment: string[];
+  painAreas: string[];
+  poseFocusTags?: string[];
+  phaseIndex?: number;
+};
+
+export type ProgramRecentGenerationPhaseSummary = {
+  phase: 1 | 2 | 3;
+  routineIds: string[];
+  accessoryIds: string[];
+  routineFamilyKeys: string[];
+  accessoryFamilyKeys: string[];
+  routineVariantKeys: string[];
+  accessoryVariantKeys: string[];
+};
+
+export type ProgramRecentGenerationDaySummary = {
+  templateKey?: string;
+  phaseSummaries?: ProgramRecentGenerationPhaseSummary[];
+  // Backward-compatible shape support.
+  routineIds?: string[];
+  accessoryIds?: string[];
+  familyKeys?: string[];
+  variantKeys?: string[];
+};
+
+export type ProgramRecentGenerationSummary = {
+  settingsHash?: string;
+  variationIndex?: number;
+  generatedAt?: number;
+  // Backward-compatible legacy field support.
+  phaseIndex?: number;
+  days?:
+    | (Partial<Record<ProgramDayKey, ProgramRecentGenerationDaySummary>> &
+        Record<string, ProgramRecentGenerationDaySummary | undefined>)
+    | Record<string, ProgramRecentGenerationDaySummary | undefined>;
+  exerciseIds?: string[];
+  familyKeys?: string[];
+  variantKeys?: string[];
+  dayTemplateKeys?: Record<string, string>;
 };
 
 type ProgramVariationConfig = {
@@ -140,6 +194,9 @@ type ProgramVariationSnapshot = {
   exerciseIds: string[];
   familyCounts: Record<string, number>;
   variantCounts: Record<string, number>;
+  slotExerciseIds: Record<string, string>;
+  slotFamilyKeys: Record<string, string>;
+  slotVariantKeys: Record<string, string>;
   slotFamilySignatures: Record<string, string>;
   dayMainLayoutSignatures: Record<string, string>;
   dayMainFamilyLayoutSignatures: Record<string, string>;
@@ -150,6 +207,9 @@ type ProgramVariationMemory = {
   recentExerciseIds: Set<string>;
   recentFamilyCounts: Map<string, number>;
   recentVariantCounts: Map<string, number>;
+  recentSlotExerciseIds: Map<string, string>;
+  recentSlotFamilyKeys: Map<string, string>;
+  recentSlotVariantKeys: Map<string, string>;
   recentSlotFamilySignatures: Map<string, string>;
   recentDayMainLayoutSignatures: Map<string, string[]>;
   recentDayMainFamilyLayoutSignatures: Map<string, string[]>;
@@ -203,6 +263,15 @@ const stableHashUnit = (value: string) => {
     hash = Math.imul(hash, 16777619);
   }
   return (hash >>> 0) / 0xffffffff;
+};
+
+const stableHashToken = (value: string) => {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
 };
 
 const POSE_FOCUS_TAG_ALIASES: Record<string, string[]> = {
@@ -2111,6 +2180,92 @@ const normalizeSlotToken = (value: string) =>
     .replace(/[^a-z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "");
 
+const PROGRAM_DAY_KEY_TO_DAY_TOKEN: Record<ProgramDayKey, string> = {
+  day1_back_chest: "back_chest",
+  day2_shoulders_arms: "shoulders_arms",
+  day3_legs_abs: "legs_abs",
+};
+
+const resolveRecentGenerationDayToken = (dayTokenRaw: string) => {
+  const normalized = normalizeSlotToken(dayTokenRaw);
+  const mapped = PROGRAM_DAY_KEY_TO_DAY_TOKEN[normalized as ProgramDayKey];
+  return mapped ?? normalized;
+};
+
+const resolveProgramVariationIndex = (
+  options?:
+    | Pick<ProgramVariationOptions, "variationIndex" | "index">
+    | null
+) => {
+  const rawVariationIndex = options?.variationIndex ?? options?.index;
+  return typeof rawVariationIndex === "number" && Number.isFinite(rawVariationIndex)
+    ? Math.max(0, Math.floor(rawVariationIndex))
+    : 0;
+};
+
+const resolveProgramVariationPhaseIndex = (value?: number | null) =>
+  typeof value === "number" && Number.isFinite(value)
+    ? clampPhaseIndexToSupportedRange(value)
+    : null;
+
+const buildVariationDayPhaseToken = (dayToken: string, phaseIndex?: number | null) => {
+  const normalizedDayToken = normalizeSlotToken(dayToken);
+  const normalizedPhaseIndex = resolveProgramVariationPhaseIndex(phaseIndex);
+  if (!normalizedDayToken) return "";
+  return normalizedPhaseIndex === null
+    ? normalizedDayToken
+    : `${normalizedDayToken}__phase_${normalizedPhaseIndex}`;
+};
+
+const pushUniqueValue = (values: string[], value: string) => {
+  if (!value || values.includes(value)) return values;
+  return [...values, value];
+};
+
+const getVariationMemoryValuesForDayToken = (
+  map: Map<string, string[]>,
+  dayTokenRaw: string,
+  phaseIndex?: number | null
+) => {
+  const dayToken = normalizeSlotToken(dayTokenRaw);
+  if (!dayToken) return [] as string[];
+  const merged: string[] = [];
+  const baseValues = map.get(dayToken) ?? [];
+  baseValues.forEach((value) => {
+    if (!value || merged.includes(value)) return;
+    merged.push(value);
+  });
+  const phaseToken = buildVariationDayPhaseToken(dayToken, phaseIndex);
+  if (phaseToken && phaseToken !== dayToken) {
+    const phaseValues = map.get(phaseToken) ?? [];
+    phaseValues.forEach((value) => {
+      if (!value || merged.includes(value)) return;
+      merged.push(value);
+    });
+  }
+  return merged;
+};
+
+const pushVariationMemoryDayValue = (params: {
+  map: Map<string, string[]>;
+  dayTokenRaw: string;
+  value: string;
+  phaseIndex?: number | null;
+}) => {
+  const { map, dayTokenRaw, value, phaseIndex } = params;
+  const normalizedValue = String(value ?? "").trim();
+  if (!normalizedValue) return;
+  const dayToken = normalizeSlotToken(dayTokenRaw);
+  if (!dayToken) return;
+  const nextBaseValues = pushUniqueValue(map.get(dayToken) ?? [], normalizedValue);
+  map.set(dayToken, nextBaseValues);
+  const phaseToken = buildVariationDayPhaseToken(dayToken, phaseIndex);
+  if (phaseToken && phaseToken !== dayToken) {
+    const nextPhaseValues = pushUniqueValue(map.get(phaseToken) ?? [], normalizedValue);
+    map.set(phaseToken, nextPhaseValues);
+  }
+};
+
 const DEFAULT_PROGRAM_VARIATION_CONFIG: ProgramVariationConfig = {
   topBandPercent: 0.12,
   topBandMinCandidates: 2,
@@ -2142,21 +2297,22 @@ const buildProgramVariationSettingsKey = (params: {
   available: Set<Equipment>;
   daysPerWeek: 3 | 4 | 5;
   phaseIndex: number;
+  poseFocusTags?: string[];
 }): string => {
-  const { questionnaire, available, daysPerWeek, phaseIndex } = params;
-  const normalizedPainAreas = [...(questionnaire.painAreas ?? [])]
-    .map((area) => normalizeTagToken(area))
-    .sort()
-    .join(",");
-  return [
-    "settings",
-    `days:${daysPerWeek}`,
-    `phase:${phaseIndex}`,
-    `goal:${normalizeTagToken(questionnaire.goals ?? "")}`,
-    `exp:${normalizeTagToken(questionnaire.experience ?? "")}`,
-    `eq:${[...available].sort().join(",")}`,
-    `pain:${normalizedPainAreas}`,
-  ].join("|");
+  const { questionnaire, available, daysPerWeek, phaseIndex, poseFocusTags } = params;
+  const fingerprint: GenerationSettingsFingerprint = {
+    goal: normalizeTagToken(questionnaire.goals ?? ""),
+    experience: normalizeTagToken(questionnaire.experience ?? ""),
+    daysPerWeek,
+    equipment: [...available].sort(),
+    painAreas: [...(questionnaire.painAreas ?? [])]
+      .map((area) => normalizeTagToken(area))
+      .sort(),
+    poseFocusTags: [...(poseFocusTags ?? [])].map((tag) => normalizeTagToken(tag)).sort(),
+    phaseIndex,
+  };
+  const serialized = JSON.stringify(fingerprint);
+  return `gsf_${stableHashToken(serialized)}`;
 };
 
 const buildProgramVariationSnapshot = (
@@ -2166,6 +2322,9 @@ const buildProgramVariationSnapshot = (
   const exerciseIds: string[] = [];
   const familyCounts = new Map<string, number>();
   const variantCounts = new Map<string, number>();
+  const slotExerciseIds = new Map<string, string>();
+  const slotFamilyKeys = new Map<string, string>();
+  const slotVariantKeys = new Map<string, string>();
   const slotFamilySignatures = new Map<string, string>();
   const dayMainLayoutSignatures = new Map<string, string>();
   const dayMainFamilyLayoutSignatures = new Map<string, string>();
@@ -2190,12 +2349,20 @@ const buildProgramVariationSnapshot = (
 
       if (item.section === "main") {
         mainOrdinal += 1;
-        slotFamilySignatures.set(`${dayToken}-main-${mainOrdinal}`, signature);
+        const slotId = `${dayToken}-main-${mainOrdinal}`;
+        slotExerciseIds.set(slotId, exercise.id);
+        slotFamilyKeys.set(slotId, familyKey);
+        slotVariantKeys.set(slotId, variantKey);
+        slotFamilySignatures.set(slotId, signature);
         dayMainSignatures.push(signature);
         dayMainFamilySignatures.push(familyKey);
       } else if (item.section === "accessory") {
         accessoryOrdinal += 1;
-        slotFamilySignatures.set(`${dayToken}-accessory-${accessoryOrdinal}`, signature);
+        const slotId = `${dayToken}-accessory-${accessoryOrdinal}`;
+        slotExerciseIds.set(slotId, exercise.id);
+        slotFamilyKeys.set(slotId, familyKey);
+        slotVariantKeys.set(slotId, variantKey);
+        slotFamilySignatures.set(slotId, signature);
       }
     });
 
@@ -2211,6 +2378,9 @@ const buildProgramVariationSnapshot = (
     exerciseIds,
     familyCounts: Object.fromEntries(familyCounts.entries()),
     variantCounts: Object.fromEntries(variantCounts.entries()),
+    slotExerciseIds: Object.fromEntries(slotExerciseIds.entries()),
+    slotFamilyKeys: Object.fromEntries(slotFamilyKeys.entries()),
+    slotVariantKeys: Object.fromEntries(slotVariantKeys.entries()),
     slotFamilySignatures: Object.fromEntries(slotFamilySignatures.entries()),
     dayMainLayoutSignatures: Object.fromEntries(dayMainLayoutSignatures.entries()),
     dayMainFamilyLayoutSignatures: Object.fromEntries(dayMainFamilyLayoutSignatures.entries()),
@@ -2224,6 +2394,9 @@ const aggregateProgramVariationMemory = (
   const recentExerciseIds = new Set<string>();
   const recentFamilyCounts = new Map<string, number>();
   const recentVariantCounts = new Map<string, number>();
+  const recentSlotExerciseIds = new Map<string, string>();
+  const recentSlotFamilyKeys = new Map<string, string>();
+  const recentSlotVariantKeys = new Map<string, string>();
   const recentSlotFamilySignatures = new Map<string, string>();
   const recentDayMainLayoutSignatures = new Map<string, string[]>();
   const recentDayMainFamilyLayoutSignatures = new Map<string, string[]>();
@@ -2233,6 +2406,9 @@ const aggregateProgramVariationMemory = (
       recentExerciseIds,
       recentFamilyCounts,
       recentVariantCounts,
+      recentSlotExerciseIds,
+      recentSlotFamilyKeys,
+      recentSlotVariantKeys,
       recentSlotFamilySignatures,
       recentDayMainLayoutSignatures,
       recentDayMainFamilyLayoutSignatures,
@@ -2243,6 +2419,18 @@ const aggregateProgramVariationMemory = (
   const recencyOrdered = [...history].reverse();
   const latest = recencyOrdered[0]!;
   latest.exerciseIds.forEach((id) => recentExerciseIds.add(id));
+  Object.entries(latest.slotExerciseIds).forEach(([slotId, exerciseId]) => {
+    if (!exerciseId) return;
+    recentSlotExerciseIds.set(slotId, exerciseId);
+  });
+  Object.entries(latest.slotFamilyKeys).forEach(([slotId, familyKey]) => {
+    if (!familyKey) return;
+    recentSlotFamilyKeys.set(slotId, familyKey);
+  });
+  Object.entries(latest.slotVariantKeys).forEach(([slotId, variantKey]) => {
+    if (!variantKey) return;
+    recentSlotVariantKeys.set(slotId, variantKey);
+  });
   Object.entries(latest.slotFamilySignatures).forEach(([slotId, signature]) => {
     recentSlotFamilySignatures.set(slotId, signature);
   });
@@ -2263,27 +2451,27 @@ const aggregateProgramVariationMemory = (
     });
     Object.entries(snapshot.dayMainLayoutSignatures).forEach(([dayToken, signature]) => {
       if (!signature) return;
-      const existing = recentDayMainLayoutSignatures.get(dayToken) ?? [];
-      if (!existing.includes(signature)) {
-        existing.push(signature);
-      }
-      recentDayMainLayoutSignatures.set(dayToken, existing);
+      pushVariationMemoryDayValue({
+        map: recentDayMainLayoutSignatures,
+        dayTokenRaw: dayToken,
+        value: signature,
+      });
     });
     Object.entries(snapshot.dayMainFamilyLayoutSignatures).forEach(([dayToken, signature]) => {
       if (!signature) return;
-      const existing = recentDayMainFamilyLayoutSignatures.get(dayToken) ?? [];
-      if (!existing.includes(signature)) {
-        existing.push(signature);
-      }
-      recentDayMainFamilyLayoutSignatures.set(dayToken, existing);
+      pushVariationMemoryDayValue({
+        map: recentDayMainFamilyLayoutSignatures,
+        dayTokenRaw: dayToken,
+        value: signature,
+      });
     });
     Object.entries(snapshot.dayTemplateKeys).forEach(([dayToken, templateKey]) => {
       if (!templateKey) return;
-      const existing = recentDayTemplateKeys.get(dayToken) ?? [];
-      if (!existing.includes(templateKey)) {
-        existing.push(templateKey);
-      }
-      recentDayTemplateKeys.set(dayToken, existing);
+      pushVariationMemoryDayValue({
+        map: recentDayTemplateKeys,
+        dayTokenRaw: dayToken,
+        value: templateKey,
+      });
     });
   });
 
@@ -2291,11 +2479,30 @@ const aggregateProgramVariationMemory = (
     recentExerciseIds,
     recentFamilyCounts,
     recentVariantCounts,
+    recentSlotExerciseIds,
+    recentSlotFamilyKeys,
+    recentSlotVariantKeys,
     recentSlotFamilySignatures,
     recentDayMainLayoutSignatures,
     recentDayMainFamilyLayoutSignatures,
     recentDayTemplateKeys,
   };
+};
+
+const resolveRecentGenerationPhaseSummary = (params: {
+  daySummary: ProgramRecentGenerationDaySummary;
+  summaryPhaseIndex: number | null;
+}): ProgramRecentGenerationPhaseSummary | null => {
+  const { daySummary, summaryPhaseIndex } = params;
+  const phaseSummaries = (daySummary.phaseSummaries ?? [])
+    .filter((entry): entry is ProgramRecentGenerationPhaseSummary => Boolean(entry))
+    .filter((entry) => entry.phase === 1 || entry.phase === 2 || entry.phase === 3);
+  if (!phaseSummaries.length) return null;
+  if (summaryPhaseIndex !== null) {
+    const exact = phaseSummaries.find((entry) => entry.phase === summaryPhaseIndex);
+    if (exact) return exact;
+  }
+  return [...phaseSummaries].sort((left, right) => left.phase - right.phase).at(-1) ?? null;
 };
 
 const applyExternalVariationSummaryMemory = (params: {
@@ -2304,35 +2511,175 @@ const applyExternalVariationSummaryMemory = (params: {
 }): ProgramVariationMemory => {
   const { memory, summary } = params;
   if (!summary) return memory;
+  const summaryPhaseIndex = resolveProgramVariationPhaseIndex(summary.phaseIndex);
   const nextMemory: ProgramVariationMemory = {
     recentExerciseIds: new Set(memory.recentExerciseIds),
     recentFamilyCounts: new Map(memory.recentFamilyCounts),
     recentVariantCounts: new Map(memory.recentVariantCounts),
+    recentSlotExerciseIds: new Map(memory.recentSlotExerciseIds),
+    recentSlotFamilyKeys: new Map(memory.recentSlotFamilyKeys),
+    recentSlotVariantKeys: new Map(memory.recentSlotVariantKeys),
     recentSlotFamilySignatures: new Map(memory.recentSlotFamilySignatures),
     recentDayMainLayoutSignatures: new Map(memory.recentDayMainLayoutSignatures),
     recentDayMainFamilyLayoutSignatures: new Map(memory.recentDayMainFamilyLayoutSignatures),
     recentDayTemplateKeys: new Map(memory.recentDayTemplateKeys),
   };
-  summary.exerciseIds?.forEach((id) => {
-    if (!id?.trim()) return;
-    nextMemory.recentExerciseIds.add(id);
-  });
-  summary.familyKeys?.forEach((familyKey) => {
-    if (!familyKey?.trim()) return;
+  const addExerciseId = (exerciseIdRaw: string | null | undefined) => {
+    const exerciseId = String(exerciseIdRaw ?? "").trim();
+    if (!exerciseId) return;
+    nextMemory.recentExerciseIds.add(exerciseId);
+  };
+  const addFamilyKey = (familyKeyRaw: string | null | undefined) => {
+    const familyKey = String(familyKeyRaw ?? "").trim();
+    if (!familyKey) return;
     const normalized = normalizeTagToken(familyKey);
     nextMemory.recentFamilyCounts.set(
       normalized,
       (nextMemory.recentFamilyCounts.get(normalized) ?? 0) + 1
     );
+  };
+  const addVariantKey = (variantKeyRaw: string | null | undefined) => {
+    const variantKey = String(variantKeyRaw ?? "").trim();
+    if (!variantKey) return;
+    const normalized = normalizeTagToken(variantKey);
+    nextMemory.recentVariantCounts.set(
+      normalized,
+      (nextMemory.recentVariantCounts.get(normalized) ?? 0) + 1
+    );
+  };
+  const addResolvedExerciseTraits = (
+    exerciseIdRaw: string | null | undefined,
+    options?: {
+      slotSignatureId?: string;
+    }
+  ) => {
+    const exerciseId = String(exerciseIdRaw ?? "").trim();
+    if (!exerciseId) return;
+    addExerciseId(exerciseId);
+    const exercise = exerciseById(exerciseId);
+    if (!exercise) return;
+    const familyKey = resolveProgramVariationFamilyKey(exercise);
+    const variantKey = resolveProgramVariationVariantKey(exercise);
+    addFamilyKey(familyKey);
+    addVariantKey(variantKey);
+    if (options?.slotSignatureId) {
+      nextMemory.recentSlotExerciseIds.set(options.slotSignatureId, exerciseId);
+      nextMemory.recentSlotFamilyKeys.set(options.slotSignatureId, familyKey);
+      nextMemory.recentSlotVariantKeys.set(options.slotSignatureId, variantKey);
+      nextMemory.recentSlotFamilySignatures.set(
+        options.slotSignatureId,
+        `${familyKey}::${variantKey}`
+      );
+    }
+  };
+  const addDayTemplateKey = (
+    dayTokenRaw: string,
+    templateKeyRaw: string | null | undefined
+  ) => {
+    const templateKey = String(templateKeyRaw ?? "").trim();
+    if (!templateKey) return;
+    pushVariationMemoryDayValue({
+      map: nextMemory.recentDayTemplateKeys,
+      dayTokenRaw,
+      value: templateKey,
+      phaseIndex: summaryPhaseIndex,
+    });
+  };
+  const addDayRoutineLayout = (
+    dayTokenRaw: string,
+    routineIdsRaw: string[] | null | undefined
+  ) => {
+    const dayToken = normalizeSlotToken(dayTokenRaw);
+    if (!dayToken) return;
+    const routineIds = (routineIdsRaw ?? [])
+      .map((id) => String(id ?? "").trim())
+      .filter((id) => Boolean(id));
+    if (!routineIds.length) return;
+    const layoutSignatures: string[] = [];
+    const familyLayout: string[] = [];
+    routineIds.forEach((exerciseId, index) => {
+      addResolvedExerciseTraits(exerciseId, {
+        slotSignatureId: `${dayToken}-main-${index + 1}`,
+      });
+      const exercise = exerciseById(exerciseId);
+      if (!exercise) return;
+      const familyKey = resolveProgramVariationFamilyKey(exercise);
+      const variantKey = resolveProgramVariationVariantKey(exercise);
+      layoutSignatures.push(`${familyKey}::${variantKey}`);
+      familyLayout.push(familyKey);
+    });
+    if (layoutSignatures.length) {
+      pushVariationMemoryDayValue({
+        map: nextMemory.recentDayMainLayoutSignatures,
+        dayTokenRaw: dayToken,
+        value: layoutSignatures.join("|"),
+        phaseIndex: summaryPhaseIndex,
+      });
+      pushVariationMemoryDayValue({
+        map: nextMemory.recentDayMainFamilyLayoutSignatures,
+        dayTokenRaw: dayToken,
+        value: familyLayout.join("|"),
+        phaseIndex: summaryPhaseIndex,
+      });
+    }
+  };
+  const addDayAccessoryEntries = (
+    dayTokenRaw: string,
+    accessoryIdsRaw: string[] | null | undefined
+  ) => {
+    const dayToken = normalizeSlotToken(dayTokenRaw);
+    if (!dayToken) return;
+    const accessoryIds = (accessoryIdsRaw ?? [])
+      .map((id) => String(id ?? "").trim())
+      .filter((id) => Boolean(id));
+    accessoryIds.forEach((exerciseId, index) => {
+      addResolvedExerciseTraits(exerciseId, {
+        slotSignatureId: `${dayToken}-accessory-${index + 1}`,
+      });
+    });
+  };
+  summary.exerciseIds?.forEach((id) => {
+    addExerciseId(id);
+  });
+  summary.familyKeys?.forEach((familyKey) => {
+    addFamilyKey(familyKey);
+  });
+  summary.variantKeys?.forEach((variantKey) => {
+    addVariantKey(variantKey);
   });
   Object.entries(summary.dayTemplateKeys ?? {}).forEach(([dayTokenRaw, templateKey]) => {
-    if (!templateKey?.trim()) return;
-    const dayToken = normalizeSlotToken(dayTokenRaw);
-    const existing = nextMemory.recentDayTemplateKeys.get(dayToken) ?? [];
-    if (!existing.includes(templateKey)) {
-      existing.push(templateKey);
-    }
-    nextMemory.recentDayTemplateKeys.set(dayToken, existing);
+    addDayTemplateKey(resolveRecentGenerationDayToken(dayTokenRaw), templateKey);
+  });
+  Object.entries(summary.days ?? {}).forEach(([dayTokenRaw, daySummary]) => {
+    if (!daySummary) return;
+    const normalizedDayToken = resolveRecentGenerationDayToken(dayTokenRaw);
+    const phaseSummary = resolveRecentGenerationPhaseSummary({
+      daySummary,
+      summaryPhaseIndex,
+    });
+    const routineIds = phaseSummary?.routineIds ?? daySummary.routineIds;
+    const accessoryIds = phaseSummary?.accessoryIds ?? daySummary.accessoryIds;
+    addDayTemplateKey(normalizedDayToken, daySummary.templateKey);
+    addDayRoutineLayout(normalizedDayToken, routineIds);
+    addDayAccessoryEntries(normalizedDayToken, accessoryIds);
+    phaseSummary?.routineFamilyKeys?.forEach((familyKey) => {
+      addFamilyKey(familyKey);
+    });
+    phaseSummary?.accessoryFamilyKeys?.forEach((familyKey) => {
+      addFamilyKey(familyKey);
+    });
+    phaseSummary?.routineVariantKeys?.forEach((variantKey) => {
+      addVariantKey(variantKey);
+    });
+    phaseSummary?.accessoryVariantKeys?.forEach((variantKey) => {
+      addVariantKey(variantKey);
+    });
+    daySummary.familyKeys?.forEach((familyKey) => {
+      addFamilyKey(familyKey);
+    });
+    daySummary.variantKeys?.forEach((variantKey) => {
+      addVariantKey(variantKey);
+    });
   });
   return nextMemory;
 };
@@ -2342,22 +2689,31 @@ const resolveProgramVariationState = (params: {
   available: Set<Equipment>;
   daysPerWeek: 3 | 4 | 5;
   phaseIndex: number;
+  poseFocusTags?: string[];
   baseSeed?: string;
   variation?: ProgramVariationOptions;
 }): ProgramVariationState | null => {
-  const { questionnaire, available, daysPerWeek, phaseIndex, baseSeed, variation } = params;
+  const {
+    questionnaire,
+    available,
+    daysPerWeek,
+    phaseIndex,
+    poseFocusTags,
+    baseSeed,
+    variation,
+  } = params;
   if (daysPerWeek !== 3) return null;
 
   const seedToken = String(variation?.seed ?? "").trim();
   const settingsHashToken = String(variation?.settingsHash ?? "").trim();
   const hasExternalSummary = Boolean(variation?.recentGenerationSummary);
-  const indexRaw =
-    typeof variation?.index === "number" && Number.isFinite(variation.index)
-      ? Math.max(0, Math.floor(variation.index))
-      : 0;
+  const indexRaw = resolveProgramVariationIndex(variation);
   const useRecentMemory =
-    variation?.useRecentMemory ?? Boolean(seedToken || indexRaw > 0 || hasExternalSummary);
-  const enabled = Boolean(seedToken || indexRaw > 0 || useRecentMemory || hasExternalSummary);
+    variation?.useRecentMemory ??
+    Boolean(seedToken || settingsHashToken || indexRaw > 0 || hasExternalSummary);
+  const enabled = Boolean(
+    seedToken || settingsHashToken || indexRaw > 0 || useRecentMemory || hasExternalSummary
+  );
   if (!enabled) return null;
 
   const settingsKey =
@@ -2367,7 +2723,16 @@ const resolveProgramVariationState = (params: {
       available,
       daysPerWeek,
       phaseIndex,
+      poseFocusTags,
     });
+  const summarySettingsHash = String(
+    variation?.recentGenerationSummary?.settingsHash ?? ""
+  ).trim();
+  const externalSummaryMatchesSettings =
+    !summarySettingsHash || summarySettingsHash === settingsKey;
+  const externalSummary = externalSummaryMatchesSettings
+    ? variation?.recentGenerationSummary
+    : undefined;
   const seedKey = [
     "variety",
     settingsKey,
@@ -2380,7 +2745,7 @@ const resolveProgramVariationState = (params: {
     : [];
   const memory = applyExternalVariationSummaryMemory({
     memory: aggregateProgramVariationMemory(history),
-    summary: variation?.recentGenerationSummary,
+    summary: externalSummary,
   });
 
   return {
@@ -2392,10 +2757,11 @@ const resolveProgramVariationState = (params: {
     selectedDayTemplateKeys: new Map<string, string>(),
     options: {
       seed: seedToken || undefined,
+      variationIndex: indexRaw,
       index: indexRaw,
       useRecentMemory,
       settingsHash: settingsHashToken || undefined,
-      recentGenerationSummary: variation?.recentGenerationSummary,
+      recentGenerationSummary: externalSummary,
     },
   };
 };
@@ -4381,17 +4747,19 @@ const ensureDayHasDumbbellMain = (params: {
     );
   if (!mainEntries.length) return day;
   if (mainEntries.some((entry) => entry.exercise.equipment.includes("dumbbells"))) return day;
+  const plannedThreeDaySlotKinds = get3DayMainLanePlan(day.title, mainEntries.length) ?? null;
 
   const usedIds = new Set(day.routine.map((item) => item.exerciseId));
   const candidatesByTarget = mainEntries
-    .map((entry) => {
+    .map((entry, mainOrdinal) => {
       const overlapPatterns = new Set(
         entry.exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
       );
       const usedWithoutCurrent = new Set(usedIds);
       usedWithoutCurrent.delete(entry.exercise.id);
-      const slotLane = getMainLaneHits(entry.exercise)[0] ?? "pull";
-      const slotKind = slotKindByMainLane[slotLane];
+      const plannedSlot = plannedThreeDaySlotKinds?.[mainOrdinal];
+      const slotLane = (plannedSlot?.lane as MainLane | undefined) ?? getMainLaneHits(entry.exercise)[0] ?? "pull";
+      const slotKind = plannedSlot?.slotKind ?? slotKindByMainLane[slotLane];
       const preferredNoBenchIdsForLane =
         slotLane === "push"
           ? ["dumbbell-floor-press", "dumbbell-shoulder-press", "dumbbell-arnold-press"]
@@ -4408,8 +4776,25 @@ const ensureDayHasDumbbellMain = (params: {
           if (candidate.category !== "main") return false;
           if (!candidate.equipment.includes("dumbbells")) return false;
           if (usedWithoutCurrent.has(candidate.id)) return false;
-          const candidateLanes = getMainLaneHits(candidate);
-          if (candidateLanes.length && !candidateLanes.includes(slotLane)) return false;
+          if (isShouldersArmsDayTitle(day.title)) {
+            if (
+              !matchesShouldersArmsMainSlotKind({
+                exercise: candidate,
+                slotKind,
+                slotLane,
+                dayTitle: day.title,
+              })
+            ) {
+              return false;
+            }
+          } else if (isBackChestDayTitle(day.title)) {
+            if (!matchesBackChestMainSlotKind({ exercise: candidate, slotKind, slotLane })) {
+              return false;
+            }
+          } else {
+            const candidateLanes = getMainLaneHits(candidate);
+            if (candidateLanes.length && !candidateLanes.includes(slotLane)) return false;
+          }
           if (
             !candidate.movementPattern.some((pattern) =>
               overlapPatterns.has(normalizeTagToken(pattern))
@@ -6541,6 +6926,8 @@ const chooseBackChestAccessoryCandidate = (params: {
       .map((exercise) => {
         const auditMeta: SelectionAuditMeta = {
           slotId: `${normalizeSlotToken(day.title)}-accessory-repair-${slotIndex + 1}`,
+          slotIndex,
+          phaseIndex: phaseIndexFromStage(context.selectionContext.phaseStage),
           dayTitle: day.title,
           dayFocusTags: day.focusTags,
           slotKind: "accessoryback",
@@ -7743,12 +8130,32 @@ const getBackChestMainSlotPlan = (params: {
   mainCount: number;
   selectionContext: SelectionContext;
   daysPerWeek: 3 | 4 | 5;
+  available: Set<Equipment>;
 }) => {
-  const { mainCount, selectionContext, daysPerWeek } = params;
+  const { mainCount, selectionContext, daysPerWeek, available } = params;
   if (daysPerWeek === 3) {
+    const targetCount = Math.max(1, mainCount);
+    const selectedVariantKey = selectionContext.variationState?.selectedDayTemplateKeys.get(
+      "back_chest"
+    );
+    if (selectedVariantKey) {
+      const selectedVariant = resolveThreeDayTemplateVariants({
+        dayTitle: "Back + Chest",
+        mainCount: targetCount,
+        available,
+        selectionContext,
+      }).find((variant) => variant.key === selectedVariantKey);
+      if (selectedVariant?.mainLanePlan.length) {
+        return selectedVariant.mainLanePlan.map((slot, index) => ({
+          lane: slot.lane as MainLane,
+          slotKind: slot.slotKind,
+          slotId: `back_chest-main-repair-${index + 1}`,
+        }));
+      }
+    }
     const plannedFromTemplate = get3DayMainLanePlan(
       "Back + Chest",
-      Math.max(1, mainCount)
+      targetCount
     );
     if (plannedFromTemplate?.length) {
       return plannedFromTemplate.map((slot, index) => ({
@@ -8942,6 +9349,30 @@ const compareBackChestAnchorCandidates = (params: {
       return leftIsDeprioritized ? 1 : -1;
     }
   }
+  const variationState = selectionContext?.variationState;
+  const nonBeginnerLowPain =
+    selectionContext?.experienceLevel !== "beginner" &&
+    selectionContext?.painSeverity === "low";
+  const activeVariationState =
+    daysPerWeek === 3 &&
+    selectionContext &&
+    nonBeginnerLowPain &&
+    variationState?.enabled
+      ? variationState
+      : null;
+  if (activeVariationState && selectionContext) {
+    const variationIndex = resolveProgramVariationIndex(activeVariationState.options);
+    const variationSeed =
+      activeVariationState.options.settingsHash ??
+      activeVariationState.settingsKey ??
+      activeVariationState.seedKey ??
+      activeVariationState.options.seed ??
+      "back-chest-anchor";
+    const tieBreakSeed = `${variationSeed}|v:${variationIndex}|${selectionContext.phaseStage}|${role}`;
+    const leftSeed = stableHashUnit(`${tieBreakSeed}|${left.id}`);
+    const rightSeed = stableHashUnit(`${tieBreakSeed}|${right.id}`);
+    if (leftSeed !== rightSeed) return leftSeed - rightSeed;
+  }
   return 0;
 };
 
@@ -9225,7 +9656,17 @@ const selectBackChestAnchorExercise = (params: {
   let strictRungOrder: BackChestEquipmentTier[];
   if (phaseStage === "activation") {
     const activationMaxRung = toBackChestTier(Math.min(2, effectiveTierCeiling));
-    const activationMinRung = toBackChestTier(Math.min(minAllowedRung, activationMaxRung));
+    const nonBeginnerLowPainActivation =
+      context.selectionContext.experienceLevel !== "beginner" &&
+      context.selectionContext.painSeverity === "low";
+    const preferTierTwoActivation =
+      nonBeginnerLowPainActivation &&
+      !allowChestIsolation &&
+      hasTier2OrHigherCandidate &&
+      activationMaxRung >= 2;
+    const activationMinRung = preferTierTwoActivation
+      ? (2 as BackChestEquipmentTier)
+      : toBackChestTier(Math.min(minAllowedRung, activationMaxRung));
     strictRungOrder = buildBackChestRungOrder({
       targetRung: activationMinRung,
       minRung: activationMinRung,
@@ -9256,7 +9697,11 @@ const selectBackChestAnchorExercise = (params: {
     strictRungOrder = [growthTarget];
   }
 
-  const relaxedRungOrder = ([3, 2, 1] as BackChestEquipmentTier[])
+  const relaxedRungOrderSource =
+    phaseStage === "activation"
+      ? ([2, 1] as BackChestEquipmentTier[])
+      : ([3, 2, 1] as BackChestEquipmentTier[]);
+  const relaxedRungOrder = relaxedRungOrderSource
     .filter((rung) => rung <= effectiveTierCeiling)
     .filter((rung) => rung >= minAllowedRung);
   const rungOrder = Array.from(new Set([...strictRungOrder, ...relaxedRungOrder]));
@@ -11063,6 +11508,7 @@ const repairBackChestMainIntelligence = (params: {
     mainCount: mainEntries.length,
     selectionContext: context.selectionContext,
     daysPerWeek,
+    available: availableForBackChest,
   });
   const previousBackChestDay = getBackChestDayFromWeek(context.previousWeek);
   const previousMainExercises = previousBackChestDay
@@ -13004,7 +13450,12 @@ type ShouldersArmsSecondaryRole =
   | "biceps"
   | "triceps"
   | "rearDeltMain"
-  | "shoulderSupportMain";
+  | "shoulderSupportMain"
+  | "shoulderSupportMainAlt";
+type ShouldersArmsTemplateSecondaryRole = Exclude<
+  ShouldersArmsSecondaryRole,
+  "biceps" | "triceps"
+>;
 type ShouldersArmsAccessoryRole = "rearDelt" | "externalScap";
 type ShouldersArmsArmRole = "biceps" | "triceps";
 type ShouldersArmsMainCategory =
@@ -13546,7 +13997,7 @@ const chooseDeterministicTopScoredExercise = (
     if (right.score !== left.score) return right.score - left.score;
     return left.exercise.id.localeCompare(right.exercise.id);
   });
-  const variationBandEnabled = Boolean(options?.useVariationBand && rng);
+  const variationBandEnabled = Boolean(options?.useVariationBand);
   if (variationBandEnabled) {
     const topBand = getProgramVariationBandForRankedEntries(
       rankedEntries,
@@ -13705,18 +14156,39 @@ const SHOULDERS_ARMS_REAR_DELT_MAIN_POOL_BY_PHASE: Record<
 const SHOULDERS_ARMS_SUPPORT_MAIN_POOL_BY_PHASE: Record<ProgramPhaseStage, string[]> = {
   activation: [
     "prone-y-raise",
-    "reverse-snow-angel",
     "prone-swimmer",
+    "reverse-snow-angel",
   ],
   skill: [
     "prone-y-raise",
-    "reverse-snow-angel",
     "prone-swimmer",
+    "reverse-snow-angel",
   ],
   growth: [
     "prone-y-raise",
+    "prone-swimmer",
+    "reverse-snow-angel",
+  ],
+};
+
+const SHOULDERS_ARMS_SUPPORT_MAIN_ALT_POOL_BY_PHASE: Record<
+  ProgramPhaseStage,
+  string[]
+> = {
+  activation: [
+    "prone-swimmer",
+    "reverse-snow-angel",
+    "prone-y-raise",
+  ],
+  skill: [
     "reverse-snow-angel",
     "prone-swimmer",
+    "prone-y-raise",
+  ],
+  growth: [
+    "prone-swimmer",
+    "reverse-snow-angel",
+    "prone-y-raise",
   ],
 };
 
@@ -13770,15 +14242,32 @@ const selectShouldersArmsMainExercise = (params: {
   const phaseStage = context.selectionContext.phaseStage;
   const goalType = normalizeShouldersArmsGoal(context.selectionContext.goal);
   const anchorRole =
-    role === "rearDeltMain" || role === "shoulderSupportMain"
+    role === "rearDeltMain" ||
+    role === "shoulderSupportMain" ||
+    role === "shoulderSupportMainAlt"
       ? null
       : (role as ShouldersArmsAnchorRole);
-  const phaseIds =
+  const basePhaseIds =
     role === "rearDeltMain"
       ? SHOULDERS_ARMS_REAR_DELT_MAIN_POOL_BY_PHASE[phaseStage]
       : role === "shoulderSupportMain"
       ? SHOULDERS_ARMS_SUPPORT_MAIN_POOL_BY_PHASE[phaseStage]
+      : role === "shoulderSupportMainAlt"
+      ? SHOULDERS_ARMS_SUPPORT_MAIN_ALT_POOL_BY_PHASE[phaseStage]
       : SHOULDERS_ARMS_ANCHOR_POOLS[role as ShouldersArmsAnchorRole][phaseStage];
+  const phaseIds =
+    role === "ohp" &&
+    phaseStage === "activation" &&
+    context.selectionContext.experienceLevel !== "beginner" &&
+    context.selectionContext.painSeverity === "low"
+      ? [
+          "dumbbell-shoulder-press",
+          "band-overhead-press",
+          "machine-shoulder-press",
+          "pike-pushup",
+          "suspension-pike-press-upright",
+        ]
+      : basePhaseIds;
 
   const fromSeedPool = phaseIds
     .map((id) => exerciseById(id))
@@ -13786,14 +14275,18 @@ const selectShouldersArmsMainExercise = (params: {
     .filter((exercise) => {
       const category = resolveShouldersArmsMainCategory(exercise);
       if (role === "rearDeltMain") return category === "rearDeltMain";
-      if (role === "shoulderSupportMain") return category === "shoulderSupport";
+      if (role === "shoulderSupportMain" || role === "shoulderSupportMainAlt") {
+        return category === "shoulderSupport";
+      }
       return resolveShouldersArmsRoleFromCategory(category) === anchorRole;
     });
   const fallbackPool = exercises.filter((exercise) => {
     if (!isShouldersArmsMainBoundaryEligible(exercise)) return false;
     const category = resolveShouldersArmsMainCategory(exercise);
     if (role === "rearDeltMain") return category === "rearDeltMain";
-    if (role === "shoulderSupportMain") return category === "shoulderSupport";
+    if (role === "shoulderSupportMain" || role === "shoulderSupportMainAlt") {
+      return category === "shoulderSupport";
+    }
     return resolveShouldersArmsRoleFromCategory(category) === anchorRole;
   });
 
@@ -14014,6 +14507,7 @@ const selectShouldersArmsArmAccessoryExercise = (params: {
   usedStimulusKeys: Set<string>;
   enforceUniqueStimulus?: boolean;
   disallowIds?: Set<string>;
+  auditMeta?: SelectionAuditMeta;
 }): Exercise | null => {
   const {
     role,
@@ -14022,6 +14516,7 @@ const selectShouldersArmsArmAccessoryExercise = (params: {
     usedStimulusKeys,
     enforceUniqueStimulus = true,
     disallowIds,
+    auditMeta,
   } = params;
   const gymAccessoryEnvironment =
     context.available.has("machines") ||
@@ -14096,12 +14591,13 @@ const selectShouldersArmsArmAccessoryExercise = (params: {
       const patterns = new Set(
         (exercise.movementPattern ?? []).map((pattern) => normalizeTagToken(pattern))
       );
-      let score = scoreExerciseForContext(
+      let score = scoreExerciseForContextDetailed(
         exercise,
         "accessory",
         context.selectionContext,
-        context.available
-      );
+        context.available,
+        auditMeta
+      ).score;
       const equipmentPreferenceRank = resolveShouldersArmsArmEquipmentPreferenceRank(exercise);
       score += equipmentPreferenceRank * 2;
       if (exercise.loadType === "weighted") score += 1.5;
@@ -14217,6 +14713,7 @@ const repairShouldersArmsDayIntelligence = (params: {
     }
     if (category === "shoulderSupport" && !previousMainByRole.has("shoulderSupportMain")) {
       previousMainByRole.set("shoulderSupportMain", exercise.id);
+      previousMainByRole.set("shoulderSupportMainAlt", exercise.id);
     }
   });
 
@@ -14244,6 +14741,21 @@ const repairShouldersArmsDayIntelligence = (params: {
       if (!isShouldersArmsMainBoundaryEligible(candidate)) return false;
       if (resolveShouldersArmsMainCategory(candidate) !== "rearDeltMain") return false;
       if (resolveShouldersArmsRearDeltSubtype(candidate) === "fly") return false;
+      return isExerciseEligibleForProgramContext({
+        exercise: candidate,
+        available: context.available,
+        section: "main",
+        context: context.selectionContext,
+        dayTitle: day.title,
+      });
+    });
+  const hasEligibleShoulderSupportAlternative = (excludeId?: string) =>
+    exercises.some((candidate) => {
+      if (candidate.category !== "main") return false;
+      if (candidate.id === excludeId) return false;
+      if (usedMainIds.has(candidate.id)) return false;
+      if (!isShouldersArmsMainBoundaryEligible(candidate)) return false;
+      if (resolveShouldersArmsMainCategory(candidate) !== "shoulderSupport") return false;
       return isExerciseEligibleForProgramContext({
         exercise: candidate,
         available: context.available,
@@ -14284,6 +14796,14 @@ const repairShouldersArmsDayIntelligence = (params: {
       return false;
     }
     if (category === "rearDeltMain") {
+      if (
+        selectedMainCategoryCounts.rearDeltMain >= 1 &&
+        selectedMainCategoryCounts.shoulderSupport <
+          SHOULDERS_ARMS_MAIN_CATEGORY_CAPS.shoulderSupport &&
+        hasEligibleShoulderSupportAlternative(exercise.id)
+      ) {
+        return false;
+      }
       const candidateSubtype = resolveShouldersArmsRearDeltSubtype(exercise);
       const selectedRearDeltExercises = selectedMainExercises.filter(
         (entry) => resolveShouldersArmsMainCategory(entry) === "rearDeltMain"
@@ -14342,7 +14862,7 @@ const repairShouldersArmsDayIntelligence = (params: {
     const preferredCategory =
       role === "rearDeltMain"
         ? "rearDeltMain"
-        : role === "shoulderSupportMain"
+        : role === "shoulderSupportMain" || role === "shoulderSupportMainAlt"
         ? "shoulderSupport"
         : (role as ShouldersArmsMainCategory);
     const phaseSpecificDisallow = new Set<string>();
@@ -14437,6 +14957,21 @@ const repairShouldersArmsDayIntelligence = (params: {
     });
   };
 
+  const resolveSecondaryRoleFromTemplateSlotKind = (slotKind?: string) => {
+    if (slotKind === "mainShoulderPullPrimary") return "rearDeltMain" as const;
+    if (slotKind === "mainShoulderStructuralAlternate") {
+      return "shoulderSupportMainAlt" as const;
+    }
+    if (slotKind === "mainShoulderStructuralSecondary") {
+      return "shoulderSupportMain" as const;
+    }
+    return null;
+  };
+
+  const templatePlannedSecondaryRoles = (threeDayBlueprint?.mainLanePlan ?? [])
+    .map((slot) => resolveSecondaryRoleFromTemplateSlotKind(slot.slotKind))
+    .filter((role): role is ShouldersArmsTemplateSecondaryRole => Boolean(role));
+
   const buildMainSelection = (strictRebuild: boolean) => {
     anchorMainRoles.forEach((role) => {
       trySelectRole({
@@ -14447,14 +14982,22 @@ const repairShouldersArmsDayIntelligence = (params: {
       });
     });
 
-    const extraRolePriorityByIndex: Array<ShouldersArmsSecondaryRole[]> = [
-      ["rearDeltMain", "shoulderSupportMain"],
-      ["shoulderSupportMain", "rearDeltMain"],
+    const defaultExtraRolePriorityByIndex: Array<ShouldersArmsTemplateSecondaryRole[]> = [
+      ["rearDeltMain", "shoulderSupportMain", "shoulderSupportMainAlt"],
+      ["shoulderSupportMain", "shoulderSupportMainAlt", "rearDeltMain"],
     ];
     for (let index = 0; index < extraMainCount; index += 1) {
       let added = false;
-      const rolePriority =
-        extraRolePriorityByIndex[Math.min(index, extraRolePriorityByIndex.length - 1)] ?? [];
+      const primaryTemplateRole = templatePlannedSecondaryRoles[index];
+      const rolePriority: ShouldersArmsTemplateSecondaryRole[] = primaryTemplateRole
+        ? primaryTemplateRole === "rearDeltMain"
+          ? ["rearDeltMain", "shoulderSupportMain", "shoulderSupportMainAlt"]
+          : primaryTemplateRole === "shoulderSupportMainAlt"
+          ? ["shoulderSupportMainAlt", "shoulderSupportMain", "rearDeltMain"]
+          : ["shoulderSupportMain", "shoulderSupportMainAlt", "rearDeltMain"]
+        : defaultExtraRolePriorityByIndex[
+            Math.min(index, defaultExtraRolePriorityByIndex.length - 1)
+          ] ?? [];
       for (const role of rolePriority) {
         if (
           trySelectRole({
@@ -14533,6 +15076,22 @@ const repairShouldersArmsDayIntelligence = (params: {
     accessoryRoleOrder.push(accessoryRoleOrder.length % 2 === 0 ? "triceps" : "biceps");
   }
 
+  const buildArmAccessoryAuditMeta = (
+    slotIndex: number,
+    role: ShouldersArmsArmRole
+  ): SelectionAuditMeta => ({
+    slotId: `${normalizeSlotToken(day.title)}-accessory-${slotIndex + 1}`,
+    slotIndex,
+    phaseIndex,
+    dayTitle: day.title,
+    dayFocusTags: day.focusTags,
+    slotKind: role === "triceps" ? "accessoryTriIso" : "accessoryBiIso",
+    selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
+    selectedAccessoryExerciseIds: accessoryExercises.map((exercise) => exercise.id),
+    capabilityMode: context.capabilityMode,
+    selectionRng: context.selectionRng,
+  });
+
   accessoryRoleOrder.forEach((role, index) => {
     const previousId = previousAccessoryIds[index];
     let picked = selectShouldersArmsArmAccessoryExercise({
@@ -14541,6 +15100,7 @@ const repairShouldersArmsDayIntelligence = (params: {
       usedIds: usedAccessoryIds,
       usedStimulusKeys: usedAccessoryStimulusByRole[role],
       disallowIds: previousId ? new Set([previousId]) : undefined,
+      auditMeta: buildArmAccessoryAuditMeta(index, role),
     });
     if (!picked && previousId) {
       picked = selectShouldersArmsArmAccessoryExercise({
@@ -14548,6 +15108,7 @@ const repairShouldersArmsDayIntelligence = (params: {
         context,
         usedIds: usedAccessoryIds,
         usedStimulusKeys: usedAccessoryStimulusByRole[role],
+        auditMeta: buildArmAccessoryAuditMeta(index, role),
       });
     }
     if (!picked) {
@@ -14558,6 +15119,7 @@ const repairShouldersArmsDayIntelligence = (params: {
         usedStimulusKeys: usedAccessoryStimulusByRole[role],
         enforceUniqueStimulus: false,
         disallowIds: previousId ? new Set([previousId]) : undefined,
+        auditMeta: buildArmAccessoryAuditMeta(index, role),
       });
     }
     if (!picked && previousId) {
@@ -14567,6 +15129,7 @@ const repairShouldersArmsDayIntelligence = (params: {
         usedIds: usedAccessoryIds,
         usedStimulusKeys: usedAccessoryStimulusByRole[role],
         enforceUniqueStimulus: false,
+        auditMeta: buildArmAccessoryAuditMeta(index, role),
       });
     }
     if (!picked) return;
@@ -15950,6 +16513,24 @@ const pickThreeDayCarryAccessoryForDay = (params: {
 }): Exercise | null => {
   const { day, context, usedIds } = params;
   const dayToken = normalizeSlotToken(day.title);
+  const existingAccessoryIds = day.routine
+    .filter((item) => item.section === "accessory")
+    .map((item) => item.exerciseId);
+  const carrySlotIndex = existingAccessoryIds.length;
+  const carryAuditMeta: SelectionAuditMeta = {
+    slotId: `${dayToken}-accessory-${carrySlotIndex + 1}`,
+    slotIndex: carrySlotIndex,
+    phaseIndex: phaseIndexFromStage(context.selectionContext.phaseStage),
+    dayTitle: day.title,
+    dayFocusTags: day.focusTags,
+    slotKind: "accessoryCarryFinisher",
+    selectedMainExerciseIds: day.routine
+      .filter((item) => item.section === "main")
+      .map((item) => item.exerciseId),
+    selectedAccessoryExerciseIds: existingAccessoryIds,
+    capabilityMode: context.capabilityMode,
+    selectionRng: context.selectionRng,
+  };
   const scoredEntries = exercises
     .filter((exercise) => isLegsCarryExercise(exercise))
     .filter((exercise) => !usedIds.has(exercise.id))
@@ -15966,12 +16547,13 @@ const pickThreeDayCarryAccessoryForDay = (params: {
       const patterns = new Set(
         exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
       );
-      let score = scoreExerciseForContext(
+      let score = scoreExerciseForContextDetailed(
         exercise,
         "accessory",
         context.selectionContext,
-        context.available
-      );
+        context.available,
+        carryAuditMeta
+      ).score;
       if (
         context.selectionContext.capabilityMode === "hasLoad" &&
         exercise.loadType === "weighted"
@@ -17751,7 +18333,12 @@ const hasEligibleShouldersArmsTemplateSlotCandidate = (params: {
     if (slot.slotKind === "mainVerticalPushPrimary") return category === "ohp";
     if (slot.slotKind === "mainLateralDeltPrimary") return category === "lateral";
     if (slot.slotKind === "mainShoulderPullPrimary") return category === "rearDeltMain";
-    if (slot.slotKind === "mainShoulderStructuralSecondary") return category === "shoulderSupport";
+    if (
+      slot.slotKind === "mainShoulderStructuralSecondary" ||
+      slot.slotKind === "mainShoulderStructuralAlternate"
+    ) {
+      return category === "shoulderSupport";
+    }
     return category === "rearDeltMain" || category === "shoulderSupport";
   });
 };
@@ -17810,11 +18397,21 @@ const resolveThreeDayTemplateVariants = (params: {
         dayTitle,
       });
     });
-    const hasRowOrVerticalCandidate = exercises.some((exercise) => {
+    const hasRowCandidate = exercises.some((exercise) => {
       if (exercise.category !== "main") return false;
-      if (!hasHorizontalPullSignature(exercise) && !hasVerticalPullSignature(exercise)) {
-        return false;
-      }
+      if (!hasHorizontalPullSignature(exercise)) return false;
+      return isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context: selectionContext,
+        dayTitle,
+      });
+    });
+    const hasVerticalCandidate = exercises.some((exercise) => {
+      if (exercise.category !== "main") return false;
+      if (!hasVerticalPullSignature(exercise)) return false;
+      if (isBackChestLatAccentExercise(exercise)) return false;
       return isExerciseEligibleForProgramContext({
         exercise,
         available,
@@ -17843,7 +18440,7 @@ const resolveThreeDayTemplateVariants = (params: {
           ],
         },
       ];
-      if (hasPulloverCandidate && !hasRowOrVerticalCandidate) {
+      if (hasPulloverCandidate) {
         variants.push({
           key: "back_chest_beginner_press_fly_pullover",
           mainLanePlan: [
@@ -17877,7 +18474,8 @@ const resolveThreeDayTemplateVariants = (params: {
           ],
         },
       ];
-      if (hasPulloverCandidate) {
+      // Intermediate favors row+vertical templates when vertical-pull options exist.
+      if (hasPulloverCandidate && hasRowCandidate && !hasVerticalCandidate) {
         variants.push({
           key: "back_chest_intermediate_press_fly_row_pullover",
           mainLanePlan: [
@@ -17983,6 +18581,19 @@ const resolveThreeDayTemplateVariants = (params: {
           { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
         ],
       },
+      {
+        key: "shoulders_arms_ohp_lateral_rear_support_alt",
+        mainLanePlan: [
+          { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
+          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
+          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+          {
+            lane: "pull",
+            slotKind: "mainShoulderStructuralAlternate",
+            family: "shoulder_structural_alternate",
+          },
+        ],
+      },
     ];
   }
 
@@ -18033,23 +18644,43 @@ const selectThreeDayTemplateVariant = (params: {
     return chosen;
   }
 
-  const recentTemplateKeys = variationState.memory.recentDayTemplateKeys.get(dayToken) ?? [];
-  const recentFamilyLayouts =
-    variationState.memory.recentDayMainFamilyLayoutSignatures.get(dayToken) ?? [];
+  const phaseIndex = phaseIndexFromStage(selectionContext.phaseStage);
+  const recentTemplateKeys = getVariationMemoryValuesForDayToken(
+    variationState.memory.recentDayTemplateKeys,
+    dayToken,
+    phaseIndex
+  );
+  const recentFamilyLayouts = getVariationMemoryValuesForDayToken(
+    variationState.memory.recentDayMainFamilyLayoutSignatures,
+    dayToken,
+    phaseIndex
+  );
+  const templateIntentTuning =
+    dayToken === "back_chest" || dayToken === "shoulders_arms"
+      ? {
+          templateRepeatPenaltyMultiplier: 1.25,
+          familyLayoutPenaltyMultiplier: 1.2,
+        }
+      : {
+          templateRepeatPenaltyMultiplier: 0.85,
+          familyLayoutPenaltyMultiplier: 0.9,
+        };
   const ranked = eligibleVariants
     .map((variant, index) => {
-      let score = (eligibleVariants.length - index) * 2;
+      let score = (eligibleVariants.length - index) * 0.75;
       const familyLayout = resolveThreeDayTemplateFamilyLayoutSignature(variant.mainLanePlan);
       if (index === 0) {
-        score += 0.35;
+        score += 0.25;
       }
       const previousTemplateIndex = recentTemplateKeys.indexOf(variant.key);
       if (previousTemplateIndex >= 0) {
-        const penalty = Math.max(1.25, 3 - previousTemplateIndex * 0.75);
+        const penalty =
+          Math.max(1.25, 3 - previousTemplateIndex * 0.75) *
+          templateIntentTuning.templateRepeatPenaltyMultiplier;
         score -= penalty;
       }
       if (recentFamilyLayouts.includes(familyLayout)) {
-        score -= 1.75;
+        score -= 1.75 * templateIntentTuning.familyLayoutPenaltyMultiplier;
       }
       return {
         variant,
@@ -18062,16 +18693,27 @@ const selectThreeDayTemplateVariant = (params: {
       return left.variant.key.localeCompare(right.variant.key);
     });
   const topBand = getProgramVariationBandForRankedEntries(ranked, variationState.config);
-  const variationSeedToken = [
-    variationState.seedKey,
-    dayToken,
-    "template-variant",
-    topBand.map((entry) => `${entry.variant.key}:${entry.score.toFixed(2)}`).join("|"),
-  ].join("|");
-  const chosenEntry =
-    pickFromProgramVariationBand(topBand, {
-      deterministicSeed: variationSeedToken,
-    }) ?? ranked[0];
+  const variationIndex = resolveProgramVariationIndex(variationState.options);
+  const settingsToken = String(
+    variationState.options.settingsHash ?? variationState.settingsKey
+  ).trim();
+  const seedAlignedOffset = topBand.length
+    ? Math.floor(
+        stableHashUnit(
+          [
+            settingsToken || variationState.settingsKey,
+            variationState.options.seed ?? "default",
+            dayToken,
+            `phase:${phaseIndex}`,
+            "template-variant-rotation",
+          ].join("|")
+        ) * topBand.length
+      )
+    : 0;
+  const rotatedIndex = topBand.length
+    ? (seedAlignedOffset + variationIndex) % topBand.length
+    : 0;
+  const chosenEntry = topBand[rotatedIndex] ?? ranked[0];
   if (!chosenEntry) return eligibleVariants[0] ?? null;
   variationState.selectedDayTemplateKeys.set(dayToken, chosenEntry.variant.key);
   return chosenEntry.variant;
@@ -18746,13 +19388,48 @@ const matchesBackChestMainSlotKind = (params: {
   if (slotKind === "mainPushCompound") {
     return hasHorizontalPushSignature(exercise) && !isBackChestFlyPatternExercise(exercise);
   }
-  if (slotKind === "mainPullVertical") return hasVerticalPullSignature(exercise);
+  if (slotKind === "mainPullVertical") {
+    return hasVerticalPullSignature(exercise) && !isBackChestLatAccentExercise(exercise);
+  }
   if (slotKind === "mainPullHorizontal") return hasHorizontalPullSignature(exercise);
   if (slotKind === "mainPullSupport") {
     return isBackChestCompoundPullMainCandidate(exercise);
   }
   if (slotLane) return matchesMainLanePattern(exercise, slotLane);
   return true;
+};
+
+const matchesShouldersArmsMainSlotKind = (params: {
+  exercise: Exercise;
+  slotKind: string;
+  slotLane?: MainLane;
+  dayTitle?: string | null;
+}) => {
+  const { exercise, slotKind, slotLane, dayTitle } = params;
+  if (!isShouldersArmsDayTitle(dayTitle)) {
+    if (slotLane) return matchesMainLanePattern(exercise, slotLane);
+    return true;
+  }
+  if (!isShouldersArmsMainBoundaryEligible(exercise)) return false;
+  const category = resolveShouldersArmsMainCategory(exercise);
+  if (slotKind === "mainVerticalPushPrimary") return category === "ohp";
+  if (slotKind === "mainLateralDeltPrimary") return category === "lateral";
+  if (slotKind === "mainShoulderPullPrimary") return category === "rearDeltMain";
+  if (
+    slotKind === "mainShoulderStructuralSecondary" ||
+    slotKind === "mainShoulderStructuralAlternate"
+  ) {
+    return category === "shoulderSupport";
+  }
+  if (slotLane === "verticalPush") return category === "ohp";
+  if (slotLane === "push") return category === "lateral";
+  if (slotLane === "pull") return category === "rearDeltMain" || category === "shoulderSupport";
+  return (
+    category === "ohp" ||
+    category === "lateral" ||
+    category === "rearDeltMain" ||
+    category === "shoulderSupport"
+  );
 };
 
 const resolveHighestBackChestTierForSlot = (params: {
@@ -19343,6 +20020,154 @@ const getMainVarietyScoreBonus = (params: {
   return { score, reasons };
 };
 
+type DaySpecificVarietyIntentTuning = {
+  globalExerciseRepeatMultiplier: number;
+  globalFamilyRepeatMultiplier: number;
+  globalVariantRepeatMultiplier: number;
+  slotExerciseRepeatMultiplier: number;
+  slotFamilyRepeatMultiplier: number;
+  slotVariantRepeatMultiplier: number;
+  slotSignatureRepeatMultiplier: number;
+  dayLayoutRepeatMultiplier: number;
+  dayFamilyLayoutRepeatMultiplier: number;
+  novelFamilyBonusMultiplier: number;
+  accessoryPrefixRepeatPenalty: number;
+  accessoryPrefixVariantPenalty: number;
+  accessoryNovelFamilyBonus: number;
+  enforceAccessoryPrefixVariety: boolean;
+};
+
+const DEFAULT_DAY_SPECIFIC_VARIETY_TUNING: DaySpecificVarietyIntentTuning = {
+  globalExerciseRepeatMultiplier: 1,
+  globalFamilyRepeatMultiplier: 1,
+  globalVariantRepeatMultiplier: 1,
+  slotExerciseRepeatMultiplier: 1,
+  slotFamilyRepeatMultiplier: 1,
+  slotVariantRepeatMultiplier: 1,
+  slotSignatureRepeatMultiplier: 1,
+  dayLayoutRepeatMultiplier: 1,
+  dayFamilyLayoutRepeatMultiplier: 1,
+  novelFamilyBonusMultiplier: 1,
+  accessoryPrefixRepeatPenalty: 0,
+  accessoryPrefixVariantPenalty: 0,
+  accessoryNovelFamilyBonus: 0,
+  enforceAccessoryPrefixVariety: false,
+};
+
+const BACK_CHEST_VARIETY_SLOT_KINDS = new Set([
+  "mainPushCompound",
+  "mainPushFly",
+  "mainPullHorizontal",
+  "mainPullVertical",
+  "mainPullSupport",
+]);
+
+const SHOULDERS_ARMS_VARIETY_MAIN_SLOT_KINDS = new Set([
+  "mainVerticalPushPrimary",
+  "mainLateralDeltPrimary",
+  "mainShoulderPullPrimary",
+  "mainShoulderStructuralSecondary",
+  "mainShoulderStructuralAlternate",
+]);
+
+const isShouldersArmsVarietyAccessoryExercise = (exercise: Exercise) => {
+  if (isShouldersArmsCarryMainLeakExercise(exercise)) return true;
+  const category = resolveShouldersArmsMainCategory(exercise);
+  return category === "biceps" || category === "triceps";
+};
+
+const collectRecentSlotSequenceForDaySection = (
+  slotMap: Map<string, string>,
+  dayTokenRaw: string,
+  section: "main" | "accessory"
+) => {
+  const dayToken = normalizeSlotToken(dayTokenRaw);
+  const prefix = `${dayToken}-${section}-`;
+  return Array.from(slotMap.entries())
+    .map(([slotId, value]) => {
+      if (!slotId.startsWith(prefix)) return null;
+      const suffix = slotId.slice(prefix.length);
+      const ordinal = Number(suffix);
+      if (!Number.isFinite(ordinal)) return null;
+      return { value, ordinal };
+    })
+    .filter((entry): entry is { value: string; ordinal: number } => Boolean(entry))
+    .sort((left, right) => left.ordinal - right.ordinal)
+    .map((entry) => entry.value);
+};
+
+const resolveDaySpecificVarietyIntentTuning = (params: {
+  exercise: Exercise;
+  section: ProgramRoutineItem["section"] | undefined;
+  auditMeta?: SelectionAuditMeta;
+}) => {
+  const { exercise, section, auditMeta } = params;
+  if (!auditMeta?.dayTitle || !auditMeta.slotKind) {
+    return DEFAULT_DAY_SPECIFIC_VARIETY_TUNING;
+  }
+  const dayToken = normalizeSlotToken(auditMeta.dayTitle);
+  if (dayToken === "back_chest" && section === "main") {
+    if (!BACK_CHEST_VARIETY_SLOT_KINDS.has(auditMeta.slotKind)) {
+      return DEFAULT_DAY_SPECIFIC_VARIETY_TUNING;
+    }
+    return {
+      globalExerciseRepeatMultiplier: 1.1,
+      globalFamilyRepeatMultiplier: 1.2,
+      globalVariantRepeatMultiplier: 1.25,
+      slotExerciseRepeatMultiplier: 1.3,
+      slotFamilyRepeatMultiplier: 1.35,
+      slotVariantRepeatMultiplier: 1.45,
+      slotSignatureRepeatMultiplier: 1.35,
+      dayLayoutRepeatMultiplier: 1.25,
+      dayFamilyLayoutRepeatMultiplier: 1.2,
+      novelFamilyBonusMultiplier: 1.15,
+      accessoryPrefixRepeatPenalty: 0,
+      accessoryPrefixVariantPenalty: 0,
+      accessoryNovelFamilyBonus: 0,
+      enforceAccessoryPrefixVariety: false,
+    };
+  }
+  if (dayToken === "shoulders_arms") {
+    if (section === "main" && SHOULDERS_ARMS_VARIETY_MAIN_SLOT_KINDS.has(auditMeta.slotKind)) {
+      return {
+        globalExerciseRepeatMultiplier: 1.15,
+        globalFamilyRepeatMultiplier: 1.2,
+        globalVariantRepeatMultiplier: 1.3,
+        slotExerciseRepeatMultiplier: 1.35,
+        slotFamilyRepeatMultiplier: 1.4,
+        slotVariantRepeatMultiplier: 1.5,
+        slotSignatureRepeatMultiplier: 1.4,
+        dayLayoutRepeatMultiplier: 1.3,
+        dayFamilyLayoutRepeatMultiplier: 1.25,
+        novelFamilyBonusMultiplier: 1.2,
+        accessoryPrefixRepeatPenalty: 0,
+        accessoryPrefixVariantPenalty: 0,
+        accessoryNovelFamilyBonus: 0,
+        enforceAccessoryPrefixVariety: false,
+      };
+    }
+    if (section === "accessory" && isShouldersArmsVarietyAccessoryExercise(exercise)) {
+      return {
+        globalExerciseRepeatMultiplier: 1.2,
+        globalFamilyRepeatMultiplier: 1.25,
+        globalVariantRepeatMultiplier: 1.35,
+        slotExerciseRepeatMultiplier: 1.35,
+        slotFamilyRepeatMultiplier: 1.4,
+        slotVariantRepeatMultiplier: 1.5,
+        slotSignatureRepeatMultiplier: 1.4,
+        dayLayoutRepeatMultiplier: 1.15,
+        dayFamilyLayoutRepeatMultiplier: 1.1,
+        novelFamilyBonusMultiplier: 1.1,
+        accessoryPrefixRepeatPenalty: 1.05,
+        accessoryPrefixVariantPenalty: 0.65,
+        accessoryNovelFamilyBonus: 0.2,
+        enforceAccessoryPrefixVariety: true,
+      };
+    }
+  }
+  return DEFAULT_DAY_SPECIFIC_VARIETY_TUNING;
+};
+
 const getCrossGenerationVarietyScoreBonus = (params: {
   exercise: Exercise;
   section: ProgramRoutineItem["section"] | undefined;
@@ -19359,43 +20184,206 @@ const getCrossGenerationVarietyScoreBonus = (params: {
   const familyKey = resolveProgramVariationFamilyKey(exercise);
   const variantKey = resolveProgramVariationVariantKey(exercise);
   const slotSignature = `${familyKey}::${variantKey}`;
+  const daySpecificTuning = resolveDaySpecificVarietyIntentTuning({
+    exercise,
+    section,
+    auditMeta,
+  });
 
   if (variationState.memory.recentExerciseIds.has(exercise.id)) {
-    const penalty = section === "main" ? 3.25 : section === "accessory" ? 1.35 : 0.5;
+    const penaltyBase = section === "main" ? 3.25 : section === "accessory" ? 1.35 : 0.5;
+    const penalty = penaltyBase * daySpecificTuning.globalExerciseRepeatMultiplier;
     score -= penalty;
-    reasons.push(`-${penalty} prior-generation duplicate exercise penalty`);
+    reasons.push(`-${penalty.toFixed(2)} prior-generation duplicate exercise penalty`);
   }
 
   const familyOveruse = variationState.memory.recentFamilyCounts.get(familyKey) ?? 0;
   if (familyOveruse > 0) {
-    const penalty =
+    const penaltyBase =
       section === "main"
         ? Math.min(2.5, familyOveruse * 0.14)
         : Math.min(1.25, familyOveruse * 0.08);
+    const penalty = penaltyBase * daySpecificTuning.globalFamilyRepeatMultiplier;
     score -= penalty;
     reasons.push(`-${penalty.toFixed(2)} prior-generation family overuse (${familyKey})`);
   } else if (section === "main") {
-    score += 0.25;
-    reasons.push("+0.25 prior-generation novel family bonus");
+    const bonus = 0.25 * daySpecificTuning.novelFamilyBonusMultiplier;
+    score += bonus;
+    reasons.push(`+${bonus.toFixed(2)} prior-generation novel family bonus`);
   }
 
   const variantOveruse = variationState.memory.recentVariantCounts.get(variantKey) ?? 0;
   if (variantOveruse > 0) {
-    const penalty =
+    const penaltyBase =
       section === "main"
         ? Math.min(1.6, variantOveruse * 0.1)
         : Math.min(0.8, variantOveruse * 0.06);
+    const penalty = penaltyBase * daySpecificTuning.globalVariantRepeatMultiplier;
     score -= penalty;
     reasons.push(`-${penalty.toFixed(2)} prior-generation variant overuse (${variantKey})`);
   }
 
   if (auditMeta?.slotId) {
+    const previousSlotExerciseId =
+      variationState.memory.recentSlotExerciseIds.get(auditMeta.slotId);
+    const previousSlotFamilyKeyExplicit =
+      variationState.memory.recentSlotFamilyKeys.get(auditMeta.slotId);
+    const previousSlotVariantKeyExplicit =
+      variationState.memory.recentSlotVariantKeys.get(auditMeta.slotId);
     const previousSlotSignature =
       variationState.memory.recentSlotFamilySignatures.get(auditMeta.slotId);
-    if (previousSlotSignature === slotSignature) {
-      const slotPenalty = section === "main" ? 1.4 : 0.75;
-      score -= slotPenalty;
-      reasons.push(`-${slotPenalty} prior-generation slot layout repeat`);
+    const previousSlotFamilyKey =
+      previousSlotFamilyKeyExplicit ||
+      (previousSlotSignature?.includes("::")
+        ? previousSlotSignature.split("::")[0] ?? ""
+        : "");
+    const previousSlotVariantKey =
+      previousSlotVariantKeyExplicit ||
+      (previousSlotSignature?.includes("::")
+        ? previousSlotSignature.split("::")[1] ?? ""
+        : "");
+    const exactSlotIdRepeat = previousSlotExerciseId === exercise.id;
+    if (exactSlotIdRepeat) {
+      const idRepeatPenaltyBase = section === "main" ? 2.4 : 1.2;
+      const idRepeatPenalty =
+        idRepeatPenaltyBase * daySpecificTuning.slotExerciseRepeatMultiplier;
+      score -= idRepeatPenalty;
+      reasons.push(
+        `-${idRepeatPenalty.toFixed(2)} prior-generation same-slot exercise repeat`
+      );
+    } else {
+      if (previousSlotFamilyKey && previousSlotFamilyKey === familyKey) {
+        const familySlotPenaltyBase = section === "main" ? 1.35 : 0.7;
+        const familySlotPenalty =
+          familySlotPenaltyBase * daySpecificTuning.slotFamilyRepeatMultiplier;
+        score -= familySlotPenalty;
+        reasons.push(
+          `-${familySlotPenalty.toFixed(2)} prior-generation same-slot family repeat (${familyKey})`
+        );
+      }
+      if (previousSlotVariantKey && previousSlotVariantKey === variantKey) {
+        const variantSlotPenaltyBase = section === "main" ? 0.65 : 0.35;
+        const variantSlotPenalty =
+          variantSlotPenaltyBase * daySpecificTuning.slotVariantRepeatMultiplier;
+        score -= variantSlotPenalty;
+        reasons.push(
+          `-${variantSlotPenalty.toFixed(2)} prior-generation same-slot variant repeat (${variantKey})`
+        );
+      }
+      if (
+        previousSlotSignature &&
+        !previousSlotFamilyKey &&
+        !previousSlotVariantKey &&
+        previousSlotSignature === slotSignature
+      ) {
+        const fallbackSlotPenaltyBase = section === "main" ? 1.4 : 0.75;
+        const fallbackSlotPenalty =
+          fallbackSlotPenaltyBase * daySpecificTuning.slotSignatureRepeatMultiplier;
+        score -= fallbackSlotPenalty;
+        reasons.push(
+          `-${fallbackSlotPenalty.toFixed(2)} prior-generation same-slot signature repeat`
+        );
+      }
+    }
+  }
+  if (section === "main" && auditMeta?.dayTitle) {
+    const dayToken = normalizeSlotToken(auditMeta.dayTitle);
+    const phaseIndex = phaseIndexFromStage(context.phaseStage);
+    const recentMainLayouts = getVariationMemoryValuesForDayToken(
+      variationState.memory.recentDayMainLayoutSignatures,
+      dayToken,
+      phaseIndex
+    );
+    const recentFamilyLayouts = getVariationMemoryValuesForDayToken(
+      variationState.memory.recentDayMainFamilyLayoutSignatures,
+      dayToken,
+      phaseIndex
+    );
+    const selectedBeforeCurrent = (auditMeta.selectedMainExerciseIds ?? [])
+      .map((id) => exerciseById(id))
+      .filter((entry): entry is Exercise => Boolean(entry));
+    if (selectedBeforeCurrent.length) {
+      const proposedLayoutSignature = [...selectedBeforeCurrent, exercise]
+        .map(
+          (entry) =>
+            `${resolveProgramVariationFamilyKey(entry)}::${resolveProgramVariationVariantKey(entry)}`
+        )
+        .join("|");
+      if (
+        recentMainLayouts.some((layout) =>
+          layout === proposedLayoutSignature || layout.startsWith(`${proposedLayoutSignature}|`)
+        )
+      ) {
+        const layoutPenalty = 1.35 * daySpecificTuning.dayLayoutRepeatMultiplier;
+        score -= layoutPenalty;
+        reasons.push(`-${layoutPenalty.toFixed(2)} prior-generation day layout repeat pressure`);
+      }
+      const proposedFamilyLayout = [...selectedBeforeCurrent, exercise]
+        .map((entry) => resolveProgramVariationFamilyKey(entry))
+        .join("|");
+      if (
+        recentFamilyLayouts.some((layout) =>
+          layout === proposedFamilyLayout || layout.startsWith(`${proposedFamilyLayout}|`)
+        )
+      ) {
+        const familyLayoutPenalty = 1.1 * daySpecificTuning.dayFamilyLayoutRepeatMultiplier;
+        score -= familyLayoutPenalty;
+        reasons.push(
+          `-${familyLayoutPenalty.toFixed(2)} prior-generation day family-layout repeat pressure`
+        );
+      }
+    }
+  }
+
+  if (
+    section === "accessory" &&
+    daySpecificTuning.enforceAccessoryPrefixVariety &&
+    auditMeta?.dayTitle
+  ) {
+    const dayToken = normalizeSlotToken(auditMeta.dayTitle);
+    const selectedAccessoryExercises = (auditMeta.selectedAccessoryExerciseIds ?? [])
+      .map((id) => exerciseById(id))
+      .filter((entry): entry is Exercise => Boolean(entry));
+    if (selectedAccessoryExercises.length) {
+      const proposedFamilyPrefix = [...selectedAccessoryExercises, exercise].map((entry) =>
+        resolveProgramVariationFamilyKey(entry)
+      );
+      const proposedVariantPrefix = [...selectedAccessoryExercises, exercise].map((entry) =>
+        resolveProgramVariationVariantKey(entry)
+      );
+      const recentFamilyPrefix = collectRecentSlotSequenceForDaySection(
+        variationState.memory.recentSlotFamilyKeys,
+        dayToken,
+        "accessory"
+      );
+      const recentVariantPrefix = collectRecentSlotSequenceForDaySection(
+        variationState.memory.recentSlotVariantKeys,
+        dayToken,
+        "accessory"
+      );
+      const sameFamilyPrefix =
+        recentFamilyPrefix.length >= proposedFamilyPrefix.length &&
+        proposedFamilyPrefix.every((value, index) => recentFamilyPrefix[index] === value);
+      const sameVariantPrefix =
+        recentVariantPrefix.length >= proposedVariantPrefix.length &&
+        proposedVariantPrefix.every((value, index) => recentVariantPrefix[index] === value);
+      if (sameFamilyPrefix) {
+        score -= daySpecificTuning.accessoryPrefixRepeatPenalty;
+        reasons.push(
+          `-${daySpecificTuning.accessoryPrefixRepeatPenalty.toFixed(2)} prior-generation Day 2 accessory pairing repeat`
+        );
+      } else if (!recentFamilyPrefix.includes(familyKey)) {
+        score += daySpecificTuning.accessoryNovelFamilyBonus;
+        reasons.push(
+          `+${daySpecificTuning.accessoryNovelFamilyBonus.toFixed(2)} Day 2 accessory family novelty`
+        );
+      }
+      if (sameVariantPrefix) {
+        score -= daySpecificTuning.accessoryPrefixVariantPenalty;
+        reasons.push(
+          `-${daySpecificTuning.accessoryPrefixVariantPenalty.toFixed(2)} prior-generation Day 2 accessory variant-pairing repeat`
+        );
+      }
     }
   }
 
@@ -19619,6 +20607,8 @@ const getIntentSlotScoreBonus = (params: {
     context.phaseStage === "activation" &&
     context.capabilityMode === "hasLoad"
   ) {
+    const conservativeActivationMachineBias =
+      context.experienceLevel === "beginner" || context.painSeverity === "high";
     const foundationalMainPattern =
       patterns.has("push") ||
       patterns.has("verticalpush") ||
@@ -19627,12 +20617,26 @@ const getIntentSlotScoreBonus = (params: {
       patterns.has("verticalpull") ||
       patterns.has("squat") ||
       patterns.has("hinge");
-    if (foundationalMainPattern && exercise.equipment.includes("machines")) {
-      score += 5;
-      reasons.push("+5 Control & Technique machine-main priority");
-    } else if (foundationalMainPattern && exercise.loadType === "weighted") {
-      score -= 1;
-      reasons.push("-1 Control & Technique non-machine weighted main de-priority");
+    if (foundationalMainPattern && conservativeActivationMachineBias) {
+      if (exercise.equipment.includes("machines")) {
+        score += 5;
+        reasons.push("+5 Control & Technique machine-main priority");
+      } else if (exercise.loadType === "weighted") {
+        score -= 1;
+        reasons.push("-1 Control & Technique non-machine weighted main de-priority");
+      }
+    } else if (
+      foundationalMainPattern &&
+      context.experienceLevel !== "beginner" &&
+      context.painSeverity === "low"
+    ) {
+      if (exercise.loadType === "weighted" && !exercise.equipment.includes("machines")) {
+        score += 0.75;
+        reasons.push("+0.75 activation non-machine weighted main preference for intermediate/advanced");
+      } else if (exercise.equipment.includes("machines")) {
+        score -= 0.35;
+        reasons.push("-0.35 activation machine-main de-priority for intermediate/advanced");
+      }
     }
   }
 
@@ -19695,8 +20699,15 @@ const getIntentSlotScoreBonus = (params: {
       context.phaseStage !== "growth" &&
       descriptor.includes("machine")
     ) {
-      score += 0.8;
-      reasons.push("+0.8 machine-guided shoulder press bias in early phases");
+      const conservativeShoulderPressBias =
+        context.experienceLevel === "beginner" || context.painSeverity === "high";
+      if (conservativeShoulderPressBias) {
+        score += 0.8;
+        reasons.push("+0.8 machine-guided shoulder press bias in early phases");
+      } else {
+        score -= 0.4;
+        reasons.push("-0.4 intermediate/advanced vertical-push avoids machine defaulting in early phases");
+      }
     }
     if (
       context.phaseStage === "growth" &&
@@ -19909,11 +20920,21 @@ const getIntentSlotScoreBonus = (params: {
       score -= penalty;
       reasons.push(`-${penalty} low-progressive pull de-priority`);
     }
-    if (context.phaseStage === "activation" && exercise.equipment.includes("machines")) {
+    const conservativeActivationPullBias =
+      context.experienceLevel === "beginner" || context.painSeverity === "high";
+    if (
+      context.phaseStage === "activation" &&
+      conservativeActivationPullBias &&
+      exercise.equipment.includes("machines")
+    ) {
       score += 2.5;
       reasons.push("+2.5 Control & Technique pull-slot machine priority");
     }
-    if (context.phaseStage === "activation" && exercise.id === "dumbbell-rows") {
+    if (
+      context.phaseStage === "activation" &&
+      conservativeActivationPullBias &&
+      exercise.id === "dumbbell-rows"
+    ) {
       score -= 4;
       reasons.push("-4 dumbbell row held for later-phase pull progression");
     }
@@ -19922,13 +20943,28 @@ const getIntentSlotScoreBonus = (params: {
       context.phaseStage === "activation" &&
       auditMeta?.slotKind === "mainPullHorizontal"
     ) {
-      if (exercise.id === "machine-seated-row") {
-        score += 8;
-        reasons.push("+8 Back + Chest first pull slot prefers machine seated row in control phase");
-      }
-      if (exercise.id === "dumbbell-rows") {
-        score -= 6;
-        reasons.push("-6 Back + Chest first pull slot de-prioritizes dumbbell row in control phase");
+      if (conservativeActivationPullBias) {
+        if (exercise.id === "machine-seated-row") {
+          score += 8;
+          reasons.push("+8 Back + Chest first pull slot prefers machine seated row in control phase");
+        }
+        if (exercise.id === "dumbbell-rows") {
+          score -= 6;
+          reasons.push("-6 Back + Chest first pull slot de-prioritizes dumbbell row in control phase");
+        }
+      } else if (context.painSeverity === "low") {
+        if (
+          exercise.id === "dumbbell-rows" ||
+          exercise.id === "dumbbell-chest-supported-row" ||
+          exercise.id === "cable-seated-row"
+        ) {
+          score += 2.25;
+          reasons.push("+2.25 Back + Chest activation pull slot favors skill-carrying row variants");
+        }
+        if (exercise.id === "machine-seated-row") {
+          score -= 1.5;
+          reasons.push("-1.5 Back + Chest activation pull slot avoids machine-default lock-in");
+        }
       }
     }
   }
@@ -20114,6 +21150,21 @@ const getIntentSlotScoreBonus = (params: {
       score += 2.5;
       reasons.push("+2.5 Back + Chest extra pull main favors secondary vertical pull reinforcement");
     }
+    if (
+      context.experienceLevel === "advanced" &&
+      !isLatAccentSupport &&
+      hasSelectedHorizontalPull &&
+      hasSelectedVerticalPull
+    ) {
+      if (horizontalPull) {
+        score += 3;
+        reasons.push("+3 advanced extra-back fallback prefers row variant before extra vertical");
+      }
+      if (verticalPull) {
+        score -= 3;
+        reasons.push("-3 advanced extra-back fallback de-prioritizes third vertical before row variant");
+      }
+    }
     if (context.phaseStage !== "activation" && exercise.loadType === "weighted") {
       score += 0.75;
       reasons.push("+0.75 Back + Chest extra pull main higher-tension progression bonus");
@@ -20154,12 +21205,33 @@ const getIntentSlotScoreBonus = (params: {
   if (section === "main" && auditMeta?.slotKind === "mainPullVertical") {
     const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
     const isVerticalPull = patterns.has("verticalpull");
+    const isLatAccentVertical = isBackChestLatAccentExercise(exercise);
     if (isVerticalPull) {
       score += 6;
       reasons.push("+6 Back + Chest vertical-pull slot specificity");
     } else {
       score -= 6;
       reasons.push("-6 Back + Chest vertical-pull slot mismatch");
+    }
+    if (
+      isLatAccentVertical &&
+      hasEligibleBackChestMainAlternative({
+        exercise,
+        slotKind: "mainPullVertical",
+        slotLane: "pull",
+        allowChestFly: false,
+        available,
+        context,
+        predicate: (candidate) =>
+          hasVerticalPullSignature(candidate) && !isBackChestLatAccentExercise(candidate),
+      })
+    ) {
+      score -= 12;
+      reasons.push("-12 Back + Chest vertical slot reserves pullover/lat-accent for extra-back template slots");
+    }
+    if (isLatAccentVertical && context.experienceLevel === "intermediate") {
+      score -= 18;
+      reasons.push("-18 intermediate Back + Chest vertical slot blocks pullover when row+vertical templates are available");
     }
 
     if (descriptor.includes("pulldown")) {
@@ -20864,14 +21936,30 @@ const scoreExerciseForContextDetailed = (
   }
 
   const isPushLane = (auditMeta?.slotLane ?? "").includes("push");
-  if (section === "main" && isPushLane && context.phaseStage === "activation") {
-    // Phase 1 control/technique prefers stable machine pressing when available.
-    if (exercise.id === "machine-chest-press") {
-      score += 25;
-      reasons.push("+25 activation main push machine chest preference");
-    } else if (exercise.id === "dumbbell-bench-press") {
-      score += 5;
-      reasons.push("+5 activation main push dumbbell bench secondary preference");
+  if (
+    section === "main" &&
+    isPushLane &&
+    context.phaseStage === "activation" &&
+    isBackChestDayTitle(auditMeta?.dayTitle)
+  ) {
+    const conservativeActivationPushBias =
+      context.experienceLevel === "beginner" || context.painSeverity === "high";
+    if (conservativeActivationPushBias) {
+      // Beginner/high-pain profiles can stay machine-stable in phase 1.
+      if (exercise.id === "machine-chest-press") {
+        score += 16;
+        reasons.push("+16 activation main push machine chest preference (beginner/high-pain)");
+      } else if (exercise.id === "dumbbell-bench-press") {
+        score += 4;
+        reasons.push("+4 activation main push dumbbell bench secondary preference");
+      }
+    } else if (
+      context.experienceLevel !== "beginner" &&
+      context.painSeverity === "low" &&
+      exercise.id === "machine-chest-press"
+    ) {
+      score -= 1.25;
+      reasons.push("-1.25 activation push de-prioritizes machine chest default for intermediate/advanced");
     }
   }
 
@@ -20957,6 +22045,60 @@ const pickFromProgramVariationBand = <T>(
   if (!rng) return entries[0] ?? null;
   const index = Math.floor(rng() * entries.length);
   return entries[Math.max(0, Math.min(entries.length - 1, index))] ?? null;
+};
+
+const resolveVariationAuditSlotIndex = (auditMeta?: SelectionAuditMeta) => {
+  const explicitSlotIndex = auditMeta?.slotIndex;
+  if (typeof explicitSlotIndex === "number" && Number.isFinite(explicitSlotIndex)) {
+    return Math.max(0, Math.floor(explicitSlotIndex));
+  }
+  const slotId = String(auditMeta?.slotId ?? "");
+  const match = slotId.match(/(\d+)(?!.*\d)/);
+  if (!match) return 0;
+  const parsed = Number(match[1]);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.max(0, Math.floor(parsed) - 1);
+};
+
+const resolveVariationAuditPhaseIndex = (
+  context: SelectionContext,
+  auditMeta?: SelectionAuditMeta
+) => {
+  const explicitPhaseIndex = auditMeta?.phaseIndex;
+  if (typeof explicitPhaseIndex === "number" && Number.isFinite(explicitPhaseIndex)) {
+    return clampPhaseIndexToSupportedRange(explicitPhaseIndex);
+  }
+  return phaseIndexFromStage(context.phaseStage);
+};
+
+const buildVariationBandDeterministicSeed = (params: {
+  context: SelectionContext;
+  variationState: ProgramVariationState;
+  section?: ProgramRoutineItem["section"];
+  auditMeta?: SelectionAuditMeta;
+  topBandSignature: string;
+}) => {
+  const { context, variationState, section, auditMeta, topBandSignature } = params;
+  const settingsToken = String(
+    variationState.options.settingsHash ?? variationState.settingsKey
+  ).trim();
+  const variationIndex = resolveProgramVariationIndex(variationState.options);
+  const phaseIndex = resolveVariationAuditPhaseIndex(context, auditMeta);
+  const slotIndex = resolveVariationAuditSlotIndex(auditMeta);
+  const slotId = normalizeSlotToken(auditMeta?.slotId ?? "unknown-slot");
+  const slotKind = normalizeSlotToken(auditMeta?.slotKind ?? "unknown-slot-kind");
+  return [
+    "variation-top-band",
+    `settings:${settingsToken || variationState.settingsKey}`,
+    `variationIndex:${variationIndex}`,
+    `phaseIndex:${phaseIndex}`,
+    `slotIndex:${slotIndex}`,
+    `slotId:${slotId}`,
+    `slotKind:${slotKind}`,
+    `section:${section ?? "unknown"}`,
+    variationState.seedKey,
+    topBandSignature,
+  ].join("|");
 };
 
 const pickFirstEligibleId = (
@@ -21152,21 +22294,22 @@ const pickFirstEligibleId = (
   const maybeVariationBandPick = () => {
     const varietyState = context.variationState;
     if (!varietyState?.enabled) return null;
-    const rng = auditMeta?.selectionRng;
-    if (!rng) return null;
     const topBand = getProgramVariationBandForRankedEntries(
       rankedChoicePool,
       varietyState.config
     );
-    const variationSeedToken = [
-      varietyState.seedKey,
-      auditMeta?.slotId ?? "unknown-slot",
-      topBand
-        .map((entry) => `${entry.id}:${entry.score.toFixed(2)}`)
-        .join("|"),
-    ].join("|");
+    const topBandSignature = topBand
+      .map((entry) => `${entry.id}:${entry.score.toFixed(2)}`)
+      .join("|");
+    const variationSeedToken = buildVariationBandDeterministicSeed({
+      context,
+      variationState: varietyState,
+      section,
+      auditMeta,
+      topBandSignature,
+    });
     return pickFromProgramVariationBand(topBand, {
-      rng,
+      rng: auditMeta?.selectionRng,
       deterministicSeed: variationSeedToken,
     });
   };
@@ -21276,6 +22419,7 @@ const getPushCompoundCandidateIds = (
   experience: ExperienceProfile,
   context: SelectionContext
 ) => {
+  const beginnerTrack = context.experienceLevel === "beginner";
   if (context.capabilityMode === "hasLoad") {
     if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
       return [
@@ -21290,11 +22434,34 @@ const getPushCompoundCandidateIds = (
       ];
     }
     if (phaseIndex >= 2) {
+      if (!beginnerTrack) {
+        return [
+          "dumbbell-bench-press",
+          "dumbbell-incline-press",
+          "machine-chest-press",
+          "barbell-bench-press-paused",
+          "dumbbell-floor-press",
+          "band-chest-press",
+          "incline-pushup",
+          "pushup",
+        ];
+      }
       return [
         "machine-chest-press",
         "dumbbell-bench-press",
         "dumbbell-incline-press",
         "barbell-bench-press-paused",
+        "dumbbell-floor-press",
+        "band-chest-press",
+        "incline-pushup",
+        "pushup",
+      ];
+    }
+    if (!beginnerTrack) {
+      return [
+        "dumbbell-bench-press",
+        "dumbbell-incline-press",
+        "machine-chest-press",
         "dumbbell-floor-press",
         "band-chest-press",
         "incline-pushup",
@@ -21403,8 +22570,23 @@ const getPullCompoundCandidateIds = (
   experience: ExperienceProfile,
   context: SelectionContext
 ) => {
+  const beginnerTrack = context.experienceLevel === "beginner";
   if (context.capabilityMode === "hasLoad") {
     if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+      if (!beginnerTrack) {
+        return [
+          "dumbbell-chest-supported-row",
+          "cable-seated-row",
+          "barbell-bent-over-row",
+          "dumbbell-rows",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "cable-lat-pulldown",
+          "barbell-landmine-pulldown",
+          "band-lat-pulldown",
+          "face-pull",
+        ];
+      }
       return [
         "machine-lat-pulldown",
         "machine-seated-row",
@@ -21419,6 +22601,20 @@ const getPullCompoundCandidateIds = (
       ];
     }
     if (phaseIndex >= 2) {
+      if (!beginnerTrack) {
+        return [
+          "dumbbell-chest-supported-row",
+          "dumbbell-rows",
+          "cable-seated-row",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "band-lat-pulldown",
+          "band-row",
+          "split-stance-row",
+          "face-pull",
+          "prone-swimmer",
+        ];
+      }
       return [
         "machine-seated-row",
         "dumbbell-rows",
@@ -21428,6 +22624,20 @@ const getPullCompoundCandidateIds = (
         "split-stance-row",
         "face-pull",
         "prone-swimmer",
+      ];
+    }
+    if (!beginnerTrack) {
+      return [
+        "dumbbell-chest-supported-row",
+        "dumbbell-rows",
+        "cable-seated-row",
+        "machine-seated-row",
+        "band-row",
+        "split-stance-row",
+        "face-pull",
+        "supine-elbow-drive-row",
+        "prone-elbow-row",
+        "back-widow",
       ];
     }
     return [
@@ -21468,6 +22678,7 @@ const getBackChestVerticalPullCandidateIds = (
   experience: ExperienceProfile,
   context: SelectionContext
 ) => {
+  const beginnerTrack = context.experienceLevel === "beginner";
   const verticalIntentFallbackIds = get3DayBackChestVerticalFallbackIds().filter(
     (id) => id !== "supine-elbow-drive-row" && id !== "prone-elbow-row"
   );
@@ -21475,6 +22686,21 @@ const getBackChestVerticalPullCandidateIds = (
     Array.from(new Set([...ids, ...verticalIntentFallbackIds]));
   if (context.capabilityMode === "hasLoad") {
     if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+      if (!beginnerTrack) {
+        return withVerticalFallbacks([
+          "weighted-pullup",
+          "cable-lat-pulldown",
+          "neutral-grip-pullup",
+          "chinup-strict",
+          "machine-lat-pulldown",
+          "barbell-landmine-pulldown",
+          "machine-assisted-pullup",
+          "band-assisted-pullup",
+          "chest-to-bar-pullup",
+          "band-lat-pulldown",
+          "dumbbell-pullover",
+        ]);
+      }
       return withVerticalFallbacks([
         "weighted-pullup",
         "machine-lat-pulldown",
@@ -21490,6 +22716,20 @@ const getBackChestVerticalPullCandidateIds = (
       ]);
     }
     if (phaseIndex >= 2) {
+      if (!beginnerTrack) {
+        return withVerticalFallbacks([
+          "cable-lat-pulldown",
+          "machine-lat-pulldown",
+          "neutral-grip-pullup",
+          "chinup-strict",
+          "machine-assisted-pullup",
+          "band-assisted-pullup",
+          "weighted-pullup",
+          "band-lat-pulldown",
+          "dumbbell-pullover",
+          "kneeling-prayer-lat-pulldown",
+        ]);
+      }
       return withVerticalFallbacks([
         "machine-lat-pulldown",
         "cable-lat-pulldown",
@@ -21501,6 +22741,21 @@ const getBackChestVerticalPullCandidateIds = (
         "band-lat-pulldown",
         "dumbbell-pullover",
         "kneeling-prayer-lat-pulldown",
+      ]);
+    }
+    if (!beginnerTrack) {
+      return withVerticalFallbacks([
+        "cable-lat-pulldown",
+        "machine-lat-pulldown",
+        "neutral-grip-pullup",
+        "chinup-strict",
+        "machine-assisted-pullup",
+        "band-assisted-pullup",
+        "band-lat-pulldown",
+        "kneeling-prayer-lat-pulldown",
+        "supine-lat-pulldown-isometric",
+        "prone-lat-sweep",
+        "dumbbell-pullover",
       ]);
     }
     return withVerticalFallbacks([
@@ -21775,11 +23030,17 @@ const getBackChestFlyMainCandidateIds = (
   experience: ExperienceProfile,
   context: SelectionContext
 ) => {
-  const flyFirst = [
+  const knownFlyIds = [
     "machine-pec-deck-press",
     "dumbbell-chest-fly",
     "suspension-chest-fly",
   ];
+  const discoveredFlyIds = exercises
+    .filter((exercise) => exercise.category === "main")
+    .filter((exercise) => isBackChestFlyPatternExercise(exercise))
+    .filter((exercise) => hasHorizontalPushSignature(exercise))
+    .map((exercise) => exercise.id);
+  const flyFirst = Array.from(new Set([...knownFlyIds, ...discoveredFlyIds]));
   const safePressFallback = getPushCompoundCandidateIds(phaseIndex, experience, context);
   return Array.from(new Set([...flyFirst, ...safePressFallback]));
 };
@@ -21790,14 +23051,48 @@ const chooseBackChestFlyMainId = (
   experience: ExperienceProfile,
   context: SelectionContext,
   auditMeta?: SelectionAuditMeta
-) =>
-  pickFirstEligibleId(
-    getBackChestFlyMainCandidateIds(phaseIndex, experience, context),
+) => {
+  const flyAndFallbackCandidates = getBackChestFlyMainCandidateIds(
+    phaseIndex,
+    experience,
+    context
+  );
+  const strictFlyCandidates = flyAndFallbackCandidates.filter((id) => {
+    const exercise = exerciseById(id);
+    if (!exercise) return false;
+    if (!isBackChestFlyPatternExercise(exercise)) return false;
+    if (
+      !isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context,
+        dayTitle: auditMeta?.dayTitle ?? "Back + Chest",
+      })
+    ) {
+      return false;
+    }
+    if (!isBackChestMainBoundaryEligible({ exercise, allowChestFly: true })) return false;
+    if (isBackChestScapularAccessoryPullExercise(exercise)) return false;
+    return true;
+  });
+  if (strictFlyCandidates.length) {
+    return pickFirstEligibleId(
+      strictFlyCandidates,
+      available,
+      context,
+      "main",
+      auditMeta
+    );
+  }
+  return pickFirstEligibleId(
+    flyAndFallbackCandidates,
     available,
     context,
     "main",
     auditMeta
   );
+};
 
 const getShouldersLateralMainCandidateIds = (
   phaseIndex: number,
@@ -21833,7 +23128,7 @@ const chooseShouldersLateralMainId = (
     auditMeta
   );
 
-const getShouldersPullMainCandidateIds = (
+const getShouldersRearDeltMainCandidateIds = (
   phaseIndex: number,
   _experience: ExperienceProfile,
   context: SelectionContext
@@ -21842,35 +23137,97 @@ const getShouldersPullMainCandidateIds = (
     if (phaseIndex >= 3) {
       return [
         "machine-reverse-pec-deck",
-        "machine-rear-delt-row",
         "cable-rear-delt-fly",
-        "cable-face-pull",
         "dumbbell-rear-delt-fly",
-        "face-pull",
-        "prone-y-raise",
+        "band-rear-delt-fly",
+        "reverse-snow-angel",
       ];
     }
     return [
-      "machine-rear-delt-row",
       "machine-reverse-pec-deck",
-      "cable-face-pull",
       "dumbbell-rear-delt-fly",
+      "cable-rear-delt-fly",
       "band-rear-delt-fly",
-      "face-pull",
-      "prone-y-raise",
+      "reverse-snow-angel",
     ];
   }
   if (context.capabilityMode === "bandOnly") {
     return [
       "band-rear-delt-fly",
-      "band-face-pull-high-anchor",
-      "face-pull",
       "reverse-snow-angel",
-      "prone-y-raise",
+      "dumbbell-rear-delt-fly",
     ];
   }
-  return ["reverse-snow-angel", "prone-y-raise", "prone-t-raise", "face-pull"];
+  return ["reverse-snow-angel", "dumbbell-rear-delt-fly", "band-rear-delt-fly"];
 };
+
+const getShouldersSupportMainCandidateIds = (
+  phaseIndex: number,
+  _experience: ExperienceProfile,
+  context: SelectionContext,
+  options?: {
+    alternate?: boolean;
+  }
+) => {
+  const alternate = Boolean(options?.alternate);
+  if (context.capabilityMode === "hasLoad") {
+    if (phaseIndex >= 3) {
+      return alternate
+        ? ["prone-swimmer", "reverse-snow-angel", "prone-y-raise"]
+        : ["prone-y-raise", "reverse-snow-angel", "prone-swimmer"];
+    }
+    return alternate
+      ? ["reverse-snow-angel", "prone-swimmer", "prone-y-raise"]
+      : ["prone-y-raise", "prone-swimmer", "reverse-snow-angel"];
+  }
+  if (context.capabilityMode === "bandOnly") {
+    return alternate
+      ? ["reverse-snow-angel", "prone-swimmer", "prone-y-raise"]
+      : ["prone-y-raise", "reverse-snow-angel", "prone-swimmer"];
+  }
+  return alternate
+    ? ["prone-swimmer", "reverse-snow-angel", "prone-y-raise"]
+    : ["prone-y-raise", "reverse-snow-angel", "prone-swimmer"];
+};
+
+const chooseShouldersRearDeltMainId = (
+  phaseIndex: number,
+  available: Set<Equipment>,
+  experience: ExperienceProfile,
+  context: SelectionContext,
+  auditMeta?: SelectionAuditMeta
+) =>
+  pickFirstEligibleId(
+    getShouldersRearDeltMainCandidateIds(phaseIndex, experience, context),
+    available,
+    context,
+    "main",
+    auditMeta
+  );
+
+const chooseShouldersSupportMainId = (
+  phaseIndex: number,
+  available: Set<Equipment>,
+  experience: ExperienceProfile,
+  context: SelectionContext,
+  auditMeta?: SelectionAuditMeta,
+  options?: {
+    alternate?: boolean;
+  }
+) =>
+  pickFirstEligibleId(
+    getShouldersSupportMainCandidateIds(phaseIndex, experience, context, options),
+    available,
+    context,
+    "main",
+    auditMeta
+  );
+
+const getShouldersPullMainCandidateIds = (
+  phaseIndex: number,
+  experience: ExperienceProfile,
+  context: SelectionContext
+) => getShouldersRearDeltMainCandidateIds(phaseIndex, experience, context);
 
 const chooseShouldersPullMainId = (
   phaseIndex: number,
@@ -21879,11 +23236,11 @@ const chooseShouldersPullMainId = (
   context: SelectionContext,
   auditMeta?: SelectionAuditMeta
 ) =>
-  pickFirstEligibleId(
-    getShouldersPullMainCandidateIds(phaseIndex, experience, context),
+  chooseShouldersRearDeltMainId(
+    phaseIndex,
     available,
+    experience,
     context,
-    "main",
     auditMeta
   );
 
@@ -22267,11 +23624,14 @@ const pushProgramConstraintWarnings = (warnings: ProgramConstraintWarning[]) => 
 
 type SelectionAuditMeta = {
   slotId: string;
+  slotIndex?: number;
+  phaseIndex?: number;
   dayTitle: string;
   dayFocusTags: string[];
   slotKind: string;
   slotLane?: MainLane;
   selectedMainExerciseIds?: string[];
+  selectedAccessoryExerciseIds?: string[];
   expectedLaneCounts?: Partial<Record<MainLane, number>>;
   capabilityMode: EquipmentCapabilityMode;
   dayBudget?: DayPatternBudget | null;
@@ -22583,6 +23943,9 @@ const maybeRotateThreeDayTemplateLanePlan = (params: {
   if (!variationState?.enabled) return plan;
 
   const dayToken = normalizeSlotToken(dayTitle);
+  if (variationState.selectedDayTemplateKeys.has(dayToken)) {
+    return plan;
+  }
   const seededUnit = stableHashUnit(
     `${variationState.seedKey}|${dayToken}|lane-plan|${phaseIndex}`
   );
@@ -22826,6 +24189,28 @@ const buildStructuredDay = (params: {
     (slot.lane === "pull"
       ? backChestPullSlotKindById.get(slot.slotId) ?? slotKindByMainLane[slot.lane]
       : slotKindByMainLane[slot.lane]);
+  const isMainCandidateCompatibleWithPlannedSlot = (
+    candidate: Exercise,
+    slot: PlannedMainSlot
+  ) => {
+    const slotKind = getSlotKindForSlot(slot);
+    if (normalizedTitle === "back_chest") {
+      return matchesBackChestMainSlotKind({
+        exercise: candidate,
+        slotKind,
+        slotLane: slot.lane,
+      });
+    }
+    if (normalizedTitle === "shoulders_arms") {
+      return matchesShouldersArmsMainSlotKind({
+        exercise: candidate,
+        slotKind,
+        slotLane: slot.lane,
+        dayTitle: title,
+      });
+    }
+    return matchesMainLanePattern(candidate, slot.lane);
+  };
   const expectedLaneCounts = plannedLanes.reduce((map, lane) => {
     map[lane] = (map[lane] ?? 0) + 1;
     return map;
@@ -22835,8 +24220,11 @@ const buildStructuredDay = (params: {
   plannedMainSlots.forEach((slot) => {
     const lane = slot.lane;
     const slotKind = getSlotKindForSlot(slot);
+    const slotIndex = mainIds.length;
     const auditMeta: SelectionAuditMeta = {
       slotId: slot.slotId,
+      slotIndex,
+      phaseIndex,
       dayTitle: title,
       dayFocusTags: focusTags,
       capabilityMode,
@@ -22899,14 +24287,25 @@ const buildStructuredDay = (params: {
               selectionContext,
               auditMeta
             )
-          : slotKind === "mainShoulderPullPrimary" ||
-            slotKind === "mainShoulderStructuralSecondary"
-          ? chooseShouldersPullMainId(
+          : slotKind === "mainShoulderPullPrimary"
+          ? chooseShouldersRearDeltMainId(
               phaseIndex,
               available,
               experienceProfile,
               selectionContext,
               auditMeta
+            )
+          : slotKind === "mainShoulderStructuralSecondary" ||
+            slotKind === "mainShoulderStructuralAlternate"
+          ? chooseShouldersSupportMainId(
+              phaseIndex,
+              available,
+              experienceProfile,
+              selectionContext,
+              auditMeta,
+              {
+                alternate: slotKind === "mainShoulderStructuralAlternate",
+              }
             )
           : choosePullCompoundId(
               phaseIndex,
@@ -22994,6 +24393,7 @@ const buildStructuredDay = (params: {
     if (hasDumbbellMain) return mainExerciseIds;
 
     const targetIndex = Math.max(0, mainExerciseIds.length - 1);
+    const targetSlot = plannedMainSlots[targetIndex];
     const current = exerciseById(mainExerciseIds[targetIndex]);
     if (!current) return mainExerciseIds;
 
@@ -23012,6 +24412,9 @@ const buildStructuredDay = (params: {
             dayTitle: title,
           })
         ) {
+          return false;
+        }
+        if (targetSlot && !isMainCandidateCompatibleWithPlannedSlot(candidate, targetSlot)) {
           return false;
         }
         const overlap = candidate.movementPattern.some((pattern) =>
@@ -23105,22 +24508,16 @@ const buildStructuredDay = (params: {
               section: "main",
               context: selectionContext,
               dayTitle: title,
-            })
-          ) {
-            return false;
-          }
-          if (!shouldKeep(candidate)) return false;
-          if (slot.lane === "squat" && !candidate.movementPattern.includes("squat")) {
-            return false;
-          }
-          if (slot.lane === "hinge" && !candidate.movementPattern.includes("hinge")) {
-            return false;
-          }
-          if (slot.lane === "pull" && !candidate.movementPattern.includes("pull")) {
-            return false;
-          }
-          return true;
-        })
+          })
+        ) {
+          return false;
+        }
+        if (!shouldKeep(candidate)) return false;
+        if (!isMainCandidateCompatibleWithPlannedSlot(candidate, slot)) {
+          return false;
+        }
+        return true;
+      })
         .map((candidate) => ({
           candidate,
           score: scoreMainCandidateForSlot(candidate, slot),
@@ -23171,9 +24568,12 @@ const buildStructuredDay = (params: {
   const activationId = chooseActivationId(activationLane, available, selectionContext);
   const accessoryAuditMeta = (
     slotId: string,
-    slotKind: string
+    slotKind: string,
+    slotIndex: number
   ): SelectionAuditMeta => ({
     slotId,
+    slotIndex,
+    phaseIndex,
     dayTitle: title,
     dayFocusTags: focusTags,
     slotKind,
@@ -23187,7 +24587,11 @@ const buildStructuredDay = (params: {
       lane,
       available,
       selectionContext,
-      accessoryAuditMeta(`${normalizedTitle}-accessory-${index + 1}`, `accessory${lane}`)
+      accessoryAuditMeta(
+        `${normalizedTitle}-accessory-${index + 1}`,
+        `accessory${lane}`,
+        index
+      )
     );
     const fallbackCandidates = getAccessoryCandidateIds({
       lane,
@@ -23280,12 +24684,22 @@ const buildStructuredDay = (params: {
                 experienceProfile,
                 selectionContext
               )
-            : getSlotKindForSlot(slot) === "mainShoulderPullPrimary" ||
-              getSlotKindForSlot(slot) === "mainShoulderStructuralSecondary"
-            ? getShouldersPullMainCandidateIds(
+            : getSlotKindForSlot(slot) === "mainShoulderPullPrimary"
+            ? getShouldersRearDeltMainCandidateIds(
                 phaseIndex,
                 experienceProfile,
                 selectionContext
+              )
+            : getSlotKindForSlot(slot) === "mainShoulderStructuralSecondary" ||
+              getSlotKindForSlot(slot) === "mainShoulderStructuralAlternate"
+            ? getShouldersSupportMainCandidateIds(
+                phaseIndex,
+                experienceProfile,
+                selectionContext,
+                {
+                  alternate:
+                    getSlotKindForSlot(slot) === "mainShoulderStructuralAlternate",
+                }
               )
             : getPullCompoundCandidateIds(
                 phaseIndex,
@@ -24095,11 +25509,21 @@ export const generateWeeklyProgram = (
     previousWeek: options?.previousWeek,
   });
   const phaseIndex = options?.phaseIndex ?? 1;
+  const variationPoseFocusTags = (() => {
+    const resolvedPoseAnalysis = resolvePoseAnalysisFromSources({
+      poseAnalysis: options?.poseAnalysis,
+      assessmentReport: options?.assessmentReport,
+    });
+    return derivePoseFocus(resolvedPoseAnalysis).focusTags
+      .map((tag) => normalizeTagToken(tag))
+      .sort();
+  })();
   const variationState = resolveProgramVariationState({
     questionnaire: data,
     available: equipmentContext.available,
     daysPerWeek: normalizedDaysPerWeek,
     phaseIndex,
+    poseFocusTags: variationPoseFocusTags,
     baseSeed: options?.seed,
     variation: options?.variation,
   });

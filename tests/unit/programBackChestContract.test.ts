@@ -172,6 +172,7 @@ describe("back + chest 3-day final contract", () => {
       ["gym", "bands"],
       ["gym", "bands", "none"],
       ["gym", "dumbbells"],
+      ["bands", "dumbbells", "bench"],
     ];
 
     cases.forEach((equipment, index) => {
@@ -194,6 +195,40 @@ describe("back + chest 3-day final contract", () => {
         expect(isFlyMain(chestMains[1]!)).toBe(true);
         expect(chestMains.filter((exercise) => isPressMain(exercise)).length).toBe(1);
       }
+    });
+  });
+
+  test("mixed bands + dumbbells + bench never leaks press+press when fly is eligible", () => {
+    const questionnaire = buildQuestionnaire("Intermediate", {
+      goals: "General fitness",
+      equipment: ["bands", "dumbbells", "bench"],
+    });
+
+    Array.from({ length: 10 }, (_, variationIndex) => {
+      const program = generateWeeklyProgram(
+        questionnaire,
+        `back-chest-bands-db-bench-fly-enforcement-${variationIndex}`,
+        {
+          phaseIndex: 2,
+          variation: {
+            seed: "back-chest-bands-db-bench-fly-enforcement",
+            variationIndex,
+            useRecentMemory: false,
+          },
+        }
+      );
+      const mains = getMainExercises(program);
+      const chestMains = mains.filter((exercise) => hasHorizontalPushMain(exercise));
+      const available = normalizeEquipmentSelection(questionnaire.equipment).available;
+      const hasEligibleFly = exercises
+        .filter((exercise) => exercise.category === "main")
+        .filter((exercise) => isFlyMain(exercise) && hasHorizontalPushMain(exercise))
+        .some((exercise) => isExerciseEligible(exercise, available));
+
+      expect(chestMains.length).toBe(2);
+      expect(hasEligibleFly).toBe(true);
+      expect(isFlyMain(chestMains[1]!)).toBe(true);
+      expect(chestMains.filter((exercise) => isPressMain(exercise)).length).toBe(1);
     });
   });
 
@@ -344,5 +379,95 @@ describe("back + chest 3-day final contract", () => {
         !(phases[0].vertical === phases[1].vertical && phases[1].vertical === phases[2].vertical)
       ).toBe(true);
     }
+  });
+
+  test("phase 1 intermediate/advanced gym avoids machine-locked chest press defaults", () => {
+    (["Intermediate", "Advanced"] as const).forEach((experience) => {
+      const questionnaire = buildQuestionnaire(experience, {
+        goals: "General fitness",
+        equipment: ["gym"],
+      });
+      const pressIds = new Set<string>();
+      let sawNonMachinePress = false;
+
+      Array.from({ length: 12 }, (_, variationIndex) => {
+        const program = generateWeeklyProgram(
+          questionnaire,
+          `back-chest-${experience.toLowerCase()}-activation-press-variety-${variationIndex}`,
+          {
+            phaseIndex: 1,
+            variation: {
+              seed: `back-chest-${experience.toLowerCase()}-activation-press-variety`,
+              variationIndex,
+              useRecentMemory: false,
+            },
+          }
+        );
+        const pressMain = getMainExercises(program).find((exercise) => isPressMain(exercise));
+        expect(pressMain).toBeTruthy();
+        if (!pressMain) return;
+
+        pressIds.add(pressMain.id);
+        const machineOnly =
+          pressMain.equipment.includes("machines") &&
+          pressMain.equipment.every((equipment) => equipment === "machines");
+        if (!machineOnly) {
+          sawNonMachinePress = true;
+        }
+      });
+
+      expect(sawNonMachinePress).toBe(true);
+      expect(pressIds.size).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  test("intermediate template rotation uses row+vertical variants and avoids pullover when vertical is available", () => {
+    const questionnaire = buildQuestionnaire("Intermediate", {
+      goals: "General fitness",
+      equipment: ["gym"],
+    });
+    const backOrders = new Set<string>();
+
+    Array.from({ length: 10 }, (_, variationIndex) => {
+      const program = generateWeeklyProgram(
+        questionnaire,
+        `back-chest-intermediate-template-rotation-${variationIndex}`,
+        {
+          phaseIndex: 2,
+          variation: {
+            seed: "back-chest-intermediate-template-rotation",
+            variationIndex,
+            useRecentMemory: false,
+          },
+        }
+      );
+      const mains = getMainExercises(program);
+      const backMains = mains.filter(
+        (exercise) =>
+          isHorizontalPullMain(exercise) ||
+          isVerticalPullMain(exercise) ||
+          isPulloverLatAccentMain(exercise)
+      );
+      const backOrder = backMains
+        .map((exercise) =>
+          isPulloverLatAccentMain(exercise)
+            ? "pullover"
+            : isHorizontalPullMain(exercise)
+            ? "row"
+            : "vertical"
+        )
+        .join(">");
+
+      expect(mains.length).toBe(4);
+      expect(mains.filter(isPressMain).length).toBe(1);
+      expect(mains.filter(isFlyMain).length).toBe(1);
+      expect(mains.filter(isHorizontalPullMain).length).toBeGreaterThanOrEqual(1);
+      expect(mains.filter(isVerticalPullMain).length).toBeGreaterThanOrEqual(1);
+      expect(mains.some((exercise) => isPulloverLatAccentMain(exercise))).toBe(false);
+      backOrders.add(backOrder);
+    });
+
+    expect(backOrders.has("row>vertical")).toBe(true);
+    expect(backOrders.has("vertical>row")).toBe(true);
   });
 });

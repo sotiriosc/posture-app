@@ -20,6 +20,7 @@ export type ThreeDayMainLanePlanEntry = {
     | "lateral_delt"
     | "shoulder_pull"
     | "shoulder_structural_secondary"
+    | "shoulder_structural_alternate"
     | "squat_primary"
     | "hinge_primary"
     | "single_leg_or_secondary_squat"

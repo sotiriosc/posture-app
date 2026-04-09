@@ -31,6 +31,7 @@ import {
 import Button from "@/components/ui/Button";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
+import { buildProgramVariationOptions } from "@/lib/programVariationClient";
 import type { Exercise } from "@/lib/exercises";
 import type {
   ExerciseFeedback,
@@ -677,6 +678,11 @@ export default function ResultsRoutine() {
       weekIndex: 1,
       cycleIndex: 1,
       totalWeekIndex: (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1,
+      variation: buildProgramVariationOptions({
+        settingsHash: questionnaireSignature,
+        variationIndex: nextProgramVersion,
+        recentProgram: program,
+      }),
     });
     const baseProgress: ProgramProgress = {
       programId: nextProgram.id,
@@ -741,7 +747,11 @@ export default function ResultsRoutine() {
           return;
         }
       }
-      const newProgram = generateWeeklyProgram(data, uuid());
+      const variation = buildProgramVariationOptions({
+        settingsHash: questionnaireSignature,
+        variationIndex: state?.programVersion ?? 0,
+      });
+      const newProgram = generateWeeklyProgram(data, uuid(), variation ? { variation } : undefined);
       await saveProgram(newProgram);
       setProgram(newProgram);
     };
@@ -761,6 +771,11 @@ export default function ResultsRoutine() {
         weekIndex: program.weekIndex ?? 1,
         cycleIndex: program.cycleIndex ?? 1,
         totalWeekIndex: program.totalWeekIndex ?? program.weekIndex ?? 1,
+        variation: buildProgramVariationOptions({
+          settingsHash: questionnaireSignature,
+          variationIndex: state?.programVersion ?? 0,
+          recentProgram: program,
+        }),
       });
       await saveProgram(reconciled);
       setProgram(reconciled);
@@ -1044,6 +1059,11 @@ export default function ResultsRoutine() {
                 (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1
               ),
               recentLogs,
+              variation: buildProgramVariationOptions({
+                settingsHash: questionnaireSignature,
+                variationIndex: nextProgramVersion,
+                recentProgram: program,
+              }),
             });
       const nowIso = new Date().toISOString();
       const nextPhaseIndex = nextProgram.phaseIndex ?? 1;

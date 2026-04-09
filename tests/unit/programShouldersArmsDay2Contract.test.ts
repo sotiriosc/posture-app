@@ -230,6 +230,99 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
     });
   });
 
+  test("beginner template rotation can produce rear-delt or shoulder-support third main", () => {
+    const templateThirdMainCategories = new Set<string>();
+
+    Array.from({ length: 8 }, (_, variationIndex) => {
+      const seed = `day2-beginner-template-rotation-${variationIndex}`;
+      const program = generateWeeklyProgram(
+        buildQuestionnaire({
+          experience: "Beginner",
+          equipment: ["gym"],
+        }),
+        seed,
+        {
+          phaseIndex: 1,
+          variation: {
+            seed: "day2-beginner-template-rotation",
+            variationIndex,
+            useRecentMemory: false,
+          },
+        }
+      );
+      const mains = getMainExercises(program);
+      const categories = mains.map((exercise) => resolveMainCategory(exercise));
+      const thirdMainCategory = categories[2];
+
+      expect(mains.length).toBe(3);
+      expect(categories.filter((category) => category === "ohp").length).toBe(1);
+      expect(categories.filter((category) => category === "lateral").length).toBe(1);
+      expect(
+        thirdMainCategory === "rearDeltMain" || thirdMainCategory === "shoulderSupport"
+      ).toBe(true);
+      expect(mains.some((exercise) => isRowMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isBackPullMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isFacePullMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isExternalRotationMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isCarryExercise(exercise))).toBe(false);
+
+      if (thirdMainCategory) templateThirdMainCategories.add(thirdMainCategory);
+    });
+
+    expect(templateThirdMainCategories.has("rearDeltMain")).toBe(true);
+    expect(templateThirdMainCategories.has("shoulderSupport")).toBe(true);
+  });
+
+  test("intermediate template rotation uses multiple valid shoulder extra layouts and support variants", () => {
+    const extraOrderSignatures = new Set<string>();
+    const supportIds = new Set<string>();
+
+    Array.from({ length: 12 }, (_, variationIndex) => {
+      const seed = `day2-intermediate-template-rotation-${variationIndex}`;
+      const program = generateWeeklyProgram(
+        buildQuestionnaire({
+          experience: "Intermediate",
+          equipment: ["gym"],
+        }),
+        seed,
+        {
+          phaseIndex: 2,
+          variation: {
+            seed: "day2-intermediate-template-rotation",
+            variationIndex,
+            useRecentMemory: false,
+          },
+        }
+      );
+      const mains = getMainExercises(program);
+      const categories = mains.map((exercise) => resolveMainCategory(exercise));
+      const extras = categories.slice(2).filter((category) =>
+        ["rearDeltMain", "shoulderSupport"].includes(category)
+      );
+      const supportMain = mains.find(
+        (exercise) => resolveMainCategory(exercise) === "shoulderSupport"
+      );
+
+      expect(mains.length).toBe(4);
+      expect(categories.filter((category) => category === "ohp").length).toBe(1);
+      expect(categories.filter((category) => category === "lateral").length).toBe(1);
+      expect(categories.filter((category) => category === "rearDeltMain").length).toBeLessThanOrEqual(1);
+      expect(categories.filter((category) => category === "shoulderSupport").length).toBeGreaterThanOrEqual(1);
+      expect(mains.some((exercise) => isRowMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isBackPullMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isFacePullMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isExternalRotationMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isCarryExercise(exercise))).toBe(false);
+
+      extraOrderSignatures.add(extras.join(">"));
+      if (supportMain) supportIds.add(supportMain.id);
+    });
+
+    expect(extraOrderSignatures.has("rearDeltMain>shoulderSupport")).toBe(true);
+    expect(extraOrderSignatures.has("shoulderSupport>rearDeltMain")).toBe(true);
+    expect(supportIds.size).toBeGreaterThanOrEqual(2);
+  });
+
   test("intermediate/advanced gym extra shoulders include non-machine complementary support", () => {
     (["Intermediate", "Advanced"] as const).forEach((experience) => {
       const seed = `day2-complementary-support-${experience.toLowerCase()}`;
@@ -246,6 +339,40 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
         support.equipment.includes("machines") &&
         support.equipment.every((equipment) => equipment === "machines");
       expect(machineOnly).toBe(false);
+    });
+  });
+
+  test("phase 1 intermediate/advanced OHP anchor is not locked to machine default", () => {
+    (["Intermediate", "Advanced"] as const).forEach((experience) => {
+      let sawNonMachineOhp = false;
+
+      Array.from({ length: 12 }, (_, variationIndex) => {
+        const seed = `day2-${experience.toLowerCase()}-activation-ohp-variety-${variationIndex}`;
+        const program = generateWeeklyProgram(
+          buildQuestionnaire({
+            experience,
+            equipment: ["gym"],
+          }),
+          seed,
+          {
+            phaseIndex: 1,
+            variation: {
+              seed: `day2-${experience.toLowerCase()}-activation-ohp-variety`,
+              variationIndex,
+              useRecentMemory: false,
+            },
+          }
+        );
+        const ohp = getMainExercises(program).find((exercise) => resolveMainCategory(exercise) === "ohp");
+        expect(ohp).toBeTruthy();
+        if (!ohp) return;
+        const machineOnly =
+          ohp.equipment.includes("machines") &&
+          ohp.equipment.every((equipment) => equipment === "machines");
+        if (!machineOnly) sawNonMachineOhp = true;
+      });
+
+      expect(sawNonMachineOhp).toBe(true);
     });
   });
 
@@ -270,6 +397,55 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
     expect(mains.some((exercise) => isFacePullMainLeak(exercise))).toBe(false);
     expect(mains.some((exercise) => isExternalRotationMainLeak(exercise))).toBe(false);
     expect(mains.some((exercise) => isCarryExercise(exercise))).toBe(false);
+  });
+
+  test("mixed-equipment seed sweep never leaks non-shoulder mains on Day 2", () => {
+    const allowedCategories = new Set(["ohp", "lateral", "rearDeltMain", "shoulderSupport"]);
+    const cases: Array<{
+      experience: "Intermediate" | "Advanced";
+      phaseIndex: 2 | 3;
+      expectedMainCount: number;
+    }> = [
+      { experience: "Intermediate", phaseIndex: 2, expectedMainCount: 4 },
+      { experience: "Advanced", phaseIndex: 3, expectedMainCount: 4 },
+    ];
+    const equipmentProfiles: QuestionnaireData["equipment"][] = [
+      ["gym", "bands", "none"],
+      ["bands", "dumbbells", "bench"],
+    ];
+
+    cases.forEach(({ experience, phaseIndex, expectedMainCount }) => {
+      equipmentProfiles.forEach((equipment, equipmentIndex) => {
+        Array.from({ length: 12 }, (_, variationIndex) => {
+          const seed = `day2-mixed-shoulder-only-sweep-${experience.toLowerCase()}-${equipmentIndex}-${variationIndex}`;
+          const program = generateWeeklyProgram(
+            buildQuestionnaire({
+              experience,
+              equipment,
+            }),
+            seed,
+            {
+              phaseIndex,
+              variation: {
+                seed: `day2-mixed-shoulder-only-sweep-${experience.toLowerCase()}-${equipmentIndex}`,
+                variationIndex,
+                useRecentMemory: false,
+              },
+            }
+          );
+          const mains = getMainExercises(program);
+          const categories = mains.map((exercise) => resolveMainCategory(exercise));
+
+          expect(mains.length).toBe(expectedMainCount);
+          expect(categories.every((category) => allowedCategories.has(category))).toBe(true);
+          expect(mains.some((exercise) => isRowMainLeak(exercise))).toBe(false);
+          expect(mains.some((exercise) => isBackPullMainLeak(exercise))).toBe(false);
+          expect(mains.some((exercise) => isFacePullMainLeak(exercise))).toBe(false);
+          expect(mains.some((exercise) => isExternalRotationMainLeak(exercise))).toBe(false);
+          expect(mains.some((exercise) => isCarryExercise(exercise))).toBe(false);
+        });
+      });
+    });
   });
 
   test("beginner has 2 arm accessories + 1 carry finisher", () => {

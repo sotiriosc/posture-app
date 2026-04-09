@@ -175,4 +175,17 @@ describe("questionnaire change confirmation flow", () => {
     ) as typeof initialQuestionnaire;
     expect(savedQuestionnaire.daysPerWeek).toBe(4);
   });
+
+  test("unchanged submit still regenerates to allow same-profile variety", async () => {
+    fireEvent.click(screen.getByTestId("generate-routine"));
+
+    await waitFor(() => {
+      expect(mocks.saveProgram).toHaveBeenCalledTimes(1);
+      expect(mocks.saveProgramProgress).toHaveBeenCalledTimes(1);
+    });
+
+    expect(screen.queryByTestId("questionnaire-change-confirm-modal")).toBeNull();
+    expect(mocks.clearDraft).toHaveBeenCalledWith("session-live");
+    expect(mocks.routerPush).toHaveBeenCalledWith("/results");
+  });
 });

@@ -8,6 +8,7 @@ import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
 import { clearDraft } from "@/lib/sessionDraftStore";
 import { generateWeeklyProgram } from "@/lib/program";
+import { buildProgramVariationOptions } from "@/lib/programVariationClient";
 import { saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
 import type { ProgramProgress } from "@/lib/types";
 
@@ -127,7 +128,15 @@ export default function QuestionnaireForm() {
     }
 
     try {
-      const nextProgram = generateWeeklyProgram(next, uuid());
+      const variation = buildProgramVariationOptions({
+        settingsHash: questionnaireSignature,
+        variationIndex: nextProgramVersion,
+      });
+      const nextProgram = generateWeeklyProgram(
+        next,
+        uuid(),
+        variation ? { variation } : undefined
+      );
       const nowIso = new Date().toISOString();
       const nextProgress: ProgramProgress = {
         programId: nextProgram.id,
@@ -270,13 +279,7 @@ export default function QuestionnaireForm() {
           return;
         }
 
-        if (!requiresChangeConfirmation) {
-          void commitAndRegenerateProgram(data);
-          return;
-        }
-
-        persistQuestionnaire(data);
-        router.push("/results");
+        void commitAndRegenerateProgram(data);
       }}
     >
       <div>

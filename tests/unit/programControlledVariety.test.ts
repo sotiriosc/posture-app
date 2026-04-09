@@ -4,6 +4,8 @@ import { exerciseById, type Exercise } from "@/lib/exercises";
 import {
   clearProgramVariationHistory,
   generateWeeklyProgram,
+  type ProgramDayKey,
+  type ProgramRecentGenerationSummary,
 } from "@/lib/program";
 
 const normalizeToken = (value: string) =>
@@ -100,6 +102,16 @@ const getMainExercises = (
     .map((item) => exerciseById(item.exerciseId))
     .filter((exercise): exercise is Exercise => Boolean(exercise));
 
+const daySectionSignature = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  dayTitle: "Back + Chest" | "Shoulders + Arms",
+  section: "main" | "accessory"
+) =>
+  getDay(program, dayTitle).routine
+    .filter((item) => item.section === section)
+    .map((item) => item.exerciseId)
+    .join(",");
+
 const weekMainSignature = (program: ReturnType<typeof generateWeeklyProgram>) =>
   program.week
     .map((day) =>
@@ -115,7 +127,31 @@ const weekFullRoutineSignature = (program: ReturnType<typeof generateWeeklyProgr
     .map((day) => day.routine.map((item) => `${item.section}:${item.exerciseId}`).join(","))
     .join("|");
 
-const buildRecentGenerationSummary = (program: ReturnType<typeof generateWeeklyProgram>) => {
+const templateKeyByDayTitle: Record<string, string> = {
+  "Back + Chest": "back_chest_intermediate_press_fly_row_vertical",
+  "Shoulders + Arms": "shoulders_arms_ohp_lateral_rear_support",
+};
+
+const dayTitleToKey = (dayTitle: string): ProgramDayKey | null => {
+  if (dayTitle === "Back + Chest") return "day1_back_chest";
+  if (dayTitle === "Shoulders + Arms") return "day2_shoulders_arms";
+  if (dayTitle === "Legs + Abs") return "day3_legs_abs";
+  return null;
+};
+
+const buildRecentGenerationSummary = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  context: {
+    settingsHash: string;
+    variationIndex: number;
+  }
+): ProgramRecentGenerationSummary => {
+  const resolvedPhaseIndex = ((): 1 | 2 | 3 => {
+    const rawPhase = Number(program.phaseIndex ?? program.phase?.phaseIndex ?? 1);
+    if (rawPhase >= 3) return 3;
+    if (rawPhase <= 1) return 1;
+    return 2;
+  })();
   const exerciseIds = program.week.flatMap((day) =>
     day.routine.map((item) => item.exerciseId)
   );
@@ -123,13 +159,90 @@ const buildRecentGenerationSummary = (program: ReturnType<typeof generateWeeklyP
     .map((id) => exerciseById(id))
     .filter((exercise): exercise is Exercise => Boolean(exercise))
     .map((exercise) => exercise.familyKey ?? exercise.id);
+  const variantKeys = exerciseIds
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise))
+    .map(
+      (exercise) =>
+        exercise.variantKey ??
+        `${exercise.loadType}-${exercise.equipment.slice().sort().join("_") || "none"}`
+    );
+  const days = Object.fromEntries(
+    program.week.map((day) => {
+      const dayKey = dayTitleToKey(day.title);
+      const routineIds = day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId);
+      const accessoryIds = day.routine
+        .filter((item) => item.section === "accessory")
+        .map((item) => item.exerciseId);
+      const routineExercises = routineIds
+        .map((id) => exerciseById(id))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      const accessoryExercises = accessoryIds
+        .map((id) => exerciseById(id))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      const dayExercises = [...routineExercises, ...accessoryExercises];
+      const routineFamilyKeys = routineExercises.map(
+        (exercise) => exercise.familyKey ?? exercise.id
+      );
+      const accessoryFamilyKeys = accessoryExercises.map(
+        (exercise) => exercise.familyKey ?? exercise.id
+      );
+      const routineVariantKeys = routineExercises.map(
+        (exercise) =>
+          exercise.variantKey ??
+          `${exercise.loadType}-${exercise.equipment.slice().sort().join("_") || "none"}`
+      );
+      const accessoryVariantKeys = accessoryExercises.map(
+        (exercise) =>
+          exercise.variantKey ??
+          `${exercise.loadType}-${exercise.equipment.slice().sort().join("_") || "none"}`
+      );
+      const summary = {
+        templateKey: templateKeyByDayTitle[day.title],
+        phaseSummaries: [
+          {
+            phase: resolvedPhaseIndex,
+            routineIds,
+            accessoryIds,
+            routineFamilyKeys,
+            accessoryFamilyKeys,
+            routineVariantKeys,
+            accessoryVariantKeys,
+          },
+        ],
+        // Keep legacy fields for backward-compatibility hooks.
+        routineIds,
+        accessoryIds,
+        familyKeys: dayExercises.map((exercise) => exercise.familyKey ?? exercise.id),
+        variantKeys: dayExercises.map(
+          (exercise) =>
+            exercise.variantKey ??
+            `${exercise.loadType}-${exercise.equipment.slice().sort().join("_") || "none"}`
+        ),
+      };
+      return [
+        dayKey ?? day.title,
+        summary,
+      ];
+    })
+  );
   return {
+    settingsHash: context.settingsHash,
+    variationIndex: context.variationIndex,
+    generatedAt: Date.now(),
+    phaseIndex: resolvedPhaseIndex,
+    days,
     exerciseIds,
     familyKeys,
-    dayTemplateKeys: {
-      back_chest: "back_chest_intermediate_press_fly_row_vertical",
-      shoulders_arms: "shoulders_arms_ohp_lateral_rear_support",
-    },
+    variantKeys,
+    dayTemplateKeys: Object.fromEntries(
+      Object.entries(templateKeyByDayTitle).map(([title, templateKey]) => [
+        dayTitleToKey(title) ?? title,
+        templateKey,
+      ])
+    ),
   };
 };
 
@@ -181,6 +294,67 @@ describe("controlled variety engine pass", () => {
     });
 
     expect(new Set(signatures).size).toBeGreaterThan(1);
+  });
+
+  test("variationIndex is supported as an alias for index", () => {
+    const input: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["gym"],
+      daysPerWeek: 3,
+    };
+    const withVariationIndex = generateWeeklyProgram(input, "variation-index-alias-a", {
+      phaseIndex: 2,
+      variation: {
+        seed: "alias-check",
+        variationIndex: 3,
+        useRecentMemory: false,
+      },
+    });
+    const withLegacyIndex = generateWeeklyProgram(input, "variation-index-alias-b", {
+      phaseIndex: 2,
+      variation: {
+        seed: "alias-check",
+        index: 3,
+        useRecentMemory: false,
+      },
+    });
+
+    expectThreeDayContractsHold(withVariationIndex);
+    expectThreeDayContractsHold(withLegacyIndex);
+    expect(weekFullRoutineSignature(withVariationIndex)).toBe(
+      weekFullRoutineSignature(withLegacyIndex)
+    );
+  });
+
+  test("omitted variationIndex defaults to 0", () => {
+    const input: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["gym"],
+      daysPerWeek: 3,
+    };
+    const omittedIndex = generateWeeklyProgram(input, "variation-default-omitted", {
+      phaseIndex: 2,
+      variation: {
+        seed: "default-index-check",
+        useRecentMemory: false,
+      },
+    });
+    const explicitZero = generateWeeklyProgram(input, "variation-default-explicit", {
+      phaseIndex: 2,
+      variation: {
+        seed: "default-index-check",
+        variationIndex: 0,
+        useRecentMemory: false,
+      },
+    });
+
+    expectThreeDayContractsHold(omittedIndex);
+    expectThreeDayContractsHold(explicitZero);
+    expect(weekFullRoutineSignature(omittedIndex)).toBe(weekFullRoutineSignature(explicitZero));
   });
 
   test("limited-option slot may repeat across variation seeds (acceptable)", () => {
@@ -260,7 +434,46 @@ describe("controlled variety engine pass", () => {
     expect(weekMainSignature(second)).not.toBe(weekMainSignature(first));
   });
 
-  test("external recent-generation summary hook is accepted while preserving valid contracts", () => {
+  test("day-specific variety intent emphasizes Day 1 mains and Day 2 mains/accessories across same-profile regenerations", () => {
+    const input: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["gym", "bands"],
+      daysPerWeek: 3,
+    };
+    const options = {
+      phaseIndex: 2 as const,
+      variation: {
+        seed: "day-specific-variety-intent",
+        variationIndex: 2,
+        useRecentMemory: true,
+        settingsHash: "day-specific-variety-intent-profile",
+      },
+    };
+
+    const generated = Array.from({ length: 5 }, (_, index) =>
+      generateWeeklyProgram(input, `day-specific-variety-intent-${index}`, options)
+    );
+
+    generated.forEach((program) => expectThreeDayContractsHold(program));
+
+    const day1MainSignatures = generated.map((program) =>
+      daySectionSignature(program, "Back + Chest", "main")
+    );
+    const day2MainSignatures = generated.map((program) =>
+      daySectionSignature(program, "Shoulders + Arms", "main")
+    );
+    const day2AccessorySignatures = generated.map((program) =>
+      daySectionSignature(program, "Shoulders + Arms", "accessory")
+    );
+
+    expect(new Set(day1MainSignatures).size).toBeGreaterThan(1);
+    expect(new Set(day2MainSignatures).size).toBeGreaterThan(1);
+    expect(new Set(day2AccessorySignatures).size).toBeGreaterThan(1);
+  });
+
+  test("external recent-generation summary enforces repetition penalties while preserving contracts", () => {
     const input: QuestionnaireData = {
       goals: "General fitness",
       painAreas: [],
@@ -283,12 +496,15 @@ describe("controlled variety engine pass", () => {
       phaseIndex: 2,
       variation: {
         ...baseVariation,
-        recentGenerationSummary: buildRecentGenerationSummary(first),
+        recentGenerationSummary: buildRecentGenerationSummary(first, {
+          settingsHash: baseVariation.settingsHash,
+          variationIndex: baseVariation.index,
+        }),
       },
     });
 
     expectThreeDayContractsHold(first);
     expectThreeDayContractsHold(second);
-    expect(weekMainSignature(second).length).toBeGreaterThan(0);
+    expect(weekFullRoutineSignature(second)).not.toBe(weekFullRoutineSignature(first));
   });
 });
