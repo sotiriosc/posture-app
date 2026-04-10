@@ -12,7 +12,6 @@ import { computeEquipmentCapability } from "@/lib/engine/equipmentCapability";
 import { derivePoseFocus } from "@/lib/engine/poseFocus";
 import {
   MAX_PHASE_INDEX,
-  buildNextWeekPlan,
   decideProgramProgression,
   deriveUserTrainingState,
   getCycleLadder,
@@ -20,13 +19,22 @@ import {
   getPhaseProfile,
 } from "@/lib/phases";
 import type { UserTrainingState } from "@/lib/phases";
-import { optimizePhaseWeek } from "@/lib/phaseOptimizer";
-import { buildMovementProfile } from "@/lib/movementProfile";
-import { buildPhaseObjective } from "@/lib/phaseObjectives";
 import type { ExerciseFeedbackSummary } from "@/lib/logStore";
 import type { PoseAnalysis, PoseMetrics } from "@/lib/poseAnalyzer";
 import { createSeededRng, type RandomFn } from "@/lib/seededRng";
-import { buildSessionAdaptation } from "@/lib/sessionAdaptation";
+import {
+  advanceWeekWithProgressionPipeline,
+  finalizeGeneratedWeek,
+  normalizeWeekForProgramConstraints,
+} from "@/lib/program/postGenerationPipeline";
+import {
+  assembleAdvancedProgressionResult,
+  assembleProgram,
+  buildProgramConstraintWarnings,
+  buildProgramIntelligence,
+  buildProgramNextWeekPlan,
+  buildProgramPhaseMetadata,
+} from "@/lib/program/programAssembly";
 import {
   buildWarmupForDay,
   deriveDayIntentFromProgramDay,
@@ -1200,58 +1208,6 @@ const buildProgressionPolicy = (params: {
   };
 };
 
-const buildProgramIntelligence = (params: {
-  questionnaire: QuestionnaireData;
-  phaseIndex: number;
-  cycleIndex: number;
-  weekIndex: number;
-  week: ProgramDay[];
-  consistencyRate: number;
-  recentLogs?: import("@/lib/types").ExerciseLog[];
-  trainingState?: ReturnType<typeof deriveUserTrainingState>;
-  optimizerReport?: {
-    changedSlots: number;
-    totalSlots: number;
-  };
-}) => {
-  const {
-    questionnaire,
-    phaseIndex,
-    cycleIndex,
-    weekIndex,
-    week,
-    consistencyRate,
-    recentLogs = [],
-    trainingState,
-    optimizerReport,
-  } = params;
-
-  const movementProfile = buildMovementProfile({
-    questionnaire,
-    recentLogs,
-    consistencyRate,
-  });
-  const phaseObjective = buildPhaseObjective({
-    phaseIndex,
-    cycleIndex,
-    weekIndex,
-    movementProfile,
-  });
-  const sessionAdaptation = buildSessionAdaptation({
-    movementProfile,
-    trainingState,
-    changedSlots: optimizerReport?.changedSlots ?? 0,
-    totalSlots: optimizerReport?.totalSlots ?? 0,
-    week,
-  });
-
-  return {
-    movementProfile,
-    phaseObjective,
-    sessionAdaptation,
-  };
-};
-
 const pickBaselineFallbackExercise = (
   category: ExerciseCategory,
   loadType: ProgramRoutineItem["loadType"],
@@ -1692,6 +1648,29 @@ const ensureDistinctRoutine = (
   });
   return { ...day, routine };
 };
+
+const dedupeWeekForSelectionContext = (params: {
+  week: ProgramDay[];
+  available: Set<Equipment>;
+  selectionContext: SelectionContext;
+}) =>
+  params.week.map((day) =>
+    ensureDistinctRoutine(day, params.available, params.selectionContext)
+  );
+
+const normalizeWeekForSelectionContext = (params: {
+  week: ProgramDay[];
+  available: Set<Equipment>;
+  selectionContext: SelectionContext;
+}) =>
+  normalizeWeekForProgramConstraints({
+    week: params.week,
+    available: params.available,
+    selectionContext: params.selectionContext,
+    resolveEligibilityAvailabilityForDay,
+    ensureEligibleItem,
+    ensureDistinctRoutine,
+  });
 
 const dedupeCues = (cues: string[]) => {
   const seen = new Set<string>();
@@ -25427,21 +25406,6 @@ const buildSplitTemplates = (
   return builtDays;
 };
 
-const HIGH_PAIN_SUMMARY_CLAUSE =
-  "This plan prioritizes comfortable range of motion and control to restore movement before growth.";
-
-const applyHighPainSummaryClause = (
-  plan: { summary: string; change: string; reason: string },
-  painSeverity: PainSeverity
-) => {
-  if (painSeverity !== "high") return plan;
-  if (plan.summary.includes(HIGH_PAIN_SUMMARY_CLAUSE)) return plan;
-  return {
-    ...plan,
-    summary: `${plan.summary} ${HIGH_PAIN_SUMMARY_CLAUSE}`.trim(),
-  };
-};
-
 const attachStructuredPrepBlocksToWeek = (params: {
   week: ProgramDay[];
   available: Set<Equipment>;
@@ -25569,8 +25533,11 @@ export const generateWeeklyProgram = (
   const weekIndex = options?.weekIndex ?? 1;
   const totalWeekIndex = options?.totalWeekIndex ?? 1;
   const cycleIndex = options?.cycleIndex ?? 1;
-  const phaseMeta = getPhaseMetaByIndex(phaseIndex);
-  const profile = getPhaseProfile(phaseIndex);
+  const { phaseMeta } = buildProgramPhaseMetadata({
+    phaseIndex,
+    cycleIndex,
+    weekIndex,
+  });
   const trainingState =
     options?.trainingState ??
     deriveUserTrainingState({
@@ -25579,24 +25546,14 @@ export const generateWeeklyProgram = (
       painFlag: data.painAreas.length > 0,
       fatigueFlag: false,
     });
-  const phase = {
-    name: phaseMeta.phaseName,
-    phaseIndex,
-    cycleIndex,
-    weekIndex,
-    weekCount: weekIndex,
-    goal: profile.description,
-  };
-  const nextWeekPlan = applyHighPainSummaryClause(
-    buildNextWeekPlan({
-      complianceRate: 0,
-      painFlag: data.painAreas.length > 0,
-      fatigueFlag: false,
-      phaseName: phaseMeta.phaseName,
-      trainingState,
-    }),
-    selectionContext.painSeverity
-  );
+  const nextWeekPlan = buildProgramNextWeekPlan({
+    complianceRate: 0,
+    painFlag: data.painAreas.length > 0,
+    fatigueFlag: false,
+    phaseName: phaseMeta.phaseName,
+    trainingState,
+    painSeverity: selectionContext.painSeverity,
+  });
   const adjustedDays = days.map((day) =>
     adjustRoutineForPhase(
       day,
@@ -25640,99 +25597,45 @@ export const generateWeeklyProgram = (
     selectionRng,
     previousWeek: options?.previousWeek,
   };
-  const feedbackSubstitutedDays = applyFeedbackDrivenSubstitutions({
+  const structuredWeekResult = finalizeGeneratedWeek({
     week: adjustedDays,
-    daysPerWeek: normalizedDaysPerWeek,
-    context: dayRepairContext,
+    normalizeWeek: (week) =>
+      normalizeWeekForSelectionContext({
+        week,
+        available: equipmentContext.available,
+        selectionContext,
+      }),
+    substituteWeek: (week) =>
+      applyFeedbackDrivenSubstitutions({
+        week,
+        daysPerWeek: normalizedDaysPerWeek,
+        context: dayRepairContext,
+      }),
+    repairWeek: (week) =>
+      applyDayCurriculumConstraints({
+        week,
+        daysPerWeek: normalizedDaysPerWeek,
+        context: dayRepairContext,
+      }),
+    applyFeedbackSafety: (week) =>
+      applyFinalFeedbackSafetyPass({
+        week,
+        daysPerWeek: normalizedDaysPerWeek,
+        context: dayRepairContext,
+      }),
+    attachPrep: (week) =>
+      attachStructuredPrepBlocksToWeek({
+        week,
+        available: equipmentContext.available,
+        capabilityMode,
+        painAreas: selectionContext.painAreas,
+        painSeverity: selectionContext.painSeverity,
+        goal: selectionContext.goal,
+        experienceLevel: selectionContext.experienceLevel,
+        poseFocusTags: selectionContext.poseFocusTags,
+      }),
   });
-
-  const eligibleDays = feedbackSubstitutedDays
-    .map((day) => {
-      const availableForDay = resolveEligibilityAvailabilityForDay(
-        day.title,
-        equipmentContext.available
-      );
-      return {
-        ...day,
-        routine: day.routine.map((item) =>
-          ensureEligibleItem(item, availableForDay, selectionContext, day.title)
-        ),
-      };
-    })
-    .map((day) =>
-      ensureDistinctRoutine(day, equipmentContext.available, selectionContext)
-    );
-  const constraintAdjusted = applyDayCurriculumConstraints({
-    week: eligibleDays,
-    daysPerWeek: normalizedDaysPerWeek,
-    context: dayRepairContext,
-  });
-  const finalizedWeek = constraintAdjusted.week
-    .map((day) => {
-      const availableForDay = resolveEligibilityAvailabilityForDay(
-        day.title,
-        equipmentContext.available
-      );
-      return {
-        ...day,
-        routine: day.routine.map((item) =>
-          ensureEligibleItem(item, availableForDay, selectionContext, day.title)
-        ),
-      };
-    })
-    .map((day) =>
-      ensureDistinctRoutine(day, equipmentContext.available, selectionContext)
-    );
-  const feedbackSafetyWeek = applyFinalFeedbackSafetyPass({
-    week: finalizedWeek,
-    daysPerWeek: normalizedDaysPerWeek,
-    context: dayRepairContext,
-  }).map((day) => {
-    const availableForDay = resolveEligibilityAvailabilityForDay(
-      day.title,
-      equipmentContext.available
-    );
-    return {
-      ...day,
-      routine: day.routine.map((item) =>
-        ensureEligibleItem(item, availableForDay, selectionContext, day.title)
-      ),
-    };
-  });
-  const dedupedFeedbackSafetyWeek = feedbackSafetyWeek.map((day) =>
-    ensureDistinctRoutine(day, equipmentContext.available, selectionContext)
-  );
-  const stabilizedWeekResult = applyDayCurriculumConstraints({
-    week: dedupedFeedbackSafetyWeek,
-    daysPerWeek: normalizedDaysPerWeek,
-    context: dayRepairContext,
-  });
-  const stabilizedWeek = stabilizedWeekResult.week
-    .map((day) => {
-      const availableForDay = resolveEligibilityAvailabilityForDay(
-        day.title,
-        equipmentContext.available
-      );
-      return {
-        ...day,
-        routine: day.routine.map((item) =>
-          ensureEligibleItem(item, availableForDay, selectionContext, day.title)
-        ),
-      };
-    })
-    .map((day) =>
-      ensureDistinctRoutine(day, equipmentContext.available, selectionContext)
-    );
-  const structuredPrepWeek = attachStructuredPrepBlocksToWeek({
-    week: stabilizedWeek,
-    available: equipmentContext.available,
-    capabilityMode,
-    painAreas: selectionContext.painAreas,
-    painSeverity: selectionContext.painSeverity,
-    goal: selectionContext.goal,
-    experienceLevel: selectionContext.experienceLevel,
-    poseFocusTags: selectionContext.poseFocusTags,
-  });
+  const structuredPrepWeek = structuredWeekResult.week;
   emitFinalSelectionTraceForWeek({
     week: structuredPrepWeek,
     selectionContext,
@@ -25741,13 +25644,11 @@ export const generateWeeklyProgram = (
     selectionAuditHook: options?.selectionAuditHook,
   });
   pushProgramConstraintWarnings(
-    [...constraintAdjusted.warnings, ...stabilizedWeekResult.warnings].map((warning) => ({
+    buildProgramConstraintWarnings({
       programId,
       phaseName: phaseMeta.phaseName,
-      dayTitle: warning.dayTitle,
-      kind: warning.kind,
-      message: warning.message,
-    }))
+      warnings: structuredWeekResult.warnings,
+    })
   );
   const intelligence = buildProgramIntelligence({
     questionnaire: data,
@@ -25760,27 +25661,20 @@ export const generateWeeklyProgram = (
   });
   commitProgramVariationSnapshot(selectionContext.variationState, structuredPrepWeek);
 
-  return {
-    id: programId,
-    userId: null,
+  return assembleProgram({
+    programId,
     createdAt: timestamp,
-    updatedAt: timestamp,
-    templateVersion: PROGRAM_TEMPLATE_VERSION,
     goalTrack: data.goals ?? null,
     daysPerWeek: normalizedDaysPerWeek,
-    estimatedSessionMinutesRange: { min: 45, max: 60 },
-    phaseIndex: phaseMeta.phaseIndex,
-    phaseName: phaseMeta.phaseName,
+    phaseIndex,
     weekIndex,
     totalWeekIndex,
     cycleIndex,
-    phase,
     nextWeekPlan,
-    ...intelligence,
     week: structuredPrepWeek,
-    source: "local",
-    deletedAt: null,
-  };
+    intelligence,
+    templateVersion: PROGRAM_TEMPLATE_VERSION,
+  });
 };
 
 export const generateNextPhaseProgram = (params: {
@@ -25918,6 +25812,9 @@ export const generateNextPhaseProgram = (params: {
         feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
       })
     : program;
+  const resolvedPhaseIndex = phaseProgram.phaseIndex ?? nextPhaseIndex;
+  const resolvedCycleIndex = phaseProgram.cycleIndex ?? nextCycleIndex;
+  const resolvedWeekIndex = phaseProgram.weekIndex ?? nextWeekIndex;
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
   const phaseCapability = computeEquipmentCapability(questionnaire.equipment);
   const phaseCapabilityMode: EquipmentCapabilityMode = phaseCapability.hasLoad
@@ -25930,153 +25827,124 @@ export const generateNextPhaseProgram = (params: {
     poseAnalysis,
     assessmentReport,
     {
-      phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
+      phaseIndex: resolvedPhaseIndex,
       phaseName:
-        phaseProgram.phaseName ??
-        getPhaseMetaByIndex(phaseProgram.phaseIndex ?? nextPhaseIndex).phaseName,
+        phaseProgram.phaseName ?? getPhaseMetaByIndex(resolvedPhaseIndex).phaseName,
       capabilityMode: phaseCapabilityMode,
       feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
       recentlyUsedExerciseIds,
     }
   );
-  const phaseWeek = enforceMaterialWeekChange({
+  const phaseDaysPerWeek = normalizeDaysPerWeek(phaseProgram.daysPerWeek);
+  const progressedPhaseResult = advanceWeekWithProgressionPipeline({
     currentWeek: currentProgram.week,
-    nextWeek: phaseProgram.week,
-    cycleIndex: phaseProgram.cycleIndex ?? nextCycleIndex,
-    available: equipmentContext.available,
-    selectionContext: phaseSelectionContext,
-  });
-  const remappedPhaseWeek = remapWeekForProgressiveNovelty({
-    currentWeek: currentProgram.week,
-    nextWeek: phaseWeek,
-    available: equipmentContext.available,
-    cycleIndex: phaseProgram.cycleIndex ?? nextCycleIndex,
-    phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
-    painAreas: questionnaire.painAreas,
-    selectionContext: phaseSelectionContext,
-  });
-  const optimizedPhase = optimizePhaseWeek({
-    proposedWeek: remappedPhaseWeek,
-    previousWeek: currentProgram.week,
+    proposedWeek: phaseProgram.week,
     questionnaire,
     availableEquipment: equipmentContext.available,
-    phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
-    cycleIndex: phaseProgram.cycleIndex ?? nextCycleIndex,
+    phaseIndex: resolvedPhaseIndex,
+    cycleIndex: resolvedCycleIndex,
+    enforceMaterialWeekChange: (currentWeek, nextWeek) =>
+      enforceMaterialWeekChange({
+        currentWeek,
+        nextWeek,
+        cycleIndex: resolvedCycleIndex,
+        available: equipmentContext.available,
+        selectionContext: phaseSelectionContext,
+      }),
+    remapWeekForNovelty: (currentWeek, nextWeek) =>
+      remapWeekForProgressiveNovelty({
+        currentWeek,
+        nextWeek,
+        available: equipmentContext.available,
+        cycleIndex: resolvedCycleIndex,
+        phaseIndex: resolvedPhaseIndex,
+        painAreas: questionnaire.painAreas,
+        selectionContext: phaseSelectionContext,
+      }),
+    enforceProgressiveDemand: (previousWeek, nextWeek) =>
+      enforceProgressiveDemand({
+        previousWeek,
+        nextWeek,
+        available: equipmentContext.available,
+        phaseIndex: resolvedPhaseIndex,
+        cycleIndex: resolvedCycleIndex,
+        experienceLevel: getExperienceProfile(
+          questionnaire.experience,
+          questionnaire.goals
+        ).level,
+        trainingState,
+        selectionContext: phaseSelectionContext,
+      }),
+    dedupeWeek: (week) =>
+      dedupeWeekForSelectionContext({
+        week,
+        available: equipmentContext.available,
+        selectionContext: phaseSelectionContext,
+      }),
+    repairWeek: (week) =>
+      applyDayCurriculumConstraints({
+        week,
+        daysPerWeek: phaseDaysPerWeek,
+        context: {
+          available: equipmentContext.available,
+          selectionContext: phaseSelectionContext,
+          capabilityMode: phaseCapabilityMode,
+          previousWeek: currentProgram.week,
+        },
+      }),
+    normalizeWeek: (week) =>
+      normalizeWeekForSelectionContext({
+        week,
+        available: equipmentContext.available,
+        selectionContext: phaseSelectionContext,
+      }),
+    attachPrep: (week) =>
+      attachStructuredPrepBlocksToWeek({
+        week,
+        available: equipmentContext.available,
+        capabilityMode: phaseCapabilityMode,
+        painAreas: phaseSelectionContext.painAreas,
+        painSeverity: phaseSelectionContext.painSeverity,
+        goal: phaseSelectionContext.goal,
+        experienceLevel: phaseSelectionContext.experienceLevel,
+        poseFocusTags: phaseSelectionContext.poseFocusTags,
+      }),
+    extraRepair: (week) =>
+      ensureWeekHasProgressiveChestPushMain({
+        week,
+        daysPerWeek: phaseDaysPerWeek,
+        available: equipmentContext.available,
+        selectionContext: phaseSelectionContext,
+        capabilityMode: phaseCapabilityMode,
+        phaseIndex: resolvedPhaseIndex,
+      }),
   });
-  const progressedPhaseWeek = enforceProgressiveDemand({
-    previousWeek: currentProgram.week,
-    nextWeek: optimizedPhase.week,
-    available: equipmentContext.available,
-    phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
-    cycleIndex: phaseProgram.cycleIndex ?? nextCycleIndex,
-    experienceLevel: getExperienceProfile(questionnaire.experience, questionnaire.goals).level,
-    trainingState,
-    selectionContext: phaseSelectionContext,
-  });
-  const distinctOptimizedPhaseWeek = progressedPhaseWeek.map((day) =>
-    ensureDistinctRoutine(day, equipmentContext.available, phaseSelectionContext)
-  );
-  const constrainedPhaseWeekResult = applyDayCurriculumConstraints({
-    week: distinctOptimizedPhaseWeek,
-    daysPerWeek: normalizeDaysPerWeek(phaseProgram.daysPerWeek),
-    context: {
-      available: equipmentContext.available,
-      selectionContext: phaseSelectionContext,
-      capabilityMode: phaseCapabilityMode,
-      previousWeek: currentProgram.week,
-    },
-  });
-  const constrainedPhaseWeek = constrainedPhaseWeekResult.week
-    .map((day) => {
-      const availableForDay = resolveEligibilityAvailabilityForDay(
-        day.title,
-        equipmentContext.available
-      );
-      return {
-        ...day,
-        routine: day.routine.map((item) =>
-          ensureEligibleItem(item, availableForDay, phaseSelectionContext, day.title)
-        ),
-      };
-    })
-    .map((day) =>
-      ensureDistinctRoutine(day, equipmentContext.available, phaseSelectionContext)
-    );
-  const progressedChestPushWeek = ensureWeekHasProgressiveChestPushMain({
-    week: constrainedPhaseWeek,
-    daysPerWeek: normalizeDaysPerWeek(phaseProgram.daysPerWeek),
-    available: equipmentContext.available,
-    selectionContext: phaseSelectionContext,
-    capabilityMode: phaseCapabilityMode,
-    phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
-  });
-  const structuredPhaseWeek = attachStructuredPrepBlocksToWeek({
-    week: progressedChestPushWeek,
-    available: equipmentContext.available,
-    capabilityMode: phaseCapabilityMode,
-    painAreas: phaseSelectionContext.painAreas,
-    painSeverity: phaseSelectionContext.painSeverity,
-    goal: phaseSelectionContext.goal,
-    experienceLevel: phaseSelectionContext.experienceLevel,
-    poseFocusTags: phaseSelectionContext.poseFocusTags,
-  });
+  const structuredPhaseWeek = progressedPhaseResult.week;
+  const optimizedPhase = progressedPhaseResult.optimizerResult;
   pushProgramConstraintWarnings(
-    constrainedPhaseWeekResult.warnings.map((warning) => ({
+    buildProgramConstraintWarnings({
       programId: phaseProgram.id,
       phaseName: phaseProgram.phaseName ?? null,
-      dayTitle: warning.dayTitle,
-      kind: warning.kind,
-      message: warning.message,
-    }))
+      warnings: progressedPhaseResult.warnings,
+    })
   );
-
-  const phaseMeta = getPhaseMetaByIndex(nextPhaseIndex);
   const painSeverity = getPainSeverity(questionnaire);
-  const nextWeekPlan = buildNextWeekPlan({
+
+  return assembleAdvancedProgressionResult({
+    program: phaseProgram,
+    questionnaire,
+    phaseIndex: resolvedPhaseIndex,
+    cycleIndex: resolvedCycleIndex,
+    weekIndex: resolvedWeekIndex,
+    week: structuredPhaseWeek,
     complianceRate,
     painFlag,
     fatigueFlag,
-    phaseName: phaseMeta.phaseName,
+    painSeverity,
     trainingState,
-  });
-  const enhancedNextWeekPlan = applyHighPainSummaryClause(
-    {
-      ...nextWeekPlan,
-      change: `${nextWeekPlan.change} ${optimizedPhase.summary}`,
-    },
-    painSeverity
-  );
-  const intelligence = buildProgramIntelligence({
-    questionnaire,
-    phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
-    cycleIndex: phaseProgram.cycleIndex ?? nextCycleIndex,
-    weekIndex: phaseProgram.weekIndex ?? nextWeekIndex,
-    week: structuredPhaseWeek,
-    consistencyRate: complianceRate,
     recentLogs,
-    trainingState,
-    optimizerReport: {
-      changedSlots: optimizedPhase.changedSlots,
-      totalSlots: optimizedPhase.totalSlots,
-    },
+    optimizerResult: optimizedPhase,
   });
-
-  return {
-    status: "advanced" as const,
-    program: {
-      ...phaseProgram,
-      week: structuredPhaseWeek,
-      nextWeekPlan: enhancedNextWeekPlan,
-      ...intelligence,
-      phaseOptimizerReport: {
-        summary: optimizedPhase.summary,
-        priorities: optimizedPhase.priorities,
-        changedSlots: optimizedPhase.changedSlots,
-        totalSlots: optimizedPhase.totalSlots,
-        exerciseReasons: optimizedPhase.exerciseReasons,
-      },
-    },
-  };
 };
 
 export const generateNextCycleProgram = (params: {
@@ -26198,6 +26066,9 @@ export const generateNextCycleProgram = (params: {
     previousWeek: currentProgram.week,
     feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
   });
+  const resolvedPhaseIndex = program.phaseIndex ?? transition.next.phaseIndex;
+  const resolvedCycleIndex = program.cycleIndex ?? transition.next.cycleIndex;
+  const resolvedWeekIndex = program.weekIndex ?? transition.next.weekIndex;
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
   const cycleCapability = computeEquipmentCapability(questionnaire.equipment);
   const cycleCapabilityMode: EquipmentCapabilityMode = cycleCapability.hasLoad
@@ -26210,143 +26081,113 @@ export const generateNextCycleProgram = (params: {
     poseAnalysis,
     assessmentReport,
     {
-      phaseIndex: program.phaseIndex ?? transition.next.phaseIndex,
+      phaseIndex: resolvedPhaseIndex,
       phaseName:
-        program.phaseName ??
-        getPhaseMetaByIndex(program.phaseIndex ?? transition.next.phaseIndex).phaseName,
+        program.phaseName ?? getPhaseMetaByIndex(resolvedPhaseIndex).phaseName,
       capabilityMode: cycleCapabilityMode,
       feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
       recentlyUsedExerciseIds,
     }
   );
-  const nextWeek = enforceMaterialWeekChange({
+  const cycleDaysPerWeek = normalizeDaysPerWeek(program.daysPerWeek);
+  const progressedCycleResult = advanceWeekWithProgressionPipeline({
     currentWeek: currentProgram.week,
-    nextWeek: program.week,
-    cycleIndex: program.cycleIndex ?? transition.next.cycleIndex,
-    available: equipmentContext.available,
-    selectionContext: cycleSelectionContext,
-  });
-  const remappedNextWeek = remapWeekForProgressiveNovelty({
-    currentWeek: currentProgram.week,
-    nextWeek,
-    available: equipmentContext.available,
-    cycleIndex: program.cycleIndex ?? transition.next.cycleIndex,
-    phaseIndex: program.phaseIndex ?? transition.next.phaseIndex,
-    painAreas: questionnaire.painAreas,
-    selectionContext: cycleSelectionContext,
-  });
-  const optimizedCycle = optimizePhaseWeek({
-    proposedWeek: remappedNextWeek,
-    previousWeek: currentProgram.week,
+    proposedWeek: program.week,
     questionnaire,
     availableEquipment: equipmentContext.available,
-    phaseIndex: program.phaseIndex ?? transition.next.phaseIndex,
-    cycleIndex: program.cycleIndex ?? transition.next.cycleIndex,
+    phaseIndex: resolvedPhaseIndex,
+    cycleIndex: resolvedCycleIndex,
+    enforceMaterialWeekChange: (currentWeek, nextWeek) =>
+      enforceMaterialWeekChange({
+        currentWeek,
+        nextWeek,
+        cycleIndex: resolvedCycleIndex,
+        available: equipmentContext.available,
+        selectionContext: cycleSelectionContext,
+      }),
+    remapWeekForNovelty: (currentWeek, nextWeek) =>
+      remapWeekForProgressiveNovelty({
+        currentWeek,
+        nextWeek,
+        available: equipmentContext.available,
+        cycleIndex: resolvedCycleIndex,
+        phaseIndex: resolvedPhaseIndex,
+        painAreas: questionnaire.painAreas,
+        selectionContext: cycleSelectionContext,
+      }),
+    enforceProgressiveDemand: (previousWeek, nextWeek) =>
+      enforceProgressiveDemand({
+        previousWeek,
+        nextWeek,
+        available: equipmentContext.available,
+        phaseIndex: resolvedPhaseIndex,
+        cycleIndex: resolvedCycleIndex,
+        experienceLevel: getExperienceProfile(
+          questionnaire.experience,
+          questionnaire.goals
+        ).level,
+        trainingState,
+        selectionContext: cycleSelectionContext,
+      }),
+    dedupeWeek: (week) =>
+      dedupeWeekForSelectionContext({
+        week,
+        available: equipmentContext.available,
+        selectionContext: cycleSelectionContext,
+      }),
+    repairWeek: (week) =>
+      applyDayCurriculumConstraints({
+        week,
+        daysPerWeek: cycleDaysPerWeek,
+        context: {
+          available: equipmentContext.available,
+          selectionContext: cycleSelectionContext,
+          capabilityMode: cycleCapabilityMode,
+          previousWeek: currentProgram.week,
+        },
+      }),
+    normalizeWeek: (week) =>
+      normalizeWeekForSelectionContext({
+        week,
+        available: equipmentContext.available,
+        selectionContext: cycleSelectionContext,
+      }),
+    attachPrep: (week) =>
+      attachStructuredPrepBlocksToWeek({
+        week,
+        available: equipmentContext.available,
+        capabilityMode: cycleCapabilityMode,
+        painAreas: cycleSelectionContext.painAreas,
+        painSeverity: cycleSelectionContext.painSeverity,
+        goal: cycleSelectionContext.goal,
+        experienceLevel: cycleSelectionContext.experienceLevel,
+        poseFocusTags: cycleSelectionContext.poseFocusTags,
+      }),
   });
-  const progressedCycleWeek = enforceProgressiveDemand({
-    previousWeek: currentProgram.week,
-    nextWeek: optimizedCycle.week,
-    available: equipmentContext.available,
-    phaseIndex: program.phaseIndex ?? transition.next.phaseIndex,
-    cycleIndex: program.cycleIndex ?? transition.next.cycleIndex,
-    experienceLevel: getExperienceProfile(questionnaire.experience, questionnaire.goals).level,
-    trainingState,
-    selectionContext: cycleSelectionContext,
-  });
-  const distinctOptimizedCycleWeek = progressedCycleWeek.map((day) =>
-    ensureDistinctRoutine(day, equipmentContext.available, cycleSelectionContext)
-  );
-  const constrainedCycleWeekResult = applyDayCurriculumConstraints({
-    week: distinctOptimizedCycleWeek,
-    daysPerWeek: normalizeDaysPerWeek(program.daysPerWeek),
-    context: {
-      available: equipmentContext.available,
-      selectionContext: cycleSelectionContext,
-      capabilityMode: cycleCapabilityMode,
-      previousWeek: currentProgram.week,
-    },
-  });
-  const constrainedCycleWeek = constrainedCycleWeekResult.week
-    .map((day) => {
-      const availableForDay = resolveEligibilityAvailabilityForDay(
-        day.title,
-        equipmentContext.available
-      );
-      return {
-        ...day,
-        routine: day.routine.map((item) =>
-          ensureEligibleItem(item, availableForDay, cycleSelectionContext, day.title)
-        ),
-      };
-    })
-    .map((day) =>
-      ensureDistinctRoutine(day, equipmentContext.available, cycleSelectionContext)
-    );
-  const structuredCycleWeek = attachStructuredPrepBlocksToWeek({
-    week: constrainedCycleWeek,
-    available: equipmentContext.available,
-    capabilityMode: cycleCapabilityMode,
-    painAreas: cycleSelectionContext.painAreas,
-    painSeverity: cycleSelectionContext.painSeverity,
-    goal: cycleSelectionContext.goal,
-    experienceLevel: cycleSelectionContext.experienceLevel,
-    poseFocusTags: cycleSelectionContext.poseFocusTags,
-  });
+  const structuredCycleWeek = progressedCycleResult.week;
+  const optimizedCycle = progressedCycleResult.optimizerResult;
   pushProgramConstraintWarnings(
-    constrainedCycleWeekResult.warnings.map((warning) => ({
+    buildProgramConstraintWarnings({
       programId: program.id,
       phaseName: program.phaseName ?? null,
-      dayTitle: warning.dayTitle,
-      kind: warning.kind,
-      message: warning.message,
-    }))
+      warnings: progressedCycleResult.warnings,
+    })
   );
-
-  const phaseMeta = getPhaseMetaByIndex(transition.next.phaseIndex);
   const painSeverity = getPainSeverity(questionnaire);
-  const nextWeekPlan = buildNextWeekPlan({
+
+  return assembleAdvancedProgressionResult({
+    program,
+    questionnaire,
+    phaseIndex: resolvedPhaseIndex,
+    cycleIndex: resolvedCycleIndex,
+    weekIndex: resolvedWeekIndex,
+    week: structuredCycleWeek,
     complianceRate,
     painFlag,
     fatigueFlag,
-    phaseName: phaseMeta.phaseName,
+    painSeverity,
     trainingState,
-  });
-  const enhancedNextWeekPlan = applyHighPainSummaryClause(
-    {
-      ...nextWeekPlan,
-      change: `${nextWeekPlan.change} ${optimizedCycle.summary}`,
-    },
-    painSeverity
-  );
-  const intelligence = buildProgramIntelligence({
-    questionnaire,
-    phaseIndex: program.phaseIndex ?? transition.next.phaseIndex,
-    cycleIndex: program.cycleIndex ?? transition.next.cycleIndex,
-    weekIndex: program.weekIndex ?? transition.next.weekIndex,
-    week: structuredCycleWeek,
-    consistencyRate: complianceRate,
     recentLogs,
-    trainingState,
-    optimizerReport: {
-      changedSlots: optimizedCycle.changedSlots,
-      totalSlots: optimizedCycle.totalSlots,
-    },
+    optimizerResult: optimizedCycle,
   });
-
-  return {
-    status: "advanced" as const,
-    program: {
-      ...program,
-      week: structuredCycleWeek,
-      nextWeekPlan: enhancedNextWeekPlan,
-      ...intelligence,
-      phaseOptimizerReport: {
-        summary: optimizedCycle.summary,
-        priorities: optimizedCycle.priorities,
-        changedSlots: optimizedCycle.changedSlots,
-        totalSlots: optimizedCycle.totalSlots,
-        exerciseReasons: optimizedCycle.exerciseReasons,
-      },
-    },
-  };
 };
