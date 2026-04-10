@@ -1,0 +1,5 @@
+{
+    "chatgpt.openOnStartup": true,
+    "chatgpt.runCodexInWindowsSubsystemForLinux": true,
+    "chatgpt.commentCodeLensEnabled": true
+}

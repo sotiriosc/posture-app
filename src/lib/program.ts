@@ -25795,6 +25795,9 @@ export const generateNextPhaseProgram = (params: {
   confidence?: number;
   capacity?: number;
   recentLogs?: import("@/lib/types").ExerciseLog[];
+  feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
+  poseAnalysis?: PoseAnalysis | null;
+  assessmentReport?: AssessmentReport | null;
   nextProgramId: string;
   seed?: string;
 }) => {
@@ -25810,6 +25813,9 @@ export const generateNextPhaseProgram = (params: {
     confidence,
     capacity,
     recentLogs = [],
+    feedbackSummaryByExercise,
+    poseAnalysis,
+    assessmentReport,
     nextProgramId,
     seed,
   } = params;
@@ -25875,7 +25881,8 @@ export const generateNextPhaseProgram = (params: {
   const nextWeekIndex = 1;
   const nextCycleIndex = 1;
   const nextTotalWeekIndex = totalWeekIndex + 1;
-  const feedbackSummaryByExercise = summarizeFeedbackFromLogs(recentLogs);
+  const resolvedFeedbackSummaryByExercise =
+    feedbackSummaryByExercise ?? summarizeFeedbackFromLogs(recentLogs);
   const recentlyUsedExerciseIds = buildRecentlyUsedExerciseIdSet({
     recentLogs,
     previousWeek: currentProgram.week,
@@ -25888,9 +25895,11 @@ export const generateNextPhaseProgram = (params: {
     totalWeekIndex: nextTotalWeekIndex,
     trainingState,
     seed,
+    poseAnalysis,
+    assessmentReport,
     recentLogs,
     previousWeek: currentProgram.week,
-    feedbackSummaryByExercise,
+    feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
   });
   const hasSameWeekTemplate =
     JSON.stringify(program.week) === JSON.stringify(currentProgram.week);
@@ -25902,9 +25911,11 @@ export const generateNextPhaseProgram = (params: {
         totalWeekIndex: nextTotalWeekIndex,
         trainingState,
         seed,
+        poseAnalysis,
+        assessmentReport,
         recentLogs,
         previousWeek: currentProgram.week,
-        feedbackSummaryByExercise,
+        feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
       })
     : program;
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
@@ -25916,15 +25927,15 @@ export const generateNextPhaseProgram = (params: {
     : "noneOnly";
   const phaseSelectionContext = buildSelectionContext(
     questionnaire,
-    undefined,
-    undefined,
+    poseAnalysis,
+    assessmentReport,
     {
       phaseIndex: phaseProgram.phaseIndex ?? nextPhaseIndex,
       phaseName:
         phaseProgram.phaseName ??
         getPhaseMetaByIndex(phaseProgram.phaseIndex ?? nextPhaseIndex).phaseName,
       capabilityMode: phaseCapabilityMode,
-      feedbackSummaryByExercise,
+      feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
       recentlyUsedExerciseIds,
     }
   );
@@ -26080,6 +26091,9 @@ export const generateNextCycleProgram = (params: {
   confidence?: number;
   capacity?: number;
   recentLogs?: import("@/lib/types").ExerciseLog[];
+  feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
+  poseAnalysis?: PoseAnalysis | null;
+  assessmentReport?: AssessmentReport | null;
   nextProgramId: string;
   seed?: string;
 }) => {
@@ -26095,6 +26109,9 @@ export const generateNextCycleProgram = (params: {
     confidence,
     capacity,
     recentLogs = [],
+    feedbackSummaryByExercise,
+    poseAnalysis,
+    assessmentReport,
     nextProgramId,
     seed,
   } = params;
@@ -26161,7 +26178,8 @@ export const generateNextCycleProgram = (params: {
       message: transition.message ?? trainingState.reason,
     };
   }
-  const feedbackSummaryByExercise = summarizeFeedbackFromLogs(recentLogs);
+  const resolvedFeedbackSummaryByExercise =
+    feedbackSummaryByExercise ?? summarizeFeedbackFromLogs(recentLogs);
   const recentlyUsedExerciseIds = buildRecentlyUsedExerciseIdSet({
     recentLogs,
     previousWeek: currentProgram.week,
@@ -26174,9 +26192,11 @@ export const generateNextCycleProgram = (params: {
     totalWeekIndex: transition.next.totalWeekIndex,
     trainingState,
     seed,
+    poseAnalysis,
+    assessmentReport,
     recentLogs,
     previousWeek: currentProgram.week,
-    feedbackSummaryByExercise,
+    feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
   });
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
   const cycleCapability = computeEquipmentCapability(questionnaire.equipment);
@@ -26187,15 +26207,15 @@ export const generateNextCycleProgram = (params: {
     : "noneOnly";
   const cycleSelectionContext = buildSelectionContext(
     questionnaire,
-    undefined,
-    undefined,
+    poseAnalysis,
+    assessmentReport,
     {
       phaseIndex: program.phaseIndex ?? transition.next.phaseIndex,
       phaseName:
         program.phaseName ??
         getPhaseMetaByIndex(program.phaseIndex ?? transition.next.phaseIndex).phaseName,
       capabilityMode: cycleCapabilityMode,
-      feedbackSummaryByExercise,
+      feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
       recentlyUsedExerciseIds,
     }
   );

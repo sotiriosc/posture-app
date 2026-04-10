@@ -7,8 +7,7 @@ import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
 import { clearDraft } from "@/lib/sessionDraftStore";
-import { generateWeeklyProgram } from "@/lib/program";
-import { buildProgramVariationOptions } from "@/lib/programVariationClient";
+import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
 import { saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
 import type { ProgramProgress } from "@/lib/types";
 
@@ -128,16 +127,22 @@ export default function QuestionnaireForm() {
     }
 
     try {
-      const variation = buildProgramVariationOptions({
-        settingsHash: questionnaireSignature,
-        variationIndex: nextProgramVersion,
-      });
-      const nextProgram = generateWeeklyProgram(
-        next,
-        uuid(),
-        variation ? { variation } : undefined
-      );
       const nowIso = new Date().toISOString();
+      const nextProgramId = uuid();
+      const signals = await buildSignalsFromLocalState({
+        programId: state?.activeProgramId ?? state?.programId ?? null,
+        questionnaire: next,
+        nowIso,
+      });
+      const result = generateProgram({
+        mode: "weekly",
+        signals,
+        nextProgramId,
+      });
+      if (!("program" in result)) {
+        throw new Error(result.message);
+      }
+      const nextProgram = result.program;
       const nextProgress: ProgramProgress = {
         programId: nextProgram.id,
         lastCompletedDayIndex: null,

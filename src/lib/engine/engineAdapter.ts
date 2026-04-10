@@ -1,10 +1,15 @@
 import {
   getProgramProgress,
   listAllExerciseLogs,
+  loadPrefs,
   listSessions,
 } from "@/lib/logStore";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import type { AssessmentReport } from "@/lib/assessmentEngine";
 import type { EngineHistory, EngineSignals } from "@/lib/engine/engineTypes";
+import type { PoseAnalysis } from "@/lib/poseAnalyzer";
+import type { LogPrefs } from "@/lib/types";
+import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 
 export const loadEngineHistory = async (
   programId?: string | null
@@ -30,26 +35,77 @@ const defaultQuestionnaire: QuestionnaireData = {
   daysPerWeek: 3,
 };
 
-export const buildSignalsFromLocalState = async (
-  params?: { programId?: string | null }
-): Promise<EngineSignals> => {
-  const history = await loadEngineHistory(params?.programId);
-  let questionnaire = defaultQuestionnaire;
+const normalizeDaysPerWeek = (value: unknown): QuestionnaireData["daysPerWeek"] => {
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+      ? Number(value)
+      : NaN;
+  return parsed === 4 || parsed === 5 ? parsed : 3;
+};
 
-  if (typeof window !== "undefined") {
+const normalizeQuestionnaireData = (
+  input?: Partial<QuestionnaireData> | null
+): QuestionnaireData => ({
+  ...defaultQuestionnaire,
+  ...(input ?? {}),
+  equipment: normalizeEquipmentSelectionValues(input?.equipment ?? ["none"]),
+  daysPerWeek: normalizeDaysPerWeek(input?.daysPerWeek),
+});
+
+export const buildEngineSignals = (params: {
+  questionnaire?: Partial<QuestionnaireData> | null;
+  history?: EngineHistory;
+  poseAnalysis?: PoseAnalysis | null;
+  assessmentReport?: AssessmentReport | null;
+  prefs?: LogPrefs | null;
+  nowIso?: string;
+}): EngineSignals => ({
+  questionnaire: normalizeQuestionnaireData(params.questionnaire),
+  history: {
+    sessions: params.history?.sessions ?? [],
+    exerciseLogs: params.history?.exerciseLogs ?? [],
+    programProgress: params.history?.programProgress ?? null,
+  },
+  poseAnalysis: params.poseAnalysis ?? null,
+  assessmentReport: params.assessmentReport ?? null,
+  prefs: params.prefs ?? null,
+  nowIso: params.nowIso ?? new Date().toISOString(),
+});
+
+export const buildSignalsFromLocalState = async (
+  params?: {
+    programId?: string | null;
+    questionnaire?: Partial<QuestionnaireData> | null;
+    history?: EngineHistory;
+    poseAnalysis?: PoseAnalysis | null;
+    assessmentReport?: AssessmentReport | null;
+    prefs?: LogPrefs | null;
+    nowIso?: string;
+  }
+): Promise<EngineSignals> => {
+  const history =
+    params?.history ?? (await loadEngineHistory(params?.programId));
+  const prefs =
+    params?.prefs ??
+    (await loadPrefs().catch(() => null));
+  let questionnaire = normalizeQuestionnaireData(params?.questionnaire);
+
+  if (!params?.questionnaire && typeof window !== "undefined") {
     const raw = window.localStorage.getItem("posture_questionnaire");
     if (raw) {
       const parsed = JSON.parse(raw) as Partial<QuestionnaireData>;
-      questionnaire = {
-        ...defaultQuestionnaire,
-        ...parsed,
-      };
+      questionnaire = normalizeQuestionnaireData(parsed);
     }
   }
 
-  return {
+  return buildEngineSignals({
     questionnaire,
     history,
-    nowIso: new Date().toISOString(),
-  };
+    poseAnalysis: params?.poseAnalysis,
+    assessmentReport: params?.assessmentReport,
+    prefs,
+    nowIso: params?.nowIso,
+  });
 };
