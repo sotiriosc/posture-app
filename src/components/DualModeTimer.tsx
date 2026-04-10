@@ -35,6 +35,8 @@ const clampDuration = (value: number, mode: TimerMode) => {
   return Math.min(max, Math.max(min, value));
 };
 
+const getCurrentTimestampMs = () => Date.now();
+
 const reconcileRuntimeState = (
   state: DualModeTimerRuntimeState | null | undefined
 ): DualModeTimerRuntimeState | null => {
@@ -42,7 +44,7 @@ const reconcileRuntimeState = (
 
   const exerciseSeconds = clampDuration(state.exerciseSeconds, "exercise");
   const restSeconds = clampDuration(state.restSeconds, "rest");
-  const now = Date.now();
+  const now = getCurrentTimestampMs();
   const baseline = Math.max(0, Math.floor(state.remainingSeconds));
 
   if (!state.running || !state.updatedAtMs) {
@@ -166,7 +168,7 @@ export default function DualModeTimer({
   const lastRemainingRef = useRef(remainingSeconds);
   const autoSwitchRef = useRef(false);
   const runtimeAnchorMsRef = useRef<number>(
-    reconciledPersistedState?.updatedAtMs ?? Date.now()
+    reconciledPersistedState?.updatedAtMs ?? getCurrentTimestampMs()
   );
 
   const activeSelectedSeconds =
@@ -242,19 +244,22 @@ export default function DualModeTimer({
 
   useEffect(() => {
     if (!reconciledPersistedState) return;
-    setMode(reconciledPersistedState.mode);
-    setRunning(reconciledPersistedState.running);
-    setRemainingSeconds(reconciledPersistedState.remainingSeconds);
-    setSelectedExerciseSeconds(reconciledPersistedState.exerciseSeconds);
-    setSelectedRestSeconds(reconciledPersistedState.restSeconds);
     modeRef.current = reconciledPersistedState.mode;
     runningRef.current = reconciledPersistedState.running;
     remainingRef.current = reconciledPersistedState.remainingSeconds;
     selectedExerciseRef.current = reconciledPersistedState.exerciseSeconds;
     selectedRestRef.current = reconciledPersistedState.restSeconds;
-    runtimeAnchorMsRef.current = reconciledPersistedState.updatedAtMs ?? Date.now();
+    runtimeAnchorMsRef.current =
+      reconciledPersistedState.updatedAtMs ?? getCurrentTimestampMs();
     lastRunningRef.current = false;
     lastRemainingRef.current = reconciledPersistedState.remainingSeconds;
+    queueMicrotask(() => {
+      setMode(reconciledPersistedState.mode);
+      setRunning(reconciledPersistedState.running);
+      setRemainingSeconds(reconciledPersistedState.remainingSeconds);
+      setSelectedExerciseSeconds(reconciledPersistedState.exerciseSeconds);
+      setSelectedRestSeconds(reconciledPersistedState.restSeconds);
+    });
   }, [reconciledPersistedState]);
 
   useEffect(() => {
@@ -270,7 +275,10 @@ export default function DualModeTimer({
     const remainingNow = remainingRef.current;
     if (!runningNow || remainingNow <= 0) return;
     const anchorMs = runtimeAnchorMsRef.current;
-    const elapsedSeconds = Math.max(0, Math.floor((Date.now() - anchorMs) / 1000));
+    const elapsedSeconds = Math.max(
+      0,
+      Math.floor((getCurrentTimestampMs() - anchorMs) / 1000)
+    );
     if (elapsedSeconds <= 0) return;
 
     const reconciled = reconcileRuntimeState({
@@ -283,7 +291,8 @@ export default function DualModeTimer({
     });
     if (!reconciled) return;
 
-    runtimeAnchorMsRef.current = reconciled.updatedAtMs ?? Date.now();
+    runtimeAnchorMsRef.current =
+      reconciled.updatedAtMs ?? getCurrentTimestampMs();
     if (reconciled.mode !== modeRef.current) {
       modeRef.current = reconciled.mode;
       setMode(reconciled.mode);
@@ -325,24 +334,28 @@ export default function DualModeTimer({
     if (remainingSeconds !== 0) return;
     if (mode === "exercise") {
       autoSwitchRef.current = true;
-      runtimeAnchorMsRef.current = Date.now();
+      runtimeAnchorMsRef.current = getCurrentTimestampMs();
       modeRef.current = "rest";
       runningRef.current = true;
       remainingRef.current = selectedRestSeconds;
-      setMode("rest");
-      setRemainingSeconds(selectedRestSeconds);
-      setRunning(true);
+      queueMicrotask(() => {
+        setMode("rest");
+        setRemainingSeconds(selectedRestSeconds);
+        setRunning(true);
+      });
       return;
     }
-    runtimeAnchorMsRef.current = Date.now();
+    runtimeAnchorMsRef.current = getCurrentTimestampMs();
     runningRef.current = false;
-    setRunning(false);
+    queueMicrotask(() => {
+      setRunning(false);
+    });
   }, [mode, remainingSeconds, selectedRestSeconds]);
 
   const handleModeChange = (nextMode: TimerMode) => {
     if (nextMode === mode) return;
     autoSwitchRef.current = false;
-    runtimeAnchorMsRef.current = Date.now();
+    runtimeAnchorMsRef.current = getCurrentTimestampMs();
     modeRef.current = nextMode;
     runningRef.current = false;
     remainingRef.current =
@@ -365,7 +378,7 @@ export default function DualModeTimer({
     if (mode === "exercise" && !running) setRemainingSeconds(next);
     if (mode === "exercise" && !running) {
       remainingRef.current = next;
-      runtimeAnchorMsRef.current = Date.now();
+      runtimeAnchorMsRef.current = getCurrentTimestampMs();
     }
     return next;
   };
@@ -377,7 +390,7 @@ export default function DualModeTimer({
     if (mode === "rest" && !running) setRemainingSeconds(next);
     if (mode === "rest" && !running) {
       remainingRef.current = next;
-      runtimeAnchorMsRef.current = Date.now();
+      runtimeAnchorMsRef.current = getCurrentTimestampMs();
     }
     return next;
   };
@@ -399,7 +412,7 @@ export default function DualModeTimer({
   };
 
   const resetTimer = () => {
-    runtimeAnchorMsRef.current = Date.now();
+    runtimeAnchorMsRef.current = getCurrentTimestampMs();
     runningRef.current = false;
     remainingRef.current = activeSelectedSeconds;
     setRunning(false);
@@ -472,7 +485,7 @@ export default function DualModeTimer({
       remainingSeconds,
       exerciseSeconds: selectedExerciseSeconds,
       restSeconds: selectedRestSeconds,
-      updatedAtMs: Date.now(),
+      updatedAtMs: getCurrentTimestampMs(),
     });
   }, [
     mode,
@@ -537,7 +550,7 @@ export default function DualModeTimer({
             type="button"
             onClick={() =>
               setRunning((prev) => {
-                runtimeAnchorMsRef.current = Date.now();
+                runtimeAnchorMsRef.current = getCurrentTimestampMs();
                 const next = !prev;
                 runningRef.current = next;
                 return next;

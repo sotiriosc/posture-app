@@ -37,7 +37,29 @@ const painProfiles: Array<{
   { label: "lower-back-hips", painAreas: ["Lower back", "Hips"] },
 ];
 
-const expectedMainCount = (experience: QuestionnaireData["experience"]) => {
+const expectedMainCount = (
+  experience: QuestionnaireData["experience"],
+  daysPerWeek: QuestionnaireData["daysPerWeek"],
+  dayTitle: string,
+  _equipment: QuestionnaireData["equipment"]
+) => {
+  if (daysPerWeek === 3) {
+    if (dayTitle === "Back + Chest") {
+      if (experience === "Advanced") return 5;
+      if (experience === "Intermediate") return 4;
+      return 3;
+    }
+    if (dayTitle === "Shoulders + Arms") {
+      if (experience === "Advanced") return 4;
+      if (experience === "Intermediate") return 4;
+      return 3;
+    }
+    if (dayTitle === "Legs + Abs") {
+      if (experience === "Advanced") return 4;
+      if (experience === "Intermediate") return 4;
+      return 3;
+    }
+  }
   if (experience === "Advanced") return 4;
   if (experience === "Intermediate") return 3;
   return 2;
@@ -81,7 +103,18 @@ describe("program matrix quality", () => {
                 expect(new Set(ids).size).toBe(ids.length);
 
                 const mains = day.routine.filter((item) => item.section === "main");
-                expect(mains.length).toBe(expectedMainCount(experience));
+                const expectedMain = expectedMainCount(
+                  experience,
+                  daysPerWeek,
+                  day.title,
+                  equipment
+                );
+                if (Array.isArray(expectedMain)) {
+                  expect(mains.length).toBeGreaterThanOrEqual(expectedMain[0]);
+                  expect(mains.length).toBeLessThanOrEqual(expectedMain[1]);
+                } else {
+                  expect(mains.length).toBe(expectedMain);
+                }
                 mains.forEach((item) => {
                   expect(exerciseById(item.exerciseId)?.category).toBe("main");
                 });

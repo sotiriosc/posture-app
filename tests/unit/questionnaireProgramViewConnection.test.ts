@@ -16,7 +16,8 @@ const mocks = vi.hoisted(() => ({
   routerPush: vi.fn(),
   loadTrainingSnapshot: vi.fn(),
   pushTrainingPatch: vi.fn(),
-  generateWeeklyProgram: vi.fn(),
+  buildSignalsFromLocalState: vi.fn(),
+  generateProgram: vi.fn(),
   saveProgram: vi.fn(),
   saveProgramProgress: vi.fn(),
   getProgram: vi.fn(),
@@ -36,8 +37,9 @@ vi.mock("@/lib/trainingSyncClient", () => ({
   pushTrainingPatch: mocks.pushTrainingPatch,
 }));
 
-vi.mock("@/lib/program", () => ({
-  generateWeeklyProgram: mocks.generateWeeklyProgram,
+vi.mock("@/lib/engine", () => ({
+  buildSignalsFromLocalState: mocks.buildSignalsFromLocalState,
+  generateProgram: mocks.generateProgram,
 }));
 
 vi.mock("@/lib/logStore", () => ({
@@ -127,7 +129,8 @@ describe("questionnaire -> confirm -> program view connection", () => {
     mocks.routerPush.mockReset();
     mocks.loadTrainingSnapshot.mockReset();
     mocks.pushTrainingPatch.mockReset();
-    mocks.generateWeeklyProgram.mockReset();
+    mocks.buildSignalsFromLocalState.mockReset();
+    mocks.generateProgram.mockReset();
     mocks.saveProgram.mockReset();
     mocks.saveProgramProgress.mockReset();
     mocks.getProgram.mockReset();
@@ -139,11 +142,55 @@ describe("questionnaire -> confirm -> program view connection", () => {
 
     mocks.loadTrainingSnapshot.mockResolvedValue(null);
     mocks.pushTrainingPatch.mockResolvedValue(undefined);
+    mocks.buildSignalsFromLocalState.mockImplementation(
+      async ({ questionnaire }: { questionnaire?: typeof initialQuestionnaire }) => ({
+        questionnaire: questionnaire ?? initialQuestionnaire,
+        history: {
+          sessions: [],
+          exerciseLogs: [],
+          programProgress: null,
+        },
+        prefs: null,
+        nowIso: "2026-02-15T00:00:00.000Z",
+      })
+    );
     mocks.uuid.mockReturnValue("program-new");
     mocks.clearDraft.mockResolvedValue(undefined);
-    mocks.generateWeeklyProgram.mockImplementation(
-      (questionnaire: typeof initialQuestionnaire, programId: string) =>
-        buildProgram(programId, questionnaire.daysPerWeek as 3 | 4 | 5)
+    mocks.generateProgram.mockImplementation(
+      ({
+        nextProgramId,
+        signals,
+      }: {
+        nextProgramId: string;
+        signals: { questionnaire: typeof initialQuestionnaire };
+      }) => ({
+        status: "generated",
+        program: buildProgram(
+          nextProgramId,
+          signals.questionnaire.daysPerWeek as 3 | 4 | 5
+        ),
+        seed: "test-seed",
+        debug: {
+          mode: "weekly",
+          seed: "test-seed",
+          settingsHash: "settings",
+          target: {
+            phaseIndex: 1,
+            cycleIndex: 1,
+            weekIndex: 1,
+            totalWeekIndex: 1,
+          },
+          progression: {
+            complianceRate: 0,
+            painFlag: false,
+            fatigueFlag: false,
+            completedSessionsCount: 0,
+            completedWeeksCount: 0,
+            recentLogCount: 0,
+            recentSessionCount: 0,
+          },
+        },
+      })
     );
     mocks.saveProgram.mockImplementation(async (program: Program) => {
       mocks.programsById.set(program.id, program);

@@ -14,7 +14,8 @@ const mocks = vi.hoisted(() => ({
   routerPush: vi.fn(),
   loadTrainingSnapshot: vi.fn(),
   pushTrainingPatch: vi.fn(),
-  generateWeeklyProgram: vi.fn(),
+  buildSignalsFromLocalState: vi.fn(),
+  generateProgram: vi.fn(),
   saveProgram: vi.fn(),
   saveProgramProgress: vi.fn(),
   uuid: vi.fn(),
@@ -32,8 +33,9 @@ vi.mock("@/lib/trainingSyncClient", () => ({
   pushTrainingPatch: mocks.pushTrainingPatch,
 }));
 
-vi.mock("@/lib/program", () => ({
-  generateWeeklyProgram: mocks.generateWeeklyProgram,
+vi.mock("@/lib/engine", () => ({
+  buildSignalsFromLocalState: mocks.buildSignalsFromLocalState,
+  generateProgram: mocks.generateProgram,
 }));
 
 vi.mock("@/lib/logStore", () => ({
@@ -77,7 +79,8 @@ describe("questionnaire change confirmation flow", () => {
     mocks.routerPush.mockReset();
     mocks.loadTrainingSnapshot.mockReset();
     mocks.pushTrainingPatch.mockReset();
-    mocks.generateWeeklyProgram.mockReset();
+    mocks.buildSignalsFromLocalState.mockReset();
+    mocks.generateProgram.mockReset();
     mocks.saveProgram.mockReset();
     mocks.saveProgramProgress.mockReset();
     mocks.uuid.mockReset();
@@ -85,17 +88,37 @@ describe("questionnaire change confirmation flow", () => {
 
     mocks.loadTrainingSnapshot.mockResolvedValue(null);
     mocks.pushTrainingPatch.mockResolvedValue(undefined);
+    mocks.buildSignalsFromLocalState.mockImplementation(
+      async ({ questionnaire }: { questionnaire?: typeof initialQuestionnaire }) => ({
+        questionnaire: questionnaire ?? initialQuestionnaire,
+        history: {
+          sessions: [],
+          exerciseLogs: [],
+          programProgress: null,
+        },
+        prefs: null,
+        nowIso: "2026-02-15T00:00:00.000Z",
+      })
+    );
     mocks.uuid.mockReturnValue("program-new");
     mocks.clearDraft.mockResolvedValue(undefined);
-    mocks.generateWeeklyProgram.mockImplementation(
-      (questionnaire: typeof initialQuestionnaire, programId: string) => ({
-        id: programId,
+    mocks.generateProgram.mockImplementation(
+      ({
+        nextProgramId,
+        signals,
+      }: {
+        nextProgramId: string;
+        signals: { questionnaire: typeof initialQuestionnaire };
+      }) => ({
+        status: "generated",
+        program: {
+        id: nextProgramId,
         userId: null,
         createdAt: "2026-02-15T00:00:00.000Z",
         updatedAt: "2026-02-15T00:00:00.000Z",
         templateVersion: 1,
-        goalTrack: questionnaire.goals,
-        daysPerWeek: questionnaire.daysPerWeek,
+        goalTrack: signals.questionnaire.goals,
+        daysPerWeek: signals.questionnaire.daysPerWeek,
         estimatedSessionMinutesRange: { min: 45, max: 60 },
         phaseIndex: 1,
         phaseName: "Activation",
@@ -103,6 +126,28 @@ describe("questionnaire change confirmation flow", () => {
         week: [],
         source: "local",
         deletedAt: null,
+        },
+        seed: "test-seed",
+        debug: {
+          mode: "weekly",
+          seed: "test-seed",
+          settingsHash: "settings",
+          target: {
+            phaseIndex: 1,
+            cycleIndex: 1,
+            weekIndex: 1,
+            totalWeekIndex: 1,
+          },
+          progression: {
+            complianceRate: 0,
+            painFlag: false,
+            fatigueFlag: false,
+            completedSessionsCount: 0,
+            completedWeeksCount: 0,
+            recentLogCount: 0,
+            recentSessionCount: 0,
+          },
+        },
       })
     );
     mocks.saveProgram.mockImplementation(async (program: unknown) => program);
@@ -174,5 +219,18 @@ describe("questionnaire change confirmation flow", () => {
       localStorage.getItem(STORAGE_KEY) ?? "{}"
     ) as typeof initialQuestionnaire;
     expect(savedQuestionnaire.daysPerWeek).toBe(4);
+  });
+
+  test("unchanged submit still regenerates to allow same-profile variety", async () => {
+    fireEvent.click(screen.getByTestId("generate-routine"));
+
+    await waitFor(() => {
+      expect(mocks.saveProgram).toHaveBeenCalledTimes(1);
+      expect(mocks.saveProgramProgress).toHaveBeenCalledTimes(1);
+    });
+
+    expect(screen.queryByTestId("questionnaire-change-confirm-modal")).toBeNull();
+    expect(mocks.clearDraft).toHaveBeenCalledWith("session-live");
+    expect(mocks.routerPush).toHaveBeenCalledWith("/results");
   });
 });

@@ -659,11 +659,17 @@ export default function SessionClient() {
 
   useEffect(() => {
     if (!totalItems) {
-      if (activeIndex !== 0) setActiveIndex(0);
+      if (activeIndex !== 0) {
+        queueMicrotask(() => {
+          setActiveIndex(0);
+        });
+      }
       return;
     }
     if (activeIndex > totalItems - 1) {
-      setActiveIndex(totalItems - 1);
+      queueMicrotask(() => {
+        setActiveIndex(totalItems - 1);
+      });
     }
   }, [activeIndex, totalItems]);
 
@@ -1003,36 +1009,39 @@ export default function SessionClient() {
     setSaveState("saved");
   };
 
-  const getTimerForExercise = (params: {
-    exerciseId: string;
-    durationSec?: number | null;
-    restSec?: number | null;
-    sets: string | number | null;
-    reps?: string | null;
-    loadType: "weighted" | "bodyweight" | "timed" | "assisted";
-  }) => {
-    const exerciseTimerPref =
-      timerByExercise[params.exerciseId] ??
-      prefs?.timerPrefsByExercise?.[params.exerciseId];
-    if (exerciseTimerPref) {
-      return {
-        workSeconds: exerciseTimerPref.workSeconds,
-        restSeconds: exerciseTimerPref.restSeconds,
-      };
-    }
+  const getTimerForExercise = useCallback(
+    (params: {
+      exerciseId: string;
+      durationSec?: number | null;
+      restSec?: number | null;
+      sets: string | number | null;
+      reps?: string | null;
+      loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+    }) => {
+      const exerciseTimerPref =
+        timerByExercise[params.exerciseId] ??
+        prefs?.timerPrefsByExercise?.[params.exerciseId];
+      if (exerciseTimerPref) {
+        return {
+          workSeconds: exerciseTimerPref.workSeconds,
+          restSeconds: exerciseTimerPref.restSeconds,
+        };
+      }
 
-    return getEffectiveTimer(
-      {
-        exerciseId: params.exerciseId,
-        durationSec: params.durationSec ?? null,
-        restSec: params.restSec ?? null,
-        sets: params.sets,
-        reps: params.reps ?? null,
-        loadType: params.loadType,
-      },
-      prefs?.timerPrefs
-    );
-  };
+      return getEffectiveTimer(
+        {
+          exerciseId: params.exerciseId,
+          durationSec: params.durationSec ?? null,
+          restSec: params.restSec ?? null,
+          sets: params.sets,
+          reps: params.reps ?? null,
+          loadType: params.loadType,
+        },
+        prefs?.timerPrefs
+      );
+    },
+    [prefs?.timerPrefs, prefs?.timerPrefsByExercise, timerByExercise]
+  );
 
   const getRecordedTimerForItem = useCallback(
     (item: {
@@ -1840,7 +1849,9 @@ export default function SessionClient() {
 
   useEffect(() => {
     if (!currentItemId) {
-      setExerciseCompleteFlashVisible(false);
+      queueMicrotask(() => {
+        setExerciseCompleteFlashVisible(false);
+      });
       lastExerciseCompletionRef.current = {
         itemId: null,
         allSetsCompleted: false,
@@ -1849,7 +1860,9 @@ export default function SessionClient() {
     }
     const previous = lastExerciseCompletionRef.current;
     if (previous.itemId !== currentItemId) {
-      setExerciseCompleteFlashVisible(false);
+      queueMicrotask(() => {
+        setExerciseCompleteFlashVisible(false);
+      });
       lastExerciseCompletionRef.current = {
         itemId: currentItemId,
         allSetsCompleted,
@@ -1857,7 +1870,9 @@ export default function SessionClient() {
       return;
     }
     if (!previous.allSetsCompleted && allSetsCompleted) {
-      setExerciseCompleteFlashVisible(true);
+      queueMicrotask(() => {
+        setExerciseCompleteFlashVisible(true);
+      });
       if (exerciseCompleteFlashTimerRef.current) {
         window.clearTimeout(exerciseCompleteFlashTimerRef.current);
       }
@@ -1865,7 +1880,9 @@ export default function SessionClient() {
         setExerciseCompleteFlashVisible(false);
       }, 800);
     } else if (previous.allSetsCompleted && !allSetsCompleted) {
-      setExerciseCompleteFlashVisible(false);
+      queueMicrotask(() => {
+        setExerciseCompleteFlashVisible(false);
+      });
     }
     lastExerciseCompletionRef.current = {
       itemId: currentItemId,

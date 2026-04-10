@@ -179,6 +179,54 @@ describe("phase progression changes program output", () => {
     }
   });
 
+  test("next cycle includes at least one new main exercise when alternatives are available", () => {
+    const equippedData: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["gym"],
+      daysPerWeek: 3,
+    };
+    const current = generateWeeklyProgram(equippedData, "recent-main-current", {
+      phaseIndex: 2,
+      weekIndex: 1,
+      cycleIndex: 1,
+      totalWeekIndex: 1,
+      seed: "recent-main-seed",
+    });
+
+    const result = generateNextCycleProgram({
+      currentProgram: current,
+      questionnaire: equippedData,
+      painFlag: false,
+      complianceRate: 1,
+      fatigueFlag: false,
+      completedSessionsCount: 3,
+      completedWeeksCount: 1,
+      movementQuality: 0.9,
+      confidence: 0.9,
+      capacity: 0.9,
+      nextProgramId: "recent-main-next",
+      seed: "recent-main-seed",
+    });
+
+    expect(result.status).toBe("advanced");
+    if (result.status === "advanced") {
+      const currentMainIds = current.week.flatMap((day) =>
+        day.routine
+          .filter((item) => item.section === "main")
+          .map((item) => item.exerciseId)
+      );
+      const nextMainIds = result.program.week.flatMap((day) =>
+        day.routine
+          .filter((item) => item.section === "main")
+          .map((item) => item.exerciseId)
+      );
+      const currentMainSet = new Set(currentMainIds);
+      expect(nextMainIds.some((id) => !currentMainSet.has(id))).toBe(true);
+    }
+  });
+
   test("phase progression upgrades push demand when equipment allows", () => {
     const equippedData: QuestionnaireData = {
       ...baseData,

@@ -1,6 +1,10 @@
 import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import { generateWeeklyProgram } from "@/lib/program";
+import { exerciseById, type Exercise } from "@/lib/exercises";
+import {
+  generateWeeklyProgram,
+  type ProgramSelectionAuditEntry,
+} from "@/lib/program";
 
 const baseInput: QuestionnaireData = {
   goals: "Improve posture",
@@ -20,6 +24,37 @@ const warmupSignature = (program: ReturnType<typeof generateWeeklyProgram>) =>
 
 const getDay = (program: ReturnType<typeof generateWeeklyProgram>, title: string) =>
   program.week.find((day) => day.title === title);
+
+const hasMainPattern = (exercise: Exercise, pattern: "push" | "pull") =>
+  exercise.movementPattern.some((entry) => entry.toLowerCase() === pattern);
+
+const findNonFinalAuditEntry = (
+  entries: ProgramSelectionAuditEntry[],
+  predicate: (entry: ProgramSelectionAuditEntry) => boolean
+) =>
+  entries.find(
+    (entry) =>
+      predicate(entry) &&
+      !entry.chosen.reasons.some((reason) => reason.includes("[final_trace]"))
+  );
+
+const assertBackChestMainPushAndPull = (
+  program: ReturnType<typeof generateWeeklyProgram>
+) => {
+  const backChestDay = getDay(program, "Back + Chest");
+  expect(backChestDay).toBeTruthy();
+  if (!backChestDay) return;
+
+  const mainExercises = backChestDay.routine
+    .filter((item) => item.section === "main")
+    .map((item) => exerciseById(item.exerciseId))
+    .filter((exercise): exercise is Exercise => Boolean(exercise));
+
+  const pushMains = mainExercises.filter((exercise) => hasMainPattern(exercise, "push"));
+  const pullMains = mainExercises.filter((exercise) => hasMainPattern(exercise, "pull"));
+  expect(pushMains.length).toBeGreaterThanOrEqual(1);
+  expect(pullMains.length).toBeGreaterThanOrEqual(1);
+};
 
 describe("program warmup contracts", () => {
   test.each([
@@ -150,5 +185,106 @@ describe("program warmup contracts", () => {
 
     expect(baseActivationIds.includes("serratus-wall-slide")).toBe(false);
     expect(scapActivationIds.includes("serratus-wall-slide")).toBe(true);
+  });
+
+  // Temporary skip while focusing test effort on MAIN + ACCESSORY structure.
+  test.skip(
+    "activation prefers machine chest press when both machine and dumbbell presses are eligible",
+    () => {
+    const auditEntries: ProgramSelectionAuditEntry[] = [];
+    const program = generateWeeklyProgram(
+      {
+        ...baseInput,
+        experience: "Advanced",
+        equipment: ["gym", "dumbbells", "bench"],
+      },
+      "activation-machine-push-preference",
+      {
+        phaseIndex: 1,
+        seed: "activation-machine-push-preference",
+        selectionAuditHook: (entry) => auditEntries.push(entry),
+      }
+    );
+    const mainPushEntry = findNonFinalAuditEntry(
+      auditEntries,
+      (entry) =>
+        entry.dayTitle === "Back + Chest" &&
+        entry.slotKind === "mainPush" &&
+        entry.slotId.endsWith("-main-2")
+    );
+    expect(mainPushEntry).toBeTruthy();
+    expect(mainPushEntry?.chosen.exerciseId).toBe("machine-chest-press");
+    expect(
+      mainPushEntry?.chosen.reasons.some((reason) =>
+        reason.includes("activation main push machine chest preference")
+      )
+    ).toBe(true);
+    assertBackChestMainPushAndPull(program);
+    }
+  );
+
+  // Temporary skip while focusing test effort on MAIN + ACCESSORY structure.
+  test.skip("activation falls back when machines are unavailable", () => {
+    const auditEntries: ProgramSelectionAuditEntry[] = [];
+    const program = generateWeeklyProgram(
+      {
+        ...baseInput,
+        experience: "Advanced",
+        equipment: ["dumbbells", "bench"],
+      },
+      "activation-no-machine-fallback",
+      {
+        phaseIndex: 1,
+        seed: "activation-no-machine-fallback",
+        selectionAuditHook: (entry) => auditEntries.push(entry),
+      }
+    );
+    const mainPushEntry = findNonFinalAuditEntry(
+      auditEntries,
+      (entry) =>
+        entry.dayTitle === "Back + Chest" &&
+        entry.slotKind === "mainPush" &&
+        entry.slotId.endsWith("-main-2")
+    );
+    expect(mainPushEntry).toBeTruthy();
+    expect(mainPushEntry?.chosen.exerciseId).not.toBe("machine-chest-press");
+    expect(
+      ["dumbbell-bench-press", "dumbbell-floor-press", "band-chest-press"].includes(
+        mainPushEntry?.chosen.exerciseId ?? ""
+      )
+    ).toBe(true);
+    assertBackChestMainPushAndPull(program);
+  });
+
+  // Temporary skip while focusing test effort on MAIN + ACCESSORY structure.
+  test.skip("non-activation phases do not apply activation main push bonus", () => {
+    const auditEntries: ProgramSelectionAuditEntry[] = [];
+    const program = generateWeeklyProgram(
+      {
+        ...baseInput,
+        experience: "Advanced",
+        equipment: ["gym", "dumbbells", "bench"],
+      },
+      "growth-no-activation-push-bonus",
+      {
+        phaseIndex: 2,
+        seed: "growth-no-activation-push-bonus",
+        selectionAuditHook: (entry) => auditEntries.push(entry),
+      }
+    );
+    const mainPushEntry = findNonFinalAuditEntry(
+      auditEntries,
+      (entry) =>
+        entry.dayTitle === "Back + Chest" &&
+        entry.slotKind === "mainPush" &&
+        entry.slotId.endsWith("-main-2")
+    );
+    expect(mainPushEntry).toBeTruthy();
+    expect(
+      mainPushEntry?.chosen.reasons.some((reason) =>
+        reason.includes("activation main push machine chest preference")
+      )
+    ).toBe(false);
+    assertBackChestMainPushAndPull(program);
   });
 });

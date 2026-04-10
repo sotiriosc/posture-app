@@ -43,8 +43,10 @@ export default function OnboardingInfoButton({
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!autoOpen || isAutomationEnvironment()) {
-      setReady(true);
-      return;
+      const timer = window.setTimeout(() => {
+        setReady(true);
+      }, 0);
+      return () => window.clearTimeout(timer);
     }
     const shouldAutoOpen = shouldAutoOpenOnboarding(onboardingKey);
     if (shouldAutoOpen) {
@@ -54,7 +56,10 @@ export default function OnboardingInfoButton({
       }, 450);
       return () => window.clearTimeout(timer);
     }
-    setReady(true);
+    const timer = window.setTimeout(() => {
+      setReady(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [autoOpen, onboardingKey]);
 
   const closeGuide = () => {

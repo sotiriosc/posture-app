@@ -36,10 +36,6 @@ export default function ExpandableSection({
   const isExpanded = isControlled ? controlledExpanded : localExpanded;
 
   useEffect(() => {
-    previousExpandedRef.current = isExpanded;
-  }, []);
-
-  useEffect(() => {
     const node = contentRef.current;
     if (!node) return;
 
@@ -58,26 +54,34 @@ export default function ExpandableSection({
   }, [children, isExpanded]);
 
   useEffect(() => {
-    let timer: number | null = null;
+    let showTimer: number | null = null;
+    let hideTimer: number | null = null;
     const wasExpanded = previousExpandedRef.current;
     const openedProgrammatically =
       !wasExpanded && isExpanded && isControlled && !userToggleRef.current;
 
     if (openedProgrammatically) {
-      setProgrammaticFlash(true);
-      timer = window.setTimeout(() => {
+      showTimer = window.setTimeout(() => {
+        setProgrammaticFlash(true);
+      }, 0);
+      hideTimer = window.setTimeout(() => {
         setProgrammaticFlash(false);
       }, 600);
     } else if (!isExpanded) {
-      setProgrammaticFlash(false);
+      showTimer = window.setTimeout(() => {
+        setProgrammaticFlash(false);
+      }, 0);
     }
 
     previousExpandedRef.current = isExpanded;
     userToggleRef.current = false;
 
     return () => {
-      if (timer !== null) {
-        window.clearTimeout(timer);
+      if (showTimer !== null) {
+        window.clearTimeout(showTimer);
+      }
+      if (hideTimer !== null) {
+        window.clearTimeout(hideTimer);
       }
     };
   }, [isExpanded, isControlled]);

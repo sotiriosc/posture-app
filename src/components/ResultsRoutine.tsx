@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { QuestionnaireData } from "./QuestionnaireForm";
@@ -8,9 +8,11 @@ import { exerciseById } from "@/lib/exercises";
 import type { Routine } from "@/lib/routine";
 import { generateRoutine } from "@/lib/routine";
 import {
-  generateNextCycleProgram,
-  generateNextPhaseProgram,
-  generateWeeklyProgram,
+  buildEngineSignals,
+  buildSignalsFromLocalState,
+  generateProgram,
+} from "@/lib/engine";
+import {
   PROGRAM_TEMPLATE_VERSION,
 } from "@/lib/program";
 import {
@@ -46,7 +48,6 @@ import {
   getProgram,
   listSessions,
   listExerciseLogsByExercise,
-  listRecentExerciseLogsForProgram,
   listExerciseLogsBySessionIds,
   loadPrefs,
   saveProgram,
@@ -123,15 +124,21 @@ const formatReferenceRoutineItems = (items: ProgramRoutineItem[]) => {
     .join(", ");
 };
 
-const buildReferenceLineForDay = (day: ProgramWeekDay) => {
+type ProgramPrepItem = { name: string; reps?: string; durationSec?: number };
+
+const buildReferenceLinesForDay = (day: ProgramWeekDay) => {
+  const dayWithCorrective = day as ProgramWeekDay & {
+    corrective?: { items?: ProgramPrepItem[] };
+  };
   const warmupText =
     day.warmup?.items?.length
       ? formatReferencePrepItems(day.warmup.items)
       : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "warmup"));
-  const activationText =
-    day.activation?.items?.length
-      ? formatReferencePrepItems(day.activation.items)
-      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "activation"));
+  const correctiveText = dayWithCorrective.corrective?.items?.length
+    ? formatReferencePrepItems(dayWithCorrective.corrective.items)
+    : day.activation?.items?.length
+    ? formatReferencePrepItems(day.activation.items)
+    : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "activation"));
   const cooldownText =
     day.cooldown?.items?.length
       ? formatReferencePrepItems(day.cooldown.items)
@@ -142,7 +149,14 @@ const buildReferenceLineForDay = (day: ProgramWeekDay) => {
   const accessoryText = formatReferenceRoutineItems(
     day.routine.filter((item) => item.section === "accessory")
   );
-  return `D${day.dayIndex + 1} ${day.title} | W: ${warmupText} | A: ${activationText} | M: ${mainText} | X: ${accessoryText} | C: ${cooldownText}`;
+  return [
+    `Day ${day.dayIndex + 1}: ${day.title}`,
+    `Warm-up: ${warmupText}`,
+    `Corrective: ${correctiveText}`,
+    `Routine: ${mainText}`,
+    `Accessory: ${accessoryText}`,
+    `Cooldown: ${cooldownText}`,
+  ];
 };
 
 const loadImageFromFile = (file: File) =>
@@ -168,6 +182,21 @@ const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
       ? Number(value)
       : NaN;
   return parsed === 4 || parsed === 5 ? parsed : 3;
+};
+
+const formatQuestionnaireToken = (value: string) =>
+  value
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+const formatQuestionnaireList = (values: string[] | null | undefined) => {
+  if (!values?.length) return "none";
+  const formatted = values
+    .map((entry) => formatQuestionnaireToken(entry))
+    .filter((entry) => entry.length > 0);
+  return formatted.length ? formatted.join(", ") : "none";
 };
 
 const toEpochMs = (value: string | null | undefined) => {
@@ -279,15 +308,46 @@ export default function ResultsRoutine() {
   const [poseState, setPoseState] = useState<{
     loading: boolean;
     error: string | null;
+    analysis: PoseAnalysis | null;
     report: AssessmentReport | null;
-  }>({ loading: false, error: null, report: null });
+  }>({ loading: false, error: null, analysis: null, report: null });
   const triggerSessionCompleteNotice = () => {
     setSessionCompleteNoticeFading(false);
     setShowSessionCompleteNotice(true);
   };
 
+  const loadGenerationSignals = useCallback(
+    async (programId?: string | null) => {
+      if (!data) {
+        throw new Error("Questionnaire data is unavailable.");
+      }
+      return buildSignalsFromLocalState({
+        programId,
+        questionnaire: data,
+        poseAnalysis: poseState.analysis ?? null,
+        assessmentReport: poseState.report ?? null,
+        nowIso: new Date().toISOString(),
+      });
+    },
+    [data, poseState.analysis, poseState.report]
+  );
+
   useEffect(() => {
     const loadBootstrap = async () => {
+      const snapshot = await loadTrainingSnapshot();
+      const remoteAssessment = snapshot?.assessment as AssessmentReport | undefined;
+      if (remoteAssessment) {
+        setPoseState((current) =>
+          current.report
+            ? current
+            : {
+                ...current,
+                error: null,
+                analysis: current.analysis ?? null,
+                report: remoteAssessment,
+              }
+        );
+      }
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
@@ -301,7 +361,6 @@ export default function ResultsRoutine() {
           daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
         });
       } else {
-        const snapshot = await loadTrainingSnapshot();
         const remote = snapshot?.questionnaire as Partial<QuestionnaireData> | undefined;
         if (remote) {
           const next = {
@@ -553,40 +612,11 @@ export default function ResultsRoutine() {
     const state = loadAppState();
     const nextProgramVersion =
       typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
-    const recentLogsForProgression = await listRecentExerciseLogsForProgram({
-      programId: program.id,
-      lookbackDays: 14,
-      limit: 250,
-    });
-    const progressionLogs =
-      recentLogsForProgression.length > 0 ? recentLogsForProgression : lastTwoLogs;
-    const now = Date.parse(new Date().toISOString());
-    const recentSessions = completedSessions.filter((session) => {
-      if (!session.completedAt) return false;
-      const timestamp = Date.parse(session.completedAt);
-      if (Number.isNaN(timestamp)) return false;
-      return now - timestamp <= 7 * 24 * 60 * 60 * 1000;
-    });
-    const complianceRate = Math.min(
-      1,
-      recentSessions.length / Math.max(1, program.daysPerWeek)
-    );
-    const painFlag =
-      lastTwoLogs.some((log) => log.felt === "pain") ||
-      completedSessions.slice(0, 2).some((session) => session.sessionFeedback === "pain");
-    const hardCount = lastTwoLogs.filter((log) => log.felt === "hard").length;
-    const fatigueFlag =
-      lastTwoLogs.length > 0 && hardCount / lastTwoLogs.length >= 0.5;
-
-    const result = generateNextPhaseProgram({
+    const signals = await loadGenerationSignals(program.id);
+    const result = generateProgram({
+      mode: "nextPhase",
+      signals,
       currentProgram: program,
-      questionnaire: data,
-      painFlag,
-      complianceRate,
-      fatigueFlag,
-      completedSessionsCount: completedSessions.length,
-      completedWeeksCount: completedWeeks,
-      recentLogs: progressionLogs,
       nextProgramId: uuid(),
     });
 
@@ -629,7 +659,7 @@ export default function ResultsRoutine() {
       return;
     }
 
-    setAdvanceMessage(result.message);
+    setAdvanceMessage("message" in result ? result.message : null);
   };
 
   const handleSkipPhaseOne = async () => {
@@ -644,12 +674,19 @@ export default function ResultsRoutine() {
       typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
     const nowIso = new Date().toISOString();
     const activationBaselineAt = Date.now();
-    const nextProgram = generateWeeklyProgram(data, uuid(), {
+    const signals = await loadGenerationSignals(program.id);
+    const nextProgramResult = generateProgram({
+      mode: "weekly",
+      signals,
+      currentProgram: program,
+      nextProgramId: uuid(),
       phaseIndex: 2,
       weekIndex: 1,
       cycleIndex: 1,
       totalWeekIndex: (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1,
     });
+    if (!("program" in nextProgramResult)) return;
+    const nextProgram = nextProgramResult.program;
     const baseProgress: ProgramProgress = {
       programId: nextProgram.id,
       lastCompletedDayIndex: null,
@@ -713,12 +750,21 @@ export default function ResultsRoutine() {
           return;
         }
       }
-      const newProgram = generateWeeklyProgram(data, uuid());
+      const signals = await loadGenerationSignals(
+        state?.activeProgramId ?? state?.programId ?? null
+      );
+      const generated = generateProgram({
+        mode: "weekly",
+        signals,
+        nextProgramId: uuid(),
+      });
+      if (!("program" in generated)) return;
+      const newProgram = generated.program;
       await saveProgram(newProgram);
       setProgram(newProgram);
     };
     loadProgram();
-  }, [data, questionnaireSignature]);
+  }, [data, questionnaireSignature, loadGenerationSignals]);
 
   useEffect(() => {
     if (!program || !data || !questionnaireSignature) return;
@@ -728,12 +774,15 @@ export default function ResultsRoutine() {
     if (signatureMatches && isProgramCompatibleWithQuestionnaire(program, data)) return;
 
     const reconcileProgram = async () => {
-      const reconciled = generateWeeklyProgram(data, uuid(), {
-        phaseIndex: program.phaseIndex ?? 1,
-        weekIndex: program.weekIndex ?? 1,
-        cycleIndex: program.cycleIndex ?? 1,
-        totalWeekIndex: program.totalWeekIndex ?? program.weekIndex ?? 1,
+      const signals = await loadGenerationSignals(program.id);
+      const generated = generateProgram({
+        mode: "weekly",
+        signals,
+        currentProgram: program,
+        nextProgramId: uuid(),
       });
+      if (!("program" in generated)) return;
+      const reconciled = generated.program;
       await saveProgram(reconciled);
       setProgram(reconciled);
       setSelectedDay(0);
@@ -749,7 +798,7 @@ export default function ResultsRoutine() {
     };
 
     reconcileProgram();
-  }, [program, data, questionnaireSignature]);
+  }, [program, data, questionnaireSignature, loadGenerationSignals]);
 
   useEffect(() => {
     if (!program || !questionnaireSignature) return;
@@ -800,11 +849,9 @@ export default function ResultsRoutine() {
     const stored = loadAppState()?.activeProgramId;
     if (!stored) return program.id;
     return stored === program.id ? stored : program.id;
-  }, [program?.id, activeProgramBaselineAt]);
+  }, [program]);
 
-  const activeSessionId = useMemo(() => {
-    return loadAppState()?.activeSessionId ?? null;
-  }, [activeProgramId, activeProgramBaselineAt, allSessions.length, nowAnchor]);
+  const activeSessionId = loadAppState()?.activeSessionId ?? null;
 
   const activeDaysPerWeek = program?.daysPerWeek ?? data?.daysPerWeek ?? 3;
 
@@ -951,72 +998,32 @@ export default function ResultsRoutine() {
       const state = loadAppState();
       const nextProgramVersion =
         typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
-      const sevenDaysAgoMs = Date.now() - 7 * 24 * 60 * 60 * 1000;
-      const sessionsForCurrentProgram = allSessions.filter((session) => {
-        if (session.routineId !== program.id) return false;
-        const parsed = toEpochMs(session.startedAt ?? session.createdAt);
-        const sessionAt = Number.isNaN(parsed) ? 0 : parsed;
-        return sessionAt >= baselineForActiveProgram;
-      });
-      const completedForCurrentProgram = sessionsForCurrentProgram.filter(
-        (session) => Boolean(session.completedAt)
-      );
-      const recentSessions = completedForCurrentProgram.filter((session) => {
-        const parsed = toEpochMs(session.completedAt ?? session.updatedAt ?? session.createdAt);
-        if (Number.isNaN(parsed)) return false;
-        return parsed >= sevenDaysAgoMs;
-      });
-      const recentLogs = await listExerciseLogsBySessionIds(
-        completedForCurrentProgram
-          .slice(0, Math.max(program.daysPerWeek * 2, 6))
-          .map((session) => session.id)
-      );
-      const feedbackRatings = [
-        ...completedForCurrentProgram
-          .map((session) => session.sessionFeedback)
-          .filter((rating): rating is "easy" | "moderate" | "hard" | "pain" =>
-            Boolean(rating)
-          ),
-        ...recentLogs
-          .map((log) => log.felt)
-          .filter((rating): rating is "easy" | "moderate" | "hard" | "pain" =>
-            Boolean(rating)
-          ),
-      ];
-      const painFlag = feedbackRatings.includes("pain");
-      const hardCount = feedbackRatings.filter((rating) => rating === "hard").length;
-      const fatigueFlag =
-        feedbackRatings.length > 0 && hardCount / feedbackRatings.length >= 0.5;
-      const complianceRate = Math.min(
-        1,
-        recentSessions.length / Math.max(1, program.daysPerWeek)
-      );
-
-      const nextCycleResult = generateNextCycleProgram({
+      const signals = await loadGenerationSignals(program.id);
+      const nextCycleResult = generateProgram({
+        mode: "nextCycle",
+        signals,
         currentProgram: program,
-        questionnaire: data,
-        painFlag,
-        complianceRate,
-        fatigueFlag,
-        completedSessionsCount: completedForCurrentProgram.length,
-        completedWeeksCount: completedWeeks,
-        recentLogs,
         nextProgramId: uuid(),
       });
 
-      const nextProgram =
-        nextCycleResult.status === "advanced"
-          ? nextCycleResult.program
-          : generateWeeklyProgram(data, uuid(), {
-              phaseIndex: program.phaseIndex ?? 1,
-              weekIndex: Math.max(1, (program.weekIndex ?? 1) + 1),
-              cycleIndex: Math.max(1, (program.cycleIndex ?? 1) + 1),
-              totalWeekIndex: Math.max(
-                1,
-                (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1
-              ),
-              recentLogs,
-            });
+      const nextProgram = (() => {
+        if (nextCycleResult.status === "advanced") return nextCycleResult.program;
+        const fallback = generateProgram({
+          mode: "weekly",
+          signals,
+          currentProgram: program,
+          nextProgramId: uuid(),
+          phaseIndex: program.phaseIndex ?? 1,
+          weekIndex: Math.max(1, (program.weekIndex ?? 1) + 1),
+          cycleIndex: Math.max(1, (program.cycleIndex ?? 1) + 1),
+          totalWeekIndex: Math.max(
+            1,
+            (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1
+          ),
+        });
+        return "program" in fallback ? fallback.program : null;
+      })();
+      if (!nextProgram) return;
       const nowIso = new Date().toISOString();
       const nextPhaseIndex = nextProgram.phaseIndex ?? 1;
       const previousPhaseIndex = program.phaseIndex ?? 1;
@@ -1075,6 +1082,7 @@ export default function ResultsRoutine() {
     progress?.cyclesCompletedInPhase,
     progress?.phaseStartedAt,
     questionnaireSignature,
+    loadGenerationSignals,
   ]);
 
   useEffect(() => {
@@ -1231,12 +1239,12 @@ export default function ResultsRoutine() {
       window.removeEventListener("visibilitychange", loadSessions);
       window.removeEventListener(SESSION_COMPLETE_EVENT, loadSessions as EventListener);
     };
-  }, [program?.id]);
+  }, [program]);
 
   useEffect(() => {
     setWeekViewDetailsOpen(false);
     setWeekViewSelectedDay(null);
-  }, [program?.id, baselineForActiveProgram]);
+  }, [program, baselineForActiveProgram]);
 
   const phaseGate = useMemo(() => {
     return canAdvancePhase({
@@ -1318,46 +1326,72 @@ export default function ResultsRoutine() {
   }, [program]);
 
   const temporaryProgramReferenceText = useMemo(() => {
-    if (!data || !program) return "";
+    if (!program) return "";
 
-    const referenceQuestionnaire: QuestionnaireData = {
-      ...data,
-      daysPerWeek: normalizeDaysPerWeek(data.daysPerWeek),
-    };
-    const referenceSeedBase = questionnaireSignature ?? program.id ?? "program-reference";
     const lines: string[] = [];
+    const referenceQuestionnaire = data
+      ? {
+          ...data,
+          daysPerWeek: normalizeDaysPerWeek(data.daysPerWeek),
+          equipment: normalizeEquipmentSelectionValues(data.equipment),
+        }
+      : null;
 
-    lines.push("ACTIVE WEEK (CURRENT PROGRAM)");
-    lines.push(
-      `${program.phaseName ?? `Phase ${program.phaseIndex ?? 1}`} | Cycle ${program.cycleIndex ?? 1} | Week ${program.weekIndex ?? 1}`
-    );
-    program.week.forEach((day) => {
-      lines.push(buildReferenceLineForDay(day));
-    });
+    if (referenceQuestionnaire) {
+      lines.push("QUESTIONNAIRE INPUTS");
+      lines.push(`Goal: ${referenceQuestionnaire.goals}`);
+      lines.push(`Experience: ${referenceQuestionnaire.experience}`);
+      lines.push(`Days Per Week: ${referenceQuestionnaire.daysPerWeek}`);
+      lines.push(`Equipment: ${formatQuestionnaireList(referenceQuestionnaire.equipment)}`);
+      lines.push(`Pain Areas: ${formatQuestionnaireList(referenceQuestionnaire.painAreas)}`);
+      lines.push("");
+    }
 
+    if (!referenceQuestionnaire) return lines.join("\n");
     lines.push("");
-    lines.push("PHASE MATRIX PREVIEW (CYCLE 1 / WEEK 1)");
+    lines.push("PHASE PREVIEW (ALL 3 DAYS)");
     for (let phaseIndex = 1; phaseIndex <= MAX_PHASE_INDEX; phaseIndex += 1) {
       const phaseMeta = getPhaseMetaByIndex(phaseIndex);
       const profile = getPhaseProfile(phaseIndex);
-      lines.push(
-        `${phaseMeta.phaseName} | ${profile.description}`
-      );
+      lines.push(`${phaseMeta.phaseName} | ${profile.description}`);
       try {
-        const phaseProgram = generateWeeklyProgram(
-          referenceQuestionnaire,
-          `${program.id}-reference-phase-${phaseIndex}`,
-          {
-            phaseIndex,
-            cycleIndex: 1,
-            weekIndex: 1,
-            totalWeekIndex: 1,
-            seed: `${referenceSeedBase}-reference-phase-${phaseIndex}`,
-          }
-        );
-        phaseProgram.week.forEach((day) => {
-          lines.push(buildReferenceLineForDay(day));
+        const phaseSignals = buildEngineSignals({
+          questionnaire: referenceQuestionnaire,
+          poseAnalysis: poseState.analysis ?? null,
+          assessmentReport: poseState.report ?? null,
+          history: {
+            sessions: [],
+            exerciseLogs: [],
+            programProgress: progress,
+          },
+          nowIso: program.createdAt ?? new Date().toISOString(),
         });
+        const phaseResult = generateProgram({
+          mode: "weekly",
+          signals: phaseSignals,
+          nextProgramId: `${program.id}-reference-phase-${phaseIndex}`,
+          phaseIndex,
+          cycleIndex: 1,
+          weekIndex: 1,
+          totalWeekIndex: 1,
+        });
+        if (!("program" in phaseResult)) {
+          throw new Error(phaseResult.message);
+        }
+        const phaseProgram = phaseResult.program;
+        const referenceDays = [...phaseProgram.week]
+          .sort((left, right) => left.dayIndex - right.dayIndex)
+          .slice(0, 3);
+        if (referenceDays.length) {
+          referenceDays.forEach((phaseDay, dayListIndex) => {
+            lines.push(...buildReferenceLinesForDay(phaseDay));
+            if (dayListIndex < referenceDays.length - 1) {
+              lines.push("");
+            }
+          });
+        } else {
+          lines.push("(phase day preview unavailable)");
+        }
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unable to generate phase preview.";
@@ -1369,7 +1403,7 @@ export default function ResultsRoutine() {
     }
 
     return lines.join("\n");
-  }, [data, program, questionnaireSignature]);
+  }, [data, poseState.analysis, poseState.report, program, progress]);
 
   const adherencePercent = useMemo(() => {
     if (!activeDaysPerWeek) return 0;
@@ -1509,11 +1543,10 @@ export default function ResultsRoutine() {
   useEffect(() => {
     if (process.env.NODE_ENV !== "development" || !program) return;
     if (!baselineForActiveProgram) return;
-    // eslint-disable-next-line no-console
     console.log(
       `[Week View] baseline=${new Date(baselineForActiveProgram).toISOString()} programId=${activeProgramId ?? program.id}`
     );
-  }, [program?.id, activeProgramId, baselineForActiveProgram]);
+  }, [program, activeProgramId, baselineForActiveProgram]);
 
   useEffect(() => {
     const runPoseAnalysis = async () => {
@@ -1527,13 +1560,14 @@ export default function ResultsRoutine() {
         setPoseState({
           loading: false,
           error: null,
+          analysis: null,
           report: fallbackReport,
         });
         void pushTrainingPatch({ assessment: fallbackReport as unknown as Record<string, unknown> });
         return;
       }
 
-      setPoseState({ loading: true, error: null, report: null });
+      setPoseState({ loading: true, error: null, analysis: null, report: null });
 
       try {
         const metricsByView: Record<string, PoseMetrics> = {};
@@ -1581,7 +1615,7 @@ export default function ResultsRoutine() {
           questionnaire: data,
           poseAnalysis: combined,
         });
-        setPoseState({ loading: false, error: null, report });
+        setPoseState({ loading: false, error: null, analysis: combined, report });
         void pushTrainingPatch({ assessment: report as unknown as Record<string, unknown> });
       } catch (error) {
         const fallbackReport = buildAssessmentReport({ questionnaire: data });
@@ -1591,6 +1625,7 @@ export default function ResultsRoutine() {
             error instanceof Error
               ? error.message
               : "Pose detection failed. Try clearer photos.",
+          analysis: null,
           report: fallbackReport,
         });
         void pushTrainingPatch({ assessment: fallbackReport as unknown as Record<string, unknown> });
@@ -2237,7 +2272,7 @@ export default function ResultsRoutine() {
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-600">
-            Plain reference output for screenshot review across all phases and days.
+            Plain reference output for screenshot review of all 3 days for active week and all phases.
           </p>
           <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
             <pre className="whitespace-pre-wrap text-[11px] leading-5 text-slate-700">

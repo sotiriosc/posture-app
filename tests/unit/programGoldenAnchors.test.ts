@@ -2,6 +2,10 @@ import { describe, expect, test } from "vitest";
 import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById } from "@/lib/exercises";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import {
+  expectedAccessoryCountForDayTitle,
+  expectedMainCountForDayTitle,
+} from "./_helpers/expectedCounts";
 
 type AnchorScenario = {
   key: string;
@@ -24,6 +28,7 @@ type GoldenDaySummary = {
   invariants: {
     uniqueExerciseIds: boolean;
     mainCountMatchesExpected: boolean;
+    accessoryCountMatchesExpected?: boolean;
     mainSectionHasOnlyMainCategory: boolean;
   };
 };
@@ -120,24 +125,32 @@ const COACH6_ANCHORS: AnchorScenario[] = [
   },
 ];
 
-const expectedMainCount = (experience: QuestionnaireData["experience"]) => {
-  if (experience === "Advanced") return 4;
-  if (experience === "Intermediate") return 3;
-  return 2;
-};
-
 const buildGoldenSummary = (scenario: AnchorScenario): GoldenSummary => {
-  const expectedMainPerDay = expectedMainCount(scenario.questionnaire.experience);
   const seed = `${GOLDEN_SEED_BASE}:${scenario.key}`;
   const program = generateWeeklyProgram(scenario.questionnaire, `golden-${scenario.key}`, {
     phaseIndex: scenario.phaseIndex,
     seed,
+  });
+  const expectedMainPerDay = expectedMainCountForDayTitle({
+    daysPerWeek: scenario.questionnaire.daysPerWeek,
+    dayTitle: program.week[0]?.title ?? "Back + Chest",
+    experience: scenario.questionnaire.experience,
   });
 
   const days: GoldenDaySummary[] = program.week.map((day) => {
     const routineIds = day.routine.map((item) => item.exerciseId);
     const mainItems = day.routine.filter((item) => item.section === "main");
     const accessoryItems = day.routine.filter((item) => item.section === "accessory");
+    const expectedMainCount = expectedMainCountForDayTitle({
+      daysPerWeek: scenario.questionnaire.daysPerWeek,
+      dayTitle: day.title,
+      experience: scenario.questionnaire.experience,
+    });
+    const expectedAccessoryCount = expectedAccessoryCountForDayTitle({
+      daysPerWeek: scenario.questionnaire.daysPerWeek,
+      dayTitle: day.title,
+      experience: scenario.questionnaire.experience,
+    });
     const activationBlockFirst2 = day.routine
       .filter((item) => item.section === "warmup" || item.section === "activation")
       .slice(0, 2)
@@ -158,7 +171,10 @@ const buildGoldenSummary = (scenario: AnchorScenario): GoldenSummary => {
       },
       invariants: {
         uniqueExerciseIds: new Set(routineIds).size === routineIds.length,
-        mainCountMatchesExpected: mainItems.length === expectedMainPerDay,
+        mainCountMatchesExpected: mainItems.length === expectedMainCount,
+        ...(scenario.questionnaire.daysPerWeek === 3
+          ? { accessoryCountMatchesExpected: accessoryItems.length === expectedAccessoryCount }
+          : {}),
         mainSectionHasOnlyMainCategory,
       },
     };
@@ -186,6 +202,9 @@ const expectGoldenInvariants = (summary: GoldenSummary) => {
   summary.days.forEach((day) => {
     expect(day.invariants.uniqueExerciseIds).toBe(true);
     expect(day.invariants.mainCountMatchesExpected).toBe(true);
+    if (typeof day.invariants.accessoryCountMatchesExpected === "boolean") {
+      expect(day.invariants.accessoryCountMatchesExpected).toBe(true);
+    }
     expect(day.invariants.mainSectionHasOnlyMainCategory).toBe(true);
   });
 };
@@ -208,8 +227,8 @@ describe("program golden anchor fingerprints", () => {
         "days": [
           {
             "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
-              "band-woodchop",
+              "band-rear-delt-fly",
+              "band-face-pull-high-anchor",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -218,72 +237,78 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Back + Chest",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "face-pull",
-              "incline-pushup",
+              "split-stance-band-chest-press",
+              "band-chest-press",
+              "split-stance-row",
             ],
           },
           {
             "accessoryFirst2Ids": [
+              "band-overhead-triceps-extension",
               "band-biceps-curl",
-              "bodyweight-triceps-extension",
             ],
             "activationBlockFirst2": [
               "wall-slides",
               "wall-angel-hold",
             ],
             "counts": {
-              "accessory": 2,
+              "accessory": 3,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Shoulders + Arms",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
               "band-overhead-press",
-              "face-pull",
+              "prone-t-raise",
+              "band-rear-delt-fly",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "band-suitcase-march",
-              "band-woodchop",
+              "side-plank",
+              "single-leg-calf-raise",
             ],
             "activationBlockFirst2": [
               "cat-cow",
-              "dead-bug",
+              "wall-angel-hold",
             ],
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Legs + Abs",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "heels-elevated-squat",
-              "bodyweight-good-morning",
+              "band-front-squat",
+              "back-extension-hold",
+              "split-squat",
             ],
           },
         ],
         "daysPerWeek": 3,
-        "expectedMainPerDay": 2,
+        "expectedMainPerDay": 3,
         "phase": "activation",
         "profile": "normal beginner",
       }
@@ -324,12 +349,12 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
-              "farmers-carry",
               "db-calf-raise",
+              "suitcase-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
-              "dumbbell-rows",
+              "dead-bug",
             ],
             "counts": {
               "accessory": 2,
@@ -343,14 +368,14 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "goblet-squat",
+              "machine-leg-press",
               "db-rdl",
             ],
           },
           {
             "accessoryFirst2Ids": [
               "bodyweight-triceps-extension",
-              "db-biceps-curl",
+              "cable-biceps-curl",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -374,12 +399,12 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
-              "farmers-carry",
               "db-calf-raise",
+              "suitcase-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
-              "dumbbell-rows",
+              "dead-bug",
             ],
             "counts": {
               "accessory": 2,
@@ -394,7 +419,7 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "db-rdl",
-              "goblet-squat",
+              "machine-leg-press",
             ],
           },
         ],
@@ -416,7 +441,7 @@ describe("program golden anchor fingerprints", () => {
           {
             "accessoryFirst2Ids": [
               "dumbbell-chest-fly",
-              "bodyweight-triceps-extension",
+              "close-grip-pushup",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -436,17 +461,17 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-floor-press",
               "dumbbell-arnold-press",
-              "dumbbell-shoulder-press",
+              "machine-chest-press",
             ],
           },
           {
             "accessoryFirst2Ids": [
               "db-calf-raise",
-              "hollow-body-hold",
+              "suitcase-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
-              "dumbbell-rows",
+              "dead-bug",
             ],
             "counts": {
               "accessory": 2,
@@ -460,14 +485,14 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "goblet-squat",
               "db-rdl",
-              "machine-leg-press",
+              "machine-hack-squat",
+              "dumbbell-step-up-loaded",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "db-biceps-curl",
+              "cable-biceps-curl",
               "farmers-carry",
             ],
             "activationBlockFirst2": [
@@ -488,17 +513,17 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-rows",
               "dumbbell-chest-supported-row",
-              "seated-lat-sweep-pulse",
+              "machine-lat-pulldown",
             ],
           },
           {
             "accessoryFirst2Ids": [
               "db-calf-raise",
-              "hollow-body-hold",
+              "suitcase-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
-              "dumbbell-rows",
+              "dead-bug",
             ],
             "counts": {
               "accessory": 2,
@@ -512,19 +537,19 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "db-rdl",
-              "goblet-squat",
-              "barbell-bent-over-row",
+              "dumbbell-step-up-loaded",
+              "machine-seated-hamstring-curl",
+              "dumbbell-sumo-rdl",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "db-biceps-curl",
+              "cable-biceps-curl",
               "farmers-carry",
             ],
             "activationBlockFirst2": [
               "wall-angel-hold",
-              "dumbbell-rows",
+              "dead-bug",
             ],
             "counts": {
               "accessory": 2,
@@ -540,7 +565,7 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "db-triceps-extension",
               "dumbbell-shoulder-press",
-              "machine-seated-row",
+              "dumbbell-chest-supported-row",
             ],
           },
         ],
@@ -561,8 +586,8 @@ describe("program golden anchor fingerprints", () => {
         "days": [
           {
             "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
-              "pallof-press",
+              "band-face-pull-high-anchor",
+              "band-rear-delt-fly",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -571,72 +596,78 @@ describe("program golden anchor fingerprints", () => {
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Back + Chest",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
+              "band-chest-press",
+              "split-stance-band-chest-press",
               "split-stance-row",
-              "incline-pushup",
             ],
           },
           {
             "accessoryFirst2Ids": [
+              "band-triceps-pressdown",
               "band-biceps-curl",
-              "bodyweight-triceps-extension",
             ],
             "activationBlockFirst2": [
               "wall-slides",
               "band-pull-aparts",
             ],
             "counts": {
-              "accessory": 2,
+              "accessory": 3,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Shoulders + Arms",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
               "band-overhead-press",
-              "face-pull",
+              "prone-t-raise",
+              "band-rear-delt-fly",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "band-suitcase-march",
               "pallof-press",
+              "band-calf-raise",
             ],
             "activationBlockFirst2": [
               "cat-cow",
-              "hip-hinge-drill",
+              "dead-bug",
             ],
             "counts": {
               "accessory": 2,
               "activation": 1,
-              "main": 2,
+              "main": 3,
             },
             "dayTitle": "Legs + Abs",
             "invariants": {
+              "accessoryCountMatchesExpected": true,
               "mainCountMatchesExpected": true,
               "mainSectionHasOnlyMainCategory": true,
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "heels-elevated-squat",
-              "bodyweight-good-morning",
+              "band-front-squat",
+              "back-extension-hold",
+              "split-squat",
             ],
           },
         ],
         "daysPerWeek": 3,
-        "expectedMainPerDay": 2,
+        "expectedMainPerDay": 3,
         "phase": "activation",
         "profile": "pain beginner",
       }
@@ -672,15 +703,15 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-floor-press",
+              "pike-pushup",
+              "machine-chest-press",
               "dumbbell-bench-press",
-              "dumbbell-chest-fly",
-              "dumbbell-lateral-raise",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "hollow-body-hold",
               "single-leg-calf-raise",
+              "suitcase-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -698,8 +729,8 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "goblet-squat",
-              "bodyweight-good-morning",
+              "machine-leg-press",
+              "back-extension",
               "split-squat",
               "farmers-carry",
             ],
@@ -726,15 +757,15 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "supine-elbow-drive-row",
-              "prone-elbow-row",
               "seated-lat-sweep-pulse",
+              "single-arm-dumbbell-row",
+              "prone-swimmer",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "hollow-body-hold",
               "single-leg-calf-raise",
+              "suitcase-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -752,9 +783,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "bodyweight-good-morning",
-              "goblet-squat",
               "back-extension",
+              "machine-leg-press",
+              "bodyweight-good-morning",
               "farmers-carry",
             ],
           },
@@ -776,8 +807,8 @@ describe("program golden anchor fingerprints", () => {
         "days": [
           {
             "accessoryFirst2Ids": [
-              "dumbbell-lateral-raise",
-              "bodyweight-triceps-extension",
+              "dumbbell-chest-fly",
+              "close-grip-pushup",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -797,14 +828,14 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-floor-press",
               "dumbbell-shoulder-press",
-              "dumbbell-bench-press",
-              "dumbbell-chest-fly",
+              "machine-chest-press",
+              "dumbbell-arnold-press",
             ],
           },
           {
             "accessoryFirst2Ids": [
               "db-calf-raise",
-              "hollow-body-hold",
+              "suitcase-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -822,10 +853,10 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "goblet-squat",
               "barbell-hip-thrust",
               "farmers-carry",
-              "machine-hack-squat",
+              "dumbbell-step-up-loaded",
+              "barbell-back-squat",
             ],
           },
           {
@@ -850,15 +881,15 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "dumbbell-pullover",
+              "machine-rear-delt-row",
               "cable-seated-row",
-              "seated-lat-sweep-pulse",
+              "cable-lat-pulldown",
             ],
           },
           {
             "accessoryFirst2Ids": [
               "db-calf-raise",
-              "hollow-body-hold",
+              "suitcase-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -876,9 +907,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "goblet-squat",
-              "barbell-hip-thrust",
+              "dumbbell-step-up-loaded",
               "machine-glute-drive",
+              "barbell-hip-thrust",
               "farmers-carry",
             ],
           },
@@ -904,9 +935,9 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "dumbbell-arnold-press",
-              "dumbbell-pullover",
               "dumbbell-shoulder-press",
+              "machine-rear-delt-row",
+              "dumbbell-arnold-press",
             ],
           },
         ],

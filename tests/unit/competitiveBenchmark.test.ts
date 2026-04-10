@@ -4,6 +4,7 @@ import { exerciseById } from "@/lib/exercises";
 import { normalizeEquipmentSelection, isExerciseEligible } from "@/lib/equipment";
 import { generateWeeklyProgram } from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
+import { expectedMainCountForDayTitle } from "./_helpers/expectedCounts";
 
 type MainPattern = "push" | "verticalPush" | "pull" | "squat" | "hinge";
 
@@ -20,12 +21,6 @@ const normalizePattern = (value: string) =>
     .trim()
     .toLowerCase()
     .replace(/[\s_-]+/g, "");
-
-const expectedMainCount = (experience: QuestionnaireData["experience"]) => {
-  if (experience === "Advanced") return 4;
-  if (experience === "Intermediate") return 3;
-  return 2;
-};
 
 const hasMainPattern = (
   day: ReturnType<typeof generateWeeklyProgram>["week"][number],
@@ -126,7 +121,6 @@ const scoreCompetitiveBenchmark = (input: QuestionnaireData): CompetitiveScore =
   let progression = 0;
   let coaching = 0;
 
-  const expectedMain = expectedMainCount(input.experience);
   const available = normalizeEquipmentSelection(input.equipment).available;
   const painAreas = input.painAreas.map((area) => area.toLowerCase());
 
@@ -141,9 +135,14 @@ const scoreCompetitiveBenchmark = (input: QuestionnaireData): CompetitiveScore =
   });
   if (allDaysHaveCoreSections) design += 8;
 
-  const allMainCountsCorrect = phase1.week.every(
-    (day) => day.routine.filter((item) => item.section === "main").length === expectedMain
-  );
+  const allMainCountsCorrect = phase1.week.every((day) => {
+    const expectedMain = expectedMainCountForDayTitle({
+      daysPerWeek: input.daysPerWeek,
+      dayTitle: day.title,
+      experience: input.experience,
+    });
+    return day.routine.filter((item) => item.section === "main").length === expectedMain;
+  });
   if (allMainCountsCorrect) design += 6;
 
   const allMainCategoriesCorrect = phase1.week.every((day) =>
