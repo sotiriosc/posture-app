@@ -31,18 +31,24 @@ export default function ProgressBar({
   const previousPercentRef = useRef<number | null>(null);
 
   useEffect(() => {
+    let frame = 0;
     if (!animate) {
-      setDisplayedPercent(percent);
-      return;
+      frame = window.requestAnimationFrame(() => {
+        setDisplayedPercent(percent);
+      });
+      return () => window.cancelAnimationFrame(frame);
     }
     if (!hasMountedRef.current) {
       hasMountedRef.current = true;
-      const raf = window.requestAnimationFrame(() => {
+      frame = window.requestAnimationFrame(() => {
         setDisplayedPercent(percent);
       });
-      return () => window.cancelAnimationFrame(raf);
+      return () => window.cancelAnimationFrame(frame);
     }
-    setDisplayedPercent(percent);
+    frame = window.requestAnimationFrame(() => {
+      setDisplayedPercent(percent);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [percent, animate]);
 
   useEffect(() => {
@@ -51,12 +57,17 @@ export default function ProgressBar({
     if (previousPercent === null) return;
     if (percent <= previousPercent) return;
 
-    setFlashProgress(true);
+    const flashFrame = window.requestAnimationFrame(() => {
+      setFlashProgress(true);
+    });
     const timer = window.setTimeout(() => {
       setFlashProgress(false);
     }, 800);
 
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.cancelAnimationFrame(flashFrame);
+      window.clearTimeout(timer);
+    };
   }, [percent]);
 
   return (

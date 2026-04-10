@@ -50,6 +50,7 @@ const logTimestampMs = (log: ExerciseLog) => {
 };
 
 const dayBucket = (timestampMs: number) => Math.floor(timestampMs / DAY_MS);
+const currentTimestampMs = () => Date.now();
 
 const toDateKey = (timestampMs: number) =>
   new Date(timestampMs).toISOString().slice(0, 10);
@@ -63,7 +64,7 @@ const weekStartFromTimestampMs = (timestampMs: number) => {
 };
 
 const startOfWeekMs = () => {
-  return weekStartFromTimestampMs(Date.now());
+  return weekStartFromTimestampMs(currentTimestampMs());
 };
 
 const difficultyScoreFromLabel = (
@@ -298,11 +299,17 @@ export default function ProgressPage() {
       .sort((left, right) => right.occurredAt - left.occurredAt)
       .slice(0, 5);
 
-    return entries.map(({ occurredAt, ...entry }) => entry);
+    return entries.map(({ key, name, last, previous, improvement }) => ({
+      key,
+      name,
+      last,
+      previous,
+      improvement,
+    }));
   }, [logs]);
 
   const weeklyFrequency = useMemo(() => {
-    const now = Date.now();
+    const now = currentTimestampMs();
     const recentWindowStart = now - 7 * DAY_MS;
     const previousWindowStart = now - 14 * DAY_MS;
 
@@ -330,7 +337,7 @@ export default function ProgressPage() {
     }
 
     const baselineDay = dayBucket(baselineAt);
-    const currentDay = dayBucket(Date.now());
+    const currentDay = dayBucket(currentTimestampMs());
     const trackedDays = Math.max(1, currentDay - baselineDay + 1);
 
     return clamp(Math.round((uniqueDays.size / trackedDays) * 100), 0, 100);
