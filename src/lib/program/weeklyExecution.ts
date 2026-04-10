@@ -6,6 +6,7 @@ import {
   finalizeGeneratedWeek,
   type PostGenerationRepairResult,
 } from "@/lib/program/postGenerationPipeline";
+import { composeSelectionRngSeedToken } from "@/lib/program/variationRuntime";
 import { createSeededRng, type RandomFn } from "@/lib/seededRng";
 import type { ExerciseLog, Program, ProgramDay } from "@/lib/types";
 
@@ -164,9 +165,10 @@ export const resolveWeeklyRuntimeContext = <
     recentlyUsedExerciseIds: params.recentlyUsedExerciseIds,
     variationState,
   });
-  const composedSelectionSeed = [params.seed, variationState?.seedKey]
-    .filter((value): value is string => Boolean(value))
-    .join("|");
+  const composedSelectionSeed = composeSelectionRngSeedToken({
+    baseSeed: params.seed,
+    variationState,
+  });
   const selectionRng = composedSelectionSeed
     ? createSeededRng(composedSelectionSeed)
     : undefined;

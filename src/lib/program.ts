@@ -20,6 +20,14 @@ import type { UserTrainingState } from "@/lib/phases";
 import type { ExerciseFeedbackSummary } from "@/lib/logStore";
 import type { PoseAnalysis, PoseMetrics } from "@/lib/poseAnalyzer";
 import type { RandomFn } from "@/lib/seededRng";
+import { resolveProgramVariationIndex as resolveProgramVariationIndexValue } from "@/lib/programVariationClient";
+import {
+  buildFinalSelectionTraceEmitter,
+  finalizeWeeklyGenerationObservability,
+  recordProgramSelectionAuditEntry,
+  type ProgramSelectionAuditEntry,
+  type ProgramSelectionAuditHook,
+} from "@/lib/program/generationObservability";
 import {
   normalizeWeekForProgramConstraints,
 } from "@/lib/program/postGenerationPipeline";
@@ -47,6 +55,11 @@ import {
   buildWeeklyPipelineCallbacks,
   resolveWeeklyRepairContext,
 } from "@/lib/program/weeklyPipelineAdapters";
+import {
+  composeWeeklyDeterministicSelectionSeed,
+  composeWeeklyDeterministicSelectionSeedBase,
+  resolveVariationPoseFocusTags,
+} from "@/lib/program/variationRuntime";
 import {
   buildWarmupForDay,
   deriveDayIntentFromProgramDay,
@@ -2192,12 +2205,7 @@ const resolveProgramVariationIndex = (
   options?:
     | Pick<ProgramVariationOptions, "variationIndex" | "index">
     | null
-) => {
-  const rawVariationIndex = options?.variationIndex ?? options?.index;
-  return typeof rawVariationIndex === "number" && Number.isFinite(rawVariationIndex)
-    ? Math.max(0, Math.floor(rawVariationIndex))
-    : 0;
-};
+) => resolveProgramVariationIndexValue(options?.variationIndex ?? options?.index);
 
 const resolveProgramVariationPhaseIndex = (value?: number | null) =>
   typeof value === "number" && Number.isFinite(value)
@@ -22348,13 +22356,11 @@ const pickFirstEligibleId = (
       chosen,
       top,
     };
-    if (DEBUG_AUDIT_SELECTION) {
-      selectionAuditBuffer.push(payload);
-      if (selectionAuditBuffer.length > 500) {
-        selectionAuditBuffer.shift();
-      }
-    }
-    auditMeta.selectionAuditHook?.(payload);
+    recordProgramSelectionAuditEntry({
+      entry: payload,
+      persistToBuffer: DEBUG_AUDIT_SELECTION,
+      selectionAuditHook: auditMeta.selectionAuditHook,
+    });
   }
 
   return chosenEntry.id;
@@ -23564,31 +23570,14 @@ type DayPatternBudget = {
 
 const DEBUG_AUDIT_SELECTION = false;
 
-export type ProgramSelectionAuditCandidate = {
-  exerciseId: string;
-  name: string;
-  score: number;
-  reasons: string[];
-};
-
-export type ProgramSelectionAuditEntry = {
-  slotId: string;
-  dayTitle: string;
-  slotKind: string;
-  capabilityMode: EquipmentCapabilityMode;
-  chosen: ProgramSelectionAuditCandidate;
-  top: ProgramSelectionAuditCandidate[];
-};
-
-type ProgramSelectionAuditHook = (entry: ProgramSelectionAuditEntry) => void;
-
-const selectionAuditBuffer: ProgramSelectionAuditEntry[] = [];
-
-export const getProgramSelectionAuditBuffer = () => [...selectionAuditBuffer];
-
-export const clearProgramSelectionAuditBuffer = () => {
-  selectionAuditBuffer.length = 0;
-};
+export {
+  clearProgramSelectionAuditBuffer,
+  getProgramSelectionAuditBuffer,
+} from "@/lib/program/generationObservability";
+export type {
+  ProgramSelectionAuditCandidate,
+  ProgramSelectionAuditEntry,
+} from "@/lib/program/generationObservability";
 
 export type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 
@@ -24765,71 +24754,35 @@ const buildStructuredDay = (params: {
   return { title, focusTags, routine };
 };
 
-const emitFinalSelectionTraceForWeek = (params: {
-  week: ProgramDay[];
-  selectionContext: SelectionContext;
-  available: Set<Equipment>;
-  capabilityMode: EquipmentCapabilityMode;
-  selectionAuditHook?: ProgramSelectionAuditHook;
-}) => {
-  const { week, selectionContext, available, capabilityMode, selectionAuditHook } = params;
-  if (!selectionAuditHook) return;
-
-  week.forEach((day) => {
-    const mainItems = day.routine.filter(
-      (item): item is ProgramRoutineItem => item.section === "main"
-    );
-    mainItems.forEach((item, index) => {
-      const exercise = exerciseById(item.exerciseId);
-      if (!exercise) return;
-      const lane = getMainLaneHits(exercise)[0];
-      const slotId = `${normalizeSlotToken(day.title)}-main-${index + 1}`;
-      const slotKind = lane ? slotKindByMainLane[lane] : "mainRepair";
-      const detail = scoreExerciseForContextDetailed(
-        exercise,
-        "main",
-        selectionContext,
-        available,
-        {
-          slotId,
-          dayTitle: day.title,
-          dayFocusTags: day.focusTags,
-          slotKind,
-          slotLane: lane,
-          capabilityMode,
-        }
-      );
-      const capabilityBonus = getCapabilitySlotBonus({
-        exercise,
-        section: "main",
-        auditMeta: {
-          slotId,
-          dayTitle: day.title,
-          dayFocusTags: day.focusTags,
-          slotKind,
-          slotLane: lane,
-          capabilityMode,
-        },
-      });
-      const chosenScore = Number((detail.score + capabilityBonus.bonus).toFixed(2));
-      const chosenReasons = ["[final_trace]", ...detail.reasons, ...capabilityBonus.reasons];
-      const chosen: ProgramSelectionAuditCandidate = {
-        exerciseId: exercise.id,
-        name: exercise.name,
-        score: chosenScore,
-        reasons: chosenReasons,
-      };
-      selectionAuditHook({
-        slotId,
-        dayTitle: day.title,
-        slotKind,
-        capabilityMode,
-        chosen,
-        top: [chosen],
-      });
-    });
-  });
-};
+const emitFinalSelectionTraceForWeek = buildFinalSelectionTraceEmitter<
+  SelectionContext,
+  Equipment,
+  EquipmentCapabilityMode,
+  Exercise,
+  MainLane
+>({
+  resolveExerciseById: (exerciseId) => exerciseById(exerciseId) ?? undefined,
+  getExerciseId: (exercise) => exercise.id,
+  getExerciseName: (exercise) => exercise.name,
+  resolveMainLane: (exercise) => getMainLaneHits(exercise)[0],
+  resolveSlotKind: (lane) => (lane ? slotKindByMainLane[lane] : "mainRepair"),
+  buildSlotId: ({ dayTitle, mainIndex }) =>
+    `${normalizeSlotToken(dayTitle)}-main-${mainIndex}`,
+  scoreExerciseForSelectionTrace: ({ exercise, selectionContext, available, auditMeta }) =>
+    scoreExerciseForContextDetailed(
+      exercise,
+      "main",
+      selectionContext,
+      available,
+      auditMeta
+    ),
+  getCapabilityBonus: ({ exercise, auditMeta }) =>
+    getCapabilitySlotBonus({
+      exercise,
+      section: "main",
+      auditMeta,
+    }),
+});
 
 const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
   const parsed =
@@ -25476,15 +25429,17 @@ export const generateWeeklyProgram = (
       summarizeFeedbackFromLogs,
       buildRecentlyUsedExerciseIdSet,
     });
-  const variationPoseFocusTags = (() => {
-    const resolvedPoseAnalysis = resolvePoseAnalysisFromSources({
-      poseAnalysis: options?.poseAnalysis,
-      assessmentReport: options?.assessmentReport,
-    });
-    return derivePoseFocus(resolvedPoseAnalysis).focusTags
-      .map((tag) => normalizeTagToken(tag))
-      .sort();
-  })();
+  const variationPoseFocusTags = resolveVariationPoseFocusTags({
+    poseAnalysis: options?.poseAnalysis,
+    assessmentReport: options?.assessmentReport,
+    resolvePoseAnalysisFromSources: ({ poseAnalysis, assessmentReport }) =>
+      resolvePoseAnalysisFromSources({
+        poseAnalysis,
+        assessmentReport,
+      }),
+    derivePoseFocus,
+    normalizeTagToken,
+  });
   const weeklyRuntimeContext = resolveWeeklyRuntimeContext({
     questionnaire: data,
     feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
@@ -25571,25 +25526,24 @@ export const generateWeeklyProgram = (
   );
 
   const deterministicSelectionSeedBase =
-    options?.seed ??
-    [
-      "weekly",
-      String(weeklyRuntimeContext.phaseIndex),
-      String(weeklyRuntimeContext.cycleIndex),
-      String(weeklyRuntimeContext.weekIndex),
-      String(weeklyRuntimeContext.totalWeekIndex),
-      String(weeklyRuntimeContext.normalizedDaysPerWeek),
-      normalizeTagToken(data.goals ?? ""),
-      normalizeExperienceLevel(data.experience),
-      [...weeklyRuntimeContext.availableEquipment].sort().join(","),
-      [...(data.painAreas ?? [])]
-        .map((area) => normalizeTagToken(area))
-        .sort()
-        .join(","),
-    ].join("|");
-  const deterministicSelectionSeed = weeklyRuntimeContext.variationState?.enabled
-    ? `${deterministicSelectionSeedBase}|variation:${weeklyRuntimeContext.variationState.seedKey}`
-    : deterministicSelectionSeedBase;
+    composeWeeklyDeterministicSelectionSeedBase({
+      baseSeed: options?.seed,
+      phaseIndex: weeklyRuntimeContext.phaseIndex,
+      cycleIndex: weeklyRuntimeContext.cycleIndex,
+      weekIndex: weeklyRuntimeContext.weekIndex,
+      totalWeekIndex: weeklyRuntimeContext.totalWeekIndex,
+      daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
+      goal: data.goals ?? "",
+      experience: data.experience,
+      availableEquipment: weeklyRuntimeContext.availableEquipment,
+      painAreas: data.painAreas,
+      normalizeTagToken,
+      normalizeExperienceLevel,
+    });
+  const deterministicSelectionSeed = composeWeeklyDeterministicSelectionSeed({
+    baseSeed: deterministicSelectionSeedBase,
+    variationState: weeklyRuntimeContext.variationState,
+  });
 
   const dayRepairContext: DayConstraintRepairContext = resolveWeeklyRepairContext({
     availableEquipment: weeklyRuntimeContext.availableEquipment,
@@ -25613,17 +25567,15 @@ export const generateWeeklyProgram = (
     ...weeklyPipelineCallbacks,
   });
   const structuredPrepWeek = structuredWeekResult.week;
-  emitFinalSelectionTraceForWeek({
+  finalizeWeeklyGenerationObservability({
     week: structuredPrepWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
     available: weeklyRuntimeContext.availableEquipment,
     capabilityMode: weeklyRuntimeContext.capabilityMode,
     selectionAuditHook: options?.selectionAuditHook,
+    emitSelectionTrace: emitFinalSelectionTraceForWeek,
+    commitVariationSnapshot: commitProgramVariationSnapshot,
   });
-  commitProgramVariationSnapshot(
-    weeklyRuntimeContext.selectionContext.variationState,
-    structuredPrepWeek
-  );
 
   return finalizeWeeklyProgramResult({
     pushWarnings: pushProgramConstraintWarnings,
