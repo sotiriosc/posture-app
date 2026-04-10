@@ -26,19 +26,21 @@ import {
   normalizeWeekForProgramConstraints,
 } from "@/lib/program/postGenerationPipeline";
 import {
-  assembleAdvancedProgressionResult,
-  assembleProgram,
-  buildProgramConstraintWarnings,
-  buildProgramIntelligence,
   buildProgramNextWeekPlan,
   buildProgramPhaseMetadata,
 } from "@/lib/program/programAssembly";
+import {
+  finalizeAdvancedProgressionResult,
+  finalizeWeeklyProgramResult,
+  type ProgramConstraintWarning,
+} from "@/lib/program/programFinalization";
 import {
   buildBaseProgressedProgram,
   resolveProgressionFeedbackInputs,
   resolveProgressionRuntimeContext,
   runApprovedProgressionPipeline,
 } from "@/lib/program/progressionExecution";
+import { buildProgressionPipelineCallbacks } from "@/lib/program/progressionPipelineAdapters";
 import {
   buildWarmupForDay,
   deriveDayIntentFromProgramDay,
@@ -23582,13 +23584,7 @@ export const clearProgramSelectionAuditBuffer = () => {
   selectionAuditBuffer.length = 0;
 };
 
-export type ProgramConstraintWarning = {
-  programId: string;
-  phaseName: string | null;
-  dayTitle: string;
-  kind: "missing" | "violation" | "coverage";
-  message: string;
-};
+export type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 
 const programConstraintWarningBuffer: ProgramConstraintWarning[] = [];
 
@@ -25652,26 +25648,12 @@ export const generateWeeklyProgram = (
     capabilityMode,
     selectionAuditHook: options?.selectionAuditHook,
   });
-  pushProgramConstraintWarnings(
-    buildProgramConstraintWarnings({
-      programId,
-      phaseName: phaseMeta.phaseName,
-      warnings: structuredWeekResult.warnings,
-    })
-  );
-  const intelligence = buildProgramIntelligence({
-    questionnaire: data,
-    phaseIndex,
-    cycleIndex,
-    weekIndex,
-    week: structuredPrepWeek,
-    consistencyRate: 0,
-    trainingState,
-  });
   commitProgramVariationSnapshot(selectionContext.variationState, structuredPrepWeek);
 
-  return assembleProgram({
+  return finalizeWeeklyProgramResult({
+    pushWarnings: pushProgramConstraintWarnings,
     programId,
+    phaseName: phaseMeta.phaseName,
     createdAt: timestamp,
     goalTrack: data.goals ?? null,
     daysPerWeek: normalizedDaysPerWeek,
@@ -25681,7 +25663,10 @@ export const generateWeeklyProgram = (
     cycleIndex,
     nextWeekPlan,
     week: structuredPrepWeek,
-    intelligence,
+    questionnaire: data,
+    trainingState,
+    consistencyRate: 0,
+    warnings: structuredWeekResult.warnings,
     templateVersion: PROGRAM_TEMPLATE_VERSION,
   });
 };
@@ -25793,99 +25778,37 @@ export const generateNextPhaseProgram = (params: {
     getPhaseName: (phaseIndex) => getPhaseMetaByIndex(phaseIndex).phaseName,
     normalizeDaysPerWeek,
   });
+  const phasePipelineCallbacks = buildProgressionPipelineCallbacks({
+    questionnairePainAreas: questionnaire.painAreas,
+    previousWeek: currentProgram.week,
+    trainingState: progressionState.trainingState,
+    experienceLevel: getExperienceProfile(
+      questionnaire.experience,
+      questionnaire.goals
+    ).level,
+    enforceMaterialWeekChange,
+    remapWeekForProgressiveNovelty,
+    enforceProgressiveDemand,
+    dedupeWeekForSelectionContext,
+    applyDayCurriculumConstraints,
+    normalizeWeekForSelectionContext,
+    attachStructuredPrepBlocksToWeek,
+    extraRepair: ensureWeekHasProgressiveChestPushMain,
+  });
   const progressedPhaseResult = runApprovedProgressionPipeline({
     currentWeek: currentProgram.week,
     proposedProgram: phaseProgram,
     questionnaire,
     runtimeContext: phaseRuntimeContext,
-    runMaterialWeekChange: (currentWeek, nextWeek, runtimeContext) =>
-      enforceMaterialWeekChange({
-        currentWeek,
-        nextWeek,
-        cycleIndex: runtimeContext.resolvedTarget.cycleIndex,
-        available: runtimeContext.availableEquipment,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    runNoveltyRemap: (currentWeek, nextWeek, runtimeContext) =>
-      remapWeekForProgressiveNovelty({
-        currentWeek,
-        nextWeek,
-        available: runtimeContext.availableEquipment,
-        cycleIndex: runtimeContext.resolvedTarget.cycleIndex,
-        phaseIndex: runtimeContext.resolvedTarget.phaseIndex,
-        painAreas: questionnaire.painAreas,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    runDemandProgression: (previousWeek, nextWeek, runtimeContext) =>
-      enforceProgressiveDemand({
-        previousWeek,
-        nextWeek,
-        available: runtimeContext.availableEquipment,
-        phaseIndex: runtimeContext.resolvedTarget.phaseIndex,
-        cycleIndex: runtimeContext.resolvedTarget.cycleIndex,
-        experienceLevel: getExperienceProfile(
-          questionnaire.experience,
-          questionnaire.goals
-        ).level,
-        trainingState: progressionState.trainingState,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    dedupeWeek: (week, runtimeContext) =>
-      dedupeWeekForSelectionContext({
-        week,
-        available: runtimeContext.availableEquipment,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    repairWeek: (week, runtimeContext) =>
-      applyDayCurriculumConstraints({
-        week,
-        daysPerWeek: runtimeContext.daysPerWeek,
-        context: {
-          available: runtimeContext.availableEquipment,
-          selectionContext: runtimeContext.selectionContext,
-          capabilityMode: runtimeContext.capabilityMode,
-          previousWeek: currentProgram.week,
-        },
-      }),
-    normalizeWeek: (week, runtimeContext) =>
-      normalizeWeekForSelectionContext({
-        week,
-        available: runtimeContext.availableEquipment,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    attachPrep: (week, runtimeContext) =>
-      attachStructuredPrepBlocksToWeek({
-        week,
-        available: runtimeContext.availableEquipment,
-        capabilityMode: runtimeContext.capabilityMode,
-        painAreas: runtimeContext.selectionContext.painAreas,
-        painSeverity: runtimeContext.selectionContext.painSeverity,
-        goal: runtimeContext.selectionContext.goal,
-        experienceLevel: runtimeContext.selectionContext.experienceLevel,
-        poseFocusTags: runtimeContext.selectionContext.poseFocusTags,
-      }),
-    extraRepair: (week, runtimeContext) =>
-      ensureWeekHasProgressiveChestPushMain({
-        week,
-        daysPerWeek: runtimeContext.daysPerWeek,
-        available: runtimeContext.availableEquipment,
-        selectionContext: runtimeContext.selectionContext,
-        capabilityMode: runtimeContext.capabilityMode,
-        phaseIndex: runtimeContext.resolvedTarget.phaseIndex,
-      }),
+    ...phasePipelineCallbacks,
   });
   const structuredPhaseWeek = progressedPhaseResult.week;
   const optimizedPhase = progressedPhaseResult.optimizerResult;
-  pushProgramConstraintWarnings(
-    buildProgramConstraintWarnings({
-      programId: phaseProgram.id,
-      phaseName: phaseProgram.phaseName ?? null,
-      warnings: progressedPhaseResult.warnings,
-    })
-  );
   const painSeverity = getPainSeverity(questionnaire);
 
-  return assembleAdvancedProgressionResult({
+  return finalizeAdvancedProgressionResult({
+    pushWarnings: pushProgramConstraintWarnings,
+    warnings: progressedPhaseResult.warnings,
     program: phaseProgram,
     questionnaire,
     phaseIndex: phaseRuntimeContext.resolvedTarget.phaseIndex,
@@ -26009,90 +25932,36 @@ export const generateNextCycleProgram = (params: {
     getPhaseName: (phaseIndex) => getPhaseMetaByIndex(phaseIndex).phaseName,
     normalizeDaysPerWeek,
   });
+  const cyclePipelineCallbacks = buildProgressionPipelineCallbacks({
+    questionnairePainAreas: questionnaire.painAreas,
+    previousWeek: currentProgram.week,
+    trainingState: progressionState.trainingState,
+    experienceLevel: getExperienceProfile(
+      questionnaire.experience,
+      questionnaire.goals
+    ).level,
+    enforceMaterialWeekChange,
+    remapWeekForProgressiveNovelty,
+    enforceProgressiveDemand,
+    dedupeWeekForSelectionContext,
+    applyDayCurriculumConstraints,
+    normalizeWeekForSelectionContext,
+    attachStructuredPrepBlocksToWeek,
+  });
   const progressedCycleResult = runApprovedProgressionPipeline({
     currentWeek: currentProgram.week,
     proposedProgram: program,
     questionnaire,
     runtimeContext: cycleRuntimeContext,
-    runMaterialWeekChange: (currentWeek, nextWeek, runtimeContext) =>
-      enforceMaterialWeekChange({
-        currentWeek,
-        nextWeek,
-        cycleIndex: runtimeContext.resolvedTarget.cycleIndex,
-        available: runtimeContext.availableEquipment,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    runNoveltyRemap: (currentWeek, nextWeek, runtimeContext) =>
-      remapWeekForProgressiveNovelty({
-        currentWeek,
-        nextWeek,
-        available: runtimeContext.availableEquipment,
-        cycleIndex: runtimeContext.resolvedTarget.cycleIndex,
-        phaseIndex: runtimeContext.resolvedTarget.phaseIndex,
-        painAreas: questionnaire.painAreas,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    runDemandProgression: (previousWeek, nextWeek, runtimeContext) =>
-      enforceProgressiveDemand({
-        previousWeek,
-        nextWeek,
-        available: runtimeContext.availableEquipment,
-        phaseIndex: runtimeContext.resolvedTarget.phaseIndex,
-        cycleIndex: runtimeContext.resolvedTarget.cycleIndex,
-        experienceLevel: getExperienceProfile(
-          questionnaire.experience,
-          questionnaire.goals
-        ).level,
-        trainingState: progressionState.trainingState,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    dedupeWeek: (week, runtimeContext) =>
-      dedupeWeekForSelectionContext({
-        week,
-        available: runtimeContext.availableEquipment,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    repairWeek: (week, runtimeContext) =>
-      applyDayCurriculumConstraints({
-        week,
-        daysPerWeek: runtimeContext.daysPerWeek,
-        context: {
-          available: runtimeContext.availableEquipment,
-          selectionContext: runtimeContext.selectionContext,
-          capabilityMode: runtimeContext.capabilityMode,
-          previousWeek: currentProgram.week,
-        },
-      }),
-    normalizeWeek: (week, runtimeContext) =>
-      normalizeWeekForSelectionContext({
-        week,
-        available: runtimeContext.availableEquipment,
-        selectionContext: runtimeContext.selectionContext,
-      }),
-    attachPrep: (week, runtimeContext) =>
-      attachStructuredPrepBlocksToWeek({
-        week,
-        available: runtimeContext.availableEquipment,
-        capabilityMode: runtimeContext.capabilityMode,
-        painAreas: runtimeContext.selectionContext.painAreas,
-        painSeverity: runtimeContext.selectionContext.painSeverity,
-        goal: runtimeContext.selectionContext.goal,
-        experienceLevel: runtimeContext.selectionContext.experienceLevel,
-        poseFocusTags: runtimeContext.selectionContext.poseFocusTags,
-      }),
+    ...cyclePipelineCallbacks,
   });
   const structuredCycleWeek = progressedCycleResult.week;
   const optimizedCycle = progressedCycleResult.optimizerResult;
-  pushProgramConstraintWarnings(
-    buildProgramConstraintWarnings({
-      programId: program.id,
-      phaseName: program.phaseName ?? null,
-      warnings: progressedCycleResult.warnings,
-    })
-  );
   const painSeverity = getPainSeverity(questionnaire);
 
-  return assembleAdvancedProgressionResult({
+  return finalizeAdvancedProgressionResult({
+    pushWarnings: pushProgramConstraintWarnings,
+    warnings: progressedCycleResult.warnings,
     program,
     questionnaire,
     phaseIndex: cycleRuntimeContext.resolvedTarget.phaseIndex,
