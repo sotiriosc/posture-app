@@ -12,7 +12,6 @@ import { computeEquipmentCapability } from "@/lib/engine/equipmentCapability";
 import { derivePoseFocus } from "@/lib/engine/poseFocus";
 import {
   MAX_PHASE_INDEX,
-  decideProgramProgression,
   deriveUserTrainingState,
   getCycleLadder,
   getPhaseMetaByIndex,
@@ -39,6 +38,12 @@ import {
   buildWarmupForDay,
   deriveDayIntentFromProgramDay,
 } from "@/lib/program/warmupPlanner";
+import {
+  deriveProgramProgressionState,
+  evaluateNextCycleProgression,
+  evaluateNextPhaseProgression,
+  resolveGeneratedProgramTransitionState,
+} from "@/lib/program/progressionTransition";
 import {
   get3DayBackChestVerticalFallbackIds,
   get3DayMainLanePlan,
@@ -1018,6 +1023,19 @@ const buildRecentlyUsedExerciseIdSet = (params?: {
   });
   return recentlyUsedExerciseIds;
 };
+
+const resolveProgressionFeedbackInputs = (params: {
+  currentProgram: Program;
+  recentLogs: ExerciseLog[];
+  feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
+}) => ({
+  resolvedFeedbackSummaryByExercise:
+    params.feedbackSummaryByExercise ?? summarizeFeedbackFromLogs(params.recentLogs),
+  recentlyUsedExerciseIds: buildRecentlyUsedExerciseIdSet({
+    recentLogs: params.recentLogs,
+    previousWeek: params.currentProgram.week,
+  }),
+});
 
 const getExperienceProfile = (
   experience: string,
@@ -25714,80 +25732,38 @@ export const generateNextPhaseProgram = (params: {
     seed,
   } = params;
 
-  const phaseIndex = clampPhaseIndexToSupportedRange(currentProgram.phaseIndex ?? 1);
-  if (phaseIndex >= MAX_PHASE_INDEX) {
-    return {
-      status: "repeat" as const,
-      message: `You are already in Phase ${MAX_PHASE_INDEX}. Continue progressing through cycles for variation.`,
-    };
-  }
-  const totalWeekIndex =
-    currentProgram.totalWeekIndex ?? currentProgram.weekIndex ?? 1;
-  const priorReadiness =
-    currentProgram.nextWeekPlan?.summary.includes("progress") ? 0.7 : 0.55;
-  const trainingState = deriveUserTrainingState({
-    phaseIndex,
+  const progressionState = deriveProgramProgressionState({
+    currentProgram,
     complianceRate,
     painFlag,
     fatigueFlag,
     movementQuality,
     confidence,
     capacity,
-    priorReadiness,
   });
-  if (trainingState.painRisk >= 0.65) {
-    return {
-      status: "blocked" as const,
-      message: trainingState.reason,
-    };
-  }
-
-  if (trainingState.consistency < 0.5 || trainingState.fatigueRisk >= 0.65) {
-    return {
-      status: "repeat" as const,
-      message: trainingState.reason,
-    };
-  }
-
-  const weeksCompleted =
-    typeof completedWeeksCount === "number"
-      ? completedWeeksCount
-      : Math.max(0, totalWeekIndex - 1);
-  if (weeksCompleted < MIN_WEEKS_FOR_PHASE_ADVANCE) {
-    return {
-      status: "repeat" as const,
-      message: "Complete at least 2 full weeks before advancing to the next phase.",
-    };
-  }
-
-  const requiredSessionsForPhase = currentProgram.daysPerWeek * MIN_WEEKS_FOR_PHASE_ADVANCE;
-  if (
-    typeof completedSessionsCount === "number" &&
-    completedSessionsCount < requiredSessionsForPhase
-  ) {
-    return {
-      status: "repeat" as const,
-      message: `Complete at least ${requiredSessionsForPhase} sessions before advancing to the next phase.`,
-    };
-  }
-
-  const nextPhaseIndex = clampPhaseIndexToSupportedRange(phaseIndex + 1);
-  const nextWeekIndex = 1;
-  const nextCycleIndex = 1;
-  const nextTotalWeekIndex = totalWeekIndex + 1;
-  const resolvedFeedbackSummaryByExercise =
-    feedbackSummaryByExercise ?? summarizeFeedbackFromLogs(recentLogs);
-  const recentlyUsedExerciseIds = buildRecentlyUsedExerciseIdSet({
-    recentLogs,
-    previousWeek: currentProgram.week,
+  const phaseDecision = evaluateNextPhaseProgression({
+    currentProgram,
+    progressionState,
+    completedSessionsCount,
+    completedWeeksCount,
+    minimumWeeksForPhaseAdvance: MIN_WEEKS_FOR_PHASE_ADVANCE,
   });
+  if (phaseDecision.status !== "advanced") return phaseDecision;
+
+  const nextTarget = phaseDecision.target;
+  const { resolvedFeedbackSummaryByExercise, recentlyUsedExerciseIds } =
+    resolveProgressionFeedbackInputs({
+      currentProgram,
+      recentLogs,
+      feedbackSummaryByExercise,
+    });
 
   const program = generateWeeklyProgram(questionnaire, nextProgramId, {
-    phaseIndex: nextPhaseIndex,
-    weekIndex: nextWeekIndex,
-    cycleIndex: nextCycleIndex,
-    totalWeekIndex: nextTotalWeekIndex,
-    trainingState,
+    phaseIndex: nextTarget.phaseIndex,
+    weekIndex: nextTarget.weekIndex,
+    cycleIndex: nextTarget.cycleIndex,
+    totalWeekIndex: nextTarget.totalWeekIndex,
+    trainingState: progressionState.trainingState,
     seed,
     poseAnalysis,
     assessmentReport,
@@ -25799,11 +25775,11 @@ export const generateNextPhaseProgram = (params: {
     JSON.stringify(program.week) === JSON.stringify(currentProgram.week);
   const phaseProgram = hasSameWeekTemplate
       ? generateWeeklyProgram(questionnaire, nextProgramId, {
-        phaseIndex: nextPhaseIndex,
-        weekIndex: nextWeekIndex,
+        phaseIndex: nextTarget.phaseIndex,
+        weekIndex: nextTarget.weekIndex,
         cycleIndex: 2,
-        totalWeekIndex: nextTotalWeekIndex,
-        trainingState,
+        totalWeekIndex: nextTarget.totalWeekIndex,
+        trainingState: progressionState.trainingState,
         seed,
         poseAnalysis,
         assessmentReport,
@@ -25812,9 +25788,13 @@ export const generateNextPhaseProgram = (params: {
         feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
       })
     : program;
-  const resolvedPhaseIndex = phaseProgram.phaseIndex ?? nextPhaseIndex;
-  const resolvedCycleIndex = phaseProgram.cycleIndex ?? nextCycleIndex;
-  const resolvedWeekIndex = phaseProgram.weekIndex ?? nextWeekIndex;
+  const resolvedProgramState = resolveGeneratedProgramTransitionState({
+    program: phaseProgram,
+    fallbackTarget: nextTarget,
+  });
+  const resolvedPhaseIndex = resolvedProgramState.phaseIndex;
+  const resolvedCycleIndex = resolvedProgramState.cycleIndex;
+  const resolvedWeekIndex = resolvedProgramState.weekIndex;
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
   const phaseCapability = computeEquipmentCapability(questionnaire.equipment);
   const phaseCapabilityMode: EquipmentCapabilityMode = phaseCapability.hasLoad
@@ -25872,7 +25852,7 @@ export const generateNextPhaseProgram = (params: {
           questionnaire.experience,
           questionnaire.goals
         ).level,
-        trainingState,
+        trainingState: progressionState.trainingState,
         selectionContext: phaseSelectionContext,
       }),
     dedupeWeek: (week) =>
@@ -25941,7 +25921,7 @@ export const generateNextPhaseProgram = (params: {
     painFlag,
     fatigueFlag,
     painSeverity,
-    trainingState,
+    trainingState: progressionState.trainingState,
     recentLogs,
     optimizerResult: optimizedPhase,
   });
@@ -25984,81 +25964,39 @@ export const generateNextCycleProgram = (params: {
     seed,
   } = params;
 
-  const phaseIndex = clampPhaseIndexToSupportedRange(currentProgram.phaseIndex ?? 1);
-  const phaseWeekIndex = currentProgram.weekIndex ?? 1;
-  const totalWeekIndex =
-    currentProgram.totalWeekIndex ?? currentProgram.weekIndex ?? 1;
-  const cycleIndex = currentProgram.cycleIndex ?? 1;
-  const priorReadiness =
-    currentProgram.nextWeekPlan?.summary.includes("progress") ? 0.7 : 0.55;
-  const trainingState = deriveUserTrainingState({
-    phaseIndex,
+  const progressionState = deriveProgramProgressionState({
+    currentProgram,
     complianceRate,
     painFlag,
     fatigueFlag,
     movementQuality,
     confidence,
     capacity,
-    priorReadiness,
   });
-  const transition = decideProgramProgression({
-    state: trainingState,
-    phaseIndex,
-    cycleIndex,
-    phaseWeekIndex,
-    totalWeekIndex,
+  const cycleDecision = evaluateNextCycleProgression({
+    currentProgram,
+    progressionState,
+    complianceRate,
+    completedSessionsCount,
+    completedWeeksCount,
     minimumWeeksForPhaseAdvance: MIN_WEEKS_FOR_PHASE_ADVANCE,
   });
+  if (cycleDecision.status !== "advanced") return cycleDecision;
 
-  const requiredSessionsForCurrentCycle = currentProgram.daysPerWeek;
-  if (
-    typeof completedSessionsCount === "number" &&
-    completedSessionsCount < requiredSessionsForCurrentCycle
-  ) {
-    return {
-      status: "repeat" as const,
-      message: `Complete at least ${requiredSessionsForCurrentCycle} sessions before starting the next cycle.`,
-    };
-  }
-
-  if (complianceRate < 0.85) {
-    return {
-      status: "repeat" as const,
-      message: "Hit at least 85% weekly compliance before advancing cycle.",
-    };
-  }
-
-  if (
-    transition.next &&
-    transition.next.phaseIndex > phaseIndex &&
-    typeof completedWeeksCount === "number" &&
-    completedWeeksCount < MIN_WEEKS_FOR_PHASE_ADVANCE
-  ) {
-    return {
-      status: "repeat" as const,
-      message: "Complete at least 2 full weeks before advancing phase.",
-    };
-  }
-
-  if (transition.status !== "advanced" || !transition.next) {
-    return {
-      status: transition.status,
-      message: transition.message ?? trainingState.reason,
-    };
-  }
-  const resolvedFeedbackSummaryByExercise =
-    feedbackSummaryByExercise ?? summarizeFeedbackFromLogs(recentLogs);
-  const recentlyUsedExerciseIds = buildRecentlyUsedExerciseIdSet({
-    recentLogs,
-    previousWeek: currentProgram.week,
-  });
+  const nextTarget = cycleDecision.target;
+  const { resolvedFeedbackSummaryByExercise, recentlyUsedExerciseIds } =
+    resolveProgressionFeedbackInputs({
+      currentProgram,
+      recentLogs,
+      feedbackSummaryByExercise,
+    });
 
   const program = generateWeeklyProgram(questionnaire, nextProgramId, {
-    phaseIndex: transition.next.phaseIndex,
-    weekIndex: transition.next.weekIndex,
-    cycleIndex: transition.next.cycleIndex,
-    totalWeekIndex: transition.next.totalWeekIndex,
-    trainingState,
+    phaseIndex: nextTarget.phaseIndex,
+    weekIndex: nextTarget.weekIndex,
+    cycleIndex: nextTarget.cycleIndex,
+    totalWeekIndex: nextTarget.totalWeekIndex,
+    trainingState: progressionState.trainingState,
     seed,
     poseAnalysis,
     assessmentReport,
@@ -26066,9 +26004,13 @@ export const generateNextCycleProgram = (params: {
     previousWeek: currentProgram.week,
     feedbackSummaryByExercise: resolvedFeedbackSummaryByExercise,
   });
-  const resolvedPhaseIndex = program.phaseIndex ?? transition.next.phaseIndex;
-  const resolvedCycleIndex = program.cycleIndex ?? transition.next.cycleIndex;
-  const resolvedWeekIndex = program.weekIndex ?? transition.next.weekIndex;
+  const resolvedProgramState = resolveGeneratedProgramTransitionState({
+    program,
+    fallbackTarget: nextTarget,
+  });
+  const resolvedPhaseIndex = resolvedProgramState.phaseIndex;
+  const resolvedCycleIndex = resolvedProgramState.cycleIndex;
+  const resolvedWeekIndex = resolvedProgramState.weekIndex;
   const equipmentContext = normalizeEquipmentSelection(questionnaire.equipment);
   const cycleCapability = computeEquipmentCapability(questionnaire.equipment);
   const cycleCapabilityMode: EquipmentCapabilityMode = cycleCapability.hasLoad
@@ -26126,7 +26068,7 @@ export const generateNextCycleProgram = (params: {
           questionnaire.experience,
           questionnaire.goals
         ).level,
-        trainingState,
+        trainingState: progressionState.trainingState,
         selectionContext: cycleSelectionContext,
       }),
     dedupeWeek: (week) =>
@@ -26186,7 +26128,7 @@ export const generateNextCycleProgram = (params: {
     painFlag,
     fatigueFlag,
     painSeverity,
-    trainingState,
+    trainingState: progressionState.trainingState,
     recentLogs,
     optimizerResult: optimizedCycle,
   });

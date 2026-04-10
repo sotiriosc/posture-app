@@ -165,4 +165,31 @@ describe("post-generation pipeline regression", () => {
 
     expect(result.status).toBe("blocked");
   });
+
+  test("next-cycle progression can still return blocked when pain risk is high", () => {
+    const current = generateWeeklyProgram(weeklyInput, "pipeline-cycle-block-current", {
+      phaseIndex: 1,
+      weekIndex: 2,
+      cycleIndex: 2,
+      totalWeekIndex: 2,
+      seed: "pipeline-cycle-block-current",
+    });
+
+    const result = generateNextCycleProgram({
+      currentProgram: current,
+      questionnaire: weeklyInput,
+      painFlag: true,
+      complianceRate: 1,
+      fatigueFlag: false,
+      movementQuality: 0.2,
+      confidence: 0.2,
+      capacity: 0.2,
+      completedSessionsCount: weeklyInput.daysPerWeek,
+      completedWeeksCount: 1,
+      nextProgramId: "pipeline-cycle-blocked",
+      seed: "pipeline-cycle-blocked",
+    });
+
+    expect(result.status).toBe("blocked");
+  });
 });
