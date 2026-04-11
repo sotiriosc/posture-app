@@ -1,0 +1,174 @@
+/** @vitest-environment jsdom */
+
+import React from "react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+const mocks = vi.hoisted(() => ({
+  routerPush: vi.fn(),
+  loadTrainingSnapshot: vi.fn(),
+  pushTrainingPatch: vi.fn(),
+  buildEngineSignals: vi.fn(),
+  buildSignalsFromLocalState: vi.fn(),
+  generateProgram: vi.fn(),
+  getProgramProgress: vi.fn(),
+  getLatestProgram: vi.fn(),
+  getProgram: vi.fn(),
+  listSessions: vi.fn(),
+  listExerciseLogsByExercise: vi.fn(),
+  listExerciseLogsBySessionIds: vi.fn(),
+  loadPrefs: vi.fn(),
+  saveProgram: vi.fn(),
+  saveProgramProgress: vi.fn(),
+  uuid: vi.fn(),
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mocks.routerPush,
+  }),
+}));
+
+vi.mock("@/components/PhotoContext", () => ({
+  usePhotoContext: () => ({ photos: {} }),
+}));
+
+vi.mock("@/lib/trainingSyncClient", () => ({
+  loadTrainingSnapshot: mocks.loadTrainingSnapshot,
+  pushTrainingPatch: mocks.pushTrainingPatch,
+}));
+
+vi.mock("@/lib/engine", () => ({
+  buildEngineSignals: mocks.buildEngineSignals,
+  buildSignalsFromLocalState: mocks.buildSignalsFromLocalState,
+  generateProgram: mocks.generateProgram,
+}));
+
+vi.mock("@/lib/logStore", () => ({
+  getProgramProgress: mocks.getProgramProgress,
+  getLatestProgram: mocks.getLatestProgram,
+  getProgram: mocks.getProgram,
+  listSessions: mocks.listSessions,
+  listExerciseLogsByExercise: mocks.listExerciseLogsByExercise,
+  listExerciseLogsBySessionIds: mocks.listExerciseLogsBySessionIds,
+  loadPrefs: mocks.loadPrefs,
+  saveProgram: mocks.saveProgram,
+  saveProgramProgress: mocks.saveProgramProgress,
+  uuid: mocks.uuid,
+}));
+
+vi.mock("@/lib/poseAnalyzer", () => ({
+  analyzeImagePose: vi.fn(),
+  computeMetrics: vi.fn(),
+  generateObservations: vi.fn(),
+}));
+
+vi.mock("@/lib/assessmentEngine", () => ({
+  buildAssessmentReport: vi.fn(() => ({
+    observations: [],
+    priorities: [],
+  })),
+}));
+
+vi.mock("@/lib/sessionDraftStore", () => ({
+  clearDraftsByProgramId: vi.fn(async () => undefined),
+}));
+
+import ResultsRoutine from "@/components/ResultsRoutine";
+
+const STORAGE_KEY = "posture_questionnaire";
+
+describe("results operational readiness", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        goals: "Improve posture",
+        painAreas: [],
+        experience: "Beginner",
+        equipment: ["bands"],
+        daysPerWeek: 3,
+      })
+    );
+
+    mocks.routerPush.mockReset();
+    mocks.loadTrainingSnapshot.mockReset();
+    mocks.pushTrainingPatch.mockReset();
+    mocks.buildEngineSignals.mockReset();
+    mocks.buildSignalsFromLocalState.mockReset();
+    mocks.generateProgram.mockReset();
+    mocks.getProgramProgress.mockReset();
+    mocks.getLatestProgram.mockReset();
+    mocks.getProgram.mockReset();
+    mocks.listSessions.mockReset();
+    mocks.listExerciseLogsByExercise.mockReset();
+    mocks.listExerciseLogsBySessionIds.mockReset();
+    mocks.loadPrefs.mockReset();
+    mocks.saveProgram.mockReset();
+    mocks.saveProgramProgress.mockReset();
+    mocks.uuid.mockReset();
+
+    mocks.loadTrainingSnapshot.mockResolvedValue(null);
+    mocks.pushTrainingPatch.mockResolvedValue(undefined);
+    mocks.buildEngineSignals.mockImplementation((params: unknown) => params);
+    mocks.buildSignalsFromLocalState.mockResolvedValue({
+      questionnaire: {
+        goals: "Improve posture",
+        painAreas: [],
+        experience: "Beginner",
+        equipment: ["bands"],
+        daysPerWeek: 3,
+      },
+      history: {
+        sessions: [],
+        exerciseLogs: [],
+        programProgress: null,
+      },
+      prefs: null,
+      nowIso: "2026-04-11T12:00:00.000Z",
+    });
+    mocks.generateProgram.mockReturnValue({
+      status: "blocked",
+      message: "No eligible weekly program found for this profile.",
+    });
+    mocks.getProgramProgress.mockResolvedValue(null);
+    mocks.getLatestProgram.mockResolvedValue(null);
+    mocks.getProgram.mockResolvedValue(null);
+    mocks.listSessions.mockResolvedValue([]);
+    mocks.listExerciseLogsByExercise.mockResolvedValue([]);
+    mocks.listExerciseLogsBySessionIds.mockResolvedValue([]);
+    mocks.loadPrefs.mockResolvedValue({ schemaVersion: 2 });
+    mocks.saveProgram.mockImplementation(async (program: unknown) => program);
+    mocks.saveProgramProgress.mockImplementation(async (progress: unknown) => progress);
+    mocks.uuid.mockReturnValue("results-program");
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        json: async () => ({ enabled: false, authenticated: false, user: null }),
+      }))
+    );
+  });
+
+  afterEach(() => {
+    cleanup();
+    localStorage.clear();
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+  });
+
+  test("shows a recovery path instead of an indefinite loading state when generation returns no program", async () => {
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/We couldn't generate your weekly program yet/i)
+      ).toBeTruthy();
+    });
+
+    expect(screen.getByText(/No eligible weekly program found/i)).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Review questionnaire/i })).toBeTruthy();
+    expect(screen.queryByText(/Loading your weekly program/i)).toBeNull();
+  });
+});

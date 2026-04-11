@@ -134,6 +134,7 @@ import ProgressPage from "@/app/progress/page";
 import DualModeTimer from "@/components/DualModeTimer";
 
 const STORAGE_KEY = "posture_questionnaire";
+const APP_STATE_KEY = "app_state_v1";
 
 describe("session tracking integration flow", () => {
   beforeEach(() => {
@@ -305,6 +306,30 @@ describe("session tracking integration flow", () => {
     });
     expect(screen.getByTestId("reps-input")).toBeTruthy();
     expect(screen.getByRole("button", { name: "0:40" })).toBeTruthy();
+  });
+
+  test("direct session route loads the active generated program from app state", async () => {
+    mocks.searchParams = "";
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        programId: "program-strength",
+        activeProgramId: "program-strength",
+        programVersion: 1,
+        updatedAt: Date.now(),
+      })
+    );
+
+    render(React.createElement(SessionClient));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Guided session/i)).toBeTruthy();
+      expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
+    });
+
+    expect(screen.getByTestId("current-exercise-id").dataset.exerciseId).toBe(
+      "dumbbell-rows"
+    );
   });
 
   test("auto-advances focus through logging inputs once all sets are complete", async () => {
