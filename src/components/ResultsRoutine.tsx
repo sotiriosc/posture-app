@@ -82,7 +82,7 @@ import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
-const SHOW_TEMP_PROGRAM_REFERENCE_CARD = true;
+const SHOW_TEMP_PROGRAM_REFERENCE_CARD = process.env.NODE_ENV !== "production";
 
 const defaultRoutine: Routine = {
   summary:
@@ -252,10 +252,21 @@ const isProgramCompatibleWithQuestionnaire = (
   );
 };
 
+const formatProgramGenerationIssue = (error: unknown) => {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+  if (typeof error === "string" && error.trim()) {
+    return error;
+  }
+  return "Unable to generate a weekly program from the current profile.";
+};
+
 export default function ResultsRoutine() {
   const router = useRouter();
   const [data, setData] = useState<QuestionnaireData | null>(null);
   const [program, setProgram] = useState<Program | null>(null);
+  const [programLoadIssue, setProgramLoadIssue] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState(0);
   const [showDebug, setShowDebug] = useState(false);
   const [progress, setProgress] = useState<ProgramProgress | null>(null);
@@ -734,34 +745,42 @@ export default function ResultsRoutine() {
   useEffect(() => {
     if (!data || !questionnaireSignature) return;
     const loadProgram = async () => {
-      const state = loadAppState();
-      if (state?.activeProgramId) {
-        const active = await getProgram(state.activeProgramId);
-        if (active) {
-          setProgram(active);
+      try {
+        setProgramLoadIssue(null);
+        const state = loadAppState();
+        if (state?.activeProgramId) {
+          const active = await getProgram(state.activeProgramId);
+          if (active) {
+            setProgram(active);
+            return;
+          }
+        }
+        const questionnaireMatches = state?.questionnaireSignature === questionnaireSignature;
+        if (questionnaireMatches) {
+          const latest = await getLatestProgram();
+          if (isProgramCompatibleWithQuestionnaire(latest, data)) {
+            setProgram(latest);
+            return;
+          }
+        }
+        const signals = await loadGenerationSignals(
+          state?.activeProgramId ?? state?.programId ?? null
+        );
+        const generated = generateProgram({
+          mode: "weekly",
+          signals,
+          nextProgramId: uuid(),
+        });
+        if (!("program" in generated)) {
+          setProgramLoadIssue(generated.message);
           return;
         }
+        const newProgram = generated.program;
+        await saveProgram(newProgram);
+        setProgram(newProgram);
+      } catch (error) {
+        setProgramLoadIssue(formatProgramGenerationIssue(error));
       }
-      const questionnaireMatches = state?.questionnaireSignature === questionnaireSignature;
-      if (questionnaireMatches) {
-        const latest = await getLatestProgram();
-        if (isProgramCompatibleWithQuestionnaire(latest, data)) {
-          setProgram(latest);
-          return;
-        }
-      }
-      const signals = await loadGenerationSignals(
-        state?.activeProgramId ?? state?.programId ?? null
-      );
-      const generated = generateProgram({
-        mode: "weekly",
-        signals,
-        nextProgramId: uuid(),
-      });
-      if (!("program" in generated)) return;
-      const newProgram = generated.program;
-      await saveProgram(newProgram);
-      setProgram(newProgram);
     };
     loadProgram();
   }, [data, questionnaireSignature, loadGenerationSignals]);
@@ -1326,6 +1345,7 @@ export default function ResultsRoutine() {
   }, [program]);
 
   const temporaryProgramReferenceText = useMemo(() => {
+    if (!SHOW_TEMP_PROGRAM_REFERENCE_CARD) return "";
     if (!program) return "";
 
     const lines: string[] = [];
@@ -1661,6 +1681,31 @@ export default function ResultsRoutine() {
   }
 
   if (!program) {
+    if (programLoadIssue) {
+      return (
+        <div className="ui-card p-6">
+          <p className="text-sm font-semibold text-slate-900">
+            We couldn&apos;t generate your weekly program yet.
+          </p>
+          <p className="mt-2 text-sm text-slate-600">{programLoadIssue}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setProgramLoadIssue(null);
+                window.location.reload();
+              }}
+            >
+              Try again
+            </Button>
+            <Link href="/questionnaire">
+              <Button variant="primary">Review questionnaire</Button>
+            </Link>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="ui-card p-6">
         <p className="text-sm text-slate-600">Loading your weekly program...</p>

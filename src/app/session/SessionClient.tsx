@@ -535,7 +535,12 @@ export default function SessionClient() {
         setSubstitutionByExercise(storedPrefs.substitutionByExercise);
       }
 
-      const programId = searchParams.get("programId");
+      const state = loadAppState();
+      const programId =
+        searchParams.get("programId") ??
+        state?.activeProgramId ??
+        state?.programId ??
+        null;
       const dayIndexRaw = searchParams.get("dayIndex");
       const resumeId =
         searchParams.get("resumeSessionId") ?? searchParams.get("sessionId");
