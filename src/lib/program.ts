@@ -1576,7 +1576,9 @@ const ensureEligibleItem = (
     !selectionContext?.painAreas.length ||
     !contraindicationHitsPainArea(candidate.contraindications, selectionContext.painAreas);
   const candidateIsStrictRoleReplacement = (candidate: Exercise) =>
-    shouldProtectMainIdentity && selectionContext
+    selectionContext &&
+    (shouldProtectMainIdentity ||
+      (item.section === "accessory" && Boolean(item.selectionDebug?.slotLane)))
       ? isRoleLegalForSlot({
           exercise: candidate,
           section: item.section,
@@ -1636,10 +1638,11 @@ const pickDistinctReplacement = (params: {
   if (!current) return null;
   const shouldEnforceRoleCompatibility =
     context &&
-    shouldApplyMainIdentityProtection({ available, context }) &&
-    (isBackChestDayTitle(dayTitle) ||
-      isShouldersArmsDayTitle(dayTitle) ||
-      isLegsAbsDayTitle(dayTitle));
+    ((item.section === "accessory" && Boolean(item.selectionDebug?.slotLane)) ||
+      (shouldApplyMainIdentityProtection({ available, context }) &&
+        (isBackChestDayTitle(dayTitle) ||
+          isShouldersArmsDayTitle(dayTitle) ||
+          isLegsAbsDayTitle(dayTitle))));
   const isRoleCompatibleReplacement = (candidate: Exercise) =>
     shouldEnforceRoleCompatibility && context
       ? isRoleLegalForSlot({
@@ -2482,6 +2485,15 @@ const findReplacementExerciseForRule = (params: {
 
   const usedIds = new Set(day.routine.map((entry) => entry.exerciseId));
   usedIds.delete(currentExercise.id);
+  const mainSlotLane =
+    currentItem.section === "main"
+      ? (currentItem.selectionDebug?.slotLane as MainLane | undefined) ??
+        getMainLaneHits(currentExercise)[0]
+      : undefined;
+  const accessoryLane =
+    currentItem.section === "accessory"
+      ? (currentItem.selectionDebug?.slotLane as AccessoryLane | undefined)
+      : undefined;
 
   const substitutionCandidates = rankSubstitutionCandidates({
     current: currentExercise,
@@ -2531,6 +2543,20 @@ const findReplacementExerciseForRule = (params: {
         avoidRules.some((rule) =>
           matchesRule(candidate, rule, currentItem.section)
         )
+      ) {
+        return false;
+      }
+      if (
+        !isRoleLegalForSlot({
+          exercise: candidate,
+          section: currentItem.section,
+          dayTitle: day.title,
+          slotKind: currentItem.selectionDebug?.slotKind,
+          mainSlotLane,
+          accessoryLane,
+          available,
+          context: selectionContext,
+        })
       ) {
         return false;
       }
@@ -2956,6 +2982,43 @@ const replaceDayMainExerciseForLane = (params: {
   routine[itemIndex] = withSelectionDebug(updated, source, {
     slotId: updated.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, "main"),
     slotKind: slotKindByMainLane[resolvedLane],
+    slotLane: resolvedLane,
+    phaseIndex,
+  });
+  return { ...nextDay, routine };
+};
+
+const accessorySlotKindByLane = (lane: AccessoryLane) => `accessory${lane}`;
+
+const resolveAccessoryLaneForReplacement = (
+  exercise: Exercise,
+  preferredLane?: AccessoryLane | null
+): AccessoryLane | null => {
+  if (preferredLane && matchesAccessoryLanePattern(exercise, preferredLane)) {
+    return preferredLane;
+  }
+  const laneOrder: AccessoryLane[] = ["push", "pull", "lower", "core", "chest", "back"];
+  return laneOrder.find((lane) => matchesAccessoryLanePattern(exercise, lane)) ?? preferredLane ?? null;
+};
+
+const replaceDayAccessoryExerciseForLane = (params: {
+  day: ProgramDay;
+  itemIndex: number;
+  replacement: Exercise;
+  source: ProgramSelectionDebugSource;
+  lane?: AccessoryLane | null;
+  phaseIndex?: number;
+}) => {
+  const { day, itemIndex, replacement, source, lane, phaseIndex } = params;
+  const nextDay = replaceDayItemExercise(day, itemIndex, replacement, source);
+  const resolvedLane = resolveAccessoryLaneForReplacement(replacement, lane);
+  if (!resolvedLane) return nextDay;
+  const updated = nextDay.routine[itemIndex];
+  if (!updated || updated.section !== "accessory") return nextDay;
+  const routine = [...nextDay.routine];
+  routine[itemIndex] = withSelectionDebug(updated, source, {
+    slotId: updated.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, "accessory"),
+    slotKind: accessorySlotKindByLane(resolvedLane),
     slotLane: resolvedLane,
     phaseIndex,
   });
@@ -17474,7 +17537,7 @@ const repairArmsPostureConditioningIdentity = (params: {
   const { day, context } = params;
   if (!isArmsPostureConditioningDayTitle(day.title)) return day;
 
-  let routine = [...day.routine];
+  const routine = [...day.routine];
   const usedIds = () => new Set(routine.map((item) => item.exerciseId));
   const pullMainIndex = routine.findIndex(
     (item) =>
@@ -18170,6 +18233,13 @@ export const isEligibleForPhase = (
   const currentStage = phaseStageFromName(phaseName, phaseStageRank[context.phaseStage] + 1);
   const minimumStage = normalizePhaseMin(exercise.phaseMin);
   const inActivation = currentStage === "activation";
+  const phaseOneLowPainLoadedHingePrimer =
+    inActivation &&
+    context.capabilityMode === "hasLoad" &&
+    context.painSeverity === "low" &&
+    context.painAreas.length === 0 &&
+    !hasLowBackPainSignal(context) &&
+    ["db-rdl", "band-rdl"].includes(exercise.id);
   const allowActivationMachineMainPrimer =
     inActivation &&
     minimumStage === "activation" &&
@@ -18182,12 +18252,12 @@ export const isEligibleForPhase = (
   const activationPrimerException =
     allowActivationMachineMainPrimer || allowActivationPulloverAccessoryPrimer;
   if (phaseStageRank[currentStage] < phaseStageRank[minimumStage]) {
-    if (!activationPrimerException) {
+    if (!activationPrimerException && !phaseOneLowPainLoadedHingePrimer) {
       return false;
     }
   }
 
-  if (inActivation && isDeadliftLikeExercise(exercise)) {
+  if (inActivation && isDeadliftLikeExercise(exercise) && !phaseOneLowPainLoadedHingePrimer) {
     // Deadlift/RDL variants are intentionally deferred until skill/growth.
     return false;
   }
@@ -18204,6 +18274,7 @@ export const isEligibleForPhase = (
   const blockActivationHingeLoad =
     inActivation &&
     isHingeLoadPatternExercise(exercise) &&
+    !phaseOneLowPainLoadedHingePrimer &&
     (isBeginner ||
       context.capabilityMode !== "hasLoad" ||
       context.painSeverity !== "low");
@@ -19085,6 +19156,15 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
   const tags = new Set((exercise.tags ?? []).map(normalizeTagToken));
   const muscles = new Set((exercise.muscleGroups ?? []).map(normalizeTagToken));
   const token = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const hasMainMovementPattern =
+    patterns.has("push") ||
+    patterns.has("verticalpush") ||
+    patterns.has("horizontalpush") ||
+    patterns.has("pull") ||
+    patterns.has("horizontalpull") ||
+    patterns.has("verticalpull") ||
+    patterns.has("squat") ||
+    patterns.has("hinge");
 
   if (lane === "chest") {
     return (
@@ -19126,8 +19206,9 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
       tags.has("push") ||
       tags.has("chest") ||
       tags.has("triceps") ||
-      tags.has("shoulders") ||
-      token.includes("push")
+      token.includes("push") ||
+      token.includes("press") ||
+      token.includes("triceps")
     );
   }
   if (lane === "pull") {
@@ -19161,7 +19242,7 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
       token.includes("stepup")
     );
   }
-  return (
+  const coreOrBracePattern =
     patterns.has("core") ||
     patterns.has("anti_rotation") ||
     patterns.has("anti_extension") ||
@@ -19175,8 +19256,20 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
     token.includes("plank") ||
     token.includes("dead bug") ||
     token.includes("bird dog") ||
-    token.includes("pallof")
-  );
+    token.includes("pallof") ||
+    token.includes("woodchop") ||
+    token.includes("hollow") ||
+    token.includes("brace") ||
+    token.includes("march") ||
+    token.includes("carry") ||
+    token.includes("suitcase");
+  const carryOrMarch =
+    patterns.has("carry") ||
+    tags.has("carry") ||
+    token.includes("carry") ||
+    token.includes("suitcase") ||
+    token.includes("march");
+  return coreOrBracePattern && (!hasMainMovementPattern || carryOrMarch);
 };
 
 const inferSectionFocusFromDayTitle = (title: string): SectionFocus => {
@@ -21282,6 +21375,19 @@ const hasEligibleMainAnchor = (params: {
     if (excludeIds.has(candidate.id)) return false;
     if (candidate.category !== "main") return false;
     if (!matchesMainAnchorKind(candidate, kind)) return false;
+    if (
+      (kind === "hinge" || kind === "squat") &&
+      isHigherFrequencyLowerDayTitle(dayTitle) &&
+      isHigherFrequencyLowerMainDrift({
+        exercise: candidate,
+        slotLane: kind === "hinge" ? "hinge" : "squat",
+        dayTitle,
+        available,
+        context,
+      })
+    ) {
+      return false;
+    }
     return isExerciseEligibleForProgramContext({
       exercise: candidate,
       available,
@@ -24766,6 +24872,17 @@ const getHingeCompoundCandidateIds = (
         "band-rdl",
       ];
     }
+    if (context.painSeverity === "low" && context.painAreas.length === 0) {
+      return [
+        "db-rdl",
+        "band-rdl",
+        "back-extension",
+        "back-extension-hold",
+        "single-leg-hip-thrust",
+        "single-leg-glute-bridge-hold",
+        "single-leg-rdl",
+      ];
+    }
     return [
       "back-extension-hold",
       "db-rdl",
@@ -27833,6 +27950,7 @@ const lowerSlotPurityRescueIds = (
       "machine-glute-drive",
       "barbell-hip-thrust",
       "machine-seated-hamstring-curl",
+      "single-leg-rdl",
       "bodyweight-good-morning",
       "back-extension",
     ];
@@ -27865,6 +27983,10 @@ const findLowerSlotPurityReplacement = (params: {
     slotLane === "hinge" &&
     context.selectionContext.painSeverity !== "high" &&
     !hasLowBackPainSignal(context.selectionContext);
+  const painConstrainedMachineHinge =
+    slotLane === "hinge" &&
+    context.capabilityMode === "hasLoad" &&
+    context.selectionContext.painSeverity === "high";
 
   return lowerSlotPurityRescueIds(slotLane, context)
     .map((id) => exerciseById(id))
@@ -27890,13 +28012,21 @@ const findLowerSlotPurityReplacement = (params: {
           context.selectionContext.phaseName,
           context.selectionContext
         );
-      if (!contextEligible && !constrainedHingeRescue) return false;
+      const painConstrainedHingeRescue =
+        painConstrainedMachineHinge &&
+        candidate.id === "machine-seated-hamstring-curl" &&
+        isExerciseEligible(candidate, context.available) &&
+        isExerciseAllowedForSection(candidate, "main");
+      if (!contextEligible && !constrainedHingeRescue && !painConstrainedHingeRescue) return false;
       if (constrainedHingeRescue) {
         return (
           matchesMainLanePattern(candidate, "hinge") &&
           !isLegsCarryExercise(candidate) &&
           !matchesAccessoryLanePattern(candidate, "core")
         );
+      }
+      if (painConstrainedHingeRescue) {
+        return matchesMainLanePattern(candidate, "hinge");
       }
       return isMainLegalForSlot({
         exercise: candidate,
@@ -27969,6 +28099,183 @@ const enforceFinalLowerSlotPurity = (params: {
         kind: "violation",
         message: `${day.title} lower slot purity replaced ${item.exerciseId} with ${replacement.id}.`,
       });
+    });
+
+    return nextDay;
+  });
+
+  return { week: nextWeek, warnings };
+};
+
+const findFinalAccessorySlotReplacement = (params: {
+  day: ProgramDay;
+  lane: AccessoryLane;
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+}) => {
+  const { day, lane, usedIds, context } = params;
+  const candidateIds = getAccessoryCandidateIds({
+    lane,
+    available: context.available,
+    context: context.selectionContext,
+    dayTitle: day.title,
+  });
+  return Array.from(new Set(candidateIds))
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise))
+    .filter((exercise) => !usedIds.has(exercise.id))
+    .filter((exercise) =>
+      isExerciseEligibleForProgramContext({
+        exercise,
+        available: context.available,
+        section: "accessory",
+        context: context.selectionContext,
+        dayTitle: day.title,
+      })
+    )
+    .filter((exercise) =>
+      isAccessoryLegalForSlot({
+        exercise,
+        dayTitle: day.title,
+        slotLane: lane,
+        available: context.available,
+        context: context.selectionContext,
+      })
+    )
+    .map((exercise) => {
+      const detail = scoreExerciseForContextDetailed(
+        exercise,
+        "accessory",
+        context.selectionContext,
+        context.available,
+        {
+          slotId: `${normalizeSlotToken(day.title)}-accessory-repair-${lane}`,
+          dayTitle: day.title,
+          dayFocusTags: day.focusTags,
+          slotKind: accessorySlotKindByLane(lane),
+          capabilityMode: context.capabilityMode,
+        }
+      );
+      return {
+        exercise,
+        score: detail.score + focusOverlapScore(exercise, day.focusTags),
+      };
+    })
+    .sort((left, right) => {
+      if (right.score !== left.score) return right.score - left.score;
+      return left.exercise.id.localeCompare(right.exercise.id);
+    })[0]?.exercise ?? null;
+};
+
+const enforceFinalAccessorySlotPurity = (params: {
+  week: ProgramDay[];
+  daysPerWeek: 3 | 4 | 5;
+  context: DayConstraintRepairContext;
+  phaseIndex: number;
+}): WeekConstraintRepairResult => {
+  const { week, daysPerWeek, context, phaseIndex } = params;
+  const warnings: WeekConstraintRepairResult["warnings"] = [];
+
+  const nextWeek = week.map((day) => {
+    let nextDay = day;
+    const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+    const plannedLanes = resolvePlannedAccessoryLanesForDay({
+      day,
+      daysPerWeek,
+      capabilityMode: context.capabilityMode,
+    });
+    let accessoryOrdinal = 0;
+
+    day.routine.forEach((item, itemIndex) => {
+      if (item.section !== "accessory") return;
+      const exercise = exerciseById(item.exerciseId);
+      const plannedLane = plannedLanes[accessoryOrdinal];
+      accessoryOrdinal += 1;
+      if (!exercise) return;
+      const debugLane = item.selectionDebug?.slotLane as AccessoryLane | undefined;
+      const inferredLane = resolveAccessoryLaneForReplacement(exercise, null);
+      const lane = debugLane ?? plannedLane ?? inferredLane;
+      if (!lane) return;
+      const legal = isAccessoryLegalForSlot({
+        exercise,
+        dayTitle: day.title,
+        slotLane: lane,
+        available: context.available,
+        context: context.selectionContext,
+      });
+
+      if (legal) {
+        const expectedSlotKind = accessorySlotKindByLane(lane);
+        if (item.selectionDebug?.slotKind === expectedSlotKind && item.selectionDebug.slotLane === lane) {
+          return;
+        }
+        const routine = [...nextDay.routine];
+        const current = routine[itemIndex];
+        if (!current) return;
+        routine[itemIndex] = withSelectionDebug(current, item.selectionDebug?.source ?? "legality_repair", {
+          slotId: item.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, "accessory"),
+          slotKind: expectedSlotKind,
+          slotLane: lane,
+          phaseIndex,
+        });
+        nextDay = { ...nextDay, routine };
+        return;
+      }
+
+      usedIds.delete(item.exerciseId);
+      const replacement = findFinalAccessorySlotReplacement({
+        day: nextDay,
+        lane,
+        usedIds,
+        context,
+      });
+      if (replacement) {
+        usedIds.add(replacement.id);
+        nextDay = replaceDayAccessoryExerciseForLane({
+          day: nextDay,
+          itemIndex,
+          replacement,
+          source: "legality_repair",
+          lane,
+          phaseIndex,
+        });
+        warnings.push({
+          dayTitle: day.title,
+          kind: "violation",
+          message: `${day.title} accessory slot purity replaced ${item.exerciseId} with ${replacement.id}.`,
+        });
+        return;
+      }
+
+      if (
+        inferredLane &&
+        isAccessoryLegalForSlot({
+          exercise,
+          dayTitle: day.title,
+          slotLane: inferredLane,
+          available: context.available,
+          context: context.selectionContext,
+        })
+      ) {
+        const routine = [...nextDay.routine];
+        const current = routine[itemIndex];
+        if (current) {
+          routine[itemIndex] = withSelectionDebug(current, "legality_repair", {
+            slotId: item.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, "accessory"),
+            slotKind: accessorySlotKindByLane(inferredLane),
+            slotLane: inferredLane,
+            phaseIndex,
+          });
+          nextDay = { ...nextDay, routine };
+          warnings.push({
+            dayTitle: day.title,
+            kind: "violation",
+            message: `${day.title} accessory slot debug relabeled ${item.exerciseId} as ${inferredLane}.`,
+          });
+        }
+      } else {
+        usedIds.add(item.exerciseId);
+      }
     });
 
     return nextDay;
@@ -28163,7 +28470,13 @@ export const generateWeeklyProgram = (
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
   });
-  const structuredPrepWeek = lowerSlotPurityResult.week;
+  const accessorySlotPurityResult = enforceFinalAccessorySlotPurity({
+    week: lowerSlotPurityResult.week,
+    daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
+    context: dayRepairContext,
+    phaseIndex: weeklyRuntimeContext.phaseIndex,
+  });
+  const structuredPrepWeek = accessorySlotPurityResult.week;
   finalizeWeeklyGenerationObservability({
     week: structuredPrepWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
@@ -28195,6 +28508,7 @@ export const generateWeeklyProgram = (
       ...higherFrequencyIntegrityResult.warnings,
       ...debugBackfilledIntegrityResult.warnings,
       ...lowerSlotPurityResult.warnings,
+      ...accessorySlotPurityResult.warnings,
     ],
     templateVersion: PROGRAM_TEMPLATE_VERSION,
   });

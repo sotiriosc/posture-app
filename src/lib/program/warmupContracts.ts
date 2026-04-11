@@ -68,6 +68,7 @@ export const isShoulderIntent = (intent: DayIntent) => {
   return (
     intent.movement.overhead ||
     (intent.emphasis.shoulders && !isBackChestIntent(intent) && !isLegDayIntent(intent)) ||
+    (dayNameTokens.has("upper") && !isLegDayIntent(intent)) ||
     dayNameTokens.has("shoulders") ||
     dayNameTokens.has("shoulder")
   );

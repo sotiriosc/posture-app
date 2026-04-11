@@ -234,6 +234,38 @@ const isForbiddenHingeMain = (exercise: Exercise) =>
   isCoreOnlyMain(exercise) ||
   isAntiRotationOrBraceDrill(exercise);
 
+const isTrueCoreAccessory = (exercise: Exercise) => {
+  const text = descriptor(exercise);
+  const tags = new Set((exercise.tags ?? []).map((tag) => tag.toLowerCase()));
+  const patterns = new Set(exercise.movementPattern.map((pattern) => pattern.toLowerCase()));
+  const carryOrMarch = isCarryMain(exercise) || text.includes("march");
+  if (carryOrMarch) return true;
+  const coreOrBrace =
+    patterns.has("core") ||
+    patterns.has("anti-rotation") ||
+    patterns.has("anti_rotation") ||
+    patterns.has("anti-extension") ||
+    patterns.has("anti_extension") ||
+    tags.has("core") ||
+    tags.has("tva") ||
+    tags.has("anti-rotation") ||
+    tags.has("anti_rotation") ||
+    ["plank", "dead bug", "dead-bug", "bird dog", "bird-dog", "pallof", "woodchop", "hollow", "brace"].some(
+      (token) => text.includes(token)
+    );
+  const mainPatternLeak = [
+    "push",
+    "verticalpush",
+    "horizontalpush",
+    "pull",
+    "horizontalpull",
+    "verticalpull",
+    "squat",
+    "hinge",
+  ].some((pattern) => patterns.has(pattern));
+  return coreOrBrace && !mainPatternLeak;
+};
+
 const routineItemsForDay = (program: Program, title: string) => {
   const day = program.week.find((item) => item.title === title);
   expect(day, `Missing generated day "${title}"`).toBeTruthy();
@@ -258,6 +290,25 @@ const expectLowerSlotPurity = (program: Program, title: string) => {
     if (slotKind === "mainSquat" || slotLane === "squat") {
       expect(hasTrueSquatAnchor(exercise), `${title}: ${exercise.id}`).toBe(true);
     }
+  });
+};
+
+const expectAccessoryCorePurity = (program: Program) => {
+  program.week.forEach((day) => {
+    day.routine
+      .filter((item) => item.section === "accessory")
+      .forEach((item) => {
+        expect(item.selectionDebug?.slotKind, `${day.title}: ${item.exerciseId}`).not.toBe(
+          "accessoryFinal"
+        );
+        if (item.selectionDebug?.slotLane !== "core") return;
+        const exercise = exerciseById(item.exerciseId);
+        expect(exercise, `${day.title}: ${item.exerciseId}`).toBeTruthy();
+        if (!exercise) return;
+        expect(exercise.id).not.toBe("goblet-squat");
+        expect(exercise.id).not.toBe("dumbbell-floor-press");
+        expect(isTrueCoreAccessory(exercise), `${day.title}: ${exercise.id}`).toBe(true);
+      });
   });
 };
 
@@ -421,6 +472,134 @@ describe("higher-frequency split contracts", () => {
       expect(item.reps).toBe("8-12");
     });
   });
+
+  test("mixed dumbbells and bands athletic split keeps accessory core lane pure", () => {
+    const program = generateAnchorProgram(
+      baseQuestionnaire({
+        goals: "Athletic performance",
+        equipment: ["dumbbells", "bands"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+      "hf-5day-athletic-db-bands-accessory-core-purity"
+    );
+
+    expectAccessoryCorePurity(program);
+  });
+
+  test("5-day beginner gym athletic Phase 1 lower days prefer a real loaded hinge when low-pain", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "Athletic performance",
+        equipment: ["gym"],
+        experience: "Beginner",
+        daysPerWeek: 5,
+      }),
+      "hf-5day-beginner-gym-phase1-loaded-hinge",
+      {
+        phaseIndex: 1,
+        seed: "hf-5day-beginner-gym-phase1-loaded-hinge",
+      }
+    );
+
+    ["Lower Squat", "Lower Hinge + Posterior Chain"].forEach((title) => {
+      const hingeSlotExercises = mainRoutineItems(program, title)
+        .filter((item) => item.selectionDebug?.slotLane === "hinge")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      expect(hingeSlotExercises.length, title).toBeGreaterThan(0);
+      expect(hingeSlotExercises.some(hasTrueHingeAnchor), title).toBe(true);
+      hingeSlotExercises.forEach((exercise) => {
+        expect(
+          ["bodyweight-good-morning", "back-extension", "back-extension-hold"].includes(
+            exercise.id
+          ),
+          `${title}: ${exercise.id}`
+        ).toBe(false);
+      });
+    });
+  });
+
+  test("4-day beginner gym general fitness Phase 1 lower days prefer a real loaded hinge when low-pain", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "General fitness",
+        equipment: ["gym"],
+        experience: "Beginner",
+        daysPerWeek: 4,
+      }),
+      "hf-4day-beginner-gym-phase1-loaded-hinge",
+      {
+        phaseIndex: 1,
+        seed: "hf-4day-beginner-gym-phase1-loaded-hinge",
+      }
+    );
+
+    [
+      "Lower (Squat Emphasis) + Core",
+      "Lower (Hinge Emphasis) + Carry/Anti-rotation",
+    ].forEach((title) => {
+      const hingeSlotExercises = mainRoutineItems(program, title)
+        .filter((item) => item.selectionDebug?.slotLane === "hinge")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      expect(hingeSlotExercises.length, title).toBeGreaterThan(0);
+      expect(hingeSlotExercises.some(hasTrueHingeAnchor), title).toBe(true);
+      hingeSlotExercises.forEach((exercise) => {
+        expect(
+          ["bodyweight-good-morning", "back-extension", "back-extension-hold"].includes(
+            exercise.id
+          ),
+          `${title}: ${exercise.id}`
+        ).toBe(false);
+      });
+    });
+  });
+
+  test.each([
+    ["advanced 5-day", "Advanced", 5],
+    ["intermediate 4-day", "Intermediate", 4],
+  ] as const)(
+    "%s band pain profile preserves conservative Phase 1 hinge behavior",
+    (_, experience, daysPerWeek) => {
+      const program = generateWeeklyProgram(
+        baseQuestionnaire({
+          goals: "Reduce pain",
+          painAreas: ["Lower back", "Hips"],
+          equipment: ["bands"],
+          experience,
+          daysPerWeek,
+        }),
+        `hf-${daysPerWeek}day-${experience.toLowerCase()}-bands-pain-conservative-hinge`,
+        {
+          phaseIndex: 1,
+          seed: `hf-${daysPerWeek}day-${experience.toLowerCase()}-bands-pain-conservative-hinge`,
+        }
+      );
+      const conservativeHingeIds = new Set([
+        "single-leg-glute-bridge-hold",
+        "bodyweight-good-morning",
+        "back-extension-hold",
+        "back-extension",
+        "single-leg-rdl",
+      ]);
+
+      const hingeSlotIds = program.week
+        .filter((day) => day.title.toLowerCase().includes("lower"))
+        .flatMap((day) =>
+          day.routine
+            .filter(
+              (item) =>
+                item.section === "main" && item.selectionDebug?.slotLane === "hinge"
+            )
+            .map((item) => item.exerciseId)
+        );
+      expect(hingeSlotIds.length).toBeGreaterThan(0);
+      hingeSlotIds.forEach((id) => {
+        expect(conservativeHingeIds.has(id), id).toBe(true);
+      });
+    }
+  );
 
   test.each([
     ["shoulder pain", ["Shoulders"]],

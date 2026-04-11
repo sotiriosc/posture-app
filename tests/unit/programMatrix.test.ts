@@ -137,6 +137,79 @@ const isCarryOrBraceDrill = (exercise: Exercise) => {
   ].some((token) => text.includes(token));
 };
 
+const isCoreAccessory = (exercise: Exercise) => {
+  const text = descriptor(exercise);
+  const tags = new Set((exercise.tags ?? []).map((tag) => tag.toLowerCase()));
+  const patterns = new Set(exercise.movementPattern.map((pattern) => pattern.toLowerCase()));
+  if (isCarryOrBraceDrill(exercise)) return true;
+  const coreOrBrace =
+    patterns.has("core") ||
+    patterns.has("anti-rotation") ||
+    patterns.has("anti_rotation") ||
+    patterns.has("anti-extension") ||
+    patterns.has("anti_extension") ||
+    tags.has("core") ||
+    tags.has("tva") ||
+    tags.has("anti-rotation") ||
+    tags.has("anti_rotation") ||
+    ["plank", "dead bug", "dead-bug", "bird dog", "bird-dog", "pallof", "woodchop", "hollow", "brace"].some(
+      (token) => text.includes(token)
+    );
+  const mainPatternLeak = [
+    "push",
+    "verticalpush",
+    "horizontalpush",
+    "pull",
+    "horizontalpull",
+    "verticalpull",
+    "squat",
+    "hinge",
+  ].some((pattern) => patterns.has(pattern));
+  return coreOrBrace && !mainPatternLeak;
+};
+
+const isAccessoryLanePure = (exercise: Exercise, lane?: string) => {
+  const text = descriptor(exercise);
+  const tags = new Set((exercise.tags ?? []).map((tag) => tag.toLowerCase()));
+  if (lane === "core") return isCoreAccessory(exercise);
+  if (lane === "push") {
+    return (
+      hasPattern(exercise, "push") ||
+      hasPattern(exercise, "verticalpush") ||
+      tags.has("triceps") ||
+      text.includes("triceps") ||
+      text.includes("press")
+    );
+  }
+  if (lane === "pull") {
+    return (
+      hasPattern(exercise, "pull") ||
+      tags.has("biceps") ||
+      tags.has("scap") ||
+      tags.has("upper-back") ||
+      tags.has("upper_back") ||
+      text.includes("curl") ||
+      text.includes("row") ||
+      text.includes("pulldown") ||
+      text.includes("pull")
+    );
+  }
+  if (lane === "lower") {
+    return (
+      hasPattern(exercise, "squat") ||
+      hasPattern(exercise, "hinge") ||
+      hasPattern(exercise, "single-leg") ||
+      tags.has("legs") ||
+      tags.has("glutes") ||
+      tags.has("quads") ||
+      tags.has("hamstrings") ||
+      tags.has("calves") ||
+      text.includes("calf")
+    );
+  }
+  return true;
+};
+
 const isForbiddenHingeSlotExercise = (exercise: Exercise) =>
   [
     "goblet-squat",
@@ -191,6 +264,25 @@ const expectTruthfulLowerMainSlots = (
     });
 };
 
+const expectTruthfulAccessorySlots = (
+  day: ReturnType<typeof generateWeeklyProgram>["week"][number]
+) => {
+  day.routine
+    .filter((item) => item.section === "accessory")
+    .forEach((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      expect(exercise, `${day.title}: ${item.exerciseId}`).toBeTruthy();
+      if (!exercise) return;
+      expect(item.selectionDebug?.slotKind, `${day.title}: ${exercise.id}`).not.toBe(
+        "accessoryFinal"
+      );
+      expect(
+        isAccessoryLanePure(exercise, item.selectionDebug?.slotLane),
+        `${day.title}: ${exercise.id} in ${item.selectionDebug?.slotLane ?? "unknown"}`
+      ).toBe(true);
+    });
+};
+
 describe("program matrix quality", () => {
   test("core structure invariants hold across scenario matrix", () => {
     let scenarioCount = 0;
@@ -239,6 +331,7 @@ describe("program matrix quality", () => {
                 if (daysPerWeek >= 4 && isHigherFrequencyLowerDay(day.title)) {
                   expectTruthfulLowerMainSlots(day);
                 }
+                expectTruthfulAccessorySlots(day);
 
                 if (equipment.includes("none") && equipment.length === 1) {
                   day.routine.forEach((item) => {
