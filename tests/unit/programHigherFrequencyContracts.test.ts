@@ -95,10 +95,27 @@ const isSupportDrill = (exercise: Exercise) => {
 const isKnownLowerMainDrift = (exercise: Exercise) =>
   [
     "bodyweight-good-morning",
-    "back-extension",
     "back-extension-hold",
+    "single-leg-hip-thrust",
     "single-leg-glute-bridge-hold",
   ].includes(exercise.id);
+
+const isCarryMain = (exercise: Exercise) =>
+  exercise.movementPattern.some((pattern) => pattern.toLowerCase() === "carry") ||
+  /carry|suitcase/i.test(`${exercise.id} ${exercise.name}`);
+
+const isCoreOnlyMain = (exercise: Exercise) => {
+  const patterns = new Set(exercise.movementPattern.map((pattern) => pattern.toLowerCase()));
+  return (
+    patterns.has("core") &&
+    !["push", "pull", "verticalpush", "squat", "hinge"].some((pattern) =>
+      patterns.has(pattern)
+    )
+  );
+};
+
+const countPattern = (exercises: Exercise[], pattern: string) =>
+  exercises.filter((exercise) => hasPattern(exercise, pattern)).length;
 
 const mainLayoutSignature = (program: Program) =>
   program.week
@@ -174,6 +191,14 @@ describe("higher-frequency split contracts", () => {
       expect(day.activation?.items.length ?? 0).toBeLessThanOrEqual(2);
       expect(day.cooldown?.items.length ?? 0).toBeGreaterThanOrEqual(2);
     });
+
+    const hingeMains = mainExercises(program, "Lower (Hinge Emphasis) + Carry/Anti-rotation");
+    expect(hingeMains[0] ? hasPattern(hingeMains[0], "hinge") : false).toBe(true);
+    expect(hingeMains.some((exercise) => hasPattern(exercise, "hinge"))).toBe(true);
+    expect(hingeMains.some(isCarryMain)).toBe(false);
+    expect(countPattern(hingeMains, "squat")).toBeLessThanOrEqual(
+      Math.max(1, countPattern(hingeMains, "hinge"))
+    );
   });
 
   test("5-day gym split keeps arms/posture as an upper exposure, not an isolation main day", () => {
@@ -189,14 +214,25 @@ describe("higher-frequency split contracts", () => {
     const lowerHinge = mainExercises(program, "Lower Hinge + Posterior Chain");
     expect(lowerSquat.some((exercise) => hasPattern(exercise, "squat"))).toBe(true);
     expect(lowerSquat.some((exercise) => hasPattern(exercise, "hinge"))).toBe(true);
+    expect(lowerSquat.some((exercise) => exercise.id === "bodyweight-good-morning")).toBe(false);
+    expect(countPattern(lowerSquat, "squat")).toBeGreaterThanOrEqual(
+      countPattern(lowerSquat, "hinge")
+    );
+    expect(lowerHinge[0] ? hasPattern(lowerHinge[0], "hinge") : false).toBe(true);
     expect(lowerHinge.some((exercise) => hasPattern(exercise, "hinge"))).toBe(true);
+    expect(countPattern(lowerHinge, "hinge")).toBeGreaterThanOrEqual(
+      countPattern(lowerHinge, "squat")
+    );
     expect(lowerHinge.some(isKnownLowerMainDrift)).toBe(false);
+    expect(lowerHinge.some(isCarryMain)).toBe(false);
 
     const armsMains = mainExercises(program, "Arms + Posture + Conditioning");
     expect(armsMains.some((exercise) => hasPattern(exercise, "pull"))).toBe(true);
     expect(armsMains.some((exercise) => hasPattern(exercise, "verticalpush"))).toBe(true);
     expect(armsMains.some(isArmIsolation)).toBe(false);
     expect(armsMains.some(isSupportDrill)).toBe(false);
+    expect(armsMains.some(isCarryMain)).toBe(false);
+    expect(armsMains.some(isCoreOnlyMain)).toBe(false);
 
     const armsAccessories = accessoryExercises(program, "Arms + Posture + Conditioning");
     expect(armsAccessories.some((exercise) => /triceps|extension/i.test(exercise.name))).toBe(true);
@@ -220,6 +256,40 @@ describe("higher-frequency split contracts", () => {
     expect(lowerMains.some(isKnownLowerMainDrift)).toBe(false);
     expect(lowerMains.some((exercise) => hasPattern(exercise, "squat"))).toBe(true);
     expect(lowerMains.some((exercise) => hasPattern(exercise, "hinge"))).toBe(true);
+  });
+
+  test("5-day no-equipment split keeps constrained lower days anchored instead of filler-only", () => {
+    const program = generateAnchorProgram(
+      baseQuestionnaire({
+        equipment: ["none"],
+        experience: "Advanced",
+        daysPerWeek: 5,
+      }),
+      "hf-5day-advanced-none"
+    );
+
+    const lowerSquat = mainExercises(program, "Lower Squat");
+    const lowerHinge = mainExercises(program, "Lower Hinge + Posterior Chain");
+    expect(lowerSquat.some((exercise) => exercise.id === "bodyweight-good-morning")).toBe(false);
+    expect(lowerSquat.some(isCarryMain)).toBe(false);
+    expect(countPattern(lowerSquat, "squat")).toBeGreaterThanOrEqual(2);
+    expect(lowerHinge[0] ? hasPattern(lowerHinge[0], "hinge") : false).toBe(true);
+    expect(countPattern(lowerHinge, "hinge")).toBeGreaterThanOrEqual(2);
+    expect(lowerHinge.some(isCarryMain)).toBe(false);
+    expect(
+      lowerHinge.some((exercise) =>
+        ["back-extension-hold", "single-leg-hip-thrust", "single-leg-glute-bridge-hold"].includes(
+          exercise.id
+        )
+      )
+    ).toBe(false);
+
+    const armsMains = mainExercises(program, "Arms + Posture + Conditioning");
+    expect(armsMains.some((exercise) => hasPattern(exercise, "pull"))).toBe(true);
+    expect(armsMains.some((exercise) => hasPattern(exercise, "verticalpush"))).toBe(true);
+    expect(armsMains.some(isArmIsolation)).toBe(false);
+    expect(armsMains.some(isCarryMain)).toBe(false);
+    expect(armsMains.some(isCoreOnlyMain)).toBe(false);
   });
 
   test("4/5-day live initial variation changes main layout while same slot stays stable", () => {

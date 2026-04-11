@@ -65,7 +65,7 @@ describe("merge readiness anchors", () => {
       "engine-v1|weekly|target:2:1:1:1|questionnaire:15hyeri|settings:w8rmy8|history:14wgysr"
     );
     expect(weekSignature(result.program.week)).toBe(
-      "warmup:wall-slides,activation:band-pull-aparts,main:dumbbell-bench-press,main:split-stance-band-chest-press,main:dumbbell-rows,main:band-lat-pulldown,accessory:band-rear-delt-fly,accessory:band-face-pull-high-anchor,cooldown:thread-the-needle|warmup:wall-slides,activation:band-pull-aparts,main:band-overhead-press,main:dumbbell-lateral-raise,main:band-rear-delt-fly,main:prone-swimmer,accessory:db-triceps-extension,accessory:db-biceps-curl,accessory:marching-brace-hold,cooldown:thread-the-needle|warmup:cat-cow,activation:wall-angel-hold,main:goblet-squat,main:db-rdl,main:split-squat,main:single-leg-rdl,accessory:band-woodchop,accessory:single-leg-calf-raise,cooldown:thread-the-needle"
+      "warmup:wall-slides,activation:band-pull-aparts,main:dumbbell-bench-press,main:split-stance-band-chest-press,main:dumbbell-rows,main:band-lat-pulldown,accessory:band-rear-delt-fly,accessory:band-face-pull-high-anchor,cooldown:thread-the-needle|warmup:wall-slides,activation:band-pull-aparts,main:band-overhead-press,main:dumbbell-lateral-raise,main:band-rear-delt-fly,main:band-lateral-raise,accessory:db-triceps-extension,accessory:db-biceps-curl,accessory:marching-brace-hold,cooldown:thread-the-needle|warmup:cat-cow,activation:wall-angel-hold,main:cossack-squat,main:db-rdl,main:split-squat,main:band-rdl,accessory:band-woodchop,accessory:single-leg-calf-raise,cooldown:thread-the-needle"
     );
   });
 

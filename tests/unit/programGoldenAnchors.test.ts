@@ -343,8 +343,8 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-floor-press",
-              "dumbbell-shoulder-press",
+              "dumbbell-bench-press",
+              "dumbbell-arnold-press",
             ],
           },
           {
@@ -459,9 +459,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-floor-press",
-              "dumbbell-arnold-press",
-              "machine-chest-press",
+              "dumbbell-incline-press",
+              "dumbbell-shoulder-press",
+              "dumbbell-bench-press",
             ],
           },
           {
@@ -565,7 +565,7 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-rows",
               "dumbbell-shoulder-press",
-              "dumbbell-floor-press",
+              "dumbbell-bench-press",
             ],
           },
         ],
@@ -661,7 +661,7 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "band-front-squat",
-              "band-rdl",
+              "back-extension-hold",
               "split-squat",
             ],
           },
@@ -702,10 +702,10 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-floor-press",
               "dumbbell-bench-press",
+              "dumbbell-floor-press",
+              "machine-chest-press",
               "dumbbell-chest-fly",
-              "dumbbell-lateral-raise",
             ],
           },
           {
@@ -730,9 +730,9 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "machine-leg-press",
-              "farmers-carry",
-              "split-squat",
               "machine-seated-hamstring-curl",
+              "split-squat",
+              "dumbbell-sumo-rdl",
             ],
           },
           {
@@ -785,8 +785,8 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "machine-seated-hamstring-curl",
               "machine-leg-press",
-              "farmers-carry",
-              "split-squat",
+              "dumbbell-sumo-rdl",
+              "machine-glute-drive",
             ],
           },
         ],
@@ -826,9 +826,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-floor-press",
+              "dumbbell-bench-press",
               "dumbbell-shoulder-press",
-              "machine-chest-press",
+              "dumbbell-incline-press",
               "dumbbell-arnold-press",
             ],
           },
@@ -883,7 +883,7 @@ describe("program golden anchor fingerprints", () => {
               "dumbbell-rows",
               "barbell-bent-over-row",
               "cable-seated-row",
-              "cable-lat-pulldown",
+              "barbell-landmine-pulldown",
             ],
           },
           {
@@ -935,8 +935,8 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "dumbbell-arnold-press",
-              "dumbbell-floor-press",
+              "dumbbell-shoulder-press",
+              "dumbbell-incline-press",
               "dumbbell-rear-delt-fly",
             ],
           },

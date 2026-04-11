@@ -4052,6 +4052,14 @@ const isHigherFrequencyLowerDayTitle = (title?: string | null) => {
   return normalized.includes("lower") || normalized.includes("posterior chain");
 };
 
+const isHigherFrequencyLowerHingeDayTitle = (title?: string | null) => {
+  const normalized = String(title ?? "").toLowerCase();
+  return normalized.includes("hinge") || normalized.includes("posterior chain");
+};
+
+const isArmsPostureConditioningDayTitle = (title?: string | null) =>
+  String(title ?? "").toLowerCase().includes("arms + posture + conditioning");
+
 const uniqueRulesById = (rules: RequirementRule[]) => {
   const map = new Map<string, RequirementRule>();
   rules.forEach((rule) => {
@@ -16513,10 +16521,28 @@ const finalMainCandidateMatchesSlot = (params: {
 const isHigherFrequencyIllegalMainDrift = (params: {
   exercise: Exercise;
   daysPerWeek: 3 | 4 | 5;
+  dayTitle?: string | null;
   slotLane?: MainLane;
   context: DayConstraintRepairContext;
 }) => {
-  const { exercise, daysPerWeek, slotLane, context } = params;
+  const { exercise, daysPerWeek, dayTitle, slotLane, context } = params;
+  if (isHigherFrequencyLowerMainDrift({
+    exercise,
+    slotLane,
+    dayTitle,
+    available: context.available,
+    context: context.selectionContext,
+  })) {
+    return true;
+  }
+  if (
+    isArmsPostureConditioningDayTitle(dayTitle) &&
+    (isLegsCarryExercise(exercise) ||
+      matchesAccessoryLanePattern(exercise, "core") ||
+      !exerciseHasUpperMainPattern(exercise))
+  ) {
+    return true;
+  }
   const constrainedEquipmentCanDoBetter =
     context.capabilityMode !== "noneOnly" ||
     context.available.has("bands") ||
@@ -16602,6 +16628,7 @@ const findFinalRoleLegalityReplacement = (params: {
         isHigherFrequencyIllegalMainDrift({
           exercise: candidate,
           daysPerWeek,
+          dayTitle: day.title,
           slotLane: mainSlotLane,
           context,
         })
@@ -16824,9 +16851,10 @@ const findConstrainedLegsMainFallback = (params: {
   day: ProgramDay;
   slotLane?: MainLane;
   usedIds: Set<string>;
+  currentExerciseId?: string;
   context: DayConstraintRepairContext;
 }) => {
-  const { day, slotLane, usedIds, context } = params;
+  const { day, slotLane, usedIds, currentExerciseId, context } = params;
   if (!isLegsAbsDayTitle(day.title) && !isHigherFrequencyLowerDayTitle(day.title)) return null;
   const wantsHinge = slotLane === "hinge";
   const candidateIds = [
@@ -16859,6 +16887,7 @@ const findConstrainedLegsMainFallback = (params: {
     .map((id) => exerciseById(id))
     .filter((exercise): exercise is Exercise => Boolean(exercise))
     .find((exercise) => {
+      if (exercise.id === currentExerciseId) return false;
       if (usedIds.has(exercise.id)) return false;
       if (
         !isExerciseEligibleForProgramContext({
@@ -16950,6 +16979,7 @@ const enforceFinalRoleLegality = (params: {
         !isHigherFrequencyIllegalMainDrift({
           exercise,
           daysPerWeek,
+          dayTitle: day.title,
           slotLane: slot.slotLane,
           context,
         }) &&
@@ -17018,6 +17048,7 @@ const enforceFinalRoleLegality = (params: {
           day: nextDay,
           slotLane: slot.slotLane,
           usedIds,
+          currentExerciseId: entry.item.exerciseId,
           context,
         });
       }
@@ -18408,6 +18439,80 @@ const matchesMainLanePattern = (exercise: Exercise, lane: MainLane) => {
     return patterns.has("squat");
   }
   return patterns.has("hinge");
+};
+
+const isConstrainedNoEquipmentMainContext = (
+  available: Set<Equipment>,
+  context: SelectionContext
+) => context.capabilityMode === "noneOnly" && available.size === 1 && available.has("none");
+
+const isHigherFrequencyHardLowerMainDrift = (exercise: Exercise) => {
+  if (isLegsCarryExercise(exercise)) return true;
+  if (matchesAccessoryLanePattern(exercise, "core")) return true;
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    exercise.id === "back-extension-hold" ||
+    exercise.id === "single-leg-hip-thrust" ||
+    exercise.id === "single-leg-glute-bridge-hold" ||
+    descriptor.includes("isometric") ||
+    descriptor.includes("hold") ||
+    descriptor.includes("march") ||
+    descriptor.includes("plank") ||
+    descriptor.includes("dead bug") ||
+    descriptor.includes("bird dog")
+  );
+};
+
+const isHigherFrequencyLowerMainDrift = (params: {
+  exercise: Exercise;
+  slotLane?: MainLane;
+  dayTitle?: string | null;
+  available: Set<Equipment>;
+  context: SelectionContext;
+}) => {
+  const { exercise, slotLane, dayTitle, available, context } = params;
+  if (!isHigherFrequencyLowerDayTitle(dayTitle)) return false;
+  if (isHigherFrequencyHardLowerMainDrift(exercise)) return true;
+  if (slotLane && !matchesMainLanePattern(exercise, slotLane)) return true;
+
+  const noEquipmentContext = isConstrainedNoEquipmentMainContext(available, context);
+  const lowBackPain = hasLowBackPainSignal(context);
+  if (
+    lowBackPain &&
+    [
+      "bodyweight-good-morning",
+      "back-extension",
+      "back-extension-hold",
+      "single-leg-glute-bridge-hold",
+      "single-leg-hip-thrust",
+    ].includes(exercise.id)
+  ) {
+    return true;
+  }
+
+  if (slotLane === "hinge") {
+    if (!matchesMainLanePattern(exercise, "hinge")) return true;
+    if (noEquipmentContext) {
+      return false;
+    }
+    return (
+      exercise.id === "bodyweight-good-morning" ||
+      exercise.id === "back-extension" ||
+      exercise.id === "single-leg-hip-thrust" ||
+      exercise.id === "single-leg-rdl" ||
+      isRegressionOrDrillMovement(exercise)
+    );
+  }
+
+  if (slotLane === "squat") {
+    if (!matchesMainLanePattern(exercise, "squat")) return true;
+    return !noEquipmentContext && isRegressionOrDrillMovement(exercise);
+  }
+
+  return (
+    !exerciseHasLowerMainPattern(exercise) ||
+    (!noEquipmentContext && isRegressionOrDrillMovement(exercise))
+  );
 };
 
 const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) => {
@@ -20005,26 +20110,13 @@ const classifyMainSlotIdentity = (params: {
   }
 
   if (isHigherFrequencyLowerDayTitle(dayTitle)) {
-    const beginnerActivationNoPainHingePrimer =
-      exercise.id === "bodyweight-good-morning" &&
-      context.experienceLevel === "beginner" &&
-      context.phaseStage === "activation" &&
-      context.painSeverity === "low" &&
-      context.painAreas.length === 0;
-    if (exercise.id === "bodyweight-good-morning" && !beginnerActivationNoPainHingePrimer) {
-      return "support_corrective";
-    }
-    if (isRegressionOrDrillMovement(exercise)) {
-      return "support_corrective";
-    }
     if (
-      lowBackPain &&
-      (exercise.id === "bodyweight-squat" ||
-        exercise.id === "bodyweight-good-morning" ||
-        exercise.id === "back-extension" ||
-        exercise.id === "back-extension-hold" ||
-        exercise.id === "single-leg-hip-thrust" ||
-        exercise.id === "single-leg-glute-bridge-hold")
+      isHigherFrequencyLowerMainDrift({
+        exercise,
+        dayTitle,
+        available,
+        context,
+      })
     ) {
       return "support_corrective";
     }
@@ -20051,21 +20143,30 @@ const isMainLegalForSlot = (params: {
     isHigherFrequencyUpperDayTitle(dayTitle) &&
     (isSupportOnlyMovement(exercise) ||
       isArmIsolationMainOnlyMovement(exercise) ||
+      isLegsCarryExercise(exercise) ||
+      matchesAccessoryLanePattern(exercise, "core") ||
+      !exerciseHasUpperMainPattern(exercise) ||
       (hasUpperPainSignal(context) &&
         (exercise.id === "pike-pushup" ||
           `${exercise.id} ${exercise.name}`.toLowerCase().includes("pike push"))))
   ) {
     return false;
   }
-  if (
-    isHigherFrequencyLowerDayTitle(dayTitle) &&
-    (exercise.id === "bodyweight-good-morning" ||
-      exercise.id === "back-extension" ||
-      exercise.id === "back-extension-hold" ||
-      exercise.id === "single-leg-glute-bridge-hold" ||
-      isRegressionOrDrillMovement(exercise))
-  ) {
-    return false;
+  if (isHigherFrequencyLowerDayTitle(dayTitle)) {
+    if (
+      isHigherFrequencyLowerMainDrift({
+        exercise,
+        slotLane,
+        dayTitle,
+        available,
+        context,
+      })
+    ) {
+      return false;
+    }
+    return slotLane
+      ? matchesMainLanePattern(exercise, slotLane)
+      : exerciseHasLowerMainPattern(exercise);
   }
   const strictDefaultNoPain = shouldApplyDefaultGeneralFitnessNoPainRoleStrictness({
     available,
@@ -24845,6 +24946,9 @@ const maybeRotateHigherFrequencyLanePlan = (params: {
 }): MainLane[] => {
   const { dayTitle, daysPerWeek, phaseIndex, lanes, selectionContext } = params;
   if (daysPerWeek < 4 || lanes.length < 2) return lanes;
+  if (isHigherFrequencyLowerDayTitle(dayTitle) || isArmsPostureConditioningDayTitle(dayTitle)) {
+    return lanes;
+  }
   const variationState = selectionContext.variationState;
   if (!variationState?.enabled) return lanes;
   const uniqueLanes = Array.from(new Set(lanes));
@@ -24906,6 +25010,25 @@ const buildStructuredDay = (params: {
     const isHigherFrequencyMainDriftCandidate = (candidate: Exercise) => {
       if (section !== "main" || daysPerWeek < 4 || !options.mainSlot) return false;
       const lane = options.mainSlot.lane;
+      if (
+        isHigherFrequencyLowerMainDrift({
+          exercise: candidate,
+          slotLane: lane,
+          dayTitle: title,
+          available,
+          context: selectionContext,
+        })
+      ) {
+        return true;
+      }
+      if (
+        isArmsPostureConditioningDayTitle(title) &&
+        (isLegsCarryExercise(candidate) ||
+          matchesAccessoryLanePattern(candidate, "core") ||
+          !exerciseHasUpperMainPattern(candidate))
+      ) {
+        return true;
+      }
       const constrainedEquipmentCanDoBetter =
         capabilityMode !== "noneOnly" ||
         available.has("bands") ||
@@ -26222,7 +26345,7 @@ const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] => {
           "carry",
           "anti-rotation",
         ],
-        lanes: ["hinge", "squat"],
+        lanes: ["hinge", "squat", "hinge"],
         warmupFocus: "lower",
         cooldownFocus: "core",
         constraints: {
@@ -26475,20 +26598,19 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
       const slotLane =
         (item.selectionDebug?.slotLane as MainLane | undefined) ??
         getMainLaneHits(exercise)[0];
-      const knownLowerMainDrift =
-        [
-          "bodyweight-good-morning",
-          "back-extension",
-          "back-extension-hold",
-          "single-leg-hip-thrust",
-          "single-leg-rdl",
-          "single-leg-glute-bridge-hold",
-        ].includes(item.exerciseId);
+      const knownLowerMainDrift = isHigherFrequencyLowerMainDrift({
+        exercise,
+        slotLane,
+        dayTitle: day.title,
+        available: context.available,
+        context: context.selectionContext,
+      });
       if (
         !knownLowerMainDrift &&
         !isHigherFrequencyIllegalMainDrift({
           exercise,
           daysPerWeek,
+          dayTitle: day.title,
           slotLane,
           context,
         })
@@ -26512,10 +26634,12 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
           day: nextDay,
           slotLane,
           usedIds,
+          currentExerciseId: item.exerciseId,
           context,
         });
       }
       if (!replacement && knownLowerMainDrift) {
+        const isLowerHingeDay = isHigherFrequencyLowerHingeDayTitle(day.title);
         const primaryRescueIds =
           slotLane === "hinge"
             ? [
@@ -26535,7 +26659,7 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
                 "split-squat",
               ];
         const secondaryRescueIds =
-          slotLane === "hinge"
+          slotLane === "hinge" && !isLowerHingeDay
             ? [
                 "machine-leg-press",
                 "machine-hack-squat",
@@ -26556,6 +26680,7 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
             .find(
               (candidate) => {
                 if (usedIds.has(candidate.id)) return false;
+                if (candidate.id === item.exerciseId) return false;
                 if (candidate.category !== "main") return false;
                 if (!isExerciseEligible(candidate, context.available)) return false;
                 if (!primaryRescueIdSet.has(candidate.id)) {
