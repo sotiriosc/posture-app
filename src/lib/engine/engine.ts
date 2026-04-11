@@ -414,8 +414,7 @@ const buildSeedPolicy = (params: {
   const questionSignature = buildQuestionnaireSignature(signals.questionnaire);
   const initialVariationSeed =
     request.mode === "weekly" &&
-    !request.currentProgram &&
-    signals.questionnaire.daysPerWeek === 3
+    !request.currentProgram
       ? String(request.initialVariationSeed ?? "").trim()
       : "";
   const settingsProjection = {

@@ -579,8 +579,6 @@ export const createProgramVariationMemoryRuntime = (
       baseSeed,
       variation,
     } = params;
-    if (daysPerWeek !== 3) return null;
-
     const seedToken = String(variation?.seed ?? "").trim();
     const settingsHashToken = String(variation?.settingsHash ?? "").trim();
     const hasExternalSummary = Boolean(variation?.recentGenerationSummary);
