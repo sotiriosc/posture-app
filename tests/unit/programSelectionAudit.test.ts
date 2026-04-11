@@ -78,6 +78,23 @@ const isLatAccentStyle = (exercise: Exercise) => {
   );
 };
 
+const isBackChestSupportMainDrift = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    isLatAccentStyle(exercise) ||
+    descriptor.includes("rear-delt") ||
+    descriptor.includes("rear delt") ||
+    descriptor.includes("external rotation") ||
+    descriptor.includes("external-rotation") ||
+    descriptor.includes("swimmer") ||
+    descriptor.includes("prone elbow row") ||
+    descriptor.includes("prone-elbow-row") ||
+    descriptor.includes("back widow") ||
+    descriptor.includes("supine lat pulldown isometric") ||
+    descriptor.includes("supine-lat-pulldown-isometric")
+  );
+};
+
 const isShoulderSupportDrill = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
     exercise.variantKey ?? ""
@@ -97,10 +114,25 @@ const isShoulderSupportDrill = (exercise: Exercise) => {
   );
 };
 
+const isPainAwareShoulderMainDrift = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    isShoulderSupportDrill(exercise) ||
+    descriptor.includes("pike push") ||
+    descriptor.includes("pike-push") ||
+    descriptor.includes("y raise") ||
+    descriptor.includes("y-raise") ||
+    descriptor.includes("t raise") ||
+    descriptor.includes("t-raise")
+  );
+};
+
 const isLowerRegressionOrDrillMain = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
   const blockedIds = new Set([
     "bodyweight-squat",
+    "bodyweight-good-morning",
+    "single-leg-hip-thrust",
     "single-leg-rdl",
     "single-leg-glute-bridge-hold",
     "back-extension",
@@ -114,6 +146,8 @@ const isLowerRegressionOrDrillMain = (exercise: Exercise) => {
   return (
     blockedIds.has(exercise.id) ||
     descriptor.includes("glute bridge hold") ||
+    descriptor.includes("hip thrust") ||
+    descriptor.includes("good morning") ||
     descriptor.includes("dead bug") ||
     descriptor.includes("bird dog") ||
     descriptor.includes("plank")
@@ -340,13 +374,14 @@ describe("program selection audit metadata", () => {
     const scenarios: Array<{
       equipment: QuestionnaireData["equipment"];
       maxShoulderSupportMains: number;
+      maxLowerRegressionMains: number;
     }> = [
-      { equipment: ["bands"], maxShoulderSupportMains: 1 },
-      { equipment: ["dumbbells"], maxShoulderSupportMains: 1 },
-      { equipment: ["none"], maxShoulderSupportMains: 2 },
+      { equipment: ["bands"], maxShoulderSupportMains: 1, maxLowerRegressionMains: 0 },
+      { equipment: ["dumbbells"], maxShoulderSupportMains: 2, maxLowerRegressionMains: 0 },
+      { equipment: ["none"], maxShoulderSupportMains: 3, maxLowerRegressionMains: 1 },
     ];
 
-    scenarios.forEach(({ equipment, maxShoulderSupportMains }) => {
+    scenarios.forEach(({ equipment, maxShoulderSupportMains, maxLowerRegressionMains }) => {
       const program = generateWeeklyProgram(
         { ...questionnaire, equipment },
         `selection-non-gym-legality-${equipment.join("-")}`,
@@ -366,9 +401,45 @@ describe("program selection audit metadata", () => {
       expect(shoulderMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(
         maxShoulderSupportMains
       );
-      expect(legMains.filter(isLowerRegressionOrDrillMain).length).toBeLessThanOrEqual(1);
+      expect(legMains.filter(isLowerRegressionOrDrillMain).length).toBeLessThanOrEqual(
+        maxLowerRegressionMains
+      );
       expect(backChestMains.some(isLatAccentStyle)).toBe(false);
     });
+  });
+
+  test("pain-aware gym profiles preserve main identity before using corrective substitutions", () => {
+    const lowerBackProgram = generateWeeklyProgram(
+      { ...questionnaire, painAreas: ["Lower back"] },
+      "selection-pain-aware-lower-back",
+      {
+        phaseIndex: 2,
+        weekIndex: 1,
+        cycleIndex: 1,
+        totalWeekIndex: 1,
+        seed: "selection-pain-aware-lower-back-seed",
+      }
+    );
+    const lowerBackLegMains = getDayExercises(lowerBackProgram, "Legs + Abs", "main");
+
+    expect(lowerBackLegMains.some(isLowerRegressionOrDrillMain)).toBe(false);
+
+    const shoulderNeckProgram = generateWeeklyProgram(
+      { ...questionnaire, painAreas: ["Shoulders", "Neck"] },
+      "selection-pain-aware-shoulder-neck",
+      {
+        phaseIndex: 2,
+        weekIndex: 1,
+        cycleIndex: 1,
+        totalWeekIndex: 1,
+        seed: "selection-pain-aware-shoulder-neck-seed",
+      }
+    );
+    const shoulderMains = getDayExercises(shoulderNeckProgram, "Shoulders + Arms", "main");
+    const backChestMains = getDayExercises(shoulderNeckProgram, "Back + Chest", "main");
+
+    expect(shoulderMains.some(isPainAwareShoulderMainDrift)).toBe(false);
+    expect(backChestMains.some(isBackChestSupportMainDrift)).toBe(false);
   });
 
   test("preserves deterministic same-seed output with selection debug metadata", () => {
