@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 
 import React from "react";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { PROGRAM_TEMPLATE_VERSION } from "@/lib/program";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
@@ -24,6 +24,7 @@ const mocks = vi.hoisted(() => ({
   saveProgram: vi.fn(),
   saveProgramProgress: vi.fn(),
   uuid: vi.fn(),
+  writeText: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -142,6 +143,7 @@ describe("results operational readiness", () => {
     mocks.saveProgram.mockReset();
     mocks.saveProgramProgress.mockReset();
     mocks.uuid.mockReset();
+    mocks.writeText.mockReset();
 
     mocks.loadTrainingSnapshot.mockResolvedValue(null);
     mocks.pushTrainingPatch.mockResolvedValue(undefined);
@@ -176,6 +178,13 @@ describe("results operational readiness", () => {
     mocks.saveProgram.mockImplementation(async (program: unknown) => program);
     mocks.saveProgramProgress.mockImplementation(async (progress: unknown) => progress);
     mocks.uuid.mockReturnValue("results-program");
+    mocks.writeText.mockResolvedValue(undefined);
+    Object.defineProperty(window.navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: mocks.writeText,
+      },
+    });
 
     vi.stubGlobal(
       "fetch",
@@ -220,6 +229,8 @@ describe("results operational readiness", () => {
       JSON.stringify({
         activeProgramId: savedProgram.id,
         programId: savedProgram.id,
+        activeGenerationMode: "live_initial",
+        activeInitialVariationSeed: "saved-program",
         selectedDay: 0,
         questionnaireSignature: buildQuestionnaireSignature(questionnaire),
         updatedAt: Date.now(),
@@ -234,6 +245,25 @@ describe("results operational readiness", () => {
     });
 
     expect(mocks.generateProgram).not.toHaveBeenCalled();
+    expect(screen.getByText("Phase Preview (Reference)")).toBeTruthy();
+    expect(screen.queryByTestId("program-reference-body")).toBeNull();
+    expect(screen.getByText("Current Saved Week")).toBeTruthy();
+    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
+    expect(currentSnapshot).toContain("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
+    expect(currentSnapshot).toContain("Program ID: saved-program");
+    expect(currentSnapshot).toContain("Generation Mode: live_initial");
+    expect(currentSnapshot).toContain("Initial Live Variation Slot: saved-program");
+    expect(currentSnapshot).toContain("Day 1: Day 1");
+    expect(currentSnapshot).toContain("Routine: Band Row");
+    expect(currentSnapshot).not.toContain("DETERMINISTIC PHASE PREVIEW");
+
+    fireEvent.click(screen.getByRole("button", { name: /Copy Current Saved Week/i }));
+
+    expect(mocks.writeText).toHaveBeenCalledTimes(1);
+    const copiedText = mocks.writeText.mock.calls[0]?.[0] as string;
+    expect(copiedText).toContain("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
+    expect(copiedText).toContain("Program ID: saved-program");
+    expect(copiedText).not.toContain("DETERMINISTIC PHASE PREVIEW");
     expect(screen.getByText("Week View")).toBeTruthy();
   });
 });

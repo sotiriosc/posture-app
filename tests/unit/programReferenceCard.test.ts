@@ -9,7 +9,7 @@ const referenceText = [
   "QUESTIONNAIRE INPUTS",
   "Goal: Improve posture",
   "",
-  "PHASE PREVIEW (ALL 3 DAYS)",
+  "DETERMINISTIC PHASE PREVIEW (REFERENCE, ALL 3 DAYS)",
   "Day 1: Back + Chest",
 ].join("\n");
 
@@ -31,19 +31,20 @@ describe("ProgramReferenceCard", () => {
     render(React.createElement(StatefulProgramReferenceCard));
 
     expect(screen.getByTestId("program-reference-card")).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Show phase reference/i })).toBeTruthy();
+    expect(screen.getByText("Phase Preview (Reference)")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Show phase preview/i })).toBeTruthy();
     expect(screen.queryByTestId("program-reference-body")).toBeNull();
   });
 
   test("reveals the generated phase reference on explicit user request", () => {
     render(React.createElement(StatefulProgramReferenceCard));
 
-    fireEvent.click(screen.getByRole("button", { name: /Show phase reference/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Show phase preview/i }));
 
     const bodyText = screen.getByTestId("program-reference-body").textContent ?? "";
     expect(bodyText).toContain("QUESTIONNAIRE INPUTS");
-    expect(bodyText).toContain("PHASE PREVIEW (ALL 3 DAYS)");
+    expect(bodyText).toContain("DETERMINISTIC PHASE PREVIEW (REFERENCE, ALL 3 DAYS)");
     expect(bodyText).toContain("Day 1: Back + Chest");
-    expect(screen.getByRole("button", { name: /Hide phase reference/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Hide phase preview/i })).toBeTruthy();
   });
 });

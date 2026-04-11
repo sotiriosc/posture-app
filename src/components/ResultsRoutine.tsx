@@ -159,6 +159,72 @@ const buildReferenceLinesForDay = (day: ProgramWeekDay) => {
   ];
 };
 
+const buildMainLayoutSignature = (program: Program) =>
+  program.week
+    .map((day) =>
+      [
+        `day${day.dayIndex + 1}`,
+        day.routine
+          .filter((item) => item.section === "main")
+          .map((item) => item.exerciseId)
+          .join(","),
+      ].join(":")
+    )
+    .join(" | ");
+
+const buildCurrentSavedWeekSnapshotText = (params: {
+  program: Program;
+  questionnaire: QuestionnaireData | null;
+  generationMode?: string | null;
+  initialVariationSeed?: string | null;
+}) => {
+  const { program, questionnaire, generationMode, initialVariationSeed } = params;
+  const lines: string[] = [];
+  const normalizedQuestionnaire = questionnaire
+    ? {
+        ...questionnaire,
+        daysPerWeek: normalizeDaysPerWeek(questionnaire.daysPerWeek),
+        equipment: normalizeEquipmentSelectionValues(questionnaire.equipment),
+      }
+    : null;
+  const phaseIndex = program.phaseIndex ?? program.phase?.phaseIndex ?? 1;
+  const phaseName =
+    program.phaseName ?? program.phase?.name ?? getPhaseMetaByIndex(phaseIndex).phaseName;
+
+  if (normalizedQuestionnaire) {
+    lines.push("QUESTIONNAIRE INPUTS");
+    lines.push(`Goal: ${normalizedQuestionnaire.goals}`);
+    lines.push(`Experience: ${normalizedQuestionnaire.experience}`);
+    lines.push(`Days Per Week: ${normalizedQuestionnaire.daysPerWeek}`);
+    lines.push(`Equipment: ${formatQuestionnaireList(normalizedQuestionnaire.equipment)}`);
+    lines.push(`Pain Areas: ${formatQuestionnaireList(normalizedQuestionnaire.painAreas)}`);
+    lines.push("");
+  }
+
+  lines.push("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
+  lines.push(`Program ID: ${program.id}`);
+  if (generationMode) {
+    lines.push(`Generation Mode: ${generationMode}`);
+  }
+  if (initialVariationSeed) {
+    lines.push(`Initial Live Variation Slot: ${initialVariationSeed}`);
+  }
+  lines.push(`Phase: ${phaseName} (index ${phaseIndex})`);
+  lines.push(`Cycle Index: ${program.cycleIndex ?? program.phase?.cycleIndex ?? 1}`);
+  lines.push(`Week Index: ${program.weekIndex ?? program.phase?.weekIndex ?? 1}`);
+  lines.push(`Main Layout Signature: ${buildMainLayoutSignature(program)}`);
+  lines.push("");
+
+  [...program.week]
+    .sort((left, right) => left.dayIndex - right.dayIndex)
+    .forEach((day, index, days) => {
+      lines.push(...buildReferenceLinesForDay(day));
+      if (index < days.length - 1) lines.push("");
+    });
+
+  return lines.join("\n");
+};
+
 const loadImageFromFile = (file: File) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new Image();
@@ -289,6 +355,7 @@ export default function ResultsRoutine() {
   const [showSessionCompleteNotice, setShowSessionCompleteNotice] = useState(false);
   const [sessionCompleteNoticeFading, setSessionCompleteNoticeFading] = useState(false);
   const [programReferenceOpen, setProgramReferenceOpen] = useState(false);
+  const [currentWeekCopyStatus, setCurrentWeekCopyStatus] = useState<string | null>(null);
   const [weekViewDetailsOpen, setWeekViewDetailsOpen] = useState(false);
   const [weekViewSelectedDay, setWeekViewSelectedDay] = useState<number | null>(
     null
@@ -658,6 +725,8 @@ export default function ResultsRoutine() {
         programId: result.program.id,
         activeProgramId: result.program.id,
         activeProgramBaselineAt: activationBaselineAt,
+        activeGenerationMode: "live_regeneration",
+        activeInitialVariationSeed: undefined,
         selectedDay: 0,
         activePhaseIndex: result.program.phaseIndex ?? 1,
         activeCycleIndex: result.program.cycleIndex ?? 1,
@@ -732,6 +801,8 @@ export default function ResultsRoutine() {
       programId: nextProgram.id,
       activeProgramId: nextProgram.id,
       activeProgramBaselineAt: activationBaselineAt,
+      activeGenerationMode: "live_regeneration",
+      activeInitialVariationSeed: undefined,
       selectedDay: 0,
       activePhaseIndex: nextProgram.phaseIndex ?? 2,
       activeCycleIndex: nextProgram.cycleIndex ?? 1,
@@ -780,6 +851,18 @@ export default function ResultsRoutine() {
         }
         const newProgram = generated.program;
         await saveProgram(newProgram);
+        saveAppState({
+          programId: newProgram.id,
+          activeProgramId: newProgram.id,
+          activeProgramBaselineAt: Date.now(),
+          activeGenerationMode: "live_initial",
+          activeInitialVariationSeed: nextProgramId,
+          selectedDay: 0,
+          activePhaseIndex: newProgram.phaseIndex ?? 1,
+          activeCycleIndex: newProgram.cycleIndex ?? 1,
+          questionnaireSignature,
+          lastRoute: "/results",
+        });
         setProgram(newProgram);
       } catch (error) {
         setProgramLoadIssue(formatProgramGenerationIssue(error));
@@ -812,6 +895,8 @@ export default function ResultsRoutine() {
         programId: reconciled.id,
         activeProgramId: reconciled.id,
         activeProgramBaselineAt: Date.now(),
+        activeGenerationMode: "live_regeneration",
+        activeInitialVariationSeed: undefined,
         selectedDay: 0,
         activePhaseIndex: reconciled.phaseIndex ?? 1,
         activeCycleIndex: reconciled.cycleIndex ?? 1,
@@ -851,6 +936,10 @@ export default function ResultsRoutine() {
       programId: program.id,
       activeProgramId: program.id,
       activeProgramBaselineAt: nextBaselineAt,
+      activeGenerationMode: sameActiveProgram ? state?.activeGenerationMode : undefined,
+      activeInitialVariationSeed: sameActiveProgram
+        ? state?.activeInitialVariationSeed
+        : undefined,
       selectedDay: stateDay,
       activePhaseIndex: program.phaseIndex ?? 1,
       activeCycleIndex: program.cycleIndex ?? 1,
@@ -1079,6 +1168,8 @@ export default function ResultsRoutine() {
         programId: nextProgram.id,
         activeProgramId: nextProgram.id,
         activeProgramBaselineAt: Date.now(),
+        activeGenerationMode: "live_regeneration",
+        activeInitialVariationSeed: undefined,
         selectedDay: 0,
         activePhaseIndex: nextProgram.phaseIndex ?? 1,
         activeCycleIndex: nextProgram.cycleIndex ?? 1,
@@ -1372,7 +1463,7 @@ export default function ResultsRoutine() {
 
     if (!referenceQuestionnaire) return lines.join("\n");
     lines.push("");
-    lines.push("PHASE PREVIEW (ALL 3 DAYS)");
+    lines.push("DETERMINISTIC PHASE PREVIEW (REFERENCE, ALL 3 DAYS)");
     for (let phaseIndex = 1; phaseIndex <= MAX_PHASE_INDEX; phaseIndex += 1) {
       const phaseMeta = getPhaseMetaByIndex(phaseIndex);
       const profile = getPhaseProfile(phaseIndex);
@@ -1427,6 +1518,31 @@ export default function ResultsRoutine() {
 
     return lines.join("\n");
   }, [data, poseState.analysis, poseState.report, program, programReferenceOpen, progress]);
+
+  const currentSavedWeekSnapshotText = useMemo(() => {
+    if (!program) return "";
+    const state = loadAppState();
+    const metadataMatchesProgram = state?.activeProgramId === program.id;
+    return buildCurrentSavedWeekSnapshotText({
+      program,
+      questionnaire: data,
+      generationMode: metadataMatchesProgram ? state?.activeGenerationMode : null,
+      initialVariationSeed: metadataMatchesProgram ? state?.activeInitialVariationSeed : null,
+    });
+  }, [data, program]);
+
+  const handleCopyCurrentSavedWeek = useCallback(() => {
+    if (!currentSavedWeekSnapshotText) return;
+    const writeText = navigator.clipboard?.writeText;
+    if (!writeText) {
+      setCurrentWeekCopyStatus("Copy unavailable in this browser.");
+      return;
+    }
+    void writeText.call(navigator.clipboard, currentSavedWeekSnapshotText).then(
+      () => setCurrentWeekCopyStatus("Current saved week copied."),
+      () => setCurrentWeekCopyStatus("Copy failed. Select the text manually.")
+    );
+  }, [currentSavedWeekSnapshotText]);
 
   const adherencePercent = useMemo(() => {
     if (!activeDaysPerWeek) return 0;
@@ -2307,11 +2423,24 @@ export default function ResultsRoutine() {
       ) : null}
 
       {program ? (
-        <ProgramReferenceCard
-          isOpen={programReferenceOpen}
-          referenceText={temporaryProgramReferenceText}
-          onToggle={() => setProgramReferenceOpen((current) => !current)}
-        />
+        <>
+          <ProgramReferenceCard
+            isOpen={programReferenceOpen}
+            referenceText={temporaryProgramReferenceText}
+            onToggle={() => setProgramReferenceOpen((current) => !current)}
+          />
+          <ProgramReferenceCard
+            title="Current Saved Week"
+            description="Actual saved current-week live program. This snapshot does not regenerate phase previews or reshuffle the plan."
+            isOpen
+            referenceText={currentSavedWeekSnapshotText}
+            cardTestId="current-saved-week-card"
+            bodyTestId="current-saved-week-body"
+            copyLabel="Copy Current Saved Week"
+            onCopy={handleCopyCurrentSavedWeek}
+            copyStatus={currentWeekCopyStatus}
+          />
+        </>
       ) : null}
 
       <section id="week-view" ref={weekViewSectionRef} className="ui-card order-2 p-5">
