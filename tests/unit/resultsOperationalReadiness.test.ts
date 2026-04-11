@@ -270,6 +270,10 @@ describe("results operational readiness", () => {
     const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
     expect(currentSnapshot).toContain("Generation Mode: live_initial");
     expect(currentSnapshot).toContain("Initial Live Variation Slot: results-program");
+    expect(currentSnapshot).toContain("PHASE ROADMAP (SAVED PROGRAM CONTEXT, NO REGENERATION)");
+    expect(currentSnapshot).toContain("Phase 1:");
+    expect(currentSnapshot).toContain("Phase 2:");
+    expect(currentSnapshot).toContain("Phase 3:");
   });
 
   test("reopening a saved active program does not silently regenerate or reshuffle it", async () => {
@@ -295,11 +299,12 @@ describe("results operational readiness", () => {
     });
 
     expect(mocks.generateProgram).not.toHaveBeenCalled();
-    expect(screen.getByText("Phase Preview (Reference)")).toBeTruthy();
+    expect(screen.queryByText("Phase Preview (Reference)")).toBeNull();
     expect(screen.queryByTestId("program-reference-body")).toBeNull();
     expect(screen.getByText("Current Saved Week")).toBeTruthy();
     const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
     expect(currentSnapshot).toContain("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
+    expect(currentSnapshot).toContain("PHASE ROADMAP (SAVED PROGRAM CONTEXT, NO REGENERATION)");
     expect(currentSnapshot).toContain("Program ID: saved-program");
     expect(currentSnapshot).toContain("Generation Mode: live_initial");
     expect(currentSnapshot).toContain("Initial Live Variation Slot: saved-program");

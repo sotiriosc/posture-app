@@ -83,6 +83,7 @@ import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
+const SHOW_PHASE_PREVIEW_REFERENCE = false;
 
 const defaultRoutine: Routine = {
   summary:
@@ -212,6 +213,27 @@ const buildCurrentSavedWeekSnapshotText = (params: {
   lines.push(`Phase: ${phaseName} (index ${phaseIndex})`);
   lines.push(`Cycle Index: ${program.cycleIndex ?? program.phase?.cycleIndex ?? 1}`);
   lines.push(`Week Index: ${program.weekIndex ?? program.phase?.weekIndex ?? 1}`);
+  lines.push("");
+  lines.push("PHASE ROADMAP (SAVED PROGRAM CONTEXT, NO REGENERATION)");
+  for (let roadmapPhaseIndex = 1; roadmapPhaseIndex <= MAX_PHASE_INDEX; roadmapPhaseIndex += 1) {
+    const roadmapMeta = getPhaseMetaByIndex(roadmapPhaseIndex);
+    const roadmapProfile = getPhaseProfile(roadmapPhaseIndex);
+    const currentLabel = roadmapPhaseIndex === phaseIndex ? " — current saved phase" : "";
+    lines.push(
+      `${roadmapMeta.phaseName}${currentLabel}: ${roadmapProfile.description}`
+    );
+  }
+  if (program.phaseObjective) {
+    lines.push("");
+    lines.push("CURRENT PHASE OBJECTIVE");
+    lines.push(`Title: ${program.phaseObjective.title}`);
+    lines.push(`Objective: ${program.phaseObjective.objective}`);
+    lines.push(`Focus: ${program.phaseObjective.phaseFocus}`);
+    lines.push(`Week Intent: ${program.phaseObjective.weekIntent}`);
+    lines.push(`Why Now: ${program.phaseObjective.whyNow}`);
+    lines.push(`Guardrail: ${program.phaseObjective.guardrail}`);
+  }
+  lines.push("");
   lines.push(`Main Layout Signature: ${buildMainLayoutSignature(program)}`);
   lines.push("");
 
@@ -1439,6 +1461,7 @@ export default function ResultsRoutine() {
   }, [program]);
 
   const temporaryProgramReferenceText = useMemo(() => {
+    if (!SHOW_PHASE_PREVIEW_REFERENCE) return "";
     if (!programReferenceOpen) return "";
     if (!program) return "";
 
@@ -2424,14 +2447,16 @@ export default function ResultsRoutine() {
 
       {program ? (
         <>
-          <ProgramReferenceCard
-            isOpen={programReferenceOpen}
-            referenceText={temporaryProgramReferenceText}
-            onToggle={() => setProgramReferenceOpen((current) => !current)}
-          />
+          {SHOW_PHASE_PREVIEW_REFERENCE ? (
+            <ProgramReferenceCard
+              isOpen={programReferenceOpen}
+              referenceText={temporaryProgramReferenceText}
+              onToggle={() => setProgramReferenceOpen((current) => !current)}
+            />
+          ) : null}
           <ProgramReferenceCard
             title="Current Saved Week"
-            description="Actual saved current-week live program. This snapshot does not regenerate phase previews or reshuffle the plan."
+            description="Actual saved current-week live program, including saved phase context. This snapshot does not regenerate phase previews or reshuffle the plan."
             isOpen
             referenceText={currentSavedWeekSnapshotText}
             cardTestId="current-saved-week-card"
