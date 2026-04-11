@@ -138,16 +138,16 @@ describe("program warmup contracts", () => {
     );
 
     program.week.forEach((day) => {
-      expect(day.warmup?.items.length ?? 0).toBeLessThanOrEqual(4);
-      expect(day.activation?.items.length ?? 0).toBeLessThanOrEqual(3);
-      expect(day.cooldown?.items.length ?? 0).toBeLessThanOrEqual(2);
+      expect(day.warmup?.items.length ?? 0).toBeLessThanOrEqual(3);
+      expect(day.activation?.items.length ?? 0).toBeLessThanOrEqual(2);
+      expect(day.cooldown?.items.length ?? 0).toBe(1);
       expect(day.warmup?.items.length ?? 0).toBeGreaterThanOrEqual(3);
-      expect(day.activation?.items.length ?? 0).toBeGreaterThanOrEqual(2);
+      expect(day.activation?.items.length ?? 0).toBeGreaterThanOrEqual(1);
       expect(day.cooldown?.items.length ?? 0).toBeGreaterThanOrEqual(1);
     });
   });
 
-  test("default General Fitness keeps prep lean and cooldown two-part", () => {
+  test("default General Fitness keeps prep lean and cooldown one-part", () => {
     const program = generateWeeklyProgram(
       {
         ...baseInput,
@@ -169,15 +169,11 @@ describe("program warmup contracts", () => {
       const activationItems = day.activation?.items ?? [];
       const cooldownItems = day.cooldown?.items ?? [];
 
-      expect(warmupItems.length).toBeLessThanOrEqual(isLowerDay ? 4 : 3);
+      expect(warmupItems.length).toBeLessThanOrEqual(3);
       expect(warmupItems.length).toBeGreaterThanOrEqual(isLowerDay ? 3 : 2);
       expect(activationItems.length).toBeLessThanOrEqual(2);
       expect(activationItems.length).toBeGreaterThanOrEqual(1);
-      expect(cooldownItems.length).toBe(2);
-      expect(cooldownItems.some((item) => item.tags.includes("breathing"))).toBe(true);
-      expect(
-        cooldownItems.some((item) => item.tags.includes(isLowerDay ? "hips" : "shoulders"))
-      ).toBe(true);
+      expect(cooldownItems.length).toBe(1);
     });
   });
 

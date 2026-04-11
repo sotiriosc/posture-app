@@ -39,9 +39,11 @@ const painProfiles: Array<{
 
 const expectedMainCount = (
   experience: QuestionnaireData["experience"],
+  goal: QuestionnaireData["goals"],
+  painAreas: QuestionnaireData["painAreas"],
   daysPerWeek: QuestionnaireData["daysPerWeek"],
   dayTitle: string,
-  _equipment: QuestionnaireData["equipment"]
+  equipment: QuestionnaireData["equipment"]
 ) => {
   if (daysPerWeek === 3) {
     if (dayTitle === "Back + Chest") {
@@ -59,6 +61,16 @@ const expectedMainCount = (
       if (experience === "Intermediate") return 4;
       return 3;
     }
+  }
+  if (dayTitle === "Arms + Posture + Conditioning") return 2;
+  const highPain =
+    painAreas.length >= 2 || (goal === "Reduce pain" && experience === "Beginner");
+  if (highPain) return 2;
+  if (experience === "Advanced" && equipment.includes("none") && equipment.length === 1) {
+    return 3;
+  }
+  if (experience === "Advanced" && (goal === "Improve posture" || painAreas.length > 0)) {
+    return 3;
   }
   if (experience === "Advanced") return 4;
   if (experience === "Intermediate") return 3;
@@ -105,6 +117,8 @@ describe("program matrix quality", () => {
                 const mains = day.routine.filter((item) => item.section === "main");
                 const expectedMain = expectedMainCount(
                   experience,
+                  goal,
+                  painAreas,
                   daysPerWeek,
                   day.title,
                   equipment

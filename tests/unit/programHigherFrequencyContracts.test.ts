@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { buildEngineSignals, generateProgram } from "@/lib/engine";
 import { exerciseById, type Exercise } from "@/lib/exercises";
+import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
 import { clearProgramVariationHistory, generateWeeklyProgram } from "@/lib/program";
 import type { Program } from "@/lib/types";
 
@@ -96,7 +97,6 @@ const isKnownLowerMainDrift = (exercise: Exercise) =>
   [
     "bodyweight-good-morning",
     "back-extension-hold",
-    "single-leg-hip-thrust",
     "single-leg-glute-bridge-hold",
   ].includes(exercise.id);
 
@@ -113,6 +113,48 @@ const isCoreOnlyMain = (exercise: Exercise) => {
     )
   );
 };
+
+const descriptor = (exercise: Exercise) => `${exercise.id} ${exercise.name}`.toLowerCase();
+
+const isChestFly = (exercise: Exercise) => descriptor(exercise).includes("fly");
+
+const isLateralRaise = (exercise: Exercise) => descriptor(exercise).includes("lateral raise");
+
+const isForbiddenMainSlotDrill = (exercise: Exercise) => {
+  const text = descriptor(exercise);
+  return (
+    isCarryMain(exercise) ||
+    isCoreOnlyMain(exercise) ||
+    ["march", "plank", "dead bug", "bird dog"].some((token) => text.includes(token)) ||
+    (text.includes("hold") && exercise.id !== "back-extension-hold")
+  );
+};
+
+const hasHorizontalPressAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "push") &&
+  !hasPattern(exercise, "verticalpush") &&
+  !isChestFly(exercise) &&
+  !isLateralRaise(exercise) &&
+  !isForbiddenMainSlotDrill(exercise);
+
+const hasVerticalPressAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "verticalpush") &&
+  !isChestFly(exercise) &&
+  !isLateralRaise(exercise) &&
+  !isForbiddenMainSlotDrill(exercise);
+
+const hasHorizontalPullAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "pull") && /row/i.test(exercise.name);
+
+const hasVerticalPullAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "pull") &&
+  /pulldown|pull-up|pullup|chin-up|chinup|lat/i.test(`${exercise.id} ${exercise.name}`);
+
+const hasTrueHingeAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "hinge") &&
+  !/hamstring curl/i.test(exercise.name) &&
+  !["bodyweight-good-morning", "back-extension-hold"].includes(exercise.id) &&
+  !isForbiddenMainSlotDrill(exercise);
 
 const countPattern = (exercises: Exercise[], pattern: string) =>
   exercises.filter((exercise) => hasPattern(exercise, pattern)).length;
@@ -186,10 +228,10 @@ describe("higher-frequency split contracts", () => {
         expect(mains.some(hasUpperPattern)).toBe(false);
       }
       expect(day.warmup?.items.length ?? 0).toBeLessThanOrEqual(
-        day.title.startsWith("Upper") ? 3 : 4
+        3
       );
       expect(day.activation?.items.length ?? 0).toBeLessThanOrEqual(2);
-      expect(day.cooldown?.items.length ?? 0).toBeGreaterThanOrEqual(2);
+      expect(day.cooldown?.items.length ?? 0).toBe(1);
     });
 
     const hingeMains = mainExercises(program, "Lower (Hinge Emphasis) + Carry/Anti-rotation");
@@ -226,9 +268,24 @@ describe("higher-frequency split contracts", () => {
     expect(lowerHinge.some(isKnownLowerMainDrift)).toBe(false);
     expect(lowerHinge.some(isCarryMain)).toBe(false);
 
+    const weeklyMains = program.week.flatMap((day) =>
+      day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    );
+    expect(weeklyMains.some((exercise) => hasPattern(exercise, "squat"))).toBe(true);
+    expect(weeklyMains.some(hasTrueHingeAnchor)).toBe(true);
+    expect(weeklyMains.some(hasHorizontalPullAnchor)).toBe(true);
+    expect(weeklyMains.some(hasVerticalPullAnchor)).toBe(true);
+    expect(weeklyMains.some(hasHorizontalPressAnchor)).toBe(true);
+    expect(weeklyMains.some(hasVerticalPressAnchor)).toBe(true);
+
     const armsMains = mainExercises(program, "Arms + Posture + Conditioning");
     expect(armsMains.some((exercise) => hasPattern(exercise, "pull"))).toBe(true);
     expect(armsMains.some((exercise) => hasPattern(exercise, "verticalpush"))).toBe(true);
+    expect(armsMains.some(hasHorizontalPressAnchor)).toBe(false);
+    expect(armsMains.some(hasHorizontalPullAnchor)).toBe(true);
     expect(armsMains.some(isArmIsolation)).toBe(false);
     expect(armsMains.some(isSupportDrill)).toBe(false);
     expect(armsMains.some(isCarryMain)).toBe(false);
@@ -256,6 +313,39 @@ describe("higher-frequency split contracts", () => {
     expect(lowerMains.some(isKnownLowerMainDrift)).toBe(false);
     expect(lowerMains.some((exercise) => hasPattern(exercise, "squat"))).toBe(true);
     expect(lowerMains.some((exercise) => hasPattern(exercise, "hinge"))).toBe(true);
+  });
+
+  test("5-day gym split keeps strict main-slot anchors after repairs", () => {
+    const program = generateAnchorProgram(
+      baseQuestionnaire({
+        equipment: ["gym"],
+        daysPerWeek: 5,
+      }),
+      "hf-5day-slot-fitness-gym"
+    );
+
+    program.week.forEach((day) => {
+      day.routine
+        .filter((item) => item.section === "main")
+        .forEach((item) => {
+          const exercise = exerciseById(item.exerciseId);
+          expect(exercise, item.exerciseId).toBeTruthy();
+          if (!exercise) return;
+          expect(isForbiddenMainSlotDrill(exercise)).toBe(false);
+
+          const slotKind = item.selectionDebug?.slotKind;
+          const slotLane = item.selectionDebug?.slotLane;
+          if (slotKind === "mainPush" || slotKind === "mainPushCompound") {
+            expect(hasHorizontalPressAnchor(exercise)).toBe(true);
+          }
+          if (slotKind === "mainVerticalPush" || slotLane === "verticalPush") {
+            expect(hasVerticalPressAnchor(exercise)).toBe(true);
+          }
+          if (slotKind === "mainHinge" || slotLane === "hinge") {
+            expect(hasTrueHingeAnchor(exercise)).toBe(true);
+          }
+        });
+    });
   });
 
   test("5-day no-equipment split keeps constrained lower days anchored instead of filler-only", () => {
@@ -290,6 +380,75 @@ describe("higher-frequency split contracts", () => {
     expect(armsMains.some(isArmIsolation)).toBe(false);
     expect(armsMains.some(isCarryMain)).toBe(false);
     expect(armsMains.some(isCoreOnlyMain)).toBe(false);
+  });
+
+  test("5-day repairs keep every final exercise inside the questionnaire equipment universe", () => {
+    const questionnaire = baseQuestionnaire({
+      equipment: ["dumbbells"],
+      painAreas: ["Lower back"],
+      daysPerWeek: 5,
+    });
+    const available = normalizeEquipmentSelection(questionnaire.equipment).available;
+    const program = generateAnchorProgram(questionnaire, "hf-5day-equipment-legality-db");
+
+    program.week.forEach((day) => {
+      day.routine.forEach((item) => {
+        const exercise = exerciseById(item.exerciseId);
+        expect(exercise, item.exerciseId).toBeTruthy();
+        if (!exercise) return;
+        expect(isExerciseEligible(exercise, available), `${day.title}: ${exercise.id}`).toBe(true);
+      });
+    });
+  });
+
+  test("5-day quality-first beginner budget stays lean across main, accessory, and prep blocks", () => {
+    const program = generateAnchorProgram(
+      baseQuestionnaire({
+        goals: "Improve posture",
+        painAreas: ["Shoulders", "Lower back"],
+        experience: "Beginner",
+        equipment: ["gym"],
+        daysPerWeek: 5,
+      }),
+      "hf-5day-beginner-quality-budget"
+    );
+
+    program.week.forEach((day) => {
+      expect(day.routine.filter((item) => item.section === "main")).toHaveLength(2);
+      expect(day.routine.filter((item) => item.section === "accessory").length).toBeLessThanOrEqual(2);
+      expect(day.warmup?.items.length ?? 0).toBeLessThanOrEqual(3);
+      expect(day.activation?.items.length ?? 0).toBeLessThanOrEqual(2);
+      expect(day.cooldown?.items.length ?? 0).toBe(1);
+    });
+  });
+
+  test("Strength Focus mains use lower-rep strength prescriptions while accessories stay moderate", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "Athletic performance",
+        equipment: ["gym"],
+        experience: "Beginner",
+        daysPerWeek: 5,
+      }),
+      "hf-5day-strength-reps",
+      {
+        phaseIndex: 3,
+        seed: "hf-5day-strength-reps",
+      }
+    );
+
+    const mains = program.week.flatMap((day) =>
+      day.routine.filter((item) => item.section === "main")
+    );
+    expect(mains.length).toBeGreaterThan(0);
+    mains.forEach((item) => {
+      expect(item.reps).toBe("4-8");
+    });
+
+    const accessories = program.week.flatMap((day) =>
+      day.routine.filter((item) => item.section === "accessory")
+    );
+    expect(accessories.some((item) => item.reps !== "4-8")).toBe(true);
   });
 
   test("4/5-day live initial variation changes main layout while same slot stays stable", () => {
