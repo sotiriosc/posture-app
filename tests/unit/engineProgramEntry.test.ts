@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { buildEngineSignals, generateProgram } from "@/lib/engine";
+import { clearProgramVariationHistory } from "@/lib/program";
 import type { ExerciseLog, Program, ProgramProgress, SessionRecord } from "@/lib/types";
 
 const questionnaire: QuestionnaireData = {
@@ -183,5 +184,45 @@ describe("engine program entry point", () => {
 
     expect(cycleOne.seed).not.toBe(cycleTwo.seed);
     expect(comparableWeek(cycleOne.program)).not.toEqual(comparableWeek(cycleTwo.program));
+  });
+
+  test("live weekly regeneration uses current-program memory without losing same-input determinism", () => {
+    clearProgramVariationHistory();
+    const signals = buildSignals();
+    const current = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-var-current",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    expect(current.status).toBe("generated");
+    if (!("program" in current)) {
+      throw new Error("Expected current program to generate.");
+    }
+
+    const regenerate = (nextProgramId: string) =>
+      generateProgram({
+        mode: "weekly",
+        signals,
+        currentProgram: current.program,
+        nextProgramId,
+      });
+
+    const firstRegeneration = regenerate("engine-live-var-repeat-a");
+    const secondRegeneration = regenerate("engine-live-var-repeat-b");
+
+    expect(firstRegeneration.status).toBe("generated");
+    expect(secondRegeneration.status).toBe("generated");
+    if ("program" in firstRegeneration && "program" in secondRegeneration) {
+      expect(comparableWeek(firstRegeneration.program)).toEqual(
+        comparableWeek(secondRegeneration.program)
+      );
+      expect(comparableWeek(firstRegeneration.program)).not.toEqual(
+        comparableWeek(current.program)
+      );
+    }
   });
 });

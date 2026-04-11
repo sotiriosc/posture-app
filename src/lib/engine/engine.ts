@@ -8,7 +8,7 @@ import {
   generateNextPhaseProgram,
   generateWeeklyProgram,
 } from "@/lib/program";
-import { buildProgramRecentGenerationSummary } from "@/lib/programVariationClient";
+import { buildProgramVariationOptions } from "@/lib/programVariationClient";
 import { uuid } from "@/lib/logStore";
 import type { Program } from "@/lib/types";
 import type {
@@ -479,23 +479,21 @@ const buildWeeklyProgram = (
     target,
     progression,
   });
-  const variation =
-    request.currentProgram
-      ? {
-          seed: seedPolicy.seed,
-          settingsHash: seedPolicy.settingsHash,
-          variationIndex: seedPolicy.variationIndex,
-          index: seedPolicy.variationIndex,
-          useRecentMemory: false,
-          recentGenerationSummary: buildProgramRecentGenerationSummary(
-            request.currentProgram,
-            {
-              settingsHash: seedPolicy.settingsHash,
-              variationIndex: Math.max(0, seedPolicy.variationIndex - 1),
-            }
-          ),
-        }
-      : undefined;
+  const variation = request.currentProgram
+    ? buildProgramVariationOptions({
+        settingsHash: seedPolicy.settingsHash,
+        variationIndex: seedPolicy.variationIndex,
+        recentProgram: request.currentProgram,
+      })
+    : seedPolicy.variationIndex > 0
+    ? {
+        seed: seedPolicy.seed,
+        settingsHash: seedPolicy.settingsHash,
+        variationIndex: seedPolicy.variationIndex,
+        index: seedPolicy.variationIndex,
+        useRecentMemory: false,
+      }
+    : undefined;
   const program = generateWeeklyProgram(request.signals.questionnaire, request.nextProgramId, {
     phaseIndex: target.phaseIndex,
     weekIndex: target.weekIndex,
@@ -507,7 +505,7 @@ const buildWeeklyProgram = (
     recentLogs: progression.recentLogs,
     previousWeek: request.currentProgram?.week,
     feedbackSummaryByExercise: progression.feedbackSummaryByExercise,
-    variation,
+    variation: variation ? { ...variation, seed: seedPolicy.seed } : undefined,
   });
 
   return {

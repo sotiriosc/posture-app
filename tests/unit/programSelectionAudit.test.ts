@@ -87,6 +87,7 @@ const isBackChestSupportMainDrift = (exercise: Exercise) => {
     descriptor.includes("external rotation") ||
     descriptor.includes("external-rotation") ||
     descriptor.includes("swimmer") ||
+    descriptor.includes("plank") ||
     descriptor.includes("prone elbow row") ||
     descriptor.includes("prone-elbow-row") ||
     descriptor.includes("back widow") ||
@@ -378,6 +379,7 @@ describe("program selection audit metadata", () => {
     }> = [
       { equipment: ["bands"], maxShoulderSupportMains: 1, maxLowerRegressionMains: 0 },
       { equipment: ["dumbbells"], maxShoulderSupportMains: 2, maxLowerRegressionMains: 0 },
+      { equipment: ["dumbbells", "bands"], maxShoulderSupportMains: 0, maxLowerRegressionMains: 0 },
       { equipment: ["none"], maxShoulderSupportMains: 3, maxLowerRegressionMains: 1 },
     ];
 
@@ -404,6 +406,7 @@ describe("program selection audit metadata", () => {
       expect(legMains.filter(isLowerRegressionOrDrillMain).length).toBeLessThanOrEqual(
         maxLowerRegressionMains
       );
+      expect(backChestMains.some((exercise) => exercise.id === "plank")).toBe(false);
       expect(backChestMains.some(isLatAccentStyle)).toBe(false);
     });
   });

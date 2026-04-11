@@ -1529,7 +1529,12 @@ const ensureEligibleItem = (
   const shouldProtectMainIdentity =
     selectionContext &&
     dayTitle &&
-    shouldApplyMainIdentityProtection({ available, context: selectionContext }) &&
+    (shouldApplyMainIdentityProtection({ available, context: selectionContext }) ||
+      shouldApplyBodyweightMainIdentityForDay({
+        dayTitle,
+        available,
+        context: selectionContext,
+      })) &&
     (isBackChestDayTitle(dayTitle) ||
       isShouldersArmsDayTitle(dayTitle) ||
       isLegsAbsDayTitle(dayTitle));
@@ -13192,6 +13197,14 @@ const shouldApplyFinalRoleLegality = (params: {
   shouldApplyMainIdentityProtection(params) ||
   shouldApplyBodyweightMainIdentityProtection(params);
 
+const shouldApplyBodyweightMainIdentityForDay = (params: {
+  dayTitle?: string | null;
+  available: Set<Equipment>;
+  context: SelectionContext;
+}) =>
+  shouldApplyBodyweightMainIdentityProtection(params) &&
+  (isBackChestDayTitle(params.dayTitle) || isLegsAbsDayTitle(params.dayTitle));
+
 const isPushupPatternExercise = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
   return descriptor.includes("pushup") || descriptor.includes("push-up");
@@ -18921,12 +18934,12 @@ const selectThreeDayTemplateVariant = (params: {
   const templateIntentTuning =
     dayToken === "back_chest" || dayToken === "shoulders_arms"
       ? {
-          templateRepeatPenaltyMultiplier: 1.75,
-          familyLayoutPenaltyMultiplier: 1.8,
+          templateRepeatPenaltyMultiplier: 2.25,
+          familyLayoutPenaltyMultiplier: 2.4,
         }
       : {
-          templateRepeatPenaltyMultiplier: 1.35,
-          familyLayoutPenaltyMultiplier: 1.5,
+          templateRepeatPenaltyMultiplier: 1.75,
+          familyLayoutPenaltyMultiplier: 1.9,
         };
   const ranked = eligibleVariants
     .map((variant, index) => {
@@ -19855,8 +19868,7 @@ const isMainLegalForSlot = (params: {
   });
   const protectMainIdentity =
     shouldApplyMainIdentityProtection({ available, context }) ||
-    (isLegsAbsDayTitle(dayTitle) &&
-      shouldApplyBodyweightMainIdentityProtection({ available, context }));
+    shouldApplyBodyweightMainIdentityForDay({ dayTitle, available, context });
   const identityTier = classifyMainSlotIdentity({
     exercise,
     dayTitle,
@@ -20900,7 +20912,7 @@ const getCrossGenerationVarietyScoreBonus = (params: {
           layout === proposedLayoutSignature || layout.startsWith(`${proposedLayoutSignature}|`)
         )
       ) {
-        const layoutPenalty = 2.25 * daySpecificTuning.dayLayoutRepeatMultiplier;
+        const layoutPenalty = 3.15 * daySpecificTuning.dayLayoutRepeatMultiplier;
         score -= layoutPenalty;
         reasons.push(`-${layoutPenalty.toFixed(2)} prior-generation day layout repeat pressure`);
       }
@@ -20912,7 +20924,7 @@ const getCrossGenerationVarietyScoreBonus = (params: {
           layout === proposedFamilyLayout || layout.startsWith(`${proposedFamilyLayout}|`)
         )
       ) {
-        const familyLayoutPenalty = 1.9 * daySpecificTuning.dayFamilyLayoutRepeatMultiplier;
+        const familyLayoutPenalty = 2.75 * daySpecificTuning.dayFamilyLayoutRepeatMultiplier;
         score -= familyLayoutPenalty;
         reasons.push(
           `-${familyLayoutPenalty.toFixed(2)} prior-generation day family-layout repeat pressure`

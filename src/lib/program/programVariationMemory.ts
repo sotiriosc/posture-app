@@ -649,6 +649,7 @@ export const createProgramVariationMemoryRuntime = (
   ) => {
     if (!variationState?.enabled) return;
     if (!variationState.options.useRecentMemory) return;
+    if (variationState.options.recentGenerationSummary) return;
     const history = programVariationHistoryBySettings.get(variationState.settingsKey) ?? [];
     history.push(buildVariationSnapshot(week, variationState.selectedDayTemplateKeys));
     while (history.length > variationState.config.historySize) {
