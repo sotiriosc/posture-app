@@ -1575,10 +1575,14 @@ const ensureEligibleItem = (
   const candidateAvoidsCurrentPain = (candidate: Exercise) =>
     !selectionContext?.painAreas.length ||
     !contraindicationHitsPainArea(candidate.contraindications, selectionContext.painAreas);
-  const candidateIsStrictRoleReplacement = (candidate: Exercise) =>
+  const shouldEnforceStrictRoleReplacement = Boolean(
     selectionContext &&
-    (shouldProtectMainIdentity ||
-      (item.section === "accessory" && Boolean(item.selectionDebug?.slotLane)))
+      (shouldProtectMainIdentity ||
+        ((item.section === "main" || item.section === "accessory") &&
+          Boolean(item.selectionDebug?.slotLane)))
+  );
+  const candidateIsStrictRoleReplacement = (candidate: Exercise) =>
+    shouldEnforceStrictRoleReplacement && selectionContext
       ? isRoleLegalForSlot({
           exercise: candidate,
           section: item.section,
@@ -1600,20 +1604,48 @@ const ensureEligibleItem = (
           context: selectionContext,
         })
       : true;
-  const fallback =
-    ranked.find((entry) => candidateAvoidsCurrentPain(entry.exercise) && candidateIsStrictRoleReplacement(entry.exercise))
-      ?.exercise ??
-    ranked.find((entry) => candidateAvoidsCurrentPain(entry.exercise) && candidatePreservesMainIdentity(entry.exercise))
-      ?.exercise ??
-    ranked.find((entry) => candidatePreservesMainIdentity(entry.exercise))?.exercise ??
-    ranked[0]?.exercise ??
-    pickBaselineFallbackExercise(
-      exercise.category,
-      exercise.loadType,
-      available,
-      item.section,
-      selectionContext
-    );
+  const strictRoleFallback =
+    ranked.find(
+      (entry) =>
+        candidateAvoidsCurrentPain(entry.exercise) &&
+        candidateIsStrictRoleReplacement(entry.exercise)
+    )?.exercise ??
+    (shouldEnforceStrictRoleReplacement && selectionContext
+      ? exercises.find((candidate) => {
+          if (candidate.id === exercise.id) return false;
+          if (candidate.category !== exercise.category) return false;
+          if (!candidateAvoidsCurrentPain(candidate)) return false;
+          if (
+            !isExerciseEligibleForProgramContext({
+              exercise: candidate,
+              available,
+              section: item.section,
+              context: selectionContext,
+              dayTitle,
+            })
+          ) {
+            return false;
+          }
+          return candidateIsStrictRoleReplacement(candidate);
+        })
+      : undefined);
+  const fallback = shouldEnforceStrictRoleReplacement
+    ? strictRoleFallback
+    : strictRoleFallback ??
+      ranked.find(
+        (entry) =>
+          candidateAvoidsCurrentPain(entry.exercise) &&
+          candidatePreservesMainIdentity(entry.exercise)
+      )?.exercise ??
+      ranked.find((entry) => candidatePreservesMainIdentity(entry.exercise))?.exercise ??
+      ranked[0]?.exercise ??
+      pickBaselineFallbackExercise(
+        exercise.category,
+        exercise.loadType,
+        available,
+        item.section,
+        selectionContext
+      );
   if (!fallback) return item;
   return withSelectionDebug(
     {
@@ -1638,11 +1670,177 @@ const pickDistinctReplacement = (params: {
   if (!current) return null;
   const shouldEnforceRoleCompatibility =
     context &&
-    ((item.section === "accessory" && Boolean(item.selectionDebug?.slotLane)) ||
+    (((item.section === "main" || item.section === "accessory") &&
+      Boolean(item.selectionDebug?.slotLane)) ||
       (shouldApplyMainIdentityProtection({ available, context }) &&
         (isBackChestDayTitle(dayTitle) ||
           isShouldersArmsDayTitle(dayTitle) ||
           isLegsAbsDayTitle(dayTitle))));
+  const mainSlotLane = item.selectionDebug?.slotLane as MainLane | undefined;
+  let hasUnusedTrueHingeReplacementMemo: boolean | null = null;
+  const hasUnusedTrueHingeReplacement = () => {
+    if (hasUnusedTrueHingeReplacementMemo !== null) {
+      return hasUnusedTrueHingeReplacementMemo;
+    }
+    if (!context) {
+      hasUnusedTrueHingeReplacementMemo = false;
+      return hasUnusedTrueHingeReplacementMemo;
+    }
+    hasUnusedTrueHingeReplacementMemo = exercises.some((candidate) => {
+      if (candidate.id === current.id) return false;
+      if (usedIds.has(candidate.id)) return false;
+      if (candidate.category !== current.category) return false;
+      if (!hasTrueHingeAnchor(candidate)) return false;
+      if (
+        !isExerciseEligibleForProgramContext({
+          exercise: candidate,
+          available,
+          section: item.section,
+          context,
+          dayTitle,
+        })
+      ) {
+        return false;
+      }
+      return isRoleLegalForSlot({
+        exercise: candidate,
+        section: item.section,
+        dayTitle,
+        slotKind: item.selectionDebug?.slotKind,
+        mainSlotLane,
+        accessoryLane: item.selectionDebug?.slotLane as AccessoryLane | undefined,
+        available,
+        context,
+      });
+    });
+    return hasUnusedTrueHingeReplacementMemo;
+  };
+  const isHingeFallbackUniquenessReplacement = (candidate: Exercise) =>
+    Boolean(context) &&
+    item.section === "main" &&
+    mainSlotLane === "hinge" &&
+    matchesMainLanePattern(candidate, "hinge") &&
+    isFallbackQualityHingeAnchorExercise(candidate) &&
+    !hasUnusedTrueHingeReplacement();
+  let hasUnusedStrongPullReplacementMemo: boolean | null = null;
+  const hasUnusedStrongPullReplacement = () => {
+    if (hasUnusedStrongPullReplacementMemo !== null) {
+      return hasUnusedStrongPullReplacementMemo;
+    }
+    if (!context) {
+      hasUnusedStrongPullReplacementMemo = false;
+      return hasUnusedStrongPullReplacementMemo;
+    }
+    hasUnusedStrongPullReplacementMemo = exercises.some((candidate) => {
+      if (candidate.id === current.id) return false;
+      if (usedIds.has(candidate.id)) return false;
+      if (candidate.category !== current.category) return false;
+      if (!hasStrongHorizontalPullAnchor(candidate) && !hasStrongVerticalPullAnchor(candidate)) {
+        return false;
+      }
+      if (
+        !isExerciseEligibleForProgramContext({
+          exercise: candidate,
+          available,
+          section: item.section,
+          context,
+          dayTitle,
+        })
+      ) {
+        return false;
+      }
+      return isRoleLegalForSlot({
+        exercise: candidate,
+        section: item.section,
+        dayTitle,
+        slotKind: item.selectionDebug?.slotKind,
+        mainSlotLane,
+        accessoryLane: item.selectionDebug?.slotLane as AccessoryLane | undefined,
+        available,
+        context,
+      });
+    });
+    return hasUnusedStrongPullReplacementMemo;
+  };
+  const isPullFallbackUniquenessReplacement = (candidate: Exercise) =>
+    Boolean(context) &&
+    item.section === "main" &&
+    mainSlotLane === "pull" &&
+    (isNoEquipmentPrimePullAnchorExercise(candidate) ||
+      (isLowOutputPullAnchorExercise(candidate) &&
+        (hasTrueHorizontalPullAnchor(candidate) || hasTrueVerticalPullAnchor(candidate)))) &&
+    !hasUnusedStrongPullReplacement();
+  const isLoadedNoPainPrimePullUniquenessFallback = (candidate: Exercise) => {
+    if (!context) return false;
+    return (
+      item.section === "main" &&
+      mainSlotLane === "pull" &&
+      context.capabilityMode === "hasLoad" &&
+      context.experienceLevel !== "beginner" &&
+      context.painSeverity === "low" &&
+      context.painAreas.length === 0 &&
+      isNoEquipmentPrimePullAnchorExercise(candidate) &&
+      isPullFallbackUniquenessReplacement(candidate) &&
+      isExerciseEligible(candidate, available) &&
+      isExerciseAllowedForSection(candidate, item.section) &&
+      isEligibleForPhase(candidate, context.phaseName, context)
+    );
+  };
+  let hasUnusedTrueVerticalPushReplacementMemo: boolean | null = null;
+  const hasUnusedTrueVerticalPushReplacement = () => {
+    if (hasUnusedTrueVerticalPushReplacementMemo !== null) {
+      return hasUnusedTrueVerticalPushReplacementMemo;
+    }
+    if (!context) {
+      hasUnusedTrueVerticalPushReplacementMemo = false;
+      return hasUnusedTrueVerticalPushReplacementMemo;
+    }
+    hasUnusedTrueVerticalPushReplacementMemo = exercises.some((candidate) => {
+      if (candidate.id === current.id) return false;
+      if (usedIds.has(candidate.id)) return false;
+      if (candidate.category !== current.category) return false;
+      if (!hasTrueVerticalPressAnchor(candidate)) return false;
+      if (
+        !isExerciseEligibleForProgramContext({
+          exercise: candidate,
+          available,
+          section: item.section,
+          context,
+          dayTitle,
+        })
+      ) {
+        return false;
+      }
+      return isRoleLegalForSlot({
+        exercise: candidate,
+        section: item.section,
+        dayTitle,
+        slotKind: item.selectionDebug?.slotKind,
+        mainSlotLane,
+        accessoryLane: item.selectionDebug?.slotLane as AccessoryLane | undefined,
+        available,
+        context,
+      });
+    });
+    return hasUnusedTrueVerticalPushReplacementMemo;
+  };
+  const isVerticalPushReshapeUniquenessReplacement = (candidate: Exercise) =>
+    Boolean(context) &&
+    item.section === "main" &&
+    mainSlotLane === "verticalPush" &&
+    hasTrueHorizontalPressAnchor(candidate) &&
+    !hasUnusedTrueVerticalPushReplacement();
+  const isDistinctReplacementEligible = (candidate: Exercise) =>
+    context
+      ? isExerciseEligibleForProgramContext({
+          exercise: candidate,
+          available,
+          section: item.section,
+          context,
+          dayTitle,
+        }) || isLoadedNoPainPrimePullUniquenessFallback(candidate)
+      : isExerciseEligible(candidate, available) &&
+        isExerciseAllowedForSection(candidate, item.section);
   const isRoleCompatibleReplacement = (candidate: Exercise) =>
     shouldEnforceRoleCompatibility && context
       ? isRoleLegalForSlot({
@@ -1650,11 +1848,14 @@ const pickDistinctReplacement = (params: {
           section: item.section,
           dayTitle,
           slotKind: item.selectionDebug?.slotKind,
-          mainSlotLane: item.selectionDebug?.slotLane as MainLane | undefined,
+          mainSlotLane,
           accessoryLane: item.selectionDebug?.slotLane as AccessoryLane | undefined,
           available,
           context,
-        })
+        }) ||
+        isHingeFallbackUniquenessReplacement(candidate) ||
+        isPullFallbackUniquenessReplacement(candidate) ||
+        isVerticalPushReshapeUniquenessReplacement(candidate)
       : true;
 
   const swapCandidate =
@@ -1664,16 +1865,7 @@ const pickDistinctReplacement = (params: {
       .filter(
         (candidate) =>
           !usedIds.has(candidate.id) &&
-          (context
-            ? isExerciseEligibleForProgramContext({
-                exercise: candidate,
-                available,
-                section: item.section,
-                context,
-                dayTitle,
-              })
-            : isExerciseEligible(candidate, available) &&
-              isExerciseAllowedForSection(candidate, item.section)) &&
+          isDistinctReplacementEligible(candidate) &&
           isRoleCompatibleReplacement(candidate)
       )[0] ?? null;
   if (swapCandidate) return swapCandidate;
@@ -1681,18 +1873,7 @@ const pickDistinctReplacement = (params: {
   const pool = exercises.filter((candidate) => {
     if (candidate.id === current.id) return false;
     if (usedIds.has(candidate.id)) return false;
-    if (
-      context
-        ? !isExerciseEligibleForProgramContext({
-            exercise: candidate,
-            available,
-            section: item.section,
-            context,
-            dayTitle,
-          })
-        : !isExerciseEligible(candidate, available) ||
-          !isExerciseAllowedForSection(candidate, item.section)
-    ) {
+    if (!isDistinctReplacementEligible(candidate)) {
       return false;
     }
     if (!isRoleCompatibleReplacement(candidate)) return false;
@@ -1712,15 +1893,7 @@ const pickDistinctReplacement = (params: {
   const relaxedPool = exercises.filter((candidate) => {
     if (candidate.id === current.id) return false;
     if (usedIds.has(candidate.id)) return false;
-    if (
-      !isExerciseEligibleForProgramContext({
-        exercise: candidate,
-        available,
-        section: item.section,
-        context,
-        dayTitle,
-      })
-    ) {
+    if (!isDistinctReplacementEligible(candidate)) {
       return false;
     }
     if (!isRoleCompatibleReplacement(candidate)) return false;
@@ -1739,7 +1912,7 @@ const ensureDistinctRoutine = (
   context?: SelectionContext
 ): ProgramDay => {
   const usedIds = new Set<string>();
-  const routine = day.routine.map((item) => {
+  const routine = day.routine.map((item, itemIndex) => {
     if (!usedIds.has(item.exerciseId)) {
       usedIds.add(item.exerciseId);
       return item;
@@ -1755,6 +1928,11 @@ const ensureDistinctRoutine = (
       return item;
     }
     usedIds.add(replacement.id);
+    const currentLane = item.selectionDebug?.slotLane as MainLane | undefined;
+    const replacementLane =
+      item.section === "main"
+        ? resolveMainLaneForReplacement(replacement, currentLane)
+        : null;
     return withSelectionDebug(
       {
         ...item,
@@ -1762,7 +1940,15 @@ const ensureDistinctRoutine = (
         loadType: replacement.loadType,
         cues: buildProgramCues(replacement, item.section),
       },
-      "uniqueness_swap"
+      "uniqueness_swap",
+      replacementLane && replacementLane !== currentLane
+        ? {
+            slotId: item.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, item.section),
+            slotKind: slotKindByMainLane[replacementLane],
+            slotLane: replacementLane,
+            phaseIndex: item.selectionDebug?.phaseIndex,
+          }
+        : undefined
     );
   });
   return { ...day, routine };
@@ -21263,6 +21449,25 @@ const isLowOutputPullAnchorExercise = (exercise: Exercise) => {
   );
 };
 
+const noEquipmentPrimePullAnchorIds = new Set([
+  "supine-elbow-drive-row",
+  "prone-elbow-row",
+  "back-widow",
+]);
+
+const noEquipmentLowPriorityPullFallbackIds = new Set([
+  "prone-swimmer",
+  "supine-lat-pulldown-isometric",
+  "prone-lat-sweep",
+  "reverse-snow-angel",
+]);
+
+const isNoEquipmentPrimePullAnchorExercise = (exercise: Exercise) =>
+  noEquipmentPrimePullAnchorIds.has(exercise.id);
+
+const isNoEquipmentLowPriorityPullFallbackExercise = (exercise: Exercise) =>
+  noEquipmentLowPriorityPullFallbackIds.has(exercise.id);
+
 const isMainSlotNeverAnchorExercise = (exercise: Exercise) => {
   const descriptor = getExerciseDescriptor(exercise);
   return (
@@ -21465,6 +21670,13 @@ const isStrictPullSlotAnchorLegal = (params: {
 
   if (wantsVertical && !hasTrueVerticalPullAnchor(exercise)) return false;
   if (wantsHorizontal && !hasTrueHorizontalPullAnchor(exercise)) return false;
+  if (
+    context.capabilityMode === "noneOnly" &&
+    slotLane === "pull" &&
+    isNoEquipmentPrimePullAnchorExercise(exercise)
+  ) {
+    return true;
+  }
   if (
     slotLane === "pull" &&
     !hasTrueHorizontalPullAnchor(exercise) &&
@@ -23804,6 +24016,20 @@ const scoreExerciseForContextDetailed = (
     );
   }
 
+  if (
+    section === "main" &&
+    auditMeta?.slotLane === "pull" &&
+    auditMeta.capabilityMode === "noneOnly"
+  ) {
+    if (isNoEquipmentPrimePullAnchorExercise(exercise)) {
+      score += 6;
+      reasons.push("+6 no-equipment row-style pull anchor");
+    } else if (isNoEquipmentLowPriorityPullFallbackExercise(exercise)) {
+      score -= 6;
+      reasons.push("-6 no-equipment low-output pull fallback");
+    }
+  }
+
   const deprioritizeTagHits = exercise.tags.filter((tag) =>
     context.deprioritizeTags.has(tag.toLowerCase())
   );
@@ -24602,6 +24828,27 @@ const getPullCompoundCandidateIds = (
       "supine-elbow-drive-row",
       "prone-elbow-row",
       "back-widow",
+    ];
+  }
+
+  if (context.capabilityMode === "noneOnly") {
+    if (phaseIndex >= 3 && experience.allowAdvancedCompounds) {
+      return [
+        "supine-elbow-drive-row",
+        "prone-elbow-row",
+        "back-widow",
+        "prone-lat-sweep",
+        "supine-lat-pulldown-isometric",
+        "prone-swimmer",
+        "reverse-snow-angel",
+      ];
+    }
+    return [
+      "supine-elbow-drive-row",
+      "prone-elbow-row",
+      "back-widow",
+      "prone-swimmer",
+      "reverse-snow-angel",
     ];
   }
 
@@ -27759,6 +28006,9 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
       const slotLane =
         (item.selectionDebug?.slotLane as MainLane | undefined) ??
         getMainLaneHits(exercise)[0];
+      const slotKind =
+        item.selectionDebug?.slotKind ??
+        (slotLane ? slotKindByMainLane[slotLane] : undefined);
       const knownLowerMainDrift = isHigherFrequencyLowerMainDrift({
         exercise,
         slotLane,
@@ -27766,8 +28016,20 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
         available: context.available,
         context: context.selectionContext,
       });
+      const knownSlotIllegal = Boolean(
+        slotLane &&
+          !isMainLegalForSlot({
+            exercise,
+            dayTitle: day.title,
+            slotKind,
+            slotLane,
+            available: context.available,
+            context: context.selectionContext,
+          })
+      );
       if (
         !knownLowerMainDrift &&
+        !knownSlotIllegal &&
         !isHigherFrequencyIllegalMainDrift({
           exercise,
           daysPerWeek,
@@ -27785,7 +28047,7 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
         itemIndex,
         daysPerWeek,
         section: "main",
-        slotKind: item.selectionDebug?.slotKind,
+        slotKind,
         mainSlotLane: slotLane,
         usedIds,
         context,
@@ -27893,7 +28155,7 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
                   !isMainLegalForSlot({
                     exercise: candidate,
                     dayTitle: day.title,
-                    slotKind: item.selectionDebug?.slotKind ?? slotKindByMainLane[slotLane ?? "hinge"],
+                    slotKind: slotKind ?? slotKindByMainLane[slotLane ?? "hinge"],
                     slotLane,
                     available: context.available,
                     context: context.selectionContext,
@@ -27911,6 +28173,39 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
             ) ?? null;
       }
       if (!replacement) {
+        const relabelLane = resolveMainLaneForReplacement(exercise, null);
+        if (
+          knownSlotIllegal &&
+          relabelLane &&
+          relabelLane !== slotLane &&
+          isMainLegalForSlot({
+            exercise,
+            dayTitle: day.title,
+            slotKind: slotKindByMainLane[relabelLane],
+            slotLane: relabelLane,
+            available: context.available,
+            context: context.selectionContext,
+          })
+        ) {
+          const routine = [...nextDay.routine];
+          const current = routine[itemIndex];
+          if (current) {
+            routine[itemIndex] = withSelectionDebug(current, "legality_repair", {
+              slotId: item.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, "main"),
+              slotKind: slotKindByMainLane[relabelLane],
+              slotLane: relabelLane,
+              phaseIndex,
+            });
+            nextDay = { ...nextDay, routine };
+            usedIds.add(item.exerciseId);
+            warnings.push({
+              dayTitle: day.title,
+              kind: "violation",
+              message: `${day.title} final main integrity relabeled ${item.exerciseId} from ${slotLane ?? "unknown"} to ${relabelLane}.`,
+            });
+            return;
+          }
+        }
         usedIds.add(item.exerciseId);
         return;
       }
@@ -28367,7 +28662,65 @@ const findFinalEquipmentLegalReplacement = (params: {
         return left.exercise.id.localeCompare(right.exercise.id);
       })[0]?.exercise ?? null;
 
-  return choose(false) ?? choose(true);
+  const isRelaxedEquipmentSlotLegal = (candidate: Exercise) => {
+    if (candidate.id === item.exerciseId) return false;
+    if (!isExerciseEligible(candidate, context.available)) return false;
+    if (!isExerciseAllowedForSection(candidate, item.section)) return false;
+    if (item.section === "main") {
+      if (candidate.category !== "main") return false;
+      if (mainSlotLane === "hinge") {
+        return matchesMainLanePattern(candidate, "hinge") && !isMainSlotNeverAnchorExercise(candidate);
+      }
+      if (mainSlotLane === "squat") return hasTrueSquatAnchor(candidate);
+      if (mainSlotLane === "verticalPush") return hasTrueVerticalPressAnchor(candidate);
+      if (mainSlotLane === "push") return hasTrueHorizontalPressAnchor(candidate);
+      if (mainSlotLane === "pull") {
+        return (
+          hasTrueHorizontalPullAnchor(candidate) ||
+          hasTrueVerticalPullAnchor(candidate) ||
+          (context.capabilityMode === "noneOnly" && isNoEquipmentPrimePullAnchorExercise(candidate))
+        );
+      }
+      return candidate.category === "main";
+    }
+    if (item.section === "accessory" && accessoryLane) {
+      return matchesAccessoryLanePattern(candidate, accessoryLane);
+    }
+    return true;
+  };
+
+  const relaxedChoose = (allowUsedIds: boolean) =>
+    exercises
+      .filter((candidate) => {
+        if (!allowUsedIds && usedIds.has(candidate.id)) return false;
+        return isRelaxedEquipmentSlotLegal(candidate);
+      })
+      .map((exercise) => {
+        const detail = scoreExerciseForContextDetailed(
+          exercise,
+          item.section,
+          context.selectionContext,
+          context.available,
+          {
+            slotId: item.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, item.section),
+            dayTitle: day.title,
+            dayFocusTags: day.focusTags,
+            slotKind: item.selectionDebug?.slotKind ?? item.section ?? "unknown",
+            slotLane: mainSlotLane,
+            capabilityMode: context.capabilityMode,
+          }
+        );
+        return {
+          exercise,
+          score: detail.score + focusOverlapScore(exercise, day.focusTags),
+        };
+      })
+      .sort((left, right) => {
+        if (right.score !== left.score) return right.score - left.score;
+        return left.exercise.id.localeCompare(right.exercise.id);
+      })[0]?.exercise ?? null;
+
+  return choose(false) ?? choose(true) ?? relaxedChoose(false) ?? relaxedChoose(true);
 };
 
 const enforceFinalEquipmentLegality = (params: {
@@ -28431,6 +28784,112 @@ const enforceFinalEquipmentLegality = (params: {
         dayTitle: day.title,
         kind: "violation",
         message: `${day.title} equipment legality replaced ${item.exerciseId} with ${replacement.id}.`,
+      });
+    });
+
+    return nextDay;
+  });
+
+  return { week: nextWeek, warnings };
+};
+
+const findNoEquipmentPullQualityReplacement = (params: {
+  day: ProgramDay;
+  item: ProgramRoutineItem;
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+}) => {
+  const { day, item, usedIds, context } = params;
+  const slotLane = item.selectionDebug?.slotLane as MainLane | undefined;
+  const slotKind = item.selectionDebug?.slotKind;
+  return ["supine-elbow-drive-row", "prone-elbow-row", "back-widow"]
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise))
+    .find((exercise) => {
+      if (exercise.id === item.exerciseId) {
+        return false;
+      }
+      if (usedIds.has(exercise.id)) {
+        return false;
+      }
+      if (
+        !isExerciseEligibleForProgramContext({
+          exercise,
+          available: context.available,
+          section: "main",
+          context: context.selectionContext,
+          dayTitle: day.title,
+        })
+      ) {
+        return false;
+      }
+      return isRoleLegalForSlot({
+        exercise,
+        section: "main",
+        dayTitle: day.title,
+        slotKind,
+        mainSlotLane: slotLane,
+        available: context.available,
+        context: context.selectionContext,
+      });
+    }) ?? null;
+};
+
+const enforceNoEquipmentPullQuality = (params: {
+  week: ProgramDay[];
+  context: DayConstraintRepairContext;
+  phaseIndex: number;
+}): WeekConstraintRepairResult => {
+  const { week, context, phaseIndex } = params;
+  if (context.capabilityMode !== "noneOnly") return { week, warnings: [] };
+  const warnings: WeekConstraintRepairResult["warnings"] = [];
+
+  const nextWeek = week.map((day) => {
+    let nextDay = day;
+    const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+    const seenPullMainIds = new Set<string>();
+
+    day.routine.forEach((item, itemIndex) => {
+      if (item.section !== "main") return;
+      const slotLane = item.selectionDebug?.slotLane as MainLane | undefined;
+      if (slotLane !== "pull") return;
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return;
+
+      const duplicatePrimePull = seenPullMainIds.has(exercise.id);
+      const lowPriorityFallback = isNoEquipmentLowPriorityPullFallbackExercise(exercise);
+      if (!duplicatePrimePull && !lowPriorityFallback) {
+        seenPullMainIds.add(exercise.id);
+        return;
+      }
+
+      usedIds.delete(item.exerciseId);
+      const replacement = findNoEquipmentPullQualityReplacement({
+        day: nextDay,
+        item,
+        usedIds,
+        context,
+      });
+      if (!replacement) {
+        usedIds.add(item.exerciseId);
+        seenPullMainIds.add(item.exerciseId);
+        return;
+      }
+
+      usedIds.add(replacement.id);
+      seenPullMainIds.add(replacement.id);
+      nextDay = replaceDayMainExerciseForLane({
+        day: nextDay,
+        itemIndex,
+        replacement,
+        source: "legality_repair",
+        lane: "pull",
+        phaseIndex,
+      });
+      warnings.push({
+        dayTitle: day.title,
+        kind: "violation",
+        message: `${day.title} no-equipment pull quality replaced ${item.exerciseId} with ${replacement.id}.`,
       });
     });
 
@@ -28637,7 +29096,16 @@ export const generateWeeklyProgram = (
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
   });
-  const structuredPrepWeek = equipmentLegalityResult.week;
+  const noEquipmentPullQualityResult = enforceNoEquipmentPullQuality({
+    week: equipmentLegalityResult.week,
+    context: dayRepairContext,
+    phaseIndex: weeklyRuntimeContext.phaseIndex,
+  });
+  const structuredPrepWeek = dedupeWeekForSelectionContext({
+    week: noEquipmentPullQualityResult.week,
+    available: weeklyRuntimeContext.availableEquipment,
+    selectionContext: weeklyRuntimeContext.selectionContext,
+  });
   finalizeWeeklyGenerationObservability({
     week: structuredPrepWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
@@ -28671,6 +29139,7 @@ export const generateWeeklyProgram = (
       ...lowerSlotPurityResult.warnings,
       ...accessorySlotPurityResult.warnings,
       ...equipmentLegalityResult.warnings,
+      ...noEquipmentPullQualityResult.warnings,
     ],
     templateVersion: PROGRAM_TEMPLATE_VERSION,
   });

@@ -240,6 +240,37 @@ const hasTrueHingeAnchor = (exercise: Exercise) =>
 const hasTrueSquatAnchor = (exercise: Exercise) =>
   hasPattern(exercise, "squat") && !isCarryOrBraceDrill(exercise);
 
+const forbiddenVerticalPushIds = new Set([
+  "pushup",
+  "tempo-pushup",
+  "incline-pushup",
+  "close-grip-pushup",
+  "band-chest-press",
+  "dumbbell-bench-press",
+  "dumbbell-floor-press",
+  "machine-chest-press",
+]);
+
+const hasTruthfulVerticalPressAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "verticalpush") &&
+  !forbiddenVerticalPushIds.has(exercise.id) &&
+  !descriptor(exercise).includes("fly") &&
+  !descriptor(exercise).includes("lateral raise") &&
+  !isCarryOrBraceDrill(exercise);
+
+const noEquipmentPrimePullIds = new Set([
+  "supine-elbow-drive-row",
+  "prone-elbow-row",
+  "back-widow",
+]);
+
+const noEquipmentLowPriorityPullIds = new Set([
+  "prone-swimmer",
+  "supine-lat-pulldown-isometric",
+  "prone-lat-sweep",
+  "reverse-snow-angel",
+]);
+
 const isHigherFrequencyLowerDay = (title: string) => {
   const normalized = title.toLowerCase();
   return normalized.includes("lower") || normalized.includes("posterior chain");
@@ -263,6 +294,27 @@ const expectTruthfulLowerMainSlots = (
       if (slotKind === "mainSquat" || slotLane === "squat") {
         expect(hasTrueSquatAnchor(exercise), `${day.title}: ${exercise.id}`).toBe(true);
       }
+    });
+};
+
+const expectTruthfulVerticalPushSlots = (
+  day: ReturnType<typeof generateWeeklyProgram>["week"][number]
+) => {
+  day.routine
+    .filter(
+      (item) =>
+        item.section === "main" &&
+        (item.selectionDebug?.slotKind === "mainVerticalPush" ||
+          item.selectionDebug?.slotLane === "verticalPush")
+    )
+    .forEach((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      expect(exercise, `${day.title}: ${item.exerciseId}`).toBeTruthy();
+      if (!exercise) return;
+      expect(forbiddenVerticalPushIds.has(exercise.id), `${day.title}: ${exercise.id}`).toBe(
+        false
+      );
+      expect(hasTruthfulVerticalPressAnchor(exercise), `${day.title}: ${exercise.id}`).toBe(true);
     });
 };
 
@@ -298,6 +350,33 @@ const expectEquipmentEligibleDay = (
       `${day.title}: ${exercise.id} requires ${exercise.equipment.join(", ")}`
     ).toBe(true);
   });
+};
+
+const expectNoEquipmentPullQuality = (
+  program: ReturnType<typeof generateWeeklyProgram>
+) => {
+  const pullDay = program.week.find((day) => day.title === "Upper Pull + Thoracic Posture");
+  expect(pullDay).toBeTruthy();
+  const pullIds = (pullDay?.routine ?? [])
+    .filter(
+      (item) =>
+        item.section === "main" &&
+        (item.selectionDebug?.slotLane === "pull" ||
+          item.selectionDebug?.slotKind?.startsWith("mainPull"))
+    )
+    .map((item) => item.exerciseId);
+  expect(pullIds.length).toBeGreaterThan(0);
+  expect(noEquipmentPrimePullIds.has(pullIds[0]), pullIds.join(", ")).toBe(true);
+  expect(new Set(pullIds).size, pullIds.join(", ")).toBe(pullIds.length);
+
+  const firstPrimeIndex = pullIds.findIndex((id) => noEquipmentPrimePullIds.has(id));
+  const firstLowPriorityIndex = pullIds.findIndex((id) =>
+    noEquipmentLowPriorityPullIds.has(id)
+  );
+  expect(firstPrimeIndex).toBeGreaterThanOrEqual(0);
+  if (firstLowPriorityIndex >= 0) {
+    expect(firstPrimeIndex).toBeLessThan(firstLowPriorityIndex);
+  }
 };
 
 describe("program matrix quality", () => {
@@ -350,6 +429,7 @@ describe("program matrix quality", () => {
                 if (daysPerWeek >= 4 && isHigherFrequencyLowerDay(day.title)) {
                   expectTruthfulLowerMainSlots(day);
                 }
+                expectTruthfulVerticalPushSlots(day);
                 expectTruthfulAccessorySlots(day);
 
                 if (equipment.includes("none") && equipment.length === 1) {
@@ -404,6 +484,22 @@ describe("program matrix quality", () => {
       });
       expect(phase1.week).not.toEqual(phase2.week);
     });
+  });
+
+  test("no-equipment upper pull prefers row-style mains before low-output posture drills", () => {
+    const input: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["none"],
+      daysPerWeek: 4,
+    };
+    const program = generateWeeklyProgram(input, "matrix-no-equipment-pull-quality", {
+      phaseIndex: 1,
+      seed: "matrix-no-equipment-pull-quality",
+    });
+
+    expectNoEquipmentPullQuality(program);
   });
 
   test("phase rep intent stays visible for hypertrophy and constrained strength anchors", () => {

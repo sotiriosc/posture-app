@@ -179,6 +179,17 @@ const hasVerticalPressAnchor = (exercise: Exercise) =>
   !isLateralRaise(exercise) &&
   !isForbiddenMainSlotDrill(exercise);
 
+const forbiddenVerticalPushIds = new Set([
+  "pushup",
+  "tempo-pushup",
+  "incline-pushup",
+  "close-grip-pushup",
+  "band-chest-press",
+  "dumbbell-bench-press",
+  "dumbbell-floor-press",
+  "machine-chest-press",
+]);
+
 const hasHorizontalPullAnchor = (exercise: Exercise) =>
   hasPattern(exercise, "pull") && /row/i.test(exercise.name);
 
@@ -359,6 +370,59 @@ const expectAnyHingeId = (
 const countPattern = (exercises: Exercise[], pattern: string) =>
   exercises.filter((exercise) => hasPattern(exercise, pattern)).length;
 
+const noEquipmentPrimePullIds = new Set([
+  "supine-elbow-drive-row",
+  "prone-elbow-row",
+  "back-widow",
+]);
+
+const noEquipmentLowPriorityPullIds = new Set([
+  "prone-swimmer",
+  "supine-lat-pulldown-isometric",
+  "prone-lat-sweep",
+  "reverse-snow-angel",
+]);
+
+const expectTruthfulVerticalPushSlots = (program: Program) => {
+  program.week.forEach((day) => {
+    day.routine
+      .filter(
+        (item) =>
+          item.section === "main" &&
+          (item.selectionDebug?.slotKind === "mainVerticalPush" ||
+            item.selectionDebug?.slotLane === "verticalPush")
+      )
+      .forEach((item) => {
+        const exercise = exerciseById(item.exerciseId);
+        expect(exercise, `${day.title}: ${item.exerciseId}`).toBeTruthy();
+        if (!exercise) return;
+        expect(forbiddenVerticalPushIds.has(exercise.id), `${day.title}: ${exercise.id}`).toBe(
+          false
+        );
+        expect(hasVerticalPressAnchor(exercise), `${day.title}: ${exercise.id}`).toBe(true);
+      });
+  });
+};
+
+const expectNoEquipmentMainPullQuality = (program: Program) => {
+  const pullItems = mainRoutineItems(program, "Upper Pull + Thoracic Posture").filter(
+    (item) =>
+      item.selectionDebug?.slotLane === "pull" ||
+      item.selectionDebug?.slotKind?.startsWith("mainPull")
+  );
+  const pullIds = pullItems.map((item) => item.exerciseId);
+  expect(pullIds.length).toBeGreaterThan(0);
+  expect(noEquipmentPrimePullIds.has(pullIds[0]), pullIds.join(", ")).toBe(true);
+  expect(new Set(pullIds).size, pullIds.join(", ")).toBe(pullIds.length);
+
+  const firstPrimeIndex = pullIds.findIndex((id) => noEquipmentPrimePullIds.has(id));
+  const firstLowPriorityIndex = pullIds.findIndex((id) => noEquipmentLowPriorityPullIds.has(id));
+  expect(firstPrimeIndex).toBeGreaterThanOrEqual(0);
+  if (firstLowPriorityIndex >= 0) {
+    expect(firstPrimeIndex).toBeLessThan(firstLowPriorityIndex);
+  }
+};
+
 const mainLayoutSignature = (program: Program) =>
   program.week
     .map((day) =>
@@ -515,6 +579,86 @@ describe("higher-frequency split contracts", () => {
     loadedMains.forEach((item) => {
       expect(item.reps).toBe("8-12");
     });
+  });
+
+  test("4-day no-equipment shoulder-pain split does not label horizontal pushups as vertical push", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Shoulders"],
+        equipment: ["none"],
+        experience: "Intermediate",
+        daysPerWeek: 4,
+      }),
+      "hf-4day-none-shoulder-vertical-push-truth",
+      {
+        phaseIndex: 1,
+        seed: "hf-4day-none-shoulder-vertical-push-truth",
+      }
+    );
+
+    expectTruthfulVerticalPushSlots(program);
+    program.week
+      .flatMap((day) =>
+        day.routine.filter(
+          (item) =>
+            item.exerciseId === "tempo-pushup" &&
+            item.selectionDebug?.slotLane === "verticalPush"
+        )
+      )
+      .forEach((item) => {
+        expect(item.selectionDebug?.slotLane).not.toBe("verticalPush");
+      });
+  });
+
+  test("4-day bands neck-pain split does not label horizontal pushups as vertical push", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Neck"],
+        equipment: ["bands"],
+        experience: "Intermediate",
+        daysPerWeek: 4,
+      }),
+      "hf-4day-bands-neck-vertical-push-truth",
+      {
+        phaseIndex: 1,
+        seed: "hf-4day-bands-neck-vertical-push-truth",
+      }
+    );
+
+    expectTruthfulVerticalPushSlots(program);
+    program.week
+      .flatMap((day) =>
+        day.routine.filter(
+          (item) =>
+            item.exerciseId === "pushup" &&
+            item.selectionDebug?.slotLane === "verticalPush"
+        )
+      )
+      .forEach((item) => {
+        expect(item.selectionDebug?.slotLane).not.toBe("verticalPush");
+      });
+  });
+
+  test("4-day no-equipment pull day prefers row-style anchors over low-output posture drills", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "General fitness",
+        painAreas: [],
+        equipment: ["none"],
+        experience: "Intermediate",
+        daysPerWeek: 4,
+      }),
+      "hf-4day-none-main-pull-quality",
+      {
+        phaseIndex: 1,
+        seed: "hf-4day-none-main-pull-quality",
+      }
+    );
+
+    expectTruthfulVerticalPushSlots(program);
+    expectNoEquipmentMainPullQuality(program);
   });
 
   test("mixed dumbbells and bands athletic split keeps accessory core lane pure", () => {
