@@ -192,6 +192,75 @@ const hasTrueHingeAnchor = (exercise: Exercise) =>
   !["bodyweight-good-morning", "back-extension", "back-extension-hold"].includes(exercise.id) &&
   !isForbiddenMainSlotDrill(exercise);
 
+const hasTrueSquatAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "squat") && !isForbiddenMainSlotDrill(exercise);
+
+const isAntiRotationOrBraceDrill = (exercise: Exercise) => {
+  const text = descriptor(exercise);
+  return [
+    "pallof",
+    "woodchop",
+    "anti-rotation",
+    "anti rotation",
+    "brace hold",
+    "hollow body",
+    "hollow-body",
+    "plank",
+    "dead bug",
+    "dead-bug",
+    "march",
+  ].some((token) => text.includes(token));
+};
+
+const isForbiddenHingeMain = (exercise: Exercise) =>
+  [
+    "goblet-squat",
+    "split-squat",
+    "heels-elevated-squat",
+    "dumbbell-step-up-loaded",
+    "farmers-carry",
+    "suitcase-carry",
+    "suitcase-hold-march",
+    "band-suitcase-march",
+    "pallof-press",
+    "band-woodchop",
+    "hollow-body-hold",
+    "plank",
+    "side-plank",
+    "dead-bug",
+    "marching-brace-hold",
+  ].includes(exercise.id) ||
+  isCarryMain(exercise) ||
+  isCoreOnlyMain(exercise) ||
+  isAntiRotationOrBraceDrill(exercise);
+
+const routineItemsForDay = (program: Program, title: string) => {
+  const day = program.week.find((item) => item.title === title);
+  expect(day, `Missing generated day "${title}"`).toBeTruthy();
+  return day?.routine ?? [];
+};
+
+const mainRoutineItems = (program: Program, title: string) =>
+  routineItemsForDay(program, title).filter((item) => item.section === "main");
+
+const expectLowerSlotPurity = (program: Program, title: string) => {
+  mainRoutineItems(program, title).forEach((item) => {
+    const exercise = exerciseById(item.exerciseId);
+    expect(exercise, `${title}: ${item.exerciseId}`).toBeTruthy();
+    if (!exercise) return;
+    const slotKind = item.selectionDebug?.slotKind;
+    const slotLane = item.selectionDebug?.slotLane;
+
+    if (slotKind === "mainHinge" || slotLane === "hinge") {
+      expect(isForbiddenHingeMain(exercise), `${title}: ${exercise.id}`).toBe(false);
+      expect(hasTrueHingeAnchor(exercise), `${title}: ${exercise.id}`).toBe(true);
+    }
+    if (slotKind === "mainSquat" || slotLane === "squat") {
+      expect(hasTrueSquatAnchor(exercise), `${title}: ${exercise.id}`).toBe(true);
+    }
+  });
+};
+
 const countPattern = (exercises: Exercise[], pattern: string) =>
   exercises.filter((exercise) => hasPattern(exercise, pattern)).length;
 
@@ -277,6 +346,104 @@ describe("higher-frequency split contracts", () => {
     expect(countPattern(hingeMains, "squat")).toBeLessThanOrEqual(
       Math.max(1, countPattern(hingeMains, "hinge"))
     );
+  });
+
+  test("5-day bands and dumbbells posture split keeps anti-rotation out of mainHinge", () => {
+    const program = generateAnchorProgram(
+      baseQuestionnaire({
+        goals: "Improve posture",
+        equipment: ["bands", "dumbbells"],
+        experience: "Advanced",
+        daysPerWeek: 5,
+      }),
+      "hf-5day-posture-bands-db-lower-slot-purity"
+    );
+
+    expectLowerSlotPurity(program, "Lower Squat");
+    expectLowerSlotPurity(program, "Lower Hinge + Posterior Chain");
+
+    const lowerHingeItems = mainRoutineItems(program, "Lower Hinge + Posterior Chain");
+    const lowerHingeExercises = lowerHingeItems
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+    expect(lowerHingeExercises.some((exercise) => exercise.id === "pallof-press")).toBe(false);
+    expect(lowerHingeExercises.some(hasTrueHingeAnchor)).toBe(true);
+
+    const firstTrueHingeIndex = lowerHingeExercises.findIndex(hasTrueHingeAnchor);
+    const firstSupportIndex = lowerHingeExercises.findIndex(
+      (exercise) =>
+        isCarryMain(exercise) || isCoreOnlyMain(exercise) || isAntiRotationOrBraceDrill(exercise)
+    );
+    expect(firstTrueHingeIndex).toBeGreaterThanOrEqual(0);
+    if (firstSupportIndex >= 0) {
+      expect(firstTrueHingeIndex).toBeLessThan(firstSupportIndex);
+    }
+  });
+
+  test("4-day dumbbell athletic lower slots keep squat, carry, and core out of mainHinge", () => {
+    const program = generateAnchorProgram(
+      baseQuestionnaire({
+        goals: "Athletic performance",
+        equipment: ["dumbbells"],
+        experience: "Intermediate",
+        daysPerWeek: 4,
+      }),
+      "hf-4day-athletic-db-lower-slot-purity"
+    );
+
+    expectLowerSlotPurity(program, "Lower (Squat Emphasis) + Core");
+    expectLowerSlotPurity(program, "Lower (Hinge Emphasis) + Carry/Anti-rotation");
+
+    const hingeDayItems = mainRoutineItems(
+      program,
+      "Lower (Hinge Emphasis) + Carry/Anti-rotation"
+    );
+    const hingeSlotIds = hingeDayItems
+      .filter(
+        (item) =>
+          item.selectionDebug?.slotKind === "mainHinge" ||
+          item.selectionDebug?.slotLane === "hinge"
+      )
+      .map((item) => item.exerciseId);
+    expect(hingeSlotIds).not.toContain("goblet-squat");
+    expect(hingeSlotIds).not.toContain("farmers-carry");
+
+    const hingeDayMains = hingeDayItems
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+    expect(hingeDayMains.some(hasTrueHingeAnchor)).toBe(true);
+
+    const loadedMains = program.week.flatMap((day) =>
+      day.routine.filter((item) => item.section === "main" && item.loadType === "weighted")
+    );
+    expect(loadedMains.length).toBeGreaterThan(0);
+    loadedMains.forEach((item) => {
+      expect(item.reps).toBe("8-12");
+    });
+  });
+
+  test.each([
+    ["shoulder pain", ["Shoulders"]],
+    ["upper-back pain", ["Upper back"]],
+  ] as const)("4-day beginner gym with %s keeps conservative lower structure", (_, painAreas) => {
+    const program = generateAnchorProgram(
+      baseQuestionnaire({
+        equipment: ["gym"],
+        experience: "Beginner",
+        painAreas: [...painAreas],
+        daysPerWeek: 4,
+      }),
+      `hf-4day-beginner-gym-${painAreas[0].toLowerCase().replace(/\s+/g, "-")}`
+    );
+
+    [
+      "Lower (Squat Emphasis) + Core",
+      "Lower (Hinge Emphasis) + Carry/Anti-rotation",
+    ].forEach((title) => {
+      const lowerMains = mainRoutineItems(program, title);
+      expect(lowerMains).toHaveLength(2);
+      expectLowerSlotPurity(program, title);
+    });
   });
 
   test("5-day gym split keeps arms/posture as an upper exposure, not an isolation main day", () => {

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { generateWeeklyProgram } from "@/lib/program";
-import { exerciseById } from "@/lib/exercises";
+import { exerciseById, type Exercise } from "@/lib/exercises";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 
 const experiences: QuestionnaireData["experience"][] = [
@@ -66,6 +66,31 @@ const expectedMainCount = (
   const highPain =
     painAreas.length >= 2 || (goal === "Reduce pain" && experience === "Beginner");
   if (highPain) return 2;
+  const lowerHingeDay =
+    dayTitle === "Lower (Hinge Emphasis) + Carry/Anti-rotation" ||
+    dayTitle === "Lower Hinge + Posterior Chain";
+  if (
+    daysPerWeek >= 4 &&
+    experience === "Advanced" &&
+    dayTitle.toLowerCase().includes("lower")
+  ) {
+    return [2, 4];
+  }
+  if (
+    daysPerWeek >= 4 &&
+    lowerHingeDay &&
+    experience === "Intermediate"
+  ) {
+    return [2, 3];
+  }
+  if (
+    daysPerWeek >= 4 &&
+    lowerHingeDay &&
+    equipment.includes("none") &&
+    equipment.length === 1
+  ) {
+    return [2, 3];
+  }
   if (experience === "Advanced" && equipment.includes("none") && equipment.length === 1) {
     return 3;
   }
@@ -85,6 +110,85 @@ const hasSections = (day: ReturnType<typeof generateWeeklyProgram>["week"][numbe
     sections.has("accessory") &&
     sections.has("cooldown")
   );
+};
+
+const hasPattern = (exercise: Exercise, pattern: string) =>
+  exercise.movementPattern.some((entry) => entry.toLowerCase() === pattern.toLowerCase());
+
+const descriptor = (exercise: Exercise) => `${exercise.id} ${exercise.name}`.toLowerCase();
+
+const isCarryOrBraceDrill = (exercise: Exercise) => {
+  const text = descriptor(exercise);
+  return [
+    "carry",
+    "suitcase",
+    "pallof",
+    "woodchop",
+    "anti-rotation",
+    "anti rotation",
+    "hollow body",
+    "hollow-body",
+    "plank",
+    "dead bug",
+    "dead-bug",
+    "bird dog",
+    "bird-dog",
+    "march",
+  ].some((token) => text.includes(token));
+};
+
+const isForbiddenHingeSlotExercise = (exercise: Exercise) =>
+  [
+    "goblet-squat",
+    "split-squat",
+    "heels-elevated-squat",
+    "dumbbell-step-up-loaded",
+    "farmers-carry",
+    "suitcase-carry",
+    "suitcase-hold-march",
+    "band-suitcase-march",
+    "pallof-press",
+    "band-woodchop",
+    "hollow-body-hold",
+    "plank",
+    "side-plank",
+    "dead-bug",
+    "marching-brace-hold",
+  ].includes(exercise.id) || isCarryOrBraceDrill(exercise);
+
+const hasTrueHingeAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "hinge") &&
+  !/hamstring curl/i.test(exercise.name) &&
+  !["bodyweight-good-morning", "back-extension", "back-extension-hold"].includes(exercise.id) &&
+  !isForbiddenHingeSlotExercise(exercise);
+
+const hasTrueSquatAnchor = (exercise: Exercise) =>
+  hasPattern(exercise, "squat") && !isCarryOrBraceDrill(exercise);
+
+const isHigherFrequencyLowerDay = (title: string) => {
+  const normalized = title.toLowerCase();
+  return normalized.includes("lower") || normalized.includes("posterior chain");
+};
+
+const expectTruthfulLowerMainSlots = (
+  day: ReturnType<typeof generateWeeklyProgram>["week"][number]
+) => {
+  day.routine
+    .filter((item) => item.section === "main")
+    .forEach((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      expect(exercise, `${day.title}: ${item.exerciseId}`).toBeTruthy();
+      if (!exercise) return;
+      const slotKind = item.selectionDebug?.slotKind;
+      const slotLane = item.selectionDebug?.slotLane;
+      if (slotKind === "mainHinge" || slotLane === "hinge") {
+        expect(isForbiddenHingeSlotExercise(exercise), `${day.title}: ${exercise.id}`).toBe(false);
+        expect(hasPattern(exercise, "hinge"), `${day.title}: ${exercise.id}`).toBe(true);
+      }
+      if (slotKind === "mainSquat" || slotLane === "squat") {
+        expect(hasTrueSquatAnchor(exercise), `${day.title}: ${exercise.id}`).toBe(true);
+      }
+    });
 };
 
 describe("program matrix quality", () => {
@@ -132,6 +236,9 @@ describe("program matrix quality", () => {
                 mains.forEach((item) => {
                   expect(exerciseById(item.exerciseId)?.category).toBe("main");
                 });
+                if (daysPerWeek >= 4 && isHigherFrequencyLowerDay(day.title)) {
+                  expectTruthfulLowerMainSlots(day);
+                }
 
                 if (equipment.includes("none") && equipment.length === 1) {
                   day.routine.forEach((item) => {
@@ -226,6 +333,43 @@ describe("program matrix quality", () => {
       .flatMap((day) => day.routine.filter((item) => item.section === "main"))
       .forEach((item) => {
         expect(item.reps).toBe("4-8");
+      });
+  });
+
+  test("4-day athletic dumbbell lower slots and phase 2 reps stay truthful", () => {
+    const program = generateWeeklyProgram(
+      {
+        goals: "Athletic performance",
+        painAreas: [],
+        experience: "Intermediate",
+        equipment: ["dumbbells"],
+        daysPerWeek: 4,
+      },
+      "matrix-4day-athletic-db-lower-truth",
+      {
+        phaseIndex: 2,
+        seed: "matrix-4day-athletic-db-lower-truth",
+      }
+    );
+
+    const lowerDays = program.week.filter((day) => isHigherFrequencyLowerDay(day.title));
+    expect(lowerDays).toHaveLength(2);
+    lowerDays.forEach(expectTruthfulLowerMainSlots);
+
+    const hingeDay = lowerDays.find((day) => day.title.toLowerCase().includes("hinge"));
+    expect(hingeDay).toBeTruthy();
+    const hingeMains = (hingeDay?.routine ?? [])
+      .filter((item) => item.section === "main")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+    expect(hingeMains.some(hasTrueHingeAnchor)).toBe(true);
+
+    program.week
+      .flatMap((day) =>
+        day.routine.filter((item) => item.section === "main" && item.loadType === "weighted")
+      )
+      .forEach((item) => {
+        expect(item.reps).toBe("8-12");
       });
   });
 });
