@@ -149,7 +149,10 @@ export default function QuestionnaireForm() {
       if (!("program" in result)) {
         throw new Error(result.message);
       }
-      const nextProgram = result.program;
+      const nextProgram = {
+        ...result.program,
+        questionnaireSignature,
+      };
       const nextProgress: ProgramProgress = {
         programId: nextProgram.id,
         lastCompletedDayIndex: null,

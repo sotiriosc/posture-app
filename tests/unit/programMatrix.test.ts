@@ -186,4 +186,46 @@ describe("program matrix quality", () => {
       expect(phase1.week).not.toEqual(phase2.week);
     });
   });
+
+  test("phase rep intent stays visible for hypertrophy and constrained strength anchors", () => {
+    const hypertrophy = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Advanced",
+        equipment: ["gym"],
+        daysPerWeek: 5,
+      },
+      "matrix-hypertrophy-reps",
+      {
+        phaseIndex: 2,
+        seed: "matrix-hypertrophy-reps",
+      }
+    );
+    hypertrophy.week
+      .flatMap((day) => day.routine.filter((item) => item.section === "main"))
+      .forEach((item) => {
+        expect(item.reps).toBe("8-12");
+      });
+
+    const constrainedStrength = generateWeeklyProgram(
+      {
+        goals: "Reduce pain",
+        painAreas: ["Lower back", "Shoulders"],
+        experience: "Beginner",
+        equipment: ["bands"],
+        daysPerWeek: 5,
+      },
+      "matrix-constrained-strength-reps",
+      {
+        phaseIndex: 3,
+        seed: "matrix-constrained-strength-reps",
+      }
+    );
+    constrainedStrength.week
+      .flatMap((day) => day.routine.filter((item) => item.section === "main"))
+      .forEach((item) => {
+        expect(item.reps).toBe("4-8");
+      });
+  });
 });

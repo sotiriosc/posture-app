@@ -561,16 +561,35 @@ const resolveFirstRoutableDay = (program: Program | null) => {
 
 const isProgramCompatibleWithQuestionnaire = (
   candidate: Program | null,
-  questionnaire: QuestionnaireData
+  questionnaire: QuestionnaireData,
+  options: {
+    questionnaireSignature?: string | null;
+    savedQuestionnaireSignature?: string | null;
+  } = {}
 ) => {
   if (!candidate) return false;
+  const expectedSignature =
+    options.questionnaireSignature ?? buildQuestionnaireSignature(questionnaire);
+  const persistedSignature =
+    typeof candidate.questionnaireSignature === "string" && candidate.questionnaireSignature
+      ? candidate.questionnaireSignature
+      : options.savedQuestionnaireSignature ?? null;
   return (
     candidate.templateVersion === PROGRAM_TEMPLATE_VERSION &&
     candidate.daysPerWeek === questionnaire.daysPerWeek &&
     candidate.goalTrack === questionnaire.goals &&
+    persistedSignature === expectedSignature &&
     hasValidWeekStructure(candidate)
   );
 };
+
+const attachQuestionnaireSignatureToProgram = (
+  program: Program,
+  questionnaireSignature: string
+): Program => ({
+  ...program,
+  questionnaireSignature,
+});
 
 const formatProgramGenerationIssue = (error: unknown) => {
   if (error instanceof Error && error.message.trim()) {
@@ -954,36 +973,40 @@ export default function ResultsRoutine() {
     });
 
     if (result.status === "advanced") {
+      const signedProgram = attachQuestionnaireSignatureToProgram(
+        result.program,
+        questionnaireSignature ?? buildQuestionnaireSignature(data)
+      );
       const nowIso = new Date().toISOString();
       const activationBaselineAt = Date.now();
       const nextProgress: ProgramProgress = {
-        programId: result.program.id,
+        programId: signedProgram.id,
         lastCompletedDayIndex: null,
         nextDayIndex: 0,
         completedDayIndices: [],
-        phaseIndex: result.program.phaseIndex ?? 2,
+        phaseIndex: signedProgram.phaseIndex ?? 2,
         phaseStartedAt: nowIso,
         cyclesCompletedInPhase: 0,
-        daysPerWeek: result.program.daysPerWeek,
+        daysPerWeek: signedProgram.daysPerWeek,
         weekIndex: 1,
         countedWeekKeys: [],
         updatedAt: nowIso,
       };
-      await saveProgram(result.program);
+      await saveProgram(signedProgram);
       await saveProgramProgress(nextProgress);
-      setProgram(result.program);
+      setProgram(signedProgram);
       setProgress(nextProgress);
       setSelectedDay(0);
       await clearDraftsByProgramId(program.id);
       saveAppState({
-        programId: result.program.id,
-        activeProgramId: result.program.id,
+        programId: signedProgram.id,
+        activeProgramId: signedProgram.id,
         activeProgramBaselineAt: activationBaselineAt,
         activeGenerationMode: "live_regeneration",
         activeInitialVariationSeed: undefined,
         selectedDay: 0,
-        activePhaseIndex: result.program.phaseIndex ?? 1,
-        activeCycleIndex: result.program.cycleIndex ?? 1,
+        activePhaseIndex: signedProgram.phaseIndex ?? 1,
+        activeCycleIndex: signedProgram.cycleIndex ?? 1,
         programVersion: nextProgramVersion,
         activeSessionId: undefined,
         questionnaireSignature: questionnaireSignature ?? undefined,
@@ -1021,7 +1044,10 @@ export default function ResultsRoutine() {
       totalWeekIndex: (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1,
     });
     if (!("program" in nextProgramResult)) return;
-    const nextProgram = nextProgramResult.program;
+    const nextProgram = attachQuestionnaireSignatureToProgram(
+      nextProgramResult.program,
+      questionnaireSignature ?? buildQuestionnaireSignature(data)
+    );
     const baseProgress: ProgramProgress = {
       programId: nextProgram.id,
       lastCompletedDayIndex: null,
@@ -1074,24 +1100,36 @@ export default function ResultsRoutine() {
       try {
         setProgramLoadIssue(null);
         const state = loadAppState();
+        const stateQuestionnaireSignature = state?.questionnaireSignature ?? null;
         if (state?.activeProgramId) {
           const active = await getProgram(state.activeProgramId);
-          if (active) {
+          if (
+            isProgramCompatibleWithQuestionnaire(active, data, {
+              questionnaireSignature,
+              savedQuestionnaireSignature: stateQuestionnaireSignature,
+            })
+          ) {
             setProgram(active);
             return;
           }
         }
-        const questionnaireMatches = state?.questionnaireSignature === questionnaireSignature;
-        if (questionnaireMatches) {
-          const latest = await getLatestProgram();
-          if (isProgramCompatibleWithQuestionnaire(latest, data)) {
-            setProgram(latest);
-            return;
-          }
+        const latest = await getLatestProgram();
+        const latestSavedSignature =
+          latest &&
+          (latest.id === state?.activeProgramId || latest.id === state?.programId)
+            ? stateQuestionnaireSignature
+            : null;
+        if (
+          latest &&
+          isProgramCompatibleWithQuestionnaire(latest, data, {
+            questionnaireSignature,
+            savedQuestionnaireSignature: latestSavedSignature,
+          })
+        ) {
+          setProgram(latest);
+          return;
         }
-        const signals = await loadGenerationSignals(
-          state?.activeProgramId ?? state?.programId ?? null
-        );
+        const signals = await loadGenerationSignals(null);
         const nextProgramId = uuid();
         const generated = generateProgram({
           mode: "weekly",
@@ -1103,7 +1141,10 @@ export default function ResultsRoutine() {
           setProgramLoadIssue(generated.message);
           return;
         }
-        const newProgram = generated.program;
+        const newProgram = attachQuestionnaireSignatureToProgram(
+          generated.program,
+          questionnaireSignature
+        );
         await saveProgram(newProgram);
         saveAppState({
           programId: newProgram.id,
@@ -1129,19 +1170,24 @@ export default function ResultsRoutine() {
     if (!program || !data || !questionnaireSignature) return;
     const state = loadAppState();
     if (state?.activeProgramId && state.activeProgramId !== program.id) return;
-    const signatureMatches = state?.questionnaireSignature === questionnaireSignature;
-    if (signatureMatches && isProgramCompatibleWithQuestionnaire(program, data)) return;
+    const programIsCompatible = isProgramCompatibleWithQuestionnaire(program, data, {
+      questionnaireSignature,
+      savedQuestionnaireSignature: state?.questionnaireSignature ?? null,
+    });
+    if (programIsCompatible) return;
 
     const reconcileProgram = async () => {
-      const signals = await loadGenerationSignals(program.id);
+      const signals = await loadGenerationSignals(null);
       const generated = generateProgram({
         mode: "weekly",
         signals,
-        currentProgram: program,
         nextProgramId: uuid(),
       });
       if (!("program" in generated)) return;
-      const reconciled = generated.program;
+      const reconciled = attachQuestionnaireSignatureToProgram(
+        generated.program,
+        questionnaireSignature
+      );
       await saveProgram(reconciled);
       setProgram(reconciled);
       setSelectedDay(0);
@@ -1371,7 +1417,7 @@ export default function ResultsRoutine() {
         nextProgramId: uuid(),
       });
 
-      const nextProgram = (() => {
+      const generatedNextProgram = (() => {
         if (nextCycleResult.status === "advanced") return nextCycleResult.program;
         const fallback = generateProgram({
           mode: "weekly",
@@ -1388,7 +1434,11 @@ export default function ResultsRoutine() {
         });
         return "program" in fallback ? fallback.program : null;
       })();
-      if (!nextProgram) return;
+      if (!generatedNextProgram) return;
+      const nextProgram = attachQuestionnaireSignatureToProgram(
+        generatedNextProgram,
+        questionnaireSignature ?? buildQuestionnaireSignature(data)
+      );
       const nowIso = new Date().toISOString();
       const nextPhaseIndex = nextProgram.phaseIndex ?? 1;
       const previousPhaseIndex = program.phaseIndex ?? 1;

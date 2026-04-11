@@ -137,6 +137,7 @@ export type Program = {
   createdAt: string;
   updatedAt: string;
   templateVersion?: number;
+  questionnaireSignature?: string;
   goalTrack: string | null;
   daysPerWeek: 3 | 4 | 5;
   estimatedSessionMinutesRange: { min: 45; max: 60 };

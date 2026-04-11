@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { PROGRAM_TEMPLATE_VERSION } from "@/lib/program";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import type { Program } from "@/lib/types";
+import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 
 const mocks = vi.hoisted(() => ({
   routerPush: vi.fn(),
@@ -82,35 +83,58 @@ import ResultsRoutine from "@/components/ResultsRoutine";
 
 const STORAGE_KEY = "posture_questionnaire";
 const APP_STATE_KEY = "app_state_v1";
-const questionnaire = {
+const buildQuestionnaire = (
+  overrides: Partial<QuestionnaireData> = {}
+): QuestionnaireData => ({
   goals: "Improve posture",
   painAreas: [],
   experience: "Beginner",
   equipment: ["bands"],
   daysPerWeek: 3 as const,
-};
+  ...overrides,
+});
 
-const buildSavedProgram = (programId: string): Program => ({
+const questionnaire = buildQuestionnaire();
+
+const buildSavedProgram = (
+  programId: string,
+  options: {
+    questionnaire?: QuestionnaireData;
+    exerciseId?: string;
+    daysPerWeek?: 3 | 4 | 5;
+    weekLength?: number;
+    questionnaireSignature?: string | null;
+  } = {}
+): Program => {
+  const sourceQuestionnaire = options.questionnaire ?? questionnaire;
+  const daysPerWeek = options.daysPerWeek ?? sourceQuestionnaire.daysPerWeek;
+  const weekLength = options.weekLength ?? daysPerWeek;
+  const signature =
+    options.questionnaireSignature === null
+      ? undefined
+      : options.questionnaireSignature ?? buildQuestionnaireSignature(sourceQuestionnaire);
+  return {
   id: programId,
   userId: null,
   createdAt: "2026-04-11T12:00:00.000Z",
   updatedAt: "2026-04-11T12:00:00.000Z",
   templateVersion: PROGRAM_TEMPLATE_VERSION,
-  goalTrack: questionnaire.goals,
-  daysPerWeek: questionnaire.daysPerWeek,
+  questionnaireSignature: signature,
+  goalTrack: sourceQuestionnaire.goals,
+  daysPerWeek,
   estimatedSessionMinutesRange: { min: 45, max: 60 },
   phaseIndex: 1,
   phaseName: "Activation",
   cycleIndex: 1,
   weekIndex: 1,
   totalWeekIndex: 1,
-  week: Array.from({ length: questionnaire.daysPerWeek }, (_, index) => ({
+  week: Array.from({ length: weekLength }, (_, index) => ({
     dayIndex: index,
     title: `Day ${index + 1}`,
     focusTags: ["upper"],
     routine: [
       {
-        exerciseId: "band-row",
+        exerciseId: options.exerciseId ?? "band-row",
         section: "main",
         sets: 3,
         reps: "10-12",
@@ -120,7 +144,85 @@ const buildSavedProgram = (programId: string): Program => ({
   })),
   source: "local",
   deletedAt: null,
-});
+  };
+};
+
+const mockLiveGeneratedProgram = (program: Program) => {
+  mocks.generateProgram.mockImplementation(
+    (request: { phaseIndex?: number; nextProgramId?: string }) => {
+      if (request.nextProgramId?.includes("progression-inspection-phase")) {
+        const phaseIndex = request.phaseIndex ?? 1;
+        return {
+          status: "generated",
+          program: {
+            ...buildSavedProgram(request.nextProgramId, {
+              questionnaire: {
+                ...questionnaire,
+                daysPerWeek: program.daysPerWeek,
+              },
+              daysPerWeek: program.daysPerWeek,
+              weekLength: program.week.length,
+              exerciseId: program.week[0]?.routine[0]?.exerciseId ?? "band-row",
+            }),
+            phaseIndex,
+            phaseName: `Phase ${phaseIndex}`,
+            totalWeekIndex: phaseIndex,
+            week: program.week.map((day) => ({
+              ...day,
+              title: `Phase ${phaseIndex} ${day.title}`,
+            })),
+          },
+          seed: "inspection-seed",
+          debug: {
+            mode: "weekly",
+            seed: "inspection-seed",
+            settingsHash: "settings-hash",
+            target: {
+              phaseIndex,
+              cycleIndex: 1,
+              weekIndex: 1,
+              totalWeekIndex: phaseIndex,
+            },
+            progression: {
+              complianceRate: 0,
+              painFlag: false,
+              fatigueFlag: false,
+              completedSessionsCount: 0,
+              completedWeeksCount: 0,
+              recentLogCount: 0,
+              recentSessionCount: 0,
+            },
+          },
+        };
+      }
+      return {
+        status: "generated",
+        program,
+        seed: "results-seed",
+        debug: {
+          mode: "weekly",
+          seed: "results-seed",
+          settingsHash: "settings-hash",
+          target: {
+            phaseIndex: program.phaseIndex ?? 1,
+            cycleIndex: program.cycleIndex ?? 1,
+            weekIndex: program.weekIndex ?? 1,
+            totalWeekIndex: program.totalWeekIndex ?? 1,
+          },
+          progression: {
+            complianceRate: 0,
+            painFlag: false,
+            fatigueFlag: false,
+            completedSessionsCount: 0,
+            completedWeeksCount: 0,
+            recentLogCount: 0,
+            recentSessionCount: 0,
+          },
+        },
+      };
+    }
+  );
+};
 
 describe("results operational readiness", () => {
   beforeEach(() => {
@@ -148,22 +250,19 @@ describe("results operational readiness", () => {
     mocks.loadTrainingSnapshot.mockResolvedValue(null);
     mocks.pushTrainingPatch.mockResolvedValue(undefined);
     mocks.buildEngineSignals.mockImplementation((params: unknown) => params);
-    mocks.buildSignalsFromLocalState.mockResolvedValue({
-      questionnaire: {
-        goals: "Improve posture",
-        painAreas: [],
-        experience: "Beginner",
-        equipment: ["bands"],
-        daysPerWeek: 3,
-      },
+    mocks.buildSignalsFromLocalState.mockImplementation(async (params: {
+      questionnaire: QuestionnaireData;
+      nowIso?: string;
+    }) => ({
+      questionnaire: params.questionnaire,
       history: {
         sessions: [],
         exerciseLogs: [],
         programProgress: null,
       },
       prefs: null,
-      nowIso: "2026-04-11T12:00:00.000Z",
-    });
+      nowIso: params.nowIso ?? "2026-04-11T12:00:00.000Z",
+    }));
     mocks.generateProgram.mockReturnValue({
       status: "blocked",
       message: "No eligible weekly program found for this profile.",
@@ -274,6 +373,130 @@ describe("results operational readiness", () => {
     expect(currentSnapshot).toContain("PHASE 1:");
     expect(currentSnapshot).toContain("PHASE 2:");
     expect(currentSnapshot).toContain("PHASE 3:");
+  });
+
+  test.each([
+    {
+      label: "equipment changes",
+      current: buildQuestionnaire({ equipment: ["bands"] }),
+      saved: buildQuestionnaire({ equipment: ["dumbbells"] }),
+      staleExerciseId: "dumbbell-rows",
+    },
+    {
+      label: "experience changes",
+      current: buildQuestionnaire({ experience: "Advanced" }),
+      saved: buildQuestionnaire({ experience: "Beginner" }),
+      staleExerciseId: "band-row",
+    },
+    {
+      label: "pain areas change",
+      current: buildQuestionnaire({ painAreas: ["Lower back"] }),
+      saved: buildQuestionnaire({ painAreas: [] }),
+      staleExerciseId: "band-row",
+    },
+  ])("rejects a saved active program when $label", async ({ current, saved, staleExerciseId }) => {
+    const staleProgram = buildSavedProgram("stale-program", {
+      questionnaire: saved,
+      exerciseId: staleExerciseId,
+    });
+    const regeneratedProgram = buildSavedProgram("results-program", {
+      questionnaire: current,
+      exerciseId: "band-row",
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: staleProgram.id,
+        programId: staleProgram.id,
+        activeGenerationMode: "live_initial",
+        selectedDay: 0,
+        questionnaireSignature: buildQuestionnaireSignature(saved),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(staleProgram);
+    mockLiveGeneratedProgram(regeneratedProgram);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(mocks.saveProgram).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: "results-program",
+          questionnaireSignature: buildQuestionnaireSignature(current),
+        })
+      );
+    });
+
+    const liveGenerationCall = mocks.generateProgram.mock.calls.find(
+      ([request]) => request.nextProgramId === "results-program"
+    )?.[0];
+    expect(liveGenerationCall).toEqual(
+      expect.not.objectContaining({ currentProgram: staleProgram })
+    );
+    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
+    expect(currentSnapshot).toContain("Program ID: results-program");
+    expect(currentSnapshot).not.toContain("Program ID: stale-program");
+  });
+
+  test("5-day questionnaire never surfaces a 4-day saved live week as compatible", async () => {
+    const savedQuestionnaire = buildQuestionnaire({
+      equipment: ["dumbbells"],
+      daysPerWeek: 4,
+    });
+    const currentQuestionnaire = buildQuestionnaire({
+      equipment: ["bands"],
+      daysPerWeek: 5,
+    });
+    const staleProgram = buildSavedProgram("stale-4-day-program", {
+      questionnaire: savedQuestionnaire,
+      daysPerWeek: 4,
+      weekLength: 4,
+      exerciseId: "dumbbell-rows",
+    });
+    const regeneratedProgram = buildSavedProgram("results-program", {
+      questionnaire: currentQuestionnaire,
+      daysPerWeek: 5,
+      weekLength: 5,
+      exerciseId: "band-row",
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(currentQuestionnaire));
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: staleProgram.id,
+        programId: staleProgram.id,
+        activeGenerationMode: "live_initial",
+        selectedDay: 0,
+        questionnaireSignature: buildQuestionnaireSignature(savedQuestionnaire),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(staleProgram);
+    mockLiveGeneratedProgram(regeneratedProgram);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(mocks.saveProgram).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: "results-program",
+          daysPerWeek: 5,
+          week: expect.arrayContaining([
+            expect.objectContaining({ dayIndex: 4 }),
+          ]),
+        })
+      );
+    });
+
+    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
+    expect(currentSnapshot).toContain("Days Per Week: 5");
+    expect(currentSnapshot).toContain("Program ID: results-program");
+    expect(currentSnapshot).toContain("Day 5: Day 5");
+    expect(currentSnapshot).toContain("Routine: Band Row");
+    expect(currentSnapshot).not.toContain("Program ID: stale-4-day-program");
+    expect(currentSnapshot).not.toContain("Dumbbell Rows");
   });
 
   test("reopening a saved active program does not silently regenerate or reshuffle it", async () => {

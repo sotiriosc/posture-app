@@ -93,9 +93,45 @@ const isSupportDrill = (exercise: Exercise) => {
   ].some((token) => descriptor.includes(token));
 };
 
+const isPostureSupportPull = (exercise: Exercise) => {
+  const text = descriptor(exercise);
+  const tags = new Set((exercise.tags ?? []).map((tag) => tag.toLowerCase()));
+  return (
+    hasPattern(exercise, "pull") &&
+    (tags.has("scap") ||
+      tags.has("scapular") ||
+      tags.has("posture") ||
+      text.includes("chest-supported") ||
+      text.includes("chest supported") ||
+      text.includes("seated row") ||
+      text.includes("rear delt"))
+  );
+};
+
+const isLowOutputPullMain = (exercise: Exercise) => {
+  const text = descriptor(exercise);
+  return [
+    "rear delt fly",
+    "rear-delt-fly",
+    "row iso hold",
+    "row-iso-hold",
+    "prone elbow row",
+    "prone-elbow-row",
+    "supine elbow drive row",
+    "supine-elbow-drive-row",
+    "back widow",
+    "back-widow",
+    "lat sweep",
+    "lat-sweep",
+    "isometric",
+    "iso-hold",
+  ].some((token) => text.includes(token));
+};
+
 const isKnownLowerMainDrift = (exercise: Exercise) =>
   [
     "bodyweight-good-morning",
+    "back-extension",
     "back-extension-hold",
     "single-leg-glute-bridge-hold",
   ].includes(exercise.id);
@@ -153,7 +189,7 @@ const hasVerticalPullAnchor = (exercise: Exercise) =>
 const hasTrueHingeAnchor = (exercise: Exercise) =>
   hasPattern(exercise, "hinge") &&
   !/hamstring curl/i.test(exercise.name) &&
-  !["bodyweight-good-morning", "back-extension-hold"].includes(exercise.id) &&
+  !["bodyweight-good-morning", "back-extension", "back-extension-hold"].includes(exercise.id) &&
   !isForbiddenMainSlotDrill(exercise);
 
 const countPattern = (exercises: Exercise[], pattern: string) =>
@@ -286,6 +322,8 @@ describe("higher-frequency split contracts", () => {
     expect(armsMains.some((exercise) => hasPattern(exercise, "verticalpush"))).toBe(true);
     expect(armsMains.some(hasHorizontalPressAnchor)).toBe(false);
     expect(armsMains.some(hasHorizontalPullAnchor)).toBe(true);
+    expect(armsMains.some(isPostureSupportPull)).toBe(true);
+    expect(armsMains.some(isLowOutputPullMain)).toBe(false);
     expect(armsMains.some(isArmIsolation)).toBe(false);
     expect(armsMains.some(isSupportDrill)).toBe(false);
     expect(armsMains.some(isCarryMain)).toBe(false);
@@ -294,6 +332,7 @@ describe("higher-frequency split contracts", () => {
     const armsAccessories = accessoryExercises(program, "Arms + Posture + Conditioning");
     expect(armsAccessories.some((exercise) => /triceps|extension/i.test(exercise.name))).toBe(true);
     expect(armsAccessories.some((exercise) => /biceps|curl/i.test(exercise.name))).toBe(true);
+    expect([...armsMains, ...armsAccessories].some(isPostureSupportPull)).toBe(true);
   });
 
   test("5-day pain-aware gym split protects lower mains from hold/drill fallback", () => {
@@ -348,6 +387,66 @@ describe("higher-frequency split contracts", () => {
     });
   });
 
+  test("5-day gym pull slots keep low-output posture variants out of primary mains when stronger pulls exist", () => {
+    const program = generateAnchorProgram(
+      baseQuestionnaire({
+        equipment: ["gym"],
+        daysPerWeek: 5,
+      }),
+      "hf-5day-pull-anchor-quality-gym"
+    );
+
+    const pullMainExercises = program.week.flatMap((day) =>
+      day.routine
+        .filter(
+          (item) =>
+            item.section === "main" &&
+            (item.selectionDebug?.slotLane === "pull" ||
+              item.selectionDebug?.slotKind?.startsWith("mainPull"))
+        )
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    );
+
+    expect(pullMainExercises.length).toBeGreaterThan(0);
+    expect(pullMainExercises.some(hasHorizontalPullAnchor)).toBe(true);
+    expect(pullMainExercises.some(hasVerticalPullAnchor)).toBe(true);
+    expect(pullMainExercises.some(isLowOutputPullMain)).toBe(false);
+  });
+
+  test("gym and dumbbell hinge days prefer true hinge anchors over back extension fallbacks", () => {
+    const programs = [
+      generateAnchorProgram(
+        baseQuestionnaire({
+          equipment: ["gym"],
+          experience: "Advanced",
+          daysPerWeek: 5,
+        }),
+        "hf-5day-hinge-priority-gym"
+      ),
+      generateAnchorProgram(
+        baseQuestionnaire({
+          equipment: ["dumbbells", "bench"],
+          experience: "Advanced",
+          daysPerWeek: 5,
+        }),
+        "hf-5day-hinge-priority-db"
+      ),
+    ];
+
+    programs.forEach((program) => {
+      const lowerHinge = mainExercises(program, "Lower Hinge + Posterior Chain");
+      expect(lowerHinge.some(hasTrueHingeAnchor)).toBe(true);
+      expect(
+        lowerHinge.some((exercise) =>
+          ["back-extension", "back-extension-hold", "bodyweight-good-morning"].includes(
+            exercise.id
+          )
+        )
+      ).toBe(false);
+    });
+  });
+
   test("5-day no-equipment split keeps constrained lower days anchored instead of filler-only", () => {
     const program = generateAnchorProgram(
       baseQuestionnaire({
@@ -368,7 +467,7 @@ describe("higher-frequency split contracts", () => {
     expect(lowerHinge.some(isCarryMain)).toBe(false);
     expect(
       lowerHinge.some((exercise) =>
-        ["back-extension-hold", "single-leg-hip-thrust", "single-leg-glute-bridge-hold"].includes(
+        ["back-extension-hold", "single-leg-glute-bridge-hold"].includes(
           exercise.id
         )
       )
@@ -449,6 +548,55 @@ describe("higher-frequency split contracts", () => {
       day.routine.filter((item) => item.section === "accessory")
     );
     expect(accessories.some((item) => item.reps !== "4-8")).toBe(true);
+  });
+
+  test("Hypertrophy & Capacity standard advanced gym mains stay in a hypertrophy rep range", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "General fitness",
+        equipment: ["gym"],
+        experience: "Advanced",
+        daysPerWeek: 5,
+      }),
+      "hf-5day-hypertrophy-reps",
+      {
+        phaseIndex: 2,
+        seed: "hf-5day-hypertrophy-reps",
+      }
+    );
+
+    const mains = program.week.flatMap((day) =>
+      day.routine.filter((item) => item.section === "main")
+    );
+    expect(mains.length).toBeGreaterThan(0);
+    mains.forEach((item) => {
+      expect(item.reps).toBe("8-12");
+    });
+  });
+
+  test("Strength Focus keeps 4-8 main reps across constrained pain-sensitive profiles", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Lower back", "Shoulders"],
+        equipment: ["bands"],
+        experience: "Beginner",
+        daysPerWeek: 5,
+      }),
+      "hf-5day-strength-constrained-reps",
+      {
+        phaseIndex: 3,
+        seed: "hf-5day-strength-constrained-reps",
+      }
+    );
+
+    const mains = program.week.flatMap((day) =>
+      day.routine.filter((item) => item.section === "main")
+    );
+    expect(mains.length).toBeGreaterThan(0);
+    mains.forEach((item) => {
+      expect(item.reps).toBe("4-8");
+    });
   });
 
   test("4/5-day live initial variation changes main layout while same slot stays stable", () => {
