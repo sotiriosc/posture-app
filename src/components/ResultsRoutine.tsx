@@ -204,6 +204,8 @@ type ProgressionInspectionPhaseSnapshot = {
   source: "saved_current_phase" | "generated_inspection_phase" | "unavailable";
   program?: Program | null;
   error?: string | null;
+  seed?: string | null;
+  settingsHash?: string | null;
 };
 
 const formatPhaseMetrics = (program: Program) => {
@@ -247,6 +249,12 @@ const buildPhaseSnapshotLines = (
 
   lines.push(`Program ID: ${phaseProgram.id}`);
   lines.push(`Source: ${snapshot.source}`);
+  if (snapshot.seed) {
+    lines.push(`Inspection Seed: ${snapshot.seed}`);
+  }
+  if (snapshot.settingsHash) {
+    lines.push(`Settings Hash: ${snapshot.settingsHash}`);
+  }
   lines.push(`Template Version: ${phaseProgram.templateVersion ?? "unknown"}`);
   lines.push(`Phase: ${phaseName} (index ${phaseIndex})`);
   lines.push(`Cycle Index: ${phaseProgram.cycleIndex ?? phaseProgram.phase?.cycleIndex ?? 1}`);
@@ -452,6 +460,8 @@ const buildProgressionInspectionPhaseSnapshots = (params: {
         description: phaseProfile.description,
         source: "generated_inspection_phase",
         program: phaseResult.program,
+        seed: phaseResult.seed,
+        settingsHash: phaseResult.debug.settingsHash,
       };
     } catch (error) {
       return {
