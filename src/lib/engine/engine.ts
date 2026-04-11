@@ -406,6 +406,12 @@ const buildSeedPolicy = (params: {
   const { request, target, progression } = params;
   const signals = request.signals;
   const questionSignature = buildQuestionnaireSignature(signals.questionnaire);
+  const initialVariationSeed =
+    request.mode === "weekly" &&
+    !request.currentProgram &&
+    signals.questionnaire.daysPerWeek === 3
+      ? String(request.initialVariationSeed ?? "").trim()
+      : "";
   const settingsProjection = {
     questionnaireSignature: questionSignature,
     poseAnalysis: projectPoseAnalysis(signals),
@@ -436,13 +442,15 @@ const buildSeedPolicy = (params: {
     `target:${target.phaseIndex}:${target.cycleIndex}:${target.weekIndex}:${target.totalWeekIndex}`,
     `questionnaire:${projectionHash(questionSignature)}`,
     `settings:${projectionHash(settingsProjection)}`,
+    initialVariationSeed ? `initialVariation:${initialVariationSeed}` : "",
     `history:${projectionHash(historyProjection)}`,
-  ].join("|");
+  ].filter(Boolean).join("|");
   const variationIndex = Math.max(0, target.totalWeekIndex - 1);
 
   return {
     seed,
     settingsHash,
+    initialVariationSeed,
     variationIndex,
   };
 };
@@ -485,7 +493,7 @@ const buildWeeklyProgram = (
         variationIndex: seedPolicy.variationIndex,
         recentProgram: request.currentProgram,
       })
-    : seedPolicy.variationIndex > 0
+    : seedPolicy.initialVariationSeed || seedPolicy.variationIndex > 0
     ? {
         seed: seedPolicy.seed,
         settingsHash: seedPolicy.settingsHash,

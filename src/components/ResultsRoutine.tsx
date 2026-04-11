@@ -767,10 +767,12 @@ export default function ResultsRoutine() {
         const signals = await loadGenerationSignals(
           state?.activeProgramId ?? state?.programId ?? null
         );
+        const nextProgramId = uuid();
         const generated = generateProgram({
           mode: "weekly",
           signals,
-          nextProgramId: uuid(),
+          nextProgramId,
+          initialVariationSeed: nextProgramId,
         });
         if (!("program" in generated)) {
           setProgramLoadIssue(generated.message);

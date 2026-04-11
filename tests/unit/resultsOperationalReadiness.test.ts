@@ -3,6 +3,9 @@
 import React from "react";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { PROGRAM_TEMPLATE_VERSION } from "@/lib/program";
+import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
+import type { Program } from "@/lib/types";
 
 const mocks = vi.hoisted(() => ({
   routerPush: vi.fn(),
@@ -77,20 +80,51 @@ vi.mock("@/lib/sessionDraftStore", () => ({
 import ResultsRoutine from "@/components/ResultsRoutine";
 
 const STORAGE_KEY = "posture_questionnaire";
+const APP_STATE_KEY = "app_state_v1";
+const questionnaire = {
+  goals: "Improve posture",
+  painAreas: [],
+  experience: "Beginner",
+  equipment: ["bands"],
+  daysPerWeek: 3 as const,
+};
+
+const buildSavedProgram = (programId: string): Program => ({
+  id: programId,
+  userId: null,
+  createdAt: "2026-04-11T12:00:00.000Z",
+  updatedAt: "2026-04-11T12:00:00.000Z",
+  templateVersion: PROGRAM_TEMPLATE_VERSION,
+  goalTrack: questionnaire.goals,
+  daysPerWeek: questionnaire.daysPerWeek,
+  estimatedSessionMinutesRange: { min: 45, max: 60 },
+  phaseIndex: 1,
+  phaseName: "Activation",
+  cycleIndex: 1,
+  weekIndex: 1,
+  totalWeekIndex: 1,
+  week: Array.from({ length: questionnaire.daysPerWeek }, (_, index) => ({
+    dayIndex: index,
+    title: `Day ${index + 1}`,
+    focusTags: ["upper"],
+    routine: [
+      {
+        exerciseId: "band-row",
+        section: "main",
+        sets: 3,
+        reps: "10-12",
+        loadType: "weighted",
+      },
+    ],
+  })),
+  source: "local",
+  deletedAt: null,
+});
 
 describe("results operational readiness", () => {
   beforeEach(() => {
     localStorage.clear();
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        goals: "Improve posture",
-        painAreas: [],
-        experience: "Beginner",
-        equipment: ["bands"],
-        daysPerWeek: 3,
-      })
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(questionnaire));
 
     mocks.routerPush.mockReset();
     mocks.loadTrainingSnapshot.mockReset();
@@ -170,5 +204,36 @@ describe("results operational readiness", () => {
     expect(screen.getByText(/No eligible weekly program found/i)).toBeTruthy();
     expect(screen.getByRole("link", { name: /Review questionnaire/i })).toBeTruthy();
     expect(screen.queryByText(/Loading your weekly program/i)).toBeNull();
+    expect(mocks.generateProgram).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "weekly",
+        nextProgramId: "results-program",
+        initialVariationSeed: "results-program",
+      })
+    );
+  });
+
+  test("reopening a saved active program does not silently regenerate or reshuffle it", async () => {
+    const savedProgram = buildSavedProgram("saved-program");
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: savedProgram.id,
+        programId: savedProgram.id,
+        selectedDay: 0,
+        questionnaireSignature: buildQuestionnaireSignature(questionnaire),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(savedProgram);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(mocks.getProgram).toHaveBeenCalledWith(savedProgram.id);
+    });
+
+    expect(mocks.generateProgram).not.toHaveBeenCalled();
+    expect(screen.getByText("Week View")).toBeTruthy();
   });
 });

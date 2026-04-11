@@ -196,6 +196,101 @@ describe("engine program entry point", () => {
     expect(comparableWeek(cycleOne.program)).not.toEqual(comparableWeek(cycleTwo.program));
   });
 
+  test("reference mode stays deterministic while live initial variation slots change main layout", () => {
+    clearProgramVariationHistory();
+    const mixedEquipmentQuestionnaire: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["dumbbells", "bands"],
+      daysPerWeek: 3,
+    };
+    const signals = buildEngineSignals({
+      questionnaire: mixedEquipmentQuestionnaire,
+      history: {
+        sessions: [],
+        exerciseLogs: [],
+        programProgress: null,
+      },
+      prefs: null,
+      nowIso: "2026-04-09T12:00:00.000Z",
+    });
+
+    const referenceA = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-reference-a",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const referenceB = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-reference-b",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const liveSlotA = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-slot-a",
+      initialVariationSeed: "initial-slot-a",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const liveSlotARepeat = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-slot-a-repeat",
+      initialVariationSeed: "initial-slot-a",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const liveSlotB = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-slot-b",
+      initialVariationSeed: "initial-slot-b",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+
+    expect(referenceA.status).toBe("generated");
+    expect(referenceB.status).toBe("generated");
+    expect(liveSlotA.status).toBe("generated");
+    expect(liveSlotARepeat.status).toBe("generated");
+    expect(liveSlotB.status).toBe("generated");
+    if (
+      "program" in referenceA &&
+      "program" in referenceB &&
+      "program" in liveSlotA &&
+      "program" in liveSlotARepeat &&
+      "program" in liveSlotB
+    ) {
+      expect(comparableWeek(referenceA.program)).toEqual(comparableWeek(referenceB.program));
+      expect(comparableWeek(liveSlotA.program)).toEqual(comparableWeek(liveSlotARepeat.program));
+      expect(mainLayoutSignature(liveSlotA.program)).not.toBe(
+        mainLayoutSignature(liveSlotB.program)
+      );
+      [liveSlotA.program, liveSlotB.program].forEach((program) => {
+        expect(program.week).toHaveLength(3);
+        program.week.forEach((day) => {
+          expect(day.routine.some((item) => item.section === "main")).toBe(true);
+        });
+      });
+    }
+  });
+
   test("live weekly regeneration uses current-program memory without losing same-input determinism", () => {
     clearProgramVariationHistory();
     const signals = buildSignals();

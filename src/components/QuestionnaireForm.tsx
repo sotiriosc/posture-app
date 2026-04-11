@@ -143,6 +143,7 @@ export default function QuestionnaireForm() {
         mode: "weekly",
         signals,
         currentProgram: currentProgram ?? undefined,
+        initialVariationSeed: currentProgram ? undefined : nextProgramId,
         nextProgramId,
       });
       if (!("program" in result)) {
