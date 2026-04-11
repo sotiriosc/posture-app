@@ -107,7 +107,10 @@ const formatReferencePrepItems = (
     .join(", ");
 };
 
-const formatReferenceRoutineItems = (items: ProgramRoutineItem[]) => {
+const formatReferenceRoutineItems = (
+  items: ProgramRoutineItem[],
+  options?: { includeDebug?: boolean }
+) => {
   if (!items.length) return "none";
   return items
     .map((item) => {
@@ -120,35 +123,56 @@ const formatReferenceRoutineItems = (items: ProgramRoutineItem[]) => {
         : item.sets
         ? `${item.sets} sets`
         : null;
-      return prescription ? `${name} [${prescription}]` : name;
+      const base = prescription ? `${name} [${prescription}]` : name;
+      if (!options?.includeDebug || !item.selectionDebug) return base;
+      const debugParts = [
+        item.selectionDebug.source ? `source=${item.selectionDebug.source}` : null,
+        item.selectionDebug.slotKind ? `slot=${item.selectionDebug.slotKind}` : null,
+        item.selectionDebug.slotLane ? `lane=${item.selectionDebug.slotLane}` : null,
+      ].filter(Boolean);
+      return debugParts.length ? `${base} {${debugParts.join(", ")}}` : base;
     })
     .join(", ");
 };
 
 type ProgramPrepItem = { name: string; reps?: string; durationSec?: number };
 
-const buildReferenceLinesForDay = (day: ProgramWeekDay) => {
+const buildReferenceLinesForDay = (
+  day: ProgramWeekDay,
+  options?: { includeDebug?: boolean }
+) => {
   const dayWithCorrective = day as ProgramWeekDay & {
     corrective?: { items?: ProgramPrepItem[] };
   };
   const warmupText =
     day.warmup?.items?.length
       ? formatReferencePrepItems(day.warmup.items)
-      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "warmup"));
+      : formatReferenceRoutineItems(
+          day.routine.filter((item) => item.section === "warmup"),
+          options
+        );
   const correctiveText = dayWithCorrective.corrective?.items?.length
     ? formatReferencePrepItems(dayWithCorrective.corrective.items)
     : day.activation?.items?.length
     ? formatReferencePrepItems(day.activation.items)
-    : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "activation"));
+    : formatReferenceRoutineItems(
+        day.routine.filter((item) => item.section === "activation"),
+        options
+      );
   const cooldownText =
     day.cooldown?.items?.length
       ? formatReferencePrepItems(day.cooldown.items)
-      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "cooldown"));
+      : formatReferenceRoutineItems(
+          day.routine.filter((item) => item.section === "cooldown"),
+          options
+        );
   const mainText = formatReferenceRoutineItems(
-    day.routine.filter((item) => item.section === "main")
+    day.routine.filter((item) => item.section === "main"),
+    options
   );
   const accessoryText = formatReferenceRoutineItems(
-    day.routine.filter((item) => item.section === "accessory")
+    day.routine.filter((item) => item.section === "accessory"),
+    options
   );
   return [
     `Day ${day.dayIndex + 1}: ${day.title}`,
@@ -173,13 +197,94 @@ const buildMainLayoutSignature = (program: Program) =>
     )
     .join(" | ");
 
+type ProgressionInspectionPhaseSnapshot = {
+  phaseIndex: number;
+  phaseName: string;
+  description: string;
+  source: "saved_current_phase" | "generated_inspection_phase" | "unavailable";
+  program?: Program | null;
+  error?: string | null;
+};
+
+const formatPhaseMetrics = (program: Program) => {
+  const metrics = program.phaseObjective?.metrics;
+  if (!metrics) return null;
+  return [
+    `readiness=${Math.round(metrics.readiness * 100)}%`,
+    `consistency=${Math.round(metrics.consistency * 100)}%`,
+    `painRisk=${Math.round(metrics.painRisk * 100)}%`,
+    `asymmetry=${Math.round(metrics.asymmetry * 100)}%`,
+  ].join(", ");
+};
+
+const buildPhaseSnapshotLines = (
+  snapshot: ProgressionInspectionPhaseSnapshot,
+  currentSavedPhaseIndex: number
+) => {
+  const lines: string[] = [];
+  const sourceLabel =
+    snapshot.source === "saved_current_phase"
+      ? "CURRENT SAVED PHASE"
+      : snapshot.source === "generated_inspection_phase"
+      ? "GENERATED INSPECTION PHASE - NOT SAVED"
+      : "UNAVAILABLE";
+
+  lines.push(`PHASE ${snapshot.phaseIndex}: ${snapshot.phaseName} [${sourceLabel}]`);
+  lines.push(`Description: ${snapshot.description}`);
+
+  if (!snapshot.program) {
+    lines.push(`Status: ${snapshot.error ?? "phase snapshot unavailable"}`);
+    return lines;
+  }
+
+  const phaseProgram = snapshot.program;
+  const phaseObjective = phaseProgram.phaseObjective;
+  const phaseIndex =
+    phaseProgram.phaseIndex ?? phaseProgram.phase?.phaseIndex ?? snapshot.phaseIndex;
+  const phaseName =
+    phaseProgram.phaseName ?? phaseProgram.phase?.name ?? snapshot.phaseName;
+  const metrics = formatPhaseMetrics(phaseProgram);
+
+  lines.push(`Program ID: ${phaseProgram.id}`);
+  lines.push(`Source: ${snapshot.source}`);
+  lines.push(`Template Version: ${phaseProgram.templateVersion ?? "unknown"}`);
+  lines.push(`Phase: ${phaseName} (index ${phaseIndex})`);
+  lines.push(`Cycle Index: ${phaseProgram.cycleIndex ?? phaseProgram.phase?.cycleIndex ?? 1}`);
+  lines.push(`Week Index: ${phaseProgram.weekIndex ?? phaseProgram.phase?.weekIndex ?? 1}`);
+  if (phaseProgram.totalWeekIndex) {
+    lines.push(`Total Week Index: ${phaseProgram.totalWeekIndex}`);
+  }
+  lines.push(`Main Layout Signature: ${buildMainLayoutSignature(phaseProgram)}`);
+  if (phaseObjective) {
+    lines.push(`Objective: ${phaseObjective.objective}`);
+    lines.push(`Focus: ${phaseObjective.phaseFocus}`);
+    lines.push(`Week Intent: ${phaseObjective.weekIntent}`);
+    lines.push(`Guardrail: ${phaseObjective.guardrail}`);
+    if (metrics) lines.push(`Metrics: ${metrics}`);
+  }
+  if (snapshot.phaseIndex !== currentSavedPhaseIndex) {
+    lines.push("Inspection Note: generated for comparison only; this was not saved over the active program.");
+  }
+  lines.push("");
+
+  [...phaseProgram.week]
+    .sort((left, right) => left.dayIndex - right.dayIndex)
+    .forEach((day, index, days) => {
+      lines.push(...buildReferenceLinesForDay(day, { includeDebug: true }));
+      if (index < days.length - 1) lines.push("");
+    });
+
+  return lines;
+};
+
 const buildCurrentSavedWeekSnapshotText = (params: {
   program: Program;
   questionnaire: QuestionnaireData | null;
   generationMode?: string | null;
   initialVariationSeed?: string | null;
+  phaseSnapshots?: ProgressionInspectionPhaseSnapshot[];
 }) => {
-  const { program, questionnaire, generationMode, initialVariationSeed } = params;
+  const { program, questionnaire, generationMode, initialVariationSeed, phaseSnapshots } = params;
   const lines: string[] = [];
   const normalizedQuestionnaire = questionnaire
     ? {
@@ -213,18 +318,13 @@ const buildCurrentSavedWeekSnapshotText = (params: {
   lines.push(`Phase: ${phaseName} (index ${phaseIndex})`);
   lines.push(`Cycle Index: ${program.cycleIndex ?? program.phase?.cycleIndex ?? 1}`);
   lines.push(`Week Index: ${program.weekIndex ?? program.phase?.weekIndex ?? 1}`);
-  lines.push("");
-  lines.push("PHASE ROADMAP (SAVED PROGRAM CONTEXT, NO REGENERATION)");
-  for (let roadmapPhaseIndex = 1; roadmapPhaseIndex <= MAX_PHASE_INDEX; roadmapPhaseIndex += 1) {
-    const roadmapMeta = getPhaseMetaByIndex(roadmapPhaseIndex);
-    const roadmapProfile = getPhaseProfile(roadmapPhaseIndex);
-    const currentLabel = roadmapPhaseIndex === phaseIndex ? " — current saved phase" : "";
-    lines.push(
-      `${roadmapMeta.phaseName}${currentLabel}: ${roadmapProfile.description}`
-    );
+  if (program.totalWeekIndex) {
+    lines.push(`Total Week Index: ${program.totalWeekIndex}`);
   }
+  lines.push(`Template Version: ${program.templateVersion ?? "unknown"}`);
+  lines.push(`Main Layout Signature: ${buildMainLayoutSignature(program)}`);
+  lines.push("");
   if (program.phaseObjective) {
-    lines.push("");
     lines.push("CURRENT PHASE OBJECTIVE");
     lines.push(`Title: ${program.phaseObjective.title}`);
     lines.push(`Objective: ${program.phaseObjective.objective}`);
@@ -234,17 +334,139 @@ const buildCurrentSavedWeekSnapshotText = (params: {
     lines.push(`Guardrail: ${program.phaseObjective.guardrail}`);
   }
   lines.push("");
-  lines.push(`Main Layout Signature: ${buildMainLayoutSignature(program)}`);
-  lines.push("");
 
   [...program.week]
     .sort((left, right) => left.dayIndex - right.dayIndex)
     .forEach((day, index, days) => {
-      lines.push(...buildReferenceLinesForDay(day));
+      lines.push(...buildReferenceLinesForDay(day, { includeDebug: true }));
       if (index < days.length - 1) lines.push("");
     });
 
+  if (phaseSnapshots?.length) {
+    lines.push("");
+    lines.push("FULL PROGRESSION SNAPSHOT (SAVED CURRENT PHASE + INSPECTION PHASES)");
+    lines.push(
+      "Use this section to compare phase intent, main layouts, prep, accessories, cooldown, and debug provenance across the full generated progression."
+    );
+    lines.push(
+      "Only the current phase is the saved live program; inspection phases are generated for review and are not persisted."
+    );
+    lines.push("");
+    phaseSnapshots.forEach((snapshot, index) => {
+      lines.push(...buildPhaseSnapshotLines(snapshot, phaseIndex));
+      if (index < phaseSnapshots.length - 1) lines.push("");
+    });
+  }
+
   return lines.join("\n");
+};
+
+const buildProgressionInspectionPhaseSnapshots = (params: {
+  program: Program;
+  questionnaire: QuestionnaireData | null;
+  poseAnalysis?: PoseAnalysis | null;
+  assessmentReport?: AssessmentReport | null;
+  programProgress?: ProgramProgress | null;
+  initialVariationSeed?: string | null;
+}): ProgressionInspectionPhaseSnapshot[] => {
+  const {
+    program,
+    questionnaire,
+    poseAnalysis,
+    assessmentReport,
+    programProgress,
+    initialVariationSeed,
+  } = params;
+  const currentPhaseIndex = program.phaseIndex ?? program.phase?.phaseIndex ?? 1;
+  const normalizedQuestionnaire = questionnaire
+    ? {
+        ...questionnaire,
+        daysPerWeek: normalizeDaysPerWeek(questionnaire.daysPerWeek),
+        equipment: normalizeEquipmentSelectionValues(questionnaire.equipment),
+      }
+    : null;
+
+  return Array.from({ length: MAX_PHASE_INDEX }, (_, index) => {
+    const phaseIndex = index + 1;
+    const phaseMeta = getPhaseMetaByIndex(phaseIndex);
+    const phaseProfile = getPhaseProfile(phaseIndex);
+
+    if (phaseIndex === currentPhaseIndex) {
+      return {
+        phaseIndex,
+        phaseName: phaseMeta.phaseName,
+        description: phaseProfile.description,
+        source: "saved_current_phase",
+        program,
+      };
+    }
+
+    if (!normalizedQuestionnaire) {
+      return {
+        phaseIndex,
+        phaseName: phaseMeta.phaseName,
+        description: phaseProfile.description,
+        source: "unavailable",
+        program: null,
+        error: "questionnaire inputs unavailable",
+      };
+    }
+
+    try {
+      const phaseSignals = buildEngineSignals({
+        questionnaire: normalizedQuestionnaire,
+        poseAnalysis: poseAnalysis ?? null,
+        assessmentReport: assessmentReport ?? null,
+        history: {
+          sessions: [],
+          exerciseLogs: [],
+          programProgress: programProgress ?? null,
+        },
+        nowIso: program.createdAt ?? new Date().toISOString(),
+      });
+      const phaseResult = generateProgram({
+        mode: "weekly",
+        signals: phaseSignals,
+        nextProgramId: `${program.id}-progression-inspection-phase-${phaseIndex}`,
+        phaseIndex,
+        cycleIndex: 1,
+        weekIndex: 1,
+        totalWeekIndex: phaseIndex,
+        initialVariationSeed: initialVariationSeed ?? program.id,
+      });
+
+      if (!("program" in phaseResult)) {
+        return {
+          phaseIndex,
+          phaseName: phaseMeta.phaseName,
+          description: phaseProfile.description,
+          source: "unavailable",
+          program: null,
+          error: phaseResult.message,
+        };
+      }
+
+      return {
+        phaseIndex,
+        phaseName: phaseMeta.phaseName,
+        description: phaseProfile.description,
+        source: "generated_inspection_phase",
+        program: phaseResult.program,
+      };
+    } catch (error) {
+      return {
+        phaseIndex,
+        phaseName: phaseMeta.phaseName,
+        description: phaseProfile.description,
+        source: "unavailable",
+        program: null,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unable to generate inspection phase snapshot.",
+      };
+    }
+  });
 };
 
 const loadImageFromFile = (file: File) =>
@@ -1546,13 +1768,25 @@ export default function ResultsRoutine() {
     if (!program) return "";
     const state = loadAppState();
     const metadataMatchesProgram = state?.activeProgramId === program.id;
+    const initialVariationSeed = metadataMatchesProgram
+      ? state?.activeInitialVariationSeed
+      : null;
+    const phaseSnapshots = buildProgressionInspectionPhaseSnapshots({
+      program,
+      questionnaire: data,
+      poseAnalysis: poseState.analysis ?? null,
+      assessmentReport: poseState.report ?? null,
+      programProgress: progress,
+      initialVariationSeed,
+    });
     return buildCurrentSavedWeekSnapshotText({
       program,
       questionnaire: data,
       generationMode: metadataMatchesProgram ? state?.activeGenerationMode : null,
-      initialVariationSeed: metadataMatchesProgram ? state?.activeInitialVariationSeed : null,
+      initialVariationSeed,
+      phaseSnapshots,
     });
-  }, [data, program]);
+  }, [data, poseState.analysis, poseState.report, program, progress]);
 
   const handleCopyCurrentSavedWeek = useCallback(() => {
     if (!currentSavedWeekSnapshotText) return;
@@ -2455,13 +2689,13 @@ export default function ResultsRoutine() {
             />
           ) : null}
           <ProgramReferenceCard
-            title="Current Saved Week"
-            description="Actual saved current-week live program, including saved phase context. This snapshot does not regenerate phase previews or reshuffle the plan."
+            title="Current Saved Program Snapshot"
+            description="Actual saved current-week live program plus inspection snapshots for the other phases. This does not reshuffle or overwrite the saved plan."
             isOpen
             referenceText={currentSavedWeekSnapshotText}
             cardTestId="current-saved-week-card"
             bodyTestId="current-saved-week-body"
-            copyLabel="Copy Current Saved Week"
+            copyLabel="Copy Full Progression Snapshot"
             onCopy={handleCopyCurrentSavedWeek}
             copyStatus={currentWeekCopyStatus}
           />

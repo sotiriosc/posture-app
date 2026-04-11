@@ -270,14 +270,24 @@ describe("results operational readiness", () => {
     const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
     expect(currentSnapshot).toContain("Generation Mode: live_initial");
     expect(currentSnapshot).toContain("Initial Live Variation Slot: results-program");
-    expect(currentSnapshot).toContain("PHASE ROADMAP (SAVED PROGRAM CONTEXT, NO REGENERATION)");
-    expect(currentSnapshot).toContain("Phase 1:");
-    expect(currentSnapshot).toContain("Phase 2:");
-    expect(currentSnapshot).toContain("Phase 3:");
+    expect(currentSnapshot).toContain("FULL PROGRESSION SNAPSHOT");
+    expect(currentSnapshot).toContain("PHASE 1:");
+    expect(currentSnapshot).toContain("PHASE 2:");
+    expect(currentSnapshot).toContain("PHASE 3:");
   });
 
   test("reopening a saved active program does not silently regenerate or reshuffle it", async () => {
     const savedProgram = buildSavedProgram("saved-program");
+    const buildInspectionProgram = (phaseIndex: number): Program => ({
+      ...buildSavedProgram(`saved-program-progression-inspection-phase-${phaseIndex}`),
+      phaseIndex,
+      phaseName: `Phase ${phaseIndex}`,
+      totalWeekIndex: phaseIndex,
+      week: savedProgram.week.map((day) => ({
+        ...day,
+        title: `Phase ${phaseIndex} ${day.title}`,
+      })),
+    });
     localStorage.setItem(
       APP_STATE_KEY,
       JSON.stringify({
@@ -291,6 +301,39 @@ describe("results operational readiness", () => {
       })
     );
     mocks.getProgram.mockResolvedValue(savedProgram);
+    mocks.generateProgram.mockImplementation((request: { phaseIndex?: number; nextProgramId?: string }) => {
+      if (request.nextProgramId?.includes("progression-inspection-phase")) {
+        return {
+          status: "generated",
+          program: buildInspectionProgram(request.phaseIndex ?? 1),
+          seed: "inspection-seed",
+          debug: {
+            mode: "weekly",
+            seed: "inspection-seed",
+            settingsHash: "settings-hash",
+            target: {
+              phaseIndex: request.phaseIndex ?? 1,
+              cycleIndex: 1,
+              weekIndex: 1,
+              totalWeekIndex: request.phaseIndex ?? 1,
+            },
+            progression: {
+              complianceRate: 0,
+              painFlag: false,
+              fatigueFlag: false,
+              completedSessionsCount: 0,
+              completedWeeksCount: 0,
+              recentLogCount: 0,
+              recentSessionCount: 0,
+            },
+          },
+        };
+      }
+      return {
+        status: "blocked",
+        message: "No eligible weekly program found for this profile.",
+      };
+    });
 
     render(React.createElement(ResultsRoutine));
 
@@ -298,26 +341,45 @@ describe("results operational readiness", () => {
       expect(mocks.getProgram).toHaveBeenCalledWith(savedProgram.id);
     });
 
-    expect(mocks.generateProgram).not.toHaveBeenCalled();
+    expect(mocks.generateProgram).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "weekly",
+        nextProgramId: "saved-program-progression-inspection-phase-2",
+        phaseIndex: 2,
+      })
+    );
+    expect(mocks.generateProgram).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "weekly",
+        nextProgramId: "saved-program-progression-inspection-phase-3",
+        phaseIndex: 3,
+      })
+    );
     expect(screen.queryByText("Phase Preview (Reference)")).toBeNull();
     expect(screen.queryByTestId("program-reference-body")).toBeNull();
-    expect(screen.getByText("Current Saved Week")).toBeTruthy();
+    expect(screen.getByText("Current Saved Program Snapshot")).toBeTruthy();
     const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
     expect(currentSnapshot).toContain("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
-    expect(currentSnapshot).toContain("PHASE ROADMAP (SAVED PROGRAM CONTEXT, NO REGENERATION)");
+    expect(currentSnapshot).toContain("FULL PROGRESSION SNAPSHOT");
+    expect(currentSnapshot).toContain("CURRENT SAVED PHASE");
+    expect(currentSnapshot).toContain("GENERATED INSPECTION PHASE - NOT SAVED");
     expect(currentSnapshot).toContain("Program ID: saved-program");
     expect(currentSnapshot).toContain("Generation Mode: live_initial");
     expect(currentSnapshot).toContain("Initial Live Variation Slot: saved-program");
     expect(currentSnapshot).toContain("Day 1: Day 1");
+    expect(currentSnapshot).toContain("Day 1: Phase 2 Day 1");
+    expect(currentSnapshot).toContain("Day 1: Phase 3 Day 1");
     expect(currentSnapshot).toContain("Routine: Band Row");
     expect(currentSnapshot).not.toContain("DETERMINISTIC PHASE PREVIEW");
 
-    fireEvent.click(screen.getByRole("button", { name: /Copy Current Saved Week/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Copy Full Progression Snapshot/i }));
 
     expect(mocks.writeText).toHaveBeenCalledTimes(1);
     const copiedText = mocks.writeText.mock.calls[0]?.[0] as string;
     expect(copiedText).toContain("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
     expect(copiedText).toContain("Program ID: saved-program");
+    expect(copiedText).toContain("FULL PROGRESSION SNAPSHOT");
+    expect(copiedText).toContain("Day 1: Phase 2 Day 1");
     expect(copiedText).not.toContain("DETERMINISTIC PHASE PREVIEW");
     expect(screen.getByText("Week View")).toBeTruthy();
   });
