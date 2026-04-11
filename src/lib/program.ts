@@ -1,6 +1,12 @@
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import type { AssessmentReport } from "@/lib/assessmentEngine";
-import type { ExerciseLog, Program, ProgramDay, ProgramRoutineItem } from "@/lib/types";
+import type {
+  ExerciseLog,
+  Program,
+  ProgramDay,
+  ProgramRoutineItem,
+  ProgramSelectionDebugSource,
+} from "@/lib/types";
 import type { Exercise, ExerciseCategory } from "@/lib/exercises";
 import { exerciseById, exercises, resolveExerciseHistoryIds } from "@/lib/exercises";
 import type { Equipment } from "@/lib/equipment";
@@ -1530,12 +1536,15 @@ const ensureEligibleItem = (
       selectionContext
     );
   if (!fallback) return item;
-  return {
-    ...item,
-    exerciseId: fallback.id,
-    loadType: fallback.loadType,
-    cues: buildProgramCues(fallback, item.section),
-  };
+  return withSelectionDebug(
+    {
+      ...item,
+      exerciseId: fallback.id,
+      loadType: fallback.loadType,
+      cues: buildProgramCues(fallback, item.section),
+    },
+    "eligibility_swap"
+  );
 };
 
 const pickDistinctReplacement = (params: {
@@ -1631,12 +1640,15 @@ const ensureDistinctRoutine = (
       return item;
     }
     usedIds.add(replacement.id);
-    return {
-      ...item,
-      exerciseId: replacement.id,
-      loadType: replacement.loadType,
-      cues: buildProgramCues(replacement, item.section),
-    };
+    return withSelectionDebug(
+      {
+        ...item,
+        exerciseId: replacement.id,
+        loadType: replacement.loadType,
+        cues: buildProgramCues(replacement, item.section),
+      },
+      "uniqueness_swap"
+    );
   });
   return { ...day, routine };
 };
@@ -1726,7 +1738,8 @@ const makeItem = (
   reps?: string,
   durationSec?: number,
   restSec?: number,
-  section?: ProgramRoutineItem["section"]
+  section?: ProgramRoutineItem["section"],
+  selectionDebug?: ProgramRoutineItem["selectionDebug"]
 ): ProgramRoutineItem => {
   const exercise = exerciseById(exerciseId);
   return {
@@ -1739,6 +1752,31 @@ const makeItem = (
     loadType: exercise?.loadType ?? "bodyweight",
     notes: null,
     cues: buildProgramCues(exercise, section),
+    ...(selectionDebug ? { selectionDebug } : {}),
+  };
+};
+
+const withSelectionDebug = (
+  item: ProgramRoutineItem,
+  source: ProgramSelectionDebugSource,
+  meta?: {
+    slotId?: string;
+    slotKind?: string;
+    slotLane?: string;
+    phaseIndex?: number;
+  }
+): ProgramRoutineItem => {
+  if (item.section !== "main" && item.section !== "accessory") return item;
+  return {
+    ...item,
+    selectionDebug: {
+      ...(item.selectionDebug ?? {}),
+      source,
+      slotId: meta?.slotId ?? item.selectionDebug?.slotId,
+      slotKind: meta?.slotKind ?? item.selectionDebug?.slotKind,
+      slotLane: meta?.slotLane ?? item.selectionDebug?.slotLane,
+      phaseIndex: meta?.phaseIndex ?? item.selectionDebug?.phaseIndex,
+    },
   };
 };
 
@@ -2397,17 +2435,24 @@ const findReplacementExerciseForRule = (params: {
 const replaceDayItemExercise = (
   day: ProgramDay,
   itemIndex: number,
-  replacement: Exercise
+  replacement: Exercise,
+  source: ProgramSelectionDebugSource = "contract_repair"
 ) => {
   const routine = [...day.routine];
   const current = routine[itemIndex];
   if (!current) return day;
-  routine[itemIndex] = {
-    ...current,
-    exerciseId: replacement.id,
-    loadType: replacement.loadType,
-    cues: buildProgramCues(replacement, current.section),
-  };
+  routine[itemIndex] = withSelectionDebug(
+    {
+      ...current,
+      exerciseId: replacement.id,
+      loadType: replacement.loadType,
+      cues: buildProgramCues(replacement, current.section),
+    },
+    source,
+    {
+      slotId: makeDaySlotId(day, itemIndex, current.section),
+    }
+  );
   return { ...day, routine };
 };
 
@@ -3467,7 +3512,8 @@ const applyDayPatternBudget = (params: {
         updatedDay = replaceDayItemExercise(
           updatedDay,
           target.index,
-          replacementResult.replacement
+          replacementResult.replacement,
+          "coverage_repair"
         );
         budgetReport.resolvedViolations.push({
           pattern: lane,
@@ -4269,7 +4315,12 @@ const ensureDayHasDumbbellMain = (params: {
 
   const target = candidatesByTarget[0];
   if (!target) return day;
-  return replaceDayItemExercise(day, target.entryIndex, target.candidate);
+  return replaceDayItemExercise(
+    day,
+    target.entryIndex,
+    target.candidate,
+    "day_intelligence_repair"
+  );
 };
 
 const collectDedupedWarnings = (warnings: DayConstraintRepairWarning[]) => {
@@ -16127,7 +16178,14 @@ const enforceBeginnerThreeDayCarryPolicy = (params: {
       carryReps ?? undefined,
       carryDurationSec,
       carryRestSec,
-      "accessory"
+      "accessory",
+      {
+        source: "coverage_repair",
+        slotId: `${normalizeSlotToken(day.title)}-accessory-carry-finisher`,
+        slotKind: "accessoryCarry",
+        slotLane: "core",
+        phaseIndex: phaseIndexFromStage(context.selectionContext.phaseStage),
+      }
     );
     const nextRoutine = [...day.routine];
     nextRoutine.splice(insertIndex, 0, carryItem);
@@ -16162,7 +16220,12 @@ const enforceBeginnerThreeDayCarryPolicy = (params: {
         usedIds,
       });
       if (!fallback) return;
-      nextWeek[ref.dayIndex] = replaceDayItemExercise(day, ref.itemIndex, fallback);
+      nextWeek[ref.dayIndex] = replaceDayItemExercise(
+        day,
+        ref.itemIndex,
+        fallback,
+        "coverage_repair"
+      );
       warnings.push(
         `3-day carry policy replaced extra Shoulders + Arms carry with ${fallback.id}.`
       );
@@ -22782,6 +22845,7 @@ const getAccessoryCandidateIds = (params: {
   const prioritizeLoaded =
     context.capabilityMode === "hasLoad" && context.painSeverity !== "high";
   const backChestAccessoryDay = isBackChestDayTitle(dayTitle);
+  const shouldersArmsAccessoryDay = isShouldersArmsDayTitle(dayTitle);
   const hasEligibleAccessoryCandidate = (ids: string[]) =>
     ids.some((id) => {
       const exercise = exerciseById(id);
@@ -22869,34 +22933,54 @@ const getAccessoryCandidateIds = (params: {
     return [...backLoadedFirst, ...backFallback];
   }
   if (lane === "push") {
-    return [
+    const tricepsCandidates = [
       "db-triceps-extension",
+      "dumbbell-triceps-kickback",
+      "band-triceps-pressdown",
+      "band-overhead-triceps-extension",
+      "overhead-cable-triceps-extension",
       "bodyweight-triceps-extension",
+      "self-resisted-triceps-extension",
+    ];
+    if (shouldersArmsAccessoryDay) return tricepsCandidates;
+    return [
+      ...tricepsCandidates,
       "dumbbell-chest-fly",
       "dumbbell-lateral-raise",
     ];
   }
   if (lane === "pull") {
+    const bicepsCandidates = [
+      "db-biceps-curl",
+      "hammer-curl",
+      "cable-biceps-curl",
+      "band-biceps-curl",
+      "single-arm-band-biceps-curl",
+      "towel-biceps-curl-hold",
+      "self-resisted-biceps-curl",
+    ];
+    if (shouldersArmsAccessoryDay) return bicepsCandidates;
     return [
       "face-pull",
       "band-lat-pulldown",
       "reverse-snow-angel",
-      "db-biceps-curl",
-      "band-biceps-curl",
+      ...bicepsCandidates,
     ];
   }
   if (lane === "lower") {
     return [
-      "suitcase-carry",
-      "farmers-carry",
-      "band-suitcase-march",
-      "suitcase-hold-march",
+      "single-leg-calf-raise",
+      "standing-calf-raise",
       "band-rdl",
       "hip-hinge-drill",
       "glute-bridges",
       "band-front-squat",
       "bodyweight-squat",
       "cossack-squat",
+      "suitcase-carry",
+      "farmers-carry",
+      "band-suitcase-march",
+      "suitcase-hold-march",
     ];
   }
   return [
@@ -23388,17 +23472,36 @@ const buildStructuredDay = (params: {
   const pickUnique = (
     id: string,
     fallbackCandidates: string[],
-    section: ProgramRoutineItem["section"]
+    section: ProgramRoutineItem["section"],
+    options: {
+      mainSlot?: PlannedMainSlot;
+      accessoryLane?: AccessoryLane;
+    } = {}
   ) => {
+    const fallbackCandidateSet = new Set(fallbackCandidates);
+    const matchesRequestedSlot = (candidate: Exercise) => {
+      if (options.mainSlot) {
+        return isMainCandidateCompatibleWithPlannedSlot(candidate, options.mainSlot);
+      }
+      if (options.accessoryLane) {
+        return (
+          fallbackCandidateSet.has(candidate.id) &&
+          matchesAccessoryLanePattern(candidate, options.accessoryLane)
+        );
+      }
+      return true;
+    };
+
     if (!used.has(id)) {
       used.add(id);
-      return id;
+      return { id, source: "initial_pick" as ProgramSelectionDebugSource };
     }
     const current = exerciseById(id);
     const fallbackFromList = fallbackCandidates.find((candidateId) => {
       const candidate = exerciseById(candidateId);
       if (!candidate) return false;
       if (used.has(candidate.id)) return false;
+      if (!matchesRequestedSlot(candidate)) return false;
       if (
         !isExerciseEligibleForProgramContext({
           exercise: candidate,
@@ -23414,12 +23517,13 @@ const buildStructuredDay = (params: {
     });
     if (fallbackFromList) {
       used.add(fallbackFromList);
-      return fallbackFromList;
+      return { id: fallbackFromList, source: "uniqueness_swap" as ProgramSelectionDebugSource };
     }
 
     const pool = exercises
       .filter((candidate) => {
         if (used.has(candidate.id)) return false;
+        if (!matchesRequestedSlot(candidate)) return false;
         if (
           !isExerciseEligibleForProgramContext({
             exercise: candidate,
@@ -23443,14 +23547,20 @@ const buildStructuredDay = (params: {
       );
     const next = pool[0]?.id ?? id;
     used.add(next);
-    return next;
+    return {
+      id: next,
+      source:
+        next === id
+          ? ("initial_pick" as ProgramSelectionDebugSource)
+          : ("uniqueness_swap" as ProgramSelectionDebugSource),
+    };
   };
 
   const warmupId = pickUnique(
     chooseWarmupId(warmupFocus, available, selectionContext),
     ["cat-cow", "thoracic-rotation", "wall-slides"],
     "warmup"
-  );
+  ).id;
   const normalizedTitle = normalizeSlotToken(title);
   const threeDayBlueprint =
     daysPerWeek === 3
@@ -23586,6 +23696,7 @@ const buildStructuredDay = (params: {
   }, {} as Partial<Record<MainLane, number>>);
 
   const mainIds: string[] = [];
+  const mainSelectionSources: ProgramSelectionDebugSource[] = [];
   plannedMainSlots.forEach((slot) => {
     const lane = slot.lane;
     const slotKind = getSlotKindForSlot(slot);
@@ -23723,6 +23834,7 @@ const buildStructuredDay = (params: {
             auditMeta
           );
     mainIds.push(selectedId);
+    mainSelectionSources.push("initial_pick");
   });
 
   if (
@@ -23748,6 +23860,7 @@ const buildStructuredDay = (params: {
         })
       ) {
         mainIds[primaryRowSlotIndex] = machineRow.id;
+        mainSelectionSources[primaryRowSlotIndex] = "day_intelligence_repair";
       }
     }
   }
@@ -23952,15 +24065,16 @@ const buildStructuredDay = (params: {
     selectionRng,
   });
   const accessoryPlans = plannedAccessoryLanes.map((lane, index) => {
+    const auditMeta = accessoryAuditMeta(
+      `${normalizedTitle}-accessory-${index + 1}`,
+      `accessory${lane}`,
+      index
+    );
     const selectedId = chooseAccessoryId(
       lane,
       available,
       selectionContext,
-      accessoryAuditMeta(
-        `${normalizedTitle}-accessory-${index + 1}`,
-        `accessory${lane}`,
-        index
-      )
+      auditMeta
     );
     const fallbackCandidates = getAccessoryCandidateIds({
       lane,
@@ -23972,10 +24086,12 @@ const buildStructuredDay = (params: {
       lane,
       selectedId,
       fallbackCandidates,
+      auditMeta,
     };
   });
-  const accessoryIds = accessoryPlans.map((entry) => entry.selectedId);
   const cooldownId = chooseCooldownId(cooldownFocus, available, selectionContext);
+  const equipmentBalancedMainIds = ensureMainEquipmentBalance(mainIds);
+  const capabilityAdjustedMainIds = applyCapabilitySoftMinimum(equipmentBalancedMainIds);
 
   const routine = [
     makeItem(warmupId, experienceProfile.warmupSets, "6-10", 60, 30, "warmup"),
@@ -23984,14 +24100,14 @@ const buildStructuredDay = (params: {
         activationId,
         ["dead-bug", "bird-dog", "band-pull-aparts", "hip-hinge-drill"],
         "activation"
-      ),
+      ).id,
       "2",
       "8-12",
       60,
       30,
       "activation"
     ),
-    ...applyCapabilitySoftMinimum(ensureMainEquipmentBalance(mainIds)).map((id, index) => {
+    ...capabilityAdjustedMainIds.map((id, index) => {
       const slot = plannedMainSlots[index] ?? {
         slotId: `${normalizedTitle}-main-${index + 1}`,
         lane: "pull" as MainLane,
@@ -24101,15 +24217,29 @@ const buildStructuredDay = (params: {
       const uniqueId = pickUnique(
         id,
         slotFallbackCandidates,
-        "main"
+        "main",
+        { mainSlot: slot }
       );
+      const baseSelectionSource: ProgramSelectionDebugSource =
+        uniqueId.source === "uniqueness_swap"
+          ? "uniqueness_swap"
+          : id !== mainIds[index]
+          ? "day_intelligence_repair"
+          : mainSelectionSources[index] ?? "initial_pick";
       const item = makeItem(
-        uniqueId,
+        uniqueId.id,
         experienceProfile.mainSets,
         experienceProfile.mainRepRange,
         undefined,
         experienceProfile.mainRestSec,
-        "main"
+        "main",
+        {
+          source: baseSelectionSource,
+          slotId: slot.slotId,
+          slotKind: getSlotKindForSlot(slot),
+          slotLane: slot.lane,
+          phaseIndex,
+        }
       );
       const capabilityAdjusted = applyCapabilityMainPrescription({
         item,
@@ -24121,16 +24251,29 @@ const buildStructuredDay = (params: {
         selectionContext,
       });
     }),
-    ...accessoryPlans.map((plan) =>
-      makeItem(
-        pickUnique(plan.selectedId, plan.fallbackCandidates, "accessory"),
+    ...accessoryPlans.map((plan) => {
+      const uniqueId = pickUnique(
+        plan.selectedId,
+        plan.fallbackCandidates,
+        "accessory",
+        { accessoryLane: plan.lane }
+      );
+      return makeItem(
+        uniqueId.id,
         experienceProfile.accessorySets,
         experienceProfile.accessoryRepRange,
         undefined,
         experienceProfile.accessoryRestSec,
-        "accessory"
-      )
-    ),
+        "accessory",
+        {
+          source: uniqueId.source,
+          slotId: plan.auditMeta.slotId,
+          slotKind: plan.auditMeta.slotKind,
+          slotLane: plan.lane,
+          phaseIndex,
+        }
+      );
+    }),
     makeItem(
       cooldownId,
       experienceProfile.cooldownSets,
@@ -24792,6 +24935,42 @@ const attachStructuredPrepBlocksToWeek = (params: {
     };
   });
 
+const inferSelectionDebugLane = (
+  item: ProgramRoutineItem,
+  exercise: Exercise
+): string | undefined => {
+  if (item.section === "main") {
+    return getMainLaneHits(exercise)[0];
+  }
+  if (item.section !== "accessory") return undefined;
+  if (matchesAccessoryLanePattern(exercise, "push")) return "push";
+  if (matchesAccessoryLanePattern(exercise, "pull")) return "pull";
+  if (matchesAccessoryLanePattern(exercise, "lower")) return "lower";
+  if (matchesAccessoryLanePattern(exercise, "core")) return "core";
+  if (matchesAccessoryLanePattern(exercise, "chest")) return "chest";
+  if (matchesAccessoryLanePattern(exercise, "back")) return "back";
+  return undefined;
+};
+
+const backfillMainAccessorySelectionDebug = (
+  week: ProgramDay[],
+  phaseIndex: number
+): ProgramDay[] =>
+  week.map((day) => ({
+    ...day,
+    routine: day.routine.map((item, itemIndex) => {
+      if (item.section !== "main" && item.section !== "accessory") return item;
+      if (item.selectionDebug?.source) return item;
+      const exercise = exerciseById(item.exerciseId);
+      return withSelectionDebug(item, "initial_pick", {
+        slotId: makeDaySlotId(day, itemIndex, item.section),
+        slotKind: item.section === "main" ? "mainFinal" : "accessoryFinal",
+        slotLane: exercise ? inferSelectionDebugLane(item, exercise) : undefined,
+        phaseIndex,
+      });
+    }),
+  }));
+
 export const generateWeeklyProgram = (
   data: QuestionnaireData,
   programId: string,
@@ -24956,7 +25135,10 @@ export const generateWeeklyProgram = (
     initialWeek: adjustedDays,
     ...weeklyPipelineCallbacks,
   });
-  const structuredPrepWeek = structuredWeekResult.week;
+  const structuredPrepWeek = backfillMainAccessorySelectionDebug(
+    structuredWeekResult.week,
+    weeklyRuntimeContext.phaseIndex
+  );
   finalizeWeeklyGenerationObservability({
     week: structuredPrepWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
@@ -25119,7 +25301,10 @@ export const generateNextPhaseProgram = (params: {
     runtimeContext: phaseRuntimeContext,
     ...phasePipelineCallbacks,
   });
-  const structuredPhaseWeek = progressedPhaseResult.week;
+  const structuredPhaseWeek = backfillMainAccessorySelectionDebug(
+    progressedPhaseResult.week,
+    phaseRuntimeContext.resolvedTarget.phaseIndex
+  );
   const optimizedPhase = progressedPhaseResult.optimizerResult;
   const painSeverity = getPainSeverity(questionnaire);
 
@@ -25272,7 +25457,10 @@ export const generateNextCycleProgram = (params: {
     runtimeContext: cycleRuntimeContext,
     ...cyclePipelineCallbacks,
   });
-  const structuredCycleWeek = progressedCycleResult.week;
+  const structuredCycleWeek = backfillMainAccessorySelectionDebug(
+    progressedCycleResult.week,
+    cycleRuntimeContext.resolvedTarget.phaseIndex
+  );
   const optimizedCycle = progressedCycleResult.optimizerResult;
   const painSeverity = getPainSeverity(questionnaire);
 

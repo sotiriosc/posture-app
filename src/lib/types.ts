@@ -100,6 +100,24 @@ export type ProgramRoutineItem = {
   loadType: "weighted" | "bodyweight" | "timed" | "assisted";
   notes?: string | null;
   cues?: string[] | null;
+  selectionDebug?: ProgramSelectionDebug;
+};
+
+export type ProgramSelectionDebugSource =
+  | "initial_pick"
+  | "uniqueness_swap"
+  | "eligibility_swap"
+  | "feedback_swap"
+  | "contract_repair"
+  | "coverage_repair"
+  | "day_intelligence_repair";
+
+export type ProgramSelectionDebug = {
+  source: ProgramSelectionDebugSource;
+  slotId?: string;
+  slotKind?: string;
+  slotLane?: string;
+  phaseIndex?: number;
 };
 
 export type ProgramDay = {

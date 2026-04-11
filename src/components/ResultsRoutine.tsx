@@ -77,12 +77,12 @@ import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import PhaseProgressCard from "@/components/dashboard/PhaseProgressCard";
 import ProgressBar from "@/components/ui/ProgressBar";
+import ProgramReferenceCard from "@/components/ProgramReferenceCard";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
-const SHOW_TEMP_PROGRAM_REFERENCE_CARD = process.env.NODE_ENV !== "production";
 
 const defaultRoutine: Routine = {
   summary:
@@ -288,6 +288,7 @@ export default function ResultsRoutine() {
   const [systemAdjustmentsExpanded, setSystemAdjustmentsExpanded] = useState(false);
   const [showSessionCompleteNotice, setShowSessionCompleteNotice] = useState(false);
   const [sessionCompleteNoticeFading, setSessionCompleteNoticeFading] = useState(false);
+  const [programReferenceOpen, setProgramReferenceOpen] = useState(false);
   const [weekViewDetailsOpen, setWeekViewDetailsOpen] = useState(false);
   const [weekViewSelectedDay, setWeekViewSelectedDay] = useState<number | null>(
     null
@@ -1345,7 +1346,7 @@ export default function ResultsRoutine() {
   }, [program]);
 
   const temporaryProgramReferenceText = useMemo(() => {
-    if (!SHOW_TEMP_PROGRAM_REFERENCE_CARD) return "";
+    if (!programReferenceOpen) return "";
     if (!program) return "";
 
     const lines: string[] = [];
@@ -1423,7 +1424,7 @@ export default function ResultsRoutine() {
     }
 
     return lines.join("\n");
-  }, [data, poseState.analysis, poseState.report, program, progress]);
+  }, [data, poseState.analysis, poseState.report, program, programReferenceOpen, progress]);
 
   const adherencePercent = useMemo(() => {
     if (!activeDaysPerWeek) return 0;
@@ -2303,28 +2304,12 @@ export default function ResultsRoutine() {
         </section>
       ) : null}
 
-      {SHOW_TEMP_PROGRAM_REFERENCE_CARD && temporaryProgramReferenceText ? (
-        <section
-          className="ui-card order-2 p-5"
-          data-testid="temporary-program-reference-card"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="text-base font-semibold text-slate-900">
-              Temporary Program Reference
-            </h3>
-            <span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
-              TEMP
-            </span>
-          </div>
-          <p className="mt-1 text-xs text-slate-600">
-            Plain reference output for screenshot review of all 3 days for active week and all phases.
-          </p>
-          <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
-            <pre className="whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
-              {temporaryProgramReferenceText}
-            </pre>
-          </div>
-        </section>
+      {program ? (
+        <ProgramReferenceCard
+          isOpen={programReferenceOpen}
+          referenceText={temporaryProgramReferenceText}
+          onToggle={() => setProgramReferenceOpen((current) => !current)}
+        />
       ) : null}
 
       <section id="week-view" ref={weekViewSectionRef} className="ui-card order-2 p-5">
