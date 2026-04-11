@@ -99,6 +99,12 @@ const stableHash = (value: string) => {
 
 const projectionHash = (value: unknown) => stableHash(stableSerialize(value));
 
+const deriveInitialLiveVariationIndex = (value: string) => {
+  const parsed = Number.parseInt(stableHash(`initial-live-variation:${value}`), 36);
+  if (!Number.isFinite(parsed)) return 1;
+  return (Math.abs(parsed) % 97) + 1;
+};
+
 const roundMetric = (value: number | null | undefined) =>
   typeof value === "number" && Number.isFinite(value) ? Number(value.toFixed(4)) : null;
 
@@ -445,7 +451,9 @@ const buildSeedPolicy = (params: {
     initialVariationSeed ? `initialVariation:${initialVariationSeed}` : "",
     `history:${projectionHash(historyProjection)}`,
   ].filter(Boolean).join("|");
-  const variationIndex = Math.max(0, target.totalWeekIndex - 1);
+  const variationIndex = initialVariationSeed
+    ? deriveInitialLiveVariationIndex(initialVariationSeed)
+    : Math.max(0, target.totalWeekIndex - 1);
 
   return {
     seed,
@@ -500,6 +508,7 @@ const buildWeeklyProgram = (
         variationIndex: seedPolicy.variationIndex,
         index: seedPolicy.variationIndex,
         useRecentMemory: false,
+        initialLiveVariation: Boolean(seedPolicy.initialVariationSeed),
       }
     : undefined;
   const program = generateWeeklyProgram(request.signals.questionnaire, request.nextProgramId, {

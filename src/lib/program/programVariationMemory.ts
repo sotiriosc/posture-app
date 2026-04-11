@@ -639,6 +639,7 @@ export const createProgramVariationMemoryRuntime = (
         useRecentMemory,
         settingsHash: settingsHashToken || undefined,
         recentGenerationSummary: externalSummary,
+        initialLiveVariation: variation?.initialLiveVariation ?? false,
       },
     };
   };

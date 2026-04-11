@@ -222,6 +222,56 @@ describe("results operational readiness", () => {
     );
   });
 
+  test("first-time saved generation records truthful live initial metadata", async () => {
+    const generatedProgram = buildSavedProgram("results-program");
+    mocks.generateProgram.mockReturnValue({
+      status: "generated",
+      program: generatedProgram,
+      seed: "results-seed",
+      debug: {
+        mode: "weekly",
+        seed: "results-seed",
+        settingsHash: "settings-hash",
+        target: {
+          phaseIndex: 1,
+          cycleIndex: 1,
+          weekIndex: 1,
+          totalWeekIndex: 1,
+        },
+        progression: {
+          complianceRate: 0,
+          painFlag: false,
+          fatigueFlag: false,
+          completedSessionsCount: 0,
+          completedWeeksCount: 0,
+          recentLogCount: 0,
+          recentSessionCount: 0,
+        },
+      },
+    });
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(mocks.saveProgram).toHaveBeenCalledWith(generatedProgram);
+    });
+
+    const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
+    expect(persistedState.activeProgramId).toBe("results-program");
+    expect(persistedState.activeGenerationMode).toBe("live_initial");
+    expect(persistedState.activeInitialVariationSeed).toBe("results-program");
+    expect(mocks.generateProgram).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "weekly",
+        nextProgramId: "results-program",
+        initialVariationSeed: "results-program",
+      })
+    );
+    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
+    expect(currentSnapshot).toContain("Generation Mode: live_initial");
+    expect(currentSnapshot).toContain("Initial Live Variation Slot: results-program");
+  });
+
   test("reopening a saved active program does not silently regenerate or reshuffle it", async () => {
     const savedProgram = buildSavedProgram("saved-program");
     localStorage.setItem(

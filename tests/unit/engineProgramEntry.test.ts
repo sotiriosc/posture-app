@@ -35,6 +35,21 @@ const mainLayoutSignature = (program: Program) =>
     )
     .join("|");
 
+const dayMainLayoutSignatures = (program: Program) =>
+  program.week.map((day) =>
+    day.routine
+      .filter((item) => item.section === "main")
+      .map((item) => item.exerciseId)
+      .join(",")
+  );
+
+const countChangedMainLayoutDays = (left: Program, right: Program) => {
+  const leftSignatures = dayMainLayoutSignatures(left);
+  const rightSignatures = dayMainLayoutSignatures(right);
+  return leftSignatures.filter((signature, index) => signature !== rightSignatures[index])
+    .length;
+};
+
 const buildSignals = (params?: {
   sessions?: SessionRecord[];
   exerciseLogs?: ExerciseLog[];
@@ -258,7 +273,7 @@ describe("engine program entry point", () => {
       mode: "weekly",
       signals,
       nextProgramId: "engine-live-slot-b",
-      initialVariationSeed: "initial-slot-b",
+      initialVariationSeed: "initial-slot-c",
       phaseIndex: 2,
       cycleIndex: 1,
       weekIndex: 1,
@@ -288,6 +303,61 @@ describe("engine program entry point", () => {
           expect(day.routine.some((item) => item.section === "main")).toBe(true);
         });
       });
+    }
+  });
+
+  test("advanced no-equipment live initial slots change main layout beyond filler variation", () => {
+    clearProgramVariationHistory();
+    const advancedNoEquipmentQuestionnaire: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Advanced",
+      equipment: ["none"],
+      daysPerWeek: 3,
+    };
+    const signals = buildEngineSignals({
+      questionnaire: advancedNoEquipmentQuestionnaire,
+      history: {
+        sessions: [],
+        exerciseLogs: [],
+        programProgress: null,
+      },
+      prefs: null,
+      nowIso: "2026-04-09T12:00:00.000Z",
+    });
+
+    const generateInitial = (slot: string, nextProgramId = `engine-live-${slot}`) =>
+      generateProgram({
+        mode: "weekly",
+        signals,
+        nextProgramId,
+        initialVariationSeed: slot,
+        phaseIndex: 2,
+        cycleIndex: 1,
+        weekIndex: 1,
+        totalWeekIndex: 1,
+      });
+
+    const liveSlotA = generateInitial("initial-slot-a", "advanced-none-live-slot-a");
+    const liveSlotARepeat = generateInitial(
+      "initial-slot-a",
+      "advanced-none-live-slot-a-repeat"
+    );
+    const liveSlotB = generateInitial("initial-slot-b", "advanced-none-live-slot-b");
+
+    expect(liveSlotA.status).toBe("generated");
+    expect(liveSlotARepeat.status).toBe("generated");
+    expect(liveSlotB.status).toBe("generated");
+    if ("program" in liveSlotA && "program" in liveSlotARepeat && "program" in liveSlotB) {
+      expect(comparableWeek(liveSlotA.program)).toEqual(
+        comparableWeek(liveSlotARepeat.program)
+      );
+      expect(
+        countChangedMainLayoutDays(liveSlotA.program, liveSlotB.program)
+      ).toBeGreaterThanOrEqual(1);
+      expect(mainLayoutSignature(liveSlotA.program)).not.toBe(
+        mainLayoutSignature(liveSlotB.program)
+      );
     }
   });
 

@@ -173,6 +173,36 @@ export type ProgramVariationOptions = {
   useRecentMemory?: boolean;
   settingsHash?: string;
   recentGenerationSummary?: ProgramRecentGenerationSummary;
+  initialLiveVariation?: boolean;
+};
+
+type ProgramVariationBandPurpose = "default" | "main" | "template";
+
+const resolveProgramVariationBandConfig = (
+  variationState?: ProgramVariationState | null,
+  purpose: ProgramVariationBandPurpose = "default"
+): ProgramVariationConfig => {
+  const baseConfig = variationState?.config ?? DEFAULT_PROGRAM_VARIATION_CONFIG;
+  if (!variationState?.options.initialLiveVariation) return baseConfig;
+  if (purpose === "template") {
+    return {
+      ...baseConfig,
+      topBandPercent: Math.max(baseConfig.topBandPercent, 0.8),
+      topBandMinCandidates: Math.max(baseConfig.topBandMinCandidates, 3),
+      topBandMaxCandidates: Math.max(baseConfig.topBandMaxCandidates, 10),
+      topBandMinScoreAllowance: Math.max(baseConfig.topBandMinScoreAllowance, 7),
+    };
+  }
+  if (purpose === "main") {
+    return {
+      ...baseConfig,
+      topBandPercent: Math.max(baseConfig.topBandPercent, 0.7),
+      topBandMinCandidates: Math.max(baseConfig.topBandMinCandidates, 3),
+      topBandMaxCandidates: Math.max(baseConfig.topBandMaxCandidates, 10),
+      topBandMinScoreAllowance: Math.max(baseConfig.topBandMinScoreAllowance, 6),
+    };
+  }
+  return baseConfig;
 };
 
 export type ProgramDayKey =
@@ -14024,7 +14054,7 @@ const selectShouldersArmsMainExercise = (params: {
     return chooseDeterministicTopScoredExercise(scoredEntries, context.selectionRng, {
       useVariationBand: Boolean(context.selectionContext.variationState?.enabled),
       variationConfig:
-        context.selectionContext.variationState?.config ?? DEFAULT_PROGRAM_VARIATION_CONFIG,
+        resolveProgramVariationBandConfig(context.selectionContext.variationState, "main"),
       variationSeedToken: context.selectionContext.variationState?.enabled
         ? [
             context.selectionContext.variationState.seedKey,
@@ -18968,7 +18998,10 @@ const selectThreeDayTemplateVariant = (params: {
       if (right.score !== left.score) return right.score - left.score;
       return left.variant.key.localeCompare(right.variant.key);
     });
-  const topBand = getProgramVariationBandForRankedEntries(ranked, variationState.config);
+  const topBand = getProgramVariationBandForRankedEntries(
+    ranked,
+    resolveProgramVariationBandConfig(variationState, "template")
+  );
   const variationIndex = resolveProgramVariationIndex(variationState.options);
   const settingsToken = String(
     variationState.options.settingsHash ?? variationState.settingsKey
@@ -22918,7 +22951,10 @@ const pickFirstEligibleId = (
     if (!varietyState?.enabled) return null;
     const topBand = getProgramVariationBandForRankedEntries(
       rankedChoicePool,
-      varietyState.config
+      resolveProgramVariationBandConfig(
+        varietyState,
+        section === "main" ? "main" : "default"
+      )
     );
     const topBandSignature = topBand
       .map((entry) => `${entry.id}:${entry.score.toFixed(2)}`)
