@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import { exerciseById } from "@/lib/exercises";
+import { exerciseById, type Exercise } from "@/lib/exercises";
 import { generateWeeklyProgram } from "@/lib/program";
 
 const normalizeToken = (value: string) => value.toLowerCase().replace(/[\s-]+/g, "_");
@@ -21,6 +21,102 @@ const isUpperMainPattern = (exerciseId: string) => {
 const isLowerMainPattern = (exerciseId: string) => {
   const patterns = new Set(movementTokens(exerciseId));
   return patterns.has("squat") || patterns.has("hinge");
+};
+
+const getDayExercises = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  dayTitle: string,
+  section: "main" | "accessory"
+) => {
+  const day = program.week.find((entry) => entry.title === dayTitle);
+  expect(day).toBeTruthy();
+  if (!day) return [];
+  return day.routine
+    .filter((item) => item.section === section)
+    .map((item) => exerciseById(item.exerciseId))
+    .filter((exercise): exercise is Exercise => Boolean(exercise));
+};
+
+const hasHorizontalPullSignature = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const patterns = new Set(exercise.movementPattern.map(normalizeToken));
+  return patterns.has("horizontal_pull") || patterns.has("horizontalpull") || descriptor.includes("row");
+};
+
+const hasVerticalPullSignature = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const patterns = new Set(exercise.movementPattern.map(normalizeToken));
+  return (
+    patterns.has("vertical_pull") ||
+    patterns.has("verticalpull") ||
+    descriptor.includes("pulldown") ||
+    descriptor.includes("pull-down")
+  );
+};
+
+const isChestMain = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const tags = new Set((exercise.tags ?? []).map(normalizeToken));
+  return (
+    tags.has("chest") ||
+    descriptor.includes("bench") ||
+    descriptor.includes("chest") ||
+    descriptor.includes("fly") ||
+    descriptor.includes("pec deck")
+  );
+};
+
+const isPulloverStyle = (exercise: Exercise) =>
+  `${exercise.id} ${exercise.name}`.toLowerCase().includes("pullover");
+
+const isShoulderSupportDrill = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
+    exercise.variantKey ?? ""
+  }`.toLowerCase();
+  return (
+    descriptor.includes("y raise") ||
+    descriptor.includes("y-raise") ||
+    descriptor.includes("swimmer") ||
+    descriptor.includes("external rotation") ||
+    descriptor.includes("external-rotation") ||
+    descriptor.includes("face pull") ||
+    descriptor.includes("face-pull") ||
+    descriptor.includes("pull-apart") ||
+    descriptor.includes("pull apart")
+  );
+};
+
+const isLowerRegressionOrDrillMain = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const blockedIds = new Set([
+    "bodyweight-squat",
+    "single-leg-rdl",
+    "single-leg-glute-bridge-hold",
+    "back-extension",
+    "back-extension-hold",
+    "dead-bug",
+    "bird-dog",
+    "plank",
+    "side-plank",
+    "hollow-body-hold",
+  ]);
+  return (
+    blockedIds.has(exercise.id) ||
+    descriptor.includes("glute bridge hold") ||
+    descriptor.includes("dead bug") ||
+    descriptor.includes("bird dog") ||
+    descriptor.includes("plank")
+  );
+};
+
+const hasBicepsSignal = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return hasAnyToken(exercise.tags, ["biceps"]) || descriptor.includes("curl");
+};
+
+const hasTricepsSignal = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return hasAnyToken(exercise.tags, ["triceps"]) || descriptor.includes("triceps");
 };
 
 const weekSignature = (program: ReturnType<typeof generateWeeklyProgram>) =>
@@ -123,6 +219,109 @@ describe("program selection audit metadata", () => {
       if (item.selectionDebug?.slotLane === "pull") {
         expect(hasAnyToken(exercise.tags, ["biceps"])).toBe(true);
       }
+    });
+  });
+
+  test("beginner gym Back + Chest keeps at least two true pull mains", () => {
+    const program = generateWeeklyProgram(
+      { ...questionnaire, experience: "Beginner" },
+      "selection-beginner-back-chest-balance",
+      {
+        phaseIndex: 2,
+        weekIndex: 1,
+        cycleIndex: 1,
+        totalWeekIndex: 1,
+        seed: "selection-beginner-back-chest-balance-seed",
+      }
+    );
+    const mains = getDayExercises(program, "Back + Chest", "main");
+    const truePullMainCount = mains.filter(
+      (exercise) => hasHorizontalPullSignature(exercise) || hasVerticalPullSignature(exercise)
+    ).length;
+
+    expect(mains.length).toBe(3);
+    expect(truePullMainCount).toBeGreaterThanOrEqual(2);
+    expect(mains.filter(isChestMain).length).toBeLessThanOrEqual(1);
+    expect(mains.some(isPulloverStyle)).toBe(false);
+  });
+
+  test("intermediate and advanced gym Shoulders + Arms keep support drills out of mains", () => {
+    (["Intermediate", "Advanced"] as const).forEach((experience) => {
+      const program = generateWeeklyProgram(
+        { ...questionnaire, experience },
+        `selection-shoulders-support-main-${experience.toLowerCase()}`,
+        {
+          phaseIndex: experience === "Advanced" ? 3 : 2,
+          weekIndex: 1,
+          cycleIndex: 1,
+          totalWeekIndex: 1,
+          seed: `selection-shoulders-support-main-${experience.toLowerCase()}-seed`,
+        }
+      );
+      const mains = getDayExercises(program, "Shoulders + Arms", "main");
+
+      expect(mains.length).toBe(4);
+      expect(mains.some(isShoulderSupportDrill)).toBe(false);
+    });
+  });
+
+  test("intermediate and advanced gym Legs + Abs keep regression drills out of mains", () => {
+    (["Intermediate", "Advanced"] as const).forEach((experience) => {
+      const program = generateWeeklyProgram(
+        { ...questionnaire, experience },
+        `selection-legs-regression-main-${experience.toLowerCase()}`,
+        {
+          phaseIndex: experience === "Advanced" ? 3 : 2,
+          weekIndex: 1,
+          cycleIndex: 1,
+          totalWeekIndex: 1,
+          seed: `selection-legs-regression-main-${experience.toLowerCase()}-seed`,
+        }
+      );
+      const mains = getDayExercises(program, "Legs + Abs", "main");
+
+      expect(mains.length).toBe(4);
+      expect(mains.some(isLowerRegressionOrDrillMain)).toBe(false);
+    });
+  });
+
+  test("advanced gym Shoulders + Arms caps accessories while preserving biceps and triceps", () => {
+    const program = generateWeeklyProgram(
+      { ...questionnaire, experience: "Advanced" },
+      "selection-advanced-shoulders-accessory-cap",
+      {
+        phaseIndex: 3,
+        weekIndex: 1,
+        cycleIndex: 1,
+        totalWeekIndex: 1,
+        seed: "selection-advanced-shoulders-accessory-cap-seed",
+      }
+    );
+    const accessories = getDayExercises(program, "Shoulders + Arms", "accessory");
+
+    expect(accessories.length).toBeLessThanOrEqual(4);
+    expect(accessories.some(hasBicepsSignal)).toBe(true);
+    expect(accessories.some(hasTricepsSignal)).toBe(true);
+  });
+
+  test("gym Back + Chest keeps pullover-style bridge movements out of main slots", () => {
+    (["Beginner", "Intermediate", "Advanced"] as const).forEach((experience) => {
+      const program = generateWeeklyProgram(
+        { ...questionnaire, experience },
+        `selection-back-chest-no-pullover-main-${experience.toLowerCase()}`,
+        {
+          phaseIndex: experience === "Advanced" ? 3 : 2,
+          weekIndex: 1,
+          cycleIndex: 1,
+          totalWeekIndex: 1,
+          seed: `selection-back-chest-no-pullover-main-${experience.toLowerCase()}-seed`,
+        }
+      );
+      const mains = getDayExercises(program, "Back + Chest", "main");
+
+      expect(mains.some(isPulloverStyle)).toBe(false);
+      expect(mains.some((exercise) => hasHorizontalPullSignature(exercise))).toBe(true);
+      expect(mains.some((exercise) => hasVerticalPullSignature(exercise))).toBe(true);
     });
   });
 

@@ -108,6 +108,7 @@ export type ProgramSelectionDebugSource =
   | "uniqueness_swap"
   | "eligibility_swap"
   | "feedback_swap"
+  | "legality_repair"
   | "contract_repair"
   | "coverage_repair"
   | "day_intelligence_repair";
