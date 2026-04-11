@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById, type Exercise } from "@/lib/exercises";
+import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 
 const experiences: QuestionnaireData["experience"][] = [
@@ -24,7 +25,8 @@ const equipmentProfiles: Array<{
 }> = [
   { label: "none", equipment: ["none"] },
   { label: "bands", equipment: ["bands"] },
-  { label: "home", equipment: ["bands", "dumbbells", "bench"] },
+  { label: "dumbbells", equipment: ["dumbbells"] },
+  { label: "home", equipment: ["bands", "dumbbells"] },
   { label: "gym", equipment: ["gym"] },
 ];
 
@@ -283,6 +285,21 @@ const expectTruthfulAccessorySlots = (
     });
 };
 
+const expectEquipmentEligibleDay = (
+  day: ReturnType<typeof generateWeeklyProgram>["week"][number],
+  available: ReturnType<typeof normalizeEquipmentSelection>["available"]
+) => {
+  day.routine.forEach((item) => {
+    const exercise = exerciseById(item.exerciseId);
+    expect(exercise, `${day.title}: ${item.exerciseId}`).toBeTruthy();
+    if (!exercise) return;
+    expect(
+      isExerciseEligible(exercise, available),
+      `${day.title}: ${exercise.id} requires ${exercise.equipment.join(", ")}`
+    ).toBe(true);
+  });
+};
+
 describe("program matrix quality", () => {
   test("core structure invariants hold across scenario matrix", () => {
     let scenarioCount = 0;
@@ -302,10 +319,12 @@ describe("program matrix quality", () => {
               };
               const id = `matrix-${scenarioCount}`;
               const program = generateWeeklyProgram(input, id);
+              const available = normalizeEquipmentSelection(equipment).available;
 
               expect(program.week).toHaveLength(daysPerWeek);
               program.week.forEach((day) => {
                 expect(hasSections(day)).toBe(true);
+                expectEquipmentEligibleDay(day, available);
 
                 const ids = day.routine.map((item) => item.exerciseId);
                 expect(new Set(ids).size).toBe(ids.length);

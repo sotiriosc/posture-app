@@ -312,6 +312,50 @@ const expectAccessoryCorePurity = (program: Program) => {
   });
 };
 
+const expectProgramEquipmentEligible = (
+  program: Program,
+  questionnaire: QuestionnaireData
+) => {
+  const available = normalizeEquipmentSelection(questionnaire.equipment).available;
+  program.week.forEach((day) => {
+    day.routine.forEach((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      expect(exercise, `${day.title}: ${item.exerciseId}`).toBeTruthy();
+      if (!exercise) return;
+      expect(
+        isExerciseEligible(exercise, available),
+        `${day.title}: ${exercise.id} requires ${exercise.equipment.join(", ")}`
+      ).toBe(true);
+    });
+  });
+};
+
+const hingeMainExercises = (program: Program) =>
+  program.week
+    .filter((day) => day.title.toLowerCase().includes("lower"))
+    .flatMap((day) =>
+      day.routine
+        .filter(
+          (item) =>
+            item.section === "main" && item.selectionDebug?.slotLane === "hinge"
+        )
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    );
+
+const expectAnyHingeId = (
+  program: Program,
+  expectedIds: string[],
+  label: string
+) => {
+  const hingeIds = hingeMainExercises(program).map((exercise) => exercise.id);
+  expect(hingeIds.length, label).toBeGreaterThan(0);
+  expect(
+    hingeIds.some((id) => expectedIds.includes(id)),
+    `${label}: ${hingeIds.join(", ")}`
+  ).toBe(true);
+};
+
 const countPattern = (exercises: Exercise[], pattern: string) =>
   exercises.filter((exercise) => hasPattern(exercise, pattern)).length;
 
@@ -485,6 +529,180 @@ describe("higher-frequency split contracts", () => {
     );
 
     expectAccessoryCorePurity(program);
+  });
+
+  test.each([
+    [
+      "dumbbells-only",
+      baseQuestionnaire({
+        goals: "General fitness",
+        equipment: ["dumbbells"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+    ],
+    [
+      "bands-only",
+      baseQuestionnaire({
+        goals: "General fitness",
+        equipment: ["bands"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+    ],
+    [
+      "bands + dumbbells",
+      baseQuestionnaire({
+        goals: "Athletic performance",
+        equipment: ["bands", "dumbbells"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+    ],
+    [
+      "no-equipment",
+      baseQuestionnaire({
+        goals: "General fitness",
+        equipment: ["none"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+    ],
+    [
+      "mixed home reduce pain shoulders",
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Shoulders"],
+        equipment: ["bands", "dumbbells"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+    ],
+    [
+      "dumbbells-only hips and lower back",
+      baseQuestionnaire({
+        goals: "General fitness",
+        painAreas: ["Hips", "Lower back"],
+        equipment: ["dumbbells"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+    ],
+    [
+      "bands-only lower and upper back",
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Lower back", "Upper back"],
+        equipment: ["bands"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+    ],
+  ] as const)("home profile equipment legality holds for %s", (label, questionnaire) => {
+    const program = generateWeeklyProgram(questionnaire, `hf-home-equipment-${label}`, {
+      phaseIndex: 1,
+      seed: `hf-home-equipment-${label}`,
+    });
+
+    expectProgramEquipmentEligible(program, questionnaire);
+  });
+
+  test.each([
+    [
+      "dumbbells-only low-pain",
+      baseQuestionnaire({
+        goals: "General fitness",
+        equipment: ["dumbbells"],
+        experience: "Beginner",
+        daysPerWeek: 5,
+      }),
+      ["db-rdl"],
+    ],
+    [
+      "dumbbells-only shoulder pain",
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Shoulders"],
+        equipment: ["dumbbells"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+      ["db-rdl"],
+    ],
+    [
+      "bands-only low-pain",
+      baseQuestionnaire({
+        goals: "General fitness",
+        equipment: ["bands"],
+        experience: "Beginner",
+        daysPerWeek: 5,
+      }),
+      ["band-rdl"],
+    ],
+    [
+      "bands-only shoulder pain",
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Shoulders"],
+        equipment: ["bands"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+      ["band-rdl"],
+    ],
+    [
+      "mixed home shoulder pain",
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Shoulders"],
+        equipment: ["bands", "dumbbells"],
+        experience: "Intermediate",
+        daysPerWeek: 5,
+      }),
+      ["db-rdl", "band-rdl"],
+    ],
+  ] as const)(
+    "Phase 1 home hinge quality prefers real anchors for %s",
+    (label, questionnaire, expectedIds) => {
+      const program = generateWeeklyProgram(questionnaire, `hf-home-hinge-${label}`, {
+        phaseIndex: 1,
+        seed: `hf-home-hinge-${label}`,
+      });
+
+      expectProgramEquipmentEligible(program, questionnaire);
+      expectAnyHingeId(program, [...expectedIds], label);
+    }
+  );
+
+  test("high-pain bands profile preserves conservative Phase 1 hinge fallback", () => {
+    const questionnaire = baseQuestionnaire({
+      goals: "Reduce pain",
+      painAreas: ["Lower back", "Upper back"],
+      equipment: ["bands"],
+      experience: "Intermediate",
+      daysPerWeek: 5,
+    });
+    const program = generateWeeklyProgram(questionnaire, "hf-home-high-pain-conservative-hinge", {
+      phaseIndex: 1,
+      seed: "hf-home-high-pain-conservative-hinge",
+    });
+    const hingeIds = hingeMainExercises(program).map((exercise) => exercise.id);
+
+    expectProgramEquipmentEligible(program, questionnaire);
+    expect(hingeIds.length).toBeGreaterThan(0);
+    expect(hingeIds.includes("band-rdl"), hingeIds.join(", ")).toBe(false);
+    hingeIds.forEach((id) => {
+      expect(
+        [
+          "single-leg-glute-bridge-hold",
+          "bodyweight-good-morning",
+          "back-extension-hold",
+          "back-extension",
+          "single-leg-rdl",
+        ].includes(id),
+        id
+      ).toBe(true);
+    });
   });
 
   test("5-day beginner gym athletic Phase 1 lower days prefer a real loaded hinge when low-pain", () => {
