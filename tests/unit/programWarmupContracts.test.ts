@@ -147,6 +147,40 @@ describe("program warmup contracts", () => {
     });
   });
 
+  test("default General Fitness keeps prep lean and cooldown two-part", () => {
+    const program = generateWeeklyProgram(
+      {
+        ...baseInput,
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Intermediate",
+        equipment: ["gym"],
+      },
+      "warmup-general-fitness-lean",
+      {
+        phaseIndex: 2,
+        seed: "warmup-general-fitness-lean",
+      }
+    );
+
+    program.week.forEach((day) => {
+      const isLowerDay = day.title === "Legs + Abs";
+      const warmupItems = day.warmup?.items ?? [];
+      const activationItems = day.activation?.items ?? [];
+      const cooldownItems = day.cooldown?.items ?? [];
+
+      expect(warmupItems.length).toBeLessThanOrEqual(isLowerDay ? 4 : 3);
+      expect(warmupItems.length).toBeGreaterThanOrEqual(isLowerDay ? 3 : 2);
+      expect(activationItems.length).toBeLessThanOrEqual(2);
+      expect(activationItems.length).toBeGreaterThanOrEqual(1);
+      expect(cooldownItems.length).toBe(2);
+      expect(cooldownItems.some((item) => item.tags.includes("breathing"))).toBe(true);
+      expect(
+        cooldownItems.some((item) => item.tags.includes(isLowerDay ? "hips" : "shoulders"))
+      ).toBe(true);
+    });
+  });
+
   test("pose/photo scapular signal shifts back+chest activation toward serratus prep", () => {
     const withoutPose = generateWeeklyProgram(baseInput, "warmup-pose-off", {
       phaseIndex: 2,

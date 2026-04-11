@@ -1559,7 +1559,8 @@ const pickDistinctReplacement = (params: {
   if (!current) return null;
   const shouldEnforceRoleCompatibility =
     context &&
-    isGymNoPainSelectionContext({ available, context }) &&
+    (isGymNoPainSelectionContext({ available, context }) ||
+      shouldApplyDefaultGeneralFitnessNoPainRoleStrictness({ available, context })) &&
     (isBackChestDayTitle(dayTitle) ||
       isShouldersArmsDayTitle(dayTitle) ||
       isLegsAbsDayTitle(dayTitle));
@@ -13067,6 +13068,26 @@ const isGymNoPainSelectionContext = (params: {
   params.available.has("gym") &&
   hasGymLikeUpperImplementAvailability(params.available);
 
+const isDefaultGeneralFitnessNoPainSelectionContext = (context: SelectionContext) => {
+  const goal = normalizeTagToken(context.goal);
+  return (
+    context.painSeverity === "low" &&
+    context.painAreas.length === 0 &&
+    goal.includes("general") &&
+    goal.includes("fitness")
+  );
+};
+
+const shouldApplyDefaultGeneralFitnessNoPainRoleStrictness = (params: {
+  available: Set<Equipment>;
+  context: SelectionContext;
+}) =>
+  isDefaultGeneralFitnessNoPainSelectionContext(params.context) &&
+  (params.available.has("bands") ||
+    params.available.has("dumbbells") ||
+    params.available.has("gym") ||
+    hasGymLikeUpperImplementAvailability(params.available));
+
 const isPushupPatternExercise = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
   return descriptor.includes("pushup") || descriptor.includes("push-up");
@@ -16406,6 +16427,42 @@ const findFinalRoleLegalityReplacement = (params: {
     })[0]?.candidate ?? null;
 };
 
+const findConstrainedShoulderMainFallback = (params: {
+  day: ProgramDay;
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+}) => {
+  const { day, usedIds, context } = params;
+  if (!isShouldersArmsDayTitle(day.title)) return null;
+  const lastResortSupportIds = new Set(["prone-swimmer", "reverse-snow-angel"]);
+  return ["prone-t-raise", "prone-swimmer", "reverse-snow-angel"]
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise))
+    .find((exercise) => {
+      if (usedIds.has(exercise.id)) return false;
+      if (
+        !isExerciseEligibleForProgramContext({
+          exercise,
+          available: context.available,
+          section: "main",
+          context: context.selectionContext,
+          dayTitle: day.title,
+        })
+      ) {
+        return false;
+      }
+      const strictlyLegal = isMainLegalForSlot({
+        exercise,
+        dayTitle: day.title,
+        slotKind: "mainShoulderPullPrimary",
+        slotLane: "pull",
+        available: context.available,
+        context: context.selectionContext,
+      });
+      return strictlyLegal || lastResortSupportIds.has(exercise.id);
+    }) ?? null;
+};
+
 const enforceFinalRoleLegality = (params: {
   week: ProgramDay[];
   daysPerWeek: 3 | 4 | 5;
@@ -16414,6 +16471,10 @@ const enforceFinalRoleLegality = (params: {
   const { week, daysPerWeek, context } = params;
   if (daysPerWeek !== 3) return { week, warnings: [] };
   if (
+    !shouldApplyDefaultGeneralFitnessNoPainRoleStrictness({
+      available: context.available,
+      context: context.selectionContext,
+    }) &&
     !isGymNoPainSelectionContext({
       available: context.available,
       context: context.selectionContext,
@@ -16455,7 +16516,8 @@ const enforceFinalRoleLegality = (params: {
         : resolvedSlot;
       const slot =
         isShouldersArmsDayTitle(day.title) &&
-        provenanceSlot.slotKind === "mainShoulderStructuralSecondary"
+        (provenanceSlot.slotKind === "mainShoulderStructuralSecondary" ||
+          provenanceSlot.slotKind === "mainShoulderStructuralAlternate")
           ? {
               ...provenanceSlot,
               slotKind: "mainShoulderPullPrimary",
@@ -16472,7 +16534,7 @@ const enforceFinalRoleLegality = (params: {
       });
       if (legal) return;
       usedIds.delete(entry.item.exerciseId);
-      const replacement = findFinalRoleLegalityReplacement({
+      let replacement = findFinalRoleLegalityReplacement({
         day: nextDay,
         itemIndex: entry.itemIndex,
         section: "main",
@@ -16481,8 +16543,25 @@ const enforceFinalRoleLegality = (params: {
         usedIds,
         context,
       });
-      usedIds.add(entry.item.exerciseId);
-      if (!replacement) return;
+      if (
+        !replacement &&
+        isShouldersArmsDayTitle(day.title) &&
+        shouldApplyDefaultGeneralFitnessNoPainRoleStrictness({
+          available: context.available,
+          context: context.selectionContext,
+        })
+      ) {
+        replacement = findConstrainedShoulderMainFallback({
+          day: nextDay,
+          usedIds,
+          context,
+        });
+      }
+      if (!replacement) {
+        usedIds.add(entry.item.exerciseId);
+        return;
+      }
+      usedIds.add(replacement.id);
       nextDay = replaceDayItemExercise(nextDay, entry.itemIndex, replacement, "legality_repair");
       const updated = nextDay.routine[entry.itemIndex];
       if (updated) {
@@ -16524,8 +16603,11 @@ const enforceFinalRoleLegality = (params: {
         usedIds,
         context,
       });
-      usedIds.add(entry.item.exerciseId);
-      if (!replacement) return;
+      if (!replacement) {
+        usedIds.add(entry.item.exerciseId);
+        return;
+      }
+      usedIds.add(replacement.id);
       nextDay = replaceDayItemExercise(nextDay, entry.itemIndex, replacement, "legality_repair");
       warnings.push(
         `${day.title} accessory legality replaced ${entry.item.exerciseId} with ${replacement.id}.`
@@ -16722,7 +16804,40 @@ const applyDayCurriculumConstraints = (params: {
       message,
     });
   });
-  const finalWeek = roleLegalAdjusted.week;
+  const dumbbellEnsuredWeek = roleLegalAdjusted.week.map((day) =>
+    ensureDayHasDumbbellMain({
+      day,
+      context,
+      budget: resolveDayPatternBudget({
+        title: day.title,
+        selectionContext: context.selectionContext,
+      }),
+    })
+  );
+  const postDumbbellRoleLegalAdjusted = enforceFinalRoleLegality({
+    week: dumbbellEnsuredWeek,
+    daysPerWeek,
+    context,
+  });
+  postDumbbellRoleLegalAdjusted.warnings.forEach((message) => {
+    accumulatedWarnings.push({
+      dayTitle: "Program role legality",
+      kind: "violation",
+      message,
+    });
+  });
+  const finalWeek = postDumbbellRoleLegalAdjusted.week.map((day) =>
+    isLegsAbsDayTitle(day.title)
+      ? ensureDayHasDumbbellMain({
+          day,
+          context,
+          budget: resolveDayPatternBudget({
+            title: day.title,
+            selectionContext: context.selectionContext,
+          }),
+        })
+      : day
+  );
 
   const persistentWarnings: WeekConstraintRepairResult["warnings"] = [];
   finalWeek.forEach((day) => {
@@ -18473,12 +18588,12 @@ const selectThreeDayTemplateVariant = (params: {
   const templateIntentTuning =
     dayToken === "back_chest" || dayToken === "shoulders_arms"
       ? {
-          templateRepeatPenaltyMultiplier: 1.25,
-          familyLayoutPenaltyMultiplier: 1.2,
+          templateRepeatPenaltyMultiplier: 1.75,
+          familyLayoutPenaltyMultiplier: 1.8,
         }
       : {
-          templateRepeatPenaltyMultiplier: 0.85,
-          familyLayoutPenaltyMultiplier: 0.9,
+          templateRepeatPenaltyMultiplier: 1.35,
+          familyLayoutPenaltyMultiplier: 1.5,
         };
   const ranked = eligibleVariants
     .map((variant, index) => {
@@ -18495,7 +18610,7 @@ const selectThreeDayTemplateVariant = (params: {
         score -= penalty;
       }
       if (recentFamilyLayouts.includes(familyLayout)) {
-        score -= 1.75 * templateIntentTuning.familyLayoutPenaltyMultiplier;
+        score -= 2.25 * templateIntentTuning.familyLayoutPenaltyMultiplier;
       }
       return {
         variant,
@@ -19322,10 +19437,15 @@ const isMainLegalForSlot = (params: {
   const { exercise, dayTitle, slotKind, slotLane, available, context } = params;
   if (exercise.category !== "main") return false;
   const gymNoPain = isGymNoPainSelectionContext({ available, context });
+  const strictDefaultNoPain = shouldApplyDefaultGeneralFitnessNoPainRoleStrictness({
+    available,
+    context,
+  });
+  const strictLoadedOrDefaultNoPain = gymNoPain || strictDefaultNoPain;
 
   if (isBackChestDayTitle(dayTitle)) {
-    if (gymNoPain && isSupportOnlyMovement(exercise)) return false;
-    if (gymNoPain && isBackChestLatAccentExercise(exercise)) return false;
+    if (strictLoadedOrDefaultNoPain && isSupportOnlyMovement(exercise)) return false;
+    if (strictLoadedOrDefaultNoPain && isBackChestLatAccentExercise(exercise)) return false;
     if (!isBackChestMainBoundaryEligible({ exercise, allowChestFly: slotKind === "mainPushFly" })) {
       return false;
     }
@@ -19337,9 +19457,18 @@ const isMainLegalForSlot = (params: {
   }
 
   if (isShouldersArmsDayTitle(dayTitle)) {
-    if (gymNoPain && isSupportOnlyMovement(exercise)) return false;
+    const supportTemplateSlot =
+      slotKind === "mainShoulderStructuralSecondary" ||
+      slotKind === "mainShoulderStructuralAlternate";
+    const enforceStrictShoulderMain = strictLoadedOrDefaultNoPain && !supportTemplateSlot;
+    const constrainedRearDeltFallback =
+      strictDefaultNoPain &&
+      exercise.id === "prone-t-raise" &&
+      (slotKind === "mainShoulderPullPrimary" || slotLane === "pull");
+    if (constrainedRearDeltFallback) return true;
+    if (enforceStrictShoulderMain && isSupportOnlyMovement(exercise)) return false;
     const category = resolveShouldersArmsMainCategory(exercise);
-    if (gymNoPain && category === "shoulderSupport") return false;
+    if (enforceStrictShoulderMain && category === "shoulderSupport") return false;
     return matchesShouldersArmsMainSlotKind({
       exercise,
       slotKind: slotKind ?? "mainShoulderRepair",
@@ -19349,7 +19478,7 @@ const isMainLegalForSlot = (params: {
   }
 
   if (isLegsAbsDayTitle(dayTitle)) {
-    if (gymNoPain && isRegressionOrDrillMovement(exercise)) return false;
+    if (strictLoadedOrDefaultNoPain && isRegressionOrDrillMovement(exercise)) return false;
     if (isLegsCarryExercise(exercise)) return false;
     if (matchesAccessoryLanePattern(exercise, "core")) return false;
     if (matchesAccessoryLanePattern(exercise, "lower") && !matchesMainLanePattern(exercise, slotLane ?? "squat")) {
@@ -19358,7 +19487,7 @@ const isMainLegalForSlot = (params: {
     return slotLane ? matchesMainLanePattern(exercise, slotLane) : exerciseHasLowerMainPattern(exercise);
   }
 
-  if (gymNoPain && isSupportOnlyMovement(exercise)) return false;
+  if (strictLoadedOrDefaultNoPain && isSupportOnlyMovement(exercise)) return false;
   return slotLane ? matchesMainLanePattern(exercise, slotLane) : true;
 };
 
@@ -19375,13 +19504,15 @@ const isAccessoryLegalForSlot = (params: {
   const hasTriceps = tags.has("triceps") || descriptor.includes("triceps");
   const hasBiceps = tags.has("biceps") || descriptor.includes("biceps") || descriptor.includes("curl");
   const gymNoPain = isGymNoPainSelectionContext({ available, context });
+  const strictLoadedOrDefaultNoPain =
+    gymNoPain || shouldApplyDefaultGeneralFitnessNoPainRoleStrictness({ available, context });
 
   if (isShouldersArmsDayTitle(dayTitle)) {
     if (slotLane === "push") return hasTriceps;
     if (slotLane === "pull") return hasBiceps;
   }
 
-  if (isBackChestDayTitle(dayTitle) && slotLane === "back" && gymNoPain) {
+  if (isBackChestDayTitle(dayTitle) && slotLane === "back" && strictLoadedOrDefaultNoPain) {
     return (
       isBackChestRearDeltDominantAccessory(exercise) ||
       isBackChestRequiredExternalScapAccessory(exercise) ||
@@ -19389,7 +19520,7 @@ const isAccessoryLegalForSlot = (params: {
     );
   }
 
-  if (isLegsAbsDayTitle(dayTitle) && gymNoPain) {
+  if (isLegsAbsDayTitle(dayTitle) && strictLoadedOrDefaultNoPain) {
     if (slotLane === "lower" && isLegsCarryExercise(exercise)) return false;
     if (slotLane === "core") return matchesAccessoryLanePattern(exercise, "core");
   }
@@ -20311,7 +20442,7 @@ const getCrossGenerationVarietyScoreBonus = (params: {
           layout === proposedLayoutSignature || layout.startsWith(`${proposedLayoutSignature}|`)
         )
       ) {
-        const layoutPenalty = 1.35 * daySpecificTuning.dayLayoutRepeatMultiplier;
+        const layoutPenalty = 2.25 * daySpecificTuning.dayLayoutRepeatMultiplier;
         score -= layoutPenalty;
         reasons.push(`-${layoutPenalty.toFixed(2)} prior-generation day layout repeat pressure`);
       }
@@ -20323,7 +20454,7 @@ const getCrossGenerationVarietyScoreBonus = (params: {
           layout === proposedFamilyLayout || layout.startsWith(`${proposedFamilyLayout}|`)
         )
       ) {
-        const familyLayoutPenalty = 1.1 * daySpecificTuning.dayFamilyLayoutRepeatMultiplier;
+        const familyLayoutPenalty = 1.9 * daySpecificTuning.dayFamilyLayoutRepeatMultiplier;
         score -= familyLayoutPenalty;
         reasons.push(
           `-${familyLayoutPenalty.toFixed(2)} prior-generation day family-layout repeat pressure`

@@ -69,6 +69,15 @@ const isChestMain = (exercise: Exercise) => {
 const isPulloverStyle = (exercise: Exercise) =>
   `${exercise.id} ${exercise.name}`.toLowerCase().includes("pullover");
 
+const isLatAccentStyle = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    descriptor.includes("pullover") ||
+    descriptor.includes("lat sweep") ||
+    descriptor.includes("lat-sweep")
+  );
+};
+
 const isShoulderSupportDrill = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
     exercise.variantKey ?? ""
@@ -81,6 +90,8 @@ const isShoulderSupportDrill = (exercise: Exercise) => {
     descriptor.includes("external-rotation") ||
     descriptor.includes("face pull") ||
     descriptor.includes("face-pull") ||
+    descriptor.includes("snow angel") ||
+    descriptor.includes("snow-angel") ||
     descriptor.includes("pull-apart") ||
     descriptor.includes("pull apart")
   );
@@ -322,6 +333,41 @@ describe("program selection audit metadata", () => {
       expect(mains.some(isPulloverStyle)).toBe(false);
       expect(mains.some((exercise) => hasHorizontalPullSignature(exercise))).toBe(true);
       expect(mains.some((exercise) => hasVerticalPullSignature(exercise))).toBe(true);
+    });
+  });
+
+  test("non-gym General Fitness avoids worst support and regression mains when constrained alternatives exist", () => {
+    const scenarios: Array<{
+      equipment: QuestionnaireData["equipment"];
+      maxShoulderSupportMains: number;
+    }> = [
+      { equipment: ["bands"], maxShoulderSupportMains: 1 },
+      { equipment: ["dumbbells"], maxShoulderSupportMains: 1 },
+      { equipment: ["none"], maxShoulderSupportMains: 2 },
+    ];
+
+    scenarios.forEach(({ equipment, maxShoulderSupportMains }) => {
+      const program = generateWeeklyProgram(
+        { ...questionnaire, equipment },
+        `selection-non-gym-legality-${equipment.join("-")}`,
+        {
+          phaseIndex: 2,
+          weekIndex: 1,
+          cycleIndex: 1,
+          totalWeekIndex: 1,
+          seed: `selection-non-gym-legality-${equipment.join("-")}-seed`,
+        }
+      );
+
+      const shoulderMains = getDayExercises(program, "Shoulders + Arms", "main");
+      const legMains = getDayExercises(program, "Legs + Abs", "main");
+      const backChestMains = getDayExercises(program, "Back + Chest", "main");
+
+      expect(shoulderMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(
+        maxShoulderSupportMains
+      );
+      expect(legMains.filter(isLowerRegressionOrDrillMain).length).toBeLessThanOrEqual(1);
+      expect(backChestMains.some(isLatAccentStyle)).toBe(false);
     });
   });
 
