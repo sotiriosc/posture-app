@@ -9,6 +9,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 
 const mocks = vi.hoisted(() => ({
   routerPush: vi.fn(),
@@ -18,6 +19,7 @@ const mocks = vi.hoisted(() => ({
   generateProgram: vi.fn(),
   saveProgram: vi.fn(),
   saveProgramProgress: vi.fn(),
+  getProgram: vi.fn(),
   uuid: vi.fn(),
   clearDraft: vi.fn(),
 }));
@@ -41,6 +43,7 @@ vi.mock("@/lib/engine", () => ({
 vi.mock("@/lib/logStore", () => ({
   saveProgram: mocks.saveProgram,
   saveProgramProgress: mocks.saveProgramProgress,
+  getProgram: mocks.getProgram,
   uuid: mocks.uuid,
 }));
 
@@ -61,6 +64,25 @@ const initialQuestionnaire = {
   daysPerWeek: 3,
 };
 
+const currentProgram = {
+  id: "program-old",
+  userId: null,
+  createdAt: "2026-02-01T00:00:00.000Z",
+  updatedAt: "2026-02-01T00:00:00.000Z",
+  templateVersion: 1,
+  goalTrack: initialQuestionnaire.goals,
+  daysPerWeek: initialQuestionnaire.daysPerWeek,
+  estimatedSessionMinutesRange: { min: 45, max: 60 },
+  phaseIndex: 1,
+  phaseName: "Activation",
+  cycleIndex: 1,
+  weekIndex: 1,
+  totalWeekIndex: 1,
+  week: [],
+  source: "local",
+  deletedAt: null,
+};
+
 describe("questionnaire change confirmation flow", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -72,6 +94,7 @@ describe("questionnaire change confirmation flow", () => {
         activeProgramId: "program-old",
         activeSessionId: "session-live",
         programVersion: 2,
+        questionnaireSignature: buildQuestionnaireSignature(initialQuestionnaire),
         updatedAt: Date.now(),
       })
     );
@@ -83,6 +106,7 @@ describe("questionnaire change confirmation flow", () => {
     mocks.generateProgram.mockReset();
     mocks.saveProgram.mockReset();
     mocks.saveProgramProgress.mockReset();
+    mocks.getProgram.mockReset();
     mocks.uuid.mockReset();
     mocks.clearDraft.mockReset();
 
@@ -101,6 +125,7 @@ describe("questionnaire change confirmation flow", () => {
       })
     );
     mocks.uuid.mockReturnValue("program-new");
+    mocks.getProgram.mockResolvedValue(currentProgram);
     mocks.clearDraft.mockResolvedValue(undefined);
     mocks.generateProgram.mockImplementation(
       ({
@@ -202,6 +227,7 @@ describe("questionnaire change confirmation flow", () => {
     });
 
     expect(mocks.clearDraft).toHaveBeenCalledWith("session-live");
+    expect(mocks.getProgram).not.toHaveBeenCalled();
     expect(mocks.routerPush).toHaveBeenCalledWith("/results");
 
     const appState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}") as {
@@ -231,6 +257,13 @@ describe("questionnaire change confirmation flow", () => {
 
     expect(screen.queryByTestId("questionnaire-change-confirm-modal")).toBeNull();
     expect(mocks.clearDraft).toHaveBeenCalledWith("session-live");
+    expect(mocks.getProgram).toHaveBeenCalledWith("program-old");
+    expect(mocks.generateProgram).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentProgram,
+        nextProgramId: "program-new",
+      })
+    );
     expect(mocks.routerPush).toHaveBeenCalledWith("/results");
   });
 });

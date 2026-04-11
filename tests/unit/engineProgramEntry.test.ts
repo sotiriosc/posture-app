@@ -25,6 +25,16 @@ const comparableWeek = (program: Program) =>
     })),
   }));
 
+const mainLayoutSignature = (program: Program) =>
+  program.week
+    .map((day) =>
+      day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+        .join(",")
+    )
+    .join("|");
+
 const buildSignals = (params?: {
   sessions?: SessionRecord[];
   exerciseLogs?: ExerciseLog[];
@@ -222,6 +232,63 @@ describe("engine program entry point", () => {
       );
       expect(comparableWeek(firstRegeneration.program)).not.toEqual(
         comparableWeek(current.program)
+      );
+    }
+  });
+
+  test("live 3-day regeneration changes main layout when recent memory has valid alternatives", () => {
+    clearProgramVariationHistory();
+    const mixedEquipmentQuestionnaire: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["dumbbells", "bands"],
+      daysPerWeek: 3,
+    };
+    const signals = buildEngineSignals({
+      questionnaire: mixedEquipmentQuestionnaire,
+      history: {
+        sessions: [],
+        exerciseLogs: [],
+        programProgress: null,
+      },
+      prefs: null,
+      nowIso: "2026-04-09T12:00:00.000Z",
+    });
+
+    const current = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-main-layout-current",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    expect(current.status).toBe("generated");
+    if (!("program" in current)) {
+      throw new Error("Expected current program to generate.");
+    }
+
+    const regenerate = (nextProgramId: string) =>
+      generateProgram({
+        mode: "weekly",
+        signals,
+        currentProgram: current.program,
+        nextProgramId,
+      });
+
+    const firstRegeneration = regenerate("engine-live-main-layout-repeat-a");
+    const secondRegeneration = regenerate("engine-live-main-layout-repeat-b");
+
+    expect(firstRegeneration.status).toBe("generated");
+    expect(secondRegeneration.status).toBe("generated");
+    if ("program" in firstRegeneration && "program" in secondRegeneration) {
+      expect(comparableWeek(firstRegeneration.program)).toEqual(
+        comparableWeek(secondRegeneration.program)
+      );
+      expect(mainLayoutSignature(firstRegeneration.program)).not.toBe(
+        mainLayoutSignature(current.program)
       );
     }
   });

@@ -8,7 +8,7 @@ import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
 import { clearDraft } from "@/lib/sessionDraftStore";
 import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
-import { saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
+import { getProgram, saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
 import type { ProgramProgress } from "@/lib/types";
 
 export type QuestionnaireData = {
@@ -129,14 +129,20 @@ export default function QuestionnaireForm() {
     try {
       const nowIso = new Date().toISOString();
       const nextProgramId = uuid();
+      const currentProgramId = state?.activeProgramId ?? state?.programId ?? null;
+      const currentProgram =
+        currentProgramId && state?.questionnaireSignature === questionnaireSignature
+          ? await getProgram(currentProgramId).catch(() => null)
+          : null;
       const signals = await buildSignalsFromLocalState({
-        programId: state?.activeProgramId ?? state?.programId ?? null,
+        programId: currentProgramId,
         questionnaire: next,
         nowIso,
       });
       const result = generateProgram({
         mode: "weekly",
         signals,
+        currentProgram: currentProgram ?? undefined,
         nextProgramId,
       });
       if (!("program" in result)) {
