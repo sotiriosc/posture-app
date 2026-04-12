@@ -19815,24 +19815,27 @@ const resolveThreeDayTemplateVariants = (params: {
     if (experienceLevel === "beginner" && mainCount === 3) {
       const gymNoPain = isGymNoPainSelectionContext({ available, context: selectionContext });
       if (!gymNoPain) {
-        const variants: ThreeDayBlueprintTemplateVariant[] = [
-          {
-            key: "back_chest_beginner_press_fly_vertical",
-            mainLanePlan: [
-              { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-              { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
-              { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
-            ],
-          },
-          {
-            key: "back_chest_beginner_press_fly_row",
-            mainLanePlan: [
-              { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-              { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
-              { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
-            ],
-          },
-        ];
+        const verticalVariant: ThreeDayBlueprintTemplateVariant = {
+          key: "back_chest_beginner_press_fly_vertical",
+          mainLanePlan: [
+            { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
+            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
+          ],
+        };
+        const rowVariant: ThreeDayBlueprintTemplateVariant = {
+          key: "back_chest_beginner_press_fly_row",
+          mainLanePlan: [
+            { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
+            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
+          ],
+        };
+        const noEquipmentUpperPain =
+          available.size === 1 && available.has("none") && hasUpperPainSignal(selectionContext);
+        const variants: ThreeDayBlueprintTemplateVariant[] = noEquipmentUpperPain
+          ? [rowVariant, verticalVariant]
+          : [verticalVariant, rowVariant];
         if (hasPulloverCandidate) {
           variants.push({
             key: "back_chest_beginner_press_fly_pullover",
@@ -26237,9 +26240,13 @@ const resolveDayPatternBudget = (params: {
   }
 
   if (normalized === "arms + posture + conditioning") {
+    const noEquipmentUpperPain =
+      selectionContext.capabilityMode === "noneOnly" && hasUpperPainSignal(selectionContext);
     return {
-      mainMin: { pull: 1, verticalPush: 1 },
-      mainMax: { pull: 1, verticalPush: 1, push: 0, squat: 0, hinge: 0 },
+      mainMin: noEquipmentUpperPain ? { pull: 1 } : { pull: 1, verticalPush: 1 },
+      mainMax: noEquipmentUpperPain
+        ? { pull: 4, verticalPush: 0, push: 2, squat: 0, hinge: 0 }
+        : { pull: 2, verticalPush: 2, push: 2, squat: 0, hinge: 0 },
       requiresArmIsolation: true,
     };
   }
@@ -26262,18 +26269,9 @@ const resolveStructuredMainSlotCount = (params: {
   const { title, daysPerWeek, baseCount, capabilityMode, selectionContext } = params;
   if (daysPerWeek < 4) return baseCount;
   if (isArmsPostureConditioningDayTitle(title)) {
-    return Math.min(baseCount, 2);
-  }
-  if (selectionContext.painSeverity === "high") {
-    return Math.min(baseCount, 2);
+    return selectionContext.experienceLevel === "beginner" ? Math.min(baseCount, 2) : baseCount;
   }
   if (capabilityMode === "noneOnly") {
-    return Math.min(baseCount, 3);
-  }
-  if (
-    selectionContext.experienceLevel === "advanced" &&
-    isQualityFirstDayBudgetContext(selectionContext)
-  ) {
     return Math.min(baseCount, 3);
   }
   return baseCount;
@@ -26595,13 +26593,26 @@ const buildStructuredDay = (params: {
     capabilityMode === "bandOnly"
       ? ensurePullLaneBandOnly([...lanes], title, focusTags)
       : [...lanes];
-  const plannedSeedLanes = maybeRotateHigherFrequencyLanePlan({
+  const rotatedSeedLanes = maybeRotateHigherFrequencyLanePlan({
     dayTitle: title,
     daysPerWeek,
     phaseIndex,
     lanes: seedLanes,
     selectionContext,
   });
+  const plannedSeedLanes =
+    daysPerWeek >= 4 &&
+    capabilityMode === "noneOnly" &&
+    hasUpperPainSignal(selectionContext) &&
+    (isUpperPushDayTitle(title) || isArmsPostureConditioningDayTitle(title))
+      ? rotatedSeedLanes.map((lane) =>
+          lane === "verticalPush"
+            ? isArmsPostureConditioningDayTitle(title)
+              ? "pull"
+              : "push"
+            : lane
+        )
+      : rotatedSeedLanes;
   const dayBudget = resolveDayPatternBudget({
     title,
     selectionContext,

@@ -41,6 +41,14 @@ export const expectedMainCountForDayTitle = ({
     }
   }
 
+  if (
+    daysPerWeek === 5 &&
+    experience === "Advanced" &&
+    (dayTitle === "Lower Squat" || dayTitle === "Lower Hinge + Posterior Chain")
+  ) {
+    return 3;
+  }
+
   return legacyMainCountByExperience(experience);
 };
 
@@ -52,7 +60,7 @@ export const expectedAccessoryCountForDayTitle = ({
   if (daysPerWeek === 3) {
     if (dayTitle === "Back + Chest") return 2;
     if (dayTitle === "Shoulders + Arms") {
-      if (experience === "Advanced") return 5;
+      if (experience === "Advanced") return 4;
       if (experience === "Intermediate") return 3;
       return 3;
     }
