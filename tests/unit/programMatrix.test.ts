@@ -64,6 +64,16 @@ const expectedMainCount = (
       return 3;
     }
   }
+  if (
+    daysPerWeek >= 4 &&
+    (dayTitle.toLowerCase().includes("upper push") ||
+      dayTitle === "Arms + Posture + Conditioning") &&
+    equipment.includes("none") &&
+    equipment.length === 1 &&
+    painAreas.length > 0
+  ) {
+    return [1, 2];
+  }
   if (dayTitle === "Arms + Posture + Conditioning") return 2;
   const highPain =
     painAreas.length >= 2 || (goal === "Reduce pain" && experience === "Beginner");
@@ -245,6 +255,9 @@ const forbiddenVerticalPushIds = new Set([
   "tempo-pushup",
   "incline-pushup",
   "close-grip-pushup",
+  "archer-pushup",
+  "countertop-pushup",
+  "scapular-pushups",
   "band-chest-press",
   "dumbbell-bench-press",
   "dumbbell-floor-press",
@@ -500,6 +513,68 @@ describe("program matrix quality", () => {
     });
 
     expectNoEquipmentPullQuality(program);
+  });
+
+  test("advanced no-equipment neck profile keeps scapular push-ups out of mainVerticalPush", () => {
+    const program = generateWeeklyProgram(
+      {
+        goals: "Reduce pain",
+        painAreas: ["Neck"],
+        experience: "Advanced",
+        equipment: ["none"],
+        daysPerWeek: 4,
+      },
+      "matrix-advanced-none-neck-vertical-push-truth",
+      {
+        phaseIndex: 3,
+        seed: "matrix-advanced-none-neck-vertical-push-truth",
+      }
+    );
+
+    program.week.forEach(expectTruthfulVerticalPushSlots);
+    const scapularVerticalPushItems = program.week.flatMap((day) =>
+      day.routine.filter(
+        (item) =>
+          item.exerciseId === "scapular-pushups" &&
+          (item.selectionDebug?.slotKind === "mainVerticalPush" ||
+            item.selectionDebug?.slotLane === "verticalPush")
+      )
+    );
+    expect(scapularVerticalPushItems).toHaveLength(0);
+  });
+
+  test("advanced athletic gym Phase 1 lower hinge avoids low-value extra hinge filler", () => {
+    const program = generateWeeklyProgram(
+      {
+        goals: "Athletic performance",
+        painAreas: [],
+        experience: "Advanced",
+        equipment: ["gym"],
+        daysPerWeek: 5,
+      },
+      "matrix-advanced-athletic-gym-phase1-hinge-filler",
+      {
+        phaseIndex: 1,
+        seed: "matrix-advanced-athletic-gym-phase1-hinge-filler",
+      }
+    );
+
+    const lowerHinge = program.week.find((day) => day.title === "Lower Hinge + Posterior Chain");
+    expect(lowerHinge).toBeTruthy();
+    const hingeMains = (lowerHinge?.routine ?? [])
+      .filter((item) => item.section === "main" && item.selectionDebug?.slotLane === "hinge")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+
+    expect(hingeMains.some(hasTrueHingeAnchor)).toBe(true);
+    expect(
+      hingeMains.some((exercise) =>
+        ["bodyweight-good-morning", "back-extension", "back-extension-hold"].includes(
+          exercise.id
+        )
+      ),
+      hingeMains.map((exercise) => exercise.id).join(", ")
+    ).toBe(false);
   });
 
   test("phase rep intent stays visible for hypertrophy and constrained strength anchors", () => {

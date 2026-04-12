@@ -570,11 +570,11 @@ describe("results operational readiness", () => {
     render(React.createElement(ResultsRoutine));
     await waitFor(() => expect(deferredSignals).toHaveLength(1));
     expect(screen.getByTestId("current-saved-week-loading-card")).toBeTruthy();
-    expect(
-      screen.getByRole("progressbar", {
-        name: /Current saved program snapshot status/i,
-      })
-    ).toBeTruthy();
+    const snapshotStatus = screen.getByRole("progressbar", {
+      name: /Current saved program snapshot status/i,
+    });
+    expect(snapshotStatus).toBeTruthy();
+    expect(snapshotStatus.getAttribute("aria-valuenow")).toBeNull();
     expect(screen.queryByTestId("current-saved-week-body")).toBeNull();
 
     deferredSignals[0].resolve(buildSignalsPayload());

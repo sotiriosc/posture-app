@@ -184,6 +184,9 @@ const forbiddenVerticalPushIds = new Set([
   "tempo-pushup",
   "incline-pushup",
   "close-grip-pushup",
+  "archer-pushup",
+  "countertop-pushup",
+  "scapular-pushups",
   "band-chest-press",
   "dumbbell-bench-press",
   "dumbbell-floor-press",
@@ -641,6 +644,34 @@ describe("higher-frequency split contracts", () => {
       });
   });
 
+  test("advanced no-equipment neck split never uses scapular push-ups as mainVerticalPush", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["Neck"],
+        equipment: ["none"],
+        experience: "Advanced",
+        daysPerWeek: 4,
+      }),
+      "hf-4day-advanced-none-neck-vertical-push-truth",
+      {
+        phaseIndex: 3,
+        seed: "hf-4day-advanced-none-neck-vertical-push-truth",
+      }
+    );
+
+    expectTruthfulVerticalPushSlots(program);
+    const scapularVerticalPushItems = program.week.flatMap((day) =>
+      day.routine.filter(
+        (item) =>
+          item.exerciseId === "scapular-pushups" &&
+          (item.selectionDebug?.slotKind === "mainVerticalPush" ||
+            item.selectionDebug?.slotLane === "verticalPush")
+      )
+    );
+    expect(scapularVerticalPushItems).toHaveLength(0);
+  });
+
   test("4-day no-equipment pull day prefers row-style anchors over low-output posture drills", () => {
     const program = generateWeeklyProgram(
       baseQuestionnaire({
@@ -916,6 +947,38 @@ describe("higher-frequency split contracts", () => {
         ).toBe(false);
       });
     });
+  });
+
+  test("advanced athletic gym Phase 1 lower hinge day drops low-value fallback hinge filler once loaded hinge exists", () => {
+    const program = generateWeeklyProgram(
+      baseQuestionnaire({
+        goals: "Athletic performance",
+        equipment: ["gym"],
+        experience: "Advanced",
+        daysPerWeek: 5,
+      }),
+      "hf-5day-advanced-athletic-gym-phase1-hinge-filler",
+      {
+        phaseIndex: 1,
+        seed: "hf-5day-advanced-athletic-gym-phase1-hinge-filler",
+      }
+    );
+
+    const lowerHingeItems = mainRoutineItems(program, "Lower Hinge + Posterior Chain");
+    const hingeSlotExercises = lowerHingeItems
+      .filter((item) => item.selectionDebug?.slotLane === "hinge")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+
+    expect(hingeSlotExercises.some(hasTrueHingeAnchor)).toBe(true);
+    expect(
+      hingeSlotExercises.some((exercise) =>
+        ["bodyweight-good-morning", "back-extension", "back-extension-hold"].includes(
+          exercise.id
+        )
+      ),
+      hingeSlotExercises.map((exercise) => exercise.id).join(", ")
+    ).toBe(false);
   });
 
   test.each([

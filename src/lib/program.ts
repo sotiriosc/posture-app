@@ -17533,6 +17533,71 @@ const enforceFinalRoleLegality = (params: {
   }
 
   const warnings: string[] = [];
+  const isStrictVerticalPushSlotMeta = (slot: {
+    slotKind?: string;
+    slotLane?: MainLane;
+  }) =>
+    slot.slotLane === "verticalPush" ||
+    slot.slotKind === "mainVerticalPush" ||
+    slot.slotKind === "mainVerticalPushPrimary";
+  const isStrictHingeSlotMeta = (slot: {
+    slotKind?: string;
+    slotLane?: MainLane;
+  }) => slot.slotLane === "hinge" || slot.slotKind === "mainHinge";
+  const isAdvancedLoadedLowPainPhaseOneLowerHinge = (dayTitle: string) => {
+    const title = dayTitle.toLowerCase();
+    return (
+      context.capabilityMode === "hasLoad" &&
+      context.selectionContext.experienceLevel === "advanced" &&
+      context.selectionContext.phaseStage === "activation" &&
+      context.selectionContext.painSeverity === "low" &&
+      (title.includes("hinge") || title.includes("posterior")) &&
+      isHigherFrequencyLowerDayTitle(dayTitle)
+    );
+  };
+  const hasLoadedTrueHingeMain = (day: ProgramDay, currentItemIndex: number) =>
+    day.routine.some((item, itemIndex) => {
+      if (itemIndex === currentItemIndex || item.section !== "main") return false;
+      const exercise = exerciseById(item.exerciseId);
+      return Boolean(
+        exercise &&
+          exercise.loadType === "weighted" &&
+          hasTrueHingeAnchor(exercise) &&
+          isExerciseEligibleForProgramContext({
+            exercise,
+            available: context.available,
+            section: "main",
+            context: context.selectionContext,
+            dayTitle: day.title,
+          })
+      );
+    });
+  const shouldDropUnrepairableMainSlot = (params: {
+    day: ProgramDay;
+    itemIndex: number;
+    exercise: Exercise;
+    slot: { slotKind?: string; slotLane?: MainLane };
+    mainCount: number;
+  }) => {
+    const { day, itemIndex, exercise, slot, mainCount } = params;
+    if (mainCount <= 1) return false;
+    if (
+      isStrictVerticalPushSlotMeta(slot) &&
+      !hasTrueVerticalPressAnchor(exercise) &&
+      isConstrainedNoEquipmentMainContext(context.available, context.selectionContext)
+    ) {
+      return true;
+    }
+    if (
+      isStrictHingeSlotMeta(slot) &&
+      isFallbackQualityHingeAnchorExercise(exercise) &&
+      isAdvancedLoadedLowPainPhaseOneLowerHinge(day.title) &&
+      hasLoadedTrueHingeMain(day, itemIndex)
+    ) {
+      return true;
+    }
+    return false;
+  };
   const nextWeek = week.map((day) => {
     const mainEntries = day.routine
       .map((item, itemIndex) => ({ item, itemIndex }))
@@ -17542,6 +17607,7 @@ const enforceFinalRoleLegality = (params: {
       .filter((entry) => entry.item.section === "accessory");
     const usedIds = new Set(day.routine.map((item) => item.exerciseId));
     let nextDay = day;
+    const droppedMainItemIndexes = new Set<number>();
 
     mainEntries.forEach((entry, mainOrdinal) => {
       const exercise = exerciseById(entry.item.exerciseId);
@@ -17653,6 +17719,21 @@ const enforceFinalRoleLegality = (params: {
         });
       }
       if (!replacement) {
+        if (
+          shouldDropUnrepairableMainSlot({
+            day: nextDay,
+            itemIndex: entry.itemIndex,
+            exercise,
+            slot,
+            mainCount: mainEntries.length,
+          })
+        ) {
+          droppedMainItemIndexes.add(entry.itemIndex);
+          warnings.push(
+            `${day.title} main legality removed unrepairable ${entry.item.exerciseId} from ${slot.slotLane ?? slot.slotKind}.`
+          );
+          return;
+        }
         usedIds.add(entry.item.exerciseId);
         return;
       }
@@ -17709,6 +17790,15 @@ const enforceFinalRoleLegality = (params: {
         `${day.title} accessory legality replaced ${entry.item.exerciseId} with ${replacement.id}.`
       );
     });
+
+    if (droppedMainItemIndexes.size) {
+      nextDay = {
+        ...nextDay,
+        routine: nextDay.routine.filter(
+          (_item, itemIndex) => !droppedMainItemIndexes.has(itemIndex)
+        ),
+      };
+    }
 
     return nextDay;
   });
