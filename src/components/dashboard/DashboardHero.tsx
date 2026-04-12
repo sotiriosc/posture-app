@@ -5,11 +5,11 @@ import ProgressBar from "@/components/ui/ProgressBar";
 type DashboardHeroProps = {
   greeting: string;
   phaseName: string;
-  cycleCurrent: number;
-  cycleTarget: number;
+  workoutsCompletedInPhase: number;
+  workoutTarget: number;
   weekCompletedDays: number;
   weekTargetDays: number;
-  cycleProgressPercent: number;
+  workoutProgressPercent: number;
   weekProgressPercent: number;
   readinessScore: number;
   weeklyConsistencyCount: number;
@@ -25,11 +25,11 @@ type DashboardHeroProps = {
 export default function DashboardHero({
   greeting,
   phaseName,
-  cycleCurrent,
-  cycleTarget,
+  workoutsCompletedInPhase,
+  workoutTarget,
   weekCompletedDays,
   weekTargetDays,
-  cycleProgressPercent,
+  workoutProgressPercent,
   weekProgressPercent,
   readinessScore,
   weeklyConsistencyCount,
@@ -80,7 +80,7 @@ export default function DashboardHero({
             ))}
           </div>
           <p className="mt-3 text-sm text-slate-300">
-            Cycle {cycleCurrent} of {cycleTarget} required
+            Workouts: {workoutsCompletedInPhase} / {workoutTarget} in this phase
           </p>
           <p className="mt-1 text-sm text-slate-300">
             Week progress: {weekCompletedDays} / {weekTargetDays} days complete
@@ -88,11 +88,11 @@ export default function DashboardHero({
 
           <div className="mt-4 space-y-3">
             <ProgressBar
-              label="Cycle progress"
-              value={cycleProgressPercent}
+              label="Phase workout progress"
+              value={workoutProgressPercent}
               max={100}
               animate
-              subtitle={`${Math.round(cycleProgressPercent)}% through current gate`}
+              subtitle={`${workoutsCompletedInPhase}/${workoutTarget} workouts completed`}
             />
             <ProgressBar
               label="Week progress"

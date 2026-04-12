@@ -70,7 +70,11 @@ import {
   formatPhaseGateReason,
   skipPhase1,
 } from "@/lib/phaseGating";
-import { getPhaseControlUiState } from "@/lib/phaseControls";
+import {
+  buildPhaseReadyDismissalKey,
+  getPhaseControlUiState,
+  getPhaseReadyNoticeState,
+} from "@/lib/phaseControls";
 import { getDailyInsight } from "@/lib/insightGenerator";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import DailyInsightCard from "@/components/dashboard/DailyInsightCard";
@@ -788,6 +792,7 @@ export default function ResultsRoutine() {
   const [systemAdjustmentsExpanded, setSystemAdjustmentsExpanded] = useState(false);
   const [showSessionCompleteNotice, setShowSessionCompleteNotice] = useState(false);
   const [sessionCompleteNoticeFading, setSessionCompleteNoticeFading] = useState(false);
+  const [phaseReadyNoticeOpen, setPhaseReadyNoticeOpen] = useState(false);
   const [programReferenceOpen, setProgramReferenceOpen] = useState(false);
   const [currentWeekCopyStatus, setCurrentWeekCopyStatus] = useState<string | null>(null);
   const [weekViewDetailsOpen, setWeekViewDetailsOpen] = useState(false);
@@ -1221,7 +1226,7 @@ export default function ResultsRoutine() {
   const previewSummary = () => {
     const currentPhaseIndex = program?.phaseIndex ?? 1;
     if (currentPhaseIndex >= MAX_PHASE_INDEX) {
-      return `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue cycles to keep progression and variation moving.`;
+      return `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue workouts to keep progression and variation moving.`;
     }
     const nextPhaseIndex = currentPhaseIndex + 1;
     const nextProfile = getPhaseProfile(nextPhaseIndex);
@@ -1232,7 +1237,7 @@ export default function ResultsRoutine() {
     if (!program || !data) return;
     if ((program.phaseIndex ?? 1) >= MAX_PHASE_INDEX) {
       setAdvanceMessage(
-        `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue cycles to keep progressing.`
+        `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue workouts to keep progressing.`
       );
       return;
     }
@@ -1266,6 +1271,7 @@ export default function ResultsRoutine() {
         phaseIndex: signedProgram.phaseIndex ?? 2,
         phaseStartedAt: nowIso,
         cyclesCompletedInPhase: 0,
+        workoutsCompletedInPhase: 0,
         daysPerWeek: signedProgram.daysPerWeek,
         weekIndex: 1,
         countedWeekKeys: [],
@@ -1347,6 +1353,7 @@ export default function ResultsRoutine() {
       phaseIndex: currentPhaseIndex,
       phaseStartedAt: progress?.phaseStartedAt ?? program.createdAt ?? nowIso,
       cyclesCompletedInPhase: progress?.cyclesCompletedInPhase ?? 0,
+      workoutsCompletedInPhase: progress?.workoutsCompletedInPhase ?? 0,
       daysPerWeek: nextProgram.daysPerWeek,
       weekIndex: progress?.weekIndex ?? 1,
       countedWeekKeys: progress?.countedWeekKeys ?? [],
@@ -1927,6 +1934,9 @@ export default function ResultsRoutine() {
         cyclesCompletedInPhase: phaseChanged
           ? 0
           : Math.max(progress?.cyclesCompletedInPhase ?? 0, completedWeeks),
+        workoutsCompletedInPhase: phaseChanged
+          ? 0
+          : progress?.workoutsCompletedInPhase ?? completedSessions.length,
         daysPerWeek: nextProgram.daysPerWeek,
         weekIndex: Math.max(1, nextProgram.weekIndex ?? 1),
         countedWeekKeys: [],
@@ -1972,7 +1982,9 @@ export default function ResultsRoutine() {
     allSessions,
     baselineForActiveProgram,
     completedWeeks,
+    completedSessions.length,
     progress?.cyclesCompletedInPhase,
+    progress?.workoutsCompletedInPhase,
     progress?.phaseStartedAt,
     questionnaireSignature,
     loadGenerationSignals,
@@ -2013,6 +2025,10 @@ export default function ResultsRoutine() {
             typeof stored.cyclesCompletedInPhase === "number"
               ? stored.cyclesCompletedInPhase
               : 0,
+          workoutsCompletedInPhase:
+            typeof stored.workoutsCompletedInPhase === "number"
+              ? stored.workoutsCompletedInPhase
+              : 0,
           daysPerWeek: stored.daysPerWeek ?? progressProgram.daysPerWeek,
           weekIndex: Math.max(1, stored.weekIndex ?? 1),
           countedWeekKeys: Array.isArray(stored.countedWeekKeys)
@@ -2025,6 +2041,7 @@ export default function ResultsRoutine() {
         if (
           stored.phaseStartedAt !== normalized.phaseStartedAt ||
           stored.cyclesCompletedInPhase !== normalized.cyclesCompletedInPhase ||
+          stored.workoutsCompletedInPhase !== normalized.workoutsCompletedInPhase ||
           stored.phaseIndex !== normalized.phaseIndex ||
           stored.daysPerWeek !== normalized.daysPerWeek ||
           stored.weekIndex !== normalized.weekIndex ||
@@ -2043,6 +2060,7 @@ export default function ResultsRoutine() {
           phaseIndex: progressProgram.phaseIndex ?? 1,
           phaseStartedAt: progressProgram.createdAt ?? nowIso,
           cyclesCompletedInPhase: 0,
+          workoutsCompletedInPhase: 0,
           daysPerWeek: progressProgram.daysPerWeek,
           weekIndex: 1,
           countedWeekKeys: [],
@@ -2168,29 +2186,36 @@ export default function ResultsRoutine() {
     setWeekViewSelectedDay(null);
   }, [programId, baselineForActiveProgram]);
 
+  const currentPhaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
+  const workoutsCompletedInPhase =
+    progress?.workoutsCompletedInPhase ?? completedSessions.length;
+
   const phaseGate = useMemo(() => {
     return canAdvancePhase({
-      phaseIndex: progress?.phaseIndex ?? program?.phaseIndex ?? 1,
+      phaseIndex: currentPhaseIndex,
       phaseStartedAt: progress?.phaseStartedAt ?? program?.createdAt ?? null,
       cyclesCompletedInPhase: progress?.cyclesCompletedInPhase ?? 0,
+      workoutsCompletedInPhase,
+      daysPerWeek: progress?.daysPerWeek ?? program?.daysPerWeek ?? activeDaysPerWeek,
     });
   }, [
-    program?.phaseIndex,
+    currentPhaseIndex,
     program?.createdAt,
-    progress?.phaseIndex,
+    program?.daysPerWeek,
+    activeDaysPerWeek,
     progress?.phaseStartedAt,
     progress?.cyclesCompletedInPhase,
+    progress?.daysPerWeek,
+    workoutsCompletedInPhase,
   ]);
 
   const phaseGateReason = useMemo(() => {
-    const phaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
-    if (phaseIndex >= MAX_PHASE_INDEX) {
-      return `Phase ${MAX_PHASE_INDEX} is active. Continue progressing through cycles and execution quality.`;
+    if (currentPhaseIndex >= MAX_PHASE_INDEX) {
+      return `Phase ${MAX_PHASE_INDEX} is active. Continue building completion and execution quality.`;
     }
     return formatPhaseGateReason(phaseGate);
-  }, [phaseGate, progress?.phaseIndex, program?.phaseIndex]);
+  }, [phaseGate, currentPhaseIndex]);
 
-  const currentPhaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
   const phaseControlUi = useMemo(
     () =>
       getPhaseControlUiState({
@@ -2199,6 +2224,52 @@ export default function ResultsRoutine() {
       }),
     [currentPhaseIndex, phaseGate]
   );
+  const phaseAdvanceReady = currentPhaseIndex < MAX_PHASE_INDEX && phaseGate.ok;
+  const nextPhaseIndex = Math.min(MAX_PHASE_INDEX, currentPhaseIndex + 1);
+  const phaseReadyDismissalKey = programId
+    ? buildPhaseReadyDismissalKey(programId, currentPhaseIndex)
+    : null;
+
+  useEffect(() => {
+    if (!programId || currentPhaseIndex >= MAX_PHASE_INDEX || !phaseGate.ok) {
+      setPhaseReadyNoticeOpen(false);
+      return;
+    }
+    const lastCompletedAt = localStorage.getItem("session_last_completed_at");
+    if (!lastCompletedAt) return;
+    const latestCompletionMatchesActiveProgram = currentProgramCompletedSessions.some(
+      (session) => session.completedAt === lastCompletedAt
+    );
+    if (!latestCompletionMatchesActiveProgram) return;
+    const storageKey = buildPhaseReadyDismissalKey(programId, currentPhaseIndex);
+    if (localStorage.getItem(storageKey)) return;
+
+    const noticeState = getPhaseReadyNoticeState({
+      programId,
+      phaseIndex: currentPhaseIndex,
+      gate: phaseGate,
+      previousWorkoutsCompletedInPhase: phaseGate.workoutsCompletedInPhase - 1,
+    });
+    if (!noticeState.shouldShow || !noticeState.storageKey) return;
+    localStorage.setItem(noticeState.storageKey, "shown");
+    setPhaseReadyNoticeOpen(true);
+  }, [programId, currentPhaseIndex, phaseGate, currentProgramCompletedSessions]);
+
+  const openPhaseAdvancePrompt = () => {
+    if (phaseReadyDismissalKey) {
+      localStorage.setItem(phaseReadyDismissalKey, "move-opened");
+    }
+    setPhaseReadyNoticeOpen(false);
+    setAdvanceMessage(previewSummary());
+    setAdvanceOpen(true);
+  };
+
+  const dismissPhaseReadyNotice = () => {
+    if (phaseReadyDismissalKey) {
+      localStorage.setItem(phaseReadyDismissalKey, "dismissed");
+    }
+    setPhaseReadyNoticeOpen(false);
+  };
 
   const heroGreeting = useMemo(() => {
     const hour = new Date().getHours();
@@ -2208,12 +2279,12 @@ export default function ResultsRoutine() {
   }, []);
 
   const phaseProgressPercent = useMemo(() => {
-    const cycleRatio =
-      phaseGate.minCycles > 0
-        ? phaseGate.cyclesCompletedInPhase / phaseGate.minCycles
+    const workoutRatio =
+      phaseGate.minWorkouts > 0
+        ? phaseGate.workoutsCompletedInPhase / phaseGate.minWorkouts
         : 0;
     const dayRatio = phaseGate.minDays > 0 ? phaseGate.daysSincePhaseStart / phaseGate.minDays : 0;
-    return Math.round(Math.min(1, (cycleRatio + dayRatio) / 2) * 100);
+    return Math.round(Math.min(1, (workoutRatio + dayRatio) / 2) * 100);
   }, [phaseGate]);
 
   const resolvedSessionProgramId = activeProgramId ?? program?.id ?? null;
@@ -2713,10 +2784,15 @@ export default function ResultsRoutine() {
   const phaseName = program.phaseName ?? getPhaseMetaByIndex(currentPhaseIndex).phaseName;
   const phaseDescription = getPhaseProfile(currentPhaseIndex).description;
   const cycleCurrent = Math.max(1, phaseGate.cyclesCompletedInPhase + 1);
-  const cycleTarget = Math.max(1, phaseGate.minCycles);
-  const cycleProgressPercent = Math.max(
+  const workoutProgressPercent = Math.max(
     0,
-    Math.min(100, Math.round((phaseGate.cyclesCompletedInPhase / Math.max(1, phaseGate.minCycles)) * 100))
+    Math.min(
+      100,
+      Math.round(
+        (phaseGate.workoutsCompletedInPhase / Math.max(1, phaseGate.minWorkouts)) *
+          100
+      )
+    )
   );
   const weekProgressPercent = Math.max(
     0,
@@ -2746,15 +2822,18 @@ export default function ResultsRoutine() {
       ? "Stay controlled this week and prioritize clean reps."
       : null;
 
-  const cyclesRemaining = Math.max(0, phaseGate.minCycles - phaseGate.cyclesCompletedInPhase);
+  const workoutsRemaining = Math.max(
+    0,
+    phaseGate.minWorkouts - phaseGate.workoutsCompletedInPhase
+  );
   const daysRemaining = Math.max(0, phaseGate.minDays - phaseGate.daysSincePhaseStart);
-  const readinessLow = Math.max(daysRemaining, cyclesRemaining * 6);
-  const readinessHigh = Math.max(daysRemaining, cyclesRemaining * 8);
   const readinessEstimate =
-    readinessHigh <= 0 ? "Ready now" : `${readinessLow}-${readinessHigh} days remaining`;
+    workoutsRemaining <= 0 && daysRemaining <= 0
+      ? "Ready now"
+      : `${workoutsRemaining} workout${workoutsRemaining === 1 ? "" : "s"} + ${daysRemaining} day${daysRemaining === 1 ? "" : "s"} remaining`;
 
-  const phaseProgressText = `Cycles: ${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} • Days: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
-  const phaseRequirementsText = `Complete ${phaseGate.minCycles} cycles and spend at least ${phaseGate.minDays} days in this phase.`;
+  const phaseProgressText = `Workouts: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
+  const phaseRequirementsText = `Complete ${phaseGate.minWorkouts} workouts and spend at least ${phaseGate.minDays} days in this phase.`;
   const movementPatternItems =
     routine.observed.slice(0, 4).length > 0
       ? routine.observed.slice(0, 4)
@@ -2903,7 +2982,7 @@ export default function ResultsRoutine() {
     `Pain trend: ${painTrendLabel} • Movement quality: ${movementQualityTrend}`,
   ];
   const progressPreviewChips = [
-    `${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} cycles`,
+    `${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} workouts`,
     `${completedCount}/${activeDaysPerWeek} days`,
     encouragementMessage ?? "Keep steady progress",
   ];
@@ -2982,8 +3061,8 @@ export default function ResultsRoutine() {
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
     `Cycle: ${program.cycleIndex ?? cycleCurrent}`,
     `Readiness for Corrective Progress: ${readinessScore}% (${readinessLabel})`,
-    phaseGate.minCycles > 0 && phaseGate.minDays > 0
-      ? `Phase gate: ${phaseGate.minCycles} cycles + ${phaseGate.minDays} days`
+    phaseGate.minWorkouts > 0 && phaseGate.minDays > 0
+      ? `Phase gate: ${phaseGate.minWorkouts} workouts + ${phaseGate.minDays} days`
       : "Phase gate: Progressing normally",
   ].filter((chip): chip is string => Boolean(chip));
 
@@ -3273,6 +3352,7 @@ export default function ResultsRoutine() {
         phaseIndex: program.phaseIndex ?? 1,
         phaseStartedAt: resetAtIso,
         cyclesCompletedInPhase: 0,
+        workoutsCompletedInPhase: 0,
         daysPerWeek: program.daysPerWeek,
         weekIndex: Math.max(1, program.weekIndex ?? 1),
         countedWeekKeys: [],
@@ -3423,11 +3503,11 @@ export default function ResultsRoutine() {
         <DashboardHero
           greeting={heroGreeting}
           phaseName={phaseName}
-          cycleCurrent={cycleCurrent}
-          cycleTarget={cycleTarget}
+          workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
+          workoutTarget={phaseGate.minWorkouts}
           weekCompletedDays={completedCount}
           weekTargetDays={activeDaysPerWeek}
-          cycleProgressPercent={cycleProgressPercent}
+          workoutProgressPercent={workoutProgressPercent}
           weekProgressPercent={weekProgressPercent}
           readinessScore={readinessScore}
           weeklyConsistencyCount={workoutsThisWeek}
@@ -3442,6 +3522,50 @@ export default function ResultsRoutine() {
       </div>
 
       <AssessmentStatusCard status={assessmentStatus} />
+
+      {phaseReadyNoticeOpen ? (
+        <section
+          className="ui-card ui-soft-surface-raised order-2 rounded-lg border-sky-300/35 p-5 text-slate-100 sm:p-6"
+          data-testid="phase-ready-notice"
+          aria-live="polite"
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="ui-kicker text-sky-100">Phase gate reached</p>
+              <h2 className="mt-1 text-xl font-semibold text-white">
+                You&apos;ve reached the Phase {nextPhaseIndex} gate
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                Both targets are satisfied: workouts {phaseGate.workoutsCompletedInPhase}/{phaseGate.minWorkouts} and days {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="primary" onClick={openPhaseAdvancePrompt}>
+                Move now
+              </Button>
+              <Button variant="secondary" onClick={dismissPhaseReadyNotice}>
+                Later
+              </Button>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {phaseAdvanceReady && !phaseReadyNoticeOpen ? (
+        <section
+          className="ui-soft-surface order-2 rounded-lg px-4 py-3 text-sm text-slate-200"
+          data-testid="phase-ready-persistent-cta"
+        >
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              Phase {nextPhaseIndex} is ready: workouts {phaseGate.workoutsCompletedInPhase}/{phaseGate.minWorkouts} and days {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}.
+            </p>
+            <Button variant="primary" onClick={openPhaseAdvancePrompt}>
+              Move to Phase {nextPhaseIndex}
+            </Button>
+          </div>
+        </section>
+      ) : null}
 
       {showSessionCompleteNotice ? (
         <section
@@ -4415,8 +4539,8 @@ export default function ResultsRoutine() {
           previewChips={progressPreviewChips}
         >
           <ProgressSummary
-            cyclesCompleted={phaseGate.cyclesCompletedInPhase}
-            cycleTarget={phaseGate.minCycles}
+            workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
+            workoutTarget={phaseGate.minWorkouts}
             consistencyPercent={consistencyPercent}
             completionPercent={adherencePercent}
             painTrend={painTrendLabel}
@@ -4435,7 +4559,7 @@ export default function ResultsRoutine() {
           subtitle="Requirements and readiness to move ahead."
           previewLines={[phaseRequirementsText, phaseGateReason]}
           previewChips={[
-            `${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} cycles`,
+            `${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} workouts`,
             `${phaseGate.daysSincePhaseStart}/${phaseGate.minDays} days`,
             readinessEstimate,
           ]}
@@ -4450,12 +4574,9 @@ export default function ResultsRoutine() {
             canMove={phaseControlUi.canMoveNextPhase}
             showSkip={phaseControlUi.showSkipPhaseOne}
             phaseProgressPercent={phaseProgressPercent}
-            cycleProgressPercent={cycleProgressPercent}
+            workoutProgressPercent={workoutProgressPercent}
             readinessEstimate={readinessEstimate}
-            onOpenMove={() => {
-              setAdvanceMessage(previewSummary());
-              setAdvanceOpen(true);
-            }}
+            onOpenMove={openPhaseAdvancePrompt}
             onOpenSkip={() => setSkipPhaseOneOpen(true)}
             uploadControl={
               phaseControlUi.canUploadPhotos ? (

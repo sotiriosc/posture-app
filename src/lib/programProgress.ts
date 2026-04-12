@@ -37,6 +37,10 @@ export const applyCompletedDayToProgramProgress = (params: {
     typeof priorProgress?.cyclesCompletedInPhase === "number"
       ? priorProgress.cyclesCompletedInPhase
       : 0;
+  const priorWorkouts =
+    typeof priorProgress?.workoutsCompletedInPhase === "number"
+      ? priorProgress.workoutsCompletedInPhase
+      : 0;
   const priorKeys = normalizeCountedWeekKeys(priorProgress?.countedWeekKeys);
   const completedDays = new Set(priorProgress?.completedDayIndices ?? []);
   completedDays.add(completedDayIndex);
@@ -73,6 +77,7 @@ export const applyCompletedDayToProgramProgress = (params: {
       phaseIndex,
       phaseStartedAt,
       cyclesCompletedInPhase,
+      workoutsCompletedInPhase: priorWorkouts + 1,
       daysPerWeek,
       weekIndex: nextWeekIndex,
       countedWeekKeys,
@@ -80,4 +85,3 @@ export const applyCompletedDayToProgramProgress = (params: {
     },
   };
 };
-

@@ -161,6 +161,7 @@ export default function QuestionnaireForm() {
         phaseIndex: nextProgram.phaseIndex ?? 1,
         phaseStartedAt: nowIso,
         cyclesCompletedInPhase: 0,
+        workoutsCompletedInPhase: 0,
         daysPerWeek: nextProgram.daysPerWeek,
         weekIndex: 1,
         countedWeekKeys: [],

@@ -1,29 +1,36 @@
 import type { ProgramProgress } from "@/lib/types";
 
 export type PhaseGateThreshold = {
-  minCycles: number;
   minDays: number;
+  minWorkouts: number;
 };
 
 export type PhaseAdvanceGateResult = {
   ok: boolean;
   reasons: string[];
-  minCycles: number;
   minDays: number;
+  minWorkouts: number;
+  workoutsCompletedInPhase: number;
   cyclesCompletedInPhase: number;
   daysSincePhaseStart: number;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-export const getPhaseGateThreshold = (phaseIndex: number): PhaseGateThreshold => {
+const normalizeDaysPerWeek = (daysPerWeek: number | null | undefined) => {
+  const parsed = Math.floor(daysPerWeek ?? 3);
+  return parsed === 4 || parsed === 5 ? parsed : 3;
+};
+
+export const getPhaseGateThreshold = (
+  phaseIndex: number,
+  daysPerWeek?: number | null
+): PhaseGateThreshold => {
+  const safeDaysPerWeek = normalizeDaysPerWeek(daysPerWeek);
   if (phaseIndex <= 1) {
-    return { minCycles: 2, minDays: 14 };
+    return { minDays: 30, minWorkouts: safeDaysPerWeek * 4 };
   }
-  if (phaseIndex === 2) {
-    return { minCycles: 4, minDays: 28 };
-  }
-  return { minCycles: 8, minDays: 56 };
+  return { minDays: 60, minWorkouts: safeDaysPerWeek * 8 };
 };
 
 const safeDaysSince = (phaseStartedAt: string | null | undefined, nowIso: string) => {
@@ -38,20 +45,26 @@ export const canAdvancePhase = (params: {
   phaseIndex?: number;
   phaseStartedAt?: string | null;
   cyclesCompletedInPhase?: number;
+  workoutsCompletedInPhase?: number;
+  daysPerWeek?: number | null;
 }, nowIso = new Date().toISOString()): PhaseAdvanceGateResult => {
   const {
     phaseIndex = 1,
     phaseStartedAt = null,
     cyclesCompletedInPhase = 0,
+    workoutsCompletedInPhase = 0,
+    daysPerWeek = 3,
   } = params;
-  const { minCycles, minDays } = getPhaseGateThreshold(phaseIndex);
+  const { minDays, minWorkouts } = getPhaseGateThreshold(phaseIndex, daysPerWeek);
   const safeCycles = Math.max(0, Math.floor(cyclesCompletedInPhase));
+  const safeWorkouts = Math.max(0, Math.floor(workoutsCompletedInPhase));
   if (!phaseStartedAt) {
     return {
       ok: false,
       reasons: ["Phase initialization incomplete"],
-      minCycles,
       minDays,
+      minWorkouts,
+      workoutsCompletedInPhase: safeWorkouts,
       cyclesCompletedInPhase: safeCycles,
       daysSincePhaseStart: 0,
     };
@@ -59,8 +72,8 @@ export const canAdvancePhase = (params: {
   const daysSincePhaseStart = safeDaysSince(phaseStartedAt, nowIso);
   const reasons: string[] = [];
 
-  if (safeCycles < minCycles) {
-    reasons.push(`Complete ${minCycles} cycles in this phase.`);
+  if (safeWorkouts < minWorkouts) {
+    reasons.push(`Complete ${minWorkouts} workouts in this phase.`);
   }
   if (daysSincePhaseStart < minDays) {
     reasons.push(`Spend at least ${minDays} days in this phase.`);
@@ -69,8 +82,9 @@ export const canAdvancePhase = (params: {
   return {
     ok: reasons.length === 0,
     reasons,
-    minCycles,
     minDays,
+    minWorkouts,
+    workoutsCompletedInPhase: safeWorkouts,
     cyclesCompletedInPhase: safeCycles,
     daysSincePhaseStart,
   };
@@ -88,6 +102,7 @@ export const skipPhase1 = (
     phaseIndex: 2,
     phaseStartedAt: nowIso,
     cyclesCompletedInPhase: 0,
+    workoutsCompletedInPhase: 0,
     weekIndex: 0,
     countedWeekKeys: [],
     updatedAt: nowIso,

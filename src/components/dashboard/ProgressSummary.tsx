@@ -7,8 +7,8 @@ type ProgressSummaryProps = {
   painTrendPercent: number;
   movementQualityTrend: string;
   movementQualityPercent: number;
-  cyclesCompleted: number;
-  cycleTarget: number;
+  workoutsCompletedInPhase: number;
+  workoutTarget: number;
 };
 
 export default function ProgressSummary({
@@ -18,13 +18,13 @@ export default function ProgressSummary({
   painTrendPercent,
   movementQualityTrend,
   movementQualityPercent,
-  cyclesCompleted,
-  cycleTarget,
+  workoutsCompletedInPhase,
+  workoutTarget,
 }: ProgressSummaryProps) {
   return (
     <div className="space-y-3 text-sm text-slate-700">
       <p>
-        Cycles completed: <span className="font-semibold">{cyclesCompleted}/{cycleTarget}</span>
+        Workouts in phase: <span className="font-semibold">{workoutsCompletedInPhase}/{workoutTarget}</span>
       </p>
 
       <ProgressBar label="Consistency" value={consistencyPercent} max={100} animate />

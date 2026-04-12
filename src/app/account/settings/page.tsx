@@ -75,6 +75,7 @@ export default function AccountSettingsPage() {
         phaseIndex: activeProgram.phaseIndex ?? 1,
         phaseStartedAt: resetAtIso,
         cyclesCompletedInPhase: 0,
+        workoutsCompletedInPhase: 0,
         daysPerWeek: activeProgram.daysPerWeek,
         weekIndex: Math.max(1, activeProgram.weekIndex ?? 1),
         countedWeekKeys: [],

@@ -242,6 +242,12 @@ describe("session tracking integration flow", () => {
     expect(savedLog.felt).toBe("pain");
     expect(savedLog.painLocation).toBe("shoulder");
     expect(savedLog.nextTimeGuidance).toBeTruthy();
+    expect(
+      mocks.progressByProgramId.get("program-strength")?.workoutsCompletedInPhase
+    ).toBe(1);
+    expect(
+      mocks.progressByProgramId.get("program-strength")?.cyclesCompletedInPhase
+    ).toBe(0);
 
     cleanup();
     mocks.searchParams = "programId=program-strength&dayIndex=0";

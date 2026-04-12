@@ -12,7 +12,7 @@ type PhaseProgressCardProps = {
   canMove: boolean;
   showSkip: boolean;
   phaseProgressPercent: number;
-  cycleProgressPercent: number;
+  workoutProgressPercent: number;
   readinessEstimate: string;
   onOpenMove: () => void;
   onOpenSkip: () => void;
@@ -29,7 +29,7 @@ export default function PhaseProgressCard({
   canMove,
   showSkip,
   phaseProgressPercent,
-  cycleProgressPercent,
+  workoutProgressPercent,
   readinessEstimate,
   onOpenMove,
   onOpenSkip,
@@ -51,8 +51,8 @@ export default function PhaseProgressCard({
           animate
         />
         <ProgressBar
-          label="Cycle progress"
-          value={cycleProgressPercent}
+          label="Workout progress"
+          value={workoutProgressPercent}
           max={100}
           compact
           animate
