@@ -102,7 +102,7 @@ function CurrentSavedProgramSnapshotLoadingCard({
 }) {
   return (
     <section
-      className="ui-card order-2 p-5"
+      className="ui-card order-10 p-4 sm:p-5"
       data-testid="current-saved-week-loading-card"
       aria-live="polite"
     >
@@ -122,6 +122,124 @@ function CurrentSavedProgramSnapshotLoadingCard({
       <p className="mt-2 text-[11px] text-slate-500">
         Ready when the full saved snapshot is available.
       </p>
+    </section>
+  );
+}
+
+type AssessmentStatusTone = "photo" | "fallback" | "failed" | "loading";
+
+type AssessmentStatusInfo = {
+  tone: AssessmentStatusTone;
+  title: string;
+  body: string;
+  chips: string[];
+};
+
+const photoViewLabelByKey: Record<string, string> = {
+  front: "Front",
+  side: "Side",
+  back: "Back",
+};
+
+const orderedPhotoViewKeys = ["front", "side", "back"];
+
+const formatDetectedPhotoViews = (views: string[]) => {
+  if (!views.length) return "none";
+  return views.map((view) => photoViewLabelByKey[view] ?? view).join(" / ");
+};
+
+const formatConfidencePercent = (score: number | null | undefined) => {
+  if (typeof score !== "number" || !Number.isFinite(score)) return null;
+  return `${Math.round(Math.max(0, Math.min(1, score)) * 100)}% confidence`;
+};
+
+const detectPoseAnalysisViews = (analysis: PoseAnalysis | null) => {
+  if (!analysis) return [] as string[];
+  const views = new Set<string>();
+  analysis.observations.forEach((item) => {
+    const match = item.match(/^(front|side|back):/i);
+    if (match) views.add(match[1].toLowerCase());
+  });
+  const metricViewMap: Record<string, Array<keyof PoseAnalysis["metrics"]>> = {
+    front: ["shoulderHeightDelta", "hipHeightDelta", "kneeAlignmentDelta"],
+    side: ["headForwardOffset", "torsoLeanAngle", "hipToShoulderAlignment"],
+    back: ["scapularSymmetry", "hipShift"],
+  };
+  Object.entries(metricViewMap).forEach(([view, metricKeys]) => {
+    if (
+      metricKeys.some((key) => {
+        const value = analysis.metrics[key];
+        return typeof value === "number" && Number.isFinite(value);
+      })
+    ) {
+      views.add(view);
+    }
+  });
+  return orderedPhotoViewKeys.filter((view) => views.has(view));
+};
+
+const detectAssessmentReportPhotoViews = (report: AssessmentReport | null) => {
+  if (!report) return [] as string[];
+  const views = new Set<string>();
+  report.observations.forEach((observation) => {
+    observation.evidence.forEach((item) => {
+      const match = item.match(/^View:\s*(front|side|back)$/i);
+      if (match) views.add(match[1].toLowerCase());
+    });
+  });
+  return orderedPhotoViewKeys.filter((view) => views.has(view));
+};
+
+const hasPhotoDerivedAssessmentReport = (report: AssessmentReport | null) =>
+  Boolean(
+    report?.observations.some((observation) => {
+      if (observation.id.startsWith("pose-")) return true;
+      return observation.evidence.some((item) => {
+        const lower = item.toLowerCase();
+        return lower.startsWith("scan:") || lower.startsWith("view:");
+      });
+    })
+  );
+
+function AssessmentStatusCard({ status }: { status: AssessmentStatusInfo }) {
+  const toneClasses: Record<AssessmentStatusTone, string> = {
+    photo: "border-emerald-200 bg-emerald-50/80 text-emerald-950",
+    fallback: "border-slate-200 bg-slate-50 text-slate-900",
+    failed: "border-amber-200 bg-amber-50/80 text-amber-950",
+    loading: "border-blue-200 bg-blue-50/80 text-blue-950",
+  };
+  const chipClasses: Record<AssessmentStatusTone, string> = {
+    photo: "border-emerald-200 bg-white/80 text-emerald-800",
+    fallback: "border-slate-200 bg-white text-slate-700",
+    failed: "border-amber-200 bg-white/80 text-amber-800",
+    loading: "border-blue-200 bg-white/80 text-blue-800",
+  };
+
+  return (
+    <section
+      className={`ui-card order-2 border px-4 py-3 sm:px-5 ${toneClasses[status.tone]}`}
+      data-testid="assessment-status-card"
+      aria-live="polite"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide opacity-70">
+            Assessment Status
+          </p>
+          <h2 className="mt-1 text-base font-semibold">{status.title}</h2>
+          <p className="mt-1 text-sm leading-5 opacity-85">{status.body}</p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-1.5 sm:max-w-xs sm:justify-end">
+          {status.chips.map((chip) => (
+            <span
+              key={chip}
+              className={`rounded-md border px-2 py-1 text-xs font-medium ${chipClasses[status.tone]}`}
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -860,6 +978,77 @@ export default function ResultsRoutine() {
   const programGenerationInputsReady = Boolean(
     data && questionnaireSignature && (poseState.report || poseState.error)
   );
+  const uploadedPhotoViews = useMemo(
+    () =>
+      orderedPhotoViewKeys.filter(
+        (view) => Boolean(photos[view as keyof typeof photos])
+      ),
+    [photos]
+  );
+  const detectedPoseViews = useMemo(() => {
+    const fromAnalysis = detectPoseAnalysisViews(poseState.analysis);
+    if (fromAnalysis.length) return fromAnalysis;
+    return detectAssessmentReportPhotoViews(poseState.report);
+  }, [poseState.analysis, poseState.report]);
+  const assessmentStatus = useMemo<AssessmentStatusInfo>(() => {
+    const uploadedViewsLabel = formatDetectedPhotoViews(uploadedPhotoViews);
+    const detectedViewsLabel = formatDetectedPhotoViews(detectedPoseViews);
+    const confidenceChip = formatConfidencePercent(poseState.analysis?.confidenceScore);
+    const hasPhotoAnalysis =
+      !poseState.error &&
+      (detectedPoseViews.length > 0 ||
+        hasPhotoDerivedAssessmentReport(poseState.report));
+
+    if (poseState.loading && uploadedPhotoViews.length > 0) {
+      return {
+        tone: "loading",
+        title: "Checking photos",
+        body: "Photo analysis is still running. The program status will settle when it finishes.",
+        chips: [`Uploaded: ${uploadedViewsLabel}`],
+      };
+    }
+
+    if (poseState.error) {
+      return {
+        tone: "failed",
+        title: "Photo analysis failed",
+        body: "Photo analysis could not be completed. Program used questionnaire fallback.",
+        chips: ["Questionnaire fallback", uploadedPhotoViews.length ? `Uploaded: ${uploadedViewsLabel}` : "No photos active"],
+      };
+    }
+
+    if (hasPhotoAnalysis) {
+      return {
+        tone: "photo",
+        title: "Photos analyzed",
+        body: "Program informed by uploaded posture photos and questionnaire inputs.",
+        chips: [
+          detectedPoseViews.length
+            ? `Views: ${detectedViewsLabel}`
+            : "Photo-derived report",
+          confidenceChip,
+        ].filter((chip): chip is string => Boolean(chip)),
+      };
+    }
+
+    return {
+      tone: "fallback",
+      title: "Questionnaire-only fallback",
+      body: "Program currently informed by questionnaire inputs only.",
+      chips: [
+        uploadedPhotoViews.length
+          ? "No usable photo analysis"
+          : "No photos uploaded",
+      ],
+    };
+  }, [
+    detectedPoseViews,
+    poseState.analysis?.confidenceScore,
+    poseState.error,
+    poseState.loading,
+    poseState.report,
+    uploadedPhotoViews,
+  ]);
 
   const dayPreviewRecommendations = (() => {
     if (!program) return [];
@@ -2947,6 +3136,8 @@ export default function ResultsRoutine() {
         />
       </div>
 
+      <AssessmentStatusCard status={assessmentStatus} />
+
       {showSessionCompleteNotice ? (
         <section
           className={`order-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-900 transition-opacity duration-300 ${
@@ -2987,6 +3178,8 @@ export default function ResultsRoutine() {
               copyLabel="Copy Full Progression Snapshot"
               onCopy={handleCopyCurrentSavedWeek}
               copyStatus={currentWeekCopyStatus}
+              className="order-10 p-4 sm:p-5"
+              bodyClassName="mt-3 max-h-56 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3"
             />
           ) : (
             <CurrentSavedProgramSnapshotLoadingCard
@@ -2996,9 +3189,14 @@ export default function ResultsRoutine() {
         </>
       ) : null}
 
-      <section id="week-view" ref={weekViewSectionRef} className="ui-card order-2 p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-base font-semibold text-slate-900">Week View</h3>
+      <section id="week-view" ref={weekViewSectionRef} className="ui-card order-4 p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              This Week
+            </p>
+            <h3 className="mt-1 text-lg font-semibold text-slate-900">Week View</h3>
+          </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary" onClick={focusTodayPlanInWeekView}>
               View today&apos;s plan
@@ -3028,7 +3226,7 @@ export default function ResultsRoutine() {
             Current day: {sessionLaunchDayIndex + 1}
           </span>
         </div>
-        <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
           {program.week.map((day) => {
             const isCompleted = completedDaySet.has(day.dayIndex);
             const isInProgress =
@@ -3071,7 +3269,7 @@ export default function ResultsRoutine() {
                   openWeekViewDayDetails(day.dayIndex, { scrollToDetails: true });
                 }}
                 disabled={isLocked}
-                className={`min-h-[88px] rounded-2xl border px-3 py-2.5 text-left transition ${
+                className={`min-h-[96px] rounded-lg border px-3.5 py-3 text-left transition ${
                   isCompleted
                     ? "border-emerald-300 bg-emerald-50"
                     : isInProgress
@@ -3128,7 +3326,7 @@ export default function ResultsRoutine() {
         {weekViewDetailsOpen && weekViewDay ? (
           <div
             ref={weekViewDetailsRef}
-            className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3"
+            className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3"
           >
             <div className="flex items-center justify-between gap-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -3150,7 +3348,7 @@ export default function ResultsRoutine() {
                 return (
                   <div
                     key={item.key}
-                    className="rounded-lg border border-slate-200 bg-white px-3 py-2"
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2.5"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-sm font-semibold text-slate-900">{item.name}</p>
@@ -3177,7 +3375,7 @@ export default function ResultsRoutine() {
         ) : null}
       </section>
 
-      <div className="order-3">
+      <div className="order-5">
         <DailyInsightCard
           insight={dailyInsight}
           coachNotes={coachNotes}
@@ -3185,16 +3383,23 @@ export default function ResultsRoutine() {
         />
       </div>
 
-      <section className="ui-card order-4 p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          Corrective Focus Summary
-        </h2>
-        <div className="mt-2 space-y-1.5">
+      <section className="ui-card order-3 p-4 sm:p-5">
+        <div className="flex flex-col gap-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Corrective Focus
+          </p>
+          <h2 className="text-lg font-semibold text-slate-900">
+            Corrective Focus Summary
+          </h2>
+        </div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {coachSummaryBullets.map((item) => (
-            <p key={item.label} className="text-sm text-slate-700">
-              <span className="font-medium text-slate-900">{item.label}:</span>{" "}
-              {item.text}
-            </p>
+            <div key={item.label} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {item.label}
+              </p>
+              <p className="mt-1 text-sm text-slate-700">{item.text}</p>
+            </div>
           ))}
         </div>
         {hasAdaptationCallout ? (

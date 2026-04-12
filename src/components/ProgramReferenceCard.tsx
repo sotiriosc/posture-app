@@ -15,6 +15,8 @@ type ProgramReferenceCardProps = {
   copyLabel?: string;
   onCopy?: () => void;
   copyStatus?: string | null;
+  className?: string;
+  bodyClassName?: string;
 };
 
 export default function ProgramReferenceCard({
@@ -30,9 +32,11 @@ export default function ProgramReferenceCard({
   copyLabel,
   onCopy,
   copyStatus,
+  className = "order-2 p-5",
+  bodyClassName = "mt-3 max-h-96 overflow-auto rounded-xl border border-slate-200 bg-slate-50 p-3",
 }: ProgramReferenceCardProps) {
   return (
-    <section className="ui-card order-2 p-5" data-testid={cardTestId}>
+    <section className={`ui-card ${className}`} data-testid={cardTestId}>
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-base font-semibold text-slate-900">{title}</h3>
         <div className="flex flex-wrap justify-end gap-2">
@@ -55,7 +59,7 @@ export default function ProgramReferenceCard({
         </p>
       ) : null}
       {isOpen ? (
-        <div className="mt-3 max-h-96 overflow-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <div className={bodyClassName}>
           <pre
             className="whitespace-pre-wrap text-[11px] leading-5 text-slate-700"
             data-testid={bodyTestId}

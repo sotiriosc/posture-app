@@ -425,6 +425,51 @@ describe("results operational readiness", () => {
     expect(currentSnapshot).toContain("PHASE 3:");
   });
 
+  test("assessment status makes questionnaire-only fallback explicit", async () => {
+    const generatedProgram = buildSavedProgram("results-program");
+    mocks.generateProgram.mockReturnValue(buildMockGenerationResult(generatedProgram));
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("current-saved-week-body")).toBeTruthy();
+    });
+
+    const status = screen.getByTestId("assessment-status-card").textContent ?? "";
+    expect(status).toContain("Questionnaire-only fallback");
+    expect(status).toContain("Program currently informed by questionnaire inputs only.");
+    expect(status).toContain("No photos uploaded");
+  });
+
+  test("assessment status surfaces photo-derived report evidence", async () => {
+    const generatedProgram = buildSavedProgram("results-program");
+    mocks.loadTrainingSnapshot.mockResolvedValue({
+      assessment: {
+        observations: [
+          {
+            id: "pose-forward-head",
+            evidence: ["View: side", "Scan: head position offset"],
+          },
+        ],
+        priorities: ["pose-forward-head"],
+        summary: "Photo-derived posture report.",
+        disclaimers: [],
+      },
+    });
+    mocks.generateProgram.mockReturnValue(buildMockGenerationResult(generatedProgram));
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("current-saved-week-body")).toBeTruthy();
+    });
+
+    const status = screen.getByTestId("assessment-status-card").textContent ?? "";
+    expect(status).toContain("Photos analyzed");
+    expect(status).toContain("Program informed by uploaded posture photos and questionnaire inputs.");
+    expect(status).toContain("Views: Side");
+  });
+
   test("repeated initial async loads only settle one active generated program", async () => {
     const deferredSignals: Array<Deferred<SignalsPayload>> = [];
     mocks.buildSignalsFromLocalState.mockImplementation(() => {
