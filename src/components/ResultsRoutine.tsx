@@ -697,6 +697,19 @@ const parseDayIndexFromSession = (session: SessionRecord) => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
+const deriveWorkoutsCompletedInPhase = (
+  sessions: SessionRecord[],
+  phaseStartedAt: string | null | undefined
+) => {
+  const phaseStartedAtMs = toEpochMs(phaseStartedAt);
+  return sessions.filter((session) => {
+    if (!session.completedAt) return false;
+    if (Number.isNaN(phaseStartedAtMs)) return true;
+    const completedAtMs = toEpochMs(session.completedAt);
+    return !Number.isNaN(completedAtMs) && completedAtMs >= phaseStartedAtMs;
+  }).length;
+};
+
 const hasValidWeekStructure = (program: Program) => {
   const targetDays = program.daysPerWeek;
   if (!Array.isArray(program.week) || program.week.length !== targetDays) {
@@ -2016,19 +2029,26 @@ export default function ResultsRoutine() {
       if (cancelled) return;
       if (stored) {
         const nowIso = new Date().toISOString();
+        const phaseStartedAt =
+          stored.phaseStartedAt ?? progressProgram.createdAt ?? nowIso;
+        const storedWorkoutsCompletedInPhase =
+          typeof stored.workoutsCompletedInPhase === "number"
+            ? stored.workoutsCompletedInPhase
+            : 0;
+        const backfilledWorkoutsCompletedInPhase =
+          deriveWorkoutsCompletedInPhase(currentProgramCompletedSessions, phaseStartedAt);
         const normalized: ProgramProgress = {
           ...stored,
           phaseIndex: stored.phaseIndex ?? (progressProgram.phaseIndex ?? 1),
-          phaseStartedAt:
-            stored.phaseStartedAt ?? progressProgram.createdAt ?? nowIso,
+          phaseStartedAt,
           cyclesCompletedInPhase:
             typeof stored.cyclesCompletedInPhase === "number"
               ? stored.cyclesCompletedInPhase
               : 0,
-          workoutsCompletedInPhase:
-            typeof stored.workoutsCompletedInPhase === "number"
-              ? stored.workoutsCompletedInPhase
-              : 0,
+          workoutsCompletedInPhase: Math.max(
+            storedWorkoutsCompletedInPhase,
+            backfilledWorkoutsCompletedInPhase
+          ),
           daysPerWeek: stored.daysPerWeek ?? progressProgram.daysPerWeek,
           weekIndex: Math.max(1, stored.weekIndex ?? 1),
           countedWeekKeys: Array.isArray(stored.countedWeekKeys)
@@ -2052,15 +2072,19 @@ export default function ResultsRoutine() {
         }
       } else {
         const nowIso = new Date().toISOString();
+        const phaseStartedAt = progressProgram.createdAt ?? nowIso;
         const initial: ProgramProgress = {
           programId,
           lastCompletedDayIndex: null,
           nextDayIndex: 0,
           completedDayIndices: [],
           phaseIndex: progressProgram.phaseIndex ?? 1,
-          phaseStartedAt: progressProgram.createdAt ?? nowIso,
+          phaseStartedAt,
           cyclesCompletedInPhase: 0,
-          workoutsCompletedInPhase: 0,
+          workoutsCompletedInPhase: deriveWorkoutsCompletedInPhase(
+            currentProgramCompletedSessions,
+            phaseStartedAt
+          ),
           daysPerWeek: progressProgram.daysPerWeek,
           weekIndex: 1,
           countedWeekKeys: [],
@@ -2074,7 +2098,7 @@ export default function ResultsRoutine() {
     return () => {
       cancelled = true;
     };
-  }, [programId]);
+  }, [programId, currentProgramCompletedSessions]);
 
   useEffect(() => {
     return () => {

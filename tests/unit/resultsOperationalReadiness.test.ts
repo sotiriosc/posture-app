@@ -1037,6 +1037,62 @@ describe("results operational readiness", () => {
     expect(screen.queryByText(/unlocks with real use/i)).toBeNull();
   });
 
+  test("backfills phase workout progress from completed current-phase sessions", async () => {
+    const fourDayQuestionnaire = buildQuestionnaire({ daysPerWeek: 4 as const });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(fourDayQuestionnaire));
+    const savedProgram = buildSavedProgram("phase-workout-backfill-program", {
+      questionnaire: fourDayQuestionnaire,
+      daysPerWeek: 4,
+    });
+    const completedSessions = [0, 1, 2, 3].map((dayIndex) =>
+      buildSession(
+        `completed-day-${dayIndex + 1}`,
+        savedProgram.id,
+        dayIndex,
+        `2026-04-12T0${dayIndex + 1}:30:00.000Z`
+      )
+    );
+
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: savedProgram.id,
+        programId: savedProgram.id,
+        activeGenerationMode: "live_initial",
+        selectedDay: 0,
+        questionnaireSignature: buildQuestionnaireSignature(fourDayQuestionnaire),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(savedProgram);
+    mocks.getProgramProgress.mockResolvedValue(
+      buildProgress(savedProgram, {
+        daysPerWeek: 4,
+        nextDayIndex: 0,
+        cyclesCompletedInPhase: 1,
+        workoutsCompletedInPhase: 1,
+      })
+    );
+    mocks.listSessions.mockResolvedValue(completedSessions);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(screen.getByText("4 completed / 4")).toBeTruthy();
+    });
+    await waitFor(() => {
+      expect(screen.getByText("Workouts: 4 / 16 in this phase")).toBeTruthy();
+    });
+    await waitFor(() => {
+      expect(mocks.saveProgramProgress).toHaveBeenCalledWith(
+        expect.objectContaining({
+          programId: savedProgram.id,
+          workoutsCompletedInPhase: 4,
+        })
+      );
+    });
+  });
+
   test("history search can switch from current program to all history", async () => {
     const savedProgram = buildSavedProgram("current-history-program", {
       exerciseId: "band-row",
