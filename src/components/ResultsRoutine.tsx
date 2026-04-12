@@ -95,6 +95,44 @@ const defaultRoutine: Routine = {
 
 type ProgramWeekDay = Program["week"][number];
 
+function CurrentSavedProgramSnapshotLoadingCard({
+  progressPercent,
+  message = "Finalizing saved program snapshot.",
+}: {
+  progressPercent: number;
+  message?: string;
+}) {
+  const clampedProgress = Math.max(0, Math.min(100, Math.round(progressPercent)));
+  return (
+    <section
+      className="ui-card order-2 p-5"
+      data-testid="current-saved-week-loading-card"
+      aria-live="polite"
+    >
+      <h3 className="text-base font-semibold text-slate-900">
+        Current Saved Program Snapshot
+      </h3>
+      <p className="mt-1 text-xs text-slate-600">{message}</p>
+      <div
+        className="mt-4 h-2 w-full overflow-hidden rounded-full border border-slate-300/70 bg-slate-200/80"
+        role="progressbar"
+        aria-label="Current saved program snapshot status"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={clampedProgress}
+      >
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-slate-600 via-slate-500 to-slate-400 transition-[width] duration-700 ease-out"
+          style={{ width: `${clampedProgress}%` }}
+        />
+      </div>
+      <p className="mt-2 text-[11px] text-slate-500">
+        The full snapshot appears here when the active saved program is ready.
+      </p>
+    </section>
+  );
+}
+
 const formatReferencePrepItems = (
   items?: Array<{ name: string; reps?: string; durationSec?: number }>
 ) => {
@@ -2020,6 +2058,16 @@ export default function ResultsRoutine() {
 
   const currentSavedWeekSnapshotText = currentSavedWeekSnapshot.text;
   const isCurrentSavedWeekSnapshotSettled = currentSavedWeekSnapshot.settled;
+  const currentSavedWeekSnapshotLoadingPercent = (() => {
+    if (!program) return programGenerationInputsReady ? 35 : 20;
+    if (initialProgramLoadPending) return 60;
+    if (reconcileProgramPending) return 75;
+    if (settledProgramId === program.id) return 92;
+    return 85;
+  })();
+  const currentSavedWeekSnapshotLoadingMessage = program
+    ? "Finalizing saved program snapshot."
+    : "Building your saved weekly program.";
 
   const handleCopyCurrentSavedWeek = useCallback(() => {
     if (!isCurrentSavedWeekSnapshotSettled || !currentSavedWeekSnapshotText) return;
@@ -2326,8 +2374,14 @@ export default function ResultsRoutine() {
       );
     }
     return (
-      <div className="ui-card p-6">
-        <p className="text-sm text-slate-600">Loading your weekly program...</p>
+      <div className="space-y-4">
+        <div className="ui-card p-6">
+          <p className="text-sm text-slate-600">Loading your weekly program...</p>
+        </div>
+        <CurrentSavedProgramSnapshotLoadingCard
+          progressPercent={currentSavedWeekSnapshotLoadingPercent}
+          message={currentSavedWeekSnapshotLoadingMessage}
+        />
       </div>
     );
   }
@@ -2943,7 +2997,12 @@ export default function ResultsRoutine() {
               onCopy={handleCopyCurrentSavedWeek}
               copyStatus={currentWeekCopyStatus}
             />
-          ) : null}
+          ) : (
+            <CurrentSavedProgramSnapshotLoadingCard
+              progressPercent={currentSavedWeekSnapshotLoadingPercent}
+              message={currentSavedWeekSnapshotLoadingMessage}
+            />
+          )}
         </>
       ) : null}
 

@@ -569,6 +569,12 @@ describe("results operational readiness", () => {
 
     render(React.createElement(ResultsRoutine));
     await waitFor(() => expect(deferredSignals).toHaveLength(1));
+    expect(screen.getByTestId("current-saved-week-loading-card")).toBeTruthy();
+    expect(
+      screen.getByRole("progressbar", {
+        name: /Current saved program snapshot status/i,
+      })
+    ).toBeTruthy();
     expect(screen.queryByTestId("current-saved-week-body")).toBeNull();
 
     deferredSignals[0].resolve(buildSignalsPayload());
@@ -579,6 +585,7 @@ describe("results operational readiness", () => {
       expect(snapshot).toContain("Generation Mode: live_initial");
       expect(snapshot).toContain("Initial Live Variation Slot: settled-snapshot-program");
     });
+    expect(screen.queryByTestId("current-saved-week-loading-card")).toBeNull();
   });
 
   test("copy action captures the settled active program instead of an intermediate generation", async () => {
