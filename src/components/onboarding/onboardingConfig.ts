@@ -127,7 +127,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
         items: [
           "Phase: where you are in pattern mastery",
           "Week View: your weekly corrective structure",
-          "Readiness for Corrective Progress: how prepared you are",
+          "Training readiness: how prepared you are",
           "System Adjustments: what the plan changed and why",
         ],
       },

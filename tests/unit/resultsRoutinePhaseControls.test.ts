@@ -23,17 +23,17 @@ describe("results routine phase controls", () => {
     expect(confirmed.nextPhaseIndex).toBe(2);
   });
 
-  test("advancing remains blocked until both workout and day gates pass", () => {
-    const missingWorkouts = canAdvancePhase(
+  test("advancing passes when either workout or day gate is satisfied", () => {
+    const blocked = canAdvancePhase(
       {
         phaseIndex: 1,
-        phaseStartedAt: "2026-01-01T00:00:00.000Z",
+        phaseStartedAt: "2026-01-25T00:00:00.000Z",
         workoutsCompletedInPhase: 11,
         daysPerWeek: 3,
       },
       "2026-02-01T00:00:00.000Z"
     );
-    const missingDays = canAdvancePhase(
+    const passedByWorkouts = canAdvancePhase(
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-25T00:00:00.000Z",
@@ -42,19 +42,21 @@ describe("results routine phase controls", () => {
       },
       "2026-02-01T00:00:00.000Z"
     );
-    const passed = canAdvancePhase(
+    const passedByDays = canAdvancePhase(
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-01T00:00:00.000Z",
-        workoutsCompletedInPhase: 12,
+        workoutsCompletedInPhase: 1,
         daysPerWeek: 3,
       },
       "2026-02-01T00:00:00.000Z"
     );
 
-    expect(missingWorkouts.ok).toBe(false);
-    expect(missingDays.ok).toBe(false);
-    expect(passed.ok).toBe(true);
+    expect(blocked.ok).toBe(false);
+    expect(passedByWorkouts.ok).toBe(true);
+    expect(passedByWorkouts.satisfiedBy).toBe("workouts");
+    expect(passedByDays.ok).toBe(true);
+    expect(passedByDays.satisfiedBy).toBe("days");
   });
 
   test("phase 1 hides skip and disables upload/photos and phase move until gate passes", () => {
@@ -122,16 +124,17 @@ describe("results routine phase controls", () => {
     expect(ui.canMoveNextPhase).toBe(false);
   });
 
-  test("phase-ready notice appears only when a workout flips the gate", () => {
+  test("phase-ready notice appears when a workout flips the OR gate", () => {
     const gate = canAdvancePhase(
       {
         phaseIndex: 1,
-        phaseStartedAt: "2026-01-01T00:00:00.000Z",
+        phaseStartedAt: "2026-01-25T00:00:00.000Z",
         workoutsCompletedInPhase: 12,
         daysPerWeek: 3,
       },
       "2026-02-01T00:00:00.000Z"
     );
+    expect(gate.satisfiedBy).toBe("workouts");
 
     expect(
       getPhaseReadyNoticeState({
@@ -160,6 +163,34 @@ describe("results routine phase controls", () => {
         gate,
         previousWorkoutsCompletedInPhase: 11,
         dismissed: true,
+      }).shouldShow
+    ).toBe(false);
+  });
+
+  test("day-only gate pass enables the persistent move action without replaying workout notice", () => {
+    const gate = canAdvancePhase(
+      {
+        phaseIndex: 1,
+        phaseStartedAt: "2026-01-01T00:00:00.000Z",
+        workoutsCompletedInPhase: 1,
+        daysPerWeek: 3,
+      },
+      "2026-02-01T00:00:00.000Z"
+    );
+    expect(gate.ok).toBe(true);
+    expect(gate.satisfiedBy).toBe("days");
+    expect(
+      getPhaseControlUiState({
+        phaseIndex: 1,
+        gate,
+      }).canMoveNextPhase
+    ).toBe(true);
+    expect(
+      getPhaseReadyNoticeState({
+        programId: "program-1",
+        phaseIndex: 1,
+        gate,
+        previousWorkoutsCompletedInPhase: 0,
       }).shouldShow
     ).toBe(false);
   });

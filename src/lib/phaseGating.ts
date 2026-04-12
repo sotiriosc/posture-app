@@ -5,6 +5,8 @@ export type PhaseGateThreshold = {
   minWorkouts: number;
 };
 
+export type PhaseGateSatisfiedBy = "workouts" | "days" | "both" | null;
+
 export type PhaseAdvanceGateResult = {
   ok: boolean;
   reasons: string[];
@@ -13,6 +15,7 @@ export type PhaseAdvanceGateResult = {
   workoutsCompletedInPhase: number;
   cyclesCompletedInPhase: number;
   daysSincePhaseStart: number;
+  satisfiedBy: PhaseGateSatisfiedBy;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -58,35 +61,36 @@ export const canAdvancePhase = (params: {
   const { minDays, minWorkouts } = getPhaseGateThreshold(phaseIndex, daysPerWeek);
   const safeCycles = Math.max(0, Math.floor(cyclesCompletedInPhase));
   const safeWorkouts = Math.max(0, Math.floor(workoutsCompletedInPhase));
-  if (!phaseStartedAt) {
-    return {
-      ok: false,
-      reasons: ["Phase initialization incomplete"],
-      minDays,
-      minWorkouts,
-      workoutsCompletedInPhase: safeWorkouts,
-      cyclesCompletedInPhase: safeCycles,
-      daysSincePhaseStart: 0,
-    };
-  }
   const daysSincePhaseStart = safeDaysSince(phaseStartedAt, nowIso);
-  const reasons: string[] = [];
+  const workoutsSatisfied = safeWorkouts >= minWorkouts;
+  const daysSatisfied = daysSincePhaseStart >= minDays;
+  const satisfiedBy: PhaseGateSatisfiedBy =
+    workoutsSatisfied && daysSatisfied
+      ? "both"
+      : workoutsSatisfied
+      ? "workouts"
+      : daysSatisfied
+      ? "days"
+      : null;
+  const unmetReasons: string[] = [];
 
-  if (safeWorkouts < minWorkouts) {
-    reasons.push(`Complete ${minWorkouts} workouts in this phase.`);
+  if (!workoutsSatisfied) {
+    unmetReasons.push(`Complete ${minWorkouts} workouts in this phase.`);
   }
-  if (daysSincePhaseStart < minDays) {
-    reasons.push(`Spend at least ${minDays} days in this phase.`);
+  if (!daysSatisfied) {
+    unmetReasons.push(`Spend at least ${minDays} days in this phase.`);
   }
+  const reasons = satisfiedBy === null ? unmetReasons : [];
 
   return {
-    ok: reasons.length === 0,
+    ok: satisfiedBy !== null,
     reasons,
     minDays,
     minWorkouts,
     workoutsCompletedInPhase: safeWorkouts,
     cyclesCompletedInPhase: safeCycles,
     daysSincePhaseStart,
+    satisfiedBy,
   };
 };
 
@@ -110,6 +114,14 @@ export const skipPhase1 = (
 };
 
 export const formatPhaseGateReason = (result: PhaseAdvanceGateResult) => {
-  if (result.ok) return "Gate passed. You can move to the next phase.";
-  return result.reasons.join(" ");
+  if (result.satisfiedBy === "both") {
+    return "Gate passed: workout and day targets are both satisfied.";
+  }
+  if (result.satisfiedBy === "workouts") {
+    return "Gate passed: workout target is satisfied.";
+  }
+  if (result.satisfiedBy === "days") {
+    return "Gate passed: day target is satisfied.";
+  }
+  return `${result.reasons.join(" ")} Either target unlocks the next phase.`;
 };

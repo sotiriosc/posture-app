@@ -1081,8 +1081,13 @@ describe("results operational readiness", () => {
       expect(screen.getByText("4 completed / 4")).toBeTruthy();
     });
     await waitFor(() => {
-      expect(screen.getByText("Workouts: 4 / 16 in this phase")).toBeTruthy();
+      expect(screen.getByText("4/16 workouts in phase")).toBeTruthy();
     });
+    expect(screen.getByText("Gate locked")).toBeTruthy();
+    fireEvent.click(screen.getByText("Progress").closest("button")!);
+    expect(screen.queryByText("Phase progress")).toBeNull();
+    expect(screen.getAllByText("Workout gate progress").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Days in phase").length).toBeGreaterThan(0);
     await waitFor(() => {
       expect(mocks.saveProgramProgress).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1091,6 +1096,84 @@ describe("results operational readiness", () => {
         })
       );
     });
+  });
+
+  test("week progress uses the current Monday-start calendar week", async () => {
+    const dateNowSpy = vi
+      .spyOn(Date, "now")
+      .mockReturnValue(new Date("2026-04-12T12:00:00.000Z").getTime());
+    try {
+      const fourDayQuestionnaire = buildQuestionnaire({ daysPerWeek: 4 as const });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(fourDayQuestionnaire));
+      const savedProgram = buildSavedProgram("calendar-week-program", {
+        questionnaire: fourDayQuestionnaire,
+        daysPerWeek: 4,
+      });
+      const previousWeekSession = buildSession(
+        "previous-week-day-1",
+        savedProgram.id,
+        0,
+        "2026-04-05T12:00:00.000Z"
+      );
+      const currentWeekDay1 = buildSession(
+        "current-week-day-1",
+        savedProgram.id,
+        0,
+        "2026-04-06T12:00:00.000Z"
+      );
+      const currentWeekDay2 = buildSession(
+        "current-week-day-2",
+        savedProgram.id,
+        1,
+        "2026-04-10T12:00:00.000Z"
+      );
+      const currentWeekInProgress = buildSession(
+        "current-week-in-progress",
+        savedProgram.id,
+        2,
+        null
+      );
+      currentWeekInProgress.startedAt = "2026-04-11T12:00:00.000Z";
+      currentWeekInProgress.createdAt = "2026-04-11T12:00:00.000Z";
+      currentWeekInProgress.updatedAt = "2026-04-11T12:00:00.000Z";
+
+      localStorage.setItem(
+        APP_STATE_KEY,
+        JSON.stringify({
+          activeProgramId: savedProgram.id,
+          programId: savedProgram.id,
+          activeGenerationMode: "live_initial",
+          selectedDay: 0,
+          questionnaireSignature: buildQuestionnaireSignature(fourDayQuestionnaire),
+          updatedAt: Date.now(),
+        })
+      );
+      mocks.getProgram.mockResolvedValue(savedProgram);
+      mocks.getProgramProgress.mockResolvedValue(
+        buildProgress(savedProgram, {
+          daysPerWeek: 4,
+          nextDayIndex: 0,
+          workoutsCompletedInPhase: 3,
+        })
+      );
+      mocks.listSessions.mockResolvedValue([
+        previousWeekSession,
+        currentWeekDay1,
+        currentWeekDay2,
+        currentWeekInProgress,
+      ]);
+
+      render(React.createElement(ResultsRoutine));
+
+      await waitFor(() => {
+        expect(screen.getByText("2 completed / 4")).toBeTruthy();
+      });
+      expect(screen.getByText("1 in progress")).toBeTruthy();
+      expect(screen.queryByText("3 completed / 4")).toBeNull();
+      expect(screen.getByText("Week: 2/4 days")).toBeTruthy();
+    } finally {
+      dateNowSpy.mockRestore();
+    }
   });
 
   test("history search can switch from current program to all history", async () => {
@@ -1238,7 +1321,12 @@ describe("results operational readiness", () => {
 
   test("a true new program id resets current progress while keeping all history", async () => {
     const oldProgram = buildSavedProgram("previous-program");
-    const nextProgram = buildSavedProgram("next-program");
+    const nextProgram = {
+      ...buildSavedProgram("next-program"),
+      phaseIndex: 2,
+      phaseName: "Integration",
+      totalWeekIndex: 2,
+    };
     const oldSession = buildSession(
       "old-program-session",
       oldProgram.id,
@@ -1266,11 +1354,15 @@ describe("results operational readiness", () => {
       expect(screen.getByText("0 completed / 3")).toBeTruthy();
     });
     await waitFor(() => {
-      expect(screen.getByText("Level 2 progress")).toBeTruthy();
+      expect(screen.getByText("Level 3 analysis")).toBeTruthy();
     });
-    expect(screen.getByText("0 workouts logged")).toBeTruthy();
+    expect(screen.getByText("1 workouts logged")).toBeTruthy();
     fireEvent.click(screen.getByText("History").closest("button")!);
-    expect(screen.getByText("Complete your first workout in this program to build history.")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "No completed workouts in this phase yet. Switch to All history to review earlier sessions."
+      )
+    ).toBeTruthy();
     fireEvent.click(screen.getByTestId("history-scope-all"));
     expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain("Day 1");
   });

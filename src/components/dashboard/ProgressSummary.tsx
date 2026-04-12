@@ -9,6 +9,10 @@ type ProgressSummaryProps = {
   movementQualityPercent: number;
   workoutsCompletedInPhase: number;
   workoutTarget: number;
+  daysInPhase: number;
+  dayTarget: number;
+  gateStatusLabel: "Ready to advance" | "Gate locked" | "Phase 3 active";
+  gateStatusDetail: string;
 };
 
 export default function ProgressSummary({
@@ -20,12 +24,38 @@ export default function ProgressSummary({
   movementQualityPercent,
   workoutsCompletedInPhase,
   workoutTarget,
+  daysInPhase,
+  dayTarget,
+  gateStatusLabel,
+  gateStatusDetail,
 }: ProgressSummaryProps) {
   return (
-    <div className="space-y-3 text-sm text-slate-700">
+    <div className="space-y-3 text-sm text-slate-300">
       <p>
         Workouts in phase: <span className="font-semibold">{workoutsCompletedInPhase}/{workoutTarget}</span>
       </p>
+      <p>
+        Days in phase: <span className="font-semibold">{daysInPhase}/{dayTarget}</span>
+      </p>
+      <p>
+        Gate status: <span className="font-semibold">{gateStatusLabel}</span>
+      </p>
+      <p className="text-xs text-slate-400">{gateStatusDetail}</p>
+
+      <ProgressBar
+        label="Workout gate progress"
+        value={workoutsCompletedInPhase}
+        max={workoutTarget}
+        animate
+        subtitle={`${workoutsCompletedInPhase}/${workoutTarget} workouts in phase`}
+      />
+      <ProgressBar
+        label="Days in phase"
+        value={daysInPhase}
+        max={dayTarget}
+        animate
+        subtitle={`${daysInPhase}/${dayTarget} days in phase`}
+      />
 
       <ProgressBar label="Consistency" value={consistencyPercent} max={100} animate />
       <ProgressBar label="Completion" value={completionPercent} max={100} animate />

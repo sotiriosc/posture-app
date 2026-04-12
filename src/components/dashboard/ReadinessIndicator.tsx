@@ -23,7 +23,7 @@ const getReadinessColor = (score: number) => {
 };
 
 const getReadinessLabel = (score: number) => {
-  if (score >= 80) return "Ready";
+  if (score >= 80) return "High";
   if (score >= 55) return "Good";
   return "Caution";
 };
@@ -65,7 +65,7 @@ export default function ReadinessIndicator({ score }: ReadinessIndicatorProps) {
           height={SIZE}
           viewBox={`0 0 ${SIZE} ${SIZE}`}
           className="-rotate-90"
-          aria-label={`Readiness for corrective progress ${animatedScore}%`}
+          aria-label={`Training readiness ${animatedScore}%`}
         >
           <circle
             cx={SIZE / 2}
@@ -90,7 +90,7 @@ export default function ReadinessIndicator({ score }: ReadinessIndicatorProps) {
       </div>
       <div className="space-y-0.5">
         <p className="text-xs font-semibold uppercase text-slate-400">
-          Readiness for Corrective Progress
+          Training readiness
         </p>
         <p className="text-xl font-semibold text-white">{animatedScore}%</p>
         <p className="text-xs text-slate-300">{getReadinessLabel(safeScore)}</p>

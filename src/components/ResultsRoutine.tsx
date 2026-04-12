@@ -89,6 +89,7 @@ import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
+const DASHBOARD_UNLOCK_LEVEL_KEY = "praxis_dashboard_unlock_level";
 const SHOW_PHASE_PREVIEW_REFERENCE = false;
 
 type DashboardMode =
@@ -100,6 +101,12 @@ type DashboardMode =
   | "account";
 
 type HistoryScope = "current" | "all";
+
+type LevelUpNotice = {
+  eyebrow: string;
+  title: string;
+  body: string;
+};
 
 const defaultRoutine: Routine = {
   summary:
@@ -788,6 +795,7 @@ export default function ResultsRoutine() {
   const [showDebug, setShowDebug] = useState(false);
   const [progress, setProgress] = useState<ProgramProgress | null>(null);
   const [allSessions, setAllSessions] = useState<SessionRecord[]>([]);
+  const [sessionsLoaded, setSessionsLoaded] = useState(false);
   const [activeProgramBaselineAt, setActiveProgramBaselineAt] = useState(0);
   const [latestLogsByExercise, setLatestLogsByExercise] = useState<
     Record<string, ExerciseLog | null>
@@ -834,6 +842,7 @@ export default function ResultsRoutine() {
   const [resetProgressConfirmOpen, setResetProgressConfirmOpen] = useState(false);
   const [resetProgressWorking, setResetProgressWorking] = useState(false);
   const [resetProgressMessage, setResetProgressMessage] = useState<string | null>(null);
+  const [levelUpNotice, setLevelUpNotice] = useState<LevelUpNotice | null>(null);
   const knowledgeSectionRef = useRef<HTMLDivElement | null>(null);
   const systemAdjustmentsSectionRef = useRef<HTMLDivElement | null>(null);
   const weekViewSectionRef = useRef<HTMLElement | null>(null);
@@ -841,6 +850,9 @@ export default function ResultsRoutine() {
   const knowledgeHighlightTimeoutRef = useRef<number | null>(null);
   const sessionCompleteNoticeFadeTimeoutRef = useRef<number | null>(null);
   const sessionCompleteNoticeTimeoutRef = useRef<number | null>(null);
+  const levelUpNoticeTimeoutRef = useRef<number | null>(null);
+  const previousUnlockLevelRef = useRef<number | null>(null);
+  const previousCelebratedPhaseRef = useRef<number | null>(null);
   const missingWorkoutRepairAttemptRef = useRef(new Set<string>());
   const programProgressSnapshotRef = useRef<Program | null>(null);
   const initialProgramLoadInFlightRef = useRef(false);
@@ -870,6 +882,17 @@ export default function ResultsRoutine() {
     setSessionCompleteNoticeFading(false);
     setShowSessionCompleteNotice(true);
   };
+
+  const showLevelUpNotice = useCallback((notice: LevelUpNotice) => {
+    if (levelUpNoticeTimeoutRef.current !== null) {
+      window.clearTimeout(levelUpNoticeTimeoutRef.current);
+    }
+    setLevelUpNotice(notice);
+    levelUpNoticeTimeoutRef.current = window.setTimeout(() => {
+      setLevelUpNotice(null);
+      levelUpNoticeTimeoutRef.current = null;
+    }, 4400);
+  }, []);
 
   const loadGenerationSignals = useCallback(
     async (programId?: string | null) => {
@@ -1657,6 +1680,18 @@ export default function ResultsRoutine() {
   const activeSessionId = loadAppState()?.activeSessionId ?? null;
 
   const activeDaysPerWeek = program?.daysPerWeek ?? data?.daysPerWeek ?? 3;
+  const calendarWeekWindow = useMemo(() => {
+    const weekStart = new Date(nowAnchor);
+    weekStart.setHours(0, 0, 0, 0);
+    const mondayOffset = (weekStart.getDay() + 6) % 7;
+    weekStart.setDate(weekStart.getDate() - mondayOffset);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+    return {
+      startMs: weekStart.getTime(),
+      endMs: weekEnd.getTime(),
+    };
+  }, [nowAnchor]);
 
   const sessionsSinceBaseline = useMemo(() => {
     if (!activeProgramId) return [] as SessionRecord[];
@@ -1668,10 +1703,34 @@ export default function ResultsRoutine() {
     });
   }, [allSessions, activeProgramId, baselineForActiveProgram]);
 
+  const currentCalendarWeekSessions = useMemo(() => {
+    if (!activeProgramId) return [] as SessionRecord[];
+    return allSessions.filter((session) => {
+      if (session.routineId !== activeProgramId) return false;
+      const sessionAt = toEpochMs(
+        session.completedAt ?? session.startedAt ?? session.createdAt
+      );
+      if (Number.isNaN(sessionAt)) return false;
+      return sessionAt >= calendarWeekWindow.startMs && sessionAt < calendarWeekWindow.endMs;
+    });
+  }, [allSessions, activeProgramId, calendarWeekWindow]);
+
+  const completedCalendarWeekSessions = useMemo(
+    () =>
+      currentCalendarWeekSessions.filter((session) => {
+        const completedAt = toEpochMs(session.completedAt);
+        if (Number.isNaN(completedAt)) return false;
+        return (
+          completedAt >= calendarWeekWindow.startMs &&
+          completedAt < calendarWeekWindow.endMs
+        );
+      }),
+    [currentCalendarWeekSessions, calendarWeekWindow]
+  );
+
   const completedDaySet = useMemo(() => {
     const set = new Set<number>();
-    sessionsSinceBaseline.forEach((session) => {
-      if (!session.completedAt) return;
+    completedCalendarWeekSessions.forEach((session) => {
       const dayIndex = parseDayIndexFromSession(session);
       if (dayIndex === null) return;
       if (
@@ -1682,11 +1741,11 @@ export default function ResultsRoutine() {
       }
     });
     return set;
-  }, [sessionsSinceBaseline, activeDaysPerWeek]);
+  }, [completedCalendarWeekSessions, activeDaysPerWeek]);
 
   const inProgressDaySet = useMemo(() => {
     const set = new Set<number>();
-    sessionsSinceBaseline.forEach((session) => {
+    currentCalendarWeekSessions.forEach((session) => {
       if (session.completedAt) return;
       const dayIndex = parseDayIndexFromSession(session);
       if (dayIndex === null) return;
@@ -1695,11 +1754,11 @@ export default function ResultsRoutine() {
       set.add(dayIndex);
     });
     return set;
-  }, [sessionsSinceBaseline, activeDaysPerWeek, completedDaySet]);
+  }, [currentCalendarWeekSessions, activeDaysPerWeek, completedDaySet]);
 
   const latestInProgressDayIndex = useMemo(() => {
     let latest: { dayIndex: number; timestamp: number } | null = null;
-    for (const session of sessionsSinceBaseline) {
+    for (const session of currentCalendarWeekSessions) {
       if (session.completedAt) continue;
       const dayIndex = parseDayIndexFromSession(session);
       if (dayIndex === null || dayIndex < 0 || dayIndex >= activeDaysPerWeek) continue;
@@ -1710,7 +1769,7 @@ export default function ResultsRoutine() {
       }
     }
     return latest?.dayIndex ?? null;
-  }, [sessionsSinceBaseline, activeDaysPerWeek]);
+  }, [currentCalendarWeekSessions, activeDaysPerWeek]);
 
   const nextDayIndex = useMemo(() => {
     if (!program) return 0;
@@ -1733,8 +1792,8 @@ export default function ResultsRoutine() {
   }, [program, latestInProgressDayIndex, completedDaySet, nowAnchor]);
 
   const completedCount = useMemo(() => {
-    return completedDaySet.size;
-  }, [completedDaySet]);
+    return Math.min(activeDaysPerWeek, completedCalendarWeekSessions.length);
+  }, [completedCalendarWeekSessions, activeDaysPerWeek]);
 
   const isFreePlan = authEnabled && plan !== "pro";
   const isDayLocked = (dayIndex: number) => isFreePlan && dayIndex > 0;
@@ -1866,20 +1925,7 @@ export default function ResultsRoutine() {
       ? 0
       : Math.floor(completedSessions.length / program.daysPerWeek);
 
-  const workoutsThisWeek = useMemo(() => {
-    const weekStart = new Date(nowAnchor);
-    weekStart.setHours(0, 0, 0, 0);
-    const mondayOffset = (weekStart.getDay() + 6) % 7;
-    weekStart.setDate(weekStart.getDate() - mondayOffset);
-    const weekStartMs = weekStart.getTime();
-    return completedSessions.filter((session) => {
-      const parsed = Date.parse(
-        session.completedAt ?? session.updatedAt ?? session.createdAt
-      );
-      if (Number.isNaN(parsed)) return false;
-      return parsed >= weekStartMs;
-    }).length;
-  }, [completedSessions, nowAnchor]);
+  const workoutsThisWeek = completedCount;
 
   useEffect(() => {
     if (!program || !data || !activeProgramId) return;
@@ -2111,6 +2157,9 @@ export default function ResultsRoutine() {
       if (sessionCompleteNoticeTimeoutRef.current !== null) {
         window.clearTimeout(sessionCompleteNoticeTimeoutRef.current);
       }
+      if (levelUpNoticeTimeoutRef.current !== null) {
+        window.clearTimeout(levelUpNoticeTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -2175,6 +2224,7 @@ export default function ResultsRoutine() {
       listSessions(500).then((sessions) => {
         if (!cancelled) {
           setAllSessions(sessions);
+          setSessionsLoaded(true);
         }
       });
     };
@@ -2253,6 +2303,62 @@ export default function ResultsRoutine() {
   const phaseReadyDismissalKey = programId
     ? buildPhaseReadyDismissalKey(programId, currentPhaseIndex)
     : null;
+  const completedWorkoutCount = currentProgramCompletedSessions.length;
+  const totalCompletedWorkoutCount = allCompletedSessions.length;
+  const hasCompletedWorkout = totalCompletedWorkoutCount >= 1;
+  const lifetimeCompletedWeeks = Math.floor(
+    totalCompletedWorkoutCount / Math.max(1, activeDaysPerWeek)
+  );
+  const hasAdvancedPhaseUnlock = currentPhaseIndex > 1;
+  const hasCompletedFullWeek =
+    hasAdvancedPhaseUnlock ||
+    completedWeeks >= 1 ||
+    phaseGate.cyclesCompletedInPhase >= 1 ||
+    lifetimeCompletedWeeks >= 1;
+  const dashboardLevel = hasCompletedFullWeek ? 3 : hasCompletedWorkout ? 2 : 1;
+
+  useEffect(() => {
+    if (!sessionsLoaded) return;
+    const storedLevelRaw = localStorage.getItem(DASHBOARD_UNLOCK_LEVEL_KEY);
+    const storedLevel = storedLevelRaw ? Number(storedLevelRaw) : 0;
+    const normalizedStoredLevel = Number.isFinite(storedLevel) ? storedLevel : 0;
+    const previousLevel = previousUnlockLevelRef.current;
+    previousUnlockLevelRef.current = dashboardLevel;
+
+    if (normalizedStoredLevel <= 0) {
+      localStorage.setItem(DASHBOARD_UNLOCK_LEVEL_KEY, String(dashboardLevel));
+      return;
+    }
+    const priorLevel = Math.max(normalizedStoredLevel, previousLevel ?? 0);
+    if (dashboardLevel <= priorLevel) return;
+
+    localStorage.setItem(DASHBOARD_UNLOCK_LEVEL_KEY, String(dashboardLevel));
+
+    showLevelUpNotice({
+      eyebrow: "Praxis level up",
+      title:
+        dashboardLevel >= 3
+          ? "Level 3 analysis unlocked"
+          : "Level 2 progress unlocked",
+      body:
+        dashboardLevel >= 3
+          ? "Deeper insights stay available as your program evolves."
+          : "History and progress are now open from your completed work.",
+    });
+  }, [dashboardLevel, sessionsLoaded, showLevelUpNotice]);
+
+  useEffect(() => {
+    if (!programId) return;
+    const previousPhaseIndex = previousCelebratedPhaseRef.current;
+    previousCelebratedPhaseRef.current = currentPhaseIndex;
+    if (previousPhaseIndex === null || currentPhaseIndex <= previousPhaseIndex) return;
+
+    showLevelUpNotice({
+      eyebrow: "Phase advanced",
+      title: `Phase ${currentPhaseIndex} unlocked`,
+      body: "Your prior history and analysis stay available while the new phase begins.",
+    });
+  }, [programId, currentPhaseIndex, showLevelUpNotice]);
 
   useEffect(() => {
     if (!programId || currentPhaseIndex >= MAX_PHASE_INDEX || !phaseGate.ok) {
@@ -2301,15 +2407,6 @@ export default function ResultsRoutine() {
     if (hour < 18) return "Good afternoon";
     return "Good evening";
   }, []);
-
-  const phaseProgressPercent = useMemo(() => {
-    const workoutRatio =
-      phaseGate.minWorkouts > 0
-        ? phaseGate.workoutsCompletedInPhase / phaseGate.minWorkouts
-        : 0;
-    const dayRatio = phaseGate.minDays > 0 ? phaseGate.daysSincePhaseStart / phaseGate.minDays : 0;
-    return Math.round(Math.min(1, (workoutRatio + dayRatio) / 2) * 100);
-  }, [phaseGate]);
 
   const resolvedSessionProgramId = activeProgramId ?? program?.id ?? null;
 
@@ -2808,16 +2905,6 @@ export default function ResultsRoutine() {
   const phaseName = program.phaseName ?? getPhaseMetaByIndex(currentPhaseIndex).phaseName;
   const phaseDescription = getPhaseProfile(currentPhaseIndex).description;
   const cycleCurrent = Math.max(1, phaseGate.cyclesCompletedInPhase + 1);
-  const workoutProgressPercent = Math.max(
-    0,
-    Math.min(
-      100,
-      Math.round(
-        (phaseGate.workoutsCompletedInPhase / Math.max(1, phaseGate.minWorkouts)) *
-          100
-      )
-    )
-  );
   const weekProgressPercent = Math.max(
     0,
     Math.min(
@@ -2851,13 +2938,29 @@ export default function ResultsRoutine() {
     phaseGate.minWorkouts - phaseGate.workoutsCompletedInPhase
   );
   const daysRemaining = Math.max(0, phaseGate.minDays - phaseGate.daysSincePhaseStart);
-  const readinessEstimate =
-    workoutsRemaining <= 0 && daysRemaining <= 0
-      ? "Ready now"
-      : `${workoutsRemaining} workout${workoutsRemaining === 1 ? "" : "s"} + ${daysRemaining} day${daysRemaining === 1 ? "" : "s"} remaining`;
-
-  const phaseProgressText = `Workouts: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
-  const phaseRequirementsText = `Complete ${phaseGate.minWorkouts} workouts and spend at least ${phaseGate.minDays} days in this phase.`;
+  const gateRemainingText = `${workoutsRemaining} workout${workoutsRemaining === 1 ? "" : "s"} remaining or ${daysRemaining} day${daysRemaining === 1 ? "" : "s"} remaining`;
+  const gateSatisfiedText =
+    phaseGate.satisfiedBy === "both"
+      ? "All gate requirements satisfied"
+      : phaseGate.satisfiedBy === "workouts"
+      ? "Workout gate requirement satisfied"
+      : phaseGate.satisfiedBy === "days"
+      ? "Days-in-phase gate requirement satisfied"
+      : gateRemainingText;
+  const phaseGateStatusLabel =
+    currentPhaseIndex >= MAX_PHASE_INDEX
+      ? "Phase 3 active"
+      : phaseAdvanceReady
+      ? "Ready to advance"
+      : "Gate locked";
+  const phaseGateStatusDetail =
+    currentPhaseIndex >= MAX_PHASE_INDEX
+      ? `Phase ${MAX_PHASE_INDEX} is active. Continue building completion and execution quality.`
+      : phaseAdvanceReady
+      ? gateSatisfiedText
+      : gateRemainingText;
+  const phaseGateProgressText = `Workouts in phase: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days in phase: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
+  const phaseRequirementsText = `Complete ${phaseGate.minWorkouts} workouts or spend at least ${phaseGate.minDays} days in this phase.`;
   const movementPatternItems =
     routine.observed.slice(0, 4).length > 0
       ? routine.observed.slice(0, 4)
@@ -3006,9 +3109,9 @@ export default function ResultsRoutine() {
     `Pain trend: ${painTrendLabel} • Movement quality: ${movementQualityTrend}`,
   ];
   const progressPreviewChips = [
-    `${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} workouts`,
-    `${completedCount}/${activeDaysPerWeek} days`,
-    encouragementMessage ?? "Keep steady progress",
+    `Workouts in phase: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts}`,
+    `Days in phase: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`,
+    phaseGateStatusLabel,
   ];
 
   const knowledgePreviewLines = [
@@ -3073,7 +3176,7 @@ export default function ResultsRoutine() {
   })();
 
   const readinessLabel =
-    readinessScore >= 80 ? "Ready" : readinessScore >= 55 ? "Good" : "Caution";
+    readinessScore >= 80 ? "High" : readinessScore >= 55 ? "Good" : "Caution";
   const shouldPulsePrimaryCta =
     heroCta.label === "Start Today's Session" &&
     !completedDaySet.has(effectiveNextDayIndex);
@@ -3082,12 +3185,9 @@ export default function ResultsRoutine() {
     !completedDaySet.has(effectiveNextDayIndex);
 
   const heroMetricChips = [
+    `Training readiness: ${readinessScore}% (${readinessLabel})`,
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
     `Cycle: ${program.cycleIndex ?? cycleCurrent}`,
-    `Readiness for Corrective Progress: ${readinessScore}% (${readinessLabel})`,
-    phaseGate.minWorkouts > 0 && phaseGate.minDays > 0
-      ? `Phase gate: ${phaseGate.minWorkouts} workouts + ${phaseGate.minDays} days`
-      : "Phase gate: Progressing normally",
   ].filter((chip): chip is string => Boolean(chip));
 
   const coachToday = (() => {
@@ -3410,14 +3510,6 @@ export default function ResultsRoutine() {
     }
   };
 
-  const completedWorkoutCount = currentProgramCompletedSessions.length;
-  const totalCompletedWorkoutCount = allCompletedSessions.length;
-  const hasCompletedWorkout = totalCompletedWorkoutCount >= 1;
-  const hasCompletedFullWeek =
-    completedWeeks >= 1 ||
-    phaseGate.cyclesCompletedInPhase >= 1 ||
-    Math.floor(completedWorkoutCount / Math.max(1, activeDaysPerWeek)) >= 1;
-  const dashboardLevel = hasCompletedFullWeek ? 3 : hasCompletedWorkout ? 2 : 1;
   const progressLocked = dashboardLevel < 2;
   const historyLocked = dashboardLevel < 2;
   const insightsLocked = dashboardLevel < 3;
@@ -3478,7 +3570,7 @@ export default function ResultsRoutine() {
       key: "history",
       title: "History",
       eyebrow: "Level 2",
-      summary: `${completedWorkoutCount} completed workouts saved for this program.`,
+      summary: `${totalCompletedWorkoutCount} completed workouts saved across your history.`,
       icon: "H",
       locked: historyLocked,
       lockReason: "Complete one workout to unlock session history.",
@@ -3523,16 +3615,48 @@ export default function ResultsRoutine() {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+      {levelUpNotice ? (
+        <div
+          className="pointer-events-none fixed inset-x-0 top-4 z-[80] flex justify-center px-4 sm:top-6"
+          data-testid="level-up-celebration"
+          aria-live="polite"
+        >
+          <div className="level-up-pop ui-card ui-soft-surface-raised relative w-full max-w-sm overflow-hidden rounded-lg border-sky-300/35 px-4 py-3 text-slate-100 shadow-[0_18px_60px_rgba(14,165,233,0.24)] sm:max-w-md sm:px-5 sm:py-4">
+            <div className="relative z-10">
+              <p className="ui-kicker text-sky-100">{levelUpNotice.eyebrow}</p>
+              <p className="mt-1 text-base font-semibold text-white sm:text-lg">
+                {levelUpNotice.title}
+              </p>
+              <p className="mt-1 text-sm text-slate-300">{levelUpNotice.body}</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <div className="order-1">
         <DashboardHero
           greeting={heroGreeting}
           phaseName={phaseName}
           workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
           workoutTarget={phaseGate.minWorkouts}
+          daysInPhase={phaseGate.daysSincePhaseStart}
+          dayTarget={phaseGate.minDays}
           weekCompletedDays={completedCount}
           weekTargetDays={activeDaysPerWeek}
-          workoutProgressPercent={workoutProgressPercent}
           weekProgressPercent={weekProgressPercent}
+          phaseGateStatusLabel={phaseGateStatusLabel}
+          phaseGateStatusDetail={phaseGateStatusDetail}
+          phaseGateReady={phaseAdvanceReady}
+          phaseGateActionLabel={
+            phaseAdvanceReady && !phaseReadyNoticeOpen
+              ? `Move to Phase ${nextPhaseIndex}`
+              : null
+          }
+          onPhaseGateAction={
+            phaseAdvanceReady && !phaseReadyNoticeOpen
+              ? openPhaseAdvancePrompt
+              : null
+          }
           readinessScore={readinessScore}
           weeklyConsistencyCount={workoutsThisWeek}
           weeklyConsistencyTarget={program?.daysPerWeek ?? data?.daysPerWeek ?? null}
@@ -3560,7 +3684,7 @@ export default function ResultsRoutine() {
                 You&apos;ve reached the Phase {nextPhaseIndex} gate
               </h2>
               <p className="mt-2 text-sm text-slate-300">
-                Both targets are satisfied: workouts {phaseGate.workoutsCompletedInPhase}/{phaseGate.minWorkouts} and days {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}.
+                {gateSatisfiedText}: Workouts in phase {phaseGate.workoutsCompletedInPhase}/{phaseGate.minWorkouts} and Days in phase {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -3571,22 +3695,6 @@ export default function ResultsRoutine() {
                 Later
               </Button>
             </div>
-          </div>
-        </section>
-      ) : null}
-
-      {phaseAdvanceReady && !phaseReadyNoticeOpen ? (
-        <section
-          className="ui-soft-surface order-2 rounded-lg px-4 py-3 text-sm text-slate-200"
-          data-testid="phase-ready-persistent-cta"
-        >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p>
-              Phase {nextPhaseIndex} is ready: workouts {phaseGate.workoutsCompletedInPhase}/{phaseGate.minWorkouts} and days {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}.
-            </p>
-            <Button variant="primary" onClick={openPhaseAdvancePrompt}>
-              Move to Phase {nextPhaseIndex}
-            </Button>
           </div>
         </section>
       ) : null}
@@ -3625,7 +3733,7 @@ export default function ResultsRoutine() {
           <div className="rounded-lg border border-slate-400/20 bg-slate-950/38 px-4 py-3 text-xs text-slate-200">
             <p className="font-semibold text-white">{dashboardLevelLabel}</p>
             <p className="mt-1 text-slate-400">
-              {completedWorkoutCount} workouts logged
+              {totalCompletedWorkoutCount} workouts logged
             </p>
           </div>
         </div>
@@ -4437,7 +4545,9 @@ export default function ResultsRoutine() {
                 {historySearchTerm
                   ? "No completed workouts match that search."
                   : historyScope === "current"
-                  ? "Complete your first workout in this program to build history."
+                  ? totalCompletedWorkoutCount > completedWorkoutCount
+                    ? "No completed workouts in this phase yet. Switch to All history to review earlier sessions."
+                    : "Complete your first workout in this program to build history."
                   : "Complete your first workout to build history."}
               </div>
             )}
@@ -4472,7 +4582,7 @@ export default function ResultsRoutine() {
                 <div className="ui-soft-surface rounded-lg px-3 py-3">
                   <p className="text-xs text-slate-400">History</p>
                   <p className="mt-1 text-sm font-semibold text-white">
-                    {completedWorkoutCount} workouts
+                    {totalCompletedWorkoutCount} workouts
                   </p>
                 </div>
               </div>
@@ -4565,6 +4675,10 @@ export default function ResultsRoutine() {
           <ProgressSummary
             workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
             workoutTarget={phaseGate.minWorkouts}
+            daysInPhase={phaseGate.daysSincePhaseStart}
+            dayTarget={phaseGate.minDays}
+            gateStatusLabel={phaseGateStatusLabel}
+            gateStatusDetail={phaseGateStatusDetail}
             consistencyPercent={consistencyPercent}
             completionPercent={adherencePercent}
             painTrend={painTrendLabel}
@@ -4581,25 +4695,27 @@ export default function ResultsRoutine() {
         <ExpandableSection
           title="Phase Progression"
           subtitle="Requirements and readiness to move ahead."
-          previewLines={[phaseRequirementsText, phaseGateReason]}
+          previewLines={[phaseRequirementsText, phaseGateStatusDetail]}
           previewChips={[
             `${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} workouts`,
             `${phaseGate.daysSincePhaseStart}/${phaseGate.minDays} days`,
-            readinessEstimate,
+            phaseGateStatusLabel,
           ]}
         >
           <PhaseProgressCard
             phaseName={phaseName}
             phaseDescription={phaseDescription}
             requirementsText={phaseRequirementsText}
-            gateReason={phaseGateReason}
-            gateProgressText={phaseProgressText}
+            gateProgressText={phaseGateProgressText}
             moveButtonLabel={movePhaseButtonLabel}
             canMove={phaseControlUi.canMoveNextPhase}
             showSkip={phaseControlUi.showSkipPhaseOne}
-            phaseProgressPercent={phaseProgressPercent}
-            workoutProgressPercent={workoutProgressPercent}
-            readinessEstimate={readinessEstimate}
+            workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
+            workoutTarget={phaseGate.minWorkouts}
+            daysInPhase={phaseGate.daysSincePhaseStart}
+            dayTarget={phaseGate.minDays}
+            gateStatusLabel={phaseGateStatusLabel}
+            gateStatusDetail={phaseGateStatusDetail}
             onOpenMove={openPhaseAdvancePrompt}
             onOpenSkip={() => setSkipPhaseOneOpen(true)}
             uploadControl={

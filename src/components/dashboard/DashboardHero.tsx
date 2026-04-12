@@ -1,16 +1,23 @@
 import Link from "next/link";
 import ReadinessIndicator from "@/components/dashboard/ReadinessIndicator";
 import ProgressBar from "@/components/ui/ProgressBar";
+import Button from "@/components/ui/Button";
 
 type DashboardHeroProps = {
   greeting: string;
   phaseName: string;
   workoutsCompletedInPhase: number;
   workoutTarget: number;
+  daysInPhase: number;
+  dayTarget: number;
   weekCompletedDays: number;
   weekTargetDays: number;
-  workoutProgressPercent: number;
   weekProgressPercent: number;
+  phaseGateStatusLabel: "Ready to advance" | "Gate locked" | "Phase 3 active";
+  phaseGateStatusDetail: string;
+  phaseGateReady: boolean;
+  phaseGateActionLabel?: string | null;
+  onPhaseGateAction?: (() => void) | null;
   readinessScore: number;
   weeklyConsistencyCount: number;
   weeklyConsistencyTarget?: number | null;
@@ -27,10 +34,16 @@ export default function DashboardHero({
   phaseName,
   workoutsCompletedInPhase,
   workoutTarget,
+  daysInPhase,
+  dayTarget,
   weekCompletedDays,
   weekTargetDays,
-  workoutProgressPercent,
   weekProgressPercent,
+  phaseGateStatusLabel,
+  phaseGateStatusDetail,
+  phaseGateReady,
+  phaseGateActionLabel,
+  onPhaseGateAction,
   readinessScore,
   weeklyConsistencyCount,
   weeklyConsistencyTarget,
@@ -68,11 +81,6 @@ export default function DashboardHero({
             {metricChips.slice(0, 4).map((chip) => (
               <span
                 key={chip}
-                title={
-                  chip.startsWith("Readiness for Corrective Progress:")
-                    ? "Based on recent completion + pain signals"
-                    : undefined
-                }
                 className="rounded-lg border border-slate-500/25 bg-slate-900/55 px-2.5 py-1 text-[11px] font-medium text-slate-300"
               >
                 {chip}
@@ -80,20 +88,51 @@ export default function DashboardHero({
             ))}
           </div>
           <p className="mt-3 text-sm text-slate-300">
-            Workouts: {workoutsCompletedInPhase} / {workoutTarget} in this phase
-          </p>
-          <p className="mt-1 text-sm text-slate-300">
-            Week progress: {weekCompletedDays} / {weekTargetDays} days complete
+            Week progress: {weekCompletedDays}/{weekTargetDays} days complete
           </p>
 
-          <div className="mt-4 space-y-3">
+          <div className="ui-soft-surface mt-4 space-y-3 rounded-lg px-3 py-3">
+            <div>
+              <p className="ui-kicker">Phase gate</p>
+              <p
+                className={`mt-1 text-base font-semibold ${
+                  phaseGateReady ? "text-emerald-100" : "text-sky-100"
+                }`}
+              >
+                {phaseGateStatusLabel}
+              </p>
+              <p className="mt-1 text-xs text-slate-300">{phaseGateStatusDetail}</p>
+            </div>
+            {phaseGateReady && phaseGateActionLabel && onPhaseGateAction ? (
+              <div
+                className="flex flex-col gap-2 rounded-lg border border-sky-300/25 bg-sky-300/10 px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
+                data-testid="phase-ready-persistent-cta"
+              >
+                <p className="text-xs text-slate-200">
+                  {phaseGateStatusDetail}
+                </p>
+                <Button variant="primary" onClick={onPhaseGateAction}>
+                  {phaseGateActionLabel}
+                </Button>
+              </div>
+            ) : null}
             <ProgressBar
-              label="Phase workout progress"
-              value={workoutProgressPercent}
-              max={100}
+              label="Workout gate progress"
+              value={workoutsCompletedInPhase}
+              max={workoutTarget}
               animate
-              subtitle={`${workoutsCompletedInPhase}/${workoutTarget} workouts completed`}
+              subtitle={`${workoutsCompletedInPhase}/${workoutTarget} workouts in phase`}
             />
+            <ProgressBar
+              label="Days in phase"
+              value={daysInPhase}
+              max={dayTarget}
+              animate
+              subtitle={`${daysInPhase}/${dayTarget} days in phase`}
+            />
+          </div>
+
+          <div className="mt-4">
             <ProgressBar
               label="Week progress"
               value={weekProgressPercent}

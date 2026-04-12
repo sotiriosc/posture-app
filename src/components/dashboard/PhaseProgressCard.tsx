@@ -6,14 +6,16 @@ type PhaseProgressCardProps = {
   phaseName: string;
   phaseDescription: string;
   requirementsText: string;
-  gateReason: string;
   gateProgressText: string;
   moveButtonLabel: string;
   canMove: boolean;
   showSkip: boolean;
-  phaseProgressPercent: number;
-  workoutProgressPercent: number;
-  readinessEstimate: string;
+  workoutsCompletedInPhase: number;
+  workoutTarget: number;
+  daysInPhase: number;
+  dayTarget: number;
+  gateStatusLabel: "Ready to advance" | "Gate locked" | "Phase 3 active";
+  gateStatusDetail: string;
   onOpenMove: () => void;
   onOpenSkip: () => void;
   uploadControl: ReactNode;
@@ -23,14 +25,16 @@ export default function PhaseProgressCard({
   phaseName,
   phaseDescription,
   requirementsText,
-  gateReason,
   gateProgressText,
   moveButtonLabel,
   canMove,
   showSkip,
-  phaseProgressPercent,
-  workoutProgressPercent,
-  readinessEstimate,
+  workoutsCompletedInPhase,
+  workoutTarget,
+  daysInPhase,
+  dayTarget,
+  gateStatusLabel,
+  gateStatusDetail,
   onOpenMove,
   onOpenSkip,
   uploadControl,
@@ -44,30 +48,33 @@ export default function PhaseProgressCard({
 
       <div className="ui-soft-surface space-y-3 rounded-lg px-3 py-3">
         <ProgressBar
-          label="Phase progress"
-          value={phaseProgressPercent}
-          max={100}
+          label="Workout gate progress"
+          value={workoutsCompletedInPhase}
+          max={workoutTarget}
           compact
           animate
+          subtitle={`${workoutsCompletedInPhase}/${workoutTarget} workouts in phase`}
         />
         <ProgressBar
-          label="Workout progress"
-          value={workoutProgressPercent}
-          max={100}
+          label="Days in phase"
+          value={daysInPhase}
+          max={dayTarget}
           compact
           animate
+          subtitle={`${daysInPhase}/${dayTarget} days in phase`}
         />
       </div>
 
       <div className="ui-soft-surface rounded-lg px-3 py-3 text-xs text-slate-300">
-        <p className="font-semibold text-white">Requirements</p>
+        <p className="font-semibold text-white">Gate status</p>
+        <p className="mt-1 text-sm font-semibold text-slate-100">
+          {gateStatusLabel}
+        </p>
+        <p className="mt-1" data-testid="phase-gate-reason">{gateStatusDetail}</p>
+        <p className="mt-2 font-semibold text-white">Requirements</p>
         <p className="mt-1">{requirementsText}</p>
-        <p className="mt-2" data-testid="phase-gate-reason">{gateReason}</p>
         <p className="mt-1 text-[11px] text-slate-400" data-testid="phase-gate-progress">
           {gateProgressText}
-        </p>
-        <p className="mt-2 text-[11px] text-slate-400">
-          Estimated readiness: <span className="font-semibold text-slate-200">{readinessEstimate}</span>
         </p>
       </div>
 

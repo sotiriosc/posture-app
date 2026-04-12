@@ -599,6 +599,55 @@ textarea {
   }
 }
 
+.level-up-pop {
+  animation: levelUpPop 980ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.level-up-pop::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background:
+    linear-gradient(115deg, transparent 0%, rgba(125, 211, 252, 0.18) 38%, transparent 72%),
+    radial-gradient(circle at 16% 0%, rgba(56, 189, 248, 0.22), transparent 34%),
+    radial-gradient(circle at 88% 10%, rgba(52, 211, 153, 0.16), transparent 30%);
+  opacity: 0.9;
+  transform: translateX(-18%);
+  animation: levelUpSheen 1400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes levelUpPop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.96);
+    filter: blur(4px);
+  }
+  24% {
+    opacity: 1;
+    transform: translate3d(0, -2px, 0) scale(1.018);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes levelUpSheen {
+  0% {
+    opacity: 0;
+    transform: translateX(-24%);
+  }
+  28% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.45;
+    transform: translateX(12%);
+  }
+}
+
 @keyframes homeNeonBorderShift {
   0% {
     background-position: 0% 50%;
@@ -687,6 +736,11 @@ textarea {
   }
 
   .slide-up-in {
+    animation: none;
+  }
+
+  .level-up-pop,
+  .level-up-pop::before {
     animation: none;
   }
 
