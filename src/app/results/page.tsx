@@ -32,7 +32,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
     <BackgroundShell>
       <div className="ui-shell flex max-w-6xl flex-col gap-8 py-8 sm:py-12">
         <OnImage>
-          <header className="border-b border-white/10 pb-5">
+          <header className="ui-page-heading">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="ui-kicker">Praxis Dashboard</p>

@@ -21,31 +21,31 @@ type RecentPrListProps = {
 
 export default function RecentPrList({ items }: RecentPrListProps) {
   return (
-    <section className="ui-card p-6">
-      <h2 className="text-sm font-semibold text-slate-900">Recent PRs</h2>
-      <div className="mt-4 space-y-3 text-sm text-slate-700">
+    <section className="ui-card ui-soft-surface-raised p-6">
+      <h2 className="text-sm font-semibold text-white">Recent PRs</h2>
+      <div className="mt-4 space-y-3 text-sm text-slate-300">
         {items.length ? (
           items.map((item) => (
             <article
               key={item.key}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-3"
+              className="ui-soft-surface rounded-lg p-3"
             >
-              <p className="font-semibold text-slate-900">{item.name}</p>
-              <p className="mt-1 text-xs text-slate-600">Last PR: {item.last.label}</p>
+              <p className="font-semibold text-white">{item.name}</p>
+              <p className="mt-1 text-xs text-slate-300">Last PR: {item.last.label}</p>
               {item.previous ? (
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-400">
                   Previous PR: {item.previous.label}
                 </p>
               ) : null}
               {item.improvement ? (
-                <p className="mt-2 text-xs font-semibold text-emerald-700">
+                <p className="mt-2 text-xs font-semibold text-emerald-200">
                   Improvement: {item.improvement}
                 </p>
               ) : null}
             </article>
           ))
         ) : (
-          <p className="text-sm text-slate-500">No PRs yet.</p>
+          <p className="text-sm text-slate-400">No PRs yet.</p>
         )}
       </div>
     </section>

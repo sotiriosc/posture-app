@@ -10,7 +10,7 @@ export default function AssessmentPage() {
     <BackgroundShell>
       <div className="ui-shell flex max-w-6xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
+          <header className="ui-page-heading flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase text-slate-300">
                 Movement & Posture Baseline
@@ -31,7 +31,7 @@ export default function AssessmentPage() {
             {["Natural stance", "Good lighting", "Front / side / back"].map((item) => (
               <div
                 key={item}
-                className="rounded-lg border border-white/10 bg-slate-950/45 px-3 py-2 text-sm text-slate-200"
+                className="rounded-lg border border-slate-400/18 bg-slate-950/42 px-3 py-2 text-sm text-slate-200"
               >
                 {item}
               </div>

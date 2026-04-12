@@ -10,7 +10,7 @@ export default function QuestionnairePage() {
     <BackgroundShell>
       <div className="ui-shell flex max-w-4xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
+          <header className="ui-page-heading flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase text-slate-300">
                 Step 2

@@ -302,7 +302,7 @@ export default function QuestionnaireForm() {
       }}
     >
       <div>
-        <p className="text-sm font-semibold text-slate-900">
+        <p className="text-sm font-semibold text-white">
           Days per week
         </p>
         <div className="mt-3 grid grid-cols-3 gap-2">
@@ -316,8 +316,8 @@ export default function QuestionnaireForm() {
               }
               className={`min-h-12 rounded-lg border px-4 py-2 text-xs font-semibold transition ${
                 data.daysPerWeek === days
-                  ? "border-slate-900 bg-slate-900 text-white"
-                  : "border-slate-200 bg-white text-slate-700"
+                  ? "border-sky-200/60 bg-slate-900 text-white shadow-[0_12px_30px_rgba(14,165,233,0.14)] ring-1 ring-sky-300/30"
+                  : "border-slate-500/25 bg-slate-950/45 text-slate-300 hover:border-sky-200/30"
               }`}
             >
               {days} days
@@ -327,11 +327,11 @@ export default function QuestionnaireForm() {
       </div>
 
       <div>
-            <label className="text-sm font-semibold text-slate-900">
+            <label className="text-sm font-semibold text-white">
               Primary goal
             </label>
             <select
-          className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/25"
+          className="mt-2 w-full rounded-lg border border-slate-500/25 bg-slate-950/55 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none focus-visible:border-sky-200/50 focus-visible:ring-2 focus-visible:ring-sky-300/30"
           value={data.goals}
           onChange={(event) => updateData({ goals: event.target.value })}
         >
@@ -344,12 +344,12 @@ export default function QuestionnaireForm() {
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-slate-900">Pain areas</p>
+        <p className="text-sm font-semibold text-white">Pain areas</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {painOptions.map((area) => (
             <label
               key={area}
-              className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm"
+              className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-500/25 bg-slate-950/45 px-3 py-3 text-sm text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
             >
               <input
                 type="checkbox"
@@ -364,7 +364,7 @@ export default function QuestionnaireForm() {
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-slate-900">
+        <p className="text-sm font-semibold text-white">
           Training experience
         </p>
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
@@ -375,8 +375,8 @@ export default function QuestionnaireForm() {
               onClick={() => updateData({ experience: level })}
               className={`min-h-12 rounded-lg border px-4 py-2 text-xs font-semibold transition ${
                 data.experience === level
-                  ? "border-slate-900 bg-slate-900 text-white"
-                  : "border-slate-200 bg-white text-slate-700"
+                  ? "border-sky-200/60 bg-slate-900 text-white shadow-[0_12px_30px_rgba(14,165,233,0.14)] ring-1 ring-sky-300/30"
+                  : "border-slate-500/25 bg-slate-950/45 text-slate-300 hover:border-sky-200/30"
               }`}
             >
               {level}
@@ -386,12 +386,12 @@ export default function QuestionnaireForm() {
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-slate-900">Equipment</p>
+        <p className="text-sm font-semibold text-white">Equipment</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {equipmentOptions.map((item) => (
             <label
               key={item.value}
-              className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm"
+              className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-500/25 bg-slate-950/45 px-3 py-3 text-sm text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
             >
               <input
                 type="checkbox"
@@ -410,7 +410,7 @@ export default function QuestionnaireForm() {
         type="submit"
         data-testid="generate-routine"
         disabled={isApplyingChange}
-        className="w-full rounded-lg bg-[linear-gradient(135deg,#3B82F6_0%,#2563EB_100%)] px-6 py-3 text-sm font-semibold text-white transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+        className="h-12 w-full rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_38px_rgba(37,99,235,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
       >
         Generate routine
       </button>
@@ -442,7 +442,7 @@ export default function QuestionnaireForm() {
                 data-testid="questionnaire-change-cancel"
                 onClick={cancelPendingChange}
                 disabled={isApplyingChange}
-                className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white/90 hover:bg-white/10 disabled:opacity-60"
+                className="rounded-lg border border-white/20 px-4 py-2 text-xs font-semibold text-white/90 hover:bg-white/10 disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -454,7 +454,7 @@ export default function QuestionnaireForm() {
                   void commitAndRegenerateProgram(next);
                 }}
                 disabled={isApplyingChange}
-                className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 disabled:opacity-60"
+                className="rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-4 py-2 text-xs font-semibold text-white disabled:opacity-60"
               >
                 {isApplyingChange ? "Updating..." : "Confirm"}
               </button>

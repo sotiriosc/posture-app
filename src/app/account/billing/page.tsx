@@ -100,9 +100,9 @@ export default async function BillingAccountPage() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-5xl flex-col gap-6 py-8 sm:py-12">
+      <div className="ui-shell flex max-w-6xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
+          <header className="ui-page-heading flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="ui-kicker">
                 Account
@@ -121,7 +121,7 @@ export default async function BillingAccountPage() {
         </OnImage>
 
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)]">
-          <div className="ui-card rounded-lg p-5 sm:p-6">
+          <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
             <p className="ui-kicker">Current plan</p>
             <h2 className="mt-2 text-3xl font-semibold text-white">
               {user?.plan === "pro" ? "Pro" : "Free"}
@@ -159,7 +159,7 @@ export default async function BillingAccountPage() {
               ].map(([label, value]) => (
                 <div
                   key={label}
-                  className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3"
+                  className="ui-soft-surface rounded-lg px-3 py-3"
                 >
                   <p className="text-xs text-slate-400">{label}</p>
                   <p className="mt-1 break-words font-semibold text-slate-100">{value}</p>
@@ -168,7 +168,7 @@ export default async function BillingAccountPage() {
             </div>
           </div>
 
-          <aside className="ui-card rounded-lg p-5 sm:p-6">
+          <aside className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
             <p className="ui-kicker">Access</p>
             <h2 className="mt-2 text-xl font-semibold text-white">
               Pro plan includes
@@ -189,7 +189,7 @@ export default async function BillingAccountPage() {
                 </p>
               </div>
             ) : (
-              <div className="mt-5 rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3 text-xs text-slate-300">
+              <div className="ui-soft-surface mt-5 rounded-lg px-3 py-3 text-xs text-slate-300">
                 Billing portal access appears after a Stripe customer is connected.
               </div>
             )}

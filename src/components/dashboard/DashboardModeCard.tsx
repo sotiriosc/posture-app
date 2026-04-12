@@ -27,18 +27,22 @@ export default function DashboardModeCard({
       onClick={onClick}
       aria-pressed={active}
       aria-disabled={locked}
-      className={`group min-h-[132px] rounded-lg border p-3 text-left transition ${
+      className={`group min-h-[148px] rounded-lg border p-4 text-left ${
         active
-          ? "border-sky-300/70 bg-sky-400/15 shadow-[0_16px_42px_rgba(14,165,233,0.18)]"
-          : "border-white/10 bg-slate-950/44 hover:-translate-y-px hover:border-slate-300/25 hover:bg-slate-900/66"
-      } ${locked ? "opacity-55" : ""}`}
+          ? "border-sky-200/60 bg-[linear-gradient(135deg,rgba(56,189,248,0.22),rgba(30,41,59,0.52))] shadow-[0_20px_54px_rgba(14,165,233,0.2)]"
+          : locked
+          ? "border-slate-500/16 bg-slate-950/28"
+          : "border-white/10 bg-slate-950/44 hover:border-sky-200/25 hover:bg-slate-900/62"
+      }`}
     >
-      <div className="flex h-full flex-col justify-between gap-4">
+      <div className="flex h-full flex-col justify-between gap-5">
         <div className="flex items-start justify-between gap-3">
           <span
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border text-sm font-semibold ${
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border text-sm font-semibold ${
               active
-                ? "border-sky-200/70 bg-sky-300/20 text-sky-50"
+                ? "border-sky-100/60 bg-sky-300/20 text-sky-50 shadow-[0_10px_28px_rgba(14,165,233,0.18)]"
+                : locked
+                ? "border-slate-500/20 bg-slate-900/38 text-slate-500"
                 : "border-slate-500/30 bg-slate-900/70 text-slate-200"
             }`}
             aria-hidden="true"
@@ -46,11 +50,11 @@ export default function DashboardModeCard({
             {icon}
           </span>
           <span
-            className={`rounded-lg border px-2 py-1 text-[10px] font-semibold uppercase ${
+            className={`rounded-lg border px-2.5 py-1 text-[10px] font-semibold uppercase ${
               locked
-                ? "border-amber-300/30 bg-amber-400/10 text-amber-100"
+                ? "border-slate-500/20 bg-slate-950/35 text-slate-400"
                 : active
-                ? "border-sky-200/50 bg-sky-200/10 text-sky-100"
+                ? "border-sky-100/50 bg-sky-200/12 text-sky-50"
                 : "border-slate-500/25 bg-slate-950/40 text-slate-300"
             }`}
           >
@@ -58,8 +62,10 @@ export default function DashboardModeCard({
           </span>
         </div>
         <div>
-          <h3 className="text-base font-semibold text-white">{title}</h3>
-          <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-300">
+          <h3 className={`text-lg font-semibold ${locked ? "text-slate-300" : "text-white"}`}>
+            {title}
+          </h3>
+          <p className={`mt-2 line-clamp-2 text-sm leading-5 ${locked ? "text-slate-500" : "text-slate-300"}`}>
             {locked ? lockReason ?? summary : summary}
           </p>
         </div>

@@ -111,21 +111,21 @@ function CurrentSavedProgramSnapshotLoadingCard({
 }) {
   return (
     <section
-      className="ui-card order-10 p-4 sm:p-5"
+      className="ui-card ui-soft-surface order-20 p-4 opacity-75 sm:p-5"
       data-testid="current-saved-week-loading-card"
       aria-live="polite"
     >
-      <h3 className="text-base font-semibold text-slate-900">
+      <h3 className="text-base font-semibold text-white">
         Current Saved Program Snapshot
       </h3>
-      <p className="mt-1 text-xs text-slate-600">{message}</p>
+      <p className="mt-1 text-xs text-slate-400">{message}</p>
       <div
-        className="mt-4 h-2 w-full overflow-hidden rounded-full border border-slate-300/70 bg-slate-200/80"
+        className="mt-4 h-2 w-full overflow-hidden rounded-full border border-slate-500/30 bg-slate-950/60"
         role="progressbar"
         aria-label="Current saved program snapshot status"
       >
         <div
-          className="h-full w-full rounded-full bg-gradient-to-r from-slate-600 via-slate-500 to-slate-400 opacity-70 animate-pulse"
+          className="h-full w-full animate-pulse rounded-full bg-gradient-to-r from-slate-500 via-sky-400 to-slate-400 opacity-70"
         />
       </div>
       <p className="mt-2 text-[11px] text-slate-500">
@@ -2516,21 +2516,21 @@ export default function ResultsRoutine() {
 
   if (!isReady) {
     return (
-      <div className="ui-card p-6">
-        <p className="text-sm text-slate-600">Loading your program...</p>
+      <div className="ui-card ui-soft-surface-raised p-6">
+        <p className="text-sm text-slate-300">Loading your program...</p>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center">
-        <p className="text-sm text-slate-600">
+      <div className="ui-card ui-soft-surface-raised rounded-lg border-dashed p-6 text-center">
+        <p className="text-sm text-slate-300">
           We need your questionnaire answers to build a routine.
         </p>
         <Link
           href="/questionnaire"
-          className="mt-4 inline-flex rounded-full bg-slate-900 px-6 py-2 text-sm font-semibold text-white"
+          className="mt-4 inline-flex rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-6 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(37,99,235,0.24)]"
         >
           Go to questionnaire
         </Link>
@@ -2541,11 +2541,11 @@ export default function ResultsRoutine() {
   if (!program) {
     if (programLoadIssue) {
       return (
-        <div className="ui-card p-6">
-          <p className="text-sm font-semibold text-slate-900">
+        <div className="ui-card ui-soft-surface-raised p-6">
+          <p className="text-sm font-semibold text-white">
             We couldn&apos;t generate your weekly program yet.
           </p>
-          <p className="mt-2 text-sm text-slate-600">{programLoadIssue}</p>
+          <p className="mt-2 text-sm text-slate-300">{programLoadIssue}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button
               type="button"
@@ -2566,8 +2566,8 @@ export default function ResultsRoutine() {
     }
     return (
       <div className="space-y-4">
-        <div className="ui-card p-6">
-          <p className="text-sm text-slate-600">Loading your weekly program...</p>
+        <div className="ui-card ui-soft-surface-raised p-6">
+          <p className="text-sm text-slate-300">Loading your weekly program...</p>
         </div>
         <CurrentSavedProgramSnapshotLoadingCard
           message={currentSavedWeekSnapshotLoadingMessage}
@@ -3234,7 +3234,7 @@ export default function ResultsRoutine() {
     .slice(0, 5);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       <div className="order-1">
         <DashboardHero
           greeting={heroGreeting}
@@ -3261,43 +3261,43 @@ export default function ResultsRoutine() {
 
       {showSessionCompleteNotice ? (
         <section
-          className={`order-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-900 transition-opacity duration-300 ${
+          className={`ui-soft-surface order-2 rounded-lg px-4 py-3 text-emerald-100 transition-opacity duration-300 ${
             sessionCompleteNoticeFading ? "opacity-0" : "opacity-100"
           }`}
           aria-live="polite"
         >
           <p className="text-sm font-semibold">Session Complete</p>
-          <p className="mt-1 text-xs text-emerald-800">
+          <p className="mt-1 text-xs text-emerald-200/85">
             Your program has been updated based on today&apos;s performance.
           </p>
         </section>
       ) : null}
 
       {showWeeklyCompletionNudge ? (
-        <section className="order-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700">
+        <section className="ui-soft-surface order-2 rounded-lg px-4 py-3 text-xs text-slate-300">
           Complete today&apos;s session to maintain progression.
         </section>
       ) : null}
 
-      <section className="ui-card order-3 p-4 sm:p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <section className="ui-card ui-soft-surface-raised order-3 p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="ui-kicker">Dashboard Modes</p>
-            <h2 className="mt-1 text-xl font-semibold text-white">
+            <h2 className="mt-2 text-2xl font-semibold text-white">
               {activeModeConfig.title}
             </h2>
-            <p className="mt-1 text-sm text-slate-300">
+            <p className="mt-2 max-w-2xl text-sm text-slate-300">
               {dashboardLevelDescription}
             </p>
           </div>
-          <div className="rounded-lg border border-slate-500/25 bg-slate-950/50 px-3 py-2 text-xs text-slate-200">
+          <div className="rounded-lg border border-slate-400/20 bg-slate-950/38 px-4 py-3 text-xs text-slate-200">
             <p className="font-semibold text-white">{dashboardLevelLabel}</p>
             <p className="mt-1 text-slate-400">
               {completedWorkoutCount} workouts logged
             </p>
           </div>
         </div>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {dashboardModes.map((mode) => (
             <DashboardModeCard
               key={mode.key}
@@ -3315,7 +3315,7 @@ export default function ResultsRoutine() {
       </section>
 
       {activeModeLocked ? (
-        <section className="ui-card order-4 p-5">
+        <section className="ui-card ui-soft-surface order-4 p-5 sm:p-6">
           <p className="ui-kicker">Unlock Path</p>
           <h2 className="mt-2 text-2xl font-semibold text-white">
             {activeModeConfig.title} unlocks with real use
@@ -3323,16 +3323,16 @@ export default function ResultsRoutine() {
           <p className="mt-2 max-w-2xl text-sm text-slate-300">
             {activeModeConfig.lockReason}
           </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-lg border border-emerald-300/25 bg-emerald-400/10 p-3">
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-emerald-300/18 bg-emerald-300/8 p-4">
               <p className="text-xs font-semibold text-emerald-100">Level 1</p>
               <p className="mt-1 text-sm text-slate-200">Assessment, Today, Week View</p>
             </div>
-            <div className="rounded-lg border border-sky-300/25 bg-sky-400/10 p-3">
+            <div className="rounded-lg border border-sky-300/18 bg-sky-300/8 p-4">
               <p className="text-xs font-semibold text-sky-100">Level 2</p>
               <p className="mt-1 text-sm text-slate-200">History and Progress Summary</p>
             </div>
-            <div className="rounded-lg border border-amber-300/25 bg-amber-400/10 p-3">
+            <div className="rounded-lg border border-amber-300/18 bg-amber-300/8 p-4">
               <p className="text-xs font-semibold text-amber-100">Level 3</p>
               <p className="mt-1 text-sm text-slate-200">Deeper Knowledge and Analysis</p>
             </div>
@@ -3349,8 +3349,8 @@ export default function ResultsRoutine() {
       ) : null}
 
       {activeMode === "today" && !activeModeLocked ? (
-        <section className="ui-card order-4 p-4 sm:p-5" data-testid="today-mode-panel">
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)]">
+        <section className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6" data-testid="today-mode-panel">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)]">
             <div>
               <p className="ui-kicker">Today</p>
               <h2 className="mt-1 text-2xl font-semibold text-white">
@@ -3360,11 +3360,11 @@ export default function ResultsRoutine() {
               <p className="mt-2 text-sm text-slate-300">
                 {coachAction.replace(/^Next best action:\s*/i, "")}
               </p>
-              <div className="mt-4 grid gap-2 sm:grid-cols-3">
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 {coachSummaryBullets.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-2"
+                    className="ui-soft-surface rounded-lg px-3 py-3"
                   >
                     <p className="text-xs font-semibold text-slate-400">{item.label}</p>
                     <p className="mt-1 text-sm text-slate-100">{item.text}</p>
@@ -3372,7 +3372,7 @@ export default function ResultsRoutine() {
                 ))}
               </div>
               {hasAdaptationCallout ? (
-                <div className="mt-4 rounded-lg border border-sky-300/25 bg-sky-400/10 px-3 py-3 text-xs text-slate-200">
+                <div className="ui-soft-surface mt-5 rounded-lg px-3 py-3 text-xs text-slate-200">
                   <p>System adapted this week to improve stability and execution quality.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
@@ -3393,7 +3393,7 @@ export default function ResultsRoutine() {
                 </div>
               ) : null}
             </div>
-            <div className="rounded-lg border border-white/10 bg-slate-950/45 p-4">
+            <div className="ui-soft-surface rounded-lg p-4">
               <p className="text-xs font-semibold uppercase text-slate-400">
                 Session Entry
               </p>
@@ -3402,7 +3402,7 @@ export default function ResultsRoutine() {
                   todayModeEntries.map((entry) => (
                     <div
                       key={entry.key}
-                      className="rounded-lg border border-slate-700/60 bg-slate-900/70 px-3 py-2"
+                      className="rounded-lg border border-slate-500/20 bg-slate-950/42 px-3 py-2.5"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-semibold text-white">{entry.name}</p>
@@ -3461,8 +3461,8 @@ export default function ResultsRoutine() {
               copyLabel="Copy Full Progression Snapshot"
               onCopy={handleCopyCurrentSavedWeek}
               copyStatus={currentWeekCopyStatus}
-              className="order-20 p-3 opacity-75 sm:p-4"
-              bodyClassName="mt-3 max-h-36 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3"
+              className="order-20 p-3 opacity-70 sm:p-4"
+              bodyClassName="mt-3 max-h-36 overflow-auto rounded-lg border border-slate-500/20 bg-slate-950/45 p-3"
             />
           ) : (
             <CurrentSavedProgramSnapshotLoadingCard
@@ -3473,13 +3473,13 @@ export default function ResultsRoutine() {
       ) : null}
 
       {activeMode === "week" && !activeModeLocked ? (
-      <section id="week-view" ref={weekViewSectionRef} className="ui-card order-4 p-4 sm:p-5">
+      <section id="week-view" ref={weekViewSectionRef} className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <p className="ui-kicker">
               This Week
             </p>
-            <h3 className="mt-1 text-lg font-semibold text-slate-900">Week View</h3>
+            <h3 className="mt-2 text-2xl font-semibold text-white">Week View</h3>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary" onClick={focusTodayPlanInWeekView}>
@@ -3489,7 +3489,7 @@ export default function ResultsRoutine() {
               href={`/session?programId=${resolvedSessionProgramId ?? program.id}&dayIndex=${weekViewStartDay}`}
               scroll
             >
-              <Button variant="secondary" data-testid="start-selected-day">
+              <Button variant="primary" data-testid="start-selected-day">
                 Start Selected Day
               </Button>
             </Link>
@@ -3499,18 +3499,18 @@ export default function ResultsRoutine() {
           <span
             data-testid="completed-count"
             title={weekViewBaselineDebugTitle}
-            className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-600"
+            className="rounded-lg border border-slate-500/25 bg-slate-950/38 px-2.5 py-1 text-xs text-slate-300"
           >
             {completedCount} completed / {activeDaysPerWeek}
           </span>
-          <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs text-blue-700">
+          <span className="rounded-lg border border-sky-300/25 bg-sky-300/10 px-2.5 py-1 text-xs text-sky-100">
             {inProgressCount} in progress
           </span>
-          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
+          <span className="rounded-lg border border-slate-500/25 bg-slate-950/38 px-2.5 py-1 text-xs text-slate-300">
             Current day: {sessionLaunchDayIndex + 1}
           </span>
         </div>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid grid-cols-1 gap-3.5 md:grid-cols-2 lg:grid-cols-3">
           {program.week.map((day) => {
             const isCompleted = completedDaySet.has(day.dayIndex);
             const isInProgress =
@@ -3526,20 +3526,20 @@ export default function ResultsRoutine() {
               : "Not started";
             const statePercent = isCompleted ? 100 : isInProgress ? 50 : 0;
             const dayIndexTextClass = isCompleted
-              ? "text-emerald-900"
+              ? "text-emerald-100"
               : isInProgress
-              ? "text-blue-900"
-              : "text-slate-600";
+              ? "text-sky-100"
+              : "text-slate-300";
             const dayTitleTextClass = isCompleted
-              ? "text-emerald-950"
+              ? "text-emerald-50"
               : isInProgress
-              ? "text-blue-950"
-              : "text-slate-900";
+              ? "text-sky-50"
+              : "text-white";
             const stateLabelClass = isCompleted
-              ? "text-emerald-800"
+              ? "text-emerald-200"
               : isInProgress
-              ? "text-blue-700"
-              : "text-slate-500";
+              ? "text-sky-200"
+              : "text-slate-400";
             return (
               <button
                 key={day.dayIndex}
@@ -3553,16 +3553,16 @@ export default function ResultsRoutine() {
                   openWeekViewDayDetails(day.dayIndex, { scrollToDetails: true });
                 }}
                 disabled={isLocked}
-                className={`min-h-[96px] rounded-lg border px-3.5 py-3 text-left transition ${
+                className={`min-h-[116px] rounded-lg border px-4 py-3.5 text-left ${
                   isCompleted
-                    ? "border-emerald-300 bg-emerald-50"
+                    ? "border-emerald-300/32 bg-emerald-300/10"
                     : isInProgress
-                    ? "border-blue-300 bg-blue-50"
-                    : "border-slate-200 bg-white"
-                } ${isSelected ? "ring-1 ring-slate-300" : ""} ${
+                    ? "border-sky-300/38 bg-sky-300/10"
+                    : "border-slate-500/20 bg-slate-950/42"
+                } ${isSelected ? "shadow-[0_0_0_1px_rgba(125,211,252,0.45),0_18px_46px_rgba(14,165,233,0.13)]" : ""} ${
                   shouldDimLockedCard
                     ? "opacity-60"
-                    : "hover:-translate-y-px hover:shadow-sm"
+                    : "hover:border-sky-200/35"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -3571,17 +3571,17 @@ export default function ResultsRoutine() {
                   </p>
                   <div className="flex items-center gap-1">
                     {isCompleted ? (
-                      <span className="rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                      <span className="rounded-lg border border-emerald-300/35 bg-emerald-300/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
                         ✓ Completed
                       </span>
                     ) : null}
                     {isInProgress ? (
-                      <span className="rounded-full border border-blue-300 bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-800">
+                      <span className="rounded-lg border border-sky-300/35 bg-sky-300/12 px-2 py-0.5 text-[10px] font-semibold text-sky-100">
                         In progress
                       </span>
                     ) : null}
                     {isToday ? (
-                      <span className="rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                      <span className="rounded-lg border border-slate-400/25 bg-slate-100/8 px-2 py-0.5 text-[10px] font-semibold text-slate-200">
                         Today
                       </span>
                     ) : null}
@@ -3590,14 +3590,14 @@ export default function ResultsRoutine() {
                 <p className={`mt-1 text-sm font-semibold ${dayTitleTextClass}`}>{day.title}</p>
                 <p className={`mt-1 text-xs ${stateLabelClass}`}>{stateLabel}</p>
                 <div className="mt-2">
-                  <div className="h-2 w-full overflow-hidden rounded-full border border-slate-300/70 bg-slate-200/80">
+                  <div className="h-2 w-full overflow-hidden rounded-full border border-slate-500/30 bg-slate-950/60">
                     <div
                       className={`h-full rounded-full transition-[width] duration-[700ms] ease-[cubic-bezier(.22,1,.36,1)] ${
                         isCompleted
                           ? "bg-emerald-500"
-                          : isInProgress
-                          ? "bg-blue-500"
-                          : "bg-slate-400"
+                        : isInProgress
+                          ? "bg-sky-400"
+                          : "bg-slate-500"
                       }`}
                       style={{ width: `${statePercent}%` }}
                     />
@@ -3610,10 +3610,10 @@ export default function ResultsRoutine() {
         {weekViewDetailsOpen && weekViewDay ? (
           <div
             ref={weekViewDetailsRef}
-            className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3"
+            className="ui-soft-surface mt-5 rounded-lg px-4 py-4"
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <p className="text-xs font-semibold uppercase text-slate-400">
                 Selected Day Details
               </p>
               <button
@@ -3624,28 +3624,28 @@ export default function ResultsRoutine() {
                 Hide details
               </button>
             </div>
-            <p className="mt-1 text-sm font-semibold text-slate-900">
+            <p className="mt-2 text-lg font-semibold text-white">
               Day {weekViewStartDay + 1} • {weekViewDay.title}
             </p>
-            <div className="mt-3 space-y-2">
+            <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
               {weekViewDetailEntries.map((item) => {
                 return (
                   <div
                     key={item.key}
-                    className="rounded-lg border border-slate-200 bg-white px-3 py-2.5"
+                    className="rounded-lg border border-slate-500/22 bg-slate-950/42 px-3 py-3"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-semibold text-slate-900">{item.name}</p>
+                      <p className="text-sm font-semibold text-white">{item.name}</p>
                       <div className="flex flex-wrap items-center gap-1">
-                        <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] uppercase text-slate-600">
+                        <span className="rounded-md border border-slate-500/24 bg-slate-900/55 px-2 py-0.5 text-[10px] uppercase text-slate-300">
                           {item.sectionLabel}
                         </span>
                       </div>
                     </div>
                     {item.prescription ? (
-                      <p className="mt-1 text-xs text-slate-600">{item.prescription}</p>
+                      <p className="mt-1 text-xs text-slate-400">{item.prescription}</p>
                     ) : null}
-                    <p className="mt-1 text-xs text-slate-600">{item.rationale}</p>
+                    <p className="mt-2 text-xs leading-5 text-slate-300">{item.rationale}</p>
                   </div>
                 );
               })}
@@ -3653,7 +3653,7 @@ export default function ResultsRoutine() {
           </div>
         ) : null}
         {isFreePlan ? (
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-3 text-xs text-slate-400">
             Free plan preview is limited to Day 1. Upgrade to unlock Day 2–{program.daysPerWeek}.
           </p>
         ) : null}
@@ -3842,7 +3842,7 @@ export default function ResultsRoutine() {
           activeMode === "insights" && !activeModeLocked ? "order-4" : "hidden"
         } scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
           knowledgeHighlighted
-            ? "bg-slate-50/50 ring-2 ring-slate-300 ring-offset-2"
+            ? "bg-sky-400/10 ring-2 ring-sky-300/35 ring-offset-2 ring-offset-slate-950"
             : "bg-transparent"
         }`}
       >
@@ -4001,7 +4001,7 @@ export default function ResultsRoutine() {
       </div>
 
       {activeMode === "history" && !activeModeLocked ? (
-        <section className="ui-card order-4 p-4 sm:p-5" data-testid="history-mode-panel">
+        <section className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6" data-testid="history-mode-panel">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="ui-kicker">History</p>
@@ -4026,7 +4026,7 @@ export default function ResultsRoutine() {
                 return (
                   <div
                     key={session.id}
-                    className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-4 py-3"
+                    className="ui-soft-surface rounded-lg px-4 py-3"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm font-semibold text-white">
@@ -4051,7 +4051,7 @@ export default function ResultsRoutine() {
                 );
               })
             ) : (
-              <div className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-4 py-5 text-sm text-slate-300">
+              <div className="ui-soft-surface rounded-lg px-4 py-5 text-sm text-slate-300">
                 Complete your first workout to build history.
               </div>
             )}
@@ -4060,7 +4060,7 @@ export default function ResultsRoutine() {
       ) : null}
 
       {activeMode === "account" && !activeModeLocked ? (
-        <section className="ui-card order-4 p-4 sm:p-5" data-testid="account-mode-panel">
+        <section className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6" data-testid="account-mode-panel">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)]">
             <div>
               <p className="ui-kicker">Billing / Account</p>
@@ -4071,19 +4071,19 @@ export default function ResultsRoutine() {
                 Manage plan status, exports, and local training data without leaving the dashboard flow.
               </p>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
+                <div className="ui-soft-surface rounded-lg px-3 py-3">
                   <p className="text-xs text-slate-400">Plan</p>
                   <p className="mt-1 text-sm font-semibold text-white">
                     {authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local"}
                   </p>
                 </div>
-                <div className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
+                <div className="ui-soft-surface rounded-lg px-3 py-3">
                   <p className="text-xs text-slate-400">Program</p>
                   <p className="mt-1 text-sm font-semibold text-white">
                     Phase {currentPhaseIndex}
                   </p>
                 </div>
-                <div className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
+                <div className="ui-soft-surface rounded-lg px-3 py-3">
                   <p className="text-xs text-slate-400">History</p>
                   <p className="mt-1 text-sm font-semibold text-white">
                     {completedWorkoutCount} workouts
@@ -4091,7 +4091,7 @@ export default function ResultsRoutine() {
                 </div>
               </div>
             </div>
-            <div className="rounded-lg border border-white/10 bg-slate-950/45 p-4">
+            <div className="ui-soft-surface rounded-lg p-4">
               <p className="text-sm font-semibold text-white">Account actions</p>
               <div className="mt-3 flex flex-col gap-2">
                 {authEnabled ? (
@@ -4205,26 +4205,26 @@ export default function ResultsRoutine() {
               setAdvanceConfirm(false);
             }}
           />
-          <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-900">
+          <div className="ui-card ui-soft-surface-raised relative w-full max-w-md rounded-lg p-6 text-slate-100 shadow-xl">
+            <h3 className="text-lg font-semibold text-white">
               {(program?.phaseIndex ?? 1) >= MAX_PHASE_INDEX
                 ? `Phase ${MAX_PHASE_INDEX} is active`
                 : `Move to Phase ${(program?.phaseIndex ?? 1) + 1}?`}
             </h3>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-slate-300">
               This creates your next progressive plan. Your logs and history stay saved.
             </p>
             {!phaseGate.ok ? (
-              <div className="mt-3 rounded-2xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+              <div className="mt-3 rounded-lg border border-amber-300/35 bg-amber-400/10 px-3 py-2 text-xs text-amber-100">
                 {phaseGateReason}
               </div>
             ) : null}
             {advanceMessage ? (
-              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+              <div className="ui-soft-surface mt-3 rounded-lg px-3 py-2 text-xs text-slate-300">
                 {advanceMessage}
               </div>
             ) : null}
-            <label className="mt-4 flex items-center gap-2 text-xs text-slate-600">
+            <label className="mt-4 flex items-center gap-2 text-xs text-slate-300">
               <input
                 type="checkbox"
                 checked={advanceConfirm}
@@ -4248,7 +4248,7 @@ export default function ResultsRoutine() {
                 type="button"
                 disabled={!advanceConfirm || !phaseGate.ok}
                 onClick={() => handleAdvanceProgram()}
-                className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+                className="rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
               >
                 Move phase
               </button>
@@ -4264,14 +4264,14 @@ export default function ResultsRoutine() {
             onClick={() => setSkipPhaseOneOpen(false)}
           />
           <div
-            className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl"
+            className="ui-card ui-soft-surface-raised relative w-full max-w-md rounded-lg p-6 text-slate-100 shadow-xl"
             data-testid="skip-phase-one-modal"
           >
-            <h3 className="text-lg font-semibold text-slate-900">Skip Phase 1?</h3>
-            <p className="mt-2 text-sm text-slate-600">
+            <h3 className="text-lg font-semibold text-white">Skip Phase 1?</h3>
+            <p className="mt-2 text-sm text-slate-300">
               Phase 1 builds control and tolerance. Skipping can make Phase 2 feel sharper and less stable.
             </p>
-            <p className="mt-2 text-xs text-slate-600">
+            <p className="mt-2 text-xs text-slate-400">
               You can continue now, but expect stricter loading and technique demands.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -4287,7 +4287,7 @@ export default function ResultsRoutine() {
                 type="button"
                 data-testid="skip-phase-one-confirm"
                 onClick={handleSkipPhaseOne}
-                className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
+                className="rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-4 py-2 text-xs font-semibold text-white"
               >
                 Confirm skip
               </button>

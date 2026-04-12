@@ -476,9 +476,9 @@ export default function ProgressPage() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-5xl flex-col gap-6 py-8 sm:py-12">
+      <div className="ui-shell flex max-w-6xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
+          <header className="ui-page-heading flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase text-slate-300">
                 Progress
@@ -508,7 +508,7 @@ export default function ProgressPage() {
         <RecentPrList items={recentPRs} />
         <ImprovementInsights insights={recentInsights} />
 
-        <div className="ui-card rounded-lg p-5 sm:p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="ui-kicker">History</p>
@@ -525,7 +525,7 @@ export default function ProgressPage() {
                 return (
                   <div
                     key={session.id}
-                    className="flex flex-wrap items-center justify-between rounded-lg border border-slate-600/30 bg-slate-950/45 px-3 py-2"
+                    className="ui-soft-surface flex flex-wrap items-center justify-between rounded-lg px-3 py-2"
                   >
                     <span className="text-slate-100">{dateKey}</span>
                     <span className="text-xs text-slate-400">

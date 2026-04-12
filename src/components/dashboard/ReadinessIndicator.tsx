@@ -72,7 +72,7 @@ export default function ReadinessIndicator({ score }: ReadinessIndicatorProps) {
             cy={SIZE / 2}
             r={RADIUS}
             fill="none"
-            stroke="#e2e8f0"
+            stroke="rgba(148,163,184,0.28)"
             strokeWidth={STROKE_WIDTH}
           />
           <circle
@@ -89,11 +89,11 @@ export default function ReadinessIndicator({ score }: ReadinessIndicatorProps) {
         </svg>
       </div>
       <div className="space-y-0.5">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <p className="text-xs font-semibold uppercase text-slate-400">
           Readiness for Corrective Progress
         </p>
-        <p className="text-xl font-semibold text-slate-900">{animatedScore}%</p>
-        <p className="text-xs text-slate-600">{getReadinessLabel(safeScore)}</p>
+        <p className="text-xl font-semibold text-white">{animatedScore}%</p>
+        <p className="text-xs text-slate-300">{getReadinessLabel(safeScore)}</p>
       </div>
     </div>
   );

@@ -90,14 +90,14 @@ export default function PhotoUploader() {
 
   return (
     <div className="space-y-6">
-      <div className="ui-card rounded-lg border-amber-300/25 bg-amber-400/10 p-4 text-xs text-amber-100">
+      <div className="ui-card ui-soft-surface rounded-lg border-amber-300/25 p-4 text-xs text-amber-100">
         <p className="font-semibold text-amber-50">Local photo storage</p>
         <p className="mt-1">
           Photos are stored on this device. Clearing site data will remove them.
         </p>
       </div>
 
-      <div className="ui-card flex flex-wrap items-center justify-between gap-3 rounded-lg bg-slate-950/55 px-4 py-3 text-xs text-slate-300">
+      <div className="ui-card ui-soft-surface flex flex-wrap items-center justify-between gap-3 rounded-lg px-4 py-3 text-xs text-slate-300">
         <p>
           Filled slots:{" "}
           <span className="font-semibold text-white">
@@ -116,7 +116,7 @@ export default function PhotoUploader() {
           return (
             <div
               key={slot.key}
-              className="ui-card rounded-lg bg-slate-950/55 p-4 shadow-sm"
+              className="ui-card ui-soft-surface-raised rounded-lg p-4 shadow-sm"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -143,16 +143,16 @@ export default function PhotoUploader() {
                   <img
                     src={previewUrl}
                     alt={`${slot.title} preview`}
-                    className="h-48 w-full rounded-lg object-cover"
+                    className="h-52 w-full rounded-lg object-cover"
                   />
                 ) : (
-                  <div className="flex h-48 items-center justify-center rounded-lg border border-dashed border-slate-500/50 bg-slate-900/60 text-xs text-slate-400">
+                  <div className="flex h-52 items-center justify-center rounded-lg border border-dashed border-slate-500/45 bg-slate-950/45 text-xs text-slate-400">
                     No photo yet
                   </div>
                 )}
               </div>
 
-              <label className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-sky-300/45 bg-sky-500/20 px-4 py-2 text-xs font-semibold text-white transition hover:bg-sky-500/30">
+              <label className="mt-4 flex h-11 cursor-pointer items-center justify-center rounded-lg border border-sky-300/45 bg-sky-500/18 px-4 py-2 text-xs font-semibold text-white shadow-[0_12px_28px_rgba(14,165,233,0.16)] transition hover:bg-sky-500/26">
                 {value ? "Replace photo" : "Upload photo"}
                 <input
                   type="file"

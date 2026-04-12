@@ -126,9 +126,9 @@ export default function AccountSettingsPage() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-5xl flex-col gap-6 py-8 sm:py-12">
+      <div className="ui-shell flex max-w-6xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
+          <header className="ui-page-heading flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="ui-kicker">
                 Account
@@ -145,10 +145,10 @@ export default function AccountSettingsPage() {
         </OnImage>
 
         <div className="grid gap-4 lg:grid-cols-2">
-        <div className="ui-card rounded-lg p-5 sm:p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
           <p className="ui-kicker">Exports</p>
           <h2 className="ui-title mt-1">Download your data</h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-300">
             Export logs and program history anytime.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -161,10 +161,10 @@ export default function AccountSettingsPage() {
           </div>
         </div>
 
-        <div className="ui-card rounded-lg p-5 sm:p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
           <p className="ui-kicker">Data controls</p>
           <h2 className="ui-title mt-1">Reset app data</h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-300">
             This removes local workout programs, logs, photos, and in-progress drafts on this device.
           </p>
 
@@ -223,7 +223,7 @@ export default function AccountSettingsPage() {
             </div>
           )}
 
-          {message ? <p className="mt-3 text-sm text-slate-700">{message}</p> : null}
+          {message ? <p className="mt-3 text-sm text-slate-300">{message}</p> : null}
         </div>
         </div>
       </div>
