@@ -224,6 +224,56 @@ const mockLiveGeneratedProgram = (program: Program) => {
   );
 };
 
+const buildMockGenerationResult = (program: Program, seed = "results-seed") => ({
+  status: "generated" as const,
+  program,
+  seed,
+  debug: {
+    mode: "weekly",
+    seed,
+    settingsHash: "settings-hash",
+    target: {
+      phaseIndex: program.phaseIndex ?? 1,
+      cycleIndex: program.cycleIndex ?? 1,
+      weekIndex: program.weekIndex ?? 1,
+      totalWeekIndex: program.totalWeekIndex ?? 1,
+    },
+    progression: {
+      complianceRate: 0,
+      painFlag: false,
+      fatigueFlag: false,
+      completedSessionsCount: 0,
+      completedWeeksCount: 0,
+      recentLogCount: 0,
+      recentSessionCount: 0,
+    },
+  },
+});
+
+const buildSignalsPayload = () => ({
+  questionnaire,
+  history: {
+    sessions: [],
+    exerciseLogs: [],
+    programProgress: null,
+  },
+  prefs: null,
+  nowIso: "2026-04-11T12:00:00.000Z",
+});
+
+const createDeferred = <T,>() => {
+  let resolve!: (value: T) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((promiseResolve, promiseReject) => {
+    resolve = promiseResolve;
+    reject = promiseReject;
+  });
+  return { promise, resolve, reject };
+};
+
+type SignalsPayload = ReturnType<typeof buildSignalsPayload>;
+type Deferred<T> = ReturnType<typeof createDeferred<T>>;
+
 describe("results operational readiness", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -373,6 +423,204 @@ describe("results operational readiness", () => {
     expect(currentSnapshot).toContain("PHASE 1:");
     expect(currentSnapshot).toContain("PHASE 2:");
     expect(currentSnapshot).toContain("PHASE 3:");
+  });
+
+  test("repeated initial async loads only settle one active generated program", async () => {
+    const deferredSignals: Array<Deferred<SignalsPayload>> = [];
+    mocks.buildSignalsFromLocalState.mockImplementation(() => {
+      const deferred = createDeferred<ReturnType<typeof buildSignalsPayload>>();
+      deferredSignals.push(deferred);
+      return deferred.promise;
+    });
+    mocks.uuid
+      .mockReturnValueOnce("program-new")
+      .mockReturnValueOnce("program-old");
+    mocks.generateProgram.mockImplementation(
+      (request: { nextProgramId?: string; phaseIndex?: number }) => {
+        const programId = request.nextProgramId ?? "missing-id";
+        return buildMockGenerationResult(
+          buildSavedProgram(programId, {
+            exerciseId: programId === "program-new" ? "band-row" : "band-pull-aparts",
+          }),
+          `${programId}-seed`
+        );
+      }
+    );
+
+    const firstRender = render(React.createElement(ResultsRoutine));
+    await waitFor(() => expect(deferredSignals).toHaveLength(1));
+    firstRender.unmount();
+
+    render(React.createElement(ResultsRoutine));
+    await waitFor(() => expect(deferredSignals).toHaveLength(2));
+    deferredSignals[1].resolve(buildSignalsPayload());
+
+    await waitFor(() => {
+      expect(
+        mocks.saveProgram.mock.calls.map(([program]) => (program as Program).id)
+      ).toContain("program-new");
+    });
+
+    deferredSignals[0].resolve(buildSignalsPayload());
+    await Promise.resolve();
+
+    const savedProgramIds = mocks.saveProgram.mock.calls.map(
+      ([program]) => (program as Program).id
+    );
+    expect(new Set(savedProgramIds)).toEqual(new Set(["program-new"]));
+    const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
+    expect(persistedState.activeProgramId).toBe("program-new");
+    expect(screen.getByTestId("current-saved-week-body").textContent ?? "").toContain(
+      "Program ID: program-new"
+    );
+  });
+
+  test("stale initial generation result cannot overwrite a newer settled program", async () => {
+    const deferredSignals: Array<Deferred<SignalsPayload>> = [];
+    mocks.buildSignalsFromLocalState.mockImplementation(() => {
+      const deferred = createDeferred<ReturnType<typeof buildSignalsPayload>>();
+      deferredSignals.push(deferred);
+      return deferred.promise;
+    });
+    mocks.uuid
+      .mockReturnValueOnce("settled-program")
+      .mockReturnValueOnce("stale-program");
+    mocks.generateProgram.mockImplementation(
+      (request: { nextProgramId?: string; phaseIndex?: number }) =>
+        buildMockGenerationResult(
+          buildSavedProgram(request.nextProgramId ?? "unknown-program"),
+          `${request.nextProgramId}-seed`
+        )
+    );
+
+    const firstRender = render(React.createElement(ResultsRoutine));
+    await waitFor(() => expect(deferredSignals).toHaveLength(1));
+    firstRender.unmount();
+
+    render(React.createElement(ResultsRoutine));
+    await waitFor(() => expect(deferredSignals).toHaveLength(2));
+    deferredSignals[1].resolve(buildSignalsPayload());
+
+    await waitFor(() => {
+      expect(screen.getByTestId("current-saved-week-body").textContent ?? "").toContain(
+        "Program ID: settled-program"
+      );
+    });
+
+    deferredSignals[0].resolve(buildSignalsPayload());
+    await Promise.resolve();
+
+    expect(
+      mocks.saveProgram.mock.calls.map(([program]) => (program as Program).id)
+    ).not.toContain("stale-program");
+    expect(
+      mocks.saveProgram.mock.calls.map(([program]) => (program as Program).id)
+    ).toContain("settled-program");
+    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
+    expect(currentSnapshot).toContain("Program ID: settled-program");
+    expect(currentSnapshot).not.toContain("Program ID: stale-program");
+  });
+
+  test("reconcile does not regenerate immediately after a fresh compatible initial generation", async () => {
+    const generatedProgram = buildSavedProgram("results-program");
+    mocks.uuid
+      .mockReturnValueOnce("results-program")
+      .mockReturnValue("unexpected-reconcile-program");
+    mocks.generateProgram.mockImplementation((request: { nextProgramId?: string }) => {
+      if (request.nextProgramId?.includes("progression-inspection-phase")) {
+        return buildMockGenerationResult(buildSavedProgram(request.nextProgramId), "inspection-seed");
+      }
+      return buildMockGenerationResult(generatedProgram);
+    });
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(mocks.saveProgram).toHaveBeenCalledWith(
+        expect.objectContaining({ id: "results-program" })
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId("current-saved-week-body").textContent ?? "").toContain(
+        "Program ID: results-program"
+      );
+    });
+
+    const liveGenerationIds = mocks.generateProgram.mock.calls
+      .map(([request]) => (request as { nextProgramId?: string }).nextProgramId)
+      .filter((id) => id && !id.includes("progression-inspection-phase"));
+    expect(liveGenerationIds).toEqual(["results-program"]);
+    expect(
+      new Set(mocks.saveProgram.mock.calls.map(([program]) => (program as Program).id))
+    ).toEqual(new Set(["results-program"]));
+  });
+
+  test("snapshot metadata waits for the settled active program/app-state pair", async () => {
+    const deferredSignals: Array<Deferred<SignalsPayload>> = [];
+    mocks.buildSignalsFromLocalState.mockImplementation(() => {
+      const deferred = createDeferred<ReturnType<typeof buildSignalsPayload>>();
+      deferredSignals.push(deferred);
+      return deferred.promise;
+    });
+    mocks.uuid.mockReturnValue("settled-snapshot-program");
+    mocks.generateProgram.mockImplementation((request: { nextProgramId?: string }) =>
+      buildMockGenerationResult(buildSavedProgram(request.nextProgramId ?? "settled-snapshot-program"))
+    );
+
+    render(React.createElement(ResultsRoutine));
+    await waitFor(() => expect(deferredSignals).toHaveLength(1));
+    expect(screen.queryByTestId("current-saved-week-body")).toBeNull();
+
+    deferredSignals[0].resolve(buildSignalsPayload());
+
+    await waitFor(() => {
+      const snapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
+      expect(snapshot).toContain("Program ID: settled-snapshot-program");
+      expect(snapshot).toContain("Generation Mode: live_initial");
+      expect(snapshot).toContain("Initial Live Variation Slot: settled-snapshot-program");
+    });
+  });
+
+  test("copy action captures the settled active program instead of an intermediate generation", async () => {
+    const deferredSignals: Array<Deferred<SignalsPayload>> = [];
+    mocks.buildSignalsFromLocalState.mockImplementation(() => {
+      const deferred = createDeferred<ReturnType<typeof buildSignalsPayload>>();
+      deferredSignals.push(deferred);
+      return deferred.promise;
+    });
+    mocks.uuid
+      .mockReturnValueOnce("settled-copy-program")
+      .mockReturnValueOnce("intermediate-program");
+    mocks.generateProgram.mockImplementation(
+      (request: { nextProgramId?: string; phaseIndex?: number }) =>
+        buildMockGenerationResult(
+          buildSavedProgram(request.nextProgramId ?? "unknown-program"),
+          `${request.nextProgramId}-seed`
+        )
+    );
+
+    const firstRender = render(React.createElement(ResultsRoutine));
+    await waitFor(() => expect(deferredSignals).toHaveLength(1));
+    firstRender.unmount();
+
+    render(React.createElement(ResultsRoutine));
+    await waitFor(() => expect(deferredSignals).toHaveLength(2));
+    deferredSignals[1].resolve(buildSignalsPayload());
+
+    await waitFor(() => {
+      expect(screen.getByTestId("current-saved-week-body").textContent ?? "").toContain(
+        "Program ID: settled-copy-program"
+      );
+    });
+    deferredSignals[0].resolve(buildSignalsPayload());
+    await Promise.resolve();
+
+    fireEvent.click(screen.getByRole("button", { name: /Copy Full Progression Snapshot/i }));
+
+    expect(mocks.writeText).toHaveBeenCalledTimes(1);
+    const copiedText = mocks.writeText.mock.calls[0]?.[0] as string;
+    expect(copiedText).toContain("Program ID: settled-copy-program");
+    expect(copiedText).not.toContain("Program ID: intermediate-program");
   });
 
   test.each([
