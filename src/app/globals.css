@@ -18,7 +18,7 @@
   --accent-glow: rgba(35, 166, 255, 0.35);
   --danger: #f97373;
   --hero-image: url("/landing-bg.png");
-  --ui-card-radius: 1rem;
+  --ui-card-radius: 0.5rem;
   --ui-card-border-shaded: rgba(255, 255, 255, 0.1);
   --ui-card-surface-shaded: rgba(15, 23, 42, 0.6);
   --ui-card-shadow-shaded: 0 10px 40px rgba(0, 0, 0, 0.25);
@@ -47,8 +47,8 @@
   --ui-line-relaxed: 1.55;
   --ui-gap-card: 1rem;
   --radius-pill: 9999px;
-  --radius-md: 0.85rem;
-  --radius-lg: 1rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.5rem;
   --focus-ring: 0 0 0 2px rgba(8, 16, 29, 0.95), 0 0 0 4px rgba(35, 166, 255, 0.55);
   --ease-ui: 300ms ease;
   --ui-text-haze-soft: 0 0 10px rgba(148, 163, 184, 0.16);
@@ -93,8 +93,12 @@ body {
   background: var(--background);
   color: #cbd5e1;
   font-family: "Manrope", "Avenir Next", "Helvetica Neue", sans-serif;
-  letter-spacing: 0.005em;
+  letter-spacing: 0;
   text-rendering: optimizeLegibility;
+}
+
+* {
+  letter-spacing: 0 !important;
 }
 
 h1,
@@ -104,7 +108,7 @@ h4,
 h5,
 h6 {
   font-family: "Space Grotesk", "Manrope", sans-serif;
-  letter-spacing: -0.015em;
+  letter-spacing: 0;
   color: #ffffff;
 }
 
@@ -128,7 +132,6 @@ textarea {
     background-color var(--ease-ui),
     color var(--ease-ui),
     box-shadow var(--ease-ui),
-    transform var(--ease-ui),
     opacity var(--ease-ui);
 }
 

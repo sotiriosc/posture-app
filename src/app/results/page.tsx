@@ -32,20 +32,13 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
     <BackgroundShell>
       <div className="ui-shell flex max-w-6xl flex-col gap-8 py-8 sm:py-12">
         <OnImage>
-          <header className="rounded-2xl border border-slate-300/20 bg-slate-900/35 p-4 sm:p-6">
+          <header className="border-b border-white/10 pb-5">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="ui-kicker">
-                  Step 3
-                </p>
-                <h1 className="text-4xl font-semibold text-white sm:text-5xl">
-                  Results Dashboard
+                <p className="ui-kicker">Praxis Dashboard</p>
+                <h1 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
+                  {session ? `Welcome back, ${displayName}` : "Your movement system"}
                 </h1>
-                {session ? (
-                  <p className="mt-2 text-base font-semibold text-slate-100 sm:text-lg">
-                    Hey {displayName}, welcome back. How are you feeling today?
-                  </p>
-                ) : null}
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Link href="/questionnaire">
@@ -58,16 +51,17 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
                 ) : null}
               </div>
             </div>
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-200">
+              <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
+                Generated from movement profile
+              </span>
+              {authEnabled ? (
+                <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
+                  Plan: {isPro ? "Pro" : "Free"}
+                </span>
+              ) : null}
+            </div>
           </header>
-
-          <p className="max-w-2xl text-sm text-slate-200">
-            Your routine is generated locally from your movement profile and corrective priorities. Ready to start your next session and build pattern quality?
-          </p>
-          {authEnabled ? (
-            <p className="text-xs font-semibold text-slate-200">
-              Plan: {isPro ? "Pro (full access)" : "Free (day 1 workout access)"}
-            </p>
-          ) : null}
           {authEnabled && isPro ? <ManageSubscriptionButton showRefreshAction={false} /> : null}
           {authEnabled && showPaywallNotice && !isPro ? (
             <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">

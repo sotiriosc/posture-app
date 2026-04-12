@@ -90,21 +90,21 @@ export default function PhotoUploader() {
 
   return (
     <div className="space-y-6">
-      <div className="ui-card rounded-2xl border-amber-200 bg-amber-50/95 p-4 text-xs text-amber-900">
-        <p className="font-semibold">Note</p>
+      <div className="ui-card rounded-lg border-amber-300/25 bg-amber-400/10 p-4 text-xs text-amber-100">
+        <p className="font-semibold text-amber-50">Local photo storage</p>
         <p className="mt-1">
           Photos are stored on this device. Clearing site data will remove them.
         </p>
       </div>
 
-      <div className="ui-card flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/95 px-4 py-3 text-xs text-slate-600">
+      <div className="ui-card flex flex-wrap items-center justify-between gap-3 rounded-lg bg-slate-950/55 px-4 py-3 text-xs text-slate-300">
         <p>
           Filled slots:{" "}
-          <span className="font-semibold text-slate-900">
+          <span className="font-semibold text-white">
             {filledCount} / 3
           </span>
         </p>
-        <p className="text-slate-500">
+        <p className="text-slate-400">
           Lightweight metadata is saved locally for quick status.
         </p>
       </div>
@@ -116,20 +116,20 @@ export default function PhotoUploader() {
           return (
             <div
               key={slot.key}
-              className="ui-card rounded-2xl bg-white/95 p-4 shadow-sm"
+              className="ui-card rounded-lg bg-slate-950/55 p-4 shadow-sm"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-slate-800">
+                  <p className="text-sm font-semibold text-white">
                     {slot.title} photo
                   </p>
-                  <p className="text-xs text-slate-500">{slot.hint}</p>
+                  <p className="text-xs text-slate-400">{slot.hint}</p>
                 </div>
                 {value ? (
                   <button
                     type="button"
                     onClick={() => handleDelete(slot.key)}
-                    className="text-xs font-semibold text-rose-600"
+                    className="text-xs font-semibold text-rose-200"
                   >
                     Delete
                   </button>
@@ -143,16 +143,16 @@ export default function PhotoUploader() {
                   <img
                     src={previewUrl}
                     alt={`${slot.title} preview`}
-                    className="h-48 w-full rounded-xl object-cover"
+                    className="h-48 w-full rounded-lg object-cover"
                   />
                 ) : (
-                  <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-xs text-slate-400">
+                  <div className="flex h-48 items-center justify-center rounded-lg border border-dashed border-slate-500/50 bg-slate-900/60 text-xs text-slate-400">
                     No photo yet
                   </div>
                 )}
               </div>
 
-              <label className="mt-4 flex cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800">
+              <label className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-sky-300/45 bg-sky-500/20 px-4 py-2 text-xs font-semibold text-white transition hover:bg-sky-500/30">
                 {value ? "Replace photo" : "Upload photo"}
                 <input
                   type="file"

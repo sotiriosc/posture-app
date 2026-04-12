@@ -100,16 +100,19 @@ export default async function BillingAccountPage() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+      <div className="ui-shell flex max-w-5xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-center justify-between gap-4">
+          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
             <div>
               <p className="ui-kicker">
                 Account
               </p>
-              <h1 className="text-3xl font-semibold text-white">
+              <h1 className="mt-2 text-3xl font-semibold text-white">
                 Billing status
               </h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-200">
+                Review access, renewal, and subscription controls.
+              </p>
             </div>
             <Link href="/results">
               <Button variant="secondary">Back</Button>
@@ -117,63 +120,87 @@ export default async function BillingAccountPage() {
           </header>
         </OnImage>
 
-        <div className="ui-card p-6">
-          <p className="ui-kicker">Current plan</p>
-          <h2 className="ui-title mt-1">
-            {user?.plan === "pro" ? "Pro" : "Free"}
-          </h2>
-          <span
-            className={`mt-3 inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${statusChip.className}`}
-          >
-            {statusChip.label}
-          </span>
-          <div className="mt-3 space-y-2 text-xs text-slate-700">
-            <p>Email: {session?.email ?? "Unknown"}</p>
-            <p>
-              Access status:{" "}
-              {getAccessStatusLabel({
-                plan: user?.plan,
-                stripeStatus: user?.stripeSubscriptionStatus,
-                cancelAtPeriodEnd: user?.stripeCancelAtPeriodEnd,
-                renewalDate: user?.stripeCurrentPeriodEnd,
-              })}
-            </p>
-            <p>Stripe subscription status: {user?.stripeSubscriptionStatus ?? "--"}</p>
-            <p>{dateRow.label}: {dateRow.value}</p>
-            <p>
-              Cancel at period end:{" "}
-              {user?.stripeCancelAtPeriodEnd === null ||
-              user?.stripeCancelAtPeriodEnd === undefined
-                ? "--"
-                : user.stripeCancelAtPeriodEnd
-                ? "Yes"
-                : "No"}
-            </p>
-            <p>Stripe customer: {user?.stripeCustomerId ?? "--"}</p>
-            <p>Stripe subscription: {user?.stripeSubscriptionId ?? "--"}</p>
-          </div>
-          <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
-              Your Pro plan includes:
-            </p>
-            <ul className="mt-2 space-y-1 text-xs text-slate-700">
-              <li>Structured corrective progression built around movement quality and pattern balance</li>
-              <li>Weekly progression driven by movement performance and recovery data</li>
-              <li>Session tracking and analytics</li>
-              <li>Continuous system adjustments</li>
-            </ul>
-          </div>
-          {user?.stripeCustomerId ? (
-            <div className="mt-4 space-y-3">
-              <ManageSubscriptionButton />
-              <p className="text-xs text-slate-600">
-                You can cancel or modify your subscription anytime.
-              </p>
-              <p className="text-xs text-slate-600">
-                Your training data remains accessible.
-              </p>
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)]">
+          <div className="ui-card rounded-lg p-5 sm:p-6">
+            <p className="ui-kicker">Current plan</p>
+            <h2 className="mt-2 text-3xl font-semibold text-white">
+              {user?.plan === "pro" ? "Pro" : "Free"}
+            </h2>
+            <span
+              className={`mt-3 inline-flex rounded-lg border px-3 py-1 text-[11px] font-semibold uppercase ${statusChip.className}`}
+            >
+              {statusChip.label}
+            </span>
+            <div className="mt-5 grid gap-3 text-sm text-slate-300 sm:grid-cols-2">
+              {[
+                ["Email", session?.email ?? "Unknown"],
+                [
+                  "Access status",
+                  getAccessStatusLabel({
+                    plan: user?.plan,
+                    stripeStatus: user?.stripeSubscriptionStatus,
+                    cancelAtPeriodEnd: user?.stripeCancelAtPeriodEnd,
+                    renewalDate: user?.stripeCurrentPeriodEnd,
+                  }),
+                ],
+                ["Stripe status", user?.stripeSubscriptionStatus ?? "--"],
+                [dateRow.label, dateRow.value],
+                [
+                  "Cancel at period end",
+                  user?.stripeCancelAtPeriodEnd === null ||
+                  user?.stripeCancelAtPeriodEnd === undefined
+                    ? "--"
+                    : user.stripeCancelAtPeriodEnd
+                    ? "Yes"
+                    : "No",
+                ],
+                ["Stripe customer", user?.stripeCustomerId ?? "--"],
+                ["Stripe subscription", user?.stripeSubscriptionId ?? "--"],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3"
+                >
+                  <p className="text-xs text-slate-400">{label}</p>
+                  <p className="mt-1 break-words font-semibold text-slate-100">{value}</p>
+                </div>
+              ))}
             </div>
-          ) : null}
+          </div>
+
+          <aside className="ui-card rounded-lg p-5 sm:p-6">
+            <p className="ui-kicker">Access</p>
+            <h2 className="mt-2 text-xl font-semibold text-white">
+              Pro plan includes
+            </h2>
+            <ul className="mt-4 space-y-3 text-sm text-slate-300">
+              <li>Structured corrective progression around movement quality.</li>
+              <li>Weekly progression driven by performance and recovery data.</li>
+              <li>Session tracking, analytics, and continuous adjustments.</li>
+            </ul>
+            {user?.stripeCustomerId ? (
+              <div className="mt-5 space-y-3 border-t border-white/10 pt-4">
+                <ManageSubscriptionButton />
+                <p className="text-xs text-slate-400">
+                  You can cancel or modify your subscription anytime.
+                </p>
+                <p className="text-xs text-slate-400">
+                  Your training data remains accessible.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-5 rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3 text-xs text-slate-300">
+                Billing portal access appears after a Stripe customer is connected.
+              </div>
+            )}
+            <div className="mt-4">
+              <Link href="/account/settings">
+                <Button variant="secondary" className="w-full">
+                  Data settings
+                </Button>
+              </Link>
+            </div>
+          </aside>
         </div>
       </div>
     </BackgroundShell>

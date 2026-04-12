@@ -10,7 +10,6 @@ export default async function Home() {
     "Generate your weekly plan automatically",
     "Adapt your program as you progress",
   ];
-  const panelWidthClass = "w-full max-w-xl lg:max-w-3xl xl:max-w-4xl";
 
   return (
     <div className="hero-bg min-h-screen text-white">
@@ -39,28 +38,28 @@ export default async function Home() {
           </div>
         </header>
 
-        <main className="flex flex-1 flex-col justify-center gap-6 sm:gap-8 lg:gap-10">
-          <div
-            className={`hero-glass home-neon-border ${panelWidthClass} rounded-[28px] p-6 sm:p-8 lg:p-9`}
+        <main className="flex flex-1 flex-col justify-center gap-8 py-12 sm:gap-10 lg:py-16">
+          <section
+            className="w-full max-w-4xl"
             style={{
               animation: "slideUpIn 300ms cubic-bezier(0.2, 0.75, 0.2, 1) both",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+            <p className="text-xs font-semibold uppercase text-slate-200">
               Praxis Corrective Performance System
             </p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl lg:text-[3.25rem]">
+            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-[3.25rem]">
               Train with intent. Move better every week.
             </h1>
-            <p className="mt-4 text-base text-slate-100 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-base text-slate-100 sm:text-lg">
               This system identifies movement imbalances and guides your progress with structured corrective logic.
             </p>
-            <p className="mt-2 text-sm text-slate-200 sm:text-base">
+            <p className="mt-2 max-w-2xl text-sm text-slate-200 sm:text-base">
               Your plan evolves based on your execution, recovery, and movement quality.
             </p>
-            <div className="mt-6 flex flex-col items-center gap-3 sm:items-start">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link href="/assessment">
-                <Button className="h-12 min-w-[220px] px-7 text-sm font-semibold shadow-[0_12px_28px_rgba(14,165,233,0.28)] transition-transform duration-150 hover:scale-[1.02]">
+                <Button className="h-12 min-w-[220px] px-7 text-sm font-semibold shadow-[0_12px_28px_rgba(14,165,233,0.28)]">
                   Start Assessment →
                 </Button>
               </Link>
@@ -73,36 +72,40 @@ export default async function Home() {
                 </Button>
               </Link>
             </div>
-            <p className="mt-3 text-xs text-slate-300">
+            <p className="mt-4 text-xs text-slate-300">
               Built to help you improve posture, movement quality, and strength patterns over time.
             </p>
-          </div>
-          <p className={`${panelWidthClass} text-xs text-slate-300`}>
-            Program generation takes less than 60 seconds.
-          </p>
+          </section>
 
-          <section className={`hero-pill home-neon-border ${panelWidthClass} rounded-2xl p-4 sm:p-5`}>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
-              How the system builds your program
-            </p>
-            <div className="mt-3 grid grid-cols-1 gap-2.5 text-sm text-slate-100 md:auto-rows-fr md:grid-cols-3">
+          <section className="w-full max-w-5xl border-t border-white/10 pt-5">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase text-slate-300">
+                  Program generation takes less than 60 seconds.
+                </p>
+                <h2 className="mt-2 text-xl font-semibold text-white">
+                  How the system builds your program
+                </h2>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-1 gap-2.5 text-sm text-slate-100 md:auto-rows-fr md:grid-cols-3">
               {systemSteps.map((step, index) => (
                 <div
                   key={step}
-                  className="flex h-full min-h-16 flex-col items-center justify-center rounded-xl bg-slate-950/25 px-3 py-2 text-center md:min-h-[108px]"
+                  className="flex h-full min-h-[108px] flex-col justify-between rounded-lg border border-white/10 bg-slate-950/44 px-4 py-3"
                   style={{
                     animation: "slideUpIn 300ms ease-out both",
                     animationDelay: `${index * 50}ms`,
                   }}
                 >
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300">
+                  <p className="text-[10px] font-semibold uppercase text-slate-400">
                     Step {index + 1}
                   </p>
-                  <p className="mt-1 text-sm text-slate-100">{step}</p>
+                  <p className="mt-3 text-base text-slate-100">{step}</p>
                 </div>
               ))}
             </div>
-            <p className="mt-3 text-center text-sm text-slate-100">
+            <p className="mt-3 text-sm text-slate-200">
               No static workouts. The plan evolves with you.
             </p>
           </section>

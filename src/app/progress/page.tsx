@@ -476,16 +476,23 @@ export default function ProgressPage() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-4xl flex-col gap-6 py-8 sm:py-12">
+      <div className="ui-shell flex max-w-5xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300">
-              Progress
-            </p>
-            <h1 className="text-3xl font-semibold text-white">Training insights</h1>
-            <p className="text-sm text-slate-200">
-              Review corrective performance trends, movement frequency, and personal records.
-            </p>
+          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
+            <div>
+              <p className="text-xs font-semibold uppercase text-slate-300">
+                Progress
+              </p>
+              <h1 className="mt-2 text-3xl font-semibold text-white">Training insights</h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-200">
+                Review corrective performance trends, movement frequency, and personal records.
+              </p>
+            </div>
+            <Link href="/results">
+              <span className="inline-flex rounded-lg border border-slate-300/40 bg-slate-900/55 px-5 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-800/65">
+                Back to dashboard
+              </span>
+            </Link>
           </header>
         </OnImage>
 
@@ -501,8 +508,16 @@ export default function ProgressPage() {
         <RecentPrList items={recentPRs} />
         <ImprovementInsights insights={recentInsights} />
 
-        <div className="ui-card p-6">
-          <h2 className="text-sm font-semibold text-slate-900">Last 7 sessions</h2>
+        <div className="ui-card rounded-lg p-5 sm:p-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="ui-kicker">History</p>
+              <h2 className="mt-1 text-lg font-semibold text-white">Last 7 sessions</h2>
+            </div>
+            <span className="rounded-lg border border-slate-500/30 bg-slate-950/45 px-3 py-1 text-xs text-slate-300">
+              {sessions.length} sessions tracked
+            </span>
+          </div>
           <div className="mt-4 space-y-3 text-sm text-slate-700">
             {lastSessions.length ? (
               lastSessions.map((session) => {
@@ -510,10 +525,10 @@ export default function ProgressPage() {
                 return (
                   <div
                     key={session.id}
-                    className="flex flex-wrap items-center justify-between rounded-2xl bg-slate-50 px-3 py-2"
+                    className="flex flex-wrap items-center justify-between rounded-lg border border-slate-600/30 bg-slate-950/45 px-3 py-2"
                   >
-                    <span>{dateKey}</span>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-slate-100">{dateKey}</span>
+                    <span className="text-xs text-slate-400">
                       {session.durationSec ? `${Math.round(session.durationSec / 60)} min` : "--"}{" "}
                       • Volume {volumeByDate[dateKey] ?? 0}
                     </span>
@@ -521,19 +536,10 @@ export default function ProgressPage() {
                 );
               })
             ) : (
-              <p className="text-sm text-slate-500">No completed sessions yet.</p>
+              <p className="text-sm text-slate-400">No completed sessions yet.</p>
             )}
           </div>
         </div>
-
-        <OnImage>
-          <Link
-            href="/results"
-            className="inline-flex rounded-full border border-slate-300/40 bg-slate-900/55 px-5 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-800/65"
-          >
-            Back to results
-          </Link>
-        </OnImage>
       </div>
     </BackgroundShell>
   );

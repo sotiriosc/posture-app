@@ -126,14 +126,17 @@ export default function AccountSettingsPage() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+      <div className="ui-shell flex max-w-5xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-center justify-between gap-4">
+          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
             <div>
               <p className="ui-kicker">
                 Account
               </p>
-              <h1 className="text-3xl font-semibold text-white">Settings</h1>
+              <h1 className="mt-2 text-3xl font-semibold text-white">Settings</h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-200">
+                Export training data or reset local app state on this device.
+              </p>
             </div>
             <Link href="/results">
               <Button variant="secondary">Back</Button>
@@ -141,7 +144,8 @@ export default function AccountSettingsPage() {
           </header>
         </OnImage>
 
-        <div className="ui-card p-6">
+        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="ui-card rounded-lg p-5 sm:p-6">
           <p className="ui-kicker">Exports</p>
           <h2 className="ui-title mt-1">Download your data</h2>
           <p className="mt-2 text-sm text-slate-600">
@@ -157,7 +161,7 @@ export default function AccountSettingsPage() {
           </div>
         </div>
 
-        <div className="ui-card p-6">
+        <div className="ui-card rounded-lg p-5 sm:p-6">
           <p className="ui-kicker">Data controls</p>
           <h2 className="ui-title mt-1">Reset app data</h2>
           <p className="mt-2 text-sm text-slate-600">
@@ -220,6 +224,7 @@ export default function AccountSettingsPage() {
           )}
 
           {message ? <p className="mt-3 text-sm text-slate-700">{message}</p> : null}
+        </div>
         </div>
       </div>
     </BackgroundShell>

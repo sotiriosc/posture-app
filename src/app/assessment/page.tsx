@@ -8,14 +8,14 @@ import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 export default function AssessmentPage() {
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
+      <div className="ui-shell flex max-w-6xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-center justify-between gap-4">
+          <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+              <p className="text-xs font-semibold uppercase text-slate-300">
                 Movement & Posture Baseline
               </p>
-              <h1 className="text-3xl font-semibold text-white">
+              <h1 className="mt-2 text-3xl font-semibold text-white">
                 Upload your posture photos
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-slate-200">
@@ -27,18 +27,21 @@ export default function AssessmentPage() {
             </Link>
           </header>
 
-          <p className="max-w-2xl text-sm text-slate-200">
-            Photos are stored on your device. Capture natural posture in good
-            lighting for the clearest results.
-          </p>
+          <div className="grid gap-3 pt-2 sm:grid-cols-3">
+            {["Natural stance", "Good lighting", "Front / side / back"].map((item) => (
+              <div
+                key={item}
+                className="rounded-lg border border-white/10 bg-slate-950/45 px-3 py-2 text-sm text-slate-200"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
         </OnImage>
 
         <PhotoUploader />
-        <p className="max-w-3xl text-sm text-slate-200">
-          Capture front, side, and back views with relaxed posture for the clearest baseline.
-        </p>
 
-        <OnImage className="flex flex-wrap gap-3">
+        <OnImage className="flex flex-wrap gap-3 border-t border-white/10 pt-5">
           <Link href="/">
             <Button variant="secondary">Back to home</Button>
           </Link>

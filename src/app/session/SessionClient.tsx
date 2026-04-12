@@ -1269,7 +1269,9 @@ export default function SessionClient() {
       setActiveIndex((prev) => prev + 1);
       return;
     }
-    await handleCompleteSession();
+    window.setTimeout(() => {
+      void handleCompleteSession();
+    }, 250);
   };
 
   const handleBack = async () => {
@@ -2030,17 +2032,19 @@ export default function SessionClient() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-4xl flex-col gap-4 py-6 sm:py-8">
+      <div className="ui-shell flex max-w-5xl flex-col gap-4 py-6 sm:py-8">
         <span
           className="sr-only"
           data-testid="current-exercise-id"
           data-exercise-id={currentItem.exerciseId}
         />
 
-        <OnImage className="py-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+        <OnImage className="border-b border-white/10 py-3">
+          <p className="text-xs font-semibold uppercase text-slate-300">
             Guided session
           </p>
+          <h1 className="mt-2 text-2xl font-semibold text-white">{dayTitle}</h1>
+          <p className="mt-1 text-sm text-slate-300">{phaseLabel}</p>
         </OnImage>
 
         <div className="sticky top-2 z-30 space-y-2">
@@ -2081,7 +2085,7 @@ export default function SessionClient() {
           />
         </div>
 
-        <div className="ui-card border-indigo-200/70 bg-[linear-gradient(135deg,rgba(238,242,255,0.9),rgba(255,255,255,0.96))] p-4 sm:p-5">
+        <div className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-start">
             <DualModeTimer
               key={currentItem.id}
@@ -2104,14 +2108,14 @@ export default function SessionClient() {
               onStateChange={handleTimerRuntimeChange}
             />
 
-            <div className="space-y-2 rounded-xl border border-indigo-200/80 bg-indigo-50/70 p-3 text-sm text-indigo-900 lg:pt-1">
-              <p className="font-semibold text-indigo-900">Cues</p>
+            <div className="space-y-2 rounded-lg border border-sky-300/25 bg-sky-400/10 p-3 text-sm text-slate-100 lg:pt-1">
+              <p className="font-semibold text-white">Cues</p>
               <ul className="list-disc pl-5">
                 {currentItem.cues.map((cue) => (
                   <li key={cue}>{cue}</li>
                 ))}
               </ul>
-              <p className="mt-3 text-xs text-indigo-700/85">
+              <p className="mt-3 text-xs text-slate-300">
                 Common mistake: {currentItem.mistake}
               </p>
             </div>
@@ -2120,7 +2124,7 @@ export default function SessionClient() {
 
         <div
           ref={trackingPanelRef}
-          className="ui-card border-sky-200/75 bg-[linear-gradient(135deg,rgba(240,249,255,0.95),rgba(255,255,255,0.98))] p-6"
+          className="ui-card rounded-lg border-sky-300/25 bg-slate-950/58 p-5 sm:p-6"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -2167,7 +2171,7 @@ export default function SessionClient() {
                 </div>
               ) : null}
               <span
-                className="ui-saving-indicator rounded-full border border-sky-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-sky-700"
+                className="ui-saving-indicator rounded-lg border border-sky-300/35 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold text-sky-100"
                 data-state={saveState}
               >
                 {saveState === "saving"
@@ -2178,34 +2182,34 @@ export default function SessionClient() {
               </span>
             </div>
           </div>
-          <div className="mt-3 rounded-2xl border border-indigo-200/75 bg-indigo-50/70 px-3 py-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-700/90">
+          <div className="mt-3 rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
+            <p className="text-[11px] font-semibold uppercase text-slate-300">
               About to record
             </p>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-indigo-900/90">
+            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-200">
               <p>
-                <span className="font-semibold text-indigo-900">Load:</span>{" "}
+                <span className="font-semibold text-white">Load:</span>{" "}
                 {currentItem.loadType === "weighted"
                   ? `${previewWeight}${previewUnit ? ` ${previewUnit}` : ""}`
                   : currentItem.loadType}
               </p>
               <p>
-                <span className="font-semibold text-indigo-900">Reps/set:</span>{" "}
+                <span className="font-semibold text-white">Reps/set:</span>{" "}
                 {previewReps}
               </p>
               <p data-testid="about-to-record-rpe">
-                <span className="font-semibold text-indigo-900">RPE:</span> {previewRpe}
+                <span className="font-semibold text-white">RPE:</span> {previewRpe}
               </p>
               <p>
-                <span className="font-semibold text-indigo-900">Sets:</span>{" "}
+                <span className="font-semibold text-white">Sets:</span>{" "}
                 {previewSetsCompleted}/{previewSetsPlanned}
               </p>
               <p>
-                <span className="font-semibold text-indigo-900">Timer:</span>{" "}
+                <span className="font-semibold text-white">Timer:</span>{" "}
                 {currentTimer.workSeconds}s work • {currentTimer.restSeconds}s rest
               </p>
               <p className="col-span-2">
-                <span className="font-semibold text-indigo-900">Feedback:</span>{" "}
+                <span className="font-semibold text-white">Feedback:</span>{" "}
                 {currentFeedback?.rating ?? "not set"}
                 {currentFeedback?.rating === "pain" && currentFeedback?.painLocation
                   ? ` (${currentFeedback.painLocation})`
@@ -2395,8 +2399,8 @@ export default function SessionClient() {
         </div>
 
         {allSetsCompleted ? (
-          <div className="ui-card border-amber-200/80 bg-[linear-gradient(135deg,rgba(255,251,235,0.95),rgba(255,255,255,0.98))] p-6">
-            <p className="text-sm font-semibold text-slate-900">How did it feel?</p>
+          <div className="ui-card rounded-lg border-amber-300/25 bg-amber-400/10 p-5 sm:p-6">
+            <p className="text-sm font-semibold text-white">How did it feel?</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {(
                 [
@@ -2445,13 +2449,13 @@ export default function SessionClient() {
 
         {painModalOpen ? (
           <div
-            className="ui-card border-rose-200 bg-rose-50 p-6"
+            className="ui-card rounded-lg border-rose-300/30 bg-rose-400/10 p-5 sm:p-6"
             data-testid="pain-report-modal"
           >
-            <p className="text-sm font-semibold text-slate-900">
+            <p className="text-sm font-semibold text-white">
               Pain check-in for {currentItem.name}
             </p>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-slate-300">
               Select the level you felt on this movement pattern focus.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
@@ -2591,9 +2595,7 @@ export default function SessionClient() {
             onClick={() => {
               void handleNext();
             }}
-            className={`${primaryActionBtn} h-14 w-full min-w-0 rounded-xl px-6 text-base font-semibold ${
-              sessionComplete ? "" : "motion-safe:animate-[pulse_6s_ease-in-out_infinite]"
-            }`}
+            className={`${primaryActionBtn} h-14 w-full min-w-0 rounded-lg px-6 text-base font-semibold`}
           >
             {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next Movement Pattern \u2192"}
           </button>

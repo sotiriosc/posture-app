@@ -76,6 +76,7 @@ import DailyInsightCard from "@/components/dashboard/DailyInsightCard";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import PhaseProgressCard from "@/components/dashboard/PhaseProgressCard";
+import DashboardModeCard from "@/components/dashboard/DashboardModeCard";
 import ProgressBar from "@/components/ui/ProgressBar";
 import ProgramReferenceCard from "@/components/ProgramReferenceCard";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
@@ -84,6 +85,14 @@ import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
 const SHOW_PHASE_PREVIEW_REFERENCE = false;
+
+type DashboardMode =
+  | "today"
+  | "week"
+  | "progress"
+  | "insights"
+  | "history"
+  | "account";
 
 const defaultRoutine: Routine = {
   summary:
@@ -203,16 +212,16 @@ const hasPhotoDerivedAssessmentReport = (report: AssessmentReport | null) =>
 
 function AssessmentStatusCard({ status }: { status: AssessmentStatusInfo }) {
   const toneClasses: Record<AssessmentStatusTone, string> = {
-    photo: "border-emerald-200 bg-emerald-50/80 text-emerald-950",
-    fallback: "border-slate-200 bg-slate-50 text-slate-900",
-    failed: "border-amber-200 bg-amber-50/80 text-amber-950",
-    loading: "border-blue-200 bg-blue-50/80 text-blue-950",
+    photo: "border-emerald-300/30 bg-emerald-400/10 text-emerald-50",
+    fallback: "border-slate-500/25 bg-slate-950/42 text-slate-100",
+    failed: "border-amber-300/30 bg-amber-400/10 text-amber-50",
+    loading: "border-sky-300/30 bg-sky-400/10 text-sky-50",
   };
   const chipClasses: Record<AssessmentStatusTone, string> = {
-    photo: "border-emerald-200 bg-white/80 text-emerald-800",
-    fallback: "border-slate-200 bg-white text-slate-700",
-    failed: "border-amber-200 bg-white/80 text-amber-800",
-    loading: "border-blue-200 bg-white/80 text-blue-800",
+    photo: "border-emerald-300/40 bg-emerald-300/10 text-emerald-100",
+    fallback: "border-slate-500/35 bg-slate-900/70 text-slate-200",
+    failed: "border-amber-300/40 bg-amber-300/10 text-amber-100",
+    loading: "border-sky-300/40 bg-sky-300/10 text-sky-100",
   };
 
   return (
@@ -797,6 +806,7 @@ export default function ResultsRoutine() {
   const [lastTwoLogs, setLastTwoLogs] = useState<ExerciseLog[]>([]);
   const [authEnabled, setAuthEnabled] = useState(false);
   const [plan, setPlan] = useState<SubscriptionPlan>("free");
+  const [activeMode, setActiveMode] = useState<DashboardMode>("week");
   const knowledgeSectionRef = useRef<HTMLDivElement | null>(null);
   const systemAdjustmentsSectionRef = useRef<HTMLDivElement | null>(null);
   const weekViewSectionRef = useRef<HTMLElement | null>(null);
@@ -3042,6 +3052,7 @@ export default function ResultsRoutine() {
       : undefined;
 
   const openKnowledgeAnalysis = () => {
+    setActiveMode("insights");
     setKnowledgeExpanded(true);
     setKnowledgeHighlighted(true);
     window.requestAnimationFrame(() => {
@@ -3059,6 +3070,7 @@ export default function ResultsRoutine() {
   };
 
   const openSystemAdjustments = () => {
+    setActiveMode("insights");
     setSystemAdjustmentsExpanded(true);
     window.requestAnimationFrame(() => {
       systemAdjustmentsSectionRef.current?.scrollIntoView({
@@ -3100,6 +3112,7 @@ export default function ResultsRoutine() {
   };
 
   const focusTodayPlanInWeekView = () => {
+    setActiveMode("week");
     openWeekViewDayDetails(todayPlanDayIndex);
     window.requestAnimationFrame(() => {
       weekViewSectionRef.current?.scrollIntoView({
@@ -3111,6 +3124,114 @@ export default function ResultsRoutine() {
       });
     });
   };
+
+  const completedWorkoutCount = completedSessions.length;
+  const hasCompletedWorkout = completedWorkoutCount >= 1;
+  const hasCompletedFullWeek =
+    completedWeeks >= 1 || phaseGate.cyclesCompletedInPhase >= 1;
+  const dashboardLevel = hasCompletedFullWeek ? 3 : hasCompletedWorkout ? 2 : 1;
+  const progressLocked = dashboardLevel < 2;
+  const historyLocked = dashboardLevel < 2;
+  const insightsLocked = dashboardLevel < 3;
+  const dashboardLevelLabel =
+    dashboardLevel === 3
+      ? "Level 3 analysis"
+      : dashboardLevel === 2
+      ? "Level 2 progress"
+      : "Level 1 foundation";
+  const dashboardLevelDescription =
+    dashboardLevel === 3
+      ? "Full-cycle analysis is available from your completed week."
+      : dashboardLevel === 2
+      ? "Progress and history are unlocked from your first completed workout."
+      : "Assessment, today, and week planning are ready. Complete one workout to unlock progress and history.";
+  const dashboardModes: Array<{
+    key: DashboardMode;
+    title: string;
+    eyebrow: string;
+    summary: string;
+    icon: string;
+    locked?: boolean;
+    lockReason?: string;
+  }> = [
+    {
+      key: "today",
+      title: "Today",
+      eyebrow: "Next",
+      summary: `Day ${sessionLaunchDayIndex + 1}: ${program.week[sessionLaunchDayIndex]?.title ?? "current plan"}`,
+      icon: "T",
+    },
+    {
+      key: "week",
+      title: "Week",
+      eyebrow: "Plan",
+      summary: `${completedCount}/${activeDaysPerWeek} days complete with ${inProgressCount} in progress.`,
+      icon: "W",
+    },
+    {
+      key: "progress",
+      title: "Progress",
+      eyebrow: "Level 2",
+      summary: `Consistency ${consistencyPercent}% with movement quality ${movementQualityPercent}%.`,
+      icon: "P",
+      locked: progressLocked,
+      lockReason: "Complete one workout to unlock your progress summary.",
+    },
+    {
+      key: "insights",
+      title: "Insights",
+      eyebrow: "Level 3",
+      summary: "Pattern, stability, compensation, and adaptation analysis.",
+      icon: "I",
+      locked: insightsLocked,
+      lockReason: "Complete one full week or cycle to unlock deeper analysis.",
+    },
+    {
+      key: "history",
+      title: "History",
+      eyebrow: "Level 2",
+      summary: `${completedWorkoutCount} completed workouts saved for this program.`,
+      icon: "H",
+      locked: historyLocked,
+      lockReason: "Complete one workout to unlock session history.",
+    },
+    {
+      key: "account",
+      title: "Billing / Account",
+      eyebrow: authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local",
+      summary: authEnabled
+        ? "Manage billing, plan status, and account data."
+        : "Review local data controls and account options.",
+      icon: "A",
+    },
+  ];
+  const activeModeConfig =
+    dashboardModes.find((mode) => mode.key === activeMode) ?? dashboardModes[0];
+  const activeModeLocked = Boolean(activeModeConfig.locked);
+  const todayModeDay =
+    program.week[sessionLaunchDayIndex] ?? selectedDayProgram ?? program.week[0];
+  const todayModeEntries = (todayModeDay?.routine ?? [])
+    .map((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return null;
+      const prescription = item.reps
+        ? `${item.sets ?? 1} x ${item.reps}`
+        : item.durationSec
+        ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
+        : item.sets
+        ? `${item.sets} sets`
+        : null;
+      return {
+        key: `${item.exerciseId}-${item.section}`,
+        name: exercise.name,
+        section: item.section ?? "work",
+        prescription,
+      };
+    })
+    .filter((entry): entry is { key: string; name: string; section: string; prescription: string | null } =>
+      Boolean(entry)
+    )
+    .slice(0, 5);
 
   return (
     <div className="flex flex-col gap-5">
@@ -3158,6 +3279,168 @@ export default function ResultsRoutine() {
         </section>
       ) : null}
 
+      <section className="ui-card order-3 p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="ui-kicker">Dashboard Modes</p>
+            <h2 className="mt-1 text-xl font-semibold text-white">
+              {activeModeConfig.title}
+            </h2>
+            <p className="mt-1 text-sm text-slate-300">
+              {dashboardLevelDescription}
+            </p>
+          </div>
+          <div className="rounded-lg border border-slate-500/25 bg-slate-950/50 px-3 py-2 text-xs text-slate-200">
+            <p className="font-semibold text-white">{dashboardLevelLabel}</p>
+            <p className="mt-1 text-slate-400">
+              {completedWorkoutCount} workouts logged
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {dashboardModes.map((mode) => (
+            <DashboardModeCard
+              key={mode.key}
+              title={mode.title}
+              eyebrow={mode.eyebrow}
+              summary={mode.summary}
+              icon={mode.icon}
+              active={activeMode === mode.key}
+              locked={mode.locked}
+              lockReason={mode.lockReason}
+              onClick={() => setActiveMode(mode.key)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {activeModeLocked ? (
+        <section className="ui-card order-4 p-5">
+          <p className="ui-kicker">Unlock Path</p>
+          <h2 className="mt-2 text-2xl font-semibold text-white">
+            {activeModeConfig.title} unlocks with real use
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-slate-300">
+            {activeModeConfig.lockReason}
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-emerald-300/25 bg-emerald-400/10 p-3">
+              <p className="text-xs font-semibold text-emerald-100">Level 1</p>
+              <p className="mt-1 text-sm text-slate-200">Assessment, Today, Week View</p>
+            </div>
+            <div className="rounded-lg border border-sky-300/25 bg-sky-400/10 p-3">
+              <p className="text-xs font-semibold text-sky-100">Level 2</p>
+              <p className="mt-1 text-sm text-slate-200">History and Progress Summary</p>
+            </div>
+            <div className="rounded-lg border border-amber-300/25 bg-amber-400/10 p-3">
+              <p className="text-xs font-semibold text-amber-100">Level 3</p>
+              <p className="mt-1 text-sm text-slate-200">Deeper Knowledge and Analysis</p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link href={heroCta.href} scroll>
+              <Button variant="primary">Start today&apos;s session</Button>
+            </Link>
+            <Button variant="secondary" onClick={() => setActiveMode("week")}>
+              Review week plan
+            </Button>
+          </div>
+        </section>
+      ) : null}
+
+      {activeMode === "today" && !activeModeLocked ? (
+        <section className="ui-card order-4 p-4 sm:p-5" data-testid="today-mode-panel">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)]">
+            <div>
+              <p className="ui-kicker">Today</p>
+              <h2 className="mt-1 text-2xl font-semibold text-white">
+                Day {sessionLaunchDayIndex + 1}
+                {todayModeDay?.title ? `: ${todayModeDay.title}` : ""}
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                {coachAction.replace(/^Next best action:\s*/i, "")}
+              </p>
+              <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                {coachSummaryBullets.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-2"
+                  >
+                    <p className="text-xs font-semibold text-slate-400">{item.label}</p>
+                    <p className="mt-1 text-sm text-slate-100">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+              {hasAdaptationCallout ? (
+                <div className="mt-4 rounded-lg border border-sky-300/25 bg-sky-400/10 px-3 py-3 text-xs text-slate-200">
+                  <p>System adapted this week to improve stability and execution quality.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={openKnowledgeAnalysis}
+                      className={secondaryActionBtn}
+                    >
+                      Why
+                    </button>
+                    <button
+                      type="button"
+                      onClick={openSystemAdjustments}
+                      className={secondaryActionBtn}
+                    >
+                      Adjustments
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="rounded-lg border border-white/10 bg-slate-950/45 p-4">
+              <p className="text-xs font-semibold uppercase text-slate-400">
+                Session Entry
+              </p>
+              <div className="mt-3 space-y-2">
+                {todayModeEntries.length ? (
+                  todayModeEntries.map((entry) => (
+                    <div
+                      key={entry.key}
+                      className="rounded-lg border border-slate-700/60 bg-slate-900/70 px-3 py-2"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold text-white">{entry.name}</p>
+                        <span className="rounded-md border border-slate-600/60 px-2 py-0.5 text-[10px] uppercase text-slate-300">
+                          {entry.section}
+                        </span>
+                      </div>
+                      {entry.prescription ? (
+                        <p className="mt-1 text-xs text-slate-400">{entry.prescription}</p>
+                      ) : null}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-400">Today&apos;s routine is loading.</p>
+                )}
+              </div>
+              <div className="mt-4 flex flex-col gap-2">
+                <Link
+                  href={`/session?programId=${resolvedSessionProgramId ?? program.id}&dayIndex=${sessionLaunchDayIndex}`}
+                  scroll
+                >
+                  <Button
+                    variant="primary"
+                    data-testid="start-selected-day"
+                    className="h-12 w-full"
+                  >
+                    Start Selected Day
+                  </Button>
+                </Link>
+                <Button variant="secondary" onClick={() => setActiveMode("week")}>
+                  View full week
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {program ? (
         <>
           {SHOW_PHASE_PREVIEW_REFERENCE ? (
@@ -3170,7 +3453,7 @@ export default function ResultsRoutine() {
           {isCurrentSavedWeekSnapshotSettled ? (
             <ProgramReferenceCard
               title="Current Saved Program Snapshot"
-              description="Actual saved current-week live program plus inspection snapshots for the other phases. This does not reshuffle or overwrite the saved plan."
+              description="Technical reference for the saved live program and inspection snapshots. Kept below the main dashboard flow."
               isOpen
               referenceText={currentSavedWeekSnapshotText}
               cardTestId="current-saved-week-card"
@@ -3178,8 +3461,8 @@ export default function ResultsRoutine() {
               copyLabel="Copy Full Progression Snapshot"
               onCopy={handleCopyCurrentSavedWeek}
               copyStatus={currentWeekCopyStatus}
-              className="order-10 p-4 sm:p-5"
-              bodyClassName="mt-3 max-h-56 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3"
+              className="order-20 p-3 opacity-75 sm:p-4"
+              bodyClassName="mt-3 max-h-36 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3"
             />
           ) : (
             <CurrentSavedProgramSnapshotLoadingCard
@@ -3189,6 +3472,7 @@ export default function ResultsRoutine() {
         </>
       ) : null}
 
+      {activeMode === "week" && !activeModeLocked ? (
       <section id="week-view" ref={weekViewSectionRef} className="ui-card order-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -3217,7 +3501,7 @@ export default function ResultsRoutine() {
             title={weekViewBaselineDebugTitle}
             className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-600"
           >
-            {completedCount}/{activeDaysPerWeek} completed
+            {completedCount} completed / {activeDaysPerWeek}
           </span>
           <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs text-blue-700">
             {inProgressCount} in progress
@@ -3374,16 +3658,19 @@ export default function ResultsRoutine() {
           </p>
         ) : null}
       </section>
+      ) : null}
 
-      <div className="order-5">
+      {activeMode === "insights" && !activeModeLocked ? (
+      <div className="order-4">
         <DailyInsightCard
           insight={dailyInsight}
           coachNotes={coachNotes}
           priorities={weeklyPriorities}
         />
       </div>
+      ) : null}
 
-      <section className="ui-card order-3 p-4 sm:p-5">
+      <section className="hidden">
         <div className="flex flex-col gap-1">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             Corrective Focus
@@ -3428,7 +3715,7 @@ export default function ResultsRoutine() {
         <p className="mt-3 text-xs text-slate-500">Plan adapts as you log sessions.</p>
       </section>
 
-      <div className="order-8">
+      <div className="hidden">
         <ExpandableSection
           title="Your Current Plan"
           subtitle="Phase intent, weekly objective, and adaptive guidance."
@@ -3521,8 +3808,8 @@ export default function ResultsRoutine() {
         </ExpandableSection>
       </div>
 
-      {hasSystemAdjustments ? (
-        <div ref={systemAdjustmentsSectionRef} className="order-6 scroll-mt-24">
+      {activeMode === "insights" && !activeModeLocked && hasSystemAdjustments ? (
+        <div ref={systemAdjustmentsSectionRef} className="order-4 scroll-mt-24">
           <ExpandableSection
             title="System Adjustments"
             subtitle="What the system changed and why."
@@ -3551,7 +3838,9 @@ export default function ResultsRoutine() {
 
       <div
         ref={knowledgeSectionRef}
-        className={`order-7 scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
+        className={`${
+          activeMode === "insights" && !activeModeLocked ? "order-4" : "hidden"
+        } scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
           knowledgeHighlighted
             ? "bg-slate-50/50 ring-2 ring-slate-300 ring-offset-2"
             : "bg-transparent"
@@ -3711,7 +4000,125 @@ export default function ResultsRoutine() {
         </ExpandableSection>
       </div>
 
-      <div className="order-5">
+      {activeMode === "history" && !activeModeLocked ? (
+        <section className="ui-card order-4 p-4 sm:p-5" data-testid="history-mode-panel">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="ui-kicker">History</p>
+              <h2 className="mt-1 text-2xl font-semibold text-white">
+                Completed workouts
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                Recent completed sessions for the current saved program.
+              </p>
+            </div>
+            <Button variant="secondary" onClick={() => router.push("/progress")}>
+              Open progress page
+            </Button>
+          </div>
+          <div className="mt-4 grid gap-3">
+            {completedSessions.slice(0, 6).length ? (
+              completedSessions.slice(0, 6).map((session, index) => {
+                const dayIndex = parseDayIndexFromSession(session);
+                const completedAt = session.completedAt
+                  ? new Date(session.completedAt).toLocaleDateString()
+                  : "Completed";
+                return (
+                  <div
+                    key={session.id}
+                    className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-4 py-3"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-sm font-semibold text-white">
+                        Workout {completedSessions.length - index}
+                      </p>
+                      <span className="text-xs text-slate-400">{completedAt}</span>
+                    </div>
+                    <p className="mt-1 text-sm text-slate-300">
+                      {dayIndex === null ? "Program day saved" : `Day ${dayIndex + 1}`}{" "}
+                      {session.durationSec ? `• ${Math.round(session.durationSec / 60)} min` : ""}
+                    </p>
+                    {dayIndex !== null ? (
+                      <button
+                        type="button"
+                        onClick={() => router.push(`/program/${program.id}/day/${dayIndex}`)}
+                        className={`${secondaryActionBtn} mt-3`}
+                      >
+                        View day history
+                      </button>
+                    ) : null}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-4 py-5 text-sm text-slate-300">
+                Complete your first workout to build history.
+              </div>
+            )}
+          </div>
+        </section>
+      ) : null}
+
+      {activeMode === "account" && !activeModeLocked ? (
+        <section className="ui-card order-4 p-4 sm:p-5" data-testid="account-mode-panel">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)]">
+            <div>
+              <p className="ui-kicker">Billing / Account</p>
+              <h2 className="mt-1 text-2xl font-semibold text-white">
+                {authEnabled ? (plan === "pro" ? "Pro access active" : "Free access") : "Local account controls"}
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                Manage plan status, exports, and local training data without leaving the dashboard flow.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
+                  <p className="text-xs text-slate-400">Plan</p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    {authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local"}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
+                  <p className="text-xs text-slate-400">Program</p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    Phase {currentPhaseIndex}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
+                  <p className="text-xs text-slate-400">History</p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    {completedWorkoutCount} workouts
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-slate-950/45 p-4">
+              <p className="text-sm font-semibold text-white">Account actions</p>
+              <div className="mt-3 flex flex-col gap-2">
+                {authEnabled ? (
+                  <Link href="/account/billing">
+                    <Button variant="primary" className="h-11 w-full">
+                      Billing status
+                    </Button>
+                  </Link>
+                ) : null}
+                <Link href="/account/settings">
+                  <Button variant="secondary" className="h-11 w-full">
+                    Data and settings
+                  </Button>
+                </Link>
+                <Link href="/questionnaire">
+                  <Button variant="secondary" className="h-11 w-full">
+                    Edit questionnaire
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {activeMode === "progress" && !activeModeLocked ? (
+      <div className="order-4">
         <ExpandableSection
           title="Progress Summary"
           subtitle="How your consistency, completion, pain, and quality are trending."
@@ -3730,8 +4137,10 @@ export default function ResultsRoutine() {
           />
         </ExpandableSection>
       </div>
+      ) : null}
 
-      <div className="order-9">
+      {activeMode === "progress" && !activeModeLocked ? (
+      <div className="order-4">
         <ExpandableSection
           title="Phase Progression"
           subtitle="Requirements and readiness to move ahead."
@@ -3785,6 +4194,7 @@ export default function ResultsRoutine() {
           </div>
         </ExpandableSection>
       </div>
+      ) : null}
 
       {advanceOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">

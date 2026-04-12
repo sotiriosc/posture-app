@@ -290,7 +290,7 @@ export default function QuestionnaireForm() {
   return (
     <form
       data-testid="questionnaire-form"
-      className="ui-card space-y-8 rounded-3xl bg-white/95 p-6 shadow-lg"
+      className="ui-card space-y-8 rounded-lg bg-slate-950/60 p-5 shadow-lg sm:p-6"
       onSubmit={(event) => {
         event.preventDefault();
         if (requiresChangeConfirmation && hasProgramAffectingChange(data, committedData)) {
@@ -305,7 +305,7 @@ export default function QuestionnaireForm() {
         <p className="text-sm font-semibold text-slate-900">
           Days per week
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 grid grid-cols-3 gap-2">
           {[3, 4, 5].map((days) => (
             <button
               type="button"
@@ -314,7 +314,7 @@ export default function QuestionnaireForm() {
               onClick={() =>
                 updateData({ daysPerWeek: days as QuestionnaireData["daysPerWeek"] })
               }
-              className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
+              className={`min-h-12 rounded-lg border px-4 py-2 text-xs font-semibold transition ${
                 data.daysPerWeek === days
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-200 bg-white text-slate-700"
@@ -331,7 +331,7 @@ export default function QuestionnaireForm() {
               Primary goal
             </label>
             <select
-          className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/25"
+          className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm outline-none focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/25"
           value={data.goals}
           onChange={(event) => updateData({ goals: event.target.value })}
         >
@@ -349,7 +349,7 @@ export default function QuestionnaireForm() {
           {painOptions.map((area) => (
             <label
               key={area}
-              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm"
+              className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm"
             >
               <input
                 type="checkbox"
@@ -367,13 +367,13 @@ export default function QuestionnaireForm() {
         <p className="text-sm font-semibold text-slate-900">
           Training experience
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {experienceOptions.map((level) => (
             <button
               type="button"
               key={level}
               onClick={() => updateData({ experience: level })}
-              className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
+              className={`min-h-12 rounded-lg border px-4 py-2 text-xs font-semibold transition ${
                 data.experience === level
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-200 bg-white text-slate-700"
@@ -391,7 +391,7 @@ export default function QuestionnaireForm() {
           {equipmentOptions.map((item) => (
             <label
               key={item.value}
-              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm"
+              className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 shadow-sm"
             >
               <input
                 type="checkbox"
@@ -410,7 +410,7 @@ export default function QuestionnaireForm() {
         type="submit"
         data-testid="generate-routine"
         disabled={isApplyingChange}
-        className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+        className="w-full rounded-lg bg-[linear-gradient(135deg,#3B82F6_0%,#2563EB_100%)] px-6 py-3 text-sm font-semibold text-white transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
       >
         Generate routine
       </button>
