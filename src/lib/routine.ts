@@ -1,6 +1,14 @@
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { normalizeEquipmentSelection } from "@/lib/equipment";
 
+/**
+ * Legacy questionnaire-only routine fallback.
+ *
+ * Engine-generated Program objects are the source of truth for dashboard,
+ * plan, and progression rendering. Keep this isolated for the session fallback
+ * path where a saved Program cannot be resolved but the user can still start a
+ * basic questionnaire-derived routine.
+ */
 type RoutineItem = {
   exerciseId: string;
   sets: string;

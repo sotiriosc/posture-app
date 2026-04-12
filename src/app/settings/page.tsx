@@ -271,7 +271,7 @@ export default function SettingsPage() {
     };
     downloadFile(
       JSON.stringify(payload, null, 2),
-      `bodycoach-export-${Date.now()}.json`,
+      `praxis-admin-export-${Date.now()}.json`,
       "application/json"
     );
     setLoading(false);
@@ -312,7 +312,7 @@ export default function SettingsPage() {
     }));
     downloadFile(
       toCsv(rows),
-      `bodycoach-exercise-logs-${Date.now()}.csv`,
+      `praxis-admin-exercise-logs-${Date.now()}.csv`,
       "text/csv"
     );
     setLoading(false);
@@ -433,7 +433,7 @@ export default function SettingsPage() {
                 Backup & restore
               </h1>
               <p className="text-sm text-slate-200">
-                Export or restore your local program data.
+                Export or restore your local Praxis plan data.
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -465,7 +465,7 @@ export default function SettingsPage() {
             Download data
           </h2>
           <p className="mt-2 text-xs text-slate-600">
-            JSON includes programs, sessions, exercise logs, and preferences.
+            JSON includes saved plans, sessions, exercise logs, and preferences.
             CSV exports exercise logs only.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
@@ -652,7 +652,7 @@ export default function SettingsPage() {
         <div className="ui-card ui-soft-surface-raised rounded-lg border-rose-300/30 p-6">
           <h2 className="text-sm font-semibold text-rose-100">Danger zone</h2>
           <p className="mt-2 text-xs text-rose-100/80">
-            Resetting removes all programs, logs, photos, and in-progress
+            Resetting removes all saved plans, logs, photos, and in-progress
             sessions from this device.
           </p>
           <div className="mt-4">
@@ -680,7 +680,7 @@ export default function SettingsPage() {
                 Delete all app data?
               </p>
               <p className="mt-1 text-xs text-rose-100/80">
-                This will permanently delete your programs, logs, photos, and
+                This will permanently delete your saved plans, logs, photos, and
                 in-progress sessions from this device. This can’t be undone.
               </p>
               <label className="mt-3 block text-xs font-semibold text-rose-100">

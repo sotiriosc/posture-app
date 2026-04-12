@@ -12,6 +12,8 @@ const mocks = vi.hoisted(() => ({
   routerPush: vi.fn(),
   loadTrainingSnapshot: vi.fn(),
   pushTrainingPatch: vi.fn(),
+  getTrainingSyncStatus: vi.fn(),
+  subscribeTrainingSyncStatus: vi.fn(),
   buildEngineSignals: vi.fn(),
   buildSignalsFromLocalState: vi.fn(),
   generateProgram: vi.fn(),
@@ -43,6 +45,8 @@ vi.mock("@/components/PhotoContext", () => ({
 vi.mock("@/lib/trainingSyncClient", () => ({
   loadTrainingSnapshot: mocks.loadTrainingSnapshot,
   pushTrainingPatch: mocks.pushTrainingPatch,
+  getTrainingSyncStatus: mocks.getTrainingSyncStatus,
+  subscribeTrainingSyncStatus: mocks.subscribeTrainingSyncStatus,
 }));
 
 vi.mock("@/lib/engine", () => ({
@@ -326,6 +330,8 @@ describe("results operational readiness", () => {
     mocks.routerPush.mockReset();
     mocks.loadTrainingSnapshot.mockReset();
     mocks.pushTrainingPatch.mockReset();
+    mocks.getTrainingSyncStatus.mockReset();
+    mocks.subscribeTrainingSyncStatus.mockReset();
     mocks.buildEngineSignals.mockReset();
     mocks.buildSignalsFromLocalState.mockReset();
     mocks.generateProgram.mockReset();
@@ -345,6 +351,14 @@ describe("results operational readiness", () => {
 
     mocks.loadTrainingSnapshot.mockResolvedValue(null);
     mocks.pushTrainingPatch.mockResolvedValue(undefined);
+    mocks.getTrainingSyncStatus.mockReturnValue({
+      state: "idle",
+      lastAttemptAt: null,
+      lastSyncedAt: null,
+      lastError: null,
+      authenticated: null,
+    });
+    mocks.subscribeTrainingSyncStatus.mockReturnValue(() => undefined);
     mocks.buildEngineSignals.mockImplementation((params: unknown) => params);
     mocks.buildSignalsFromLocalState.mockImplementation(async (params: {
       questionnaire: QuestionnaireData;
@@ -403,13 +417,13 @@ describe("results operational readiness", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(/We couldn't generate your weekly program yet/i)
+        screen.getByText(/We couldn't build your weekly plan yet/i)
       ).toBeTruthy();
     });
 
     expect(screen.getByText(/No eligible weekly program found/i)).toBeTruthy();
-    expect(screen.getByRole("link", { name: /Review questionnaire/i })).toBeTruthy();
-    expect(screen.queryByText(/Loading your weekly program/i)).toBeNull();
+    expect(screen.getByRole("link", { name: /Review profile/i })).toBeTruthy();
+    expect(screen.queryByText(/Building your weekly plan/i)).toBeNull();
     expect(mocks.generateProgram).toHaveBeenCalledWith(
       expect.objectContaining({
         mode: "weekly",
@@ -473,6 +487,24 @@ describe("results operational readiness", () => {
     expect(currentSnapshot).toContain("PHASE 3:");
   });
 
+  test("surfaces cloud sync failures while keeping local progress usable", async () => {
+    const generatedProgram = buildSavedProgram("results-program");
+    mocks.getTrainingSyncStatus.mockReturnValue({
+      state: "error",
+      lastAttemptAt: Date.parse("2026-04-12T12:00:00.000Z"),
+      lastSyncedAt: null,
+      lastError: "Network unavailable",
+      authenticated: true,
+    });
+    mocks.generateProgram.mockReturnValue(buildMockGenerationResult(generatedProgram));
+
+    render(React.createElement(ResultsRoutine));
+
+    expect(await screen.findByTestId("training-sync-status")).toBeTruthy();
+    expect(screen.getByText(/Local progress is saved/i)).toBeTruthy();
+    expect(screen.getByText(/retry automatically/i)).toBeTruthy();
+  });
+
   test("assessment status makes questionnaire-only fallback explicit", async () => {
     const generatedProgram = buildSavedProgram("results-program");
     mocks.generateProgram.mockReturnValue(buildMockGenerationResult(generatedProgram));
@@ -484,8 +516,8 @@ describe("results operational readiness", () => {
     });
 
     const status = screen.getByTestId("assessment-status-card").textContent ?? "";
-    expect(status).toContain("Questionnaire-only fallback");
-    expect(status).toContain("Program currently informed by questionnaire inputs only.");
+    expect(status).toContain("Profile-based plan");
+    expect(status).toContain("Praxis is currently using your movement profile answers only.");
     expect(status).toContain("No photos uploaded");
   });
 
@@ -513,8 +545,8 @@ describe("results operational readiness", () => {
     });
 
     const status = screen.getByTestId("assessment-status-card").textContent ?? "";
-    expect(status).toContain("Photos analyzed");
-    expect(status).toContain("Program informed by uploaded posture photos and questionnaire inputs.");
+    expect(status).toContain("Photos informed this plan");
+    expect(status).toContain("Plan informed by uploaded posture photos and questionnaire inputs.");
     expect(status).toContain("Views: Side");
   });
 
@@ -664,7 +696,7 @@ describe("results operational readiness", () => {
     await waitFor(() => expect(deferredSignals).toHaveLength(1));
     expect(screen.getByTestId("current-saved-week-loading-card")).toBeTruthy();
     const snapshotStatus = screen.getByRole("progressbar", {
-      name: /Current saved program snapshot status/i,
+      name: /Plan reference status/i,
     });
     expect(snapshotStatus).toBeTruthy();
     expect(snapshotStatus.getAttribute("aria-valuenow")).toBeNull();
@@ -1035,6 +1067,94 @@ describe("results operational readiness", () => {
     expect(screen.getByText("Progress Summary")).toBeTruthy();
     fireEvent.click(screen.getByText("Insights").closest("button")!);
     expect(screen.queryByText(/unlocks with real use/i)).toBeNull();
+  });
+
+  test("dashboard focus and insight copy come from the saved program instead of legacy questionnaire routine state", async () => {
+    const legacyQuestionnaire = buildQuestionnaire({
+      goals: "Reduce pain",
+      painAreas: ["Neck"],
+      equipment: ["none"],
+    });
+    const savedProgram: Program = {
+      ...buildSavedProgram("program-source-of-truth", {
+        questionnaire: legacyQuestionnaire,
+      }),
+      phaseObjective: {
+        title: "Engine phase objective",
+        objective: "Engine objective builds durable control.",
+        phaseFocus: "Engine phase focus",
+        primaryPatterns: ["engine scapular control", "engine thoracic extension"],
+        successMarkers: ["Engine marker stays smooth"],
+        guardrail: "Engine guardrail",
+        weekIntent: "Engine week intent from saved program",
+        whyNow: "Engine why now",
+        riskWatchouts: ["Engine watchout"],
+        coachingPrompts: ["Engine coaching prompt: set the shoulder blade"],
+        metrics: {
+          readiness: 0.75,
+          consistency: 0.8,
+          painRisk: 0.2,
+          asymmetry: 0.1,
+        },
+      },
+    };
+    const completedSession = buildSession(
+      "program-source-session",
+      savedProgram.id,
+      0,
+      "2026-04-12T01:30:00.000Z"
+    );
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(legacyQuestionnaire));
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: savedProgram.id,
+        programId: savedProgram.id,
+        activeGenerationMode: "live_initial",
+        selectedDay: 0,
+        questionnaireSignature: buildQuestionnaireSignature(legacyQuestionnaire),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(savedProgram);
+    mocks.getProgramProgress.mockResolvedValue(
+      buildProgress(savedProgram, {
+        nextDayIndex: 1,
+        cyclesCompletedInPhase: 1,
+      })
+    );
+    mocks.listSessions.mockResolvedValue([completedSession]);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(screen.getByText("Level 3 analysis")).toBeTruthy();
+    });
+
+    const todayModeButton = screen
+      .getAllByRole("button")
+      .find((button) => button.textContent?.includes("Today"));
+    expect(todayModeButton).toBeTruthy();
+    fireEvent.click(todayModeButton!);
+    const todayPanel = screen.getByTestId("today-mode-panel").textContent ?? "";
+    expect(todayPanel).toContain("Engine Scapular Control");
+    expect(document.body.textContent ?? "").toContain(
+      "Engine week intent from saved program"
+    );
+
+    fireEvent.click(screen.getByText("Insights").closest("button")!);
+    expect(document.body.textContent ?? "").toContain(
+      "Engine coaching prompt: set the shoulder blade"
+    );
+    expect(document.body.textContent ?? "").toContain("Engine Thoracic Extension");
+    expect(document.body.textContent ?? "").toContain(
+      "Plan focus: Engine Scapular Control"
+    );
+    expect(document.body.textContent ?? "").not.toContain("Daily gentle mobility");
+    expect(document.body.textContent ?? "").not.toContain(
+      "Neck tension tends to show with screen-heavy days."
+    );
   });
 
   test("backfills phase workout progress from completed current-phase sessions", async () => {

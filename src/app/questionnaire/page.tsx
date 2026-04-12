@@ -16,10 +16,10 @@ export default function QuestionnairePage() {
                 Step 2
               </p>
               <h1 className="mt-2 text-3xl font-semibold text-white">
-                Structured movement profile assessment
+                Build your Praxis movement profile
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-slate-200">
-                Choose the training constraints that should shape your weekly plan.
+                Choose the goals, schedule, and equipment that should shape your weekly plan.
               </p>
             </div>
             <Link href="/assessment">

@@ -102,6 +102,7 @@ vi.mock("@/lib/logStore", () => ({
   listExerciseLogsBySession: vi.fn(async (sessionId: string) =>
     mocks.logs.filter((log) => log.sessionId === sessionId)
   ),
+  listAllPrograms: vi.fn(async () => Array.from(mocks.programs.values())),
   listSessions: vi.fn(async (limit = 20) => mocks.sessions.slice(0, limit)),
   loadPrefs: vi.fn(async () => mocks.prefs),
   nowIso: vi.fn(() => "2026-02-15T00:00:00.000Z"),

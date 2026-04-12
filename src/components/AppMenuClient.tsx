@@ -31,14 +31,14 @@ export default function AppMenuClient({
     const nav: MenuLink[] = [
       { href: "/", label: "Home" },
       { href: "/assessment", label: "Assessment" },
-      { href: "/questionnaire", label: "Questionnaire" },
+      { href: "/questionnaire", label: "Movement Profile" },
     ];
     if (authEnabled) {
-      nav.push({ href: "/results", label: "Results Dashboard" });
+      nav.push({ href: "/results", label: "Praxis Dashboard" });
       nav.push({ href: "/progress", label: "Progress" });
       if (authenticated) {
-        nav.push({ href: "/account/billing", label: "Billing" });
-        nav.push({ href: "/account/settings", label: "Settings" });
+        nav.push({ href: "/account/billing", label: "Account / Billing" });
+        nav.push({ href: "/account/settings", label: "Data Settings" });
       }
     }
     if (isAdmin) nav.push({ href: "/settings", label: "Admin Settings" });

@@ -88,6 +88,7 @@ export default async function BillingAccountPage() {
   const session = await readServerSession();
   const repo = getUserRepository();
   const user = session ? await repo.findUserById(session.id) : null;
+  const showTechnicalBillingDetails = process.env.NODE_ENV !== "production";
   const dateRow = getDateRow({
     plan: user?.plan,
     stripeStatus: user?.stripeSubscriptionStatus,
@@ -108,10 +109,10 @@ export default async function BillingAccountPage() {
                 Account
               </p>
               <h1 className="mt-2 text-3xl font-semibold text-white">
-                Billing status
+                Account and billing
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-slate-200">
-                Review access, renewal, and subscription controls.
+                Review your Praxis access, renewal timing, and subscription controls.
               </p>
             </div>
             <Link href="/results">
@@ -143,10 +144,9 @@ export default async function BillingAccountPage() {
                     renewalDate: user?.stripeCurrentPeriodEnd,
                   }),
                 ],
-                ["Stripe status", user?.stripeSubscriptionStatus ?? "--"],
                 [dateRow.label, dateRow.value],
                 [
-                  "Cancel at period end",
+                  "Scheduled cancellation",
                   user?.stripeCancelAtPeriodEnd === null ||
                   user?.stripeCancelAtPeriodEnd === undefined
                     ? "--"
@@ -154,8 +154,13 @@ export default async function BillingAccountPage() {
                     ? "Yes"
                     : "No",
                 ],
-                ["Stripe customer", user?.stripeCustomerId ?? "--"],
-                ["Stripe subscription", user?.stripeSubscriptionId ?? "--"],
+                ...(showTechnicalBillingDetails
+                  ? [
+                      ["Billing status", user?.stripeSubscriptionStatus ?? "--"],
+                      ["Customer reference", user?.stripeCustomerId ?? "--"],
+                      ["Subscription reference", user?.stripeSubscriptionId ?? "--"],
+                    ]
+                  : []),
               ].map(([label, value]) => (
                 <div
                   key={label}
@@ -171,7 +176,7 @@ export default async function BillingAccountPage() {
           <aside className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
             <p className="ui-kicker">Access</p>
             <h2 className="mt-2 text-xl font-semibold text-white">
-              Pro plan includes
+              Praxis Pro includes
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-slate-300">
               <li>Structured corrective progression around movement quality.</li>
@@ -190,7 +195,7 @@ export default async function BillingAccountPage() {
               </div>
             ) : (
               <div className="ui-soft-surface mt-5 rounded-lg px-3 py-3 text-xs text-slate-300">
-                Billing portal access appears after a Stripe customer is connected.
+                Subscription management appears after your first checkout is connected.
               </div>
             )}
             <div className="mt-4">

@@ -1911,14 +1911,13 @@ export default function SessionClient() {
         <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
           <OnImage>
             <h1 className="text-2xl font-semibold text-white">
-              We need your questionnaire first
+              We need your movement profile first
             </h1>
             <p className="text-sm text-slate-200">
-              Complete the questionnaire to build your routine and start a
-              session.
+              Complete your Praxis profile to build a plan and start a session.
             </p>
             <Link href="/questionnaire">
-              <Button variant="primary">Go to questionnaire</Button>
+              <Button variant="primary">Build profile</Button>
             </Link>
           </OnImage>
         </div>
@@ -1953,7 +1952,7 @@ export default function SessionClient() {
           <OnImage className="space-y-3">
             <h1 className="text-3xl font-semibold text-white">Session complete</h1>
             <p className="text-sm text-slate-200">
-              Excellent work. Your program will adapt based on today&apos;s
+              Excellent work. Your Praxis plan will adapt based on today&apos;s
               performance.
             </p>
           </OnImage>

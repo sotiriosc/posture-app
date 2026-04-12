@@ -6,16 +6,9 @@ import type {
   ProgramProgress,
   SessionRecord,
 } from "@/lib/types";
+import type { TrainingSnapshot } from "@/lib/trainingStateModel";
 
-export type TrainingSnapshot = {
-  questionnaire?: Record<string, unknown> | null;
-  assessment?: Record<string, unknown> | null;
-  prefs?: LogPrefs | null;
-  programs?: Program[];
-  programProgress?: ProgramProgress[];
-  sessions?: SessionRecord[];
-  exerciseLogs?: ExerciseLog[];
-};
+export type { TrainingSnapshot } from "@/lib/trainingStateModel";
 
 let pool: Pool | null = null;
 let initialized = false;
@@ -123,36 +116,73 @@ export const getTrainingSnapshot = async (userId: string): Promise<TrainingSnaps
     logsResult,
   ] = await Promise.all([
     db.query(
-      `SELECT questionnaire, assessment, prefs FROM app_user_state WHERE user_id = $1 LIMIT 1`,
+      `SELECT questionnaire, assessment, prefs, updated_at FROM app_user_state WHERE user_id = $1 LIMIT 1`,
       [userId]
     ),
     db.query(
-      `SELECT payload FROM app_user_programs WHERE user_id = $1`,
+      `SELECT payload, updated_at FROM app_user_programs WHERE user_id = $1`,
       [userId]
     ),
     db.query(
-      `SELECT payload FROM app_user_program_progress WHERE user_id = $1`,
+      `SELECT payload, updated_at FROM app_user_program_progress WHERE user_id = $1`,
       [userId]
     ),
     db.query(
-      `SELECT payload FROM app_user_sessions WHERE user_id = $1`,
+      `SELECT payload, updated_at FROM app_user_sessions WHERE user_id = $1`,
       [userId]
     ),
     db.query(
-      `SELECT payload FROM app_user_exercise_logs WHERE user_id = $1`,
+      `SELECT payload, updated_at FROM app_user_exercise_logs WHERE user_id = $1`,
       [userId]
     ),
   ]);
 
   const stateRow = stateResult.rows[0] ?? null;
+  const programRows = programResult.rows as Array<{
+    payload: Program;
+    updated_at: Date | string;
+  }>;
+  const progressRows = progressResult.rows as Array<{
+    payload: ProgramProgress;
+    updated_at: Date | string;
+  }>;
+  const sessionRows = sessionResult.rows as Array<{
+    payload: SessionRecord;
+    updated_at: Date | string;
+  }>;
+  const logsRows = logsResult.rows as Array<{
+    payload: ExerciseLog;
+    updated_at: Date | string;
+  }>;
+  const toIso = (value: Date | string | null | undefined) =>
+    value instanceof Date ? value.toISOString() : value ?? undefined;
+
   return {
     questionnaire: stateRow?.questionnaire ?? null,
     assessment: stateRow?.assessment ?? null,
     prefs: (stateRow?.prefs ?? null) as LogPrefs | null,
-    programs: programResult.rows.map((row) => row.payload as Program),
-    programProgress: progressResult.rows.map((row) => row.payload as ProgramProgress),
-    sessions: sessionResult.rows.map((row) => row.payload as SessionRecord),
-    exerciseLogs: logsResult.rows.map((row) => row.payload as ExerciseLog),
+    programs: programRows.map((row) => row.payload),
+    programProgress: progressRows.map((row) => row.payload),
+    sessions: sessionRows.map((row) => row.payload),
+    exerciseLogs: logsRows.map((row) => row.payload),
+    meta: {
+      stateUpdatedAt: toIso(stateRow?.updated_at),
+      programUpdatedAtById: Object.fromEntries(
+        programRows.map((row) => [row.payload.id, toIso(row.updated_at) ?? ""])
+      ),
+      programProgressUpdatedAtByProgramId: Object.fromEntries(
+        progressRows.map((row) => [
+          row.payload.programId,
+          toIso(row.updated_at) ?? "",
+        ])
+      ),
+      sessionUpdatedAtById: Object.fromEntries(
+        sessionRows.map((row) => [row.payload.id, toIso(row.updated_at) ?? ""])
+      ),
+      exerciseLogUpdatedAtById: Object.fromEntries(
+        logsRows.map((row) => [row.payload.id, toIso(row.updated_at) ?? ""])
+      ),
+    },
   };
 };
 

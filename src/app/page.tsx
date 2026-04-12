@@ -7,8 +7,8 @@ import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 export default async function Home() {
   const systemSteps = [
     "Analyze your posture and training inputs",
-    "Generate your weekly plan automatically",
-    "Adapt your program as you progress",
+    "Build a weekly plan around your current capacity",
+    "Adapt the plan as your execution improves",
   ];
 
   return (
@@ -30,7 +30,7 @@ export default async function Home() {
               Praxis Movement System
             </span>
             <span className="hero-pill rounded-full px-3 py-1 text-slate-200">
-              Structured. Adaptive. Clear.
+              Structured. Adaptive. Focused.
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -47,13 +47,13 @@ export default async function Home() {
               }}
             >
               <p className="text-xs font-semibold uppercase text-slate-200">
-                Praxis Corrective Performance System
+                Praxis Movement Performance
               </p>
               <h1 className="mx-auto mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-[3.25rem]">
                 Train with intent. Move better every week.
               </h1>
               <p className="mx-auto mt-5 max-w-2xl text-base text-slate-100 sm:text-lg">
-                This system identifies movement imbalances and guides your progress with structured corrective logic.
+                Build a posture-informed training plan that keeps the next session clear.
               </p>
               <p className="mx-auto mt-2 max-w-2xl text-sm text-slate-200 sm:text-base">
                 Your plan evolves based on your execution, recovery, and movement quality.
@@ -61,7 +61,7 @@ export default async function Home() {
               <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row sm:items-center">
                 <Link href="/assessment">
                   <Button className="h-12 min-w-[220px] px-7 text-sm font-semibold shadow-[0_12px_28px_rgba(14,165,233,0.28)]">
-                    Start Assessment →
+                    Start assessment →
                   </Button>
                 </Link>
                 <Link href="/questionnaire">
@@ -69,12 +69,12 @@ export default async function Home() {
                     variant="secondary"
                     className="h-9 px-4 text-xs font-medium text-slate-200"
                   >
-                    Skip to questionnaire
+                    Answer profile instead
                   </Button>
                 </Link>
               </div>
               <p className="mt-4 text-xs text-slate-300">
-                Built to help you improve posture, movement quality, and strength patterns over time.
+                Start with photos or answer the profile questions first. Both paths lead to your plan.
               </p>
             </section>
 
@@ -82,10 +82,10 @@ export default async function Home() {
               <div className="flex flex-wrap items-end justify-center gap-3 text-center sm:justify-between sm:text-left">
                 <div>
                   <p className="text-xs font-semibold uppercase text-slate-300">
-                    Program generation takes less than 60 seconds.
+                    Your first plan takes less than 60 seconds.
                   </p>
                   <h2 className="mt-2 text-xl font-semibold text-white">
-                    How the system builds your program
+                    How Praxis builds your plan
                   </h2>
                 </div>
               </div>
@@ -107,7 +107,7 @@ export default async function Home() {
                 ))}
               </div>
               <p className="mt-5 text-center text-sm text-slate-200">
-                No static workouts. The plan evolves with you.
+                A clear starting point today. A smarter plan as your history grows.
               </p>
             </section>
           </div>

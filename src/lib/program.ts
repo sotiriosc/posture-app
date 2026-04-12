@@ -87,6 +87,11 @@ import {
   get3DayTemplateCounts,
   type ThreeDayMainLanePlanEntry,
 } from "@/lib/program/dayTemplates";
+import {
+  applyAdaptiveWeakpointTemplateOverlay as applyAdaptiveWeakpointTemplateOverlayPolicy,
+  buildRawSplitTemplateSpecs,
+  type SplitTemplateSpec as RawSplitTemplateSpec,
+} from "@/lib/program/splitTemplatePolicy";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
@@ -27430,272 +27435,32 @@ const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
   return 3;
 };
 
-type SplitTemplateSpec = {
-  title: string;
-  focusTags: string[];
-  lanes: MainLane[];
-  warmupFocus: "upper" | "lower" | "core";
-  cooldownFocus: "upper" | "lower" | "core";
-  adaptiveNote?: string;
-  constraints: {
-    requiredMainPatterns: Array<{ pattern: MainLane; min: number }>;
-    requiredMainRules?: RequirementRule[];
-    forbiddenMainTags?: string[];
-    requiredAccessories?: RequirementRule[];
-    optionalRules?: RequirementRule[];
-    forbidUpperPushPullOnMainAndAccessory?: boolean;
-  };
-};
+type SplitTemplateSpec = RawSplitTemplateSpec<MainLane, RequirementRule>;
 
-const withAccessorySection = (baseRule: RequirementRule, minCount = 1): RequirementRule => ({
-  ...baseRule,
-  id: `${baseRule.id}_accessory`,
-  description: `${baseRule.description} accessory`,
-  sections: ["accessory"],
-  minCount,
+const splitTemplateRuleSet = () => ({
+  antiRotationRule,
+  bicepsIsolationRule,
+  calvesRule,
+  carryOrAntiRotationRule,
+  conditioningRule,
+  coreRule,
+  lateralDeltRule,
+  pullBackRule,
+  rowPullMainRule,
+  scapPostureRule,
+  tricepsIsolationRule,
 });
-
-const dedupeRuleListById = (rules: RequirementRule[]) => {
-  const byId = new Map<string, RequirementRule>();
-  rules.forEach((rule) => {
-    if (!byId.has(rule.id)) {
-      byId.set(rule.id, rule);
-    }
-  });
-  return Array.from(byId.values());
-};
-
-const dedupeStringValues = (values: string[]) =>
-  Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
-
-type AdaptiveWeakpointDomain = "upperPosture" | "coreStability" | "lowerStability";
-
-type AdaptiveWeakpointPlan = {
-  domain: AdaptiveWeakpointDomain;
-  lanes: MainLane[];
-  focusTags: string[];
-  requiredMainRules: RequirementRule[];
-  requiredAccessories: RequirementRule[];
-  optionalRules: RequirementRule[];
-  forbiddenMainTags: string[];
-  deprioritizedLabel: string;
-  weakpointLabel: string;
-  overrideMainRules: boolean;
-};
-
-const deriveAdaptiveWeakpointPlan = (
-  selectionContext: SelectionContext
-): AdaptiveWeakpointPlan | null => {
-  const poseTags = selectionContext.poseFocusTags;
-  const painAreaTokens = new Set(
-    selectionContext.painAreas.map((area) => normalizeTagToken(area))
-  );
-  const hasUpperPain = ["neck", "shoulders", "upper_back"].some((token) =>
-    painAreaTokens.has(token)
-  );
-  const hasSpinePain = ["lower_back", "low_back"].some((token) =>
-    painAreaTokens.has(token)
-  );
-  const hasLowerPain = ["hips", "knees"].some((token) => painAreaTokens.has(token));
-  const hasPoseSignals = poseTags.size > 0;
-
-  let upperScore = 0;
-  let coreScore = 0;
-  let lowerScore = 0;
-
-  if (
-    poseTags.has("scapular_control") ||
-    poseTags.has("forward_head") ||
-    poseTags.has("thoracic_extension")
-  ) {
-    upperScore += 2;
-    coreScore += 1;
-  }
-  if (poseTags.has("hip_stability")) {
-    lowerScore += 2;
-    coreScore += 1;
-  }
-  if (hasUpperPain) {
-    upperScore += 2;
-    coreScore += 1;
-  }
-  if (hasSpinePain) {
-    coreScore += 2;
-    lowerScore += 1;
-  }
-  if (hasLowerPain) {
-    lowerScore += 2;
-    coreScore += 1;
-  }
-  if (selectionContext.intentProfile.needs.needsScapularControl) upperScore += 1;
-  if (selectionContext.intentProfile.needs.needsCoreAntiRotation) coreScore += 1;
-  if (selectionContext.intentProfile.needs.needsHipHingeRepattern) lowerScore += 1;
-  if (selectionContext.painSeverity === "high") {
-    coreScore += 1;
-    if (hasUpperPain) upperScore += 1;
-    if (hasLowerPain || hasSpinePain) lowerScore += 1;
-  }
-
-  const rankedDomains: Array<{ domain: AdaptiveWeakpointDomain; score: number }> = [
-    { domain: "coreStability", score: coreScore },
-    { domain: "upperPosture", score: upperScore },
-    { domain: "lowerStability", score: lowerScore },
-  ];
-  rankedDomains.sort((left, right) => right.score - left.score);
-
-  const top = rankedDomains[0];
-  if (!top) return null;
-  const runnerUpScore = rankedDomains[1]?.score ?? 0;
-  const decisiveLead = top.score - runnerUpScore >= 2;
-  const highPainProfile = selectionContext.painSeverity === "high";
-  const mediumPainProfile = selectionContext.painSeverity === "medium";
-  const upperEvidence =
-    (poseTags.has("scapular_control") ? 1 : 0) +
-    (poseTags.has("forward_head") ? 1 : 0) +
-    (poseTags.has("thoracic_extension") ? 1 : 0) +
-    (hasUpperPain ? 1 : 0) +
-    (selectionContext.intentProfile.needs.needsScapularControl ? 1 : 0);
-  const coreEvidence =
-    (selectionContext.intentProfile.needs.needsCoreAntiRotation ? 1 : 0) +
-    (hasSpinePain ? 1 : 0) +
-    (poseTags.has("thoracic_extension") ? 1 : 0) +
-    (poseTags.has("hip_stability") ? 1 : 0) +
-    (selectionContext.intentProfile.needs.needsHipHingeRepattern ? 1 : 0);
-  const lowerEvidence =
-    (hasLowerPain ? 1 : 0) +
-    (hasSpinePain ? 1 : 0) +
-    (poseTags.has("hip_stability") ? 1 : 0) +
-    (selectionContext.intentProfile.needs.needsHipHingeRepattern ? 1 : 0);
-  const evidenceByDomain: Record<AdaptiveWeakpointDomain, number> = {
-    upperPosture: upperEvidence,
-    coreStability: coreEvidence,
-    lowerStability: lowerEvidence,
-  };
-  const topEvidence = evidenceByDomain[top.domain];
-  const shouldAdapt =
-    (highPainProfile && top.score >= 4 && topEvidence >= 3 && decisiveLead) ||
-    (mediumPainProfile && top.score >= 5 && topEvidence >= 4 && decisiveLead && hasPoseSignals);
-  if (!shouldAdapt) return null;
-  const overrideMainRules =
-    highPainProfile && top.score >= 5 && topEvidence >= 4 && decisiveLead;
-
-  if (top.domain === "upperPosture") {
-    return {
-      domain: "upperPosture",
-      lanes: ["pull", "pull"],
-      focusTags: ["upper-back", "scapular", "posture", "thoracic", "core"],
-      requiredMainRules: [scapPostureRule],
-      requiredAccessories: [
-        withAccessorySection(coreRule, 1),
-        withAccessorySection(antiRotationRule, 1),
-      ],
-      optionalRules: [withAccessorySection(carryOrAntiRotationRule, 1)],
-      forbiddenMainTags: ["biceps", "triceps", "chest"],
-      deprioritizedLabel: "arm and pressing emphasis",
-      weakpointLabel: "scapular + posture control",
-      overrideMainRules,
-    };
-  }
-  if (top.domain === "lowerStability") {
-    return {
-      domain: "lowerStability",
-      lanes: ["squat", "hinge"],
-      focusTags: ["lower", "legs", "glutes", "balance", "core", "stability"],
-      requiredMainRules: [],
-      requiredAccessories: [
-        withAccessorySection(coreRule, 1),
-        withAccessorySection(calvesRule, 1),
-      ],
-      optionalRules: [withAccessorySection(antiRotationRule, 1)],
-      forbiddenMainTags: ["chest"],
-      deprioritizedLabel: "high-fatigue upper-body volume",
-      weakpointLabel: "lower-body balance + hip stability",
-      overrideMainRules,
-    };
-  }
-  return {
-    domain: "coreStability",
-    lanes: ["squat", "hinge"],
-    focusTags: ["core", "anti-rotation", "stability", "trunk", "glutes"],
-    requiredMainRules: [],
-    requiredAccessories: [
-      withAccessorySection(coreRule, 1),
-      withAccessorySection(antiRotationRule, 1),
-    ],
-    optionalRules: [withAccessorySection(carryOrAntiRotationRule, 1)],
-    forbiddenMainTags: ["biceps", "triceps"],
-    deprioritizedLabel: "non-essential isolation volume",
-    weakpointLabel: "core alignment + trunk control",
-    overrideMainRules,
-  };
-};
 
 const applyAdaptiveWeakpointTemplateOverlay = (params: {
   templates: SplitTemplateSpec[];
   daysPerWeek: 3 | 4 | 5;
   selectionContext: SelectionContext;
-}): SplitTemplateSpec[] => {
-  const { templates, daysPerWeek, selectionContext } = params;
-  const adaptivePlan = deriveAdaptiveWeakpointPlan(selectionContext);
-  if (!adaptivePlan) return templates;
-
-  const targetTitlePriority =
-    daysPerWeek === 3
-      ? adaptivePlan.domain === "lowerStability"
-        ? ["Legs + Abs", "Shoulders + Arms"]
-        : adaptivePlan.domain === "upperPosture"
-        ? ["Back + Chest", "Shoulders + Arms"]
-        : ["Legs + Abs", "Shoulders + Arms"]
-      : daysPerWeek === 4
-      ? adaptivePlan.domain === "lowerStability"
-        ? ["Lower (Squat Emphasis) + Core", "Lower (Hinge Emphasis) + Carry/Anti-rotation"]
-        : adaptivePlan.domain === "upperPosture"
-        ? ["Upper Pull + Thoracic Posture", "Upper Push + Scapular Control"]
-        : ["Lower (Hinge Emphasis) + Carry/Anti-rotation", "Lower (Squat Emphasis) + Core"]
-      : adaptivePlan.domain === "lowerStability"
-      ? ["Lower Hinge + Posterior Chain", "Lower Squat"]
-      : adaptivePlan.domain === "upperPosture"
-      ? ["Arms + Posture + Conditioning", "Upper Pull"]
-      : ["Arms + Posture + Conditioning", "Lower Hinge + Posterior Chain"];
-
-  const targetIndex = targetTitlePriority
-    .map((title) => templates.findIndex((template) => template.title === title))
-    .find((index) => typeof index === "number" && index >= 0);
-  if (typeof targetIndex !== "number") return templates;
-
-  const adaptiveNote = adaptivePlan.overrideMainRules
-    ? `Adaptive rebalance: ${adaptivePlan.deprioritizedLabel} skipped for this cycle. Replaced with ${adaptivePlan.weakpointLabel} to restore balance.`
-    : `Adaptive rebalance: ${adaptivePlan.deprioritizedLabel} de-prioritized this cycle. Emphasis shifted to ${adaptivePlan.weakpointLabel} to restore balance.`;
-  const overrideMainRules = daysPerWeek !== 4 && adaptivePlan.overrideMainRules;
-
-  return templates.map((template, index) => {
-    if (index !== targetIndex) return template;
-
-    return {
-      ...template,
-      focusTags: dedupeStringValues([...template.focusTags, ...adaptivePlan.focusTags]),
-      adaptiveNote,
-      constraints: {
-        ...template.constraints,
-        requiredMainRules: overrideMainRules
-          ? dedupeRuleListById([...adaptivePlan.requiredMainRules])
-          : template.constraints.requiredMainRules,
-        requiredAccessories: dedupeRuleListById([
-          ...(template.constraints.requiredAccessories ?? []),
-          ...adaptivePlan.requiredAccessories,
-        ]),
-        optionalRules: dedupeRuleListById([
-          ...(template.constraints.optionalRules ?? []),
-          ...adaptivePlan.optionalRules,
-        ]),
-        forbiddenMainTags: dedupeStringValues([
-          ...(template.constraints.forbiddenMainTags ?? []),
-          ...adaptivePlan.forbiddenMainTags,
-        ]),
-      },
-    };
+}): SplitTemplateSpec[] =>
+  applyAdaptiveWeakpointTemplateOverlayPolicy<MainLane, RequirementRule>({
+    ...params,
+    normalizeTagToken,
+    rules: splitTemplateRuleSet(),
   });
-};
 
 const applyAdaptiveTemplateNote = (
   day: ReturnType<typeof buildStructuredDay>,
@@ -27718,237 +27483,11 @@ const applyAdaptiveTemplateNote = (
   };
 };
 
-const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] => {
-  if (daysPerWeek === 3) {
-    return [
-      {
-        title: "Back + Chest",
-        focusTags: ["back", "chest", "fly", "push", "pull"],
-        lanes: ["push", "pull", "pull"],
-        warmupFocus: "upper",
-        cooldownFocus: "upper",
-        constraints: {
-          requiredMainPatterns: [
-            { pattern: "push", min: 2 },
-            { pattern: "pull", min: 1 },
-          ],
-          requiredAccessories: [
-            withAccessorySection(scapPostureRule, 1),
-            withAccessorySection(pullBackRule, 1),
-          ],
-          forbiddenMainTags: ["lateral-delt", "shoulders-isolation"],
-          optionalRules: [scapPostureRule],
-        },
-      },
-      {
-        title: "Shoulders + Arms",
-        focusTags: ["shoulders", "arms", "upper", "lateral_delt", "rear_delt"],
-        lanes: ["verticalPush", "push", "pull"],
-        warmupFocus: "upper",
-        cooldownFocus: "upper",
-        constraints: {
-          requiredMainPatterns: [
-            { pattern: "verticalPush", min: 1 },
-          ],
-          requiredMainRules: [lateralDeltRule],
-          requiredAccessories: [
-            withAccessorySection(tricepsIsolationRule, 1),
-            withAccessorySection(bicepsIsolationRule, 1),
-          ],
-          forbiddenMainTags: ["chest", "biceps", "triceps"],
-        },
-      },
-      {
-        title: "Legs + Abs",
-        focusTags: ["legs", "quads", "hamstrings", "core"],
-        lanes: ["squat", "hinge", "squat"],
-        warmupFocus: "lower",
-        cooldownFocus: "core",
-        constraints: {
-          requiredMainPatterns: [
-            { pattern: "squat", min: 1 },
-            { pattern: "hinge", min: 1 },
-          ],
-          requiredAccessories: [
-            withAccessorySection(coreRule, 1),
-            withAccessorySection(calvesRule, 1),
-          ],
-          forbidUpperPushPullOnMainAndAccessory: true,
-        },
-      },
-    ];
-  }
-
-  if (daysPerWeek === 4) {
-    return [
-      {
-        title: "Upper Push + Scapular Control",
-        focusTags: ["upper", "push", "shoulders", "triceps", "scapular", "posture"],
-        lanes: ["push", "verticalPush"],
-        warmupFocus: "upper",
-        cooldownFocus: "upper",
-        constraints: {
-          requiredMainPatterns: [
-            { pattern: "push", min: 1 },
-            { pattern: "verticalPush", min: 1 },
-          ],
-          requiredMainRules: [scapPostureRule],
-          requiredAccessories: [withAccessorySection(tricepsIsolationRule, 1)],
-          optionalRules: [withAccessorySection(coreRule, 1)],
-        },
-      },
-      {
-        title: "Lower (Squat Emphasis) + Core",
-        focusTags: ["legs", "lower", "squat", "quads", "core", "anti-rotation"],
-        lanes: ["squat", "hinge"],
-        warmupFocus: "lower",
-        cooldownFocus: "core",
-        constraints: {
-          requiredMainPatterns: [
-            { pattern: "squat", min: 1 },
-            { pattern: "hinge", min: 1 },
-          ],
-          requiredAccessories: [
-            withAccessorySection(coreRule, 1),
-            withAccessorySection(calvesRule, 1),
-          ],
-          forbiddenMainTags: ["push", "chest"],
-          forbidUpperPushPullOnMainAndAccessory: true,
-        },
-      },
-      {
-        title: "Upper Pull + Thoracic Posture",
-        focusTags: ["upper", "pull", "back", "thoracic", "posture", "scapular"],
-        lanes: ["pull", "pull"],
-        warmupFocus: "upper",
-        cooldownFocus: "upper",
-        constraints: {
-          requiredMainPatterns: [{ pattern: "pull", min: 2 }],
-          requiredMainRules: [scapPostureRule],
-          requiredAccessories: [withAccessorySection(bicepsIsolationRule, 1)],
-          optionalRules: [withAccessorySection(coreRule, 1)],
-        },
-      },
-      {
-        title: "Lower (Hinge Emphasis) + Carry/Anti-rotation",
-        focusTags: [
-          "legs",
-          "lower",
-          "hinge",
-          "posterior",
-          "hamstrings",
-          "glutes",
-          "core",
-          "carry",
-          "anti-rotation",
-        ],
-        lanes: ["hinge", "squat", "hinge"],
-        warmupFocus: "lower",
-        cooldownFocus: "core",
-        constraints: {
-          requiredMainPatterns: [
-            { pattern: "hinge", min: 1 },
-            { pattern: "squat", min: 1 },
-          ],
-          forbiddenMainTags: ["push", "chest"],
-          requiredAccessories: [
-            withAccessorySection(carryOrAntiRotationRule, 1),
-            withAccessorySection(calvesRule, 1),
-          ],
-          forbidUpperPushPullOnMainAndAccessory: true,
-        },
-      },
-    ];
-  }
-
-  return [
-    {
-      title: "Upper Push",
-      focusTags: ["upper", "push", "chest", "shoulders", "triceps"],
-      lanes: ["push", "verticalPush"],
-      warmupFocus: "upper",
-      cooldownFocus: "upper",
-      constraints: {
-        requiredMainPatterns: [
-          { pattern: "push", min: 1 },
-          { pattern: "verticalPush", min: 1 },
-        ],
-        forbiddenMainTags: ["lateral-delt", "shoulders-isolation"],
-        requiredAccessories: [withAccessorySection(tricepsIsolationRule, 1)],
-        optionalRules: [scapPostureRule],
-      },
-    },
-    {
-      title: "Lower Squat",
-      focusTags: ["lower", "legs", "squat", "quads", "core"],
-      lanes: ["squat", "hinge", "squat"],
-      warmupFocus: "lower",
-      cooldownFocus: "core",
-      constraints: {
-        requiredMainPatterns: [
-          { pattern: "squat", min: 1 },
-          { pattern: "hinge", min: 1 },
-        ],
-        forbiddenMainTags: ["push", "chest"],
-        requiredAccessories: [
-          withAccessorySection(coreRule, 1),
-          withAccessorySection(calvesRule, 1),
-        ],
-        forbidUpperPushPullOnMainAndAccessory: true,
-      },
-    },
-    {
-      title: "Upper Pull",
-      focusTags: ["upper", "pull", "back", "biceps", "posture"],
-      lanes: ["pull", "pull"],
-      warmupFocus: "upper",
-      cooldownFocus: "upper",
-      constraints: {
-        requiredMainPatterns: [{ pattern: "pull", min: 2 }],
-        requiredMainRules: [scapPostureRule],
-        requiredAccessories: [withAccessorySection(bicepsIsolationRule, 1)],
-      },
-    },
-    {
-      title: "Lower Hinge + Posterior Chain",
-      focusTags: ["lower", "hinge", "posterior", "hamstrings", "glutes", "core"],
-      lanes: ["hinge", "squat", "hinge"],
-      warmupFocus: "lower",
-      cooldownFocus: "core",
-      constraints: {
-        requiredMainPatterns: [
-          { pattern: "hinge", min: 1 },
-          { pattern: "squat", min: 1 },
-        ],
-        forbiddenMainTags: ["push", "chest"],
-        requiredAccessories: [
-          withAccessorySection(carryOrAntiRotationRule, 1),
-          withAccessorySection(calvesRule, 1),
-        ],
-        forbidUpperPushPullOnMainAndAccessory: true,
-      },
-    },
-    {
-      title: "Arms + Posture + Conditioning",
-      focusTags: ["upper", "push", "pull", "shoulders", "arms", "posture", "conditioning"],
-      lanes: ["pull", "verticalPush"],
-      warmupFocus: "upper",
-      cooldownFocus: "upper",
-      constraints: {
-        requiredMainPatterns: [
-          { pattern: "pull", min: 1 },
-          { pattern: "verticalPush", min: 1 },
-        ],
-        requiredMainRules: [rowPullMainRule],
-        requiredAccessories: [
-          withAccessorySection(bicepsIsolationRule, 1),
-          withAccessorySection(tricepsIsolationRule, 1),
-        ],
-        optionalRules: [scapPostureRule, conditioningRule],
-      },
-    },
-  ];
-};
+const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] =>
+  buildRawSplitTemplateSpecs<MainLane, RequirementRule>(
+    daysPerWeek,
+    splitTemplateRuleSet()
+  );
 
 export const previewSplitTemplates = (
   daysPerWeek: 3 | 4 | 5,

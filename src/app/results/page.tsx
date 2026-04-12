@@ -37,23 +37,23 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
               <div>
                 <p className="ui-kicker">Praxis Dashboard</p>
                 <h1 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
-                  {session ? `Welcome back, ${displayName}` : "Your movement system"}
+                  {session ? `Welcome back, ${displayName}` : "Your Praxis plan"}
                 </h1>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Link href="/questionnaire">
-                  <Button variant="secondary">Edit questionnaire</Button>
+                  <Button variant="secondary">Edit profile</Button>
                 </Link>
                 {authEnabled ? (
                   <Link href="/account/billing">
-                    <Button variant="secondary">Billing status</Button>
+                    <Button variant="secondary">Account and billing</Button>
                   </Link>
                 ) : null}
               </div>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-200">
               <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
-                Generated from movement profile
+                Built from your movement profile
               </span>
               {authEnabled ? (
                 <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
@@ -65,7 +65,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
           {authEnabled && isPro ? <ManageSubscriptionButton showRefreshAction={false} /> : null}
           {authEnabled && showPaywallNotice && !isPro ? (
             <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">
-              Free plan only unlocks Day 1 workout execution. Upgrade to access all days.
+              Free access includes Day 1. Praxis Pro unlocks the full weekly plan.
             </div>
           ) : null}
           {authEnabled && !isPro ? <UpgradePrompt /> : null}

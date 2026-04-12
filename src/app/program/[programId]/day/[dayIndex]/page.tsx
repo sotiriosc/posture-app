@@ -237,10 +237,10 @@ export default function ProgramDayPage({ params }: Props) {
         <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12">
           <OnImage>
             <h1 className="text-2xl font-semibold text-white">
-              {!sessionResolved ? "Loading access..." : "Program not found"}
+              {!sessionResolved ? "Checking access..." : "Plan not found"}
             </h1>
             <Link href="/results">
-              <Button variant="secondary">Back to program</Button>
+              <Button variant="secondary">Back to plan</Button>
             </Link>
           </OnImage>
         </div>
@@ -277,7 +277,7 @@ export default function ProgramDayPage({ params }: Props) {
                 <Button variant="primary">Start This Day</Button>
               </Link>
               <Link href="/results">
-                <Button variant="secondary">Back to Program</Button>
+                <Button variant="secondary">Back to plan</Button>
               </Link>
             </div>
             <p className="text-xs text-slate-200">
@@ -304,7 +304,7 @@ export default function ProgramDayPage({ params }: Props) {
             </div>
             {isFreePlan ? (
               <p className="text-xs text-slate-200">
-                Free plan shows Day 1 history only. Upgrade to switch days.
+                Free access keeps Day 1 available. Praxis Pro unlocks the full week.
               </p>
             ) : null}
           </header>
