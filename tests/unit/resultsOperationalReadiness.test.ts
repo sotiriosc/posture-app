@@ -18,12 +18,14 @@ const mocks = vi.hoisted(() => ({
   getProgramProgress: vi.fn(),
   getLatestProgram: vi.fn(),
   getProgram: vi.fn(),
+  listAllPrograms: vi.fn(),
   listSessions: vi.fn(),
   listExerciseLogsByExercise: vi.fn(),
   listExerciseLogsBySessionIds: vi.fn(),
   loadPrefs: vi.fn(),
   saveProgram: vi.fn(),
   saveProgramProgress: vi.fn(),
+  clearDraftsByProgramId: vi.fn(),
   uuid: vi.fn(),
   writeText: vi.fn(),
 }));
@@ -53,6 +55,7 @@ vi.mock("@/lib/logStore", () => ({
   getProgramProgress: mocks.getProgramProgress,
   getLatestProgram: mocks.getLatestProgram,
   getProgram: mocks.getProgram,
+  listAllPrograms: mocks.listAllPrograms,
   listSessions: mocks.listSessions,
   listExerciseLogsByExercise: mocks.listExerciseLogsByExercise,
   listExerciseLogsBySessionIds: mocks.listExerciseLogsBySessionIds,
@@ -76,7 +79,7 @@ vi.mock("@/lib/assessmentEngine", () => ({
 }));
 
 vi.mock("@/lib/sessionDraftStore", () => ({
-  clearDraftsByProgramId: vi.fn(async () => undefined),
+  clearDraftsByProgramId: mocks.clearDraftsByProgramId,
 }));
 
 import ResultsRoutine from "@/components/ResultsRoutine";
@@ -329,12 +332,14 @@ describe("results operational readiness", () => {
     mocks.getProgramProgress.mockReset();
     mocks.getLatestProgram.mockReset();
     mocks.getProgram.mockReset();
+    mocks.listAllPrograms.mockReset();
     mocks.listSessions.mockReset();
     mocks.listExerciseLogsByExercise.mockReset();
     mocks.listExerciseLogsBySessionIds.mockReset();
     mocks.loadPrefs.mockReset();
     mocks.saveProgram.mockReset();
     mocks.saveProgramProgress.mockReset();
+    mocks.clearDraftsByProgramId.mockReset();
     mocks.uuid.mockReset();
     mocks.writeText.mockReset();
 
@@ -361,12 +366,14 @@ describe("results operational readiness", () => {
     mocks.getProgramProgress.mockResolvedValue(null);
     mocks.getLatestProgram.mockResolvedValue(null);
     mocks.getProgram.mockResolvedValue(null);
+    mocks.listAllPrograms.mockResolvedValue([]);
     mocks.listSessions.mockResolvedValue([]);
     mocks.listExerciseLogsByExercise.mockResolvedValue([]);
     mocks.listExerciseLogsBySessionIds.mockResolvedValue([]);
     mocks.loadPrefs.mockResolvedValue({ schemaVersion: 2 });
     mocks.saveProgram.mockImplementation(async (program: unknown) => program);
     mocks.saveProgramProgress.mockImplementation(async (progress: unknown) => progress);
+    mocks.clearDraftsByProgramId.mockResolvedValue(undefined);
     mocks.uuid.mockReturnValue("results-program");
     mocks.writeText.mockResolvedValue(undefined);
     Object.defineProperty(window.navigator, "clipboard", {
@@ -1022,7 +1029,7 @@ describe("results operational readiness", () => {
 
     fireEvent.click(screen.getByText("History").closest("button")!);
     expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain(
-      "Workout 1"
+      "Day 1"
     );
     fireEvent.click(screen.getByText("Progress").closest("button")!);
     expect(screen.getByText("Progress Summary")).toBeTruthy();
@@ -1030,7 +1037,150 @@ describe("results operational readiness", () => {
     expect(screen.queryByText(/unlocks with real use/i)).toBeNull();
   });
 
-  test("a true new program id does not count history from the previous program", async () => {
+  test("history search can switch from current program to all history", async () => {
+    const savedProgram = buildSavedProgram("current-history-program", {
+      exerciseId: "band-row",
+    });
+    const legacyProgram: Program = {
+      ...buildSavedProgram("legacy-history-program", {
+        exerciseId: "plank",
+      }),
+      phaseName: "Legacy Phase",
+      week: [
+        {
+          ...buildSavedProgram("legacy-history-program").week[0],
+          title: "Legacy core day",
+          routine: [
+            {
+              exerciseId: "plank",
+              section: "main",
+              sets: 2,
+              reps: null,
+              durationSec: 45,
+              loadType: "timed",
+            },
+          ],
+        },
+      ],
+    };
+    const currentSession = buildSession(
+      "current-history-session",
+      savedProgram.id,
+      0,
+      "2026-04-12T01:30:00.000Z"
+    );
+    const legacySession = buildSession(
+      "legacy-history-session",
+      legacyProgram.id,
+      0,
+      "2026-04-09T01:30:00.000Z"
+    );
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: savedProgram.id,
+        programId: savedProgram.id,
+        activeGenerationMode: "live_initial",
+        selectedDay: 0,
+        questionnaireSignature: buildQuestionnaireSignature(questionnaire),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(savedProgram);
+    mocks.getProgramProgress.mockResolvedValue(buildProgress(savedProgram));
+    mocks.listSessions.mockResolvedValue([currentSession, legacySession]);
+    mocks.listAllPrograms.mockResolvedValue([savedProgram, legacyProgram]);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(screen.getByText("1 completed / 3")).toBeTruthy();
+    });
+    fireEvent.click(screen.getByText("History").closest("button")!);
+    await waitFor(() => {
+      expect(mocks.listAllPrograms).toHaveBeenCalled();
+    });
+
+    expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain("Day 1");
+    expect(screen.getByTestId("history-mode-panel").textContent ?? "").not.toContain("Plank");
+
+    fireEvent.click(screen.getByTestId("history-scope-all"));
+    fireEvent.change(screen.getByTestId("history-search-input"), {
+      target: { value: "plank" },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain("Plank");
+    });
+    expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain(
+      "Legacy core day"
+    );
+
+    fireEvent.change(screen.getByTestId("history-search-input"), {
+      target: { value: "not a session" },
+    });
+    expect(screen.getByText("No completed workouts match that search.")).toBeTruthy();
+  });
+
+  test("reset current progress preserves completed history and all-history access", async () => {
+    const savedProgram = buildSavedProgram("reset-progress-program");
+    const completedSession = buildSession(
+      "reset-progress-session",
+      savedProgram.id,
+      0,
+      "2026-04-12T01:30:00.000Z"
+    );
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: savedProgram.id,
+        programId: savedProgram.id,
+        activeGenerationMode: "live_initial",
+        selectedDay: 0,
+        activeProgramBaselineAt: Date.parse(savedProgram.createdAt),
+        questionnaireSignature: buildQuestionnaireSignature(questionnaire),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(savedProgram);
+    mocks.getProgramProgress.mockResolvedValue(
+      buildProgress(savedProgram, {
+        nextDayIndex: 1,
+        completedDayIndices: [0],
+      })
+    );
+    mocks.listSessions.mockResolvedValue([completedSession]);
+    mocks.listAllPrograms.mockResolvedValue([savedProgram]);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(screen.getByText("1 completed / 3")).toBeTruthy();
+    });
+    fireEvent.click(screen.getByText("Billing / Account").closest("button")!);
+    fireEvent.click(screen.getByTestId("reset-current-progress-trigger"));
+    fireEvent.click(screen.getByTestId("reset-current-progress-confirm-button"));
+
+    await waitFor(() => {
+      expect(mocks.saveProgramProgress).toHaveBeenCalledWith(
+        expect.objectContaining({
+          programId: savedProgram.id,
+          nextDayIndex: 0,
+          completedDayIndices: [],
+          cyclesCompletedInPhase: 0,
+        })
+      );
+    });
+
+    expect(mocks.clearDraftsByProgramId).toHaveBeenCalledWith(savedProgram.id);
+    expect(screen.getByText("Current progress reset. Your workout history is still saved.")).toBeTruthy();
+    expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain("Day 1");
+
+    fireEvent.click(screen.getByTestId("history-scope-all"));
+    expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain("Day 1");
+  });
+
+  test("a true new program id resets current progress while keeping all history", async () => {
     const oldProgram = buildSavedProgram("previous-program");
     const nextProgram = buildSavedProgram("next-program");
     const oldSession = buildSession(
@@ -1059,8 +1209,13 @@ describe("results operational readiness", () => {
     await waitFor(() => {
       expect(screen.getByText("0 completed / 3")).toBeTruthy();
     });
-    expect(screen.getByText("Level 1 foundation")).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText("Level 2 progress")).toBeTruthy();
+    });
     expect(screen.getByText("0 workouts logged")).toBeTruthy();
-    expect(screen.getByText(/Complete one workout to unlock progress and history/i)).toBeTruthy();
+    fireEvent.click(screen.getByText("History").closest("button")!);
+    expect(screen.getByText("Complete your first workout in this program to build history.")).toBeTruthy();
+    fireEvent.click(screen.getByTestId("history-scope-all"));
+    expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain("Day 1");
   });
 });

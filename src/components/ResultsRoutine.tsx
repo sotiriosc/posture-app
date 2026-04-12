@@ -46,6 +46,7 @@ import {
   getProgramProgress,
   getLatestProgram,
   getProgram,
+  listAllPrograms,
   listSessions,
   listExerciseLogsByExercise,
   listExerciseLogsBySessionIds,
@@ -93,6 +94,8 @@ type DashboardMode =
   | "insights"
   | "history"
   | "account";
+
+type HistoryScope = "current" | "all";
 
 const defaultRoutine: Routine = {
   summary:
@@ -807,6 +810,12 @@ export default function ResultsRoutine() {
   const [authEnabled, setAuthEnabled] = useState(false);
   const [plan, setPlan] = useState<SubscriptionPlan>("free");
   const [activeMode, setActiveMode] = useState<DashboardMode>("week");
+  const [historyScope, setHistoryScope] = useState<HistoryScope>("current");
+  const [historySearchQuery, setHistorySearchQuery] = useState("");
+  const [allPrograms, setAllPrograms] = useState<Program[]>([]);
+  const [resetProgressConfirmOpen, setResetProgressConfirmOpen] = useState(false);
+  const [resetProgressWorking, setResetProgressWorking] = useState(false);
+  const [resetProgressMessage, setResetProgressMessage] = useState<string | null>(null);
   const knowledgeSectionRef = useRef<HTMLDivElement | null>(null);
   const systemAdjustmentsSectionRef = useRef<HTMLDivElement | null>(null);
   const weekViewSectionRef = useRef<HTMLElement | null>(null);
@@ -815,7 +824,6 @@ export default function ResultsRoutine() {
   const sessionCompleteNoticeFadeTimeoutRef = useRef<number | null>(null);
   const sessionCompleteNoticeTimeoutRef = useRef<number | null>(null);
   const missingWorkoutRepairAttemptRef = useRef(new Set<string>());
-  const sessionsLoadedForProgramIdRef = useRef<string | null>(null);
   const programProgressSnapshotRef = useRef<Program | null>(null);
   const initialProgramLoadInFlightRef = useRef(false);
   const initialProgramLoadSignatureRef = useRef<string | null>(null);
@@ -1740,6 +1748,99 @@ export default function ResultsRoutine() {
     [sessionsSinceBaseline]
   );
 
+  const allCompletedSessions = useMemo(
+    () =>
+      allSessions
+        .filter((session) => session.completedAt)
+        .toSorted((a, b) =>
+          (b.completedAt ?? b.updatedAt ?? b.createdAt ?? "").localeCompare(
+            a.completedAt ?? a.updatedAt ?? a.createdAt ?? ""
+          )
+        ),
+    [allSessions]
+  );
+
+  const currentProgramCompletedSessions = useMemo(() => {
+    if (!activeProgramId) return [] as SessionRecord[];
+    return allCompletedSessions.filter(
+      (session) => session.routineId === activeProgramId
+    );
+  }, [allCompletedSessions, activeProgramId]);
+
+  const programById = useMemo(() => {
+    const map = new Map<string, Program>();
+    allPrograms.forEach((entry) => {
+      map.set(entry.id, entry);
+    });
+    if (program) {
+      map.set(program.id, program);
+    }
+    return map;
+  }, [allPrograms, program]);
+
+  const historyScopeSessions =
+    historyScope === "current" ? currentProgramCompletedSessions : allCompletedSessions;
+  const historySearchTerm = historySearchQuery.trim().toLowerCase();
+  const historyEntries = useMemo(() => {
+    return historyScopeSessions
+      .map((session) => {
+        const dayIndex = parseDayIndexFromSession(session);
+        const sessionProgram = session.routineId
+          ? programById.get(session.routineId)
+          : null;
+        const day =
+          dayIndex === null
+            ? null
+            : sessionProgram?.week.find((entry) => entry.dayIndex === dayIndex) ?? null;
+        const exerciseNames =
+          day?.routine
+            .map((item) => exerciseById(item.exerciseId)?.name)
+            .filter((name): name is string => Boolean(name)) ?? [];
+        const completedAtValue =
+          session.completedAt ?? session.updatedAt ?? session.createdAt;
+        const completedAt = completedAtValue
+          ? new Date(completedAtValue)
+          : null;
+        const isoDate =
+          completedAt && !Number.isNaN(completedAt.getTime())
+            ? completedAt.toISOString().slice(0, 10)
+            : "";
+        const displayDate =
+          completedAt && !Number.isNaN(completedAt.getTime())
+            ? completedAt.toLocaleDateString()
+            : "Completed";
+        const dayLabel =
+          day?.title ??
+          (dayIndex === null ? "Program day saved" : `Day ${dayIndex + 1}`);
+        const programLabel = sessionProgram
+          ? `${sessionProgram.phaseName ?? "Program"} • Week ${sessionProgram.weekIndex ?? 1}`
+          : session.routineId ?? "Program";
+        const searchText = [
+          displayDate,
+          isoDate,
+          dayLabel,
+          programLabel,
+          session.routineId ?? "",
+          dayIndex === null ? "" : `day ${dayIndex + 1}`,
+          ...exerciseNames,
+        ]
+          .join(" ")
+          .toLowerCase();
+        return {
+          session,
+          dayIndex,
+          dayLabel,
+          displayDate,
+          programLabel,
+          exerciseNames,
+          searchText,
+        };
+      })
+      .filter((entry) =>
+        historySearchTerm ? entry.searchText.includes(historySearchTerm) : true
+      );
+  }, [historyScopeSessions, historySearchTerm, programById]);
+
   const completedWeeks =
     !program || !completedSessions.length
       ? 0
@@ -2027,15 +2128,6 @@ export default function ResultsRoutine() {
 
   useEffect(() => {
     if (!programId) return;
-    const previousProgramId = sessionsLoadedForProgramIdRef.current;
-    const isProgramTransition =
-      previousProgramId !== null && previousProgramId !== programId;
-    sessionsLoadedForProgramIdRef.current = programId;
-    if (isProgramTransition) {
-      setAllSessions((current) =>
-        current.filter((session) => session.routineId === programId)
-      );
-    }
     let cancelled = false;
     const loadSessions = () => {
       listSessions(500).then((sessions) => {
@@ -2053,6 +2145,21 @@ export default function ResultsRoutine() {
       window.removeEventListener("focus", loadSessions);
       window.removeEventListener("visibilitychange", loadSessions);
       window.removeEventListener(SESSION_COMPLETE_EVENT, loadSessions as EventListener);
+    };
+  }, [programId]);
+
+  useEffect(() => {
+    if (!programId) return;
+    let cancelled = false;
+    listAllPrograms()
+      .then((programs) => {
+        if (!cancelled) {
+          setAllPrograms(programs);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
     };
   }, [programId]);
 
@@ -3151,10 +3258,61 @@ export default function ResultsRoutine() {
     });
   };
 
-  const completedWorkoutCount = completedSessions.length;
-  const hasCompletedWorkout = completedWorkoutCount >= 1;
+  const resetCurrentProgress = async () => {
+    if (!program) return;
+    setResetProgressWorking(true);
+    setResetProgressMessage(null);
+    try {
+      const resetAt = Date.now();
+      const resetAtIso = new Date(resetAt).toISOString();
+      const nextProgress: ProgramProgress = {
+        programId: program.id,
+        lastCompletedDayIndex: null,
+        nextDayIndex: 0,
+        completedDayIndices: [],
+        phaseIndex: program.phaseIndex ?? 1,
+        phaseStartedAt: resetAtIso,
+        cyclesCompletedInPhase: 0,
+        daysPerWeek: program.daysPerWeek,
+        weekIndex: Math.max(1, program.weekIndex ?? 1),
+        countedWeekKeys: [],
+        updatedAt: resetAtIso,
+      };
+      await saveProgramProgress(nextProgress);
+      await clearDraftsByProgramId(program.id);
+      setProgress(nextProgress);
+      setSelectedDay(0);
+      setWeekViewSelectedDay(null);
+      setWeekViewDetailsOpen(false);
+      setActiveProgramBaselineAt(resetAt);
+      saveAppState({
+        programId: program.id,
+        activeProgramId: program.id,
+        activeProgramBaselineAt: resetAt,
+        selectedDay: 0,
+        activeSessionId: undefined,
+        activePhaseIndex: program.phaseIndex ?? 1,
+        activeCycleIndex: program.cycleIndex ?? 1,
+        questionnaireSignature: questionnaireSignature ?? undefined,
+        lastRoute: "/results",
+      });
+      setResetProgressConfirmOpen(false);
+      setResetProgressMessage("Current progress reset. Your workout history is still saved.");
+      setActiveMode("history");
+    } catch {
+      setResetProgressMessage("Could not reset current progress. Please try again.");
+    } finally {
+      setResetProgressWorking(false);
+    }
+  };
+
+  const completedWorkoutCount = currentProgramCompletedSessions.length;
+  const totalCompletedWorkoutCount = allCompletedSessions.length;
+  const hasCompletedWorkout = totalCompletedWorkoutCount >= 1;
   const hasCompletedFullWeek =
-    completedWeeks >= 1 || phaseGate.cyclesCompletedInPhase >= 1;
+    completedWeeks >= 1 ||
+    phaseGate.cyclesCompletedInPhase >= 1 ||
+    Math.floor(completedWorkoutCount / Math.max(1, activeDaysPerWeek)) >= 1;
   const dashboardLevel = hasCompletedFullWeek ? 3 : hasCompletedWorkout ? 2 : 1;
   const progressLocked = dashboardLevel < 2;
   const historyLocked = dashboardLevel < 2;
@@ -4035,20 +4193,62 @@ export default function ResultsRoutine() {
                 Completed workouts
               </h2>
               <p className="mt-2 text-sm text-slate-300">
-                Recent completed sessions for the current saved program.
+                Search completed sessions across the active program or your full local history.
               </p>
+              {resetProgressMessage ? (
+                <p className="mt-3 text-xs font-medium text-sky-100" aria-live="polite">
+                  {resetProgressMessage}
+                </p>
+              ) : null}
             </div>
             <Button variant="secondary" onClick={() => router.push("/progress")}>
               Open progress page
             </Button>
           </div>
+          <div className="ui-soft-surface mt-5 rounded-lg p-3">
+            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+              <label className="block">
+                <span className="text-xs font-semibold uppercase text-slate-400">
+                  Search history
+                </span>
+                <input
+                  value={historySearchQuery}
+                  onChange={(event) => setHistorySearchQuery(event.target.value)}
+                  data-testid="history-search-input"
+                  className="mt-2 h-11 w-full rounded-lg border border-slate-500/25 bg-slate-950/55 px-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus-visible:border-sky-300/50 focus-visible:ring-2 focus-visible:ring-sky-300/25"
+                  placeholder="Search date, day, program, or exercise"
+                />
+              </label>
+              <div className="flex rounded-lg border border-slate-500/25 bg-slate-950/45 p-1 text-xs font-semibold text-slate-300">
+                {(["current", "all"] as const).map((scope) => (
+                  <button
+                    key={scope}
+                    type="button"
+                    data-testid={`history-scope-${scope}`}
+                    onClick={() => setHistoryScope(scope)}
+                    className={`rounded-md px-3 py-2 ${
+                      historyScope === scope
+                        ? "bg-sky-400/18 text-white shadow-[0_10px_24px_rgba(14,165,233,0.14)]"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    {scope === "current" ? "Current program" : "All history"}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-slate-400">
+              {historyEntries.length} result{historyEntries.length === 1 ? "" : "s"} •{" "}
+              {historyScope === "current"
+                ? `${completedWorkoutCount} saved for this program`
+                : `${totalCompletedWorkoutCount} completed workouts total`}
+            </p>
+          </div>
           <div className="mt-4 grid gap-3">
-            {completedSessions.slice(0, 6).length ? (
-              completedSessions.slice(0, 6).map((session, index) => {
-                const dayIndex = parseDayIndexFromSession(session);
-                const completedAt = session.completedAt
-                  ? new Date(session.completedAt).toLocaleDateString()
-                  : "Completed";
+            {historyEntries.length ? (
+              historyEntries.map((entry) => {
+                const { session, dayIndex } = entry;
+                const historyProgramId = session.routineId ?? program.id;
                 return (
                   <div
                     key={session.id}
@@ -4056,18 +4256,26 @@ export default function ResultsRoutine() {
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm font-semibold text-white">
-                        Workout {completedSessions.length - index}
+                        {entry.dayLabel}
                       </p>
-                      <span className="text-xs text-slate-400">{completedAt}</span>
+                      <span className="text-xs text-slate-400">{entry.displayDate}</span>
                     </div>
                     <p className="mt-1 text-sm text-slate-300">
-                      {dayIndex === null ? "Program day saved" : `Day ${dayIndex + 1}`}{" "}
+                      {entry.programLabel}
+                      {dayIndex === null ? "" : ` • Day ${dayIndex + 1}`}{" "}
                       {session.durationSec ? `• ${Math.round(session.durationSec / 60)} min` : ""}
                     </p>
+                    {entry.exerciseNames.length ? (
+                      <p className="mt-2 line-clamp-2 text-xs text-slate-400">
+                        {entry.exerciseNames.slice(0, 5).join(" • ")}
+                      </p>
+                    ) : null}
                     {dayIndex !== null ? (
                       <button
                         type="button"
-                        onClick={() => router.push(`/program/${program.id}/day/${dayIndex}`)}
+                        onClick={() =>
+                          router.push(`/program/${historyProgramId}/day/${dayIndex}`)
+                        }
                         className={`${secondaryActionBtn} mt-3`}
                       >
                         View day history
@@ -4078,7 +4286,11 @@ export default function ResultsRoutine() {
               })
             ) : (
               <div className="ui-soft-surface rounded-lg px-4 py-5 text-sm text-slate-300">
-                Complete your first workout to build history.
+                {historySearchTerm
+                  ? "No completed workouts match that search."
+                  : historyScope === "current"
+                  ? "Complete your first workout in this program to build history."
+                  : "Complete your first workout to build history."}
               </div>
             )}
           </div>
@@ -4123,7 +4335,7 @@ export default function ResultsRoutine() {
                 {authEnabled ? (
                   <Link href="/account/billing">
                     <Button variant="primary" className="h-11 w-full">
-                      Billing status
+                      {plan === "pro" ? "Manage subscription" : "Billing status"}
                     </Button>
                   </Link>
                 ) : null}
@@ -4139,6 +4351,57 @@ export default function ResultsRoutine() {
                 </Link>
               </div>
             </div>
+          </div>
+          <div className="ui-soft-surface mt-4 rounded-lg p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-white">Reset current progress</p>
+                <p className="mt-1 max-w-2xl text-xs leading-5 text-slate-400">
+                  Start this active program from Day 1 again. Completed workout history and logs stay saved.
+                </p>
+              </div>
+              <Button
+                variant="secondary"
+                onClick={() => setResetProgressConfirmOpen(true)}
+                data-testid="reset-current-progress-trigger"
+              >
+                Reset current progress
+              </Button>
+            </div>
+            {resetProgressMessage ? (
+              <p className="mt-3 text-xs text-slate-300" aria-live="polite">
+                {resetProgressMessage}
+              </p>
+            ) : null}
+            {resetProgressConfirmOpen ? (
+              <div
+                className="mt-4 rounded-lg border border-sky-300/25 bg-sky-400/10 p-4"
+                data-testid="reset-current-progress-confirm"
+              >
+                <p className="text-sm font-semibold text-white">Start fresh week?</p>
+                <p className="mt-1 text-xs leading-5 text-slate-300">
+                  This resets the active program baseline and current day back to Day 1.
+                  It does not erase completed sessions, exercise logs, programs, photos, or exports.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    variant="primary"
+                    disabled={resetProgressWorking}
+                    onClick={resetCurrentProgress}
+                    data-testid="reset-current-progress-confirm-button"
+                  >
+                    {resetProgressWorking ? "Resetting..." : "Start fresh week"}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={resetProgressWorking}
+                    onClick={() => setResetProgressConfirmOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : null}
           </div>
         </section>
       ) : null}

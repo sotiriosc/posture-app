@@ -49,20 +49,26 @@ export default function ManageSubscriptionButton({
 
   return (
     <div className="mt-2">
-      <Button type="button" variant="primary" onClick={openPortal} disabled={loading}>
+      <Button
+        type="button"
+        variant="primary"
+        className="h-11 w-full text-sm"
+        onClick={openPortal}
+        disabled={loading}
+      >
         {loading ? "Opening..." : "Manage subscription"}
       </Button>
       {showRefreshAction ? (
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <Button type="button" variant="primary" onClick={refreshStatus} disabled={refreshing}>
+          <Button type="button" variant="secondary" onClick={refreshStatus} disabled={refreshing}>
             {refreshing ? "Refreshing..." : "I finished in Stripe"}
           </Button>
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-slate-400">
             After changes in Stripe, click here to refresh this page.
           </p>
         </div>
       ) : null}
-      {message ? <p className="mt-1 text-xs text-slate-600">{message}</p> : null}
+      {message ? <p className="mt-1 text-xs text-slate-400">{message}</p> : null}
     </div>
   );
 }

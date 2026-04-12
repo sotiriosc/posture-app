@@ -6,17 +6,22 @@ import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import { resetAllAppData } from "@/lib/resetAppData";
+import { loadAppState, saveAppState } from "@/lib/appState";
+import { clearDraftsByProgramId } from "@/lib/sessionDraftStore";
 import {
+  getProgram,
   init,
   listAllExerciseLogs,
   listAllPrograms,
   listSessions,
   loadPrefs,
   SCHEMA_VERSION,
+  saveProgramProgress,
 } from "@/lib/logStore";
 
 export default function AccountSettingsPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [resetProgressConfirmOpen, setResetProgressConfirmOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -43,6 +48,56 @@ export default function AccountSettingsPage() {
       ),
     ];
     return csvLines.join("\n");
+  };
+
+  const handleResetCurrentProgress = async () => {
+    setWorking(true);
+    setMessage(null);
+    try {
+      const state = loadAppState();
+      const activeProgramId = state?.activeProgramId ?? state?.programId ?? null;
+      if (!activeProgramId) {
+        setMessage("No active program found to reset.");
+        return;
+      }
+      const activeProgram = await getProgram(activeProgramId);
+      if (!activeProgram) {
+        setMessage("No active program found to reset.");
+        return;
+      }
+      const resetAt = Date.now();
+      const resetAtIso = new Date(resetAt).toISOString();
+      await saveProgramProgress({
+        programId: activeProgram.id,
+        lastCompletedDayIndex: null,
+        nextDayIndex: 0,
+        completedDayIndices: [],
+        phaseIndex: activeProgram.phaseIndex ?? 1,
+        phaseStartedAt: resetAtIso,
+        cyclesCompletedInPhase: 0,
+        daysPerWeek: activeProgram.daysPerWeek,
+        weekIndex: Math.max(1, activeProgram.weekIndex ?? 1),
+        countedWeekKeys: [],
+        updatedAt: resetAtIso,
+      });
+      await clearDraftsByProgramId(activeProgram.id);
+      saveAppState({
+        programId: activeProgram.id,
+        activeProgramId: activeProgram.id,
+        activeProgramBaselineAt: resetAt,
+        selectedDay: 0,
+        activeSessionId: undefined,
+        activePhaseIndex: activeProgram.phaseIndex ?? 1,
+        activeCycleIndex: activeProgram.cycleIndex ?? 1,
+        lastRoute: "/account/settings",
+      });
+      setResetProgressConfirmOpen(false);
+      setMessage("Current progress reset. Workout history and logs were preserved.");
+    } catch {
+      setMessage("Current progress reset failed. Please try again.");
+    } finally {
+      setWorking(false);
+    }
   };
 
   const downloadFile = (content: string, filename: string, type: string) => {
@@ -135,7 +190,7 @@ export default function AccountSettingsPage() {
               </p>
               <h1 className="mt-2 text-3xl font-semibold text-white">Settings</h1>
               <p className="mt-2 max-w-2xl text-sm text-slate-200">
-                Export training data or reset local app state on this device.
+                Export training data, reset current progress, or erase local app data on this device.
               </p>
             </div>
             <Link href="/results">
@@ -145,87 +200,130 @@ export default function AccountSettingsPage() {
         </OnImage>
 
         <div className="grid gap-4 lg:grid-cols-2">
-        <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
-          <p className="ui-kicker">Exports</p>
-          <h2 className="ui-title mt-1">Download your data</h2>
-          <p className="mt-2 text-sm text-slate-300">
-            Export logs and program history anytime.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Button variant="primary" disabled={exporting} onClick={handleDownloadCsv}>
-              {exporting ? "Working..." : "Download CSV"}
-            </Button>
-            <Button variant="primary" disabled={exporting} onClick={handleDownloadJson}>
-              {exporting ? "Working..." : "Download JSON"}
-            </Button>
-          </div>
-        </div>
-
-        <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
-          <p className="ui-kicker">Data controls</p>
-          <h2 className="ui-title mt-1">Reset app data</h2>
-          <p className="mt-2 text-sm text-slate-300">
-            This removes local workout programs, logs, photos, and in-progress drafts on this device.
-          </p>
-
-          {!confirmOpen ? (
-            <div className="mt-4">
-              <Button variant="primary" onClick={() => setConfirmOpen(true)}>
-                Reset my data
+          <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
+            <p className="ui-kicker">Exports</p>
+            <h2 className="ui-title mt-1">Download your data</h2>
+            <p className="mt-2 text-sm text-slate-300">
+              Export logs and program history anytime.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button variant="primary" disabled={exporting} onClick={handleDownloadCsv}>
+                {exporting ? "Working..." : "Download CSV"}
+              </Button>
+              <Button variant="primary" disabled={exporting} onClick={handleDownloadJson}>
+                {exporting ? "Working..." : "Download JSON"}
               </Button>
             </div>
-          ) : (
-            <div className="mt-4 rounded-2xl border border-rose-300/35 bg-rose-900/20 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-rose-100">
-                Confirm reset
-              </p>
-              <p className="mt-1 text-sm text-rose-100">
-                Type <span className="font-semibold">RESET</span> to continue.
-              </p>
-              <input
-                value={confirmText}
-                onChange={(event) => setConfirmText(event.target.value)}
-                className="ui-input mt-3 border-rose-300/45"
-                placeholder="Type RESET"
-              />
-              <div className="mt-3 flex gap-2">
-                <Button
-                  variant="primary"
-                  disabled={working || confirmText !== "RESET"}
-                  onClick={async () => {
-                    setWorking(true);
-                    setMessage(null);
-                    try {
-                      await resetAllAppData();
-                      setMessage("App data reset complete.");
-                      setConfirmOpen(false);
-                      setConfirmText("");
-                    } catch {
-                      setMessage("Reset failed. Please try again.");
-                    } finally {
-                      setWorking(false);
-                    }
-                  }}
-                >
-                  {working ? "Resetting..." : "Confirm reset"}
-                </Button>
+          </div>
+
+          <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
+            <p className="ui-kicker">Current progress</p>
+            <h2 className="ui-title mt-1">Reset active program progress</h2>
+            <p className="mt-2 text-sm text-slate-300">
+              Start the active program from Day 1 again while preserving completed workout history and logs.
+            </p>
+            {!resetProgressConfirmOpen ? (
+              <div className="mt-4">
                 <Button
                   variant="secondary"
-                  disabled={working}
-                  onClick={() => {
-                    setConfirmOpen(false);
-                    setConfirmText("");
-                  }}
+                  onClick={() => setResetProgressConfirmOpen(true)}
+                  data-testid="settings-reset-current-progress-trigger"
                 >
-                  Cancel
+                  Reset current progress
                 </Button>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="mt-4 rounded-lg border border-sky-300/25 bg-sky-400/10 p-4">
+                <p className="text-xs font-semibold uppercase text-sky-100">
+                  Confirm progress reset
+                </p>
+                <p className="mt-1 text-sm text-slate-200">
+                  This resets the current baseline and active day only. It keeps workout history, logs, programs, photos, and exports.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    variant="primary"
+                    disabled={working}
+                    onClick={handleResetCurrentProgress}
+                    data-testid="settings-reset-current-progress-confirm"
+                  >
+                    {working ? "Resetting..." : "Start fresh week"}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={working}
+                    onClick={() => setResetProgressConfirmOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
 
-          {message ? <p className="mt-3 text-sm text-slate-300">{message}</p> : null}
+          <div className="ui-card ui-soft-surface-raised rounded-lg border-rose-300/25 p-5 sm:p-6 lg:col-span-2">
+            <p className="ui-kicker text-rose-100">Destructive reset</p>
+            <h2 className="ui-title mt-1">Erase all local data</h2>
+            <p className="mt-2 max-w-3xl text-sm text-slate-300">
+              This deletes workout history and logs, saved programs, photos, and in-progress drafts from this device.
+            </p>
+            {!confirmOpen ? (
+              <div className="mt-4">
+                <Button variant="secondary" onClick={() => setConfirmOpen(true)}>
+                  Erase all local data
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-4 rounded-lg border border-rose-300/35 bg-rose-900/20 p-4">
+                <p className="text-xs font-semibold uppercase text-rose-100">
+                  Confirm destructive reset
+                </p>
+                <p className="mt-1 text-sm text-rose-100">
+                  Type <span className="font-semibold">ERASE ALL DATA</span> to delete workout history/logs, programs, photos, and drafts.
+                </p>
+                <input
+                  value={confirmText}
+                  onChange={(event) => setConfirmText(event.target.value)}
+                  className="ui-input mt-3 border-rose-300/45"
+                  placeholder="Type ERASE ALL DATA"
+                />
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    variant="danger"
+                    disabled={working || confirmText !== "ERASE ALL DATA"}
+                    onClick={async () => {
+                      setWorking(true);
+                      setMessage(null);
+                      try {
+                        await resetAllAppData();
+                        setMessage("All local app data erased.");
+                        setConfirmOpen(false);
+                        setConfirmText("");
+                      } catch {
+                        setMessage("Erase failed. Please try again.");
+                      } finally {
+                        setWorking(false);
+                      }
+                    }}
+                  >
+                    {working ? "Erasing..." : "Erase all local data"}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={working}
+                    onClick={() => {
+                      setConfirmOpen(false);
+                      setConfirmText("");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        </div>
+        {message ? <p className="text-sm text-slate-300">{message}</p> : null}
       </div>
     </BackgroundShell>
   );
