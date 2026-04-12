@@ -815,6 +815,8 @@ export default function ResultsRoutine() {
   const sessionCompleteNoticeFadeTimeoutRef = useRef<number | null>(null);
   const sessionCompleteNoticeTimeoutRef = useRef<number | null>(null);
   const missingWorkoutRepairAttemptRef = useRef(new Set<string>());
+  const sessionsLoadedForProgramIdRef = useRef<string | null>(null);
+  const programProgressSnapshotRef = useRef<Program | null>(null);
   const initialProgramLoadInFlightRef = useRef(false);
   const initialProgramLoadSignatureRef = useRef<string | null>(null);
   const programGenerationRequestTokenRef = useRef(0);
@@ -834,6 +836,10 @@ export default function ResultsRoutine() {
   dataRef.current = data;
   poseAnalysisRef.current = poseState.analysis;
   assessmentReportRef.current = poseState.report;
+  const programId = program?.id ?? null;
+  if (program && programProgressSnapshotRef.current?.id !== program.id) {
+    programProgressSnapshotRef.current = program;
+  }
   const triggerSessionCompleteNotice = () => {
     setSessionCompleteNoticeFading(false);
     setShowSessionCompleteNotice(true);
@@ -1614,11 +1620,11 @@ export default function ResultsRoutine() {
   }, [activeProgramBaselineAt, program?.createdAt]);
 
   const activeProgramId = useMemo(() => {
-    if (!program) return null;
+    if (!programId) return null;
     const stored = loadAppState()?.activeProgramId;
-    if (!stored) return program.id;
-    return stored === program.id ? stored : program.id;
-  }, [program]);
+    if (!stored) return programId;
+    return stored === programId ? stored : programId;
+  }, [programId]);
 
   const activeSessionId = loadAppState()?.activeSessionId ?? null;
 
@@ -1890,20 +1896,23 @@ export default function ResultsRoutine() {
   }, [completedSessions]);
 
   useEffect(() => {
-    if (!program) return;
-    getProgramProgress(program.id).then((stored) => {
+    const progressProgram = programProgressSnapshotRef.current;
+    if (!progressProgram || !programId || progressProgram.id !== programId) return;
+    let cancelled = false;
+    getProgramProgress(programId).then((stored) => {
+      if (cancelled) return;
       if (stored) {
         const nowIso = new Date().toISOString();
         const normalized: ProgramProgress = {
           ...stored,
-          phaseIndex: stored.phaseIndex ?? (program.phaseIndex ?? 1),
+          phaseIndex: stored.phaseIndex ?? (progressProgram.phaseIndex ?? 1),
           phaseStartedAt:
-            stored.phaseStartedAt ?? program.createdAt ?? nowIso,
+            stored.phaseStartedAt ?? progressProgram.createdAt ?? nowIso,
           cyclesCompletedInPhase:
             typeof stored.cyclesCompletedInPhase === "number"
               ? stored.cyclesCompletedInPhase
               : 0,
-          daysPerWeek: stored.daysPerWeek ?? program.daysPerWeek,
+          daysPerWeek: stored.daysPerWeek ?? progressProgram.daysPerWeek,
           weekIndex: Math.max(1, stored.weekIndex ?? 1),
           countedWeekKeys: Array.isArray(stored.countedWeekKeys)
             ? stored.countedWeekKeys
@@ -1926,14 +1935,14 @@ export default function ResultsRoutine() {
       } else {
         const nowIso = new Date().toISOString();
         const initial: ProgramProgress = {
-          programId: program.id,
+          programId,
           lastCompletedDayIndex: null,
           nextDayIndex: 0,
           completedDayIndices: [],
-          phaseIndex: program.phaseIndex ?? 1,
-          phaseStartedAt: program.createdAt ?? nowIso,
+          phaseIndex: progressProgram.phaseIndex ?? 1,
+          phaseStartedAt: progressProgram.createdAt ?? nowIso,
           cyclesCompletedInPhase: 0,
-          daysPerWeek: program.daysPerWeek,
+          daysPerWeek: progressProgram.daysPerWeek,
           weekIndex: 1,
           countedWeekKeys: [],
           updatedAt: nowIso,
@@ -1943,7 +1952,10 @@ export default function ResultsRoutine() {
         setSelectedDay(0);
       }
     });
-  }, [program]);
+    return () => {
+      cancelled = true;
+    };
+  }, [programId]);
 
   useEffect(() => {
     return () => {
@@ -2014,26 +2026,40 @@ export default function ResultsRoutine() {
   }, [showSessionCompleteNotice]);
 
   useEffect(() => {
-    if (!program) return;
+    if (!programId) return;
+    const previousProgramId = sessionsLoadedForProgramIdRef.current;
+    const isProgramTransition =
+      previousProgramId !== null && previousProgramId !== programId;
+    sessionsLoadedForProgramIdRef.current = programId;
+    if (isProgramTransition) {
+      setAllSessions((current) =>
+        current.filter((session) => session.routineId === programId)
+      );
+    }
+    let cancelled = false;
     const loadSessions = () => {
-      listSessions(500).then(setAllSessions);
+      listSessions(500).then((sessions) => {
+        if (!cancelled) {
+          setAllSessions(sessions);
+        }
+      });
     };
-    setAllSessions([]);
     loadSessions();
     window.addEventListener("focus", loadSessions);
     window.addEventListener("visibilitychange", loadSessions);
     window.addEventListener(SESSION_COMPLETE_EVENT, loadSessions as EventListener);
     return () => {
+      cancelled = true;
       window.removeEventListener("focus", loadSessions);
       window.removeEventListener("visibilitychange", loadSessions);
       window.removeEventListener(SESSION_COMPLETE_EVENT, loadSessions as EventListener);
     };
-  }, [program]);
+  }, [programId]);
 
   useEffect(() => {
     setWeekViewDetailsOpen(false);
     setWeekViewSelectedDay(null);
-  }, [program, baselineForActiveProgram]);
+  }, [programId, baselineForActiveProgram]);
 
   const phaseGate = useMemo(() => {
     return canAdvancePhase({
@@ -2409,12 +2435,12 @@ export default function ResultsRoutine() {
   }, [program, completedSessions, data]);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development" || !program) return;
+    if (process.env.NODE_ENV !== "development" || !programId) return;
     if (!baselineForActiveProgram) return;
     console.log(
-      `[Week View] baseline=${new Date(baselineForActiveProgram).toISOString()} programId=${activeProgramId ?? program.id}`
+      `[Week View] baseline=${new Date(baselineForActiveProgram).toISOString()} programId=${activeProgramId ?? programId}`
     );
-  }, [program, activeProgramId, baselineForActiveProgram]);
+  }, [programId, activeProgramId, baselineForActiveProgram]);
 
   useEffect(() => {
     const runPoseAnalysis = async () => {

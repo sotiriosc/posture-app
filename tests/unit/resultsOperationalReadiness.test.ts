@@ -1,11 +1,11 @@
 /** @vitest-environment jsdom */
 
 import React from "react";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { PROGRAM_TEMPLATE_VERSION } from "@/lib/program";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
-import type { Program } from "@/lib/types";
+import type { Program, ProgramProgress, SessionRecord } from "@/lib/types";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 
 const mocks = vi.hoisted(() => ({
@@ -146,6 +146,47 @@ const buildSavedProgram = (
   deletedAt: null,
   };
 };
+
+const buildSession = (
+  id: string,
+  programId: string,
+  dayIndex: number,
+  completedAt: string | null
+): SessionRecord => {
+  const createdAt = `2026-04-12T0${dayIndex}:00:00.000Z`;
+  return {
+    id,
+    userId: null,
+    startedAt: createdAt,
+    completedAt,
+    createdAt,
+    updatedAt: completedAt ?? createdAt,
+    routineId: programId,
+    durationSec: completedAt ? 1800 : null,
+    notes: `dayIndex:${dayIndex}`,
+    sessionFeedback: "moderate",
+    source: "local",
+    deletedAt: null,
+  };
+};
+
+const buildProgress = (
+  program: Program,
+  overrides: Partial<ProgramProgress> = {}
+): ProgramProgress => ({
+  programId: program.id,
+  lastCompletedDayIndex: null,
+  nextDayIndex: 0,
+  completedDayIndices: [],
+  phaseIndex: program.phaseIndex ?? 1,
+  phaseStartedAt: program.createdAt,
+  cyclesCompletedInPhase: 0,
+  daysPerWeek: program.daysPerWeek,
+  weekIndex: program.weekIndex ?? 1,
+  countedWeekKeys: [],
+  updatedAt: "2026-04-12T12:00:00.000Z",
+  ...overrides,
+});
 
 const mockLiveGeneratedProgram = (program: Program) => {
   mocks.generateProgram.mockImplementation(
@@ -905,5 +946,121 @@ describe("results operational readiness", () => {
     expect(copiedText).toContain("Day 1: Phase 2 Day 1");
     expect(copiedText).not.toContain("DETERMINISTIC PHASE PREVIEW");
     expect(screen.getByText("Week View")).toBeTruthy();
+  });
+
+  test("same-id metadata refresh keeps completed history, unlocks, and week indicators visible", async () => {
+    const savedProgram = buildSavedProgram("metadata-refresh-program");
+    const completedSession = buildSession(
+      "completed-day-1",
+      savedProgram.id,
+      0,
+      "2026-04-12T01:30:00.000Z"
+    );
+    const inProgressSession = buildSession(
+      "in-progress-day-2",
+      savedProgram.id,
+      1,
+      null
+    );
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: savedProgram.id,
+        programId: savedProgram.id,
+        activeGenerationMode: "live_initial",
+        selectedDay: 0,
+        questionnaireSignature: buildQuestionnaireSignature(questionnaire),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(savedProgram);
+    mocks.getProgramProgress.mockResolvedValue(
+      buildProgress(savedProgram, {
+        nextDayIndex: 1,
+        cyclesCompletedInPhase: 1,
+      })
+    );
+    mocks.listSessions.mockResolvedValue([completedSession, inProgressSession]);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(screen.getByText("1 completed / 3")).toBeTruthy();
+    });
+    expect(screen.getByText("1 in progress")).toBeTruthy();
+    expect(screen.getByText("Level 3 analysis")).toBeTruthy();
+    expect(screen.getByText("1 workouts logged")).toBeTruthy();
+
+    await waitFor(() => {
+      expect(mocks.saveProgram).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: savedProgram.id,
+          nextWeekPlan: expect.any(Object),
+        })
+      );
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(mocks.listSessions).toHaveBeenCalledTimes(1);
+    expect(screen.getByText("1 completed / 3")).toBeTruthy();
+    expect(screen.getByText("1 in progress")).toBeTruthy();
+    expect(screen.getByText("Level 3 analysis")).toBeTruthy();
+    expect(screen.getByText("1 workouts logged")).toBeTruthy();
+
+    const refresh = createDeferred<SessionRecord[]>();
+    mocks.listSessions.mockImplementation(() => refresh.promise);
+    window.dispatchEvent(new Event("focus"));
+    expect(mocks.listSessions).toHaveBeenCalledTimes(2);
+    expect(screen.getByText("1 completed / 3")).toBeTruthy();
+    expect(screen.getByText("1 in progress")).toBeTruthy();
+    refresh.resolve([completedSession, inProgressSession]);
+    await act(async () => {
+      await refresh.promise;
+    });
+
+    fireEvent.click(screen.getByText("History").closest("button")!);
+    expect(screen.getByTestId("history-mode-panel").textContent ?? "").toContain(
+      "Workout 1"
+    );
+    fireEvent.click(screen.getByText("Progress").closest("button")!);
+    expect(screen.getByText("Progress Summary")).toBeTruthy();
+    fireEvent.click(screen.getByText("Insights").closest("button")!);
+    expect(screen.queryByText(/unlocks with real use/i)).toBeNull();
+  });
+
+  test("a true new program id does not count history from the previous program", async () => {
+    const oldProgram = buildSavedProgram("previous-program");
+    const nextProgram = buildSavedProgram("next-program");
+    const oldSession = buildSession(
+      "old-program-session",
+      oldProgram.id,
+      0,
+      "2026-04-12T01:30:00.000Z"
+    );
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: nextProgram.id,
+        programId: nextProgram.id,
+        activeGenerationMode: "live_regeneration",
+        selectedDay: 0,
+        questionnaireSignature: buildQuestionnaireSignature(questionnaire),
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.getProgram.mockResolvedValue(nextProgram);
+    mocks.getProgramProgress.mockResolvedValue(buildProgress(nextProgram));
+    mocks.listSessions.mockResolvedValue([oldSession]);
+
+    render(React.createElement(ResultsRoutine));
+
+    await waitFor(() => {
+      expect(screen.getByText("0 completed / 3")).toBeTruthy();
+    });
+    expect(screen.getByText("Level 1 foundation")).toBeTruthy();
+    expect(screen.getByText("0 workouts logged")).toBeTruthy();
+    expect(screen.getByText(/Complete one workout to unlock progress and history/i)).toBeTruthy();
   });
 });
