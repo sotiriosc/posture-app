@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import AuthControls from "@/components/AuthControls";
 import Button from "@/components/ui/Button";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 
@@ -14,8 +13,8 @@ export default async function Home() {
   return (
     <div className="hero-bg min-h-screen text-white">
       <div className="ui-shell flex max-w-7xl flex-col py-8 sm:py-12 lg:py-16">
-        <header className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center">
+        <header className="flex flex-wrap items-center justify-center gap-4 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+          <div className="flex items-center md:justify-self-start">
             <Image
               src="/icons/praxis-logo-full.png"
               alt="Praxis"
@@ -25,7 +24,7 @@ export default async function Home() {
               priority
             />
           </div>
-          <div className="flex flex-wrap items-center gap-3 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs md:justify-self-center">
             <span className="hero-pill rounded-full px-3 py-1 text-slate-100">
               Praxis Movement System
             </span>
@@ -33,9 +32,7 @@ export default async function Home() {
               Structured. Adaptive. Focused.
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <AuthControls />
-          </div>
+          <div aria-hidden="true" className="hidden md:block" />
         </header>
 
         <main className="flex flex-1 items-center justify-center py-12 lg:py-16">
