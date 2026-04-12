@@ -8,25 +8,24 @@ import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 export default function QuestionnairePage() {
   return (
     <BackgroundShell>
-      <div className="mx-auto flex min-h-screen max-w-4xl flex-col gap-8 px-6 py-12">
+      <div className="ui-shell flex max-w-4xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-center justify-between gap-4">
+          <header className="ui-page-heading flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">
+              <p className="text-xs font-semibold uppercase text-slate-300">
                 Step 2
               </p>
-              <h1 className="text-3xl font-semibold text-white">
+              <h1 className="mt-2 text-3xl font-semibold text-white">
                 Structured movement profile assessment
               </h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-200">
+                Choose the training constraints that should shape your weekly plan.
+              </p>
             </div>
             <Link href="/assessment">
               <Button variant="secondary">Back to photos</Button>
             </Link>
           </header>
-
-          <p className="max-w-2xl text-sm text-slate-200">
-            Your answers help identify movement priorities and constraints for better corrective programming.
-          </p>
         </OnImage>
 
         <QuestionnaireForm />

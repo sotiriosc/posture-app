@@ -20,60 +20,60 @@ export default function PerformanceOverview({
   const weekLabel = weeklyGoalStreak === 1 ? "week" : "weeks";
   const trendTone =
     trendLabel === "Pattern quality improving"
-      ? "text-emerald-700"
+      ? "text-emerald-200"
       : trendLabel === "Corrective strength trend"
-        ? "text-blue-700"
-        : "text-slate-700";
+        ? "text-sky-200"
+        : "text-slate-200";
 
   return (
-    <section className="ui-card p-6">
+    <section className="ui-card ui-soft-surface-raised p-6">
       <div className="mb-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+        <p className="ui-kicker">
           Performance overview
         </p>
-        <h2 className="mt-1 text-xl font-semibold text-slate-900">
+        <h2 className="mt-2 text-xl font-semibold text-white">
           Performance Overview
         </h2>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <article className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
+        <article className="ui-soft-surface rounded-lg p-4">
+          <p className="text-xs uppercase text-slate-400">
             Corrective Consistency
           </p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">
+          <p className="mt-2 text-2xl font-semibold text-white">
             <AnimatedCount value={consistencyPercent} suffix="%" />
           </p>
-          <p className="mt-2 text-xs text-slate-500">Since active baseline</p>
+          <p className="mt-2 text-xs text-slate-400">Since active baseline</p>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
+        <article className="ui-soft-surface rounded-lg p-4">
+          <p className="text-xs uppercase text-slate-400">
             Sessions this week
           </p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">
+          <p className="mt-2 text-2xl font-semibold text-white">
             <AnimatedCount value={sessionsThisWeek} />
           </p>
-          <p className="mt-2 text-xs text-slate-500">Last 7-day window</p>
+          <p className="mt-2 text-xs text-slate-400">Last 7-day window</p>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
+        <article className="ui-soft-surface rounded-lg p-4">
+          <p className="text-xs uppercase text-slate-400">
             Consistency streak
           </p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">
+          <p className="mt-2 text-2xl font-semibold text-white">
             <AnimatedCount value={weeklyGoalStreak} />
-            <span className="ml-1 text-base font-medium text-slate-600">{weekLabel}</span>
+            <span className="ml-1 text-base font-medium text-slate-300">{weekLabel}</span>
           </p>
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-slate-400">
             Consecutive weeks hitting {prescribedWorkoutsPerWeek} workouts/week
           </p>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-          <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Trend</p>
+        <article className="ui-soft-surface rounded-lg p-4">
+          <p className="text-xs uppercase text-slate-400">Trend</p>
           <p className={`mt-2 text-lg font-semibold ${trendTone}`}>{trendLabel}</p>
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-slate-400">
             Based on recent difficulty pattern
           </p>
         </article>

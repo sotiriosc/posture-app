@@ -422,11 +422,11 @@ export default function SettingsPage() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+      <div className="ui-shell flex max-w-5xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
-          <header className="flex flex-wrap items-center justify-between gap-4">
+          <header className="ui-page-heading flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+              <p className="ui-kicker">
                 Settings
               </p>
               <h1 className="text-3xl font-semibold text-white">
@@ -451,7 +451,7 @@ export default function SettingsPage() {
           </header>
         </OnImage>
 
-        <div className="ui-card p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Corrective settings note
           </h2>
@@ -460,7 +460,7 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        <div className="ui-card p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Download data
           </h2>
@@ -488,7 +488,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="ui-card p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Restore from JSON
           </h2>
@@ -523,7 +523,7 @@ export default function SettingsPage() {
           ) : null}
         </div>
 
-        <div className="ui-card p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-sm font-semibold text-slate-900">
@@ -598,7 +598,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="ui-card p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
           <h2 className="text-sm font-semibold text-slate-900">
             Real-device QA pass
           </h2>
@@ -649,9 +649,9 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-rose-200 bg-rose-50/40 p-6 shadow-sm">
-          <h2 className="text-sm font-semibold text-rose-700">Danger zone</h2>
-          <p className="mt-2 text-xs text-rose-700/80">
+        <div className="ui-card ui-soft-surface-raised rounded-lg border-rose-300/30 p-6">
+          <h2 className="text-sm font-semibold text-rose-100">Danger zone</h2>
+          <p className="mt-2 text-xs text-rose-100/80">
             Resetting removes all programs, logs, photos, and in-progress
             sessions from this device.
           </p>
@@ -663,7 +663,7 @@ export default function SettingsPage() {
             >
               Reset app data
             </button>
-            <div className="mt-3 rounded-2xl border border-rose-200 bg-white/80 px-3 py-3 text-xs text-rose-800">
+            <div className="mt-3 rounded-lg border border-rose-300/25 bg-rose-900/15 px-3 py-3 text-xs text-rose-100">
               <p>This does NOT affect your subscription.</p>
               <p className="mt-2">This removes:</p>
               <ul className="mt-1 list-disc space-y-1 pl-5">
@@ -675,21 +675,21 @@ export default function SettingsPage() {
           </div>
 
           {showResetConfirm ? (
-            <div className="mt-4 rounded-2xl border border-rose-200 bg-white px-4 py-3 text-xs text-rose-900">
-              <p className="text-sm font-semibold text-rose-700">
+            <div className="mt-4 rounded-lg border border-rose-300/25 bg-rose-900/15 px-4 py-3 text-xs text-rose-100">
+              <p className="text-sm font-semibold text-rose-100">
                 Delete all app data?
               </p>
-              <p className="mt-1 text-xs text-rose-700/80">
+              <p className="mt-1 text-xs text-rose-100/80">
                 This will permanently delete your programs, logs, photos, and
                 in-progress sessions from this device. This can’t be undone.
               </p>
-              <label className="mt-3 block text-xs font-semibold text-rose-700">
+              <label className="mt-3 block text-xs font-semibold text-rose-100">
                 Type DELETE to confirm
                 <input
                   type="text"
                   value={confirmText}
                   onChange={(event) => setConfirmText(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-rose-200 px-3 py-2 text-xs text-rose-900"
+                  className="mt-2 w-full rounded-lg border border-rose-300/35 bg-slate-950/55 px-3 py-2 text-xs text-rose-50"
                 />
               </label>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -699,7 +699,7 @@ export default function SettingsPage() {
                     setShowResetConfirm(false);
                     setConfirmText("");
                   }}
-                  className="rounded-full border border-rose-200 px-4 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100"
+                  className="rounded-lg border border-rose-300/35 px-4 py-2 text-xs font-semibold text-rose-100 hover:bg-rose-900/25"
                 >
                   Cancel
                 </button>
@@ -722,7 +722,7 @@ export default function SettingsPage() {
           ) : null}
         </div>
 
-        <div className="ui-card p-6">
+        <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
           <h2 className="text-sm font-semibold text-slate-900">System status</h2>
           <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-xs text-slate-700">
             <p>

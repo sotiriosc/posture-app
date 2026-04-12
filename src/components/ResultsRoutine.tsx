@@ -46,6 +46,7 @@ import {
   getProgramProgress,
   getLatestProgram,
   getProgram,
+  listAllPrograms,
   listSessions,
   listExerciseLogsByExercise,
   listExerciseLogsBySessionIds,
@@ -69,13 +70,18 @@ import {
   formatPhaseGateReason,
   skipPhase1,
 } from "@/lib/phaseGating";
-import { getPhaseControlUiState } from "@/lib/phaseControls";
+import {
+  buildPhaseReadyDismissalKey,
+  getPhaseControlUiState,
+  getPhaseReadyNoticeState,
+} from "@/lib/phaseControls";
 import { getDailyInsight } from "@/lib/insightGenerator";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import DailyInsightCard from "@/components/dashboard/DailyInsightCard";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import PhaseProgressCard from "@/components/dashboard/PhaseProgressCard";
+import DashboardModeCard from "@/components/dashboard/DashboardModeCard";
 import ProgressBar from "@/components/ui/ProgressBar";
 import ProgramReferenceCard from "@/components/ProgramReferenceCard";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
@@ -84,6 +90,16 @@ import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
 const SHOW_PHASE_PREVIEW_REFERENCE = false;
+
+type DashboardMode =
+  | "today"
+  | "week"
+  | "progress"
+  | "insights"
+  | "history"
+  | "account";
+
+type HistoryScope = "current" | "all";
 
 const defaultRoutine: Routine = {
   summary:
@@ -102,21 +118,21 @@ function CurrentSavedProgramSnapshotLoadingCard({
 }) {
   return (
     <section
-      className="ui-card order-10 p-4 sm:p-5"
+      className="ui-card ui-soft-surface order-20 p-4 opacity-75 sm:p-5"
       data-testid="current-saved-week-loading-card"
       aria-live="polite"
     >
-      <h3 className="text-base font-semibold text-slate-900">
+      <h3 className="text-base font-semibold text-white">
         Current Saved Program Snapshot
       </h3>
-      <p className="mt-1 text-xs text-slate-600">{message}</p>
+      <p className="mt-1 text-xs text-slate-400">{message}</p>
       <div
-        className="mt-4 h-2 w-full overflow-hidden rounded-full border border-slate-300/70 bg-slate-200/80"
+        className="mt-4 h-2 w-full overflow-hidden rounded-full border border-slate-500/30 bg-slate-950/60"
         role="progressbar"
         aria-label="Current saved program snapshot status"
       >
         <div
-          className="h-full w-full rounded-full bg-gradient-to-r from-slate-600 via-slate-500 to-slate-400 opacity-70 animate-pulse"
+          className="h-full w-full animate-pulse rounded-full bg-gradient-to-r from-slate-500 via-sky-400 to-slate-400 opacity-70"
         />
       </div>
       <p className="mt-2 text-[11px] text-slate-500">
@@ -203,16 +219,16 @@ const hasPhotoDerivedAssessmentReport = (report: AssessmentReport | null) =>
 
 function AssessmentStatusCard({ status }: { status: AssessmentStatusInfo }) {
   const toneClasses: Record<AssessmentStatusTone, string> = {
-    photo: "border-emerald-200 bg-emerald-50/80 text-emerald-950",
-    fallback: "border-slate-200 bg-slate-50 text-slate-900",
-    failed: "border-amber-200 bg-amber-50/80 text-amber-950",
-    loading: "border-blue-200 bg-blue-50/80 text-blue-950",
+    photo: "border-emerald-300/30 bg-emerald-400/10 text-emerald-50",
+    fallback: "border-slate-500/25 bg-slate-950/42 text-slate-100",
+    failed: "border-amber-300/30 bg-amber-400/10 text-amber-50",
+    loading: "border-sky-300/30 bg-sky-400/10 text-sky-50",
   };
   const chipClasses: Record<AssessmentStatusTone, string> = {
-    photo: "border-emerald-200 bg-white/80 text-emerald-800",
-    fallback: "border-slate-200 bg-white text-slate-700",
-    failed: "border-amber-200 bg-white/80 text-amber-800",
-    loading: "border-blue-200 bg-white/80 text-blue-800",
+    photo: "border-emerald-300/40 bg-emerald-300/10 text-emerald-100",
+    fallback: "border-slate-500/35 bg-slate-900/70 text-slate-200",
+    failed: "border-amber-300/40 bg-amber-300/10 text-amber-100",
+    loading: "border-sky-300/40 bg-sky-300/10 text-sky-100",
   };
 
   return (
@@ -776,6 +792,7 @@ export default function ResultsRoutine() {
   const [systemAdjustmentsExpanded, setSystemAdjustmentsExpanded] = useState(false);
   const [showSessionCompleteNotice, setShowSessionCompleteNotice] = useState(false);
   const [sessionCompleteNoticeFading, setSessionCompleteNoticeFading] = useState(false);
+  const [phaseReadyNoticeOpen, setPhaseReadyNoticeOpen] = useState(false);
   const [programReferenceOpen, setProgramReferenceOpen] = useState(false);
   const [currentWeekCopyStatus, setCurrentWeekCopyStatus] = useState<string | null>(null);
   const [weekViewDetailsOpen, setWeekViewDetailsOpen] = useState(false);
@@ -797,6 +814,13 @@ export default function ResultsRoutine() {
   const [lastTwoLogs, setLastTwoLogs] = useState<ExerciseLog[]>([]);
   const [authEnabled, setAuthEnabled] = useState(false);
   const [plan, setPlan] = useState<SubscriptionPlan>("free");
+  const [activeMode, setActiveMode] = useState<DashboardMode>("week");
+  const [historyScope, setHistoryScope] = useState<HistoryScope>("current");
+  const [historySearchQuery, setHistorySearchQuery] = useState("");
+  const [allPrograms, setAllPrograms] = useState<Program[]>([]);
+  const [resetProgressConfirmOpen, setResetProgressConfirmOpen] = useState(false);
+  const [resetProgressWorking, setResetProgressWorking] = useState(false);
+  const [resetProgressMessage, setResetProgressMessage] = useState<string | null>(null);
   const knowledgeSectionRef = useRef<HTMLDivElement | null>(null);
   const systemAdjustmentsSectionRef = useRef<HTMLDivElement | null>(null);
   const weekViewSectionRef = useRef<HTMLElement | null>(null);
@@ -805,6 +829,7 @@ export default function ResultsRoutine() {
   const sessionCompleteNoticeFadeTimeoutRef = useRef<number | null>(null);
   const sessionCompleteNoticeTimeoutRef = useRef<number | null>(null);
   const missingWorkoutRepairAttemptRef = useRef(new Set<string>());
+  const programProgressSnapshotRef = useRef<Program | null>(null);
   const initialProgramLoadInFlightRef = useRef(false);
   const initialProgramLoadSignatureRef = useRef<string | null>(null);
   const programGenerationRequestTokenRef = useRef(0);
@@ -824,6 +849,10 @@ export default function ResultsRoutine() {
   dataRef.current = data;
   poseAnalysisRef.current = poseState.analysis;
   assessmentReportRef.current = poseState.report;
+  const programId = program?.id ?? null;
+  if (program && programProgressSnapshotRef.current?.id !== program.id) {
+    programProgressSnapshotRef.current = program;
+  }
   const triggerSessionCompleteNotice = () => {
     setSessionCompleteNoticeFading(false);
     setShowSessionCompleteNotice(true);
@@ -1197,7 +1226,7 @@ export default function ResultsRoutine() {
   const previewSummary = () => {
     const currentPhaseIndex = program?.phaseIndex ?? 1;
     if (currentPhaseIndex >= MAX_PHASE_INDEX) {
-      return `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue cycles to keep progression and variation moving.`;
+      return `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue workouts to keep progression and variation moving.`;
     }
     const nextPhaseIndex = currentPhaseIndex + 1;
     const nextProfile = getPhaseProfile(nextPhaseIndex);
@@ -1208,7 +1237,7 @@ export default function ResultsRoutine() {
     if (!program || !data) return;
     if ((program.phaseIndex ?? 1) >= MAX_PHASE_INDEX) {
       setAdvanceMessage(
-        `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue cycles to keep progressing.`
+        `Phase ${MAX_PHASE_INDEX} is currently the highest phase. Continue workouts to keep progressing.`
       );
       return;
     }
@@ -1242,6 +1271,7 @@ export default function ResultsRoutine() {
         phaseIndex: signedProgram.phaseIndex ?? 2,
         phaseStartedAt: nowIso,
         cyclesCompletedInPhase: 0,
+        workoutsCompletedInPhase: 0,
         daysPerWeek: signedProgram.daysPerWeek,
         weekIndex: 1,
         countedWeekKeys: [],
@@ -1323,6 +1353,7 @@ export default function ResultsRoutine() {
       phaseIndex: currentPhaseIndex,
       phaseStartedAt: progress?.phaseStartedAt ?? program.createdAt ?? nowIso,
       cyclesCompletedInPhase: progress?.cyclesCompletedInPhase ?? 0,
+      workoutsCompletedInPhase: progress?.workoutsCompletedInPhase ?? 0,
       daysPerWeek: nextProgram.daysPerWeek,
       weekIndex: progress?.weekIndex ?? 1,
       countedWeekKeys: progress?.countedWeekKeys ?? [],
@@ -1604,11 +1635,11 @@ export default function ResultsRoutine() {
   }, [activeProgramBaselineAt, program?.createdAt]);
 
   const activeProgramId = useMemo(() => {
-    if (!program) return null;
+    if (!programId) return null;
     const stored = loadAppState()?.activeProgramId;
-    if (!stored) return program.id;
-    return stored === program.id ? stored : program.id;
-  }, [program]);
+    if (!stored) return programId;
+    return stored === programId ? stored : programId;
+  }, [programId]);
 
   const activeSessionId = loadAppState()?.activeSessionId ?? null;
 
@@ -1724,6 +1755,99 @@ export default function ResultsRoutine() {
     [sessionsSinceBaseline]
   );
 
+  const allCompletedSessions = useMemo(
+    () =>
+      allSessions
+        .filter((session) => session.completedAt)
+        .toSorted((a, b) =>
+          (b.completedAt ?? b.updatedAt ?? b.createdAt ?? "").localeCompare(
+            a.completedAt ?? a.updatedAt ?? a.createdAt ?? ""
+          )
+        ),
+    [allSessions]
+  );
+
+  const currentProgramCompletedSessions = useMemo(() => {
+    if (!activeProgramId) return [] as SessionRecord[];
+    return allCompletedSessions.filter(
+      (session) => session.routineId === activeProgramId
+    );
+  }, [allCompletedSessions, activeProgramId]);
+
+  const programById = useMemo(() => {
+    const map = new Map<string, Program>();
+    allPrograms.forEach((entry) => {
+      map.set(entry.id, entry);
+    });
+    if (program) {
+      map.set(program.id, program);
+    }
+    return map;
+  }, [allPrograms, program]);
+
+  const historyScopeSessions =
+    historyScope === "current" ? currentProgramCompletedSessions : allCompletedSessions;
+  const historySearchTerm = historySearchQuery.trim().toLowerCase();
+  const historyEntries = useMemo(() => {
+    return historyScopeSessions
+      .map((session) => {
+        const dayIndex = parseDayIndexFromSession(session);
+        const sessionProgram = session.routineId
+          ? programById.get(session.routineId)
+          : null;
+        const day =
+          dayIndex === null
+            ? null
+            : sessionProgram?.week.find((entry) => entry.dayIndex === dayIndex) ?? null;
+        const exerciseNames =
+          day?.routine
+            .map((item) => exerciseById(item.exerciseId)?.name)
+            .filter((name): name is string => Boolean(name)) ?? [];
+        const completedAtValue =
+          session.completedAt ?? session.updatedAt ?? session.createdAt;
+        const completedAt = completedAtValue
+          ? new Date(completedAtValue)
+          : null;
+        const isoDate =
+          completedAt && !Number.isNaN(completedAt.getTime())
+            ? completedAt.toISOString().slice(0, 10)
+            : "";
+        const displayDate =
+          completedAt && !Number.isNaN(completedAt.getTime())
+            ? completedAt.toLocaleDateString()
+            : "Completed";
+        const dayLabel =
+          day?.title ??
+          (dayIndex === null ? "Program day saved" : `Day ${dayIndex + 1}`);
+        const programLabel = sessionProgram
+          ? `${sessionProgram.phaseName ?? "Program"} • Week ${sessionProgram.weekIndex ?? 1}`
+          : session.routineId ?? "Program";
+        const searchText = [
+          displayDate,
+          isoDate,
+          dayLabel,
+          programLabel,
+          session.routineId ?? "",
+          dayIndex === null ? "" : `day ${dayIndex + 1}`,
+          ...exerciseNames,
+        ]
+          .join(" ")
+          .toLowerCase();
+        return {
+          session,
+          dayIndex,
+          dayLabel,
+          displayDate,
+          programLabel,
+          exerciseNames,
+          searchText,
+        };
+      })
+      .filter((entry) =>
+        historySearchTerm ? entry.searchText.includes(historySearchTerm) : true
+      );
+  }, [historyScopeSessions, historySearchTerm, programById]);
+
   const completedWeeks =
     !program || !completedSessions.length
       ? 0
@@ -1810,6 +1934,9 @@ export default function ResultsRoutine() {
         cyclesCompletedInPhase: phaseChanged
           ? 0
           : Math.max(progress?.cyclesCompletedInPhase ?? 0, completedWeeks),
+        workoutsCompletedInPhase: phaseChanged
+          ? 0
+          : progress?.workoutsCompletedInPhase ?? completedSessions.length,
         daysPerWeek: nextProgram.daysPerWeek,
         weekIndex: Math.max(1, nextProgram.weekIndex ?? 1),
         countedWeekKeys: [],
@@ -1855,7 +1982,9 @@ export default function ResultsRoutine() {
     allSessions,
     baselineForActiveProgram,
     completedWeeks,
+    completedSessions.length,
     progress?.cyclesCompletedInPhase,
+    progress?.workoutsCompletedInPhase,
     progress?.phaseStartedAt,
     questionnaireSignature,
     loadGenerationSignals,
@@ -1880,20 +2009,27 @@ export default function ResultsRoutine() {
   }, [completedSessions]);
 
   useEffect(() => {
-    if (!program) return;
-    getProgramProgress(program.id).then((stored) => {
+    const progressProgram = programProgressSnapshotRef.current;
+    if (!progressProgram || !programId || progressProgram.id !== programId) return;
+    let cancelled = false;
+    getProgramProgress(programId).then((stored) => {
+      if (cancelled) return;
       if (stored) {
         const nowIso = new Date().toISOString();
         const normalized: ProgramProgress = {
           ...stored,
-          phaseIndex: stored.phaseIndex ?? (program.phaseIndex ?? 1),
+          phaseIndex: stored.phaseIndex ?? (progressProgram.phaseIndex ?? 1),
           phaseStartedAt:
-            stored.phaseStartedAt ?? program.createdAt ?? nowIso,
+            stored.phaseStartedAt ?? progressProgram.createdAt ?? nowIso,
           cyclesCompletedInPhase:
             typeof stored.cyclesCompletedInPhase === "number"
               ? stored.cyclesCompletedInPhase
               : 0,
-          daysPerWeek: stored.daysPerWeek ?? program.daysPerWeek,
+          workoutsCompletedInPhase:
+            typeof stored.workoutsCompletedInPhase === "number"
+              ? stored.workoutsCompletedInPhase
+              : 0,
+          daysPerWeek: stored.daysPerWeek ?? progressProgram.daysPerWeek,
           weekIndex: Math.max(1, stored.weekIndex ?? 1),
           countedWeekKeys: Array.isArray(stored.countedWeekKeys)
             ? stored.countedWeekKeys
@@ -1905,6 +2041,7 @@ export default function ResultsRoutine() {
         if (
           stored.phaseStartedAt !== normalized.phaseStartedAt ||
           stored.cyclesCompletedInPhase !== normalized.cyclesCompletedInPhase ||
+          stored.workoutsCompletedInPhase !== normalized.workoutsCompletedInPhase ||
           stored.phaseIndex !== normalized.phaseIndex ||
           stored.daysPerWeek !== normalized.daysPerWeek ||
           stored.weekIndex !== normalized.weekIndex ||
@@ -1916,14 +2053,15 @@ export default function ResultsRoutine() {
       } else {
         const nowIso = new Date().toISOString();
         const initial: ProgramProgress = {
-          programId: program.id,
+          programId,
           lastCompletedDayIndex: null,
           nextDayIndex: 0,
           completedDayIndices: [],
-          phaseIndex: program.phaseIndex ?? 1,
-          phaseStartedAt: program.createdAt ?? nowIso,
+          phaseIndex: progressProgram.phaseIndex ?? 1,
+          phaseStartedAt: progressProgram.createdAt ?? nowIso,
           cyclesCompletedInPhase: 0,
-          daysPerWeek: program.daysPerWeek,
+          workoutsCompletedInPhase: 0,
+          daysPerWeek: progressProgram.daysPerWeek,
           weekIndex: 1,
           countedWeekKeys: [],
           updatedAt: nowIso,
@@ -1933,7 +2071,10 @@ export default function ResultsRoutine() {
         setSelectedDay(0);
       }
     });
-  }, [program]);
+    return () => {
+      cancelled = true;
+    };
+  }, [programId]);
 
   useEffect(() => {
     return () => {
@@ -2004,50 +2145,77 @@ export default function ResultsRoutine() {
   }, [showSessionCompleteNotice]);
 
   useEffect(() => {
-    if (!program) return;
+    if (!programId) return;
+    let cancelled = false;
     const loadSessions = () => {
-      listSessions(500).then(setAllSessions);
+      listSessions(500).then((sessions) => {
+        if (!cancelled) {
+          setAllSessions(sessions);
+        }
+      });
     };
-    setAllSessions([]);
     loadSessions();
     window.addEventListener("focus", loadSessions);
     window.addEventListener("visibilitychange", loadSessions);
     window.addEventListener(SESSION_COMPLETE_EVENT, loadSessions as EventListener);
     return () => {
+      cancelled = true;
       window.removeEventListener("focus", loadSessions);
       window.removeEventListener("visibilitychange", loadSessions);
       window.removeEventListener(SESSION_COMPLETE_EVENT, loadSessions as EventListener);
     };
-  }, [program]);
+  }, [programId]);
+
+  useEffect(() => {
+    if (!programId) return;
+    let cancelled = false;
+    listAllPrograms()
+      .then((programs) => {
+        if (!cancelled) {
+          setAllPrograms(programs);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [programId]);
 
   useEffect(() => {
     setWeekViewDetailsOpen(false);
     setWeekViewSelectedDay(null);
-  }, [program, baselineForActiveProgram]);
+  }, [programId, baselineForActiveProgram]);
+
+  const currentPhaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
+  const workoutsCompletedInPhase =
+    progress?.workoutsCompletedInPhase ?? completedSessions.length;
 
   const phaseGate = useMemo(() => {
     return canAdvancePhase({
-      phaseIndex: progress?.phaseIndex ?? program?.phaseIndex ?? 1,
+      phaseIndex: currentPhaseIndex,
       phaseStartedAt: progress?.phaseStartedAt ?? program?.createdAt ?? null,
       cyclesCompletedInPhase: progress?.cyclesCompletedInPhase ?? 0,
+      workoutsCompletedInPhase,
+      daysPerWeek: progress?.daysPerWeek ?? program?.daysPerWeek ?? activeDaysPerWeek,
     });
   }, [
-    program?.phaseIndex,
+    currentPhaseIndex,
     program?.createdAt,
-    progress?.phaseIndex,
+    program?.daysPerWeek,
+    activeDaysPerWeek,
     progress?.phaseStartedAt,
     progress?.cyclesCompletedInPhase,
+    progress?.daysPerWeek,
+    workoutsCompletedInPhase,
   ]);
 
   const phaseGateReason = useMemo(() => {
-    const phaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
-    if (phaseIndex >= MAX_PHASE_INDEX) {
-      return `Phase ${MAX_PHASE_INDEX} is active. Continue progressing through cycles and execution quality.`;
+    if (currentPhaseIndex >= MAX_PHASE_INDEX) {
+      return `Phase ${MAX_PHASE_INDEX} is active. Continue building completion and execution quality.`;
     }
     return formatPhaseGateReason(phaseGate);
-  }, [phaseGate, progress?.phaseIndex, program?.phaseIndex]);
+  }, [phaseGate, currentPhaseIndex]);
 
-  const currentPhaseIndex = progress?.phaseIndex ?? program?.phaseIndex ?? 1;
   const phaseControlUi = useMemo(
     () =>
       getPhaseControlUiState({
@@ -2056,6 +2224,52 @@ export default function ResultsRoutine() {
       }),
     [currentPhaseIndex, phaseGate]
   );
+  const phaseAdvanceReady = currentPhaseIndex < MAX_PHASE_INDEX && phaseGate.ok;
+  const nextPhaseIndex = Math.min(MAX_PHASE_INDEX, currentPhaseIndex + 1);
+  const phaseReadyDismissalKey = programId
+    ? buildPhaseReadyDismissalKey(programId, currentPhaseIndex)
+    : null;
+
+  useEffect(() => {
+    if (!programId || currentPhaseIndex >= MAX_PHASE_INDEX || !phaseGate.ok) {
+      setPhaseReadyNoticeOpen(false);
+      return;
+    }
+    const lastCompletedAt = localStorage.getItem("session_last_completed_at");
+    if (!lastCompletedAt) return;
+    const latestCompletionMatchesActiveProgram = currentProgramCompletedSessions.some(
+      (session) => session.completedAt === lastCompletedAt
+    );
+    if (!latestCompletionMatchesActiveProgram) return;
+    const storageKey = buildPhaseReadyDismissalKey(programId, currentPhaseIndex);
+    if (localStorage.getItem(storageKey)) return;
+
+    const noticeState = getPhaseReadyNoticeState({
+      programId,
+      phaseIndex: currentPhaseIndex,
+      gate: phaseGate,
+      previousWorkoutsCompletedInPhase: phaseGate.workoutsCompletedInPhase - 1,
+    });
+    if (!noticeState.shouldShow || !noticeState.storageKey) return;
+    localStorage.setItem(noticeState.storageKey, "shown");
+    setPhaseReadyNoticeOpen(true);
+  }, [programId, currentPhaseIndex, phaseGate, currentProgramCompletedSessions]);
+
+  const openPhaseAdvancePrompt = () => {
+    if (phaseReadyDismissalKey) {
+      localStorage.setItem(phaseReadyDismissalKey, "move-opened");
+    }
+    setPhaseReadyNoticeOpen(false);
+    setAdvanceMessage(previewSummary());
+    setAdvanceOpen(true);
+  };
+
+  const dismissPhaseReadyNotice = () => {
+    if (phaseReadyDismissalKey) {
+      localStorage.setItem(phaseReadyDismissalKey, "dismissed");
+    }
+    setPhaseReadyNoticeOpen(false);
+  };
 
   const heroGreeting = useMemo(() => {
     const hour = new Date().getHours();
@@ -2065,12 +2279,12 @@ export default function ResultsRoutine() {
   }, []);
 
   const phaseProgressPercent = useMemo(() => {
-    const cycleRatio =
-      phaseGate.minCycles > 0
-        ? phaseGate.cyclesCompletedInPhase / phaseGate.minCycles
+    const workoutRatio =
+      phaseGate.minWorkouts > 0
+        ? phaseGate.workoutsCompletedInPhase / phaseGate.minWorkouts
         : 0;
     const dayRatio = phaseGate.minDays > 0 ? phaseGate.daysSincePhaseStart / phaseGate.minDays : 0;
-    return Math.round(Math.min(1, (cycleRatio + dayRatio) / 2) * 100);
+    return Math.round(Math.min(1, (workoutRatio + dayRatio) / 2) * 100);
   }, [phaseGate]);
 
   const resolvedSessionProgramId = activeProgramId ?? program?.id ?? null;
@@ -2399,12 +2613,12 @@ export default function ResultsRoutine() {
   }, [program, completedSessions, data]);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development" || !program) return;
+    if (process.env.NODE_ENV !== "development" || !programId) return;
     if (!baselineForActiveProgram) return;
     console.log(
-      `[Week View] baseline=${new Date(baselineForActiveProgram).toISOString()} programId=${activeProgramId ?? program.id}`
+      `[Week View] baseline=${new Date(baselineForActiveProgram).toISOString()} programId=${activeProgramId ?? programId}`
     );
-  }, [program, activeProgramId, baselineForActiveProgram]);
+  }, [programId, activeProgramId, baselineForActiveProgram]);
 
   useEffect(() => {
     const runPoseAnalysis = async () => {
@@ -2506,21 +2720,21 @@ export default function ResultsRoutine() {
 
   if (!isReady) {
     return (
-      <div className="ui-card p-6">
-        <p className="text-sm text-slate-600">Loading your program...</p>
+      <div className="ui-card ui-soft-surface-raised p-6">
+        <p className="text-sm text-slate-300">Loading your program...</p>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center">
-        <p className="text-sm text-slate-600">
+      <div className="ui-card ui-soft-surface-raised rounded-lg border-dashed p-6 text-center">
+        <p className="text-sm text-slate-300">
           We need your questionnaire answers to build a routine.
         </p>
         <Link
           href="/questionnaire"
-          className="mt-4 inline-flex rounded-full bg-slate-900 px-6 py-2 text-sm font-semibold text-white"
+          className="mt-4 inline-flex rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-6 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(37,99,235,0.24)]"
         >
           Go to questionnaire
         </Link>
@@ -2531,11 +2745,11 @@ export default function ResultsRoutine() {
   if (!program) {
     if (programLoadIssue) {
       return (
-        <div className="ui-card p-6">
-          <p className="text-sm font-semibold text-slate-900">
+        <div className="ui-card ui-soft-surface-raised p-6">
+          <p className="text-sm font-semibold text-white">
             We couldn&apos;t generate your weekly program yet.
           </p>
-          <p className="mt-2 text-sm text-slate-600">{programLoadIssue}</p>
+          <p className="mt-2 text-sm text-slate-300">{programLoadIssue}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button
               type="button"
@@ -2556,8 +2770,8 @@ export default function ResultsRoutine() {
     }
     return (
       <div className="space-y-4">
-        <div className="ui-card p-6">
-          <p className="text-sm text-slate-600">Loading your weekly program...</p>
+        <div className="ui-card ui-soft-surface-raised p-6">
+          <p className="text-sm text-slate-300">Loading your weekly program...</p>
         </div>
         <CurrentSavedProgramSnapshotLoadingCard
           message={currentSavedWeekSnapshotLoadingMessage}
@@ -2570,10 +2784,15 @@ export default function ResultsRoutine() {
   const phaseName = program.phaseName ?? getPhaseMetaByIndex(currentPhaseIndex).phaseName;
   const phaseDescription = getPhaseProfile(currentPhaseIndex).description;
   const cycleCurrent = Math.max(1, phaseGate.cyclesCompletedInPhase + 1);
-  const cycleTarget = Math.max(1, phaseGate.minCycles);
-  const cycleProgressPercent = Math.max(
+  const workoutProgressPercent = Math.max(
     0,
-    Math.min(100, Math.round((phaseGate.cyclesCompletedInPhase / Math.max(1, phaseGate.minCycles)) * 100))
+    Math.min(
+      100,
+      Math.round(
+        (phaseGate.workoutsCompletedInPhase / Math.max(1, phaseGate.minWorkouts)) *
+          100
+      )
+    )
   );
   const weekProgressPercent = Math.max(
     0,
@@ -2603,15 +2822,18 @@ export default function ResultsRoutine() {
       ? "Stay controlled this week and prioritize clean reps."
       : null;
 
-  const cyclesRemaining = Math.max(0, phaseGate.minCycles - phaseGate.cyclesCompletedInPhase);
+  const workoutsRemaining = Math.max(
+    0,
+    phaseGate.minWorkouts - phaseGate.workoutsCompletedInPhase
+  );
   const daysRemaining = Math.max(0, phaseGate.minDays - phaseGate.daysSincePhaseStart);
-  const readinessLow = Math.max(daysRemaining, cyclesRemaining * 6);
-  const readinessHigh = Math.max(daysRemaining, cyclesRemaining * 8);
   const readinessEstimate =
-    readinessHigh <= 0 ? "Ready now" : `${readinessLow}-${readinessHigh} days remaining`;
+    workoutsRemaining <= 0 && daysRemaining <= 0
+      ? "Ready now"
+      : `${workoutsRemaining} workout${workoutsRemaining === 1 ? "" : "s"} + ${daysRemaining} day${daysRemaining === 1 ? "" : "s"} remaining`;
 
-  const phaseProgressText = `Cycles: ${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} • Days: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
-  const phaseRequirementsText = `Complete ${phaseGate.minCycles} cycles and spend at least ${phaseGate.minDays} days in this phase.`;
+  const phaseProgressText = `Workouts: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
+  const phaseRequirementsText = `Complete ${phaseGate.minWorkouts} workouts and spend at least ${phaseGate.minDays} days in this phase.`;
   const movementPatternItems =
     routine.observed.slice(0, 4).length > 0
       ? routine.observed.slice(0, 4)
@@ -2760,7 +2982,7 @@ export default function ResultsRoutine() {
     `Pain trend: ${painTrendLabel} • Movement quality: ${movementQualityTrend}`,
   ];
   const progressPreviewChips = [
-    `${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} cycles`,
+    `${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} workouts`,
     `${completedCount}/${activeDaysPerWeek} days`,
     encouragementMessage ?? "Keep steady progress",
   ];
@@ -2839,8 +3061,8 @@ export default function ResultsRoutine() {
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
     `Cycle: ${program.cycleIndex ?? cycleCurrent}`,
     `Readiness for Corrective Progress: ${readinessScore}% (${readinessLabel})`,
-    phaseGate.minCycles > 0 && phaseGate.minDays > 0
-      ? `Phase gate: ${phaseGate.minCycles} cycles + ${phaseGate.minDays} days`
+    phaseGate.minWorkouts > 0 && phaseGate.minDays > 0
+      ? `Phase gate: ${phaseGate.minWorkouts} workouts + ${phaseGate.minDays} days`
       : "Phase gate: Progressing normally",
   ].filter((chip): chip is string => Boolean(chip));
 
@@ -3042,6 +3264,7 @@ export default function ResultsRoutine() {
       : undefined;
 
   const openKnowledgeAnalysis = () => {
+    setActiveMode("insights");
     setKnowledgeExpanded(true);
     setKnowledgeHighlighted(true);
     window.requestAnimationFrame(() => {
@@ -3059,6 +3282,7 @@ export default function ResultsRoutine() {
   };
 
   const openSystemAdjustments = () => {
+    setActiveMode("insights");
     setSystemAdjustmentsExpanded(true);
     window.requestAnimationFrame(() => {
       systemAdjustmentsSectionRef.current?.scrollIntoView({
@@ -3100,6 +3324,7 @@ export default function ResultsRoutine() {
   };
 
   const focusTodayPlanInWeekView = () => {
+    setActiveMode("week");
     openWeekViewDayDetails(todayPlanDayIndex);
     window.requestAnimationFrame(() => {
       weekViewSectionRef.current?.scrollIntoView({
@@ -3112,17 +3337,177 @@ export default function ResultsRoutine() {
     });
   };
 
+  const resetCurrentProgress = async () => {
+    if (!program) return;
+    setResetProgressWorking(true);
+    setResetProgressMessage(null);
+    try {
+      const resetAt = Date.now();
+      const resetAtIso = new Date(resetAt).toISOString();
+      const nextProgress: ProgramProgress = {
+        programId: program.id,
+        lastCompletedDayIndex: null,
+        nextDayIndex: 0,
+        completedDayIndices: [],
+        phaseIndex: program.phaseIndex ?? 1,
+        phaseStartedAt: resetAtIso,
+        cyclesCompletedInPhase: 0,
+        workoutsCompletedInPhase: 0,
+        daysPerWeek: program.daysPerWeek,
+        weekIndex: Math.max(1, program.weekIndex ?? 1),
+        countedWeekKeys: [],
+        updatedAt: resetAtIso,
+      };
+      await saveProgramProgress(nextProgress);
+      await clearDraftsByProgramId(program.id);
+      setProgress(nextProgress);
+      setSelectedDay(0);
+      setWeekViewSelectedDay(null);
+      setWeekViewDetailsOpen(false);
+      setActiveProgramBaselineAt(resetAt);
+      saveAppState({
+        programId: program.id,
+        activeProgramId: program.id,
+        activeProgramBaselineAt: resetAt,
+        selectedDay: 0,
+        activeSessionId: undefined,
+        activePhaseIndex: program.phaseIndex ?? 1,
+        activeCycleIndex: program.cycleIndex ?? 1,
+        questionnaireSignature: questionnaireSignature ?? undefined,
+        lastRoute: "/results",
+      });
+      setResetProgressConfirmOpen(false);
+      setResetProgressMessage("Current progress reset. Your workout history is still saved.");
+      setActiveMode("history");
+    } catch {
+      setResetProgressMessage("Could not reset current progress. Please try again.");
+    } finally {
+      setResetProgressWorking(false);
+    }
+  };
+
+  const completedWorkoutCount = currentProgramCompletedSessions.length;
+  const totalCompletedWorkoutCount = allCompletedSessions.length;
+  const hasCompletedWorkout = totalCompletedWorkoutCount >= 1;
+  const hasCompletedFullWeek =
+    completedWeeks >= 1 ||
+    phaseGate.cyclesCompletedInPhase >= 1 ||
+    Math.floor(completedWorkoutCount / Math.max(1, activeDaysPerWeek)) >= 1;
+  const dashboardLevel = hasCompletedFullWeek ? 3 : hasCompletedWorkout ? 2 : 1;
+  const progressLocked = dashboardLevel < 2;
+  const historyLocked = dashboardLevel < 2;
+  const insightsLocked = dashboardLevel < 3;
+  const dashboardLevelLabel =
+    dashboardLevel === 3
+      ? "Level 3 analysis"
+      : dashboardLevel === 2
+      ? "Level 2 progress"
+      : "Level 1 foundation";
+  const dashboardLevelDescription =
+    dashboardLevel === 3
+      ? "Full-cycle analysis is available from your completed week."
+      : dashboardLevel === 2
+      ? "Progress and history are unlocked from your first completed workout."
+      : "Assessment, today, and week planning are ready. Complete one workout to unlock progress and history.";
+  const dashboardModes: Array<{
+    key: DashboardMode;
+    title: string;
+    eyebrow: string;
+    summary: string;
+    icon: string;
+    locked?: boolean;
+    lockReason?: string;
+  }> = [
+    {
+      key: "today",
+      title: "Today",
+      eyebrow: "Next",
+      summary: `Day ${sessionLaunchDayIndex + 1}: ${program.week[sessionLaunchDayIndex]?.title ?? "current plan"}`,
+      icon: "T",
+    },
+    {
+      key: "week",
+      title: "Week",
+      eyebrow: "Plan",
+      summary: `${completedCount}/${activeDaysPerWeek} days complete with ${inProgressCount} in progress.`,
+      icon: "W",
+    },
+    {
+      key: "progress",
+      title: "Progress",
+      eyebrow: "Level 2",
+      summary: `Consistency ${consistencyPercent}% with movement quality ${movementQualityPercent}%.`,
+      icon: "P",
+      locked: progressLocked,
+      lockReason: "Complete one workout to unlock your progress summary.",
+    },
+    {
+      key: "insights",
+      title: "Insights",
+      eyebrow: "Level 3",
+      summary: "Pattern, stability, compensation, and adaptation analysis.",
+      icon: "I",
+      locked: insightsLocked,
+      lockReason: "Complete one full week or cycle to unlock deeper analysis.",
+    },
+    {
+      key: "history",
+      title: "History",
+      eyebrow: "Level 2",
+      summary: `${completedWorkoutCount} completed workouts saved for this program.`,
+      icon: "H",
+      locked: historyLocked,
+      lockReason: "Complete one workout to unlock session history.",
+    },
+    {
+      key: "account",
+      title: "Billing / Account",
+      eyebrow: authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local",
+      summary: authEnabled
+        ? "Manage billing, plan status, and account data."
+        : "Review local data controls and account options.",
+      icon: "A",
+    },
+  ];
+  const activeModeConfig =
+    dashboardModes.find((mode) => mode.key === activeMode) ?? dashboardModes[0];
+  const activeModeLocked = Boolean(activeModeConfig.locked);
+  const todayModeDay =
+    program.week[sessionLaunchDayIndex] ?? selectedDayProgram ?? program.week[0];
+  const todayModeEntries = (todayModeDay?.routine ?? [])
+    .map((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return null;
+      const prescription = item.reps
+        ? `${item.sets ?? 1} x ${item.reps}`
+        : item.durationSec
+        ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
+        : item.sets
+        ? `${item.sets} sets`
+        : null;
+      return {
+        key: `${item.exerciseId}-${item.section}`,
+        name: exercise.name,
+        section: item.section ?? "work",
+        prescription,
+      };
+    })
+    .filter((entry): entry is { key: string; name: string; section: string; prescription: string | null } =>
+      Boolean(entry)
+    )
+    .slice(0, 5);
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       <div className="order-1">
         <DashboardHero
           greeting={heroGreeting}
           phaseName={phaseName}
-          cycleCurrent={cycleCurrent}
-          cycleTarget={cycleTarget}
+          workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
+          workoutTarget={phaseGate.minWorkouts}
           weekCompletedDays={completedCount}
           weekTargetDays={activeDaysPerWeek}
-          cycleProgressPercent={cycleProgressPercent}
+          workoutProgressPercent={workoutProgressPercent}
           weekProgressPercent={weekProgressPercent}
           readinessScore={readinessScore}
           weeklyConsistencyCount={workoutsThisWeek}
@@ -3138,23 +3523,229 @@ export default function ResultsRoutine() {
 
       <AssessmentStatusCard status={assessmentStatus} />
 
+      {phaseReadyNoticeOpen ? (
+        <section
+          className="ui-card ui-soft-surface-raised order-2 rounded-lg border-sky-300/35 p-5 text-slate-100 sm:p-6"
+          data-testid="phase-ready-notice"
+          aria-live="polite"
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="ui-kicker text-sky-100">Phase gate reached</p>
+              <h2 className="mt-1 text-xl font-semibold text-white">
+                You&apos;ve reached the Phase {nextPhaseIndex} gate
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                Both targets are satisfied: workouts {phaseGate.workoutsCompletedInPhase}/{phaseGate.minWorkouts} and days {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="primary" onClick={openPhaseAdvancePrompt}>
+                Move now
+              </Button>
+              <Button variant="secondary" onClick={dismissPhaseReadyNotice}>
+                Later
+              </Button>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {phaseAdvanceReady && !phaseReadyNoticeOpen ? (
+        <section
+          className="ui-soft-surface order-2 rounded-lg px-4 py-3 text-sm text-slate-200"
+          data-testid="phase-ready-persistent-cta"
+        >
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              Phase {nextPhaseIndex} is ready: workouts {phaseGate.workoutsCompletedInPhase}/{phaseGate.minWorkouts} and days {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}.
+            </p>
+            <Button variant="primary" onClick={openPhaseAdvancePrompt}>
+              Move to Phase {nextPhaseIndex}
+            </Button>
+          </div>
+        </section>
+      ) : null}
+
       {showSessionCompleteNotice ? (
         <section
-          className={`order-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-900 transition-opacity duration-300 ${
+          className={`ui-soft-surface order-2 rounded-lg px-4 py-3 text-emerald-100 transition-opacity duration-300 ${
             sessionCompleteNoticeFading ? "opacity-0" : "opacity-100"
           }`}
           aria-live="polite"
         >
           <p className="text-sm font-semibold">Session Complete</p>
-          <p className="mt-1 text-xs text-emerald-800">
+          <p className="mt-1 text-xs text-emerald-200/85">
             Your program has been updated based on today&apos;s performance.
           </p>
         </section>
       ) : null}
 
       {showWeeklyCompletionNudge ? (
-        <section className="order-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-700">
+        <section className="ui-soft-surface order-2 rounded-lg px-4 py-3 text-xs text-slate-300">
           Complete today&apos;s session to maintain progression.
+        </section>
+      ) : null}
+
+      <section className="ui-card ui-soft-surface-raised order-3 p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="ui-kicker">Dashboard Modes</p>
+            <h2 className="mt-2 text-2xl font-semibold text-white">
+              {activeModeConfig.title}
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-300">
+              {dashboardLevelDescription}
+            </p>
+          </div>
+          <div className="rounded-lg border border-slate-400/20 bg-slate-950/38 px-4 py-3 text-xs text-slate-200">
+            <p className="font-semibold text-white">{dashboardLevelLabel}</p>
+            <p className="mt-1 text-slate-400">
+              {completedWorkoutCount} workouts logged
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+          {dashboardModes.map((mode) => (
+            <DashboardModeCard
+              key={mode.key}
+              title={mode.title}
+              eyebrow={mode.eyebrow}
+              summary={mode.summary}
+              icon={mode.icon}
+              active={activeMode === mode.key}
+              locked={mode.locked}
+              lockReason={mode.lockReason}
+              onClick={() => setActiveMode(mode.key)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {activeModeLocked ? (
+        <section className="ui-card ui-soft-surface order-4 p-5 sm:p-6">
+          <p className="ui-kicker">Unlock Path</p>
+          <h2 className="mt-2 text-2xl font-semibold text-white">
+            {activeModeConfig.title} unlocks with real use
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-slate-300">
+            {activeModeConfig.lockReason}
+          </p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-emerald-300/18 bg-emerald-300/8 p-4">
+              <p className="text-xs font-semibold text-emerald-100">Level 1</p>
+              <p className="mt-1 text-sm text-slate-200">Assessment, Today, Week View</p>
+            </div>
+            <div className="rounded-lg border border-sky-300/18 bg-sky-300/8 p-4">
+              <p className="text-xs font-semibold text-sky-100">Level 2</p>
+              <p className="mt-1 text-sm text-slate-200">History and Progress Summary</p>
+            </div>
+            <div className="rounded-lg border border-amber-300/18 bg-amber-300/8 p-4">
+              <p className="text-xs font-semibold text-amber-100">Level 3</p>
+              <p className="mt-1 text-sm text-slate-200">Deeper Knowledge and Analysis</p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link href={heroCta.href} scroll>
+              <Button variant="primary">Start today&apos;s session</Button>
+            </Link>
+            <Button variant="secondary" onClick={() => setActiveMode("week")}>
+              Review week plan
+            </Button>
+          </div>
+        </section>
+      ) : null}
+
+      {activeMode === "today" && !activeModeLocked ? (
+        <section className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6" data-testid="today-mode-panel">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)]">
+            <div>
+              <p className="ui-kicker">Today</p>
+              <h2 className="mt-1 text-2xl font-semibold text-white">
+                Day {sessionLaunchDayIndex + 1}
+                {todayModeDay?.title ? `: ${todayModeDay.title}` : ""}
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                {coachAction.replace(/^Next best action:\s*/i, "")}
+              </p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {coachSummaryBullets.map((item) => (
+                  <div
+                    key={item.label}
+                    className="ui-soft-surface rounded-lg px-3 py-3"
+                  >
+                    <p className="text-xs font-semibold text-slate-400">{item.label}</p>
+                    <p className="mt-1 text-sm text-slate-100">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+              {hasAdaptationCallout ? (
+                <div className="ui-soft-surface mt-5 rounded-lg px-3 py-3 text-xs text-slate-200">
+                  <p>System adapted this week to improve stability and execution quality.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={openKnowledgeAnalysis}
+                      className={secondaryActionBtn}
+                    >
+                      Why
+                    </button>
+                    <button
+                      type="button"
+                      onClick={openSystemAdjustments}
+                      className={secondaryActionBtn}
+                    >
+                      Adjustments
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="ui-soft-surface rounded-lg p-4">
+              <p className="text-xs font-semibold uppercase text-slate-400">
+                Session Entry
+              </p>
+              <div className="mt-3 space-y-2">
+                {todayModeEntries.length ? (
+                  todayModeEntries.map((entry) => (
+                    <div
+                      key={entry.key}
+                      className="rounded-lg border border-slate-500/20 bg-slate-950/42 px-3 py-2.5"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold text-white">{entry.name}</p>
+                        <span className="rounded-md border border-slate-600/60 px-2 py-0.5 text-[10px] uppercase text-slate-300">
+                          {entry.section}
+                        </span>
+                      </div>
+                      {entry.prescription ? (
+                        <p className="mt-1 text-xs text-slate-400">{entry.prescription}</p>
+                      ) : null}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-400">Today&apos;s routine is loading.</p>
+                )}
+              </div>
+              <div className="mt-4 flex flex-col gap-2">
+                <Link
+                  href={`/session?programId=${resolvedSessionProgramId ?? program.id}&dayIndex=${sessionLaunchDayIndex}`}
+                  scroll
+                >
+                  <Button
+                    variant="primary"
+                    data-testid="start-selected-day"
+                    className="h-12 w-full"
+                  >
+                    Start Selected Day
+                  </Button>
+                </Link>
+                <Button variant="secondary" onClick={() => setActiveMode("week")}>
+                  View full week
+                </Button>
+              </div>
+            </div>
+          </div>
         </section>
       ) : null}
 
@@ -3170,7 +3761,7 @@ export default function ResultsRoutine() {
           {isCurrentSavedWeekSnapshotSettled ? (
             <ProgramReferenceCard
               title="Current Saved Program Snapshot"
-              description="Actual saved current-week live program plus inspection snapshots for the other phases. This does not reshuffle or overwrite the saved plan."
+              description="Technical reference for the saved live program and inspection snapshots. Kept below the main dashboard flow."
               isOpen
               referenceText={currentSavedWeekSnapshotText}
               cardTestId="current-saved-week-card"
@@ -3178,8 +3769,8 @@ export default function ResultsRoutine() {
               copyLabel="Copy Full Progression Snapshot"
               onCopy={handleCopyCurrentSavedWeek}
               copyStatus={currentWeekCopyStatus}
-              className="order-10 p-4 sm:p-5"
-              bodyClassName="mt-3 max-h-56 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3"
+              className="order-20 p-3 opacity-70 sm:p-4"
+              bodyClassName="mt-3 max-h-36 overflow-auto rounded-lg border border-slate-500/20 bg-slate-950/45 p-3"
             />
           ) : (
             <CurrentSavedProgramSnapshotLoadingCard
@@ -3189,13 +3780,14 @@ export default function ResultsRoutine() {
         </>
       ) : null}
 
-      <section id="week-view" ref={weekViewSectionRef} className="ui-card order-4 p-4 sm:p-5">
+      {activeMode === "week" && !activeModeLocked ? (
+      <section id="week-view" ref={weekViewSectionRef} className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <p className="ui-kicker">
               This Week
             </p>
-            <h3 className="mt-1 text-lg font-semibold text-slate-900">Week View</h3>
+            <h3 className="mt-2 text-2xl font-semibold text-white">Week View</h3>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary" onClick={focusTodayPlanInWeekView}>
@@ -3205,7 +3797,7 @@ export default function ResultsRoutine() {
               href={`/session?programId=${resolvedSessionProgramId ?? program.id}&dayIndex=${weekViewStartDay}`}
               scroll
             >
-              <Button variant="secondary" data-testid="start-selected-day">
+              <Button variant="primary" data-testid="start-selected-day">
                 Start Selected Day
               </Button>
             </Link>
@@ -3215,18 +3807,18 @@ export default function ResultsRoutine() {
           <span
             data-testid="completed-count"
             title={weekViewBaselineDebugTitle}
-            className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-600"
+            className="rounded-lg border border-slate-500/25 bg-slate-950/38 px-2.5 py-1 text-xs text-slate-300"
           >
-            {completedCount}/{activeDaysPerWeek} completed
+            {completedCount} completed / {activeDaysPerWeek}
           </span>
-          <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs text-blue-700">
+          <span className="rounded-lg border border-sky-300/25 bg-sky-300/10 px-2.5 py-1 text-xs text-sky-100">
             {inProgressCount} in progress
           </span>
-          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
+          <span className="rounded-lg border border-slate-500/25 bg-slate-950/38 px-2.5 py-1 text-xs text-slate-300">
             Current day: {sessionLaunchDayIndex + 1}
           </span>
         </div>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid grid-cols-1 gap-3.5 md:grid-cols-2 lg:grid-cols-3">
           {program.week.map((day) => {
             const isCompleted = completedDaySet.has(day.dayIndex);
             const isInProgress =
@@ -3242,20 +3834,20 @@ export default function ResultsRoutine() {
               : "Not started";
             const statePercent = isCompleted ? 100 : isInProgress ? 50 : 0;
             const dayIndexTextClass = isCompleted
-              ? "text-emerald-900"
+              ? "text-emerald-100"
               : isInProgress
-              ? "text-blue-900"
-              : "text-slate-600";
+              ? "text-sky-100"
+              : "text-slate-300";
             const dayTitleTextClass = isCompleted
-              ? "text-emerald-950"
+              ? "text-emerald-50"
               : isInProgress
-              ? "text-blue-950"
-              : "text-slate-900";
+              ? "text-sky-50"
+              : "text-white";
             const stateLabelClass = isCompleted
-              ? "text-emerald-800"
+              ? "text-emerald-200"
               : isInProgress
-              ? "text-blue-700"
-              : "text-slate-500";
+              ? "text-sky-200"
+              : "text-slate-400";
             return (
               <button
                 key={day.dayIndex}
@@ -3269,16 +3861,16 @@ export default function ResultsRoutine() {
                   openWeekViewDayDetails(day.dayIndex, { scrollToDetails: true });
                 }}
                 disabled={isLocked}
-                className={`min-h-[96px] rounded-lg border px-3.5 py-3 text-left transition ${
+                className={`min-h-[116px] rounded-lg border px-4 py-3.5 text-left ${
                   isCompleted
-                    ? "border-emerald-300 bg-emerald-50"
+                    ? "border-emerald-300/32 bg-emerald-300/10"
                     : isInProgress
-                    ? "border-blue-300 bg-blue-50"
-                    : "border-slate-200 bg-white"
-                } ${isSelected ? "ring-1 ring-slate-300" : ""} ${
+                    ? "border-sky-300/38 bg-sky-300/10"
+                    : "border-slate-500/20 bg-slate-950/42"
+                } ${isSelected ? "shadow-[0_0_0_1px_rgba(125,211,252,0.45),0_18px_46px_rgba(14,165,233,0.13)]" : ""} ${
                   shouldDimLockedCard
                     ? "opacity-60"
-                    : "hover:-translate-y-px hover:shadow-sm"
+                    : "hover:border-sky-200/35"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -3287,17 +3879,17 @@ export default function ResultsRoutine() {
                   </p>
                   <div className="flex items-center gap-1">
                     {isCompleted ? (
-                      <span className="rounded-full border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                      <span className="rounded-lg border border-emerald-300/35 bg-emerald-300/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
                         ✓ Completed
                       </span>
                     ) : null}
                     {isInProgress ? (
-                      <span className="rounded-full border border-blue-300 bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-800">
+                      <span className="rounded-lg border border-sky-300/35 bg-sky-300/12 px-2 py-0.5 text-[10px] font-semibold text-sky-100">
                         In progress
                       </span>
                     ) : null}
                     {isToday ? (
-                      <span className="rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                      <span className="rounded-lg border border-slate-400/25 bg-slate-100/8 px-2 py-0.5 text-[10px] font-semibold text-slate-200">
                         Today
                       </span>
                     ) : null}
@@ -3306,14 +3898,14 @@ export default function ResultsRoutine() {
                 <p className={`mt-1 text-sm font-semibold ${dayTitleTextClass}`}>{day.title}</p>
                 <p className={`mt-1 text-xs ${stateLabelClass}`}>{stateLabel}</p>
                 <div className="mt-2">
-                  <div className="h-2 w-full overflow-hidden rounded-full border border-slate-300/70 bg-slate-200/80">
+                  <div className="h-2 w-full overflow-hidden rounded-full border border-slate-500/30 bg-slate-950/60">
                     <div
                       className={`h-full rounded-full transition-[width] duration-[700ms] ease-[cubic-bezier(.22,1,.36,1)] ${
                         isCompleted
                           ? "bg-emerald-500"
-                          : isInProgress
-                          ? "bg-blue-500"
-                          : "bg-slate-400"
+                        : isInProgress
+                          ? "bg-sky-400"
+                          : "bg-slate-500"
                       }`}
                       style={{ width: `${statePercent}%` }}
                     />
@@ -3326,10 +3918,10 @@ export default function ResultsRoutine() {
         {weekViewDetailsOpen && weekViewDay ? (
           <div
             ref={weekViewDetailsRef}
-            className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3"
+            className="ui-soft-surface mt-5 rounded-lg px-4 py-4"
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <p className="text-xs font-semibold uppercase text-slate-400">
                 Selected Day Details
               </p>
               <button
@@ -3340,28 +3932,28 @@ export default function ResultsRoutine() {
                 Hide details
               </button>
             </div>
-            <p className="mt-1 text-sm font-semibold text-slate-900">
+            <p className="mt-2 text-lg font-semibold text-white">
               Day {weekViewStartDay + 1} • {weekViewDay.title}
             </p>
-            <div className="mt-3 space-y-2">
+            <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
               {weekViewDetailEntries.map((item) => {
                 return (
                   <div
                     key={item.key}
-                    className="rounded-lg border border-slate-200 bg-white px-3 py-2.5"
+                    className="rounded-lg border border-slate-500/22 bg-slate-950/42 px-3 py-3"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-semibold text-slate-900">{item.name}</p>
+                      <p className="text-sm font-semibold text-white">{item.name}</p>
                       <div className="flex flex-wrap items-center gap-1">
-                        <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] uppercase text-slate-600">
+                        <span className="rounded-md border border-slate-500/24 bg-slate-900/55 px-2 py-0.5 text-[10px] uppercase text-slate-300">
                           {item.sectionLabel}
                         </span>
                       </div>
                     </div>
                     {item.prescription ? (
-                      <p className="mt-1 text-xs text-slate-600">{item.prescription}</p>
+                      <p className="mt-1 text-xs text-slate-400">{item.prescription}</p>
                     ) : null}
-                    <p className="mt-1 text-xs text-slate-600">{item.rationale}</p>
+                    <p className="mt-2 text-xs leading-5 text-slate-300">{item.rationale}</p>
                   </div>
                 );
               })}
@@ -3369,21 +3961,24 @@ export default function ResultsRoutine() {
           </div>
         ) : null}
         {isFreePlan ? (
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-3 text-xs text-slate-400">
             Free plan preview is limited to Day 1. Upgrade to unlock Day 2–{program.daysPerWeek}.
           </p>
         ) : null}
       </section>
+      ) : null}
 
-      <div className="order-5">
+      {activeMode === "insights" && !activeModeLocked ? (
+      <div className="order-4">
         <DailyInsightCard
           insight={dailyInsight}
           coachNotes={coachNotes}
           priorities={weeklyPriorities}
         />
       </div>
+      ) : null}
 
-      <section className="ui-card order-3 p-4 sm:p-5">
+      <section className="hidden">
         <div className="flex flex-col gap-1">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             Corrective Focus
@@ -3428,7 +4023,7 @@ export default function ResultsRoutine() {
         <p className="mt-3 text-xs text-slate-500">Plan adapts as you log sessions.</p>
       </section>
 
-      <div className="order-8">
+      <div className="hidden">
         <ExpandableSection
           title="Your Current Plan"
           subtitle="Phase intent, weekly objective, and adaptive guidance."
@@ -3521,8 +4116,8 @@ export default function ResultsRoutine() {
         </ExpandableSection>
       </div>
 
-      {hasSystemAdjustments ? (
-        <div ref={systemAdjustmentsSectionRef} className="order-6 scroll-mt-24">
+      {activeMode === "insights" && !activeModeLocked && hasSystemAdjustments ? (
+        <div ref={systemAdjustmentsSectionRef} className="order-4 scroll-mt-24">
           <ExpandableSection
             title="System Adjustments"
             subtitle="What the system changed and why."
@@ -3551,9 +4146,11 @@ export default function ResultsRoutine() {
 
       <div
         ref={knowledgeSectionRef}
-        className={`order-7 scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
+        className={`${
+          activeMode === "insights" && !activeModeLocked ? "order-4" : "hidden"
+        } scroll-mt-24 rounded-3xl transition-[box-shadow,background-color] duration-200 ${
           knowledgeHighlighted
-            ? "bg-slate-50/50 ring-2 ring-slate-300 ring-offset-2"
+            ? "bg-sky-400/10 ring-2 ring-sky-300/35 ring-offset-2 ring-offset-slate-950"
             : "bg-transparent"
         }`}
       >
@@ -3711,7 +4308,230 @@ export default function ResultsRoutine() {
         </ExpandableSection>
       </div>
 
-      <div className="order-5">
+      {activeMode === "history" && !activeModeLocked ? (
+        <section className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6" data-testid="history-mode-panel">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="ui-kicker">History</p>
+              <h2 className="mt-1 text-2xl font-semibold text-white">
+                Completed workouts
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                Search completed sessions across the active program or your full local history.
+              </p>
+              {resetProgressMessage ? (
+                <p className="mt-3 text-xs font-medium text-sky-100" aria-live="polite">
+                  {resetProgressMessage}
+                </p>
+              ) : null}
+            </div>
+            <Button variant="secondary" onClick={() => router.push("/progress")}>
+              Open progress page
+            </Button>
+          </div>
+          <div className="ui-soft-surface mt-5 rounded-lg p-3">
+            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+              <label className="block">
+                <span className="text-xs font-semibold uppercase text-slate-400">
+                  Search history
+                </span>
+                <input
+                  value={historySearchQuery}
+                  onChange={(event) => setHistorySearchQuery(event.target.value)}
+                  data-testid="history-search-input"
+                  className="mt-2 h-11 w-full rounded-lg border border-slate-500/25 bg-slate-950/55 px-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus-visible:border-sky-300/50 focus-visible:ring-2 focus-visible:ring-sky-300/25"
+                  placeholder="Search date, day, program, or exercise"
+                />
+              </label>
+              <div className="flex rounded-lg border border-slate-500/25 bg-slate-950/45 p-1 text-xs font-semibold text-slate-300">
+                {(["current", "all"] as const).map((scope) => (
+                  <button
+                    key={scope}
+                    type="button"
+                    data-testid={`history-scope-${scope}`}
+                    onClick={() => setHistoryScope(scope)}
+                    className={`rounded-md px-3 py-2 ${
+                      historyScope === scope
+                        ? "bg-sky-400/18 text-white shadow-[0_10px_24px_rgba(14,165,233,0.14)]"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    {scope === "current" ? "Current program" : "All history"}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-slate-400">
+              {historyEntries.length} result{historyEntries.length === 1 ? "" : "s"} •{" "}
+              {historyScope === "current"
+                ? `${completedWorkoutCount} saved for this program`
+                : `${totalCompletedWorkoutCount} completed workouts total`}
+            </p>
+          </div>
+          <div className="mt-4 grid h-[min(58vh,30rem)] gap-2.5 overflow-y-auto overscroll-contain pr-1 [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] sm:h-[min(52vh,34rem)] sm:gap-3 sm:pr-2">
+            {historyEntries.length ? (
+              historyEntries.map((entry) => {
+                const { session, dayIndex } = entry;
+                const historyProgramId = session.routineId ?? program.id;
+                return (
+                  <div
+                    key={session.id}
+                    className="ui-soft-surface rounded-lg px-3 py-3 sm:px-4"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-sm font-semibold text-white">
+                        {entry.dayLabel}
+                      </p>
+                      <span className="text-xs text-slate-400">{entry.displayDate}</span>
+                    </div>
+                    <p className="mt-1 text-sm text-slate-300">
+                      {entry.programLabel}
+                      {dayIndex === null ? "" : ` • Day ${dayIndex + 1}`}{" "}
+                      {session.durationSec ? `• ${Math.round(session.durationSec / 60)} min` : ""}
+                    </p>
+                    {entry.exerciseNames.length ? (
+                      <p className="mt-2 line-clamp-2 text-xs text-slate-400">
+                        {entry.exerciseNames.slice(0, 5).join(" • ")}
+                      </p>
+                    ) : null}
+                    {dayIndex !== null ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          router.push(`/program/${historyProgramId}/day/${dayIndex}`)
+                        }
+                        className={`${secondaryActionBtn} mt-3`}
+                      >
+                        View day history
+                      </button>
+                    ) : null}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="ui-soft-surface rounded-lg px-4 py-5 text-sm text-slate-300">
+                {historySearchTerm
+                  ? "No completed workouts match that search."
+                  : historyScope === "current"
+                  ? "Complete your first workout in this program to build history."
+                  : "Complete your first workout to build history."}
+              </div>
+            )}
+          </div>
+        </section>
+      ) : null}
+
+      {activeMode === "account" && !activeModeLocked ? (
+        <section className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6" data-testid="account-mode-panel">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)]">
+            <div>
+              <p className="ui-kicker">Billing / Account</p>
+              <h2 className="mt-1 text-2xl font-semibold text-white">
+                {authEnabled ? (plan === "pro" ? "Pro access active" : "Free access") : "Local account controls"}
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                Manage plan status, exports, and local training data without leaving the dashboard flow.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="ui-soft-surface rounded-lg px-3 py-3">
+                  <p className="text-xs text-slate-400">Plan</p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    {authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local"}
+                  </p>
+                </div>
+                <div className="ui-soft-surface rounded-lg px-3 py-3">
+                  <p className="text-xs text-slate-400">Program</p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    Phase {currentPhaseIndex}
+                  </p>
+                </div>
+                <div className="ui-soft-surface rounded-lg px-3 py-3">
+                  <p className="text-xs text-slate-400">History</p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    {completedWorkoutCount} workouts
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="ui-soft-surface rounded-lg p-4">
+              <p className="text-sm font-semibold text-white">Account actions</p>
+              <div className="mt-3 flex flex-col gap-2">
+                {authEnabled ? (
+                  <Link href="/account/billing" className="self-start">
+                    <Button variant="primary">
+                      {plan === "pro" ? "Manage subscription" : "Billing status"}
+                    </Button>
+                  </Link>
+                ) : null}
+                <Link href="/account/settings">
+                  <Button variant="secondary" className="h-11 w-full">
+                    Data and settings
+                  </Button>
+                </Link>
+                <Link href="/questionnaire">
+                  <Button variant="secondary" className="h-11 w-full">
+                    Edit questionnaire
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="ui-soft-surface mt-4 rounded-lg p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-white">Reset current progress</p>
+                <p className="mt-1 max-w-2xl text-xs leading-5 text-slate-400">
+                  Start this active program from Day 1 again. Completed workout history and logs stay saved.
+                </p>
+              </div>
+              <Button
+                variant="secondary"
+                onClick={() => setResetProgressConfirmOpen(true)}
+                data-testid="reset-current-progress-trigger"
+              >
+                Reset current progress
+              </Button>
+            </div>
+            {resetProgressMessage ? (
+              <p className="mt-3 text-xs text-slate-300" aria-live="polite">
+                {resetProgressMessage}
+              </p>
+            ) : null}
+            {resetProgressConfirmOpen ? (
+              <div
+                className="mt-4 rounded-lg border border-sky-300/25 bg-sky-400/10 p-4"
+                data-testid="reset-current-progress-confirm"
+              >
+                <p className="text-sm font-semibold text-white">Start fresh week?</p>
+                <p className="mt-1 text-xs leading-5 text-slate-300">
+                  This resets the active program baseline and current day back to Day 1.
+                  It does not erase completed sessions, exercise logs, programs, photos, or exports.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    variant="primary"
+                    disabled={resetProgressWorking}
+                    onClick={resetCurrentProgress}
+                    data-testid="reset-current-progress-confirm-button"
+                  >
+                    {resetProgressWorking ? "Resetting..." : "Start fresh week"}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={resetProgressWorking}
+                    onClick={() => setResetProgressConfirmOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      {activeMode === "progress" && !activeModeLocked ? (
+      <div className="order-4">
         <ExpandableSection
           title="Progress Summary"
           subtitle="How your consistency, completion, pain, and quality are trending."
@@ -3719,8 +4539,8 @@ export default function ResultsRoutine() {
           previewChips={progressPreviewChips}
         >
           <ProgressSummary
-            cyclesCompleted={phaseGate.cyclesCompletedInPhase}
-            cycleTarget={phaseGate.minCycles}
+            workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
+            workoutTarget={phaseGate.minWorkouts}
             consistencyPercent={consistencyPercent}
             completionPercent={adherencePercent}
             painTrend={painTrendLabel}
@@ -3730,14 +4550,16 @@ export default function ResultsRoutine() {
           />
         </ExpandableSection>
       </div>
+      ) : null}
 
-      <div className="order-9">
+      {activeMode === "progress" && !activeModeLocked ? (
+      <div className="order-4">
         <ExpandableSection
           title="Phase Progression"
           subtitle="Requirements and readiness to move ahead."
           previewLines={[phaseRequirementsText, phaseGateReason]}
           previewChips={[
-            `${phaseGate.cyclesCompletedInPhase}/${phaseGate.minCycles} cycles`,
+            `${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} workouts`,
             `${phaseGate.daysSincePhaseStart}/${phaseGate.minDays} days`,
             readinessEstimate,
           ]}
@@ -3752,12 +4574,9 @@ export default function ResultsRoutine() {
             canMove={phaseControlUi.canMoveNextPhase}
             showSkip={phaseControlUi.showSkipPhaseOne}
             phaseProgressPercent={phaseProgressPercent}
-            cycleProgressPercent={cycleProgressPercent}
+            workoutProgressPercent={workoutProgressPercent}
             readinessEstimate={readinessEstimate}
-            onOpenMove={() => {
-              setAdvanceMessage(previewSummary());
-              setAdvanceOpen(true);
-            }}
+            onOpenMove={openPhaseAdvancePrompt}
             onOpenSkip={() => setSkipPhaseOneOpen(true)}
             uploadControl={
               phaseControlUi.canUploadPhotos ? (
@@ -3785,6 +4604,7 @@ export default function ResultsRoutine() {
           </div>
         </ExpandableSection>
       </div>
+      ) : null}
 
       {advanceOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -3795,26 +4615,26 @@ export default function ResultsRoutine() {
               setAdvanceConfirm(false);
             }}
           />
-          <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl">
-            <h3 className="text-lg font-semibold text-slate-900">
+          <div className="ui-card ui-soft-surface-raised relative w-full max-w-md rounded-lg p-6 text-slate-100 shadow-xl">
+            <h3 className="text-lg font-semibold text-white">
               {(program?.phaseIndex ?? 1) >= MAX_PHASE_INDEX
                 ? `Phase ${MAX_PHASE_INDEX} is active`
                 : `Move to Phase ${(program?.phaseIndex ?? 1) + 1}?`}
             </h3>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-slate-300">
               This creates your next progressive plan. Your logs and history stay saved.
             </p>
             {!phaseGate.ok ? (
-              <div className="mt-3 rounded-2xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+              <div className="mt-3 rounded-lg border border-amber-300/35 bg-amber-400/10 px-3 py-2 text-xs text-amber-100">
                 {phaseGateReason}
               </div>
             ) : null}
             {advanceMessage ? (
-              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+              <div className="ui-soft-surface mt-3 rounded-lg px-3 py-2 text-xs text-slate-300">
                 {advanceMessage}
               </div>
             ) : null}
-            <label className="mt-4 flex items-center gap-2 text-xs text-slate-600">
+            <label className="mt-4 flex items-center gap-2 text-xs text-slate-300">
               <input
                 type="checkbox"
                 checked={advanceConfirm}
@@ -3838,7 +4658,7 @@ export default function ResultsRoutine() {
                 type="button"
                 disabled={!advanceConfirm || !phaseGate.ok}
                 onClick={() => handleAdvanceProgram()}
-                className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+                className="rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
               >
                 Move phase
               </button>
@@ -3854,14 +4674,14 @@ export default function ResultsRoutine() {
             onClick={() => setSkipPhaseOneOpen(false)}
           />
           <div
-            className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl"
+            className="ui-card ui-soft-surface-raised relative w-full max-w-md rounded-lg p-6 text-slate-100 shadow-xl"
             data-testid="skip-phase-one-modal"
           >
-            <h3 className="text-lg font-semibold text-slate-900">Skip Phase 1?</h3>
-            <p className="mt-2 text-sm text-slate-600">
+            <h3 className="text-lg font-semibold text-white">Skip Phase 1?</h3>
+            <p className="mt-2 text-sm text-slate-300">
               Phase 1 builds control and tolerance. Skipping can make Phase 2 feel sharper and less stable.
             </p>
-            <p className="mt-2 text-xs text-slate-600">
+            <p className="mt-2 text-xs text-slate-400">
               You can continue now, but expect stricter loading and technique demands.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -3877,7 +4697,7 @@ export default function ResultsRoutine() {
                 type="button"
                 data-testid="skip-phase-one-confirm"
                 onClick={handleSkipPhaseOne}
-                className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
+                className="rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-4 py-2 text-xs font-semibold text-white"
               >
                 Confirm skip
               </button>

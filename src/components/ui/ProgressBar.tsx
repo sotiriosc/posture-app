@@ -73,22 +73,22 @@ export default function ProgressBar({
   return (
     <div className={compact ? "space-y-1" : "space-y-1.5"}>
       <div className="flex items-center justify-between gap-2 text-xs">
-        <p className="font-medium text-slate-700">{label}</p>
-        {showPercent ? <span className="text-slate-500">{percent}%</span> : null}
+        <p className="font-medium text-slate-300">{label}</p>
+        {showPercent ? <span className="text-slate-400">{percent}%</span> : null}
       </div>
       <div
-        className={`w-full overflow-hidden rounded-full border border-slate-300/70 bg-slate-200/80 ${
+        className={`w-full overflow-hidden rounded-full border border-slate-500/30 bg-slate-950/60 ${
           variant === "mini" ? "h-2" : "h-2.5"
         }`}
       >
         <div
-          className={`progress-fill h-full rounded-full bg-gradient-to-r from-slate-600 via-slate-500 to-slate-400 transition-[width,filter] duration-[700ms] ease-[cubic-bezier(.22,1,.36,1)] ${
+          className={`progress-fill h-full rounded-full bg-gradient-to-r from-sky-400 via-blue-400 to-emerald-300 transition-[width,filter] duration-[700ms] ease-[cubic-bezier(.22,1,.36,1)] ${
             flashProgress ? "progress-flash" : ""
           }`}
           style={{ width: `${displayedPercent}%` }}
         />
       </div>
-      {subtitle ? <p className="text-[11px] text-slate-500">{subtitle}</p> : null}
+      {subtitle ? <p className="text-[11px] text-slate-400">{subtitle}</p> : null}
       <style jsx>{`
         .progress-flash {
           animation: progressFlash 800ms ease-out;

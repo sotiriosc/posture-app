@@ -10,6 +10,7 @@ const makeProgress = (overrides: Partial<ProgramProgress> = {}): ProgramProgress
   phaseIndex: 1,
   phaseStartedAt: "2026-01-01T00:00:00.000Z",
   cyclesCompletedInPhase: 3,
+  workoutsCompletedInPhase: 9,
   daysPerWeek: 3,
   weekIndex: 4,
   countedWeekKeys: ["program-1:1:4"],
@@ -25,6 +26,7 @@ describe("phase skip", () => {
     expect(updated.phaseIndex).toBe(2);
     expect(updated.phaseStartedAt).toBe(nowIso);
     expect(updated.cyclesCompletedInPhase).toBe(0);
+    expect(updated.workoutsCompletedInPhase).toBe(0);
     expect(updated.weekIndex).toBe(0);
     expect(updated.countedWeekKeys).toEqual([]);
   });
@@ -34,6 +36,7 @@ describe("phase skip", () => {
       phaseIndex: 2,
       phaseStartedAt: "2026-02-01T00:00:00.000Z",
       cyclesCompletedInPhase: 1,
+      workoutsCompletedInPhase: 1,
     });
     const updated = skipPhase1(phase2Progress, "2026-02-15T00:00:00.000Z");
 
@@ -46,6 +49,8 @@ describe("phase skip", () => {
         phaseIndex: 1,
         phaseStartedAt: null,
         cyclesCompletedInPhase: 10,
+        workoutsCompletedInPhase: 99,
+        daysPerWeek: 3,
       },
       "2026-02-15T00:00:00.000Z"
     );
@@ -58,12 +63,15 @@ describe("phase skip", () => {
       phaseIndex: 1,
       phaseStartedAt: "2026-01-01T00:00:00.000Z",
       cyclesCompletedInPhase: 3,
+      workoutsCompletedInPhase: 12,
     });
     const gate = canAdvancePhase(
       {
         phaseIndex: progress.phaseIndex,
         phaseStartedAt: progress.phaseStartedAt,
         cyclesCompletedInPhase: progress.cyclesCompletedInPhase,
+        workoutsCompletedInPhase: progress.workoutsCompletedInPhase,
+        daysPerWeek: progress.daysPerWeek,
       },
       "2026-02-15T00:00:00.000Z"
     );

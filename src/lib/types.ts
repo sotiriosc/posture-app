@@ -219,6 +219,7 @@ export type ProgramProgress = {
   phaseIndex?: number;
   phaseStartedAt?: string | null;
   cyclesCompletedInPhase?: number;
+  workoutsCompletedInPhase?: number;
   daysPerWeek?: number;
   weekIndex?: number;
   countedWeekKeys?: string[];

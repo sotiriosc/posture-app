@@ -97,9 +97,9 @@ export default function ExpandableSection({
 
   return (
     <section
-      className={`ui-card p-5 transition-all duration-[180ms] ease-out hover:-translate-y-px hover:shadow-[0_10px_24px_rgba(15,23,42,0.09)] ${
+      className={`ui-card ui-soft-surface-raised p-5 transition-all duration-[180ms] ease-out ${
         programmaticFlash
-          ? "bg-sky-50/55 ring-1 ring-sky-200"
+          ? "ring-1 ring-sky-300/45 shadow-[0_18px_54px_rgba(14,165,233,0.16)]"
           : ""
       }`}
     >
@@ -111,9 +111,9 @@ export default function ExpandableSection({
         onClick={handleToggle}
       >
         <div>
-          <h3 className="text-base font-semibold text-slate-900">{title}</h3>
+          <h3 className="text-base font-semibold text-white">{title}</h3>
           {subtitle ? (
-            <p className="mt-1 text-xs text-slate-500">{subtitle}</p>
+            <p className="mt-1 text-xs text-slate-400">{subtitle}</p>
           ) : null}
         </div>
         <span className={secondaryActionBtn}>
@@ -123,7 +123,7 @@ export default function ExpandableSection({
       {!isExpanded && (previewLines.length > 0 || previewChips.length > 0) ? (
         <div className="mt-3 space-y-1.5">
           {previewLines.length ? (
-            <div className="space-y-1 text-sm text-slate-600">
+            <div className="space-y-1 text-sm text-slate-300">
               {previewLines.slice(0, 1).map((line) => (
                 <p key={line}>{line}</p>
               ))}
@@ -134,7 +134,7 @@ export default function ExpandableSection({
               {previewChips.slice(0, 3).map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-600"
+                  className="rounded-md border border-slate-500/25 bg-slate-950/45 px-2 py-0.5 text-xs text-slate-300"
                 >
                   {chip}
                 </span>

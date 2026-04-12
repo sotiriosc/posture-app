@@ -8,7 +8,7 @@ const LOCAL_KEYS = [
   "session_feedback",
 ];
 
-const DB_NAMES = ["bodycoach-logs", "bodycoach-drafts"];
+const DB_NAMES = ["bodycoach-logs", "bodycoach-drafts", "bodycoach-photos"];
 
 const deleteDatabase = (name: string) =>
   new Promise<void>((resolve, reject) => {
