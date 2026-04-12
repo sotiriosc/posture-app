@@ -254,7 +254,7 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
-              "band-overhead-triceps-extension",
+              "band-triceps-pressdown",
               "band-biceps-curl",
             ],
             "activationBlockFirst2": [
@@ -324,8 +324,8 @@ describe("program golden anchor fingerprints", () => {
         "days": [
           {
             "accessoryFirst2Ids": [
-              "db-biceps-curl",
               "bodyweight-triceps-extension",
+              "db-biceps-curl",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -343,14 +343,14 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-floor-press",
-              "dumbbell-shoulder-press",
+              "dumbbell-bench-press",
+              "dumbbell-arnold-press",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "db-calf-raise",
-              "suitcase-carry",
+              "single-leg-calf-raise",
+              "farmers-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -374,8 +374,8 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
               "cable-biceps-curl",
+              "bodyweight-triceps-extension",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -399,8 +399,8 @@ describe("program golden anchor fingerprints", () => {
           },
           {
             "accessoryFirst2Ids": [
-              "db-calf-raise",
-              "suitcase-carry",
+              "single-leg-calf-raise",
+              "farmers-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -441,7 +441,7 @@ describe("program golden anchor fingerprints", () => {
           {
             "accessoryFirst2Ids": [
               "dumbbell-chest-fly",
-              "close-grip-pushup",
+              "contralateral-reach-march",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -459,15 +459,15 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-floor-press",
-              "dumbbell-arnold-press",
-              "machine-chest-press",
+              "dumbbell-incline-press",
+              "dumbbell-shoulder-press",
+              "dumbbell-bench-press",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "db-calf-raise",
-              "suitcase-carry",
+              "single-leg-calf-raise",
+              "farmers-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -485,9 +485,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
+              "machine-leg-press",
               "db-rdl",
               "machine-hack-squat",
-              "dumbbell-step-up-loaded",
             ],
           },
           {
@@ -512,14 +512,14 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "dumbbell-chest-supported-row",
-              "machine-lat-pulldown",
+              "barbell-landmine-pulldown",
+              "single-arm-dumbbell-row",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "db-calf-raise",
-              "suitcase-carry",
+              "single-leg-calf-raise",
+              "farmers-carry",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -537,19 +537,19 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-step-up-loaded",
+              "db-rdl",
+              "machine-leg-press",
               "machine-seated-hamstring-curl",
-              "dumbbell-sumo-rdl",
             ],
           },
           {
             "accessoryFirst2Ids": [
+              "bodyweight-triceps-extension",
               "cable-biceps-curl",
-              "farmers-carry",
             ],
             "activationBlockFirst2": [
+              "wall-slides",
               "wall-angel-hold",
-              "dead-bug",
             ],
             "counts": {
               "accessory": 2,
@@ -563,9 +563,9 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "db-triceps-extension",
+              "dumbbell-rows",
               "dumbbell-shoulder-press",
-              "dumbbell-chest-supported-row",
+              "dumbbell-bench-press",
             ],
           },
         ],
@@ -608,7 +608,7 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "band-chest-press",
               "split-stance-band-chest-press",
-              "split-stance-row",
+              "band-lat-pulldown",
             ],
           },
           {
@@ -634,7 +634,7 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "band-overhead-press",
-              "prone-t-raise",
+              "band-lateral-raise",
               "band-rear-delt-fly",
             ],
           },
@@ -683,8 +683,8 @@ describe("program golden anchor fingerprints", () => {
         "days": [
           {
             "accessoryFirst2Ids": [
-              "db-biceps-curl",
               "bodyweight-triceps-extension",
+              "dumbbell-rows",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -702,16 +702,16 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-floor-press",
-              "pike-pushup",
-              "machine-chest-press",
               "dumbbell-bench-press",
+              "dumbbell-floor-press",
+              "machine-chest-press",
+              "dumbbell-chest-fly",
             ],
           },
           {
             "accessoryFirst2Ids": [
               "single-leg-calf-raise",
-              "suitcase-carry",
+              "hollow-body-hold",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -730,14 +730,14 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "machine-leg-press",
-              "back-extension",
+              "machine-seated-hamstring-curl",
               "split-squat",
-              "farmers-carry",
+              "dumbbell-sumo-rdl",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
+              "cable-biceps-curl",
               "farmers-carry",
             ],
             "activationBlockFirst2": [
@@ -757,15 +757,15 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "seated-lat-sweep-pulse",
+              "machine-rear-delt-row",
               "single-arm-dumbbell-row",
-              "prone-swimmer",
+              "dumbbell-rear-delt-fly",
             ],
           },
           {
             "accessoryFirst2Ids": [
               "single-leg-calf-raise",
-              "suitcase-carry",
+              "hollow-body-hold",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -783,10 +783,10 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "back-extension",
+              "machine-seated-hamstring-curl",
               "machine-leg-press",
-              "bodyweight-good-morning",
-              "farmers-carry",
+              "dumbbell-sumo-rdl",
+              "machine-glute-drive",
             ],
           },
         ],
@@ -808,7 +808,7 @@ describe("program golden anchor fingerprints", () => {
           {
             "accessoryFirst2Ids": [
               "dumbbell-chest-fly",
-              "close-grip-pushup",
+              "contralateral-reach-march",
             ],
             "activationBlockFirst2": [
               "wall-slides",
@@ -826,16 +826,16 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-floor-press",
+              "dumbbell-bench-press",
               "dumbbell-shoulder-press",
-              "machine-chest-press",
+              "dumbbell-incline-press",
               "dumbbell-arnold-press",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "db-calf-raise",
-              "suitcase-carry",
+              "single-leg-calf-raise",
+              "hollow-body-hold",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -853,10 +853,10 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "barbell-hip-thrust",
-              "farmers-carry",
-              "dumbbell-step-up-loaded",
+              "machine-leg-press",
+              "db-rdl",
               "barbell-back-squat",
+              "dumbbell-step-up-loaded",
             ],
           },
           {
@@ -881,15 +881,15 @@ describe("program golden anchor fingerprints", () => {
             },
             "mainIds": [
               "dumbbell-rows",
-              "machine-rear-delt-row",
+              "barbell-bent-over-row",
               "cable-seated-row",
-              "cable-lat-pulldown",
+              "barbell-landmine-pulldown",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "db-calf-raise",
-              "suitcase-carry",
+              "single-leg-calf-raise",
+              "hollow-body-hold",
             ],
             "activationBlockFirst2": [
               "cat-cow",
@@ -907,19 +907,19 @@ describe("program golden anchor fingerprints", () => {
               "uniqueExerciseIds": true,
             },
             "mainIds": [
-              "dumbbell-step-up-loaded",
-              "machine-glute-drive",
+              "db-rdl",
+              "machine-leg-press",
               "barbell-hip-thrust",
-              "farmers-carry",
+              "machine-glute-drive",
             ],
           },
           {
             "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
-              "farmers-carry",
+              "dumbbell-chest-fly",
+              "cable-biceps-curl",
             ],
             "activationBlockFirst2": [
-              "cat-cow",
+              "wall-slides",
               "wall-angel-hold",
             ],
             "counts": {
@@ -936,8 +936,8 @@ describe("program golden anchor fingerprints", () => {
             "mainIds": [
               "dumbbell-rows",
               "dumbbell-shoulder-press",
-              "machine-rear-delt-row",
-              "dumbbell-arnold-press",
+              "dumbbell-incline-press",
+              "dumbbell-rear-delt-fly",
             ],
           },
         ],

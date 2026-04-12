@@ -579,8 +579,6 @@ export const createProgramVariationMemoryRuntime = (
       baseSeed,
       variation,
     } = params;
-    if (daysPerWeek !== 3) return null;
-
     const seedToken = String(variation?.seed ?? "").trim();
     const settingsHashToken = String(variation?.settingsHash ?? "").trim();
     const hasExternalSummary = Boolean(variation?.recentGenerationSummary);
@@ -639,6 +637,7 @@ export const createProgramVariationMemoryRuntime = (
         useRecentMemory,
         settingsHash: settingsHashToken || undefined,
         recentGenerationSummary: externalSummary,
+        initialLiveVariation: variation?.initialLiveVariation ?? false,
       },
     };
   };
@@ -649,6 +648,7 @@ export const createProgramVariationMemoryRuntime = (
   ) => {
     if (!variationState?.enabled) return;
     if (!variationState.options.useRecentMemory) return;
+    if (variationState.options.recentGenerationSummary) return;
     const history = programVariationHistoryBySettings.get(variationState.settingsKey) ?? [];
     history.push(buildVariationSnapshot(week, variationState.selectedDayTemplateKeys));
     while (history.length > variationState.config.historySize) {

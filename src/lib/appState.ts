@@ -3,6 +3,8 @@ export type AppState = {
   programId?: string;
   activeProgramId?: string;
   activeProgramBaselineAt?: number;
+  activeGenerationMode?: "live_initial" | "live_regeneration" | "reference_preview";
+  activeInitialVariationSeed?: string;
   selectedDay?: number;
   activeSessionId?: string;
   programVersion?: number;

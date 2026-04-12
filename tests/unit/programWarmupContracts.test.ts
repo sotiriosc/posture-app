@@ -56,6 +56,21 @@ const assertBackChestMainPushAndPull = (
   expect(pullMains.length).toBeGreaterThanOrEqual(1);
 };
 
+const lowerHeavyPrepIds = new Set([
+  "ninety-ninety-switches",
+  "hip-shifts",
+  "ankle-mobility-rocks",
+  "soleus-wall-drives",
+  "glute-bridge-activation",
+  "band-lateral-walk",
+  "hip-hinge-dowel",
+  "bodyweight-good-morning-pattern",
+  "back-extension-hold-pattern",
+  "bodyweight-squat-to-box",
+  "goblet-squat-pattern",
+  "supported-squat-pattern",
+]);
+
 describe("program warmup contracts", () => {
   test.each([
     { id: "band-only", equipment: ["bands"] as QuestionnaireData["equipment"] },
@@ -138,12 +153,42 @@ describe("program warmup contracts", () => {
     );
 
     program.week.forEach((day) => {
-      expect(day.warmup?.items.length ?? 0).toBeLessThanOrEqual(4);
-      expect(day.activation?.items.length ?? 0).toBeLessThanOrEqual(3);
-      expect(day.cooldown?.items.length ?? 0).toBeLessThanOrEqual(2);
+      expect(day.warmup?.items.length ?? 0).toBeLessThanOrEqual(3);
+      expect(day.activation?.items.length ?? 0).toBeLessThanOrEqual(2);
+      expect(day.cooldown?.items.length ?? 0).toBe(1);
       expect(day.warmup?.items.length ?? 0).toBeGreaterThanOrEqual(3);
-      expect(day.activation?.items.length ?? 0).toBeGreaterThanOrEqual(2);
+      expect(day.activation?.items.length ?? 0).toBeGreaterThanOrEqual(1);
       expect(day.cooldown?.items.length ?? 0).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  test("default General Fitness keeps prep lean and cooldown one-part", () => {
+    const program = generateWeeklyProgram(
+      {
+        ...baseInput,
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Intermediate",
+        equipment: ["gym"],
+      },
+      "warmup-general-fitness-lean",
+      {
+        phaseIndex: 2,
+        seed: "warmup-general-fitness-lean",
+      }
+    );
+
+    program.week.forEach((day) => {
+      const isLowerDay = day.title === "Legs + Abs";
+      const warmupItems = day.warmup?.items ?? [];
+      const activationItems = day.activation?.items ?? [];
+      const cooldownItems = day.cooldown?.items ?? [];
+
+      expect(warmupItems.length).toBeLessThanOrEqual(3);
+      expect(warmupItems.length).toBeGreaterThanOrEqual(isLowerDay ? 3 : 2);
+      expect(activationItems.length).toBeLessThanOrEqual(2);
+      expect(activationItems.length).toBeGreaterThanOrEqual(1);
+      expect(cooldownItems.length).toBe(1);
     });
   });
 
@@ -185,6 +230,52 @@ describe("program warmup contracts", () => {
 
     expect(baseActivationIds.includes("serratus-wall-slide")).toBe(false);
     expect(scapActivationIds.includes("serratus-wall-slide")).toBe(true);
+  });
+
+  test("standard low-pain gym upper days avoid lower-body-heavy prep drift", () => {
+    const program = generateWeeklyProgram(
+      {
+        ...baseInput,
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Intermediate",
+        equipment: ["gym"],
+        daysPerWeek: 5,
+      },
+      "warmup-upper-day-prep-alignment",
+      {
+        phaseIndex: 1,
+        seed: "warmup-upper-day-prep-alignment",
+      }
+    );
+
+    ["Upper Push", "Upper Pull"].forEach((title) => {
+      const day = getDay(program, title);
+      expect(day, title).toBeTruthy();
+      if (!day) return;
+      const prepIds = [
+        ...(day.warmup?.items.map((item) => item.id) ?? []),
+        ...(day.activation?.items.map((item) => item.id) ?? []),
+      ];
+      expect(
+        prepIds.some((id) => lowerHeavyPrepIds.has(id)),
+        `${title}: ${prepIds.join(", ")}`
+      ).toBe(false);
+      expect(
+        prepIds.some((id) =>
+          [
+            "wall-slides",
+            "scap-cars",
+            "thoracic-open-book",
+            "thread-the-needle",
+            "serratus-wall-slide",
+            "side-lying-external-rotation",
+            "wall-external-rotation-isometric",
+          ].includes(id)
+        ),
+        `${title}: ${prepIds.join(", ")}`
+      ).toBe(true);
+    });
   });
 
   // Temporary skip while focusing test effort on MAIN + ACCESSORY structure.

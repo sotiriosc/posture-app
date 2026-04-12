@@ -502,9 +502,21 @@ describe("controlled variety engine pass", () => {
         }),
       },
     });
+    const third = generateWeeklyProgram(input, "summary-hook-third", {
+      phaseIndex: 2,
+      variation: {
+        ...baseVariation,
+        recentGenerationSummary: buildRecentGenerationSummary(first, {
+          settingsHash: baseVariation.settingsHash,
+          variationIndex: baseVariation.index,
+        }),
+      },
+    });
 
     expectThreeDayContractsHold(first);
     expectThreeDayContractsHold(second);
+    expectThreeDayContractsHold(third);
     expect(weekFullRoutineSignature(second)).not.toBe(weekFullRoutineSignature(first));
+    expect(weekFullRoutineSignature(third)).toBe(weekFullRoutineSignature(second));
   });
 });

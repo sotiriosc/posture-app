@@ -33,6 +33,7 @@ type WarmupPlanningContext = {
 
 type WarmupPlanningSignals = {
   reducePainGoal: boolean;
+  defaultGeneralFitnessNoPain: boolean;
   beginner: boolean;
   advanced: boolean;
   scapBias: boolean;
@@ -152,8 +153,11 @@ const derivePlanningSignals = (
   const experience = normalizeToken(context?.experienceLevel ?? "");
   const poseTags = new Set(toArrayFromIterable(context?.poseFocusTags).map(normalizeToken));
   const painSeverity = context?.painSeverity ?? "low";
+  const noPain = painSeverity === "low" && painTokens.size === 0;
   return {
     reducePainGoal: goal.includes("pain"),
+    defaultGeneralFitnessNoPain:
+      noPain && goal.includes("general") && goal.includes("fitness"),
     beginner: experience === "beginner",
     advanced: experience === "advanced",
     scapBias:
@@ -318,15 +322,15 @@ const resolveSectionTargets = (params: {
 
   const warmup = {
     minItems: 3,
-    maxItems: 4,
+    maxItems: 3,
     minDurationSec: 210,
-    maxDurationSec: 390,
+    maxDurationSec: 360,
   };
   const activation = {
     minItems: 2,
-    maxItems: 3,
+    maxItems: 2,
     minDurationSec: 90,
-    maxDurationSec: 210,
+    maxDurationSec: 180,
   };
   const cooldown = {
     minItems: 1,
@@ -337,19 +341,33 @@ const resolveSectionTargets = (params: {
 
   if (isLegDayIntent(dayIntent) || signals.hipBias) {
     warmup.minDurationSec = 240;
-    warmup.maxDurationSec = 420;
+    warmup.maxDurationSec = 360;
+  }
+  if (signals.defaultGeneralFitnessNoPain && !signals.scapBias && !signals.hipBias) {
+    warmup.minItems = isLegDayIntent(dayIntent) ? 3 : 2;
+    warmup.maxItems = 3;
+    warmup.minDurationSec = isLegDayIntent(dayIntent) ? 210 : 150;
+    warmup.maxDurationSec = isLegDayIntent(dayIntent) ? 360 : 270;
+    activation.minItems = 1;
+    activation.maxItems = 2;
+    activation.minDurationSec = 60;
+    activation.maxDurationSec = 150;
   }
   if (signals.highPain || signals.reducePainGoal) {
-    cooldown.maxItems = 2;
+    cooldown.minItems = 1;
+    cooldown.maxItems = 1;
     cooldown.minDurationSec = 60;
-    cooldown.maxDurationSec = 180;
+    cooldown.maxDurationSec = 120;
   }
-  if (signals.beginner && !signals.highPain) {
-    cooldown.maxItems = Math.max(cooldown.maxItems, 2);
+  if (signals.defaultGeneralFitnessNoPain) {
+    cooldown.minItems = 1;
+    cooldown.maxItems = 1;
+    cooldown.minDurationSec = 60;
+    cooldown.maxDurationSec = 120;
   }
   if (signals.advanced && !signals.reducePainGoal) {
-    warmup.maxItems = Math.min(4, warmup.maxItems);
-    activation.maxItems = Math.min(3, activation.maxItems);
+    warmup.maxItems = Math.min(3, warmup.maxItems);
+    activation.maxItems = Math.min(2, activation.maxItems);
   }
 
   return { warmup, activation, cooldown };
@@ -365,6 +383,7 @@ const enforceSectionTargets = (params: {
   minDurationSec: number;
   maxDurationSec: number;
   fillerBlockIds: string[];
+  allowRequiredTrim?: boolean;
 }) => {
   const {
     entries,
@@ -376,6 +395,7 @@ const enforceSectionTargets = (params: {
     minDurationSec,
     maxDurationSec,
     fillerBlockIds,
+    allowRequiredTrim = false,
   } = params;
 
   let safety = 0;
@@ -396,10 +416,14 @@ const enforceSectionTargets = (params: {
     safety += 1;
   }
 
-  while (entries.length > minItems && sectionDurationSec(entries) > maxDurationSec) {
-    const removableIndex = [...entries]
-      .reverse()
-      .findIndex((entry) => !entry.required);
+  while (
+    entries.length > minItems &&
+    (entries.length > maxItems || sectionDurationSec(entries) > maxDurationSec)
+  ) {
+    const removableIndex = [...entries].reverse().findIndex((entry) => {
+      if (!entry.required) return true;
+      return allowRequiredTrim;
+    });
     if (removableIndex < 0) break;
     const actualIndex = entries.length - 1 - removableIndex;
     const [removed] = entries.splice(actualIndex, 1);
@@ -440,6 +464,21 @@ const buildCooldownBlock = (params: {
     painTokens,
     required: true,
   });
+
+  if (minItems >= 2 && entries.length < maxItems) {
+    const recoveryFirstBlockIds = [
+      "cooldown-core",
+      ...candidateBlockIds.filter((blockId) => blockId !== "cooldown-core"),
+    ];
+    tryAddItemFromBlockOrder({
+      entries,
+      blockIds: recoveryFirstBlockIds,
+      usedIds,
+      equipment,
+      painTokens,
+      required: true,
+    });
+  }
 
   let safety = 0;
   while (
@@ -656,6 +695,7 @@ export const buildWarmupForDay = (
     minDurationSec: sectionTargets.warmup.minDurationSec,
     maxDurationSec: sectionTargets.warmup.maxDurationSec,
     fillerBlockIds: warmupFillerOrder(dayIntent, signals),
+    allowRequiredTrim: true,
   });
 
   enforceSectionTargets({
@@ -668,6 +708,7 @@ export const buildWarmupForDay = (
     minDurationSec: sectionTargets.activation.minDurationSec,
     maxDurationSec: sectionTargets.activation.maxDurationSec,
     fillerBlockIds: activationFillerOrder(dayIntent, signals),
+    allowRequiredTrim: true,
   });
 
   const cooldownBlock = buildCooldownBlock({

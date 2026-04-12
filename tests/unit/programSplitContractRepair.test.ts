@@ -576,7 +576,15 @@ describe("split contract repair enforcement", () => {
 
     expect(
       skillMainIds.some((id) =>
-        ["machine-shoulder-press", "band-overhead-press", "pike-pushup", "dumbbell-shoulder-press"].includes(id)
+        [
+          "machine-shoulder-press",
+          "band-overhead-press",
+          "pike-pushup",
+          "dumbbell-shoulder-press",
+          "cable-lateral-raise",
+          "dumbbell-lateral-raise",
+          "band-lateral-raise",
+        ].includes(id)
       )
     ).toBe(true);
     expect(

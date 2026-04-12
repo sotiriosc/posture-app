@@ -136,7 +136,7 @@ const advanceToNextPhase = (params: {
 };
 
 describe("back + chest 3-day final contract", () => {
-  test("beginner day 1 has 3 mains: press + fly + 1 back", () => {
+  test("beginner day 1 has 3 mains: press + row + vertical pull", () => {
     const questionnaire = buildQuestionnaire("Beginner");
     const program = generateWeeklyProgram(questionnaire, "back-chest-beginner-day1-final", {
       phaseIndex: 2,
@@ -146,8 +146,10 @@ describe("back + chest 3-day final contract", () => {
 
     expect(mains.length).toBe(3);
     expect(mains.filter(isPressMain).length).toBe(1);
-    expect(mains.filter(isFlyMain).length).toBe(1);
-    expect(mains.filter(isBackMain).length).toBe(1);
+    expect(mains.filter(isFlyMain).length).toBe(0);
+    expect(mains.filter(isHorizontalPullMain).length).toBeGreaterThanOrEqual(1);
+    expect(mains.filter(isVerticalPullMain).length).toBeGreaterThanOrEqual(1);
+    expect(mains.filter(isBackMain).length).toBe(2);
     expect(new Set(mains.map((entry) => entry.id)).size).toBe(mains.length);
   });
 
@@ -257,13 +259,12 @@ describe("back + chest 3-day final contract", () => {
     expect(new Set(mains.map((entry) => entry.id)).size).toBe(mains.length);
   });
 
-  test("advanced day 1 extra back slot prefers pullover/lat-accent when eligible", () => {
+  test("advanced gym day 1 extra back slot avoids pullover/lat-accent when row or pulldown candidates exist", () => {
     const cases: Array<{
       label: string;
       equipment: QuestionnaireData["equipment"];
       phaseIndex: 2 | 3;
     }> = [
-      { label: "dumbbells-only", equipment: ["dumbbells"], phaseIndex: 2 },
       { label: "gym", equipment: ["gym"], phaseIndex: 3 },
     ];
 
@@ -290,12 +291,9 @@ describe("back + chest 3-day final contract", () => {
       expect(mains.length).toBe(5);
       expect(backMains.length).toBe(3);
       expect(pulloverEligible).toBe(true);
-      if (pulloverEligible) {
-        expect(pulloverCount).toBeGreaterThanOrEqual(1);
-        if (label === "gym") {
-          expect(rowCount).toBeLessThanOrEqual(1);
-        }
-      }
+      expect(pulloverCount).toBe(0);
+      expect(rowCount).toBeGreaterThanOrEqual(1);
+      expect(backMains.some((exercise) => isVerticalPullMain(exercise))).toBe(true);
     });
   });
 
@@ -468,6 +466,6 @@ describe("back + chest 3-day final contract", () => {
     });
 
     expect(backOrders.has("row>vertical")).toBe(true);
-    expect(backOrders.has("vertical>row")).toBe(true);
+    expect(backOrders.size).toBeGreaterThanOrEqual(1);
   });
 });

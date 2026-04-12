@@ -4,14 +4,17 @@ import React from "react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 
 const mocks = vi.hoisted(() => ({
   routerPush: vi.fn(),
   loadTrainingSnapshot: vi.fn(),
   pushTrainingPatch: vi.fn(),
-  generateWeeklyProgram: vi.fn(),
+  buildSignalsFromLocalState: vi.fn(),
+  generateProgram: vi.fn(),
   saveProgram: vi.fn(),
   saveProgramProgress: vi.fn(),
+  getProgram: vi.fn(),
   uuid: vi.fn(),
   clearDraft: vi.fn(),
 }));
@@ -27,13 +30,15 @@ vi.mock("@/lib/trainingSyncClient", () => ({
   pushTrainingPatch: mocks.pushTrainingPatch,
 }));
 
-vi.mock("@/lib/program", () => ({
-  generateWeeklyProgram: mocks.generateWeeklyProgram,
+vi.mock("@/lib/engine", () => ({
+  buildSignalsFromLocalState: mocks.buildSignalsFromLocalState,
+  generateProgram: mocks.generateProgram,
 }));
 
 vi.mock("@/lib/logStore", () => ({
   saveProgram: mocks.saveProgram,
   saveProgramProgress: mocks.saveProgramProgress,
+  getProgram: mocks.getProgram,
   uuid: mocks.uuid,
 }));
 
@@ -115,6 +120,7 @@ describe("questionnaire golden flow", () => {
         activeProgramId: "program-old",
         activeSessionId: "session-live",
         programVersion: 8,
+        questionnaireSignature: buildQuestionnaireSignature(initialQuestionnaire),
         updatedAt: Date.now(),
       })
     );
@@ -122,9 +128,11 @@ describe("questionnaire golden flow", () => {
     mocks.routerPush.mockReset();
     mocks.loadTrainingSnapshot.mockReset();
     mocks.pushTrainingPatch.mockReset();
-    mocks.generateWeeklyProgram.mockReset();
+    mocks.buildSignalsFromLocalState.mockReset();
+    mocks.generateProgram.mockReset();
     mocks.saveProgram.mockReset();
     mocks.saveProgramProgress.mockReset();
+    mocks.getProgram.mockReset();
     mocks.uuid.mockReset();
     mocks.clearDraft.mockReset();
 
@@ -132,9 +140,51 @@ describe("questionnaire golden flow", () => {
     mocks.pushTrainingPatch.mockResolvedValue(undefined);
     mocks.clearDraft.mockResolvedValue(undefined);
     mocks.uuid.mockReturnValue("program-golden-new");
-    mocks.generateWeeklyProgram.mockImplementation(
-      (questionnaire: QuestionnaireData, programId: string) =>
-        buildMockProgram(questionnaire, programId)
+    mocks.getProgram.mockResolvedValue(buildMockProgram(initialQuestionnaire, "program-old"));
+    mocks.buildSignalsFromLocalState.mockImplementation(
+      async ({ questionnaire }: { questionnaire?: QuestionnaireData }) => ({
+        questionnaire: questionnaire ?? initialQuestionnaire,
+        history: {
+          sessions: [],
+          exerciseLogs: [],
+          programProgress: null,
+        },
+        prefs: null,
+        nowIso: "2026-02-15T00:00:00.000Z",
+      })
+    );
+    mocks.generateProgram.mockImplementation(
+      ({
+        nextProgramId,
+        signals,
+      }: {
+        nextProgramId: string;
+        signals: { questionnaire: QuestionnaireData };
+      }) => ({
+        status: "generated",
+        program: buildMockProgram(signals.questionnaire, nextProgramId),
+        seed: "test-seed",
+        debug: {
+          mode: "weekly",
+          seed: "test-seed",
+          settingsHash: "settings",
+          target: {
+            phaseIndex: 1,
+            cycleIndex: 1,
+            weekIndex: 1,
+            totalWeekIndex: 1,
+          },
+          progression: {
+            complianceRate: 0,
+            painFlag: false,
+            fatigueFlag: false,
+            completedSessionsCount: 0,
+            completedWeeksCount: 0,
+            recentLogCount: 0,
+            recentSessionCount: 0,
+          },
+        },
+      })
     );
     mocks.saveProgram.mockImplementation(async (program: unknown) => program);
     mocks.saveProgramProgress.mockImplementation(async (progress: unknown) => progress);

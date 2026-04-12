@@ -8,7 +8,7 @@ import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
 import { clearDraft } from "@/lib/sessionDraftStore";
 import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
-import { saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
+import { getProgram, saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
 import type { ProgramProgress } from "@/lib/types";
 
 export type QuestionnaireData = {
@@ -129,20 +129,30 @@ export default function QuestionnaireForm() {
     try {
       const nowIso = new Date().toISOString();
       const nextProgramId = uuid();
+      const currentProgramId = state?.activeProgramId ?? state?.programId ?? null;
+      const currentProgram =
+        currentProgramId && state?.questionnaireSignature === questionnaireSignature
+          ? await getProgram(currentProgramId).catch(() => null)
+          : null;
       const signals = await buildSignalsFromLocalState({
-        programId: state?.activeProgramId ?? state?.programId ?? null,
+        programId: currentProgramId,
         questionnaire: next,
         nowIso,
       });
       const result = generateProgram({
         mode: "weekly",
         signals,
+        currentProgram: currentProgram ?? undefined,
+        initialVariationSeed: currentProgram ? undefined : nextProgramId,
         nextProgramId,
       });
       if (!("program" in result)) {
         throw new Error(result.message);
       }
-      const nextProgram = result.program;
+      const nextProgram = {
+        ...result.program,
+        questionnaireSignature,
+      };
       const nextProgress: ProgramProgress = {
         programId: nextProgram.id,
         lastCompletedDayIndex: null,
@@ -162,6 +172,8 @@ export default function QuestionnaireForm() {
         programId: nextProgram.id,
         activeProgramId: nextProgram.id,
         activeProgramBaselineAt: Date.now(),
+        activeGenerationMode: currentProgram ? "live_regeneration" : "live_initial",
+        activeInitialVariationSeed: currentProgram ? undefined : nextProgramId,
         selectedDay: 0,
         activeSessionId: undefined,
         programVersion: nextProgramVersion,
@@ -176,6 +188,8 @@ export default function QuestionnaireForm() {
         programId: undefined,
         activeProgramId: undefined,
         activeProgramBaselineAt: undefined,
+        activeGenerationMode: undefined,
+        activeInitialVariationSeed: undefined,
         selectedDay: 0,
         activeSessionId: undefined,
         programVersion: nextProgramVersion,

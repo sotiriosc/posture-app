@@ -31,6 +31,7 @@ export type WeeklyEngineRequest = {
   signals: EngineSignals;
   nextProgramId: string;
   currentProgram?: Program | null;
+  initialVariationSeed?: string | null;
   phaseIndex?: number;
   weekIndex?: number;
   cycleIndex?: number;

@@ -77,12 +77,13 @@ import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import PhaseProgressCard from "@/components/dashboard/PhaseProgressCard";
 import ProgressBar from "@/components/ui/ProgressBar";
+import ProgramReferenceCard from "@/components/ProgramReferenceCard";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
-const SHOW_TEMP_PROGRAM_REFERENCE_CARD = process.env.NODE_ENV !== "production";
+const SHOW_PHASE_PREVIEW_REFERENCE = false;
 
 const defaultRoutine: Routine = {
   summary:
@@ -93,6 +94,155 @@ const defaultRoutine: Routine = {
 };
 
 type ProgramWeekDay = Program["week"][number];
+
+function CurrentSavedProgramSnapshotLoadingCard({
+  message = "Finalizing saved program snapshot.",
+}: {
+  message?: string;
+}) {
+  return (
+    <section
+      className="ui-card order-10 p-4 sm:p-5"
+      data-testid="current-saved-week-loading-card"
+      aria-live="polite"
+    >
+      <h3 className="text-base font-semibold text-slate-900">
+        Current Saved Program Snapshot
+      </h3>
+      <p className="mt-1 text-xs text-slate-600">{message}</p>
+      <div
+        className="mt-4 h-2 w-full overflow-hidden rounded-full border border-slate-300/70 bg-slate-200/80"
+        role="progressbar"
+        aria-label="Current saved program snapshot status"
+      >
+        <div
+          className="h-full w-full rounded-full bg-gradient-to-r from-slate-600 via-slate-500 to-slate-400 opacity-70 animate-pulse"
+        />
+      </div>
+      <p className="mt-2 text-[11px] text-slate-500">
+        Ready when the full saved snapshot is available.
+      </p>
+    </section>
+  );
+}
+
+type AssessmentStatusTone = "photo" | "fallback" | "failed" | "loading";
+
+type AssessmentStatusInfo = {
+  tone: AssessmentStatusTone;
+  title: string;
+  body: string;
+  chips: string[];
+};
+
+const photoViewLabelByKey: Record<string, string> = {
+  front: "Front",
+  side: "Side",
+  back: "Back",
+};
+
+const orderedPhotoViewKeys = ["front", "side", "back"];
+
+const formatDetectedPhotoViews = (views: string[]) => {
+  if (!views.length) return "none";
+  return views.map((view) => photoViewLabelByKey[view] ?? view).join(" / ");
+};
+
+const formatConfidencePercent = (score: number | null | undefined) => {
+  if (typeof score !== "number" || !Number.isFinite(score)) return null;
+  return `${Math.round(Math.max(0, Math.min(1, score)) * 100)}% confidence`;
+};
+
+const detectPoseAnalysisViews = (analysis: PoseAnalysis | null) => {
+  if (!analysis) return [] as string[];
+  const views = new Set<string>();
+  analysis.observations.forEach((item) => {
+    const match = item.match(/^(front|side|back):/i);
+    if (match) views.add(match[1].toLowerCase());
+  });
+  const metricViewMap: Record<string, Array<keyof PoseAnalysis["metrics"]>> = {
+    front: ["shoulderHeightDelta", "hipHeightDelta", "kneeAlignmentDelta"],
+    side: ["headForwardOffset", "torsoLeanAngle", "hipToShoulderAlignment"],
+    back: ["scapularSymmetry", "hipShift"],
+  };
+  Object.entries(metricViewMap).forEach(([view, metricKeys]) => {
+    if (
+      metricKeys.some((key) => {
+        const value = analysis.metrics[key];
+        return typeof value === "number" && Number.isFinite(value);
+      })
+    ) {
+      views.add(view);
+    }
+  });
+  return orderedPhotoViewKeys.filter((view) => views.has(view));
+};
+
+const detectAssessmentReportPhotoViews = (report: AssessmentReport | null) => {
+  if (!report) return [] as string[];
+  const views = new Set<string>();
+  report.observations.forEach((observation) => {
+    observation.evidence.forEach((item) => {
+      const match = item.match(/^View:\s*(front|side|back)$/i);
+      if (match) views.add(match[1].toLowerCase());
+    });
+  });
+  return orderedPhotoViewKeys.filter((view) => views.has(view));
+};
+
+const hasPhotoDerivedAssessmentReport = (report: AssessmentReport | null) =>
+  Boolean(
+    report?.observations.some((observation) => {
+      if (observation.id.startsWith("pose-")) return true;
+      return observation.evidence.some((item) => {
+        const lower = item.toLowerCase();
+        return lower.startsWith("scan:") || lower.startsWith("view:");
+      });
+    })
+  );
+
+function AssessmentStatusCard({ status }: { status: AssessmentStatusInfo }) {
+  const toneClasses: Record<AssessmentStatusTone, string> = {
+    photo: "border-emerald-200 bg-emerald-50/80 text-emerald-950",
+    fallback: "border-slate-200 bg-slate-50 text-slate-900",
+    failed: "border-amber-200 bg-amber-50/80 text-amber-950",
+    loading: "border-blue-200 bg-blue-50/80 text-blue-950",
+  };
+  const chipClasses: Record<AssessmentStatusTone, string> = {
+    photo: "border-emerald-200 bg-white/80 text-emerald-800",
+    fallback: "border-slate-200 bg-white text-slate-700",
+    failed: "border-amber-200 bg-white/80 text-amber-800",
+    loading: "border-blue-200 bg-white/80 text-blue-800",
+  };
+
+  return (
+    <section
+      className={`ui-card order-2 border px-4 py-3 sm:px-5 ${toneClasses[status.tone]}`}
+      data-testid="assessment-status-card"
+      aria-live="polite"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide opacity-70">
+            Assessment Status
+          </p>
+          <h2 className="mt-1 text-base font-semibold">{status.title}</h2>
+          <p className="mt-1 text-sm leading-5 opacity-85">{status.body}</p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-1.5 sm:max-w-xs sm:justify-end">
+          {status.chips.map((chip) => (
+            <span
+              key={chip}
+              className={`rounded-md border px-2 py-1 text-xs font-medium ${chipClasses[status.tone]}`}
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 const formatReferencePrepItems = (
   items?: Array<{ name: string; reps?: string; durationSec?: number }>
@@ -106,7 +256,10 @@ const formatReferencePrepItems = (
     .join(", ");
 };
 
-const formatReferenceRoutineItems = (items: ProgramRoutineItem[]) => {
+const formatReferenceRoutineItems = (
+  items: ProgramRoutineItem[],
+  options?: { includeDebug?: boolean }
+) => {
   if (!items.length) return "none";
   return items
     .map((item) => {
@@ -119,35 +272,56 @@ const formatReferenceRoutineItems = (items: ProgramRoutineItem[]) => {
         : item.sets
         ? `${item.sets} sets`
         : null;
-      return prescription ? `${name} [${prescription}]` : name;
+      const base = prescription ? `${name} [${prescription}]` : name;
+      if (!options?.includeDebug || !item.selectionDebug) return base;
+      const debugParts = [
+        item.selectionDebug.source ? `source=${item.selectionDebug.source}` : null,
+        item.selectionDebug.slotKind ? `slot=${item.selectionDebug.slotKind}` : null,
+        item.selectionDebug.slotLane ? `lane=${item.selectionDebug.slotLane}` : null,
+      ].filter(Boolean);
+      return debugParts.length ? `${base} {${debugParts.join(", ")}}` : base;
     })
     .join(", ");
 };
 
 type ProgramPrepItem = { name: string; reps?: string; durationSec?: number };
 
-const buildReferenceLinesForDay = (day: ProgramWeekDay) => {
+const buildReferenceLinesForDay = (
+  day: ProgramWeekDay,
+  options?: { includeDebug?: boolean }
+) => {
   const dayWithCorrective = day as ProgramWeekDay & {
     corrective?: { items?: ProgramPrepItem[] };
   };
   const warmupText =
     day.warmup?.items?.length
       ? formatReferencePrepItems(day.warmup.items)
-      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "warmup"));
+      : formatReferenceRoutineItems(
+          day.routine.filter((item) => item.section === "warmup"),
+          options
+        );
   const correctiveText = dayWithCorrective.corrective?.items?.length
     ? formatReferencePrepItems(dayWithCorrective.corrective.items)
     : day.activation?.items?.length
     ? formatReferencePrepItems(day.activation.items)
-    : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "activation"));
+    : formatReferenceRoutineItems(
+        day.routine.filter((item) => item.section === "activation"),
+        options
+      );
   const cooldownText =
     day.cooldown?.items?.length
       ? formatReferencePrepItems(day.cooldown.items)
-      : formatReferenceRoutineItems(day.routine.filter((item) => item.section === "cooldown"));
+      : formatReferenceRoutineItems(
+          day.routine.filter((item) => item.section === "cooldown"),
+          options
+        );
   const mainText = formatReferenceRoutineItems(
-    day.routine.filter((item) => item.section === "main")
+    day.routine.filter((item) => item.section === "main"),
+    options
   );
   const accessoryText = formatReferenceRoutineItems(
-    day.routine.filter((item) => item.section === "accessory")
+    day.routine.filter((item) => item.section === "accessory"),
+    options
   );
   return [
     `Day ${day.dayIndex + 1}: ${day.title}`,
@@ -157,6 +331,301 @@ const buildReferenceLinesForDay = (day: ProgramWeekDay) => {
     `Accessory: ${accessoryText}`,
     `Cooldown: ${cooldownText}`,
   ];
+};
+
+const buildMainLayoutSignature = (program: Program) =>
+  program.week
+    .map((day) =>
+      [
+        `day${day.dayIndex + 1}`,
+        day.routine
+          .filter((item) => item.section === "main")
+          .map((item) => item.exerciseId)
+          .join(","),
+      ].join(":")
+    )
+    .join(" | ");
+
+type ProgressionInspectionPhaseSnapshot = {
+  phaseIndex: number;
+  phaseName: string;
+  description: string;
+  source: "saved_current_phase" | "generated_inspection_phase" | "unavailable";
+  program?: Program | null;
+  error?: string | null;
+  seed?: string | null;
+  settingsHash?: string | null;
+};
+
+const formatPhaseMetrics = (program: Program) => {
+  const metrics = program.phaseObjective?.metrics;
+  if (!metrics) return null;
+  return [
+    `readiness=${Math.round(metrics.readiness * 100)}%`,
+    `consistency=${Math.round(metrics.consistency * 100)}%`,
+    `painRisk=${Math.round(metrics.painRisk * 100)}%`,
+    `asymmetry=${Math.round(metrics.asymmetry * 100)}%`,
+  ].join(", ");
+};
+
+const buildPhaseSnapshotLines = (
+  snapshot: ProgressionInspectionPhaseSnapshot,
+  currentSavedPhaseIndex: number
+) => {
+  const lines: string[] = [];
+  const sourceLabel =
+    snapshot.source === "saved_current_phase"
+      ? "CURRENT SAVED PHASE"
+      : snapshot.source === "generated_inspection_phase"
+      ? "GENERATED INSPECTION PHASE - NOT SAVED"
+      : "UNAVAILABLE";
+
+  lines.push(`PHASE ${snapshot.phaseIndex}: ${snapshot.phaseName} [${sourceLabel}]`);
+  lines.push(`Description: ${snapshot.description}`);
+
+  if (!snapshot.program) {
+    lines.push(`Status: ${snapshot.error ?? "phase snapshot unavailable"}`);
+    return lines;
+  }
+
+  const phaseProgram = snapshot.program;
+  const phaseObjective = phaseProgram.phaseObjective;
+  const phaseIndex =
+    phaseProgram.phaseIndex ?? phaseProgram.phase?.phaseIndex ?? snapshot.phaseIndex;
+  const phaseName =
+    phaseProgram.phaseName ?? phaseProgram.phase?.name ?? snapshot.phaseName;
+  const metrics = formatPhaseMetrics(phaseProgram);
+
+  lines.push(`Program ID: ${phaseProgram.id}`);
+  lines.push(`Source: ${snapshot.source}`);
+  if (snapshot.seed) {
+    lines.push(`Inspection Seed: ${snapshot.seed}`);
+  }
+  if (snapshot.settingsHash) {
+    lines.push(`Settings Hash: ${snapshot.settingsHash}`);
+  }
+  lines.push(`Template Version: ${phaseProgram.templateVersion ?? "unknown"}`);
+  lines.push(`Phase: ${phaseName} (index ${phaseIndex})`);
+  lines.push(`Cycle Index: ${phaseProgram.cycleIndex ?? phaseProgram.phase?.cycleIndex ?? 1}`);
+  lines.push(`Week Index: ${phaseProgram.weekIndex ?? phaseProgram.phase?.weekIndex ?? 1}`);
+  if (phaseProgram.totalWeekIndex) {
+    lines.push(`Total Week Index: ${phaseProgram.totalWeekIndex}`);
+  }
+  lines.push(`Main Layout Signature: ${buildMainLayoutSignature(phaseProgram)}`);
+  if (phaseObjective) {
+    lines.push(`Objective: ${phaseObjective.objective}`);
+    lines.push(`Focus: ${phaseObjective.phaseFocus}`);
+    lines.push(`Week Intent: ${phaseObjective.weekIntent}`);
+    lines.push(`Guardrail: ${phaseObjective.guardrail}`);
+    if (metrics) lines.push(`Metrics: ${metrics}`);
+  }
+  if (snapshot.phaseIndex !== currentSavedPhaseIndex) {
+    lines.push("Inspection Note: generated for comparison only; this was not saved over the active program.");
+  }
+  lines.push("");
+
+  [...phaseProgram.week]
+    .sort((left, right) => left.dayIndex - right.dayIndex)
+    .forEach((day, index, days) => {
+      lines.push(...buildReferenceLinesForDay(day, { includeDebug: true }));
+      if (index < days.length - 1) lines.push("");
+    });
+
+  return lines;
+};
+
+const buildCurrentSavedWeekSnapshotText = (params: {
+  program: Program;
+  questionnaire: QuestionnaireData | null;
+  generationMode?: string | null;
+  initialVariationSeed?: string | null;
+  phaseSnapshots?: ProgressionInspectionPhaseSnapshot[];
+}) => {
+  const { program, questionnaire, generationMode, initialVariationSeed, phaseSnapshots } = params;
+  const lines: string[] = [];
+  const normalizedQuestionnaire = questionnaire
+    ? {
+        ...questionnaire,
+        daysPerWeek: normalizeDaysPerWeek(questionnaire.daysPerWeek),
+        equipment: normalizeEquipmentSelectionValues(questionnaire.equipment),
+      }
+    : null;
+  const phaseIndex = program.phaseIndex ?? program.phase?.phaseIndex ?? 1;
+  const phaseName =
+    program.phaseName ?? program.phase?.name ?? getPhaseMetaByIndex(phaseIndex).phaseName;
+
+  if (normalizedQuestionnaire) {
+    lines.push("QUESTIONNAIRE INPUTS");
+    lines.push(`Goal: ${normalizedQuestionnaire.goals}`);
+    lines.push(`Experience: ${normalizedQuestionnaire.experience}`);
+    lines.push(`Days Per Week: ${normalizedQuestionnaire.daysPerWeek}`);
+    lines.push(`Equipment: ${formatQuestionnaireList(normalizedQuestionnaire.equipment)}`);
+    lines.push(`Pain Areas: ${formatQuestionnaireList(normalizedQuestionnaire.painAreas)}`);
+    lines.push("");
+  }
+
+  lines.push("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
+  lines.push(`Program ID: ${program.id}`);
+  if (generationMode) {
+    lines.push(`Generation Mode: ${generationMode}`);
+  }
+  if (initialVariationSeed) {
+    lines.push(`Initial Live Variation Slot: ${initialVariationSeed}`);
+  }
+  lines.push(`Phase: ${phaseName} (index ${phaseIndex})`);
+  lines.push(`Cycle Index: ${program.cycleIndex ?? program.phase?.cycleIndex ?? 1}`);
+  lines.push(`Week Index: ${program.weekIndex ?? program.phase?.weekIndex ?? 1}`);
+  if (program.totalWeekIndex) {
+    lines.push(`Total Week Index: ${program.totalWeekIndex}`);
+  }
+  lines.push(`Template Version: ${program.templateVersion ?? "unknown"}`);
+  lines.push(`Main Layout Signature: ${buildMainLayoutSignature(program)}`);
+  lines.push("");
+  if (program.phaseObjective) {
+    lines.push("CURRENT PHASE OBJECTIVE");
+    lines.push(`Title: ${program.phaseObjective.title}`);
+    lines.push(`Objective: ${program.phaseObjective.objective}`);
+    lines.push(`Focus: ${program.phaseObjective.phaseFocus}`);
+    lines.push(`Week Intent: ${program.phaseObjective.weekIntent}`);
+    lines.push(`Why Now: ${program.phaseObjective.whyNow}`);
+    lines.push(`Guardrail: ${program.phaseObjective.guardrail}`);
+  }
+  lines.push("");
+
+  [...program.week]
+    .sort((left, right) => left.dayIndex - right.dayIndex)
+    .forEach((day, index, days) => {
+      lines.push(...buildReferenceLinesForDay(day, { includeDebug: true }));
+      if (index < days.length - 1) lines.push("");
+    });
+
+  if (phaseSnapshots?.length) {
+    lines.push("");
+    lines.push("FULL PROGRESSION SNAPSHOT (SAVED CURRENT PHASE + INSPECTION PHASES)");
+    lines.push(
+      "Use this section to compare phase intent, main layouts, prep, accessories, cooldown, and debug provenance across the full generated progression."
+    );
+    lines.push(
+      "Only the current phase is the saved live program; inspection phases are generated for review and are not persisted."
+    );
+    lines.push("");
+    phaseSnapshots.forEach((snapshot, index) => {
+      lines.push(...buildPhaseSnapshotLines(snapshot, phaseIndex));
+      if (index < phaseSnapshots.length - 1) lines.push("");
+    });
+  }
+
+  return lines.join("\n");
+};
+
+const buildProgressionInspectionPhaseSnapshots = (params: {
+  program: Program;
+  questionnaire: QuestionnaireData | null;
+  poseAnalysis?: PoseAnalysis | null;
+  assessmentReport?: AssessmentReport | null;
+  programProgress?: ProgramProgress | null;
+  initialVariationSeed?: string | null;
+}): ProgressionInspectionPhaseSnapshot[] => {
+  const {
+    program,
+    questionnaire,
+    poseAnalysis,
+    assessmentReport,
+    programProgress,
+    initialVariationSeed,
+  } = params;
+  const currentPhaseIndex = program.phaseIndex ?? program.phase?.phaseIndex ?? 1;
+  const normalizedQuestionnaire = questionnaire
+    ? {
+        ...questionnaire,
+        daysPerWeek: normalizeDaysPerWeek(questionnaire.daysPerWeek),
+        equipment: normalizeEquipmentSelectionValues(questionnaire.equipment),
+      }
+    : null;
+
+  return Array.from({ length: MAX_PHASE_INDEX }, (_, index) => {
+    const phaseIndex = index + 1;
+    const phaseMeta = getPhaseMetaByIndex(phaseIndex);
+    const phaseProfile = getPhaseProfile(phaseIndex);
+
+    if (phaseIndex === currentPhaseIndex) {
+      return {
+        phaseIndex,
+        phaseName: phaseMeta.phaseName,
+        description: phaseProfile.description,
+        source: "saved_current_phase",
+        program,
+      };
+    }
+
+    if (!normalizedQuestionnaire) {
+      return {
+        phaseIndex,
+        phaseName: phaseMeta.phaseName,
+        description: phaseProfile.description,
+        source: "unavailable",
+        program: null,
+        error: "questionnaire inputs unavailable",
+      };
+    }
+
+    try {
+      const phaseSignals = buildEngineSignals({
+        questionnaire: normalizedQuestionnaire,
+        poseAnalysis: poseAnalysis ?? null,
+        assessmentReport: assessmentReport ?? null,
+        history: {
+          sessions: [],
+          exerciseLogs: [],
+          programProgress: programProgress ?? null,
+        },
+        nowIso: program.createdAt ?? new Date().toISOString(),
+      });
+      const phaseResult = generateProgram({
+        mode: "weekly",
+        signals: phaseSignals,
+        nextProgramId: `${program.id}-progression-inspection-phase-${phaseIndex}`,
+        phaseIndex,
+        cycleIndex: 1,
+        weekIndex: 1,
+        totalWeekIndex: phaseIndex,
+        initialVariationSeed: initialVariationSeed ?? program.id,
+      });
+
+      if (!("program" in phaseResult)) {
+        return {
+          phaseIndex,
+          phaseName: phaseMeta.phaseName,
+          description: phaseProfile.description,
+          source: "unavailable",
+          program: null,
+          error: phaseResult.message,
+        };
+      }
+
+      return {
+        phaseIndex,
+        phaseName: phaseMeta.phaseName,
+        description: phaseProfile.description,
+        source: "generated_inspection_phase",
+        program: phaseResult.program,
+        seed: phaseResult.seed,
+        settingsHash: phaseResult.debug.settingsHash,
+      };
+    } catch (error) {
+      return {
+        phaseIndex,
+        phaseName: phaseMeta.phaseName,
+        description: phaseProfile.description,
+        source: "unavailable",
+        program: null,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unable to generate inspection phase snapshot.",
+      };
+    }
+  });
 };
 
 const loadImageFromFile = (file: File) =>
@@ -241,16 +710,35 @@ const resolveFirstRoutableDay = (program: Program | null) => {
 
 const isProgramCompatibleWithQuestionnaire = (
   candidate: Program | null,
-  questionnaire: QuestionnaireData
+  questionnaire: QuestionnaireData,
+  options: {
+    questionnaireSignature?: string | null;
+    savedQuestionnaireSignature?: string | null;
+  } = {}
 ) => {
   if (!candidate) return false;
+  const expectedSignature =
+    options.questionnaireSignature ?? buildQuestionnaireSignature(questionnaire);
+  const persistedSignature =
+    typeof candidate.questionnaireSignature === "string" && candidate.questionnaireSignature
+      ? candidate.questionnaireSignature
+      : options.savedQuestionnaireSignature ?? null;
   return (
     candidate.templateVersion === PROGRAM_TEMPLATE_VERSION &&
     candidate.daysPerWeek === questionnaire.daysPerWeek &&
     candidate.goalTrack === questionnaire.goals &&
+    persistedSignature === expectedSignature &&
     hasValidWeekStructure(candidate)
   );
 };
+
+const attachQuestionnaireSignatureToProgram = (
+  program: Program,
+  questionnaireSignature: string
+): Program => ({
+  ...program,
+  questionnaireSignature,
+});
 
 const formatProgramGenerationIssue = (error: unknown) => {
   if (error instanceof Error && error.message.trim()) {
@@ -288,6 +776,8 @@ export default function ResultsRoutine() {
   const [systemAdjustmentsExpanded, setSystemAdjustmentsExpanded] = useState(false);
   const [showSessionCompleteNotice, setShowSessionCompleteNotice] = useState(false);
   const [sessionCompleteNoticeFading, setSessionCompleteNoticeFading] = useState(false);
+  const [programReferenceOpen, setProgramReferenceOpen] = useState(false);
+  const [currentWeekCopyStatus, setCurrentWeekCopyStatus] = useState<string | null>(null);
   const [weekViewDetailsOpen, setWeekViewDetailsOpen] = useState(false);
   const [weekViewSelectedDay, setWeekViewSelectedDay] = useState<number | null>(
     null
@@ -315,13 +805,25 @@ export default function ResultsRoutine() {
   const sessionCompleteNoticeFadeTimeoutRef = useRef<number | null>(null);
   const sessionCompleteNoticeTimeoutRef = useRef<number | null>(null);
   const missingWorkoutRepairAttemptRef = useRef(new Set<string>());
+  const initialProgramLoadInFlightRef = useRef(false);
+  const initialProgramLoadSignatureRef = useRef<string | null>(null);
+  const programGenerationRequestTokenRef = useRef(0);
   const { photos } = usePhotoContext();
+  const [initialProgramLoadPending, setInitialProgramLoadPending] = useState(false);
+  const [reconcileProgramPending, setReconcileProgramPending] = useState(false);
+  const [settledProgramId, setSettledProgramId] = useState<string | null>(null);
   const [poseState, setPoseState] = useState<{
     loading: boolean;
     error: string | null;
     analysis: PoseAnalysis | null;
     report: AssessmentReport | null;
   }>({ loading: false, error: null, analysis: null, report: null });
+  const dataRef = useRef<QuestionnaireData | null>(null);
+  const poseAnalysisRef = useRef<PoseAnalysis | null>(null);
+  const assessmentReportRef = useRef<AssessmentReport | null>(null);
+  dataRef.current = data;
+  poseAnalysisRef.current = poseState.analysis;
+  assessmentReportRef.current = poseState.report;
   const triggerSessionCompleteNotice = () => {
     setSessionCompleteNoticeFading(false);
     setShowSessionCompleteNotice(true);
@@ -329,19 +831,36 @@ export default function ResultsRoutine() {
 
   const loadGenerationSignals = useCallback(
     async (programId?: string | null) => {
-      if (!data) {
+      const questionnaire = dataRef.current;
+      if (!questionnaire) {
         throw new Error("Questionnaire data is unavailable.");
       }
       return buildSignalsFromLocalState({
         programId,
-        questionnaire: data,
-        poseAnalysis: poseState.analysis ?? null,
-        assessmentReport: poseState.report ?? null,
+        questionnaire,
+        poseAnalysis: poseAnalysisRef.current ?? null,
+        assessmentReport: assessmentReportRef.current ?? null,
         nowIso: new Date().toISOString(),
       });
     },
-    [data, poseState.analysis, poseState.report]
+    []
   );
+
+  const beginProgramGenerationRequest = useCallback(() => {
+    programGenerationRequestTokenRef.current += 1;
+    setSettledProgramId(null);
+    return programGenerationRequestTokenRef.current;
+  }, []);
+
+  const isLatestProgramGenerationRequest = useCallback(
+    (requestToken: number) =>
+      requestToken === programGenerationRequestTokenRef.current,
+    []
+  );
+
+  const markProgramSettled = useCallback((programId: string) => {
+    setSettledProgramId(programId);
+  }, []);
 
   useEffect(() => {
     const loadBootstrap = async () => {
@@ -456,6 +975,80 @@ export default function ResultsRoutine() {
     if (!data) return null;
     return buildQuestionnaireSignature(data);
   }, [data]);
+  const programGenerationInputsReady = Boolean(
+    data && questionnaireSignature && (poseState.report || poseState.error)
+  );
+  const uploadedPhotoViews = useMemo(
+    () =>
+      orderedPhotoViewKeys.filter(
+        (view) => Boolean(photos[view as keyof typeof photos])
+      ),
+    [photos]
+  );
+  const detectedPoseViews = useMemo(() => {
+    const fromAnalysis = detectPoseAnalysisViews(poseState.analysis);
+    if (fromAnalysis.length) return fromAnalysis;
+    return detectAssessmentReportPhotoViews(poseState.report);
+  }, [poseState.analysis, poseState.report]);
+  const assessmentStatus = useMemo<AssessmentStatusInfo>(() => {
+    const uploadedViewsLabel = formatDetectedPhotoViews(uploadedPhotoViews);
+    const detectedViewsLabel = formatDetectedPhotoViews(detectedPoseViews);
+    const confidenceChip = formatConfidencePercent(poseState.analysis?.confidenceScore);
+    const hasPhotoAnalysis =
+      !poseState.error &&
+      (detectedPoseViews.length > 0 ||
+        hasPhotoDerivedAssessmentReport(poseState.report));
+
+    if (poseState.loading && uploadedPhotoViews.length > 0) {
+      return {
+        tone: "loading",
+        title: "Checking photos",
+        body: "Photo analysis is still running. The program status will settle when it finishes.",
+        chips: [`Uploaded: ${uploadedViewsLabel}`],
+      };
+    }
+
+    if (poseState.error) {
+      return {
+        tone: "failed",
+        title: "Photo analysis failed",
+        body: "Photo analysis could not be completed. Program used questionnaire fallback.",
+        chips: ["Questionnaire fallback", uploadedPhotoViews.length ? `Uploaded: ${uploadedViewsLabel}` : "No photos active"],
+      };
+    }
+
+    if (hasPhotoAnalysis) {
+      return {
+        tone: "photo",
+        title: "Photos analyzed",
+        body: "Program informed by uploaded posture photos and questionnaire inputs.",
+        chips: [
+          detectedPoseViews.length
+            ? `Views: ${detectedViewsLabel}`
+            : "Photo-derived report",
+          confidenceChip,
+        ].filter((chip): chip is string => Boolean(chip)),
+      };
+    }
+
+    return {
+      tone: "fallback",
+      title: "Questionnaire-only fallback",
+      body: "Program currently informed by questionnaire inputs only.",
+      chips: [
+        uploadedPhotoViews.length
+          ? "No usable photo analysis"
+          : "No photos uploaded",
+      ],
+    };
+  }, [
+    detectedPoseViews,
+    poseState.analysis?.confidenceScore,
+    poseState.error,
+    poseState.loading,
+    poseState.report,
+    uploadedPhotoViews,
+  ]);
 
   const dayPreviewRecommendations = (() => {
     if (!program) return [];
@@ -623,53 +1216,68 @@ export default function ResultsRoutine() {
     const state = loadAppState();
     const nextProgramVersion =
       typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
+    const requestToken = beginProgramGenerationRequest();
     const signals = await loadGenerationSignals(program.id);
+    if (!isLatestProgramGenerationRequest(requestToken)) return;
     const result = generateProgram({
       mode: "nextPhase",
       signals,
       currentProgram: program,
       nextProgramId: uuid(),
     });
+    if (!isLatestProgramGenerationRequest(requestToken)) return;
 
     if (result.status === "advanced") {
+      const signedProgram = attachQuestionnaireSignatureToProgram(
+        result.program,
+        questionnaireSignature ?? buildQuestionnaireSignature(data)
+      );
       const nowIso = new Date().toISOString();
       const activationBaselineAt = Date.now();
       const nextProgress: ProgramProgress = {
-        programId: result.program.id,
+        programId: signedProgram.id,
         lastCompletedDayIndex: null,
         nextDayIndex: 0,
         completedDayIndices: [],
-        phaseIndex: result.program.phaseIndex ?? 2,
+        phaseIndex: signedProgram.phaseIndex ?? 2,
         phaseStartedAt: nowIso,
         cyclesCompletedInPhase: 0,
-        daysPerWeek: result.program.daysPerWeek,
+        daysPerWeek: signedProgram.daysPerWeek,
         weekIndex: 1,
         countedWeekKeys: [],
         updatedAt: nowIso,
       };
-      await saveProgram(result.program);
+      if (!isLatestProgramGenerationRequest(requestToken)) return;
+      await saveProgram(signedProgram);
+      if (!isLatestProgramGenerationRequest(requestToken)) return;
       await saveProgramProgress(nextProgress);
-      setProgram(result.program);
+      if (!isLatestProgramGenerationRequest(requestToken)) return;
+      setProgram(signedProgram);
       setProgress(nextProgress);
       setSelectedDay(0);
       await clearDraftsByProgramId(program.id);
+      if (!isLatestProgramGenerationRequest(requestToken)) return;
       saveAppState({
-        programId: result.program.id,
-        activeProgramId: result.program.id,
+        programId: signedProgram.id,
+        activeProgramId: signedProgram.id,
         activeProgramBaselineAt: activationBaselineAt,
+        activeGenerationMode: "live_regeneration",
+        activeInitialVariationSeed: undefined,
         selectedDay: 0,
-        activePhaseIndex: result.program.phaseIndex ?? 1,
-        activeCycleIndex: result.program.cycleIndex ?? 1,
+        activePhaseIndex: signedProgram.phaseIndex ?? 1,
+        activeCycleIndex: signedProgram.cycleIndex ?? 1,
         programVersion: nextProgramVersion,
         activeSessionId: undefined,
         questionnaireSignature: questionnaireSignature ?? undefined,
         lastRoute: "/results",
       });
+      markProgramSettled(signedProgram.id);
       setAdvanceOpen(false);
       setAdvanceConfirm(false);
       return;
     }
 
+    markProgramSettled(program.id);
     setAdvanceMessage("message" in result ? result.message : null);
   };
 
@@ -685,7 +1293,9 @@ export default function ResultsRoutine() {
       typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
     const nowIso = new Date().toISOString();
     const activationBaselineAt = Date.now();
+    const requestToken = beginProgramGenerationRequest();
     const signals = await loadGenerationSignals(program.id);
+    if (!isLatestProgramGenerationRequest(requestToken)) return;
     const nextProgramResult = generateProgram({
       mode: "weekly",
       signals,
@@ -696,8 +1306,15 @@ export default function ResultsRoutine() {
       cycleIndex: 1,
       totalWeekIndex: (program.totalWeekIndex ?? program.weekIndex ?? 1) + 1,
     });
-    if (!("program" in nextProgramResult)) return;
-    const nextProgram = nextProgramResult.program;
+    if (!isLatestProgramGenerationRequest(requestToken)) return;
+    if (!("program" in nextProgramResult)) {
+      markProgramSettled(program.id);
+      return;
+    }
+    const nextProgram = attachQuestionnaireSignatureToProgram(
+      nextProgramResult.program,
+      questionnaireSignature ?? buildQuestionnaireSignature(data)
+    );
     const baseProgress: ProgramProgress = {
       programId: nextProgram.id,
       lastCompletedDayIndex: null,
@@ -721,16 +1338,22 @@ export default function ResultsRoutine() {
       daysPerWeek: nextProgram.daysPerWeek,
       updatedAt: nowIso,
     };
+    if (!isLatestProgramGenerationRequest(requestToken)) return;
     await saveProgram(nextProgram);
+    if (!isLatestProgramGenerationRequest(requestToken)) return;
     await saveProgramProgress(nextProgress);
+    if (!isLatestProgramGenerationRequest(requestToken)) return;
     setProgram(nextProgram);
     setProgress(nextProgress);
     setSelectedDay(0);
     await clearDraftsByProgramId(program.id);
+    if (!isLatestProgramGenerationRequest(requestToken)) return;
     saveAppState({
       programId: nextProgram.id,
       activeProgramId: nextProgram.id,
       activeProgramBaselineAt: activationBaselineAt,
+      activeGenerationMode: "live_regeneration",
+      activeInitialVariationSeed: undefined,
       selectedDay: 0,
       activePhaseIndex: nextProgram.phaseIndex ?? 2,
       activeCycleIndex: nextProgram.cycleIndex ?? 1,
@@ -739,85 +1362,198 @@ export default function ResultsRoutine() {
       questionnaireSignature: questionnaireSignature ?? undefined,
       lastRoute: "/results",
     });
+    markProgramSettled(nextProgram.id);
     setSkipPhaseOneOpen(false);
   };
 
   useEffect(() => {
-    if (!data || !questionnaireSignature) return;
+    if (!data || !questionnaireSignature || !programGenerationInputsReady) return;
+    if (
+      initialProgramLoadInFlightRef.current &&
+      initialProgramLoadSignatureRef.current === questionnaireSignature
+    ) {
+      return;
+    }
+    const requestToken = beginProgramGenerationRequest();
+    initialProgramLoadInFlightRef.current = true;
+    initialProgramLoadSignatureRef.current = questionnaireSignature;
+    setInitialProgramLoadPending(true);
+    let cancelled = false;
     const loadProgram = async () => {
       try {
         setProgramLoadIssue(null);
         const state = loadAppState();
+        const stateQuestionnaireSignature = state?.questionnaireSignature ?? null;
         if (state?.activeProgramId) {
           const active = await getProgram(state.activeProgramId);
-          if (active) {
+          if (
+            isProgramCompatibleWithQuestionnaire(active, data, {
+              questionnaireSignature,
+              savedQuestionnaireSignature: stateQuestionnaireSignature,
+            })
+          ) {
+            if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
             setProgram(active);
+            markProgramSettled(active.id);
             return;
           }
         }
-        const questionnaireMatches = state?.questionnaireSignature === questionnaireSignature;
-        if (questionnaireMatches) {
-          const latest = await getLatestProgram();
-          if (isProgramCompatibleWithQuestionnaire(latest, data)) {
-            setProgram(latest);
-            return;
-          }
+        const latest = await getLatestProgram();
+        const latestSavedSignature =
+          latest &&
+          (latest.id === state?.activeProgramId || latest.id === state?.programId)
+            ? stateQuestionnaireSignature
+            : null;
+        if (
+          latest &&
+          isProgramCompatibleWithQuestionnaire(latest, data, {
+            questionnaireSignature,
+            savedQuestionnaireSignature: latestSavedSignature,
+          })
+        ) {
+          if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
+          setProgram(latest);
+          markProgramSettled(latest.id);
+          return;
         }
-        const signals = await loadGenerationSignals(
-          state?.activeProgramId ?? state?.programId ?? null
+        const signals = await loadGenerationSignals(null);
+        if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
+        const nextProgramId = uuid();
+        const generated = generateProgram({
+          mode: "weekly",
+          signals,
+          nextProgramId,
+          initialVariationSeed: nextProgramId,
+        });
+        if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
+        if (!("program" in generated)) {
+          setProgramLoadIssue(generated.message);
+          return;
+        }
+        const newProgram = attachQuestionnaireSignatureToProgram(
+          generated.program,
+          questionnaireSignature
         );
+        if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
+        await saveProgram(newProgram);
+        if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
+        saveAppState({
+          programId: newProgram.id,
+          activeProgramId: newProgram.id,
+          activeProgramBaselineAt: Date.now(),
+          activeGenerationMode: "live_initial",
+          activeInitialVariationSeed: nextProgramId,
+          selectedDay: 0,
+          activePhaseIndex: newProgram.phaseIndex ?? 1,
+          activeCycleIndex: newProgram.cycleIndex ?? 1,
+          questionnaireSignature,
+          lastRoute: "/results",
+        });
+        setProgram(newProgram);
+        markProgramSettled(newProgram.id);
+      } catch (error) {
+        if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
+        setProgramLoadIssue(formatProgramGenerationIssue(error));
+      } finally {
+        if (isLatestProgramGenerationRequest(requestToken)) {
+          initialProgramLoadInFlightRef.current = false;
+          initialProgramLoadSignatureRef.current = null;
+          setInitialProgramLoadPending(false);
+        }
+      }
+    };
+    void loadProgram();
+    return () => {
+      cancelled = true;
+      if (isLatestProgramGenerationRequest(requestToken)) {
+        initialProgramLoadInFlightRef.current = false;
+        initialProgramLoadSignatureRef.current = null;
+        setInitialProgramLoadPending(false);
+      }
+    };
+  }, [
+    data,
+    questionnaireSignature,
+    programGenerationInputsReady,
+    loadGenerationSignals,
+    beginProgramGenerationRequest,
+    isLatestProgramGenerationRequest,
+    markProgramSettled,
+  ]);
+
+  useEffect(() => {
+    if (!program || !data || !questionnaireSignature) return;
+    if (
+      initialProgramLoadPending ||
+      initialProgramLoadInFlightRef.current ||
+      reconcileProgramPending
+    ) {
+      return;
+    }
+    if (settledProgramId !== program.id) return;
+    const state = loadAppState();
+    if (state?.activeProgramId && state.activeProgramId !== program.id) return;
+    const programIsCompatible = isProgramCompatibleWithQuestionnaire(program, data, {
+      questionnaireSignature,
+      savedQuestionnaireSignature: state?.questionnaireSignature ?? null,
+    });
+    if (programIsCompatible) return;
+
+    const reconcileProgram = async () => {
+      const requestToken = beginProgramGenerationRequest();
+      setReconcileProgramPending(true);
+      try {
+        const signals = await loadGenerationSignals(null);
+        if (!isLatestProgramGenerationRequest(requestToken)) return;
         const generated = generateProgram({
           mode: "weekly",
           signals,
           nextProgramId: uuid(),
         });
-        if (!("program" in generated)) {
-          setProgramLoadIssue(generated.message);
-          return;
+        if (!isLatestProgramGenerationRequest(requestToken)) return;
+        if (!("program" in generated)) return;
+        const reconciled = attachQuestionnaireSignatureToProgram(
+          generated.program,
+          questionnaireSignature
+        );
+        if (!isLatestProgramGenerationRequest(requestToken)) return;
+        await saveProgram(reconciled);
+        if (!isLatestProgramGenerationRequest(requestToken)) return;
+        saveAppState({
+          programId: reconciled.id,
+          activeProgramId: reconciled.id,
+          activeProgramBaselineAt: Date.now(),
+          activeGenerationMode: "live_regeneration",
+          activeInitialVariationSeed: undefined,
+          selectedDay: 0,
+          activePhaseIndex: reconciled.phaseIndex ?? 1,
+          activeCycleIndex: reconciled.cycleIndex ?? 1,
+          questionnaireSignature,
+        });
+        if (!isLatestProgramGenerationRequest(requestToken)) return;
+        setProgram(reconciled);
+        setSelectedDay(0);
+        markProgramSettled(reconciled.id);
+      } finally {
+        if (isLatestProgramGenerationRequest(requestToken)) {
+          setReconcileProgramPending(false);
         }
-        const newProgram = generated.program;
-        await saveProgram(newProgram);
-        setProgram(newProgram);
-      } catch (error) {
-        setProgramLoadIssue(formatProgramGenerationIssue(error));
       }
     };
-    loadProgram();
-  }, [data, questionnaireSignature, loadGenerationSignals]);
 
-  useEffect(() => {
-    if (!program || !data || !questionnaireSignature) return;
-    const state = loadAppState();
-    if (state?.activeProgramId && state.activeProgramId !== program.id) return;
-    const signatureMatches = state?.questionnaireSignature === questionnaireSignature;
-    if (signatureMatches && isProgramCompatibleWithQuestionnaire(program, data)) return;
-
-    const reconcileProgram = async () => {
-      const signals = await loadGenerationSignals(program.id);
-      const generated = generateProgram({
-        mode: "weekly",
-        signals,
-        currentProgram: program,
-        nextProgramId: uuid(),
-      });
-      if (!("program" in generated)) return;
-      const reconciled = generated.program;
-      await saveProgram(reconciled);
-      setProgram(reconciled);
-      setSelectedDay(0);
-      saveAppState({
-        programId: reconciled.id,
-        activeProgramId: reconciled.id,
-        activeProgramBaselineAt: Date.now(),
-        selectedDay: 0,
-        activePhaseIndex: reconciled.phaseIndex ?? 1,
-        activeCycleIndex: reconciled.cycleIndex ?? 1,
-        questionnaireSignature,
-      });
-    };
-
-    reconcileProgram();
-  }, [program, data, questionnaireSignature, loadGenerationSignals]);
+    void reconcileProgram();
+  }, [
+    program,
+    data,
+    questionnaireSignature,
+    loadGenerationSignals,
+    initialProgramLoadPending,
+    reconcileProgramPending,
+    settledProgramId,
+    beginProgramGenerationRequest,
+    isLatestProgramGenerationRequest,
+    markProgramSettled,
+  ]);
 
   useEffect(() => {
     if (!program || !questionnaireSignature) return;
@@ -848,6 +1584,10 @@ export default function ResultsRoutine() {
       programId: program.id,
       activeProgramId: program.id,
       activeProgramBaselineAt: nextBaselineAt,
+      activeGenerationMode: sameActiveProgram ? state?.activeGenerationMode : undefined,
+      activeInitialVariationSeed: sameActiveProgram
+        ? state?.activeInitialVariationSeed
+        : undefined,
       selectedDay: stateDay,
       activePhaseIndex: program.phaseIndex ?? 1,
       activeCycleIndex: program.cycleIndex ?? 1,
@@ -1017,15 +1757,18 @@ export default function ResultsRoutine() {
       const state = loadAppState();
       const nextProgramVersion =
         typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
+      const requestToken = beginProgramGenerationRequest();
       const signals = await loadGenerationSignals(program.id);
+      if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
       const nextCycleResult = generateProgram({
         mode: "nextCycle",
         signals,
         currentProgram: program,
         nextProgramId: uuid(),
       });
+      if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
 
-      const nextProgram = (() => {
+      const generatedNextProgram = (() => {
         if (nextCycleResult.status === "advanced") return nextCycleResult.program;
         const fallback = generateProgram({
           mode: "weekly",
@@ -1042,7 +1785,15 @@ export default function ResultsRoutine() {
         });
         return "program" in fallback ? fallback.program : null;
       })();
-      if (!nextProgram) return;
+      if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
+      if (!generatedNextProgram) {
+        markProgramSettled(program.id);
+        return;
+      }
+      const nextProgram = attachQuestionnaireSignatureToProgram(
+        generatedNextProgram,
+        questionnaireSignature ?? buildQuestionnaireSignature(data)
+      );
       const nowIso = new Date().toISOString();
       const nextPhaseIndex = nextProgram.phaseIndex ?? 1;
       const previousPhaseIndex = program.phaseIndex ?? 1;
@@ -1064,18 +1815,23 @@ export default function ResultsRoutine() {
         countedWeekKeys: [],
         updatedAt: nowIso,
       };
+      if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
       await saveProgram(nextProgram);
+      if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
       await saveProgramProgress(nextProgress);
-      if (cancelled) return;
+      if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
       setProgram(nextProgram);
       setProgress(nextProgress);
       setSelectedDay(0);
       setWeekViewSelectedDay(0);
       setWeekViewDetailsOpen(false);
+      if (cancelled || !isLatestProgramGenerationRequest(requestToken)) return;
       saveAppState({
         programId: nextProgram.id,
         activeProgramId: nextProgram.id,
         activeProgramBaselineAt: Date.now(),
+        activeGenerationMode: "live_regeneration",
+        activeInitialVariationSeed: undefined,
         selectedDay: 0,
         activePhaseIndex: nextProgram.phaseIndex ?? 1,
         activeCycleIndex: nextProgram.cycleIndex ?? 1,
@@ -1084,6 +1840,7 @@ export default function ResultsRoutine() {
         questionnaireSignature: questionnaireSignature ?? undefined,
         lastRoute: "/results",
       });
+      markProgramSettled(nextProgram.id);
     };
 
     void repairMissingNextWorkout();
@@ -1102,6 +1859,9 @@ export default function ResultsRoutine() {
     progress?.phaseStartedAt,
     questionnaireSignature,
     loadGenerationSignals,
+    beginProgramGenerationRequest,
+    isLatestProgramGenerationRequest,
+    markProgramSettled,
   ]);
 
   useEffect(() => {
@@ -1345,7 +2105,8 @@ export default function ResultsRoutine() {
   }, [program]);
 
   const temporaryProgramReferenceText = useMemo(() => {
-    if (!SHOW_TEMP_PROGRAM_REFERENCE_CARD) return "";
+    if (!SHOW_PHASE_PREVIEW_REFERENCE) return "";
+    if (!programReferenceOpen) return "";
     if (!program) return "";
 
     const lines: string[] = [];
@@ -1369,7 +2130,7 @@ export default function ResultsRoutine() {
 
     if (!referenceQuestionnaire) return lines.join("\n");
     lines.push("");
-    lines.push("PHASE PREVIEW (ALL 3 DAYS)");
+    lines.push("DETERMINISTIC PHASE PREVIEW (REFERENCE, ALL 3 DAYS)");
     for (let phaseIndex = 1; phaseIndex <= MAX_PHASE_INDEX; phaseIndex += 1) {
       const phaseMeta = getPhaseMetaByIndex(phaseIndex);
       const profile = getPhaseProfile(phaseIndex);
@@ -1423,7 +2184,84 @@ export default function ResultsRoutine() {
     }
 
     return lines.join("\n");
-  }, [data, poseState.analysis, poseState.report, program, progress]);
+  }, [data, poseState.analysis, poseState.report, program, programReferenceOpen, progress]);
+
+  const currentSavedWeekSnapshot = useMemo(() => {
+    if (!program || !data || !questionnaireSignature) {
+      return { settled: false, text: "" };
+    }
+    const state = loadAppState();
+    const metadataMatchesProgram =
+      state?.activeProgramId === program.id &&
+      state?.questionnaireSignature === questionnaireSignature;
+    const programIsCompatible = isProgramCompatibleWithQuestionnaire(program, data, {
+      questionnaireSignature,
+      savedQuestionnaireSignature: state?.questionnaireSignature ?? null,
+    });
+    if (
+      !metadataMatchesProgram ||
+      !programIsCompatible ||
+      settledProgramId !== program.id ||
+      initialProgramLoadPending ||
+      reconcileProgramPending
+    ) {
+      return { settled: false, text: "" };
+    }
+    const initialVariationSeed = metadataMatchesProgram
+      ? state?.activeInitialVariationSeed
+      : null;
+    const phaseSnapshots = buildProgressionInspectionPhaseSnapshots({
+      program,
+      questionnaire: data,
+      poseAnalysis: poseState.analysis ?? null,
+      assessmentReport: poseState.report ?? null,
+      programProgress: progress,
+      initialVariationSeed,
+    });
+    const text = buildCurrentSavedWeekSnapshotText({
+      program,
+      questionnaire: data,
+      generationMode: metadataMatchesProgram ? state?.activeGenerationMode : null,
+      initialVariationSeed,
+      phaseSnapshots,
+    });
+    return { settled: true, text };
+  }, [
+    data,
+    poseState.analysis,
+    poseState.report,
+    program,
+    progress,
+    questionnaireSignature,
+    settledProgramId,
+    initialProgramLoadPending,
+    reconcileProgramPending,
+  ]);
+
+  const currentSavedWeekSnapshotText = currentSavedWeekSnapshot.text;
+  const isCurrentSavedWeekSnapshotSettled = currentSavedWeekSnapshot.settled;
+  const currentSavedWeekSnapshotLoadingMessage = !program
+    ? programGenerationInputsReady
+      ? "Generating and saving your weekly program."
+      : "Preparing your questionnaire inputs."
+    : reconcileProgramPending
+    ? "Reconciling the saved program with your current questionnaire."
+    : initialProgramLoadPending
+    ? "Finishing the initial saved program."
+    : "Checking the saved program against your current questionnaire.";
+
+  const handleCopyCurrentSavedWeek = useCallback(() => {
+    if (!isCurrentSavedWeekSnapshotSettled || !currentSavedWeekSnapshotText) return;
+    const writeText = navigator.clipboard?.writeText;
+    if (!writeText) {
+      setCurrentWeekCopyStatus("Copy unavailable in this browser.");
+      return;
+    }
+    void writeText.call(navigator.clipboard, currentSavedWeekSnapshotText).then(
+      () => setCurrentWeekCopyStatus("Current saved week copied."),
+      () => setCurrentWeekCopyStatus("Copy failed. Select the text manually.")
+    );
+  }, [currentSavedWeekSnapshotText, isCurrentSavedWeekSnapshotSettled]);
 
   const adherencePercent = useMemo(() => {
     if (!activeDaysPerWeek) return 0;
@@ -1577,11 +2415,21 @@ export default function ResultsRoutine() {
 
       if (!entries.length) {
         const fallbackReport = buildAssessmentReport({ questionnaire: data });
-        setPoseState({
-          loading: false,
-          error: null,
-          analysis: null,
-          report: fallbackReport,
+        setPoseState((current) => {
+          if (
+            !current.loading &&
+            current.error === null &&
+            current.analysis === null &&
+            current.report
+          ) {
+            return current;
+          }
+          return {
+            loading: false,
+            error: null,
+            analysis: null,
+            report: fallbackReport,
+          };
         });
         void pushTrainingPatch({ assessment: fallbackReport as unknown as Record<string, unknown> });
         return;
@@ -1707,8 +2555,13 @@ export default function ResultsRoutine() {
       );
     }
     return (
-      <div className="ui-card p-6">
-        <p className="text-sm text-slate-600">Loading your weekly program...</p>
+      <div className="space-y-4">
+        <div className="ui-card p-6">
+          <p className="text-sm text-slate-600">Loading your weekly program...</p>
+        </div>
+        <CurrentSavedProgramSnapshotLoadingCard
+          message={currentSavedWeekSnapshotLoadingMessage}
+        />
       </div>
     );
   }
@@ -2283,6 +3136,8 @@ export default function ResultsRoutine() {
         />
       </div>
 
+      <AssessmentStatusCard status={assessmentStatus} />
+
       {showSessionCompleteNotice ? (
         <section
           className={`order-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-900 transition-opacity duration-300 ${
@@ -2303,33 +3158,45 @@ export default function ResultsRoutine() {
         </section>
       ) : null}
 
-      {SHOW_TEMP_PROGRAM_REFERENCE_CARD && temporaryProgramReferenceText ? (
-        <section
-          className="ui-card order-2 p-5"
-          data-testid="temporary-program-reference-card"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="text-base font-semibold text-slate-900">
-              Temporary Program Reference
-            </h3>
-            <span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
-              TEMP
-            </span>
-          </div>
-          <p className="mt-1 text-xs text-slate-600">
-            Plain reference output for screenshot review of all 3 days for active week and all phases.
-          </p>
-          <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
-            <pre className="whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
-              {temporaryProgramReferenceText}
-            </pre>
-          </div>
-        </section>
+      {program ? (
+        <>
+          {SHOW_PHASE_PREVIEW_REFERENCE ? (
+            <ProgramReferenceCard
+              isOpen={programReferenceOpen}
+              referenceText={temporaryProgramReferenceText}
+              onToggle={() => setProgramReferenceOpen((current) => !current)}
+            />
+          ) : null}
+          {isCurrentSavedWeekSnapshotSettled ? (
+            <ProgramReferenceCard
+              title="Current Saved Program Snapshot"
+              description="Actual saved current-week live program plus inspection snapshots for the other phases. This does not reshuffle or overwrite the saved plan."
+              isOpen
+              referenceText={currentSavedWeekSnapshotText}
+              cardTestId="current-saved-week-card"
+              bodyTestId="current-saved-week-body"
+              copyLabel="Copy Full Progression Snapshot"
+              onCopy={handleCopyCurrentSavedWeek}
+              copyStatus={currentWeekCopyStatus}
+              className="order-10 p-4 sm:p-5"
+              bodyClassName="mt-3 max-h-56 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3"
+            />
+          ) : (
+            <CurrentSavedProgramSnapshotLoadingCard
+              message={currentSavedWeekSnapshotLoadingMessage}
+            />
+          )}
+        </>
       ) : null}
 
-      <section id="week-view" ref={weekViewSectionRef} className="ui-card order-2 p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-base font-semibold text-slate-900">Week View</h3>
+      <section id="week-view" ref={weekViewSectionRef} className="ui-card order-4 p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              This Week
+            </p>
+            <h3 className="mt-1 text-lg font-semibold text-slate-900">Week View</h3>
+          </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary" onClick={focusTodayPlanInWeekView}>
               View today&apos;s plan
@@ -2359,7 +3226,7 @@ export default function ResultsRoutine() {
             Current day: {sessionLaunchDayIndex + 1}
           </span>
         </div>
-        <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
           {program.week.map((day) => {
             const isCompleted = completedDaySet.has(day.dayIndex);
             const isInProgress =
@@ -2402,7 +3269,7 @@ export default function ResultsRoutine() {
                   openWeekViewDayDetails(day.dayIndex, { scrollToDetails: true });
                 }}
                 disabled={isLocked}
-                className={`min-h-[88px] rounded-2xl border px-3 py-2.5 text-left transition ${
+                className={`min-h-[96px] rounded-lg border px-3.5 py-3 text-left transition ${
                   isCompleted
                     ? "border-emerald-300 bg-emerald-50"
                     : isInProgress
@@ -2459,7 +3326,7 @@ export default function ResultsRoutine() {
         {weekViewDetailsOpen && weekViewDay ? (
           <div
             ref={weekViewDetailsRef}
-            className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3"
+            className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3"
           >
             <div className="flex items-center justify-between gap-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -2481,7 +3348,7 @@ export default function ResultsRoutine() {
                 return (
                   <div
                     key={item.key}
-                    className="rounded-lg border border-slate-200 bg-white px-3 py-2"
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2.5"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-sm font-semibold text-slate-900">{item.name}</p>
@@ -2508,7 +3375,7 @@ export default function ResultsRoutine() {
         ) : null}
       </section>
 
-      <div className="order-3">
+      <div className="order-5">
         <DailyInsightCard
           insight={dailyInsight}
           coachNotes={coachNotes}
@@ -2516,16 +3383,23 @@ export default function ResultsRoutine() {
         />
       </div>
 
-      <section className="ui-card order-4 p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          Corrective Focus Summary
-        </h2>
-        <div className="mt-2 space-y-1.5">
+      <section className="ui-card order-3 p-4 sm:p-5">
+        <div className="flex flex-col gap-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Corrective Focus
+          </p>
+          <h2 className="text-lg font-semibold text-slate-900">
+            Corrective Focus Summary
+          </h2>
+        </div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {coachSummaryBullets.map((item) => (
-            <p key={item.label} className="text-sm text-slate-700">
-              <span className="font-medium text-slate-900">{item.label}:</span>{" "}
-              {item.text}
-            </p>
+            <div key={item.label} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {item.label}
+              </p>
+              <p className="mt-1 text-sm text-slate-700">{item.text}</p>
+            </div>
           ))}
         </div>
         {hasAdaptationCallout ? (

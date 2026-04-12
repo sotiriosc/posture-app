@@ -206,6 +206,7 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       const mains = getMainExercises(program);
       const categories = mains.map((exercise) => resolveMainCategory(exercise));
       const rearDeltCount = categories.filter((category) => category === "rearDeltMain").length;
+      const lateralCount = categories.filter((category) => category === "lateral").length;
       const shoulderSupportCount = categories.filter(
         (category) => category === "shoulderSupport"
       ).length;
@@ -213,11 +214,11 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
 
       expect(mains.length).toBe(expectedMainCount);
       expect(categories.filter((category) => category === "ohp").length).toBe(1);
-      expect(categories.filter((category) => category === "lateral").length).toBe(1);
-      expect(rearDeltCount + shoulderSupportCount).toBe(supplementalShoulderCount);
+      expect(lateralCount).toBeGreaterThanOrEqual(1);
+      expect(lateralCount + rearDeltCount - 1).toBe(supplementalShoulderCount);
+      expect(shoulderSupportCount).toBe(0);
       if (expectedMainCount >= 4) {
-        expect(rearDeltCount).toBeLessThanOrEqual(1);
-        expect(shoulderSupportCount).toBeGreaterThanOrEqual(1);
+        expect(rearDeltCount).toBeGreaterThanOrEqual(1);
       }
       expect(categories.filter((category) => category === "biceps").length).toBe(0);
       expect(categories.filter((category) => category === "triceps").length).toBe(0);
@@ -230,7 +231,7 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
     });
   });
 
-  test("beginner template rotation can produce rear-delt or shoulder-support third main", () => {
+  test("beginner gym template rotation keeps support drills out of the third main", () => {
     const templateThirdMainCategories = new Set<string>();
 
     Array.from({ length: 8 }, (_, variationIndex) => {
@@ -257,9 +258,7 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       expect(mains.length).toBe(3);
       expect(categories.filter((category) => category === "ohp").length).toBe(1);
       expect(categories.filter((category) => category === "lateral").length).toBe(1);
-      expect(
-        thirdMainCategory === "rearDeltMain" || thirdMainCategory === "shoulderSupport"
-      ).toBe(true);
+      expect(thirdMainCategory).toBe("rearDeltMain");
       expect(mains.some((exercise) => isRowMainLeak(exercise))).toBe(false);
       expect(mains.some((exercise) => isBackPullMainLeak(exercise))).toBe(false);
       expect(mains.some((exercise) => isFacePullMainLeak(exercise))).toBe(false);
@@ -270,10 +269,10 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
     });
 
     expect(templateThirdMainCategories.has("rearDeltMain")).toBe(true);
-    expect(templateThirdMainCategories.has("shoulderSupport")).toBe(true);
+    expect(templateThirdMainCategories.has("shoulderSupport")).toBe(false);
   });
 
-  test("intermediate template rotation uses multiple valid shoulder extra layouts and support variants", () => {
+  test("intermediate gym template rotation uses loaded shoulder extras instead of support variants", () => {
     const extraOrderSignatures = new Set<string>();
     const supportIds = new Set<string>();
 
@@ -297,7 +296,7 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       const mains = getMainExercises(program);
       const categories = mains.map((exercise) => resolveMainCategory(exercise));
       const extras = categories.slice(2).filter((category) =>
-        ["rearDeltMain", "shoulderSupport"].includes(category)
+        ["rearDeltMain", "lateral"].includes(category)
       );
       const supportMain = mains.find(
         (exercise) => resolveMainCategory(exercise) === "shoulderSupport"
@@ -305,9 +304,9 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
 
       expect(mains.length).toBe(4);
       expect(categories.filter((category) => category === "ohp").length).toBe(1);
-      expect(categories.filter((category) => category === "lateral").length).toBe(1);
-      expect(categories.filter((category) => category === "rearDeltMain").length).toBeLessThanOrEqual(1);
-      expect(categories.filter((category) => category === "shoulderSupport").length).toBeGreaterThanOrEqual(1);
+      expect(categories.filter((category) => category === "lateral").length).toBeGreaterThanOrEqual(1);
+      expect(categories.filter((category) => category === "rearDeltMain").length).toBeGreaterThanOrEqual(1);
+      expect(categories.filter((category) => category === "shoulderSupport").length).toBe(0);
       expect(mains.some((exercise) => isRowMainLeak(exercise))).toBe(false);
       expect(mains.some((exercise) => isBackPullMainLeak(exercise))).toBe(false);
       expect(mains.some((exercise) => isFacePullMainLeak(exercise))).toBe(false);
@@ -318,12 +317,11 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       if (supportMain) supportIds.add(supportMain.id);
     });
 
-    expect(extraOrderSignatures.has("rearDeltMain>shoulderSupport")).toBe(true);
-    expect(extraOrderSignatures.has("shoulderSupport>rearDeltMain")).toBe(true);
-    expect(supportIds.size).toBeGreaterThanOrEqual(2);
+    expect(extraOrderSignatures.size).toBeGreaterThanOrEqual(1);
+    expect(supportIds.size).toBe(0);
   });
 
-  test("intermediate/advanced gym extra shoulders include non-machine complementary support", () => {
+  test("intermediate/advanced gym extra shoulders avoid support-only main drills", () => {
     (["Intermediate", "Advanced"] as const).forEach((experience) => {
       const seed = `day2-complementary-support-${experience.toLowerCase()}`;
       const program = generateWeeklyProgram(
@@ -333,12 +331,9 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       );
       const mains = getMainExercises(program);
       const support = mains.find((exercise) => resolveMainCategory(exercise) === "shoulderSupport");
-      expect(support).toBeTruthy();
-      if (!support) return;
-      const machineOnly =
-        support.equipment.includes("machines") &&
-        support.equipment.every((equipment) => equipment === "machines");
-      expect(machineOnly).toBe(false);
+      expect(support).toBeFalsy();
+      expect(mains.some((exercise) => isFacePullMainLeak(exercise))).toBe(false);
+      expect(mains.some((exercise) => isExternalRotationMainLeak(exercise))).toBe(false);
     });
   });
 
@@ -492,7 +487,7 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
     expect(Math.max(...carryIndexes)).toBe(accessories.length - 1);
   });
 
-  test("advanced has 4 arm accessories (2 biceps + 2 triceps) + 1 carry finisher", () => {
+  test("advanced has 4 arm accessories (2 biceps + 2 triceps) without overfilling carry", () => {
     const program = generateWeeklyProgram(
       buildQuestionnaire({
         experience: "Advanced",
@@ -523,9 +518,8 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
     expect(triceps.length).toBe(2);
     expect(bicepsFamilyVariants.size).toBe(2);
     expect(tricepsFamilyVariants.size).toBe(2);
-    expect(carryIndexes.length).toBe(1);
-    expect(accessories.length).toBe(5);
-    expect(Math.max(...carryIndexes)).toBe(accessories.length - 1);
+    expect(carryIndexes.length).toBe(0);
+    expect(accessories.length).toBe(4);
   });
 
   test("gym availability avoids towel/isometric arm accessory hacks when weighted options exist", () => {

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { buildEngineSignals, generateProgram } from "@/lib/engine";
+import { clearProgramVariationHistory } from "@/lib/program";
 import type { ExerciseLog, Program, ProgramProgress, SessionRecord } from "@/lib/types";
 
 const questionnaire: QuestionnaireData = {
@@ -23,6 +24,31 @@ const comparableWeek = (program: Program) =>
       loadType: item.loadType,
     })),
   }));
+
+const mainLayoutSignature = (program: Program) =>
+  program.week
+    .map((day) =>
+      day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+        .join(",")
+    )
+    .join("|");
+
+const dayMainLayoutSignatures = (program: Program) =>
+  program.week.map((day) =>
+    day.routine
+      .filter((item) => item.section === "main")
+      .map((item) => item.exerciseId)
+      .join(",")
+  );
+
+const countChangedMainLayoutDays = (left: Program, right: Program) => {
+  const leftSignatures = dayMainLayoutSignatures(left);
+  const rightSignatures = dayMainLayoutSignatures(right);
+  return leftSignatures.filter((signature, index) => signature !== rightSignatures[index])
+    .length;
+};
 
 const buildSignals = (params?: {
   sessions?: SessionRecord[];
@@ -183,5 +209,252 @@ describe("engine program entry point", () => {
 
     expect(cycleOne.seed).not.toBe(cycleTwo.seed);
     expect(comparableWeek(cycleOne.program)).not.toEqual(comparableWeek(cycleTwo.program));
+  });
+
+  test("reference mode stays deterministic while live initial variation slots change main layout", () => {
+    clearProgramVariationHistory();
+    const mixedEquipmentQuestionnaire: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["dumbbells", "bands"],
+      daysPerWeek: 3,
+    };
+    const signals = buildEngineSignals({
+      questionnaire: mixedEquipmentQuestionnaire,
+      history: {
+        sessions: [],
+        exerciseLogs: [],
+        programProgress: null,
+      },
+      prefs: null,
+      nowIso: "2026-04-09T12:00:00.000Z",
+    });
+
+    const referenceA = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-reference-a",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const referenceB = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-reference-b",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const liveSlotA = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-slot-a",
+      initialVariationSeed: "initial-slot-a",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const liveSlotARepeat = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-slot-a-repeat",
+      initialVariationSeed: "initial-slot-a",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    const liveSlotB = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-slot-b",
+      initialVariationSeed: "initial-slot-c",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+
+    expect(referenceA.status).toBe("generated");
+    expect(referenceB.status).toBe("generated");
+    expect(liveSlotA.status).toBe("generated");
+    expect(liveSlotARepeat.status).toBe("generated");
+    expect(liveSlotB.status).toBe("generated");
+    if (
+      "program" in referenceA &&
+      "program" in referenceB &&
+      "program" in liveSlotA &&
+      "program" in liveSlotARepeat &&
+      "program" in liveSlotB
+    ) {
+      expect(comparableWeek(referenceA.program)).toEqual(comparableWeek(referenceB.program));
+      expect(comparableWeek(liveSlotA.program)).toEqual(comparableWeek(liveSlotARepeat.program));
+      expect(mainLayoutSignature(liveSlotA.program)).not.toBe(
+        mainLayoutSignature(liveSlotB.program)
+      );
+      [liveSlotA.program, liveSlotB.program].forEach((program) => {
+        expect(program.week).toHaveLength(3);
+        program.week.forEach((day) => {
+          expect(day.routine.some((item) => item.section === "main")).toBe(true);
+        });
+      });
+    }
+  });
+
+  test("advanced no-equipment live initial slots change main layout beyond filler variation", () => {
+    clearProgramVariationHistory();
+    const advancedNoEquipmentQuestionnaire: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Advanced",
+      equipment: ["none"],
+      daysPerWeek: 3,
+    };
+    const signals = buildEngineSignals({
+      questionnaire: advancedNoEquipmentQuestionnaire,
+      history: {
+        sessions: [],
+        exerciseLogs: [],
+        programProgress: null,
+      },
+      prefs: null,
+      nowIso: "2026-04-09T12:00:00.000Z",
+    });
+
+    const generateInitial = (slot: string, nextProgramId = `engine-live-${slot}`) =>
+      generateProgram({
+        mode: "weekly",
+        signals,
+        nextProgramId,
+        initialVariationSeed: slot,
+        phaseIndex: 2,
+        cycleIndex: 1,
+        weekIndex: 1,
+        totalWeekIndex: 1,
+      });
+
+    const liveSlotA = generateInitial("initial-slot-a", "advanced-none-live-slot-a");
+    const liveSlotARepeat = generateInitial(
+      "initial-slot-a",
+      "advanced-none-live-slot-a-repeat"
+    );
+    const liveSlotB = generateInitial("initial-slot-b", "advanced-none-live-slot-b");
+
+    expect(liveSlotA.status).toBe("generated");
+    expect(liveSlotARepeat.status).toBe("generated");
+    expect(liveSlotB.status).toBe("generated");
+    if ("program" in liveSlotA && "program" in liveSlotARepeat && "program" in liveSlotB) {
+      expect(comparableWeek(liveSlotA.program)).toEqual(
+        comparableWeek(liveSlotARepeat.program)
+      );
+      expect(
+        countChangedMainLayoutDays(liveSlotA.program, liveSlotB.program)
+      ).toBeGreaterThanOrEqual(1);
+      expect(mainLayoutSignature(liveSlotA.program)).not.toBe(
+        mainLayoutSignature(liveSlotB.program)
+      );
+    }
+  });
+
+  test("live weekly regeneration uses current-program memory without losing same-input determinism", () => {
+    clearProgramVariationHistory();
+    const signals = buildSignals();
+    const current = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-var-current",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    expect(current.status).toBe("generated");
+    if (!("program" in current)) {
+      throw new Error("Expected current program to generate.");
+    }
+
+    const regenerate = (nextProgramId: string) =>
+      generateProgram({
+        mode: "weekly",
+        signals,
+        currentProgram: current.program,
+        nextProgramId,
+      });
+
+    const firstRegeneration = regenerate("engine-live-var-repeat-a");
+    const secondRegeneration = regenerate("engine-live-var-repeat-b");
+
+    expect(firstRegeneration.status).toBe("generated");
+    expect(secondRegeneration.status).toBe("generated");
+    if ("program" in firstRegeneration && "program" in secondRegeneration) {
+      expect(comparableWeek(firstRegeneration.program)).toEqual(
+        comparableWeek(secondRegeneration.program)
+      );
+      expect(comparableWeek(firstRegeneration.program)).not.toEqual(
+        comparableWeek(current.program)
+      );
+    }
+  });
+
+  test("live 3-day regeneration changes main layout when recent memory has valid alternatives", () => {
+    clearProgramVariationHistory();
+    const mixedEquipmentQuestionnaire: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["dumbbells", "bands"],
+      daysPerWeek: 3,
+    };
+    const signals = buildEngineSignals({
+      questionnaire: mixedEquipmentQuestionnaire,
+      history: {
+        sessions: [],
+        exerciseLogs: [],
+        programProgress: null,
+      },
+      prefs: null,
+      nowIso: "2026-04-09T12:00:00.000Z",
+    });
+
+    const current = generateProgram({
+      mode: "weekly",
+      signals,
+      nextProgramId: "engine-live-main-layout-current",
+      phaseIndex: 2,
+      cycleIndex: 1,
+      weekIndex: 1,
+      totalWeekIndex: 1,
+    });
+    expect(current.status).toBe("generated");
+    if (!("program" in current)) {
+      throw new Error("Expected current program to generate.");
+    }
+
+    const regenerate = (nextProgramId: string) =>
+      generateProgram({
+        mode: "weekly",
+        signals,
+        currentProgram: current.program,
+        nextProgramId,
+      });
+
+    const firstRegeneration = regenerate("engine-live-main-layout-repeat-a");
+    const secondRegeneration = regenerate("engine-live-main-layout-repeat-b");
+
+    expect(firstRegeneration.status).toBe("generated");
+    expect(secondRegeneration.status).toBe("generated");
+    if ("program" in firstRegeneration && "program" in secondRegeneration) {
+      expect(comparableWeek(firstRegeneration.program)).toEqual(
+        comparableWeek(secondRegeneration.program)
+      );
+      expect(mainLayoutSignature(firstRegeneration.program)).not.toBe(
+        mainLayoutSignature(current.program)
+      );
+    }
   });
 });

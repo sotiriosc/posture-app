@@ -8,7 +8,7 @@ import {
   generateNextPhaseProgram,
   generateWeeklyProgram,
 } from "@/lib/program";
-import { buildProgramRecentGenerationSummary } from "@/lib/programVariationClient";
+import { buildProgramVariationOptions } from "@/lib/programVariationClient";
 import { uuid } from "@/lib/logStore";
 import type { Program } from "@/lib/types";
 import type {
@@ -98,6 +98,12 @@ const stableHash = (value: string) => {
 };
 
 const projectionHash = (value: unknown) => stableHash(stableSerialize(value));
+
+const deriveInitialLiveVariationIndex = (value: string) => {
+  const parsed = Number.parseInt(stableHash(`initial-live-variation:${value}`), 36);
+  if (!Number.isFinite(parsed)) return 1;
+  return (Math.abs(parsed) % 97) + 1;
+};
 
 const roundMetric = (value: number | null | undefined) =>
   typeof value === "number" && Number.isFinite(value) ? Number(value.toFixed(4)) : null;
@@ -406,6 +412,11 @@ const buildSeedPolicy = (params: {
   const { request, target, progression } = params;
   const signals = request.signals;
   const questionSignature = buildQuestionnaireSignature(signals.questionnaire);
+  const initialVariationSeed =
+    request.mode === "weekly" &&
+    !request.currentProgram
+      ? String(request.initialVariationSeed ?? "").trim()
+      : "";
   const settingsProjection = {
     questionnaireSignature: questionSignature,
     poseAnalysis: projectPoseAnalysis(signals),
@@ -436,13 +447,17 @@ const buildSeedPolicy = (params: {
     `target:${target.phaseIndex}:${target.cycleIndex}:${target.weekIndex}:${target.totalWeekIndex}`,
     `questionnaire:${projectionHash(questionSignature)}`,
     `settings:${projectionHash(settingsProjection)}`,
+    initialVariationSeed ? `initialVariation:${initialVariationSeed}` : "",
     `history:${projectionHash(historyProjection)}`,
-  ].join("|");
-  const variationIndex = Math.max(0, target.totalWeekIndex - 1);
+  ].filter(Boolean).join("|");
+  const variationIndex = initialVariationSeed
+    ? deriveInitialLiveVariationIndex(initialVariationSeed)
+    : Math.max(0, target.totalWeekIndex - 1);
 
   return {
     seed,
     settingsHash,
+    initialVariationSeed,
     variationIndex,
   };
 };
@@ -479,23 +494,22 @@ const buildWeeklyProgram = (
     target,
     progression,
   });
-  const variation =
-    request.currentProgram
-      ? {
-          seed: seedPolicy.seed,
-          settingsHash: seedPolicy.settingsHash,
-          variationIndex: seedPolicy.variationIndex,
-          index: seedPolicy.variationIndex,
-          useRecentMemory: false,
-          recentGenerationSummary: buildProgramRecentGenerationSummary(
-            request.currentProgram,
-            {
-              settingsHash: seedPolicy.settingsHash,
-              variationIndex: Math.max(0, seedPolicy.variationIndex - 1),
-            }
-          ),
-        }
-      : undefined;
+  const variation = request.currentProgram
+    ? buildProgramVariationOptions({
+        settingsHash: seedPolicy.settingsHash,
+        variationIndex: seedPolicy.variationIndex,
+        recentProgram: request.currentProgram,
+      })
+    : seedPolicy.initialVariationSeed || seedPolicy.variationIndex > 0
+    ? {
+        seed: seedPolicy.seed,
+        settingsHash: seedPolicy.settingsHash,
+        variationIndex: seedPolicy.variationIndex,
+        index: seedPolicy.variationIndex,
+        useRecentMemory: false,
+        initialLiveVariation: Boolean(seedPolicy.initialVariationSeed),
+      }
+    : undefined;
   const program = generateWeeklyProgram(request.signals.questionnaire, request.nextProgramId, {
     phaseIndex: target.phaseIndex,
     weekIndex: target.weekIndex,
@@ -507,7 +521,7 @@ const buildWeeklyProgram = (
     recentLogs: progression.recentLogs,
     previousWeek: request.currentProgram?.week,
     feedbackSummaryByExercise: progression.feedbackSummaryByExercise,
-    variation,
+    variation: variation ? { ...variation, seed: seedPolicy.seed } : undefined,
   });
 
   return {
