@@ -763,18 +763,18 @@ export default function SessionClient() {
   const activeTip = tips[tipIndex] ?? "";
   const tipTone = (() => {
     if (/breathe|breath/i.test(activeTip)) {
-      return "border-sky-200 bg-sky-50 text-sky-900";
+      return "border-sky-300/35 bg-sky-400/10 text-sky-100 shadow-[0_18px_42px_rgba(14,165,233,0.16)]";
     }
     if (/move|control|tempo/i.test(activeTip)) {
-      return "border-amber-200 bg-amber-50 text-amber-900";
+      return "border-amber-300/35 bg-amber-300/10 text-amber-100 shadow-[0_18px_42px_rgba(245,158,11,0.12)]";
     }
     if (/posture/i.test(activeTip)) {
-      return "border-indigo-200 bg-indigo-50 text-indigo-900";
+      return "border-indigo-300/35 bg-indigo-300/10 text-indigo-100 shadow-[0_18px_42px_rgba(99,102,241,0.14)]";
     }
     if (/relax|jaw|neck/i.test(activeTip)) {
-      return "border-rose-200 bg-rose-50 text-rose-900";
+      return "border-rose-300/35 bg-rose-300/10 text-rose-100 shadow-[0_18px_42px_rgba(244,63,94,0.13)]";
     }
-    return "border-slate-200 bg-slate-50 text-slate-900";
+    return "border-slate-300/25 bg-slate-900/65 text-slate-100 shadow-[0_18px_42px_rgba(15,23,42,0.22)]";
   })();
 
   useEffect(() => {
@@ -2057,9 +2057,38 @@ export default function SessionClient() {
           />
 
           <div
-            className={`ui-card rounded-2xl border px-4 py-3 text-sm font-semibold shadow-sm transition-colors ${tipTone}`}
+            className={`ui-card relative overflow-hidden rounded-lg border px-4 py-3 transition-[border-color,background-color,box-shadow,color] duration-500 ${tipTone}`}
           >
-            Corrective guidance: <span>{activeTip}</span>
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-current opacity-[0.08] blur-2xl" />
+            <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-current shadow-[0_0_18px_currentColor]" />
+                  <p className="text-[11px] font-semibold uppercase text-slate-300">
+                    Corrective guidance
+                  </p>
+                </div>
+                <p
+                  key={activeTip}
+                  className="mt-1 text-base font-semibold leading-snug text-white sm:text-lg"
+                  style={{ animation: "slideUpIn 260ms ease-out both" }}
+                >
+                  {activeTip}
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5" aria-label="Cycling guidance">
+                {tips.map((tip, index) => (
+                  <span
+                    key={tip}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      index === tipIndex
+                        ? "w-5 bg-current opacity-95"
+                        : "w-1.5 bg-slate-400/45"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2086,7 +2115,7 @@ export default function SessionClient() {
         </div>
 
         <div className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-start">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-stretch">
             <DualModeTimer
               key={currentItem.id}
               initialExerciseSeconds={currentTimer.workSeconds}
@@ -2108,16 +2137,18 @@ export default function SessionClient() {
               onStateChange={handleTimerRuntimeChange}
             />
 
-            <div className="space-y-2 rounded-lg border border-sky-300/25 bg-sky-400/10 p-3 text-sm text-slate-100 lg:pt-1">
-              <p className="font-semibold text-white">Cues</p>
-              <ul className="list-disc pl-5">
-                {currentItem.cues.map((cue) => (
-                  <li key={cue}>{cue}</li>
-                ))}
-              </ul>
-              <p className="mt-3 text-xs text-slate-300">
-                Common mistake: {currentItem.mistake}
-              </p>
+            <div className="flex h-full min-h-[220px] flex-col justify-center rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-5 text-sm text-slate-100 sm:px-5 sm:py-6">
+              <div>
+                <p className="font-semibold text-white">Cues</p>
+                <ul className="mt-4 list-disc space-y-2 pl-5 leading-6">
+                  {currentItem.cues.map((cue) => (
+                    <li key={cue}>{cue}</li>
+                  ))}
+                </ul>
+                <p className="mt-5 border-t border-sky-200/15 pt-4 text-xs leading-5 text-slate-300">
+                  Common mistake: {currentItem.mistake}
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -52,7 +52,6 @@ export default function ManageSubscriptionButton({
       <Button
         type="button"
         variant="primary"
-        className="h-11 w-full text-sm"
         onClick={openPortal}
         disabled={loading}
       >

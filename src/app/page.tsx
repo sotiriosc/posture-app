@@ -39,7 +39,7 @@ export default async function Home() {
         </header>
 
         <main className="flex flex-1 items-center justify-center py-12 lg:py-16">
-          <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-8 sm:gap-10">
+          <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-9 sm:gap-11">
             <section
               className="w-full text-center"
               style={{
@@ -78,7 +78,7 @@ export default async function Home() {
               </p>
             </section>
 
-            <section className="ui-soft-surface w-full rounded-lg px-4 py-5 sm:px-5">
+            <section className="ui-soft-surface w-full rounded-lg px-5 py-6 sm:px-6 sm:py-7">
               <div className="flex flex-wrap items-end justify-center gap-3 text-center sm:justify-between sm:text-left">
                 <div>
                   <p className="text-xs font-semibold uppercase text-slate-300">
@@ -89,11 +89,11 @@ export default async function Home() {
                   </h2>
                 </div>
               </div>
-              <div className="mt-4 grid grid-cols-1 gap-2.5 text-sm text-slate-100 md:auto-rows-fr md:grid-cols-3">
+              <div className="mt-5 grid grid-cols-1 items-stretch gap-3 text-sm text-slate-100 md:grid-cols-3">
                 {systemSteps.map((step, index) => (
                   <div
                     key={step}
-                    className="flex h-full min-h-[116px] flex-col justify-between rounded-lg border border-slate-400/18 bg-slate-950/42 px-4 py-3"
+                    className="flex h-full min-h-[128px] flex-col justify-center rounded-lg border border-slate-400/18 bg-slate-950/42 px-5 py-5 text-center sm:text-left"
                     style={{
                       animation: "slideUpIn 300ms ease-out both",
                       animationDelay: `${index * 50}ms`,
@@ -102,11 +102,11 @@ export default async function Home() {
                     <p className="text-[10px] font-semibold uppercase text-slate-400">
                       Step {index + 1}
                     </p>
-                    <p className="mt-3 text-base text-slate-100">{step}</p>
+                    <p className="mt-3 text-base leading-6 text-slate-100">{step}</p>
                   </div>
                 ))}
               </div>
-              <p className="mt-4 text-center text-sm text-slate-200">
+              <p className="mt-5 text-center text-sm text-slate-200">
                 No static workouts. The plan evolves with you.
               </p>
             </section>

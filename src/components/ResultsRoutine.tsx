@@ -4244,7 +4244,7 @@ export default function ResultsRoutine() {
                 : `${totalCompletedWorkoutCount} completed workouts total`}
             </p>
           </div>
-          <div className="mt-4 grid gap-3">
+          <div className="mt-4 grid h-[min(58vh,30rem)] gap-2.5 overflow-y-auto overscroll-contain pr-1 [-webkit-overflow-scrolling:touch] [scrollbar-gutter:stable] sm:h-[min(52vh,34rem)] sm:gap-3 sm:pr-2">
             {historyEntries.length ? (
               historyEntries.map((entry) => {
                 const { session, dayIndex } = entry;
@@ -4252,7 +4252,7 @@ export default function ResultsRoutine() {
                 return (
                   <div
                     key={session.id}
-                    className="ui-soft-surface rounded-lg px-4 py-3"
+                    className="ui-soft-surface rounded-lg px-3 py-3 sm:px-4"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm font-semibold text-white">
@@ -4333,8 +4333,8 @@ export default function ResultsRoutine() {
               <p className="text-sm font-semibold text-white">Account actions</p>
               <div className="mt-3 flex flex-col gap-2">
                 {authEnabled ? (
-                  <Link href="/account/billing">
-                    <Button variant="primary" className="h-11 w-full">
+                  <Link href="/account/billing" className="self-start">
+                    <Button variant="primary">
                       {plan === "pro" ? "Manage subscription" : "Billing status"}
                     </Button>
                   </Link>
