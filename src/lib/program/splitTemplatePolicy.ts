@@ -370,8 +370,8 @@ export const buildRawSplitTemplateSpecs = <
         cooldownFocus: "upper",
         constraints: {
           requiredMainPatterns: [
-            { pattern: "push" as MainLane, min: 2 },
-            { pattern: "pull" as MainLane, min: 1 },
+            { pattern: "push" as MainLane, min: 1 },
+            { pattern: "pull" as MainLane, min: 2 },
           ],
           requiredAccessories: [
             withAccessorySection(rules.scapPostureRule, 1),
@@ -386,7 +386,7 @@ export const buildRawSplitTemplateSpecs = <
         focusTags: ["shoulders", "arms", "upper", "lateral_delt", "rear_delt"],
         lanes: ["verticalPush", "push", "pull"] as MainLane[],
         warmupFocus: "upper",
-        cooldownFocus: "upper",
+        cooldownFocus: "core",
         constraints: {
           requiredMainPatterns: [{ pattern: "verticalPush" as MainLane, min: 1 }],
           requiredMainRules: [rules.lateralDeltRule],

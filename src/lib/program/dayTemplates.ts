@@ -12,17 +12,23 @@ export type ThreeDayMainLanePlanEntry = {
   slotKind: string;
   family:
     | "chest_fly"
+    | "extra_back_loaded"
     | "horizontal_pull"
     | "vertical_pull"
     | "horizontal_press_compound"
     | "pull_secondary"
     | "vertical_push"
+    | "lateral_delt_loaded"
+    | "rear_delt_loaded"
+    | "secondary_loaded_shoulder"
     | "lateral_delt"
     | "shoulder_pull"
     | "shoulder_structural_secondary"
     | "shoulder_structural_alternate"
     | "squat_primary"
     | "hinge_primary"
+    | "unilateral_lower_loaded"
+    | "secondary_lower_loaded"
     | "single_leg_or_secondary_squat"
     | "lower_secondary";
 };
@@ -62,8 +68,8 @@ const SHOULDERS_ARMS_3_DAY_COUNTS: Record<
   ThreeDayExperienceLevel,
   ThreeDayTemplateCounts
 > = {
-  beginner: { mainCount: 3, accessoryCount: 2 },
-  intermediate: { mainCount: 4, accessoryCount: 2 },
+  beginner: { mainCount: 3, accessoryCount: 3 },
+  intermediate: { mainCount: 4, accessoryCount: 3 },
   advanced: { mainCount: 4, accessoryCount: 4 },
 };
 
@@ -75,8 +81,8 @@ const LEGS_ABS_3_DAY_COUNTS: Record<ThreeDayExperienceLevel, ThreeDayTemplateCou
 
 const BACK_CHEST_3_DAY_BEGINNER_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
   { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-  { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
-  { lane: "pull", slotKind: "mainPullSupport", family: "pull_secondary" },
+  { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
+  { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
 ];
 
 const BACK_CHEST_3_DAY_INTERMEDIATE_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
@@ -88,17 +94,19 @@ const BACK_CHEST_3_DAY_INTERMEDIATE_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
 
 const BACK_CHEST_3_DAY_ADVANCED_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
   ...BACK_CHEST_3_DAY_INTERMEDIATE_MAIN_PLAN,
-  { lane: "pull", slotKind: "mainPullSupport", family: "pull_secondary" },
+  { lane: "pull", slotKind: "mainExtraBackLoaded", family: "extra_back_loaded" },
 ];
 
+// Three-day gym MAIN slots are role-locked. The broad lane still tells older
+// scoring how to group a slot, but slotKind/family is the contract repair must preserve.
 const SHOULDERS_ARMS_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
   { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-  { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
-  { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+  { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt_loaded" },
+  { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "rear_delt_loaded" },
   {
     lane: "pull",
-    slotKind: "mainShoulderStructuralSecondary",
-    family: "shoulder_structural_secondary",
+    slotKind: "mainSecondaryLoadedShoulder",
+    family: "secondary_loaded_shoulder",
   },
 ];
 
@@ -107,10 +115,10 @@ const LEGS_ABS_3_DAY_MAIN_PLAN: ThreeDayMainLanePlanEntry[] = [
   { lane: "hinge", slotKind: "mainHingePrimary", family: "hinge_primary" },
   {
     lane: "squat",
-    slotKind: "mainSingleLegOrSecondarySquat",
-    family: "single_leg_or_secondary_squat",
+    slotKind: "mainUnilateralLowerLoaded",
+    family: "unilateral_lower_loaded",
   },
-  { lane: "hinge", slotKind: "mainLowerSecondary", family: "lower_secondary" },
+  { lane: "hinge", slotKind: "mainSecondaryLowerLoaded", family: "secondary_lower_loaded" },
 ];
 
 export const get3DayTemplateCounts = (

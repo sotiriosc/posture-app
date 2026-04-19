@@ -1,6 +1,21 @@
 import type { Equipment } from "@/lib/equipment";
 
 export type ExerciseCategory = "warmup" | "activation" | "main" | "cooldown";
+export type ExerciseSlotRole =
+  | "pushCompound"
+  | "pushFly"
+  | "pullHorizontal"
+  | "pullVertical"
+  | "extraBackLoaded"
+  | "verticalPush"
+  | "lateralDeltLoaded"
+  | "rearDeltLoaded"
+  | "secondaryLoadedShoulder"
+  | "squatPrimary"
+  | "hingePrimary"
+  | "unilateralLowerLoaded"
+  | "secondaryLowerLoaded";
+export type ExerciseCarryType = "carry" | "coreStability";
 
 export type Exercise = {
   id: string;
@@ -23,6 +38,11 @@ export type Exercise = {
   tier?: 1 | 2 | 3;
   experienceMin?: "Beginner" | "Intermediate" | "Advanced";
   loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+  slotRoles?: ExerciseSlotRole[];
+  supportOnly?: boolean;
+  regressionOnly?: boolean;
+  loadedMainEligible?: boolean;
+  carryType?: ExerciseCarryType;
   durationOrReps: string;
   cues: string[];
   mistakes: string[];
@@ -2308,7 +2328,7 @@ const rawExercises: Exercise[] = [
     variantKey: "prone_sweep",
     difficulty: 1,
     tier: 1,
-    phaseMin: "skill",
+    phaseMin: "activation",
     difficultyTier: "hard",
     regressionOf: "kneeling-prayer-lat-pulldown",
     equipment: ["none"],
@@ -3942,8 +3962,8 @@ const rawExercises: Exercise[] = [
     category: "main",
     pattern: "knee_dominant",
     difficulty: 3,
-    phaseMin: "growth",
-    difficultyTier: "hard",
+    phaseMin: "activation",
+    difficultyTier: "moderate",
     progressionOf: "machine-leg-press",
     regressionOf: "machine-hack-squat",
     equipment: ["dumbbells", "bench"],
@@ -4007,7 +4027,7 @@ const rawExercises: Exercise[] = [
     category: "main",
     pattern: "hinge",
     difficulty: 2,
-    phaseMin: "growth",
+    phaseMin: "activation",
     difficultyTier: "hard",
     progressionOf: "glute-bridges",
     regressionOf: "dumbbell-sumo-rdl",
@@ -4719,6 +4739,168 @@ const inferMovementIntensityForExercise = (params: {
   return "pattern";
 };
 
+const inferSupportOnlyForExercise = (exercise: Exercise) => {
+  const descriptor = normalizeTagToken(
+    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
+      exercise.variantKey ?? ""
+    }`
+  );
+  if (descriptor.includes("reardelt") || descriptor.includes("reversepecdeck")) {
+    return false;
+  }
+  return [
+    "facepull",
+    "externalrotation",
+    "pullapart",
+    "snowangel",
+    "swimmer",
+    "yraise",
+    "traise",
+    "ytw",
+    "latsweep",
+    "scappullup",
+    "scapsupport",
+    "scaption",
+    "arnoldpress",
+    "landminepress",
+  ].some((token) => descriptor.includes(token));
+};
+
+const inferRegressionOnlyForExercise = (exercise: Exercise) => {
+  const descriptor = normalizeTagToken(
+    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
+      exercise.variantKey ?? ""
+    }`
+  );
+  const lowLoadMainBlocklist = new Set([
+    "bodyweight-squat",
+    "bodyweight-good-morning",
+    "back-extension-hold",
+    "single-leg-glute-bridge-hold",
+    "back-extension",
+    "glute-bridges",
+    "single-leg-hip-thrust",
+    "single-leg-rdl",
+    "supine-lat-pulldown-isometric",
+    "prone-elbow-row",
+    "back-widow",
+    "prone-lat-sweep",
+    "seated-lat-sweep-pulse",
+    "dead-bug",
+    "bird-dog",
+    "plank",
+    "side-plank",
+    "hollow-body-hold",
+  ]);
+  return (
+    lowLoadMainBlocklist.has(exercise.id) ||
+    exercise.loadType === "timed" ||
+    descriptor.includes("drill") ||
+    descriptor.includes("hold") ||
+    descriptor.includes("isometric") ||
+    descriptor.includes("deadbug") ||
+    descriptor.includes("birddog") ||
+    descriptor.includes("plank") ||
+    descriptor.includes("brace") ||
+    descriptor.includes("march")
+  );
+};
+
+const inferCarryTypeForExercise = (exercise: Exercise): ExerciseCarryType | undefined => {
+  const movementTokens = new Set(
+    exercise.movementPattern.map((item) => normalizeTagToken(item))
+  );
+  const tagTokens = new Set(exercise.tags.map((item) => normalizeTagToken(item)));
+  const descriptor = normalizeTagToken(`${exercise.id} ${exercise.name}`);
+  const hasCarrySignal =
+    movementTokens.has("carry") ||
+    tagTokens.has("carry") ||
+    descriptor.includes("carry") ||
+    descriptor.includes("suitcase") ||
+    descriptor.includes("farmer");
+  if (!hasCarrySignal) return undefined;
+  const isStationaryBrace =
+    descriptor.includes("march") ||
+    descriptor.includes("hold") ||
+    descriptor.includes("brace") ||
+    descriptor.includes("supported");
+  return isStationaryBrace ? "coreStability" : "carry";
+};
+
+const inferSlotRolesForExercise = (params: {
+  exercise: Exercise;
+  supportOnly: boolean;
+  regressionOnly: boolean;
+  loadedMainEligible: boolean;
+  carryType?: ExerciseCarryType;
+}): ExerciseSlotRole[] => {
+  const { exercise, supportOnly, regressionOnly, loadedMainEligible, carryType } = params;
+  if (exercise.category !== "main" || carryType) return [];
+
+  const movementTokens = new Set(
+    exercise.movementPattern.map((item) => normalizeTagToken(item))
+  );
+  const tagTokens = new Set(exercise.tags.map((item) => normalizeTagToken(item)));
+  const descriptor = normalizeTagToken(
+    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
+      exercise.variantKey ?? ""
+    } ${exercise.tags.join(" ")}`
+  );
+  const roles = new Set<ExerciseSlotRole>();
+  const hasMovement = (...tokens: string[]) =>
+    tokens.some((token) => movementTokens.has(normalizeTagToken(token)));
+  const textHasAny = (...tokens: string[]) =>
+    tokens.some((token) => descriptor.includes(normalizeTagToken(token)));
+
+  const isFly = textHasAny("fly", "pec deck", "pec-deck");
+  const isHorizontalPush =
+    (hasMovement("push") || hasMovement("horizontalPush")) && !hasMovement("verticalPush");
+  const isVerticalPull =
+    hasMovement("verticalPull") ||
+    (hasMovement("pull") &&
+      textHasAny("pulldown", "pull-down", "pullup", "pull-up", "chinup", "chin-up"));
+  const isHorizontalPull =
+    hasMovement("horizontalPull") || (hasMovement("pull") && textHasAny("row"));
+  const isLatAccent = textHasAny("pullover", "lat sweep", "lat-sweep");
+  const isVerticalPush =
+    hasMovement("verticalPush") ||
+    textHasAny("shoulder press", "overhead press", "strict press", "push press", "pike push");
+  const isLateralRaise = textHasAny("lateral raise", "lateral-raise") || tagTokens.has("lateraldelt");
+  const isRearDelt =
+    textHasAny("rear delt", "rear-delt", "reverse pec deck", "reverse-pec-deck") ||
+    tagTokens.has("reardelt");
+  const isSquat = hasMovement("squat") || textHasAny("squat", "leg press", "stepup", "step-up");
+  const isHinge = hasMovement("hinge") || textHasAny("rdl", "deadlift", "hip thrust", "hamstring curl");
+  const isUnilateralLower =
+    hasMovement("singleLeg") ||
+    textHasAny("split squat", "split-squat", "stepup", "step-up", "lunge", "cossack");
+
+  if (isHorizontalPush && isFly) roles.add("pushFly");
+  if (isHorizontalPush && !isFly) roles.add("pushCompound");
+  if (isHorizontalPull && !supportOnly) roles.add("pullHorizontal");
+  if (isVerticalPull && !isLatAccent && !supportOnly) roles.add("pullVertical");
+  if ((isHorizontalPull || isVerticalPull) && !isLatAccent && !supportOnly) {
+    roles.add("extraBackLoaded");
+  }
+  if (isVerticalPush && !supportOnly) roles.add("verticalPush");
+  if (isLateralRaise && !supportOnly) {
+    roles.add("lateralDeltLoaded");
+    roles.add("secondaryLoadedShoulder");
+  }
+  if (isRearDelt && !supportOnly) {
+    roles.add("rearDeltLoaded");
+    roles.add("secondaryLoadedShoulder");
+  }
+  if (loadedMainEligible && !regressionOnly) {
+    if (isSquat && !isUnilateralLower) roles.add("squatPrimary");
+    if (isHinge) roles.add("hingePrimary");
+    if (isUnilateralLower) roles.add("unilateralLowerLoaded");
+    if (isSquat || isHinge || isUnilateralLower) roles.add("secondaryLowerLoaded");
+  }
+
+  return Array.from(roles);
+};
+
 export const exercises: Exercise[] = rawExercises.map((exercise) => {
   const pattern = inferPatternFromExercise(exercise);
   const difficulty = inferDifficultyForExercise(exercise, pattern);
@@ -4728,6 +4910,26 @@ export const exercises: Exercise[] = rawExercises.map((exercise) => {
   );
   const difficultyTier = inferDifficultyTierForExercise({ exercise, difficulty });
   const movementIntensity = inferMovementIntensityForExercise({ exercise, pattern });
+  const supportOnly = exercise.supportOnly ?? inferSupportOnlyForExercise(exercise);
+  const regressionOnly =
+    exercise.regressionOnly ?? inferRegressionOnlyForExercise(exercise);
+  const carryType = exercise.carryType ?? inferCarryTypeForExercise(exercise);
+  const loadedMainEligible =
+    exercise.loadedMainEligible ??
+    (exercise.category === "main" &&
+      exercise.loadType === "weighted" &&
+      !supportOnly &&
+      !regressionOnly &&
+      !carryType);
+  const slotRoles =
+    exercise.slotRoles ??
+    inferSlotRolesForExercise({
+      exercise,
+      supportOnly,
+      regressionOnly,
+      loadedMainEligible,
+      carryType,
+    });
 
   return {
     ...exercise,
@@ -4736,6 +4938,11 @@ export const exercises: Exercise[] = rawExercises.map((exercise) => {
     difficultyTier,
     movementIntensity,
     painContraindications,
+    ...(slotRoles.length ? { slotRoles } : {}),
+    ...(supportOnly ? { supportOnly } : {}),
+    ...(regressionOnly ? { regressionOnly } : {}),
+    ...(loadedMainEligible ? { loadedMainEligible } : {}),
+    ...(carryType ? { carryType } : {}),
     focusTags: exercise.focusTags ?? exercise.tags ?? [],
     swapOptions:
       exercise.swapOptions && exercise.swapOptions.length

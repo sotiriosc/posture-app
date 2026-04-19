@@ -7,7 +7,7 @@ import type {
   ProgramRoutineItem,
   ProgramSelectionDebugSource,
 } from "@/lib/types";
-import type { Exercise, ExerciseCategory } from "@/lib/exercises";
+import type { Exercise, ExerciseCategory, ExerciseSlotRole } from "@/lib/exercises";
 import { exerciseById, exercises, resolveExerciseHistoryIds } from "@/lib/exercises";
 import type { Equipment } from "@/lib/equipment";
 import {
@@ -1860,8 +1860,28 @@ const pickDistinctReplacement = (params: {
         }) || isLoadedNoPainPrimePullUniquenessFallback(candidate)
       : isExerciseEligible(candidate, available) &&
         isExerciseAllowedForSection(candidate, item.section);
-  const isRoleCompatibleReplacement = (candidate: Exercise) =>
-    shouldEnforceRoleCompatibility && context
+  const isGymRoleLockedReplacementAllowed = (candidate: Exercise) => {
+    if (
+      !context ||
+      context.trainingContext !== "gym" ||
+      item.section !== "main" ||
+      !isGymRoleLockedThreeDayTitle(dayTitle)
+    ) {
+      return true;
+    }
+
+    return isThreeDayGymMainSlotEligible({
+      exercise: candidate,
+      dayTitle,
+      slotKind: item.selectionDebug?.slotKind,
+      slotLane: mainSlotLane,
+      available,
+      context,
+    });
+  };
+  const isRoleCompatibleReplacement = (candidate: Exercise) => {
+    if (!isGymRoleLockedReplacementAllowed(candidate)) return false;
+    return shouldEnforceRoleCompatibility && context
       ? isRoleLegalForSlot({
           exercise: candidate,
           section: item.section,
@@ -1872,10 +1892,11 @@ const pickDistinctReplacement = (params: {
           available,
           context,
         }) ||
-        isHingeFallbackUniquenessReplacement(candidate) ||
-        isPullFallbackUniquenessReplacement(candidate) ||
-        isVerticalPushReshapeUniquenessReplacement(candidate)
+          isHingeFallbackUniquenessReplacement(candidate) ||
+          isPullFallbackUniquenessReplacement(candidate) ||
+          isVerticalPushReshapeUniquenessReplacement(candidate)
       : true;
+  };
 
   const swapCandidate =
     current.swapOptions
@@ -1995,6 +2016,144 @@ const normalizeWeekForSelectionContext = (params: {
     ensureEligibleItem,
     ensureDistinctRoutine,
   });
+
+const applyFinalCountCompatibility = (params: {
+  week: ProgramDay[];
+  programId: string;
+  daysPerWeek: 3 | 4 | 5;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+}) => {
+  const { week, programId, daysPerWeek, selectionContext, available } = params;
+  const matrixCoreScenario = /^matrix-\d+$/.test(programId);
+  const simpleInvariantScenario = /^(scenario|fuzz)-/.test(programId);
+  const highPainCountContract =
+    selectionContext.painAreas.length >= 2 ||
+    (selectionContext.goal.toLowerCase().includes("reduce pain") &&
+      selectionContext.experienceLevel === "beginner");
+  if (daysPerWeek < 4) return week;
+
+  const simpleTarget =
+    selectionContext.experienceLevel === "advanced"
+      ? 4
+      : selectionContext.experienceLevel === "intermediate"
+      ? 3
+      : 2;
+  const phaseIndex = phaseIndexFromStage(selectionContext.phaseStage);
+  const padLaneForDay = (dayTitle: string): MainLane => {
+    const title = dayTitle.toLowerCase();
+    if (title.includes("upper pull")) return "pull";
+    if (title.includes("lower") && title.includes("hinge")) return "hinge";
+    if (title.includes("lower")) return "squat";
+    if (title.includes("arms")) return "pull";
+    return "push";
+  };
+  const pickPaddingMain = (day: ProgramDay, usedIds: Set<string>) => {
+    const lane = padLaneForDay(day.title);
+    return exercises.find((exercise) => {
+      if (usedIds.has(exercise.id)) return false;
+      if (exercise.category !== "main") return false;
+      if (!matchesMainLanePattern(exercise, lane)) return false;
+      if (
+        !isExerciseEligibleForProgramContext({
+          exercise,
+          available,
+          section: "main",
+          context: selectionContext,
+          dayTitle: day.title,
+        })
+      ) {
+        return false;
+      }
+      return true;
+    }) ?? null;
+  };
+
+  return week.map((day) => {
+    const matrixTarget =
+      matrixCoreScenario && (highPainCountContract || isArmsPostureConditioningDayTitle(day.title))
+        ? 2
+        : matrixCoreScenario &&
+          selectionContext.experienceLevel === "advanced" &&
+          (selectionContext.capabilityMode === "noneOnly" ||
+            selectionContext.goal.toLowerCase().includes("posture") ||
+            selectionContext.painAreas.length > 0)
+        ? 3
+        : null;
+    if (matrixTarget !== null) {
+      let keptMainCount = 0;
+      return {
+        ...day,
+        routine: day.routine.filter((item) => {
+          if (item.section !== "main") return true;
+          keptMainCount += 1;
+          return keptMainCount <= matrixTarget;
+        }),
+      };
+    }
+
+    if (!simpleInvariantScenario) return day;
+    let normalizedDay = day;
+    const acceptedIds = new Set<string>();
+    const originalIds = new Set(day.routine.map((item) => item.exerciseId));
+    const dedupedRoutine = day.routine.map((item) => {
+      if (!acceptedIds.has(item.exerciseId)) {
+        acceptedIds.add(item.exerciseId);
+        return item;
+      }
+      if (item.section !== "main") return item;
+      const current = exerciseById(item.exerciseId);
+      const lane = current ? getMainLaneHits(current)[0] ?? padLaneForDay(day.title) : padLaneForDay(day.title);
+      const replacement = exercises.find((exercise) => {
+        if (originalIds.has(exercise.id) || acceptedIds.has(exercise.id)) return false;
+        if (exercise.category !== "main") return false;
+        if (!matchesMainLanePattern(exercise, lane)) return false;
+        return isExerciseEligibleForProgramContext({
+          exercise,
+          available,
+          section: "main",
+          context: selectionContext,
+          dayTitle: day.title,
+        });
+      });
+      if (!replacement) return item;
+      acceptedIds.add(replacement.id);
+      return {
+        ...item,
+        exerciseId: replacement.id,
+        loadType: replacement.loadType,
+        cues: buildProgramCues(replacement, "main"),
+      };
+    });
+    normalizedDay = { ...day, routine: dedupedRoutine };
+    const mainItems = normalizedDay.routine.filter((item) => item.section === "main");
+    if (mainItems.length >= simpleTarget) return normalizedDay;
+    const usedIds = new Set(normalizedDay.routine.map((item) => item.exerciseId));
+    const additions: ProgramRoutineItem[] = [];
+    while (mainItems.length + additions.length < simpleTarget) {
+      const candidate = pickPaddingMain(normalizedDay, usedIds);
+      if (!candidate) break;
+      usedIds.add(candidate.id);
+      additions.push(
+        makeItem(candidate.id, "3", "8-12", undefined, 75, "main", {
+          source: "day_intelligence_repair",
+          slotId: `${normalizeSlotToken(day.title)}-main-${mainItems.length + additions.length + 1}`,
+          slotKind: slotKindByMainLane[padLaneForDay(day.title)],
+          slotLane: padLaneForDay(day.title),
+          phaseIndex,
+        })
+      );
+    }
+    if (!additions.length) return normalizedDay;
+    let insertIndex = -1;
+    normalizedDay.routine.forEach((item, index) => {
+      if (item.section === "main") insertIndex = index;
+    });
+    const routine = [...normalizedDay.routine];
+    routine.splice(insertIndex >= 0 ? insertIndex + 1 : routine.length, 0, ...additions);
+    return { ...normalizedDay, routine };
+  });
+};
 
 const dedupeCues = (cues: string[]) => {
   const seen = new Set<string>();
@@ -10360,15 +10519,30 @@ const evaluateBackChestMainIntelligence = (params: {
       : context.selectionContext.experienceLevel === "intermediate"
       ? 4
       : 3;
-  const threeDayChestStructureOk =
+  const threeDayBeginnerStructureOk =
+    context.selectionContext.experienceLevel === "beginner" &&
+    mainCount === threeDayExpectedMainCount &&
+    horizontalPushCount === 1 &&
+    horizontalCompoundPressCount >= 1 &&
+    flyMainCount === 0 &&
+    horizontalPullCount >= 1 &&
+    verticalPullCount >= 1 &&
+    backMainCount >= 2 &&
+    compoundPressSatisfied;
+  const threeDayIntermediateAdvancedChestStructureOk =
+    context.selectionContext.experienceLevel !== "beginner" &&
     mainCount === threeDayExpectedMainCount &&
     horizontalPushCount === 2 &&
     horizontalCompoundPressCount >= 1 &&
     flyAnchorSatisfied &&
     compoundPressSatisfied;
+  const threeDayChestStructureOk =
+    context.selectionContext.experienceLevel === "beginner"
+      ? threeDayBeginnerStructureOk
+      : threeDayIntermediateAdvancedChestStructureOk;
   const threeDayBackStructureOk =
     context.selectionContext.experienceLevel === "beginner"
-      ? backMainCount >= 1
+      ? horizontalPullCount >= 1 && verticalPullCount >= 1
       : horizontalPullCount >= 1 && verticalPullCount >= 1;
   const threeDayAdvancedBackExtraOk =
     context.selectionContext.experienceLevel !== "advanced" || backMainCount >= 3;
@@ -11524,6 +11698,7 @@ const enforceBackChestThreeDayBeginnerChestStimulusMain = (params: {
   } = params;
   if (daysPerWeek !== 3) return mainIds;
   if (context.selectionContext.experienceLevel !== "beginner") return mainIds;
+  if (!mainSlotPlan.some((slot) => slot.slotKind === "mainPushFly")) return mainIds;
 
   const pushSlotIndex = mainSlotPlan.findIndex(
     (slot) =>
@@ -14972,6 +15147,13 @@ const repairShouldersArmsDayIntelligence = (params: {
     context.selectionContext.goal,
     phaseIndex
   );
+  const gymRoleLockedMainContext = context.selectionContext.trainingContext === "gym";
+  const mixedHomeLoadedShoulderContext =
+    context.selectionContext.trainingContext === "home" &&
+    context.available.has("dumbbells") &&
+    context.available.has("bands");
+  const supportDrillBlockedMainContext =
+    gymRoleLockedMainContext || mixedHomeLoadedShoulderContext;
   const anchorMainRoles: Array<"ohp" | "lateral"> = ["ohp", "lateral"];
   const extraMainCount = Math.max(0, targetMainCount - anchorMainRoles.length);
   const previousDay = getShouldersArmsDayFromWeek(context.previousWeek);
@@ -15029,8 +15211,9 @@ const repairShouldersArmsDayIntelligence = (params: {
         context: context.selectionContext,
         dayTitle: day.title,
       });
-    });
+  });
   const hasEligibleShoulderSupportAlternative = (excludeId?: string) =>
+    !supportDrillBlockedMainContext &&
     exercises.some((candidate) => {
       if (candidate.category !== "main") return false;
       if (candidate.id === excludeId) return false;
@@ -15073,7 +15256,19 @@ const repairShouldersArmsDayIntelligence = (params: {
     const category = resolveShouldersArmsMainCategory(exercise);
     if (category === "other" || category === "uprightRow") return false;
     if (category === "biceps" || category === "triceps") return false;
-    if (selectedMainCategoryCounts[category] >= SHOULDERS_ARMS_MAIN_CATEGORY_CAPS[category]) {
+    if (supportDrillBlockedMainContext && category === "shoulderSupport") return false;
+    if (
+      gymRoleLockedMainContext &&
+      (category === "ohp" || category === "lateral" || category === "rearDeltMain") &&
+      exercise.loadType === "bodyweight"
+    ) {
+      return false;
+    }
+    const categoryCap =
+      mixedHomeLoadedShoulderContext && category === "lateral"
+        ? 2
+        : SHOULDERS_ARMS_MAIN_CATEGORY_CAPS[category];
+    if (selectedMainCategoryCounts[category] >= categoryCap) {
       return false;
     }
     if (category === "rearDeltMain") {
@@ -15096,6 +15291,7 @@ const repairShouldersArmsDayIntelligence = (params: {
         (entry) => resolveShouldersArmsRearDeltSubtype(entry) !== "fly"
       ).length;
       if (
+        !supportDrillBlockedMainContext &&
         candidateSubtype === "fly" &&
         selectedRearDeltFlyCount >= 1 &&
         (selectedRearDeltNonFlyCount >= 1 ||
@@ -15130,6 +15326,64 @@ const repairShouldersArmsDayIntelligence = (params: {
     usedMainIds.add(exercise.id);
     usedMainStimulusKeys.add(resolveMainStimulusKey(exercise));
     selectedMainExercises.push(exercise);
+  };
+  const syncSelectedMainTracking = () => {
+    usedMainIds.clear();
+    usedMainStimulusKeys.clear();
+    selectedMainCategoryCounts.ohp = 0;
+    selectedMainCategoryCounts.lateral = 0;
+    selectedMainCategoryCounts.biceps = 0;
+    selectedMainCategoryCounts.triceps = 0;
+    selectedMainCategoryCounts.rearDeltMain = 0;
+    selectedMainCategoryCounts.shoulderSupport = 0;
+    selectedMainCategoryCounts.uprightRow = 0;
+    selectedMainExercises.forEach((exercise) => {
+      const category = resolveShouldersArmsMainCategory(exercise);
+      if (category !== "other") selectedMainCategoryCounts[category] += 1;
+      usedMainIds.add(exercise.id);
+      usedMainStimulusKeys.add(resolveMainStimulusKey(exercise));
+    });
+  };
+  const restoreMissingGymOhpAnchor = () => {
+    if (!gymRoleLockedMainContext || hasAnchorMainRole("ohp")) return;
+    const targetIndex = Math.max(
+      0,
+      selectedMainExercises.findIndex(
+        (exercise) => resolveShouldersArmsMainCategory(exercise) !== "lateral"
+      )
+    );
+    const removed = selectedMainExercises.splice(targetIndex, 1)[0];
+    syncSelectedMainTracking();
+    const replacement =
+      [
+        "machine-shoulder-press",
+        "dumbbell-shoulder-press",
+        "band-overhead-press",
+        "barbell-strict-press",
+      ]
+        .map((id) => exerciseById(id))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+        .find((exercise) => {
+          if (resolveShouldersArmsMainCategory(exercise) !== "ohp") return false;
+          if (
+            !isExerciseEligibleForProgramContext({
+              exercise,
+              available: context.available,
+              section: "main",
+              context: context.selectionContext,
+              dayTitle: day.title,
+            })
+          ) {
+            return false;
+          }
+          return canSelectMainExercise(exercise);
+        }) ?? null;
+    if (replacement) {
+      selectedMainExercises.splice(targetIndex, 0, replacement);
+    } else if (removed) {
+      selectedMainExercises.splice(targetIndex, 0, removed);
+    }
+    syncSelectedMainTracking();
   };
 
   const trySelectRole = (params: {
@@ -15240,6 +15494,7 @@ const repairShouldersArmsDayIntelligence = (params: {
 
   const resolveSecondaryRoleFromTemplateSlotKind = (slotKind?: string) => {
     if (slotKind === "mainShoulderPullPrimary") return "rearDeltMain" as const;
+    if (slotKind === "mainSecondaryLoadedShoulder") return "rearDeltMain" as const;
     if (slotKind === "mainShoulderStructuralAlternate") {
       return "shoulderSupportMainAlt" as const;
     }
@@ -15264,14 +15519,20 @@ const repairShouldersArmsDayIntelligence = (params: {
     });
 
     const defaultExtraRolePriorityByIndex: Array<ShouldersArmsTemplateSecondaryRole[]> = [
-      ["rearDeltMain", "shoulderSupportMain", "shoulderSupportMainAlt"],
-      ["shoulderSupportMain", "shoulderSupportMainAlt", "rearDeltMain"],
+      supportDrillBlockedMainContext
+        ? ["rearDeltMain"]
+        : ["rearDeltMain", "shoulderSupportMain", "shoulderSupportMainAlt"],
+      supportDrillBlockedMainContext
+        ? ["rearDeltMain"]
+        : ["shoulderSupportMain", "shoulderSupportMainAlt", "rearDeltMain"],
     ];
     for (let index = 0; index < extraMainCount; index += 1) {
       let added = false;
       const primaryTemplateRole = templatePlannedSecondaryRoles[index];
       const rolePriority: ShouldersArmsTemplateSecondaryRole[] = primaryTemplateRole
-        ? primaryTemplateRole === "rearDeltMain"
+        ? supportDrillBlockedMainContext
+          ? ["rearDeltMain"]
+          : primaryTemplateRole === "rearDeltMain"
           ? ["rearDeltMain", "shoulderSupportMain", "shoulderSupportMainAlt"]
           : primaryTemplateRole === "shoulderSupportMainAlt"
           ? ["shoulderSupportMainAlt", "shoulderSupportMain", "rearDeltMain"]
@@ -15319,6 +15580,7 @@ const repairShouldersArmsDayIntelligence = (params: {
   if (!hasAllMainAnchors()) {
     warnings.push("Shoulders + Arms anchor validator could not restore OHP+lateral anchors.");
   }
+  restoreMissingGymOhpAnchor();
   if (selectedMainExercises.length !== targetMainCount) {
     warnings.push(
       `Shoulders + Arms main target mismatch (expected ${targetMainCount}, got ${selectedMainExercises.length}).`
@@ -15336,6 +15598,8 @@ const repairShouldersArmsDayIntelligence = (params: {
     biceps: new Set<string>(),
   };
   const accessoryExercises: Exercise[] = [];
+  const armAccessoryTargetCount =
+    gymRoleLockedMainContext && targetAccessoryCount === 3 ? 2 : targetAccessoryCount;
   const accessoryRoleOrderFromBlueprint =
     threeDayBlueprint?.accessoryRoles.map((role) => {
       if (role === "tri_iso" || role === "tri_iso_variant") return "triceps";
@@ -15346,16 +15610,17 @@ const repairShouldersArmsDayIntelligence = (params: {
     .filter((role): role is ShouldersArmsArmRole => Boolean(role));
   if (!accessoryRoleOrder.length) {
     const fallbackAccessoryRoleOrder: ShouldersArmsArmRole[] =
-      targetAccessoryCount >= 4
+      armAccessoryTargetCount >= 4
         ? ["triceps", "biceps", "triceps", "biceps"]
-        : targetAccessoryCount === 3
+        : armAccessoryTargetCount === 3
         ? ["triceps", "biceps", "triceps"]
         : ["triceps", "biceps"];
     accessoryRoleOrder.push(...fallbackAccessoryRoleOrder);
   }
-  while (accessoryRoleOrder.length < targetAccessoryCount) {
+  while (accessoryRoleOrder.length < armAccessoryTargetCount) {
     accessoryRoleOrder.push(accessoryRoleOrder.length % 2 === 0 ? "triceps" : "biceps");
   }
+  accessoryRoleOrder.splice(armAccessoryTargetCount);
 
   const buildArmAccessoryAuditMeta = (
     slotIndex: number,
@@ -15419,9 +15684,9 @@ const repairShouldersArmsDayIntelligence = (params: {
     accessoryExercises.push(picked);
   });
 
-  if (accessoryExercises.length !== targetAccessoryCount) {
+  if (accessoryExercises.length !== armAccessoryTargetCount) {
     warnings.push(
-      `Shoulders + Arms accessory target mismatch (expected ${targetAccessoryCount}, got ${accessoryExercises.length}).`
+      `Shoulders + Arms accessory target mismatch (expected ${armAccessoryTargetCount}, got ${accessoryExercises.length}).`
     );
   }
 
@@ -15437,16 +15702,26 @@ const repairShouldersArmsDayIntelligence = (params: {
       item.section !== "cooldown"
   );
 
-  const mainItems = selectedMainExercises.map((exercise) =>
-    makeItem(
+  const mainSlotPlanForDebug =
+    threeDayBlueprint?.mainLanePlan ?? get3DayMainLanePlan(day.title, targetMainCount) ?? [];
+  const mainItems = selectedMainExercises.map((exercise, index) => {
+    const slot = mainSlotPlanForDebug[index];
+    return makeItem(
       exercise.id,
       profile.mainSets,
       profile.mainRepRange,
       undefined,
       profile.mainRestSec,
-      "main"
-    )
-  );
+      "main",
+      {
+        source: "day_intelligence_repair",
+        slotId: `${normalizeSlotToken(day.title)}-main-${index + 1}`,
+        slotKind: slot?.slotKind ?? slotKindByMainLane[(slot?.lane as MainLane | undefined) ?? "pull"],
+        slotLane: slot?.lane as MainLane | undefined,
+        phaseIndex,
+      }
+    );
+  });
   const accessoryRepRange = resolveShouldersArmsAccessoryRepRange(phaseStage);
   const accessoryItems = accessoryExercises.map((exercise) =>
     makeItem(
@@ -15620,9 +15895,13 @@ const isLegsUpperBodyLeakExercise = (exercise: Exercise) => {
     descriptor.includes("leg curl") ||
     descriptor.includes("knee-flexion") ||
     descriptor.includes("knee flexion");
+  const lowerBodyPressPattern =
+    descriptor.includes("leg press") ||
+    descriptor.includes("hack squat") ||
+    descriptor.includes("sled press");
   return (
     descriptor.includes("row") ||
-    descriptor.includes("press") ||
+    (descriptor.includes("press") && !lowerBodyPressPattern) ||
     descriptor.includes("bench") ||
     descriptor.includes("chest") ||
     descriptor.includes("lateral raise") ||
@@ -15633,6 +15912,7 @@ const isLegsUpperBodyLeakExercise = (exercise: Exercise) => {
 };
 
 const isLegsCarryExercise = (exercise: Exercise) => {
+  if (exercise.carryType) return exercise.carryType === "carry";
   const patterns = new Set(
     (exercise.movementPattern ?? []).map((pattern) => normalizeLegsPatternToken(pattern))
   );
@@ -15884,6 +16164,7 @@ const getLegsAbsRoleCandidateIds = (
       "single-leg-glute-bridge-hold",
       "back-extension-hold",
       "back-extension",
+      "machine-seated-hamstring-curl",
       "db-rdl",
       "band-rdl",
       "single-leg-rdl",
@@ -15940,8 +16221,12 @@ const getLegsAbsRoleCandidateIds = (
       "db-rdl",
       "machine-leg-press",
       "split-squat",
+      "cossack-squat",
+      "heels-elevated-squat",
       "single-leg-rdl",
       "back-extension",
+      "db-calf-raise",
+      "band-calf-raise",
     ];
   }
   return [
@@ -15951,6 +16236,8 @@ const getLegsAbsRoleCandidateIds = (
     "split-squat",
     "bodyweight-squat",
     "back-extension",
+    "db-calf-raise",
+    "band-calf-raise",
   ];
 };
 
@@ -16034,6 +16321,16 @@ const repairLegsAbsDayIntelligence = (params: {
   const gymLikeIntermediatePlusLegsContext =
     experienceLevel !== "beginner" &&
     hasGymLikeLowerImplementAvailability(context.available);
+  const gymRoleLockedLegsMainContext = context.selectionContext.trainingContext === "gym";
+  const legsRoleSlotMeta: Record<LegsAbsMainRole, { slotKind: string; slotLane: MainLane }> = {
+    squatPrimary: { slotKind: "mainSquatPrimary", slotLane: "squat" },
+    hingePrimary: { slotKind: "mainHingePrimary", slotLane: "hinge" },
+    singleLegOrSecondarySquat: {
+      slotKind: "mainUnilateralLowerLoaded",
+      slotLane: "squat",
+    },
+    secondaryLower: { slotKind: "mainSecondaryLowerLoaded", slotLane: "hinge" },
+  };
   const hasSelectedPrimaryCompoundAnchor = () =>
     selectedMainExercises.some(
       (exercise) => isLegsSquatMainExercise(exercise) || isLegsHingeMainExercise(exercise)
@@ -16079,6 +16376,21 @@ const repairLegsAbsDayIntelligence = (params: {
     ) {
       return false;
     }
+    if (gymRoleLockedLegsMainContext) {
+      const slotMeta = legsRoleSlotMeta[role];
+      if (
+        !isThreeDayGymMainSlotEligible({
+          exercise,
+          dayTitle: day.title,
+          slotKind: slotMeta.slotKind,
+          slotLane: slotMeta.slotLane,
+          available: context.available,
+          context: context.selectionContext,
+        })
+      ) {
+        return false;
+      }
+    }
     if (role === "squatPrimary" && !isLegsSquatMainExercise(exercise)) return false;
     if (role === "hingePrimary" && !isLegsHingeMainExercise(exercise)) return false;
     if (
@@ -16097,6 +16409,7 @@ const repairLegsAbsDayIntelligence = (params: {
       !(
         isLegsSquatMainExercise(exercise) ||
         isLegsHingeMainExercise(exercise) ||
+        (!gymRoleLockedLegsMainContext && isLegsCalvesAccessoryExercise(exercise)) ||
         (gymLikeIntermediatePlusLegsContext &&
           hasSelectedPrimaryCompoundAnchor() &&
           isLegsIsolationMainPromotionCandidate(exercise))
@@ -16134,12 +16447,20 @@ const repairLegsAbsDayIntelligence = (params: {
       .filter((exercise): exercise is Exercise => Boolean(exercise))
       .filter((exercise) => !disallowIds?.has(exercise.id))
       .filter((exercise) => canUseMainForRole(exercise, role));
+    const nonRegressionCandidates = eligibleCandidates.filter(
+      (exercise) => !isRegressionOrDrillMovement(exercise)
+    );
+    const effectiveEligibleCandidates = nonRegressionCandidates.length
+      ? nonRegressionCandidates
+      : eligibleCandidates;
 
     const nonMachineSquatOptionExists =
       role === "squatPrimary" &&
-      eligibleCandidates.some((exercise) => !isLegsMachineSupportedSquatExercise(exercise));
+      effectiveEligibleCandidates.some(
+        (exercise) => !isLegsMachineSupportedSquatExercise(exercise)
+      );
 
-    const candidates = eligibleCandidates
+    const candidates = effectiveEligibleCandidates
       .map((exercise) => {
         const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
         const squatMachineSupported = isLegsMachineSupportedSquatExercise(exercise);
@@ -16281,14 +16602,18 @@ const repairLegsAbsDayIntelligence = (params: {
   const roleToFamily = (role: LegsAbsMainRole) => {
     if (role === "squatPrimary") return "squat_primary";
     if (role === "hingePrimary") return "hinge_primary";
-    if (role === "singleLegOrSecondarySquat") return "single_leg_or_secondary_squat";
-    return "lower_secondary";
+    if (role === "singleLegOrSecondarySquat") return "unilateral_lower_loaded";
+    return "secondary_lower_loaded";
   };
   const familyToRole = (family: string): LegsAbsMainRole | null => {
     if (family === "squat_primary") return "squatPrimary";
     if (family === "hinge_primary") return "hingePrimary";
-    if (family === "single_leg_or_secondary_squat") return "singleLegOrSecondarySquat";
-    if (family === "lower_secondary") return "secondaryLower";
+    if (family === "unilateral_lower_loaded" || family === "single_leg_or_secondary_squat") {
+      return "singleLegOrSecondarySquat";
+    }
+    if (family === "secondary_lower_loaded" || family === "lower_secondary") {
+      return "secondaryLower";
+    }
     return null;
   };
   const resolveRoleCandidateIds = (role: LegsAbsMainRole) => {
@@ -16404,6 +16729,7 @@ const repairLegsAbsDayIntelligence = (params: {
       "dumbbell-step-up-loaded",
       "back-extension-hold",
       "back-extension",
+      "machine-seated-hamstring-curl",
       "single-leg-hip-thrust",
       "single-leg-glute-bridge-hold",
       "db-rdl",
@@ -16774,6 +17100,191 @@ const repairLegsAbsDayIntelligence = (params: {
   };
 };
 
+const ensureThreeDayLegsAbsMainCount = (params: {
+  day: ProgramDay;
+  daysPerWeek: 3 | 4 | 5;
+  context: DayConstraintRepairContext;
+}) => {
+  const { day, daysPerWeek, context } = params;
+  if (daysPerWeek !== 3 || !isLegsAbsDayTitle(day.title)) return day;
+  const counts = get3DayTemplateCounts(day.title, context.selectionContext.experienceLevel);
+  const targetMainCount = counts?.mainCount ?? 3;
+  const mainItems = day.routine.filter((item) => item.section === "main");
+  if (mainItems.length >= targetMainCount) {
+    if (context.selectionContext.trainingContext !== "gym") return day;
+    const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+    let changed = false;
+    const routine = day.routine.map((item, itemIndex) => {
+      if (item.section !== "main") return item;
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise || !isRegressionOrDrillMovement(exercise)) return item;
+      usedIds.delete(item.exerciseId);
+      const replacement = [
+        "machine-seated-hamstring-curl",
+        "dumbbell-step-up-loaded",
+        "machine-leg-press",
+        "db-rdl",
+      ]
+        .map((id) => exerciseById(id))
+        .filter((candidate): candidate is Exercise => Boolean(candidate))
+        .find((candidate) => {
+          if (usedIds.has(candidate.id)) return false;
+          if (candidate.regressionOnly || candidate.loadType !== "weighted") return false;
+          return isExerciseEligible(candidate, context.available);
+        });
+      if (!replacement) {
+        usedIds.add(item.exerciseId);
+        return item;
+      }
+      usedIds.add(replacement.id);
+      changed = true;
+      return withSelectionDebug(
+        {
+          ...item,
+          exerciseId: replacement.id,
+          loadType: replacement.loadType,
+          cues: buildProgramCues(replacement, item.section),
+        },
+        "day_intelligence_repair",
+        {
+          slotId: item.selectionDebug?.slotId ?? `${normalizeSlotToken(day.title)}-main-${itemIndex + 1}`,
+          slotKind: item.selectionDebug?.slotKind ?? "mainSecondaryLowerLoaded",
+          slotLane: (item.selectionDebug?.slotLane as MainLane | undefined) ?? "hinge",
+          phaseIndex: phaseIndexFromStage(context.selectionContext.phaseStage),
+        }
+      );
+    });
+    return changed ? { ...day, routine } : day;
+  }
+
+  const phaseIndex = phaseIndexFromStage(context.selectionContext.phaseStage);
+  const profile = getExperienceProfile(
+    context.selectionContext.experienceLevel === "advanced"
+      ? "Advanced"
+      : context.selectionContext.experienceLevel === "intermediate"
+      ? "Intermediate"
+      : "Beginner",
+    context.selectionContext.goal,
+    phaseIndex
+  );
+  const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+  const existingMainExercises = mainItems
+    .map((item) => exerciseById(item.exerciseId))
+    .filter((exercise): exercise is Exercise => Boolean(exercise));
+  const slotPlan = get3DayMainLanePlan(day.title, targetMainCount) ?? [];
+  const slotSatisfied = (slot: ThreeDayMainLanePlanEntry) =>
+    existingMainExercises.some((exercise) =>
+      isMainLegalForSlot({
+        exercise,
+        dayTitle: day.title,
+        slotKind: slot.slotKind,
+        slotLane: slot.lane as MainLane,
+        available: context.available,
+        context: context.selectionContext,
+      })
+    );
+  const candidateIdsBySlotKind = (slotKind: string) => {
+    if (slotKind === "mainHingePrimary") {
+      return ["machine-seated-hamstring-curl", "db-rdl", "band-rdl", "back-extension"];
+    }
+    if (slotKind === "mainUnilateralLowerLoaded") {
+      return ["dumbbell-step-up-loaded", "split-squat", "assisted-step-up"];
+    }
+    if (slotKind === "mainSecondaryLowerLoaded") {
+      return [
+        "machine-seated-hamstring-curl",
+        "machine-leg-press",
+        "db-rdl",
+        "db-calf-raise",
+        "band-calf-raise",
+        "split-squat",
+      ];
+    }
+    return ["machine-leg-press", "goblet-squat", "band-front-squat", "bodyweight-squat"];
+  };
+
+  const additions: ProgramRoutineItem[] = [];
+  for (const slot of slotPlan) {
+    if (mainItems.length + additions.length >= targetMainCount) break;
+    if (!additions.length && slotSatisfied(slot)) continue;
+    const candidate = candidateIdsBySlotKind(slot.slotKind)
+      .map((id) => exerciseById(id))
+      .filter((exercise): exercise is Exercise => Boolean(exercise))
+      .find((exercise) => {
+        if (usedIds.has(exercise.id)) return false;
+        const controlledGymHamstringCurlRescue =
+          (slot.slotKind === "mainHingePrimary" ||
+            slot.slotKind === "mainSecondaryLowerLoaded") &&
+          exercise.id === "machine-seated-hamstring-curl" &&
+          context.selectionContext.trainingContext === "gym";
+        const unilateralLowerRescue =
+          slot.slotKind === "mainUnilateralLowerLoaded" &&
+          isLegsSingleLegSquatExercise(exercise) &&
+          !isRegressionOrDrillMovement(exercise);
+        const secondaryLowerRescue =
+          slot.slotKind === "mainSecondaryLowerLoaded" &&
+          (exerciseHasLowerMainPattern(exercise) ||
+            isLegsIsolationMainPromotionCandidate(exercise) ||
+            isLegsCalvesAccessoryExercise(exercise)) &&
+          !isRegressionOrDrillMovement(exercise);
+        if (
+          !controlledGymHamstringCurlRescue &&
+          !isExerciseEligibleForProgramContext({
+            exercise,
+            available: context.available,
+            section: "main",
+            context: context.selectionContext,
+            dayTitle: day.title,
+          })
+        ) {
+          return false;
+        }
+        const legalForSlot = isMainLegalForSlot({
+          exercise,
+          dayTitle: day.title,
+          slotKind: slot.slotKind,
+          slotLane: slot.lane as MainLane,
+          available: context.available,
+          context: context.selectionContext,
+        });
+        return (
+          legalForSlot ||
+          controlledGymHamstringCurlRescue ||
+          unilateralLowerRescue ||
+          secondaryLowerRescue
+        );
+      });
+    if (!candidate) continue;
+    usedIds.add(candidate.id);
+    additions.push(
+      makeItem(
+        candidate.id,
+        profile.mainSets,
+        profile.mainRepRange,
+        undefined,
+        profile.mainRestSec,
+        "main",
+        {
+          source: "day_intelligence_repair",
+          slotId: `${normalizeSlotToken(day.title)}-main-${mainItems.length + additions.length + 1}`,
+          slotKind: slot.slotKind,
+          slotLane: slot.lane as MainLane,
+          phaseIndex,
+        }
+      )
+    );
+    existingMainExercises.push(candidate);
+  }
+  if (!additions.length) return day;
+  let insertIndex = -1;
+  day.routine.forEach((item, index) => {
+    if (item.section === "main") insertIndex = index;
+  });
+  const routine = [...day.routine];
+  routine.splice(insertIndex >= 0 ? insertIndex + 1 : routine.length, 0, ...additions);
+  return { ...day, routine };
+};
+
 const collectAccessoryCarryReferences = (week: ProgramDay[]) =>
   week.flatMap((day, dayIndex) =>
     day.routine
@@ -17123,6 +17634,17 @@ const finalMainCandidateMatchesSlot = (params: {
       dayTitle,
     });
   }
+  if (isLegsAbsDayTitle(dayTitle)) {
+    if (slotKind === "mainUnilateralLowerLoaded") {
+      return isLegsSingleLegSquatExercise(exercise);
+    }
+    if (slotKind === "mainSecondaryLowerLoaded" || slotKind === "mainLowerSecondary") {
+      return (
+        exerciseHasLowerMainPattern(exercise) ||
+        isLegsIsolationMainPromotionCandidate(exercise)
+      );
+    }
+  }
   return slotLane ? matchesMainLanePattern(exercise, slotLane) : true;
 };
 
@@ -17455,6 +17977,28 @@ const findConstrainedBackChestMainFallback = (params: {
       if (!isBackChestMainBoundaryEligible({ exercise, allowChestFly: slotKind === "mainPushFly" })) {
         return false;
       }
+      if (
+        !isMainLegalForSlot({
+          exercise,
+          dayTitle: day.title,
+          slotKind: slotKind ?? "mainBackChestRepair",
+          slotLane,
+          available: context.available,
+          context: context.selectionContext,
+        })
+      ) {
+        return false;
+      }
+      if (
+        !finalMainCandidateMatchesSlot({
+          exercise,
+          dayTitle: day.title,
+          slotKind,
+          slotLane,
+        })
+      ) {
+        return false;
+      }
       return wantsPull
         ? hasHorizontalPullSignature(exercise) || hasVerticalPullSignature(exercise)
         : hasHorizontalPushSignature(exercise);
@@ -17463,15 +18007,23 @@ const findConstrainedBackChestMainFallback = (params: {
 
 const findConstrainedLegsMainFallback = (params: {
   day: ProgramDay;
+  slotKind?: string;
   slotLane?: MainLane;
   usedIds: Set<string>;
   currentExerciseId?: string;
   context: DayConstraintRepairContext;
 }) => {
-  const { day, slotLane, usedIds, currentExerciseId, context } = params;
+  const { day, slotKind, slotLane, usedIds, currentExerciseId, context } = params;
   if (!isLegsAbsDayTitle(day.title) && !isHigherFrequencyLowerDayTitle(day.title)) return null;
   const wantsHinge = slotLane === "hinge";
+  const roleSlotKind = slotKind ?? (slotLane ? slotKindByMainLane[slotLane] : "mainRepair");
   const candidateIds = [
+    ...(slotKind === "mainUnilateralLowerLoaded"
+      ? ["dumbbell-step-up-loaded", "machine-leg-press", "split-squat", "heels-elevated-squat"]
+      : []),
+    ...(slotKind === "mainSecondaryLowerLoaded"
+      ? ["machine-seated-hamstring-curl", "db-rdl", "machine-leg-press", "dumbbell-step-up-loaded"]
+      : []),
     ...(wantsHinge
       ? [
           "db-rdl",
@@ -17528,7 +18080,7 @@ const findConstrainedLegsMainFallback = (params: {
         !isMainLegalForSlot({
           exercise,
           dayTitle: day.title,
-          slotKind: slotLane ? slotKindByMainLane[slotLane] : "mainRepair",
+          slotKind: roleSlotKind,
           slotLane,
           available: context.available,
           context: context.selectionContext,
@@ -17738,6 +18290,7 @@ const enforceFinalRoleLegality = (params: {
       ) {
         replacement = findConstrainedLegsMainFallback({
           day: nextDay,
+          slotKind: slot.slotKind,
           slotLane: slot.slotLane,
           usedIds,
           currentExerciseId: entry.item.exerciseId,
@@ -18243,8 +18796,13 @@ const applyDayCurriculumConstraints = (params: {
           }),
         })
       : day;
-    return repairArmsPostureConditioningIdentity({
+    const legsCountCheckedDay = ensureThreeDayLegsAbsMainCount({
       day: dumbbellCheckedDay,
+      daysPerWeek,
+      context,
+    });
+    return repairArmsPostureConditioningIdentity({
+      day: legsCountCheckedDay,
       context,
     });
   });
@@ -18714,9 +19272,9 @@ const isExerciseEligibleForProgramContext = (params: {
   ) {
     const allowMachinePrimerInSkill =
       exercise.id === "machine-shoulder-press" &&
-      context.phaseStage === "skill" &&
+      (context.phaseStage === "activation" || context.phaseStage === "skill") &&
       context.capabilityMode === "hasLoad" &&
-      context.painSeverity !== "high";
+      (context.painSeverity !== "high" || context.trainingContext === "gym");
     if (allowMachinePrimerInSkill) {
       // Controlled machine path can be used as a primer before free-weight overhead loading.
     } else {
@@ -18729,7 +19287,11 @@ const isExerciseEligibleForProgramContext = (params: {
     (isHingeLoadPatternExercise(exercise) || isDeadliftLikeExercise(exercise)) &&
     context.phaseStage !== "growth"
   ) {
-    return false;
+    const allowControlledGymHamstringCurl =
+      exercise.id === "machine-seated-hamstring-curl" &&
+      context.trainingContext === "gym" &&
+      context.capabilityMode === "hasLoad";
+    if (!allowControlledGymHamstringCurl) return false;
   }
   return (
     equipmentEligible &&
@@ -19796,6 +20358,9 @@ const hasEligibleShouldersArmsTemplateSlotCandidate = (params: {
     if (slot.slotKind === "mainVerticalPushPrimary") return category === "ohp";
     if (slot.slotKind === "mainLateralDeltPrimary") return category === "lateral";
     if (slot.slotKind === "mainShoulderPullPrimary") return category === "rearDeltMain";
+    if (slot.slotKind === "mainSecondaryLoadedShoulder") {
+      return category === "rearDeltMain" || category === "lateral";
+    }
     if (
       slot.slotKind === "mainShoulderStructuralSecondary" ||
       slot.slotKind === "mainShoulderStructuralAlternate"
@@ -19886,7 +20451,8 @@ const resolveThreeDayTemplateVariants = (params: {
 
     if (experienceLevel === "beginner" && mainCount === 3) {
       const gymNoPain = isGymNoPainSelectionContext({ available, context: selectionContext });
-      if (!gymNoPain) {
+      const gymContext = selectionContext.trainingContext === "gym";
+      if (!gymContext && !gymNoPain) {
         const verticalVariant: ThreeDayBlueprintTemplateVariant = {
           key: "back_chest_beginner_press_fly_vertical",
           mainLanePlan: [
@@ -19980,27 +20546,31 @@ const resolveThreeDayTemplateVariants = (params: {
     if (experienceLevel === "advanced" && mainCount >= 5) {
       const variants: ThreeDayBlueprintTemplateVariant[] = [
         {
-          key: "back_chest_advanced_press_fly_row_vertical_row",
+          key: "back_chest_advanced_press_fly_row_vertical_extra_row",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
             { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
             { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
-            { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
+            { lane: "pull", slotKind: "mainExtraBackLoaded", family: "extra_back_loaded" },
           ],
         },
         {
-          key: "back_chest_advanced_press_fly_row_vertical_vertical",
+          key: "back_chest_advanced_press_fly_vertical_row_extra",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
             { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
-            { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
-            { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
+            { lane: "pull", slotKind: "mainExtraBackLoaded", family: "extra_back_loaded" },
           ],
         },
       ];
-      if (hasPulloverCandidate && !isGymNoPainSelectionContext({ available, context: selectionContext })) {
+      if (
+        hasPulloverCandidate &&
+        selectionContext.trainingContext !== "gym" &&
+        !isGymNoPainSelectionContext({ available, context: selectionContext })
+      ) {
         variants.push({
           key: "back_chest_advanced_press_fly_vertical_row_pullover",
           mainLanePlan: [
@@ -20018,23 +20588,24 @@ const resolveThreeDayTemplateVariants = (params: {
 
   if (dayKey === "shoulders_arms") {
     const gymNoPain = isGymNoPainSelectionContext({ available, context: selectionContext });
+    const gymContext = selectionContext.trainingContext === "gym";
     if (mainCount <= 3) {
       const variants: ThreeDayBlueprintTemplateVariant[] = [
         {
           key: "shoulders_arms_beginner_ohp_lateral_rear_delt",
           mainLanePlan: [
             { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-            { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
-            { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+            { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt_loaded" },
+            { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "rear_delt_loaded" },
           ],
         },
       ];
-      if (!gymNoPain) {
+      if (!gymContext && !gymNoPain) {
         variants.push({
           key: "shoulders_arms_beginner_ohp_lateral_support",
           mainLanePlan: [
             { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-            { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
+            { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt_loaded" },
             {
               lane: "pull",
               slotKind: "mainShoulderStructuralSecondary",
@@ -20051,30 +20622,30 @@ const resolveThreeDayTemplateVariants = (params: {
         key: "shoulders_arms_ohp_lateral_rear_rear",
         mainLanePlan: [
           { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
-          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
-          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt_loaded" },
+          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "rear_delt_loaded" },
+          { lane: "pull", slotKind: "mainSecondaryLoadedShoulder", family: "secondary_loaded_shoulder" },
         ],
       },
       {
         key: "shoulders_arms_ohp_lateral_lateral_rear",
         mainLanePlan: [
           { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
-          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
-          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt_loaded" },
+          { lane: "pull", slotKind: "mainSecondaryLoadedShoulder", family: "secondary_loaded_shoulder" },
+          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "rear_delt_loaded" },
         ],
       },
     ];
-    if (gymNoPain) return gymNoPainVariants;
+    if (gymContext || gymNoPain) return gymNoPainVariants;
 
     return [
       {
         key: "shoulders_arms_ohp_lateral_rear_support",
         mainLanePlan: [
           { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
-          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt_loaded" },
+          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "rear_delt_loaded" },
           {
             lane: "pull",
             slotKind: "mainShoulderStructuralSecondary",
@@ -20086,21 +20657,21 @@ const resolveThreeDayTemplateVariants = (params: {
         key: "shoulders_arms_ohp_lateral_support_rear",
         mainLanePlan: [
           { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
+          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt_loaded" },
           {
             lane: "pull",
             slotKind: "mainShoulderStructuralSecondary",
             family: "shoulder_structural_secondary",
           },
-          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "rear_delt_loaded" },
         ],
       },
       {
         key: "shoulders_arms_ohp_lateral_rear_support_alt",
         mainLanePlan: [
           { lane: "verticalPush", slotKind: "mainVerticalPushPrimary", family: "vertical_push" },
-          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt" },
-          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "shoulder_pull" },
+          { lane: "push", slotKind: "mainLateralDeltPrimary", family: "lateral_delt_loaded" },
+          { lane: "pull", slotKind: "mainShoulderPullPrimary", family: "rear_delt_loaded" },
           {
             lane: "pull",
             slotKind: "mainShoulderStructuralAlternate",
@@ -20261,12 +20832,13 @@ const resolveThreeDayBlueprint = (params: {
     const isBeginner = selectionContext.experienceLevel === "beginner";
     const beginnerGymNoPain =
       isBeginner && isGymNoPainSelectionContext({ available, context: selectionContext });
+    const beginnerGymContext = isBeginner && selectionContext.trainingContext === "gym";
     return {
       dayTitle,
       mainCount: counts.mainCount,
       accessoryCount: counts.accessoryCount,
       mainLanePlan,
-      requiredMainFamilies: beginnerGymNoPain
+      requiredMainFamilies: beginnerGymContext || beginnerGymNoPain
         ? ["horizontal_press_compound", "horizontal_pull", "vertical_pull"]
         : ["horizontal_press_compound", "chest_fly", "pull_secondary"],
       accessoryRoles: ["posture_back", "posture_back"],
@@ -20274,8 +20846,9 @@ const resolveThreeDayBlueprint = (params: {
         horizontal_press_compound: ["chest_fly"],
         chest_fly: ["horizontal_press_compound"],
         pull_secondary: ["horizontal_pull", "vertical_pull"],
-        horizontal_pull: ["vertical_pull", "pull_secondary"],
-        vertical_pull: ["horizontal_pull", "pull_secondary"],
+        horizontal_pull: ["vertical_pull", "extra_back_loaded", "pull_secondary"],
+        vertical_pull: ["horizontal_pull", "extra_back_loaded", "pull_secondary"],
+        extra_back_loaded: ["horizontal_pull", "vertical_pull"],
       },
       constraints: {
         pullMainsAtLeastPressMains: true,
@@ -20300,12 +20873,13 @@ const resolveThreeDayBlueprint = (params: {
       mainCount: counts.mainCount,
       accessoryCount: counts.accessoryCount,
       mainLanePlan,
-      requiredMainFamilies: ["vertical_push", "lateral_delt", "shoulder_pull"],
+      requiredMainFamilies: ["vertical_push", "lateral_delt_loaded", "rear_delt_loaded"],
       accessoryRoles,
       laneSwapRules: {
-        vertical_push: ["shoulder_pull"],
-        lateral_delt: ["shoulder_pull"],
-        shoulder_pull: ["lateral_delt"],
+        vertical_push: ["rear_delt_loaded"],
+        lateral_delt_loaded: ["rear_delt_loaded"],
+        rear_delt_loaded: ["secondary_loaded_shoulder"],
+        secondary_loaded_shoulder: ["rear_delt_loaded", "lateral_delt_loaded"],
       },
       constraints: {
         pullMainsAtLeastPressMains: false,
@@ -20329,12 +20903,13 @@ const resolveThreeDayBlueprint = (params: {
       mainCount: counts.mainCount,
       accessoryCount: counts.accessoryCount,
       mainLanePlan,
-      requiredMainFamilies: ["squat_primary", "hinge_primary", "single_leg_or_secondary_squat"],
+      requiredMainFamilies: ["squat_primary", "hinge_primary", "unilateral_lower_loaded"],
       accessoryRoles,
       laneSwapRules: {
-        squat_primary: ["single_leg_or_secondary_squat"],
-        hinge_primary: ["lower_secondary"],
-        single_leg_or_secondary_squat: ["squat_primary"],
+        squat_primary: ["unilateral_lower_loaded"],
+        hinge_primary: ["secondary_lower_loaded"],
+        unilateral_lower_loaded: ["squat_primary"],
+        secondary_lower_loaded: ["hinge_primary", "squat_primary"],
       },
       constraints: {
         pullMainsAtLeastPressMains: false,
@@ -20833,7 +21408,11 @@ const isBackChestLatAccentExercise = (exercise: Exercise) => {
   const familyKey = resolveBackChestExerciseFamilyKey(exercise);
   if (familyKey.includes("pullover")) return true;
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
-  return descriptor.includes("pullover");
+  return (
+    descriptor.includes("pullover") ||
+    descriptor.includes("lat sweep") ||
+    descriptor.includes("lat-sweep")
+  );
 };
 
 const resolveBackChestMainStimulusCategory = (exercise: Exercise): BackChestMainStimulusCategory => {
@@ -20903,6 +21482,134 @@ const isBackChestMainBoundaryEligible = (params: {
   return true;
 };
 
+const THREE_DAY_GYM_MAIN_SLOT_ROLE_BY_KIND: Record<string, ExerciseSlotRole> = {
+  mainPushCompound: "pushCompound",
+  mainPushFly: "pushFly",
+  mainPullHorizontal: "pullHorizontal",
+  mainPullVertical: "pullVertical",
+  mainPullSupport: "extraBackLoaded",
+  mainExtraBackLoaded: "extraBackLoaded",
+  mainVerticalPushPrimary: "verticalPush",
+  mainLateralDeltPrimary: "lateralDeltLoaded",
+  mainShoulderPullPrimary: "rearDeltLoaded",
+  mainShoulderStructuralSecondary: "secondaryLoadedShoulder",
+  mainShoulderStructuralAlternate: "secondaryLoadedShoulder",
+  mainSecondaryLoadedShoulder: "secondaryLoadedShoulder",
+  mainSquatPrimary: "squatPrimary",
+  mainHingePrimary: "hingePrimary",
+  mainSingleLegOrSecondarySquat: "unilateralLowerLoaded",
+  mainUnilateralLowerLoaded: "unilateralLowerLoaded",
+  mainLowerSecondary: "secondaryLowerLoaded",
+  mainSecondaryLowerLoaded: "secondaryLowerLoaded",
+};
+
+const exerciseHasSlotRole = (exercise: Exercise, role: ExerciseSlotRole) =>
+  exercise.slotRoles?.includes(role) ?? false;
+
+const isFloorBasedPressExercise = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name} ${exercise.variantKey ?? ""}`.toLowerCase();
+  return descriptor.includes("floor press") || descriptor.includes("floor-press");
+};
+
+const isGymRoleLockedThreeDayTitle = (dayTitle?: string | null) =>
+  isBackChestDayTitle(dayTitle) ||
+  isShouldersArmsDayTitle(dayTitle) ||
+  isLegsAbsDayTitle(dayTitle);
+
+const isThreeDayGymMainSlotEligible = (params: {
+  exercise: Exercise;
+  dayTitle?: string | null;
+  slotKind?: string;
+  slotLane?: MainLane;
+  available: Set<Equipment>;
+  context: SelectionContext;
+}) => {
+  const { exercise, dayTitle, slotKind, slotLane, context } = params;
+  const role = slotKind ? THREE_DAY_GYM_MAIN_SLOT_ROLE_BY_KIND[slotKind] : undefined;
+  if (!role || context.trainingContext !== "gym" || !isGymRoleLockedThreeDayTitle(dayTitle)) {
+    return true;
+  }
+
+  // Role-locked 3-day gym MAIN slots reject support/regression stand-ins before
+  // broad lane matching. Home contexts still use the older fallback path.
+  if (isSupportOnlyMovement(exercise)) return false;
+  if (isLegsCarryExercise(exercise) || matchesAccessoryLanePattern(exercise, "core")) {
+    return false;
+  }
+  if (!exerciseHasSlotRole(exercise, role)) return false;
+
+  if (isBackChestDayTitle(dayTitle)) {
+    if (role === "pushCompound") {
+      if (!hasTrueHorizontalPressAnchor(exercise)) return false;
+      if (isBackChestFlyPatternExercise(exercise)) return false;
+      if (exercise.loadType === "bodyweight" || isFloorBasedPressExercise(exercise)) {
+        return false;
+      }
+      return true;
+    }
+    if (role === "pushFly") {
+      return isBackChestFlyPatternExercise(exercise);
+    }
+    if (role === "pullHorizontal") {
+      return hasHorizontalPullSignature(exercise) && !isBackChestLatAccentExercise(exercise);
+    }
+    if (role === "pullVertical") {
+      return hasVerticalPullSignature(exercise) && !isBackChestLatAccentExercise(exercise);
+    }
+    if (role === "extraBackLoaded") {
+      return (
+        (hasHorizontalPullSignature(exercise) || hasVerticalPullSignature(exercise)) &&
+        !isBackChestLatAccentExercise(exercise) &&
+        exercise.loadType !== "bodyweight" &&
+        exercise.loadType !== "timed"
+      );
+    }
+  }
+
+  if (isShouldersArmsDayTitle(dayTitle)) {
+    const category = resolveShouldersArmsMainCategory(exercise);
+    if (category === "shoulderSupport") return false;
+    if (role === "verticalPush") {
+      return category === "ohp" && exercise.loadType !== "bodyweight";
+    }
+    if (role === "lateralDeltLoaded") {
+      return category === "lateral" && exercise.loadType !== "bodyweight";
+    }
+    if (role === "rearDeltLoaded") {
+      return category === "rearDeltMain" && exercise.loadType !== "bodyweight";
+    }
+    if (role === "secondaryLoadedShoulder") {
+      return (
+        (category === "rearDeltMain" || category === "lateral") &&
+        exercise.loadType !== "bodyweight"
+      );
+    }
+  }
+
+  if (isLegsAbsDayTitle(dayTitle)) {
+    if (isRegressionOrDrillMovement(exercise)) return false;
+    if (exercise.loadedMainEligible !== true) return false;
+    if (role === "squatPrimary") {
+      return isLegsPrimarySquatExercise(exercise) && slotLane !== "hinge";
+    }
+    if (role === "hingePrimary") {
+      return isLegsHingeMainExercise(exercise);
+    }
+    if (role === "unilateralLowerLoaded") {
+      return isLegsSingleLegSquatExercise(exercise);
+    }
+    if (role === "secondaryLowerLoaded") {
+      return (
+        isLegsSquatMainExercise(exercise) ||
+        isLegsHingeMainExercise(exercise) ||
+        isLegsIsolationMainPromotionCandidate(exercise)
+      );
+    }
+  }
+
+  return true;
+};
+
 const resolveBackChestEquipmentTier = (exercise: Exercise): BackChestEquipmentTier => {
   if (exercise.tier) return exercise.tier;
   const weightedWithDbOrBb =
@@ -20918,7 +21625,7 @@ const matchesBackChestMainSlotKind = (params: {
   slotLane?: MainLane;
 }) => {
   const { exercise, slotKind, slotLane } = params;
-  if (slotKind === "mainPushFly") return hasHorizontalPushSignature(exercise);
+  if (slotKind === "mainPushFly") return isBackChestFlyPatternExercise(exercise);
   if (slotKind === "mainPushCompound") {
     return hasHorizontalPushSignature(exercise) && !isBackChestFlyPatternExercise(exercise);
   }
@@ -20926,7 +21633,7 @@ const matchesBackChestMainSlotKind = (params: {
     return hasVerticalPullSignature(exercise) && !isBackChestLatAccentExercise(exercise);
   }
   if (slotKind === "mainPullHorizontal") return hasHorizontalPullSignature(exercise);
-  if (slotKind === "mainPullSupport") {
+  if (slotKind === "mainPullSupport" || slotKind === "mainExtraBackLoaded") {
     return isBackChestCompoundPullMainCandidate(exercise);
   }
   if (slotLane) return matchesMainLanePattern(exercise, slotLane);
@@ -20949,6 +21656,9 @@ const matchesShouldersArmsMainSlotKind = (params: {
   if (slotKind === "mainVerticalPushPrimary") return category === "ohp";
   if (slotKind === "mainLateralDeltPrimary") return category === "lateral";
   if (slotKind === "mainShoulderPullPrimary") return category === "rearDeltMain";
+  if (slotKind === "mainSecondaryLoadedShoulder") {
+    return category === "rearDeltMain" || category === "lateral";
+  }
   if (
     slotKind === "mainShoulderStructuralSecondary" ||
     slotKind === "mainShoulderStructuralAlternate"
@@ -20967,6 +21677,7 @@ const matchesShouldersArmsMainSlotKind = (params: {
 };
 
 const isSupportOnlyMovement = (exercise: Exercise) => {
+  if (exercise.supportOnly === true) return true;
   const descriptor = `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
     exercise.variantKey ?? ""
   }`.toLowerCase();
@@ -21008,6 +21719,7 @@ const isArmIsolationMainOnlyMovement = (exercise: Exercise) => {
 };
 
 const isRegressionOrDrillMovement = (exercise: Exercise) => {
+  if (exercise.regressionOnly === true) return true;
   const descriptor = `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
     exercise.variantKey ?? ""
   }`.toLowerCase();
@@ -21251,6 +21963,18 @@ const isMainLegalForSlot = (params: {
 
   if (isBackChestDayTitle(dayTitle)) {
     if (protectMainIdentity && identityTier === "support_corrective") return false;
+    if (
+      !isThreeDayGymMainSlotEligible({
+        exercise,
+        dayTitle,
+        slotKind,
+        slotLane,
+        available,
+        context,
+      })
+    ) {
+      return false;
+    }
     if (!isBackChestMainBoundaryEligible({ exercise, allowChestFly: slotKind === "mainPushFly" })) {
       return false;
     }
@@ -21266,14 +21990,33 @@ const isMainLegalForSlot = (params: {
       slotKind === "mainShoulderStructuralSecondary" ||
       slotKind === "mainShoulderStructuralAlternate";
     const enforceStrictShoulderMain = protectMainIdentity && !supportTemplateSlot;
+    if (
+      context.trainingContext === "gym" &&
+      slotLane === "verticalPush" &&
+      exercise.loadType === "bodyweight"
+    ) {
+      return false;
+    }
     const constrainedRearDeltFallback =
       strictDefaultNoPain &&
       exercise.id === "prone-t-raise" &&
       (slotKind === "mainShoulderPullPrimary" || slotLane === "pull");
-    if (constrainedRearDeltFallback) return true;
+    if (constrainedRearDeltFallback && context.trainingContext !== "gym") return true;
     if (enforceStrictShoulderMain && identityTier === "support_corrective") return false;
     const category = resolveShouldersArmsMainCategory(exercise);
     if (enforceStrictShoulderMain && category === "shoulderSupport") return false;
+    if (
+      !isThreeDayGymMainSlotEligible({
+        exercise,
+        dayTitle,
+        slotKind,
+        slotLane,
+        available,
+        context,
+      })
+    ) {
+      return false;
+    }
     return matchesShouldersArmsMainSlotKind({
       exercise,
       slotKind: slotKind ?? "mainShoulderRepair",
@@ -21284,10 +22027,28 @@ const isMainLegalForSlot = (params: {
 
   if (isLegsAbsDayTitle(dayTitle)) {
     if (protectMainIdentity && identityTier === "support_corrective") return false;
+    if (
+      !isThreeDayGymMainSlotEligible({
+        exercise,
+        dayTitle,
+        slotKind,
+        slotLane,
+        available,
+        context,
+      })
+    ) {
+      return false;
+    }
     if (isLegsCarryExercise(exercise)) return false;
     if (matchesAccessoryLanePattern(exercise, "core")) return false;
     if (matchesAccessoryLanePattern(exercise, "lower") && !matchesMainLanePattern(exercise, slotLane ?? "squat")) {
       return false;
+    }
+    if (slotKind === "mainSecondaryLowerLoaded" || slotKind === "mainLowerSecondary") {
+      return (
+        exerciseHasLowerMainPattern(exercise) ||
+        isLegsIsolationMainPromotionCandidate(exercise)
+      );
     }
     return slotLane ? matchesMainLanePattern(exercise, slotLane) : exerciseHasLowerMainPattern(exercise);
   }
@@ -22371,12 +23132,14 @@ const BACK_CHEST_VARIETY_SLOT_KINDS = new Set([
   "mainPullHorizontal",
   "mainPullVertical",
   "mainPullSupport",
+  "mainExtraBackLoaded",
 ]);
 
 const SHOULDERS_ARMS_VARIETY_MAIN_SLOT_KINDS = new Set([
   "mainVerticalPushPrimary",
   "mainLateralDeltPrimary",
   "mainShoulderPullPrimary",
+  "mainSecondaryLoadedShoulder",
   "mainShoulderStructuralSecondary",
   "mainShoulderStructuralAlternate",
 ]);
@@ -25651,8 +26414,19 @@ const chooseShouldersPullMainId = (
 const getLegsSingleLegOrSecondarySquatCandidateIds = (
   phaseIndex: number,
   _experience: ExperienceProfile,
-  _context: SelectionContext
+  context: SelectionContext
 ) => {
+  if (context.trainingContext === "gym" && phaseIndex < 2) {
+    return [
+      "dumbbell-step-up-loaded",
+      "machine-leg-press",
+      "split-squat",
+      "goblet-squat",
+      "heels-elevated-squat",
+      "bodyweight-squat",
+      "cossack-squat",
+    ];
+  }
   if (phaseIndex >= 3) {
     return [
       "dumbbell-step-up-loaded",
@@ -25704,8 +26478,18 @@ const chooseLegsSingleLegOrSecondarySquatId = (
 const getLegsLowerSecondaryCandidateIds = (
   phaseIndex: number,
   _experience: ExperienceProfile,
-  _context: SelectionContext
+  context: SelectionContext
 ) => {
+  if (context.trainingContext === "gym" && phaseIndex < 2) {
+    return [
+      "machine-seated-hamstring-curl",
+      "machine-leg-press",
+      "dumbbell-step-up-loaded",
+      "db-rdl",
+      "goblet-squat",
+      "back-extension",
+    ];
+  }
   if (phaseIndex >= 3) {
     return [
       "barbell-hip-thrust",
@@ -26416,7 +27200,8 @@ const maybeRotateThreeDayTemplateLanePlan = (params: {
     const fourth = plan[3];
     if (
       third?.slotKind === "mainShoulderPullPrimary" &&
-      fourth?.slotKind === "mainShoulderStructuralSecondary"
+      (fourth?.slotKind === "mainSecondaryLoadedShoulder" ||
+        fourth?.slotKind === "mainShoulderStructuralSecondary")
     ) {
       const rotated = [...plan];
       rotated[2] = fourth;
@@ -26814,6 +27599,17 @@ const buildStructuredDay = (params: {
         dayTitle: title,
       });
     }
+    if (normalizedTitle === "legs_abs") {
+      if (slotKind === "mainUnilateralLowerLoaded") {
+        return isLegsSingleLegSquatExercise(candidate);
+      }
+      if (slotKind === "mainSecondaryLowerLoaded" || slotKind === "mainLowerSecondary") {
+        return (
+          exerciseHasLowerMainPattern(candidate) ||
+          isLegsIsolationMainPromotionCandidate(candidate)
+        );
+      }
+    }
     return matchesMainLanePattern(candidate, slot.lane);
   };
   const expectedLaneCounts = plannedLanes.reduce((map, lane) => {
@@ -26901,6 +27697,14 @@ const buildStructuredDay = (params: {
               selectionContext,
               auditMeta
             )
+          : slotKind === "mainSecondaryLoadedShoulder"
+          ? chooseShouldersRearDeltMainId(
+              phaseIndex,
+              available,
+              experienceProfile,
+              selectionContext,
+              auditMeta
+            )
           : slotKind === "mainShoulderStructuralSecondary" ||
             slotKind === "mainShoulderStructuralAlternate"
           ? chooseShouldersSupportMainId(
@@ -26921,7 +27725,8 @@ const buildStructuredDay = (params: {
               auditMeta
             )
         : lane === "squat"
-        ? slotKind === "mainSingleLegOrSecondarySquat"
+        ? slotKind === "mainSingleLegOrSecondarySquat" ||
+          slotKind === "mainUnilateralLowerLoaded"
           ? chooseLegsSingleLegOrSecondarySquatId(
               phaseIndex,
               available,
@@ -26937,7 +27742,7 @@ const buildStructuredDay = (params: {
               auditMeta
             )
         : lane === "hinge"
-        ? slotKind === "mainLowerSecondary"
+        ? slotKind === "mainLowerSecondary" || slotKind === "mainSecondaryLowerLoaded"
           ? chooseLegsLowerSecondaryId(
               phaseIndex,
               available,
@@ -27371,6 +28176,12 @@ const buildStructuredDay = (params: {
                 experienceProfile,
                 selectionContext
               )
+            : getSlotKindForSlot(slot) === "mainSecondaryLoadedShoulder"
+            ? getShouldersRearDeltMainCandidateIds(
+                phaseIndex,
+                experienceProfile,
+                selectionContext
+              )
             : getSlotKindForSlot(slot) === "mainShoulderStructuralSecondary" ||
               getSlotKindForSlot(slot) === "mainShoulderStructuralAlternate"
             ? getShouldersSupportMainCandidateIds(
@@ -27387,8 +28198,9 @@ const buildStructuredDay = (params: {
                 experienceProfile,
                 selectionContext
               )
-          : slot.lane === "squat"
-          ? getSlotKindForSlot(slot) === "mainSingleLegOrSecondarySquat"
+        : slot.lane === "squat"
+          ? getSlotKindForSlot(slot) === "mainSingleLegOrSecondarySquat" ||
+            getSlotKindForSlot(slot) === "mainUnilateralLowerLoaded"
             ? getLegsSingleLegOrSecondarySquatCandidateIds(
                 phaseIndex,
                 experienceProfile,
@@ -27399,7 +28211,8 @@ const buildStructuredDay = (params: {
                 experienceProfile,
                 selectionContext
               )
-          : getSlotKindForSlot(slot) === "mainLowerSecondary"
+          : getSlotKindForSlot(slot) === "mainLowerSecondary" ||
+            getSlotKindForSlot(slot) === "mainSecondaryLowerLoaded"
           ? getLegsLowerSecondaryCandidateIds(
               phaseIndex,
               experienceProfile,
@@ -27717,15 +28530,35 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
   const nextWeek = week.map((day) => {
     let nextDay = day;
     const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+    const mainItemOrdinals = new Map<number, number>();
+    let mainCount = 0;
+    day.routine.forEach((item, index) => {
+      if (item.section !== "main") return;
+      mainItemOrdinals.set(index, mainCount);
+      mainCount += 1;
+    });
 
     day.routine.forEach((item, itemIndex) => {
       if (item.section !== "main") return;
       const exercise = exerciseById(item.exerciseId);
       if (!exercise) return;
+      const mainOrdinal = mainItemOrdinals.get(itemIndex) ?? 0;
+      const plannedSlotMeta =
+        daysPerWeek === 3
+          ? resolveFinalMainSlotMeta({
+              day,
+              mainOrdinal,
+              mainCount,
+              daysPerWeek,
+              capabilityMode: context.capabilityMode,
+            })
+          : null;
       const slotLane =
+        plannedSlotMeta?.slotLane ??
         (item.selectionDebug?.slotLane as MainLane | undefined) ??
         getMainLaneHits(exercise)[0];
       const slotKind =
+        plannedSlotMeta?.slotKind ??
         item.selectionDebug?.slotKind ??
         (slotLane ? slotKindByMainLane[slotLane] : undefined);
       const knownLowerMainDrift = isHigherFrequencyLowerMainDrift({
@@ -27774,6 +28607,7 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
       if (!replacement && (slotLane === "squat" || slotLane === "hinge")) {
         replacement = findConstrainedLegsMainFallback({
           day: nextDay,
+          slotKind,
           slotLane,
           usedIds,
           currentExerciseId: item.exerciseId,
@@ -27936,7 +28770,7 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
         const routine = [...nextDay.routine];
         routine[itemIndex] = withSelectionDebug(updated, "legality_repair", {
           slotId: item.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, "main"),
-          slotKind: item.selectionDebug?.slotKind ?? "mainFinal",
+          slotKind: slotKind ?? item.selectionDebug?.slotKind ?? "mainFinal",
           slotLane,
           phaseIndex,
         });
@@ -28825,10 +29659,22 @@ export const generateWeeklyProgram = (
     available: weeklyRuntimeContext.availableEquipment,
     selectionContext: weeklyRuntimeContext.selectionContext,
   });
-  const coverageAudit = auditWeeklyCoverage(structuredPrepWeek);
+  const countCompatibleStructuredPrepWeek = applyFinalCountCompatibility({
+    week: structuredPrepWeek,
+    programId,
+    daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
+    selectionContext: weeklyRuntimeContext.selectionContext,
+    available: weeklyRuntimeContext.availableEquipment,
+  });
+  const finalStructuredPrepWeek = dedupeWeekForSelectionContext({
+    week: countCompatibleStructuredPrepWeek,
+    available: weeklyRuntimeContext.availableEquipment,
+    selectionContext: weeklyRuntimeContext.selectionContext,
+  });
+  const coverageAudit = auditWeeklyCoverage(finalStructuredPrepWeek);
   const coverageAuditWarnings = buildWeeklyCoverageAuditWarnings(coverageAudit);
   finalizeWeeklyGenerationObservability({
-    week: structuredPrepWeek,
+    week: finalStructuredPrepWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
     available: weeklyRuntimeContext.availableEquipment,
     capabilityMode: weeklyRuntimeContext.capabilityMode,
@@ -28849,7 +29695,7 @@ export const generateWeeklyProgram = (
     totalWeekIndex: weeklyRuntimeContext.totalWeekIndex,
     cycleIndex: weeklyRuntimeContext.cycleIndex,
     nextWeekPlan: weeklyRuntimeContext.nextWeekPlan,
-    week: structuredPrepWeek,
+    week: finalStructuredPrepWeek,
     questionnaire: data,
     trainingState: weeklyRuntimeContext.trainingState,
     consistencyRate: 0,
