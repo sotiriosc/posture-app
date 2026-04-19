@@ -323,7 +323,13 @@ type SignalsPayload = ReturnType<typeof buildSignalsPayload>;
 type Deferred<T> = ReturnType<typeof createDeferred<T>>;
 
 describe("results operational readiness", () => {
+  let dateNowSpy: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
+    dateNowSpy = vi
+      .spyOn(Date, "now")
+      .mockReturnValue(new Date("2026-04-12T12:00:00.000Z").getTime());
+
     localStorage.clear();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(questionnaire));
 
@@ -406,6 +412,7 @@ describe("results operational readiness", () => {
   });
 
   afterEach(() => {
+    dateNowSpy.mockRestore();
     cleanup();
     localStorage.clear();
     vi.unstubAllGlobals();

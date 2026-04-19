@@ -303,8 +303,9 @@ export const completeCurrentSession = async (page: Page) => {
 
   for (let i = 0; i < 20; i += 1) {
     const button = page.getByTestId("session-next");
+    await expect(button).toBeEnabled();
     const label = (await button.textContent()) ?? "";
-    await button.click({ force: true });
+    await button.evaluate((element: HTMLElement) => element.click());
     if (label.toLowerCase().includes("finish")) {
       break;
     }
