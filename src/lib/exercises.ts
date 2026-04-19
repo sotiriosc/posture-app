@@ -351,7 +351,7 @@ const rawExercises: Exercise[] = [
     familyKey: "db_press",
     variantKey: "bilateral",
     tier: 2,
-    equipment: ["dumbbells"],
+    equipment: ["dumbbells", "bench"],
     movementPattern: ["push"],
     muscleGroups: ["chest", "triceps", "shoulders"],
     loadType: "weighted",

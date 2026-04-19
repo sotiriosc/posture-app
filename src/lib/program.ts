@@ -73,6 +73,10 @@ import {
   resolveVariationPoseFocusTags,
 } from "@/lib/program/variationRuntime";
 import {
+  auditWeeklyCoverage,
+  buildWeeklyCoverageAuditWarnings,
+} from "@/lib/program/coverageAudit";
+import {
   buildWarmupForDay,
   deriveDayIntentFromProgramDay,
 } from "@/lib/program/warmupPlanner";
@@ -130,6 +134,8 @@ type PainSeverity = "low" | "medium" | "high";
 type ProgramPhaseStage = "activation" | "skill" | "growth";
 export type EquipmentCapabilityMode = "noneOnly" | "bandOnly" | "hasLoad";
 type NormalizedExperienceLevel = "beginner" | "intermediate" | "advanced";
+type TrainingContext = "gym" | "home";
+type SlotIntent = "main" | "accessory" | "prep";
 
 type PainRuleDefinition = {
   preferredTags: string[];
@@ -280,6 +286,7 @@ type SelectionContext = {
   phaseName: string;
   experienceLevel: NormalizedExperienceLevel;
   capabilityMode: EquipmentCapabilityMode;
+  trainingContext: TrainingContext;
   intentProfile: ProgramIntentProfile;
   feedbackSummaryByExercise: Map<string, ExerciseFeedbackSummary>;
   recentlyUsedExerciseIds: Set<string>;
@@ -796,6 +803,11 @@ const deriveIntentEquipmentMode = (
   return "none";
 };
 
+const deriveTrainingContext = (questionnaire: QuestionnaireData): TrainingContext => {
+  const equipment = normalizeEquipmentSelection(questionnaire.equipment);
+  return equipment.hasGym ? "gym" : "home";
+};
+
 const getQuestionnaireFatigueHint = (questionnaire: QuestionnaireData) => {
   const fatigueLike = (questionnaire as unknown as Record<string, unknown>)["tiredness"];
   if (typeof fatigueLike === "number") return fatigueLike;
@@ -966,6 +978,7 @@ const buildSelectionContext = (
   const phaseName = options?.phaseName ?? `Phase ${phaseIndex}`;
   const phaseStage = phaseStageFromName(phaseName, phaseIndex);
   const capabilityMode = options?.capabilityMode ?? "noneOnly";
+  const trainingContext = deriveTrainingContext(questionnaire);
   const experienceLevel = normalizeExperienceLevel(questionnaire.experience);
   const intentProfile = buildProgramIntentProfile({
     questionnaire,
@@ -1024,6 +1037,7 @@ const buildSelectionContext = (
     phaseName,
     experienceLevel,
     capabilityMode,
+    trainingContext,
     intentProfile,
     feedbackSummaryByExercise,
     recentlyUsedExerciseIds,
@@ -8820,6 +8834,13 @@ const isBackChestFloorPressAllowed = (
   tierProfile: BackChestTierProfile
 ) => {
   if (!isBackChestFloorPress(exercise)) return true;
+  if (
+    context.selectionContext.trainingContext === "home" &&
+    context.available.has("dumbbells") &&
+    !context.available.has("bench")
+  ) {
+    return true;
+  }
   if (tierProfile.painCapActive) return true;
   return context.selectionContext.experienceLevel === "beginner";
 };
@@ -18506,6 +18527,49 @@ const isBandOnlyBodyweightFallbackExercise = (exercise: Exercise) => {
   );
 };
 
+const resolveSlotIntent = (
+  section?: ProgramRoutineItem["section"]
+): SlotIntent => {
+  if (section === "main") return "main";
+  if (section === "accessory") return "accessory";
+  return "prep";
+};
+
+const exerciseRequiresBenchSurface = (exercise: Exercise) => {
+  if (exercise.equipment.includes("bench")) return true;
+  const descriptor = `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
+    exercise.variantKey ?? ""
+  }`.toLowerCase();
+  return (
+    descriptor.includes("bench press") ||
+    descriptor.includes("bench-press") ||
+    descriptor.includes("incline press") ||
+    descriptor.includes("incline-press") ||
+    descriptor.includes("chest-supported") ||
+    descriptor.includes("chest supported")
+  );
+};
+
+const isExerciseEligibleForTrainingEnvironment = (params: {
+  exercise: Exercise;
+  available: Set<Equipment>;
+  context: SelectionContext;
+  slotIntent: SlotIntent;
+}) => {
+  const { exercise, available, context, slotIntent } = params;
+  // Environment eligibility keeps surface-dependent choices honest: home dumbbells
+  // can use dumbbell floor press, but bench patterns require a bench or gym context.
+  if (
+    context.trainingContext === "home" &&
+    (slotIntent === "main" || slotIntent === "accessory") &&
+    !available.has("bench") &&
+    exerciseRequiresBenchSurface(exercise)
+  ) {
+    return false;
+  }
+  return true;
+};
+
 export const isEligibleForPhase = (
   exercise: Exercise,
   phaseName: string,
@@ -18571,8 +18635,10 @@ const isExerciseEligibleForProgramContext = (params: {
   section?: ProgramRoutineItem["section"];
   context: SelectionContext;
   dayTitle?: string;
+  slotIntent?: SlotIntent;
 }) => {
   const { exercise, available, section, context, dayTitle } = params;
+  const slotIntent = params.slotIntent ?? resolveSlotIntent(section);
   if (exercise.experienceMin) {
     const minimumExperience = normalizeExperienceLevel(exercise.experienceMin);
     if (experienceRankByLevel[context.experienceLevel] < experienceRankByLevel[minimumExperience]) {
@@ -18668,7 +18734,13 @@ const isExerciseEligibleForProgramContext = (params: {
   return (
     equipmentEligible &&
     isExerciseAllowedForSection(exercise, section) &&
-    isEligibleForPhase(exercise, context.phaseName, context)
+    isEligibleForPhase(exercise, context.phaseName, context) &&
+    isExerciseEligibleForTrainingEnvironment({
+      exercise,
+      available,
+      context,
+      slotIntent,
+    })
   );
 };
 
@@ -23121,7 +23193,14 @@ const getIntentSlotScoreBonus = (params: {
     if (backChestMainDay && floorPressPattern) {
       const beginnerShoulderProtectionCase =
         context.experienceLevel === "beginner" && shoulderPainProfile;
-      if (beginnerShoulderProtectionCase) {
+      const homeDumbbellNoBenchCase =
+        context.trainingContext === "home" &&
+        available.has("dumbbells") &&
+        !available.has("bench");
+      if (homeDumbbellNoBenchCase) {
+        score += 9;
+        reasons.push("+9 home dumbbell no-bench floor-press fit");
+      } else if (beginnerShoulderProtectionCase) {
         score += 1.25;
         reasons.push("+1.25 floor-press allowed for beginner shoulder-protection profile");
       } else {
@@ -28746,6 +28825,8 @@ export const generateWeeklyProgram = (
     available: weeklyRuntimeContext.availableEquipment,
     selectionContext: weeklyRuntimeContext.selectionContext,
   });
+  const coverageAudit = auditWeeklyCoverage(structuredPrepWeek);
+  const coverageAuditWarnings = buildWeeklyCoverageAuditWarnings(coverageAudit);
   finalizeWeeklyGenerationObservability({
     week: structuredPrepWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
@@ -28780,6 +28861,7 @@ export const generateWeeklyProgram = (
       ...accessorySlotPurityResult.warnings,
       ...equipmentLegalityResult.warnings,
       ...noEquipmentPullQualityResult.warnings,
+      ...coverageAuditWarnings,
     ],
     templateVersion: PROGRAM_TEMPLATE_VERSION,
   });

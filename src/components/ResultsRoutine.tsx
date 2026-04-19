@@ -3448,7 +3448,7 @@ export default function ResultsRoutine() {
               onCopy={handleCopyCurrentSavedWeek}
               copyStatus={currentWeekCopyStatus}
               className="order-20 p-3 opacity-70 sm:p-4"
-              bodyClassName="mt-3 max-h-36 overflow-auto rounded-lg border border-slate-500/20 bg-slate-950/45 p-3"
+              bodyClassName="mt-3 max-h-[27rem] overflow-auto rounded-lg border border-slate-500/20 bg-slate-950/45 p-3"
             />
           ) : (
             <CurrentSavedProgramSnapshotLoadingCard
