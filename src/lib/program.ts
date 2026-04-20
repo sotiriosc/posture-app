@@ -17439,7 +17439,7 @@ const repairLegsAbsDayIntelligence = (params: {
       .filter((exercise) => {
         if (slot.role === "accessoryCarry") return isLegsCarryExercise(exercise);
         if (slot.role === "accessoryCoreStability") return !isCarryLikeAccessory(exercise);
-        if (slot.role !== "accessoryCarry" && isCarryLikeAccessory(exercise)) return false;
+        if (isCarryLikeAccessory(exercise)) return false;
         return true;
       })
       .map((exercise) => {
@@ -24225,7 +24225,10 @@ const hasEligibleFeedbackAlternative = (params: {
     ) {
       return false;
     }
-    if (auditMeta?.slotLane && !matchesMainLanePattern(alternative, auditMeta.slotLane)) {
+    const mainSlotLane = isMainSlotLane(auditMeta?.slotLane)
+      ? auditMeta.slotLane
+      : undefined;
+    if (mainSlotLane && !matchesMainLanePattern(alternative, mainSlotLane)) {
       return false;
     }
     const alternativePatterns = new Set(
@@ -24354,20 +24357,21 @@ const getIntentSlotScoreBonus = (params: {
   const patterns = new Set(exercise.movementPattern.map(normalizeTagToken));
   const tags = new Set((exercise.tags ?? []).map(normalizeTagToken));
   const lane = auditMeta?.slotLane;
+  const mainLane = isMainSlotLane(lane) ? lane : undefined;
   const gymLoadReadyMain =
     section === "main" &&
     context.capabilityMode === "hasLoad" &&
     context.experienceLevel !== "beginner" &&
     context.painSeverity !== "high" &&
-    Boolean(lane);
+    Boolean(mainLane);
 
-  if (section === "main" && lane) {
-    if (matchesMainLanePattern(exercise, lane)) {
+  if (section === "main" && mainLane) {
+    if (matchesMainLanePattern(exercise, mainLane)) {
       score += 3;
-      reasons.push(`+3 lane match (${lane})`);
+      reasons.push(`+3 lane match (${mainLane})`);
     } else {
       score -= 2;
-      reasons.push(`-2 lane mismatch (${lane})`);
+      reasons.push(`-2 lane mismatch (${mainLane})`);
     }
   }
 
@@ -24550,7 +24554,9 @@ const getIntentSlotScoreBonus = (params: {
       hasEligibleLoadedBackChestPushAlternative({
         exercise,
         slotKind: auditMeta?.slotKind ?? "mainPushCompound",
-        slotLane: auditMeta?.slotLane,
+        slotLane: isMainSlotLane(auditMeta?.slotLane)
+          ? auditMeta.slotLane
+          : undefined,
         allowChestFly: allowBackChestFlyMainSlot,
         available,
         context,
@@ -24749,7 +24755,9 @@ const getIntentSlotScoreBonus = (params: {
     const tier = resolveBackChestEquipmentTier(exercise);
     const highestTierForSlot = resolveHighestBackChestTierForSlot({
       slotKind: auditMeta?.slotKind ?? "mainRepair",
-      slotLane: auditMeta?.slotLane,
+      slotLane: isMainSlotLane(auditMeta?.slotLane)
+        ? auditMeta.slotLane
+        : undefined,
       available,
       context,
     });
@@ -24964,7 +24972,9 @@ const getIntentSlotScoreBonus = (params: {
       hasEligibleBackChestNonScapularMainAlternative({
         exercise,
         slotKind: auditMeta?.slotKind ?? "mainRepair",
-        slotLane: auditMeta?.slotLane,
+        slotLane: isMainSlotLane(auditMeta?.slotLane)
+          ? auditMeta.slotLane
+          : undefined,
         allowChestFly: allowBackChestFlyMainSlot,
         available,
         context,
@@ -25313,8 +25323,11 @@ const getIntentSlotScoreBonus = (params: {
   }
 
   const priorDayHeavyPatterns = new Set(auditMeta?.priorDayHeavyPatterns ?? []);
-  if (section === "main" && auditMeta?.slotLane && priorDayHeavyPatterns.size) {
-    const currentMainPattern = mainLaneToPrimaryPattern(auditMeta.slotLane);
+  const currentMainLane = isMainSlotLane(auditMeta?.slotLane)
+    ? auditMeta.slotLane
+    : undefined;
+  if (section === "main" && currentMainLane && priorDayHeavyPatterns.size) {
+    const currentMainPattern = mainLaneToPrimaryPattern(currentMainLane);
     const stackedSamePattern = priorDayHeavyPatterns.has(currentMainPattern);
     if (stackedSamePattern) {
       const heavyMain =
@@ -25949,8 +25962,12 @@ const pickFirstEligibleId = (
         section,
         dayTitle: auditMeta?.dayTitle,
         slotKind: auditMeta?.slotKind,
-        mainSlotLane: auditMeta?.slotLane,
-        accessoryLane: auditMeta?.slotLane as AccessoryLane | undefined,
+        mainSlotLane: isMainSlotLane(auditMeta?.slotLane)
+          ? auditMeta.slotLane
+          : undefined,
+        accessoryLane: isAccessorySlotLane(auditMeta?.slotLane)
+          ? auditMeta.slotLane
+          : undefined,
         available,
         context,
       })
@@ -26036,14 +26053,18 @@ const pickFirstEligibleId = (
               section,
               dayTitle: auditMeta?.dayTitle,
               slotKind: auditMeta?.slotKind,
-              mainSlotLane: auditMeta?.slotLane,
-              accessoryLane: auditMeta?.slotLane as AccessoryLane | undefined,
+              mainSlotLane: isMainSlotLane(auditMeta?.slotLane)
+                ? auditMeta.slotLane
+                : undefined,
+              accessoryLane: isAccessorySlotLane(auditMeta?.slotLane)
+                ? auditMeta.slotLane
+                : undefined,
               available,
               context,
             })
           )
           .filter((exercise) =>
-            auditMeta?.slotLane
+            isMainSlotLane(auditMeta?.slotLane)
               ? matchesMainLanePattern(exercise, auditMeta.slotLane)
               : true
           )
@@ -27489,6 +27510,7 @@ const chooseAccessoryId = (
 
 type MainLane = "push" | "verticalPush" | "pull" | "squat" | "hinge";
 type AccessoryLane = "push" | "pull" | "lower" | "core" | "chest" | "back";
+type SlotLane = MainLane | AccessoryLane;
 type SectionFocus = "upper" | "lower" | "core";
 type BudgetPatternKey =
   | MainLane
@@ -27511,6 +27533,21 @@ type DayPatternBudget = {
   requiresCarryOrAntiRotation?: boolean;
   requiresArmIsolation?: boolean;
 };
+
+const isMainSlotLane = (value?: SlotLane): value is MainLane =>
+  value === "push" ||
+  value === "verticalPush" ||
+  value === "pull" ||
+  value === "squat" ||
+  value === "hinge";
+
+const isAccessorySlotLane = (value?: SlotLane): value is AccessoryLane =>
+  value === "push" ||
+  value === "pull" ||
+  value === "lower" ||
+  value === "core" ||
+  value === "chest" ||
+  value === "back";
 
 const DEBUG_AUDIT_SELECTION = false;
 
@@ -27552,7 +27589,7 @@ type SelectionAuditMeta = {
   dayTitle: string;
   dayFocusTags: string[];
   slotKind: string;
-  slotLane?: MainLane;
+  slotLane?: SlotLane;
   slotRole?: string;
   selectedMainExerciseIds?: string[];
   selectedAccessoryExerciseIds?: string[];
@@ -30326,6 +30363,7 @@ const annotateSelectionDecisionTraceForWeek = (params: {
       routine: day.routine.map((item, itemIndex) => {
         if (item.section !== "main" && item.section !== "accessory") return item;
         if (!item.selectionDebug) return item;
+        const selectionSection = item.section;
         const exercise = exerciseById(item.exerciseId);
         if (!exercise) return item;
 
@@ -30353,7 +30391,7 @@ const annotateSelectionDecisionTraceForWeek = (params: {
           : undefined;
         const selectionDelta = scoreSelectionCandidateDelta({
           exercise,
-          section: item.section,
+          section: selectionSection,
           phase: selectionContext.phaseStage,
           experience: selectionContext.experienceLevel,
           trainingContext: selectionContext.trainingContext,
@@ -30368,12 +30406,14 @@ const annotateSelectionDecisionTraceForWeek = (params: {
         });
         const rankedCandidates = rankSelectionCandidatesDeterministically(
           exercises
-            .filter((candidate) => isExerciseAllowedForSection(candidate, item.section))
+            .filter((candidate) =>
+              isExerciseAllowedForSection(candidate, selectionSection)
+            )
             .filter((candidate) =>
               isExerciseEligibleForProgramContext({
                 exercise: candidate,
                 available,
-                section: item.section,
+                section: selectionSection,
                 context: selectionContext,
                 dayTitle: day.title,
               })
@@ -30381,7 +30421,7 @@ const annotateSelectionDecisionTraceForWeek = (params: {
             .filter((candidate) =>
               isRoleLegalForSlot({
                 exercise: candidate,
-                section: item.section,
+                section: selectionSection,
                 dayTitle: day.title,
                 slotKind: item.selectionDebug?.slotKind,
                 mainSlotLane,
@@ -30393,7 +30433,7 @@ const annotateSelectionDecisionTraceForWeek = (params: {
             .map((candidate) => {
               const candidateDelta = scoreSelectionCandidateDelta({
                 exercise: candidate,
-                section: item.section,
+                section: selectionSection,
                 phase: selectionContext.phaseStage,
                 experience: selectionContext.experienceLevel,
                 trainingContext: selectionContext.trainingContext,

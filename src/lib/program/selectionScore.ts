@@ -253,11 +253,9 @@ export const scoreSelectionCandidateDelta = (
       : exercisePhaseLevel === currentPhaseLevel
       ? 0.65
       : 0.2;
-  if (phaseDelta !== 0) {
-    score += phaseDelta;
-    decisionTrace.phaseFitBonusOrPenalty = Number(phaseDelta.toFixed(2));
-    reasons.push(`${phaseDelta >= 0 ? "+" : ""}${phaseDelta.toFixed(2)} phase fit`);
-  }
+  score += phaseDelta;
+  decisionTrace.phaseFitBonusOrPenalty = Number(phaseDelta.toFixed(2));
+  reasons.push(`${phaseDelta >= 0 ? "+" : ""}${phaseDelta.toFixed(2)} phase fit`);
 
   const dayIdentityCategories = resolveDayIdentityCategories(dayTitle);
   if (
