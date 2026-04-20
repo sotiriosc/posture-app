@@ -15,6 +15,20 @@ export type ExerciseSlotRole =
   | "hingePrimary"
   | "unilateralLowerLoaded"
   | "secondaryLowerLoaded";
+export type ExerciseAccessoryRole =
+  | "accessoryChestIsolation"
+  | "accessoryBackThickness"
+  | "accessoryBackWidth"
+  | "accessoryRearDelt"
+  | "accessoryLateralDelt"
+  | "accessoryBiceps"
+  | "accessoryTriceps"
+  | "accessoryCoreStability"
+  | "accessoryCarry"
+  | "accessoryCalves"
+  | "accessoryHamstring"
+  | "accessoryGlute"
+  | "accessoryShoulderSupport";
 export type ExerciseCarryType = "carry" | "coreStability";
 
 export type Exercise = {
@@ -39,6 +53,7 @@ export type Exercise = {
   experienceMin?: "Beginner" | "Intermediate" | "Advanced";
   loadType: "weighted" | "bodyweight" | "timed" | "assisted";
   slotRoles?: ExerciseSlotRole[];
+  accessoryRoles?: ExerciseAccessoryRole[];
   supportOnly?: boolean;
   regressionOnly?: boolean;
   loadedMainEligible?: boolean;
@@ -4901,6 +4916,126 @@ const inferSlotRolesForExercise = (params: {
   return Array.from(roles);
 };
 
+const inferAccessoryRolesForExercise = (params: {
+  exercise: Exercise;
+  supportOnly: boolean;
+  carryType?: ExerciseCarryType;
+  loadedMainEligible: boolean;
+}): ExerciseAccessoryRole[] => {
+  const { exercise, supportOnly, carryType, loadedMainEligible } = params;
+  if (exercise.category !== "main") return [];
+
+  const movementTokens = new Set(
+    exercise.movementPattern.map((item) => normalizeTagToken(item))
+  );
+  const tagTokens = new Set(exercise.tags.map((item) => normalizeTagToken(item)));
+  const muscleTokens = new Set(exercise.muscleGroups.map((item) => normalizeTagToken(item)));
+  const descriptor = normalizeTagToken(
+    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
+      exercise.variantKey ?? ""
+    } ${exercise.tags.join(" ")}`
+  );
+  const roles = new Set<ExerciseAccessoryRole>();
+  const hasMovement = (...tokens: string[]) =>
+    tokens.some((token) => movementTokens.has(normalizeTagToken(token)));
+  const textHasAny = (...tokens: string[]) =>
+    tokens.some((token) => descriptor.includes(normalizeTagToken(token)));
+
+  const isRearDelt =
+    textHasAny(
+      "rear delt",
+      "rear-delt",
+      "reverse pec deck",
+      "reverse-pec-deck",
+      "reverse snow angel",
+      "prone swimmer"
+    ) || tagTokens.has("reardelt");
+  const isChestIsolation =
+    !isRearDelt &&
+    !textHasAny("reverse pec deck", "reverse-pec-deck") &&
+    (textHasAny("chest fly", "chest-fly", "pec deck", "pec-deck") ||
+      ((tagTokens.has("chest") || muscleTokens.has("chest")) && textHasAny("fly")) ||
+      (muscleTokens.has("chest") && textHasAny("isolation")));
+  const isShoulderSupport =
+    supportOnly ||
+    isRearDelt ||
+    textHasAny(
+      "face pull",
+      "face-pull",
+      "external rotation",
+      "external-rotation",
+      "pull apart",
+      "pull-apart",
+      "y raise",
+      "y-raise",
+      "t raise",
+      "t-raise",
+      "ytw"
+    ) ||
+    tagTokens.has("scap") ||
+    tagTokens.has("scapular") ||
+    tagTokens.has("external_rotation") ||
+    tagTokens.has("externalrotation") ||
+    tagTokens.has("rotator_cuff");
+  const isBackWidth =
+    hasMovement("verticalPull") ||
+    textHasAny("pulldown", "pull-down", "pullup", "pull-up", "chinup", "chin-up", "lat", "pullover");
+  const isBackThickness =
+    !isRearDelt &&
+    (hasMovement("horizontalPull") || (hasMovement("pull") && textHasAny("row")));
+  const isLateralDelt =
+    textHasAny("lateral raise", "lateral-raise") || tagTokens.has("lateraldelt");
+  const isBiceps =
+    textHasAny("biceps", "curl") ||
+    tagTokens.has("biceps") ||
+    muscleTokens.has("biceps");
+  const isTriceps =
+    textHasAny("triceps", "pressdown", "kickback", "skullcrusher") ||
+    tagTokens.has("triceps") ||
+    muscleTokens.has("triceps");
+  const isCoreStability =
+    carryType === "coreStability" ||
+    hasMovement("core", "antiRotation", "antiExtension") ||
+    textHasAny(
+      "plank",
+      "dead bug",
+      "deadbug",
+      "bird dog",
+      "birddog",
+      "pallof",
+      "woodchop",
+      "brace",
+      "march",
+      "hollow"
+    );
+  const isCarry = carryType === "carry";
+  const isCalves =
+    hasMovement("calf") || tagTokens.has("calves") || muscleTokens.has("calves");
+  const isHamstring =
+    muscleTokens.has("hamstrings") ||
+    textHasAny("hamstring curl", "leg curl", "knee flexion", "knee-flexion");
+  const isGlute =
+    muscleTokens.has("glutes") &&
+    (textHasAny("hip thrust", "hip-thrust", "glute bridge", "glute-bridge", "glute drive", "glute-drive") ||
+      (!loadedMainEligible && (hasMovement("hinge") || hasMovement("singleLeg"))));
+
+  if (isChestIsolation) roles.add("accessoryChestIsolation");
+  if (isBackThickness) roles.add("accessoryBackThickness");
+  if (isBackWidth) roles.add("accessoryBackWidth");
+  if (isRearDelt) roles.add("accessoryRearDelt");
+  if (isLateralDelt) roles.add("accessoryLateralDelt");
+  if (isBiceps) roles.add("accessoryBiceps");
+  if (isTriceps) roles.add("accessoryTriceps");
+  if (isCoreStability && !isCarry) roles.add("accessoryCoreStability");
+  if (isCarry) roles.add("accessoryCarry");
+  if (isCalves) roles.add("accessoryCalves");
+  if (isHamstring) roles.add("accessoryHamstring");
+  if (isGlute) roles.add("accessoryGlute");
+  if (isShoulderSupport) roles.add("accessoryShoulderSupport");
+
+  return Array.from(roles);
+};
+
 export const exercises: Exercise[] = rawExercises.map((exercise) => {
   const pattern = inferPatternFromExercise(exercise);
   const difficulty = inferDifficultyForExercise(exercise, pattern);
@@ -4930,6 +5065,14 @@ export const exercises: Exercise[] = rawExercises.map((exercise) => {
       loadedMainEligible,
       carryType,
     });
+  const accessoryRoles =
+    exercise.accessoryRoles ??
+    inferAccessoryRolesForExercise({
+      exercise,
+      supportOnly,
+      carryType,
+      loadedMainEligible,
+    });
 
   return {
     ...exercise,
@@ -4939,6 +5082,7 @@ export const exercises: Exercise[] = rawExercises.map((exercise) => {
     movementIntensity,
     painContraindications,
     ...(slotRoles.length ? { slotRoles } : {}),
+    ...(accessoryRoles.length ? { accessoryRoles } : {}),
     ...(supportOnly ? { supportOnly } : {}),
     ...(regressionOnly ? { regressionOnly } : {}),
     ...(loadedMainEligible ? { loadedMainEligible } : {}),

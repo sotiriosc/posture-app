@@ -15,10 +15,45 @@ export type WeeklyCoverageMustHitCategory =
   | `movement:${WeeklyCoverageMovementPattern}`
   | `region:${WeeklyCoverageMajorBodyRegion}`;
 
+export type WeeklyCoverageCategory =
+  | "chest"
+  | "back"
+  | "quads"
+  | "posteriorChain"
+  | "core"
+  | "delts"
+  | "arms"
+  | "calves"
+  | "chestIsolation"
+  | "rearDeltIsolation"
+  | "adductors"
+  | "tibialis"
+  | "carries"
+  | "antiRotation";
+
+export type WeeklyCoveragePriority = "must" | "should" | "optional";
+
+export type WeeklyCoverageTarget = {
+  min: number;
+  max?: number;
+  priority: WeeklyCoveragePriority;
+};
+
+export type WeeklyCoverageCategoryAudit = WeeklyCoverageTarget & {
+  hits: number;
+  deficit: number;
+  met: boolean;
+};
+
 export type WeeklyCoverageAudit = {
   movementPatternsHit: WeeklyCoverageMovementPattern[];
   majorBodyRegionsHit: WeeklyCoverageMajorBodyRegion[];
   missingMustHitCategories: WeeklyCoverageMustHitCategory[];
+  categoryHits: Record<WeeklyCoverageCategory, number>;
+  categoryAudits: Record<WeeklyCoverageCategory, WeeklyCoverageCategoryAudit>;
+  missingMustHitCoverage: WeeklyCoverageCategory[];
+  underHitShouldCoverage: WeeklyCoverageCategory[];
+  optionalCoverageOpportunities: WeeklyCoverageCategory[];
 };
 
 const movementPatternOrder: WeeklyCoverageMovementPattern[] = [
@@ -34,6 +69,40 @@ const majorBodyRegionOrder: WeeklyCoverageMajorBodyRegion[] = [
   "lower",
   "core",
 ];
+
+const coverageCategoryOrder: WeeklyCoverageCategory[] = [
+  "chest",
+  "back",
+  "quads",
+  "posteriorChain",
+  "core",
+  "delts",
+  "arms",
+  "calves",
+  "chestIsolation",
+  "rearDeltIsolation",
+  "adductors",
+  "tibialis",
+  "carries",
+  "antiRotation",
+];
+
+export const WEEKLY_COVERAGE_TARGETS: Record<WeeklyCoverageCategory, WeeklyCoverageTarget> = {
+  chest: { min: 2, priority: "must" },
+  back: { min: 2, priority: "must" },
+  quads: { min: 1, priority: "must" },
+  posteriorChain: { min: 1, priority: "must" },
+  core: { min: 2, priority: "must" },
+  delts: { min: 1, priority: "should" },
+  arms: { min: 1, priority: "should" },
+  calves: { min: 1, priority: "should" },
+  chestIsolation: { min: 1, max: 2, priority: "optional" },
+  rearDeltIsolation: { min: 1, max: 2, priority: "optional" },
+  adductors: { min: 1, priority: "optional" },
+  tibialis: { min: 1, priority: "optional" },
+  carries: { min: 1, priority: "optional" },
+  antiRotation: { min: 1, priority: "optional" },
+};
 
 const trainingCoverageSections = new Set<NonNullable<ProgramRoutineItem["section"]>>([
   "activation",
@@ -139,24 +208,165 @@ const collectMajorBodyRegionHits = (exercise: Exercise) => {
   return hits;
 };
 
+const collectCoverageCategoryHits = (exercise: Exercise) => {
+  const movementHits = collectMovementPatternHits(exercise);
+  const movementTokens = tokensFrom(exercise.movementPattern);
+  const regionTokens = new Set([
+    ...movementTokens,
+    ...tokensFrom(exercise.muscleGroups),
+    ...tokensFrom(exercise.tags),
+    ...tokensFrom(exercise.accessoryRoles),
+  ]);
+  const descriptor = normalizeCoverageToken(
+    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${exercise.variantKey ?? ""}`
+  );
+  const hits = new Set<WeeklyCoverageCategory>();
+  const textHasAny = (...tokens: string[]) =>
+    tokens.some((token) => descriptor.includes(normalizeCoverageToken(token)));
+
+  if (
+    hasAnyToken(regionTokens, ["chest", "accessorychestisolation"]) ||
+    movementTokens.has("horizontalpush") ||
+    textHasAny(
+      "bench press",
+      "chest press",
+      "pec deck",
+      "pushup",
+      "push-up",
+      "floor press",
+      "chest fly",
+      "cable fly"
+    )
+  ) {
+    hits.add("chest");
+  }
+  if (
+    movementHits.has("pull") ||
+    hasAnyToken(regionTokens, [
+      "back",
+      "lats",
+      "upperback",
+      "accessorybackthickness",
+      "accessorybackwidth",
+      "accessoryreardelt",
+      "accessoryshouldersupport",
+    ])
+  ) {
+    hits.add("back");
+  }
+  if (
+    hasAnyToken(regionTokens, ["quads"]) ||
+    hasAnyToken(regionTokens, ["squat", "kneedominant", "lunge"])
+  ) {
+    hits.add("quads");
+  }
+  if (
+    movementHits.has("hinge") ||
+    hasAnyToken(regionTokens, [
+      "posteriorchain",
+      "glutes",
+      "hamstrings",
+      "accessoryhamstring",
+      "accessoryglute",
+    ])
+  ) {
+    hits.add("posteriorChain");
+  }
+  if (
+    movementHits.has("core") ||
+    hasAnyToken(regionTokens, [
+      "core",
+      "obliques",
+      "tva",
+      "accessorycorestability",
+      "accessorycarry",
+    ])
+  ) {
+    hits.add("core");
+  }
+  if (
+    hasAnyToken(regionTokens, [
+      "shoulders",
+      "reardelts",
+      "lateraldelt",
+      "accessoryreardelt",
+      "accessorylateraldelt",
+      "accessoryshouldersupport",
+    ]) ||
+    textHasAny("rear delt", "rear-delt", "lateral raise", "lateral-raise", "shoulder press")
+  ) {
+    hits.add("delts");
+  }
+  if (
+    hasAnyToken(regionTokens, ["biceps", "triceps", "accessorybiceps", "accessorytriceps"]) ||
+    textHasAny("biceps", "triceps", "curl", "pressdown", "kickback")
+  ) {
+    hits.add("arms");
+  }
+  if (
+    hasAnyToken(regionTokens, ["calves", "accessorycalves"]) ||
+    textHasAny("calf raise", "calf-raise", "calves")
+  ) {
+    hits.add("calves");
+  }
+  if (
+    hasAnyToken(regionTokens, ["accessorychestisolation"]) ||
+    textHasAny("chest fly", "chest-fly", "pec deck", "pec-deck")
+  ) {
+    hits.add("chestIsolation");
+  }
+  if (
+    hasAnyToken(regionTokens, ["accessoryreardelt"]) ||
+    textHasAny("rear delt", "rear-delt", "reverse pec deck", "reverse-pec-deck")
+  ) {
+    hits.add("rearDeltIsolation");
+  }
+  if (hasAnyToken(regionTokens, ["adductors"]) || textHasAny("adductor", "cossack")) {
+    hits.add("adductors");
+  }
+  if (hasAnyToken(regionTokens, ["tibialis"]) || textHasAny("tibialis")) {
+    hits.add("tibialis");
+  }
+  if (hasAnyToken(regionTokens, ["accessorycarry"]) || textHasAny("carry", "suitcase", "farmer")) {
+    hits.add("carries");
+  }
+  if (
+    hasAnyToken(regionTokens, ["antirotation", "antirotation"]) ||
+    textHasAny("pallof", "woodchop", "anti rotation", "anti-rotation")
+  ) {
+    hits.add("antiRotation");
+  }
+
+  return hits;
+};
+
 const isTrainingCoverageItem = (item: ProgramRoutineItem) =>
   !item.section || trainingCoverageSections.has(item.section);
 
 const orderedHits = <T extends string>(values: T[], hits: Set<T>) =>
   values.filter((value) => hits.has(value));
 
-// The coverage audit is intentionally observational: it reads final exercise
-// metadata after generation/repair and reports holes without mutating the week.
-export const auditWeeklyCoverage = (week: ProgramDay[]): WeeklyCoverageAudit => {
+const createEmptyCategoryHitMap = () =>
+  coverageCategoryOrder.reduce(
+    (acc, category) => {
+      acc[category] = 0;
+      return acc;
+    },
+    {} as Record<WeeklyCoverageCategory, number>
+  );
+
+export const auditWeeklyCoverageFromExercises = (
+  selectedExercises: Exercise[]
+): WeeklyCoverageAudit => {
   const movementHits = new Set<WeeklyCoverageMovementPattern>();
   const regionHits = new Set<WeeklyCoverageMajorBodyRegion>();
+  const categoryHits = createEmptyCategoryHitMap();
 
-  week.forEach((day) => {
-    day.routine.filter(isTrainingCoverageItem).forEach((item) => {
-      const exercise = exerciseById(item.exerciseId);
-      if (!exercise) return;
-      collectMovementPatternHits(exercise).forEach((hit) => movementHits.add(hit));
-      collectMajorBodyRegionHits(exercise).forEach((hit) => regionHits.add(hit));
+  selectedExercises.forEach((exercise) => {
+    collectMovementPatternHits(exercise).forEach((hit) => movementHits.add(hit));
+    collectMajorBodyRegionHits(exercise).forEach((hit) => regionHits.add(hit));
+    collectCoverageCategoryHits(exercise).forEach((hit) => {
+      categoryHits[hit] += 1;
     });
   });
 
@@ -170,12 +380,56 @@ export const auditWeeklyCoverage = (week: ProgramDay[]): WeeklyCoverageAudit => 
       .filter((region) => !regionHits.has(region))
       .map((region) => `region:${region}` as const),
   ];
+  const categoryAudits = coverageCategoryOrder.reduce(
+    (acc, category) => {
+      const target = WEEKLY_COVERAGE_TARGETS[category];
+      const hits = categoryHits[category];
+      const deficit = Math.max(0, target.min - hits);
+      acc[category] = {
+        ...target,
+        hits,
+        deficit,
+        met: deficit === 0,
+      };
+      return acc;
+    },
+    {} as Record<WeeklyCoverageCategory, WeeklyCoverageCategoryAudit>
+  );
+  const missingMustHitCoverage = coverageCategoryOrder.filter(
+    (category) =>
+      categoryAudits[category].priority === "must" && categoryAudits[category].deficit > 0
+  );
+  const underHitShouldCoverage = coverageCategoryOrder.filter(
+    (category) =>
+      categoryAudits[category].priority === "should" && categoryAudits[category].deficit > 0
+  );
+  const optionalCoverageOpportunities = coverageCategoryOrder.filter(
+    (category) =>
+      categoryAudits[category].priority === "optional" && categoryAudits[category].deficit > 0
+  );
 
   return {
     movementPatternsHit,
     majorBodyRegionsHit,
     missingMustHitCategories,
+    categoryHits,
+    categoryAudits,
+    missingMustHitCoverage,
+    underHitShouldCoverage,
+    optionalCoverageOpportunities,
   };
+};
+
+// The coverage audit is intentionally observational: it reads final exercise
+// metadata after generation/repair and reports holes without mutating the week.
+export const auditWeeklyCoverage = (week: ProgramDay[]): WeeklyCoverageAudit => {
+  const selectedExercises = week.flatMap((day) =>
+    day.routine
+      .filter(isTrainingCoverageItem)
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise))
+  );
+  return auditWeeklyCoverageFromExercises(selectedExercises);
 };
 
 export const buildWeeklyCoverageAuditWarnings = (

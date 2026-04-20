@@ -7,7 +7,12 @@ import type {
   ProgramRoutineItem,
   ProgramSelectionDebugSource,
 } from "@/lib/types";
-import type { Exercise, ExerciseCategory, ExerciseSlotRole } from "@/lib/exercises";
+import type {
+  Exercise,
+  ExerciseAccessoryRole,
+  ExerciseCategory,
+  ExerciseSlotRole,
+} from "@/lib/exercises";
 import { exerciseById, exercises, resolveExerciseHistoryIds } from "@/lib/exercises";
 import type { Equipment } from "@/lib/equipment";
 import {
@@ -76,6 +81,7 @@ import {
   auditWeeklyCoverage,
   buildWeeklyCoverageAuditWarnings,
 } from "@/lib/program/coverageAudit";
+import { planThreeDayAccessorySlots } from "@/lib/program/accessoryPlanner";
 import {
   buildWarmupForDay,
   deriveDayIntentFromProgramDay,
@@ -7508,6 +7514,73 @@ const isBackChestAccessoryRoleCoverageSatisfied = (accessoryExercises: Exercise[
   return coverage.hasRearDeltAccessory && coverage.hasExternalScapAccessory;
 };
 
+const buildAccessoryPlanningCoverageAudit = (params: {
+  planningWeek?: ProgramDay[];
+  currentDay: ProgramDay;
+  currentDayIndex?: number;
+  selectedMainExerciseIds: string[];
+}) => {
+  const { planningWeek, currentDay, currentDayIndex, selectedMainExerciseIds } = params;
+  const baseWeek =
+    planningWeek?.map((day) => ({
+      ...day,
+      routine: day.routine.filter((item) => item.section === "main"),
+    })) ?? [
+      {
+        ...currentDay,
+        routine: currentDay.routine.filter((item) => item.section === "main"),
+      },
+    ];
+  const resolvedIndex =
+    typeof currentDayIndex === "number" && currentDayIndex >= 0
+      ? currentDayIndex
+      : baseWeek.findIndex((day) => day.title === currentDay.title);
+  const dayIndex = resolvedIndex >= 0 ? resolvedIndex : 0;
+  const targetDay = baseWeek[dayIndex] ?? currentDay;
+  const mainItems = selectedMainExerciseIds.map((exerciseId) => ({
+    exerciseId,
+    section: "main" as const,
+    sets: "3",
+    reps: "8-12",
+    restSec: 90,
+    loadType: exerciseById(exerciseId)?.loadType ?? "weighted",
+  }));
+  baseWeek[dayIndex] = {
+    ...targetDay,
+    routine: [...mainItems],
+  };
+  return auditWeeklyCoverage(baseWeek);
+};
+
+const deriveAccessoryPlanningFatigueOverlap = (selectedMainExercises: Exercise[]) => {
+  const overlaps = new Set<string>();
+  selectedMainExercises.forEach((exercise) => {
+    const patterns = new Set(
+      (exercise.movementPattern ?? []).map((pattern) => normalizeTagToken(pattern))
+    );
+    if (patterns.has("push") || patterns.has("horizontalpush")) {
+      overlaps.add("horizontalPush");
+    }
+    if (patterns.has("verticalpush")) {
+      overlaps.add("verticalPush");
+    }
+    if (
+      patterns.has("pull") ||
+      patterns.has("horizontalpull") ||
+      patterns.has("verticalpull")
+    ) {
+      overlaps.add("pull");
+    }
+    if (patterns.has("hinge")) {
+      overlaps.add("hinge");
+    }
+    if (patterns.has("squat")) {
+      overlaps.add("squat");
+    }
+  });
+  return Array.from(overlaps);
+};
+
 const isBackChestPhase2ChestFlyWindowOpen = (params: {
   context: DayConstraintRepairContext;
   daysPerWeek: 3 | 4 | 5;
@@ -8133,8 +8206,10 @@ const repairBackChestAccessoryArchitecture = (params: {
   day: ProgramDay;
   daysPerWeek: 3 | 4 | 5;
   context: DayConstraintRepairContext;
+  planningWeek?: ProgramDay[];
+  dayIndex?: number;
 }): { day: ProgramDay; warning?: string } => {
-  const { day, daysPerWeek, context } = params;
+  const { day, daysPerWeek, context, planningWeek, dayIndex } = params;
   if (!isBackChestDayTitle(day.title)) return { day };
   const goalModifier = resolveBackChestGoalModifier({ context, daysPerWeek });
 
@@ -8156,6 +8231,12 @@ const repairBackChestAccessoryArchitecture = (params: {
     .map((item) => exerciseById(item.exerciseId))
     .filter((exercise): exercise is Exercise => Boolean(exercise));
   const selectedMainExerciseIds = mainExercises.map((exercise) => exercise.id);
+  const planningCoverageAudit = buildAccessoryPlanningCoverageAudit({
+    planningWeek,
+    currentDay: day,
+    currentDayIndex: dayIndex,
+    selectedMainExerciseIds,
+  });
   const previousSignature = previousBackChestDay
     ? buildExerciseIdSignature(
         previousBackChestDay.routine
@@ -8165,6 +8246,86 @@ const repairBackChestAccessoryArchitecture = (params: {
     : null;
   const enforceThreeDayBackChestRules = daysPerWeek === 3;
   const enforceAccessoryFamilyDedup = enforceThreeDayBackChestRules;
+  const plannedAccessorySlots = planThreeDayAccessorySlots({
+    dayTitle: day.title,
+    targetAccessoryCount: accessoryEntries.length,
+    selectedMainExercises: mainExercises,
+    weeklyCoverageAudit: planningCoverageAudit,
+    phase: context.selectionContext.phaseStage,
+    experience: context.selectionContext.experienceLevel,
+    trainingContext: context.selectionContext.trainingContext,
+    goal: context.selectionContext.goal,
+    stableGymEquipment: isBackChestGymFlySetupAvailable(context.available),
+    recentAccessoryRoles: previousBackChestDay
+      ? previousBackChestDay.routine
+          .filter((item) => item.section === "accessory")
+          .flatMap((item) => exerciseById(item.exerciseId)?.accessoryRoles ?? [])
+      : [],
+    fatigueOverlap: deriveAccessoryPlanningFatigueOverlap(mainExercises),
+  });
+  const prefersChestIsolationExpansion = plannedAccessorySlots.some(
+    (slot) => slot.role === "accessoryChestIsolation" && slot.isExpansion
+  );
+  const resolveBackChestAccessoryRoleForSlot = (slotIndex: number): BackChestAccessoryRole => {
+    const plannedSlot = plannedAccessorySlots[slotIndex];
+    if (plannedSlot?.role === "accessoryRearDelt") return "rearDelt";
+    if (plannedSlot?.role === "accessoryShoulderSupport") return "externalScap";
+    return slotIndex === 0 ? "rearDelt" : "posterior";
+  };
+  const pickBackChestChestIsolationAccessory = (params: {
+    slotIndex: number;
+    usedIds: Set<string>;
+    selectedAccessoryIds: string[];
+    avoidPriorIds: boolean;
+  }) => {
+    const { slotIndex, usedIds, selectedAccessoryIds, avoidPriorIds } = params;
+    if (!prefersChestIsolationExpansion || slotIndex <= 0) return null;
+    if (!isBackChestPhase2ChestFlyWindowOpen({ context, daysPerWeek })) return null;
+    const selectedAccessoryExercises = selectedAccessoryIds
+      .map((id) => exerciseById(id))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+    if (!selectedAccessoryExercises.some((exercise) => isBackChestRearDeltDominantAccessory(exercise))) {
+      return null;
+    }
+    return getBackChestPhase2ChestFlyCandidatePriority({ context, daysPerWeek })
+      .map((id) => exerciseById(id))
+      .filter((exercise): exercise is Exercise => Boolean(exercise))
+      .filter((exercise) => !usedIds.has(exercise.id))
+      .filter((exercise) => !avoidPriorIds || !priorPhaseAccessoryIds.has(exercise.id))
+      .filter((exercise) =>
+        isExerciseEligibleForProgramContext({
+          exercise,
+          available: context.available,
+          section: "accessory",
+          context: context.selectionContext,
+        })
+      )
+      .map((exercise) => ({
+        exercise,
+        score: scoreExerciseForContextDetailed(
+          exercise,
+          "accessory",
+          context.selectionContext,
+          context.available,
+          {
+            slotId: `${normalizeSlotToken(day.title)}-accessory-${slotIndex + 1}`,
+            slotIndex,
+            phaseIndex: phaseIndexFromStage(context.selectionContext.phaseStage),
+            dayTitle: day.title,
+            dayFocusTags: day.focusTags,
+            slotKind: "accessorychest",
+            slotLane: undefined,
+            selectedMainExerciseIds,
+            selectedAccessoryExerciseIds: selectedAccessoryIds,
+            capabilityMode: context.capabilityMode,
+          }
+        ).score,
+      }))
+      .sort((left, right) => {
+        if (right.score !== left.score) return right.score - left.score;
+        return left.exercise.id.localeCompare(right.exercise.id);
+      })[0]?.exercise ?? null;
+  };
 
   const backChestAccessorySetSatisfiesRules = (accessoryIds: string[]) => {
     if (!enforceThreeDayBackChestRules) return true;
@@ -8204,14 +8365,16 @@ const repairBackChestAccessoryArchitecture = (params: {
         .map((item) => item.exerciseId)
     );
     const selectedAccessoryIds: string[] = [];
-    const roleOrder = getBackChestAccessoryRoleOrder({
-      accessoryCount: accessoryEntries.length,
-      context,
-      daysPerWeek,
-    });
 
-    roleOrder.forEach((role, slotIndex) => {
+    accessoryEntries.forEach((_entry, slotIndex) => {
+      const role = resolveBackChestAccessoryRoleForSlot(slotIndex);
       const candidate =
+        pickBackChestChestIsolationAccessory({
+          slotIndex,
+          usedIds,
+          selectedAccessoryIds,
+          avoidPriorIds,
+        }) ??
         pickBackChestAccessoryForRole({
           role,
           day,
@@ -8266,7 +8429,7 @@ const repairBackChestAccessoryArchitecture = (params: {
         Boolean(fallback) &&
         fallbackChestIsolation &&
         isBackChestChestFlyAccessory(fallback!) &&
-        role !== "rearDelt" &&
+        slotIndex > 0 &&
         isBackChestPhase2ChestFlyWindowOpen({ context, daysPerWeek }) &&
         accessoryEntries.length === 2 &&
         fallbackChestIsolationCount < 1 &&
@@ -8285,7 +8448,10 @@ const repairBackChestAccessoryArchitecture = (params: {
       const fallbackEligible =
         Boolean(fallback) &&
         !usedIds.has(fallback!.id) &&
-        matchesBackChestAccessoryRole(fallback!, role) &&
+        ((prefersChestIsolationExpansion &&
+          slotIndex > 0 &&
+          isChestDominantIsolationAccessory(fallback!)) ||
+          matchesBackChestAccessoryRole(fallback!, role)) &&
         !isBackChestRedundantAccessoryPattern(fallback!) &&
         fallbackFamilyAllowed &&
         (!fallbackChestIsolation || fallbackChestFlyAllowed) &&
@@ -8339,11 +8505,6 @@ const repairBackChestAccessoryArchitecture = (params: {
     if (!previousSignature) return currentIds;
     if (buildExerciseIdSignature(currentIds) !== previousSignature) return currentIds;
 
-    const roleOrder = getBackChestAccessoryRoleOrder({
-      accessoryCount: accessoryEntries.length,
-      context,
-      daysPerWeek,
-    });
     const nonAccessoryUsedIds = new Set(
       day.routine
         .filter((item) => item.section !== "accessory")
@@ -8351,8 +8512,8 @@ const repairBackChestAccessoryArchitecture = (params: {
     );
     const rolePriority: BackChestAccessoryRole[] = ["rearDelt", "externalScap", "posterior"];
     const roleMappedSwapIndexes = rolePriority.flatMap((priorityRole) =>
-      roleOrder
-        .map((role, index) => ({ role, index }))
+      accessoryEntries
+        .map((_entry, index) => ({ role: resolveBackChestAccessoryRoleForSlot(index), index }))
         .filter((entry) => entry.role === priorityRole)
         .map((entry) => entry.index)
     );
@@ -8364,12 +8525,18 @@ const repairBackChestAccessoryArchitecture = (params: {
     ];
 
     for (const swapIndex of swapIndexes) {
-      const role = roleOrder[swapIndex] ?? "posterior";
+      const role = resolveBackChestAccessoryRoleForSlot(swapIndex);
       const lockedAccessoryIds = currentIds.filter((_, index) => index !== swapIndex);
       const usedIds = new Set(nonAccessoryUsedIds);
       lockedAccessoryIds.forEach((id) => usedIds.add(id));
 
       const replacement =
+        pickBackChestChestIsolationAccessory({
+          slotIndex: swapIndex,
+          usedIds,
+          selectedAccessoryIds: lockedAccessoryIds,
+          avoidPriorIds: true,
+        }) ??
         pickBackChestAccessoryForRole({
           role,
           day,
@@ -13738,8 +13905,10 @@ const repairBackChestDayIntelligence = (params: {
   day: ProgramDay;
   daysPerWeek: 3 | 4 | 5;
   context: DayConstraintRepairContext;
+  planningWeek?: ProgramDay[];
+  dayIndex?: number;
 }): { day: ProgramDay; warnings: string[] } => {
-  const { day, daysPerWeek, context } = params;
+  const { day, daysPerWeek, context, planningWeek, dayIndex } = params;
   if (!isBackChestDayTitle(day.title)) return { day, warnings: [] };
 
   const warnings: string[] = [];
@@ -13757,6 +13926,8 @@ const repairBackChestDayIntelligence = (params: {
     day: updatedDay,
     daysPerWeek,
     context,
+    planningWeek,
+    dayIndex,
   });
   if (repairedAccessory.warning) warnings.push(repairedAccessory.warning);
   updatedDay = repairedAccessory.day;
@@ -15111,6 +15282,111 @@ const selectShouldersArmsArmAccessoryExercise = (params: {
   });
 };
 
+const isShouldersArmsCarryStyleCoreAccessory = (exercise: Exercise) => {
+  if (exercise.carryType !== "coreStability") return false;
+  const patterns = new Set(
+    (exercise.movementPattern ?? []).map((pattern) => normalizeTagToken(pattern))
+  );
+  const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    patterns.has("carry") ||
+    tags.has("carry") ||
+    descriptor.includes("carry") ||
+    descriptor.includes("suitcase") ||
+    descriptor.includes("march")
+  );
+};
+
+const selectShouldersArmsCarryStyleAccessoryExercise = (params: {
+  day: ProgramDay;
+  context: DayConstraintRepairContext;
+  usedIds: Set<string>;
+  slotIndex: number;
+  selectedMainExercises: Exercise[];
+  selectedAccessoryExercises: Exercise[];
+}): Exercise | null => {
+  const { day, context, usedIds, slotIndex, selectedMainExercises, selectedAccessoryExercises } =
+    params;
+  const auditMeta: SelectionAuditMeta = {
+    slotId: `${normalizeSlotToken(day.title)}-accessory-${slotIndex + 1}`,
+    slotIndex,
+    phaseIndex: phaseIndexFromStage(context.selectionContext.phaseStage),
+    dayTitle: day.title,
+    dayFocusTags: day.focusTags,
+    slotKind: "accessoryCarryExpansion",
+    slotLane: "core",
+    selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
+    selectedAccessoryExerciseIds: selectedAccessoryExercises.map((exercise) => exercise.id),
+    capabilityMode: context.capabilityMode,
+    selectionRng: context.selectionRng,
+  };
+  const scoredEntries = exercises
+    .filter((exercise) => !usedIds.has(exercise.id))
+    .filter(isShouldersArmsCarryStyleCoreAccessory)
+    .filter((exercise) =>
+      isExerciseEligibleForProgramContext({
+        exercise,
+        available: context.available,
+        section: "accessory",
+        context: context.selectionContext,
+        dayTitle: day.title,
+      })
+    )
+    .filter((exercise) =>
+      isAccessoryLegalForSlot({
+        exercise,
+        dayTitle: day.title,
+        slotLane: "core",
+        available: context.available,
+        context: context.selectionContext,
+      })
+    )
+    .map((exercise) => {
+      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+      const patterns = new Set(
+        (exercise.movementPattern ?? []).map((pattern) => normalizeTagToken(pattern))
+      );
+      let score = scoreExerciseForContextDetailed(
+        exercise,
+        "accessory",
+        context.selectionContext,
+        context.available,
+        auditMeta
+      ).score;
+      if (
+        context.selectionContext.capabilityMode === "bandOnly" &&
+        isBandEquippedExercise(exercise)
+      ) {
+        score += 1.5;
+      }
+      if (descriptor.includes("suitcase") || descriptor.includes("carry")) score += 1.25;
+      if (patterns.has("anti_rotation") || patterns.has("antirotation")) score += 1;
+      return { exercise, score };
+    })
+    .sort((left, right) => {
+      if (right.score !== left.score) return right.score - left.score;
+      return left.exercise.id.localeCompare(right.exercise.id);
+    });
+  return chooseDeterministicTopScoredExercise(scoredEntries, context.selectionRng, {
+    useVariationBand: Boolean(context.selectionContext.variationState?.enabled),
+    variationConfig:
+      context.selectionContext.variationState?.config ?? DEFAULT_PROGRAM_VARIATION_CONFIG,
+    variationSeedToken: context.selectionContext.variationState?.enabled
+      ? [
+          context.selectionContext.variationState.seedKey,
+          "shoulders-arms-carry-style-accessory",
+          scoredEntries
+            .map((entry) => `${entry.exercise.id}:${entry.score.toFixed(2)}`)
+            .join("|"),
+        ].join("|")
+      : undefined,
+  });
+};
+
+const isShouldersArmsCarryExpansionSatisfiedExercise = (exercise: Exercise) =>
+  isLegsCarryExercise(exercise) || isShouldersArmsCarryStyleCoreAccessory(exercise);
+
 const resolveShouldersArmsAccessoryRepRange = (phaseStage: ProgramPhaseStage) =>
   phaseStage === "growth" ? "8-12" : "10-15";
 
@@ -15118,8 +15394,10 @@ const repairShouldersArmsDayIntelligence = (params: {
   day: ProgramDay;
   daysPerWeek: 3 | 4 | 5;
   context: DayConstraintRepairContext;
+  planningWeek?: ProgramDay[];
+  dayIndex?: number;
 }): { day: ProgramDay; warnings: string[] } => {
-  const { day, daysPerWeek, context } = params;
+  const { day, daysPerWeek, context, planningWeek, dayIndex } = params;
   if (daysPerWeek !== 3 || !isShouldersArmsDayTitle(day.title)) return { day, warnings: [] };
 
   const warnings: string[] = [];
@@ -15592,101 +15870,200 @@ const repairShouldersArmsDayIntelligence = (params: {
         .filter((item) => item.section === "accessory")
         .map((item) => item.exerciseId)
     : [];
+  const planningCoverageAudit = buildAccessoryPlanningCoverageAudit({
+    planningWeek,
+    currentDay: day,
+    currentDayIndex: dayIndex,
+    selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
+  });
+  const plannedAccessorySlots = planThreeDayAccessorySlots({
+    dayTitle: day.title,
+    targetAccessoryCount,
+    selectedMainExercises,
+    weeklyCoverageAudit: planningCoverageAudit,
+    phase: phaseStage,
+    experience: experienceLevel,
+    trainingContext: context.selectionContext.trainingContext,
+    goal: context.selectionContext.goal,
+    stableGymEquipment:
+      context.available.has("machines") ||
+      context.available.has("cables") ||
+      context.available.has("dumbbells"),
+    recentAccessoryRoles: previousDay
+      ? previousDay.routine
+          .filter((item) => item.section === "accessory")
+          .flatMap((item) => exerciseById(item.exerciseId)?.accessoryRoles ?? [])
+      : [],
+    fatigueOverlap: deriveAccessoryPlanningFatigueOverlap(selectedMainExercises),
+  });
   const usedAccessoryIds = new Set<string>(selectedMainExercises.map((exercise) => exercise.id));
   const usedAccessoryStimulusByRole: Record<ShouldersArmsArmRole, Set<string>> = {
     triceps: new Set<string>(),
     biceps: new Set<string>(),
   };
+  const usedShoulderAccessoryFamilies = new Set<string>();
   const accessoryExercises: Exercise[] = [];
-  const armAccessoryTargetCount =
-    gymRoleLockedMainContext && targetAccessoryCount === 3 ? 2 : targetAccessoryCount;
-  const accessoryRoleOrderFromBlueprint =
-    threeDayBlueprint?.accessoryRoles.map((role) => {
-      if (role === "tri_iso" || role === "tri_iso_variant") return "triceps";
-      if (role === "bi_iso" || role === "bi_iso_variant") return "biceps";
-      return null;
-    }) ?? [];
-  const accessoryRoleOrder: ShouldersArmsArmRole[] = accessoryRoleOrderFromBlueprint
-    .filter((role): role is ShouldersArmsArmRole => Boolean(role));
-  if (!accessoryRoleOrder.length) {
-    const fallbackAccessoryRoleOrder: ShouldersArmsArmRole[] =
-      armAccessoryTargetCount >= 4
-        ? ["triceps", "biceps", "triceps", "biceps"]
-        : armAccessoryTargetCount === 3
-        ? ["triceps", "biceps", "triceps"]
-        : ["triceps", "biceps"];
-    accessoryRoleOrder.push(...fallbackAccessoryRoleOrder);
-  }
-  while (accessoryRoleOrder.length < armAccessoryTargetCount) {
-    accessoryRoleOrder.push(accessoryRoleOrder.length % 2 === 0 ? "triceps" : "biceps");
-  }
-  accessoryRoleOrder.splice(armAccessoryTargetCount);
-
-  const buildArmAccessoryAuditMeta = (
+  const selectedAccessorySlots: (typeof plannedAccessorySlots)[number][] = [];
+  const accessoryRepRange = resolveShouldersArmsAccessoryRepRange(phaseStage);
+  const buildPlannedAccessoryAuditMeta = (
     slotIndex: number,
-    role: ShouldersArmsArmRole
+    slot: (typeof plannedAccessorySlots)[number]
   ): SelectionAuditMeta => ({
     slotId: `${normalizeSlotToken(day.title)}-accessory-${slotIndex + 1}`,
     slotIndex,
     phaseIndex,
     dayTitle: day.title,
     dayFocusTags: day.focusTags,
-    slotKind: role === "triceps" ? "accessoryTriIso" : "accessoryBiIso",
+    slotKind: slot.slotKind,
+    slotLane: slot.lane,
     selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
     selectedAccessoryExerciseIds: accessoryExercises.map((exercise) => exercise.id),
     capabilityMode: context.capabilityMode,
     selectionRng: context.selectionRng,
   });
-
-  accessoryRoleOrder.forEach((role, index) => {
+  const buildWorkingAccessorySelectionDay = (): ProgramDay => ({
+    ...day,
+    routine: [
+      ...day.routine.filter(
+        (item) => item.section !== "main" && item.section !== "accessory"
+      ),
+      ...selectedMainExercises.map((exercise) =>
+        makeItem(
+          exercise.id,
+          profile.mainSets,
+          profile.mainRepRange,
+          undefined,
+          profile.mainRestSec,
+          "main"
+        )
+      ),
+      ...accessoryExercises.map((exercise, index) =>
+        makeItem(
+          exercise.id,
+          profile.accessorySets,
+          accessoryRepRange,
+          undefined,
+          profile.accessoryRestSec,
+          "accessory",
+          {
+            source: "day_intelligence_repair",
+            slotId: `${normalizeSlotToken(day.title)}-accessory-${index + 1}`,
+            slotKind: selectedAccessorySlots[index]?.slotKind ?? "accessory",
+            slotLane: selectedAccessorySlots[index]?.lane,
+            phaseIndex,
+          }
+        )
+      ),
+    ],
+  });
+  const selectAccessoryForRole = (params: {
+    role: ExerciseAccessoryRole;
+    slot: (typeof plannedAccessorySlots)[number];
+    slotIndex: number;
+    disallowIds?: Set<string>;
+    enforceUniqueStimulus?: boolean;
+  }) => {
+    const { role, slot, slotIndex, disallowIds, enforceUniqueStimulus = true } = params;
+    const mergedUsedIds =
+      disallowIds?.size
+        ? new Set<string>([...usedAccessoryIds, ...Array.from(disallowIds)])
+        : usedAccessoryIds;
+    if (role === "accessoryTriceps" || role === "accessoryBiceps") {
+      const armRole: ShouldersArmsArmRole =
+        role === "accessoryTriceps" ? "triceps" : "biceps";
+      return selectShouldersArmsArmAccessoryExercise({
+        role: armRole,
+        context,
+        usedIds: usedAccessoryIds,
+        usedStimulusKeys: usedAccessoryStimulusByRole[armRole],
+        enforceUniqueStimulus,
+        disallowIds,
+        auditMeta: buildPlannedAccessoryAuditMeta(slotIndex, slot),
+      });
+    }
+    if (role === "accessoryRearDelt" || role === "accessoryShoulderSupport") {
+      return selectShouldersArmsAccessoryExercise({
+        role: role === "accessoryRearDelt" ? "rearDelt" : "externalScap",
+        context,
+        usedIds: usedAccessoryIds,
+        usedFamilyKeys: usedShoulderAccessoryFamilies,
+        disallowIds,
+      });
+    }
+    if (role === "accessoryCarry") {
+      const carry = pickThreeDayCarryAccessoryForDay({
+        day: buildWorkingAccessorySelectionDay(),
+        context,
+        usedIds: mergedUsedIds,
+      });
+      if (carry) return carry;
+      return selectShouldersArmsCarryStyleAccessoryExercise({
+        day,
+        context,
+        usedIds: mergedUsedIds,
+        slotIndex,
+        selectedMainExercises,
+        selectedAccessoryExercises: accessoryExercises,
+      });
+    }
+    return null;
+  };
+  const trackSelectedAccessory = (exercise: Exercise) => {
+    usedAccessoryIds.add(exercise.id);
+    const mainCategory = resolveShouldersArmsMainCategory(exercise);
+    if (mainCategory === "triceps" || mainCategory === "biceps") {
+      usedAccessoryStimulusByRole[mainCategory].add(
+        resolveShouldersArmsArmStimulusKey(exercise, mainCategory)
+      );
+    }
+    if (
+      isShouldersArmsAccessoryRearDelt(exercise) ||
+      isShouldersArmsAccessoryExternalScap(exercise)
+    ) {
+      usedShoulderAccessoryFamilies.add(resolveShouldersArmsAccessoryFamilyKey(exercise));
+    }
+  };
+  plannedAccessorySlots.forEach((slot, index) => {
     const previousId = previousAccessoryIds[index];
-    let picked = selectShouldersArmsArmAccessoryExercise({
-      role,
-      context,
-      usedIds: usedAccessoryIds,
-      usedStimulusKeys: usedAccessoryStimulusByRole[role],
-      disallowIds: previousId ? new Set([previousId]) : undefined,
-      auditMeta: buildArmAccessoryAuditMeta(index, role),
-    });
+    const candidateRoles = [slot.role, ...slot.alternatives];
+    const tryPick = (
+      disallowIds?: Set<string>,
+      enforceUniqueStimulus = true
+    ): Exercise | null => {
+      for (const candidateRole of candidateRoles) {
+        const picked = selectAccessoryForRole({
+          role: candidateRole,
+          slot,
+          slotIndex: index,
+          disallowIds,
+          enforceUniqueStimulus,
+        });
+        if (picked) return picked;
+      }
+      return null;
+    };
+    let picked = tryPick(previousId ? new Set([previousId]) : undefined, true);
     if (!picked && previousId) {
-      picked = selectShouldersArmsArmAccessoryExercise({
-        role,
-        context,
-        usedIds: usedAccessoryIds,
-        usedStimulusKeys: usedAccessoryStimulusByRole[role],
-        auditMeta: buildArmAccessoryAuditMeta(index, role),
-      });
+      picked = tryPick(undefined, true);
     }
-    if (!picked) {
-      picked = selectShouldersArmsArmAccessoryExercise({
-        role,
-        context,
-        usedIds: usedAccessoryIds,
-        usedStimulusKeys: usedAccessoryStimulusByRole[role],
-        enforceUniqueStimulus: false,
-        disallowIds: previousId ? new Set([previousId]) : undefined,
-        auditMeta: buildArmAccessoryAuditMeta(index, role),
-      });
-    }
-    if (!picked && previousId) {
-      picked = selectShouldersArmsArmAccessoryExercise({
-        role,
-        context,
-        usedIds: usedAccessoryIds,
-        usedStimulusKeys: usedAccessoryStimulusByRole[role],
-        enforceUniqueStimulus: false,
-        auditMeta: buildArmAccessoryAuditMeta(index, role),
-      });
+    if (
+      !picked &&
+      (slot.role === "accessoryTriceps" || slot.role === "accessoryBiceps")
+    ) {
+      picked = tryPick(previousId ? new Set([previousId]) : undefined, false);
+      if (!picked && previousId) {
+        picked = tryPick(undefined, false);
+      }
     }
     if (!picked) return;
-    usedAccessoryIds.add(picked.id);
-    usedAccessoryStimulusByRole[role].add(resolveShouldersArmsArmStimulusKey(picked, role));
+    trackSelectedAccessory(picked);
     accessoryExercises.push(picked);
+    selectedAccessorySlots.push(slot);
   });
 
-  if (accessoryExercises.length !== armAccessoryTargetCount) {
+  if (accessoryExercises.length !== targetAccessoryCount) {
     warnings.push(
-      `Shoulders + Arms accessory target mismatch (expected ${armAccessoryTargetCount}, got ${accessoryExercises.length}).`
+      `Shoulders + Arms accessory target mismatch (expected ${targetAccessoryCount}, got ${accessoryExercises.length}).`
     );
   }
 
@@ -15722,15 +16099,30 @@ const repairShouldersArmsDayIntelligence = (params: {
       }
     );
   });
-  const accessoryRepRange = resolveShouldersArmsAccessoryRepRange(phaseStage);
-  const accessoryItems = accessoryExercises.map((exercise) =>
+  const accessoryItems = accessoryExercises.map((exercise, index) =>
     makeItem(
       exercise.id,
       profile.accessorySets,
       accessoryRepRange,
       undefined,
       profile.accessoryRestSec,
-      "accessory"
+      "accessory",
+      {
+        source: "day_intelligence_repair",
+        slotId: `${normalizeSlotToken(day.title)}-accessory-${index + 1}`,
+        slotKind:
+          selectedAccessorySlots[index]?.slotKind ??
+          accessorySlotKindByLane(
+            selectedAccessorySlots[index]?.lane ??
+              resolveAccessoryLaneForReplacement(exercise, null) ??
+              "core"
+          ),
+        slotLane:
+          selectedAccessorySlots[index]?.lane ??
+          resolveAccessoryLaneForReplacement(exercise, null) ??
+          "core",
+        phaseIndex,
+      }
     )
   );
 
@@ -15846,6 +16238,17 @@ const repairShouldersArmsDayIntelligence = (params: {
   }
   if (bicepsAccessoryCount < 1) {
     warnings.push("Shoulders + Arms accessory repair missing required biceps accessory.");
+  }
+  const wantsCarryExpansion = plannedAccessorySlots.some(
+    (slot) => slot.role === "accessoryCarry" && slot.isExpansion
+  );
+  if (
+    wantsCarryExpansion &&
+    !accessoryExercises.some((exercise) =>
+      isShouldersArmsCarryExpansionSatisfiedExercise(exercise)
+    )
+  ) {
+    warnings.push("Shoulders + Arms accessory repair missing planned carry-style finisher.");
   }
   if (targetAccessoryCount >= 4 && tricepsAccessoryCount < 2) {
     warnings.push("Shoulders + Arms advanced accessory repair missing second triceps accessory.");
@@ -16276,8 +16679,10 @@ const repairLegsAbsDayIntelligence = (params: {
   day: ProgramDay;
   daysPerWeek: 3 | 4 | 5;
   context: DayConstraintRepairContext;
+  planningWeek?: ProgramDay[];
+  dayIndex?: number;
 }): { day: ProgramDay; warnings: string[] } => {
-  const { day, daysPerWeek, context } = params;
+  const { day, daysPerWeek, context, planningWeek, dayIndex } = params;
   if (daysPerWeek !== 3 || !isLegsAbsDayTitle(day.title)) return { day, warnings: [] };
 
   const warnings: string[] = [];
@@ -16864,21 +17269,58 @@ const repairLegsAbsDayIntelligence = (params: {
 
   enforceBeginnerPhaseOneLegsLaneIntegrity();
 
+  const planningCoverageAudit = buildAccessoryPlanningCoverageAudit({
+    planningWeek,
+    currentDay: day,
+    currentDayIndex: dayIndex,
+    selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
+  });
+  const plannedAccessorySlots = planThreeDayAccessorySlots({
+    dayTitle: day.title,
+    targetAccessoryCount,
+    selectedMainExercises,
+    weeklyCoverageAudit: planningCoverageAudit,
+    phase: phaseStage,
+    experience: experienceLevel,
+    trainingContext: context.selectionContext.trainingContext,
+    goal: context.selectionContext.goal,
+    stableGymEquipment: hasGymLikeLowerImplementAvailability(context.available),
+    recentAccessoryRoles: previousDay
+      ? previousDay.routine
+          .filter((item) => item.section === "accessory")
+          .flatMap((item) => exerciseById(item.exerciseId)?.accessoryRoles ?? [])
+      : [],
+    fatigueOverlap: deriveAccessoryPlanningFatigueOverlap(selectedMainExercises),
+  });
+
   const usedAccessoryIds = new Set<string>(selectedMainExercises.map((exercise) => exercise.id));
   const selectedAccessories: Exercise[] = [];
   const usedAccessoryStimulus = new Set<string>();
 
-  const selectAccessoryByIds = (
-    ids: string[],
-    role: "core" | "calves" | "extraAb",
+  const selectAccessoryForPlannedRole = (
+    slot: (typeof plannedAccessorySlots)[number],
+    slotIndex: number,
     disallowIds?: Set<string>
   ) => {
-    const candidates = Array.from(new Set(ids))
-      .map((id) => exerciseById(id))
-      .filter((exercise): exercise is Exercise => Boolean(exercise))
+    const isCarryLikeAccessory = (exercise: Exercise) => {
+      const patterns = new Set(
+        (exercise.movementPattern ?? []).map((pattern) => normalizeLegsPatternToken(pattern))
+      );
+      const tags = new Set((exercise.tags ?? []).map((tag) => normalizeTagToken(tag)));
+      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+      return (
+        patterns.has("carry") ||
+        tags.has("carry") ||
+        descriptor.includes("carry") ||
+        descriptor.includes("suitcase")
+      );
+    };
+    const candidateRoles = [slot.role, ...slot.alternatives];
+    const scoredCandidates = exercises
+      .filter((exercise) => exercise.category === "main")
       .filter((exercise) => !usedAccessoryIds.has(exercise.id))
       .filter((exercise) => !disallowIds?.has(exercise.id))
-      .filter((exercise) => !isLegsCarryExercise(exercise))
+      .filter((exercise) => !usedAccessoryStimulus.has(resolveLegsMainStimulusKey(exercise)))
       .filter((exercise) =>
         isExerciseEligibleForProgramContext({
           exercise,
@@ -16889,35 +17331,74 @@ const repairLegsAbsDayIntelligence = (params: {
         })
       )
       .filter((exercise) =>
-        role === "core" || role === "extraAb"
-          ? isLegsCoreAccessoryExercise(exercise)
-          : isLegsCalvesAccessoryExercise(exercise)
+        isAccessoryLegalForSlot({
+          exercise,
+          dayTitle: day.title,
+          slotLane: slot.lane,
+          available: context.available,
+          context: context.selectionContext,
+        })
       )
-      .filter((exercise) => !usedAccessoryStimulus.has(resolveLegsMainStimulusKey(exercise)))
+      .filter((exercise) => candidateRoles.some((role) => exerciseHasAccessoryRole(exercise, role)))
+      .filter((exercise) => {
+        if (slot.role === "accessoryCarry") return isLegsCarryExercise(exercise);
+        if (slot.role === "accessoryCoreStability") return !isCarryLikeAccessory(exercise);
+        if (slot.role !== "accessoryCarry" && isCarryLikeAccessory(exercise)) return false;
+        return true;
+      })
       .map((exercise) => {
-        let score = scoreExerciseForContext(
+        const roleMatchIndex = candidateRoles.findIndex((role) => exerciseHasAccessoryRole(exercise, role));
+        const primaryMatch = exerciseHasAccessoryRole(exercise, slot.role);
+        let score = scoreExerciseForContextDetailed(
           exercise,
           "accessory",
           context.selectionContext,
-          context.available
-        );
-        if (role === "core" && isLegsCoreAccessoryExercise(exercise)) score += 2;
-        if (role === "calves" && isLegsCalvesAccessoryExercise(exercise)) score += 2;
-        if (role === "extraAb" && phaseStage === "growth") score += 1;
+          context.available,
+          {
+            slotId: `${normalizeSlotToken(day.title)}-accessory-${slotIndex + 1}`,
+            slotIndex,
+            phaseIndex,
+            dayTitle: day.title,
+            dayFocusTags: day.focusTags,
+            slotKind: slot.slotKind,
+            slotLane: undefined,
+            selectedMainExerciseIds: selectedMainExercises.map((entry) => entry.id),
+            selectedAccessoryExerciseIds: selectedAccessories.map((entry) => entry.id),
+            capabilityMode: context.capabilityMode,
+            selectionRng: context.selectionRng,
+          }
+        ).score;
+        if (primaryMatch) score += 3;
+        else score += Math.max(0, 1.5 - Math.max(roleMatchIndex, 0) * 0.25);
+        if (slot.role === "accessoryCoreStability" && isLegsCoreAccessoryExercise(exercise)) {
+          score += slot.isExpansion ? 2.5 : 2;
+        }
+        if (slot.role === "accessoryCalves" && isLegsCalvesAccessoryExercise(exercise)) {
+          score += 2.5;
+        }
+        if (slot.role === "accessoryHamstring" && exerciseHasAccessoryRole(exercise, "accessoryHamstring")) {
+          score += 2;
+        }
+        if (slot.role === "accessoryGlute" && exerciseHasAccessoryRole(exercise, "accessoryGlute")) {
+          score += 2;
+        }
+        if (slot.role === "accessoryCarry" && isLegsCarryExercise(exercise)) {
+          score += 2;
+        }
         return { exercise, score };
       })
       .sort((left, right) => {
         if (right.score !== left.score) return right.score - left.score;
         const leftSeed = stableHashUnit(
-          `${context.selectionSeed ?? "legs-abs-accessory"}|${role}|${left.exercise.id}`
+          `${context.selectionSeed ?? "legs-abs-accessory"}|${slot.slotKind}|${left.exercise.id}`
         );
         const rightSeed = stableHashUnit(
-          `${context.selectionSeed ?? "legs-abs-accessory"}|${role}|${right.exercise.id}`
+          `${context.selectionSeed ?? "legs-abs-accessory"}|${slot.slotKind}|${right.exercise.id}`
         );
         if (leftSeed !== rightSeed) return leftSeed - rightSeed;
         return left.exercise.id.localeCompare(right.exercise.id);
       });
-    return candidates[0]?.exercise ?? null;
+    return scoredCandidates[0]?.exercise ?? null;
   };
 
   const addAccessory = (exercise: Exercise) => {
@@ -16926,48 +17407,36 @@ const repairLegsAbsDayIntelligence = (params: {
     selectedAccessories.push(exercise);
   };
 
-  const accessoryRolePlanFromBlueprint =
-    threeDayBlueprint?.accessoryRoles ?? [];
-  const accessoryRolePlan: Array<"core" | "calves" | "extraAb"> =
-    accessoryRolePlanFromBlueprint.length
-      ? accessoryRolePlanFromBlueprint
-          .map((role) => {
-            if (role === "calves") return "calves" as const;
-            if (role === "extra_ab") return "extraAb" as const;
-            if (role === "core") return "core" as const;
-            return null;
-          })
-          .filter((role): role is "core" | "calves" | "extraAb" => Boolean(role))
-      : targetAccessoryCount >= 3
-      ? ["core", "calves", "extraAb"]
-      : ["core", "calves"];
-
-  accessoryRolePlan.forEach((role) => {
+  plannedAccessorySlots.forEach((slot, index) => {
     if (selectedAccessories.length >= targetAccessoryCount) return;
-    const ids =
-      role === "core"
-        ? LEGS_ABS_CORE_ACCESSORY_IDS
-        : role === "calves"
-        ? LEGS_ABS_CALVES_ACCESSORY_IDS
-        : LEGS_ABS_EXTRA_AB_ACCESSORY_IDS;
-    const previousId = previousAccessoryIds.find((id) => ids.includes(id));
-    let picked = selectAccessoryByIds(
-      ids,
-      role,
+    const previousId = previousAccessoryIds[index];
+    let picked = selectAccessoryForPlannedRole(
+      slot,
+      index,
       previousId ? new Set([previousId]) : undefined
     );
     if (!picked && previousId) {
-      picked = selectAccessoryByIds(ids, role);
+      picked = selectAccessoryForPlannedRole(slot, index);
     }
     if (picked) addAccessory(picked);
   });
 
   while (selectedAccessories.length < targetAccessoryCount) {
-    const fallbackRole: "core" | "calves" =
-      selectedAccessories.length % 2 === 0 ? "core" : "calves";
-    const ids =
-      fallbackRole === "core" ? LEGS_ABS_CORE_ACCESSORY_IDS : LEGS_ABS_CALVES_ACCESSORY_IDS;
-    const picked = selectAccessoryByIds(ids, fallbackRole);
+    const fallbackSlot =
+      plannedAccessorySlots[selectedAccessories.length] ??
+      ({
+        role: selectedAccessories.length % 2 === 0 ? "accessoryCoreStability" : "accessoryCalves",
+        alternatives:
+          selectedAccessories.length % 2 === 0 ? ["accessoryCarry"] : ["accessoryHamstring"],
+        lane: selectedAccessories.length % 2 === 0 ? "core" : "lower",
+        slotKind:
+          selectedAccessories.length % 2 === 0
+            ? "accessoryCoreFallback"
+            : "accessoryCalvesFallback",
+        required: false,
+        isExpansion: true,
+      } as (typeof plannedAccessorySlots)[number]);
+    const picked = selectAccessoryForPlannedRole(fallbackSlot, selectedAccessories.length);
     if (!picked) break;
     addAccessory(picked);
   }
@@ -17486,9 +17955,50 @@ const enforceBeginnerThreeDayCarryPolicy = (params: {
     const accessoryEntries = day.routine
       .map((item, itemIndex) => ({ item, itemIndex }))
       .filter((entry) => entry.item.section === "accessory");
+    const planningCoverageAudit = buildAccessoryPlanningCoverageAudit({
+      planningWeek: nextWeek,
+      currentDay: day,
+      currentDayIndex: shouldersIndex,
+      selectedMainExerciseIds: day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId),
+    });
+    const targetAccessoryCount =
+      get3DayTemplateCounts(day.title, context.selectionContext.experienceLevel)?.accessoryCount ??
+      Math.max(3, accessoryEntries.length + 1);
+    const plannedSlots = planThreeDayAccessorySlots({
+      dayTitle: day.title,
+      targetAccessoryCount,
+      selectedMainExercises: day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise)),
+      weeklyCoverageAudit: planningCoverageAudit,
+      phase: context.selectionContext.phaseStage,
+      experience: context.selectionContext.experienceLevel,
+      trainingContext: context.selectionContext.trainingContext,
+      goal: context.selectionContext.goal,
+      stableGymEquipment:
+        context.available.has("machines") ||
+        context.available.has("cables") ||
+        context.available.has("dumbbells"),
+      recentAccessoryRoles: day.routine
+        .filter((item) => item.section === "accessory")
+        .flatMap((item) => exerciseById(item.exerciseId)?.accessoryRoles ?? []),
+      fatigueOverlap: deriveAccessoryPlanningFatigueOverlap(
+        day.routine
+          .filter((item) => item.section === "main")
+          .map((item) => exerciseById(item.exerciseId))
+          .filter((exercise): exercise is Exercise => Boolean(exercise))
+      ),
+    });
+    const wantsCarryExpansion = plannedSlots.some(
+      (slot) => slot.role === "accessoryCarry" && slot.isExpansion
+    );
+    if (!wantsCarryExpansion) return;
     const shouldersHasCarry = accessoryEntries.some((entry) => {
       const exercise = exerciseById(entry.item.exerciseId);
-      return exercise ? isLegsCarryExercise(exercise) : false;
+      return exercise ? isShouldersArmsCarryExpansionSatisfiedExercise(exercise) : false;
     });
     if (shouldersHasCarry) return;
 
@@ -18676,15 +19186,23 @@ const applyDayCurriculumConstraints = (params: {
     daysPerWeek,
     context,
   });
-  const architectureAdjustedWeek = weeklyRepaired.week.map((day) => {
+  const architectureAdjustedWeek: ProgramDay[] = [];
+  weeklyRepaired.week.forEach((day, dayIndex) => {
     const dayBudget = resolveDayPatternBudget({
       title: day.title,
       selectionContext: context.selectionContext,
     });
+    const planningWeek = [
+      ...architectureAdjustedWeek,
+      day,
+      ...weeklyRepaired.week.slice(dayIndex + 1),
+    ];
     const repairedBackChest = repairBackChestDayIntelligence({
       day,
       daysPerWeek,
       context,
+      planningWeek,
+      dayIndex,
     });
     repairedBackChest.warnings.forEach((message) => {
       accumulatedWarnings.push({
@@ -18697,6 +19215,8 @@ const applyDayCurriculumConstraints = (params: {
       day: repairedBackChest.day,
       daysPerWeek,
       context,
+      planningWeek,
+      dayIndex,
     });
     repairedShouldersArms.warnings.forEach((message) => {
       accumulatedWarnings.push({
@@ -18709,6 +19229,8 @@ const applyDayCurriculumConstraints = (params: {
       day: repairedShouldersArms.day,
       daysPerWeek,
       context,
+      planningWeek,
+      dayIndex,
     });
     repairedLegsAbs.warnings.forEach((message) => {
       accumulatedWarnings.push({
@@ -18717,11 +19239,13 @@ const applyDayCurriculumConstraints = (params: {
         message,
       });
     });
-    return ensureDayHasDumbbellMain({
-      day: repairedLegsAbs.day,
-      context,
-      budget: dayBudget,
-    });
+    architectureAdjustedWeek.push(
+      ensureDayHasDumbbellMain({
+        day: repairedLegsAbs.day,
+        context,
+        budget: dayBudget,
+      })
+    );
   });
   const fiveDayGymAnchorAdjusted = enforceFiveDayGymWeeklyMainAnchors({
     week: architectureAdjustedWeek,
@@ -21505,6 +22029,27 @@ const THREE_DAY_GYM_MAIN_SLOT_ROLE_BY_KIND: Record<string, ExerciseSlotRole> = {
 
 const exerciseHasSlotRole = (exercise: Exercise, role: ExerciseSlotRole) =>
   exercise.slotRoles?.includes(role) ?? false;
+
+const exerciseHasAccessoryRole = (exercise: Exercise, role: ExerciseAccessoryRole) =>
+  exercise.accessoryRoles?.includes(role) ?? false;
+
+const accessoryRoleToLane = (role: ExerciseAccessoryRole): AccessoryLane => {
+  if (role === "accessoryChestIsolation") return "chest";
+  if (
+    role === "accessoryBackThickness" ||
+    role === "accessoryBackWidth" ||
+    role === "accessoryRearDelt" ||
+    role === "accessoryShoulderSupport"
+  ) {
+    return "back";
+  }
+  if (role === "accessoryTriceps" || role === "accessoryLateralDelt") return "push";
+  if (role === "accessoryBiceps") return "pull";
+  if (role === "accessoryCalves" || role === "accessoryHamstring" || role === "accessoryGlute") {
+    return "lower";
+  }
+  return "core";
+};
 
 const isFloorBasedPressExercise = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name} ${exercise.variantKey ?? ""}`.toLowerCase();
@@ -25503,11 +26048,32 @@ const chooseWarmupId = (
 const chooseCooldownId = (
   focus: "upper" | "lower" | "core",
   available: Set<Equipment>,
-  context: SelectionContext
+  context: SelectionContext,
+  options?: {
+    dayTitle?: string;
+    selectedMainExerciseIds?: string[];
+    selectedAccessoryExerciseIds?: string[];
+  }
 ) =>
   pickFirstEligibleId(
     focus === "upper"
-      ? ["doorway-pec-stretch", "thread-the-needle", "banded-lat-stretch", "chin-tucks"]
+      ? isShouldersArmsDayTitle(options?.dayTitle)
+        ? (() => {
+            const selectedIds = [
+              ...(options?.selectedMainExerciseIds ?? []),
+              ...(options?.selectedAccessoryExerciseIds ?? []),
+            ];
+            const selectedExercises = selectedIds
+              .map((id) => exerciseById(id))
+              .filter((exercise): exercise is Exercise => Boolean(exercise));
+            const hasChestDominantWork = selectedExercises.some((exercise) =>
+              isChestDominantHorizontalPush(exercise)
+            );
+            return hasChestDominantWork
+              ? ["thread-the-needle", "banded-lat-stretch", "doorway-pec-stretch", "chin-tucks"]
+              : ["thread-the-needle", "banded-lat-stretch", "chin-tucks", "doorway-pec-stretch"];
+          })()
+        : ["doorway-pec-stretch", "thread-the-needle", "banded-lat-stretch", "chin-tucks"]
       : focus === "lower"
       ? ["hamstring-stretch", "hip-flexor-stretch", "breathing-90-90"]
       : ["breathing-90-90", "thread-the-needle", "hip-flexor-stretch"],
@@ -28089,10 +28655,14 @@ const buildStructuredDay = (params: {
       auditMeta,
     };
   });
-  const cooldownId = chooseCooldownId(cooldownFocus, available, selectionContext);
   const identityAdjustedMainIds = applyArmsPostureMainIdentityPreference(mainIds);
   const equipmentBalancedMainIds = ensureMainEquipmentBalance(identityAdjustedMainIds);
   const capabilityAdjustedMainIds = applyCapabilitySoftMinimum(equipmentBalancedMainIds);
+  const cooldownId = chooseCooldownId(cooldownFocus, available, selectionContext, {
+    dayTitle: title,
+    selectedMainExerciseIds: capabilityAdjustedMainIds,
+    selectedAccessoryExerciseIds: accessoryPlans.map((plan) => plan.selectedId),
+  });
 
   const routine = [
     makeItem(warmupId, experienceProfile.warmupSets, "6-10", 60, 30, "warmup"),
