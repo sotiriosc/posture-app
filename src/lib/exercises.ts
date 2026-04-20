@@ -4,13 +4,15 @@ import type { WeeklyQuotaCategory } from "@/lib/program/quotaRegistry";
 export type ExerciseCategory = "warmup" | "activation" | "main" | "cooldown";
 export type ExerciseSlotRole =
   | "pushCompound"
-  | "pushFly"
+  | "mainChestIsolation"
+  | "mainPushSecondary"
   | "pullHorizontal"
   | "pullVertical"
   | "extraBackLoaded"
   | "verticalPush"
-  | "lateralDeltLoaded"
-  | "rearDeltLoaded"
+  | "mainLateralDeltLoaded"
+  | "mainRearDeltLoaded"
+  | "mainShoulderStructural"
   | "secondaryLoadedShoulder"
   | "squatPrimary"
   | "hingePrimary"
@@ -31,6 +33,31 @@ export type ExerciseAccessoryRole =
   | "accessoryGlute"
   | "accessoryShoulderSupport";
 export type ExerciseCarryType = "carry" | "coreStability";
+
+type ExerciseSemanticFlags = {
+  isHorizontalPush: boolean;
+  isChestIsolation: boolean;
+  isPushSecondary: boolean;
+  isHorizontalPullTrue: boolean;
+  isVerticalPullTrue: boolean;
+  isVerticalPullSurrogate: boolean;
+  isLatAccent: boolean;
+  isVerticalPush: boolean;
+  isLateralDeltLoaded: boolean;
+  isRearDeltLoaded: boolean;
+  isShoulderStructural: boolean;
+  isSquat: boolean;
+  isHinge: boolean;
+  isUnilateralLower: boolean;
+  isCarry: boolean;
+  isCoreStability: boolean;
+  isAntiRotation: boolean;
+  isHamstringIsolation: boolean;
+  isGluteAccessory: boolean;
+  isBicepsIsolation: boolean;
+  isTricepsIsolation: boolean;
+  isCalves: boolean;
+};
 
 export type Exercise = {
   id: string;
@@ -4844,89 +4871,13 @@ const inferCarryTypeForExercise = (exercise: Exercise): ExerciseCarryType | unde
   return isStationaryBrace ? "coreStability" : "carry";
 };
 
-const inferSlotRolesForExercise = (params: {
+const buildExerciseSemanticFlags = (params: {
   exercise: Exercise;
   supportOnly: boolean;
-  regressionOnly: boolean;
   loadedMainEligible: boolean;
   carryType?: ExerciseCarryType;
-}): ExerciseSlotRole[] => {
-  const { exercise, supportOnly, regressionOnly, loadedMainEligible, carryType } = params;
-  if (exercise.category !== "main" || carryType) return [];
-
-  const movementTokens = new Set(
-    exercise.movementPattern.map((item) => normalizeTagToken(item))
-  );
-  const tagTokens = new Set(exercise.tags.map((item) => normalizeTagToken(item)));
-  const descriptor = normalizeTagToken(
-    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
-      exercise.variantKey ?? ""
-    } ${exercise.tags.join(" ")}`
-  );
-  const roles = new Set<ExerciseSlotRole>();
-  const hasMovement = (...tokens: string[]) =>
-    tokens.some((token) => movementTokens.has(normalizeTagToken(token)));
-  const textHasAny = (...tokens: string[]) =>
-    tokens.some((token) => descriptor.includes(normalizeTagToken(token)));
-
-  const isFly = textHasAny("fly", "pec deck", "pec-deck");
-  const isHorizontalPush =
-    (hasMovement("push") || hasMovement("horizontalPush")) && !hasMovement("verticalPush");
-  const isVerticalPull =
-    hasMovement("verticalPull") ||
-    (hasMovement("pull") &&
-      textHasAny("pulldown", "pull-down", "pullup", "pull-up", "chinup", "chin-up"));
-  const isHorizontalPull =
-    hasMovement("horizontalPull") || (hasMovement("pull") && textHasAny("row"));
-  const isLatAccent = textHasAny("pullover", "lat sweep", "lat-sweep");
-  const isVerticalPush =
-    hasMovement("verticalPush") ||
-    textHasAny("shoulder press", "overhead press", "strict press", "push press", "pike push");
-  const isLateralRaise = textHasAny("lateral raise", "lateral-raise") || tagTokens.has("lateraldelt");
-  const isRearDelt =
-    textHasAny("rear delt", "rear-delt", "reverse pec deck", "reverse-pec-deck") ||
-    tagTokens.has("reardelt");
-  const isSquat = hasMovement("squat") || textHasAny("squat", "leg press", "stepup", "step-up");
-  const isHinge = hasMovement("hinge") || textHasAny("rdl", "deadlift", "hip thrust", "hamstring curl");
-  const isUnilateralLower =
-    hasMovement("singleLeg") ||
-    textHasAny("split squat", "split-squat", "stepup", "step-up", "lunge", "cossack");
-
-  if (isHorizontalPush && isFly) roles.add("pushFly");
-  if (isHorizontalPush && !isFly) roles.add("pushCompound");
-  if (isHorizontalPull && !supportOnly) roles.add("pullHorizontal");
-  if (isVerticalPull && !isLatAccent && !supportOnly) roles.add("pullVertical");
-  if ((isHorizontalPull || isVerticalPull) && !isLatAccent && !supportOnly) {
-    roles.add("extraBackLoaded");
-  }
-  if (isVerticalPush && !supportOnly) roles.add("verticalPush");
-  if (isLateralRaise && !supportOnly) {
-    roles.add("lateralDeltLoaded");
-    roles.add("secondaryLoadedShoulder");
-  }
-  if (isRearDelt && !supportOnly) {
-    roles.add("rearDeltLoaded");
-    roles.add("secondaryLoadedShoulder");
-  }
-  if (loadedMainEligible && !regressionOnly) {
-    if (isSquat && !isUnilateralLower) roles.add("squatPrimary");
-    if (isHinge) roles.add("hingePrimary");
-    if (isUnilateralLower) roles.add("unilateralLowerLoaded");
-    if (isSquat || isHinge || isUnilateralLower) roles.add("secondaryLowerLoaded");
-  }
-
-  return Array.from(roles);
-};
-
-const inferAccessoryRolesForExercise = (params: {
-  exercise: Exercise;
-  supportOnly: boolean;
-  carryType?: ExerciseCarryType;
-  loadedMainEligible: boolean;
-}): ExerciseAccessoryRole[] => {
-  const { exercise, supportOnly, carryType, loadedMainEligible } = params;
-  if (exercise.category !== "main") return [];
-
+}): ExerciseSemanticFlags => {
+  const { exercise, supportOnly, loadedMainEligible, carryType } = params;
   const movementTokens = new Set(
     exercise.movementPattern.map((item) => normalizeTagToken(item))
   );
@@ -4935,66 +4886,85 @@ const inferAccessoryRolesForExercise = (params: {
   const descriptor = normalizeTagToken(
     `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
       exercise.variantKey ?? ""
-    } ${exercise.tags.join(" ")}`
+    }`
   );
-  const roles = new Set<ExerciseAccessoryRole>();
   const hasMovement = (...tokens: string[]) =>
     tokens.some((token) => movementTokens.has(normalizeTagToken(token)));
   const textHasAny = (...tokens: string[]) =>
     tokens.some((token) => descriptor.includes(normalizeTagToken(token)));
 
-  const isRearDelt =
+  const isRearDeltDescriptor =
+    textHasAny("rear delt", "rear-delt", "reverse pec deck", "reverse-pec-deck") ||
+    tagTokens.has("reardelt");
+  const isShoulderStructural =
+    supportOnly ||
     textHasAny(
-      "rear delt",
-      "rear-delt",
-      "reverse pec deck",
-      "reverse-pec-deck",
+      "prone swimmer",
       "reverse snow angel",
-      "prone swimmer"
-    ) || tagTokens.has("reardelt");
+      "snow angel",
+      "prone t raise",
+      "t raise",
+      "y raise",
+      "ytw",
+      "wall angel",
+      "face pull",
+      "external rotation",
+      "pull apart",
+      "pull-apart"
+    ) ||
+    tagTokens.has("rotator_cuff");
   const isChestIsolation =
-    !isRearDelt &&
-    !textHasAny("reverse pec deck", "reverse-pec-deck") &&
-    (textHasAny("chest fly", "chest-fly", "pec deck", "pec-deck") ||
+    !isRearDeltDescriptor &&
+    !isShoulderStructural &&
+    (textHasAny("chest fly", "chest-fly", "pec deck", "pec-deck", "cable fly") ||
       ((tagTokens.has("chest") || muscleTokens.has("chest")) && textHasAny("fly")) ||
       (muscleTokens.has("chest") && textHasAny("isolation")));
-  const isShoulderSupport =
-    supportOnly ||
-    isRearDelt ||
-    textHasAny(
-      "face pull",
-      "face-pull",
-      "external rotation",
-      "external-rotation",
-      "pull apart",
-      "pull-apart",
-      "y raise",
-      "y-raise",
-      "t raise",
-      "t-raise",
-      "ytw"
+  const isHorizontalPush =
+    (hasMovement("push") || hasMovement("horizontalPush")) && !hasMovement("verticalPush");
+  const isPushSecondary =
+    isHorizontalPush &&
+    !isChestIsolation &&
+    (textHasAny(
+      "pushup",
+      "push-up",
+      "countertop pushup",
+      "incline pushup",
+      "incline press",
+      "incline-press",
+      "floor press",
+      "floor-press",
+      "band chest press"
     ) ||
-    tagTokens.has("scap") ||
-    tagTokens.has("scapular") ||
-    tagTokens.has("external_rotation") ||
-    tagTokens.has("externalrotation") ||
-    tagTokens.has("rotator_cuff");
-  const isBackWidth =
+      (textHasAny("chest press") && !textHasAny("bench press", "bench-press")));
+  const isVerticalPullTrue =
     hasMovement("verticalPull") ||
-    textHasAny("pulldown", "pull-down", "pullup", "pull-up", "chinup", "chin-up", "lat", "pullover");
-  const isBackThickness =
-    !isRearDelt &&
-    (hasMovement("horizontalPull") || (hasMovement("pull") && textHasAny("row")));
-  const isLateralDelt =
-    textHasAny("lateral raise", "lateral-raise") || tagTokens.has("lateraldelt");
-  const isBiceps =
-    textHasAny("biceps", "curl") ||
-    tagTokens.has("biceps") ||
-    muscleTokens.has("biceps");
-  const isTriceps =
-    textHasAny("triceps", "pressdown", "kickback", "skullcrusher") ||
-    tagTokens.has("triceps") ||
-    muscleTokens.has("triceps");
+    (hasMovement("pull") &&
+      textHasAny("pulldown", "pull-down", "pullup", "pull-up", "chinup", "chin-up"));
+  const isVerticalPullSurrogate =
+    textHasAny(
+      "pullover",
+      "lat sweep",
+      "lat-sweep",
+      "supine lat pulldown isometric",
+      "supine-lat-pulldown-isometric"
+    ) || tagTokens.has("latsweep");
+  const isHorizontalPullTrue =
+    hasMovement("horizontalPull") || (hasMovement("pull") && textHasAny("row"));
+  const isLatAccent = isVerticalPullSurrogate;
+  const isVerticalPush =
+    hasMovement("verticalPush") ||
+    textHasAny("shoulder press", "overhead press", "strict press", "push press", "pike push");
+  const isLateralDeltLoaded =
+    !isShoulderStructural &&
+    (textHasAny("lateral raise", "lateral-raise") || tagTokens.has("lateraldelt"));
+  const isRearDeltLoaded =
+    !isShoulderStructural &&
+    (isRearDeltDescriptor ||
+      textHasAny("rear delt row", "rear-delt-row", "reverse pec deck", "reverse-pec-deck"));
+  const isSquat = hasMovement("squat") || textHasAny("squat", "leg press", "stepup", "step-up");
+  const isHinge =
+    hasMovement("hinge") || textHasAny("rdl", "deadlift", "hip thrust", "hamstring curl");
+  const isCarry = carryType === "carry";
   const isCoreStability =
     carryType === "coreStability" ||
     hasMovement("core", "antiRotation", "antiExtension") ||
@@ -5010,30 +4980,143 @@ const inferAccessoryRolesForExercise = (params: {
       "march",
       "hollow"
     );
-  const isCarry = carryType === "carry";
-  const isCalves =
-    hasMovement("calf") || tagTokens.has("calves") || muscleTokens.has("calves");
-  const isHamstring =
+  const isAntiRotation =
+    hasMovement("antiRotation") ||
+    textHasAny("anti rotation", "anti-rotation", "pallof", "woodchop");
+  const isUnilateralLower =
+    !isCoreStability &&
+    (hasMovement("singleLeg") ||
+      textHasAny("split squat", "split-squat", "stepup", "step-up", "lunge", "cossack"));
+  const isHamstringIsolation =
     muscleTokens.has("hamstrings") ||
     textHasAny("hamstring curl", "leg curl", "knee flexion", "knee-flexion");
-  const isGlute =
+  const isGluteAccessory =
     muscleTokens.has("glutes") &&
-    (textHasAny("hip thrust", "hip-thrust", "glute bridge", "glute-bridge", "glute drive", "glute-drive") ||
+    (textHasAny("hip thrust", "hip-thrust", "glute bridge", "glute-bridge", "glute drive") ||
       (!loadedMainEligible && (hasMovement("hinge") || hasMovement("singleLeg"))));
+  const isBicepsIsolation =
+    textHasAny("biceps", "curl") || tagTokens.has("biceps") || muscleTokens.has("biceps");
+  const isTricepsIsolation =
+    textHasAny("triceps", "pressdown", "kickback", "skullcrusher") ||
+    tagTokens.has("triceps") ||
+    muscleTokens.has("triceps");
+  const isCalves =
+    hasMovement("calf") || tagTokens.has("calves") || muscleTokens.has("calves");
 
-  if (isChestIsolation) roles.add("accessoryChestIsolation");
-  if (isBackThickness) roles.add("accessoryBackThickness");
-  if (isBackWidth) roles.add("accessoryBackWidth");
-  if (isRearDelt) roles.add("accessoryRearDelt");
-  if (isLateralDelt) roles.add("accessoryLateralDelt");
-  if (isBiceps) roles.add("accessoryBiceps");
-  if (isTriceps) roles.add("accessoryTriceps");
-  if (isCoreStability && !isCarry) roles.add("accessoryCoreStability");
-  if (isCarry) roles.add("accessoryCarry");
-  if (isCalves) roles.add("accessoryCalves");
-  if (isHamstring) roles.add("accessoryHamstring");
-  if (isGlute) roles.add("accessoryGlute");
-  if (isShoulderSupport) roles.add("accessoryShoulderSupport");
+  return {
+    isHorizontalPush,
+    isChestIsolation,
+    isPushSecondary,
+    isHorizontalPullTrue,
+    isVerticalPullTrue,
+    isVerticalPullSurrogate,
+    isLatAccent,
+    isVerticalPush,
+    isLateralDeltLoaded,
+    isRearDeltLoaded,
+    isShoulderStructural,
+    isSquat,
+    isHinge,
+    isUnilateralLower,
+    isCarry,
+    isCoreStability,
+    isAntiRotation,
+    isHamstringIsolation,
+    isGluteAccessory,
+    isBicepsIsolation,
+    isTricepsIsolation,
+    isCalves,
+  };
+};
+
+const inferSlotRolesForExercise = (params: {
+  exercise: Exercise;
+  supportOnly: boolean;
+  regressionOnly: boolean;
+  loadedMainEligible: boolean;
+  carryType?: ExerciseCarryType;
+}): ExerciseSlotRole[] => {
+  const { exercise, supportOnly, regressionOnly, loadedMainEligible, carryType } = params;
+  if (exercise.category !== "main" || carryType) return [];
+  const roles = new Set<ExerciseSlotRole>();
+  const semantics = buildExerciseSemanticFlags({
+    exercise,
+    supportOnly,
+    loadedMainEligible,
+    carryType,
+  });
+
+  if (semantics.isChestIsolation) roles.add("mainChestIsolation");
+  if (semantics.isHorizontalPush && !semantics.isChestIsolation) roles.add("pushCompound");
+  if (semantics.isPushSecondary) roles.add("mainPushSecondary");
+  if (semantics.isHorizontalPullTrue && !supportOnly) roles.add("pullHorizontal");
+  if (semantics.isVerticalPullTrue && !semantics.isLatAccent && !supportOnly) {
+    roles.add("pullVertical");
+  }
+  if (
+    (semantics.isHorizontalPullTrue || semantics.isVerticalPullTrue) &&
+    !semantics.isLatAccent &&
+    !supportOnly
+  ) {
+    roles.add("extraBackLoaded");
+  }
+  if (semantics.isVerticalPush && !supportOnly) roles.add("verticalPush");
+  if (semantics.isLateralDeltLoaded && !supportOnly) {
+    roles.add("mainLateralDeltLoaded");
+    roles.add("secondaryLoadedShoulder");
+  }
+  if (semantics.isRearDeltLoaded && !supportOnly) {
+    roles.add("mainRearDeltLoaded");
+    roles.add("secondaryLoadedShoulder");
+  }
+  if (semantics.isShoulderStructural) roles.add("mainShoulderStructural");
+  if (loadedMainEligible && !regressionOnly) {
+    if (semantics.isSquat && !semantics.isUnilateralLower) roles.add("squatPrimary");
+    if (semantics.isHinge) roles.add("hingePrimary");
+    if (semantics.isUnilateralLower) roles.add("unilateralLowerLoaded");
+    if (semantics.isSquat || semantics.isHinge || semantics.isUnilateralLower) {
+      roles.add("secondaryLowerLoaded");
+    }
+  }
+
+  return Array.from(roles);
+};
+
+const inferAccessoryRolesForExercise = (params: {
+  exercise: Exercise;
+  supportOnly: boolean;
+  carryType?: ExerciseCarryType;
+  loadedMainEligible: boolean;
+}): ExerciseAccessoryRole[] => {
+  const { exercise, supportOnly, carryType, loadedMainEligible } = params;
+  if (exercise.category !== "main") return [];
+  const roles = new Set<ExerciseAccessoryRole>();
+  const semantics = buildExerciseSemanticFlags({
+    exercise,
+    supportOnly,
+    loadedMainEligible,
+    carryType,
+  });
+
+  if (semantics.isChestIsolation) roles.add("accessoryChestIsolation");
+  if (semantics.isHorizontalPullTrue && !semantics.isRearDeltLoaded) {
+    roles.add("accessoryBackThickness");
+  }
+  if (semantics.isVerticalPullTrue || semantics.isVerticalPullSurrogate) {
+    roles.add("accessoryBackWidth");
+  }
+  if (semantics.isRearDeltLoaded) roles.add("accessoryRearDelt");
+  if (semantics.isLateralDeltLoaded) roles.add("accessoryLateralDelt");
+  if (semantics.isBicepsIsolation) roles.add("accessoryBiceps");
+  if (semantics.isTricepsIsolation) roles.add("accessoryTriceps");
+  if (semantics.isCoreStability && !semantics.isCarry) {
+    roles.add("accessoryCoreStability");
+  }
+  if (semantics.isCarry) roles.add("accessoryCarry");
+  if (semantics.isCalves) roles.add("accessoryCalves");
+  if (semantics.isHamstringIsolation) roles.add("accessoryHamstring");
+  if (semantics.isGluteAccessory) roles.add("accessoryGlute");
+  if (semantics.isShoulderStructural) roles.add("accessoryShoulderSupport");
 
   return Array.from(roles);
 };
@@ -5051,54 +5134,34 @@ const inferWeeklyCoverageTagsForExercise = (params: {
   const movementTokens = new Set(
     exercise.movementPattern.map((item) => normalizeTagToken(item))
   );
-  const tagTokens = new Set(exercise.tags.map((item) => normalizeTagToken(item)));
   const muscleTokens = new Set(exercise.muscleGroups.map((item) => normalizeTagToken(item)));
-  const descriptor = normalizeTagToken(
-    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
-      exercise.variantKey ?? ""
-    } ${exercise.tags.join(" ")}`
-  );
   const tags = new Set<WeeklyQuotaCategory>();
-  const hasMovement = (...tokens: string[]) =>
-    tokens.some((token) => movementTokens.has(normalizeTagToken(token)));
-  const textHasAny = (...tokens: string[]) =>
-    tokens.some((token) => descriptor.includes(normalizeTagToken(token)));
-
+  const semantics = buildExerciseSemanticFlags({
+    exercise,
+    supportOnly: exercise.supportOnly ?? false,
+    loadedMainEligible,
+    carryType,
+  });
   const isChest =
-    muscleTokens.has("chest") ||
-    tagTokens.has("chest") ||
-    textHasAny(
-      "bench press",
-      "chest press",
-      "pushup",
-      "push-up",
-      "floor press",
-      "chest fly",
-      "pec deck",
-      "pec-deck"
-    );
+    slotRoles.includes("pushCompound") ||
+    slotRoles.includes("mainChestIsolation") ||
+    slotRoles.includes("mainPushSecondary") ||
+    accessoryRoles.includes("accessoryChestIsolation");
   const isBack =
-    hasMovement("pull") ||
-    muscleTokens.has("lats") ||
-    muscleTokens.has("upper_back") ||
-    textHasAny("row", "pulldown", "pull-down", "pullup", "pull-up", "chinup", "chin-up");
+    slotRoles.includes("pullHorizontal") ||
+    slotRoles.includes("pullVertical") ||
+    slotRoles.includes("extraBackLoaded") ||
+    accessoryRoles.includes("accessoryBackThickness") ||
+    accessoryRoles.includes("accessoryBackWidth") ||
+    accessoryRoles.includes("accessoryRearDelt") ||
+    accessoryRoles.includes("accessoryShoulderSupport") ||
+    semantics.isVerticalPullSurrogate;
   const isCore =
-    hasMovement("core", "antiRotation", "antiExtension") ||
-    carryType === "carry" ||
-    carryType === "coreStability" ||
-    textHasAny("plank", "dead bug", "deadbug", "pallof", "woodchop", "brace");
-  const isSquat =
-    slotRoles.includes("squatPrimary") ||
-    hasMovement("squat", "kneeDominant") ||
-    textHasAny("squat", "leg press", "step-up", "stepup", "lunge");
-  const isHinge =
-    slotRoles.includes("hingePrimary") ||
-    hasMovement("hinge") ||
-    textHasAny("rdl", "deadlift", "hip thrust", "hamstring curl", "leg curl");
+    semantics.isCoreStability || semantics.isCarry || accessoryRoles.includes("accessoryCarry");
+  const isSquat = slotRoles.includes("squatPrimary") || semantics.isSquat;
+  const isHinge = slotRoles.includes("hingePrimary") || semantics.isHinge;
   const isUnilateralLower =
-    slotRoles.includes("unilateralLowerLoaded") ||
-    hasMovement("singleLeg") ||
-    textHasAny("step-up", "stepup", "split squat", "split-squat", "lunge", "cossack");
+    slotRoles.includes("unilateralLowerLoaded") || semantics.isUnilateralLower;
 
   if (isChest) {
     tags.add("chest");
@@ -5112,15 +5175,27 @@ const inferWeeklyCoverageTagsForExercise = (params: {
     tags.add("core");
     tags.add("coreRegion");
   }
-  if (isSquat || isHinge || isUnilateralLower || muscleTokens.has("quads") || muscleTokens.has("glutes") || muscleTokens.has("hamstrings")) {
+  if (
+    isSquat ||
+    isHinge ||
+    isUnilateralLower ||
+    muscleTokens.has("quads") ||
+    muscleTokens.has("glutes") ||
+    muscleTokens.has("hamstrings")
+  ) {
     tags.add("lowerRegion");
   }
   if (slotRoles.includes("pushCompound")) tags.add("pushCompound");
-  if (slotRoles.includes("pullHorizontal") || hasMovement("horizontalPull")) {
+  if (slotRoles.includes("pullHorizontal") || semantics.isHorizontalPullTrue) {
     tags.add("horizontalPull");
+    tags.add("horizontalPullTrue");
   }
-  if (slotRoles.includes("pullVertical") || hasMovement("verticalPull")) {
+  if (slotRoles.includes("pullVertical") || semantics.isVerticalPullTrue) {
     tags.add("verticalPull");
+    tags.add("verticalPullTrue");
+  }
+  if (semantics.isVerticalPullSurrogate) {
+    tags.add("verticalPullSurrogate");
   }
   if (slotRoles.includes("squatPrimary") || isSquat) tags.add("squat");
   if (slotRoles.includes("hingePrimary") || isHinge) tags.add("hinge");
@@ -5139,13 +5214,11 @@ const inferWeeklyCoverageTagsForExercise = (params: {
   }
   if (
     slotRoles.includes("verticalPush") ||
-    slotRoles.includes("lateralDeltLoaded") ||
-    slotRoles.includes("rearDeltLoaded") ||
+    slotRoles.includes("mainLateralDeltLoaded") ||
+    slotRoles.includes("mainRearDeltLoaded") ||
     slotRoles.includes("secondaryLoadedShoulder") ||
     accessoryRoles.includes("accessoryLateralDelt") ||
-    accessoryRoles.includes("accessoryRearDelt") ||
-    accessoryRoles.includes("accessoryShoulderSupport") ||
-    textHasAny("shoulder press", "lateral raise", "rear delt", "rear-delt")
+    accessoryRoles.includes("accessoryRearDelt")
   ) {
     tags.add("delts");
   }
@@ -5153,8 +5226,7 @@ const inferWeeklyCoverageTagsForExercise = (params: {
     accessoryRoles.includes("accessoryBiceps") ||
     accessoryRoles.includes("accessoryTriceps") ||
     muscleTokens.has("biceps") ||
-    muscleTokens.has("triceps") ||
-    textHasAny("biceps", "triceps", "curl", "pressdown", "kickback")
+    muscleTokens.has("triceps")
   ) {
     tags.add("arms");
   }
@@ -5167,12 +5239,12 @@ const inferWeeklyCoverageTagsForExercise = (params: {
   }
   if (accessoryRoles.includes("accessoryChestIsolation")) tags.add("chestIsolation");
   if (accessoryRoles.includes("accessoryRearDelt")) tags.add("rearDeltIsolation");
-  if (muscleTokens.has("adductors") || textHasAny("adductor", "cossack")) tags.add("adductors");
-  if (muscleTokens.has("tibialis") || textHasAny("tibialis")) tags.add("tibialis");
+  if (muscleTokens.has("adductors") || exercise.id.includes("cossack")) tags.add("adductors");
+  if (muscleTokens.has("tibialis") || exercise.id.includes("tibialis")) tags.add("tibialis");
   if (
     movementTokens.has("antirotation") ||
     movementTokens.has("anti_rotation") ||
-    textHasAny("anti rotation", "anti-rotation", "pallof", "woodchop")
+    semantics.isAntiRotation
   ) {
     tags.add("antiRotation");
   }

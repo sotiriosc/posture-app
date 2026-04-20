@@ -14,7 +14,10 @@ export type WeeklyQuotaCategory =
   | "arms"
   | "calves"
   | "horizontalPull"
+  | "horizontalPullTrue"
   | "verticalPull"
+  | "verticalPullTrue"
+  | "verticalPullSurrogate"
   | "pushCompound"
   | "hinge"
   | "squat"
@@ -67,7 +70,10 @@ export const WEEKLY_QUOTA_CATEGORY_ORDER: WeeklyQuotaCategory[] = [
   "arms",
   "calves",
   "horizontalPull",
+  "horizontalPullTrue",
   "verticalPull",
+  "verticalPullTrue",
+  "verticalPullSurrogate",
   "pushCompound",
   "hinge",
   "squat",

@@ -7638,6 +7638,7 @@ const isBackChestPhase2ChestFlyWindowOpen = (params: {
 const BACK_CHEST_PHASE2_CHEST_FLY_IDS = [
   "machine-pec-deck-press",
   "dumbbell-chest-fly",
+  "dumbbell-incline-press",
   "suspension-chest-fly",
 ];
 
@@ -9998,7 +9999,11 @@ const resolveBackChestAnchorRoleForSlot = (
 ): BackChestAnchorRole | null => {
   if (slotKind === "mainPullHorizontal") return "horizontalPull";
   if (slotKind === "mainPullVertical") return "verticalPull";
-  if (slotKind === "mainPushFly" || slotKind === "mainPushCompound") {
+  if (
+    slotKind === "mainPushFly" ||
+    slotKind === "mainPushSecondary" ||
+    slotKind === "mainPushCompound"
+  ) {
     return "horizontalPush";
   }
   if (slotLane === "push") return "horizontalPush";
@@ -18595,7 +18600,13 @@ const findConstrainedBackChestMainFallback = (params: {
       ) {
         return false;
       }
-      if (!isBackChestMainBoundaryEligible({ exercise, allowChestFly: slotKind === "mainPushFly" })) {
+      if (
+        !isBackChestMainBoundaryEligible({
+          exercise,
+          allowChestFly: slotKind === "mainPushFly",
+          allowLatAccent: slotKind === "mainPullSupport",
+        })
+      ) {
         return false;
       }
       if (
@@ -20956,6 +20967,7 @@ const hasEligibleBackChestTemplateSlotCandidate = (params: {
       !isBackChestMainBoundaryEligible({
         exercise,
         allowChestFly: slot.slotKind === "mainPushFly",
+        allowLatAccent: slot.slotKind === "mainPullSupport",
       })
     ) {
       return false;
@@ -21092,7 +21104,7 @@ const resolveThreeDayTemplateVariants = (params: {
           key: "back_chest_beginner_press_fly_vertical",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "push", slotKind: "mainPushSecondary", family: "push_secondary" },
             { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
           ],
         };
@@ -21100,7 +21112,7 @@ const resolveThreeDayTemplateVariants = (params: {
           key: "back_chest_beginner_press_fly_row",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "push", slotKind: "mainPushSecondary", family: "push_secondary" },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
           ],
         };
@@ -21114,7 +21126,7 @@ const resolveThreeDayTemplateVariants = (params: {
             key: "back_chest_beginner_press_fly_pullover",
             mainLanePlan: [
               { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-              { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+              { lane: "push", slotKind: "mainPushSecondary", family: "push_secondary" },
               { lane: "pull", slotKind: "mainPullSupport", family: "pull_secondary" },
             ],
           });
@@ -21143,12 +21155,19 @@ const resolveThreeDayTemplateVariants = (params: {
     }
 
     if (experienceLevel === "intermediate" && mainCount === 4) {
+      const constrainedPushSlotKind =
+        selectionContext.trainingContext !== "gym" &&
+        !isGymNoPainSelectionContext({ available, context: selectionContext })
+          ? "mainPushSecondary"
+          : "mainPushFly";
+      const constrainedPushFamily =
+        constrainedPushSlotKind === "mainPushSecondary" ? "push_secondary" : "chest_fly";
       const variants: ThreeDayBlueprintTemplateVariant[] = [
         {
           key: "back_chest_intermediate_press_fly_row_vertical",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "push", slotKind: constrainedPushSlotKind, family: constrainedPushFamily },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
             { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
           ],
@@ -21157,7 +21176,7 @@ const resolveThreeDayTemplateVariants = (params: {
           key: "back_chest_intermediate_press_fly_vertical_row",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "push", slotKind: constrainedPushSlotKind, family: constrainedPushFamily },
             { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
           ],
@@ -21169,7 +21188,7 @@ const resolveThreeDayTemplateVariants = (params: {
           key: "back_chest_intermediate_press_fly_row_pullover",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "push", slotKind: constrainedPushSlotKind, family: constrainedPushFamily },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
             { lane: "pull", slotKind: "mainPullSupport", family: "pull_secondary" },
           ],
@@ -21179,12 +21198,19 @@ const resolveThreeDayTemplateVariants = (params: {
     }
 
     if (experienceLevel === "advanced" && mainCount >= 5) {
+      const constrainedPushSlotKind =
+        selectionContext.trainingContext !== "gym" &&
+        !isGymNoPainSelectionContext({ available, context: selectionContext })
+          ? "mainPushSecondary"
+          : "mainPushFly";
+      const constrainedPushFamily =
+        constrainedPushSlotKind === "mainPushSecondary" ? "push_secondary" : "chest_fly";
       const variants: ThreeDayBlueprintTemplateVariant[] = [
         {
           key: "back_chest_advanced_press_fly_row_vertical_extra_row",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "push", slotKind: constrainedPushSlotKind, family: constrainedPushFamily },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
             { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
             { lane: "pull", slotKind: "mainExtraBackLoaded", family: "extra_back_loaded" },
@@ -21194,7 +21220,7 @@ const resolveThreeDayTemplateVariants = (params: {
           key: "back_chest_advanced_press_fly_vertical_row_extra",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "push", slotKind: constrainedPushSlotKind, family: constrainedPushFamily },
             { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
             { lane: "pull", slotKind: "mainExtraBackLoaded", family: "extra_back_loaded" },
@@ -21210,7 +21236,7 @@ const resolveThreeDayTemplateVariants = (params: {
           key: "back_chest_advanced_press_fly_vertical_row_pullover",
           mainLanePlan: [
             { lane: "push", slotKind: "mainPushCompound", family: "horizontal_press_compound" },
-            { lane: "push", slotKind: "mainPushFly", family: "chest_fly" },
+            { lane: "push", slotKind: constrainedPushSlotKind, family: constrainedPushFamily },
             { lane: "pull", slotKind: "mainPullVertical", family: "vertical_pull" },
             { lane: "pull", slotKind: "mainPullHorizontal", family: "horizontal_pull" },
             { lane: "pull", slotKind: "mainPullSupport", family: "pull_secondary" },
@@ -21841,6 +21867,7 @@ const hasRowPullSignature = (exercise: Exercise) => {
 };
 
 const hasHorizontalPullSignature = (exercise: Exercise) => {
+  if (exercise.slotRoles?.includes("pullHorizontal")) return true;
   const patternTokens = new Set(
     exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
   );
@@ -21851,10 +21878,14 @@ const hasHorizontalPullSignature = (exercise: Exercise) => {
 };
 
 const hasVerticalPullSignature = (exercise: Exercise) => {
+  if (exercise.slotRoles?.includes("pullVertical")) return true;
   const patternTokens = new Set(
     exercise.movementPattern.map((pattern) => normalizeTagToken(pattern))
   );
-  if (patternTokens.has("verticalpull")) return true;
+  if (patternTokens.has("verticalpull")) {
+    const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+    return !descriptor.includes("pullover") && !descriptor.includes("lat sweep");
+  }
   if (!patternTokens.has("pull")) return false;
   const token = `${exercise.id} ${exercise.name}`.toLowerCase();
   return (
@@ -21862,8 +21893,19 @@ const hasVerticalPullSignature = (exercise: Exercise) => {
     token.includes("pull-up") ||
     token.includes("pullup") ||
     token.includes("chin-up") ||
-    token.includes("chinup") ||
-    token.includes("lat")
+    token.includes("chinup")
+  );
+};
+
+const isVerticalPullSurrogateExercise = (exercise: Exercise) => {
+  if (exercise.weeklyCoverageTags?.includes("verticalPullSurrogate")) return true;
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    descriptor.includes("pullover") ||
+    descriptor.includes("lat sweep") ||
+    descriptor.includes("lat-sweep") ||
+    descriptor.includes("supine lat pulldown isometric") ||
+    descriptor.includes("supine-lat-pulldown-isometric")
   );
 };
 
@@ -22042,12 +22084,7 @@ const BACK_CHEST_SECONDARY_CATEGORY_CAPS: Record<
 const isBackChestLatAccentExercise = (exercise: Exercise) => {
   const familyKey = resolveBackChestExerciseFamilyKey(exercise);
   if (familyKey.includes("pullover")) return true;
-  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
-  return (
-    descriptor.includes("pullover") ||
-    descriptor.includes("lat sweep") ||
-    descriptor.includes("lat-sweep")
-  );
+  return isVerticalPullSurrogateExercise(exercise);
 };
 
 const resolveBackChestMainStimulusCategory = (exercise: Exercise): BackChestMainStimulusCategory => {
@@ -22102,8 +22139,9 @@ const isBackChestMeaningfulSameFamilyStimulusDelta = (
 const isBackChestMainBoundaryEligible = (params: {
   exercise: Exercise;
   allowChestFly?: boolean;
+  allowLatAccent?: boolean;
 }) => {
-  const { exercise, allowChestFly = false } = params;
+  const { exercise, allowChestFly = false, allowLatAccent = false } = params;
   if (isBackChestLowerBodyLeakExercise(exercise)) return false;
   if (isBackChestVerticalPushLeakExercise(exercise)) return false;
   if (isBackChestShoulderIsolationLeakExercise(exercise)) return false;
@@ -22112,23 +22150,25 @@ const isBackChestMainBoundaryEligible = (params: {
     hasVerticalPullSignature(exercise) ||
     hasHorizontalPushSignature(exercise);
   const flyAllowed = allowChestFly && isBackChestFlyPatternExercise(exercise);
-  if (!backChestPrimaryPattern && !flyAllowed) return false;
+  const latAccentAllowed = allowLatAccent && isBackChestLatAccentExercise(exercise);
+  if (!backChestPrimaryPattern && !flyAllowed && !latAccentAllowed) return false;
   if (isIsolationExercise(exercise) && !flyAllowed) return false;
   return true;
 };
 
 const THREE_DAY_GYM_MAIN_SLOT_ROLE_BY_KIND: Record<string, ExerciseSlotRole> = {
   mainPushCompound: "pushCompound",
-  mainPushFly: "pushFly",
+  mainPushFly: "mainChestIsolation",
+  mainPushSecondary: "mainPushSecondary",
   mainPullHorizontal: "pullHorizontal",
   mainPullVertical: "pullVertical",
   mainPullSupport: "extraBackLoaded",
   mainExtraBackLoaded: "extraBackLoaded",
   mainVerticalPushPrimary: "verticalPush",
-  mainLateralDeltPrimary: "lateralDeltLoaded",
-  mainShoulderPullPrimary: "rearDeltLoaded",
-  mainShoulderStructuralSecondary: "secondaryLoadedShoulder",
-  mainShoulderStructuralAlternate: "secondaryLoadedShoulder",
+  mainLateralDeltPrimary: "mainLateralDeltLoaded",
+  mainShoulderPullPrimary: "mainRearDeltLoaded",
+  mainShoulderStructuralSecondary: "mainShoulderStructural",
+  mainShoulderStructuralAlternate: "mainShoulderStructural",
   mainSecondaryLoadedShoulder: "secondaryLoadedShoulder",
   mainSquatPrimary: "squatPrimary",
   mainHingePrimary: "hingePrimary",
@@ -22242,8 +22282,11 @@ const isThreeDayGymMainSlotEligible = (params: {
       }
       return true;
     }
-    if (role === "pushFly") {
+    if (role === "mainChestIsolation") {
       return isBackChestFlyPatternExercise(exercise);
+    }
+    if (role === "mainPushSecondary") {
+      return isBackChestPushSecondaryExercise(exercise);
     }
     if (role === "pullHorizontal") {
       return hasHorizontalPullSignature(exercise) && !isBackChestLatAccentExercise(exercise);
@@ -22267,11 +22310,14 @@ const isThreeDayGymMainSlotEligible = (params: {
     if (role === "verticalPush") {
       return category === "ohp" && exercise.loadType !== "bodyweight";
     }
-    if (role === "lateralDeltLoaded") {
+    if (role === "mainLateralDeltLoaded") {
       return category === "lateral" && exercise.loadType !== "bodyweight";
     }
-    if (role === "rearDeltLoaded") {
+    if (role === "mainRearDeltLoaded") {
       return category === "rearDeltMain" && exercise.loadType !== "bodyweight";
+    }
+    if (role === "mainShoulderStructural") {
+      return category === "shoulderSupport";
     }
     if (role === "secondaryLoadedShoulder") {
       return (
@@ -22321,6 +22367,7 @@ const matchesBackChestMainSlotKind = (params: {
 }) => {
   const { exercise, slotKind, slotLane } = params;
   if (slotKind === "mainPushFly") return isBackChestFlyPatternExercise(exercise);
+  if (slotKind === "mainPushSecondary") return isBackChestPushSecondaryExercise(exercise);
   if (slotKind === "mainPushCompound") {
     return hasHorizontalPushSignature(exercise) && !isBackChestFlyPatternExercise(exercise);
   }
@@ -22328,7 +22375,10 @@ const matchesBackChestMainSlotKind = (params: {
     return hasVerticalPullSignature(exercise) && !isBackChestLatAccentExercise(exercise);
   }
   if (slotKind === "mainPullHorizontal") return hasHorizontalPullSignature(exercise);
-  if (slotKind === "mainPullSupport" || slotKind === "mainExtraBackLoaded") {
+  if (slotKind === "mainPullSupport") {
+    return isBackChestLatAccentExercise(exercise) || isBackChestCompoundPullMainCandidate(exercise);
+  }
+  if (slotKind === "mainExtraBackLoaded") {
     return isBackChestCompoundPullMainCandidate(exercise);
   }
   if (slotLane) return matchesMainLanePattern(exercise, slotLane);
@@ -22566,6 +22616,7 @@ const isMainLegalForSlot = (params: {
     slotKind === "mainPushCompound" ||
     (!isShouldersArmsDayTitle(dayTitle) &&
       slotKind !== "mainPushFly" &&
+      slotKind !== "mainPushSecondary" &&
       slotKind !== "mainLateralDeltPrimary" &&
       slotLane === "push");
   if (strictHorizontalPressSlot && !hasTrueHorizontalPressAnchor(exercise)) {
@@ -22670,9 +22721,15 @@ const isMainLegalForSlot = (params: {
     ) {
       return false;
     }
-    if (!isBackChestMainBoundaryEligible({ exercise, allowChestFly: slotKind === "mainPushFly" })) {
-      return false;
-    }
+      if (
+        !isBackChestMainBoundaryEligible({
+          exercise,
+          allowChestFly: slotKind === "mainPushFly",
+          allowLatAccent: slotKind === "mainPullSupport",
+        })
+      ) {
+        return false;
+      }
     return matchesBackChestMainSlotKind({
       exercise,
       slotKind: slotKind ?? "mainRepair",
@@ -23012,11 +23069,29 @@ const resolveSlotOrdinal = (slotId?: string | null) => {
 };
 
 const isBackChestFlyPatternExercise = (exercise: Exercise) => {
+  if (exercise.slotRoles?.includes("mainChestIsolation")) return true;
+  if (exercise.slotRoles?.includes("mainRearDeltLoaded")) return false;
+  if (exercise.slotRoles?.includes("mainShoulderStructural")) return false;
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
   return (
-    descriptor.includes("fly") ||
+    (descriptor.includes("chest fly") || descriptor.includes("cable fly")) ||
     descriptor.includes("pec deck") ||
     descriptor.includes("pec-deck")
+  );
+};
+
+const isBackChestPushSecondaryExercise = (exercise: Exercise) => {
+  if (exercise.slotRoles?.includes("mainPushSecondary")) return true;
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return (
+    hasHorizontalPushSignature(exercise) &&
+    !isBackChestFlyPatternExercise(exercise) &&
+    (descriptor.includes("pushup") ||
+      descriptor.includes("push-up") ||
+      descriptor.includes("floor press") ||
+      descriptor.includes("floor-press") ||
+      descriptor.includes("incline press") ||
+      descriptor.includes("incline-press"))
   );
 };
 
@@ -23237,6 +23312,34 @@ const isStrictHingeSlotAnchorLegal = (params: {
   const { exercise, available, context, dayTitle } = params;
   if (hasTrueHingeAnchor(exercise)) return true;
 
+  const lowBackPain = hasLowBackPainSignal(context);
+  const hasPainSaferHingeAlternative =
+    lowBackPain &&
+    exercises.some((candidate) => {
+      if (candidate.id === exercise.id) return false;
+      if (candidate.category !== "main") return false;
+      if (
+        ![
+          "single-leg-hip-thrust",
+          "single-leg-glute-bridge-hold",
+          "machine-seated-hamstring-curl",
+          "db-rdl",
+          "band-rdl",
+          "single-leg-rdl",
+          "back-extension",
+        ].includes(candidate.id)
+      ) {
+        return false;
+      }
+      return isExerciseEligibleForProgramContext({
+        exercise: candidate,
+        available,
+        section: "main",
+        context,
+        dayTitle: dayTitle ?? undefined,
+      });
+    });
+
   const hasRealHingeAlternative = hasEligibleMainAnchor({
     kind: "hinge",
     available,
@@ -23247,6 +23350,10 @@ const isStrictHingeSlotAnchorLegal = (params: {
 
   if (isHamstringCurlExercise(exercise)) {
     return !hasRealHingeAlternative;
+  }
+
+  if (exercise.id === "back-extension-hold" && hasPainSaferHingeAlternative) {
+    return false;
   }
 
   if (isFallbackQualityHingeAnchorExercise(exercise)) {
@@ -23824,6 +23931,7 @@ const DEFAULT_DAY_SPECIFIC_VARIETY_TUNING: DaySpecificVarietyIntentTuning = {
 const BACK_CHEST_VARIETY_SLOT_KINDS = new Set([
   "mainPushCompound",
   "mainPushFly",
+  "mainPushSecondary",
   "mainPullHorizontal",
   "mainPullVertical",
   "mainPullSupport",
@@ -24417,6 +24525,7 @@ const getIntentSlotScoreBonus = (params: {
     const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
     const hingeControlException =
       lane === "hinge" &&
+      !hasLowBackPainSignal(context) &&
       (exercise.id === "back-extension-hold" || exercise.id === "back-extension");
     const lowDemandMain =
       (exercise.loadType === "bodyweight" ||
@@ -25306,9 +25415,15 @@ const getIntentSlotScoreBonus = (params: {
 
   if (section === "main" && auditMeta?.slotLane === "hinge") {
     if (exercise.id === "back-extension-hold") {
-      const delta = context.phaseStage === "growth" ? 0.5 : 1.25;
-      score += delta;
-      reasons.push(`+${delta} back-extension hold hinge-control bias`);
+      if (hasLowBackPainSignal(context)) {
+        const penalty = context.phaseStage === "growth" ? 2 : 4;
+        score -= penalty;
+        reasons.push(`-${penalty} lower-back pain de-prioritizes back-extension hold as primary hinge`);
+      } else {
+        const delta = context.phaseStage === "growth" ? 0.5 : 1.25;
+        score += delta;
+        reasons.push(`+${delta} back-extension hold hinge-control bias`);
+      }
     }
     if (exercise.id === "bodyweight-good-morning") {
       const penalty = context.phaseStage === "growth" ? 1 : 2;
@@ -26248,27 +26363,39 @@ const chooseCooldownId = (
   }
 ) =>
   pickFirstEligibleId(
-    focus === "upper"
-      ? isShouldersArmsDayTitle(options?.dayTitle)
-        ? (() => {
-            const selectedIds = [
-              ...(options?.selectedMainExerciseIds ?? []),
-              ...(options?.selectedAccessoryExerciseIds ?? []),
-            ];
-            const selectedExercises = selectedIds
-              .map((id) => exerciseById(id))
-              .filter((exercise): exercise is Exercise => Boolean(exercise));
-            const hasChestDominantWork = selectedExercises.some((exercise) =>
-              isChestDominantHorizontalPush(exercise)
-            );
-            return hasChestDominantWork
-              ? ["thread-the-needle", "banded-lat-stretch", "doorway-pec-stretch", "chin-tucks"]
-              : ["thread-the-needle", "banded-lat-stretch", "chin-tucks", "doorway-pec-stretch"];
-          })()
-        : ["doorway-pec-stretch", "thread-the-needle", "banded-lat-stretch", "chin-tucks"]
-      : focus === "lower"
-      ? ["hamstring-stretch", "hip-flexor-stretch", "breathing-90-90"]
-      : ["breathing-90-90", "thread-the-needle", "hip-flexor-stretch"],
+    (() => {
+      const selectedIds = [
+        ...(options?.selectedMainExerciseIds ?? []),
+        ...(options?.selectedAccessoryExerciseIds ?? []),
+      ];
+      const selectedExercises = selectedIds
+        .map((id) => exerciseById(id))
+        .filter((exercise): exercise is Exercise => Boolean(exercise));
+      const hasChestDominantWork = selectedExercises.some((exercise) =>
+        isChestDominantHorizontalPush(exercise)
+      );
+
+      if (isBackChestDayTitle(options?.dayTitle)) {
+        return hasChestDominantWork
+          ? ["doorway-pec-stretch", "thread-the-needle", "banded-lat-stretch", "chin-tucks"]
+          : ["thread-the-needle", "banded-lat-stretch", "doorway-pec-stretch", "chin-tucks"];
+      }
+      if (isShouldersArmsDayTitle(options?.dayTitle)) {
+        return hasChestDominantWork
+          ? ["thread-the-needle", "banded-lat-stretch", "chin-tucks", "doorway-pec-stretch"]
+          : ["thread-the-needle", "chin-tucks", "banded-lat-stretch", "doorway-pec-stretch"];
+      }
+      if (isLegsAbsDayTitle(options?.dayTitle)) {
+        return ["hamstring-stretch", "hip-flexor-stretch", "breathing-90-90", "thread-the-needle"];
+      }
+      if (focus === "upper") {
+        return ["thread-the-needle", "banded-lat-stretch", "doorway-pec-stretch", "chin-tucks"];
+      }
+      if (focus === "lower") {
+        return ["hamstring-stretch", "hip-flexor-stretch", "breathing-90-90"];
+      }
+      return ["breathing-90-90", "thread-the-needle", "hip-flexor-stretch"];
+    })(),
     available,
     context,
     "cooldown"

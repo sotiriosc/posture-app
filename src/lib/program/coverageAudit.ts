@@ -2,6 +2,7 @@ import { exerciseById, type Exercise } from "@/lib/exercises";
 import type { PostGenerationWarning } from "@/lib/program/postGenerationPipeline";
 import {
   auditWeeklyQuotasFromExercises,
+  type WeeklyQuotaCategory,
   type WeeklyQuotaAudit,
 } from "@/lib/program/quotaRegistry";
 import type { ProgramDay, ProgramRoutineItem } from "@/lib/types";
@@ -115,232 +116,103 @@ const trainingCoverageSections = new Set<NonNullable<ProgramRoutineItem["section
   "accessory",
 ]);
 
-const normalizeCoverageToken = (value: string) =>
-  value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "");
+const coverageTagsFrom = (exercise: Exercise) => new Set(exercise.weeklyCoverageTags ?? []);
 
-const hasAnyToken = (tokens: Set<string>, candidates: string[]) =>
-  candidates.some((candidate) => tokens.has(candidate));
+const movementPatternByQuotaTag: Partial<
+  Record<WeeklyQuotaCategory, WeeklyCoverageMovementPattern>
+> = {
+  chest: "push",
+  chestIsolation: "push",
+  pushCompound: "push",
+  back: "pull",
+  horizontalPull: "pull",
+  horizontalPullTrue: "pull",
+  verticalPull: "pull",
+  verticalPullTrue: "pull",
+  verticalPullSurrogate: "pull",
+  rearDeltIsolation: "pull",
+  squat: "squat",
+  quads: "squat",
+  unilateralLower: "squat",
+  hinge: "hinge",
+  posteriorChain: "hinge",
+  core: "core",
+  coreStability: "core",
+  carry: "core",
+  antiRotation: "core",
+};
 
-const tokensFrom = (values: string[] | undefined) =>
-  new Set((values ?? []).map(normalizeCoverageToken).filter(Boolean));
+const majorRegionByQuotaTag: Partial<
+  Record<WeeklyQuotaCategory, WeeklyCoverageMajorBodyRegion>
+> = {
+  upperRegion: "upper",
+  chest: "upper",
+  back: "upper",
+  delts: "upper",
+  arms: "upper",
+  horizontalPull: "upper",
+  horizontalPullTrue: "upper",
+  verticalPull: "upper",
+  verticalPullTrue: "upper",
+  verticalPullSurrogate: "upper",
+  pushCompound: "upper",
+  lowerRegion: "lower",
+  quads: "lower",
+  posteriorChain: "lower",
+  calves: "lower",
+  squat: "lower",
+  hinge: "lower",
+  unilateralLower: "lower",
+  coreRegion: "core",
+  core: "core",
+  carry: "core",
+  coreStability: "core",
+  antiRotation: "core",
+};
+
+const coverageCategoryByQuotaTag: Partial<Record<WeeklyQuotaCategory, WeeklyCoverageCategory>> = {
+  chest: "chest",
+  back: "back",
+  quads: "quads",
+  posteriorChain: "posteriorChain",
+  core: "core",
+  delts: "delts",
+  arms: "arms",
+  calves: "calves",
+  chestIsolation: "chestIsolation",
+  rearDeltIsolation: "rearDeltIsolation",
+  adductors: "adductors",
+  tibialis: "tibialis",
+  carry: "carries",
+  antiRotation: "antiRotation",
+};
 
 const collectMovementPatternHits = (exercise: Exercise) => {
-  const movementTokens = tokensFrom(exercise.movementPattern);
-  const tagTokens = tokensFrom(exercise.tags);
-  const semanticTokens = new Set([...movementTokens, ...tagTokens]);
   const hits = new Set<WeeklyCoverageMovementPattern>();
-
-  if (hasAnyToken(semanticTokens, ["push", "horizontalpush", "verticalpush"])) {
-    hits.add("push");
-  }
-  if (hasAnyToken(semanticTokens, ["pull", "horizontalpull", "verticalpull"])) {
-    hits.add("pull");
-  }
-  if (hasAnyToken(semanticTokens, ["squat", "kneedominant", "lunge"])) {
-    hits.add("squat");
-  }
-  if (hasAnyToken(semanticTokens, ["hinge", "hiphinge", "posteriorchain"])) {
-    hits.add("hinge");
-  }
-  if (hasAnyToken(semanticTokens, ["core", "antirotation", "antiextension", "carry"])) {
-    hits.add("core");
-  }
+  coverageTagsFrom(exercise).forEach((tag) => {
+    const mapped = movementPatternByQuotaTag[tag];
+    if (mapped) hits.add(mapped);
+  });
 
   return hits;
 };
 
 const collectMajorBodyRegionHits = (exercise: Exercise) => {
-  const movementHits = collectMovementPatternHits(exercise);
-  const regionTokens = new Set([
-    ...tokensFrom(exercise.movementPattern),
-    ...tokensFrom(exercise.muscleGroups),
-    ...tokensFrom(exercise.tags),
-  ]);
   const hits = new Set<WeeklyCoverageMajorBodyRegion>();
-
-  if (
-    movementHits.has("push") ||
-    movementHits.has("pull") ||
-    hasAnyToken(regionTokens, [
-      "back",
-      "biceps",
-      "chest",
-      "lats",
-      "reardelts",
-      "rotatorcuff",
-      "scapularstabilizers",
-      "serratus",
-      "shoulders",
-      "traps",
-      "triceps",
-      "upperback",
-      "upperchest",
-    ])
-  ) {
-    hits.add("upper");
-  }
-
-  if (
-    movementHits.has("squat") ||
-    movementHits.has("hinge") ||
-    hasAnyToken(regionTokens, [
-      "adductors",
-      "ankles",
-      "calves",
-      "glutemed",
-      "glutes",
-      "hamstrings",
-      "hipflexors",
-      "hips",
-      "lowerback",
-      "quads",
-      "singleleg",
-    ])
-  ) {
-    hits.add("lower");
-  }
-
-  if (
-    movementHits.has("core") ||
-    hasAnyToken(regionTokens, ["core", "diaphragm", "obliques", "tva"])
-  ) {
-    hits.add("core");
-  }
+  coverageTagsFrom(exercise).forEach((tag) => {
+    const mapped = majorRegionByQuotaTag[tag];
+    if (mapped) hits.add(mapped);
+  });
 
   return hits;
 };
 
 const collectCoverageCategoryHits = (exercise: Exercise) => {
-  const movementHits = collectMovementPatternHits(exercise);
-  const movementTokens = tokensFrom(exercise.movementPattern);
-  const regionTokens = new Set([
-    ...movementTokens,
-    ...tokensFrom(exercise.muscleGroups),
-    ...tokensFrom(exercise.tags),
-    ...tokensFrom(exercise.accessoryRoles),
-  ]);
-  const descriptor = normalizeCoverageToken(
-    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${exercise.variantKey ?? ""}`
-  );
   const hits = new Set<WeeklyCoverageCategory>();
-  const textHasAny = (...tokens: string[]) =>
-    tokens.some((token) => descriptor.includes(normalizeCoverageToken(token)));
-
-  if (
-    hasAnyToken(regionTokens, ["chest", "accessorychestisolation"]) ||
-    movementTokens.has("horizontalpush") ||
-    textHasAny(
-      "bench press",
-      "chest press",
-      "pec deck",
-      "pushup",
-      "push-up",
-      "floor press",
-      "chest fly",
-      "cable fly"
-    )
-  ) {
-    hits.add("chest");
-  }
-  if (
-    movementHits.has("pull") ||
-    hasAnyToken(regionTokens, [
-      "back",
-      "lats",
-      "upperback",
-      "accessorybackthickness",
-      "accessorybackwidth",
-      "accessoryreardelt",
-      "accessoryshouldersupport",
-    ])
-  ) {
-    hits.add("back");
-  }
-  if (
-    hasAnyToken(regionTokens, ["quads"]) ||
-    hasAnyToken(regionTokens, ["squat", "kneedominant", "lunge"])
-  ) {
-    hits.add("quads");
-  }
-  if (
-    movementHits.has("hinge") ||
-    hasAnyToken(regionTokens, [
-      "posteriorchain",
-      "glutes",
-      "hamstrings",
-      "accessoryhamstring",
-      "accessoryglute",
-    ])
-  ) {
-    hits.add("posteriorChain");
-  }
-  if (
-    movementHits.has("core") ||
-    hasAnyToken(regionTokens, [
-      "core",
-      "obliques",
-      "tva",
-      "accessorycorestability",
-      "accessorycarry",
-    ])
-  ) {
-    hits.add("core");
-  }
-  if (
-    hasAnyToken(regionTokens, [
-      "shoulders",
-      "reardelts",
-      "lateraldelt",
-      "accessoryreardelt",
-      "accessorylateraldelt",
-      "accessoryshouldersupport",
-    ]) ||
-    textHasAny("rear delt", "rear-delt", "lateral raise", "lateral-raise", "shoulder press")
-  ) {
-    hits.add("delts");
-  }
-  if (
-    hasAnyToken(regionTokens, ["biceps", "triceps", "accessorybiceps", "accessorytriceps"]) ||
-    textHasAny("biceps", "triceps", "curl", "pressdown", "kickback")
-  ) {
-    hits.add("arms");
-  }
-  if (
-    hasAnyToken(regionTokens, ["calves", "accessorycalves"]) ||
-    textHasAny("calf raise", "calf-raise", "calves")
-  ) {
-    hits.add("calves");
-  }
-  if (
-    hasAnyToken(regionTokens, ["accessorychestisolation"]) ||
-    textHasAny("chest fly", "chest-fly", "pec deck", "pec-deck")
-  ) {
-    hits.add("chestIsolation");
-  }
-  if (
-    hasAnyToken(regionTokens, ["accessoryreardelt"]) ||
-    textHasAny("rear delt", "rear-delt", "reverse pec deck", "reverse-pec-deck")
-  ) {
-    hits.add("rearDeltIsolation");
-  }
-  if (hasAnyToken(regionTokens, ["adductors"]) || textHasAny("adductor", "cossack")) {
-    hits.add("adductors");
-  }
-  if (hasAnyToken(regionTokens, ["tibialis"]) || textHasAny("tibialis")) {
-    hits.add("tibialis");
-  }
-  if (hasAnyToken(regionTokens, ["accessorycarry"]) || textHasAny("carry", "suitcase", "farmer")) {
-    hits.add("carries");
-  }
-  if (
-    hasAnyToken(regionTokens, ["antirotation", "antirotation"]) ||
-    textHasAny("pallof", "woodchop", "anti rotation", "anti-rotation")
-  ) {
-    hits.add("antiRotation");
-  }
+  coverageTagsFrom(exercise).forEach((tag) => {
+    const mapped = coverageCategoryByQuotaTag[tag];
+    if (mapped) hits.add(mapped);
+  });
 
   return hits;
 };
