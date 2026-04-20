@@ -21501,11 +21501,12 @@ const resolveThreeDayBlueprint = (params: {
       mainLanePlan,
       requiredMainFamilies: beginnerGymContext || beginnerGymNoPain
         ? ["horizontal_press_compound", "horizontal_pull", "vertical_pull"]
-        : ["horizontal_press_compound", "chest_fly", "pull_secondary"],
+        : ["horizontal_press_compound", "push_secondary", "pull_secondary"],
       accessoryRoles: ["posture_back", "posture_back"],
       laneSwapRules: {
-        horizontal_press_compound: ["chest_fly"],
+        horizontal_press_compound: ["chest_fly", "push_secondary"],
         chest_fly: ["horizontal_press_compound"],
+        push_secondary: ["horizontal_press_compound"],
         pull_secondary: ["horizontal_pull", "vertical_pull"],
         horizontal_pull: ["vertical_pull", "extra_back_loaded", "pull_secondary"],
         vertical_pull: ["horizontal_pull", "extra_back_loaded", "pull_secondary"],
@@ -22306,7 +22307,9 @@ const isThreeDayGymMainSlotEligible = (params: {
 
   if (isShouldersArmsDayTitle(dayTitle)) {
     const category = resolveShouldersArmsMainCategory(exercise);
-    if (category === "shoulderSupport") return false;
+    if (category === "shoulderSupport") {
+      return role === "mainShoulderStructural";
+    }
     if (role === "verticalPush") {
       return category === "ohp" && exercise.loadType !== "bodyweight";
     }
@@ -22315,9 +22318,6 @@ const isThreeDayGymMainSlotEligible = (params: {
     }
     if (role === "mainRearDeltLoaded") {
       return category === "rearDeltMain" && exercise.loadType !== "bodyweight";
-    }
-    if (role === "mainShoulderStructural") {
-      return category === "shoulderSupport";
     }
     if (role === "secondaryLoadedShoulder") {
       return (

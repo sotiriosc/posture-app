@@ -12,6 +12,7 @@ export type ThreeDayMainLanePlanEntry = {
   slotKind: string;
   family:
     | "chest_fly"
+    | "push_secondary"
     | "extra_back_loaded"
     | "horizontal_pull"
     | "vertical_pull"
