@@ -1,5 +1,6 @@
 import type { Exercise, ExerciseAccessoryRole } from "@/lib/exercises";
 import type { WeeklyCoverageAudit, WeeklyCoverageCategory } from "@/lib/program/coverageAudit";
+import type { WeeklyQuotaAudit, WeeklyQuotaCategory } from "@/lib/program/quotaRegistry";
 
 export type AccessoryPlannerPhase = "activation" | "skill" | "growth";
 export type AccessoryPlannerExperience = "beginner" | "intermediate" | "advanced";
@@ -20,6 +21,7 @@ type ThreeDayAccessoryPlannerParams = {
   targetAccessoryCount: number;
   selectedMainExercises: Exercise[];
   weeklyCoverageAudit: WeeklyCoverageAudit;
+  weeklyQuotaAudit?: WeeklyQuotaAudit;
   phase: AccessoryPlannerPhase;
   experience: AccessoryPlannerExperience;
   trainingContext: AccessoryPlannerTrainingContext;
@@ -51,51 +53,128 @@ const scoreCoverageNeed = (
     return total + deficit * entry.weight;
   }, 0);
 
+const scoreQuotaNeed = (
+  audit: WeeklyQuotaAudit | undefined,
+  categories: Array<{ category: WeeklyQuotaCategory; weight: number }>
+) =>
+  categories.reduce((total, entry) => {
+    const deficit = audit?.audits[entry.category]?.deficit ?? 0;
+    return total + deficit * entry.weight;
+  }, 0);
+
 const scoreAccessoryRoleNeed = (
   role: ExerciseAccessoryRole,
-  audit: WeeklyCoverageAudit
+  audit: WeeklyCoverageAudit,
+  quotaAudit?: WeeklyQuotaAudit
 ) => {
   switch (role) {
     case "accessoryChestIsolation":
-      return scoreCoverageNeed(audit, [
-        { category: "chest", weight: 3 },
-        { category: "chestIsolation", weight: 1.25 },
-      ]);
+      return (
+        scoreCoverageNeed(audit, [
+          { category: "chest", weight: 3 },
+          { category: "chestIsolation", weight: 1.25 },
+        ]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "chest", weight: 2.25 },
+          { category: "pushCompound", weight: 0.5 },
+          { category: "chestIsolation", weight: 1.25 },
+        ])
+      );
     case "accessoryBackThickness":
-      return scoreCoverageNeed(audit, [{ category: "back", weight: 2 }]);
+      return (
+        scoreCoverageNeed(audit, [{ category: "back", weight: 2 }]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "back", weight: 1.5 },
+          { category: "horizontalPull", weight: 1.75 },
+        ])
+      );
     case "accessoryBackWidth":
-      return scoreCoverageNeed(audit, [{ category: "back", weight: 2.25 }]);
+      return (
+        scoreCoverageNeed(audit, [{ category: "back", weight: 2.25 }]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "back", weight: 1.5 },
+          { category: "verticalPull", weight: 1.75 },
+        ])
+      );
     case "accessoryRearDelt":
-      return scoreCoverageNeed(audit, [
-        { category: "rearDeltIsolation", weight: 1.75 },
-        { category: "delts", weight: 1 },
-      ]);
+      return (
+        scoreCoverageNeed(audit, [
+          { category: "rearDeltIsolation", weight: 1.75 },
+          { category: "delts", weight: 1 },
+        ]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "delts", weight: 1.25 },
+          { category: "back", weight: 0.5 },
+          { category: "rearDeltIsolation", weight: 1.5 },
+        ])
+      );
     case "accessoryLateralDelt":
-      return scoreCoverageNeed(audit, [{ category: "delts", weight: 1.5 }]);
+      return (
+        scoreCoverageNeed(audit, [{ category: "delts", weight: 1.5 }]) +
+        scoreQuotaNeed(quotaAudit, [{ category: "delts", weight: 1.5 }])
+      );
     case "accessoryBiceps":
     case "accessoryTriceps":
-      return scoreCoverageNeed(audit, [{ category: "arms", weight: 1.5 }]);
+      return (
+        scoreCoverageNeed(audit, [{ category: "arms", weight: 1.5 }]) +
+        scoreQuotaNeed(quotaAudit, [{ category: "arms", weight: 1.5 }])
+      );
     case "accessoryCoreStability":
-      return scoreCoverageNeed(audit, [
-        { category: "core", weight: 2.5 },
-        { category: "antiRotation", weight: 1.5 },
-      ]);
+      return (
+        scoreCoverageNeed(audit, [
+          { category: "core", weight: 2.5 },
+          { category: "antiRotation", weight: 1.5 },
+        ]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "core", weight: 2 },
+          { category: "coreStability", weight: 2.25 },
+          { category: "antiRotation", weight: 1.25 },
+        ])
+      );
     case "accessoryCarry":
-      return scoreCoverageNeed(audit, [
-        { category: "carries", weight: 2 },
-        { category: "core", weight: 0.5 },
-      ]);
+      return (
+        scoreCoverageNeed(audit, [
+          { category: "carries", weight: 2 },
+          { category: "core", weight: 0.5 },
+        ]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "carry", weight: 2.5 },
+          { category: "core", weight: 0.5 },
+        ])
+      );
     case "accessoryCalves":
-      return scoreCoverageNeed(audit, [{ category: "calves", weight: 2 }]);
+      return (
+        scoreCoverageNeed(audit, [{ category: "calves", weight: 2 }]) +
+        scoreQuotaNeed(quotaAudit, [{ category: "calves", weight: 2 }])
+      );
     case "accessoryHamstring":
-      return scoreCoverageNeed(audit, [{ category: "posteriorChain", weight: 1.5 }]);
+      return (
+        scoreCoverageNeed(audit, [{ category: "posteriorChain", weight: 1.5 }]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "posteriorChain", weight: 1.5 },
+          { category: "hinge", weight: 0.75 },
+        ])
+      );
     case "accessoryGlute":
-      return scoreCoverageNeed(audit, [{ category: "posteriorChain", weight: 1.25 }]);
+      return (
+        scoreCoverageNeed(audit, [{ category: "posteriorChain", weight: 1.25 }]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "posteriorChain", weight: 1.25 },
+          { category: "unilateralLower", weight: 0.5 },
+        ])
+      );
     case "accessoryShoulderSupport":
-      return scoreCoverageNeed(audit, [
-        { category: "rearDeltIsolation", weight: 1.25 },
-        { category: "delts", weight: 0.75 },
-      ]);
+      return (
+        scoreCoverageNeed(audit, [
+          { category: "rearDeltIsolation", weight: 1.25 },
+          { category: "delts", weight: 0.75 },
+        ]) +
+        scoreQuotaNeed(quotaAudit, [
+          { category: "delts", weight: 0.75 },
+          { category: "back", weight: 0.5 },
+          { category: "rearDeltIsolation", weight: 1.25 },
+        ])
+      );
     default:
       return 0;
   }
@@ -105,9 +184,16 @@ const scoreRoleWithContext = (
   params: ThreeDayAccessoryPlannerParams,
   role: ExerciseAccessoryRole
 ) => {
-  const { weeklyCoverageAudit, phase, trainingContext, recentAccessoryRoles, fatigueOverlap, goal } =
-    params;
-  let score = scoreAccessoryRoleNeed(role, weeklyCoverageAudit);
+  const {
+    weeklyCoverageAudit,
+    weeklyQuotaAudit,
+    phase,
+    trainingContext,
+    recentAccessoryRoles,
+    fatigueOverlap,
+    goal,
+  } = params;
+  let score = scoreAccessoryRoleNeed(role, weeklyCoverageAudit, weeklyQuotaAudit);
   const goalKey = resolveGoalKey(goal);
   const recentPenalty = recentAccessoryRoles?.includes(role) ? 0.5 : 0;
 

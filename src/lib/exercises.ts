@@ -1,4 +1,5 @@
 import type { Equipment } from "@/lib/equipment";
+import type { WeeklyQuotaCategory } from "@/lib/program/quotaRegistry";
 
 export type ExerciseCategory = "warmup" | "activation" | "main" | "cooldown";
 export type ExerciseSlotRole =
@@ -54,6 +55,7 @@ export type Exercise = {
   loadType: "weighted" | "bodyweight" | "timed" | "assisted";
   slotRoles?: ExerciseSlotRole[];
   accessoryRoles?: ExerciseAccessoryRole[];
+  weeklyCoverageTags?: WeeklyQuotaCategory[];
   supportOnly?: boolean;
   regressionOnly?: boolean;
   loadedMainEligible?: boolean;
@@ -5036,6 +5038,155 @@ const inferAccessoryRolesForExercise = (params: {
   return Array.from(roles);
 };
 
+const inferWeeklyCoverageTagsForExercise = (params: {
+  exercise: Exercise;
+  slotRoles: ExerciseSlotRole[];
+  accessoryRoles: ExerciseAccessoryRole[];
+  carryType?: ExerciseCarryType;
+  loadedMainEligible: boolean;
+}): WeeklyQuotaCategory[] => {
+  const { exercise, slotRoles, accessoryRoles, carryType, loadedMainEligible } = params;
+  if (exercise.category !== "main") return [];
+
+  const movementTokens = new Set(
+    exercise.movementPattern.map((item) => normalizeTagToken(item))
+  );
+  const tagTokens = new Set(exercise.tags.map((item) => normalizeTagToken(item)));
+  const muscleTokens = new Set(exercise.muscleGroups.map((item) => normalizeTagToken(item)));
+  const descriptor = normalizeTagToken(
+    `${exercise.id} ${exercise.name} ${exercise.familyKey ?? ""} ${
+      exercise.variantKey ?? ""
+    } ${exercise.tags.join(" ")}`
+  );
+  const tags = new Set<WeeklyQuotaCategory>();
+  const hasMovement = (...tokens: string[]) =>
+    tokens.some((token) => movementTokens.has(normalizeTagToken(token)));
+  const textHasAny = (...tokens: string[]) =>
+    tokens.some((token) => descriptor.includes(normalizeTagToken(token)));
+
+  const isChest =
+    muscleTokens.has("chest") ||
+    tagTokens.has("chest") ||
+    textHasAny(
+      "bench press",
+      "chest press",
+      "pushup",
+      "push-up",
+      "floor press",
+      "chest fly",
+      "pec deck",
+      "pec-deck"
+    );
+  const isBack =
+    hasMovement("pull") ||
+    muscleTokens.has("lats") ||
+    muscleTokens.has("upper_back") ||
+    textHasAny("row", "pulldown", "pull-down", "pullup", "pull-up", "chinup", "chin-up");
+  const isCore =
+    hasMovement("core", "antiRotation", "antiExtension") ||
+    carryType === "carry" ||
+    carryType === "coreStability" ||
+    textHasAny("plank", "dead bug", "deadbug", "pallof", "woodchop", "brace");
+  const isSquat =
+    slotRoles.includes("squatPrimary") ||
+    hasMovement("squat", "kneeDominant") ||
+    textHasAny("squat", "leg press", "step-up", "stepup", "lunge");
+  const isHinge =
+    slotRoles.includes("hingePrimary") ||
+    hasMovement("hinge") ||
+    textHasAny("rdl", "deadlift", "hip thrust", "hamstring curl", "leg curl");
+  const isUnilateralLower =
+    slotRoles.includes("unilateralLowerLoaded") ||
+    hasMovement("singleLeg") ||
+    textHasAny("step-up", "stepup", "split squat", "split-squat", "lunge", "cossack");
+
+  if (isChest) {
+    tags.add("chest");
+    tags.add("upperRegion");
+  }
+  if (isBack) {
+    tags.add("back");
+    tags.add("upperRegion");
+  }
+  if (isCore) {
+    tags.add("core");
+    tags.add("coreRegion");
+  }
+  if (isSquat || isHinge || isUnilateralLower || muscleTokens.has("quads") || muscleTokens.has("glutes") || muscleTokens.has("hamstrings")) {
+    tags.add("lowerRegion");
+  }
+  if (slotRoles.includes("pushCompound")) tags.add("pushCompound");
+  if (slotRoles.includes("pullHorizontal") || hasMovement("horizontalPull")) {
+    tags.add("horizontalPull");
+  }
+  if (slotRoles.includes("pullVertical") || hasMovement("verticalPull")) {
+    tags.add("verticalPull");
+  }
+  if (slotRoles.includes("squatPrimary") || isSquat) tags.add("squat");
+  if (slotRoles.includes("hingePrimary") || isHinge) tags.add("hinge");
+  if (slotRoles.includes("unilateralLowerLoaded") || isUnilateralLower) {
+    tags.add("unilateralLower");
+  }
+  if (muscleTokens.has("quads") || isSquat || isUnilateralLower) tags.add("quads");
+  if (
+    muscleTokens.has("hamstrings") ||
+    muscleTokens.has("glutes") ||
+    isHinge ||
+    accessoryRoles.includes("accessoryHamstring") ||
+    accessoryRoles.includes("accessoryGlute")
+  ) {
+    tags.add("posteriorChain");
+  }
+  if (
+    slotRoles.includes("verticalPush") ||
+    slotRoles.includes("lateralDeltLoaded") ||
+    slotRoles.includes("rearDeltLoaded") ||
+    slotRoles.includes("secondaryLoadedShoulder") ||
+    accessoryRoles.includes("accessoryLateralDelt") ||
+    accessoryRoles.includes("accessoryRearDelt") ||
+    accessoryRoles.includes("accessoryShoulderSupport") ||
+    textHasAny("shoulder press", "lateral raise", "rear delt", "rear-delt")
+  ) {
+    tags.add("delts");
+  }
+  if (
+    accessoryRoles.includes("accessoryBiceps") ||
+    accessoryRoles.includes("accessoryTriceps") ||
+    muscleTokens.has("biceps") ||
+    muscleTokens.has("triceps") ||
+    textHasAny("biceps", "triceps", "curl", "pressdown", "kickback")
+  ) {
+    tags.add("arms");
+  }
+  if (accessoryRoles.includes("accessoryCalves") || muscleTokens.has("calves")) {
+    tags.add("calves");
+  }
+  if (carryType === "carry") tags.add("carry");
+  if (carryType === "coreStability" || accessoryRoles.includes("accessoryCoreStability")) {
+    tags.add("coreStability");
+  }
+  if (accessoryRoles.includes("accessoryChestIsolation")) tags.add("chestIsolation");
+  if (accessoryRoles.includes("accessoryRearDelt")) tags.add("rearDeltIsolation");
+  if (muscleTokens.has("adductors") || textHasAny("adductor", "cossack")) tags.add("adductors");
+  if (muscleTokens.has("tibialis") || textHasAny("tibialis")) tags.add("tibialis");
+  if (
+    movementTokens.has("antirotation") ||
+    movementTokens.has("anti_rotation") ||
+    textHasAny("anti rotation", "anti-rotation", "pallof", "woodchop")
+  ) {
+    tags.add("antiRotation");
+  }
+
+  if (!loadedMainEligible && accessoryRoles.includes("accessoryCarry")) {
+    tags.add("carry");
+  }
+  if (!loadedMainEligible && accessoryRoles.includes("accessoryCoreStability")) {
+    tags.add("coreStability");
+  }
+
+  return Array.from(tags);
+};
+
 export const exercises: Exercise[] = rawExercises.map((exercise) => {
   const pattern = inferPatternFromExercise(exercise);
   const difficulty = inferDifficultyForExercise(exercise, pattern);
@@ -5073,6 +5224,15 @@ export const exercises: Exercise[] = rawExercises.map((exercise) => {
       carryType,
       loadedMainEligible,
     });
+  const weeklyCoverageTags =
+    exercise.weeklyCoverageTags ??
+    inferWeeklyCoverageTagsForExercise({
+      exercise,
+      slotRoles,
+      accessoryRoles,
+      carryType,
+      loadedMainEligible,
+    });
 
   return {
     ...exercise,
@@ -5083,6 +5243,7 @@ export const exercises: Exercise[] = rawExercises.map((exercise) => {
     painContraindications,
     ...(slotRoles.length ? { slotRoles } : {}),
     ...(accessoryRoles.length ? { accessoryRoles } : {}),
+    ...(weeklyCoverageTags.length ? { weeklyCoverageTags } : {}),
     ...(supportOnly ? { supportOnly } : {}),
     ...(regressionOnly ? { regressionOnly } : {}),
     ...(loadedMainEligible ? { loadedMainEligible } : {}),

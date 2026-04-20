@@ -1,5 +1,9 @@
 import { exerciseById, type Exercise } from "@/lib/exercises";
 import type { PostGenerationWarning } from "@/lib/program/postGenerationPipeline";
+import {
+  auditWeeklyQuotasFromExercises,
+  type WeeklyQuotaAudit,
+} from "@/lib/program/quotaRegistry";
 import type { ProgramDay, ProgramRoutineItem } from "@/lib/types";
 
 export type WeeklyCoverageMovementPattern =
@@ -54,6 +58,7 @@ export type WeeklyCoverageAudit = {
   missingMustHitCoverage: WeeklyCoverageCategory[];
   underHitShouldCoverage: WeeklyCoverageCategory[];
   optionalCoverageOpportunities: WeeklyCoverageCategory[];
+  quotaAudit?: WeeklyQuotaAudit;
 };
 
 const movementPatternOrder: WeeklyCoverageMovementPattern[] = [
@@ -356,7 +361,12 @@ const createEmptyCategoryHitMap = () =>
   );
 
 export const auditWeeklyCoverageFromExercises = (
-  selectedExercises: Exercise[]
+  selectedExercises: Exercise[],
+  options?: {
+    daysPerWeek?: 3 | 4 | 5;
+    phase?: "activation" | "skill" | "growth";
+    experience?: "beginner" | "intermediate" | "advanced";
+  }
 ): WeeklyCoverageAudit => {
   const movementHits = new Set<WeeklyCoverageMovementPattern>();
   const regionHits = new Set<WeeklyCoverageMajorBodyRegion>();
@@ -417,19 +427,35 @@ export const auditWeeklyCoverageFromExercises = (
     missingMustHitCoverage,
     underHitShouldCoverage,
     optionalCoverageOpportunities,
+    ...(options
+      ? {
+          quotaAudit: auditWeeklyQuotasFromExercises(selectedExercises, {
+            daysPerWeek: options.daysPerWeek ?? 3,
+            phase: options.phase ?? "skill",
+            experience: options.experience ?? "beginner",
+          }),
+        }
+      : {}),
   };
 };
 
 // The coverage audit is intentionally observational: it reads final exercise
 // metadata after generation/repair and reports holes without mutating the week.
-export const auditWeeklyCoverage = (week: ProgramDay[]): WeeklyCoverageAudit => {
+export const auditWeeklyCoverage = (
+  week: ProgramDay[],
+  options?: {
+    daysPerWeek?: 3 | 4 | 5;
+    phase?: "activation" | "skill" | "growth";
+    experience?: "beginner" | "intermediate" | "advanced";
+  }
+): WeeklyCoverageAudit => {
   const selectedExercises = week.flatMap((day) =>
     day.routine
       .filter(isTrainingCoverageItem)
       .map((item) => exerciseById(item.exerciseId))
       .filter((exercise): exercise is Exercise => Boolean(exercise))
   );
-  return auditWeeklyCoverageFromExercises(selectedExercises);
+  return auditWeeklyCoverageFromExercises(selectedExercises, options);
 };
 
 export const buildWeeklyCoverageAuditWarnings = (

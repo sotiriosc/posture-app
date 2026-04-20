@@ -5,6 +5,7 @@ import type {
   Program,
   ProgramDay,
   ProgramRoutineItem,
+  ProgramSelectionDecisionTrace,
   ProgramSelectionDebugSource,
 } from "@/lib/types";
 import type {
@@ -82,6 +83,16 @@ import {
   buildWeeklyCoverageAuditWarnings,
 } from "@/lib/program/coverageAudit";
 import { planThreeDayAccessorySlots } from "@/lib/program/accessoryPlanner";
+import {
+  auditWeeklyQuotasFromExercises,
+  auditWeeklyQuotasFromWeek,
+  type WeeklyQuotaAudit,
+} from "@/lib/program/quotaRegistry";
+import {
+  rankSelectionCandidatesDeterministically,
+  scoreSelectionCandidateDelta,
+} from "@/lib/program/selectionScore";
+import { mergeDecisionTrace, withDecisionTrace } from "@/lib/program/decisionTrace";
 import {
   buildWarmupForDay,
   deriveDayIntentFromProgramDay,
@@ -2249,6 +2260,7 @@ const withSelectionDebug = (
     slotKind?: string;
     slotLane?: string;
     phaseIndex?: number;
+    decisionTrace?: ProgramSelectionDecisionTrace;
   }
 ): ProgramRoutineItem => {
   if (item.section !== "main" && item.section !== "accessory") return item;
@@ -2261,6 +2273,10 @@ const withSelectionDebug = (
       slotKind: meta?.slotKind ?? item.selectionDebug?.slotKind,
       slotLane: meta?.slotLane ?? item.selectionDebug?.slotLane,
       phaseIndex: meta?.phaseIndex ?? item.selectionDebug?.phaseIndex,
+      decisionTrace: mergeDecisionTrace(
+        item.selectionDebug?.decisionTrace,
+        meta?.decisionTrace
+      ),
     },
   };
 };
@@ -7514,7 +7530,7 @@ const isBackChestAccessoryRoleCoverageSatisfied = (accessoryExercises: Exercise[
   return coverage.hasRearDeltAccessory && coverage.hasExternalScapAccessory;
 };
 
-const buildAccessoryPlanningCoverageAudit = (params: {
+const buildAccessoryPlanningWeek = (params: {
   planningWeek?: ProgramDay[];
   currentDay: ProgramDay;
   currentDayIndex?: number;
@@ -7549,7 +7565,33 @@ const buildAccessoryPlanningCoverageAudit = (params: {
     ...targetDay,
     routine: [...mainItems],
   };
-  return auditWeeklyCoverage(baseWeek);
+  return baseWeek;
+};
+
+const buildAccessoryPlanningCoverageAudit = (params: {
+  planningWeek?: ProgramDay[];
+  currentDay: ProgramDay;
+  currentDayIndex?: number;
+  selectedMainExerciseIds: string[];
+}) => {
+  return auditWeeklyCoverage(buildAccessoryPlanningWeek(params));
+};
+
+const buildAccessoryPlanningQuotaAudit = (params: {
+  planningWeek?: ProgramDay[];
+  currentDay: ProgramDay;
+  currentDayIndex?: number;
+  selectedMainExerciseIds: string[];
+  daysPerWeek: 3 | 4 | 5;
+  selectionContext: SelectionContext;
+}) => {
+  const { daysPerWeek, selectionContext } = params;
+  return auditWeeklyQuotasFromWeek(buildAccessoryPlanningWeek(params), {
+    daysPerWeek,
+    phase: selectionContext.phaseStage,
+    experience: selectionContext.experienceLevel,
+    resolveExerciseById: (exerciseId) => exerciseById(exerciseId),
+  });
 };
 
 const deriveAccessoryPlanningFatigueOverlap = (selectedMainExercises: Exercise[]) => {
@@ -8237,6 +8279,15 @@ const repairBackChestAccessoryArchitecture = (params: {
     currentDayIndex: dayIndex,
     selectedMainExerciseIds,
   });
+  const planningQuotaAudit = buildAccessoryPlanningQuotaAudit({
+    planningWeek,
+    currentDay: day,
+    currentDayIndex: dayIndex,
+    selectedMainExerciseIds,
+    daysPerWeek,
+    selectionContext: context.selectionContext,
+  });
+  const fatigueOverlap = deriveAccessoryPlanningFatigueOverlap(mainExercises);
   const previousSignature = previousBackChestDay
     ? buildExerciseIdSignature(
         previousBackChestDay.routine
@@ -8251,6 +8302,7 @@ const repairBackChestAccessoryArchitecture = (params: {
     targetAccessoryCount: accessoryEntries.length,
     selectedMainExercises: mainExercises,
     weeklyCoverageAudit: planningCoverageAudit,
+    weeklyQuotaAudit: planningQuotaAudit,
     phase: context.selectionContext.phaseStage,
     experience: context.selectionContext.experienceLevel,
     trainingContext: context.selectionContext.trainingContext,
@@ -8261,7 +8313,7 @@ const repairBackChestAccessoryArchitecture = (params: {
           .filter((item) => item.section === "accessory")
           .flatMap((item) => exerciseById(item.exerciseId)?.accessoryRoles ?? [])
       : [],
-    fatigueOverlap: deriveAccessoryPlanningFatigueOverlap(mainExercises),
+    fatigueOverlap,
   });
   const prefersChestIsolationExpansion = plannedAccessorySlots.some(
     (slot) => slot.role === "accessoryChestIsolation" && slot.isExpansion
@@ -8315,9 +8367,12 @@ const repairBackChestAccessoryArchitecture = (params: {
             dayFocusTags: day.focusTags,
             slotKind: "accessorychest",
             slotLane: undefined,
+            slotRole: "accessoryChestIsolation",
             selectedMainExerciseIds,
             selectedAccessoryExerciseIds: selectedAccessoryIds,
             capabilityMode: context.capabilityMode,
+            fatigueOverlap,
+            weeklyQuotaAudit: planningQuotaAudit,
           }
         ).score,
       }))
@@ -15069,8 +15124,9 @@ const selectShouldersArmsAccessoryExercise = (params: {
   usedIds: Set<string>;
   usedFamilyKeys: Set<string>;
   disallowIds?: Set<string>;
+  auditMeta?: SelectionAuditMeta;
 }): Exercise | null => {
-  const { role, context, usedIds, usedFamilyKeys, disallowIds } = params;
+  const { role, context, usedIds, usedFamilyKeys, disallowIds, auditMeta } = params;
   const poolIds = SHOULDERS_ARMS_ACCESSORY_POOL[role];
   const pool = poolIds
     .map((id) => exerciseById(id))
@@ -15093,12 +15149,13 @@ const selectShouldersArmsAccessoryExercise = (params: {
   const orderedPool = [...pool].sort((left, right) => left.id.localeCompare(right.id));
   const scoredEntries = orderedPool
     .map((exercise) => {
-      let score = scoreExerciseForContext(
+      let score = scoreExerciseForContextDetailed(
         exercise,
         "accessory",
         context.selectionContext,
-        context.available
-      );
+        context.available,
+        auditMeta
+      ).score;
       if (role === "rearDelt" && isShouldersArmsAccessoryRearDelt(exercise)) score += 2;
       if (role === "externalScap" && isShouldersArmsAccessoryExternalScap(exercise)) score += 2;
       if (context.selectionContext.phaseStage === "growth" && exercise.loadType === "weighted") {
@@ -15305,9 +15362,19 @@ const selectShouldersArmsCarryStyleAccessoryExercise = (params: {
   slotIndex: number;
   selectedMainExercises: Exercise[];
   selectedAccessoryExercises: Exercise[];
+  weeklyQuotaAudit?: WeeklyQuotaAudit;
+  fatigueOverlap?: string[];
 }): Exercise | null => {
-  const { day, context, usedIds, slotIndex, selectedMainExercises, selectedAccessoryExercises } =
-    params;
+  const {
+    day,
+    context,
+    usedIds,
+    slotIndex,
+    selectedMainExercises,
+    selectedAccessoryExercises,
+    weeklyQuotaAudit,
+    fatigueOverlap,
+  } = params;
   const auditMeta: SelectionAuditMeta = {
     slotId: `${normalizeSlotToken(day.title)}-accessory-${slotIndex + 1}`,
     slotIndex,
@@ -15316,9 +15383,12 @@ const selectShouldersArmsCarryStyleAccessoryExercise = (params: {
     dayFocusTags: day.focusTags,
     slotKind: "accessoryCarryExpansion",
     slotLane: "core",
+    slotRole: "accessoryCarry",
     selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
     selectedAccessoryExerciseIds: selectedAccessoryExercises.map((exercise) => exercise.id),
     capabilityMode: context.capabilityMode,
+    fatigueOverlap,
+    weeklyQuotaAudit,
     selectionRng: context.selectionRng,
   };
   const scoredEntries = exercises
@@ -15876,11 +15946,21 @@ const repairShouldersArmsDayIntelligence = (params: {
     currentDayIndex: dayIndex,
     selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
   });
+  const planningQuotaAudit = buildAccessoryPlanningQuotaAudit({
+    planningWeek,
+    currentDay: day,
+    currentDayIndex: dayIndex,
+    selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
+    daysPerWeek,
+    selectionContext: context.selectionContext,
+  });
+  const fatigueOverlap = deriveAccessoryPlanningFatigueOverlap(selectedMainExercises);
   const plannedAccessorySlots = planThreeDayAccessorySlots({
     dayTitle: day.title,
     targetAccessoryCount,
     selectedMainExercises,
     weeklyCoverageAudit: planningCoverageAudit,
+    weeklyQuotaAudit: planningQuotaAudit,
     phase: phaseStage,
     experience: experienceLevel,
     trainingContext: context.selectionContext.trainingContext,
@@ -15894,7 +15974,7 @@ const repairShouldersArmsDayIntelligence = (params: {
           .filter((item) => item.section === "accessory")
           .flatMap((item) => exerciseById(item.exerciseId)?.accessoryRoles ?? [])
       : [],
-    fatigueOverlap: deriveAccessoryPlanningFatigueOverlap(selectedMainExercises),
+    fatigueOverlap,
   });
   const usedAccessoryIds = new Set<string>(selectedMainExercises.map((exercise) => exercise.id));
   const usedAccessoryStimulusByRole: Record<ShouldersArmsArmRole, Set<string>> = {
@@ -15916,9 +15996,12 @@ const repairShouldersArmsDayIntelligence = (params: {
     dayFocusTags: day.focusTags,
     slotKind: slot.slotKind,
     slotLane: slot.lane,
+    slotRole: slot.role,
     selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
     selectedAccessoryExerciseIds: accessoryExercises.map((exercise) => exercise.id),
     capabilityMode: context.capabilityMode,
+    fatigueOverlap,
+    weeklyQuotaAudit: planningQuotaAudit,
     selectionRng: context.selectionRng,
   });
   const buildWorkingAccessorySelectionDay = (): ProgramDay => ({
@@ -15988,6 +16071,7 @@ const repairShouldersArmsDayIntelligence = (params: {
         usedIds: usedAccessoryIds,
         usedFamilyKeys: usedShoulderAccessoryFamilies,
         disallowIds,
+        auditMeta: buildPlannedAccessoryAuditMeta(slotIndex, slot),
       });
     }
     if (role === "accessoryCarry") {
@@ -16004,6 +16088,8 @@ const repairShouldersArmsDayIntelligence = (params: {
         slotIndex,
         selectedMainExercises,
         selectedAccessoryExercises: accessoryExercises,
+        weeklyQuotaAudit: planningQuotaAudit,
+        fatigueOverlap,
       });
     }
     return null;
@@ -17275,11 +17361,21 @@ const repairLegsAbsDayIntelligence = (params: {
     currentDayIndex: dayIndex,
     selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
   });
+  const planningQuotaAudit = buildAccessoryPlanningQuotaAudit({
+    planningWeek,
+    currentDay: day,
+    currentDayIndex: dayIndex,
+    selectedMainExerciseIds: selectedMainExercises.map((exercise) => exercise.id),
+    daysPerWeek,
+    selectionContext: context.selectionContext,
+  });
+  const fatigueOverlap = deriveAccessoryPlanningFatigueOverlap(selectedMainExercises);
   const plannedAccessorySlots = planThreeDayAccessorySlots({
     dayTitle: day.title,
     targetAccessoryCount,
     selectedMainExercises,
     weeklyCoverageAudit: planningCoverageAudit,
+    weeklyQuotaAudit: planningQuotaAudit,
     phase: phaseStage,
     experience: experienceLevel,
     trainingContext: context.selectionContext.trainingContext,
@@ -17290,7 +17386,7 @@ const repairLegsAbsDayIntelligence = (params: {
           .filter((item) => item.section === "accessory")
           .flatMap((item) => exerciseById(item.exerciseId)?.accessoryRoles ?? [])
       : [],
-    fatigueOverlap: deriveAccessoryPlanningFatigueOverlap(selectedMainExercises),
+    fatigueOverlap,
   });
 
   const usedAccessoryIds = new Set<string>(selectedMainExercises.map((exercise) => exercise.id));
@@ -17362,9 +17458,12 @@ const repairLegsAbsDayIntelligence = (params: {
             dayFocusTags: day.focusTags,
             slotKind: slot.slotKind,
             slotLane: undefined,
+            slotRole: slot.role,
             selectedMainExerciseIds: selectedMainExercises.map((entry) => entry.id),
             selectedAccessoryExerciseIds: selectedAccessories.map((entry) => entry.id),
             capabilityMode: context.capabilityMode,
+            fatigueOverlap,
+            weeklyQuotaAudit: planningQuotaAudit,
             selectionRng: context.selectionRng,
           }
         ).score;
@@ -17963,6 +18062,22 @@ const enforceBeginnerThreeDayCarryPolicy = (params: {
         .filter((item) => item.section === "main")
         .map((item) => item.exerciseId),
     });
+    const planningQuotaAudit = buildAccessoryPlanningQuotaAudit({
+      planningWeek: nextWeek,
+      currentDay: day,
+      currentDayIndex: shouldersIndex,
+      selectedMainExerciseIds: day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId),
+      daysPerWeek,
+      selectionContext: context.selectionContext,
+    });
+    const fatigueOverlap = deriveAccessoryPlanningFatigueOverlap(
+      day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    );
     const targetAccessoryCount =
       get3DayTemplateCounts(day.title, context.selectionContext.experienceLevel)?.accessoryCount ??
       Math.max(3, accessoryEntries.length + 1);
@@ -17974,6 +18089,7 @@ const enforceBeginnerThreeDayCarryPolicy = (params: {
         .map((item) => exerciseById(item.exerciseId))
         .filter((exercise): exercise is Exercise => Boolean(exercise)),
       weeklyCoverageAudit: planningCoverageAudit,
+      weeklyQuotaAudit: planningQuotaAudit,
       phase: context.selectionContext.phaseStage,
       experience: context.selectionContext.experienceLevel,
       trainingContext: context.selectionContext.trainingContext,
@@ -17985,12 +18101,7 @@ const enforceBeginnerThreeDayCarryPolicy = (params: {
       recentAccessoryRoles: day.routine
         .filter((item) => item.section === "accessory")
         .flatMap((item) => exerciseById(item.exerciseId)?.accessoryRoles ?? []),
-      fatigueOverlap: deriveAccessoryPlanningFatigueOverlap(
-        day.routine
-          .filter((item) => item.section === "main")
-          .map((item) => exerciseById(item.exerciseId))
-          .filter((exercise): exercise is Exercise => Boolean(exercise))
-      ),
+      fatigueOverlap,
     });
     const wantsCarryExpansion = plannedSlots.some(
       (slot) => slot.role === "accessoryCarry" && slot.isExpansion
@@ -22051,6 +22162,45 @@ const accessoryRoleToLane = (role: ExerciseAccessoryRole): AccessoryLane => {
   return "core";
 };
 
+const resolveAccessoryRoleFromSlotKind = (
+  slotKind?: string
+): ExerciseAccessoryRole | undefined => {
+  if (!slotKind) return undefined;
+  if (slotKind === "accessoryTriIso" || slotKind === "accessoryTriIsoVariant") {
+    return "accessoryTriceps";
+  }
+  if (slotKind === "accessoryBiIso" || slotKind === "accessoryBiIsoVariant") {
+    return "accessoryBiceps";
+  }
+  if (slotKind === "accessoryCarryExpansion" || slotKind === "accessoryCarryFinisher") {
+    return "accessoryCarry";
+  }
+  if (slotKind === "accessoryCorePrimary" || slotKind === "accessoryCoreExpansion") {
+    return "accessoryCoreStability";
+  }
+  if (slotKind === "accessoryCalvesPrimary") return "accessoryCalves";
+  if (slotKind === "accessoryChestExpansion") return "accessoryChestIsolation";
+  if (slotKind === "accessoryBackRearDelt") return "accessoryRearDelt";
+  if (slotKind === "accessoryBackSupport") return "accessoryShoulderSupport";
+  if (slotKind === "accessoryLowerExpansion") return "accessoryHamstring";
+  return undefined;
+};
+
+const resolveSelectionSlotRoleLabel = (params: {
+  section?: ProgramRoutineItem["section"];
+  slotKind?: string;
+  slotLane?: string;
+}): string | undefined => {
+  const { section, slotKind, slotLane } = params;
+  if (section === "main") {
+    return slotKind ? THREE_DAY_GYM_MAIN_SLOT_ROLE_BY_KIND[slotKind] ?? slotLane : slotLane;
+  }
+  if (section === "accessory") {
+    return resolveAccessoryRoleFromSlotKind(slotKind) ?? slotLane;
+  }
+  return undefined;
+};
+
 const isFloorBasedPressExercise = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name} ${exercise.variantKey ?? ""}`.toLowerCase();
   return descriptor.includes("floor press") || descriptor.includes("floor-press");
@@ -25636,6 +25786,27 @@ const scoreExerciseForContextDetailed = (
   score += feedbackBonus.score;
   reasons.push(...feedbackBonus.reasons);
 
+  if (auditMeta?.weeklyQuotaAudit) {
+    const quotaScore = scoreSelectionCandidateDelta({
+      exercise,
+      section:
+        section === "main" || section === "accessory" ? section : undefined,
+      phase: context.phaseStage,
+      experience: context.experienceLevel,
+      trainingContext: context.trainingContext,
+      availableEquipment: Array.from(available),
+      dayTitle: auditMeta.dayTitle,
+      quotaAudit: auditMeta.weeklyQuotaAudit,
+      recentExerciseIds: recentExerciseIds,
+      fatigueOverlap: auditMeta.fatigueOverlap,
+      slotLane: auditMeta.slotLane,
+      slotKind: auditMeta.slotKind,
+      slotRole: auditMeta.slotRole,
+    });
+    score += quotaScore.score;
+    reasons.push(...quotaScore.reasons);
+  }
+
   return { score, reasons };
 };
 
@@ -27382,12 +27553,15 @@ type SelectionAuditMeta = {
   dayFocusTags: string[];
   slotKind: string;
   slotLane?: MainLane;
+  slotRole?: string;
   selectedMainExerciseIds?: string[];
   selectedAccessoryExerciseIds?: string[];
   expectedLaneCounts?: Partial<Record<MainLane, number>>;
   capabilityMode: EquipmentCapabilityMode;
   dayBudget?: DayPatternBudget | null;
   priorDayHeavyPatterns?: PrimaryMotorPattern[];
+  fatigueOverlap?: string[];
+  weeklyQuotaAudit?: WeeklyQuotaAudit;
   selectionAuditHook?: ProgramSelectionAuditHook;
   selectionRng?: RandomFn;
 };
@@ -29544,8 +29718,10 @@ const findFinalAccessorySlotReplacement = (params: {
   lane: AccessoryLane;
   usedIds: Set<string>;
   context: DayConstraintRepairContext;
+  weeklyQuotaAudit?: WeeklyQuotaAudit;
+  fatigueOverlap?: string[];
 }) => {
-  const { day, lane, usedIds, context } = params;
+  const { day, lane, usedIds, context, weeklyQuotaAudit, fatigueOverlap } = params;
   const candidateIds = getAccessoryCandidateIds({
     lane,
     available: context.available,
@@ -29585,7 +29761,15 @@ const findFinalAccessorySlotReplacement = (params: {
           dayTitle: day.title,
           dayFocusTags: day.focusTags,
           slotKind: accessorySlotKindByLane(lane),
+          slotLane: lane,
+          slotRole: resolveSelectionSlotRoleLabel({
+            section: "accessory",
+            slotKind: accessorySlotKindByLane(lane),
+            slotLane: lane,
+          }),
           capabilityMode: context.capabilityMode,
+          fatigueOverlap,
+          weeklyQuotaAudit,
         }
       );
       return {
@@ -29607,10 +29791,22 @@ const enforceFinalAccessorySlotPurity = (params: {
 }): WeekConstraintRepairResult => {
   const { week, daysPerWeek, context, phaseIndex } = params;
   const warnings: WeekConstraintRepairResult["warnings"] = [];
+  const weeklyQuotaAudit = auditWeeklyQuotasFromWeek(week, {
+    daysPerWeek,
+    phase: context.selectionContext.phaseStage,
+    experience: context.selectionContext.experienceLevel,
+    resolveExerciseById: (exerciseId) => exerciseById(exerciseId),
+  });
 
   const nextWeek = week.map((day) => {
     let nextDay = day;
     const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+    const fatigueOverlap = deriveAccessoryPlanningFatigueOverlap(
+      day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    );
     const plannedLanes = resolvePlannedAccessoryLanesForDay({
       day,
       daysPerWeek,
@@ -29660,6 +29856,8 @@ const enforceFinalAccessorySlotPurity = (params: {
         lane,
         usedIds,
         context,
+        weeklyQuotaAudit,
+        fatigueOverlap,
       });
       if (replacement) {
         usedIds.add(replacement.id);
@@ -29722,8 +29920,18 @@ const findFinalEquipmentLegalReplacement = (params: {
   itemIndex: number;
   usedIds: Set<string>;
   context: DayConstraintRepairContext;
+  weeklyQuotaAudit?: WeeklyQuotaAudit;
+  fatigueOverlap?: string[];
 }) => {
-  const { day, item, itemIndex, usedIds, context } = params;
+  const {
+    day,
+    item,
+    itemIndex,
+    usedIds,
+    context,
+    weeklyQuotaAudit,
+    fatigueOverlap,
+  } = params;
   const mainSlotLane =
     item.section === "main"
       ? (item.selectionDebug?.slotLane as MainLane | undefined)
@@ -29772,7 +29980,14 @@ const findFinalEquipmentLegalReplacement = (params: {
             dayFocusTags: day.focusTags,
             slotKind: item.selectionDebug?.slotKind ?? item.section ?? "unknown",
             slotLane: mainSlotLane,
+            slotRole: resolveSelectionSlotRoleLabel({
+              section: item.section,
+              slotKind: item.selectionDebug?.slotKind,
+              slotLane: item.selectionDebug?.slotLane,
+            }),
             capabilityMode: context.capabilityMode,
+            fatigueOverlap,
+            weeklyQuotaAudit,
           }
         );
         return {
@@ -29830,7 +30045,14 @@ const findFinalEquipmentLegalReplacement = (params: {
             dayFocusTags: day.focusTags,
             slotKind: item.selectionDebug?.slotKind ?? item.section ?? "unknown",
             slotLane: mainSlotLane,
+            slotRole: resolveSelectionSlotRoleLabel({
+              section: item.section,
+              slotKind: item.selectionDebug?.slotKind,
+              slotLane: item.selectionDebug?.slotLane,
+            }),
             capabilityMode: context.capabilityMode,
+            fatigueOverlap,
+            weeklyQuotaAudit,
           }
         );
         return {
@@ -29848,15 +30070,28 @@ const findFinalEquipmentLegalReplacement = (params: {
 
 const enforceFinalEquipmentLegality = (params: {
   week: ProgramDay[];
+  daysPerWeek: 3 | 4 | 5;
   context: DayConstraintRepairContext;
   phaseIndex: number;
 }): WeekConstraintRepairResult => {
-  const { week, context, phaseIndex } = params;
+  const { week, daysPerWeek, context, phaseIndex } = params;
   const warnings: WeekConstraintRepairResult["warnings"] = [];
+  const weeklyQuotaAudit = auditWeeklyQuotasFromWeek(week, {
+    daysPerWeek,
+    phase: context.selectionContext.phaseStage,
+    experience: context.selectionContext.experienceLevel,
+    resolveExerciseById: (exerciseId) => exerciseById(exerciseId),
+  });
 
   const nextWeek = week.map((day) => {
     let nextDay = day;
     const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+    const fatigueOverlap = deriveAccessoryPlanningFatigueOverlap(
+      day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+    );
 
     day.routine.forEach((item, itemIndex) => {
       const exercise = exerciseById(item.exerciseId);
@@ -29870,6 +30105,8 @@ const enforceFinalEquipmentLegality = (params: {
         itemIndex,
         usedIds,
         context,
+        weeklyQuotaAudit,
+        fatigueOverlap,
       });
       if (!replacement) {
         usedIds.add(item.exerciseId);
@@ -30020,6 +30257,177 @@ const enforceNoEquipmentPullQuality = (params: {
   });
 
   return { week: nextWeek, warnings };
+};
+
+const quotaTraceSections = new Set<NonNullable<ProgramRoutineItem["section"]>>([
+  "activation",
+  "main",
+  "accessory",
+]);
+
+const isMainLaneValue = (value?: string): value is MainLane =>
+  value === "push" ||
+  value === "verticalPush" ||
+  value === "pull" ||
+  value === "squat" ||
+  value === "hinge";
+
+const isAccessoryLaneValue = (value?: string): value is AccessoryLane =>
+  value === "push" ||
+  value === "pull" ||
+  value === "lower" ||
+  value === "core" ||
+  value === "chest" ||
+  value === "back";
+
+const collectQuotaTraceExercises = (
+  week: ProgramDay[],
+  options?: { omitDayIndex?: number; omitItemIndex?: number }
+) =>
+  week.flatMap((day, dayIndex) =>
+    day.routine
+      .filter(
+        (item, itemIndex) =>
+          (!item.section || quotaTraceSections.has(item.section)) &&
+          !(
+            dayIndex === options?.omitDayIndex &&
+            itemIndex === options?.omitItemIndex
+          )
+      )
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise))
+  );
+
+const annotateSelectionDecisionTraceForWeek = (params: {
+  week: ProgramDay[];
+  daysPerWeek: 3 | 4 | 5;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  previousWeek?: ProgramDay[];
+}) => {
+  const { week, daysPerWeek, selectionContext, available, previousWeek } = params;
+  const recentExerciseIds = new Set(
+    previousWeek?.flatMap((day) =>
+      day.routine
+        .filter((item) => item.section === "main" || item.section === "accessory")
+        .map((item) => item.exerciseId)
+    ) ?? []
+  );
+
+  return week.map((day, dayIndex) => {
+    const dayMainExercises = day.routine
+      .filter((item) => item.section === "main")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
+    const fatigueOverlap = deriveAccessoryPlanningFatigueOverlap(dayMainExercises);
+
+    return {
+      ...day,
+      routine: day.routine.map((item, itemIndex) => {
+        if (item.section !== "main" && item.section !== "accessory") return item;
+        if (!item.selectionDebug) return item;
+        const exercise = exerciseById(item.exerciseId);
+        if (!exercise) return item;
+
+        const quotaAudit = auditWeeklyQuotasFromExercises(
+          collectQuotaTraceExercises(week, {
+            omitDayIndex: dayIndex,
+            omitItemIndex: itemIndex,
+          }),
+          {
+            daysPerWeek,
+            phase: selectionContext.phaseStage,
+            experience: selectionContext.experienceLevel,
+          }
+        );
+        const slotRole = resolveSelectionSlotRoleLabel({
+          section: item.section,
+          slotKind: item.selectionDebug.slotKind,
+          slotLane: item.selectionDebug.slotLane,
+        });
+        const mainSlotLane = isMainLaneValue(item.selectionDebug.slotLane)
+          ? item.selectionDebug.slotLane
+          : undefined;
+        const accessoryLane = isAccessoryLaneValue(item.selectionDebug.slotLane)
+          ? item.selectionDebug.slotLane
+          : undefined;
+        const selectionDelta = scoreSelectionCandidateDelta({
+          exercise,
+          section: item.section,
+          phase: selectionContext.phaseStage,
+          experience: selectionContext.experienceLevel,
+          trainingContext: selectionContext.trainingContext,
+          availableEquipment: Array.from(available),
+          dayTitle: day.title,
+          quotaAudit,
+          recentExerciseIds,
+          fatigueOverlap,
+          slotLane: item.selectionDebug.slotLane,
+          slotKind: item.selectionDebug.slotKind,
+          slotRole,
+        });
+        const rankedCandidates = rankSelectionCandidatesDeterministically(
+          exercises
+            .filter((candidate) => isExerciseAllowedForSection(candidate, item.section))
+            .filter((candidate) =>
+              isExerciseEligibleForProgramContext({
+                exercise: candidate,
+                available,
+                section: item.section,
+                context: selectionContext,
+                dayTitle: day.title,
+              })
+            )
+            .filter((candidate) =>
+              isRoleLegalForSlot({
+                exercise: candidate,
+                section: item.section,
+                dayTitle: day.title,
+                slotKind: item.selectionDebug?.slotKind,
+                mainSlotLane,
+                accessoryLane,
+                available,
+                context: selectionContext,
+              })
+            )
+            .map((candidate) => {
+              const candidateDelta = scoreSelectionCandidateDelta({
+                exercise: candidate,
+                section: item.section,
+                phase: selectionContext.phaseStage,
+                experience: selectionContext.experienceLevel,
+                trainingContext: selectionContext.trainingContext,
+                availableEquipment: Array.from(available),
+                dayTitle: day.title,
+                quotaAudit,
+                recentExerciseIds,
+                fatigueOverlap,
+                slotLane: item.selectionDebug?.slotLane,
+                slotKind: item.selectionDebug?.slotKind,
+                slotRole,
+              });
+              return {
+                exercise: candidate,
+                score: candidateDelta.score,
+                reasons: candidateDelta.reasons,
+                decisionTrace: candidateDelta.decisionTrace,
+              };
+            })
+        );
+        const selectedRank = rankedCandidates.find(
+          (candidate) => candidate.exercise.id === exercise.id
+        )?.decisionTrace.tieBreakRank;
+
+        return {
+          ...item,
+          selectionDebug: withDecisionTrace(item.selectionDebug, {
+            ...selectionDelta.decisionTrace,
+            tieBreakRank: selectedRank ?? 1,
+          }),
+        };
+      }),
+    };
+  });
 };
 
 export const generateWeeklyProgram = (
@@ -30216,6 +30624,7 @@ export const generateWeeklyProgram = (
   });
   const equipmentLegalityResult = enforceFinalEquipmentLegality({
     week: accessorySlotPurityResult.week,
+    daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
   });
@@ -30241,10 +30650,21 @@ export const generateWeeklyProgram = (
     available: weeklyRuntimeContext.availableEquipment,
     selectionContext: weeklyRuntimeContext.selectionContext,
   });
-  const coverageAudit = auditWeeklyCoverage(finalStructuredPrepWeek);
+  const tracedStructuredPrepWeek = annotateSelectionDecisionTraceForWeek({
+    week: finalStructuredPrepWeek,
+    daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
+    selectionContext: weeklyRuntimeContext.selectionContext,
+    available: weeklyRuntimeContext.availableEquipment,
+    previousWeek: options?.previousWeek,
+  });
+  const coverageAudit = auditWeeklyCoverage(tracedStructuredPrepWeek, {
+    daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
+    phase: weeklyRuntimeContext.selectionContext.phaseStage,
+    experience: weeklyRuntimeContext.selectionContext.experienceLevel,
+  });
   const coverageAuditWarnings = buildWeeklyCoverageAuditWarnings(coverageAudit);
   finalizeWeeklyGenerationObservability({
-    week: finalStructuredPrepWeek,
+    week: tracedStructuredPrepWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
     available: weeklyRuntimeContext.availableEquipment,
     capabilityMode: weeklyRuntimeContext.capabilityMode,
@@ -30265,7 +30685,7 @@ export const generateWeeklyProgram = (
     totalWeekIndex: weeklyRuntimeContext.totalWeekIndex,
     cycleIndex: weeklyRuntimeContext.cycleIndex,
     nextWeekPlan: weeklyRuntimeContext.nextWeekPlan,
-    week: finalStructuredPrepWeek,
+    week: tracedStructuredPrepWeek,
     questionnaire: data,
     trainingState: weeklyRuntimeContext.trainingState,
     consistencyRate: 0,
