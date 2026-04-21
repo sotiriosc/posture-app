@@ -41,6 +41,18 @@ export const expectedMainCountForDayTitle = ({
     }
   }
 
+  if (daysPerWeek === 4) {
+    if (experience === "Beginner") return 2;
+    if (
+      experience === "Advanced" &&
+      (dayTitle === "Upper Push + Scapular Control" ||
+        dayTitle === "Upper Pull + Thoracic Posture")
+    ) {
+      return 4;
+    }
+    return 3;
+  }
+
   if (
     daysPerWeek === 5 &&
     experience === "Advanced" &&

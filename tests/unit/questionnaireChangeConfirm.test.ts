@@ -196,7 +196,7 @@ describe("questionnaire change confirmation flow", () => {
 
     expect(screen.getByTestId("questionnaire-change-confirm-modal")).toBeTruthy();
     expect(screen.getByTestId("questionnaire-change-confirm-modal").textContent).toContain(
-      "Your selection changed. Your workout will update."
+      "Your profile changed. Your plan will update."
     );
 
     fireEvent.click(screen.getByTestId("questionnaire-change-cancel"));
