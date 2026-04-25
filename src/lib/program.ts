@@ -19247,9 +19247,9 @@ const findConstrainedBackChestMainFallback = (params: {
             (slotKind === "mainPullVertical" &&
               !hasEligibleStrongPullAnchor({
                 kind: "verticalPull",
-                available,
-                context,
-                dayTitle,
+                available: context.available,
+                context: context.selectionContext,
+                dayTitle: day.title,
                 excludeIds: new Set([exercise.id]),
               })),
         })
