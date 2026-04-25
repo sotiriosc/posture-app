@@ -1,6 +1,7 @@
 import type { Exercise, ExerciseAccessoryRole } from "@/lib/exercises";
 import type { WeeklyCoverageAudit, WeeklyCoverageCategory } from "@/lib/program/coverageAudit";
 import type { WeeklyQuotaAudit, WeeklyQuotaCategory } from "@/lib/program/quotaRegistry";
+import { scoreBackChestAccessoryRoleBudget } from "@/lib/program/threeDayCoachPolicy";
 
 export type AccessoryPlannerPhase = "activation" | "skill" | "growth";
 export type AccessoryPlannerExperience = "beginner" | "intermediate" | "advanced";
@@ -258,7 +259,7 @@ const scoreRoleWithContext = (
   if (role === "accessoryChestIsolation") {
     if (phase === "activation") score -= 2.5;
     if (phase === "growth") score += 0.5;
-    if (trainingContext !== "gym" && !stableGymEquipment) score -= 5;
+    if (trainingContext !== "gym" && !stableGymEquipment) score -= 1.25;
     if (!stableGymEquipment && trainingContext === "gym") score -= 2;
     if (goalKey === "improve_posture" || goalKey === "reduce_pain") score -= 1.5;
   }
@@ -280,7 +281,21 @@ const scoreRoleWithContext = (
     score += 0.5;
   }
 
-  return score - recentPenalty - recentClusterPenalty;
+  const coachBudget = scoreBackChestAccessoryRoleBudget({
+    dayTitle: params.dayTitle,
+    targetAccessoryCount: params.targetAccessoryCount,
+    selectedMainExercises: params.selectedMainExercises,
+    role,
+    phase,
+    experience: params.experience,
+    trainingContext,
+    stableGymEquipment,
+    chestDeficit: params.weeklyCoverageAudit.categoryAudits.chest?.deficit ?? 0,
+    fatigueOverlap,
+    recentAccessoryRoles,
+  });
+
+  return score + coachBudget.score - recentPenalty - recentClusterPenalty;
 };
 
 const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAccessorySlotPlan[] => {
@@ -333,7 +348,6 @@ const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAcc
     chestDeficit > 0 &&
     hasHorizontalPull &&
     hasVerticalPull &&
-    phase !== "activation" &&
     fatigueAllowsChestExpansion &&
     (trainingContext === "gym" ? stableGymEquipment : true);
   const shouldSpendOnChestExpansion =

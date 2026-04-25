@@ -51,6 +51,18 @@ describe("program role truthfulness", () => {
     expect(coverageTags.has("unilateralLower")).toBe(false);
   });
 
+  test("pallof press contributes to core anti-rotation and not push", () => {
+    const pallofPress = exerciseById("pallof-press");
+    const coverageTags = new Set(pallofPress?.weeklyCoverageTags ?? []);
+    const movementPatterns = new Set(pallofPress?.movementPattern ?? []);
+
+    expect(coverageTags.has("core")).toBe(true);
+    expect(coverageTags.has("antiRotation")).toBe(true);
+    expect(movementPatterns.has("anti-rotation")).toBe(true);
+    expect(coverageTags.has("pushCompound")).toBe(false);
+    expect(movementPatterns.has("push")).toBe(false);
+  });
+
   test("lower-back pain profiles avoid back-extension-hold as the primary hinge main", () => {
     const questionnaire: QuestionnaireData = {
       goals: "General fitness",

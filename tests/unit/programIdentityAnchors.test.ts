@@ -192,8 +192,17 @@ const IDENTITY_SCENARIOS: IdentityScenario[] = [
         mainCount: 3,
         accessoryCount: 2,
         lanes: { push: 1, pull: 2 },
-        requiredFamilies: [["horizontal_press"], ["horizontal_row", "scapular_pull"]],
-        allowedFamilies: ["horizontal_press", "horizontal_row", "scapular_pull"],
+        requiredFamilies: [
+          ["horizontal_press"],
+          ["horizontal_row", "scapular_pull"],
+          ["vertical_pull"],
+        ],
+        allowedFamilies: [
+          "horizontal_press",
+          "horizontal_row",
+          "vertical_pull",
+          "scapular_pull",
+        ],
       },
       {
         title: "Shoulders + Arms",
