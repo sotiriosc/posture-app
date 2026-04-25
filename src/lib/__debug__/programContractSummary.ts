@@ -9,6 +9,7 @@ export type ContractFamilyBucket =
   | "horizontal_press"
   | "chest_fly"
   | "vertical_press"
+  | "upright_row"
   | "horizontal_row"
   | "vertical_pull"
   | "rear_delt"
@@ -132,6 +133,12 @@ export const bucketExerciseFamily = (exercise: Exercise | undefined): ContractFa
     textIncludes(descriptor, ["pulldown", "pull-down", "pullup", "pull-up", "chinup", "chin-up"])
   ) {
     return "vertical_pull";
+  }
+
+  if (
+    textIncludes(descriptor, ["upright row", "upright-row"])
+  ) {
+    return "upright_row";
   }
 
   if (

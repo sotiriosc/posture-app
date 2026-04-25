@@ -106,13 +106,14 @@ const IDENTITY_SCENARIOS: IdentityScenario[] = [
         lanes: { verticalPush: 1, push: 1, pull: 1 },
         requiredFamilies: [
           ["vertical_press"],
-          ["lateral_delt", "rear_delt", "shoulder_support", "scapular_pull"],
-          ["rear_delt", "shoulder_support", "scapular_pull"],
+          ["lateral_delt", "rear_delt", "upright_row", "shoulder_support", "scapular_pull"],
+          ["rear_delt", "upright_row", "shoulder_support", "scapular_pull"],
         ],
         allowedFamilies: [
           "vertical_press",
           "lateral_delt",
           "rear_delt",
+          "upright_row",
           "shoulder_support",
           "scapular_pull",
         ],
@@ -159,13 +160,14 @@ const IDENTITY_SCENARIOS: IdentityScenario[] = [
         lanes: { verticalPush: 1, push: 1, pull: 2 },
         requiredFamilies: [
           ["vertical_press"],
-          ["lateral_delt", "rear_delt", "shoulder_support", "scapular_pull"],
-          ["rear_delt", "shoulder_support", "scapular_pull"],
+          ["lateral_delt", "rear_delt", "upright_row", "shoulder_support", "scapular_pull"],
+          ["rear_delt", "upright_row", "shoulder_support", "scapular_pull"],
         ],
         allowedFamilies: [
           "vertical_press",
           "lateral_delt",
           "rear_delt",
+          "upright_row",
           "shoulder_support",
           "scapular_pull",
         ],

@@ -75,6 +75,23 @@ const isBackFocusedAccessory = (exercise: Exercise) => {
   );
 };
 
+const isChestIsolationAccessory = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  const family = normalizeToken(exercise.familyKey?.trim() ? exercise.familyKey : exercise.id);
+  const rearDeltFly =
+    descriptor.includes("rear delt") ||
+    descriptor.includes("rear-delt") ||
+    descriptor.includes("reverse pec deck") ||
+    descriptor.includes("reverse-pec-deck");
+  return (
+    !rearDeltFly &&
+    (family === "chestfly" ||
+      descriptor.includes("fly") ||
+      descriptor.includes("pec deck") ||
+      descriptor.includes("pec-deck"))
+  );
+};
+
 const accessoryFamilyKey = (exercise: Exercise) =>
   normalizeToken(exercise.familyKey?.trim() ? exercise.familyKey : exercise.id);
 
@@ -297,7 +314,7 @@ describe("back + chest 3-day final contract", () => {
     });
   });
 
-  test("day 1 accessories are exactly 2, both back-focused, no duplicate familyKey", () => {
+  test("day 1 accessories are exactly 2, preserve truthful Day 1 identity, no duplicate familyKey", () => {
     const cases: QuestionnaireData["experience"][] = ["Beginner", "Intermediate", "Advanced"];
     cases.forEach((experience) => {
       const questionnaire = buildQuestionnaire(experience);
@@ -316,7 +333,13 @@ describe("back + chest 3-day final contract", () => {
       available.add("pullup_bar");
 
       expect(accessories.length).toBe(2);
-      expect(accessories.every((exercise) => isBackFocusedAccessory(exercise))).toBe(true);
+      expect(
+        accessories.every(
+          (exercise) => isBackFocusedAccessory(exercise) || isChestIsolationAccessory(exercise)
+        )
+      ).toBe(true);
+      expect(accessories.some((exercise) => isBackFocusedAccessory(exercise))).toBe(true);
+      expect(accessories.filter((exercise) => isChestIsolationAccessory(exercise)).length).toBeLessThanOrEqual(1);
       expect(
         new Set(accessories.map((exercise) => accessoryFamilyKey(exercise))).size
       ).toBe(accessories.length);

@@ -31,6 +31,18 @@ type ThreeDayAccessoryPlannerParams = {
   fatigueOverlap?: string[];
 };
 
+const BACK_CHEST_SUPPORT_ROLES: ExerciseAccessoryRole[] = [
+  "accessoryBackWidth",
+  "accessoryBackThickness",
+  "accessoryRearDelt",
+  "accessoryShoulderSupport",
+];
+
+const BACK_CHEST_POSTERIOR_SUPPORT_ROLES: ExerciseAccessoryRole[] = [
+  "accessoryRearDelt",
+  "accessoryShoulderSupport",
+];
+
 const normalizeToken = (value: string) =>
   value
     .trim()
@@ -41,8 +53,48 @@ const resolveDayKey = (dayTitle: string) => normalizeToken(dayTitle);
 
 const resolveGoalKey = (goal: string) => normalizeToken(goal);
 
+const resolveAccessoryRoleCluster = (role: ExerciseAccessoryRole) => {
+  switch (role) {
+    case "accessoryChestIsolation":
+      return "chest";
+    case "accessoryBackWidth":
+      return "back_width";
+    case "accessoryBackThickness":
+      return "back_thickness";
+    case "accessoryRearDelt":
+    case "accessoryShoulderSupport":
+      return "rear_support";
+    case "accessoryCoreStability":
+      return "core";
+    case "accessoryCarry":
+      return "carry";
+    case "accessoryHamstring":
+      return "hamstring";
+    case "accessoryGlute":
+      return "glute";
+    case "accessoryCalves":
+      return "calves";
+    case "accessoryBiceps":
+      return "biceps";
+    case "accessoryTriceps":
+      return "triceps";
+    case "accessoryLateralDelt":
+      return "lateral_delt";
+    default:
+      return role;
+  }
+};
+
 const exerciseHasPattern = (exercise: Exercise, pattern: string) =>
   (exercise.movementPattern ?? []).some((value) => normalizeToken(value) === normalizeToken(pattern));
+
+const exerciseHasSlotRole = (exercise: Exercise, role: string) =>
+  (exercise.slotRoles ?? []).some((value) => normalizeToken(value) === normalizeToken(role));
+
+const exerciseHasCoverageTag = (exercise: Exercise, tag: WeeklyQuotaCategory) =>
+  (exercise.weeklyCoverageTags ?? []).some(
+    (value) => normalizeToken(value) === normalizeToken(tag)
+  );
 
 const scoreCoverageNeed = (
   audit: WeeklyCoverageAudit,
@@ -189,6 +241,7 @@ const scoreRoleWithContext = (
     weeklyQuotaAudit,
     phase,
     trainingContext,
+    stableGymEquipment,
     recentAccessoryRoles,
     fatigueOverlap,
     goal,
@@ -196,11 +249,18 @@ const scoreRoleWithContext = (
   let score = scoreAccessoryRoleNeed(role, weeklyCoverageAudit, weeklyQuotaAudit);
   const goalKey = resolveGoalKey(goal);
   const recentPenalty = recentAccessoryRoles?.includes(role) ? 0.5 : 0;
+  const recentClusterPenalty = recentAccessoryRoles?.some(
+    (recentRole) => resolveAccessoryRoleCluster(recentRole) === resolveAccessoryRoleCluster(role)
+  )
+    ? 0.35
+    : 0;
 
   if (role === "accessoryChestIsolation") {
-    if (phase !== "skill") score -= 6;
-    if (trainingContext !== "gym") score -= 6;
-    if (goalKey === "improve_posture" || goalKey === "reduce_pain") score -= 3;
+    if (phase === "activation") score -= 2.5;
+    if (phase === "growth") score += 0.5;
+    if (trainingContext !== "gym" && !stableGymEquipment) score -= 5;
+    if (!stableGymEquipment && trainingContext === "gym") score -= 2;
+    if (goalKey === "improve_posture" || goalKey === "reduce_pain") score -= 1.5;
   }
 
   if (role === "accessoryCarry") {
@@ -220,7 +280,7 @@ const scoreRoleWithContext = (
     score += 0.5;
   }
 
-  return score - recentPenalty;
+  return score - recentPenalty - recentClusterPenalty;
 };
 
 const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAccessorySlotPlan[] => {
@@ -237,61 +297,106 @@ const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAcc
   if (targetAccessoryCount <= 0) return [];
   const goalKey = resolveGoalKey(goal);
   const hasHorizontalPull = selectedMainExercises.some((exercise) =>
-    exerciseHasPattern(exercise, "horizontalPull")
+    exerciseHasPattern(exercise, "horizontalPull") ||
+    exerciseHasSlotRole(exercise, "pullHorizontal") ||
+    exerciseHasCoverageTag(exercise, "horizontalPull") ||
+    exerciseHasCoverageTag(exercise, "horizontalPullTrue")
   );
   const hasVerticalPull = selectedMainExercises.some((exercise) =>
-    exerciseHasPattern(exercise, "verticalPull")
+    exerciseHasPattern(exercise, "verticalPull") ||
+    exerciseHasSlotRole(exercise, "pullVertical") ||
+    exerciseHasCoverageTag(exercise, "verticalPull") ||
+    exerciseHasCoverageTag(exercise, "verticalPullTrue")
   );
   const chestDeficit = weeklyCoverageAudit.categoryAudits.chest?.deficit ?? 0;
   const fatigueAllowsChestExpansion = !fatigueOverlap?.includes("verticalPush");
+  const supportRoleScores = BACK_CHEST_SUPPORT_ROLES.map((role) => ({
+    role,
+    score: scoreRoleWithContext(params, role),
+  })).sort((left, right) => {
+    if (right.score !== left.score) return right.score - left.score;
+    return left.role.localeCompare(right.role);
+  });
+  const posteriorSupportRoleScores = BACK_CHEST_POSTERIOR_SUPPORT_ROLES.map((role) => ({
+    role,
+    score: scoreRoleWithContext(params, role),
+  })).sort((left, right) => {
+    if (right.score !== left.score) return right.score - left.score;
+    return left.role.localeCompare(right.role);
+  });
+  const bestSupportRole = supportRoleScores[0]?.role ?? "accessoryRearDelt";
+  const bestPosteriorSupportRole =
+    posteriorSupportRoleScores[0]?.role ?? "accessoryRearDelt";
+  const chestExpansionScore = scoreRoleWithContext(params, "accessoryChestIsolation");
   const canUseChestExpansion =
     targetAccessoryCount >= 2 &&
-    phase === "skill" &&
-    trainingContext === "gym" &&
-    stableGymEquipment &&
     chestDeficit > 0 &&
     hasHorizontalPull &&
     hasVerticalPull &&
+    phase !== "activation" &&
     fatigueAllowsChestExpansion &&
-    goalKey !== "improve_posture" &&
-    goalKey !== "reduce_pain";
+    (trainingContext === "gym" ? stableGymEquipment : true);
+  const shouldSpendOnChestExpansion =
+    canUseChestExpansion &&
+    chestExpansionScore >= (supportRoleScores[0]?.score ?? 0) - (phase === "skill" ? 1 : 0.35);
 
+  const chooseSupportRole = (usedRoles: ExerciseAccessoryRole[]) =>
+    supportRoleScores
+      .map((entry) => {
+        let adjustedScore = entry.score;
+        if (usedRoles.includes(entry.role)) adjustedScore -= 4;
+        if (
+          usedRoles.some(
+            (usedRole) =>
+              resolveAccessoryRoleCluster(usedRole) === resolveAccessoryRoleCluster(entry.role)
+          )
+        ) {
+          adjustedScore -= 1.25;
+        }
+        return {
+          role: entry.role,
+          score: adjustedScore,
+        };
+      })
+      .sort((left, right) => {
+        if (right.score !== left.score) return right.score - left.score;
+        return left.role.localeCompare(right.role);
+      })[0]?.role ?? bestSupportRole;
+
+  const resolveSupportSlotKind = (role: ExerciseAccessoryRole) =>
+    role === "accessoryRearDelt" ? "accessoryBackRearDelt" : "accessoryBackSupport";
+
+  const primarySupportRole = shouldSpendOnChestExpansion
+    ? bestPosteriorSupportRole
+    : bestSupportRole;
   const slots: ThreeDayAccessorySlotPlan[] = [
     {
-      role: "accessoryRearDelt",
-      alternatives: ["accessoryShoulderSupport"],
+      role: primarySupportRole,
+      alternatives: BACK_CHEST_SUPPORT_ROLES.filter((role) => role !== primarySupportRole),
       lane: "back",
-      slotKind: "accessoryBackRearDelt",
+      slotKind: resolveSupportSlotKind(primarySupportRole),
       required: true,
       isExpansion: false,
     },
   ];
 
   if (targetAccessoryCount >= 2) {
-    if (canUseChestExpansion) {
+    if (shouldSpendOnChestExpansion) {
       slots.push({
         role: "accessoryChestIsolation",
-        alternatives: ["accessoryShoulderSupport", "accessoryBackWidth"],
+        alternatives: BACK_CHEST_SUPPORT_ROLES,
         lane: "chest",
         slotKind: "accessoryChestExpansion",
         required: false,
         isExpansion: true,
       });
     } else {
-      const supportCandidates: ExerciseAccessoryRole[] = [
-        "accessoryShoulderSupport",
-        "accessoryBackWidth",
-        "accessoryBackThickness",
-      ];
-      const bestSupportRole =
-        supportCandidates
-          .map((role) => ({ role, score: scoreRoleWithContext(params, role) }))
-          .sort((left, right) => right.score - left.score)[0]?.role ?? "accessoryShoulderSupport";
+      const secondarySupportRole = chooseSupportRole([primarySupportRole]);
       slots.push({
-        role: bestSupportRole,
-        alternatives: supportCandidates.filter((role) => role !== bestSupportRole),
+        role: secondarySupportRole,
+        alternatives: BACK_CHEST_SUPPORT_ROLES.filter((role) => role !== secondarySupportRole),
         lane: "back",
-        slotKind: "accessoryBackSupport",
+        slotKind: resolveSupportSlotKind(secondarySupportRole),
         required: true,
         isExpansion: false,
       });

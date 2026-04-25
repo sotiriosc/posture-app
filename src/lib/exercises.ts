@@ -45,6 +45,7 @@ type ExerciseSemanticFlags = {
   isVerticalPush: boolean;
   isLateralDeltLoaded: boolean;
   isRearDeltLoaded: boolean;
+  isUprightRowLoaded: boolean;
   isShoulderStructural: boolean;
   isSquat: boolean;
   isHinge: boolean;
@@ -850,6 +851,54 @@ const rawExercises: Exercise[] = [
     tags: ["legs", "squat"],
   },
   {
+    id: "dumbbell-reverse-lunge",
+    name: "Dumbbell Reverse Lunge",
+    category: "main",
+    pattern: "knee_dominant",
+    familyKey: "reverse_lunge",
+    variantKey: "dumbbell",
+    difficulty: 3,
+    phaseMin: "activation",
+    difficultyTier: "moderate",
+    progressionOf: "split-squat",
+    regressionOf: "dumbbell-bulgarian-split-squat",
+    equipment: ["dumbbells"],
+    movementPattern: ["squat", "kneedominant", "single-leg"],
+    muscleGroups: ["quads", "glutes", "adductors", "core"],
+    painContraindications: ["knees", "hips", "ankles", "low back"],
+    loadType: "weighted",
+    durationOrReps: "6-10 reps per side",
+    cues: ["Step back softly and keep the front foot rooted", "Lower with a tall torso and drive through the front leg"],
+    mistakes: ["Crashing the back knee down", "Leaning too far forward on the front leg"],
+    contraindications: ["Acute knee pain (shorten range)", "Hip pain (reduce stride length)"],
+    videoUrl: "https://example.com/video/dumbbell-reverse-lunge",
+    tags: ["legs", "squat", "dumbbell", "single-leg"],
+  },
+  {
+    id: "dumbbell-bulgarian-split-squat",
+    name: "Dumbbell Bulgarian Split Squat",
+    category: "main",
+    pattern: "knee_dominant",
+    familyKey: "bulgarian_split_squat",
+    variantKey: "dumbbell",
+    difficulty: 4,
+    phaseMin: "skill",
+    difficultyTier: "hard",
+    progressionOf: "dumbbell-reverse-lunge",
+    regressionOf: "dumbbell-step-up-loaded",
+    equipment: ["dumbbells", "bench"],
+    movementPattern: ["squat", "kneedominant", "single-leg"],
+    muscleGroups: ["quads", "glutes", "adductors", "core"],
+    painContraindications: ["knees", "hips", "ankles", "low back"],
+    loadType: "weighted",
+    durationOrReps: "6-10 reps per side",
+    cues: ["Set the rear foot lightly and keep most of the work on the front leg", "Stay tall and descend straight down under control"],
+    mistakes: ["Loading the back leg too much", "Bouncing out of the bottom"],
+    contraindications: ["Acute knee pain (reduce depth)", "Hip pain (adjust stance length)"],
+    videoUrl: "https://example.com/video/dumbbell-bulgarian-split-squat",
+    tags: ["legs", "squat", "dumbbell", "single-leg"],
+  },
+  {
     id: "hip-hinge-drill",
     name: "Hip Hinge Drill",
     category: "activation",
@@ -1285,6 +1334,27 @@ const rawExercises: Exercise[] = [
     contraindications: ["Shoulder pain (light band)"],
     videoUrl: "https://example.com/video/band-chest-press",
     tags: ["push", "band"],
+  },
+  {
+    id: "band-chest-fly",
+    name: "Band Chest Fly",
+    category: "main",
+    pattern: "horizontal_push",
+    familyKey: "chest_fly",
+    variantKey: "band_standing",
+    difficulty: 2,
+    tier: 1,
+    equipment: ["bands"],
+    movementPattern: ["push", "horizontalpush", "fly"],
+    muscleGroups: ["chest", "anterior delts"],
+    painContraindications: ["shoulders", "wrists", "elbows"],
+    loadType: "assisted",
+    durationOrReps: "10-15 reps",
+    cues: ["Keep a soft bend in elbows and sweep hands together with control", "Stay tall with ribs stacked and shoulders down"],
+    mistakes: ["Turning it into a press", "Overreaching shoulders forward at the finish"],
+    contraindications: ["Shoulder pain (shorten arc)", "Elbow pain (use a lighter band)"],
+    videoUrl: "https://example.com/video/band-chest-fly",
+    tags: ["push", "band", "chest", "fly"],
   },
   {
     id: "split-stance-band-chest-press",
@@ -3960,6 +4030,30 @@ const rawExercises: Exercise[] = [
     tags: ["push", "shoulders", "cable", "lateral-delt"],
   },
   {
+    id: "cable-upright-row",
+    name: "Cable Upright Row",
+    category: "main",
+    pattern: "lateral_raise",
+    familyKey: "upright_row",
+    variantKey: "cable_standard",
+    difficulty: 3,
+    tier: 2,
+    phaseMin: "skill",
+    difficultyTier: "moderate",
+    regressionOf: "cable-lateral-raise",
+    equipment: ["cables"],
+    movementPattern: ["push", "uprightrow"],
+    muscleGroups: ["shoulders", "upper traps", "upper back"],
+    painContraindications: ["shoulders", "neck", "wrists", "elbows"],
+    loadType: "weighted",
+    durationOrReps: "8-12 reps",
+    cues: ["Lead with elbows while keeping shoulders down and neck relaxed", "Stop at the height you can control without shrugging"],
+    mistakes: ["Yanking with upper traps", "Pulling too high and crowding the shoulder joint"],
+    contraindications: ["Acute shoulder pain (avoid)", "Neck pain (use a different delt variation)"],
+    videoUrl: "https://example.com/video/cable-upright-row",
+    tags: ["push", "shoulders", "cable", "upright-row"],
+  },
+  {
     id: "prone-t-raise",
     name: "Prone T Raise",
     category: "main",
@@ -4957,6 +5051,9 @@ const buildExerciseSemanticFlags = (params: {
   const isLateralDeltLoaded =
     !isShoulderStructural &&
     (textHasAny("lateral raise", "lateral-raise") || tagTokens.has("lateraldelt"));
+  const isUprightRowLoaded =
+    !isShoulderStructural &&
+    textHasAny("upright row", "upright-row");
   const isRearDeltLoaded =
     !isShoulderStructural &&
     (isRearDeltDescriptor ||
@@ -5014,6 +5111,7 @@ const buildExerciseSemanticFlags = (params: {
     isVerticalPush,
     isLateralDeltLoaded,
     isRearDeltLoaded,
+    isUprightRowLoaded,
     isShoulderStructural,
     isSquat,
     isHinge,
@@ -5047,7 +5145,17 @@ const inferSlotRolesForExercise = (params: {
   });
 
   if (semantics.isChestIsolation) roles.add("mainChestIsolation");
-  if (semantics.isHorizontalPush && !semantics.isChestIsolation) roles.add("pushCompound");
+  if (
+    semantics.isHorizontalPush &&
+    !semantics.isChestIsolation &&
+    !semantics.isVerticalPush &&
+    !semantics.isLateralDeltLoaded &&
+    !semantics.isRearDeltLoaded &&
+    !semantics.isUprightRowLoaded &&
+    !semantics.isShoulderStructural
+  ) {
+    roles.add("pushCompound");
+  }
   if (semantics.isPushSecondary) roles.add("mainPushSecondary");
   if (semantics.isHorizontalPullTrue && !supportOnly) roles.add("pullHorizontal");
   if (semantics.isVerticalPullTrue && !semantics.isLatAccent && !supportOnly) {
@@ -5063,6 +5171,9 @@ const inferSlotRolesForExercise = (params: {
   if (semantics.isVerticalPush && !supportOnly) roles.add("verticalPush");
   if (semantics.isLateralDeltLoaded && !supportOnly) {
     roles.add("mainLateralDeltLoaded");
+    roles.add("secondaryLoadedShoulder");
+  }
+  if (semantics.isUprightRowLoaded && !supportOnly) {
     roles.add("secondaryLoadedShoulder");
   }
   if (semantics.isRearDeltLoaded && !supportOnly) {

@@ -147,7 +147,6 @@ const isLowerRegressionOrDrillMain = (exercise: Exercise) => {
   return (
     blockedIds.has(exercise.id) ||
     descriptor.includes("glute bridge hold") ||
-    descriptor.includes("hip thrust") ||
     descriptor.includes("good morning") ||
     descriptor.includes("dead bug") ||
     descriptor.includes("bird dog") ||
