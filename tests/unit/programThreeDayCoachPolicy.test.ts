@@ -85,6 +85,19 @@ describe("three-day coach policy", () => {
     expect(resolveBackChestAccessoryCoachFamily(rearDeltFly)).toBe("rear_delt_support");
     expect(isBackChestTruthfulChestIsolation(bandChestFly)).toBe(true);
     expect(resolveBackChestAccessoryCoachFamily(bandChestFly)).toBe("chest_isolation");
+    expect(bandChestFly.slotRoles ?? []).toContain("mainChestIsolation");
+    expect(bandChestFly.accessoryRoles ?? []).toContain("accessoryChestIsolation");
+  });
+
+  test("constrained surrogate metadata contributes to truthful pull and hinge coverage", () => {
+    const supineLat = requireExercise("supine-lat-pulldown-isometric");
+    const seatedLat = requireExercise("seated-lat-sweep-pulse");
+    const gluteBridgeHold = requireExercise("single-leg-glute-bridge-hold");
+
+    expect(supineLat.weeklyCoverageTags ?? []).toContain("verticalPullSurrogate");
+    expect(seatedLat.weeklyCoverageTags ?? []).toContain("verticalPullSurrogate");
+    expect(gluteBridgeHold.weeklyCoverageTags ?? []).toContain("hinge");
+    expect(gluteBridgeHold.weeklyCoverageTags ?? []).toContain("posteriorChain");
   });
 
   test("balances Back + Chest accessories once pull coverage is already satisfied", () => {
