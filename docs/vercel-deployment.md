@@ -17,10 +17,34 @@ This app already supports Vercel environment separation. Use Vercel's built-in e
 
 Set these in Vercel Project Settings -> Environment Variables.
 
+### Development (local)
+
+Use this mode for normal `npm run dev` work without touching Neon:
+
+- `USER_STORE_DRIVER=memory`
+- `TRAINING_STORE_DRIVER=disabled`
+- leave `DATABASE_URL` unset or empty
+- `AUTH_SECRET=<local-only secret>`
+- `APP_URL=http://localhost:3000`
+- `AUTH_USER_EMAIL=<local bootstrap user email>`
+- `AUTH_USER_PASSWORD=<local bootstrap user password>`
+- `AUTH_USER_PLAN=free`
+- Stripe can remain unset unless you are testing billing locally.
+
+If you need to test database-backed auth or sync locally, use a local or
+disposable development Postgres database:
+
+- `USER_STORE_DRIVER=db`
+- `TRAINING_STORE_DRIVER=db`
+- `DATABASE_URL=postgresql://localhost:5432/posture_app_dev`
+
+Do not use the production Neon URL in local `.env.local`.
+
 ### Preview (staging)
 
 - `USER_STORE_DRIVER=db`
-- `DATABASE_URL=<staging postgres url>`
+- `TRAINING_STORE_DRIVER=db`
+- `DATABASE_URL=<staging or Neon preview branch postgres url>`
 - `AUTH_SECRET=<staging secret>`
 - `APP_URL=https://staging.yourdomain.com`
 - `ADMIN_ACCESS_KEY=<staging admin key>`
@@ -34,6 +58,7 @@ Set these in Vercel Project Settings -> Environment Variables.
 ### Production
 
 - `USER_STORE_DRIVER=db`
+- `TRAINING_STORE_DRIVER=db`
 - `DATABASE_URL=<production postgres url>`
 - `AUTH_SECRET=<production secret>`
 - `APP_URL=https://yourdomain.com`

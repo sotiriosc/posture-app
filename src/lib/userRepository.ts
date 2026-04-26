@@ -23,8 +23,21 @@ import {
   dbUpdateUserPlan,
   dbVerifyUserPassword,
 } from "@/lib/userStoreDb";
+import {
+  memoryCreateUser,
+  memoryEnsureBootstrapUser,
+  memoryFindUserByEmail,
+  memoryFindUserById,
+  memoryFindUserByStripeCustomerId,
+  memoryListUsers,
+  memoryMarkStripeWebhookEvent,
+  memoryUpdateUserBilling,
+  memoryUpdateUserPlan,
+  memoryVerifyUserPassword,
+} from "@/lib/userStoreMemory";
+import { hasDatabaseUrl, shouldUseLocalDbFallback, warnOnce } from "@/lib/runtimeEnv";
 
-export type UserStoreDriver = "file" | "db";
+export type UserStoreDriver = "file" | "memory" | "db";
 
 export type UserRepository = {
   driver: UserStoreDriver;
@@ -81,6 +94,20 @@ const fileRepository: UserRepository = {
   ensureBootstrapUser,
 };
 
+const memoryRepository: UserRepository = {
+  driver: "memory",
+  listUsers: memoryListUsers,
+  findUserByEmail: memoryFindUserByEmail,
+  findUserById: memoryFindUserById,
+  findUserByStripeCustomerId: memoryFindUserByStripeCustomerId,
+  createUser: memoryCreateUser,
+  updateUserPlan: memoryUpdateUserPlan,
+  updateUserBilling: memoryUpdateUserBilling,
+  markStripeWebhookEvent: memoryMarkStripeWebhookEvent,
+  verifyUserPassword: memoryVerifyUserPassword,
+  ensureBootstrapUser: memoryEnsureBootstrapUser,
+};
+
 const dbRepository: UserRepository = {
   driver: "db",
   listUsers: dbListUsers,
@@ -95,9 +122,30 @@ const dbRepository: UserRepository = {
   ensureBootstrapUser: dbEnsureBootstrapUser,
 };
 
+export const getConfiguredUserStoreDriver = (): UserStoreDriver => {
+  const raw = process.env.USER_STORE_DRIVER?.trim().toLowerCase();
+  if (raw === "file" || raw === "memory" || raw === "db") return raw;
+  if (raw) {
+    warnOnce(
+      "user-store-invalid-driver",
+      `[auth] Unknown USER_STORE_DRIVER="${raw}"; using file user store.`
+    );
+  }
+  return "file";
+};
+
 export const getUserRepository = (): UserRepository => {
-  const driver = (process.env.USER_STORE_DRIVER?.trim().toLowerCase() ??
-    "file") as UserStoreDriver;
-  if (driver === "db") return dbRepository;
+  const driver = getConfiguredUserStoreDriver();
+  if (driver === "memory") return memoryRepository;
+  if (driver === "db") {
+    if (!hasDatabaseUrl() && shouldUseLocalDbFallback()) {
+      warnOnce(
+        "user-store-local-db-fallback",
+        "[auth] USER_STORE_DRIVER=db but DATABASE_URL is empty in local dev; using memory user store."
+      );
+      return memoryRepository;
+    }
+    return dbRepository;
+  }
   return fileRepository;
 };

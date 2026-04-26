@@ -66,6 +66,27 @@ npm run dev
 ```
 Open `http://localhost:3000`.
 
+Recommended DB-free local `.env.local`:
+```
+USER_STORE_DRIVER=memory
+TRAINING_STORE_DRIVER=disabled
+DATABASE_URL=
+APP_URL=http://localhost:3000
+```
+This mode keeps auth users in process memory and leaves training sync in browser
+storage, so `npm run dev` does not consume Neon/Postgres quota. Use it for
+ordinary UI and program-generator work.
+
+Optional local Postgres mode:
+```
+USER_STORE_DRIVER=db
+TRAINING_STORE_DRIVER=db
+DATABASE_URL=postgresql://localhost:5432/posture_app_dev
+APP_URL=http://localhost:3000
+```
+Use a local or disposable development database here. Do not point local
+development at the production Neon database.
+
 Admin gate:
 ```
 ADMIN_ACCESS_KEY=your-secret-key
@@ -88,8 +109,12 @@ APP_URL=http://localhost:3000
 - Entitlement rule: `free` can execute only Day 1 workouts; `pro` unlocks all days.
 - Users are stored server-side in `data/users.json` with salted+hashed passwords.
 - `AUTH_USER_*` values act as bootstrap credentials: first run seeds the initial user in storage.
-- `USER_STORE_DRIVER` controls storage backend (`file` default, `db` reserved for upcoming database adapter).
+- `USER_STORE_DRIVER` controls auth user storage (`file` default, `memory` for DB-free local dev, `db` for Postgres).
+- `TRAINING_STORE_DRIVER` controls server-side training sync (`disabled` for DB-free local dev, `db` for Postgres).
 - With `USER_STORE_DRIVER=db`, users are stored in Postgres table `app_users` (auto-created on first use).
+- With `TRAINING_STORE_DRIVER=db`, training state is stored in Postgres tables
+  `app_user_state`, `app_user_programs`, `app_user_program_progress`,
+  `app_user_sessions`, and `app_user_exercise_logs` (auto-created on first use).
 - Stripe endpoints:
   - `POST /api/billing/checkout-session`
   - `POST /api/billing/portal-session`
