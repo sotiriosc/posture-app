@@ -105,6 +105,12 @@ import {
   shouldAllowBackChestChestIsolationAccessory,
 } from "@/lib/program/threeDayCoachPolicy";
 import {
+  isHigherFrequencyScapularPostureSupportExercise,
+  resolveHigherFrequencyAccessoryLanePlan,
+  resolveHigherFrequencyMainSlotKind,
+  scoreHigherFrequencyCoachCandidate,
+} from "@/lib/program/higherFrequencyCoachPolicy";
+import {
   rankSelectionCandidatesDeterministically,
   scoreSelectionCandidateDelta,
 } from "@/lib/program/selectionScore";
@@ -5775,12 +5781,33 @@ const applyWeeklyCoverageRepairs = (params: {
       return normalized.includes("upper pull") || normalized.includes("arms");
     })
     .map((entry) => entry.index);
-  const corePriorityIndexes = pickCoverageDayIndexes({
+  const upperPushOrArmsDayIndexes = nextWeek
+    .map((day, index) => ({ day, index }))
+    .filter(({ day }) => {
+      const normalized = day.title.toLowerCase();
+      return normalized.includes("upper push") || normalized.includes("arms");
+    })
+    .map((entry) => entry.index);
+  const lowerSquatDayIndexes = nextWeek
+    .map((day, index) => ({ day, index }))
+    .filter(({ day }) => {
+      const normalized = day.title.toLowerCase();
+      return normalized.includes("lower") && normalized.includes("squat");
+    })
+    .map((entry) => entry.index);
+  const corePriorityIndexesRaw = pickCoverageDayIndexes({
     week: nextWeek,
     matchRule: antiRotationRule,
     preferLower: false,
     preferArms: false,
   });
+  const lowerCorePriorityIndexes = corePriorityIndexesRaw.filter((index) =>
+    isLowerDayForCoverage(nextWeek[index]!)
+  );
+  const corePriorityIndexes =
+    daysPerWeek >= 4 && lowerCorePriorityIndexes.length > 0
+      ? lowerCorePriorityIndexes
+      : corePriorityIndexesRaw;
   const armDayIndexes = nextWeek
     .map((day, index) => ({ day, index }))
     .filter(({ day }) => {
@@ -5839,6 +5866,44 @@ const applyWeeklyCoverageRepairs = (params: {
         ? 2
         : 1
       : 0;
+  const bicepsCoverageIndexes =
+    upperPullOrArmsDayIndexes.length > 0
+      ? upperPullOrArmsDayIndexes
+      : armCoverageIndexes;
+  const tricepsCoverageIndexes =
+    upperPushOrArmsDayIndexes.length > 0
+      ? upperPushOrArmsDayIndexes
+      : armCoverageIndexes;
+  const calvesCoverageIndexes =
+    lowerSquatDayIndexes.length > 0 ? lowerSquatDayIndexes : lowerCoverageIndexes;
+  const bicepsMinDays = Math.min(
+    contract.bicepsDays,
+    Math.max(1, new Set(bicepsCoverageIndexes).size)
+  );
+  const tricepsMinDays = Math.min(
+    contract.tricepsDays,
+    Math.max(1, new Set(tricepsCoverageIndexes).size)
+  );
+  const calvesMinDays = Math.min(
+    contract.calvesDays,
+    Math.max(1, new Set(calvesCoverageIndexes).size)
+  );
+  const pushCoverageIndexes =
+    upperPushOrArmsDayIndexes.length > 0
+      ? upperPushOrArmsDayIndexes
+      : upperDayIndexes;
+  const pushMinDays = Math.min(
+    contract.pushDays,
+    Math.max(1, new Set(pushCoverageIndexes).size)
+  );
+  const pullCoverageIndexes =
+    upperPullOrArmsDayIndexes.length > 0
+      ? upperPullOrArmsDayIndexes
+      : upperDayIndexes;
+  const pullMinDays = Math.min(
+    contract.pullDays,
+    Math.max(1, new Set(pullCoverageIndexes).size)
+  );
 
   const carryRepair = enforceCoverageRuleByAccessory({
     week: nextWeek,
@@ -5923,14 +5988,14 @@ const applyWeeklyCoverageRepairs = (params: {
     week: nextWeek,
     rule: calvesRule,
     metric: "calvesDays",
-    minDays: contract.calvesDays,
+    minDays: calvesMinDays,
     preferredIds: [
       "standing-calf-raise",
       "single-leg-calf-raise",
       "band-calf-raise",
       "db-calf-raise",
     ],
-    dayIndexes: lowerCoverageIndexes,
+    dayIndexes: calvesCoverageIndexes,
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
@@ -5944,10 +6009,10 @@ const applyWeeklyCoverageRepairs = (params: {
     week: nextWeek,
     rule: bicepsIsolationRule,
     metric: "bicepsDays",
-    minDays: contract.bicepsDays,
+    minDays: bicepsMinDays,
     preferredIds: ["db-biceps-curl", "band-biceps-curl", "towel-biceps-curl-hold"],
     dayIndexes: Array.from(
-      new Set([...upperPullOrArmsDayIndexes, ...armCoverageIndexes])
+      new Set([...bicepsCoverageIndexes])
     ),
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
@@ -5963,13 +6028,13 @@ const applyWeeklyCoverageRepairs = (params: {
     week: nextWeek,
     rule: tricepsIsolationRule,
     metric: "tricepsDays",
-    minDays: contract.tricepsDays,
+    minDays: tricepsMinDays,
     preferredIds: [
       "db-triceps-extension",
       "band-triceps-pressdown",
       "bodyweight-triceps-extension",
     ],
-    dayIndexes: armCoverageIndexes,
+    dayIndexes: tricepsCoverageIndexes,
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     preserveRules: [bicepsIsolationRule, calvesRule],
@@ -5984,9 +6049,9 @@ const applyWeeklyCoverageRepairs = (params: {
     week: nextWeek,
     rule: pullBackRule,
     metric: "pullDays",
-    minDays: contract.pullDays,
+    minDays: pullMinDays,
     preferredIds: ["split-stance-row", "band-row", "dumbbell-rows", "lat-pulldown"],
-    dayIndexes: upperDayIndexes,
+    dayIndexes: pullCoverageIndexes,
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
@@ -6000,14 +6065,14 @@ const applyWeeklyCoverageRepairs = (params: {
     week: nextWeek,
     rule: pushChestRule,
     metric: "pushDays",
-    minDays: contract.pushDays,
+    minDays: pushMinDays,
     preferredIds: [
       "bodyweight-triceps-extension",
       "band-chest-press",
       "pushup",
       "dumbbell-floor-press",
     ],
-    dayIndexes: upperDayIndexes,
+    dayIndexes: pushCoverageIndexes,
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
     context,
@@ -6067,19 +6132,19 @@ const applyWeeklyCoverageRepairs = (params: {
 
   const summaryAfterPrimaryRepairs = summarizeWeekCoverage(nextWeek);
 
-  if (summaryAfterPrimaryRepairs.calvesDays < contract.calvesDays) {
+  if (summaryAfterPrimaryRepairs.calvesDays < calvesMinDays) {
     const calvesFallbackRepair = enforceCoverageRuleByAccessory({
       week: nextWeek,
       rule: calvesRule,
       metric: "calvesDays",
-      minDays: contract.calvesDays,
+      minDays: calvesMinDays,
       preferredIds: [
         "standing-calf-raise",
         "single-leg-calf-raise",
         "band-calf-raise",
         "db-calf-raise",
       ],
-      dayIndexes: lowerCoverageIndexes,
+      dayIndexes: calvesCoverageIndexes,
       daysPerWeek,
       accessoryCapacityByDayIndex: baselineAccessoryCapacity,
       preserveRules: [bicepsIsolationRule, tricepsIsolationRule],
@@ -6092,15 +6157,15 @@ const applyWeeklyCoverageRepairs = (params: {
   }
 
   const summaryAfterCalvesFallback = summarizeWeekCoverage(nextWeek);
-  if (summaryAfterCalvesFallback.bicepsDays < contract.bicepsDays) {
+  if (summaryAfterCalvesFallback.bicepsDays < bicepsMinDays) {
     const bicepsFallbackRepair = enforceCoverageRuleByAccessory({
       week: nextWeek,
       rule: bicepsIsolationRule,
       metric: "bicepsDays",
-      minDays: contract.bicepsDays,
+      minDays: bicepsMinDays,
       preferredIds: ["db-biceps-curl", "band-biceps-curl", "towel-biceps-curl-hold"],
       dayIndexes: Array.from(
-        new Set([...upperPullOrArmsDayIndexes, ...armCoverageIndexes])
+        new Set([...bicepsCoverageIndexes])
       ),
       daysPerWeek,
       accessoryCapacityByDayIndex: baselineAccessoryCapacity,
@@ -6134,14 +6199,14 @@ const applyWeeklyCoverageRepairs = (params: {
   }
 
   const summaryAfterCarryFallback = summarizeWeekCoverage(nextWeek);
-  if (summaryAfterCarryFallback.pullDays < contract.pullDays) {
+  if (summaryAfterCarryFallback.pullDays < pullMinDays) {
     const pullFallbackRepair = enforceCoverageRuleByAccessory({
       week: nextWeek,
       rule: pullBackRule,
       metric: "pullDays",
-      minDays: contract.pullDays,
+      minDays: pullMinDays,
       preferredIds: ["split-stance-row", "band-row", "dumbbell-rows", "lat-pulldown"],
-      dayIndexes: [...upperDayIndexes, ...corePriorityIndexes, ...lowerCoverageIndexes],
+      dayIndexes: [...pullCoverageIndexes, ...corePriorityIndexes, ...lowerCoverageIndexes],
       daysPerWeek,
       accessoryCapacityByDayIndex: baselineAccessoryCapacity,
       preserveRules: [bicepsIsolationRule, tricepsIsolationRule, calvesRule, carryRule],
@@ -19006,9 +19071,23 @@ const resolveFinalMainSlotMeta = (params: {
     capabilityMode,
   });
   const slotLane = (plannedSlot?.lane as MainLane | undefined) ?? plannedLanes[mainOrdinal];
+  const higherFrequencySlotKind =
+    !plannedSlot?.slotKind && daysPerWeek >= 4 && slotLane
+      ? resolveHigherFrequencyMainSlotKind({
+          dayTitle: day.title,
+          slotLane,
+          sameLaneOrdinal:
+            plannedLanes
+              .slice(0, mainOrdinal + 1)
+              .filter((entry) => entry === slotLane).length - 1,
+        })
+      : undefined;
   return {
     slotId: `${normalizeSlotToken(day.title)}-main-${mainOrdinal + 1}`,
-    slotKind: plannedSlot?.slotKind ?? (slotLane ? slotKindByMainLane[slotLane] : "mainRepair"),
+    slotKind:
+      plannedSlot?.slotKind ??
+      higherFrequencySlotKind ??
+      (slotLane ? slotKindByMainLane[slotLane] : "mainRepair"),
     slotLane,
   };
 };
@@ -19352,6 +19431,25 @@ const finalMainCandidateMatchesSlot = (params: {
     isHigherFrequencyPullSurrogateSlotKind(slotKind)
   ) {
     return isHigherFrequencyPullSurrogateExercise(exercise);
+  }
+  if (isHigherFrequencyUpperDayTitle(dayTitle) && slotLane === "pull") {
+    if (slotKind === "mainHorizontalPull") {
+      return hasTrueHorizontalPullAnchor(exercise) || isHigherFrequencyPullSurrogateExercise(exercise);
+    }
+    if (slotKind === "mainVerticalPull") {
+      return (
+        hasTrueVerticalPullAnchor(exercise) ||
+        isVerticalPullSurrogateExercise(exercise) ||
+        isHigherFrequencyPullSurrogateExercise(exercise)
+      );
+    }
+    if (slotKind === "mainExtraBackLoaded") {
+      return (
+        hasTrueHorizontalPullAnchor(exercise) ||
+        hasTrueVerticalPullAnchor(exercise) ||
+        isHigherFrequencyPullSurrogateExercise(exercise)
+      );
+    }
   }
   return slotLane ? matchesMainLanePattern(exercise, slotLane) : true;
 };
@@ -21939,6 +22037,12 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
     token.includes("rear-delt") ||
     token.includes("reverse pec deck") ||
     token.includes("reverse-pec-deck");
+  const backDescriptor =
+    token.includes("upper-back") ||
+    token.includes("upper back") ||
+    token.includes("back-widow") ||
+    token.includes("back widow") ||
+    /\bback\b/.test(token);
 
   if (lane === "chest") {
     if (rearDeltDescriptor) return false;
@@ -21969,7 +22073,7 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
       token.includes("row") ||
       token.includes("pull") ||
       token.includes("lat") ||
-      token.includes("back")
+      backDescriptor
     );
   }
 
@@ -23027,6 +23131,14 @@ const resolvePlannedAccessoryLanesFromTemplate = (params: {
     return planned.slice(0, accessoryCount);
   }
 
+  const higherFrequencyPlan = resolveHigherFrequencyAccessoryLanePlan({
+    dayTitle,
+    accessoryCount,
+  });
+  if (higherFrequencyPlan.length) {
+    return higherFrequencyPlan as AccessoryLane[];
+  }
+
   if (normalizeSlotToken(dayTitle) === "back_chest") {
     const planned: AccessoryLane[] = ["back"];
     if (accessoryCount >= 2) planned.push("back");
@@ -23433,6 +23545,8 @@ const THREE_DAY_GYM_MAIN_SLOT_ROLE_BY_KIND: Record<string, ExerciseSlotRole> = {
   mainPullHorizontal: "pullHorizontal",
   mainPullVertical: "pullVertical",
   mainPullSupport: "extraBackLoaded",
+  mainHorizontalPull: "pullHorizontal",
+  mainVerticalPull: "pullVertical",
   mainExtraBackLoaded: "extraBackLoaded",
   mainVerticalPushPrimary: "verticalPush",
   mainLateralDeltPrimary: "mainLateralDeltLoaded",
@@ -24281,6 +24395,32 @@ const isAccessoryLegalForSlot = (params: {
       return false;
     }
     if (slotLane === "core") return matchesAccessoryLanePattern(exercise, "core");
+    if (slotLane === "back") {
+      if (normalizeSlotToken(dayTitle ?? "").includes("upper_push")) {
+        const supportDescriptor = getExerciseDescriptor(exercise);
+        const loadedGenericRow =
+          exercise.loadType === "weighted" &&
+          /\brows?\b/.test(supportDescriptor) &&
+          !supportDescriptor.includes("rear delt") &&
+          !supportDescriptor.includes("rear-delt") &&
+          !supportDescriptor.includes("face pull") &&
+          !supportDescriptor.includes("face-pull") &&
+          !supportDescriptor.includes("external rotation") &&
+          !supportDescriptor.includes("external-rotation") &&
+          !supportDescriptor.includes("chest-supported") &&
+          !supportDescriptor.includes("chest supported");
+        return (
+          isHigherFrequencyScapularPostureSupportExercise(exercise) && !loadedGenericRow
+        );
+      }
+      return matchesAccessoryLanePattern(exercise, "back") && !hasTriceps && !hasBiceps;
+    }
+    if (slotLane === "pull") {
+      return matchesAccessoryLanePattern(exercise, "pull") && !hasTriceps;
+    }
+    if (slotLane === "push") {
+      return matchesAccessoryLanePattern(exercise, "push") && !hasBiceps;
+    }
   }
 
   if (isHigherFrequencyLowerDayTitle(dayTitle)) {
@@ -24290,6 +24430,27 @@ const isAccessoryLegalForSlot = (params: {
       matchesMainLanePattern(exercise, "verticalPush")
     ) {
       return false;
+    }
+    if (slotLane === "core") return matchesAccessoryLanePattern(exercise, "core");
+    if (slotLane === "lower") {
+      const descriptor = getExerciseDescriptor(exercise);
+      const truthfulLowerDescriptor =
+        descriptor.includes("calf") ||
+        descriptor.includes("hamstring") ||
+        descriptor.includes("glute") ||
+        descriptor.includes("hip thrust") ||
+        descriptor.includes("hip-thrust") ||
+        descriptor.includes("bridge") ||
+        descriptor.includes("rdl") ||
+        descriptor.includes("squat") ||
+        descriptor.includes("lunge") ||
+        descriptor.includes("step-up") ||
+        descriptor.includes("step up") ||
+        descriptor.includes("cossack");
+      if (matchesAccessoryLanePattern(exercise, "core") && !truthfulLowerDescriptor) {
+        return false;
+      }
+      return matchesAccessoryLanePattern(exercise, "lower");
     }
   }
 
@@ -24983,12 +25144,13 @@ const isStrictPullSlotAnchorLegal = (params: {
   slotLane?: MainLane;
 }) => {
   const { exercise, available, context, dayTitle, slotKind, slotLane } = params;
-  const wantsVertical = slotKind === "mainPullVertical";
-  const wantsHorizontal = slotKind === "mainPullHorizontal";
+  const wantsVertical = slotKind === "mainPullVertical" || slotKind === "mainVerticalPull";
+  const wantsHorizontal =
+    slotKind === "mainPullHorizontal" || slotKind === "mainHorizontalPull";
 
   if (wantsVertical && !hasTrueVerticalPullAnchor(exercise)) {
     const allowVerticalSurrogate =
-      isBackChestDayTitle(dayTitle) &&
+      (isBackChestDayTitle(dayTitle) || isHigherFrequencyUpperDayTitle(dayTitle)) &&
       isVerticalPullSurrogateExercise(exercise) &&
       !hasEligibleStrongPullAnchor({
         kind: "verticalPull",
@@ -25014,7 +25176,7 @@ const isStrictPullSlotAnchorLegal = (params: {
   ) {
     const allowVerticalSurrogate =
       wantsVertical &&
-      isBackChestDayTitle(dayTitle) &&
+      (isBackChestDayTitle(dayTitle) || isHigherFrequencyUpperDayTitle(dayTitle)) &&
       isVerticalPullSurrogateExercise(exercise);
     if (!allowVerticalSurrogate) return false;
   }
@@ -25244,7 +25406,10 @@ const getCapabilitySlotBonus = (params: {
     (slotKind === "mainPull" ||
       slotKind === "mainPullHorizontal" ||
       slotKind === "mainPullVertical" ||
+      slotKind === "mainHorizontalPull" ||
+      slotKind === "mainVerticalPull" ||
       slotKind === "mainPullSupport" ||
+      slotKind === "mainExtraBackLoaded" ||
       slotKind === "mainHinge") &&
     isBandEquippedExercise(exercise)
   ) {
@@ -27544,6 +27709,11 @@ const scoreExerciseForContextDetailed = (
     const selectedAccessoryExercises = (auditMeta.selectedAccessoryExerciseIds ?? [])
       .map((id) => exerciseById(id))
       .filter((entry): entry is Exercise => Boolean(entry));
+    const sameWeekRelatedMainExercises = (
+      auditMeta.sameWeekRelatedMainExerciseIds ?? []
+    )
+      .map((id) => exerciseById(id))
+      .filter((entry): entry is Exercise => Boolean(entry));
     const recentlyUsedExercises = Array.from(recentExerciseIds)
       .map((id) => exerciseById(id))
       .filter((entry): entry is Exercise => Boolean(entry));
@@ -27575,6 +27745,20 @@ const scoreExerciseForContextDetailed = (
     });
     score += coachScore.score;
     reasons.push(...coachScore.reasons);
+
+    const higherFrequencyCoachScore = scoreHigherFrequencyCoachCandidate({
+      exercise,
+      section,
+      dayTitle: auditMeta.dayTitle,
+      slotKind: auditMeta.slotKind,
+      slotLane: auditMeta.slotLane,
+      availableEquipment: available,
+      selectedMainExercises,
+      selectedAccessoryExercises,
+      sameWeekRelatedMainExercises,
+    });
+    score += higherFrequencyCoachScore.score;
+    reasons.push(...higherFrequencyCoachScore.reasons);
   }
 
   return { score, reasons };
@@ -29154,6 +29338,13 @@ const getAccessoryCandidateIds = (params: {
     : [
         "machine-rear-delt-row",
         "cable-face-pull",
+        "cable-rear-delt-fly",
+        "dumbbell-rear-delt-fly",
+        "dumbbell-side-lying-external-rotation",
+        "band-rear-delt-fly",
+        "band-pull-apart",
+        "band-pull-aparts",
+        "band-external-rotation",
         "machine-seated-row",
         "cable-seated-row",
         "machine-lat-pulldown",
@@ -29168,9 +29359,10 @@ const getAccessoryCandidateIds = (params: {
       ];
   const backFallback = [
     "reverse-snow-angel",
+    "prone-swimmer",
+    "prone-y-raise",
     "supine-elbow-drive-row",
     "prone-elbow-row",
-    "prone-swimmer",
     "back-widow",
   ];
 
@@ -29223,11 +29415,18 @@ const getAccessoryCandidateIds = (params: {
   }
   if (lane === "lower") {
     return [
+      "machine-seated-hamstring-curl",
+      "machine-glute-drive",
+      "barbell-hip-thrust",
+      "db-rdl",
+      "dumbbell-sumo-rdl",
+      "band-rdl",
+      "single-leg-rdl",
+      "single-leg-hip-thrust",
+      "glute-bridges",
       "single-leg-calf-raise",
       "standing-calf-raise",
-      "band-rdl",
       "hip-hinge-drill",
-      "glute-bridges",
       "band-front-squat",
       "bodyweight-squat",
       "cossack-squat",
@@ -29360,6 +29559,7 @@ type SelectionAuditMeta = {
   capabilityMode: EquipmentCapabilityMode;
   dayBudget?: DayPatternBudget | null;
   priorDayHeavyPatterns?: PrimaryMotorPattern[];
+  sameWeekRelatedMainExerciseIds?: string[];
   fatigueOverlap?: string[];
   weeklyQuotaAudit?: WeeklyQuotaAudit;
   selectionAuditHook?: ProgramSelectionAuditHook;
@@ -29813,6 +30013,7 @@ const buildStructuredDay = (params: {
   cooldownFocus: "upper" | "lower" | "core";
   capabilityMode: EquipmentCapabilityMode;
   priorDayHeavyPatterns?: PrimaryMotorPattern[];
+  sameWeekRelatedMainExerciseIds?: string[];
   selectionAuditHook?: ProgramSelectionAuditHook;
   selectionRng?: RandomFn;
 }) => {
@@ -29829,6 +30030,7 @@ const buildStructuredDay = (params: {
     cooldownFocus,
     capabilityMode,
     priorDayHeavyPatterns,
+    sameWeekRelatedMainExerciseIds,
     selectionAuditHook,
     selectionRng,
   } = params;
@@ -30100,7 +30302,17 @@ const buildStructuredDay = (params: {
     slotId: `${normalizedTitle}-main-${index + 1}`,
     lane,
     isExtraMain: false,
-    slotKind: threeDayTemplateLanePlan?.[index]?.slotKind,
+    slotKind:
+      threeDayTemplateLanePlan?.[index]?.slotKind ??
+      (daysPerWeek >= 4
+        ? resolveHigherFrequencyMainSlotKind({
+            dayTitle: title,
+            slotLane: lane,
+            sameLaneOrdinal: plannedLanes
+              .slice(0, index + 1)
+              .filter((entry) => entry === lane).length - 1,
+          })
+        : undefined),
   }));
   const backChestPullSlotKindById = new Map<
     string,
@@ -30170,6 +30382,25 @@ const buildStructuredDay = (params: {
         );
       }
     }
+    if (isHigherFrequencyUpperDayTitle(title) && slot.lane === "pull") {
+      if (slotKind === "mainHorizontalPull") {
+        return hasTrueHorizontalPullAnchor(candidate) || isHigherFrequencyPullSurrogateExercise(candidate);
+      }
+      if (slotKind === "mainVerticalPull") {
+        return (
+          hasTrueVerticalPullAnchor(candidate) ||
+          isVerticalPullSurrogateExercise(candidate) ||
+          isHigherFrequencyPullSurrogateExercise(candidate)
+        );
+      }
+      if (slotKind === "mainExtraBackLoaded") {
+        return (
+          hasTrueHorizontalPullAnchor(candidate) ||
+          hasTrueVerticalPullAnchor(candidate) ||
+          isHigherFrequencyPullSurrogateExercise(candidate)
+        );
+      }
+    }
     return matchesMainLanePattern(candidate, slot.lane);
   };
   const expectedLaneCounts = plannedLanes.reduce((map, lane) => {
@@ -30196,6 +30427,7 @@ const buildStructuredDay = (params: {
       expectedLaneCounts,
       dayBudget,
       priorDayHeavyPatterns,
+      sameWeekRelatedMainExerciseIds,
       selectionAuditHook,
       selectionRng,
     };
@@ -30233,7 +30465,7 @@ const buildStructuredDay = (params: {
             auditMeta
           )
         : lane === "pull"
-        ? slotKind === "mainPullVertical"
+        ? slotKind === "mainPullVertical" || slotKind === "mainVerticalPull"
           ? chooseBackChestVerticalPullId(
               phaseIndex,
               available,
@@ -30424,6 +30656,7 @@ const buildStructuredDay = (params: {
         capabilityMode,
         dayBudget,
         priorDayHeavyPatterns,
+        sameWeekRelatedMainExerciseIds,
       }
     ).score;
     const capability = getCapabilitySlotBonus({
@@ -30436,6 +30669,7 @@ const buildStructuredDay = (params: {
         slotKind,
         capabilityMode,
         priorDayHeavyPatterns,
+        sameWeekRelatedMainExerciseIds,
       },
     }).bonus;
     return base + capability;
@@ -30612,7 +30846,9 @@ const buildStructuredDay = (params: {
   const accessoryAuditMeta = (
     slotId: string,
     slotKind: string,
-    slotIndex: number
+    slotIndex: number,
+    lane: AccessoryLane,
+    selectedAccessoryExerciseIds: string[]
   ): SelectionAuditMeta => ({
     slotId,
     slotIndex,
@@ -30620,16 +30856,21 @@ const buildStructuredDay = (params: {
     dayTitle: title,
     dayFocusTags: focusTags,
     slotKind,
+    slotLane: lane,
     selectedMainExerciseIds: [...mainIds],
+    selectedAccessoryExerciseIds,
     capabilityMode,
     priorDayHeavyPatterns,
     selectionRng,
   });
+  const selectedAccessoryPlanIds: string[] = [];
   const accessoryPlans = plannedAccessoryLanes.map((lane, index) => {
     const auditMeta = accessoryAuditMeta(
       `${normalizedTitle}-accessory-${index + 1}`,
       `accessory${lane}`,
-      index
+      index,
+      lane,
+      [...selectedAccessoryPlanIds]
     );
     const selectedId = chooseAccessoryId(
       lane,
@@ -30643,6 +30884,7 @@ const buildStructuredDay = (params: {
       context: selectionContext,
       dayTitle: title,
     });
+    selectedAccessoryPlanIds.push(selectedId);
     return {
       lane,
       selectedId,
@@ -30723,7 +30965,8 @@ const buildStructuredDay = (params: {
               ])
             )
           : slot.lane === "pull"
-          ? getSlotKindForSlot(slot) === "mainPullVertical"
+          ? getSlotKindForSlot(slot) === "mainPullVertical" ||
+            getSlotKindForSlot(slot) === "mainVerticalPull"
             ? getBackChestVerticalPullCandidateIds(
                 phaseIndex,
                 experienceProfile,
@@ -30988,8 +31231,12 @@ const buildSplitTemplates = (
   });
   const builtDays: ReturnType<typeof buildStructuredDay>[] = [];
   let priorDayHeavyPatterns: PrimaryMotorPattern[] = [];
+  const sameWeekLowerMainExerciseIds: string[] = [];
 
   templates.forEach((template) => {
+    const sameWeekRelatedMainExerciseIds = isHigherFrequencyLowerDayTitle(template.title)
+      ? [...sameWeekLowerMainExerciseIds]
+      : [];
     const builtDayBase = buildStructuredDay({
       title: template.title,
       focusTags: template.focusTags,
@@ -31003,6 +31250,7 @@ const buildSplitTemplates = (
       cooldownFocus: template.cooldownFocus,
       capabilityMode,
       priorDayHeavyPatterns,
+      sameWeekRelatedMainExerciseIds,
       selectionAuditHook,
       selectionRng,
     });
@@ -31011,6 +31259,13 @@ const buildSplitTemplates = (
       : builtDayBase;
     builtDays.push(builtDay);
     priorDayHeavyPatterns = deriveHeavyPrimaryPatternsForDay(builtDay);
+    if (isHigherFrequencyLowerDayTitle(builtDay.title)) {
+      sameWeekLowerMainExerciseIds.push(
+        ...builtDay.routine
+          .filter((item) => item.section === "main")
+          .map((item) => item.exerciseId)
+      );
+    }
   });
 
   return builtDays;
@@ -31732,7 +31987,11 @@ const enforceFinalAccessorySlotPurity = (params: {
       if (!exercise) return;
       const debugLane = item.selectionDebug?.slotLane as AccessoryLane | undefined;
       const inferredLane = resolveAccessoryLaneForReplacement(exercise, null);
-      const lane = inferredLane === "core" ? inferredLane : debugLane ?? plannedLane ?? inferredLane;
+      const identityPlannedLane = daysPerWeek >= 4 && plannedLane ? plannedLane : undefined;
+      const lane =
+        inferredLane === "core" && !identityPlannedLane
+          ? inferredLane
+          : identityPlannedLane ?? debugLane ?? plannedLane ?? inferredLane;
       if (!lane) return;
       const legal = isAccessoryLegalForSlot({
         exercise,

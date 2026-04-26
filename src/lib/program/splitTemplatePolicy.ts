@@ -492,8 +492,8 @@ export const buildRawSplitTemplateSpecs = <
           forbiddenMainTags: ["push", "chest"],
           requiredAccessories: [
             withAccessorySection(rules.carryOrAntiRotationRule, 1),
-            withAccessorySection(rules.calvesRule, 1),
           ],
+          optionalRules: [withAccessorySection(rules.calvesRule, 1)],
           forbidUpperPushPullOnMainAndAccessory: true,
         },
       },
@@ -562,8 +562,8 @@ export const buildRawSplitTemplateSpecs = <
         forbiddenMainTags: ["push", "chest"],
         requiredAccessories: [
           withAccessorySection(rules.carryOrAntiRotationRule, 1),
-          withAccessorySection(rules.calvesRule, 1),
         ],
+        optionalRules: [withAccessorySection(rules.calvesRule, 1)],
         forbidUpperPushPullOnMainAndAccessory: true,
       },
     },
