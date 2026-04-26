@@ -19600,14 +19600,28 @@ const findConstrainedLegsMainFallback = (params: {
   const wantsHinge = slotLane === "hinge";
   const roleSlotKind = slotKind ?? (slotLane ? slotKindByMainLane[slotLane] : "mainRepair");
   const lowBackPain = hasLowBackPainSignal(context.selectionContext);
+  const conservativeBandPainHinge =
+    wantsHinge &&
+    context.capabilityMode === "bandOnly" &&
+    context.selectionContext.phaseStage === "activation" &&
+    (lowBackPain || context.selectionContext.painSeverity === "high");
+  const conservativeBandPainHingeIds = [
+    "single-leg-glute-bridge-hold",
+    "bodyweight-good-morning",
+    "single-leg-rdl",
+    "back-extension-hold",
+    "back-extension",
+  ];
   const candidateIds = [
-    ...(wantsHinge && lowBackPain
-      ? [
-          "single-leg-hip-thrust",
-          "single-leg-glute-bridge-hold",
-          "machine-glute-drive",
-          "barbell-hip-thrust",
-        ]
+    ...(conservativeBandPainHinge
+      ? conservativeBandPainHingeIds
+      : wantsHinge && lowBackPain
+        ? [
+            "single-leg-hip-thrust",
+            "single-leg-glute-bridge-hold",
+            "machine-glute-drive",
+            "barbell-hip-thrust",
+          ]
       : []),
     ...(roleSlotKind === "mainSecondaryHinge" ? ["single-leg-rdl"] : []),
     ...(slotKind === "mainUnilateralLowerLoaded"
@@ -19616,7 +19630,7 @@ const findConstrainedLegsMainFallback = (params: {
     ...(slotKind === "mainSecondaryLowerLoaded"
       ? ["machine-seated-hamstring-curl", "db-rdl", "machine-leg-press", "dumbbell-step-up-loaded"]
       : []),
-    ...(wantsHinge
+    ...(wantsHinge && !conservativeBandPainHinge
       ? [
           "db-rdl",
           "dumbbell-sumo-rdl",
@@ -19638,7 +19652,7 @@ const findConstrainedLegsMainFallback = (params: {
     "cossack-squat",
     "db-rdl",
     "dumbbell-sumo-rdl",
-    "band-rdl",
+    ...(conservativeBandPainHinge ? [] : ["band-rdl"]),
     "machine-seated-hamstring-curl",
   ];
 
@@ -19648,14 +19662,23 @@ const findConstrainedLegsMainFallback = (params: {
     .find((exercise) => {
       if (exercise.id === currentExerciseId) return false;
       if (usedIds.has(exercise.id)) return false;
+      const conservativeBandPainHingeFallback =
+        conservativeBandPainHinge && conservativeBandPainHingeIds.includes(exercise.id);
+      const contextEligible = isExerciseEligibleForProgramContext({
+        exercise,
+        available: context.available,
+        section: "main",
+        context: context.selectionContext,
+        dayTitle: day.title,
+      });
       if (
-        !isExerciseEligibleForProgramContext({
-          exercise,
-          available: context.available,
-          section: "main",
-          context: context.selectionContext,
-          dayTitle: day.title,
-        })
+        !contextEligible &&
+        !(
+          conservativeBandPainHingeFallback &&
+          isExerciseEligible(exercise, context.available) &&
+          isExerciseAllowedForSection(exercise, "main") &&
+          matchesMainLanePattern(exercise, "hinge")
+        )
       ) {
         return false;
       }
@@ -19666,6 +19689,7 @@ const findConstrainedLegsMainFallback = (params: {
           available: context.available,
           context: context.selectionContext,
         }) === "support_corrective" &&
+        !conservativeBandPainHingeFallback &&
         !(
           roleSlotKind === "mainSecondaryHinge" &&
           exercise.id === "single-leg-rdl"
@@ -19681,7 +19705,8 @@ const findConstrainedLegsMainFallback = (params: {
           slotLane,
           available: context.available,
           context: context.selectionContext,
-        })
+        }) &&
+        !conservativeBandPainHingeFallback
       ) {
         return false;
       }
@@ -20925,6 +20950,15 @@ const isExerciseEligibleForProgramContext = (params: {
       return false;
     }
   }
+  if (
+    section === "main" &&
+    exercise.id === "band-rdl" &&
+    context.capabilityMode === "bandOnly" &&
+    context.phaseStage === "activation" &&
+    (context.painSeverity === "high" || hasLowBackPainSignal(context))
+  ) {
+    return false;
+  }
   return (
     equipmentEligible &&
     isExerciseAllowedForSection(exercise, section) &&
@@ -21651,6 +21685,15 @@ const isHigherFrequencyLowerMainDrift = (params: {
 
   const noEquipmentContext = isConstrainedNoEquipmentMainContext(available, context);
   const lowBackPain = hasLowBackPainSignal(context);
+  const conservativeBandPainHinge =
+    slotLane === "hinge" &&
+    exercise.id === "band-rdl" &&
+    context.capabilityMode === "bandOnly" &&
+    context.phaseStage === "activation" &&
+    (lowBackPain || context.painSeverity === "high");
+  if (conservativeBandPainHinge) {
+    return true;
+  }
   if (
     lowBackPain &&
     [
