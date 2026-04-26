@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import {
+  areTrainingRecordsEquivalent,
   resolveActiveProgramFromList,
   shouldUseRemoteTrainingRecord,
 } from "@/lib/trainingStateModel";
@@ -9,7 +10,7 @@ import {
   pushTrainingPatchWithStatus,
 } from "@/lib/trainingSyncClient";
 import type { AppState } from "@/lib/appState";
-import type { Program } from "@/lib/types";
+import type { Program, SessionRecord } from "@/lib/types";
 
 const buildProgram = (
   id: string,
@@ -31,6 +32,20 @@ const buildProgram = (
   week: [],
   source: "local",
   deletedAt,
+});
+
+const buildSession = (id: string): SessionRecord => ({
+  id,
+  userId: null,
+  startedAt: "2026-04-05T12:00:00.000Z",
+  completedAt: null,
+  createdAt: "2026-04-05T12:00:00.000Z",
+  updatedAt: "2026-04-05T12:00:00.000Z",
+  routineId: "program-active",
+  durationSec: null,
+  notes: null,
+  source: "local",
+  deletedAt: null,
 });
 
 describe("training state source-of-truth flow", () => {
@@ -112,6 +127,16 @@ describe("training state source-of-truth flow", () => {
     });
   });
 
+  test("empty patches are skipped before network sync", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const pushed = await pushTrainingPatchWithStatus({ sessions: [] });
+
+    expect(pushed).toBe(true);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   test("unauthenticated patch is not treated as a data-loss sync error", async () => {
     vi.stubGlobal(
       "fetch",
@@ -122,7 +147,9 @@ describe("training state source-of-truth flow", () => {
       }))
     );
 
-    const pushed = await pushTrainingPatchWithStatus({ sessions: [] });
+    const pushed = await pushTrainingPatchWithStatus({
+      sessions: [buildSession("session-unauth")],
+    });
 
     expect(pushed).toBe(false);
     expect(getTrainingSyncStatus()).toMatchObject({
@@ -130,5 +157,49 @@ describe("training state source-of-truth flow", () => {
       authenticated: false,
       lastError: null,
     });
+  });
+
+  test("snapshot loads coalesce while one request is already in flight", async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        ({
+          ok: true,
+          status: 200,
+          json: async () => ({
+            ok: true,
+            authenticated: true,
+            snapshot: { sessions: [buildSession("session-1")] },
+          }),
+        }) as Response
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const [first, second] = await Promise.all([
+      loadTrainingSnapshotWithStatus({ force: true }),
+      loadTrainingSnapshotWithStatus(),
+    ]);
+
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  test("record equivalence can ignore timestamp-only churn", () => {
+    const base = buildProgram("program-a", "2026-04-02T00:00:00.000Z");
+    const timestampOnly = {
+      ...base,
+      updatedAt: "2026-04-03T00:00:00.000Z",
+    };
+    const changedCompletion = {
+      ...timestampOnly,
+      weekIndex: 2,
+    };
+
+    expect(
+      areTrainingRecordsEquivalent(base, timestampOnly, { ignoreUpdatedAt: true })
+    ).toBe(true);
+    expect(
+      areTrainingRecordsEquivalent(base, changedCompletion, { ignoreUpdatedAt: true })
+    ).toBe(false);
   });
 });

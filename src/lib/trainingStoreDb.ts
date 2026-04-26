@@ -7,6 +7,7 @@ import type {
   SessionRecord,
 } from "@/lib/types";
 import type { TrainingSnapshot } from "@/lib/trainingStateModel";
+import { logTrainingSync } from "@/lib/trainingSyncDebug";
 
 export type { TrainingSnapshot } from "@/lib/trainingStateModel";
 
@@ -192,81 +193,134 @@ const upsertStateField = async (
   value: unknown
 ) => {
   await ensureDb();
-  await getPool().query(
+  const result = await getPool().query(
     `INSERT INTO app_user_state (user_id, ${column}, updated_at)
      VALUES ($1, $2::jsonb, NOW())
      ON CONFLICT (user_id)
-     DO UPDATE SET ${column} = EXCLUDED.${column}, updated_at = NOW()`,
+     DO UPDATE SET ${column} = EXCLUDED.${column}, updated_at = NOW()
+     WHERE app_user_state.${column} IS DISTINCT FROM EXCLUDED.${column}`,
     [userId, JSON.stringify(value ?? null)]
   );
+  return Number(result.rowCount ?? 0) > 0;
 };
 
 export const patchTrainingSnapshot = async (userId: string, patch: TrainingSnapshot) => {
   await ensureDb();
+  const summary = {
+    state: {} as Record<string, "upserted" | "skipped">,
+    programs: { attempted: patch.programs?.length ?? 0, upserted: 0, skipped: 0 },
+    programProgress: {
+      attempted: patch.programProgress?.length ?? 0,
+      upserted: 0,
+      skipped: 0,
+    },
+    sessions: { attempted: patch.sessions?.length ?? 0, upserted: 0, skipped: 0 },
+    exerciseLogs: {
+      attempted: patch.exerciseLogs?.length ?? 0,
+      upserted: 0,
+      skipped: 0,
+    },
+  };
 
   if (patch.questionnaire !== undefined) {
-    await upsertStateField(userId, "questionnaire", patch.questionnaire);
+    const changed = await upsertStateField(userId, "questionnaire", patch.questionnaire);
+    summary.state.questionnaire = changed ? "upserted" : "skipped";
   }
   if (patch.assessment !== undefined) {
-    await upsertStateField(userId, "assessment", patch.assessment);
+    const changed = await upsertStateField(userId, "assessment", patch.assessment);
+    summary.state.assessment = changed ? "upserted" : "skipped";
   }
   if (patch.prefs !== undefined) {
-    await upsertStateField(userId, "prefs", patch.prefs);
+    const changed = await upsertStateField(userId, "prefs", patch.prefs);
+    summary.state.prefs = changed ? "upserted" : "skipped";
   }
 
   if (patch.programs?.length) {
-    await Promise.all(
+    const results = await Promise.all(
       patch.programs.map((program) =>
         getPool().query(
           `INSERT INTO app_user_programs (user_id, program_id, payload, updated_at)
            VALUES ($1, $2, $3::jsonb, NOW())
            ON CONFLICT (user_id, program_id)
-           DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()`,
+           DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()
+           WHERE app_user_programs.payload - 'updatedAt'
+             IS DISTINCT FROM EXCLUDED.payload - 'updatedAt'`,
           [userId, program.id, JSON.stringify(program)]
         )
       )
     );
+    summary.programs.upserted = results.reduce(
+      (count, result) => count + Number(result.rowCount ?? 0),
+      0
+    );
+    summary.programs.skipped =
+      summary.programs.attempted - summary.programs.upserted;
   }
 
   if (patch.programProgress?.length) {
-    await Promise.all(
+    const results = await Promise.all(
       patch.programProgress.map((progress) =>
         getPool().query(
           `INSERT INTO app_user_program_progress (user_id, program_id, payload, updated_at)
            VALUES ($1, $2, $3::jsonb, NOW())
            ON CONFLICT (user_id, program_id)
-           DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()`,
+           DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()
+           WHERE app_user_program_progress.payload - 'updatedAt'
+             IS DISTINCT FROM EXCLUDED.payload - 'updatedAt'`,
           [userId, progress.programId, JSON.stringify(progress)]
         )
       )
     );
+    summary.programProgress.upserted = results.reduce(
+      (count, result) => count + Number(result.rowCount ?? 0),
+      0
+    );
+    summary.programProgress.skipped =
+      summary.programProgress.attempted - summary.programProgress.upserted;
   }
 
   if (patch.sessions?.length) {
-    await Promise.all(
+    const results = await Promise.all(
       patch.sessions.map((session) =>
         getPool().query(
           `INSERT INTO app_user_sessions (user_id, session_id, payload, updated_at)
            VALUES ($1, $2, $3::jsonb, NOW())
            ON CONFLICT (user_id, session_id)
-           DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()`,
+           DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()
+           WHERE app_user_sessions.payload - 'updatedAt'
+             IS DISTINCT FROM EXCLUDED.payload - 'updatedAt'`,
           [userId, session.id, JSON.stringify(session)]
         )
       )
     );
+    summary.sessions.upserted = results.reduce(
+      (count, result) => count + Number(result.rowCount ?? 0),
+      0
+    );
+    summary.sessions.skipped = summary.sessions.attempted - summary.sessions.upserted;
   }
 
   if (patch.exerciseLogs?.length) {
-    await Promise.all(
+    const results = await Promise.all(
       patch.exerciseLogs.map((log) =>
         getPool().query(
           `INSERT INTO app_user_exercise_logs (user_id, log_id, payload, updated_at)
            VALUES ($1, $2, $3::jsonb, NOW())
            ON CONFLICT (user_id, log_id)
-           DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()`,
+           DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()
+           WHERE app_user_exercise_logs.payload - 'updatedAt'
+             IS DISTINCT FROM EXCLUDED.payload - 'updatedAt'`,
           [userId, log.id, JSON.stringify(log)]
         )
       )
     );
+    summary.exerciseLogs.upserted = results.reduce(
+      (count, result) => count + Number(result.rowCount ?? 0),
+      0
+    );
+    summary.exerciseLogs.skipped =
+      summary.exerciseLogs.attempted - summary.exerciseLogs.upserted;
   }
+
+  logTrainingSync("training-store", "patch persisted", summary);
 };

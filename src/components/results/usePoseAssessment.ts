@@ -14,6 +14,7 @@ import {
   type AssessmentReport,
 } from "@/lib/assessmentEngine";
 import { pushTrainingPatch } from "@/lib/trainingSyncClient";
+import { logTrainingSync } from "@/lib/trainingSyncDebug";
 
 export type PoseAssessmentState = {
   loading: boolean;
@@ -81,9 +82,16 @@ export function usePoseAssessment({
             report: reportForUi,
           };
         });
-        void pushTrainingPatch({
-          assessment: fallbackReport as unknown as Record<string, unknown>,
-        });
+        if (remoteAssessment) {
+          logTrainingSync(
+            "training-sync",
+            "skipped fallback assessment write because remote assessment is loaded"
+          );
+        } else {
+          void pushTrainingPatch({
+            assessment: fallbackReport as unknown as Record<string, unknown>,
+          });
+        }
         return;
       }
 

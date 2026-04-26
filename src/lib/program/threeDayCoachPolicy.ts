@@ -433,6 +433,8 @@ export const scoreLowerUnilateralCoachVariety = (params: {
   alternativeFamilies: Set<string>;
   recentFamilies: Set<string>;
   selectedFamilies?: Set<string>;
+  experience?: ThreeDayCoachExperience;
+  phase?: ThreeDayCoachPhase;
 }): ScoreWithReasons => {
   const family = resolveLowerUnilateralCoachFamily(params.exercise);
   if (family === "other") return { score: 0, reasons: [] };
@@ -440,8 +442,16 @@ export const scoreLowerUnilateralCoachVariety = (params: {
   let score = 0;
   const reasons: string[] = [];
   if (alternativesExist && family === "step_up") {
-    score -= 1.4;
-    reasons.push("-1.40 step-up saturation penalty when unilateral alternatives exist");
+    const penalty =
+      params.experience && params.experience !== "beginner"
+        ? params.phase === "activation"
+          ? 4.25
+          : 3.1
+        : 1.4;
+    score -= penalty;
+    reasons.push(
+      `-${penalty.toFixed(2)} step-up saturation penalty when unilateral alternatives exist`
+    );
   }
   if (params.recentFamilies.has(family)) {
     const penalty = family === "step_up" ? 4.25 : 2.35;

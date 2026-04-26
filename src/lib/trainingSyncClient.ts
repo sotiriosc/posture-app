@@ -1,6 +1,8 @@
 "use client";
 
 import type { TrainingSnapshot } from "@/lib/trainingStateModel";
+import { stableTrainingStringify } from "@/lib/trainingStateModel";
+import { logTrainingSync } from "@/lib/trainingSyncDebug";
 
 export type { TrainingSnapshot } from "@/lib/trainingStateModel";
 
@@ -28,6 +30,8 @@ export type TrainingSnapshotLoadResult = {
 };
 
 const listeners = new Set<() => void>();
+const SNAPSHOT_LOAD_CACHE_MS = 5_000;
+const PATCH_DEDUPE_WINDOW_MS = 4_000;
 let syncStatus: TrainingSyncStatus = {
   state: "idle",
   lastAttemptAt: null,
@@ -35,6 +39,13 @@ let syncStatus: TrainingSyncStatus = {
   lastError: null,
   authenticated: null,
 };
+let snapshotLoadPromise: Promise<TrainingSnapshotLoadResult> | null = null;
+let lastSnapshotLoad:
+  | { loadedAt: number; result: TrainingSnapshotLoadResult }
+  | null = null;
+const inFlightPatchBySignature = new Map<string, Promise<boolean>>();
+let lastSuccessfulPatchSignature: string | null = null;
+let lastSuccessfulPatchAt = 0;
 
 const emitSyncStatus = (partial: Partial<TrainingSyncStatus>) => {
   syncStatus = {
@@ -71,14 +82,51 @@ const fetchTrainingState = async (init?: RequestInit) => {
   return response;
 };
 
+const patchHasPayload = (patch: TrainingSnapshot) =>
+  Object.prototype.hasOwnProperty.call(patch, "questionnaire") ||
+  Object.prototype.hasOwnProperty.call(patch, "assessment") ||
+  Object.prototype.hasOwnProperty.call(patch, "prefs") ||
+  Boolean(patch.programs?.length) ||
+  Boolean(patch.programProgress?.length) ||
+  Boolean(patch.sessions?.length) ||
+  Boolean(patch.exerciseLogs?.length);
+
+const summarizePatch = (patch: TrainingSnapshot) => ({
+  questionnaire: Object.prototype.hasOwnProperty.call(patch, "questionnaire"),
+  assessment: Object.prototype.hasOwnProperty.call(patch, "assessment"),
+  prefs: Object.prototype.hasOwnProperty.call(patch, "prefs"),
+  programs: patch.programs?.length ?? 0,
+  programProgress: patch.programProgress?.length ?? 0,
+  sessions: patch.sessions?.length ?? 0,
+  exerciseLogs: patch.exerciseLogs?.length ?? 0,
+});
+
+const invalidateSnapshotCache = () => {
+  lastSnapshotLoad = null;
+};
+
 export const loadTrainingSnapshotWithStatus =
-  async (): Promise<TrainingSnapshotLoadResult> => {
+  async (options: { force?: boolean } = {}): Promise<TrainingSnapshotLoadResult> => {
+    const now = Date.now();
+    if (
+      !options.force &&
+      lastSnapshotLoad &&
+      now - lastSnapshotLoad.loadedAt < SNAPSHOT_LOAD_CACHE_MS
+    ) {
+      logTrainingSync("training-sync", "snapshot cache hit");
+      return lastSnapshotLoad.result;
+    }
+    if (!options.force && snapshotLoadPromise) {
+      logTrainingSync("training-sync", "snapshot request joined");
+      return snapshotLoadPromise;
+    }
+
     emitSyncStatus({
       state: "syncing",
-      lastAttemptAt: Date.now(),
+      lastAttemptAt: now,
       lastError: null,
     });
-    try {
+    snapshotLoadPromise = (async () => {
       const response = await fetchTrainingState({ method: "GET" });
       const payload = (await response.json().catch(() => null)) as
         | {
@@ -95,13 +143,15 @@ export const loadTrainingSnapshotWithStatus =
           lastSyncedAt: Date.now(),
           lastError: null,
         });
-        return {
+        const result = {
           ok: true,
           authenticated: true,
           snapshot: payload.snapshot ?? null,
           error: null,
           status: response.status,
         };
+        lastSnapshotLoad = { loadedAt: Date.now(), result };
+        return result;
       }
       if (response.ok && payload?.ok && payload.authenticated === false) {
         emitSyncStatus({
@@ -109,13 +159,15 @@ export const loadTrainingSnapshotWithStatus =
           authenticated: false,
           lastError: null,
         });
-        return {
+        const result = {
           ok: true,
           authenticated: false,
           snapshot: null,
           error: null,
           status: response.status,
         };
+        lastSnapshotLoad = { loadedAt: Date.now(), result };
+        return result;
       }
       const error = statusMessageFromPayload(
         payload,
@@ -133,7 +185,8 @@ export const loadTrainingSnapshotWithStatus =
         error,
         status: response.status,
       };
-    } catch (error) {
+    })()
+      .catch((error) => {
       const message =
         error instanceof Error ? error.message : "Training sync failed.";
       emitSyncStatus({
@@ -147,7 +200,12 @@ export const loadTrainingSnapshotWithStatus =
         error: message,
         status: null,
       };
-    }
+      })
+      .finally(() => {
+        snapshotLoadPromise = null;
+      });
+
+    return snapshotLoadPromise;
   };
 
 export const loadTrainingSnapshot = async (): Promise<TrainingSnapshot | null> => {
@@ -156,12 +214,31 @@ export const loadTrainingSnapshot = async (): Promise<TrainingSnapshot | null> =
 };
 
 export const pushTrainingPatchWithStatus = async (patch: TrainingSnapshot) => {
+  if (!patchHasPayload(patch)) {
+    logTrainingSync("training-sync", "skipped empty patch");
+    return true;
+  }
+  const patchSignature = stableTrainingStringify(patch);
+  const existingPatch = inFlightPatchBySignature.get(patchSignature);
+  if (existingPatch) {
+    logTrainingSync("training-sync", "joined duplicate in-flight patch", summarizePatch(patch));
+    return existingPatch;
+  }
+  const now = Date.now();
+  if (
+    lastSuccessfulPatchSignature === patchSignature &&
+    now - lastSuccessfulPatchAt < PATCH_DEDUPE_WINDOW_MS
+  ) {
+    logTrainingSync("training-sync", "skipped recent duplicate patch", summarizePatch(patch));
+    return true;
+  }
+
   emitSyncStatus({
     state: "syncing",
-    lastAttemptAt: Date.now(),
+    lastAttemptAt: now,
     lastError: null,
   });
-  try {
+  const pushPromise = (async () => {
     const response = await fetchTrainingState({
       method: "POST",
       body: JSON.stringify(patch),
@@ -176,6 +253,10 @@ export const pushTrainingPatchWithStatus = async (patch: TrainingSnapshot) => {
         lastSyncedAt: Date.now(),
         lastError: null,
       });
+      lastSuccessfulPatchSignature = patchSignature;
+      lastSuccessfulPatchAt = Date.now();
+      invalidateSnapshotCache();
+      logTrainingSync("training-sync", "patch pushed", summarizePatch(patch));
       return true;
     }
     if (response.status === 401) {
@@ -192,14 +273,21 @@ export const pushTrainingPatchWithStatus = async (patch: TrainingSnapshot) => {
       lastError: statusMessageFromPayload(payload, "Training sync failed."),
     });
     return false;
-  } catch (error) {
+  })()
+    .catch((error) => {
     emitSyncStatus({
       state: "error",
       lastError:
         error instanceof Error ? error.message : "Training sync failed.",
     });
     return false;
-  }
+    })
+    .finally(() => {
+      inFlightPatchBySignature.delete(patchSignature);
+    });
+
+  inFlightPatchBySignature.set(patchSignature, pushPromise);
+  return pushPromise;
 };
 
 export const pushTrainingPatch = async (patch: TrainingSnapshot) => {

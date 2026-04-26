@@ -44,6 +44,11 @@ const BACK_CHEST_POSTERIOR_SUPPORT_ROLES: ExerciseAccessoryRole[] = [
   "accessoryShoulderSupport",
 ];
 
+const BACK_CHEST_TRUTHFUL_EXPANSION_ROLES: ExerciseAccessoryRole[] = [
+  "accessoryBackWidth",
+  "accessoryBackThickness",
+];
+
 const normalizeToken = (value: string) =>
   value
     .trim()
@@ -311,6 +316,15 @@ const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAcc
   } = params;
   if (targetAccessoryCount <= 0) return [];
   const goalKey = resolveGoalKey(goal);
+  const isSupportBiasedGoal = goalKey === "improve_posture" || goalKey === "reduce_pain";
+  const hasChestMain = selectedMainExercises.some((exercise) =>
+    exerciseHasCoverageTag(exercise, "chest") ||
+    exerciseHasCoverageTag(exercise, "chestIsolation") ||
+    exerciseHasSlotRole(exercise, "pushCompound") ||
+    exerciseHasSlotRole(exercise, "mainChestIsolation") ||
+    exerciseHasPattern(exercise, "push") ||
+    exerciseHasPattern(exercise, "horizontalPush")
+  );
   const hasHorizontalPull = selectedMainExercises.some((exercise) =>
     exerciseHasPattern(exercise, "horizontalPull") ||
     exerciseHasSlotRole(exercise, "pullHorizontal") ||
@@ -342,6 +356,15 @@ const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAcc
   const bestSupportRole = supportRoleScores[0]?.role ?? "accessoryRearDelt";
   const bestPosteriorSupportRole =
     posteriorSupportRoleScores[0]?.role ?? "accessoryRearDelt";
+  const truthfulExpansionRoleScores = BACK_CHEST_TRUTHFUL_EXPANSION_ROLES.map((role) => ({
+    role,
+    score: scoreRoleWithContext(params, role),
+  })).sort((left, right) => {
+    if (right.score !== left.score) return right.score - left.score;
+    return left.role.localeCompare(right.role);
+  });
+  const bestTruthfulExpansionRole =
+    truthfulExpansionRoleScores[0]?.role ?? "accessoryBackWidth";
   const chestExpansionScore = scoreRoleWithContext(params, "accessoryChestIsolation");
   const canUseChestExpansion =
     targetAccessoryCount >= 2 &&
@@ -353,6 +376,13 @@ const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAcc
   const shouldSpendOnChestExpansion =
     canUseChestExpansion &&
     chestExpansionScore >= (supportRoleScores[0]?.score ?? 0) - (phase === "skill" ? 1 : 0.35);
+  const shouldSpendOnTruthfulBackExpansion =
+    targetAccessoryCount >= 2 &&
+    hasChestMain &&
+    hasHorizontalPull &&
+    hasVerticalPull &&
+    !shouldSpendOnChestExpansion &&
+    !isSupportBiasedGoal;
 
   const chooseSupportRole = (usedRoles: ExerciseAccessoryRole[]) =>
     supportRoleScores
@@ -378,7 +408,13 @@ const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAcc
       })[0]?.role ?? bestSupportRole;
 
   const resolveSupportSlotKind = (role: ExerciseAccessoryRole) =>
-    role === "accessoryRearDelt" ? "accessoryBackRearDelt" : "accessoryBackSupport";
+    role === "accessoryRearDelt"
+      ? "accessoryBackRearDelt"
+      : role === "accessoryShoulderSupport"
+      ? "accessoryBackSupport"
+      : role === "accessoryBackWidth"
+      ? "accessoryBackWidth"
+      : "accessoryBackThickness";
 
   const primarySupportRole = shouldSpendOnChestExpansion
     ? bestPosteriorSupportRole
@@ -401,6 +437,17 @@ const planBackChestSlots = (params: ThreeDayAccessoryPlannerParams): ThreeDayAcc
         alternatives: BACK_CHEST_SUPPORT_ROLES,
         lane: "chest",
         slotKind: "accessoryChestExpansion",
+        required: false,
+        isExpansion: true,
+      });
+    } else if (shouldSpendOnTruthfulBackExpansion) {
+      slots.push({
+        role: bestTruthfulExpansionRole,
+        alternatives: BACK_CHEST_TRUTHFUL_EXPANSION_ROLES.filter(
+          (role) => role !== bestTruthfulExpansionRole
+        ),
+        lane: "back",
+        slotKind: resolveSupportSlotKind(bestTruthfulExpansionRole),
         required: false,
         isExpansion: true,
       });

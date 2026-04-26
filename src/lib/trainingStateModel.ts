@@ -33,6 +33,47 @@ export type TimestampedTrainingRecord = {
   deletedAt?: string | null;
 };
 
+const normalizeForStableJson = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map(normalizeForStableJson);
+  }
+  if (!value || typeof value !== "object") {
+    return value;
+  }
+
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>)
+      .filter(([, entry]) => entry !== undefined)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, entry]) => [key, normalizeForStableJson(entry)])
+  );
+};
+
+export const stableTrainingStringify = (value: unknown) =>
+  JSON.stringify(normalizeForStableJson(value));
+
+const omitTopLevelUpdatedAt = (record: unknown) => {
+  if (!record || typeof record !== "object" || Array.isArray(record)) {
+    return record;
+  }
+  const { updatedAt: _updatedAt, ...rest } = record as Record<string, unknown>;
+  return rest;
+};
+
+export const areTrainingRecordsEquivalent = (
+  left: unknown,
+  right: unknown,
+  options: { ignoreUpdatedAt?: boolean } = {}
+) => {
+  const normalizedLeft = options.ignoreUpdatedAt
+    ? omitTopLevelUpdatedAt(left)
+    : left;
+  const normalizedRight = options.ignoreUpdatedAt
+    ? omitTopLevelUpdatedAt(right)
+    : right;
+  return stableTrainingStringify(normalizedLeft) === stableTrainingStringify(normalizedRight);
+};
+
 const parseTime = (value?: string | null) => {
   if (!value) return 0;
   const parsed = Date.parse(value);

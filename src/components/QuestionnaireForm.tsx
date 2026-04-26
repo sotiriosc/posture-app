@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
+import { logTrainingSync } from "@/lib/trainingSyncDebug";
 import { clearDraft } from "@/lib/sessionDraftStore";
 import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
 import { getProgram, saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
@@ -89,10 +90,17 @@ export default function QuestionnaireForm() {
   const [requiresChangeConfirmation, setRequiresChangeConfirmation] = useState(false);
   const router = useRouter();
   const [hydratedServerSnapshot, setHydratedServerSnapshot] = useState(false);
+  const lastQuestionnaireSyncSignatureRef = useRef<string | null>(null);
 
   const persistQuestionnaire = (next: QuestionnaireData) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     if (hydratedServerSnapshot) {
+      const nextSignature = buildQuestionnaireSignature(next);
+      if (lastQuestionnaireSyncSignatureRef.current === nextSignature) {
+        logTrainingSync("training-sync", "skipped unchanged questionnaire sync");
+        return;
+      }
+      lastQuestionnaireSyncSignatureRef.current = nextSignature;
       void pushTrainingPatch({ questionnaire: next });
     }
   };
@@ -246,6 +254,7 @@ export default function QuestionnaireForm() {
       setData(merged);
       setCommittedData(merged);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      lastQuestionnaireSyncSignatureRef.current = buildQuestionnaireSignature(merged);
       setRequiresChangeConfirmation(true);
       setHydratedServerSnapshot(true);
     };

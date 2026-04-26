@@ -6,9 +6,11 @@ import {
   canUseUprightRowForThreeDayShoulder,
   getThreeDayCooldownPreferenceIds,
   isBackChestAccessorySetCoachBalanced,
+  isBackChestPosteriorSupportFamily,
   isBackChestTruthfulChestIsolation,
   resolveBackChestAccessoryCoachFamily,
   resolveCoreCoachFamily,
+  resolveLowerUnilateralCoachFamily,
   scoreLowerUnilateralCoachVariety,
 } from "@/lib/program/threeDayCoachPolicy";
 
@@ -44,6 +46,16 @@ const getDayExercises = (
   );
 };
 
+const getDayItems = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  dayTitle: string,
+  section: "main" | "accessory"
+) => {
+  const day = program.week.find((entry) => entry.title === dayTitle);
+  expect(day).toBeTruthy();
+  return day?.routine.filter((item) => item.section === section) ?? [];
+};
+
 const isFacePullFamily = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
   return descriptor.includes("face pull") || descriptor.includes("face-pull");
@@ -57,6 +69,14 @@ const isRowFamily = (exercise: Exercise) => {
 const isVerticalPullSurrogate = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
   return descriptor.includes("pullover") || descriptor.includes("lat");
+};
+
+const isRearDeltMainFamily = (exercise: Exercise) => {
+  const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
+  return descriptor.includes("rear-delt") ||
+    descriptor.includes("rear delt") ||
+    descriptor.includes("reverse pec deck") ||
+    descriptor.includes("reverse-pec-deck");
 };
 
 describe("three-day coach policy", () => {
@@ -132,6 +152,31 @@ describe("three-day coach policy", () => {
     ).toBe(false);
   });
 
+  test("generated gym Back + Chest uses one support plus one truthful expansion when mains already cover press and pulls", () => {
+    ["Intermediate", "Advanced"].forEach((experience) => {
+      clearProgramVariationHistory();
+      const program = generateWeeklyProgram(
+        buildQuestionnaire({
+          experience: experience as QuestionnaireData["experience"],
+          equipment: ["gym"],
+        }),
+        `policy-gym-back-chest-expansion-${experience}`,
+        { phaseIndex: 1, seed: `policy-gym-back-chest-expansion-${experience}` }
+      );
+      const accessories = getDayExercises(program, "Back + Chest", "accessory");
+      const families = accessories.map(resolveBackChestAccessoryCoachFamily);
+      const supportCount = families.filter(isBackChestPosteriorSupportFamily).length;
+
+      expect(accessories.length).toBeGreaterThanOrEqual(2);
+      expect(supportCount).toBe(1);
+      expect(
+        families.some((family) =>
+          ["back_thickness", "back_width", "pullover_serratus"].includes(family)
+        )
+      ).toBe(true);
+    });
+  });
+
   test("gates upright rows to safe shoulder profiles", () => {
     const uprightRow = requireExercise("cable-upright-row");
     const safe = {
@@ -168,6 +213,82 @@ describe("three-day coach policy", () => {
     }).score;
 
     expect(stepUpScore).toBeLessThan(reverseLungeScore);
+  });
+
+  test("generated intermediate and advanced gym shoulders do not double up rear-delt mains when loaded alternatives exist", () => {
+    ["Intermediate", "Advanced"].forEach((experience) => {
+      clearProgramVariationHistory();
+      const program = generateWeeklyProgram(
+        buildQuestionnaire({
+          experience: experience as QuestionnaireData["experience"],
+          equipment: ["gym"],
+        }),
+        `policy-shoulder-secondary-${experience}`,
+        { phaseIndex: 1, seed: `policy-shoulder-secondary-${experience}` }
+      );
+      const mains = getDayExercises(program, "Shoulders + Arms", "main");
+      const mainItems = getDayItems(program, "Shoulders + Arms", "main");
+      const rearDeltMainCount = mains.filter(isRearDeltMainFamily).length;
+      const secondaryLateral = mainItems.find(
+        (item) =>
+          item.selectionDebug?.slotKind === "mainSecondaryLoadedShoulder" &&
+          item.exerciseId === "cable-lateral-raise"
+      );
+
+      expect(rearDeltMainCount).toBeLessThanOrEqual(1);
+      expect(mains.some((exercise) => exercise.id === "cable-lateral-raise")).toBe(true);
+      expect(secondaryLateral?.selectionDebug?.slotLane).toBe("push");
+    });
+  });
+
+  test("generated intermediate and advanced gym lower unilateral slot rotates away from step-up when legal alternatives exist", () => {
+    ["Intermediate", "Advanced"].forEach((experience) => {
+      clearProgramVariationHistory();
+      const program = generateWeeklyProgram(
+        buildQuestionnaire({
+          experience: experience as QuestionnaireData["experience"],
+          equipment: ["gym"],
+        }),
+        `policy-lower-unilateral-${experience}`,
+        { phaseIndex: 1, seed: `policy-lower-unilateral-${experience}` }
+      );
+      const unilateral = getDayExercises(program, "Legs + Abs", "main").find(
+        (exercise) => resolveLowerUnilateralCoachFamily(exercise) !== "other"
+      );
+
+      expect(unilateral).toBeTruthy();
+      expect(resolveLowerUnilateralCoachFamily(unilateral!)).not.toBe("step_up");
+    });
+  });
+
+  test("band Back + Chest with press, fly, row, and pulldown avoids rear-delt plus face-pull accessory saturation", () => {
+    const program = generateWeeklyProgram(
+      buildQuestionnaire({
+        experience: "Intermediate",
+        equipment: ["bands"],
+      }),
+      "policy-band-back-chest-expansion",
+      { phaseIndex: 2, seed: "policy-band-back-chest-expansion" }
+    );
+    const mainIds = getDayExercises(program, "Back + Chest", "main").map(
+      (exercise) => exercise.id
+    );
+    const accessories = getDayExercises(program, "Back + Chest", "accessory");
+    const accessoryIds = accessories.map((exercise) => exercise.id);
+    const families = accessories.map(resolveBackChestAccessoryCoachFamily);
+
+    expect(mainIds).toEqual(
+      expect.arrayContaining([
+        "band-chest-fly",
+        "split-stance-row",
+        "band-lat-pulldown",
+      ])
+    );
+    expect(accessoryIds).not.toEqual(
+      expect.arrayContaining(["band-rear-delt-fly", "band-face-pull-high-anchor"])
+    );
+    expect(families.filter(isBackChestPosteriorSupportFamily).length).toBe(1);
+    expect(families).toContain("back_width");
   });
 
   test("uses day-aware cooldown preferences", () => {

@@ -3,6 +3,7 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { exerciseById } from "@/lib/exercises";
 import {
   clearProgramConstraintWarningBuffer,
+  clearProgramVariationHistory,
   generateWeeklyProgram,
   getProgramConstraintWarningBuffer,
 } from "@/lib/program";
@@ -28,6 +29,12 @@ const backChestMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
 
 const legsMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
   const day = program.week.find((entry) => entry.title === "Legs + Abs");
+  expect(day).toBeTruthy();
+  return day?.routine.filter((item) => item.section === "main") ?? [];
+};
+
+const shouldersMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
+  const day = program.week.find((entry) => entry.title === "Shoulders + Arms");
   expect(day).toBeTruthy();
   return day?.routine.filter((item) => item.section === "main") ?? [];
 };
@@ -236,5 +243,209 @@ describe("program role truthfulness", () => {
     expect(legsDay).toBeTruthy();
     expect(hingeMain?.exerciseId).toBeTruthy();
     expect(hingeMain?.exerciseId).not.toBe("back-extension-hold");
+  });
+
+  test("3-day Legs + Abs finishes with explicit lower main slots and no calf mains", () => {
+    const profiles: Array<{ id: string; questionnaire: QuestionnaireData; phaseIndex: 1 | 2 | 3 }> = [
+      {
+        id: "truth-legs-gym-beginner",
+        questionnaire: {
+          goals: "General fitness",
+          painAreas: [],
+          experience: "Beginner",
+          equipment: ["gym"],
+          daysPerWeek: 3,
+        },
+        phaseIndex: 1,
+      },
+      {
+        id: "truth-legs-db-intermediate",
+        questionnaire: {
+          goals: "General fitness",
+          painAreas: [],
+          experience: "Intermediate",
+          equipment: ["dumbbells"],
+          daysPerWeek: 3,
+        },
+        phaseIndex: 1,
+      },
+      {
+        id: "truth-legs-bands-intermediate-growth",
+        questionnaire: {
+          goals: "General fitness",
+          painAreas: [],
+          experience: "Intermediate",
+          equipment: ["bands"],
+          daysPerWeek: 3,
+        },
+        phaseIndex: 3,
+      },
+    ];
+
+    profiles.forEach(({ id, questionnaire, phaseIndex }) => {
+      clearProgramVariationHistory();
+      clearProgramConstraintWarningBuffer();
+      const program = generateWeeklyProgram(questionnaire, id, {
+        phaseIndex,
+        seed: `${id}-seed`,
+      });
+      const mains = legsMains(program);
+
+      expect(mains.every((item) => item.selectionDebug?.slotKind !== "mainFinal")).toBe(true);
+      expect(
+        mains.every((item) => !["db-calf-raise", "band-calf-raise"].includes(item.exerciseId))
+      ).toBe(true);
+      expect(warningMessagesFor(id).join("\n")).not.toMatch(/Final main slot|main hinge pattern/i);
+    });
+  });
+
+  test("hamstring curl is secondary hamstring work, not a primary hinge or generic main", () => {
+    clearProgramVariationHistory();
+    clearProgramConstraintWarningBuffer();
+    const program = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Intermediate",
+        equipment: ["gym"],
+        daysPerWeek: 3,
+      },
+      "truth-hamstring-curl-slot",
+      { phaseIndex: 1, seed: "truth-hamstring-curl-slot" }
+    );
+
+    legsMains(program)
+      .filter((item) => item.exerciseId === "machine-seated-hamstring-curl")
+      .forEach((item) => {
+        expect(item.selectionDebug?.slotKind).toBe("mainHamstringIsolation");
+        expect(item.selectionDebug?.slotKind).not.toBe("mainHingePrimary");
+        expect(item.selectionDebug?.slotKind).not.toBe("mainFinal");
+      });
+  });
+
+  test("lower-back-pain Phase 1 uses a hip-extension hinge surrogate instead of hamstring curl", () => {
+    clearProgramVariationHistory();
+    clearProgramConstraintWarningBuffer();
+    const program = generateWeeklyProgram(
+      {
+        goals: "Reduce pain",
+        painAreas: ["lower back"],
+        experience: "Beginner",
+        equipment: ["gym"],
+        daysPerWeek: 3,
+      },
+      "truth-low-back-phase-one-hip-extension",
+      { phaseIndex: 1, seed: "three-day-persona-review-4-phase-1" }
+    );
+    const hinge = legsMains(program).find(
+      (item) => item.selectionDebug?.slotKind === "mainHingePrimary"
+    );
+    const hingeName = `${exerciseById(hinge?.exerciseId)?.id ?? ""} ${
+      exerciseById(hinge?.exerciseId)?.name ?? ""
+    }`.toLowerCase();
+
+    expect(hinge?.exerciseId).toBeTruthy();
+    expect(hinge?.exerciseId).not.toBe("machine-seated-hamstring-curl");
+    expect(hingeName).toMatch(/hip thrust|glute bridge|glute-bridge/);
+    expect(warningMessagesFor("truth-low-back-phase-one-hip-extension")).toEqual([]);
+  });
+
+  test("dumbbell Shoulder + Arms does not satisfy shoulder-pull slots with structural or press exercises", () => {
+    clearProgramVariationHistory();
+    clearProgramConstraintWarningBuffer();
+    const program = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Intermediate",
+        equipment: ["dumbbells"],
+        daysPerWeek: 3,
+      },
+      "truth-dumbbell-shoulder-pull",
+      { phaseIndex: 1, seed: "three-day-persona-review-6-phase-1" }
+    );
+
+    shouldersMains(program).forEach((item) => {
+      if (item.exerciseId === "prone-swimmer") {
+        expect(item.selectionDebug?.slotKind).not.toBe("mainShoulderPullPrimary");
+      }
+      if (item.exerciseId === "dumbbell-arnold-press") {
+        expect(item.selectionDebug?.slotKind).not.toContain("Pull");
+      }
+    });
+  });
+
+  test("constrained dumbbell Back + Chest Phase 1 includes a vertical-pull surrogate", () => {
+    clearProgramVariationHistory();
+    clearProgramConstraintWarningBuffer();
+    const program = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Intermediate",
+        equipment: ["dumbbells"],
+        daysPerWeek: 3,
+      },
+      "truth-db-back-chest-vertical-surrogate",
+      { phaseIndex: 1, seed: "three-day-persona-review-6-phase-1" }
+    );
+
+    expect(
+      backChestMains(program).some(
+        (item) =>
+          item.selectionDebug?.slotKind === "mainPullVertical" &&
+          hasVerticalPullOrSurrogate(item.exerciseId)
+      )
+    ).toBe(true);
+    expect(warningMessagesFor("truth-db-back-chest-vertical-surrogate")).toEqual([]);
+  });
+
+  test("side-plank star and Pallof press finish with core accessory labels", () => {
+    const cases: Array<{
+      id: string;
+      questionnaire: QuestionnaireData;
+      phaseIndex: 1 | 2 | 3;
+      seed: string;
+      expectedExerciseId: string;
+    }> = [
+      {
+        id: "truth-pallof-final-core",
+        questionnaire: {
+          goals: "General fitness",
+          painAreas: [],
+          experience: "Beginner",
+          equipment: ["bands"],
+          daysPerWeek: 3,
+        },
+        phaseIndex: 3,
+        seed: "slot-core-bands-5",
+        expectedExerciseId: "pallof-press",
+      },
+      {
+        id: "truth-side-plank-star-final-core",
+        questionnaire: {
+          goals: "General fitness",
+          painAreas: [],
+          experience: "Advanced",
+          equipment: ["none"],
+          daysPerWeek: 3,
+        },
+        phaseIndex: 2,
+        seed: "side-star-1",
+        expectedExerciseId: "side-plank-star",
+      },
+    ];
+
+    cases.forEach(({ id, questionnaire, phaseIndex, seed, expectedExerciseId }) => {
+      clearProgramVariationHistory();
+      const program = generateWeeklyProgram(questionnaire, id, { phaseIndex, seed });
+      const item = program.week
+        .flatMap((day) => day.routine)
+        .find((entry) => entry.exerciseId === expectedExerciseId);
+
+      expect(item?.section).toBe("accessory");
+      expect(item?.selectionDebug?.slotKind).toBe("accessorycore");
+      expect(item?.selectionDebug?.slotLane).toBe("core");
+    });
   });
 });

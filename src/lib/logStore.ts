@@ -12,7 +12,11 @@ import {
   pushTrainingPatch,
   type TrainingSnapshot,
 } from "@/lib/trainingSyncClient";
-import { shouldUseRemoteTrainingRecord } from "@/lib/trainingStateModel";
+import {
+  areTrainingRecordsEquivalent,
+  shouldUseRemoteTrainingRecord,
+} from "@/lib/trainingStateModel";
+import { logTrainingSync } from "@/lib/trainingSyncDebug";
 
 const DB_NAME = "bodycoach-logs";
 const DB_VERSION = 2;
@@ -214,6 +218,42 @@ const requestToPromise = <T>(request: IDBRequest<T>) =>
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
+
+const saveTrainingRecordIfChanged = async <T extends object>(
+  params: {
+    storeName: string;
+    key: IDBValidKey;
+    record: T;
+    label: string;
+    toPatch: (record: T) => TrainingSnapshot;
+  }
+) => {
+  const result = await withStore(params.storeName, "readwrite", async (store) => {
+    const existing = (await requestToPromise(store.get(params.key))) as
+      | T
+      | undefined;
+    if (
+      existing &&
+      areTrainingRecordsEquivalent(existing, params.record, {
+        ignoreUpdatedAt: true,
+      })
+    ) {
+      return { record: existing, changed: false };
+    }
+    await requestToPromise(store.put(params.record));
+    return { record: params.record, changed: true };
+  });
+
+  if (result.changed) {
+    void pushTrainingPatch(params.toPatch(result.record));
+  } else {
+    logTrainingSync("training-local", `skipped unchanged ${params.label}`, {
+      key: String(params.key),
+    });
+  }
+
+  return result.record;
+};
 
 const nowIso = () => new Date().toISOString();
 
@@ -523,22 +563,24 @@ export const init = async () => {
 
 export const createSession = async (session: SessionRecord) => {
   await init();
-  const saved = await withStore(STORE_SESSIONS, "readwrite", async (store) => {
-    await requestToPromise(store.put(session));
-    return session;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_SESSIONS,
+    key: session.id,
+    record: session,
+    label: "session",
+    toPatch: (saved) => ({ sessions: [saved] }),
   });
-  void pushTrainingPatch({ sessions: [saved] });
-  return saved;
 };
 
 export const updateSession = async (session: SessionRecord) => {
   await init();
-  const saved = await withStore(STORE_SESSIONS, "readwrite", async (store) => {
-    await requestToPromise(store.put(session));
-    return session;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_SESSIONS,
+    key: session.id,
+    record: session,
+    label: "session",
+    toPatch: (saved) => ({ sessions: [saved] }),
   });
-  void pushTrainingPatch({ sessions: [saved] });
-  return saved;
 };
 
 export const listSessions = async (limit = 20) => {
@@ -587,12 +629,13 @@ export const listExerciseLogsByProgramDay = async (
 
 export const saveProgram = async (program: Program) => {
   await init();
-  const saved = await withStore(STORE_PROGRAMS, "readwrite", async (store) => {
-    await requestToPromise(store.put(program));
-    return program;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_PROGRAMS,
+    key: program.id,
+    record: program,
+    label: "program",
+    toPatch: (saved) => ({ programs: [saved] }),
   });
-  void pushTrainingPatch({ programs: [saved] });
-  return saved;
 };
 
 export const getLatestProgram = async () => {
@@ -629,12 +672,13 @@ export const listAllPrograms = async () => {
 
 export const saveProgramProgress = async (progress: ProgramProgress) => {
   await init();
-  const saved = await withStore(STORE_PROGRESS, "readwrite", async (store) => {
-    await requestToPromise(store.put(progress));
-    return progress;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_PROGRESS,
+    key: progress.programId,
+    record: progress,
+    label: "program progress",
+    toPatch: (saved) => ({ programProgress: [saved] }),
   });
-  void pushTrainingPatch({ programProgress: [saved] });
-  return saved;
 };
 
 export const getProgramProgress = async (programId: string) => {
@@ -648,12 +692,13 @@ export const getProgramProgress = async (programId: string) => {
 
 export const saveExerciseLog = async (log: ExerciseLog) => {
   await init();
-  const saved = await withStore(STORE_LOGS, "readwrite", async (store) => {
-    await requestToPromise(store.put(log));
-    return log;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_LOGS,
+    key: log.id,
+    record: log,
+    label: "exercise log",
+    toPatch: (saved) => ({ exerciseLogs: [saved] }),
   });
-  void pushTrainingPatch({ exerciseLogs: [saved] });
-  return saved;
 };
 
 export const saveExerciseSwapEvent = async (params: {
