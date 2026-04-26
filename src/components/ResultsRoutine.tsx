@@ -103,6 +103,30 @@ type LevelUpNotice = {
 
 type ProgramWeekDay = Program["week"][number];
 
+const formatRoutineItemPrescription = (item: ProgramRoutineItem) => {
+  const structured = item.prescription;
+  if (structured) {
+    const dose =
+      structured.sets && structured.reps
+        ? `${structured.sets} x ${structured.reps}`
+        : structured.reps ?? (structured.sets ? `${structured.sets} sets` : null);
+    const details = [
+      structured.targetRPE ? `RPE ${structured.targetRPE}` : null,
+      structured.tempo ? `tempo ${structured.tempo}` : null,
+      structured.restSeconds ? `rest ${structured.restSeconds}s` : null,
+    ].filter(Boolean);
+    return [dose, ...details].filter(Boolean).join(" | ") || null;
+  }
+
+  return item.reps
+    ? `${item.sets ?? 1} x ${item.reps}`
+    : item.durationSec
+    ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
+    : item.sets
+    ? `${item.sets} sets`
+    : null;
+};
+
 function CurrentSavedProgramSnapshotLoadingCard({
   message = "Finalizing the plan reference.",
 }: {
@@ -273,13 +297,7 @@ const formatReferenceRoutineItems = (
     .map((item) => {
       const exercise = exerciseById(item.exerciseId);
       const name = exercise?.name ?? item.exerciseId;
-      const prescription = item.reps
-        ? `${item.sets ?? 1}x${item.reps}`
-        : item.durationSec
-        ? `${item.sets ? `${item.sets}x` : ""}${item.durationSec}s`
-        : item.sets
-        ? `${item.sets} sets`
-        : null;
+      const prescription = formatRoutineItemPrescription(item);
       const base = prescription ? `${name} [${prescription}]` : name;
       if (!options?.includeDebug || !item.selectionDebug) return base;
       const debugParts = [
@@ -2855,18 +2873,13 @@ export default function ResultsRoutine() {
     const exercise = exerciseById(item.exerciseId);
     if (!exercise) return [];
     const rationale =
+      item.rationale?.whyThisExercise ??
       optimizerReasonsByExercise[item.exerciseId]?.[0] ??
       exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
       exerciseRationaleById.get(item.exerciseId)?.contextReason ??
       buildWhyPicked(exercise).purpose ??
       "Rationale isn’t available for this exercise yet.";
-    const prescription = item.reps
-      ? `${item.sets ?? 1} x ${item.reps}`
-      : item.durationSec
-      ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
-      : item.sets
-      ? `${item.sets} sets`
-      : null;
+    const prescription = formatRoutineItemPrescription(item);
     return [
       {
         key: `routine-main-${item.exerciseId}-${index}`,
@@ -2881,18 +2894,13 @@ export default function ResultsRoutine() {
     const exercise = exerciseById(item.exerciseId);
     if (!exercise) return [];
     const rationale =
+      item.rationale?.whyThisExercise ??
       optimizerReasonsByExercise[item.exerciseId]?.[0] ??
       exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
       exerciseRationaleById.get(item.exerciseId)?.contextReason ??
       buildWhyPicked(exercise).purpose ??
       "Rationale isn’t available for this exercise yet.";
-    const prescription = item.reps
-      ? `${item.sets ?? 1} x ${item.reps}`
-      : item.durationSec
-      ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
-      : item.sets
-      ? `${item.sets} sets`
-      : null;
+    const prescription = formatRoutineItemPrescription(item);
     return [
       {
         key: `routine-fallback-${item.exerciseId}-${index}`,
@@ -3123,13 +3131,7 @@ export default function ResultsRoutine() {
     .map((item) => {
       const exercise = exerciseById(item.exerciseId);
       if (!exercise) return null;
-      const prescription = item.reps
-        ? `${item.sets ?? 1} x ${item.reps}`
-        : item.durationSec
-        ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
-        : item.sets
-        ? `${item.sets} sets`
-        : null;
+      const prescription = formatRoutineItemPrescription(item);
       return {
         key: `${item.exerciseId}-${item.section}`,
         name: exercise.name,
@@ -3620,8 +3622,18 @@ export default function ResultsRoutine() {
                     if (!exercise) return null;
                     const richRationale = exerciseRationaleById.get(item.exerciseId);
                     const reason =
+                      item.rationale?.whyThisExercise ??
                       optimizerReasonsByExercise[item.exerciseId]?.[0] ??
                       buildWhyPicked(exercise).purpose;
+                    const debugWhy =
+                      item.rationale?.whyThisExercise ??
+                      richRationale?.primaryReason ??
+                      richRationale?.contextReason ??
+                      "Rationale isn't available for this exercise yet.";
+                    const debugSetup =
+                      item.rationale?.mainCue ??
+                      richRationale?.setup ??
+                      "Control each rep, steady tempo.";
                     return (
                       <div key={`${item.exerciseId}-${index}`} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
                         <div className="flex items-center justify-between gap-2">
@@ -3633,20 +3645,25 @@ export default function ResultsRoutine() {
                         ) : (
                           <div className="mt-1 space-y-1">
                             <p className="text-[11px] text-slate-500">
-                              Why:{" "}
-                              {richRationale?.primaryReason ??
-                                richRationale?.contextReason ??
-                                "Rationale isn\u2019t available for this exercise yet."}
+                              Why: {debugWhy}
                             </p>
                             <p className="text-[11px] text-slate-500">
-                              Setup: {richRationale?.setup ?? "Control each rep, steady tempo."}
+                              Setup: {debugSetup}
                             </p>
-                            {richRationale?.progressions.length ? (
+                            {item.prescription?.progressionRule ? (
+                              <p className="text-[11px] text-slate-500">
+                                Progression: {item.prescription.progressionRule}
+                              </p>
+                            ) : richRationale?.progressions.length ? (
                               <p className="text-[11px] text-slate-500">
                                 Progression: {richRationale.progressions.join(" / ")}
                               </p>
                             ) : null}
-                            {richRationale?.regressions.length ? (
+                            {item.prescription?.regressionRule ? (
+                              <p className="text-[11px] text-slate-500">
+                                Regression: {item.prescription.regressionRule}
+                              </p>
+                            ) : richRationale?.regressions.length ? (
                               <p className="text-[11px] text-slate-500">
                                 Regression: {richRationale.regressions.join(" / ")}
                               </p>

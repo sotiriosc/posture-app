@@ -72,6 +72,26 @@ const groupBySection = (routine: ProgramRoutineItem[]): RoutineWithSections => {
   return { warmup, activation, main, cooldown };
 };
 
+const formatRoutineItemPrescription = (item: ProgramRoutineItem) => {
+  const structured = item.prescription;
+  if (structured) {
+    const dose =
+      structured.sets && structured.reps
+        ? `${structured.sets} x ${structured.reps}`
+        : structured.reps ?? (structured.sets ? `${structured.sets} sets` : null);
+    const details = [
+      structured.targetRPE ? `RPE ${structured.targetRPE}` : null,
+      structured.tempo ? `tempo ${structured.tempo}` : null,
+      structured.restSeconds ? `rest ${structured.restSeconds}s` : null,
+    ].filter(Boolean);
+    return [dose, ...details].filter(Boolean).join(" | ") || null;
+  }
+
+  return item.loadType === "timed"
+    ? `${item.durationSec ?? 60} sec`
+    : item.reps ?? null;
+};
+
 export default function ProgramDayPage({ params }: Props) {
   const router = useRouter();
   const [program, setProgram] = useState<Program | null>(null);
@@ -413,9 +433,12 @@ export default function ProgramDayPage({ params }: Props) {
                         : "BODYWEIGHT";
                     const latestWorkSeconds = lastLog?.workSecondsUsed ?? null;
                     const prescribedLine =
-                      item.loadType === "timed"
+                      formatRoutineItemPrescription(item) ??
+                      (item.loadType === "timed"
                         ? `${latestWorkSeconds ?? item.durationSec ?? 60} sec`
-                        : item.reps ?? exercise?.durationOrReps ?? "As prescribed";
+                        : item.reps ?? exercise?.durationOrReps ?? "As prescribed");
+                    const coachingLine =
+                      item.rationale?.mainCue ?? item.rationale?.whyThisExercise ?? null;
                     const nextLine = recommendation
                       ? `Next: ${formatRecommendation(recommendation)}`
                       : "Next: Keep targets consistent";
@@ -434,6 +457,9 @@ export default function ProgramDayPage({ params }: Props) {
                             </p>
                             <p className="mt-1 ui-body font-semibold text-slate-700">{nextLine}</p>
                             <p className="mt-1 ui-body">Prescribed: {prescribedLine}</p>
+                            {coachingLine ? (
+                              <p className="mt-1 ui-body text-slate-600">{coachingLine}</p>
+                            ) : null}
                           </div>
                           <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold text-slate-500">
                             <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">

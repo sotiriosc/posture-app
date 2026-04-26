@@ -90,6 +90,26 @@ export type LogPrefs = {
   substitutionByExercise?: Record<string, string>;
 };
 
+export type ExercisePrescription = {
+  sets?: number;
+  reps?: string;
+  tempo?: string;
+  restSeconds?: number;
+  targetRPE?: number;
+  progressionRule?: string;
+  regressionRule?: string;
+  stopRule?: string;
+};
+
+export type ExerciseRationale = {
+  whyThisExercise?: string;
+  mainCue?: string;
+  commonMistake?: string;
+  easierVersion?: string;
+  harderVersion?: string;
+  stopIf?: string;
+};
+
 export type ProgramRoutineItem = {
   exerciseId: string;
   section?: "warmup" | "activation" | "main" | "accessory" | "cooldown";
@@ -101,6 +121,8 @@ export type ProgramRoutineItem = {
   notes?: string | null;
   cues?: string[] | null;
   selectionDebug?: ProgramSelectionDebug;
+  prescription?: ExercisePrescription;
+  rationale?: ExerciseRationale;
 };
 
 export type ProgramSelectionDebugSource =
