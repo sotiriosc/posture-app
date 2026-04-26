@@ -36,15 +36,15 @@ export const onboardingPageOrder: OnboardingKey[] = [
 
 export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
   home: {
-    title: "Start here: How this movement system works",
+    title: "Start here: How Praxis works",
     sections: [
       {
         type: "text",
-        text: "This movement system is built for corrective performance, not generic workouts.",
+        text: "Praxis is built for corrective performance, not generic workouts.",
       },
       {
         type: "bullets",
-        title: "The system:",
+        title: "Praxis:",
         items: [
           "Detects tendencies that undermine movement quality.",
           "Builds structured corrective progression around pattern balance.",
@@ -57,7 +57,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
         items: [
           "Movement & posture baseline",
           "Structured movement profile assessment",
-          "Corrective program generation",
+          "Personalized plan build",
         ],
       },
       {
@@ -92,7 +92,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
     ],
   },
   questionnaire: {
-    title: "How to answer the structured movement profile assessment",
+    title: "How to answer your Praxis movement profile",
     sections: [
       {
         type: "bullets",
@@ -114,12 +114,12 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "Your answers help identify movement priorities and constraints for better corrective programming.",
+        text: "Your answers help identify movement priorities and constraints for a more useful plan.",
       },
     ],
   },
   results: {
-    title: "How to use your corrective dashboard",
+    title: "How to use your Praxis dashboard",
     sections: [
       {
         type: "bullets",
@@ -127,8 +127,8 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
         items: [
           "Phase: where you are in pattern mastery",
           "Week View: your weekly corrective structure",
-          "Readiness for Corrective Progress: how prepared you are",
-          "System Adjustments: what the plan changed and why",
+          "Training readiness: how prepared you are",
+          "Plan adjustments: what changed and why",
         ],
       },
       {
@@ -137,7 +137,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "After each session, the movement system updates automatically.",
+        text: "After each session, Praxis updates the plan automatically.",
       },
     ],
   },
@@ -164,7 +164,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "The system adjusts movement quality emphasis based on your feedback.",
+        text: "Praxis adjusts movement quality emphasis based on your feedback.",
       },
     ],
   },

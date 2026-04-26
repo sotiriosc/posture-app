@@ -17,6 +17,7 @@ import type {
   ProgramProgress,
   SessionRecord,
 } from "@/lib/types";
+import { PROGRAM_TEMPLATE_VERSION } from "@/lib/program";
 
 const mocks = vi.hoisted(() => ({
   searchParams: "programId=program-strength&dayIndex=0",
@@ -40,12 +41,14 @@ const makeProgram = (params: {
   daysPerWeek: 3 | 4 | 5;
   dayTitle: string;
   routine: Program["week"][number]["routine"];
+  templateVersion?: number;
+  updatedAt?: string;
 }): Program => ({
   id: params.id,
   userId: null,
   createdAt: "2026-02-15T00:00:00.000Z",
-  updatedAt: "2026-02-15T00:00:00.000Z",
-  templateVersion: 1,
+  updatedAt: params.updatedAt ?? "2026-02-15T00:00:00.000Z",
+  templateVersion: params.templateVersion ?? PROGRAM_TEMPLATE_VERSION,
   goalTrack: "Improve posture",
   daysPerWeek: params.daysPerWeek,
   estimatedSessionMinutesRange: { min: 45, max: 60 },
@@ -101,6 +104,11 @@ vi.mock("@/lib/logStore", () => ({
   ),
   listExerciseLogsBySession: vi.fn(async (sessionId: string) =>
     mocks.logs.filter((log) => log.sessionId === sessionId)
+  ),
+  listAllPrograms: vi.fn(async () =>
+    Array.from(mocks.programs.values()).sort((a, b) =>
+      (b.updatedAt ?? "").localeCompare(a.updatedAt ?? "")
+    )
   ),
   listSessions: vi.fn(async (limit = 20) => mocks.sessions.slice(0, limit)),
   loadPrefs: vi.fn(async () => mocks.prefs),
@@ -336,6 +344,90 @@ describe("session tracking integration flow", () => {
     expect(screen.getByTestId("current-exercise-id").dataset.exerciseId).toBe(
       "dumbbell-rows"
     );
+  });
+
+  test("direct session route recovers the latest compatible saved program", async () => {
+    mocks.searchParams = "";
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: "missing-active-program",
+        programId: "missing-legacy-program",
+        updatedAt: Date.now(),
+      })
+    );
+    mocks.programs.set(
+      "program-newer-incompatible",
+      makeProgram({
+        id: "program-newer-incompatible",
+        daysPerWeek: 4,
+        dayTitle: "Incompatible Day",
+        updatedAt: "2026-02-16T00:00:00.000Z",
+        templateVersion: PROGRAM_TEMPLATE_VERSION,
+        routine: [
+          {
+            exerciseId: "plank",
+            section: "main",
+            sets: "1",
+            reps: null,
+            durationSec: 30,
+            restSec: 30,
+            loadType: "timed",
+          },
+        ],
+      })
+    );
+    mocks.programs.set(
+      "program-compatible-latest",
+      makeProgram({
+        id: "program-compatible-latest",
+        daysPerWeek: 3,
+        dayTitle: "Recovered Program Day",
+        updatedAt: "2026-02-15T12:00:00.000Z",
+        templateVersion: PROGRAM_TEMPLATE_VERSION,
+        routine: [
+          {
+            exerciseId: "band-row",
+            section: "main",
+            sets: "2",
+            reps: "10-12",
+            durationSec: null,
+            restSec: 45,
+            loadType: "assisted",
+          },
+        ],
+      })
+    );
+
+    render(React.createElement(SessionClient));
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/Recovered Program Day/i).length).toBeGreaterThan(0);
+      expect(screen.getByTestId("current-exercise-id").dataset.exerciseId).toBe(
+        "band-row"
+      );
+    });
+  });
+
+  test("direct session route does not generate a questionnaire-only routine when no program exists", async () => {
+    mocks.searchParams = "";
+    mocks.programs.clear();
+    localStorage.setItem(
+      APP_STATE_KEY,
+      JSON.stringify({
+        activeProgramId: "missing-active-program",
+        programId: "missing-legacy-program",
+        updatedAt: Date.now(),
+      })
+    );
+
+    render(React.createElement(SessionClient));
+
+    await waitFor(() => {
+      expect(screen.getByText("No saved Praxis program found")).toBeTruthy();
+    });
+    expect(screen.queryByTestId("current-exercise-id")).toBeNull();
+    expect(screen.getByRole("link", { name: "Back to results" })).toBeTruthy();
   });
 
   test("auto-advances focus through logging inputs once all sets are complete", async () => {

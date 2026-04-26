@@ -91,9 +91,9 @@ export default function PhotoUploader() {
   return (
     <div className="space-y-6">
       <div className="ui-card ui-soft-surface rounded-lg border-amber-300/25 p-4 text-xs text-amber-100">
-        <p className="font-semibold text-amber-50">Local photo storage</p>
+        <p className="font-semibold text-amber-50">Private on this device</p>
         <p className="mt-1">
-          Photos are stored on this device. Clearing site data will remove them.
+          Photos stay local to this browser unless cloud sync is available. Clearing site data removes them.
         </p>
       </div>
 
@@ -105,7 +105,7 @@ export default function PhotoUploader() {
           </span>
         </p>
         <p className="text-slate-400">
-          Lightweight metadata is saved locally for quick status.
+          Photo status is saved locally so your dashboard can explain what informed the plan.
         </p>
       </div>
 

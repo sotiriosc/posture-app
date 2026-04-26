@@ -16,12 +16,12 @@ import RecentPrList, {
 import { loadAppState } from "@/lib/appState";
 import { exerciseById } from "@/lib/exercises";
 import {
-  getLatestProgram,
-  getProgram,
   init,
+  listAllPrograms,
   listExerciseLogsBySession,
   listSessions,
 } from "@/lib/logStore";
+import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import type { ExerciseLog, SessionRecord } from "@/lib/types";
 
 const DAY_MS = 86_400_000;
@@ -163,10 +163,10 @@ export default function ProgressPage() {
       await init();
       const sessionList = await listSessions(250);
       const appState = loadAppState();
-      const activeProgramId = appState?.activeProgramId ?? null;
-      const activeProgram = activeProgramId
-        ? await getProgram(activeProgramId)
-        : await getLatestProgram();
+      const programs = await listAllPrograms();
+      const activeProgramResolution = resolveActiveProgramFromList(programs, appState);
+      const activeProgramId = activeProgramResolution.programId;
+      const activeProgram = activeProgramResolution.program;
       const activeProgramSessions = activeProgramId
         ? sessionList.filter((session) => session.routineId === activeProgramId)
         : [];

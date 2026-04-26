@@ -4,11 +4,11 @@ import { applyCompletedDayToProgramProgress } from "@/lib/programProgress";
 import type { ProgramProgress } from "@/lib/types";
 
 describe("phase gating rules", () => {
-  test("phase 1 requires at least 30 days and daysPerWeek * 4 workouts", () => {
+  test("phase 1 passes with either 30 days or daysPerWeek * 4 workouts", () => {
     const blocked = canAdvancePhase(
       {
         phaseIndex: 1,
-        phaseStartedAt: "2026-01-10T00:00:00.000Z",
+        phaseStartedAt: "2026-01-25T00:00:00.000Z",
         workoutsCompletedInPhase: 11,
         cyclesCompletedInPhase: 4,
         daysPerWeek: 3,
@@ -19,8 +19,35 @@ describe("phase gating rules", () => {
     expect(blocked.minWorkouts).toBe(12);
     expect(blocked.reasons.join(" ")).toContain("12 workouts");
     expect(blocked.reasons.join(" ")).toContain("30 days");
+    expect(blocked.satisfiedBy).toBeNull();
 
-    const passed = canAdvancePhase(
+    const passedByWorkouts = canAdvancePhase(
+      {
+        phaseIndex: 1,
+        phaseStartedAt: "2026-01-25T00:00:00.000Z",
+        workoutsCompletedInPhase: 12,
+        cyclesCompletedInPhase: 0,
+        daysPerWeek: 3,
+      },
+      "2026-02-01T00:00:00.000Z"
+    );
+    expect(passedByWorkouts.ok).toBe(true);
+    expect(passedByWorkouts.satisfiedBy).toBe("workouts");
+
+    const passedByDays = canAdvancePhase(
+      {
+        phaseIndex: 1,
+        phaseStartedAt: "2026-01-01T00:00:00.000Z",
+        workoutsCompletedInPhase: 1,
+        cyclesCompletedInPhase: 0,
+        daysPerWeek: 3,
+      },
+      "2026-02-01T00:00:00.000Z"
+    );
+    expect(passedByDays.ok).toBe(true);
+    expect(passedByDays.satisfiedBy).toBe("days");
+
+    const passedByBoth = canAdvancePhase(
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-01T00:00:00.000Z",
@@ -30,28 +57,55 @@ describe("phase gating rules", () => {
       },
       "2026-02-01T00:00:00.000Z"
     );
-    expect(passed.ok).toBe(true);
+    expect(passedByBoth.ok).toBe(true);
+    expect(passedByBoth.satisfiedBy).toBe("both");
   });
 
-  test("phase 2 and phase 3+ use 60 days and daysPerWeek * 8 workouts", () => {
+  test("phase 2 and phase 3+ pass with either 60 days or daysPerWeek * 8 workouts", () => {
     const phase2Blocked = canAdvancePhase(
       {
         phaseIndex: 2,
-        phaseStartedAt: "2026-01-01T00:00:00.000Z",
+        phaseStartedAt: "2026-01-25T00:00:00.000Z",
         workoutsCompletedInPhase: 31,
         cyclesCompletedInPhase: 99,
         daysPerWeek: 4,
       },
-      "2026-03-15T00:00:00.000Z"
+      "2026-02-01T00:00:00.000Z"
     );
     expect(phase2Blocked.ok).toBe(false);
     expect(phase2Blocked.minWorkouts).toBe(32);
     expect(phase2Blocked.reasons.join(" ")).toContain("32 workouts");
 
+    const phase2PassedByWorkouts = canAdvancePhase(
+      {
+        phaseIndex: 2,
+        phaseStartedAt: "2026-01-25T00:00:00.000Z",
+        workoutsCompletedInPhase: 32,
+        cyclesCompletedInPhase: 0,
+        daysPerWeek: 4,
+      },
+      "2026-02-01T00:00:00.000Z"
+    );
+    expect(phase2PassedByWorkouts.ok).toBe(true);
+    expect(phase2PassedByWorkouts.satisfiedBy).toBe("workouts");
+
+    const phase2PassedByDays = canAdvancePhase(
+      {
+        phaseIndex: 2,
+        phaseStartedAt: "2026-01-01T00:00:00.000Z",
+        workoutsCompletedInPhase: 1,
+        cyclesCompletedInPhase: 0,
+        daysPerWeek: 4,
+      },
+      "2026-03-15T00:00:00.000Z"
+    );
+    expect(phase2PassedByDays.ok).toBe(true);
+    expect(phase2PassedByDays.satisfiedBy).toBe("days");
+
     const phase3Blocked = canAdvancePhase(
       {
         phaseIndex: 3,
-        phaseStartedAt: "2026-01-01T00:00:00.000Z",
+        phaseStartedAt: "2026-01-25T00:00:00.000Z",
         workoutsCompletedInPhase: 39,
         cyclesCompletedInPhase: 99,
         daysPerWeek: 5,

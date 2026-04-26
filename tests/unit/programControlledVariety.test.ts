@@ -58,7 +58,11 @@ const isLateralMain = (exercise: Exercise) =>
 
 const isRowLeakMain = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
-  return descriptor.includes("row");
+  return (
+    descriptor.includes("row") &&
+    !descriptor.includes("upright row") &&
+    !descriptor.includes("upright-row")
+  );
 };
 
 const isExternalRotationLeakMain = (exercise: Exercise) => {

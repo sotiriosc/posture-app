@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
+import { logTrainingSync } from "@/lib/trainingSyncDebug";
 import { clearDraft } from "@/lib/sessionDraftStore";
 import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
 import { getProgram, saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
@@ -89,10 +90,17 @@ export default function QuestionnaireForm() {
   const [requiresChangeConfirmation, setRequiresChangeConfirmation] = useState(false);
   const router = useRouter();
   const [hydratedServerSnapshot, setHydratedServerSnapshot] = useState(false);
+  const lastQuestionnaireSyncSignatureRef = useRef<string | null>(null);
 
   const persistQuestionnaire = (next: QuestionnaireData) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     if (hydratedServerSnapshot) {
+      const nextSignature = buildQuestionnaireSignature(next);
+      if (lastQuestionnaireSyncSignatureRef.current === nextSignature) {
+        logTrainingSync("training-sync", "skipped unchanged questionnaire sync");
+        return;
+      }
+      lastQuestionnaireSyncSignatureRef.current = nextSignature;
       void pushTrainingPatch({ questionnaire: next });
     }
   };
@@ -103,7 +111,7 @@ export default function QuestionnaireForm() {
     const state = loadAppState();
     setChangeWarning(
       state?.activeSessionId
-        ? "An active session is in progress. Confirming will end it and load a new program."
+        ? "An active session is in progress. Confirming will end it and build a refreshed plan."
         : null
     );
   };
@@ -246,6 +254,7 @@ export default function QuestionnaireForm() {
       setData(merged);
       setCommittedData(merged);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      lastQuestionnaireSyncSignatureRef.current = buildQuestionnaireSignature(merged);
       setRequiresChangeConfirmation(true);
       setHydratedServerSnapshot(true);
     };
@@ -413,24 +422,24 @@ export default function QuestionnaireForm() {
         disabled={isApplyingChange}
         className="h-12 w-full rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_38px_rgba(37,99,235,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
       >
-        Generate routine
+        Build my Praxis plan
       </button>
 
       {showChangeConfirm ? (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Questionnaire change confirmation"
+          aria-label="Movement profile change confirmation"
           data-testid="questionnaire-change-confirm-modal"
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
         >
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
           <div className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-950/95 p-6 text-white shadow-xl">
             <p className="text-lg font-semibold">
-              Your selection changed. Your workout will update.
+              Your profile changed. Your plan will update.
             </p>
             <p className="mt-2 text-sm text-slate-200">
-              Cancel keeps your current plan. Confirm regenerates your workout now.
+              Cancel keeps your current plan. Confirm builds a refreshed Praxis plan now.
             </p>
             {changeWarning ? (
               <p className="mt-3 rounded-2xl border border-amber-200/40 bg-amber-50/10 px-3 py-2 text-xs text-amber-100">

@@ -43,7 +43,7 @@ describe("phase skip", () => {
     expect(updated).toEqual(phase2Progress);
   });
 
-  test("canAdvancePhase is locked when phaseStartedAt is missing", () => {
+  test("canAdvancePhase can pass by workout target when phaseStartedAt is missing", () => {
     const gate = canAdvancePhase(
       {
         phaseIndex: 1,
@@ -54,8 +54,8 @@ describe("phase skip", () => {
       },
       "2026-02-15T00:00:00.000Z"
     );
-    expect(gate.ok).toBe(false);
-    expect(gate.reasons).toContain("Phase initialization incomplete");
+    expect(gate.ok).toBe(true);
+    expect(gate.satisfiedBy).toBe("workouts");
   });
 
   test("phase remains unchanged until explicit skip action is invoked", () => {

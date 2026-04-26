@@ -23,7 +23,7 @@ export default function AssessmentPage() {
               </p>
             </div>
             <Link href="/questionnaire">
-              <Button variant="secondary">Skip to questionnaire</Button>
+              <Button variant="secondary">Answer profile instead</Button>
             </Link>
           </header>
 
@@ -46,7 +46,7 @@ export default function AssessmentPage() {
             <Button variant="secondary">Back to home</Button>
           </Link>
           <Link href="/questionnaire">
-            <Button variant="primary">Continue to questionnaire</Button>
+            <Button variant="primary">Continue to profile</Button>
           </Link>
         </OnImage>
       </div>

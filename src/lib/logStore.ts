@@ -8,10 +8,15 @@ import type {
 } from "@/lib/types";
 import { resolveExerciseHistoryIds } from "@/lib/exercises";
 import {
-  loadTrainingSnapshot,
+  loadTrainingSnapshotWithStatus,
   pushTrainingPatch,
   type TrainingSnapshot,
 } from "@/lib/trainingSyncClient";
+import {
+  areTrainingRecordsEquivalent,
+  shouldUseRemoteTrainingRecord,
+} from "@/lib/trainingStateModel";
+import { logTrainingSync } from "@/lib/trainingSyncDebug";
 
 const DB_NAME = "bodycoach-logs";
 const DB_VERSION = 2;
@@ -214,6 +219,42 @@ const requestToPromise = <T>(request: IDBRequest<T>) =>
     request.onerror = () => reject(request.error);
   });
 
+const saveTrainingRecordIfChanged = async <T extends object>(
+  params: {
+    storeName: string;
+    key: IDBValidKey;
+    record: T;
+    label: string;
+    toPatch: (record: T) => TrainingSnapshot;
+  }
+) => {
+  const result = await withStore(params.storeName, "readwrite", async (store) => {
+    const existing = (await requestToPromise(store.get(params.key))) as
+      | T
+      | undefined;
+    if (
+      existing &&
+      areTrainingRecordsEquivalent(existing, params.record, {
+        ignoreUpdatedAt: true,
+      })
+    ) {
+      return { record: existing, changed: false };
+    }
+    await requestToPromise(store.put(params.record));
+    return { record: params.record, changed: true };
+  });
+
+  if (result.changed) {
+    void pushTrainingPatch(params.toPatch(result.record));
+  } else {
+    logTrainingSync("training-local", `skipped unchanged ${params.label}`, {
+      key: String(params.key),
+    });
+  }
+
+  return result.record;
+};
+
 const nowIso = () => new Date().toISOString();
 
 const normalizeDate = (date: string) => {
@@ -409,17 +450,32 @@ const hydrateFromServerSnapshot = async (snapshot: TrainingSnapshot | null) => {
   if (!snapshot) return;
 
   if (snapshot.questionnaire !== undefined && snapshot.questionnaire !== null) {
-    localStorage.setItem("posture_questionnaire", JSON.stringify(snapshot.questionnaire));
+    const existingQuestionnaire = localStorage.getItem("posture_questionnaire");
+    if (!existingQuestionnaire) {
+      localStorage.setItem("posture_questionnaire", JSON.stringify(snapshot.questionnaire));
+    }
   }
 
   if (snapshot.prefs) {
-    await savePrefsRecord(snapshot.prefs);
+    const localPrefs = await loadPrefsRecord();
+    if (!localPrefs || localPrefs.schemaVersion !== SCHEMA_VERSION) {
+      await savePrefsRecord(snapshot.prefs);
+    }
   }
 
   if (snapshot.programs?.length) {
     await withStore(STORE_PROGRAMS, "readwrite", async (store) => {
       for (const program of snapshot.programs ?? []) {
-        await requestToPromise(store.put(program));
+        const localProgram = await requestToPromise(store.get(program.id));
+        if (
+          shouldUseRemoteTrainingRecord(
+            program,
+            localProgram ?? null,
+            snapshot.meta?.programUpdatedAtById?.[program.id]
+          )
+        ) {
+          await requestToPromise(store.put(program));
+        }
       }
       return true;
     });
@@ -428,7 +484,16 @@ const hydrateFromServerSnapshot = async (snapshot: TrainingSnapshot | null) => {
   if (snapshot.programProgress?.length) {
     await withStore(STORE_PROGRESS, "readwrite", async (store) => {
       for (const progress of snapshot.programProgress ?? []) {
-        await requestToPromise(store.put(progress));
+        const localProgress = await requestToPromise(store.get(progress.programId));
+        if (
+          shouldUseRemoteTrainingRecord(
+            progress,
+            localProgress ?? null,
+            snapshot.meta?.programProgressUpdatedAtByProgramId?.[progress.programId]
+          )
+        ) {
+          await requestToPromise(store.put(progress));
+        }
       }
       return true;
     });
@@ -437,7 +502,16 @@ const hydrateFromServerSnapshot = async (snapshot: TrainingSnapshot | null) => {
   if (snapshot.sessions?.length) {
     await withStore(STORE_SESSIONS, "readwrite", async (store) => {
       for (const session of snapshot.sessions ?? []) {
-        await requestToPromise(store.put(session));
+        const localSession = await requestToPromise(store.get(session.id));
+        if (
+          shouldUseRemoteTrainingRecord(
+            session,
+            localSession ?? null,
+            snapshot.meta?.sessionUpdatedAtById?.[session.id]
+          )
+        ) {
+          await requestToPromise(store.put(session));
+        }
       }
       return true;
     });
@@ -446,7 +520,16 @@ const hydrateFromServerSnapshot = async (snapshot: TrainingSnapshot | null) => {
   if (snapshot.exerciseLogs?.length) {
     await withStore(STORE_LOGS, "readwrite", async (store) => {
       for (const log of snapshot.exerciseLogs ?? []) {
-        await requestToPromise(store.put(log));
+        const localLog = await requestToPromise(store.get(log.id));
+        if (
+          shouldUseRemoteTrainingRecord(
+            log,
+            localLog ?? null,
+            snapshot.meta?.exerciseLogUpdatedAtById?.[log.id]
+          )
+        ) {
+          await requestToPromise(store.put(log));
+        }
       }
       return true;
     });
@@ -459,9 +542,11 @@ const ensureServerHydrated = async () => {
   if (now - lastServerHydratedAt < SERVER_HYDRATION_TTL_MS) return;
   if (serverHydrationPromise) return serverHydrationPromise;
   serverHydrationPromise = (async () => {
-    const snapshot = await loadTrainingSnapshot();
-    await hydrateFromServerSnapshot(snapshot);
-    lastServerHydratedAt = Date.now();
+    const result = await loadTrainingSnapshotWithStatus();
+    if (result.ok) {
+      await hydrateFromServerSnapshot(result.snapshot);
+      lastServerHydratedAt = Date.now();
+    }
   })()
     .catch(() => {})
     .finally(() => {
@@ -478,22 +563,24 @@ export const init = async () => {
 
 export const createSession = async (session: SessionRecord) => {
   await init();
-  const saved = await withStore(STORE_SESSIONS, "readwrite", async (store) => {
-    await requestToPromise(store.put(session));
-    return session;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_SESSIONS,
+    key: session.id,
+    record: session,
+    label: "session",
+    toPatch: (saved) => ({ sessions: [saved] }),
   });
-  void pushTrainingPatch({ sessions: [saved] });
-  return saved;
 };
 
 export const updateSession = async (session: SessionRecord) => {
   await init();
-  const saved = await withStore(STORE_SESSIONS, "readwrite", async (store) => {
-    await requestToPromise(store.put(session));
-    return session;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_SESSIONS,
+    key: session.id,
+    record: session,
+    label: "session",
+    toPatch: (saved) => ({ sessions: [saved] }),
   });
-  void pushTrainingPatch({ sessions: [saved] });
-  return saved;
 };
 
 export const listSessions = async (limit = 20) => {
@@ -542,12 +629,13 @@ export const listExerciseLogsByProgramDay = async (
 
 export const saveProgram = async (program: Program) => {
   await init();
-  const saved = await withStore(STORE_PROGRAMS, "readwrite", async (store) => {
-    await requestToPromise(store.put(program));
-    return program;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_PROGRAMS,
+    key: program.id,
+    record: program,
+    label: "program",
+    toPatch: (saved) => ({ programs: [saved] }),
   });
-  void pushTrainingPatch({ programs: [saved] });
-  return saved;
 };
 
 export const getLatestProgram = async () => {
@@ -584,12 +672,13 @@ export const listAllPrograms = async () => {
 
 export const saveProgramProgress = async (progress: ProgramProgress) => {
   await init();
-  const saved = await withStore(STORE_PROGRESS, "readwrite", async (store) => {
-    await requestToPromise(store.put(progress));
-    return progress;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_PROGRESS,
+    key: progress.programId,
+    record: progress,
+    label: "program progress",
+    toPatch: (saved) => ({ programProgress: [saved] }),
   });
-  void pushTrainingPatch({ programProgress: [saved] });
-  return saved;
 };
 
 export const getProgramProgress = async (programId: string) => {
@@ -603,12 +692,13 @@ export const getProgramProgress = async (programId: string) => {
 
 export const saveExerciseLog = async (log: ExerciseLog) => {
   await init();
-  const saved = await withStore(STORE_LOGS, "readwrite", async (store) => {
-    await requestToPromise(store.put(log));
-    return log;
+  return saveTrainingRecordIfChanged({
+    storeName: STORE_LOGS,
+    key: log.id,
+    record: log,
+    label: "exercise log",
+    toPatch: (saved) => ({ exerciseLogs: [saved] }),
   });
-  void pushTrainingPatch({ exerciseLogs: [saved] });
-  return saved;
 };
 
 export const saveExerciseSwapEvent = async (params: {

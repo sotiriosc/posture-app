@@ -113,12 +113,28 @@ export type ProgramSelectionDebugSource =
   | "coverage_repair"
   | "day_intelligence_repair";
 
+export type ProgramSelectionDecisionTrace = {
+  selectedForQuota?: Array<{
+    category: string;
+    deficit: number;
+    bonus: number;
+  }>;
+  noveltyPenaltyApplied?: number;
+  environmentBonusOrPenalty?: number;
+  slotRoleMatch?: string;
+  tieBreakRank?: number;
+  phaseFitBonusOrPenalty?: number;
+  dayIdentityBonusOrPenalty?: number;
+  fatigueOverlapPenalty?: number;
+};
+
 export type ProgramSelectionDebug = {
   source: ProgramSelectionDebugSource;
   slotId?: string;
   slotKind?: string;
   slotLane?: string;
   phaseIndex?: number;
+  decisionTrace?: ProgramSelectionDecisionTrace;
 };
 
 export type ProgramDay = {

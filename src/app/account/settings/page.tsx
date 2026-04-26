@@ -139,7 +139,7 @@ export default function AccountSettingsPage() {
       }));
       downloadFile(
         toCsv(rows),
-        `bodycoach-logs-${Date.now()}.csv`,
+        `praxis-training-logs-${Date.now()}.csv`,
         "text/csv;charset=utf-8"
       );
       setMessage("CSV export downloaded.");
@@ -169,7 +169,7 @@ export default function AccountSettingsPage() {
       };
       downloadFile(
         JSON.stringify(payload, null, 2),
-        `bodycoach-export-${Date.now()}.json`,
+        `praxis-training-export-${Date.now()}.json`,
         "application/json"
       );
       setMessage("JSON export downloaded.");
@@ -191,7 +191,7 @@ export default function AccountSettingsPage() {
               </p>
               <h1 className="mt-2 text-3xl font-semibold text-white">Settings</h1>
               <p className="mt-2 max-w-2xl text-sm text-slate-200">
-                Export training data, reset current progress, or erase local app data on this device.
+                Export Praxis data, reset current progress, or erase local app data on this device.
               </p>
             </div>
             <Link href="/results">
@@ -205,7 +205,7 @@ export default function AccountSettingsPage() {
             <p className="ui-kicker">Exports</p>
             <h2 className="ui-title mt-1">Download your data</h2>
             <p className="mt-2 text-sm text-slate-300">
-              Export logs and program history anytime.
+              Export your Praxis logs and plan history anytime.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Button variant="primary" disabled={exporting} onClick={handleDownloadCsv}>
@@ -219,9 +219,9 @@ export default function AccountSettingsPage() {
 
           <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
             <p className="ui-kicker">Current progress</p>
-            <h2 className="ui-title mt-1">Reset active program progress</h2>
+            <h2 className="ui-title mt-1">Reset active plan progress</h2>
             <p className="mt-2 text-sm text-slate-300">
-              Start the active program from Day 1 again while preserving completed workout history and logs.
+              Start the active plan from Day 1 again while preserving completed workout history and logs.
             </p>
             {!resetProgressConfirmOpen ? (
               <div className="mt-4">

@@ -44,6 +44,12 @@ const resolveMainCategory = (exercise: Exercise) => {
     return "lateral";
   }
   if (
+    descriptor.includes("upright row") ||
+    descriptor.includes("upright-row")
+  ) {
+    return "uprightRow";
+  }
+  if (
     descriptor.includes("y raise") ||
     descriptor.includes("y-raise") ||
     descriptor.includes("t raise") ||
@@ -98,7 +104,11 @@ const isCarryExercise = (exercise: Exercise) => {
 
 const isRowMainLeak = (exercise: Exercise) => {
   const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
-  return descriptor.includes("row");
+  return (
+    descriptor.includes("row") &&
+    !descriptor.includes("upright row") &&
+    !descriptor.includes("upright-row")
+  );
 };
 
 const isExternalRotationMainLeak = (exercise: Exercise) => {
@@ -207,6 +217,7 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       const categories = mains.map((exercise) => resolveMainCategory(exercise));
       const rearDeltCount = categories.filter((category) => category === "rearDeltMain").length;
       const lateralCount = categories.filter((category) => category === "lateral").length;
+      const uprightRowCount = categories.filter((category) => category === "uprightRow").length;
       const shoulderSupportCount = categories.filter(
         (category) => category === "shoulderSupport"
       ).length;
@@ -215,10 +226,11 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       expect(mains.length).toBe(expectedMainCount);
       expect(categories.filter((category) => category === "ohp").length).toBe(1);
       expect(lateralCount).toBeGreaterThanOrEqual(1);
-      expect(lateralCount + rearDeltCount - 1).toBe(supplementalShoulderCount);
+      expect(rearDeltCount + uprightRowCount).toBe(supplementalShoulderCount);
       expect(shoulderSupportCount).toBe(0);
       if (expectedMainCount >= 4) {
         expect(rearDeltCount).toBeGreaterThanOrEqual(1);
+        expect(uprightRowCount).toBeLessThanOrEqual(1);
       }
       expect(categories.filter((category) => category === "biceps").length).toBe(0);
       expect(categories.filter((category) => category === "triceps").length).toBe(0);
@@ -296,7 +308,7 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       const mains = getMainExercises(program);
       const categories = mains.map((exercise) => resolveMainCategory(exercise));
       const extras = categories.slice(2).filter((category) =>
-        ["rearDeltMain", "lateral"].includes(category)
+        ["rearDeltMain", "lateral", "uprightRow"].includes(category)
       );
       const supportMain = mains.find(
         (exercise) => resolveMainCategory(exercise) === "shoulderSupport"
@@ -382,7 +394,13 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
       { phaseIndex: 2, seed }
     );
     const mains = getMainExercises(program);
-    const allowedCategories = new Set(["ohp", "lateral", "rearDeltMain", "shoulderSupport"]);
+    const allowedCategories = new Set([
+      "ohp",
+      "lateral",
+      "rearDeltMain",
+      "uprightRow",
+      "shoulderSupport",
+    ]);
     const categories = mains.map((exercise) => resolveMainCategory(exercise));
 
     expect(mains.length).toBe(4);
@@ -395,7 +413,13 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
   });
 
   test("mixed-equipment seed sweep never leaks non-shoulder mains on Day 2", () => {
-    const allowedCategories = new Set(["ohp", "lateral", "rearDeltMain", "shoulderSupport"]);
+    const allowedCategories = new Set([
+      "ohp",
+      "lateral",
+      "rearDeltMain",
+      "uprightRow",
+      "shoulderSupport",
+    ]);
     const cases: Array<{
       experience: "Intermediate" | "Advanced";
       phaseIndex: 2 | 3;

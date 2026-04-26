@@ -60,10 +60,10 @@ export default function ManageSubscriptionButton({
       {showRefreshAction ? (
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <Button type="button" variant="secondary" onClick={refreshStatus} disabled={refreshing}>
-            {refreshing ? "Refreshing..." : "I finished in Stripe"}
+            {refreshing ? "Refreshing..." : "Refresh subscription status"}
           </Button>
           <p className="text-xs text-slate-400">
-            After changes in Stripe, click here to refresh this page.
+            After making changes in the secure billing portal, refresh to confirm your access.
           </p>
         </div>
       ) : null}

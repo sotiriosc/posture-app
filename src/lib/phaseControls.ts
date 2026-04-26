@@ -36,6 +36,7 @@ export const getPhaseReadyNoticeState = (params: {
   phaseIndex: number;
   gate: PhaseAdvanceGateResult;
   previousWorkoutsCompletedInPhase?: number;
+  previousDaysSincePhaseStart?: number;
   dismissed?: boolean;
 }): PhaseReadyNoticeState => {
   const {
@@ -43,6 +44,7 @@ export const getPhaseReadyNoticeState = (params: {
     phaseIndex,
     gate,
     previousWorkoutsCompletedInPhase = gate.workoutsCompletedInPhase,
+    previousDaysSincePhaseStart = gate.daysSincePhaseStart,
     dismissed = false,
   } = params;
   if (!programId || phaseIndex >= MAX_PHASE_INDEX || dismissed || !gate.ok) {
@@ -50,9 +52,9 @@ export const getPhaseReadyNoticeState = (params: {
   }
 
   const previousWorkouts = Math.max(0, Math.floor(previousWorkoutsCompletedInPhase));
+  const previousDays = Math.max(0, Math.floor(previousDaysSincePhaseStart));
   const previousGateWasSatisfied =
-    previousWorkouts >= gate.minWorkouts &&
-    gate.daysSincePhaseStart >= gate.minDays;
+    previousWorkouts >= gate.minWorkouts || previousDays >= gate.minDays;
 
   return {
     shouldShow: !previousGateWasSatisfied,

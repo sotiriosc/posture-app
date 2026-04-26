@@ -65,7 +65,7 @@ describe("merge readiness anchors", () => {
       "engine-v1|weekly|target:2:1:1:1|questionnaire:15hyeri|settings:w8rmy8|history:14wgysr"
     );
     expect(weekSignature(result.program.week)).toBe(
-      "warmup:wall-slides,activation:band-pull-aparts,main:dumbbell-bench-press,main:split-stance-band-chest-press,main:dumbbell-rows,main:band-lat-pulldown,accessory:band-rear-delt-fly,accessory:band-face-pull-high-anchor,cooldown:thread-the-needle|warmup:wall-slides,activation:band-pull-aparts,main:band-overhead-press,main:dumbbell-lateral-raise,main:band-rear-delt-fly,main:band-lateral-raise,accessory:db-triceps-extension,accessory:db-biceps-curl,accessory:marching-brace-hold,cooldown:thread-the-needle|warmup:cat-cow,activation:wall-angel-hold,main:cossack-squat,main:db-rdl,main:split-squat,main:band-rdl,accessory:band-woodchop,accessory:single-leg-calf-raise,cooldown:thread-the-needle"
+      "warmup:wall-slides,activation:band-pull-aparts,main:dumbbell-floor-press,main:split-stance-band-chest-press,main:dumbbell-rows,main:band-lat-pulldown-kneeling,accessory:band-rear-delt-fly,accessory:band-face-pull-high-anchor,cooldown:thread-the-needle|warmup:wall-slides,activation:band-pull-aparts,main:band-overhead-press,main:dumbbell-lateral-raise,main:band-rear-delt-fly,main:band-lateral-raise,accessory:db-triceps-extension,accessory:db-biceps-curl,accessory:farmers-carry,cooldown:thread-the-needle|warmup:cat-cow,activation:wall-angel-hold,main:goblet-squat,main:db-rdl,main:split-squat,main:band-rdl,accessory:side-plank-star,accessory:single-leg-calf-raise,cooldown:thread-the-needle"
     );
   });
 
@@ -99,7 +99,7 @@ describe("merge readiness anchors", () => {
     expect(result.program.weekIndex).toBe(2);
     expect(result.program.cycleIndex).toBe(2);
     expect(weekSignature(result.program.week)).toBe(
-      "warmup:scapular-pushups,activation:ankle-mobility,main:pushup,main:countertop-pushup,main:prone-elbow-row,accessory:reverse-snow-angel,accessory:back-widow,cooldown:thoracic-rotation|warmup:prone-ytw,activation:thoracic-rotation,main:pike-pushup,main:prone-t-raise,main:reverse-snow-angel,accessory:bodyweight-triceps-extension,accessory:towel-biceps-curl-hold,accessory:marching-brace-hold,cooldown:wall-slides|warmup:wall-slides,activation:thoracic-rotation,main:bodyweight-squat,main:back-extension-hold,main:split-squat,accessory:hollow-body-hold,accessory:single-leg-calf-raise,cooldown:hip-flexor-stretch"
+      "warmup:scapular-pushups,activation:ankle-mobility,main:pushup,main:supine-elbow-drive-row,main:prone-elbow-row,accessory:reverse-snow-angel,accessory:back-widow,cooldown:thoracic-rotation|warmup:prone-ytw,activation:thoracic-rotation,main:pike-pushup,main:prone-t-raise,main:reverse-snow-angel,accessory:bodyweight-triceps-extension,accessory:self-resisted-biceps-curl,accessory:contralateral-reach-march,cooldown:wall-slides|warmup:wall-slides,activation:thoracic-rotation,main:bodyweight-squat,main:single-leg-glute-bridge-hold,main:split-squat,accessory:side-plank,accessory:single-leg-calf-raise,cooldown:hip-flexor-stretch"
     );
   });
 
@@ -133,7 +133,7 @@ describe("merge readiness anchors", () => {
     expect(result.program.weekIndex).toBe(1);
     expect(result.program.cycleIndex).toBe(1);
     expect(weekSignature(result.program.week)).toBe(
-      "warmup:thoracic-rotation,activation:prone-ytw,main:pushup,main:countertop-pushup,main:prone-elbow-row,accessory:reverse-snow-angel,accessory:back-widow,cooldown:side-lying-open-book|warmup:wall-slides,activation:wall-angel-hold,main:pike-pushup,main:prone-t-raise,main:reverse-snow-angel,accessory:bodyweight-triceps-extension,accessory:self-resisted-biceps-curl,accessory:contralateral-reach-march,cooldown:thread-the-needle|warmup:cat-cow,activation:wall-angel-hold,main:bodyweight-squat,main:single-leg-rdl,main:split-squat,accessory:hollow-body-hold,accessory:standing-calf-raise,cooldown:thread-the-needle"
+      "warmup:thoracic-rotation,activation:prone-ytw,main:pushup,main:supine-elbow-drive-row,main:supine-lat-pulldown-isometric,accessory:reverse-snow-angel,accessory:back-widow,cooldown:side-lying-open-book|warmup:wall-slides,activation:wall-angel-hold,main:pike-pushup,main:prone-t-raise,main:reverse-snow-angel,accessory:bodyweight-triceps-extension,accessory:towel-biceps-curl-hold,accessory:contralateral-reach-march,cooldown:thread-the-needle|warmup:cat-cow,activation:wall-angel-hold,main:split-squat,main:single-leg-rdl,main:bodyweight-squat,accessory:side-plank,accessory:single-leg-calf-raise,cooldown:thread-the-needle"
     );
   });
 

@@ -11,8 +11,8 @@ export default function OfflinePage() {
           You&apos;re offline, but your plan still works.
         </h1>
         <p className="text-sm text-slate-300">
-          We saved your latest questionnaire on this device. Reconnect to access
-          updates, videos, and new routines.
+          We saved your latest profile on this device. Reconnect to access
+          updates, videos, and refreshed plans.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link

@@ -50,7 +50,7 @@ export default function LoginClient() {
           </p>
           <h1 className="mt-2 text-3xl font-semibold text-white">Log in</h1>
           <p className="mt-2 text-sm text-slate-300">
-            Sign in to access your program and subscription.
+            Sign in to access your Praxis plan and subscription.
           </p>
         </OnImage>
         <form onSubmit={submit} className="ui-card p-6">

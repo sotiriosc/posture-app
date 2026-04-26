@@ -13,14 +13,32 @@ type MatrixCase = {
 };
 
 const SEED = "engine-matrix-v2";
-const EXPECTED_MAINS_BY_EXPERIENCE: Record<
-  QuestionnaireData["experience"],
-  number
-> = {
-  Beginner: 2,
-  Intermediate: 3,
-  Advanced: 4,
+const expectedMainCountForDay = (
+  experience: QuestionnaireData["experience"],
+  daysPerWeek: QuestionnaireData["daysPerWeek"],
+  dayTitle: string
+) => {
+  // 3-day programming is intentionally fuller than the legacy uniform count rule:
+  // Beginner = 3 mains/day, Intermediate = 4 mains/day, Advanced = 5 on
+  // Back + Chest and 4 on the remaining days.
+  if (daysPerWeek === 3) {
+    if (dayTitle === "Back + Chest") {
+      if (experience === "Advanced") return 5;
+      if (experience === "Intermediate") return 4;
+      return 3;
+    }
+    if (dayTitle === "Shoulders + Arms" || dayTitle === "Legs + Abs") {
+      if (experience === "Beginner") return 3;
+      return 4;
+    }
+  }
+
+  if (experience === "Advanced") return 4;
+  if (experience === "Intermediate") return 3;
+  return 2;
 };
+
+const EXPECTED_THREE_DAY_TITLES = ["Back + Chest", "Shoulders + Arms", "Legs + Abs"];
 
 const matrix: MatrixCase[] = [];
 const equipmentValues: QuestionnaireData["equipment"][] = [
@@ -162,14 +180,32 @@ matrix.forEach((input, index) => {
     audit.issues.forEach((issue) => issues.push(`audit: ${issue}`));
   }
 
-  const expectedMainCount = EXPECTED_MAINS_BY_EXPERIENCE[questionnaire.experience];
   mainPerDay.forEach((count, dayIndex) => {
+    const dayTitle = programA.week[dayIndex]?.title ?? `Day ${dayIndex + 1}`;
+    const expectedMainCount = expectedMainCountForDay(
+      questionnaire.experience,
+      questionnaire.daysPerWeek,
+      dayTitle
+    );
     if (count !== expectedMainCount) {
       issues.push(
-        `${programA.week[dayIndex]?.title ?? `Day ${dayIndex + 1}`}: expected ${expectedMainCount} mains, got ${count}`
+        `${dayTitle}: expected ${expectedMainCount} mains, got ${count}`
       );
     }
   });
+
+  if (questionnaire.daysPerWeek === 3) {
+    const titles = programA.week.map((day) => day.title);
+    EXPECTED_THREE_DAY_TITLES.forEach((title, titleIndex) => {
+      if (titles[titleIndex] !== title) {
+        issues.push(
+          `3-day title mismatch at day ${titleIndex + 1}: expected "${title}", got "${
+            titles[titleIndex] ?? "missing"
+          }"`
+        );
+      }
+    });
+  }
 
   programA.week.forEach((day) => {
     const mainIds = day.routine

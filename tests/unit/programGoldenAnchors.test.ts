@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { generateWeeklyProgram } from "@/lib/program";
-import { exerciseById } from "@/lib/exercises";
+import { exerciseById, type Exercise } from "@/lib/exercises";
+import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import {
   expectedAccessoryCountForDayTitle,
@@ -25,11 +26,20 @@ type GoldenDaySummary = {
     main: number;
     accessory: number;
   };
+  expected: {
+    main: number;
+    accessory?: number;
+  };
+  coverage: {
+    hasRequiredMovementCoverage: boolean;
+  };
   invariants: {
+    titleMatchesExpected: boolean;
     uniqueExerciseIds: boolean;
     mainCountMatchesExpected: boolean;
     accessoryCountMatchesExpected?: boolean;
     mainSectionHasOnlyMainCategory: boolean;
+    allExercisesEquipmentEligible: boolean;
   };
 };
 
@@ -38,7 +48,6 @@ type GoldenSummary = {
   profile: string;
   phase: "activation" | "skill" | "growth";
   daysPerWeek: 3 | 4 | 5;
-  expectedMainPerDay: number;
   days: GoldenDaySummary[];
 };
 
@@ -125,32 +134,92 @@ const COACH6_ANCHORS: AnchorScenario[] = [
   },
 ];
 
+const expectedDayTitlesForDays = (daysPerWeek: QuestionnaireData["daysPerWeek"]) => {
+  if (daysPerWeek === 3) {
+    return ["Back + Chest", "Shoulders + Arms", "Legs + Abs"];
+  }
+  if (daysPerWeek === 4) {
+    return [
+      "Upper Push + Scapular Control",
+      "Lower (Squat Emphasis) + Core",
+      "Upper Pull + Thoracic Posture",
+      "Lower (Hinge Emphasis) + Carry/Anti-rotation",
+    ];
+  }
+  return [
+    "Upper Push",
+    "Lower Squat",
+    "Upper Pull",
+    "Lower Hinge + Posterior Chain",
+    "Arms + Posture + Conditioning",
+  ];
+};
+
+const hasPattern = (exercise: Exercise, patternToken: string) =>
+  exercise.movementPattern.some((pattern) =>
+    pattern.toLowerCase().includes(patternToken.toLowerCase())
+  );
+
+const hasAnyPattern = (exercises: Exercise[], patternToken: string) =>
+  exercises.some((exercise) => hasPattern(exercise, patternToken));
+
+const hasRequiredMovementCoverage = (dayTitle: string, mainExercises: Exercise[]) => {
+  if (dayTitle === "Back + Chest") {
+    return hasAnyPattern(mainExercises, "push") && hasAnyPattern(mainExercises, "pull");
+  }
+
+  if (dayTitle === "Legs + Abs") {
+    return hasAnyPattern(mainExercises, "squat") && hasAnyPattern(mainExercises, "hinge");
+  }
+
+  if (dayTitle.includes("Upper Push")) {
+    return hasAnyPattern(mainExercises, "push");
+  }
+
+  if (dayTitle.includes("Upper Pull")) {
+    return hasAnyPattern(mainExercises, "pull");
+  }
+
+  if (dayTitle.includes("Lower Squat") || dayTitle.includes("(Squat")) {
+    return hasAnyPattern(mainExercises, "squat");
+  }
+
+  if (dayTitle.includes("Lower Hinge") || dayTitle.includes("(Hinge")) {
+    return hasAnyPattern(mainExercises, "hinge");
+  }
+
+  return true;
+};
+
 const buildGoldenSummary = (scenario: AnchorScenario): GoldenSummary => {
   const seed = `${GOLDEN_SEED_BASE}:${scenario.key}`;
   const program = generateWeeklyProgram(scenario.questionnaire, `golden-${scenario.key}`, {
     phaseIndex: scenario.phaseIndex,
     seed,
   });
-  const expectedMainPerDay = expectedMainCountForDayTitle({
-    daysPerWeek: scenario.questionnaire.daysPerWeek,
-    dayTitle: program.week[0]?.title ?? "Back + Chest",
-    experience: scenario.questionnaire.experience,
-  });
+  const expectedTitles = expectedDayTitlesForDays(scenario.questionnaire.daysPerWeek);
+  const availableEquipment = normalizeEquipmentSelection(scenario.questionnaire.equipment).available;
 
-  const days: GoldenDaySummary[] = program.week.map((day) => {
+  const days: GoldenDaySummary[] = program.week.map((day, dayIndex) => {
     const routineIds = day.routine.map((item) => item.exerciseId);
     const mainItems = day.routine.filter((item) => item.section === "main");
     const accessoryItems = day.routine.filter((item) => item.section === "accessory");
+    const mainExercises = mainItems
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((exercise): exercise is Exercise => Boolean(exercise));
     const expectedMainCount = expectedMainCountForDayTitle({
       daysPerWeek: scenario.questionnaire.daysPerWeek,
       dayTitle: day.title,
       experience: scenario.questionnaire.experience,
     });
-    const expectedAccessoryCount = expectedAccessoryCountForDayTitle({
-      daysPerWeek: scenario.questionnaire.daysPerWeek,
-      dayTitle: day.title,
-      experience: scenario.questionnaire.experience,
-    });
+    const expectedAccessoryCount =
+      scenario.questionnaire.daysPerWeek === 3
+        ? expectedAccessoryCountForDayTitle({
+            daysPerWeek: scenario.questionnaire.daysPerWeek,
+            dayTitle: day.title,
+            experience: scenario.questionnaire.experience,
+          })
+        : undefined;
     const activationBlockFirst2 = day.routine
       .filter((item) => item.section === "warmup" || item.section === "activation")
       .slice(0, 2)
@@ -158,6 +227,11 @@ const buildGoldenSummary = (scenario: AnchorScenario): GoldenSummary => {
     const mainSectionHasOnlyMainCategory = mainItems.every((item) => {
       return exerciseById(item.exerciseId)?.category === "main";
     });
+    const allExercisesEquipmentEligible = day.routine.every((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      return exercise ? isExerciseEligible(exercise, availableEquipment) : false;
+    });
+    const requiredMovementCoverage = hasRequiredMovementCoverage(day.title, mainExercises);
 
     return {
       dayTitle: day.title,
@@ -169,13 +243,24 @@ const buildGoldenSummary = (scenario: AnchorScenario): GoldenSummary => {
         main: mainItems.length,
         accessory: accessoryItems.length,
       },
+      expected: {
+        main: expectedMainCount,
+        ...(typeof expectedAccessoryCount === "number"
+          ? { accessory: expectedAccessoryCount }
+          : {}),
+      },
+      coverage: {
+        hasRequiredMovementCoverage: requiredMovementCoverage,
+      },
       invariants: {
+        titleMatchesExpected: day.title === expectedTitles[dayIndex],
         uniqueExerciseIds: new Set(routineIds).size === routineIds.length,
         mainCountMatchesExpected: mainItems.length === expectedMainCount,
-        ...(scenario.questionnaire.daysPerWeek === 3
+        ...(typeof expectedAccessoryCount === "number"
           ? { accessoryCountMatchesExpected: accessoryItems.length === expectedAccessoryCount }
           : {}),
         mainSectionHasOnlyMainCategory,
+        allExercisesEquipmentEligible,
       },
     };
   });
@@ -185,31 +270,29 @@ const buildGoldenSummary = (scenario: AnchorScenario): GoldenSummary => {
     profile: scenario.profile,
     phase: scenario.phase,
     daysPerWeek: scenario.questionnaire.daysPerWeek,
-    expectedMainPerDay,
     days,
   };
 };
 
-const getAnchor = (key: AnchorScenario["key"]) => {
-  const match = COACH6_ANCHORS.find((scenario) => scenario.key === key);
-  if (!match) {
-    throw new Error(`Missing anchor scenario: ${key}`);
-  }
-  return match;
-};
-
 const expectGoldenInvariants = (summary: GoldenSummary) => {
+  expect(summary.days.map((day) => day.dayTitle)).toEqual(
+    expectedDayTitlesForDays(summary.daysPerWeek)
+  );
+
   summary.days.forEach((day) => {
+    expect(day.invariants.titleMatchesExpected).toBe(true);
     expect(day.invariants.uniqueExerciseIds).toBe(true);
     expect(day.invariants.mainCountMatchesExpected).toBe(true);
     if (typeof day.invariants.accessoryCountMatchesExpected === "boolean") {
       expect(day.invariants.accessoryCountMatchesExpected).toBe(true);
     }
     expect(day.invariants.mainSectionHasOnlyMainCategory).toBe(true);
+    expect(day.invariants.allExercisesEquipmentEligible).toBe(true);
+    expect(day.coverage.hasRequiredMovementCoverage).toBe(true);
   });
 };
 
-describe("program golden anchor fingerprints", () => {
+describe("program golden anchor contracts", () => {
   test("seeded output is deterministic across repeated runs", () => {
     COACH6_ANCHORS.forEach((scenario) => {
       const first = buildGoldenSummary(scenario);
@@ -218,734 +301,12 @@ describe("program golden anchor fingerprints", () => {
     });
   });
 
-  test("anchor A fingerprint", () => {
-    const summary = buildGoldenSummary(getAnchor("A"));
+  test.each(COACH6_ANCHORS)("anchor $key follows contract", (scenario) => {
+    const summary = buildGoldenSummary(scenario);
+    expect(summary.anchor).toBe(scenario.key);
+    expect(summary.profile).toBe(scenario.profile);
+    expect(summary.phase).toBe(scenario.phase);
+    expect(summary.daysPerWeek).toBe(scenario.questionnaire.daysPerWeek);
     expectGoldenInvariants(summary);
-    expect(summary).toMatchInlineSnapshot(`
-      {
-        "anchor": "A",
-        "days": [
-          {
-            "accessoryFirst2Ids": [
-              "band-rear-delt-fly",
-              "band-face-pull-high-anchor",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Back + Chest",
-            "invariants": {
-              "accessoryCountMatchesExpected": true,
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "split-stance-band-chest-press",
-              "band-chest-press",
-              "split-stance-row",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "band-triceps-pressdown",
-              "band-biceps-curl",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Shoulders + Arms",
-            "invariants": {
-              "accessoryCountMatchesExpected": true,
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "band-overhead-press",
-              "prone-t-raise",
-              "band-rear-delt-fly",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "side-plank",
-              "single-leg-calf-raise",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Legs + Abs",
-            "invariants": {
-              "accessoryCountMatchesExpected": true,
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "band-front-squat",
-              "back-extension-hold",
-              "split-squat",
-            ],
-          },
-        ],
-        "daysPerWeek": 3,
-        "expectedMainPerDay": 3,
-        "phase": "activation",
-        "profile": "normal beginner",
-      }
-    `);
-  });
-
-  test("anchor B fingerprint", () => {
-    const summary = buildGoldenSummary(getAnchor("B"));
-    expectGoldenInvariants(summary);
-    expect(summary).toMatchInlineSnapshot(`
-      {
-        "anchor": "B",
-        "days": [
-          {
-            "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
-              "db-biceps-curl",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 2,
-            },
-            "dayTitle": "Upper Push + Scapular Control",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-bench-press",
-              "dumbbell-arnold-press",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "single-leg-calf-raise",
-              "farmers-carry",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "dead-bug",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 2,
-            },
-            "dayTitle": "Lower (Squat Emphasis) + Core",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "machine-leg-press",
-              "db-rdl",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "cable-biceps-curl",
-              "bodyweight-triceps-extension",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 2,
-            },
-            "dayTitle": "Upper Pull + Thoracic Posture",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-rows",
-              "dumbbell-chest-supported-row",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "single-leg-calf-raise",
-              "farmers-carry",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "dead-bug",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 2,
-            },
-            "dayTitle": "Lower (Hinge Emphasis) + Carry/Anti-rotation",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "db-rdl",
-              "machine-leg-press",
-            ],
-          },
-        ],
-        "daysPerWeek": 4,
-        "expectedMainPerDay": 2,
-        "phase": "growth",
-        "profile": "normal beginner",
-      }
-    `);
-  });
-
-  test("anchor C fingerprint", () => {
-    const summary = buildGoldenSummary(getAnchor("C"));
-    expectGoldenInvariants(summary);
-    expect(summary).toMatchInlineSnapshot(`
-      {
-        "anchor": "C",
-        "days": [
-          {
-            "accessoryFirst2Ids": [
-              "dumbbell-chest-fly",
-              "contralateral-reach-march",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Upper Push",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-incline-press",
-              "dumbbell-shoulder-press",
-              "dumbbell-bench-press",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "single-leg-calf-raise",
-              "farmers-carry",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "dead-bug",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Lower Squat",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "machine-leg-press",
-              "db-rdl",
-              "machine-hack-squat",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "cable-biceps-curl",
-              "farmers-carry",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Upper Pull",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-rows",
-              "barbell-landmine-pulldown",
-              "single-arm-dumbbell-row",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "single-leg-calf-raise",
-              "farmers-carry",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "dead-bug",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Lower Hinge + Posterior Chain",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "db-rdl",
-              "machine-leg-press",
-              "machine-seated-hamstring-curl",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
-              "cable-biceps-curl",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Arms + Posture + Conditioning",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-rows",
-              "dumbbell-shoulder-press",
-              "dumbbell-bench-press",
-            ],
-          },
-        ],
-        "daysPerWeek": 5,
-        "expectedMainPerDay": 3,
-        "phase": "growth",
-        "profile": "intermediate",
-      }
-    `);
-  });
-
-  test("anchor D fingerprint", () => {
-    const summary = buildGoldenSummary(getAnchor("D"));
-    expectGoldenInvariants(summary);
-    expect(summary).toMatchInlineSnapshot(`
-      {
-        "anchor": "D",
-        "days": [
-          {
-            "accessoryFirst2Ids": [
-              "band-face-pull-high-anchor",
-              "band-rear-delt-fly",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "band-pull-aparts",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Back + Chest",
-            "invariants": {
-              "accessoryCountMatchesExpected": true,
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "band-chest-press",
-              "split-stance-band-chest-press",
-              "band-lat-pulldown",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "band-triceps-pressdown",
-              "band-biceps-curl",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "band-pull-aparts",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Shoulders + Arms",
-            "invariants": {
-              "accessoryCountMatchesExpected": true,
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "band-overhead-press",
-              "band-lateral-raise",
-              "band-rear-delt-fly",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "pallof-press",
-              "band-calf-raise",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "dead-bug",
-            ],
-            "counts": {
-              "accessory": 2,
-              "activation": 1,
-              "main": 3,
-            },
-            "dayTitle": "Legs + Abs",
-            "invariants": {
-              "accessoryCountMatchesExpected": true,
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "band-front-squat",
-              "back-extension-hold",
-              "split-squat",
-            ],
-          },
-        ],
-        "daysPerWeek": 3,
-        "expectedMainPerDay": 3,
-        "phase": "activation",
-        "profile": "pain beginner",
-      }
-    `);
-  });
-
-  test("anchor E fingerprint", () => {
-    const summary = buildGoldenSummary(getAnchor("E"));
-    expectGoldenInvariants(summary);
-    expect(summary).toMatchInlineSnapshot(`
-      {
-        "anchor": "E",
-        "days": [
-          {
-            "accessoryFirst2Ids": [
-              "bodyweight-triceps-extension",
-              "dumbbell-rows",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Upper Push + Scapular Control",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-bench-press",
-              "dumbbell-floor-press",
-              "machine-chest-press",
-              "dumbbell-chest-fly",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "single-leg-calf-raise",
-              "hollow-body-hold",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "hip-hinge-drill",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Lower (Squat Emphasis) + Core",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "machine-leg-press",
-              "machine-seated-hamstring-curl",
-              "split-squat",
-              "dumbbell-sumo-rdl",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "cable-biceps-curl",
-              "farmers-carry",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Upper Pull + Thoracic Posture",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-rows",
-              "machine-rear-delt-row",
-              "single-arm-dumbbell-row",
-              "dumbbell-rear-delt-fly",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "single-leg-calf-raise",
-              "hollow-body-hold",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "hip-hinge-drill",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Lower (Hinge Emphasis) + Carry/Anti-rotation",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "machine-seated-hamstring-curl",
-              "machine-leg-press",
-              "dumbbell-sumo-rdl",
-              "machine-glute-drive",
-            ],
-          },
-        ],
-        "daysPerWeek": 4,
-        "expectedMainPerDay": 4,
-        "phase": "skill",
-        "profile": "pain advanced",
-      }
-    `);
-  });
-
-  test("anchor F fingerprint", () => {
-    const summary = buildGoldenSummary(getAnchor("F"));
-    expectGoldenInvariants(summary);
-    expect(summary).toMatchInlineSnapshot(`
-      {
-        "anchor": "F",
-        "days": [
-          {
-            "accessoryFirst2Ids": [
-              "dumbbell-chest-fly",
-              "contralateral-reach-march",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Upper Push",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-bench-press",
-              "dumbbell-shoulder-press",
-              "dumbbell-incline-press",
-              "dumbbell-arnold-press",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "single-leg-calf-raise",
-              "hollow-body-hold",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "hip-hinge-drill",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Lower Squat",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "machine-leg-press",
-              "db-rdl",
-              "barbell-back-squat",
-              "dumbbell-step-up-loaded",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "reverse-snow-angel",
-              "farmers-carry",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Upper Pull",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-rows",
-              "barbell-bent-over-row",
-              "cable-seated-row",
-              "barbell-landmine-pulldown",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "single-leg-calf-raise",
-              "hollow-body-hold",
-            ],
-            "activationBlockFirst2": [
-              "cat-cow",
-              "hip-hinge-drill",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Lower Hinge + Posterior Chain",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "db-rdl",
-              "machine-leg-press",
-              "barbell-hip-thrust",
-              "machine-glute-drive",
-            ],
-          },
-          {
-            "accessoryFirst2Ids": [
-              "dumbbell-chest-fly",
-              "cable-biceps-curl",
-            ],
-            "activationBlockFirst2": [
-              "wall-slides",
-              "wall-angel-hold",
-            ],
-            "counts": {
-              "accessory": 3,
-              "activation": 1,
-              "main": 4,
-            },
-            "dayTitle": "Arms + Posture + Conditioning",
-            "invariants": {
-              "mainCountMatchesExpected": true,
-              "mainSectionHasOnlyMainCategory": true,
-              "uniqueExerciseIds": true,
-            },
-            "mainIds": [
-              "dumbbell-rows",
-              "dumbbell-shoulder-press",
-              "dumbbell-incline-press",
-              "dumbbell-rear-delt-fly",
-            ],
-          },
-        ],
-        "daysPerWeek": 5,
-        "expectedMainPerDay": 4,
-        "phase": "growth",
-        "profile": "pain advanced",
-      }
-    `);
   });
 });

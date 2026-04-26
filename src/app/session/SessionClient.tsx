@@ -12,10 +12,13 @@ import {
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { exerciseById } from "@/lib/exercises";
-import { generateRoutine } from "@/lib/routine";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
-import { previewPainSubstitutionChoices } from "@/lib/program";
+import {
+  PROGRAM_TEMPLATE_VERSION,
+  previewPainSubstitutionChoices,
+} from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
+import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
@@ -53,6 +56,7 @@ import {
   getProgram,
   init,
   getProgramProgress,
+  listAllPrograms,
   listExerciseLogsByExerciseHistory,
   loadPrefs,
   saveExerciseLog,
@@ -115,6 +119,14 @@ const hasRoutableProgramDay = (program: Program, dayIndex: number) => {
   return Boolean(day && Array.isArray(day.routine) && day.routine.length > 0);
 };
 
+const hasRoutableProgram = (program: Program | null | undefined) =>
+  Boolean(
+    program &&
+      !program.deletedAt &&
+      Array.isArray(program.week) &&
+      program.week.some((day) => Array.isArray(day.routine) && day.routine.length > 0)
+  );
+
 const resolveRoutableProgramDayIndex = (
   program: Program,
   preferredDayIndex: number | null,
@@ -145,6 +157,44 @@ const resolveRoutableProgramDayIndex = (
   return typeof firstRoutableDay?.dayIndex === "number"
     ? firstRoutableDay.dayIndex
     : null;
+};
+
+const isProgramCompatibleWithSessionProfile = (
+  candidate: Program,
+  questionnaire: QuestionnaireData | null,
+  savedQuestionnaireSignature?: string | null
+) => {
+  if (!hasRoutableProgram(candidate)) return false;
+  if (!questionnaire) return true;
+  if (
+    typeof candidate.templateVersion === "number" &&
+    candidate.templateVersion !== PROGRAM_TEMPLATE_VERSION
+  ) {
+    return false;
+  }
+  if (candidate.daysPerWeek !== questionnaire.daysPerWeek) return false;
+  if (candidate.goalTrack && candidate.goalTrack !== questionnaire.goals) return false;
+
+  const expectedSignature = buildQuestionnaireSignature(questionnaire);
+  const persistedSignature =
+    candidate.questionnaireSignature ?? savedQuestionnaireSignature ?? null;
+  return !persistedSignature || persistedSignature === expectedSignature;
+};
+
+const resolveLatestCompatibleProgram = async (
+  questionnaire: QuestionnaireData | null,
+  savedQuestionnaireSignature?: string | null
+) => {
+  const programs = await listAllPrograms();
+  return (
+    programs.find((candidate) =>
+      isProgramCompatibleWithSessionProfile(
+        candidate,
+        questionnaire,
+        savedQuestionnaireSignature
+      )
+    ) ?? null
+  );
 };
 
 const normalizeLogSection = (
@@ -306,6 +356,7 @@ const findPainSwapAlternativeExerciseId = (params: {
 
 export default function SessionClient() {
   const searchParams = useSearchParams();
+  const searchParamString = searchParams.toString();
   const [data, setData] = useState<QuestionnaireData | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [workSeconds, setWorkSeconds] = useState(60);
@@ -339,6 +390,8 @@ export default function SessionClient() {
   const [programDayIndex, setProgramDayIndex] = useState<number | null>(null);
   const [programProgress, setProgramProgress] =
     useState<ProgramProgress | null>(null);
+  const [sessionPlanLoading, setSessionPlanLoading] = useState(true);
+  const [sessionPlanIssue, setSessionPlanIssue] = useState<string | null>(null);
   const [tipIndex, setTipIndex] = useState(0);
   const [unitByExercise, setUnitByExercise] = useState<
     Record<string, "lb" | "kg">
@@ -440,163 +493,193 @@ export default function SessionClient() {
 
   useEffect(() => {
     const load = async () => {
-      await init();
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
-        setData({
-          goals: parsed.goals ?? "Improve posture",
-          painAreas: parsed.painAreas ?? [],
-          experience: parsed.experience ?? "Beginner",
-          equipment: normalizeEquipmentSelectionValues(
-            parsed.equipment ?? ["none"]
-          ),
-          daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
-        });
-      } else {
-        const snapshot = await loadTrainingSnapshot();
-        const remote = snapshot?.questionnaire as Partial<QuestionnaireData> | undefined;
-        if (remote) {
-          const next = {
-            goals: remote.goals ?? "Improve posture",
-            painAreas: remote.painAreas ?? [],
-            experience: remote.experience ?? "Beginner",
+      setSessionPlanLoading(true);
+      setSessionPlanIssue(null);
+      try {
+        await init();
+        let resolvedQuestionnaire: QuestionnaireData | null = null;
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
+          resolvedQuestionnaire = {
+            goals: parsed.goals ?? "Improve posture",
+            painAreas: parsed.painAreas ?? [],
+            experience: parsed.experience ?? "Beginner",
             equipment: normalizeEquipmentSelectionValues(
-              remote.equipment ?? ["none"]
+              parsed.equipment ?? ["none"]
             ),
-            daysPerWeek: normalizeDaysPerWeek(remote.daysPerWeek),
+            daysPerWeek: normalizeDaysPerWeek(parsed.daysPerWeek),
           };
-          setData(next);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          setData(resolvedQuestionnaire);
+        } else {
+          const snapshot = await loadTrainingSnapshot();
+          const remote = snapshot?.questionnaire as Partial<QuestionnaireData> | undefined;
+          if (remote) {
+            resolvedQuestionnaire = {
+              goals: remote.goals ?? "Improve posture",
+              painAreas: remote.painAreas ?? [],
+              experience: remote.experience ?? "Beginner",
+              equipment: normalizeEquipmentSelectionValues(
+                remote.equipment ?? ["none"]
+              ),
+              daysPerWeek: normalizeDaysPerWeek(remote.daysPerWeek),
+            };
+            setData(resolvedQuestionnaire);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(resolvedQuestionnaire));
+          }
         }
-      }
 
-      const storedPrefs = await loadPrefs();
-      setPrefs(storedPrefs);
-      if (storedPrefs.timerPrefs?.workSeconds) {
-        setWorkSeconds(storedPrefs.timerPrefs.workSeconds);
-      }
-      if (storedPrefs.timerPrefs?.restSeconds) {
-        setRestSeconds(storedPrefs.timerPrefs.restSeconds);
-      }
-      if (storedPrefs.timerPrefsByExercise) {
-        setTimerByExercise(storedPrefs.timerPrefsByExercise);
-      }
-      if (storedPrefs.loadPrefsByExercise) {
-        const entries = Object.entries(storedPrefs.loadPrefsByExercise);
-        setUnitByExercise(
-          Object.fromEntries(
-            entries
-              .filter(([, value]) => value.unit === "lb" || value.unit === "kg")
-              .map(([key, value]) => [key, value.unit as "lb" | "kg"])
-          )
-        );
-        setWeightByExercise(
-          Object.fromEntries(
-            entries
-              .filter(([, value]) => typeof value.weight === "string")
-              .map(([key, value]) => [key, value.weight as string])
-          )
-        );
-        setRepsByExercise(
-          Object.fromEntries(
-            entries
-              .filter(([, value]) => typeof value.reps === "string")
-              .map(([key, value]) => [key, value.reps as string])
-          )
-        );
-      }
-      if (storedPrefs.feedbackByExercise) {
-        const normalized = Object.fromEntries(
-          Object.entries(storedPrefs.feedbackByExercise).map(([key, value]) => {
-            if (typeof value === "string") {
-              const rating =
-                value === "good"
-                  ? "moderate"
-                  : (value as FeedbackEntry);
+        const storedPrefs = await loadPrefs();
+        setPrefs(storedPrefs);
+        if (storedPrefs.timerPrefs?.workSeconds) {
+          setWorkSeconds(storedPrefs.timerPrefs.workSeconds);
+        }
+        if (storedPrefs.timerPrefs?.restSeconds) {
+          setRestSeconds(storedPrefs.timerPrefs.restSeconds);
+        }
+        if (storedPrefs.timerPrefsByExercise) {
+          setTimerByExercise(storedPrefs.timerPrefsByExercise);
+        }
+        if (storedPrefs.loadPrefsByExercise) {
+          const entries = Object.entries(storedPrefs.loadPrefsByExercise);
+          setUnitByExercise(
+            Object.fromEntries(
+              entries
+                .filter(([, value]) => value.unit === "lb" || value.unit === "kg")
+                .map(([key, value]) => [key, value.unit as "lb" | "kg"])
+            )
+          );
+          setWeightByExercise(
+            Object.fromEntries(
+              entries
+                .filter(([, value]) => typeof value.weight === "string")
+                .map(([key, value]) => [key, value.weight as string])
+            )
+          );
+          setRepsByExercise(
+            Object.fromEntries(
+              entries
+                .filter(([, value]) => typeof value.reps === "string")
+                .map(([key, value]) => [key, value.reps as string])
+            )
+          );
+        }
+        if (storedPrefs.feedbackByExercise) {
+          const normalized = Object.fromEntries(
+            Object.entries(storedPrefs.feedbackByExercise).map(([key, value]) => {
+              if (typeof value === "string") {
+                const rating =
+                  value === "good"
+                    ? "moderate"
+                    : (value as FeedbackEntry);
+                return [
+                  key,
+                  { rating, painLocation: null, notes: "" } as ExerciseFeedback,
+                ];
+              }
               return [
                 key,
-                { rating, painLocation: null, notes: "" } as ExerciseFeedback,
+                {
+                  rating: value.rating,
+                  painLocation: value.painLocation ?? null,
+                  notes: value.notes ?? "",
+                } as ExerciseFeedback,
               ];
-            }
-            return [
-              key,
-              {
-                rating: value.rating,
-                painLocation: value.painLocation ?? null,
-                notes: value.notes ?? "",
-              } as ExerciseFeedback,
-            ];
-          })
-        );
-        setFeedback(normalized);
-      }
-      if (storedPrefs.substitutionByExercise) {
-        setSubstitutionByExercise(storedPrefs.substitutionByExercise);
-      }
+            })
+          );
+          setFeedback(normalized);
+        }
+        if (storedPrefs.substitutionByExercise) {
+          setSubstitutionByExercise(storedPrefs.substitutionByExercise);
+        }
 
-      const state = loadAppState();
-      const programId =
-        searchParams.get("programId") ??
-        state?.activeProgramId ??
-        state?.programId ??
-        null;
-      const dayIndexRaw = searchParams.get("dayIndex");
-      const resumeId =
-        searchParams.get("resumeSessionId") ?? searchParams.get("sessionId");
-      const requestedDayIndex = dayIndexRaw ? Number(dayIndexRaw) : null;
+        const currentSearchParams = new URLSearchParams(searchParamString);
+        const state = loadAppState();
+        const explicitProgramId = currentSearchParams.get("programId");
+        const dayIndexRaw = currentSearchParams.get("dayIndex");
+        const resumeId =
+          currentSearchParams.get("resumeSessionId") ?? currentSearchParams.get("sessionId");
+        const requestedDayIndex = dayIndexRaw ? Number(dayIndexRaw) : null;
+        const resumeDraft = resumeId ? await loadDraft(resumeId) : null;
 
-      let resolvedProgram: Program | null = null;
-      let resolvedProgress: ProgramProgress | null = null;
-      let resolvedDayIndex: number | null = Number.isFinite(requestedDayIndex)
-        ? (requestedDayIndex as number)
-        : null;
+        if (resumeDraft) {
+          applyDraft(resumeDraft);
+        }
 
-      if (programId) {
-        resolvedProgram = await getProgram(programId);
+        let resolvedProgram: Program | null = null;
+        let resolvedProgress: ProgramProgress | null = null;
+        let resolvedDayIndex: number | null = Number.isFinite(requestedDayIndex)
+          ? (requestedDayIndex as number)
+          : null;
+
+        if (!Number.isFinite(resolvedDayIndex) && Number.isFinite(resumeDraft?.dayIndex)) {
+          resolvedDayIndex = resumeDraft?.dayIndex as number;
+        }
+
+        const candidateProgramIds = [
+          explicitProgramId,
+          resumeDraft?.programId ?? null,
+          state?.activeProgramId ?? null,
+          state?.programId ?? null,
+        ].filter((id): id is string => Boolean(id));
+        const triedProgramIds = new Set<string>();
+
+        for (const candidateProgramId of candidateProgramIds) {
+          if (triedProgramIds.has(candidateProgramId)) continue;
+          triedProgramIds.add(candidateProgramId);
+          const candidate = await getProgram(candidateProgramId);
+          if (!hasRoutableProgram(candidate)) continue;
+          resolvedProgram = candidate;
+          resolvedProgress = await getProgramProgress(candidate.id);
+          break;
+        }
+
+        if (!resolvedProgram) {
+          const latest = await resolveLatestCompatibleProgram(resolvedQuestionnaire, null);
+          if (latest) {
+            resolvedProgram = latest;
+            resolvedProgress = await getProgramProgress(latest.id);
+          }
+        }
+
         if (resolvedProgram) {
-          resolvedProgress = await getProgramProgress(resolvedProgram.id);
+          const fallbackDayIndex =
+            resolvedProgress && Number.isFinite(resolvedProgress.nextDayIndex)
+              ? resolvedProgress.nextDayIndex
+              : 0;
+          const routableDayIndex = resolveRoutableProgramDayIndex(
+            resolvedProgram,
+            Number.isFinite(resolvedDayIndex) ? (resolvedDayIndex as number) : null,
+            fallbackDayIndex
+          );
+          setProgram(resolvedProgram);
+          setProgramDayIndex(routableDayIndex);
+          setProgramProgress(resolvedProgress);
+          setSessionPlanIssue(null);
+          return;
         }
-      }
 
-      if (resumeId) {
-        const draft = await loadDraft(resumeId);
-        if (draft) {
-          applyDraft(draft);
-          if (!resolvedProgram && draft.programId) {
-            resolvedProgram = await getProgram(draft.programId);
-            if (resolvedProgram) {
-              resolvedProgress = await getProgramProgress(resolvedProgram.id);
-            }
-          }
-          if (!Number.isFinite(resolvedDayIndex) && Number.isFinite(draft.dayIndex)) {
-            resolvedDayIndex = draft.dayIndex as number;
-          }
-        }
-      }
-
-      if (resolvedProgram) {
-        const fallbackDayIndex =
-          resolvedProgress && Number.isFinite(resolvedProgress.nextDayIndex)
-            ? resolvedProgress.nextDayIndex
-            : 0;
-        const routableDayIndex = resolveRoutableProgramDayIndex(
-          resolvedProgram,
-          Number.isFinite(resolvedDayIndex) ? (resolvedDayIndex as number) : null,
-          fallbackDayIndex
+        setProgram(null);
+        setProgramDayIndex(null);
+        setProgramProgress(null);
+        setSessionPlanIssue(
+          resolvedQuestionnaire
+            ? "No saved Praxis program is available for this session yet. Return to Results to rebuild your active plan."
+            : "No saved Praxis profile or program is available for this session yet. Build your profile to create a plan."
         );
-        setProgram(resolvedProgram);
-        setProgramDayIndex(routableDayIndex);
-        setProgramProgress(resolvedProgress);
+      } catch {
+        setProgram(null);
+        setProgramDayIndex(null);
+        setProgramProgress(null);
+        setSessionPlanIssue(
+          "Praxis could not load your saved program for this session. Your local data is still safe."
+        );
+      } finally {
+        setSessionPlanLoading(false);
       }
     };
     load();
-  }, [searchParams]);
-
-  const routine = useMemo(() => {
-    if (!data) return null;
-    return generateRoutine(data);
-  }, [data]);
+  }, [searchParamString]);
 
   const flatItems = useMemo(() => {
     if (program && programDayIndex !== null) {
@@ -629,31 +712,8 @@ export default function SessionClient() {
       });
     }
 
-    if (!routine) return [];
-    return routine.sections.flatMap((section) =>
-      section.items.map((item) => {
-        const itemId = `${section.title}-${item.exerciseId}`;
-        const sessionSwapId = sessionSwapByItemId[itemId];
-        const substitutedId = substitutionByExercise[item.exerciseId];
-        const effectiveExerciseId = sessionSwapId ?? substitutedId ?? item.exerciseId;
-        const exercise = exerciseById(effectiveExerciseId);
-        return {
-          ...item,
-          section: section.title,
-          dayTitle: section.title,
-          id: itemId,
-          exerciseId: effectiveExerciseId,
-          originalExerciseId: item.exerciseId,
-          restSec: 60,
-          name: exercise?.name ?? "Movement pattern focus",
-          cues: exercise?.cues ?? [],
-          mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
-          duration: exercise?.durationOrReps ?? item.reps,
-          loadType: exercise?.loadType ?? "bodyweight",
-        };
-      })
-    );
-  }, [program, programDayIndex, routine, substitutionByExercise, sessionSwapByItemId]);
+    return [];
+  }, [program, programDayIndex, substitutionByExercise, sessionSwapByItemId]);
 
   const totalItems = flatItems.length;
   const currentItem = flatItems[activeIndex];
@@ -663,6 +723,7 @@ export default function SessionClient() {
   const currentReps = currentItem?.reps ?? null;
 
   useEffect(() => {
+    if (sessionPlanLoading) return;
     if (!totalItems) {
       if (activeIndex !== 0) {
         queueMicrotask(() => {
@@ -676,7 +737,7 @@ export default function SessionClient() {
         setActiveIndex(totalItems - 1);
       });
     }
-  }, [activeIndex, totalItems]);
+  }, [activeIndex, sessionPlanLoading, totalItems]);
 
   useEffect(() => {
     activeIndexRef.current = activeIndex;
@@ -1212,7 +1273,11 @@ export default function SessionClient() {
   };
 
   const handleSwapFromPainReport = async () => {
-    if (!data || !currentItem) return;
+    if (!currentItem) return;
+    if (!data) {
+      await handleSavePainReportOnly();
+      return;
+    }
     const shouldSwap =
       painModalLevel === "moderate" || painModalLevel === "severe";
     if (!shouldSwap) {
@@ -1905,21 +1970,17 @@ export default function SessionClient() {
     };
   }, []);
 
-  if (!data || !routine) {
+  if (sessionPlanLoading) {
     return (
       <BackgroundShell>
         <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
           <OnImage>
             <h1 className="text-2xl font-semibold text-white">
-              We need your questionnaire first
+              Loading your session
             </h1>
             <p className="text-sm text-slate-200">
-              Complete the questionnaire to build your routine and start a
-              session.
+              Praxis is finding your saved program and restoring any active session draft.
             </p>
-            <Link href="/questionnaire">
-              <Button variant="primary">Go to questionnaire</Button>
-            </Link>
           </OnImage>
         </div>
       </BackgroundShell>
@@ -1927,18 +1988,35 @@ export default function SessionClient() {
   }
 
   if (!currentItem) {
+    const recoveryHref = data ? "/results" : "/questionnaire";
+    const recoveryLabel = data ? "Back to results" : "Build profile";
+    const recoveryTitle = program
+      ? "No session items available"
+      : data
+      ? "No saved Praxis program found"
+      : "We need your movement profile first";
+    const recoveryCopy =
+      sessionPlanIssue ??
+      (program
+        ? "Return to results and start a planned day to continue."
+        : data
+        ? "Return to Results to rebuild your active Praxis plan before starting a session."
+        : "Complete your Praxis profile to build a plan and start a session.");
+
     return (
       <BackgroundShell>
         <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
           <OnImage>
             <h1 className="text-2xl font-semibold text-white">
-              No session items available
+              {recoveryTitle}
             </h1>
             <p className="text-sm text-slate-200">
-              Return to results and start a planned day to continue.
+              {recoveryCopy}
             </p>
-            <Link href="/results">
-              <Button variant="secondary">Back to results</Button>
+            <Link href={recoveryHref}>
+              <Button variant={data ? "secondary" : "primary"}>
+                {recoveryLabel}
+              </Button>
             </Link>
           </OnImage>
         </div>
@@ -1953,7 +2031,7 @@ export default function SessionClient() {
           <OnImage className="space-y-3">
             <h1 className="text-3xl font-semibold text-white">Session complete</h1>
             <p className="text-sm text-slate-200">
-              Excellent work. Your program will adapt based on today&apos;s
+              Excellent work. Your Praxis plan will adapt based on today&apos;s
               performance.
             </p>
           </OnImage>
