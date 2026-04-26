@@ -63,6 +63,26 @@ const isExternalScapAccessory = (exercise: Exercise) => {
   );
 };
 
+const isChestIsolationAccessory = (exercise: Exercise) =>
+  exercise.accessoryRoles?.includes("accessoryChestIsolation") ?? false;
+
+const expectChestIsolationHasPosteriorSupport = (ids: string[]) => {
+  const selected = ids
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise));
+  const chestIsolation = selected.filter(isChestIsolationAccessory);
+  if (!chestIsolation.length) return;
+
+  expect(chestIsolation).toHaveLength(1);
+  expect(
+    selected.some(
+      (exercise) =>
+        !isChestIsolationAccessory(exercise) &&
+        (isRearDeltDominantAccessory(exercise) || isExternalScapAccessory(exercise))
+    )
+  ).toBe(true);
+};
+
 const advancePhase = (
   currentProgram: ReturnType<typeof generateWeeklyProgram>,
   questionnaire: QuestionnaireData,
@@ -122,7 +142,7 @@ describe("back + chest accessory progression", () => {
     expect(phase3Signature).not.toBe(phase2Signature);
   });
 
-  test("beginner gym phase 2 rotates from phase 1 when alternates exist and chest fly stays phase-bound", () => {
+  test("beginner gym accessories rotate and chest isolation stays paired with posterior support", () => {
     const questionnaire: QuestionnaireData = {
       goals: "Athletic performance",
       painAreas: [],
@@ -182,21 +202,9 @@ describe("back + chest accessory progression", () => {
     ).toBe(true);
     expect(phase3AccessoryReps.every((reps) => reps === "8-12")).toBe(true);
 
-    expect(phase1AccessoryIds).not.toContain("dumbbell-chest-fly");
-    expect(phase3AccessoryIds).not.toContain("dumbbell-chest-fly");
-
-    if (phase2AccessoryIds.includes("dumbbell-chest-fly")) {
-      const supportingAccessoryId = phase2AccessoryIds.find(
-        (id) => id !== "dumbbell-chest-fly"
-      );
-      const supportingAccessory = supportingAccessoryId
-        ? exerciseById(supportingAccessoryId)
-        : null;
-      expect(Boolean(supportingAccessory)).toBe(true);
-      if (!supportingAccessory) return;
-      expect(isRearDeltDominantAccessory(supportingAccessory)).toBe(true);
-      expect(isExternalScapAccessory(supportingAccessory)).toBe(true);
-    }
+    expectChestIsolationHasPosteriorSupport(phase1AccessoryIds);
+    expectChestIsolationHasPosteriorSupport(phase2AccessoryIds);
+    expectChestIsolationHasPosteriorSupport(phase3AccessoryIds);
 
     const progressedPhase2 = advancePhase(
       phase1,

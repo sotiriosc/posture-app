@@ -31690,10 +31690,32 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
       const updated = nextDay.routine[itemIndex];
       if (updated) {
         const routine = [...nextDay.routine];
-        routine[itemIndex] = withSelectionDebug(updated, "legality_repair", {
-          slotId: item.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, "main"),
+        const replacementSlotId =
+          item.selectionDebug?.slotId ?? makeDaySlotId(day, itemIndex, "main");
+        const replacementSlotMetaBase = {
+          slotId: replacementSlotId,
           slotKind: slotKind ?? item.selectionDebug?.slotKind ?? "mainFinal",
           slotLane,
+        };
+        const replacementDayMainExercises = nextDay.routine
+          .filter((entry) => entry.section === "main")
+          .map((entry) => exerciseById(entry.exerciseId))
+          .filter((entry): entry is Exercise => Boolean(entry));
+        const replacementSlotMeta =
+          daysPerWeek >= 4 && slotLane
+            ? resolveHigherFrequencyTruthfulMainSlotMeta({
+                exercise: replacement,
+                dayTitle: nextDay.title,
+                plannedSlot: replacementSlotMetaBase,
+                dayMainExercises: replacementDayMainExercises,
+                available: context.available,
+                context: context.selectionContext,
+              })
+            : replacementSlotMetaBase;
+        routine[itemIndex] = withSelectionDebug(updated, "legality_repair", {
+          slotId: replacementSlotMeta.slotId,
+          slotKind: replacementSlotMeta.slotKind,
+          slotLane: replacementSlotMeta.slotLane,
           phaseIndex,
         });
         nextDay = { ...nextDay, routine };

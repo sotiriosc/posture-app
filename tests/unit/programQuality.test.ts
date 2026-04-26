@@ -13,10 +13,10 @@ type ScoreBreakdown = {
   total: number;
 };
 
-const expectedMainCount = (experience: string) => {
-  if (experience === "Advanced") return 4;
-  if (experience === "Intermediate") return 3;
-  return 2;
+const expectedMainRange = (experience: string, daysPerWeek: number) => {
+  if (experience === "Advanced") return { min: 3, max: 4 };
+  if (experience === "Intermediate") return { min: 3, max: 3 };
+  return { min: 2, max: daysPerWeek === 3 ? 3 : 2 };
 };
 
 const mainDemandScore = (id: string) => {
@@ -66,7 +66,7 @@ const scoreProgramQuality = (input: QuestionnaireData): ScoreBreakdown => {
   let variety = 0;
   let practicalFit = 0;
 
-  const expectedMain = expectedMainCount(input.experience);
+  const expectedMain = expectedMainRange(input.experience, input.daysPerWeek);
   const available = normalizeEquipmentSelection(input.equipment).available;
 
   const allDaysHaveSections = phase1.week.every((day) => {
@@ -81,7 +81,10 @@ const scoreProgramQuality = (input: QuestionnaireData): ScoreBreakdown => {
   if (allDaysHaveSections) structure += 8;
 
   const allMainCountsCorrect = phase1.week.every(
-    (day) => day.routine.filter((item) => item.section === "main").length === expectedMain
+    (day) => {
+      const mainCount = day.routine.filter((item) => item.section === "main").length;
+      return mainCount >= expectedMain.min && mainCount <= expectedMain.max;
+    }
   );
   if (allMainCountsCorrect) structure += 7;
 
