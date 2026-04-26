@@ -15,6 +15,7 @@ import {
 describe("4-day and 5-day persona acceptance guardrails", () => {
   test("reviewed higher-frequency personas satisfy structural quality criteria across phases", () => {
     const failures: string[] = [];
+    let finalMarkerCount = 0;
 
     higherFrequencyReviewPersonas.forEach((persona, personaIndex) => {
       higherFrequencyReviewPhaseIndexes.forEach((phaseIndex) => {
@@ -28,6 +29,9 @@ describe("4-day and 5-day persona acceptance guardrails", () => {
           seed,
         });
         const warnings = collectFinalWarnings(getProgramConstraintWarningBuffer(), program.id);
+        finalMarkerCount += warnings.filter((warning) =>
+          ["violation", "missing", "coverage"].includes(warning.kind)
+        ).length;
         const evaluation = evaluateHigherFrequencyPersonaQuality({
           program,
           questionnaire: persona.questionnaire,
@@ -44,5 +48,7 @@ describe("4-day and 5-day persona acceptance guardrails", () => {
     });
 
     expect(failures).toEqual([]);
+    expect(finalMarkerCount).toBe(0);
+    expect(finalMarkerCount).toBeLessThan(43);
   }, 60000);
 });

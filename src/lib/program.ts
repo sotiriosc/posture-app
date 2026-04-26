@@ -19162,6 +19162,131 @@ const resolveThreeDayTruthfulMainSlotMeta = (params: {
   return plannedSlot;
 };
 
+const isHigherFrequencyHingeRequirementExercise = (params: {
+  exercise: Exercise;
+  available: Set<Equipment>;
+  context: SelectionContext;
+  dayTitle?: string | null;
+}) => {
+  const { exercise, available, context, dayTitle } = params;
+  return (
+    hasTrueHingeAnchor(exercise) ||
+    shouldAllowHipExtensionHingeSurrogateForMainSlot({
+      exercise,
+      available,
+      context,
+      dayTitle,
+    })
+  );
+};
+
+const hasOtherHigherFrequencyHingeRequirementExercise = (params: {
+  dayMainExercises: Exercise[];
+  exercise: Exercise;
+  available: Set<Equipment>;
+  context: SelectionContext;
+  dayTitle?: string | null;
+}) => {
+  const { dayMainExercises, exercise, available, context, dayTitle } = params;
+  return dayMainExercises.some((candidate) => {
+    if (candidate.id === exercise.id) return false;
+    return isHigherFrequencyHingeRequirementExercise({
+      exercise: candidate,
+      available,
+      context,
+      dayTitle,
+    });
+  });
+};
+
+const resolveHigherFrequencyTruthfulMainSlotMeta = (params: {
+  exercise: Exercise;
+  dayTitle: string;
+  plannedSlot: FinalMainSlotMeta;
+  dayMainExercises: Exercise[];
+  available: Set<Equipment>;
+  context: SelectionContext;
+}): FinalMainSlotMeta => {
+  const { exercise, dayTitle, plannedSlot, dayMainExercises, available, context } =
+    params;
+
+  if (
+    isHigherFrequencyUpperDayTitle(dayTitle) &&
+    plannedSlot.slotLane === "pull" &&
+    isHigherFrequencyPullSurrogateExercise(exercise) &&
+    !hasStrongHorizontalPullAnchor(exercise) &&
+    !hasStrongVerticalPullAnchor(exercise)
+  ) {
+    return {
+      slotId: plannedSlot.slotId,
+      slotKind: resolveHigherFrequencyPullSurrogateSlotKind(exercise),
+      slotLane: "pull",
+    };
+  }
+
+  if (!isHigherFrequencyLowerDayTitle(dayTitle)) return plannedSlot;
+
+  const hasOtherTrueHinge = hasOtherHigherFrequencyHingeRequirementExercise({
+    dayMainExercises,
+    exercise,
+    available,
+    context,
+    dayTitle,
+  });
+
+  if (isHamstringCurlExercise(exercise)) {
+    return hasOtherTrueHinge
+      ? {
+          slotId: plannedSlot.slotId,
+          slotKind: "mainHamstringIsolation",
+          slotLane: "hinge",
+        }
+      : plannedSlot;
+  }
+
+  if (
+    isHigherFrequencyHingeSurrogateExercise({
+      exercise,
+      available,
+      context,
+      dayTitle,
+    })
+  ) {
+    return {
+      slotId: plannedSlot.slotId,
+      slotKind: "mainHingeSurrogate",
+      slotLane: "hinge",
+    };
+  }
+
+  if (isBackExtensionHingeFamily(exercise) || isFallbackQualityHingeAnchorExercise(exercise)) {
+    if (hasOtherTrueHinge) {
+      return {
+        slotId: plannedSlot.slotId,
+        slotKind: "mainSecondaryPosteriorChain",
+        slotLane: "hinge",
+      };
+    }
+    if (
+      context.capabilityMode === "noneOnly" &&
+      !hasEligibleTrueHingeAnchorAlternative({
+        exercise,
+        available,
+        context,
+        dayTitle,
+      })
+    ) {
+      return {
+        slotId: plannedSlot.slotId,
+        slotKind: "mainHingeSurrogate",
+        slotLane: "hinge",
+      };
+    }
+  }
+
+  return plannedSlot;
+};
+
 const finalMainCandidateMatchesSlot = (params: {
   exercise: Exercise;
   dayTitle: string;
@@ -19207,6 +19332,26 @@ const finalMainCandidateMatchesSlot = (params: {
         isLegsIsolationMainPromotionCandidate(exercise)
       );
     }
+  }
+  if (isHigherFrequencyLowerDayTitle(dayTitle)) {
+    if (slotKind === "mainHamstringIsolation") {
+      return isHamstringCurlExercise(exercise);
+    }
+    if (slotKind === "mainSecondaryPosteriorChain") {
+      return isHigherFrequencySecondaryPosteriorChainExercise(exercise);
+    }
+    if (slotKind === "mainHingeSurrogate") {
+      return (
+        isHipExtensionHingeSurrogateExercise(exercise) ||
+        isNoEquipmentLastResortHingeFallback(exercise)
+      );
+    }
+  }
+  if (
+    isHigherFrequencyUpperDayTitle(dayTitle) &&
+    isHigherFrequencyPullSurrogateSlotKind(slotKind)
+  ) {
+    return isHigherFrequencyPullSurrogateExercise(exercise);
   }
   return slotLane ? matchesMainLanePattern(exercise, slotLane) : true;
 };
@@ -19612,6 +19757,9 @@ const findConstrainedLegsMainFallback = (params: {
     "back-extension-hold",
     "back-extension",
   ];
+  const allowHamstringCurlPosteriorSlot =
+    roleSlotKind === "mainHamstringIsolation" ||
+    roleSlotKind === "mainSecondaryPosteriorChain";
   const candidateIds = [
     ...(conservativeBandPainHinge
       ? conservativeBandPainHingeIds
@@ -19639,7 +19787,6 @@ const findConstrainedLegsMainFallback = (params: {
           "machine-glute-drive",
           "barbell-hip-thrust",
           "single-leg-rdl",
-          "machine-seated-hamstring-curl",
           "bodyweight-good-morning",
         ]
       : []),
@@ -19653,7 +19800,7 @@ const findConstrainedLegsMainFallback = (params: {
     "db-rdl",
     "dumbbell-sumo-rdl",
     ...(conservativeBandPainHinge ? [] : ["band-rdl"]),
-    "machine-seated-hamstring-curl",
+    ...(allowHamstringCurlPosteriorSlot ? ["machine-seated-hamstring-curl"] : []),
   ];
 
   return Array.from(new Set(candidateIds))
@@ -19664,6 +19811,15 @@ const findConstrainedLegsMainFallback = (params: {
       if (usedIds.has(exercise.id)) return false;
       const conservativeBandPainHingeFallback =
         conservativeBandPainHinge && conservativeBandPainHingeIds.includes(exercise.id);
+      const painHipExtensionHingeFallback =
+        wantsHinge &&
+        lowBackPain &&
+        shouldAllowHipExtensionHingeSurrogateForMainSlot({
+          exercise,
+          available: context.available,
+          context: context.selectionContext,
+          dayTitle: day.title,
+        });
       const contextEligible = isExerciseEligibleForProgramContext({
         exercise,
         available: context.available,
@@ -19678,6 +19834,17 @@ const findConstrainedLegsMainFallback = (params: {
           isExerciseEligible(exercise, context.available) &&
           isExerciseAllowedForSection(exercise, "main") &&
           matchesMainLanePattern(exercise, "hinge")
+        ) &&
+        !(
+          painHipExtensionHingeFallback &&
+          isExerciseEligible(exercise, context.available) &&
+          isExerciseAllowedForSection(exercise, "main") &&
+          matchesMainLanePattern(exercise, "hinge") &&
+          isEligibleForPhase(
+            exercise,
+            context.selectionContext.phaseName,
+            context.selectionContext
+          )
         )
       ) {
         return false;
@@ -19690,6 +19857,7 @@ const findConstrainedLegsMainFallback = (params: {
           context: context.selectionContext,
         }) === "support_corrective" &&
         !conservativeBandPainHingeFallback &&
+        !painHipExtensionHingeFallback &&
         !(
           roleSlotKind === "mainSecondaryHinge" &&
           exercise.id === "single-leg-rdl"
@@ -19706,7 +19874,8 @@ const findConstrainedLegsMainFallback = (params: {
           available: context.available,
           context: context.selectionContext,
         }) &&
-        !conservativeBandPainHingeFallback
+        !conservativeBandPainHingeFallback &&
+        !painHipExtensionHingeFallback
       ) {
         return false;
       }
@@ -21680,7 +21849,17 @@ const isHigherFrequencyLowerMainDrift = (params: {
 }) => {
   const { exercise, slotLane, dayTitle, available, context } = params;
   if (!isHigherFrequencyLowerDayTitle(dayTitle)) return false;
-  if (isHigherFrequencyHardLowerMainDrift(exercise)) return true;
+  const allowedHipExtensionHingeSurrogate =
+    slotLane === "hinge" &&
+    shouldAllowHipExtensionHingeSurrogateForMainSlot({
+      exercise,
+      available,
+      context,
+      dayTitle,
+    });
+  if (!allowedHipExtensionHingeSurrogate && isHigherFrequencyHardLowerMainDrift(exercise)) {
+    return true;
+  }
   if (slotLane && !matchesMainLanePattern(exercise, slotLane)) return true;
 
   const noEquipmentContext = isConstrainedNoEquipmentMainContext(available, context);
@@ -21696,6 +21875,7 @@ const isHigherFrequencyLowerMainDrift = (params: {
   }
   if (
     lowBackPain &&
+    !allowedHipExtensionHingeSurrogate &&
     [
       "bodyweight-good-morning",
       "back-extension",
@@ -23752,8 +23932,39 @@ const isMainLegalForSlot = (params: {
 
   if (slotKind === "mainHamstringIsolation") {
     return (
-      isLegsAbsDayTitle(dayTitle) &&
+      (isLegsAbsDayTitle(dayTitle) || isHigherFrequencyLowerDayTitle(dayTitle)) &&
       resolveLegsIsolationMainSubtype(exercise) === "hamstring_curl"
+    );
+  }
+
+  if (isHigherFrequencySecondaryPosteriorSlotKind(slotKind)) {
+    return (
+      isHigherFrequencyLowerDayTitle(dayTitle) &&
+      slotLane === "hinge" &&
+      isHigherFrequencySecondaryPosteriorChainExercise(exercise)
+    );
+  }
+
+  if (isHigherFrequencyHingeSurrogateSlotKind(slotKind)) {
+    return (
+      isHigherFrequencyLowerDayTitle(dayTitle) &&
+      slotLane === "hinge" &&
+      isHigherFrequencyHingeSurrogateExercise({
+        exercise,
+        available,
+        context,
+        dayTitle,
+      })
+    );
+  }
+
+  if (isHigherFrequencyPullSurrogateSlotKind(slotKind)) {
+    return (
+      isHigherFrequencyUpperDayTitle(dayTitle) &&
+      slotLane === "pull" &&
+      isHigherFrequencyPullSurrogateExercise(exercise) &&
+      !hasTrueHorizontalPressAnchor(exercise) &&
+      !hasTrueVerticalPressAnchor(exercise)
     );
   }
 
@@ -23778,7 +23989,10 @@ const isMainLegalForSlot = (params: {
   }
 
   const strictHingeSlot =
-    slotKind !== "mainHamstringIsolation" && (slotKind === "mainHinge" || slotLane === "hinge");
+    slotKind !== "mainHamstringIsolation" &&
+    !isHigherFrequencySecondaryPosteriorSlotKind(slotKind) &&
+    !isHigherFrequencyHingeSurrogateSlotKind(slotKind) &&
+    (slotKind === "mainHinge" || slotLane === "hinge");
   if (
     strictHingeSlot &&
     !isStrictHingeSlotAnchorLegal({
@@ -23792,8 +24006,11 @@ const isMainLegalForSlot = (params: {
   }
 
   const strictPullSlot =
-    slotKind?.startsWith("mainPull") ||
-    (slotLane === "pull" && !isShouldersArmsDayTitle(dayTitle));
+    (slotKind?.startsWith("mainPull") &&
+      !isHigherFrequencyPullSurrogateSlotKind(slotKind)) ||
+    (slotLane === "pull" &&
+      !isShouldersArmsDayTitle(dayTitle) &&
+      !isHigherFrequencyPullSurrogateSlotKind(slotKind));
   if (
     strictPullSlot &&
     !isStrictPullSlotAnchorLegal({
@@ -24428,6 +24645,91 @@ const isNoEquipmentPrimePullAnchorExercise = (exercise: Exercise) =>
 const isNoEquipmentLowPriorityPullFallbackExercise = (exercise: Exercise) =>
   noEquipmentLowPriorityPullFallbackIds.has(exercise.id);
 
+const higherFrequencyPullSurrogateSlotKinds = new Set([
+  "mainPullSurrogate",
+  "mainHorizontalPullSurrogate",
+  "mainVerticalPullSurrogate",
+]);
+
+const isHigherFrequencyPullSurrogateSlotKind = (slotKind?: string) =>
+  Boolean(slotKind && higherFrequencyPullSurrogateSlotKinds.has(slotKind));
+
+const isHigherFrequencySecondaryPosteriorSlotKind = (slotKind?: string) =>
+  slotKind === "mainSecondaryPosteriorChain";
+
+const isHigherFrequencyHingeSurrogateSlotKind = (slotKind?: string) =>
+  slotKind === "mainHingeSurrogate";
+
+const isHigherFrequencyPullSurrogateExercise = (exercise: Exercise) => {
+  if (!matchesMainLanePattern(exercise, "pull")) return false;
+  const descriptor = getExerciseDescriptor(exercise);
+  return (
+    isNoEquipmentPrimePullAnchorExercise(exercise) ||
+    isNoEquipmentLowPriorityPullFallbackExercise(exercise) ||
+    isVerticalPullSurrogateExercise(exercise) ||
+    descriptor.includes("prone elbow row") ||
+    descriptor.includes("prone-elbow-row") ||
+    descriptor.includes("supine elbow drive row") ||
+    descriptor.includes("supine-elbow-drive-row") ||
+    descriptor.includes("back widow") ||
+    descriptor.includes("back-widow") ||
+    descriptor.includes("lat sweep") ||
+    descriptor.includes("lat-sweep")
+  );
+};
+
+const resolveHigherFrequencyPullSurrogateSlotKind = (exercise: Exercise) => {
+  const descriptor = getExerciseDescriptor(exercise);
+  if (
+    hasVerticalPullSignature(exercise) ||
+    isVerticalPullSurrogateExercise(exercise) ||
+    descriptor.includes("lat") ||
+    descriptor.includes("pulldown")
+  ) {
+    return "mainVerticalPullSurrogate";
+  }
+  if (
+    hasHorizontalPullSignature(exercise) ||
+    descriptor.includes("row") ||
+    descriptor.includes("widow")
+  ) {
+    return "mainHorizontalPullSurrogate";
+  }
+  return "mainPullSurrogate";
+};
+
+const isHigherFrequencySecondaryPosteriorChainExercise = (exercise: Exercise) =>
+  matchesMainLanePattern(exercise, "hinge") &&
+  (isHamstringCurlExercise(exercise) ||
+    isBackExtensionHingeFamily(exercise) ||
+    isFallbackQualityHingeAnchorExercise(exercise));
+
+const isHigherFrequencyHingeSurrogateExercise = (params: {
+  exercise: Exercise;
+  available: Set<Equipment>;
+  context: SelectionContext;
+  dayTitle?: string | null;
+}) => {
+  const { exercise, available, context, dayTitle } = params;
+  return (
+    matchesMainLanePattern(exercise, "hinge") &&
+    (shouldAllowHipExtensionHingeSurrogateForMainSlot({
+      exercise,
+      available,
+      context,
+      dayTitle,
+    }) ||
+      (context.capabilityMode === "noneOnly" &&
+        isNoEquipmentLastResortHingeFallback(exercise) &&
+        !hasEligibleTrueHingeAnchorAlternative({
+          exercise,
+          available,
+          context,
+          dayTitle,
+        })))
+  );
+};
+
 const isMainSlotNeverAnchorExercise = (exercise: Exercise) => {
   const descriptor = getExerciseDescriptor(exercise);
   return (
@@ -24632,7 +24934,7 @@ const isStrictHingeSlotAnchorLegal = (params: {
   });
 
   if (isHamstringCurlExercise(exercise)) {
-    return !hasRealHingeAlternative;
+    return false;
   }
 
   if (isBackExtensionHingeFamily(exercise) && hasPainSaferHingeAlternative) {
@@ -29185,6 +29487,10 @@ const ensurePullLaneBandOnly = (
   if (lanes.includes("pull")) return lanes;
 
   const next = [...lanes];
+  const normalizedTitle = dayTitle.toLowerCase();
+  if (normalizedTitle.includes("upper push")) {
+    return next;
+  }
   const lowerDay = isLowerFocusedDay(dayTitle, focusTags);
 
   if (lowerDay) {
@@ -30805,21 +31111,35 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
       const exercise = exerciseById(item.exerciseId);
       if (!exercise) return;
       const mainOrdinal = mainItemOrdinals.get(itemIndex) ?? 0;
+      const dayMainExercises = nextDay.routine
+        .filter((entry) => entry.section === "main")
+        .map((entry) => exerciseById(entry.exerciseId))
+        .filter((entry): entry is Exercise => Boolean(entry));
+      const basePlannedSlotMeta = resolveFinalMainSlotMeta({
+        day: nextDay,
+        mainOrdinal,
+        mainCount,
+        daysPerWeek,
+        capabilityMode: context.capabilityMode,
+      });
       const genericPlannedSlotMetaBase =
         daysPerWeek === 3
-          ? resolveFinalMainSlotMeta({
-              day,
-              mainOrdinal,
-              mainCount,
-              daysPerWeek,
-              capabilityMode: context.capabilityMode,
+          ? basePlannedSlotMeta
+          : daysPerWeek >= 4
+          ? resolveHigherFrequencyTruthfulMainSlotMeta({
+              exercise,
+              dayTitle: nextDay.title,
+              plannedSlot: basePlannedSlotMeta,
+              dayMainExercises,
+              available: context.available,
+              context: context.selectionContext,
             })
           : null;
       const genericPlannedSlotMeta =
         genericPlannedSlotMetaBase && daysPerWeek === 3
           ? resolveThreeDayTruthfulMainSlotMeta({
               exercise,
-              dayTitle: day.title,
+              dayTitle: nextDay.title,
               plannedSlot: genericPlannedSlotMetaBase,
               mainOrdinal,
               available: context.available,
@@ -30852,14 +31172,16 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
             })
         );
       const plannedSlotMeta =
-        genericPlannedSlotMeta &&
-        debugSlotMeta &&
-        !(
-          isBackChestDayTitle(day.title) &&
-          genericPlannedSlotMeta.slotKind.startsWith("mainPull")
-        ) &&
-        !slotMetaIsLegal(genericPlannedSlotMeta) &&
-        slotMetaIsLegal(debugSlotMeta)
+        daysPerWeek >= 4
+          ? genericPlannedSlotMeta
+          : genericPlannedSlotMeta &&
+            debugSlotMeta &&
+            !(
+              isBackChestDayTitle(day.title) &&
+              genericPlannedSlotMeta.slotKind.startsWith("mainPull")
+            ) &&
+            !slotMetaIsLegal(genericPlannedSlotMeta) &&
+            slotMetaIsLegal(debugSlotMeta)
           ? debugSlotMeta
           : genericPlannedSlotMeta;
       const slotLane =
@@ -30870,16 +31192,9 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
         plannedSlotMeta?.slotKind ??
         item.selectionDebug?.slotKind ??
         (slotLane ? slotKindByMainLane[slotLane] : undefined);
-      const knownLowerMainDrift = isHigherFrequencyLowerMainDrift({
-        exercise,
-        slotLane,
-        dayTitle: day.title,
-        available: context.available,
-        context: context.selectionContext,
-      });
-      const knownSlotIllegal = Boolean(
+      const slotLegalForFinalTruth = Boolean(
         slotLane &&
-          !isMainLegalForSlot({
+          isMainLegalForSlot({
             exercise,
             dayTitle: day.title,
             slotKind,
@@ -30888,13 +31203,33 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
             context: context.selectionContext,
           })
       );
-      const knownIllegalDrift = isHigherFrequencyIllegalMainDrift({
+      const truthfulSecondaryOrSurrogateSlot =
+        isHigherFrequencySecondaryPosteriorSlotKind(slotKind) ||
+        isHigherFrequencyHingeSurrogateSlotKind(slotKind) ||
+        isHigherFrequencyPullSurrogateSlotKind(slotKind);
+      const rawKnownLowerMainDrift = isHigherFrequencyLowerMainDrift({
+        exercise,
+        slotLane,
+        dayTitle: day.title,
+        available: context.available,
+        context: context.selectionContext,
+      });
+      const knownLowerMainDrift =
+        slotLegalForFinalTruth && truthfulSecondaryOrSurrogateSlot
+          ? false
+          : rawKnownLowerMainDrift;
+      const knownSlotIllegal = Boolean(slotLane && !slotLegalForFinalTruth);
+      const rawKnownIllegalDrift = isHigherFrequencyIllegalMainDrift({
         exercise,
         daysPerWeek,
         dayTitle: day.title,
         slotLane,
         context,
       });
+      const knownIllegalDrift =
+        slotLegalForFinalTruth && truthfulSecondaryOrSurrogateSlot
+          ? false
+          : rawKnownIllegalDrift;
       if (
         !knownLowerMainDrift &&
         !knownSlotIllegal &&
@@ -30966,7 +31301,6 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
                 "barbell-hip-thrust",
                 "db-rdl",
                 "band-rdl",
-                "machine-seated-hamstring-curl",
               ]
             : [
                 "machine-leg-press",
@@ -31144,7 +31478,6 @@ const lowerSlotPurityRescueIds = (
       "barbell-romanian-deadlift",
       "machine-glute-drive",
       "barbell-hip-thrust",
-      "machine-seated-hamstring-curl",
       "single-leg-rdl",
       "bodyweight-good-morning",
       "back-extension",
@@ -31178,10 +31511,6 @@ const findLowerSlotPurityReplacement = (params: {
     slotLane === "hinge" &&
     context.selectionContext.painSeverity !== "high" &&
     !hasLowBackPainSignal(context.selectionContext);
-  const painConstrainedMachineHinge =
-    slotLane === "hinge" &&
-    context.capabilityMode === "hasLoad" &&
-    context.selectionContext.painSeverity === "high";
 
   return lowerSlotPurityRescueIds(slotLane, context)
     .map((id) => exerciseById(id))
@@ -31207,21 +31536,13 @@ const findLowerSlotPurityReplacement = (params: {
           context.selectionContext.phaseName,
           context.selectionContext
         );
-      const painConstrainedHingeRescue =
-        painConstrainedMachineHinge &&
-        candidate.id === "machine-seated-hamstring-curl" &&
-        isExerciseEligible(candidate, context.available) &&
-        isExerciseAllowedForSection(candidate, "main");
-      if (!contextEligible && !constrainedHingeRescue && !painConstrainedHingeRescue) return false;
+      if (!contextEligible && !constrainedHingeRescue) return false;
       if (constrainedHingeRescue) {
         return (
           matchesMainLanePattern(candidate, "hinge") &&
           !isLegsCarryExercise(candidate) &&
           !matchesAccessoryLanePattern(candidate, "core")
         );
-      }
-      if (painConstrainedHingeRescue) {
-        return matchesMainLanePattern(candidate, "hinge");
       }
       return isMainLegalForSlot({
         exercise: candidate,
@@ -31498,6 +31819,148 @@ const enforceFinalAccessorySlotPurity = (params: {
     });
 
     return nextDay;
+  });
+
+  return { week: nextWeek, warnings };
+};
+
+const isScapularPostureSupportExercise = (exercise: Exercise) => {
+  if (matchesRule(exercise, scapPostureRule)) return true;
+  if (isSupportOnlyMovement(exercise)) return true;
+  const descriptor = getExerciseDescriptor(exercise);
+  return [
+    "face pull",
+    "face-pull",
+    "external rotation",
+    "external-rotation",
+    "pull-apart",
+    "pull apart",
+    "reverse snow angel",
+    "reverse-snow-angel",
+    "snow angel",
+    "snow-angel",
+    "swimmer",
+    "y raise",
+    "y-raise",
+    "t raise",
+    "t-raise",
+    "ytw",
+    "scapular push",
+    "scapular-push",
+  ].some((token) => descriptor.includes(token));
+};
+
+const hasScapularPostureSupport = (day: ProgramDay) =>
+  day.routine.some((item) => {
+    const exercise = exerciseById(item.exerciseId);
+    if (!exercise) return false;
+    return matchesRule(exercise, scapPostureRule, item.section) || isScapularPostureSupportExercise(exercise);
+  });
+
+const findUpperPushScapularSupportAccessory = (params: {
+  day: ProgramDay;
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+}) => {
+  const { day, usedIds, context } = params;
+  const candidateIds = [
+    "cable-face-pull",
+    "face-pull",
+    "band-pull-apart",
+    "band-rear-delt-fly",
+    "cable-external-rotation",
+    "dumbbell-side-lying-external-rotation",
+    "prone-swimmer",
+    "reverse-snow-angel",
+    "prone-y-raise",
+    "prone-t-raise",
+    "scapular-pushups",
+  ];
+
+  return Array.from(new Set(candidateIds))
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise))
+    .find((exercise) => {
+      if (usedIds.has(exercise.id)) return false;
+      if (!isScapularPostureSupportExercise(exercise)) return false;
+      if (
+        !isExerciseEligibleForProgramContext({
+          exercise,
+          available: context.available,
+          section: "accessory",
+          context: context.selectionContext,
+          dayTitle: day.title,
+        })
+      ) {
+        return false;
+      }
+      const lane = resolveAccessoryLaneForReplacement(exercise, "pull");
+      return Boolean(
+        lane &&
+          isAccessoryLegalForSlot({
+            exercise,
+            dayTitle: day.title,
+            slotLane: lane,
+            available: context.available,
+            context: context.selectionContext,
+          })
+      );
+    }) ?? null;
+};
+
+const enforceHigherFrequencyUpperPushScapularSupport = (params: {
+  week: ProgramDay[];
+  daysPerWeek: 3 | 4 | 5;
+  context: DayConstraintRepairContext;
+  phaseIndex: number;
+}): WeekConstraintRepairResult => {
+  const { week, daysPerWeek, context, phaseIndex } = params;
+  if (daysPerWeek !== 4) return { week, warnings: [] };
+  const warnings: WeekConstraintRepairResult["warnings"] = [];
+
+  const nextWeek = week.map((day) => {
+    if (day.title !== "Upper Push + Scapular Control") return day;
+    if (hasScapularPostureSupport(day)) return day;
+
+    const accessoryEntries = day.routine
+      .map((item, itemIndex) => ({ item, itemIndex }))
+      .filter((entry) => entry.item.section === "accessory");
+    const target =
+      accessoryEntries.find((entry) => {
+        const exercise = exerciseById(entry.item.exerciseId);
+        if (!exercise) return false;
+        const descriptor = getExerciseDescriptor(exercise);
+        return !descriptor.includes("triceps") && !isScapularPostureSupportExercise(exercise);
+      }) ??
+      accessoryEntries.find((entry) => {
+        const exercise = exerciseById(entry.item.exerciseId);
+        return Boolean(exercise && !isScapularPostureSupportExercise(exercise));
+      });
+    if (!target) return day;
+
+    const usedIds = new Set(day.routine.map((item) => item.exerciseId));
+    usedIds.delete(target.item.exerciseId);
+    const replacement = findUpperPushScapularSupportAccessory({
+      day,
+      usedIds,
+      context,
+    });
+    if (!replacement) return day;
+
+    const lane = resolveAccessoryLaneForReplacement(replacement, "pull") ?? "pull";
+    warnings.push({
+      dayTitle: day.title,
+      kind: "missing",
+      message: `${day.title} reserved accessory support replaced ${target.item.exerciseId} with ${replacement.id}.`,
+    });
+    return replaceDayAccessoryExerciseForLane({
+      day,
+      itemIndex: target.itemIndex,
+      replacement,
+      source: "contract_repair",
+      lane,
+      phaseIndex,
+    });
   });
 
   return { week: nextWeek, warnings };
@@ -32800,8 +33263,14 @@ export const generateWeeklyProgram = (
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
   });
-  const threeDayFinalSlotTruthResult = enforceThreeDayFinalSlotRoleTruth({
+  const higherFrequencyScapularSupportResult = enforceHigherFrequencyUpperPushScapularSupport({
     week: postCompatibilityAccessoryPurityResult.week,
+    daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
+    context: dayRepairContext,
+    phaseIndex: weeklyRuntimeContext.phaseIndex,
+  });
+  const threeDayFinalSlotTruthResult = enforceThreeDayFinalSlotRoleTruth({
+    week: higherFrequencyScapularSupportResult.week,
     daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
@@ -32835,6 +33304,7 @@ export const generateWeeklyProgram = (
     ...noEquipmentPullQualityResult.warnings,
     ...postCompatibilityMainIntegrityResult.warnings,
     ...postCompatibilityAccessoryPurityResult.warnings,
+    ...higherFrequencyScapularSupportResult.warnings,
     ...threeDayFinalSlotTruthResult.warnings,
   ];
   const finalStateWarnings = buildFinalStateProgramWarnings({

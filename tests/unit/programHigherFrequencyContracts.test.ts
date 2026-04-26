@@ -3,7 +3,12 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { buildEngineSignals, generateProgram } from "@/lib/engine";
 import { exerciseById, type Exercise } from "@/lib/exercises";
 import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
-import { clearProgramVariationHistory, generateWeeklyProgram } from "@/lib/program";
+import {
+  clearProgramConstraintWarningBuffer,
+  clearProgramVariationHistory,
+  generateWeeklyProgram,
+  getProgramConstraintWarningBuffer,
+} from "@/lib/program";
 import type { Program } from "@/lib/types";
 
 const baseQuestionnaire = (
@@ -31,6 +36,17 @@ const generateAnchorProgram = (
       useRecentMemory: false,
       initialLiveVariation: true,
     },
+  });
+
+const generatePhaseProgram = (
+  questionnaire: QuestionnaireData,
+  id: string,
+  phaseIndex: 1 | 2 | 3,
+  seed = id
+): Program =>
+  generateWeeklyProgram(questionnaire, id, {
+    phaseIndex,
+    seed,
   });
 
 const mainExercises = (program: Program, title: string) => {
@@ -107,6 +123,40 @@ const isPostureSupportPull = (exercise: Exercise) => {
       text.includes("rear delt"))
   );
 };
+
+const isScapularPostureSupport = (exercise: Exercise) => {
+  const text = descriptor(exercise);
+  const tags = new Set((exercise.tags ?? []).map((tag) => tag.toLowerCase()));
+  return (
+    tags.has("scap") ||
+    tags.has("scapular") ||
+    tags.has("posture") ||
+    tags.has("rotator cuff") ||
+    tags.has("rear delt") ||
+    [
+      "scapular",
+      "face pull",
+      "external rotation",
+      "pull-apart",
+      "snow angel",
+      "swimmer",
+      "y raise",
+      "t raise",
+      "rear delt",
+      "wall slide",
+      "wall angel",
+    ].some((token) => text.includes(token))
+  );
+};
+
+const isPullSurrogateId = (exerciseId: string) =>
+  [
+    "back-widow",
+    "prone-elbow-row",
+    "supine-elbow-drive-row",
+    "seated-lat-sweep-pulse",
+    "supine-lat-pulldown-isometric",
+  ].includes(exerciseId);
 
 const isLowOutputPullMain = (exercise: Exercise) => {
   const text = descriptor(exercise);
@@ -344,6 +394,15 @@ const expectProgramEquipmentEligible = (
   });
 };
 
+const finalWarningMessagesFor = (programId: string) =>
+  getProgramConstraintWarningBuffer()
+    .filter(
+      (warning) =>
+        warning.programId === programId &&
+        ["violation", "missing", "coverage"].includes(warning.kind)
+    )
+    .map((warning) => warning.message);
+
 const hingeMainExercises = (program: Program) =>
   program.week
     .filter((day) => day.title.toLowerCase().includes("lower"))
@@ -463,6 +522,7 @@ const buildSignals = (questionnaire: QuestionnaireData) =>
 describe("higher-frequency split contracts", () => {
   beforeEach(() => {
     clearProgramVariationHistory();
+    clearProgramConstraintWarningBuffer();
   });
 
   test("4-day gym split preserves two upper and two lower day identities", () => {
@@ -1215,6 +1275,216 @@ describe("higher-frequency split contracts", () => {
           )
         )
       ).toBe(false);
+    });
+  });
+
+  test("higher-frequency posterior-chain fallbacks never masquerade as primary hinge slots", () => {
+    const programs = [
+      generatePhaseProgram(
+        baseQuestionnaire({
+          equipment: ["gym"],
+          experience: "Intermediate",
+          daysPerWeek: 4,
+        }),
+        "hf-slot-truth-4day-gym-phase1",
+        1,
+        "higher-frequency-persona-review-2-phase-1"
+      ),
+      generatePhaseProgram(
+        baseQuestionnaire({
+          equipment: ["dumbbells"],
+          experience: "Intermediate",
+          daysPerWeek: 4,
+        }),
+        "hf-slot-truth-4day-db-phase1",
+        1,
+        "higher-frequency-persona-review-5-phase-1"
+      ),
+      generatePhaseProgram(
+        baseQuestionnaire({
+          equipment: ["bands"],
+          experience: "Intermediate",
+          daysPerWeek: 5,
+        }),
+        "hf-slot-truth-5day-bands-phase1",
+        1,
+        "higher-frequency-persona-review-16-phase-1"
+      ),
+    ];
+
+    programs.forEach((program) => {
+      program.week.forEach((day) => {
+        const mains = day.routine.filter((item) => item.section === "main");
+        mains.forEach((item) => {
+          if (
+            item.exerciseId !== "machine-seated-hamstring-curl" &&
+            item.exerciseId !== "back-extension" &&
+            item.exerciseId !== "back-extension-hold"
+          ) {
+            return;
+          }
+
+          const slotKind = item.selectionDebug?.slotKind;
+          expect(slotKind, `${day.title}: ${item.exerciseId}`).not.toBe("mainHinge");
+
+          if (item.exerciseId === "machine-seated-hamstring-curl") {
+            expect(["mainHamstringIsolation", "mainSecondaryPosteriorChain"]).toContain(
+              slotKind
+            );
+          } else {
+            expect(["mainSecondaryPosteriorChain", "mainHingeSurrogate"]).toContain(
+              slotKind
+            );
+          }
+
+          if (slotKind === "mainSecondaryPosteriorChain") {
+            const hasSeparateTrueHinge = mains.some((candidate) => {
+              if (candidate.exerciseId === item.exerciseId) return false;
+              const exercise = exerciseById(candidate.exerciseId);
+              return Boolean(exercise && hasTrueHingeAnchor(exercise));
+            });
+            expect(hasSeparateTrueHinge, `${day.title}: ${item.exerciseId}`).toBe(true);
+          }
+        });
+      });
+    });
+  });
+
+  test("pain-aware 4-day Upper Push + Scapular Control keeps a real scapular support exposure", () => {
+    const program = generatePhaseProgram(
+      baseQuestionnaire({
+        goals: "Reduce pain",
+        painAreas: ["lower back"],
+        experience: "Beginner",
+        equipment: ["dumbbells"],
+        daysPerWeek: 4,
+      }),
+      "hf-slot-truth-4day-upper-push-scapular",
+      1,
+      "higher-frequency-persona-review-6-phase-1"
+    );
+
+    const day = program.week.find((item) => item.title === "Upper Push + Scapular Control");
+    expect(day).toBeTruthy();
+    if (!day) return;
+
+    const prepAndAccessoryIds = [
+      ...(day.warmup?.items.map((item) => item.id) ?? []),
+      ...(day.activation?.items.map((item) => item.id) ?? []),
+      ...day.routine
+        .filter((item) => item.section === "accessory")
+        .map((item) => item.exerciseId),
+    ];
+    const supportIds = prepAndAccessoryIds.filter((exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      return Boolean(exercise && isScapularPostureSupport(exercise));
+    });
+
+    expect(supportIds.length).toBeGreaterThanOrEqual(1);
+    expect(day.routine.filter((item) => item.section === "accessory")).toHaveLength(2);
+    expect(finalWarningMessagesFor(program.id)).toEqual([]);
+  });
+
+  test("constrained upper-pull surrogates use truthful surrogate main slots", () => {
+    const programs = [
+      generatePhaseProgram(
+        baseQuestionnaire({
+          equipment: ["dumbbells"],
+          experience: "Intermediate",
+          daysPerWeek: 4,
+        }),
+        "hf-slot-truth-4day-db-pull-surrogate",
+        1,
+        "higher-frequency-persona-review-5-phase-1"
+      ),
+      generatePhaseProgram(
+        baseQuestionnaire({
+          equipment: ["none"],
+          experience: "Beginner",
+          daysPerWeek: 5,
+        }),
+        "hf-slot-truth-5day-none-pull-surrogate",
+        2,
+        "higher-frequency-persona-review-17-phase-2"
+      ),
+    ];
+
+    programs.forEach((program) => {
+      const surrogateMains = program.week.flatMap((day) =>
+        day.routine
+          .filter((item) => item.section === "main" && isPullSurrogateId(item.exerciseId))
+          .map((item) => ({ dayTitle: day.title, item }))
+      );
+
+      expect(surrogateMains.length).toBeGreaterThan(0);
+      surrogateMains.forEach(({ dayTitle, item }) => {
+        expect(
+          item.selectionDebug?.slotKind,
+          `${dayTitle}: ${item.exerciseId}`
+        ).toMatch(/PullSurrogate$/);
+        expect(item.selectionDebug?.slotLane, `${dayTitle}: ${item.exerciseId}`).toBe("pull");
+      });
+      expect(finalWarningMessagesFor(program.id)).toEqual([]);
+    });
+  });
+
+  test("lower-back-pain higher-frequency lower days prefer safer hip-extension hinges", () => {
+    const programs = [
+      generatePhaseProgram(
+        baseQuestionnaire({
+          goals: "Reduce pain",
+          painAreas: ["lower back"],
+          equipment: ["none"],
+          experience: "Beginner",
+          daysPerWeek: 4,
+        }),
+        "hf-slot-truth-4day-none-low-back-hinge",
+        1,
+        "higher-frequency-persona-review-9-phase-1"
+      ),
+      generatePhaseProgram(
+        baseQuestionnaire({
+          goals: "Reduce pain",
+          painAreas: ["lower back"],
+          equipment: ["none"],
+          experience: "Beginner",
+          daysPerWeek: 5,
+        }),
+        "hf-slot-truth-5day-none-low-back-hinge",
+        2,
+        "higher-frequency-persona-review-18-phase-2"
+      ),
+    ];
+
+    programs.forEach((program) => {
+      const lowerMains = program.week
+        .filter((day) => day.title.toLowerCase().includes("lower"))
+        .flatMap((day) => day.routine.filter((item) => item.section === "main"));
+      const hingeMains = lowerMains.filter(
+        (item) => item.selectionDebug?.slotLane === "hinge"
+      );
+
+      expect(hingeMains.length).toBeGreaterThan(0);
+      expect(
+        hingeMains.some((item) =>
+          ["back-extension", "back-extension-hold", "machine-seated-hamstring-curl"].includes(
+            item.exerciseId
+          )
+        )
+      ).toBe(false);
+      expect(
+        hingeMains.some((item) =>
+          [
+            "single-leg-glute-bridge-hold",
+            "single-leg-hip-thrust",
+            "barbell-hip-thrust",
+            "machine-glute-drive",
+            "single-leg-rdl",
+            "db-rdl",
+          ].includes(item.exerciseId)
+        )
+      ).toBe(true);
+      expect(finalWarningMessagesFor(program.id)).toEqual([]);
     });
   });
 
