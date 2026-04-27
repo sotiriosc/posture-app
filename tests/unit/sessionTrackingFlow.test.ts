@@ -261,6 +261,12 @@ describe("session tracking integration flow", () => {
         "Difficulty 10/10 • Pain 2 -> 3 • Energy 4/5 • Confidence 4/5"
       );
     });
+    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
+      "Next-time preview: keep this pattern steady."
+    );
+    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
+      "Preview only; no workout has been changed."
+    );
 
     expect(mocks.sessions.length).toBe(1);
     expect(mocks.sessions[0].feedback).toEqual({
@@ -315,6 +321,41 @@ describe("session tracking integration flow", () => {
     expect(
       screen.getByText("Coach read: symptoms stable, effort high, confidence good.")
     ).toBeTruthy();
+    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
+      "Next-time preview: keep this pattern steady."
+    );
+    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
+      "Preview only; no workout has been changed."
+    );
+  });
+
+  test("old completed sessions without feedback render history without a preview", async () => {
+    mocks.sessions = [
+      {
+        id: "old-session",
+        userId: null,
+        startedAt: "2026-02-15T00:00:00.000Z",
+        completedAt: "2026-02-15T00:30:00.000Z",
+        createdAt: "2026-02-15T00:00:00.000Z",
+        updatedAt: "2026-02-15T00:30:00.000Z",
+        routineId: "program-strength",
+        durationSec: 1800,
+        notes: "dayIndex:0",
+        sessionFeedback: null,
+        sessionPainLocation: null,
+        sessionFeedbackNotes: null,
+        source: "local",
+        deletedAt: null,
+      },
+    ];
+
+    render(React.createElement(ProgressPage));
+
+    await waitFor(() => {
+      expect(screen.getByText("Training insights")).toBeTruthy();
+    });
+    expect(screen.getByText("2026-02-15")).toBeTruthy();
+    expect(screen.queryByTestId("adaptation-preview")).toBeNull();
   });
 
   test("timed vs reps-based exercises show capability-specific timer/logging UI", async () => {

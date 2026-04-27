@@ -33,6 +33,7 @@ import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { sanitizeSessionFeedback } from "@/lib/sessionFeedback";
 import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
 import { applyCompletedDayToProgramProgress } from "@/lib/programProgress";
@@ -2043,6 +2044,10 @@ export default function SessionClient() {
   }
 
   if (sessionComplete && summary && summaryStats) {
+    const adaptationPreview = formatSessionAdaptationPreviewFromFeedback(
+      summary.feedback ?? null
+    );
+
     return (
       <BackgroundShell>
         <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
@@ -2071,6 +2076,17 @@ export default function SessionClient() {
             }}
             onSave={saveSessionCheckIn}
           />
+          {adaptationPreview ? (
+            <div
+              className="ui-card p-4 text-sm font-semibold text-slate-700"
+              data-testid="adaptation-preview"
+            >
+              {adaptationPreview}
+              <span className="mt-1 block text-xs font-medium text-slate-500">
+                Preview only; no workout has been changed.
+              </span>
+            </div>
+          ) : null}
           <OnImage className="flex flex-col gap-3 sm:flex-row">
             <Link href="/results">
               <Button

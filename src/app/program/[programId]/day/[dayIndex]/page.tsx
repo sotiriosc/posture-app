@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { exerciseById, resolveExerciseHistoryIds } from "@/lib/exercises";
 import { getProgressionRecommendation } from "@/lib/progression";
 import { formatHistorySchemaRow, getHistoryDeltaPills } from "@/lib/historyView";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
 import type { SubscriptionPlan } from "@/lib/authTypes";
@@ -260,6 +261,8 @@ export default function ProgramDayPage({ params }: Props) {
   const activeSessionFeedbackSummary = formatSessionFeedbackCoachSummary(
     activeSession?.feedback ?? null
   );
+  const activeSessionAdaptationPreview =
+    formatSessionAdaptationPreviewFromFeedback(activeSession?.feedback ?? null);
   const activeSessionLogs = activeSession
     ? logs.filter((log) => log.sessionId === activeSession.id)
     : [];
@@ -371,6 +374,14 @@ export default function ProgramDayPage({ params }: Props) {
           {activeSessionFeedbackSummary ? (
             <p className="mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
               {activeSessionFeedbackSummary}
+            </p>
+          ) : null}
+          {activeSessionAdaptationPreview ? (
+            <p
+              className="mt-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
+              data-testid="adaptation-preview"
+            >
+              {activeSessionAdaptationPreview} Preview only; no workout has been changed.
             </p>
           ) : null}
 

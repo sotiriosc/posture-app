@@ -21,6 +21,7 @@ import {
   listExerciseLogsBySession,
   listSessions,
 } from "@/lib/logStore";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import type { ExerciseLog, SessionRecord } from "@/lib/types";
@@ -526,6 +527,10 @@ export default function ProgressPage() {
                 const feedbackSummary = formatSessionFeedbackCoachSummary(
                   session.feedback ?? null
                 );
+                const adaptationPreview =
+                  formatSessionAdaptationPreviewFromFeedback(
+                    session.feedback ?? null
+                  );
                 return (
                   <div
                     key={session.id}
@@ -538,6 +543,14 @@ export default function ProgressPage() {
                       {feedbackSummary ? (
                         <span className="block text-slate-300">
                           {feedbackSummary}
+                        </span>
+                      ) : null}
+                      {adaptationPreview ? (
+                        <span
+                          className="block text-slate-300"
+                          data-testid="adaptation-preview"
+                        >
+                          {adaptationPreview} Preview only; no workout has been changed.
                         </span>
                       ) : null}
                     </span>

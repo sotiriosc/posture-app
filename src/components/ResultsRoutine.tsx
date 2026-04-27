@@ -73,6 +73,7 @@ import RoutineItemCoachingDetails, {
 } from "@/components/RoutineItemCoachingDetails";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { useTrainingSyncStatus } from "@/lib/useTrainingSyncStatus";
 import { useResultsBootstrap } from "@/components/results/useResultsBootstrap";
@@ -3730,6 +3731,10 @@ export default function ResultsRoutine() {
                 const feedbackSummary = formatSessionFeedbackCoachSummary(
                   session.feedback ?? null
                 );
+                const adaptationPreview =
+                  formatSessionAdaptationPreviewFromFeedback(
+                    session.feedback ?? null
+                  );
                 return (
                   <div
                     key={session.id}
@@ -3754,6 +3759,14 @@ export default function ResultsRoutine() {
                     {feedbackSummary ? (
                       <p className="mt-2 text-xs font-semibold text-slate-300">
                         {feedbackSummary}
+                      </p>
+                    ) : null}
+                    {adaptationPreview ? (
+                      <p
+                        className="mt-1 text-xs font-semibold text-slate-300"
+                        data-testid="adaptation-preview"
+                      >
+                        {adaptationPreview} Preview only; no workout has been changed.
                       </p>
                     ) : null}
                     {dayIndex !== null ? (

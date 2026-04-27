@@ -23,6 +23,18 @@ export type SessionFeedbackSignals = {
   coachSummary?: string;
 };
 
+export type SessionAdaptationPreview = {
+  readinessHint: "progress" | "maintain" | "reduce" | "recover";
+  suggestedAction:
+    | "gently_progress"
+    | "repeat"
+    | "reduce_dose"
+    | "simplify_pattern"
+    | "recovery_session";
+  reasons: string[];
+  coachMessage: string;
+};
+
 export type SessionRecord = {
   id: string;
   userId: string | null;
