@@ -33,6 +33,7 @@ import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
+import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
 import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { sanitizeSessionFeedback } from "@/lib/sessionFeedback";
 import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
@@ -2047,6 +2048,8 @@ export default function SessionClient() {
     const adaptationPreview = formatSessionAdaptationPreviewFromFeedback(
       summary.feedback ?? null
     );
+    const nextSessionRecommendation =
+      formatNextSessionRecommendationFromSession(summary);
 
     return (
       <BackgroundShell>
@@ -2084,6 +2087,17 @@ export default function SessionClient() {
               {adaptationPreview}
               <span className="mt-1 block text-xs font-medium text-slate-500">
                 Preview only; no workout has been changed.
+              </span>
+            </div>
+          ) : null}
+          {nextSessionRecommendation ? (
+            <div
+              className="ui-card p-4 text-sm font-semibold text-slate-700"
+              data-testid="next-session-recommendation"
+            >
+              {nextSessionRecommendation}
+              <span className="mt-1 block text-xs font-medium text-slate-500">
+                Recommendation only; your plan has not been changed.
               </span>
             </div>
           ) : null}

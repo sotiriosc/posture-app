@@ -267,6 +267,12 @@ describe("session tracking integration flow", () => {
     expect(screen.getByTestId("adaptation-preview").textContent).toContain(
       "Preview only; no workout has been changed."
     );
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Next session recommendation: repeat the pattern at a steady dose."
+    );
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Recommendation only; your plan has not been changed."
+    );
 
     expect(mocks.sessions.length).toBe(1);
     expect(mocks.sessions[0].feedback).toEqual({
@@ -327,6 +333,12 @@ describe("session tracking integration flow", () => {
     expect(screen.getByTestId("adaptation-preview").textContent).toContain(
       "Preview only; no workout has been changed."
     );
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Next session recommendation: repeat the pattern at a steady dose."
+    );
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Recommendation only; your plan has not been changed."
+    );
   });
 
   test("old completed sessions without feedback render history without a preview", async () => {
@@ -356,6 +368,7 @@ describe("session tracking integration flow", () => {
     });
     expect(screen.getByText("2026-02-15")).toBeTruthy();
     expect(screen.queryByTestId("adaptation-preview")).toBeNull();
+    expect(screen.queryByTestId("next-session-recommendation")).toBeNull();
   });
 
   test("timed vs reps-based exercises show capability-specific timer/logging UI", async () => {

@@ -21,6 +21,7 @@ import {
   listExerciseLogsBySession,
   listSessions,
 } from "@/lib/logStore";
+import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
 import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
@@ -531,6 +532,8 @@ export default function ProgressPage() {
                   formatSessionAdaptationPreviewFromFeedback(
                     session.feedback ?? null
                   );
+                const nextSessionRecommendation =
+                  formatNextSessionRecommendationFromSession(session);
                 return (
                   <div
                     key={session.id}
@@ -551,6 +554,14 @@ export default function ProgressPage() {
                           data-testid="adaptation-preview"
                         >
                           {adaptationPreview} Preview only; no workout has been changed.
+                        </span>
+                      ) : null}
+                      {nextSessionRecommendation ? (
+                        <span
+                          className="block text-slate-300"
+                          data-testid="next-session-recommendation"
+                        >
+                          {nextSessionRecommendation} Recommendation only; your plan has not been changed.
                         </span>
                       ) : null}
                     </span>

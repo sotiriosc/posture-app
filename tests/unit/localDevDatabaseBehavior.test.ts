@@ -188,4 +188,36 @@ describe("local development database behavior", () => {
     expect(getTrainingSnapshot).not.toHaveBeenCalled();
     expect(patchTrainingSnapshot).not.toHaveBeenCalled();
   });
+
+  test("next session recommendation derivation stays DB-free in local-safe mode", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    process.env.USER_STORE_DRIVER = "memory";
+    process.env.DATABASE_URL = "postgres://example.invalid/prod";
+    delete process.env.TRAINING_STORE_DRIVER;
+    const getTrainingSnapshot = vi.fn();
+    const patchTrainingSnapshot = vi.fn();
+
+    vi.resetModules();
+    vi.doMock("@/lib/trainingStoreDb", () => ({
+      getTrainingSnapshot,
+      patchTrainingSnapshot,
+    }));
+
+    const { deriveNextSessionRecommendationFromFeedback } = await import(
+      "@/lib/nextSessionRecommendation"
+    );
+
+    expect(
+      deriveNextSessionRecommendationFromFeedback({
+        completed: "yes",
+        difficultyRPE: 6,
+        painBefore: 1,
+        painAfter: 1,
+        energy: 4,
+        techniqueConfidence: 4,
+      })?.mode
+    ).toBe("normal");
+    expect(getTrainingSnapshot).not.toHaveBeenCalled();
+    expect(patchTrainingSnapshot).not.toHaveBeenCalled();
+  });
 });

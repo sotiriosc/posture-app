@@ -35,6 +35,15 @@ export type SessionAdaptationPreview = {
   coachMessage: string;
 };
 
+export type NextSessionRecommendation = {
+  mode: "normal" | "repeat" | "reduce" | "simplify" | "recover";
+  priority: "low" | "medium" | "high";
+  reasons: string[];
+  message: string;
+  suggestedAdjustments: string[];
+  sourceSessionId?: string;
+};
+
 export type SessionRecord = {
   id: string;
   userId: string | null;
