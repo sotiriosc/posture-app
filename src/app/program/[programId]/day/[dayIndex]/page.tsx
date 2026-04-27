@@ -16,6 +16,9 @@ import {
 } from "@/lib/logStore";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
+import RoutineItemCoachingDetails, {
+  formatRoutineItemDose,
+} from "@/components/RoutineItemCoachingDetails";
 import Button from "@/components/ui/Button";
 
 type Props = {
@@ -70,26 +73,6 @@ const groupBySection = (routine: ProgramRoutineItem[]): RoutineWithSections => {
   });
 
   return { warmup, activation, main, cooldown };
-};
-
-const formatRoutineItemPrescription = (item: ProgramRoutineItem) => {
-  const structured = item.prescription;
-  if (structured) {
-    const dose =
-      structured.sets && structured.reps
-        ? `${structured.sets} x ${structured.reps}`
-        : structured.reps ?? (structured.sets ? `${structured.sets} sets` : null);
-    const details = [
-      structured.targetRPE ? `RPE ${structured.targetRPE}` : null,
-      structured.tempo ? `tempo ${structured.tempo}` : null,
-      structured.restSeconds ? `rest ${structured.restSeconds}s` : null,
-    ].filter(Boolean);
-    return [dose, ...details].filter(Boolean).join(" | ") || null;
-  }
-
-  return item.loadType === "timed"
-    ? `${item.durationSec ?? 60} sec`
-    : item.reps ?? null;
 };
 
 export default function ProgramDayPage({ params }: Props) {
@@ -432,13 +415,11 @@ export default function ProgramDayPage({ params }: Props) {
                         ? "ASSISTED"
                         : "BODYWEIGHT";
                     const latestWorkSeconds = lastLog?.workSecondsUsed ?? null;
-                    const prescribedLine =
-                      formatRoutineItemPrescription(item) ??
-                      (item.loadType === "timed"
+                    const fallbackDose =
+                      item.loadType === "timed"
                         ? `${latestWorkSeconds ?? item.durationSec ?? 60} sec`
-                        : item.reps ?? exercise?.durationOrReps ?? "As prescribed");
-                    const coachingLine =
-                      item.rationale?.mainCue ?? item.rationale?.whyThisExercise ?? null;
+                        : item.reps ?? exercise?.durationOrReps ?? "As prescribed";
+                    const prescribedLine = formatRoutineItemDose(item, fallbackDose);
                     const nextLine = recommendation
                       ? `Next: ${formatRecommendation(recommendation)}`
                       : "Next: Keep targets consistent";
@@ -456,10 +437,12 @@ export default function ProgramDayPage({ params }: Props) {
                               {exercise?.name ?? "Exercise"}
                             </p>
                             <p className="mt-1 ui-body font-semibold text-slate-700">{nextLine}</p>
-                            <p className="mt-1 ui-body">Prescribed: {prescribedLine}</p>
-                            {coachingLine ? (
-                              <p className="mt-1 ui-body text-slate-600">{coachingLine}</p>
-                            ) : null}
+                            <RoutineItemCoachingDetails
+                              item={item}
+                              fallbackDose={prescribedLine}
+                              tone="light"
+                              className="mt-1"
+                            />
                           </div>
                           <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold text-slate-500">
                             <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">
