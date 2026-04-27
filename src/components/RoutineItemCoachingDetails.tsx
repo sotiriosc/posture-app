@@ -30,8 +30,12 @@ export const getRoutineItemDoseParts = (
     typeof prescription.sets === "number" ? formatSets(prescription.sets) : null,
     prescription.reps ? formatReps(prescription.reps) : null,
     prescription.tempo,
-    typeof prescription.restSeconds === "number" ? `${prescription.restSeconds}s rest` : null,
-    typeof prescription.targetRPE === "number" ? `RPE ${prescription.targetRPE}` : null,
+    typeof prescription.restSeconds === "number"
+      ? `${prescription.restSeconds} sec rest`
+      : null,
+    typeof prescription.targetRPE === "number"
+      ? `Effort ${prescription.targetRPE}/10`
+      : null,
   ].filter((part): part is string => Boolean(part));
 
   return parts.length ? parts : fallbackDose ? [fallbackDose] : [];
@@ -75,10 +79,10 @@ export default function RoutineItemCoachingDetails({
   const classes = toneClasses[tone];
   const doseParts = getRoutineItemDoseParts(item, fallbackDose);
   const detailRows = [
-    ["Why this", item.rationale?.whyThisExercise ?? fallbackRationale],
-    ["Cue", item.rationale?.mainCue],
-    ["Easier", item.rationale?.easierVersion],
-    ["Harder", item.rationale?.harderVersion],
+    ["Why", item.rationale?.whyThisExercise ?? fallbackRationale],
+    ["Focus", item.rationale?.mainCue],
+    ["Ease off", item.rationale?.easierVersion],
+    ["Progress", item.rationale?.harderVersion],
     ["Stop if", item.rationale?.stopIf ?? item.prescription?.stopRule],
   ].filter((row): row is [string, string] => Boolean(row[1]));
 
@@ -104,7 +108,7 @@ export default function RoutineItemCoachingDetails({
       {showDetails && detailRows.length ? (
         <details className="group">
           <summary className={`inline-flex cursor-pointer list-none items-center text-xs font-semibold ${classes.summary}`}>
-            <span>Coach notes</span>
+            <span>Coach note</span>
             <span aria-hidden="true" className="ml-1 group-open:hidden">+</span>
             <span aria-hidden="true" className="ml-1 hidden group-open:inline">-</span>
           </summary>

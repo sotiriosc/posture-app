@@ -13,24 +13,24 @@ const optionCopy: Record<
   Pick<SessionPracticeOption, "label" | "description">
 > = {
   full: {
-    label: "Full Session",
-    description: "Use the saved plan exactly as written for today.",
+    label: "Full",
+    description: "Run the saved session as written for today.",
   },
   steady: {
-    label: "Steady Session",
-    description: "Keep the saved session intact and hold dose steady.",
+    label: "Steady",
+    description: "Keep every exercise, but hold effort and dose steady.",
   },
   reduced: {
-    label: "Reduced Session",
-    description: "Keep the key pattern work while trimming total exposure.",
+    label: "Reduced",
+    description: "Keep the key pattern work while trimming total volume.",
   },
   simplified: {
-    label: "Simplified Session",
-    description: "Favor easier pattern practice and fewer main items.",
+    label: "Simplified",
+    description: "Use fewer or easier items so form stays clean.",
   },
   recovery: {
-    label: "Recovery Session",
-    description: "Use low-intensity mobility, activation, and cooldown work.",
+    label: "Recovery",
+    description: "Shift today toward mobility, activation, and easy ranges.",
   },
 };
 
@@ -199,9 +199,15 @@ export const formatPracticeModeSessionNote = (
   option: SessionPracticeOption | null | undefined
 ) => {
   if (!option) return null;
-  if (option.mode === "full") return "Using the full saved session.";
-  if (option.mode === "steady") return "Holding today's session steady.";
-  if (option.mode === "reduced") return "Using a reduced session view today.";
-  if (option.mode === "simplified") return "Using a simplified session view today.";
-  return "Using a recovery-oriented session view today.";
+  if (option.mode === "full") return "Full mode: using the saved session view.";
+  if (option.mode === "steady") {
+    return "Steady mode: keeping the session intact and holding dose steady.";
+  }
+  if (option.mode === "reduced") {
+    return "Reduced mode: trimming today's volume while keeping the key work.";
+  }
+  if (option.mode === "simplified") {
+    return "Simplified mode: making today's work easier to execute cleanly.";
+  }
+  return "Recovery mode: keeping today's work easy and restorative.";
 };

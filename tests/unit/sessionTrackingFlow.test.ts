@@ -211,7 +211,20 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
     });
     expect(screen.getByText("Today's options")).toBeTruthy();
-    expect(screen.getByText("This changes only today's session view. Your saved plan is not changed.")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "This changes only today's session view. Your saved plan is not changed."
+      )
+    ).toBeTruthy();
+    expect(screen.getByTestId("coaching-check-in-explanation").textContent).toBe(
+      "Praxis uses your check-ins to suggest safer ways to approach the next session. It will not change your plan unless you choose a session option."
+    );
+    expect(screen.getByTestId("practice-option-full").textContent).toContain(
+      "Full"
+    );
+    expect(screen.getByTestId("practice-option-reduced").textContent).toContain(
+      "Reduced"
+    );
     fireEvent.click(screen.getByTestId("practice-option-full"));
 
     fireEvent.change(screen.getByTestId("weight-input"), {
@@ -268,13 +281,16 @@ describe("session tracking integration flow", () => {
       );
     });
     expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Next-time preview: keep this pattern steady."
+      "Keep this pattern steady."
+    );
+    expect(screen.getByTestId("coach-read-summary").textContent).toContain(
+      "Symptoms stable, effort high, confidence good."
     );
     expect(screen.getByTestId("adaptation-preview").textContent).toContain(
       "Preview only; no workout has been changed."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "Next session recommendation: repeat the pattern at a steady dose."
+      "Repeat the pattern at a steady dose."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
       "Recommendation only; your plan has not been changed."
@@ -331,17 +347,17 @@ describe("session tracking integration flow", () => {
     });
     expect(screen.queryByText("No completed sessions yet.")).toBeNull();
     expect(screen.getByText("2026-02-15")).toBeTruthy();
-    expect(
-      screen.getByText("Coach read: symptoms stable, effort high, confidence good.")
-    ).toBeTruthy();
+    expect(screen.getByTestId("coach-read-summary").textContent).toContain(
+      "Symptoms stable, effort high, confidence good."
+    );
     expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Next-time preview: keep this pattern steady."
+      "Keep this pattern steady."
     );
     expect(screen.getByTestId("adaptation-preview").textContent).toContain(
       "Preview only; no workout has been changed."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "Next session recommendation: repeat the pattern at a steady dose."
+      "Repeat the pattern at a steady dose."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
       "Recommendation only; your plan has not been changed."

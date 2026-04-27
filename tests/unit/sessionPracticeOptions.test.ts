@@ -104,7 +104,7 @@ describe("session practice options", () => {
     expect(oldSession.selectedPracticeMode).toBeUndefined();
     expect(deriveSessionPracticeOptions(practiceDay, null)[0]).toMatchObject({
       mode: "full",
-      label: "Full Session",
+      label: "Full",
     });
   });
 

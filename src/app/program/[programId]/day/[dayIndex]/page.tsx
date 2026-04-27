@@ -22,6 +22,7 @@ import OnImage from "@/components/OnImage";
 import RoutineItemCoachingDetails, {
   formatRoutineItemDose,
 } from "@/components/RoutineItemCoachingDetails";
+import { SessionCoachFeedbackCards } from "@/components/session/CoachingGuidance";
 import Button from "@/components/ui/Button";
 
 type Props = {
@@ -374,27 +375,12 @@ export default function ProgramDayPage({ params }: Props) {
               No recorded workouts yet for this day. Start this day to create the first dated entry.
             </p>
           ) : null}
-          {activeSessionFeedbackSummary ? (
-            <p className="mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
-              {activeSessionFeedbackSummary}
-            </p>
-          ) : null}
-          {activeSessionAdaptationPreview ? (
-            <p
-              className="mt-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
-              data-testid="adaptation-preview"
-            >
-              {activeSessionAdaptationPreview} Preview only; no workout has been changed.
-            </p>
-          ) : null}
-          {activeSessionRecommendation ? (
-            <p
-              className="mt-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
-              data-testid="next-session-recommendation"
-            >
-              {activeSessionRecommendation} Recommendation only; your plan has not been changed.
-            </p>
-          ) : null}
+          <SessionCoachFeedbackCards
+            coachRead={activeSessionFeedbackSummary}
+            adaptationPreview={activeSessionAdaptationPreview}
+            nextSessionRecommendation={activeSessionRecommendation}
+            className="mt-3"
+          />
 
           <div
             onTouchStart={onTouchStart}

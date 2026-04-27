@@ -29,6 +29,10 @@ import DualModeTimer, {
 import ExerciseCard from "@/components/ExerciseCard";
 import SessionProgressHeader from "@/components/session/SessionProgressHeader";
 import SessionFeedbackCheckIn from "@/components/session/SessionFeedbackCheckIn";
+import {
+  CoachingExplanationBlock,
+  SessionCoachFeedbackCards,
+} from "@/components/session/CoachingGuidance";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
@@ -43,6 +47,7 @@ import {
   selectSessionPracticeItems,
 } from "@/lib/sessionPracticeOptions";
 import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { sanitizeSessionFeedback } from "@/lib/sessionFeedback";
 import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
 import { applyCompletedDayToProgramProgress } from "@/lib/programProgress";
@@ -2138,6 +2143,9 @@ export default function SessionClient() {
   }
 
   if (sessionComplete && summary && summaryStats) {
+    const feedbackSummary = formatSessionFeedbackCoachSummary(
+      summary.feedback ?? null
+    );
     const adaptationPreview = formatSessionAdaptationPreviewFromFeedback(
       summary.feedback ?? null
     );
@@ -2172,28 +2180,12 @@ export default function SessionClient() {
             }}
             onSave={saveSessionCheckIn}
           />
-          {adaptationPreview ? (
-            <div
-              className="ui-card p-4 text-sm font-semibold text-slate-700"
-              data-testid="adaptation-preview"
-            >
-              {adaptationPreview}
-              <span className="mt-1 block text-xs font-medium text-slate-500">
-                Preview only; no workout has been changed.
-              </span>
-            </div>
-          ) : null}
-          {nextSessionRecommendation ? (
-            <div
-              className="ui-card p-4 text-sm font-semibold text-slate-700"
-              data-testid="next-session-recommendation"
-            >
-              {nextSessionRecommendation}
-              <span className="mt-1 block text-xs font-medium text-slate-500">
-                Recommendation only; your plan has not been changed.
-              </span>
-            </div>
-          ) : null}
+          <SessionCoachFeedbackCards
+            coachRead={feedbackSummary}
+            adaptationPreview={adaptationPreview}
+            nextSessionRecommendation={nextSessionRecommendation}
+            className="sm:grid-cols-2"
+          />
           <OnImage className="flex flex-col gap-3 sm:flex-row">
             <Link href="/results">
               <Button
@@ -2251,10 +2243,11 @@ export default function SessionClient() {
                   className="rounded-lg border border-slate-500/30 bg-slate-950/55 px-2 py-1 text-[11px] font-semibold text-slate-300"
                   data-testid="selected-practice-mode"
                 >
-                  {selectedPracticeOption.label}
+                  {selectedPracticeOption.label} mode
                 </span>
               ) : null}
             </div>
+            <CoachingExplanationBlock tone="dark" className="mt-3" />
             <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {practiceOptions.map((option) => {
                 const selected = option.mode === effectivePracticeMode;

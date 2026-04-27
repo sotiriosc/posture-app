@@ -36,10 +36,10 @@ describe("RoutineItemCoachingDetails", () => {
     expect(screen.getByText("2 sets")).toBeTruthy();
     expect(screen.getByText("8-12 reps")).toBeTruthy();
     expect(screen.getByText("3-1-2 controlled")).toBeTruthy();
-    expect(screen.getByText("60s rest")).toBeTruthy();
-    expect(screen.getByText("RPE 6")).toBeTruthy();
-    expect(screen.getByText("Coach notes")).toBeTruthy();
-    expect(screen.getByText("Why this:")).toBeTruthy();
+    expect(screen.getByText("60 sec rest")).toBeTruthy();
+    expect(screen.getByText("Effort 6/10")).toBeTruthy();
+    expect(screen.getByText("Coach note")).toBeTruthy();
+    expect(screen.getByText("Why:")).toBeTruthy();
     expect(container.querySelector("details")?.hasAttribute("open")).toBe(false);
   });
 
@@ -63,6 +63,6 @@ describe("RoutineItemCoachingDetails", () => {
     );
 
     expect(screen.getByText("2 x 8-10")).toBeTruthy();
-    expect(screen.queryByText("Coach notes")).toBeNull();
+    expect(screen.queryByText("Coach note")).toBeNull();
   });
 });

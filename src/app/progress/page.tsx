@@ -13,6 +13,7 @@ import RecentPrList, {
   type PrSnapshot,
   type RecentPrItem,
 } from "@/components/progress/RecentPrList";
+import { SessionCoachFeedbackCards } from "@/components/session/CoachingGuidance";
 import { loadAppState } from "@/lib/appState";
 import { exerciseById } from "@/lib/exercises";
 import {
@@ -537,34 +538,22 @@ export default function ProgressPage() {
                 return (
                   <div
                     key={session.id}
-                    className="ui-soft-surface flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2"
+                    className="ui-soft-surface rounded-lg px-3 py-2"
                   >
-                    <span className="text-slate-100">{dateKey}</span>
-                    <span className="text-right text-xs text-slate-400">
-                      {session.durationSec ? `${Math.round(session.durationSec / 60)} min` : "--"}{" "}
-                      • Volume {volumeByDate[dateKey] ?? 0}
-                      {feedbackSummary ? (
-                        <span className="block text-slate-300">
-                          {feedbackSummary}
-                        </span>
-                      ) : null}
-                      {adaptationPreview ? (
-                        <span
-                          className="block text-slate-300"
-                          data-testid="adaptation-preview"
-                        >
-                          {adaptationPreview} Preview only; no workout has been changed.
-                        </span>
-                      ) : null}
-                      {nextSessionRecommendation ? (
-                        <span
-                          className="block text-slate-300"
-                          data-testid="next-session-recommendation"
-                        >
-                          {nextSessionRecommendation} Recommendation only; your plan has not been changed.
-                        </span>
-                      ) : null}
-                    </span>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-slate-100">{dateKey}</span>
+                      <span className="text-right text-xs text-slate-400">
+                        {session.durationSec ? `${Math.round(session.durationSec / 60)} min` : "--"}{" "}
+                        • Volume {volumeByDate[dateKey] ?? 0}
+                      </span>
+                    </div>
+                    <SessionCoachFeedbackCards
+                      coachRead={feedbackSummary}
+                      adaptationPreview={adaptationPreview}
+                      nextSessionRecommendation={nextSessionRecommendation}
+                      tone="dark"
+                      className="mt-2"
+                    />
                   </div>
                 );
               })

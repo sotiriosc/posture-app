@@ -71,6 +71,7 @@ import ProgramReferenceCard from "@/components/ProgramReferenceCard";
 import RoutineItemCoachingDetails, {
   formatRoutineItemDose,
 } from "@/components/RoutineItemCoachingDetails";
+import { SessionCoachFeedbackCards } from "@/components/session/CoachingGuidance";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
@@ -3759,27 +3760,13 @@ export default function ResultsRoutine() {
                         {entry.exerciseNames.slice(0, 5).join(" • ")}
                       </p>
                     ) : null}
-                    {feedbackSummary ? (
-                      <p className="mt-2 text-xs font-semibold text-slate-300">
-                        {feedbackSummary}
-                      </p>
-                    ) : null}
-                    {adaptationPreview ? (
-                      <p
-                        className="mt-1 text-xs font-semibold text-slate-300"
-                        data-testid="adaptation-preview"
-                      >
-                        {adaptationPreview} Preview only; no workout has been changed.
-                      </p>
-                    ) : null}
-                    {nextSessionRecommendation ? (
-                      <p
-                        className="mt-1 text-xs font-semibold text-slate-300"
-                        data-testid="next-session-recommendation"
-                      >
-                        {nextSessionRecommendation} Recommendation only; your plan has not been changed.
-                      </p>
-                    ) : null}
+                    <SessionCoachFeedbackCards
+                      coachRead={feedbackSummary}
+                      adaptationPreview={adaptationPreview}
+                      nextSessionRecommendation={nextSessionRecommendation}
+                      tone="dark"
+                      className="mt-3"
+                    />
                     {dayIndex !== null ? (
                       <button
                         type="button"
