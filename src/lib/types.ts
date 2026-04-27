@@ -52,6 +52,15 @@ export type SessionPracticeOption = {
   sourceRecommendationMode?: NextSessionRecommendation["mode"];
 };
 
+export type AdaptiveProgramIntent = {
+  enabled: boolean;
+  mode: "none" | "hold" | "reduce" | "simplify" | "recover" | "gently_progress";
+  source: "session_feedback";
+  reasons: string[];
+  constraints: string[];
+  suggestedGeneratorEffects: string[];
+};
+
 export type SessionRecord = {
   id: string;
   userId: string | null;
