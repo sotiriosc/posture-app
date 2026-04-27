@@ -72,6 +72,8 @@ USER_STORE_DRIVER=memory
 TRAINING_STORE_DRIVER=disabled
 DATABASE_URL=
 APP_URL=http://localhost:3000
+# Optional, defaults off. Leave unset unless explicitly testing future adaptive generation.
+ADAPTIVE_PROGRAMMING_ENABLED=
 ```
 This mode keeps auth users in process memory and leaves training sync in browser
 storage, so `npm run dev` does not consume Neon/Postgres quota. Use it for
@@ -122,6 +124,14 @@ APP_URL=http://localhost:3000
 - Security:
   - rotate Stripe/API secrets before production
   - never use `sk_live_...` in local/dev environments
+
+## Coaching Feedback Safety
+- Session feedback, adaptation previews, next-session recommendations, and manual session modes are advisory/current-session UX only.
+- Saved generated programs are not rewritten by these feedback layers.
+- `ADAPTIVE_PROGRAMMING_ENABLED` defaults off; adaptive intent helpers may derive inert future-generation intent, but no generator scoring, repair, progression, or substitution behavior is enabled by default.
+
+## Development Reports
+Generated persona review artifacts live in `docs/dev-reports/`. They are debug/merge-readiness evidence, not product documentation. Keep regenerated review files out of the repository root.
 
 ## Build
 ```
