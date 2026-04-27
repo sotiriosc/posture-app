@@ -44,6 +44,14 @@ export type NextSessionRecommendation = {
   sourceSessionId?: string;
 };
 
+export type SessionPracticeOption = {
+  mode: "full" | "steady" | "reduced" | "simplified" | "recovery";
+  label: string;
+  description: string;
+  isRecommended?: boolean;
+  sourceRecommendationMode?: NextSessionRecommendation["mode"];
+};
+
 export type SessionRecord = {
   id: string;
   userId: string | null;
@@ -58,6 +66,7 @@ export type SessionRecord = {
   sessionPainLocation?: PainLocation | null;
   sessionFeedbackNotes?: string | null;
   feedback?: SessionFeedback | null;
+  selectedPracticeMode?: SessionPracticeOption["mode"];
   source: "local" | "cloud";
   deletedAt: string | null;
 };

@@ -33,7 +33,15 @@ import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
-import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
+import {
+  deriveNextSessionRecommendationFromSession,
+  formatNextSessionRecommendationFromSession,
+} from "@/lib/nextSessionRecommendation";
+import {
+  deriveSessionPracticeOptions,
+  formatPracticeModeSessionNote,
+  selectSessionPracticeItems,
+} from "@/lib/sessionPracticeOptions";
 import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { sanitizeSessionFeedback } from "@/lib/sessionFeedback";
 import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
@@ -53,7 +61,9 @@ import type {
   Program,
   ProgramProgress,
   ProgramRoutineItem,
+  NextSessionRecommendation,
   SessionFeedback,
+  SessionPracticeOption,
   SessionRecord,
 } from "@/lib/types";
 import {
@@ -63,6 +73,7 @@ import {
   getProgramProgress,
   listAllPrograms,
   listExerciseLogsByExerciseHistory,
+  listSessionsByProgramId,
   loadPrefs,
   saveExerciseLog,
   saveExerciseSwapEvent,
@@ -118,6 +129,16 @@ const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
       : NaN;
   return parsed === 4 || parsed === 5 ? parsed : 3;
 };
+
+const parseDayIndexFromSessionNotes = (notes: string | null) => {
+  const match = notes?.match(/dayIndex:(\d+)/);
+  if (!match) return null;
+  const parsed = Number(match[1]);
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : null;
+};
+
+const sessionCompletedAnchor = (session: SessionRecord) =>
+  session.completedAt ?? session.updatedAt ?? session.createdAt ?? "";
 
 const hasRoutableProgramDay = (program: Program, dayIndex: number) => {
   const day = program.week.find((entry) => entry.dayIndex === dayIndex);
@@ -399,6 +420,10 @@ export default function SessionClient() {
   const [programDayIndex, setProgramDayIndex] = useState<number | null>(null);
   const [programProgress, setProgramProgress] =
     useState<ProgramProgress | null>(null);
+  const [nextSessionRecommendation, setNextSessionRecommendation] =
+    useState<NextSessionRecommendation | null>(null);
+  const [selectedPracticeMode, setSelectedPracticeMode] =
+    useState<SessionPracticeOption["mode"]>("full");
   const [sessionPlanLoading, setSessionPlanLoading] = useState(true);
   const [sessionPlanIssue, setSessionPlanIssue] = useState<string | null>(null);
   const [tipIndex, setTipIndex] = useState(0);
@@ -661,9 +686,27 @@ export default function SessionClient() {
             Number.isFinite(resolvedDayIndex) ? (resolvedDayIndex as number) : null,
             fallbackDayIndex
           );
+          const programSessions = await listSessionsByProgramId(resolvedProgram.id);
+          const feedbackSessions = programSessions
+            .filter((session) => !session.deletedAt && Boolean(session.feedback))
+            .sort((left, right) =>
+              sessionCompletedAnchor(right).localeCompare(sessionCompletedAnchor(left))
+            );
+          const sameDayFeedbackSession =
+            routableDayIndex === null
+              ? null
+              : feedbackSessions.find(
+                  (session) =>
+                    parseDayIndexFromSessionNotes(session.notes) === routableDayIndex
+                ) ?? null;
+          const latestFeedbackSession =
+            sameDayFeedbackSession ?? feedbackSessions[0] ?? null;
           setProgram(resolvedProgram);
           setProgramDayIndex(routableDayIndex);
           setProgramProgress(resolvedProgress);
+          setNextSessionRecommendation(
+            deriveNextSessionRecommendationFromSession(latestFeedbackSession)
+          );
           setSessionPlanIssue(null);
           return;
         }
@@ -671,6 +714,7 @@ export default function SessionClient() {
         setProgram(null);
         setProgramDayIndex(null);
         setProgramProgress(null);
+        setNextSessionRecommendation(null);
         setSessionPlanIssue(
           resolvedQuestionnaire
             ? "No saved Praxis program is available for this session yet. Return to Results to rebuild your active plan."
@@ -680,6 +724,7 @@ export default function SessionClient() {
         setProgram(null);
         setProgramDayIndex(null);
         setProgramProgress(null);
+        setNextSessionRecommendation(null);
         setSessionPlanIssue(
           "Praxis could not load your saved program for this session. Your local data is still safe."
         );
@@ -690,11 +735,45 @@ export default function SessionClient() {
     load();
   }, [searchParamString]);
 
+  const currentProgramDay = useMemo(() => {
+    if (!program || programDayIndex === null) return null;
+    return program.week.find((entry) => entry.dayIndex === programDayIndex) ?? null;
+  }, [program, programDayIndex]);
+
+  const practiceOptions = useMemo(
+    () =>
+      currentProgramDay
+        ? deriveSessionPracticeOptions(
+            currentProgramDay,
+            nextSessionRecommendation
+          )
+        : [],
+    [currentProgramDay, nextSessionRecommendation]
+  );
+
+  const selectedPracticeOption =
+    practiceOptions.find((option) => option.mode === selectedPracticeMode) ??
+    practiceOptions[0] ??
+    null;
+  const effectivePracticeMode = selectedPracticeOption?.mode ?? "full";
+
+  useEffect(() => {
+    if (!practiceOptions.length) return;
+    if (practiceOptions.some((option) => option.mode === selectedPracticeMode)) {
+      return;
+    }
+    setSelectedPracticeMode("full");
+  }, [practiceOptions, selectedPracticeMode]);
+
+  const practiceRoutineItems = useMemo(() => {
+    if (!currentProgramDay) return [] as ProgramRoutineItem[];
+    return selectSessionPracticeItems(currentProgramDay, effectivePracticeMode);
+  }, [currentProgramDay, effectivePracticeMode]);
+
   const flatItems = useMemo(() => {
-    if (program && programDayIndex !== null) {
-      const day = program.week.find((entry) => entry.dayIndex === programDayIndex);
-      if (!day) return [];
-      return day.routine.map((item) => {
+    if (currentProgramDay) {
+      const day = currentProgramDay;
+      return practiceRoutineItems.map((item) => {
         const routineItem = item as ProgramRoutineItem;
         const itemId = `${day.title}-${routineItem.exerciseId}`;
         const sessionSwapId = sessionSwapByItemId[itemId];
@@ -722,7 +801,7 @@ export default function SessionClient() {
     }
 
     return [];
-  }, [program, programDayIndex, substitutionByExercise, sessionSwapByItemId]);
+  }, [currentProgramDay, practiceRoutineItems, substitutionByExercise, sessionSwapByItemId]);
 
   const totalItems = flatItems.length;
   const currentItem = flatItems[activeIndex];
@@ -1382,6 +1461,19 @@ export default function SessionClient() {
     setPainModalLocation("");
     setPainModalNotes("");
     setPainModalMessage(null);
+    setSelectedPracticeMode("full");
+    scrollSessionTop("auto");
+  };
+
+  const handleSelectPracticeMode = (
+    mode: SessionPracticeOption["mode"]
+  ) => {
+    setSelectedPracticeMode(mode);
+    setActiveIndex(0);
+    setCompletedSets({});
+    setSelectedSets({});
+    setTimerRuntimeByItemId({});
+    setActiveTrackingField(null);
     scrollSessionTop("auto");
   };
 
@@ -1419,6 +1511,7 @@ export default function SessionClient() {
       sessionPainLocation: null,
       sessionFeedbackNotes: null,
       feedback: null,
+      selectedPracticeMode: effectivePracticeMode,
       source: "local",
       deletedAt: null,
     };
@@ -2140,6 +2233,65 @@ export default function SessionClient() {
           <h1 className="mt-2 text-2xl font-semibold text-white">{dayTitle}</h1>
           <p className="mt-1 text-sm text-slate-300">{phaseLabel}</p>
         </OnImage>
+
+        {practiceOptions.length ? (
+          <section
+            className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5"
+            data-testid="session-practice-options"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-white">Today's options</p>
+                <p className="mt-1 text-xs text-slate-300">
+                  This changes only today's session view. Your saved plan is not changed.
+                </p>
+              </div>
+              {selectedPracticeOption ? (
+                <span
+                  className="rounded-lg border border-slate-500/30 bg-slate-950/55 px-2 py-1 text-[11px] font-semibold text-slate-300"
+                  data-testid="selected-practice-mode"
+                >
+                  {selectedPracticeOption.label}
+                </span>
+              ) : null}
+            </div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {practiceOptions.map((option) => {
+                const selected = option.mode === effectivePracticeMode;
+                return (
+                  <button
+                    key={option.mode}
+                    type="button"
+                    data-testid={`practice-option-${option.mode}`}
+                    onClick={() => handleSelectPracticeMode(option.mode)}
+                    className={`rounded-lg border px-3 py-3 text-left transition ${
+                      selected
+                        ? "border-sky-300 bg-sky-400/15 text-white shadow-[0_14px_28px_rgba(14,165,233,0.12)]"
+                        : "border-slate-500/25 bg-slate-950/35 text-slate-200 hover:border-sky-300/45"
+                    }`}
+                  >
+                    <span className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-semibold">{option.label}</span>
+                      {option.isRecommended ? (
+                        <span className="rounded-full border border-emerald-300/35 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
+                          Suggested
+                        </span>
+                      ) : null}
+                    </span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-300">
+                      {option.description}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {selectedPracticeOption ? (
+              <p className="mt-3 text-xs font-semibold text-slate-300">
+                {formatPracticeModeSessionNote(selectedPracticeOption)}
+              </p>
+            ) : null}
+          </section>
+        ) : null}
 
         <div className="sticky top-2 z-30 space-y-2">
           <SessionProgressHeader

@@ -220,4 +220,45 @@ describe("local development database behavior", () => {
     expect(getTrainingSnapshot).not.toHaveBeenCalled();
     expect(patchTrainingSnapshot).not.toHaveBeenCalled();
   });
+
+  test("session practice options stay DB-free in local-safe mode", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    process.env.USER_STORE_DRIVER = "memory";
+    process.env.DATABASE_URL = "postgres://example.invalid/prod";
+    delete process.env.TRAINING_STORE_DRIVER;
+    const getTrainingSnapshot = vi.fn();
+    const patchTrainingSnapshot = vi.fn();
+
+    vi.resetModules();
+    vi.doMock("@/lib/trainingStoreDb", () => ({
+      getTrainingSnapshot,
+      patchTrainingSnapshot,
+    }));
+
+    const { deriveSessionPracticeOptions } = await import(
+      "@/lib/sessionPracticeOptions"
+    );
+
+    const options = deriveSessionPracticeOptions(
+      {
+        dayIndex: 0,
+        title: "Local Day",
+        focusTags: ["core"],
+        routine: [
+          {
+            exerciseId: "cat-cow",
+            section: "warmup",
+            sets: "1",
+            reps: "6-8",
+            loadType: "bodyweight",
+          },
+        ],
+      },
+      null
+    );
+
+    expect(options[0]?.mode).toBe("full");
+    expect(getTrainingSnapshot).not.toHaveBeenCalled();
+    expect(patchTrainingSnapshot).not.toHaveBeenCalled();
+  });
 });

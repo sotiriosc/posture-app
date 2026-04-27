@@ -111,6 +111,9 @@ vi.mock("@/lib/logStore", () => ({
     )
   ),
   listSessions: vi.fn(async (limit = 20) => mocks.sessions.slice(0, limit)),
+  listSessionsByProgramId: vi.fn(async (programId: string) =>
+    mocks.sessions.filter((session) => session.routineId === programId)
+  ),
   loadPrefs: vi.fn(async () => mocks.prefs),
   nowIso: vi.fn(() => "2026-02-15T00:00:00.000Z"),
   saveExerciseLog: vi.fn(async (log: ExerciseLog) => {
@@ -207,6 +210,9 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText(/Guided session/i)).toBeTruthy();
       expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
     });
+    expect(screen.getByText("Today's options")).toBeTruthy();
+    expect(screen.getByText("This changes only today's session view. Your saved plan is not changed.")).toBeTruthy();
+    fireEvent.click(screen.getByTestId("practice-option-full"));
 
     fireEvent.change(screen.getByTestId("weight-input"), {
       target: { value: "55" },
@@ -284,6 +290,7 @@ describe("session tracking integration flow", () => {
       techniqueConfidence: 4,
       notes: "Grip felt steady.",
     });
+    expect(mocks.sessions[0].selectedPracticeMode).toBe("full");
     expect(mocks.logs.length).toBe(1);
     const [savedLog] = mocks.logs;
     expect(savedLog.exerciseId).toBe("dumbbell-rows");
