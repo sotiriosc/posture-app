@@ -21,7 +21,7 @@ import {
   listExerciseLogsBySession,
   listSessions,
 } from "@/lib/logStore";
-import { formatSessionFeedbackSummary } from "@/lib/sessionFeedback";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import type { ExerciseLog, SessionRecord } from "@/lib/types";
 
@@ -523,7 +523,7 @@ export default function ProgressPage() {
             {lastSessions.length ? (
               lastSessions.map((session) => {
                 const dateKey = toDateKey(sessionTimestampMs(session));
-                const feedbackSummary = formatSessionFeedbackSummary(
+                const feedbackSummary = formatSessionFeedbackCoachSummary(
                   session.feedback ?? null
                 );
                 return (

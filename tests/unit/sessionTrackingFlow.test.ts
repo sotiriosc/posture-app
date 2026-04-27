@@ -312,6 +312,9 @@ describe("session tracking integration flow", () => {
     });
     expect(screen.queryByText("No completed sessions yet.")).toBeNull();
     expect(screen.getByText("2026-02-15")).toBeTruthy();
+    expect(
+      screen.getByText("Coach read: symptoms stable, effort high, confidence good.")
+    ).toBeTruthy();
   });
 
   test("timed vs reps-based exercises show capability-specific timer/logging UI", async () => {

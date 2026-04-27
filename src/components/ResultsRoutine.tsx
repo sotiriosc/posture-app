@@ -73,7 +73,7 @@ import RoutineItemCoachingDetails, {
 } from "@/components/RoutineItemCoachingDetails";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
-import { formatSessionFeedbackSummary } from "@/lib/sessionFeedback";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { useTrainingSyncStatus } from "@/lib/useTrainingSyncStatus";
 import { useResultsBootstrap } from "@/components/results/useResultsBootstrap";
 import { usePoseAssessment } from "@/components/results/usePoseAssessment";
@@ -3727,7 +3727,7 @@ export default function ResultsRoutine() {
               historyEntries.map((entry) => {
                 const { session, dayIndex } = entry;
                 const historyProgramId = session.routineId ?? program.id;
-                const feedbackSummary = formatSessionFeedbackSummary(
+                const feedbackSummary = formatSessionFeedbackCoachSummary(
                   session.feedback ?? null
                 );
                 return (

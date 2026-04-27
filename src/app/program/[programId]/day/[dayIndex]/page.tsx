@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { exerciseById, resolveExerciseHistoryIds } from "@/lib/exercises";
 import { getProgressionRecommendation } from "@/lib/progression";
 import { formatHistorySchemaRow, getHistoryDeltaPills } from "@/lib/historyView";
-import { formatSessionFeedbackSummary } from "@/lib/sessionFeedback";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
 import type { SubscriptionPlan } from "@/lib/authTypes";
 import {
@@ -257,7 +257,7 @@ export default function ProgramDayPage({ params }: Props) {
   const activeSessionDate = activeSession
     ? (activeSession.completedAt ?? activeSession.updatedAt ?? activeSession.createdAt).slice(0, 10)
     : null;
-  const activeSessionFeedbackSummary = formatSessionFeedbackSummary(
+  const activeSessionFeedbackSummary = formatSessionFeedbackCoachSummary(
     activeSession?.feedback ?? null
   );
   const activeSessionLogs = activeSession

@@ -12,6 +12,17 @@ export type SessionFeedback = {
   notes?: string;
 };
 
+export type SessionFeedbackSignals = {
+  painDelta?: number;
+  completed?: "yes" | "partial" | "no";
+  effortBand?: "low" | "moderate" | "high";
+  confidenceBand?: "low" | "moderate" | "high";
+  energyBand?: "low" | "moderate" | "high";
+  readinessHint?: "progress" | "maintain" | "reduce" | "recover";
+  flags: string[];
+  coachSummary?: string;
+};
+
 export type SessionRecord = {
   id: string;
   userId: string | null;
