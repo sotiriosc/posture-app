@@ -7,6 +7,7 @@ import {
   buildProgramConstraintWarnings,
   buildProgramIntelligence,
 } from "@/lib/program/programAssembly";
+import { attachRoutineItemCoachingMetadata } from "@/lib/program/prescriptionRationale";
 import type { ExerciseLog, Program } from "@/lib/types";
 
 export type ProgramConstraintWarning = {
@@ -61,12 +62,18 @@ export const finalizeWeeklyProgramResult = (params: {
     pushWarnings: params.pushWarnings,
   });
 
+  const coachedWeek = attachRoutineItemCoachingMetadata({
+    week: params.week,
+    questionnaire: params.questionnaire,
+    phaseIndex: params.phaseIndex,
+  });
+
   const intelligence = buildProgramIntelligence({
     questionnaire: params.questionnaire,
     phaseIndex: params.phaseIndex,
     cycleIndex: params.cycleIndex,
     weekIndex: params.weekIndex,
-    week: params.week,
+    week: coachedWeek,
     consistencyRate: params.consistencyRate,
     recentLogs: params.recentLogs,
     trainingState: params.trainingState,
@@ -82,7 +89,7 @@ export const finalizeWeeklyProgramResult = (params: {
     totalWeekIndex: params.totalWeekIndex,
     cycleIndex: params.cycleIndex,
     nextWeekPlan: params.nextWeekPlan,
-    week: params.week,
+    week: coachedWeek,
     intelligence,
     templateVersion: params.templateVersion,
   });
@@ -112,13 +119,19 @@ export const finalizeAdvancedProgressionResult = (params: {
     pushWarnings: params.pushWarnings,
   });
 
+  const coachedWeek = attachRoutineItemCoachingMetadata({
+    week: params.week,
+    questionnaire: params.questionnaire,
+    phaseIndex: params.phaseIndex,
+  });
+
   return assembleAdvancedProgressionResult({
     program: params.program,
     questionnaire: params.questionnaire,
     phaseIndex: params.phaseIndex,
     cycleIndex: params.cycleIndex,
     weekIndex: params.weekIndex,
-    week: params.week,
+    week: coachedWeek,
     complianceRate: params.complianceRate,
     painFlag: params.painFlag,
     fatigueFlag: params.fatigueFlag,

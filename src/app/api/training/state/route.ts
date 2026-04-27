@@ -5,6 +5,8 @@ import {
   patchTrainingSnapshot,
   type TrainingSnapshot,
 } from "@/lib/trainingStoreDb";
+import { isTrainingStoreDisabled } from "@/lib/trainingStoreConfig";
+import { shouldUseLocalDbFallback, warnOnce } from "@/lib/runtimeEnv";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -24,11 +26,32 @@ export async function GET() {
   if (!session) {
     return noStoreJson({ ok: true, authenticated: false, snapshot: null });
   }
+  if (isTrainingStoreDisabled()) {
+    return noStoreJson({
+      ok: true,
+      authenticated: true,
+      snapshot: null,
+      sync: "disabled",
+    });
+  }
 
   try {
     const snapshot = await getTrainingSnapshot(session.id);
     return noStoreJson({ ok: true, authenticated: true, snapshot });
   } catch (error) {
+    if (shouldUseLocalDbFallback()) {
+      warnOnce(
+        "training-state-local-load-unavailable",
+        "[training/state] Database sync is unavailable in local dev; returning local-only snapshot state.",
+        error
+      );
+      return noStoreJson({
+        ok: true,
+        authenticated: true,
+        snapshot: null,
+        sync: "local-fallback",
+      });
+    }
     console.error("[training/state] failed to load snapshot", error);
     return noStoreJson(
       { ok: false, authenticated: true, error: "Training snapshot unavailable." },
@@ -47,11 +70,22 @@ export async function POST(request: Request) {
   if (!patch || typeof patch !== "object") {
     return noStoreJson({ ok: false, error: "Invalid patch payload." }, 400);
   }
+  if (isTrainingStoreDisabled()) {
+    return noStoreJson({ ok: true, sync: "disabled" });
+  }
 
   try {
     await patchTrainingSnapshot(session.id, patch);
     return noStoreJson({ ok: true });
   } catch (error) {
+    if (shouldUseLocalDbFallback()) {
+      warnOnce(
+        "training-state-local-persist-unavailable",
+        "[training/state] Database sync is unavailable in local dev; keeping training state in browser storage only.",
+        error
+      );
+      return noStoreJson({ ok: true, sync: "local-fallback" });
+    }
     console.error("[training/state] failed to persist patch", error);
     return noStoreJson({ ok: false, error: "Failed to persist training state." }, 500);
   }

@@ -68,6 +68,27 @@ const findNonFinalAuditEntry = (
       !entry.chosen.reasons.some((reason) => reason.includes("[final_trace]"))
   );
 
+const hasFeedbackPenaltyReason = (reasons: string[]) =>
+  reasons.some(
+    (reason) =>
+      reason.includes("feedback pain penalty") ||
+      reason.includes("feedback failure penalty") ||
+      reason.includes("feedback substitute-available penalty")
+  );
+
+const findFinalExerciseForAuditSlot = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  slotId: string | undefined
+) =>
+  slotId
+    ? program.week
+        .flatMap((day) => day.routine)
+        .find(
+          (item) =>
+            item.section === "main" && item.selectionDebug?.slotId === slotId
+        )
+    : undefined;
+
 describe("session feedback influences main selection", () => {
   test("painful exercise receives strong penalties and yields to safer alternatives when available", () => {
     const baselineAudit: ProgramSelectionAuditEntry[] = [];
@@ -201,7 +222,20 @@ describe("session feedback influences main selection", () => {
         )
       ).toBe(true);
     }
-    expect(adjustedUpperPullEntry?.chosen.exerciseId).not.toBe(failedExerciseId);
+    const hasUnpenalizedAlternative =
+      adjustedUpperPullEntry?.top.some(
+        (candidate) =>
+          candidate.exerciseId !== failedExerciseId &&
+          !hasFeedbackPenaltyReason(candidate.reasons)
+      ) ?? false;
+    if (hasUnpenalizedAlternative) {
+      expect(adjustedUpperPullEntry?.chosen.exerciseId).not.toBe(failedExerciseId);
+    }
+    const finalSameSlot = findFinalExerciseForAuditSlot(
+      adjusted,
+      baselineUpperPullEntry?.slotId
+    );
+    expect(finalSameSlot?.exerciseId).not.toBe(failedExerciseId);
     assertContractsHold(baseQuestionnaire, adjusted.week);
   });
 

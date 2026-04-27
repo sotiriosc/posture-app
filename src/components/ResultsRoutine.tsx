@@ -68,8 +68,14 @@ import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import DashboardModeCard from "@/components/dashboard/DashboardModeCard";
 import ProgramReferenceCard from "@/components/ProgramReferenceCard";
+import RoutineItemCoachingDetails, {
+  formatRoutineItemDose,
+} from "@/components/RoutineItemCoachingDetails";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
+import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { useTrainingSyncStatus } from "@/lib/useTrainingSyncStatus";
 import { useResultsBootstrap } from "@/components/results/useResultsBootstrap";
 import { usePoseAssessment } from "@/components/results/usePoseAssessment";
@@ -102,6 +108,18 @@ type LevelUpNotice = {
 };
 
 type ProgramWeekDay = Program["week"][number];
+
+const formatLegacyRoutineItemDose = (item: ProgramRoutineItem) =>
+  item.reps
+    ? `${item.sets ?? 1} x ${item.reps}`
+    : item.durationSec
+    ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
+    : item.sets
+    ? `${item.sets} sets`
+    : null;
+
+const formatRoutineItemPrescription = (item: ProgramRoutineItem) =>
+  formatRoutineItemDose(item, formatLegacyRoutineItemDose(item));
 
 function CurrentSavedProgramSnapshotLoadingCard({
   message = "Finalizing the plan reference.",
@@ -273,13 +291,7 @@ const formatReferenceRoutineItems = (
     .map((item) => {
       const exercise = exerciseById(item.exerciseId);
       const name = exercise?.name ?? item.exerciseId;
-      const prescription = item.reps
-        ? `${item.sets ?? 1}x${item.reps}`
-        : item.durationSec
-        ? `${item.sets ? `${item.sets}x` : ""}${item.durationSec}s`
-        : item.sets
-        ? `${item.sets} sets`
-        : null;
+      const prescription = formatRoutineItemPrescription(item);
       const base = prescription ? `${name} [${prescription}]` : name;
       if (!options?.includeDebug || !item.selectionDebug) return base;
       const debugParts = [
@@ -772,7 +784,6 @@ export default function ResultsRoutine() {
   const [program, setProgram] = useState<Program | null>(null);
   const [programLoadIssue, setProgramLoadIssue] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState(0);
-  const [showDebug, setShowDebug] = useState(false);
   const [progress, setProgress] = useState<ProgramProgress | null>(null);
   const [allSessions, setAllSessions] = useState<SessionRecord[]>([]);
   const [sessionsLoaded, setSessionsLoaded] = useState(false);
@@ -2855,18 +2866,13 @@ export default function ResultsRoutine() {
     const exercise = exerciseById(item.exerciseId);
     if (!exercise) return [];
     const rationale =
+      item.rationale?.whyThisExercise ??
       optimizerReasonsByExercise[item.exerciseId]?.[0] ??
       exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
       exerciseRationaleById.get(item.exerciseId)?.contextReason ??
       buildWhyPicked(exercise).purpose ??
       "Rationale isn’t available for this exercise yet.";
-    const prescription = item.reps
-      ? `${item.sets ?? 1} x ${item.reps}`
-      : item.durationSec
-      ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
-      : item.sets
-      ? `${item.sets} sets`
-      : null;
+    const prescription = formatRoutineItemPrescription(item);
     return [
       {
         key: `routine-main-${item.exerciseId}-${index}`,
@@ -2881,18 +2887,13 @@ export default function ResultsRoutine() {
     const exercise = exerciseById(item.exerciseId);
     if (!exercise) return [];
     const rationale =
+      item.rationale?.whyThisExercise ??
       optimizerReasonsByExercise[item.exerciseId]?.[0] ??
       exerciseRationaleById.get(item.exerciseId)?.primaryReason ??
       exerciseRationaleById.get(item.exerciseId)?.contextReason ??
       buildWhyPicked(exercise).purpose ??
       "Rationale isn’t available for this exercise yet.";
-    const prescription = item.reps
-      ? `${item.sets ?? 1} x ${item.reps}`
-      : item.durationSec
-      ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
-      : item.sets
-      ? `${item.sets} sets`
-      : null;
+    const prescription = formatRoutineItemPrescription(item);
     return [
       {
         key: `routine-fallback-${item.exerciseId}-${index}`,
@@ -3123,22 +3124,25 @@ export default function ResultsRoutine() {
     .map((item) => {
       const exercise = exerciseById(item.exerciseId);
       if (!exercise) return null;
-      const prescription = item.reps
-        ? `${item.sets ?? 1} x ${item.reps}`
-        : item.durationSec
-        ? `${item.sets ? `${item.sets} x ` : ""}${item.durationSec}s`
-        : item.sets
-        ? `${item.sets} sets`
-        : null;
+      const prescription = formatRoutineItemPrescription(item);
       return {
         key: `${item.exerciseId}-${item.section}`,
+        item,
         name: exercise.name,
         section: item.section ?? "work",
         prescription,
       };
     })
-    .filter((entry): entry is { key: string; name: string; section: string; prescription: string | null } =>
-      Boolean(entry)
+    .filter(
+      (
+        entry
+      ): entry is {
+        key: string;
+        item: ProgramRoutineItem;
+        name: string;
+        section: string;
+        prescription: string | null;
+      } => Boolean(entry)
     )
     .slice(0, 5);
   const showTrainingSyncIssue =
@@ -3396,9 +3400,13 @@ export default function ResultsRoutine() {
                           {entry.section}
                         </span>
                       </div>
-                      {entry.prescription ? (
-                        <p className="mt-1 text-xs text-slate-400">{entry.prescription}</p>
-                      ) : null}
+                      <RoutineItemCoachingDetails
+                        item={entry.item}
+                        fallbackDose={entry.prescription}
+                        showDetails={false}
+                        tone="dark"
+                        className="mt-1"
+                      />
                     </div>
                   ))
                 ) : (
@@ -3611,15 +3619,12 @@ export default function ResultsRoutine() {
                     {selectedDayProgram?.title}
                   </p>
                 </div>
-                <div
-                  id={showDebug ? "exercise-rationale" : undefined}
-                  className="mt-2 space-y-2"
-                >
+                <div className="mt-2 space-y-2">
                   {selectedDayProgram?.routine.map((item, index) => {
                     const exercise = exerciseById(item.exerciseId);
                     if (!exercise) return null;
-                    const richRationale = exerciseRationaleById.get(item.exerciseId);
                     const reason =
+                      item.rationale?.whyThisExercise ??
                       optimizerReasonsByExercise[item.exerciseId]?.[0] ??
                       buildWhyPicked(exercise).purpose;
                     return (
@@ -3628,48 +3633,23 @@ export default function ResultsRoutine() {
                           <p className="text-xs font-semibold text-slate-900">{exercise.name}</p>
                           <span className="text-[11px] uppercase text-slate-500">{item.section}</span>
                         </div>
-                        {!showDebug ? (
-                          <p className="mt-1 text-xs text-slate-600">{reason}</p>
-                        ) : (
-                          <div className="mt-1 space-y-1">
-                            <p className="text-[11px] text-slate-500">
-                              Why:{" "}
-                              {richRationale?.primaryReason ??
-                                richRationale?.contextReason ??
-                                "Rationale isn\u2019t available for this exercise yet."}
-                            </p>
-                            <p className="text-[11px] text-slate-500">
-                              Setup: {richRationale?.setup ?? "Control each rep, steady tempo."}
-                            </p>
-                            {richRationale?.progressions.length ? (
-                              <p className="text-[11px] text-slate-500">
-                                Progression: {richRationale.progressions.join(" / ")}
-                              </p>
-                            ) : null}
-                            {richRationale?.regressions.length ? (
-                              <p className="text-[11px] text-slate-500">
-                                Regression: {richRationale.regressions.join(" / ")}
-                              </p>
-                            ) : null}
-                          </div>
-                        )}
+                        <RoutineItemCoachingDetails
+                          item={item}
+                          fallbackDose={formatRoutineItemPrescription(item)}
+                          fallbackRationale={reason}
+                          tone="light"
+                          className="mt-1"
+                        />
                       </div>
                     );
                   })}
                 </div>
-                {showDebug && (!selectedDayProgram?.routine || selectedDayProgram.routine.length === 0) ? (
+                {!selectedDayProgram?.routine || selectedDayProgram.routine.length === 0 ? (
                   <p className="mt-2 text-xs text-slate-500">
                     No exercises found for today yet.
                   </p>
                 ) : null}
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                  <button
-                    type="button"
-                    onClick={() => setShowDebug((prev) => !prev)}
-                    className={secondaryActionBtn}
-                  >
-                    {showDebug ? "Hide exercise rationale" : "Show exercise rationale"}
-                  </button>
                   <button
                     type="button"
                     onClick={() => router.push(`/program/${program.id}/day/${effectiveSelectedDay}`)}
@@ -3749,6 +3729,15 @@ export default function ResultsRoutine() {
               historyEntries.map((entry) => {
                 const { session, dayIndex } = entry;
                 const historyProgramId = session.routineId ?? program.id;
+                const feedbackSummary = formatSessionFeedbackCoachSummary(
+                  session.feedback ?? null
+                );
+                const adaptationPreview =
+                  formatSessionAdaptationPreviewFromFeedback(
+                    session.feedback ?? null
+                  );
+                const nextSessionRecommendation =
+                  formatNextSessionRecommendationFromSession(session);
                 return (
                   <div
                     key={session.id}
@@ -3768,6 +3757,27 @@ export default function ResultsRoutine() {
                     {entry.exerciseNames.length ? (
                       <p className="mt-2 line-clamp-2 text-xs text-slate-400">
                         {entry.exerciseNames.slice(0, 5).join(" • ")}
+                      </p>
+                    ) : null}
+                    {feedbackSummary ? (
+                      <p className="mt-2 text-xs font-semibold text-slate-300">
+                        {feedbackSummary}
+                      </p>
+                    ) : null}
+                    {adaptationPreview ? (
+                      <p
+                        className="mt-1 text-xs font-semibold text-slate-300"
+                        data-testid="adaptation-preview"
+                      >
+                        {adaptationPreview} Preview only; no workout has been changed.
+                      </p>
+                    ) : null}
+                    {nextSessionRecommendation ? (
+                      <p
+                        className="mt-1 text-xs font-semibold text-slate-300"
+                        data-testid="next-session-recommendation"
+                      >
+                        {nextSessionRecommendation} Recommendation only; your plan has not been changed.
                       </p>
                     ) : null}
                     {dayIndex !== null ? (

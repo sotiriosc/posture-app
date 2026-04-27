@@ -104,7 +104,7 @@ describe("3-day accessory planner", () => {
     expect(plan[1]?.isExpansion).toBe(true);
   });
 
-  test("Day 1 accessory expansion changes with phase and weekly chest deficit", () => {
+  test("Day 1 accessory expansion follows chest exposure while preserving posterior support", () => {
     const mains = pickExercises([
       "machine-chest-press",
       "machine-seated-row",
@@ -154,9 +154,21 @@ describe("3-day accessory planner", () => {
       stableGymEquipment: true,
     });
 
-    expect(skillDeficitPlan[1]?.role).toBe("accessoryChestIsolation");
-    expect(activationPlan[1]?.role).not.toBe("accessoryChestIsolation");
+    expect(skillDeficitPlan[0]?.lane).toBe("back");
+    expect(skillDeficitPlan[1]).toMatchObject({
+      role: "accessoryChestIsolation",
+      lane: "chest",
+      isExpansion: true,
+    });
+    expect(activationPlan[0]?.lane).toBe("back");
+    expect(activationPlan[1]).toMatchObject({
+      role: "accessoryChestIsolation",
+      lane: "chest",
+      isExpansion: true,
+    });
+    expect(coveredChestPlan[0]?.lane).toBe("back");
     expect(coveredChestPlan[1]?.role).not.toBe("accessoryChestIsolation");
+    expect(coveredChestPlan[1]?.lane).toBe("back");
   });
 
   test("expansion slots preserve 3-day day identity", () => {

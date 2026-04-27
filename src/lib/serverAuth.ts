@@ -4,8 +4,7 @@ import { AUTH_COOKIE_NAME } from "@/lib/authTypes";
 import { createSessionToken, verifySessionToken } from "@/lib/authToken";
 import { getUserRepository } from "@/lib/userRepository";
 import type { StoredUser } from "@/lib/userStore";
-
-const repo = getUserRepository();
+import { shouldUseLocalDbFallback, warnOnce } from "@/lib/runtimeEnv";
 
 export const getAuthSecret = () => process.env.AUTH_SECRET?.trim() ?? "";
 
@@ -17,12 +16,26 @@ const toAuthUser = (user: StoredUser): AuthUser => ({
 
 export const isAuthConfigured = async () => {
   if (!getAuthSecret()) return false;
-  await repo.ensureBootstrapUser();
-  const users = await repo.listUsers();
-  return users.length > 0;
+  const repo = getUserRepository();
+  try {
+    await repo.ensureBootstrapUser();
+    const users = await repo.listUsers();
+    return users.length > 0;
+  } catch (error) {
+    if (shouldUseLocalDbFallback()) {
+      warnOnce(
+        "auth-config-local-store-unavailable",
+        "[auth] User store is unavailable in local dev; auth is disabled for this request.",
+        error
+      );
+      return false;
+    }
+    throw error;
+  }
 };
 
 export const getUserByCredentials = async (email: string, password: string) => {
+  const repo = getUserRepository();
   await repo.ensureBootstrapUser();
   const user = await repo.findUserByEmail(email);
   if (!user) return null;
@@ -30,7 +43,9 @@ export const getUserByCredentials = async (email: string, password: string) => {
   return toAuthUser(user);
 };
 
-export const buildUserToken = async (user: Pick<AuthUser, "id" | "email" | "plan">) => {
+export const buildUserToken = async (
+  user: Pick<AuthUser, "id" | "email" | "plan">
+) => {
   const secret = getAuthSecret();
   if (!secret) throw new Error("Missing AUTH_SECRET");
   const nowSec = Math.floor(Date.now() / 1000);
@@ -53,11 +68,20 @@ export const readServerSession = async () => {
   const payload = await verifySessionToken(token, secret);
   if (!payload) return null;
   let stored: StoredUser | null = null;
+  const repo = getUserRepository();
   try {
     // Passive session reads should not force bootstrap writes.
     stored = await repo.findUserById(payload.sub);
   } catch (error) {
-    console.error("[auth] readServerSession failed to load user", error);
+    if (shouldUseLocalDbFallback()) {
+      warnOnce(
+        "auth-session-local-store-unavailable",
+        "[auth] Session user lookup failed in local dev; treating request as signed out.",
+        error
+      );
+    } else {
+      console.error("[auth] readServerSession failed to load user", error);
+    }
     return null;
   }
   if (!stored) return null;

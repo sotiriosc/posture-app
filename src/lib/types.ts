@@ -1,5 +1,66 @@
 import type { WarmupBlock } from "@/lib/program/warmupLibrary";
 
+export type SessionFeedback = {
+  completed?: "yes" | "partial" | "no";
+  difficultyRPE?: number;
+  painBefore?: number;
+  painAfter?: number;
+  energy?: number;
+  techniqueConfidence?: number;
+  enjoyment?: number;
+  timeAvailableNextSession?: number;
+  notes?: string;
+};
+
+export type SessionFeedbackSignals = {
+  painDelta?: number;
+  completed?: "yes" | "partial" | "no";
+  effortBand?: "low" | "moderate" | "high";
+  confidenceBand?: "low" | "moderate" | "high";
+  energyBand?: "low" | "moderate" | "high";
+  readinessHint?: "progress" | "maintain" | "reduce" | "recover";
+  flags: string[];
+  coachSummary?: string;
+};
+
+export type SessionAdaptationPreview = {
+  readinessHint: "progress" | "maintain" | "reduce" | "recover";
+  suggestedAction:
+    | "gently_progress"
+    | "repeat"
+    | "reduce_dose"
+    | "simplify_pattern"
+    | "recovery_session";
+  reasons: string[];
+  coachMessage: string;
+};
+
+export type NextSessionRecommendation = {
+  mode: "normal" | "repeat" | "reduce" | "simplify" | "recover";
+  priority: "low" | "medium" | "high";
+  reasons: string[];
+  message: string;
+  suggestedAdjustments: string[];
+  sourceSessionId?: string;
+};
+
+export type SessionPracticeOption = {
+  mode: "full" | "steady" | "reduced" | "simplified" | "recovery";
+  label: string;
+  description: string;
+  isRecommended?: boolean;
+  sourceRecommendationMode?: NextSessionRecommendation["mode"];
+};
+
+export type AdaptiveProgramIntent = {
+  enabled: boolean;
+  mode: "none" | "hold" | "reduce" | "simplify" | "recover" | "gently_progress";
+  source: "session_feedback";
+  reasons: string[];
+  constraints: string[];
+  suggestedGeneratorEffects: string[];
+};
+
 export type SessionRecord = {
   id: string;
   userId: string | null;
@@ -13,6 +74,8 @@ export type SessionRecord = {
   sessionFeedback?: "easy" | "moderate" | "hard" | "pain" | null;
   sessionPainLocation?: PainLocation | null;
   sessionFeedbackNotes?: string | null;
+  feedback?: SessionFeedback | null;
+  selectedPracticeMode?: SessionPracticeOption["mode"];
   source: "local" | "cloud";
   deletedAt: string | null;
 };
@@ -90,6 +153,26 @@ export type LogPrefs = {
   substitutionByExercise?: Record<string, string>;
 };
 
+export type ExercisePrescription = {
+  sets?: number;
+  reps?: string;
+  tempo?: string;
+  restSeconds?: number;
+  targetRPE?: number;
+  progressionRule?: string;
+  regressionRule?: string;
+  stopRule?: string;
+};
+
+export type ExerciseRationale = {
+  whyThisExercise?: string;
+  mainCue?: string;
+  commonMistake?: string;
+  easierVersion?: string;
+  harderVersion?: string;
+  stopIf?: string;
+};
+
 export type ProgramRoutineItem = {
   exerciseId: string;
   section?: "warmup" | "activation" | "main" | "accessory" | "cooldown";
@@ -101,6 +184,8 @@ export type ProgramRoutineItem = {
   notes?: string | null;
   cues?: string[] | null;
   selectionDebug?: ProgramSelectionDebug;
+  prescription?: ExercisePrescription;
+  rationale?: ExerciseRationale;
 };
 
 export type ProgramSelectionDebugSource =

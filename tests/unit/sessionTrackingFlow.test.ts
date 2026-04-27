@@ -111,6 +111,9 @@ vi.mock("@/lib/logStore", () => ({
     )
   ),
   listSessions: vi.fn(async (limit = 20) => mocks.sessions.slice(0, limit)),
+  listSessionsByProgramId: vi.fn(async (programId: string) =>
+    mocks.sessions.filter((session) => session.routineId === programId)
+  ),
   loadPrefs: vi.fn(async () => mocks.prefs),
   nowIso: vi.fn(() => "2026-02-15T00:00:00.000Z"),
   saveExerciseLog: vi.fn(async (log: ExerciseLog) => {
@@ -207,6 +210,9 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText(/Guided session/i)).toBeTruthy();
       expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
     });
+    expect(screen.getByText("Today's options")).toBeTruthy();
+    expect(screen.getByText("This changes only today's session view. Your saved plan is not changed.")).toBeTruthy();
+    fireEvent.click(screen.getByTestId("practice-option-full"));
 
     fireEvent.change(screen.getByTestId("weight-input"), {
       target: { value: "55" },
@@ -239,7 +245,52 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText("Session complete")).toBeTruthy();
     });
 
+    expect(screen.queryByTestId("session-feedback-summary")).toBeNull();
+    fireEvent.change(screen.getByTestId("session-feedback-difficulty"), {
+      target: { value: "12" },
+    });
+    fireEvent.change(screen.getByTestId("session-feedback-pain-before"), {
+      target: { value: "2" },
+    });
+    fireEvent.change(screen.getByTestId("session-feedback-pain-after"), {
+      target: { value: "3" },
+    });
+    fireEvent.click(screen.getByTestId("session-feedback-energy-4"));
+    fireEvent.click(screen.getByTestId("session-feedback-confidence-4"));
+    fireEvent.change(screen.getByTestId("session-feedback-notes"), {
+      target: { value: "  Grip felt steady.  " },
+    });
+    fireEvent.click(screen.getByTestId("session-feedback-save"));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("session-feedback-summary").textContent).toBe(
+        "Difficulty 10/10 • Pain 2 -> 3 • Energy 4/5 • Confidence 4/5"
+      );
+    });
+    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
+      "Next-time preview: keep this pattern steady."
+    );
+    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
+      "Preview only; no workout has been changed."
+    );
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Next session recommendation: repeat the pattern at a steady dose."
+    );
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Recommendation only; your plan has not been changed."
+    );
+
     expect(mocks.sessions.length).toBe(1);
+    expect(mocks.sessions[0].feedback).toEqual({
+      completed: "yes",
+      difficultyRPE: 10,
+      painBefore: 2,
+      painAfter: 3,
+      energy: 4,
+      techniqueConfidence: 4,
+      notes: "Grip felt steady.",
+    });
+    expect(mocks.sessions[0].selectedPracticeMode).toBe("full");
     expect(mocks.logs.length).toBe(1);
     const [savedLog] = mocks.logs;
     expect(savedLog.exerciseId).toBe("dumbbell-rows");
@@ -280,6 +331,51 @@ describe("session tracking integration flow", () => {
     });
     expect(screen.queryByText("No completed sessions yet.")).toBeNull();
     expect(screen.getByText("2026-02-15")).toBeTruthy();
+    expect(
+      screen.getByText("Coach read: symptoms stable, effort high, confidence good.")
+    ).toBeTruthy();
+    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
+      "Next-time preview: keep this pattern steady."
+    );
+    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
+      "Preview only; no workout has been changed."
+    );
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Next session recommendation: repeat the pattern at a steady dose."
+    );
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Recommendation only; your plan has not been changed."
+    );
+  });
+
+  test("old completed sessions without feedback render history without a preview", async () => {
+    mocks.sessions = [
+      {
+        id: "old-session",
+        userId: null,
+        startedAt: "2026-02-15T00:00:00.000Z",
+        completedAt: "2026-02-15T00:30:00.000Z",
+        createdAt: "2026-02-15T00:00:00.000Z",
+        updatedAt: "2026-02-15T00:30:00.000Z",
+        routineId: "program-strength",
+        durationSec: 1800,
+        notes: "dayIndex:0",
+        sessionFeedback: null,
+        sessionPainLocation: null,
+        sessionFeedbackNotes: null,
+        source: "local",
+        deletedAt: null,
+      },
+    ];
+
+    render(React.createElement(ProgressPage));
+
+    await waitFor(() => {
+      expect(screen.getByText("Training insights")).toBeTruthy();
+    });
+    expect(screen.getByText("2026-02-15")).toBeTruthy();
+    expect(screen.queryByTestId("adaptation-preview")).toBeNull();
+    expect(screen.queryByTestId("next-session-recommendation")).toBeNull();
   });
 
   test("timed vs reps-based exercises show capability-specific timer/logging UI", async () => {

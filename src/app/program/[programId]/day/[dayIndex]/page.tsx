@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { exerciseById, resolveExerciseHistoryIds } from "@/lib/exercises";
 import { getProgressionRecommendation } from "@/lib/progression";
 import { formatHistorySchemaRow, getHistoryDeltaPills } from "@/lib/historyView";
+import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
 import type { SubscriptionPlan } from "@/lib/authTypes";
 import {
@@ -16,6 +19,9 @@ import {
 } from "@/lib/logStore";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
+import RoutineItemCoachingDetails, {
+  formatRoutineItemDose,
+} from "@/components/RoutineItemCoachingDetails";
 import Button from "@/components/ui/Button";
 
 type Props = {
@@ -253,6 +259,13 @@ export default function ProgramDayPage({ params }: Props) {
   const activeSessionDate = activeSession
     ? (activeSession.completedAt ?? activeSession.updatedAt ?? activeSession.createdAt).slice(0, 10)
     : null;
+  const activeSessionFeedbackSummary = formatSessionFeedbackCoachSummary(
+    activeSession?.feedback ?? null
+  );
+  const activeSessionAdaptationPreview =
+    formatSessionAdaptationPreviewFromFeedback(activeSession?.feedback ?? null);
+  const activeSessionRecommendation =
+    formatNextSessionRecommendationFromSession(activeSession);
   const activeSessionLogs = activeSession
     ? logs.filter((log) => log.sessionId === activeSession.id)
     : [];
@@ -361,6 +374,27 @@ export default function ProgramDayPage({ params }: Props) {
               No recorded workouts yet for this day. Start this day to create the first dated entry.
             </p>
           ) : null}
+          {activeSessionFeedbackSummary ? (
+            <p className="mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
+              {activeSessionFeedbackSummary}
+            </p>
+          ) : null}
+          {activeSessionAdaptationPreview ? (
+            <p
+              className="mt-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
+              data-testid="adaptation-preview"
+            >
+              {activeSessionAdaptationPreview} Preview only; no workout has been changed.
+            </p>
+          ) : null}
+          {activeSessionRecommendation ? (
+            <p
+              className="mt-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
+              data-testid="next-session-recommendation"
+            >
+              {activeSessionRecommendation} Recommendation only; your plan has not been changed.
+            </p>
+          ) : null}
 
           <div
             onTouchStart={onTouchStart}
@@ -412,10 +446,11 @@ export default function ProgramDayPage({ params }: Props) {
                         ? "ASSISTED"
                         : "BODYWEIGHT";
                     const latestWorkSeconds = lastLog?.workSecondsUsed ?? null;
-                    const prescribedLine =
+                    const fallbackDose =
                       item.loadType === "timed"
                         ? `${latestWorkSeconds ?? item.durationSec ?? 60} sec`
                         : item.reps ?? exercise?.durationOrReps ?? "As prescribed";
+                    const prescribedLine = formatRoutineItemDose(item, fallbackDose);
                     const nextLine = recommendation
                       ? `Next: ${formatRecommendation(recommendation)}`
                       : "Next: Keep targets consistent";
@@ -433,7 +468,12 @@ export default function ProgramDayPage({ params }: Props) {
                               {exercise?.name ?? "Exercise"}
                             </p>
                             <p className="mt-1 ui-body font-semibold text-slate-700">{nextLine}</p>
-                            <p className="mt-1 ui-body">Prescribed: {prescribedLine}</p>
+                            <RoutineItemCoachingDetails
+                              item={item}
+                              fallbackDose={prescribedLine}
+                              tone="light"
+                              className="mt-1"
+                            />
                           </div>
                           <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold text-slate-500">
                             <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5">

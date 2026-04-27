@@ -21,6 +21,9 @@ import {
   listExerciseLogsBySession,
   listSessions,
 } from "@/lib/logStore";
+import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import type { ExerciseLog, SessionRecord } from "@/lib/types";
 
@@ -522,15 +525,45 @@ export default function ProgressPage() {
             {lastSessions.length ? (
               lastSessions.map((session) => {
                 const dateKey = toDateKey(sessionTimestampMs(session));
+                const feedbackSummary = formatSessionFeedbackCoachSummary(
+                  session.feedback ?? null
+                );
+                const adaptationPreview =
+                  formatSessionAdaptationPreviewFromFeedback(
+                    session.feedback ?? null
+                  );
+                const nextSessionRecommendation =
+                  formatNextSessionRecommendationFromSession(session);
                 return (
                   <div
                     key={session.id}
-                    className="ui-soft-surface flex flex-wrap items-center justify-between rounded-lg px-3 py-2"
+                    className="ui-soft-surface flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2"
                   >
                     <span className="text-slate-100">{dateKey}</span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-right text-xs text-slate-400">
                       {session.durationSec ? `${Math.round(session.durationSec / 60)} min` : "--"}{" "}
                       • Volume {volumeByDate[dateKey] ?? 0}
+                      {feedbackSummary ? (
+                        <span className="block text-slate-300">
+                          {feedbackSummary}
+                        </span>
+                      ) : null}
+                      {adaptationPreview ? (
+                        <span
+                          className="block text-slate-300"
+                          data-testid="adaptation-preview"
+                        >
+                          {adaptationPreview} Preview only; no workout has been changed.
+                        </span>
+                      ) : null}
+                      {nextSessionRecommendation ? (
+                        <span
+                          className="block text-slate-300"
+                          data-testid="next-session-recommendation"
+                        >
+                          {nextSessionRecommendation} Recommendation only; your plan has not been changed.
+                        </span>
+                      ) : null}
                     </span>
                   </div>
                 );
