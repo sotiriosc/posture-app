@@ -95,6 +95,9 @@ vi.mock("@/lib/logStore", () => ({
     mocks.logs.filter((log) => log.exerciseId === exerciseId)
   ),
   listAllPrograms: vi.fn(async () => Array.from(mocks.programs.values())),
+  listSessionsByProgramId: vi.fn(async (programId: string) =>
+    mocks.sessions.filter((session) => session.routineId === programId)
+  ),
   loadPrefs: vi.fn(async () => mocks.prefs),
   nowIso: vi.fn(() => "2026-02-15T00:00:00.000Z"),
   saveExerciseLog: vi.fn(async (log: ExerciseLog) => {

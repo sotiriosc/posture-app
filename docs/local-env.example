@@ -6,6 +6,10 @@ TRAINING_STORE_DRIVER=disabled
 DATABASE_URL=
 APP_URL=http://localhost:3000
 
+# Optional future adaptive-generation flag.
+# Default is off; leave unset for normal local development.
+ADAPTIVE_PROGRAMMING_ENABLED=
+
 # Optional local auth bootstrap. Use local-only values.
 AUTH_SECRET=replace-with-local-dev-secret
 AUTH_USER_EMAIL=local@example.com
