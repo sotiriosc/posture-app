@@ -28,10 +28,12 @@ import DualModeTimer, {
 } from "@/components/DualModeTimer";
 import ExerciseCard from "@/components/ExerciseCard";
 import SessionProgressHeader from "@/components/session/SessionProgressHeader";
+import SessionFeedbackCheckIn from "@/components/session/SessionFeedbackCheckIn";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
+import { sanitizeSessionFeedback } from "@/lib/sessionFeedback";
 import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
 import { applyCompletedDayToProgramProgress } from "@/lib/programProgress";
 import {
@@ -49,6 +51,7 @@ import type {
   Program,
   ProgramProgress,
   ProgramRoutineItem,
+  SessionFeedback,
   SessionRecord,
 } from "@/lib/types";
 import {
@@ -380,8 +383,12 @@ export default function SessionClient() {
   const [feedback, setFeedback] = useState<Record<string, ExerciseFeedback>>(
     {}
   );
-  const [sessionFeedback, setSessionFeedback] =
-    useState<ExerciseFeedback | null>(null);
+  const [sessionFeedbackDraft, setSessionFeedbackDraft] = useState<
+    Partial<SessionFeedback>
+  >({ completed: "yes" });
+  const [sessionFeedbackSaveState, setSessionFeedbackSaveState] = useState<
+    "idle" | "saving" | "saved"
+  >("idle");
   const [prefs, setPrefs] = useState<LogPrefs | null>(null);
   const [lastLog, setLastLog] = useState<ExerciseLog | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(() => uuid());
@@ -1144,18 +1151,24 @@ export default function SessionClient() {
     [getTimerForExercise, timerRuntimeByItemId]
   );
 
-  const saveSessionFeedback = async (next: ExerciseFeedback) => {
-    setSessionFeedback(next);
+  const saveSessionCheckIn = async () => {
     if (!summary) return;
+    const sanitized = sanitizeSessionFeedback(sessionFeedbackDraft);
+    if (!sanitized) return;
+    setSessionFeedbackSaveState("saving");
     const updated: SessionRecord = {
       ...summary,
-      sessionFeedback: next.rating,
-      sessionPainLocation: next.painLocation ?? null,
-      sessionFeedbackNotes: next.notes ?? null,
+      feedback: sanitized,
       updatedAt: nowIso(),
     };
-    setSummary(updated);
-    await updateSession(updated);
+    setSessionFeedbackDraft(sanitized);
+    try {
+      const saved = await updateSession(updated);
+      setSummary(saved);
+      setSessionFeedbackSaveState("saved");
+    } catch {
+      setSessionFeedbackSaveState("idle");
+    }
   };
 
   const ensureSessionIdentity = () => {
@@ -1354,6 +1367,8 @@ export default function SessionClient() {
     dropoffTrackedRef.current = false;
     setSummary(null);
     setSummaryStats(null);
+    setSessionFeedbackDraft({ completed: "yes" });
+    setSessionFeedbackSaveState("idle");
     setActiveTrackingField(null);
     setActiveIndex(0);
     setCompletedSets({});
@@ -1398,9 +1413,10 @@ export default function SessionClient() {
         program && programDayIndex !== null
           ? `dayIndex:${programDayIndex}`
           : null,
-      sessionFeedback: sessionFeedback?.rating ?? null,
-      sessionPainLocation: sessionFeedback?.painLocation ?? null,
-      sessionFeedbackNotes: sessionFeedback?.notes ?? null,
+      sessionFeedback: null,
+      sessionPainLocation: null,
+      sessionFeedbackNotes: null,
+      feedback: null,
       source: "local",
       deletedAt: null,
     };
@@ -1522,6 +1538,8 @@ export default function SessionClient() {
     const completedExercises = totalItems;
     setSummary(sessionRecord);
     setSummaryStats({ completedExercises, estimatedMinutes });
+    setSessionFeedbackDraft({ completed: "yes" });
+    setSessionFeedbackSaveState("idle");
     setSessionComplete(true);
     sessionCompleteRef.current = true;
 
@@ -2031,8 +2049,7 @@ export default function SessionClient() {
           <OnImage className="space-y-3">
             <h1 className="text-3xl font-semibold text-white">Session complete</h1>
             <p className="text-sm text-slate-200">
-              Excellent work. Your Praxis plan will adapt based on today&apos;s
-              performance.
+              Excellent work. Your session is logged for future coaching context.
             </p>
           </OnImage>
           <div className="ui-card p-6">
@@ -2044,47 +2061,16 @@ export default function SessionClient() {
               Great work staying consistent today.
             </p>
           </div>
-          <div className="ui-card p-6">
-            <p className="text-sm font-semibold text-slate-900">
-              How did the workout feel?
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {(
-                [
-                  { value: "easy", label: "Easy" },
-                  { value: "moderate", label: "Moderate" },
-                  { value: "hard", label: "Hard" },
-                ] as Array<{ value: FeedbackEntry; label: string }>
-              ).map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() =>
-                    saveSessionFeedback({
-                      rating: option.value,
-                      painLocation: sessionFeedback?.painLocation ?? null,
-                      notes: sessionFeedback?.notes ?? "",
-                    })
-                  }
-                  className={`rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
-                    sessionFeedback?.rating === option.value
-                      ? option.value === "easy"
-                        ? "border-emerald-600 bg-emerald-600 text-white"
-                        : option.value === "moderate"
-                        ? "border-sky-600 bg-sky-600 text-white"
-                        : "border-amber-600 bg-amber-500 text-slate-950"
-                      : option.value === "easy"
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                      : option.value === "moderate"
-                      ? "border-sky-200 bg-sky-50 text-sky-800"
-                      : "border-amber-200 bg-amber-50 text-amber-800"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <SessionFeedbackCheckIn
+            value={sessionFeedbackDraft}
+            savedFeedback={summary.feedback ?? null}
+            saveState={sessionFeedbackSaveState}
+            onChange={(next) => {
+              setSessionFeedbackDraft(next);
+              setSessionFeedbackSaveState("idle");
+            }}
+            onSave={saveSessionCheckIn}
+          />
           <OnImage className="flex flex-col gap-3 sm:flex-row">
             <Link href="/results">
               <Button

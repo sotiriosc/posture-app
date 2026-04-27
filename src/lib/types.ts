@@ -1,5 +1,17 @@
 import type { WarmupBlock } from "@/lib/program/warmupLibrary";
 
+export type SessionFeedback = {
+  completed?: "yes" | "partial" | "no";
+  difficultyRPE?: number;
+  painBefore?: number;
+  painAfter?: number;
+  energy?: number;
+  techniqueConfidence?: number;
+  enjoyment?: number;
+  timeAvailableNextSession?: number;
+  notes?: string;
+};
+
 export type SessionRecord = {
   id: string;
   userId: string | null;
@@ -13,6 +25,7 @@ export type SessionRecord = {
   sessionFeedback?: "easy" | "moderate" | "hard" | "pain" | null;
   sessionPainLocation?: PainLocation | null;
   sessionFeedbackNotes?: string | null;
+  feedback?: SessionFeedback | null;
   source: "local" | "cloud";
   deletedAt: string | null;
 };

@@ -239,7 +239,39 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText("Session complete")).toBeTruthy();
     });
 
+    expect(screen.queryByTestId("session-feedback-summary")).toBeNull();
+    fireEvent.change(screen.getByTestId("session-feedback-difficulty"), {
+      target: { value: "12" },
+    });
+    fireEvent.change(screen.getByTestId("session-feedback-pain-before"), {
+      target: { value: "2" },
+    });
+    fireEvent.change(screen.getByTestId("session-feedback-pain-after"), {
+      target: { value: "3" },
+    });
+    fireEvent.click(screen.getByTestId("session-feedback-energy-4"));
+    fireEvent.click(screen.getByTestId("session-feedback-confidence-4"));
+    fireEvent.change(screen.getByTestId("session-feedback-notes"), {
+      target: { value: "  Grip felt steady.  " },
+    });
+    fireEvent.click(screen.getByTestId("session-feedback-save"));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("session-feedback-summary").textContent).toBe(
+        "Difficulty 10/10 • Pain 2 -> 3 • Energy 4/5 • Confidence 4/5"
+      );
+    });
+
     expect(mocks.sessions.length).toBe(1);
+    expect(mocks.sessions[0].feedback).toEqual({
+      completed: "yes",
+      difficultyRPE: 10,
+      painBefore: 2,
+      painAfter: 3,
+      energy: 4,
+      techniqueConfidence: 4,
+      notes: "Grip felt steady.",
+    });
     expect(mocks.logs.length).toBe(1);
     const [savedLog] = mocks.logs;
     expect(savedLog.exerciseId).toBe("dumbbell-rows");

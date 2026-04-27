@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { exerciseById, resolveExerciseHistoryIds } from "@/lib/exercises";
 import { getProgressionRecommendation } from "@/lib/progression";
 import { formatHistorySchemaRow, getHistoryDeltaPills } from "@/lib/historyView";
+import { formatSessionFeedbackSummary } from "@/lib/sessionFeedback";
 import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
 import type { SubscriptionPlan } from "@/lib/authTypes";
 import {
@@ -256,6 +257,9 @@ export default function ProgramDayPage({ params }: Props) {
   const activeSessionDate = activeSession
     ? (activeSession.completedAt ?? activeSession.updatedAt ?? activeSession.createdAt).slice(0, 10)
     : null;
+  const activeSessionFeedbackSummary = formatSessionFeedbackSummary(
+    activeSession?.feedback ?? null
+  );
   const activeSessionLogs = activeSession
     ? logs.filter((log) => log.sessionId === activeSession.id)
     : [];
@@ -362,6 +366,11 @@ export default function ProgramDayPage({ params }: Props) {
           {!daySessions.length ? (
             <p className="mt-3 ui-body">
               No recorded workouts yet for this day. Start this day to create the first dated entry.
+            </p>
+          ) : null}
+          {activeSessionFeedbackSummary ? (
+            <p className="mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
+              {activeSessionFeedbackSummary}
             </p>
           ) : null}
 

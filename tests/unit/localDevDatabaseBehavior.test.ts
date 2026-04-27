@@ -122,7 +122,31 @@ describe("local development database behavior", () => {
     const postResponse = await POST(
       new Request("http://localhost/api/training/state", {
         method: "POST",
-        body: JSON.stringify({ programs: [] }),
+        body: JSON.stringify({
+          sessions: [
+            {
+              id: "session-feedback-local-safe",
+              userId: null,
+              startedAt: "2026-02-15T00:00:00.000Z",
+              completedAt: "2026-02-15T00:30:00.000Z",
+              createdAt: "2026-02-15T00:00:00.000Z",
+              updatedAt: "2026-02-15T00:31:00.000Z",
+              routineId: "program-1",
+              durationSec: 1800,
+              notes: "dayIndex:0",
+              feedback: {
+                completed: "yes",
+                difficultyRPE: 7,
+                painBefore: 2,
+                painAfter: 3,
+                energy: 4,
+                techniqueConfidence: 4,
+              },
+              source: "local",
+              deletedAt: null,
+            },
+          ],
+        }),
         headers: { "Content-Type": "application/json" },
       })
     );

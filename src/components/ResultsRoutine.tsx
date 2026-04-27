@@ -73,6 +73,7 @@ import RoutineItemCoachingDetails, {
 } from "@/components/RoutineItemCoachingDetails";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
+import { formatSessionFeedbackSummary } from "@/lib/sessionFeedback";
 import { useTrainingSyncStatus } from "@/lib/useTrainingSyncStatus";
 import { useResultsBootstrap } from "@/components/results/useResultsBootstrap";
 import { usePoseAssessment } from "@/components/results/usePoseAssessment";
@@ -3726,6 +3727,9 @@ export default function ResultsRoutine() {
               historyEntries.map((entry) => {
                 const { session, dayIndex } = entry;
                 const historyProgramId = session.routineId ?? program.id;
+                const feedbackSummary = formatSessionFeedbackSummary(
+                  session.feedback ?? null
+                );
                 return (
                   <div
                     key={session.id}
@@ -3745,6 +3749,11 @@ export default function ResultsRoutine() {
                     {entry.exerciseNames.length ? (
                       <p className="mt-2 line-clamp-2 text-xs text-slate-400">
                         {entry.exerciseNames.slice(0, 5).join(" • ")}
+                      </p>
+                    ) : null}
+                    {feedbackSummary ? (
+                      <p className="mt-2 text-xs font-semibold text-slate-300">
+                        {feedbackSummary}
                       </p>
                     ) : null}
                     {dayIndex !== null ? (

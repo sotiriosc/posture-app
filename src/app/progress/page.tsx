@@ -21,6 +21,7 @@ import {
   listExerciseLogsBySession,
   listSessions,
 } from "@/lib/logStore";
+import { formatSessionFeedbackSummary } from "@/lib/sessionFeedback";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import type { ExerciseLog, SessionRecord } from "@/lib/types";
 
@@ -522,15 +523,23 @@ export default function ProgressPage() {
             {lastSessions.length ? (
               lastSessions.map((session) => {
                 const dateKey = toDateKey(sessionTimestampMs(session));
+                const feedbackSummary = formatSessionFeedbackSummary(
+                  session.feedback ?? null
+                );
                 return (
                   <div
                     key={session.id}
-                    className="ui-soft-surface flex flex-wrap items-center justify-between rounded-lg px-3 py-2"
+                    className="ui-soft-surface flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2"
                   >
                     <span className="text-slate-100">{dateKey}</span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-right text-xs text-slate-400">
                       {session.durationSec ? `${Math.round(session.durationSec / 60)} min` : "--"}{" "}
                       • Volume {volumeByDate[dateKey] ?? 0}
+                      {feedbackSummary ? (
+                        <span className="block text-slate-300">
+                          {feedbackSummary}
+                        </span>
+                      ) : null}
                     </span>
                   </div>
                 );
