@@ -46,9 +46,9 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
         type: "bullets",
         title: "Praxis:",
         items: [
-          "Detects tendencies that undermine movement quality.",
-          "Builds structured corrective progression around pattern balance.",
-          "Adapts corrective guidance based on movement performance and recovery.",
+          "Builds your plan from your goal, experience, equipment, pain areas, and training days.",
+          "Organizes corrective work around movement quality, pattern balance, and progressive exposure.",
+          "Uses check-ins to suggest safer ways to approach the next session.",
         ],
       },
       {
@@ -62,7 +62,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "Estimated time: under 3 minutes.",
+        text: "Your saved plan is not changed automatically. Coaching suggestions stay advisory; choosing a current-session option changes only that session view.",
       },
     ],
   },
@@ -128,16 +128,26 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
           "Phase: where you are in pattern mastery",
           "Week View: your weekly corrective structure",
           "Training readiness: how prepared you are",
-          "Plan adjustments: what changed and why",
+          "Coach Notes: dose, cues, and why exercises were selected",
+          "Recommendations: advisory next-session guidance from your check-ins",
         ],
       },
       {
         type: "text",
-        text: "This dashboard shows where you are in pattern mastery and what to prioritize next.",
+        text: "Coach Notes explain how to approach each movement without exposing internal selection details.",
       },
       {
         type: "text",
-        text: "After each session, Praxis updates the plan automatically.",
+        text: "Praxis uses check-ins to suggest safer ways to approach the next session. Your saved plan is not changed automatically.",
+      },
+      {
+        type: "bullets",
+        title: "What stays unchanged",
+        items: [
+          "Recommendations are advisory.",
+          "Today’s Options change only today’s session view.",
+          "Choosing a current-session option does not rewrite your saved plan.",
+        ],
       },
     ],
   },
@@ -148,6 +158,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
         type: "bullets",
         title: "Flow:",
         items: [
+          "Choose a Today’s Options view if you need full, steady, reduced, simplified, or recovery work today",
           "Follow movement pattern focus order",
           "Log weight / reps",
           "Complete sets in sequence",
@@ -164,7 +175,11 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "Praxis adjusts movement quality emphasis based on your feedback.",
+        text: "Check-ins help Praxis understand how the session felt.",
+      },
+      {
+        type: "text",
+        text: "Praxis uses check-ins to suggest safer ways to approach the next session. Today’s Options change only today’s session view, and your saved plan is not changed automatically.",
       },
     ],
   },
