@@ -915,7 +915,7 @@ export default function SessionClient() {
       return "border-sky-300/35 bg-sky-400/10 text-sky-100 shadow-[0_18px_42px_rgba(14,165,233,0.16)]";
     }
     if (/move|control|tempo/i.test(activeTip)) {
-      return "border-amber-300/35 bg-amber-300/10 text-amber-100 shadow-[0_18px_42px_rgba(245,158,11,0.12)]";
+      return "border-cyan-300/35 bg-cyan-300/10 text-cyan-100 shadow-[0_18px_42px_rgba(14,165,233,0.12)]";
     }
     if (/posture/i.test(activeTip)) {
       return "border-indigo-300/35 bg-indigo-300/10 text-indigo-100 shadow-[0_18px_42px_rgba(99,102,241,0.14)]";
@@ -2236,19 +2236,19 @@ export default function SessionClient() {
 
         {practiceOptions.length ? (
           <section
-            className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5"
+            className="praxis-panel rounded-lg p-4 sm:p-5"
             data-testid="session-practice-options"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-white">Today's options</p>
+                <p className="text-sm font-semibold text-white">Today&apos;s options</p>
                 <p className="mt-1 text-xs text-slate-300">
-                  This changes only today's session view. Your saved plan is not changed.
+                  This changes only today&apos;s session view. Your saved plan is not changed.
                 </p>
               </div>
               {selectedPracticeOption ? (
                 <span
-                  className="rounded-lg border border-slate-500/30 bg-slate-950/55 px-2 py-1 text-[11px] font-semibold text-slate-300"
+                  className="praxis-card-muted rounded-lg px-2 py-1 text-[11px] font-semibold text-slate-300"
                   data-testid="selected-practice-mode"
                 >
                   {selectedPracticeOption.label}
@@ -2266,8 +2266,8 @@ export default function SessionClient() {
                     onClick={() => handleSelectPracticeMode(option.mode)}
                     className={`rounded-lg border px-3 py-3 text-left transition ${
                       selected
-                        ? "border-sky-300 bg-sky-400/15 text-white shadow-[0_14px_28px_rgba(14,165,233,0.12)]"
-                        : "border-slate-500/25 bg-slate-950/35 text-slate-200 hover:border-sky-300/45"
+                        ? "praxis-selected-surface text-white"
+                        : "praxis-card-muted text-slate-200 hover:border-sky-300/45"
                     }`}
                   >
                     <span className="flex items-center justify-between gap-2">
@@ -2360,7 +2360,7 @@ export default function SessionClient() {
           />
         </div>
 
-        <div className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5">
+        <div className="praxis-panel rounded-lg p-4 sm:p-5">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-stretch">
             <DualModeTimer
               key={currentItem.id}
@@ -2399,10 +2399,7 @@ export default function SessionClient() {
           </div>
         </div>
 
-        <div
-          ref={trackingPanelRef}
-          className="ui-card rounded-lg border-sky-300/25 bg-slate-950/58 p-5 sm:p-6"
-        >
+        <div ref={trackingPanelRef} className="praxis-panel-strong rounded-lg p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <p className="ui-title">Log this movement pattern focus</p>
@@ -2439,7 +2436,7 @@ export default function SessionClient() {
                   </p>
                   {lastLog.nextTimeGuidance ? (
                     <p
-                      className="mt-1 text-[11px] text-slate-600"
+                      className="mt-1 text-[11px] text-slate-400"
                       data-testid="next-time-guidance"
                     >
                       {lastLog.nextTimeGuidance}
@@ -2459,7 +2456,7 @@ export default function SessionClient() {
               </span>
             </div>
           </div>
-          <div className="mt-3 rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
+          <div className="praxis-card mt-3 rounded-lg px-3 py-3">
             <p className="text-[11px] font-semibold uppercase text-slate-300">
               About to record
             </p>
@@ -2497,8 +2494,8 @@ export default function SessionClient() {
 
           <div className="mt-4 grid gap-3">
             {maxSets > minSets ? (
-              <div className="flex items-center gap-2 text-xs text-sky-700">
-                <span className="font-semibold text-sky-900">Sets</span>
+              <div className="flex items-center gap-2 text-xs text-slate-300">
+                <span className="font-semibold text-white">Sets</span>
                 <button
                   type="button"
                   onClick={() =>
@@ -2508,11 +2505,11 @@ export default function SessionClient() {
                       Math.max(minSets, currentSelectedSets - 1)
                     )
                   }
-                  className="rounded-full border border-sky-300 bg-white px-3 py-1 font-semibold text-sky-700 transition-colors hover:bg-sky-50"
+                  className="praxis-input-surface rounded-full px-3 py-1 font-semibold text-slate-200 transition-colors hover:border-sky-300/45"
                 >
                   -
                 </button>
-                <span className="w-6 text-center font-semibold text-sky-900">
+                <span className="w-6 text-center font-semibold text-sky-100">
                   {currentSelectedSets}
                 </span>
                 <button
@@ -2524,7 +2521,7 @@ export default function SessionClient() {
                       Math.min(maxSets, currentSelectedSets + 1)
                     )
                   }
-                  className="rounded-full border border-sky-300 bg-white px-3 py-1 font-semibold text-sky-700 transition-colors hover:bg-sky-50"
+                  className="praxis-input-surface rounded-full px-3 py-1 font-semibold text-slate-200 transition-colors hover:border-sky-300/45"
                 >
                   +
                 </button>
@@ -2533,7 +2530,7 @@ export default function SessionClient() {
 
             {currentItem.loadType === "weighted" ? (
               <div className="flex flex-wrap items-center gap-2">
-                <label className="text-xs font-semibold text-slate-700" htmlFor="weight-input">
+                <label className="text-xs font-semibold text-slate-300" htmlFor="weight-input">
                   Weight
                 </label>
                 <input
@@ -2564,7 +2561,7 @@ export default function SessionClient() {
                       : ""
                   }`}
                 />
-                <div className="flex rounded-full border border-indigo-200 bg-white/80 p-1 text-xs">
+                <div className="praxis-input-surface flex rounded-full p-1 text-xs">
                   {(["lb", "kg"] as const).map((unit) => (
                     <button
                       key={unit}
@@ -2572,8 +2569,8 @@ export default function SessionClient() {
                       onClick={() => applyUnit(currentItem.exerciseId, unit)}
                       className={`rounded-full px-3 py-1 font-semibold ${
                         currentUnitValue === unit
-                          ? "bg-indigo-600 text-white"
-                          : "text-indigo-700 hover:bg-indigo-50"
+                          ? "praxis-selected-surface text-white"
+                          : "text-slate-300 hover:bg-sky-400/10 hover:text-sky-100"
                       }`}
                     >
                       {unit}
@@ -2582,7 +2579,7 @@ export default function SessionClient() {
                 </div>
               </div>
             ) : (
-              <p className="text-xs font-semibold text-slate-600">
+              <p className="text-xs font-semibold text-slate-300">
                 Load:{" "}
                 {currentItem.loadType === "timed"
                   ? "Timed"
@@ -2593,7 +2590,7 @@ export default function SessionClient() {
             )}
             {currentItem.loadType !== "timed" ? (
               <div className="flex flex-wrap items-center gap-2">
-                <label className="text-xs font-semibold text-slate-700" htmlFor="reps-input">
+                <label className="text-xs font-semibold text-slate-300" htmlFor="reps-input">
                   Reps
                 </label>
                 <input
@@ -2628,7 +2625,7 @@ export default function SessionClient() {
               </div>
             ) : null}
             <div className="flex flex-wrap items-center gap-2">
-              <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
+              <label className="text-xs font-semibold text-slate-300" htmlFor="rpe-input">
                 RPE (1-10)
               </label>
               <input
@@ -2660,7 +2657,7 @@ export default function SessionClient() {
                 placeholder="RPE"
               />
             </div>
-            <p className="text-[11px] text-slate-600" aria-live="polite">
+            <p className="text-[11px] text-slate-400" aria-live="polite">
               {activeTrackingField
                 ? `Active input: ${
                     activeTrackingField === "rpe"
@@ -2676,7 +2673,7 @@ export default function SessionClient() {
         </div>
 
         {allSetsCompleted ? (
-          <div className="ui-card rounded-lg border-amber-300/25 bg-amber-400/10 p-5 sm:p-6">
+          <div className="praxis-panel rounded-lg p-5 sm:p-6">
             <p className="text-sm font-semibold text-white">How did it feel?</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {(
@@ -2705,16 +2702,8 @@ export default function SessionClient() {
                   }}
                   className={`rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
                     currentFeedback?.rating === option.value
-                      ? option.value === "easy"
-                        ? "border-emerald-600 bg-emerald-600 text-white"
-                        : option.value === "moderate"
-                        ? "border-sky-600 bg-sky-600 text-white"
-                        : "border-amber-600 bg-amber-500 text-slate-950"
-                      : option.value === "easy"
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                      : option.value === "moderate"
-                      ? "border-sky-200 bg-sky-50 text-sky-800"
-                      : "border-amber-200 bg-amber-50 text-amber-800"
+                      ? "praxis-selected-surface text-white"
+                      : "praxis-input-surface text-slate-300 hover:border-sky-300/35"
                   }`}
                 >
                   {option.label}
@@ -2747,8 +2736,8 @@ export default function SessionClient() {
                   }}
                   className={`rounded-full border px-3 py-1 text-xs font-semibold ${
                     painModalLevel === level
-                      ? "border-slate-900 bg-slate-900 text-white"
-                      : "border-slate-200 bg-white text-slate-700"
+                      ? "border-rose-300/60 bg-rose-400/20 text-rose-50"
+                      : "praxis-input-surface text-slate-300 hover:border-rose-300/35"
                   }`}
                 >
                   {level}
@@ -2757,7 +2746,7 @@ export default function SessionClient() {
             </div>
             <div className="mt-3 grid gap-3 text-xs">
               <label className="flex flex-col gap-2">
-                <span className="font-semibold text-slate-700">Location (optional)</span>
+                <span className="font-semibold text-slate-300">Location (optional)</span>
                 <select
                   data-testid="pain-report-location"
                   value={painModalLocation}
@@ -2785,7 +2774,7 @@ export default function SessionClient() {
                 </select>
               </label>
               <label className="flex flex-col gap-2">
-                <span className="font-semibold text-slate-700">Notes (optional)</span>
+                <span className="font-semibold text-slate-300">Notes (optional)</span>
                 <textarea
                   data-testid="pain-report-notes"
                   value={painModalNotes}

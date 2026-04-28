@@ -31,7 +31,7 @@ export default function AssessmentPage() {
             {["Natural stance", "Good lighting", "Front / side / back"].map((item) => (
               <div
                 key={item}
-                className="rounded-lg border border-slate-400/18 bg-slate-950/42 px-3 py-2 text-sm text-slate-200"
+                className="praxis-card-muted rounded-lg px-3 py-2 text-sm text-slate-200"
               >
                 {item}
               </div>

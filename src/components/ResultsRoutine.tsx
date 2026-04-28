@@ -92,6 +92,7 @@ const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
 const DASHBOARD_UNLOCK_LEVEL_KEY = "praxis_dashboard_unlock_level";
 const SHOW_TECHNICAL_PROGRAM_REFERENCE = process.env.NODE_ENV !== "production";
 const SHOW_PHASE_PREVIEW_REFERENCE = false;
+const SHOW_CURRENT_SAVED_PROGRAM_SNAPSHOT_REFERENCE = false;
 
 type DashboardMode =
   | "today"
@@ -2517,7 +2518,7 @@ export default function ResultsRoutine() {
         <div className="ui-card ui-soft-surface-raised p-6">
           <p className="text-sm text-slate-300">Building your weekly plan...</p>
         </div>
-        {SHOW_TECHNICAL_PROGRAM_REFERENCE ? (
+        {SHOW_TECHNICAL_PROGRAM_REFERENCE && SHOW_CURRENT_SAVED_PROGRAM_SNAPSHOT_REFERENCE ? (
           <CurrentSavedProgramSnapshotLoadingCard
             message={currentSavedWeekSnapshotLoadingMessage}
           />
@@ -3269,7 +3270,7 @@ export default function ResultsRoutine() {
         </section>
       ) : null}
 
-      <section className="ui-card ui-soft-surface-raised order-3 p-5 sm:p-6">
+      <section className="praxis-panel-strong order-3 p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="ui-kicker">Praxis dashboard</p>
@@ -3280,7 +3281,7 @@ export default function ResultsRoutine() {
               {dashboardLevelDescription}
             </p>
           </div>
-          <div className="rounded-lg border border-slate-400/20 bg-slate-950/38 px-4 py-3 text-xs text-slate-200">
+          <div className="praxis-card-muted rounded-lg px-4 py-3 text-xs text-slate-200">
             <p className="font-semibold text-white">{dashboardLevelLabel}</p>
             <p className="mt-1 text-slate-400">
               {totalCompletedWorkoutCount} workouts logged
@@ -3305,7 +3306,7 @@ export default function ResultsRoutine() {
       </section>
 
       {activeModeLocked ? (
-        <section className="ui-card ui-soft-surface order-4 p-5 sm:p-6">
+        <section className="praxis-panel order-4 p-5 sm:p-6">
           <p className="ui-kicker">Unlock Path</p>
           <h2 className="mt-2 text-2xl font-semibold text-white">
             {activeModeConfig.title} unlocks with real use
@@ -3339,7 +3340,7 @@ export default function ResultsRoutine() {
       ) : null}
 
       {activeMode === "today" && !activeModeLocked ? (
-        <section className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6" data-testid="today-mode-panel">
+        <section className="praxis-panel-strong order-4 p-5 sm:p-6" data-testid="today-mode-panel">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)]">
             <div>
               <p className="ui-kicker">Today</p>
@@ -3354,7 +3355,7 @@ export default function ResultsRoutine() {
                 {coachSummaryBullets.map((item) => (
                   <div
                     key={item.label}
-                    className="ui-soft-surface rounded-lg px-3 py-3"
+                    className="praxis-card rounded-lg px-3 py-3"
                   >
                     <p className="text-xs font-semibold text-slate-400">{item.label}</p>
                     <p className="mt-1 text-sm text-slate-100">{item.text}</p>
@@ -3362,7 +3363,7 @@ export default function ResultsRoutine() {
                 ))}
               </div>
               {hasAdaptationCallout ? (
-                <div className="ui-soft-surface mt-5 rounded-lg px-3 py-3 text-xs text-slate-200">
+                <div className="praxis-card mt-5 rounded-lg px-3 py-3 text-xs text-slate-200">
                   <p>System adapted this week to improve stability and execution quality.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
@@ -3383,7 +3384,7 @@ export default function ResultsRoutine() {
                 </div>
               ) : null}
             </div>
-            <div className="ui-soft-surface rounded-lg p-4">
+            <div className="praxis-card rounded-lg p-4">
               <p className="text-xs font-semibold uppercase text-slate-400">
                 Session Entry
               </p>
@@ -3392,7 +3393,7 @@ export default function ResultsRoutine() {
                   todayModeEntries.map((entry) => (
                     <div
                       key={entry.key}
-                      className="rounded-lg border border-slate-500/20 bg-slate-950/42 px-3 py-2.5"
+                      className="praxis-card-muted rounded-lg px-3 py-2.5"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-semibold text-white">{entry.name}</p>
@@ -3435,7 +3436,9 @@ export default function ResultsRoutine() {
         </section>
       ) : null}
 
-      {program && SHOW_TECHNICAL_PROGRAM_REFERENCE ? (
+      {program &&
+      SHOW_TECHNICAL_PROGRAM_REFERENCE &&
+      (SHOW_PHASE_PREVIEW_REFERENCE || SHOW_CURRENT_SAVED_PROGRAM_SNAPSHOT_REFERENCE) ? (
         <>
           {SHOW_PHASE_PREVIEW_REFERENCE ? (
             <ProgramReferenceCard
@@ -3444,25 +3447,27 @@ export default function ResultsRoutine() {
               onToggle={() => setProgramReferenceOpen((current) => !current)}
             />
           ) : null}
-          {isCurrentSavedWeekSnapshotSettled ? (
-            <ProgramReferenceCard
-              title="Current Saved Program Snapshot"
-              description="Development-only plan reference for the saved live program and inspection snapshots."
-              isOpen
-              referenceText={currentSavedWeekSnapshotText}
-              cardTestId="current-saved-week-card"
-              bodyTestId="current-saved-week-body"
-              copyLabel="Copy Full Progression Snapshot"
-              onCopy={handleCopyCurrentSavedWeek}
-              copyStatus={currentWeekCopyStatus}
-              className="order-20 p-3 opacity-70 sm:p-4"
-              bodyClassName="mt-3 max-h-[27rem] overflow-auto rounded-lg border border-slate-500/20 bg-slate-950/45 p-3"
-            />
-          ) : (
-            <CurrentSavedProgramSnapshotLoadingCard
-              message={currentSavedWeekSnapshotLoadingMessage}
-            />
-          )}
+          {SHOW_CURRENT_SAVED_PROGRAM_SNAPSHOT_REFERENCE ? (
+            isCurrentSavedWeekSnapshotSettled ? (
+              <ProgramReferenceCard
+                title="Current Saved Program Snapshot"
+                description="Development-only plan reference for the saved live program and inspection snapshots."
+                isOpen
+                referenceText={currentSavedWeekSnapshotText}
+                cardTestId="current-saved-week-card"
+                bodyTestId="current-saved-week-body"
+                copyLabel="Copy Full Progression Snapshot"
+                onCopy={handleCopyCurrentSavedWeek}
+                copyStatus={currentWeekCopyStatus}
+                className="order-20 p-3 opacity-70 sm:p-4"
+                bodyClassName="mt-3 max-h-[27rem] overflow-auto rounded-lg border border-slate-500/20 bg-slate-950/45 p-3"
+              />
+            ) : (
+              <CurrentSavedProgramSnapshotLoadingCard
+                message={currentSavedWeekSnapshotLoadingMessage}
+              />
+            )
+          ) : null}
         </>
       ) : null}
 

@@ -185,62 +185,52 @@ export default function DualModeTimer({
 
   const accentClasses =
     isExerciseMode
-      ? "border-sky-300/60 bg-sky-100 text-sky-900"
-      : "border-amber-300/60 bg-amber-100 text-amber-900";
+      ? "praxis-selected-surface text-sky-50"
+      : "praxis-selected-surface text-cyan-50";
   const modeBackground = isExerciseMode
     ? "border-sky-200/70 bg-sky-50/80"
-    : "border-amber-200/80 bg-amber-50/85";
+    : "border-cyan-200/70 bg-cyan-50/80";
   const runningAccent = isExerciseMode
     ? "shadow-sky-500/28 ring-sky-400/40"
-    : "shadow-yellow-500/38 ring-yellow-300/55";
-  const activeModeButtonClasses =
-    isExerciseMode
-      ? "bg-sky-600 text-white shadow-[0_6px_16px_rgba(2,132,199,0.28)]"
-      : "bg-amber-500 text-slate-900 shadow-[0_6px_16px_rgba(245,158,11,0.26)]";
-  const sliderAccentClass = isExerciseMode ? "accent-sky-600" : "accent-amber-500";
+    : "shadow-cyan-500/30 ring-cyan-300/45";
+  const activeModeButtonClasses = "praxis-selected-surface text-white";
+  const sliderAccentClass = isExerciseMode ? "accent-sky-500" : "accent-cyan-500";
   const timerFaceBackground = isExerciseMode
     ? "bg-[radial-gradient(circle_at_30%_24%,rgba(255,255,255,.98)_0%,rgba(224,242,254,.96)_46%,rgba(125,211,252,.9)_70%,rgba(30,64,175,.58)_100%)]"
-    : "bg-[radial-gradient(circle_at_28%_22%,rgba(255,255,255,.99)_0%,rgba(255,247,214,.98)_36%,rgba(253,224,71,.95)_58%,rgba(251,146,60,.88)_78%,rgba(172,94,35,.74)_100%)]";
+    : "bg-[radial-gradient(circle_at_28%_22%,rgba(255,255,255,.98)_0%,rgba(224,242,254,.96)_38%,rgba(125,211,252,.9)_62%,rgba(14,116,144,.72)_82%,rgba(30,41,59,.72)_100%)]";
   const ringGradient = isExerciseMode
     ? "conic-gradient(from 180deg at 50% 50%, rgba(191,219,254,0.98), rgba(56,189,248,0.96), rgba(37,99,235,0.92), rgba(15,23,42,0.9), rgba(191,219,254,0.98))"
-    : "conic-gradient(from 180deg at 50% 50%, rgba(255,254,240,0.99), rgba(250,204,21,0.98), rgba(245,158,11,0.95), rgba(236,72,153,0.75), rgba(124,58,237,0.62), rgba(255,254,240,0.99))";
+    : "conic-gradient(from 180deg at 50% 50%, rgba(207,250,254,0.98), rgba(103,232,249,0.96), rgba(14,165,233,0.92), rgba(79,70,229,0.62), rgba(15,23,42,0.9), rgba(207,250,254,0.98))";
   const ringProgress = isExerciseMode
     ? `conic-gradient(from -90deg at 50% 50%, rgba(14,116,234,0.99) 0 ${progressPercent}%, rgba(15,23,42,0.34) ${progressPercent}% 100%)`
-    : `conic-gradient(from -90deg at 50% 50%, rgba(255,215,64,0.99) 0 ${progressPercent}%, rgba(30,27,45,0.34) ${progressPercent}% 100%)`;
+    : `conic-gradient(from -90deg at 50% 50%, rgba(34,211,238,0.96) 0 ${progressPercent}%, rgba(15,23,42,0.34) ${progressPercent}% 100%)`;
   const ringShadow = isExerciseMode
     ? "0 14px 30px rgba(14,116,234,0.34)"
-    : "0 16px 32px rgba(234,179,8,0.36), 0 0 22px rgba(236,72,153,0.2)";
-  const polarShellClasses =
-    isExerciseMode
-      ? "border-sky-500/45 bg-[linear-gradient(145deg,rgba(2,6,23,0.97),rgba(7,25,51,0.95))] text-sky-50"
-      : "border-amber-500/60 bg-[linear-gradient(145deg,rgba(24,14,5,0.97),rgba(58,32,8,0.95))] text-amber-50";
-  const secondaryTextClass = isExerciseMode ? "text-sky-100/95" : "text-amber-100/95";
-  const neutralPillClasses =
-    isExerciseMode
-      ? "border-slate-700 bg-slate-950/60"
-      : "border-amber-900/50 bg-slate-950/45";
+    : "0 16px 32px rgba(34,211,238,0.26), 0 0 22px rgba(14,165,233,0.16)";
+  const secondaryTextClass = isExerciseMode ? "text-sky-100/95" : "text-cyan-100/95";
+  const neutralPillClasses = "praxis-input-surface";
   const inactiveModeButtonClasses =
     isExerciseMode
       ? "text-slate-300 hover:bg-slate-800 hover:text-sky-100"
-      : "text-amber-100/85 hover:bg-amber-950/35 hover:text-amber-50";
+      : "text-slate-300 hover:bg-sky-400/10 hover:text-cyan-50";
   const timerButtonFrameClasses = isExerciseMode
     ? "border-[5px] border-sky-900/80 text-sky-950 shadow-[0_14px_30px_rgba(14,116,234,0.24)]"
-    : "border-[5px] border-amber-900/80 text-amber-950 shadow-[0_14px_30px_rgba(234,179,8,0.3)]";
+    : "border-[5px] border-cyan-900/80 text-cyan-950 shadow-[0_14px_30px_rgba(34,211,238,0.22)]";
   const timerInnerRingClasses = isExerciseMode
     ? "border border-sky-900/35"
-    : "border border-amber-900/35";
+    : "border border-cyan-900/35";
   const timerInnerShadeClasses = isExerciseMode
     ? "shadow-[inset_0_8px_14px_rgba(255,255,255,0.2),inset_0_-12px_16px_rgba(2,6,23,0.24)]"
-    : "shadow-[inset_0_8px_14px_rgba(255,255,255,0.32),inset_0_-12px_16px_rgba(120,53,15,0.24)]";
+    : "shadow-[inset_0_8px_14px_rgba(255,255,255,0.28),inset_0_-12px_16px_rgba(8,47,73,0.24)]";
   const timerTopGlowClasses = isExerciseMode
     ? "bg-white/22"
-    : "bg-white/36";
+    : "bg-white/30";
   const timerNeedleDotClasses = isExerciseMode
     ? "bg-sky-950/90"
-    : "bg-amber-950/90";
+    : "bg-cyan-950/90";
   const progressBadgeClasses = isExerciseMode
     ? "rounded-full border border-sky-300/70 bg-sky-100/95 px-2 py-0.5 text-[11px] font-semibold text-sky-900"
-    : "rounded-full border border-amber-300/80 bg-amber-200/95 px-2 py-0.5 text-[11px] font-semibold text-amber-950";
+    : "rounded-full border border-cyan-300/70 bg-cyan-100/95 px-2 py-0.5 text-[11px] font-semibold text-cyan-900";
 
   useEffect(() => {
     if (!reconciledPersistedState) return;
@@ -497,9 +487,7 @@ export default function DualModeTimer({
   ]);
 
   return (
-    <div
-      className={`rounded-2xl border p-4 shadow-sm transition ${polarShellClasses}`}
-    >
+    <div className="praxis-card rounded-lg p-4 transition">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className={`inline-flex rounded-full border p-1 shadow-sm ${neutralPillClasses}`}>
           {(["exercise", "rest"] as TimerMode[]).map((value) => (

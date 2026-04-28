@@ -12,12 +12,12 @@ export default function DailyInsightCard({
   priorities,
 }: DailyInsightCardProps) {
   return (
-    <section className="ui-card ui-soft-surface-raised p-5">
+    <section className="praxis-panel p-5">
       <h2 className="ui-kicker">
         {insight.title}
       </h2>
       <p className="mt-3 text-sm text-slate-300">{insight.text}</p>
-      <div className="ui-soft-surface mt-4 rounded-lg px-3 py-3">
+      <div className="praxis-card mt-4 rounded-lg px-3 py-3">
         <p className="text-xs font-semibold uppercase text-slate-400">
           Corrective Guidance Notes
         </p>
@@ -33,7 +33,7 @@ export default function DailyInsightCard({
           {priorities.slice(0, 3).map((item) => (
             <span
               key={item}
-              className="rounded-lg border border-slate-500/25 bg-slate-950/45 px-2.5 py-1 text-[11px] text-slate-300"
+              className="praxis-card-muted rounded-lg px-2.5 py-1 text-[11px] text-slate-300"
             >
               {item}
             </span>

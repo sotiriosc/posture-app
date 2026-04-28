@@ -300,7 +300,7 @@ export default function QuestionnaireForm() {
   return (
     <form
       data-testid="questionnaire-form"
-      className="ui-card space-y-8 rounded-lg bg-slate-950/60 p-5 shadow-lg sm:p-6"
+      className="praxis-panel-strong space-y-8 rounded-lg p-5 sm:p-6"
       onSubmit={(event) => {
         event.preventDefault();
         if (requiresChangeConfirmation && hasProgramAffectingChange(data, committedData)) {
@@ -326,8 +326,8 @@ export default function QuestionnaireForm() {
               }
               className={`min-h-12 rounded-lg border px-4 py-2 text-xs font-semibold transition ${
                 data.daysPerWeek === days
-                  ? "border-sky-200/60 bg-slate-900 text-white shadow-[0_12px_30px_rgba(14,165,233,0.14)] ring-1 ring-sky-300/30"
-                  : "border-slate-500/25 bg-slate-950/45 text-slate-300 hover:border-sky-200/30"
+                  ? "praxis-selected-surface text-white"
+                  : "praxis-input-surface text-slate-300 hover:border-sky-200/30"
               }`}
             >
               {days} days
@@ -341,7 +341,7 @@ export default function QuestionnaireForm() {
               Primary goal
             </label>
             <select
-          className="mt-2 w-full rounded-lg border border-slate-500/25 bg-slate-950/55 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none focus-visible:border-sky-200/50 focus-visible:ring-2 focus-visible:ring-sky-300/30"
+          className="praxis-input-surface mt-2 w-full rounded-lg px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus-visible:border-sky-200/50 focus-visible:ring-2 focus-visible:ring-sky-300/30"
           value={data.goals}
           onChange={(event) => updateData({ goals: event.target.value })}
         >
@@ -359,7 +359,7 @@ export default function QuestionnaireForm() {
           {painOptions.map((area) => (
             <label
               key={area}
-              className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-500/25 bg-slate-950/45 px-3 py-3 text-sm text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+              className="praxis-input-surface flex min-h-12 items-center gap-2 rounded-lg px-3 py-3 text-sm text-slate-200"
             >
               <input
                 type="checkbox"
@@ -385,8 +385,8 @@ export default function QuestionnaireForm() {
               onClick={() => updateData({ experience: level })}
               className={`min-h-12 rounded-lg border px-4 py-2 text-xs font-semibold transition ${
                 data.experience === level
-                  ? "border-sky-200/60 bg-slate-900 text-white shadow-[0_12px_30px_rgba(14,165,233,0.14)] ring-1 ring-sky-300/30"
-                  : "border-slate-500/25 bg-slate-950/45 text-slate-300 hover:border-sky-200/30"
+                  ? "praxis-selected-surface text-white"
+                  : "praxis-input-surface text-slate-300 hover:border-sky-200/30"
               }`}
             >
               {level}
@@ -401,7 +401,7 @@ export default function QuestionnaireForm() {
           {equipmentOptions.map((item) => (
             <label
               key={item.value}
-              className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-500/25 bg-slate-950/45 px-3 py-3 text-sm text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+              className="praxis-input-surface flex min-h-12 items-center gap-2 rounded-lg px-3 py-3 text-sm text-slate-200"
             >
               <input
                 type="checkbox"
@@ -434,7 +434,7 @@ export default function QuestionnaireForm() {
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
         >
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-          <div className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-950/95 p-6 text-white shadow-xl">
+          <div className="praxis-panel-strong relative w-full max-w-md rounded-3xl p-6 text-white shadow-xl">
             <p className="text-lg font-semibold">
               Your profile changed. Your plan will update.
             </p>

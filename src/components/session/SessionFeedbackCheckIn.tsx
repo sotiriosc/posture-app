@@ -40,11 +40,11 @@ export default function SessionFeedbackCheckIn({
   const selectedCompletion = value.completed ?? "yes";
 
   return (
-    <div className="ui-card p-5 sm:p-6">
+    <div className="praxis-panel p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-slate-900">Quick check-in</p>
-          <p className="mt-1 text-xs text-slate-600">
+          <p className="text-sm font-semibold text-white">Quick check-in</p>
+          <p className="mt-1 text-xs text-slate-300">
             A few notes for this workout. Keep it simple.
           </p>
         </div>
@@ -57,7 +57,7 @@ export default function SessionFeedbackCheckIn({
 
       {savedSummary ? (
         <p
-          className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700"
+          className="praxis-card-muted mt-3 rounded-lg px-3 py-2 text-xs font-semibold text-slate-200"
           data-testid="session-feedback-summary"
         >
           {savedSummary}
@@ -66,7 +66,7 @@ export default function SessionFeedbackCheckIn({
 
       <div className="mt-4 space-y-4">
         <div>
-          <p className="text-xs font-semibold uppercase text-slate-500">
+          <p className="text-xs font-semibold uppercase text-slate-400">
             Completion
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -78,8 +78,8 @@ export default function SessionFeedbackCheckIn({
                 onClick={() => onChange({ ...value, completed: option.value })}
                 className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
                   selectedCompletion === option.value
-                    ? "border-slate-900 bg-slate-900 text-white"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-400"
+                    ? "praxis-selected-surface text-white"
+                    : "praxis-input-surface text-slate-300 hover:border-sky-300/35"
                 }`}
               >
                 {option.label}
@@ -90,7 +90,7 @@ export default function SessionFeedbackCheckIn({
 
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="block">
-            <span className="text-xs font-semibold text-slate-700">
+            <span className="text-xs font-semibold text-slate-300">
               Difficulty
             </span>
             <input
@@ -110,7 +110,7 @@ export default function SessionFeedbackCheckIn({
             />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold text-slate-700">
+            <span className="text-xs font-semibold text-slate-300">
               Pain before
             </span>
             <input
@@ -130,7 +130,7 @@ export default function SessionFeedbackCheckIn({
             />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold text-slate-700">
+            <span className="text-xs font-semibold text-slate-300">
               Pain after
             </span>
             <input
@@ -153,7 +153,7 @@ export default function SessionFeedbackCheckIn({
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <p className="text-xs font-semibold text-slate-700">Energy</p>
+            <p className="text-xs font-semibold text-slate-300">Energy</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {oneToFive.map((score) => (
                 <button
@@ -163,8 +163,8 @@ export default function SessionFeedbackCheckIn({
                   onClick={() => onChange({ ...value, energy: score })}
                   className={`h-8 w-8 rounded-full border text-xs font-semibold ${
                     value.energy === score
-                      ? "border-sky-600 bg-sky-600 text-white"
-                      : "border-slate-200 bg-white text-slate-700"
+                      ? "praxis-selected-surface text-white"
+                      : "praxis-input-surface text-slate-300"
                   }`}
                   aria-label={`Energy ${score} out of 5`}
                 >
@@ -174,7 +174,7 @@ export default function SessionFeedbackCheckIn({
             </div>
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-700">Confidence</p>
+            <p className="text-xs font-semibold text-slate-300">Confidence</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {oneToFive.map((score) => (
                 <button
@@ -186,8 +186,8 @@ export default function SessionFeedbackCheckIn({
                   }
                   className={`h-8 w-8 rounded-full border text-xs font-semibold ${
                     value.techniqueConfidence === score
-                      ? "border-emerald-600 bg-emerald-600 text-white"
-                      : "border-slate-200 bg-white text-slate-700"
+                      ? "praxis-selected-surface text-white"
+                      : "praxis-input-surface text-slate-300"
                   }`}
                   aria-label={`Confidence ${score} out of 5`}
                 >
@@ -199,7 +199,7 @@ export default function SessionFeedbackCheckIn({
         </div>
 
         <label className="block">
-          <span className="text-xs font-semibold text-slate-700">
+          <span className="text-xs font-semibold text-slate-300">
             Notes optional
           </span>
           <textarea
@@ -221,7 +221,7 @@ export default function SessionFeedbackCheckIn({
           >
             {saveState === "saving" ? "Saving..." : "Save check-in"}
           </Button>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-400">
             This will not change the next workout yet.
           </p>
         </div>
@@ -229,4 +229,3 @@ export default function SessionFeedbackCheckIn({
     </div>
   );
 }
-

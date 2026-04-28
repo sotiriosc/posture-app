@@ -29,10 +29,10 @@ export default function DashboardModeCard({
       aria-disabled={locked}
       className={`group min-h-[148px] rounded-lg border p-4 text-left ${
         active
-          ? "border-sky-200/60 bg-[linear-gradient(135deg,rgba(56,189,248,0.22),rgba(30,41,59,0.52))] shadow-[0_20px_54px_rgba(14,165,233,0.2)]"
+          ? "praxis-selected-surface"
           : locked
-          ? "border-slate-500/16 bg-slate-950/28"
-          : "border-white/10 bg-slate-950/44 hover:border-sky-200/25 hover:bg-slate-900/62"
+          ? "praxis-card-muted opacity-60"
+          : "praxis-card-muted hover:border-sky-200/25"
       }`}
     >
       <div className="flex h-full flex-col justify-between gap-5">
@@ -42,8 +42,8 @@ export default function DashboardModeCard({
               active
                 ? "border-sky-100/60 bg-sky-300/20 text-sky-50 shadow-[0_10px_28px_rgba(14,165,233,0.18)]"
                 : locked
-                ? "border-slate-500/20 bg-slate-900/38 text-slate-500"
-                : "border-slate-500/30 bg-slate-900/70 text-slate-200"
+                ? "border-slate-500/20 bg-slate-950/35 text-slate-500"
+                : "praxis-card text-slate-200"
             }`}
             aria-hidden="true"
           >
@@ -52,10 +52,10 @@ export default function DashboardModeCard({
           <span
             className={`rounded-lg border px-2.5 py-1 text-[10px] font-semibold uppercase ${
               locked
-                ? "border-slate-500/20 bg-slate-950/35 text-slate-400"
+                ? "praxis-card-muted text-slate-400"
                 : active
                 ? "border-sky-100/50 bg-sky-200/12 text-sky-50"
-                : "border-slate-500/25 bg-slate-950/40 text-slate-300"
+                : "praxis-card-muted text-slate-300"
             }`}
           >
             {locked ? "Locked" : eyebrow}

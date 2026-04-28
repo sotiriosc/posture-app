@@ -68,7 +68,7 @@ export default function WeekViewPanel({
     <section
       id="week-view"
       ref={sectionRef}
-      className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6"
+      className="praxis-panel-strong order-4 p-5 sm:p-6"
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -93,14 +93,14 @@ export default function WeekViewPanel({
         <span
           data-testid="completed-count"
           title={weekViewBaselineDebugTitle}
-          className="rounded-lg border border-slate-500/25 bg-slate-950/38 px-2.5 py-1 text-xs text-slate-300"
+          className="praxis-card-muted rounded-lg px-2.5 py-1 text-xs text-slate-300"
         >
           {completedCount} completed / {activeDaysPerWeek}
         </span>
         <span className="rounded-lg border border-sky-300/25 bg-sky-300/10 px-2.5 py-1 text-xs text-sky-100">
           {inProgressCount} in progress
         </span>
-        <span className="rounded-lg border border-slate-500/25 bg-slate-950/38 px-2.5 py-1 text-xs text-slate-300">
+        <span className="praxis-card-muted rounded-lg px-2.5 py-1 text-xs text-slate-300">
           Current day: {sessionLaunchDayIndex + 1}
         </span>
       </div>
@@ -152,7 +152,7 @@ export default function WeekViewPanel({
                   ? "border-emerald-300/32 bg-emerald-300/10"
                   : isInProgress
                   ? "border-sky-300/38 bg-sky-300/10"
-                  : "border-slate-500/20 bg-slate-950/42"
+                  : "praxis-card-muted"
               } ${isSelected ? "shadow-[0_0_0_1px_rgba(125,211,252,0.45),0_18px_46px_rgba(14,165,233,0.13)]" : ""} ${
                 shouldDimLockedCard ? "opacity-60" : "hover:border-sky-200/35"
               }`}
@@ -202,7 +202,7 @@ export default function WeekViewPanel({
         })}
       </div>
       {weekViewDetailsOpen && weekViewDay ? (
-        <div ref={detailsRef} className="ui-soft-surface mt-5 rounded-lg px-4 py-4">
+        <div ref={detailsRef} className="praxis-card mt-5 rounded-lg px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             <p className="text-xs font-semibold uppercase text-slate-400">
               Selected Day Details
@@ -218,12 +218,12 @@ export default function WeekViewPanel({
             {weekViewDetailEntries.map((item) => (
               <div
                 key={item.key}
-                className="rounded-lg border border-slate-500/22 bg-slate-950/42 px-3 py-3"
+                className="praxis-card-muted rounded-lg px-3 py-3"
               >
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-white">{item.name}</p>
                   <div className="flex flex-wrap items-center gap-1">
-                    <span className="rounded-md border border-slate-500/24 bg-slate-900/55 px-2 py-0.5 text-[10px] uppercase text-slate-300">
+                    <span className="praxis-card-muted rounded-md px-2 py-0.5 text-[10px] uppercase text-slate-300">
                       {item.sectionLabel}
                     </span>
                   </div>

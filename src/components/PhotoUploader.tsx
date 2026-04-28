@@ -90,14 +90,14 @@ export default function PhotoUploader() {
 
   return (
     <div className="space-y-6">
-      <div className="ui-card ui-soft-surface rounded-lg border-amber-300/25 p-4 text-xs text-amber-100">
+      <div className="praxis-card-muted rounded-lg border-amber-300/25 p-4 text-xs text-amber-100">
         <p className="font-semibold text-amber-50">Private on this device</p>
         <p className="mt-1">
           Photos stay local to this browser unless cloud sync is available. Clearing site data removes them.
         </p>
       </div>
 
-      <div className="ui-card ui-soft-surface flex flex-wrap items-center justify-between gap-3 rounded-lg px-4 py-3 text-xs text-slate-300">
+      <div className="praxis-card-muted flex flex-wrap items-center justify-between gap-3 rounded-lg px-4 py-3 text-xs text-slate-300">
         <p>
           Filled slots:{" "}
           <span className="font-semibold text-white">
@@ -116,7 +116,7 @@ export default function PhotoUploader() {
           return (
             <div
               key={slot.key}
-              className="ui-card ui-soft-surface-raised rounded-lg p-4 shadow-sm"
+              className="praxis-panel rounded-lg p-4"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -146,7 +146,7 @@ export default function PhotoUploader() {
                     className="h-52 w-full rounded-lg object-cover"
                   />
                 ) : (
-                  <div className="flex h-52 items-center justify-center rounded-lg border border-dashed border-slate-500/45 bg-slate-950/45 text-xs text-slate-400">
+                  <div className="praxis-input-surface flex h-52 items-center justify-center rounded-lg border-dashed text-xs text-slate-400">
                     No photo yet
                   </div>
                 )}

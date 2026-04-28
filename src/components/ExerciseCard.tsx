@@ -22,7 +22,7 @@ export default function ExerciseCard({
   completionFlashVisible,
 }: ExerciseCardProps) {
   return (
-    <section className="ui-card rounded-lg p-5 sm:p-6">
+    <section className="praxis-panel-strong rounded-lg p-5 sm:p-6">
       <div>
         <h2 className="text-xl font-semibold text-white">{name}</h2>
         <p className="mt-1 text-sm text-slate-300">
@@ -30,14 +30,14 @@ export default function ExerciseCard({
         </p>
       </div>
 
-      <div className="mt-4 rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-3">
+      <div className="praxis-card mt-4 rounded-lg px-4 py-3">
         <p className="text-xs font-semibold uppercase text-sky-100">
           Corrective guidance cue
         </p>
         <p className="mt-1 text-sm text-slate-100">{cue}</p>
       </div>
 
-      <div className="mt-4 space-y-2 rounded-lg border border-slate-600/35 bg-slate-950/45 px-4 py-3">
+      <div className="praxis-card-muted mt-4 space-y-2 rounded-lg px-4 py-3">
         <p className="text-xs font-semibold uppercase text-slate-300">
           Set tracking
         </p>
@@ -46,8 +46,8 @@ export default function ExerciseCard({
             key={`set-${index}`}
             className={`flex min-h-11 items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm transition ${
               completed
-                ? "border-sky-300/55 bg-sky-400/15 text-sky-50"
-                : "border-amber-300/35 bg-amber-400/10 text-amber-50"
+                ? "praxis-selected-surface text-white"
+                : "praxis-input-surface text-slate-300 hover:border-sky-300/35"
             }`}
           >
             <span className="flex items-center gap-2 font-medium">
