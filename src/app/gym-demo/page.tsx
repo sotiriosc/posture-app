@@ -35,12 +35,16 @@ export default function GymDemoPage() {
               {gymSaasDemoCopy.subheadline}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a className="inline-flex h-12 items-center justify-center rounded-full bg-[#5B8FA8] px-6 text-sm font-semibold text-white" href="#member-preview">
-                {gymSaasDemoCopy.ctaPrimary}
-              </a>
-              <a className="inline-flex h-12 items-center justify-center rounded-full border border-[#C9D6DD] bg-white px-6 text-sm font-semibold" href="#owner-value">
-                {gymSaasDemoCopy.ctaSecondary}
-              </a>
+              <Link className="inline-flex h-12 items-center justify-center rounded-full bg-[#5B8FA8] px-6 text-sm font-semibold text-white" href="/gym-demo/member">
+                Preview member app
+              </Link>
+              <Link className="inline-flex h-12 items-center justify-center rounded-full border border-[#C9D6DD] bg-white px-6 text-sm font-semibold" href="/gym-demo/admin">
+                Preview owner dashboard
+              </Link>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-3 text-sm text-[#5F6B75]">
+              <a href="#member-preview" className="font-medium text-[#5B8FA8]">Sample plan</a>
+              <a href="#owner-value" className="font-medium text-[#5B8FA8]">Value props</a>
             </div>
           </div>
 
