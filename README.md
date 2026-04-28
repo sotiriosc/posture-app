@@ -1,173 +1,120 @@
-# Body Alignment Coach
+# Praxis for Gyms
 
-Local-first posture and strength coaching app. Users complete an assessment and questionnaire, receive a multi-day program, run guided sessions, and review history with progression cues. All data is stored on-device (no login required).
+Praxis for Gyms is a gym SaaS pilot/demo platform that uses the Praxis coaching engine to support member onboarding, guided training, personal training pathways, and standardized coaching education.
 
-## Overview
-- Assessment: optional posture scan + questionnaire
-- Program: weekly split with day preview, coaching cues, and progression
-- Session: guided workout with dual-mode timer, feedback, and substitution
-- History: coach-grade logs, last sessions, next-time targets
-- Local-first: IndexedDB + localStorage; no cloud required
+This repository is a standalone product copied from the consumer Praxis app. It is not intended to merge back into the consumer app. The current priority is to establish a clear B2B product boundary while preserving the proven member coaching engine.
 
-## Core Features
-- Program generation with equipment-aware filtering
-- Phased programming (Restore & Control → Strength & Capacity → Performance)
-- Guided sessions with timer, logging, and feedback
-- Progression engine for next-time recommendations
-- Exercise library with cues and video placeholders
-- Resume where you left off (session drafts)
-- Backup/restore + Reset app data (danger zone)
+## Product Positioning
 
-## Project Structure
-```
-src/
-  app/                 Next.js app routes
-  components/          UI + layout components
-  lib/                 Core logic, storage, generators, progression
-  tests/               Unit + e2e tests
-```
+Praxis for Gyms helps clubs turn unsure members into supported members. The platform demonstrates how a gym can connect assessments, first-week training plans, guided sessions, member feedback, trainer consult pathways, and coaching education into one structured member support layer.
 
-### Key Modules
-- `src/lib/program.ts` — weekly program generator
-- `src/lib/phases.ts` — phase selection + next-week plan
-- `src/lib/progression.ts` — next-time recommendations
-- `src/lib/assessmentEngine.ts` — structured observations
-- `src/lib/logStore.ts` — IndexedDB logs/programs/prefs
-- `src/lib/sessionDraftStore.ts` — resume-in-progress sessions
-- `src/lib/appState.ts` — last route / active session tracking
+The app currently includes a buyer-facing landing page, a gym demo shell, and the existing Praxis member-flow engine.
 
-## Routes
-- `/` — landing
-- `/assessment` — photo upload + posture scan
-- `/questionnaire` — user inputs
-- `/results` — program dashboard
-- `/session` — guided session
-- `/program/[programId]/day/[dayIndex]` — day details + history
-- `/exercise/[id]` — exercise detail
-- `/progress` — progress overview
-- `/settings` — admin-only backup/restore + telemetry + reset
-- `/admin/access` — admin unlock page (not linked in UI)
+## Primary Routes
 
-## Data Storage
-LocalStorage
+- `/enterprise` - B2B landing page for Praxis for Gyms.
+- `/gym-demo` - demo hub for buyers, operators, and stakeholders.
+- `/gym-demo/member` - buyer-facing walkthrough of the member journey.
+- `/gym-demo/admin` - mock gym/operator dashboard for pilot metrics and trainer handoff signals.
+
+## Member Coaching Engine Routes
+
+These routes remain available as the actual demo flow powered by the existing Praxis engine:
+
+- `/assessment` - optional movement and posture photo baseline.
+- `/questionnaire` - member movement profile and training inputs.
+- `/results` - generated plan dashboard.
+- `/session` - guided training session with timer, logging, and feedback.
+- `/program/[programId]/day/[dayIndex]` - day details and exercise history.
+- `/exercise/[id]` - exercise detail page.
+- `/progress` - member progress overview.
+
+## Engine Boundary
+
+The Praxis coaching engine remains intact and powers the demo:
+
+- `src/lib/program.ts` - weekly program generator entry point.
+- `src/lib/phases.ts` - phase definitions and phase movement.
+- `src/lib/progression.ts` - next-time recommendations.
+- `src/lib/assessmentEngine.ts` - structured assessment observations.
+- `src/lib/logStore.ts` - local training logs, programs, preferences, and progress.
+- `src/lib/sessionDraftStore.ts` - in-progress session resume support.
+- `src/lib/appState.ts` - active route, program, and session state.
+
+Do not change generator, progression, phase gating, auth, Stripe, database, storage, session behavior, questionnaire behavior, assessment behavior, or program logic for product-boundary work.
+
+## Storage Names
+
+Some storage keys and database names still use legacy consumer-app names. This is intentional for now because renaming them can orphan local demo data or break migration assumptions.
+
+Legacy names currently include:
+
 - `posture_questionnaire`
 - `posture_photo_meta`
-- `app_state_v1`
-- legacy keys for migration (logs/session/prefs)
+- `bodycoach-logs`
+- `bodycoach-drafts`
+- `bodycoach-photos`
+- `bac_user`
+- `bac_admin`
 
-IndexedDB
-- `bodycoach-logs` (sessions, logs, programs, prefs, progress)
-- `bodycoach-drafts` (session drafts)
+Do not rename localStorage keys, IndexedDB names, cookies, or server storage tables casually. Treat storage renaming as a separate migration project.
+
+## Project Structure
+
+```text
+src/
+  app/                 Next.js app routes, including B2B demo routes
+  components/          UI, layout, dashboard, results, session, and shared controls
+  lib/                 Praxis coaching engine, storage, auth, billing, and server utilities
+  tests/               Unit and e2e tests
+docs/
+  dev-reports/         Engine review artifacts and historical quality evidence
+```
 
 ## Running Locally
-```
+
+```bash
 npm install
 npm run dev
 ```
+
 Open `http://localhost:3000`.
 
 Recommended DB-free local `.env.local`:
-```
+
+```bash
 USER_STORE_DRIVER=memory
 TRAINING_STORE_DRIVER=disabled
 DATABASE_URL=
 APP_URL=http://localhost:3000
-# Optional, defaults off. Leave unset unless explicitly testing future adaptive generation.
 ADAPTIVE_PROGRAMMING_ENABLED=
 ```
-This mode keeps auth users in process memory and leaves training sync in browser
-storage, so `npm run dev` does not consume Neon/Postgres quota. Use it for
-ordinary UI and program-generator work.
 
-Optional local Postgres mode:
-```
-USER_STORE_DRIVER=db
-TRAINING_STORE_DRIVER=db
-DATABASE_URL=postgresql://localhost:5432/posture_app_dev
-APP_URL=http://localhost:3000
-```
-Use a local or disposable development database here. Do not point local
-development at the production Neon database.
+This keeps local development focused on UI and demo flow work without consuming a hosted database.
 
-Admin gate:
-```
-ADMIN_ACCESS_KEY=your-secret-key
-```
-Set this in your environment before running. Use `/admin/access` to unlock admin cookie, then `/settings` becomes available.
+Optional auth, admin, Stripe, and Postgres settings still exist from the copied Praxis app. Keep those systems stable unless the work explicitly targets them.
 
-Auth + subscription gate:
-```
-AUTH_SECRET=your-long-random-secret
-AUTH_USER_EMAIL=you@example.com
-AUTH_USER_PASSWORD=your-password
-AUTH_USER_PLAN=free
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_PRICE_ID=price_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-APP_URL=http://localhost:3000
-```
-- `/auth/login` handles sign-in.
-- Protected routes: `/results`, `/session`, `/program`, `/progress`.
-- Entitlement rule: `free` can execute only Day 1 workouts; `pro` unlocks all days.
-- Users are stored server-side in `data/users.json` with salted+hashed passwords.
-- `AUTH_USER_*` values act as bootstrap credentials: first run seeds the initial user in storage.
-- `USER_STORE_DRIVER` controls auth user storage (`file` default, `memory` for DB-free local dev, `db` for Postgres).
-- `TRAINING_STORE_DRIVER` controls server-side training sync (`disabled` for DB-free local dev, `db` for Postgres).
-- With `USER_STORE_DRIVER=db`, users are stored in Postgres table `app_users` (auto-created on first use).
-- With `TRAINING_STORE_DRIVER=db`, training state is stored in Postgres tables
-  `app_user_state`, `app_user_programs`, `app_user_program_progress`,
-  `app_user_sessions`, and `app_user_exercise_logs` (auto-created on first use).
-- Stripe endpoints:
-  - `POST /api/billing/checkout-session`
-  - `POST /api/billing/portal-session`
-  - `POST /api/billing/webhook`
-- Security:
-  - rotate Stripe/API secrets before production
-  - never use `sk_live_...` in local/dev environments
+## Deployment Notes
 
-## Coaching Feedback Safety
-- Session feedback, adaptation previews, next-session recommendations, and manual session modes are advisory/current-session UX only.
-- Saved generated programs are not rewritten by these feedback layers.
-- `ADAPTIVE_PROGRAMMING_ENABLED` defaults off; adaptive intent helpers may derive inert future-generation intent, but no generator scoring, repair, progression, or substitution behavior is enabled by default.
+- `/enterprise` and `/gym-demo` routes are the product-facing surfaces.
+- `/assessment`, `/questionnaire`, `/results`, and `/session` are the member demo engine.
+- Billing and auth routes remain present but should not define the gym SaaS business model until intentionally redesigned.
+- Use `docs/vercel-deployment.md` for environment setup details.
 
-## Development Reports
-Generated persona review artifacts live in `docs/dev-reports/`. They are debug/merge-readiness evidence, not product documentation. Keep regenerated review files out of the repository root.
+## Test Commands
 
-## Build
-```
+```bash
+npm run lint
+npm test
 npm run build
 ```
 
-## Vercel Deployment
-- Use `Preview` as staging and keep Stripe in test mode there.
-- Use `Production` for live traffic with live Stripe keys.
-- Full setup guide: `docs/vercel-deployment.md`.
+If WSL cannot resolve the local Node install, use the local Node fallback that works in your environment.
 
-## Tests
-```
-npm test
-npm run test:e2e
-```
-Note: Playwright uses a web server on port 3000 in config; update if needed.
+## Product Boundary Rules
 
-## Reset App Data
-Settings → Danger zone → Reset app data.
-This clears localStorage + IndexedDB and reloads the app as a fresh install.
-
-## Future Plans (Roadmap)
-1. Cloud sync + login (optional): cross-device restore
-2. Wearable integration: HR/sleep insights to adjust weekly plan
-3. Adaptive periodization: auto-adjust phase based on readiness
-4. Movement scoring: real-time camera feedback in session (browser-only)
-5. Expanded exercise library: progression ladders and alternatives
-6. Coach review mode: shared links for remote feedback
-7. Notifications: weekly prompts and missed-session nudges
-8. Localization: multi-language support
-
-## Design Principles
-- Mobile-first, high-contrast UI over a background image
-- Local-first storage (privacy by default)
-- Progressive disclosure: keep screens clean, show details on demand
-
-## Contributing
-Keep changes scoped, avoid heavy dependencies, and preserve local-first behavior.
+- Keep product identity and B2B demo work separate from engine behavior.
+- Preserve the member flow as a demo of what a gym member experiences.
+- Add gym SaaS surfaces around the engine before changing the engine itself.
+- Do not delete consumer/member-flow routes until replacement gym flows are fully specified.
+- Keep storage names stable until a migration plan exists.

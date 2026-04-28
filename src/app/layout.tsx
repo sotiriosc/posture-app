@@ -21,19 +21,22 @@ const resolveMetadataBase = () => {
 
 export const metadata: Metadata = {
   metadataBase: resolveMetadataBase(),
-  title: "Praxis Personal Trainer App",
-  description: "Personal training for strength, posture, and movement quality.",
-  applicationName: "Praxis Personal Trainer App",
+  title: "Praxis for Gyms",
+  description:
+    "Digital coaching infrastructure for gym onboarding, guided training, trainer pathways, and member support.",
+  applicationName: "Praxis for Gyms",
   manifest: "/manifest.webmanifest",
   openGraph: {
-    title: "Praxis Personal Trainer App",
-    description: "Personal training for strength, posture, and movement quality.",
+    title: "Praxis for Gyms",
+    description:
+      "Digital coaching infrastructure for gym onboarding, guided training, trainer pathways, and member support.",
     images: [{ url: "/icons/praxis-logo-full.png" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Praxis Personal Trainer App",
-    description: "Personal training for strength, posture, and movement quality.",
+    title: "Praxis for Gyms",
+    description:
+      "Digital coaching infrastructure for gym onboarding, guided training, trainer pathways, and member support.",
     images: ["/icons/praxis-logo-full.png"],
   },
   icons: {

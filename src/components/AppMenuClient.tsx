@@ -29,12 +29,14 @@ export default function AppMenuClient({
     pathname?.startsWith("/auth/") || pathname?.startsWith("/admin/access");
   const links = useMemo(() => {
     const nav: MenuLink[] = [
-      { href: "/", label: "Home" },
-      { href: "/assessment", label: "Assessment" },
+      { href: "/enterprise", label: "Praxis for Gyms" },
+      { href: "/gym-demo", label: "Gym Demo" },
+      { href: "/", label: "Member Home" },
+      { href: "/assessment", label: "Member Assessment" },
       { href: "/questionnaire", label: "Movement Profile" },
     ];
     if (authEnabled) {
-      nav.push({ href: "/results", label: "Praxis Dashboard" });
+      nav.push({ href: "/results", label: "Member Dashboard" });
       nav.push({ href: "/progress", label: "Progress" });
       if (authenticated) {
         nav.push({ href: "/account/billing", label: "Account / Billing" });
