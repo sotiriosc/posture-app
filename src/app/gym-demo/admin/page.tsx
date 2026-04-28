@@ -65,18 +65,21 @@ export default function GymDemoAdminPage() {
         <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
           <GymDemoHeader activeHref="/gym-demo/admin" />
 
-          <div className="grid gap-10 py-14 lg:grid-cols-[0.82fr_1fr] lg:items-end lg:py-20">
+          <div className="grid gap-8 py-10 lg:grid-cols-[0.82fr_1fr] lg:items-end lg:py-14">
             <div>
               <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
                 Mock operator dashboard
               </span>
               <h1 className="mt-5 text-4xl font-semibold leading-tight text-[#1F2A33] sm:text-5xl lg:text-6xl">
-                Pilot metrics for club teams.
+                Review the operator view for a 30-day gym pilot.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5F6B75]">
-                This static dashboard shows the kinds of activation, confidence,
-                and trainer-pathway signals a gym could review during a 30-day
-                Praxis pilot.
+                This static dashboard shows the activation, confidence, and
+                trainer-pathway signals a gym team could review during a Praxis
+                pilot.
+              </p>
+              <p className="mt-4 max-w-2xl rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] px-4 py-3 text-sm font-semibold text-[#5B8FA8]">
+                All values shown here are mock demo data.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">

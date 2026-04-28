@@ -42,12 +42,12 @@ export default function GymDemoMemberPage() {
         <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
           <GymDemoHeader activeHref="/gym-demo/member" />
 
-          <div className="max-w-4xl py-14 lg:py-20">
+          <div className="max-w-4xl py-10 lg:py-14">
             <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
               Member-flow demo
             </span>
             <h1 className="mt-5 text-4xl font-semibold leading-tight text-[#1F2A33] sm:text-5xl lg:text-6xl">
-              From unsure member to supported first workout.
+              Follow the member journey before launching the live assessment.
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-[#5F6B75]">
               This buyer-facing walkthrough explains the member journey before

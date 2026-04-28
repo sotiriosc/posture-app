@@ -42,21 +42,20 @@ export default function GymDemoPage() {
   return (
     <main className="min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
       <section className="border-b border-[#E3E9EE] bg-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-14 px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
           <GymDemoHeader activeHref="/gym-demo" />
 
-          <div className="grid gap-10 pb-10 pt-6 lg:grid-cols-[1fr_0.76fr] lg:items-end lg:pb-16 lg:pt-12">
+          <div className="grid gap-8 pb-8 pt-2 lg:grid-cols-[1fr_0.76fr] lg:items-end lg:pb-12 lg:pt-8">
             <div>
               <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
                 Demo hub
               </span>
               <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight text-[#1F2A33] sm:text-5xl lg:text-6xl">
-                A working pilot view of Praxis for Gyms.
+                Explore the Praxis for Gyms demo.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5F6B75]">
-                Explore how the Praxis coaching engine can support member
-                onboarding, guided training, personal training pathways, and
-                standardized coaching education inside a gym SaaS product.
+                See how the member journey, operator dashboard, and personal
+                training pathway connect inside one coaching system.
               </p>
             </div>
             <div className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] p-6">
