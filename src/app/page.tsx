@@ -32,7 +32,12 @@ export default async function Home() {
               Structured. Adaptive. Focused.
             </span>
           </div>
-          <div aria-hidden="true" className="hidden md:block" />
+          <Link
+            href="/enterprise"
+            className="rounded-full border border-white/10 bg-slate-950/35 px-3 py-1 text-xs font-semibold text-slate-300 shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur transition hover:border-sky-300/35 hover:text-white md:justify-self-end"
+          >
+            Praxis for Gyms
+          </Link>
         </header>
 
         <main className="flex flex-1 items-center justify-center py-12 lg:py-16">
