@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
 
 export const metadata: Metadata = {
   title: "Member Demo | Praxis for Gyms",
@@ -39,20 +40,7 @@ export default function GymDemoMemberPage() {
     <main className="min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
       <section className="border-b border-[#E3E9EE] bg-white">
         <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
-          <header className="flex flex-wrap items-center justify-between gap-4">
-            <Link
-              href="/gym-demo"
-              className="text-sm font-semibold uppercase text-[#5B8FA8]"
-            >
-              Gym demo
-            </Link>
-            <Link
-              href="/gym-demo/admin"
-              className="rounded-lg border border-[#E3E9EE] bg-white px-4 py-2 text-sm font-semibold text-[#1F2A33] transition hover:border-[#5B8FA8]/50 hover:text-[#5B8FA8]"
-            >
-              View admin demo
-            </Link>
-          </header>
+          <GymDemoHeader activeHref="/gym-demo/member" />
 
           <div className="max-w-4xl py-14 lg:py-20">
             <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
@@ -63,20 +51,20 @@ export default function GymDemoMemberPage() {
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-[#5F6B75]">
               This buyer-facing walkthrough explains the member journey before
-              launching the actual Praxis assessment and coaching flow.
+              continuing into the live Praxis assessment and coaching flow.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/assessment"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.28)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
               >
-                Start actual member flow
+                Launch member assessment
               </Link>
               <Link
                 href="/questionnaire"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#E3E9EE] bg-white px-6 py-3 text-sm font-semibold text-[#1F2A33] transition hover:-translate-y-px hover:border-[#5B8FA8]/50 hover:text-[#5B8FA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
               >
-                Skip to member profile
+                Continue to member profile
               </Link>
             </div>
           </div>
@@ -105,7 +93,7 @@ export default function GymDemoMemberPage() {
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-6 py-16 sm:px-8 lg:flex-row lg:items-center lg:px-10">
           <div>
             <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
-              Actual demo entry
+              Live demo entry
             </span>
             <h2 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight text-[#1F2A33]">
               The next click starts the existing Praxis member engine.
@@ -115,7 +103,7 @@ export default function GymDemoMemberPage() {
             href="/assessment"
             className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.24)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
           >
-            Launch assessment
+            Continue into the assessment
           </Link>
         </div>
       </section>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
 
 export const metadata: Metadata = {
   title: "Admin Demo | Praxis for Gyms",
@@ -34,25 +35,35 @@ const operatorSections = [
   },
 ];
 
+const attentionRows = [
+  {
+    member: "Avery M.",
+    signal: "Low confidence after first session",
+    nextStep: "Send trainer check-in prompt",
+  },
+  {
+    member: "Jordan P.",
+    signal: "First workout incomplete",
+    nextStep: "Offer guided restart",
+  },
+  {
+    member: "Mina S.",
+    signal: "Reported discomfort during push pattern",
+    nextStep: "Recommend movement consultation",
+  },
+  {
+    member: "Theo R.",
+    signal: "Ready for trainer consultation",
+    nextStep: "Route to PT desk",
+  },
+];
+
 export default function GymDemoAdminPage() {
   return (
     <main className="min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
       <section className="border-b border-[#E3E9EE] bg-white">
         <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
-          <header className="flex flex-wrap items-center justify-between gap-4">
-            <Link
-              href="/gym-demo"
-              className="text-sm font-semibold uppercase text-[#5B8FA8]"
-            >
-              Gym demo
-            </Link>
-            <Link
-              href="/gym-demo/member"
-              className="rounded-lg border border-[#E3E9EE] bg-white px-4 py-2 text-sm font-semibold text-[#1F2A33] transition hover:border-[#5B8FA8]/50 hover:text-[#5B8FA8]"
-            >
-              View member demo
-            </Link>
-          </header>
+          <GymDemoHeader activeHref="/gym-demo/admin" />
 
           <div className="grid gap-10 py-14 lg:grid-cols-[0.82fr_1fr] lg:items-end lg:py-20">
             <div>
@@ -91,20 +102,64 @@ export default function GymDemoAdminPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-10 lg:py-20">
-        <div className="grid gap-4 md:grid-cols-2">
-          {operatorSections.map((section) => (
-            <article
-              key={section.title}
-              className="rounded-lg border border-[#E3E9EE] bg-white p-6 shadow-[0_16px_45px_rgba(31,42,51,0.05)]"
-            >
-              <h2 className="text-xl font-semibold text-[#1F2A33]">
-                {section.title}
-              </h2>
-              <p className="mt-4 text-sm leading-7 text-[#5F6B75]">
-                {section.body}
-              </p>
-            </article>
-          ))}
+        <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+            {operatorSections.map((section) => (
+              <article
+                key={section.title}
+                className="rounded-lg border border-[#E3E9EE] bg-white p-6 shadow-[0_16px_45px_rgba(31,42,51,0.05)]"
+              >
+                <h2 className="text-xl font-semibold text-[#1F2A33]">
+                  {section.title}
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-[#5F6B75]">
+                  {section.body}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <section className="rounded-lg border border-[#E3E9EE] bg-white p-6 shadow-[0_18px_55px_rgba(31,42,51,0.06)]">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
+                  Mock demo data
+                </span>
+                <h2 className="mt-3 text-2xl font-semibold text-[#1F2A33]">
+                  Members needing attention
+                </h2>
+              </div>
+              <span className="rounded-full border border-[#E3E9EE] bg-[#F6F9FB] px-3 py-1 text-xs font-semibold text-[#5B8FA8]">
+                Pilot week
+              </span>
+            </div>
+
+            <div className="mt-6 overflow-hidden rounded-lg border border-[#E3E9EE]">
+              <div className="hidden gap-3 bg-[#F6F9FB] px-4 py-3 text-xs font-semibold uppercase text-[#5B8FA8] sm:grid sm:grid-cols-[0.8fr_1.1fr_1fr]">
+                <span>Member</span>
+                <span>Signal</span>
+                <span>Suggested next step</span>
+              </div>
+              {attentionRows.map((row) => (
+                <div
+                  key={`${row.member}-${row.signal}`}
+                  className="grid grid-cols-1 gap-2 border-t border-[#E3E9EE] px-4 py-4 text-sm sm:grid-cols-[0.8fr_1.1fr_1fr] sm:gap-3"
+                >
+                  <span className="font-semibold text-[#1F2A33]">
+                    {row.member}
+                  </span>
+                  <span className="text-[#5F6B75]">{row.signal}</span>
+                  <span className="font-semibold text-[#1F2A33]">
+                    {row.nextStep}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-xs leading-5 text-[#5F6B75]">
+              Example-only operator data. This page is not connected to storage,
+              APIs, or live member records.
+            </p>
+          </section>
         </div>
       </section>
 

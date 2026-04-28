@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
 
 export const metadata: Metadata = {
   title: "Praxis for Gyms | Digital Coaching Infrastructure",
@@ -66,24 +66,7 @@ export default function EnterprisePage() {
       <section className="relative overflow-hidden border-b border-[#E3E9EE] bg-white">
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_10%,rgba(91,143,168,0.16),transparent_32%),radial-gradient(circle_at_88%_8%,rgba(31,42,51,0.08),transparent_30%)]" />
         <div className="relative mx-auto flex w-full max-w-7xl flex-col px-6 py-8 sm:px-8 lg:px-10">
-          <header className="flex flex-wrap items-center justify-between gap-4 md:pr-28 lg:pr-32">
-            <Link
-              href="/"
-              className="inline-flex h-9 w-[150px] items-center justify-center overflow-hidden rounded-lg border border-[#E3E9EE] bg-[#1F2A33] px-2 shadow-[0_12px_34px_rgba(31,42,51,0.12)] sm:h-10 sm:w-[180px] md:h-11 md:w-[210px] lg:h-12 lg:w-[240px] xl:h-14 xl:w-[270px]"
-            >
-              <Image
-                src="/icons/praxis-logo-full.png"
-                alt="Praxis"
-                width={440}
-                height={132}
-                className="h-full w-full scale-[2.7] object-contain object-center sm:scale-[2.6] md:scale-[2.5] lg:scale-[2.4]"
-                priority
-              />
-            </Link>
-            <span className="rounded-full border border-[#E3E9EE] bg-[#F6F9FB] px-4 py-2 text-xs font-semibold uppercase text-[#5B8FA8]">
-              Enterprise pilot
-            </span>
-          </header>
+          <GymDemoHeader activeHref="/enterprise" badge="Enterprise pilot" />
 
           <div className="grid gap-12 py-16 sm:py-20 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.72fr)] lg:items-center lg:py-24">
             <div className="max-w-3xl">
@@ -104,6 +87,12 @@ export default function EnterprisePage() {
                   className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.28)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
                 >
                   View member flow
+                </Link>
+                <Link
+                  href="/gym-demo"
+                  className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#5B8FA8]/35 bg-[#F6F9FB] px-6 py-3 text-sm font-semibold text-[#1F2A33] transition hover:-translate-y-px hover:border-[#5B8FA8]/60 hover:text-[#5B8FA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
+                >
+                  View demo hub
                 </Link>
                 <Link
                   href="#pilot"

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
 
 export const metadata: Metadata = {
   title: "Gym Demo | Praxis for Gyms",
@@ -42,28 +43,7 @@ export default function GymDemoPage() {
     <main className="min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
       <section className="border-b border-[#E3E9EE] bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-14 px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
-          <header className="flex flex-wrap items-center justify-between gap-4">
-            <Link
-              href="/enterprise"
-              className="text-sm font-semibold uppercase text-[#5B8FA8]"
-            >
-              Praxis for Gyms
-            </Link>
-            <nav className="flex flex-wrap items-center gap-2 text-sm">
-              <Link
-                href="/gym-demo/member"
-                className="rounded-lg border border-[#E3E9EE] bg-white px-4 py-2 font-semibold text-[#1F2A33] transition hover:border-[#5B8FA8]/50 hover:text-[#5B8FA8]"
-              >
-                Member demo
-              </Link>
-              <Link
-                href="/gym-demo/admin"
-                className="rounded-lg border border-[#E3E9EE] bg-white px-4 py-2 font-semibold text-[#1F2A33] transition hover:border-[#5B8FA8]/50 hover:text-[#5B8FA8]"
-              >
-                Admin demo
-              </Link>
-            </nav>
-          </header>
+          <GymDemoHeader activeHref="/gym-demo" />
 
           <div className="grid gap-10 pb-10 pt-6 lg:grid-cols-[1fr_0.76fr] lg:items-end lg:pb-16 lg:pt-12">
             <div>
@@ -132,7 +112,7 @@ export default function GymDemoPage() {
             <p className="mt-5 text-base leading-8 text-[#5F6B75]">
               The member flow remains the working Praxis engine. The gym demo
               wraps that engine with buyer-facing context so clubs can evaluate
-              the product as infrastructure, not just a consumer app.
+              the product as infrastructure, not just a standalone app.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
