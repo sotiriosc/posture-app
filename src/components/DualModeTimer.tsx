@@ -595,6 +595,12 @@ export default function DualModeTimer({
         </div>
         <input
           type="range"
+          aria-label={mode === "exercise" ? "Movement duration" : "Rest duration"}
+          data-testid={
+            mode === "exercise"
+              ? "movement-duration-slider"
+              : "rest-duration-slider"
+          }
           min={sliderMin}
           max={sliderMax}
           step={15}

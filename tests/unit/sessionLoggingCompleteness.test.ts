@@ -309,6 +309,13 @@ describe("session logging completeness", () => {
     expect(mainLog?.painLevel).toBe("moderate");
     expect(mainLog?.painLocation).toBe("shoulder");
 
+    const timedLog = logsByExercise.get("hamstring-stretch");
+    expect(timedLog?.loadType).toBe("timed");
+    expect(timedLog?.reps).toBeNull();
+    expect(timedLog?.durationSec).toBe(30);
+    expect(timedLog?.workSecondsUsed).toBe(timedLog?.durationSec);
+    expect(timedLog?.restSecondsUsed).toBe(30);
+
     expect(mocks.swapEventCalls.length).toBe(0);
   });
 });

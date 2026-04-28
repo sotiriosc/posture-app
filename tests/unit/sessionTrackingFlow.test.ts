@@ -238,6 +238,15 @@ describe("session tracking integration flow", () => {
     });
     expect(screen.getByTestId("about-to-record-rpe").textContent).toContain("8");
     fireEvent.click(screen.getByLabelText("Set 1"));
+    await waitFor(() => {
+      expect(screen.queryByTestId("practice-option-reduced")).toBeNull();
+    });
+    expect(screen.getByTestId("session-practice-options-summary").textContent).toContain(
+      "Today's options are tucked away"
+    );
+    expect(screen.getByTestId("rest-guidance").textContent).toContain(
+      "Rest: 20 seconds before Set 2."
+    );
     fireEvent.click(screen.getByLabelText("Set 2"));
     fireEvent.click(screen.getByTestId("report-pain-trigger"));
     fireEvent.click(screen.getByTestId("pain-level-moderate"));
@@ -422,8 +431,53 @@ describe("session tracking integration flow", () => {
       expect(screen.getByRole("button", { name: "0:45" })).toBeTruthy();
     });
     expect(screen.queryByTestId("reps-input")).toBeNull();
+    expect(screen.getByTestId("duration-input-summary").textContent).toContain(
+      "Duration 45 seconds per set"
+    );
+    expect(screen.getByTestId("about-to-record-duration").textContent).toContain(
+      "Duration: 45 seconds"
+    );
+    expect(screen.queryByText(/Reps\/set:/i)).toBeNull();
+    expect(screen.getByTestId("active-prescription-row").textContent).toContain(
+      "2 sets • 45 seconds • smooth and controlled • 30s rest"
+    );
+    expect(screen.getByTestId("rest-guidance").textContent).toContain(
+      "Rest: 30 seconds between sets."
+    );
+    expect(screen.getByTestId("active-exercise-card").textContent).toMatch(
+      /Set 1\s*•\s*45 seconds/
+    );
+
+    fireEvent.change(screen.getByTestId("movement-duration-slider"), {
+      target: { value: "60" },
+    });
+    fireEvent.mouseUp(screen.getByTestId("movement-duration-slider"));
+    await waitFor(() => {
+      expect(screen.getByTestId("duration-input-summary").textContent).toContain(
+        "Duration 60 seconds per set"
+      );
+    });
+    expect(screen.getByTestId("active-prescription-row").textContent).toContain(
+      "2 sets • 60 seconds"
+    );
+    fireEvent.click(screen.getByLabelText("Set 1"));
+    fireEvent.click(screen.getByLabelText("Set 2"));
+    fireEvent.click(screen.getByTestId("session-next"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Session complete")).toBeTruthy();
+    });
+    const timedLog = mocks.logs.find((log) => log.exerciseId === "plank");
+    expect(timedLog?.loadType).toBe("timed");
+    expect(timedLog?.reps).toBeNull();
+    expect(timedLog?.durationSec).toBe(60);
+    expect(timedLog?.workSecondsUsed).toBe(60);
+    expect(timedLog?.restSecondsUsed).toBe(30);
 
     cleanup();
+    mocks.logs = [];
+    mocks.sessions = [];
+    mocks.idCounter = 0;
     mocks.searchParams = "programId=program-strength&dayIndex=0";
     render(React.createElement(SessionClient));
     await waitFor(() => {
@@ -431,7 +485,71 @@ describe("session tracking integration flow", () => {
       expect(screen.getByRole("button", { name: "0:40" })).toBeTruthy();
     });
     expect(screen.getByTestId("reps-input")).toBeTruthy();
+    expect(screen.getByText(/Reps\/set:/i)).toBeTruthy();
+    expect(screen.queryByTestId("duration-input-summary")).toBeNull();
+    expect(screen.getByTestId("active-prescription-row").textContent).toContain(
+      "2 sets • 8-10 reps • 20s rest"
+    );
     expect(screen.getByRole("button", { name: "0:40" })).toBeTruthy();
+  });
+
+  test("duration-like prescriptions are logged as timed work without reps", async () => {
+    mocks.programs.set(
+      "program-duration-like",
+      makeProgram({
+        id: "program-duration-like",
+        daysPerWeek: 3,
+        dayTitle: "Duration Day",
+        routine: [
+          {
+            exerciseId: "hamstring-stretch",
+            section: "cooldown",
+            sets: "2",
+            reps: "60 seconds",
+            durationSec: null,
+            restSec: 50,
+            loadType: "bodyweight",
+            prescription: {
+              sets: 2,
+              reps: "60 seconds",
+              tempo: "smooth and controlled",
+              restSeconds: 50,
+            },
+          },
+        ],
+      })
+    );
+    mocks.searchParams = "programId=program-duration-like&dayIndex=0";
+
+    render(React.createElement(SessionClient));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Hamstring Stretch/i)).toBeTruthy();
+      expect(screen.getByRole("button", { name: "1:00" })).toBeTruthy();
+    });
+    expect(screen.queryByTestId("reps-input")).toBeNull();
+    expect(screen.getByTestId("duration-input-summary").textContent).toContain(
+      "Duration 60 seconds per set"
+    );
+    expect(screen.getByTestId("active-prescription-row").textContent).toContain(
+      "2 sets • 60 seconds • smooth and controlled • 50s rest"
+    );
+
+    fireEvent.click(screen.getByLabelText("Set 1"));
+    fireEvent.click(screen.getByLabelText("Set 2"));
+    fireEvent.click(screen.getByTestId("session-next"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Session complete")).toBeTruthy();
+    });
+    const durationLikeLog = mocks.logs.find(
+      (log) => log.exerciseId === "hamstring-stretch"
+    );
+    expect(durationLikeLog?.loadType).toBe("timed");
+    expect(durationLikeLog?.reps).toBeNull();
+    expect(durationLikeLog?.durationSec).toBe(60);
+    expect(durationLikeLog?.workSecondsUsed).toBe(60);
+    expect(durationLikeLog?.restSecondsUsed).toBe(50);
   });
 
   test("direct session route loads the active generated program from app state", async () => {

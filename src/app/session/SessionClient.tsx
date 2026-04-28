@@ -96,7 +96,7 @@ const STORAGE_KEY = "posture_questionnaire";
 type FeedbackEntry = "easy" | "moderate" | "hard" | "pain";
 type TrackingField = "weight" | "reps" | "rpe";
 
-const parseSetsRange = (sets?: string | number) => {
+const parseSetsRange = (sets?: string | number | null) => {
   if (typeof sets === "number") {
     return { minSets: sets, maxSets: sets };
   }
@@ -123,6 +123,41 @@ const parseRangeFromString = (value?: string | null) => {
   if (!parts.length) return { min: null as number | null, max: null as number | null };
   if (parts.length === 1) return { min: parts[0], max: parts[0] };
   return { min: parts[0], max: parts[1] };
+};
+
+const parseDurationLikeSeconds = (value?: string | null) => {
+  if (!value) return null;
+  const match = value.match(/(\d+)\s*(?:s|sec|secs|second|seconds)\b/i);
+  if (!match) return null;
+  const parsed = Number(match[1]);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
+const formatSecondsText = (seconds: number) =>
+  `${seconds} ${seconds === 1 ? "second" : "seconds"}`;
+
+const formatSetsText = (sets: string | number | null | undefined) => {
+  if (typeof sets === "number") return `${sets} ${sets === 1 ? "set" : "sets"}`;
+  const value = sets?.trim();
+  if (!value) return null;
+  return `${value} sets`;
+};
+
+const formatRepsText = (reps: string | null | undefined) => {
+  const value = reps?.trim();
+  if (!value) return null;
+  return /^\d+\s*[-\u2013]\s*\d+$/.test(value) || /^\d+$/.test(value)
+    ? `${value.replace(/\s*[\u2013]\s*/g, "-")} reps`
+    : value;
+};
+
+const formatSectionLabel = (section: string) => {
+  const normalized = normalizeLogSection(section);
+  if (normalized === "warmup" || normalized === "activation") return "Corrective";
+  if (normalized === "main") return "Main";
+  if (normalized === "accessory") return "Accessory";
+  if (normalized === "cooldown") return "Cooldown";
+  return "Corrective";
 };
 
 const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
@@ -248,6 +283,54 @@ type SessionRoutineViewItem = {
   section: string;
   exerciseId: string;
   originalExerciseId: string;
+  sets: string | number | null;
+  reps?: string | null;
+  durationSec?: number | null;
+  restSec?: number | null;
+  name: string;
+  cues: string[];
+  mistake: string;
+  duration: string;
+  loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+  prescription?: ProgramRoutineItem["prescription"];
+  rationale?: ProgramRoutineItem["rationale"];
+};
+
+const isTimedSessionItem = (
+  item: Pick<
+    SessionRoutineViewItem,
+    "loadType" | "durationSec" | "reps" | "prescription"
+  >
+) =>
+  item.loadType === "timed" ||
+  Boolean(item.durationSec && item.durationSec > 0) ||
+  Boolean(parseDurationLikeSeconds(item.prescription?.reps ?? item.reps ?? null));
+
+const buildPrescriptionParts = (
+  item: SessionRoutineViewItem,
+  timer: { workSeconds: number; restSeconds: number },
+  isTimed: boolean
+) => {
+  const setsPart = formatSetsText(item.prescription?.sets ?? item.sets);
+  const restSeconds = item.prescription?.restSeconds ?? timer.restSeconds;
+  const restPart = restSeconds ? `${restSeconds}s rest` : null;
+  const parts = setsPart ? [setsPart] : [];
+
+  if (isTimed) {
+    parts.push(formatSecondsText(timer.workSeconds));
+    parts.push(item.prescription?.tempo ?? "smooth and controlled");
+    if (restPart) parts.push(restPart);
+    return parts;
+  }
+
+  const repsPart = formatRepsText(item.prescription?.reps ?? item.reps ?? null);
+  if (repsPart) parts.push(repsPart);
+  if (item.prescription?.tempo) parts.push(item.prescription.tempo);
+  if (restPart) parts.push(restPart);
+  if (item.prescription?.targetRPE) {
+    parts.push(`RPE ${item.prescription.targetRPE}`);
+  }
+  return parts;
 };
 
 const toPatternTokens = (exerciseId: string) =>
@@ -335,7 +418,10 @@ const matchesSessionFocus = (
 
 const findPainSwapAlternativeExerciseId = (params: {
   questionnaire: QuestionnaireData;
-  currentItem: SessionRoutineViewItem;
+  currentItem: Pick<
+    SessionRoutineViewItem,
+    "dayTitle" | "section" | "exerciseId" | "originalExerciseId"
+  >;
   usedExerciseIds: Set<string>;
 }): string | null => {
   const { questionnaire, currentItem, usedExerciseIds } = params;
@@ -429,6 +515,9 @@ export default function SessionClient() {
     useState<NextSessionRecommendation | null>(null);
   const [selectedPracticeMode, setSelectedPracticeMode] =
     useState<SessionPracticeOption["mode"]>("full");
+  const [practiceOptionsExpanded, setPracticeOptionsExpanded] = useState(true);
+  const [practiceOptionsAutoCollapsed, setPracticeOptionsAutoCollapsed] =
+    useState(false);
   const [sessionPlanLoading, setSessionPlanLoading] = useState(true);
   const [sessionPlanIssue, setSessionPlanIssue] = useState<string | null>(null);
   const [tipIndex, setTipIndex] = useState(0);
@@ -770,12 +859,30 @@ export default function SessionClient() {
     setSelectedPracticeMode("full");
   }, [practiceOptions, selectedPracticeMode]);
 
+  const sessionHasStarted = useMemo(
+    () =>
+      activeIndex > 0 ||
+      Object.values(completedSets).some((sets) => sets.some(Boolean)) ||
+      Object.values(timerRuntimeByItemId).some((runtime) => runtime.running),
+    [activeIndex, completedSets, timerRuntimeByItemId]
+  );
+
+  useEffect(() => {
+    if (!sessionHasStarted) {
+      setPracticeOptionsAutoCollapsed(false);
+      return;
+    }
+    if (practiceOptionsAutoCollapsed) return;
+    setPracticeOptionsExpanded(false);
+    setPracticeOptionsAutoCollapsed(true);
+  }, [practiceOptionsAutoCollapsed, sessionHasStarted]);
+
   const practiceRoutineItems = useMemo(() => {
     if (!currentProgramDay) return [] as ProgramRoutineItem[];
     return selectSessionPracticeItems(currentProgramDay, effectivePracticeMode);
   }, [currentProgramDay, effectivePracticeMode]);
 
-  const flatItems = useMemo(() => {
+  const flatItems = useMemo<SessionRoutineViewItem[]>(() => {
     if (currentProgramDay) {
       const day = currentProgramDay;
       return practiceRoutineItems.map((item) => {
@@ -786,12 +893,20 @@ export default function SessionClient() {
         const effectiveExerciseId =
           sessionSwapId ?? substitutedId ?? routineItem.exerciseId;
         const exercise = exerciseById(effectiveExerciseId);
+        const durationLikeSeconds = parseDurationLikeSeconds(
+          routineItem.prescription?.reps ?? routineItem.reps
+        );
+        const itemDurationSec = routineItem.durationSec ?? durationLikeSeconds ?? null;
+        const loadType: SessionRoutineViewItem["loadType"] =
+          routineItem.loadType === "timed" || itemDurationSec
+            ? "timed"
+            : routineItem.loadType ?? exercise?.loadType ?? "bodyweight";
         return {
           exerciseId: effectiveExerciseId,
           originalExerciseId: routineItem.exerciseId,
           sets: routineItem.sets ?? "1",
           reps: routineItem.reps ?? "",
-          durationSec: routineItem.durationSec ?? undefined,
+          durationSec: itemDurationSec ?? undefined,
           restSec: routineItem.restSec ?? 60,
           section: routineItem.section ?? day.title,
           dayTitle: day.title,
@@ -800,7 +915,9 @@ export default function SessionClient() {
           cues: routineItem.cues ?? exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
           duration: exercise?.durationOrReps ?? routineItem.reps ?? "",
-          loadType: routineItem.loadType ?? exercise?.loadType ?? "bodyweight",
+          loadType,
+          prescription: routineItem.prescription,
+          rationale: routineItem.rationale,
         };
       });
     }
@@ -814,6 +931,7 @@ export default function SessionClient() {
   const currentExerciseId = currentItem?.exerciseId ?? null;
   const currentDurationSec = currentItem?.durationSec ?? null;
   const currentReps = currentItem?.reps ?? null;
+  const currentIsTimed = currentItem ? isTimedSessionItem(currentItem) : false;
 
   useEffect(() => {
     if (sessionPlanLoading) return;
@@ -1004,7 +1122,7 @@ export default function SessionClient() {
         queueFocus(weightInputRef.current);
         return;
       }
-      if (currentItem?.loadType !== "timed" && repsInputRef.current) {
+      if (currentItem && !isTimedSessionItem(currentItem) && repsInputRef.current) {
         queueFocus(repsInputRef.current);
         return;
       }
@@ -1387,7 +1505,6 @@ export default function SessionClient() {
     const candidateId = findPainSwapAlternativeExerciseId({
       questionnaire: data,
       currentItem: {
-        id: currentItem.id,
         dayTitle: currentItem.dayTitle,
         section: currentItem.section,
         exerciseId: currentItem.exerciseId,
@@ -1467,6 +1584,8 @@ export default function SessionClient() {
     setPainModalNotes("");
     setPainModalMessage(null);
     setSelectedPracticeMode("full");
+    setPracticeOptionsExpanded(true);
+    setPracticeOptionsAutoCollapsed(false);
     scrollSessionTop("auto");
   };
 
@@ -1479,6 +1598,8 @@ export default function SessionClient() {
     setSelectedSets({});
     setTimerRuntimeByItemId({});
     setActiveTrackingField(null);
+    setPracticeOptionsExpanded(true);
+    setPracticeOptionsAutoCollapsed(false);
     scrollSessionTop("auto");
   };
 
@@ -1525,16 +1646,18 @@ export default function SessionClient() {
 
     const logsToSave: ExerciseLog[] = flatItems.map((item) => {
       const exerciseId = item.exerciseId;
+      const isTimed = isTimedSessionItem(item);
+      const logLoadType: ExerciseLog["loadType"] = isTimed ? "timed" : item.loadType;
       const originalExerciseId = item.originalExerciseId ?? null;
       const loadPref = prefs?.loadPrefsByExercise?.[exerciseId];
       const unit = unitByExercise[exerciseId] ?? loadPref?.unit ?? "lb";
       const weightValue = weightByExercise[exerciseId] ?? loadPref?.weight ?? "";
       const weight =
-        item.loadType === "weighted" && weightValue ? Number(weightValue) : null;
+        logLoadType === "weighted" && weightValue ? Number(weightValue) : null;
       const repsValue = repsByExercise[exerciseId] ?? loadPref?.reps ?? "";
       const fallbackReps =
-        !item.durationSec && item.reps ? parseFirstNumber(item.reps) : null;
-      const reps = repsValue ? Number(repsValue) : fallbackReps;
+        !isTimed && item.reps ? parseFirstNumber(item.reps) : null;
+      const reps = isTimed ? null : repsValue ? Number(repsValue) : fallbackReps;
       const rpeRaw = rpeByExercise[exerciseId];
       const rpeParsed = Number(rpeRaw);
       const rpe =
@@ -1550,7 +1673,9 @@ export default function SessionClient() {
           : itemMinSets);
       const setsCompleted = (completedSets[item.id] ?? []).filter(Boolean)
         .length;
-      const prescribedRepsRange = parseRangeFromString(item.reps ?? null);
+      const prescribedRepsRange = parseRangeFromString(
+        isTimed ? null : item.prescription?.reps ?? item.reps ?? null
+      );
       const prescribedRepsPerSet = prescribedRepsRange.min;
       const volumeFromReps =
         weight && reps
@@ -1571,14 +1696,14 @@ export default function SessionClient() {
           ? felt
           : null;
       const nextTimeGuidance = generateNextTimeGuidance({
-        loadType: item.loadType,
+        loadType: logLoadType,
         prescribedSets: setsPlanned,
         prescribedRepsPerSet,
         prescribedDurationSec:
-          item.loadType === "timed" ? timer.workSeconds : item.durationSec ?? null,
+          isTimed ? timer.workSeconds : item.durationSec ?? null,
         actualSets: setsCompleted,
         actualRepsPerSet: reps,
-        actualDurationSec: item.loadType === "timed" ? timer.workSeconds : null,
+        actualDurationSec: isTimed ? timer.workSeconds : null,
         difficulty: guidanceDifficulty,
         painLevel,
       });
@@ -1599,15 +1724,15 @@ export default function SessionClient() {
             : null,
         createdAt: completedAt,
         updatedAt: completedAt,
-        loadType: item.loadType,
-        unit: item.loadType === "weighted" ? unit : null,
+        loadType: logLoadType,
+        unit: logLoadType === "weighted" ? unit : null,
         weight,
         reps,
         repsBySet: null,
         setsPlanned,
         setsCompleted,
         durationSec:
-          item.loadType === "timed"
+          isTimed
             ? timer.workSeconds
             : item.durationSec ?? null,
         workSecondsUsed: timer.workSeconds,
@@ -1707,7 +1832,7 @@ export default function SessionClient() {
       currentLoadPref?.reps ??
       (lastLog?.reps
         ? String(lastLog.reps)
-        : currentDurationSec
+        : currentIsTimed || currentDurationSec
         ? ""
         : String(parseFirstNumber(currentReps ?? undefined) ?? ""))
     : "";
@@ -1725,6 +1850,9 @@ export default function SessionClient() {
         loadType: currentItem.loadType,
       })
     : { workSeconds: 60, restSeconds: 60 };
+  const currentRecordedTimer = currentItem
+    ? getRecordedTimerForItem(currentItem)
+    : currentTimer;
   const previewWeight =
     currentItem?.loadType === "weighted" && currentItem
       ? currentWeightValue || "-"
@@ -1734,13 +1862,46 @@ export default function SessionClient() {
       ? currentUnitValue
       : null;
   const previewReps =
-    currentItem && currentItem.loadType !== "timed"
+    currentItem && !currentIsTimed
       ? currentRepsValue ||
-        String(parseFirstNumber(currentItem.reps) ?? "-")
+        String(
+          parseFirstNumber(
+            currentItem.prescription?.reps ?? currentItem.reps ?? undefined
+          ) ?? "-"
+        )
       : "-";
   const previewRpe = currentRpeValue || "-";
   const previewSetsPlanned = currentSelectedSets;
   const previewSetsCompleted = checks.filter(Boolean).length;
+  const activePrescriptionParts = currentItem
+    ? buildPrescriptionParts(currentItem, currentRecordedTimer, currentIsTimed)
+    : [];
+  const nextIncompleteSetIndex = checks.findIndex((value) => !value);
+  const currentSetProgressLabel =
+    checks.length === 0
+      ? "No sets planned"
+      : nextIncompleteSetIndex >= 0
+      ? `Set ${nextIncompleteSetIndex + 1} of ${checks.length}`
+      : `${checks.length}/${checks.length} sets complete`;
+  const activeSetDetailLabel =
+    currentItem && currentIsTimed
+      ? formatSecondsText(currentRecordedTimer.workSeconds)
+      : currentItem
+      ? formatRepsText(currentItem.prescription?.reps ?? currentItem.reps ?? null)
+      : null;
+  const activeRestGuidance = currentRecordedTimer.restSeconds
+    ? previewSetsCompleted > 0 && !allSetsCompleted && nextIncompleteSetIndex >= 0
+      ? `Rest: ${formatSecondsText(
+          currentRecordedTimer.restSeconds
+        )} before Set ${nextIncompleteSetIndex + 1}.`
+      : allSetsCompleted
+      ? `Rest: ${formatSecondsText(currentRecordedTimer.restSeconds)}, then move on when ready.`
+      : `Rest: ${formatSecondsText(currentRecordedTimer.restSeconds)} between sets.`
+    : "Rest as needed between sets.";
+  const activeMainCue =
+    currentItem?.rationale?.mainCue ??
+    currentItem?.cues[0] ??
+    "Move with control, breathe steadily, and keep posture stacked.";
   const currentExerciseMeta = currentExerciseId
     ? exerciseById(currentExerciseId)
     : null;
@@ -1775,7 +1936,7 @@ export default function SessionClient() {
       ? currentItemRuntime
       : runningTimerRuntime ?? currentItemRuntime;
   const hasWeightedInput = currentItem?.loadType === "weighted";
-  const hasRepsInput = currentItem?.loadType !== "timed";
+  const hasRepsInput = Boolean(currentItem && !currentIsTimed);
   const trackingFieldOrder = useMemo<TrackingField[]>(() => {
     const fields: TrackingField[] = [];
     if (hasWeightedInput) fields.push("weight");
@@ -2238,47 +2399,75 @@ export default function SessionClient() {
                   This changes only today's session view. Your saved plan is not changed.
                 </p>
               </div>
-              {selectedPracticeOption ? (
-                <span
-                  className="rounded-lg border border-slate-500/30 bg-slate-950/55 px-2 py-1 text-[11px] font-semibold text-slate-300"
-                  data-testid="selected-practice-mode"
-                >
-                  {selectedPracticeOption.label} mode
-                </span>
-              ) : null}
-            </div>
-            <CoachingExplanationBlock tone="dark" className="mt-3" />
-            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {practiceOptions.map((option) => {
-                const selected = option.mode === effectivePracticeMode;
-                return (
-                  <button
-                    key={option.mode}
-                    type="button"
-                    data-testid={`practice-option-${option.mode}`}
-                    onClick={() => handleSelectPracticeMode(option.mode)}
-                    className={`rounded-lg border px-3 py-3 text-left transition ${
-                      selected
-                        ? "border-sky-300 bg-sky-400/15 text-white shadow-[0_14px_28px_rgba(14,165,233,0.12)]"
-                        : "border-slate-500/25 bg-slate-950/35 text-slate-200 hover:border-sky-300/45"
-                    }`}
+              <div className="flex flex-wrap items-center gap-2">
+                {selectedPracticeOption ? (
+                  <span
+                    className="rounded-lg border border-slate-500/30 bg-slate-950/55 px-2 py-1 text-[11px] font-semibold text-slate-300"
+                    data-testid="selected-practice-mode"
                   >
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-semibold">{option.label}</span>
-                      {option.isRecommended ? (
-                        <span className="rounded-full border border-emerald-300/35 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
-                          Suggested
-                        </span>
-                      ) : null}
-                    </span>
-                    <span className="mt-1 block text-xs leading-5 text-slate-300">
-                      {option.description}
-                    </span>
+                    {selectedPracticeOption.label} mode
+                  </span>
+                ) : null}
+                {sessionHasStarted ? (
+                  <button
+                    type="button"
+                    data-testid="session-practice-options-toggle"
+                    onClick={() =>
+                      setPracticeOptionsExpanded((isExpanded) => !isExpanded)
+                    }
+                    className="rounded-lg border border-sky-300/35 bg-sky-400/10 px-2.5 py-1 text-[11px] font-semibold text-sky-100 transition hover:border-sky-200/70"
+                  >
+                    {practiceOptionsExpanded ? "Hide options" : "Change view"}
                   </button>
-                );
-              })}
+                ) : null}
+              </div>
             </div>
-            {selectedPracticeOption ? (
+            {practiceOptionsExpanded || !sessionHasStarted ? (
+              <>
+                <CoachingExplanationBlock tone="dark" className="mt-3" />
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {practiceOptions.map((option) => {
+                    const selected = option.mode === effectivePracticeMode;
+                    return (
+                      <button
+                        key={option.mode}
+                        type="button"
+                        data-testid={`practice-option-${option.mode}`}
+                        onClick={() => handleSelectPracticeMode(option.mode)}
+                        className={`rounded-lg border px-3 py-3 text-left transition ${
+                          selected
+                            ? "border-sky-300 bg-sky-400/15 text-white shadow-[0_14px_28px_rgba(14,165,233,0.12)]"
+                            : "border-slate-500/25 bg-slate-950/35 text-slate-200 hover:border-sky-300/45"
+                        }`}
+                      >
+                        <span className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-semibold">{option.label}</span>
+                          {option.isRecommended ? (
+                            <span className="rounded-full border border-emerald-300/35 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
+                              Suggested
+                            </span>
+                          ) : null}
+                        </span>
+                        <span className="mt-1 block text-xs leading-5 text-slate-300">
+                          {option.description}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <p
+                className="mt-3 rounded-lg border border-slate-500/25 bg-slate-950/35 px-3 py-2 text-xs font-semibold text-slate-300"
+                data-testid="session-practice-options-summary"
+              >
+                Today's options are tucked away while you train.{" "}
+                {selectedPracticeOption
+                  ? formatPracticeModeSessionNote(selectedPracticeOption)
+                  : "Your current session view is selected."}
+              </p>
+            )}
+            {selectedPracticeOption && (practiceOptionsExpanded || !sessionHasStarted) ? (
               <p className="mt-3 text-xs font-semibold text-slate-300">
                 {formatPracticeModeSessionNote(selectedPracticeOption)}
               </p>
@@ -2335,10 +2524,14 @@ export default function SessionClient() {
           <ExerciseCard
             name={currentItem.name}
             targetMuscles={currentExerciseMeta?.muscleGroups ?? []}
-            cue={
-              currentItem.cues[0] ??
-              "Move with control, breathe steadily, and keep posture stacked."
-            }
+            cue={activeMainCue}
+            sectionLabel={formatSectionLabel(currentItem.section)}
+            dayTitle={dayTitle}
+            phaseLabel={phaseLabel}
+            doseParts={activePrescriptionParts}
+            setProgressLabel={currentSetProgressLabel}
+            setDetailLabel={activeSetDetailLabel}
+            restGuidance={activeRestGuidance}
             sets={checks}
             onToggleSet={(index) =>
               toggleSetComplete(currentItem.id, index, currentSelectedSets)
@@ -2361,13 +2554,13 @@ export default function SessionClient() {
               initialRestSeconds={currentTimer.restSeconds}
               onExerciseDurationChange={(seconds) => {
                 void updateTimerPrefs(
-                  { workSeconds: seconds, restSeconds: currentTimer.restSeconds },
+                  { workSeconds: seconds, restSeconds: currentRecordedTimer.restSeconds },
                   currentItem.exerciseId
                 );
               }}
               onRestDurationChange={(seconds) => {
                 void updateTimerPrefs(
-                  { workSeconds: currentTimer.workSeconds, restSeconds: seconds },
+                  { workSeconds: currentRecordedTimer.workSeconds, restSeconds: seconds },
                   currentItem.exerciseId
                 );
               }}
@@ -2463,10 +2656,17 @@ export default function SessionClient() {
                   ? `${previewWeight}${previewUnit ? ` ${previewUnit}` : ""}`
                   : currentItem.loadType}
               </p>
-              <p>
-                <span className="font-semibold text-white">Reps/set:</span>{" "}
-                {previewReps}
-              </p>
+              {currentIsTimed ? (
+                <p data-testid="about-to-record-duration">
+                  <span className="font-semibold text-white">Duration:</span>{" "}
+                  {formatSecondsText(currentRecordedTimer.workSeconds)}
+                </p>
+              ) : (
+                <p>
+                  <span className="font-semibold text-white">Reps/set:</span>{" "}
+                  {previewReps}
+                </p>
+              )}
               <p data-testid="about-to-record-rpe">
                 <span className="font-semibold text-white">RPE:</span> {previewRpe}
               </p>
@@ -2476,7 +2676,8 @@ export default function SessionClient() {
               </p>
               <p>
                 <span className="font-semibold text-white">Timer:</span>{" "}
-                {currentTimer.workSeconds}s work • {currentTimer.restSeconds}s rest
+                {currentRecordedTimer.workSeconds}s work •{" "}
+                {currentRecordedTimer.restSeconds}s rest
               </p>
               <p className="col-span-2">
                 <span className="font-semibold text-white">Feedback:</span>{" "}
@@ -2577,14 +2778,23 @@ export default function SessionClient() {
             ) : (
               <p className="text-xs font-semibold text-slate-600">
                 Load:{" "}
-                {currentItem.loadType === "timed"
+                {currentIsTimed
                   ? "Timed"
                   : currentItem.loadType === "assisted"
                     ? "Assisted"
                     : "Bodyweight"}
               </p>
             )}
-            {currentItem.loadType !== "timed" ? (
+            {currentIsTimed ? (
+              <div
+                className="rounded-lg border border-sky-300/25 bg-sky-400/10 px-3 py-2 text-xs text-slate-200"
+                data-testid="duration-input-summary"
+              >
+                <span className="font-semibold text-white">Duration</span>{" "}
+                {formatSecondsText(currentRecordedTimer.workSeconds)} per set. Use
+                the movement timer to adjust what gets logged.
+              </div>
+            ) : (
               <div className="flex flex-wrap items-center gap-2">
                 <label className="text-xs font-semibold text-slate-700" htmlFor="reps-input">
                   Reps
@@ -2619,7 +2829,7 @@ export default function SessionClient() {
                   placeholder="Reps per set"
                 />
               </div>
-            ) : null}
+            )}
             <div className="flex flex-wrap items-center gap-2">
               <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
                 RPE (1-10)
