@@ -8,6 +8,12 @@ import Button from "@/components/ui/Button";
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import {
+  PRO_ACTIVE_MESSAGE,
+  formatPlanLabel,
+  isProPlan,
+  resolvePlanStatus,
+} from "@/lib/planStatus";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -27,7 +33,12 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
     session?.email?.split("@")[0] ||
     "athlete";
   const showPaywallNotice = query.paywall === "1";
-  const isPro = session?.plan === "pro";
+  const plan = resolvePlanStatus(
+    storedUser?.plan,
+    session?.plan,
+    session ? undefined : "free"
+  );
+  const isPro = isProPlan(plan);
   return (
     <BackgroundShell>
       <div className="ui-shell flex max-w-6xl flex-col gap-8 py-8 sm:py-12">
@@ -57,11 +68,16 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
               </span>
               {authEnabled ? (
                 <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
-                  Plan: {isPro ? "Pro" : "Free"}
+                  Plan: {formatPlanLabel({ authEnabled, plan })}
                 </span>
               ) : null}
             </div>
           </header>
+          {authEnabled && isPro ? (
+            <div className="mt-3 rounded-lg border border-emerald-300/25 bg-emerald-400/10 px-3 py-2 text-xs font-semibold text-emerald-100">
+              {PRO_ACTIVE_MESSAGE}
+            </div>
+          ) : null}
           {authEnabled && isPro ? <ManageSubscriptionButton showRefreshAction={false} /> : null}
           {authEnabled && showPaywallNotice && !isPro ? (
             <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">

@@ -2,11 +2,15 @@
 
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import type { SubscriptionPlan } from "@/lib/authTypes";
+import {
+  formatPlanLabel,
+  formatPlanStatusMessage,
+  type PlanStatus,
+} from "@/lib/planStatus";
 
 type AccountModePanelProps = {
   authEnabled: boolean;
-  plan: SubscriptionPlan;
+  plan: PlanStatus;
   currentPhaseIndex: number;
   totalCompletedWorkoutCount: number;
   resetProgressMessage: string | null;
@@ -38,7 +42,7 @@ export default function AccountModePanel({
         <div>
           <p className="ui-kicker">Billing / Account</p>
           <h2 className="mt-1 text-2xl font-semibold text-white">
-            {authEnabled ? (plan === "pro" ? "Praxis Pro active" : "Free access") : "Local-first mode"}
+            {formatPlanStatusMessage({ authEnabled, plan })}
           </h2>
           <p className="mt-2 text-sm text-slate-300">
             Manage plan status, exports, and training data without leaving the dashboard.
@@ -47,7 +51,7 @@ export default function AccountModePanel({
             <div className="ui-soft-surface rounded-lg px-3 py-3">
               <p className="text-xs text-slate-400">Plan</p>
               <p className="mt-1 text-sm font-semibold text-white">
-                {authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local"}
+                {formatPlanLabel({ authEnabled, plan })}
               </p>
             </div>
             <div className="ui-soft-surface rounded-lg px-3 py-3">

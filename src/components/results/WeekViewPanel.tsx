@@ -4,6 +4,7 @@ import type { RefObject } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
+import { PRO_ACTIVE_MESSAGE } from "@/lib/planStatus";
 import type { Program } from "@/lib/types";
 
 export type WeekViewDetailEntry = {
@@ -31,6 +32,7 @@ type WeekViewPanelProps = {
   weekViewDay: Program["week"][number];
   weekViewDetailEntries: WeekViewDetailEntry[];
   isFreePlan: boolean;
+  isProPlan: boolean;
   isDayLocked: (dayIndex: number) => boolean;
   onFocusTodayPlan: () => void;
   onOpenDayDetails: (
@@ -58,6 +60,7 @@ export default function WeekViewPanel({
   weekViewDay,
   weekViewDetailEntries,
   isFreePlan,
+  isProPlan,
   isDayLocked,
   onFocusTodayPlan,
   onOpenDayDetails,
@@ -240,6 +243,10 @@ export default function WeekViewPanel({
       {isFreePlan ? (
         <p className="mt-3 text-xs text-slate-400">
           Free access keeps Day 1 available. Praxis Pro unlocks Day 2 through Day {program.daysPerWeek}.
+        </p>
+      ) : isProPlan ? (
+        <p className="mt-3 text-xs text-emerald-100">
+          {PRO_ACTIVE_MESSAGE}
         </p>
       ) : null}
     </section>

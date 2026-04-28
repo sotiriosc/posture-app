@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
+import { PRO_ACTIVE_MESSAGE } from "@/lib/planStatus";
 
 export default function UpgradePrompt() {
   const [message, setMessage] = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutEnabled, setCheckoutEnabled] = useState<boolean | null>(null);
+  const [proActive, setProActive] = useState(false);
 
   useEffect(() => {
     void (async () => {
@@ -17,8 +19,10 @@ export default function UpgradePrompt() {
         });
         const data = (await res.json().catch(() => null)) as {
           stripeConfigured?: boolean;
+          user?: { plan?: string } | null;
         } | null;
         setCheckoutEnabled(Boolean(data?.stripeConfigured));
+        setProActive(data?.user?.plan === "pro");
       } catch {
         setCheckoutEnabled(false);
       }
@@ -49,8 +53,23 @@ export default function UpgradePrompt() {
     }
   };
 
+  if (proActive) {
+    return (
+      <div
+        className="ui-card ui-soft-surface-raised mt-4 rounded-lg border-emerald-300/25 p-4"
+        data-testid="pro-active-notice"
+      >
+        <p className="ui-kicker">Praxis Pro</p>
+        <p className="mt-1 text-lg font-semibold text-white">{PRO_ACTIVE_MESSAGE}</p>
+        <p className="mt-2 text-sm text-slate-300">
+          Every training day and full plan history are available on this account.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="ui-card ui-soft-surface-raised mt-4 rounded-lg p-4">
+    <div className="ui-card ui-soft-surface-raised mt-4 rounded-lg p-4" data-testid="upgrade-prompt">
       <p className="ui-kicker">Praxis Pro</p>
       <p className="mt-1 text-lg font-semibold text-white">Unlock the full weekly plan</p>
       <p className="mt-2 text-sm text-slate-300">

@@ -6,6 +6,7 @@ import type { AssessmentReport } from "@/lib/assessmentEngine";
 import type { SubscriptionPlan } from "@/lib/authTypes";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import { loadPrefs } from "@/lib/logStore";
+import { resolvePlanStatus, type PlanStatus } from "@/lib/planStatus";
 import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
 
 const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
@@ -22,7 +23,7 @@ export function useResultsBootstrap({ storageKey }: UseResultsBootstrapParams) {
   const [data, setData] = useState<QuestionnaireData | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [authEnabled, setAuthEnabled] = useState(false);
-  const [plan, setPlan] = useState<SubscriptionPlan>("free");
+  const [plan, setPlan] = useState<PlanStatus>("unknown");
   const [substitutionByExercise, setSubstitutionByExercise] = useState<
     Record<string, string>
   >({});
@@ -95,8 +96,28 @@ export function useResultsBootstrap({ storageKey }: UseResultsBootstrapParams) {
           authenticated?: boolean;
           user?: { plan?: SubscriptionPlan } | null;
         };
-        setAuthEnabled(Boolean(payload.enabled));
-        setPlan(payload.user?.plan === "pro" ? "pro" : "free");
+        const enabled = Boolean(payload.enabled);
+        setAuthEnabled(enabled);
+        if (!enabled || !payload.authenticated) {
+          setPlan("free");
+          return;
+        }
+
+        let billingPlan: SubscriptionPlan | undefined;
+        try {
+          const billingResponse = await fetch("/api/billing/status", {
+            cache: "no-store",
+            credentials: "include",
+          });
+          const billingPayload = (await billingResponse.json()) as {
+            user?: { plan?: SubscriptionPlan } | null;
+          };
+          billingPlan = billingPayload.user?.plan;
+        } catch {
+          billingPlan = undefined;
+        }
+
+        setPlan(resolvePlanStatus(billingPlan, payload.user?.plan));
       } catch {
         setAuthEnabled(false);
         setPlan("free");

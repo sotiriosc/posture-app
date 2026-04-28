@@ -63,6 +63,12 @@ import {
   getPhaseReadyNoticeState,
 } from "@/lib/phaseControls";
 import { getDailyInsight } from "@/lib/insightGenerator";
+import {
+  PRO_ACTIVE_MESSAGE,
+  formatPlanLabel,
+  isFreeAccessPlan,
+  isProPlan,
+} from "@/lib/planStatus";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
@@ -91,7 +97,13 @@ import { buildProgramDashboardCopy } from "@/components/results/programDashboard
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
 const DASHBOARD_UNLOCK_LEVEL_KEY = "praxis_dashboard_unlock_level";
-const SHOW_TECHNICAL_PROGRAM_REFERENCE = process.env.NODE_ENV !== "production";
+export const DEBUG_PROGRAM_REFERENCE_STORAGE_KEY = "praxis_debug_program_reference";
+const shouldShowTechnicalProgramReference = () => {
+  if (process.env.NODE_ENV === "production") return false;
+  if (process.env.NODE_ENV === "development") return true;
+  if (typeof window === "undefined") return false;
+  return window.localStorage.getItem(DEBUG_PROGRAM_REFERENCE_STORAGE_KEY) === "1";
+};
 const SHOW_PHASE_PREVIEW_REFERENCE = false;
 
 type DashboardMode =
@@ -1599,7 +1611,8 @@ export default function ResultsRoutine() {
     return Math.min(activeDaysPerWeek, completedCalendarWeekSessions.length);
   }, [completedCalendarWeekSessions, activeDaysPerWeek]);
 
-  const isFreePlan = authEnabled && plan !== "pro";
+  const showTechnicalProgramReference = shouldShowTechnicalProgramReference();
+  const isFreePlan = isFreeAccessPlan({ authEnabled, plan });
   const isDayLocked = (dayIndex: number) => isFreePlan && dayIndex > 0;
   const effectiveSelectedDay = isDayLocked(selectedDay) ? 0 : selectedDay;
   const effectiveNextDayIndex = isDayLocked(nextDayIndex) ? 0 : nextDayIndex;
@@ -2244,7 +2257,7 @@ export default function ResultsRoutine() {
   }, [data, poseState.analysis, poseState.report, program, programReferenceOpen, progress]);
 
   const currentSavedWeekSnapshot = useMemo(() => {
-    if (!SHOW_TECHNICAL_PROGRAM_REFERENCE || !program || !data || !questionnaireSignature) {
+    if (!showTechnicalProgramReference || !program || !data || !questionnaireSignature) {
       return { settled: false, text: "" };
     }
     const state = loadAppState();
@@ -2293,6 +2306,7 @@ export default function ResultsRoutine() {
     settledProgramId,
     initialProgramLoadPending,
     reconcileProgramPending,
+    showTechnicalProgramReference,
   ]);
 
   const currentSavedWeekSnapshotText = currentSavedWeekSnapshot.text;
@@ -2518,7 +2532,7 @@ export default function ResultsRoutine() {
         <div className="ui-card ui-soft-surface-raised p-6">
           <p className="text-sm text-slate-300">Building your weekly plan...</p>
         </div>
-        {SHOW_TECHNICAL_PROGRAM_REFERENCE ? (
+        {showTechnicalProgramReference ? (
           <CurrentSavedProgramSnapshotLoadingCard
             message={currentSavedWeekSnapshotLoadingMessage}
           />
@@ -3109,7 +3123,7 @@ export default function ResultsRoutine() {
     {
       key: "account",
       title: "Billing / Account",
-      eyebrow: authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local",
+      eyebrow: formatPlanLabel({ authEnabled, plan }),
       summary: authEnabled
         ? "Manage plan status and account data."
         : "Review local data controls.",
@@ -3259,7 +3273,7 @@ export default function ResultsRoutine() {
         >
           <p className="text-sm font-semibold">Session complete</p>
           <p className="mt-1 text-xs text-emerald-200/85">
-            Your Praxis plan has been updated from today&apos;s performance.
+            Your session is logged for future coaching context.
           </p>
         </section>
       ) : null}
@@ -3267,6 +3281,15 @@ export default function ResultsRoutine() {
       {showWeeklyCompletionNudge ? (
         <section className="ui-soft-surface order-2 rounded-lg px-4 py-3 text-xs text-slate-300">
           Complete today&apos;s session to maintain progression.
+        </section>
+      ) : null}
+
+      {authEnabled && plan === "pro" ? (
+        <section
+          className="ui-soft-surface order-2 rounded-lg border border-emerald-300/25 px-4 py-3 text-xs text-emerald-100"
+          data-testid="dashboard-pro-status"
+        >
+          {PRO_ACTIVE_MESSAGE}
         </section>
       ) : null}
 
@@ -3436,7 +3459,7 @@ export default function ResultsRoutine() {
         </section>
       ) : null}
 
-      {program && SHOW_TECHNICAL_PROGRAM_REFERENCE ? (
+      {program && showTechnicalProgramReference ? (
         <>
           {SHOW_PHASE_PREVIEW_REFERENCE ? (
             <ProgramReferenceCard
@@ -3485,6 +3508,7 @@ export default function ResultsRoutine() {
           weekViewDay={weekViewDay}
           weekViewDetailEntries={weekViewDetailEntries}
           isFreePlan={isFreePlan}
+          isProPlan={isProPlan(plan)}
           isDayLocked={isDayLocked}
           onFocusTodayPlan={focusTodayPlanInWeekView}
           onOpenDayDetails={openWeekViewDayDetails}
@@ -3600,7 +3624,7 @@ export default function ResultsRoutine() {
                             Your current plan reflects what your body is ready to improve safely and efficiently.
                           </p>
                           <p>
-                            As your execution improves, the system will automatically increase complexity and progression.
+                            As your execution improves, Praxis will show clearer next-session guidance.
                           </p>
                         </div>
                       </div>

@@ -119,8 +119,9 @@ h6 {
 }
 
 :where(.ui-on-image p, .ui-on-image li, .ui-on-image label, .ui-on-image small) {
-  color: rgba(226, 232, 240, 0.9);
-  text-shadow: var(--ui-text-haze-soft);
+  color: rgba(241, 245, 249, 0.94);
+  line-height: 1.58;
+  text-shadow: 0 1px 14px rgba(2, 6, 23, 0.42);
 }
 
 :where(.ui-on-image a) {

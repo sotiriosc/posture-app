@@ -5,6 +5,11 @@ import Button from "@/components/ui/Button";
 import { readServerSession } from "@/lib/serverAuth";
 import { getUserRepository } from "@/lib/userRepository";
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
+import {
+  formatPlanLabel,
+  isProPlan,
+  resolvePlanStatus,
+} from "@/lib/planStatus";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -89,13 +94,14 @@ export default async function BillingAccountPage() {
   const repo = getUserRepository();
   const user = session ? await repo.findUserById(session.id) : null;
   const showTechnicalBillingDetails = process.env.NODE_ENV !== "production";
+  const plan = resolvePlanStatus(user?.plan, session?.plan);
   const dateRow = getDateRow({
-    plan: user?.plan,
+    plan: isProPlan(plan) ? "pro" : "free",
     stripeStatus: user?.stripeSubscriptionStatus,
     renewalDate: user?.stripeCurrentPeriodEnd,
   });
   const statusChip = getPlanStatusChip({
-    plan: user?.plan,
+    plan: isProPlan(plan) ? "pro" : "free",
     stripeStatus: user?.stripeSubscriptionStatus,
   });
 
@@ -125,7 +131,7 @@ export default async function BillingAccountPage() {
           <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
             <p className="ui-kicker">Current plan</p>
             <h2 className="mt-2 text-3xl font-semibold text-white">
-              {user?.plan === "pro" ? "Pro" : "Free"}
+              {formatPlanLabel({ authEnabled: Boolean(session), plan })}
             </h2>
             <span
               className={`mt-3 inline-flex rounded-lg border px-3 py-1 text-[11px] font-semibold uppercase ${statusChip.className}`}
@@ -138,7 +144,7 @@ export default async function BillingAccountPage() {
                 [
                   "Access status",
                   getAccessStatusLabel({
-                    plan: user?.plan,
+                    plan: isProPlan(plan) ? "pro" : "free",
                     stripeStatus: user?.stripeSubscriptionStatus,
                     cancelAtPeriodEnd: user?.stripeCancelAtPeriodEnd,
                     renewalDate: user?.stripeCurrentPeriodEnd,
@@ -180,8 +186,8 @@ export default async function BillingAccountPage() {
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-slate-300">
               <li>Structured corrective progression around movement quality.</li>
-              <li>Weekly progression driven by performance and recovery data.</li>
-              <li>Session tracking, analytics, and continuous adjustments.</li>
+              <li>Full weekly access across every planned training day.</li>
+              <li>Session tracking, analytics, and next-session guidance.</li>
             </ul>
             {user?.stripeCustomerId ? (
               <div className="mt-5 space-y-3 border-t border-white/10 pt-4">

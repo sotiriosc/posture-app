@@ -13,6 +13,11 @@ import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals"
 import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
 import type { SubscriptionPlan } from "@/lib/authTypes";
 import {
+  isFreeAccessPlan,
+  resolvePlanStatus,
+  type PlanStatus,
+} from "@/lib/planStatus";
+import {
   getProgram,
   listExerciseLogsBySessionIds,
   listSessionsByProgramId,
@@ -89,7 +94,7 @@ export default function ProgramDayPage({ params }: Props) {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [historyIndex, setHistoryIndex] = useState(0);
   const [authEnabled, setAuthEnabled] = useState(false);
-  const [plan, setPlan] = useState<SubscriptionPlan>("free");
+  const [plan, setPlan] = useState<PlanStatus>("unknown");
   const [sessionResolved, setSessionResolved] = useState(false);
 
   useEffect(() => {
@@ -136,10 +141,31 @@ export default function ProgramDayPage({ params }: Props) {
         });
         const payload = (await response.json()) as {
           enabled?: boolean;
+          authenticated?: boolean;
           user?: { plan?: SubscriptionPlan } | null;
         };
-        setAuthEnabled(Boolean(payload.enabled));
-        setPlan(payload.user?.plan === "pro" ? "pro" : "free");
+        const enabled = Boolean(payload.enabled);
+        setAuthEnabled(enabled);
+        if (!enabled || !payload.authenticated) {
+          setPlan("free");
+          return;
+        }
+
+        let billingPlan: SubscriptionPlan | undefined;
+        try {
+          const billingResponse = await fetch("/api/billing/status", {
+            cache: "no-store",
+            credentials: "include",
+          });
+          const billingPayload = (await billingResponse.json()) as {
+            user?: { plan?: SubscriptionPlan } | null;
+          };
+          billingPlan = billingPayload.user?.plan;
+        } catch {
+          billingPlan = undefined;
+        }
+
+        setPlan(resolvePlanStatus(billingPlan, payload.user?.plan));
       } catch {
         setAuthEnabled(false);
         setPlan("free");
@@ -151,7 +177,7 @@ export default function ProgramDayPage({ params }: Props) {
   }, []);
 
   const day = program?.week[dayIndex] ?? null;
-  const isFreePlan = authEnabled && plan !== "pro";
+  const isFreePlan = isFreeAccessPlan({ authEnabled, plan });
   const sections = useMemo(
     () =>
       day

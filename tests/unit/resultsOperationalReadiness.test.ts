@@ -86,7 +86,9 @@ vi.mock("@/lib/sessionDraftStore", () => ({
   clearDraftsByProgramId: mocks.clearDraftsByProgramId,
 }));
 
-import ResultsRoutine from "@/components/ResultsRoutine";
+import ResultsRoutine, {
+  DEBUG_PROGRAM_REFERENCE_STORAGE_KEY,
+} from "@/components/ResultsRoutine";
 
 const STORAGE_KEY = "posture_questionnaire";
 const APP_STATE_KEY = "app_state_v1";
@@ -322,6 +324,76 @@ const createDeferred = <T,>() => {
 type SignalsPayload = ReturnType<typeof buildSignalsPayload>;
 type Deferred<T> = ReturnType<typeof createDeferred<T>>;
 
+const mockPlanFetch = (params: {
+  enabled?: boolean;
+  authenticated?: boolean;
+  sessionPlan?: "free" | "pro";
+  billingPlan?: "free" | "pro";
+  stripeConfigured?: boolean;
+  omitPlan?: boolean;
+}) => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: RequestInfo | URL) => {
+      const url = input.toString();
+      if (url.includes("/api/billing/status")) {
+        return {
+          json: async () => ({
+            authenticated: params.authenticated ?? true,
+            stripeConfigured: params.stripeConfigured ?? true,
+            user:
+              (params.authenticated ?? true)
+                ? params.omitPlan
+                  ? {}
+                  : { plan: params.billingPlan ?? params.sessionPlan ?? "free" }
+                : null,
+          }),
+        };
+      }
+      return {
+        json: async () => ({
+          enabled: params.enabled ?? true,
+          authenticated: params.authenticated ?? true,
+          user:
+            (params.authenticated ?? true)
+              ? params.omitPlan
+                ? {}
+                : { plan: params.sessionPlan ?? "free" }
+              : null,
+        }),
+      };
+    })
+  );
+};
+
+const renderSavedDashboard = async (
+  program = buildSavedProgram("plan-status-program")
+) => {
+  localStorage.setItem(
+    APP_STATE_KEY,
+    JSON.stringify({
+      activeProgramId: program.id,
+      programId: program.id,
+      activeGenerationMode: "live_initial",
+      selectedDay: 0,
+      questionnaireSignature: buildQuestionnaireSignature(questionnaire),
+      updatedAt: Date.now(),
+    })
+  );
+  mocks.getProgram.mockResolvedValue(program);
+  mocks.getProgramProgress.mockResolvedValue(buildProgress(program));
+  mocks.listSessions.mockResolvedValue([]);
+  mocks.listAllPrograms.mockResolvedValue([program]);
+
+  render(React.createElement(ResultsRoutine));
+
+  await waitFor(() => {
+    expect(screen.getByText("Praxis dashboard")).toBeTruthy();
+  });
+
+  return program;
+};
+
 describe("results operational readiness", () => {
   let dateNowSpy: ReturnType<typeof vi.spyOn>;
 
@@ -332,6 +404,7 @@ describe("results operational readiness", () => {
 
     localStorage.clear();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(questionnaire));
+    localStorage.setItem(DEBUG_PROGRAM_REFERENCE_STORAGE_KEY, "1");
 
     mocks.routerPush.mockReset();
     mocks.loadTrainingSnapshot.mockReset();
@@ -438,6 +511,76 @@ describe("results operational readiness", () => {
         initialVariationSeed: "results-program",
       })
     );
+  });
+
+  test("pro billing status wins over a stale free session on the dashboard", async () => {
+    mockPlanFetch({
+      enabled: true,
+      authenticated: true,
+      sessionPlan: "free",
+      billingPlan: "pro",
+    });
+    await renderSavedDashboard();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("dashboard-pro-status").textContent).toContain(
+        "Praxis Pro active"
+      );
+    });
+
+    expect(
+      screen.getAllByText("Praxis Pro active — full weekly plan unlocked.").length
+    ).toBeGreaterThan(0);
+    expect(screen.queryByText(/Praxis Pro unlocks Day 2/i)).toBeNull();
+
+    fireEvent.click(screen.getByText("Billing / Account").closest("button")!);
+    expect(screen.getByTestId("account-mode-panel").textContent).toContain(
+      "Praxis Pro active — full weekly plan unlocked."
+    );
+    expect(screen.getByTestId("account-mode-panel").textContent).toContain("Pro");
+    expect(screen.queryByText("View Pro options")).toBeNull();
+  });
+
+  test("free plan keeps the dashboard upgrade path visible", async () => {
+    mockPlanFetch({
+      enabled: true,
+      authenticated: true,
+      sessionPlan: "free",
+      billingPlan: "free",
+    });
+    await renderSavedDashboard();
+
+    expect(screen.getByText(/Praxis Pro unlocks Day 2 through Day 3/i)).toBeTruthy();
+
+    fireEvent.click(screen.getByText("Billing / Account").closest("button")!);
+    expect(screen.getByTestId("account-mode-panel").textContent).toContain(
+      "Free access"
+    );
+    expect(screen.getByText("View Pro options")).toBeTruthy();
+  });
+
+  test("missing authenticated plan falls back safely without crashing", async () => {
+    mockPlanFetch({
+      enabled: true,
+      authenticated: true,
+      omitPlan: true,
+    });
+    await renderSavedDashboard();
+
+    expect(screen.getByText("Praxis dashboard")).toBeTruthy();
+    fireEvent.click(screen.getByText("Billing / Account").closest("button")!);
+    expect(screen.getByTestId("account-mode-panel").textContent).toContain(
+      "Checking"
+    );
+    expect(screen.getByText("View Pro options")).toBeTruthy();
+  });
+
+  test("debug program snapshot is gated outside development by default", async () => {
+    localStorage.removeItem(DEBUG_PROGRAM_REFERENCE_STORAGE_KEY);
+    await renderSavedDashboard(buildSavedProgram("hidden-debug-program"));
+
+    expect(screen.queryByTestId("current-saved-week-card")).toBeNull();
+    expect(screen.queryByTestId("current-saved-week-body")).toBeNull();
   });
 
   test("first-time saved generation records truthful live initial metadata", async () => {
