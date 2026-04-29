@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BrowserDemoSignalsPanel from "@/components/gym-admin/BrowserDemoSignalsPanel";
 import B2BIcon, { type B2BIconName } from "@/components/gym-demo/B2BIcon";
 import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
 import { getActiveGymConfig } from "@/lib/gymSaas/gymConfig";
@@ -86,7 +87,7 @@ export default function GymAdminDashboardPage() {
           <GymDemoHeader badge="Signal dashboard shell" />
 
           <div className="rounded-lg border border-[#5B8FA8]/25 bg-[#F6F9FB] px-4 py-3 text-sm font-semibold text-[#5B8FA8]">
-            Pilot signal preview. Live member data connection comes next.
+            Pilot fixture signals remain available below. Browser-local demo sessions can also produce demo signals here; live member data storage comes next.
           </div>
 
           <div className="grid gap-8 pb-8 pt-2 lg:grid-cols-[minmax(0,0.95fr)_minmax(340px,0.6fr)] lg:items-end lg:pb-12">
@@ -135,6 +136,8 @@ export default function GymAdminDashboardPage() {
           </div>
         </div>
       </section>
+
+      <BrowserDemoSignalsPanel />
 
       <section className="mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-10 lg:py-16">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
