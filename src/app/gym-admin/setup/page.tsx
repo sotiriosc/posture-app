@@ -74,7 +74,7 @@ export default function GymAdminSetupPage() {
                   href="/gym-admin/dashboard"
                   className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.24)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
                 >
-                  Go to dashboard
+                  Go to Signal Dashboard
                 </Link>
                 <Link
                   href="/gym-demo"

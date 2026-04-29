@@ -9,9 +9,9 @@ import {
 } from "@/lib/gymSaas/demoData";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard | Praxis for Gyms",
+  title: "Admin Preview | Praxis for Gyms",
   description:
-    "Preview a mock Admin Dashboard for Praxis for Gyms pilot metrics and member attention signals.",
+    "Preview a mock Admin Preview for Praxis for Gyms pilot metrics and member attention signals.",
 };
 
 const metricIcons: B2BIconName[] = [
@@ -34,13 +34,13 @@ export default function GymDemoAdminPage() {
           <div className="grid gap-8 py-10 lg:grid-cols-[0.82fr_1fr] lg:items-end lg:py-14">
             <div>
               <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
-                Admin Dashboard
+                Admin Preview
               </span>
               <h1 className="mt-5 text-4xl font-semibold leading-tight text-[#1F2A33] sm:text-5xl lg:text-6xl">
                 Review mock pilot metrics and member attention signals.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5F6B75]">
-                This static Admin Dashboard shows the assessments, first
+                This static Admin Preview shows the assessments, first
                 workouts, trainer consult requests, confidence feedback, and
                 members needing attention a gym team could review during a
                 Praxis pilot.
@@ -161,7 +161,7 @@ export default function GymDemoAdminPage() {
               Connect the views
             </span>
             <h2 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight text-[#1F2A33]">
-              The Admin Dashboard sits beside the live member flow.
+              The Admin Preview sits beside the live member flow.
             </h2>
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
@@ -169,7 +169,7 @@ export default function GymDemoAdminPage() {
               href="/gym-admin/dashboard"
               className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.24)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
             >
-              View signal dashboard shell
+              View Signal Dashboard
             </Link>
             <Link
               href="/gym-admin/setup"

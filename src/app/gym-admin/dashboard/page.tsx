@@ -16,7 +16,7 @@ import type {
 export const metadata: Metadata = {
   title: "Signal Dashboard | Praxis for Gyms",
   description:
-    "Preview a Praxis for Gyms operator dashboard shell powered by demo pilot session feedback signals.",
+    "Preview a Praxis for Gyms operator signal dashboard shell powered by demo pilot session feedback signals.",
 };
 
 const categoryLabels: Record<OperatorSignalCategory, string> = {
@@ -83,7 +83,7 @@ export default function GymAdminDashboardPage() {
     <main className="gym-b2b-page min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
       <section className="border-b border-[#E3E9EE] bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
-          <GymDemoHeader badge="Dashboard shell" />
+          <GymDemoHeader badge="Signal dashboard shell" />
 
           <div className="rounded-lg border border-[#5B8FA8]/25 bg-[#F6F9FB] px-4 py-3 text-sm font-semibold text-[#5B8FA8]">
             Pilot signal preview. Live member data connection comes next.
@@ -92,13 +92,13 @@ export default function GymAdminDashboardPage() {
           <div className="grid gap-8 pb-8 pt-2 lg:grid-cols-[minmax(0,0.95fr)_minmax(340px,0.6fr)] lg:items-end lg:pb-12">
             <div>
               <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
-                Operator dashboard
+                Operator Signal Dashboard
               </span>
               <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight text-[#1F2A33] sm:text-5xl lg:text-6xl">
                 Trainer attention signals for a pilot gym.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5F6B75]">
-                This dashboard uses the operator signal layer to translate demo
+                This Signal Dashboard uses the operator signal layer to translate demo
                 workout feedback into calm, useful review queues for gym owners,
                 trainers, and PT staff.
               </p>
@@ -268,8 +268,10 @@ export default function GymAdminDashboardPage() {
               recovery support. Low priority highlights a steady next step.
             </p>
             <p>
-              This shell currently uses pilot preview inputs. Live member data
-              storage and detail routes are intentionally separate next steps.
+              This shell currently uses pilot preview inputs. Signal detail pages
+              are available for workflow review. Live member data storage,
+              reviewed status, and notification workflows are intentionally
+              separate next steps.
             </p>
           </div>
         </section>

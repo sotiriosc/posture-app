@@ -5,7 +5,7 @@ const navLinks = [
   { href: "/pilot", label: "Pilot" },
   { href: "/gym-demo", label: "Demo Overview" },
   { href: "/gym-demo/member", label: "Member Demo" },
-  { href: "/gym-demo/admin", label: "Admin Dashboard" },
+  { href: "/gym-demo/admin", label: "Admin Preview" },
 ];
 
 type GymDemoHeaderProps = {

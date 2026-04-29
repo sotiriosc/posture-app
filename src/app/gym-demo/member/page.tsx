@@ -52,7 +52,7 @@ export default function GymDemoMemberPage() {
                 href="/gym-demo/admin"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#E3E9EE] bg-white px-6 py-3 text-sm font-semibold text-[#1F2A33] transition hover:-translate-y-px hover:border-[#5B8FA8]/50 hover:text-[#5B8FA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
               >
-                View Admin Dashboard
+                View Admin Preview
               </Link>
             </div>
           </div>

@@ -30,10 +30,10 @@ export const gymDemoCards: GymDemoCard[] = [
     cta: "View member demo",
   },
   {
-    title: "Admin Dashboard",
-    body: "Review the pilot metrics a gym team would use to understand activation, completion, confidence, and trainer handoffs.",
+    title: "Admin Preview",
+    body: "Review example pilot metrics a gym team could use to understand activation, completion, confidence, and trainer handoffs.",
     href: "/gym-demo/admin",
-    cta: "View dashboard",
+    cta: "View admin preview",
   },
   {
     title: "Pilot page",

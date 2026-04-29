@@ -10,7 +10,7 @@ import {
 export const metadata: Metadata = {
   title: "Demo Overview | Praxis for Gyms",
   description:
-    "Choose the member demo, Admin Dashboard, or Pilot page in the Praxis for Gyms buyer demo.",
+    "Choose the member demo, Admin Preview, or Pilot page in the Praxis for Gyms buyer demo.",
 };
 
 const demoCardIcons: B2BIconName[] = ["coach", "dashboard", "pilot"];
@@ -32,7 +32,7 @@ export default function GymDemoPage() {
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5F6B75]">
                 Use this page to move quickly between the member journey, the
-                Admin Dashboard, and the main Pilot page.
+                Admin Preview, and the main Pilot page.
               </p>
             </div>
             <div className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] p-6">

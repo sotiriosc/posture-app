@@ -93,8 +93,8 @@ const dashboardMetrics: Array<{
   },
   {
     label: "Confidence feedback",
-    value: "+21%",
-    detail: "Post-session signal",
+    value: "4.3/5",
+    detail: "Example score",
     progress: 68,
     icon: "metrics",
   },
@@ -164,7 +164,7 @@ const demoRoutes: Array<{
 }> = [
   {
     title: "Demo Overview",
-    body: "See how the member demo and Admin Dashboard connect inside the pilot walkthrough.",
+    body: "See how the member demo and Admin Preview connect inside the pilot walkthrough.",
     href: "/gym-demo",
     cta: "Open overview",
     icon: "system",
@@ -177,10 +177,10 @@ const demoRoutes: Array<{
     icon: "coach",
   },
   {
-    title: "Admin Dashboard",
-    body: "Review mock pilot metrics, confidence feedback, and members needing attention.",
+    title: "Admin Preview",
+    body: "Review example pilot metrics, confidence feedback, and members needing attention.",
     href: "/gym-demo/admin",
-    cta: "View dashboard",
+    cta: "View admin preview",
     icon: "dashboard",
   },
 ];
@@ -335,8 +335,7 @@ function OperatorDashboardPreview() {
       </div>
 
       <p className="mt-4 text-xs leading-5 text-[#5F6B75]">
-        Dashboard values are mock demo data until connected to a live gym
-        deployment.
+        Dashboard values and progress bars are mock demo data until connected to a live gym deployment.
       </p>
     </aside>
   );
@@ -533,7 +532,7 @@ export default function PilotPage() {
             </h2>
             <p className="mt-5 text-base leading-8 text-[#5F6B75]">
               Start with the overview, follow the member journey, or review the
-              Admin Dashboard with mock pilot metrics.
+              Admin Preview with example pilot metrics.
             </p>
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
