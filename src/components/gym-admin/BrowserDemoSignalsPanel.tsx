@@ -95,12 +95,14 @@ export default function BrowserDemoSignalsPanel() {
               Browser demo signals
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-[#1F2A33]">
-              Local member check-ins can now preview dashboard signals.
+              Local member check-ins can now preview staff-facing support signals.
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5F6B75]">
               These signals are derived from completed member demo sessions saved
-              in this browser. They are not live gym data and are not connected
-              to server storage, reviewed status, notifications, email, SMS, or CRM.
+              in this browser. Complete a member demo session and this panel
+              shows how member feedback can become a staff-facing support
+              signal. They are not live gym data and are not connected to server
+              storage, reviewed status, notifications, email, SMS, or CRM.
             </p>
           </div>
           <div className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] px-4 py-3 text-sm">

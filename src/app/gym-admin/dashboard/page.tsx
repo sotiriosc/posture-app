@@ -271,6 +271,11 @@ export default function GymAdminDashboardPage() {
               recovery support. Low priority highlights a steady next step.
             </p>
             <p>
+              Praxis is not just showing data. It is shaping feedback into a
+              service queue: who may need support, why it matters, and what
+              staff can do next.
+            </p>
+            <p>
               This shell currently uses pilot preview inputs. Signal detail pages
               are available for workflow review. Live member data storage,
               reviewed status, and notification workflows are intentionally

@@ -6,7 +6,7 @@ import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
 export const metadata: Metadata = {
   title: "Praxis for Gyms | Local Gym Pilot",
   description:
-    "Praxis for Gyms is a pilot-ready coaching layer for member onboarding, guided first-week plans, trainer consultation pathways, and operator dashboard metrics.",
+    "Praxis for Gyms is a pilot-ready coaching layer for member onboarding, guided first-week plans, trainer consultation pathways, and operator awareness signals.",
 };
 
 const journeySteps: Array<{
@@ -57,12 +57,39 @@ const needCards: Array<{
     icon: "handoff",
   },
   {
-    title: "Operators need readable pilot metrics",
-    body: "A focused pilot measures activation, completion, confidence, and member attention signals before rollout decisions.",
+    title: "Operators need readable member attention signals",
+    body: "A focused pilot gives operators clearer context around activation, completion, confidence, and member attention signals before rollout decisions.",
     icon: "metrics",
   },
 ];
 
+
+const signalLayerCards: Array<{
+  title: string;
+  body: string;
+  icon: B2BIconName;
+}> = [
+  {
+    title: "Listen",
+    body: "Members share goals, schedule, experience, discomfort areas, and post-session feedback inside the guided flow.",
+    icon: "assessment",
+  },
+  {
+    title: "Interpret",
+    body: "The Praxis engine turns those inputs into structured plans, readiness cues, and operator signals instead of leaving feedback scattered.",
+    icon: "system",
+  },
+  {
+    title: "Act",
+    body: "Trainers and staff can see calm next steps: check in, offer a walkthrough, support a restart, or encourage the next session.",
+    icon: "handoff",
+  },
+  {
+    title: "Grow",
+    body: "Every signal becomes context a gym can review as it learns what support members respond to during a pilot.",
+    icon: "metrics",
+  },
+];
 const dashboardMetrics: Array<{
   label: string;
   value: string;
@@ -140,7 +167,7 @@ const pilotMeasures: Array<{
   },
   {
     title: "Operator dashboard",
-    body: "Pilot metrics and members needing attention presented as a weekly operating view.",
+    body: "Member attention signals and trainer handoff context presented as a weekly operating view.",
     icon: "dashboard",
   },
   {
@@ -178,7 +205,7 @@ const demoRoutes: Array<{
   },
   {
     title: "Admin Preview",
-    body: "Review example pilot metrics, confidence feedback, and members needing attention.",
+    body: "Review example member attention signals, confidence feedback, and trainer handoff context.",
     href: "/gym-demo/admin",
     cta: "View admin preview",
     icon: "dashboard",
@@ -425,6 +452,44 @@ export default function PilotPage() {
 
       <section className="border-y border-[#E3E9EE] bg-white">
         <div className="mx-auto max-w-7xl px-5 py-12 sm:px-6 sm:py-14 lg:px-10 lg:py-16">
+          <div className="grid gap-8 lg:grid-cols-[0.72fr_1fr] lg:items-start">
+            <div>
+              <span className="block text-sm font-semibold uppercase text-[#5B8FA8]">
+                Signal layer
+              </span>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight text-[#1F2A33] sm:text-4xl">
+                An operating nervous system for the member experience.
+              </h2>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-[#5F6B75]">
+                Praxis listens to member inputs and workout check-ins,
+                translates them through a structured coaching engine, and gives
+                gym staff clearer signals about where support, encouragement,
+                or trainer review may help.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {signalLayerCards.map((card) => (
+                <article
+                  key={card.title}
+                  className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] p-5"
+                >
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#5B8FA8]/25 bg-white text-[#5B8FA8]">
+                    <B2BIcon name={card.icon} className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-4 text-xl font-semibold text-[#1F2A33]">
+                    {card.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-[#5F6B75]">
+                    {card.body}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="border-y border-[#E3E9EE] bg-white">
+        <div className="mx-auto max-w-7xl px-5 py-12 sm:px-6 sm:py-14 lg:px-10 lg:py-16">
           <div className="max-w-3xl">
             <span className="block text-sm font-semibold uppercase text-[#5B8FA8]">
               Member journey
@@ -473,12 +538,13 @@ export default function PilotPage() {
               Operator dashboard
             </span>
             <h2 className="mt-4 text-3xl font-semibold leading-tight text-[#1F2A33] sm:text-4xl">
-              A pilot view for metrics and members needing attention.
+              A pilot view for operator awareness and member attention signals.
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-8 text-[#5F6B75]">
-              The operator dashboard is designed to show pilot metrics,
+              The operator dashboard is designed to show operator awareness,
               confidence feedback, trainer consult requests, and practical
-              follow-up signals without pretending the demo is live data.
+              staff-facing support signals without pretending the demo is live
+              data.
             </p>
           </div>
           <OperatorDashboardPreview />
@@ -532,7 +598,7 @@ export default function PilotPage() {
             </h2>
             <p className="mt-5 text-base leading-8 text-[#5F6B75]">
               Start with the overview, follow the member journey, or review the
-              Admin Preview with example pilot metrics.
+              Admin Preview with example member attention signals.
             </p>
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
