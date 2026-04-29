@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Manrope, Space_Grotesk } from "next/font/google";
 import { PhotoProvider } from "@/components/PhotoContext";
 import AppMenu from "@/components/AppMenu";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
@@ -6,6 +7,18 @@ import "./globals.css";
 
 const GLOBAL_CARD_STYLE = "shaded";
 const GLOBAL_INPUT_STYLE = "shaded";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
 
 const resolveMetadataBase = () => {
   const raw =
@@ -61,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className="antialiased"
+        className={`${manrope.variable} ${spaceGrotesk.variable} antialiased`}
         data-card-style={GLOBAL_CARD_STYLE}
         data-input-style={GLOBAL_INPUT_STYLE}
       >

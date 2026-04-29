@@ -3116,11 +3116,11 @@ export default function ResultsRoutine({
     },
     {
       key: "account",
-      title: "Billing / Account",
-      eyebrow: authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local",
+      title: authEnabled ? "Account" : "Demo Controls",
+      eyebrow: authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Demo",
       summary: authEnabled
-        ? "Manage plan status and account data."
-        : "Review local data controls.",
+        ? "Manage access status and account data."
+        : "Review member profile controls and demo reset options.",
       icon: "A",
     },
   ];
@@ -3825,6 +3825,7 @@ export default function ResultsRoutine({
       {activeMode === "account" && !activeModeLocked ? (
         <AccountModePanel
           authEnabled={authEnabled}
+          buyerDemoMode={buyerDemoMode}
           plan={plan}
           currentPhaseIndex={currentPhaseIndex}
           totalCompletedWorkoutCount={totalCompletedWorkoutCount}

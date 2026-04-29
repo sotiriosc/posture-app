@@ -42,10 +42,10 @@ export default function AppMenuClient({
   const links = useMemo(() => {
     if (buyerDemoMode) {
       return [
-        { href: "/enterprise", label: "Praxis for Gyms" },
-        { href: "/gym-demo", label: "Demo hub" },
-        { href: "/gym-demo/member", label: "Member demo" },
-        { href: "/gym-demo/admin", label: "Admin demo" },
+        { href: "/pilot", label: "Pilot" },
+        { href: "/gym-demo", label: "Demo Overview" },
+        { href: "/gym-demo/member", label: "Member Demo" },
+        { href: "/gym-demo/admin", label: "Admin Dashboard" },
         { href: "/assessment", label: "Assessment" },
         { href: "/questionnaire", label: "Member profile" },
         { href: "/results", label: "Member plan" },
@@ -53,9 +53,8 @@ export default function AppMenuClient({
     }
 
     const nav: MenuLink[] = [
-      { href: "/enterprise", label: "Praxis for Gyms" },
-      { href: "/gym-demo", label: "Gym Demo" },
-      { href: "/", label: "Member Home" },
+      { href: "/pilot", label: "Pilot" },
+      { href: "/gym-demo", label: "Demo Overview" },
       { href: "/assessment", label: "Member Assessment" },
       { href: "/questionnaire", label: "Movement Profile" },
     ];
@@ -63,7 +62,7 @@ export default function AppMenuClient({
       nav.push({ href: "/results", label: "Member Dashboard" });
       nav.push({ href: "/progress", label: "Progress" });
       if (authenticated) {
-        nav.push({ href: "/account/billing", label: "Account / Billing" });
+        nav.push({ href: "/account/billing", label: "Account" });
         nav.push({ href: "/account/settings", label: "Data Settings" });
       }
     }

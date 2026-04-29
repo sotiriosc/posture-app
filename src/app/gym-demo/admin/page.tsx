@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import B2BIcon, { type B2BIconName } from "@/components/gym-demo/B2BIcon";
 import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
 import {
   adminMetrics,
@@ -8,14 +9,24 @@ import {
 } from "@/lib/gymSaas/demoData";
 
 export const metadata: Metadata = {
-  title: "Admin Demo | Praxis for Gyms",
+  title: "Admin Dashboard | Praxis for Gyms",
   description:
-    "Preview a mock gym operator dashboard for Praxis for Gyms pilot metrics and trainer pathway signals.",
+    "Preview a mock Admin Dashboard for Praxis for Gyms pilot metrics and member attention signals.",
 };
+
+const metricIcons: B2BIconName[] = [
+  "assessment",
+  "plan",
+  "handoff",
+  "metrics",
+  "coach",
+];
+const sectionIcons: B2BIconName[] = ["dashboard", "metrics", "handoff", "library"];
+const attentionIcons: B2BIconName[] = ["coach", "plan", "assessment", "handoff"];
 
 export default function GymDemoAdminPage() {
   return (
-    <main className="min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
+    <main className="gym-b2b-page min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
       <section className="border-b border-[#E3E9EE] bg-white">
         <div className="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
           <GymDemoHeader activeHref="/gym-demo/admin" />
@@ -23,27 +34,34 @@ export default function GymDemoAdminPage() {
           <div className="grid gap-8 py-10 lg:grid-cols-[0.82fr_1fr] lg:items-end lg:py-14">
             <div>
               <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
-                Mock operator dashboard
+                Admin Dashboard
               </span>
               <h1 className="mt-5 text-4xl font-semibold leading-tight text-[#1F2A33] sm:text-5xl lg:text-6xl">
-                Review the operator view for a 30-day gym pilot.
+                Review mock pilot metrics and member attention signals.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5F6B75]">
-                This static dashboard shows the activation, confidence, and
-                trainer-pathway signals a gym team could review during a Praxis
-                pilot.
+                This static Admin Dashboard shows the assessments, first
+                workouts, trainer consult requests, confidence feedback, and
+                members needing attention a gym team could review during a
+                Praxis pilot.
               </p>
               <p className="mt-4 max-w-2xl rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] px-4 py-3 text-sm font-semibold text-[#5B8FA8]">
                 All values shown here are mock demo data.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              {adminMetrics.map((metric) => (
+              {adminMetrics.map((metric, index) => (
                 <article
                   key={metric.label}
                   className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] p-5"
                 >
-                  <p className="text-sm font-semibold text-[#5F6B75]">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#5B8FA8]/25 bg-white text-[#5B8FA8]">
+                    <B2BIcon
+                      name={metricIcons[index] ?? "metrics"}
+                      className="h-5 w-5"
+                    />
+                  </span>
+                  <p className="mt-3 text-sm font-semibold text-[#5F6B75]">
                     {metric.label}
                   </p>
                   <p className="mt-3 text-3xl font-semibold text-[#1F2A33]">
@@ -62,12 +80,18 @@ export default function GymDemoAdminPage() {
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-10 lg:py-20">
         <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-            {operatorSections.map((section) => (
+            {operatorSections.map((section, index) => (
               <article
                 key={section.title}
                 className="rounded-lg border border-[#E3E9EE] bg-white p-6 shadow-[0_16px_45px_rgba(31,42,51,0.05)]"
               >
-                <h2 className="text-xl font-semibold text-[#1F2A33]">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#5B8FA8]/25 bg-[#F6F9FB] text-[#5B8FA8]">
+                  <B2BIcon
+                    name={sectionIcons[index] ?? "system"}
+                    className="h-5 w-5"
+                  />
+                </span>
+                <h2 className="mt-4 text-xl font-semibold text-[#1F2A33]">
                   {section.title}
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-[#5F6B75]">
@@ -83,7 +107,10 @@ export default function GymDemoAdminPage() {
                 <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
                   Mock demo data
                 </span>
-                <h2 className="mt-3 text-2xl font-semibold text-[#1F2A33]">
+                <h2 className="mt-3 flex items-center gap-3 text-2xl font-semibold text-[#1F2A33]">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#5B8FA8]/25 bg-[#F6F9FB] text-[#5B8FA8]">
+                    <B2BIcon name="dashboard" className="h-5 w-5" />
+                  </span>
                   Members needing attention
                 </h2>
               </div>
@@ -93,17 +120,23 @@ export default function GymDemoAdminPage() {
             </div>
 
             <div className="mt-6 overflow-hidden rounded-lg border border-[#E3E9EE]">
-              <div className="hidden gap-3 bg-[#F6F9FB] px-4 py-3 text-xs font-semibold uppercase text-[#5B8FA8] sm:grid sm:grid-cols-[0.8fr_1.1fr_1fr]">
+              <div className="hidden gap-3 bg-[#F6F9FB] px-4 py-3 text-xs font-semibold uppercase text-[#5B8FA8] sm:grid sm:grid-cols-[0.85fr_1.15fr_1fr]">
                 <span>Member</span>
                 <span>Signal</span>
                 <span>Suggested next step</span>
               </div>
-              {membersNeedingAttention.map((row) => (
+              {membersNeedingAttention.map((row, index) => (
                 <div
                   key={`${row.member}-${row.signal}`}
-                  className="grid grid-cols-1 gap-2 border-t border-[#E3E9EE] px-4 py-4 text-sm sm:grid-cols-[0.8fr_1.1fr_1fr] sm:gap-3"
+                  className="grid grid-cols-1 gap-2 border-t border-[#E3E9EE] px-4 py-4 text-sm sm:grid-cols-[0.85fr_1.15fr_1fr] sm:gap-3"
                 >
-                  <span className="font-semibold text-[#1F2A33]">
+                  <span className="flex items-center gap-2 font-semibold text-[#1F2A33]">
+                    <span className="text-[#5B8FA8]">
+                      <B2BIcon
+                        name={attentionIcons[index] ?? "system"}
+                        className="h-4 w-4"
+                      />
+                    </span>
                     {row.member}
                   </span>
                   <span className="text-[#5F6B75]">{row.signal}</span>
@@ -128,7 +161,7 @@ export default function GymDemoAdminPage() {
               Connect the views
             </span>
             <h2 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight text-[#1F2A33]">
-              The admin view is a product wrapper around the live member engine.
+              The Admin Dashboard sits beside the live member flow.
             </h2>
           </div>
           <Link

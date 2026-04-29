@@ -24,22 +24,22 @@ export type GymDemoAttentionRow = {
 
 export const gymDemoCards: GymDemoCard[] = [
   {
-    title: "Member flow",
-    body: "Walk through how a new or unsure member moves from assessment to profile, first plan, guided session, and feedback.",
+    title: "Member Demo",
+    body: "Walk through member onboarding, the guided first-week plan, session support, and the trainer consultation pathway.",
     href: "/gym-demo/member",
     cta: "View member demo",
   },
   {
-    title: "Operator view",
+    title: "Admin Dashboard",
     body: "Review the pilot metrics a gym team would use to understand activation, completion, confidence, and trainer handoffs.",
     href: "/gym-demo/admin",
-    cta: "View admin demo",
+    cta: "View dashboard",
   },
   {
-    title: "PT pathway",
-    body: "See how member feedback can create warmer trainer consult moments without making trainers feel replaced.",
-    href: "/enterprise#pilot",
-    cta: "Explore pilot model",
+    title: "Pilot page",
+    body: "Return to the main buyer page for the full local gym pilot offer and demo entry points.",
+    href: "/pilot",
+    cta: "View pilot page",
   },
 ];
 
@@ -53,7 +53,7 @@ export const gymDemoProofPoints = [
 ];
 
 export const gymDemoPilotConcept: GymDemoTextItem = {
-  title: "Pilot concept",
+  title: "Connected demo",
   body: "Start with one club, one region, or one member segment. Measure member activation, first-workout completion, trainer consult requests, and coaching usefulness before expanding rollout.",
 };
 
@@ -87,9 +87,9 @@ export const memberJourneySteps: GymDemoTextItem[] = [
 export const adminMetrics: GymDemoMetric[] = [
   { label: "Assessments completed", value: "124", note: "Pilot member segment" },
   { label: "First workouts completed", value: "82", note: "Activation signal" },
-  { label: "PT consult requests", value: "19", note: "Trainer pathway" },
-  { label: "Member confidence feedback", value: "4.3/5", note: "Post-session average" },
-  { label: "Trainer usefulness feedback", value: "91%", note: "Staff-reported helpful" },
+  { label: "Trainer consult requests", value: "19", note: "Consultation pathway" },
+  { label: "Confidence feedback", value: "4.3/5", note: "Post-session average" },
+  { label: "Members needing attention", value: "12", note: "Weekly review queue" },
 ];
 
 export const operatorSections: GymDemoTextItem[] = [
