@@ -5,6 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
 import AuthControls from "@/components/AuthControls";
+import {
+  BUYER_DEMO_COOKIE,
+  isBuyerDemoCookieValue,
+} from "@/lib/gymSaas/demoMode";
 
 type AppMenuClientProps = {
   isAdmin: boolean;
@@ -24,10 +28,30 @@ export default function AppMenuClient({
 }: AppMenuClientProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const buyerDemoMode = useMemo(() => {
+    if (typeof document === "undefined") return false;
+    const demoCookie = document.cookie
+      .split(";")
+      .map((entry) => entry.trim())
+      .find((entry) => entry.startsWith(`${BUYER_DEMO_COOKIE}=`));
+    return isBuyerDemoCookieValue(demoCookie?.split("=")[1]);
+  }, []);
 
   const hideMenu =
     pathname?.startsWith("/auth/") || pathname?.startsWith("/admin/access");
   const links = useMemo(() => {
+    if (buyerDemoMode) {
+      return [
+        { href: "/enterprise", label: "Praxis for Gyms" },
+        { href: "/gym-demo", label: "Demo hub" },
+        { href: "/gym-demo/member", label: "Member demo" },
+        { href: "/gym-demo/admin", label: "Admin demo" },
+        { href: "/assessment", label: "Assessment" },
+        { href: "/questionnaire", label: "Member profile" },
+        { href: "/results", label: "Member plan" },
+      ];
+    }
+
     const nav: MenuLink[] = [
       { href: "/enterprise", label: "Praxis for Gyms" },
       { href: "/gym-demo", label: "Gym Demo" },
@@ -45,7 +69,7 @@ export default function AppMenuClient({
     }
     if (isAdmin) nav.push({ href: "/settings", label: "Admin Settings" });
     return nav;
-  }, [isAdmin, authEnabled, authenticated]);
+  }, [isAdmin, authEnabled, authenticated, buyerDemoMode]);
 
   if (hideMenu) return null;
 
