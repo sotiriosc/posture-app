@@ -1,39 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
+import { memberJourneySteps } from "@/lib/gymSaas/demoData";
 
 export const metadata: Metadata = {
   title: "Member Demo | Praxis for Gyms",
   description:
     "See how a gym member moves through assessment, profile, plan, session guidance, feedback, and trainer pathways.",
 };
-
-const journeySteps = [
-  {
-    title: "1. Member starts with context",
-    body: "A member enters goals, experience, schedule, equipment access, discomfort, and confidence signals before starting a plan.",
-  },
-  {
-    title: "2. Optional movement baseline",
-    body: "The assessment route can capture posture and movement inputs that help the coaching engine shape corrective focus.",
-  },
-  {
-    title: "3. First-week plan",
-    body: "Praxis generates a structured week that gives the member a clear starting point instead of leaving them to guess.",
-  },
-  {
-    title: "4. Guided session",
-    body: "The session flow shows movement cues, set tracking, timer support, feedback capture, and safer adjustment paths.",
-  },
-  {
-    title: "5. Feedback creates support moments",
-    body: "Difficulty, discomfort, and confidence feedback can inform the next recommendation and surface trainer consult opportunities.",
-  },
-  {
-    title: "6. Trainer pathway",
-    body: "Members can be guided toward a complimentary movement consultation when the context makes that handoff useful.",
-  },
-];
 
 export default function GymDemoMemberPage() {
   return (
@@ -73,7 +47,7 @@ export default function GymDemoMemberPage() {
 
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-10 lg:py-20">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {journeySteps.map((step) => (
+          {memberJourneySteps.map((step) => (
             <article
               key={step.title}
               className="rounded-lg border border-[#E3E9EE] bg-white p-6 shadow-[0_16px_45px_rgba(31,42,51,0.05)]"

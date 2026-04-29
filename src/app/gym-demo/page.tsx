@@ -1,42 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
+import {
+  gymDemoCards,
+  gymDemoPilotConcept,
+  gymDemoProofPoints,
+} from "@/lib/gymSaas/demoData";
 
 export const metadata: Metadata = {
   title: "Gym Demo | Praxis for Gyms",
   description:
     "Explore the Praxis for Gyms pilot demo for member onboarding, operator metrics, and personal training pathways.",
 };
-
-const demoCards = [
-  {
-    title: "Member flow",
-    body: "Walk through how a new or unsure member moves from assessment to profile, first plan, guided session, and feedback.",
-    href: "/gym-demo/member",
-    cta: "View member demo",
-  },
-  {
-    title: "Operator view",
-    body: "Review the pilot metrics a gym team would use to understand activation, completion, confidence, and trainer handoffs.",
-    href: "/gym-demo/admin",
-    cta: "View admin demo",
-  },
-  {
-    title: "PT pathway",
-    body: "See how member feedback can create warmer trainer consult moments without making trainers feel replaced.",
-    href: "/enterprise#pilot",
-    cta: "Explore pilot model",
-  },
-];
-
-const proofPoints = [
-  "Assessment-driven onboarding",
-  "Structured first-week plan",
-  "Guided session support",
-  "Feedback-aware trainer prompts",
-  "Pilot metrics for club teams",
-  "Standardized coaching education",
-];
 
 export default function GymDemoPage() {
   return (
@@ -60,12 +35,10 @@ export default function GymDemoPage() {
             </div>
             <div className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] p-6">
               <p className="text-sm font-semibold text-[#1F2A33]">
-                Pilot concept
+                {gymDemoPilotConcept.title}
               </p>
               <p className="mt-3 text-sm leading-7 text-[#5F6B75]">
-                Start with one club, one region, or one member segment. Measure
-                member activation, first-workout completion, trainer consult
-                requests, and coaching usefulness before expanding rollout.
+                {gymDemoPilotConcept.body}
               </p>
             </div>
           </div>
@@ -74,7 +47,7 @@ export default function GymDemoPage() {
 
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-10 lg:py-20">
         <div className="grid gap-4 lg:grid-cols-3">
-          {demoCards.map((card) => (
+          {gymDemoCards.map((card) => (
             <article
               key={card.title}
               className="flex min-h-[260px] flex-col justify-between rounded-lg border border-[#E3E9EE] bg-white p-6 shadow-[0_16px_45px_rgba(31,42,51,0.05)]"
@@ -115,7 +88,7 @@ export default function GymDemoPage() {
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            {proofPoints.map((point) => (
+            {gymDemoProofPoints.map((point) => (
               <div
                 key={point}
                 className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] px-5 py-4 text-sm font-semibold text-[#1F2A33]"

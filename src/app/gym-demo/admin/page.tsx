@@ -1,62 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
+import {
+  adminMetrics,
+  membersNeedingAttention,
+  operatorSections,
+} from "@/lib/gymSaas/demoData";
 
 export const metadata: Metadata = {
   title: "Admin Demo | Praxis for Gyms",
   description:
     "Preview a mock gym operator dashboard for Praxis for Gyms pilot metrics and trainer pathway signals.",
 };
-
-const metricCards = [
-  { label: "Assessments completed", value: "124", note: "Pilot member segment" },
-  { label: "First workouts completed", value: "82", note: "Activation signal" },
-  { label: "PT consult requests", value: "19", note: "Trainer pathway" },
-  { label: "Member confidence feedback", value: "4.3/5", note: "Post-session average" },
-  { label: "Trainer usefulness feedback", value: "91%", note: "Staff-reported helpful" },
-];
-
-const operatorSections = [
-  {
-    title: "Member activation",
-    body: "Track whether members move from assessment to first plan and first workout.",
-  },
-  {
-    title: "Support signals",
-    body: "Identify uncertainty, discomfort, skipped sessions, and low-confidence feedback before members drift.",
-  },
-  {
-    title: "Trainer handoffs",
-    body: "Surface members who may benefit from a complimentary movement consultation or PT conversation.",
-  },
-  {
-    title: "Coaching consistency",
-    body: "Standardize exercise explanations, regressions, progressions, and common compensation cues.",
-  },
-];
-
-const attentionRows = [
-  {
-    member: "Avery M.",
-    signal: "Low confidence after first session",
-    nextStep: "Send trainer check-in prompt",
-  },
-  {
-    member: "Jordan P.",
-    signal: "First workout incomplete",
-    nextStep: "Offer guided restart",
-  },
-  {
-    member: "Mina S.",
-    signal: "Reported discomfort during push pattern",
-    nextStep: "Recommend movement consultation",
-  },
-  {
-    member: "Theo R.",
-    signal: "Ready for trainer consultation",
-    nextStep: "Route to PT desk",
-  },
-];
 
 export default function GymDemoAdminPage() {
   return (
@@ -83,7 +38,7 @@ export default function GymDemoAdminPage() {
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              {metricCards.map((metric) => (
+              {adminMetrics.map((metric) => (
                 <article
                   key={metric.label}
                   className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] p-5"
@@ -143,7 +98,7 @@ export default function GymDemoAdminPage() {
                 <span>Signal</span>
                 <span>Suggested next step</span>
               </div>
-              {attentionRows.map((row) => (
+              {membersNeedingAttention.map((row) => (
                 <div
                   key={`${row.member}-${row.signal}`}
                   className="grid grid-cols-1 gap-2 border-t border-[#E3E9EE] px-4 py-4 text-sm sm:grid-cols-[0.8fr_1.1fr_1fr] sm:gap-3"
