@@ -58,6 +58,20 @@ describe("trainer handoff", () => {
     expect(handoff.memberFacingMessage).toContain("walk through the movement");
   });
 
+  test("completion support creates supportive restart copy", () => {
+    const handoff = buildTrainerHandoff(
+      buildSignal({
+        category: "completion_support",
+        priority: "high",
+      }),
+      defaultGymConfig
+    );
+
+    expect(handoff.title).toBe("Supportive restart recommended");
+    expect(handoff.trainerAction).toContain("supportive restart message");
+    expect(handoff.memberFacingMessage).toContain("restart");
+    expect(handoff.ctaLabel).toBe("Prepare restart note");
+  });
   test("progress opportunity creates positive reinforcement copy", () => {
     const handoff = buildTrainerHandoff(
       buildSignal({

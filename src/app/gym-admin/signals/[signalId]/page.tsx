@@ -182,10 +182,10 @@ export default async function SignalDetailPage({
           Back to signal dashboard
         </Link>
         <Link
-          href="/gym-demo/admin"
+          href="/gym-admin/setup"
           className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#E3E9EE] bg-white px-5 py-3 text-sm font-semibold text-[#1F2A33] transition hover:-translate-y-px hover:border-[#5B8FA8]/50 hover:text-[#5B8FA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
         >
-          Back to Admin Dashboard demo
+          Gym setup
         </Link>
       </section>
     </main>

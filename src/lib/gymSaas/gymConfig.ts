@@ -68,3 +68,33 @@ export const defaultGymConfig: GymConfig = {
 export function getActiveGymConfig() {
   return defaultGymConfig;
 }
+
+export function getGymQuestionnaireEquipmentSelection(
+  config: GymConfig
+): string[] {
+  const configuredItems = config.equipmentProfile.availableEquipment.map((item) =>
+    item.trim().toLowerCase()
+  );
+
+  if (configuredItems.length === 0) {
+    return ["none"];
+  }
+
+  const bandOnly = configuredItems.every(
+    (item) => item.includes("band") || item.includes("resistance")
+  );
+
+  if (bandOnly) {
+    return ["bands"];
+  }
+
+  const noEquipmentOnly = configuredItems.every(
+    (item) => item === "none" || item.includes("no equipment")
+  );
+
+  if (noEquipmentOnly) {
+    return ["none"];
+  }
+
+  return ["gym"];
+}

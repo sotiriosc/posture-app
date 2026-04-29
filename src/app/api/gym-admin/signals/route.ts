@@ -9,8 +9,8 @@ export function GET() {
   const gymConfig = getActiveGymConfig();
 
   return NextResponse.json({
+    mode: "pilot_preview",
     demo: true,
-    dataSource: "pilot_preview",
     message: "Pilot signal preview. Live member data connection comes next.",
     gym: {
       gymId: gymConfig.gymId,

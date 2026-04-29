@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import { loadAppState, saveAppState } from "@/lib/appState";
@@ -27,6 +27,9 @@ export type QuestionnaireData = {
 
 type QuestionnaireFormProps = {
   buyerDemoMode?: boolean;
+  gymMode?: boolean;
+  lockedEquipment?: QuestionnaireData["equipment"];
+  lockedEquipmentLabel?: string;
 };
 
 const STORAGE_KEY = "posture_questionnaire";
@@ -75,11 +78,14 @@ const normalizeDaysPerWeek = (value: unknown): QuestionnaireData["daysPerWeek"] 
 };
 
 const normalizeQuestionnaireData = (
-  input?: Partial<QuestionnaireData> | null
+  input?: Partial<QuestionnaireData> | null,
+  lockedEquipmentValues?: string[] | null
 ): QuestionnaireData => ({
   ...emptyData,
   ...(input ?? {}),
-  equipment: normalizeEquipmentSelectionValues(input?.equipment ?? ["none"]),
+  equipment: lockedEquipmentValues?.length
+    ? [...lockedEquipmentValues]
+    : normalizeEquipmentSelectionValues(input?.equipment ?? ["none"]),
   daysPerWeek: normalizeDaysPerWeek(input?.daysPerWeek),
 });
 
@@ -99,9 +105,27 @@ const buildBuyerDemoResultsUrl = () => {
 
 export default function QuestionnaireForm({
   buyerDemoMode = false,
+  gymMode = false,
+  lockedEquipment,
+  lockedEquipmentLabel,
 }: QuestionnaireFormProps) {
-  const [data, setData] = useState<QuestionnaireData>(emptyData);
-  const [committedData, setCommittedData] = useState<QuestionnaireData>(emptyData);
+  const lockedEquipmentKey = gymMode ? lockedEquipment?.join("|") ?? "" : "";
+  const lockedEquipmentValues = useMemo(() => {
+    if (!lockedEquipmentKey) return null;
+    return normalizeEquipmentSelectionValues(
+      lockedEquipmentKey.split("|").filter(Boolean)
+    );
+  }, [lockedEquipmentKey]);
+  const initialData = useMemo(
+    () => normalizeQuestionnaireData(null, lockedEquipmentValues),
+    [lockedEquipmentValues]
+  );
+  const lockedEquipmentActive = gymMode && Boolean(lockedEquipmentValues?.length);
+  const withEquipmentLock = (next?: Partial<QuestionnaireData> | null) =>
+    normalizeQuestionnaireData(next, lockedEquipmentValues);
+
+  const [data, setData] = useState<QuestionnaireData>(() => initialData);
+  const [committedData, setCommittedData] = useState<QuestionnaireData>(() => initialData);
   const [pendingData, setPendingData] = useState<QuestionnaireData | null>(null);
   const [showChangeConfirm, setShowChangeConfirm] = useState(false);
   const [isApplyingChange, setIsApplyingChange] = useState(false);
@@ -112,20 +136,21 @@ export default function QuestionnaireForm({
   const lastQuestionnaireSyncSignatureRef = useRef<string | null>(null);
 
   const persistQuestionnaire = (next: QuestionnaireData) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    const nextWithLockedEquipment = withEquipmentLock(next);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextWithLockedEquipment));
     if (hydratedServerSnapshot) {
-      const nextSignature = buildQuestionnaireSignature(next);
+      const nextSignature = buildQuestionnaireSignature(nextWithLockedEquipment);
       if (lastQuestionnaireSyncSignatureRef.current === nextSignature) {
         logTrainingSync("training-sync", "skipped unchanged questionnaire sync");
         return;
       }
       lastQuestionnaireSyncSignatureRef.current = nextSignature;
-      void pushTrainingPatch({ questionnaire: next });
+      void pushTrainingPatch({ questionnaire: nextWithLockedEquipment });
     }
   };
 
   const openChangeConfirm = (next: QuestionnaireData) => {
-    setPendingData(next);
+    setPendingData(withEquipmentLock(next));
     setShowChangeConfirm(true);
     const state = loadAppState();
     setChangeWarning(
@@ -136,15 +161,16 @@ export default function QuestionnaireForm({
   };
 
   const commitAndRegenerateProgram = async (next: QuestionnaireData) => {
+    const nextWithLockedEquipment = withEquipmentLock(next);
     setIsApplyingChange(true);
     const state = loadAppState();
     const nextProgramVersion =
       typeof state?.programVersion === "number" ? state.programVersion + 1 : 1;
-    const questionnaireSignature = buildQuestionnaireSignature(next);
+    const questionnaireSignature = buildQuestionnaireSignature(nextWithLockedEquipment);
 
-    persistQuestionnaire(next);
-    setCommittedData(next);
-    setData(next);
+    persistQuestionnaire(nextWithLockedEquipment);
+    setCommittedData(nextWithLockedEquipment);
+    setData(nextWithLockedEquipment);
     setRequiresChangeConfirmation(true);
     setPendingData(null);
     setShowChangeConfirm(false);
@@ -163,7 +189,7 @@ export default function QuestionnaireForm({
           : null;
       const signals = await buildSignalsFromLocalState({
         programId: currentProgramId,
-        questionnaire: next,
+        questionnaire: nextWithLockedEquipment,
         nowIso,
       });
       const result = generateProgram({
@@ -242,6 +268,17 @@ export default function QuestionnaireForm({
   };
 
   useEffect(() => {
+    if (!lockedEquipmentActive) return;
+    setData((current) => normalizeQuestionnaireData(current, lockedEquipmentValues));
+    setCommittedData((current) =>
+      normalizeQuestionnaireData(current, lockedEquipmentValues)
+    );
+    setPendingData((current) =>
+      current ? normalizeQuestionnaireData(current, lockedEquipmentValues) : null
+    );
+  }, [lockedEquipmentActive, lockedEquipmentValues]);
+
+  useEffect(() => {
     const state = loadAppState();
 
     try {
@@ -252,17 +289,18 @@ export default function QuestionnaireForm({
       }
 
       const parsed = JSON.parse(saved) as Partial<QuestionnaireData>;
-      const normalized = normalizeQuestionnaireData(parsed);
+      const normalized = normalizeQuestionnaireData(parsed, lockedEquipmentValues);
       setData(normalized);
       setCommittedData(normalized);
       setRequiresChangeConfirmation(true);
     } catch {
+      const fallback = normalizeQuestionnaireData(null, lockedEquipmentValues);
       localStorage.removeItem(STORAGE_KEY);
-      setData(emptyData);
-      setCommittedData(emptyData);
+      setData(fallback);
+      setCommittedData(fallback);
       setRequiresChangeConfirmation(Boolean(state?.activeProgramId || state?.programId));
     }
-  }, []);
+  }, [lockedEquipmentValues]);
 
   useEffect(() => {
     let active = true;
@@ -273,7 +311,7 @@ export default function QuestionnaireForm({
         setHydratedServerSnapshot(true);
         return;
       }
-      const merged = normalizeQuestionnaireData(remote);
+      const merged = normalizeQuestionnaireData(remote, lockedEquipmentValues);
       setData(merged);
       setCommittedData(merged);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
@@ -285,10 +323,10 @@ export default function QuestionnaireForm({
     return () => {
       active = false;
     };
-  }, []);
+  }, [lockedEquipmentValues]);
 
   const updateData = (updates: Partial<QuestionnaireData>) => {
-    const next = { ...data, ...updates };
+    const next = withEquipmentLock({ ...data, ...updates });
     setData(next);
 
     if (!requiresChangeConfirmation) {
@@ -302,6 +340,8 @@ export default function QuestionnaireForm({
   };
 
   const toggleArrayValue = (key: "painAreas" | "equipment", value: string) => {
+    if (key === "equipment" && lockedEquipmentActive) return;
+
     const list = data[key].includes(value)
       ? data[key].filter((item) => item !== value)
       : [...data[key], value];
@@ -326,12 +366,16 @@ export default function QuestionnaireForm({
       className="praxis-panel-strong space-y-8 rounded-lg p-5 sm:p-6"
       onSubmit={(event) => {
         event.preventDefault();
-        if (requiresChangeConfirmation && hasProgramAffectingChange(data, committedData)) {
-          openChangeConfirm(data);
+        const submissionData = withEquipmentLock(data);
+        if (
+          requiresChangeConfirmation &&
+          hasProgramAffectingChange(submissionData, committedData)
+        ) {
+          openChangeConfirm(submissionData);
           return;
         }
 
-        void commitAndRegenerateProgram(data);
+        void commitAndRegenerateProgram(submissionData);
       }}
     >
       <div>
@@ -418,26 +462,45 @@ export default function QuestionnaireForm({
         </div>
       </div>
 
-      <div>
-        <p className="text-sm font-semibold text-white">Equipment</p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {equipmentOptions.map((item) => (
-            <label
-              key={item.value}
-              className="praxis-input-surface flex min-h-12 items-center gap-2 rounded-lg px-3 py-3 text-sm text-slate-200"
-            >
-              <input
-                type="checkbox"
-                data-testid={`equipment-${item.value}`}
-                checked={data.equipment.includes(item.value)}
-                onChange={() => toggleArrayValue("equipment", item.value)}
-                className="h-4 w-4 accent-slate-900"
-              />
-              {item.label}
-            </label>
-          ))}
+      {lockedEquipmentActive ? (
+        <div
+          data-testid="gym-equipment-profile"
+          className="rounded-lg border border-sky-200/20 bg-sky-100/10 p-4"
+        >
+          <p className="text-sm font-semibold text-white">
+            Training environment
+          </p>
+          <p className="mt-2 text-sm leading-6 text-slate-200">
+            This plan uses the configured equipment profile for this gym.
+          </p>
+          {lockedEquipmentLabel ? (
+            <p className="mt-3 rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-xs font-semibold text-sky-100">
+              {lockedEquipmentLabel}
+            </p>
+          ) : null}
         </div>
-      </div>
+      ) : (
+        <div>
+          <p className="text-sm font-semibold text-white">Equipment</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {equipmentOptions.map((item) => (
+              <label
+                key={item.value}
+                className="praxis-input-surface flex min-h-12 items-center gap-2 rounded-lg px-3 py-3 text-sm text-slate-200"
+              >
+                <input
+                  type="checkbox"
+                  data-testid={`equipment-${item.value}`}
+                  checked={data.equipment.includes(item.value)}
+                  onChange={() => toggleArrayValue("equipment", item.value)}
+                  className="h-4 w-4 accent-slate-900"
+                />
+                {item.label}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       <button
         type="submit"
