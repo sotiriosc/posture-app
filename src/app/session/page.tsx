@@ -1,7 +1,23 @@
 import { Suspense } from "react";
+import { cookies } from "next/headers";
+import {
+  BUYER_DEMO_COOKIE,
+  isBuyerDemoCookieValue,
+  isBuyerDemoSearchParamValue,
+} from "@/lib/gymSaas/demoMode";
 import SessionClient from "./SessionClient";
 
-export default function SessionPage() {
+type SessionPageProps = {
+  searchParams: Promise<{ demo?: string }>;
+};
+
+export default async function SessionPage({ searchParams }: SessionPageProps) {
+  const query = await searchParams;
+  const cookieStore = await cookies();
+  const buyerDemoMode =
+    isBuyerDemoSearchParamValue(query.demo) ||
+    isBuyerDemoCookieValue(cookieStore.get(BUYER_DEMO_COOKIE)?.value);
+
   return (
     <Suspense
       fallback={
@@ -12,7 +28,7 @@ export default function SessionPage() {
         </div>
       }
     >
-      <SessionClient />
+      <SessionClient buyerDemoMode={buyerDemoMode} />
     </Suspense>
   );
 }

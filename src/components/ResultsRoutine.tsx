@@ -108,6 +108,10 @@ type LevelUpNotice = {
   body: string;
 };
 
+type ResultsRoutineProps = {
+  buyerDemoMode?: boolean;
+};
+
 type ProgramWeekDay = Program["week"][number];
 
 const formatLegacyRoutineItemDose = (item: ProgramRoutineItem) =>
@@ -769,16 +773,20 @@ const formatProgramGenerationIssue = (error: unknown) => {
   return "Unable to generate a weekly program from the current profile.";
 };
 
-export default function ResultsRoutine() {
+export default function ResultsRoutine({
+  buyerDemoMode = false,
+}: ResultsRoutineProps) {
   const router = useRouter();
   const {
     data,
     isReady,
-    authEnabled,
-    plan,
+    authEnabled: rawAuthEnabled,
+    plan: rawPlan,
     nowAnchor,
     remoteAssessment,
   } = useResultsBootstrap({ storageKey: STORAGE_KEY });
+  const authEnabled = buyerDemoMode ? false : rawAuthEnabled;
+  const plan = buyerDemoMode ? "free" : rawPlan;
   const { photos } = usePhotoContext();
   const poseState = usePoseAssessment({ photos, data, remoteAssessment });
   const trainingSyncStatus = useTrainingSyncStatus();

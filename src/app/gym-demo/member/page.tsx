@@ -29,16 +29,16 @@ export default function GymDemoMemberPage() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/assessment"
+                href="/gym-demo/start"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.28)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
               >
-                Launch member assessment
+                Start fresh member demo
               </Link>
               <Link
-                href="/questionnaire"
+                href="/gym-demo"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg border border-[#E3E9EE] bg-white px-6 py-3 text-sm font-semibold text-[#1F2A33] transition hover:-translate-y-px hover:border-[#5B8FA8]/50 hover:text-[#5B8FA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
               >
-                Continue to member profile
+                Back to demo hub
               </Link>
             </div>
           </div>
@@ -74,10 +74,10 @@ export default function GymDemoMemberPage() {
             </h2>
           </div>
           <Link
-            href="/assessment"
+            href="/gym-demo/start"
             className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.24)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
           >
-            Continue into the assessment
+            Start fresh member demo
           </Link>
         </div>
       </section>

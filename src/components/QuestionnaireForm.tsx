@@ -20,6 +20,10 @@ export type QuestionnaireData = {
   daysPerWeek: 3 | 4 | 5;
 };
 
+type QuestionnaireFormProps = {
+  buyerDemoMode?: boolean;
+};
+
 const STORAGE_KEY = "posture_questionnaire";
 
 const goalOptions = [
@@ -80,7 +84,9 @@ const hasProgramAffectingChange = (
 ) =>
   buildQuestionnaireSignature(next) !== buildQuestionnaireSignature(baseline);
 
-export default function QuestionnaireForm() {
+export default function QuestionnaireForm({
+  buyerDemoMode = false,
+}: QuestionnaireFormProps) {
   const [data, setData] = useState<QuestionnaireData>(emptyData);
   const [committedData, setCommittedData] = useState<QuestionnaireData>(emptyData);
   const [pendingData, setPendingData] = useState<QuestionnaireData | null>(null);
@@ -422,7 +428,7 @@ export default function QuestionnaireForm() {
         disabled={isApplyingChange}
         className="h-12 w-full rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_38px_rgba(37,99,235,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
       >
-        Build my Praxis plan
+        {buyerDemoMode ? "Build member demo plan" : "Build my Praxis plan"}
       </button>
 
       {showChangeConfirm ? (

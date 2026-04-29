@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifySessionToken } from "@/lib/authToken";
+import {
+  BUYER_DEMO_COOKIE,
+  BUYER_DEMO_COOKIE_MAX_AGE_SECONDS,
+  BUYER_DEMO_QUERY_VALUE,
+  hasBuyerDemoSearchParam,
+  isBuyerDemoCookieValue,
+} from "@/lib/gymSaas/demoMode";
 
 const ADMIN_COOKIE_NAME = "bac_admin";
 const AUTH_COOKIE_NAME = "bac_user";
@@ -39,6 +46,29 @@ export async function middleware(request: NextRequest) {
 
   if (!needsAuth) {
     return NextResponse.next();
+  }
+
+  const buyerDemoAllowed =
+    pathname.startsWith("/results") ||
+    pathname.startsWith("/session") ||
+    pathname.startsWith("/program") ||
+    pathname.startsWith("/progress");
+  const buyerDemoRequested =
+    buyerDemoAllowed &&
+    (isBuyerDemoCookieValue(request.cookies.get(BUYER_DEMO_COOKIE)?.value) ||
+      hasBuyerDemoSearchParam(searchParams));
+  if (buyerDemoRequested) {
+    const response = NextResponse.next();
+    if (hasBuyerDemoSearchParam(searchParams)) {
+      response.cookies.set({
+        name: BUYER_DEMO_COOKIE,
+        value: BUYER_DEMO_QUERY_VALUE,
+        path: "/",
+        sameSite: "lax",
+        maxAge: BUYER_DEMO_COOKIE_MAX_AGE_SECONDS,
+      });
+    }
+    return response;
   }
 
   const authEnabled =

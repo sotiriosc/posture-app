@@ -88,6 +88,10 @@ import { markSessionComplete } from "@/lib/sessionStore";
 
 const STORAGE_KEY = "posture_questionnaire";
 
+type SessionClientProps = {
+  buyerDemoMode?: boolean;
+};
+
 type FeedbackEntry = "easy" | "moderate" | "hard" | "pain";
 type TrackingField = "weight" | "reps" | "rpe";
 
@@ -380,7 +384,9 @@ const findPainSwapAlternativeExerciseId = (params: {
   return candidate ?? null;
 };
 
-export default function SessionClient() {
+export default function SessionClient({
+  buyerDemoMode = false,
+}: SessionClientProps) {
   const searchParams = useSearchParams();
   const searchParamString = searchParams.toString();
   const [data, setData] = useState<QuestionnaireData | null>(null);
@@ -2126,11 +2132,20 @@ export default function SessionClient() {
             <p className="text-sm text-slate-200">
               {recoveryCopy}
             </p>
-            <Link href={recoveryHref}>
-              <Button variant={data ? "secondary" : "primary"}>
-                {recoveryLabel}
-              </Button>
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link href={recoveryHref}>
+                <Button variant={data ? "secondary" : "primary"}>
+                  {recoveryLabel}
+                </Button>
+              </Link>
+              {buyerDemoMode ? (
+                <Link href="/gym-demo/admin">
+                  <Button variant="secondary">
+                    View mock operator dashboard
+                  </Button>
+                </Link>
+              ) : null}
+            </div>
           </OnImage>
         </div>
       </BackgroundShell>
@@ -2204,6 +2219,16 @@ export default function SessionClient() {
                 Return to Dashboard
               </Button>
             </Link>
+            {buyerDemoMode ? (
+              <Link href="/gym-demo/admin">
+                <Button
+                  variant="secondary"
+                  className="h-12 w-full rounded-xl text-sm font-semibold"
+                >
+                  View mock operator dashboard
+                </Button>
+              </Link>
+            ) : null}
             <Button
               variant="secondary"
               onClick={handleStartNewSession}

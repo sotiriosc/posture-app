@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { isAuthConfigured, readServerSession } from "@/lib/serverAuth";
 import { getUserRepository } from "@/lib/userRepository";
 import ResultsRoutine from "@/components/ResultsRoutine";
@@ -8,20 +9,30 @@ import Button from "@/components/ui/Button";
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import {
+  BUYER_DEMO_COOKIE,
+  isBuyerDemoCookieValue,
+  isBuyerDemoSearchParamValue,
+} from "@/lib/gymSaas/demoMode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type ResultsProps = {
-  searchParams: Promise<{ paywall?: string }>;
+  searchParams: Promise<{ paywall?: string; demo?: string }>;
 };
 
 export default async function ResultsPage({ searchParams }: ResultsProps) {
   const query = await searchParams;
-  const authEnabled = await isAuthConfigured();
-  const session = await readServerSession();
-  const repo = getUserRepository();
-  const storedUser = session ? await repo.findUserById(session.id) : null;
+  const cookieStore = await cookies();
+  const buyerDemoMode =
+    isBuyerDemoSearchParamValue(query.demo) ||
+    isBuyerDemoCookieValue(cookieStore.get(BUYER_DEMO_COOKIE)?.value);
+  const authEnabled = buyerDemoMode ? false : await isAuthConfigured();
+  const session = buyerDemoMode ? null : await readServerSession();
+  const storedUser = session
+    ? await getUserRepository().findUserById(session.id)
+    : null;
   const displayName =
     storedUser?.name?.trim() ||
     session?.email?.split("@")[0] ||
@@ -37,7 +48,11 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
               <div>
                 <p className="ui-kicker">Praxis Dashboard</p>
                 <h1 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
-                  {session ? `Welcome back, ${displayName}` : "Your Praxis plan"}
+                  {buyerDemoMode
+                    ? "Member demo plan"
+                    : session
+                    ? `Welcome back, ${displayName}`
+                    : "Your Praxis plan"}
                 </h1>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -55,6 +70,11 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
               <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
                 Built from your movement profile
               </span>
+              {buyerDemoMode ? (
+                <span className="rounded-lg border border-sky-300/35 bg-sky-400/12 px-3 py-1 font-semibold text-sky-100">
+                  Buyer demo mode
+                </span>
+              ) : null}
               {authEnabled ? (
                 <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
                   Plan: {isPro ? "Pro" : "Free"}
@@ -71,7 +91,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
           {authEnabled && !isPro ? <UpgradePrompt /> : null}
         </OnImage>
 
-        <ResultsRoutine />
+        <ResultsRoutine buyerDemoMode={buyerDemoMode} />
       </div>
       <OnboardingInfoButton onboardingKey="results" />
     </BackgroundShell>
