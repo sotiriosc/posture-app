@@ -1,11 +1,11 @@
 {
-  "name": "Praxis Personal Trainer App",
-  "short_name": "Praxis",
+  "name": "Praxis for Gyms",
+  "short_name": "Praxis for Gyms",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0f19",
   "theme_color": "#0a0f19",
-  "description": "Personal training for strength, posture, and movement quality.",
+  "description": "Digital coaching infrastructure for gyms, trainers, and supported member onboarding.",
   "icons": [
     {
       "src": "/icons/praxis-mark-192.png",

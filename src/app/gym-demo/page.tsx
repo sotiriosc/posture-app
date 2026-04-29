@@ -1,0 +1,104 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
+import {
+  gymDemoCards,
+  gymDemoPilotConcept,
+  gymDemoProofPoints,
+} from "@/lib/gymSaas/demoData";
+
+export const metadata: Metadata = {
+  title: "Gym Demo | Praxis for Gyms",
+  description:
+    "Explore the Praxis for Gyms pilot demo for member onboarding, operator metrics, and personal training pathways.",
+};
+
+export default function GymDemoPage() {
+  return (
+    <main className="min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
+      <section className="border-b border-[#E3E9EE] bg-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-8 sm:px-8 lg:px-10 lg:py-10">
+          <GymDemoHeader activeHref="/gym-demo" />
+
+          <div className="grid gap-8 pb-8 pt-2 lg:grid-cols-[1fr_0.76fr] lg:items-end lg:pb-12 lg:pt-8">
+            <div>
+              <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
+                Demo hub
+              </span>
+              <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight text-[#1F2A33] sm:text-5xl lg:text-6xl">
+                Explore the Praxis for Gyms demo.
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5F6B75]">
+                See how the member journey, operator dashboard, and personal
+                training pathway connect inside one coaching system.
+              </p>
+            </div>
+            <div className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] p-6">
+              <p className="text-sm font-semibold text-[#1F2A33]">
+                {gymDemoPilotConcept.title}
+              </p>
+              <p className="mt-3 text-sm leading-7 text-[#5F6B75]">
+                {gymDemoPilotConcept.body}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-10 lg:py-20">
+        <div className="grid gap-4 lg:grid-cols-3">
+          {gymDemoCards.map((card) => (
+            <article
+              key={card.title}
+              className="flex min-h-[260px] flex-col justify-between rounded-lg border border-[#E3E9EE] bg-white p-6 shadow-[0_16px_45px_rgba(31,42,51,0.05)]"
+            >
+              <div>
+                <h2 className="text-2xl font-semibold text-[#1F2A33]">
+                  {card.title}
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-[#5F6B75]">
+                  {card.body}
+                </p>
+              </div>
+              <Link
+                href={card.href}
+                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-[#5B8FA8] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(91,143,168,0.22)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
+              >
+                {card.cta}
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-[#E3E9EE] bg-white">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 sm:px-8 lg:grid-cols-[0.8fr_1fr] lg:px-10 lg:py-20">
+          <div>
+            <span className="text-sm font-semibold uppercase text-[#5B8FA8]">
+              What this demo proves
+            </span>
+            <h2 className="mt-4 text-3xl font-semibold leading-tight text-[#1F2A33] sm:text-4xl">
+              The member experience and club operating model can be shown
+              together.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-[#5F6B75]">
+              The member flow remains the working Praxis engine. The gym demo
+              wraps that engine with buyer-facing context so clubs can evaluate
+              the product as infrastructure, not just a standalone app.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {gymDemoProofPoints.map((point) => (
+              <div
+                key={point}
+                className="rounded-lg border border-[#E3E9EE] bg-[#F6F9FB] px-5 py-4 text-sm font-semibold text-[#1F2A33]"
+              >
+                {point}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
