@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
+import {
+  BUYER_DEMO_AUTOSTART_QUERY_PARAM,
+  BUYER_DEMO_AUTOSTART_QUERY_VALUE,
+} from "@/lib/gymSaas/demoMode";
 import DemoStartClient from "./DemoStartClient";
 
 export const metadata: Metadata = {
@@ -8,7 +12,18 @@ export const metadata: Metadata = {
     "Start a fresh Praxis for Gyms buyer demo before entering the live member assessment flow.",
 };
 
-export default function GymDemoStartPage() {
+type GymDemoStartPageProps = {
+  searchParams: Promise<{ autostart?: string }>;
+};
+
+export default async function GymDemoStartPage({
+  searchParams,
+}: GymDemoStartPageProps) {
+  const query = await searchParams;
+  const autoStart =
+    query[BUYER_DEMO_AUTOSTART_QUERY_PARAM] ===
+    BUYER_DEMO_AUTOSTART_QUERY_VALUE;
+
   return (
     <main className="min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
       <section className="border-b border-[#E3E9EE] bg-white">
@@ -30,7 +45,7 @@ export default function GymDemoStartPage() {
               </p>
             </div>
 
-            <DemoStartClient />
+            <DemoStartClient autoStart={autoStart} />
           </div>
         </div>
       </section>

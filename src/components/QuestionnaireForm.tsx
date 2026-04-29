@@ -11,6 +11,11 @@ import { clearDraft } from "@/lib/sessionDraftStore";
 import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
 import { getProgram, saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
 import type { ProgramProgress } from "@/lib/types";
+import {
+  BUYER_DEMO_QUERY_PARAM,
+  BUYER_DEMO_QUERY_VALUE,
+  BUYER_DEMO_RUN_QUERY_PARAM,
+} from "@/lib/gymSaas/demoMode";
 
 export type QuestionnaireData = {
   goals: string;
@@ -83,6 +88,14 @@ const hasProgramAffectingChange = (
   baseline: QuestionnaireData
 ) =>
   buildQuestionnaireSignature(next) !== buildQuestionnaireSignature(baseline);
+
+const buildBuyerDemoResultsUrl = () => {
+  const params = new URLSearchParams({
+    [BUYER_DEMO_QUERY_PARAM]: BUYER_DEMO_QUERY_VALUE,
+    [BUYER_DEMO_RUN_QUERY_PARAM]: String(Date.now()),
+  });
+  return `/results?${params.toString()}`;
+};
 
 export default function QuestionnaireForm({
   buyerDemoMode = false,
@@ -213,6 +226,10 @@ export default function QuestionnaireForm({
       });
     } finally {
       setIsApplyingChange(false);
+      if (buyerDemoMode) {
+        window.location.assign(buildBuyerDemoResultsUrl());
+        return;
+      }
       router.push("/results");
     }
   };

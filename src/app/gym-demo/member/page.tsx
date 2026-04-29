@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
 import { memberJourneySteps } from "@/lib/gymSaas/demoData";
+import {
+  BUYER_DEMO_AUTOSTART_QUERY_PARAM,
+  BUYER_DEMO_AUTOSTART_QUERY_VALUE,
+} from "@/lib/gymSaas/demoMode";
 
 export const metadata: Metadata = {
   title: "Member Demo | Praxis for Gyms",
@@ -29,7 +33,7 @@ export default function GymDemoMemberPage() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/gym-demo/start"
+                href={`/gym-demo/start?${BUYER_DEMO_AUTOSTART_QUERY_PARAM}=${BUYER_DEMO_AUTOSTART_QUERY_VALUE}`}
                 className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.28)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
               >
                 Start fresh member demo
@@ -70,11 +74,12 @@ export default function GymDemoMemberPage() {
               Live demo entry
             </span>
             <h2 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight text-[#1F2A33]">
-              The next click starts the existing Praxis member engine.
+              The next click prepares a clean browser state and launches the
+              existing Praxis member engine.
             </h2>
           </div>
           <Link
-            href="/gym-demo/start"
+            href={`/gym-demo/start?${BUYER_DEMO_AUTOSTART_QUERY_PARAM}=${BUYER_DEMO_AUTOSTART_QUERY_VALUE}`}
             className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-lg bg-[#5B8FA8] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(91,143,168,0.24)] transition hover:-translate-y-px hover:bg-[#4E7F96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B8FA8] focus-visible:ring-offset-2"
           >
             Start fresh member demo
