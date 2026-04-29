@@ -91,14 +91,15 @@ body[data-input-style="transparent"] {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope);
+  --font-heading: var(--font-space-grotesk);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 body {
   background: var(--background);
   color: #cbd5e1;
-  font-family: "Manrope", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-family: var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   letter-spacing: 0;
   text-rendering: optimizeLegibility;
 }
@@ -113,9 +114,30 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Space Grotesk", "Manrope", sans-serif;
+  font-family: var(--font-space-grotesk), var(--font-manrope), system-ui, sans-serif;
   letter-spacing: 0;
-  color: #ffffff;
+  line-height: 1.1;
+  color: inherit;
+  text-wrap: balance;
+}
+
+.gym-b2b-page {
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  color: #5F6B75;
+  background: #ffffff;
+}
+
+:where(.gym-b2b-page) :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-space-grotesk), var(--font-manrope), system-ui, sans-serif;
+  color: #1F2A33;
+}
+
+:where(.gym-b2b-page) p {
+  color: #5F6B75;
+}
+
+:where(.gym-b2b-page) .b2b-eyebrow {
+  color: #5B8FA8;
 }
 
 :where(.ui-on-image p, .ui-on-image li, .ui-on-image label, .ui-on-image small) {
@@ -559,7 +581,20 @@ textarea {
   transition: opacity 300ms ease, transform 300ms ease;
 }
 
-:is(.ui-card, .ui-panel, .hero-glass, .hero-pill) :is(h1, h2, h3, h4, h5, h6) {
+:is(
+    .app-bg,
+    .hero-bg,
+    .ui-card,
+    .ui-panel,
+    .hero-glass,
+    .hero-pill,
+    .ui-on-image,
+    .praxis-panel,
+    .praxis-panel-strong,
+    .praxis-card,
+    .praxis-card-muted
+  )
+  :is(h1, h2, h3, h4, h5, h6) {
   color: #ffffff;
   text-shadow: var(--ui-text-haze-soft);
 }

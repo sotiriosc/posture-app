@@ -49,7 +49,7 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
                 <p className="ui-kicker">Praxis Dashboard</p>
                 <h1 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
                   {buyerDemoMode
-                    ? "Member demo plan"
+                    ? "Member Demo plan"
                     : session
                     ? `Welcome back, ${displayName}`
                     : "Your Praxis plan"}

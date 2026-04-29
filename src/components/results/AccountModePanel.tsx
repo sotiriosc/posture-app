@@ -6,6 +6,7 @@ import type { SubscriptionPlan } from "@/lib/authTypes";
 
 type AccountModePanelProps = {
   authEnabled: boolean;
+  buyerDemoMode?: boolean;
   plan: SubscriptionPlan;
   currentPhaseIndex: number;
   totalCompletedWorkoutCount: number;
@@ -19,6 +20,7 @@ type AccountModePanelProps = {
 
 export default function AccountModePanel({
   authEnabled,
+  buyerDemoMode = false,
   plan,
   currentPhaseIndex,
   totalCompletedWorkoutCount,
@@ -29,6 +31,14 @@ export default function AccountModePanel({
   onCloseResetProgressConfirm,
   onResetCurrentProgress,
 }: AccountModePanelProps) {
+  const demoControlsMode = buyerDemoMode || !authEnabled;
+  const statusLabel = authEnabled
+    ? plan === "pro"
+      ? "Praxis Pro active"
+      : "Free access"
+    : "Pilot demo mode";
+  const accessLabel = authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Demo";
+
   return (
     <section
       className="ui-card ui-soft-surface-raised order-4 p-5 sm:p-6"
@@ -36,22 +46,28 @@ export default function AccountModePanel({
     >
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)]">
         <div>
-          <p className="ui-kicker">Billing / Account</p>
+          <p className="ui-kicker">
+            {demoControlsMode ? "Member Demo Controls" : "Account Controls"}
+          </p>
           <h2 className="mt-1 text-2xl font-semibold text-white">
-            {authEnabled ? (plan === "pro" ? "Praxis Pro active" : "Free access") : "Local-first mode"}
+            {statusLabel}
           </h2>
           <p className="mt-2 text-sm text-slate-300">
-            Manage plan status, exports, and training data without leaving the dashboard.
+            {demoControlsMode
+              ? "Review member profile controls and demo reset options for the pilot walkthrough."
+              : "Manage account status, exports, and training data without leaving the dashboard."}
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <div className="ui-soft-surface rounded-lg px-3 py-3">
-              <p className="text-xs text-slate-400">Plan</p>
+              <p className="text-xs text-slate-400">
+                {demoControlsMode ? "Mode" : "Plan"}
+              </p>
               <p className="mt-1 text-sm font-semibold text-white">
-                {authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local"}
+                {accessLabel}
               </p>
             </div>
             <div className="ui-soft-surface rounded-lg px-3 py-3">
-              <p className="text-xs text-slate-400">Plan</p>
+              <p className="text-xs text-slate-400">Phase</p>
               <p className="mt-1 text-sm font-semibold text-white">
                 Phase {currentPhaseIndex}
               </p>
@@ -65,7 +81,9 @@ export default function AccountModePanel({
           </div>
         </div>
         <div className="ui-soft-surface rounded-lg p-4">
-          <p className="text-sm font-semibold text-white">Account actions</p>
+          <p className="text-sm font-semibold text-white">
+            {demoControlsMode ? "Demo actions" : "Member actions"}
+          </p>
           <div className="mt-3 flex flex-col gap-2">
             {authEnabled ? (
               <Link href="/account/billing" className="self-start">
@@ -74,11 +92,13 @@ export default function AccountModePanel({
                 </Button>
               </Link>
             ) : null}
-            <Link href="/account/settings">
-              <Button variant="secondary" className="h-11 w-full">
-                Data and settings
-              </Button>
-            </Link>
+            {!demoControlsMode ? (
+              <Link href="/account/settings">
+                <Button variant="secondary" className="h-11 w-full">
+                  Data and settings
+                </Button>
+              </Link>
+            ) : null}
             <Link href="/questionnaire">
               <Button variant="secondary" className="h-11 w-full">
                 Edit movement profile

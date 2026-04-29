@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
-  { href: "/enterprise", label: "Praxis for Gyms" },
-  { href: "/gym-demo", label: "Demo hub" },
-  { href: "/gym-demo/member", label: "Member demo" },
-  { href: "/gym-demo/admin", label: "Admin demo" },
+  { href: "/pilot", label: "Pilot" },
+  { href: "/gym-demo", label: "Demo Overview" },
+  { href: "/gym-demo/member", label: "Member Demo" },
+  { href: "/gym-demo/admin", label: "Admin Preview" },
 ];
 
 type GymDemoHeaderProps = {
@@ -20,7 +20,7 @@ export default function GymDemoHeader({
   return (
     <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <Link
-        href="/enterprise"
+        href="/pilot"
         aria-label="Praxis for Gyms"
         className="inline-flex h-9 w-[150px] shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[#E3E9EE] bg-[#1F2A33] px-2 shadow-[0_12px_34px_rgba(31,42,51,0.12)] sm:h-10 sm:w-[180px] md:h-11 md:w-[210px] lg:h-12 lg:w-[240px] xl:h-14 xl:w-[270px]"
       >
