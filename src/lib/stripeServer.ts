@@ -102,12 +102,22 @@ const parseStripeSignature = (header: string) => {
   };
 };
 
+const STRIPE_WEBHOOK_TOLERANCE_SECONDS = 300;
+
 export const verifyStripeWebhook = (payload: string, signatureHeader: string) => {
   const secret = process.env.STRIPE_WEBHOOK_SECRET?.trim() ?? "";
   if (!secret) throw new Error("Missing STRIPE_WEBHOOK_SECRET.");
   const { timestamp, signature } = parseStripeSignature(signatureHeader);
   if (!timestamp || !signature) {
     throw new Error("Invalid Stripe signature header.");
+  }
+  const timestampSeconds = Number(timestamp);
+  if (!Number.isFinite(timestampSeconds)) {
+    throw new Error("Invalid Stripe signature header.");
+  }
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  if (Math.abs(nowSeconds - timestampSeconds) > STRIPE_WEBHOOK_TOLERANCE_SECONDS) {
+    throw new Error("Stripe webhook timestamp outside tolerance.");
   }
   const signedPayload = `${timestamp}.${payload}`;
   const expected = crypto
