@@ -32,6 +32,26 @@ const signSegment = async (segment: string, secret: string) => {
   return toBase64Url(new Uint8Array(sig));
 };
 
+const verifySegment = async (
+  segment: string,
+  signature: string,
+  secret: string
+) => {
+  let signatureBytes: Uint8Array;
+  try {
+    signatureBytes = fromBase64Url(signature);
+  } catch {
+    return false;
+  }
+  const key = await getHmacKey(secret);
+  return crypto.subtle.verify(
+    "HMAC",
+    key,
+    signatureBytes,
+    encoder.encode(segment)
+  );
+};
+
 export const createSessionToken = async (
   payload: SessionTokenPayload,
   secret: string
@@ -50,8 +70,8 @@ export const verifySessionToken = async (
   const [header, body, signature] = token.split(".");
   if (!header || !body || !signature) return null;
   const segment = `${header}.${body}`;
-  const expectedSignature = await signSegment(segment, secret);
-  if (expectedSignature !== signature) return null;
+  const valid = await verifySegment(segment, signature, secret);
+  if (!valid) return null;
   try {
     const payload = JSON.parse(
       new TextDecoder().decode(fromBase64Url(body))
