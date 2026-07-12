@@ -16,6 +16,16 @@ const MAIN_PATTERNS = new Set([
   "core_stability",
 ]);
 
+// Recognized isolation/accessory families: valid patterns but ladder-exempt
+// (they progress by load/reps in place, not via progressionOf chains).
+const ISOLATION_PATTERNS = new Set([
+  "calves",
+  "carry_load",
+  "lateral_raise",
+  "elbow_flexion",
+  "elbow_extension",
+]);
+
 export const getExerciseById = (id?: string) => exerciseById(id);
 
 export const requireExerciseById = (id?: string) => {
@@ -42,7 +52,10 @@ const validateMainMetadata = (
 
   if (!exercise.pattern) {
     errors.push(`${exercise.id}: missing pattern`);
-  } else if (!MAIN_PATTERNS.has(exercise.pattern)) {
+  } else if (
+    !MAIN_PATTERNS.has(exercise.pattern) &&
+    !ISOLATION_PATTERNS.has(exercise.pattern)
+  ) {
     errors.push(`${exercise.id}: invalid pattern "${exercise.pattern}"`);
   }
 
