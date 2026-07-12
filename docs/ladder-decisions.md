@@ -154,15 +154,54 @@ Ratified joint map (Sotirios, 2026-07-12):
 - vertical_pull → shoulders, scapulae, elbows (lats/grip noted in Phase-3W contract)
 - core_stability → spine, hips
 
-Applied to all warmup/activation/cooldown entries. Flags for Sotirios review:
-- `ankle-mobility`: mobilizes kept as `["ankles"]` (exercise-specific); map includes `["knees", "hips", "ankles"]` — confirm scope.
-- `hip-flexor-stretch`: mobilizes `["hips", "hip flexors"]`; "hip flexors" not in ratified map joints — confirm.
-- `chin-tucks`: mobilizes `["neck"]`; neck not in ratified pattern map — confirm.
-- `doorway-pec-stretch`: mobilizes `["shoulders", "chest"]`; "chest" not in map — confirm.
-- `banded-lat-stretch`: mobilizes `["lats", "upper_back"]`; "lats" is a muscle not a joint — confirm.
-- `scapular-pushups`: mobilizes includes `"serratus"` (exercise-specific; not in horizontal_push map) — confirm or remove.
-- `band-offset-march-hold`: mobilizes `["spine", "hips"]` only (no primes); carry_load receives no warmup prep block (SR-3) — confirm no primes is correct.
-- `wall-supported-carry-march`: `carry_load` removed from primes per SR-3; now only `["core_stability"]` — confirm.
+Applied to all warmup/activation/cooldown entries. Flagged-annotation rulings applied (2026-07-12):
+- `ankle-mobility`: mobilizes `["ankles"]` — confirmed exercise-specific; full knee_dominant map scope not appropriate for a pure ankle drill.
+- `hip-flexor-stretch`: "hip flexors" normalized → `["hips"]` (folded under hips per normalization rule).
+- `chin-tucks`: mobilizes `["neck"]` — confirmed overlay-only; neck is exempt from pattern-map matching.
+- `doorway-pec-stretch`: "chest" normalized → `["shoulders"]` (chest = anterior shoulder region per normalization rule).
+- `banded-lat-stretch`: "lats" retained as exercise-specific vocabulary; "upper_back" normalized → "thoracic spine". Final: `["lats", "thoracic spine"]`.
+- `scapular-pushups`: "serratus" normalized → "scapulae" per normalization rule. Final: `["shoulders", "scapulae", "thoracic spine"]`.
+- `band-offset-march-hold`: mobilizes `["spine", "hips"]` only — confirmed no primes (carry_load receives no warmup prep per SR-3).
+- `wall-supported-carry-march`: `carry_load` removed from primes per SR-3 — confirmed `primes: ["core_stability"]` only.
+
+### Vocabulary closure (2026-07-12)
+
+Normalized terms — these forms are no longer accepted in the catalog:
+| Deprecated form | Normalized form | Rule |
+|---|---|---|
+| `"upper_back"` | `"thoracic spine"` | separator-style + anatomical precision |
+| `"serratus"` | `"scapulae"` | serratus is an origin; scapulae is the region |
+| `"hip flexors"` | `"hips"` | folded under broader joint region |
+| `"chest"` | `"shoulders"` | anterior shoulder region for mobilize context |
+
+Closed vocabulary encoded in `VALID_PRIMES` and `VALID_MOBILIZES` in `catalogLadderInvariants.test.ts`. Any new term outside the set fails CI.
+
+Inventory gaps flagged for Sotirios (no new exercises authored without sign-off):
+- **knees** — zero mobilizer exercises currently in catalog
+- **elbows** — zero mobilizer exercises currently in catalog
+- **wrists** — zero mobilizer exercises currently in catalog
+- **grip/lats** — only one entry (`banded-lat-stretch`); grip has zero
+
+### One-directional link audit (2026-07-12)
+
+11 asymmetric links identified. Resolution applied:
+
+1. **band-straight-arm-pulldown → band-lat-pulldown** — `progressionOf` removed. SR-1 violation: band variants are pain/deload swaps, not progression rungs. `swapOptions: ["cable-straight-arm-pulldown"]` retained.
+
+2–11. The remaining 10 links are confirmed **explicit branch children** (alternate progressions from a shared parent). Each is listed in `KNOWN_BRANCH_CHILDREN` in `catalogLadderInvariants.test.ts`, which enforces that no silent third state can be introduced. If a new asymmetric link appears in future it will fail I4 unless added to the set:
+
+| Branch child | Parent | Canonical sibling |
+|---|---|---|
+| `incline-pushup` | `wall-pushup` | `countertop-pushup` |
+| `suspension-archer-row` | `suspension-row-parallel` | `suspension-row-feet-elevated` |
+| `suspension-rear-delt-row` | `suspension-row-incline` | `suspension-row-parallel` |
+| `suspension-face-pull` | `suspension-row-upright` | `suspension-row-incline` |
+| `pullup-isometric-top-hold` | `band-assisted-pullup` | `neutral-grip-pullup` |
+| `suspension-archer-pushup` | `suspension-pushup-parallel` | `suspension-pushup-feet-elevated` |
+| `suspension-chest-fly` | `suspension-pushup-incline` | `suspension-pushup-parallel` |
+| `hanging-oblique-knee-raise` | `hanging-knee-raise` | `hanging-hollow-hold` |
+| `machine-chest-press` | `band-chest-press` | `machine-pec-deck-press` |
+| `seated-lat-sweep-pulse` | `prone-lat-sweep` | `kneeling-prayer-lat-pulldown` |
 
 ### deprecated: true — formal mechanism implemented (2026-07-12)
 
@@ -172,6 +211,29 @@ Applied to all warmup/activation/cooldown entries. Flags for Sotirios review:
 - `exerciseById` still searches `allExercises` (legacy log entries still resolve)
 
 Previous log note (P2 isolation entry): "Formal `deprecated` field is P3 tech debt" — **resolved in Phase 2b**.
+
+---
+
+## Phase 2b — Rebase onto main (2026-07-12)
+
+**Branch:** `phase-2b-institutionalize` → PR #9.
+
+The branch was originally cut from `c7b9ed2`. After PR #7 (Phase 0 security) and PR #8 (Phase 2 catalog) landed on `main`, the branch was rebased using `git rebase --onto origin/main 7c89515 phase-2b-institutionalize` — replaying only the 4 Phase 2b commits on top of `7404481`. The two local P2 commits (d68014b, 7c89515) were explicitly excluded to avoid conflicts with the squashed PR #8.
+
+**PR #8 squash — standing-rule violation (logged for the record):**  
+PR #8 ("Phase 2 catalog") was merged using a **squash merge**, collapsing 6 per-item commits into one. This violates SR standing rule: **merge commits are required in this repo; squash is never acceptable.** Logged here so it is not repeated. Future catalog PRs must use `--no-ff` merge commits.
+
+**Pre-existing test failures (identified on rebased tree, 2026-07-12):**  
+These 4 tests fail on `main` before any Phase 2b changes; they are NOT regressions introduced here.
+
+| Test | First-failing commit on main |
+|---|---|
+| `programFuzz > randomized questionnaire combinations preserve structural safety` | `7404481` "Phase 2 catalog (#8)" — Phase 2 catalog restructuring reduced the eligible exercise pool for a specific fuzz configuration |
+| `sessionFeedbackSubstitution > next week uses recent logs + guidance...` | `86f7da7` "Add feedback-driven substitution and in-session pain swap flow" |
+| `sessionFeedbackInfluence > failed exercise gets deprioritized` | `6f367b0` "Use session feedback to influence exercise selection..." |
+| `resultsOperationalReadiness > backfills phase workout progress...` | `67a8c45` "Operational polish pass" |
+
+Note: `sessionFeedbackSubstitution/Influence` and `resultsOperationalReadiness` — the commits listed are the earliest point where each test file exists on main and fails; a full git-bisect is required to pinpoint the exact commit where the expectation first broke. `programFuzz` is precisely identified: it passes on `c7b9ed2` (pre-Phase-2 base) and fails on `7404481` (after Phase 2 catalog squash).
 
 ---
 
@@ -186,3 +248,5 @@ Previous log note (P2 isolation entry): "Formal `deprecated` field is P3 tech de
 | 2026-07-12 | `elbow_extension` → ISOLATION_PATTERNS | Triceps isolation family |
 | 2026-07-12 | I4/I5/I6/I7 + ISO-delinked + deprecated-exclusion | catalogLadderInvariants.test.ts green (Phase 2b) |
 | 2026-07-12 | `deprecated?: boolean` on Exercise type | cable-upright-row excluded from selection |
+| 2026-07-12 | KNOWN_BRANCH_CHILDREN explicit allowlist | no silent third state for asymmetric links |
+| 2026-07-12 | VALID_PRIMES + VALID_MOBILIZES closed vocab | vocabulary normalized + CI-enforced |
