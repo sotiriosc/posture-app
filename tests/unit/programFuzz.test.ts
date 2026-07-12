@@ -123,11 +123,24 @@ describe("program fuzz invariants", () => {
 
         const mains = day.routine.filter((item) => item.section === "main");
         const expectedMain = expectedMainCount(experience, daysPerWeek, day.title, equipment);
-        if (Array.isArray(expectedMain)) {
-          expect(mains.length).toBeGreaterThanOrEqual(expectedMain[0]);
-          expect(mains.length).toBeLessThanOrEqual(expectedMain[1]);
-        } else {
-          expect(mains.length).toBe(expectedMain);
+        const minExpected = Array.isArray(expectedMain) ? expectedMain[0] : expectedMain;
+        const maxExpected = Array.isArray(expectedMain) ? expectedMain[1] : expectedMain;
+
+        // Slot-degradation contract: every template slot must be filled, degraded-with-trace
+        // (stage a/b/c → count stays the same), or dropped-with-trace (stage d → count
+        // decreases by at most 1 per slot, but a coachNote MUST be present). A silent count
+        // mismatch — fewer mains than expected AND no coachNotes on the day — is a failure.
+        if (mains.length < minExpected) {
+          const shortfall = minExpected - mains.length;
+          const notes = day.coachNotes ?? [];
+          expect(
+            notes.length,
+            `scenario ${i} (${experience}/${daysPerWeek}d/"${day.title}"): ` +
+              `${shortfall} main slot(s) silently dropped — expected ${minExpected} mains, ` +
+              `got ${mains.length}; day.coachNotes must document each traced drop`
+          ).toBeGreaterThanOrEqual(shortfall);
+        } else if (mains.length > maxExpected) {
+          expect(mains.length).toBeLessThanOrEqual(maxExpected);
         }
 
         mains.forEach((item) => {
