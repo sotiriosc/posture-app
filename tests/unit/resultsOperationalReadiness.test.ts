@@ -1165,6 +1165,14 @@ describe("results operational readiness", () => {
   });
 
   test("backfills phase workout progress from completed current-phase sessions", async () => {
+    // Fix for stale test (2c.4): canAdvancePhase uses `new Date().toISOString()` as its
+    // default `nowIso` parameter. Without freezing the system clock the live date makes
+    // daysSincePhaseStart >> minDays (30), so the days-gate passes and the UI shows
+    // "Ready to advance" instead of the expected "Gate locked". Freeze to April 12, 2026
+    // (one day after phaseStartedAt 2026-04-11) so only the workout gate matters.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-04-12T12:00:00.000Z"));
+    try {
     const fourDayQuestionnaire = buildQuestionnaire({ daysPerWeek: 4 as const });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(fourDayQuestionnaire));
     const savedProgram = buildSavedProgram("phase-workout-backfill-program", {
@@ -1223,6 +1231,9 @@ describe("results operational readiness", () => {
         })
       );
     });
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   test("week progress uses the current Monday-start calendar week", async () => {
