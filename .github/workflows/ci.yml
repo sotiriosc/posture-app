@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+  schedule:
+    # Nightly full suite at 07:00 UTC (heavy — minutes, not seconds).
+    - cron: "0 7 * * *"
+
+jobs:
+  anchors:
+    name: Anchor tests (PR gate)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Run anchor suites
+        run: >-
+          npx vitest --run
+          tests/unit/programGoldenAnchors.test.ts
+          tests/unit/programIdentityAnchors.test.ts
+          tests/unit/questionnaireGoldenFlow.test.ts
+          tests/unit/programDeterminism.test.ts
+          tests/unit/competitiveBenchmark.test.ts
+          tests/unit/stripeWebhookLogic.test.ts
+
+  full-suite:
+    name: Full suite (nightly)
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Run full unit suite
+        run: npx vitest --run

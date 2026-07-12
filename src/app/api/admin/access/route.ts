@@ -1,12 +1,29 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { ADMIN_COOKIE_NAME, getAdminSecretHash, isAdminCookieValue } from "@/lib/adminAuth";
+import { takeRateLimit } from "@/lib/rateLimit";
 
 type AccessBody = {
   accessKey?: string;
 };
 
 export async function POST(request: Request) {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+  const gate = takeRateLimit({
+    key: `admin:${ip}`,
+    limit: 5,
+    windowMs: 60_000,
+  });
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { ok: false, error: "Too many admin access attempts. Please wait 1 minute." },
+      { status: 429 }
+    );
+  }
+
   const body = (await request.json().catch(() => null)) as AccessBody | null;
   const incoming = body?.accessKey?.trim() ?? "";
   const expectedHash = getAdminSecretHash();

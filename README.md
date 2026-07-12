@@ -1,13 +1,22 @@
-# Body Alignment Coach
+# Praxis (consumer app)
 
-Local-first posture and strength coaching app. Users complete an assessment and questionnaire, receive a multi-day program, run guided sessions, and review history with progression cues. All data is stored on-device (no login required).
+> Formerly **Body Alignment Coach** — the `bac_` cookie/storage prefix is legacy from
+> that name (see [Branding & legacy naming](#branding--legacy-naming)).
+
+Posture and strength coaching app. Users sign in, complete an assessment and
+questionnaire, receive a multi-day program, run guided sessions, and review history
+with progression cues. The app has a local-first heritage (browser storage still
+backs an offline-capable DB-free dev mode), but the shipped product is **auth-gated
+with a Stripe subscription** and **optional server-side cloud sync** for cross-device
+continuity.
 
 ## Overview
+- Auth + subscription: email/password login, `free`/`pro` entitlement via Stripe
 - Assessment: optional posture scan + questionnaire
 - Program: weekly split with day preview, coaching cues, and progression
 - Session: guided workout with dual-mode timer, feedback, and substitution
 - History: coach-grade logs, last sessions, next-time targets
-- Local-first: IndexedDB + localStorage; no cloud required
+- Storage: browser IndexedDB + localStorage, with optional Postgres-backed cloud sync
 
 ## Core Features
 - Program generation with equipment-aware filtering
@@ -17,6 +26,8 @@ Local-first posture and strength coaching app. Users complete an assessment and 
 - Exercise library with cues and video placeholders
 - Resume where you left off (session drafts)
 - Backup/restore + Reset app data (danger zone)
+- Auth-gated access with Stripe subscription entitlement (`free` vs `pro`)
+- Optional cloud sync (Postgres) for cross-device continuity
 
 ## Project Structure
 ```
@@ -58,6 +69,25 @@ LocalStorage
 IndexedDB
 - `bodycoach-logs` (sessions, logs, programs, prefs, progress)
 - `bodycoach-drafts` (session drafts)
+
+Cookies (server-set, httpOnly)
+- `bac_user` — session JWT (HMAC-signed, timing-safe verified)
+- `bac_admin` — admin unlock hash
+
+Postgres (optional, cloud sync)
+- `app_users`, plus `app_user_state`, `app_user_programs`,
+  `app_user_program_progress`, `app_user_sessions`, `app_user_exercise_logs`
+- Auto-created on first use when the DB drivers are enabled (see below).
+
+## Branding & legacy naming
+The product is now **Praxis**; it was originally **Body Alignment Coach**. Several
+identifiers still carry the old `bac_`/`bodycoach-` prefixes (cookies, IndexedDB
+databases). These are intentionally left as legacy names for now: renaming the
+cookies would invalidate every existing session and admin unlock, and renaming the
+IndexedDB stores would strand on-device data without a migration path. A rename, if
+done, should be a deliberate dual-read migration — not a silent flip. **Cookie-name
+migration decision is deferred to merge time (Sotirios's call);** until then the
+legacy names stay and this note keeps the tradeoff honest.
 
 ## Running Locally
 ```
@@ -155,19 +185,22 @@ Settings → Danger zone → Reset app data.
 This clears localStorage + IndexedDB and reloads the app as a fresh install.
 
 ## Future Plans (Roadmap)
-1. Cloud sync + login (optional): cross-device restore
-2. Wearable integration: HR/sleep insights to adjust weekly plan
-3. Adaptive periodization: auto-adjust phase based on readiness
-4. Movement scoring: real-time camera feedback in session (browser-only)
-5. Expanded exercise library: progression ladders and alternatives
-6. Coach review mode: shared links for remote feedback
-7. Notifications: weekly prompts and missed-session nudges
-8. Localization: multi-language support
+1. Wearable integration: HR/sleep insights to adjust weekly plan
+2. Adaptive periodization: auto-adjust phase based on readiness
+3. Movement scoring: real-time camera feedback in session (browser-only)
+4. Expanded exercise library: progression ladders and alternatives
+5. Coach review mode: shared links for remote feedback
+6. Notifications: weekly prompts and missed-session nudges
+7. Localization: multi-language support
+
+Delivered since the original roadmap: login + optional cloud sync (cross-device
+restore) and Stripe subscription entitlement are now in the shipped product.
 
 ## Design Principles
 - Mobile-first, high-contrast UI over a background image
-- Local-first storage (privacy by default)
+- Local-first heritage: browser storage backs a DB-free dev/offline mode; cloud
+  sync is opt-in on top, not a replacement
 - Progressive disclosure: keep screens clean, show details on demand
 
 ## Contributing
-Keep changes scoped, avoid heavy dependencies, and preserve local-first behavior.
+Keep changes scoped, avoid heavy dependencies, and preserve the DB-free local mode.
