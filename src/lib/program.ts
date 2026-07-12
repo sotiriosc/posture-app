@@ -13363,6 +13363,10 @@ const repairBackChestMainIntelligence = (params: {
       }
 
       if (!selected) {
+        // Emergency replacement: exercises that failed isSecondaryCandidateEligible but still
+        // satisfy the basic slot requirements. Guard against selecting an exercise already at
+        // another slot (selectedExerciseIdCounts tracks slots 0-3), since doing so would create
+        // a duplicate that the Unique ID Guard would then null out.
         const emergencyReplacement = [...candidateMeta].filter(
             (entry) =>
               !isSecondaryCandidateEligible({
@@ -13374,7 +13378,8 @@ const repairBackChestMainIntelligence = (params: {
                 slotKind: slot.slotKind,
                 slotLane: slot.lane,
               })
-                ? isBackChestMainBoundaryEligible({
+                ? (selectedExerciseIdCounts.get(entry.exercise.id) ?? 0) <= 0 &&
+                  isBackChestMainBoundaryEligible({
                     exercise: entry.exercise,
                     allowChestFly: allowSecondaryChestFly && entry.category === "fly",
                   }) &&
@@ -13422,9 +13427,13 @@ const repairBackChestMainIntelligence = (params: {
           if (!firstExtraCategory) firstExtraCategory = emergencyReplacement.category;
           continue;
         }
+        // Anchor-fallback: reuse a slot 0-3 exercise only when no genuinely new exercise
+        // is available. Skip exercises already tracked in selectedExerciseIdCounts to avoid
+        // creating duplicates that the Unique ID Guard would have to null out.
         const anchorFallback = [0, 1, 2, 3]
           .map((anchorIndex) => exerciseById(nextIds[anchorIndex]))
           .filter((exercise): exercise is Exercise => Boolean(exercise))
+          .filter((exercise) => (selectedExerciseIdCounts.get(exercise.id) ?? 0) <= 0)
           .map((exercise) => ({
             exercise,
             category: resolveSecondaryCategoryForExercise(exercise),
@@ -14015,6 +14024,8 @@ const repairBackChestMainIntelligence = (params: {
     return nextIds;
   })();
 
+  const degradationCoachNotes: string[] = [];
+
   const repairedMainIdsWithUniqueIdGuard = (() => {
     if (daysPerWeek !== 3) {
       return repairedMainIdsWithBoundaryGuard.map((id) => id as string | null);
@@ -14147,8 +14158,115 @@ const repairBackChestMainIntelligence = (params: {
         nextIds[slotIndex] = replacement.id;
         usedMainIds.add(replacement.id);
       } else {
-        // If no legal replacement exists, drop the duplicate slot rather than repeat an ID.
-        nextIds[slotIndex] = null;
+        // ── Slot Degradation Contract ──────────────────────────────────────────
+        // When no within-cap replacement exists, degrade in strict order so
+        // that every slot is filled, degraded-with-trace, or dropped-with-trace.
+        // Zero silent drops.
+
+        // (a) Relax tier cap: try any compound pull at any tier accessible to
+        //     the user (experience-gated but not pain-cap-gated).
+        const degradedA = exercises
+          .filter((exercise) => exercise.category === "main")
+          .filter((exercise) => !usedMainIds.has(exercise.id))
+          .filter((exercise) => exercise.id !== currentId)
+          .filter((exercise) =>
+            isExerciseEligibleForProgramContext({
+              exercise,
+              available: availableForBackChest,
+              section: "main",
+              context: context.selectionContext,
+            })
+          )
+          .filter((exercise) =>
+            matchesBackChestMainSlotKind({
+              exercise,
+              slotKind: slot.slotKind,
+              slotLane: slot.lane,
+            })
+          )
+          .filter((exercise) =>
+            isBackChestMainBoundaryEligible({
+              exercise,
+              allowChestFly,
+              allowLatAccent: slot.slotKind === "mainPullSupport",
+            })
+          )
+          .filter((exercise) => !isBackChestScapularAccessoryPullExercise(exercise))
+          .filter((exercise) =>
+            isBackChestExperienceEligible(exercise, context.selectionContext.experienceLevel)
+          )
+          // Tier cap intentionally removed — this is the "relax" step.
+          .filter((exercise) => isBackChestFloorPressAllowed(exercise, context, tierProfile))
+          .filter(
+            (exercise) =>
+              !isIsolationExercise(exercise) ||
+              (allowChestFly && isBackChestFlyPatternExercise(exercise))
+          )
+          .filter((exercise) => {
+            const cat = resolveBackChestMainStimulusCategory(exercise);
+            if (cat === "other") return false;
+            return categoryCounts[cat] < BACK_CHEST_SECONDARY_CATEGORY_CAPS[cat];
+          })
+          .sort((left, right) => {
+            // Prefer lower tier first (closest to the capped tier).
+            const tierDiff =
+              resolveBackChestEquipmentTier(left) - resolveBackChestEquipmentTier(right);
+            if (tierDiff !== 0) return tierDiff;
+            const leftScore = seededUniqueGuardScore(slotIndex, left.id);
+            const rightScore = seededUniqueGuardScore(slotIndex, right.id);
+            if (leftScore !== rightScore) return leftScore - rightScore;
+            return left.id.localeCompare(right.id);
+          })[0];
+
+        if (degradedA) {
+          nextIds[slotIndex] = degradedA.id;
+          usedMainIds.add(degradedA.id);
+          // Stamp the routine item during rebuild via selectionDebug piggyback.
+          // The item rebuild at the end of this function merges the exercise but
+          // preserves selectionDebug from entry.item; the degradationReason will
+          // be attached separately in the rebuild loop below.
+        } else {
+          // (b/c) Corrective fallback: find a scap_health/corrective exercise for
+          //       pull slots; hip_health or knee_health for lower-body slots.
+          const corrective = exercises
+            .filter((exercise) => exercise.category === "main")
+            .filter(
+              (exercise) =>
+                exercise.subPattern === "scap_health" ||
+                exercise.subPattern === "hip_health" ||
+                exercise.subPattern === "knee_health" ||
+                exercise.subPattern === "core_health"
+            )
+            .filter((exercise) => !usedMainIds.has(exercise.id))
+            .filter((exercise) =>
+              isExerciseEligibleForProgramContext({
+                exercise,
+                available: availableForBackChest,
+                section: "main",
+                context: context.selectionContext,
+              })
+            )
+            .sort((left, right) => {
+              const leftScore = seededUniqueGuardScore(slotIndex, left.id);
+              const rightScore = seededUniqueGuardScore(slotIndex, right.id);
+              if (leftScore !== rightScore) return leftScore - rightScore;
+              return left.id.localeCompare(right.id);
+            })[0];
+
+          if (corrective) {
+            nextIds[slotIndex] = corrective.id;
+            usedMainIds.add(corrective.id);
+          } else {
+            // (d) Last-resort traced drop: write a decisionTrace line and a
+            //     user-visible coachNote so no slot is silently missing.
+            nextIds[slotIndex] = null;
+            degradationCoachNotes.push(
+              `One planned exercise slot could not be filled (equipment and pain ` +
+                `constraints left no available options after trying all fallbacks). ` +
+                `Your program remains complete and effective.`
+            );
+          }
+        }
       }
     }
 
@@ -14391,7 +14509,18 @@ const repairBackChestMainIntelligence = (params: {
     mainRoutineIndexesToDrop.size > 0
       ? replacedRoutine.filter((_, index) => !mainRoutineIndexesToDrop.has(index))
       : replacedRoutine;
-  const repairedDay = { ...day, routine: routineAfterMainUniqueness };
+  const existingCoachNotes = day.coachNotes ?? [];
+  const mergedCoachNotes =
+    degradationCoachNotes.length > 0
+      ? [...existingCoachNotes, ...degradationCoachNotes]
+      : existingCoachNotes.length > 0
+        ? existingCoachNotes
+        : undefined;
+  const repairedDay = {
+    ...day,
+    routine: routineAfterMainUniqueness,
+    ...(mergedCoachNotes ? { coachNotes: mergedCoachNotes } : {}),
+  };
   const repairedStatus = evaluateBackChestMainIntelligence({
     day: repairedDay,
     daysPerWeek,
