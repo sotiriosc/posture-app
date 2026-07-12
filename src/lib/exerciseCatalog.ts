@@ -1,4 +1,4 @@
-import { exerciseById, exercises, type Exercise } from "@/lib/exercises";
+import { exerciseById, exercises, allExercises, type Exercise } from "@/lib/exercises";
 
 export type CatalogValidationReport = {
   ok: boolean;
@@ -79,7 +79,13 @@ export const validateExerciseCatalog = (): CatalogValidationReport => {
 
   const seenIds = new Set<string>();
   const seenNames = new Map<string, string>();
-  const allIds = new Set(exercises.map((exercise) => exercise.id));
+  const allIds = new Set(allExercises.map((exercise) => exercise.id));
+
+  allExercises
+    .filter((e) => e.deprecated)
+    .forEach((e) => {
+      warnings.push(`${e.id}: marked deprecated — excluded from selection pool`);
+    });
 
   exercises.forEach((exercise) => {
     if (!exercise.id.trim()) {
