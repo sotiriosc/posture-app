@@ -107,6 +107,74 @@ Chains are the asset being built. Dissolving a clean chain into a ladder-exempt 
 
 ---
 
+## Phase 2b — Tie calls & institutionalization (2026-07-12)
+
+### Standing rules ratified by Sotirios (2026-07-12)
+
+SR-1  **Band variants are the low-equipment lane and designated pain/deload swaps** — surfaced by equipment gating and `simplify_pattern`, never progression links. Band entries with matching cable/free-weight counterparts are registered as `swapOptions` only; no `progressionOf`/`regressionOf` links cross equipment tracks.
+
+SR-2  **Suspension content is retained, equipment-gated, and rated to honor instability** — the suspension family is not removed. All suspension exercises carry `equipment: ["pullup_bar", "bands"]` and have difficulty ratings +1 relative to their ground-based counterparts to reflect the instability demand. Advanced suspension press patterns carry `experienceMin: "advanced"`.
+
+SR-3  **carry_load receives no dedicated warmup prep block** (Sotirios, 2026-07-12) — carry_load isolation exercises do not appear in the PRIME block of the warmup system. Unloaded bracing marches (`standing-brace-march`, `wall-supported-carry-march`) remain in `core_health` and serve as core primers, not carry primers.
+
+### Tie calls (2026-07-12)
+
+TC-1  **split-stance-row ✂ dumbbell-rows** (cross-track: band→free) — delinked. `dumbbell-rows` removed from `split-stance-row`'s progression chain. `dumbbell-rows` = swap at the free d3 row rung (`swapOptions`). Band variants (`band-row`, `split-stance-row`) are designated as the low-equipment lane per SR-1; they are pain/deload swaps of their free-track counterparts via `swapOptions`, not progression rungs.
+
+TC-2  **countertop-pushup ✂ suspension-pushup-upright** (cross-track: ground→suspension) — delinked; mutual `swapOptions` established. Suspension family retained (SR-2). Draft +1 difficulty re-rate applied across the suspension push-up chain for Sotirios's PR review:
+  - `suspension-pushup-upright`: d2 → **d3** (was tied with countertop-pushup at d2; +1 honors instability)
+  - `suspension-pushup-incline`: d3 → **d4**
+  - `suspension-pushup-parallel`: d4 → **d5**
+  - `suspension-pushup-feet-elevated`: stays d5 (ceiling cap; I5a d5-tie with parallel)
+  - `suspension-chest-fly`: d4 → **d5** (consequential re-rate: was tied with newly re-rated incline at d4; suspension fly at full extension is a legitimate d5 ceiling entry)
+  ⚠️ REVIEW: Confirm the +1 shift is correct before merging. If upright at d3 leaves a gap below the suspension entry point, consider a d2 bodyweight regression anchor or accept the gap.
+
+TC-3  **suspension-pike-press-incline ✂ wall-handstand-hold** (cross-track: suspension→handstand) — delinked. Handstand mini-track formalized: `wall-handstand-hold(3) → wall-handstand-negative(4) → wall-assisted-handstand-pushup(5)`; `pike-pushup(3)` = swap of hold. Suspension-pike-press chain retains its own vertical-push ladder (`upright(2) → incline(3) → deep(4)`) and receives `experienceMin: "advanced"` on all three entries (SR-2).
+
+TC-4  **band-row ✂ machine-seated-row** (cross-track: band→machine) — delinked. `machine-seated-row` roots the gym-track d2 horizontal-pull rung. `band-row` = designated low-equipment / pain swap (SR-1); `swapOptions` link maintained. Band-track audit passed: all 34 `band-*` entries carry `equipment: ["bands"]` (or `["pullup_bar", "bands"]` for band-assisted-pullup).
+
+TC-5  **cable-seated-row = canonical d3 row rung** — `dumbbell-chest-supported-row`, `single-arm-dumbbell-row`, and `dumbbell-rows` = its `swapOptions`. `barbell-bent-over-row(4)` chains from `cable-seated-row`. True tie (same track, same difficulty) resolved by designating cable-seated-row as the canonical ladder rung per equipment availability hierarchy.
+
+TC-6  **band-assisted-pullup ✂ machine-assisted-pullup** (cross-track) — delinked; mutual `swapOptions`. Per SR-1, band variant = designated pain/deload swap of the machine version.
+
+TC-7  **band-straight-arm-pulldown ✂ cable-straight-arm-pulldown** (equipment variant) — delinked; mutual `swapOptions`. Band variant = designated light-resistance/pain option (SR-1); carries `supportOnly: true` and `painContraindications: ["shoulders", "low back"]`. Bidirectional `swapOptions` added to both entries.
+
+TC-8  **dumbbell-pullover ✂ cable-lat-pulldown** (different movement animal) — delinked. `dumbbell-pullover` = swap of `cable-lat-pulldown`; it stays selectable as a lat-extension variation but is not a progression rung.
+
+TC-9  **dumbbell-side-lying-external-rotation ← cable-external-rotation** (scap_health stragglers missed in toolbox sweep) — entire external-rotation chain delinked from ladder membership. `dumbbell-side-lying-external-rotation`, `cable-external-rotation`, `band-external-rotation`, and `machine-shoulder-external-rotation` all reclassified to `subPattern: "scap_health"`. No `progressionOf`/`regressionOf` links remain. Carries `primes: ["horizontal_pull"]` and `mobilizes: ["shoulders", "scapulae"]` for the warmup system.
+
+### Warmup/activation annotation pass (2026-07-12)
+
+Ratified joint map (Sotirios, 2026-07-12):
+- hinge → hips, hamstrings, lower back
+- knee_dominant → knees, hips, ankles
+- horizontal_push → shoulders, elbows, wrists
+- vertical_push → shoulders, thoracic spine, elbows, wrists
+- horizontal_pull → shoulders, scapulae, elbows
+- vertical_pull → shoulders, scapulae, elbows (lats/grip noted in Phase-3W contract)
+- core_stability → spine, hips
+
+Applied to all warmup/activation/cooldown entries. Flags for Sotirios review:
+- `ankle-mobility`: mobilizes kept as `["ankles"]` (exercise-specific); map includes `["knees", "hips", "ankles"]` — confirm scope.
+- `hip-flexor-stretch`: mobilizes `["hips", "hip flexors"]`; "hip flexors" not in ratified map joints — confirm.
+- `chin-tucks`: mobilizes `["neck"]`; neck not in ratified pattern map — confirm.
+- `doorway-pec-stretch`: mobilizes `["shoulders", "chest"]`; "chest" not in map — confirm.
+- `banded-lat-stretch`: mobilizes `["lats", "upper_back"]`; "lats" is a muscle not a joint — confirm.
+- `scapular-pushups`: mobilizes includes `"serratus"` (exercise-specific; not in horizontal_push map) — confirm or remove.
+- `band-offset-march-hold`: mobilizes `["spine", "hips"]` only (no primes); carry_load receives no warmup prep block (SR-3) — confirm no primes is correct.
+- `wall-supported-carry-march`: `carry_load` removed from primes per SR-3; now only `["core_stability"]` — confirm.
+
+### deprecated: true — formal mechanism implemented (2026-07-12)
+
+`cable-upright-row` carries `deprecated: true`. The type field and filter were implemented in the 2b.3+2b.4 commit:
+- `exercises` export filters `allExercises` to exclude deprecated entries (selection cannot pick them)
+- `exerciseCatalog.ts` builds `allIds` from `allExercises`; validator warns on deprecated entries
+- `exerciseById` still searches `allExercises` (legacy log entries still resolve)
+
+Previous log note (P2 isolation entry): "Formal `deprecated` field is P3 tech debt" — **resolved in Phase 2b**.
+
+---
+
 ## Validator extensions (cumulative)
 
 | Date | Addition | Reason |
@@ -116,3 +184,5 @@ Chains are the asset being built. Dissolving a clean chain into a ladder-exempt 
 | 2026-07-12 | `lateral_raise` → ISOLATION_PATTERNS | Shoulder isolation family |
 | 2026-07-12 | `elbow_flexion` → ISOLATION_PATTERNS | Biceps isolation family |
 | 2026-07-12 | `elbow_extension` → ISOLATION_PATTERNS | Triceps isolation family |
+| 2026-07-12 | I4/I5/I6/I7 + ISO-delinked + deprecated-exclusion | catalogLadderInvariants.test.ts green (Phase 2b) |
+| 2026-07-12 | `deprecated?: boolean` on Exercise type | cable-upright-row excluded from selection |
