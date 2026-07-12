@@ -415,6 +415,14 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   decided by Sotirios. The model compiles; you architect. Same division as Horus.
 - Every falsified approach gets a line in the relevant decisions log. Nothing silently
   disappears.
+- **Branch-creation rule (2026-07-12):** Every phase branch must be cut from `origin/main`
+  at the exact merge-commit SHA logged in the work order (e.g. `git checkout -b phase-Xc-foo
+  ec9a621`). Before opening a PR the branch must be rebased onto that same SHA so the
+  merge-base is clean. Confirm with `git merge-base HEAD origin/main` = target SHA.
+- **Merge method (standing rule, 2026-07-11):** Merge commits are required in this repo.
+  Squash is never acceptable. PR #8 was squashed against this rule and is logged as a
+  standing-rule violation in `docs/ladder-decisions.md`. Any PR opened with squash merge
+  selected is out of contract.
 - SCOPE BOUNDARY (2026-07-11, per Sotirios): Praxis stays standalone. Zakhor is a
   separate memory project — do NOT integrate, bridge, or couple this app to Zakhor
   or to any external memory/knowledge system. Any PR introducing such a connection
