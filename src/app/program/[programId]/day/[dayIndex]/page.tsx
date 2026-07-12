@@ -285,6 +285,11 @@ export default function ProgramDayPage({ params }: Props) {
             <p className="text-sm text-slate-200">
               Focus: {day.focusTags.join(", ")} • Estimated 45–60 min
             </p>
+            {day.degradationNotes && day.degradationNotes.length > 0 && (
+              <p className="text-xs text-amber-300/80">
+                {day.degradationNotes.join(" ")}
+              </p>
+            )}
             <div className="flex flex-wrap gap-3">
               <Link href={`/session?programId=${program.id}&dayIndex=${dayIndex}`}>
                 <Button variant="primary">Start This Day</Button>

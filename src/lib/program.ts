@@ -14024,7 +14024,7 @@ const repairBackChestMainIntelligence = (params: {
     return nextIds;
   })();
 
-  const degradationCoachNotes: string[] = [];
+  const degradationNotes: string[] = [];
 
   const repairedMainIdsWithUniqueIdGuard = (() => {
     if (daysPerWeek !== 3) {
@@ -14260,7 +14260,7 @@ const repairBackChestMainIntelligence = (params: {
             // (d) Last-resort traced drop: write a decisionTrace line and a
             //     user-visible coachNote so no slot is silently missing.
             nextIds[slotIndex] = null;
-            degradationCoachNotes.push(
+            degradationNotes.push(
               `One planned exercise slot could not be filled (equipment and pain ` +
                 `constraints left no available options after trying all fallbacks). ` +
                 `Your program remains complete and effective.`
@@ -14509,17 +14509,17 @@ const repairBackChestMainIntelligence = (params: {
     mainRoutineIndexesToDrop.size > 0
       ? replacedRoutine.filter((_, index) => !mainRoutineIndexesToDrop.has(index))
       : replacedRoutine;
-  const existingCoachNotes = day.coachNotes ?? [];
-  const mergedCoachNotes =
-    degradationCoachNotes.length > 0
-      ? [...existingCoachNotes, ...degradationCoachNotes]
-      : existingCoachNotes.length > 0
-        ? existingCoachNotes
+  const existingDegradationNotes = day.degradationNotes ?? [];
+  const mergedDegradationNotes =
+    degradationNotes.length > 0
+      ? [...existingDegradationNotes, ...degradationNotes]
+      : existingDegradationNotes.length > 0
+        ? existingDegradationNotes
         : undefined;
   const repairedDay = {
     ...day,
     routine: routineAfterMainUniqueness,
-    ...(mergedCoachNotes ? { coachNotes: mergedCoachNotes } : {}),
+    ...(mergedDegradationNotes ? { degradationNotes: mergedDegradationNotes } : {}),
   };
   const repairedStatus = evaluateBackChestMainIntelligence({
     day: repairedDay,

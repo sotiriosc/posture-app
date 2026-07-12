@@ -19,8 +19,8 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 const mainItems = (day: { routine: Array<{ section: string; exerciseId: string }> }) =>
   day.routine.filter((item) => item.section === "main");
 
-const hasCoachNote = (day: { coachNotes?: string[] }) =>
-  Array.isArray(day.coachNotes) && day.coachNotes.length > 0;
+const hasDegradationNote = (day: { degradationNotes?: string[] }) =>
+  Array.isArray(day.degradationNotes) && day.degradationNotes.length > 0;
 
 // ── i=29 Fuzz Persona ───────────────────────────────────────────────────────
 
@@ -60,12 +60,12 @@ describe("slot degradation contract", () => {
 
     if (shortfall > 0) {
       expect(
-        hasCoachNote(backChestDay),
+        hasDegradationNote(backChestDay),
         `Slot degradation contract violated: ${shortfall} slot(s) silently dropped. ` +
-          `Expected ${expectedMainCount} mains or a traced drop via coachNotes. ` +
-          `Got ${mains.length} mains with no coachNotes.`
+          `Expected ${expectedMainCount} mains or a traced drop via degradationNotes. ` +
+          `Got ${mains.length} mains with no degradationNotes.`
       ).toBe(true);
-      expect(backChestDay.coachNotes!.length).toBeGreaterThanOrEqual(shortfall);
+      expect(backChestDay.degradationNotes!.length).toBeGreaterThanOrEqual(shortfall);
     } else {
       // All slots filled — verify the count is exactly right (no phantom extras).
       expect(mains.length).toBe(expectedMainCount);
@@ -177,15 +177,15 @@ describe("slot degradation contract", () => {
    * Stage (d): Last-resort traced drop
    *
    * If the generator drops a slot as a last resort, it must:
-   *   1. Not drop it silently — day.coachNotes must be populated.
+   *   1. Not drop it silently — day.degradationNotes must be populated.
    *   2. Guarantee no duplicate exercise IDs.
    *
    * This test asserts that wherever fewer mains are returned than expected, a
-   * coachNote exists explaining the shortfall. The test intentionally does NOT
+   * degradationNote exists explaining the shortfall. The test intentionally does NOT
    * require stage (d) to be triggered (that would constrain the implementation),
    * only that IF a drop occurs it is always traced.
    */
-  test("stage (d): any last-resort drop is documented via coachNotes, never silent", () => {
+  test("stage (d): any last-resort drop is documented via degradationNotes, never silent", () => {
     const questionnaire: QuestionnaireData = {
       goals: "Reduce pain",
       experience: "Advanced",
@@ -208,9 +208,9 @@ describe("slot degradation contract", () => {
 
         if (shortfall > 0) {
           expect(
-            hasCoachNote(day),
+            hasDegradationNote(day),
             `Silent drop detected on "${day.title}": expected ${advancedBackChestExpected} mains, ` +
-              `got ${mains.length} with no coachNotes.`
+              `got ${mains.length} with no degradationNotes.`
           ).toBe(true);
         }
       }

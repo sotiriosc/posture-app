@@ -128,16 +128,16 @@ describe("program fuzz invariants", () => {
 
         // Slot-degradation contract: every template slot must be filled, degraded-with-trace
         // (stage a/b/c → count stays the same), or dropped-with-trace (stage d → count
-        // decreases by at most 1 per slot, but a coachNote MUST be present). A silent count
-        // mismatch — fewer mains than expected AND no coachNotes on the day — is a failure.
+        // decreases by at most 1 per slot, but a degradationNote MUST be present). A silent
+        // count mismatch — fewer mains than expected AND no degradationNotes — is a failure.
         if (mains.length < minExpected) {
           const shortfall = minExpected - mains.length;
-          const notes = day.coachNotes ?? [];
+          const notes = day.degradationNotes ?? [];
           expect(
             notes.length,
             `scenario ${i} (${experience}/${daysPerWeek}d/"${day.title}"): ` +
               `${shortfall} main slot(s) silently dropped — expected ${minExpected} mains, ` +
-              `got ${mains.length}; day.coachNotes must document each traced drop`
+              `got ${mains.length}; day.degradationNotes must document each traced drop`
           ).toBeGreaterThanOrEqual(shortfall);
         } else if (mains.length > maxExpected) {
           expect(mains.length).toBeLessThanOrEqual(maxExpected);

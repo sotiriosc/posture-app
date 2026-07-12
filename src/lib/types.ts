@@ -217,7 +217,7 @@ export type ProgramSelectionDecisionTrace = {
    *   "degraded-a" = sibling-family relax / tier-cap relaxed
    *   "degraded-b" = ladder-aware substitution (any pattern rung)
    *   "degraded-c" = corrective fallback (scap_health / hip_health / etc.)
-   *   "dropped"    = last-resort drop; see ProgramDay.coachNotes for user msg
+   *   "dropped"    = last-resort drop; see ProgramDay.degradationNotes for user msg
    */
   degradationReason?: "degraded-a" | "degraded-b" | "degraded-c" | "dropped";
 };
@@ -240,7 +240,7 @@ export type ProgramDay = {
   activation?: WarmupBlock;
   cooldown?: WarmupBlock;
   /** User-visible notes explaining why a slot was dropped or degraded. */
-  coachNotes?: string[];
+  degradationNotes?: string[];
 };
 
 export type Program = {
