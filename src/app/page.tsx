@@ -2,6 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import { publicPageMetadata } from "@/lib/seo";
+import { seoResourceLinks } from "@/lib/seoPages";
+
+export const metadata = publicPageMetadata({
+  title: "Praxis | Posture-Aware Personal Training App",
+  description:
+    "Praxis is a structured, posture-aware personal training app that builds workout programs from goals, limitations, schedule, progression, and equipment.",
+  path: "/",
+});
 
 export default async function Home() {
   const systemSteps = [
@@ -107,6 +116,21 @@ export default async function Home() {
                 A clear starting point today. A smarter plan as your history grows.
               </p>
             </section>
+
+            <footer className="w-full border-t border-white/10 pt-5 text-center">
+              <p className="text-xs font-semibold uppercase text-slate-300">Resources</p>
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                {seoResourceLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="rounded-lg border border-slate-300/20 bg-slate-950/35 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-slate-900/55"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </footer>
           </div>
         </main>
       </div>

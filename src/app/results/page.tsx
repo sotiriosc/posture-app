@@ -8,9 +8,11 @@ import Button from "@/components/ui/Button";
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import { noIndexMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const metadata = noIndexMetadata("Praxis Dashboard");
 
 type ResultsProps = {
   searchParams: Promise<{ paywall?: string }>;

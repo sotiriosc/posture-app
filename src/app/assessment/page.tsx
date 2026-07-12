@@ -4,6 +4,9 @@ import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import { noIndexMetadata } from "@/lib/seo";
+
+export const metadata = noIndexMetadata("Praxis Assessment");
 
 export default function AssessmentPage() {
   return (

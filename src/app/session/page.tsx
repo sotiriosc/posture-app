@@ -1,5 +1,8 @@
 import { Suspense } from "react";
 import SessionClient from "./SessionClient";
+import { noIndexMetadata } from "@/lib/seo";
+
+export const metadata = noIndexMetadata("Praxis Session");
 
 export default function SessionPage() {
   return (
