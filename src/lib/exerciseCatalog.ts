@@ -18,7 +18,13 @@ const MAIN_PATTERNS = new Set([
 
 // Recognized isolation/accessory families: valid patterns but ladder-exempt
 // (they progress by load/reps in place, not via progressionOf chains).
-const ISOLATION_PATTERNS = new Set(["calves", "carry_load"]);
+const ISOLATION_PATTERNS = new Set([
+  "calves",
+  "carry_load",
+  "lateral_raise",
+  "elbow_flexion",
+  "elbow_extension",
+]);
 
 export const getExerciseById = (id?: string) => exerciseById(id);
 
