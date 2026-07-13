@@ -3,41 +3,76 @@ name: CI
 on:
   pull_request:
   schedule:
-    # Nightly full suite at 07:00 UTC (heavy — minutes, not seconds).
+    # Nightly full suite at 07:00 UTC
     - cron: "0 7 * * *"
 
 jobs:
-  anchors:
-    name: Anchor tests (PR gate)
+  # ─── PR gate ──────────────────────────────────────────────────────────────
+  # Runs on every pull request. Fast enough to be a blocking gate (~5 min).
+  pr-gate:
+    name: PR gate (lint + anchors + both builds)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - name: Run anchor suites
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Boundary lint (R2/R3/R4) ──────────────────────────────────────────
+      - name: Boundary lint
+        run: >-
+          npx eslint
+          packages/engine/src
+          apps/consumer/src
+          apps/gyms/src
+
+      # ── Engine anchor gate + catalog invariants ───────────────────────────
+      - name: Engine anchor gate
         run: >-
           npx vitest --run
-          tests/unit/programGoldenAnchors.test.ts
-          tests/unit/programIdentityAnchors.test.ts
-          tests/unit/questionnaireGoldenFlow.test.ts
-          tests/unit/programDeterminism.test.ts
-          tests/unit/competitiveBenchmark.test.ts
-          tests/unit/stripeWebhookLogic.test.ts
+          --config packages/engine/vitest.config.ts
+          packages/engine/tests/unit/programGoldenAnchors.test.ts
+          packages/engine/tests/unit/programIdentityAnchors.test.ts
+          packages/engine/tests/unit/questionnaireGoldenFlow.test.ts
+          packages/engine/tests/unit/programDeterminism.test.ts
+          packages/engine/tests/unit/competitiveBenchmark.test.ts
+          packages/engine/tests/unit/catalogLadderInvariants.test.ts
+          packages/engine/tests/unit/stripeWebhookLogic.test.ts
+          packages/engine/tests/unit/mergeReadinessAnchors.test.ts
 
+      # ── Both apps build ───────────────────────────────────────────────────
+      - name: Build consumer app
+        run: npm run build --workspace=apps/consumer
+
+      - name: Build gyms app
+        run: npm run build --workspace=apps/gyms
+
+  # ─── Nightly full suite ───────────────────────────────────────────────────
+  # Runs on schedule only. Heavier — allows the full 468-test suite to run.
   full-suite:
-    name: Full suite (nightly)
+    name: Full engine suite (nightly)
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - name: Run full unit suite
-        run: npx vitest --run
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run full engine suite
+        run: npx vitest --run --config packages/engine/vitest.config.ts
+
+      # Gyms-only tests run nightly too.
+      - name: Run gyms suite
+        run: npx vitest --run --config apps/gyms/vitest.config.ts
