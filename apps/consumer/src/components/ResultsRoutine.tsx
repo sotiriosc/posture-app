@@ -4,36 +4,36 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { QuestionnaireData } from "./QuestionnaireForm";
-import { exerciseById } from "@/lib/exercises";
+import { exerciseById } from "@praxis/engine";
 import {
   buildEngineSignals,
   buildSignalsFromLocalState,
   generateProgram,
-} from "@/lib/engine";
+} from "@praxis/engine";
 import {
   PROGRAM_TEMPLATE_VERSION,
-} from "@/lib/program";
+} from "@praxis/engine";
 import {
   normalizeEquipmentSelectionValues,
-} from "@/lib/equipment";
+} from "@praxis/engine";
 import { usePhotoContext } from "@/components/PhotoContext";
 import {
   type PoseAnalysis,
-} from "@/lib/poseAnalyzer";
+} from "@praxis/engine";
 import {
   type AssessmentReport,
-} from "@/lib/assessmentEngine";
+} from "@praxis/engine";
 import Button from "@/components/ui/Button";
-import { loadAppState, saveAppState } from "@/lib/appState";
-import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
-import type { Exercise } from "@/lib/exercises";
+import { loadAppState, saveAppState } from "@praxis/engine";
+import { buildQuestionnaireSignature } from "@praxis/engine";
+import type { Exercise } from "@praxis/engine";
 import type {
   ExerciseLog,
   Program,
   ProgramProgress,
   ProgramRoutineItem,
   SessionRecord,
-} from "@/lib/types";
+} from "@praxis/engine";
 import {
   getProgramProgress,
   getLatestProgram,
@@ -44,25 +44,25 @@ import {
   saveProgram,
   saveProgramProgress,
   uuid,
-} from "@/lib/logStore";
+} from "@praxis/engine";
 import {
   MAX_PHASE_INDEX,
   buildNextWeekPlan,
   getPhaseMetaByIndex,
   getPhaseProfile,
-} from "@/lib/phases";
-import { clearDraftsByProgramId } from "@/lib/sessionDraftStore";
+} from "@praxis/engine";
+import { clearDraftsByProgramId } from "@praxis/engine";
 import {
   canAdvancePhase,
   formatPhaseGateReason,
   skipPhase1,
-} from "@/lib/phaseGating";
+} from "@praxis/engine";
 import {
   buildPhaseReadyDismissalKey,
   getPhaseControlUiState,
   getPhaseReadyNoticeState,
-} from "@/lib/phaseControls";
-import { getDailyInsight } from "@/lib/insightGenerator";
+} from "@praxis/engine";
+import { getDailyInsight } from "@praxis/engine";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
@@ -72,11 +72,11 @@ import RoutineItemCoachingDetails, {
   formatRoutineItemDose,
 } from "@/components/RoutineItemCoachingDetails";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
-import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
-import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
-import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
-import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
-import { useTrainingSyncStatus } from "@/lib/useTrainingSyncStatus";
+import { SESSION_COMPLETE_EVENT } from "@praxis/engine";
+import { formatNextSessionRecommendationFromSession } from "@praxis/engine";
+import { formatSessionAdaptationPreviewFromFeedback } from "@praxis/engine";
+import { formatSessionFeedbackCoachSummary } from "@praxis/engine";
+import { useTrainingSyncStatus } from "@praxis/engine";
 import { useResultsBootstrap } from "@/components/results/useResultsBootstrap";
 import { usePoseAssessment } from "@/components/results/usePoseAssessment";
 import { useResultsHistoryProgress } from "@/components/results/useResultsHistoryProgress";

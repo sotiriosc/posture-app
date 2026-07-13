@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { readServerSession } from "@/lib/serverAuth";
-import { getUserRepository } from "@/lib/userRepository";
-import { isStripeConfigured } from "@/lib/stripeServer";
+import { readServerSession } from "@praxis/engine";
+import { getUserRepository } from "@praxis/engine";
+import { isStripeConfigured } from "@praxis/engine";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

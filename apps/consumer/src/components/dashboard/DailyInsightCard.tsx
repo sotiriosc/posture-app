@@ -1,4 +1,4 @@
-import type { Insight } from "@/lib/insightGenerator";
+import type { Insight } from "@praxis/engine";
 
 type DailyInsightCardProps = {
   insight: Insight;

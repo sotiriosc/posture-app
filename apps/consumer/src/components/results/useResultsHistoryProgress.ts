@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { exerciseById } from "@/lib/exercises";
-import type { Program, SessionRecord } from "@/lib/types";
+import { exerciseById } from "@praxis/engine";
+import type { Program, SessionRecord } from "@praxis/engine";
 
 export type HistoryScope = "current" | "all";
 

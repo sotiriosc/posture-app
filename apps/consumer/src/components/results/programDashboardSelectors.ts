@@ -1,7 +1,7 @@
-import type { AssessmentReport } from "@/lib/assessmentEngine";
-import { exerciseById } from "@/lib/exercises";
-import type { Exercise } from "@/lib/exercises";
-import type { Program } from "@/lib/types";
+import type { AssessmentReport } from "@praxis/engine";
+import { exerciseById } from "@praxis/engine";
+import type { Exercise } from "@praxis/engine";
+import type { Program } from "@praxis/engine";
 
 const DEFAULT_FOCUS = "Control and alignment";
 const DEFAULT_MOVEMENT_ITEM =

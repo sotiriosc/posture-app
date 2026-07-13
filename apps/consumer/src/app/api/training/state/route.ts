@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { readServerSession } from "@/lib/serverAuth";
+import { readServerSession } from "@praxis/engine";
 import {
   getTrainingSnapshot,
   patchTrainingSnapshot,
   type TrainingSnapshot,
-} from "@/lib/trainingStoreDb";
-import { isTrainingStoreDisabled } from "@/lib/trainingStoreConfig";
-import { shouldUseLocalDbFallback, warnOnce } from "@/lib/runtimeEnv";
+} from "@praxis/engine";
+import { isTrainingStoreDisabled } from "@praxis/engine";
+import { shouldUseLocalDbFallback, warnOnce } from "@praxis/engine";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

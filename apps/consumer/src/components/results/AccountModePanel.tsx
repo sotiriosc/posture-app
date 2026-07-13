@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import type { SubscriptionPlan } from "@/lib/authTypes";
+import type { SubscriptionPlan } from "@praxis/engine";
 
 type AccountModePanelProps = {
   authEnabled: boolean;

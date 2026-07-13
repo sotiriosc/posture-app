@@ -8,13 +8,13 @@ import {
   generateObservations,
   type PoseAnalysis,
   type PoseMetrics,
-} from "@/lib/poseAnalyzer";
+} from "@praxis/engine";
 import {
   buildAssessmentReport,
   type AssessmentReport,
-} from "@/lib/assessmentEngine";
-import { pushTrainingPatch } from "@/lib/trainingSyncClient";
-import { logTrainingSync } from "@/lib/trainingSyncDebug";
+} from "@praxis/engine";
+import { pushTrainingPatch } from "@praxis/engine";
+import { logTrainingSync } from "@praxis/engine";
 
 export type PoseAssessmentState = {
   loading: boolean;

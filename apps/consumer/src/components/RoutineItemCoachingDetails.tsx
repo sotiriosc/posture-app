@@ -1,4 +1,4 @@
-import type { ProgramRoutineItem } from "@/lib/types";
+import type { ProgramRoutineItem } from "@praxis/engine";
 
 type RoutineItemCoachingDetailsProps = {
   item: Pick<ProgramRoutineItem, "prescription" | "rationale">;

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { exerciseById } from "@/lib/exercises";
+import { exerciseById } from "@praxis/engine";
 import ExerciseHistory from "@/components/ExerciseHistory";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";

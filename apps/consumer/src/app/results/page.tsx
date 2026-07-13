@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { isAuthConfigured, readServerSession } from "@/lib/serverAuth";
-import { getUserRepository } from "@/lib/userRepository";
+import { isAuthConfigured, readServerSession } from "@praxis/engine";
+import { getUserRepository } from "@praxis/engine";
 import ResultsRoutine from "@/components/ResultsRoutine";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";

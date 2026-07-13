@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import type { AssessmentReport } from "@/lib/assessmentEngine";
-import type { SubscriptionPlan } from "@/lib/authTypes";
-import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
-import { loadPrefs } from "@/lib/logStore";
-import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
+import type { AssessmentReport } from "@praxis/engine";
+import type { SubscriptionPlan } from "@praxis/engine";
+import { normalizeEquipmentSelectionValues } from "@praxis/engine";
+import { loadPrefs } from "@praxis/engine";
+import { loadTrainingSnapshot } from "@praxis/engine";
 
 const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
   if (value === 4 || value === "4") return 4;

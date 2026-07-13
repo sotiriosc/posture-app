@@ -7,7 +7,7 @@ import {
   removePhoto as removeStoredPhoto,
   setPhoto as saveStoredPhoto,
   type PhotoSlot,
-} from "@/lib/photoStore";
+} from "@praxis/engine";
 
 type PhotoKey = PhotoSlot;
 

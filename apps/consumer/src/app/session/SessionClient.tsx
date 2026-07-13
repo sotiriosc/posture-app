@@ -11,14 +11,14 @@ import {
 } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { exerciseById } from "@/lib/exercises";
-import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import { exerciseById } from "@praxis/engine";
+import { normalizeEquipmentSelectionValues } from "@praxis/engine";
 import {
   PROGRAM_TEMPLATE_VERSION,
   previewPainSubstitutionChoices,
-} from "@/lib/program";
-import { generateNextTimeGuidance } from "@/lib/progression";
-import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
+} from "@praxis/engine";
+import { generateNextTimeGuidance } from "@praxis/engine";
+import { buildQuestionnaireSignature } from "@praxis/engine";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
@@ -31,27 +31,27 @@ import SessionProgressHeader from "@/components/session/SessionProgressHeader";
 import SessionFeedbackCheckIn from "@/components/session/SessionFeedbackCheckIn";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import { loadAppState, saveAppState } from "@/lib/appState";
-import { getEffectiveTimer } from "@/lib/timerRules";
+import { loadAppState, saveAppState } from "@praxis/engine";
+import { getEffectiveTimer } from "@praxis/engine";
 import {
   deriveNextSessionRecommendationFromSession,
   formatNextSessionRecommendationFromSession,
-} from "@/lib/nextSessionRecommendation";
+} from "@praxis/engine";
 import {
   deriveSessionPracticeOptions,
   formatPracticeModeSessionNote,
   selectSessionPracticeItems,
-} from "@/lib/sessionPracticeOptions";
-import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
-import { sanitizeSessionFeedback } from "@/lib/sessionFeedback";
-import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
-import { applyCompletedDayToProgramProgress } from "@/lib/programProgress";
+} from "@praxis/engine";
+import { formatSessionAdaptationPreviewFromFeedback } from "@praxis/engine";
+import { sanitizeSessionFeedback } from "@praxis/engine";
+import { saveSessionDropoffTelemetry } from "@praxis/engine";
+import { applyCompletedDayToProgramProgress } from "@praxis/engine";
 import {
   clearDraft,
   loadDraft,
   saveDraft,
   type SessionDraft,
-} from "@/lib/sessionDraftStore";
+} from "@praxis/engine";
 import type {
   ExerciseFeedback,
   ExerciseLog,
@@ -65,7 +65,7 @@ import type {
   SessionFeedback,
   SessionPracticeOption,
   SessionRecord,
-} from "@/lib/types";
+} from "@praxis/engine";
 import {
   createSession,
   getProgram,
@@ -82,9 +82,9 @@ import {
   updateSession,
   uuid,
   nowIso,
-} from "@/lib/logStore";
-import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
-import { markSessionComplete } from "@/lib/sessionStore";
+} from "@praxis/engine";
+import { loadTrainingSnapshot } from "@praxis/engine";
+import { markSessionComplete } from "@praxis/engine";
 
 const STORAGE_KEY = "posture_questionnaire";
 

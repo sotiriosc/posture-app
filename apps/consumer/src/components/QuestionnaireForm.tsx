@@ -2,15 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
-import { loadAppState, saveAppState } from "@/lib/appState";
-import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
-import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
-import { logTrainingSync } from "@/lib/trainingSyncDebug";
-import { clearDraft } from "@/lib/sessionDraftStore";
-import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
-import { getProgram, saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
-import type { ProgramProgress } from "@/lib/types";
+import { normalizeEquipmentSelectionValues } from "@praxis/engine";
+import { loadAppState, saveAppState } from "@praxis/engine";
+import { buildQuestionnaireSignature } from "@praxis/engine";
+import { loadTrainingSnapshot, pushTrainingPatch } from "@praxis/engine";
+import { logTrainingSync } from "@praxis/engine";
+import { clearDraft } from "@praxis/engine";
+import { buildSignalsFromLocalState, generateProgram } from "@praxis/engine";
+import { getProgram, saveProgram, saveProgramProgress, uuid } from "@praxis/engine";
+import type { ProgramProgress } from "@praxis/engine";
 
 export type QuestionnaireData = {
   goals: string;

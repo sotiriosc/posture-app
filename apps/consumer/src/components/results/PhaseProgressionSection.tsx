@@ -4,7 +4,7 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import PhaseProgressCard from "@/components/dashboard/PhaseProgressCard";
-import type { PhaseAdvanceGateResult } from "@/lib/phaseGating";
+import type { PhaseAdvanceGateResult } from "@praxis/engine";
 
 type PhaseProgressionSectionProps = {
   phaseName: string;

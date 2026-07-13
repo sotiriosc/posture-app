@@ -1,7 +1,7 @@
 "use client";
 
 import DailyInsightCard from "@/components/dashboard/DailyInsightCard";
-import type { Insight } from "@/lib/insightGenerator";
+import type { Insight } from "@praxis/engine";
 
 export type KnowledgeCard = {
   key: "movement" | "stability" | "compensation" | "adaptation";

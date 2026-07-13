@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { loadAppState, saveAppState } from "@/lib/appState";
-import { clearDraft, loadDraft } from "@/lib/sessionDraftStore";
+import { loadAppState, saveAppState } from "@praxis/engine";
+import { clearDraft, loadDraft } from "@praxis/engine";
 
 const dismissedKey = (sessionId: string) => `resume_banner_dismissed_${sessionId}`;
 

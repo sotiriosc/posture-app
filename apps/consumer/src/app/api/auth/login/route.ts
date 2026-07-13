@@ -5,8 +5,8 @@ import {
   getUserByCredentials,
   isAuthConfigured,
   serializeSessionCookie,
-} from "@/lib/serverAuth";
-import { takeRateLimit } from "@/lib/rateLimit";
+} from "@praxis/engine";
+import { takeRateLimit } from "@praxis/engine";
 
 type LoginBody = {
   email?: string;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { verifySessionToken } from "@/lib/authToken";
+import { verifySessionToken } from "@praxis/engine";
 
 const ADMIN_COOKIE_NAME = "bac_admin";
 const AUTH_COOKIE_NAME = "bac_user";
