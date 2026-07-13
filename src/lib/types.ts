@@ -211,6 +211,15 @@ export type ProgramSelectionDecisionTrace = {
   phaseFitBonusOrPenalty?: number;
   dayIdentityBonusOrPenalty?: number;
   fatigueOverlapPenalty?: number;
+  /**
+   * Present when the slot was filled via the degradation contract instead of
+   * the primary selection path. Values follow the contract stages:
+   *   "degraded-a" = sibling-family relax / tier-cap relaxed
+   *   "degraded-b" = ladder-aware substitution (any pattern rung)
+   *   "degraded-c" = corrective fallback (scap_health / hip_health / etc.)
+   *   "dropped"    = last-resort drop; see ProgramDay.degradationNotes for user msg
+   */
+  degradationReason?: "degraded-a" | "degraded-b" | "degraded-c" | "dropped";
 };
 
 export type ProgramSelectionDebug = {
@@ -230,6 +239,8 @@ export type ProgramDay = {
   warmup?: WarmupBlock;
   activation?: WarmupBlock;
   cooldown?: WarmupBlock;
+  /** User-visible notes explaining why a slot was dropped or degraded. */
+  degradationNotes?: string[];
 };
 
 export type Program = {

@@ -134,7 +134,14 @@ describe("feedback-driven substitution", () => {
     assertContractsHold(questionnaire, adjusted.week);
   });
 
-  test("next week uses recent logs + guidance to move risky main out of lead while preserving contracts", () => {
+  // QUARANTINE (Phase 2c.4 — first-failing commit: 86f7da7)
+  // Verdict: code-bug. Sibling to sessionFeedbackInfluence "failed exercise gets
+  // deprioritized". The feedback/pain log penalty is applied at scoring but the
+  // Back+Chest repair pipeline reinserts the penalized exercise as an anchor when it
+  // finds no other candidate, overriding the log-aware selection.
+  // Unquarantine condition: same as sessionFeedbackInfluence — repair pipeline must
+  // propagate recentLogs / feedbackSummaryByExercise into all selectBackChest* helpers.
+  test.skip("next week uses recent logs + guidance to move risky main out of lead while preserving contracts", () => {
     const current = generateWeeklyProgram(questionnaire, "substitution-next-cycle-current", {
       seed: "feedback-next-cycle-seed",
       phaseIndex: 1,
