@@ -89,21 +89,30 @@ praxis/  (posture-app repo; optional GitHub rename to `praxis` — old URLs redi
 - Archive the praxis-gyms repo on GitHub afterward with a README pointer.
   Never force-push over either history.
 
-### 1.3 Imports — the engine gets a public API
-- packages/engine exposes a curated barrel: `src/index.ts` re-exporting the
-  surface apps actually use. Building the barrel IS the API-design moment:
-  every export is a conscious decision, logged in docs/engine-api.md (one line
-  each: export, first consumer, why).
-- Codemod, committed to scripts/ (reproducible, auditable — the transform is an
-  artifact): inside engine, `@/lib/X` → relative; inside apps, `@/lib/X` →
-  `@praxis/engine`. Anything an app needs that the barrel lacks gets ADDED to
-  the barrel consciously — never a deep import.
+### 1.3 Imports — tsconfig-alias approach (barrel-during-transport superseded)
+
+FALSIFICATION LOG (2026-07-13): The original 1.3 plan required apps to import
+the engine exclusively via the `@praxis/engine` barrel. This was falsified during
+Day 1 execution: importing `verifySessionToken` through the barrel pulled `crypto`
+into the Next.js Edge Runtime (middleware.ts), causing a hard build failure.
+Decision: apps use `@/lib/*` tsconfig path aliases (→ packages/engine/src/*) for
+transport. The barrel (`packages/engine/src/index.ts`) and `docs/engine-api.md`
+are committed as the defined public API surface and remain; the codemod
+(`scripts/codemod-engine-imports.ts`) is committed as a reproducible artifact for
+future re-run. R1 (barrel-only imports in apps) is ticketed as a post-Phase-3 task
+— to be adopted after Phase 3's feedback loop closes, when the Edge Runtime
+import-graph is explicit and audited.
 
 ### 1.4 Boundary enforcement (the architecture defends itself)
-- ESLint `no-restricted-imports` (or dependency-cruiser):
+- ESLint `no-restricted-imports` enforces three rules in CI:
   R1 apps may import engine ONLY via `@praxis/engine` (no deep paths)
-  R2 engine may NEVER import from apps/*
-  R3 engine may NEVER import next/*, react (types-only exceptions listed explicitly)
+     STATUS: post-Phase-3 ticket; not enforced during Phase 1 transport.
+     Reason: alias approach required for Day 1–2 Edge Runtime compatibility.
+  R2 engine may NEVER import from apps/* (enforced Day 3)
+  R3 engine may NEVER import next/* or react (type-only exceptions listed
+     explicitly in the rule); enforced Day 3
+  R4 no cross-app imports: consumer may not import from apps/gyms/* and vice versa;
+     enforced Day 3
 - These rules run in CI. A boundary that isn't lint-enforced is a suggestion.
 
 ### 1.5 Tests & CI (workspace-aware)
