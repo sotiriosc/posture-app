@@ -1,34 +1,25 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/lib/*": ["./packages/engine/src/*"],
+      "@/*": ["./apps/consumer/src/*"],
+      "@praxis/engine": ["./packages/engine/src/index.ts"],
+      "@praxis/engine/*": ["./packages/engine/src/*"]
     }
   },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "packages/engine/src/**/*.ts",
+    "packages/engine/src/**/*.js",
+    "packages/engine/tests/**/*.ts",
+    "apps/consumer/src/**/*.ts",
+    "apps/consumer/src/**/*.tsx",
+    "apps/consumer/**/*.ts",
+    "apps/consumer/**/*.tsx"
   ],
-  "exclude": ["node_modules", "src/lib/__debug__/**"]
+  "exclude": [
+    "node_modules",
+    "packages/engine/src/__debug__/**"
+  ]
 }
