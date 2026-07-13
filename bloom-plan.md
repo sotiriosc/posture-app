@@ -299,6 +299,28 @@ them green BEFORE any ladder-advancement code.
     rungs-climbed per pattern. This metric also feeds the gym operator dashboard
     (B2B: member-progress signal nobody else can show).
 
+3.8 Silence is a signal (design principle, ratified Sotirios 2026-07-12):
+    A completed session with no feedback is implicit consent to progress — not a
+    void. Every session resolves to one of three states, never a fourth silent one:
+      - Negative feedback (pain, too hard, simplify_pattern) → react per 3.3.
+      - Positive feedback → counts as a clean session per 3.2.
+      - Silence + completion → ALSO counts as a clean session per 3.2, provided
+        the objective log supports it: session finished, sets logged, no
+        mid-session abandonment. An abandoned session is not "easy" — it holds.
+    Missing feedback bands never block advancement: where 3.2 reads effortBand,
+    confidenceBand, or painDelta, an absent value satisfies the criterion whenever
+    the objective criteria (completed = "yes", reps vs target) are met. Without
+    this, the silent majority — most clients, in practice — would hold forever,
+    and a static program is the primary churn driver.
+    Check-ins are framed as a veto on offered progress, not a prerequisite for it:
+    the product announces the earned advance ("3 clean sessions — next session
+    moves you up. Too soon? Tell us."). A veto is recorded as a difficulty signal
+    on that exercise; silence confirms the advance. Either response is
+    informative; nagging for ratings is not.
+    Test obligation: 3.6's truth table must include a silent-completion persona
+    (no feedback ever, all sessions completed) that advances on schedule, and an
+    abandonment persona (silent, incomplete sessions) that holds.
+
 Acceptance: truth-table tests green; determinism suite green; benchmark score does
 not regress; a synthetic 8-week persona demonstrably climbs hinge 1→3 in the
 persona-review harness (add to docs/dev-reports/ in the existing format).
