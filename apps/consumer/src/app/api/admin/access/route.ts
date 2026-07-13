@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
-import { ADMIN_COOKIE_NAME, getAdminSecretHash, isAdminCookieValue } from "@praxis/engine";
-import { takeRateLimit } from "@praxis/engine";
+import { ADMIN_COOKIE_NAME, getAdminSecretHash, isAdminCookieValue } from "@/lib/adminAuth";
+import { takeRateLimit } from "@/lib/rateLimit";
 
 type AccessBody = {
   accessKey?: string;

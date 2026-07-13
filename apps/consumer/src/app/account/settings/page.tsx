@@ -5,9 +5,9 @@ import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
-import { resetAllAppData } from "@praxis/engine";
-import { loadAppState, saveAppState } from "@praxis/engine";
-import { clearDraftsByProgramId } from "@praxis/engine";
+import { resetAllAppData } from "@/lib/resetAppData";
+import { loadAppState, saveAppState } from "@/lib/appState";
+import { clearDraftsByProgramId } from "@/lib/sessionDraftStore";
 import {
   getProgram,
   init,
@@ -17,7 +17,7 @@ import {
   loadPrefs,
   SCHEMA_VERSION,
   saveProgramProgress,
-} from "@praxis/engine";
+} from "@/lib/logStore";
 
 export default function AccountSettingsPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);

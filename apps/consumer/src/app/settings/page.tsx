@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { loadAppState } from "@praxis/engine";
+import { loadAppState } from "@/lib/appState";
 import {
   init,
   listAllExerciseLogs,
@@ -15,13 +15,13 @@ import {
   saveProgram,
   savePrefs,
   SCHEMA_VERSION,
-} from "@praxis/engine";
-import type { ExerciseLog, LogPrefs, Program, SessionRecord } from "@praxis/engine";
-import { resetAllAppData } from "@praxis/engine";
+} from "@/lib/logStore";
+import type { ExerciseLog, LogPrefs, Program, SessionRecord } from "@/lib/types";
+import { resetAllAppData } from "@/lib/resetAppData";
 import {
   listSessionDropoffTelemetry,
   type SessionDropoffEvent,
-} from "@praxis/engine";
+} from "@/lib/telemetry";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";

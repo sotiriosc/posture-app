@@ -4,7 +4,7 @@ import type { RefObject } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
-import type { Program } from "@praxis/engine";
+import type { Program } from "@/lib/types";
 
 export type WeekViewDetailEntry = {
   key: string;

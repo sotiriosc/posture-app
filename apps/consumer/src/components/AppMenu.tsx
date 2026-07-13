@@ -1,6 +1,6 @@
 import AppMenuClient from "@/components/AppMenuClient";
-import { isAdminRequest } from "@praxis/engine";
-import { isAuthConfigured, readServerSession } from "@praxis/engine";
+import { isAdminRequest } from "@/lib/adminAuth";
+import { isAuthConfigured, readServerSession } from "@/lib/serverAuth";
 
 export default async function AppMenu() {
   const [isAdmin, authEnabled, session] = await Promise.all([

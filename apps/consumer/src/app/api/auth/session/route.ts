@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildUserToken, isAuthConfigured, readServerSession, serializeSessionCookie } from "@praxis/engine";
+import { buildUserToken, isAuthConfigured, readServerSession, serializeSessionCookie } from "@/lib/serverAuth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

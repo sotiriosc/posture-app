@@ -2,8 +2,8 @@ import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
-import { readServerSession } from "@praxis/engine";
-import { getUserRepository } from "@praxis/engine";
+import { readServerSession } from "@/lib/serverAuth";
+import { getUserRepository } from "@/lib/userRepository";
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 
 export const dynamic = "force-dynamic";

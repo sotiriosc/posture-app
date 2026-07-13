@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "plugins": [{ "name": "next" }],
     "paths": {
+      "@/lib/*": ["../../packages/engine/src/*"],
       "@/*": ["./src/*"],
       "@praxis/engine": ["../../packages/engine/src/index.ts"],
       "@praxis/engine/*": ["../../packages/engine/src/*"]

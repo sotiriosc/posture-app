@@ -11,6 +11,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@/lib": path.resolve(__dirname, "packages/engine/src"),
+      "@/components": path.resolve(__dirname, "apps/consumer/src/components"),
+      "@/app": path.resolve(__dirname, "apps/consumer/src/app"),
     },
   },
 });

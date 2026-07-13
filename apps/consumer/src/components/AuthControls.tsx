@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import type { SubscriptionPlan } from "@praxis/engine";
+import type { SubscriptionPlan } from "@/lib/authTypes";
 
 type SessionPayload = {
   enabled?: boolean;

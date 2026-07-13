@@ -47,7 +47,7 @@ const verifySegment = async (
   return crypto.subtle.verify(
     "HMAC",
     key,
-    signatureBytes,
+    signatureBytes as BufferSource,
     encoder.encode(segment)
   );
 };

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { getUserRepository } from "@praxis/engine";
-import { type StripeWebhookEvent, verifyStripeWebhook } from "@praxis/engine";
+import { getUserRepository } from "@/lib/userRepository";
+import { type StripeWebhookEvent, verifyStripeWebhook } from "@/lib/stripeServer";
 import {
   mapPlanFromEvent,
   resolveBillingPatch,
   resolveEmailFromEvent,
   resolveUserIdFromEvent,
-} from "@praxis/engine";
+} from "@/lib/stripeWebhookLogic";
 
 export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature") ?? "";

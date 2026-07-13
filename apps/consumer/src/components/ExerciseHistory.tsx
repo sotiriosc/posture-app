@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { exerciseById } from "@praxis/engine";
-import type { ExerciseFeedback, ExerciseLog } from "@praxis/engine";
+import { exerciseById } from "@/lib/exercises";
+import type { ExerciseFeedback, ExerciseLog } from "@/lib/types";
 import {
   init,
   listExerciseLogsByExerciseHistory,
   loadPrefs,
   savePrefs,
-} from "@praxis/engine";
-import { getProgressionRecommendation } from "@praxis/engine";
+} from "@/lib/logStore";
+import { getProgressionRecommendation } from "@/lib/progression";
 
 type Props = {
   exerciseId: string;

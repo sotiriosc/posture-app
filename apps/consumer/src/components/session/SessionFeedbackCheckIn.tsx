@@ -1,7 +1,7 @@
 "use client";
 
-import type { SessionFeedback } from "@praxis/engine";
-import { formatSessionFeedbackSummary } from "@praxis/engine";
+import type { SessionFeedback } from "@/lib/types";
+import { formatSessionFeedbackSummary } from "@/lib/sessionFeedback";
 import Button from "@/components/ui/Button";
 
 type Props = {

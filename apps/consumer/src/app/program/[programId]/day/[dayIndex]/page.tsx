@@ -4,19 +4,19 @@ import { useEffect, useMemo, useState } from "react";
 import type { TouchEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { exerciseById, resolveExerciseHistoryIds } from "@praxis/engine";
-import { getProgressionRecommendation } from "@praxis/engine";
-import { formatHistorySchemaRow, getHistoryDeltaPills } from "@praxis/engine";
-import { formatNextSessionRecommendationFromSession } from "@praxis/engine";
-import { formatSessionAdaptationPreviewFromFeedback } from "@praxis/engine";
-import { formatSessionFeedbackCoachSummary } from "@praxis/engine";
-import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@praxis/engine";
-import type { SubscriptionPlan } from "@praxis/engine";
+import { exerciseById, resolveExerciseHistoryIds } from "@/lib/exercises";
+import { getProgressionRecommendation } from "@/lib/progression";
+import { formatHistorySchemaRow, getHistoryDeltaPills } from "@/lib/historyView";
+import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
+import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
+import type { SubscriptionPlan } from "@/lib/authTypes";
 import {
   getProgram,
   listExerciseLogsBySessionIds,
   listSessionsByProgramId,
-} from "@praxis/engine";
+} from "@/lib/logStore";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import RoutineItemCoachingDetails, {

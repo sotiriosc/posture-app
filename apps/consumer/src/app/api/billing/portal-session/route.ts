@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { readServerSession } from "@praxis/engine";
-import { getUserRepository } from "@praxis/engine";
-import { createStripePortalSession, isStripeConfigured } from "@praxis/engine";
-import { takeRateLimit } from "@praxis/engine";
+import { readServerSession } from "@/lib/serverAuth";
+import { getUserRepository } from "@/lib/userRepository";
+import { createStripePortalSession, isStripeConfigured } from "@/lib/stripeServer";
+import { takeRateLimit } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
   const ip =

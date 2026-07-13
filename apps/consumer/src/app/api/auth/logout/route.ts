@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { AUTH_COOKIE_NAME } from "@praxis/engine";
+import { AUTH_COOKIE_NAME } from "@/lib/authTypes";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

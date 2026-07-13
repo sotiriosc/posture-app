@@ -13,19 +13,19 @@ import RecentPrList, {
   type PrSnapshot,
   type RecentPrItem,
 } from "@/components/progress/RecentPrList";
-import { loadAppState } from "@praxis/engine";
-import { exerciseById } from "@praxis/engine";
+import { loadAppState } from "@/lib/appState";
+import { exerciseById } from "@/lib/exercises";
 import {
   init,
   listAllPrograms,
   listExerciseLogsBySession,
   listSessions,
-} from "@praxis/engine";
-import { formatNextSessionRecommendationFromSession } from "@praxis/engine";
-import { formatSessionAdaptationPreviewFromFeedback } from "@praxis/engine";
-import { formatSessionFeedbackCoachSummary } from "@praxis/engine";
-import { resolveActiveProgramFromList } from "@praxis/engine";
-import type { ExerciseLog, SessionRecord } from "@praxis/engine";
+} from "@/lib/logStore";
+import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
+import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
+import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
+import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
+import type { ExerciseLog, SessionRecord } from "@/lib/types";
 
 const DAY_MS = 86_400_000;
 

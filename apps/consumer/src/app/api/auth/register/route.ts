@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { getUserRepository } from "@praxis/engine";
+import { getUserRepository } from "@/lib/userRepository";
 import {
   buildUserToken,
   getAuthSecret,
   isAuthConfigured,
   serializeSessionCookie,
-} from "@praxis/engine";
-import { takeRateLimit } from "@praxis/engine";
+} from "@/lib/serverAuth";
+import { takeRateLimit } from "@/lib/rateLimit";
 
 type RegisterBody = {
   name?: string;
