@@ -1,0 +1,50 @@
+{
+  "name": "praxis-gyms",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:benchmark": "vitest --run tests/unit/competitiveBenchmark.test.ts",
+    "test:golden": "vitest --run tests/unit/programGoldenAnchors.test.ts tests/unit/programIdentityAnchors.test.ts tests/unit/questionnaireGoldenFlow.test.ts",
+    "test:watch": "vitest --watch",
+    "test:e2e": "playwright test",
+    "test:engine": "node --import tsx src/lib/__debug__/engineMatrixTest.ts",
+    "audit:catalog": "node --import tsx src/lib/__debug__/catalogAudit.ts",
+    "audit:store": "node --import tsx src/lib/__debug__/storeIntegritySmoke.ts",
+    "audit:phase-matrix": "node --import tsx src/lib/__debug__/phaseMatrixProgramPrint.ts",
+    "audit:coverage-matrix": "node --import tsx src/lib/__debug__/coverageContractAudit.ts",
+    "audit:program-contract": "node --import tsx src/lib/__debug__/programContractAudit.ts",
+    "audit:decision-trace": "node --import tsx src/lib/__debug__/decisionTraceAudit.ts",
+    "debug:program": "node --import tsx src/lib/__debug__/printProgram.ts",
+    "smoke:photo-ns": "node --import tsx src/lib/__debug__/photoNamespaceSmoke.ts",
+    "smoke:phase": "node --import tsx src/lib/__debug__/phaseEligibilitySmoke.ts"
+  },
+  "dependencies": {
+    "@tensorflow-models/pose-detection": "^2.1.3",
+    "@tensorflow/tfjs": "^4.20.0",
+    "@types/pg": "^8.16.0",
+    "next": "16.1.6",
+    "pg": "^8.18.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "jsdom": "^28.0.0",
+    "tailwindcss": "^4",
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "vitest": "^2.1.5"
+  }
+}
