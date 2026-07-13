@@ -2241,9 +2241,9 @@ export default function SessionClient() {
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-white">Today's options</p>
+                <p className="text-sm font-semibold text-white">Today&apos;s options</p>
                 <p className="mt-1 text-xs text-slate-300">
-                  This changes only today's session view. Your saved plan is not changed.
+                  This changes only today&apos;s session view. Your saved plan is not changed.
                 </p>
               </div>
               {selectedPracticeOption ? (
