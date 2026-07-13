@@ -248,6 +248,12 @@ decisions log updated.
 Goal: the engine advances/regresses users along Phase-2 ladders from demonstrated
 control, not calendar time. All movement auditable in the decision trace.
 
+### 3.0 Entrance exam (prerequisite — complete before any ladder-advancement code)
+
+Fix `feedbackSummaryByExercise` propagation through the repair pipeline; un-skip both
+quarantined tests (`sessionFeedbackInfluence`, `sessionFeedbackSubstitution`) and get
+them green BEFORE any ladder-advancement code.
+
 3.1 Signals (all already collected — consume, don't invent):
     - per-exercise feedback summaries (engine.ts ExerciseFeedbackSummary)
     - SessionFeedbackSignals: painDelta, completed, effortBand, confidenceBand, flags
@@ -317,9 +323,16 @@ teaching layer: recall the pattern unloaded before loading it.
 3W.2 Overlays: assessment focus tags inject their corrective block daily
      (e.g. forward_head → chin-tuck/wall-slide) regardless of split;
      painContraindications filter all blocks.
+     AMENDMENT (2026-07-12): pain flags may INJECT protective prep, not only filter.
+     Knee ruling: knee prep triggers on `knee_dominant` days via the map, and on any
+     lower-body day when knee pain is flagged.
 3W.3 Data (lands in Phase 2b annotation pass): `primes: [patterns]` and
      `mobilizes: [joints]` on all warmup/activation entries (~35). These REPLACE
      difficulty/ladder-pattern requirements for those categories.
+     AMENDMENT (2026-07-12): elbows/wrists/grip trimmed from the joint map.
+     Draft knee-mobilizer entries (awaiting Sotirios's rename):
+       - half-kneeling knee-over-toe rocks
+       - wall-supported deep-knee-bend hold
 3W.4 Engineering: deterministic (seeded), respects existing warmupPlanner slot
      structure, every pick writes a decisionTrace line naming its block and its
      because ("primer: glute-bridges — today's main: barbell-romanian-deadlift").
@@ -328,6 +341,9 @@ teaching layer: recall the pattern unloaded before loading it.
      mobilize covers loaded joints; activation matches toolbox mapping; zero
      contraindicated picks; budget respected. Extend golden anchors with warmup
      assertions.
+3W.6 Cooldown contract (AMENDMENT 2026-07-12): cooldown = down-shift mirror of the
+     day's loaded joints plus breathing. Picks from the same toolboxes as MOBILIZE
+     but ordered toward parasympathetic (breath-paced, lower intensity).
 Acceptance: contract tests green; anchor personas show correct primers; a pain-
 flagged persona provably gets a filtered-but-complete warmup, never an empty one.
 
@@ -335,6 +351,12 @@ flagged persona provably gets a filtered-but-complete warmup, never an empty one
 
 Goal: the assessment never claims more than the photo supports, visibly drives the
 plan, and is re-tested so its claims can be retired by contact with reality.
+
+### Phase 4 ticket (AMENDMENT 2026-07-12): Severity-graded contraindications
+
+Implement severity-graded contraindications: `"acute"` blocks the exercise entirely;
+`"manageable"` allows-with-note (exercise surfaced with a coach note, not silently
+filtered). Group B rows in ED-2c.3 await this ticket before a ruling can be applied.
 
 4.1 Confidence gate (src/lib/engine/poseFocus.ts):
     If pose.confidenceScore < CONF_FLOOR (draft 0.55) → return no focus tags +
@@ -435,16 +457,20 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
 
 posture-app cloned and diffed against praxis-gyms. Findings that change the plan:
 
-A1. THE ENGINES ARE BYTE-IDENTICAL. `diff -rq` across src/lib returns exactly one
-    line: praxis-gyms adds `gymSaas/`. Every engine file — program.ts, engine/,
-    exercises.ts, progression, phases, auth, Stripe, stores — is identical.
-    posture-app's last commit is 2026-04-27; the copy was made 2026-04-28. Nothing
-    on either side has touched the engine since.
+A1. THE ENGINES WERE BYTE-IDENTICAL at the April copy. `diff -rq` across src/lib
+    returned exactly one line: praxis-gyms adds `gymSaas/`. Every engine file —
+    program.ts, engine/, exercises.ts, progression, phases, auth, Stripe, stores —
+    was identical. posture-app's last commit was 2026-04-27; the copy was made
+    2026-04-28.
 
-    ⇒ Phase 1 is now a pure file move, not a reconciliation. The source-of-truth
-    rule and divergence log in Phase 1 are moot for the engine (keep them for the
-    ~25 UI components that legitimately differ: branding, demo-mode plumbing,
-    B2B routes). Timebox likely beats 3 days comfortably.
+    AMENDMENT (2026-07-12): posture-app's engine has since advanced through
+    P2/2b/2c and is canonical. The gyms engine copy is discarded per 1.2.
+    The 1.7 purity check scopes to engine files vs POSTURE-APP's pre-monorepo tag
+    and gyms app-shell files vs PRAXIS-GYMS's pre-monorepo tag — no cross-repo
+    engine comparison is expected to pass.
+
+    ⇒ Phase 1 is now a pure file move (posture-app engine is canonical SoT).
+    Timebox likely beats 3 days comfortably.
 
 A2. Divergence is shell-only: praxis-gyms adds /pilot, /enterprise, /gym-demo,
     /gym-admin routes + gymSaas lib + gym components, and modifies ~20 shared UI
