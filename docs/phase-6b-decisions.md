@@ -115,3 +115,21 @@ non-matching selection back to `full`, so no legacy value reaches the UI.
 
 All 818 engine unit tests remain green; golden anchors unchanged (program
 generation was not touched — only per-session option derivation).
+
+## Commit 5 — Telemetry panel move to /dev-qa
+
+The "Telemetry dashboard (local)" panel was internal-facing — the same category
+as the Real-device QA panel relocated in PR #25. It has no place in user
+Settings. Extracted verbatim into `components/dev/TelemetryPanel.tsx` in both
+apps and rendered on the existing `/dev-qa` route (gated `NODE_ENV ===
+"development"`, `notFound()` in production), alongside `DeviceQaPanel`. Removed
+the panel, its `dropoffEvents` state, its loader effect and its summary from
+`app/settings/page.tsx` in both apps.
+
+No functional change. One lint nuance: the extracted component is small enough
+that the React Compiler no longer bails out of it, so `react-hooks/purity`
+correctly flags `Date.now()` in a `useMemo` render path (it was silently
+tolerated inside the large Settings component). Fixed properly rather than
+suppressed: the summary is now a pure `computeTelemetrySummary(events, now)`
+called from the refresh handler / mount effect and stored in state, so no
+impure call happens during render.
