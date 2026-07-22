@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { PhotoProvider } from "@/components/PhotoContext";
 import AppMenu from "@/components/AppMenu";
+import Analytics from "@/components/Analytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
@@ -88,9 +89,11 @@ export default function RootLayout({
         data-card-style={GLOBAL_CARD_STYLE}
         data-input-style={GLOBAL_INPUT_STYLE}
       >
-        <AppMenu />
-        <PhotoProvider>{children}</PhotoProvider>
-        <ServiceWorkerRegister />
+        <Analytics>
+          <AppMenu />
+          <PhotoProvider>{children}</PhotoProvider>
+          <ServiceWorkerRegister />
+        </Analytics>
       </body>
     </html>
   );

@@ -260,3 +260,32 @@ improvement alone is meaningful. Thunder upgrade deferred to Phase 6 when delibe
 single-capture flow is more stable. Log: `~2x accuracy, ~4x latency (50ms → 200ms),
 burst-of-frames averaging (3 frames). Trade-off acceptable for single-capture context.`
 
+### ED-6.8 — Analytics: Plausible (Path A, ratified 2026-07-22)
+
+**Decision:** Install Plausible as the product analytics layer for both apps,
+via `next-plausible`. Path A (privacy-respecting, cookieless) was ratified by
+Sotirios over Path B (self-hosted PostHog) and Path C (no analytics at launch).
+
+**Rationale:**
+- Cookieless by design — sidesteps the EU/UK cookie-consent banner for this
+  component (no consent gate required for aggregate, non-identifying counts).
+- EU-hosted, aggregate-only. No personal tracking, no cross-site profiles, no
+  third-party ad networks. This is honest to the disclosure already written in
+  both privacy policies (§6.2).
+- Lightweight script, no runtime cost to the engine, zero engine coupling.
+
+**Implementation:**
+- `next-plausible@^4` added to root `dependencies` (npm workspaces, hoisted).
+- `apps/{consumer,gyms}/src/components/Analytics.tsx` — server-safe wrapper that
+  renders `PlausibleProvider` only when `NEXT_PUBLIC_PLAUSIBLE_SRC` (the
+  site-specific script URL from the Plausible dashboard) is set. Both root
+  layouts wrap their body content in `<Analytics>`.
+- Guarded on two fronts so nothing loads outside production with a real site:
+  (1) no `src` env → no script at all (dev, test, preview stay clean);
+  (2) next-plausible's `enabled` default restricts injection to production.
+  `init.captureOnLocalhost` is left false.
+
+**Sotirios's remaining step (infra, out of code scope):** create the Plausible
+site, then set `NEXT_PUBLIC_PLAUSIBLE_SRC` in the Vercel env for each project.
+No code change is needed to turn analytics on.
+
