@@ -1,40 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import type { SubscriptionPlan } from "@/lib/authTypes";
-
-type SessionPayload = {
-  enabled?: boolean;
-  authenticated: boolean;
-  user?: {
-    email: string;
-    plan: SubscriptionPlan;
-  } | null;
-};
+import { useUserPlan } from "@/hooks/useUserPlan";
 
 export default function AuthControls() {
-  const [session, setSession] = useState<SessionPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch("/api/auth/session", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const data = (await res.json()) as SessionPayload;
-        setSession(data);
-      } catch {
-        setSession({ authenticated: false });
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
+  const { authEnabled, authenticated, isPro, loading } = useUserPlan();
 
   const logout = async () => {
     await fetch("/api/auth/logout", {
@@ -46,8 +17,8 @@ export default function AuthControls() {
   };
 
   if (loading) return null;
-  if (session?.enabled === false) return null;
-  if (!session?.authenticated) {
+  if (!authEnabled) return null;
+  if (!authenticated) {
     return (
       <Link href="/auth/login">
         <Button variant="secondary">Log in</Button>
@@ -57,9 +28,7 @@ export default function AuthControls() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="ui-chip">
-        {session.user?.plan === "pro" ? "Pro" : "Free"}
-      </span>
+      <span className="ui-chip">{isPro ? "Pro" : "Free"}</span>
       <Button type="button" variant="secondary" onClick={logout}>
         Log out
       </Button>

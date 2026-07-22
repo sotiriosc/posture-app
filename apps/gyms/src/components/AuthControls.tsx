@@ -1,55 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
-import type { SubscriptionPlan } from "@/lib/authTypes";
-import {
-  BUYER_DEMO_COOKIE,
-  isBuyerDemoCookieValue,
-} from "@/lib/gymSaas/demoMode";
+import { useUserPlan } from "@/hooks/useUserPlan";
 
-type SessionPayload = {
-  enabled?: boolean;
-  authenticated: boolean;
-  user?: {
-    email: string;
-    plan: SubscriptionPlan;
-  } | null;
-};
+// Operator-facing routes must never render consumer-plan chrome (the Pro/Free
+// chip). On these paths we keep the log-out control but drop the plan chip.
+const OPERATOR_ROUTE_PREFIXES = [
+  "/pilot",
+  "/enterprise",
+  "/gym-demo",
+  "/gym-admin",
+  "/settings",
+  "/admin",
+];
 
 export default function AuthControls() {
-  const [session, setSession] = useState<SessionPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [buyerDemoMode, setBuyerDemoMode] = useState(false);
+  const pathname = usePathname();
+  const { authEnabled, authenticated, isPro, loading } = useUserPlan();
 
-  useEffect(() => {
-    const load = async () => {
-      const demoCookie = document.cookie
-        .split(";")
-        .map((entry) => entry.trim())
-        .find((entry) => entry.startsWith(`${BUYER_DEMO_COOKIE}=`));
-      if (isBuyerDemoCookieValue(demoCookie?.split("=")[1])) {
-        setBuyerDemoMode(true);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await fetch("/api/auth/session", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const data = (await res.json()) as SessionPayload;
-        setSession(data);
-      } catch {
-        setSession({ authenticated: false });
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
+  const isOperatorRoute = OPERATOR_ROUTE_PREFIXES.some((prefix) =>
+    pathname?.startsWith(prefix)
+  );
 
   const logout = async () => {
     await fetch("/api/auth/logout", {
@@ -61,9 +34,8 @@ export default function AuthControls() {
   };
 
   if (loading) return null;
-  if (buyerDemoMode) return null;
-  if (session?.enabled === false) return null;
-  if (!session?.authenticated) {
+  if (!authEnabled) return null;
+  if (!authenticated) {
     return (
       <Link href="/auth/login">
         <Button variant="secondary">Log in</Button>
@@ -73,9 +45,9 @@ export default function AuthControls() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="ui-chip">
-        {session.user?.plan === "pro" ? "Pro" : "Free"}
-      </span>
+      {isOperatorRoute ? null : (
+        <span className="ui-chip">{isPro ? "Pro" : "Free"}</span>
+      )}
       <Button type="button" variant="secondary" onClick={logout}>
         Log out
       </Button>

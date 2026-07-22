@@ -11,7 +11,7 @@ import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRec
 import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
-import type { SubscriptionPlan } from "@/lib/authTypes";
+import { useUserPlan } from "@/hooks/useUserPlan";
 import {
   getProgram,
   listExerciseLogsBySessionIds,
@@ -87,9 +87,8 @@ export default function ProgramDayPage({ params }: Props) {
   const [isLoading, setIsLoading] = useState(true);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [historyIndex, setHistoryIndex] = useState(0);
-  const [authEnabled, setAuthEnabled] = useState(false);
-  const [plan, setPlan] = useState<SubscriptionPlan>("free");
-  const [sessionResolved, setSessionResolved] = useState(false);
+  const { isFreePlan, loading: planLoading } = useUserPlan();
+  const sessionResolved = !planLoading;
 
   useEffect(() => {
     let isMounted = true;
@@ -126,31 +125,7 @@ export default function ProgramDayPage({ params }: Props) {
     };
   }, [params]);
 
-  useEffect(() => {
-    const loadSession = async () => {
-      try {
-        const response = await fetch("/api/auth/session", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const payload = (await response.json()) as {
-          enabled?: boolean;
-          user?: { plan?: SubscriptionPlan } | null;
-        };
-        setAuthEnabled(Boolean(payload.enabled));
-        setPlan(payload.user?.plan === "pro" ? "pro" : "free");
-      } catch {
-        setAuthEnabled(false);
-        setPlan("free");
-      } finally {
-        setSessionResolved(true);
-      }
-    };
-    loadSession();
-  }, []);
-
   const day = program?.week[dayIndex] ?? null;
-  const isFreePlan = authEnabled && plan !== "pro";
   const sections = useMemo(
     () =>
       day
@@ -174,12 +149,19 @@ export default function ProgramDayPage({ params }: Props) {
   }, [sessions, program, dayIndex]);
 
   useEffect(() => {
+    // Pre-existing reset-on-day-change effect (unchanged by Phase 6a). The
+    // React Compiler rule only surfaces here now that the async session fetch
+    // moved into useUserPlan; the behavior is intentional and untouched.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHistoryIndex(0);
   }, [dayIndex, daySessions.length]);
 
   useEffect(() => {
     if (!program) return;
     if (isFreePlan && dayIndex > 0) {
+      // Free-plan lock: snap the view to Day 1 and rewrite the URL. Pre-existing
+      // behavior, surfaced (not introduced) by the Phase 6a plan-hook refactor.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDayIndex(0);
       router.replace(`/program/${program.id}/day/0`);
     }
