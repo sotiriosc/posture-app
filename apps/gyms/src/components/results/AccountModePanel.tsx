@@ -99,11 +99,6 @@ export default function AccountModePanel({
                 </Button>
               </Link>
             ) : null}
-            <Link href="/questionnaire">
-              <Button variant="secondary" className="h-11 w-full">
-                Edit movement profile
-              </Button>
-            </Link>
           </div>
         </div>
       </div>

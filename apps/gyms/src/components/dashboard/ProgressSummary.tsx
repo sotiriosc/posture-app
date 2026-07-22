@@ -11,7 +11,7 @@ type ProgressSummaryProps = {
   workoutTarget: number;
   daysInPhase: number;
   dayTarget: number;
-  gateStatusLabel: "Ready to advance" | "Gate locked" | "Phase 3 active";
+  gateStatusLabel: "Ready to advance" | "Keep going" | "Phase 3 active";
   gateStatusDetail: string;
 };
 
@@ -38,12 +38,12 @@ export default function ProgressSummary({
         Days in phase: <span className="font-semibold">{daysInPhase}/{dayTarget}</span>
       </p>
       <p>
-        Gate status: <span className="font-semibold">{gateStatusLabel}</span>
+        Phase status: <span className="font-semibold">{gateStatusLabel}</span>
       </p>
       <p className="text-xs text-slate-400">{gateStatusDetail}</p>
 
       <ProgressBar
-        label="Workout gate progress"
+        label="Sessions this phase"
         value={workoutsCompletedInPhase}
         max={workoutTarget}
         animate

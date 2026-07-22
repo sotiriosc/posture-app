@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePhotoContext } from "@/components/PhotoContext";
 
 const META_KEY = "posture_photo_meta";
@@ -83,29 +83,12 @@ export default function PhotoUploader() {
     await setPhoto(key, null);
   };
 
-  const filledCount = useMemo(
-    () => Object.values(photos).filter((entry) => entry !== null).length,
-    [photos]
-  );
-
   return (
     <div className="space-y-6">
       <div className="ui-card ui-soft-surface rounded-lg border-amber-300/25 p-4 text-xs text-amber-100">
         <p className="font-semibold text-amber-50">Private on this device</p>
         <p className="mt-1">
           Photos stay local to this browser unless cloud sync is available. Clearing site data removes them.
-        </p>
-      </div>
-
-      <div className="ui-card ui-soft-surface flex flex-wrap items-center justify-between gap-3 rounded-lg px-4 py-3 text-xs text-slate-300">
-        <p>
-          Filled slots:{" "}
-          <span className="font-semibold text-white">
-            {filledCount} / 3
-          </span>
-        </p>
-        <p className="text-slate-400">
-          Photo status is saved locally so your dashboard can explain what informed the plan.
         </p>
       </div>
 

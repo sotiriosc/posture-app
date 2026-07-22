@@ -16,6 +16,7 @@ export default defineConfig({
     alias: {
       "@/lib": path.resolve(__dirname, "packages/engine/src"),
       "@/components": path.resolve(__dirname, "apps/consumer/src/components"),
+      "@/hooks": path.resolve(__dirname, "apps/consumer/src/hooks"),
       "@/app": path.resolve(__dirname, "apps/consumer/src/app"),
     },
   },

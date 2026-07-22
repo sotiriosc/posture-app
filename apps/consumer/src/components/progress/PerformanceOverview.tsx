@@ -39,7 +39,7 @@ export default function PerformanceOverview({
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <article className="ui-soft-surface rounded-lg p-4">
           <p className="text-xs uppercase text-slate-400">
-            Corrective Consistency
+            How often you did the work
           </p>
           <p className="mt-2 text-2xl font-semibold text-white">
             <AnimatedCount value={consistencyPercent} suffix="%" />

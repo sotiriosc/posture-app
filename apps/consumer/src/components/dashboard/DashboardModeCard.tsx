@@ -2,9 +2,7 @@
 
 type DashboardModeCardProps = {
   title: string;
-  eyebrow: string;
   summary: string;
-  icon: string;
   active: boolean;
   locked?: boolean;
   lockReason?: string;
@@ -13,9 +11,7 @@ type DashboardModeCardProps = {
 
 export default function DashboardModeCard({
   title,
-  eyebrow,
   summary,
-  icon,
   active,
   locked = false,
   lockReason,
@@ -36,31 +32,13 @@ export default function DashboardModeCard({
       }`}
     >
       <div className="flex h-full flex-col justify-between gap-5">
-        <div className="flex items-start justify-between gap-3">
-          <span
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border text-sm font-semibold ${
-              active
-                ? "border-sky-100/60 bg-sky-300/20 text-sky-50 shadow-[0_10px_28px_rgba(14,165,233,0.18)]"
-                : locked
-                ? "border-slate-500/20 bg-slate-900/38 text-slate-500"
-                : "border-slate-500/30 bg-slate-900/70 text-slate-200"
-            }`}
-            aria-hidden="true"
-          >
-            {icon}
-          </span>
-          <span
-            className={`rounded-lg border px-2.5 py-1 text-[10px] font-semibold uppercase ${
-              locked
-                ? "border-slate-500/20 bg-slate-950/35 text-slate-400"
-                : active
-                ? "border-sky-100/50 bg-sky-200/12 text-sky-50"
-                : "border-slate-500/25 bg-slate-950/40 text-slate-300"
-            }`}
-          >
-            {locked ? "Locked" : eyebrow}
-          </span>
-        </div>
+        {locked ? (
+          <div className="flex justify-end">
+            <span className="rounded-lg border border-slate-500/20 bg-slate-950/35 px-2.5 py-1 text-[10px] font-semibold uppercase text-slate-400">
+              Locked
+            </span>
+          </div>
+        ) : null}
         <div>
           <h3 className={`text-lg font-semibold ${locked ? "text-slate-300" : "text-white"}`}>
             {title}

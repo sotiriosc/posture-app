@@ -7,11 +7,12 @@ import PhaseProgressCard from "@/components/dashboard/PhaseProgressCard";
 import type { PhaseAdvanceGateResult } from "@/lib/phaseGating";
 
 type PhaseProgressionSectionProps = {
+  sectionTitle: string;
   phaseName: string;
   phaseDescription: string;
   phaseRequirementsText: string;
   phaseGateStatusDetail: string;
-  phaseGateStatusLabel: "Ready to advance" | "Gate locked" | "Phase 3 active";
+  phaseGateStatusLabel: "Ready to advance" | "Keep going" | "Phase 3 active";
   phaseGateProgressText: string;
   phaseGateReason: string;
   phaseGate: PhaseAdvanceGateResult;
@@ -24,6 +25,7 @@ type PhaseProgressionSectionProps = {
 };
 
 export default function PhaseProgressionSection({
+  sectionTitle,
   phaseName,
   phaseDescription,
   phaseRequirementsText,
@@ -42,8 +44,7 @@ export default function PhaseProgressionSection({
   return (
     <div className="order-4">
       <ExpandableSection
-        title="Phase Progression"
-        subtitle="Requirements and readiness to move ahead."
+        title={sectionTitle}
         previewLines={[phaseRequirementsText, phaseGateStatusDetail]}
         previewChips={[
           `${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} workouts`,

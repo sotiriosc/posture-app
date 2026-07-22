@@ -466,11 +466,17 @@ export default function SettingsPage() {
 
         <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
           <h2 className="text-sm font-semibold text-slate-900">
-            Corrective settings note
+            Movement profile
           </h2>
-          <p className="mt-2 text-xs text-amber-700">
-            Changing corrective emphasis reshapes focus areas — your movement history remains intact.
+          <p className="mt-2 text-xs text-slate-600">
+            Update your goals, injuries, equipment, and schedule. Your movement
+            history stays intact.
           </p>
+          <div className="mt-4">
+            <Link href="/questionnaire">
+              <Button variant="secondary">Edit movement profile</Button>
+            </Link>
+          </div>
         </div>
 
         <div className="ui-card ui-soft-surface-raised rounded-lg p-6">

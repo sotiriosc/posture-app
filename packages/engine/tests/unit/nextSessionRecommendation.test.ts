@@ -96,7 +96,7 @@ describe("next session recommendation", () => {
     expect(recommendation?.priority).toBe("low");
     expect(recommendation?.sourceSessionId).toBe("stable-session");
     expect(formatNextSessionRecommendation(recommendation)).toBe(
-      "Next session recommendation: continue normally with gentle progression optional."
+      "For next session: keep going as planned — a small step up is optional."
     );
   });
 
