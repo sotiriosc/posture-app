@@ -180,6 +180,8 @@ export const assembleProgram = (params: {
   userId?: string | null;
   source?: Program["source"];
   deletedAt?: string | null;
+  /** Phase 3: computed ladder state to persist on the Program. */
+  ladderState?: import("@/lib/types").LadderState;
 }) => {
   const { phaseMeta, phase } = buildProgramPhaseMetadata({
     phaseIndex: params.phaseIndex,
@@ -208,6 +210,7 @@ export const assembleProgram = (params: {
     nextWeekPlan: params.nextWeekPlan,
     ...params.intelligence,
     week: params.week,
+    ...(params.ladderState ? { ladderState: params.ladderState } : {}),
     source: params.source ?? "local",
     deletedAt: params.deletedAt ?? null,
   } satisfies Program;

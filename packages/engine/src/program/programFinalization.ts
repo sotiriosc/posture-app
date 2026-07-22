@@ -54,6 +54,8 @@ export const finalizeWeeklyProgramResult = (params: {
   recentLogs?: ExerciseLog[];
   warnings: PostGenerationWarning[];
   templateVersion?: number;
+  /** Phase 3: computed ladder state to store in the generated Program. */
+  ladderState?: import("@/lib/types").LadderState;
 }) => {
   forwardConstraintWarnings({
     programId: params.programId,
@@ -92,6 +94,7 @@ export const finalizeWeeklyProgramResult = (params: {
     week: coachedWeek,
     intelligence,
     templateVersion: params.templateVersion,
+    ladderState: params.ladderState,
   });
 };
 

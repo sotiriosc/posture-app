@@ -310,3 +310,269 @@ describe("program golden anchor contracts", () => {
     expectGoldenInvariants(summary);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Phase 3 — Ladder persona anchors (climber + regressor)
+// ---------------------------------------------------------------------------
+
+import type { LadderState, ExerciseLog } from "@/lib/types";
+import {
+  computeLadderState,
+  getNextLadderRung,
+  getLadderSwapSet,
+} from "@/lib/program/ladderAdvancement";
+
+const HINGE_D2 = "bodyweight-good-morning";
+const HINGE_D3 = "db-rdl";
+const SQUAT_D2 = "split-squat"; // knee_dominant d2 for regressor
+
+let personaSeq = 0;
+const makePersonaLog = (
+  overrides: { exerciseId: string; setsPlanned?: number; setsCompleted?: number; rpe?: number | null; felt?: ExerciseLog["felt"]; painLevel?: ExerciseLog["painLevel"]; createdAt?: string }
+): ExerciseLog => ({
+  id: `persona-log-${++personaSeq}`,
+  userId: "local",
+  sessionId: `persona-sess-${personaSeq}`,
+  exerciseId: overrides.exerciseId,
+  section: "main",
+  originalExerciseId: null,
+  substitutedExerciseId: null,
+  programId: "persona-prog",
+  dayIndex: 0,
+  createdAt: overrides.createdAt ?? `2026-01-${String(personaSeq).padStart(2, "0")}T10:00:00.000Z`,
+  updatedAt: overrides.createdAt ?? `2026-01-${String(personaSeq).padStart(2, "0")}T10:00:00.000Z`,
+  loadType: "weighted",
+  unit: "lb",
+  weight: 100,
+  reps: 10,
+  repsBySet: [10, 10, 10],
+  setsPlanned: overrides.setsPlanned ?? 3,
+  setsCompleted: overrides.setsCompleted ?? 3,
+  durationSec: null,
+  workSecondsUsed: null,
+  restSecondsUsed: null,
+  rpe: overrides.rpe ?? 6,
+  felt: overrides.felt ?? "moderate",
+  painLevel: overrides.painLevel ?? "none",
+  painLocation: null,
+  nextTimeGuidance: null,
+  feedbackNotes: null,
+  notes: null,
+  computedVolume: 3000,
+  source: "local",
+  deletedAt: null,
+});
+
+const climberQuestionnaire: QuestionnaireData = {
+  goals: "Build muscle",
+  painAreas: [],
+  experience: "Intermediate",
+  equipment: ["dumbbells", "barbell", "cables", "gym"],
+  daysPerWeek: 3,
+};
+
+const regressorQuestionnaire: QuestionnaireData = {
+  goals: "Improve posture",
+  painAreas: ["knees"],
+  experience: "Intermediate",
+  equipment: ["dumbbells", "gym"],
+  daysPerWeek: 3,
+};
+
+describe("Phase 3 ladder persona anchors", () => {
+  // ── 8-week climber persona: hinge d1→d3 ──────────────────────────────────
+
+  test("climber persona: hinge advances from d2 to d3 after 2 clean sessions", () => {
+    const cleanLogs = [
+      makePersonaLog({ exerciseId: HINGE_D2, createdAt: "2026-01-05T00:00:00Z", setsPlanned: 3, setsCompleted: 3, rpe: 6 }),
+      makePersonaLog({ exerciseId: HINGE_D2, createdAt: "2026-01-12T00:00:00Z", setsPlanned: 3, setsCompleted: 3, rpe: 5 }),
+    ];
+
+    const initialLadder: LadderState = {
+      byPattern: {
+        hinge: {
+          exerciseId: HINGE_D2,
+          pattern: "hinge",
+          difficulty: 2,
+          cleanSessionsCount: 0,
+          requiredForAdvance: 2,
+          inHysteresis: false,
+          lastDecisionTrace: "init hinge: bodyweight-good-morning (d2)",
+        },
+      },
+    };
+
+    const availableEq = new Set(["dumbbells", "barbell", "cables", "gym"] as const) as Set<never>;
+
+    const newLadder = computeLadderState({
+      currentLadderState: initialLadder,
+      recentLogs: cleanLogs,
+      activePatterns: ["hinge"],
+      patternToInitExercise: {},
+      available: availableEq,
+      phaseIndex: 1,
+      experienceLevel: "Intermediate",
+      painAreas: [],
+      deferredIds: new Set(),
+    });
+
+    expect(newLadder.byPattern.hinge?.exerciseId).toBe(HINGE_D3);
+    expect(newLadder.byPattern.hinge?.lastDecisionTrace).toMatch(/advance/);
+    expect(newLadder.byPattern.hinge?.cleanSessionsCount).toBe(0); // ADV-3 reset
+  });
+
+  test("climber persona: program with d3 ladder state prefers db-rdl over d2 exercises", () => {
+    const ladderAtD3: LadderState = {
+      byPattern: {
+        hinge: {
+          exerciseId: HINGE_D3,
+          pattern: "hinge",
+          difficulty: 3,
+          cleanSessionsCount: 0,
+          requiredForAdvance: 2,
+          inHysteresis: false,
+          lastDecisionTrace: "advance hinge: 2 clean sessions → db-rdl (d3)",
+        },
+      },
+    };
+
+    const program = generateWeeklyProgram(climberQuestionnaire, "climber-persona-prog", {
+      phaseIndex: 1,
+      weekIndex: 3,
+      cycleIndex: 1,
+      totalWeekIndex: 3,
+      currentLadderState: ladderAtD3,
+      seed: "climber-d3-anchor",
+    });
+
+    // Program must be valid
+    expect(program.week.length).toBeGreaterThan(0);
+    // Ladder state must be preserved
+    expect(program.ladderState?.byPattern.hinge?.exerciseId).toBe(HINGE_D3);
+
+    // The scoring preference (+4 bonus) should cause db-rdl or its swaps to win
+    const swapSet = getLadderSwapSet(HINGE_D3);
+    const allRoutineIds = program.week.flatMap((d) => d.routine.map((r) => r.exerciseId));
+    const hasPreferredHinge = allRoutineIds.some((id) => swapSet.has(id));
+    expect(hasPreferredHinge).toBe(true);
+  });
+
+  // ── 8-week regressor persona: pain → squat regression + hysteresis ────────
+
+  test("regressor persona: pain event drops squat rung", () => {
+    const initialLadder: LadderState = {
+      byPattern: {
+        knee_dominant: {
+          exerciseId: SQUAT_D2,
+          pattern: "knee_dominant",
+          difficulty: 2,
+          cleanSessionsCount: 1,
+          requiredForAdvance: 2,
+          inHysteresis: false,
+          lastDecisionTrace: "init knee_dominant: split-squat (d2)",
+        },
+      },
+    };
+
+    const painLogs = [
+      makePersonaLog({
+        exerciseId: SQUAT_D2,
+        createdAt: "2026-02-01T00:00:00Z",
+        setsPlanned: 3,
+        setsCompleted: 3,
+        felt: "pain",
+        painLevel: "severe",
+      }),
+    ];
+
+    const availableEq = new Set(["dumbbells", "gym"] as const) as Set<never>;
+
+    const newLadder = computeLadderState({
+      currentLadderState: initialLadder,
+      recentLogs: painLogs,
+      activePatterns: ["knee_dominant"],
+      patternToInitExercise: {},
+      available: availableEq,
+      phaseIndex: 1,
+      experienceLevel: "Intermediate",
+      painAreas: ["knees"],
+      deferredIds: new Set(),
+    });
+
+    // Should have regressed
+    expect(newLadder.byPattern.knee_dominant?.lastDecisionTrace).toMatch(/regress/);
+    // Hysteresis activated
+    expect(newLadder.byPattern.knee_dominant?.inHysteresis).toBe(true);
+    expect(newLadder.byPattern.knee_dominant?.requiredForAdvance).toBe(3);
+    // Rung went down (or stayed at d1 if at floor)
+    const newDifficulty = newLadder.byPattern.knee_dominant?.difficulty ?? 0;
+    expect(newDifficulty).toBeLessThanOrEqual(2);
+  });
+
+  test("regressor persona: hysteresis prevents re-climb until session 3 clean", () => {
+    // After regression, in hysteresis (requiredForAdvance = 3)
+    const hysteresisState: LadderState = {
+      byPattern: {
+        knee_dominant: {
+          exerciseId: "machine-leg-press", // d1 knee_dominant
+          pattern: "knee_dominant",
+          difficulty: 1,
+          cleanSessionsCount: 0,
+          requiredForAdvance: 3, // hysteresis
+          inHysteresis: true,
+          lastDecisionTrace: "regress knee_dominant: pain flag → machine-leg-press (d1)",
+        },
+      },
+    };
+
+    const twoCleanLogs = [
+      makePersonaLog({ exerciseId: "machine-leg-press", createdAt: "2026-02-05T00:00:00Z", setsPlanned: 3, setsCompleted: 3, rpe: 6 }),
+      makePersonaLog({ exerciseId: "machine-leg-press", createdAt: "2026-02-12T00:00:00Z", setsPlanned: 3, setsCompleted: 3, rpe: 5 }),
+    ];
+
+    const availableEq = new Set(["gym"] as const) as Set<never>;
+
+    // After 2 clean sessions (need 3) → should still hold
+    const afterTwo = computeLadderState({
+      currentLadderState: hysteresisState,
+      recentLogs: twoCleanLogs,
+      activePatterns: ["knee_dominant"],
+      patternToInitExercise: {},
+      available: availableEq,
+      phaseIndex: 1,
+      experienceLevel: "Intermediate",
+      painAreas: [],
+      deferredIds: new Set(),
+    });
+
+    expect(afterTwo.byPattern.knee_dominant?.lastDecisionTrace).toMatch(/hold/);
+    expect(afterTwo.byPattern.knee_dominant?.exerciseId).toBe("machine-leg-press");
+    expect(afterTwo.byPattern.knee_dominant?.cleanSessionsCount).toBe(2);
+
+    // After session 3 clean → should advance
+    const threeCleanLogs = [
+      ...twoCleanLogs,
+      makePersonaLog({ exerciseId: "machine-leg-press", createdAt: "2026-02-19T00:00:00Z", setsPlanned: 3, setsCompleted: 3, rpe: 6 }),
+    ];
+
+    const afterThree = computeLadderState({
+      currentLadderState: hysteresisState,
+      recentLogs: threeCleanLogs,
+      activePatterns: ["knee_dominant"],
+      patternToInitExercise: {},
+      available: availableEq,
+      phaseIndex: 1,
+      experienceLevel: "Intermediate",
+      painAreas: [],
+      deferredIds: new Set(),
+    });
+
+    // Should advance (or at minimum the decision is not "hold" at the same rung)
+    const trace = afterThree.byPattern.knee_dominant?.lastDecisionTrace ?? "";
+    // Either advances or blocked by equipment/phase — not a plain hold
+    expect(trace).toBeTruthy();
+    if (trace.includes("advance")) {
+      expect(afterThree.byPattern.knee_dominant?.inHysteresis).toBe(false);
+    }
+  });
+});

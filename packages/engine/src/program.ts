@@ -2,12 +2,18 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import type { AssessmentReport } from "@/lib/assessmentEngine";
 import type {
   ExerciseLog,
+  LadderState,
   Program,
   ProgramDay,
   ProgramRoutineItem,
   ProgramSelectionDecisionTrace,
   ProgramSelectionDebugSource,
 } from "@/lib/types";
+import {
+  computeLadderState,
+  getLadderSwapSet,
+  LADDER_MAIN_PATTERNS,
+} from "@/lib/program/ladderAdvancement";
 import type {
   Exercise,
   ExerciseAccessoryRole,
@@ -29,7 +35,8 @@ import {
   getPhaseProfile,
 } from "@/lib/phases";
 import type { UserTrainingState } from "@/lib/phases";
-import type { ExerciseFeedbackSummary } from "@/lib/logStore";
+// ExerciseFeedbackSummary canonical location is @/lib/types (Phase 3 hygiene).
+import type { ExerciseFeedbackSummary } from "@/lib/types";
 import type { PoseAnalysis, PoseMetrics } from "@/lib/poseAnalyzer";
 import type { RandomFn } from "@/lib/seededRng";
 import { resolveProgramVariationIndex as resolveProgramVariationIndexValue } from "@/lib/programVariationClient";
@@ -335,6 +342,11 @@ type SelectionContext = {
     movementSignature: string;
   }>;
   variationState: ProgramVariationState | null;
+  /**
+   * Phase 3: per-pattern ladder rung state for scoring preference and
+   * VAR-1 variation constraint.  Undefined when no ladder history exists.
+   */
+  ladderState?: LadderState;
 };
 
 const normalizeTagToken = (value: string) =>
@@ -966,6 +978,7 @@ const buildSelectionContext = (
     feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
     recentlyUsedExerciseIds?: Set<string>;
     variationState?: ProgramVariationState | null;
+    ladderState?: LadderState;
   }
 ): SelectionContext => {
   const painAreas = questionnaire.painAreas.map(canonicalizePainArea);
@@ -1082,6 +1095,7 @@ const buildSelectionContext = (
     recentlyUsedExerciseIds,
     feedbackPenaltyHints,
     variationState: options?.variationState ?? null,
+    ladderState: options?.ladderState,
   };
 };
 
@@ -25627,6 +25641,24 @@ const getCapabilitySlotBonus = (params: {
     }
   }
 
+  // Phase 3 — ladder rung preference (composition rule: proposes, doesn't replace).
+  // +4 for the exact current-rung exercise, +1 for a swap option of the current rung.
+  if (section === "main" && auditMeta.ladderState) {
+    const exPattern = exercise.pattern;
+    if (exPattern && LADDER_MAIN_PATTERNS.has(exPattern)) {
+      const rungState = auditMeta.ladderState.byPattern[exPattern];
+      if (rungState) {
+        if (rungState.exerciseId === exercise.id) {
+          bonus += 4;
+          reasons.push(`+4 ladder preference: current rung for ${exPattern} (${exercise.id})`);
+        } else if ((exerciseById(rungState.exerciseId)?.swapOptions ?? []).includes(exercise.id)) {
+          bonus += 1;
+          reasons.push(`+1 ladder preference: swap option of current ${exPattern} rung`);
+        }
+      }
+    }
+  }
+
   return { bonus, reasons };
 };
 
@@ -28110,6 +28142,25 @@ const pickFirstEligibleId = (
         context,
       })
     )
+    // VAR-1: when variation is enabled AND ladderState is present, restrict
+    // main-slot candidates to {currentRung ∪ swapOptions} for tracked patterns.
+    // This prevents the variation rotation from surfacing exercises outside the
+    // current ladder rung's swap set.
+    .filter((entry) => {
+      if (
+        section !== "main" ||
+        !context.variationState?.enabled ||
+        !context.ladderState
+      ) {
+        return true;
+      }
+      const pattern = entry.exercise.pattern;
+      if (!pattern || !LADDER_MAIN_PATTERNS.has(pattern)) return true;
+      const rungState = context.ladderState.byPattern[pattern];
+      if (!rungState) return true;
+      const swapSet = getLadderSwapSet(rungState.exerciseId);
+      return swapSet.has(entry.exercise.id);
+    })
     .map((entry) => {
       const detail = scoreExerciseForContextDetailed(
         entry.exercise,
@@ -29737,6 +29788,18 @@ export type {
 
 export type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 
+// Phase 3: ladder advancement public API
+export {
+  computeLadderState,
+  getLadderProgressionMessage,
+  getLadderSwapSet,
+  getNextLadderRung,
+  getPrevLadderRung,
+  findD1RootForPattern,
+  LADDER_MAIN_PATTERNS,
+} from "@/lib/program/ladderAdvancement";
+export type { LadderDecision, LadderDecisionKind } from "@/lib/program/ladderAdvancement";
+
 const programConstraintWarningBuffer: ProgramConstraintWarning[] = [];
 
 export const getProgramConstraintWarningBuffer = () => [
@@ -29777,6 +29840,8 @@ type SelectionAuditMeta = {
   weeklyQuotaAudit?: WeeklyQuotaAudit;
   selectionAuditHook?: ProgramSelectionAuditHook;
   selectionRng?: RandomFn;
+  /** Phase 3: ladder state for rung-preference scoring bonus. */
+  ladderState?: LadderState;
 };
 
 const appendNote = (notes: string | null | undefined, text: string) => {
@@ -30643,6 +30708,8 @@ const buildStructuredDay = (params: {
       sameWeekRelatedMainExerciseIds,
       selectionAuditHook,
       selectionRng,
+      // Phase 3: pass ladder state for rung-preference scoring + VAR-1 constraint.
+      ladderState: selectionContext.ladderState,
     };
     const selectedId =
       lane === "push"
@@ -33542,6 +33609,12 @@ export const generateWeeklyProgram = (
     previousWeek?: ProgramDay[];
     feedbackSummaryByExercise?: Map<string, ExerciseFeedbackSummary>;
     variation?: ProgramVariationOptions;
+    /**
+     * Phase 3: prior program's ladder state.  When provided the engine
+     * computes the new LadderState from recentLogs at the cycle/phase boundary
+     * and writes it into the generated Program.
+     */
+    currentLadderState?: LadderState;
   }
 ): Program => {
   const { resolvedFeedbackSummaryByExercise, recentlyUsedExerciseIds } =
@@ -33552,6 +33625,30 @@ export const generateWeeklyProgram = (
       summarizeFeedbackFromLogs,
       buildRecentlyUsedExerciseIdSet,
     });
+
+  // Phase 3: compute updated ladder state at this cycle/phase boundary.
+  // Only runs when currentLadderState or recentLogs are provided (TRC-1 safe).
+  const resolvedLadderState: LadderState | undefined = (() => {
+    if (!options?.currentLadderState && !options?.recentLogs?.length) return undefined;
+    const deferredIds = new Set(
+      Array.from(resolvedFeedbackSummaryByExercise.values())
+        .filter((s) => s.deferred === true)
+        .map((s) => s.exerciseId)
+    );
+    const available = normalizeEquipmentSelection(data.equipment).available;
+    return computeLadderState({
+      currentLadderState: options?.currentLadderState,
+      recentLogs: options?.recentLogs ?? [],
+      activePatterns: Array.from(LADDER_MAIN_PATTERNS),
+      patternToInitExercise: {}, // Phase 3.1: initialize from questionnaire choices
+      available,
+      phaseIndex: options?.phaseIndex ?? 0,
+      experienceLevel: data.experience,
+      painAreas: data.painAreas,
+      deferredIds,
+    });
+  })();
+
   const variationPoseFocusTags = resolveVariationPoseFocusTags({
     poseAnalysis: options?.poseAnalysis,
     assessmentReport: options?.assessmentReport,
@@ -33594,6 +33691,7 @@ export const generateWeeklyProgram = (
         feedbackSummaryByExercise,
         recentlyUsedExerciseIds,
         variationState,
+        ladderState: resolvedLadderState,
       }),
     createTrainingState: (phaseIndex) =>
       deriveUserTrainingState({
@@ -33838,6 +33936,7 @@ export const generateWeeklyProgram = (
     consistencyRate: 0,
     warnings: emittedWarnings,
     templateVersion: PROGRAM_TEMPLATE_VERSION,
+    ladderState: resolvedLadderState,
   });
 };
 
