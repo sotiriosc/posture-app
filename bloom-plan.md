@@ -834,6 +834,111 @@ Screenshot smoke: seed 12-week climber, walk the eleven screens, confirm no engi
 Merge commit.
 
 
+Phase 6b — Ship-Critical Polish
+
+Branch: phase-6b-polish from origin/main (after PR #25 merges). Six commits, one per numbered item. Multi-concern PR but tightly scoped.
+
+Guiding principle (log as SR-6b)
+
+Phase 6b closes the gap between "the app works" and "the app is trustworthy under real-user conditions." Every item below is something a paying user would notice within their first hour, and something a paying user's absence would cost real revenue. No item in this phase is decorative; each closes a specific failure mode observed in QA.
+
+Commit 1 — Session persistence across Stripe (SHIP-CRITICAL)
+
+Observed: after Stripe signup / plan upgrade, user is logged out when redirected back to the app.
+
+Likely causes, in order of probability:
+
+Auth cookie sameSite attribute is "strict", dropped on cross-origin redirect from checkout.stripe.com. Fix: sameSite: "lax" for the auth cookie (session cookie only; do not weaken CSRF-token cookies).
+Stripe success URL hits a route that doesn't re-establish session before render, causing a redirect to /login that clobbers the checkout return.
+The plan-refresh logic added in Commit 2 of PR #25 (derivePlanState() fanout) is over-invalidating during a plan change, triggering a session reset as a side effect.
+
+Investigation order: check auth cookie attributes first (fastest to verify), then trace the Stripe success URL handler, then audit any signOut() or session-clearing calls in the plan-refresh path.
+
+Add a Playwright test in apps/consumer/tests/e2e/stripeSessionPersistence.spec.ts that simulates the Stripe redirect (mock the return URL) and asserts the user is still logged in with the correct plan reflected. This test must fail against current main and pass after the fix — that's the acceptance.
+
+Commit 2 — Guide card content refresh
+
+The guide cards (auto-open on first visit, collapse to a ? button after) are already built and working. What's stale is their content — they were written before Phases 3.0, 3.2, 3.3, 3W, 3.5, and 5. Users see coaching-quality UI but explanations of features that no longer describe what the app does.
+
+Audit every guide card in both apps. For each card, compare its content against the actual feature it explains. Rewrite in Sotirios's coach voice (SR-6a) to reflect current behavior. Specifically confirm these features are mentioned somewhere in the guide-card set:
+
+Ladder progression and how sessions earn the next level ("You'll move up to [next exercise name] after two clean sessions at the top of your rep range. No pushiness — your body tells us when.")
+Sacrifice / Test / Modify prompt on flagged exercises ("If something felt off last session, you'll see three buttons before we begin. Yours to choose.")
+Training intent — Build / Maintain / Recover — and how to change it in Settings ("Not everyone is here to add weight. Set your goal in Settings and we adapt to it, not the other way around.")
+Personal equipment blocks — how to permanently remove exercises ("Don't have a cable machine, or don't want a specific movement? Tap the '⋯' on any exercise card and choose 'Block until I reset.'")
+Assessment retest prompts at phase transitions ("Every so often we'll ask you to take fresh posture photos. Your baseline updates; the plan adapts.")
+Per-section visibility — how to hide/show what you want to see ("Prefer less on screen? Settings → Interface lets you hide anything you don't want to see. Nothing is gone, just tucked away.")
+
+Where a guide card covers a feature that has since been removed or changed behavior significantly, rewrite from scratch. Where a guide card is silent on a feature listed above, add coverage. Do NOT expand guide cards beyond one short paragraph plus optional bullet list — the point is coaching moments, not documentation dumps.
+
+Deliverable: every guide card in the app has been read against actual feature behavior. Log a per-card verdict (updated / added / unchanged / removed) in docs/guide-card-refresh.md.
+
+Commit 3 — Layout audit and overlap fixes
+
+Observed on the dashboard and multiple detail screens: top buttons (Log in / Menu, Pro badge, Back) overlap with header info pills (Plan: Free/Pro, phase badge, "Built from your movement profile" etc.) especially on narrower viewports and mid-scroll.
+
+Approach: NOT a redesign. A pass to fix z-index conflicts and spacing on existing components. For each of the eleven QA screens from Sotirios's walkthrough:
+
+Identify overlap zones at 1920×1080, 1440×900, 1024×768, and mobile 360×740 breakpoints.
+Fix via existing Tailwind spacing tokens — no new design language.
+Where a fix isn't possible without a redesign, flag in docs/layout-defer.md for a future dedicated design pass, don't hack around it.
+
+Add a Playwright screenshot regression test (both apps, both dashboard variants) that captures the header region and compares to a baseline. Zero overlapping bounding boxes in the captured region = pass.
+
+Commit 4 — Session options: 5 → 3 (properly)
+
+DEC-6a-1 correctly identified that this required an engine change and deferred it. Now, the right way:
+
+Engine change first, in packages/engine/src/sessionPracticeOptions.ts:
+
+Consolidate the current five modes (Full, Steady, Reduced, Simplified, Recovery) into three:
+
+full — the whole session as saved (absorbs current "Full" and "Steady")
+lighter — same movement patterns, reduced work (absorbs "Reduced" and "Simplified")
+recovery — mobility, activation, and cooldown only (unchanged behavior)
+
+Update the option-selection logic to map any legacy stored value to the new set (e.g., previously-saved "simplified" maps to "lighter", "steady" maps to "full") — this is a data migration, do it in the read path so no one-time script is needed.
+
+Add anchor test coverage for each new mode in the golden anchor suite. The persona whose day gets picked as "lighter" should get a demonstrably lighter session vs "full" — verify by counting main-slot work volume in the test.
+
+Then the UI change in both apps: session-start screen shows three buttons, labels from bloom-plan Phase 6a spec.
+
+Update guide cards (Commit 2) to reflect the three-option world if any card mentions session modes.
+
+Commit 5 — Telemetry panel move to /dev-qa
+
+The Telemetry dashboard (local) panel in user Settings is internal-facing — same category as the Real-device QA panel moved in PR #25. Move it to the existing /dev-qa route, gated by NODE_ENV === "development", absent from production builds.
+
+No functional change; just relocation. Confirm the panel still works in dev mode after the move.
+
+Commit 6 — Seed hygiene and honest reset
+
+Two issues in one:
+
+6.a — /dev-seed must fully wipe state on every persona load. The current implementation left seeded data in IndexedDB across account changes, which caused a false "ready for next phase" report during Sotirios's QA. Fix: every persona seed action begins by clearing IndexedDB completely (all Praxis keys, not just program state) before writing the seeded persona. Log the wipe in a dev-console message so future QA sessions can spot state leaks immediately.
+
+6.b — Production reset path in Settings. The existing "Reset current progress" only clears the active plan. Add a second, more severe option: "Erase all local data" that wipes IndexedDB fully (matching what dev-seed does). Copy: "This deletes everything Praxis has stored on this device — sessions, photos, program, preferences. It does not cancel your subscription. Type ERASE below to confirm." Confirmation input required, matching text comparison, then wipe. This gives users an escape hatch and gives Motion Care clients a way to hand off devices cleanly. Log the action locally (nothing sent to server; the point is the data leaves the device).
+
+Both changes need Playwright coverage:
+
+apps/consumer/tests/e2e/devSeedWipesState.spec.ts — seed persona A, seed persona B, verify persona A's data is fully gone.
+apps/consumer/tests/e2e/eraseAllLocalDataConfirmation.spec.ts — verify confirmation input works, verify data is actually gone after wipe.
+What is NOT in this pass
+No new features (guide cards get refreshed, not added-to beyond covering existing features).
+No visual redesign beyond spacing/z-index fixes.
+No changes to onboarding flow, questionnaire, or assessment capture.
+No engine changes beyond the session-options consolidation in Commit 4.
+Acceptance
+Stripe signup + redirect keeps user logged in with correct plan reflected.
+Every guide card reflects current features; verdict log exists.
+Zero overlapping bounding boxes on the eleven QA screens across the four named breakpoints.
+Session options render as three buttons, engine honors the new set, legacy stored values migrate cleanly on read.
+Telemetry panel absent from production Settings.
+Dev-seed clears state on every action; production Erase-all-local-data button exists with confirmation input.
+Full gate green, including new Playwright specs.
+
+Merge commit.
+
 ## Sequencing & effort (with Claude Code)
 
 P0 security            0.5 day        (both repos)
