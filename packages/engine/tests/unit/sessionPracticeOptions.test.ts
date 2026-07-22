@@ -5,6 +5,7 @@ import {
 } from "@/lib/program";
 import {
   deriveSessionPracticeOptions,
+  normalizePracticeMode,
   recommendedPracticeModeForRecommendation,
   selectSessionPracticeItems,
 } from "@/lib/sessionPracticeOptions";
@@ -104,8 +105,17 @@ describe("session practice options", () => {
     expect(oldSession.selectedPracticeMode).toBeUndefined();
     expect(deriveSessionPracticeOptions(practiceDay, null)[0]).toMatchObject({
       mode: "full",
-      label: "Full Session",
+      label: "Full",
     });
+  });
+
+  test("exactly three options are offered: full, lighter, recovery", () => {
+    const options = deriveSessionPracticeOptions(practiceDay, null);
+    expect(options.map((option) => option.mode)).toEqual([
+      "full",
+      "lighter",
+      "recovery",
+    ]);
   });
 
   test("full mode includes all items", () => {
@@ -114,15 +124,29 @@ describe("session practice options", () => {
     );
   });
 
-  test("reduced mode includes fewer items and preserves warmup, corrective, and cooldown", () => {
-    const selected = selectSessionPracticeItems(practiceDay, "reduced");
-    const ids = selected.map((entry) => entry.exerciseId);
+  const mainWorkVolume = (items: ProgramRoutineItem[]) =>
+    items
+      .filter((entry) => (entry.section ?? "main") === "main")
+      .reduce((sum, entry) => sum + Number.parseInt(String(entry.sets), 10), 0);
 
-    expect(selected.length).toBeLessThan(practiceDay.routine.length);
-    expect(ids).toEqual(
-      expect.arrayContaining(["cat-cow", "dead-bug", "doorway-pec-stretch"])
+  const mainIds = (items: ProgramRoutineItem[]) =>
+    items
+      .filter((entry) => (entry.section ?? "main") === "main")
+      .map((entry) => entry.exerciseId)
+      .sort();
+
+  test("lighter mode keeps the same movement patterns with demonstrably less work", () => {
+    const full = selectSessionPracticeItems(practiceDay, "full");
+    const lighter = selectSessionPracticeItems(practiceDay, "lighter");
+
+    // Same main movement patterns as the full session.
+    expect(mainIds(lighter)).toEqual(mainIds(full));
+    // But strictly less main-slot work volume.
+    expect(mainWorkVolume(lighter)).toBeLessThan(mainWorkVolume(full));
+    // Warmup/corrective prep is preserved.
+    expect(lighter.map((entry) => entry.exerciseId)).toEqual(
+      expect.arrayContaining(["cat-cow", "dead-bug"])
     );
-    expect(ids).toEqual(expect.arrayContaining(["dumbbell-rows", "plank"]));
   });
 
   test("recovery mode excludes main heavy work", () => {
@@ -136,19 +160,40 @@ describe("session practice options", () => {
     );
   });
 
+  test("legacy stored modes migrate to the canonical three on read", () => {
+    expect(normalizePracticeMode("steady")).toBe("full");
+    expect(normalizePracticeMode("reduced")).toBe("lighter");
+    expect(normalizePracticeMode("simplified")).toBe("lighter");
+    expect(normalizePracticeMode("recovery")).toBe("recovery");
+    expect(normalizePracticeMode("full")).toBe("full");
+    expect(normalizePracticeMode("lighter")).toBe("lighter");
+    expect(normalizePracticeMode(undefined)).toBe("full");
+
+    // A legacy value fed to the read path resolves exactly like its new mode.
+    expect(selectSessionPracticeItems(practiceDay, "steady")).toEqual(
+      selectSessionPracticeItems(practiceDay, "full")
+    );
+    expect(selectSessionPracticeItems(practiceDay, "reduced")).toEqual(
+      selectSessionPracticeItems(practiceDay, "lighter")
+    );
+    expect(selectSessionPracticeItems(practiceDay, "simplified")).toEqual(
+      selectSessionPracticeItems(practiceDay, "lighter")
+    );
+  });
+
   test("recommendation mode maps to the expected suggested option", () => {
     expect(recommendedPracticeModeForRecommendation(recommendation("normal"))).toBe(
       "full"
     );
     expect(recommendedPracticeModeForRecommendation(recommendation("repeat"))).toBe(
-      "steady"
+      "full"
     );
     expect(recommendedPracticeModeForRecommendation(recommendation("reduce"))).toBe(
-      "reduced"
+      "lighter"
     );
     expect(
       recommendedPracticeModeForRecommendation(recommendation("simplify"))
-    ).toBe("simplified");
+    ).toBe("lighter");
     expect(recommendedPracticeModeForRecommendation(recommendation("recover"))).toBe(
       "recovery"
     );
@@ -157,7 +202,7 @@ describe("session practice options", () => {
       practiceDay,
       recommendation("reduce")
     );
-    expect(options.find((option) => option.isRecommended)?.mode).toBe("reduced");
+    expect(options.find((option) => option.isRecommended)?.mode).toBe("lighter");
   });
 
   test("deriving practice options does not alter seeded program output", () => {
@@ -179,5 +224,32 @@ describe("session practice options", () => {
     expect(stableProgramProjection(after)).toEqual(
       stableProgramProjection(before)
     );
+  });
+
+  test("real generated persona: lighter is strictly lighter than full, same patterns (anchor)", () => {
+    clearProgramVariationHistory();
+    const program = generateWeeklyProgram(questionnaire, "lighter-anchor", {
+      phaseIndex: 1,
+      seed: "lighter-anchor-seed",
+    });
+
+    const fullTotal = program.week.reduce(
+      (sum, day) => sum + mainWorkVolume(selectSessionPracticeItems(day, "full")),
+      0
+    );
+    const lighterTotal = program.week.reduce(
+      (sum, day) => sum + mainWorkVolume(selectSessionPracticeItems(day, "lighter")),
+      0
+    );
+
+    // Demonstrably lighter total main-slot work volume across the week.
+    expect(lighterTotal).toBeLessThan(fullTotal);
+
+    // Every day keeps the same main movement patterns under "lighter".
+    program.week.forEach((day) => {
+      expect(mainIds(selectSessionPracticeItems(day, "lighter"))).toEqual(
+        mainIds(selectSessionPracticeItems(day, "full"))
+      );
+    });
   });
 });

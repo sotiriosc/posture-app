@@ -61,3 +61,57 @@ webhook), follows the Stripe return, and asserts the user is still authenticated
 and the re-issued cookie token decodes to `pro`. **Fails against current main**
 (no return route → the navigation 404s / stays signed-out); **passes after the
 fix.** Verified both directions locally.
+
+## Commit 4 — Session options: 5 → 3 (properly)
+
+This closes **DEC-6a-1**, the item deferred out of the Phase 6a copy pass because
+it required an engine change rather than a rename.
+
+### Problem
+
+The session start screen offered five practice options — `full`, `steady`,
+`reduced`, `simplified`, `recovery`. In QA they read as redundant: `full` vs
+`steady` were indistinguishable to a user, and `reduced` vs `simplified` both
+"do less" with no clear rule for which. Five choices for "how hard is today?" is
+decision paralysis, not control.
+
+### Decision
+
+Collapse to a canonical three, each with a distinct, honest meaning:
+
+- **Full** — the session exactly as programmed (absorbs old `full` + `steady`).
+- **Lighter** — *same movement patterns*, less work. Each main slot drops one
+  working set (min 1). Warmup/corrective prep is preserved (absorbs old
+  `reduced` + `simplified`).
+- **Recovery** — no main heavy work; warmup, corrective, mobility and cooldown
+  only (unchanged in spirit).
+
+`SessionPracticeOption["mode"]` in `packages/engine/src/types.ts` is now the
+three-member union. `sessionPracticeOptions.ts` derives exactly these three and
+`selectSessionPracticeItems` implements the new "lighter" set-trimming.
+
+### Migration on read
+
+Historical `SessionRecord`s persist `selectedPracticeMode` as one of the old
+five. Rather than a destructive data migration, we normalise on read:
+`normalizePracticeMode()` maps `steady → full`, `reduced|simplified → lighter`,
+and passes `full|lighter|recovery` through (default `full`). Every engine read
+path (`selectSessionPracticeItems`, `formatPracticeModeSessionNote`) runs values
+through it, so old logs resolve cleanly and analytics stay coherent. The
+`SessionClient` UI state is already the three-member union and coerces any
+non-matching selection back to `full`, so no legacy value reaches the UI.
+
+### Anchor coverage
+
+`packages/engine/tests/unit/sessionPracticeOptions.test.ts`:
+- exactly three options offered, in `[full, lighter, recovery]` order;
+- **`lighter` is demonstrably lighter** — on both a synthetic day and a *real
+  generated persona program*, total main-slot work volume under `lighter` is
+  strictly less than under `full`, while the set of main movement patterns is
+  identical (proves "same patterns, less work", not "fewer exercises");
+- `recovery` excludes main heavy work;
+- legacy `steady/reduced/simplified` values migrate to `full/lighter/lighter`
+  and resolve to the same selected items as their canonical mode.
+
+All 818 engine unit tests remain green; golden anchors unchanged (program
+generation was not touched — only per-session option derivation).
