@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/lib/gymSaas/*": ["./src/lib/gymSaas/*"],
+      "@/lib/*": ["../../packages/engine/src/*"],
+      "@/*": ["./src/*"],
+      "@praxis/engine": ["../../packages/engine/src/index.ts"],
+      "@praxis/engine/*": ["../../packages/engine/src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@praxis/gyms",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@praxis/engine": "*"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest",
+    "test:e2e": "playwright test"
+  }
+}
