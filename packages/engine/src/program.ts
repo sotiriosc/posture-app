@@ -124,6 +124,7 @@ import {
 import { mergeDecisionTrace, withDecisionTrace } from "@/lib/program/decisionTrace";
 import {
   buildWarmupForDay,
+  buildFourBlockWarmup,
   deriveDayIntentFromProgramDay,
 } from "@/lib/program/warmupPlanner";
 import {
@@ -31598,9 +31599,81 @@ const attachStructuredPrepBlocksToWeek = (params: {
   goal: string;
   experienceLevel: SelectionContext["experienceLevel"];
   poseFocusTags: Set<string>;
+  ladderState?: import("@/lib/types").LadderState;
 }) =>
   params.week.map((day) => {
     const dayIntent = deriveDayIntentFromProgramDay(day);
+
+    // Phase 3W: derive today's main patterns from the routine
+    const mainRoutineExercises = day.routine
+      .filter((item) => item.section === "main")
+      .map((item) => exerciseById(item.exerciseId))
+      .filter((ex): ex is NonNullable<ReturnType<typeof exerciseById>> => Boolean(ex));
+
+    // Phase 3W: map raw exercise movementPattern tokens to canonical ladder
+    // pattern names.  Exercise catalog uses compact forms ("horizontalpull",
+    // "kneedominant") while the PRIME and joint-map system uses underscore forms.
+    const RAW_TO_LADDER_PATTERN: Record<string, string> = {
+      horizontalpull: "horizontal_pull",
+      horizontal_pull: "horizontal_pull",
+      verticalpull: "vertical_pull",
+      vertical_pull: "vertical_pull",
+      horizontalpush: "horizontal_push",
+      horizontal_push: "horizontal_push",
+      verticalpush: "vertical_push",
+      vertical_push: "vertical_push",
+      hinge: "hinge",
+      squat: "knee_dominant",
+      kneedominant: "knee_dominant",
+      knee_dominant: "knee_dominant",
+      core: "core_stability",
+      core_stability: "core_stability",
+      carry: "carry_load",
+    };
+    const todayPatterns = [
+      ...new Set(
+        mainRoutineExercises
+          .flatMap((ex) => ex.movementPattern)
+          .map((p) => RAW_TO_LADDER_PATTERN[p.toLowerCase()])
+          .filter((p): p is string => Boolean(p) && p !== "carry_load")
+      ),
+    ];
+
+    // Phase 3W — use four-block contract when we have enough signal
+    if (todayPatterns.length > 0) {
+      const {
+        rampBlock,
+        mobilizeBlock,
+        activateBlock,
+        primeBlock,
+        cooldownBlock: fourBlockCooldown,
+        warmupDecisionTrace,
+      } = buildFourBlockWarmup(dayIntent, todayPatterns, params.available, params.painAreas, {
+        ladderState: params.ladderState,
+        poseFocusTags: params.poseFocusTags,
+        goal: params.goal,
+        experienceLevel: params.experienceLevel,
+        painSeverity: params.painSeverity,
+      });
+
+      // Merge RAMP + MOBILIZE into the legacy `warmup` field for backward
+      // compatibility; ACTIVATE stays in `activation`; PRIME is new.
+      return {
+        ...day,
+        warmup: {
+          id: rampBlock.id.replace("-ramp", "-warmup"),
+          title: "Warmup",
+          tags: [...new Set([...rampBlock.tags, ...mobilizeBlock.tags])],
+          items: [...rampBlock.items, ...mobilizeBlock.items],
+        },
+        activation: activateBlock,
+        cooldown: fourBlockCooldown,
+        prime: primeBlock,
+        warmupDecisionTrace,
+      };
+    }
+
+    // Fallback: existing planner for days with no recognized main patterns
     const { warmupBlock, activationBlock, cooldownBlock } = buildWarmupForDay(
       dayIntent,
       params.available,
@@ -33853,6 +33926,12 @@ export const generateWeeklyProgram = (
     selectionRng: weeklyRuntimeContext.selectionRng,
     previousWeek: options?.previousWeek,
   });
+  // Phase 3W: bind resolvedLadderState into the prep-block builder so the
+  // PRIME block can read d1–d2 rungs from the current ladder.
+  const attachPrepWithLadder = (
+    params: Parameters<typeof attachStructuredPrepBlocksToWeek>[0]
+  ) => attachStructuredPrepBlocksToWeek({ ...params, ladderState: resolvedLadderState });
+
   const weeklyPipelineCallbacks = buildWeeklyPipelineCallbacks({
     runtimeContext: weeklyRuntimeContext,
     repairContext: dayRepairContext,
@@ -33860,7 +33939,7 @@ export const generateWeeklyProgram = (
     applyFeedbackDrivenSubstitutions,
     applyDayCurriculumConstraints,
     applyFinalFeedbackSafetyPass,
-    attachStructuredPrepBlocksToWeek,
+    attachStructuredPrepBlocksToWeek: attachPrepWithLadder,
   });
   const structuredWeekResult = runWeeklyGenerationPipeline({
     initialWeek: adjustedDays,

@@ -360,6 +360,18 @@ export type ProgramDay = {
   warmup?: WarmupBlock;
   activation?: WarmupBlock;
   cooldown?: WarmupBlock;
+  /**
+   * Phase 3W — PRIME block.  One d1–d2 rung per main pattern of the day,
+   * unloaded/minimally loaded.  The ladder read downward is the primer
+   * generator.  Items here are WarmupItems built from Exercise catalog entries.
+   */
+  prime?: WarmupBlock;
+  /**
+   * Phase 3W — Human-readable trace of every RAMP/MOBILIZE/ACTIVATE/PRIME
+   * pick with block label and reason.  Undefined on programs generated before
+   * Phase 3W.
+   */
+  warmupDecisionTrace?: string[];
   /** User-visible notes explaining why a slot was dropped or degraded. */
   degradationNotes?: string[];
 };
