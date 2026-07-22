@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import B2BIcon, { type B2BIconName } from "@/components/gym-demo/B2BIcon";
 import GymDemoHeader from "@/components/gym-demo/GymDemoHeader";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Praxis for Gyms | Local Gym Pilot",
@@ -629,6 +630,7 @@ export default function PilotPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }
