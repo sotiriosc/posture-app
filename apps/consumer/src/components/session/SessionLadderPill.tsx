@@ -15,7 +15,7 @@ export default function SessionLadderPill({ message }: { message: string | null 
       <span
         className="inline-flex items-center rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-medium text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
         role="status"
-        aria-label="Ladder progression status"
+        aria-label="Level indicator"
       >
         {message}
       </span>

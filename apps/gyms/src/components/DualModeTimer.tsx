@@ -183,10 +183,6 @@ export default function DualModeTimer({
   const sliderMax = mode === "exercise" ? 180 : 300;
   const isExerciseMode = mode === "exercise";
 
-  const accentClasses =
-    isExerciseMode
-      ? "praxis-selected-surface text-sky-50"
-      : "praxis-selected-surface text-cyan-50";
   const modeBackground = isExerciseMode
     ? "border-sky-200/70 bg-sky-50/80"
     : "border-cyan-200/70 bg-cyan-50/80";
@@ -501,14 +497,9 @@ export default function DualModeTimer({
                   : inactiveModeButtonClasses
               }`}
             >
-              {value === "exercise" ? "Movement pattern focus" : "Rest"}
+              {value === "exercise" ? "Working" : "Resting"}
             </button>
           ))}
-        </div>
-        <div
-          className={`rounded-full border px-3 py-1 text-xs font-semibold ${accentClasses}`}
-        >
-          {mode === "exercise" ? "Movement pattern focus mode" : "Rest mode"}
         </div>
       </div>
 
@@ -559,11 +550,14 @@ export default function DualModeTimer({
 
       <div className={`mt-3 flex items-center justify-between text-xs font-semibold ${secondaryTextClass}`}>
         <span>{running ? "Tap to pause" : "Tap to start"}</span>
-        <span
-          className={progressBadgeClasses}
-        >
-          Pattern proficiency {progressPercent}%
-        </span>
+        {progressPercent > 0 ? (
+          <span
+            className={progressBadgeClasses}
+            title="How often you're hitting the coaching cue on this movement."
+          >
+            Cue consistency: {progressPercent}%
+          </span>
+        ) : null}
         <button
           type="button"
           onClick={resetTimer}
@@ -609,8 +603,8 @@ export default function DualModeTimer({
       </div>
 
       <div className={`mt-4 flex flex-wrap gap-3 text-xs font-semibold ${secondaryTextClass}`}>
-        <span>Movement pattern focus: {formatTime(selectedExerciseSeconds)}</span>
-        <span>Rest: {formatTime(selectedRestSeconds)}</span>
+        <span>Working: {formatTime(selectedExerciseSeconds)}</span>
+        <span>Resting: {formatTime(selectedRestSeconds)}</span>
       </div>
     </div>
   );

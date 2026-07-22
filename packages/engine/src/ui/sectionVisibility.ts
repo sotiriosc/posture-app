@@ -44,14 +44,14 @@ export const SECTION_REGISTRY: readonly SectionDefinition[] = [
   {
     id: "results.ladders",
     screen: "results",
-    label: "Current ladders",
-    description: "Your progress up each movement pattern's rungs (d1–d5).",
+    label: "Your progression",
+    description: "How far you've progressed on each exercise.",
     defaultVisible: true,
   },
   {
     id: "results.sacrificeRetest",
     screen: "results",
-    label: "Sacrifice retest queue",
+    label: "Exercises ready to try again",
     description:
       "Exercises you set aside that are now eligible to try again.",
     defaultVisible: true,
@@ -59,14 +59,14 @@ export const SECTION_REGISTRY: readonly SectionDefinition[] = [
   {
     id: "results.posture",
     screen: "results",
-    label: "Posture observations",
-    description: "Baseline vs latest measurements for tracked observations.",
+    label: "Posture check results",
+    description: "Baseline vs latest measurements from your posture check.",
     defaultVisible: true,
   },
   {
     id: "results.retiredTags",
     screen: "results",
-    label: "Retired posture focus",
+    label: "Areas you've improved",
     description: "Posture focuses you've cleared and retired.",
     defaultVisible: true,
   },
@@ -84,15 +84,15 @@ export const SECTION_REGISTRY: readonly SectionDefinition[] = [
     label: "Provenance footer",
     description:
       "The trust footer: assessment dates, retest count, and decisions traced.",
-    defaultVisible: true,
+    defaultVisible: false,
   },
   // ── Session screen ──────────────────────────────────────────────────────
   {
     id: "session.ladderPill",
     screen: "session",
-    label: "Ladder progress pill",
+    label: "Level indicator",
     description:
-      "The small progression status pill shown on each exercise card.",
+      "The small level indicator shown on each exercise card.",
     defaultVisible: true,
   },
   // ── Day view ────────────────────────────────────────────────────────────
@@ -102,7 +102,7 @@ export const SECTION_REGISTRY: readonly SectionDefinition[] = [
     label: "Corrective-source annotations",
     description:
       'The "Chosen because: [reason]" line under posture-biased picks.',
-    defaultVisible: true,
+    defaultVisible: false,
   },
   {
     id: "day.warmupBreakdown",

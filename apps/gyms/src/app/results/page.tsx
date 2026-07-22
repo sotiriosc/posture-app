@@ -6,8 +6,8 @@ import ResultsRoutine from "@/components/ResultsRoutine";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
-import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
-import UpgradePrompt from "@/components/UpgradePrompt";
+import PlanBadge from "@/components/results/PlanBadge";
+import PlanUpsell from "@/components/results/PlanUpsell";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import {
   BUYER_DEMO_COOKIE,
@@ -38,7 +38,6 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
     session?.email?.split("@")[0] ||
     "athlete";
   const showPaywallNotice = query.paywall === "1";
-  const isPro = session?.plan === "pro";
   return (
     <BackgroundShell>
       <div className="ui-shell flex max-w-6xl flex-col gap-8 py-8 sm:py-12">
@@ -75,20 +74,10 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
                   Buyer demo mode
                 </span>
               ) : null}
-              {authEnabled ? (
-                <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
-                  Plan: {isPro ? "Pro" : "Free"}
-                </span>
-              ) : null}
+              <PlanBadge />
             </div>
           </header>
-          {authEnabled && isPro ? <ManageSubscriptionButton showRefreshAction={false} /> : null}
-          {authEnabled && showPaywallNotice && !isPro ? (
-            <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">
-              Free access includes Day 1. Praxis Pro unlocks the full weekly plan.
-            </div>
-          ) : null}
-          {authEnabled && !isPro ? <UpgradePrompt /> : null}
+          <PlanUpsell showPaywallNotice={showPaywallNotice} />
         </OnImage>
 
         <ResultsRoutine buyerDemoMode={buyerDemoMode} />

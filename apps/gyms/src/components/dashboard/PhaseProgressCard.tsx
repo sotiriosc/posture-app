@@ -14,7 +14,7 @@ type PhaseProgressCardProps = {
   workoutTarget: number;
   daysInPhase: number;
   dayTarget: number;
-  gateStatusLabel: "Ready to advance" | "Gate locked" | "Phase 3 active";
+  gateStatusLabel: "Ready to advance" | "Keep going" | "Phase 3 active";
   gateStatusDetail: string;
   onOpenMove: () => void;
   onOpenSkip: () => void;
@@ -48,7 +48,7 @@ export default function PhaseProgressCard({
 
       <div className="ui-soft-surface space-y-3 rounded-lg px-3 py-3">
         <ProgressBar
-          label="Workout gate progress"
+          label="Sessions this phase"
           value={workoutsCompletedInPhase}
           max={workoutTarget}
           compact
@@ -66,7 +66,7 @@ export default function PhaseProgressCard({
       </div>
 
       <div className="ui-soft-surface rounded-lg px-3 py-3 text-xs text-slate-300">
-        <p className="font-semibold text-white">Gate status</p>
+        <p className="font-semibold text-white">Phase status</p>
         <p className="mt-1 text-sm font-semibold text-slate-100">
           {gateStatusLabel}
         </p>

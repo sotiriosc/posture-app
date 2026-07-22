@@ -367,9 +367,9 @@ export default function QuestionnaireForm() {
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {(
             [
-              { value: "build", label: "Build", sub: "Progress to harder movements" },
-              { value: "maintain", label: "Maintain", sub: "Keep what I have" },
-              { value: "rehab", label: "Recover", sub: "Working through an issue" },
+              { value: "build", label: "Build", sub: "Build strength and skill week to week" },
+              { value: "maintain", label: "Maintain", sub: "Keep what I have, stay strong" },
+              { value: "rehab", label: "Recover", sub: "Coming back from injury" },
             ] as { value: "build" | "maintain" | "rehab"; label: string; sub: string }[]
           ).map((opt) => (
             <button

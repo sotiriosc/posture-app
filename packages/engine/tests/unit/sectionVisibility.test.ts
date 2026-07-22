@@ -35,16 +35,20 @@ describe("section visibility registry", () => {
     }
   });
 
-  it("encodes the ratified defaults (hidden-by-default set)", () => {
-    // Full timeline + warmup breakdown are hidden until toggled on.
+  it("encodes the ratified defaults (Phase 6a selective-default set)", () => {
+    // Hidden until toggled on: full timeline, warmup breakdown, provenance
+    // footer, and corrective-source annotations (Phase 6a Commit 2).
     expect(DEFAULT_SECTION_VISIBILITY["results.phaseHistory"]).toBe(false);
     expect(DEFAULT_SECTION_VISIBILITY["day.warmupBreakdown"]).toBe(false);
+    expect(DEFAULT_SECTION_VISIBILITY["results.provenanceFooter"]).toBe(false);
+    expect(DEFAULT_SECTION_VISIBILITY["day.correctiveSource"]).toBe(false);
     // Core sections are visible by default.
     expect(DEFAULT_SECTION_VISIBILITY["results.headline"]).toBe(true);
     expect(DEFAULT_SECTION_VISIBILITY["results.ladders"]).toBe(true);
     expect(DEFAULT_SECTION_VISIBILITY["results.posture"]).toBe(true);
+    expect(DEFAULT_SECTION_VISIBILITY["results.sacrificeRetest"]).toBe(true);
+    expect(DEFAULT_SECTION_VISIBILITY["results.retiredTags"]).toBe(true);
     expect(DEFAULT_SECTION_VISIBILITY["session.ladderPill"]).toBe(true);
-    expect(DEFAULT_SECTION_VISIBILITY["day.correctiveSource"]).toBe(true);
   });
 });
 
@@ -74,15 +78,18 @@ describe("screen scoping", () => {
   });
 
   it("counts hidden sections per screen using defaults + overrides", () => {
-    // Default: results has exactly one hidden section (phaseHistory).
-    expect(countHiddenSections(undefined, "results")).toBe(1);
+    // Default: results has two hidden sections (phaseHistory + provenanceFooter).
+    expect(countHiddenSections(undefined, "results")).toBe(2);
     // Hiding the headline too raises the count.
     expect(
       countHiddenSections({ "results.headline": false }, "results")
-    ).toBe(2);
-    // Showing phaseHistory drops it to zero.
+    ).toBe(3);
+    // Showing both hidden-by-default sections drops it to zero.
     expect(
-      countHiddenSections({ "results.phaseHistory": true }, "results")
+      countHiddenSections(
+        { "results.phaseHistory": true, "results.provenanceFooter": true },
+        "results"
+      )
     ).toBe(0);
   });
 

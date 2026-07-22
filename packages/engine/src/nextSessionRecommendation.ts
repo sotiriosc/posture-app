@@ -184,12 +184,11 @@ export const formatNextSessionRecommendation = (
   if (!recommendation) return null;
 
   const labelByMode: Record<NextSessionRecommendation["mode"], string> = {
-    normal: "Next session recommendation: continue normally with gentle progression optional.",
-    repeat: "Next session recommendation: repeat the pattern at a steady dose.",
-    reduce: "Next session recommendation: reduce dose or choose an easier exposure.",
-    simplify: "Next session recommendation: simplify the pattern before progressing.",
-    recover:
-      "Next session recommendation: use a recovery-oriented or very conservative exposure.",
+    normal: "For next session: keep going as planned — a small step up is optional.",
+    repeat: "For next session: repeat this movement at a steady pace.",
+    reduce: "For next session: ease off a little or pick something easier.",
+    simplify: "For next session: we'll simplify this movement before moving forward.",
+    recover: "For next session: keep it easy and recovery-focused.",
   };
 
   return labelByMode[recommendation.mode];

@@ -42,24 +42,38 @@ export default function OnboardingInfoButton({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!autoOpen || isAutomationEnvironment()) {
-      const timer = window.setTimeout(() => {
-        setReady(true);
-      }, 0);
-      return () => window.clearTimeout(timer);
+
+    // The Guide button is always available; reveal it without slamming the
+    // panel open on first paint.
+    const readyTimer = window.setTimeout(() => setReady(true), 0);
+
+    if (
+      !autoOpen ||
+      isAutomationEnvironment() ||
+      !shouldAutoOpenOnboarding(onboardingKey)
+    ) {
+      return () => window.clearTimeout(readyTimer);
     }
-    const shouldAutoOpen = shouldAutoOpenOnboarding(onboardingKey);
-    if (shouldAutoOpen) {
-      const timer = window.setTimeout(() => {
-        setOpen(true);
-        setReady(true);
-      }, 450);
-      return () => window.clearTimeout(timer);
+
+    // Don't auto-open on initial paint. Wait for the first scroll, or 3s of
+    // idle — whichever comes first — so the guide feels invited, not intrusive.
+    let opened = false;
+    function openGuide() {
+      if (opened) return;
+      opened = true;
+      window.clearTimeout(idleTimer);
+      window.removeEventListener("scroll", onScroll);
+      setOpen(true);
     }
-    const timer = window.setTimeout(() => {
-      setReady(true);
-    }, 0);
-    return () => window.clearTimeout(timer);
+    const onScroll = () => openGuide();
+    const idleTimer = window.setTimeout(openGuide, 3000);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.clearTimeout(readyTimer);
+      window.clearTimeout(idleTimer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [autoOpen, onboardingKey]);
 
   const closeGuide = () => {

@@ -797,7 +797,7 @@ export default function SessionClient({
           section: routineItem.section ?? day.title,
           dayTitle: day.title,
           id: itemId,
-          name: exercise?.name ?? "Movement pattern focus",
+          name: exercise?.name ?? "Exercise",
           cues: routineItem.cues ?? exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
           duration: exercise?.durationOrReps ?? routineItem.reps ?? "",
@@ -911,7 +911,7 @@ export default function SessionClient({
   const tips = [
     "Breathe steadily",
     "Move with control",
-    "Maintain posture",
+    "Keep your posture steady",
     "Relax your jaw and neck",
     "Smooth tempo over speed",
   ];
@@ -1397,7 +1397,7 @@ export default function SessionClient({
       usedExerciseIds: new Set(flatItems.map((item) => item.exerciseId)),
     });
     if (!candidateId || candidateId === currentItem.exerciseId) {
-      setPainModalMessage("No safe same-lane substitute found for this movement pattern focus.");
+      setPainModalMessage("No safe substitute found for this exercise.");
       await handleSavePainReportOnly();
       return;
     }
@@ -1756,7 +1756,7 @@ export default function SessionClient({
       program.week.find((entry) => entry.dayIndex === programDayIndex)?.title) ||
     currentItem?.dayTitle ||
     "Today";
-  const exercisePositionLabel = `Movement pattern focus ${Math.min(
+  const exercisePositionLabel = `Exercise ${Math.min(
     totalItems,
     activeIndex + 1
   )} of ${Math.max(1, totalItems)}`;
@@ -2170,7 +2170,7 @@ export default function SessionClient({
           </OnImage>
           <div className="ui-card p-6">
             <p className="text-sm text-slate-600">
-              You completed {summaryStats.completedExercises} movement pattern focuses in about{" "}
+              You completed {summaryStats.completedExercises} exercises in about{" "}
               {summaryStats.estimatedMinutes} minutes.
             </p>
             <p className="mt-2 text-sm text-slate-600">
@@ -2268,7 +2268,7 @@ export default function SessionClient({
               <div>
                 <p className="text-sm font-semibold text-white">Today&apos;s options</p>
                 <p className="mt-1 text-xs text-slate-300">
-                  This changes only today&apos;s session view. Your saved plan is not changed.
+                  Adjust just today&apos;s session — your plan stays the same.
                 </p>
               </div>
               {selectedPracticeOption ? (
@@ -2336,7 +2336,7 @@ export default function SessionClient({
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-current shadow-[0_0_18px_currentColor]" />
                   <p className="text-[11px] font-semibold uppercase text-slate-300">
-                    Corrective guidance
+                    Focus
                   </p>
                 </div>
                 <p
@@ -2427,7 +2427,7 @@ export default function SessionClient({
         <div ref={trackingPanelRef} className="praxis-panel-strong rounded-lg p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <p className="ui-title">Log this movement pattern focus</p>
+              <p className="ui-title">Log this set</p>
               <button
                 type="button"
                 data-testid="report-pain-trigger"
@@ -2747,7 +2747,7 @@ export default function SessionClient({
               Pain check-in for {currentItem.name}
             </p>
             <p className="mt-1 text-xs text-slate-300">
-              Select the level you felt on this movement pattern focus.
+              Select the level you felt on this exercise.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {(["none", "mild", "moderate", "severe"] as const).map((level) => (
@@ -2848,7 +2848,7 @@ export default function SessionClient({
                     void handleSwapFromPainReport();
                   }}
                 >
-                  Swap movement pattern
+                  Swap exercise
                 </Button>
               ) : null}
             </div>
@@ -2888,7 +2888,7 @@ export default function SessionClient({
             }}
             className={`${primaryActionBtn} h-14 w-full min-w-0 rounded-lg px-6 text-base font-semibold`}
           >
-            {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next Movement Pattern \u2192"}
+            {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next \u2192"}
           </button>
         </OnImage>
       </div>

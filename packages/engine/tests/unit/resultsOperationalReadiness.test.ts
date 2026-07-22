@@ -1042,7 +1042,7 @@ describe("results operational readiness", () => {
       expect(screen.getByText("1 completed / 3")).toBeTruthy();
     });
     expect(screen.getByText("1 in progress")).toBeTruthy();
-    expect(screen.getByText("Level 3 analysis")).toBeTruthy();
+    expect(screen.getByText("Full analysis unlocked")).toBeTruthy();
     expect(screen.getByText("1 workouts logged")).toBeTruthy();
 
     await waitFor(() => {
@@ -1060,7 +1060,7 @@ describe("results operational readiness", () => {
     expect(mocks.listSessions).toHaveBeenCalledTimes(1);
     expect(screen.getByText("1 completed / 3")).toBeTruthy();
     expect(screen.getByText("1 in progress")).toBeTruthy();
-    expect(screen.getByText("Level 3 analysis")).toBeTruthy();
+    expect(screen.getByText("Full analysis unlocked")).toBeTruthy();
     expect(screen.getByText("1 workouts logged")).toBeTruthy();
 
     const refresh = createDeferred<SessionRecord[]>();
@@ -1144,7 +1144,7 @@ describe("results operational readiness", () => {
     render(React.createElement(ResultsRoutine));
 
     await waitFor(() => {
-      expect(screen.getByText("Level 3 analysis")).toBeTruthy();
+      expect(screen.getByText("Full analysis unlocked")).toBeTruthy();
     });
 
     const todayModeButton = screen
@@ -1160,7 +1160,7 @@ describe("results operational readiness", () => {
 
     fireEvent.click(screen.getByText("Insights").closest("button")!);
     expect(document.body.textContent ?? "").toContain(
-      "Engine coaching prompt: set the shoulder blade"
+      "set the shoulder blade"
     );
     expect(document.body.textContent ?? "").toContain("Engine Thoracic Extension");
     expect(document.body.textContent ?? "").toContain(
@@ -1223,14 +1223,14 @@ describe("results operational readiness", () => {
     await waitFor(() => {
       expect(screen.getByText("4 completed / 4")).toBeTruthy();
     });
-    await waitFor(() => {
-      expect(screen.getByText("4/16 workouts in phase")).toBeTruthy();
-    });
-    expect(screen.getByText("Gate locked")).toBeTruthy();
     fireEvent.click(screen.getByText("Progress").closest("button")!);
     expect(screen.queryByText("Phase progress")).toBeNull();
-    expect(screen.getAllByText("Workout gate progress").length).toBeGreaterThan(0);
+    await waitFor(() => {
+      expect(screen.getAllByText("4/16 workouts in phase").length).toBeGreaterThan(0);
+    });
+    expect(screen.getAllByText("Sessions this phase").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Days in phase").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Keep going").length).toBeGreaterThan(0);
     await waitFor(() => {
       expect(mocks.saveProgramProgress).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1500,7 +1500,7 @@ describe("results operational readiness", () => {
       expect(screen.getByText("0 completed / 3")).toBeTruthy();
     });
     await waitFor(() => {
-      expect(screen.getByText("Level 3 analysis")).toBeTruthy();
+      expect(screen.getByText("Full analysis unlocked")).toBeTruthy();
     });
     expect(screen.getByText("1 workouts logged")).toBeTruthy();
     fireEvent.click(screen.getByText("History").closest("button")!);

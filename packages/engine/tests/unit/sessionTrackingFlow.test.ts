@@ -211,7 +211,7 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
     });
     expect(screen.getByText("Today's options")).toBeTruthy();
-    expect(screen.getByText("This changes only today's session view. Your saved plan is not changed.")).toBeTruthy();
+    expect(screen.getByText("Adjust just today's session — your plan stays the same.")).toBeTruthy();
     fireEvent.click(screen.getByTestId("practice-option-full"));
 
     fireEvent.change(screen.getByTestId("weight-input"), {
@@ -274,7 +274,7 @@ describe("session tracking integration flow", () => {
       "Preview only; no workout has been changed."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "Next session recommendation: repeat the pattern at a steady dose."
+      "For next session: repeat this movement at a steady pace."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
       "Recommendation only; your plan has not been changed."
@@ -341,7 +341,7 @@ describe("session tracking integration flow", () => {
       "Preview only; no workout has been changed."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "Next session recommendation: repeat the pattern at a steady dose."
+      "For next session: repeat this movement at a steady pace."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
       "Recommendation only; your plan has not been changed."

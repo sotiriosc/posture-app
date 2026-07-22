@@ -115,13 +115,13 @@ export const skipPhase1 = (
 
 export const formatPhaseGateReason = (result: PhaseAdvanceGateResult) => {
   if (result.satisfiedBy === "both") {
-    return "Gate passed: workout and day targets are both satisfied.";
+    return "You've done enough sessions and spent enough time — ready to move ahead.";
   }
   if (result.satisfiedBy === "workouts") {
-    return "Gate passed: workout target is satisfied.";
+    return "You've done enough sessions — ready to move ahead.";
   }
   if (result.satisfiedBy === "days") {
-    return "Gate passed: day target is satisfied.";
+    return "You've spent enough time in this phase — ready to move ahead.";
   }
-  return `${result.reasons.join(" ")} Either target unlocks the next phase.`;
+  return `${result.reasons.join(" ")} Either one moves you to the next phase.`;
 };

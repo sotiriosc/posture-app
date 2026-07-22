@@ -79,11 +79,6 @@ export default function AccountModePanel({
                 Data and settings
               </Button>
             </Link>
-            <Link href="/questionnaire">
-              <Button variant="secondary" className="h-11 w-full">
-                Edit movement profile
-              </Button>
-            </Link>
           </div>
         </div>
       </div>

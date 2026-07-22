@@ -32,7 +32,7 @@ export default function ExerciseCard({
 
       <div className="mt-4 rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-3">
         <p className="text-xs font-semibold uppercase text-sky-100">
-          Corrective guidance cue
+          Focus for this exercise
         </p>
         <p className="mt-1 text-sm text-slate-100">{cue}</p>
       </div>

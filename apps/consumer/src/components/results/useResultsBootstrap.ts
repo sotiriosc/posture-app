@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import type { AssessmentReport } from "@/lib/assessmentEngine";
-import type { SubscriptionPlan } from "@/lib/authTypes";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import { loadPrefs } from "@/lib/logStore";
 import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
+import { useUserPlan } from "@/hooks/useUserPlan";
 
 const normalizeDaysPerWeek = (value: unknown): 3 | 4 | 5 => {
   if (value === 4 || value === "4") return 4;
@@ -21,8 +21,7 @@ type UseResultsBootstrapParams = {
 export function useResultsBootstrap({ storageKey }: UseResultsBootstrapParams) {
   const [data, setData] = useState<QuestionnaireData | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const [authEnabled, setAuthEnabled] = useState(false);
-  const [plan, setPlan] = useState<SubscriptionPlan>("free");
+  const { authEnabled, plan } = useUserPlan();
   const [substitutionByExercise, setSubstitutionByExercise] = useState<
     Record<string, string>
   >({});
@@ -82,28 +81,6 @@ export function useResultsBootstrap({ storageKey }: UseResultsBootstrapParams) {
 
     loadBootstrap().finally(() => loadPrefsData());
   }, [storageKey]);
-
-  useEffect(() => {
-    const loadSession = async () => {
-      try {
-        const response = await fetch("/api/auth/session", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const payload = (await response.json()) as {
-          enabled?: boolean;
-          authenticated?: boolean;
-          user?: { plan?: SubscriptionPlan } | null;
-        };
-        setAuthEnabled(Boolean(payload.enabled));
-        setPlan(payload.user?.plan === "pro" ? "pro" : "free");
-      } catch {
-        setAuthEnabled(false);
-        setPlan("free");
-      }
-    };
-    loadSession();
-  }, []);
 
   useEffect(() => {
     const tick = () => setNowAnchor(Date.now());

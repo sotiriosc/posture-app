@@ -1,6 +1,4 @@
 import Link from "next/link";
-import ReadinessIndicator from "@/components/dashboard/ReadinessIndicator";
-import ProgressBar from "@/components/ui/ProgressBar";
 import Button from "@/components/ui/Button";
 
 type DashboardHeroProps = {
@@ -8,19 +6,14 @@ type DashboardHeroProps = {
   phaseName: string;
   workoutsCompletedInPhase: number;
   workoutTarget: number;
-  daysInPhase: number;
   dayTarget: number;
   weekCompletedDays: number;
   weekTargetDays: number;
-  weekProgressPercent: number;
-  phaseGateStatusLabel: "Ready to advance" | "Gate locked" | "Phase 3 active";
-  phaseGateStatusDetail: string;
+  nextPhaseIndex: number;
+  phaseAtMax: boolean;
   phaseGateReady: boolean;
   phaseGateActionLabel?: string | null;
   onPhaseGateAction?: (() => void) | null;
-  readinessScore: number;
-  weeklyConsistencyCount: number;
-  weeklyConsistencyTarget?: number | null;
   phaseGoal: string;
   encouragement?: string | null;
   metricChips: string[];
@@ -34,19 +27,14 @@ export default function DashboardHero({
   phaseName,
   workoutsCompletedInPhase,
   workoutTarget,
-  daysInPhase,
   dayTarget,
   weekCompletedDays,
   weekTargetDays,
-  weekProgressPercent,
-  phaseGateStatusLabel,
-  phaseGateStatusDetail,
+  nextPhaseIndex,
+  phaseAtMax,
   phaseGateReady,
   phaseGateActionLabel,
   onPhaseGateAction,
-  readinessScore,
-  weeklyConsistencyCount,
-  weeklyConsistencyTarget,
   phaseGoal,
   encouragement,
   metricChips,
@@ -54,13 +42,13 @@ export default function DashboardHero({
   ctaHref,
   ctaPulse = false,
 }: DashboardHeroProps) {
-  const hasWeeklyTarget =
-    typeof weeklyConsistencyTarget === "number" &&
-    Number.isFinite(weeklyConsistencyTarget) &&
-    weeklyConsistencyTarget > 0;
-  const consistencyText = hasWeeklyTarget
-    ? `Corrective consistency: ${weeklyConsistencyCount}/${weeklyConsistencyTarget} this week`
-    : `Corrective consistency: ${weeklyConsistencyCount} sessions this week`;
+  const phaseLine = phaseAtMax
+    ? "You're in the final phase — keep building strength and clean execution."
+    : phaseGateReady
+    ? `You've met what's needed to move to Phase ${nextPhaseIndex}.`
+    : `Phase ${nextPhaseIndex} unlocks after ${workoutTarget} sessions or ${dayTarget} days — whichever comes first. You've done ${workoutsCompletedInPhase} ${
+        workoutsCompletedInPhase === 1 ? "session" : "sessions"
+      } so far.`;
 
   return (
     <section className="ui-card ui-soft-surface-raised p-5 sm:p-6">
@@ -68,79 +56,43 @@ export default function DashboardHero({
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-slate-300">{greeting}</p>
           <h1 className="mt-1 text-3xl font-semibold text-white sm:text-4xl">{phaseName}</h1>
-          <div className="ui-soft-surface mt-4 rounded-lg px-3 py-3 lg:hidden">
-            <ReadinessIndicator score={readinessScore} />
-            <p className="mt-3 text-xs font-medium text-slate-300">
-              {consistencyText}
-            </p>
-            <p className="mt-1 text-[11px] text-slate-400">
-              Based on your current plan week.
+
+          <div className="ui-soft-surface mt-4 rounded-lg px-3 py-3">
+            <p className="text-sm font-semibold text-white">
+              This week: {weekCompletedDays} of {weekTargetDays} sessions done.
             </p>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {metricChips.slice(0, 4).map((chip) => (
-              <span
-                key={chip}
-                className="rounded-lg border border-slate-500/25 bg-slate-900/55 px-2.5 py-1 text-[11px] font-medium text-slate-300"
-              >
-                {chip}
-              </span>
-            ))}
-          </div>
-          <p className="mt-3 text-sm text-slate-300">
-            Week progress: {weekCompletedDays}/{weekTargetDays} days complete
-          </p>
+
+          {metricChips.length > 0 ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {metricChips.slice(0, 4).map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-lg border border-slate-500/25 bg-slate-900/55 px-2.5 py-1 text-[11px] font-medium text-slate-300"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
+          ) : null}
 
           <div className="ui-soft-surface mt-4 space-y-3 rounded-lg px-3 py-3">
-            <div>
-              <p className="ui-kicker">Phase gate</p>
-              <p
-                className={`mt-1 text-base font-semibold ${
-                  phaseGateReady ? "text-emerald-100" : "text-sky-100"
-                }`}
-              >
-                {phaseGateStatusLabel}
-              </p>
-              <p className="mt-1 text-xs text-slate-300">{phaseGateStatusDetail}</p>
-            </div>
+            <p className="text-sm text-slate-200">{phaseLine}</p>
             {phaseGateReady && phaseGateActionLabel && onPhaseGateAction ? (
               <div
                 className="flex flex-col gap-2 rounded-lg border border-sky-300/25 bg-sky-300/10 px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
                 data-testid="phase-ready-persistent-cta"
               >
                 <p className="text-xs text-slate-200">
-                  {phaseGateStatusDetail}
+                  You&apos;re ready when you are — nothing is locked.
                 </p>
                 <Button variant="primary" onClick={onPhaseGateAction}>
                   {phaseGateActionLabel}
                 </Button>
               </div>
             ) : null}
-            <ProgressBar
-              label="Workout gate progress"
-              value={workoutsCompletedInPhase}
-              max={workoutTarget}
-              animate
-              subtitle={`${workoutsCompletedInPhase}/${workoutTarget} workouts in phase`}
-            />
-            <ProgressBar
-              label="Days in phase"
-              value={daysInPhase}
-              max={dayTarget}
-              animate
-              subtitle={`${daysInPhase}/${dayTarget} days in phase`}
-            />
           </div>
 
-          <div className="mt-4">
-            <ProgressBar
-              label="Week progress"
-              value={weekProgressPercent}
-              max={100}
-              animate
-              subtitle={`${weekCompletedDays}/${weekTargetDays} days completed`}
-            />
-          </div>
           <p className="mt-4 text-xs text-slate-400">
             Phase goal: <span className="font-medium text-slate-200">{phaseGoal}</span>
           </p>
@@ -152,15 +104,6 @@ export default function DashboardHero({
         </div>
 
         <div className="flex w-full flex-col gap-3 lg:min-w-[280px] lg:max-w-[420px] lg:basis-[35%]">
-          <div className="ui-soft-surface hidden rounded-lg px-4 py-4 lg:block">
-            <ReadinessIndicator score={readinessScore} />
-            <p className="mt-3 text-xs font-medium text-slate-300">
-              {consistencyText}
-            </p>
-            <p className="mt-1 text-[11px] text-slate-400">
-              Based on your current plan week.
-            </p>
-          </div>
           <Link
             href={ctaHref}
             scroll

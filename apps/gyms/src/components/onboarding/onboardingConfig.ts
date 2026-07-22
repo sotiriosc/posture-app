@@ -40,29 +40,20 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
     sections: [
       {
         type: "text",
-        text: "Praxis is built for corrective performance, not generic workouts.",
+        text: "Praxis fixes what's holding your movement back, then builds strength on top.",
       },
       {
         type: "bullets",
         title: "Praxis:",
         items: [
-          "Detects tendencies that undermine movement quality.",
-          "Builds structured corrective progression around pattern balance.",
-          "Adapts corrective guidance based on movement performance and recovery.",
-        ],
-      },
-      {
-        type: "steps",
-        title: "You’ll complete:",
-        items: [
-          "Movement & posture baseline",
-          "Structured movement profile assessment",
-          "Personalized plan build",
+          "Spots the habits that hold your movement back.",
+          "Builds a weekly plan that works on them in the right order.",
+          "Adjusts each week based on how your sessions actually go.",
         ],
       },
       {
         type: "text",
-        text: "Estimated time: under 3 minutes.",
+        text: "You'll answer a few questions, take three posture photos, and get your plan. Under three minutes.",
       },
     ],
   },
@@ -125,15 +116,15 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
         type: "bullets",
         title: "Your dashboard shows:",
         items: [
-          "Phase: where you are in pattern mastery",
-          "Week View: your weekly corrective structure",
-          "Training readiness: how prepared you are",
+          "Phase: where you are in your training",
+          "Week View: your sessions for the week",
+          "This week's focus: what you're working on and why",
           "Plan adjustments: what changed and why",
         ],
       },
       {
         type: "text",
-        text: "This dashboard shows where you are in pattern mastery and what to prioritize next.",
+        text: "This dashboard shows where you are and what to prioritize next.",
       },
       {
         type: "text",
@@ -148,7 +139,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
         type: "bullets",
         title: "Flow:",
         items: [
-          "Follow movement pattern focus order",
+          "Follow the exercise order",
           "Log weight / reps",
           "Complete sets in sequence",
           "Focus on executed movement quality, not just load.",
@@ -160,7 +151,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "When finished: Press \"Next Movement Pattern\" until session completes.",
+        text: "When finished: Press \"Next\" until the session completes.",
       },
       {
         type: "text",

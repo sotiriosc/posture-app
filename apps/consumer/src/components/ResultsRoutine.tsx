@@ -1746,8 +1746,6 @@ export default function ResultsRoutine() {
       ? 0
       : Math.floor(completedSessions.length / program.daysPerWeek);
 
-  const workoutsThisWeek = completedCount;
-
   useEffect(() => {
     if (!program || !data || !activeProgramId) return;
     if (activeProgramId !== program.id) return;
@@ -2159,8 +2157,8 @@ export default function ResultsRoutine() {
       eyebrow: "Praxis level up",
       title:
         dashboardLevel >= 3
-          ? "Level 3 analysis unlocked"
-          : "Level 2 progress unlocked",
+          ? "Full analysis is now unlocked"
+          : "Progress is now unlocked",
       body:
         dashboardLevel >= 3
           ? "Deeper insights stay available as your plan evolves."
@@ -2625,15 +2623,6 @@ export default function ResultsRoutine() {
   const phaseName = program.phaseName ?? getPhaseMetaByIndex(currentPhaseIndex).phaseName;
   const phaseDescription = getPhaseProfile(currentPhaseIndex).description;
   const cycleCurrent = Math.max(1, phaseGate.cyclesCompletedInPhase + 1);
-  const weekProgressPercent = Math.max(
-    0,
-    Math.min(
-      100,
-      Math.round(
-        ((completedCount + inProgressCount * 0.5) / Math.max(1, activeDaysPerWeek)) * 100
-      )
-    )
-  );
   const phaseGoalText =
     program.phaseObjective?.weekIntent ??
     program.phaseObjective?.objective ??
@@ -2666,18 +2655,18 @@ export default function ResultsRoutine() {
   const gateRemainingText = `${workoutsRemaining} workout${workoutsRemaining === 1 ? "" : "s"} remaining or ${daysRemaining} day${daysRemaining === 1 ? "" : "s"} remaining`;
   const gateSatisfiedText =
     phaseGate.satisfiedBy === "both"
-      ? "All gate requirements satisfied"
+      ? "You've met everything needed to move ahead"
       : phaseGate.satisfiedBy === "workouts"
-      ? "Workout gate requirement satisfied"
+      ? "You've done enough sessions to move ahead"
       : phaseGate.satisfiedBy === "days"
-      ? "Days-in-phase gate requirement satisfied"
+      ? "You've spent enough time in this phase to move ahead"
       : gateRemainingText;
   const phaseGateStatusLabel =
     currentPhaseIndex >= MAX_PHASE_INDEX
       ? "Phase 3 active"
       : phaseAdvanceReady
       ? "Ready to advance"
-      : "Gate locked";
+      : "Keep going";
   const phaseGateStatusDetail =
     currentPhaseIndex >= MAX_PHASE_INDEX
       ? `Phase ${MAX_PHASE_INDEX} is active. Continue building completion and execution quality.`
@@ -2749,7 +2738,9 @@ export default function ResultsRoutine() {
     "Program adjusted from recent performance signals.";
 
   const progressPreviewLines = [
-    `Consistency ${consistencyPercent}% • Completion ${adherencePercent}%`,
+    totalCompletedWorkoutCount === 0
+      ? "Your first session will start filling this in."
+      : `Consistency ${consistencyPercent}% • Completion ${adherencePercent}%`,
     `Pain trend: ${painTrendLabel} • Movement quality: ${movementQualityTrend}`,
   ];
   const progressPreviewChips = [
@@ -3140,10 +3131,10 @@ export default function ResultsRoutine() {
   const insightsLocked = dashboardLevel < 3;
   const dashboardLevelLabel =
     dashboardLevel === 3
-      ? "Level 3 analysis"
+      ? "Full analysis unlocked"
       : dashboardLevel === 2
-      ? "Level 2 progress"
-      : "Level 1 foundation";
+      ? "Progress unlocked"
+      : "Getting started";
   const dashboardLevelDescription =
     dashboardLevel === 3
       ? "Full-cycle analysis is available from your completed week."
@@ -3153,61 +3144,47 @@ export default function ResultsRoutine() {
   const dashboardModes: Array<{
     key: DashboardMode;
     title: string;
-    eyebrow: string;
     summary: string;
-    icon: string;
     locked?: boolean;
     lockReason?: string;
   }> = [
     {
       key: "today",
       title: "Today",
-      eyebrow: "Next",
       summary: `Day ${sessionLaunchDayIndex + 1}: ${program.week[sessionLaunchDayIndex]?.title ?? "current plan"}`,
-      icon: "T",
     },
     {
       key: "week",
       title: "Week",
-      eyebrow: "Plan",
       summary: `${completedCount}/${activeDaysPerWeek} days complete with ${inProgressCount} in progress.`,
-      icon: "W",
     },
     {
       key: "progress",
       title: "Progress",
-      eyebrow: "Level 2",
       summary: `Consistency ${consistencyPercent}% with movement quality ${movementQualityPercent}%.`,
-      icon: "P",
       locked: progressLocked,
       lockReason: "Complete one workout to unlock your progress summary.",
     },
     {
       key: "insights",
       title: "Insights",
-      eyebrow: "Level 3",
       summary: "Pattern, stability, compensation, and adaptation analysis.",
-      icon: "I",
       locked: insightsLocked,
       lockReason: "Complete one full week or cycle to unlock deeper analysis.",
     },
     {
       key: "history",
       title: "History",
-      eyebrow: "Level 2",
       summary: `${totalCompletedWorkoutCount} completed workouts saved across your history.`,
-      icon: "H",
       locked: historyLocked,
       lockReason: "Complete one workout to unlock session history.",
     },
     {
       key: "account",
       title: "Billing / Account",
-      eyebrow: authEnabled ? (plan === "pro" ? "Pro" : "Free") : "Local",
       summary: authEnabled
         ? "Manage plan status and account data."
         : "Review local data controls.",
-      icon: "A",
     },
   ];
   const activeModeConfig =
@@ -3270,13 +3247,11 @@ export default function ResultsRoutine() {
           phaseName={phaseName}
           workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
           workoutTarget={phaseGate.minWorkouts}
-          daysInPhase={phaseGate.daysSincePhaseStart}
           dayTarget={phaseGate.minDays}
           weekCompletedDays={completedCount}
           weekTargetDays={activeDaysPerWeek}
-          weekProgressPercent={weekProgressPercent}
-          phaseGateStatusLabel={phaseGateStatusLabel}
-          phaseGateStatusDetail={phaseGateStatusDetail}
+          nextPhaseIndex={nextPhaseIndex}
+          phaseAtMax={currentPhaseIndex >= MAX_PHASE_INDEX}
           phaseGateReady={phaseAdvanceReady}
           phaseGateActionLabel={
             phaseAdvanceReady && !phaseReadyNoticeOpen
@@ -3288,9 +3263,6 @@ export default function ResultsRoutine() {
               ? openPhaseAdvancePrompt
               : null
           }
-          readinessScore={readinessScore}
-          weeklyConsistencyCount={workoutsThisWeek}
-          weeklyConsistencyTarget={program?.daysPerWeek ?? data?.daysPerWeek ?? null}
           phaseGoal={phaseGoalText}
           encouragement={encouragementMessage}
           metricChips={heroMetricChips}
@@ -3334,12 +3306,12 @@ export default function ResultsRoutine() {
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="ui-kicker text-sky-100">Phase gate reached</p>
+              <p className="ui-kicker text-sky-100">Ready for the next phase</p>
               <h2 className="mt-1 text-xl font-semibold text-white">
-                You&apos;ve reached the Phase {nextPhaseIndex} gate
+                You&apos;re ready for Phase {nextPhaseIndex}
               </h2>
               <p className="mt-2 text-sm text-slate-300">
-                {gateSatisfiedText}: Workouts in phase {phaseGate.workoutsCompletedInPhase}/{phaseGate.minWorkouts} and Days in phase {phaseGate.daysSincePhaseStart}/{phaseGate.minDays}.
+                {gateSatisfiedText} — {phaseGate.workoutsCompletedInPhase} of {phaseGate.minWorkouts} sessions done.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -3397,9 +3369,7 @@ export default function ResultsRoutine() {
             <DashboardModeCard
               key={mode.key}
               title={mode.title}
-              eyebrow={mode.eyebrow}
               summary={mode.summary}
-              icon={mode.icon}
               active={activeMode === mode.key}
               locked={mode.locked}
               lockReason={mode.lockReason}
@@ -3420,16 +3390,16 @@ export default function ResultsRoutine() {
           </p>
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
             <div className="rounded-lg border border-emerald-300/18 bg-emerald-300/8 p-4">
-              <p className="text-xs font-semibold text-emerald-100">Level 1</p>
-              <p className="mt-1 text-sm text-slate-200">Assessment, Today, Week View</p>
+              <p className="text-xs font-semibold text-emerald-100">Available now</p>
+              <p className="mt-1 text-sm text-slate-200">Assessment, Today, and Week</p>
             </div>
             <div className="rounded-lg border border-sky-300/18 bg-sky-300/8 p-4">
-              <p className="text-xs font-semibold text-sky-100">Level 2</p>
-              <p className="mt-1 text-sm text-slate-200">History and Progress Summary</p>
+              <p className="text-xs font-semibold text-sky-100">After your first workout</p>
+              <p className="mt-1 text-sm text-slate-200">History and progress summary</p>
             </div>
             <div className="rounded-lg border border-amber-300/18 bg-amber-300/8 p-4">
-              <p className="text-xs font-semibold text-amber-100">Level 3</p>
-              <p className="mt-1 text-sm text-slate-200">Deeper Knowledge and Analysis</p>
+              <p className="text-xs font-semibold text-amber-100">After your first full week</p>
+              <p className="mt-1 text-sm text-slate-200">Deeper analysis and insights</p>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -3967,6 +3937,11 @@ export default function ResultsRoutine() {
 
       {activeMode === "progress" && !activeModeLocked ? (
         <PhaseProgressionSection
+          sectionTitle={
+            currentPhaseIndex >= MAX_PHASE_INDEX
+              ? "Your phase progress"
+              : `When does Phase ${nextPhaseIndex} start?`
+          }
           phaseName={phaseName}
           phaseDescription={phaseDescription}
           phaseRequirementsText={phaseRequirementsText}
