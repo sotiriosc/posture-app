@@ -36,7 +36,7 @@ import {
 } from "@/lib/phases";
 import type { UserTrainingState } from "@/lib/phases";
 // ExerciseFeedbackSummary canonical location is @/lib/types (Phase 3 hygiene).
-import type { ExerciseFeedbackSummary } from "@/lib/types";
+import type { ExerciseFeedbackSummary, LogPrefs } from "@/lib/types";
 import type { PoseAnalysis, PoseMetrics } from "@/lib/poseAnalyzer";
 import type { RandomFn } from "@/lib/seededRng";
 import { resolveProgramVariationIndex as resolveProgramVariationIndexValue } from "@/lib/programVariationClient";
@@ -347,6 +347,12 @@ type SelectionContext = {
    * VAR-1 variation constraint.  Undefined when no ladder history exists.
    */
   ladderState?: LadderState;
+  /**
+   * Phase 3.3 — Personal Equipment Blocks.
+   * Hard-filtered before scoring, at the same tier as painContraindications.
+   * Populated by buildSelectionContext from LogPrefs.blockedExerciseIds.
+   */
+  blockedExerciseIds?: Set<string>;
 };
 
 const normalizeTagToken = (value: string) =>
@@ -979,6 +985,8 @@ const buildSelectionContext = (
     recentlyUsedExerciseIds?: Set<string>;
     variationState?: ProgramVariationState | null;
     ladderState?: LadderState;
+    /** Phase 3.3 — Personal Equipment Blocks hard-filter. */
+    blockedExerciseIds?: Set<string>;
   }
 ): SelectionContext => {
   const painAreas = questionnaire.painAreas.map(canonicalizePainArea);
@@ -1096,6 +1104,7 @@ const buildSelectionContext = (
     feedbackPenaltyHints,
     variationState: options?.variationState ?? null,
     ladderState: options?.ladderState,
+    blockedExerciseIds: options?.blockedExerciseIds,
   };
 };
 
@@ -21323,6 +21332,9 @@ const isExerciseEligibleForProgramContext = (params: {
 }) => {
   const { exercise, available, section, context, dayTitle } = params;
   const slotIntent = params.slotIntent ?? resolveSlotIntent(section);
+  // Phase 3.3 — Personal Equipment Blocks: hard-filter before any scoring.
+  // Same tier as painContraindications — no exception paths.
+  if (context.blockedExerciseIds?.has(exercise.id)) return false;
   if (exercise.experienceMin) {
     const minimumExperience = normalizeExperienceLevel(exercise.experienceMin);
     if (experienceRankByLevel[context.experienceLevel] < experienceRankByLevel[minimumExperience]) {
@@ -29814,6 +29826,18 @@ export type {
   FeedbackContractResult,
 } from "@/lib/program/feedbackContract";
 
+// Phase 3.3: training intent public API
+export {
+  computeMaintainPrompts,
+  markMaintainPromptsShown,
+  applyMaintainProgressionYes,
+  applyMaintainProgressionNo,
+} from "@/lib/program/trainingIntent";
+export type {
+  TrainingIntent,
+  MaintainProgressionPrompt,
+} from "@/lib/program/trainingIntent";
+
 const programConstraintWarningBuffer: ProgramConstraintWarning[] = [];
 
 export const getProgramConstraintWarningBuffer = () => [
@@ -33629,9 +33653,22 @@ export const generateWeeklyProgram = (
      * and writes it into the generated Program.
      */
     currentLadderState?: LadderState;
+    /**
+     * Phase 3.3 — Training intent.  Forwarded to computeLadderState.
+     * When absent, defaults to questionnaire trainingIntent field, then "build".
+     */
+    trainingIntent?: "build" | "maintain" | "rehab";
+    /**
+     * Phase 3.3 — Personal Equipment Blocks.
+     * Exercises with a block entry are hard-filtered from all candidate pools,
+     * at the same tier as painContraindications.  The injection synthesises
+     * deferred=true in feedbackSummaryByExercise so all existing Phase 3.0
+     * repair-path guards automatically block them.
+     */
+    blockedExerciseIds?: LogPrefs["blockedExerciseIds"];
   }
 ): Program => {
-  const { resolvedFeedbackSummaryByExercise, recentlyUsedExerciseIds } =
+  const { resolvedFeedbackSummaryByExercise: rawFeedbackSummary, recentlyUsedExerciseIds } =
     resolveWeeklyFeedbackInputs({
       recentLogs: options?.recentLogs,
       previousWeek: options?.previousWeek,
@@ -33639,6 +33676,26 @@ export const generateWeeklyProgram = (
       summarizeFeedbackFromLogs,
       buildRecentlyUsedExerciseIdSet,
     });
+
+  // Phase 3.3 — inject blocked exercises as synthetic deferred=true entries.
+  // This single injection propagates through all 8 existing Phase 3.0
+  // deferred-check sites without touching them individually.
+  const resolvedFeedbackSummaryByExercise: Map<string, ExerciseFeedbackSummary> =
+    options?.blockedExerciseIds && Object.keys(options.blockedExerciseIds).length > 0
+      ? (() => {
+          const merged = new Map(rawFeedbackSummary);
+          Object.keys(options.blockedExerciseIds!).forEach((exId) => {
+            const existing = merged.get(exId) ?? {
+              exerciseId: exId,
+              pain: "none" as const,
+              difficulty: "normal" as const,
+              completionRate: 1,
+            };
+            merged.set(exId, { ...existing, deferred: true });
+          });
+          return merged;
+        })()
+      : rawFeedbackSummary;
 
   // Phase 3: compute updated ladder state at this cycle/phase boundary.
   // Only runs when currentLadderState or recentLogs are provided (TRC-1 safe).
@@ -33650,6 +33707,9 @@ export const generateWeeklyProgram = (
         .map((s) => s.exerciseId)
     );
     const available = normalizeEquipmentSelection(data.equipment).available;
+    // Phase 3.3: trainingIntent from options > questionnaire field > default "build".
+    const resolvedTrainingIntent =
+      options?.trainingIntent ?? data.trainingIntent ?? "build";
     return computeLadderState({
       currentLadderState: options?.currentLadderState,
       recentLogs: options?.recentLogs ?? [],
@@ -33660,6 +33720,7 @@ export const generateWeeklyProgram = (
       experienceLevel: data.experience,
       painAreas: data.painAreas,
       deferredIds,
+      trainingIntent: resolvedTrainingIntent,
     });
   })();
 
@@ -33706,6 +33767,10 @@ export const generateWeeklyProgram = (
         recentlyUsedExerciseIds,
         variationState,
         ladderState: resolvedLadderState,
+        // Phase 3.3: hard-filter blocked exercises before scoring.
+        blockedExerciseIds: options?.blockedExerciseIds
+          ? new Set(Object.keys(options.blockedExerciseIds))
+          : undefined,
       }),
     createTrainingState: (phaseIndex) =>
       deriveUserTrainingState({
@@ -34057,6 +34122,8 @@ export const generateNextPhaseProgram = (params: {
         capabilityMode,
         feedbackSummaryByExercise,
         recentlyUsedExerciseIds,
+        // Phase 3.3: nextCycle/nextPhase paths don't receive blockedExerciseIds
+        // directly — they are pre-filtered by generateWeeklyProgram.
       }),
     getPhaseName: (phaseIndex) => getPhaseMetaByIndex(phaseIndex).phaseName,
     normalizeDaysPerWeek,
@@ -34214,6 +34281,9 @@ export const generateNextCycleProgram = (params: {
         capabilityMode,
         feedbackSummaryByExercise,
         recentlyUsedExerciseIds,
+        // Phase 3.3: nextCycle/nextPhase paths don't receive blockedExerciseIds
+        // directly — they are pre-filtered by generateWeeklyProgram before
+        // entering this pipeline. blockedExerciseIds is undefined here by design.
       }),
     getPhaseName: (phaseIndex) => getPhaseMetaByIndex(phaseIndex).phaseName,
     normalizeDaysPerWeek,

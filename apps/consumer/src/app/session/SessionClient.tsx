@@ -20,8 +20,15 @@ import {
   computeFlaggedExercises,
   applyFeedbackContractAction,
   applyAutoSacrifice,
+  computeMaintainPrompts,
+  markMaintainPromptsShown,
+  applyMaintainProgressionYes,
+  applyMaintainProgressionNo,
 } from "@/lib/program";
-import type { FeedbackContractTrigger } from "@/lib/program";
+import type {
+  FeedbackContractTrigger,
+  MaintainProgressionPrompt,
+} from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import BackgroundShell from "@/components/BackgroundShell";
@@ -469,6 +476,16 @@ export default function SessionClient() {
   const [contractPromptIndex, setContractPromptIndex] = useState(0);
   const [contractDismissed, setContractDismissed] = useState(false);
 
+  // Phase 3.3 — maintain-mode phase-transition prompts
+  const [maintainPrompts, setMaintainPrompts] = useState<MaintainProgressionPrompt[]>([]);
+  const [maintainPromptIndex, setMaintainPromptIndex] = useState(0);
+  const [maintainPromptsDismissed, setMaintainPromptsDismissed] = useState(false);
+
+  // Phase 3.3 — exercise block menu state
+  const [blockMenuOpen, setBlockMenuOpen] = useState(false);
+  const [blockMenuExerciseId, setBlockMenuExerciseId] = useState<string | null>(null);
+  const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
+
   const [activeTrackingField, setActiveTrackingField] =
     useState<TrackingField | null>(null);
   const [exerciseCompleteFlashVisible, setExerciseCompleteFlashVisible] =
@@ -773,6 +790,26 @@ export default function SessionClient() {
             } catch {
               // Non-critical: if contract check fails, proceed with session normally.
             }
+          }
+
+          // Phase 3.3 — compute maintain-mode phase-transition prompts.
+          try {
+            const intent = resolvedQuestionnaire?.trainingIntent ?? "build";
+            if (intent === "maintain" && resolvedProgram.ladderState) {
+              const phaseIdx = resolvedProgress?.phaseIndex ?? 0;
+              const prompts = computeMaintainPrompts({
+                trainingIntent: "maintain",
+                ladderState: resolvedProgram.ladderState,
+                phaseIndex: phaseIdx,
+              });
+              if (prompts.length > 0) {
+                setMaintainPrompts(prompts);
+                setMaintainPromptIndex(0);
+                setMaintainPromptsDismissed(false);
+              }
+            }
+          } catch {
+            // Non-critical: proceed with session normally.
           }
           return;
         }
@@ -1489,6 +1526,64 @@ export default function SessionClient() {
     } else {
       setContractDismissed(true);
     }
+  };
+
+  // Phase 3.3 — handle maintain-mode progression prompt response.
+  const handleMaintainPrompt = async (answer: "yes" | "no" | "dismiss") => {
+    const prompt = maintainPrompts[maintainPromptIndex];
+    if (!prompt || !program?.ladderState) return;
+
+    const currentPrefs = await loadPrefs();
+    // Update ladder state in saved prefs (non-destructive merge).
+    let updatedLadderState = program.ladderState;
+    if (answer === "yes") {
+      updatedLadderState = applyMaintainProgressionYes(updatedLadderState, prompt.pattern);
+    } else {
+      updatedLadderState = applyMaintainProgressionNo(updatedLadderState);
+    }
+    updatedLadderState = markMaintainPromptsShown(updatedLadderState, [prompt.pattern], prompt.phaseIndex);
+
+    // Persist updated ladder state to prefs (re-uses contractStateByExercise slot indirectly
+    // via a dedicated field; we persist through the program update flow instead).
+    // For now store the progressionOverride in prefs until program regenerates.
+    if (answer === "yes") {
+      await savePrefs({
+        ...currentPrefs,
+        contractStateByExercise: {
+          ...(currentPrefs.contractStateByExercise ?? {}),
+          [`__maintain_override_${prompt.pattern}`]: { deferred: false },
+        },
+      });
+    }
+
+    // Advance to next prompt or dismiss.
+    if (maintainPromptIndex < maintainPrompts.length - 1) {
+      setMaintainPromptIndex((i) => i + 1);
+    } else {
+      setMaintainPromptsDismissed(true);
+    }
+  };
+
+  // Phase 3.3 — block exercise until reset (personal equipment block).
+  const handleBlockExercise = async (exerciseId: string, reason: "no_equipment" | "personal_preference") => {
+    const phaseIndex = programProgress?.phaseIndex ?? program?.phaseIndex ?? 0;
+    const phaseLabel: "activation" | "skill" | "growth" =
+      phaseIndex === 2 ? "growth" : phaseIndex === 1 ? "skill" : "activation";
+    const sessionCount = programProgress?.totalSessionsCompleted ?? 0;
+
+    const currentPrefs = await loadPrefs();
+    const nextPrefs: LogPrefs = {
+      ...currentPrefs,
+      blockedExerciseIds: {
+        ...(currentPrefs.blockedExerciseIds ?? {}),
+        [exerciseId]: { reason, blockedAt: { phase: phaseLabel, sessionCount } },
+      },
+    };
+    await savePrefs(nextPrefs);
+    setPrefs(nextPrefs);
+    setBlockMenuOpen(false);
+    setBlockConfirmOpen(false);
+    setBlockMenuExerciseId(null);
   };
 
   const handleSavePainReportOnly = async () => {
@@ -2254,12 +2349,73 @@ export default function SessionClient() {
     );
   }
 
+  // Phase 3.3 — maintain-mode phase-transition prompt.
+  const activeMaintainPrompt =
+    !maintainPromptsDismissed && maintainPrompts.length > 0
+      ? maintainPrompts[maintainPromptIndex] ?? null
+      : null;
+
   // Phase 3.2 — pre-session feedback contract prompt.
   // One card per flagged exercise, shown before the session begins.
   const activeContractTrigger =
     !contractDismissed && contractTriggers.length > 0
       ? contractTriggers[contractPromptIndex] ?? null
       : null;
+
+  if (activeMaintainPrompt) {
+    const ex = exerciseById(activeMaintainPrompt.exerciseId);
+    const exName = ex?.name ?? activeMaintainPrompt.exerciseId;
+    const patternLabel = activeMaintainPrompt.pattern.replace(/_/g, " ");
+    const remaining = maintainPrompts.length - maintainPromptIndex;
+
+    return (
+      <BackgroundShell>
+        <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+          <OnImage>
+            {remaining > 1 && (
+              <p className="text-xs font-medium text-indigo-300 mb-1">
+                {maintainPromptIndex + 1} of {maintainPrompts.length}
+              </p>
+            )}
+            <h1 className="text-xl font-semibold text-white">
+              Your body has been responding well
+            </h1>
+            <p className="mt-2 text-sm text-slate-200">
+              You&apos;ve been consistent on {patternLabel} ({exName}). Want to try progressing?
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3">
+              <button
+                onClick={() => { void handleMaintainPrompt("yes"); }}
+                className="w-full rounded-xl bg-sky-600 px-5 py-3 text-left font-semibold text-white shadow hover:bg-sky-500 active:bg-sky-700"
+              >
+                <span className="block text-base">Yes, let&apos;s progress</span>
+                <span className="block text-xs font-normal text-sky-200 mt-0.5">
+                  Try a harder variation for this movement
+                </span>
+              </button>
+              <button
+                onClick={() => { void handleMaintainPrompt("no"); }}
+                className="w-full rounded-xl bg-slate-700 px-5 py-3 text-left font-semibold text-white shadow hover:bg-slate-600 active:bg-slate-800"
+              >
+                <span className="block text-base">Keep maintaining</span>
+                <span className="block text-xs font-normal text-slate-300 mt-0.5">
+                  I&apos;m happy with where I am
+                </span>
+              </button>
+            </div>
+
+            <button
+              onClick={() => { void handleMaintainPrompt("dismiss"); }}
+              className="mt-4 w-full text-center text-xs text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline"
+            >
+              Ask me later
+            </button>
+          </OnImage>
+        </div>
+      </BackgroundShell>
+    );
+  }
 
   if (activeContractTrigger) {
     const ex = exerciseById(activeContractTrigger.exerciseId);
@@ -2587,6 +2743,82 @@ export default function SessionClient() {
         </div>
 
         <div ref={exerciseCardRef}>
+          {/* Phase 3.3 — exercise block menu affordance */}
+          <div className="mb-1 flex justify-end">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setBlockMenuExerciseId(currentItem.exerciseId);
+                  setBlockMenuOpen((o) => !o);
+                  setBlockConfirmOpen(false);
+                }}
+                className="rounded p-1 text-slate-500 hover:bg-slate-700/50 hover:text-slate-300"
+                aria-label="Exercise options"
+              >
+                ···
+              </button>
+              {blockMenuOpen && blockMenuExerciseId === currentItem.exerciseId && (
+                <div className="absolute right-0 top-8 z-20 min-w-44 rounded-lg border border-slate-600/40 bg-slate-900 shadow-lg">
+                  {!blockConfirmOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setBlockConfirmOpen(true)}
+                      className="block w-full px-4 py-3 text-left text-sm text-slate-200 hover:bg-slate-700/50"
+                    >
+                      Remove from my program
+                    </button>
+                  ) : (
+                    <div className="px-4 py-3">
+                      <p className="mb-3 text-xs font-semibold text-slate-300">
+                        Remove {currentItem.name}?
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          // "Just today" — session-level swap, no persistence.
+                          if (currentItem && data) {
+                            const candidateId = findPainSwapAlternativeExerciseId({
+                              questionnaire: data,
+                              currentItem: {
+                                id: currentItem.id,
+                                dayTitle: currentItem.dayTitle,
+                                section: currentItem.section,
+                                exerciseId: currentItem.exerciseId,
+                                originalExerciseId: currentItem.originalExerciseId,
+                              },
+                              usedExerciseIds: new Set(flatItems.map((i) => i.exerciseId)),
+                            });
+                            if (candidateId && candidateId !== currentItem.exerciseId) {
+                              setSessionSwapByItemId((prev) => ({
+                                ...prev,
+                                [currentItem.id]: candidateId,
+                              }));
+                            }
+                          }
+                          setBlockMenuOpen(false);
+                          setBlockConfirmOpen(false);
+                        }}
+                        className="mb-2 block w-full rounded-lg border border-slate-600/40 bg-slate-800 px-3 py-2 text-left text-xs text-slate-200 hover:bg-slate-700"
+                      >
+                        <span className="block font-semibold">Just today</span>
+                        <span className="block text-slate-400">Swap out this session only</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { void handleBlockExercise(currentItem.exerciseId, "personal_preference"); }}
+                        className="block w-full rounded-lg border border-red-500/30 bg-red-950/30 px-3 py-2 text-left text-xs text-red-300 hover:bg-red-950/50"
+                      >
+                        <span className="block font-semibold">Block until I reset</span>
+                        <span className="block text-red-400/70">Never appear in my program</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           <ExerciseCard
             name={currentItem.name}
             targetMuscles={currentExerciseMeta?.muscleGroups ?? []}

@@ -67,6 +67,25 @@ export type LadderState = {
    * "Ready to retest?" prompts at phase transitions.
    */
   sacrificedByPattern?: Record<string, string[]>;
+  /**
+   * Phase 3.3 — Maintain mode override.
+   * Set per-pattern when the user responds "Yes, let's progress" to the
+   * phase-transition prompt in maintain mode.  Temporarily flips intent to
+   * "build" for that pattern only, cleared after one successful advance.
+   */
+  progressionOverrideByPattern?: Record<string, "build">;
+  /**
+   * Phase 3.3 — Rehab mode explicit advance request.
+   * Set only by explicit user action (never auto-set).  Permits one
+   * advancement attempt for that pattern before being cleared.
+   */
+  explicitAdvanceRequestedByPattern?: Record<string, boolean>;
+  /**
+   * Phase 3.3 — Maintain phase-transition prompt tracking.
+   * Records the phase index at which the "Want to try progressing?" prompt
+   * was last surfaced per pattern.  Prevents re-nagging within the same phase.
+   */
+  maintainPromptShownAtPhase?: Record<string, number>;
 };
 
 export type SessionFeedback = {
@@ -232,6 +251,26 @@ export type LogPrefs = {
       ExerciseFeedbackSummary,
       "deferred" | "probation" | "sacrificedAt" | "autoSacrificed"
     >
+  >;
+  /**
+   * Phase 3.3 — Personal Equipment Blocks.
+   * Exercises the user has removed from their program (either by preference or
+   * because the equipment is unavailable).  Hard-filtered before scoring, at
+   * the same tier as painContraindications — no exception paths.
+   *
+   * Reset options (Settings screen):
+   *   - "Reset equipment blocks" → clears entries where reason === "no_equipment"
+   *   - "Reset all blocks" → clears all entries in this map
+   *
+   * These resets do NOT touch sacrifice/regression history or LadderState — the
+   * coaching state persists through equipment changes by design.
+   */
+  blockedExerciseIds?: Record<
+    string,
+    {
+      reason: "no_equipment" | "personal_preference";
+      blockedAt: { phase: "activation" | "skill" | "growth"; sessionCount: number };
+    }
   >;
 };
 

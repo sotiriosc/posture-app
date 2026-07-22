@@ -7,6 +7,10 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["packages/engine/tests/unit/**/*.test.ts"],
+    // Matrix, fuzz, and golden-anchor suites are intentionally large and can
+    // take 30–120 s on constrained CI runners (especially WSL2). Raise the
+    // default 5 000 ms to 3 minutes so these suites are not false-negatives.
+    testTimeout: 180_000,
   },
   resolve: {
     alias: {

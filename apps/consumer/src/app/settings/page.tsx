@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { loadAppState } from "@/lib/appState";
+import { exerciseById } from "@/lib/exercises";
 import {
   init,
   listAllExerciseLogs,
@@ -119,6 +120,7 @@ export default function SettingsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [confirmText, setConfirmText] = useState("");
+  const [settingsPrefs, setSettingsPrefs] = useState<LogPrefs | null>(null);
   const [dropoffEvents, setDropoffEvents] = useState<SessionDropoffEvent[]>([]);
   const [qaChecklist, setQaChecklist] = useState<Record<string, boolean>>({});
   const [systemStatus, setSystemStatus] = useState<{
@@ -134,6 +136,11 @@ export default function SettingsPage() {
   useEffect(() => {
     setDropoffEvents(listSessionDropoffTelemetry());
     setQaChecklist(loadQaChecklistState());
+    void (async () => {
+      await init();
+      const prefs = await loadPrefs();
+      setSettingsPrefs(prefs);
+    })();
   }, []);
 
   useEffect(() => {
@@ -648,6 +655,107 @@ export default function SettingsPage() {
             ))}
           </div>
         </div>
+
+        {/* Phase 3.3 — Blocked exercises section */}
+        {(() => {
+          const blocked = settingsPrefs?.blockedExerciseIds ?? {};
+          const blockedEntries = Object.entries(blocked);
+          const hasBlocked = blockedEntries.length > 0;
+
+          const handleUnblock = async (exerciseId: string) => {
+            const currentPrefs = await loadPrefs();
+            const next = { ...(currentPrefs.blockedExerciseIds ?? {}) };
+            delete next[exerciseId];
+            const nextPrefs: LogPrefs = { ...currentPrefs, blockedExerciseIds: next };
+            await savePrefs(nextPrefs);
+            setSettingsPrefs(nextPrefs);
+          };
+
+          const handleResetEquipmentBlocks = async () => {
+            const currentPrefs = await loadPrefs();
+            const next = Object.fromEntries(
+              Object.entries(currentPrefs.blockedExerciseIds ?? {}).filter(
+                ([, v]) => v.reason !== "no_equipment"
+              )
+            );
+            const nextPrefs: LogPrefs = { ...currentPrefs, blockedExerciseIds: next };
+            await savePrefs(nextPrefs);
+            setSettingsPrefs(nextPrefs);
+          };
+
+          const handleResetAllBlocks = async () => {
+            const currentPrefs = await loadPrefs();
+            const nextPrefs: LogPrefs = { ...currentPrefs, blockedExerciseIds: {} };
+            await savePrefs(nextPrefs);
+            setSettingsPrefs(nextPrefs);
+          };
+
+          return (
+            <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
+              <h2 className="text-sm font-semibold text-slate-100">Blocked exercises</h2>
+              <p className="mt-1 text-xs text-slate-400">
+                Exercises removed from your program. These are hard-filtered before any
+                selection — they will not appear in workouts, swaps, or repair paths.
+              </p>
+
+              {hasBlocked && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => { void handleResetEquipmentBlocks(); }}
+                    className="rounded-lg border border-slate-600/40 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-700"
+                  >
+                    Reset equipment blocks
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { void handleResetAllBlocks(); }}
+                    className="rounded-lg border border-amber-500/30 bg-amber-950/20 px-3 py-1.5 text-xs font-semibold text-amber-300 hover:bg-amber-950/40"
+                  >
+                    Reset all blocks
+                  </button>
+                </div>
+              )}
+
+              {hasBlocked ? (
+                <ul className="mt-4 space-y-2">
+                  {blockedEntries.map(([exId, info]) => {
+                    const ex = exerciseById(exId);
+                    const name = ex?.name ?? exId;
+                    const reasonLabel =
+                      info.reason === "no_equipment"
+                        ? "No equipment"
+                        : "Personal preference";
+                    const phaseLabel = info.blockedAt.phase.charAt(0).toUpperCase() +
+                      info.blockedAt.phase.slice(1);
+                    return (
+                      <li
+                        key={exId}
+                        className="flex items-center justify-between gap-3 rounded-lg border border-slate-700/40 bg-slate-900/50 px-3 py-2"
+                      >
+                        <div>
+                          <p className="text-xs font-semibold text-slate-200">{name}</p>
+                          <p className="text-xs text-slate-500">
+                            {reasonLabel} · blocked in {phaseLabel} phase
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => { void handleUnblock(exId); }}
+                          className="shrink-0 rounded-lg border border-sky-500/30 bg-sky-950/20 px-3 py-1 text-xs font-semibold text-sky-300 hover:bg-sky-950/40"
+                        >
+                          Unblock
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="mt-3 text-xs text-slate-500">No exercises blocked.</p>
+              )}
+            </div>
+          );
+        })()}
 
         <div className="ui-card ui-soft-surface-raised rounded-lg border-rose-300/30 p-6">
           <h2 className="text-sm font-semibold text-rose-100">Danger zone</h2>

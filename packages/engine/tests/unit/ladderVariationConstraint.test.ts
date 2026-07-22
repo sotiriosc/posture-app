@@ -16,7 +16,6 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import type { LadderState } from "@/lib/types";
 import { getLadderSwapSet, getNextLadderRung, getPrevLadderRung, LADDER_MAIN_PATTERNS } from "@/lib/program/ladderAdvancement";
 import { exerciseById, exercises } from "@/lib/exercises";
-import { getPrevLadderRung } from "@/lib/program/ladderAdvancement";
 import { generateWeeklyProgram } from "@/lib/program";
 
 // ---------------------------------------------------------------------------

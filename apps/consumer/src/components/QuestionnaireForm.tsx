@@ -18,6 +18,15 @@ export type QuestionnaireData = {
   experience: string;
   equipment: string[];
   daysPerWeek: 3 | 4 | 5;
+  /**
+   * Phase 3.3 — Training Intent.  Controls how the ladder advancement engine
+   * interprets advancement criteria.
+   *   "build"    — default; current Phase 3 advance/hold/regress logic unchanged.
+   *   "maintain" — advance decisions become holds (criteria still evaluated + traced).
+   *   "rehab"    — advance blocked without explicitAdvanceRequested; hysteresis 3→5.
+   * Default on existing profiles: "build" (preserves current behavior).
+   */
+  trainingIntent?: "build" | "maintain" | "rehab";
 };
 
 const STORAGE_KEY = "posture_questionnaire";
@@ -351,6 +360,33 @@ export default function QuestionnaireForm() {
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <p className="text-sm font-semibold text-white">How would you describe your current approach?</p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          {(
+            [
+              { value: "build", label: "Build", sub: "Progress to harder movements" },
+              { value: "maintain", label: "Maintain", sub: "Keep what I have" },
+              { value: "rehab", label: "Recover", sub: "Working through an issue" },
+            ] as { value: "build" | "maintain" | "rehab"; label: string; sub: string }[]
+          ).map((opt) => (
+            <button
+              type="button"
+              key={opt.value}
+              onClick={() => updateData({ trainingIntent: opt.value })}
+              className={`min-h-14 rounded-lg border px-3 py-2 text-left text-xs font-semibold transition ${
+                (data.trainingIntent ?? "build") === opt.value
+                  ? "border-sky-200/60 bg-slate-900 text-white shadow-[0_12px_30px_rgba(14,165,233,0.14)] ring-1 ring-sky-300/30"
+                  : "border-slate-500/25 bg-slate-950/45 text-slate-300 hover:border-sky-200/30"
+              }`}
+            >
+              <span className="block">{opt.label}</span>
+              <span className="block font-normal text-slate-400 mt-0.5">{opt.sub}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div>
