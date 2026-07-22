@@ -48,7 +48,7 @@ export default function InstallApp() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-slate-900">
-            Install Body Alignment Coach
+            Install Praxis
           </p>
           <p className="text-xs text-slate-600">
             Get quick access and offline support.
