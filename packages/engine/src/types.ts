@@ -12,14 +12,29 @@ export type ExerciseFeedbackSummary = {
   difficulty: "easy" | "normal" | "hard" | "failed";
   completionRate: number;
   /**
-   * Phase 3.2: set exclusively by user response to the Sacrifice/Test/Modify
-   * next-session prompt.  When true, the engine hard-blocks this exercise from
-   * every repair-insertion path.  At initial selection the exercise is
-   * re-scored (heavy penalty) but never silently dropped without user consent.
-   * Until Phase 3.2 ships, callers must set this flag explicitly in fixtures to
-   * trigger the hard-block in tests.
+   * Phase 3.2 — Sacrifice: set by user choosing Sacrifice or auto-Sacrifice
+   * (two-strikes).  When true, the engine hard-blocks this exercise from every
+   * repair-insertion path and skips it from next-cycle selection scoring.
+   * Never set automatically by the engine without user action.
    */
   deferred?: boolean;
+  /**
+   * Phase 3.2 — Test: set when user chooses Test (or dismisses the prompt).
+   * On the next session, if the same exercise triggers a heavy signal again,
+   * auto-Sacrifice is applied (two-strikes-and-defer).
+   * Cleared when the exercise logs a clean session.
+   */
+  probation?: boolean;
+  /**
+   * Phase 3.2 — Sacrifice timestamp.  Written when deferred is set to true.
+   * Phase 5 reads this for the "Sacrificed exercises" retest panel.
+   */
+  sacrificedAt?: { phase: "activation" | "skill" | "growth"; sessionCount: number };
+  /**
+   * Phase 3.2 — Auto-Sacrifice flag.  Distinguishes user-chosen Sacrifice from
+   * two-strikes-triggered auto-defer.  Carries a decisionTrace line.
+   */
+  autoSacrificed?: boolean;
 };
 
 /**
@@ -46,6 +61,12 @@ export type LadderRungState = {
 export type LadderState = {
   /** Keyed by canonical pattern name. */
   byPattern: Record<string, LadderRungState>;
+  /**
+   * Phase 3.2 — Retest queue.  When a user Sacrifices an exercise, its ID is
+   * added here under the pattern key.  Phase 5 reads this list to surface
+   * "Ready to retest?" prompts at phase transitions.
+   */
+  sacrificedByPattern?: Record<string, string[]>;
 };
 
 export type SessionFeedback = {
@@ -199,6 +220,19 @@ export type LogPrefs = {
   >;
   feedbackByExercise?: Record<string, ExerciseFeedback>;
   substitutionByExercise?: Record<string, string>;
+  /**
+   * Phase 3.2 — persisted contract state per exercise.
+   * Stores deferred/probation/sacrificedAt/autoSacrificed set by the
+   * Sacrifice/Test/Modify pre-session prompt.  Merged with computed log
+   * summaries when building feedbackSummaryByExercise.
+   */
+  contractStateByExercise?: Record<
+    string,
+    Pick<
+      ExerciseFeedbackSummary,
+      "deferred" | "probation" | "sacrificedAt" | "autoSacrificed"
+    >
+  >;
 };
 
 export type ExercisePrescription = {
