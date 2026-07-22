@@ -65,6 +65,7 @@ import { getDailyInsight } from "@/lib/insightGenerator";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
+import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
 import DashboardModeCard from "@/components/dashboard/DashboardModeCard";
 import ProgramReferenceCard from "@/components/ProgramReferenceCard";
 import RoutineItemCoachingDetails, {
@@ -3145,22 +3146,26 @@ export default function ResultsRoutine() {
     key: DashboardMode;
     title: string;
     summary: string;
+    icon: string;
     locked?: boolean;
     lockReason?: string;
   }> = [
     {
       key: "today",
       title: "Today",
+      icon: "\u{1F3CB}\u{FE0F}",
       summary: `Day ${sessionLaunchDayIndex + 1}: ${program.week[sessionLaunchDayIndex]?.title ?? "current plan"}`,
     },
     {
       key: "week",
       title: "Week",
+      icon: "\u{1F4C5}",
       summary: `${completedCount}/${activeDaysPerWeek} days complete with ${inProgressCount} in progress.`,
     },
     {
       key: "progress",
       title: "Progress",
+      icon: "\u{1F4C8}",
       summary: `Consistency ${consistencyPercent}% with movement quality ${movementQualityPercent}%.`,
       locked: progressLocked,
       lockReason: "Complete one workout to unlock your progress summary.",
@@ -3168,6 +3173,7 @@ export default function ResultsRoutine() {
     {
       key: "insights",
       title: "Insights",
+      icon: "\u{1F9E9}",
       summary: "Pattern, stability, compensation, and adaptation analysis.",
       locked: insightsLocked,
       lockReason: "Complete one full week or cycle to unlock deeper analysis.",
@@ -3175,6 +3181,7 @@ export default function ResultsRoutine() {
     {
       key: "history",
       title: "History",
+      icon: "\u{1F4DC}",
       summary: `${totalCompletedWorkoutCount} completed workouts saved across your history.`,
       locked: historyLocked,
       lockReason: "Complete one workout to unlock session history.",
@@ -3182,6 +3189,7 @@ export default function ResultsRoutine() {
     {
       key: "account",
       title: "Billing / Account",
+      icon: "\u{1F4B3}",
       summary: authEnabled
         ? "Manage plan status and account data."
         : "Review local data controls.",
@@ -3370,6 +3378,7 @@ export default function ResultsRoutine() {
               key={mode.key}
               title={mode.title}
               summary={mode.summary}
+              icon={mode.icon}
               active={activeMode === mode.key}
               locked={mode.locked}
               lockReason={mode.lockReason}
@@ -3689,11 +3698,16 @@ export default function ResultsRoutine() {
               );
             })}
 
-            <details className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-              <summary className={`${secondaryActionBtn} list-none cursor-pointer`}>
-                View details: Day {effectiveSelectedDay + 1} plan reasoning
-              </summary>
-              <div className="mt-3">
+            <AnimatedDisclosure
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2"
+              summary={
+                <span className={secondaryActionBtn}>
+                  View details: Day {effectiveSelectedDay + 1} plan reasoning
+                </span>
+              }
+              contentClassName="mt-3"
+            >
+              <div>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-xs font-semibold text-slate-700">
                     {selectedDayProgram?.title}
@@ -3744,7 +3758,7 @@ export default function ResultsRoutine() {
                   </button>
                 </div>
               </div>
-            </details>
+            </AnimatedDisclosure>
           </div>
         </ExpandableSection>
       </div>

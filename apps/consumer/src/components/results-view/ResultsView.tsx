@@ -14,6 +14,7 @@ import {
 } from "@/components/visibility/SectionVisibility";
 import type { ExerciseLog, Program } from "@/lib/types";
 import type { ResultsProjection } from "@/lib/results/resultsProjection";
+import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
 
 // ---------------------------------------------------------------------------
 // Sub-section components — quiet design language per bloom-plan §Phase 5
@@ -92,18 +93,22 @@ function LaddersSection({ projection }: { projection: ResultsProjection }) {
               <p className="text-sm text-slate-300">{rung.exerciseName}</p>
               <p className="text-xs text-slate-500">{rung.nextRungRequirements}</p>
               {climbs.length > 0 && (
-                <details className="group">
-                  <summary className="cursor-pointer text-xs text-slate-600 hover:text-slate-400">
-                    {climbs.length} advancement{climbs.length === 1 ? "" : "s"} logged
-                  </summary>
-                  <ul className="mt-1 space-y-1 pl-3">
+                <AnimatedDisclosure
+                  summary={
+                    <span className="text-xs text-slate-600 hover:text-slate-400">
+                      {climbs.length} advancement{climbs.length === 1 ? "" : "s"} logged
+                    </span>
+                  }
+                  contentClassName="mt-1"
+                >
+                  <ul className="space-y-1 pl-3">
                     {climbs.map((c, idx) => (
                       <li key={idx} className="text-xs text-slate-600">
                         {c.fromExerciseName} → {c.toExerciseName} (session {c.atSessionCount})
                       </li>
                     ))}
                   </ul>
-                </details>
+                </AnimatedDisclosure>
               )}
             </div>
           );

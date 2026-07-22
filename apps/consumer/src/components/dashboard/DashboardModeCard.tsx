@@ -3,6 +3,7 @@
 type DashboardModeCardProps = {
   title: string;
   summary: string;
+  icon?: string;
   active: boolean;
   locked?: boolean;
   lockReason?: string;
@@ -12,6 +13,7 @@ type DashboardModeCardProps = {
 export default function DashboardModeCard({
   title,
   summary,
+  icon,
   active,
   locked = false,
   lockReason,
@@ -40,7 +42,12 @@ export default function DashboardModeCard({
           </div>
         ) : null}
         <div>
-          <h3 className={`text-lg font-semibold ${locked ? "text-slate-300" : "text-white"}`}>
+          <h3 className={`flex items-center gap-2 text-lg font-semibold ${locked ? "text-slate-300" : "text-white"}`}>
+            {icon ? (
+              <span aria-hidden="true" className="text-xl leading-none">
+                {icon}
+              </span>
+            ) : null}
             {title}
           </h3>
           <p className={`mt-2 line-clamp-2 text-sm leading-5 ${locked ? "text-slate-500" : "text-slate-300"}`}>

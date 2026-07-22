@@ -38,9 +38,10 @@ export default function AppMenuClient({
       nav.push({ href: "/progress", label: "Progress" });
       if (authenticated) {
         nav.push({ href: "/account/billing", label: "Account / Billing" });
-        nav.push({ href: "/account/settings", label: "Data Settings" });
+        nav.push({ href: "/account/settings", label: "Settings" });
       }
     }
+    nav.push({ href: "/faq", label: "Help & FAQ" });
     if (isAdmin) nav.push({ href: "/settings", label: "Admin Settings" });
     return nav;
   }, [isAdmin, authEnabled, authenticated]);

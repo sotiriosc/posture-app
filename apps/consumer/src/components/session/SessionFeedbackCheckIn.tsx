@@ -161,7 +161,7 @@ export default function SessionFeedbackCheckIn({
                   type="button"
                   data-testid={`session-feedback-energy-${score}`}
                   onClick={() => onChange({ ...value, energy: score })}
-                  className={`h-8 w-8 rounded-full border text-xs font-semibold ${
+                  className={`h-11 w-11 rounded-full border text-sm font-semibold ${
                     value.energy === score
                       ? "border-sky-600 bg-sky-600 text-white"
                       : "border-slate-200 bg-white text-slate-700"
@@ -184,7 +184,7 @@ export default function SessionFeedbackCheckIn({
                   onClick={() =>
                     onChange({ ...value, techniqueConfidence: score })
                   }
-                  className={`h-8 w-8 rounded-full border text-xs font-semibold ${
+                  className={`h-11 w-11 rounded-full border text-sm font-semibold ${
                     value.techniqueConfidence === score
                       ? "border-emerald-600 bg-emerald-600 text-white"
                       : "border-slate-200 bg-white text-slate-700"

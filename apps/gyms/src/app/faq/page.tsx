@@ -1,0 +1,95 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import {
+  onboardingGuides,
+  onboardingPageOrder,
+} from "@/components/onboarding/onboardingConfig";
+
+export const metadata: Metadata = {
+  title: "Help & FAQ — Praxis for Gyms",
+  description: "How Praxis for Gyms works, screen by screen.",
+};
+
+/**
+ * Phase 6c, Commit 3 — no FAQ existed anywhere in the app, gated or
+ * otherwise. Rather than inventing new copy, this consolidates the existing
+ * per-page onboarding guides (the single source of truth for "how this
+ * screen works") into one page reachable from the main nav without needing
+ * to visit every screen first.
+ */
+export default function FaqPage() {
+  return (
+    <div className="gym-b2b-page min-h-screen bg-[#F6F9FB] text-[#5F6B75]">
+      <main className="mx-auto max-w-3xl px-6 py-12">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#5B8FA8]">
+          Help
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold text-[#1F2A33]">
+          Help &amp; FAQ
+        </h1>
+        <p className="mt-2 text-sm text-[#5F6B75]">
+          How Praxis for Gyms works, screen by screen.
+        </p>
+
+        <div className="mt-8 space-y-8 text-sm leading-relaxed text-[#5F6B75]">
+          {onboardingPageOrder.map((key) => {
+            const guide = onboardingGuides[key];
+            return (
+              <section key={key}>
+                <h2 className="text-lg font-semibold text-[#1F2A33]">
+                  {guide.title}
+                </h2>
+                <div className="mt-2 space-y-3">
+                  {guide.sections.map((section, index) => {
+                    if (section.type === "text") {
+                      return <p key={`text-${index}`}>{section.text}</p>;
+                    }
+                    if (section.type === "bullets") {
+                      return (
+                        <div key={`bullets-${index}`}>
+                          {section.title ? (
+                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#5B8FA8]">
+                              {section.title}
+                            </p>
+                          ) : null}
+                          <ul className="mt-2 list-disc space-y-1 pl-5">
+                            {section.items.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={`steps-${index}`}>
+                        {section.title ? (
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#5B8FA8]">
+                            {section.title}
+                          </p>
+                        ) : null}
+                        <ol className="mt-2 list-decimal space-y-1 pl-5">
+                          {section.items.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ol>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+
+        <div className="mt-10">
+          <Link
+            href="/"
+            className="text-sm font-semibold text-[#5B8FA8] hover:text-[#1F2A33]"
+          >
+            ← Back to Praxis for Gyms
+          </Link>
+        </div>
+      </main>
+    </div>
+  );
+}

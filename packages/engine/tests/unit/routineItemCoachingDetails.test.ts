@@ -40,7 +40,9 @@ describe("RoutineItemCoachingDetails", () => {
     expect(screen.getByText("RPE 6")).toBeTruthy();
     expect(screen.getByText("Coach notes")).toBeTruthy();
     expect(screen.getByText("Why this:")).toBeTruthy();
-    expect(container.querySelector("details")?.hasAttribute("open")).toBe(false);
+    expect(
+      container.querySelector('button[aria-expanded]')?.getAttribute("aria-expanded")
+    ).toBe("false");
   });
 
   test("renders nothing when old routine items have no metadata or fallback", () => {

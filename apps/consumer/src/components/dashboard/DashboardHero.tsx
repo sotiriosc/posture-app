@@ -46,9 +46,9 @@ export default function DashboardHero({
     ? "You're in the final phase — keep building strength and clean execution."
     : phaseGateReady
     ? `You've met what's needed to move to Phase ${nextPhaseIndex}.`
-    : `Phase ${nextPhaseIndex} unlocks after ${workoutTarget} sessions or ${dayTarget} days — whichever comes first. You've done ${workoutsCompletedInPhase} ${
+    : `Phase ${nextPhaseIndex} unlocks after ${workoutTarget} sessions or ${dayTarget} days — you're at ${workoutsCompletedInPhase} ${
         workoutsCompletedInPhase === 1 ? "session" : "sessions"
-      } so far.`;
+      }.`;
 
   return (
     <section className="ui-card ui-soft-surface-raised p-5 sm:p-6">
@@ -77,7 +77,7 @@ export default function DashboardHero({
           ) : null}
 
           <div className="ui-soft-surface mt-4 space-y-3 rounded-lg px-3 py-3">
-            <p className="text-sm text-slate-200">{phaseLine}</p>
+            <p className="line-clamp-2 text-sm text-slate-200">{phaseLine}</p>
             {phaseGateReady && phaseGateActionLabel && onPhaseGateAction ? (
               <div
                 className="flex flex-col gap-2 rounded-lg border border-sky-300/25 bg-sky-300/10 px-3 py-3 sm:flex-row sm:items-center sm:justify-between"

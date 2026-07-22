@@ -2624,7 +2624,7 @@ export default function SessionClient() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-5xl flex-col gap-4 py-6 sm:py-8">
+      <div className="ui-shell flex max-w-5xl flex-col gap-4 py-6 pb-[10rem] sm:py-8 md:pb-8">
         <span
           className="sr-only"
           data-testid="current-exercise-id"
@@ -2698,7 +2698,14 @@ export default function SessionClient() {
           </section>
         ) : null}
 
-        <div className="sticky top-2 z-30 space-y-2">
+        {/* Phase 6c, Commit 6 — the fixed top-right control cluster
+            (AppMenuClient) only moves to the top at md+; this sticky header
+            must clear it there too, not just at initial scroll position 0.
+            .ui-shell's own padding-top reserves that space for content at
+            the top of the page, but a sticky descendant re-anchors to the
+            viewport on scroll and ignores an ancestor's padding, so it
+            needs its own matching offset. */}
+        <div className="sticky top-2 z-30 space-y-2 md:top-16">
           <SessionProgressHeader
             phaseName={phaseLabel}
             dayPositionLabel={dayPositionLabel}
@@ -3347,18 +3354,27 @@ export default function SessionClient() {
               {activeIndex + 1} / {totalItems}
             </div>
           </div>
-          <button
-            type="button"
-            data-testid="session-next"
-            ref={nextButtonRef}
-            onClick={() => {
-              void handleNext();
-            }}
-            className={`${primaryActionBtn} h-14 w-full min-w-0 rounded-lg px-6 text-base font-semibold`}
-          >
-            {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next \u2192"}
-          </button>
         </OnImage>
+      </div>
+      {/* Pinned above the viewport bottom on phone (Phase 6c, Commit 4) so the
+          primary "advance/log this set" action never scrolls out of reach.
+          Offset (not flush bottom-0) clears the fixed Menu pill that
+          AppMenuClient floats bottom-right on mobile (see globals.css
+          .ui-shell mobile padding-bottom comment). Static and inline again
+          at md+, where that cluster moves to the top and there's room in
+          flow. */}
+      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto w-full max-w-5xl px-4 md:static md:bottom-auto md:px-0">
+        <button
+          type="button"
+          data-testid="session-next"
+          ref={nextButtonRef}
+          onClick={() => {
+            void handleNext();
+          }}
+          className={`${primaryActionBtn} h-14 w-full min-w-0 rounded-lg px-6 text-base font-semibold shadow-lg shadow-black/30 md:shadow-none`}
+        >
+          {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next \u2192"}
+        </button>
       </div>
       <OnboardingInfoButton onboardingKey="session" />
     </BackgroundShell>
