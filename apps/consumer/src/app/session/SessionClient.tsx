@@ -481,6 +481,11 @@ export default function SessionClient() {
   const [maintainPromptIndex, setMaintainPromptIndex] = useState(0);
   const [maintainPromptsDismissed, setMaintainPromptsDismissed] = useState(false);
 
+  // Phase 3.3 — exercise block menu state
+  const [blockMenuOpen, setBlockMenuOpen] = useState(false);
+  const [blockMenuExerciseId, setBlockMenuExerciseId] = useState<string | null>(null);
+  const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
+
   const [activeTrackingField, setActiveTrackingField] =
     useState<TrackingField | null>(null);
   const [exerciseCompleteFlashVisible, setExerciseCompleteFlashVisible] =
@@ -1557,6 +1562,28 @@ export default function SessionClient() {
     } else {
       setMaintainPromptsDismissed(true);
     }
+  };
+
+  // Phase 3.3 — block exercise until reset (personal equipment block).
+  const handleBlockExercise = async (exerciseId: string, reason: "no_equipment" | "personal_preference") => {
+    const phaseIndex = programProgress?.phaseIndex ?? program?.phaseIndex ?? 0;
+    const phaseLabel: "activation" | "skill" | "growth" =
+      phaseIndex === 2 ? "growth" : phaseIndex === 1 ? "skill" : "activation";
+    const sessionCount = programProgress?.totalSessionsCompleted ?? 0;
+
+    const currentPrefs = await loadPrefs();
+    const nextPrefs: LogPrefs = {
+      ...currentPrefs,
+      blockedExerciseIds: {
+        ...(currentPrefs.blockedExerciseIds ?? {}),
+        [exerciseId]: { reason, blockedAt: { phase: phaseLabel, sessionCount } },
+      },
+    };
+    await savePrefs(nextPrefs);
+    setPrefs(nextPrefs);
+    setBlockMenuOpen(false);
+    setBlockConfirmOpen(false);
+    setBlockMenuExerciseId(null);
   };
 
   const handleSavePainReportOnly = async () => {
@@ -2716,6 +2743,82 @@ export default function SessionClient() {
         </div>
 
         <div ref={exerciseCardRef}>
+          {/* Phase 3.3 — exercise block menu affordance */}
+          <div className="mb-1 flex justify-end">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setBlockMenuExerciseId(currentItem.exerciseId);
+                  setBlockMenuOpen((o) => !o);
+                  setBlockConfirmOpen(false);
+                }}
+                className="rounded p-1 text-slate-500 hover:bg-slate-700/50 hover:text-slate-300"
+                aria-label="Exercise options"
+              >
+                ···
+              </button>
+              {blockMenuOpen && blockMenuExerciseId === currentItem.exerciseId && (
+                <div className="absolute right-0 top-8 z-20 min-w-44 rounded-lg border border-slate-600/40 bg-slate-900 shadow-lg">
+                  {!blockConfirmOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setBlockConfirmOpen(true)}
+                      className="block w-full px-4 py-3 text-left text-sm text-slate-200 hover:bg-slate-700/50"
+                    >
+                      Remove from my program
+                    </button>
+                  ) : (
+                    <div className="px-4 py-3">
+                      <p className="mb-3 text-xs font-semibold text-slate-300">
+                        Remove {currentItem.name}?
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          // "Just today" — session-level swap, no persistence.
+                          if (currentItem && data) {
+                            const candidateId = findPainSwapAlternativeExerciseId({
+                              questionnaire: data,
+                              currentItem: {
+                                id: currentItem.id,
+                                dayTitle: currentItem.dayTitle,
+                                section: currentItem.section,
+                                exerciseId: currentItem.exerciseId,
+                                originalExerciseId: currentItem.originalExerciseId,
+                              },
+                              usedExerciseIds: new Set(flatItems.map((i) => i.exerciseId)),
+                            });
+                            if (candidateId && candidateId !== currentItem.exerciseId) {
+                              setSessionSwapByItemId((prev) => ({
+                                ...prev,
+                                [currentItem.id]: candidateId,
+                              }));
+                            }
+                          }
+                          setBlockMenuOpen(false);
+                          setBlockConfirmOpen(false);
+                        }}
+                        className="mb-2 block w-full rounded-lg border border-slate-600/40 bg-slate-800 px-3 py-2 text-left text-xs text-slate-200 hover:bg-slate-700"
+                      >
+                        <span className="block font-semibold">Just today</span>
+                        <span className="block text-slate-400">Swap out this session only</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { void handleBlockExercise(currentItem.exerciseId, "personal_preference"); }}
+                        className="block w-full rounded-lg border border-red-500/30 bg-red-950/30 px-3 py-2 text-left text-xs text-red-300 hover:bg-red-950/50"
+                      >
+                        <span className="block font-semibold">Block until I reset</span>
+                        <span className="block text-red-400/70">Never appear in my program</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           <ExerciseCard
             name={currentItem.name}
             targetMuscles={currentExerciseMeta?.muscleGroups ?? []}

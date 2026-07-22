@@ -522,6 +522,9 @@ const buildWeeklyProgram = (
     previousWeek: request.currentProgram?.week,
     feedbackSummaryByExercise: progression.feedbackSummaryByExercise,
     variation: variation ? { ...variation, seed: seedPolicy.seed } : undefined,
+    // Phase 3.3: pass blocked exercises and training intent through from signals.
+    blockedExerciseIds: request.signals.prefs?.blockedExerciseIds ?? undefined,
+    trainingIntent: request.signals.questionnaire.trainingIntent ?? "build",
   });
 
   return {

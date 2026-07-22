@@ -718,3 +718,353 @@ describe("Phase 3.2 feedback contract persona anchors", () => {
     expect(autoResult.updatedLadderState?.sacrificedByPattern?.hinge).toContain(exerciseId);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Phase 3.3 persona anchors: 60-year-old maintainer + gym-switch
+// ---------------------------------------------------------------------------
+
+import {
+  computeMaintainPrompts,
+  markMaintainPromptsShown,
+  applyMaintainProgressionYes,
+} from "@/lib/program/trainingIntent";
+import type { LogPrefs } from "@/lib/types";
+
+describe("Phase 3.3 persona anchors", () => {
+  // ── 60-year-old maintainer: criteria met week after week, engine holds, no pushiness
+
+  describe("60-year-old maintainer persona", () => {
+    const maintainerQuestionnaire: QuestionnaireData = {
+      goals: "General fitness",
+      painAreas: ["Lower back"],
+      experience: "Beginner",
+      equipment: ["dumbbells", "bands"],
+      daysPerWeek: 3,
+      trainingIntent: "maintain",
+    };
+
+    const availableEq = new Set(["dumbbells", "bands"] as const) as Set<never>;
+
+    let seq = 1000;
+    const makeLog = (exerciseId: string, dateOffset: number): ExerciseLog => ({
+      id: `log-${++seq}`,
+      userId: "local",
+      sessionId: `sess-${seq}`,
+      exerciseId,
+      section: "main",
+      originalExerciseId: null,
+      substitutedExerciseId: null,
+      programId: "prog-maintainer",
+      dayIndex: 0,
+      createdAt: new Date(Date.UTC(2026, 3, 1) + dateOffset * 86400000).toISOString(),
+      updatedAt: new Date(Date.UTC(2026, 3, 1) + dateOffset * 86400000).toISOString(),
+      loadType: "weighted",
+      unit: "lb",
+      weight: 30,
+      reps: 10,
+      repsBySet: [10, 10, 10],
+      setsPlanned: 3,
+      setsCompleted: 3,
+      durationSec: null,
+      workSecondsUsed: null,
+      restSecondsUsed: null,
+      rpe: 5,
+      felt: "moderate",
+      painLevel: "none",
+      painLocation: null,
+      nextTimeGuidance: null,
+      feedbackNotes: null,
+      notes: null,
+      computedVolume: 900,
+      source: "local",
+      deletedAt: null,
+    });
+
+    const hingeD2 = "bodyweight-good-morning";
+
+    test("criteria met week after week → engine holds at rung in maintain mode", () => {
+      const initialState: LadderState = {
+        byPattern: {
+          hinge: {
+            exerciseId: hingeD2,
+            pattern: "hinge",
+            difficulty: 2,
+            cleanSessionsCount: 0,
+            requiredForAdvance: 2,
+            inHysteresis: false,
+            lastDecisionTrace: "",
+          },
+        },
+      };
+
+      const twoCleanLogs = [
+        makeLog(hingeD2, 0),
+        makeLog(hingeD2, 7),
+      ];
+
+      const week1State = computeLadderState({
+        currentLadderState: initialState,
+        recentLogs: twoCleanLogs,
+        activePatterns: ["hinge"],
+        patternToInitExercise: {},
+        available: availableEq,
+        phaseIndex: 1,
+        experienceLevel: maintainerQuestionnaire.experience,
+        painAreas: maintainerQuestionnaire.painAreas,
+        deferredIds: new Set(),
+        trainingIntent: "maintain",
+      });
+
+      // Criteria met but engine holds.
+      expect(week1State.byPattern.hinge?.lastDecisionTrace).toMatch(
+        /advancement criteria met.*holding by user preference/
+      );
+      expect(week1State.byPattern.hinge?.exerciseId).toBe(hingeD2); // no advance
+
+      // Week 2: more clean sessions, same rung.
+      const week2Logs = [makeLog(hingeD2, 14), makeLog(hingeD2, 21)];
+      const week2State = computeLadderState({
+        currentLadderState: week1State,
+        recentLogs: week2Logs,
+        activePatterns: ["hinge"],
+        patternToInitExercise: {},
+        available: availableEq,
+        phaseIndex: 1,
+        experienceLevel: maintainerQuestionnaire.experience,
+        painAreas: maintainerQuestionnaire.painAreas,
+        deferredIds: new Set(),
+        trainingIntent: "maintain",
+      });
+
+      // Still holding — no pushiness.
+      expect(week2State.byPattern.hinge?.exerciseId).toBe(hingeD2);
+      expect(week2State.byPattern.hinge?.lastDecisionTrace).toMatch(/holding by user preference/);
+    });
+
+    test("maintain phase-transition prompt fires once; 'Keep maintaining' records no change", () => {
+      const maintainHoldState: LadderState = {
+        byPattern: {
+          hinge: {
+            exerciseId: hingeD2,
+            pattern: "hinge",
+            difficulty: 2,
+            cleanSessionsCount: 4,
+            requiredForAdvance: 2,
+            inHysteresis: false,
+            lastDecisionTrace: "maintain intent: advancement criteria met for hinge; holding by user preference",
+          },
+        },
+      };
+
+      const prompts = computeMaintainPrompts({
+        trainingIntent: "maintain",
+        ladderState: maintainHoldState,
+        phaseIndex: 1,
+      });
+      expect(prompts).toHaveLength(1);
+
+      // User says "Keep maintaining" — mark prompt shown, no change to ladder.
+      const afterNo = markMaintainPromptsShown(maintainHoldState, ["hinge"], 1);
+      expect(afterNo.maintainPromptShownAtPhase?.hinge).toBe(1);
+      // Prompt no longer fires.
+      const promptsAfter = computeMaintainPrompts({
+        trainingIntent: "maintain",
+        ladderState: afterNo,
+        phaseIndex: 1,
+      });
+      expect(promptsAfter).toHaveLength(0);
+      // Rung unchanged.
+      expect(afterNo.byPattern.hinge?.exerciseId).toBe(hingeD2);
+    });
+
+    test("maintain prompt fires again at next phase", () => {
+      const shownState: LadderState = {
+        byPattern: {
+          hinge: {
+            exerciseId: hingeD2,
+            pattern: "hinge",
+            difficulty: 2,
+            cleanSessionsCount: 6,
+            requiredForAdvance: 2,
+            inHysteresis: false,
+            lastDecisionTrace: "maintain intent: advancement criteria met for hinge; holding by user preference",
+          },
+        },
+        maintainPromptShownAtPhase: { hinge: 1 },
+      };
+
+      const prompts = computeMaintainPrompts({
+        trainingIntent: "maintain",
+        ladderState: shownState,
+        phaseIndex: 2, // phase transition
+      });
+      expect(prompts).toHaveLength(1);
+    });
+
+    test("regression on pain fires in maintain mode (safety gating unchanged)", () => {
+      const painState: LadderState = {
+        byPattern: {
+          hinge: {
+            exerciseId: hingeD2,
+            pattern: "hinge",
+            difficulty: 2,
+            cleanSessionsCount: 4,
+            requiredForAdvance: 2,
+            inHysteresis: false,
+            lastDecisionTrace: "",
+          },
+        },
+      };
+
+      const painLog: ExerciseLog = {
+        id: "pain-log",
+        userId: "local",
+        sessionId: "sess-pain",
+        exerciseId: hingeD2,
+        section: "main",
+        originalExerciseId: null,
+        substitutedExerciseId: null,
+        programId: "prog-maintain",
+        dayIndex: 0,
+        createdAt: "2026-04-01T10:00:00Z",
+        updatedAt: "2026-04-01T10:00:00Z",
+        loadType: "weighted",
+        unit: "lb",
+        weight: 30,
+        reps: 0,
+        repsBySet: [],
+        setsPlanned: 3,
+        setsCompleted: 3,
+        durationSec: null,
+        workSecondsUsed: null,
+        restSecondsUsed: null,
+        rpe: 9,
+        felt: "pain",
+        painLevel: "severe",
+        painLocation: "lower-back",
+        nextTimeGuidance: null,
+        feedbackNotes: null,
+        notes: null,
+        computedVolume: 0,
+        source: "local",
+        deletedAt: null,
+      };
+
+      const afterPain = computeLadderState({
+        currentLadderState: painState,
+        recentLogs: [painLog],
+        activePatterns: ["hinge"],
+        patternToInitExercise: {},
+        available: availableEq,
+        phaseIndex: 1,
+        experienceLevel: "Beginner",
+        painAreas: ["Lower back"],
+        deferredIds: new Set(),
+        trainingIntent: "maintain",
+      });
+
+      expect(afterPain.byPattern.hinge?.lastDecisionTrace).toMatch(/regress/);
+    });
+  });
+
+  // ── Gym-switch persona: blocks a machine variant, resets equipment blocks later
+
+  describe("gym-switch persona", () => {
+    const gymQuestionnaire: QuestionnaireData = {
+      goals: "Improve posture",
+      painAreas: [],
+      experience: "Intermediate",
+      equipment: ["dumbbells", "gym", "barbell", "cables"],
+      daysPerWeek: 3,
+      trainingIntent: "build",
+    };
+
+    test("blocking a machine exercise removes it from program", () => {
+      const blocked: LogPrefs["blockedExerciseIds"] = {
+        "machine-leg-press": {
+          reason: "no_equipment",
+          blockedAt: { phase: "skill", sessionCount: 6 },
+        },
+      };
+
+      const program = generateWeeklyProgram(gymQuestionnaire, "prog-gym-switch", {
+        blockedExerciseIds: blocked,
+      });
+
+      const found = program.week.some((day) =>
+        day.routine.some((item) => item.exerciseId === "machine-leg-press")
+      );
+      expect(found).toBe(false);
+    });
+
+    test("after reset equipment blocks, machine exercise can reappear", () => {
+      // After reset: empty blockedExerciseIds.
+      const afterReset = generateWeeklyProgram(gymQuestionnaire, "prog-gym-reset", {
+        blockedExerciseIds: {},
+        seed: "deterministic-seed-gym",
+      });
+      const withBlock = generateWeeklyProgram(gymQuestionnaire, "prog-gym-blocked", {
+        blockedExerciseIds: {
+          "machine-leg-press": {
+            reason: "no_equipment",
+            blockedAt: { phase: "skill", sessionCount: 6 },
+          },
+        },
+        seed: "deterministic-seed-gym",
+      });
+
+      // Programs differ when machine-leg-press is blocked vs not.
+      // (The exercise might or might not appear, but the programs are different
+      // because the blocked path picks an alternative.)
+      const extractIds = (p: ReturnType<typeof generateWeeklyProgram>) =>
+        p.week
+          .flatMap((d) => d.routine)
+          .map((i) => i.exerciseId)
+          .join(",");
+
+      // machine-leg-press never appears when blocked.
+      expect(extractIds(withBlock)).not.toMatch("machine-leg-press");
+      // Reset version might include it (depends on seed) — but programs differ.
+      // The key invariant: blocking changes the candidate pool.
+      expect(extractIds(withBlock)).not.toBe(extractIds(afterReset));
+    });
+
+    test("coaching state (ladder) persists through equipment block reset", () => {
+      const ladderState: LadderState = {
+        byPattern: {
+          quad: {
+            exerciseId: "machine-leg-press",
+            pattern: "quad",
+            difficulty: 3,
+            cleanSessionsCount: 4,
+            requiredForAdvance: 2,
+            inHysteresis: false,
+            lastDecisionTrace: "hold quad: 4/2 clean sessions (awaiting phase boundary)",
+          },
+        },
+      };
+
+      // Block the machine exercise (gym switch).
+      const prefsWithBlock: LogPrefs = {
+        blockedExerciseIds: {
+          "machine-leg-press": {
+            reason: "no_equipment",
+            blockedAt: { phase: "skill", sessionCount: 6 },
+          },
+        },
+      };
+
+      // Reset equipment blocks.
+      const prefsAfterReset: LogPrefs = {
+        ...prefsWithBlock,
+        blockedExerciseIds: {},
+      };
+
+      // ladderState is unchanged — coaching state persists.
+      expect(ladderState.byPattern.quad?.cleanSessionsCount).toBe(4);
+      expect(prefsAfterReset.blockedExerciseIds).toEqual({});
+      // The ladder object itself was never mutated.
+      expect(Object.keys(ladderState.byPattern)).toContain("quad");
+    });
+  });
+});

@@ -252,6 +252,26 @@ export type LogPrefs = {
       "deferred" | "probation" | "sacrificedAt" | "autoSacrificed"
     >
   >;
+  /**
+   * Phase 3.3 — Personal Equipment Blocks.
+   * Exercises the user has removed from their program (either by preference or
+   * because the equipment is unavailable).  Hard-filtered before scoring, at
+   * the same tier as painContraindications — no exception paths.
+   *
+   * Reset options (Settings screen):
+   *   - "Reset equipment blocks" → clears entries where reason === "no_equipment"
+   *   - "Reset all blocks" → clears all entries in this map
+   *
+   * These resets do NOT touch sacrifice/regression history or LadderState — the
+   * coaching state persists through equipment changes by design.
+   */
+  blockedExerciseIds?: Record<
+    string,
+    {
+      reason: "no_equipment" | "personal_preference";
+      blockedAt: { phase: "activation" | "skill" | "growth"; sessionCount: number };
+    }
+  >;
 };
 
 export type ExercisePrescription = {
