@@ -165,11 +165,7 @@ describe("session feedback influences main selection", () => {
     assertContractsHold(baseQuestionnaire, adjusted.week);
   });
 
-  // Unquarantined in Phase 3.0 — fixed by hard-blocking directly-penalized exercises
-  // in all candidate-iteration paths (pickFirstEligibleId, findBestMainCandidateForRequiredPattern,
-  // findReplacementExerciseForRule, ensureDayHasDumbbellMain, findFinalRoleLegalityReplacement,
-  // pickDistinctReplacement, pickPaddingMain, pickFirstBackChestCandidateByIds).
-  // See ED-3.0.1 in docs/engine-decisions.md.
+  // Fixed in commit 9d0dcdc (Phase 3.0) — see ED-3.0.1 in docs/engine-decisions.md.
   test("failed exercise gets deprioritized", () => {
     const baselineAudit: ProgramSelectionAuditEntry[] = [];
     generateWeeklyProgram(baseQuestionnaire, "feedback-failure-baseline", {

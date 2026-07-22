@@ -134,9 +134,7 @@ describe("feedback-driven substitution", () => {
     assertContractsHold(questionnaire, adjusted.week);
   });
 
-  // Unquarantined in Phase 3.0 — fixed alongside sessionFeedbackInfluence.
-  // Hard-block applied across all candidate-iteration paths.
-  // See ED-3.0.1 in docs/engine-decisions.md.
+  // Fixed in commit 9d0dcdc (Phase 3.0) — see ED-3.0.1 in docs/engine-decisions.md.
   test("next week uses recent logs + guidance to move risky main out of lead while preserving contracts", () => {
     const current = generateWeeklyProgram(questionnaire, "substitution-next-cycle-current", {
       seed: "feedback-next-cycle-seed",
