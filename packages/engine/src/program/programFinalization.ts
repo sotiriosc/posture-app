@@ -62,6 +62,8 @@ export const finalizeWeeklyProgramResult = (params: {
   assessmentHistory?: import("@/lib/types").AssessmentSnapshot[];
   /** Phase 4: per-tag lifecycle state to store in the generated Program. */
   focusTagLifecycle?: Record<string, import("@/lib/types").FocusTagLifecycleState>;
+  /** Phase 5: phase transition history to store in the generated Program. */
+  phaseHistory?: import("@/lib/types").PhaseTransitionRecord[];
 }) => {
   forwardConstraintWarnings({
     programId: params.programId,
@@ -104,6 +106,7 @@ export const finalizeWeeklyProgramResult = (params: {
     phaseTransitionState: params.phaseTransitionState,
     assessmentHistory: params.assessmentHistory,
     focusTagLifecycle: params.focusTagLifecycle,
+    phaseHistory: params.phaseHistory,
   });
 };
 

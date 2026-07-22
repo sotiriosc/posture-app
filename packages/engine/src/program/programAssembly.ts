@@ -188,6 +188,8 @@ export const assembleProgram = (params: {
   assessmentHistory?: import("@/lib/types").AssessmentSnapshot[];
   /** Phase 4: per-tag lifecycle state to persist on the Program. */
   focusTagLifecycle?: Record<string, import("@/lib/types").FocusTagLifecycleState>;
+  /** Phase 5: phase transition history to persist on the Program. */
+  phaseHistory?: import("@/lib/types").PhaseTransitionRecord[];
 }) => {
   const { phaseMeta, phase } = buildProgramPhaseMetadata({
     phaseIndex: params.phaseIndex,
@@ -220,6 +222,7 @@ export const assembleProgram = (params: {
     ...(params.phaseTransitionState ? { phaseTransitionState: params.phaseTransitionState } : {}),
     ...(params.assessmentHistory ? { assessmentHistory: params.assessmentHistory } : {}),
     ...(params.focusTagLifecycle ? { focusTagLifecycle: params.focusTagLifecycle } : {}),
+    ...(params.phaseHistory ? { phaseHistory: params.phaseHistory } : {}),
     source: params.source ?? "local",
     deletedAt: params.deletedAt ?? null,
   } satisfies Program;

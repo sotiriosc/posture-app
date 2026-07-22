@@ -33797,6 +33797,12 @@ export const generateWeeklyProgram = (
      */
     assessmentHistory?: import("@/lib/types").AssessmentSnapshot[];
     focusTagLifecycle?: Record<string, import("@/lib/types").FocusTagLifecycleState>;
+    /**
+     * Phase 5 — Phase transition history.
+     * Carry-forward from prior program; a new record is appended when
+     * the phase gating verdict is "advance".
+     */
+    priorPhaseHistory?: import("@/lib/types").PhaseTransitionRecord[];
   }
 ): Program => {
   const { resolvedFeedbackSummaryByExercise: rawFeedbackSummary, recentlyUsedExerciseIds } =
@@ -34219,6 +34225,47 @@ export const generateWeeklyProgram = (
     // Phase 4 — persist assessment history and tag lifecycle state.
     assessmentHistory: options?.assessmentHistory,
     focusTagLifecycle: options?.focusTagLifecycle,
+    // Phase 5 — append to phaseHistory when a transition is recorded.
+    phaseHistory: (() => {
+      if (!options?.sessionsInPhase || !options?.phaseSessionSnapshots) {
+        return options?.priorPhaseHistory;
+      }
+      const phaseIndex = weeklyRuntimeContext.phaseIndex ?? 0;
+      const phase: "activation" | "skill" | "growth" =
+        phaseIndex === 2 ? "growth" : phaseIndex === 1 ? "skill" : "activation";
+      const resolvedIntent = options?.trainingIntent ?? data.trainingIntent ?? "build";
+      const verdict = computeReadinessVerdict({
+        phase,
+        sessionsInPhase: options.sessionsInPhase,
+        recentSessions: options.phaseSessionSnapshots,
+        ladderState: resolvedLadderState,
+        rungsClimbedSincePhaseStart: options?.rungsClimbedSincePhaseStart,
+        deferredExerciseCount: options?.deferredExerciseCount,
+        activationSacrificeQueueCleared: options?.activationSacrificeQueueCleared,
+        trainingIntent: resolvedIntent,
+      });
+      if (verdict.verdict !== "advance") return options?.priorPhaseHistory;
+      // A transition just occurred: append to history.
+      const prior = options?.priorPhaseHistory ?? [];
+      // Close the previous open record if the phase just changed.
+      const previousPhases = prior.map((record) =>
+        record.exitedAtSessionCount === undefined
+          ? { ...record, exitedAtSessionCount: options!.sessionsInPhase }
+          : record
+      );
+      return [
+        ...previousPhases,
+        {
+          phase,
+          enteredAtSessionCount: 0,
+          exitedAtSessionCount: options.sessionsInPhase,
+          criteriaAtExit: verdict.criteriaResults.map(
+            (c) => `${c.criterion}: ${c.satisfied ? "✓" : "✗"} — ${c.reason}`
+          ),
+          trace: verdict.trace,
+        } satisfies import("@/lib/types").PhaseTransitionRecord,
+      ];
+    })(),
   });
 };
 

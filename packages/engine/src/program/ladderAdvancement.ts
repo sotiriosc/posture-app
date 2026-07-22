@@ -456,6 +456,12 @@ export const computeLadderState = (params: {
    * Defaults to "build" (existing behavior) when absent.
    */
   trainingIntent?: "build" | "maintain" | "rehab";
+  /**
+   * Phase 5 — Total session count at the time of this computation.
+   * Written into rungAdvancementHistory records.  Optional for backwards
+   * compatibility; defaults to 0 when absent.
+   */
+  sessionCount?: number;
 }): LadderState => {
   const {
     currentLadderState,
@@ -468,9 +474,12 @@ export const computeLadderState = (params: {
     painAreas,
     deferredIds,
     trainingIntent = "build",
+    sessionCount = 0,
   } = params;
 
   const byPattern: Record<string, LadderRungState> = {};
+  // Phase 5 — collect advancement records for history append.
+  const newAdvancementRecords: import("@/lib/types").RungAdvancementRecord[] = [];
 
   const sortedLogs = recentLogs
     .filter((log) => !log.deletedAt)
@@ -532,6 +541,20 @@ export const computeLadderState = (params: {
       inHysteresis: decision.inHysteresis,
       lastDecisionTrace: decision.trace,
     };
+
+    // Phase 5 — record the advance in history.
+    if (decision.kind === "advance" && existing) {
+      newAdvancementRecords.push({
+        pattern,
+        fromExerciseId: existing.exerciseId,
+        fromDifficulty: existing.difficulty,
+        toExerciseId: decision.newExerciseId,
+        toDifficulty: decision.newDifficulty,
+        atSessionCount: sessionCount,
+        atPhase: phaseIndex,
+        trace: decision.trace,
+      });
+    }
   }
 
   // Carry forward Phase 3.2 state (sacrificedByPattern, etc.) unchanged.
@@ -556,6 +579,11 @@ export const computeLadderState = (params: {
     explicitAdvanceRequestedByPattern:
       Object.keys(clearedExplicit).length > 0 ? clearedExplicit : undefined,
     maintainPromptShownAtPhase: currentLadderState?.maintainPromptShownAtPhase,
+    // Phase 5: carry forward existing history and append new advances.
+    rungAdvancementHistory:
+      newAdvancementRecords.length > 0
+        ? [...(currentLadderState?.rungAdvancementHistory ?? []), ...newAdvancementRecords]
+        : currentLadderState?.rungAdvancementHistory,
   };
 };
 

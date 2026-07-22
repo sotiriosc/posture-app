@@ -1733,3 +1733,244 @@ describe("Phase 4 — golden anchor personas", () => {
     });
   });
 });
+
+// ---------------------------------------------------------------------------
+// Phase 5 — Results Screen golden anchor personas
+// ---------------------------------------------------------------------------
+
+import { projectResults } from "@/lib/results/resultsProjection";
+import type {
+  RungAdvancementRecord,
+  PhaseTransitionRecord,
+  FocusTagLifecycleState,
+} from "@/lib/types";
+
+const make12WeekBaseProgram = (): import("@/lib/types").Program => ({
+  id: "12wk-climber",
+  userId: null,
+  createdAt: "2026-01-01T00:00:00.000Z",
+  updatedAt: "2026-03-01T00:00:00.000Z",
+  goalTrack: null,
+  daysPerWeek: 3,
+  estimatedSessionMinutesRange: { min: 45, max: 60 },
+  phaseIndex: 1, // in skill phase after activation transition
+  phaseName: "skill",
+  weekIndex: 4,
+  totalWeekIndex: 8,
+  cycleIndex: 1,
+  phase: {
+    name: "skill",
+    phaseIndex: 1,
+    cycleIndex: 1,
+    weekIndex: 4,
+    weekCount: 4,
+    goal: "Skill development",
+  },
+  nextWeekPlan: { summary: "Skill week 4", change: "Maintain load", reason: "Steady progress" },
+  week: [],
+  source: "local",
+  deletedAt: null,
+  ladderState: {
+    byPattern: {
+      hinge: {
+        exerciseId: "deadlift-barbell",
+        pattern: "hinge",
+        difficulty: 3,
+        cleanSessionsCount: 1,
+        requiredForAdvance: 2,
+        inHysteresis: false,
+        lastDecisionTrace: "hold hinge: 1/2 clean sessions",
+      },
+      horizontal_push: {
+        exerciseId: "bench-press-barbell",
+        pattern: "horizontal_push",
+        difficulty: 3,
+        cleanSessionsCount: 0,
+        requiredForAdvance: 2,
+        inHysteresis: false,
+        lastDecisionTrace: "hold horizontal_push: 0/2 clean sessions",
+      },
+    },
+    rungAdvancementHistory: [
+      {
+        pattern: "hinge",
+        fromExerciseId: "romanian-deadlift",
+        fromDifficulty: 1,
+        toExerciseId: "deadlift-sumo",
+        toDifficulty: 2,
+        atSessionCount: 5,
+        atPhase: 0,
+        trace: "advance hinge: 2/2 clean sessions → deadlift-sumo (d2)",
+      },
+      {
+        pattern: "hinge",
+        fromExerciseId: "deadlift-sumo",
+        fromDifficulty: 2,
+        toExerciseId: "deadlift-barbell",
+        toDifficulty: 3,
+        atSessionCount: 10,
+        atPhase: 0,
+        trace: "advance hinge: 2/2 clean sessions → deadlift-barbell (d3)",
+      },
+      {
+        pattern: "horizontal_push",
+        fromExerciseId: "push-up",
+        fromDifficulty: 1,
+        toExerciseId: "bench-press-dumbbell",
+        toDifficulty: 2,
+        atSessionCount: 7,
+        atPhase: 0,
+        trace: "advance horizontal_push: 2/2 clean sessions → bench-press-dumbbell (d2)",
+      },
+      {
+        pattern: "horizontal_push",
+        fromExerciseId: "bench-press-dumbbell",
+        fromDifficulty: 2,
+        toExerciseId: "bench-press-barbell",
+        toDifficulty: 3,
+        atSessionCount: 14,
+        atPhase: 0,
+        trace: "advance horizontal_push: 2/2 clean sessions → bench-press-barbell (d3)",
+      },
+    ] satisfies RungAdvancementRecord[],
+  },
+  phaseHistory: [
+    {
+      phase: "activation",
+      enteredAtSessionCount: 0,
+      exitedAtSessionCount: 12,
+      criteriaAtExit: [
+        "rungs_climbed: ✓ — 2/2 patterns advanced",
+        "consistency: ✓ — 5/5 sessions completed",
+        "pain_signal: ✓ — no severe pain",
+        "sacrifice_load: ✓ — 0 deferred exercises",
+        "confidence: ✓ — 4/5 sessions moderate+",
+      ],
+      trace: "advance activation: 5/5 criteria met, min 10 sessions passed",
+    },
+  ] satisfies PhaseTransitionRecord[],
+  assessmentHistory: [
+    {
+      timestamp: "2026-01-03T10:00:00.000Z",
+      phase: 0,
+      confidenceScore: 0.88,
+      observations: [
+        {
+          focusTag: "forward_head",
+          measuredValue: 0.13,
+          threshold: 0.08,
+          keypointConfidences: [0.85, 0.9],
+        },
+      ],
+      status: "accepted",
+    },
+    {
+      timestamp: "2026-02-15T10:00:00.000Z",
+      phase: 1,
+      confidenceScore: 0.90,
+      observations: [
+        {
+          focusTag: "forward_head",
+          measuredValue: 0.05,
+          threshold: 0.08,
+          keypointConfidences: [0.88, 0.91],
+        },
+      ],
+      status: "user_retook",
+    },
+  ],
+  focusTagLifecycle: {
+    forward_head: {
+      focusTag: "forward_head",
+      firstSeenAt: "2026-01-03T10:00:00.000Z",
+      retiredAt: "2026-02-15T10:00:00.000Z",
+      retirementTrace:
+        "forward_head focus retired — retest cleared threshold on [2026-01-03 → 2026-02-15] — corrective slot reallocated.",
+      escalationBumps: 0,
+    } satisfies FocusTagLifecycleState,
+  },
+});
+
+describe("Phase 5 — 12-week climber golden anchor persona", () => {
+  const program = make12WeekBaseProgram();
+  const logs: import("@/lib/types").ExerciseLog[] = Array.from({ length: 36 }, (_, i) => ({
+    id: `log-${i}`,
+    userId: null,
+    sessionId: `session-${Math.floor(i / 3)}`,
+    exerciseId: "deadlift-barbell",
+    createdAt: new Date(Date.UTC(2026, 0, 3 + Math.floor(i / 3) * 2)).toISOString(),
+    updatedAt: new Date(Date.UTC(2026, 0, 3 + Math.floor(i / 3) * 2)).toISOString(),
+    loadType: "weighted" as const,
+    unit: "lb" as const,
+    weight: 155 + Math.floor(i / 9) * 10,
+    reps: 5,
+    repsBySet: null,
+    setsPlanned: 3,
+    setsCompleted: 3,
+    durationSec: null,
+    rpe: 7,
+    felt: "moderate" as const,
+    notes: null,
+    computedVolume: null,
+    source: "local" as const,
+    deletedAt: null,
+  }));
+
+  test("laddersClimbed reports 4 total rung advancements across 2 patterns", () => {
+    const result = projectResults(program, logs);
+    expect(result.laddersClimbed).toHaveLength(4);
+    const hingeClimbs = result.laddersClimbed.filter((c) => c.pattern === "hinge");
+    const pushClimbs = result.laddersClimbed.filter((c) => c.pattern === "horizontal_push");
+    expect(hingeClimbs).toHaveLength(2);
+    expect(pushClimbs).toHaveLength(2);
+  });
+
+  test("laddersClimbed ordered by atSessionCount", () => {
+    const result = projectResults(program, logs);
+    const counts = result.laddersClimbed.map((c) => c.atSessionCount);
+    const sorted = [...counts].sort((a, b) => a - b);
+    expect(counts).toEqual(sorted);
+  });
+
+  test("retired forward_head tag appears in retiredTags", () => {
+    const result = projectResults(program, logs);
+    expect(result.retiredTags).toHaveLength(1);
+    expect(result.retiredTags[0].tag).toBe("forward_head");
+    expect(result.retiredTags[0].reason).toBe("cleared_2x");
+    expect(result.retiredTags[0].baselineValue).toBe(0.13);
+    expect(result.retiredTags[0].finalValue).toBe(0.05);
+  });
+
+  test("forward_head is NOT in activeTags after retirement", () => {
+    const result = projectResults(program, logs);
+    const active = result.activeTags.map((t) => t.tag);
+    expect(active).not.toContain("forward_head");
+  });
+
+  test("activation phase is in phaseHistory with correct exit session", () => {
+    const result = projectResults(program, logs);
+    const activation = result.phaseHistory.find((p) => p.phase === "activation");
+    expect(activation).toBeDefined();
+    expect(activation!.exitedAtSessionCount).toBe(12);
+    expect(activation!.criteriaAtExit.length).toBeGreaterThan(0);
+  });
+
+  test("consistency: 12 unique sessions completed", () => {
+    const result = projectResults(program, logs);
+    // 36 log entries / 3 per session = 12 sessions.
+    expect(result.consistency.sessionsCompleted).toBe(12);
+  });
+
+  test("provenance footer: 1 retest, baseline and latest dates set", () => {
+    const result = projectResults(program, logs);
+    expect(result.provenanceFooter.retestCount).toBe(1);
+    expect(result.provenanceFooter.baselineAssessmentDate).toBe("2026-01-03T10:00:00.000Z");
+    expect(result.provenanceFooter.latestAssessmentDate).toBe("2026-02-15T10:00:00.000Z");
+  });
+
+  test("projection shape is stable (snapshot test)", () => {
+    const r1 = projectResults(program, logs);
+    const r2 = projectResults(program, logs);
+    expect(JSON.stringify(r1)).toBe(JSON.stringify(r2));
+  });
+});
