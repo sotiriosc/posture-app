@@ -939,6 +939,158 @@ Full gate green, including new Playwright specs.
 
 Merge commit.
 
+Phase 6c — Mobile Audit + Deploy Fix + Layout Bugs
+
+Branch: phase-6c-mobile-and-deploy from origin/main. Six commits, one per numbered item. Focused on ship-blocking bugs and the mobile pass that must land before the paid pilot begins.
+
+Guiding principle (log as SR-6c)
+
+Praxis is a phone-first product for consumer users. Every consumer-facing surface must work well on phone before being called done, regardless of how it looks on desktop. Gyms operator UI is desktop-first and does not need the same mobile treatment. Read every commit below through the phone-first vs desktop-first lens.
+
+Commit 1 — Turbopack build fix (SHIP-BLOCKING for gyms deploy)
+
+Current gyms Vercel build fails with:
+
+./packages/engine/src/poseAnalyzer.ts:55:29
+Module not found: Can't resolve '@tensorflow-models/pose-detection/dist/movenet/detector'
+
+Root cause: deep import into a package internal path that TensorFlow's exports field does not expose. Turbopack (Next 15's bundler) enforces exports strictly; Webpack was lenient. The current import worked historically by accident.
+
+Fix: use the package's public entry point.
+
+typescript
+// Before (line 55):
+const movenet = await import("@tensorflow-models/pose-detection/dist/movenet/detector");
+
+// After:
+const poseDetection = await import("@tensorflow-models/pose-detection");
+const detector = await poseDetection.createDetector(
+  poseDetection.SupportedModels.MoveNet,
+  {
+    modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
+    enableSmoothing: true,
+  }
+);
+
+Verify against the library's current README to confirm exact API shape — the above is the documented public path but the exact enum name may differ by version. Run both next build in apps/consumer and apps/gyms locally after the change; both must succeed. Do NOT touch anything else in poseAnalyzer.ts — same behavior, different import path.
+
+Commit 2 — Card-open background jump
+
+Observed: when guide cards or expandable sections open, the entire page background reflows, causing a visible jump. Users notice.
+
+Root cause: expandable containers use height: auto transitions without reserving space, so their parent's layout recalculates on every state change.
+
+Fix approach:
+
+Use max-height transitions with a large enough ceiling for content, or
+Use grid-template-rows transitions (0fr → 1fr), which animate cleanly without layout shift, or
+Absolute-position the expanding content within a reserved area.
+
+The specific fix depends on the component. Audit these components for open/close animations:
+
+apps/consumer/src/components/GuideCard.tsx (or wherever guide cards live)
+The card-grid on the results dashboard (Today / Week / Progress etc.)
+The session-options card on session start
+Any collapsible in Settings
+
+For each, apply the fix that produces zero cumulative layout shift on open. Verify with browser dev-tools' Layout Shift indicator — target CLS < 0.1 on the affected screens.
+
+Commit 3 — Missing routes on deployed site
+
+Sotirios reports that on the deployed praxisapp.ca, there is no visible way to reach FAQ or Settings from the UI.
+
+Investigation checklist:
+
+Grep the consumer app for /settings and /faq route definitions. Confirm they exist in the router.
+Grep the nav menu component for links to those routes. Confirm the links render.
+Confirm the routes are not gated by a flag that's off in production.
+Confirm no robots.ts or middleware is blocking them.
+
+Fix: whatever's missing. If Settings has no menu entry, add it. If FAQ was never built and is instead handled by guide cards, add copy to the menu that matches ("Help & guide" or similar) that opens the appropriate guide card.
+
+Commit 4 — Phone-first mobile audit
+
+The largest commit in this phase. Walk every consumer-app screen at 360×740 (iPhone SE), 390×844 (iPhone 15), and 412×915 (large Android). For each:
+
+Dashboard (results view):
+
+Six-card grid (Today/Week/Progress/Insights/History/Billing) currently reads as three-across-two-down on desktop. On phone it should collapse to single-column vertical, with the most important cards (Today, Week) at top and the rest below the fold. Never a two-across grid on phone — each card gets full width to be tappable.
+Replace text-heavy card labels with icon-plus-short-text where possible ("Today's session" → 🏋️ + "Today"). Use existing lucide-react icons (already in the dep tree) — do not add a new icon library.
+Header cluster (Log in / Menu / Pro badge / Back) collapses to a hamburger menu on phone. Only one primary CTA visible per phone screen at a time.
+Phase card and gate status: collapse the "Phase 2 unlocks after 12 sessions or 30 days" line into two lines max, no more.
+
+Session screen:
+
+Currently shows the timer, cues, and set-tracking side-by-side on desktop. Phone stacks them vertically: timer top, cues middle, set-tracking bottom.
+Timer circle uses a larger tap target on phone.
+"Log this set" button pinned to bottom of viewport, not inline in scroll.
+
+Post-session screen:
+
+Check-in form (Energy/Confidence 1-5) uses larger tap targets on phone; the current 1-5 pill buttons are too small on 360px viewport.
+
+Settings:
+
+Long lists of toggles need per-section collapse on phone. Group by area (Interface / Notifications / Data / Account) with expandable groups.
+
+Questionnaire / assessment:
+
+Confirm form controls are all thumb-reachable (44px minimum tap targets per Apple HIG).
+Photo upload buttons on the assessment screen must be large and centered on phone — no thumb-stretch to reach.
+
+Deliverable per screen: before/after screenshot pairs in docs/mobile-audit.md, one section per screen with a checklist of what changed.
+
+Do NOT touch gyms app in this commit — the operator dashboard is intentionally desktop-first and doesn't need mobile treatment. If any shared component change affects gyms, verify gyms desktop still looks correct and mention in the PR.
+
+Commit 5 — Vercel gyms project setup (documentation only)
+
+The gyms app needs its own Vercel project pointing at the same monorepo. This is a dashboard action Sotirios must perform, but the docs need to be crystal clear so he can do it once and never wonder again.
+
+Update docs/deploy.md with a step-by-step:
+
+Vercel dashboard → New Project
+Import from the same GitHub repo (sotiriosc/posture-app)
+Name it "praxis-gyms" or similar (not the same as the consumer project)
+Framework Preset: Next.js
+Root Directory: apps/gyms
+Build Command: (auto-detected, leave blank)
+Output Directory: (auto-detected, leave blank)
+Install Command: pnpm install --frozen-lockfile (or npm equivalent — confirm what the consumer project uses)
+Environment Variables: copy all needed env vars from the consumer project, except any that must differ (Stripe keys if using separate accounts for the two products, NEXT_PUBLIC_PLAUSIBLE_SRC pointing at a separate site).
+Deploy.
+
+Include a screenshot walkthrough if Code can generate one; if not, prose is fine.
+
+Also confirm in the doc that both projects will build on every PR to main by default (Vercel behavior) — that's what Sotirios wants and it's the default, so just confirm it's documented.
+
+Commit 6 — Header layout regression fix
+
+The Phase 6b headerLayout.spec.ts test passes for the tested breakpoints but Sotirios continues to see overlap between top buttons and header info pills on his computer. Either:
+
+The test's breakpoints don't cover his actual browser width, or
+The overlap is at a mid-scroll state the test doesn't capture, or
+The fix only handled the fixed-header component, and the pills that scroll into that region still collide during scroll.
+
+Investigate. If the fix from 6b was scoped too narrowly, extend it to cover scroll states. Add scroll-state coverage to the test.
+
+What is NOT in this pass
+No new features
+No engine changes (except the Turbopack fix which is pure import path)
+No video content work (separate ongoing workstream)
+No new exercises added to the catalog
+No gyms mobile audit (desktop-first stays desktop-first)
+No changes to onboarding, questionnaire, or assessment flows beyond mobile tap-target sizing
+Acceptance
+Both apps/consumer and apps/gyms build successfully with Turbopack.
+Card open/close animations have zero cumulative layout shift.
+Settings and FAQ (or their equivalents) are reachable from the deployed site's main navigation.
+Every consumer screen tested at three mobile widths; before/after documentation exists.
+docs/deploy.md contains the second-Vercel-project setup Sotirios can follow without further guidance.
+Header overlap fixed at all reported viewport widths including mid-scroll.
+Full gate + Playwright green.
+
+Merge commit.
+
 ## Sequencing & effort (with Claude Code)
 
 P0 security            0.5 day        (both repos)
