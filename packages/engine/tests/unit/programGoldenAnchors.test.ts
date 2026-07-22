@@ -1376,3 +1376,197 @@ describe("Phase 3W — warmup golden anchors", () => {
     });
   });
 });
+
+// ---------------------------------------------------------------------------
+// Phase 3.5 — Phase Gating golden anchor personas
+// ---------------------------------------------------------------------------
+
+import {
+  computeReadinessVerdict,
+  buildPhaseTransitionState,
+  type PhaseGatingInput,
+  type SessionSnapshot,
+} from "@/lib/program/phaseGatingEvaluator";
+import {
+  ACTIVATION_MIN_SESSIONS,
+  ACTIVATION_MAX_SESSIONS,
+} from "@/lib/program/phaseGatingConstants";
+import type { LadderState as _LadderState35, PhaseTransitionState } from "@/lib/types";
+
+const _nGreen35 = (n: number): SessionSnapshot[] =>
+  Array.from({ length: n }, () => ({
+    completed: "yes" as const,
+    maxPain: "none" as const,
+    effortBand: "moderate" as const,
+    confidenceBand: "moderate" as const,
+  }));
+
+const _strongLadder: _LadderState35 = {
+  byPattern: {
+    hinge: { exerciseId: "db-rdl", pattern: "hinge", difficulty: 2, cleanSessionsCount: 2, requiredForAdvance: 2, inHysteresis: false, lastDecisionTrace: "" },
+    knee_dominant: { exerciseId: "goblet-squat", pattern: "knee_dominant", difficulty: 2, cleanSessionsCount: 2, requiredForAdvance: 2, inHysteresis: false, lastDecisionTrace: "" },
+  },
+};
+
+describe("Phase 3.5 — phase gating golden anchor personas", () => {
+  // ── Persona 1: Quick adapter ────────────────────────────────────────────
+  describe("quick-adapter persona — satisfies criteria at session 8, advances at session 10", () => {
+    test("session 8: criteria all met but below min (10) → holds", () => {
+      const input: PhaseGatingInput = {
+        phase: "activation",
+        sessionsInPhase: 8,
+        recentSessions: _nGreen35(5),
+        ladderState: _strongLadder,
+        rungsClimbedSincePhaseStart: { hinge: 1, knee_dominant: 1 },
+        deferredExerciseCount: 0,
+        trainingIntent: "build",
+      };
+      const verdict = computeReadinessVerdict(input);
+      expect(verdict.verdict).toBe("hold");
+      expect(verdict.reason).toBe("min_not_reached");
+    });
+
+    test("session 10: min reached + criteria met → advances early", () => {
+      const input: PhaseGatingInput = {
+        phase: "activation",
+        sessionsInPhase: ACTIVATION_MIN_SESSIONS,
+        recentSessions: _nGreen35(5),
+        ladderState: _strongLadder,
+        rungsClimbedSincePhaseStart: { hinge: 1, knee_dominant: 1 },
+        deferredExerciseCount: 0,
+        trainingIntent: "build",
+      };
+      const verdict = computeReadinessVerdict(input);
+      expect(verdict.verdict).toBe("advance");
+      expect(verdict.reason).toBe("criteria_met");
+      // State reflects early eligibility
+      const state = buildPhaseTransitionState({ verdict, input });
+      expect(state.eligibleAt).toBe(ACTIVATION_MIN_SESSIONS);
+      expect(state.unlockedAt).toBe(ACTIVATION_MIN_SESSIONS);
+    });
+
+    test("PhaseTransitionState trace names all 5 criteria with numbers", () => {
+      const input: PhaseGatingInput = {
+        phase: "activation",
+        sessionsInPhase: ACTIVATION_MIN_SESSIONS,
+        recentSessions: _nGreen35(5),
+        ladderState: _strongLadder,
+        rungsClimbedSincePhaseStart: { hinge: 1, knee_dominant: 1 },
+        deferredExerciseCount: 0,
+        trainingIntent: "build",
+      };
+      const verdict = computeReadinessVerdict(input);
+      expect(verdict.trace).toContain("rungs_climbed");
+      expect(verdict.trace).toContain("consistency");
+      expect(verdict.trace).toContain("pain_signal");
+      expect(verdict.trace).toContain("sacrifice_load");
+      expect(verdict.trace).toContain("confidence");
+    });
+  });
+
+  // ── Persona 2: Slow adapter ────────────────────────────────────────────
+  describe("slow-adapter persona — needs session 20, held until max ceiling at 21", () => {
+    test("session 18: criteria not met → holds", () => {
+      const input: PhaseGatingInput = {
+        phase: "activation",
+        sessionsInPhase: 18,
+        recentSessions: [
+          ..._nGreen35(2),
+          { completed: "partial", maxPain: "severe", confidenceBand: "low", effortBand: "high" },
+          { completed: "no", maxPain: "mild", confidenceBand: "low", effortBand: "high" },
+          { completed: "partial", maxPain: "none", confidenceBand: "low", effortBand: "moderate" },
+        ],
+        ladderState: {
+          byPattern: {
+            hinge: { exerciseId: "hip-hinge-drill", pattern: "hinge", difficulty: 1, cleanSessionsCount: 1, requiredForAdvance: 2, inHysteresis: false, lastDecisionTrace: "" },
+          },
+        },
+        rungsClimbedSincePhaseStart: { hinge: 0 },
+        deferredExerciseCount: 2, // sacrifice_load fails
+        trainingIntent: "build",
+      };
+      const verdict = computeReadinessVerdict(input);
+      expect(verdict.verdict).toBe("hold");
+    });
+
+    test("session 21: max ceiling reached → advance regardless of criteria", () => {
+      const input: PhaseGatingInput = {
+        phase: "activation",
+        sessionsInPhase: ACTIVATION_MAX_SESSIONS,
+        recentSessions: [
+          ..._nGreen35(2),
+          { completed: "partial", maxPain: "severe", confidenceBand: "low", effortBand: "high" },
+          { completed: "no", maxPain: "mild", confidenceBand: "low", effortBand: "high" },
+          { completed: "partial", maxPain: "none", confidenceBand: "low", effortBand: "moderate" },
+        ],
+        ladderState: {
+          byPattern: {
+            hinge: { exerciseId: "hip-hinge-drill", pattern: "hinge", difficulty: 1, cleanSessionsCount: 1, requiredForAdvance: 2, inHysteresis: false, lastDecisionTrace: "" },
+          },
+        },
+        rungsClimbedSincePhaseStart: { hinge: 0 },
+        deferredExerciseCount: 2,
+        trainingIntent: "build",
+      };
+      const verdict = computeReadinessVerdict(input);
+      expect(verdict.verdict).toBe("advance");
+      expect(verdict.reason).toBe("max_reached");
+      expect(verdict.trace).toContain("max reached");
+    });
+  });
+
+  // ── Persona 3: Maintainer at transition ────────────────────────────────
+  describe("maintainer-at-transition persona — criteria met but user holds by preference", () => {
+    test("maintain mode: criteria met → holds with trace recording maintain intent", () => {
+      const input: PhaseGatingInput = {
+        phase: "activation",
+        sessionsInPhase: ACTIVATION_MIN_SESSIONS,
+        recentSessions: _nGreen35(5),
+        ladderState: _strongLadder,
+        rungsClimbedSincePhaseStart: { hinge: 1, knee_dominant: 1 },
+        deferredExerciseCount: 0,
+        trainingIntent: "maintain",
+      };
+      const verdict = computeReadinessVerdict(input);
+      expect(verdict.verdict).toBe("hold");
+      expect(verdict.trace).toContain("maintain intent");
+    });
+
+    test("maintain mode: PhaseTransitionState captures satisfiedCount for the extend-prompt hook", () => {
+      const input: PhaseGatingInput = {
+        phase: "activation",
+        sessionsInPhase: ACTIVATION_MIN_SESSIONS,
+        recentSessions: _nGreen35(5),
+        ladderState: _strongLadder,
+        rungsClimbedSincePhaseStart: { hinge: 1, knee_dominant: 1 },
+        deferredExerciseCount: 0,
+        trainingIntent: "maintain",
+      };
+      const verdict = computeReadinessVerdict(input);
+      const state: PhaseTransitionState = buildPhaseTransitionState({ verdict, input });
+      // All criteria evaluated even in maintain mode
+      expect(state.criteriaLastEvaluated.length).toBeGreaterThan(0);
+      const allSatisfied = state.criteriaLastEvaluated.every((c) => c.satisfied);
+      // With green inputs, all should be satisfied
+      expect(allSatisfied).toBe(true);
+      // lastTrace records maintain intent for prompt extension
+      expect(state.lastTrace).toContain("maintain intent");
+    });
+
+    test("maintain mode: safety ceiling fires at max sessions regardless", () => {
+      // Even maintainers are graduated at the ceiling (never trapped).
+      const input: PhaseGatingInput = {
+        phase: "activation",
+        sessionsInPhase: ACTIVATION_MAX_SESSIONS,
+        recentSessions: _nGreen35(5),
+        ladderState: _strongLadder,
+        rungsClimbedSincePhaseStart: { hinge: 1, knee_dominant: 1 },
+        deferredExerciseCount: 0,
+        trainingIntent: "maintain",
+      };
+      const verdict = computeReadinessVerdict(input);
+      expect(verdict.verdict).toBe("advance");
+      expect(verdict.reason).toBe("max_reached");
+    });
+  });
+});
