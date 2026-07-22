@@ -36,126 +36,97 @@ export const onboardingPageOrder: OnboardingKey[] = [
 
 export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
   home: {
-    title: "Start here: How Praxis works",
+    title: "Start here: how Praxis works",
     sections: [
       {
         type: "text",
-        text: "Praxis fixes what's holding your movement back, then builds strength on top.",
+        text: "Praxis finds what's holding your movement back, works on that first, then builds strength on top. Answer a few questions, take three posture photos, and you'll have a weekly plan — under three minutes.",
       },
       {
         type: "bullets",
-        title: "Praxis:",
+        title: "What Praxis does:",
         items: [
-          "Spots the habits that hold your movement back.",
+          "Spots the habits limiting your movement.",
           "Builds a weekly plan that works on them in the right order.",
-          "Adjusts each week based on how your sessions actually go.",
+          "Adjusts every week based on how your sessions actually go.",
         ],
-      },
-      {
-        type: "text",
-        text: "You'll answer a few questions, take three posture photos, and get your plan. Under three minutes.",
       },
     ],
   },
   assessment: {
-    title: "How to capture a movement & posture baseline",
+    title: "Your posture photos",
     sections: [
       {
+        type: "text",
+        text: "Three photos give us your starting point. Stand as you normally would — don't correct your posture for the camera, or we'll be fixing the wrong thing.",
+      },
+      {
         type: "bullets",
-        title: "For best results:",
+        title: "For a clean read:",
         items: [
-          "Stand naturally, not flexing",
-          "Relax your shoulders and jaw",
-          "Use neutral lighting",
-          "Keep camera at chest height",
-          "Wear fitted clothing",
-          "Take front, side, and back views",
+          "Stand naturally, shoulders and jaw relaxed",
+          "Neutral lighting, camera at chest height",
+          "Fitted clothing",
+          "Front, side, and back views",
         ],
       },
       {
         type: "text",
-        text: "These images help detect structural imbalances that influence movement mechanics and corrective focus.",
-      },
-      {
-        type: "text",
-        text: "Do not try to correct posture in the photo; stand as you normally would.",
+        text: "Every so often — usually when you move to a new phase — we'll ask for fresh photos. Your baseline updates and the plan adapts.",
       },
     ],
   },
   questionnaire: {
-    title: "How to answer your Praxis movement profile",
+    title: "Your movement profile",
     sections: [
       {
-        type: "bullets",
-        title: "Answer based on:",
-        items: [
-          "Your current ability",
-          "Not your best day",
-          "Not your worst day",
-        ],
-      },
-      {
-        type: "bullets",
-        title: "Be honest about:",
-        items: [
-          "Pain areas",
-          "Equipment access",
-          "Training frequency",
-        ],
+        type: "text",
+        text: "Answer for your current ability — not your best day, not your worst. Be honest about pain, the equipment you have, and how often you train; that's what makes the plan yours.",
       },
       {
         type: "text",
-        text: "Your answers help identify movement priorities and constraints for a more useful plan.",
+        text: "One question sets your goal — Build, Maintain, or Recover. Not everyone is here to add weight, so we adapt to the goal you pick. Change it anytime with \"Edit profile\" on your dashboard.",
       },
     ],
   },
   results: {
-    title: "How to use your Praxis dashboard",
+    title: "Your dashboard",
     sections: [
       {
         type: "bullets",
-        title: "Your dashboard shows:",
+        title: "What you'll see:",
         items: [
-          "Phase: where you are in your training",
-          "Week View: your sessions for the week",
-          "This week's focus: what you're working on and why",
-          "Plan adjustments: what changed and why",
+          "Phase — where you are in your training",
+          "Week view — your sessions for the week",
+          "This week's focus — what you're working on and why",
+          "Plan adjustments — what changed and why",
         ],
       },
       {
         type: "text",
-        text: "This dashboard shows where you are and what to prioritize next.",
-      },
-      {
-        type: "text",
-        text: "After each session, Praxis updates the plan automatically.",
+        text: "After each session Praxis updates the plan. You'll move up to the next progression after two clean sessions at the top of your rep range — no pushiness, your body tells us when.",
       },
     ],
   },
   session: {
-    title: "How to complete a corrective session",
+    title: "During a session",
     sections: [
       {
         type: "bullets",
-        title: "Flow:",
+        title: "Each session:",
         items: [
           "Follow the exercise order",
-          "Log weight / reps",
-          "Complete sets in sequence",
-          "Focus on executed movement quality, not just load.",
+          "Log your weight and reps as you go",
+          "Focus on movement quality, not just load",
         ],
       },
       {
         type: "text",
-        text: "Use the timer when appropriate and stay controlled and aligned.",
+        text: "If something felt off last time, you'll see three choices before we begin — Sacrifice, Test, or Modify. Yours to pick.",
       },
       {
         type: "text",
-        text: "When finished: Press \"Next\" until the session completes.",
-      },
-      {
-        type: "text",
-        text: "Praxis adjusts movement quality emphasis based on your feedback.",
+        text: "Don't want a movement, or don't have the gear? Tap the ⋯ on any exercise and choose \"Block until I reset\" — it won't come back until you do.",
       },
     ],
   },
