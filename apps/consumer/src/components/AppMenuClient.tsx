@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
@@ -17,6 +17,13 @@ type MenuLink = {
   label: string;
 };
 
+export const OPEN_APP_MENU_EVENT = "praxis:open-app-menu";
+
+export function openAppMenu() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(OPEN_APP_MENU_EVENT));
+}
+
 export default function AppMenuClient({
   isAdmin,
   authEnabled,
@@ -25,8 +32,21 @@ export default function AppMenuClient({
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    function handleExternalOpen() {
+      setOpen(true);
+    }
+    window.addEventListener(OPEN_APP_MENU_EVENT, handleExternalOpen);
+    return () => window.removeEventListener(OPEN_APP_MENU_EVENT, handleExternalOpen);
+  }, []);
+
   const hideMenu =
     pathname?.startsWith("/auth/") || pathname?.startsWith("/admin/access");
+  // Phase 6d, Commit 1 — the session screen's own consolidated bottom bar
+  // provides the Menu entry on phone; the global floating pill would
+  // otherwise duplicate it. Desktop is out of scope for this pass and keeps
+  // the floating pill (it already lives at the top there, out of the way).
+  const isSessionRoute = pathname === "/session";
   const links = useMemo(() => {
     const nav: MenuLink[] = [
       { href: "/", label: "Home" },
@@ -51,7 +71,11 @@ export default function AppMenuClient({
   return (
     <>
       {!open ? (
-        <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] right-3 z-[70] flex items-center justify-end gap-2 sm:right-4 md:bottom-auto md:right-4 md:top-4">
+        <div
+          className={`fixed bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] right-3 z-[70] items-center justify-end gap-2 sm:right-4 md:bottom-auto md:right-4 md:top-4 ${
+            isSessionRoute ? "hidden md:flex" : "flex"
+          }`}
+        >
           <div className="hidden md:block">
             <AuthControls />
           </div>

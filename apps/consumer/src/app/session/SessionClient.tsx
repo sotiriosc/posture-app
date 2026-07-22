@@ -42,7 +42,10 @@ import DualModeTimer, {
 import ExerciseCard from "@/components/ExerciseCard";
 import SessionProgressHeader from "@/components/session/SessionProgressHeader";
 import SessionFeedbackCheckIn from "@/components/session/SessionFeedbackCheckIn";
-import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import OnboardingInfoButton, {
+  openOnboardingGuide,
+} from "@/components/onboarding/OnboardingInfoButton";
+import { openAppMenu } from "@/components/AppMenuClient";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
@@ -486,6 +489,7 @@ export default function SessionClient() {
   const [blockMenuOpen, setBlockMenuOpen] = useState(false);
   const [blockMenuExerciseId, setBlockMenuExerciseId] = useState<string | null>(null);
   const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
+
 
   const [activeTrackingField, setActiveTrackingField] =
     useState<TrackingField | null>(null);
@@ -2007,6 +2011,18 @@ export default function SessionClient() {
   const sessionProgressPercent = totalItems
     ? ((activeIndex + 1) / totalItems) * 100
     : 0;
+  // Phase 6d, Commit 1 — full header only at session start (first exercise,
+  // nothing worked yet); collapses everywhere after that so it stops
+  // competing with the timer for vertical space on phone.
+  const isSessionStartHeader = activeIndex === 0;
+  const compactPhaseLabel = phaseLabel.match(/^Phase\s+\d+/i)?.[0] ?? phaseLabel;
+  const compactDayLabel =
+    program && programDayIndex !== null ? `Day ${programDayIndex + 1}` : "Day 1";
+  const compactExercisePositionLabel = `Exercise ${Math.min(
+    totalItems,
+    activeIndex + 1
+  )}/${Math.max(1, totalItems)}`;
+  const compactHeaderLabel = `${compactExercisePositionLabel} \u00b7 ${compactDayLabel} \u00b7 ${compactPhaseLabel}`;
   const runningTimerRuntime = Object.values(timerRuntimeByItemId)
     .filter((runtime) => runtime.running)
     .sort(
@@ -2624,7 +2640,7 @@ export default function SessionClient() {
 
   return (
     <BackgroundShell>
-      <div className="ui-shell flex max-w-5xl flex-col gap-4 py-6 pb-[10rem] sm:py-8 md:pb-8">
+      <div className="ui-shell flex max-w-5xl flex-col gap-4 py-6 pb-24 sm:py-8 md:pb-8">
         <span
           className="sr-only"
           data-testid="current-exercise-id"
@@ -2712,6 +2728,8 @@ export default function SessionClient() {
             dayTitle={dayTitle}
             exercisePositionLabel={exercisePositionLabel}
             progressPercent={sessionProgressPercent}
+            compact={!isSessionStartHeader}
+            compactLabel={compactHeaderLabel}
           />
 
           <div
@@ -3356,14 +3374,45 @@ export default function SessionClient() {
           </div>
         </OnImage>
       </div>
-      {/* Pinned above the viewport bottom on phone (Phase 6c, Commit 4) so the
-          primary "advance/log this set" action never scrolls out of reach.
-          Offset (not flush bottom-0) clears the fixed Menu pill that
-          AppMenuClient floats bottom-right on mobile (see globals.css
-          .ui-shell mobile padding-bottom comment). Static and inline again
-          at md+, where that cluster moves to the top and there's room in
-          flow. */}
-      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto w-full max-w-5xl px-4 md:static md:bottom-auto md:px-0">
+      {/* Desktop-only: on phone this same action lives in the consolidated
+          bottom bar below (Phase 6d, Commit 1). Desktop is out of scope for
+          this pass, so it keeps the Phase 6c layout unchanged. */}
+      <div className="mx-auto hidden w-full max-w-5xl md:block">
+        <button
+          type="button"
+          data-testid="session-next-desktop"
+          onClick={() => {
+            void handleNext();
+          }}
+          className={`${primaryActionBtn} h-14 w-full min-w-0 rounded-lg px-6 text-base font-semibold`}
+        >
+          {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next \u2192"}
+        </button>
+      </div>
+      <OnboardingInfoButton onboardingKey="session" hideTriggerBelowMd />
+
+      {/* Phase 6d, Commit 1 — the session screen's five previously-separate
+          fixed/floating bands (full header, big Next bar, floating Guide
+          button, floating Menu pill) collapse to one thin three-action bar
+          on phone: [i] [Next →] [Menu], all 44px min, equal width. This is
+          the single largest fixed-footprint reduction in this pass. Desktop
+          is unaffected (hidden here, shown via the block above + the
+          existing global Guide/Menu floats). */}
+      <div
+        className="fixed inset-x-0 bottom-0 z-30 flex items-stretch gap-1.5 border-t border-white/10 bg-slate-950/92 p-2 backdrop-blur-md md:hidden"
+        style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))" }}
+      >
+        <button
+          type="button"
+          aria-label="Open guide"
+          data-testid="session-bar-guide"
+          onClick={() => openOnboardingGuide("session")}
+          className="flex min-h-11 flex-1 items-center justify-center rounded-lg border border-slate-400/35 bg-slate-900/60 text-sm font-semibold text-slate-200"
+        >
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-slate-300/70 text-[11px]">
+            i
+          </span>
+        </button>
         <button
           type="button"
           data-testid="session-next"
@@ -3371,12 +3420,20 @@ export default function SessionClient() {
           onClick={() => {
             void handleNext();
           }}
-          className={`${primaryActionBtn} h-14 w-full min-w-0 rounded-lg px-6 text-base font-semibold shadow-lg shadow-black/30 md:shadow-none`}
+          className={`${primaryActionBtn} min-h-11 flex-1 rounded-lg text-sm font-semibold shadow-none`}
         >
-          {activeIndex === totalItems - 1 ? "Finish session \u2192" : "Next \u2192"}
+          {activeIndex === totalItems - 1 ? "Finish \u2192" : "Next \u2192"}
+        </button>
+        <button
+          type="button"
+          aria-label="Open menu"
+          data-testid="session-bar-menu"
+          onClick={() => openAppMenu()}
+          className="flex min-h-11 flex-1 items-center justify-center rounded-lg border border-slate-400/35 bg-slate-900/60 text-sm font-semibold text-slate-200"
+        >
+          Menu
         </button>
       </div>
-      <OnboardingInfoButton onboardingKey="session" />
     </BackgroundShell>
   );
 }

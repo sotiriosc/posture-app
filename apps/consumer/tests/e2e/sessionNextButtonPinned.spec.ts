@@ -2,16 +2,13 @@ import { test, expect } from "@playwright/test";
 import { e2eEmail, upsertE2eUser } from "../../e2e/fixtures";
 
 /**
- * Phase 6c, Commit 4 — mobile audit, session screen.
- *
- * The "Next →" / "Finish session →" button (the primary action that advances
- * — and effectively logs — the current exercise) was the last element in
- * normal document flow. On any exercise with more than a couple of cues or
- * sets it scrolled out of view, so reaching it required scrolling on every
- * single exercise of every session. It's now pinned above the viewport
- * bottom on phone widths. This locks two things: the button is visible
- * without any scrolling, and it does not overlap the fixed bottom-right Menu
- * pill that AppMenuClient floats on the same viewport.
+ * Phase 6c, Commit 4 — mobile audit, session screen. Superseded in shape (but
+ * not in intent) by Phase 6d, Commit 1: the "Next →" button that used to be
+ * pinned on its own above a separately-floating Menu pill now lives inside
+ * one consolidated three-action bottom bar ([i] [Next →] [Menu]). This still
+ * locks the two things that mattered originally: the advance action is
+ * visible without any scrolling, and it does not collide with the Menu
+ * control sharing the same bar.
  */
 test("session advance button is pinned and visible without scrolling on phone, and clears the Menu pill", async ({
   page,
