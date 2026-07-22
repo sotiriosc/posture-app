@@ -123,3 +123,55 @@ The tier ceiling resolved to 1 due to high pain severity. The extra slot governo
 - **SE-1:** The slot degradation contract is permanent. Zero silent drops is a hard invariant. Any future generation path that can produce an empty slot must implement the four-stage cascade.
 - **SE-2:** All fallback sorts within the Unique ID Guard must include a seeded tiebreaker (keyed on `context.selectionSeed`) to guarantee determinism under repeated calls.
 - **SE-3:** `ProgramDay.coachNotes` is the user-visible surface for traced drops. Keep messages jargon-free.
+
+---
+
+## Phase 3.0 — Feedback Propagation Fix (2026-07-21)
+
+### ED-3.0.1 — feedbackSummaryByExercise Hard-Block Audit
+
+**Context:** Two quarantined tests (`sessionFeedbackInfluence`, `sessionFeedbackSubstitution`)
+failed because the engine was selecting exercises with `pain === "severe"` OR
+`difficulty === "failed"` despite feedback data being present. Root-cause bisection showed
+that multiple candidate-iteration paths bypassed `feedbackSummaryByExercise` entirely.
+
+**Threshold ratified by Sotirios (2026-07-21):** An exercise is *hard-blocked* from
+selection when its OWN entry in `feedbackSummaryByExercise` has `pain === "severe"` OR
+`difficulty === "failed"`. Related exercises (swap options, history neighbours) are NOT
+hard-blocked; they receive existing score penalties via `getFeedbackSelectionScoreBonus`
+and `shouldAvoidFeedbackRiskCandidate`.
+
+---
+
+#### FIX-NOW sites (applied in this commit)
+
+| Function | File | Line (approx) | Why it mattered |
+|---|---|---|---|
+| `pickFirstEligibleId` | `program.ts` | ~28096 | Main initial-selection gateway — introduced `isDirectlyFeedbackBlocked` filter |
+| `findBestMainCandidateForRequiredPattern` | `program.ts` | ~4368 | Contract-repair candidate picker used by `repairDayToMeetSpec` |
+| `findReplacementExerciseForRule` | `program.ts` | ~2887 | `contract_repair` replacement, iterates ALL exercises with `rankSubstitutionCandidates` |
+| `ensureDayHasDumbbellMain` | `program.ts` | ~4895 | `day_intelligence_repair` — guarantees ≥1 dumbbell main; prefers `dumbbell-rows` for pull lane |
+| `findFinalRoleLegalityReplacement` | `program.ts` | ~19685 | `legality_repair` — integrity-pass replacement when an exercise's slot is illegal |
+| `pickFirstBackChestCandidateByIds` | `program.ts` | ~9721 | Back+Chest anchor / fallback selection; added `decisionTrace` param for caller-level skip tracing |
+| `repairBackChestMainIntelligence` | `program.ts` | ~12540 | Pre-populates `usedIds` + `feedbackRepairTrace` (→ `degradationNotes`) for all Back+Chest calls |
+| `pickDistinctReplacement` | `program.ts` | ~1952 | Uniqueness-swap path; has "last-resort relaxed pool" that previously ignored feedback |
+| `pickPaddingMain` (inside `applyFinalCountCompatibility`) | `program.ts` | ~2092 | Count-compatibility padding; could pad with a penalized exercise |
+
+**Trace mechanism:** The `repairBackChestMainIntelligence` function emits strings of the
+form `"skipped anchor candidate <id>: severe pain flag"` or `"skipped anchor candidate <id>:
+failure flag"` into `ProgramDay.degradationNotes` via the `feedbackRepairTrace` array.
+The `pickFirstBackChestCandidateByIds` function accepts an optional `decisionTrace` array
+and appends to it when a candidate is hard-blocked.
+
+---
+
+#### TICKET-FOR-LATER sites (logged, not fixed in this commit)
+
+| Function | File | Risk level | Reason deferred |
+|---|---|---|---|
+| `getBackChestEligibleAnchorCandidates` | `program.ts` | LOW | Returns raw candidates; callers filter by `usedIds` which is pre-populated with penalized exercises in `repairBackChestMainIntelligence`. Effectively guarded. Ticket: add direct guard in Phase 3W. |
+| `hasUnusedTrueHingeReplacementMemo` / `hasUnusedStrongPullReplacementMemo` / `hasUnusedTrueVerticalPushReplacementMemo` | `program.ts` | NONE | Boolean availability probes only — no exercise is selected, no entry is written to routine. |
+| `exercises.some()` calls in `hasEligibleFeedbackAlternative` | `program.ts` | NONE | Probe function — determines whether a penalty should apply, never selects an exercise. |
+| `lowerSlotPurityRescueIds` hardcoded arrays | `program.ts` | LOW | Only contains specific lower-body exercises (squat/hinge families); none are horizontal-pull penalized candidates. |
+| `applyFinalCountCompatibility` dedup inline `exercises.find` | `program.ts` | LOW | Fires only when a slot already contains a duplicate; with hard-blocks applied upstream the dedup path is unlikely to encounter a penalized exercise. Phase 3W. |
+

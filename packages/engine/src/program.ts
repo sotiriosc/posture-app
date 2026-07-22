@@ -1949,9 +1949,18 @@ const pickDistinctReplacement = (params: {
       )[0] ?? null;
   if (swapCandidate) return swapCandidate;
 
+  // Phase 3.0 fix: hard-block directly-penalized main exercises from uniqueness swaps.
+  const isDirectlyFeedbackBlockedForSection = (candidate: Exercise): boolean => {
+    if (item.section !== "main") return false;
+    if (!context?.feedbackSummaryByExercise.size) return false;
+    const summary = context.feedbackSummaryByExercise.get(candidate.id);
+    return Boolean(summary && (summary.pain === "severe" || summary.difficulty === "failed"));
+  };
+
   const pool = exercises.filter((candidate) => {
     if (candidate.id === current.id) return false;
     if (usedIds.has(candidate.id)) return false;
+    if (isDirectlyFeedbackBlockedForSection(candidate)) return false;
     if (!isDistinctReplacementEligible(candidate)) {
       return false;
     }
@@ -1972,6 +1981,7 @@ const pickDistinctReplacement = (params: {
   const relaxedPool = exercises.filter((candidate) => {
     if (candidate.id === current.id) return false;
     if (usedIds.has(candidate.id)) return false;
+    if (isDirectlyFeedbackBlockedForSection(candidate)) return false;
     if (!isDistinctReplacementEligible(candidate)) {
       return false;
     }
@@ -2092,6 +2102,13 @@ const applyFinalCountCompatibility = (params: {
     return exercises.find((exercise) => {
       if (usedIds.has(exercise.id)) return false;
       if (exercise.category !== "main") return false;
+      // Phase 3.0 fix: hard-block directly-penalized exercises from count-compatibility padding.
+      if (selectionContext.feedbackSummaryByExercise.size > 0) {
+        const summary = selectionContext.feedbackSummaryByExercise.get(exercise.id);
+        if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
+          return false;
+        }
+      }
       if (!matchesMainLanePattern(exercise, lane)) return false;
       if (
         !isExerciseEligibleForProgramContext({
@@ -2950,6 +2967,13 @@ const findReplacementExerciseForRule = (params: {
 
   const scoredCandidates = Array.from(candidateMap.values())
     .filter((candidate) => {
+      // Phase 3.0 fix: hard-block directly-penalized exercises from contract repair.
+      if (currentItem.section === "main" && selectionContext.feedbackSummaryByExercise.size > 0) {
+        const summary = selectionContext.feedbackSummaryByExercise.get(candidate.id);
+        if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
+          return false;
+        }
+      }
       if (
         requiredRule &&
         !matchesRule(candidate, requiredRule, currentItem.section)
@@ -4362,6 +4386,13 @@ const findBestMainCandidateForRequiredPattern = (params: {
       if (exercise.category !== "main") return false;
       // Contract repair never duplicates exercises inside a day.
       if (usedIds.has(exercise.id)) return false;
+      // Phase 3.0 fix: hard-block directly-penalized exercises from contract repair.
+      if (context.selectionContext.feedbackSummaryByExercise.size > 0) {
+        const summary = context.selectionContext.feedbackSummaryByExercise.get(exercise.id);
+        if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
+          return false;
+        }
+      }
       if (!matchesRule(exercise, requiredRule, "main")) return false;
       if (
         !isExerciseEligibleForProgramContext({
@@ -4940,6 +4971,13 @@ const ensureDayHasDumbbellMain = (params: {
           if (candidate.category !== "main") return false;
           if (!candidate.equipment.includes("dumbbells")) return false;
           if (usedWithoutCurrent.has(candidate.id)) return false;
+          // Phase 3.0 fix: hard-block directly-penalized exercises from dumbbell-main guarantee.
+          if (context.selectionContext.feedbackSummaryByExercise.size > 0) {
+            const summary = context.selectionContext.feedbackSummaryByExercise.get(candidate.id);
+            if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
+              return false;
+            }
+          }
           if (isShouldersArmsDayTitle(day.title)) {
             if (
               !matchesShouldersArmsMainSlotKind({
@@ -9705,6 +9743,8 @@ const pickFirstBackChestCandidateByIds = (params: {
   tierCeiling?: BackChestEquipmentTier;
   allowBodyweightFallback?: boolean;
   predicate?: (exercise: Exercise) => boolean;
+  /** Phase 3.0: optional sink for per-candidate skip traces (pain/difficulty blocks). */
+  decisionTrace?: string[];
 }): Exercise | null => {
   const {
     candidateIds,
@@ -9714,6 +9754,7 @@ const pickFirstBackChestCandidateByIds = (params: {
     tierCeiling,
     allowBodyweightFallback = false,
     predicate,
+    decisionTrace,
   } = params;
   const availableForBackChest = resolveBackChestMainAvailableSet(context.available);
   const hasLoad = context.selectionContext.capabilityMode === "hasLoad";
@@ -9722,6 +9763,16 @@ const pickFirstBackChestCandidateByIds = (params: {
     const exercise = exerciseById(id);
     if (!exercise) continue;
     if (usedIds.has(exercise.id)) continue;
+    // Phase 3.0 fix: hard-block directly-penalized exercises.
+    // Threshold: pain === "severe" OR difficulty === "failed".
+    if (section === "main" && context.selectionContext.feedbackSummaryByExercise.size > 0) {
+      const summary = context.selectionContext.feedbackSummaryByExercise.get(exercise.id);
+      if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
+        const reason = summary.pain === "severe" ? "severe pain flag" : "failure flag";
+        decisionTrace?.push(`skipped anchor candidate ${exercise.id}: ${reason}`);
+        continue;
+      }
+    }
     if (
       !isExerciseEligibleForProgramContext({
         exercise,
@@ -12542,6 +12593,21 @@ const repairBackChestMainIntelligence = (params: {
         .filter((exercise): exercise is Exercise => Boolean(exercise))
     : [];
   const usedIds = new Set<string>();
+
+  // Phase 3.0 fix: exclude feedback-penalized exercises from every selection
+  // and fallback path inside this repair function.  Pre-populating usedIds
+  // covers (a) pickFirstBackChestCandidateByIds, (b) fallbackCurrentEligible,
+  // and (c) the last-resort exercises-array scan — all three check usedIds.
+  // Ratified threshold (Sotirios 2026-07-21): pain === "severe" OR difficulty === "failed".
+  const feedbackRepairTrace: string[] = [];
+  for (const [exerciseId, summary] of context.selectionContext.feedbackSummaryByExercise) {
+    if (summary.pain === "severe" || summary.difficulty === "failed") {
+      const reason = summary.pain === "severe" ? "severe pain flag" : "failure flag";
+      usedIds.add(exerciseId);
+      feedbackRepairTrace.push(`skipped anchor candidate ${exerciseId}: ${reason}`);
+    }
+  }
+
   const repairedMainIds = mainSlotPlan.map((slot, slotIndex) => {
     const anchorRoleForSlot = resolveBackChestAnchorRoleForSlot(slot.slotKind, slot.lane);
     const intermediateFlyExpansionSlot = isBackChestIntermediateFlyExpansionSlotByIndex({
@@ -12618,6 +12684,7 @@ const repairBackChestMainIntelligence = (params: {
         context,
         tierCeiling: tierProfile.tierCeiling,
         allowBodyweightFallback: true,
+        decisionTrace: feedbackRepairTrace,
         predicate: (exercise) =>
           !isBackChestScapularAccessoryPullExercise(exercise) &&
           (hasVerticalPullSignature(exercise) ||
@@ -14024,7 +14091,9 @@ const repairBackChestMainIntelligence = (params: {
     return nextIds;
   })();
 
-  const degradationNotes: string[] = [];
+  // Seed with the feedback-skip trace collected above so every skipped
+  // penalized candidate is visible in the day's degradationNotes.
+  const degradationNotes: string[] = [...feedbackRepairTrace];
 
   const repairedMainIdsWithUniqueIdGuard = (() => {
     if (daysPerWeek !== 3) {
@@ -19664,6 +19733,14 @@ const findFinalRoleLegalityReplacement = (params: {
     .filter((candidate) => {
       if (candidate.id === current.exerciseId) return false;
       if (usedIds.has(candidate.id)) return false;
+      // Phase 3.0 fix: hard-block directly-penalized exercises from repair paths.
+      // Same threshold as pickFirstEligibleId: pain==="severe" OR difficulty==="failed".
+      if (section === "main" && context.selectionContext.feedbackSummaryByExercise.size > 0) {
+        const summary = context.selectionContext.feedbackSummaryByExercise.get(candidate.id);
+        if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
+          return false;
+        }
+      }
       if (
         !isExerciseEligibleForProgramContext({
           exercise: candidate,
@@ -28070,9 +28147,32 @@ const pickFirstEligibleId = (
     })
     .sort((left, right) => right.score - left.score);
 
+  // Phase 3.0 fix: exercises whose own ID is directly in the feedback map with
+  // pain==="severe" OR difficulty==="failed" are hard-blocked from selection.
+  // This is a DIRECT lookup (not via resolveExerciseHistoryIds) so that related
+  // exercises (e.g., swap options that share a history group) are NOT blocked —
+  // they are merely score-penalised by the existing getFeedbackSelectionScoreBonus.
+  // Ratified threshold (Sotirios 2026-07-21): pain === "severe" OR difficulty === "failed".
+  const isDirectlyFeedbackBlocked =
+    section === "main" && context.feedbackSummaryByExercise.size > 0
+      ? (exercise: Exercise): boolean => {
+          const summary = context.feedbackSummaryByExercise.get(exercise.id);
+          return Boolean(
+            summary && (summary.pain === "severe" || summary.difficulty === "failed")
+          );
+        }
+      : (_exercise: Exercise) => false;
+
+  // Unblocked pool: the hard-blocked exercises are held back unless no other
+  // candidates survive (they are re-admitted via feedbackFallbackEligible below).
+  const unblockedEligible = eligible.filter(
+    (entry) => !isDirectlyFeedbackBlocked(entry.exercise)
+  );
+  const poolForSplit = unblockedEligible.length > 0 ? unblockedEligible : eligible;
+
   const safeEligible =
     section === "main"
-      ? eligible.filter(
+      ? poolForSplit.filter(
           (entry) =>
             !shouldAvoidFeedbackRiskCandidate({
               exercise: entry.exercise,
@@ -28082,11 +28182,11 @@ const pickFirstEligibleId = (
               auditMeta,
             })
         )
-      : eligible;
+      : poolForSplit;
 
   const riskyEligible =
     section === "main"
-      ? eligible.filter((entry) =>
+      ? poolForSplit.filter((entry) =>
           shouldAvoidFeedbackRiskCandidate({
             exercise: entry.exercise,
             section,
@@ -28200,10 +28300,17 @@ const pickFirstEligibleId = (
           .sort((left, right) => right.score - left.score)
       : [];
 
+  // Choice pool priority (Phase 3.0):
+  //  1. safeEligible        — unblocked + no history-risk signal (best)
+  //  2. feedbackFallbackEligible — exercises outside the original candidates list
+  //  3. riskyEligible       — unblocked but history-tainted (still beats hard-blocked)
+  //  4. eligible            — last resort, includes hard-blocked exercises
   const choicePool = safeEligible.length
     ? safeEligible
     : feedbackFallbackEligible.length
     ? feedbackFallbackEligible
+    : riskyEligible.length
+    ? riskyEligible
     : eligible;
   const rankedChoicePool = [...choicePool].sort((left, right) => {
     return right.score - left.score;
