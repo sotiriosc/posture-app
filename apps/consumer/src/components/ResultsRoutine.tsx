@@ -18,12 +18,8 @@ import {
   normalizeEquipmentSelectionValues,
 } from "@/lib/equipment";
 import { usePhotoContext } from "@/components/PhotoContext";
-import {
-  type PoseAnalysis,
-} from "@/lib/poseAnalyzer";
-import {
-  type AssessmentReport,
-} from "@/lib/assessmentEngine";
+import type { PoseAnalysis } from "@/lib/poseAnalyzer";
+import type { AssessmentReport } from "@/lib/assessmentEngine";
 import Button from "@/components/ui/Button";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";

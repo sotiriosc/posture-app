@@ -228,18 +228,7 @@ function buildActiveTags(
       allFocusTags.add(tag);
     }
   }
-  // Also include tags referenced in sourceObservation traces.
-  const observationByTag: Record<string, string> = {};
-  for (const day of program.week ?? []) {
-    for (const item of day.routine ?? []) {
-      const obs = item.selectionDebug?.decisionTrace?.sourceObservation;
-      if (obs && item.selectionDebug?.decisionTrace) {
-        // Tag comes from the routine item's focus tags, not easily extractable here.
-        // We'll use the baseline assessment observations as the source of truth.
-      }
-    }
-  }
-  // Use assessment history to find active tags (not retired).
+  // Also include tags referenced in sourceObservation traces (via baseline assessment).
   const baselineSnap = assessmentHistory?.find((s) => s.status === "accepted");
   if (!baselineSnap && allFocusTags.size === 0) return [];
   const latestSnap = assessmentHistory?.filter((s) => s.status !== "insufficient_confidence").at(-1);

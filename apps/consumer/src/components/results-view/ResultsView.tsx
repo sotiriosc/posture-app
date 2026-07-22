@@ -5,14 +5,14 @@ import Link from "next/link";
 import { init, listAllPrograms, listExerciseLogsBySession, listSessions } from "@/lib/logStore";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import { projectResults } from "@/lib/results/resultsProjection";
-import type { ExerciseLog, Program, SessionRecord } from "@/lib/types";
+import type { ExerciseLog, Program } from "@/lib/types";
 import type { ResultsProjection } from "@/lib/results/resultsProjection";
 
 // ---------------------------------------------------------------------------
 // Sub-section components — quiet design language per bloom-plan §Phase 5
 // ---------------------------------------------------------------------------
 
-function HeadlineMetric({ projection, program }: { projection: ResultsProjection; program: Program }) {
+function HeadlineMetric({ projection }: { projection: ResultsProjection }) {
   const rungsCount = projection.laddersClimbed.length;
   const patternsCount = new Set(projection.laddersClimbed.map((c) => c.pattern)).size;
   const sessions = projection.consistency.sessionsCompleted;
@@ -278,7 +278,6 @@ function ProvenanceFooter({ footer }: { footer: ResultsProjection["provenanceFoo
 export default function ResultsView() {
   const [program, setProgram] = useState<Program | null>(null);
   const [logs, setLogs] = useState<ExerciseLog[]>([]);
-  const [sessions, setSessions] = useState<SessionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [retestDismissed, setRetestDismissed] = useState<Set<string>>(new Set());
 
@@ -299,7 +298,6 @@ export default function ResultsView() {
         }
         if (!cancelled) {
           setLogs(allLogs);
-          setSessions(sessionList);
         }
       }
       if (!cancelled) setLoading(false);
@@ -361,7 +359,7 @@ export default function ResultsView() {
         </nav>
 
         {/* Headline metric */}
-        <HeadlineMetric projection={projection} program={program} />
+        <HeadlineMetric projection={projection} />
 
         {/* Sacrifice retest queue — shown above main content when eligible */}
         <SacrificeRetestSection

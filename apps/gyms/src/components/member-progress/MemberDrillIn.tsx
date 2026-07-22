@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { projectResults } from "@praxis/engine/results/resultsProjection";
 import { init, listAllPrograms, listExerciseLogsBySession, listSessions } from "@/lib/logStore";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
