@@ -184,6 +184,10 @@ export const assembleProgram = (params: {
   ladderState?: import("@/lib/types").LadderState;
   /** Phase 3.5: computed phase gating state to persist on the Program. */
   phaseTransitionState?: import("@/lib/types").PhaseTransitionState;
+  /** Phase 4: assessment snapshots to persist on the Program. */
+  assessmentHistory?: import("@/lib/types").AssessmentSnapshot[];
+  /** Phase 4: per-tag lifecycle state to persist on the Program. */
+  focusTagLifecycle?: Record<string, import("@/lib/types").FocusTagLifecycleState>;
 }) => {
   const { phaseMeta, phase } = buildProgramPhaseMetadata({
     phaseIndex: params.phaseIndex,
@@ -214,6 +218,8 @@ export const assembleProgram = (params: {
     week: params.week,
     ...(params.ladderState ? { ladderState: params.ladderState } : {}),
     ...(params.phaseTransitionState ? { phaseTransitionState: params.phaseTransitionState } : {}),
+    ...(params.assessmentHistory ? { assessmentHistory: params.assessmentHistory } : {}),
+    ...(params.focusTagLifecycle ? { focusTagLifecycle: params.focusTagLifecycle } : {}),
     source: params.source ?? "local",
     deletedAt: params.deletedAt ?? null,
   } satisfies Program;

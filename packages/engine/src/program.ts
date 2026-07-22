@@ -359,6 +359,11 @@ type SelectionContext = {
    * Populated by buildSelectionContext from LogPrefs.blockedExerciseIds.
    */
   blockedExerciseIds?: Set<string>;
+  /**
+   * Phase 4 — Observation reason strings from derivePoseFocus, keyed by
+   * normalised focus tag.  Used to write sourceObservation into decisionTrace.
+   */
+  poseFocusReasons?: Record<string, string>;
 };
 
 const normalizeTagToken = (value: string) =>
@@ -1040,6 +1045,14 @@ const buildSelectionContext = (
     poseFocusTags.add(normalizeTagToken(tag));
   });
 
+  // Phase 4 — build normalized reasons map for sourceObservation trace.
+  const poseFocusReasons: Record<string, string> = {};
+  if (poseFocus.status === "ok") {
+    Object.entries(poseFocus.reasons).forEach(([tag, reason]) => {
+      poseFocusReasons[normalizeTagToken(tag)] = reason;
+    });
+  }
+
   const phaseIndex = clampPhaseIndexToSupportedRange(options?.phaseIndex ?? 1);
   const phaseName = options?.phaseName ?? `Phase ${phaseIndex}`;
   const phaseStage = phaseStageFromName(phaseName, phaseIndex);
@@ -1111,6 +1124,7 @@ const buildSelectionContext = (
     variationState: options?.variationState ?? null,
     ladderState: options?.ladderState,
     blockedExerciseIds: options?.blockedExerciseIds,
+    poseFocusReasons: Object.keys(poseFocusReasons).length ? poseFocusReasons : undefined,
   };
 };
 
@@ -24832,6 +24846,8 @@ const isChestDominantHorizontalPush = (exercise: Exercise) => {
 type ScoreWithReasons = {
   score: number;
   reasons: string[];
+  /** Phase 4: verbatim observation reason for the pose-focus tag that drove this score. */
+  sourceObservation?: string;
 };
 
 type CapabilitySlotBonus = {
@@ -24842,6 +24858,8 @@ type CapabilitySlotBonus = {
 type PoseFocusScoreBonus = {
   bonus: number;
   reasons: string[];
+  /** Phase 4: verbatim reason string from derivePoseFocus for the first matched tag. */
+  sourceObservation?: string;
 };
 
 const isBandEquippedExercise = (exercise: Exercise) =>
@@ -25704,11 +25722,18 @@ const getPoseFocusScoreBonus = (params: {
   }
 
   const bonus = section === "main" ? 0.5 : 1;
+  // Phase 4 — sourceObservation: use reason from the first matched pose tag.
+  const firstMatchedTag = matchedPoseTags[0];
+  const sourceObservation = firstMatchedTag && context.poseFocusReasons
+    ? context.poseFocusReasons[firstMatchedTag]
+    : undefined;
+
   return {
     bonus,
     reasons: [
       `+${bonus.toFixed(1)} pose-focus tag match (${matchedPoseTags.join(", ")})`,
     ],
+    sourceObservation,
   };
 };
 
@@ -27902,6 +27927,8 @@ const scoreExerciseForContextDetailed = (
   });
   score += poseFocusBonus.bonus;
   reasons.push(...poseFocusBonus.reasons);
+  // Phase 4: capture for sourceObservation in return value.
+  const poseFocusSourceObservation = poseFocusBonus.sourceObservation;
 
   if (contraindicationHitsPainArea(exercise.contraindications, context.painAreas)) {
     score -= 8;
@@ -28008,7 +28035,7 @@ const scoreExerciseForContextDetailed = (
     reasons.push(...higherFrequencyCoachScore.reasons);
   }
 
-  return { score, reasons };
+  return { score, reasons, sourceObservation: poseFocusSourceObservation };
 };
 
 const scoreExerciseForContext = (
@@ -33762,6 +33789,14 @@ export const generateWeeklyProgram = (
     rungsClimbedSincePhaseStart?: Record<string, number>;
     deferredExerciseCount?: number;
     activationSacrificeQueueCleared?: boolean;
+    /**
+     * Phase 4 — Assessment history inputs.
+     * When provided, the assessment history is persisted on the returned Program.
+     * assessmentHistory: prior snapshots (new snapshot is appended by caller).
+     * focusTagLifecycle: prior per-tag lifecycle state.
+     */
+    assessmentHistory?: import("@/lib/types").AssessmentSnapshot[];
+    focusTagLifecycle?: Record<string, import("@/lib/types").FocusTagLifecycleState>;
   }
 ): Program => {
   const { resolvedFeedbackSummaryByExercise: rawFeedbackSummary, recentlyUsedExerciseIds } =
@@ -34099,6 +34134,36 @@ export const generateWeeklyProgram = (
     commitVariationSnapshot: commitProgramVariationSnapshot,
   });
 
+  // Phase 4 — Because → Therefore: annotate biased exercises with sourceObservation.
+  const poseFocusReasons = weeklyRuntimeContext.selectionContext.poseFocusReasons;
+  const poseFocusTags = weeklyRuntimeContext.selectionContext.poseFocusTags;
+  const annotatedWeek: typeof tracedStructuredPrepWeek =
+    poseFocusReasons && Object.keys(poseFocusReasons).length
+      ? tracedStructuredPrepWeek.map((day) => ({
+          ...day,
+          routine: day.routine.map((item) => {
+            if (item.selectionDebug?.decisionTrace?.sourceObservation) return item;
+            const exerciseFocusTags = new Set(
+              (exerciseById(item.exerciseId)?.focusTags ?? []).map(normalizeTagToken)
+            );
+            const matchedTag = Array.from(poseFocusTags).find((poseTag) => {
+              if (exerciseFocusTags.has(poseTag)) return true;
+              const aliases = POSE_FOCUS_TAG_ALIASES[poseTag] ?? [poseTag];
+              return aliases.some((alias) => exerciseFocusTags.has(normalizeTagToken(alias)));
+            });
+            if (!matchedTag) return item;
+            const reason = poseFocusReasons[matchedTag];
+            if (!reason) return item;
+            return {
+              ...item,
+              selectionDebug: withDecisionTrace(item.selectionDebug, {
+                sourceObservation: reason,
+              }),
+            };
+          }),
+        }))
+      : tracedStructuredPrepWeek;
+
   return finalizeWeeklyProgramResult({
     pushWarnings: pushProgramConstraintWarnings,
     programId,
@@ -34111,7 +34176,7 @@ export const generateWeeklyProgram = (
     totalWeekIndex: weeklyRuntimeContext.totalWeekIndex,
     cycleIndex: weeklyRuntimeContext.cycleIndex,
     nextWeekPlan: weeklyRuntimeContext.nextWeekPlan,
-    week: tracedStructuredPrepWeek,
+    week: annotatedWeek,
     questionnaire: data,
     trainingState: weeklyRuntimeContext.trainingState,
     consistencyRate: 0,
@@ -34151,6 +34216,9 @@ export const generateWeeklyProgram = (
         priorState: options?.priorPhaseTransitionState,
       });
     })(),
+    // Phase 4 — persist assessment history and tag lifecycle state.
+    assessmentHistory: options?.assessmentHistory,
+    focusTagLifecycle: options?.focusTagLifecycle,
   });
 };
 

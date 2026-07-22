@@ -37,6 +37,24 @@ export default function AssessmentPage() {
               </div>
             ))}
           </div>
+
+          {/* Phase 4 — Capture quality protocol card */}
+          <div className="mt-2 rounded-lg border border-slate-400/18 bg-slate-950/42 px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Photo protocol
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-200">
+              <li>• Phone at chest height — not overhead, not low.</li>
+              <li>• Stand ~8 feet from wall or camera.</li>
+              <li>• Plain background if possible.</li>
+              <li>• Neutral clothing — avoid baggy tops that obscure shoulders and hips.</li>
+              <li>• Use timer capture, not selfie mode.</li>
+            </ul>
+            <p className="mt-2 text-xs text-slate-400">
+              <span className="font-semibold text-slate-300">Side view required</span> for forward-head and torso-lean measurements.
+              Skipping the side photo disables those observations.
+            </p>
+          </div>
         </OnImage>
 
         <PhotoUploader />

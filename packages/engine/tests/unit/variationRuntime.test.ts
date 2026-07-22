@@ -16,6 +16,8 @@ describe("variation runtime helpers", () => {
         resolvePoseAnalysisFromSources: ({ poseAnalysis }) => poseAnalysis,
         derivePoseFocus: () => ({
           focusTags: ["Thoracic Extension", "scapular-control", "Forward Head"],
+          reasons: {},
+          status: "ok" as const,
         }),
         normalizeTagToken: (value) =>
           value
