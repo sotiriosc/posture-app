@@ -541,6 +541,12 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   decided by Sotirios. The model compiles; you architect. Same division as Horus.
 - Every falsified approach gets a line in the relevant decisions log. Nothing silently
   disappears.
+- **Import type safety rule (ED-5.0, 2026-07-22):** `import type { ... }` is for types ONLY.
+  Runtime values (functions, constants, classes) must appear in a separate plain `import { ... }`.
+  Enforced by `@typescript-eslint/no-import-type-side-effects` + `@typescript-eslint/consistent-type-imports`
+  in `eslint.config.mjs`. Violating this causes a `ReferenceError` at runtime because TypeScript
+  strips `import type` entirely at emit. This rule was added after the Phase 4 regression where
+  `shouldPromptRetest` (a function) was placed inside `import type` in `ResultsRoutine.tsx`.
 - **Branch-creation rule (2026-07-12):** Every phase branch must be cut from `origin/main`
   at the exact merge-commit SHA logged in the work order (e.g. `git checkout -b phase-Xc-foo
   ec9a621`). Before opening a PR the branch must be rebased onto that same SHA so the

@@ -86,6 +86,12 @@ export type LadderState = {
    * was last surfaced per pattern.  Prevents re-nagging within the same phase.
    */
   maintainPromptShownAtPhase?: Record<string, number>;
+  /**
+   * Phase 5 — Append-only log of every rung advancement.
+   * Written by computeLadderState when decision.kind === "advance".
+   * Used by resultsProjection to build the laddersClimbed field.
+   */
+  rungAdvancementHistory?: RungAdvancementRecord[];
 };
 
 export type SessionFeedback = {
@@ -482,8 +488,55 @@ export type Program = {
    * Undefined on programs generated before Phase 4.
    */
   focusTagLifecycle?: Record<string, FocusTagLifecycleState>;
+  /**
+   * Phase 5 — Ordered log of every phase transition earned.
+   * Append-only.  Written by buildPhaseTransitionState when verdict === "advance".
+   * Used by resultsProjection to build the phaseHistory field.
+   * Undefined on programs generated before Phase 5.
+   */
+  phaseHistory?: PhaseTransitionRecord[];
   source: "local" | "cloud";
   deletedAt: string | null;
+};
+
+// ---------------------------------------------------------------------------
+// Phase 5 — Rung advancement history (laddersClimbed projection)
+// ---------------------------------------------------------------------------
+
+/**
+ * One rung advancement event, written by computeLadderState when
+ * decision.kind === "advance".  Append-only on LadderState.
+ */
+export type RungAdvancementRecord = {
+  pattern: string;
+  fromExerciseId: string;
+  fromDifficulty: number;
+  toExerciseId: string;
+  toDifficulty: number;
+  /** Session count at the time of advancement (from sessionCount param). */
+  atSessionCount: number;
+  /** Phase index at the time of advancement. */
+  atPhase: number;
+  /** Human-readable criteria trace that earned this advance. */
+  trace: string;
+};
+
+// ---------------------------------------------------------------------------
+// Phase 5 — Phase transition history (phaseHistory projection)
+// ---------------------------------------------------------------------------
+
+/**
+ * One completed phase, appended to Program.phaseHistory whenever a
+ * phase transition is recorded.  Closed when the next phase begins.
+ */
+export type PhaseTransitionRecord = {
+  phase: "activation" | "skill" | "growth";
+  enteredAtSessionCount: number;
+  /** Undefined if the phase is still current (open end). */
+  exitedAtSessionCount?: number;
+  /** Criteria verdict trace at the moment of exit. */
+  criteriaAtExit: string[];
+  trace: string;
 };
 
 // ---------------------------------------------------------------------------
