@@ -1569,7 +1569,7 @@ export default function SessionClient() {
     const phaseIndex = programProgress?.phaseIndex ?? program?.phaseIndex ?? 0;
     const phaseLabel: "activation" | "skill" | "growth" =
       phaseIndex === 2 ? "growth" : phaseIndex === 1 ? "skill" : "activation";
-    const sessionCount = programProgress?.totalSessionsCompleted ?? 0;
+    const sessionCount = programProgress?.completedDayIndices?.length ?? 0;
 
     const currentPrefs = await loadPrefs();
     const nextPrefs: LogPrefs = {
