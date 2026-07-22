@@ -4,6 +4,7 @@ import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import DeviceQaPanel from "@/components/dev/DeviceQaPanel";
+import TelemetryPanel from "@/components/dev/TelemetryPanel";
 
 export default function DevQaPage() {
   if (process.env.NODE_ENV !== "development") {
@@ -32,6 +33,7 @@ export default function DevQaPage() {
         </OnImage>
 
         <DeviceQaPanel />
+        <TelemetryPanel />
       </div>
     </BackgroundShell>
   );

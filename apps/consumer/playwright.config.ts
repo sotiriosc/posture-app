@@ -21,6 +21,8 @@ export default defineConfig({
       AUTH_USER_PASSWORD:
         process.env.PLAYWRIGHT_AUTH_USER_PASSWORD ?? "playwright-password",
       AUTH_USER_PLAN: process.env.PLAYWRIGHT_AUTH_USER_PLAN ?? "free",
+      ADMIN_ACCESS_KEY:
+        process.env.PLAYWRIGHT_ADMIN_ACCESS_KEY ?? "playwright-admin-key",
       USER_STORE_DRIVER: "file",
       DATABASE_URL: "",
       STRIPE_SECRET_KEY: "",

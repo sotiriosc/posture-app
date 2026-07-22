@@ -8,29 +8,32 @@ import type {
 
 type PracticeMode = SessionPracticeOption["mode"];
 
+/**
+ * Phase 6b, Commit 4 — session options consolidated 5 → 3.
+ *
+ * Canonical set:
+ *   full     — the whole session as saved (absorbs legacy "full" + "steady")
+ *   lighter  — same movement patterns, reduced work (absorbs "reduced" + "simplified")
+ *   recovery — mobility, activation, and cooldown only (unchanged behaviour)
+ *
+ * Legacy stored values are migrated on read via normalizePracticeMode, so no
+ * one-time data migration script is needed.
+ */
 const optionCopy: Record<
   PracticeMode,
   Pick<SessionPracticeOption, "label" | "description">
 > = {
   full: {
-    label: "Full Session",
-    description: "Use the saved plan exactly as written for today.",
+    label: "Full",
+    description: "The whole session as planned.",
   },
-  steady: {
-    label: "Steady Session",
-    description: "Keep the saved session intact and hold dose steady.",
-  },
-  reduced: {
-    label: "Reduced Session",
-    description: "Keep the key pattern work while trimming total exposure.",
-  },
-  simplified: {
-    label: "Simplified Session",
-    description: "Favor easier pattern practice and fewer main items.",
+  lighter: {
+    label: "Lighter",
+    description: "Same movements, less work.",
   },
   recovery: {
-    label: "Recovery Session",
-    description: "Use low-intensity mobility, activation, and cooldown work.",
+    label: "Recovery",
+    description: "Mobility and easy movement only.",
   },
 };
 
@@ -39,10 +42,46 @@ const recommendationModeToPracticeMode: Record<
   PracticeMode
 > = {
   normal: "full",
-  repeat: "steady",
-  reduce: "reduced",
-  simplify: "simplified",
+  repeat: "full",
+  reduce: "lighter",
+  simplify: "lighter",
   recover: "recovery",
+};
+
+/**
+ * Migrate any stored/legacy practice-mode value to the canonical three. Applied
+ * at every read entry point (option selection, note formatting) so previously
+ * saved sessions carrying "steady"/"reduced"/"simplified" resolve cleanly.
+ */
+export const normalizePracticeMode = (mode: string | null | undefined): PracticeMode => {
+  switch (mode) {
+    case "steady":
+    case "full":
+      return "full";
+    case "reduced":
+    case "simplified":
+    case "lighter":
+      return "lighter";
+    case "recovery":
+      return "recovery";
+    default:
+      return "full";
+  }
+};
+
+const parseSetCount = (sets: ProgramRoutineItem["sets"]): number => {
+  const parsed = Number.parseInt(String(sets ?? ""), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+};
+
+/**
+ * "Lighter" keeps the movement pattern but trims one working set (never below
+ * one). Returns a shallow clone so the saved routine is never mutated.
+ */
+const toLighterMain = (item: ProgramRoutineItem): ProgramRoutineItem => {
+  const sets = parseSetCount(item.sets);
+  if (sets <= 1) return item;
+  return { ...item, sets: String(sets - 1) };
 };
 
 const sectionOf = (item: ProgramRoutineItem) => item.section ?? "main";
@@ -77,19 +116,6 @@ const isCoreOrMobility = (item: ProgramRoutineItem) => {
   );
 };
 
-const isSimplerMain = (item: ProgramRoutineItem) => {
-  if (!isMain(item)) return false;
-  const exercise = exerciseById(item.exerciseId);
-  if (item.loadType !== "weighted") return true;
-  if (exercise?.movementIntensity === "pattern") return true;
-  if (exercise?.difficulty !== undefined && exercise.difficulty <= 2) return true;
-  if (exercise?.difficultyTier === "easy") return true;
-  if (item.prescription?.targetRPE !== undefined && item.prescription.targetRPE <= 6) {
-    return true;
-  }
-  return Boolean(item.prescription?.regressionRule);
-};
-
 const appendUnique = (
   target: ProgramRoutineItem[],
   items: ProgramRoutineItem[],
@@ -104,10 +130,11 @@ const appendUnique = (
 
 export const selectSessionPracticeItems = (
   day: ProgramDay,
-  mode: PracticeMode
+  modeInput: PracticeMode | string
 ): ProgramRoutineItem[] => {
+  const mode = normalizePracticeMode(modeInput);
   const routine = day.routine;
-  if (mode === "full" || mode === "steady") return [...routine];
+  if (mode === "full") return [...routine];
 
   const selected: ProgramRoutineItem[] = [];
   const seen = new Set<ProgramRoutineItem>();
@@ -124,38 +151,16 @@ export const selectSessionPracticeItems = (
 
   appendUnique(selected, warmupCorrective, seen);
 
-  if (mode === "reduced") {
-    appendUnique(selected, mainItems.slice(0, 2), seen);
-    appendUnique(
-      selected,
-      (cooldownItems.length ? cooldownItems : coreOrMobilitySupport).slice(0, 1),
-      seen
-    );
+  if (mode === "lighter") {
+    // Same movement patterns as the full session, but one less working set per
+    // main slot (cloned, never mutating the saved routine).
+    mainItems.forEach((item) => selected.push(toLighterMain(item)));
+    appendUnique(selected, cooldownItems, seen);
     return selected;
   }
 
-  if (mode === "simplified") {
-    const simplerMains = mainItems.filter(isSimplerMain);
-    appendUnique(
-      selected,
-      (simplerMains.length ? simplerMains : mainItems).slice(0, 2),
-      seen
-    );
-    appendUnique(selected, coreOrMobilitySupport.slice(0, 1), seen);
-    appendUnique(selected, cooldownItems.slice(0, 1), seen);
-    return selected;
-  }
-
-  appendUnique(
-    selected,
-    routine.filter(
-      (item) =>
-        !isMain(item) &&
-        !isWarmupOrCorrective(item) &&
-        (isCooldown(item) || isCoreOrMobility(item))
-    ),
-    seen
-  );
+  // recovery — mobility, activation, and cooldown only; no main strength work.
+  appendUnique(selected, coreOrMobilitySupport, seen);
   appendUnique(selected, cooldownItems, seen);
   return selected;
 };
@@ -172,13 +177,7 @@ export const deriveSessionPracticeOptions = (
   recommendation?: NextSessionRecommendation | null
 ): SessionPracticeOption[] => {
   const recommendedMode = recommendedPracticeModeForRecommendation(recommendation);
-  const modes: PracticeMode[] = [
-    "full",
-    "steady",
-    "reduced",
-    "simplified",
-    "recovery",
-  ];
+  const modes: PracticeMode[] = ["full", "lighter", "recovery"];
 
   return modes
     .filter((mode) => {
@@ -199,9 +198,8 @@ export const formatPracticeModeSessionNote = (
   option: SessionPracticeOption | null | undefined
 ) => {
   if (!option) return null;
-  if (option.mode === "full") return "Using the full saved session.";
-  if (option.mode === "steady") return "Holding today's session steady.";
-  if (option.mode === "reduced") return "Using a reduced session view today.";
-  if (option.mode === "simplified") return "Using a simplified session view today.";
+  const mode = normalizePracticeMode(option.mode);
+  if (mode === "full") return "Using the full saved session.";
+  if (mode === "lighter") return "Using a lighter version of today's session.";
   return "Using a recovery-oriented session view today.";
 };

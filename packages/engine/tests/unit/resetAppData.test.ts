@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { resetAllAppData, resetAppDataKeys } from "@/lib/resetAppData";
+import {
+  eraseAllLocalData,
+  resetAllAppData,
+  resetAppDataKeys,
+} from "@/lib/resetAppData";
 
 describe("reset app data", () => {
   afterEach(() => {
@@ -46,6 +50,50 @@ describe("reset app data", () => {
   test("published reset key list includes photos", () => {
     expect(resetAppDataKeys().indexedDB).toEqual(
       expect.arrayContaining(["bodycoach-logs", "bodycoach-drafts", "bodycoach-photos"])
+    );
+  });
+
+  test("erase-all-local-data enumerates every database and clears all storage", async () => {
+    const deletedDatabases: string[] = [];
+    let cleared = false;
+
+    vi.stubGlobal("window", {});
+    vi.stubGlobal("localStorage", {
+      length: 5,
+      key: vi.fn(),
+      getItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(() => {
+        cleared = true;
+      }),
+    });
+    vi.stubGlobal("sessionStorage", { clear: vi.fn() });
+    vi.stubGlobal("indexedDB", {
+      // A stray database not in the hard-coded allowlist — the full wipe must
+      // still delete it (this is the leak the fixed list used to miss).
+      databases: vi.fn(async () => [
+        { name: "bodycoach-logs" },
+        { name: "praxis-experimental-store" },
+      ]),
+      deleteDatabase: vi.fn((name: string) => {
+        deletedDatabases.push(name);
+        const request = {} as IDBOpenDBRequest;
+        queueMicrotask(() => request.onsuccess?.({} as Event));
+        return request;
+      }),
+    });
+
+    await eraseAllLocalData();
+
+    expect(cleared).toBe(true);
+    // Both the known and the enumerated-only database are deleted.
+    expect(deletedDatabases).toEqual(
+      expect.arrayContaining([
+        "bodycoach-logs",
+        "bodycoach-drafts",
+        "bodycoach-photos",
+        "praxis-experimental-store",
+      ])
     );
   });
 });

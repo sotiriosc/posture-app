@@ -68,7 +68,7 @@ export const createStripeCheckoutSession = async (params: {
     mode: "subscription",
     "line_items[0][price]": priceId,
     "line_items[0][quantity]": "1",
-    success_url: `${appUrl}/results?billing=success`,
+    success_url: `${appUrl}/api/billing/return?billing=success`,
     cancel_url: `${appUrl}/results?billing=cancel`,
     customer_email: params.email,
     client_reference_id: params.userId,

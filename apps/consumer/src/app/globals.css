@@ -373,6 +373,18 @@ textarea {
   }
 }
 
+/*
+ * The fixed control cluster (Log in/out, plan chip, Menu) sits bottom-right on
+ * mobile and top-right on md+. Mobile reserves bottom room above; md+ must
+ * reserve top room so page-heading actions (Edit profile, Back, etc.) never sit
+ * under the cluster. Phase 6b, Commit 3.
+ */
+@media (min-width: 768px) {
+  body .ui-shell {
+    padding-top: 3.75rem;
+  }
+}
+
 .ui-chip {
   border-radius: var(--radius-pill);
   border: 1px solid var(--border-soft);

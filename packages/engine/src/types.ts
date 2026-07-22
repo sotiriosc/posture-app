@@ -139,7 +139,7 @@ export type NextSessionRecommendation = {
 };
 
 export type SessionPracticeOption = {
-  mode: "full" | "steady" | "reduced" | "simplified" | "recovery";
+  mode: "full" | "lighter" | "recovery";
   label: string;
   description: string;
   isRecommended?: boolean;
