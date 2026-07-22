@@ -1,4 +1,5 @@
 import type {
+  ExerciseFeedbackSummary,
   ExerciseLog,
   LogPrefs,
   PainLevel,
@@ -6,6 +7,8 @@ import type {
   ProgramProgress,
   SessionRecord,
 } from "@/lib/types";
+// ExerciseFeedbackSummary is re-exported from @/lib/types (canonical location).
+export type { ExerciseFeedbackSummary };
 import { resolveExerciseHistoryIds } from "@/lib/exercises";
 import {
   loadTrainingSnapshotWithStatus,
@@ -38,21 +41,6 @@ let serverHydrationPromise: Promise<void> | null = null;
 let lastServerHydratedAt = 0;
 const SERVER_HYDRATION_TTL_MS = 12_000;
 
-export type ExerciseFeedbackSummary = {
-  exerciseId: string;
-  pain: "none" | "mild" | "moderate" | "severe";
-  difficulty: "easy" | "normal" | "hard" | "failed";
-  completionRate: number;
-  /**
-   * Phase 3.2: set exclusively by user response to the Sacrifice/Test/Modify
-   * next-session prompt.  When true, the engine hard-blocks this exercise from
-   * every repair-insertion path.  At initial selection the exercise is
-   * re-scored (heavy penalty) but never silently dropped without user consent.
-   * Until Phase 3.2 ships, callers must set this flag explicitly in fixtures to
-   * trigger the hard-block in tests.
-   */
-  deferred?: boolean;
-};
 
 const painRank: Record<ExerciseFeedbackSummary["pain"], number> = {
   none: 0,

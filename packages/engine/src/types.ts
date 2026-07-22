@@ -2,7 +2,7 @@ import type { WarmupBlock } from "@/lib/program/warmupLibrary";
 
 /**
  * Aggregated per-exercise feedback summary computed from recent ExerciseLogs.
- * Defined in logStore.ts; re-exported here as a first-class public type.
+ * Canonical location is types.ts (promoted from logStore.ts in Phase 3 hygiene).
  * Phase 3.0-refinement (ED-3.0.2): deferred flag is set by user response to
  * the Phase 3.2 Sacrifice/Test/Modify prompt — never set automatically.
  */
@@ -11,6 +11,14 @@ export type ExerciseFeedbackSummary = {
   pain: "none" | "mild" | "moderate" | "severe";
   difficulty: "easy" | "normal" | "hard" | "failed";
   completionRate: number;
+  /**
+   * Phase 3.2: set exclusively by user response to the Sacrifice/Test/Modify
+   * next-session prompt.  When true, the engine hard-blocks this exercise from
+   * every repair-insertion path.  At initial selection the exercise is
+   * re-scored (heavy penalty) but never silently dropped without user consent.
+   * Until Phase 3.2 ships, callers must set this flag explicitly in fixtures to
+   * trigger the hard-block in tests.
+   */
   deferred?: boolean;
 };
 
