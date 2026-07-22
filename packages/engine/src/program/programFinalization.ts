@@ -56,6 +56,8 @@ export const finalizeWeeklyProgramResult = (params: {
   templateVersion?: number;
   /** Phase 3: computed ladder state to store in the generated Program. */
   ladderState?: import("@/lib/types").LadderState;
+  /** Phase 3.5: computed phase gating state to store in the generated Program. */
+  phaseTransitionState?: import("@/lib/types").PhaseTransitionState;
 }) => {
   forwardConstraintWarnings({
     programId: params.programId,
@@ -95,6 +97,7 @@ export const finalizeWeeklyProgramResult = (params: {
     intelligence,
     templateVersion: params.templateVersion,
     ladderState: params.ladderState,
+    phaseTransitionState: params.phaseTransitionState,
   });
 };
 

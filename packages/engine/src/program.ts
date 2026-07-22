@@ -133,6 +133,11 @@ import {
   evaluateNextPhaseProgression,
 } from "@/lib/program/progressionTransition";
 import {
+  computeReadinessVerdict,
+  buildPhaseTransitionState,
+} from "@/lib/program/phaseGatingEvaluator";
+import {
+
   get3DayBackChestVerticalFallbackIds,
   get3DayMainLanePlan,
   get3DayTemplateCounts,
@@ -33739,6 +33744,24 @@ export const generateWeeklyProgram = (
      * repair-path guards automatically block them.
      */
     blockedExerciseIds?: LogPrefs["blockedExerciseIds"];
+    /**
+     * Phase 3.5 — Phase Gating inputs.
+     * When provided, the evaluator runs at program generation time and writes
+     * phaseTransitionState into the returned Program.
+     *
+     * sessionsInPhase: total sessions completed in the current phase so far.
+     * phaseSessionSnapshots: lightweight per-session summaries (chronological).
+     * priorPhaseTransitionState: prior state to preserve eligibleAt/unlockedAt.
+     * rungsClimbedSincePhaseStart: per-pattern rung climb counts from phase start.
+     * deferredExerciseCount: count of exercises currently in deferred=true.
+     * activationSacrificeQueueCleared: whether activation sacrifice queue is clear.
+     */
+    sessionsInPhase?: number;
+    phaseSessionSnapshots?: import("@/lib/program/phaseGatingEvaluator").SessionSnapshot[];
+    priorPhaseTransitionState?: import("@/lib/types").PhaseTransitionState;
+    rungsClimbedSincePhaseStart?: Record<string, number>;
+    deferredExerciseCount?: number;
+    activationSacrificeQueueCleared?: boolean;
   }
 ): Program => {
   const { resolvedFeedbackSummaryByExercise: rawFeedbackSummary, recentlyUsedExerciseIds } =
@@ -34095,6 +34118,39 @@ export const generateWeeklyProgram = (
     warnings: emittedWarnings,
     templateVersion: PROGRAM_TEMPLATE_VERSION,
     ladderState: resolvedLadderState,
+    // Phase 3.5 — compute readiness verdict and attach phaseTransitionState.
+    phaseTransitionState: (() => {
+      if (!options?.sessionsInPhase || !options?.phaseSessionSnapshots) return undefined;
+      const phaseIndex = weeklyRuntimeContext.phaseIndex ?? 0;
+      const phase: "activation" | "skill" | "growth" =
+        phaseIndex === 2 ? "growth" : phaseIndex === 1 ? "skill" : "activation";
+      const resolvedIntent =
+        options?.trainingIntent ?? data.trainingIntent ?? "build";
+      const verdict = computeReadinessVerdict({
+        phase,
+        sessionsInPhase: options.sessionsInPhase,
+        recentSessions: options.phaseSessionSnapshots,
+        ladderState: resolvedLadderState,
+        rungsClimbedSincePhaseStart: options?.rungsClimbedSincePhaseStart,
+        deferredExerciseCount: options?.deferredExerciseCount,
+        activationSacrificeQueueCleared: options?.activationSacrificeQueueCleared,
+        trainingIntent: resolvedIntent,
+      });
+      return buildPhaseTransitionState({
+        verdict,
+        input: {
+          phase,
+          sessionsInPhase: options.sessionsInPhase,
+          recentSessions: options.phaseSessionSnapshots,
+          ladderState: resolvedLadderState,
+          rungsClimbedSincePhaseStart: options?.rungsClimbedSincePhaseStart,
+          deferredExerciseCount: options?.deferredExerciseCount,
+          activationSacrificeQueueCleared: options?.activationSacrificeQueueCleared,
+          trainingIntent: resolvedIntent,
+        },
+        priorState: options?.priorPhaseTransitionState,
+      });
+    })(),
   });
 };
 

@@ -457,8 +457,93 @@ export type Program = {
    * Undefined on programs generated before Phase 3 (treated as "no history").
    */
   ladderState?: LadderState;
+  /**
+   * Phase 3.5: persisted phase gating state.  Written when phaseSessionSnapshots
+   * are supplied to generateWeeklyProgram.  Undefined on programs generated
+   * before Phase 3.5 or without session history.
+   */
+  phaseTransitionState?: PhaseTransitionState;
   source: "local" | "cloud";
   deletedAt: string | null;
+};
+
+// ---------------------------------------------------------------------------
+// Phase 3.5 — Phase Gating types
+// ---------------------------------------------------------------------------
+
+/**
+ * The result of evaluating a single gating criterion at a given session.
+ * Stored in PhaseTransitionState.criteriaLastEvaluated for display and
+ * for deterministic re-evaluation.
+ */
+export type GatingCriterionResult = {
+  criterion: string;
+  satisfied: boolean;
+  /**
+   * Human-readable explanation of why the criterion was satisfied or not.
+   * Follows the format "N/M [label]" so the UI can surface it directly.
+   */
+  reason: string;
+};
+
+/**
+ * Phase 3.5 — Persisted phase-gating state.
+ *
+ * Written by the gating evaluator at each session boundary.  Read by:
+ *   - program.ts (to decide whether to auto-advance phaseIndex)
+ *   - Phase 5 UI (to surface readiness display and retest flags)
+ *   - Phase 3.3 maintain-mode prompt extension (to include readiness reason)
+ *
+ * One-way flow: the evaluator READS Phase 3/3.2/3.3 state and WRITES only
+ * this type.  No Phase 3/3.2/3.3 logic is modified.
+ */
+export type PhaseTransitionState = {
+  /** Phase being evaluated ("activation" | "skill" | "growth"). */
+  phase: "activation" | "skill" | "growth";
+  /** Total sessions completed in this phase (counter). */
+  sessionsInPhase: number;
+  /** Snapshot of criterion results from the most recent evaluation. */
+  criteriaLastEvaluated: GatingCriterionResult[];
+  /**
+   * Session count at which criteria + minimum were first both satisfied.
+   * Undefined until that point is reached.
+   */
+  eligibleAt?: number;
+  /**
+   * Session count at which an actual phase transition was recorded.
+   * Set when the evaluator emits verdict === "advance".
+   * Undefined until then.
+   */
+  unlockedAt?: number;
+  /**
+   * Human-readable trace of the most recent verdict, including every
+   * criterion's verdict with numbers (for determinism testing and display).
+   */
+  lastTrace: string;
+  /**
+   * Phase 5 hook: exercises flagged for retest offer at the next session.
+   * Written by the evaluator at every phase transition.  Cleared by the
+   * Phase 5 UI when the user acts on them.
+   */
+  sacrificeRetestEligible?: Array<{
+    exerciseId: string;
+    sacrificedAtPhase: "activation" | "skill" | "growth";
+    trace: string;
+  }>;
+};
+
+/**
+ * Phase 3.5 — Verdict returned by computeReadinessVerdict().
+ * "advance" = criteria met + minimum passed, or maximum reached.
+ * "hold"    = criteria not yet met or minimum not yet passed.
+ */
+export type GatingVerdict = {
+  verdict: "advance" | "hold";
+  reason: "criteria_met" | "max_reached" | "criteria_unmet" | "min_not_reached";
+  criteriaResults: GatingCriterionResult[];
+  satisfiedCount: number;
+  requiredCount: number;
+  trace: string;
 };
 
 export type ProgramProgress = {
@@ -474,6 +559,12 @@ export type ProgramProgress = {
   weekIndex?: number;
   countedWeekKeys?: string[];
   updatedAt: string;
+  /**
+   * Phase 3.5 — Persisted gating state for the current phase.
+   * Written by computeReadinessVerdict(); undefined on programs generated
+   * before Phase 3.5.
+   */
+  phaseTransitionState?: PhaseTransitionState;
 };
 
 export type TrainingStage =

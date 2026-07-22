@@ -182,6 +182,8 @@ export const assembleProgram = (params: {
   deletedAt?: string | null;
   /** Phase 3: computed ladder state to persist on the Program. */
   ladderState?: import("@/lib/types").LadderState;
+  /** Phase 3.5: computed phase gating state to persist on the Program. */
+  phaseTransitionState?: import("@/lib/types").PhaseTransitionState;
 }) => {
   const { phaseMeta, phase } = buildProgramPhaseMetadata({
     phaseIndex: params.phaseIndex,
@@ -211,6 +213,7 @@ export const assembleProgram = (params: {
     ...params.intelligence,
     week: params.week,
     ...(params.ladderState ? { ladderState: params.ladderState } : {}),
+    ...(params.phaseTransitionState ? { phaseTransitionState: params.phaseTransitionState } : {}),
     source: params.source ?? "local",
     deletedAt: params.deletedAt ?? null,
   } satisfies Program;
