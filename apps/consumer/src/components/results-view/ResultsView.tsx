@@ -6,6 +6,12 @@ import { init, listAllPrograms, listExerciseLogsBySession, listSessions } from "
 import { loadAppState } from "@/lib/appState";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import { projectResults } from "@/lib/results/resultsProjection";
+import {
+  SectionVisibilityProvider,
+  VisibilityGate,
+  SectionEyeButton,
+  HiddenSectionsBar,
+} from "@/components/visibility/SectionVisibility";
 import type { ExerciseLog, Program } from "@/lib/types";
 import type { ResultsProjection } from "@/lib/results/resultsProjection";
 
@@ -43,9 +49,12 @@ function LaddersSection({ projection }: { projection: ResultsProjection }) {
   if (projection.currentRungByPattern.length === 0) return null;
   return (
     <section aria-labelledby="ladders-heading">
-      <h2 id="ladders-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-        Ladders
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 id="ladders-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+          Ladders
+        </h2>
+        <SectionEyeButton sectionId="results.ladders" title="Ladders" />
+      </div>
       <div className="mt-4 space-y-6">
         {projection.currentRungByPattern.map((rung) => {
           const climbs = projection.laddersClimbed.filter((c) => c.pattern === rung.pattern);
@@ -105,13 +114,15 @@ function LaddersSection({ projection }: { projection: ResultsProjection }) {
 }
 
 function PostureSection({ projection }: { projection: ResultsProjection }) {
-  const hasAny = projection.activeTags.length > 0 || projection.retiredTags.length > 0;
-  if (!hasAny) return null;
+  if (projection.activeTags.length === 0) return null;
   return (
     <section aria-labelledby="posture-heading">
-      <h2 id="posture-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-        Posture
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 id="posture-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+          Posture
+        </h2>
+        <SectionEyeButton sectionId="results.posture" title="Posture" />
+      </div>
       <div className="mt-4 space-y-4">
         {projection.activeTags.map((tag) => (
           <div key={tag.tag} className="rounded-lg border border-slate-800 p-4">
@@ -150,6 +161,22 @@ function PostureSection({ projection }: { projection: ResultsProjection }) {
             )}
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function RetiredTagsSection({ projection }: { projection: ResultsProjection }) {
+  if (projection.retiredTags.length === 0) return null;
+  return (
+    <section aria-labelledby="retired-tags-heading">
+      <div className="flex items-center justify-between">
+        <h2 id="retired-tags-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+          Retired focus
+        </h2>
+        <SectionEyeButton sectionId="results.retiredTags" title="Retired focus" />
+      </div>
+      <div className="mt-4 space-y-4">
         {projection.retiredTags.map((tag) => (
           <div key={tag.tag} className="rounded-lg border border-slate-800/50 p-4 opacity-60">
             <div className="flex items-center gap-2">
@@ -186,9 +213,12 @@ function SacrificeRetestSection({
   if (eligible.length === 0) return null;
   return (
     <section aria-labelledby="retest-heading">
-      <h2 id="retest-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-        Ready to retest?
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 id="retest-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+          Ready to retest?
+        </h2>
+        <SectionEyeButton sectionId="results.sacrificeRetest" title="Ready to retest?" />
+      </div>
       <div className="mt-4 space-y-3">
         {eligible.map((item) => (
           <div key={item.exerciseId} className="rounded-lg border border-slate-800 p-4">
@@ -223,9 +253,12 @@ function PhaseHistorySection({ history }: { history: ResultsProjection["phaseHis
   if (history.length === 0) return null;
   return (
     <section aria-labelledby="phase-history-heading">
-      <h2 id="phase-history-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-        Phase History
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 id="phase-history-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+          Phase History
+        </h2>
+        <SectionEyeButton sectionId="results.phaseHistory" title="Phase History" />
+      </div>
       <ol className="mt-4 space-y-2">
         {history.map((record, idx) => (
           <li key={idx} className="flex items-start gap-3">
@@ -350,37 +383,59 @@ export default function ResultsView() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 pb-24 pt-8 sm:px-6">
-      <div className="mx-auto max-w-lg space-y-10">
-        {/* Back navigation */}
-        <nav>
-          <Link href="/results" className="text-xs text-slate-500 hover:text-slate-400">
-            ← Back to program
-          </Link>
-        </nav>
+    <SectionVisibilityProvider screen="results">
+      <div className="min-h-screen bg-slate-950 px-4 pb-24 pt-8 sm:px-6">
+        <div className="mx-auto max-w-lg space-y-10">
+          {/* Back navigation */}
+          <nav>
+            <Link href="/results" className="text-xs text-slate-500 hover:text-slate-400">
+              ← Back to program
+            </Link>
+          </nav>
 
-        {/* Headline metric */}
-        <HeadlineMetric projection={projection} />
+          {/* Headline metric */}
+          <VisibilityGate sectionId="results.headline">
+            <HeadlineMetric projection={projection} />
+          </VisibilityGate>
 
-        {/* Sacrifice retest queue — shown above main content when eligible */}
-        <SacrificeRetestSection
-          queue={filteredQueue}
-          onAccept={handleRetestAccept}
-          onDecline={handleRetestDecline}
-        />
+          {/* Sacrifice retest queue — shown above main content when eligible */}
+          <VisibilityGate sectionId="results.sacrificeRetest">
+            <SacrificeRetestSection
+              queue={filteredQueue}
+              onAccept={handleRetestAccept}
+              onDecline={handleRetestDecline}
+            />
+          </VisibilityGate>
 
-        {/* Ladders section */}
-        <LaddersSection projection={projection} />
+          {/* Ladders section */}
+          <VisibilityGate sectionId="results.ladders">
+            <LaddersSection projection={projection} />
+          </VisibilityGate>
 
-        {/* Posture section */}
-        <PostureSection projection={projection} />
+          {/* Posture section */}
+          <VisibilityGate sectionId="results.posture">
+            <PostureSection projection={projection} />
+          </VisibilityGate>
 
-        {/* Phase history timeline */}
-        <PhaseHistorySection history={projection.phaseHistory} />
+          {/* Retired posture focus */}
+          <VisibilityGate sectionId="results.retiredTags">
+            <RetiredTagsSection projection={projection} />
+          </VisibilityGate>
 
-        {/* Provenance footer */}
-        <ProvenanceFooter footer={projection.provenanceFooter} />
+          {/* Phase history timeline (hidden by default) */}
+          <VisibilityGate sectionId="results.phaseHistory">
+            <PhaseHistorySection history={projection.phaseHistory} />
+          </VisibilityGate>
+
+          {/* Recovery affordance for any hidden sections */}
+          <HiddenSectionsBar />
+
+          {/* Provenance footer */}
+          <VisibilityGate sectionId="results.provenanceFooter">
+            <ProvenanceFooter footer={projection.provenanceFooter} />
+          </VisibilityGate>
+        </div>
       </div>
-    </div>
+    </SectionVisibilityProvider>
   );
 }

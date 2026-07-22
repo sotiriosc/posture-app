@@ -4,6 +4,7 @@ import type { RefObject } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
+import { useSectionVisiblePref } from "@/components/visibility/SectionVisibility";
 import type { Program } from "@/lib/types";
 
 export type WeekViewDetailEntry = {
@@ -64,6 +65,16 @@ export default function WeekViewPanel({
   onCloseDetails,
   onToggleDetails,
 }: WeekViewPanelProps) {
+  // Phase 6.3 — the four-block warmup/prep breakdown is toggleable (hidden by
+  // default) via Settings › Interface (day.warmupBreakdown).  When hidden, the
+  // prep entries are filtered out while the main work stays visible.
+  const warmupBreakdownVisible = useSectionVisiblePref("day.warmupBreakdown");
+  const prepLabels = new Set(["warmup", "activation", "cooldown"]);
+  const visibleDetailEntries = warmupBreakdownVisible
+    ? weekViewDetailEntries
+    : weekViewDetailEntries.filter(
+        (entry) => !prepLabels.has(entry.sectionLabel.toLowerCase())
+      );
   return (
     <section
       id="week-view"
@@ -215,7 +226,7 @@ export default function WeekViewPanel({
             Day {weekViewStartDay + 1} • {weekViewDay.title}
           </p>
           <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
-            {weekViewDetailEntries.map((item) => (
+            {visibleDetailEntries.map((item) => (
               <div
                 key={item.key}
                 className="rounded-lg border border-slate-500/22 bg-slate-950/42 px-3 py-3"

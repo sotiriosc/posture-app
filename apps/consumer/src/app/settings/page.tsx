@@ -20,6 +20,12 @@ import {
 import type { ExerciseLog, LogPrefs, Program, SessionRecord } from "@/lib/types";
 import { resetAllAppData } from "@/lib/resetAppData";
 import {
+  isSectionVisible,
+  resetSectionVisibilityToDefaults,
+  sectionsForScreen,
+} from "@/lib/ui/sectionVisibility";
+import type { SectionScreen } from "@/lib/ui/sectionVisibility";
+import {
   listSessionDropoffTelemetry,
   type SessionDropoffEvent,
 } from "@/lib/telemetry";
@@ -655,6 +661,114 @@ export default function SettingsPage() {
             ))}
           </div>
         </div>
+
+        {/* Phase 6.3 — Interface (per-section visibility) */}
+        {(() => {
+          const visibility = settingsPrefs?.sectionVisibility;
+          const screens: Array<{ id: SectionScreen; label: string }> = [
+            { id: "results", label: "Results" },
+            { id: "session", label: "Session" },
+            { id: "day", label: "Day" },
+          ];
+
+          const handleToggleSection = async (sectionId: string) => {
+            const currentPrefs = await loadPrefs();
+            const current = isSectionVisible(
+              currentPrefs.sectionVisibility,
+              sectionId
+            );
+            const nextVisibility = {
+              ...(currentPrefs.sectionVisibility ?? {}),
+              [sectionId]: !current,
+            };
+            const nextPrefs: LogPrefs = {
+              ...currentPrefs,
+              sectionVisibility: nextVisibility,
+            };
+            await savePrefs(nextPrefs);
+            setSettingsPrefs(nextPrefs);
+          };
+
+          const handleResetDefaults = async () => {
+            const currentPrefs = await loadPrefs();
+            const nextPrefs: LogPrefs = {
+              ...currentPrefs,
+              sectionVisibility: resetSectionVisibilityToDefaults(),
+            };
+            await savePrefs(nextPrefs);
+            setSettingsPrefs(nextPrefs);
+          };
+
+          return (
+            <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-sm font-semibold text-slate-100">Interface</h2>
+                  <p className="mt-1 text-xs text-slate-400">
+                    Choose what appears on each screen. Hidden sections can be
+                    brought back here or from the &ldquo;sections hidden&rdquo; link
+                    on the screen itself.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { void handleResetDefaults(); }}
+                  className="shrink-0 rounded-lg border border-slate-600/40 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-700"
+                >
+                  Reset to defaults
+                </button>
+              </div>
+
+              <div className="mt-4 space-y-5">
+                {screens.map((screen) => (
+                  <div key={screen.id}>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      {screen.label}
+                    </p>
+                    <ul className="mt-2 space-y-2">
+                      {sectionsForScreen(screen.id).map((section) => {
+                        const visible = isSectionVisible(visibility, section.id);
+                        return (
+                          <li
+                            key={section.id}
+                            className="flex items-start justify-between gap-3 rounded-lg border border-slate-700/40 bg-slate-900/50 px-3 py-2"
+                          >
+                            <div>
+                              <p className="text-xs font-semibold text-slate-200">
+                                {section.label}
+                              </p>
+                              <p className="text-xs text-slate-500">
+                                {section.description}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              role="switch"
+                              aria-checked={visible}
+                              aria-label={`${visible ? "Hide" : "Show"} ${section.label}`}
+                              onClick={() => { void handleToggleSection(section.id); }}
+                              className={[
+                                "relative mt-0.5 inline-flex h-5 w-9 shrink-0 items-center rounded-full transition",
+                                visible ? "bg-sky-500/70" : "bg-slate-700",
+                              ].join(" ")}
+                            >
+                              <span
+                                className={[
+                                  "inline-block h-4 w-4 transform rounded-full bg-white transition",
+                                  visible ? "translate-x-4" : "translate-x-0.5",
+                                ].join(" ")}
+                              />
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Phase 3.3 — Blocked exercises section */}
         {(() => {

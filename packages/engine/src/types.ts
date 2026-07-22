@@ -278,6 +278,13 @@ export type LogPrefs = {
       blockedAt: { phase: "activation" | "skill" | "growth"; sessionCount: number };
     }
   >;
+  /**
+   * Phase 6.3 — Per-section visibility (user-controlled progressive disclosure).
+   * Maps a stable sectionId (see engine `ui/sectionVisibility`) to whether the
+   * user wants that section shown.  Absent key means fall back to the section's
+   * ratified default.  Never a global mode — this is per-section user agency.
+   */
+  sectionVisibility?: Record<string, boolean>;
 };
 
 export type ExercisePrescription = {
