@@ -65,6 +65,7 @@ import { getDailyInsight } from "@/lib/insightGenerator";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
+import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
 import DashboardModeCard from "@/components/dashboard/DashboardModeCard";
 import ProgramReferenceCard from "@/components/ProgramReferenceCard";
 import RoutineItemCoachingDetails, {
@@ -3689,11 +3690,16 @@ export default function ResultsRoutine() {
               );
             })}
 
-            <details className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-              <summary className={`${secondaryActionBtn} list-none cursor-pointer`}>
-                View details: Day {effectiveSelectedDay + 1} plan reasoning
-              </summary>
-              <div className="mt-3">
+            <AnimatedDisclosure
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2"
+              summary={
+                <span className={secondaryActionBtn}>
+                  View details: Day {effectiveSelectedDay + 1} plan reasoning
+                </span>
+              }
+              contentClassName="mt-3"
+            >
+              <div>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-xs font-semibold text-slate-700">
                     {selectedDayProgram?.title}
@@ -3744,7 +3750,7 @@ export default function ResultsRoutine() {
                   </button>
                 </div>
               </div>
-            </details>
+            </AnimatedDisclosure>
           </div>
         </ExpandableSection>
       </div>

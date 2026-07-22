@@ -95,3 +95,73 @@ exact failure mode couldn't be reproduced here to prove the fix beyond local
 Verified: `npm run build --workspace=apps/consumer` and
 `--workspace=apps/gyms` both succeed from a cold `.next` cache. No other line
 in `poseAnalyzer.ts` was touched.
+
+## Commit 2 — Card-open background jump
+
+### Audit
+
+Grepped both apps for every open/close animation candidate named in the spec:
+
+- `apps/consumer/src/components/dashboard/ExpandableSection.tsx` (the
+  results-dashboard card sections, e.g. "System adjustments", "How this
+  works") — **not the bug**. It already measures `scrollHeight` via a
+  `ResizeObserver` and animates `max-height` to that measured value (not
+  `height: auto`, not an unbounded ceiling). This is a legitimate animated
+  expand and was left alone.
+- The session-options card on session start (`SessionClient.tsx`, "Today's
+  options") — **not a collapsible**. All three practice-mode buttons are
+  always rendered; there's nothing to expand/collapse. No CLS bug here to fix.
+- Settings — **no collapsibles exist there yet.** The per-section-group
+  collapse behavior described in Commit 4 (Interface/Notifications/Data/
+  Account) hasn't been built. Nothing to fix in Commit 2; tracked as new
+  work in Commit 4.
+- **Found the real bug**: three native `<details>`/`<summary>` elements,
+  which insert/remove their content in a single frame with zero transition —
+  the browser has no animated equivalent for native disclosure open/close.
+  - `RoutineItemCoachingDetails.tsx` (consumer + gyms) — "Coach notes",
+    rendered once per exercise, so this fires repeatedly down a routine list.
+  - `ResultsRoutine.tsx` (consumer + gyms) — "View details: Day N plan
+    reasoning".
+  - `results-view/ResultsView.tsx` (consumer only; gyms has no equivalent
+    view) — "N advancements logged" per ladder rung card.
+
+### Fix
+
+Built one shared `AnimatedDisclosure` component (`components/ui/`, mirrored
+in both apps per this repo's existing per-app UI-component convention) and
+swapped it in at all five call sites (2 consumer + 2 gyms + 1 consumer-only).
+It uses the `grid-template-rows: 0fr -> 1fr` technique named in the spec
+rather than `max-height`: the browser's own layout of the content drives the
+animated row-track size, so — unlike `ExpandableSection`'s approach — it
+needs no `ResizeObserver`/JS measurement and can't rely on a wrong or stale
+`scrollHeight` for arbitrary content. `aria-expanded`/`aria-controls` replace
+native `<details>` semantics for the same accessibility contract. The summary
+prop accepts a render function `(open: boolean) => ReactNode` so callers can
+still swap a `+`/`-` glyph exactly like the old `group-open:` Tailwind variant
+did.
+
+### Verification
+
+- `packages/engine/tests/unit/routineItemCoachingDetails.test.ts` updated:
+  the removed native-`<details>` assertion (`hasAttribute("open")`) is
+  replaced with the equivalent `aria-expanded` check.
+- New `apps/consumer/tests/e2e/cardOpenNoLayoutShift.spec.ts`: seeds the
+  climber persona via `/dev-seed` (no auth needed), opens the "N
+  advancements logged" disclosure, and samples its rendered height across
+  animation frames immediately after the click.
+  - Chrome's real Layout Instability API score for this specific panel
+    turns out to be near-zero regardless of animation — the shifted region
+    is small relative to the test viewport, so `impact fraction * distance
+    fraction` stays under 0.1 even for an un-animated instant jump. It can't
+    discriminate a fix from a regression on this element and was dropped as
+    the primary assertion after confirming this empirically.
+  - Instead the test asserts the disclosure's height on its first animation
+    frame is well below its final height (proxy for "opens gradually, not
+    in one jump") — confirmed this correctly **fails** against the
+    pre-fix native `<details>` (no `aria-controls`, so the very first
+    assertion in the new test throws) before being confirmed to **pass**
+    against the fix.
+- Full `next build` reverified for both apps after all Commit 2 changes.
+- Full engine unit suite: 819/819 passing. Lint clean on both apps (two
+  pre-existing unrelated warnings in `apps/consumer`, not touched by this
+  commit).

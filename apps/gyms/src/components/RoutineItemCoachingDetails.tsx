@@ -1,4 +1,5 @@
 import type { ProgramRoutineItem } from "@/lib/types";
+import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
 
 type RoutineItemCoachingDetailsProps = {
   item: Pick<ProgramRoutineItem, "prescription" | "rationale">;
@@ -102,13 +103,19 @@ export default function RoutineItemCoachingDetails({
       ) : null}
 
       {showDetails && detailRows.length ? (
-        <details className="group">
-          <summary className={`inline-flex cursor-pointer list-none items-center text-xs font-semibold ${classes.summary}`}>
-            <span>Coach notes</span>
-            <span aria-hidden="true" className="ml-1 group-open:hidden">+</span>
-            <span aria-hidden="true" className="ml-1 hidden group-open:inline">-</span>
-          </summary>
-          <div className={`mt-2 space-y-1.5 rounded-lg border px-3 py-2 ${classes.panel}`}>
+        <AnimatedDisclosure
+          summary={(open) => (
+            <span className={`inline-flex items-center text-xs font-semibold ${classes.summary}`}>
+              <span>Coach notes</span>
+              <span aria-hidden="true" className="ml-1">
+                {open ? "-" : "+"}
+              </span>
+            </span>
+          )}
+          contentClassName="mt-2"
+          testId="coach-notes"
+        >
+          <div className={`space-y-1.5 rounded-lg border px-3 py-2 ${classes.panel}`}>
             {detailRows.map(([label, value]) => (
               <p key={label}>
                 <span className={`font-semibold ${classes.label}`}>{label}: </span>
@@ -116,7 +123,7 @@ export default function RoutineItemCoachingDetails({
               </p>
             ))}
           </div>
-        </details>
+        </AnimatedDisclosure>
       ) : null}
     </div>
   );
