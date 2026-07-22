@@ -712,6 +712,128 @@ Gym owner outreach (ongoing):
   trainers or members.
 
 
+Phase 6a — Voice & Coherence Pass
+
+Branch: phase-6a-voice-coherence from origin/main. This is a copy translation pass + one state coherence bug fix + one dev-only route move. NOT new features. NOT engine changes. Multi-commit; separate concerns.
+
+Guiding principle (log as SR-6a)
+
+The app currently speaks as the engine. It must speak as a coach — specifically, as a Motion Care coach, which is Sotirios's voice. Every user-facing string must pass this test: "would I say this to a 55-year-old client after their Wednesday session?" If no, rewrite until yes.
+
+Engineering vocabulary that must NOT appear in user-facing copy anywhere:
+
+"rung" (say "level" or use the exercise name)
+"ladder" (say "your progression" or name the movement)
+"corrective consistency" (say "how often you did the work")
+"movement pattern focus" (say "exercise")
+"pattern proficiency" (either explain inline or hide until meaningful)
+"gate locked" (say when the next phase starts, in one line)
+"focus tag" (say "the thing your posture check flagged")
+"adaptive weakpoint" (say what actually changed and why)
+"corrective emphasis" (say "extra work on X")
+"phase gate progress" (collapse into a single "workouts done / needed" line)
+
+Engineering that CAN stay (users can learn a few real terms):
+
+"Phase 1", "Phase 2", "Phase 3"
+"RPE" (with hover-tooltip explanation)
+"sets", "reps", "rest"
+Commit 1 — Plan state coherence bug (SHIP-CRITICAL)
+
+Symptom: a Pro user sees "Pro" badge top-right, "Plan: Free" pill in the header, "Praxis Pro active" in Billing, AND an "Unlock the full weekly plan / Upgrade to Pro" upsell card — all on one screen.
+
+Root cause hypothesis: multiple components read plan status from different sources (IndexedDB direct vs. props vs. cached selector). Find every plan-status read in apps/consumer/src. They should ALL come from a single hook useUserPlan() returning {plan: "free" | "pro", loading}. Refactor every site to use it. Test: seed a Pro user, verify all badges/pills/upsell gates agree. Seed a Free user, verify same.
+
+Same audit in apps/gyms/src — operator view should never render consumer-plan chrome; confirm nothing leaks.
+
+Commit 2 — Copy translation, screen by screen
+
+Apply as written unless a rewrite breaks a layout constraint, in which case shorten while preserving voice.
+
+Landing
+"Praxis is built for corrective performance, not generic workouts." → "Praxis fixes what's holding your movement back, then builds strength on top."
+Onboarding guide popover: appears only on scroll OR 3s idle, not on initial paint.
+"You'll complete: 1. Movement & posture baseline 2. Structured movement profile assessment 3. Personalized plan build" → "You'll answer a few questions, take three posture photos, and get your plan. Under three minutes."
+Questionnaire
+Intent options:
+"Progress to harder movements" → "Build strength and skill week to week"
+"Keep what I have" → "Keep what I have, stay strong"
+"Working through an issue" → "Coming back from injury"
+Assessment upload
+"Filled slots: 0/3" → remove entirely. Let three photo cards speak.
+"No photo yet" → keep.
+Dashboard — the biggest translation zone
+
+Phase card:
+
+"Training readiness: 75% (Good) / Week: 0/3 days / Cycle: 1" → "This week: 0 of 3 sessions done."
+Entire "Phase Gate / Gate locked / 12 workouts remaining or 30 days remaining / Workout gate progress 0% / 0/12 workouts in phase / Days in phase 0% / 0/30 days in phase / Week progress 0%" block: → ONE line: "Phase 2 unlocks after 12 sessions or 30 days — whichever comes first. You've done 0 sessions so far." Dev/expanded needs the numbers? Hide behind visibility toggle from Phase 6.
+
+Card grid (Today / Week / Progress / Insights / History / Billing):
+
+Remove "Level 2", "Level 3", "PRO" badges (internal complexity tiers).
+Remove tiny letter tiles (T / W / P / I / H / A) — visual noise, no info.
+
+Today expanded:
+
+"Movement pattern focus 1 of 8" → "Exercise 1 of 8"
+"Corrective Guidance" → "Focus for this exercise"
+"System adapted this week to improve stability and execution quality" → keep.
+"This week's priorities: Primary focus patterns: balance and asymmetry control · breathing and ribcage control · squat pattern control · Breathing And Ribcage Control · Recovery cue: easy walk + mobility after sessions" → DEDUPE (breathing appears twice), then: → "This week we're focused on your balance, your breathing, and your squat pattern. Between sessions: keep it easy — walk, mobility work, sleep."
+
+Progress expanded:
+
+"Consistency 0% · Completion 0%" → "Your first session will start filling this in."
+"Phase Progression / Requirements and readiness to move ahead" → "When does Phase 2 start?"
+
+Billing expanded:
+
+Move "Edit movement profile" button OUT of Billing → into Settings.
+Session start
+"Today's options / This changes only today's session view. Your saved plan is not changed." → "Adjust just today's session — your plan stays the same."
+Consolidate 5 options → 3: → Full ("The whole session as planned") → Lighter ("Same movements, less work") — merges Steady + Reduced + Simplified → Recovery ("Mobility and easy movement only")
+"Corrective Guidance / Maintain posture" → "Focus / Keep your posture steady."
+"Movement pattern focus 1 of 8" → "Exercise 1 of 8"
+In-exercise
+"Movement pattern focus / Rest" toggle → "Working / Resting"
+"Movement pattern focus mode" button → remove, use the toggle only.
+"Pattern proficiency 0%" → HIDE until non-zero. When shown: → "Cue consistency: 60%" with hover "How often you're hitting the coaching cue on this movement."
+"Log this movement pattern focus" → "Log this set"
+Post-session
+"Corrective consistency 100%" → "How often you did the work: 100%"
+Rest of screen: keep, it's strong.
+"Next session recommendation: simplify the pattern before progressing" → "For next session: we'll simplify this movement before moving forward."
+Legal
+
+Privacy policy: keep as-is.
+
+Settings — corrective note
+"Corrective settings note / Changing corrective emphasis reshapes focus areas — your movement history remains intact" → Show ONLY adjacent to a control that changes corrective emphasis. Never as an ambient banner.
+Interface visibility panel
+Bug: nearly every toggle is currently ON. Phase 6.3 ratified selective defaults. Audit and fix:
+Default VISIBLE (rename in parens): Headline metric, Current ladders ("Your progression"), Sacrifice retest queue ("Exercises ready to try again"), Posture observations ("Posture check results"), Retired posture focus ("Areas you've improved"), Ladder progress pill ("Level indicator").
+Default HIDDEN: Phase history timeline, Provenance footer, Warmup four-block breakdown, Corrective-source annotations.
+"Real-device QA pass" panel → MOVE (see Commit 3).
+Commit 3 — Dev route hygiene
+Move "Real-device QA pass" panel out of user Settings into new apps/consumer/src/app/dev-qa/page.tsx, gated NODE_ENV === "development" — same pattern as /dev-seed. Prod builds: panel absent from settings tree.
+Same audit in apps/gyms/src.
+Not in this pass
+No engine changes.
+No new features.
+No visual redesign (colors/spacing/layout stay). Flag if a copy change breaks layout.
+No /dev-seed changes.
+No legal content changes.
+Acceptance
+Plan state bug fixed: Pro shows Pro everywhere, Free shows Free.
+Every string in Copy Translation applied.
+Visibility defaults match ratified Phase 6.3 spec.
+Real-device QA at /dev-qa, gated, absent in prod.
+Full gate green.
+Screenshot smoke: seed 12-week climber, walk the eleven screens, confirm no engineering vocabulary remains user-facing.
+
+Merge commit.
+
+
 ## Sequencing & effort (with Claude Code)
 
 P0 security            0.5 day        (both repos)
