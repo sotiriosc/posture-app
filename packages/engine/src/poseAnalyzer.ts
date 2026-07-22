@@ -52,8 +52,20 @@ export const loadPoseModel = async (): Promise<PoseModel> => {
   if (!detectorPromise) {
     detectorPromise = (async () => {
       await ensureBackend();
+      // Deliberately NOT the package's top-level `createDetector` API (see
+      // docs/phase-6c-decisions.md, Commit 1): pose-detection's
+      // dist/create_detector.js unconditionally requires all four backends —
+      // including blazepose_mediapipe, which statically imports
+      // "@mediapipe/pose". That package's browser bundle has no real ESM
+      // exports and fails Turbopack's stricter analysis, so going through
+      // createDetector() breaks the build worse than the original bug.
+      // MoveNet's own backend module has zero dependency on
+      // "@mediapipe/pose" — only @tensorflow/tfjs-{core,converter} — so we
+      // import it directly. The explicit ".js" extension makes the subpath
+      // fully specified, which is what Turbopack's ESM-style resolver
+      // requires and Webpack's more lenient extension-probing didn't.
       const movenet = await import(
-        "@tensorflow-models/pose-detection/dist/movenet/detector"
+        "@tensorflow-models/pose-detection/dist/movenet/detector.js"
       );
       return movenet.load({
         modelType: "SinglePose.Lightning",
