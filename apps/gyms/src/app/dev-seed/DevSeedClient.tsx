@@ -8,7 +8,7 @@ import {
   saveExerciseLog,
 } from "@/lib/logStore";
 import { saveAppState } from "@/lib/appState";
-import { resetAllAppData } from "@/lib/resetAppData";
+import { eraseAllLocalData } from "@/lib/resetAppData";
 import type { ExerciseLog, Program } from "@/lib/types";
 import {
   buildTwelveWeekClimberProgram,
@@ -65,7 +65,7 @@ const GAP_DOC = "docs/persona-fixture-gaps.md";
 /** Derive session records from the fixture logs so the app's session-based
  * loader surfaces them (persistence plumbing, not persona semantics). */
 async function seedProgramWithLogs(program: Program, logs: ExerciseLog[]) {
-  await resetAllAppData();
+  await eraseAllLocalData();
   await init();
   await saveProgram(program);
 
@@ -100,6 +100,9 @@ async function seedProgramWithLogs(program: Program, logs: ExerciseLog[]) {
 }
 
 async function runSeed(id: string): Promise<string> {
+  // Every seed starts from a fully wiped device so nothing leaks across persona
+  // loads (spec 6.a). eraseAllLocalData() logs the wipe to the dev console.
+  console.info(`[dev-seed] wiping all local state before seeding "${id}"`);
   if (id === "member-drill-in") {
     await seedProgramWithLogs(
       buildTwelveWeekClimberProgram(),

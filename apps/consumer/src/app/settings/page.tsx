@@ -18,7 +18,7 @@ import {
   SCHEMA_VERSION,
 } from "@/lib/logStore";
 import type { ExerciseLog, LogPrefs, Program, SessionRecord } from "@/lib/types";
-import { resetAllAppData } from "@/lib/resetAppData";
+import { eraseAllLocalData, resetAllAppData } from "@/lib/resetAppData";
 import {
   isSectionVisible,
   resetSectionVisibilityToDefaults,
@@ -64,6 +64,8 @@ export default function SettingsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [confirmText, setConfirmText] = useState("");
+  const [showEraseConfirm, setShowEraseConfirm] = useState(false);
+  const [eraseText, setEraseText] = useState("");
   const [settingsPrefs, setSettingsPrefs] = useState<LogPrefs | null>(null);
   const [systemStatus, setSystemStatus] = useState<{
     activeProgramId: string;
@@ -668,6 +670,65 @@ export default function SettingsPage() {
               </div>
             </div>
           ) : null}
+
+          <div className="mt-6 border-t border-rose-300/20 pt-5">
+            <h3 className="text-sm font-semibold text-rose-100">
+              Erase all local data
+            </h3>
+            <p className="mt-2 text-xs text-rose-100/80">
+              This deletes everything Praxis has stored on this device —
+              sessions, photos, program, preferences. It does not cancel your
+              subscription.
+            </p>
+            {!showEraseConfirm ? (
+              <button
+                type="button"
+                onClick={() => setShowEraseConfirm(true)}
+                className="mt-3 rounded-full border border-rose-300/40 bg-rose-950/30 px-5 py-2 text-xs font-semibold text-rose-100 hover:bg-rose-950/50"
+              >
+                Erase all local data
+              </button>
+            ) : (
+              <div className="mt-4 rounded-lg border border-rose-300/25 bg-rose-900/15 px-4 py-3 text-xs text-rose-100">
+                <label className="block text-xs font-semibold text-rose-100">
+                  Type ERASE below to confirm
+                  <input
+                    type="text"
+                    value={eraseText}
+                    onChange={(event) => setEraseText(event.target.value)}
+                    aria-label="Type ERASE to confirm"
+                    className="mt-2 w-full rounded-lg border border-rose-300/35 bg-slate-950/55 px-3 py-2 text-xs text-rose-50"
+                  />
+                </label>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowEraseConfirm(false);
+                      setEraseText("");
+                    }}
+                    className="rounded-lg border border-rose-300/35 px-4 py-2 text-xs font-semibold text-rose-100 hover:bg-rose-900/25"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={eraseText.trim() !== "ERASE"}
+                    onClick={async () => {
+                      await eraseAllLocalData();
+                      setShowEraseConfirm(false);
+                      setEraseText("");
+                      router.replace("/");
+                      window.location.reload();
+                    }}
+                    className="rounded-full bg-rose-600 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+                  >
+                    Erase everything
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="ui-card ui-soft-surface-raised rounded-lg p-6">

@@ -192,6 +192,26 @@ const openDb = () => {
   return dbPromise;
 };
 
+/**
+ * Close the cached IndexedDB connection and drop the memoized promise.
+ *
+ * A full wipe (erase-all-local-data / dev-seed) calls this first: an open
+ * connection makes `indexedDB.deleteDatabase` fire `onblocked` instead of
+ * deleting, which is exactly how seeded state used to leak across persona
+ * loads. Closing here guarantees the delete runs unblocked. The next store
+ * access transparently reopens via `openDb()`.
+ */
+export const closeDb = async () => {
+  if (!dbPromise) return;
+  const pending = dbPromise;
+  dbPromise = null;
+  try {
+    (await pending).close();
+  } catch {
+    // Nothing to close / already gone — the delete will proceed regardless.
+  }
+};
+
 const withStore = async <T>(
   storeName: string,
   mode: IDBTransactionMode,

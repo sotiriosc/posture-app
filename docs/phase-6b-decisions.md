@@ -133,3 +133,47 @@ tolerated inside the large Settings component). Fixed properly rather than
 suppressed: the summary is now a pure `computeTelemetrySummary(events, now)`
 called from the refresh handler / mount effect and stored in state, so no
 impure call happens during render.
+
+## Commit 6 — Seed hygiene and honest reset
+
+### 6.a — dev-seed fully wipes on every persona load
+
+Root cause of the QA leak (false "ready for next phase"): the reset used by
+dev-seed (`resetAllAppData`) trusted a hard-coded allowlist of localStorage keys
+and IndexedDB database names, and its `deleteDatabase` resolved on `onblocked`
+without actually deleting when a connection was open. Seeding persona B could
+therefore leave persona A's data behind.
+
+Fix: a new `eraseAllLocalData()` engine util that (1) closes the cached
+IndexedDB connection first (new `closeDb()` in `logStore`) so deletes never
+block, (2) enumerates **every** database in the origin via
+`indexedDB.databases()` (falling back to the known names) and deletes them all,
+and (3) clears all of localStorage/sessionStorage. It logs a dev-console line
+(`[praxis] erase-all-local-data: …`) so QA can confirm the wipe and spot leaks.
+Both apps' dev-seed now call `eraseAllLocalData()` before writing any persona
+and log `[dev-seed] wiping all local state before seeding "<id>"`.
+
+`resetAllAppData` is deliberately left intact (the surgical "Reset app data"
+path and its many internal callers only want to clear the active plan).
+
+### 6.b — "Erase all local data" in Settings
+
+A second, more severe Danger-zone option below "Reset app data". Exact copy per
+spec, gated by a confirmation input that must equal `ERASE` (matching-text
+comparison; the button is disabled otherwise). On confirm it runs the same
+`eraseAllLocalData()` full wipe, then returns home. Added to both apps.
+
+### Playwright coverage
+
+- `apps/consumer/tests/e2e/devSeedWipesState.spec.ts` — seeds the climber (A),
+  asserts a program exists in IndexedDB, seeds the empty persona (B), asserts
+  A's program and app-state key are gone.
+- `apps/consumer/tests/e2e/eraseAllLocalDataConfirmation.spec.ts` — seeds data,
+  opens `/settings` (admin cookie set), asserts the confirm button stays
+  disabled until `ERASE` is typed exactly, confirms, and asserts the device is
+  empty afterward.
+
+`/settings` is admin-gated, so the Playwright webServer now runs with
+`ADMIN_ACCESS_KEY` and the erase spec sets the matching `bac_admin` cookie. Also
+added an engine unit test proving `eraseAllLocalData` deletes an
+enumeration-only database the old allowlist would have missed.
