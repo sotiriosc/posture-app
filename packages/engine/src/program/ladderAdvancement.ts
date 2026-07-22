@@ -53,12 +53,18 @@ export const getNextLadderRung = (exerciseId: string): string | null => {
 
 /**
  * Return the exercise ID one rung easier than the given exercise (regress
- * direction), within the same pattern.  Returns null at floor (d1).
+ * direction), within the same pattern.  Returns null at floor.
+ *
+ * The data model uses `progressionOf` to encode the chain: if exercise B has
+ * `progressionOf === A`, then A is the predecessor (easier) rung and B is the
+ * successor (harder) rung.  So the predecessor of B is A = B.progressionOf.
+ * (The `regressionOf` field means "this exercise is the regression-form OF
+ * a harder exercise" — it points UP the chain, not down.)
  */
 export const getPrevLadderRung = (exerciseId: string): string | null => {
   const current = exerciseById(exerciseId);
-  if (!current?.regressionOf) return null;
-  const prev = exerciseById(current.regressionOf);
+  if (!current?.progressionOf) return null;
+  const prev = exerciseById(current.progressionOf);
   // Respect pattern boundary — don't regress across patterns.
   if (!prev || prev.pattern !== current.pattern) return null;
   return prev.id;
@@ -80,11 +86,21 @@ export const findD1RootForPattern = (pattern: string): string | null => {
   return candidates[0]?.id ?? null;
 };
 
-/** The VAR-1 allowed set: {currentRung ∪ currentRung.swapOptions}. */
+/**
+ * The VAR-1 allowed set: {currentRung ∪ currentRung.swapOptions}.
+ *
+ * Adjacent ladder rungs are always excluded even if they happen to appear in
+ * `swapOptions` (catalog cross-contamination).  This enforces VAR-1 — never
+ * let variation memory rotate to a different difficulty rung.
+ */
 export const getLadderSwapSet = (exerciseId: string): Set<string> => {
   const ex = exerciseById(exerciseId);
+  const nextRung = getNextLadderRung(exerciseId);
+  const prevRung = getPrevLadderRung(exerciseId);
   const result = new Set<string>([exerciseId]);
-  (ex?.swapOptions ?? []).forEach((id) => result.add(id));
+  (ex?.swapOptions ?? []).forEach((id) => {
+    if (id !== nextRung && id !== prevRung) result.add(id);
+  });
   return result;
 };
 

@@ -29788,6 +29788,18 @@ export type {
 
 export type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 
+// Phase 3: ladder advancement public API
+export {
+  computeLadderState,
+  getLadderProgressionMessage,
+  getLadderSwapSet,
+  getNextLadderRung,
+  getPrevLadderRung,
+  findD1RootForPattern,
+  LADDER_MAIN_PATTERNS,
+} from "@/lib/program/ladderAdvancement";
+export type { LadderDecision, LadderDecisionKind } from "@/lib/program/ladderAdvancement";
+
 const programConstraintWarningBuffer: ProgramConstraintWarning[] = [];
 
 export const getProgramConstraintWarningBuffer = () => [

@@ -16,6 +16,7 @@ import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import {
   PROGRAM_TEMPLATE_VERSION,
   previewPainSubstitutionChoices,
+  getLadderProgressionMessage,
 } from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
@@ -1739,6 +1740,23 @@ export default function SessionClient() {
   const currentExerciseMeta = currentExerciseId
     ? exerciseById(currentExerciseId)
     : null;
+
+  // Phase 3: ladder rung progression message for the session screen (read-only).
+  // Only shown for main-section exercises that match the current ladder rung.
+  const ladderProgressionMessage = useMemo(() => {
+    if (!program?.ladderState || !currentExerciseId || !currentItem) return null;
+    const section = (currentItem as { section?: string }).section;
+    if (section !== "main") return null;
+    const ex = exerciseById(currentExerciseId);
+    if (!ex?.pattern) return null;
+    const rungState = program.ladderState.byPattern[ex.pattern];
+    if (!rungState || rungState.exerciseId !== currentExerciseId) return null;
+    return getLadderProgressionMessage(
+      rungState.exerciseId,
+      rungState.cleanSessionsCount,
+      rungState.requiredForAdvance
+    );
+  }, [program?.ladderState, currentExerciseId, currentItem]);
   const phaseLabel = program?.phaseName ?? program?.phase?.name ?? "Guided session";
   const dayPositionLabel =
     program && programDayIndex !== null
@@ -2358,6 +2376,17 @@ export default function SessionClient() {
             }}
             completionFlashVisible={exerciseCompleteFlashVisible}
           />
+          {ladderProgressionMessage ? (
+            <div className="mt-2 flex items-center gap-2 px-1">
+              <span
+                className="inline-flex items-center rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-medium text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
+                role="status"
+                aria-label="Ladder progression status"
+              >
+                {ladderProgressionMessage}
+              </span>
+            </div>
+          ) : null}
         </div>
 
         <div className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5">
