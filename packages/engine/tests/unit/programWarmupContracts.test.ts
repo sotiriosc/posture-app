@@ -278,7 +278,7 @@ describe("program warmup contracts", () => {
     });
   });
 
-  // Temporary skip while focusing test effort on MAIN + ACCESSORY structure.
+  // SCOPE: Phase 3W — warmup/activation contracts.  Do not unskip before 3W.
   test.skip(
     "activation prefers machine chest press when both machine and dumbbell presses are eligible",
     () => {
@@ -314,7 +314,7 @@ describe("program warmup contracts", () => {
     }
   );
 
-  // Temporary skip while focusing test effort on MAIN + ACCESSORY structure.
+  // SCOPE: Phase 3W — warmup/activation contracts.  Do not unskip before 3W.
   test.skip("activation falls back when machines are unavailable", () => {
     const auditEntries: ProgramSelectionAuditEntry[] = [];
     const program = generateWeeklyProgram(
@@ -347,7 +347,7 @@ describe("program warmup contracts", () => {
     assertBackChestMainPushAndPull(program);
   });
 
-  // Temporary skip while focusing test effort on MAIN + ACCESSORY structure.
+  // SCOPE: Phase 3W — warmup/activation contracts.  Do not unskip before 3W.
   test.skip("non-activation phases do not apply activation main push bonus", () => {
     const auditEntries: ProgramSelectionAuditEntry[] = [];
     const program = generateWeeklyProgram(
