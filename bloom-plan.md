@@ -336,6 +336,55 @@ persona-review harness (add to docs/dev-reports/ in the existing format).
 
 ---
 
+### Phase 3.2 — Feedback Contract: Sacrifice / Test / Modify (next-session prompt)
+
+**Context (ED-3.0.2):** Phase 3.0-refinement replaced the silent hard-block with a
+deferred flag.  `deferred === true` is set here — never automatically by the engine.
+
+**Prompt surface:** At the start of the next session after a flag (pain === "severe" OR
+difficulty === "failed"), the app surfaces a three-button card for each flagged exercise:
+
+| Button | Semantic | Engine effect |
+|--------|----------|---------------|
+| **Sacrifice** | "I want to stop this exercise for now" | Sets `deferred: true`; tags exercise for phase-transition retest; emits a Sacrifice tag consumed by Phase 3.5 gating. |
+| **Test** | "Keep it in — I'll try again" | No change to state; if the exercise is flagged a second consecutive time, auto-Sacrifice is applied. |
+| **Modify** | "Make it easier" | Regresses one rung on the exercise's ladder (Phase 3.3 mechanics); clears the flag. |
+
+**Silence is consent to Test:** if the user dismisses the prompt without selecting, the
+engine treats it as Test (exercise stays in, second-flag auto-sacrifice rule applies).
+
+**Out-of-scope here:** Phase 3 ladder advancement, any other UI surface.
+
+**Acceptance:** Sacrifice tags written to user state; `deferred: true` set; Test/auto-sacrifice
+logic covers two-consecutive-flag scenario; Modify triggers a one-rung regression;
+truth-table tests extend 3.6.
+
+---
+
+### Phase 3.5 — Phase Gating Refinement (criteria-based supplement to time gate)
+
+**Context:** The existing phase gate is time-based (N weeks at a phase).  This adds a
+criteria-based layer that uses signals from Phase 3.2 as readiness indicators.
+
+**Readiness signals consumed:**
+- Sacrifice tags (exercise retired from a pattern → user is clearing the easy lane)
+- Ladder-rung climbs per pattern (from Phase 3.1 advancement rule)
+
+**Gate logic (supplement, not replacement):**
+A user is eligible for phase advancement ONE CYCLE early if, for every primary pattern,
+either:
+- At least one rung climb has been logged in the last cycle, OR
+- At least one Sacrifice tag exists for an exercise in that pattern.
+
+**Rationale:** Sacrifice reveals the user is outgrowing a rung (they can't tolerate it).
+Rung climbs directly evidence progression.  Together they make time-gating conservative
+while rewarding demonstrated adaptation.
+
+**Acceptance:** Gate logic is traceable (decisionTrace line); does not override minimum
+session count; determinism suite green.
+
+---
+
 ## Phase 3W — Tailored warmup contract (build alongside Phase 3; both consume ladders)
 
 Principle: every session's warmup provably prepares that session's work —
@@ -443,6 +492,30 @@ is the close.
 
 Acceptance: screen renders from a synthetic 8-week persona; every number on it is
 traceable to a log or a gated measurement; no metric appears without its provenance.
+
+### Phase 5 UX Expansion — Sacrifice / Retest Tracking
+
+**Context (Phase 3.2):** Phase 3.2 produces Sacrifice tags when users retire an exercise.
+These tags are meaningful milestones — they signal that a user outgrew a movement and is
+ready to be reintroduced to it at a harder rung (phase-transition retest).
+
+**Tracking screen additions:**
+
+- **Sacrificed-exercise panel:** lists every exercise the user has Sacrificed, grouped by
+  pattern.  Each entry shows the rung it was sacrificed at and how many sessions ago.
+- **Retest prompt at phase transition:** when a new phase begins, the app surfaces a
+  "Ready to retest?" card for each Sacrificed exercise.  The user can Reintroduce (adds
+  the exercise at the next rung up) or Extend the sacrifice (keeps deferred for another
+  phase).
+- **Reintroduce verdict logged to decisionTrace:** visible in the advanced session audit.
+
+**Gym operator view:** The Sacrifice/Retest cadence is exposed in the member-progress
+B2B panel (apps/gyms) — coaches can see which exercises their clients have outgrown and
+which retests are pending, making the coaching layer transparent.
+
+**Acceptance:** Panel renders from Sacrifice tags in user state; retest prompt fires
+exactly once per Sacrificed exercise per phase boundary; Reintroduce removes the
+deferred flag and logs the rung advancement.
 
 ---
 
