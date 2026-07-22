@@ -100,3 +100,71 @@ test("member dashboard header has no overlapping controls across breakpoints", a
   }
   expect(allOverlaps, allOverlaps.join(" | ")).toEqual([]);
 });
+
+/**
+ * Phase 6c, Commit 6 — same fix and same regression as consumer (identical
+ * SessionClient.tsx sticky-header code in both apps). The 6b fix only
+ * checked scroll position 0 on /results; the sticky in-page header on
+ * /session re-anchors to the viewport top on scroll and can slide under the
+ * fixed top-right cluster at md+, which the dashboard-only test never
+ * exercises.
+ */
+const SESSION_SCROLL_BREAKPOINTS = [
+  { name: "1920x1080", width: 1920, height: 1080 },
+  { name: "1440x900", width: 1440, height: 900 },
+  { name: "1024x768", width: 1024, height: 768 },
+] as const;
+
+const sessionHeaderEntries = (page: Page) => [
+  { name: "menu", locator: page.getByRole("button", { name: "Open menu" }) },
+  { name: "logout", locator: page.getByRole("button", { name: "Log out" }) },
+  { name: "plan-chip", locator: page.locator(".ui-chip") },
+  { name: "day-pill", locator: page.getByText(/^Day \d+ of \d+$/) },
+];
+
+test("session screen's sticky header has no overlapping controls at a mid-scroll state", async ({
+  page,
+}) => {
+  const email = e2eEmail("header-layout-scroll");
+  await upsertE2eUser({ email, password: "playwright-password", plan: "pro" });
+  const login = await page.request.post("/api/auth/login", {
+    data: { email, password: "playwright-password" },
+  });
+  expect(login.ok()).toBeTruthy();
+
+  // Build a real program via the questionnaire flow (gyms has no dev-seed
+  // persona that reaches a member-side /session state — its dev-seed data
+  // is operator/roster-shaped) so the sticky session header actually
+  // renders.
+  await page.goto("/questionnaire");
+  await page.evaluate(() => {
+    localStorage.clear();
+    indexedDB.deleteDatabase("bodycoach-logs");
+  });
+  await page.reload();
+  await page.getByTestId("equipment-none").check();
+  await page.getByTestId("days-3").click();
+  await page.getByTestId("generate-routine").click();
+  await expect(page).toHaveURL(/\/results/);
+
+  const allOverlaps: string[] = [];
+  for (const bp of SESSION_SCROLL_BREAKPOINTS) {
+    await page.setViewportSize({ width: bp.width, height: bp.height });
+    await page.goto("/session");
+    await expect(page.getByText(/^Day \d+ of \d+$/)).toBeVisible({
+      timeout: 20_000,
+    });
+    await page.waitForTimeout(400);
+
+    // Scroll past the sticky header's normal position so it re-anchors to
+    // the viewport top, then check it against the fixed control cluster.
+    await page.mouse.wheel(0, 400);
+    await page.waitForTimeout(300);
+
+    const boxes = await collectBoxes(sessionHeaderEntries(page));
+    for (const o of findOverlaps(boxes)) {
+      allOverlaps.push(`${bp.name} (scrolled): ${o}`);
+    }
+  }
+  expect(allOverlaps, allOverlaps.join(" | ")).toEqual([]);
+});

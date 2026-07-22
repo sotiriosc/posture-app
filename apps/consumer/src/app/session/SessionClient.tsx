@@ -2698,7 +2698,14 @@ export default function SessionClient() {
           </section>
         ) : null}
 
-        <div className="sticky top-2 z-30 space-y-2">
+        {/* Phase 6c, Commit 6 — the fixed top-right control cluster
+            (AppMenuClient) only moves to the top at md+; this sticky header
+            must clear it there too, not just at initial scroll position 0.
+            .ui-shell's own padding-top reserves that space for content at
+            the top of the page, but a sticky descendant re-anchors to the
+            viewport on scroll and ignores an ancestor's padding, so it
+            needs its own matching offset. */}
+        <div className="sticky top-2 z-30 space-y-2 md:top-16">
           <SessionProgressHeader
             phaseName={phaseLabel}
             dayPositionLabel={dayPositionLabel}

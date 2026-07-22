@@ -219,3 +219,45 @@ did.
   build manifest.
 - Lint clean on both apps (same two pre-existing warnings as Commit 2, still
   untouched).
+
+## Commit 6 — Header layout regression fix (scroll-state coverage)
+
+### The bug
+
+Phase 6b Commit 3 fixed the fixed-top-right-cluster-vs-header overlap, but
+only checked the dashboard (`/results`) at scroll position 0. The session
+screen (`SessionClient.tsx`) has its own `sticky top-2` progress header
+(exit/back controls, set counter, "Day N of M" pill) that re-anchors to the
+viewport top as the page scrolls. At `md+` widths that sticky header slides
+directly under the fixed top-right cluster (menu / logout / plan chip) once
+the user scrolls past the point where `.ui-shell`'s `padding-top` would
+otherwise have kept it clear — the ancestor's padding only reserves space
+for the *initial*, unscrolled layout; a `sticky` descendant ignores it once
+it re-anchors to the viewport. Identical bug, identical fix shape, in both
+consumer and gyms `SessionClient.tsx` (same code originally copied between
+apps).
+
+### Fix
+
+Added a matching `md:top-16` to the sticky header's `top-2` so it clears the
+fixed cluster at the same breakpoint where `.ui-shell`'s own `md:` padding
+rule (Phase 6b Commit 3) does, in both apps.
+
+### Verification
+
+- Extended `apps/consumer/tests/e2e/headerLayout.spec.ts` and
+  `apps/gyms/tests/e2e/headerLayout.spec.ts` with a new test that builds a
+  real program, navigates to `/session`, scrolls down at three desktop
+  breakpoints (1920×1080, 1440×900, 1024×768), and asserts zero bounding-box
+  overlaps between the sticky header's controls and the fixed top-right
+  cluster.
+- Confirmed discriminating power by temporarily reverting the `md:top-16`
+  change in both apps and re-running: both new tests fail with real overlap
+  pairs (e.g. `1024x768 (scrolled): menu ∩ day-pill`) before the fix, and
+  pass after restoring it.
+- Full Playwright suites green in both apps (consumer: 10/10; gyms: 16/17 —
+  the one failure, `betaRisk.spec.ts`'s "Billing / Account" label
+  expectation, is a pre-existing mismatch identical on `origin/main`,
+  untouched by any Phase 6c commit).
+- Full engine unit suite: 819/819 passing. Lint clean (same pre-existing,
+  unrelated errors/warnings as prior commits, unchanged by this one).
