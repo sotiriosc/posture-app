@@ -98,6 +98,9 @@ describe("feedback-driven substitution", () => {
         pain: "severe",
         difficulty: "failed",
         completionRate: 0.4,
+        // deferred: true activates the repair-path hard-block (Phase 3.0-refinement).
+        // Until Phase 3.2 ships this flag is set explicitly in test fixtures.
+        deferred: true,
       },
     ]);
 
@@ -219,12 +222,25 @@ describe("feedback-driven substitution", () => {
       },
     ];
 
+    // Phase 3.0-refinement: pass explicit feedbackSummaryByExercise with deferred: true so
+    // repair-path hard-blocks apply.  recentLogs is still included for the recentlyUsedExerciseIds
+    // freshness signal; feedbackSummaryByExercise takes precedence over log-derived summaries.
+    const nextWeekFeedbackMap = makeSummaryMap([
+      {
+        exerciseId: riskyExerciseId,
+        pain: "severe",
+        difficulty: "failed",
+        completionRate: 0.4,
+        deferred: true,
+      },
+    ]);
     const nextWeek = generateWeeklyProgram(questionnaire, "substitution-next-week", {
       phaseIndex: current.phaseIndex ?? 1,
       weekIndex: (current.weekIndex ?? 1) + 1,
       cycleIndex: current.cycleIndex ?? 1,
       totalWeekIndex: (current.totalWeekIndex ?? current.weekIndex ?? 1) + 1,
       recentLogs,
+      feedbackSummaryByExercise: nextWeekFeedbackMap,
       seed: "feedback-next-cycle-seed",
     });
 

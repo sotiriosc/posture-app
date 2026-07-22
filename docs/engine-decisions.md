@@ -175,3 +175,56 @@ and appends to it when a candidate is hard-blocked.
 | `lowerSlotPurityRescueIds` hardcoded arrays | `program.ts` | LOW | Only contains specific lower-body exercises (squat/hinge families); none are horizontal-pull penalized candidates. |
 | `applyFinalCountCompatibility` dedup inline `exercises.find` | `program.ts` | LOW | Fires only when a slot already contains a duplicate; with hard-blocks applied upstream the dedup path is unlikely to encounter a penalized exercise. Phase 3W. |
 
+
+---
+
+## Phase 3.0-refinement — Deferred Guard (2026-07-21)
+
+### ED-3.0.2 — Replace Pain/Difficulty Hard-Block with Deferred Flag
+
+**Context:** PR #14 delivered nine hard-block paths that silently prevented exercises with
+`pain === "severe"` OR `difficulty === "failed"` from being selected or repair-inserted.
+While architecturally correct, this semantic is wrong for the product philosophy: silent
+skips train users toward easy work and remove the coaching moment.
+
+**Decision ratified by Sotirios (2026-07-21):** Replace the hard-block condition with
+`deferred === true`.
+
+**Semantics:**
+- `deferred: true` is set **exclusively** by user response to the Phase 3.2
+  Sacrifice/Test/Modify next-session prompt.  The engine never sets it automatically.
+- At **initial selection** (`pickFirstEligibleId`): hard-block is removed entirely.
+  Feedback-flagged exercises are re-scored with the existing heavy penalty
+  (`getFeedbackSelectionScoreBonus`, `shouldAvoidFeedbackRiskCandidate`) but remain in
+  the pool.  They will not win selection unless no penalised alternatives exist.
+- At **repair-insertion paths** (eight functions): hard-block condition changes from
+  `pain === "severe" || difficulty === "failed"` to `deferred === true`.  A deferred
+  exercise cannot be silently re-inserted by any repair pass.
+
+**Type change:** `ExerciseFeedbackSummary.deferred?: boolean` added to `logStore.ts`.
+
+**Until Phase 3.2 ships:** Tests that must assert "penalised exercise doesn't come back"
+set `deferred: true` explicitly in their fixtures.  Real user sessions without a Phase 3.2
+response will not have `deferred` set; those exercises are score-penalised at initial
+selection but not hard-blocked from repair paths.  This is intentional — the engine offers
+the exercise again so the user has the opportunity to engage with the Phase 3.2 prompt.
+
+**Phase 3.2 preview (Sacrifice / Test / Modify):**
+- **Sacrifice** — user explicitly ends the exercise for this phase; tags it for
+  phase-transition retest; sets `deferred: true`; feeds Phase 3.5 gating signals.
+- **Test** — keeps the exercise in but auto-sacrifices on second flag.
+- **Modify** — regresses one rung on the exercise's ladder.
+
+**Eight repair paths changed** (guard: `deferred === true` instead of `pain/difficulty`):
+
+| Function | Change |
+|---|---|
+| `pickFirstEligibleId` | **Hard-block removed** — score-based avoidance only |
+| `pickDistinctReplacement` (`isDeferredForSection`) | `deferred === true` |
+| `pickPaddingMain` | `deferred === true` |
+| `findReplacementExerciseForRule` | `deferred === true` |
+| `findBestMainCandidateForRequiredPattern` | `deferred === true` |
+| `ensureDayHasDumbbellMain` | `deferred === true` |
+| `pickFirstBackChestCandidateByIds` | `deferred === true`; trace: "deferred by user" |
+| `repairBackChestMainIntelligence` | `deferred === true`; trace: "deferred by user" |
+| `findFinalRoleLegalityReplacement` | `deferred === true` |

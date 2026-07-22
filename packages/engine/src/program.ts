@@ -1949,18 +1949,19 @@ const pickDistinctReplacement = (params: {
       )[0] ?? null;
   if (swapCandidate) return swapCandidate;
 
-  // Phase 3.0 fix: hard-block directly-penalized main exercises from uniqueness swaps.
-  const isDirectlyFeedbackBlockedForSection = (candidate: Exercise): boolean => {
+  // Phase 3.0-refinement: hard-block deferred exercises from uniqueness swaps.
+  // deferred===true is set by user response to the Phase 3.2 Sacrifice/Test/Modify prompt.
+  const isDeferredForSection = (candidate: Exercise): boolean => {
     if (item.section !== "main") return false;
     if (!context?.feedbackSummaryByExercise.size) return false;
     const summary = context.feedbackSummaryByExercise.get(candidate.id);
-    return Boolean(summary && (summary.pain === "severe" || summary.difficulty === "failed"));
+    return summary?.deferred === true;
   };
 
   const pool = exercises.filter((candidate) => {
     if (candidate.id === current.id) return false;
     if (usedIds.has(candidate.id)) return false;
-    if (isDirectlyFeedbackBlockedForSection(candidate)) return false;
+    if (isDeferredForSection(candidate)) return false;
     if (!isDistinctReplacementEligible(candidate)) {
       return false;
     }
@@ -1981,7 +1982,7 @@ const pickDistinctReplacement = (params: {
   const relaxedPool = exercises.filter((candidate) => {
     if (candidate.id === current.id) return false;
     if (usedIds.has(candidate.id)) return false;
-    if (isDirectlyFeedbackBlockedForSection(candidate)) return false;
+    if (isDeferredForSection(candidate)) return false;
     if (!isDistinctReplacementEligible(candidate)) {
       return false;
     }
@@ -2102,12 +2103,10 @@ const applyFinalCountCompatibility = (params: {
     return exercises.find((exercise) => {
       if (usedIds.has(exercise.id)) return false;
       if (exercise.category !== "main") return false;
-      // Phase 3.0 fix: hard-block directly-penalized exercises from count-compatibility padding.
+      // Phase 3.0-refinement: hard-block deferred exercises from count-compatibility padding.
       if (selectionContext.feedbackSummaryByExercise.size > 0) {
         const summary = selectionContext.feedbackSummaryByExercise.get(exercise.id);
-        if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
-          return false;
-        }
+        if (summary?.deferred === true) return false;
       }
       if (!matchesMainLanePattern(exercise, lane)) return false;
       if (
@@ -2967,12 +2966,10 @@ const findReplacementExerciseForRule = (params: {
 
   const scoredCandidates = Array.from(candidateMap.values())
     .filter((candidate) => {
-      // Phase 3.0 fix: hard-block directly-penalized exercises from contract repair.
+      // Phase 3.0-refinement: hard-block deferred exercises from contract repair.
       if (currentItem.section === "main" && selectionContext.feedbackSummaryByExercise.size > 0) {
         const summary = selectionContext.feedbackSummaryByExercise.get(candidate.id);
-        if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
-          return false;
-        }
+        if (summary?.deferred === true) return false;
       }
       if (
         requiredRule &&
@@ -4386,12 +4383,10 @@ const findBestMainCandidateForRequiredPattern = (params: {
       if (exercise.category !== "main") return false;
       // Contract repair never duplicates exercises inside a day.
       if (usedIds.has(exercise.id)) return false;
-      // Phase 3.0 fix: hard-block directly-penalized exercises from contract repair.
+      // Phase 3.0-refinement: hard-block deferred exercises from contract repair.
       if (context.selectionContext.feedbackSummaryByExercise.size > 0) {
         const summary = context.selectionContext.feedbackSummaryByExercise.get(exercise.id);
-        if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
-          return false;
-        }
+        if (summary?.deferred === true) return false;
       }
       if (!matchesRule(exercise, requiredRule, "main")) return false;
       if (
@@ -4971,12 +4966,10 @@ const ensureDayHasDumbbellMain = (params: {
           if (candidate.category !== "main") return false;
           if (!candidate.equipment.includes("dumbbells")) return false;
           if (usedWithoutCurrent.has(candidate.id)) return false;
-          // Phase 3.0 fix: hard-block directly-penalized exercises from dumbbell-main guarantee.
+          // Phase 3.0-refinement: hard-block deferred exercises from dumbbell-main guarantee.
           if (context.selectionContext.feedbackSummaryByExercise.size > 0) {
             const summary = context.selectionContext.feedbackSummaryByExercise.get(candidate.id);
-            if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
-              return false;
-            }
+            if (summary?.deferred === true) return false;
           }
           if (isShouldersArmsDayTitle(day.title)) {
             if (
@@ -9763,13 +9756,12 @@ const pickFirstBackChestCandidateByIds = (params: {
     const exercise = exerciseById(id);
     if (!exercise) continue;
     if (usedIds.has(exercise.id)) continue;
-    // Phase 3.0 fix: hard-block directly-penalized exercises.
-    // Threshold: pain === "severe" OR difficulty === "failed".
+    // Phase 3.0-refinement: hard-block deferred exercises from anchor selection.
+    // deferred===true is set by user response to the Phase 3.2 Sacrifice/Test/Modify prompt.
     if (section === "main" && context.selectionContext.feedbackSummaryByExercise.size > 0) {
       const summary = context.selectionContext.feedbackSummaryByExercise.get(exercise.id);
-      if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
-        const reason = summary.pain === "severe" ? "severe pain flag" : "failure flag";
-        decisionTrace?.push(`skipped anchor candidate ${exercise.id}: ${reason}`);
+      if (summary?.deferred === true) {
+        decisionTrace?.push(`skipped anchor candidate ${exercise.id}: deferred by user`);
         continue;
       }
     }
@@ -12599,12 +12591,14 @@ const repairBackChestMainIntelligence = (params: {
   // covers (a) pickFirstBackChestCandidateByIds, (b) fallbackCurrentEligible,
   // and (c) the last-resort exercises-array scan — all three check usedIds.
   // Ratified threshold (Sotirios 2026-07-21): pain === "severe" OR difficulty === "failed".
+  // Phase 3.0-refinement: pre-populate usedIds with exercises the user deferred
+  // (deferred===true set by Phase 3.2 Sacrifice/Test/Modify prompt) so that all
+  // downstream anchor/fly/scapular picks in this function bypass them.
   const feedbackRepairTrace: string[] = [];
   for (const [exerciseId, summary] of context.selectionContext.feedbackSummaryByExercise) {
-    if (summary.pain === "severe" || summary.difficulty === "failed") {
-      const reason = summary.pain === "severe" ? "severe pain flag" : "failure flag";
+    if (summary.deferred === true) {
       usedIds.add(exerciseId);
-      feedbackRepairTrace.push(`skipped anchor candidate ${exerciseId}: ${reason}`);
+      feedbackRepairTrace.push(`skipped anchor candidate ${exerciseId}: deferred by user`);
     }
   }
 
@@ -19733,13 +19727,10 @@ const findFinalRoleLegalityReplacement = (params: {
     .filter((candidate) => {
       if (candidate.id === current.exerciseId) return false;
       if (usedIds.has(candidate.id)) return false;
-      // Phase 3.0 fix: hard-block directly-penalized exercises from repair paths.
-      // Same threshold as pickFirstEligibleId: pain==="severe" OR difficulty==="failed".
+      // Phase 3.0-refinement: hard-block deferred exercises from legality repair.
       if (section === "main" && context.selectionContext.feedbackSummaryByExercise.size > 0) {
         const summary = context.selectionContext.feedbackSummaryByExercise.get(candidate.id);
-        if (summary && (summary.pain === "severe" || summary.difficulty === "failed")) {
-          return false;
-        }
+        if (summary?.deferred === true) return false;
       }
       if (
         !isExerciseEligibleForProgramContext({
@@ -28147,32 +28138,18 @@ const pickFirstEligibleId = (
     })
     .sort((left, right) => right.score - left.score);
 
-  // Phase 3.0 fix: exercises whose own ID is directly in the feedback map with
-  // pain==="severe" OR difficulty==="failed" are hard-blocked from selection.
-  // This is a DIRECT lookup (not via resolveExerciseHistoryIds) so that related
-  // exercises (e.g., swap options that share a history group) are NOT blocked —
-  // they are merely score-penalised by the existing getFeedbackSelectionScoreBonus.
-  // Ratified threshold (Sotirios 2026-07-21): pain === "severe" OR difficulty === "failed".
-  const isDirectlyFeedbackBlocked =
-    section === "main" && context.feedbackSummaryByExercise.size > 0
-      ? (exercise: Exercise): boolean => {
-          const summary = context.feedbackSummaryByExercise.get(exercise.id);
-          return Boolean(
-            summary && (summary.pain === "severe" || summary.difficulty === "failed")
-          );
-        }
-      : (_exercise: Exercise) => false;
-
-  // Unblocked pool: the hard-blocked exercises are held back unless no other
-  // candidates survive (they are re-admitted via feedbackFallbackEligible below).
-  const unblockedEligible = eligible.filter(
-    (entry) => !isDirectlyFeedbackBlocked(entry.exercise)
-  );
-  const poolForSplit = unblockedEligible.length > 0 ? unblockedEligible : eligible;
-
+  // Phase 3.0-refinement: at initial selection, feedback-flagged exercises are
+  // re-scored (heavy penalty via getFeedbackSelectionScoreBonus) but NOT
+  // hard-blocked.  Hard-blocking by deferred===true happens only in the eight
+  // repair-insertion paths (pickDistinctReplacement, pickPaddingMain,
+  // findReplacementExerciseForRule, findBestMainCandidateForRequiredPattern,
+  // ensureDayHasDumbbellMain, pickFirstBackChestCandidateByIds,
+  // repairBackChestMainIntelligence, findFinalRoleLegalityReplacement).
+  // This preserves the coaching moment: the engine proposes, the user decides
+  // (Phase 3.2 Sacrifice/Test/Modify prompt sets deferred===true).
   const safeEligible =
     section === "main"
-      ? poolForSplit.filter(
+      ? eligible.filter(
           (entry) =>
             !shouldAvoidFeedbackRiskCandidate({
               exercise: entry.exercise,
@@ -28182,11 +28159,11 @@ const pickFirstEligibleId = (
               auditMeta,
             })
         )
-      : poolForSplit;
+      : eligible;
 
   const riskyEligible =
     section === "main"
-      ? poolForSplit.filter((entry) =>
+      ? eligible.filter((entry) =>
           shouldAvoidFeedbackRiskCandidate({
             exercise: entry.exercise,
             section,
@@ -28300,11 +28277,11 @@ const pickFirstEligibleId = (
           .sort((left, right) => right.score - left.score)
       : [];
 
-  // Choice pool priority (Phase 3.0):
-  //  1. safeEligible        — unblocked + no history-risk signal (best)
-  //  2. feedbackFallbackEligible — exercises outside the original candidates list
-  //  3. riskyEligible       — unblocked but history-tainted (still beats hard-blocked)
-  //  4. eligible            — last resort, includes hard-blocked exercises
+  // Choice pool priority (Phase 3.0-refinement):
+  //  1. safeEligible              — no history-risk signal (best)
+  //  2. feedbackFallbackEligible  — exercises outside the original candidates list
+  //  3. riskyEligible             — history-tainted but score-penalised
+  //  4. eligible                  — full scored pool (last resort)
   const choicePool = safeEligible.length
     ? safeEligible
     : feedbackFallbackEligible.length

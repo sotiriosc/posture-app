@@ -43,6 +43,15 @@ export type ExerciseFeedbackSummary = {
   pain: "none" | "mild" | "moderate" | "severe";
   difficulty: "easy" | "normal" | "hard" | "failed";
   completionRate: number;
+  /**
+   * Phase 3.2: set exclusively by user response to the Sacrifice/Test/Modify
+   * next-session prompt.  When true, the engine hard-blocks this exercise from
+   * every repair-insertion path.  At initial selection the exercise is
+   * re-scored (heavy penalty) but never silently dropped without user consent.
+   * Until Phase 3.2 ships, callers must set this flag explicitly in fixtures to
+   * trigger the hard-block in tests.
+   */
+  deferred?: boolean;
 };
 
 const painRank: Record<ExerciseFeedbackSummary["pain"], number> = {

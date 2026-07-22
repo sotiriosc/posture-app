@@ -188,6 +188,9 @@ describe("session feedback influences main selection", () => {
         pain: "none",
         difficulty: "failed",
         completionRate: 0.5,
+        // deferred: true activates the repair-path hard-block (Phase 3.0-refinement).
+        // Until Phase 3.2 ships this flag is set explicitly in test fixtures.
+        deferred: true,
       },
     ]);
 
