@@ -1,5 +1,45 @@
 import type { WarmupBlock } from "@/lib/program/warmupLibrary";
 
+/**
+ * Aggregated per-exercise feedback summary computed from recent ExerciseLogs.
+ * Defined in logStore.ts; re-exported here as a first-class public type.
+ * Phase 3.0-refinement (ED-3.0.2): deferred flag is set by user response to
+ * the Phase 3.2 Sacrifice/Test/Modify prompt — never set automatically.
+ */
+export type ExerciseFeedbackSummary = {
+  exerciseId: string;
+  pain: "none" | "mild" | "moderate" | "severe";
+  difficulty: "easy" | "normal" | "hard" | "failed";
+  completionRate: number;
+  deferred?: boolean;
+};
+
+/**
+ * Per-pattern ladder rung tracking.  Updated on each program generation cycle.
+ * Phase 3: criteria-based progression engine.
+ */
+export type LadderRungState = {
+  /** Exercise ID of the current rung for this pattern. */
+  exerciseId: string;
+  /** Canonical pattern key (e.g. "hinge", "horizontal_pull"). */
+  pattern: string;
+  /** Difficulty level 1–5 of the current exercise. */
+  difficulty: number;
+  /** Consecutive clean sessions accumulated since last regression (or init). */
+  cleanSessionsCount: number;
+  /** Sessions required before an advance attempt (2 normally; 3 after REG-2 hysteresis). */
+  requiredForAdvance: number;
+  /** True when hysteresis is active (3 clean sessions required). */
+  inHysteresis: boolean;
+  /** Human-readable trace of the last advance/hold/regress decision. */
+  lastDecisionTrace: string;
+};
+
+export type LadderState = {
+  /** Keyed by canonical pattern name. */
+  byPattern: Record<string, LadderRungState>;
+};
+
 export type SessionFeedback = {
   completed?: "yes" | "partial" | "no";
   difficultyRPE?: number;
@@ -319,6 +359,11 @@ export type Program = {
     masteryChecks: string[];
   };
   week: ProgramDay[];
+  /**
+   * Phase 3: per-pattern ladder rung state.  Written on each generation cycle.
+   * Undefined on programs generated before Phase 3 (treated as "no history").
+   */
+  ladderState?: LadderState;
   source: "local" | "cloud";
   deletedAt: string | null;
 };
