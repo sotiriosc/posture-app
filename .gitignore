@@ -26,6 +26,13 @@
 .DS_Store
 *.pem
 /data/*.json
+# per-app runtime data (e.g. e2e-seeded user store)
+**/data/*.json
+
+# playwright artifacts
+**/test-results/
+**/playwright-report/
+**/.playwright/
 
 # debug
 npm-debug.log*
