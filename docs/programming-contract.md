@@ -149,3 +149,44 @@ Flexible:
 
 Tests should prefer identity anchors and family buckets for flexible areas, and
 exact assertions only where the product contract requires fixed behavior.
+
+---
+
+## Phase 4 — Assessment Observation Language Contract
+
+Every user-facing posture statement is an **OBSERVATION with its measurement**, never a
+diagnosis, judgment, or prescription. This applies to the full pipeline: `generateObservations`
+in `poseAnalyzer.ts`, reason strings in `derivePoseFocus`, and any UI copy that renders them.
+
+### Copy rules
+
+| ✅ Allowed | ❌ Forbidden |
+|---|---|
+| "Head position measured 0.11 forward of shoulder line (threshold 0.08)." | "You have forward head posture." (diagnosis) |
+| "Shoulder blade asymmetry measured 0.07 (threshold 0.06)." | "Your posture is bad." (judgment) |
+| "Torso lean measured 7.2 degrees (threshold 6)." | "Fix your neck alignment." (prescription without evidence) |
+| "Insufficient keypoint confidence on shoulder pair — observation suppressed." | Any claim made from low-confidence keypoints |
+
+### Reason string format
+
+Every focus-tag reason string produced by `derivePoseFocus` MUST follow the pattern:
+
+```
+[Metric name] measured [value] [direction] of [reference point] (threshold [N]).
+```
+
+or for a suppressed observation:
+
+```
+Insufficient keypoint confidence — [observation name] suppressed.
+```
+
+Verbatim surfacing: reason strings are displayed directly in the UI beneath each focus tag.
+They are NOT rewritten by the UI layer. Engineers must write copy-ready prose in the engine.
+
+### Confidence gate status
+
+When `derivePoseFocus` returns `status: "insufficient_confidence"`, the UI must render
+the `message` field directly — no rewriting. The authoritative copy is:
+
+> "Photo wasn't clear enough for posture observations. Retake, or continue without posture biasing."

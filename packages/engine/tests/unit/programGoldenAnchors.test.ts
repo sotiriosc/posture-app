@@ -1570,3 +1570,166 @@ describe("Phase 3.5 — phase gating golden anchor personas", () => {
     });
   });
 });
+
+// ---------------------------------------------------------------------------
+// Phase 4 — Assessment Truth Loop golden anchor personas
+// ---------------------------------------------------------------------------
+
+import {
+  derivePoseFocus,
+  CONFIDENCE_FLOOR,
+} from "@/lib/engine/poseFocus";
+import {
+  computeFocusTagLifecycleUpdate,
+  shouldPromptRetest,
+  RETEST_SESSION_CADENCE,
+  RETIREMENT_STRONG_CLEAR_FACTOR,
+  type AssessmentSnapshot,
+} from "@/lib/types";
+import type { PoseAnalysis } from "@/lib/poseAnalyzer";
+
+const _makeAnalysis4 = (overrides: Partial<PoseAnalysis>): PoseAnalysis => ({
+  metrics: {
+    torsoHeight: null,
+    avgKeypointScore: null,
+    shoulderHeightDelta: null,
+    hipHeightDelta: null,
+    kneeAlignmentDelta: null,
+    headForwardOffset: null,
+    torsoLeanAngle: null,
+    hipToShoulderAlignment: null,
+    scapularSymmetry: null,
+    hipShift: null,
+  },
+  observations: [],
+  priorities: [],
+  confidenceScore: 0.8,
+  ...overrides,
+});
+
+const _makeAssessmentSnap = (measuredValue: number, ts: string): AssessmentSnapshot => ({
+  timestamp: ts,
+  phase: 0,
+  confidenceScore: 0.85,
+  observations: [{ focusTag: "forward_head", measuredValue, threshold: 0.08, keypointConfidences: [0.85, 0.85] }],
+  status: "accepted",
+});
+
+describe("Phase 4 — golden anchor personas", () => {
+  // ── Persona: Low-confidence photo ────────────────────────────────────────
+  describe("low-confidence-photo persona — blurred keypoints → no biasing", () => {
+    test("below CONFIDENCE_FLOOR → derivePoseFocus returns zero tags", () => {
+      const blurredPose = _makeAnalysis4({
+        confidenceScore: CONFIDENCE_FLOOR - 0.05,
+        metrics: {
+          torsoHeight: null,
+          avgKeypointScore: CONFIDENCE_FLOOR - 0.05,
+          shoulderHeightDelta: null,
+          hipHeightDelta: null,
+          kneeAlignmentDelta: null,
+          headForwardOffset: 0.15,
+          torsoLeanAngle: null,
+          hipToShoulderAlignment: null,
+          scapularSymmetry: null,
+          hipShift: null,
+        },
+        observations: [],
+        priorities: [],
+      });
+      const result = derivePoseFocus(blurredPose);
+      expect(result.focusTags).toHaveLength(0);
+      expect(result.status).toBe("insufficient_confidence");
+    });
+
+    test("low-confidence photo: program falls back to symmetric plan (no pose focus tags)", () => {
+      const blurredPose = _makeAnalysis4({ confidenceScore: CONFIDENCE_FLOOR - 0.05 });
+      const result = derivePoseFocus(blurredPose);
+      // With no focus tags, generateWeeklyProgram produces no pose-biased selection.
+      // This is verified by the empty focusTags.
+      expect(result.focusTags).toHaveLength(0);
+    });
+  });
+
+  // ── Persona: Cleared forward head ────────────────────────────────────────
+  describe("cleared-forward-head persona — baseline flagged, 2 retests clear, tag retires", () => {
+    const baseline = _makeAssessmentSnap(0.11, "2026-06-01T10:00:00.000Z");
+    const retest1 = _makeAssessmentSnap(0.07, "2026-07-01T10:00:00.000Z");
+    const retest2 = _makeAssessmentSnap(0.07, "2026-07-22T10:00:00.000Z");
+
+    test("tag not retired after 1 clear retest", () => {
+      const state = computeFocusTagLifecycleUpdate({
+        focusTag: "forward_head",
+        baselineSnapshot: baseline,
+        retestSnapshots: [retest1],
+        evaluatedAt: "2026-07-01T10:00:00.000Z",
+      });
+      expect(state.retiredAt).toBeUndefined();
+    });
+
+    test("tag retires after 2 consecutive clear retests", () => {
+      const state = computeFocusTagLifecycleUpdate({
+        focusTag: "forward_head",
+        baselineSnapshot: baseline,
+        retestSnapshots: [retest1, retest2],
+        evaluatedAt: "2026-07-22T10:00:00.000Z",
+      });
+      expect(state.retiredAt).toBeDefined();
+      expect(state.retirementTrace).toContain("corrective slot reallocated");
+    });
+
+    test("retirement trace names the focus tag", () => {
+      const state = computeFocusTagLifecycleUpdate({
+        focusTag: "forward_head",
+        baselineSnapshot: baseline,
+        retestSnapshots: [retest1, retest2],
+        evaluatedAt: "2026-07-22T10:00:00.000Z",
+      });
+      expect(state.retirementTrace).toContain("forward_head");
+    });
+  });
+
+  // ── Persona: Worsening scapula ────────────────────────────────────────────
+  describe("worsening-scapula persona — retest ≥20% worse → escalation bump", () => {
+    const scapBaseline: AssessmentSnapshot = {
+      timestamp: "2026-06-01T10:00:00.000Z",
+      phase: 0,
+      confidenceScore: 0.85,
+      observations: [{ focusTag: "scapular_control", measuredValue: 0.08, threshold: 0.06, keypointConfidences: [0.85, 0.85] }],
+      status: "accepted",
+    };
+
+    test("high-confidence photo 20%+ worse triggers escalation bump", () => {
+      const worseRetest: AssessmentSnapshot = {
+        timestamp: "2026-07-22T10:00:00.000Z",
+        phase: 0,
+        confidenceScore: 0.85,
+        observations: [{ focusTag: "scapular_control", measuredValue: 0.08 * 1.25, threshold: 0.06, keypointConfidences: [0.85, 0.85] }],
+        status: "accepted",
+      };
+      const state = computeFocusTagLifecycleUpdate({
+        focusTag: "scapular_control",
+        baselineSnapshot: scapBaseline,
+        retestSnapshots: [worseRetest],
+        evaluatedAt: "2026-07-22T10:00:00.000Z",
+      });
+      expect(state.escalationBumps).toBe(1);
+      expect(state.escalatedAt).toBeDefined();
+      expect(state.escalationTrace).toContain("scapular_control");
+    });
+  });
+
+  // ── Retest cadence ───────────────────────────────────────────────────────
+  describe("retest cadence — session count trigger", () => {
+    test(`retest not prompted before ${RETEST_SESSION_CADENCE} sessions`, () => {
+      expect(shouldPromptRetest({ sessionCount: RETEST_SESSION_CADENCE - 1, phaseTransitionOccurred: false, lastRetestSessionCount: 0 })).toBe(false);
+    });
+
+    test(`retest prompted at session ${RETEST_SESSION_CADENCE}`, () => {
+      expect(shouldPromptRetest({ sessionCount: RETEST_SESSION_CADENCE, phaseTransitionOccurred: false, lastRetestSessionCount: 0 })).toBe(true);
+    });
+
+    test("retest always prompted at phase transition", () => {
+      expect(shouldPromptRetest({ sessionCount: 5, phaseTransitionOccurred: true, lastRetestSessionCount: 0 })).toBe(true);
+    });
+  });
+});

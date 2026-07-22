@@ -129,9 +129,16 @@ export function usePoseAssessment({
             scapularSymmetry: metricsByView.back?.scapularSymmetry ?? null,
             hipShift: metricsByView.back?.hipShift ?? null,
           },
-          observations: observations.length
-            ? observations
-            : ["We couldn’t reliably detect posture landmarks in these photos."],
+          observations: (() => {
+            // Phase 4 — Two-view: append suppressed side-view note when no side photo.
+            const sideViewNote = !metricsByView.side
+              ? ["Side view not provided — forward-head and torso-lean observations suppressed. Side photo recommended for full assessment."]
+              : [];
+            const allObservations = [...observations, ...sideViewNote];
+            return allObservations.length
+              ? allObservations
+              : ["We couldn’t reliably detect posture landmarks in these photos."];
+          })(),
           priorities: Array.from(new Set(priorities)).slice(0, 4),
           confidenceScore: confidenceScores.length
             ? confidenceScores.reduce((sum, value) => sum + value, 0) /

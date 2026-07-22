@@ -42,6 +42,8 @@ export const mergeDecisionTrace = (
       patch.dayIdentityBonusOrPenalty ?? base.dayIdentityBonusOrPenalty,
     fatigueOverlapPenalty:
       patch.fatigueOverlapPenalty ?? base.fatigueOverlapPenalty,
+    // Phase 4 — preserve the first sourceObservation seen (patch wins if set).
+    sourceObservation: patch.sourceObservation ?? base.sourceObservation,
   };
 };
 

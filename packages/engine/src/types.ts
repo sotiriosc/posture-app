@@ -341,6 +341,13 @@ export type ProgramSelectionDecisionTrace = {
    *   "dropped"    = last-resort drop; see ProgramDay.degradationNotes for user msg
    */
   degradationReason?: "degraded-a" | "degraded-b" | "degraded-c" | "dropped";
+  /**
+   * Phase 4 — Because → Therefore surfacing.
+   * Present when this exercise was biased by a posture focus tag.  Contains
+   * the verbatim reason string from derivePoseFocus so the UI can render:
+   * "[exercise name] — chosen because [sourceObservation]."
+   */
+  sourceObservation?: string;
 };
 
 export type ProgramSelectionDebug = {
@@ -463,13 +470,205 @@ export type Program = {
    * before Phase 3.5 or without session history.
    */
   phaseTransitionState?: PhaseTransitionState;
+  /**
+   * Phase 4 — Assessment history.  One snapshot per accepted/retested assessment.
+   * Append-only.  Used by the tag lifecycle evaluator.
+   * Undefined on programs generated before Phase 4.
+   */
+  assessmentHistory?: AssessmentSnapshot[];
+  /**
+   * Phase 4 — Per-tag lifecycle state.  Keyed by focusTag.
+   * Written by computeFocusTagLifecycleUpdate.
+   * Undefined on programs generated before Phase 4.
+   */
+  focusTagLifecycle?: Record<string, FocusTagLifecycleState>;
   source: "local" | "cloud";
   deletedAt: string | null;
 };
 
 // ---------------------------------------------------------------------------
-// Phase 3.5 — Phase Gating types
+// Phase 4 — Assessment history types
 // ---------------------------------------------------------------------------
+
+/**
+ * A single observation within an assessment snapshot, carrying the raw
+ * measurement values needed for retirement/escalation comparisons.
+ */
+export type AssessmentObservationRecord = {
+  focusTag: string;
+  measuredValue: number;
+  threshold: number;
+  /** Minimum keypoint confidence among keypoints that contributed to this observation. */
+  keypointConfidences: number[];
+};
+
+/**
+ * Phase 4 — Persisted snapshot of a single assessment event.
+ * Written when a new pose analysis is accepted into the program.
+ * Used by the tag lifecycle evaluator to determine retirement and escalation.
+ */
+export type AssessmentSnapshot = {
+  /** ISO timestamp of when the assessment was taken (user-device time). */
+  timestamp: string;
+  /** Phase index at time of assessment. */
+  phase: number;
+  /** Overall pose confidenceScore from poseAnalyzer. */
+  confidenceScore: number;
+  /** Per-tag measurement records. */
+  observations: AssessmentObservationRecord[];
+  /** Acceptance status of this snapshot. */
+  status: "accepted" | "insufficient_confidence" | "user_retook";
+};
+
+/**
+ * Phase 4 — Tag lifecycle state for a single focus tag.
+ * Persisted per-tag to track retest history and retirement decisions.
+ */
+export type FocusTagLifecycleState = {
+  focusTag: string;
+  /** Timestamp of first detection. */
+  firstSeenAt: string;
+  /**
+   * Retirement decision, if any.
+   * Written when retirement conditions are met.
+   */
+  retiredAt?: string;
+  retirementTrace?: string;
+  /**
+   * Escalation decision, if any.
+   * Written when a retest shows ≥20% worse than baseline on high-confidence photo.
+   */
+  escalatedAt?: string;
+  escalationTrace?: string;
+  /** Number of corrective emphasis bumps applied (bounded; max 1 per retest). */
+  escalationBumps: number;
+};
+
+// ---------------------------------------------------------------------------
+// Phase 4 — Retest cadence constants
+// ---------------------------------------------------------------------------
+
+/** Prompt for retest every N sessions if no phase transition has occurred first. */
+export const RETEST_SESSION_CADENCE = 28;
+
+/** Retirement: metric must be ≥ this fraction BELOW threshold (strong clear). */
+export const RETIREMENT_STRONG_CLEAR_FACTOR = 0.15;
+
+/** Escalation: metric must be ≥ this fraction ABOVE baseline to bump corrective emphasis. */
+export const ESCALATION_WORSE_FACTOR = 0.20;
+
+// ---------------------------------------------------------------------------
+// Phase 4 — Assessment history
+// ---------------------------------------------------------------------------
+
+/**
+ * Computes the tag lifecycle state from a list of assessment snapshots.
+ *
+ * Retirement conditions:
+ *   (a) 2 consecutive retests show metric clears its threshold, OR
+ *   (b) 1 retest shows metric ≥15% under threshold (strong clear).
+ *
+ * Escalation condition:
+ *   A retest shows metric ≥20% worse than baseline on a high-confidence photo
+ *   (confidenceScore ≥ CONFIDENCE_FLOOR).  Bounded to 1 bump per retest.
+ *
+ * Deterministic: evaluates from persisted history only, no Date.now().
+ */
+export function computeFocusTagLifecycleUpdate(params: {
+  focusTag: string;
+  baselineSnapshot: AssessmentSnapshot;
+  retestSnapshots: AssessmentSnapshot[];
+  /** Timestamp to use for retiredAt / escalatedAt writes. */
+  evaluatedAt: string;
+  priorState?: FocusTagLifecycleState;
+}): FocusTagLifecycleState {
+  const { focusTag, baselineSnapshot, retestSnapshots, evaluatedAt, priorState } = params;
+
+  const prior: FocusTagLifecycleState = priorState ?? {
+    focusTag,
+    firstSeenAt: baselineSnapshot.timestamp,
+    escalationBumps: 0,
+  };
+
+  if (prior.retiredAt) {
+    return prior;
+  }
+
+  const baseline = baselineSnapshot.observations.find((obs) => obs.focusTag === focusTag);
+  if (!baseline) {
+    return prior;
+  }
+
+  let consecutiveClears = 0;
+  let escalationApplied = false;
+  const updatedBumps = prior.escalationBumps;
+
+  for (const snapshot of retestSnapshots) {
+    const obs = snapshot.observations.find((o) => o.focusTag === focusTag);
+    if (!obs) continue;
+
+    const metricClears = obs.measuredValue < obs.threshold;
+    const strongClear = obs.measuredValue <= obs.threshold * (1 - RETIREMENT_STRONG_CLEAR_FACTOR);
+    const highConfidence = snapshot.confidenceScore >= 0.55;
+
+    if (metricClears) {
+      consecutiveClears += 1;
+
+      if (strongClear) {
+        const retirementTrace = `${focusTag} focus retired — strong clear: metric ${obs.measuredValue.toFixed(3)} ≥${(RETIREMENT_STRONG_CLEAR_FACTOR * 100).toFixed(0)}% under threshold ${obs.threshold} — corrective slot reallocated.`;
+        return { ...prior, retiredAt: evaluatedAt, retirementTrace, escalationBumps: updatedBumps };
+      }
+
+      if (consecutiveClears >= 2) {
+        const firstRetestTs = retestSnapshots[0]?.timestamp ?? evaluatedAt;
+        const retirementTrace = `${focusTag} focus retired — retest cleared threshold on [${firstRetestTs} → ${evaluatedAt}] — corrective slot reallocated.`;
+        return { ...prior, retiredAt: evaluatedAt, retirementTrace, escalationBumps: updatedBumps };
+      }
+    } else {
+      consecutiveClears = 0;
+
+      if (
+        highConfidence &&
+        !escalationApplied &&
+        obs.measuredValue >= baseline.measuredValue * (1 + ESCALATION_WORSE_FACTOR)
+      ) {
+        escalationApplied = true;
+        const escalationTrace = `${focusTag} corrective emphasis bumped — retest metric ${obs.measuredValue.toFixed(3)} ≥${(ESCALATION_WORSE_FACTOR * 100).toFixed(0)}% worse than baseline ${baseline.measuredValue.toFixed(3)} — bump ${updatedBumps + 1}.`;
+        return {
+          ...prior,
+          escalatedAt: evaluatedAt,
+          escalationTrace,
+          escalationBumps: updatedBumps + 1,
+        };
+      }
+    }
+  }
+
+  return { ...prior, escalationBumps: updatedBumps };
+}
+
+/**
+ * Returns true if a retest prompt should be shown, given session count and
+ * whether a phase transition just occurred.
+ *
+ * Deterministic: uses sessionCount as the trigger, NOT Date.now().
+ */
+export function shouldPromptRetest(params: {
+  sessionCount: number;
+  phaseTransitionOccurred: boolean;
+  lastRetestSessionCount: number;
+}): boolean {
+  const { sessionCount, phaseTransitionOccurred, lastRetestSessionCount } = params;
+  if (phaseTransitionOccurred) return true;
+  const sessionsSinceLastRetest = sessionCount - lastRetestSessionCount;
+  return sessionsSinceLastRetest >= RETEST_SESSION_CADENCE;
+}
+
+// ---------------------------------------------------------------------------
+// Phase 4 — Assessment history on Program
+// ---------------------------------------------------------------------------
+
+// See Program.assessmentHistory below.
 
 /**
  * The result of evaluating a single gating criterion at a given session.

@@ -10,6 +10,7 @@ import {
   buildSignalsFromLocalState,
   generateProgram,
 } from "@/lib/engine";
+import { derivePoseFocus } from "@/lib/engine/poseFocus";
 import {
   PROGRAM_TEMPLATE_VERSION,
 } from "@/lib/program";
@@ -34,6 +35,7 @@ import type {
   ProgramRoutineItem,
   SessionRecord,
 } from "@/lib/types";
+import { shouldPromptRetest } from "@/lib/types";
 import {
   getProgramProgress,
   getLatestProgram,
@@ -159,6 +161,11 @@ type AssessmentStatusInfo = {
   title: string;
   body: string;
   chips: string[];
+  /**
+   * Phase 4 — Observation reason strings from derivePoseFocus, keyed by
+   * focus tag.  Rendered verbatim beneath the card title when present.
+   */
+  observationReasons?: Record<string, string>;
 };
 
 const photoViewLabelByKey: Record<string, string> = {
@@ -227,6 +234,48 @@ const hasPhotoDerivedAssessmentReport = (report: AssessmentReport | null) =>
     })
   );
 
+function RetestPromptCard({
+  onTakeRetest,
+  onSkip,
+}: {
+  onTakeRetest: () => void;
+  onSkip: () => void;
+}) {
+  return (
+    <section
+      className="ui-card order-2 border border-sky-300/30 bg-sky-400/10 px-4 py-3 text-sky-50 sm:px-5"
+      data-testid="retest-prompt-card"
+      aria-live="polite"
+    >
+      <p className="text-xs font-semibold uppercase tracking-wide opacity-70">
+        Posture Check-in
+      </p>
+      <h2 className="mt-1 text-base font-semibold">
+        Time to check in on your posture
+      </h2>
+      <p className="mt-1 text-sm leading-5 opacity-85">
+        Quick 2-photo capture — compare to your baseline.
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={onTakeRetest}
+          className="rounded-md bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-sky-400"
+        >
+          Take retest
+        </button>
+        <button
+          type="button"
+          onClick={onSkip}
+          className="rounded-md border border-sky-300/40 bg-sky-300/10 px-3 py-1.5 text-xs font-medium text-sky-100 hover:bg-sky-300/20"
+        >
+          Skip for now
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function AssessmentStatusCard({ status }: { status: AssessmentStatusInfo }) {
   const toneClasses: Record<AssessmentStatusTone, string> = {
     photo: "border-emerald-300/30 bg-emerald-400/10 text-emerald-50",
@@ -254,6 +303,16 @@ function AssessmentStatusCard({ status }: { status: AssessmentStatusInfo }) {
           </p>
           <h2 className="mt-1 text-base font-semibold">{status.title}</h2>
           <p className="mt-1 text-sm leading-5 opacity-85">{status.body}</p>
+          {status.observationReasons &&
+            Object.entries(status.observationReasons).length > 0 && (
+              <ul className="mt-2 space-y-1">
+                {Object.entries(status.observationReasons).map(([tag, reason]) => (
+                  <li key={tag} className="text-xs leading-5 opacity-70">
+                    {reason}
+                  </li>
+                ))}
+              </ul>
+            )}
         </div>
         <div className="flex shrink-0 flex-wrap gap-1.5 sm:max-w-xs sm:justify-end">
           {status.chips.map((chip) => (
@@ -822,6 +881,8 @@ export default function ResultsRoutine() {
   const [resetProgressWorking, setResetProgressWorking] = useState(false);
   const [resetProgressMessage, setResetProgressMessage] = useState<string | null>(null);
   const [levelUpNotice, setLevelUpNotice] = useState<LevelUpNotice | null>(null);
+  // Phase 4 — retest prompt dismissed state (defers to next transition).
+  const [retestPromptDismissed, setRetestPromptDismissed] = useState(false);
   const knowledgeSectionRef = useRef<HTMLDivElement | null>(null);
   const systemAdjustmentsSectionRef = useRef<HTMLDivElement | null>(null);
   const weekViewSectionRef = useRef<HTMLElement | null>(null);
@@ -936,6 +997,23 @@ export default function ResultsRoutine() {
     }
 
     if (hasPhotoAnalysis) {
+      // Phase 4 — Confidence gate: if poseFocus says insufficient_confidence,
+      // surface the honest message instead of claiming the photo guided the plan.
+      const poseFocusResult = poseState.analysis
+        ? derivePoseFocus(poseState.analysis)
+        : null;
+
+      if (poseFocusResult?.status === "insufficient_confidence") {
+        return {
+          tone: "failed" as const,
+          title: "Photo quality insufficient",
+          body:
+            poseFocusResult.message ??
+            "Photo wasn't clear enough for posture observations. Retake, or continue without posture biasing.",
+          chips: [confidenceChip ?? "Low confidence"].filter(Boolean) as string[],
+        };
+      }
+
       return {
         tone: "photo",
         title: "Photos informed this plan",
@@ -946,6 +1024,10 @@ export default function ResultsRoutine() {
             : "Photo-derived report",
           confidenceChip,
         ].filter((chip): chip is string => Boolean(chip)),
+        observationReasons:
+          poseFocusResult?.status === "ok" && Object.keys(poseFocusResult.reasons).length
+            ? poseFocusResult.reasons
+            : undefined,
       };
     }
 
@@ -961,6 +1043,7 @@ export default function ResultsRoutine() {
     };
   }, [
     detectedPoseViews,
+    poseState.analysis,
     poseState.analysis?.confidenceScore,
     poseState.error,
     poseState.loading,
@@ -972,6 +1055,21 @@ export default function ResultsRoutine() {
     () => program?.phaseOptimizerReport?.exerciseReasons ?? {},
     [program]
   );
+
+  // Phase 4 — retest prompt: show when shouldPromptRetest returns true.
+  const showRetestPrompt = useMemo(() => {
+    if (retestPromptDismissed) return false;
+    if (!program) return false;
+    const sessionCount = progress?.completedDayIndices?.length ?? 0;
+    const assessmentHistory = program.assessmentHistory ?? [];
+    const lastRetestSessionCount =
+      assessmentHistory.length > 0 ? (assessmentHistory.length - 1) * 1 : 0;
+    return shouldPromptRetest({
+      sessionCount,
+      phaseTransitionOccurred: false,
+      lastRetestSessionCount,
+    });
+  }, [progress?.completedDayIndices?.length, program, retestPromptDismissed]);
 
   const buildWhyPicked = (exercise: Exercise) => {
     const patterns = exercise.movementPattern;
@@ -3207,6 +3305,16 @@ export default function ResultsRoutine() {
 
       <AssessmentStatusCard status={assessmentStatus} />
 
+      {showRetestPrompt && (
+        <RetestPromptCard
+          onTakeRetest={() => {
+            setRetestPromptDismissed(true);
+            // Phase 5 hook: navigate to assessment flow (wired in Phase 5).
+          }}
+          onSkip={() => setRetestPromptDismissed(true)}
+        />
+      )}
+
       {showTrainingSyncIssue ? (
         <section
           className="ui-soft-surface order-2 rounded-lg border border-amber-300/25 px-4 py-3 text-amber-100"
@@ -3400,6 +3508,11 @@ export default function ResultsRoutine() {
                           {entry.section}
                         </span>
                       </div>
+                      {entry.item.selectionDebug?.decisionTrace?.sourceObservation && (
+                        <p className="mt-0.5 text-[11px] leading-4 text-slate-400">
+                          {`Chosen because: ${entry.item.selectionDebug.decisionTrace.sourceObservation}`}
+                        </p>
+                      )}
                       <RoutineItemCoachingDetails
                         item={entry.item}
                         fallbackDose={entry.prescription}
@@ -3633,6 +3746,11 @@ export default function ResultsRoutine() {
                           <p className="text-xs font-semibold text-slate-900">{exercise.name}</p>
                           <span className="text-[11px] uppercase text-slate-500">{item.section}</span>
                         </div>
+                        {item.selectionDebug?.decisionTrace?.sourceObservation && (
+                          <p className="mt-0.5 text-[11px] leading-4 text-slate-400">
+                            {`Chosen because: ${item.selectionDebug.decisionTrace.sourceObservation}`}
+                          </p>
+                        )}
                         <RoutineItemCoachingDetails
                           item={item}
                           fallbackDose={formatRoutineItemPrescription(item)}

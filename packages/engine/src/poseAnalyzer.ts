@@ -248,42 +248,58 @@ export const generateObservations = (metrics: PoseMetrics): PoseAnalysis => {
   };
 
   if (metrics.shoulderHeightDelta !== null && metrics.shoulderHeightDelta > threshold.shoulder) {
-    observations.push("Mild shoulder height asymmetry detected.");
+    observations.push(
+      `Shoulder height asymmetry measured ${metrics.shoulderHeightDelta.toFixed(3)} (threshold ${threshold.shoulder}).`
+    );
     priorities.push("Upper-back symmetry and scapular control");
   }
 
   if (metrics.hipHeightDelta !== null && metrics.hipHeightDelta > threshold.hip) {
-    observations.push("Hip height difference may indicate uneven load sharing.");
+    observations.push(
+      `Hip height difference measured ${metrics.hipHeightDelta.toFixed(3)} (threshold ${threshold.hip}).`
+    );
     priorities.push("Hip stability and lateral balance");
   }
 
   if (metrics.kneeAlignmentDelta !== null && metrics.kneeAlignmentDelta > threshold.knee) {
-    observations.push("Knee tracking appears offset; we’ll focus on alignment.");
+    observations.push(
+      `Knee tracking offset measured ${metrics.kneeAlignmentDelta!.toFixed(3)} (threshold ${threshold.knee}).`
+    );
     priorities.push("Lower-body alignment and stability");
   }
 
   if (metrics.headForwardOffset !== null && metrics.headForwardOffset > threshold.headForward) {
-    observations.push("Forward head posture tendency detected.");
+    observations.push(
+      `Head position measured ${metrics.headForwardOffset!.toFixed(3)} forward of shoulder line (threshold ${threshold.headForward}).`
+    );
     priorities.push("Neck + upper-back endurance");
   }
 
   if (metrics.torsoLeanAngle !== null && metrics.torsoLeanAngle > threshold.torsoLean) {
-    observations.push("Torso lean suggests a forward or backward bias.");
+    observations.push(
+      `Torso lean measured ${metrics.torsoLeanAngle!.toFixed(1)} degrees (threshold ${threshold.torsoLean}).`
+    );
     priorities.push("Core bracing and upright posture");
   }
 
   if (metrics.hipToShoulderAlignment !== null && metrics.hipToShoulderAlignment > threshold.hipShoulder) {
-    observations.push("Shoulder-to-hip alignment may be offset.");
+    observations.push(
+      `Hip-to-shoulder alignment offset measured ${metrics.hipToShoulderAlignment!.toFixed(3)} (threshold ${threshold.hipShoulder}).`
+    );
     priorities.push("Trunk alignment and core control");
   }
 
   if (metrics.scapularSymmetry !== null && metrics.scapularSymmetry > threshold.scapular) {
-    observations.push("Shoulder blade symmetry may be uneven.");
+    observations.push(
+      `Shoulder blade asymmetry measured ${metrics.scapularSymmetry!.toFixed(3)} (threshold ${threshold.scapular}).`
+    );
     priorities.push("Scapular positioning and control");
   }
 
   if (metrics.hipShift !== null && metrics.hipShift > threshold.hipShift) {
-    observations.push("Possible lateral weight shift detected.");
+    observations.push(
+      `Hip lateral shift measured ${metrics.hipShift!.toFixed(3)} (threshold ${threshold.hipShift}).`
+    );
     priorities.push("Balanced weight distribution");
   }
 

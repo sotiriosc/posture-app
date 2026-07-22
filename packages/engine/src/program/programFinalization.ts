@@ -58,6 +58,10 @@ export const finalizeWeeklyProgramResult = (params: {
   ladderState?: import("@/lib/types").LadderState;
   /** Phase 3.5: computed phase gating state to store in the generated Program. */
   phaseTransitionState?: import("@/lib/types").PhaseTransitionState;
+  /** Phase 4: assessment snapshots to store in the generated Program. */
+  assessmentHistory?: import("@/lib/types").AssessmentSnapshot[];
+  /** Phase 4: per-tag lifecycle state to store in the generated Program. */
+  focusTagLifecycle?: Record<string, import("@/lib/types").FocusTagLifecycleState>;
 }) => {
   forwardConstraintWarnings({
     programId: params.programId,
@@ -98,6 +102,8 @@ export const finalizeWeeklyProgramResult = (params: {
     templateVersion: params.templateVersion,
     ladderState: params.ladderState,
     phaseTransitionState: params.phaseTransitionState,
+    assessmentHistory: params.assessmentHistory,
+    focusTagLifecycle: params.focusTagLifecycle,
   });
 };
 
