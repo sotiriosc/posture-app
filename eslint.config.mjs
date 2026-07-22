@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 // ─── Boundary rules (bloom-plan §1.4) ────────────────────────────────────────
 //
@@ -97,6 +98,40 @@ const R4_GYMS = {
   },
 };
 
+// ─── ED-5.0: import type safety ────────────────────────────────────────────
+//
+// Phase 4 regression: `shouldPromptRetest` (a runtime function) was placed
+// inside `import type { ... }` in ResultsRoutine.tsx.  TypeScript silently
+// strips `import type` at emit, causing a ReferenceError at runtime.
+//
+// Rule: `@typescript-eslint/no-import-type-side-effects` prevents importing
+// a symbol with observable side effects through a type-only import.
+//
+// Complementary rule: `@typescript-eslint/consistent-type-imports` enforces
+// that imports used only as types carry the `type` modifier, making it
+// impossible for a value to "hide" inside `import type`.
+//
+// Together they create a lint fence: values must be in value imports; types
+// must be in type imports.  Any misclassification surfaces as a lint error
+// before reaching the test suite.
+const IMPORT_TYPE_SAFETY = {
+  files: ["**/*.{ts,tsx}"],
+  plugins: {
+    "@typescript-eslint": tsPlugin,
+  },
+  rules: {
+    "@typescript-eslint/no-import-type-side-effects": "error",
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        prefer: "type-imports",
+        fixStyle: "separate-type-imports",
+        disallowTypeAnnotations: false,
+      },
+    ],
+  },
+};
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -113,6 +148,7 @@ const eslintConfig = defineConfig([
   R3_LEGACY_EXCEPTIONS,
   R4_CONSUMER,
   R4_GYMS,
+  IMPORT_TYPE_SAFETY,
 ]);
 
 export default eslintConfig;

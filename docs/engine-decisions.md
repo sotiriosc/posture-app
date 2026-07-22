@@ -228,3 +228,35 @@ the exercise again so the user has the opportunity to engage with the Phase 3.2 
 | `pickFirstBackChestCandidateByIds` | `deferred === true`; trace: "deferred by user" |
 | `repairBackChestMainIntelligence` | `deferred === true`; trace: "deferred by user" |
 | `findFinalRoleLegalityReplacement` | `deferred === true` |
+
+---
+
+## Phase 5 — Undeniable Results Screen (2026-07-22)
+
+### ED-5.0 — Import Type Safety Rule
+
+**Decision:** Add `@typescript-eslint/no-import-type-side-effects` and
+`@typescript-eslint/consistent-type-imports` to `eslint.config.mjs` as hard errors.
+
+**Rationale:** Phase 4 introduced a `ReferenceError: shouldPromptRetest is not defined`
+regression because a runtime function was placed inside an `import type { ... }` block
+in `ResultsRoutine.tsx`. TypeScript completely erases `import type` at emit; any runtime
+value in that block becomes `undefined` at runtime. The bug passed type-checking because
+TypeScript does not warn when a value is inadvertently put in `import type` unless
+`verbatimModuleSyntax: true` is enabled. Adding `verbatimModuleSyntax` to the root
+`tsconfig.base.json` conflicted with `"module": "esnext"` + `moduleResolution: "bundler"`.
+
+**Resolution:** ESLint rules are the correct enforcement layer here:
+- `@typescript-eslint/no-import-type-side-effects` — prevents side-effectful imports
+  from being marked type-only.
+- `@typescript-eslint/consistent-type-imports` — enforces that every type-only import
+  carries the `type` modifier and every value import does not.
+
+Together these create a two-sided fence: a misclassified value in `import type` triggers
+the `consistent-type-imports` rule before reaching the test suite.
+
+**Deferred:** MoveNet Thunder upgrade (flagged in Phase 4 spec). The confidence gate
+improvement alone is meaningful. Thunder upgrade deferred to Phase 6 when deliberate
+single-capture flow is more stable. Log: `~2x accuracy, ~4x latency (50ms → 200ms),
+burst-of-frames averaging (3 frames). Trade-off acceptable for single-capture context.`
+
