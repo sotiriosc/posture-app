@@ -23,6 +23,14 @@ export type QuestionnaireData = {
   experience: string;
   equipment: string[];
   daysPerWeek: 3 | 4 | 5;
+  /**
+   * Phase 3.3 — Training Intent (engine parity with the consumer app).
+   * The gyms app does not yet surface a picker for this; the field exists so
+   * the shared engine (which reads questionnaire.trainingIntent) type-checks
+   * against the gyms QuestionnaireData.  Absent ⇒ engine defaults to "build",
+   * preserving current gyms behavior.
+   */
+  trainingIntent?: "build" | "maintain" | "rehab";
 };
 
 type QuestionnaireFormProps = {
