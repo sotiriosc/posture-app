@@ -188,13 +188,22 @@ describe("session timer/engine/store connection", () => {
       });
 
       const expectedTimer = getEffectiveTimer(item, mocks.prefs.timerPrefs);
-      const timerLine = `${expectedTimer.workSeconds}s work • ${expectedTimer.restSeconds}s rest`;
-      expect(screen.getByText(timerLine)).toBeTruthy();
+      // Phase 6d, Commit 2 removed the "Xs work • Ys rest" caption line (it
+      // duplicated what the timer face itself shows); assert both work and
+      // rest presets directly against the timer face instead, via its
+      // Working/Resting toggle.
       expect(
         screen.getByRole("button", {
           name: formatSeconds(expectedTimer.workSeconds),
         })
       ).toBeTruthy();
+      fireEvent.click(screen.getByRole("button", { name: "Resting" }));
+      expect(
+        screen.getByRole("button", {
+          name: formatSeconds(expectedTimer.restSeconds),
+        })
+      ).toBeTruthy();
+      fireEvent.click(screen.getByRole("button", { name: "Working" }));
 
       expect(observedExerciseIds.has(item.exerciseId)).toBe(false);
       observedExerciseIds.add(item.exerciseId);

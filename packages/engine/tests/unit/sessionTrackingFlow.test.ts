@@ -223,7 +223,7 @@ describe("session tracking integration flow", () => {
     fireEvent.change(screen.getByTestId("rpe-input"), {
       target: { value: "8" },
     });
-    expect(screen.getByTestId("about-to-record-rpe").textContent).toContain("8");
+    expect(screen.getByTestId("about-to-record-summary").textContent).toContain("RPE 8");
     fireEvent.click(screen.getByLabelText("Set 1"));
     fireEvent.click(screen.getByLabelText("Set 2"));
     fireEvent.click(screen.getByTestId("report-pain-trigger"));

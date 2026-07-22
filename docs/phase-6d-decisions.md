@@ -74,4 +74,43 @@ correctly; no clipping or overlap at the narrower SE width).
 
 ## Commit 2 — Log-set screen compression
 
-See below (added when Commit 2 lands).
+**Compressing "About to record."** The six-field grid (Load, Reps/set, RPE,
+Sets, Timer, Feedback) collapsed to one caption line, e.g. "Bodyweight ·
+target 8 reps · 2 sets · RPE 8 (1/2 logged)". Kept RPE and a sets-progress
+count in the line (the spec's own example — "Bodyweight · target 8 reps · 2
+sets" — didn't show RPE, but an existing unit test asserted the RPE preview
+value renders somewhere in this panel as the user types it, and that's
+genuinely useful feedback, so it stayed, just folded into the one line
+rather than getting its own grid cell). The now-redundant standalone "Load:
+Bodyweight" paragraph (a leftover from the pre-compression bodyweight
+branch) was also removed — the caption already states the load type, so
+that second line would have defeated the "one caption line" goal.
+
+**Reps/RPE as the two large fields.** Restructured into a `grid-cols-2` row,
+each field `min-h-11` with `text-lg` — noticeably bigger than the rest of
+the panel's controls, matching "two large input fields (Reps, RPE)." Weight
+(only present for weighted exercises — not named in the spec's bodyweight
+example but functionally required) keeps its existing compact row above
+this grid; removing it was out of scope (no engine/feature changes) and it
+isn't one of the "two" fields the spec is calling out for weighted work
+specifically.
+
+**What was *not* removed.** The spec's "That's it" reads aggressively, but
+removing the sets-count stepper or the "Report pain" trigger would be a
+feature regression, not a mobile-polish pass — and an existing unit test
+(`sessionTrackingFlow.test.ts`) exercises the pain-report flow from this
+exact panel. Interpreted "one caption line + two fields + Next" as the
+*primary* set-logging path, not a mandate to delete secondary controls that
+have their own reason to exist. Only the parts the spec explicitly named
+(the summary grid, and Exit/Back) were touched.
+
+**Exit session / Back tucked behind "...".** Replaced the two always-visible
+buttons with a single `···` trigger (top-right of the exercise counter row,
+mirroring the existing per-exercise block-menu pattern already used
+elsewhere on this screen) that opens a small dropdown with both actions.
+`trackDropoff("exit_button")` still fires on Exit exactly as before.
+
+Verified at 390×844 and 360×740 via Playwright screenshots and a new
+`logSetScreenCompression.spec.ts`, which locks: one summary line containing
+"target"/"RPE", both fields ≥44px tall, and Exit/Back hidden until the
+"..." trigger is tapped.

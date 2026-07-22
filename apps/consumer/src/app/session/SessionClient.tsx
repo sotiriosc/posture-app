@@ -490,6 +490,10 @@ export default function SessionClient() {
   const [blockMenuExerciseId, setBlockMenuExerciseId] = useState<string | null>(null);
   const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
 
+  // Phase 6d, Commit 2 — Exit session / Back tucked behind a "..." menu;
+  // they're escape hatches, not primary actions during set logging.
+  const [sessionMenuOpen, setSessionMenuOpen] = useState(false);
+
 
   const [activeTrackingField, setActiveTrackingField] =
     useState<TrackingField | null>(null);
@@ -1973,6 +1977,21 @@ export default function SessionClient() {
   const previewRpe = currentRpeValue || "-";
   const previewSetsPlanned = currentSelectedSets;
   const previewSetsCompleted = checks.filter(Boolean).length;
+  // Phase 6d, Commit 2 — one caption line ("Bodyweight · target 8 reps · 2
+  // sets") replaces the six-field "About to record" grid, which mostly
+  // restated the plan info already visible on the exercise card above it.
+  const loadCaption =
+    currentItem?.loadType === "weighted"
+      ? `${previewWeight}${previewUnit ? ` ${previewUnit}` : ""}`
+      : currentItem?.loadType === "timed"
+        ? "Timed"
+        : currentItem?.loadType === "assisted"
+          ? "Assisted"
+          : "Bodyweight";
+  const aboutToRecordSummary =
+    currentItem?.loadType === "timed"
+      ? `${loadCaption} · ${previewSetsPlanned} ${previewSetsPlanned === 1 ? "set" : "sets"} · RPE ${previewRpe}`
+      : `${loadCaption} · target ${previewReps} reps · ${previewSetsPlanned} ${previewSetsPlanned === 1 ? "set" : "sets"} · RPE ${previewRpe}`;
   const currentExerciseMeta = currentExerciseId
     ? exerciseById(currentExerciseId)
     : null;
@@ -2966,41 +2985,15 @@ export default function SessionClient() {
               </span>
             </div>
           </div>
-          <div className="mt-3 rounded-lg border border-slate-600/35 bg-slate-950/45 px-3 py-3">
-            <p className="text-[11px] font-semibold uppercase text-slate-300">
-              About to record
-            </p>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-200">
-              <p>
-                <span className="font-semibold text-white">Load:</span>{" "}
-                {currentItem.loadType === "weighted"
-                  ? `${previewWeight}${previewUnit ? ` ${previewUnit}` : ""}`
-                  : currentItem.loadType}
-              </p>
-              <p>
-                <span className="font-semibold text-white">Reps/set:</span>{" "}
-                {previewReps}
-              </p>
-              <p data-testid="about-to-record-rpe">
-                <span className="font-semibold text-white">RPE:</span> {previewRpe}
-              </p>
-              <p>
-                <span className="font-semibold text-white">Sets:</span>{" "}
-                {previewSetsCompleted}/{previewSetsPlanned}
-              </p>
-              <p>
-                <span className="font-semibold text-white">Timer:</span>{" "}
-                {currentTimer.workSeconds}s work • {currentTimer.restSeconds}s rest
-              </p>
-              <p className="col-span-2">
-                <span className="font-semibold text-white">Feedback:</span>{" "}
-                {currentFeedback?.rating ?? "not set"}
-                {currentFeedback?.rating === "pain" && currentFeedback?.painLocation
-                  ? ` (${currentFeedback.painLocation})`
-                  : ""}
-              </p>
-            </div>
-          </div>
+          <p
+            className="mt-3 text-xs font-semibold text-slate-300"
+            data-testid="about-to-record-summary"
+          >
+            {aboutToRecordSummary}
+            <span className="ml-1 text-slate-500">
+              ({previewSetsCompleted}/{previewSetsPlanned} logged)
+            </span>
+          </p>
 
           <div className="mt-4 grid gap-3">
             {maxSets > minSets ? (
@@ -3088,84 +3081,82 @@ export default function SessionClient() {
                   ))}
                 </div>
               </div>
-            ) : (
-              <p className="text-xs font-semibold text-slate-600">
-                Load:{" "}
-                {currentItem.loadType === "timed"
-                  ? "Timed"
-                  : currentItem.loadType === "assisted"
-                    ? "Assisted"
-                    : "Bodyweight"}
-              </p>
-            )}
-            {currentItem.loadType !== "timed" ? (
-              <div className="flex flex-wrap items-center gap-2">
-                <label className="text-xs font-semibold text-slate-700" htmlFor="reps-input">
-                  Reps
+            ) : null /* Phase 6d, Commit 2 — the caption line above already
+              says "Bodyweight/Timed/Assisted · target N reps · N sets", so a
+              second "Load: Bodyweight" line here would just repeat it. */}
+            {/* Phase 6d, Commit 2 — Reps and RPE as the two large fields the
+                spec asks for; side-by-side and bigger than the rest of this
+                panel since they're what the user actually taps every set. */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {currentItem.loadType !== "timed" ? (
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-slate-700" htmlFor="reps-input">
+                    Reps
+                  </label>
+                  <input
+                    id="reps-input"
+                    data-testid="reps-input"
+                    type="number"
+                    min={1}
+                    ref={repsInputRef}
+                    value={currentRepsValue}
+                    onChange={(event) =>
+                      applySingleReps(currentItem.exerciseId, event.target.value)
+                    }
+                    onFocus={() => {
+                      setActiveTrackingField("reps");
+                      scrollTrackingPanelIntoView();
+                    }}
+                    onKeyDown={handleTrackingEnter("reps")}
+                    onBlur={(event) => {
+                      setActiveTrackingField((current) =>
+                        current === "reps" ? null : current
+                      );
+                      handleTrackingBlur("reps")(event);
+                    }}
+                    enterKeyHint="next"
+                    className={`ui-input min-h-11 w-full text-lg font-semibold ${
+                      activeTrackingField === "reps"
+                        ? "border-sky-400 ring-2 ring-sky-400/60"
+                        : ""
+                    }`}
+                    placeholder="Reps per set"
+                  />
+                </div>
+              ) : null}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
+                  RPE (1-10)
                 </label>
                 <input
-                  id="reps-input"
-                  data-testid="reps-input"
+                  id="rpe-input"
+                  data-testid="rpe-input"
                   type="number"
                   min={1}
-                  ref={repsInputRef}
-                  value={currentRepsValue}
-                  onChange={(event) =>
-                    applySingleReps(currentItem.exerciseId, event.target.value)
-                  }
+                  max={10}
+                  ref={rpeInputRef}
+                  value={currentRpeValue}
+                  onChange={(event) => applyRpe(currentItem.exerciseId, event.target.value)}
                   onFocus={() => {
-                    setActiveTrackingField("reps");
+                    setActiveTrackingField("rpe");
                     scrollTrackingPanelIntoView();
                   }}
-                  onKeyDown={handleTrackingEnter("reps")}
+                  onKeyDown={handleTrackingEnter("rpe")}
                   onBlur={(event) => {
                     setActiveTrackingField((current) =>
-                      current === "reps" ? null : current
+                      current === "rpe" ? null : current
                     );
-                    handleTrackingBlur("reps")(event);
+                    handleTrackingBlur("rpe")(event);
                   }}
-                  enterKeyHint="next"
-                  className={`ui-input w-32 text-xs ${
-                    activeTrackingField === "reps"
+                  enterKeyHint="done"
+                  className={`ui-input min-h-11 w-full text-lg font-semibold ${
+                    activeTrackingField === "rpe"
                       ? "border-sky-400 ring-2 ring-sky-400/60"
                       : ""
                   }`}
-                  placeholder="Reps per set"
+                  placeholder="RPE"
                 />
               </div>
-            ) : null}
-            <div className="flex flex-wrap items-center gap-2">
-              <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
-                RPE (1-10)
-              </label>
-              <input
-                id="rpe-input"
-                data-testid="rpe-input"
-                type="number"
-                min={1}
-                max={10}
-                ref={rpeInputRef}
-                value={currentRpeValue}
-                onChange={(event) => applyRpe(currentItem.exerciseId, event.target.value)}
-                onFocus={() => {
-                  setActiveTrackingField("rpe");
-                  scrollTrackingPanelIntoView();
-                }}
-                onKeyDown={handleTrackingEnter("rpe")}
-                onBlur={(event) => {
-                  setActiveTrackingField((current) =>
-                    current === "rpe" ? null : current
-                  );
-                  handleTrackingBlur("rpe")(event);
-                }}
-                enterKeyHint="done"
-                className={`ui-input w-24 ${
-                  activeTrackingField === "rpe"
-                    ? "border-sky-400 ring-2 ring-sky-400/60"
-                    : ""
-                }`}
-                placeholder="RPE"
-              />
             </div>
             <p className="text-[11px] text-slate-600" aria-live="polite">
               {activeTrackingField
@@ -3349,27 +3340,48 @@ export default function SessionClient() {
         ) : null}
 
         <OnImage className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <Link href="/results" onClick={() => trackDropoff("exit_button")}>
-                <Button variant="secondary" className="min-h-11 rounded-xl px-4 text-xs">
-                  Exit session
-                </Button>
-              </Link>
-              <Button
-                type="button"
-                variant="secondary"
-                className="min-h-11 rounded-xl px-4 text-xs"
-                onClick={() => {
-                  void handleBack();
-                }}
-                disabled={activeIndex === 0}
-              >
-                Back
-              </Button>
-            </div>
+          <div className="flex items-center justify-between gap-2">
             <div className="text-xs font-semibold text-slate-200">
               {activeIndex + 1} / {totalItems}
+            </div>
+            <div className="relative">
+              <button
+                type="button"
+                aria-label="Session options"
+                aria-expanded={sessionMenuOpen}
+                data-testid="session-options-trigger"
+                onClick={() => setSessionMenuOpen((current) => !current)}
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-400/35 bg-slate-900/45 text-slate-300 hover:bg-slate-800/55"
+              >
+                ···
+              </button>
+              {sessionMenuOpen ? (
+                <div className="absolute right-0 top-12 z-20 min-w-40 overflow-hidden rounded-lg border border-slate-600/40 bg-slate-900 shadow-lg">
+                  <Link
+                    href="/results"
+                    data-testid="session-exit"
+                    onClick={() => {
+                      trackDropoff("exit_button");
+                      setSessionMenuOpen(false);
+                    }}
+                    className="block px-4 py-3 text-left text-sm text-slate-200 hover:bg-slate-700/50"
+                  >
+                    Exit session
+                  </Link>
+                  <button
+                    type="button"
+                    data-testid="session-back"
+                    onClick={() => {
+                      setSessionMenuOpen(false);
+                      void handleBack();
+                    }}
+                    disabled={activeIndex === 0}
+                    className="block w-full px-4 py-3 text-left text-sm text-slate-200 hover:bg-slate-700/50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Back
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </OnImage>
