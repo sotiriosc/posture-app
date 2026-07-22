@@ -53,3 +53,35 @@ program-day component analyzable by the React Compiler, which then surfaced two
 `setDayIndex`). Those effects are unchanged by Phase 6a; rewriting them is out of
 scope for a copy/coherence pass, so they carry a scoped
 `eslint-disable-next-line` with this justification rather than a behavior change.
+
+---
+
+## Commit 2 — Copy translation
+
+Every string in the § Commit 2 copy list was applied across both apps'
+user-facing screens (landing/onboarding, questionnaire, assessment upload,
+dashboard/results, session start, in-exercise, post-session, settings), plus
+the two engine copy strings the spec names (`phaseGating.formatPhaseGateReason`,
+`nextSessionRecommendation.formatNextSessionRecommendation`) and the
+Phase 6.3 section-visibility labels/defaults. Tests were updated to the new
+copy; the full vitest suite is green and CI-scoped lint (`src` only) is clean.
+
+**Deferred — session "5 options → 3" consolidation (DEC-6a-1).** The spec's
+Commit 2 list asks to collapse the five session practice options
+(Full / Steady / Reduced / Simplified / Recovery) into three
+(Full / Lighter / Recovery, where "Lighter" merges Steady + Reduced +
+Simplified). This was **not** done, because the practice-option set, its
+labels/descriptions, and the item-selection behavior for each mode all live in
+`packages/engine/src/sessionPracticeOptions.ts` (`deriveSessionPracticeOptions`
+/ `selectSessionPracticeItems`). Collapsing three modes into one is an engine
+behavior change — a new "lighter" selection rule plus a mode-set change — which
+the same Phase 6a spec forbids under **"Not in this pass → No engine changes."**
+The two directives conflict; honoring the hard boundary, the options are left
+as the engine produces them. This is a clean follow-up once an engine change is
+in scope: define the consolidated mode set + selection contract in the engine
+(with anchor coverage), then the app renders three buttons.
+
+Note: because those option labels/descriptions are engine-owned, they were left
+verbatim rather than rewritten in place — rewriting engine strings would also be
+an engine change. All app-layer session copy around them (Today's-options note,
+Focus header, log button, exercise counter, etc.) was translated.
