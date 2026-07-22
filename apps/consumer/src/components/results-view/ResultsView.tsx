@@ -24,7 +24,7 @@ function HeadlineMetric({ projection }: { projection: ResultsProjection }) {
   const patternsCount = new Set(projection.laddersClimbed.map((c) => c.pattern)).size;
   const sessions = projection.consistency.sessionsCompleted;
   return (
-    <div className="border-b border-slate-800 pb-8">
+    <div className="border-b border-slate-800 pb-8" data-testid="results-headline">
       {rungsCount > 0 ? (
         <>
           <p className="text-5xl font-light tabular-nums text-white">{rungsCount}</p>
