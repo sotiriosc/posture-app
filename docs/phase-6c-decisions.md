@@ -165,3 +165,57 @@ did.
 - Full engine unit suite: 819/819 passing. Lint clean on both apps (two
   pre-existing unrelated warnings in `apps/consumer`, not touched by this
   commit).
+
+## Commit 3 — Missing routes on deployed site
+
+### Investigation
+
+- `grep`'d both apps for `/faq` and `/settings`: **no FAQ route exists at
+  all**, gated or otherwise — real, unambiguous gap.
+- `/settings` **is** a real route and **does** have working content (the
+  admin Danger Zone / movement-profile-edit panel from Phase 6b). It is
+  intentionally admin-gated in `middleware.ts` (`ADMIN_ACCESS_KEY` +
+  `bac_admin` cookie) — redirects to `/` for everyone else. That's by
+  design, not a bug.
+- The user-facing settings page users actually want
+  (`/account/settings` — export data, reset progress, erase local data)
+  **did** have a nav entry already — but labeled **"Data Settings,"** not
+  "Settings." That's the likely cause of "no visible way to reach
+  Settings": it doesn't read as "Settings" to someone looking for it.
+- No `robots.ts`/`sitemap.ts` exists in either app, so nothing there is
+  blocking crawlers or routes.
+
+### Fix
+
+- Renamed the `/account/settings` nav entry from "Data Settings" to
+  "Settings" in both apps (`AppMenuClient.tsx`). No collision with the
+  admin entry, which is separately and clearly labeled "Admin Settings"
+  and only ever shown to admins.
+- Built a real `/faq` page in both apps (`app/faq/page.tsx`, styled to match
+  each app's existing static pages like `/privacy`/`/terms`) that
+  consolidates the existing per-page onboarding guides
+  (`onboardingConfig.ts` — the single source of truth for "how this screen
+  works") into one page. No new copy was invented; this only makes
+  existing guide content reachable without visiting every screen first, per
+  the spec's suggested fallback ("If FAQ was never built and is instead
+  handled by guide cards, add copy to the menu that ... opens the
+  appropriate guide card"). A dedicated static page was chosen over
+  wiring a nav click to reopen a specific page's `OnboardingInfoButton`
+  modal, since the guide content is inherently page-scoped and there's no
+  single "current page" context from a global nav menu.
+  - Added `{ href: "/faq", label: "Help & FAQ" }` to the nav in both apps
+    (including gyms' buyer-demo-mode nav variant), unconditionally — no
+    login required, matching that it's pre-signup-relevant content. Not
+    added to either app's `middleware.ts` auth matcher, so it isn't gated.
+
+### Verification
+
+- New `apps/consumer/tests/e2e/navRoutesReachable.spec.ts` (2 tests) and
+  `apps/gyms/tests/e2e/navRoutesReachable.spec.ts` (1 test): open the menu,
+  assert "Settings" (not "Admin Settings") links to `/account/settings`,
+  assert "Help & FAQ" links to and renders `/faq`, and (consumer) confirm
+  FAQ is reachable while logged out.
+- `next build` clean for both apps with the new `/faq` route present in the
+  build manifest.
+- Lint clean on both apps (same two pre-existing warnings as Commit 2, still
+  untouched).
