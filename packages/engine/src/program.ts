@@ -29814,6 +29814,18 @@ export type {
   FeedbackContractResult,
 } from "@/lib/program/feedbackContract";
 
+// Phase 3.3: training intent public API
+export {
+  computeMaintainPrompts,
+  markMaintainPromptsShown,
+  applyMaintainProgressionYes,
+  applyMaintainProgressionNo,
+} from "@/lib/program/trainingIntent";
+export type {
+  TrainingIntent,
+  MaintainProgressionPrompt,
+} from "@/lib/program/trainingIntent";
+
 const programConstraintWarningBuffer: ProgramConstraintWarning[] = [];
 
 export const getProgramConstraintWarningBuffer = () => [
@@ -33629,6 +33641,11 @@ export const generateWeeklyProgram = (
      * and writes it into the generated Program.
      */
     currentLadderState?: LadderState;
+    /**
+     * Phase 3.3 — Training intent.  Forwarded to computeLadderState.
+     * When absent, defaults to questionnaire trainingIntent field, then "build".
+     */
+    trainingIntent?: "build" | "maintain" | "rehab";
   }
 ): Program => {
   const { resolvedFeedbackSummaryByExercise, recentlyUsedExerciseIds } =
@@ -33650,6 +33667,9 @@ export const generateWeeklyProgram = (
         .map((s) => s.exerciseId)
     );
     const available = normalizeEquipmentSelection(data.equipment).available;
+    // Phase 3.3: trainingIntent from options > questionnaire field > default "build".
+    const resolvedTrainingIntent =
+      options?.trainingIntent ?? data.trainingIntent ?? "build";
     return computeLadderState({
       currentLadderState: options?.currentLadderState,
       recentLogs: options?.recentLogs ?? [],
@@ -33660,6 +33680,7 @@ export const generateWeeklyProgram = (
       experienceLevel: data.experience,
       painAreas: data.painAreas,
       deferredIds,
+      trainingIntent: resolvedTrainingIntent,
     });
   })();
 

@@ -20,8 +20,15 @@ import {
   computeFlaggedExercises,
   applyFeedbackContractAction,
   applyAutoSacrifice,
+  computeMaintainPrompts,
+  markMaintainPromptsShown,
+  applyMaintainProgressionYes,
+  applyMaintainProgressionNo,
 } from "@/lib/program";
-import type { FeedbackContractTrigger } from "@/lib/program";
+import type {
+  FeedbackContractTrigger,
+  MaintainProgressionPrompt,
+} from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import BackgroundShell from "@/components/BackgroundShell";
@@ -469,6 +476,11 @@ export default function SessionClient() {
   const [contractPromptIndex, setContractPromptIndex] = useState(0);
   const [contractDismissed, setContractDismissed] = useState(false);
 
+  // Phase 3.3 — maintain-mode phase-transition prompts
+  const [maintainPrompts, setMaintainPrompts] = useState<MaintainProgressionPrompt[]>([]);
+  const [maintainPromptIndex, setMaintainPromptIndex] = useState(0);
+  const [maintainPromptsDismissed, setMaintainPromptsDismissed] = useState(false);
+
   const [activeTrackingField, setActiveTrackingField] =
     useState<TrackingField | null>(null);
   const [exerciseCompleteFlashVisible, setExerciseCompleteFlashVisible] =
@@ -773,6 +785,26 @@ export default function SessionClient() {
             } catch {
               // Non-critical: if contract check fails, proceed with session normally.
             }
+          }
+
+          // Phase 3.3 — compute maintain-mode phase-transition prompts.
+          try {
+            const intent = resolvedQuestionnaire?.trainingIntent ?? "build";
+            if (intent === "maintain" && resolvedProgram.ladderState) {
+              const phaseIdx = resolvedProgress?.phaseIndex ?? 0;
+              const prompts = computeMaintainPrompts({
+                trainingIntent: "maintain",
+                ladderState: resolvedProgram.ladderState,
+                phaseIndex: phaseIdx,
+              });
+              if (prompts.length > 0) {
+                setMaintainPrompts(prompts);
+                setMaintainPromptIndex(0);
+                setMaintainPromptsDismissed(false);
+              }
+            }
+          } catch {
+            // Non-critical: proceed with session normally.
           }
           return;
         }
@@ -1488,6 +1520,42 @@ export default function SessionClient() {
       setContractPromptIndex((i) => i + 1);
     } else {
       setContractDismissed(true);
+    }
+  };
+
+  // Phase 3.3 — handle maintain-mode progression prompt response.
+  const handleMaintainPrompt = async (answer: "yes" | "no" | "dismiss") => {
+    const prompt = maintainPrompts[maintainPromptIndex];
+    if (!prompt || !program?.ladderState) return;
+
+    const currentPrefs = await loadPrefs();
+    // Update ladder state in saved prefs (non-destructive merge).
+    let updatedLadderState = program.ladderState;
+    if (answer === "yes") {
+      updatedLadderState = applyMaintainProgressionYes(updatedLadderState, prompt.pattern);
+    } else {
+      updatedLadderState = applyMaintainProgressionNo(updatedLadderState);
+    }
+    updatedLadderState = markMaintainPromptsShown(updatedLadderState, [prompt.pattern], prompt.phaseIndex);
+
+    // Persist updated ladder state to prefs (re-uses contractStateByExercise slot indirectly
+    // via a dedicated field; we persist through the program update flow instead).
+    // For now store the progressionOverride in prefs until program regenerates.
+    if (answer === "yes") {
+      await savePrefs({
+        ...currentPrefs,
+        contractStateByExercise: {
+          ...(currentPrefs.contractStateByExercise ?? {}),
+          [`__maintain_override_${prompt.pattern}`]: { deferred: false },
+        },
+      });
+    }
+
+    // Advance to next prompt or dismiss.
+    if (maintainPromptIndex < maintainPrompts.length - 1) {
+      setMaintainPromptIndex((i) => i + 1);
+    } else {
+      setMaintainPromptsDismissed(true);
     }
   };
 
@@ -2254,12 +2322,73 @@ export default function SessionClient() {
     );
   }
 
+  // Phase 3.3 — maintain-mode phase-transition prompt.
+  const activeMaintainPrompt =
+    !maintainPromptsDismissed && maintainPrompts.length > 0
+      ? maintainPrompts[maintainPromptIndex] ?? null
+      : null;
+
   // Phase 3.2 — pre-session feedback contract prompt.
   // One card per flagged exercise, shown before the session begins.
   const activeContractTrigger =
     !contractDismissed && contractTriggers.length > 0
       ? contractTriggers[contractPromptIndex] ?? null
       : null;
+
+  if (activeMaintainPrompt) {
+    const ex = exerciseById(activeMaintainPrompt.exerciseId);
+    const exName = ex?.name ?? activeMaintainPrompt.exerciseId;
+    const patternLabel = activeMaintainPrompt.pattern.replace(/_/g, " ");
+    const remaining = maintainPrompts.length - maintainPromptIndex;
+
+    return (
+      <BackgroundShell>
+        <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+          <OnImage>
+            {remaining > 1 && (
+              <p className="text-xs font-medium text-indigo-300 mb-1">
+                {maintainPromptIndex + 1} of {maintainPrompts.length}
+              </p>
+            )}
+            <h1 className="text-xl font-semibold text-white">
+              Your body has been responding well
+            </h1>
+            <p className="mt-2 text-sm text-slate-200">
+              You&apos;ve been consistent on {patternLabel} ({exName}). Want to try progressing?
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3">
+              <button
+                onClick={() => { void handleMaintainPrompt("yes"); }}
+                className="w-full rounded-xl bg-sky-600 px-5 py-3 text-left font-semibold text-white shadow hover:bg-sky-500 active:bg-sky-700"
+              >
+                <span className="block text-base">Yes, let&apos;s progress</span>
+                <span className="block text-xs font-normal text-sky-200 mt-0.5">
+                  Try a harder variation for this movement
+                </span>
+              </button>
+              <button
+                onClick={() => { void handleMaintainPrompt("no"); }}
+                className="w-full rounded-xl bg-slate-700 px-5 py-3 text-left font-semibold text-white shadow hover:bg-slate-600 active:bg-slate-800"
+              >
+                <span className="block text-base">Keep maintaining</span>
+                <span className="block text-xs font-normal text-slate-300 mt-0.5">
+                  I&apos;m happy with where I am
+                </span>
+              </button>
+            </div>
+
+            <button
+              onClick={() => { void handleMaintainPrompt("dismiss"); }}
+              className="mt-4 w-full text-center text-xs text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline"
+            >
+              Ask me later
+            </button>
+          </OnImage>
+        </div>
+      </BackgroundShell>
+    );
+  }
 
   if (activeContractTrigger) {
     const ex = exerciseById(activeContractTrigger.exerciseId);

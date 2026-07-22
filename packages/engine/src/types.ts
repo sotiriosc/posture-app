@@ -67,6 +67,25 @@ export type LadderState = {
    * "Ready to retest?" prompts at phase transitions.
    */
   sacrificedByPattern?: Record<string, string[]>;
+  /**
+   * Phase 3.3 — Maintain mode override.
+   * Set per-pattern when the user responds "Yes, let's progress" to the
+   * phase-transition prompt in maintain mode.  Temporarily flips intent to
+   * "build" for that pattern only, cleared after one successful advance.
+   */
+  progressionOverrideByPattern?: Record<string, "build">;
+  /**
+   * Phase 3.3 — Rehab mode explicit advance request.
+   * Set only by explicit user action (never auto-set).  Permits one
+   * advancement attempt for that pattern before being cleared.
+   */
+  explicitAdvanceRequestedByPattern?: Record<string, boolean>;
+  /**
+   * Phase 3.3 — Maintain phase-transition prompt tracking.
+   * Records the phase index at which the "Want to try progressing?" prompt
+   * was last surfaced per pattern.  Prevents re-nagging within the same phase.
+   */
+  maintainPromptShownAtPhase?: Record<string, number>;
 };
 
 export type SessionFeedback = {

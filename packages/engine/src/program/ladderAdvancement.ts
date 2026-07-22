@@ -238,6 +238,20 @@ export const computePatternLadderDecision = (params: {
   experienceLevel: string;
   painAreas: string[];
   deferredIds: Set<string>;
+  /**
+   * Phase 3.3 — Training intent for this user.
+   *   "build"    default; existing logic unchanged.
+   *   "maintain" advance → hold (criteria still evaluated and traced).
+   *   "rehab"    advance blocked unless explicitAdvanceRequested = true;
+   *              hysteresis 3 → 5 clean sessions.
+   */
+  trainingIntent?: "build" | "maintain" | "rehab";
+  /**
+   * Phase 3.3 — Set by user's explicit "Yes, let's progress" response to the
+   * maintain phase-transition prompt, or the "I'm ready" action in rehab mode.
+   * Permits one advancement attempt; cleared by the caller after it's consumed.
+   */
+  explicitAdvanceRequested?: boolean;
 }): LadderDecision => {
   const {
     currentState,
@@ -247,6 +261,8 @@ export const computePatternLadderDecision = (params: {
     experienceLevel,
     painAreas,
     deferredIds,
+    trainingIntent = "build",
+    explicitAdvanceRequested = false,
   } = params;
   const { exerciseId, pattern, difficulty } = currentState;
 
@@ -287,14 +303,16 @@ export const computePatternLadderDecision = (params: {
       : hasTwoConsecutiveIncomplete
       ? "two consecutive incomplete sessions"
       : "deferred by user (Modify)";
+    // Phase 3.3 rehab: extended hysteresis (5 clean sessions vs normal 3).
+    const regressHysteresis = trainingIntent === "rehab" ? 5 : 3;
     return {
       kind: "regress",
       newExerciseId: regressTarget,
       newDifficulty: regressDiff,
       cleanSessionsCount: 0,
-      requiredForAdvance: 3, // REG-2 hysteresis
+      requiredForAdvance: regressHysteresis,
       inHysteresis: true,
-      trace: `regress ${pattern}: ${reason} → ${regressTarget} (d${regressDiff})`,
+      trace: `regress ${pattern}: ${reason} → ${regressTarget} (d${regressDiff})${trainingIntent === "rehab" ? "; rehab mode: 5-session hysteresis" : ""}`,
     };
   }
 
@@ -366,6 +384,32 @@ export const computePatternLadderDecision = (params: {
     };
   }
 
+  // ── Phase 3.3: maintain mode — criteria met but user prefers no progression ──
+  if (trainingIntent === "maintain" && !explicitAdvanceRequested) {
+    return {
+      kind: "hold",
+      newExerciseId: exerciseId,
+      newDifficulty: difficulty,
+      cleanSessionsCount: totalClean,
+      requiredForAdvance: required,
+      inHysteresis: false,
+      trace: `maintain intent: advancement criteria met for ${pattern}; holding by user preference`,
+    };
+  }
+
+  // ── Phase 3.3: rehab mode — advance blocked without explicit request ────────
+  if (trainingIntent === "rehab" && !explicitAdvanceRequested) {
+    return {
+      kind: "hold",
+      newExerciseId: exerciseId,
+      newDifficulty: difficulty,
+      cleanSessionsCount: totalClean,
+      requiredForAdvance: required,
+      inHysteresis: currentState.inHysteresis,
+      trace: `rehab intent: ${pattern} advancement criteria met; awaiting explicit user request to progress`,
+    };
+  }
+
   // ── ADV-1: advance one rung ───────────────────────────────────────────────
   const nextDiff = nextEx?.difficulty ?? difficulty + 1;
   return {
@@ -375,7 +419,7 @@ export const computePatternLadderDecision = (params: {
     cleanSessionsCount: 0, // ADV-3: start at bottom of rep range on new rung
     requiredForAdvance: 2,
     inHysteresis: false,
-    trace: `advance ${pattern}: ${totalClean}/${required} clean sessions → ${nextId} (d${nextDiff})`,
+    trace: `advance ${pattern}: ${totalClean}/${required} clean sessions → ${nextId} (d${nextDiff})${explicitAdvanceRequested ? " (explicit user request)" : ""}`,
   };
 };
 
@@ -407,6 +451,11 @@ export const computeLadderState = (params: {
   painAreas: string[];
   /** Set of exerciseIds that have deferred===true in feedbackSummaryByExercise. */
   deferredIds: Set<string>;
+  /**
+   * Phase 3.3 — user's training intent.  Forwarded to computePatternLadderDecision.
+   * Defaults to "build" (existing behavior) when absent.
+   */
+  trainingIntent?: "build" | "maintain" | "rehab";
 }): LadderState => {
   const {
     currentLadderState,
@@ -418,6 +467,7 @@ export const computeLadderState = (params: {
     experienceLevel,
     painAreas,
     deferredIds,
+    trainingIntent = "build",
   } = params;
 
   const byPattern: Record<string, LadderRungState> = {};
@@ -456,6 +506,11 @@ export const computeLadderState = (params: {
       (log) => log.exerciseId === existing.exerciseId
     );
 
+    // Phase 3.3: check for per-pattern progression override / explicit advance.
+    const explicitAdvanceRequested =
+      currentLadderState?.explicitAdvanceRequestedByPattern?.[pattern] === true ||
+      currentLadderState?.progressionOverrideByPattern?.[pattern] === "build";
+
     const decision = computePatternLadderDecision({
       currentState: existing,
       exerciseLogs,
@@ -464,6 +519,8 @@ export const computeLadderState = (params: {
       experienceLevel,
       painAreas,
       deferredIds,
+      trainingIntent,
+      explicitAdvanceRequested,
     });
 
     byPattern[pattern] = {
@@ -477,7 +534,29 @@ export const computeLadderState = (params: {
     };
   }
 
-  return { byPattern };
+  // Carry forward Phase 3.2 state (sacrificedByPattern, etc.) unchanged.
+  // Clear any per-pattern explicit advance flags that were just consumed
+  // (the advance opportunity was taken; don't persist the request).
+  const clearedOverrides = Object.fromEntries(
+    Object.entries(currentLadderState?.progressionOverrideByPattern ?? {}).filter(
+      ([pat]) => byPattern[pat]?.lastDecisionTrace?.includes("advance") !== true
+    )
+  ) as Record<string, "build">;
+  const clearedExplicit = Object.fromEntries(
+    Object.entries(currentLadderState?.explicitAdvanceRequestedByPattern ?? {}).filter(
+      ([pat]) => byPattern[pat]?.lastDecisionTrace?.includes("advance") !== true
+    )
+  );
+
+  return {
+    byPattern,
+    sacrificedByPattern: currentLadderState?.sacrificedByPattern,
+    progressionOverrideByPattern:
+      Object.keys(clearedOverrides).length > 0 ? clearedOverrides : undefined,
+    explicitAdvanceRequestedByPattern:
+      Object.keys(clearedExplicit).length > 0 ? clearedExplicit : undefined,
+    maintainPromptShownAtPhase: currentLadderState?.maintainPromptShownAtPhase,
+  };
 };
 
 // ---------------------------------------------------------------------------
