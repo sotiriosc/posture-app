@@ -17,7 +17,11 @@ import {
   PROGRAM_TEMPLATE_VERSION,
   previewPainSubstitutionChoices,
   getLadderProgressionMessage,
+  computeFlaggedExercises,
+  applyFeedbackContractAction,
+  applyAutoSacrifice,
 } from "@/lib/program";
+import type { FeedbackContractTrigger } from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import BackgroundShell from "@/components/BackgroundShell";
@@ -55,6 +59,7 @@ import {
 } from "@/lib/sessionDraftStore";
 import type {
   ExerciseFeedback,
+  ExerciseFeedbackSummary,
   ExerciseLog,
   LogPrefs,
   PainLevel,
@@ -74,12 +79,14 @@ import {
   getProgramProgress,
   listAllPrograms,
   listExerciseLogsByExerciseHistory,
+  listRecentExerciseLogsForProgram,
   listSessionsByProgramId,
   loadPrefs,
   saveExerciseLog,
   saveExerciseSwapEvent,
   savePrefs,
   saveProgramProgress,
+  summarizeExerciseFeedbackFromLogs,
   updateSession,
   uuid,
   nowIso,
@@ -456,6 +463,12 @@ export default function SessionClient() {
     Record<string, PainLevel>
   >({});
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+
+  // Phase 3.2 — pre-session feedback contract prompt state
+  const [contractTriggers, setContractTriggers] = useState<FeedbackContractTrigger[]>([]);
+  const [contractPromptIndex, setContractPromptIndex] = useState(0);
+  const [contractDismissed, setContractDismissed] = useState(false);
+
   const [activeTrackingField, setActiveTrackingField] =
     useState<TrackingField | null>(null);
   const [exerciseCompleteFlashVisible, setExerciseCompleteFlashVisible] =
@@ -709,6 +722,58 @@ export default function SessionClient() {
             deriveNextSessionRecommendationFromSession(latestFeedbackSession)
           );
           setSessionPlanIssue(null);
+
+          // Phase 3.2 — compute pre-session feedback contract triggers.
+          if (routableDayIndex !== null) {
+            try {
+              const day = resolvedProgram.week.find(
+                (d) => d.dayIndex === routableDayIndex
+              );
+              const mainExerciseIds = (day?.routine ?? [])
+                .filter((item) => item.section === "main")
+                .map((item) => item.exerciseId);
+
+              if (mainExerciseIds.length > 0) {
+                const recentLogs = await listRecentExerciseLogsForProgram({
+                  programId: resolvedProgram.id,
+                  lookbackDays: 14,
+                });
+                const logSummaries = summarizeExerciseFeedbackFromLogs(
+                  recentLogs,
+                  "local"
+                );
+                // Merge persisted contract state (probation, deferred, etc.)
+                // into computed log summaries before checking triggers.
+                const contractState =
+                  storedPrefs.contractStateByExercise ?? {};
+                const mergedSummaries = new Map<string, ExerciseFeedbackSummary>(
+                  logSummaries
+                );
+                Object.entries(contractState).forEach(([exId, state]) => {
+                  const base = mergedSummaries.get(exId) ?? {
+                    exerciseId: exId,
+                    pain: "none",
+                    difficulty: "normal",
+                    completionRate: 1,
+                  };
+                  mergedSummaries.set(exId, { ...base, ...state });
+                });
+
+                const triggers = computeFlaggedExercises({
+                  todaysPlanExerciseIds: mainExerciseIds,
+                  recentLogs,
+                  feedbackSummaryByExercise: mergedSummaries,
+                });
+                if (triggers.length > 0) {
+                  setContractTriggers(triggers);
+                  setContractPromptIndex(0);
+                  setContractDismissed(false);
+                }
+              }
+            } catch {
+              // Non-critical: if contract check fails, proceed with session normally.
+            }
+          }
           return;
         }
 
@@ -1353,6 +1418,77 @@ export default function SessionClient() {
         notes: params.notes ?? feedback[currentFeedbackKey]?.notes ?? "",
       },
     });
+  };
+
+  // Phase 3.2 — apply a feedback contract action for the current prompt.
+  const handleContractAction = async (
+    action: "sacrifice" | "test" | "modify" | "dismiss"
+  ) => {
+    const trigger = contractTriggers[contractPromptIndex];
+    if (!trigger) return;
+
+    const currentPrefs = await loadPrefs();
+    const contractState = currentPrefs.contractStateByExercise ?? {};
+    const currentSummary: ExerciseFeedbackSummary = {
+      exerciseId: trigger.exerciseId,
+      pain: "none",
+      difficulty: "normal",
+      completionRate: 1,
+      ...(contractState[trigger.exerciseId] ?? {}),
+    };
+
+    const phase =
+      programProgress?.phaseIndex === 2
+        ? "growth"
+        : programProgress?.phaseIndex === 1
+        ? "skill"
+        : "activation";
+    const sessionCount =
+      (programProgress?.workoutsCompletedInPhase ?? 0) +
+      (programProgress?.cyclesCompletedInPhase ?? 0) * 3;
+
+    // Auto-sacrifice applies when the exercise is already on probation.
+    const result =
+      trigger.onProbation && action !== "sacrifice" && action !== "dismiss"
+        ? applyAutoSacrifice({
+            exerciseId: trigger.exerciseId,
+            exercisePattern:
+              exerciseById(trigger.exerciseId)?.pattern ?? undefined,
+            currentSummary,
+            currentLadderState: program?.ladderState ?? undefined,
+            phase,
+            sessionCount,
+          })
+        : applyFeedbackContractAction({
+            action,
+            exerciseId: trigger.exerciseId,
+            exercisePattern:
+              exerciseById(trigger.exerciseId)?.pattern ?? undefined,
+            currentSummary,
+            currentLadderState: program?.ladderState ?? undefined,
+            phase,
+            sessionCount,
+            atFloor: trigger.atFloor,
+          });
+
+    // Persist the updated contract state.
+    const updatedContractState: NonNullable<LogPrefs["contractStateByExercise"]> = {
+      ...contractState,
+      [trigger.exerciseId]: {
+        deferred: result.updatedSummary.deferred,
+        probation: result.updatedSummary.probation,
+        sacrificedAt: result.updatedSummary.sacrificedAt,
+        autoSacrificed: result.updatedSummary.autoSacrificed,
+      },
+    };
+    await savePrefs({ ...currentPrefs, contractStateByExercise: updatedContractState });
+
+    // Advance to next trigger or dismiss the prompt.
+    if (contractPromptIndex < contractTriggers.length - 1) {
+      setContractPromptIndex((i) => i + 1);
+    } else {
+      setContractDismissed(true);
+    }
   };
 
   const handleSavePainReportOnly = async () => {
@@ -2112,6 +2248,100 @@ export default function SessionClient() {
             <p className="text-sm text-slate-200">
               Praxis is finding your saved program and restoring any active session draft.
             </p>
+          </OnImage>
+        </div>
+      </BackgroundShell>
+    );
+  }
+
+  // Phase 3.2 — pre-session feedback contract prompt.
+  // One card per flagged exercise, shown before the session begins.
+  const activeContractTrigger =
+    !contractDismissed && contractTriggers.length > 0
+      ? contractTriggers[contractPromptIndex] ?? null
+      : null;
+
+  if (activeContractTrigger) {
+    const ex = exerciseById(activeContractTrigger.exerciseId);
+    const exerciseName = ex?.name ?? activeContractTrigger.exerciseId;
+    const remaining = contractTriggers.length - contractPromptIndex;
+    const reasonCopy: Record<typeof activeContractTrigger.reason, string> = {
+      severe_pain: "you reported pain",
+      moderate_pain_consecutive: "you reported discomfort two sessions in a row",
+      incomplete: "you didn't complete all sets",
+      failed_difficulty: "the effort was maximal",
+    };
+    const prompt = `Last session, ${reasonCopy[activeContractTrigger.reason]} on ${exerciseName}. What would you like to do?`;
+
+    return (
+      <BackgroundShell>
+        <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+          <OnImage>
+            {remaining > 1 && (
+              <p className="text-xs font-medium text-indigo-300 mb-1">
+                {contractPromptIndex + 1} of {contractTriggers.length}
+              </p>
+            )}
+            <h1 className="text-xl font-semibold text-white">{exerciseName}</h1>
+            <p className="mt-2 text-sm text-slate-200">{prompt}</p>
+
+            <div className="mt-6 flex flex-col gap-3">
+              {/* Sacrifice */}
+              <button
+                onClick={() => { void handleContractAction("sacrifice"); }}
+                className="w-full rounded-xl bg-rose-600 px-5 py-3 text-left font-semibold text-white shadow hover:bg-rose-500 active:bg-rose-700"
+              >
+                <span className="block text-base">Sacrifice</span>
+                <span className="block text-xs font-normal text-rose-200 mt-0.5">
+                  Skip this exercise for now — I&apos;ll retest it later
+                </span>
+              </button>
+
+              {/* Test */}
+              <button
+                onClick={() => { void handleContractAction("test"); }}
+                className="w-full rounded-xl bg-slate-700 px-5 py-3 text-left font-semibold text-white shadow hover:bg-slate-600 active:bg-slate-800"
+              >
+                <span className="block text-base">Test</span>
+                <span className="block text-xs font-normal text-slate-300 mt-0.5">
+                  Keep it in — I&apos;ll try again this session
+                </span>
+              </button>
+
+              {/* Modify — disabled at d1 floor */}
+              <button
+                onClick={() => { void handleContractAction("modify"); }}
+                disabled={activeContractTrigger.atFloor}
+                className={[
+                  "w-full rounded-xl px-5 py-3 text-left font-semibold text-white shadow",
+                  activeContractTrigger.atFloor
+                    ? "bg-slate-800 opacity-40 cursor-not-allowed"
+                    : "bg-amber-600 hover:bg-amber-500 active:bg-amber-700",
+                ].join(" ")}
+              >
+                <span className="block text-base">Modify</span>
+                <span
+                  className={[
+                    "block text-xs font-normal mt-0.5",
+                    activeContractTrigger.atFloor
+                      ? "text-slate-400"
+                      : "text-amber-200",
+                  ].join(" ")}
+                >
+                  {activeContractTrigger.atFloor
+                    ? "Already at the easiest version"
+                    : "Drop to an easier variation"}
+                </span>
+              </button>
+            </div>
+
+            {/* Dismiss link — treated as Test */}
+            <button
+              onClick={() => { void handleContractAction("dismiss"); }}
+              className="mt-4 w-full text-center text-xs text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline"
+            >
+              Skip for now
+            </button>
           </OnImage>
         </div>
       </BackgroundShell>

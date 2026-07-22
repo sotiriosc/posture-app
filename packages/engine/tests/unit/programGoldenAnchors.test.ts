@@ -576,3 +576,145 @@ describe("Phase 3 ladder persona anchors", () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// Phase 3.2 persona anchors (prompted-and-sacrificed, prompted-and-auto-sacrificed)
+// ---------------------------------------------------------------------------
+
+import {
+  computeFlaggedExercises,
+  applyFeedbackContractAction,
+  applyAutoSacrifice,
+} from "@/lib/program/feedbackContract";
+import type { ExerciseFeedbackSummary } from "@/lib/types";
+
+describe("Phase 3.2 feedback contract persona anchors", () => {
+  // ── Prompted-and-Sacrificed: user chooses Sacrifice after pain flag ────────
+
+  test("prompted-and-sacrificed: pain triggers prompt; Sacrifice sets deferred + retest queue", () => {
+    const exerciseId = HINGE_D3; // db-rdl
+    const painLog = makePersonaLog({
+      exerciseId,
+      felt: "pain",
+      painLevel: "severe",
+      setsPlanned: 3,
+      setsCompleted: 3,
+      createdAt: "2026-03-01T10:00:00Z",
+    });
+
+    const summaries = new Map<string, ExerciseFeedbackSummary>();
+
+    // Step 1: compute triggers — pain should fire
+    const triggers = computeFlaggedExercises({
+      todaysPlanExerciseIds: [exerciseId],
+      recentLogs: [painLog],
+      feedbackSummaryByExercise: summaries,
+    });
+    expect(triggers).toHaveLength(1);
+    expect(triggers[0]!.reason).toBe("severe_pain");
+
+    // Step 2: user chooses Sacrifice
+    const baseSummary: ExerciseFeedbackSummary = {
+      exerciseId,
+      pain: "severe",
+      difficulty: "hard",
+      completionRate: 1,
+    };
+    const result = applyFeedbackContractAction({
+      action: "sacrifice",
+      exerciseId,
+      exercisePattern: "hinge",
+      currentSummary: baseSummary,
+      phase: "skill",
+      sessionCount: 6,
+    });
+
+    expect(result.updatedSummary.deferred).toBe(true);
+    expect(result.updatedSummary.sacrificedAt).toEqual({ phase: "skill", sessionCount: 6 });
+    expect(result.updatedSummary.autoSacrificed).toBe(false);
+    expect(result.updatedLadderState?.sacrificedByPattern?.hinge).toContain(exerciseId);
+    expect(result.decisionTrace).toMatch(/sacrifice/);
+
+    // Step 3: subsequent prompt check skips this exercise (deferred)
+    const summariesAfter = new Map<string, ExerciseFeedbackSummary>([
+      [exerciseId, result.updatedSummary],
+    ]);
+    const triggersAfter = computeFlaggedExercises({
+      todaysPlanExerciseIds: [exerciseId],
+      recentLogs: [painLog],
+      feedbackSummaryByExercise: summariesAfter,
+    });
+    expect(triggersAfter).toHaveLength(0); // already deferred — no re-prompt
+  });
+
+  // ── Prompted-and-Tested-then-Auto-Sacrificed (two-strikes) ───────────────
+
+  test("prompted-and-tested-then-auto-sacrificed: two consecutive flags on probation → auto-defer", () => {
+    const exerciseId = HINGE_D3;
+
+    const firstPainLog = makePersonaLog({
+      exerciseId,
+      painLevel: "severe",
+      setsPlanned: 3,
+      setsCompleted: 3,
+      createdAt: "2026-03-01T10:00:00Z",
+    });
+
+    // Step 1: first flag → trigger
+    const step1Triggers = computeFlaggedExercises({
+      todaysPlanExerciseIds: [exerciseId],
+      recentLogs: [firstPainLog],
+      feedbackSummaryByExercise: new Map(),
+    });
+    expect(step1Triggers[0]!.reason).toBe("severe_pain");
+    expect(step1Triggers[0]!.onProbation).toBe(false);
+
+    // Step 2: user chooses Test → probation=true
+    const baseSummary: ExerciseFeedbackSummary = {
+      exerciseId,
+      pain: "severe",
+      difficulty: "hard",
+      completionRate: 1,
+    };
+    const testResult = applyFeedbackContractAction({
+      action: "test",
+      exerciseId,
+      currentSummary: baseSummary,
+      phase: "skill",
+      sessionCount: 6,
+    });
+    expect(testResult.updatedSummary.probation).toBe(true);
+
+    // Step 3: second flag — different session, still pain
+    const secondPainLog = makePersonaLog({
+      exerciseId,
+      painLevel: "severe",
+      setsPlanned: 3,
+      setsCompleted: 3,
+      createdAt: "2026-03-08T10:00:00Z",
+    });
+    const step3Summaries = new Map<string, ExerciseFeedbackSummary>([
+      [exerciseId, testResult.updatedSummary],
+    ]);
+    const step3Triggers = computeFlaggedExercises({
+      todaysPlanExerciseIds: [exerciseId],
+      recentLogs: [secondPainLog, firstPainLog],
+      feedbackSummaryByExercise: step3Summaries,
+    });
+    expect(step3Triggers[0]!.onProbation).toBe(true); // still on probation
+
+    // Step 4: auto-sacrifice triggered (caller applies on seeing onProbation=true)
+    const autoResult = applyAutoSacrifice({
+      exerciseId,
+      exercisePattern: "hinge",
+      currentSummary: testResult.updatedSummary,
+      phase: "skill",
+      sessionCount: 7,
+    });
+    expect(autoResult.updatedSummary.deferred).toBe(true);
+    expect(autoResult.updatedSummary.autoSacrificed).toBe(true);
+    expect(autoResult.updatedSummary.probation).toBe(false);
+    expect(autoResult.decisionTrace).toMatch(/two consecutive flags on probation/);
+    expect(autoResult.updatedLadderState?.sacrificedByPattern?.hinge).toContain(exerciseId);
+  });
+});

@@ -29800,6 +29800,20 @@ export {
 } from "@/lib/program/ladderAdvancement";
 export type { LadderDecision, LadderDecisionKind } from "@/lib/program/ladderAdvancement";
 
+// Phase 3.2: feedback contract public API
+export {
+  computeFlaggedExercises,
+  applyFeedbackContractAction,
+  applyAutoSacrifice,
+  clearProbationIfClean,
+} from "@/lib/program/feedbackContract";
+export type {
+  FeedbackContractAction,
+  FeedbackContractTrigger,
+  FeedbackContractTriggerReason,
+  FeedbackContractResult,
+} from "@/lib/program/feedbackContract";
+
 const programConstraintWarningBuffer: ProgramConstraintWarning[] = [];
 
 export const getProgramConstraintWarningBuffer = () => [

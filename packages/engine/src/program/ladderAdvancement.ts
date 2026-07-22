@@ -250,8 +250,13 @@ export const computePatternLadderDecision = (params: {
   } = params;
   const { exerciseId, pattern, difficulty } = currentState;
 
-  // ── No logs → hold, preserve existing count ──────────────────────────────
-  if (exerciseLogs.length === 0) {
+  // ── REG-1c: user chose "Modify" in Phase 3.2 → regress ───────────────────
+  // Checked BEFORE the "no logs" early-exit because it is user-driven state,
+  // not log-derived.  Phase 3.2 sets deferred=true; this reads it immediately.
+  const isModified = deferredIds.has(exerciseId);
+
+  // ── No logs → hold (unless REG-1c is active) ─────────────────────────────
+  if (exerciseLogs.length === 0 && !isModified) {
     return {
       kind: "hold",
       newExerciseId: exerciseId,
@@ -271,9 +276,6 @@ export const computePatternLadderDecision = (params: {
   const hasTwoConsecutiveIncomplete =
     lastTwo.length >= 2 &&
     lastTwo.every((log) => (log.setsCompleted ?? 0) < (log.setsPlanned ?? 0));
-
-  // ── REG-1c: user chose "Modify" in Phase 3.2 → regress ───────────────────
-  const isModified = deferredIds.has(exerciseId);
 
   if (hasPainFlag || hasTwoConsecutiveIncomplete || isModified) {
     const prevId = getPrevLadderRung(exerciseId);
