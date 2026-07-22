@@ -18,6 +18,7 @@ import {
   normalizeEquipmentSelectionValues,
 } from "@/lib/equipment";
 import { usePhotoContext } from "@/components/PhotoContext";
+import CorrectiveSourceLine from "@/components/session/CorrectiveSourceLine";
 import type { PoseAnalysis } from "@/lib/poseAnalyzer";
 import type { AssessmentReport } from "@/lib/assessmentEngine";
 import Button from "@/components/ui/Button";
@@ -3505,9 +3506,9 @@ export default function ResultsRoutine() {
                         </span>
                       </div>
                       {entry.item.selectionDebug?.decisionTrace?.sourceObservation && (
-                        <p className="mt-0.5 text-[11px] leading-4 text-slate-400">
-                          {`Chosen because: ${entry.item.selectionDebug.decisionTrace.sourceObservation}`}
-                        </p>
+                        <CorrectiveSourceLine
+                          observation={entry.item.selectionDebug.decisionTrace.sourceObservation}
+                        />
                       )}
                       <RoutineItemCoachingDetails
                         item={entry.item}
@@ -3743,9 +3744,9 @@ export default function ResultsRoutine() {
                           <span className="text-[11px] uppercase text-slate-500">{item.section}</span>
                         </div>
                         {item.selectionDebug?.decisionTrace?.sourceObservation && (
-                          <p className="mt-0.5 text-[11px] leading-4 text-slate-400">
-                            {`Chosen because: ${item.selectionDebug.decisionTrace.sourceObservation}`}
-                          </p>
+                          <CorrectiveSourceLine
+                            observation={item.selectionDebug.decisionTrace.sourceObservation}
+                          />
                         )}
                         <RoutineItemCoachingDetails
                           item={item}

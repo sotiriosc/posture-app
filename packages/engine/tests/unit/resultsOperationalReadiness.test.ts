@@ -24,7 +24,9 @@ const mocks = vi.hoisted(() => ({
   listSessions: vi.fn(),
   listExerciseLogsByExercise: vi.fn(),
   listExerciseLogsBySessionIds: vi.fn(),
+  init: vi.fn(),
   loadPrefs: vi.fn(),
+  savePrefs: vi.fn(),
   saveProgram: vi.fn(),
   saveProgramProgress: vi.fn(),
   clearDraftsByProgramId: vi.fn(),
@@ -63,7 +65,9 @@ vi.mock("@/lib/logStore", () => ({
   listSessions: mocks.listSessions,
   listExerciseLogsByExercise: mocks.listExerciseLogsByExercise,
   listExerciseLogsBySessionIds: mocks.listExerciseLogsBySessionIds,
+  init: mocks.init,
   loadPrefs: mocks.loadPrefs,
+  savePrefs: mocks.savePrefs,
   saveProgram: mocks.saveProgram,
   saveProgramProgress: mocks.saveProgramProgress,
   uuid: mocks.uuid,
@@ -348,7 +352,9 @@ describe("results operational readiness", () => {
     mocks.listSessions.mockReset();
     mocks.listExerciseLogsByExercise.mockReset();
     mocks.listExerciseLogsBySessionIds.mockReset();
+    mocks.init.mockReset();
     mocks.loadPrefs.mockReset();
+    mocks.savePrefs.mockReset();
     mocks.saveProgram.mockReset();
     mocks.saveProgramProgress.mockReset();
     mocks.clearDraftsByProgramId.mockReset();
@@ -390,7 +396,9 @@ describe("results operational readiness", () => {
     mocks.listSessions.mockResolvedValue([]);
     mocks.listExerciseLogsByExercise.mockResolvedValue([]);
     mocks.listExerciseLogsBySessionIds.mockResolvedValue([]);
+    mocks.init.mockResolvedValue(undefined);
     mocks.loadPrefs.mockResolvedValue({ schemaVersion: 2 });
+    mocks.savePrefs.mockImplementation(async (prefs: unknown) => prefs);
     mocks.saveProgram.mockImplementation(async (program: unknown) => program);
     mocks.saveProgramProgress.mockImplementation(async (progress: unknown) => progress);
     mocks.clearDraftsByProgramId.mockResolvedValue(undefined);

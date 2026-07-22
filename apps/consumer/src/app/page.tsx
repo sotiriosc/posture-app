@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import Footer from "@/components/Footer";
 
 export default async function Home() {
   const systemSteps = [
@@ -111,6 +112,7 @@ export default async function Home() {
         </main>
       </div>
       <OnboardingInfoButton onboardingKey="home" />
+      <Footer />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { exerciseById } from "@/lib/exercises";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import SessionLadderPill from "@/components/session/SessionLadderPill";
 import {
   PROGRAM_TEMPLATE_VERSION,
   previewPainSubstitutionChoices,
@@ -2838,17 +2839,7 @@ export default function SessionClient() {
             }}
             completionFlashVisible={exerciseCompleteFlashVisible}
           />
-          {ladderProgressionMessage ? (
-            <div className="mt-2 flex items-center gap-2 px-1">
-              <span
-                className="inline-flex items-center rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-medium text-indigo-300 ring-1 ring-inset ring-indigo-500/30"
-                role="status"
-                aria-label="Ladder progression status"
-              >
-                {ladderProgressionMessage}
-              </span>
-            </div>
-          ) : null}
+          <SessionLadderPill message={ladderProgressionMessage} />
         </div>
 
         <div className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5">

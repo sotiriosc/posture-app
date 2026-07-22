@@ -518,6 +518,199 @@ exactly once per Sacrificed exercise per phase boundary; Reintroduce removes the
 deferred flag and logs the rung advancement.
 
 ---
+---
+
+# ═══ Engine work complete — 2026-XX-XX (fill on merge of PR #22) ═══
+
+Phases 0 through 5 built the coaching engine: security foundation, catalog
+surgery + institutionalization + slot degradation contract, monorepo unification,
+ladder advancement with determinism + safety floors, the sacrifice/test/modify
+feedback contract, training intent + personal equipment blocks, tailored warmup
+contract, criteria-based phase gating, assessment truth loop with confidence
+gate + retest lifecycle, undeniable results projection.
+
+Everything from Phase 6 onward is product-and-distribution work, not engine
+work. Different discipline, same rules: contract-first, verifiable claims,
+falsifications preserved, one phase per session.
+
+---
+
+## Phase 6 — Ship Readiness Pass
+
+**Standing rule SR-6 (log in engine-decisions.md as ED-6.0):** every decision
+in ship-readiness that makes the app *look* more like a real product must also
+make it *behave* more like one. No cosmetic-only work. If a change adds visual
+polish, it must also add a real capability, close a real risk, or remove a real
+dishonesty. This is the discipline that separates ship-ready from
+shipping-with-a-fresh-coat-of-paint.
+
+### 6.1 — Media honesty audit
+
+All 225 catalog exercises carry `videoUrl: "https://example.com/video/[id]"`,
+which will 404 on click. Shipping-a-lie. Fix in three steps:
+- Change `Exercise.videoUrl` to `videoUrl?: string` (optional).
+- Delete every `example.com` videoUrl.
+- In every UI location that reads `videoUrl`, gracefully degrade to a "Video
+  coming soon" placeholder card with existing `formCues` and `commonMistakes`
+  as the fallback content. Do NOT invent a "Show demo" button that goes
+  nowhere.
+
+Turns 225 broken links into 225 working coaching moments.
+
+### 6.2 — Legal foundation
+
+Author these routes in `apps/consumer/src/app/`:
+- `/privacy` — real privacy policy reflecting actual app behavior. Truthful
+  claims to include: pose analysis runs client-side (photos never leave device),
+  account data stored on hosted DB (be specific — check current setup), no
+  third-party ad networks, users can request full decision-log export (which
+  is genuinely available — traces exist).
+- `/terms` — standard consumer terms plus one required product-specific clause:
+  "Praxis is not a medical device and does not diagnose, treat, or prevent
+  injury. Consult a qualified professional for medical decisions." Reflect
+  Motion Care's Ontario base.
+- `/refunds` — refund policy. Draft: 14-day full refund on any subscription,
+  no questions asked. Simple, aggressive, eliminates purchase-friction
+  objections.
+- Footer component (both apps) linking to all three plus support email
+  `mailto:` placeholder. Same footer both apps, different brand tokens.
+
+Docs must be honest, not template boilerplate. Where a real policy decision is
+needed (data retention length, cookie consent scope for EU/UK), flag with
+`TODO(sotirios): decide before launch` inline. Log all TODOs in
+`docs/ship-readiness-decisions.md`.
+
+### 6.3 — Per-section visibility (user-controlled progressive disclosure)
+
+Sotirios's ratified design: the user decides, per section, what appears in
+their interface. Not three curated modes — user agency over their attention.
+
+New state on user profile: `sectionVisibility: Record<sectionId, boolean>`.
+Each toggleable section on results, session, and day views declares a stable
+`sectionId`. Section header renders with a small eye-icon affordance that
+toggles its visibility persistently. Hidden sections leave a subtle "N sections
+hidden — [show all]" line at the bottom of the parent screen, never
+permanently invisible without recovery.
+
+**Sensible defaults (hidden until toggled on):**
+- Full decision trace (per-exercise "because [reason]" expanded)
+- Phase history timeline (compact summary shown; full timeline hidden)
+- Warmup contract four-block breakdown (single "warmup" summary shown; block
+  detail hidden)
+- Provenance footer (visible; but the "view full decision log" link is
+  collapsed into a small text link, not a button)
+
+**Sensible defaults (visible):**
+- Headline metric
+- Current ladders section
+- Sacrifice retest queue (if non-empty)
+- Posture section (baseline vs latest)
+- Compact phase progression summary
+- Retired tags (quiet celebration copy)
+
+**Toggleable but visible-by-default:**
+- Session-screen ladder pill on each exercise card
+- Day-view corrective-source annotations ("Chosen because: [reason]")
+
+Settings page gets an "Interface" section with a list of all toggleable
+sections grouped by screen (Results / Session / Day), each with its current
+visibility state and a description of what it contains. A "Reset to defaults"
+button returns everything to the ratified defaults above.
+
+Implementation: `<VisibilityGate sectionId="...">` component wraps each
+toggleable region. `useSectionVisibility(sectionId)` hook returns `[visible,
+toggle]`. Zero new screens — same components, same layouts, conditional
+render based on user state. Persisted alongside other user preferences.
+
+### 6.4 — Brand consistency sweep
+
+Grep for `Body Alignment Coach` and legacy references outside cookie-prefix
+territory (per Phase 0's ratified decision, `bac_` cookie names stay legacy).
+Rename user-facing strings only. `apps/consumer/src/components/InstallApp.tsx`
+has one known instance; others may exist in email templates, error messages,
+questionnaire flow.
+
+Report the full list in the PR body before applying, so Sotirios can approve
+edge cases (some strings may be intentional heritage callouts, not oversights).
+
+### 6.5 — First-run smoke test path
+
+Author `tests/e2e/firstRunHappyPath.spec.ts` in `apps/consumer` — real
+Playwright test that: opens app → completes onboarding as a Build-intent
+user → generates program → opens session → marks one exercise complete →
+opens results → sees headline metric. If any step breaks, ship-readiness
+is a lie.
+
+Same test in `apps/gyms` but the happy path is an operator viewing a
+member's projection.
+
+### 6.6 — Error boundaries and honest failure modes
+
+Wrap results view, session view, assessment flow in React error boundaries.
+On engine or projection error, the boundary shows:
+*"Something didn't render correctly. Your data is safe. [Reload] [Report this]."*
+
+Report button captures error stack to a log endpoint (stub with `console.error`
+if endpoint not built yet). Zero white screens of death shipped.
+
+### 6.7 — Metadata and social sharing polish
+
+Extend `apps/consumer/src/app/layout.tsx` metadata: real Open Graph tags,
+Twitter card, favicon (SVG + PNG fallbacks), apple-touch-icon, description
+that reflects what the app actually does. Same for gyms with B2B framing.
+
+Current description: *"Personal training for strength, posture, and movement
+quality."* Draft replacement: *"Progressive strength training with
+posture-aware programming and criteria-based advancement."*
+
+### 6.8 — Analytics (Sotirios ratified: Path A)
+
+Install Plausible as privacy-respecting analytics package. Disclose in
+privacy policy (§6.2) as "aggregated usage stats, no personal tracking, no
+third-party ad networks." Standard Plausible config; EU hosting; no cookies
+required (Plausible is cookieless by design, which sidesteps EU/UK cookie
+consent for this component). Log ratification in engine-decisions.md as
+ED-6.8.
+
+### Out of scope for Phase 6 (absolute)
+
+- Any engine logic changes
+- Video content production (separate ongoing content phase)
+- App Store / Play Store packaging (Web-first ship; native apps are a future
+  decision)
+- Gyms-app dashboard features beyond the operator view Phase 5 built
+- Marketing site work
+- Pricing page copy (Sotirios decides with the pilot conversations)
+
+### Acceptance
+
+Full gate green. All 6.1–6.7 items shipped in one branch. Merge commit.
+
+### Sotirios's parallel track (out of code scope, in ship scope)
+
+Infrastructure that only Sotirios can do:
+- Stripe: test-mode → live-mode API keys in Vercel envs, both projects.
+  Create subscription products/prices in Stripe dashboard. Test one real
+  transaction on own card, issue self-refund.
+- Vercel: verify both projects build clean from monorepo. Custom domains
+  if available. Confirm env vars carry from standalone repos.
+- Neon DB: confirm production tier (free tier pauses on inactivity),
+  backups enabled.
+- Support email: decide address (probably `support@` domain), give to Code
+  for legal docs placement.
+- Email deliverability: SPF/DKIM/DMARC setup for transactional email.
+
+Motion Care conversion (afternoon of writing):
+- One-page description of app as between-session layer of practice.
+- Pricing structure decision: package with app included vs. app as
+  separate $/month tier.
+- First three clients selected for onboarding — clients, not beta testers.
+
+Gym owner outreach (ongoing):
+- List of ten independently owned GTA gyms with owner names.
+- Pitch is not a deck — it's an on-floor demo of posture assessment on
+  trainers or members.
+
 
 ## Sequencing & effort (with Claude Code)
 
@@ -669,3 +862,4 @@ exercise can be reinserted as a repair anchor. Full rationale in `docs/engine-de
 ### Out of scope (absolutely)
 
 Phase 1, Phase 3, warmup contract, any catalog restructuring beyond what degradation requires.
+

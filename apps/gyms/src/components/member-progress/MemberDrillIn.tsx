@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { projectResults } from "@praxis/engine/results/resultsProjection";
 import { init, listAllPrograms, listExerciseLogsBySession, listSessions } from "@/lib/logStore";
+import { loadAppState } from "@/lib/appState";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import type { ExerciseLog } from "@/lib/types";
 import type { MemberRosterRow } from "@/lib/gymSaas/memberProgressData";
@@ -30,7 +31,7 @@ export default function MemberDrillIn({ member }: Props) {
       // Demo: use the local program as a stand-in.
       await init();
       const programs = await listAllPrograms();
-      const active = resolveActiveProgramFromList(programs);
+      const active = resolveActiveProgramFromList(programs, await loadAppState()).program;
       if (cancelled || !active) {
         if (!cancelled) setLoading(false);
         return;

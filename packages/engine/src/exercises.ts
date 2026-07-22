@@ -97,7 +97,7 @@ export type Exercise = {
   mistakes: string[];
   painContraindications?: string[];
   contraindications?: string[];
-  videoUrl: string;
+  videoUrl?: string;
   tags: string[];
 };
 
@@ -115,7 +115,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move through full spine", "Breathe with each rep"],
     mistakes: ["Rushing the range", "Letting shoulders collapse"],
     contraindications: ["Acute wrist pain (use fists or forearms)"],
-    videoUrl: "https://example.com/video/cat-cow",
     tags: ["t-spine", "hips", "breath"],
   },
   {
@@ -139,7 +138,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep neck long", "Ribs stay down"],
     mistakes: ["Arching low back", "Shrugging shoulders"],
     contraindications: ["Shoulder impingement (reduce range)"],
-    videoUrl: "https://example.com/video/wall-slides",
     tags: ["scap", "t-spine", "shoulders"],
   },
   {
@@ -155,7 +153,6 @@ const rawExercises: Exercise[] = [
     cues: ["Avoid rolling low back", "Pause on tight spots"],
     mistakes: ["Holding breath", "Rolling too fast"],
     contraindications: ["Osteoporosis (avoid direct pressure)"],
-    videoUrl: "https://example.com/video/foam-roll-upper-back",
     tags: ["t-spine", "mobility"],
   },
   {
@@ -176,7 +173,6 @@ const rawExercises: Exercise[] = [
     cues: ["Ribs stacked over hips", "Press through heels"],
     mistakes: ["Overextending low back", "Feet too far away"],
     contraindications: ["Acute low-back pain (shorten range)"],
-    videoUrl: "https://example.com/video/glute-bridges",
     tags: ["glutes", "hips", "tva"],
   },
   {
@@ -205,7 +201,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep neck long", "Squeeze shoulder blades"],
     mistakes: ["Shrugging shoulders", "Bending elbows"],
     contraindications: ["Shoulder irritation (use lighter band)"],
-    videoUrl: "https://example.com/video/band-pull-aparts",
     tags: ["scap", "scapular", "upper-back", "rear-delt", "rearDelt"],
   },
   {
@@ -229,7 +224,6 @@ const rawExercises: Exercise[] = [
     cues: ["Straight arms", "Push the floor away"],
     mistakes: ["Bending elbows", "Head dropping"],
     contraindications: ["Wrist pain (use fists)"],
-    videoUrl: "https://example.com/video/scapular-pushups",
     tags: ["scap", "core"],
   },
   {
@@ -250,7 +244,6 @@ const rawExercises: Exercise[] = [
     cues: ["Ribs down", "Slow controlled reach"],
     mistakes: ["Arching low back", "Holding breath"],
     contraindications: ["Acute low-back pain (reduce range)"],
-    videoUrl: "https://example.com/video/dead-bug",
     tags: ["tva", "core"],
   },
   {
@@ -269,7 +262,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace before each step", "Keep hips level and ribs stacked"],
     mistakes: ["Rushing cadence", "Leaning side to side"],
     contraindications: ["Acute hip pain (reduce march height)"],
-    videoUrl: "https://example.com/video/standing-brace-march",
     tags: ["carry", "core", "posture"],
   },
   {
@@ -288,7 +280,6 @@ const rawExercises: Exercise[] = [
     cues: ["Press lightly into wall to create full-body tension", "March slowly without trunk rotation"],
     mistakes: ["Overarching low back", "Collapsing through standing hip"],
     contraindications: ["Acute hip pain (shorten stride)"],
-    videoUrl: "https://example.com/video/wall-supported-carry-march",
     tags: ["carry", "core", "posture"],
   },
   {
@@ -307,7 +298,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep steady band tension while marching", "Stay tall and resist torso drift"],
     mistakes: ["Twisting toward band anchor", "Losing brace between steps"],
     contraindications: ["Acute hip pain (reduce tension)"],
-    videoUrl: "https://example.com/video/band-offset-march-hold",
     tags: ["carry", "core", "anti-rotation", "band"],
   },
   {
@@ -338,7 +328,6 @@ const rawExercises: Exercise[] = [
       "Low-back strain (support torso)",
       "Shoulder pain (use supported row variation)",
     ],
-    videoUrl: "https://example.com/video/dumbbell-rows",
     tags: ["upper-back", "scap"],
   },
   {
@@ -360,7 +349,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through stance and pull elbow toward hip", "Pause briefly without rotating torso"],
     mistakes: ["Twisting through trunk", "Shrugging to finish the pull"],
     contraindications: ["Low-back pain (use chest support)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/single-arm-dumbbell-row",
     tags: ["pull", "upper-back", "dumbbell", "unilateral"],
   },
   {
@@ -381,7 +369,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hold elbow tight to torso with shoulder packed", "Keep ribs down and pelvis square"],
     mistakes: ["Leaning or twisting into the hold", "Losing shoulder position"],
     contraindications: ["Low-back pain (use chest support)", "Shoulder pain (light load)"],
-    videoUrl: "https://example.com/video/dumbbell-row-iso-hold",
     tags: ["pull", "upper-back", "dumbbell", "isometric"],
   },
   {
@@ -405,7 +392,6 @@ const rawExercises: Exercise[] = [
     cues: ["Small range", "Control the tempo"],
     mistakes: ["Lifting with neck", "Winging shoulders"],
     contraindications: ["Shoulder pain (reduce range)"],
-    videoUrl: "https://example.com/video/prone-ytw",
     tags: ["scap", "upper-back"],
   },
   {
@@ -434,7 +420,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace core", "Pull elbow to hip"],
     mistakes: ["Shrugging", "Rotating hips"],
     contraindications: ["Acute shoulder pain"],
-    videoUrl: "https://example.com/video/split-stance-row",
     tags: ["scap", "core"],
   },
   {
@@ -457,7 +442,6 @@ const rawExercises: Exercise[] = [
     cues: ["Shoulders down and back", "Press in a slight arc"],
     mistakes: ["Flaring elbows", "Bouncing at bottom"],
     contraindications: ["Shoulder pain (use neutral grip)"],
-    videoUrl: "https://example.com/video/dumbbell-bench-press",
     tags: ["push", "chest", "upper"],
   },
   {
@@ -476,7 +460,6 @@ const rawExercises: Exercise[] = [
     cues: ["Ribs down", "Pause elbows softly on floor"],
     mistakes: ["Overarching low back", "Pressing unevenly"],
     contraindications: ["Acute shoulder pain (reduce load)"],
-    videoUrl: "https://example.com/video/dumbbell-floor-press",
     tags: ["push", "chest", "core"],
   },
   {
@@ -494,7 +477,6 @@ const rawExercises: Exercise[] = [
     cues: ["Soft elbows", "Stretch with control"],
     mistakes: ["Dropping too deep", "Shrugging shoulders"],
     contraindications: ["Shoulder instability (shorten range)"],
-    videoUrl: "https://example.com/video/dumbbell-chest-fly",
     tags: ["push", "chest", "shoulders"],
   },
   {
@@ -515,7 +497,6 @@ const rawExercises: Exercise[] = [
     cues: ["Use light dumbbells and keep torso still", "Lead with elbows and pause at shoulder height"],
     mistakes: ["Swinging torso", "Shrugging traps"],
     contraindications: ["Shoulder pain (reduce ROM)"],
-    videoUrl: "https://example.com/video/dumbbell-lateral-raise",
     tags: ["push", "shoulders", "upper"],
   },
   {
@@ -537,7 +518,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace core and keep ribs stacked", "Press straight up without shrugging"],
     mistakes: ["Overarching back", "Uneven lockout"],
     contraindications: ["Shoulder pain (use neutral grip)"],
-    videoUrl: "https://example.com/video/dumbbell-shoulder-press",
     tags: ["push", "shoulders", "upper"],
   },
   {
@@ -558,7 +538,6 @@ const rawExercises: Exercise[] = [
     cues: ["Body in straight line", "Elbows at 45 degrees"],
     mistakes: ["Sagging hips", "Flaring elbows"],
     contraindications: ["Wrist pain (use handles)"],
-    videoUrl: "https://example.com/video/incline-pushup",
     tags: ["chest", "core"],
   },
   {
@@ -574,7 +553,6 @@ const rawExercises: Exercise[] = [
     cues: ["Tuck tailbone slightly", "Keep ribs down"],
     mistakes: ["Overarching low back", "Leaning forward"],
     contraindications: ["Knee pain (use padding)"],
-    videoUrl: "https://example.com/video/hip-flexor-stretch",
     tags: ["hips"],
   },
   {
@@ -590,7 +568,6 @@ const rawExercises: Exercise[] = [
     cues: ["Breathe into mid-back", "Rotate from upper spine"],
     mistakes: ["Forcing the twist", "Holding breath"],
     contraindications: ["Shoulder pain (reduce range)"],
-    videoUrl: "https://example.com/video/thread-the-needle",
     tags: ["t-spine", "scap"],
   },
   {
@@ -606,7 +583,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lengthen back of neck", "Keep jaw relaxed"],
     mistakes: ["Tucking too hard", "Looking down"],
     contraindications: ["Cervical pain (light range)"],
-    videoUrl: "https://example.com/video/chin-tucks",
     tags: ["neck"],
   },
   {
@@ -622,7 +598,6 @@ const rawExercises: Exercise[] = [
     cues: ["Gentle stretch", "Keep ribs down"],
     mistakes: ["Overextending shoulder", "Arching back"],
     contraindications: ["Shoulder impingement"],
-    videoUrl: "https://example.com/video/doorway-pec-stretch",
     tags: ["chest", "shoulders"],
   },
   {
@@ -638,7 +613,6 @@ const rawExercises: Exercise[] = [
     cues: ["Rotate from upper spine", "Keep hips stacked"],
     mistakes: ["Twisting low back", "Rushing"],
     contraindications: ["Acute back pain (small range)"],
-    videoUrl: "https://example.com/video/thoracic-rotation",
     tags: ["t-spine"],
   },
   {
@@ -655,7 +629,6 @@ const rawExercises: Exercise[] = [
     cues: ["Back of arms on wall", "Chin tucked"],
     mistakes: ["Ribs flaring", "Shrugging"],
     contraindications: ["Shoulder pain (shorter hold)"],
-    videoUrl: "https://example.com/video/wall-angel-hold",
     tags: ["scap", "t-spine"],
   },
   {
@@ -673,7 +646,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace core", "Hands move straight out"],
     mistakes: ["Rotating torso", "Leaning"],
     contraindications: ["Acute low-back pain (light band)"],
-    videoUrl: "https://example.com/video/pallof-press",
     tags: ["core", "tva"],
   },
   {
@@ -691,7 +663,6 @@ const rawExercises: Exercise[] = [
     cues: ["Reach long", "Keep hips level"],
     mistakes: ["Arching back", "Twisting hips"],
     contraindications: ["Wrist pain (use forearms)"],
-    videoUrl: "https://example.com/video/bird-dog",
     tags: ["core", "tva"],
   },
   {
@@ -718,7 +689,6 @@ const rawExercises: Exercise[] = [
     mistakes: ["Leaning back", "Shrugging"],
     painContraindications: ["elbows", "neck"],
     contraindications: ["Shoulder irritation (light band)"],
-    videoUrl: "https://example.com/video/face-pull",
     tags: [
       "pull",
       "scap",
@@ -749,7 +719,6 @@ const rawExercises: Exercise[] = [
     mistakes: ["Leaning back to finish reps", "Shrugging shoulders toward ears"],
     painContraindications: ["elbows", "neck"],
     contraindications: ["Shoulder irritation (use lighter band)"],
-    videoUrl: "https://example.com/video/band-face-pull-high-anchor",
     tags: [
       "pull",
       "scap",
@@ -775,7 +744,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep spine long", "Soft knee bend"],
     mistakes: ["Rounding back", "Locking knee"],
     contraindications: ["Sciatic pain (gentle range)"],
-    videoUrl: "https://example.com/video/hamstring-stretch",
     tags: ["hips", "hamstrings"],
   },
   {
@@ -795,7 +763,6 @@ const rawExercises: Exercise[] = [
     cues: ["Tall spine", "Pull elbows back"],
     mistakes: ["Rounding shoulders", "Jerking"],
     contraindications: ["Low-back pain (sit on support)"],
-    videoUrl: "https://example.com/video/seated-band-row",
     tags: ["upper-back", "scap"],
   },
   {
@@ -811,7 +778,6 @@ const rawExercises: Exercise[] = [
     cues: ["Knees stacked", "Breathe into the stretch"],
     mistakes: ["Letting knees drift", "Holding breath"],
     contraindications: ["Shoulder pain (short range)"],
-    videoUrl: "https://example.com/video/open-book",
     tags: ["t-spine"],
   },
   {
@@ -828,7 +794,6 @@ const rawExercises: Exercise[] = [
     cues: ["Heel stays down", "Knee tracks over toes"],
     mistakes: ["Heel lifting", "Collapsing arch"],
     contraindications: ["Acute ankle pain"],
-    videoUrl: "https://example.com/video/ankle-mobility",
     tags: ["ankles", "hips"],
   },
   {
@@ -844,7 +809,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hips back", "Reach long through arm"],
     mistakes: ["Twisting torso", "Shrugging"],
     contraindications: ["Shoulder pain (gentle range)"],
-    videoUrl: "https://example.com/video/banded-lat-stretch",
     tags: ["lats", "t-spine"],
   },
   {
@@ -860,7 +824,6 @@ const rawExercises: Exercise[] = [
     cues: ["Low ribs soften", "Long exhale"],
     mistakes: ["Chest breathing", "Neck tension"],
     contraindications: ["None"],
-    videoUrl: "https://example.com/video/90-90-breathing",
     tags: ["breath", "tva"],
   },
   {
@@ -879,7 +842,6 @@ const rawExercises: Exercise[] = [
     cues: ["Sit between hips", "Knees track over toes"],
     mistakes: ["Heels lifting", "Collapsing knees"],
     contraindications: ["Knee pain (reduce depth)"],
-    videoUrl: "https://example.com/video/bodyweight-squat",
     tags: ["legs", "squat"],
   },
   {
@@ -899,7 +861,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hold dumbbell close to chest", "Brace core and sit between hips"],
     mistakes: ["Collapsing chest", "Knees caving in"],
     contraindications: ["Knee pain (reduce range)"],
-    videoUrl: "https://example.com/video/goblet-squat",
     tags: ["legs", "squat", "core"],
   },
   {
@@ -915,7 +876,6 @@ const rawExercises: Exercise[] = [
     cues: ["Tall torso", "Soft back knee"],
     mistakes: ["Front knee caves in", "Leaning forward"],
     contraindications: ["Knee pain (shorten range)"],
-    videoUrl: "https://example.com/video/split-squat",
     tags: ["legs", "squat"],
   },
   {
@@ -939,7 +899,6 @@ const rawExercises: Exercise[] = [
     cues: ["Step back softly and keep the front foot rooted", "Lower with a tall torso and drive through the front leg"],
     mistakes: ["Crashing the back knee down", "Leaning too far forward on the front leg"],
     contraindications: ["Acute knee pain (shorten range)", "Hip pain (reduce stride length)"],
-    videoUrl: "https://example.com/video/dumbbell-reverse-lunge",
     tags: ["legs", "squat", "dumbbell", "single-leg"],
   },
   {
@@ -963,7 +922,6 @@ const rawExercises: Exercise[] = [
     cues: ["Set the rear foot lightly and keep most of the work on the front leg", "Stay tall and descend straight down under control"],
     mistakes: ["Loading the back leg too much", "Bouncing out of the bottom"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (adjust stance length)"],
-    videoUrl: "https://example.com/video/dumbbell-bulgarian-split-squat",
     tags: ["legs", "squat", "dumbbell", "single-leg"],
   },
   {
@@ -980,7 +938,6 @@ const rawExercises: Exercise[] = [
     cues: ["Push hips back", "Spine long"],
     mistakes: ["Rounding back", "Bending knees too much"],
     contraindications: ["Low-back pain (shorten range)"],
-    videoUrl: "https://example.com/video/hip-hinge-drill",
     tags: ["hinge", "posterior"],
   },
   {
@@ -999,7 +956,6 @@ const rawExercises: Exercise[] = [
     cues: ["Soft knees", "Hinge hips back with long spine"],
     mistakes: ["Rounding back", "Collapsing chest"],
     contraindications: ["Acute low-back pain (regress)"],
-    videoUrl: "https://example.com/video/bodyweight-good-morning",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -1019,7 +975,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hinge at hips with soft knees", "Keep dumbbells close to legs"],
     mistakes: ["Rounding low back", "Turning it into a squat"],
     contraindications: ["Acute low-back pain (reduce load/range)"],
-    videoUrl: "https://example.com/video/db-rdl",
     tags: ["hinge", "posterior", "glutes"],
   },
   {
@@ -1037,7 +992,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lift chest with neutral spine", "Squeeze glutes at the top"],
     mistakes: ["Overextending low back", "Using momentum"],
     contraindications: ["Acute low-back pain (shorten range)"],
-    videoUrl: "https://example.com/video/back-extension",
     tags: ["hinge", "posterior", "lower-back"],
   },
   {
@@ -1055,7 +1009,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace and keep ribs stacked", "Squeeze glutes while holding neutral spine"],
     mistakes: ["Overextending low back", "Holding breath and losing brace"],
     contraindications: ["Acute low-back pain (shorten hold)"],
-    videoUrl: "https://example.com/video/back-extension-hold",
     tags: ["hinge", "posterior", "lower-back", "control"],
   },
   {
@@ -1071,7 +1024,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hips square", "Reach long"],
     mistakes: ["Opening hips", "Rounding back"],
     contraindications: ["Balance issues (use support)"],
-    videoUrl: "https://example.com/video/single-leg-rdl",
     tags: ["hinge", "balance"],
   },
   {
@@ -1094,7 +1046,6 @@ const rawExercises: Exercise[] = [
     cues: ["Body in one line", "Elbows 30-45°"],
     mistakes: ["Sagging hips", "Flaring elbows"],
     contraindications: ["Wrist pain (use handles)"],
-    videoUrl: "https://example.com/video/pushup",
     tags: ["push", "upper"],
   },
   {
@@ -1116,7 +1067,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep hands under shoulders and elbows tracking back", "Brace trunk and move with control"],
     mistakes: ["Flaring elbows out", "Sagging hips at lockout"],
     contraindications: ["Wrist pain (use handles)", "Shoulder pain (reduce depth)"],
-    videoUrl: "https://example.com/video/close-grip-pushup",
     tags: ["push", "chest", "triceps"],
   },
   {
@@ -1138,7 +1088,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lower for a full three-count and pause before pressing", "Maintain a rigid plank from head to heel"],
     mistakes: ["Rushing the eccentric phase", "Losing core tension at the bottom"],
     contraindications: ["Wrist pain (use handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/tempo-pushup",
     tags: ["push", "chest", "tempo"],
   },
   {
@@ -1160,7 +1109,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hips high", "Head between arms"],
     mistakes: ["Shrugging shoulders", "Partial range"],
     contraindications: ["Shoulder pain (reduce range)"],
-    videoUrl: "https://example.com/video/pike-pushup",
     tags: ["push", "shoulders"],
   },
   {
@@ -1183,7 +1131,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hips level — don't pike", "Full lock-out at top"],
     mistakes: ["Sagging hips", "Feet too high (loses horizontal push mechanics)"],
     contraindications: ["Wrist pain (use push-up handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/feet-elevated-pushup",
     tags: ["push", "chest", "advanced"],
   },
   {
@@ -1205,7 +1152,6 @@ const rawExercises: Exercise[] = [
     cues: ["Shift weight with control", "Keep ribs and hips aligned"],
     mistakes: ["Dropping chest too fast", "Twisting torso"],
     contraindications: ["Wrist pain (use handles or regress)"],
-    videoUrl: "https://example.com/video/archer-pushup",
     tags: ["push", "advanced", "unilateral"],
   },
   {
@@ -1224,7 +1170,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lean shoulders forward", "Keep hollow body tension"],
     mistakes: ["Losing lean", "Sagging low back"],
     contraindications: ["Wrist/shoulder pain (regress)"],
-    videoUrl: "https://example.com/video/pseudo-planche-pushup",
     tags: ["push", "advanced", "strength"],
   },
   {
@@ -1239,7 +1184,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep heel down", "Sit into one hip with control"],
     mistakes: ["Collapsing chest", "Knee caving"],
     contraindications: ["Knee pain (reduce depth)"],
-    videoUrl: "https://example.com/video/cossack-squat",
     tags: ["legs", "advanced", "mobility"],
   },
   {
@@ -1258,7 +1202,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stay tall", "Control the bottom position"],
     mistakes: ["Dropping fast", "Losing balance"],
     contraindications: ["Knee pain (regress)"],
-    videoUrl: "https://example.com/video/shrimp-squat",
     tags: ["legs", "advanced", "balance"],
   },
   {
@@ -1276,7 +1219,6 @@ const rawExercises: Exercise[] = [
     cues: ["Drive through heel", "Keep pelvis level"],
     mistakes: ["Overextending low back", "Dropping hip"],
     contraindications: ["Acute low-back pain"],
-    videoUrl: "https://example.com/video/single-leg-hip-thrust",
     tags: ["hinge", "advanced", "posterior"],
   },
   {
@@ -1296,7 +1238,6 @@ const rawExercises: Exercise[] = [
     cues: ["Press low back to floor", "Reach long through arms and legs"],
     mistakes: ["Arching back", "Neck strain"],
     contraindications: ["Low-back pain (regress)"],
-    videoUrl: "https://example.com/video/hollow-body-hold",
     tags: ["core", "advanced", "stability"],
   },
   {
@@ -1315,7 +1256,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stack shoulders/hips", "Lift top leg without rotating"],
     mistakes: ["Dropping hips", "Shrugging shoulder"],
     contraindications: ["Shoulder pain (regress)"],
-    videoUrl: "https://example.com/video/side-plank-star",
     tags: ["core", "advanced", "balance"],
   },
   {
@@ -1340,7 +1280,6 @@ const rawExercises: Exercise[] = [
     mistakes: ["Shrugging up", "Rushing through sweep"],
     painContraindications: ["neck"],
     contraindications: ["Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/prone-swimmer",
     tags: ["pull", "scap", "advanced"],
   },
   {
@@ -1358,7 +1297,6 @@ const rawExercises: Exercise[] = [
     mistakes: ["Pushing through neck", "Using momentum"],
     painContraindications: ["neck"],
     contraindications: ["Neck pain (reduce range)"],
-    videoUrl: "https://example.com/video/back-widow",
     tags: ["pull", "upper-back", "strength"],
   },
   {
@@ -1375,7 +1313,6 @@ const rawExercises: Exercise[] = [
     cues: ["Slow 3-second lower", "Stay tall with knees tracking"],
     mistakes: ["Bouncing at bottom", "Collapsing knees"],
     contraindications: ["Knee pain (reduce depth)"],
-    videoUrl: "https://example.com/video/heels-elevated-tempo-squat",
     tags: ["legs", "strength", "control"],
   },
   {
@@ -1391,7 +1328,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep hips level", "Push through heel and brace abs"],
     mistakes: ["Low-back arching", "Hip drop"],
     contraindications: ["Acute low-back pain"],
-    videoUrl: "https://example.com/video/single-leg-glute-bridge-hold",
     tags: ["hinge", "balance", "stability"],
   },
   {
@@ -1416,7 +1352,6 @@ const rawExercises: Exercise[] = [
     mistakes: ["Shrugging", "Rushing"],
     painContraindications: ["neck"],
     contraindications: ["Shoulder pain (short range)"],
-    videoUrl: "https://example.com/video/reverse-snow-angel",
     tags: ["pull", "scap"],
   },
   {
@@ -1436,7 +1371,6 @@ const rawExercises: Exercise[] = [
     cues: ["Ribs down", "Glutes tight"],
     mistakes: ["Sagging hips", "Holding breath"],
     contraindications: ["Shoulder pain (shorten)"],
-    videoUrl: "https://example.com/video/plank",
     tags: ["core", "stability"],
   },
   {
@@ -1458,7 +1392,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace core", "Press straight"],
     mistakes: ["Ribs flaring", "Shoulders shrugging"],
     contraindications: ["Shoulder pain (light band)"],
-    videoUrl: "https://example.com/video/band-chest-press",
     tags: ["push", "band"],
   },
   {
@@ -1479,7 +1412,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep a soft bend in elbows and sweep hands together with control", "Stay tall with ribs stacked and shoulders down"],
     mistakes: ["Turning it into a press", "Overreaching shoulders forward at the finish"],
     contraindications: ["Shoulder pain (shorten arc)", "Elbow pain (use a lighter band)"],
-    videoUrl: "https://example.com/video/band-chest-fly",
     tags: ["push", "band", "chest", "fly"],
   },
   {
@@ -1499,7 +1431,6 @@ const rawExercises: Exercise[] = [
     cues: ["Set split stance and brace trunk", "Press slightly down and forward with stacked ribs"],
     mistakes: ["Over-rotating torso", "Shrugging through the press"],
     contraindications: ["Shoulder pain (reduce band tension)"],
-    videoUrl: "https://example.com/video/split-stance-band-chest-press",
     tags: ["push", "band", "chest", "split-stance"],
   },
   {
@@ -1519,7 +1450,6 @@ const rawExercises: Exercise[] = [
     cues: ["Squeeze glutes and keep ribs down", "Press with even arm path without rib flare"],
     mistakes: ["Arching low back", "Uneven lockout"],
     contraindications: ["Knee pain (pad knees or use standing variation)"],
-    videoUrl: "https://example.com/video/tall-kneeling-band-chest-press",
     tags: ["push", "band", "chest", "kneeling"],
   },
   {
@@ -1539,7 +1469,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hold press path with shoulders down", "Maintain steady trunk brace and breathing"],
     mistakes: ["Drifting elbows down", "Losing core tension"],
     contraindications: ["Shoulder pain (reduce tension and hold time)"],
-    videoUrl: "https://example.com/video/band-chest-press-iso-hold",
     tags: ["push", "band", "chest", "isometric"],
   },
   {
@@ -1561,7 +1490,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace core and keep glutes tight", "Press straight up without leaning back"],
     mistakes: ["Overarching low back", "Shrugging shoulders"],
     contraindications: ["Shoulder pain (light band)"],
-    videoUrl: "https://example.com/video/band-overhead-press",
     tags: ["push", "band", "shoulders"],
   },
   {
@@ -1582,7 +1510,6 @@ const rawExercises: Exercise[] = [
     cues: ["Raise with elbows leading and shoulders down", "Keep ribs stacked without torso sway"],
     mistakes: ["Shrugging traps", "Swinging through momentum"],
     contraindications: ["Shoulder pain (reduce range and tension)"],
-    videoUrl: "https://example.com/video/band-lateral-raise",
     tags: ["push", "band", "shoulders", "lateral-delt"],
   },
   {
@@ -1604,7 +1531,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep ribs stacked", "Drive elbows down to sides"],
     mistakes: ["Leaning back", "Pulling with neck tension"],
     contraindications: ["Shoulder pain (reduce ROM)"],
-    videoUrl: "https://example.com/video/band-lat-pulldown",
     tags: ["pull", "band", "lats"],
   },
   {
@@ -1622,7 +1548,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stay tall through trunk", "Drive elbows down and slightly in"],
     mistakes: ["Leaning back to finish rep", "Shrugging toward ears"],
     contraindications: ["Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/band-lat-pulldown-kneeling",
     tags: ["pull", "band", "lats", "kneeling"],
   },
   {
@@ -1642,7 +1567,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stack ribs over pelvis and pull elbows to ribs", "Keep neck long while controlling return"],
     mistakes: ["Leaning back to finish rep", "Shrugging shoulders"],
     contraindications: ["Shoulder pain (reduce range)"],
-    videoUrl: "https://example.com/video/tall-kneeling-band-lat-pulldown",
     tags: ["pull", "band", "lats", "kneeling"],
   },
   {
@@ -1662,7 +1586,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stay tall with slight knee bend", "Drive elbows down without trunk sway"],
     mistakes: ["Rocking torso", "Pulling behind neck"],
     contraindications: ["Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/standing-band-lat-pulldown",
     tags: ["pull", "band", "lats", "standing"],
   },
   {
@@ -1680,7 +1603,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep wrists neutral", "Pull elbows to ribs with control"],
     mistakes: ["Wrist collapse", "Neck tension takeover"],
     contraindications: ["Elbow pain (reduce tension)"],
-    videoUrl: "https://example.com/video/band-lat-pulldown-neutral-grip",
     tags: ["pull", "band", "lats", "neutral-grip"],
   },
   {
@@ -1698,7 +1620,6 @@ const rawExercises: Exercise[] = [
     cues: ["Pull bar path wide and down", "Keep ribs stacked"],
     mistakes: ["Overarching low back", "Elbows drifting too far behind torso"],
     contraindications: ["Shoulder pain (use neutral grip variant)"],
-    videoUrl: "https://example.com/video/band-lat-pulldown-wide-grip",
     tags: ["pull", "band", "lats", "wide-grip"],
   },
   {
@@ -1716,7 +1637,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hold elbows down without shrugging", "Breathe behind the brace"],
     mistakes: ["Losing shoulder position", "Turning hold into short reps"],
     contraindications: ["Shoulder pain (reduce hold duration)"],
-    videoUrl: "https://example.com/video/band-lat-pulldown-iso-hold",
     tags: ["pull", "band", "lats", "isometric"],
   },
   {
@@ -1742,7 +1662,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep ribs stacked and arms long", "Sweep hands toward pockets from the lats"],
     mistakes: ["Turning it into a triceps pressdown", "Arching low back to finish"],
     contraindications: ["Shoulder pain (shorten range)", "Low-back pain (use lighter tension)"],
-    videoUrl: "https://example.com/video/band-straight-arm-pulldown",
     tags: ["pull", "band", "lats", "serratus"],
   },
   {
@@ -1760,7 +1679,6 @@ const rawExercises: Exercise[] = [
     cues: ["Push hips back", "Keep shins mostly vertical"],
     mistakes: ["Rounding back", "Bending knees too much"],
     contraindications: ["Acute low-back pain (light tension)"],
-    videoUrl: "https://example.com/video/band-rdl",
     tags: ["hinge", "band", "posterior"],
   },
   {
@@ -1777,7 +1695,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stay tall", "Knees track over toes"],
     mistakes: ["Collapsing chest", "Knees caving in"],
     contraindications: ["Knee pain (reduce depth)"],
-    videoUrl: "https://example.com/video/band-front-squat",
     tags: ["squat", "band", "legs"],
   },
   {
@@ -1795,7 +1712,6 @@ const rawExercises: Exercise[] = [
     cues: ["Rotate through torso with control", "Keep hips stable"],
     mistakes: ["Twisting knees", "Using momentum"],
     contraindications: ["Acute low-back pain (light band)"],
-    videoUrl: "https://example.com/video/band-woodchop",
     tags: ["core", "band", "rotation"],
   },
   {
@@ -1824,7 +1740,6 @@ const rawExercises: Exercise[] = [
     cues: ["Elbows back", "Tall spine"],
     mistakes: ["Leaning back", "Shrugging"],
     contraindications: ["Shoulder pain (light band)"],
-    videoUrl: "https://example.com/video/band-row",
     tags: ["pull", "band"],
   },
   {
@@ -1845,7 +1760,6 @@ const rawExercises: Exercise[] = [
     cues: ["Square hips and pull elbow toward hip", "Pause briefly without trunk twist"],
     mistakes: ["Rotating torso to cheat range", "Shrugging shoulder to finish"],
     contraindications: ["Shoulder pain (reduce tension)"],
-    videoUrl: "https://example.com/video/single-arm-band-row",
     tags: ["pull", "band", "upper-back", "unilateral"],
   },
   {
@@ -1866,7 +1780,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hold elbows back with shoulders down", "Maintain neutral spine and steady breathing"],
     mistakes: ["Leaning back into hold", "Losing shoulder position"],
     contraindications: ["Shoulder pain (shorten hold)"],
-    videoUrl: "https://example.com/video/band-row-iso-hold",
     tags: ["pull", "band", "upper-back", "isometric"],
   },
   {
@@ -1887,7 +1800,6 @@ const rawExercises: Exercise[] = [
     cues: ["Elbows by sides", "Curl with control and full range"],
     mistakes: ["Swinging torso", "Elbows drifting forward"],
     contraindications: ["Elbow pain (use lighter load)"],
-    videoUrl: "https://example.com/video/db-biceps-curl",
     tags: ["biceps", "isolation", "arms"],
   },
   {
@@ -1908,7 +1820,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep wrists neutral and elbows pinned", "Lower under full control each rep"],
     mistakes: ["Swinging torso", "Shrugging shoulders at top"],
     contraindications: ["Elbow pain (reduce load)", "Wrist pain (shorten range)"],
-    videoUrl: "https://example.com/video/hammer-curl",
     tags: ["biceps", "isolation", "arms", "dumbbell"],
   },
   {
@@ -1929,7 +1840,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep upper arms still and full tension through range", "Brace trunk and avoid sway"],
     mistakes: ["Leaning back to finish reps", "Letting elbows drift forward"],
     contraindications: ["Elbow pain (reduce load)"],
-    videoUrl: "https://example.com/video/cable-biceps-curl",
     tags: ["biceps", "isolation", "arms", "cable"],
   },
   {
@@ -1950,7 +1860,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep wrists neutral", "Control the lowering phase"],
     mistakes: ["Shrugging shoulders", "Using momentum"],
     contraindications: ["Elbow pain (reduce tension)"],
-    videoUrl: "https://example.com/video/band-biceps-curl",
     tags: ["biceps", "isolation", "arms", "band"],
   },
   {
@@ -1971,7 +1880,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep elbow close to ribs and palm-up path", "Control eccentric to maintain band tension"],
     mistakes: ["Rotating torso to help the rep", "Losing wrist neutrality"],
     contraindications: ["Elbow pain (reduce tension)"],
-    videoUrl: "https://example.com/video/single-arm-band-biceps-curl",
     tags: ["biceps", "isolation", "arms", "band", "unilateral"],
   },
   {
@@ -1992,7 +1900,6 @@ const rawExercises: Exercise[] = [
     cues: ["Create steady self-resistance", "Keep elbows tucked"],
     mistakes: ["Neck tension", "Jerky effort"],
     contraindications: ["Elbow pain (shorten hold)"],
-    videoUrl: "https://example.com/video/towel-biceps-curl-hold",
     tags: ["biceps", "isolation", "arms"],
   },
   {
@@ -2013,7 +1920,6 @@ const rawExercises: Exercise[] = [
     cues: ["Resist with opposite hand through full elbow bend", "Keep shoulders relaxed and elbows tucked"],
     mistakes: ["Shrugging to create force", "Using jerky pulses instead of steady tension"],
     contraindications: ["Elbow pain (reduce effort)"],
-    videoUrl: "https://example.com/video/self-resisted-biceps-curl",
     tags: ["biceps", "isolation", "arms"],
   },
   {
@@ -2034,7 +1940,6 @@ const rawExercises: Exercise[] = [
     cues: ["Upper arms steady", "Extend fully without locking hard"],
     mistakes: ["Flaring elbows", "Arching low back"],
     contraindications: ["Elbow pain (use lighter load)"],
-    videoUrl: "https://example.com/video/db-triceps-extension",
     tags: ["triceps", "isolation", "arms"],
   },
   {
@@ -2055,7 +1960,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hinge slightly and keep upper arm fixed", "Extend fully with a brief lockout pause"],
     mistakes: ["Swinging torso", "Dropping elbow below torso line"],
     contraindications: ["Elbow pain (reduce load)", "Low-back pain (support torso)"],
-    videoUrl: "https://example.com/video/dumbbell-triceps-kickback",
     tags: ["triceps", "isolation", "arms", "dumbbell"],
   },
   {
@@ -2076,7 +1980,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lock elbows near ribs", "Drive hands down with control"],
     mistakes: ["Shoulders rolling forward", "Using body sway"],
     contraindications: ["Elbow pain (reduce tension)"],
-    videoUrl: "https://example.com/video/band-triceps-pressdown",
     tags: ["triceps", "isolation", "arms", "band"],
   },
   {
@@ -2097,7 +2000,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep upper arms mostly fixed as elbows extend", "Brace ribs down to avoid low-back arch"],
     mistakes: ["Elbows flaring wide", "Turning it into a shoulder press"],
     contraindications: ["Elbow pain (reduce tension)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/band-overhead-triceps-extension",
     tags: ["triceps", "isolation", "arms", "band"],
   },
   {
@@ -2118,7 +2020,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep elbows high and stable while extending", "Control end range without shoulder shrug"],
     mistakes: ["Letting elbows drift excessively", "Hyperextending low back"],
     contraindications: ["Elbow pain (reduce load)", "Shoulder pain (use pressdown variant)"],
-    videoUrl: "https://example.com/video/overhead-cable-triceps-extension",
     tags: ["triceps", "isolation", "arms", "cable"],
   },
   {
@@ -2139,7 +2040,6 @@ const rawExercises: Exercise[] = [
     cues: ["Body stays rigid", "Bend/extend mainly at elbows"],
     mistakes: ["Sagging hips", "Flaring elbows"],
     contraindications: ["Wrist pain (elevate hands)"],
-    videoUrl: "https://example.com/video/bodyweight-triceps-extension",
     tags: ["triceps", "isolation", "arms"],
   },
   {
@@ -2160,7 +2060,6 @@ const rawExercises: Exercise[] = [
     cues: ["Press against opposite hand with steady elbow extension", "Keep ribs down and upper arm stable"],
     mistakes: ["Leaning to generate force", "Bouncing through short range"],
     contraindications: ["Elbow pain (reduce effort)"],
-    videoUrl: "https://example.com/video/self-resisted-triceps-extension",
     tags: ["triceps", "isolation", "arms"],
   },
   {
@@ -2178,7 +2077,6 @@ const rawExercises: Exercise[] = [
     cues: ["Rise through big toe", "Pause briefly at top"],
     mistakes: ["Bouncing", "Ankles collapsing inward"],
     contraindications: ["Acute Achilles pain (shorten range)"],
-    videoUrl: "https://example.com/video/standing-calf-raise",
     tags: ["calves", "isolation", "lower"],
   },
   {
@@ -2196,7 +2094,6 @@ const rawExercises: Exercise[] = [
     cues: ["Use full range", "Control both up and down"],
     mistakes: ["Using momentum", "Hip shift"],
     contraindications: ["Acute Achilles pain (regress)"],
-    videoUrl: "https://example.com/video/single-leg-calf-raise",
     tags: ["calves", "isolation", "lower"],
   },
   {
@@ -2214,7 +2111,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep tension through full range", "Pause at peak contraction"],
     mistakes: ["Band slack at bottom", "Rushing reps"],
     contraindications: ["Acute Achilles pain (light tension)"],
-    videoUrl: "https://example.com/video/band-calf-raise",
     tags: ["calves", "isolation", "band", "lower"],
   },
   {
@@ -2232,7 +2128,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hold load steady", "Drive straight up through forefoot"],
     mistakes: ["Bouncing bottom range", "Losing balance"],
     contraindications: ["Acute Achilles pain (reduce load)"],
-    videoUrl: "https://example.com/video/db-calf-raise",
     tags: ["calves", "isolation", "lower"],
   },
   {
@@ -2250,7 +2145,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stand tall", "Walk with short, controlled steps"],
     mistakes: ["Shrugging shoulders", "Leaning side to side"],
     contraindications: ["Acute low-back pain (reduce load)"],
-    videoUrl: "https://example.com/video/farmers-carry",
     tags: ["carry", "core", "posture"],
   },
   {
@@ -2268,7 +2162,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep torso square", "Resist side bend"],
     mistakes: ["Leaning into load", "Walking too fast"],
     contraindications: ["Acute low-back pain (reduce load)"],
-    videoUrl: "https://example.com/video/suitcase-carry",
     tags: ["carry", "core", "anti-rotation"],
   },
   {
@@ -2286,7 +2179,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hold tension and march slowly", "Keep ribcage stacked over pelvis"],
     mistakes: ["Twisting torso", "Rushing steps"],
     contraindications: ["Acute low-back pain (light tension)"],
-    videoUrl: "https://example.com/video/band-suitcase-march",
     tags: ["carry", "core", "anti-rotation", "band"],
   },
   {
@@ -2304,7 +2196,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace and march in place", "Keep shoulders level"],
     mistakes: ["Rib flare", "Losing balance"],
     contraindications: ["Acute low-back pain (shorten duration)"],
-    videoUrl: "https://example.com/video/suitcase-hold-march",
     tags: ["carry", "core", "anti-rotation"],
   },
   {
@@ -2323,7 +2214,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stack hips and shoulders", "Drive floor away with forearm"],
     mistakes: ["Dropping hips", "Rotating chest down"],
     contraindications: ["Shoulder pain (regress to knees)"],
-    videoUrl: "https://example.com/video/side-plank",
     tags: ["core", "anti-rotation", "stability"],
   },
   {
@@ -2343,7 +2233,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/suspension-row-upright",
     tags: ["pull", "upper-back", "suspension"],
   },
   {
@@ -2364,7 +2253,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/suspension-row-incline",
     tags: ["pull", "upper-back", "suspension"],
   },
   {
@@ -2385,7 +2273,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/suspension-row-parallel",
     tags: ["pull", "upper-back", "suspension"],
   },
   {
@@ -2405,7 +2292,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/suspension-row-feet-elevated",
     tags: ["pull", "upper-back", "suspension"],
   },
   {
@@ -2426,7 +2312,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/suspension-archer-row",
     tags: ["pull", "upper-back", "suspension"],
   },
   {
@@ -2446,7 +2331,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/suspension-one-arm-row-assisted",
     tags: ["pull", "upper-back", "suspension"],
   },
   {
@@ -2465,7 +2349,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/suspension-rear-delt-row",
     tags: ["pull", "upper-back", "suspension"],
   },
   {
@@ -2484,7 +2367,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/suspension-face-pull",
     tags: [
       "pull",
       "scap",
@@ -2514,7 +2396,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (band-assist if needed)", "Elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/scap-pullup",
     tags: ["pull", "lats", "pullup"],
   },
   {
@@ -2537,7 +2418,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (band-assist if needed)", "Elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/band-assisted-pullup",
     tags: ["pull", "lats", "pullup"],
   },
   {
@@ -2561,7 +2441,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (band-assist if needed)", "Elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/neutral-grip-pullup",
     tags: ["pull", "lats", "pullup"],
   },
   {
@@ -2585,7 +2464,6 @@ const rawExercises: Exercise[] = [
     cues: ["Dead hang at bottom", "Drive elbows down and back", "Chin over bar"],
     mistakes: ["Kipping", "Short rep (chin doesn't clear bar)", "Shrugging at top"],
     contraindications: ["Acute shoulder pain (regress to band-assisted)", "Elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/pullup",
     tags: ["pull", "lats", "pullup"],
   },
   {
@@ -2608,7 +2486,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (band-assist if needed)", "Elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/chinup-strict",
     tags: ["pull", "lats", "pullup"],
   },
   {
@@ -2632,7 +2509,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (band-assist if needed)", "Elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/chest-to-bar-pullup",
     tags: ["pull", "lats", "pullup"],
   },
   {
@@ -2655,7 +2531,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace and keep ribs stacked before each pull", "Drive elbows down without kipping"],
     mistakes: ["Swinging for momentum", "Losing shoulder position at the bottom"],
     contraindications: ["Acute shoulder pain (regress to assisted pull-up)", "Elbow pain (reduce load)"],
-    videoUrl: "https://example.com/video/weighted-pullup",
     tags: ["pull", "lats", "pullup", "advanced"],
   },
   {
@@ -2675,7 +2550,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Drive elbows with control and avoid shrugging"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute shoulder pain (band-assist if needed)", "Elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/pullup-isometric-top-hold",
     tags: ["pull", "lats", "pullup"],
   },
   {
@@ -2699,7 +2573,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lift arms in a smooth arc from overhead to hips", "Keep neck long and shoulder blades controlled"],
     mistakes: ["Shrugging shoulders toward ears", "Using momentum to swing arms"],
     contraindications: ["Acute shoulder pain (shorten range)", "Neck pain (reduce volume)"],
-    videoUrl: "https://example.com/video/prone-lat-sweep",
     tags: ["pull", "lats", "bodyweight"],
   },
   {
@@ -2724,7 +2597,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace trunk while pulling elbows toward ribs", "Control the return overhead without rib flare"],
     mistakes: ["Arching low back to fake range", "Rushing through end range"],
     contraindications: ["Acute shoulder pain (reduce range)", "Low-back pain (kneeling trunk brace focus)"],
-    videoUrl: "https://example.com/video/kneeling-prayer-lat-pulldown",
     tags: ["pull", "lats", "bodyweight"],
   },
   {
@@ -2748,7 +2620,6 @@ const rawExercises: Exercise[] = [
     cues: ["Drive elbows down and hold tension through lats", "Keep ribs stacked and avoid neck strain"],
     mistakes: ["Losing shoulder position during hold", "Breath-holding and trunk collapse"],
     contraindications: ["Acute shoulder pain (reduce hold duration)", "Neck pain (shorten set)"],
-    videoUrl: "https://example.com/video/supine-lat-pulldown-isometric",
     tags: ["pull", "lats", "isometric"],
   },
   {
@@ -2768,7 +2639,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Wrist pain (use neutral handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/wall-pushup",
     tags: ["push", "chest", "suspension"],
   },
   {
@@ -2789,7 +2659,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Wrist pain (use neutral handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/countertop-pushup",
     tags: ["push", "chest", "suspension"],
   },
   {
@@ -2809,7 +2678,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Wrist pain (use neutral handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/suspension-pushup-upright",
     tags: ["push", "chest", "suspension"],
   },
   {
@@ -2829,7 +2697,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Wrist pain (use neutral handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/suspension-pushup-incline",
     tags: ["push", "chest", "suspension"],
   },
   {
@@ -2849,7 +2716,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Wrist pain (use neutral handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/suspension-pushup-parallel",
     tags: ["push", "chest", "suspension"],
   },
   {
@@ -2868,7 +2734,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Wrist pain (use neutral handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/suspension-pushup-feet-elevated",
     tags: ["push", "chest", "suspension"],
   },
   {
@@ -2887,7 +2752,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Wrist pain (use neutral handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/suspension-archer-pushup",
     tags: ["push", "chest", "suspension"],
   },
   {
@@ -2909,7 +2773,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Wrist pain (use neutral handles)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/suspension-chest-fly",
     tags: ["push", "chest", "suspension"],
   },
   {
@@ -2929,7 +2792,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Shoulder pain (regress to easier variation)", "Wrist pain (use fists or handles)"],
-    videoUrl: "https://example.com/video/suspension-pike-press-upright",
     tags: ["push", "shoulders", "vertical"],
   },
   {
@@ -2950,7 +2812,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Shoulder pain (regress to easier variation)", "Wrist pain (use fists or handles)"],
-    videoUrl: "https://example.com/video/suspension-pike-press-incline",
     tags: ["push", "shoulders", "vertical"],
   },
   {
@@ -2970,7 +2831,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Shoulder pain (regress to easier variation)", "Wrist pain (use fists or handles)"],
-    videoUrl: "https://example.com/video/suspension-pike-press-deep",
     tags: ["push", "shoulders", "vertical"],
   },
   {
@@ -2990,7 +2850,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Shoulder pain (regress to easier variation)", "Wrist pain (use fists or handles)"],
-    videoUrl: "https://example.com/video/wall-handstand-hold",
     tags: ["push", "shoulders", "vertical"],
   },
   {
@@ -3010,7 +2869,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Shoulder pain (regress to easier variation)", "Wrist pain (use fists or handles)"],
-    videoUrl: "https://example.com/video/wall-handstand-negative",
     tags: ["push", "shoulders", "vertical"],
   },
   {
@@ -3029,7 +2887,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep shoulders packed and ribs down"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Shoulder pain (regress to easier variation)", "Wrist pain (use fists or handles)"],
-    videoUrl: "https://example.com/video/wall-assisted-handstand-pushup",
     tags: ["push", "shoulders", "vertical"],
   },
   {
@@ -3048,7 +2905,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep knees tracking over mid-foot"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (shorter ROM)"],
-    videoUrl: "https://example.com/video/assisted-box-squat",
     tags: ["legs", "squat", "control"],
   },
   {
@@ -3068,7 +2924,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep knees tracking over mid-foot"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (shorter ROM)"],
-    videoUrl: "https://example.com/video/assisted-split-squat",
     tags: ["legs", "squat", "control"],
   },
   {
@@ -3088,7 +2943,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep knees tracking over mid-foot"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (shorter ROM)"],
-    videoUrl: "https://example.com/video/assisted-reverse-lunge",
     tags: ["legs", "squat", "control"],
   },
   {
@@ -3106,7 +2960,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep knees tracking over mid-foot"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (shorter ROM)"],
-    videoUrl: "https://example.com/video/assisted-step-up",
     tags: ["legs", "squat", "control"],
   },
   {
@@ -3124,7 +2977,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep knees tracking over mid-foot"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (shorter ROM)"],
-    videoUrl: "https://example.com/video/assisted-cossack-squat",
     tags: ["legs", "squat", "control"],
   },
   {
@@ -3142,7 +2994,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep knees tracking over mid-foot"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (shorter ROM)"],
-    videoUrl: "https://example.com/video/assisted-shrimp-squat",
     tags: ["legs", "squat", "control"],
   },
   {
@@ -3162,7 +3013,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep knees tracking over mid-foot"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (shorter ROM)"],
-    videoUrl: "https://example.com/video/assisted-skater-squat",
     tags: ["legs", "squat", "control"],
   },
   {
@@ -3181,7 +3031,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Keep knees tracking over mid-foot"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (shorter ROM)"],
-    videoUrl: "https://example.com/video/assisted-pistol-squat",
     tags: ["legs", "squat", "control"],
   },
   {
@@ -3200,7 +3049,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute low-back pain (reduce range)", "Hamstring strain (lighter tempo)"],
-    videoUrl: "https://example.com/video/assisted-hip-hinge",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -3219,7 +3067,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute low-back pain (reduce range)", "Hamstring strain (lighter tempo)"],
-    videoUrl: "https://example.com/video/assisted-good-morning",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -3239,7 +3086,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute low-back pain (reduce range)", "Hamstring strain (lighter tempo)"],
-    videoUrl: "https://example.com/video/assisted-single-leg-rdl",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -3258,7 +3104,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute low-back pain (reduce range)", "Hamstring strain (lighter tempo)"],
-    videoUrl: "https://example.com/video/assisted-hip-thrust",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -3278,7 +3123,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute low-back pain (reduce range)", "Hamstring strain (lighter tempo)"],
-    videoUrl: "https://example.com/video/assisted-single-leg-hip-thrust",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -3297,7 +3141,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute low-back pain (reduce range)", "Hamstring strain (lighter tempo)"],
-    videoUrl: "https://example.com/video/assisted-hamstring-curl",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -3316,7 +3159,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute low-back pain (reduce range)", "Hamstring strain (lighter tempo)"],
-    videoUrl: "https://example.com/video/assisted-back-extension-hold",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -3335,7 +3177,6 @@ const rawExercises: Exercise[] = [
     cues: ["Move with controlled tempo and stacked posture", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Using momentum instead of controlled range"],
     contraindications: ["Acute low-back pain (reduce range)", "Hamstring strain (lighter tempo)"],
-    videoUrl: "https://example.com/video/assisted-nordic-eccentric",
     tags: ["hinge", "posterior", "control"],
   },
   {
@@ -3356,7 +3197,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/hanging-knee-raise",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3376,7 +3216,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/hanging-leg-raise",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3396,7 +3235,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/hanging-tuck-hold",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3417,7 +3255,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/hanging-hollow-hold",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3438,7 +3275,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/hanging-oblique-knee-raise",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3458,7 +3294,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/hanging-windshield-wiper-regression",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3477,7 +3312,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/suspension-body-saw",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3497,7 +3331,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/suspension-fallout",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3516,7 +3349,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/suspension-stir-the-pot",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3535,7 +3367,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace through your trunk before each rep", "Hinge from hips while keeping spine long"],
     mistakes: ["Rushing the tempo", "Losing trunk alignment under fatigue"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (reduce leverage)"],
-    videoUrl: "https://example.com/video/suspension-anti-rotation-hold",
     tags: ["core", "stability", "control"],
   },
   {
@@ -3562,7 +3393,6 @@ const rawExercises: Exercise[] = [
       "Elbow irritation (lighten load)",
       "Neck strain (adjust seat and handle path)",
     ],
-    videoUrl: "https://example.com/video/machine-seated-row",
     tags: ["pull", "upper-back", "scap", "machine"],
   },
   {
@@ -3590,7 +3420,6 @@ const rawExercises: Exercise[] = [
       "Elbow irritation (lighten load)",
       "Low-back flare (brace and lighten load)",
     ],
-    videoUrl: "https://example.com/video/cable-seated-row",
     tags: ["pull", "upper-back", "cable"],
   },
   {
@@ -3614,7 +3443,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep chest planted on bench", "Lead each rep with elbows"],
     mistakes: ["Rounding upper back", "Jerking dumbbells"],
     contraindications: ["Acute shoulder pain (reduce range)", "Neck strain (keep neck neutral)"],
-    videoUrl: "https://example.com/video/dumbbell-chest-supported-row",
     tags: ["pull", "upper-back", "dumbbell"],
   },
   {
@@ -3640,7 +3468,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hinge and brace before each pull", "Pull bar to lower ribs"],
     mistakes: ["Standing up each rep", "Rounding the low back"],
     contraindications: ["Acute low-back pain (reduce load)", "Shoulder pain (narrow ROM)"],
-    videoUrl: "https://example.com/video/barbell-bent-over-row",
     tags: ["pull", "upper-back", "barbell"],
   },
   {
@@ -3665,7 +3492,6 @@ const rawExercises: Exercise[] = [
     cues: ["Reset brace on every floor rep", "Drive elbows hard then stop cleanly"],
     mistakes: ["Bouncing plates", "Losing brace between reps"],
     contraindications: ["Acute low-back pain (regress)", "Elbow irritation (reduce load)"],
-    videoUrl: "https://example.com/video/pendlay-row",
     tags: ["pull", "upper-back", "barbell"],
   },
   {
@@ -3689,7 +3515,6 @@ const rawExercises: Exercise[] = [
     cues: ["Set shoulder blades down before pulling", "Keep ribcage stacked while you pull"],
     mistakes: ["Kicking through reps", "Shrugging at top position"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow pain (reduce volume)"],
-    videoUrl: "https://example.com/video/machine-assisted-pullup",
     tags: ["pull", "lats", "machine"],
   },
   {
@@ -3721,7 +3546,6 @@ const rawExercises: Exercise[] = [
     cues: ["Drive elbows down and in", "Keep chest lifted but ribs controlled"],
     mistakes: ["Pulling behind neck", "Leaning back excessively"],
     contraindications: ["Acute shoulder pain (front pull only)", "Neck pain (use neutral grip)"],
-    videoUrl: "https://example.com/video/machine-lat-pulldown",
     tags: ["pull", "lats", "machine"],
   },
   {
@@ -3753,7 +3577,6 @@ const rawExercises: Exercise[] = [
     cues: ["Initiate from shoulder blades", "Pull with elbows, not wrists"],
     mistakes: ["Using lumbar extension", "Cutting range short"],
     contraindications: ["Acute shoulder pain (use lighter load)", "Elbow irritation (neutral handle)"],
-    videoUrl: "https://example.com/video/cable-lat-pulldown",
     tags: ["pull", "lats", "cable"],
   },
   {
@@ -3778,7 +3601,6 @@ const rawExercises: Exercise[] = [
     cues: ["Set ribs down before the pull", "Keep elbows soft and sweep through the lats"],
     mistakes: ["Bending into a pressdown", "Leaning back to move the stack"],
     contraindications: ["Shoulder pain (shorten range)", "Low-back pain (reduce load)"],
-    videoUrl: "https://example.com/video/cable-straight-arm-pulldown",
     tags: ["pull", "lats", "serratus", "cable"],
   },
   {
@@ -3801,7 +3623,6 @@ const rawExercises: Exercise[] = [
     cues: ["Pull rope toward eye line with elbows high", "Rotate hands back while keeping ribs stacked"],
     mistakes: ["Leaning back to move weight", "Shrugging shoulders toward ears"],
     contraindications: ["Acute shoulder pain (lighten load)", "Neck tension (lower cable anchor)"],
-    videoUrl: "https://example.com/video/cable-face-pull",
     tags: [
       "pull",
       "scap",
@@ -3834,7 +3655,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lead with elbows in a wide arc", "Pause at end range without shrugging"],
     mistakes: ["Turning it into a lat row", "Using momentum through torso"],
     contraindications: ["Acute shoulder pain (reduce range)", "Elbow irritation (neutral grip)"],
-    videoUrl: "https://example.com/video/machine-rear-delt-row",
     tags: ["pull", "scap", "scapular", "rear-delt", "rearDelt", "machine"],
   },
   {
@@ -3858,7 +3678,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep chest anchored and lead with elbows", "Pause briefly without shrugging"],
     mistakes: ["Turning it into a lat row", "Using torso momentum"],
     contraindications: ["Acute shoulder pain (reduce range)", "Neck tension (lower load)"],
-    videoUrl: "https://example.com/video/machine-reverse-pec-deck",
     tags: [
       "pull",
       "scap",
@@ -3891,7 +3710,6 @@ const rawExercises: Exercise[] = [
     cues: ["Hinge and keep ribs stacked", "Sweep elbows out in a wide arc"],
     mistakes: ["Swinging torso", "Shrugging shoulders up"],
     contraindications: ["Acute shoulder pain (reduce range)", "Low-back pain (use chest support)"],
-    videoUrl: "https://example.com/video/dumbbell-rear-delt-fly",
     tags: [
       "pull",
       "scap",
@@ -3923,7 +3741,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep rib cage stacked as arms sweep wide", "Lead from rear shoulder, not traps"],
     mistakes: ["Swinging torso", "Shrugging to finish the rep"],
     contraindications: ["Acute shoulder pain (reduce range)", "Neck irritation (lighten load)"],
-    videoUrl: "https://example.com/video/cable-rear-delt-fly",
     tags: [
       "pull",
       "scap",
@@ -3955,7 +3772,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep chest supported and thumbs up", "Raise in a Y arc without shrugging"],
     mistakes: ["Arching low back", "Bending elbows excessively"],
     contraindications: ["Acute shoulder pain (shorten range)", "Neck pain (lower load)"],
-    videoUrl: "https://example.com/video/prone-y-raise",
     tags: [
       "pull",
       "scap",
@@ -3988,7 +3804,6 @@ const rawExercises: Exercise[] = [
     cues: ["Set shoulder blade, then rotate with control", "Keep ribs down while pressing out"],
     mistakes: ["Twisting torso for range", "Letting shoulder shrug forward"],
     contraindications: ["Acute shoulder pain (light load)", "Elbow pain (shorten range)"],
-    videoUrl: "https://example.com/video/cable-external-rotation-pressout",
     tags: [
       "pull",
       "scap",
@@ -4027,7 +3842,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep ribs down as weight lowers", "Pull from lats back to start"],
     mistakes: ["Overarching low back", "Bending elbows too much"],
     contraindications: ["Acute shoulder pain (shorten range)", "Low-back pain (reduce load)"],
-    videoUrl: "https://example.com/video/dumbbell-pullover",
     tags: ["pull", "lats", "dumbbell"],
   },
   {
@@ -4055,7 +3869,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stay tall and brace your trunk", "Pull bar path down with elbows"],
     mistakes: ["Swinging torso", "Letting shoulder blades elevate"],
     contraindications: ["Acute shoulder pain (regress)", "Elbow irritation (lighten load)"],
-    videoUrl: "https://example.com/video/barbell-landmine-pulldown",
     tags: ["pull", "lats", "barbell"],
   },
   {
@@ -4080,7 +3893,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep shoulder blades set on pad", "Press through mid-palm evenly"],
     mistakes: ["Locking out hard each rep", "Shoulders rolling forward"],
     contraindications: ["Acute shoulder pain (use neutral grip)", "Wrist pain (adjust handle)"],
-    videoUrl: "https://example.com/video/machine-chest-press",
     tags: ["push", "chest", "machine"],
   },
   {
@@ -4105,7 +3917,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep wrists neutral through arc", "Control both concentric and eccentric phases"],
     mistakes: ["Bouncing at stretch", "Overreaching shoulders forward"],
     contraindications: ["Acute shoulder pain (shorter range)", "Elbow pain (reduce load)"],
-    videoUrl: "https://example.com/video/machine-pec-deck-press",
     tags: ["push", "chest", "machine"],
   },
   {
@@ -4129,7 +3940,6 @@ const rawExercises: Exercise[] = [
     cues: ["Set feet and brace before pressing", "Press slightly in toward midline"],
     mistakes: ["Flaring elbows too wide", "Dropping shoulders off bench"],
     contraindications: ["Acute shoulder pain (reduce incline)", "Wrist pain (neutral grip)"],
-    videoUrl: "https://example.com/video/dumbbell-incline-press",
     tags: ["push", "chest", "dumbbell"],
   },
   {
@@ -4150,7 +3960,6 @@ const rawExercises: Exercise[] = [
     cues: ["Pause lightly on triceps each rep", "Keep forearms vertical at bottom"],
     mistakes: ["Bouncing elbows", "Losing wrist stack"],
     contraindications: ["Acute shoulder pain (use shorter ROM)", "Elbow pain (lighten load)"],
-    videoUrl: "https://example.com/video/barbell-floor-press",
     tags: ["push", "chest", "barbell"],
   },
   {
@@ -4174,7 +3983,6 @@ const rawExercises: Exercise[] = [
     cues: ["Use a controlled chest pause", "Drive bar up with full-body tension"],
     mistakes: ["Bouncing off chest", "Losing scapular position"],
     contraindications: ["Acute shoulder pain (regress)", "Wrist pain (wraps or neutral implement)"],
-    videoUrl: "https://example.com/video/barbell-bench-press-paused",
     tags: ["push", "chest", "barbell"],
   },
   {
@@ -4199,7 +4007,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace core before each press", "Press straight up without shrugging"],
     mistakes: ["Arching low back", "Dropping elbows too low"],
     contraindications: ["Acute shoulder pain (reduce ROM)", "Neck pain (lower load)"],
-    videoUrl: "https://example.com/video/machine-shoulder-press",
     tags: ["push", "shoulders", "machine"],
   },
   {
@@ -4223,7 +4030,6 @@ const rawExercises: Exercise[] = [
     cues: ["Rotate smoothly through the press", "Keep ribcage stacked over pelvis"],
     mistakes: ["Over-rotating wrists", "Leaning back excessively"],
     contraindications: ["Acute shoulder pain (shorten range)", "Wrist pain (neutral press variant)"],
-    videoUrl: "https://example.com/video/dumbbell-arnold-press",
     tags: ["push", "shoulders", "dumbbell"],
   },
   {
@@ -4248,7 +4054,6 @@ const rawExercises: Exercise[] = [
     cues: ["Use a shallow dip-drive", "Catch bar overhead with locked core"],
     mistakes: ["Turning it into a squat", "Pressing with loose midline"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (strict variation only)"],
-    videoUrl: "https://example.com/video/barbell-push-press",
     tags: ["push", "shoulders", "barbell"],
   },
   {
@@ -4274,7 +4079,6 @@ const rawExercises: Exercise[] = [
     cues: ["Squeeze glutes and abs hard", "Press bar in a straight line overhead"],
     mistakes: ["Overarching lumbar spine", "Pressing around the face in a loop"],
     contraindications: ["Acute shoulder pain (regress)", "Low-back pain (seated supported option)"],
-    videoUrl: "https://example.com/video/barbell-strict-press",
     tags: ["push", "shoulders", "barbell"],
   },
   {
@@ -4295,7 +4099,6 @@ const rawExercises: Exercise[] = [
     cues: ["Raise through a smooth arc with constant cable tension", "Keep neck relaxed and ribs stacked"],
     mistakes: ["Shrugging to finish reps", "Swinging trunk for momentum"],
     contraindications: ["Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/cable-lateral-raise",
     tags: ["push", "shoulders", "cable", "lateral-delt"],
   },
   {
@@ -4319,7 +4122,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lead with elbows while keeping shoulders down and neck relaxed", "Stop at the height you can control without shrugging"],
     mistakes: ["Yanking with upper traps", "Pulling too high and crowding the shoulder joint"],
     contraindications: ["Acute shoulder pain (avoid)", "Neck pain (use a different delt variation)"],
-    videoUrl: "https://example.com/video/cable-upright-row",
     tags: ["push", "shoulders", "cable", "upright-row"],
   },
   {
@@ -4340,7 +4142,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep thumbs up and neck long as arms lift to a T", "Pause briefly at top without shrugging"],
     mistakes: ["Overarching low back", "Rushing and losing shoulder position"],
     contraindications: ["Shoulder pain (reduce range)"],
-    videoUrl: "https://example.com/video/prone-t-raise",
     tags: ["push", "shoulders", "rear-delt", "scapular"],
   },
   {
@@ -4362,7 +4163,6 @@ const rawExercises: Exercise[] = [
     cues: ["Drive through full foot", "Control depth without pelvic tuck"],
     mistakes: ["Knees collapsing inward", "Locking knees aggressively"],
     contraindications: ["Acute knee pain (reduce depth)", "Hip pain (use narrower ROM)"],
-    videoUrl: "https://example.com/video/machine-leg-press",
     tags: ["legs", "squat", "machine"],
   },
   {
@@ -4382,7 +4182,6 @@ const rawExercises: Exercise[] = [
     cues: ["Drive through lead leg only", "Keep pelvis level at top"],
     mistakes: ["Pushing off trail foot", "Leaning forward excessively"],
     contraindications: ["Acute knee pain (lower step height)", "Hip pain (reduce load)"],
-    videoUrl: "https://example.com/video/dumbbell-step-up-loaded",
     tags: ["legs", "squat", "dumbbell"],
   },
   {
@@ -4404,7 +4203,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep lumbar spine pressed to back pad", "Track knees over mid-foot"],
     mistakes: ["Cutting depth abruptly", "Driving knees inward"],
     contraindications: ["Acute knee pain (shorten depth)", "Hip pain (adjust stance)"],
-    videoUrl: "https://example.com/video/machine-hack-squat",
     tags: ["legs", "squat", "machine"],
   },
   {
@@ -4425,7 +4223,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace and create full-body tension before descent", "Drive up through mid-foot and heels"],
     mistakes: ["Butt wink at depth", "Knees collapsing inward"],
     contraindications: ["Acute low-back pain (regress)", "Knee pain (reduce depth/load)"],
-    videoUrl: "https://example.com/video/barbell-back-squat",
     tags: ["legs", "squat", "barbell"],
   },
   {
@@ -4446,7 +4243,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep hips pinned to seat", "Control both up and down phases"],
     mistakes: ["Rushing eccentrics", "Hips lifting from pad"],
     contraindications: ["Acute hamstring strain (lighten load)", "Knee pain (shorten range)"],
-    videoUrl: "https://example.com/video/machine-seated-hamstring-curl",
     tags: ["hinge", "posterior", "machine"],
   },
   {
@@ -4466,7 +4262,6 @@ const rawExercises: Exercise[] = [
     cues: ["Push hips back with long spine", "Keep dumbbells close to body"],
     mistakes: ["Rounding low back", "Squatting instead of hinging"],
     contraindications: ["Acute low-back pain (regress)", "Hamstring pain (short ROM)"],
-    videoUrl: "https://example.com/video/dumbbell-sumo-rdl",
     tags: ["hinge", "posterior", "dumbbell"],
   },
   {
@@ -4488,7 +4283,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace hard and hinge evenly", "Keep bar path close to thighs/shins"],
     mistakes: ["Letting bar drift forward", "Losing brace at bottom"],
     contraindications: ["Acute low-back pain (regress)", "Hamstring strain (lighten load)"],
-    videoUrl: "https://example.com/video/barbell-romanian-deadlift",
     tags: ["hinge", "posterior", "barbell"],
   },
   {
@@ -4510,7 +4304,6 @@ const rawExercises: Exercise[] = [
     cues: ["Posteriorly tilt pelvis at top", "Keep chin tucked and ribs down"],
     mistakes: ["Overextending lumbar spine", "Driving from toes"],
     contraindications: ["Acute low-back pain (reduce load)", "Hip pain (shorten range)"],
-    videoUrl: "https://example.com/video/barbell-hip-thrust",
     tags: ["hinge", "posterior", "barbell"],
   },
   {
@@ -4531,7 +4324,6 @@ const rawExercises: Exercise[] = [
     cues: ["Press through heels with stable pelvis", "Pause at top with full glute squeeze"],
     mistakes: ["Hyperextending spine", "Rushing lockout"],
     contraindications: ["Acute low-back pain (regress)", "Hip pain (reduce ROM/load)"],
-    videoUrl: "https://example.com/video/machine-glute-drive",
     tags: ["hinge", "posterior", "machine"],
   },
   {
@@ -4552,7 +4344,6 @@ const rawExercises: Exercise[] = [
     cues: ["Exhale and brace before each press", "Keep hips and shoulders square"],
     mistakes: ["Rotating with cable pull", "Overextending low back"],
     contraindications: ["Acute low-back pain (reduce load)", "Shoulder pain (lower handle height)"],
-    videoUrl: "https://example.com/video/cable-pallof-press",
     tags: ["core", "anti-rotation", "cable"],
   },
   {
@@ -4573,7 +4364,6 @@ const rawExercises: Exercise[] = [
     cues: ["Rotate through torso with controlled hips", "Finish each rep with balanced stance"],
     mistakes: ["Twisting knees aggressively", "Using momentum from arms"],
     contraindications: ["Acute low-back pain (reduce load)", "Hip pain (limit rotation)"],
-    videoUrl: "https://example.com/video/cable-woodchop-standing",
     tags: ["core", "anti-rotation", "cable"],
   },
   {
@@ -4594,7 +4384,6 @@ const rawExercises: Exercise[] = [
     cues: ["Initiate from trunk flexion, not hip swing", "Keep chin neutral and ribs down"],
     mistakes: ["Pulling with arms", "Bouncing through bottom"],
     contraindications: ["Acute low-back pain (regress)", "Neck pain (reduce range)"],
-    videoUrl: "https://example.com/video/machine-ab-crunch",
     tags: ["core", "anti-extension", "machine"],
   },
   {
@@ -4616,7 +4405,6 @@ const rawExercises: Exercise[] = [
     cues: ["Pin elbow close to side", "Rotate slowly while keeping shoulder down"],
     mistakes: ["Elbow drifting away from body", "Twisting torso to finish reps"],
     contraindications: ["Acute shoulder pain (shorten range)", "Elbow irritation (reduce tension)"],
-    videoUrl: "https://example.com/video/band-external-rotation",
     tags: [
       "scap",
       "scapular",
@@ -4648,7 +4436,6 @@ const rawExercises: Exercise[] = [
     cues: ["Set shoulder blade first, then rotate", "Pause briefly at end range"],
     mistakes: ["Overloading and losing control", "Compensating with trunk rotation"],
     contraindications: ["Acute shoulder pain (light load)", "Neck tension (lower cable height)"],
-    videoUrl: "https://example.com/video/cable-external-rotation",
     tags: [
       "pull",
       "scap",
@@ -4683,7 +4470,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep ribs down and arms long", "Spread band apart by moving from shoulder blades"],
     mistakes: ["Shrugging shoulders", "Bending elbows to cheat range"],
     contraindications: ["Acute shoulder pain (use lighter band)"],
-    videoUrl: "https://example.com/video/band-pull-apart",
     tags: ["pull", "scap", "scapular", "rear-delt", "rearDelt", "band"],
   },
   {
@@ -4705,7 +4491,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep chest tall and sweep arms wide", "Pause briefly with shoulder blades set"],
     mistakes: ["Shrugging into upper traps", "Bending elbows to shorten range"],
     contraindications: ["Acute shoulder pain (reduce band tension)"],
-    videoUrl: "https://example.com/video/band-rear-delt-fly",
     tags: ["pull", "scap", "scapular", "rear-delt", "rearDelt", "band"],
   },
   {
@@ -4726,7 +4511,6 @@ const rawExercises: Exercise[] = [
     cues: ["Keep towel gap at elbow if needed", "Move through smooth controlled arc"],
     mistakes: ["Using momentum at top", "Losing neutral wrist"],
     contraindications: ["Acute shoulder pain (shorten range)", "Elbow pain (lighter dumbbell)"],
-    videoUrl: "https://example.com/video/dumbbell-side-lying-external-rotation",
     tags: ["scap", "rotator-cuff", "shoulders", "external-rotation", "dumbbell"],
   },
   {
@@ -4747,7 +4531,6 @@ const rawExercises: Exercise[] = [
     cues: ["Align joint axis to machine pivot", "Keep shoulder down and away from ear"],
     mistakes: ["Starting too heavy", "Forcing end range under discomfort"],
     contraindications: ["Acute shoulder pain (reduce load/range)", "Neck discomfort (check setup)"],
-    videoUrl: "https://example.com/video/machine-shoulder-external-rotation",
     tags: ["scap", "rotator-cuff", "shoulders", "external-rotation", "machine"],
   },
   {
@@ -4767,7 +4550,6 @@ const rawExercises: Exercise[] = [
     cues: ["Stay tall and level through pelvis", "March slowly with continuous brace"],
     mistakes: ["Leaning toward load", "Rushing foot contacts"],
     contraindications: ["Acute low-back pain (lighter load)", "Shoulder pain (reduce carry duration)"],
-    videoUrl: "https://example.com/video/dumbbell-suitcase-hold-march",
     tags: ["core", "anti-rotation", "dumbbell"],
   },
   {
@@ -4788,7 +4570,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace before rolling forward", "Stop where trunk stays rigid"],
     mistakes: ["Collapsing lumbar spine", "Overreaching past control"],
     contraindications: ["Acute low-back pain (regress)", "Shoulder pain (shorten range)"],
-    videoUrl: "https://example.com/video/barbell-rollout",
     tags: ["core", "anti-extension", "barbell"],
   },
   {
@@ -4817,7 +4598,6 @@ const rawExercises: Exercise[] = [
     cues: ["Drive elbows into floor to retract shoulder blades", "Keep ribs down and neck neutral"],
     mistakes: ["Shrugging shoulders toward ears", "Arching low back to fake range"],
     contraindications: ["Acute elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/supine-elbow-drive-row",
     tags: ["upper-back", "scap", "posture"],
   },
   {
@@ -4846,7 +4626,6 @@ const rawExercises: Exercise[] = [
     cues: ["Lift elbows while keeping shoulders away from ears", "Pause one beat at top contraction"],
     mistakes: ["Leading with neck extension", "Rushing through the squeeze"],
     contraindications: ["Acute elbow pain (shorten range)"],
-    videoUrl: "https://example.com/video/prone-elbow-row",
     tags: ["upper-back", "scap", "posture"],
   },
   {
@@ -4868,7 +4647,6 @@ const rawExercises: Exercise[] = [
     cues: ["Sweep elbows toward back pockets", "Stay tall and avoid trunk sway"],
     mistakes: ["Rounding lower back", "Overusing upper traps"],
     contraindications: ["Acute elbow pain (reduce range)"],
-    videoUrl: "https://example.com/video/seated-lat-sweep-pulse",
     tags: ["lats", "scap", "posture"],
   },
   {
@@ -4887,7 +4665,6 @@ const rawExercises: Exercise[] = [
     cues: ["Brace before each march step", "Keep pelvis level as feet alternate"],
     mistakes: ["Holding breath", "Rocking side to side"],
     contraindications: ["Acute hip pain (reduce march height)"],
-    videoUrl: "https://example.com/video/marching-brace-hold",
     tags: ["core", "anti-rotation", "carry", "posture"],
   },
   {
@@ -4906,7 +4683,6 @@ const rawExercises: Exercise[] = [
     cues: ["Push lightly into wall for trunk tension", "Hold stacked ribs over pelvis"],
     mistakes: ["Leaning through lumbar spine", "Losing foot tripod"],
     contraindications: ["Acute hip pain (reduce march height)"],
-    videoUrl: "https://example.com/video/wall-braced-single-leg-march",
     tags: ["core", "anti-rotation", "carry", "posture"],
   },
   {
@@ -4925,7 +4701,6 @@ const rawExercises: Exercise[] = [
     cues: ["Reach long without rotating torso", "Control each step and keep pressure through midfoot"],
     mistakes: ["Rushing the cadence", "Twisting ribcage toward reaching arm"],
     contraindications: ["Acute hip pain (use smaller stride)"],
-    videoUrl: "https://example.com/video/contralateral-reach-march",
     tags: ["core", "anti-rotation", "carry", "posture"],
   },
 ];
