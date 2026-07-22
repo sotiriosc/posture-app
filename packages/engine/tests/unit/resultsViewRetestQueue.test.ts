@@ -26,6 +26,7 @@ const mocks = vi.hoisted(() => ({
   listExerciseLogsBySession: vi.fn(),
   init: vi.fn(),
   resolveActiveProgramFromList: vi.fn(),
+  loadAppState: vi.fn(),
 }));
 
 vi.mock("@/lib/logStore", () => ({
@@ -33,6 +34,10 @@ vi.mock("@/lib/logStore", () => ({
   listAllPrograms: mocks.listAllPrograms,
   listSessions: mocks.listSessions,
   listExerciseLogsBySession: mocks.listExerciseLogsBySession,
+}));
+
+vi.mock("@/lib/appState", () => ({
+  loadAppState: mocks.loadAppState,
 }));
 
 vi.mock("@/lib/trainingStateModel", () => ({
@@ -101,10 +106,11 @@ describe("ResultsView — sacrifice retest queue flow", () => {
   beforeEach(() => {
     const program = makeProgram();
     mocks.init.mockResolvedValue(undefined);
+    mocks.loadAppState.mockResolvedValue(null);
     mocks.listAllPrograms.mockResolvedValue([program]);
     mocks.listSessions.mockResolvedValue([]);
     mocks.listExerciseLogsBySession.mockResolvedValue([]);
-    mocks.resolveActiveProgramFromList.mockReturnValue(program);
+    mocks.resolveActiveProgramFromList.mockReturnValue({ program, source: "local" });
   });
 
   afterEach(() => {
