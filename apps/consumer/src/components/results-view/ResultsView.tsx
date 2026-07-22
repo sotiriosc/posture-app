@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { init, listAllPrograms, listExerciseLogsBySession, listSessions } from "@/lib/logStore";
+import { loadAppState } from "@/lib/appState";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import { projectResults } from "@/lib/results/resultsProjection";
 import type { ExerciseLog, Program } from "@/lib/types";
@@ -286,7 +287,7 @@ export default function ResultsView() {
     async function load() {
       await init();
       const programs = await listAllPrograms();
-      const active = resolveActiveProgramFromList(programs);
+      const active = resolveActiveProgramFromList(programs, await loadAppState()).program;
       if (cancelled) return;
       if (active) {
         setProgram(active);
