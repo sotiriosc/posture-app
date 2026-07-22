@@ -53,17 +53,20 @@ export default async function ExerciseDetailPage({ params }: Props) {
 
         <div className="ui-card p-6">
           {exercise.videoUrl ? (
-            <>
-              <div className="aspect-video w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-xs text-slate-400 flex items-center justify-center">
-                Video placeholder
-              </div>
-              <p className="mt-3 text-xs text-slate-500">
-                Video URL: {exercise.videoUrl}
-              </p>
-            </>
+            <video
+              className="aspect-video w-full rounded-2xl border border-slate-200 bg-black"
+              controls
+              preload="metadata"
+              src={exercise.videoUrl}
+            >
+              Your browser does not support embedded video.
+            </video>
           ) : (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-xs text-slate-500">
-              Video coming soon
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+              <p className="font-medium text-slate-600">Video coming soon</p>
+              <p className="mt-1 text-xs text-slate-500">
+                Use the cues and common mistakes below to guide your form.
+              </p>
             </div>
           )}
         </div>
