@@ -8,7 +8,8 @@
       "@/lib/*": ["../../packages/engine/src/*"],
       "@/*": ["./src/*"],
       "@praxis/engine": ["../../packages/engine/src/index.ts"],
-      "@praxis/engine/*": ["../../packages/engine/src/*"]
+      "@praxis/engine/*": ["../../packages/engine/src/*"],
+      "@praxis/engine-fixtures/*": ["../../packages/engine/tests/fixtures/*"]
     }
   },
   "include": [
