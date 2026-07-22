@@ -3,7 +3,23 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@praxis/engine": "*"
+    "@praxis/engine": "*",
+    "next": "^16.2.11",
+    "next-plausible": "^4.0.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   },
   "scripts": {
     "dev": "next dev",
