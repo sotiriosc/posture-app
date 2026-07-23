@@ -114,3 +114,70 @@ Verified at 390×844 and 360×740 via Playwright screenshots and a new
 `logSetScreenCompression.spec.ts`, which locks: one summary line containing
 "target"/"RPE", both fields ≥44px tall, and Exit/Back hidden until the
 "..." trigger is tapped.
+
+## Commit 3 — Dashboard hierarchy + honest-locked-state
+
+**Pill hierarchy above the fold (3.a).** The dashboard header used to put
+four equal-weight elements in the same row/band: the greeting, an "Edit
+profile" pill-button, an "Account and billing" pill-button, a "Built from
+your movement profile" pill, and the "Plan: Pro/Free" pill — five things
+competing for the same visual weight above the fold on phone. Kept exactly
+two things at that weight: the page title/greeting, and a small `PlanBadge`
+(already existed, already synced to the same `useUserPlan` source as the
+nav's Pro chip — Phase 6a's duplicate-truth-source fix already covers this,
+confirmed no regression). Demoted "Built from your movement profile" from a
+bordered pill to a plain caption line under the greeting (it's context, not
+an action). Moved "Edit profile" / "Account and billing" into a new
+`DashboardProfileMenu` client component — a `···` trigger (44px tap target)
+that opens a small dropdown with both as links. This mirrors the same
+"···"-menu pattern Commit 2 used for Exit/Back on the log-set screen, so
+the mobile-polish pass now has one consistent idiom for "secondary actions
+that don't need to be always-visible."
+
+`headerLayout.spec.ts`'s existing overlap regression test skips any entry
+it can't find or that isn't visible (`collectBoxes` continues past
+zero-count/hidden locators), so hiding Edit profile/Account and billing
+behind the new trigger doesn't break that test — it now simply has fewer
+elements to check for overlap, which is a strictly safer state, not a
+weaker assertion.
+
+**Locked-card visual weight (3.b).** Replaced the full-width, uppercase
+"LOCKED" badge with a small inline lock icon (🔒, `aria-label="Locked"`)
+directly after the card title, and dimmed the card body copy to
+`text-slate-500` when locked. No behavioral change — `locked`/`lockReason`
+props and the `aria-disabled` attribute are untouched, only the visual
+treatment changed from "badge that reads louder than the title" to "small
+aspirational marker."
+
+**Card ordering by availability (3.c).** Reordered the six-card array in
+`ResultsRoutine.tsx` from [Today, Week, Progress, Insights, History,
+Billing] to [Today, Week, Billing, Progress, Insights, History] — the three
+always-unlocked cards now come first, the three locked-until-earned cards
+come last. Pure reorder of a literal array; no test or other code depended
+on the old positions (grepped for `dashboardModes` usage and any test
+referencing card order or the old "Locked" text — none found).
+
+**Verification note — shared login rate limit under fast sequential local
+runs.** `apps/consumer/src/app/api/auth/login/route.ts` rate-limits to 10
+attempts per 60s per IP, keyed by `x-forwarded-for` (falls back to the
+literal string `"unknown"` locally, so every Playwright test run from the
+same machine shares one bucket). Running the *entire* local e2e suite
+back-to-back with real logins (`dashboardHierarchyAndLockedState`,
+`headerLayout`, `logSetScreenCompression`, `navRoutesReachable`,
+`sessionBottomBarConsolidation`, `sessionNextButtonPinned`,
+`stripeSessionPersistence` — 10 real `POST /api/auth/login` calls total)
+occasionally trips this limit on whichever test runs last within the
+window; that test passes cleanly in isolation or in a fresh window. This is
+pre-existing infra behavior (the rate limit itself predates Phase 6d) and
+is orthogonal to this pass — the repo's actual PR-gate CI
+(`.github/workflows/ci.yml`) runs lint + specific vitest anchors + both app
+builds only; it does not run Playwright at all, so this has no CI impact.
+Documenting rather than "fixing" a rate limiter that's working as designed.
+
+Verified at 390×844 and 360×740 via Playwright screenshots and a new
+`dashboardHierarchyAndLockedState.spec.ts`, which locks: Edit
+profile/Account and billing hidden until the "···" trigger is tapped (and
+that trigger meets the 44px minimum), no literal "LOCKED" text anywhere,
+at least one `aria-label="Locked"` icon present on a fresh (all-locked)
+persona, and DOM order placing Today/Week/Billing before
+Progress/Insights/History on a fully-unlocked (12-week climber) persona.

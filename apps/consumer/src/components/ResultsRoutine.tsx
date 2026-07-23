@@ -3150,6 +3150,11 @@ export default function ResultsRoutine() {
     locked?: boolean;
     lockReason?: string;
   }> = [
+    // Phase 6d, Commit 3.c — unlocked cards first (Today, Week, Billing),
+    // then locked-until-earned cards (Progress, Insights, History). Billing
+    // used to sit below three locked cards and inherited their locked-feel
+    // visually just from proximity; order now matches what's actually
+    // available to tap right now.
     {
       key: "today",
       title: "Today",
@@ -3161,6 +3166,14 @@ export default function ResultsRoutine() {
       title: "Week",
       icon: "\u{1F4C5}",
       summary: `${completedCount}/${activeDaysPerWeek} days complete with ${inProgressCount} in progress.`,
+    },
+    {
+      key: "account",
+      title: "Billing / Account",
+      icon: "\u{1F4B3}",
+      summary: authEnabled
+        ? "Manage plan status and account data."
+        : "Review local data controls.",
     },
     {
       key: "progress",
@@ -3185,14 +3198,6 @@ export default function ResultsRoutine() {
       summary: `${totalCompletedWorkoutCount} completed workouts saved across your history.`,
       locked: historyLocked,
       lockReason: "Complete one workout to unlock session history.",
-    },
-    {
-      key: "account",
-      title: "Billing / Account",
-      icon: "\u{1F4B3}",
-      summary: authEnabled
-        ? "Manage plan status and account data."
-        : "Review local data controls.",
     },
   ];
   const activeModeConfig =
