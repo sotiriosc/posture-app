@@ -207,7 +207,7 @@ describe("session tracking integration flow", () => {
     render(React.createElement(SessionClient));
 
     await waitFor(() => {
-      expect(screen.getByText(/Guided session/i)).toBeTruthy();
+      expect(screen.getByTestId("session-header-full")).toBeTruthy();
       expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
     });
     expect(screen.getByText("Today's options")).toBeTruthy();
@@ -223,7 +223,7 @@ describe("session tracking integration flow", () => {
     fireEvent.change(screen.getByTestId("rpe-input"), {
       target: { value: "8" },
     });
-    expect(screen.getByTestId("about-to-record-rpe").textContent).toContain("8");
+    expect(screen.getByTestId("about-to-record-summary").textContent).toContain("RPE 8");
     fireEvent.click(screen.getByLabelText("Set 1"));
     fireEvent.click(screen.getByLabelText("Set 2"));
     fireEvent.click(screen.getByTestId("report-pain-trigger"));
@@ -267,17 +267,11 @@ describe("session tracking integration flow", () => {
         "Difficulty 10/10 • Pain 2 -> 3 • Energy 4/5 • Confidence 4/5"
       );
     });
-    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Next-time preview: keep this pattern steady."
-    );
-    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Preview only; no workout has been changed."
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Next session: we'll repeat this movement at a steady pace."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "For next session: repeat this movement at a steady pace."
-    );
-    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "Recommendation only; your plan has not been changed."
+      "Your plan will adjust based on how it goes."
     );
 
     expect(mocks.sessions.length).toBe(1);
@@ -334,17 +328,11 @@ describe("session tracking integration flow", () => {
     expect(
       screen.getByText("Coach read: symptoms stable, effort high, confidence good.")
     ).toBeTruthy();
-    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Next-time preview: keep this pattern steady."
-    );
-    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Preview only; no workout has been changed."
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Next session: we'll repeat this movement at a steady pace."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "For next session: repeat this movement at a steady pace."
-    );
-    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "Recommendation only; your plan has not been changed."
+      "Your plan will adjust based on how it goes."
     );
   });
 
@@ -374,7 +362,6 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText("Training insights")).toBeTruthy();
     });
     expect(screen.getByText("2026-02-15")).toBeTruthy();
-    expect(screen.queryByTestId("adaptation-preview")).toBeNull();
     expect(screen.queryByTestId("next-session-recommendation")).toBeNull();
   });
 
@@ -433,7 +420,7 @@ describe("session tracking integration flow", () => {
     render(React.createElement(SessionClient));
 
     await waitFor(() => {
-      expect(screen.getByText(/Guided session/i)).toBeTruthy();
+      expect(screen.getByTestId("session-header-full")).toBeTruthy();
       expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
     });
 
@@ -530,7 +517,7 @@ describe("session tracking integration flow", () => {
     render(React.createElement(SessionClient));
 
     await waitFor(() => {
-      expect(screen.getByText(/Guided session/i)).toBeTruthy();
+      expect(screen.getByTestId("session-header-full")).toBeTruthy();
       expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
     });
 

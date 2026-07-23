@@ -74,7 +74,6 @@ import RoutineItemCoachingDetails, {
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
-import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { useTrainingSyncStatus } from "@/lib/useTrainingSyncStatus";
 import { useResultsBootstrap } from "@/components/results/useResultsBootstrap";
@@ -3150,6 +3149,11 @@ export default function ResultsRoutine() {
     locked?: boolean;
     lockReason?: string;
   }> = [
+    // Phase 6d, Commit 3.c — unlocked cards first (Today, Week, Billing),
+    // then locked-until-earned cards (Progress, Insights, History). Billing
+    // used to sit below three locked cards and inherited their locked-feel
+    // visually just from proximity; order now matches what's actually
+    // available to tap right now.
     {
       key: "today",
       title: "Today",
@@ -3161,6 +3165,14 @@ export default function ResultsRoutine() {
       title: "Week",
       icon: "\u{1F4C5}",
       summary: `${completedCount}/${activeDaysPerWeek} days complete with ${inProgressCount} in progress.`,
+    },
+    {
+      key: "account",
+      title: "Billing / Account",
+      icon: "\u{1F4B3}",
+      summary: authEnabled
+        ? "Manage plan status and account data."
+        : "Review local data controls.",
     },
     {
       key: "progress",
@@ -3185,14 +3197,6 @@ export default function ResultsRoutine() {
       summary: `${totalCompletedWorkoutCount} completed workouts saved across your history.`,
       locked: historyLocked,
       lockReason: "Complete one workout to unlock session history.",
-    },
-    {
-      key: "account",
-      title: "Billing / Account",
-      icon: "\u{1F4B3}",
-      summary: authEnabled
-        ? "Manage plan status and account data."
-        : "Review local data controls.",
     },
   ];
   const activeModeConfig =
@@ -3831,10 +3835,6 @@ export default function ResultsRoutine() {
                 const feedbackSummary = formatSessionFeedbackCoachSummary(
                   session.feedback ?? null
                 );
-                const adaptationPreview =
-                  formatSessionAdaptationPreviewFromFeedback(
-                    session.feedback ?? null
-                  );
                 const nextSessionRecommendation =
                   formatNextSessionRecommendationFromSession(session);
                 return (
@@ -3863,20 +3863,12 @@ export default function ResultsRoutine() {
                         {feedbackSummary}
                       </p>
                     ) : null}
-                    {adaptationPreview ? (
-                      <p
-                        className="mt-1 text-xs font-semibold text-slate-300"
-                        data-testid="adaptation-preview"
-                      >
-                        {adaptationPreview} Preview only; no workout has been changed.
-                      </p>
-                    ) : null}
                     {nextSessionRecommendation ? (
                       <p
                         className="mt-1 text-xs font-semibold text-slate-300"
                         data-testid="next-session-recommendation"
                       >
-                        {nextSessionRecommendation} Recommendation only; your plan has not been changed.
+                        {nextSessionRecommendation}
                       </p>
                     ) : null}
                     {dayIndex !== null ? (

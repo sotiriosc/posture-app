@@ -6,6 +6,14 @@ type SessionProgressHeaderProps = {
   dayTitle: string;
   exercisePositionLabel: string;
   progressPercent: number;
+  /**
+   * Phase 6d, Commit 1 — the full header (title, day pill, progress bar) is
+   * only useful once, at session start; once the user is actively moving
+   * through exercises it's the same information restated on every scroll
+   * with no new value, so it collapses to a single caption line here.
+   */
+  compact?: boolean;
+  compactLabel?: string;
 };
 
 export default function SessionProgressHeader({
@@ -14,9 +22,27 @@ export default function SessionProgressHeader({
   dayTitle,
   exercisePositionLabel,
   progressPercent,
+  compact = false,
+  compactLabel,
 }: SessionProgressHeaderProps) {
+  if (compact) {
+    return (
+      <header
+        data-testid="session-header-compact"
+        className="ui-card flex min-h-8 items-center border-sky-200/70 bg-[linear-gradient(135deg,rgba(239,246,255,0.96),rgba(250,245,255,0.94))] px-3 py-1.5 backdrop-blur-md"
+      >
+        <p className="truncate text-xs font-medium text-slate-700">
+          {compactLabel ?? `${exercisePositionLabel} · ${dayPositionLabel} · ${phaseName}`}
+        </p>
+      </header>
+    );
+  }
+
   return (
-    <header className="ui-card border-sky-200/70 bg-[linear-gradient(135deg,rgba(239,246,255,0.96),rgba(250,245,255,0.94))] p-4 backdrop-blur-md">
+    <header
+      data-testid="session-header-full"
+      className="ui-card border-sky-200/70 bg-[linear-gradient(135deg,rgba(239,246,255,0.96),rgba(250,245,255,0.94))] p-4 backdrop-blur-md"
+    >
       <div className="flex items-start justify-between gap-3">
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-sky-700/90">
           {phaseName}

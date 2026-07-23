@@ -33,22 +33,27 @@ export default function DashboardModeCard({
           : "border-white/10 bg-slate-950/44 hover:border-sky-200/25 hover:bg-slate-900/62"
       }`}
     >
-      <div className="flex h-full flex-col justify-between gap-5">
-        {locked ? (
-          <div className="flex justify-end">
-            <span className="rounded-lg border border-slate-500/20 bg-slate-950/35 px-2.5 py-1 text-[10px] font-semibold uppercase text-slate-400">
-              Locked
-            </span>
-          </div>
-        ) : null}
+      <div className="flex h-full flex-col justify-center gap-5">
         <div>
-          <h3 className={`flex items-center gap-2 text-lg font-semibold ${locked ? "text-slate-300" : "text-white"}`}>
+          {/* Phase 6d, Commit 3 — a small inline lock icon reads as
+              "aspirational, not broken"; the old full-line uppercase
+              "LOCKED" badge sat louder than the title it was labeling. */}
+          <h3 className={`flex items-center gap-2 text-lg font-semibold ${locked ? "text-slate-400" : "text-white"}`}>
             {icon ? (
               <span aria-hidden="true" className="text-xl leading-none">
                 {icon}
               </span>
             ) : null}
             {title}
+            {locked ? (
+              <span
+                aria-label="Locked"
+                title="Locked"
+                className="text-sm leading-none text-slate-500"
+              >
+                {"\u{1F512}"}
+              </span>
+            ) : null}
           </h3>
           <p className={`mt-2 line-clamp-2 text-sm leading-5 ${locked ? "text-slate-500" : "text-slate-300"}`}>
             {locked ? lockReason ?? summary : summary}

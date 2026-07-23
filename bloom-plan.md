@@ -1091,6 +1091,139 @@ Full gate + Playwright green.
 
 Merge commit.
 
+Phase 6d — Mobile Polish Pass
+
+Branch: phase-6d-mobile-polish from origin/main. Multi-commit, one per numbered item where sensible. Focused on phone experience across the twelve QA screens from Sotirios's phone walkthrough.
+
+Guiding principle (log as SR-6d)
+
+Praxis on phone is one-hand-and-thumb software. Every fixed UI element competes with the user's actual work — reading the cue, watching the timer, entering a number, tapping a set complete. Fixed elements must be proportional to their value in the moment. Elements without immediate value in the current context should collapse, scroll away, or hide behind disclosure. This is the principle that separates a phone-native app from a web app squeezed onto a phone.
+
+Commit 1 — Session screen bar consolidation (biggest single UX win)
+
+Current state (Screen 7 in QA): five stacked fixed/quasi-fixed bands in ~800px of vertical screen — top header (phase/session/exercise/progress bar), FOCUS card ("Keep your posture steady" + swipe dots), Set 2 mark-complete row, Working/Resting toggle + timer circle, bottom Next → bar. Timer, the actual hero, competes for space with four other bands.
+
+Consolidations:
+
+Top header collapses to single line during active-exercise state: Exercise 1/9 · Day 1 · Phase 1 on one line, small caption weight, no progress bar (the exercise counter IS the progress). Full expanded header only on session-start screen (Screen 6).
+FOCUS card: keep, single line, verify swipe-through-cues actually works (the dots in Screen 7 suggest carousel design; confirm implementation). If not working, wire it. Cues should cycle: "Keep your posture steady" → "Relax your jaw and neck" → "Move slowly" etc.
+Set tracking: during active work on Set 1, hide Set 2. During Set 2, hide Set 1. Only one set actively surfaced at a time. Completed sets become a tiny check row below the current set. Reduces vertical space by ~120px.
+Bottom bar redesign — CRITICAL: currently a huge blue Next → button above small i (guide) and Menu buttons. Consolidate into ONE thin bottom bar with three equal actions: [i icon] [Next →] [Menu]. All three narrow, all three tappable (44px minimum), Next → visually primary but same width class as the other two. Frees ~80px of vertical space that the timer can occupy. This is Sotirios's explicit ask; implement exactly as named.
+
+Verify total fixed-band footprint after consolidation is ≤ 40% of viewport height at 390×844 (iPhone 15). Currently ~60%.
+
+Commit 2 — Log-set screen compression (Screen 8)
+
+Current: "About to record" summary card duplicates plan info the user just saw, occupying half the screen above the input fields.
+
+Replace with one caption line above inputs: Bodyweight · target 8 reps · 2 sets
+
+Then two large input fields (Reps, RPE), then Next. That's it. Hide "Exit session" and "Back" behind a ... menu icon in the top-right — they're escape hatches, not primary actions during set logging.
+
+Commit 3 — Dashboard hierarchy and honest-locked-state (Screens 2, 3, 4, 5)
+
+Three fixes:
+
+3.a — Pill hierarchy above the fold. Currently four pills of equal weight under the greeting (Edit profile / Account and billing / Built from your movement profile / Plan: Free). Differentiate by role:
+
+Plan: Free becomes a small status badge in the top-right of the greeting block (currently redundant with the top nav Pro badge; check for the same duplicate-truth-source bug Phase 6a fixed elsewhere).
+Built from your movement profile becomes a small caption below the greeting, not a pill (it's context, not an action).
+Edit profile and Account and billing tuck behind a "..." icon or move to the nav menu. On phone, two primary actions max above the fold.
+
+3.b — Locked cards visual weight reduction. The "LOCKED" pill on Progress/Insights/History is currently louder than the card title. Make it a small lock icon (🔒 or a lucide-react Lock) inline with the title, dimmed text on the card body, no full-width pill. The user should understand these are aspirational, not broken.
+
+3.c — Card ordering by availability. Reorder the six-card grid so unlocked cards come first (Today, Week, Billing), then locked-until-earned cards (Progress, Insights, History). Currently Billing sits below three locked cards and inherits their locked-feel visually. Order matters when scrolling.
+
+Commit 4 — Progress screen: honest early numbers (Screen 12)
+
+Current: "3%", "1", "0 weeks", "Stable performance" — three of four metrics essentially zero on a fresh user. Weaponizes early numbers against a user who is by definition just starting.
+
+Two-part fix:
+
+4.a — Statistical floor. Metrics don't render until they cross a floor of meaning. Suggested floors:
+
+Consistency %: hidden until 5 completed sessions.
+Consistency streak: hidden until user has 2+ full weeks.
+Trend: hidden until 3+ sessions with varied difficulty logged.
+Sessions this week: always visible (it's a count, not a judgment).
+
+4.b — Baseline state copy. When metrics are gated, show a coaching message instead of dimmed zeros: "Building your baseline. Come back after a few sessions and this screen starts telling your story."
+
+For the "Sessions this week: 1" that IS shown early — reframe copy from report-card to trajectory: "1 session this week — you're building." Small change, big tone difference.
+
+Commit 5 — Session-start screen redundancy (Screen 6)
+
+Currently shows exercise title/subtitle/counter both at top of viewport AND duplicated in mid-screen ("PHASE 1: CONTROL & TECHNIQUE / Upper Push + Scapular Control / Exercise 1 of 9"). Remove the middle duplicate. Keep the top header. Frees ~140px.
+
+Commit 6 — Post-session sentence merge (Screens 9, 10)
+
+Two sentences ("Next-time preview: keep this pattern steady. Preview only; no workout has been changed." / "For next session: repeat this movement at a steady pace. Recommendation only; your plan has not been changed.") say nearly the same thing.
+
+Merge to one: "Next session: we'll repeat this movement at a steady pace. Your plan will adjust based on how it goes."
+
+Remove the "Preview only" and "Recommendation only" disclaimers — the sentence itself now conveys tentativeness. If a legal or product reason requires the disclaimer explicitly, keep one instance, not two.
+
+Commit 7 — Nav menu logout + usage ordering (Screen 11)
+
+7.a — Add "Log out" to nav menu when signed in. Currently unclear where users find this action. Below Help & FAQ, above the "Log in" that shows for signed-out users.
+
+7.b — Reorder menu by expected usage frequency:
+
+Praxis Dashboard (home while signed in)
+Progress
+Assessment
+Movement Profile
+Account / Billing
+Settings
+Help & FAQ
+Home (marketing landing — deprioritize for signed-in users)
+Log in / Log out
+
+Currently the order is roughly the router's declaration order. Usage ordering respects the user's likely next tap.
+
+Commit 8 — PWA install prompt orchestration
+
+Currently Chrome's native "Install Praxis Personal Trainer App" prompt fires on landing page and covers the hero. Two-part fix:
+
+8.a — Suppress the native mini-infobar via a beforeinstallprompt handler that calls event.preventDefault(). Stash the event.
+
+8.b — Fire your own install prompt at a moment you choose. Suggested trigger: after the user completes their first session (highest engagement point). Show a small dismissible card: "Praxis works better as an app on your home screen. Install?" with Install and Not now buttons. Install button calls the stashed event's prompt() method.
+
+If not now dismissed, don't re-prompt for 30 days. Log the state in localStorage. This dramatically improves both first-impression and install conversion vs Chrome's default banner.
+
+Commit 9 — Tap target audit on smaller phones
+
+Consumer app only. At 360×740 (iPhone SE / older Android), verify every tappable element is minimum 44×44px per Apple HIG. Screens flagged from QA:
+
+Post-session Energy/Confidence 1-5 pills (currently ~40px on 360 viewport)
+Set complete checkboxes (currently ~24px)
+Header nav icons
+
+Grow to 44px minimum. Where a control cannot grow without breaking layout, flag in docs/mobile-audit.md for a future dedicated redesign of that control.
+
+What is NOT in this pass
+No new features
+No engine changes
+No gyms mobile audit (operator UI is desktop-first, unchanged)
+No new copy beyond the specific sentence merges named
+No new components beyond AnimatedDisclosure and any tiny wrappers needed for the consolidated bottom bar
+No changes to onboarding, questionnaire, or assessment capture flows
+No PWA app-manifest changes beyond suppressing the native prompt
+Acceptance
+Session screen fixed-band footprint ≤ 40% viewport height at 390×844.
+Bottom bar consolidated to three-icon layout, Next → inline with i/Menu.
+Log-set screen shows one summary line + two input fields + Next.
+Dashboard pills demoted per hierarchy rules; locked cards use small lock icon not full pill; unlocked cards ordered first.
+Progress metrics hidden below statistical floor with baseline copy.
+Session-start screen no longer duplicates exercise title mid-view.
+Post-session next-time preview is one sentence, not two.
+Nav menu includes Log out for signed-in users; ordered by usage frequency.
+Chrome PWA banner suppressed; custom prompt fires at end of first session.
+All tap targets on consumer app meet 44px minimum at 360×740.
+Full gate green + Playwright green + no visual regressions on desktop.
+
+Merge commit.
+
 ## Sequencing & effort (with Claude Code)
 
 P0 security            0.5 day        (both repos)

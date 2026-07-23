@@ -12,7 +12,27 @@ import {
 type OnboardingInfoButtonProps = {
   onboardingKey: OnboardingKey;
   autoOpen?: boolean;
+  /**
+   * Phase 6d, Commit 1 — the session screen replaces this button's own
+   * floating trigger with an entry in its consolidated bottom bar on phone
+   * (desktop is out of scope for this pass and keeps the floating button).
+   * The panel itself is unchanged; `openOnboardingGuide()` opens it from
+   * that external trigger via a window event, since the panel's open state
+   * is intentionally local to this component.
+   */
+  hideTriggerBelowMd?: boolean;
 };
+
+export const OPEN_ONBOARDING_GUIDE_EVENT = "praxis:open-onboarding-guide";
+
+export function openOnboardingGuide(key: OnboardingKey) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(
+    new CustomEvent<{ key: OnboardingKey }>(OPEN_ONBOARDING_GUIDE_EVENT, {
+      detail: { key },
+    })
+  );
+}
 
 const MOBILE_GUIDE_FOOTPRINT_PX = 72;
 
@@ -25,8 +45,19 @@ const isAutomationEnvironment = () => {
 export default function OnboardingInfoButton({
   onboardingKey,
   autoOpen = true,
+  hideTriggerBelowMd = false,
 }: OnboardingInfoButtonProps) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    function handleExternalOpen(event: Event) {
+      const detail = (event as CustomEvent<{ key?: OnboardingKey }>).detail;
+      if (!detail?.key || detail.key === onboardingKey) setOpen(true);
+    }
+    window.addEventListener(OPEN_ONBOARDING_GUIDE_EVENT, handleExternalOpen);
+    return () =>
+      window.removeEventListener(OPEN_ONBOARDING_GUIDE_EVENT, handleExternalOpen);
+  }, [onboardingKey]);
   const [ready, setReady] = useState(false);
   const panelSafeAreaStyle = useMemo(
     () =>
@@ -89,7 +120,9 @@ export default function OnboardingInfoButton({
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Open onboarding guide"
-        className="group fixed bottom-4 left-4 z-40 min-h-11 overflow-hidden rounded-full p-[1px] shadow-[0_10px_24px_rgba(2,132,199,0.26)] transition-transform duration-150 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/70 sm:left-auto sm:right-4"
+        className={`group fixed bottom-4 left-4 z-40 min-h-11 overflow-hidden rounded-full p-[1px] shadow-[0_10px_24px_rgba(2,132,199,0.26)] transition-transform duration-150 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/70 sm:left-auto sm:right-4 ${
+          hideTriggerBelowMd ? "hidden md:block" : ""
+        }`}
       >
         <span
           aria-hidden="true"

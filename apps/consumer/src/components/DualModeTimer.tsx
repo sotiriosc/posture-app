@@ -503,7 +503,7 @@ export default function DualModeTimer({
               key={value}
               type="button"
               onClick={() => handleModeChange(value)}
-              className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+              className={`min-h-11 rounded-full px-4 py-2 text-xs font-semibold transition ${
                 mode === value
                   ? activeModeButtonClasses
                   : inactiveModeButtonClasses
@@ -573,7 +573,7 @@ export default function DualModeTimer({
         <button
           type="button"
           onClick={resetTimer}
-          className={`${secondaryTextClass} underline-offset-4 hover:underline`}
+          className={`flex min-h-11 min-w-11 items-center justify-center ${secondaryTextClass} underline-offset-4 hover:underline`}
         >
           Reset
         </button>

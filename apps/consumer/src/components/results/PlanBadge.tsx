@@ -13,7 +13,7 @@ export default function PlanBadge() {
   if (loading || !authEnabled) return null;
 
   return (
-    <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1">
+    <span className="rounded-lg border border-slate-400/30 bg-slate-950/45 px-3 py-1 text-xs text-slate-200">
       Plan: {isPro ? "Pro" : "Free"}
     </span>
   );

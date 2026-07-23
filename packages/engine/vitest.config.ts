@@ -20,6 +20,7 @@ export default defineConfig({
       // point the alias so the transport doesn't break them.
       "@/components": path.resolve(__dirname, "../../apps/consumer/src/components"),
       "@/app": path.resolve(__dirname, "../../apps/consumer/src/app"),
+      "@/hooks": path.resolve(__dirname, "../../apps/consumer/src/hooks"),
     },
   },
 });

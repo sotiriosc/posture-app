@@ -227,7 +227,7 @@ describe("session logging completeness", () => {
     render(React.createElement(SessionClient));
 
     await waitFor(() => {
-      expect(screen.getByText(/Guided session/i)).toBeTruthy();
+      expect(screen.getByTestId("session-header-full")).toBeTruthy();
     });
 
     for (let index = 0; index < routine.length; index += 1) {
@@ -252,9 +252,18 @@ describe("session logging completeness", () => {
         target: { value: "7" },
       });
 
-      screen
+      // Phase 6d, Commit 1 — only the current set's checkbox is rendered at
+      // a time (future sets are hidden until reached), so re-query after
+      // each click instead of clicking a static snapshot of all checkboxes.
+      let nextUncheckedSet = screen
         .getAllByRole("checkbox")
-        .forEach((checkbox) => fireEvent.click(checkbox));
+        .find((checkbox) => !(checkbox as HTMLInputElement).checked);
+      while (nextUncheckedSet) {
+        fireEvent.click(nextUncheckedSet);
+        nextUncheckedSet = screen
+          .getAllByRole("checkbox")
+          .find((checkbox) => !(checkbox as HTMLInputElement).checked);
+      }
 
       if (item.section === "main") {
         fireEvent.click(screen.getByTestId("report-pain-trigger"));
