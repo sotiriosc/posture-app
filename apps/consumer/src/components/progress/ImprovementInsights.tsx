@@ -14,7 +14,7 @@ export default function ImprovementInsights({ insights }: ImprovementInsightsPro
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex w-full items-center justify-between gap-3 text-left"
+        className="flex min-h-11 w-full items-center justify-between gap-3 text-left"
         aria-expanded={open}
       >
         <h2 className="text-sm font-semibold text-white">Movement quality trends</h2>

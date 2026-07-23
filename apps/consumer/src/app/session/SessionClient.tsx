@@ -2772,13 +2772,13 @@ export default function SessionClient() {
                   setBlockMenuOpen((o) => !o);
                   setBlockConfirmOpen(false);
                 }}
-                className="rounded p-1 text-slate-500 hover:bg-slate-700/50 hover:text-slate-300"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded text-slate-500 hover:bg-slate-700/50 hover:text-slate-300"
                 aria-label="Exercise options"
               >
                 ···
               </button>
               {blockMenuOpen && blockMenuExerciseId === currentItem.exerciseId && (
-                <div className="absolute right-0 top-8 z-20 min-w-44 rounded-lg border border-slate-600/40 bg-slate-900 shadow-lg">
+                <div className="absolute right-0 top-full z-20 min-w-44 rounded-lg border border-slate-600/40 bg-slate-900 shadow-lg">
                   {!blockConfirmOpen ? (
                     <button
                       type="button"
@@ -2918,7 +2918,7 @@ export default function SessionClient() {
                   setPainModalMessage(null);
                   setPainModalOpen(true);
                 }}
-                className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-700 shadow-sm"
+                className="min-h-11 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-700 shadow-sm"
               >
                 Report pain
               </button>

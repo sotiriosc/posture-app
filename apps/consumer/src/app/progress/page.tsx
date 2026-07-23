@@ -516,7 +516,7 @@ export default function ProgressPage() {
               </p>
             </div>
             <Link href="/results">
-              <span className="inline-flex rounded-lg border border-slate-300/40 bg-slate-900/55 px-5 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-800/65">
+              <span className="inline-flex min-h-11 items-center rounded-lg border border-slate-300/40 bg-slate-900/55 px-5 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-800/65">
                 Back to dashboard
               </span>
             </Link>

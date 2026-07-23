@@ -99,7 +99,7 @@ export default function AppMenuClient({
             type="button"
             aria-label="Open menu"
             onClick={() => setOpen(true)}
-            className="inline-flex min-h-9 items-center justify-center rounded-lg border border-slate-400/35 bg-slate-950/72 px-4 py-2 text-xs font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.24)] backdrop-blur transition hover:-translate-y-px hover:bg-slate-900/82 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-400/35 bg-slate-950/72 px-4 py-2 text-xs font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.24)] backdrop-blur transition hover:-translate-y-px hover:bg-slate-900/82 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
           >
             Menu
           </button>

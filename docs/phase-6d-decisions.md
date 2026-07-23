@@ -452,3 +452,80 @@ session route only, with both buttons meeting the 44px minimum; the card
 never renders while `pathname === "/session"` even once eligible; and a
 "Not now" dismissal persists a timestamp that suppresses the card across
 a reload within the cooldown window.
+
+## Commit 9 — Tap target audit on smaller phones
+
+**Method.** Wrote a throwaway Playwright scan (not committed —
+`tap_audit_scan.spec.ts`, run locally against 360×740) that walks every
+`button`, `a[href]`, `input[type=checkbox]`, `input[type=radio]`,
+`[role=button]`, and `label` on the dashboard, progress, and session
+screens (including the session `···` block-menu open) and flags any
+whose rendered `getBoundingClientRect()` is under 44px on either axis.
+Ran it before touching anything to get a ground-truth list, then again
+after each fix to confirm convergence, rather than fixing from the
+spec's three named examples alone — the spec's list ("Energy/Confidence
+pills," "Set complete checkboxes," "Header nav icons") turned out to be
+illustrative, not exhaustive; the scan additionally found the session
+screen's `···` exercise-options trigger, the timer's Working/Resting
+mode toggle, its Reset link, and the Report pain trigger all under 44px.
+
+**Fixed to literal 44px (`min-h-11` / `min-w-11`):**
+- Exercise-options `···` trigger (`SessionClient.tsx`) — was `p-1` around
+  bare text (21×32); now `min-h-11 min-w-11` with centered content. Its
+  dropdown anchor moved from a hardcoded `top-8` to `top-full` so it
+  doesn't overlap the now-taller trigger.
+- Completed-set row label (`ExerciseCard.tsx`) — the spec's named
+  "~24px" checkbox row (`min-h-6`) now `min-h-11`, matching the
+  already-`min-h-11` active-set row it sits above. (The 16×16 checkbox
+  *input* itself still reports small in a raw DOM scan; it's nested
+  inside the `min-h-11` `<label>`, which is the actual tap surface via
+  native label/input association — same accepted pattern as the
+  Reps/RPE `<label>` captions above their `min-h-11` inputs, both of
+  which the scan also flags as small text but which aren't themselves
+  the interactive element.)
+- Timer mode toggle, "Working"/"Resting" (`DualModeTimer.tsx`) — was
+  `px-4 py-2` text-only (80×32/76×32); added `min-h-11`.
+- Timer "Reset" link (`DualModeTimer.tsx`) — was bare underlined text
+  (33×16); added `min-h-11 min-w-11` with centered content. This grows
+  the compact caption row under the timer face by about 28px; accepted
+  because the row has no other height constraint (unlike, say, a
+  per-set list where the same growth multiplies by row count).
+- "Report pain" trigger (`SessionClient.tsx`) — was a `px-3 py-1` pill
+  (87×27); added `min-h-11`. A slightly larger pill next to the "Log
+  this set" title is not a layout regression here — the row already
+  used `items-center` with room to grow.
+- "Open menu" trigger, "View today's plan," "Back to dashboard," and the
+  "Movement quality trends" disclosure — already fixed in Commits 3/7 and
+  via the shared `Button.tsx` secondary/ghost variants; the audit
+  confirms zero remaining violations on `/results` and `/progress`.
+
+**Nothing needed a documented exception.** Every element the spec named,
+plus everything the scan additionally found, grew to 44px without
+breaking any surrounding layout badly enough to warrant flagging for a
+future dedicated redesign — the largest single-row growth (Reset's
+caption row, and the block-menu trigger row) is a few tens of pixels on
+otherwise-flexible rows, not a fixed-band or per-item-multiplied cost.
+
+Re-ran the scan after all fixes at 360×740: `/results` and `/progress`
+report zero violations; `/session` (both closed and with the exercise
+options menu open) reports exactly three, all confirmed false
+positives — the native checkbox `<input>` (16×16, wrapped by the now
+`min-h-11` `<label>`) and the Reps/RPE field `<label>` captions (283×16,
+sitting above their own `min-h-11` `<input>` elements) — none of which
+is itself the sole interactive surface for its control.
+
+**Unrelated pre-existing test-infra gap found and fixed while running the
+full local gate.** `packages/engine/vitest.config.ts`'s alias map (added
+for Day 1 of the engine/consumer split) covered `@/lib`, `@/components`,
+and `@/app`, but never `@/hooks` — a directory that didn't exist until
+Phase 6a's `useUserPlan` hook. Five engine unit test files that import
+`AuthControls.tsx` or `useResultsBootstrap.ts` (which both import
+`useUserPlan`) have been failing to even resolve since Phase 6a merged,
+independent of anything in Phase 6d — confirmed by checking out
+`packages/engine/vitest.config.ts` from `origin/main` (identical to this
+branch's copy) and reproducing the same failure there. Not caught by
+CI's PR gate, which only runs a fixed anchor-test allowlist that doesn't
+include these files. Added the missing `@/hooks` alias (mirrors the
+existing three) so `npx vitest --run --config
+packages/engine/vitest.config.ts` — the actual "full gate" — is green;
+zero behavior change, pure test-resolution fix.

@@ -74,7 +74,7 @@ export default function ExerciseCard({
             return (
               <label
                 key={`set-${index}`}
-                className="flex min-h-6 items-center justify-between gap-3 rounded-md border border-sky-300/30 bg-sky-400/10 px-3 py-1 text-xs text-sky-100/90"
+                className="flex min-h-11 items-center justify-between gap-3 rounded-md border border-sky-300/30 bg-sky-400/10 px-3 py-1 text-xs text-sky-100/90"
               >
                 <span className="flex items-center gap-1.5 font-medium">
                   <span aria-hidden="true">✓</span>
