@@ -377,8 +377,14 @@ export default function ProgressPage() {
     return streak;
   }, [sessions, prescribedWorkoutsPerWeek]);
 
-  const difficultyTrendLabel = useMemo<DifficultyTrendLabel>(() => {
-    const difficultyScores = sessions
+  // Phase 6d, Commit 4 — all difficulty-derived entries, unsliced, so we can
+  // tell "not enough data yet" apart from an actual stable trend. The old
+  // code collapsed both cases to the literal string "Stable performance",
+  // which reads as a real (if unexciting) verdict on a fresh user who has
+  // logged zero or one session — that's the exact "weaponized early number"
+  // this commit exists to fix.
+  const difficultyDataPoints = useMemo(() => {
+    return sessions
       .map((session) => {
         const fromSession = difficultyScoreFromLabel(session.sessionFeedback ?? null);
         if (fromSession !== null) {
@@ -406,12 +412,16 @@ export default function ProgressPage() {
       .filter(
         (entry): entry is { timestamp: number; score: number } => entry !== null
       )
-      .sort((left, right) => right.timestamp - left.timestamp)
-      .slice(0, 3);
+      .sort((left, right) => right.timestamp - left.timestamp);
+  }, [logsBySessionId, sessions]);
 
-    if (difficultyScores.length < 3) return "Stable performance";
+  const hasEnoughTrendData = difficultyDataPoints.length >= 3;
 
-    const chronologicalScores = [...difficultyScores].reverse();
+  const difficultyTrendLabel = useMemo<DifficultyTrendLabel>(() => {
+    const recentScores = difficultyDataPoints.slice(0, 3);
+    if (recentScores.length < 3) return "Stable performance";
+
+    const chronologicalScores = [...recentScores].reverse();
     const delta =
       chronologicalScores[chronologicalScores.length - 1].score -
       chronologicalScores[0].score;
@@ -419,7 +429,22 @@ export default function ProgressPage() {
     if (delta <= -0.35) return "Pattern quality improving";
     if (delta >= 0.35) return "Corrective strength trend";
     return "Stable performance";
-  }, [logsBySessionId, sessions]);
+  }, [difficultyDataPoints]);
+
+  // 4.a — statistical floors. Metrics render only once they cross a floor of
+  // meaning; below it, PerformanceOverview shows baseline coaching copy
+  // instead of a dimmed/near-zero number. "Sessions this week" has no floor
+  // — it's a plain count, not a judgment about the user's trajectory.
+  const completedSessionsCount = useMemo(
+    () => sessions.filter((session) => Boolean(session.completedAt)).length,
+    [sessions]
+  );
+  const daysSinceBaseline =
+    baselineAt > 0 ? Math.floor((currentTimestampMs() - baselineAt) / DAY_MS) : 0;
+
+  const consistencyFloorMet = completedSessionsCount >= 5;
+  const streakFloorMet = daysSinceBaseline >= 14; // 2 full weeks
+  const trendFloorMet = hasEnoughTrendData;
 
   const recentInsights = useMemo(() => {
     const insights: string[] = [];
@@ -501,10 +526,13 @@ export default function ProgressPage() {
 
         <PerformanceOverview
           consistencyPercent={consistencyPercent}
+          consistencyFloorMet={consistencyFloorMet}
           sessionsThisWeek={sessionsThisWeek}
           weeklyGoalStreak={weeklyGoalStreak}
+          streakFloorMet={streakFloorMet}
           prescribedWorkoutsPerWeek={prescribedWorkoutsPerWeek}
           trendLabel={difficultyTrendLabel}
+          trendFloorMet={trendFloorMet}
         />
 
         <RankedTopMovements movements={topMovements} />

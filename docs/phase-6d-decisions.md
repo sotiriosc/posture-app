@@ -181,3 +181,68 @@ that trigger meets the 44px minimum), no literal "LOCKED" text anywhere,
 at least one `aria-label="Locked"` icon present on a fresh (all-locked)
 persona, and DOM order placing Today/Week/Billing before
 Progress/Insights/History on a fully-unlocked (12-week climber) persona.
+
+## Commit 4 — Progress screen: honest early numbers
+
+**Separating "not enough data" from "actual stable trend."** The old
+`difficultyTrendLabel` logic sliced to the 3 most recent difficulty-bearing
+entries and, if fewer than 3 existed, hard-returned the literal string
+`"Stable performance"` — indistinguishable from a genuinely-computed
+"nothing's changing" verdict. Split this into `difficultyDataPoints` (the
+full, unsliced list) and `hasEnoughTrendData` (`length >= 3`), so the page
+can gate the *card*, not just quietly reuse a real trend label as a
+placeholder.
+
+**Statistical floors, one per metric, all in `progress/page.tsx`:**
+- Consistency % floor: `completedSessionsCount >= 5` (spec's literal "5
+  completed sessions").
+- Consistency streak floor: `daysSinceBaseline >= 14` (spec's "2+ full
+  weeks"). Used elapsed days since baseline rather than counting completed
+  calendar-week buckets — simpler, and equivalent for this purpose: a
+  streak metric that's gated by *time elapsed* rather than by whether the
+  streak itself is already non-zero, otherwise a real 0-week streak after
+  15 days would stay hidden forever for the wrong reason.
+- Trend floor: `hasEnoughTrendData` (spec's "3+ sessions with varied
+  difficulty logged" — read as 3+ sessions carrying an actual difficulty
+  signal, not just 3+ sessions total, since a trend needs difficulty data
+  specifically to mean anything).
+- Sessions this week: no floor, per spec ("it's a count, not a
+  judgment") — always renders the real number.
+
+**Baseline copy.** Added a single `BaselineNotice` sub-component in
+`PerformanceOverview` rendering the spec's exact coaching line ("Building
+your baseline. Come back after a few sessions and this screen starts
+telling your story.") in place of any gated metric's number, so the four
+cards' visual weight stays even (same card shape, no numbers, not a
+crossed-out zero).
+
+**"Sessions this week" tone (4.b).** Reframed the caption under the
+always-visible count from the clinical "Last 7-day window" to a trajectory
+sentence keyed on the count: 0 → "Log a session this week to get started.",
+1 → the spec's literal "1 session this week — you're building.", N (at or
+above the prescribed weekly count) → "N sessions this week — right on
+target.", otherwise → "N sessions this week — you're building." The number
+itself stays visible above the sentence — spec says never hide it, just
+stop grading it.
+
+**Verification note — dev-seed baseline timestamp.** `dev-seed`'s
+`seedProgramWithLogs` calls `saveAppState({ activeProgramId })`, which
+(pre-existing, unrelated to this pass) stamps `activeProgramBaselineAt` to
+"now" whenever a program is (re)activated. The 12-week climber fixture's
+actual session history is dated in the past (deterministic Jan 2026
+timestamps), so seeding it via dev-seed and immediately loading `/progress`
+reads as a brand-new baseline for the streak floor specifically, even
+though the fixture's own history is old. This is fixture/dev-tool
+behavior, not a bug in the floor logic — real users don't get their
+`activeProgramBaselineAt` reset without actually starting a new program.
+`progressStatisticalFloors.spec.ts`'s "established user" case back-dates
+`activeProgramBaselineAt` in `localStorage` after seeding so the streak
+floor is exercised against history that's actually old, matching what a
+long-tenured real user's state looks like.
+
+Verified at 390×844 and 360×740 via Playwright screenshots and a new
+`progressStatisticalFloors.spec.ts`, which locks: a fresh user sees the
+baseline notice on all three gated metrics (consistency %, streak, trend)
+and the reframed zero-session copy on the ungated one, while an
+established user (12-week climber, backdated baseline) sees real numbers
+and zero baseline notices.
