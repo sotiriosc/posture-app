@@ -3,6 +3,7 @@ import { PhotoProvider } from "@/components/PhotoContext";
 import AppMenu from "@/components/AppMenu";
 import Analytics from "@/components/Analytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import InstallApp from "@/components/InstallApp";
 import "./globals.css";
 
 const GLOBAL_CARD_STYLE = "shaded";
@@ -93,6 +94,7 @@ export default function RootLayout({
           <AppMenu />
           <PhotoProvider>{children}</PhotoProvider>
           <ServiceWorkerRegister />
+          <InstallApp />
         </Analytics>
       </body>
     </html>

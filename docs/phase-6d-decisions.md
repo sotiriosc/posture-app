@@ -387,3 +387,68 @@ Verified at 390×844 and 360×740 via Playwright screenshots and a new
 vertical position is strictly increasing in the spec's usage-frequency
 order, Log out sits below all of them, and a signed-out session shows Log
 in in the same slot with zero Log out elements present.
+
+## Commit 8 — PWA install prompt orchestration
+
+**The bug wasn't missing 8.a logic — it was a missing mount.** `InstallApp`
+already existed in the tree with a correct `beforeinstallprompt` handler
+that calls `preventDefault()` and stashes the event, plus an
+`appinstalled` handler. It was never imported or rendered anywhere in the
+app, so its listener never attached — Chrome's native mini-infobar fired
+completely uncontested, exactly matching the reported symptom. The actual
+8.a fix is one line: mounting `<InstallApp />` in `layout.tsx` alongside
+`ServiceWorkerRegister`, so the listener attaches on every page from app
+load.
+
+**8.b trigger: exact signal for "first-ever completed session."**
+`sessionStore.ts` already fires a `session:completed` `CustomEvent` (and
+stamps `session_last_completed_at` in `localStorage`) every time a real
+session finishes — `ResultsRoutine.tsx` already listens to it for its own
+"session complete" dashboard notice, so this is an established, live
+signal rather than something invented for this commit. To detect
+specifically the *first* one (not every completion), `InstallApp`
+snapshots whether `session_last_completed_at` was already set *before*
+this page load, once, on mount; if it wasn't, the next `session:completed`
+event during this visit is that user's first ever, so `eligible` flips to
+true. Later sessions completing in the same or later visits won't matter
+because whichever visit first satisfies "no prior completion" is the one
+that offers the prompt, exactly once.
+
+**Held off the session-complete screen itself.** The event fires while
+the user is still looking at the "Session complete" summary (before they
+click through), which is its own screen with its own primary actions. Per
+this phase's guiding principle (fixed elements should never compete for
+space with what the user's actually doing), the component tracks
+eligibility but withholds rendering while `pathname === "/session"` —
+it appears the moment the user navigates off, e.g. back to the dashboard.
+
+**Persistence: 30-day cooldown on dismiss, permanent on install.** "Not
+now" writes an ISO timestamp to `localStorage` (`pwa_install_dismissed_at`);
+the component treats itself as dismissed if `Date.now()` is within 30
+days of that timestamp. `appinstalled` writes a permanent
+`pwa_install_installed` flag so a completed install never re-shows the
+card after a reload — the pre-existing code only tracked "installed" and
+"dismissed" as in-memory component state, meaning a page reload would
+have re-shown the card even right after a successful install; fixed as
+part of making 8.b's dismissal logic actually durable, which the "don't
+re-prompt for 30 days" requirement needs regardless.
+
+**Copy.** Used the spec's literal suggested copy verbatim: "Praxis works
+better as an app on your home screen. Install?", with "Install" / "Not
+now" buttons, both `min-h-11` (44px minimum, this phase's tap-target
+standard).
+
+Verified at 390×844 and 360×740 via Playwright screenshots and a new
+`pwaInstallPromptOrchestration.spec.ts`. Real browsers don't reliably
+fire `beforeinstallprompt` under Playwright automation, so the tests
+dispatch a synthetic event with stubbed `prompt()`/`userChoice` methods
+plus a synthetic `session:completed` event — this is exercising Praxis's
+own orchestration logic (suppress native banner, gate on first-session
+completion, hide on `/session`, persist dismissal), not Chrome's install
+eligibility heuristics, which are out of this app's control entirely. The
+suite locks: the stashed native event alone (no completed session yet)
+does not show the card; completing a session then shows it, off the
+session route only, with both buttons meeting the 44px minimum; the card
+never renders while `pathname === "/session"` even once eligible; and a
+"Not now" dismissal persists a timestamp that suppresses the card across
+a reload within the cooldown window.
