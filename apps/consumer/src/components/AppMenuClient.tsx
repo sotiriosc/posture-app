@@ -47,24 +47,40 @@ export default function AppMenuClient({
   // otherwise duplicate it. Desktop is out of scope for this pass and keeps
   // the floating pill (it already lives at the top there, out of the way).
   const isSessionRoute = pathname === "/session";
+  // Phase 6d, Commit 7 — ordered by expected usage frequency for a
+  // signed-in user rather than router declaration order. "Home" (the
+  // marketing landing) is deprioritized toward the bottom since a
+  // signed-in user's home base is the dashboard, not the landing page.
   const links = useMemo(() => {
-    const nav: MenuLink[] = [
-      { href: "/", label: "Home" },
-      { href: "/assessment", label: "Assessment" },
-      { href: "/questionnaire", label: "Movement Profile" },
-    ];
+    const nav: MenuLink[] = [];
     if (authEnabled) {
       nav.push({ href: "/results", label: "Praxis Dashboard" });
       nav.push({ href: "/progress", label: "Progress" });
-      if (authenticated) {
-        nav.push({ href: "/account/billing", label: "Account / Billing" });
-        nav.push({ href: "/account/settings", label: "Settings" });
-      }
     }
-    nav.push({ href: "/faq", label: "Help & FAQ" });
+    nav.push({ href: "/assessment", label: "Assessment" });
+    nav.push({ href: "/questionnaire", label: "Movement Profile" });
+    if (authEnabled && authenticated) {
+      nav.push({ href: "/account/billing", label: "Account / Billing" });
+      nav.push({ href: "/account/settings", label: "Settings" });
+    }
     if (isAdmin) nav.push({ href: "/settings", label: "Admin Settings" });
+    nav.push({ href: "/faq", label: "Help & FAQ" });
+    nav.push({ href: "/", label: "Home" });
     return nav;
   }, [isAdmin, authEnabled, authenticated]);
+
+  const [loggingOut, setLoggingOut] = useState(false);
+  const logout = async () => {
+    setLoggingOut(true);
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      cache: "no-store",
+      credentials: "include",
+    }).catch(() => null);
+    window.location.href = "/";
+  };
+  const navItemClass =
+    "block w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold transition border-slate-300/25 bg-slate-900/35 text-slate-100 hover:bg-slate-800/45";
 
   if (hideMenu) return null;
 
@@ -125,10 +141,29 @@ export default function AppMenuClient({
                   </Link>
                 );
               })}
+              {authEnabled ? (
+                authenticated ? (
+                  <button
+                    type="button"
+                    onClick={logout}
+                    disabled={loggingOut}
+                    data-testid="nav-menu-logout"
+                    className={navItemClass}
+                  >
+                    {loggingOut ? "Logging out..." : "Log out"}
+                  </button>
+                ) : (
+                  <Link
+                    href="/auth/login"
+                    onClick={() => setOpen(false)}
+                    data-testid="nav-menu-login"
+                    className={navItemClass}
+                  >
+                    Log in
+                  </Link>
+                )
+              ) : null}
             </nav>
-            <div className="mt-6 border-t border-white/15 pt-4">
-              <AuthControls />
-            </div>
           </aside>
         </div>
       ) : null}

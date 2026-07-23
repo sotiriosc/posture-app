@@ -347,3 +347,43 @@ full 9-exercise day through the real set-logging UI end-to-end, which
 `sessionTrackingFlow.test.ts` already exercises against the real component
 tree — the marginal coverage a real-browser screenshot would add over that
 is the CSS wrapping question above, addressed by inspection instead.
+
+## Commit 7 — Nav menu logout + usage ordering
+
+**Where "Log out" actually lived before this commit.** It already existed
+functionally (`AuthControls`, rendered inside the menu `<aside>` below a
+`border-t` divider), so the underlying capability wasn't missing — but it
+was a small pill-style `Button` visually separated from the nav list, not
+one of the uniform full-width rows the rest of the menu uses. Read the
+spec's "Currently unclear where users find this action" as a findability
+complaint about visual treatment and position, not a missing feature.
+Fix: moved Log out (and, symmetrically, Log in for signed-out users) into
+the same `<nav>` list as an actual full-width row sharing the other
+items' exact style (`data-testid="nav-menu-logout"` /
+`"nav-menu-login"`), so it reads as "the last menu item," not "a
+different kind of control below the menu." The desktop-only floating
+top-right pill (`AuthControls`, `hidden md:block`, unrelated to the
+`<aside>` list) is untouched — it's out of scope (it already reads fine
+at md+ where there's no findability complaint on record) and
+`headerLayout.spec.ts` still targets it directly by its `Button`-styled
+"Log out" text.
+
+**Ordering (7.b) applied exactly as spec-listed, gates unchanged.** Kept
+every existing visibility gate (`authEnabled` for Dashboard/Progress,
+`authEnabled && authenticated` for Account/Billing + Settings, `isAdmin`
+for Admin Settings) — only the array's push order changed, so a
+signed-out or free-tier user sees the same subset of links they always
+did, just Home moved to the end instead of the start. "Admin Settings"
+isn't named in the spec's ordering list (it's an edge case for the one
+operator role); kept it directly after "Settings" since both are
+account-configuration items, ahead of Help & FAQ/Home — this preserves
+its old relative position (after the account-ish items, before the
+generic ones) without contradicting any named ordering constraint.
+
+Verified at 390×844 and 360×740 via Playwright screenshots and a new
+`navMenuLogoutAndOrdering.spec.ts`, which locks: Log out renders as a
+44px-minimum nav row and actually logs the user out (asserted against
+`/api/auth/session` afterward, not just a URL change), every named link's
+vertical position is strictly increasing in the spec's usage-frequency
+order, Log out sits below all of them, and a signed-out session shows Log
+in in the same slot with zero Log out elements present.
