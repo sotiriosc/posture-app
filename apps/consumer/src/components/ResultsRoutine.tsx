@@ -3376,7 +3376,11 @@ export default function ResultsRoutine() {
             </p>
           </div>
         </div>
-        <div className="mt-5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* dashboard-grid — phone shows all six tiles as a 2-col × 3-row
+            compact grid so they're scannable without a ~2000px scroll; the
+            sm:/lg: rules preserve the existing 2-col / 3-col desktop layout
+            unchanged. */}
+        <div className="mt-5 grid grid-cols-2 gap-2.5 sm:gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {dashboardModes.map((mode) => (
             <DashboardModeCard
               key={mode.key}
