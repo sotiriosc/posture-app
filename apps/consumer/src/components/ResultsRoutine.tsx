@@ -3145,7 +3145,6 @@ export default function ResultsRoutine() {
     key: DashboardMode;
     title: string;
     summary: string;
-    icon: string;
     locked?: boolean;
     lockReason?: string;
   }> = [
@@ -3157,19 +3156,16 @@ export default function ResultsRoutine() {
     {
       key: "today",
       title: "Today",
-      icon: "\u{1F3CB}\u{FE0F}",
       summary: `Day ${sessionLaunchDayIndex + 1}: ${program.week[sessionLaunchDayIndex]?.title ?? "current plan"}`,
     },
     {
       key: "week",
       title: "Week",
-      icon: "\u{1F4C5}",
       summary: `${completedCount}/${activeDaysPerWeek} days complete with ${inProgressCount} in progress.`,
     },
     {
       key: "account",
       title: "Billing / Account",
-      icon: "\u{1F4B3}",
       summary: authEnabled
         ? "Manage plan status and account data."
         : "Review local data controls.",
@@ -3177,7 +3173,6 @@ export default function ResultsRoutine() {
     {
       key: "progress",
       title: "Progress",
-      icon: "\u{1F4C8}",
       summary: `Consistency ${consistencyPercent}% with movement quality ${movementQualityPercent}%.`,
       locked: progressLocked,
       lockReason: "Complete one workout to unlock your progress summary.",
@@ -3185,7 +3180,6 @@ export default function ResultsRoutine() {
     {
       key: "insights",
       title: "Insights",
-      icon: "\u{1F9E9}",
       summary: "Pattern, stability, compensation, and adaptation analysis.",
       locked: insightsLocked,
       lockReason: "Complete one full week or cycle to unlock deeper analysis.",
@@ -3193,7 +3187,6 @@ export default function ResultsRoutine() {
     {
       key: "history",
       title: "History",
-      icon: "\u{1F4DC}",
       summary: `${totalCompletedWorkoutCount} completed workouts saved across your history.`,
       locked: historyLocked,
       lockReason: "Complete one workout to unlock session history.",
@@ -3386,7 +3379,7 @@ export default function ResultsRoutine() {
               key={mode.key}
               title={mode.title}
               summary={mode.summary}
-              icon={mode.icon}
+              iconName={mode.key}
               active={activeMode === mode.key}
               locked={mode.locked}
               lockReason={mode.lockReason}
