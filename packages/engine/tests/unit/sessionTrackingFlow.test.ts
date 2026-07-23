@@ -267,17 +267,11 @@ describe("session tracking integration flow", () => {
         "Difficulty 10/10 • Pain 2 -> 3 • Energy 4/5 • Confidence 4/5"
       );
     });
-    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Next-time preview: keep this pattern steady."
-    );
-    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Preview only; no workout has been changed."
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Next session: we'll repeat this movement at a steady pace."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "For next session: repeat this movement at a steady pace."
-    );
-    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "Recommendation only; your plan has not been changed."
+      "Your plan will adjust based on how it goes."
     );
 
     expect(mocks.sessions.length).toBe(1);
@@ -334,17 +328,11 @@ describe("session tracking integration flow", () => {
     expect(
       screen.getByText("Coach read: symptoms stable, effort high, confidence good.")
     ).toBeTruthy();
-    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Next-time preview: keep this pattern steady."
-    );
-    expect(screen.getByTestId("adaptation-preview").textContent).toContain(
-      "Preview only; no workout has been changed."
+    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
+      "Next session: we'll repeat this movement at a steady pace."
     );
     expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "For next session: repeat this movement at a steady pace."
-    );
-    expect(screen.getByTestId("next-session-recommendation").textContent).toContain(
-      "Recommendation only; your plan has not been changed."
+      "Your plan will adjust based on how it goes."
     );
   });
 
@@ -374,7 +362,6 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText("Training insights")).toBeTruthy();
     });
     expect(screen.getByText("2026-02-15")).toBeTruthy();
-    expect(screen.queryByTestId("adaptation-preview")).toBeNull();
     expect(screen.queryByTestId("next-session-recommendation")).toBeNull();
   });
 

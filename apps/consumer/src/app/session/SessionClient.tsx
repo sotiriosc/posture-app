@@ -58,7 +58,6 @@ import {
   formatPracticeModeSessionNote,
   selectSessionPracticeItems,
 } from "@/lib/sessionPracticeOptions";
-import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { sanitizeSessionFeedback } from "@/lib/sessionFeedback";
 import { saveSessionDropoffTelemetry } from "@/lib/telemetry";
 import { applyCompletedDayToProgramProgress } from "@/lib/programProgress";
@@ -2578,9 +2577,6 @@ export default function SessionClient() {
   }
 
   if (sessionComplete && summary && summaryStats) {
-    const adaptationPreview = formatSessionAdaptationPreviewFromFeedback(
-      summary.feedback ?? null
-    );
     const nextSessionRecommendation =
       formatNextSessionRecommendationFromSession(summary);
 
@@ -2612,26 +2608,12 @@ export default function SessionClient() {
             }}
             onSave={saveSessionCheckIn}
           />
-          {adaptationPreview ? (
-            <div
-              className="ui-card p-4 text-sm font-semibold text-slate-700"
-              data-testid="adaptation-preview"
-            >
-              {adaptationPreview}
-              <span className="mt-1 block text-xs font-medium text-slate-500">
-                Preview only; no workout has been changed.
-              </span>
-            </div>
-          ) : null}
           {nextSessionRecommendation ? (
             <div
               className="ui-card p-4 text-sm font-semibold text-slate-700"
               data-testid="next-session-recommendation"
             >
               {nextSessionRecommendation}
-              <span className="mt-1 block text-xs font-medium text-slate-500">
-                Recommendation only; your plan has not been changed.
-              </span>
             </div>
           ) : null}
           <OnImage className="flex flex-col gap-3 sm:flex-row">

@@ -74,7 +74,6 @@ import RoutineItemCoachingDetails, {
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
 import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
-import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { useTrainingSyncStatus } from "@/lib/useTrainingSyncStatus";
 import { useResultsBootstrap } from "@/components/results/useResultsBootstrap";
@@ -3836,10 +3835,6 @@ export default function ResultsRoutine() {
                 const feedbackSummary = formatSessionFeedbackCoachSummary(
                   session.feedback ?? null
                 );
-                const adaptationPreview =
-                  formatSessionAdaptationPreviewFromFeedback(
-                    session.feedback ?? null
-                  );
                 const nextSessionRecommendation =
                   formatNextSessionRecommendationFromSession(session);
                 return (
@@ -3868,20 +3863,12 @@ export default function ResultsRoutine() {
                         {feedbackSummary}
                       </p>
                     ) : null}
-                    {adaptationPreview ? (
-                      <p
-                        className="mt-1 text-xs font-semibold text-slate-300"
-                        data-testid="adaptation-preview"
-                      >
-                        {adaptationPreview} Preview only; no workout has been changed.
-                      </p>
-                    ) : null}
                     {nextSessionRecommendation ? (
                       <p
                         className="mt-1 text-xs font-semibold text-slate-300"
                         data-testid="next-session-recommendation"
                       >
-                        {nextSessionRecommendation} Recommendation only; your plan has not been changed.
+                        {nextSessionRecommendation}
                       </p>
                     ) : null}
                     {dayIndex !== null ? (

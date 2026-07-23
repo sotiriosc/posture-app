@@ -8,7 +8,6 @@ import { exerciseById, resolveExerciseHistoryIds } from "@/lib/exercises";
 import { getProgressionRecommendation } from "@/lib/progression";
 import { formatHistorySchemaRow, getHistoryDeltaPills } from "@/lib/historyView";
 import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRecommendation";
-import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import type { ExerciseLog, Program, ProgramRoutineItem, SessionRecord } from "@/lib/types";
 import { useUserPlan } from "@/hooks/useUserPlan";
@@ -244,8 +243,6 @@ export default function ProgramDayPage({ params }: Props) {
   const activeSessionFeedbackSummary = formatSessionFeedbackCoachSummary(
     activeSession?.feedback ?? null
   );
-  const activeSessionAdaptationPreview =
-    formatSessionAdaptationPreviewFromFeedback(activeSession?.feedback ?? null);
   const activeSessionRecommendation =
     formatNextSessionRecommendationFromSession(activeSession);
   const activeSessionLogs = activeSession
@@ -366,20 +363,12 @@ export default function ProgramDayPage({ params }: Props) {
               {activeSessionFeedbackSummary}
             </p>
           ) : null}
-          {activeSessionAdaptationPreview ? (
-            <p
-              className="mt-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
-              data-testid="adaptation-preview"
-            >
-              {activeSessionAdaptationPreview} Preview only; no workout has been changed.
-            </p>
-          ) : null}
           {activeSessionRecommendation ? (
             <p
               className="mt-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
               data-testid="next-session-recommendation"
             >
-              {activeSessionRecommendation} Recommendation only; your plan has not been changed.
+              {activeSessionRecommendation}
             </p>
           ) : null}
 

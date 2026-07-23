@@ -183,12 +183,25 @@ export const formatNextSessionRecommendation = (
 ) => {
   if (!recommendation) return null;
 
+  // Phase 6d, Commit 6 — this used to be paired in the UI with
+  // sessionAdaptationPreview's "Next-time preview: ..." sentence plus its own
+  // "Recommendation only; your plan has not been changed." disclaimer. Both
+  // sentences were derived from the same underlying signal and said nearly
+  // the same thing twice, each with its own near-duplicate disclaimer. This
+  // is now the single sentence rendered post-session — the "we'll" framing
+  // plus the trailing "adjust based on how it goes" clause carries the
+  // tentativeness the disclaimers used to spell out.
   const labelByMode: Record<NextSessionRecommendation["mode"], string> = {
-    normal: "For next session: keep going as planned — a small step up is optional.",
-    repeat: "For next session: repeat this movement at a steady pace.",
-    reduce: "For next session: ease off a little or pick something easier.",
-    simplify: "For next session: we'll simplify this movement before moving forward.",
-    recover: "For next session: keep it easy and recovery-focused.",
+    normal:
+      "Next session: we'll keep going as planned — a small step up is optional. Your plan will adjust based on how it goes.",
+    repeat:
+      "Next session: we'll repeat this movement at a steady pace. Your plan will adjust based on how it goes.",
+    reduce:
+      "Next session: we'll ease off with a lighter dose or an easier variation. Your plan will adjust based on how it goes.",
+    simplify:
+      "Next session: we'll simplify this movement before adding anything back. Your plan will adjust based on how it goes.",
+    recover:
+      "Next session: we'll keep things easy and recovery-focused. Your plan will adjust based on how it goes.",
   };
 
   return labelByMode[recommendation.mode];

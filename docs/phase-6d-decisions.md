@@ -276,3 +276,74 @@ Verified at 390×844 and 360×740 via Playwright screenshots and a new
 text is gone, `session-header-full` is visible and still carries the
 exercise counter, and the day title string appears exactly once on the
 page (not twice).
+
+## Commit 6 — Post-session sentence merge
+
+**Which two sentences were "the same thing twice."** The post-session
+summary screen rendered two adjacent cards derived from the exact same
+underlying signal (`sessionAdaptationPreview`'s `suggestedAction`, wrapped
+by `nextSessionRecommendation`'s `mode`): an "adaptation preview" card
+("Next-time preview: keep this pattern steady." + "Preview only; no
+workout has been changed.") immediately followed by a "next session
+recommendation" card ("For next session: repeat this movement at a steady
+pace." + "Recommendation only; your plan has not been changed."). Same
+history entries in `ResultsRoutine.tsx`, `progress/page.tsx`, and the
+per-day view (`program/[programId]/day/[dayIndex]/page.tsx`) repeated the
+pattern. Deleted the adaptation-preview card and its derivation entirely
+(component-local `adaptationPreview` variables, the
+`formatSessionAdaptationPreviewFromFeedback` import, and the
+`data-testid="adaptation-preview"` block) in all four call sites — the
+`nextSessionRecommendation` card already carries a strict superset of the
+same information (it's derived from the same preview object, then adds
+signal-aware reasons/priority on top).
+
+**One merged sentence covering all five recommendation modes, not just
+"repeat."** The spec's literal merge example ("Next session: we'll repeat
+this movement at a steady pace. Your plan will adjust based on how it
+goes.") only covers `mode: "repeat"`. `formatNextSessionRecommendation`
+has five modes (`normal`, `repeat`, `reduce`, `simplify`, `recover`), each
+previously rendered through the same two-sentence pattern with
+mode-specific first clauses. Applied the same "we'll ___. Your plan will
+adjust based on how it goes." template to all five modes so no mode
+regresses back to a bare, undisclaimed statement — this keeps the single
+sentence's built-in tentativeness (per the spec: "the sentence itself now
+conveys tentativeness") consistent across every mode, not just the one
+the spec happened to quote.
+
+**Disclaimers removed entirely, not reduced to one.** The spec allows
+keeping one disclaimer instance "if a legal or product reason requires
+it." No such requirement exists in this codebase (no legal/compliance
+copy review process referenced anywhere in the plan or decisions logs),
+so both trailing disclaimer spans were dropped in favor of the merged
+sentence's own "Your plan will adjust based on how it goes." clause,
+matching the spec's suggested merge text exactly.
+
+**No new dedicated Playwright spec for this commit.** Every other Commit
+in this phase added a `*.spec.ts` because it verified new mobile-specific
+*layout* (fixed-band footprint, tap-target sizing, hierarchy/ordering)
+that only a real browser at a real viewport can catch. This commit is a
+pure text/copy consolidation inside an existing, unchanged `ui-card`
+container — no new layout, no new breakpoint-dependent styling, nothing a
+viewport-sensitive test would add coverage for beyond what's already
+locked. Reaching the post-session summary screen requires completing
+every exercise and set of a full program day through the real set-logging
+UI (9 exercises for the climber persona), which `sessionTrackingFlow.test.ts`
+already does end-to-end against the real `SessionClient` component (not a
+shallow render) — it was updated in this commit to assert the exact merged
+sentence (`"Next session: we'll repeat this movement at a steady pace."` +
+`"Your plan will adjust based on how it goes."`) renders under
+`data-testid="next-session-recommendation"`, and that the retired
+`adaptation-preview` testid no longer exists. `nextSessionRecommendation.test.ts`
+covers the pure-function output for all five modes. Reasoned rather than
+screenshot-verified that this reads fine at 390×844/360×740: the merged
+sentence renders inside the same `ui-card p-4` container the two old cards
+used, at the same `text-sm` size, and is a single sentence rather than the
+old sentence-plus-disclaimer pair, so it is strictly shorter and no more
+prone to wrapping than what it replaced (which already rendered correctly
+at both widths per Commit 5's screenshots of the same screen family). Did
+not spin up a throwaway Playwright script to screenshot the literal
+post-session screen for this commit, since reaching it requires driving a
+full 9-exercise day through the real set-logging UI end-to-end, which
+`sessionTrackingFlow.test.ts` already exercises against the real component
+tree — the marginal coverage a real-browser screenshot would add over that
+is the CSS wrapping question above, addressed by inspection instead.
