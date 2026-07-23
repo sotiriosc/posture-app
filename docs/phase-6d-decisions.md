@@ -246,3 +246,33 @@ baseline notice on all three gated metrics (consistency %, streak, trend)
 and the reframed zero-session copy on the ungated one, while an
 established user (12-week climber, backdated baseline) sees real numbers
 and zero baseline notices.
+
+## Commit 5 — Session-start screen redundancy
+
+**Which block was "the duplicate."** At session start (`activeIndex === 0`)
+the screen rendered two title/phase blocks: a generic, non-sticky "Guided
+session" kicker + day-title `<h1>` + phase-name line at the very top of the
+page, immediately followed by `SessionProgressHeader`'s full-state render
+(phase name / day pill / day-title `<h1>` again / exercise counter /
+progress bar) — the exact "PHASE 1: CONTROL & TECHNIQUE / Upper Push +
+Scapular Control / Exercise 1 of 9" pattern the spec quotes. Removed the
+generic top block, not `SessionProgressHeader`: the header is sticky (so it
+functions as *the* top header for the entire session, not just at start),
+and it's a strict superset of the removed block's information (day pill,
+exercise counter, and progress bar were never in the generic block to
+begin with) — the "Guided session" label itself carried zero dynamic
+information, so nothing that actually varies per-session was lost.
+
+**Test fallout.** Four unit tests (`sessionTimerEngineConnection`,
+`sessionTrackingFlow` ×3, `sessionLoggingCompleteness`,
+`sessionPainSwapFlow`) used the literal string "Guided session" purely as a
+"has `SessionClient` finished its initial render" signal, not to assert
+anything about the redundant block itself. Swapped each to wait on
+`getByTestId("session-header-full")` instead — same semantic ("session
+content has mounted"), now pointed at the header that's actually staying.
+
+Verified at 390×844 and 360×740 via Playwright screenshots and a new
+`sessionStartRedundancy.spec.ts`, which locks: the literal "Guided session"
+text is gone, `session-header-full` is visible and still carries the
+exercise counter, and the day title string appears exactly once on the
+page (not twice).

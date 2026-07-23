@@ -227,7 +227,7 @@ describe("session logging completeness", () => {
     render(React.createElement(SessionClient));
 
     await waitFor(() => {
-      expect(screen.getByText(/Guided session/i)).toBeTruthy();
+      expect(screen.getByTestId("session-header-full")).toBeTruthy();
     });
 
     for (let index = 0; index < routine.length; index += 1) {

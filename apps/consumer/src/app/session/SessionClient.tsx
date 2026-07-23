@@ -2666,14 +2666,6 @@ export default function SessionClient() {
           data-exercise-id={currentItem.exerciseId}
         />
 
-        <OnImage className="border-b border-white/10 py-3">
-          <p className="text-xs font-semibold uppercase text-slate-300">
-            Guided session
-          </p>
-          <h1 className="mt-2 text-2xl font-semibold text-white">{dayTitle}</h1>
-          <p className="mt-1 text-sm text-slate-300">{phaseLabel}</p>
-        </OnImage>
-
         {practiceOptions.length ? (
           <section
             className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5"
