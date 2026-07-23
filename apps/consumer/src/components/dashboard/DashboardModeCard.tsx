@@ -37,10 +37,13 @@ export default function DashboardModeCard({
         <div>
           {/* Phase 6d, Commit 3 — a small inline lock icon reads as
               "aspirational, not broken"; the old full-line uppercase
-              "LOCKED" badge sat louder than the title it was labeling. */}
-          <h3 className={`flex items-center gap-2 text-lg font-semibold ${locked ? "text-slate-400" : "text-white"}`}>
+              "LOCKED" badge sat louder than the title it was labeling.
+              dashboard-grid — on phone the lock floats to the tile's
+              top-right (ml-auto) and the title stays undimmed so only the
+              body copy softens; sm: restores the original inline treatment. */}
+          <h3 className={`flex items-center gap-2 text-base font-semibold sm:text-lg ${locked ? "text-white sm:text-slate-400" : "text-white"}`}>
             {icon ? (
-              <span aria-hidden="true" className="text-xl leading-none">
+              <span aria-hidden="true" className="text-lg leading-none sm:text-xl">
                 {icon}
               </span>
             ) : null}
@@ -49,13 +52,13 @@ export default function DashboardModeCard({
               <span
                 aria-label="Locked"
                 title="Locked"
-                className="text-sm leading-none text-slate-500"
+                className="ml-auto text-sm leading-none text-slate-500 sm:ml-0"
               >
                 {"\u{1F512}"}
               </span>
             ) : null}
           </h3>
-          <p className={`mt-2 line-clamp-2 text-sm leading-5 ${locked ? "text-slate-500" : "text-slate-300"}`}>
+          <p className={`mt-2 line-clamp-1 text-sm leading-5 sm:line-clamp-2 ${locked ? "text-slate-500" : "text-slate-300"}`}>
             {locked ? lockReason ?? summary : summary}
           </p>
         </div>
