@@ -5,7 +5,7 @@ export default defineConfig({
   root: __dirname,
   test: {
     environment: "node",
-    include: ["tests/unit/**/*.test.ts"],
+    include: ["tests/unit/**/*.test.ts", "tests/unit/**/*.test.tsx"],
   },
   resolve: {
     alias: [

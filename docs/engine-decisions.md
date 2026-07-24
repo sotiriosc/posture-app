@@ -710,6 +710,26 @@ exist (like the macro calculator) should be accessible from the app without
 arbitrary gating — but positioned as reference content, not tracked
 functionality.
 
+### ED-6g.1 — Commit 2: "shared" `<ClarifyTerm>` means identical duplicated
+implementation, not a new shared UI package
+
+**Decision:** bloom-plan asks for "a shared `<ClarifyTerm>` component used
+by both consumer and gyms apps." This monorepo has exactly one shared
+package (`packages/engine`) and no shared UI package — every prior
+cross-app UI component in Phase 6f (`CoachNoteBanner`, the offline badge's
+underlying pattern, `DailyInsightCard`'s refactor) was implemented as an
+identical, independently-maintained copy in each app's own
+`components/ui`/`components/dashboard` folder, matching this repo's
+established convention of app-shell independence with a shared engine
+core. Introducing a new `packages/ui` workspace package is a real
+architectural decision (build config, exports, Next.js transpilePackages
+wiring) out of scope for a two-commit clarity pass. `ClarifyTerm.tsx` is
+therefore byte-identical in `apps/consumer/src/components/ui/` and
+`apps/gyms/src/components/ui/`, exactly mirroring how every other
+consumer/gyms UI duplication in this codebase is handled. Revisit if a
+third or fourth shared component makes the duplication cost outweigh a new
+package's setup cost.
+
 ### SR-6g-nutrition-boundary — In-app macro calculator link stays a plain
 pointer to the existing public page
 
