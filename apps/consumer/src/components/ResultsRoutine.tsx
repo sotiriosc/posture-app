@@ -63,6 +63,7 @@ import {
 } from "@/lib/phaseControls";
 import { getDailyInsight } from "@/lib/insightGenerator";
 import DashboardHero from "@/components/dashboard/DashboardHero";
+import CoachNoteBanner from "@/components/dashboard/CoachNoteBanner";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
@@ -3250,6 +3251,7 @@ export default function ResultsRoutine() {
       ) : null}
 
       <div className="order-1">
+        <CoachNoteBanner note={coachAction} />
         <DashboardHero
           greeting={heroGreeting}
           phaseName={phaseName}

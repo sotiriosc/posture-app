@@ -1,5 +1,6 @@
 import { closeDb } from "./logStore";
 import { SUBSCRIPTION_STORAGE_KEY } from "./subscriptionStore";
+import { COACH_NOTE_STORAGE_KEY } from "./coachNoteStore";
 
 const LOCAL_KEYS = [
   "app_state_v1",
@@ -10,6 +11,7 @@ const LOCAL_KEYS = [
   "timer_prefs",
   "session_feedback",
   SUBSCRIPTION_STORAGE_KEY,
+  COACH_NOTE_STORAGE_KEY,
 ];
 
 const PHOTO_DB_NAME = "bodycoach-photos";

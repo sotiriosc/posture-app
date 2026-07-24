@@ -427,3 +427,25 @@ device can't reach a NEW server-rendered route at all, so there is no
 only matters for a page already loaded before the connection dropped, which
 is exactly the client-side surface this commit fixes.
 
+### ED-6f.5 — Daily coach note (Commit 4): reused the existing computed
+"Next best action" text instead of a new generator, and locked the
+never-nag decision per calendar day rather than per note-content
+
+**Decision:** `coachAction` (one of the three "coach notes" —
+Biggest win / Biggest risk / Next best action) was already being computed,
+unconditionally, from real state on every dashboard render — it just never
+reached the user because it was bundled into the Insights panel behind the
+full-week unlock. So Commit 4 doesn't add a new note generator; it reuses
+`coachAction` exactly as already computed and only adds the "never repeat
+identically two days in a row" rule (`packages/engine/src/coachNoteStore.ts`).
+That rule locks its decision (`shown: true/false`) into `localStorage` the
+first time it's evaluated on a given calendar day, and replays that exact
+decision for any further evaluation that same day — deliberately not
+recomputing "is this identical to the last thing I stored?" on every call,
+because two evaluations in the same render pass (e.g. React Strict Mode's
+dev-only double-invoke of effects) would otherwise see the just-written
+"today" record on the second call and incorrectly conclude "already shown
+today" and flip a freshly-suppressed note back to visible. Locking per
+calendar day, not per note text, is what keeps the decision stable
+regardless of how many times it's evaluated.
+
