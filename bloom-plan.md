@@ -1340,8 +1340,311 @@ Full gate green + Playwright green including new isolation tests.
 
 Merge commit.
 
+Phase 6f Amendment — Additions to Existing Spec
 
+Two additional commits added to the Phase 6f branch. These fold in alongside the original 7 commits.
 
+Amendment to Commit 3 — Subscription persistence (corrected model)
+
+Original spec used "expiry date" language which is wrong for active subscriptions. Corrected model:
+
+Persist locally on any subscription status change from Stripe:
+
+subscription: {
+  status: "active" | "canceled_at_period_end" | "canceled"
+  currentPeriodEnd: ISO timestamp  // only meaningful during canceled_at_period_end
+}
+
+Access rules:
+
+status === "active" → Pro access, regardless of connectivity.
+status === "canceled_at_period_end" AND now < currentPeriodEnd → Pro access.
+status === "canceled" OR (canceled_at_period_end AND now >= currentPeriodEnd) → free access, graceful downgrade with reconnect option.
+
+On explicit logout OR "Erase all local data," clear the subscription object. On reconnection to Stripe (webhook or manual refresh), update the persisted status.
+
+Commit 8 — Restore Interface visibility section in Settings
+
+Observed: Sotirios's Settings page (praxisapp.ca/account/settings) shows Export / Reset / Erase sections but NO Interface section. Ctrl+F for "interface" returns 0 matches.
+
+Phase 6a shipped a per-section visibility feature with a <VisibilityGate> component and useSectionVisibility hook. The settings page mount got lost in a subsequent phase.
+
+Fix:
+
+Locate the visibility toggles component from Phase 6a (should be under apps/consumer/src/components/settings/ or similar).
+Add an "Interface" section to the Settings page that mounts this component.
+Grouped list of all toggleable sections per screen (Results / Session / Day view). Each shows current visibility state and one-line description of what it contains.
+"Reset to defaults" button that returns everything to the ratified Phase 6.3 defaults (visible-by-default: headline metric, current progression, retest queue, posture observations, retired focus, level indicator; hidden-by-default: phase history timeline, provenance footer, warmup four-block breakdown, corrective-source annotations).
+Verify the same section exists in gyms app settings for operator use, or document why it doesn't (some sections may not apply to operator view).
+
+Test: tests/e2e/settingsInterfaceSectionVisible.spec.ts — asserts the Interface section renders on the Settings page and toggles persist across page reload.
+
+Commit 9 — Public macro calculator marketing page (SEO)
+
+Public-facing tool at /tools/macro-calculator. NOT integrated into the app. Purpose: organic search traffic acquisition via long-tail keywords.
+
+Page structure:
+
+Simple calculator: inputs = weight, height, age, sex, activity level, goal (maintain / lose / build). Outputs = daily calories + macro split (protein / carb / fat grams).
+Ratified macro ratio: moderate fat / high carb / high protein.
+Below the calculator, Sotirios's coaching notes as content sections:
+"Why moderate fat, high carb, high protein for lifters"
+"Hydration, salt, and muscle performance"
+"Creatine: what it does, how to use it"
+Content in Sotirios's coach voice, roughly 800-1200 words total for SEO weight without being bloated.
+
+SEO essentials:
+
+Meta title, description tuned for the target keywords ("macro calculator for lifters," "creatine and hydration for muscle").
+Structured data / JSON-LD: SoftwareApplication for the calculator, Article for the content sections.
+Sitemap entry.
+Fast load — no heavy dependencies. Calculator is client-side math, no API calls.
+Print-friendly styling (people bookmark and share macro calculators).
+
+Conversion path (soft):
+
+Bottom of page, a small CTA card: "Praxis builds a movement-and-strength plan around your body's actual patterns. Try the assessment →" Links to /assessment. Not a popup. Not a lead magnet form. Just a natural next step for someone who's already interested in getting stronger.
+
+Analytics:
+
+Ensure Plausible (from Phase 6.8) captures this page separately so conversion from /tools/macro-calculator → /assessment is measurable over time.
+
+Content rule (SR-6f-nutrition-amendment):
+
+This page is a marketing tool, not an app feature. It lives at a public URL, is not linked from the app's authenticated experience, and does not create user-tracked nutrition data. Sotirios's ratified nutrition guidance lives here in read-only form. If Motion Care clients later ask for personalized macro tracking, that's a separate discussion — this page does not become a wedge for a full nutrition tracker.
+
+Test: basic render test, calculator math correctness test, meta tags present, CTA link to /assessment works.
+
+Updated acceptance for Phase 6f (add to existing acceptance list)
+Subscription persistence uses status model, not expiry-date model.
+Settings page has restored Interface section with all toggles.
+/tools/macro-calculator public page live with calculator + coaching content + assessment CTA.
+All originally-specced items still complete.
+
+Merge commit.
+
+Phase 6f — Post-6e Follow-Up
+
+Branch: phase-6f-followup from origin/main. Multi-commit. Extends 6e's fixes to the gyms app, adds offline resilience, surfaces coach notes daily, and cleans remaining language edges.
+
+Guiding principle (log as SR-6f)
+
+Phase 6e closed ship-critical bugs on the consumer app. Phase 6f extends that safety to the gyms app, adds resilience for the two most common real-world failure modes (bad internet, expired subscription), and pulls the coach-note wisdom out of the deep-analysis panels into a place users see every day. No new features that would change the product's identity.
+
+Commit 1 — Gyms app state isolation (SHIP-CRITICAL for B2B pilots)
+
+Phase 6e's per-account state isolation landed in apps/consumer/src only. The gyms app has the same underlying issue and MORE risk because operators will demonstrably log in and out on shared devices during pilots.
+
+Apply the same fix pattern to apps/gyms/src:
+
+Port clearAllLocalState() utility and userId-namespaced IndexedDB writes to the gyms codebase.
+Login/logout cleanup identical to consumer.
+Startup stale-device check identical to consumer.
+Photos in gyms context: same Option A refined ruling — namespaced, never wiped except by explicit "Erase all local data."
+
+Tests required:
+
+apps/gyms/tests/e2e/perAccountStateIsolation.spec.ts — mirrors the consumer test.
+apps/gyms/tests/e2e/staleDeviceCleanup.spec.ts — mirrors consumer.
+Commit 2 — Offline mode for current workout (consumer)
+
+Real problem: Sotirios trains in a basement with spotty internet. If the internet drops mid-session, the app should not fail. Session data completed offline syncs when connection returns.
+
+Scope (deliberately narrow):
+
+Cache CURRENT program's active day + next scheduled day locally. Replace-not-accumulate. When user's plan updates, old cached day is overwritten.
+Session logging queues offline: reps, sets, RPE, check-in data all written to a local queue with a pendingSync: true flag.
+On reconnection, queue drains to server in order. On successful sync, flag removed. Retries on failure with exponential backoff.
+UI indicator: subtle "offline" badge visible when the app detects no connection. Nothing alarming, just informational.
+If offline at session start with no cached data (edge case), show a clear "You're offline. Connect once to load today's session, then you can train without connection." message. Don't fake data.
+
+Out of scope:
+
+Full offline mode (historical data, all past sessions). Only current + next session.
+Assessment capture offline (photos already work offline; that's fine).
+Program regeneration offline. If the user completes a cycle offline, regeneration happens on reconnect.
+
+Tests required:
+
+tests/e2e/offlineSessionCompletion.spec.ts — go offline, complete a session, come back online, verify sync.
+tests/e2e/offlineNoStaleData.spec.ts — verify cache invalidation on plan update.
+Commit 3 — Subscription end-date persistence (consumer + gyms)
+
+Real problem: if a user's internet drops or Stripe API is down, a paid user should not lose access to a subscription they've already paid for.
+
+Fix pattern:
+
+On successful subscription verification (Stripe webhook confirms payment), persist subscriptionExpiresAt: ISO timestamp locally.
+App checks local expiry first. If now < subscriptionExpiresAt, user has access regardless of network state.
+After expiry, app requires reconnection to Stripe to renew the local timestamp. If reconnection fails, user goes to free tier gracefully with a "reconnect to restore Pro access" message.
+On explicit logout OR "Erase all local data," clear the timestamp.
+
+Same fix in gyms app for operator subscriptions.
+
+Tests required:
+
+tests/e2e/subscriptionOfflineAccess.spec.ts — paid user offline, verify Pro access.
+tests/e2e/subscriptionExpiryGracefulDegrade.spec.ts — expired paid user, verify graceful downgrade.
+Commit 4 — Coach notes on dashboard (daily visibility)
+
+Current state: coach notes (Biggest win / Biggest risk / Next best action) only appear on Insights and Knowledge & Analysis panels which unlock after a full week. Users don't see them daily.
+
+Fix: surface ONE line — the "Next best action" note — on the main dashboard, above the phase card. Small text, coach-voice, updates as the user's week progresses.
+
+Copy pattern examples:
+
+"Next best action: Complete Day 1 with controlled tempo and clean reps."
+"Next best action: Take today off. Recovery is the work."
+"Next best action: Log today's session before Wednesday to stay on track."
+
+Rules:
+
+Free users see this daily too. Don't gate it. This is a taste of depth, not a Pro upsell.
+Never nag, never repeat identically two days in a row.
+If no coach note is available (fresh account, no data), show nothing — don't fake a message.
+Commit 5 — Language cleanups
+
+5.a — Duplicate tag rendering in "This week we're focused on..." block: Currently reads "balance and asymmetry control · breathing and ribcage control · squat pattern control, and your breathing And Ribcage Control." The last clause duplicates a tag already in the list, titlecased. Fix: deduplicate before rendering. Don't append a "and your X" clause if X is already in the preceding list.
+
+5.b — "Cycle" vocabulary: The engine's "cycle" concept (4-week recurring structure within a phase) leaks into user-facing copy. Users see "Cycle: 1" and don't know what it means. Two options:
+
+(a) Hide the cycle counter entirely from user-facing views. Engine still uses it internally.
+(b) Rename to "Week X of 4" everywhere it appears.
+
+Recommendation: (b) — users understand "week 2 of 4" instantly. Search for every user-facing string containing "cycle" and rename.
+
+5.c — Session-adjustment prompt copy (from Sotirios's session observation): When a user hasn't filled in any fields for an exercise and the engine prompts about it, the current copy assumes intent (asking "did you skip it?"). Rewrite in curious-not-judgmental tone:
+
+Old: "Did you skip this exercise?"
+New: "I noticed you didn't fill in fields for Machine Chest Press. Did you skip it, or want to log it now?"
+
+And add a self-adapting option:
+
+After the second time this prompt fires for a user, add a small "Turn off these prompts and adjust from Settings instead?" link. Sets a preference that suppresses the prompt going forward. User can re-enable in Settings.
+Commit 6 — Test suite scoping (hygiene)
+
+The full Playwright + engine test suite is now large enough that running it locally takes significant time. Improve without sacrificing coverage:
+
+Categorize tests into @critical (PR gate, must pass fast) and @full (nightly, comprehensive).
+PR gate runs: engine anchors, feedback contract, ladder criteria, invariants, first-run smoke, per-account isolation, and the specific test files touching modified code paths.
+Nightly runs the full suite unchanged.
+Update CI config accordingly.
+
+Target PR gate time: under 3 minutes. Current: significantly longer.
+
+Do NOT delete or skip any tests. This is a categorization pass, not a reduction pass.
+
+Commit 7 — Standing rules to log
+
+Add these to docs/engine-decisions.md and reference in bloom-plan's working agreement:
+
+SR-6f-brand: Motion Care is Sotirios's practice. Praxis is the product. The app must NEVER mix names in user-facing copy. Any future feature that integrates Motion Care as a business (e.g., "book a trainer") must be specced in its own phase with explicit brand-boundary rules; no automatic name-bleed into Praxis's core coaching voice.
+
+SR-6f-nutrition: Praxis is a movement and posture app. Nutrition features (if added) live in read-only content pages, not as calculators or trackers. Praxis does not compete with MyFitnessPal or Macrofactor. If Sotirios's Motion Care clients ask for nutrition tools, revisit — but real demand justifies real complexity; speculation does not.
+
+SR-6f-catalog: When two consecutive main-slot exercises in a generated day are the same movement pattern with identical coach-note text, flag as a bug in the catalog audit log. See Sotirios's screenshot of Machine Chest Press + Dumbbell Bench Press on a Beginner Build Muscle in Gym persona. Chest Fly should have been selected as the second main. Investigation in Phase 7 or a dedicated catalog pass.
+
+What is NOT in this pass
+No engine changes beyond the language dedup and cycle rename
+No new features (offline mode is resilience, not new functionality)
+No Phase 7 pattern-recognition work
+No Phase 8 progress-made-visible work
+No macro calculator (deferred per SR-6f-nutrition)
+No trainer-booking or Motion Care integration (deferred per SR-6f-brand)
+Acceptance
+Gyms app has state isolation matching consumer.
+Offline session completion works, syncs on reconnect.
+Paid users have offline access up to their subscription expiry.
+"Next best action" coach note visible on daily dashboard.
+Duplicate tags no longer appear in the focus summary.
+"Cycle" replaced with "Week X of 4" throughout user-facing copy.
+Session-skip prompt copy rewritten; self-adapting suppression option added.
+PR gate runs in under 3 minutes.
+All standing rules logged.
+Full gate green + Playwright green.
+
+Phase 6f Amendment — Additions to Existing Spec
+
+Two additional commits added to the Phase 6f branch. These fold in alongside the original 7 commits.
+
+Amendment to Commit 3 — Subscription persistence (corrected model)
+
+Original spec used "expiry date" language which is wrong for active subscriptions. Corrected model:
+
+Persist locally on any subscription status change from Stripe:
+
+subscription: {
+  status: "active" | "canceled_at_period_end" | "canceled"
+  currentPeriodEnd: ISO timestamp  // only meaningful during canceled_at_period_end
+}
+
+Access rules:
+
+status === "active" → Pro access, regardless of connectivity.
+status === "canceled_at_period_end" AND now < currentPeriodEnd → Pro access.
+status === "canceled" OR (canceled_at_period_end AND now >= currentPeriodEnd) → free access, graceful downgrade with reconnect option.
+
+On explicit logout OR "Erase all local data," clear the subscription object. On reconnection to Stripe (webhook or manual refresh), update the persisted status.
+
+Commit 8 — Restore Interface visibility section in Settings
+
+Observed: Sotirios's Settings page (praxisapp.ca/account/settings) shows Export / Reset / Erase sections but NO Interface section. Ctrl+F for "interface" returns 0 matches.
+
+Phase 6a shipped a per-section visibility feature with a <VisibilityGate> component and useSectionVisibility hook. The settings page mount got lost in a subsequent phase.
+
+Fix:
+
+Locate the visibility toggles component from Phase 6a (should be under apps/consumer/src/components/settings/ or similar).
+Add an "Interface" section to the Settings page that mounts this component.
+Grouped list of all toggleable sections per screen (Results / Session / Day view). Each shows current visibility state and one-line description of what it contains.
+"Reset to defaults" button that returns everything to the ratified Phase 6.3 defaults (visible-by-default: headline metric, current progression, retest queue, posture observations, retired focus, level indicator; hidden-by-default: phase history timeline, provenance footer, warmup four-block breakdown, corrective-source annotations).
+Verify the same section exists in gyms app settings for operator use, or document why it doesn't (some sections may not apply to operator view).
+
+Test: tests/e2e/settingsInterfaceSectionVisible.spec.ts — asserts the Interface section renders on the Settings page and toggles persist across page reload.
+
+Commit 9 — Public macro calculator marketing page (SEO)
+
+Public-facing tool at /tools/macro-calculator. NOT integrated into the app. Purpose: organic search traffic acquisition via long-tail keywords.
+
+Page structure:
+
+Simple calculator: inputs = weight, height, age, sex, activity level, goal (maintain / lose / build). Outputs = daily calories + macro split (protein / carb / fat grams).
+Ratified macro ratio: moderate fat / high carb / high protein.
+Below the calculator, Sotirios's coaching notes as content sections:
+"Why moderate fat, high carb, high protein for lifters"
+"Hydration, salt, and muscle performance"
+"Creatine: what it does, how to use it"
+Content in Sotirios's coach voice, roughly 800-1200 words total for SEO weight without being bloated.
+
+SEO essentials:
+
+Meta title, description tuned for the target keywords ("macro calculator for lifters," "creatine and hydration for muscle").
+Structured data / JSON-LD: SoftwareApplication for the calculator, Article for the content sections.
+Sitemap entry.
+Fast load — no heavy dependencies. Calculator is client-side math, no API calls.
+Print-friendly styling (people bookmark and share macro calculators).
+
+Conversion path (soft):
+
+Bottom of page, a small CTA card: "Praxis builds a movement-and-strength plan around your body's actual patterns. Try the assessment →" Links to /assessment. Not a popup. Not a lead magnet form. Just a natural next step for someone who's already interested in getting stronger.
+
+Analytics:
+
+Ensure Plausible (from Phase 6.8) captures this page separately so conversion from /tools/macro-calculator → /assessment is measurable over time.
+
+Content rule (SR-6f-nutrition-amendment):
+
+This page is a marketing tool, not an app feature. It lives at a public URL, is not linked from the app's authenticated experience, and does not create user-tracked nutrition data. Sotirios's ratified nutrition guidance lives here in read-only form. If Motion Care clients later ask for personalized macro tracking, that's a separate discussion — this page does not become a wedge for a full nutrition tracker.
+
+Test: basic render test, calculator math correctness test, meta tags present, CTA link to /assessment works.
+
+Updated acceptance for Phase 6f (add to existing acceptance list)
+Subscription persistence uses status model, not expiry-date model.
+Settings page has restored Interface section with all toggles.
+/tools/macro-calculator public page live with calculator + coaching content + assessment CTA.
+All originally-specced items still complete.
+
+Merge commit.
 
 ## Sequencing & effort (with Claude Code)
 
@@ -1384,6 +1687,19 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   or to any external memory/knowledge system. Any PR introducing such a connection
   is out of contract regardless of how useful it looks. This app gets locked in
   as its own complete thing.
+- **Brand boundary (SR-6f-brand, 2026-07-24):** Motion Care is Sotirios's practice;
+  Praxis is the product. Never mix the two names in user-facing copy. Any future
+  Motion Care business integration (e.g. "book a trainer") needs its own phase
+  with explicit brand-boundary rules.
+- **Nutrition scope (SR-6f-nutrition, 2026-07-24):** Nutrition stays read-only
+  content, never a tracked in-app feature, unless a dedicated phase revisits this
+  rule on real client demand. The public `/tools/macro-calculator` marketing page
+  (Phase 6f Commit 9) is a deliberate, narrow exception — see
+  SR-6f-nutrition-amendment in `docs/engine-decisions.md`.
+- **Catalog pattern-repeat flag (SR-6f-catalog, 2026-07-24):** two consecutive
+  main-slot exercises in one generated day sharing a movement pattern and
+  identical coach-note text is a catalog bug to flag, not ship. See
+  `docs/engine-decisions.md` § SR-6f-catalog.
 
 ---
 

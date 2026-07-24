@@ -8,9 +8,11 @@ on:
 
 jobs:
   # ─── PR gate ──────────────────────────────────────────────────────────────
-  # Runs on every pull request. Fast enough to be a blocking gate (~5 min).
+  # Runs on every pull request. Fast enough to be a blocking gate (target:
+  # under 3 minutes — see Phase 6f Commit 6 / ED-6f.8 in
+  # docs/engine-decisions.md for how this set was chosen).
   pr-gate:
-    name: PR gate (lint + anchors + both builds)
+    name: PR gate (lint + critical tests + smoke e2e + both builds)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -32,19 +34,23 @@ jobs:
           apps/consumer/src
           apps/gyms/src
 
-      # ── Engine anchor gate + catalog invariants ───────────────────────────
-      - name: Engine anchor gate
-        run: >-
-          npx vitest --run
-          --config packages/engine/vitest.config.ts
-          packages/engine/tests/unit/programGoldenAnchors.test.ts
-          packages/engine/tests/unit/programIdentityAnchors.test.ts
-          packages/engine/tests/unit/questionnaireGoldenFlow.test.ts
-          packages/engine/tests/unit/programDeterminism.test.ts
-          packages/engine/tests/unit/competitiveBenchmark.test.ts
-          packages/engine/tests/unit/catalogLadderInvariants.test.ts
-          packages/engine/tests/unit/stripeWebhookLogic.test.ts
-          packages/engine/tests/unit/mergeReadinessAnchors.test.ts
+      # ── Critical (@critical) engine suite: golden/identity/determinism
+      # anchors, catalog + ladder invariants, feedback contract, subscription
+      # and offline-sync logic touched by recent phases. See
+      # `test:critical` in package.json for the exact file list.
+      - name: Critical engine tests
+        run: npm run test:critical
+
+      # ── Playwright smoke: first-run happy path + per-account isolation,
+      # for both apps. Blocking per bloom-plan Phase 6f Commit 6.
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Playwright smoke (consumer)
+        run: npm run test:e2e:smoke:consumer
+
+      - name: Playwright smoke (gyms)
+        run: npm run test:e2e:smoke:gyms
 
       # ── Both apps build ───────────────────────────────────────────────────
       - name: Build consumer app
@@ -54,7 +60,8 @@ jobs:
         run: npm run build --workspace=apps/gyms
 
   # ─── Nightly full suite ───────────────────────────────────────────────────
-  # Runs on schedule only. Heavier — allows the full 468-test suite to run.
+  # Runs on schedule only. Heavier — allows the full (@full) suite to run,
+  # unchanged in scope from before Phase 6f's categorization pass.
   full-suite:
     name: Full engine suite (nightly)
     if: github.event_name == 'schedule'
@@ -71,8 +78,12 @@ jobs:
         run: npm ci
 
       - name: Run full engine suite
-        run: npx vitest --run --config packages/engine/vitest.config.ts
+        run: npm run test:full
 
       # Gyms-only tests run nightly too.
       - name: Run gyms suite
-        run: npx vitest --run --config apps/gyms/vitest.config.ts
+        run: npm run test:full:gyms
+
+      # Consumer-only tests (e.g. macro calculator math, Phase 6f Commit 9).
+      - name: Run consumer suite
+        run: npm run test:full:consumer

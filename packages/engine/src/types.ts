@@ -285,6 +285,19 @@ export type LogPrefs = {
    * ratified default.  Never a global mode — this is per-section user agency.
    */
   sectionVisibility?: Record<string, boolean>;
+  /**
+   * Phase 6f, Commit 5.c — session-adjustment ("incomplete last session")
+   * prompt self-adaptation. `incompleteContractPromptFireCount` counts how
+   * many sessions have shown this specific prompt (reason === "incomplete"
+   * in a `FeedbackContractTrigger`); once it reaches 2, the prompt itself
+   * offers a "turn off and adjust from Settings instead" link. Choosing that
+   * sets `suppressIncompleteContractPrompts`, which future sessions check
+   * before ever computing/showing the prompt again. Re-enableable from
+   * Settings. Scoped to ONLY the "incomplete" reason — pain/failed-difficulty
+   * triggers are safety-relevant and are never suppressed by this preference.
+   */
+  incompleteContractPromptFireCount?: number;
+  suppressIncompleteContractPrompts?: boolean;
 };
 
 export type ExercisePrescription = {

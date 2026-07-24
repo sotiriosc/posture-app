@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
 import AuthControls from "@/components/AuthControls";
+import { syncLocalOwner } from "@/lib/accountIsolation";
 import {
   BUYER_DEMO_COOKIE,
   isBuyerDemoCookieValue,
@@ -14,6 +15,15 @@ type AppMenuClientProps = {
   isAdmin: boolean;
   authEnabled: boolean;
   authenticated: boolean;
+  /**
+   * Server session's user id (or null for guest/signed-out use). Mounted
+   * globally in the root layout, so this is the "startup stale-device
+   * check" (Phase 6f, Commit 1 / SR-6f, porting Phase 6e's consumer fix):
+   * on every app load, and whenever the signed-in account changes,
+   * reconcile this device's remembered owner against the server's truth
+   * and wipe non-photo local state on mismatch.
+   */
+  userId: string | null;
 };
 
 type MenuLink = {
@@ -25,9 +35,15 @@ export default function AppMenuClient({
   isAdmin,
   authEnabled,
   authenticated,
+  userId,
 }: AppMenuClientProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    void syncLocalOwner(userId);
+  }, [userId]);
+
   const buyerDemoMode = useMemo(() => {
     if (typeof document === "undefined") return false;
     const demoCookie = document.cookie

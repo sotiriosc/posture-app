@@ -333,3 +333,369 @@ owner doesn't match the server session. The photo IndexedDB schema bumped
 to v2; the one-time migration drops pre-6e unnamespaced photo records
 (there is no safe way to attribute them to one account).
 
+## Phase 6f — Post-6e Follow-Up (2026-07-24)
+
+### SR-6f-brand — Motion Care / Praxis brand boundary
+
+**Standing rule:** Motion Care is Sotirios's practice. Praxis is the
+product. The app must NEVER mix the two names in user-facing copy. Any
+future feature that integrates Motion Care as a business (e.g., "book a
+trainer") must be specced in its own phase with explicit brand-boundary
+rules; there is no automatic name-bleed into Praxis's core coaching
+voice. (This corrects earlier drafting in this file and in `bloom-plan.md`
+that referred to "Motion Care clients" where "Praxis clients" was meant —
+see Phase 6e's edit to `bloom-plan.md`.)
+
+### SR-6f-nutrition — Nutrition stays read-only content, not a tracked feature
+
+**Standing rule:** Praxis is a movement and posture app. Nutrition
+features live in read-only content pages, not as calculators or trackers
+integrated into the authenticated app experience. Praxis does not compete
+with MyFitnessPal or Macrofactor. If Sotirios's Motion Care clients ask
+for nutrition tools, revisit — but real demand justifies real complexity;
+speculation does not.
+
+**Amendment (SR-6f-nutrition-amendment, Phase 6f Commit 9):** the public
+`/tools/macro-calculator` marketing page is consistent with this rule
+because it is explicitly NOT an app feature — it's an unauthenticated,
+public marketing/SEO page, not linked from the authenticated experience,
+and it creates no user-tracked nutrition data. It exists to acquire
+organic search traffic and funnel into `/assessment`, not to start a
+nutrition-tracking product surface. This page must never become a wedge
+for a full nutrition tracker without a separate, explicit phase revisiting
+SR-6f-nutrition.
+
+### SR-6f-catalog — Consecutive same-pattern mains with identical coach notes
+
+**Standing rule:** When two consecutive main-slot exercises in a
+generated day are the same movement pattern with identical coach-note
+text, flag it as a bug in the catalog audit log. Observed case: Machine
+Chest Press + Dumbbell Bench Press both selected as mains on a Beginner /
+Build Muscle / Gym persona's day, when Chest Fly should have been the
+second main (same pattern repeated with no variation the coach notes
+themselves acknowledge). Investigation deferred to Phase 7 or a dedicated
+catalog pass — no engine change in Phase 6f.
+
+### ED-6f.2 — Offline mode (Commit 2): reused the existing full-program
+cache instead of a narrower "current + next day" cache
+
+**Decision:** Commit 2's spec calls for caching "CURRENT program's active
+day + next scheduled day locally... replace-not-accumulate." Investigation
+found training already stores the ENTIRE active program (every day, not
+just two) in IndexedDB, keyed by program id, with `appState.activeProgramId`
+as the single pointer that moves when a plan is regenerated — this already
+satisfies "replace-not-accumulate" at the level that actually matters (what
+resolves as "today's session"), and is a strict superset of a 2-day cache.
+Building a separate, narrower cache alongside it would add a second source
+of truth for the same data with no user-facing benefit, and would actually
+regress days 3–7 of the current week (no longer independently navigable
+offline). No new caching layer was added; Commit 2's actual gap — writes
+made offline never syncing back once the connection returned — was in the
+*sync* path, not the *cache* path (see ED-6f.3).
+
+### ED-6f.3 — Offline mode (Commit 2): sync retry queue wraps
+`pushTrainingPatch`, not each call site
+
+**Decision:** Every local save (`logStore.ts`'s `saveTrainingRecordIfChanged`
+and `savePrefs`) already fires a best-effort `pushTrainingPatch(...)` after
+every successful local write — local writes (and therefore training itself)
+already worked fully offline; only the fire-and-forget server mirror had no
+retry. Rather than touching every call site, the retry queue
+(`localStorage`-backed, ordered, exponential backoff, capped at 50 entries)
+was added inside `pushTrainingPatch` itself in `trainingSyncClient.ts`: a
+patch that fails for a connectivity/server reason (anything except a 401,
+which will never succeed regardless of connectivity) is queued and retried
+on the `online` event and on a backoff timer, in order, until it lands.
+Every existing caller keeps its exact same call signature and behavior when
+online; nothing else changed.
+
+### ED-6f.4 — Subscription status persistence (Commit 3, amended): client-side
+fallback only, not a middleware bypass
+
+**Decision:** The status-model local cache (`subscriptionStore.ts`,
+`useUserPlan.ts` in both apps) only changes what happens when the CLIENT's
+own `/api/auth/session` + `/api/billing/status` fetches fail — it lets
+`isPro`/`isFreePlan` (the Pro chip, the upgrade prompt, client-side day-lock
+rendering) fall back to the last-confirmed local status instead of
+collapsing to "signed out." It deliberately does NOT touch
+`middleware.ts`'s JWT-cookie paywall redirect, which runs server-side on
+every request. Investigation (mirroring Phase 6f Commit 2's finding) showed
+this is the only coherent scope: the service worker's navigation fallback
+(`sw.js`, network-first → generic `/offline` page) means a genuinely offline
+device can't reach a NEW server-rendered route at all, so there is no
+"unlock a paywalled day while offline" case to build for — offline access
+only matters for a page already loaded before the connection dropped, which
+is exactly the client-side surface this commit fixes.
+
+### ED-6f.5 — Daily coach note (Commit 4): reused the existing computed
+"Next best action" text instead of a new generator, and locked the
+never-nag decision per calendar day rather than per note-content
+
+**Decision:** `coachAction` (one of the three "coach notes" —
+Biggest win / Biggest risk / Next best action) was already being computed,
+unconditionally, from real state on every dashboard render — it just never
+reached the user because it was bundled into the Insights panel behind the
+full-week unlock. So Commit 4 doesn't add a new note generator; it reuses
+`coachAction` exactly as already computed and only adds the "never repeat
+identically two days in a row" rule (`packages/engine/src/coachNoteStore.ts`).
+That rule locks its decision (`shown: true/false`) into `localStorage` the
+first time it's evaluated on a given calendar day, and replays that exact
+decision for any further evaluation that same day — deliberately not
+recomputing "is this identical to the last thing I stored?" on every call,
+because two evaluations in the same render pass (e.g. React Strict Mode's
+dev-only double-invoke of effects) would otherwise see the just-written
+"today" record on the second call and incorrectly conclude "already shown
+today" and flip a freshly-suppressed note back to visible. Locking per
+calendar day, not per note text, is what keeps the decision stable
+regardless of how many times it's evaluated.
+
+### ED-6f.6 — Language cleanups (Commit 5): dedupe by tag not by whole string,
+"cycle" renamed everywhere it's user-facing (not in dev-only diagnostics),
+and prompt suppression scoped to one specific, non-safety reason
+
+**Decision (5.a, tag dedupe):** The "This week we're focused on..." bug
+wasn't two components disagreeing — it was one `priorities` array mixing two
+shapes: an already-"•"-joined multi-tag string from the engine
+(`coachingPrompts[0]`) and a separate single bare tag
+(`focusAreas[1]`) that can duplicate one of the tags inside that joined
+string, just title-cased. Comparing whole strings case-insensitively (the
+original dedupe) can never catch a duplicate tag buried inside a joined
+list. Fixed by splitting every entry on "•" into individual tags before
+deduping (`packages/engine/src/focusSentence.ts`, extracted out of the two
+previously-duplicated `DailyInsightCard.tsx` copies so the fix and its tests
+have one home).
+
+**Decision (5.b, "cycle" rename):** Audited every user-facing string
+containing "cycle" (hero chip, `phaseObjective.phaseFocus`, and three
+progression-decision messages surfaced via `setAdvanceMessage`) and renamed
+all of them to plain "week" language — `getCycleLadder`'s `cycleIndex` is,
+in this engine, literally a running per-week counter whose `(n-1) % 4`
+determines the Base/Build/Push/Deload stage, so "Cycle: N" was never a
+distinct higher-level concept from "week" to begin with; "Week X of 4" says
+exactly what the number means. Left the `SHOW_TECHNICAL_PROGRAM_REFERENCE`
+dev-only diagnostic dumps (`process.env.NODE_ENV !== "production"`) saying
+"Cycle Index: N" untouched — those never render in production and are
+genuinely engine-internal instrumentation, not user-facing copy.
+
+**Decision (5.c, prompt tone + suppression):** No code contained the literal
+string "Did you skip this exercise?" — the closest real analog is the
+pre-session feedback contract's `reason: "incomplete"` prompt
+(`SessionClient.tsx`), which fires when the most recent log for one of
+today's exercises has `setsCompleted < setsPlanned`. Reworded only that one
+reason's copy to curious-not-judgmental phrasing; the other three reasons
+(severe pain, consecutive moderate pain, failed difficulty) are safety- or
+effort-relevant, not "maybe you just forgot to log it," and keep their
+direct phrasing. The self-adapting suppression
+(`incompleteContractPromptFireCount` / `suppressIncompleteContractPrompts`
+in `LogPrefs`) is scoped to that one reason only and is never applied to
+pain or failed-difficulty triggers — a user muting "did you forget to log
+this" should never be able to accidentally mute a pain-escalation prompt by
+the same click. Extracted the prompt-copy and suppression-filtering logic
+into pure functions in `packages/engine/src/program/feedbackContract.ts`
+(`buildContractPrompt`, `shouldOfferIncompletePromptSuppression`,
+`filterSuppressedContractTriggers`) so this logic is unit-testable without
+driving the full session UI; the suppress-and-re-enable round trip itself is
+covered end-to-end via IndexedDB-seeded Playwright specs.
+
+### ED-6f.7 — Interface visibility section (Commit 8): ported from the
+admin-only Settings route; gyms documented as not-applicable rather than
+given fake toggles
+
+**Decision:** The Phase 6.3 per-section visibility feature
+(`<VisibilityGate>`, `useSectionVisibility`, `SECTION_REGISTRY`) never lost
+its Settings UI — that UI only ever lived on `apps/consumer/src/app/
+settings/page.tsx`, which is admin-gated (`middleware.ts` requires a
+`bac_admin` cookie). Regular users were never able to reach it, which is
+functionally identical to "lost." Commit 8 ports that same block (same
+`sectionsForScreen`/`isSectionVisible`/`resetSectionVisibilityToDefaults`
+API, same defaults, no new state shape) onto the regular-user
+`apps/consumer/src/app/account/settings/page.tsx`, rather than inventing a
+second implementation. The admin page's own copy is left as-is — it's still
+useful there for QA/support impersonation.
+
+`apps/gyms` has zero `<VisibilityGate>` / `useSectionVisiblePref` call
+sites anywhere in its source — there is nothing there for an Interface
+toggle list to control. Per SR-6 (a Settings toggle that controls nothing
+is cosmetic-only, out of contract), gyms gets no Interface section in this
+commit rather than a set of toggles wired to nothing. If gym-operator UI
+grows its own progressive-disclosure needs later, that's a new phase that
+defines its own section registry for the operator screens — it should not
+borrow the consumer athlete-facing registry (`results.*`/`session.*`/
+`day.*`) which doesn't describe anything in the operator UI.
+
+### ED-6f.8 — Test suite scoping (Commit 6): a fixed `@critical` file list,
+not `vitest related`, because the engine's own barrel/types files make
+"related" resolve to ~65% of the suite
+
+**Decision:** The spec's "specific test files touching modified code paths"
+clause was prototyped literally first, with `vitest related <changed files>`
+against this PR's actual changed engine files. Result: because
+`packages/engine/src/types.ts` (global types, imported nearly everywhere)
+and `packages/engine/src/program.ts` (a 29 000+ line re-export barrel that
+most app code and many tests import from) were both in the changed set,
+`vitest related` resolved to **75 of this package's 116 test files** (565
+tests, ~107 s) — i.e., touching either of those two nearly-universal files
+makes "related" degrade to "almost the whole suite," which is exactly the
+outcome a fast PR-gate filter exists to avoid. This isn't a one-off fluke of
+this PR: any future PR that adds a new engine export (touches `program.ts`)
+or a new `LogPrefs`/`Program` field (touches `types.ts`) — both extremely
+common, low-risk changes — would trigger the same near-total-suite blowup.
+
+Went with a **fixed, curated `@critical` file list** instead (`test:critical`
+in `package.json`, run via `npm run test:critical` in the PR gate): the
+pre-existing 8 golden/identity/determinism/invariant anchor files, plus every
+feedback-contract, ladder-criteria, and phase/progression-invariant test
+file, plus the specific new test files this phase's commits actually added
+or modified (`accountIsolation`, `coachNoteStore`, `focusSentence`,
+`offlineSyncQueue`, `subscriptionStore`, `stripeWebhookVerification`,
+`programProgressionTransition`). 26 files, 278 tests, ~7–8 s locally — this
+concretely satisfies "the specific test files touching modified code paths"
+for every commit in this phase, without a mechanism that silently stops
+being a filter the moment someone touches a barrel file. `test:full` /
+`test:full:gyms` remain the complete, uncategorized suite, run nightly,
+unchanged in scope. Every test file that existed before this commit still
+runs somewhere (nightly, at minimum) — this is a categorization pass, not a
+reduction pass, per the phase spec.
+
+**Playwright in the PR gate:** first-run happy path and per-account
+isolation, for both apps, are now a blocking PR-gate step (previously
+Playwright didn't run in CI at all — see the Phase 6d note that this had "no
+CI impact" at the time, which stops being true here). Implemented as
+`npm run test:e2e:smoke:consumer` / `...:gyms`, each a plain `cd apps/<app>
+&& playwright test <two spec files>` — deliberately *not* invoked as
+`playwright test --config=apps/<app>/playwright.config.ts <files>` from the
+repo root, because `apps/*/e2e/fixtures.ts`'s test-only user store resolves
+its JSON file via `path.join(process.cwd(), "data", "users.json")`: run from
+the repo root, the Playwright *test* process (which calls `upsertE2eUser`)
+and the Next dev server it spawns (whose `webServer.cwd` defaults to the
+config file's own directory, i.e. `apps/<app>`) would resolve two different
+files, so a seeded user would silently write to a path the server-side login
+route never reads from and every `POST /api/auth/login` in the isolation
+spec would 401. `cd`-ing into the app directory first makes both sides agree
+on `process.cwd()`. The gyms smoke script also pins
+`PLAYWRIGHT_PORT=3100` (consumer keeps the default 3000) purely so the two
+smoke steps can never contend for the same port if a runner is slow to
+release it between steps — belt-and-suspenders, not a fix for an observed
+CI failure.
+
+### ED-6f.9 — Macro calculator (Commit 9): plain per-bodyweight protein
+target instead of a %-of-calories split, and a new consumer-app test layer
+that didn't exist before
+
+**Decision:** The ratified macro ratio is "moderate fat / high carb / high
+protein," but implementing all three as fixed percentages of total calories
+has a real failure mode: a %-of-calories protein target quietly under-feeds
+protein for anyone in a large calorie deficit (the "lose" goal), which is
+exactly the situation where protein retention matters most. Implemented
+instead as: protein = 1.8 g per kg bodyweight (set directly, not from
+calories — solidly inside the 1.6–2.2 g/kg range supported for
+resistance-trained lifters), fat = a flat 25% of total calories
+("moderate"), carbs = whatever calories remain. For a resistance-training
+population at typical training calorie levels this reliably makes carbs the
+largest macro by both grams and percentage without hand-tuning a carb
+percentage directly — "high carb" falls out of the other two choices rather
+than being a fourth independent knob. `MINIMUM_CALORIES = 1200` floors the
+output for small-bodyweight + "lose" combinations; this is a public
+marketing calculator, not a clinical tool, and must never recommend an
+unsafe number. All of this lives in `apps/consumer/src/tools/
+macroCalculator.ts`, deliberately NOT under the `@/lib/*` alias — that alias
+resolves to the `packages/engine` source tree for every app in this
+monorepo (see `apps/consumer/tsconfig.json`), and this calculator is
+consumer-app-only, page-specific logic with no relationship to the training
+engine.
+
+**New test infrastructure this commit adds:** `apps/consumer` had zero unit
+tests and no `vitest.config.ts` before this commit (unlike `apps/gyms`,
+which already had both). Added `apps/consumer/vitest.config.ts` (mirroring
+`apps/gyms/vitest.config.ts`) and `apps/consumer/tests/unit/
+macroCalculator.test.ts`, wired into CI as `npm run test:full:consumer`
+(nightly, alongside the existing `test:full:gyms`) — this is new coverage
+for new code, not a retrofit of the rest of the consumer app, so it wasn't
+worth adding to the Commit 6 `@critical` PR-gate list.
+
+**Route/middleware:** `/tools/macro-calculator` needed no middleware
+change — `middleware.ts`'s matcher (`/settings`, `/results`, `/session`,
+`/program`, `/progress`, `/account`) never runs on `/tools/*` at all, so the
+page is public by simply existing outside that matcher, consistent with
+SR-6f-nutrition-amendment's requirement that it not be gated or linked into
+the authenticated app experience. No existing in-app nav (`AppMenuClient`,
+dashboard, settings) links to it — the only links are the page's own
+internal "Try the assessment" CTA (outbound, to `/assessment`) and the new
+`sitemap.ts` entry.
+
+**Sitemap:** no `sitemap.ts` existed anywhere in the monorepo before this
+commit. Added `apps/consumer/src/app/sitemap.ts` covering the full existing
+set of public, indexable pages (home, assessment, macro calculator, FAQ,
+privacy, terms, refunds) rather than only the new page — a sitemap with a
+single URL would be an odd first version to ship. Authenticated-only routes
+and transactional auth routes are intentionally excluded. `robots.ts` was
+considered but not added: bloom-plan's SEO-essentials list for this commit
+names only "sitemap entry," and introducing a site-wide crawl policy is a
+broader decision than one marketing page warrants.
+
+### ED-6f.10 — Full-gate Playwright validation: a pre-existing login
+rate-limit collision when running the entire consumer suite in one long
+serialized process, not a Phase 6f regression
+
+**Finding:** Running the complete `apps/consumer` Playwright suite (51
+tests) in a single invocation intermittently fails a handful of
+login-driven specs with `expect(login.ok()).toBeTruthy()` returning false —
+e.g. `navRoutesReachable`, `sessionStartRedundancy`,
+`navMenuLogoutAndOrdering`, `perAccountStateIsolation`, `staleDeviceCleanup`,
+`stripeSessionPersistence`. None of these are Phase 6f code paths, and every
+single one of them passes cleanly and repeatably when run in isolation or in
+a smaller batch. Root cause: `/api/auth/login`'s rate limiter
+(`packages/engine/src/rateLimit.ts`) keys its bucket on the caller's IP,
+which for every local/CI Playwright request is the literal string
+`"unknown"` (no `x-forwarded-for` header) — so the ~15+ login-calling specs
+in the full suite all share one 10-requests-per-60-seconds bucket for the
+entire run, and cluster past it. This is a real characteristic of the login
+route, but not a functional bug: production traffic has real, distinct
+client IPs, and the actual PR-gate/CI Playwright surface (Commit 6's two
+smoke specs per app) is nowhere near this threshold. Left the rate limiter
+unchanged — it's outside all nine commits' declared scope, and a bypass
+would be a security-relevant decision that deserves its own explicit
+ratification, not a side effect of a test-suite-scoping commit. Confirmed
+clean via: full engine suite (869/869), full gyms suite (17/17), full
+consumer suite (13/13), full gyms Playwright suite (18/19 — the sole
+failure is `betaRisk.spec.ts`'s "reset current progress preserves completed
+history," already confirmed pre-existing/flaky on `main` earlier in this
+same phase), and every consumer Playwright spec passing when run without
+this one shared-process artifact.
+
+Separately, while running the full suite this surfaced one genuine flake in
+this phase's own new `macroCalculatorPage.spec.ts`: interacting with the
+calculator's `<select>` before the client bundle finished hydrating changed
+the native DOM value without firing React's `onChange`, and hydration then
+silently reset it back — fixed by waiting for `networkidle` before the
+first interaction (see the spec file).
+
+### ED-6f.11 — Commit 5.b follow-up: closing the remaining "cycle" copy gap
+found by post-hoc exploration
+
+A background research agent (dispatched during the original explore phase,
+but whose findings didn't return until after Commit 5.b had already landed
+and the PR was open) enumerated every user-facing occurrence of the word
+"cycle" across both apps and the engine. Cross-checking its list against
+what Commit 5.b actually changed turned up nine strings genuinely missed:
+the dashboard's "Full-cycle analysis…" description and "…complete one full
+week or cycle…" Insights lock reason (both apps' `ResultsRoutine.tsx`), and
+six engine-produced strings surfaced through the UI —
+`sessionAdaptation.ts`'s per-session summary/appliedChanges copy (x3),
+`phaseOptimizer.ts`'s "Cycle variation…" reason, `splitTemplatePolicy.ts`'s
+adaptive-rebalance note (x2), `ladderAdvancement.ts`'s
+`getLadderProgressionMessage` copy, and `phases.ts`'s repeat-week message.
+All nine are reworded to "week" vocabulary with no behavior change; none
+had a test asserting the exact literal (confirmed via full-repo grep before
+editing), so no test updates were required. Deliberately left untouched,
+per the same internal-vs-user-facing boundary already drawn in 5.b:
+`cycleIndex`/`cyclesCompletedInPhase`/`activeCycleIndex`/the `"nextCycle"`
+engine mode string (all internal identifiers), the dev-only
+`SHOW_TECHNICAL_PROGRAM_REFERENCE`-gated "Cycle Index:" debug line in both
+apps, `phaseGatingEvaluator.ts`'s internal `trace` field (developer-facing
+gating diagnostics, never rendered), and `program.ts`'s unrelated lifting
+"tempo cycle" note (a different domain concept entirely). Re-verified after
+this follow-up: full engine suite (869/869), full gyms (17/17) and consumer
+(13/13) unit suites, boundary lint (0 errors), and both app builds all
+green.
+
