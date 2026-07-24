@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
@@ -15,6 +15,7 @@ import {
   listAllPrograms,
   listSessions,
   loadPrefs,
+  savePrefs,
   SCHEMA_VERSION,
   saveProgramProgress,
 } from "@/lib/logStore";
@@ -26,6 +27,32 @@ export default function AccountSettingsPage() {
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  // Phase 6f, Commit 5.c — "incomplete last session" prompt suppression,
+  // re-enableable here after being turned off from the prompt itself.
+  const [suppressIncompletePrompts, setSuppressIncompletePrompts] = useState(false);
+  const [prefsLoading, setPrefsLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    void loadPrefs().then((prefs) => {
+      if (!active) return;
+      setSuppressIncompletePrompts(prefs.suppressIncompleteContractPrompts === true);
+      setPrefsLoading(false);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleToggleIncompletePrompts = async () => {
+    const nextValue = !suppressIncompletePrompts;
+    setSuppressIncompletePrompts(nextValue);
+    const currentPrefs = await loadPrefs();
+    await savePrefs({
+      ...currentPrefs,
+      suppressIncompleteContractPrompts: nextValue,
+    });
+  };
 
   const toCsv = (rows: Record<string, string | number | null>[]) => {
     const headers = Object.keys(rows[0] ?? {});
@@ -260,6 +287,29 @@ export default function AccountSettingsPage() {
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
+            <p className="ui-kicker">Session prompts</p>
+            <h2 className="ui-title mt-1">&quot;Didn&apos;t fill in fields&quot; prompt</h2>
+            <p className="mt-2 text-sm text-slate-300">
+              When a session starts and an exercise from last time is missing
+              its logged sets, Praxis asks about it. Turn this off if you&apos;d
+              rather it just stay quiet.
+            </p>
+            <label className="mt-4 flex items-center gap-2 text-sm text-slate-200">
+              <input
+                type="checkbox"
+                data-testid="settings-suppress-incomplete-prompts"
+                checked={suppressIncompletePrompts}
+                disabled={prefsLoading}
+                onChange={() => {
+                  void handleToggleIncompletePrompts();
+                }}
+                className="h-4 w-4 rounded border-slate-500 bg-slate-900 accent-sky-500"
+              />
+              Turn off this prompt
+            </label>
           </div>
 
           <div className="ui-card ui-soft-surface-raised rounded-lg border-rose-300/25 p-5 sm:p-6 lg:col-span-2">

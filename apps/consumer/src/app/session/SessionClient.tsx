@@ -21,6 +21,9 @@ import {
   computeFlaggedExercises,
   applyFeedbackContractAction,
   applyAutoSacrifice,
+  buildContractPrompt,
+  shouldOfferIncompletePromptSuppression,
+  filterSuppressedContractTriggers,
   computeMaintainPrompts,
   markMaintainPromptsShown,
   applyMaintainProgressionYes,
@@ -486,6 +489,11 @@ export default function SessionClient() {
   const [contractTriggers, setContractTriggers] = useState<FeedbackContractTrigger[]>([]);
   const [contractPromptIndex, setContractPromptIndex] = useState(0);
   const [contractDismissed, setContractDismissed] = useState(false);
+  // Phase 6f, Commit 5.c — how many times the "incomplete" reason prompt has
+  // fired for this user, so the prompt can offer to turn itself off after
+  // the second time.
+  const [incompleteContractPromptFireCount, setIncompleteContractPromptFireCount] =
+    useState(0);
 
   // Phase 3.3 — maintain-mode phase-transition prompts
   const [maintainPrompts, setMaintainPrompts] = useState<MaintainProgressionPrompt[]>([]);
@@ -793,15 +801,37 @@ export default function SessionClient() {
                   mergedSummaries.set(exId, { ...base, ...state });
                 });
 
-                const triggers = computeFlaggedExercises({
+                const rawTriggers = computeFlaggedExercises({
                   todaysPlanExerciseIds: mainExerciseIds,
                   recentLogs,
                   feedbackSummaryByExercise: mergedSummaries,
                 });
+                // Phase 6f, Commit 5.c — a user can turn off the "incomplete"
+                // reason prompt specifically (see the prompt UI below); pain
+                // and failed-difficulty reasons are safety-relevant and are
+                // never suppressed by that preference.
+                const suppressIncomplete =
+                  storedPrefs.suppressIncompleteContractPrompts === true;
+                const triggers = filterSuppressedContractTriggers(
+                  rawTriggers,
+                  suppressIncomplete
+                );
                 if (triggers.length > 0) {
                   setContractTriggers(triggers);
                   setContractPromptIndex(0);
                   setContractDismissed(false);
+                }
+                if (
+                  !suppressIncomplete &&
+                  triggers.some((trigger) => trigger.reason === "incomplete")
+                ) {
+                  const nextFireCount =
+                    (storedPrefs.incompleteContractPromptFireCount ?? 0) + 1;
+                  setIncompleteContractPromptFireCount(nextFireCount);
+                  void savePrefs({
+                    ...storedPrefs,
+                    incompleteContractPromptFireCount: nextFireCount,
+                  });
                 }
               }
             } catch {
@@ -1559,6 +1589,21 @@ export default function SessionClient() {
     } else {
       setContractDismissed(true);
     }
+  };
+
+  // Phase 6f, Commit 5.c — self-adapting suppression, offered on the
+  // "incomplete" reason prompt after it has fired twice. Persists the
+  // preference (checked on every future session bootstrap, above) and drops
+  // any remaining "incomplete" triggers already queued for THIS session too,
+  // without disturbing triggers already resolved earlier in the queue.
+  const handleSuppressIncompletePrompts = async () => {
+    const currentPrefs = await loadPrefs();
+    await savePrefs({ ...currentPrefs, suppressIncompleteContractPrompts: true });
+    const alreadyResolved = contractTriggers.slice(0, contractPromptIndex);
+    const remaining = contractTriggers
+      .slice(contractPromptIndex)
+      .filter((trigger) => trigger.reason !== "incomplete");
+    setContractTriggers([...alreadyResolved, ...remaining]);
   };
 
   // Phase 3.3 — handle maintain-mode progression prompt response.
@@ -2481,13 +2526,8 @@ export default function SessionClient() {
     const ex = exerciseById(activeContractTrigger.exerciseId);
     const exerciseName = ex?.name ?? activeContractTrigger.exerciseId;
     const remaining = contractTriggers.length - contractPromptIndex;
-    const reasonCopy: Record<typeof activeContractTrigger.reason, string> = {
-      severe_pain: "you reported pain",
-      moderate_pain_consecutive: "you reported discomfort two sessions in a row",
-      incomplete: "you didn't complete all sets",
-      failed_difficulty: "the effort was maximal",
-    };
-    const prompt = `Last session, ${reasonCopy[activeContractTrigger.reason]} on ${exerciseName}. What would you like to do?`;
+    const isIncompleteReason = activeContractTrigger.reason === "incomplete";
+    const prompt = buildContractPrompt(activeContractTrigger.reason, exerciseName);
 
     return (
       <BackgroundShell>
@@ -2558,6 +2598,17 @@ export default function SessionClient() {
             >
               Skip for now
             </button>
+
+            {isIncompleteReason &&
+            shouldOfferIncompletePromptSuppression(incompleteContractPromptFireCount) ? (
+              <button
+                data-testid="suppress-incomplete-prompt"
+                onClick={() => { void handleSuppressIncompletePrompts(); }}
+                className="mt-2 w-full text-center text-xs text-slate-500 underline-offset-2 hover:text-slate-300 hover:underline"
+              >
+                Turn off these prompts and adjust from Settings instead?
+              </button>
+            ) : null}
           </OnImage>
         </div>
       </BackgroundShell>

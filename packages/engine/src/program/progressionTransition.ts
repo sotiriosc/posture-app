@@ -104,7 +104,7 @@ export const evaluateNextPhaseProgression = (params: {
 
   if (progressionState.phaseIndex >= MAX_PHASE_INDEX) {
     return repeatProgression(
-      `You are already in Phase ${MAX_PHASE_INDEX}. Continue progressing through cycles for variation.`
+      `You are already in Phase ${MAX_PHASE_INDEX}. Continue progressing week to week for variation.`
     );
   }
 
@@ -180,13 +180,13 @@ export const evaluateNextCycleProgression = (params: {
     completedSessionsCount < requiredSessionsForCurrentCycle
   ) {
     return repeatProgression(
-      `Complete at least ${requiredSessionsForCurrentCycle} sessions before starting the next cycle.`
+      `Complete at least ${requiredSessionsForCurrentCycle} sessions before starting next week.`
     );
   }
 
   if (complianceRate < 0.85) {
     return repeatProgression(
-      "Hit at least 85% weekly compliance before advancing cycle."
+      "Hit at least 85% weekly compliance before advancing to next week."
     );
   }
 

@@ -449,3 +449,51 @@ today" and flip a freshly-suppressed note back to visible. Locking per
 calendar day, not per note text, is what keeps the decision stable
 regardless of how many times it's evaluated.
 
+### ED-6f.6 — Language cleanups (Commit 5): dedupe by tag not by whole string,
+"cycle" renamed everywhere it's user-facing (not in dev-only diagnostics),
+and prompt suppression scoped to one specific, non-safety reason
+
+**Decision (5.a, tag dedupe):** The "This week we're focused on..." bug
+wasn't two components disagreeing — it was one `priorities` array mixing two
+shapes: an already-"•"-joined multi-tag string from the engine
+(`coachingPrompts[0]`) and a separate single bare tag
+(`focusAreas[1]`) that can duplicate one of the tags inside that joined
+string, just title-cased. Comparing whole strings case-insensitively (the
+original dedupe) can never catch a duplicate tag buried inside a joined
+list. Fixed by splitting every entry on "•" into individual tags before
+deduping (`packages/engine/src/focusSentence.ts`, extracted out of the two
+previously-duplicated `DailyInsightCard.tsx` copies so the fix and its tests
+have one home).
+
+**Decision (5.b, "cycle" rename):** Audited every user-facing string
+containing "cycle" (hero chip, `phaseObjective.phaseFocus`, and three
+progression-decision messages surfaced via `setAdvanceMessage`) and renamed
+all of them to plain "week" language — `getCycleLadder`'s `cycleIndex` is,
+in this engine, literally a running per-week counter whose `(n-1) % 4`
+determines the Base/Build/Push/Deload stage, so "Cycle: N" was never a
+distinct higher-level concept from "week" to begin with; "Week X of 4" says
+exactly what the number means. Left the `SHOW_TECHNICAL_PROGRAM_REFERENCE`
+dev-only diagnostic dumps (`process.env.NODE_ENV !== "production"`) saying
+"Cycle Index: N" untouched — those never render in production and are
+genuinely engine-internal instrumentation, not user-facing copy.
+
+**Decision (5.c, prompt tone + suppression):** No code contained the literal
+string "Did you skip this exercise?" — the closest real analog is the
+pre-session feedback contract's `reason: "incomplete"` prompt
+(`SessionClient.tsx`), which fires when the most recent log for one of
+today's exercises has `setsCompleted < setsPlanned`. Reworded only that one
+reason's copy to curious-not-judgmental phrasing; the other three reasons
+(severe pain, consecutive moderate pain, failed difficulty) are safety- or
+effort-relevant, not "maybe you just forgot to log it," and keep their
+direct phrasing. The self-adapting suppression
+(`incompleteContractPromptFireCount` / `suppressIncompleteContractPrompts`
+in `LogPrefs`) is scoped to that one reason only and is never applied to
+pain or failed-difficulty triggers — a user muting "did you forget to log
+this" should never be able to accidentally mute a pain-escalation prompt by
+the same click. Extracted the prompt-copy and suppression-filtering logic
+into pure functions in `packages/engine/src/program/feedbackContract.ts`
+(`buildContractPrompt`, `shouldOfferIncompletePromptSuppression`,
+`filterSuppressedContractTriggers`) so this logic is unit-testable without
+driving the full session UI; the suppress-and-re-enable round trip itself is
+covered end-to-end via IndexedDB-seeded Playwright specs.
+

@@ -2731,10 +2731,15 @@ export default function ResultsRoutine({
     completedCount < activeDaysPerWeek &&
     !completedDaySet.has(effectiveNextDayIndex);
 
+  // Phase 6f, Commit 5.b: "cycle" is engine-internal vocabulary (a 4-week
+  // Base/Build/Push/Deload rotation) that used to leak into this chip
+  // verbatim as "Cycle: N" — renamed to "Week X of 4" everywhere it
+  // surfaces to users.
+  const weekOfCycle = ((Math.max(1, program.cycleIndex ?? cycleCurrent) - 1) % 4) + 1;
   const heroMetricChips = [
     `Training readiness: ${readinessScore}% (${readinessLabel})`,
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
-    `Cycle: ${program.cycleIndex ?? cycleCurrent}`,
+    `Week ${weekOfCycle} of 4`,
   ].filter((chip): chip is string => Boolean(chip));
 
   const coachToday = (() => {
