@@ -197,8 +197,12 @@ test("the suppressed prompt can be re-enabled from Account Settings", async ({
 
   await page.goto("/account/settings");
   const toggle = page.getByTestId("settings-suppress-incomplete-prompts");
+  await expect(toggle).toBeEnabled();
   await expect(toggle).not.toBeChecked();
-  await toggle.check();
+  // Plain click + a polling `expect` (rather than `.check()`'s one-shot
+  // post-click verification) — the toggle is a controlled checkbox whose
+  // `checked` prop only flips after an async savePrefs() round-trip.
+  await toggle.click();
   await expect(toggle).toBeChecked();
 
   await page.reload();
@@ -220,7 +224,7 @@ test("the suppressed prompt can be re-enabled from Account Settings", async ({
   // otherwise Playwright can sample the pre-hydration default (unchecked)
   // and treat `.uncheck()` as a no-op.
   await expect(toggleAgain).toBeChecked();
-  await toggleAgain.uncheck();
+  await toggleAgain.click();
   await expect(toggleAgain).not.toBeChecked();
 
   await page.goto("/results");

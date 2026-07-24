@@ -19,6 +19,19 @@ import {
   SCHEMA_VERSION,
   saveProgramProgress,
 } from "@/lib/logStore";
+import type { LogPrefs } from "@/lib/types";
+import {
+  isSectionVisible,
+  resetSectionVisibilityToDefaults,
+  sectionsForScreen,
+} from "@/lib/ui/sectionVisibility";
+import type { SectionScreen } from "@/lib/ui/sectionVisibility";
+
+const VISIBILITY_SCREENS: Array<{ id: SectionScreen; label: string }> = [
+  { id: "results", label: "Results" },
+  { id: "session", label: "Session" },
+  { id: "day", label: "Day" },
+];
 
 export default function AccountSettingsPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -27,17 +40,17 @@ export default function AccountSettingsPage() {
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
-  // Phase 6f, Commit 5.c — "incomplete last session" prompt suppression,
-  // re-enableable here after being turned off from the prompt itself.
-  const [suppressIncompletePrompts, setSuppressIncompletePrompts] = useState(false);
-  const [prefsLoading, setPrefsLoading] = useState(true);
+  // Phase 6f, Commit 8 — shared prefs state backs both the Interface
+  // (per-section visibility) toggles and the "incomplete" prompt
+  // suppression toggle below (Commit 5.c), mirroring the admin settings
+  // page's (apps/consumer/src/app/settings/page.tsx) existing pattern.
+  const [prefs, setPrefs] = useState<LogPrefs | null>(null);
 
   useEffect(() => {
     let active = true;
-    void loadPrefs().then((prefs) => {
+    void loadPrefs().then((loaded) => {
       if (!active) return;
-      setSuppressIncompletePrompts(prefs.suppressIncompleteContractPrompts === true);
-      setPrefsLoading(false);
+      setPrefs(loaded);
     });
     return () => {
       active = false;
@@ -45,13 +58,43 @@ export default function AccountSettingsPage() {
   }, []);
 
   const handleToggleIncompletePrompts = async () => {
-    const nextValue = !suppressIncompletePrompts;
-    setSuppressIncompletePrompts(nextValue);
     const currentPrefs = await loadPrefs();
-    await savePrefs({
+    const nextValue = !(currentPrefs.suppressIncompleteContractPrompts === true);
+    const nextPrefs: LogPrefs = {
       ...currentPrefs,
       suppressIncompleteContractPrompts: nextValue,
-    });
+    };
+    await savePrefs(nextPrefs);
+    setPrefs(nextPrefs);
+  };
+
+  // Phase 6f, Commit 8 — restore the Interface (per-section visibility)
+  // section. Ported from the admin-only apps/consumer/src/app/settings/
+  // page.tsx (Phase 6.3), whose mount regular users never see — its own
+  // route is admin-gated by middleware.ts.
+  const handleToggleSection = async (sectionId: string) => {
+    const currentPrefs = await loadPrefs();
+    const current = isSectionVisible(currentPrefs.sectionVisibility, sectionId);
+    const nextVisibility = {
+      ...(currentPrefs.sectionVisibility ?? {}),
+      [sectionId]: !current,
+    };
+    const nextPrefs: LogPrefs = {
+      ...currentPrefs,
+      sectionVisibility: nextVisibility,
+    };
+    await savePrefs(nextPrefs);
+    setPrefs(nextPrefs);
+  };
+
+  const handleResetSectionVisibility = async () => {
+    const currentPrefs = await loadPrefs();
+    const nextPrefs: LogPrefs = {
+      ...currentPrefs,
+      sectionVisibility: resetSectionVisibilityToDefaults(),
+    };
+    await savePrefs(nextPrefs);
+    setPrefs(nextPrefs);
   };
 
   const toCsv = (rows: Record<string, string | number | null>[]) => {
@@ -301,8 +344,8 @@ export default function AccountSettingsPage() {
               <input
                 type="checkbox"
                 data-testid="settings-suppress-incomplete-prompts"
-                checked={suppressIncompletePrompts}
-                disabled={prefsLoading}
+                checked={prefs?.suppressIncompleteContractPrompts === true}
+                disabled={!prefs}
                 onChange={() => {
                   void handleToggleIncompletePrompts();
                 }}
@@ -310,6 +353,85 @@ export default function AccountSettingsPage() {
               />
               Turn off this prompt
             </label>
+          </div>
+
+          <div
+            className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6 lg:col-span-2"
+            data-testid="settings-interface-section"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="ui-kicker">Interface</p>
+                <h2 className="ui-title mt-1">Choose what appears on each screen</h2>
+                <p className="mt-2 max-w-2xl text-sm text-slate-300">
+                  Hidden sections can be brought back here anytime, or from the
+                  &quot;sections hidden&quot; link on the screen itself.
+                </p>
+              </div>
+              <Button
+                variant="secondary"
+                data-testid="settings-interface-reset"
+                onClick={() => {
+                  void handleResetSectionVisibility();
+                }}
+              >
+                Reset to defaults
+              </Button>
+            </div>
+
+            <div className="mt-5 grid gap-5 sm:grid-cols-3">
+              {VISIBILITY_SCREENS.map((screen) => (
+                <div key={screen.id}>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    {screen.label}
+                  </p>
+                  <ul className="mt-2 space-y-2">
+                    {sectionsForScreen(screen.id).map((section) => {
+                      const visible = isSectionVisible(
+                        prefs?.sectionVisibility,
+                        section.id
+                      );
+                      return (
+                        <li
+                          key={section.id}
+                          className="flex items-start justify-between gap-3 rounded-lg border border-slate-700/40 bg-slate-900/50 px-3 py-2"
+                        >
+                          <div>
+                            <p className="text-xs font-semibold text-slate-200">
+                              {section.label}
+                            </p>
+                            <p className="text-xs text-slate-500">
+                              {section.description}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            role="switch"
+                            aria-checked={visible}
+                            aria-label={`${visible ? "Hide" : "Show"} ${section.label}`}
+                            data-testid={`settings-interface-toggle-${section.id}`}
+                            onClick={() => {
+                              void handleToggleSection(section.id);
+                            }}
+                            className={[
+                              "relative mt-0.5 inline-flex h-5 w-9 shrink-0 items-center rounded-full transition",
+                              visible ? "bg-sky-500/70" : "bg-slate-700",
+                            ].join(" ")}
+                          >
+                            <span
+                              className={[
+                                "inline-block h-4 w-4 transform rounded-full bg-white transition",
+                                visible ? "translate-x-4" : "translate-x-0.5",
+                              ].join(" ")}
+                            />
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="ui-card ui-soft-surface-raised rounded-lg border-rose-300/25 p-5 sm:p-6 lg:col-span-2">

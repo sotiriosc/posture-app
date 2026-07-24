@@ -497,3 +497,29 @@ into pure functions in `packages/engine/src/program/feedbackContract.ts`
 driving the full session UI; the suppress-and-re-enable round trip itself is
 covered end-to-end via IndexedDB-seeded Playwright specs.
 
+### ED-6f.7 — Interface visibility section (Commit 8): ported from the
+admin-only Settings route; gyms documented as not-applicable rather than
+given fake toggles
+
+**Decision:** The Phase 6.3 per-section visibility feature
+(`<VisibilityGate>`, `useSectionVisibility`, `SECTION_REGISTRY`) never lost
+its Settings UI — that UI only ever lived on `apps/consumer/src/app/
+settings/page.tsx`, which is admin-gated (`middleware.ts` requires a
+`bac_admin` cookie). Regular users were never able to reach it, which is
+functionally identical to "lost." Commit 8 ports that same block (same
+`sectionsForScreen`/`isSectionVisible`/`resetSectionVisibilityToDefaults`
+API, same defaults, no new state shape) onto the regular-user
+`apps/consumer/src/app/account/settings/page.tsx`, rather than inventing a
+second implementation. The admin page's own copy is left as-is — it's still
+useful there for QA/support impersonation.
+
+`apps/gyms` has zero `<VisibilityGate>` / `useSectionVisiblePref` call
+sites anywhere in its source — there is nothing there for an Interface
+toggle list to control. Per SR-6 (a Settings toggle that controls nothing
+is cosmetic-only, out of contract), gyms gets no Interface section in this
+commit rather than a set of toggles wired to nothing. If gym-operator UI
+grows its own progressive-disclosure needs later, that's a new phase that
+defines its own section registry for the operator screens — it should not
+borrow the consumer athlete-facing registry (`results.*`/`session.*`/
+`day.*`) which doesn't describe anything in the operator UI.
+
