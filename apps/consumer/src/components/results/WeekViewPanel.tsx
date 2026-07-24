@@ -124,11 +124,12 @@ export default function WeekViewPanel({
           const isLocked = isDayLocked(day.dayIndex);
           const isToday = day.dayIndex === sessionLaunchDayIndex;
           const shouldDimLockedCard = isLocked && !isCompleted;
+          const isNotStarted = !isCompleted && !isInProgress;
           const stateLabel = isCompleted
             ? "Completed"
             : isInProgress
             ? "In progress"
-            : "Not started";
+            : "Awaiting";
           const statePercent = isCompleted ? 100 : isInProgress ? 50 : 0;
           const dayIndexTextClass = isCompleted
             ? "text-emerald-100"
@@ -195,18 +196,28 @@ export default function WeekViewPanel({
               </p>
               <p className={`mt-1 text-xs ${stateLabelClass}`}>{stateLabel}</p>
               <div className="mt-2">
-                <div className="h-2 w-full overflow-hidden rounded-full border border-slate-500/30 bg-slate-950/60">
-                  <div
-                    className={`h-full rounded-full transition-[width] duration-[700ms] ease-[cubic-bezier(.22,1,.36,1)] ${
-                      isCompleted
-                        ? "bg-emerald-500"
-                        : isInProgress
-                        ? "bg-sky-400"
-                        : "bg-slate-500"
-                    }`}
-                    style={{ width: `${statePercent}%` }}
-                  />
-                </div>
+                {isNotStarted ? (
+                  // Phase 6e, Commit 5.d — an empty 0%-filled bar reads as a
+                  // failure state ("this day failed already"), and three of
+                  // these in a row look like three failures. A day that
+                  // simply hasn't come up yet has no progress story to tell,
+                  // so it gets a quiet "awaiting" glyph instead of a bar
+                  // shape with nothing in it.
+                  <div className="flex h-2 items-center gap-1.5" aria-hidden="true">
+                    <span className="h-1 w-1 rounded-full bg-slate-500/50" />
+                    <span className="h-1 w-1 rounded-full bg-slate-500/50" />
+                    <span className="h-1 w-1 rounded-full bg-slate-500/50" />
+                  </div>
+                ) : (
+                  <div className="h-2 w-full overflow-hidden rounded-full border border-slate-500/30 bg-slate-950/60">
+                    <div
+                      className={`h-full rounded-full transition-[width] duration-[700ms] ease-[cubic-bezier(.22,1,.36,1)] ${
+                        isCompleted ? "bg-emerald-500" : "bg-sky-400"
+                      }`}
+                      style={{ width: `${statePercent}%` }}
+                    />
+                  </div>
+                )}
               </div>
             </button>
           );

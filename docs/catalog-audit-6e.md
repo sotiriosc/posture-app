@@ -188,3 +188,82 @@ light `phaseMin` to `dumbbell-floor-press` if Sotirios wants to keep true
 first-timers on `pushup`-family movements one cycle longer before a
 dumbbells-only persona is handed a floor-based press — purely a taste
 call, not a correctness fix.
+
+## Commit 5 — Rough-edges pass
+
+### 5.a — Landing page footer legibility
+
+Fixed. `Footer.tsx` now sits on a solid `bg-slate-950/85` +
+`backdrop-blur-sm` container instead of the bare hero image, with
+`text-slate-300`/`text-slate-400` copy for contrast. Each nav link
+(`Privacy`/`Terms`/`Refunds`/`Support`) is wrapped in
+`inline-flex min-h-11 items-center px-2` for a 44px-tall tap target.
+Verified with a screenshot at 390×844 — the disclaimer text and links are
+legible against the dark band, independent of whatever's behind it.
+
+### 5.b — Session-start redundant title
+
+Fixed. A third, previously-missed duplicate of the exercise position
+counter (`{activeIndex + 1} / {totalItems}`) was rendering at the bottom
+of the exercise card, inside the same `OnImage` block as the "···"
+session-options menu — separate from the sticky header counter Phase 6d
+already deduplicated. Removed it; the menu button is now the only element
+in that row (`SessionClient.tsx`, `justify-between` → `justify-end`).
+
+### 5.c — Session-adjustment prompt copy (report only, per plan)
+
+Located the mid-session adjustment prompt in `SessionClient.tsx`
+(~lines 2455–2539), triggered by `activeContractTrigger` after a prior
+session logged severe pain, repeated moderate pain, an incomplete set
+count, or maximal-effort difficulty. The prompt sentence itself reads in
+plain English (e.g. "Last session, you reported pain on Barbell Squat.
+What would you like to do?"), and each option's *subtitle* is also plain
+English. The problem is the three **button labels** themselves, which
+surface internal engine/contract terminology instead of describing the
+action to the user:
+
+```typescript
+<button onClick={() => void handleContractAction("sacrifice")}>
+  <span className="block text-base">Sacrifice</span>
+  <span className="...">Skip this exercise for now — I&apos;ll retest it later</span>
+</button>
+<button onClick={() => void handleContractAction("test")}>
+  <span className="block text-base">Test</span>
+  <span className="...">Keep it in — I&apos;ll try again this session</span>
+</button>
+<button onClick={() => void handleContractAction("modify")} disabled={activeContractTrigger.atFloor}>
+  <span className="block text-base">Modify</span>
+  <span className="...">{atFloor ? "Already at the easiest version" : "Drop to an easier variation"}</span>
+</button>
+```
+
+"Sacrifice," "Test," and "Modify" are the names of the underlying
+retest-contract mechanic (see Phase 3.x engine docs), not words a user
+would choose to describe skipping an exercise, trying it again, or
+dropping to an easier variation. Each button's own subtitle already says
+the user-facing version — the fix is almost certainly just swapping the
+bold label for a short version of the subtitle (e.g. "Skip it," "Try
+again," "Make it easier") and keeping the subtitle as the longer
+explanation, but per the plan this is report-only until Sotirios confirms
+the exact screen/wording in review — no copy changed in this commit.
+
+### 5.d — Week View "Not started" bars
+
+Fixed. For days that are neither completed nor in progress,
+`WeekViewPanel.tsx` no longer renders a bordered 0%-filled progress bar
+(three of which in a row read as three failure/incomplete states). It
+renders three small muted dots instead — an "awaiting" glyph with no
+implied fill — and the label under the day title changed from
+"Not started" to "Awaiting" to match. Completed/in-progress days are
+unchanged. Verified with a screenshot at 390×844.
+
+### 5.e — Post-session completion pills
+
+Fixed. `SessionFeedbackCheckIn.tsx`'s Done/Partial/Skipped control is now
+marked up as `role="radiogroup"`/`role="radio"`/`aria-checked`, and the
+unselected pills switched from a solid white fill (which read as its own
+equal-weight button) to a transparent, dashed-border, muted-text
+treatment. The selected pill keeps its solid dark fill and gains a
+leading checkmark. The intent is that the selected pill now reads as
+"the chosen one" and the other two read as "the alternatives you didn't
+pick," rather than three visually-equal buttons.

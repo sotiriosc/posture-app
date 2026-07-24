@@ -49,13 +49,18 @@ export function PhotoProvider({ userId, children }: PhotoProviderProps) {
   setActivePhotoNamespace(userId);
 
   const [photos, setPhotos] = useState<PhotoState>(emptyState);
+  // Reset during render when `userId` changes, rather than in the effect
+  // below — React's documented pattern for "adjusting state when a prop
+  // changes." An account switch must never show the previous account's
+  // photos, even for a single paint while an effect is still scheduled.
+  const [namespaceForPhotos, setNamespaceForPhotos] = useState(userId);
+  if (namespaceForPhotos !== userId) {
+    setNamespaceForPhotos(userId);
+    setPhotos(emptyState);
+  }
   const hasLocalChanges = useRef(false);
 
   useEffect(() => {
-    // A namespace switch (account change) must never show the previous
-    // account's photos, even momentarily — reset before the async hydrate
-    // below can resolve.
-    setPhotos(emptyState);
     let active = true;
     const hydrate = async () => {
       try {
