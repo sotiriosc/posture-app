@@ -5,7 +5,7 @@ import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
-import { resetAllAppData } from "@/lib/resetAppData";
+import { eraseAllLocalData } from "@/lib/resetAppData";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { clearDraftsByProgramId } from "@/lib/sessionDraftStore";
 import {
@@ -296,7 +296,12 @@ export default function AccountSettingsPage() {
                       setWorking(true);
                       setMessage(null);
                       try {
-                        await resetAllAppData();
+                        // Phase 6e, Commit 1 (SR-6e) — this button's copy
+                        // promises a full device wipe; `resetAllAppData` only
+                        // clears a hardcoded key subset, which left stray
+                        // local data behind. `eraseAllLocalData` is the
+                        // primitive that actually matches the copy.
+                        await eraseAllLocalData();
                         setMessage("All local app data erased.");
                         setConfirmOpen(false);
                         setConfirmText("");

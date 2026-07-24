@@ -4,6 +4,7 @@ import AppMenu from "@/components/AppMenu";
 import Analytics from "@/components/Analytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import InstallApp from "@/components/InstallApp";
+import { readServerSession } from "@/lib/serverAuth";
 import "./globals.css";
 
 const GLOBAL_CARD_STYLE = "shaded";
@@ -78,11 +79,16 @@ export const viewport: Viewport = {
   themeColor: "#0a0f19",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Phase 6e, Commit 1 — photos are namespaced per account (SR-6e, ED-6e.1),
+  // so PhotoProvider needs to know who's signed in on every render, not just
+  // client-side after a fetch resolves. `readServerSession` is cache()'d so
+  // this doesn't add a second lookup on top of AppMenu's own session read.
+  const session = await readServerSession();
   return (
     <html lang="en">
       <body
@@ -92,7 +98,7 @@ export default function RootLayout({
       >
         <Analytics>
           <AppMenu />
-          <PhotoProvider>{children}</PhotoProvider>
+          <PhotoProvider userId={session?.id ?? null}>{children}</PhotoProvider>
           <ServiceWorkerRegister />
           <InstallApp />
         </Analytics>

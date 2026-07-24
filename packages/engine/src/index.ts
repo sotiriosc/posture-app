@@ -45,6 +45,7 @@ export * from "./sessionStore";
 // ── Stores & persistence ──────────────────────────────────────────────────────
 export * from "./logStore";
 export * from "./photoStore";
+export * from "./accountIsolation";
 export * from "./appState";
 
 // ── Training sync ─────────────────────────────────────────────────────────────

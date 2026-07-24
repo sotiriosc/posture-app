@@ -7,6 +7,7 @@ import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import { markSignupWalkthroughPending } from "@/components/onboarding/onboardingConfig";
+import { syncLocalOwner } from "@/lib/accountIsolation";
 
 export default function SignupClient() {
   const router = useRouter();
@@ -38,11 +39,16 @@ export default function SignupClient() {
       const payload = (await response.json().catch(() => null)) as {
         ok?: boolean;
         error?: string;
+        user?: { id?: string };
       } | null;
       if (!response.ok || !payload?.ok) {
         setError(payload?.error ?? "Signup failed.");
         return;
       }
+      // Phase 6e, Commit 1 (SR-6e) — a brand-new account must never inherit
+      // whatever a prior account left on this device (the reported bug: a
+      // new account inheriting stale phase-gating progress).
+      await syncLocalOwner(payload?.user?.id ?? null);
       markSignupWalkthroughPending();
       router.replace(next);
       router.refresh();

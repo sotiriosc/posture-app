@@ -64,8 +64,9 @@ Enforcement: ESLint `no-restricted-imports` (active from Phase 1 Day 3).
 | Export origin | Why exported |
 |---|---|
 | `logStore.ts` | Exercise log read/write — used by session, progress, results, and settings pages. |
-| `photoStore.ts` | Photo blob store for pose assessment; used by assessment and results pages. |
+| `photoStore.ts` | Photo blob store for pose assessment; used by assessment and results pages. Namespaced per account id (Phase 6e / ED-6e.1) via `setActivePhotoNamespace`. |
 | `appState.ts` | App-wide state (questionnaire, program ref, phase) — used by most consumer pages. |
+| `accountIsolation.ts` | `syncLocalOwner` — per-account local-state reconciliation (Phase 6e / ED-6e.1); used by AppMenuClient (startup check), login/signup clients, and logout. |
 
 ### Training sync (`./trainingStateModel`, `./trainingStoreConfig`, `./trainingStoreDb`, `./trainingSyncClient`, `./trainingSyncDebug`, `./useTrainingSyncStatus`)
 
@@ -106,7 +107,7 @@ Enforcement: ESLint `no-restricted-imports` (active from Phase 1 Day 3).
 | `questionnaireSignature.ts` | Questionnaire hash helpers used by results bootstrap and questionnaire page. |
 | `timerRules.ts` | Timer-interval rules consumed by session timer component. |
 | `telemetry.ts` | Event logging helpers used by session and assessment pages. |
-| `resetAppData.ts` | `resetAllAppData` — used by settings page. |
+| `resetAppData.ts` | `resetAllAppData`, `eraseAllLocalData` — used by settings pages. `clearAllLocalStateExceptPhotos` (Phase 6e / ED-6e.1) is used by `accountIsolation.ts`, not called directly by pages. |
 
 ---
 

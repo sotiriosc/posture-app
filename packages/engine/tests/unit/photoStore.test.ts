@@ -22,6 +22,7 @@ if (typeof File === "undefined") {
 
 type StoredPhoto = {
   slot: PhotoSlot;
+  namespace: string;
   name: string;
   type: string;
   lastModified: number;
