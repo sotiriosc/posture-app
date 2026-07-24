@@ -1921,12 +1921,75 @@ Full gate green + Playwright green including favicon render test.
 
 Merge commit.
 
+---
 
+## Phase queue (post–6h)
 
+Phase 8 — Progress Made Visible (READY TO EXECUTE)
 
+Small phase surfacing what the engine already measures. Two scoped pieces:
 
+### 8.1 Posture-delta surfacing on results screen
 
+Everything needed is in the DB already (Phase 4's AssessmentSnapshot, assessmentHistory, tag lifecycle). Add a "Since baseline" section per tracked observation showing baseline vs. latest measurement with a small delta indicator. Copy pattern: "Your forward head measurement moved from 0.11 to 0.06 over the last 4 weeks. That's real."
 
+Optional at retest time: consent toggle for side-by-side of baseline photo vs. latest photo. Off by default; user opts in per-retest, not globally.
+
+### 8.2 Optional manual measurements
+
+Settings section: "Track measurements (optional)."
+
+User enters weight, waist, chest, arm, thigh (or subset) when they want.
+Simple line chart per measurement, last 12 entries.
+Does NOT drive engine decisions.
+Off by default; user opts in.
+Data stored per-userId (Phase 6e isolation applies).
+
+Positioning discipline: measurements stay passive and personal. As soon as they influence the program, Praxis becomes a weight-loss app. Keep the line clear.
+
+Tests: posture-delta rendering, measurement entry flow, measurement trend view, per-userId isolation of measurement data.
+
+---
+
+Phase 7 — Pattern Recognition & Corrective Injection (PENDING SCOPE)
+
+Status: awaiting Sotirios's rulings on two design questions before this phase can be specced completely. Do NOT execute this phase without those rulings.
+
+### Question 1 — Which additional patterns can a phone camera reliably detect?
+
+Current focus-tag system covers four patterns (forward_head, scapular_control, thoracic_extension, hip_stability). Sotirios's twenty years of movement expertise is the ceiling on what makes the expansion list. Anything that can't be reliably identified from a phone camera photo should NOT be added — false confidence is worse than missing coverage.
+
+Draft candidates (Sotirios rules on each):
+
+- Anterior pelvic tilt
+- Posterior pelvic tilt
+- Knee valgus (visible standing)
+- Rounded thoracic / kyphosis
+- Uneven shoulders (asymmetry)
+- Foot pronation
+
+### Question 2 — Injection aggressiveness for detected patterns
+
+When a pattern is detected and its corrective isn't organically in the generated program, what does the engine do?
+
+- (a) Add corrective as required slot every session that week
+- (b) Add 2-3x per week
+- (c) Prompt user "we noticed X — want us to add corrective work?" and let them choose
+
+Recommendation (mine, not ratified): (c). Consistent with the Sacrifice/Test/Modify pattern from Phase 3.2 and respects user agency.
+
+Once Sotirios rules on both, Phase 7 gets fully specced.
+
+---
+
+Parked (unchanged from plan-state 2026-07-23)
+
+- Wearable integration → after native apps, after first stable revenue.
+- Body-diagram visual cues → after Phase 8, may replace or supplement video content.
+- Native app builds → precondition for wearables; no urgency yet.
+- Video content workstream → Sotirios owns schedule; not code phase.
+
+---
 
 ## Sequencing & effort (with Claude Code)
 
