@@ -60,7 +60,10 @@ const TINY_PNG_BASE64 =
 
 const uploadFrontPhoto = async (page: Page) => {
   await page.goto("/assessment");
-  const fileInput = page.locator('input[type="file"]').first();
+  await page.waitForLoadState("networkidle");
+  // Wait for the client PhotoUploader island to hydrate before injecting a file.
+  await expect(page.getByText("Front photo")).toBeVisible({ timeout: 20_000 });
+  const fileInput = page.locator('input[type="file"]').nth(0);
   await fileInput.setInputFiles({
     name: "front.png",
     mimeType: "image/png",
@@ -70,7 +73,7 @@ const uploadFrontPhoto = async (page: Page) => {
   // compile, and the client-side photo processing that follows the upload
   // adds further latency -- give both room beyond Playwright's 5s default.
   await expect(page.getByRole("button", { name: "Delete" }).first()).toBeVisible({
-    timeout: 15_000,
+    timeout: 30_000,
   });
 };
 
