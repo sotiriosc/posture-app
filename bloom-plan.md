@@ -1237,7 +1237,7 @@ Commit 1 — Per-account state isolation (SHIP-CRITICAL)
 
 Observed: Sotirios logged in on a new account and phase gating advanced him to Progress before he completed any workouts. Root cause: local state from previous accounts on the same device persists in IndexedDB and localStorage, and gets read by the new account's engine evaluation as if it belongs to that user.
 
-This is a data integrity bug, not a UI bug. It must be fixed before any Motion Care client tests on Sotirios's demo phone.
+This is a data integrity bug, not a UI bug. It must be fixed before any praxis client tests on Sotirios's demo phone.
 
 Investigation checklist first, then fix:
 
@@ -1270,11 +1270,12 @@ Commit 2 — Dashboard grid visual refinement
 Current state (from Sotirios's screenshot today): 2×3 grid works, but every tile has an outer box border, and icons are left-aligned within each tile.
 
 Sotirios's ratified design:
-
+refernce todays-phto.jpg
 Center the icon horizontally in each tile, positioned above the label.
 Remove the outer box border on non-selected tiles. Tile content (icon + label + one-line status) renders directly on the dashboard background with subtle vertical spacing between tiles.
 Keep the outer box (or a distinct visual treatment) only on the currently selected/active tile. The "Today" tile when viewing today's session, the "Week" tile when viewing the week, etc.
 Locked tiles: keep the small lock icon next to the label, dim the tile content, no separate border treatment.
+Resize icon to be the best size - condense language so it fits and is clear no need for day 1 chest and back just put chest and back ensure all labels fit. 
 
 The result is a cleaner, sleeker grid where the eye sees icons and labels first and boxes only where selection matters.
 
@@ -1282,7 +1283,7 @@ Do not change:
 
 Grid layout (2 columns × 3 rows)
 Tile order (Today, Week / Billing, Progress / Insights, History)
-Icon set or label copy
+Icon set 
 Tap-target size (44px minimum still applies)
 Commit 3 — Hip abduction/adduction catalog check
 
@@ -1352,7 +1353,7 @@ P3 ladder engine       2–4 days incl. tests
 P4 assessment truth    2–3 days
 P5 proof screen        1–2 days
 
-Revenue does not wait for P2–P5. Lane 1 (Motion Care clients) and Lane 2 (gym pilot
+Revenue does not wait for P2–P5. Lane 1 (Praxis clients) and Lane 2 (gym pilot
 conversations) start after P0. P2–P4 are the moat being built while you sell.
 
 ## Working agreement with Claude Code

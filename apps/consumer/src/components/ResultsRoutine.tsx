@@ -3156,7 +3156,10 @@ export default function ResultsRoutine() {
     {
       key: "today",
       title: "Today",
-      summary: `Day ${sessionLaunchDayIndex + 1}: ${program.week[sessionLaunchDayIndex]?.title ?? "current plan"}`,
+      // Phase 6e, Commit 2 — dropped the "Day N:" prefix so the label is
+      // short enough to read at a glance in the compact grid tile; which day
+      // it is is already implicit in "Today".
+      summary: program.week[sessionLaunchDayIndex]?.title ?? "current plan",
     },
     {
       key: "week",
