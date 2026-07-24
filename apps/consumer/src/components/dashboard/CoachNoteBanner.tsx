@@ -33,7 +33,11 @@ export default function CoachNoteBanner({ note }: CoachNoteBannerProps) {
   const [visibleNote, setVisibleNote] = useState<string | null>(null);
 
   useEffect(() => {
-    setVisibleNote(shouldShowCoachNote(note) ? note : null);
+    // Deferred a microtask (matches the pattern in useUserPlan.ts) so
+    // setState is never called synchronously within the effect body itself.
+    void Promise.resolve().then(() => {
+      setVisibleNote(shouldShowCoachNote(note) ? note : null);
+    });
   }, [note]);
 
   if (!visibleNote) return null;

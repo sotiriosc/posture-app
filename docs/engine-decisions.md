@@ -523,3 +523,58 @@ defines its own section registry for the operator screens — it should not
 borrow the consumer athlete-facing registry (`results.*`/`session.*`/
 `day.*`) which doesn't describe anything in the operator UI.
 
+### ED-6f.8 — Test suite scoping (Commit 6): a fixed `@critical` file list,
+not `vitest related`, because the engine's own barrel/types files make
+"related" resolve to ~65% of the suite
+
+**Decision:** The spec's "specific test files touching modified code paths"
+clause was prototyped literally first, with `vitest related <changed files>`
+against this PR's actual changed engine files. Result: because
+`packages/engine/src/types.ts` (global types, imported nearly everywhere)
+and `packages/engine/src/program.ts` (a 29 000+ line re-export barrel that
+most app code and many tests import from) were both in the changed set,
+`vitest related` resolved to **75 of this package's 116 test files** (565
+tests, ~107 s) — i.e., touching either of those two nearly-universal files
+makes "related" degrade to "almost the whole suite," which is exactly the
+outcome a fast PR-gate filter exists to avoid. This isn't a one-off fluke of
+this PR: any future PR that adds a new engine export (touches `program.ts`)
+or a new `LogPrefs`/`Program` field (touches `types.ts`) — both extremely
+common, low-risk changes — would trigger the same near-total-suite blowup.
+
+Went with a **fixed, curated `@critical` file list** instead (`test:critical`
+in `package.json`, run via `npm run test:critical` in the PR gate): the
+pre-existing 8 golden/identity/determinism/invariant anchor files, plus every
+feedback-contract, ladder-criteria, and phase/progression-invariant test
+file, plus the specific new test files this phase's commits actually added
+or modified (`accountIsolation`, `coachNoteStore`, `focusSentence`,
+`offlineSyncQueue`, `subscriptionStore`, `stripeWebhookVerification`,
+`programProgressionTransition`). 26 files, 278 tests, ~7–8 s locally — this
+concretely satisfies "the specific test files touching modified code paths"
+for every commit in this phase, without a mechanism that silently stops
+being a filter the moment someone touches a barrel file. `test:full` /
+`test:full:gyms` remain the complete, uncategorized suite, run nightly,
+unchanged in scope. Every test file that existed before this commit still
+runs somewhere (nightly, at minimum) — this is a categorization pass, not a
+reduction pass, per the phase spec.
+
+**Playwright in the PR gate:** first-run happy path and per-account
+isolation, for both apps, are now a blocking PR-gate step (previously
+Playwright didn't run in CI at all — see the Phase 6d note that this had "no
+CI impact" at the time, which stops being true here). Implemented as
+`npm run test:e2e:smoke:consumer` / `...:gyms`, each a plain `cd apps/<app>
+&& playwright test <two spec files>` — deliberately *not* invoked as
+`playwright test --config=apps/<app>/playwright.config.ts <files>` from the
+repo root, because `apps/*/e2e/fixtures.ts`'s test-only user store resolves
+its JSON file via `path.join(process.cwd(), "data", "users.json")`: run from
+the repo root, the Playwright *test* process (which calls `upsertE2eUser`)
+and the Next dev server it spawns (whose `webServer.cwd` defaults to the
+config file's own directory, i.e. `apps/<app>`) would resolve two different
+files, so a seeded user would silently write to a path the server-side login
+route never reads from and every `POST /api/auth/login` in the isolation
+spec would 401. `cd`-ing into the app directory first makes both sides agree
+on `process.cwd()`. The gyms smoke script also pins
+`PLAYWRIGHT_PORT=3100` (consumer keeps the default 3000) purely so the two
+smoke steps can never contend for the same port if a runner is slow to
+release it between steps — belt-and-suspenders, not a fix for an observed
+CI failure.
+
