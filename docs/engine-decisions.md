@@ -744,3 +744,30 @@ explicitly in his voice). The integration must stay removable in ~2 minutes
 (delete the Settings section; the public page is untouched) if it proves to
 be scope creep.
 
+### ED-6g.2 — Commit 4: consumer-only, because the page itself is
+consumer-only
+
+**Decision:** `/tools/macro-calculator` (Phase 6f Commit 9) was built
+exclusively under `apps/consumer/src/app/tools/` — there is no `apps/gyms`
+route at that path, and Phase 6f's own scoping treated this as an organic-
+search acquisition page for prospective Praxis clients, not gym operators
+or their members. Adding a gyms Settings link to a path that 404s in that
+app would be a straightforward bug, not a design choice. Commit 4 therefore
+only touches `apps/consumer/src/app/account/settings/page.tsx`. If gym
+operators later want equivalent in-app nutrition reference content for
+their members, that needs its own page under `apps/gyms` and its own
+decision — not a link to a route that doesn't exist there.
+
+**Observation for Sotirios's review (not acted on in this pass):** while
+implementing this commit, the macro calculator page's Article JSON-LD
+(`apps/consumer/src/app/tools/macro-calculator/page.tsx`, `articleJsonLd`)
+sets `author: { name: "Sotirios" }`. This is structured data, not rendered
+page copy — it doesn't violate the letter of Commit 4's "no personality
+attribution in the copy" rule, which governs the new Settings section's
+copy (confirmed clean: no name mentioned) — but it sits in some tension
+with SR-6f-nutrition-amendment's framing of this page as Praxis-branded,
+not personality-branded. Left untouched because bloom-plan's Phase 6g
+explicitly excludes "changes to the macro calculator page itself" from this
+pass's scope. Flagging for a ruling in case Sotirios wants it changed to
+`Organization: Praxis` in a future pass.
+

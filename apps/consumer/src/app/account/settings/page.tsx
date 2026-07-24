@@ -356,6 +356,25 @@ export default function AccountSettingsPage() {
           </div>
 
           <div
+            className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6"
+            data-testid="settings-nutrition-guidance"
+          >
+            <p className="ui-kicker">Nutrition guidance</p>
+            <h2 className="ui-title mt-1">Praxis macro calculator</h2>
+            <p className="mt-2 text-sm text-slate-300">
+              A free reference calculator for daily calorie and macro
+              targets based on your goals. It&apos;s the same public
+              calculator anyone can use — no login, no tracking, nothing
+              saved to your account.
+            </p>
+            <div className="mt-4">
+              <Link href="/tools/macro-calculator" data-testid="settings-nutrition-guidance-link">
+                <Button variant="secondary">Open Praxis macro calculator</Button>
+              </Link>
+            </div>
+          </div>
+
+          <div
             className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6 lg:col-span-2"
             data-testid="settings-interface-section"
           >
