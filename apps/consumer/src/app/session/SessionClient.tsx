@@ -3314,10 +3314,15 @@ export default function SessionClient() {
         ) : null}
 
         <OnImage className="space-y-3">
-          <div className="flex items-center justify-between gap-2">
-            <div className="text-xs font-semibold text-slate-200">
-              {activeIndex + 1} / {totalItems}
-            </div>
+          {/* Phase 6e, Commit 5.b — this row used to restate "{activeIndex +
+              1} / {totalItems}" here too, duplicating the exercise counter
+              that SessionProgressHeader (sticky, above) already shows on
+              every screen of the session, not just at start — the
+              "duplicating mid-view" Sotirios reported past Phase 6d's
+              Commit 5, which only removed a session-start-only duplicate.
+              The "..." menu here is the session's only Back/Exit affordance
+              and stays; just the redundant counter goes. */}
+          <div className="flex items-center justify-end gap-2">
             <div className="relative">
               <button
                 type="button"

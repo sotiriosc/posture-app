@@ -34,6 +34,13 @@ export default function PrivacyPage() {
               our servers. Only the derived measurements and observations you
               choose to save become part of your account record.
             </p>
+            <p className="mt-2">
+              Photos are stored on your device, locked to your account, and
+              never sent to our servers. If someone else logs into a
+              different account on the same device, they cannot see your
+              photos. Your photos remain on the device until you sign in
+              again or use &quot;Erase all local data&quot; in Settings.
+            </p>
           </section>
 
           <section>

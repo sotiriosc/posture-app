@@ -289,3 +289,47 @@ Sotirios over Path B (self-hosted PostHog) and Path C (no analytics at launch).
 site, then set `NEXT_PUBLIC_PLAUSIBLE_SRC` in the Vercel env for each project.
 No code change is needed to turn analytics on.
 
+## Phase 6e — Ship-Critical Fixes (2026-07-24)
+
+### ED-6e.1 — Photo isolation: "Option A refined" (ratified by Sotirios)
+
+**Decision:** Photos remain device-local, namespaced by `userId` in
+`bodycoach-photos` IndexedDB. Namespacing IS the isolation mechanism — there
+is no automatic wipe of photos on logout or account switch. Photos persist
+on the device until an explicit "Erase all local data," even across
+login/logout cycles for the same account.
+
+**How this differs from the bloom-plan spec's "Option A":** the spec text
+said photos are "wiped on explicit logout." Sotirios refined this: photos
+should behave like any other durable, account-owned asset — surviving
+logout the way they'd survive closing the browser — rather than being
+destroyed by the everyday act of signing out. Everything else local
+(session logs, program state, phase gating) is still fully cleared on
+login/logout/account-switch, since that state is genuinely transient and
+its leakage across accounts was the reported bug.
+
+**Rationale:** A user who logs out and back in on their own device
+shouldn't lose their posture photos — that would be a data-loss surprise,
+not a privacy win. Namespacing already fully closes the cross-account leak
+(account B can never read account A's photos on a shared device); deleting
+on top of that would only punish the common case (same person, same
+device, re-authenticating) to guard against a rare one (a truly shared
+device where the previous account never explicitly signed out AND never
+wanted their photos to persist).
+
+**Privacy copy:** `/privacy` updated to: "Photos are stored on your device,
+locked to your account, and never sent to our servers." Plus a line
+clarifying that a different account on the same device cannot see them, and
+that they persist until the explicit "Erase all local data" action.
+
+**Implementation:** `packages/engine/src/photoStore.ts` namespaces every
+IndexedDB record by `${userId}:${slot}` (default namespace `"guest"` for
+signed-out/no-auth use) and filters `list()` to the active namespace only.
+`packages/engine/src/accountIsolation.ts` (`syncLocalOwner`) sets the active
+namespace on every app load and account transition, and separately drives
+`clearAllLocalStateExceptPhotos()` (same enumeration as `eraseAllLocalData`,
+minus the `bodycoach-photos` database) whenever the locally-remembered
+owner doesn't match the server session. The photo IndexedDB schema bumped
+to v2; the one-time migration drops pre-6e unnamespaced photo records
+(there is no safe way to attribute them to one account).
+

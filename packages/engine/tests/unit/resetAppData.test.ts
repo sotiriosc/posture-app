@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import {
+  clearAllLocalStateExceptPhotos,
   eraseAllLocalData,
   resetAllAppData,
   resetAppDataKeys,
@@ -95,5 +96,45 @@ describe("reset app data", () => {
         "praxis-experimental-store",
       ])
     );
+  });
+
+  test("clear-local-state-except-photos wipes everything except the photo database (Phase 6e / ED-6e.1)", async () => {
+    const deletedDatabases: string[] = [];
+    let cleared = false;
+
+    vi.stubGlobal("window", {});
+    vi.stubGlobal("localStorage", {
+      length: 5,
+      key: vi.fn(),
+      getItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(() => {
+        cleared = true;
+      }),
+    });
+    vi.stubGlobal("sessionStorage", { clear: vi.fn() });
+    vi.stubGlobal("indexedDB", {
+      databases: vi.fn(async () => [
+        { name: "bodycoach-logs" },
+        { name: "bodycoach-drafts" },
+        { name: "bodycoach-photos" },
+        { name: "praxis-experimental-store" },
+      ]),
+      deleteDatabase: vi.fn((name: string) => {
+        deletedDatabases.push(name);
+        const request = {} as IDBOpenDBRequest;
+        queueMicrotask(() => request.onsuccess?.({} as Event));
+        return request;
+      }),
+    });
+
+    await clearAllLocalStateExceptPhotos();
+
+    expect(cleared).toBe(true);
+    expect(deletedDatabases).toEqual(
+      expect.arrayContaining(["bodycoach-logs", "bodycoach-drafts", "praxis-experimental-store"])
+    );
+    // Photos are namespaced, not wiped — this is the whole point of ED-6e.1.
+    expect(deletedDatabases).not.toContain("bodycoach-photos");
   });
 });

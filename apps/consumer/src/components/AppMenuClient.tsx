@@ -5,11 +5,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
 import AuthControls from "@/components/AuthControls";
+import { performLogout } from "@/components/authActions";
+import { syncLocalOwner } from "@/lib/accountIsolation";
 
 type AppMenuClientProps = {
   isAdmin: boolean;
   authEnabled: boolean;
   authenticated: boolean;
+  /**
+   * Server session's user id (or null for guest/signed-out use). Mounted
+   * globally in the root layout, so this is the "startup stale-device
+   * check" (Phase 6e, Commit 1 / SR-6e): on every app load, and whenever the
+   * signed-in account changes, reconcile this device's remembered owner
+   * against the server's truth and wipe non-photo local state on mismatch.
+   */
+  userId: string | null;
 };
 
 type MenuLink = {
@@ -28,6 +38,7 @@ export default function AppMenuClient({
   isAdmin,
   authEnabled,
   authenticated,
+  userId,
 }: AppMenuClientProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -39,6 +50,10 @@ export default function AppMenuClient({
     window.addEventListener(OPEN_APP_MENU_EVENT, handleExternalOpen);
     return () => window.removeEventListener(OPEN_APP_MENU_EVENT, handleExternalOpen);
   }, []);
+
+  useEffect(() => {
+    void syncLocalOwner(userId);
+  }, [userId]);
 
   const hideMenu =
     pathname?.startsWith("/auth/") || pathname?.startsWith("/admin/access");
@@ -72,12 +87,7 @@ export default function AppMenuClient({
   const [loggingOut, setLoggingOut] = useState(false);
   const logout = async () => {
     setLoggingOut(true);
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      cache: "no-store",
-      credentials: "include",
-    }).catch(() => null);
-    window.location.href = "/";
+    await performLogout();
   };
   const navItemClass =
     "block w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold transition border-slate-300/25 bg-slate-900/35 text-slate-100 hover:bg-slate-800/45";

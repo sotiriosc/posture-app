@@ -2,6 +2,7 @@ export type PhotoSlot = "front" | "side" | "back";
 
 type StoredPhoto = {
   slot: PhotoSlot;
+  namespace: string;
   name: string;
   type: string;
   lastModified: number;
@@ -18,8 +19,31 @@ type PhotoStoreAdapter = {
 const PHOTO_SLOTS: PhotoSlot[] = ["front", "side", "back"];
 
 const DB_NAME = "bodycoach-photos";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_PHOTOS = "photos";
+
+/**
+ * Photo isolation (Phase 6e, Commit 1 / SR-6e, ED-6e.1 — "Option A refined").
+ *
+ * Photos stay device-local and are namespaced by account id rather than
+ * wiped on login/logout/account-switch — this is the whole isolation
+ * mechanism. `setActivePhotoNamespace` is called by `PhotoProvider` with the
+ * server session's user id (or null for guest/signed-out use) on every page
+ * load. Every read/write below keys off it, so switching accounts on the
+ * same device instantly hides the previous account's photos without
+ * deleting them; they only go away via the explicit "Erase all local data"
+ * button (which deletes this whole database).
+ */
+const GUEST_PHOTO_NAMESPACE = "guest";
+let activeNamespace = GUEST_PHOTO_NAMESPACE;
+
+export const setActivePhotoNamespace = (id: string | null | undefined) => {
+  activeNamespace = id && id.trim() ? id : GUEST_PHOTO_NAMESPACE;
+};
+
+export const getActivePhotoNamespace = () => activeNamespace;
+
+const buildRecordId = (namespace: string, slot: PhotoSlot) => `${namespace}:${slot}`;
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
@@ -31,9 +55,14 @@ const openDbRequest = (version?: number) =>
         : indexedDB.open(DB_NAME);
     request.onupgradeneeded = () => {
       const db = request.result;
-      if (!db.objectStoreNames.contains(STORE_PHOTOS)) {
-        db.createObjectStore(STORE_PHOTOS, { keyPath: "slot" });
+      if (db.objectStoreNames.contains(STORE_PHOTOS)) {
+        // Pre-6e schema keyed records by bare `slot` with no per-account
+        // namespace — there is no safe way to attribute those legacy blobs
+        // to a single account, so this one-time migration drops them rather
+        // than risk showing one user's photos to another.
+        db.deleteObjectStore(STORE_PHOTOS);
       }
+      db.createObjectStore(STORE_PHOTOS, { keyPath: "id" });
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -115,21 +144,25 @@ const createIndexedDbAdapter = (): PhotoStoreAdapter => {
   return {
     get: async (slot) =>
       withStore("readonly", async (store) => {
-        const item = await requestToPromise(store.get(slot));
+        const item = await requestToPromise(
+          store.get(buildRecordId(activeNamespace, slot))
+        );
         return (item as StoredPhoto) ?? null;
       }),
     set: async (record) =>
       withStore("readwrite", async (store) => {
-        await requestToPromise(store.put(record));
+        await requestToPromise(
+          store.put({ ...record, id: buildRecordId(record.namespace, record.slot) })
+        );
       }),
     remove: async (slot) =>
       withStore("readwrite", async (store) => {
-        await requestToPromise(store.delete(slot));
+        await requestToPromise(store.delete(buildRecordId(activeNamespace, slot)));
       }),
     list: async () =>
       withStore("readonly", async (store) => {
-        const items = await requestToPromise(store.getAll());
-        return (items as StoredPhoto[]) ?? [];
+        const items = (await requestToPromise(store.getAll())) as StoredPhoto[];
+        return (items ?? []).filter((item) => item.namespace === activeNamespace);
       }),
   };
 };
@@ -140,6 +173,7 @@ export const createPhotoStore = (
   const setPhoto = async (slot: PhotoSlot, file: File) => {
     const record: StoredPhoto = {
       slot,
+      namespace: activeNamespace,
       name: file.name,
       type: file.type,
       lastModified: file.lastModified,

@@ -69,22 +69,40 @@ export default function SessionFeedbackCheckIn({
           <p className="text-xs font-semibold uppercase text-slate-500">
             Completion
           </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {completionOptions.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                data-testid={`session-feedback-completed-${option.value}`}
-                onClick={() => onChange({ ...value, completed: option.value })}
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                  selectedCompletion === option.value
-                    ? "border-slate-900 bg-slate-900 text-white"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-400"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
+          {/* Phase 6e, Commit 5.e — three equal-weight-looking buttons read as
+              three separate actions rather than one choice among
+              alternatives. role="radiogroup"/"radio" states the mutual
+              exclusivity semantically, and the unselected pills now use a
+              dashed, transparent, muted treatment (vs. the selected pill's
+              solid fill + checkmark) so the "chosen one vs. the other
+              options" relationship is visually unambiguous, not just
+              inferred from a single button being darker. */}
+          <div
+            className="mt-2 flex flex-wrap gap-2"
+            role="radiogroup"
+            aria-label="Session completion"
+          >
+            {completionOptions.map((option) => {
+              const selected = selectedCompletion === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  data-testid={`session-feedback-completed-${option.value}`}
+                  onClick={() => onChange({ ...value, completed: option.value })}
+                  className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                    selected
+                      ? "border-slate-900 bg-slate-900 text-white shadow-sm"
+                      : "border-dashed border-slate-300 bg-transparent text-slate-400 hover:border-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  {selected ? "\u2713 " : ""}
+                  {option.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 

@@ -10,7 +10,8 @@ const LOCAL_KEYS = [
   "session_feedback",
 ];
 
-const DB_NAMES = ["bodycoach-logs", "bodycoach-drafts", "bodycoach-photos"];
+const PHOTO_DB_NAME = "bodycoach-photos";
+const DB_NAMES = ["bodycoach-logs", "bodycoach-drafts", PHOTO_DB_NAME];
 
 const deleteDatabase = (name: string) =>
   new Promise<void>((resolve, reject) => {
@@ -97,5 +98,43 @@ export const eraseAllLocalData = async (): Promise<void> => {
   console.info(
     `[praxis] erase-all-local-data: cleared ${localKeyCount} localStorage keys and ` +
       `${dbNames.length} IndexedDB database(s): ${dbNames.join(", ") || "none"}`
+  );
+};
+
+/**
+ * Per-account isolation wipe (Phase 6e, Commit 1 / SR-6e, ED-6e.1).
+ *
+ * Identical to `eraseAllLocalData` except the photo database is deliberately
+ * excluded. Sotirios ratified namespacing — not deletion — as the photo
+ * isolation mechanism ("Option A refined"): photos stay device-local, keyed
+ * by account id, and survive login/logout/account-switch. They only go away
+ * via the explicit "Erase all local data" button above, which still wipes
+ * them. Everything else (session logs, program state, phase gating) is
+ * device-global today, so any account-boundary crossing wipes it — that's
+ * the ED-6e.1 leak (a new account inheriting a prior account's phase-gating
+ * progress) this exists to close. See `accountIsolation.ts` for the
+ * login/logout/startup call sites.
+ */
+export const clearAllLocalStateExceptPhotos = async (): Promise<void> => {
+  if (typeof window === "undefined") return;
+
+  await closeDb().catch(() => undefined);
+
+  const dbNames = (await listAllDatabaseNames()).filter(
+    (name) => name !== PHOTO_DB_NAME
+  );
+  await Promise.all(dbNames.map((name) => deleteDatabase(name)));
+
+  const localKeyCount = localStorage.length;
+  localStorage.clear();
+  try {
+    sessionStorage.clear();
+  } catch {
+    // sessionStorage can be unavailable in some embedded contexts; ignore.
+  }
+
+  console.info(
+    `[praxis] clear-local-state-except-photos: cleared ${localKeyCount} localStorage keys and ` +
+      `${dbNames.length} IndexedDB database(s), photos preserved: ${dbNames.join(", ") || "none"}`
   );
 };

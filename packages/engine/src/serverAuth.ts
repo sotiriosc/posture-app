@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import type { AuthUser, SessionTokenPayload } from "@/lib/authTypes";
 import { AUTH_COOKIE_NAME } from "@/lib/authTypes";
@@ -59,7 +60,13 @@ export const buildUserToken = async (
   return createSessionToken(payload, secret);
 };
 
-export const readServerSession = async () => {
+/**
+ * Wrapped in React's `cache()` (Phase 6e, Commit 1) so the several server
+ * components that each independently need "who's signed in" per request
+ * (AppMenu, PhotoProvider's owner prop, page-level auth checks, ...) share a
+ * single cookie decode + user-store lookup instead of one per caller.
+ */
+export const readServerSession = cache(async () => {
   const secret = getAuthSecret();
   if (!secret) return null;
   const cookieStore = await cookies();
@@ -90,7 +97,7 @@ export const readServerSession = async () => {
     email: stored.email,
     plan: stored.plan,
   } as AuthUser;
-};
+});
 
 export const serializeSessionCookie = (token: string) => ({
   name: AUTH_COOKIE_NAME,
