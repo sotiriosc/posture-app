@@ -62,7 +62,12 @@ const uploadFrontPhoto = async (page: Page) => {
     mimeType: "image/png",
     buffer: Buffer.from(TINY_PNG_BASE64, "base64"),
   });
-  await expect(page.getByRole("button", { name: "Delete" }).first()).toBeVisible();
+  // First navigation to /assessment in this run needs a fresh dev-server
+  // compile, and the client-side photo processing that follows the upload
+  // adds further latency -- give both room beyond Playwright's 5s default.
+  await expect(page.getByRole("button", { name: "Delete" }).first()).toBeVisible({
+    timeout: 15_000,
+  });
 };
 
 test("account B never sees account A's session history or photos on the same device", async ({

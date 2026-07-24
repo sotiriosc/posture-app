@@ -268,14 +268,19 @@ export const completeQuestionnaire = async (
   await page.getByTestId("equipment-none").check();
   await page.getByTestId(`days-${options.daysPerWeek ?? 3}`).click();
   await page.getByTestId("generate-routine").click();
-  await expect(page).toHaveURL(/\/results/);
+  // Program generation runs client-side before the router push to /results,
+  // and on a slower/first-compile CI runner this can comfortably exceed
+  // Playwright's 5s default expect timeout even though nothing is actually
+  // wrong -- matches the 20s tolerance already used for the dashboard text
+  // assertion right below.
+  await expect(page).toHaveURL(/\/results/, { timeout: 20_000 });
   await expect(page.getByText("Praxis dashboard", { exact: true })).toBeVisible({
     timeout: 20_000,
   });
 };
 
 export const waitForResultsDashboard = async (page: Page) => {
-  await expect(page).toHaveURL(/\/results/);
+  await expect(page).toHaveURL(/\/results/, { timeout: 20_000 });
   await expect(page.getByText("Praxis dashboard", { exact: true })).toBeVisible({
     timeout: 20_000,
   });
@@ -299,7 +304,7 @@ export const getStoredDaysPerWeek = async (page: Page) =>
 
 export const completeCurrentSession = async (page: Page) => {
   await page.getByTestId("start-selected-day").click();
-  await expect(page).toHaveURL(/\/session/);
+  await expect(page).toHaveURL(/\/session/, { timeout: 20_000 });
 
   for (let i = 0; i < 20; i += 1) {
     const button = page.getByTestId("session-next");
