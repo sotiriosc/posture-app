@@ -4,6 +4,7 @@ import AppMenu from "@/components/AppMenu";
 import Analytics from "@/components/Analytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import InstallApp from "@/components/InstallApp";
+import OfflineBadge from "@/components/OfflineBadge";
 import { readServerSession } from "@/lib/serverAuth";
 import "./globals.css";
 
@@ -98,6 +99,7 @@ export default async function RootLayout({
       >
         <Analytics>
           <AppMenu />
+          <OfflineBadge />
           <PhotoProvider userId={session?.id ?? null}>{children}</PhotoProvider>
           <ServiceWorkerRegister />
           <InstallApp />

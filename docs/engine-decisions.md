@@ -333,3 +333,79 @@ owner doesn't match the server session. The photo IndexedDB schema bumped
 to v2; the one-time migration drops pre-6e unnamespaced photo records
 (there is no safe way to attribute them to one account).
 
+## Phase 6f — Post-6e Follow-Up (2026-07-24)
+
+### SR-6f-brand — Motion Care / Praxis brand boundary
+
+**Standing rule:** Motion Care is Sotirios's practice. Praxis is the
+product. The app must NEVER mix the two names in user-facing copy. Any
+future feature that integrates Motion Care as a business (e.g., "book a
+trainer") must be specced in its own phase with explicit brand-boundary
+rules; there is no automatic name-bleed into Praxis's core coaching
+voice. (This corrects earlier drafting in this file and in `bloom-plan.md`
+that referred to "Motion Care clients" where "Praxis clients" was meant —
+see Phase 6e's edit to `bloom-plan.md`.)
+
+### SR-6f-nutrition — Nutrition stays read-only content, not a tracked feature
+
+**Standing rule:** Praxis is a movement and posture app. Nutrition
+features live in read-only content pages, not as calculators or trackers
+integrated into the authenticated app experience. Praxis does not compete
+with MyFitnessPal or Macrofactor. If Sotirios's Motion Care clients ask
+for nutrition tools, revisit — but real demand justifies real complexity;
+speculation does not.
+
+**Amendment (SR-6f-nutrition-amendment, Phase 6f Commit 9):** the public
+`/tools/macro-calculator` marketing page is consistent with this rule
+because it is explicitly NOT an app feature — it's an unauthenticated,
+public marketing/SEO page, not linked from the authenticated experience,
+and it creates no user-tracked nutrition data. It exists to acquire
+organic search traffic and funnel into `/assessment`, not to start a
+nutrition-tracking product surface. This page must never become a wedge
+for a full nutrition tracker without a separate, explicit phase revisiting
+SR-6f-nutrition.
+
+### SR-6f-catalog — Consecutive same-pattern mains with identical coach notes
+
+**Standing rule:** When two consecutive main-slot exercises in a
+generated day are the same movement pattern with identical coach-note
+text, flag it as a bug in the catalog audit log. Observed case: Machine
+Chest Press + Dumbbell Bench Press both selected as mains on a Beginner /
+Build Muscle / Gym persona's day, when Chest Fly should have been the
+second main (same pattern repeated with no variation the coach notes
+themselves acknowledge). Investigation deferred to Phase 7 or a dedicated
+catalog pass — no engine change in Phase 6f.
+
+### ED-6f.2 — Offline mode (Commit 2): reused the existing full-program
+cache instead of a narrower "current + next day" cache
+
+**Decision:** Commit 2's spec calls for caching "CURRENT program's active
+day + next scheduled day locally... replace-not-accumulate." Investigation
+found training already stores the ENTIRE active program (every day, not
+just two) in IndexedDB, keyed by program id, with `appState.activeProgramId`
+as the single pointer that moves when a plan is regenerated — this already
+satisfies "replace-not-accumulate" at the level that actually matters (what
+resolves as "today's session"), and is a strict superset of a 2-day cache.
+Building a separate, narrower cache alongside it would add a second source
+of truth for the same data with no user-facing benefit, and would actually
+regress days 3–7 of the current week (no longer independently navigable
+offline). No new caching layer was added; Commit 2's actual gap — writes
+made offline never syncing back once the connection returned — was in the
+*sync* path, not the *cache* path (see ED-6f.3).
+
+### ED-6f.3 — Offline mode (Commit 2): sync retry queue wraps
+`pushTrainingPatch`, not each call site
+
+**Decision:** Every local save (`logStore.ts`'s `saveTrainingRecordIfChanged`
+and `savePrefs`) already fires a best-effort `pushTrainingPatch(...)` after
+every successful local write — local writes (and therefore training itself)
+already worked fully offline; only the fire-and-forget server mirror had no
+retry. Rather than touching every call site, the retry queue
+(`localStorage`-backed, ordered, exponential backoff, capped at 50 entries)
+was added inside `pushTrainingPatch` itself in `trainingSyncClient.ts`: a
+patch that fails for a connectivity/server reason (anything except a 401,
+which will never succeed regardless of connectivity) is queued and retried
+on the `online` event and on a backoff timer, in order, until it lands.
+Every existing caller keeps its exact same call signature and behavior when
+online; nothing else changed.
+

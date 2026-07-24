@@ -103,6 +103,7 @@ import {
 } from "@/lib/logStore";
 import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
 import { markSessionComplete } from "@/lib/sessionStore";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -444,6 +445,13 @@ export default function SessionClient() {
     useState<SessionPracticeOption["mode"]>("full");
   const [sessionPlanLoading, setSessionPlanLoading] = useState(true);
   const [sessionPlanIssue, setSessionPlanIssue] = useState<string | null>(null);
+  // Phase 6f, Commit 2 — distinguishes "genuinely nothing saved yet" from
+  // "nothing saved AND we can't fetch it right now" so the empty-state can
+  // give an honest, specific message instead of implying there's no plan at
+  // all when really there's just no connection yet to fetch one.
+  const [sessionPlanOfflineNoCache, setSessionPlanOfflineNoCache] =
+    useState(false);
+  const isOnline = useOnlineStatus();
   const [tipIndex, setTipIndex] = useState(0);
   const [unitByExercise, setUnitByExercise] = useState<
     Record<string, "lb" | "kg">
@@ -568,6 +576,7 @@ export default function SessionClient() {
     const load = async () => {
       setSessionPlanLoading(true);
       setSessionPlanIssue(null);
+      setSessionPlanOfflineNoCache(false);
       try {
         await init();
         let resolvedQuestionnaire: QuestionnaireData | null = null;
@@ -822,22 +831,38 @@ export default function SessionClient() {
           return;
         }
 
+        // Edge case (Phase 6f, Commit 2): offline on a device with nothing
+        // cached yet — there's genuinely no plan to show, but the reason is
+        // "no connection to fetch one," not "you haven't built one." Don't
+        // fake data; say exactly what's true and what to do about it.
+        const offlineWithNothingCached =
+          !resolvedQuestionnaire &&
+          typeof navigator !== "undefined" &&
+          !navigator.onLine;
         setProgram(null);
         setProgramDayIndex(null);
         setProgramProgress(null);
         setNextSessionRecommendation(null);
+        setSessionPlanOfflineNoCache(offlineWithNothingCached);
         setSessionPlanIssue(
-          resolvedQuestionnaire
+          offlineWithNothingCached
+            ? "You're offline. Connect once to load today's session, then you can train without connection."
+            : resolvedQuestionnaire
             ? "No saved Praxis program is available for this session yet. Return to Results to rebuild your active plan."
             : "No saved Praxis profile or program is available for this session yet. Build your profile to create a plan."
         );
       } catch {
+        const offlineWithNothingCached =
+          typeof navigator !== "undefined" && !navigator.onLine;
         setProgram(null);
         setProgramDayIndex(null);
         setProgramProgress(null);
         setNextSessionRecommendation(null);
+        setSessionPlanOfflineNoCache(offlineWithNothingCached);
         setSessionPlanIssue(
-          "Praxis could not load your saved program for this session. Your local data is still safe."
+          offlineWithNothingCached
+            ? "You're offline. Connect once to load today's session, then you can train without connection."
+            : "Praxis could not load your saved program for this session. Your local data is still safe."
         );
       } finally {
         setSessionPlanLoading(false);
@@ -2540,6 +2565,32 @@ export default function SessionClient() {
   }
 
   if (!currentItem) {
+    if (sessionPlanOfflineNoCache) {
+      return (
+        <BackgroundShell>
+          <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+            <OnImage>
+              <h1 className="text-2xl font-semibold text-white">
+                You&apos;re offline
+              </h1>
+              <p className="text-sm text-slate-200">
+                {sessionPlanIssue}
+              </p>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  if (isOnline) window.location.reload();
+                }}
+                disabled={!isOnline}
+              >
+                {isOnline ? "Try again" : "Waiting for connection..."}
+              </Button>
+            </OnImage>
+          </div>
+        </BackgroundShell>
+      );
+    }
+
     const recoveryHref = data ? "/results" : "/questionnaire";
     const recoveryLabel = data ? "Back to results" : "Build profile";
     const recoveryTitle = program
