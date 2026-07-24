@@ -409,3 +409,21 @@ on the `online` event and on a backoff timer, in order, until it lands.
 Every existing caller keeps its exact same call signature and behavior when
 online; nothing else changed.
 
+### ED-6f.4 — Subscription status persistence (Commit 3, amended): client-side
+fallback only, not a middleware bypass
+
+**Decision:** The status-model local cache (`subscriptionStore.ts`,
+`useUserPlan.ts` in both apps) only changes what happens when the CLIENT's
+own `/api/auth/session` + `/api/billing/status` fetches fail — it lets
+`isPro`/`isFreePlan` (the Pro chip, the upgrade prompt, client-side day-lock
+rendering) fall back to the last-confirmed local status instead of
+collapsing to "signed out." It deliberately does NOT touch
+`middleware.ts`'s JWT-cookie paywall redirect, which runs server-side on
+every request. Investigation (mirroring Phase 6f Commit 2's finding) showed
+this is the only coherent scope: the service worker's navigation fallback
+(`sw.js`, network-first → generic `/offline` page) means a genuinely offline
+device can't reach a NEW server-rendered route at all, so there is no
+"unlock a paywalled day while offline" case to build for — offline access
+only matters for a page already loaded before the connection dropped, which
+is exactly the client-side surface this commit fixes.
+
