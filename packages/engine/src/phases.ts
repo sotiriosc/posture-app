@@ -163,7 +163,7 @@ export const buildNextWeekPlan = (params: {
       summary:
         "Next week: regress intensity and prioritize comfortable movement.",
       change: "Reduce range or load on 1–2 exercises; add extra mobility.",
-      reason: "Pain flagged last week—regress to keep this smooth.",
+      reason: "Pain flagged last week—ease to a simpler version to keep this smooth.",
     };
   }
 

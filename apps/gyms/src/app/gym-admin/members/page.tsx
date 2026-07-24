@@ -24,7 +24,7 @@ export default function MembersPage() {
           </Link>
           <h1 className="mt-4 text-lg font-semibold text-white">Member Progress</h1>
           <p className="mt-1 text-sm text-[#6B7280]">
-            Ladder advancements, posture retirements, and session activity per member.
+            Level advancements, posture retirements, and session activity per member.
           </p>
         </header>
 
@@ -39,7 +39,7 @@ export default function MembersPage() {
                   Phase
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#4B5563]">
-                  Ladders
+                  Levels
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#4B5563]">
                   Sessions / wk

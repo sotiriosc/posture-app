@@ -20,6 +20,8 @@ import { usePhotoContext } from "@/components/PhotoContext";
 import type { PoseAnalysis } from "@/lib/poseAnalyzer";
 import type { AssessmentReport } from "@/lib/assessmentEngine";
 import Button from "@/components/ui/Button";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import type { Exercise } from "@/lib/exercises";
@@ -3542,7 +3544,18 @@ export default function ResultsRoutine({
                   className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-slate-900">{card.title}</p>
+                    <p className="text-sm font-medium text-slate-900">
+                      {card.key === "compensation" ? (
+                        <ClarifyTerm
+                          term="Compensation"
+                          explanation={CLARIFY.Compensation}
+                        >
+                          {card.title}
+                        </ClarifyTerm>
+                      ) : (
+                        card.title
+                      )}
+                    </p>
                     <button
                       type="button"
                       className={secondaryActionBtn}

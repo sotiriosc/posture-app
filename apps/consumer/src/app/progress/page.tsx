@@ -31,7 +31,7 @@ const DAY_MS = 86_400_000;
 type DifficultyTrendLabel =
   | "Pattern quality improving"
   | "Stable performance"
-  | "Corrective strength trend";
+  | "Targeted strength trend";
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -426,7 +426,7 @@ export default function ProgressPage() {
       chronologicalScores[0].score;
 
     if (delta <= -0.35) return "Pattern quality improving";
-    if (delta >= 0.35) return "Corrective strength trend";
+    if (delta >= 0.35) return "Targeted strength trend";
     return "Stable performance";
   }, [difficultyDataPoints]);
 
@@ -463,8 +463,8 @@ export default function ProgressPage() {
 
     if (difficultyTrendLabel === "Pattern quality improving") {
       insights.push("Movement quality emphasis is improving across recent sessions.");
-    } else if (difficultyTrendLabel === "Corrective strength trend") {
-      insights.push("Corrective strength trend is building steadily across recent sessions.");
+    } else if (difficultyTrendLabel === "Targeted strength trend") {
+      insights.push("Targeted strength trend is building steadily across recent sessions.");
     } else {
       insights.push("Session effort is stable and repeatable.");
     }

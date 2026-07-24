@@ -105,7 +105,7 @@ export const buildPhaseObjective = (params: {
       : "Move with control first; increase demand only when form stays stable.";
   const riskWatchouts = [
     movementProfile.painRisk >= 0.6
-      ? "Avoid forcing range under pain; use regression when symptoms rise."
+      ? "Avoid forcing range under pain; drop to an easier version when symptoms rise."
       : "Avoid chasing fatigue at the cost of clean reps.",
     movementProfile.asymmetry >= 0.45
       ? "Watch left/right drift, rotation, or uneven bracing."

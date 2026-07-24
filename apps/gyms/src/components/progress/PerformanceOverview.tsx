@@ -21,7 +21,7 @@ export default function PerformanceOverview({
   const trendTone =
     trendLabel === "Pattern quality improving"
       ? "text-emerald-200"
-      : trendLabel === "Corrective strength trend"
+      : trendLabel === "Targeted strength trend"
         ? "text-sky-200"
         : "text-slate-200";
 

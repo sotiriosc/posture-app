@@ -5,6 +5,8 @@ import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import {
   BUYER_DEMO_COOKIE,
   isBuyerDemoCookieValue,
@@ -31,7 +33,16 @@ export default async function AssessmentPage({
           <header className="ui-page-heading flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase text-slate-300">
-                {buyerDemoMode ? "Buyer demo mode" : "Movement & Posture Baseline"}
+                {buyerDemoMode ? (
+                  "Buyer demo mode"
+                ) : (
+                  <>
+                    Movement & Posture{" "}
+                    <ClarifyTerm term="Baseline" explanation={CLARIFY.Baseline}>
+                      Baseline
+                    </ClarifyTerm>
+                  </>
+                )}
               </p>
               <h1 className="mt-2 text-3xl font-semibold text-white">
                 Upload your posture photos

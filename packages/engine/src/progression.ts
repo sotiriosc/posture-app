@@ -278,7 +278,7 @@ export const getProgressionRecommendation = ({
             ? prescription.restSec + 15
             : undefined,
       },
-      reason: "Pain flagged last time—regressing to keep this smooth.",
+      reason: "Pain flagged last time—easing to a simpler version to keep this smooth.",
       safetyFlag: true,
       coachNote: "Stay smooth—leave 2 reps in reserve and own the range.",
     };
@@ -495,7 +495,7 @@ export const getProgressionRecommendation = ({
           sets: setRange.min ?? undefined,
           tempo: "controlled",
         },
-        reason: "Next progression step is regression for quality: reduce work time slightly and complete all sets with control.",
+        reason: "Next step eases the work for quality: reduce work time slightly and complete all sets with control.",
         coachNote:
           lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
       };

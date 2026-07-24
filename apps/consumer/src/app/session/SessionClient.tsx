@@ -45,6 +45,8 @@ import DualModeTimer, {
 import ExerciseCard from "@/components/ExerciseCard";
 import SessionProgressHeader from "@/components/session/SessionProgressHeader";
 import SessionFeedbackCheckIn from "@/components/session/SessionFeedbackCheckIn";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import OnboardingInfoButton, {
   openOnboardingGuide,
 } from "@/components/onboarding/OnboardingInfoButton";
@@ -3203,7 +3205,10 @@ export default function SessionClient() {
               ) : null}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
-                  RPE (1-10)
+                  <ClarifyTerm term="RPE" explanation={CLARIFY.RPE}>
+                    RPE
+                  </ClarifyTerm>{" "}
+                  (1-10)
                 </label>
                 <input
                   id="rpe-input"

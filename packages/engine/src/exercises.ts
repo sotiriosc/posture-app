@@ -3279,7 +3279,7 @@ const rawExercises: Exercise[] = [
   },
   {
     id: "hanging-windshield-wiper-regression",
-    name: "Hanging Windshield Wiper (Regression)",
+    name: "Hanging Windshield Wiper (easier version)",
     category: "main",
     pattern: "core_stability",
     difficulty: 4,

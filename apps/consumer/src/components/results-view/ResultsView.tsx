@@ -19,6 +19,8 @@ import {
   formatPhaseName,
   phaseIndexFromPersistedStage,
 } from "@/lib/phases";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 
 // ---------------------------------------------------------------------------
 // Sub-section components — quiet design language per bloom-plan §Phase 5
@@ -34,7 +36,7 @@ function HeadlineMetric({ projection }: { projection: ResultsProjection }) {
         <>
           <p className="text-5xl font-light tabular-nums text-white">{rungsCount}</p>
           <p className="mt-1 text-base text-slate-400">
-            ladder rung{rungsCount === 1 ? "" : "s"} climbed across{" "}
+            level{rungsCount === 1 ? "" : "s"} climbed across{" "}
             <span className="text-slate-200">{patternsCount} pattern{patternsCount === 1 ? "" : "s"}</span>
           </p>
         </>
@@ -56,9 +58,9 @@ function LaddersSection({ projection }: { projection: ResultsProjection }) {
     <section aria-labelledby="ladders-heading">
       <div className="flex items-center justify-between">
         <h2 id="ladders-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-          Ladders
+          Your levels
         </h2>
-        <SectionEyeButton sectionId="results.ladders" title="Ladders" />
+        <SectionEyeButton sectionId="results.ladders" title="Your levels" />
       </div>
       <div className="mt-4 space-y-6">
         {projection.currentRungByPattern.map((rung) => {
@@ -128,7 +130,9 @@ function PostureSection({ projection }: { projection: ResultsProjection }) {
     <section aria-labelledby="posture-heading">
       <div className="flex items-center justify-between">
         <h2 id="posture-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-          Posture
+          <ClarifyTerm term="Focus area" explanation={CLARIFY["Focus area"]}>
+            Posture
+          </ClarifyTerm>
         </h2>
         <SectionEyeButton sectionId="results.posture" title="Posture" />
       </div>
@@ -224,7 +228,11 @@ function SacrificeRetestSection({
     <section aria-labelledby="retest-heading">
       <div className="flex items-center justify-between">
         <h2 id="retest-heading" className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-          Ready to retest?
+          Ready to{" "}
+          <ClarifyTerm term="Retest" explanation={CLARIFY.Retest}>
+            retest
+          </ClarifyTerm>
+          ?
         </h2>
         <SectionEyeButton sectionId="results.sacrificeRetest" title="Ready to retest?" />
       </div>

@@ -38,6 +38,6 @@ test("first run: operator views a member's projection", async ({ page }) => {
   // a coach note and the ladder-progress projection (no gamification copy).
   await expect(page.getByText("Coach note")).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Ladder Progress" })
+    page.getByRole("heading", { name: "Level Progress" })
   ).toBeVisible({ timeout: 20_000 });
 });
