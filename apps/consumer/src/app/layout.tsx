@@ -66,9 +66,11 @@ export const metadata: Metadata = {
     images: ["/icons/praxis-logo-full.png"],
   },
   icons: {
+    // Prefer the PNG favicon first so the browser tab always shows the Praxis
+    // mark (SVG is listed second for agents that prefer vector).
     icon: [
-      { url: "/icons/icon-192.svg", type: "image/svg+xml" },
       { url: "/icons/praxis-favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-192.svg", type: "image/svg+xml" },
       { url: "/icons/praxis-mark-192.png", sizes: "192x192", type: "image/png" },
     ],
     shortcut: [{ url: "/icons/praxis-favicon-32.png", sizes: "32x32", type: "image/png" }],
