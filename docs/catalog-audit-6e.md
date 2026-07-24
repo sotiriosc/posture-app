@@ -105,3 +105,86 @@ plank or side-lying adductor raise for adduction — tagged with a new
 pattern, and with `tags` including `glute_medius`/`hip_stability` so the
 existing `POSE_FOCUS_TAG_ALIASES` bias actually finds them. Sotirios
 rules on additions in a follow-up.
+
+## Commit 4 — Floor press program placement audit
+
+**Finding: floor press is showing up as designed, not as a bug.** It's
+correctly ratified as a swap of dumbbell/barbell bench press per Phase 2b,
+and every appearance traced below is the engine correctly substituting it
+in for a persona whose equipment genuinely can't support a bench press.
+One secondary, real observation is flagged below for Sotirios's taste call
+— it's a proposal, not a claim of incorrect behavior.
+
+### Which persona / equipment set / phase generated it
+
+Traced every `mainPushCompound` selection across
+`docs/dev-reports/three-day-persona-review-after-slot-cleanup.md` (the
+most recent three-day persona sweep). The slot resolves along a clean
+equipment waterfall, one exercise family per equipment tier:
+
+| Equipment available | `mainPushCompound` pick | Exercise's own equipment requirement |
+| --- | --- | --- |
+| none (bodyweight only) | `pushup` | `["none"]` |
+| bands | `band-chest-press` / `split-stance-band-chest-press` | `["bands"]` |
+| dumbbells (no bench) | `dumbbell-floor-press` | `["dumbbells"]` |
+| dumbbells + bench, barbell, or gym machines | `dumbbell-bench-press` / `barbell-bench-press-paused` / `machine-chest-press` | requires `"bench"` and/or barbell/machine |
+
+`dumbbell-floor-press` appears **exactly** and **only** for the
+"dumbbells, no bench" equipment tier — e.g. the "Beginner / 3 days /
+dumbbells / no pain — Phase 1" persona
+(`docs/dev-reports/three-day-persona-review-after-slot-cleanup.md:766-787`).
+`dumbbell-bench-press` requires `equipment: ["dumbbells", "bench"]`
+(`packages/engine/src/exercises.ts:436`) and is therefore ineligible the
+moment a persona's equipment list omits a bench — `dumbbell-floor-press`
+requires only `["dumbbells"]`
+(`packages/engine/src/exercises.ts:454`) and correctly becomes the best
+available compound push movement instead. This is exactly the scenario
+the swap exists for (a very common real home-gym setup: adjustable
+dumbbells, no bench).
+
+### Is it correctly ratified as a swap of db-bench per Phase 2b?
+
+Yes — confirmed in `docs/ladder-decisions.md:80` ("horizontal_push,
+2026-07-12"):
+
+```80:80:docs/ladder-decisions.md
+3. **barbell-floor-press, dumbbell-floor-press reclassified** — both become swaps (`barbell-floor-press → swapOptions: ["barbell-bench-press-paused"]`, `dumbbell-floor-press → swapOptions: ["dumbbell-bench-press"]`). Floor press limits ROM and is a valid variation, not a distinct rung.
+```
+
+Both catalog entries carry the matching `swapOptions` (`exercises.ts:453`,
+`exercises.ts:3953`).
+
+### Was it selected as a rung, a swap, or a degradation fallback?
+
+Neither a rung (it was explicitly removed from the ladder) nor a
+degradation fallback. Every trace shows `source=initial_pick` (two show
+`source=day_intelligence_repair`, an unrelated day-shape repair pass, not
+a degradation). It's chosen directly in the first selection pass because
+it's the only/best eligible `horizontal_push` candidate for that
+equipment tier — `swapOptions` here means "this is what a user's manual
+swap picker offers as the alternative," not "this can only appear when
+something else fails."
+
+### Is it showing up incorrectly anywhere (e.g., Beginner Build main slot when better options exist)?
+
+Not incorrectly by the equipment-eligibility logic — for a
+"dumbbells, no bench" persona there is no better *eligible* option
+(`pushup` only outranks it when there are no dumbbells at all; bench
+press variants are ineligible without a bench).
+
+One real, separate observation worth Sotirios's taste call: `barbell-floor-press`
+is phase-gated (`phaseMin: "growth"`, `difficultyTier: "hard"` —
+`exercises.ts:3951-3952`) so it can't reach an absolute-beginner Phase 1
+day. `dumbbell-floor-press` has **no `phaseMin` and no `tier`** field at
+all (`exercises.ts:448-464`), so it's immediately available to a
+Beginner on Phase 1, Day 1 — which is exactly what the traced persona
+shows. Lying on the floor to press is a slightly less intuitive setup
+than a standard press for someone's very first structured session, even
+though the load and pattern are appropriate.
+
+**Proposed scoring adjustment (not made in this PR):** add a `tier: 2`
+(matching its bench-press swap target's general difficulty band) or a
+light `phaseMin` to `dumbbell-floor-press` if Sotirios wants to keep true
+first-timers on `pushup`-family movements one cycle longer before a
+dumbbells-only persona is handed a floor-based press — purely a taste
+call, not a correctness fix.
