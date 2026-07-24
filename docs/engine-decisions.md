@@ -670,3 +670,32 @@ the native DOM value without firing React's `onChange`, and hydration then
 silently reset it back — fixed by waiting for `networkidle` before the
 first interaction (see the spec file).
 
+### ED-6f.11 — Commit 5.b follow-up: closing the remaining "cycle" copy gap
+found by post-hoc exploration
+
+A background research agent (dispatched during the original explore phase,
+but whose findings didn't return until after Commit 5.b had already landed
+and the PR was open) enumerated every user-facing occurrence of the word
+"cycle" across both apps and the engine. Cross-checking its list against
+what Commit 5.b actually changed turned up nine strings genuinely missed:
+the dashboard's "Full-cycle analysis…" description and "…complete one full
+week or cycle…" Insights lock reason (both apps' `ResultsRoutine.tsx`), and
+six engine-produced strings surfaced through the UI —
+`sessionAdaptation.ts`'s per-session summary/appliedChanges copy (x3),
+`phaseOptimizer.ts`'s "Cycle variation…" reason, `splitTemplatePolicy.ts`'s
+adaptive-rebalance note (x2), `ladderAdvancement.ts`'s
+`getLadderProgressionMessage` copy, and `phases.ts`'s repeat-week message.
+All nine are reworded to "week" vocabulary with no behavior change; none
+had a test asserting the exact literal (confirmed via full-repo grep before
+editing), so no test updates were required. Deliberately left untouched,
+per the same internal-vs-user-facing boundary already drawn in 5.b:
+`cycleIndex`/`cyclesCompletedInPhase`/`activeCycleIndex`/the `"nextCycle"`
+engine mode string (all internal identifiers), the dev-only
+`SHOW_TECHNICAL_PROGRAM_REFERENCE`-gated "Cycle Index:" debug line in both
+apps, `phaseGatingEvaluator.ts`'s internal `trace` field (developer-facing
+gating diagnostics, never rendered), and `program.ts`'s unrelated lifting
+"tempo cycle" note (a different domain concept entirely). Re-verified after
+this follow-up: full engine suite (869/869), full gyms (17/17) and consumer
+(13/13) unit suites, boundary lint (0 errors), and both app builds all
+green.
+

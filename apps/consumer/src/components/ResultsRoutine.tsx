@@ -3143,7 +3143,7 @@ export default function ResultsRoutine() {
       : "Getting started";
   const dashboardLevelDescription =
     dashboardLevel === 3
-      ? "Full-cycle analysis is available from your completed week."
+      ? "Full analysis is available from your completed week."
     : dashboardLevel === 2
       ? "Progress and history are unlocked from your first completed workout."
       : "Assessment, Today, and Week are ready. Complete one workout to unlock Progress and History.";
@@ -3191,7 +3191,7 @@ export default function ResultsRoutine() {
       title: "Insights",
       summary: "Pattern, stability, compensation, and adaptation analysis.",
       locked: insightsLocked,
-      lockReason: "Complete one full week or cycle to unlock deeper analysis.",
+      lockReason: "Complete one full week to unlock deeper analysis.",
     },
     {
       key: "history",
