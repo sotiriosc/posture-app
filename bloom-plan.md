@@ -1687,6 +1687,19 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   or to any external memory/knowledge system. Any PR introducing such a connection
   is out of contract regardless of how useful it looks. This app gets locked in
   as its own complete thing.
+- **Brand boundary (SR-6f-brand, 2026-07-24):** Motion Care is Sotirios's practice;
+  Praxis is the product. Never mix the two names in user-facing copy. Any future
+  Motion Care business integration (e.g. "book a trainer") needs its own phase
+  with explicit brand-boundary rules.
+- **Nutrition scope (SR-6f-nutrition, 2026-07-24):** Nutrition stays read-only
+  content, never a tracked in-app feature, unless a dedicated phase revisits this
+  rule on real client demand. The public `/tools/macro-calculator` marketing page
+  (Phase 6f Commit 9) is a deliberate, narrow exception — see
+  SR-6f-nutrition-amendment in `docs/engine-decisions.md`.
+- **Catalog pattern-repeat flag (SR-6f-catalog, 2026-07-24):** two consecutive
+  main-slot exercises in one generated day sharing a movement pattern and
+  identical coach-note text is a catalog bug to flag, not ship. See
+  `docs/engine-decisions.md` § SR-6f-catalog.
 
 ---
 
