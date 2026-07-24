@@ -578,3 +578,58 @@ smoke steps can never contend for the same port if a runner is slow to
 release it between steps — belt-and-suspenders, not a fix for an observed
 CI failure.
 
+### ED-6f.9 — Macro calculator (Commit 9): plain per-bodyweight protein
+target instead of a %-of-calories split, and a new consumer-app test layer
+that didn't exist before
+
+**Decision:** The ratified macro ratio is "moderate fat / high carb / high
+protein," but implementing all three as fixed percentages of total calories
+has a real failure mode: a %-of-calories protein target quietly under-feeds
+protein for anyone in a large calorie deficit (the "lose" goal), which is
+exactly the situation where protein retention matters most. Implemented
+instead as: protein = 1.8 g per kg bodyweight (set directly, not from
+calories — solidly inside the 1.6–2.2 g/kg range supported for
+resistance-trained lifters), fat = a flat 25% of total calories
+("moderate"), carbs = whatever calories remain. For a resistance-training
+population at typical training calorie levels this reliably makes carbs the
+largest macro by both grams and percentage without hand-tuning a carb
+percentage directly — "high carb" falls out of the other two choices rather
+than being a fourth independent knob. `MINIMUM_CALORIES = 1200` floors the
+output for small-bodyweight + "lose" combinations; this is a public
+marketing calculator, not a clinical tool, and must never recommend an
+unsafe number. All of this lives in `apps/consumer/src/tools/
+macroCalculator.ts`, deliberately NOT under the `@/lib/*` alias — that alias
+resolves to the `packages/engine` source tree for every app in this
+monorepo (see `apps/consumer/tsconfig.json`), and this calculator is
+consumer-app-only, page-specific logic with no relationship to the training
+engine.
+
+**New test infrastructure this commit adds:** `apps/consumer` had zero unit
+tests and no `vitest.config.ts` before this commit (unlike `apps/gyms`,
+which already had both). Added `apps/consumer/vitest.config.ts` (mirroring
+`apps/gyms/vitest.config.ts`) and `apps/consumer/tests/unit/
+macroCalculator.test.ts`, wired into CI as `npm run test:full:consumer`
+(nightly, alongside the existing `test:full:gyms`) — this is new coverage
+for new code, not a retrofit of the rest of the consumer app, so it wasn't
+worth adding to the Commit 6 `@critical` PR-gate list.
+
+**Route/middleware:** `/tools/macro-calculator` needed no middleware
+change — `middleware.ts`'s matcher (`/settings`, `/results`, `/session`,
+`/program`, `/progress`, `/account`) never runs on `/tools/*` at all, so the
+page is public by simply existing outside that matcher, consistent with
+SR-6f-nutrition-amendment's requirement that it not be gated or linked into
+the authenticated app experience. No existing in-app nav (`AppMenuClient`,
+dashboard, settings) links to it — the only links are the page's own
+internal "Try the assessment" CTA (outbound, to `/assessment`) and the new
+`sitemap.ts` entry.
+
+**Sitemap:** no `sitemap.ts` existed anywhere in the monorepo before this
+commit. Added `apps/consumer/src/app/sitemap.ts` covering the full existing
+set of public, indexable pages (home, assessment, macro calculator, FAQ,
+privacy, terms, refunds) rather than only the new page — a sitemap with a
+single URL would be an odd first version to ship. Authenticated-only routes
+and transactional auth routes are intentionally excluded. `robots.ts` was
+considered but not added: bloom-plan's SEO-essentials list for this commit
+names only "sitemap entry," and introducing a site-wide crawl policy is a
+broader decision than one marketing page warrants.
+

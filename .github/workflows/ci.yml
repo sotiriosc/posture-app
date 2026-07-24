@@ -83,3 +83,7 @@ jobs:
       # Gyms-only tests run nightly too.
       - name: Run gyms suite
         run: npm run test:full:gyms
+
+      # Consumer-only tests (e.g. macro calculator math, Phase 6f Commit 9).
+      - name: Run consumer suite
+        run: npm run test:full:consumer
