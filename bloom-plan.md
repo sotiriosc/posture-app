@@ -1646,6 +1646,152 @@ All originally-specced items still complete.
 
 Merge commit.
 
+
+
+Phase 6g — Clarity Pass
+
+Branch: phase-6g-clarity from origin/main (after PR #32 merges). Multi-commit. Two focused improvements: term-clarification tooltips across the app, and in-app access to the macro calculator page.
+
+Guiding principle (log as SR-6g)
+
+Users should never have to leave Praxis to look up a term. Every domain word we use should be either self-explanatory or one tap away from an explanation in coach voice. And features that already exist (like the macro calculator) should be accessible from the app without arbitrary gating — but positioned as reference content, not tracked functionality.
+
+Commit 1 — Term-clarification audit
+
+Grep the consumer and gyms codebases for domain-specific vocabulary that appears in user-facing strings. Produce a report in docs/term-audit-6g.md listing:
+
+Every term found
+Where it appears (which screens)
+Whether it currently has any explanation nearby
+Recommended action: add tooltip, rename to plainer word, or leave as-is
+
+Target terms to search for at minimum (grep both apps):
+
+RPE
+Phase (in the Activation/Skill/Growth sense)
+Cycle (should be gone from user-facing copy after 6f — verify)
+Progression
+Ladder
+Regression (in the exercise sense)
+Sacrifice / Test / Modify
+Focus tag / focus area
+Baseline
+Retest
+Corrective / corrective slot
+Autoregulation
+Compensation
+Asymmetry
+Movement pattern
+Ramp / Mobilize / Activate / Prime (warmup block names)
+Deload
+Superset (if it appears)
+Antagonist
+Scapular / scapulae
+Thoracic / thoracic extension
+
+Do not add tooltips in this commit. Report only. Sotirios reviews the report before implementation to catch terms that should be renamed rather than explained.
+
+Commit 2 — Tooltip / expansion component
+
+Build a shared <ClarifyTerm> component used by both consumer and gyms apps. Behavior:
+
+Renders the term with a subtle dotted underline (not link-blue — keep it quiet, gray or slightly lighter than body text).
+Tap on mobile / hover on desktop expands a small inline explanation card BELOW the term (not a floating tooltip that requires cursor precision, not a modal).
+Card content: term title in bold, 1-2 sentence explanation in coach voice, optional link to a deeper explanation if warranted (rarely — most explanations should be self-contained).
+Card dismisses on tap outside or a small × button in the card corner.
+Accessible: proper ARIA attributes, keyboard-navigable on desktop, screen reader announces the expansion.
+
+Do NOT use browser tooltips (the title attribute) — they don't work on mobile and can't be styled. Custom component only.
+
+Component API:
+
+tsx
+<ClarifyTerm term="RPE" explanation="Rate of Perceived Exertion — a 1-10 scale for how hard a set felt. 6 = you had 4 more reps in you. 9 = one more rep max.">
+  RPE
+</ClarifyTerm>
+Commit 3 — Apply tooltips per Sotirios's ratified audit list
+
+Sotirios reviews the term-audit report from Commit 1 and rules on each term: add tooltip / rename / leave. This commit applies the rulings.
+
+Explanations must:
+
+Be in Sotirios's coach voice
+Fit in 2 sentences maximum
+Assume no prior fitness knowledge
+Never define a term using another undefined term
+Match the tone of existing coaching copy (see the "Building your baseline" copy pattern from Phase 6d for reference)
+
+Draft explanations for the obvious candidates (Sotirios edits any that don't sound like him):
+
+RPE: "Rate of Perceived Exertion — a 1-10 scale for how hard a set felt. 6 means you had 4 more reps in you. 9 means one more rep max."
+
+Phase: "Praxis moves you through three phases: Activation (learn the patterns), Skill (own them under control), Growth (build real strength). You advance when your body earns it, not by calendar."
+
+Baseline: "Your starting posture measurements. Everything the app measures later gets compared against this. Retake anytime your body changes."
+
+Retest: "A fresh set of posture photos so we can see what's changed. When a measurement clears its threshold consistently, the focus retires and your program adjusts."
+
+Focus area: "A pattern in your posture the app is working on with you. Each focus adds specific corrective work to your program until the pattern clears."
+
+Regression (exercise sense): "An easier version of an exercise, same movement pattern. If something felt wrong, we drop you a level so you can own it before moving back up."
+
+Deload: "A planned lighter week. Your body recovers from harder work so the next block hits fresh."
+
+Scapula / scapulae: "Your shoulder blades. Praxis pays attention to how they move because most upper-body form issues start there."
+
+Thoracic: "Your mid-back — the section between your neck and lower back. Praxis works on this because a lot of posture issues live here."
+
+Compensation: "When one muscle picks up work another muscle should be doing. Common cause of pain that seems random. Praxis's correctives target the root, not the symptom."
+
+Autoregulation (if present): "Your body's daily readiness varies — sleep, stress, food all shift it. Praxis reads your logs and adjusts the next session to match where you actually are today."
+
+Terms NOT to add tooltips to (self-explanatory or previously named):
+
+Sacrifice / Test / Modify (already labeled inline where they appear)
+Ramp / Mobilize / Activate / Prime (already labeled inline in warmup contract)
+Progression (used casually enough that context carries it)
+Movement pattern (context carries)
+
+Sotirios may override any of these in review.
+
+Commit 4 — In-app link to macro calculator
+
+The /tools/macro-calculator page (from Phase 6f Commit 9) exists publicly for SEO. Add in-app access without changing what the page IS.
+
+Placement:
+
+Add a small section to Settings called "Nutrition guidance" or "Fueling."
+One button/link: "Open Praxis macro calculator."
+Opens the SAME /tools/macro-calculator page. No app-specific variant.
+Page opens in the current tab (not a new tab) — feels like part of the app.
+
+Rules (SR-6g-nutrition-boundary):
+
+No user-tracked nutrition data. The page calculates and displays, does not store per-user results.
+No app-specific personalization. If a user comes from Settings vs. Google, the page is identical.
+No daily nutrition prompts, reminders, or integration with training logs.
+Page copy branded Praxis. Do NOT include Sotirios's name in the copy (per Sotirios's ratification — Praxis-branded, not personality-branded). Content is written FROM Praxis (the product) TO the user.
+Reversible: if this proves to be scope creep, removing the Settings link and leaving the public page intact takes ~2 minutes. Design the integration to make removal trivial.
+What is NOT in this pass
+No new features beyond tooltips and the calculator link
+No engine changes
+No changes to the macro calculator page itself (it's already built by Phase 6f)
+No macro tracking or nutrition history features
+No renames of user-facing terms beyond what Sotirios rules on in Commit 3 review
+Acceptance
+Term audit report exists with recommendations per term.
+<ClarifyTerm> component works on mobile tap and desktop hover.
+Tooltips applied per Sotirios's ratified list.
+Settings has a Nutrition guidance section linking to /tools/macro-calculator.
+Macro calculator page unchanged from its public form; no user-specific data captured.
+Full gate green + Playwright green.
+
+Merge commit.
+
+
+
+
+
 ## Sequencing & effort (with Claude Code)
 
 P0 security            0.5 day        (both repos)
@@ -1700,6 +1846,13 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   main-slot exercises in one generated day sharing a movement pattern and
   identical coach-note text is a catalog bug to flag, not ship. See
   `docs/engine-decisions.md` § SR-6f-catalog.
+- **Clarity-pass guiding principle (SR-6g, 2026-07-24):** users should never
+  have to leave Praxis to look up a term. Every domain word we use should be
+  either self-explanatory or one tap away from an explanation in coach voice.
+  Features that already exist (like the macro calculator) should be
+  accessible from the app without arbitrary gating — but positioned as
+  reference content, not tracked functionality. See `docs/engine-decisions.md`
+  § SR-6g.
 
 ---
 

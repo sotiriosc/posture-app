@@ -699,3 +699,28 @@ this follow-up: full engine suite (869/869), full gyms (17/17) and consumer
 (13/13) unit suites, boundary lint (0 errors), and both app builds all
 green.
 
+## Phase 6g — Clarity Pass
+
+### SR-6g — Clarity-pass guiding principle
+
+**Standing rule:** Users should never have to leave Praxis to look up a
+term. Every domain word the app uses should be either self-explanatory or
+one tap away from an explanation in coach voice. Features that already
+exist (like the macro calculator) should be accessible from the app without
+arbitrary gating — but positioned as reference content, not tracked
+functionality.
+
+### SR-6g-nutrition-boundary — In-app macro calculator link stays a plain
+pointer to the existing public page
+
+**Standing rule:** Commit 4's Settings link opens the exact same
+`/tools/macro-calculator` page used for public SEO (Phase 6f Commit 9) —
+no app-specific variant, no personalization based on entry point, no
+per-user result storage, and no daily nutrition prompts/reminders/training-
+log integration. Per Sotirios's ratification, the calculator's in-app
+entry point and the page itself are Praxis-branded only — his name does not
+appear in this copy (unlike coaching copy elsewhere in the app, which is
+explicitly in his voice). The integration must stay removable in ~2 minutes
+(delete the Settings section; the public page is untouched) if it proves to
+be scope creep.
+
