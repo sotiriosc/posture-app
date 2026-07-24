@@ -22,6 +22,8 @@ import CorrectiveSourceLine from "@/components/session/CorrectiveSourceLine";
 import type { PoseAnalysis } from "@/lib/poseAnalyzer";
 import type { AssessmentReport } from "@/lib/assessmentEngine";
 import Button from "@/components/ui/Button";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import type { Exercise } from "@/lib/exercises";
@@ -252,7 +254,16 @@ function RetestPromptCard({
         Time to check in on your posture
       </h2>
       <p className="mt-1 text-sm leading-5 opacity-85">
-        Quick 2-photo capture — compare to your baseline.
+        Quick 2-photo{" "}
+        <ClarifyTerm term="Retest" explanation={CLARIFY.Retest}>
+          retest
+        </ClarifyTerm>
+        {" "}
+        — compare to your{" "}
+        <ClarifyTerm term="Baseline" explanation={CLARIFY.Baseline}>
+          baseline
+        </ClarifyTerm>
+        .
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         <button
@@ -3655,7 +3666,18 @@ export default function ResultsRoutine() {
                   className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-slate-900">{card.title}</p>
+                    <p className="text-sm font-medium text-slate-900">
+                      {card.key === "compensation" ? (
+                        <ClarifyTerm
+                          term="Compensation"
+                          explanation={CLARIFY.Compensation}
+                        >
+                          {card.title}
+                        </ClarifyTerm>
+                      ) : (
+                        card.title
+                      )}
+                    </p>
                     <button
                       type="button"
                       className={secondaryActionBtn}

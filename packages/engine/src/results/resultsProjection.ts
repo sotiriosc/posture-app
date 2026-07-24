@@ -276,6 +276,25 @@ function buildActiveTags(
   return active;
 }
 
+// Phase 6g: this previously read `program.phase?.name` (a "Phase N: <label>"
+// display string) and force-cast it to the "activation" | "skill" | "growth"
+// union, which it can never equal at runtime — the cast was a lie to the
+// type checker. SacrificeRetestQueueItem is rebuilt fresh on every
+// projectResults() call (not persisted), so fixing the source field needs
+// no migration.
+//
+// Mapping matches phaseStageFromIndex / phaseIndexFromPersistedStage
+// (1→activation, 2→skill, 3→growth) so the Commit 3 display helper renders
+// the correct "Phase N: …" label. Intentionally does NOT copy the off-by-one
+// phaseHistory write ternary in program.ts (see ED-6g.3).
+const curriculumStageFromPhaseIndex = (
+  phaseIndex: number | undefined
+): "activation" | "skill" | "growth" => {
+  if (phaseIndex === 2) return "skill";
+  if (typeof phaseIndex === "number" && phaseIndex >= 3) return "growth";
+  return "activation";
+};
+
 function buildSacrificeRetestQueue(program: Program): SacrificeRetestQueueItem[] {
   const queue: SacrificeRetestQueueItem[] = [];
   // Phase 3.5 eligible list.
@@ -290,7 +309,7 @@ function buildSacrificeRetestQueue(program: Program): SacrificeRetestQueueItem[]
       queue.push({
         exerciseId,
         exerciseName: ex?.name ?? exerciseId,
-        sacrificedAtPhase: (program.phase?.name as "activation" | "skill" | "growth") ?? "activation",
+        sacrificedAtPhase: curriculumStageFromPhaseIndex(program.phase?.phaseIndex),
         sacrificedAtSession: 0,
         eligibleForRetestNow: phaseRetestEligible.has(exerciseId),
       });

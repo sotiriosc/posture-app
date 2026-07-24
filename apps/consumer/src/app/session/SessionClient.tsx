@@ -45,6 +45,8 @@ import DualModeTimer, {
 import ExerciseCard from "@/components/ExerciseCard";
 import SessionProgressHeader from "@/components/session/SessionProgressHeader";
 import SessionFeedbackCheckIn from "@/components/session/SessionFeedbackCheckIn";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import OnboardingInfoButton, {
   openOnboardingGuide,
 } from "@/components/onboarding/OnboardingInfoButton";
@@ -1643,10 +1645,11 @@ export default function SessionClient() {
   };
 
   // Phase 3.3 — block exercise until reset (personal equipment block).
+  // Phase 6g Commit 3: persist the 1-based phaseIndex (number), not the
+  // curriculum-stage word. Display goes through formatPhaseName via the
+  // Settings tolerant reader. Fallback 0 clamps to Phase 1 at display time.
   const handleBlockExercise = async (exerciseId: string, reason: "no_equipment" | "personal_preference") => {
     const phaseIndex = programProgress?.phaseIndex ?? program?.phaseIndex ?? 0;
-    const phaseLabel: "activation" | "skill" | "growth" =
-      phaseIndex === 2 ? "growth" : phaseIndex === 1 ? "skill" : "activation";
     const sessionCount = programProgress?.completedDayIndices?.length ?? 0;
 
     const currentPrefs = await loadPrefs();
@@ -1654,7 +1657,7 @@ export default function SessionClient() {
       ...currentPrefs,
       blockedExerciseIds: {
         ...(currentPrefs.blockedExerciseIds ?? {}),
-        [exerciseId]: { reason, blockedAt: { phase: phaseLabel, sessionCount } },
+        [exerciseId]: { reason, blockedAt: { phase: phaseIndex, sessionCount } },
       },
     };
     await savePrefs(nextPrefs);
@@ -3202,7 +3205,10 @@ export default function SessionClient() {
               ) : null}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-slate-700" htmlFor="rpe-input">
-                  RPE (1-10)
+                  <ClarifyTerm term="RPE" explanation={CLARIFY.RPE}>
+                    RPE
+                  </ClarifyTerm>{" "}
+                  (1-10)
                 </label>
                 <input
                   id="rpe-input"

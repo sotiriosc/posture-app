@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 
 type DashboardHeroProps = {
   greeting: string;
@@ -55,7 +57,11 @@ export default function DashboardHero({
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-slate-300">{greeting}</p>
-          <h1 className="mt-1 text-3xl font-semibold text-white sm:text-4xl">{phaseName}</h1>
+          <h1 className="mt-1 text-3xl font-semibold text-white sm:text-4xl">
+            <ClarifyTerm term="Phase" explanation={CLARIFY.Phase}>
+              {phaseName}
+            </ClarifyTerm>
+          </h1>
 
           <div className="praxis-card mt-4 rounded-lg px-3 py-3">
             <p className="text-sm font-semibold text-white">

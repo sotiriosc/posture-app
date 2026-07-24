@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { secondaryActionBtn } from "@/components/ui/buttonStyles";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 
 type ExpandableSectionProps = {
   title: string;
@@ -136,7 +138,13 @@ export default function ExpandableSection({
                   key={chip}
                   className="rounded-md border border-slate-500/25 bg-slate-950/45 px-2 py-0.5 text-xs text-slate-300"
                 >
-                  {chip}
+                  {/^Asymmetry\b/i.test(chip) ? (
+                    <ClarifyTerm term="Asymmetry" explanation={CLARIFY.Asymmetry}>
+                      {chip}
+                    </ClarifyTerm>
+                  ) : (
+                    chip
+                  )}
                 </span>
               ))}
             </div>

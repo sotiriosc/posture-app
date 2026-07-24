@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { demoMemberRoster, buildOperatorCoachNote } from "@/lib/gymSaas/memberProgressData";
+import {
+  formatPhaseName,
+  phaseIndexFromPersistedStage,
+} from "@/lib/phases";
 
 export const metadata: Metadata = {
   title: "Member Progress | Praxis for Gyms",
@@ -20,7 +24,7 @@ export default function MembersPage() {
           </Link>
           <h1 className="mt-4 text-lg font-semibold text-white">Member Progress</h1>
           <p className="mt-1 text-sm text-[#6B7280]">
-            Ladder advancements, posture retirements, and session activity per member.
+            Level advancements, posture retirements, and session activity per member.
           </p>
         </header>
 
@@ -35,7 +39,7 @@ export default function MembersPage() {
                   Phase
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#4B5563]">
-                  Ladders
+                  Levels
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#4B5563]">
                   Sessions / wk
@@ -58,8 +62,10 @@ export default function MembersPage() {
                     )}
                   </td>
                   <td className="px-4 py-4">
-                    <span className="capitalize text-sm text-[#9CA3AF]">
-                      {member.currentPhase}
+                    <span className="text-sm text-[#9CA3AF]">
+                      {formatPhaseName(
+                        phaseIndexFromPersistedStage(member.currentPhase)
+                      )}
                     </span>
                   </td>
                   <td className="px-4 py-4 text-sm tabular-nums text-[#9CA3AF]">

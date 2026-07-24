@@ -6,6 +6,10 @@ import {
   buildOperatorCoachNote,
 } from "@/lib/gymSaas/memberProgressData";
 import MemberDrillIn from "@/components/member-progress/MemberDrillIn";
+import {
+  formatPhaseName,
+  phaseIndexFromPersistedStage,
+} from "@/lib/phases";
 
 export const metadata: Metadata = {
   title: "Member Detail | Praxis for Gyms",
@@ -31,7 +35,9 @@ export default async function MemberDetailPage({ params }: PageProps) {
         </Link>
         <header className="mt-4 mb-8">
           <h1 className="text-lg font-semibold text-white">{member.handle}</h1>
-          <p className="mt-1 text-sm text-[#6B7280] capitalize">{member.currentPhase} phase</p>
+          <p className="mt-1 text-sm text-[#6B7280]">
+            {formatPhaseName(phaseIndexFromPersistedStage(member.currentPhase))}
+          </p>
         </header>
 
         {/* Operator coaching note — derived from projection, no diagnosis */}

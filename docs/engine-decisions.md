@@ -699,3 +699,108 @@ this follow-up: full engine suite (869/869), full gyms (17/17) and consumer
 (13/13) unit suites, boundary lint (0 errors), and both app builds all
 green.
 
+## Phase 6g — Clarity Pass
+
+### SR-6g — Clarity-pass guiding principle
+
+**Standing rule:** Users should never have to leave Praxis to look up a
+term. Every domain word the app uses should be either self-explanatory or
+one tap away from an explanation in coach voice. Features that already
+exist (like the macro calculator) should be accessible from the app without
+arbitrary gating — but positioned as reference content, not tracked
+functionality.
+
+### ED-6g.1 — Commit 2: "shared" `<ClarifyTerm>` means identical duplicated
+implementation, not a new shared UI package
+
+**Decision:** bloom-plan asks for "a shared `<ClarifyTerm>` component used
+by both consumer and gyms apps." This monorepo has exactly one shared
+package (`packages/engine`) and no shared UI package — every prior
+cross-app UI component in Phase 6f (`CoachNoteBanner`, the offline badge's
+underlying pattern, `DailyInsightCard`'s refactor) was implemented as an
+identical, independently-maintained copy in each app's own
+`components/ui`/`components/dashboard` folder, matching this repo's
+established convention of app-shell independence with a shared engine
+core. Introducing a new `packages/ui` workspace package is a real
+architectural decision (build config, exports, Next.js transpilePackages
+wiring) out of scope for a two-commit clarity pass. `ClarifyTerm.tsx` is
+therefore byte-identical in `apps/consumer/src/components/ui/` and
+`apps/gyms/src/components/ui/`, exactly mirroring how every other
+consumer/gyms UI duplication in this codebase is handled. Revisit if a
+third or fourth shared component makes the duplication cost outweigh a new
+package's setup cost.
+
+### SR-6g-nutrition-boundary — In-app macro calculator link stays a plain
+pointer to the existing public page
+
+**Standing rule:** Commit 4's Settings link opens the exact same
+`/tools/macro-calculator` page used for public SEO (Phase 6f Commit 9) —
+no app-specific variant, no personalization based on entry point, no
+per-user result storage, and no daily nutrition prompts/reminders/training-
+log integration. Per Sotirios's ratification, the calculator's in-app
+entry point and the page itself are Praxis-branded only — his name does not
+appear in this copy (unlike coaching copy elsewhere in the app, which is
+explicitly in his voice). The integration must stay removable in ~2 minutes
+(delete the Settings section; the public page is untouched) if it proves to
+be scope creep.
+
+### ED-6g.2 — Commit 4: consumer-only, because the page itself is
+consumer-only
+
+**Decision:** `/tools/macro-calculator` (Phase 6f Commit 9) was built
+exclusively under `apps/consumer/src/app/tools/` — there is no `apps/gyms`
+route at that path, and Phase 6f's own scoping treated this as an organic-
+search acquisition page for prospective Praxis clients, not gym operators
+or their members. Adding a gyms Settings link to a path that 404s in that
+app would be a straightforward bug, not a design choice. Commit 4 therefore
+only touches `apps/consumer/src/app/account/settings/page.tsx`. If gym
+operators later want equivalent in-app nutrition reference content for
+their members, that needs its own page under `apps/gyms` and its own
+decision — not a link to a route that doesn't exist there.
+
+**Observation for Sotirios's review (not acted on in this pass):** while
+implementing this commit, the macro calculator page's Article JSON-LD
+(`apps/consumer/src/app/tools/macro-calculator/page.tsx`, `articleJsonLd`)
+sets `author: { name: "Sotirios" }`. This is structured data, not rendered
+page copy — it doesn't violate the letter of Commit 4's "no personality
+attribution in the copy" rule, which governs the new Settings section's
+copy (confirmed clean: no name mentioned) — but it sits in some tension
+with SR-6f-nutrition-amendment's framing of this page as Praxis-branded,
+not personality-branded. Left untouched because bloom-plan's Phase 6g
+explicitly excludes "changes to the macro calculator page itself" from this
+pass's scope. Flagging for a ruling in case Sotirios wants it changed to
+`Organization: Praxis` in a future pass.
+
+### ED-6g.3 — Commit 3: phase vocabulary unification is display-layer only
+
+**Decision:** UI shows one canonical label via `formatPhaseName(phaseIndex)`
+(`"Phase N: {profile label}"` from `getPhaseMetaByIndex`). Curriculum-stage
+words (`activation` / `skill` / `growth`) are retired from display paths.
+Persisted stage words in `LogPrefs.blockedAt.phase` and
+`Program.phaseHistory[].phase` are read through
+`phaseIndexFromPersistedStage` (no migration, no rewrite). New
+`blockedAt.phase` writes store the numeric 1-based `phaseIndex`.
+
+**Convention (from characterization test
+`phaseVocabularyConvention.test.ts`):**
+- `rungAdvancementHistory[].atPhase` is a pass-through of the caller's
+  `phaseIndex`. Live `generateWeeklyProgram({ phaseIndex: 1|2|3 })` writes
+  store `1|2|3`. `atPhase === 0` means missing/`?? 0` fallback or
+  hand-authored fixtures; `formatPhaseName` clamps 0 → Phase 1.
+- Do not teach `formatPhaseName` a second (0-based) convention.
+
+**Intentionally NOT changed in this commit:**
+- `phaseStageFromIndex` / selection logic in `program.ts` (out of scope).
+- The `program.ts` phaseHistory / phaseTransitionState write ternary
+  (`phaseIndex === 2 ? "growth" : phaseIndex === 1 ? "skill" : "activation"`).
+  Characterization showed it is off-by-one vs `phaseStageFromIndex`
+  (1→skill, 2→growth, 3→activation). Replacing it with `formatPhaseName`
+  would persist UI strings into IndexedDB/Postgres; aligning it to
+  `phaseStageFromIndex` is a persistence-write fix, not a display fix, and
+  needs its own decision. Left as-is; the tolerant reader maps stage words
+  via the selection-canonical activation→1 / skill→2 / growth→3 mapping so
+  display agrees with the hero. Records written by the buggy ternary may
+  mis-label historically.
+- `resultsProjection.ts` `sacrificedAtPhase` wrong-field/unsafe-cast bug —
+  ships as its own separate commit (derived at read time; no migration).
+

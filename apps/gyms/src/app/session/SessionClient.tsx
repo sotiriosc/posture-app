@@ -16,7 +16,14 @@ import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import {
   PROGRAM_TEMPLATE_VERSION,
   previewPainSubstitutionChoices,
+  computeFlaggedExercises,
+  applyFeedbackContractAction,
+  applyAutoSacrifice,
+  buildContractPrompt,
+  shouldOfferIncompletePromptSuppression,
+  filterSuppressedContractTriggers,
 } from "@/lib/program";
+import type { FeedbackContractTrigger } from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import BackgroundShell from "@/components/BackgroundShell";
@@ -30,6 +37,8 @@ import ExerciseCard from "@/components/ExerciseCard";
 import SessionProgressHeader from "@/components/session/SessionProgressHeader";
 import SessionFeedbackCheckIn from "@/components/session/SessionFeedbackCheckIn";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { getEffectiveTimer } from "@/lib/timerRules";
@@ -54,6 +63,7 @@ import {
 } from "@/lib/sessionDraftStore";
 import type {
   ExerciseFeedback,
+  ExerciseFeedbackSummary,
   ExerciseLog,
   LogPrefs,
   PainLevel,
@@ -73,12 +83,14 @@ import {
   getProgramProgress,
   listAllPrograms,
   listExerciseLogsByExerciseHistory,
+  listRecentExerciseLogsForProgram,
   listSessionsByProgramId,
   loadPrefs,
   saveExerciseLog,
   saveExerciseSwapEvent,
   savePrefs,
   saveProgramProgress,
+  summarizeExerciseFeedbackFromLogs,
   updateSession,
   uuid,
   nowIso,
@@ -461,6 +473,17 @@ export default function SessionClient({
     Record<string, PainLevel>
   >({});
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+
+  // Phase 3.2 — pre-session feedback contract prompt state
+  const [contractTriggers, setContractTriggers] = useState<FeedbackContractTrigger[]>([]);
+  const [contractPromptIndex, setContractPromptIndex] = useState(0);
+  const [contractDismissed, setContractDismissed] = useState(false);
+  // Phase 6f, Commit 5.c — how many times the "incomplete" reason prompt has
+  // fired for this user, so the prompt can offer to turn itself off after
+  // the second time.
+  const [incompleteContractPromptFireCount, setIncompleteContractPromptFireCount] =
+    useState(0);
+
   const [activeTrackingField, setActiveTrackingField] =
     useState<TrackingField | null>(null);
   const [exerciseCompleteFlashVisible, setExerciseCompleteFlashVisible] =
@@ -714,6 +737,81 @@ export default function SessionClient({
             deriveNextSessionRecommendationFromSession(latestFeedbackSession)
           );
           setSessionPlanIssue(null);
+
+          // Phase 3.2 — compute pre-session feedback contract triggers.
+          if (routableDayIndex !== null) {
+            try {
+              const day = resolvedProgram.week.find(
+                (d) => d.dayIndex === routableDayIndex
+              );
+              const mainExerciseIds = (day?.routine ?? [])
+                .filter((item) => item.section === "main")
+                .map((item) => item.exerciseId);
+
+              if (mainExerciseIds.length > 0) {
+                const recentLogs = await listRecentExerciseLogsForProgram({
+                  programId: resolvedProgram.id,
+                  lookbackDays: 14,
+                });
+                const logSummaries = summarizeExerciseFeedbackFromLogs(
+                  recentLogs,
+                  "local"
+                );
+                // Merge persisted contract state (probation, deferred, etc.)
+                // into computed log summaries before checking triggers.
+                const contractState =
+                  storedPrefs.contractStateByExercise ?? {};
+                const mergedSummaries = new Map<string, ExerciseFeedbackSummary>(
+                  logSummaries
+                );
+                Object.entries(contractState).forEach(([exId, state]) => {
+                  const base = mergedSummaries.get(exId) ?? {
+                    exerciseId: exId,
+                    pain: "none",
+                    difficulty: "normal",
+                    completionRate: 1,
+                  };
+                  mergedSummaries.set(exId, { ...base, ...state });
+                });
+
+                const rawTriggers = computeFlaggedExercises({
+                  todaysPlanExerciseIds: mainExerciseIds,
+                  recentLogs,
+                  feedbackSummaryByExercise: mergedSummaries,
+                });
+                // Phase 6f, Commit 5.c — a user can turn off the "incomplete"
+                // reason prompt specifically (see the prompt UI below); pain
+                // and failed-difficulty reasons are safety-relevant and are
+                // never suppressed by that preference.
+                const suppressIncomplete =
+                  storedPrefs.suppressIncompleteContractPrompts === true;
+                const triggers = filterSuppressedContractTriggers(
+                  rawTriggers,
+                  suppressIncomplete
+                );
+                if (triggers.length > 0) {
+                  setContractTriggers(triggers);
+                  setContractPromptIndex(0);
+                  setContractDismissed(false);
+                }
+                if (
+                  !suppressIncomplete &&
+                  triggers.some((trigger) => trigger.reason === "incomplete")
+                ) {
+                  const nextFireCount =
+                    (storedPrefs.incompleteContractPromptFireCount ?? 0) + 1;
+                  setIncompleteContractPromptFireCount(nextFireCount);
+                  void savePrefs({
+                    ...storedPrefs,
+                    incompleteContractPromptFireCount: nextFireCount,
+                  });
+                }
+              }
+            } catch {
+              // Non-critical: if contract check fails, proceed with session normally.
+            }
+          }
+
           return;
         }
 
@@ -1104,6 +1202,92 @@ export default function SessionClient({
     setSaveState("saving");
     await savePrefs(nextPrefs);
     setSaveState("saved");
+  };
+
+  // Phase 3.2 — apply a feedback contract action for the current prompt.
+  const handleContractAction = async (
+    action: "sacrifice" | "test" | "modify" | "dismiss"
+  ) => {
+    const trigger = contractTriggers[contractPromptIndex];
+    if (!trigger) return;
+
+    const currentPrefs = await loadPrefs();
+    const contractState = currentPrefs.contractStateByExercise ?? {};
+    const currentSummary: ExerciseFeedbackSummary = {
+      exerciseId: trigger.exerciseId,
+      pain: "none",
+      difficulty: "normal",
+      completionRate: 1,
+      ...(contractState[trigger.exerciseId] ?? {}),
+    };
+
+    const phase =
+      programProgress?.phaseIndex === 2
+        ? "growth"
+        : programProgress?.phaseIndex === 1
+        ? "skill"
+        : "activation";
+    const sessionCount =
+      (programProgress?.workoutsCompletedInPhase ?? 0) +
+      (programProgress?.cyclesCompletedInPhase ?? 0) * 3;
+
+    // Auto-sacrifice applies when the exercise is already on probation.
+    const result =
+      trigger.onProbation && action !== "sacrifice" && action !== "dismiss"
+        ? applyAutoSacrifice({
+            exerciseId: trigger.exerciseId,
+            exercisePattern:
+              exerciseById(trigger.exerciseId)?.pattern ?? undefined,
+            currentSummary,
+            currentLadderState: program?.ladderState ?? undefined,
+            phase,
+            sessionCount,
+          })
+        : applyFeedbackContractAction({
+            action,
+            exerciseId: trigger.exerciseId,
+            exercisePattern:
+              exerciseById(trigger.exerciseId)?.pattern ?? undefined,
+            currentSummary,
+            currentLadderState: program?.ladderState ?? undefined,
+            phase,
+            sessionCount,
+            atFloor: trigger.atFloor,
+          });
+
+    // Persist the updated contract state.
+    const updatedContractState: NonNullable<LogPrefs["contractStateByExercise"]> = {
+      ...contractState,
+      [trigger.exerciseId]: {
+        deferred: result.updatedSummary.deferred,
+        probation: result.updatedSummary.probation,
+        sacrificedAt: result.updatedSummary.sacrificedAt,
+        autoSacrificed: result.updatedSummary.autoSacrificed,
+      },
+    };
+    await savePrefs({ ...currentPrefs, contractStateByExercise: updatedContractState });
+
+    // Advance to next trigger or dismiss the prompt.
+    if (contractPromptIndex < contractTriggers.length - 1) {
+      setContractPromptIndex((i) => i + 1);
+    } else {
+      setContractDismissed(true);
+    }
+  };
+
+  // Phase 6f, Commit 5.c — self-adapting suppression, offered on the
+  // "incomplete" reason prompt after it has fired twice. Persists the
+  // preference (checked on every future session bootstrap, above) and drops
+  // any remaining "incomplete" triggers already queued for THIS session too,
+  // without disturbing triggers already resolved earlier in the queue.
+  const handleSuppressIncompletePrompts = async () => {
+    const currentPrefs = await loadPrefs();
+    await savePrefs({ ...currentPrefs, suppressIncompleteContractPrompts: true });
+    const alreadyResolved = contractTriggers.slice(0, contractPromptIndex);
+    const remaining = contractTriggers
+      .slice(contractPromptIndex)
+      .filter((trigger) => trigger.reason !== "incomplete");
+    setContractTriggers([...alreadyResolved, ...remaining]);
   };
 
   const persistLoadPref = async (
@@ -2106,6 +2290,108 @@ export default function SessionClient({
     );
   }
 
+  // Phase 3.2 — pre-session feedback contract prompt.
+  // One card per flagged exercise, shown before the session begins.
+  const activeContractTrigger =
+    !contractDismissed && contractTriggers.length > 0
+      ? contractTriggers[contractPromptIndex] ?? null
+      : null;
+
+  if (activeContractTrigger) {
+    const ex = exerciseById(activeContractTrigger.exerciseId);
+    const exerciseName = ex?.name ?? activeContractTrigger.exerciseId;
+    const remaining = contractTriggers.length - contractPromptIndex;
+    const isIncompleteReason = activeContractTrigger.reason === "incomplete";
+    const prompt = buildContractPrompt(activeContractTrigger.reason, exerciseName);
+
+    return (
+      <BackgroundShell>
+        <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+          <OnImage>
+            <div className="praxis-panel rounded-lg p-5 sm:p-6">
+              {remaining > 1 && (
+                <p className="mb-1 text-xs font-medium text-sky-300">
+                  {contractPromptIndex + 1} of {contractTriggers.length}
+                </p>
+              )}
+              <h1 className="text-xl font-semibold text-white">{exerciseName}</h1>
+              <p className="mt-2 text-sm text-slate-200">{prompt}</p>
+
+              <div className="mt-6 flex flex-col gap-3">
+                {/* Sacrifice */}
+                <button
+                  onClick={() => { void handleContractAction("sacrifice"); }}
+                  className="w-full rounded-xl bg-rose-600 px-5 py-3 text-left font-semibold text-white shadow hover:bg-rose-500 active:bg-rose-700"
+                >
+                  <span className="block text-base">Sacrifice</span>
+                  <span className="mt-0.5 block text-xs font-normal text-rose-200">
+                    Skip this exercise for now — I&apos;ll retest it later
+                  </span>
+                </button>
+
+                {/* Test */}
+                <button
+                  onClick={() => { void handleContractAction("test"); }}
+                  className="praxis-input-surface w-full rounded-xl px-5 py-3 text-left font-semibold text-white shadow hover:border-sky-300/45"
+                >
+                  <span className="block text-base">Test</span>
+                  <span className="mt-0.5 block text-xs font-normal text-slate-300">
+                    Keep it in — I&apos;ll try again this session
+                  </span>
+                </button>
+
+                {/* Modify — disabled at d1 floor */}
+                <button
+                  onClick={() => { void handleContractAction("modify"); }}
+                  disabled={activeContractTrigger.atFloor}
+                  className={[
+                    "w-full rounded-xl px-5 py-3 text-left font-semibold text-white shadow",
+                    activeContractTrigger.atFloor
+                      ? "bg-slate-800 opacity-40 cursor-not-allowed"
+                      : "bg-amber-600 hover:bg-amber-500 active:bg-amber-700",
+                  ].join(" ")}
+                >
+                  <span className="block text-base">Modify</span>
+                  <span
+                    className={[
+                      "mt-0.5 block text-xs font-normal",
+                      activeContractTrigger.atFloor
+                        ? "text-slate-400"
+                        : "text-amber-200",
+                    ].join(" ")}
+                  >
+                    {activeContractTrigger.atFloor
+                      ? "Already at the easiest version"
+                      : "Drop to an easier variation"}
+                  </span>
+                </button>
+              </div>
+
+              {/* Dismiss link — treated as Test */}
+              <button
+                onClick={() => { void handleContractAction("dismiss"); }}
+                className="mt-4 w-full text-center text-xs text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline"
+              >
+                Skip for now
+              </button>
+
+              {isIncompleteReason &&
+              shouldOfferIncompletePromptSuppression(incompleteContractPromptFireCount) ? (
+                <button
+                  data-testid="suppress-incomplete-prompt"
+                  onClick={() => { void handleSuppressIncompletePrompts(); }}
+                  className="mt-2 w-full text-center text-xs text-slate-500 underline-offset-2 hover:text-slate-300 hover:underline"
+                >
+                  Turn off these prompts and adjust from Settings instead?
+                </button>
+              ) : null}
+            </div>
+          </OnImage>
+        </div>
+      </BackgroundShell>
+    );
+  }
+
   if (!currentItem) {
     const recoveryHref = data ? "/results" : "/questionnaire";
     const recoveryLabel = data ? "Back to results" : "Build profile";
@@ -2658,7 +2944,10 @@ export default function SessionClient({
             ) : null}
             <div className="flex flex-wrap items-center gap-2">
               <label className="text-xs font-semibold text-slate-300" htmlFor="rpe-input">
-                RPE (1-10)
+                <ClarifyTerm term="RPE" explanation={CLARIFY.RPE}>
+                  RPE
+                </ClarifyTerm>{" "}
+                (1-10)
               </label>
               <input
                 id="rpe-input"

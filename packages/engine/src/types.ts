@@ -275,7 +275,15 @@ export type LogPrefs = {
     string,
     {
       reason: "no_equipment" | "personal_preference";
-      blockedAt: { phase: "activation" | "skill" | "growth"; sessionCount: number };
+      /**
+       * Phase 6g Commit 3: new writes store the 1-based phaseIndex (number).
+       * Older records may still hold "activation" | "skill" | "growth".
+       * Read via phaseIndexFromPersistedStage() — never display the raw value.
+       */
+      blockedAt: {
+        phase: number | "activation" | "skill" | "growth";
+        sessionCount: number;
+      };
     }
   >;
   /**

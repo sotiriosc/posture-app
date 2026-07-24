@@ -8,6 +8,9 @@ import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import type { ExerciseLog } from "@/lib/types";
 import type { MemberRosterRow } from "@/lib/gymSaas/memberProgressData";
 import type { ResultsProjection } from "@praxis/engine/results/resultsProjection";
+import { formatPhaseName } from "@/lib/phases";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 
 type Props = {
   member: MemberRosterRow;
@@ -67,7 +70,7 @@ export default function MemberDrillIn({ member }: Props) {
       {/* Ladder summary */}
       <section>
         <h2 className="text-xs font-semibold uppercase tracking-wider text-[#4B5563]">
-          Ladder Progress
+          Level Progress
         </h2>
         <dl className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
           <div>
@@ -100,7 +103,7 @@ export default function MemberDrillIn({ member }: Props) {
                   {climb.fromExerciseName} → {climb.toExerciseName}
                 </p>
                 <p className="mt-0.5 text-xs text-[#6B7280]">
-                  Session {climb.atSessionCount} · Phase {climb.atPhase === 0 ? "activation" : climb.atPhase === 1 ? "skill" : "growth"}
+                  Session {climb.atSessionCount} · {formatPhaseName(climb.atPhase)}
                 </p>
               </li>
             ))}
@@ -112,7 +115,10 @@ export default function MemberDrillIn({ member }: Props) {
       {projection.retiredTags.length > 0 && (
         <section>
           <h2 className="text-xs font-semibold uppercase tracking-wider text-[#4B5563]">
-            Posture — Retired Focus Areas
+            Posture — Retired{" "}
+            <ClarifyTerm term="Focus area" explanation={CLARIFY["Focus area"]}>
+              Focus Areas
+            </ClarifyTerm>
           </h2>
           <ul className="mt-3 space-y-2">
             {projection.retiredTags.map((tag) => (

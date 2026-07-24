@@ -163,7 +163,7 @@ export const buildNextWeekPlan = (params: {
       summary:
         "Next week: regress intensity and prioritize comfortable movement.",
       change: "Reduce range or load on 1–2 exercises; add extra mobility.",
-      reason: "Pain flagged last week—regress to keep this smooth.",
+      reason: "Pain flagged last week—ease to a simpler version to keep this smooth.",
     };
   }
 
@@ -361,4 +361,58 @@ export const getPhaseMetaByIndex = (phaseIndex: number) => {
     phaseName: `Phase ${index}: ${profile.label}`,
     goal: profile.description,
   };
+};
+
+/**
+ * Canonical user-facing phase label. Prefer this over any
+ * "activation" / "skill" / "growth" string in UI.
+ *
+ * Convention (Phase 6g Commit 3 characterization —
+ * packages/engine/tests/unit/phaseVocabularyConvention.test.ts):
+ *   - `phaseIndex` is 1-based in the live write path when callers pass
+ *     getPhaseMetaByIndex's world (1 | 2 | 3).
+ *   - `rungAdvancementHistory[].atPhase` is a pass-through of that
+ *     phaseIndex, so live climbs store 1 | 2 | 3.
+ *   - `atPhase === 0` appears when generateWeeklyProgram omitted
+ *     options.phaseIndex (`?? 0`) or in hand-authored fixtures; clamp
+ *     treats 0 as Phase 1 so display never invents a "Phase 0".
+ * Do not teach this helper a second (0-based) convention — normalize
+ * at the write site instead.
+ */
+export const formatPhaseName = (phaseIndex: number): string =>
+  getPhaseMetaByIndex(phaseIndex).phaseName;
+
+/**
+ * Tolerant reader for persisted curriculum-stage words
+ * ("activation" | "skill" | "growth") written into LogPrefs.blockedAt.phase
+ * and Program.phaseHistory[].phase / phaseTransitionState.
+ *
+ * Maps to the 1-based phaseIndex used by getPhaseMetaByIndex /
+ * phaseIndexFromStage (selection). Does not rewrite stored records.
+ * Unknown / empty input falls back to Phase 1.
+ *
+ * Note: the live phaseHistory write ternary in program.ts is off-by-one
+ * relative to phaseStageFromIndex (characterization documents
+ * 1→"skill", 2→"growth", 3→"activation"). This reader intentionally
+ * uses the selection-canonical mapping (activation→1, skill→2, growth→3)
+ * so display agrees with the hero. Historical records written by the
+ * buggy ternary may mis-label; we do not invent a second mapping to
+ * "undo" that without a migration.
+ */
+export const phaseIndexFromPersistedStage = (
+  stage: string | number | null | undefined
+): number => {
+  if (typeof stage === "number" && Number.isFinite(stage)) {
+    return clampPhaseIndex(stage);
+  }
+  const text = String(stage ?? "")
+    .trim()
+    .toLowerCase();
+  if (text === "activation") return 1;
+  if (text === "skill") return 2;
+  if (text === "growth") return 3;
+  // Also accept already-formatted display names / "Phase N" prefixes.
+  const phaseMatch = text.match(/^phase\s*(\d+)/i);
+  if (phaseMatch) return clampPhaseIndex(Number(phaseMatch[1]));
+  return MIN_PHASE_INDEX;
 };

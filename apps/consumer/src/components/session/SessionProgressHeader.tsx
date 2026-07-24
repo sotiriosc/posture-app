@@ -1,5 +1,9 @@
 "use client";
 
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import ClarifyWords from "@/components/ui/ClarifyWords";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
+
 type SessionProgressHeaderProps = {
   phaseName: string;
   dayPositionLabel: string;
@@ -45,13 +49,17 @@ export default function SessionProgressHeader({
     >
       <div className="flex items-start justify-between gap-3">
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-sky-700/90">
-          {phaseName}
+          <ClarifyTerm term="Phase" explanation={CLARIFY.Phase}>
+            {phaseName}
+          </ClarifyTerm>
         </p>
         <p className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-700">
           {dayPositionLabel}
         </p>
       </div>
-      <h1 className="mt-1 text-xl font-semibold text-slate-900 sm:text-2xl">{dayTitle}</h1>
+      <h1 className="mt-1 text-xl font-semibold text-slate-900 sm:text-2xl">
+        <ClarifyWords text={dayTitle} />
+      </h1>
       <p className="mt-1 text-sm font-medium text-slate-700">{exercisePositionLabel}</p>
       <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-sky-100">
         <div
