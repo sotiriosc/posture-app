@@ -633,3 +633,40 @@ considered but not added: bloom-plan's SEO-essentials list for this commit
 names only "sitemap entry," and introducing a site-wide crawl policy is a
 broader decision than one marketing page warrants.
 
+### ED-6f.10 — Full-gate Playwright validation: a pre-existing login
+rate-limit collision when running the entire consumer suite in one long
+serialized process, not a Phase 6f regression
+
+**Finding:** Running the complete `apps/consumer` Playwright suite (51
+tests) in a single invocation intermittently fails a handful of
+login-driven specs with `expect(login.ok()).toBeTruthy()` returning false —
+e.g. `navRoutesReachable`, `sessionStartRedundancy`,
+`navMenuLogoutAndOrdering`, `perAccountStateIsolation`, `staleDeviceCleanup`,
+`stripeSessionPersistence`. None of these are Phase 6f code paths, and every
+single one of them passes cleanly and repeatably when run in isolation or in
+a smaller batch. Root cause: `/api/auth/login`'s rate limiter
+(`packages/engine/src/rateLimit.ts`) keys its bucket on the caller's IP,
+which for every local/CI Playwright request is the literal string
+`"unknown"` (no `x-forwarded-for` header) — so the ~15+ login-calling specs
+in the full suite all share one 10-requests-per-60-seconds bucket for the
+entire run, and cluster past it. This is a real characteristic of the login
+route, but not a functional bug: production traffic has real, distinct
+client IPs, and the actual PR-gate/CI Playwright surface (Commit 6's two
+smoke specs per app) is nowhere near this threshold. Left the rate limiter
+unchanged — it's outside all nine commits' declared scope, and a bypass
+would be a security-relevant decision that deserves its own explicit
+ratification, not a side effect of a test-suite-scoping commit. Confirmed
+clean via: full engine suite (869/869), full gyms suite (17/17), full
+consumer suite (13/13), full gyms Playwright suite (18/19 — the sole
+failure is `betaRisk.spec.ts`'s "reset current progress preserves completed
+history," already confirmed pre-existing/flaky on `main` earlier in this
+same phase), and every consumer Playwright spec passing when run without
+this one shared-process artifact.
+
+Separately, while running the full suite this surfaced one genuine flake in
+this phase's own new `macroCalculatorPage.spec.ts`: interacting with the
+calculator's `<select>` before the client bundle finished hydrating changed
+the native DOM value without firing React's `onChange`, and hydration then
+silently reset it back — fixed by waiting for `networkidle` before the
+first interaction (see the spec file).
+
