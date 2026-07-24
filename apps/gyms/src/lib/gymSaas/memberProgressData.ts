@@ -11,7 +11,12 @@ export type MemberRosterRow = {
   /** Opaque member handle — no real name or email. */
   memberId: string;
   handle: string;
-  currentPhase: "activation" | "skill" | "growth";
+  /**
+   * Phase 6g Commit 3: 1-based phaseIndex for display via formatPhaseName.
+   * Demo roster uses numbers; a tolerant reader still accepts legacy
+   * "activation" | "skill" | "growth" words if a future data source ships them.
+   */
+  currentPhase: number | "activation" | "skill" | "growth";
   sessionsThisWeek: number;
   laddersClimbedTotal: number;
   retirementsSinceLastCheck: number;
@@ -31,7 +36,7 @@ export const demoMemberRoster: MemberRosterRow[] = [
   {
     memberId: "member-001",
     handle: "Athlete #001",
-    currentPhase: "skill",
+    currentPhase: 2,
     sessionsThisWeek: 3,
     laddersClimbedTotal: 4,
     retirementsSinceLastCheck: 1,
@@ -40,7 +45,7 @@ export const demoMemberRoster: MemberRosterRow[] = [
   {
     memberId: "member-002",
     handle: "Athlete #002",
-    currentPhase: "activation",
+    currentPhase: 1,
     sessionsThisWeek: 2,
     laddersClimbedTotal: 1,
     retirementsSinceLastCheck: 0,
@@ -49,7 +54,7 @@ export const demoMemberRoster: MemberRosterRow[] = [
   {
     memberId: "member-003",
     handle: "Athlete #003",
-    currentPhase: "growth",
+    currentPhase: 3,
     sessionsThisWeek: 3,
     laddersClimbedTotal: 8,
     retirementsSinceLastCheck: 0,
@@ -58,7 +63,7 @@ export const demoMemberRoster: MemberRosterRow[] = [
   {
     memberId: "member-004",
     handle: "Athlete #004",
-    currentPhase: "skill",
+    currentPhase: 2,
     sessionsThisWeek: 1,
     laddersClimbedTotal: 2,
     retirementsSinceLastCheck: 0,

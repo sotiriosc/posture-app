@@ -15,6 +15,10 @@ import {
 import type { ExerciseLog, Program } from "@/lib/types";
 import type { ResultsProjection } from "@/lib/results/resultsProjection";
 import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
+import {
+  formatPhaseName,
+  phaseIndexFromPersistedStage,
+} from "@/lib/phases";
 
 // ---------------------------------------------------------------------------
 // Sub-section components — quiet design language per bloom-plan §Phase 5
@@ -229,7 +233,8 @@ function SacrificeRetestSection({
           <div key={item.exerciseId} className="rounded-lg border border-slate-800 p-4">
             <p className="text-sm font-semibold text-slate-200">{item.exerciseName}</p>
             <p className="mt-1 text-xs text-slate-500">
-              Sacrificed during {item.sacrificedAtPhase} phase
+              Sacrificed during{" "}
+              {formatPhaseName(phaseIndexFromPersistedStage(item.sacrificedAtPhase))}
             </p>
             <div className="mt-3 flex gap-3">
               <button
@@ -277,8 +282,8 @@ function PhaseHistorySection({ history }: { history: ResultsProjection["phaseHis
               aria-hidden="true"
             />
             <div>
-              <p className="text-sm text-slate-300 capitalize">
-                {record.phase}
+              <p className="text-sm text-slate-300">
+                {formatPhaseName(phaseIndexFromPersistedStage(record.phase))}
                 {record.exitedAtSessionCount !== null
                   ? ` — sessions ${record.enteredAtSessionCount}–${record.exitedAtSessionCount}`
                   : " — current phase"}

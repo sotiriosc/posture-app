@@ -771,3 +771,36 @@ explicitly excludes "changes to the macro calculator page itself" from this
 pass's scope. Flagging for a ruling in case Sotirios wants it changed to
 `Organization: Praxis` in a future pass.
 
+### ED-6g.3 — Commit 3: phase vocabulary unification is display-layer only
+
+**Decision:** UI shows one canonical label via `formatPhaseName(phaseIndex)`
+(`"Phase N: {profile label}"` from `getPhaseMetaByIndex`). Curriculum-stage
+words (`activation` / `skill` / `growth`) are retired from display paths.
+Persisted stage words in `LogPrefs.blockedAt.phase` and
+`Program.phaseHistory[].phase` are read through
+`phaseIndexFromPersistedStage` (no migration, no rewrite). New
+`blockedAt.phase` writes store the numeric 1-based `phaseIndex`.
+
+**Convention (from characterization test
+`phaseVocabularyConvention.test.ts`):**
+- `rungAdvancementHistory[].atPhase` is a pass-through of the caller's
+  `phaseIndex`. Live `generateWeeklyProgram({ phaseIndex: 1|2|3 })` writes
+  store `1|2|3`. `atPhase === 0` means missing/`?? 0` fallback or
+  hand-authored fixtures; `formatPhaseName` clamps 0 → Phase 1.
+- Do not teach `formatPhaseName` a second (0-based) convention.
+
+**Intentionally NOT changed in this commit:**
+- `phaseStageFromIndex` / selection logic in `program.ts` (out of scope).
+- The `program.ts` phaseHistory / phaseTransitionState write ternary
+  (`phaseIndex === 2 ? "growth" : phaseIndex === 1 ? "skill" : "activation"`).
+  Characterization showed it is off-by-one vs `phaseStageFromIndex`
+  (1→skill, 2→growth, 3→activation). Replacing it with `formatPhaseName`
+  would persist UI strings into IndexedDB/Postgres; aligning it to
+  `phaseStageFromIndex` is a persistence-write fix, not a display fix, and
+  needs its own decision. Left as-is; the tolerant reader maps stage words
+  via the selection-canonical activation→1 / skill→2 / growth→3 mapping so
+  display agrees with the hero. Records written by the buggy ternary may
+  mis-label historically.
+- `resultsProjection.ts` `sacrificedAtPhase` wrong-field/unsafe-cast bug —
+  ships as its own separate commit (derived at read time; no migration).
+

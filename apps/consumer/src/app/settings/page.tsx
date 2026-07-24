@@ -6,6 +6,10 @@ import Link from "next/link";
 import { loadAppState } from "@/lib/appState";
 import { exerciseById } from "@/lib/exercises";
 import {
+  formatPhaseName,
+  phaseIndexFromPersistedStage,
+} from "@/lib/phases";
+import {
   init,
   listAllExerciseLogs,
   listAllPrograms,
@@ -568,8 +572,11 @@ export default function SettingsPage() {
                       info.reason === "no_equipment"
                         ? "No equipment"
                         : "Personal preference";
-                    const phaseLabel = info.blockedAt.phase.charAt(0).toUpperCase() +
-                      info.blockedAt.phase.slice(1);
+                    // Phase 6g Commit 3: tolerant read of legacy stage words
+                    // or new numeric phaseIndex → canonical "Phase N: …" label.
+                    const phaseLabel = formatPhaseName(
+                      phaseIndexFromPersistedStage(info.blockedAt.phase)
+                    );
                     return (
                       <li
                         key={exId}
@@ -578,7 +585,7 @@ export default function SettingsPage() {
                         <div>
                           <p className="text-xs font-semibold text-slate-200">{name}</p>
                           <p className="text-xs text-slate-500">
-                            {reasonLabel} · blocked in {phaseLabel} phase
+                            {reasonLabel} · blocked in {phaseLabel}
                           </p>
                         </div>
                         <button

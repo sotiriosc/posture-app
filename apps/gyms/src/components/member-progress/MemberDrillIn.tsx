@@ -8,6 +8,7 @@ import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
 import type { ExerciseLog } from "@/lib/types";
 import type { MemberRosterRow } from "@/lib/gymSaas/memberProgressData";
 import type { ResultsProjection } from "@praxis/engine/results/resultsProjection";
+import { formatPhaseName } from "@/lib/phases";
 
 type Props = {
   member: MemberRosterRow;
@@ -100,7 +101,7 @@ export default function MemberDrillIn({ member }: Props) {
                   {climb.fromExerciseName} → {climb.toExerciseName}
                 </p>
                 <p className="mt-0.5 text-xs text-[#6B7280]">
-                  Session {climb.atSessionCount} · Phase {climb.atPhase === 0 ? "activation" : climb.atPhase === 1 ? "skill" : "growth"}
+                  Session {climb.atSessionCount} · {formatPhaseName(climb.atPhase)}
                 </p>
               </li>
             ))}
