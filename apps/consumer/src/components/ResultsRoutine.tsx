@@ -63,6 +63,7 @@ import {
 } from "@/lib/phaseControls";
 import { getDailyInsight } from "@/lib/insightGenerator";
 import DashboardHero from "@/components/dashboard/DashboardHero";
+import CoachNoteBanner from "@/components/dashboard/CoachNoteBanner";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
 import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
@@ -2819,10 +2820,15 @@ export default function ResultsRoutine() {
     completedCount < activeDaysPerWeek &&
     !completedDaySet.has(effectiveNextDayIndex);
 
+  // Phase 6f, Commit 5.b: "cycle" is engine-internal vocabulary (a 4-week
+  // Base/Build/Push/Deload rotation) that used to leak into this chip
+  // verbatim as "Cycle: N" — renamed to "Week X of 4" everywhere it
+  // surfaces to users.
+  const weekOfCycle = ((Math.max(1, program.cycleIndex ?? cycleCurrent) - 1) % 4) + 1;
   const heroMetricChips = [
     `Training readiness: ${readinessScore}% (${readinessLabel})`,
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
-    `Cycle: ${program.cycleIndex ?? cycleCurrent}`,
+    `Week ${weekOfCycle} of 4`,
   ].filter((chip): chip is string => Boolean(chip));
 
   const coachToday = (() => {
@@ -3137,7 +3143,7 @@ export default function ResultsRoutine() {
       : "Getting started";
   const dashboardLevelDescription =
     dashboardLevel === 3
-      ? "Full-cycle analysis is available from your completed week."
+      ? "Full analysis is available from your completed week."
     : dashboardLevel === 2
       ? "Progress and history are unlocked from your first completed workout."
       : "Assessment, Today, and Week are ready. Complete one workout to unlock Progress and History.";
@@ -3185,7 +3191,7 @@ export default function ResultsRoutine() {
       title: "Insights",
       summary: "Pattern, stability, compensation, and adaptation analysis.",
       locked: insightsLocked,
-      lockReason: "Complete one full week or cycle to unlock deeper analysis.",
+      lockReason: "Complete one full week to unlock deeper analysis.",
     },
     {
       key: "history",
@@ -3250,6 +3256,7 @@ export default function ResultsRoutine() {
       ) : null}
 
       <div className="order-1">
+        <CoachNoteBanner note={coachAction} />
         <DashboardHero
           greeting={heroGreeting}
           phaseName={phaseName}

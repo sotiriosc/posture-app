@@ -181,7 +181,7 @@ describe("program progression transition helpers", () => {
       })
     ).toEqual({
       status: "repeat",
-      message: "Complete at least 3 sessions before starting the next cycle.",
+      message: "Complete at least 3 sessions before starting next week.",
     });
 
     expect(
@@ -195,7 +195,7 @@ describe("program progression transition helpers", () => {
       })
     ).toEqual({
       status: "repeat",
-      message: "Hit at least 85% weekly compliance before advancing cycle.",
+      message: "Hit at least 85% weekly compliance before advancing to next week.",
     });
   });
 

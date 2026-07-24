@@ -136,6 +136,58 @@ export const computeFlaggedExercises = (params: {
 };
 
 // ---------------------------------------------------------------------------
+// Phase 6f, Commit 5.c — prompt copy + self-adapting suppression
+// ---------------------------------------------------------------------------
+
+const REASON_COPY: Record<
+  Exclude<FeedbackContractTriggerReason, "incomplete">,
+  string
+> = {
+  severe_pain: "you reported pain",
+  moderate_pain_consecutive: "you reported discomfort two sessions in a row",
+  failed_difficulty: "the effort was maximal",
+};
+
+/**
+ * The pre-session prompt's headline sentence. The "incomplete" reason gets
+ * curious-not-judgmental phrasing — the old copy ("you didn't complete all
+ * sets... what would you like to do?") reads as assuming the user meant to
+ * skip it, when just as often they simply forgot to log it. Other reasons
+ * (pain, failed difficulty) aren't about missing log entries, so they keep
+ * their direct phrasing.
+ */
+export const buildContractPrompt = (
+  reason: FeedbackContractTriggerReason,
+  exerciseName: string
+): string =>
+  reason === "incomplete"
+    ? `I noticed you didn't fill in fields for ${exerciseName} last session. Did you skip it, or want to log it now?`
+    : `Last session, ${REASON_COPY[reason]} on ${exerciseName}. What would you like to do?`;
+
+/**
+ * The "incomplete" reason prompt offers a one-tap "turn this off" link once
+ * it has fired at least twice — early enough to respect a user who's told
+ * it (implicitly, by seeing it repeatedly) that they don't want it, without
+ * offering an escape hatch the very first time it could plausibly be useful.
+ */
+export const shouldOfferIncompletePromptSuppression = (
+  fireCount: number
+): boolean => fireCount >= 2;
+
+/**
+ * Drop "incomplete"-reason triggers when the user has turned that prompt
+ * off. Pain and failed-difficulty reasons are safety-relevant and are never
+ * affected by this preference.
+ */
+export const filterSuppressedContractTriggers = (
+  triggers: readonly FeedbackContractTrigger[],
+  suppressIncomplete: boolean
+): FeedbackContractTrigger[] =>
+  suppressIncomplete
+    ? triggers.filter((trigger) => trigger.reason !== "incomplete")
+    : [...triggers];
+
+// ---------------------------------------------------------------------------
 // Auto-sacrifice check
 // ---------------------------------------------------------------------------
 

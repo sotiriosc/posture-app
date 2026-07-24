@@ -64,7 +64,12 @@ export const buildPhaseObjective = (params: {
   const profile = getPhaseProfile(phaseIndex);
   const primaryPatterns = topPatterns(movementProfile);
   const weekLabel = `Week ${Math.max(1, weekIndex)}`;
-  const cycleLabel = `Cycle ${Math.max(1, cycleIndex)}`;
+  // Phase 6f, Commit 5.b: "cycle" is engine-internal vocabulary (a 4-week
+  // Base/Build/Push/Deload rotation — see phases.ts's getCycleLadder, which
+  // treats `cycleIndex` itself as the rotating week counter). User-facing
+  // copy renders this as "Week X of 4" instead.
+  const weekOfCycle = ((Math.max(1, cycleIndex) - 1) % 4) + 1;
+  const cycleLabel = `Week ${weekOfCycle} of 4`;
   const readinessLabel =
     movementProfile.readiness >= 0.75
       ? "high"

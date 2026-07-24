@@ -158,7 +158,7 @@ export const buildSessionAdaptation = (params: {
       movementProfile.consistency
     )} informed progression speed.`,
     changedSlots > 0 && totalSlots > 0
-      ? `${changedSlots}/${totalSlots} exercise slots were remapped for this cycle.`
+      ? `${changedSlots}/${totalSlots} exercise slots were remapped for this week.`
       : "Core day structure preserved while refining quality targets.",
     movementProfile.priorities.length
       ? `Top movement priorities: ${movementProfile.priorities.slice(0, 3).join(", ")}.`
@@ -187,8 +187,8 @@ export const buildSessionAdaptation = (params: {
   return {
     summary:
       changeRatio > 0.35
-        ? "Your next cycle emphasizes targeted variation plus tighter quality control."
-        : "Your next cycle keeps the base structure and tightens execution quality.",
+        ? "Next week emphasizes targeted variation plus tighter quality control."
+        : "Next week keeps the base structure and tightens execution quality.",
     reasons,
     appliedChanges,
     masteryNext,

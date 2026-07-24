@@ -17,7 +17,7 @@ import {
   SCHEMA_VERSION,
 } from "@/lib/logStore";
 import type { ExerciseLog, LogPrefs, Program, SessionRecord } from "@/lib/types";
-import { eraseAllLocalData, resetAllAppData } from "@/lib/resetAppData";
+import { eraseAllLocalData } from "@/lib/resetAppData";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
@@ -432,7 +432,13 @@ export default function SettingsPage() {
                   type="button"
                   disabled={confirmText.trim().toUpperCase() !== "DELETE"}
                   onClick={async () => {
-                    await resetAllAppData();
+                    // Phase 6f, Commit 1 (SR-6f) — this button's copy
+                    // promises deleting "saved plans, logs, photos, and
+                    // in-progress sessions"; `resetAllAppData` only clears a
+                    // hardcoded key subset (same promise-mismatch bug Phase
+                    // 6e fixed on the consumer erase button). Use the
+                    // primitive that actually matches the copy.
+                    await eraseAllLocalData();
                     setShowResetConfirm(false);
                     setConfirmText("");
                     router.replace("/");

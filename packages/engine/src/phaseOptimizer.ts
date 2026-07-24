@@ -259,7 +259,7 @@ export const optimizePhaseWeek = (
         baselineExercise.id !== exercise.id &&
         cycleIndex >= 2
       ) {
-        reasons.push("Cycle variation to prevent plateaus and build adaptability.");
+        reasons.push("Weekly variation to prevent plateaus and build adaptability.");
       }
       if (
         phaseIndex >= 2 &&

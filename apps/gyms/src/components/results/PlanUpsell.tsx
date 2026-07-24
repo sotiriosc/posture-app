@@ -15,13 +15,19 @@ type PlanUpsellProps = {
  * always agree (Phase 6a / SR-6a).
  */
 export default function PlanUpsell({ showPaywallNotice }: PlanUpsellProps) {
-  const { authEnabled, isPro, isFreePlan, loading } = useUserPlan();
+  const { authEnabled, isPro, isFreePlan, offline, loading } = useUserPlan();
 
   if (loading || !authEnabled) return null;
 
   return (
     <>
       {isPro ? <ManageSubscriptionButton showRefreshAction={false} /> : null}
+      {isFreePlan && offline ? (
+        <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">
+          Couldn&apos;t confirm your subscription while offline. Reconnect to
+          restore Pro access.
+        </div>
+      ) : null}
       {isFreePlan && showPaywallNotice ? (
         <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">
           Free access includes Day 1. Praxis Pro unlocks the full weekly plan.

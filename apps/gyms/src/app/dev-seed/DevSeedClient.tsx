@@ -9,6 +9,7 @@ import {
 } from "@/lib/logStore";
 import { saveAppState } from "@/lib/appState";
 import { eraseAllLocalData } from "@/lib/resetAppData";
+import { adoptLocalOwner } from "@/lib/accountIsolation";
 import type { ExerciseLog, Program } from "@/lib/types";
 import {
   buildTwelveWeekClimberProgram,
@@ -99,6 +100,32 @@ async function seedProgramWithLogs(program: Program, logs: ExerciseLog[]) {
   saveAppState({ activeProgramId: program.id });
 }
 
+/**
+ * dev-seed's wipe (`eraseAllLocalData`) clears the account-isolation marker
+ * (Phase 6f, Commit 1 / SR-6f, porting Phase 6e's consumer fix) along with
+ * everything else, since it has no concept of who's signed in. Left alone,
+ * the very next page load's startup check (`syncLocalOwner`, in
+ * AppMenuClient) would see a logged-in tester but no marker, read that as a
+ * stale/orphaned device, and wipe the data we just seeded a second time.
+ * Adopting the current session's owner post-seed — without triggering
+ * another wipe — closes that gap; dev-seed already IS the deliberate full
+ * reset, so there's nothing left to protect against.
+ */
+async function adoptCurrentSessionOwner(): Promise<void> {
+  try {
+    const response = await fetch("/api/auth/session", {
+      cache: "no-store",
+      credentials: "include",
+    });
+    const payload = (await response.json().catch(() => null)) as {
+      user?: { id?: string } | null;
+    } | null;
+    adoptLocalOwner(payload?.user?.id ?? null);
+  } catch {
+    adoptLocalOwner(null);
+  }
+}
+
 async function runSeed(id: string): Promise<string> {
   // Every seed starts from a fully wiped device so nothing leaks across persona
   // loads (spec 6.a). eraseAllLocalData() logs the wipe to the dev console.
@@ -108,6 +135,7 @@ async function runSeed(id: string): Promise<string> {
       buildTwelveWeekClimberProgram(),
       buildTwelveWeekClimberLogs()
     );
+    await adoptCurrentSessionOwner();
     // Operator drill-in resolves the locally-seeded active program.
     return "/gym-admin/members/member-001";
   }

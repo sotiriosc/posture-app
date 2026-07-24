@@ -6,6 +6,7 @@ import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import { syncLocalOwner } from "@/lib/accountIsolation";
 
 export default function LoginClient() {
   const router = useRouter();
@@ -29,11 +30,16 @@ export default function LoginClient() {
       const payload = (await response.json().catch(() => null)) as {
         ok?: boolean;
         error?: string;
+        user?: { id?: string };
       } | null;
       if (!response.ok || !payload?.ok) {
         setError(payload?.error ?? "Login failed.");
         return;
       }
+      // Phase 6f, Commit 1 (SR-6f) — porting Phase 6e's per-account isolation
+      // to the gyms app: reconcile before navigating so any prior account's
+      // local state never becomes momentarily readable as this account's own.
+      await syncLocalOwner(payload?.user?.id ?? null);
       router.replace(next);
       router.refresh();
     } finally {

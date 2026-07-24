@@ -29851,6 +29851,9 @@ export {
   applyFeedbackContractAction,
   applyAutoSacrifice,
   clearProbationIfClean,
+  buildContractPrompt,
+  shouldOfferIncompletePromptSuppression,
+  filterSuppressedContractTriggers,
 } from "@/lib/program/feedbackContract";
 export type {
   FeedbackContractAction,

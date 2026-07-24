@@ -14,6 +14,7 @@ export default async function AppMenu() {
       isAdmin={isAdmin}
       authEnabled={authEnabled}
       authenticated={Boolean(session)}
+      userId={session?.id ?? null}
     />
   );
 }

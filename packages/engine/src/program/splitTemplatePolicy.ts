@@ -320,8 +320,8 @@ export const applyAdaptiveWeakpointTemplateOverlay = <
   if (typeof targetIndex !== "number") return templates;
 
   const adaptiveNote = adaptivePlan.overrideMainRules
-    ? `Adaptive rebalance: ${adaptivePlan.deprioritizedLabel} skipped for this cycle. Replaced with ${adaptivePlan.weakpointLabel} to restore balance.`
-    : `Adaptive rebalance: ${adaptivePlan.deprioritizedLabel} de-prioritized this cycle. Emphasis shifted to ${adaptivePlan.weakpointLabel} to restore balance.`;
+    ? `Adaptive rebalance: ${adaptivePlan.deprioritizedLabel} skipped for this week. Replaced with ${adaptivePlan.weakpointLabel} to restore balance.`
+    : `Adaptive rebalance: ${adaptivePlan.deprioritizedLabel} de-prioritized this week. Emphasis shifted to ${adaptivePlan.weakpointLabel} to restore balance.`;
   const overrideMainRules = daysPerWeek !== 4 && adaptivePlan.overrideMainRules;
 
   return templates.map((template, index) => {

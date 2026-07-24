@@ -21,6 +21,9 @@ import {
   computeFlaggedExercises,
   applyFeedbackContractAction,
   applyAutoSacrifice,
+  buildContractPrompt,
+  shouldOfferIncompletePromptSuppression,
+  filterSuppressedContractTriggers,
   computeMaintainPrompts,
   markMaintainPromptsShown,
   applyMaintainProgressionYes,
@@ -103,6 +106,7 @@ import {
 } from "@/lib/logStore";
 import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
 import { markSessionComplete } from "@/lib/sessionStore";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -444,6 +448,13 @@ export default function SessionClient() {
     useState<SessionPracticeOption["mode"]>("full");
   const [sessionPlanLoading, setSessionPlanLoading] = useState(true);
   const [sessionPlanIssue, setSessionPlanIssue] = useState<string | null>(null);
+  // Phase 6f, Commit 2 — distinguishes "genuinely nothing saved yet" from
+  // "nothing saved AND we can't fetch it right now" so the empty-state can
+  // give an honest, specific message instead of implying there's no plan at
+  // all when really there's just no connection yet to fetch one.
+  const [sessionPlanOfflineNoCache, setSessionPlanOfflineNoCache] =
+    useState(false);
+  const isOnline = useOnlineStatus();
   const [tipIndex, setTipIndex] = useState(0);
   const [unitByExercise, setUnitByExercise] = useState<
     Record<string, "lb" | "kg">
@@ -478,6 +489,11 @@ export default function SessionClient() {
   const [contractTriggers, setContractTriggers] = useState<FeedbackContractTrigger[]>([]);
   const [contractPromptIndex, setContractPromptIndex] = useState(0);
   const [contractDismissed, setContractDismissed] = useState(false);
+  // Phase 6f, Commit 5.c — how many times the "incomplete" reason prompt has
+  // fired for this user, so the prompt can offer to turn itself off after
+  // the second time.
+  const [incompleteContractPromptFireCount, setIncompleteContractPromptFireCount] =
+    useState(0);
 
   // Phase 3.3 — maintain-mode phase-transition prompts
   const [maintainPrompts, setMaintainPrompts] = useState<MaintainProgressionPrompt[]>([]);
@@ -568,6 +584,7 @@ export default function SessionClient() {
     const load = async () => {
       setSessionPlanLoading(true);
       setSessionPlanIssue(null);
+      setSessionPlanOfflineNoCache(false);
       try {
         await init();
         let resolvedQuestionnaire: QuestionnaireData | null = null;
@@ -784,15 +801,37 @@ export default function SessionClient() {
                   mergedSummaries.set(exId, { ...base, ...state });
                 });
 
-                const triggers = computeFlaggedExercises({
+                const rawTriggers = computeFlaggedExercises({
                   todaysPlanExerciseIds: mainExerciseIds,
                   recentLogs,
                   feedbackSummaryByExercise: mergedSummaries,
                 });
+                // Phase 6f, Commit 5.c — a user can turn off the "incomplete"
+                // reason prompt specifically (see the prompt UI below); pain
+                // and failed-difficulty reasons are safety-relevant and are
+                // never suppressed by that preference.
+                const suppressIncomplete =
+                  storedPrefs.suppressIncompleteContractPrompts === true;
+                const triggers = filterSuppressedContractTriggers(
+                  rawTriggers,
+                  suppressIncomplete
+                );
                 if (triggers.length > 0) {
                   setContractTriggers(triggers);
                   setContractPromptIndex(0);
                   setContractDismissed(false);
+                }
+                if (
+                  !suppressIncomplete &&
+                  triggers.some((trigger) => trigger.reason === "incomplete")
+                ) {
+                  const nextFireCount =
+                    (storedPrefs.incompleteContractPromptFireCount ?? 0) + 1;
+                  setIncompleteContractPromptFireCount(nextFireCount);
+                  void savePrefs({
+                    ...storedPrefs,
+                    incompleteContractPromptFireCount: nextFireCount,
+                  });
                 }
               }
             } catch {
@@ -822,22 +861,38 @@ export default function SessionClient() {
           return;
         }
 
+        // Edge case (Phase 6f, Commit 2): offline on a device with nothing
+        // cached yet — there's genuinely no plan to show, but the reason is
+        // "no connection to fetch one," not "you haven't built one." Don't
+        // fake data; say exactly what's true and what to do about it.
+        const offlineWithNothingCached =
+          !resolvedQuestionnaire &&
+          typeof navigator !== "undefined" &&
+          !navigator.onLine;
         setProgram(null);
         setProgramDayIndex(null);
         setProgramProgress(null);
         setNextSessionRecommendation(null);
+        setSessionPlanOfflineNoCache(offlineWithNothingCached);
         setSessionPlanIssue(
-          resolvedQuestionnaire
+          offlineWithNothingCached
+            ? "You're offline. Connect once to load today's session, then you can train without connection."
+            : resolvedQuestionnaire
             ? "No saved Praxis program is available for this session yet. Return to Results to rebuild your active plan."
             : "No saved Praxis profile or program is available for this session yet. Build your profile to create a plan."
         );
       } catch {
+        const offlineWithNothingCached =
+          typeof navigator !== "undefined" && !navigator.onLine;
         setProgram(null);
         setProgramDayIndex(null);
         setProgramProgress(null);
         setNextSessionRecommendation(null);
+        setSessionPlanOfflineNoCache(offlineWithNothingCached);
         setSessionPlanIssue(
-          "Praxis could not load your saved program for this session. Your local data is still safe."
+          offlineWithNothingCached
+            ? "You're offline. Connect once to load today's session, then you can train without connection."
+            : "Praxis could not load your saved program for this session. Your local data is still safe."
         );
       } finally {
         setSessionPlanLoading(false);
@@ -1534,6 +1589,21 @@ export default function SessionClient() {
     } else {
       setContractDismissed(true);
     }
+  };
+
+  // Phase 6f, Commit 5.c — self-adapting suppression, offered on the
+  // "incomplete" reason prompt after it has fired twice. Persists the
+  // preference (checked on every future session bootstrap, above) and drops
+  // any remaining "incomplete" triggers already queued for THIS session too,
+  // without disturbing triggers already resolved earlier in the queue.
+  const handleSuppressIncompletePrompts = async () => {
+    const currentPrefs = await loadPrefs();
+    await savePrefs({ ...currentPrefs, suppressIncompleteContractPrompts: true });
+    const alreadyResolved = contractTriggers.slice(0, contractPromptIndex);
+    const remaining = contractTriggers
+      .slice(contractPromptIndex)
+      .filter((trigger) => trigger.reason !== "incomplete");
+    setContractTriggers([...alreadyResolved, ...remaining]);
   };
 
   // Phase 3.3 — handle maintain-mode progression prompt response.
@@ -2456,13 +2526,8 @@ export default function SessionClient() {
     const ex = exerciseById(activeContractTrigger.exerciseId);
     const exerciseName = ex?.name ?? activeContractTrigger.exerciseId;
     const remaining = contractTriggers.length - contractPromptIndex;
-    const reasonCopy: Record<typeof activeContractTrigger.reason, string> = {
-      severe_pain: "you reported pain",
-      moderate_pain_consecutive: "you reported discomfort two sessions in a row",
-      incomplete: "you didn't complete all sets",
-      failed_difficulty: "the effort was maximal",
-    };
-    const prompt = `Last session, ${reasonCopy[activeContractTrigger.reason]} on ${exerciseName}. What would you like to do?`;
+    const isIncompleteReason = activeContractTrigger.reason === "incomplete";
+    const prompt = buildContractPrompt(activeContractTrigger.reason, exerciseName);
 
     return (
       <BackgroundShell>
@@ -2533,6 +2598,17 @@ export default function SessionClient() {
             >
               Skip for now
             </button>
+
+            {isIncompleteReason &&
+            shouldOfferIncompletePromptSuppression(incompleteContractPromptFireCount) ? (
+              <button
+                data-testid="suppress-incomplete-prompt"
+                onClick={() => { void handleSuppressIncompletePrompts(); }}
+                className="mt-2 w-full text-center text-xs text-slate-500 underline-offset-2 hover:text-slate-300 hover:underline"
+              >
+                Turn off these prompts and adjust from Settings instead?
+              </button>
+            ) : null}
           </OnImage>
         </div>
       </BackgroundShell>
@@ -2540,6 +2616,32 @@ export default function SessionClient() {
   }
 
   if (!currentItem) {
+    if (sessionPlanOfflineNoCache) {
+      return (
+        <BackgroundShell>
+          <div className="ui-shell flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
+            <OnImage>
+              <h1 className="text-2xl font-semibold text-white">
+                You&apos;re offline
+              </h1>
+              <p className="text-sm text-slate-200">
+                {sessionPlanIssue}
+              </p>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  if (isOnline) window.location.reload();
+                }}
+                disabled={!isOnline}
+              >
+                {isOnline ? "Try again" : "Waiting for connection..."}
+              </Button>
+            </OnImage>
+          </div>
+        </BackgroundShell>
+      );
+    }
+
     const recoveryHref = data ? "/results" : "/questionnaire";
     const recoveryLabel = data ? "Back to results" : "Build profile";
     const recoveryTitle = program

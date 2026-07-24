@@ -307,7 +307,7 @@ export const decideProgramProgression = (params: {
       message:
         state.fatigueRisk >= 0.65
           ? "Fatigue is high. Repeat with reduced stress this week."
-          : "Repeat the current cycle to build consistency.",
+          : "Repeat this week to build consistency.",
       next: null,
     };
   }

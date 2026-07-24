@@ -290,6 +290,160 @@ export const pushTrainingPatchWithStatus = async (patch: TrainingSnapshot) => {
   return pushPromise;
 };
 
+// ---------------------------------------------------------------------------
+// Phase 6f, Commit 2 — offline sync queue.
+//
+// `pushTrainingPatchWithStatus` above is fire-and-forget: on failure it sets
+// `state: "error"` and returns `false`, but nothing ever retries. Every write
+// path already calls it after every local save (logStore.ts's
+// `saveTrainingRecordIfChanged`), which means session/program data written
+// while offline was silently never synced once the network returned — the
+// local IndexedDB write always succeeded (training works fully offline
+// already), only the mirror-to-server step was being dropped on the floor.
+//
+// This wraps the exported `pushTrainingPatch` (the function every save path
+// calls) so a patch that fails for a genuine connectivity/server reason is
+// queued in localStorage and retried — in order, with backoff — until it
+// succeeds or the queue is cleared by logout/erase (same `localStorage`
+// wipe as every other local key; see accountIsolation.ts / resetAppData.ts).
+// A 401 (unauthenticated) is NOT queued: there is no session to sync to, and
+// retrying will only ever fail the same way regardless of connectivity.
+// ---------------------------------------------------------------------------
+
+const OFFLINE_QUEUE_KEY = "praxis_offline_sync_queue";
+const MAX_QUEUE_ENTRIES = 50;
+const RETRY_DELAYS_MS = [5_000, 15_000, 30_000, 60_000];
+
+type QueuedPatch = {
+  id: string;
+  patch: TrainingSnapshot;
+  queuedAt: number;
+  attempts: number;
+};
+
+const offlineQueueListeners = new Set<() => void>();
+
+const readOfflineQueue = (): QueuedPatch[] => {
+  if (typeof localStorage === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(OFFLINE_QUEUE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    return Array.isArray(parsed) ? (parsed as QueuedPatch[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+const writeOfflineQueue = (queue: QueuedPatch[]) => {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.setItem(
+      OFFLINE_QUEUE_KEY,
+      JSON.stringify(queue.slice(-MAX_QUEUE_ENTRIES))
+    );
+  } catch {
+    // Best-effort only — a full/blocked localStorage must never crash a save.
+  }
+  offlineQueueListeners.forEach((listener) => listener());
+};
+
+/** Subscribe to offline-queue length changes (for an "N unsynced" UI, if ever needed). */
+export const subscribeOfflineSyncQueue = (listener: () => void) => {
+  offlineQueueListeners.add(listener);
+  return () => {
+    offlineQueueListeners.delete(listener);
+  };
+};
+
+export const getOfflineSyncQueueLength = () => readOfflineQueue().length;
+
+let drainTimer: ReturnType<typeof setTimeout> | null = null;
+let draining = false;
+
+const scheduleOfflineQueueDrain = (delayMs: number) => {
+  if (typeof window === "undefined") return;
+  if (drainTimer) clearTimeout(drainTimer);
+  drainTimer = setTimeout(() => {
+    drainTimer = null;
+    void drainOfflineSyncQueue();
+  }, delayMs);
+};
+
+const enqueueOfflinePatch = (patch: TrainingSnapshot) => {
+  const queue = readOfflineQueue();
+  queue.push({
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    patch,
+    queuedAt: Date.now(),
+    attempts: 0,
+  });
+  writeOfflineQueue(queue);
+  logTrainingSync("training-sync", "queued patch for offline retry", summarizePatch(patch));
+};
+
+/**
+ * Drains the offline queue in order (oldest first) — order matters because
+ * later patches (e.g. a later `programProgress` write) can depend on an
+ * earlier one having landed server-side first. Stops at the first failure
+ * so nothing is skipped/reordered, and reschedules with backoff.
+ */
+export const drainOfflineSyncQueue = async (): Promise<void> => {
+  if (draining) return;
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+  if (readOfflineQueue().length === 0) return;
+
+  draining = true;
+  try {
+    for (;;) {
+      const queue = readOfflineQueue();
+      const next = queue[0];
+      if (!next) break;
+
+      const ok = await pushTrainingPatchWithStatus(next.patch);
+      const latestQueue = readOfflineQueue();
+      if (ok) {
+        writeOfflineQueue(latestQueue.filter((entry) => entry.id !== next.id));
+        continue;
+      }
+
+      const status = getTrainingSyncStatus();
+      if (status.state === "unauthenticated") {
+        // No account to sync to (signed out mid-queue) — drop rather than
+        // retry forever against a session that will never authenticate.
+        writeOfflineQueue(latestQueue.filter((entry) => entry.id !== next.id));
+        continue;
+      }
+
+      const attempts = next.attempts + 1;
+      writeOfflineQueue(
+        latestQueue.map((entry) =>
+          entry.id === next.id ? { ...entry, attempts } : entry
+        )
+      );
+      const delay = RETRY_DELAYS_MS[Math.min(attempts - 1, RETRY_DELAYS_MS.length - 1)];
+      scheduleOfflineQueueDrain(delay);
+      break;
+    }
+  } finally {
+    draining = false;
+  }
+};
+
+if (typeof window !== "undefined") {
+  window.addEventListener("online", () => {
+    void drainOfflineSyncQueue();
+  });
+  // Pick up anything queued from a prior page load (e.g. the tab was closed
+  // while offline) once this module first evaluates.
+  scheduleOfflineQueueDrain(0);
+}
+
 export const pushTrainingPatch = async (patch: TrainingSnapshot) => {
-  return pushTrainingPatchWithStatus(patch);
+  const ok = await pushTrainingPatchWithStatus(patch);
+  if (ok) return true;
+  if (getTrainingSyncStatus().state !== "unauthenticated") {
+    enqueueOfflinePatch(patch);
+  }
+  return false;
 };

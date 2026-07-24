@@ -1,4 +1,8 @@
 import type { Insight } from "@/lib/insightGenerator";
+import {
+  buildWeeklyFocusSentence,
+  extractBetweenSessionsCue,
+} from "@/lib/focusSentence";
 
 type DailyInsightCardProps = {
   insight: Insight;
@@ -6,46 +10,13 @@ type DailyInsightCardProps = {
   priorities: string[];
 };
 
-const RECOVERY_PREFIX = "Recovery cue:";
-
-// Strip an engineering label prefix like "Posture cue:" / "Main focus:".
-const stripPrefix = (value: string) => value.replace(/^[^:]+:\s*/, "").trim();
-
-const lowerFirst = (value: string) =>
-  value ? value.charAt(0).toLowerCase() + value.slice(1) : value;
-
-const joinNaturally = (items: string[]) => {
-  if (items.length === 0) return "your key movements";
-  if (items.length === 1) return items[0];
-  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
-};
-
 export default function DailyInsightCard({
   insight,
   coachNotes,
   priorities,
 }: DailyInsightCardProps) {
-  const recovery = priorities.find((item) => item.startsWith(RECOVERY_PREFIX));
-
-  // Dedupe the focus items case-insensitively (the raw feed can list the same
-  // pattern twice — once humanized, once not) and drop the engine prefixes.
-  const seen = new Set<string>();
-  const focusItems: string[] = [];
-  priorities
-    .filter((item) => !item.startsWith(RECOVERY_PREFIX))
-    .map(stripPrefix)
-    .filter(Boolean)
-    .forEach((item) => {
-      const key = item.toLowerCase();
-      if (seen.has(key)) return;
-      seen.add(key);
-      focusItems.push(`your ${lowerFirst(item)}`);
-    });
-
-  const focusSentence = `This week we're focused on ${joinNaturally(focusItems)}.`;
-  const betweenSessions = recovery
-    ? stripPrefix(recovery)
-    : "keep it easy — walk, mobility work, sleep";
+  const focusSentence = buildWeeklyFocusSentence(priorities);
+  const betweenSessions = extractBetweenSessionsCue(priorities);
 
   return (
     <section className="ui-card ui-soft-surface-raised p-5">

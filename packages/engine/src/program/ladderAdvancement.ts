@@ -597,7 +597,7 @@ export const computeLadderState = (params: {
  *
  * Examples:
  *   "2 clean sessions away from Dumbbell RDL."
- *   "Ready to advance → Barbell RDL next cycle."
+ *   "Ready to advance → Barbell RDL next week."
  *   "At ceiling for this movement — progressing via load and reps."
  */
 export const getLadderProgressionMessage = (
@@ -615,7 +615,7 @@ export const getLadderProgressionMessage = (
   }
   const remaining = Math.max(0, requiredForAdvance - cleanSessionsCount);
   if (remaining === 0) {
-    return `Ready to advance \u2192 ${nextEx.name} next cycle.`;
+    return `Ready to advance \u2192 ${nextEx.name} next week.`;
   }
   return `${remaining} clean session${remaining === 1 ? "" : "s"} away from ${nextEx.name}.`;
 };

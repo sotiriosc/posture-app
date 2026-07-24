@@ -66,7 +66,11 @@ describe("insight card builders", () => {
 
     expect(objective.title).toContain("Week");
     expect(objective.objective.length).toBeGreaterThan(20);
-    expect(objective.phaseFocus).toContain("Cycle");
+    // Phase 6f, Commit 5.b: "cycle" is engine-internal vocabulary; user-facing
+    // copy renders it as "Week X of 4" (cycleIndex 3 -> week 3 of the 4-week
+    // Base/Build/Push/Deload rotation).
+    expect(objective.phaseFocus).toContain("Week 3 of 4");
+    expect(objective.phaseFocus).not.toMatch(/cycle/i);
     expect(objective.primaryPatterns.length).toBeGreaterThanOrEqual(2);
     expect(objective.successMarkers.length).toBeGreaterThanOrEqual(3);
     expect(objective.weekIntent.length).toBeGreaterThan(10);
