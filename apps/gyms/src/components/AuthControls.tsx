@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { useUserPlan } from "@/hooks/useUserPlan";
+import { performLogout } from "@/components/authActions";
 
 // Operator-facing routes must never render consumer-plan chrome (the Pro/Free
 // chip). On these paths we keep the log-out control but drop the plan chip.
@@ -25,12 +26,10 @@ export default function AuthControls() {
   );
 
   const logout = async () => {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      cache: "no-store",
-      credentials: "include",
-    }).catch(() => null);
-    window.location.href = "/";
+    // Phase 6f, Commit 1 (SR-6f) — route through the shared performLogout
+    // so this device's non-photo local state is reconciled before the next
+    // sign-in, same as consumer (Phase 6e).
+    await performLogout();
   };
 
   if (loading) return null;
