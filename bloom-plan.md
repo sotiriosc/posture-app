@@ -2052,6 +2052,17 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   accessible from the app without arbitrary gating — but positioned as
   reference content, not tracked functionality. See `docs/engine-decisions.md`
   § SR-6g.
+- **Visual identity (SR-6h, 2026-07-24):** a proper Praxis logo at the
+  browser-tab / PWA / OG level is part of product quality — not decoration.
+  Metadata-referenced icon paths must resolve to real files. See
+  `docs/engine-decisions.md` § SR-6h / ED-6h.1.
+- **Phase queue discipline (2026-07-24):**
+  - Phase 8 is ready to execute anytime after Phase 6h merges.
+  - Phase 7 requires ratifications before it can be specced or executed.
+  - Parked items remain informative; require a dedicated phase before code
+    work begins.
+  - New ideas that arise mid-testing get logged in this document, not
+    executed immediately. Idea capture ≠ scope creep.
 
 ---
 
