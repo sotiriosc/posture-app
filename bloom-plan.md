@@ -1224,6 +1224,124 @@ Full gate green + Playwright green + no visual regressions on desktop.
 
 Merge commit.
 
+
+Phase 6e — Ship-Critical Fixes + Final Polish
+
+Branch: phase-6e-ship-critical from origin/main. Multi-commit. Focused on ship-blockers for real-user testing.
+
+Guiding principle (log as SR-6e)
+
+Phase 6e closes the gap between "polished on my phone" and "safe on someone else's device." Every item is either: (a) a bug that would harm a real user or corrupt their experience, or (b) a piece of visual polish that will make Sotirios's first Motion Care client conversion feel professional. No new features, no engine changes.
+
+Commit 1 — Per-account state isolation (SHIP-CRITICAL)
+
+Observed: Sotirios logged in on a new account and phase gating advanced him to Progress before he completed any workouts. Root cause: local state from previous accounts on the same device persists in IndexedDB and localStorage, and gets read by the new account's engine evaluation as if it belongs to that user.
+
+This is a data integrity bug, not a UI bug. It must be fixed before any Motion Care client tests on Sotirios's demo phone.
+
+Investigation checklist first, then fix:
+
+Audit every IndexedDB write in apps/consumer/src. Which keys are currently NOT namespaced by user ID?
+Audit localStorage / sessionStorage writes for the same.
+Confirm the exact reproduction: fresh account creation on a device with prior account data present → what state leaks?
+
+Fix pattern:
+
+On login success AND on account creation, call a clearAllLocalState() utility that enumerates every Praxis-owned IndexedDB database and localStorage key, and deletes them. This is the same primitive Phase 6b built for the "Erase all local data" button — reuse it, don't duplicate.
+After clearing, establish currentUserId in memory (React context or equivalent). All subsequent IndexedDB reads/writes MUST include the userId in the key namespace: ${userId}:program-state, not program-state.
+On logout, call clearAllLocalState() again as a safety net, then redirect to landing.
+Add a startup check: on app load, if currentUserId from server session ≠ any userId embedded in local data, treat as a stale device and clear before render.
+
+Photos-specific handling:
+
+Photos are currently local-only (privacy claim in /privacy). This means they DO leak across accounts on the same device. Two acceptable options:
+
+Option A (recommended): photos get namespaced by userId same as everything else. On login change, previous user's photos become inaccessible (still on disk until wiped, but not shown). On explicit logout, they're wiped. Update /privacy copy to clarify: "photos are device-local and cleared on logout."
+Option B: move photos to server-side storage tied to the account. Breaks the privacy claim as currently written. Requires policy update.
+
+Sotirios ratifies A or B before implementation. Log ruling in docs/engine-decisions.md as ED-6e.1.
+
+Tests required:
+
+tests/e2e/perAccountStateIsolation.spec.ts — create account A, complete a session, log out, create account B, assert account B sees zero session history and zero photos.
+tests/e2e/staleDeviceCleanup.spec.ts — simulate device with orphaned state from a previous user, log in as new user, assert clean state at first render.
+Commit 2 — Dashboard grid visual refinement
+
+Current state (from Sotirios's screenshot today): 2×3 grid works, but every tile has an outer box border, and icons are left-aligned within each tile.
+
+Sotirios's ratified design:
+
+Center the icon horizontally in each tile, positioned above the label.
+Remove the outer box border on non-selected tiles. Tile content (icon + label + one-line status) renders directly on the dashboard background with subtle vertical spacing between tiles.
+Keep the outer box (or a distinct visual treatment) only on the currently selected/active tile. The "Today" tile when viewing today's session, the "Week" tile when viewing the week, etc.
+Locked tiles: keep the small lock icon next to the label, dim the tile content, no separate border treatment.
+
+The result is a cleaner, sleeker grid where the eye sees icons and labels first and boxes only where selection matters.
+
+Do not change:
+
+Grid layout (2 columns × 3 rows)
+Tile order (Today, Week / Billing, Progress / Insights, History)
+Icon set or label copy
+Tap-target size (44px minimum still applies)
+Commit 3 — Hip abduction/adduction catalog check
+
+Grep the exercise catalog for hip abduction and hip adduction exercises. If absent or under-represented, produce a report in docs/catalog-audit-6e.md listing:
+
+Currently-present abduction exercises (e.g., banded clamshells, side-lying leg raises, standing cable abduction)
+Currently-present adduction exercises (e.g., copenhagen plank, cable adduction, side-lying adductor raise)
+Which patterns they're assigned to (probably hip_health toolbox — verify)
+Whether they surface in generated programs for relevant personas
+
+No new exercises authored in this commit. Report only. Sotirios reviews the report and rules on additions in a follow-up if gaps are real.
+
+Commit 4 — Floor press program placement audit
+
+Sotirios observed floor press appearing in a program. Verify:
+
+Which persona / equipment set / phase generated it?
+Is floor press correctly ratified as a swap of db-bench per Phase 2b?
+Was it selected as a rung, a swap, or a degradation fallback?
+
+Report findings in docs/catalog-audit-6e.md. If it's showing up incorrectly (e.g., as a Beginner Build main slot when better options exist), propose a scoring adjustment. Do not adjust engine logic in this PR — propose only.
+
+Commit 5 — Remaining rough-edges pass
+
+5.a — Landing page footer legibility: Footer disclaimer ("Praxis is not a medical device...") overlaps with hero image and reads as low-contrast gray on skin tone. Fix: solid dark container behind footer, OR gradient overlay on the image starting where footer begins. Ensure Privacy/Terms/Refunds/Support links have adequate tap-target size and legibility.
+
+5.b — Session-start redundant title (6d follow-up): Sotirios reports the "PHASE 1: CONTROL & TECHNIQUE / Upper Push + Scapular Control / Exercise 1 of 9" block is still duplicating mid-view even after Phase 6d's Commit 5. Investigate. It may be a different duplicate than the one 6d targeted. Fix.
+
+5.c — Session-adjustment prompt copy (from yesterday's session): Sotirios noted the mid-session prompt about workout adjustment was unclear. Screenshot pending — for now, grep for any session-adjustment prompt copy in apps/consumer/src/app/session/ and flag any that reads as engineering voice for rewrite. Report findings; Sotirios will confirm the specific screen in review.
+
+5.d — Week View "Not started" bars (from Screen 3 review): Day 2/3/4 currently show empty progress bars labeled "Not started." This reads as three failure states. Replace empty bar with a soft outline or "awaiting" glyph — absence of a bar reads better than an empty one.
+
+5.e — Post-session completion pills (from Screen 7 review): "Done / Partial / Skipped" pills look like a group of three equal buttons. The selected state on "Done" is visually distinct, but the others need to clearly signal they're alternatives. Extend the selected-state treatment so the difference is unambiguous.
+
+What is NOT in this pass
+No new features
+No engine changes (Commit 3 and 4 are report-only)
+No pattern-recognition work (that's Phase 7)
+No body-diagram cue system (that's a separate design phase)
+No changes to onboarding, questionnaire, or assessment capture flows
+No new copy on legal pages beyond footer legibility
+Acceptance
+Fresh account creation on a device with prior state shows zero leaked data.
+Photos correctly isolated per account per Sotirios's Option A/B ruling.
+Dashboard grid renders with centered icons, no outer boxes on unselected tiles, selected tile visually distinct.
+Hip abduction/adduction audit report exists.
+Floor press placement audit report exists.
+Landing footer legible at 360×740, 390×844, and desktop.
+Session-start view no longer duplicates exercise title.
+Session-adjustment prompt copy flagged for review.
+Week View non-started days no longer show empty bars.
+Post-session completion pills clearly signal mutual exclusivity.
+Full gate green + Playwright green including new isolation tests.
+
+Merge commit.
+
+
+
+
 ## Sequencing & effort (with Claude Code)
 
 P0 security            0.5 day        (both repos)
