@@ -804,3 +804,36 @@ Persisted stage words in `LogPrefs.blockedAt.phase` and
 - `resultsProjection.ts` `sacrificedAtPhase` wrong-field/unsafe-cast bug —
   ships as its own separate commit (derived at read time; no migration).
 
+## Phase 6h — Logo Restoration + Plan Structure
+
+### SR-6h — Visual identity at the browser-tab level
+
+**Standing rule:** Visual identity matters at the browser-tab level. A
+generic favicon reads as "this is a hobby project"; a proper logo reads as
+"this is a real product." And the plan document should honestly reflect
+what's decided vs. pending so future sessions know what to pick up next.
+
+### ED-6h.1 — Commit 1 took Path A: icons were already in git; SVGs were the
+real brand bug
+
+**Investigation (2026-07-24):**
+- `git log --all --diff-filter=D --name-only` for icon/favicon paths found
+  only a legacy `src/app/favicon.ico` deletion — not the Praxis PNG set.
+- `apps/consumer/public/icons/` and `apps/gyms/public/icons/` already
+  contained every metadata-referenced file on `origin/main` (present since
+  the monorepo move `bac1508`): `praxis-favicon-32.png`,
+  `praxis-mark-192.png`, `praxis-mark-512.png`, `praxis-logo-full.png`,
+  plus source `logo full.png` / `logo symbol.png`.
+- `apps/*/src/app/icon.png` is the real Praxis mark (512×512), not a Next
+  default.
+- The SVGs (`icon-192.svg` / `icon-512.svg`) were a generic person
+  silhouette — not the Praxis mark — and were listed **first** in
+  `layout.tsx` `metadata.icons`, so browsers that prefer SVG showed the
+  wrong brand in the tab.
+
+**Decision (Path A):** Keep the existing PNG Praxis assets. Regenerate
+`icon-192.svg` / `icon-512.svg` in both apps from `praxis-mark-*.png`
+(embedded PNG data URI so the vector slot carries the real mark). Prefer
+`praxis-favicon-32.png` first in metadata icon order. Lock with
+`apps/consumer/tests/e2e/faviconRenders.spec.ts`.
+

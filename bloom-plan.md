@@ -1792,6 +1792,205 @@ Merge commit.
 
 
 
+Phase 6h — Logo Restoration + Plan Structure
+
+Branch: phase-6h-logo-and-plan from origin/main. Small, focused. Multi-commit.
+
+Guiding principle (log as SR-6h)
+
+Visual identity matters at the browser-tab level. A generic favicon reads as "this is a hobby project"; a proper logo reads as "this is a real product." And the plan document should honestly reflect what's decided vs. pending so future-you or future-sessions know what to pick up next.
+
+Commit 1 — Restore missing icon assets
+
+Root cause: layout.tsx metadata and manifest.webmanifest in both apps reference icon files at /icons/praxis-*.png and /icons/icon-*.svg, but neither app has an /icons/ folder in their public/ directory. The files were either never committed or deleted at some point.
+
+Investigation checklist first:
+
+Run git log --all --diff-filter=D --name-only | grep -i icon on the repo root to see if icon files were previously committed and removed.
+Check apps/consumer/src/app/icon.png — this is currently what Next.js auto-serves as favicon fallback. Determine if it's the real Praxis logo or a stale default.
+Check Vercel deployment file listings for both apps — if the deployed bundle has icon files that aren't in the repo, they were probably uploaded manually to Vercel and got out of sync.
+
+Fix path A (if icons are recoverable from git):
+
+Restore the deleted commit's icon files to apps/consumer/public/icons/ and apps/gyms/public/icons/.
+Commit with a message explaining the restoration.
+
+Fix path B (if icons need to be regenerated):
+
+Sotirios provides the Praxis logo files. The metadata expects these filenames:
+apps/consumer/public/icons/praxis-favicon-32.png (32×32)
+apps/consumer/public/icons/praxis-mark-192.png (192×192)
+apps/consumer/public/icons/praxis-mark-512.png (512×512)
+apps/consumer/public/icons/praxis-logo-full.png (1536×1024, OG image)
+apps/consumer/public/icons/icon-192.svg (192×192 vector)
+apps/consumer/public/icons/icon-512.svg (512×512 vector)
+Same set in apps/gyms/public/icons/ (or gyms-branded variant if intended to differ).
+If Sotirios only has one source logo, generate the size variants from it. Use a lossless method for PNG resizing.
+Commit all files together.
+
+Verification:
+
+next build succeeds without warnings about missing icon files.
+Browser tab shows the Praxis logo when the deployed app is loaded.
+Manifest correctly resolves all icon URLs (test with curl on the deployed URL).
+PWA install prompt displays the correct icon.
+Playwright screenshot test: apps/consumer/tests/e2e/faviconRenders.spec.ts — asserts the favicon element in the DOM points to a real file.
+Commit 2 — Bloom-plan Phase 7 and 8 formal structure
+
+Append to bloom-plan.md in the phase queue:
+
+Phase 8 — Progress Made Visible (READY TO EXECUTE)
+
+Small phase surfacing what the engine already measures. Two scoped pieces:
+
+8.1 Posture-delta surfacing on results screen
+
+Everything needed is in the DB already (Phase 4's AssessmentSnapshot, assessmentHistory, tag lifecycle). Add a "Since baseline" section per tracked observation showing baseline vs. latest measurement with a small delta indicator. Copy pattern: "Your forward head measurement moved from 0.11 to 0.06 over the last 4 weeks. That's real."
+
+Optional at retest time: consent toggle for side-by-side of baseline photo vs. latest photo. Off by default; user opts in per-retest, not globally.
+
+8.2 Optional manual measurements
+
+Settings section: "Track measurements (optional)."
+
+User enters weight, waist, chest, arm, thigh (or subset) when they want.
+Simple line chart per measurement, last 12 entries.
+Does NOT drive engine decisions.
+Off by default; user opts in.
+Data stored per-userId (Phase 6e isolation applies).
+
+Positioning discipline: measurements stay passive and personal. As soon as they influence the program, Praxis becomes a weight-loss app. Keep the line clear.
+
+Tests: posture-delta rendering, measurement entry flow, measurement trend view, per-userId isolation of measurement data.
+
+Phase 7 — Pattern Recognition & Corrective Injection (PENDING SCOPE)
+
+Status: awaiting Sotirios's rulings on two design questions before this phase can be specced completely. Do NOT execute this phase without those rulings.
+
+Question 1 — Which additional patterns can a phone camera reliably detect?
+
+Current focus-tag system covers four patterns (forward_head, scapular_control, thoracic_extension, hip_stability). Sotirios's twenty years of movement expertise is the ceiling on what makes the expansion list. Anything that can't be reliably identified from a phone camera photo should NOT be added — false confidence is worse than missing coverage.
+
+Draft candidates (Sotirios rules on each):
+
+Anterior pelvic tilt
+Posterior pelvic tilt
+Knee valgus (visible standing)
+Rounded thoracic / kyphosis
+Uneven shoulders (asymmetry)
+Foot pronation
+
+Question 2 — Injection aggressiveness for detected patterns
+
+When a pattern is detected and its corrective isn't organically in the generated program, what does the engine do?
+
+(a) Add corrective as required slot every session that week
+(b) Add 2-3x per week
+(c) Prompt user "we noticed X — want us to add corrective work?" and let them choose
+
+Recommendation (mine, not ratified): (c). Consistent with the Sacrifice/Test/Modify pattern from Phase 3.2 and respects user agency.
+
+Once Sotirios rules on both, Phase 7 gets fully specced.
+
+Parked (unchanged from plan-state 2026-07-23)
+Wearable integration → after native apps, after first stable revenue.
+Body-diagram visual cues → after Phase 8, may replace or supplement video content.
+Native app builds → precondition for wearables; no urgency yet.
+Video content workstream → Sotirios owns schedule; not code phase.
+Commit 3 — Working agreement update
+
+Add to bloom-plan working agreement:
+
+Phase queue discipline:
+
+Phase 8 is ready to execute anytime after Phase 6h merges.
+Phase 7 requires ratifications before it can be specced or executed.
+Parked items remain informative; require dedicated phase before code work begins.
+New ideas that arise mid-testing get logged in this document, not executed immediately. Idea capture ≠ scope creep.
+What is NOT in this pass
+No engine changes
+No new features beyond restoring icons and documenting Phase 7/8
+No execution of Phase 7 or 8 (they're just being documented here)
+No changes to macro calculator or nutrition guidance
+Acceptance
+Both apps show the Praxis logo in the browser tab, on PWA install prompts, and in OG shares.
+All icon paths referenced in metadata resolve to real files.
+Bloom-plan.md contains Phase 7 (pending) and Phase 8 (ready) as formal entries in the phase queue.
+Working agreement updated with phase queue discipline notes.
+Full gate green + Playwright green including favicon render test.
+
+Merge commit.
+
+---
+
+## Phase queue (post–6h)
+
+Phase 8 — Progress Made Visible (READY TO EXECUTE)
+
+Small phase surfacing what the engine already measures. Two scoped pieces:
+
+### 8.1 Posture-delta surfacing on results screen
+
+Everything needed is in the DB already (Phase 4's AssessmentSnapshot, assessmentHistory, tag lifecycle). Add a "Since baseline" section per tracked observation showing baseline vs. latest measurement with a small delta indicator. Copy pattern: "Your forward head measurement moved from 0.11 to 0.06 over the last 4 weeks. That's real."
+
+Optional at retest time: consent toggle for side-by-side of baseline photo vs. latest photo. Off by default; user opts in per-retest, not globally.
+
+### 8.2 Optional manual measurements
+
+Settings section: "Track measurements (optional)."
+
+User enters weight, waist, chest, arm, thigh (or subset) when they want.
+Simple line chart per measurement, last 12 entries.
+Does NOT drive engine decisions.
+Off by default; user opts in.
+Data stored per-userId (Phase 6e isolation applies).
+
+Positioning discipline: measurements stay passive and personal. As soon as they influence the program, Praxis becomes a weight-loss app. Keep the line clear.
+
+Tests: posture-delta rendering, measurement entry flow, measurement trend view, per-userId isolation of measurement data.
+
+---
+
+Phase 7 — Pattern Recognition & Corrective Injection (PENDING SCOPE)
+
+Status: awaiting Sotirios's rulings on two design questions before this phase can be specced completely. Do NOT execute this phase without those rulings.
+
+### Question 1 — Which additional patterns can a phone camera reliably detect?
+
+Current focus-tag system covers four patterns (forward_head, scapular_control, thoracic_extension, hip_stability). Sotirios's twenty years of movement expertise is the ceiling on what makes the expansion list. Anything that can't be reliably identified from a phone camera photo should NOT be added — false confidence is worse than missing coverage.
+
+Draft candidates (Sotirios rules on each):
+
+- Anterior pelvic tilt
+- Posterior pelvic tilt
+- Knee valgus (visible standing)
+- Rounded thoracic / kyphosis
+- Uneven shoulders (asymmetry)
+- Foot pronation
+
+### Question 2 — Injection aggressiveness for detected patterns
+
+When a pattern is detected and its corrective isn't organically in the generated program, what does the engine do?
+
+- (a) Add corrective as required slot every session that week
+- (b) Add 2-3x per week
+- (c) Prompt user "we noticed X — want us to add corrective work?" and let them choose
+
+Recommendation (mine, not ratified): (c). Consistent with the Sacrifice/Test/Modify pattern from Phase 3.2 and respects user agency.
+
+Once Sotirios rules on both, Phase 7 gets fully specced.
+
+---
+
+Parked (unchanged from plan-state 2026-07-23)
+
+- Wearable integration → after native apps, after first stable revenue.
+- Body-diagram visual cues → after Phase 8, may replace or supplement video content.
+- Native app builds → precondition for wearables; no urgency yet.
+- Video content workstream → Sotirios owns schedule; not code phase.
+
+---
+
 ## Sequencing & effort (with Claude Code)
 
 P0 security            0.5 day        (both repos)
@@ -1853,6 +2052,17 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   accessible from the app without arbitrary gating — but positioned as
   reference content, not tracked functionality. See `docs/engine-decisions.md`
   § SR-6g.
+- **Visual identity (SR-6h, 2026-07-24):** a proper Praxis logo at the
+  browser-tab / PWA / OG level is part of product quality — not decoration.
+  Metadata-referenced icon paths must resolve to real files. See
+  `docs/engine-decisions.md` § SR-6h / ED-6h.1.
+- **Phase queue discipline (2026-07-24):**
+  - Phase 8 is ready to execute anytime after Phase 6h merges.
+  - Phase 7 requires ratifications before it can be specced or executed.
+  - Parked items remain informative; require a dedicated phase before code
+    work begins.
+  - New ideas that arise mid-testing get logged in this document, not
+    executed immediately. Idea capture ≠ scope creep.
 
 ---
 
