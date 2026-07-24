@@ -387,6 +387,27 @@ describe("sacrificeRetestQueue", () => {
     expect(result.sacrificeRetestQueue[0].exerciseId).toBe("romanian-deadlift");
     expect(result.sacrificeRetestQueue[0].eligibleForRetestNow).toBe(true);
   });
+
+  test("sacrificedAtPhase derives from phase.phaseIndex, not phase.name (Phase 6g)", () => {
+    // Regression: prior code force-cast program.phase.name (a display string)
+    // to the curriculum-stage union. Derived at read time — no persistence.
+    const program = makeProgram({
+      phase: {
+        name: "Phase 2: Hypertrophy & Capacity",
+        phaseIndex: 2,
+        cycleIndex: 1,
+        weekIndex: 1,
+        weekCount: 1,
+        goal: "Moderate loads",
+      },
+      ladderState: {
+        byPattern: {},
+        sacrificedByPattern: { hinge: ["romanian-deadlift"] },
+      },
+    });
+    const result = projectResults(program, []);
+    expect(result.sacrificeRetestQueue[0]?.sacrificedAtPhase).toBe("skill");
+  });
 });
 
 describe("phaseHistory", () => {
