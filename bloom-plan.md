@@ -1951,6 +1951,181 @@ Tests: posture-delta rendering, measurement entry flow, measurement trend view, 
 
 ---
 
+
+
+
+Phase 6i — Knowledge Panel Cleanup + Loose Ends
+
+Branch: phase-6i-cleanup from origin/main. Multi-commit. Focused on text repetition, template leaks, contrast issues, and the menu overlap bug found in Sotirios's phone testing.
+
+Guiding principle (log as SR-6i)
+
+The Knowledge & Analysis panels are where the app's coaching intelligence becomes visible to users. When they render with duplicated headers, repeated paragraphs, or leaked template strings, they undermine the whole "the app is thinking about you" impression. This phase makes those panels read the way they should have all along.
+
+Commit 1 — Knowledge & Analysis text deduplication (SHIP-CRITICAL for polish)
+
+Multiple issues visible in Sotirios's phone screenshots:
+
+1.a — Movement patterns bulleted list duplicates the header:
+
+Header: "Plan focus: Balance And Asymmetry Control"
+
+Below: bulleted list showing:
+
+"Plan focus: Balance And Asymmetry Control"
+"Plan focus: Breathing And Ribcage Control"
+"Plan focus: Squat Pattern Control"
+"Plan focus: Balance"
+
+The word "Plan focus:" appears as a prefix on every list item — it's template-string leakage. Also "Balance" appears once with "And Asymmetry Control" and once alone. Something is duplicating and/or truncating tag names during render.
+
+Investigation: find where the "Plan focus:" prefix is being generated. Likely a template like Plan focus: ${tag.displayName} running per-tag when it should run once. Also find why "Balance" is appearing standalone alongside "Balance And Asymmetry Control" — either duplicate tags in the underlying data or a rendering bug that strips suffixes.
+
+Fix: bulleted list items should be tag names ONLY, no "Plan focus:" prefix. Header stays with "Plan focus:" as the section label.
+
+1.b — "Why this matters" paragraph duplicated across cards:
+
+The identical text "This system continuously monitors your movement quality, fatigue patterns, and structural balance. Your current plan reflects what your body is ready to improve safely and efficiently. As your execution improves, the system will automatically increase complexity and progression." appears at the bottom of BOTH the Movement patterns card AND the Stability/control card.
+
+Fix: this paragraph should appear ONCE, at the top of the Knowledge & Analysis section, as a general framing statement. Not repeated per card. Each card gets its specific content only.
+
+1.c — Movement Insight paragraph repeats headline content:
+
+Card header: "This week we're focused on your balance and asymmetry control · breathing and ribcage control · squat pattern control."
+
+Below: "Between sessions: easy walk + mobility after sessions."
+
+Then further down the same page, System Adjustments card says similar things about "balance and asymmetry" that overlap with the header.
+
+Fix: audit all copy on the Knowledge & Analysis screen. If two sections say substantially the same thing, keep the more specific one and cut the more general one. Don't repeat the tag list — reference it once, then each subsequent section adds NEW information only.
+
+1.d — Stability/control list also carries "Pattern suggests" prefix on every item:
+
+"Trunk alignment bias - Pattern suggests torso alignment drift..." "Hip balance asymmetry - Pattern suggests uneven hip loading..." "Posture control focus - Goal suggests improving posture..."
+
+The "Pattern suggests" / "Goal suggests" phrases are template glue that should be part of the section framing, not repeated on every item. Fix: list items are just the observation itself. Framing sentence at top: "Patterns we're watching this week:"
+
+Commit 2 — Contrast and legibility pass
+
+Sotirios reports some text is hard to see. Audit body text on:
+
+Knowledge & Analysis panels
+Movement Insight card
+Coach notes cards
+Any dark-on-dark or low-contrast text
+
+Ratified minimums for body text:
+
+Contrast ratio 4.5:1 minimum against background (WCAG AA for normal text)
+Muted/secondary text still 3:1 minimum
+
+Do NOT make everything bright white. Preserve the quiet design language. Just push muted text one shade lighter until it clears the ratio.
+
+Verify with a contrast checker on the actual deployed colors. Do NOT approximate.
+
+Commit 3 — Bottom bar / Menu button overlap fix
+
+Sotirios's screenshots show the Menu button (bottom-right) overlapping with content tags (Movement patterns, Stability/control, Compensation tendencies) and buttons (View details).
+
+Root cause: fixed-position Menu button doesn't reserve bottom padding on the scrollable content beneath it, so content scrolls up under it.
+
+Fix: add padding-bottom to scrollable content areas equal to the bottom-bar height plus a comfortable margin (e.g., pb-24 in Tailwind or whatever the current bottom-bar height is + 16px). This applies to:
+
+Knowledge & Analysis panels
+Session mid-workout screens (if present)
+Any screen with the bottom bar visible
+
+Also confirm the bottom bar itself is narrow enough that its middle "Next →" button doesn't extend under the side buttons. The three-icon layout from Phase 6d should already do this; verify it held.
+
+Commit 4 — Skip-prompt three-button design with instant suppression
+
+Sotirios tested purposely skipping fields on an exercise. The engine prompt fired but did not offer an immediate way to turn off future prompts. The Settings toggle exists but requires navigation.
+
+Ratified design — the prompt itself has three buttons:
+
+[Log it now]    [Skipped it]    [Stop asking]
+Log it now — opens the log input inline, user fills in the fields.
+Skipped it — records the skip, moves on to next exercise.
+Stop asking — immediately turns off future skip-check prompts for this user. No navigation. One tap.
+
+Small text below the buttons: "You can turn these back on anytime in Settings."
+
+The Settings toggle from Phase 6f Commit 5.c stays. It's the re-enable path. But the OFF path is one tap right in the prompt, not a link.
+
+This pattern is the app respecting user attention — if someone is skipping fields, the last thing they want is a nag prompt that requires navigation to silence. Give them the off-switch where they already are.
+
+Track the user's suppression choice in local state per-userId (Phase 6e namespacing applies).
+
+Commit 5 — Nutrition page density tightening
+
+Sotirios's screenshot shows a dense paragraph on the macro calculator page: "Concretely, that's why this calculator sets protein directly from your bodyweight — about 0.8 grams per pound — instead of as a percentage of calories. A percentage-based protein target quietly shortchanges you the moment you're in a calorie deficit, which is exactly the situation where protein matters most for holding onto muscle..."
+
+The paragraph explains the same concept three times. Tighten to one clear statement of the concept, one line of reasoning, one line of what NOT to do. Preserve the coach voice, cut the redundancy.
+
+Also review the whole macro calculator page for similar density. Sotirios's coach voice at its best is direct — a single strong sentence, not three sentences making the same point. Aim for that everywhere on the page.
+
+Commit 6 — Phase 7 spec finalization (documentation only, not
+
+execution)
+
+Sotirios has ratified the two remaining Phase 7 questions:
+
+Pattern set (ratified additions to draft candidates):
+
+Anterior pelvic tilt (pending Sotirios's separate ruling)
+Posterior pelvic tilt (pending)
+Knee valgus (pending)
+Kyphosis / rounded thoracic (pending)
+Uneven shoulders (pending)
+Foot pronation (pending)
+Head tilt (pending)
+Hyperlordosis (pending)
+Forward shoulders (RATIFIED YES)
+Rib alignment / rib flare (RATIFIED YES)
+
+The two newly ratified patterns get formally added to the Phase 7 pattern list in bloom-plan.md. The rest still await Sotirios's individual rulings before Phase 7 executes.
+
+Injection aggressiveness (RATIFIED): Option B refined — three-button prompt design matching Commit 4's pattern.
+
+When a pattern is detected and its corrective isn't organically in the program, the user sees a prompt with three buttons:
+
+[Add it]    [Not now]    [Stop suggesting]
+Add it — corrective is injected into the program with a decision trace explaining why.
+Not now — corrective is not added this cycle; user may be prompted again next assessment.
+Stop suggesting — immediately turns off future corrective-injection prompts for this user. No navigation.
+
+Small text below the buttons: "You can turn these back on anytime in Settings."
+
+Settings has a toggle that re-enables these prompts (mirroring the skip- prompt pattern from Commit 4). Suppressed prompts do NOT result in silent injection — if the user has said "stop suggesting," the engine respects that. Detected patterns still influence scoring (bias exists) but no new correctives get added without the user's affirmative Add-it tap.
+
+This pattern preserves user agency at every step: the app tells you what it noticed, offers help, and gets out of your way if you tell it to.
+
+Update bloom-plan.md Phase 7 section with the ratifications. Do NOT execute Phase 7 in this PR. This is documentation only.
+
+What is NOT in this pass
+No engine changes
+No execution of Phase 7 (documentation of ratifications only)
+No execution of Phase 8
+No new features beyond the copy fixes and layout fix
+No changes to the macro calculator's actual math or content structure — only tightening prose
+Acceptance
+Movement patterns list shows tag names without "Plan focus:" prefix
+Stability/control list shows observations without "Pattern suggests" prefix
+"Why this matters" paragraph appears once at top of Knowledge & Analysis, not repeated per card
+Movement Insight and System Adjustments cards don't repeat the tag list
+Body text meets 4.5:1 contrast ratio minimum (WCAG AA)
+Bottom bar no longer overlaps content — proper padding-bottom on scrollable containers
+Skip-prompt offers "Turn off in Settings" link after third fire
+Nutrition page paragraphs tightened, redundancy removed
+Phase 7 ratifications logged in bloom-plan.md
+Full gate green + Playwright green
+
+Merge commit.
+
+
+
+
+
 Phase 7 — Pattern Recognition & Corrective Injection (PENDING SCOPE)
 
 Status: awaiting Sotirios's rulings on two design questions before this phase can be specced completely. Do NOT execute this phase without those rulings.

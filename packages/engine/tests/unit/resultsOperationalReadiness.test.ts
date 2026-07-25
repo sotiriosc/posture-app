@@ -1163,7 +1163,10 @@ describe("results operational readiness", () => {
       "set the shoulder blade"
     );
     expect(document.body.textContent ?? "").toContain("Engine Thoracic Extension");
-    expect(document.body.textContent ?? "").toContain(
+    // Phase 6i Commit 1.a — list items are tag names only; "Plan focus:"
+    // is the section label, not a per-item prefix.
+    expect(document.body.textContent ?? "").toContain("Engine Scapular Control");
+    expect(document.body.textContent ?? "").not.toContain(
       "Plan focus: Engine Scapular Control"
     );
     expect(document.body.textContent ?? "").not.toContain("Daily gentle mobility");

@@ -5,7 +5,7 @@ import type { Program } from "@/lib/types";
 
 const DEFAULT_FOCUS = "Control and alignment";
 const DEFAULT_MOVEMENT_ITEM =
-  "Plan movement patterns will populate as Praxis builds your week.";
+  "Movement patterns will populate as Praxis builds your week.";
 
 const uniqueClean = (values: Array<string | null | undefined>) => {
   const seen = new Set<string>();
@@ -23,12 +23,39 @@ const uniqueClean = (values: Array<string | null | undefined>) => {
   return output;
 };
 
+/**
+ * Drop shorter tags that are already covered by a longer tag
+ * ("Balance" vs "Balance And Asymmetry Control").
+ */
+const dropCoveredTags = (values: string[]) => {
+  const sortedByLength = [...values].sort((a, b) => b.length - a.length);
+  const kept: string[] = [];
+
+  for (const value of sortedByLength) {
+    const key = value.toLowerCase();
+    const covered = kept.some((existing) => {
+      const existingKey = existing.toLowerCase();
+      return existingKey !== key && existingKey.includes(key);
+    });
+    if (!covered) kept.push(value);
+  }
+
+  const keptKeys = new Set(kept.map((value) => value.toLowerCase()));
+  return values.filter((value) => keptKeys.has(value.toLowerCase()));
+};
+
 const humanizeProgramSignal = (value: string) => {
   const cleaned = value.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
   if (!cleaned) return "";
 
   return cleaned.replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
 };
+
+const stripObservationTemplateGlue = (description: string) =>
+  description
+    .replace(/^(Pattern|Goal) suggests\s+/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 const programExercises = (program: Program) =>
   program.week
@@ -46,26 +73,11 @@ export const buildProgramFocusAreas = (program: Program, limit = 4) => {
     ...exercises.flatMap((exercise) => exercise.movementPattern),
     ...exercises.flatMap((exercise) => exercise.focusTags ?? exercise.tags ?? []),
   ]);
-  const focusAreas = uniqueClean(rawSignals.map(humanizeProgramSignal)).slice(
-    0,
-    limit
-  );
+  const focusAreas = dropCoveredTags(
+    uniqueClean(rawSignals.map(humanizeProgramSignal))
+  ).slice(0, limit);
 
   return focusAreas.length ? focusAreas : [DEFAULT_FOCUS];
-};
-
-const buildExerciseCoverageItems = (program: Program) => {
-  const exercises = programExercises(program);
-
-  return uniqueClean(
-    exercises.map((exercise) => {
-      const patterns = uniqueClean(exercise.movementPattern.map(humanizeProgramSignal))
-        .slice(0, 2)
-        .join(", ");
-      if (!patterns) return exercise.name;
-      return `${exercise.name}: ${patterns}`;
-    })
-  ).slice(0, 4);
 };
 
 const buildObservationItems = (
@@ -77,36 +89,25 @@ const buildObservationItems = (
     report?.observations
       ?.filter((item) => matcher.test(`${item.title} ${item.description}`))
       .slice(0, 3)
-      .map((item) => `${item.title} - ${item.description}`) ?? [];
+      .map((item) => {
+        const cleaned = stripObservationTemplateGlue(item.description);
+        if (!cleaned) return item.title;
+        const sentence =
+          cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+        return `${item.title} — ${sentence}`;
+      }) ?? [];
 
   return observedItems.length ? observedItems : [fallback];
 };
 
+/** Tag names only — no "Plan focus:" template prefix (Phase 6i Commit 1). */
 export const buildProgramMovementPatternItems = (params: {
   program: Program;
   assessmentReport?: AssessmentReport | null;
 }) => {
-  const { program, assessmentReport } = params;
-  const focusItems = buildProgramFocusAreas(program, 4).map(
-    (focus) => `Plan focus: ${focus}`
-  );
-  const assessmentItems =
-    assessmentReport?.priorities?.slice(0, 2).map((priority) => {
-      return `Assessment focus: ${priority}`;
-    }) ?? [];
-  const successMarkers =
-    program.phaseObjective?.successMarkers
-      ?.slice(0, 2)
-      .map((marker) => `Success marker: ${marker}`) ?? [];
-  const exerciseItems = buildExerciseCoverageItems(program);
-  const items = uniqueClean([
-    ...focusItems,
-    ...assessmentItems,
-    ...successMarkers,
-    ...exerciseItems,
-  ]).slice(0, 4);
-
-  return items.length ? items : [DEFAULT_MOVEMENT_ITEM];
+  const { program } = params;
+  const focusItems = buildProgramFocusAreas(program, 4);
+  return focusItems.length ? focusItems : [DEFAULT_MOVEMENT_ITEM];
 };
 
 export const buildProgramDashboardCopy = (params: {
