@@ -10,7 +10,8 @@ import {
   type KeyboardEvent,
 } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useUserPlan } from "@/hooks/useUserPlan";
 import { exerciseById } from "@/lib/exercises";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import SessionLadderPill from "@/components/session/SessionLadderPill";
@@ -404,8 +405,10 @@ const findPainSwapAlternativeExerciseId = (params: {
 };
 
 export default function SessionClient() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const searchParamString = searchParams.toString();
+  const { canAccessWorkoutToday, hasCompletedFirstWeek } = useUserPlan();
   const [data, setData] = useState<QuestionnaireData | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [workSeconds, setWorkSeconds] = useState(60);
@@ -738,11 +741,26 @@ export default function SessionClient() {
             resolvedProgress && Number.isFinite(resolvedProgress.nextDayIndex)
               ? resolvedProgress.nextDayIndex
               : 0;
-          const routableDayIndex = resolveRoutableProgramDayIndex(
+          let routableDayIndex = resolveRoutableProgramDayIndex(
             resolvedProgram,
             Number.isFinite(resolvedDayIndex) ? (resolvedDayIndex as number) : null,
             fallbackDayIndex
           );
+          // Phase 6j Option B — free users after first week cannot open Days 2+.
+          if (
+            routableDayIndex !== null &&
+            !canAccessWorkoutToday(routableDayIndex)
+          ) {
+            routableDayIndex = resolveRoutableProgramDayIndex(
+              resolvedProgram,
+              0,
+              0
+            );
+            const nextParams = new URLSearchParams(currentSearchParams);
+            nextParams.set("programId", resolvedProgram.id);
+            nextParams.set("dayIndex", String(routableDayIndex ?? 0));
+            router.replace(`/session?${nextParams.toString()}`);
+          }
           const programSessions = await listSessionsByProgramId(resolvedProgram.id);
           const feedbackSessions = programSessions
             .filter((session) => !session.deletedAt && Boolean(session.feedback))
@@ -900,7 +918,7 @@ export default function SessionClient() {
       }
     };
     load();
-  }, [searchParamString]);
+  }, [searchParamString, hasCompletedFirstWeek, canAccessWorkoutToday, router]);
 
   const currentProgramDay = useMemo(() => {
     if (!program || programDayIndex === null) return null;

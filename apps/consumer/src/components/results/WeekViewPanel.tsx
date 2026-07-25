@@ -32,6 +32,7 @@ type WeekViewPanelProps = {
   weekViewDay: Program["week"][number];
   weekViewDetailEntries: WeekViewDetailEntry[];
   isFreePlan: boolean;
+  hasCompletedFirstWeek: boolean;
   isDayLocked: (dayIndex: number) => boolean;
   onFocusTodayPlan: () => void;
   onOpenDayDetails: (
@@ -59,6 +60,7 @@ export default function WeekViewPanel({
   weekViewDay,
   weekViewDetailEntries,
   isFreePlan,
+  hasCompletedFirstWeek,
   isDayLocked,
   onFocusTodayPlan,
   onOpenDayDetails,
@@ -261,7 +263,9 @@ export default function WeekViewPanel({
       ) : null}
       {isFreePlan ? (
         <p className="mt-3 text-xs text-slate-400">
-          Free access keeps Day 1 available. Praxis Pro unlocks Day 2 through Day {program.daysPerWeek}.
+          {hasCompletedFirstWeek
+            ? `You've completed your first week with Praxis. Upgrade to Pro to continue with Days 2–${program.daysPerWeek} and every week after.`
+            : `You're on your free first week — Days 1–${program.daysPerWeek} are unlocked. Upgrade to Pro to keep full-week access after week 1.`}
         </p>
       ) : null}
     </section>

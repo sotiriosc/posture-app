@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
+import {
+  FIRST_WEEK_IN_PROGRESS_COPY,
+  FIRST_WEEK_UPGRADE_COPY,
+} from "@/lib/freemiumAccess";
+import { useUserPlan } from "@/hooks/useUserPlan";
 
 export default function UpgradePrompt() {
+  const { hasCompletedFirstWeek } = useUserPlan();
   const [message, setMessage] = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutEnabled, setCheckoutEnabled] = useState<boolean | null>(null);
@@ -49,13 +55,18 @@ export default function UpgradePrompt() {
     }
   };
 
+  const body = hasCompletedFirstWeek
+    ? FIRST_WEEK_UPGRADE_COPY
+    : FIRST_WEEK_IN_PROGRESS_COPY;
+  const headline = hasCompletedFirstWeek
+    ? "Keep training every day"
+    : "Unlock ongoing full-week access";
+
   return (
     <div className="ui-card ui-soft-surface-raised mt-4 rounded-lg p-4">
       <p className="ui-kicker">Praxis Pro</p>
-      <p className="mt-1 text-lg font-semibold text-white">Unlock the full weekly plan</p>
-      <p className="mt-2 text-sm text-slate-300">
-        Free access keeps Day 1 available. Pro opens every training day, deeper progress views, and full plan history.
-      </p>
+      <p className="mt-1 text-lg font-semibold text-white">{headline}</p>
+      <p className="mt-2 text-sm text-slate-300">{body}</p>
       {checkoutEnabled ? (
         <div className="mt-4">
           <Button type="button" onClick={startCheckout} disabled={checkoutLoading}>

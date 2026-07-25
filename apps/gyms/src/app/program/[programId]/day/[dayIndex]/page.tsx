@@ -87,7 +87,12 @@ export default function ProgramDayPage({ params }: Props) {
   const [isLoading, setIsLoading] = useState(true);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [historyIndex, setHistoryIndex] = useState(0);
-  const { isFreePlan, loading: planLoading } = useUserPlan();
+  const {
+    isFreePlan,
+    hasCompletedFirstWeek,
+    canAccessWorkoutToday,
+    loading: planLoading,
+  } = useUserPlan();
   const sessionResolved = !planLoading;
 
   useEffect(() => {
@@ -158,14 +163,13 @@ export default function ProgramDayPage({ params }: Props) {
 
   useEffect(() => {
     if (!program) return;
-    if (isFreePlan && dayIndex > 0) {
-      // Free-plan lock: snap the view to Day 1 and rewrite the URL. Pre-existing
-      // behavior, surfaced (not introduced) by the Phase 6a plan-hook refactor.
+    if (!canAccessWorkoutToday(dayIndex)) {
+      // Free-plan lock after first week: snap to Day 1 (Phase 6j Option B).
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setDayIndex(0);
       router.replace(`/program/${program.id}/day/0`);
     }
-  }, [isFreePlan, dayIndex, program, router]);
+  }, [canAccessWorkoutToday, dayIndex, program, router]);
 
   const formatRecommendation = (
     rec: ReturnType<typeof getProgressionRecommendation>
@@ -191,7 +195,7 @@ export default function ProgramDayPage({ params }: Props) {
 
   const navigateDay = (targetIndex: number) => {
     if (!program) return;
-    if (isFreePlan) return;
+    if (!canAccessWorkoutToday(targetIndex)) return;
     const bounded = Math.max(0, Math.min(targetIndex, program.week.length - 1));
     if (bounded === dayIndex) return;
     setDayIndex(bounded);
@@ -291,7 +295,7 @@ export default function ProgramDayPage({ params }: Props) {
                       ? "border-white bg-white text-slate-900"
                       : "border-slate-300/80 bg-slate-900/20 text-slate-100 hover:border-white"
                   }`}
-                  disabled={isFreePlan}
+                  disabled={!canAccessWorkoutToday(index)}
                 >
                   {programDay.title}
                 </button>
@@ -299,7 +303,9 @@ export default function ProgramDayPage({ params }: Props) {
             </div>
             {isFreePlan ? (
               <p className="text-xs text-slate-200">
-                Free access keeps Day 1 available. Praxis Pro unlocks the full week.
+                {hasCompletedFirstWeek
+                  ? "You've completed your first week with Praxis. Upgrade to Pro to continue with Days 2–4 and every week after."
+                  : "You're on your free first week — every training day is unlocked."}
               </p>
             ) : null}
           </header>

@@ -843,6 +843,8 @@ export default function ResultsRoutine() {
     isReady,
     authEnabled,
     plan,
+    hasCompletedFirstWeek,
+    canAccessWorkoutToday,
     nowAnchor,
     remoteAssessment,
   } = useResultsBootstrap({ storageKey: STORAGE_KEY });
@@ -1706,7 +1708,7 @@ export default function ResultsRoutine() {
   }, [completedCalendarWeekSessions, activeDaysPerWeek]);
 
   const isFreePlan = authEnabled && plan !== "pro";
-  const isDayLocked = (dayIndex: number) => isFreePlan && dayIndex > 0;
+  const isDayLocked = (dayIndex: number) => !canAccessWorkoutToday(dayIndex);
   const effectiveSelectedDay = isDayLocked(selectedDay) ? 0 : selectedDay;
   const effectiveNextDayIndex = isDayLocked(nextDayIndex) ? 0 : nextDayIndex;
   const sessionLaunchDayIndex = useMemo(() => {
@@ -1719,11 +1721,11 @@ export default function ResultsRoutine() {
   const effectiveInProgressDaySet = useMemo(() => {
     const set = new Set<number>();
     inProgressDaySet.forEach((dayIndex) => {
-      if (isFreePlan && dayIndex > 0) return;
+      if (!canAccessWorkoutToday(dayIndex)) return;
       set.add(dayIndex);
     });
     return set;
-  }, [inProgressDaySet, isFreePlan]);
+  }, [inProgressDaySet, canAccessWorkoutToday]);
   const inProgressCount = useMemo(
     () => effectiveInProgressDaySet.size,
     [effectiveInProgressDaySet]
@@ -3596,6 +3598,7 @@ export default function ResultsRoutine() {
           weekViewDay={weekViewDay}
           weekViewDetailEntries={weekViewDetailEntries}
           isFreePlan={isFreePlan}
+          hasCompletedFirstWeek={hasCompletedFirstWeek}
           isDayLocked={isDayLocked}
           onFocusTodayPlan={focusTodayPlanInWeekView}
           onOpenDayDetails={openWeekViewDayDetails}

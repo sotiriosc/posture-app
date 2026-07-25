@@ -164,6 +164,15 @@ export type SessionRecord = {
   updatedAt: string;
   routineId: string | null;
   durationSec: number | null;
+  /**
+   * Phase 6j Commit 3 — wall-clock active training seconds (excludes pauses /
+   * abandonment gaps). Prefer this over durationSec for end-of-session copy.
+   */
+  activeDurationSec?: number | null;
+  /** Phase 6j — true when inactivity exceeded the abandonment threshold. */
+  abandoned?: boolean | null;
+  /** Phase 6j — seconds spent paused / inactive (not charged to the user). */
+  pausedDurationSec?: number | null;
   notes: string | null;
   sessionFeedback?: "easy" | "moderate" | "hard" | "pain" | null;
   sessionPainLocation?: PainLocation | null;
@@ -306,6 +315,12 @@ export type LogPrefs = {
    */
   incompleteContractPromptFireCount?: number;
   suppressIncompleteContractPrompts?: boolean;
+  /**
+   * Phase 6j Commit 1 — freemium Option B latch. Once the user finishes their
+   * first full training week, free access collapses to Day 1 only. Persists
+   * per account (Phase 6e isolation) across sessions and logins.
+   */
+  hasCompletedFirstWeek?: boolean;
 };
 
 export type ExercisePrescription = {

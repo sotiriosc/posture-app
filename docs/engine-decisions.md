@@ -856,3 +856,22 @@ clean observations only.
   (`Add it` / `Not now` / `Stop suggesting`) matching the incomplete-field
   prompt pattern from Phase 6i Commit 4. Suppression never silently injects.
 
+## Phase 6j — Business Model + Session Tracking
+
+### SR-6j — Business model and session tracking change day-one behavior
+
+**Standing rule:** Business model changes and session tracking both affect how
+users experience the app over time — the first affects retention and revenue,
+the second affects self-awareness of their own training. Both need to be
+implemented with care because they're visible from day one and change user
+behavior over weeks. Ship deliberately.
+
+### ED-6j.1 — Freemium Option B (first-week-generous)
+
+**Ratified 2026-07-24:** Free tier gets full access to the first generated week
+(`sessions_per_week` days). After that week completes (distinct Day 1..N
+coverage latched in `LogPrefs.hasCompletedFirstWeek`), free access collapses
+to Day 1 recurring. Pro unlocks everything ongoing. All day-lock decisions
+read `canAccessWorkoutToday` from `useUserPlan` / `freemiumAccess` — no
+duplicated gating.
+
