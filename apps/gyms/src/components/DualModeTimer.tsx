@@ -191,9 +191,10 @@ export default function DualModeTimer({
     : "shadow-cyan-500/30 ring-cyan-300/45";
   const activeModeButtonClasses = "praxis-selected-surface text-white";
   const sliderAccentClass = isExerciseMode ? "accent-sky-500" : "accent-cyan-500";
+  // Phase 6k Commit 2 — dark face so the countdown can stay pure white (WCAG AAA).
   const timerFaceBackground = isExerciseMode
-    ? "bg-[radial-gradient(circle_at_30%_24%,rgba(255,255,255,.98)_0%,rgba(224,242,254,.96)_46%,rgba(125,211,252,.9)_70%,rgba(30,64,175,.58)_100%)]"
-    : "bg-[radial-gradient(circle_at_28%_22%,rgba(255,255,255,.98)_0%,rgba(224,242,254,.96)_38%,rgba(125,211,252,.9)_62%,rgba(14,116,144,.72)_82%,rgba(30,41,59,.72)_100%)]";
+    ? "bg-[radial-gradient(circle_at_30%_24%,rgba(15,23,42,.98)_0%,rgba(2,6,23,.98)_55%,rgba(2,6,23,1)_100%)]"
+    : "bg-[radial-gradient(circle_at_28%_22%,rgba(8,47,73,.98)_0%,rgba(2,6,23,.98)_55%,rgba(2,6,23,1)_100%)]";
   const ringGradient = isExerciseMode
     ? "conic-gradient(from 180deg at 50% 50%, rgba(191,219,254,0.98), rgba(56,189,248,0.96), rgba(37,99,235,0.92), rgba(15,23,42,0.9), rgba(191,219,254,0.98))"
     : "conic-gradient(from 180deg at 50% 50%, rgba(207,250,254,0.98), rgba(103,232,249,0.96), rgba(14,165,233,0.92), rgba(79,70,229,0.62), rgba(15,23,42,0.9), rgba(207,250,254,0.98))";
@@ -210,20 +211,20 @@ export default function DualModeTimer({
       ? "text-slate-300 hover:bg-slate-800 hover:text-sky-100"
       : "text-slate-300 hover:bg-sky-400/10 hover:text-cyan-50";
   const timerButtonFrameClasses = isExerciseMode
-    ? "border-[5px] border-sky-900/80 text-sky-950 shadow-[0_14px_30px_rgba(14,116,234,0.24)]"
-    : "border-[5px] border-cyan-900/80 text-cyan-950 shadow-[0_14px_30px_rgba(34,211,238,0.22)]";
+    ? "border-[5px] border-sky-900/80 text-white shadow-[0_14px_30px_rgba(14,116,234,0.24)]"
+    : "border-[5px] border-cyan-900/80 text-white shadow-[0_14px_30px_rgba(34,211,238,0.22)]";
   const timerInnerRingClasses = isExerciseMode
-    ? "border border-sky-900/35"
-    : "border border-cyan-900/35";
+    ? "border border-sky-400/25"
+    : "border border-cyan-400/25";
   const timerInnerShadeClasses = isExerciseMode
-    ? "shadow-[inset_0_8px_14px_rgba(255,255,255,0.2),inset_0_-12px_16px_rgba(2,6,23,0.24)]"
-    : "shadow-[inset_0_8px_14px_rgba(255,255,255,0.28),inset_0_-12px_16px_rgba(8,47,73,0.24)]";
+    ? "shadow-[inset_0_8px_14px_rgba(56,189,248,0.08),inset_0_-12px_16px_rgba(2,6,23,0.55)]"
+    : "shadow-[inset_0_8px_14px_rgba(34,211,238,0.08),inset_0_-12px_16px_rgba(2,6,23,0.55)]";
   const timerTopGlowClasses = isExerciseMode
-    ? "bg-white/22"
-    : "bg-white/30";
+    ? "bg-sky-300/10"
+    : "bg-cyan-300/10";
   const timerNeedleDotClasses = isExerciseMode
-    ? "bg-sky-950/90"
-    : "bg-cyan-950/90";
+    ? "bg-sky-200/90"
+    : "bg-cyan-200/90";
   const progressBadgeClasses = isExerciseMode
     ? "rounded-full border border-sky-300/70 bg-sky-100/95 px-2 py-0.5 text-[11px] font-semibold text-sky-900"
     : "rounded-full border border-cyan-300/70 bg-cyan-100/95 px-2 py-0.5 text-[11px] font-semibold text-cyan-900";
@@ -535,15 +536,22 @@ export default function DualModeTimer({
                 return next;
               })
             }
-          className={`relative z-10 m-[10px] flex h-[calc(100%-20px)] w-[calc(100%-20px)] items-center justify-center overflow-hidden rounded-full text-5xl font-semibold transition sm:text-6xl ${timerButtonFrameClasses} ${timerFaceBackground} ${
+          className={`relative z-10 m-[10px] flex h-[calc(100%-20px)] w-[calc(100%-20px)] items-center justify-center overflow-hidden rounded-full transition sm:text-6xl ${timerButtonFrameClasses} ${timerFaceBackground} ${
             running ? `ring-4 motion-safe:animate-pulse ${runningAccent}` : ""
           }`}
+          data-testid="session-timer-face"
           >
             <span className={`pointer-events-none absolute inset-[6px] rounded-full ${timerInnerRingClasses}`} />
             <span className={`pointer-events-none absolute inset-[9px] rounded-full ${timerInnerShadeClasses}`} />
             <span className={`pointer-events-none absolute top-8 left-10 h-6 w-20 rounded-full blur-sm ${timerTopGlowClasses}`} />
             <span className={`pointer-events-none absolute top-5 h-2 w-2 rounded-full ${timerNeedleDotClasses}`} />
-            {formatTime(remainingSeconds)}
+            {/* Phase 6k — pure white, bold, ≥48px for gym-floor glanceability (WCAG AAA). */}
+            <span
+              className="relative z-10 text-5xl font-bold tracking-tight text-[#FFFFFF] sm:text-6xl"
+              data-testid="session-timer-digits"
+            >
+              {formatTime(remainingSeconds)}
+            </span>
           </button>
         </div>
       </div>
