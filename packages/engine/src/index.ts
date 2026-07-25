@@ -41,6 +41,9 @@ export * from "./freemiumSync";
 // ── Session active timer (Phase 6j) ───────────────────────────────────────────
 export * from "./sessionActiveTimer";
 
+// ── Catalog integrity (Phase 6k) ──────────────────────────────────────────────
+export * from "./catalogDataIntegrity";
+
 // ── Session & feedback ────────────────────────────────────────────────────────
 export * from "./sessionFeedback";
 export * from "./sessionFeedbackSignals";

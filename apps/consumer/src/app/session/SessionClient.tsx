@@ -108,6 +108,10 @@ import {
 } from "@/lib/logStore";
 import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
 import { markSessionComplete } from "@/lib/sessionStore";
+import {
+  FALLBACK_REP_RANGE_COPY,
+  FALLBACK_TIMED_DURATION_COPY,
+} from "@/lib/catalogDataIntegrity";
 import { formatSessionTimeSummary } from "@/lib/sessionActiveTimer";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useSessionActiveTimer } from "@/hooks/useSessionActiveTimer";
@@ -2156,10 +2160,24 @@ export default function SessionClient() {
         : currentItem?.loadType === "assisted"
           ? "Assisted"
           : "Bodyweight";
+  const timedDurationLabel =
+    currentItem?.loadType === "timed"
+      ? currentItem.durationSec && currentItem.durationSec > 0
+        ? `${currentItem.durationSec}s`
+        : currentTimer.workSeconds > 0
+          ? `${currentTimer.workSeconds}s`
+          : FALLBACK_TIMED_DURATION_COPY
+      : null;
+  const repTargetLabel =
+    currentItem?.loadType !== "timed"
+      ? previewReps !== "-"
+        ? `${previewReps} reps`
+        : FALLBACK_REP_RANGE_COPY
+      : null;
   const aboutToRecordSummary =
     currentItem?.loadType === "timed"
-      ? `${loadCaption} · ${previewSetsPlanned} ${previewSetsPlanned === 1 ? "set" : "sets"} · RPE ${previewRpe}`
-      : `${loadCaption} · target ${previewReps} reps · ${previewSetsPlanned} ${previewSetsPlanned === 1 ? "set" : "sets"} · RPE ${previewRpe}`;
+      ? `${loadCaption} · ${timedDurationLabel} · ${previewSetsPlanned} ${previewSetsPlanned === 1 ? "set" : "sets"} · RPE ${previewRpe}`
+      : `${loadCaption} · target ${repTargetLabel} · ${previewSetsPlanned} ${previewSetsPlanned === 1 ? "set" : "sets"} · RPE ${previewRpe}`;
   const currentExerciseMeta = currentExerciseId
     ? exerciseById(currentExerciseId)
     : null;
@@ -3165,19 +3183,36 @@ export default function SessionClient() {
               onStateChange={handleTimerRuntimeChange}
             />
 
-            <div className="flex h-full min-h-[220px] flex-col justify-center rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-5 text-sm text-slate-100 sm:px-5 sm:py-6">
-              <div>
-                <p className="font-semibold text-white">Cues</p>
-                <ul className="mt-4 list-disc space-y-2 pl-5 leading-6">
-                  {currentItem.cues.map((cue) => (
-                    <li key={cue}>{cue}</li>
-                  ))}
-                </ul>
-                <p className="mt-5 border-t border-sky-200/15 pt-4 text-xs leading-5 text-slate-300">
-                  Common mistake: {currentItem.mistake}
-                </p>
+            {currentItem.cues.length > 0 ||
+            (currentItem.mistake &&
+              currentItem.mistake !== "Keep form controlled") ? (
+              <div className="flex h-full min-h-[220px] flex-col justify-center rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-5 text-sm text-slate-100 sm:px-5 sm:py-6">
+                <div>
+                  {currentItem.cues.length > 0 ? (
+                    <>
+                      <p className="font-semibold text-white">Cues</p>
+                      <ul className="mt-4 list-disc space-y-2 pl-5 leading-6">
+                        {currentItem.cues.map((cue) => (
+                          <li key={cue}>{cue}</li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : null}
+                  {currentItem.mistake &&
+                  currentItem.mistake !== "Keep form controlled" ? (
+                    <p
+                      className={`text-xs leading-5 text-slate-300 ${
+                        currentItem.cues.length > 0
+                          ? "mt-5 border-t border-sky-200/15 pt-4"
+                          : ""
+                      }`}
+                    >
+                      Common mistake: {currentItem.mistake}
+                    </p>
+                  ) : null}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
 

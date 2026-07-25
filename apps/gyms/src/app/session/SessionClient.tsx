@@ -2878,19 +2878,36 @@ export default function SessionClient({
               onStateChange={handleTimerRuntimeChange}
             />
 
-            <div className="flex h-full min-h-[220px] flex-col justify-center rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-5 text-sm text-slate-100 sm:px-5 sm:py-6">
-              <div>
-                <p className="font-semibold text-white">Cues</p>
-                <ul className="mt-4 list-disc space-y-2 pl-5 leading-6">
-                  {currentItem.cues.map((cue) => (
-                    <li key={cue}>{cue}</li>
-                  ))}
-                </ul>
-                <p className="mt-5 border-t border-sky-200/15 pt-4 text-xs leading-5 text-slate-300">
-                  Common mistake: {currentItem.mistake}
-                </p>
+            {currentItem.cues.length > 0 ||
+            (currentItem.mistake &&
+              currentItem.mistake !== "Keep form controlled") ? (
+              <div className="flex h-full min-h-[220px] flex-col justify-center rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-5 text-sm text-slate-100 sm:px-5 sm:py-6">
+                <div>
+                  {currentItem.cues.length > 0 ? (
+                    <>
+                      <p className="font-semibold text-white">Cues</p>
+                      <ul className="mt-4 list-disc space-y-2 pl-5 leading-6">
+                        {currentItem.cues.map((cue) => (
+                          <li key={cue}>{cue}</li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : null}
+                  {currentItem.mistake &&
+                  currentItem.mistake !== "Keep form controlled" ? (
+                    <p
+                      className={`text-xs leading-5 text-slate-300 ${
+                        currentItem.cues.length > 0
+                          ? "mt-5 border-t border-sky-200/15 pt-4"
+                          : ""
+                      }`}
+                    >
+                      Common mistake: {currentItem.mistake}
+                    </p>
+                  ) : null}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
 

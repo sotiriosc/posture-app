@@ -98,6 +98,11 @@ export type Exercise = {
   painContraindications?: string[];
   contraindications?: string[];
   videoUrl?: string;
+  /**
+   * Phase 6k — demo reference policy. `"url"` when `videoUrl` is set;
+   * `"none"` when the exercise intentionally has no demo (UI degrades).
+   */
+  demoStatus?: "none" | "url";
   tags: string[];
 };
 
@@ -5456,6 +5461,10 @@ const allExercises: Exercise[] = rawExercises.map((exercise) => {
     difficultyTier,
     movementIntensity,
     painContraindications,
+    // Phase 6k 1.g — every exercise either has a demo URL or is explicitly "none".
+    demoStatus: exercise.videoUrl
+      ? ("url" as const)
+      : (exercise.demoStatus ?? ("none" as const)),
     ...(slotRoles.length ? { slotRoles } : {}),
     ...(accessoryRoles.length ? { accessoryRoles } : {}),
     ...(weeklyCoverageTags.length ? { weeklyCoverageTags } : {}),
