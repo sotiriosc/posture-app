@@ -381,6 +381,11 @@ export default function AccountSettingsPage() {
                     label: "End-of-session chime",
                     testId: "settings-sound-complete",
                   },
+                  {
+                    key: "vibration" as const,
+                    label: "Vibration",
+                    testId: "settings-sound-vibration",
+                  },
                 ] as const
               ).map((row) => (
                 <label

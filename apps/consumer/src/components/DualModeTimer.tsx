@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { vibrateForEvent } from "@/lib/haptics";
 
 export type TimerMode = "exercise" | "rest";
 
@@ -30,6 +31,8 @@ type DualModeTimerProps = {
   /** Phase 6k — session-only mute (not persisted). */
   sessionMuted?: boolean;
   onToggleSessionMute?: () => void;
+  /** Phase 6k Commit 4 — haptic feedback for timer events. */
+  vibrationEnabled?: boolean;
 };
 
 const formatTime = (seconds: number) => {
@@ -143,6 +146,7 @@ export default function DualModeTimer({
   soundVolume = 70,
   sessionMuted = false,
   onToggleSessionMute,
+  vibrationEnabled = true,
 }: DualModeTimerProps) {
   const reconciledPersistedState = useMemo(
     () => reconcileRuntimeState(persistedState),
@@ -487,6 +491,11 @@ export default function DualModeTimer({
 
     if (wasRemaining > 0 && remainingSeconds === 0) {
       playBeep("finish");
+      // Haptics fire regardless of mute / sound prefs (Phase 6k Commit 4).
+      vibrateForEvent(
+        mode === "rest" ? "restEnding" : "setComplete",
+        vibrationEnabled
+      );
     }
 
     lastRunningRef.current = running;
@@ -494,10 +503,12 @@ export default function DualModeTimer({
   }, [
     running,
     remainingSeconds,
+    mode,
     sessionMuted,
     timerSoundsEnabled,
     intervalBeepsEnabled,
     soundVolume,
+    vibrationEnabled,
   ]);
 
   useEffect(() => {

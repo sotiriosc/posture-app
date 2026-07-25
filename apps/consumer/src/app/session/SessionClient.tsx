@@ -113,10 +113,12 @@ import {
   FALLBACK_TIMED_DURATION_COPY,
 } from "@/lib/catalogDataIntegrity";
 import { formatSessionTimeSummary } from "@/lib/sessionActiveTimer";
+import { vibrateForEvent } from "@/lib/haptics";
 import { playSessionCompleteChime } from "@/lib/sessionAudio";
 import { normalizeSoundPrefs } from "@/lib/soundPrefs";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useSessionActiveTimer } from "@/hooks/useSessionActiveTimer";
+import { useSessionWakeLock } from "@/hooks/useSessionWakeLock";
 import { useUserPlan } from "@/hooks/useUserPlan";
 
 const STORAGE_KEY = "posture_questionnaire";
@@ -435,6 +437,7 @@ export default function SessionClient() {
   const [sessionComplete, setSessionComplete] = useState(false);
   /** Phase 6k — session-only mute; not persisted. */
   const [sessionMuted, setSessionMuted] = useState(false);
+  const [wakeLockNoticeVisible, setWakeLockNoticeVisible] = useState(false);
   const [summary, setSummary] = useState<SessionRecord | null>(null);
   const [summaryStats, setSummaryStats] = useState<{
     completedExercises: number;
@@ -450,6 +453,11 @@ export default function SessionClient() {
     finalize: finalizeActiveTimer,
     isRunning: isActiveTimerRunning,
   } = useSessionActiveTimer({ enabled: !sessionComplete });
+  const {
+    supported: wakeLockSupported,
+    wakeLockActive,
+    releaseEarly: releaseWakeLockEarly,
+  } = useSessionWakeLock(!sessionComplete);
   const segmentActiveMsRef = useRef<Record<string, number>>({});
   const segmentAnchorRef = useRef<number>(Date.now());
   const segmentItemIdRef = useRef<string | null>(null);
@@ -649,6 +657,9 @@ export default function SessionClient() {
 
         const storedPrefs = await loadPrefs();
         setPrefs(storedPrefs);
+        if (storedPrefs.wakeLockNoticeSeen !== true) {
+          setWakeLockNoticeVisible(true);
+        }
         if (storedPrefs.timerPrefs?.workSeconds) {
           setWorkSeconds(storedPrefs.timerPrefs.workSeconds);
         }
@@ -2063,6 +2074,7 @@ export default function SessionClient() {
     ) {
       playSessionCompleteChime(soundPrefs.volume);
     }
+    vibrateForEvent("sessionComplete", soundPrefs.vibration);
 
     if (program && programDayIndex !== null) {
       const progress = applyCompletedDayToProgramProgress({
@@ -2962,6 +2974,73 @@ export default function SessionClient() {
           data-exercise-id={currentItem.exerciseId}
         />
 
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {wakeLockActive ? (
+            <button
+              type="button"
+              data-testid="session-wake-lock-indicator"
+              title="Screen stays awake during this workout. Tap to release."
+              aria-label="Wake lock active. Tap to release early."
+              onClick={() => {
+                void releaseWakeLockEarly();
+              }}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300/35 bg-emerald-400/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-100"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+              </svg>
+              Screen awake
+            </button>
+          ) : wakeLockSupported ? (
+            <span
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-500/30 bg-slate-950/40 px-2.5 py-1 text-[11px] font-semibold text-slate-400"
+              data-testid="session-wake-lock-inactive"
+            >
+              Screen may sleep
+            </span>
+          ) : null}
+        </div>
+
+        {wakeLockNoticeVisible ? (
+          <div
+            className="rounded-lg border border-sky-300/30 bg-sky-400/10 px-4 py-3 text-sm text-slate-100"
+            data-testid="session-wake-lock-notice"
+            role="status"
+          >
+            <p>
+              Your screen will stay awake during workouts so your timer keeps
+              going. Tap the lock icon to release it early if you need to.
+            </p>
+            <button
+              type="button"
+              className="mt-2 text-xs font-semibold text-sky-100 underline underline-offset-2"
+              data-testid="session-wake-lock-notice-dismiss"
+              onClick={() => {
+                setWakeLockNoticeVisible(false);
+                void (async () => {
+                  const currentPrefs = await loadPrefs();
+                  const nextPrefs = {
+                    ...currentPrefs,
+                    wakeLockNoticeSeen: true,
+                  };
+                  await savePrefs(nextPrefs);
+                  setPrefs(nextPrefs);
+                })();
+              }}
+            >
+              Got it
+            </button>
+          </div>
+        ) : null}
+
         {practiceOptions.length ? (
           <section
             className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5"
@@ -3200,6 +3279,7 @@ export default function SessionClient() {
               soundVolume={soundPrefs.volume}
               sessionMuted={sessionMuted}
               onToggleSessionMute={() => setSessionMuted((prev) => !prev)}
+              vibrationEnabled={soundPrefs.vibration}
             />
 
             {currentItem.cues.length > 0 ||
