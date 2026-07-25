@@ -535,7 +535,7 @@ export default function SessionClient({
     allSetsCompleted: false,
   });
   const previousActiveIndexRef = useRef(0);
-  const focusCardRef = useRef<HTMLElement | null>(null);
+  const focusCardRef = useRef<HTMLButtonElement | null>(null);
   const exerciseCardRef = useRef<HTMLDivElement | null>(null);
   const trackingPanelRef = useRef<HTMLDivElement | null>(null);
   const weightInputRef = useRef<HTMLInputElement | null>(null);
@@ -1436,7 +1436,8 @@ export default function SessionClient({
       sets: string | number | null;
       reps?: string | null;
       loadType: "weighted" | "bodyweight" | "timed" | "assisted";
-      section?: "warmup" | "activation" | "main" | "accessory" | "cooldown" | null;
+      /** May be a catalog section or a day-title fallback from flatItems. */
+      section?: string | null;
     }) => {
       // Rep-based work: section tempo × reps. Timed holds: durationSec.
       // Session-local slider tweaks still override for the current visit.
@@ -1448,7 +1449,7 @@ export default function SessionClient({
           sets: params.sets,
           reps: params.reps ?? null,
           loadType: params.loadType,
-          section: params.section ?? undefined,
+          section: normalizeLogSection(params.section ?? "") ?? undefined,
         },
         prefs?.timerPrefs
       );
@@ -1475,7 +1476,8 @@ export default function SessionClient({
       sets: string | number | null;
       reps?: string | null;
       loadType: "weighted" | "bodyweight" | "timed" | "assisted";
-      section?: "warmup" | "activation" | "main" | "accessory" | "cooldown" | null;
+      /** May be a catalog section or a day-title fallback from flatItems. */
+      section?: string | null;
     }) => {
       const runtime = timerRuntimeByItemId[item.id];
       if (
