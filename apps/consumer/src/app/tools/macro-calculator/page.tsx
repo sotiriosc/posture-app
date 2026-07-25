@@ -83,13 +83,14 @@ export default function MacroCalculatorPage() {
       />
 
       <main className="mx-auto max-w-3xl px-6 py-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 print:text-slate-600">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300 print:text-slate-600">
           Free tool
         </p>
         <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">
           Macro Calculator for Lifters
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 print:text-slate-700">
+        {/* Phase 6i Commit 2 — slate-200 clears AA against app-bg photo wash. */}
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-200 print:text-slate-700">
           Enter your stats to get a daily calorie target and a macro split built
           for people who train — not a generic weight-loss calculator. Moderate
           fat, high carbs, high protein: enough fuel to lift hard and enough
@@ -100,7 +101,7 @@ export default function MacroCalculatorPage() {
           <MacroCalculatorClient />
         </div>
 
-        <div className="mt-12 space-y-10 text-sm leading-relaxed text-slate-300 print:text-slate-800">
+        <div className="mt-12 space-y-10 text-sm leading-relaxed text-slate-200 print:text-slate-800">
           <section>
             <h2 className="text-lg font-semibold text-white print:text-black">
               Why moderate fat, high carb, high protein for lifters

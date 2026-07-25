@@ -58,7 +58,7 @@ export default function MacroCalculatorClient() {
       className="ui-card ui-soft-surface-raised print:break-inside-avoid rounded-2xl p-5 sm:p-6"
     >
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="flex flex-col gap-1 text-sm text-slate-300">
+        <label className="flex flex-col gap-1 text-sm text-slate-200">
           Weight (lb)
           <input
             className="ui-input"
@@ -72,7 +72,7 @@ export default function MacroCalculatorClient() {
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-slate-300">
+        <label className="flex flex-col gap-1 text-sm text-slate-200">
           Height (in)
           <input
             className="ui-input"
@@ -86,7 +86,7 @@ export default function MacroCalculatorClient() {
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-slate-300">
+        <label className="flex flex-col gap-1 text-sm text-slate-200">
           Age
           <input
             className="ui-input"
@@ -100,7 +100,7 @@ export default function MacroCalculatorClient() {
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-slate-300">
+        <label className="flex flex-col gap-1 text-sm text-slate-200">
           Sex (for the calorie formula)
           <select
             className="ui-select"
@@ -113,7 +113,7 @@ export default function MacroCalculatorClient() {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-slate-300 sm:col-span-2">
+        <label className="flex flex-col gap-1 text-sm text-slate-200 sm:col-span-2">
           Activity level
           <select
             className="ui-select"
@@ -129,7 +129,7 @@ export default function MacroCalculatorClient() {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-slate-300 sm:col-span-2">
+        <label className="flex flex-col gap-1 text-sm text-slate-200 sm:col-span-2">
           Goal
           <select
             className="ui-select"
@@ -152,11 +152,11 @@ export default function MacroCalculatorClient() {
             <p className="ui-kicker">Your daily targets</p>
             <p className="mt-1 text-3xl font-bold text-white">
               <span data-testid="macro-result-calories">{result.calories}</span>{" "}
-              <span className="text-base font-medium text-slate-400">calories / day</span>
+              <span className="text-base font-medium text-slate-300">calories / day</span>
             </p>
             <div className="mt-4 grid grid-cols-3 gap-3 text-center">
               <div className="ui-soft-surface rounded-lg p-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">
                   Protein
                 </p>
                 <p className="mt-1 text-xl font-bold text-white">
@@ -164,7 +164,7 @@ export default function MacroCalculatorClient() {
                 </p>
               </div>
               <div className="ui-soft-surface rounded-lg p-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">
                   Carbs
                 </p>
                 <p className="mt-1 text-xl font-bold text-white">
@@ -172,7 +172,7 @@ export default function MacroCalculatorClient() {
                 </p>
               </div>
               <div className="ui-soft-surface rounded-lg p-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">
                   Fat
                 </p>
                 <p className="mt-1 text-xl font-bold text-white">
@@ -180,7 +180,7 @@ export default function MacroCalculatorClient() {
                 </p>
               </div>
             </div>
-            <p className="mt-4 text-xs leading-relaxed text-slate-400">
+            <p className="mt-4 text-xs leading-relaxed text-slate-300">
               Estimated maintenance (TDEE) is {result.tdee} calories/day. Protein is set from
               your bodyweight, fat is a moderate 25% of calories, and carbs fill the rest — a
               high-carb, high-protein, moderate-fat split built for people who train, not for
@@ -190,7 +190,7 @@ export default function MacroCalculatorClient() {
         ) : (
           <p
             data-testid="macro-results-invalid"
-            className="text-sm text-slate-400"
+            className="text-sm text-slate-300"
           >
             Enter a weight between {MACRO_INPUT_BOUNDS.weightLb.min}–
             {MACRO_INPUT_BOUNDS.weightLb.max} lb, height between{" "}
