@@ -402,7 +402,7 @@ export default function ResultsView() {
 
   return (
     <SectionVisibilityProvider screen="results">
-      <div className="min-h-screen bg-slate-950 px-4 pb-24 pt-8 sm:px-6">
+      <div className="min-h-screen bg-slate-950 px-4 pb-[calc(1.25rem+120px+env(safe-area-inset-bottom,0px))] pt-8 sm:px-6 md:pb-24">
         <div className="mx-auto max-w-lg space-y-10">
           {/* Back navigation */}
           <nav>

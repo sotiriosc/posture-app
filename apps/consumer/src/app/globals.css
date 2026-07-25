@@ -369,8 +369,10 @@ textarea {
 }
 
 @media (max-width: 767px) {
+  /* Phase 6i Commit 3 — Menu + info float ~56px; 120px clearance keeps
+     Knowledge chips / View details from scrolling under the Menu pill. */
   .ui-shell {
-    padding-bottom: calc(1rem + 88px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(1.25rem + 120px + env(safe-area-inset-bottom, 0px));
   }
 }
 

@@ -82,7 +82,7 @@ export default function MacroCalculatorPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
 
-      <main className="mx-auto max-w-3xl px-6 py-12">
+      <main className="mx-auto max-w-3xl px-6 py-12 pb-[calc(1.25rem+120px+env(safe-area-inset-bottom,0px))] md:pb-12">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300 print:text-slate-600">
           Free tool
         </p>

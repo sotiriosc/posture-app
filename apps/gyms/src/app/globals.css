@@ -471,8 +471,9 @@ textarea {
 }
 
 @media (max-width: 767px) {
+  /* Phase 6i Commit 3 — Menu float clearance so chips/actions don't tuck under. */
   .ui-shell {
-    padding-bottom: calc(1rem + 88px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(1.25rem + 120px + env(safe-area-inset-bottom, 0px));
   }
 }
 
