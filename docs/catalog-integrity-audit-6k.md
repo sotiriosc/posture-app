@@ -4,9 +4,9 @@ Audited: **225** exercises (includes deprecated).
 
 | Verdict | Count |
 |---|---|
-| PASS | 220 |
+| PASS | 225 |
 | FAIL | 0 |
-| NEEDS_REVIEW | 5 |
+| NEEDS_REVIEW | 0 |
 
 Checks: **1.a** timing · **1.b** coach notes · **1.c** difficulty · **1.d** pattern · **1.e** contraindications · **1.f** cues · **1.g** demo reference.
 
@@ -16,39 +16,14 @@ Commit 5 applies Sotirios's coaching rulings on every `NEEDS_REVIEW` item below.
 
 ## NEEDS_REVIEW — Sotirios coaching rulings
 
-Reply with a ruling per id (e.g. `wall-slides: timed, 30-45 sec` or `wall-slides: reps, 8-10`).
-
-### `cat-cow` — Cat-Cow Flow
-
-- Category: warmup · loadType: bodyweight · dose: `6-8 reps` · pattern: `—` · difficulty: —
-- **1.a**: Postural corrective / mobility flow — confirm whether prescription should be rep-based or timed → _Sotirios ruling: choose loadType + durationOrReps; align warmupLibrary/program makeItem._
-
-### `wall-slides` — Wall Slides
-
-- Category: warmup · loadType: bodyweight · dose: `8-10 reps` · pattern: `—` · difficulty: —
-- **1.a**: Postural corrective / mobility flow — confirm whether prescription should be rep-based or timed → _Sotirios ruling: choose loadType + durationOrReps; align warmupLibrary/program makeItem._
-
-### `hip-flexor-stretch` — Hip Flexor Stretch
-
-- Category: cooldown · loadType: timed · dose: `30 sec per side` · pattern: `—` · difficulty: —
-- **1.a**: Known dual-source timing risk (catalog timed / "30 sec per side" vs warmup/program durationSec) → _Confirm single source of truth for session prescription (reps vs timed hold)._
-
-### `thread-the-needle` — Thread-the-Needle
-
-- Category: cooldown · loadType: bodyweight · dose: `5-6 per side` · pattern: `—` · difficulty: —
-- **1.a**: Postural corrective / mobility flow — confirm whether prescription should be rep-based or timed → _Sotirios ruling: choose loadType + durationOrReps; align warmupLibrary/program makeItem._
-
-### `reverse-snow-angel` — Reverse Snow Angels
-
-- Category: main · loadType: bodyweight · dose: `8-12 reps` · pattern: `horizontal_pull` · difficulty: 2
-- **1.a**: Postural corrective / mobility flow — confirm whether prescription should be rep-based or timed → _Sotirios ruling: choose loadType + durationOrReps; align warmupLibrary/program makeItem._
+_None._
 
 ## Full roster
 
 | id | name | verdict | issues |
 |---|---|---|---|
-| `cat-cow` | Cat-Cow Flow | NEEDS_REVIEW | 1.a:review |
-| `wall-slides` | Wall Slides | NEEDS_REVIEW | 1.a:review |
+| `cat-cow` | Cat-Cow Flow | PASS | — |
+| `wall-slides` | Wall Slides | PASS | — |
 | `foam-roll-upper-back` | Foam Roll Upper Back | PASS | — |
 | `glute-bridges` | Glute Bridges | PASS | — |
 | `band-pull-aparts` | Band Pull-Aparts | PASS | — |
@@ -68,8 +43,8 @@ Reply with a ruling per id (e.g. `wall-slides: timed, 30-45 sec` or `wall-slides
 | `dumbbell-lateral-raise` | Dumbbell Lateral Raise | PASS | — |
 | `dumbbell-shoulder-press` | Dumbbell Shoulder Press | PASS | — |
 | `incline-pushup` | Incline Push-Up | PASS | — |
-| `hip-flexor-stretch` | Hip Flexor Stretch | NEEDS_REVIEW | 1.a:review |
-| `thread-the-needle` | Thread-the-Needle | NEEDS_REVIEW | 1.a:review |
+| `hip-flexor-stretch` | Hip Flexor Stretch | PASS | — |
+| `thread-the-needle` | Thread-the-Needle | PASS | — |
 | `chin-tucks` | Chin Tucks | PASS | — |
 | `doorway-pec-stretch` | Doorway Pec Stretch | PASS | — |
 | `thoracic-rotation` | Thoracic Rotation | PASS | — |
@@ -111,7 +86,7 @@ Reply with a ruling per id (e.g. `wall-slides: timed, 30-45 sec` or `wall-slides
 | `back-widow` | Back Widow Pulls | PASS | — |
 | `heels-elevated-squat` | Heels-Elevated Tempo Squat | PASS | — |
 | `single-leg-glute-bridge-hold` | Single-Leg Glute Bridge Hold | PASS | — |
-| `reverse-snow-angel` | Reverse Snow Angels | NEEDS_REVIEW | 1.a:review |
+| `reverse-snow-angel` | Reverse Snow Angels | PASS | — |
 | `plank` | Plank | PASS | — |
 | `band-chest-press` | Band Chest Press | PASS | — |
 | `band-chest-fly` | Band Chest Fly | PASS | — |

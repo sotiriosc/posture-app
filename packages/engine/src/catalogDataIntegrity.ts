@@ -59,17 +59,14 @@ const BREATHS_RE = /(\d+)\s*[-–]?\s*(\d+)?\s*breaths?\b/i;
 
 /**
  * Ambiguous postural correctives / flows where loadType vs durationOrReps
- * needs a coaching ruling (Commit 5). Expand as the audit finds more.
+ * still needs a coaching ruling. Phase 6k Commit 5 cleared the ship queue
+ * (cat-cow, wall-slides, hip-flexor-stretch, thread-the-needle,
+ * reverse-snow-angel). Remaining ids stay for future audits.
  */
 export const TIMING_REVIEW_CANDIDATES = new Set([
-  "wall-slides",
   "wall-angels",
-  "cat-cow",
-  "reverse-snow-angel",
   "open-books",
-  "thread-the-needle",
   "worlds-greatest-stretch",
-  "hip-flexor-stretch",
   "pec-stretch",
 ]);
 
