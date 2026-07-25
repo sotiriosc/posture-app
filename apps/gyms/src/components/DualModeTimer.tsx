@@ -284,29 +284,6 @@ export default function DualModeTimer({
     });
   }, [reconciledPersistedState]);
 
-  // Keep idle countdown locked to the plan preset for the active mode.
-  useEffect(() => {
-    if (running) return;
-    if (remainingSeconds === activeSelectedSeconds) return;
-    remainingRef.current = activeSelectedSeconds;
-    runtimeAnchorMsRef.current = getCurrentTimestampMs();
-    setRemainingSeconds(activeSelectedSeconds);
-  }, [running, activeSelectedSeconds, remainingSeconds]);
-
-  // When the plan feeds new work/rest targets (new exercise), adopt them.
-  useEffect(() => {
-    const nextWork = clampDuration(initialExerciseSeconds, "exercise");
-    const nextRest = clampDuration(initialRestSeconds, "rest");
-    if (selectedExerciseRef.current !== nextWork) {
-      selectedExerciseRef.current = nextWork;
-      setSelectedExerciseSeconds(nextWork);
-    }
-    if (selectedRestRef.current !== nextRest) {
-      selectedRestRef.current = nextRest;
-      setSelectedRestSeconds(nextRest);
-    }
-  }, [initialExerciseSeconds, initialRestSeconds]);
-
   useEffect(() => {
     modeRef.current = mode;
     runningRef.current = running;
