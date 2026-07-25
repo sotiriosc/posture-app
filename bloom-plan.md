@@ -2126,34 +2126,47 @@ Merge commit.
 
 
 
-Phase 7 — Pattern Recognition & Corrective Injection (PENDING SCOPE)
+Phase 7 — Pattern Recognition & Corrective Injection (PARTIAL RATIFICATIONS — 2026-07-24)
 
-Status: awaiting Sotirios's rulings on two design questions before this phase can be specced completely. Do NOT execute this phase without those rulings.
+Status: injection aggressiveness is ratified. Pattern set is partially ratified.
+Do NOT execute Phase 7 until remaining pattern candidates below are ruled
+individually. Spec work may proceed for the ratified pieces only.
 
-### Question 1 — Which additional patterns can a phone camera reliably detect?
+### Current focus tags (already shipping)
 
-Current focus-tag system covers four patterns (forward_head, scapular_control, thoracic_extension, hip_stability). Sotirios's twenty years of movement expertise is the ceiling on what makes the expansion list. Anything that can't be reliably identified from a phone camera photo should NOT be added — false confidence is worse than missing coverage.
+forward_head, scapular_control, thoracic_extension, hip_stability
 
-Draft candidates (Sotirios rules on each):
+### Pattern expansion candidates
 
-- Anterior pelvic tilt
-- Posterior pelvic tilt
-- Knee valgus (visible standing)
-- Rounded thoracic / kyphosis
-- Uneven shoulders (asymmetry)
-- Foot pronation
+| Pattern | Status |
+|---|---|
+| Forward shoulders | **RATIFIED YES** |
+| Rib alignment / rib flare | **RATIFIED YES** |
+| Anterior pelvic tilt | pending |
+| Posterior pelvic tilt | pending |
+| Knee valgus (visible standing) | pending |
+| Kyphosis / rounded thoracic | pending |
+| Uneven shoulders (asymmetry) | pending |
+| Foot pronation | pending |
+| Head tilt | pending |
+| Hyperlordosis | pending |
 
-### Question 2 — Injection aggressiveness for detected patterns
+### Injection aggressiveness — RATIFIED (Option B refined)
 
-When a pattern is detected and its corrective isn't organically in the generated program, what does the engine do?
+When a pattern is detected and its corrective isn't organically in the
+program, prompt the user with three buttons (same interaction pattern as
+Phase 6i Commit 4's incomplete-field prompt):
 
-- (a) Add corrective as required slot every session that week
-- (b) Add 2-3x per week
-- (c) Prompt user "we noticed X — want us to add corrective work?" and let them choose
+- **[Add it]** — corrective is injected with a decisionTrace explaining why.
+- **[Not now]** — not added this cycle; may prompt again next assessment.
+- **[Stop suggesting]** — immediately turns off future corrective-injection
+  prompts for this user. No navigation required.
 
-Recommendation (mine, not ratified): (c). Consistent with the Sacrifice/Test/Modify pattern from Phase 3.2 and respects user agency.
+Small text below: "You can turn these back on anytime in Settings."
 
-Once Sotirios rules on both, Phase 7 gets fully specced.
+Settings has a re-enable toggle (mirrors skip-prompt suppression). Suppressed
+prompts do **not** silently inject — bias/scoring may still reflect the
+pattern, but no new corrective is added without an affirmative Add-it tap.
 
 ---
 
@@ -2233,11 +2246,17 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   `docs/engine-decisions.md` § SR-6h / ED-6h.1.
 - **Phase queue discipline (2026-07-24):**
   - Phase 8 is ready to execute anytime after Phase 6h merges.
-  - Phase 7 requires ratifications before it can be specced or executed.
+  - Phase 7: injection aggressiveness + Forward shoulders / Rib alignment
+    ratified (2026-07-24 via Phase 6i Commit 6). Remaining pattern candidates
+    still need individual rulings before full Phase 7 execution.
   - Parked items remain informative; require a dedicated phase before code
     work begins.
   - New ideas that arise mid-testing get logged in this document, not
     executed immediately. Idea capture ≠ scope creep.
+- **Knowledge-panel clarity (SR-6i, 2026-07-24):** Knowledge & Analysis must
+  read as coaching, not templates — no duplicated framing paragraphs, no
+  leaked "Plan focus:" / "Pattern suggests" prefixes on list items. See
+  `docs/engine-decisions.md` § SR-6i.
 
 ---
 

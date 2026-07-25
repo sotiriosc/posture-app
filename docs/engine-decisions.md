@@ -847,3 +847,12 @@ paragraphs, or leaked template strings undermine the "the app is thinking
 about you" impression. Section labels stay on the section; list items are
 clean observations only.
 
+### ED-6i.1 — Phase 7 partial ratifications (docs only; not execution)
+
+**Ratified 2026-07-24 (Phase 6i Commit 6):**
+- Patterns: Forward shoulders YES; Rib alignment / rib flare YES. All other
+  draft candidates remain pending individual rulings.
+- Injection aggressiveness: Option B refined — three-button prompt
+  (`Add it` / `Not now` / `Stop suggesting`) matching the incomplete-field
+  prompt pattern from Phase 6i Commit 4. Suppression never silently injects.
+
