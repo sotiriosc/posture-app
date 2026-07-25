@@ -29,7 +29,7 @@ export default function DashboardHero({
   phaseName,
   workoutsCompletedInPhase,
   workoutTarget,
-  dayTarget,
+  dayTarget: _dayTarget,
   weekCompletedDays,
   weekTargetDays,
   nextPhaseIndex,

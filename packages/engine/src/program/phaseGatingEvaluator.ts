@@ -23,7 +23,6 @@ import type { TrainingIntent } from "@/lib/program/trainingIntent";
 import {
   getPhaseMaxSessions,
   getPhaseMinSessions,
-  GROWTH_MAX_SESSIONS,
   ACTIVATION_CRITERIA_REQUIRED,
   SKILL_CRITERIA_REQUIRED,
   ACTIVATION_RUNGS_CLIMBED_REQUIRED,

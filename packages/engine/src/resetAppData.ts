@@ -123,6 +123,9 @@ export const clearAllLocalStateExceptPhotos = async (): Promise<void> => {
   if (typeof window === "undefined") return;
 
   await closeDb().catch(() => undefined);
+  // Imported lazily to avoid a circular init path with logStore ↔ resetAppData.
+  const { resetServerHydration } = await import("./logStore");
+  resetServerHydration();
 
   const dbNames = (await listAllDatabaseNames()).filter(
     (name) => name !== PHOTO_DB_NAME

@@ -728,27 +728,11 @@ export default function SessionClient({
             resolvedProgress && Number.isFinite(resolvedProgress.nextDayIndex)
               ? resolvedProgress.nextDayIndex
               : 0;
-          let routableDayIndex = resolveRoutableProgramDayIndex(
+          const routableDayIndex = resolveRoutableProgramDayIndex(
             resolvedProgram,
             Number.isFinite(resolvedDayIndex) ? (resolvedDayIndex as number) : null,
             fallbackDayIndex
           );
-          // Phase 6j Option B — free users after first week cannot open Days 2+.
-          if (
-            !buyerDemoMode &&
-            routableDayIndex !== null &&
-            !canAccessWorkoutToday(routableDayIndex)
-          ) {
-            routableDayIndex = resolveRoutableProgramDayIndex(
-              resolvedProgram,
-              0,
-              0
-            );
-            const nextParams = new URLSearchParams(currentSearchParams);
-            nextParams.set("programId", resolvedProgram.id);
-            nextParams.set("dayIndex", String(routableDayIndex ?? 0));
-            router.replace(`/session?${nextParams.toString()}`);
-          }
           const programSessions = await listSessionsByProgramId(resolvedProgram.id);
           const feedbackSessions = programSessions
             .filter((session) => !session.deletedAt && Boolean(session.feedback))
@@ -871,12 +855,29 @@ export default function SessionClient({
       }
     };
     load();
+  }, [searchParamString]);
+
+  // Phase 6j Option B — snap locked days to Day 1 without reloading the session
+  // plan (reloading re-fires feedback-contract prompts mid-workout).
+  useEffect(() => {
+    if (buyerDemoMode) return;
+    if (!program || programDayIndex === null) return;
+    if (canAccessWorkoutToday(programDayIndex)) return;
+    const lockedDayIndex = resolveRoutableProgramDayIndex(program, 0, 0);
+    if (lockedDayIndex === programDayIndex) return;
+    setProgramDayIndex(lockedDayIndex);
+    const nextParams = new URLSearchParams(searchParamString);
+    nextParams.set("programId", program.id);
+    nextParams.set("dayIndex", String(lockedDayIndex ?? 0));
+    router.replace(`/session?${nextParams.toString()}`);
   }, [
-    searchParamString,
+    buyerDemoMode,
+    program,
+    programDayIndex,
     hasCompletedFirstWeek,
     canAccessWorkoutToday,
+    searchParamString,
     router,
-    buyerDemoMode,
   ]);
 
   const currentProgramDay = useMemo(() => {

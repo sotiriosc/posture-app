@@ -4,6 +4,7 @@
  * sessions and logins on the same account.
  */
 
+import { whenLocalOwnerReady } from "@/lib/accountIsolation";
 import {
   deriveHasCompletedFirstWeek,
   normalizeSessionsPerWeek,
@@ -37,6 +38,9 @@ const readSessionsPerWeekFromQuestionnaire = (): number | null => {
 export const resolveHasCompletedFirstWeek = async (
   sessionsPerWeek?: number | null
 ): Promise<boolean> => {
+  // Never read training state while an account-switch wipe is in flight.
+  await whenLocalOwnerReady();
+
   const prefs = await loadPrefs();
   if (prefs.hasCompletedFirstWeek === true) return true;
 

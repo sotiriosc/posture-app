@@ -1624,7 +1624,7 @@ export default function ResultsRoutine({
   const effectiveInProgressDaySet = useMemo(() => {
     const set = new Set<number>();
     inProgressDaySet.forEach((dayIndex) => {
-      if (isDayLocked(dayIndex)) return;
+      if (buyerDemoMode ? false : !canAccessWorkoutToday(dayIndex)) return;
       set.add(dayIndex);
     });
     return set;

@@ -23,13 +23,12 @@ type UseSessionActiveTimerParams = {
  * Phase 6j — invisible active-session timer with pause / abandon thresholds.
  */
 export function useSessionActiveTimer({ enabled }: UseSessionActiveTimerParams) {
-  const timerRef = useRef<SessionTimerState>(createSessionTimer(Date.now()));
+  // Seed with a stable epoch so render stays pure; real clock starts in effect.
+  const timerRef = useRef<SessionTimerState>(createSessionTimer(0));
   const [resumePrompt, setResumePrompt] = useState<ResumePrompt>("none");
-  const [abandoned, setAbandoned] = useState(false);
 
   const apply = useCallback((next: SessionTimerState) => {
     timerRef.current = next;
-    setAbandoned(next.abandoned);
   }, []);
 
   const markActivity = useCallback(() => {
@@ -60,6 +59,7 @@ export function useSessionActiveTimer({ enabled }: UseSessionActiveTimerParams) 
 
   useEffect(() => {
     if (!enabled) return;
+    timerRef.current = createSessionTimer(Date.now());
 
     const onActivity = () => markActivity();
     window.addEventListener("pointerdown", onActivity);
@@ -74,7 +74,9 @@ export function useSessionActiveTimer({ enabled }: UseSessionActiveTimerParams) 
       }
       const { state, prompt } = evaluateResume(timerRef.current, now);
       apply(state);
-      if (prompt !== "none") setResumePrompt(prompt);
+      if (prompt !== "none") {
+        queueMicrotask(() => setResumePrompt(prompt));
+      }
     };
     document.addEventListener("visibilitychange", onVisibility);
 
@@ -82,9 +84,8 @@ export function useSessionActiveTimer({ enabled }: UseSessionActiveTimerParams) 
       const next = tickTimer(timerRef.current, Date.now());
       if (next !== timerRef.current) {
         apply(next);
-        if (next.abandoned) setResumePrompt("abandoned");
-        else if (next.status === "paused") {
-          // Idle pause — prompt on next foreground; keep quiet while visible.
+        if (next.abandoned) {
+          queueMicrotask(() => setResumePrompt("abandoned"));
         }
       }
     }, 15_000);
@@ -100,7 +101,6 @@ export function useSessionActiveTimer({ enabled }: UseSessionActiveTimerParams) 
 
   return {
     resumePrompt,
-    abandoned,
     markActivity,
     chooseResume,
     chooseRestart,
