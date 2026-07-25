@@ -1,38 +1,81 @@
-import { describe, expect, test } from "vitest";
-import { getEffectiveTimer } from "@/lib/timerRules";
-import type { ProgramRoutineItem } from "@/lib/types";
+import { describe, expect, it } from "vitest";
+import {
+  getEffectiveTimer,
+  parseRepTarget,
+  tempoNotationForPace,
+  tempoPaceForSection,
+  TEMPO_NOTATION,
+  TEMPO_SEC_PER_REP,
+  workSecondsFromRepsAndTempo,
+} from "../../src/timerRules";
 
-const baseItem: ProgramRoutineItem = {
-  exerciseId: "test",
-  sets: "1",
-  loadType: "bodyweight",
-};
-
-describe("timerRules", () => {
-  test("per-item values override defaults", () => {
-    const result = getEffectiveTimer(
-      { ...baseItem, durationSec: 90, restSec: 45 },
-      { workSeconds: 60, restSeconds: 60 }
-    );
-    expect(result.workSeconds).toBe(90);
-    expect(result.restSeconds).toBe(45);
+describe("timerRules — section tempo + reps×tempo", () => {
+  it("maps sections to slow/fast", () => {
+    expect(tempoPaceForSection("warmup")).toBe("slow");
+    expect(tempoPaceForSection("activation")).toBe("slow");
+    expect(tempoPaceForSection("main")).toBe("slow");
+    expect(tempoPaceForSection("cooldown")).toBe("slow");
+    expect(tempoPaceForSection("accessory")).toBe("fast");
   });
 
-  test("fallback uses prefs", () => {
-    const result = getEffectiveTimer(
-      { ...baseItem, durationSec: null, restSec: null },
-      { workSeconds: 70, restSeconds: 80 }
-    );
-    expect(result.workSeconds).toBe(70);
-    expect(result.restSeconds).toBe(80);
+  it("uses classic tempo notation for section paces", () => {
+    expect(TEMPO_NOTATION.slow).toBe("2-0-2-0");
+    expect(TEMPO_NOTATION.fast).toBe("1-0-1-0");
+    expect(tempoNotationForPace("slow")).toBe("2-0-2-0");
+    expect(tempoNotationForPace("fast")).toBe("1-0-1-0");
   });
 
-  test("invalid values are ignored", () => {
-    const result = getEffectiveTimer(
-      { ...baseItem, durationSec: -5, restSec: 0 },
-      { workSeconds: 55, restSeconds: 65 }
-    );
-    expect(result.workSeconds).toBe(55);
-    expect(result.restSeconds).toBe(65);
+  it("parses rep ranges and per-side", () => {
+    expect(parseRepTarget("8-12")).toEqual({ reps: 12, perSide: false });
+    expect(parseRepTarget("6-8 per side")).toEqual({ reps: 8, perSide: true });
+    expect(parseRepTarget("10 each")).toEqual({ reps: 10, perSide: true });
+  });
+
+  it("computes work seconds from reps × tempo", () => {
+    expect(
+      workSecondsFromRepsAndTempo({ reps: 10, pace: "slow" })
+    ).toBe(10 * TEMPO_SEC_PER_REP.slow);
+    expect(
+      workSecondsFromRepsAndTempo({ reps: 12, pace: "fast" })
+    ).toBe(12 * TEMPO_SEC_PER_REP.fast);
+    expect(
+      workSecondsFromRepsAndTempo({ reps: 8, perSide: true, pace: "slow" })
+    ).toBe(16 * TEMPO_SEC_PER_REP.slow);
+  });
+
+  it("uses slow reps×tempo for main and fast for accessory", () => {
+    const main = getEffectiveTimer({
+      exerciseId: "goblet-squat",
+      sets: "3",
+      reps: "8-10",
+      loadType: "weighted",
+      section: "main",
+    });
+    expect(main.fromRepTempo).toBe(true);
+    expect(main.tempoPace).toBe("slow");
+    expect(main.workSeconds).toBe(10 * TEMPO_SEC_PER_REP.slow);
+
+    const accessory = getEffectiveTimer({
+      exerciseId: "band-pull-aparts",
+      sets: "2",
+      reps: "12-15",
+      loadType: "bodyweight",
+      section: "accessory",
+    });
+    expect(accessory.tempoPace).toBe("fast");
+    expect(accessory.workSeconds).toBe(15 * TEMPO_SEC_PER_REP.fast);
+  });
+
+  it("keeps timed holds on durationSec", () => {
+    const hold = getEffectiveTimer({
+      exerciseId: "plank",
+      sets: "2",
+      reps: null,
+      durationSec: 40,
+      loadType: "timed",
+      section: "main",
+    });
+    expect(hold.fromRepTempo).toBe(false);
+    expect(hold.workSeconds).toBe(40);
   });
 });

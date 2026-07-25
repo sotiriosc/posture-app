@@ -41,7 +41,10 @@ import ClarifyTerm from "@/components/ui/ClarifyTerm";
 import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
-import { getEffectiveTimer } from "@/lib/timerRules";
+import {
+  getEffectiveTimer,
+  tempoNotationForPace,
+} from "@/lib/timerRules";
 import {
   deriveNextSessionRecommendationFromSession,
   formatNextSessionRecommendationFromSession,
@@ -532,6 +535,7 @@ export default function SessionClient({
     allSetsCompleted: false,
   });
   const previousActiveIndexRef = useRef(0);
+  const focusCardRef = useRef<HTMLButtonElement | null>(null);
   const exerciseCardRef = useRef<HTMLDivElement | null>(null);
   const trackingPanelRef = useRef<HTMLDivElement | null>(null);
   const weightInputRef = useRef<HTMLInputElement | null>(null);
@@ -955,7 +959,9 @@ export default function SessionClient({
           cues: routineItem.cues ?? exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
           duration: exercise?.durationOrReps ?? routineItem.reps ?? "",
-          loadType: routineItem.loadType ?? exercise?.loadType ?? "bodyweight",
+          // Catalog loadType wins — never keep a weighted slot's loadType after
+          // a bodyweight swap, or the Weight field incorrectly appears.
+          loadType: exercise?.loadType ?? routineItem.loadType ?? "bodyweight",
         };
       });
     }
@@ -1004,35 +1010,31 @@ export default function SessionClient({
     segmentAnchorRef.current = now;
   }, [currentItemId, isActiveTimerRunning]);
 
+  /** Scroll to the Focus card for the current exercise (not the page top). */
   const scrollSessionTop = useCallback((behavior: ScrollBehavior = "smooth") => {
     if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
       return;
     }
-    if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
-      try {
-        window.scrollTo({ top: 0, behavior });
-        return;
-      } catch {
-        // JSDOM and some embedded browsers can throw on scrollTo.
-      }
+    const target = focusCardRef.current ?? exerciseCardRef.current;
+    if (!target || typeof target.scrollIntoView !== "function") return;
+    try {
+      target.scrollIntoView({
+        behavior,
+        block: "start",
+      });
+    } catch {
+      // JSDOM and some embedded browsers can throw on scrollIntoView.
     }
-    if (!exerciseCardRef.current) return;
-    if (typeof exerciseCardRef.current.scrollIntoView !== "function") return;
-    exerciseCardRef.current.scrollIntoView({
-      behavior,
-      block: "start",
-    });
   }, []);
 
   useEffect(() => {
     if (previousActiveIndexRef.current === activeIndex) return;
     previousActiveIndexRef.current = activeIndex;
-    scrollSessionTop();
+    const frame = window.requestAnimationFrame(() => {
+      scrollSessionTop();
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [activeIndex, scrollSessionTop]);
-
-  useEffect(() => {
-    scrollSessionTop("auto");
-  }, [scrollSessionTop]);
 
   useEffect(() => {
     sessionIdRef.current = sessionId;
@@ -1075,14 +1077,20 @@ export default function SessionClient({
     },
     [flatItems, program?.id, programDayIndex]
   );
-  const tips = [
+  const genericFocusTips = [
     "Breathe steadily",
     "Move with control",
     "Keep your posture steady",
     "Relax your jaw and neck",
     "Smooth tempo over speed",
   ];
-  const activeTip = tips[tipIndex] ?? "";
+  const exerciseFocusTips = (currentItem?.cues ?? []).filter(
+    (cue) => typeof cue === "string" && cue.trim().length > 0
+  );
+  const tips =
+    exerciseFocusTips.length > 0 ? exerciseFocusTips : genericFocusTips;
+  const safeTipIndex = tips.length > 0 ? tipIndex % tips.length : 0;
+  const activeTip = tips[safeTipIndex] ?? "";
   const tipTone = (() => {
     if (/breathe|breath/i.test(activeTip)) {
       return "border-sky-300/35 bg-sky-400/10 text-sky-100 shadow-[0_18px_42px_rgba(14,165,233,0.16)]";
@@ -1099,12 +1107,10 @@ export default function SessionClient({
     return "border-slate-300/25 bg-slate-900/65 text-slate-100 shadow-[0_18px_42px_rgba(15,23,42,0.22)]";
   })();
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setTipIndex((prev) => (prev + 1) % tips.length);
-    }, 12000);
-    return () => window.clearInterval(timer);
-  }, [tips.length]);
+  const cycleFocusTip = () => {
+    if (tips.length <= 1) return;
+    setTipIndex((prev) => (prev + 1) % tips.length);
+  };
 
   const queueFocus = useCallback(
     (element: HTMLInputElement | HTMLButtonElement | null | undefined) => {
@@ -1430,9 +1436,11 @@ export default function SessionClient({
       sets: string | number | null;
       reps?: string | null;
       loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+      /** May be a catalog section or a day-title fallback from flatItems. */
+      section?: string | null;
     }) => {
-      // Plan prescription wins when present. Session-local slider tweaks
-      // (timerByExercise) still override for the current visit.
+      // Rep-based work: section tempo × reps. Timed holds: durationSec.
+      // Session-local slider tweaks still override for the current visit.
       const prescribed = getEffectiveTimer(
         {
           exerciseId: params.exerciseId,
@@ -1441,6 +1449,7 @@ export default function SessionClient({
           sets: params.sets,
           reps: params.reps ?? null,
           loadType: params.loadType,
+          section: normalizeLogSection(params.section ?? "") ?? undefined,
         },
         prefs?.timerPrefs
       );
@@ -1449,26 +1458,13 @@ export default function SessionClient({
         return {
           workSeconds: sessionOverride.workSeconds,
           restSeconds: sessionOverride.restSeconds,
-        };
-      }
-      const savedOverride = prefs?.timerPrefsByExercise?.[params.exerciseId];
-      const hasPlanWork =
-        typeof params.durationSec === "number" && params.durationSec > 0;
-      const hasPlanRest =
-        typeof params.restSec === "number" && params.restSec > 0;
-      if (savedOverride) {
-        return {
-          workSeconds: hasPlanWork
-            ? prescribed.workSeconds
-            : savedOverride.workSeconds,
-          restSeconds: hasPlanRest
-            ? prescribed.restSeconds
-            : savedOverride.restSeconds,
+          tempoPace: prescribed.tempoPace,
+          fromRepTempo: prescribed.fromRepTempo,
         };
       }
       return prescribed;
     },
-    [prefs?.timerPrefs, prefs?.timerPrefsByExercise, timerByExercise]
+    [prefs?.timerPrefs, timerByExercise]
   );
 
   const getRecordedTimerForItem = useCallback(
@@ -1480,6 +1476,8 @@ export default function SessionClient({
       sets: string | number | null;
       reps?: string | null;
       loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+      /** May be a catalog section or a day-title fallback from flatItems. */
+      section?: string | null;
     }) => {
       const runtime = timerRuntimeByItemId[item.id];
       if (
@@ -1489,9 +1487,20 @@ export default function SessionClient({
         Number.isFinite(runtime.restSeconds) &&
         runtime.restSeconds > 0
       ) {
+        const prescribed = getTimerForExercise({
+          exerciseId: item.exerciseId,
+          durationSec: item.durationSec ?? null,
+          restSec: item.restSec ?? null,
+          sets: item.sets,
+          reps: item.reps ?? null,
+          loadType: item.loadType,
+          section: item.section ?? null,
+        });
         return {
           workSeconds: runtime.exerciseSeconds,
           restSeconds: runtime.restSeconds,
+          tempoPace: prescribed.tempoPace,
+          fromRepTempo: prescribed.fromRepTempo,
         };
       }
       return getTimerForExercise({
@@ -1501,6 +1510,7 @@ export default function SessionClient({
         sets: item.sets,
         reps: item.reps ?? null,
         loadType: item.loadType,
+        section: item.section ?? null,
       });
     },
     [getTimerForExercise, timerRuntimeByItemId]
@@ -1693,11 +1703,29 @@ export default function SessionClient({
     setPainModalOpen(false);
   };
 
+  const stopAllTimersForNavigation = () => {
+    setTimerRuntimeByItemId((prev) => {
+      let changed = false;
+      const next: typeof prev = {};
+      for (const [id, runtime] of Object.entries(prev)) {
+        if (runtime.running) {
+          changed = true;
+          next[id] = { ...runtime, running: false };
+        } else {
+          next[id] = runtime;
+        }
+      }
+      return changed ? next : prev;
+    });
+  };
+
   const handleNext = async () => {
     if (!currentItem) return;
     await persistSessionDraftNow();
     setActiveTrackingField(null);
     setExerciseCompleteFlashVisible(false);
+    stopAllTimersForNavigation();
+    setTipIndex(0);
     if (activeIndex < totalItems - 1) {
       setActiveIndex((prev) => prev + 1);
       return;
@@ -1711,6 +1739,8 @@ export default function SessionClient({
     await persistSessionDraftNow();
     setActiveTrackingField(null);
     setExerciseCompleteFlashVisible(false);
+    stopAllTimersForNavigation();
+    setTipIndex(0);
     setActiveIndex((prev) => Math.max(prev - 1, 0));
   };
 
@@ -2045,8 +2075,14 @@ export default function SessionClient({
         sets: currentItem.sets,
         reps: currentItem.reps ?? null,
         loadType: currentItem.loadType,
+        section: currentItem.section ?? null,
       })
-    : { workSeconds: 60, restSeconds: 60 };
+    : {
+        workSeconds: 60,
+        restSeconds: 60,
+        tempoPace: "slow" as const,
+        fromRepTempo: false,
+      };
   const soundPrefs = normalizeSoundPrefs(prefs?.soundPrefs);
   const previewWeight =
     currentItem?.loadType === "weighted" && currentItem
@@ -2085,18 +2121,12 @@ export default function SessionClient({
   const sessionProgressPercent = totalItems
     ? ((activeIndex + 1) / totalItems) * 100
     : 0;
-  const runningTimerRuntime = Object.values(timerRuntimeByItemId)
-    .filter((runtime) => runtime.running)
-    .sort(
-      (a, b) => (b.updatedAtMs ?? 0) - (a.updatedAtMs ?? 0)
-    )[0] ?? null;
+  // Only restore this exercise's timer. Never inherit a still-running timer
+  // from the previous exercise when the user taps Next/Back.
   const currentItemRuntime = currentItemId
     ? timerRuntimeByItemId[currentItemId] ?? null
     : null;
-  const persistedTimerRuntime =
-    currentItemRuntime?.running
-      ? currentItemRuntime
-      : runningTimerRuntime ?? currentItemRuntime;
+  const persistedTimerRuntime = currentItemRuntime;
   const hasWeightedInput = currentItem?.loadType === "weighted";
   const hasRepsInput = currentItem?.loadType !== "timed";
   const trackingFieldOrder = useMemo<TrackingField[]>(() => {
@@ -2896,7 +2926,7 @@ export default function SessionClient({
             the top of the page, but a sticky descendant re-anchors to the
             viewport on scroll and ignores an ancestor's padding, so it
             needs its own matching offset. */}
-        <div className="sticky top-2 z-30 space-y-2 md:top-16">
+        <div className="sticky top-2 z-30 space-y-2 md:top-16 [&>*:has([aria-expanded=true])]:relative [&>*:has([aria-expanded=true])]:z-40">
           <SessionProgressHeader
             phaseName={phaseLabel}
             dayPositionLabel={dayPositionLabel}
@@ -2905,8 +2935,17 @@ export default function SessionClient({
             progressPercent={sessionProgressPercent}
           />
 
-          <div
-            className={`ui-card relative overflow-hidden rounded-lg border px-4 py-3 transition-[border-color,background-color,box-shadow,color] duration-500 ${tipTone}`}
+          <button
+            type="button"
+            ref={focusCardRef}
+            data-testid="session-focus-card"
+            onClick={cycleFocusTip}
+            aria-label={
+              tips.length > 1
+                ? "Focus cue. Tap for next cue."
+                : "Focus cue"
+            }
+            className={`ui-card relative w-full overflow-hidden rounded-lg border px-4 py-3 text-left transition-[border-color,background-color,box-shadow,color] duration-500 ${tipTone}`}
           >
             <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-current opacity-[0.08] blur-2xl" />
             <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -2916,6 +2955,11 @@ export default function SessionClient({
                   <p className="text-[11px] font-semibold uppercase text-slate-300">
                     Focus
                   </p>
+                  {tips.length > 1 ? (
+                    <p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">
+                      Tap for next
+                    </p>
+                  ) : null}
                 </div>
                 <p
                   key={activeTip}
@@ -2925,12 +2969,12 @@ export default function SessionClient({
                   {activeTip}
                 </p>
               </div>
-              <div className="flex items-center gap-1.5" aria-label="Cycling guidance">
+              <div className="flex items-center gap-1.5" aria-label="Cue position">
                 {tips.map((tip, index) => (
                   <span
-                    key={tip}
+                    key={`${tip}-${index}`}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
-                      index === tipIndex
+                      index === safeTipIndex
                         ? "w-5 bg-current opacity-95"
                         : "w-1.5 bg-slate-400/45"
                     }`}
@@ -2938,7 +2982,7 @@ export default function SessionClient({
                 ))}
               </div>
             </div>
-          </div>
+          </button>
         </div>
 
         <div ref={exerciseCardRef}>
@@ -2948,6 +2992,18 @@ export default function SessionClient({
             cue={
               currentItem.cues[0] ??
               "Move with control, breathe steadily, and keep posture stacked."
+            }
+            reps={
+              currentItem.loadType === "timed"
+                ? null
+                : currentItem.reps || currentItem.duration || null
+            }
+            tempoNotation={
+              currentTimer.fromRepTempo
+                ? tempoNotationForPace(currentTimer.tempoPace)
+                : currentItem.loadType === "timed"
+                  ? "Timed hold"
+                  : null
             }
             sets={checks}
             onToggleSet={(index) =>
@@ -2990,6 +3046,13 @@ export default function SessionClient({
               sessionMuted={sessionMuted}
               onToggleSessionMute={() => setSessionMuted((prev) => !prev)}
               vibrationEnabled={soundPrefs.vibration}
+              tempoHint={
+                currentTimer.fromRepTempo
+                  ? tempoNotationForPace(currentTimer.tempoPace)
+                  : currentItem.loadType === "timed"
+                    ? "Timed hold"
+                    : null
+              }
             />
 
             {currentItem.cues.length > 0 ||
@@ -3154,7 +3217,7 @@ export default function SessionClient({
               </div>
             ) : null}
 
-            {currentItem.loadType === "weighted" ? (
+            {hasWeightedInput ? (
               <div className="flex flex-wrap items-center gap-2">
                 <label className="text-xs font-semibold text-slate-300" htmlFor="weight-input">
                   Weight

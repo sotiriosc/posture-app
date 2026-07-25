@@ -5,6 +5,8 @@
 
 export const CLARIFY = {
   RPE: "Rate of Perceived Exertion — a 1-10 scale for how hard a set felt. 6 means you had 4 more reps in you. 9 means one more rep max.",
+  Tempo:
+    "How long each part of a rep should take, in seconds: eccentric (lowering) – pause – concentric (lifting) – pause. 2-0-2-0 means two seconds down, no pause, two seconds up, no pause.",
   Phase:
     "Praxis moves you through three phases: Control & Technique, Hypertrophy & Capacity, then Strength Focus. You advance when your body earns it, not by calendar.",
   Baseline:
