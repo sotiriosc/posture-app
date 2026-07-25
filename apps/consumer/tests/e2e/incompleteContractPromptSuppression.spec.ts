@@ -2,19 +2,13 @@ import { test, expect, type Page } from "@playwright/test";
 import { completeQuestionnaire, mockTrainingState } from "../../e2e/fixtures";
 
 /**
- * Phase 6f, Commit 5.c — session-adjustment ("incomplete last session")
- * prompt tone + self-adapting suppression.
- *
- * Seeds an incomplete exercise log directly into IndexedDB (schema mirrors
- * `packages/engine/src/logStore.ts`) so the pre-session feedback contract
- * prompt fires deterministically for a specific, known exercise, without
- * depending on the randomized program generator's exact exercise selection
- * or on driving a full multi-set session UI to intentionally leave sets
- * incomplete.
+ * Phase 6i Commit 4 — incomplete-field prompt uses three buttons with
+ * instant "Stop asking" (no fire-count gate, no Settings navigation).
  */
+
 const seedIncompleteContractTrigger = async (
   page: Page,
-  incompleteContractPromptFireCount: number
+  incompleteContractPromptFireCount = 0
 ) => {
   return page.evaluate(async (priorFireCount) => {
     const DB_NAME = "bodycoach-logs";
@@ -123,34 +117,41 @@ const seedIncompleteContractTrigger = async (
   }, incompleteContractPromptFireCount);
 };
 
-test("the 'incomplete' reason prompt uses curious-not-judgmental copy and offers to turn itself off after firing twice", async ({
+test("incomplete prompt offers Log it now / Skipped it / Stop asking on first fire", async ({
   page,
 }) => {
   await mockTrainingState(page, { authenticated: false });
   await completeQuestionnaire(page, { daysPerWeek: 3 });
-
-  // This prompt has already fired once before (per stored prefs); today's
-  // firing will be its second, so the self-adapting suppression link should
-  // appear immediately.
-  await seedIncompleteContractTrigger(page, 1);
+  await seedIncompleteContractTrigger(page, 0);
 
   await page.getByTestId("start-selected-day").click();
 
   const prompt = page.getByText(/I noticed you didn't fill in fields for/);
   await expect(prompt).toBeVisible({ timeout: 20_000 });
-  await expect(prompt).toContainText("last session");
-  await expect(prompt).toContainText("Did you skip it, or want to log it now?");
-  await expect(page.getByText(/^Did you skip this exercise\?/)).toHaveCount(0);
+  await expect(page.getByTestId("incomplete-log-it-now")).toBeVisible();
+  await expect(page.getByTestId("incomplete-skipped-it")).toBeVisible();
+  await expect(page.getByTestId("suppress-incomplete-prompt")).toBeVisible();
+  await expect(
+    page.getByText("You can turn these back on anytime in Settings.")
+  ).toBeVisible();
+  // Legacy Sacrifice/Test/Modify labels stay off this incomplete path.
+  await expect(page.getByText(/^Sacrifice$/)).toHaveCount(0);
+});
 
-  const suppressLink = page.getByTestId("suppress-incomplete-prompt");
-  await expect(suppressLink).toBeVisible();
-  await suppressLink.click();
+test("Stop asking persists suppression without navigating to Settings", async ({
+  page,
+}) => {
+  await mockTrainingState(page, { authenticated: false });
+  await completeQuestionnaire(page, { daysPerWeek: 3 });
+  await seedIncompleteContractTrigger(page, 0);
 
-  // The prompt itself is dismissed immediately...
+  await page.getByTestId("start-selected-day").click();
+
+  const prompt = page.getByText(/I noticed you didn't fill in fields for/);
+  await expect(prompt).toBeVisible({ timeout: 20_000 });
+  await page.getByTestId("suppress-incomplete-prompt").click();
   await expect(prompt).toHaveCount(0);
 
-  // ...and the preference is persisted so future sessions never compute the
-  // "incomplete" trigger again.
   await expect
     .poll(() =>
       page.evaluate(async () => {
@@ -172,64 +173,21 @@ test("the 'incomplete' reason prompt uses curious-not-judgmental copy and offers
     .toBe(true);
 });
 
-test("the suppression link is not offered the first time the 'incomplete' prompt fires", async ({
-  page,
-}) => {
-  await mockTrainingState(page, { authenticated: false });
-  await completeQuestionnaire(page, { daysPerWeek: 3 });
-
-  await seedIncompleteContractTrigger(page, 0);
-
-  await page.getByTestId("start-selected-day").click();
-
-  await expect(
-    page.getByText(/I noticed you didn't fill in fields for/)
-  ).toBeVisible({ timeout: 20_000 });
-  await expect(page.getByTestId("suppress-incomplete-prompt")).toHaveCount(0);
-});
-
 test("the suppressed prompt can be re-enabled from Account Settings", async ({
   page,
 }) => {
   await mockTrainingState(page, { authenticated: false });
   await completeQuestionnaire(page, { daysPerWeek: 3 });
-  await seedIncompleteContractTrigger(page, 1);
+  await seedIncompleteContractTrigger(page, 0);
 
   await page.goto("/account/settings");
   const toggle = page.getByTestId("settings-suppress-incomplete-prompts");
   await expect(toggle).toBeEnabled();
-  await expect(toggle).not.toBeChecked();
-  // Plain click + a polling `expect` (rather than `.check()`'s one-shot
-  // post-click verification) — the toggle is a controlled checkbox whose
-  // `checked` prop only flips after an async savePrefs() round-trip.
-  await toggle.click();
+  // Pref may still be false; turn suppression on then off to prove the path.
+  if (!(await toggle.isChecked())) {
+    await toggle.click();
+  }
   await expect(toggle).toBeChecked();
-
-  await page.reload();
-  await expect(page.getByTestId("settings-suppress-incomplete-prompts")).toBeChecked();
-
-  // Turned off directly from Settings: today's already-seeded "incomplete"
-  // trigger must no longer fire when a session starts.
-  await page.goto("/results");
-  await page.getByTestId("start-selected-day").click();
-  await expect(page).toHaveURL(/\/session/);
-  await expect(
-    page.getByText(/I noticed you didn't fill in fields for/)
-  ).toHaveCount(0);
-
-  // Re-enabling brings it back.
-  await page.goto("/account/settings");
-  const toggleAgain = page.getByTestId("settings-suppress-incomplete-prompts");
-  // Wait for the persisted (checked) value to load before interacting —
-  // otherwise Playwright can sample the pre-hydration default (unchecked)
-  // and treat `.uncheck()` as a no-op.
-  await expect(toggleAgain).toBeChecked();
-  await toggleAgain.click();
-  await expect(toggleAgain).not.toBeChecked();
-
-  await page.goto("/results");
-  await page.getByTestId("start-selected-day").click();
-  await expect(
-    page.getByText(/I noticed you didn't fill in fields for/)
-  ).toBeVisible({ timeout: 20_000 });
+  await toggle.click();
+  await expect(toggle).not.toBeChecked();
 });

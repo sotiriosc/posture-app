@@ -22,7 +22,6 @@ import {
   applyFeedbackContractAction,
   applyAutoSacrifice,
   buildContractPrompt,
-  shouldOfferIncompletePromptSuppression,
   filterSuppressedContractTriggers,
   computeMaintainPrompts,
   markMaintainPromptsShown,
@@ -2544,74 +2543,106 @@ export default function SessionClient() {
             <h1 className="text-xl font-semibold text-white">{exerciseName}</h1>
             <p className="mt-2 text-sm text-slate-200">{prompt}</p>
 
-            <div className="mt-6 flex flex-col gap-3">
-              {/* Sacrifice */}
-              <button
-                onClick={() => { void handleContractAction("sacrifice"); }}
-                className="w-full rounded-xl bg-rose-600 px-5 py-3 text-left font-semibold text-white shadow hover:bg-rose-500 active:bg-rose-700"
-              >
-                <span className="block text-base">Sacrifice</span>
-                <span className="block text-xs font-normal text-rose-200 mt-0.5">
-                  Skip this exercise for now — I&apos;ll retest it later
-                </span>
-              </button>
+            {isIncompleteReason ? (
+              <>
+                {/* Phase 6i Commit 4 — three-button incomplete prompt with
+                    instant Stop asking (no Settings navigation). */}
+                <div className="mt-6 flex flex-col gap-3">
+                  <button
+                    type="button"
+                    data-testid="incomplete-log-it-now"
+                    onClick={() => { void handleContractAction("test"); }}
+                    className="w-full rounded-xl bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-5 py-3 text-left font-semibold text-white shadow hover:brightness-110 active:brightness-95"
+                  >
+                    <span className="block text-base">Log it now</span>
+                    <span className="mt-0.5 block text-xs font-normal text-sky-100">
+                      Keep it in this session — fill in the fields as you go
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="incomplete-skipped-it"
+                    onClick={() => { void handleContractAction("sacrifice"); }}
+                    className="w-full rounded-xl bg-slate-700 px-5 py-3 text-left font-semibold text-white shadow hover:bg-slate-600 active:bg-slate-800"
+                  >
+                    <span className="block text-base">Skipped it</span>
+                    <span className="mt-0.5 block text-xs font-normal text-slate-300">
+                      Record the skip and move on
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="suppress-incomplete-prompt"
+                    onClick={() => { void handleSuppressIncompletePrompts(); }}
+                    className="w-full rounded-xl border border-slate-400/35 bg-slate-950/55 px-5 py-3 text-left font-semibold text-white shadow hover:border-sky-300/45"
+                  >
+                    <span className="block text-base">Stop asking</span>
+                    <span className="mt-0.5 block text-xs font-normal text-slate-300">
+                      Turn off these skip-check prompts for this account
+                    </span>
+                  </button>
+                </div>
+                <p className="mt-3 text-center text-xs text-slate-300">
+                  You can turn these back on anytime in Settings.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="mt-6 flex flex-col gap-3">
+                  <button
+                    onClick={() => { void handleContractAction("sacrifice"); }}
+                    className="w-full rounded-xl bg-rose-600 px-5 py-3 text-left font-semibold text-white shadow hover:bg-rose-500 active:bg-rose-700"
+                  >
+                    <span className="block text-base">Sacrifice</span>
+                    <span className="block text-xs font-normal text-rose-200 mt-0.5">
+                      Skip this exercise for now — I&apos;ll retest it later
+                    </span>
+                  </button>
 
-              {/* Test */}
-              <button
-                onClick={() => { void handleContractAction("test"); }}
-                className="w-full rounded-xl bg-slate-700 px-5 py-3 text-left font-semibold text-white shadow hover:bg-slate-600 active:bg-slate-800"
-              >
-                <span className="block text-base">Test</span>
-                <span className="block text-xs font-normal text-slate-300 mt-0.5">
-                  Keep it in — I&apos;ll try again this session
-                </span>
-              </button>
+                  <button
+                    onClick={() => { void handleContractAction("test"); }}
+                    className="w-full rounded-xl bg-slate-700 px-5 py-3 text-left font-semibold text-white shadow hover:bg-slate-600 active:bg-slate-800"
+                  >
+                    <span className="block text-base">Test</span>
+                    <span className="block text-xs font-normal text-slate-300 mt-0.5">
+                      Keep it in — I&apos;ll try again this session
+                    </span>
+                  </button>
 
-              {/* Modify — disabled at d1 floor */}
-              <button
-                onClick={() => { void handleContractAction("modify"); }}
-                disabled={activeContractTrigger.atFloor}
-                className={[
-                  "w-full rounded-xl px-5 py-3 text-left font-semibold text-white shadow",
-                  activeContractTrigger.atFloor
-                    ? "bg-slate-800 opacity-40 cursor-not-allowed"
-                    : "bg-amber-600 hover:bg-amber-500 active:bg-amber-700",
-                ].join(" ")}
-              >
-                <span className="block text-base">Modify</span>
-                <span
-                  className={[
-                    "block text-xs font-normal mt-0.5",
-                    activeContractTrigger.atFloor
-                      ? "text-slate-400"
-                      : "text-amber-200",
-                  ].join(" ")}
+                  <button
+                    onClick={() => { void handleContractAction("modify"); }}
+                    disabled={activeContractTrigger.atFloor}
+                    className={[
+                      "w-full rounded-xl px-5 py-3 text-left font-semibold text-white shadow",
+                      activeContractTrigger.atFloor
+                        ? "bg-slate-800 opacity-40 cursor-not-allowed"
+                        : "bg-amber-600 hover:bg-amber-500 active:bg-amber-700",
+                    ].join(" ")}
+                  >
+                    <span className="block text-base">Modify</span>
+                    <span
+                      className={[
+                        "block text-xs font-normal mt-0.5",
+                        activeContractTrigger.atFloor
+                          ? "text-slate-400"
+                          : "text-amber-200",
+                      ].join(" ")}
+                    >
+                      {activeContractTrigger.atFloor
+                        ? "Already at the easiest version"
+                        : "Drop to an easier variation"}
+                    </span>
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => { void handleContractAction("dismiss"); }}
+                  className="mt-4 w-full text-center text-xs text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline"
                 >
-                  {activeContractTrigger.atFloor
-                    ? "Already at the easiest version"
-                    : "Drop to an easier variation"}
-                </span>
-              </button>
-            </div>
-
-            {/* Dismiss link — treated as Test */}
-            <button
-              onClick={() => { void handleContractAction("dismiss"); }}
-              className="mt-4 w-full text-center text-xs text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline"
-            >
-              Skip for now
-            </button>
-
-            {isIncompleteReason &&
-            shouldOfferIncompletePromptSuppression(incompleteContractPromptFireCount) ? (
-              <button
-                data-testid="suppress-incomplete-prompt"
-                onClick={() => { void handleSuppressIncompletePrompts(); }}
-                className="mt-2 w-full text-center text-xs text-slate-500 underline-offset-2 hover:text-slate-300 hover:underline"
-              >
-                Turn off these prompts and adjust from Settings instead?
-              </button>
-            ) : null}
+                  Skip for now
+                </button>
+              </>
+            )}
           </OnImage>
         </div>
       </BackgroundShell>
