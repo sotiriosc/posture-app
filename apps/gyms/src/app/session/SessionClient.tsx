@@ -1693,11 +1693,28 @@ export default function SessionClient({
     setPainModalOpen(false);
   };
 
+  const stopAllTimersForNavigation = () => {
+    setTimerRuntimeByItemId((prev) => {
+      let changed = false;
+      const next: typeof prev = {};
+      for (const [id, runtime] of Object.entries(prev)) {
+        if (runtime.running) {
+          changed = true;
+          next[id] = { ...runtime, running: false };
+        } else {
+          next[id] = runtime;
+        }
+      }
+      return changed ? next : prev;
+    });
+  };
+
   const handleNext = async () => {
     if (!currentItem) return;
     await persistSessionDraftNow();
     setActiveTrackingField(null);
     setExerciseCompleteFlashVisible(false);
+    stopAllTimersForNavigation();
     if (activeIndex < totalItems - 1) {
       setActiveIndex((prev) => prev + 1);
       return;
@@ -1711,6 +1728,7 @@ export default function SessionClient({
     await persistSessionDraftNow();
     setActiveTrackingField(null);
     setExerciseCompleteFlashVisible(false);
+    stopAllTimersForNavigation();
     setActiveIndex((prev) => Math.max(prev - 1, 0));
   };
 
@@ -2085,18 +2103,12 @@ export default function SessionClient({
   const sessionProgressPercent = totalItems
     ? ((activeIndex + 1) / totalItems) * 100
     : 0;
-  const runningTimerRuntime = Object.values(timerRuntimeByItemId)
-    .filter((runtime) => runtime.running)
-    .sort(
-      (a, b) => (b.updatedAtMs ?? 0) - (a.updatedAtMs ?? 0)
-    )[0] ?? null;
+  // Only restore this exercise's timer. Never inherit a still-running timer
+  // from the previous exercise when the user taps Next/Back.
   const currentItemRuntime = currentItemId
     ? timerRuntimeByItemId[currentItemId] ?? null
     : null;
-  const persistedTimerRuntime =
-    currentItemRuntime?.running
-      ? currentItemRuntime
-      : runningTimerRuntime ?? currentItemRuntime;
+  const persistedTimerRuntime = currentItemRuntime;
   const hasWeightedInput = currentItem?.loadType === "weighted";
   const hasRepsInput = currentItem?.loadType !== "timed";
   const trackingFieldOrder = useMemo<TrackingField[]>(() => {

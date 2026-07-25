@@ -35,10 +35,15 @@ type DualModeTimerProps = {
   vibrationEnabled?: boolean;
 };
 
+/** Extra seconds so the user can set up before the timing pattern starts. */
+export const TIMER_SETUP_BUFFER_SEC = 5;
+
 const formatTime = (seconds: number) => {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
+  const negative = seconds < 0;
+  const abs = Math.abs(Math.trunc(seconds));
+  const mins = Math.floor(abs / 60);
+  const secs = abs % 60;
+  return `${negative ? "-" : ""}${mins}:${secs.toString().padStart(2, "0")}`;
 };
 
 const clampDuration = (value: number, mode: TimerMode) => {
@@ -47,8 +52,16 @@ const clampDuration = (value: number, mode: TimerMode) => {
   return Math.min(max, Math.max(min, value));
 };
 
+const presetWithSetup = (seconds: number) =>
+  Math.max(1, Math.floor(seconds)) + TIMER_SETUP_BUFFER_SEC;
+
 const getCurrentTimestampMs = () => Date.now();
 
+/**
+ * Advance a running timer through wall-clock time. Remaining may go negative
+ * (overtime) so the user can end the set manually for cue-consistency scoring.
+ * Never auto-starts rest — that requires an explicit user action.
+ */
 const reconcileRuntimeState = (
   state: DualModeTimerRuntimeState | null | undefined
 ): DualModeTimerRuntimeState | null => {
@@ -57,26 +70,12 @@ const reconcileRuntimeState = (
   const exerciseSeconds = clampDuration(state.exerciseSeconds, "exercise");
   const restSeconds = clampDuration(state.restSeconds, "rest");
   const now = getCurrentTimestampMs();
-  const baseline = Math.max(0, Math.floor(state.remainingSeconds));
+  const baseline = Math.trunc(state.remainingSeconds);
 
   if (!state.running || !state.updatedAtMs) {
-    // Idle timers always show the full Working/Resting preset — never a
-    // leftover partial countdown from a prior pause (session UX).
-    const idleRemaining =
-      state.mode === "exercise" ? exerciseSeconds : restSeconds;
     return {
       ...state,
-      remainingSeconds: idleRemaining,
-      exerciseSeconds,
-      restSeconds,
-      updatedAtMs: now,
-    };
-  }
-
-  const elapsedSeconds = Math.max(0, Math.floor((now - state.updatedAtMs) / 1000));
-  if (elapsedSeconds <= 0) {
-    return {
-      ...state,
+      running: false,
       remainingSeconds: baseline,
       exerciseSeconds,
       restSeconds,
@@ -84,53 +83,13 @@ const reconcileRuntimeState = (
     };
   }
 
-  if (state.mode === "exercise") {
-    if (elapsedSeconds < baseline) {
-      return {
-        ...state,
-        remainingSeconds: baseline - elapsedSeconds,
-        exerciseSeconds,
-        restSeconds,
-        updatedAtMs: now,
-      };
-    }
-    const elapsedIntoRest = elapsedSeconds - baseline;
-    if (elapsedIntoRest < restSeconds) {
-      return {
-        ...state,
-        mode: "rest",
-        running: true,
-        remainingSeconds: restSeconds - elapsedIntoRest,
-        exerciseSeconds,
-        restSeconds,
-        updatedAtMs: now,
-      };
-    }
-    return {
-      ...state,
-      mode: "rest",
-      running: false,
-      remainingSeconds: 0,
-      exerciseSeconds,
-      restSeconds,
-      updatedAtMs: now,
-    };
-  }
-
-  if (elapsedSeconds < baseline) {
-    return {
-      ...state,
-      remainingSeconds: baseline - elapsedSeconds,
-      exerciseSeconds,
-      restSeconds,
-      updatedAtMs: now,
-    };
-  }
+  const elapsedSeconds = Math.max(
+    0,
+    Math.floor((now - state.updatedAtMs) / 1000)
+  );
   return {
     ...state,
-    mode: "rest",
-    running: false,
-    remainingSeconds: 0,
+    remainingSeconds: baseline - elapsedSeconds,
     exerciseSeconds,
     restSeconds,
     updatedAtMs: now,
@@ -166,9 +125,11 @@ export default function DualModeTimer({
   const [selectedRestSeconds, setSelectedRestSeconds] = useState(
     reconciledPersistedState?.restSeconds ?? initialRestSeconds
   );
+  const initialPresetSeconds = presetWithSetup(
+    defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds
+  );
   const [remainingSeconds, setRemainingSeconds] = useState(
-    reconciledPersistedState?.remainingSeconds ??
-      (defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds)
+    reconciledPersistedState?.remainingSeconds ?? initialPresetSeconds
   );
   const modeRef = useRef<TimerMode>(
     reconciledPersistedState?.mode ?? defaultMode
@@ -177,8 +138,7 @@ export default function DualModeTimer({
     reconciledPersistedState?.running ?? false
   );
   const remainingRef = useRef<number>(
-    reconciledPersistedState?.remainingSeconds ??
-      (defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds)
+    reconciledPersistedState?.remainingSeconds ?? initialPresetSeconds
   );
   const selectedExerciseRef = useRef<number>(
     reconciledPersistedState?.exerciseSeconds ?? initialExerciseSeconds
@@ -188,7 +148,7 @@ export default function DualModeTimer({
   );
   const lastRunningRef = useRef(false);
   const lastRemainingRef = useRef(remainingSeconds);
-  const autoSwitchRef = useRef(false);
+  const zeroCrossBeepRef = useRef(false);
   const runtimeAnchorMsRef = useRef<number>(
     reconciledPersistedState?.updatedAtMs ?? getCurrentTimestampMs()
   );
@@ -196,11 +156,28 @@ export default function DualModeTimer({
   const activeSelectedSeconds =
     mode === "exercise" ? selectedExerciseSeconds : selectedRestSeconds;
   const safeSelectedSeconds = Math.max(1, activeSelectedSeconds);
-  const completionRatio = Math.min(
-    1,
-    Math.max(0, 1 - remainingSeconds / safeSelectedSeconds)
+  const startSeconds = presetWithSetup(activeSelectedSeconds);
+  const inSetupPhase = remainingSeconds > activeSelectedSeconds;
+  // Cue consistency: 100% when ending exactly on the timing pattern (0:00).
+  // Rises as the clock approaches zero, falls again in overtime.
+  const cueConsistencyPercent = inSetupPhase
+    ? null
+    : Math.max(
+        0,
+        Math.min(
+          100,
+          Math.round(
+            100 * (1 - Math.abs(remainingSeconds) / safeSelectedSeconds)
+          )
+        )
+      );
+  // Ring fill tracks progress through setup + pattern (caps at 100% in overtime).
+  const progressPercent = Math.round(
+    Math.min(
+      100,
+      Math.max(0, ((startSeconds - remainingSeconds) / startSeconds) * 100)
+    )
   );
-  const progressPercent = Math.round(completionRatio * 100);
   const sliderMin = mode === "exercise" ? 15 : 30;
   const sliderMax = mode === "exercise" ? 180 : 300;
   const isExerciseMode = mode === "exercise";
@@ -294,8 +271,8 @@ export default function DualModeTimer({
 
   const reconcileElapsedRuntime = () => {
     const runningNow = runningRef.current;
+    if (!runningNow) return;
     const remainingNow = remainingRef.current;
-    if (!runningNow || remainingNow <= 0) return;
     const anchorMs = runtimeAnchorMsRef.current;
     const elapsedSeconds = Math.max(
       0,
@@ -315,14 +292,6 @@ export default function DualModeTimer({
 
     runtimeAnchorMsRef.current =
       reconciled.updatedAtMs ?? getCurrentTimestampMs();
-    if (reconciled.mode !== modeRef.current) {
-      modeRef.current = reconciled.mode;
-      setMode(reconciled.mode);
-    }
-    if (reconciled.running !== runningRef.current) {
-      runningRef.current = reconciled.running;
-      setRunning(reconciled.running);
-    }
     if (reconciled.remainingSeconds !== remainingRef.current) {
       remainingRef.current = reconciled.remainingSeconds;
       setRemainingSeconds(reconciled.remainingSeconds);
@@ -330,12 +299,12 @@ export default function DualModeTimer({
   };
 
   useEffect(() => {
-    if (!running || remainingSeconds <= 0) return;
+    if (!running) return;
     const timer = window.setInterval(() => {
       reconcileElapsedRuntime();
     }, 250);
     return () => window.clearInterval(timer);
-  }, [running, remainingSeconds]);
+  }, [running]);
 
   useEffect(() => {
     const syncIfVisible = () => {
@@ -352,55 +321,33 @@ export default function DualModeTimer({
     };
   }, []);
 
-  useEffect(() => {
-    if (remainingSeconds !== 0) return;
-    if (mode === "exercise") {
-      autoSwitchRef.current = true;
-      runtimeAnchorMsRef.current = getCurrentTimestampMs();
-      modeRef.current = "rest";
-      runningRef.current = true;
-      remainingRef.current = selectedRestSeconds;
-      queueMicrotask(() => {
-        setMode("rest");
-        setRemainingSeconds(selectedRestSeconds);
-        setRunning(true);
-      });
-      return;
-    }
-    runtimeAnchorMsRef.current = getCurrentTimestampMs();
-    runningRef.current = false;
-    queueMicrotask(() => {
-      setRunning(false);
-    });
-  }, [mode, remainingSeconds, selectedRestSeconds]);
-
   const handleModeChange = (nextMode: TimerMode) => {
     if (nextMode === mode) return;
-    autoSwitchRef.current = false;
+    zeroCrossBeepRef.current = false;
     runtimeAnchorMsRef.current = getCurrentTimestampMs();
     modeRef.current = nextMode;
     runningRef.current = false;
-    remainingRef.current =
+    const nextRemaining = presetWithSetup(
       nextMode === "exercise"
         ? selectedExerciseRef.current
-        : selectedRestRef.current;
+        : selectedRestRef.current
+    );
+    remainingRef.current = nextRemaining;
     setRunning(false);
     setMode(nextMode);
-    setRemainingSeconds(
-      nextMode === "exercise"
-        ? selectedExerciseSeconds
-        : selectedRestSeconds
-    );
+    setRemainingSeconds(nextRemaining);
   };
 
   const applyExerciseSeconds = (seconds: number) => {
     const next = clampDuration(seconds, "exercise");
     setSelectedExerciseSeconds(next);
     selectedExerciseRef.current = next;
-    if (mode === "exercise" && !running) setRemainingSeconds(next);
     if (mode === "exercise" && !running) {
-      remainingRef.current = next;
+      const withSetup = presetWithSetup(next);
+      setRemainingSeconds(withSetup);
+      remainingRef.current = withSetup;
       runtimeAnchorMsRef.current = getCurrentTimestampMs();
+      zeroCrossBeepRef.current = false;
     }
     return next;
   };
@@ -409,10 +356,12 @@ export default function DualModeTimer({
     const next = clampDuration(seconds, "rest");
     setSelectedRestSeconds(next);
     selectedRestRef.current = next;
-    if (mode === "rest" && !running) setRemainingSeconds(next);
     if (mode === "rest" && !running) {
-      remainingRef.current = next;
+      const withSetup = presetWithSetup(next);
+      setRemainingSeconds(withSetup);
+      remainingRef.current = withSetup;
       runtimeAnchorMsRef.current = getCurrentTimestampMs();
+      zeroCrossBeepRef.current = false;
     }
     return next;
   };
@@ -436,9 +385,11 @@ export default function DualModeTimer({
   const resetTimer = () => {
     runtimeAnchorMsRef.current = getCurrentTimestampMs();
     runningRef.current = false;
-    remainingRef.current = activeSelectedSeconds;
+    zeroCrossBeepRef.current = false;
+    const withSetup = presetWithSetup(activeSelectedSeconds);
+    remainingRef.current = withSetup;
     setRunning(false);
-    setRemainingSeconds(activeSelectedSeconds);
+    setRemainingSeconds(withSetup);
   };
 
   const playBeep = (type: "start" | "finish") => {
@@ -492,13 +443,21 @@ export default function DualModeTimer({
     const wasRunning = lastRunningRef.current;
     const wasRemaining = lastRemainingRef.current;
 
-    if (!wasRunning && running && remainingSeconds > 0) {
+    if (!wasRunning && running) {
       playBeep("start");
+      zeroCrossBeepRef.current = false;
     }
 
-    if (wasRemaining > 0 && remainingSeconds === 0) {
+    // Target reached — beep once, then keep running into overtime until the
+    // user taps to end (cue-consistency scoring uses distance from 0:00).
+    if (
+      running &&
+      wasRemaining > 0 &&
+      remainingSeconds <= 0 &&
+      !zeroCrossBeepRef.current
+    ) {
+      zeroCrossBeepRef.current = true;
       playBeep("finish");
-      // Haptics fire regardless of mute / sound prefs (Phase 6k Commit 4).
       vibrateForEvent(
         mode === "rest" ? "restEnding" : "setComplete",
         vibrationEnabled
@@ -644,7 +603,13 @@ export default function DualModeTimer({
               <span
                 className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${secondaryTextClass}`}
               >
-                {isExerciseMode ? "Working" : "Resting"}
+                {inSetupPhase
+                  ? "Get ready"
+                  : remainingSeconds < 0
+                    ? "Overtime"
+                    : isExerciseMode
+                      ? "Working"
+                      : "Resting"}
               </span>
               {/* Phase 6k — pure white, bold, ≥48px for gym-floor glanceability (WCAG AAA). */}
               <span
@@ -659,13 +624,27 @@ export default function DualModeTimer({
       </div>
 
       <div className={`mt-3 flex items-center justify-between text-xs font-semibold ${secondaryTextClass}`}>
-        <span>{running ? "Tap to pause" : "Tap to start"}</span>
-        {progressPercent > 0 ? (
+        <span>
+          {running
+            ? remainingSeconds <= 0
+              ? "Tap to end"
+              : "Tap to pause"
+            : "Tap to start"}
+        </span>
+        {cueConsistencyPercent !== null ? (
           <span
             className={progressBadgeClasses}
-            title="How often you're hitting the coaching cue on this movement."
+            data-testid="session-timer-cue-consistency"
+            title="How closely you finish on the prescribed timing pattern (100% at 0:00)."
           >
-            Cue consistency: {progressPercent}%
+            Cue consistency: {cueConsistencyPercent}%
+          </span>
+        ) : running ? (
+          <span
+            className={progressBadgeClasses}
+            data-testid="session-timer-setup-badge"
+          >
+            Setup +{TIMER_SETUP_BUFFER_SEC}s
           </span>
         ) : null}
         <button
@@ -677,7 +656,13 @@ export default function DualModeTimer({
         </button>
       </div>
       <p className={`mt-2 text-center text-[11px] font-medium ${secondaryTextClass}`}>
-        Stay controlled and aligned.
+        {running
+          ? remainingSeconds <= 0
+            ? "Pattern complete — tap when you finish the set."
+            : inSetupPhase
+              ? "Get set. Timing pattern starts after the setup buffer."
+              : "Stay controlled and aligned."
+          : `Includes ${TIMER_SETUP_BUFFER_SEC}s setup. Timer waits until you tap start.`}
       </p>
 
       <div className="mt-4">
@@ -720,10 +705,10 @@ export default function DualModeTimer({
         data-testid="session-timer-presets"
       >
         <span className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}>
-          Working {formatTime(selectedExerciseSeconds)}
+          Working {formatTime(selectedExerciseSeconds)} +{TIMER_SETUP_BUFFER_SEC}s
         </span>
         <span className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}>
-          Resting {formatTime(selectedRestSeconds)}
+          Resting {formatTime(selectedRestSeconds)} +{TIMER_SETUP_BUFFER_SEC}s
         </span>
       </div>
     </div>
