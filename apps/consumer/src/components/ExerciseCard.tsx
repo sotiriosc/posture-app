@@ -4,6 +4,10 @@ type ExerciseCardProps = {
   name: string;
   targetMuscles: string[];
   cue: string;
+  /** Prescribed reps, e.g. "8-12" or "6-8 per side". */
+  reps?: string | null;
+  /** Tempo line, e.g. "Slow tempo · 4s/rep". */
+  tempoLabel?: string | null;
   sets: boolean[];
   onToggleSet: (index: number) => void;
   onSetEnter?: (index: number) => void;
@@ -15,6 +19,8 @@ export default function ExerciseCard({
   name,
   targetMuscles,
   cue,
+  reps = null,
+  tempoLabel = null,
   sets,
   onToggleSet,
   onSetEnter,
@@ -27,6 +33,10 @@ export default function ExerciseCard({
   // taller as the user progresses through it.
   const firstIncompleteIndex = sets.findIndex((completed) => !completed);
   const activeSetIndex = firstIncompleteIndex === -1 ? sets.length - 1 : firstIncompleteIndex;
+  const prescriptionBits = [
+    reps?.trim() ? `Reps ${reps.trim()}` : null,
+    tempoLabel?.trim() || null,
+  ].filter(Boolean);
 
   return (
     <section className="ui-card rounded-lg p-5 sm:p-6">
@@ -35,6 +45,14 @@ export default function ExerciseCard({
         <p className="mt-1 text-sm text-slate-300">
           Targets: {targetMuscles.length ? targetMuscles.join(", ") : "full body"}
         </p>
+        {prescriptionBits.length > 0 ? (
+          <p
+            className="mt-2 text-sm font-semibold text-sky-100"
+            data-testid="exercise-card-prescription"
+          >
+            {prescriptionBits.join(" · ")}
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-4 rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-3">

@@ -568,6 +568,7 @@ export default function SessionClient() {
     allSetsCompleted: false,
   });
   const previousActiveIndexRef = useRef(0);
+  const focusCardRef = useRef<HTMLElement | null>(null);
   const exerciseCardRef = useRef<HTMLDivElement | null>(null);
   const trackingPanelRef = useRef<HTMLDivElement | null>(null);
   const weightInputRef = useRef<HTMLInputElement | null>(null);
@@ -1076,35 +1077,32 @@ export default function SessionClient() {
     segmentAnchorRef.current = now;
   }, [currentItemId, isActiveTimerRunning]);
 
+  /** Scroll to the Focus card for the current exercise (not the page top). */
   const scrollSessionTop = useCallback((behavior: ScrollBehavior = "smooth") => {
     if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
       return;
     }
-    if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
-      try {
-        window.scrollTo({ top: 0, behavior });
-        return;
-      } catch {
-        // JSDOM and some embedded browsers can throw on scrollTo.
-      }
+    const target = focusCardRef.current ?? exerciseCardRef.current;
+    if (!target || typeof target.scrollIntoView !== "function") return;
+    try {
+      target.scrollIntoView({
+        behavior,
+        block: "start",
+      });
+    } catch {
+      // JSDOM and some embedded browsers can throw on scrollIntoView.
     }
-    if (!exerciseCardRef.current) return;
-    if (typeof exerciseCardRef.current.scrollIntoView !== "function") return;
-    exerciseCardRef.current.scrollIntoView({
-      behavior,
-      block: "start",
-    });
   }, []);
 
   useEffect(() => {
     if (previousActiveIndexRef.current === activeIndex) return;
     previousActiveIndexRef.current = activeIndex;
-    scrollSessionTop();
+    // Wait a frame so the next exercise's Focus card is mounted.
+    const frame = window.requestAnimationFrame(() => {
+      scrollSessionTop();
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [activeIndex, scrollSessionTop]);
-
-  useEffect(() => {
-    scrollSessionTop("auto");
-  }, [scrollSessionTop]);
 
   useEffect(() => {
     sessionIdRef.current = sessionId;
@@ -1147,14 +1145,20 @@ export default function SessionClient() {
     },
     [flatItems, program?.id, programDayIndex]
   );
-  const tips = [
+  const genericFocusTips = [
     "Breathe steadily",
     "Move with control",
     "Keep your posture steady",
     "Relax your jaw and neck",
     "Smooth tempo over speed",
   ];
-  const activeTip = tips[tipIndex] ?? "";
+  const exerciseFocusTips = (currentItem?.cues ?? []).filter(
+    (cue) => typeof cue === "string" && cue.trim().length > 0
+  );
+  const tips =
+    exerciseFocusTips.length > 0 ? exerciseFocusTips : genericFocusTips;
+  const safeTipIndex = tips.length > 0 ? tipIndex % tips.length : 0;
+  const activeTip = tips[safeTipIndex] ?? "";
   const tipTone = (() => {
     if (/breathe|breath/i.test(activeTip)) {
       return "border-sky-300/35 bg-sky-400/10 text-sky-100 shadow-[0_18px_42px_rgba(14,165,233,0.16)]";
@@ -1171,12 +1175,10 @@ export default function SessionClient() {
     return "border-slate-300/25 bg-slate-900/65 text-slate-100 shadow-[0_18px_42px_rgba(15,23,42,0.22)]";
   })();
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setTipIndex((prev) => (prev + 1) % tips.length);
-    }, 12000);
-    return () => window.clearInterval(timer);
-  }, [tips.length]);
+  const cycleFocusTip = () => {
+    if (tips.length <= 1) return;
+    setTipIndex((prev) => (prev + 1) % tips.length);
+  };
 
   const queueFocus = useCallback(
     (element: HTMLInputElement | HTMLButtonElement | null | undefined) => {
@@ -1848,6 +1850,7 @@ export default function SessionClient() {
     setActiveTrackingField(null);
     setExerciseCompleteFlashVisible(false);
     stopAllTimersForNavigation();
+    setTipIndex(0);
     if (activeIndex < totalItems - 1) {
       setActiveIndex((prev) => prev + 1);
       return;
@@ -1862,6 +1865,7 @@ export default function SessionClient() {
     setActiveTrackingField(null);
     setExerciseCompleteFlashVisible(false);
     stopAllTimersForNavigation();
+    setTipIndex(0);
     setActiveIndex((prev) => Math.max(prev - 1, 0));
   };
 
@@ -3161,8 +3165,17 @@ export default function SessionClient() {
             compactLabel={compactHeaderLabel}
           />
 
-          <div
-            className={`ui-card relative overflow-hidden rounded-lg border px-4 py-3 transition-[border-color,background-color,box-shadow,color] duration-500 ${tipTone}`}
+          <button
+            type="button"
+            ref={focusCardRef}
+            data-testid="session-focus-card"
+            onClick={cycleFocusTip}
+            aria-label={
+              tips.length > 1
+                ? "Focus cue. Tap for next cue."
+                : "Focus cue"
+            }
+            className={`ui-card relative w-full overflow-hidden rounded-lg border px-4 py-3 text-left transition-[border-color,background-color,box-shadow,color] duration-500 ${tipTone}`}
           >
             <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-current opacity-[0.08] blur-2xl" />
             <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -3172,6 +3185,11 @@ export default function SessionClient() {
                   <p className="text-[11px] font-semibold uppercase text-slate-300">
                     Focus
                   </p>
+                  {tips.length > 1 ? (
+                    <p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">
+                      Tap for next
+                    </p>
+                  ) : null}
                 </div>
                 <p
                   key={activeTip}
@@ -3181,12 +3199,12 @@ export default function SessionClient() {
                   {activeTip}
                 </p>
               </div>
-              <div className="flex items-center gap-1.5" aria-label="Cycling guidance">
+              <div className="flex items-center gap-1.5" aria-label="Cue position">
                 {tips.map((tip, index) => (
                   <span
-                    key={tip}
+                    key={`${tip}-${index}`}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
-                      index === tipIndex
+                      index === safeTipIndex
                         ? "w-5 bg-current opacity-95"
                         : "w-1.5 bg-slate-400/45"
                     }`}
@@ -3194,7 +3212,7 @@ export default function SessionClient() {
                 ))}
               </div>
             </div>
-          </div>
+          </button>
         </div>
 
         <div ref={exerciseCardRef}>
@@ -3280,6 +3298,18 @@ export default function SessionClient() {
             cue={
               currentItem.cues[0] ??
               "Move with control, breathe steadily, and keep posture stacked."
+            }
+            reps={
+              currentItem.loadType === "timed"
+                ? null
+                : currentItem.reps || currentItem.duration || null
+            }
+            tempoLabel={
+              currentTimer.fromRepTempo
+                ? `${tempoPaceLabel(currentTimer.tempoPace)} · ${TEMPO_SEC_PER_REP[currentTimer.tempoPace]}s/rep`
+                : currentItem.loadType === "timed"
+                  ? "Timed hold"
+                  : null
             }
             sets={checks}
             onToggleSet={(index) =>
