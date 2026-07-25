@@ -2338,6 +2338,203 @@ Merge commit.
 
 
 
+Phase 6k — Final Pre-Ship Polish
+
+Branch: phase-6k-preship-polish from origin/main. Multi-commit. Focused on accessibility and usability during the actual workout — the moments where users are on the gym floor with sweat in their eyes and need the app to just work.
+
+Guiding principle (log as SR-6k)
+
+Before Praxis takes money from real users, every element a user encounters mid-workout must be reliable and readable. This phase catches the accessibility and reliability issues that only surface when someone is actually training, not clicking through the app on a couch.
+
+Commit 1 — Complete catalog data integrity audit
+
+Observed: Wall Slides prescribed by the engine says "timed" but shows no duration. This is a symptom of a broader issue — the catalog may have data inconsistencies across many exercises that only surface when the UI tries to render them mid-workout.
+
+Approach: audit ALL 225 exercises, not just the one Sotirios noticed.
+
+Grep and validate every exercise entry in the catalog. For each, verify:
+
+1.a — Timing / format completeness:
+
+Every exercise has ONE clear format: rep-based, timed, or duration-per-rep
+Rep-based exercises have a target rep range (e.g., "8-12 reps")
+Timed exercises have a duration value in seconds
+Isometric holds have a hold time
+Interval work has work/rest times
+No exercise has ambiguous or missing timing data
+
+1.b — Coach note presence:
+
+Every exercise has at least one coach note ("Why this," or form cue, or common mistake)
+No exercise renders with an empty coach notes section
+Coach notes don't contain placeholder text ("TODO", "Lorem ipsum", "Add note here")
+
+1.c — Difficulty rating:
+
+Every exercise has a difficulty rating on the ladder
+No exercise has null or undefined difficulty
+Isolation exercises (calves, curls, etc.) may correctly have no ladder position but should still be flagged as such intentionally
+
+1.d — Pattern classification:
+
+Every exercise has a pattern classification (hinge, knee_dominant, horizontal_push, etc.)
+No exercise is classified as ambiguous or missing pattern
+
+1.e — Contraindications:
+
+Every exercise has a pain contraindications list (may be empty array but must be present as a field)
+Contraindications match the movement pattern (e.g., overhead press should have shoulders in contraindications; deadlift should have lower back)
+
+1.f — Coaching cues:
+
+Form cues are populated for beginner-critical exercises (main lifts, compound movements)
+"Common mistake" text is populated where relevant
+Cues aren't duplicated across unrelated exercises (a sign of copy-paste template leakage)
+
+1.g — Video/demonstration reference:
+
+Fields for video URL or demonstration reference are populated OR explicitly marked as "no demo available" so the UI can degrade gracefully
+
+Deliverable:
+
+Produce docs/catalog-integrity-audit-6k.md with:
+
+Total exercise count audited
+Per-exercise verdict: PASS / FAIL / NEEDS_REVIEW
+For each FAIL: which field is broken and what the fix is
+For each NEEDS_REVIEW: what Sotirios needs to rule on
+
+Fix pass:
+
+Populate missing data based on Sotirios's coaching guidance. For fields that need Sotirios's coaching input (rep ranges, hold times, cues), flag them clearly and Sotirios rules in a single review pass before merge.
+
+UI fallback (belt-and-suspenders):
+
+Regardless of catalog completeness, the session screen must degrade gracefully when data is missing:
+
+Missing duration on timed exercise → "Hold for controlled tempo"
+Missing rep range → "Perform controlled reps to fatigue"
+Missing coach note → hide the empty section entirely (don't show a blank card)
+Missing video → show static image placeholder or hide video area
+
+The UI should never expose data-integrity bugs to users. Catalog audit prevents the bugs; UI fallback catches anything that slips through.
+
+Tests:
+
+New test: tests/unit/catalogDataIntegrity.test.ts — programmatically verifies every exercise passes 1.a through 1.g. Fails CI if any exercise has incomplete data.
+This test becomes the guard against future regressions: any new exercise added must satisfy the same completeness rules.
+Commit 2 — Timer contrast fix
+
+Observed: The circular countdown timer on the session screen has low contrast between the numeric display and the background glow ring. Some users cannot read the numbers, especially in bright gym lighting.
+
+Fix:
+
+Numeric display: pure white (
+#FFFFFF) or very light gray (
+#F5F5F5) minimum, bold, 48pt or larger on phone.
+Ensure contrast ratio meets WCAG AAA (7:1) for the timer specifically, not just AA. This is a mission-critical element that gets read at a glance mid-set.
+Test in bright environmental lighting (screenshot the phone screen under actual gym lighting conditions, not just in Chrome DevTools).
+Keep the current visual design language (blue glow ring, etc.) — only the numeric readout needs to change.
+Commit 3 — Sound preferences
+
+Observed: No way to control timer sounds. Users at gyms want to listen to their own music.
+
+Add to Settings, new "Sound" section:
+
+Timer sounds toggle: On / Off (default On)
+Interval beeps toggle: On / Off (for the mid-timer transitions — work→rest→work — default On)
+End-of-session chime toggle: On / Off (default On)
+Volume slider: 0-100% (default 70%)
+
+Also add: quick-mute button on the session screen itself.
+
+Small speaker icon in the top-right of the timer area. Tap to toggle mute for the current session without going into settings. Preference is NOT persisted from this button — it resets each session so users don't accidentally leave themselves permanently muted.
+
+Behavior:
+
+All sounds respect the settings toggles
+Quick-mute overrides settings for the current session only
+Vibration/haptic feedback becomes the fallback signal when sounds are off (see Commit 4)
+Commit 4 — Wake Lock + haptic fallback for screen sleep
+
+Observed: When phone screen sleeps during rest, timer sound stops (mobile browsers throttle background audio). Users miss the end of their rest period.
+
+Two-part fix:
+
+4.a — Wake Lock API to keep screen on during active session:
+
+Use the Screen Wake Lock API (navigator.wakeLock.request('screen')) when a session is active. Release when session ends or user manually exits.
+
+Supported on iOS Safari 16.4+ and Chrome for Android 84+.
+On unsupported browsers, gracefully degrade to Commit 4.b's haptic fallback.
+Small indicator in the session screen when wake lock is active (subtle icon in the corner) so users know their screen won't sleep.
+Wake lock releases automatically when browser tab becomes hidden (backgrounded) — this is browser behavior, not something we control.
+
+4.b — Haptic feedback as backup signal:
+
+Use navigator.vibrate() to signal timer events even when audio is throttled or muted.
+
+Rest ending: short vibration pattern (200ms)
+Set complete: longer pattern (500ms)
+Session complete: distinctive pattern (300-100-300ms)
+
+Respect user's device-level vibration settings (don't override system silent mode).
+
+Also add a Settings toggle for vibration:
+
+Vibration on/off: default On
+
+4.c — "Screen won't sleep during workout" notice:
+
+First time a user starts a session, show a brief informational note: "Your screen will stay awake during workouts so your timer keeps going. Tap the lock icon to release it early if you need to."
+
+Show once per user, then never again unless they reset the app.
+
+Commit 5 — Sotirios's coaching rulings on flagged catalog items
+
+Commit 1's audit will produce a list of NEEDS_REVIEW items where Sotirios's coaching input is required. This commit is where those rulings get applied.
+
+Typical items expected in the review list:
+
+Wall slides: rep-based or timed?
+Wall angels: rep-based or timed?
+Cat-cows: rep-based or timed?
+Any other "postural correctives" currently classified ambiguously
+Any exercise where the audit found data missing that requires coaching judgment (specific rep ranges, hold times, form cues)
+
+Process:
+
+Cursor produces the review list from Commit 1
+Sotirios reviews the list (typically 10-30 items)
+Sotirios's rulings applied in this commit
+Test from Commit 1 (catalogDataIntegrity.test.ts) verifies all items now pass
+
+This ensures the catalog is coaching-truthful before shipping to real users, and any future additions are held to the same standard by the integrity test.
+
+What is NOT in this pass
+No engine logic changes beyond catalog data corrections
+No new features beyond sound preferences and wake lock
+No changes to pricing, Stripe, or paywall logic (that's separate)
+No changes to the visual design language
+Acceptance
+All 225 catalog exercises pass the integrity audit (or are explicitly marked as intentionally exempt with a documented reason)
+catalogDataIntegrity.test.ts exists and passes; future exercises cannot be added without meeting completeness rules
+Timer numeric readout meets WCAG AAA contrast (7:1)
+Sound preferences exist in Settings with quick-mute button on session screen
+Wake Lock API keeps screen on during active sessions on supported browsers
+Haptic feedback fires for timer events regardless of sound state
+First-session info note appears once explaining wake lock
+All Sotirios coaching rulings from the audit review applied
+UI degrades gracefully when catalog data is incomplete (no blank sections, no raw placeholder text visible)
+Full gate green + Playwright green
+
+Merge commit.
+
+
+
+
+
+
 
 Phase 7 — Pattern Recognition & Corrective Injection (PARTIAL RATIFICATIONS — 2026-07-24)
 
@@ -2475,6 +2672,10 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   (`8 × sessions_per_week`), and invisible session timing with abandonment
   detection. Ship deliberately — these change day-one behavior. See
   `docs/engine-decisions.md` § SR-6j.
+- **Mid-workout reliability (SR-6k, 2026-07-25):** Before taking money, every
+  mid-workout surface must be reliable and readable — catalog integrity,
+  timer contrast, sound control, wake lock + haptics. See
+  `docs/engine-decisions.md` § SR-6k.
 
 ---
 

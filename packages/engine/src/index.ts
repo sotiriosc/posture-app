@@ -41,6 +41,15 @@ export * from "./freemiumSync";
 // ── Session active timer (Phase 6j) ───────────────────────────────────────────
 export * from "./sessionActiveTimer";
 
+// ── Catalog integrity (Phase 6k) ──────────────────────────────────────────────
+export * from "./catalogDataIntegrity";
+
+// ── Sound prefs (Phase 6k) ────────────────────────────────────────────────────
+export * from "./soundPrefs";
+export * from "./sessionAudio";
+export * from "./haptics";
+export * from "./wakeLock";
+
 // ── Session & feedback ────────────────────────────────────────────────────────
 export * from "./sessionFeedback";
 export * from "./sessionFeedbackSignals";

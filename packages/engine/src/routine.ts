@@ -151,14 +151,14 @@ export const generateRoutine = (data: QuestionnaireData): Routine => {
     {
       exerciseId: "hip-flexor-stretch",
       sets: "2",
-      reps: "30 sec per side",
-      durationSec: 60,
+      reps: "20 sec per side",
+      durationSec: 40,
     },
     {
       exerciseId: "thread-the-needle",
       sets: "2",
-      reps: "5-6 per side",
-      durationSec: 60,
+      reps: "6-10 per side",
+      durationSec: 90,
     },
     {
       exerciseId: "hamstring-stretch",

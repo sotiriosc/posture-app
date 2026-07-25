@@ -893,3 +893,20 @@ minutes + previous same-day comparison (or abandoned honesty copy). Per-exercise
 `activeDurationSec` is stored on `ExerciseLog` for analytics only. All session
 timing is user-scoped via logStore (Phase 6e).
 
+## Phase 6k — Final Pre-Ship Polish
+
+### SR-6k — Mid-workout reliability before taking money
+
+**Standing rule:** Before Praxis takes money from real users, every element a
+user encounters mid-workout must be reliable and readable. This phase catches
+the accessibility and reliability issues that only surface when someone is
+actually training, not clicking through the app on a couch.
+
+### ED-6k.1 — Catalog integrity audit + Commit 5 coaching queue
+
+**Commit 1 (2026-07-25):** Full 225-exercise audit lives in
+`docs/catalog-integrity-audit-6k.md` and is guarded by
+`catalogDataIntegrity.test.ts`. Structural FAILs must stay at zero.
+`demoStatus: "none"` is the default when `videoUrl` is absent.
+NEEDS_REVIEW timing items await Sotirios rulings in Commit 5.
+

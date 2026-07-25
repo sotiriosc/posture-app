@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
@@ -15,9 +15,16 @@ import {
   listAllPrograms,
   listSessions,
   loadPrefs,
+  savePrefs,
   SCHEMA_VERSION,
   saveProgramProgress,
 } from "@/lib/logStore";
+import type { LogPrefs } from "@/lib/types";
+import {
+  DEFAULT_SOUND_PREFS,
+  normalizeSoundPrefs,
+  type SoundPrefs,
+} from "@/lib/soundPrefs";
 
 export default function AccountSettingsPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -26,6 +33,34 @@ export default function AccountSettingsPage() {
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [prefs, setPrefs] = useState<LogPrefs | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void loadPrefs().then((loaded) => {
+      if (!active) return;
+      setPrefs(loaded);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const soundPrefs = normalizeSoundPrefs(prefs?.soundPrefs);
+
+  const handleSoundPrefsChange = async (patch: Partial<SoundPrefs>) => {
+    const currentPrefs = await loadPrefs();
+    const nextSound = normalizeSoundPrefs({
+      ...normalizeSoundPrefs(currentPrefs.soundPrefs),
+      ...patch,
+    });
+    const nextPrefs: LogPrefs = {
+      ...currentPrefs,
+      soundPrefs: nextSound,
+    };
+    await savePrefs(nextPrefs);
+    setPrefs(nextPrefs);
+  };
 
   const toCsv = (rows: Record<string, string | number | null>[]) => {
     const headers = Object.keys(rows[0] ?? {});
@@ -201,6 +236,105 @@ export default function AccountSettingsPage() {
         </OnImage>
 
         <div className="grid gap-4 lg:grid-cols-2">
+          <div
+            className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6 lg:col-span-2"
+            data-testid="settings-sound-section"
+          >
+            <p className="ui-kicker">Sound</p>
+            <h2 className="ui-title mt-1">Timer and session tones</h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-300">
+              Control workout beeps without leaving the gym floor playlist.
+              Session quick-mute on the timer does not change these settings.
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {(
+                [
+                  {
+                    key: "timerSounds" as const,
+                    label: "Timer sounds",
+                    testId: "settings-sound-timer",
+                  },
+                  {
+                    key: "intervalBeeps" as const,
+                    label: "Interval beeps",
+                    testId: "settings-sound-interval",
+                  },
+                  {
+                    key: "sessionCompleteChime" as const,
+                    label: "End-of-session chime",
+                    testId: "settings-sound-complete",
+                  },
+                  {
+                    key: "vibration" as const,
+                    label: "Vibration",
+                    testId: "settings-sound-vibration",
+                  },
+                ] as const
+              ).map((row) => (
+                <label
+                  key={row.key}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-slate-700/40 bg-slate-900/50 px-3 py-2 text-sm text-slate-200"
+                >
+                  <span>{row.label}</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={soundPrefs[row.key]}
+                    aria-label={`${soundPrefs[row.key] ? "Turn off" : "Turn on"} ${row.label}`}
+                    data-testid={row.testId}
+                    disabled={!prefs}
+                    onClick={() => {
+                      void handleSoundPrefsChange({
+                        [row.key]: !soundPrefs[row.key],
+                      });
+                    }}
+                    className={[
+                      "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition",
+                      soundPrefs[row.key] ? "bg-sky-500/70" : "bg-slate-700",
+                    ].join(" ")}
+                  >
+                    <span
+                      className={[
+                        "inline-block h-4 w-4 transform rounded-full bg-white transition",
+                        soundPrefs[row.key]
+                          ? "translate-x-4"
+                          : "translate-x-0.5",
+                      ].join(" ")}
+                    />
+                  </button>
+                </label>
+              ))}
+              <label className="flex flex-col gap-2 rounded-lg border border-slate-700/40 bg-slate-900/50 px-3 py-2 text-sm text-slate-200 sm:col-span-2">
+                <div className="flex items-center justify-between gap-3">
+                  <span>Volume</span>
+                  <span className="tabular-nums text-slate-400">
+                    {soundPrefs.volume}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={soundPrefs.volume}
+                  disabled={!prefs}
+                  data-testid="settings-sound-volume"
+                  aria-label="Sound volume"
+                  onChange={(event) => {
+                    void handleSoundPrefsChange({
+                      volume: Number(event.target.value),
+                    });
+                  }}
+                  className="w-full accent-sky-500"
+                />
+                <p className="text-xs text-slate-500">
+                  Default {DEFAULT_SOUND_PREFS.volume}%. Applies to timer tones
+                  and the session-complete chime.
+                </p>
+              </label>
+            </div>
+          </div>
+
           <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
             <p className="ui-kicker">Exports</p>
             <h2 className="ui-title mt-1">Download your data</h2>

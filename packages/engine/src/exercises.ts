@@ -98,6 +98,11 @@ export type Exercise = {
   painContraindications?: string[];
   contraindications?: string[];
   videoUrl?: string;
+  /**
+   * Phase 6k — demo reference policy. `"url"` when `videoUrl` is set;
+   * `"none"` when the exercise intentionally has no demo (UI degrades).
+   */
+  demoStatus?: "none" | "url";
   tags: string[];
 };
 
@@ -549,7 +554,7 @@ const rawExercises: Exercise[] = [
     movementPattern: ["mobility", "hips"],
     muscleGroups: ["hip flexors"],
     loadType: "timed",
-    durationOrReps: "30 sec per side",
+    durationOrReps: "20 sec per side",
     cues: ["Tuck tailbone slightly", "Keep ribs down"],
     mistakes: ["Overarching low back", "Leaning forward"],
     contraindications: ["Knee pain (use padding)"],
@@ -564,7 +569,7 @@ const rawExercises: Exercise[] = [
     movementPattern: ["mobility", "spine"],
     muscleGroups: ["upper back"],
     loadType: "bodyweight",
-    durationOrReps: "5-6 per side",
+    durationOrReps: "6-10 per side",
     cues: ["Breathe into mid-back", "Rotate from upper spine"],
     mistakes: ["Forcing the twist", "Holding breath"],
     contraindications: ["Shoulder pain (reduce range)"],
@@ -5456,6 +5461,10 @@ const allExercises: Exercise[] = rawExercises.map((exercise) => {
     difficultyTier,
     movementIntensity,
     painContraindications,
+    // Phase 6k 1.g — every exercise either has a demo URL or is explicitly "none".
+    demoStatus: exercise.videoUrl
+      ? ("url" as const)
+      : (exercise.demoStatus ?? ("none" as const)),
     ...(slotRoles.length ? { slotRoles } : {}),
     ...(accessoryRoles.length ? { accessoryRoles } : {}),
     ...(weeklyCoverageTags.length ? { weeklyCoverageTags } : {}),
