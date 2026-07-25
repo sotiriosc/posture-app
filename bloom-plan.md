@@ -2126,6 +2126,219 @@ Merge commit.
 
 
 
+# Phase 6j — Business Model + Session Tracking
+
+Branch: `phase-6j-business-and-tracking` from `origin/main`.
+Multi-commit. Three related but distinct pieces of work.
+
+## Guiding principle (log as SR-6j)
+
+Business model changes and session tracking both affect how users
+experience the app over time — the first affects retention and revenue,
+the second affects self-awareness of their own training. Both need to be
+implemented with care because they're visible from day one and change
+user behavior over weeks. Ship deliberately.
+
+## Commit 1 — Freemium tier restructure (RATIFIED: Option B)
+
+**Sotirios's ratified ruling:** Option B — first-week-generous.
+
+Free tier gets full access to their first generated week (all
+sessions_per_week days). After that first week completes, free tier
+reverts to Day 1 recurring. Pro tier unlocks everything ongoing.
+
+Rationale: users experience the full Praxis product before deciding to
+pay. The upgrade decision becomes concrete ("I want another full week
+like I just had") rather than abstract ("what would Pro unlock?"). This
+matches how good gyms handle trial memberships — full access first,
+then clear upgrade path.
+
+**Mechanical implementation:**
+
+- `useUserPlan()` hook extended with:
+  - `hasCompletedFirstWeek: boolean` (persisted per userId)
+  - `canAccessWorkoutToday(dayIndex: number): boolean`
+- Gating logic:
+  - Pro user: always true
+  - Free user, first week not complete: always true
+  - Free user, first week complete, dayIndex === 0 (Day 1): true
+  - Free user, first week complete, dayIndex > 0: false, show upgrade
+- "First week complete" defined as: user has completed at least
+  sessions_per_week sessions of their initial generated program week.
+- All gating decisions read from this single source. No duplicated
+  gating logic anywhere.
+
+**Locked-state UI copy after first week:**
+
+> "You've completed your first week with Praxis.  
+> Upgrade to Pro to continue with Days 2-4 and every week after."
+
+Single upgrade prompt, non-nagging. Free users can still do Day 1
+every week; the wall is only on Days 2+.
+
+**Tests:**
+
+- Fresh free user: all days of week 1 accessible.
+- Free user after completing week 1: Day 1 accessible, Days 2-4 locked.
+- Pro user: all days always accessible.
+- Downgrade from Pro to Free: verify gating kicks in immediately.
+- Free user's "first week complete" flag persists across sessions and
+  logins.
+
+## Commit 2 — Phase duration floors (RATIFIED)
+
+**Current state:** Phase 3.5 gating uses criteria + session min/max (7-21
+for Activation, 10-28 for Skill). Users can advance early if criteria
+are met.
+
+**Sotirios's ratified refinement:** each phase must last at least 8
+weeks of actual training before advancement, scaled to user's training
+frequency.
+
+**Ratified formula:** `minSessions = 8 × sessions_per_week`
+
+This gives every user ~8 weeks (2 months) of real training per phase,
+regardless of how many days per week they train:
+- 3x/week user → 24 sessions minimum per phase
+- 4x/week user → 32 sessions minimum
+- 5x/week user → 40 sessions minimum
+
+Rationale for frequency-scaled over fixed: a fixed session count would
+either trap a 3x/week user in Activation for 11 weeks or let a 5x/week
+user through in 6 weeks. Scaling to their actual training frequency
+keeps the biological adaptation window consistent regardless of their
+chosen schedule.
+
+**Interaction with existing criteria:**
+
+Current Phase 3.5 criteria (rungs climbed, consistency, pain trend,
+etc.) remain unchanged. The new session-count floor is an AND condition
+on top:
+- User must meet criteria AND have completed ≥(8 × sessions_per_week)
+  sessions to advance
+- Meeting criteria before floor → hold until floor reached, then advance
+- Not meeting criteria at floor → hold until criteria met (up to
+  existing max cap)
+
+**Implementation:**
+
+- `packages/engine/src/program/phaseGatingConstants.ts` — replace
+  `ACTIVATION_MIN_SESSIONS` constant with a function `getPhaseMinSessions(sessionsPerWeek: number)` returning `8 * sessionsPerWeek`.
+- Same for `SKILL_MIN_SESSIONS`.
+- Update Phase 3.5 evaluator to compute floor from user's
+  `sessionsPerWeek` questionnaire answer.
+- Update user-facing "when does Phase 2 start?" copy to reflect the
+  frequency-scaled floor. Example copy: "Phase 2 unlocks after 32
+  sessions or when the criteria signal your body is ready — whichever
+  comes later." (Adjust 32 dynamically based on user's actual
+  sessions_per_week.)
+
+**Tests:**
+
+- 3x/week persona: verify floor is 24 sessions, hold until reached.
+- 4x/week persona: verify floor is 32 sessions.
+- 5x/week persona: verify floor is 40 sessions.
+- Persona meets criteria before floor: verify hold until floor.
+- Persona reaches floor without meeting criteria: verify hold until
+  criteria met.
+- Persona meets both: verify advancement at the moment both conditions
+  clear.
+
+## Commit 3 — Session time tracking (with abandonment detection)
+
+**Sotirios's ratified feature:** track total session time. Display at
+end of session with comparison to previous same-day session.
+
+**Design:**
+
+**3.a — Timer runs invisibly during session.**
+
+Starts when user taps "Start Today's Session." Runs while session is
+active. User does not see the timer during workout (per Sotirios: "they
+don't need to see the time").
+
+**3.b — Abandonment detection.**
+
+Timer pauses if user is inactive (no taps, no input) for more than 15
+minutes. If inactivity exceeds 60 minutes, session is marked as
+abandoned and timer stops. On resume within 15 minutes: continues. On
+resume between 15-60 minutes: prompt user "Continuing where you left off
+— restart timer or resume?" On resume after 60 minutes: session is
+treated as new/abandoned session, doesn't count for timing.
+
+Also: closing the browser tab or backgrounding the app on mobile
+triggers timer pause. Foregrounding resumes if within threshold.
+
+**3.c — End-of-session display.**
+
+At session complete, show:
+
+> "You worked out for 47 minutes today.  
+> Last Day 1 session: 44 minutes."
+
+If no previous same-day session exists (first time doing Day 1 this
+program):
+
+> "You worked out for 47 minutes today. Nice work."
+
+If timer detected abandonment mid-session, note it honestly:
+
+> "Active session time: 32 minutes. (You paused for a while — that
+> doesn't count against you.)"
+
+**3.d — Per-segment tracking (for engine analytics, not user-facing).**
+
+While the user doesn't see per-segment times, the engine records:
+
+- Warmup duration
+- Main lifts duration (per exercise)
+- Accessory work duration (per exercise)
+- Cooldown duration
+
+Stored in the session log per exercise. Not surfaced to user in this
+phase (may become surface in a future analytics phase). Purpose: give
+future engine refinement work real data on how users actually spend
+their time.
+
+**3.e — Store per-userId (Phase 6e isolation applies).**
+
+Session times are user data. Namespaced by userId. Persist across
+sessions for the comparison feature to work.
+
+**Tests:**
+
+- Timer starts on session start, stops on session complete.
+- Abandonment detection triggers after 60 minutes inactivity.
+- Foreground/background handling works on mobile.
+- Comparison to previous same-day session displays correctly.
+- Per-segment times persist in the session log.
+
+## What is NOT in this pass
+
+- No engine logic changes beyond phase gating floor
+- No new features beyond the three ratified pieces
+- No changes to the Sacrifice/Test/Modify prompts (those got fixed in 6i)
+- No wearable integration or heart-rate tracking
+- No changes to the ladder advancement logic itself
+
+## Acceptance
+
+- Freemium tier operates per ratified option A/B/C/D
+- Locked-state UI updated to match the new tier logic
+- Phase 3.5 gating requires 32-session floor per phase
+- Session timer runs invisibly, tracks time, detects abandonment
+- End-of-session shows total time + previous same-day comparison
+- Per-segment times stored in session log for future analytics use
+- All new features respect Phase 6e user isolation
+- Full gate green + Playwright green
+
+Merge commit.
+
+
+
+
+
+
 Phase 7 — Pattern Recognition & Corrective Injection (PARTIAL RATIFICATIONS — 2026-07-24)
 
 Status: injection aggressiveness is ratified. Pattern set is partially ratified.
@@ -2257,6 +2470,11 @@ conversations) start after P0. P2–P4 are the moat being built while you sell.
   read as coaching, not templates — no duplicated framing paragraphs, no
   leaked "Plan focus:" / "Pattern suggests" prefixes on list items. See
   `docs/engine-decisions.md` § SR-6i.
+- **Business model + session tracking (SR-6j, 2026-07-24):** Freemium Option B
+  (full first week free, then Day 1 recurring), adaptive phase floors
+  (`8 × sessions_per_week`), and invisible session timing with abandonment
+  detection. Ship deliberately — these change day-one behavior. See
+  `docs/engine-decisions.md` § SR-6j.
 
 ---
 

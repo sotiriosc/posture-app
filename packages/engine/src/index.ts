@@ -34,6 +34,13 @@ export * from "./phases";
 export * from "./phaseGating";
 export * from "./phaseControls";
 
+// ── Freemium access (Phase 6j) ────────────────────────────────────────────────
+export * from "./freemiumAccess";
+export * from "./freemiumSync";
+
+// ── Session active timer (Phase 6j) ───────────────────────────────────────────
+export * from "./sessionActiveTimer";
+
 // ── Session & feedback ────────────────────────────────────────────────────────
 export * from "./sessionFeedback";
 export * from "./sessionFeedbackSignals";

@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { canAccessWorkoutToday as evaluateWorkoutAccess } from "@/lib/freemiumAccess";
+import { resolveHasCompletedFirstWeek } from "@/lib/freemiumSync";
 import { derivePlanState } from "@/lib/planState";
 import type { PlanState, SessionPlanPayload } from "@/lib/planState";
+import { SESSION_COMPLETE_EVENT } from "@/lib/sessionStore";
 import {
   deriveLocalSubscriptionStatus,
   getLocalSubscription,
@@ -20,6 +23,10 @@ export type UserPlan = PlanState & {
    * user with no explanation.
    */
   offline: boolean;
+  /** Phase 6j — freemium Option B latch (persisted per userId). */
+  hasCompletedFirstWeek: boolean;
+  /** Phase 6j — single source for day-lock decisions. */
+  canAccessWorkoutToday: (dayIndex: number) => boolean;
 };
 
 /**
@@ -99,10 +106,39 @@ export function useUserPlan(): UserPlan {
     ...derivePlanState(null),
     loading: true,
     offline: false,
+    hasCompletedFirstWeek: false,
+    canAccessWorkoutToday: () => true,
   }));
+
+  const bindAccess = useCallback(
+    (base: PlanState & { offline: boolean; loading: boolean }, hasCompletedFirstWeek: boolean): UserPlan => ({
+      ...base,
+      hasCompletedFirstWeek,
+      canAccessWorkoutToday: (dayIndex: number) =>
+        evaluateWorkoutAccess({
+          isFreePlan: base.isFreePlan,
+          hasCompletedFirstWeek,
+          dayIndex,
+        }),
+    }),
+    []
+  );
 
   useEffect(() => {
     let active = true;
+
+    const hydrateFreemium = async (
+      base: PlanState & { offline: boolean; loading: boolean }
+    ) => {
+      let hasCompletedFirstWeek = false;
+      try {
+        hasCompletedFirstWeek = await resolveHasCompletedFirstWeek();
+      } catch {
+        hasCompletedFirstWeek = false;
+      }
+      if (!active) return;
+      setState(bindAccess(base, hasCompletedFirstWeek));
+    };
 
     void loadSession().then((payload) => {
       if (!active) return;
@@ -115,12 +151,20 @@ export function useUserPlan(): UserPlan {
         // (a guest, or one that's simply never synced) keeps today's
         // existing safe default.
         const fallback = offlineFallbackPlanState();
-        setState({ ...(fallback ?? derivePlanState(null)), loading: false, offline: Boolean(fallback) });
+        const base = {
+          ...(fallback ?? derivePlanState(null)),
+          loading: false,
+          offline: Boolean(fallback),
+        };
+        setState(bindAccess(base, false));
+        void hydrateFreemium(base);
         return;
       }
 
       const next = derivePlanState(payload);
-      setState({ ...next, loading: false, offline: false });
+      const base = { ...next, loading: false, offline: false };
+      setState(bindAccess(base, false));
+      void hydrateFreemium(base);
 
       if (!next.authenticated) return;
 
@@ -138,10 +182,32 @@ export function useUserPlan(): UserPlan {
       });
     });
 
+    const onSessionComplete = () => {
+      void resolveHasCompletedFirstWeek().then((hasCompletedFirstWeek) => {
+        if (!active) return;
+        setState((prev) =>
+          bindAccess(
+            {
+              plan: prev.plan,
+              authEnabled: prev.authEnabled,
+              authenticated: prev.authenticated,
+              isPro: prev.isPro,
+              isFreePlan: prev.isFreePlan,
+              loading: prev.loading,
+              offline: prev.offline,
+            },
+            hasCompletedFirstWeek
+          )
+        );
+      });
+    };
+    window.addEventListener(SESSION_COMPLETE_EVENT, onSessionComplete);
+
     return () => {
       active = false;
+      window.removeEventListener(SESSION_COMPLETE_EVENT, onSessionComplete);
     };
-  }, []);
+  }, [bindAccess]);
 
   return state;
 }

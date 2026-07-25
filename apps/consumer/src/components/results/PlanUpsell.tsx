@@ -2,6 +2,7 @@
 
 import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
+import { FIRST_WEEK_UPGRADE_COPY } from "@/lib/freemiumAccess";
 import { useUserPlan } from "@/hooks/useUserPlan";
 
 type PlanUpsellProps = {
@@ -15,7 +16,14 @@ type PlanUpsellProps = {
  * (Phase 6a / SR-6a).
  */
 export default function PlanUpsell({ showPaywallNotice }: PlanUpsellProps) {
-  const { authEnabled, isPro, isFreePlan, offline, loading } = useUserPlan();
+  const {
+    authEnabled,
+    isPro,
+    isFreePlan,
+    offline,
+    loading,
+    hasCompletedFirstWeek,
+  } = useUserPlan();
 
   if (loading || !authEnabled) return null;
 
@@ -30,7 +38,9 @@ export default function PlanUpsell({ showPaywallNotice }: PlanUpsellProps) {
       ) : null}
       {isFreePlan && showPaywallNotice ? (
         <div className="mt-3 rounded-2xl border border-amber-300/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">
-          Free access includes Day 1. Praxis Pro unlocks the full weekly plan.
+          {hasCompletedFirstWeek
+            ? FIRST_WEEK_UPGRADE_COPY
+            : "Free includes a full first week. Praxis Pro keeps every training day unlocked after that."}
         </div>
       ) : null}
       {isFreePlan ? <UpgradePrompt /> : null}

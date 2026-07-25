@@ -15,6 +15,18 @@ export const LOCAL_OWNER_KEY = "praxis_local_owner_id";
 /** Fired whenever `syncLocalOwner` detects (and clears) an account switch. */
 export const OWNER_CHANGED_EVENT = "praxis:owner-changed";
 
+/**
+ * Latest in-flight (or completed) owner sync. Freemium / logStore readers
+ * await this so they never touch IDB mid-wipe on account switch (Phase 6j).
+ */
+let localOwnerSyncGate: Promise<{ wiped: boolean }> = Promise.resolve({
+  wiped: false,
+});
+
+/** Wait until the most recent `syncLocalOwner` call has settled. */
+export const whenLocalOwnerReady = (): Promise<{ wiped: boolean }> =>
+  localOwnerSyncGate;
+
 export const getStoredLocalOwnerId = (): string | null => {
   if (typeof window === "undefined") return null;
   return localStorage.getItem(LOCAL_OWNER_KEY);
@@ -60,16 +72,25 @@ export const adoptLocalOwner = (ownerId: string | null): void => {
 export const syncLocalOwner = async (
   ownerId: string | null
 ): Promise<{ wiped: boolean }> => {
-  if (typeof window === "undefined") return { wiped: false };
+  const run = (async (): Promise<{ wiped: boolean }> => {
+    if (typeof window === "undefined") return { wiped: false };
 
-  setActivePhotoNamespace(ownerId);
+    setActivePhotoNamespace(ownerId);
 
-  const previous = getStoredLocalOwnerId();
-  const normalized = ownerId ?? null;
-  if (previous === normalized) return { wiped: false };
+    const previous = getStoredLocalOwnerId();
+    const normalized = ownerId ?? null;
+    if (previous === normalized) return { wiped: false };
 
-  await clearAllLocalStateExceptPhotos();
-  adoptLocalOwner(normalized);
-  window.dispatchEvent(new CustomEvent(OWNER_CHANGED_EVENT));
-  return { wiped: true };
+    await clearAllLocalStateExceptPhotos();
+    adoptLocalOwner(normalized);
+    window.dispatchEvent(new CustomEvent(OWNER_CHANGED_EVENT));
+    return { wiped: true };
+  })();
+
+  localOwnerSyncGate = run.catch((error) => {
+    // Keep the gate resolved so awaiters are not stuck after a wipe failure.
+    console.error("[praxis] syncLocalOwner failed", error);
+    return { wiped: false };
+  });
+  return localOwnerSyncGate;
 };

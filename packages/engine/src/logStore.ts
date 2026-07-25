@@ -212,6 +212,15 @@ export const closeDb = async () => {
   }
 };
 
+/**
+ * Drop memoised server-hydration state so the next `init()` cannot finish a
+ * stale in-flight hydrate into a freshly wiped DB (Phase 6j / account switch).
+ */
+export const resetServerHydration = () => {
+  serverHydrationPromise = null;
+  lastServerHydratedAt = 0;
+};
+
 const withStore = async <T>(
   storeName: string,
   mode: IDBTransactionMode,

@@ -21,11 +21,8 @@ import type {
 } from "@/lib/types";
 import type { TrainingIntent } from "@/lib/program/trainingIntent";
 import {
-  ACTIVATION_MIN_SESSIONS,
-  ACTIVATION_MAX_SESSIONS,
-  SKILL_MIN_SESSIONS,
-  SKILL_MAX_SESSIONS,
-  GROWTH_MAX_SESSIONS,
+  getPhaseMaxSessions,
+  getPhaseMinSessions,
   ACTIVATION_CRITERIA_REQUIRED,
   SKILL_CRITERIA_REQUIRED,
   ACTIVATION_RUNGS_CLIMBED_REQUIRED,
@@ -143,6 +140,12 @@ export type PhaseGatingInput = {
    *              advancement requires explicit user request.
    */
   trainingIntent?: TrainingIntent;
+
+  /**
+   * Phase 6j — questionnaire sessions_per_week (3 | 4 | 5). Scales the
+   * session-count floor via getPhaseMinSessions. Defaults to 3.
+   */
+  sessionsPerWeek?: number | null;
 };
 
 // ---------------------------------------------------------------------------
@@ -399,6 +402,7 @@ export const computeReadinessVerdict = (input: PhaseGatingInput): GatingVerdict 
     phase,
     sessionsInPhase,
     trainingIntent = "build",
+    sessionsPerWeek = 3,
   } = input;
 
   // Growth phase: no auto-advance.
@@ -413,13 +417,11 @@ export const computeReadinessVerdict = (input: PhaseGatingInput): GatingVerdict 
     };
   }
 
-  const minSessions = phase === "activation" ? ACTIVATION_MIN_SESSIONS : SKILL_MIN_SESSIONS;
+  const minSessions = getPhaseMinSessions(sessionsPerWeek);
   const maxSessions =
     trainingIntent === "rehab"
       ? Infinity
-      : phase === "activation"
-        ? ACTIVATION_MAX_SESSIONS
-        : SKILL_MAX_SESSIONS;
+      : getPhaseMaxSessions(phase, sessionsPerWeek);
   const requiredCount =
     phase === "activation" ? ACTIVATION_CRITERIA_REQUIRED : SKILL_CRITERIA_REQUIRED;
 

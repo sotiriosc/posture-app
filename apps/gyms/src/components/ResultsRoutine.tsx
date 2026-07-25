@@ -782,6 +782,8 @@ export default function ResultsRoutine({
     isReady,
     authEnabled: rawAuthEnabled,
     plan: rawPlan,
+    hasCompletedFirstWeek,
+    canAccessWorkoutToday,
     nowAnchor,
     remoteAssessment,
   } = useResultsBootstrap({ storageKey: STORAGE_KEY });
@@ -1608,7 +1610,8 @@ export default function ResultsRoutine({
   }, [completedCalendarWeekSessions, activeDaysPerWeek]);
 
   const isFreePlan = authEnabled && plan !== "pro";
-  const isDayLocked = (dayIndex: number) => isFreePlan && dayIndex > 0;
+  const isDayLocked = (dayIndex: number) =>
+    buyerDemoMode ? false : !canAccessWorkoutToday(dayIndex);
   const effectiveSelectedDay = isDayLocked(selectedDay) ? 0 : selectedDay;
   const effectiveNextDayIndex = isDayLocked(nextDayIndex) ? 0 : nextDayIndex;
   const sessionLaunchDayIndex = useMemo(() => {
@@ -1621,11 +1624,11 @@ export default function ResultsRoutine({
   const effectiveInProgressDaySet = useMemo(() => {
     const set = new Set<number>();
     inProgressDaySet.forEach((dayIndex) => {
-      if (isFreePlan && dayIndex > 0) return;
+      if (buyerDemoMode ? false : !canAccessWorkoutToday(dayIndex)) return;
       set.add(dayIndex);
     });
     return set;
-  }, [inProgressDaySet, isFreePlan]);
+  }, [inProgressDaySet, canAccessWorkoutToday, buyerDemoMode]);
   const inProgressCount = useMemo(
     () => effectiveInProgressDaySet.size,
     [effectiveInProgressDaySet]
@@ -2588,7 +2591,7 @@ export default function ResultsRoutine({
       ? gateSatisfiedText
       : gateRemainingText;
   const phaseGateProgressText = `Workouts in phase: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days in phase: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
-  const phaseRequirementsText = `Complete ${phaseGate.minWorkouts} workouts or spend at least ${phaseGate.minDays} days in this phase.`;
+  const phaseRequirementsText = `Phase advances after ${phaseGate.minWorkouts} sessions or when readiness criteria clear — whichever comes later.`;
   const adaptationTrendItems = [
     ...(program.sessionAdaptation?.reasons ?? []),
     ...(program.sessionAdaptation?.appliedChanges ?? []),
@@ -3474,6 +3477,7 @@ export default function ResultsRoutine({
           weekViewDay={weekViewDay}
           weekViewDetailEntries={weekViewDetailEntries}
           isFreePlan={isFreePlan}
+          hasCompletedFirstWeek={hasCompletedFirstWeek}
           isDayLocked={isDayLocked}
           onFocusTodayPlan={focusTodayPlanInWeekView}
           onOpenDayDetails={openWeekViewDayDetails}

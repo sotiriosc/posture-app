@@ -21,7 +21,12 @@ type UseResultsBootstrapParams = {
 export function useResultsBootstrap({ storageKey }: UseResultsBootstrapParams) {
   const [data, setData] = useState<QuestionnaireData | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const { authEnabled, plan } = useUserPlan();
+  const {
+    authEnabled,
+    plan,
+    hasCompletedFirstWeek,
+    canAccessWorkoutToday,
+  } = useUserPlan();
   const [substitutionByExercise, setSubstitutionByExercise] = useState<
     Record<string, string>
   >({});
@@ -95,6 +100,8 @@ export function useResultsBootstrap({ storageKey }: UseResultsBootstrapParams) {
     isReady,
     authEnabled,
     plan,
+    hasCompletedFirstWeek,
+    canAccessWorkoutToday,
     substitutionByExercise,
     nowAnchor,
     remoteAssessment,

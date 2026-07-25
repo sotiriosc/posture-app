@@ -29,7 +29,7 @@ export default function DashboardHero({
   phaseName,
   workoutsCompletedInPhase,
   workoutTarget,
-  dayTarget,
+  dayTarget: _dayTarget,
   weekCompletedDays,
   weekTargetDays,
   nextPhaseIndex,
@@ -48,9 +48,9 @@ export default function DashboardHero({
     ? "You're in the final phase — keep building strength and clean execution."
     : phaseGateReady
     ? `You've met what's needed to move to Phase ${nextPhaseIndex}.`
-    : `Phase ${nextPhaseIndex} unlocks after ${workoutTarget} sessions or ${dayTarget} days — whichever comes first. You've done ${workoutsCompletedInPhase} ${
+    : `Phase ${nextPhaseIndex} unlocks after ${workoutTarget} sessions or when the criteria signal your body is ready — whichever comes later. You're at ${workoutsCompletedInPhase} ${
         workoutsCompletedInPhase === 1 ? "session" : "sessions"
-      } so far.`;
+      }.`;
 
   return (
     <section className="praxis-panel-strong p-5 sm:p-6">

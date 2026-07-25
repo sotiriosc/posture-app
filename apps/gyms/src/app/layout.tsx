@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Space_Grotesk } from "next/font/google";
 import { PhotoProvider } from "@/components/PhotoContext";
+import AccountIsolationGate from "@/components/AccountIsolationGate";
 import AppMenu from "@/components/AppMenu";
 import Analytics from "@/components/Analytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
@@ -112,9 +113,11 @@ export default async function RootLayout({
         data-input-style={GLOBAL_INPUT_STYLE}
       >
         <Analytics>
-          <AppMenu />
-          <PhotoProvider userId={session?.id ?? null}>{children}</PhotoProvider>
-          <ServiceWorkerRegister />
+          <AccountIsolationGate userId={session?.id ?? null}>
+            <AppMenu />
+            <PhotoProvider userId={session?.id ?? null}>{children}</PhotoProvider>
+            <ServiceWorkerRegister />
+          </AccountIsolationGate>
         </Analytics>
       </body>
     </html>

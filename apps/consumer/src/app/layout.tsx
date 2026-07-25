@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { PhotoProvider } from "@/components/PhotoContext";
+import AccountIsolationGate from "@/components/AccountIsolationGate";
 import AppMenu from "@/components/AppMenu";
 import Analytics from "@/components/Analytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
@@ -100,11 +101,13 @@ export default async function RootLayout({
         data-input-style={GLOBAL_INPUT_STYLE}
       >
         <Analytics>
-          <AppMenu />
-          <OfflineBadge />
-          <PhotoProvider userId={session?.id ?? null}>{children}</PhotoProvider>
-          <ServiceWorkerRegister />
-          <InstallApp />
+          <AccountIsolationGate userId={session?.id ?? null}>
+            <AppMenu />
+            <OfflineBadge />
+            <PhotoProvider userId={session?.id ?? null}>{children}</PhotoProvider>
+            <ServiceWorkerRegister />
+            <InstallApp />
+          </AccountIsolationGate>
         </Analytics>
       </body>
     </html>
