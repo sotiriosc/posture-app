@@ -21,6 +21,15 @@ type DualModeTimerProps = {
   defaultMode?: TimerMode;
   persistedState?: DualModeTimerRuntimeState | null;
   onStateChange?: (state: DualModeTimerRuntimeState) => void;
+  /** Phase 6k — settings master for timer tones. */
+  timerSoundsEnabled?: boolean;
+  /** Phase 6k — settings for work↔rest beeps. */
+  intervalBeepsEnabled?: boolean;
+  /** Phase 6k — 0–100 volume from settings. */
+  soundVolume?: number;
+  /** Phase 6k — session-only mute (not persisted). */
+  sessionMuted?: boolean;
+  onToggleSessionMute?: () => void;
 };
 
 const formatTime = (seconds: number) => {
@@ -129,6 +138,11 @@ export default function DualModeTimer({
   defaultMode = "exercise",
   persistedState = null,
   onStateChange,
+  timerSoundsEnabled = true,
+  intervalBeepsEnabled = true,
+  soundVolume = 70,
+  sessionMuted = false,
+  onToggleSessionMute,
 }: DualModeTimerProps) {
   const reconciledPersistedState = useMemo(
     () => reconcileRuntimeState(persistedState),
@@ -185,49 +199,59 @@ export default function DualModeTimer({
 
   const modeBackground = isExerciseMode
     ? "border-sky-200/70 bg-sky-50/80"
-    : "border-cyan-200/70 bg-cyan-50/80";
+    : "border-amber-200/80 bg-amber-50/85";
   const runningAccent = isExerciseMode
     ? "shadow-sky-500/28 ring-sky-400/40"
-    : "shadow-cyan-500/30 ring-cyan-300/45";
-  const activeModeButtonClasses = "praxis-selected-surface text-white";
-  const sliderAccentClass = isExerciseMode ? "accent-sky-500" : "accent-cyan-500";
+    : "shadow-yellow-500/38 ring-yellow-300/55";
+  const activeModeButtonClasses =
+    isExerciseMode
+      ? "bg-sky-600 text-white shadow-[0_6px_16px_rgba(2,132,199,0.28)]"
+      : "bg-amber-500 text-slate-900 shadow-[0_6px_16px_rgba(245,158,11,0.26)]";
+  const sliderAccentClass = isExerciseMode ? "accent-sky-600" : "accent-amber-500";
   // Phase 6k Commit 2 — dark face so the countdown can stay pure white (WCAG AAA).
   const timerFaceBackground = isExerciseMode
     ? "bg-[radial-gradient(circle_at_30%_24%,rgba(15,23,42,.98)_0%,rgba(2,6,23,.98)_55%,rgba(2,6,23,1)_100%)]"
-    : "bg-[radial-gradient(circle_at_28%_22%,rgba(8,47,73,.98)_0%,rgba(2,6,23,.98)_55%,rgba(2,6,23,1)_100%)]";
+    : "bg-[radial-gradient(circle_at_28%_22%,rgba(30,20,8,.98)_0%,rgba(15,10,4,.98)_55%,rgba(10,8,4,1)_100%)]";
   const ringGradient = isExerciseMode
     ? "conic-gradient(from 180deg at 50% 50%, rgba(191,219,254,0.98), rgba(56,189,248,0.96), rgba(37,99,235,0.92), rgba(15,23,42,0.9), rgba(191,219,254,0.98))"
-    : "conic-gradient(from 180deg at 50% 50%, rgba(207,250,254,0.98), rgba(103,232,249,0.96), rgba(14,165,233,0.92), rgba(79,70,229,0.62), rgba(15,23,42,0.9), rgba(207,250,254,0.98))";
+    : "conic-gradient(from 180deg at 50% 50%, rgba(255,254,240,0.99), rgba(250,204,21,0.98), rgba(245,158,11,0.95), rgba(236,72,153,0.75), rgba(124,58,237,0.62), rgba(255,254,240,0.99))";
   const ringProgress = isExerciseMode
     ? `conic-gradient(from -90deg at 50% 50%, rgba(14,116,234,0.99) 0 ${progressPercent}%, rgba(15,23,42,0.34) ${progressPercent}% 100%)`
-    : `conic-gradient(from -90deg at 50% 50%, rgba(34,211,238,0.96) 0 ${progressPercent}%, rgba(15,23,42,0.34) ${progressPercent}% 100%)`;
+    : `conic-gradient(from -90deg at 50% 50%, rgba(255,215,64,0.99) 0 ${progressPercent}%, rgba(30,27,45,0.34) ${progressPercent}% 100%)`;
   const ringShadow = isExerciseMode
     ? "0 14px 30px rgba(14,116,234,0.34)"
-    : "0 16px 32px rgba(34,211,238,0.26), 0 0 22px rgba(14,165,233,0.16)";
-  const secondaryTextClass = isExerciseMode ? "text-sky-100/95" : "text-cyan-100/95";
-  const neutralPillClasses = "praxis-input-surface";
+    : "0 16px 32px rgba(234,179,8,0.36), 0 0 22px rgba(236,72,153,0.2)";
+  const polarShellClasses =
+    isExerciseMode
+      ? "border-sky-500/45 bg-[linear-gradient(145deg,rgba(2,6,23,0.97),rgba(7,25,51,0.95))] text-sky-50"
+      : "border-amber-500/60 bg-[linear-gradient(145deg,rgba(24,14,5,0.97),rgba(58,32,8,0.95))] text-amber-50";
+  const secondaryTextClass = isExerciseMode ? "text-sky-100/95" : "text-amber-100/95";
+  const neutralPillClasses =
+    isExerciseMode
+      ? "border-slate-700 bg-slate-950/60"
+      : "border-amber-900/50 bg-slate-950/45";
   const inactiveModeButtonClasses =
     isExerciseMode
       ? "text-slate-300 hover:bg-slate-800 hover:text-sky-100"
-      : "text-slate-300 hover:bg-sky-400/10 hover:text-cyan-50";
+      : "text-amber-100/85 hover:bg-amber-950/35 hover:text-amber-50";
   const timerButtonFrameClasses = isExerciseMode
     ? "border-[5px] border-sky-900/80 text-white shadow-[0_14px_30px_rgba(14,116,234,0.24)]"
-    : "border-[5px] border-cyan-900/80 text-white shadow-[0_14px_30px_rgba(34,211,238,0.22)]";
+    : "border-[5px] border-amber-900/80 text-white shadow-[0_14px_30px_rgba(234,179,8,0.3)]";
   const timerInnerRingClasses = isExerciseMode
     ? "border border-sky-400/25"
-    : "border border-cyan-400/25";
+    : "border border-amber-400/25";
   const timerInnerShadeClasses = isExerciseMode
     ? "shadow-[inset_0_8px_14px_rgba(56,189,248,0.08),inset_0_-12px_16px_rgba(2,6,23,0.55)]"
-    : "shadow-[inset_0_8px_14px_rgba(34,211,238,0.08),inset_0_-12px_16px_rgba(2,6,23,0.55)]";
+    : "shadow-[inset_0_8px_14px_rgba(251,191,36,0.08),inset_0_-12px_16px_rgba(15,10,4,0.55)]";
   const timerTopGlowClasses = isExerciseMode
     ? "bg-sky-300/10"
-    : "bg-cyan-300/10";
+    : "bg-amber-300/10";
   const timerNeedleDotClasses = isExerciseMode
-    ? "bg-sky-200/90"
-    : "bg-cyan-200/90";
+    ? "bg-sky-950/90"
+    : "bg-amber-950/90";
   const progressBadgeClasses = isExerciseMode
     ? "rounded-full border border-sky-300/70 bg-sky-100/95 px-2 py-0.5 text-[11px] font-semibold text-sky-900"
-    : "rounded-full border border-cyan-300/70 bg-cyan-100/95 px-2 py-0.5 text-[11px] font-semibold text-cyan-900";
+    : "rounded-full border border-amber-300/80 bg-amber-200/95 px-2 py-0.5 text-[11px] font-semibold text-amber-950";
 
   useEffect(() => {
     if (!reconciledPersistedState) return;
@@ -408,9 +432,13 @@ export default function DualModeTimer({
 
   const playBeep = (type: "start" | "finish") => {
     if (typeof window === "undefined") return;
+    if (sessionMuted) return;
+    if (!timerSoundsEnabled) return;
+    if (type === "finish" && !intervalBeepsEnabled) return;
     try {
       const context = new AudioContext();
       const now = context.currentTime;
+      const volumeScale = Math.min(1, Math.max(0, soundVolume / 100));
 
       if (type === "start") {
         const osc = context.createOscillator();
@@ -418,7 +446,7 @@ export default function DualModeTimer({
         osc.type = "square";
         osc.frequency.setValueAtTime(320, now);
         osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
-        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.setValueAtTime(0.12 * volumeScale, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
         osc.connect(gain);
         gain.connect(context.destination);
@@ -432,7 +460,7 @@ export default function DualModeTimer({
         osc2.type = "sine";
         osc1.frequency.setValueAtTime(520, now);
         osc2.frequency.setValueAtTime(780, now);
-        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.setValueAtTime(0.08 * volumeScale, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
         osc1.connect(gain);
         osc2.connect(gain);
@@ -463,7 +491,14 @@ export default function DualModeTimer({
 
     lastRunningRef.current = running;
     lastRemainingRef.current = remainingSeconds;
-  }, [running, remainingSeconds]);
+  }, [
+    running,
+    remainingSeconds,
+    sessionMuted,
+    timerSoundsEnabled,
+    intervalBeepsEnabled,
+    soundVolume,
+  ]);
 
   useEffect(() => {
     onStateChange?.({
@@ -484,7 +519,9 @@ export default function DualModeTimer({
   ]);
 
   return (
-    <div className="praxis-card rounded-lg p-4 transition">
+    <div
+      className={`rounded-2xl border p-4 shadow-sm transition ${polarShellClasses}`}
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className={`inline-flex rounded-full border p-1 shadow-sm ${neutralPillClasses}`}>
           {(["exercise", "rest"] as TimerMode[]).map((value) => (
@@ -492,7 +529,7 @@ export default function DualModeTimer({
               key={value}
               type="button"
               onClick={() => handleModeChange(value)}
-              className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+              className={`min-h-11 rounded-full px-4 py-2 text-xs font-semibold transition ${
                 mode === value
                   ? activeModeButtonClasses
                   : inactiveModeButtonClasses
@@ -506,6 +543,46 @@ export default function DualModeTimer({
 
       <div className="mt-4 flex justify-center">
         <div className="relative h-56 w-56 sm:h-64 sm:w-64">
+          {onToggleSessionMute ? (
+            <button
+              type="button"
+              data-testid="session-timer-quick-mute"
+              aria-label={sessionMuted ? "Unmute timer sounds" : "Mute timer sounds"}
+              title={
+                sessionMuted
+                  ? "Unmute for this session"
+                  : "Mute for this session only"
+              }
+              onClick={onToggleSessionMute}
+              className="absolute -right-1 -top-1 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-slate-500/40 bg-slate-950/80 text-white shadow-sm hover:border-sky-300/50"
+            >
+              {sessionMuted ? (
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M11 5 6 9H3v6h3l5 4V5z" />
+                  <path d="m22 9-6 6M16 9l6 6" />
+                </svg>
+              ) : (
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M11 5 6 9H3v6h3l5 4V5z" />
+                  <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+                </svg>
+              )}
+            </button>
+          ) : null}
           <span
             className={`pointer-events-none absolute inset-0 rounded-full transition ${
               running ? "motion-safe:animate-spin" : ""
@@ -569,7 +646,7 @@ export default function DualModeTimer({
         <button
           type="button"
           onClick={resetTimer}
-          className={`${secondaryTextClass} underline-offset-4 hover:underline`}
+          className={`flex min-h-11 min-w-11 items-center justify-center ${secondaryTextClass} underline-offset-4 hover:underline`}
         >
           Reset
         </button>

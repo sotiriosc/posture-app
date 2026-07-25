@@ -326,6 +326,21 @@ export type LogPrefs = {
    * per account (Phase 6e isolation) across sessions and logins.
    */
   hasCompletedFirstWeek?: boolean;
+  /**
+   * Phase 6k Commit 3 — timer / interval / session-complete sound prefs.
+   * See `soundPrefs.ts` for defaults and normalization.
+   */
+  soundPrefs?: {
+    timerSounds?: boolean;
+    intervalBeeps?: boolean;
+    sessionCompleteChime?: boolean;
+    volume?: number;
+    vibration?: boolean;
+  };
+  /**
+   * Phase 6k Commit 4 — first-session wake-lock notice shown once.
+   */
+  wakeLockNoticeSeen?: boolean;
 };
 
 export type ExercisePrescription = {

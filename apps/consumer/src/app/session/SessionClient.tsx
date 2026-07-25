@@ -113,6 +113,8 @@ import {
   FALLBACK_TIMED_DURATION_COPY,
 } from "@/lib/catalogDataIntegrity";
 import { formatSessionTimeSummary } from "@/lib/sessionActiveTimer";
+import { playSessionCompleteChime } from "@/lib/sessionAudio";
+import { normalizeSoundPrefs } from "@/lib/soundPrefs";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useSessionActiveTimer } from "@/hooks/useSessionActiveTimer";
 import { useUserPlan } from "@/hooks/useUserPlan";
@@ -431,6 +433,8 @@ export default function SessionClient() {
   );
   const [selectedSets, setSelectedSets] = useState<Record<string, number>>({});
   const [sessionComplete, setSessionComplete] = useState(false);
+  /** Phase 6k — session-only mute; not persisted. */
+  const [sessionMuted, setSessionMuted] = useState(false);
   const [summary, setSummary] = useState<SessionRecord | null>(null);
   const [summaryStats, setSummaryStats] = useState<{
     completedExercises: number;
@@ -2051,6 +2055,15 @@ export default function SessionClient() {
     setSessionComplete(true);
     sessionCompleteRef.current = true;
 
+    const soundPrefs = normalizeSoundPrefs(prefs?.soundPrefs);
+    if (
+      !sessionMuted &&
+      soundPrefs.timerSounds &&
+      soundPrefs.sessionCompleteChime
+    ) {
+      playSessionCompleteChime(soundPrefs.volume);
+    }
+
     if (program && programDayIndex !== null) {
       const progress = applyCompletedDayToProgramProgress({
         priorProgress: programProgress,
@@ -2133,6 +2146,7 @@ export default function SessionClient() {
         loadType: currentItem.loadType,
       })
     : { workSeconds: 60, restSeconds: 60 };
+  const soundPrefs = normalizeSoundPrefs(prefs?.soundPrefs);
   const previewWeight =
     currentItem?.loadType === "weighted" && currentItem
       ? currentWeightValue || "-"
@@ -3181,6 +3195,11 @@ export default function SessionClient() {
               defaultMode="exercise"
               persistedState={persistedTimerRuntime}
               onStateChange={handleTimerRuntimeChange}
+              timerSoundsEnabled={soundPrefs.timerSounds}
+              intervalBeepsEnabled={soundPrefs.intervalBeeps}
+              soundVolume={soundPrefs.volume}
+              sessionMuted={sessionMuted}
+              onToggleSessionMute={() => setSessionMuted((prev) => !prev)}
             />
 
             {currentItem.cues.length > 0 ||

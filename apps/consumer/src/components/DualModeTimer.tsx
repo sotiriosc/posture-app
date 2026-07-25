@@ -21,6 +21,15 @@ type DualModeTimerProps = {
   defaultMode?: TimerMode;
   persistedState?: DualModeTimerRuntimeState | null;
   onStateChange?: (state: DualModeTimerRuntimeState) => void;
+  /** Phase 6k — settings master for timer tones. */
+  timerSoundsEnabled?: boolean;
+  /** Phase 6k — settings for work↔rest beeps. */
+  intervalBeepsEnabled?: boolean;
+  /** Phase 6k — 0–100 volume from settings. */
+  soundVolume?: number;
+  /** Phase 6k — session-only mute (not persisted). */
+  sessionMuted?: boolean;
+  onToggleSessionMute?: () => void;
 };
 
 const formatTime = (seconds: number) => {
@@ -129,6 +138,11 @@ export default function DualModeTimer({
   defaultMode = "exercise",
   persistedState = null,
   onStateChange,
+  timerSoundsEnabled = true,
+  intervalBeepsEnabled = true,
+  soundVolume = 70,
+  sessionMuted = false,
+  onToggleSessionMute,
 }: DualModeTimerProps) {
   const reconciledPersistedState = useMemo(
     () => reconcileRuntimeState(persistedState),
@@ -418,9 +432,13 @@ export default function DualModeTimer({
 
   const playBeep = (type: "start" | "finish") => {
     if (typeof window === "undefined") return;
+    if (sessionMuted) return;
+    if (!timerSoundsEnabled) return;
+    if (type === "finish" && !intervalBeepsEnabled) return;
     try {
       const context = new AudioContext();
       const now = context.currentTime;
+      const volumeScale = Math.min(1, Math.max(0, soundVolume / 100));
 
       if (type === "start") {
         const osc = context.createOscillator();
@@ -428,7 +446,7 @@ export default function DualModeTimer({
         osc.type = "square";
         osc.frequency.setValueAtTime(320, now);
         osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
-        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.setValueAtTime(0.12 * volumeScale, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
         osc.connect(gain);
         gain.connect(context.destination);
@@ -442,7 +460,7 @@ export default function DualModeTimer({
         osc2.type = "sine";
         osc1.frequency.setValueAtTime(520, now);
         osc2.frequency.setValueAtTime(780, now);
-        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.setValueAtTime(0.08 * volumeScale, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
         osc1.connect(gain);
         osc2.connect(gain);
@@ -473,7 +491,14 @@ export default function DualModeTimer({
 
     lastRunningRef.current = running;
     lastRemainingRef.current = remainingSeconds;
-  }, [running, remainingSeconds]);
+  }, [
+    running,
+    remainingSeconds,
+    sessionMuted,
+    timerSoundsEnabled,
+    intervalBeepsEnabled,
+    soundVolume,
+  ]);
 
   useEffect(() => {
     onStateChange?.({
@@ -518,6 +543,46 @@ export default function DualModeTimer({
 
       <div className="mt-4 flex justify-center">
         <div className="relative h-56 w-56 sm:h-64 sm:w-64">
+          {onToggleSessionMute ? (
+            <button
+              type="button"
+              data-testid="session-timer-quick-mute"
+              aria-label={sessionMuted ? "Unmute timer sounds" : "Mute timer sounds"}
+              title={
+                sessionMuted
+                  ? "Unmute for this session"
+                  : "Mute for this session only"
+              }
+              onClick={onToggleSessionMute}
+              className="absolute -right-1 -top-1 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-slate-500/40 bg-slate-950/80 text-white shadow-sm hover:border-sky-300/50"
+            >
+              {sessionMuted ? (
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M11 5 6 9H3v6h3l5 4V5z" />
+                  <path d="m22 9-6 6M16 9l6 6" />
+                </svg>
+              ) : (
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M11 5 6 9H3v6h3l5 4V5z" />
+                  <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+                </svg>
+              )}
+            </button>
+          ) : null}
           <span
             className={`pointer-events-none absolute inset-0 rounded-full transition ${
               running ? "motion-safe:animate-spin" : ""
