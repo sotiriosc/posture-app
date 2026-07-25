@@ -107,43 +107,20 @@ export default function MacroCalculatorPage() {
               Why moderate fat, high carb, high protein for lifters
             </h2>
             <p className="mt-2">
-              Most generic macro calculators split calories the same way
-              whether you sit at a desk all day or squat three times a week.
-              That&apos;s the wrong starting point if you train. A lifter&apos;s
-              macro priorities are different, in a specific order: protein
-              first, because it&apos;s the one macro you can&apos;t make up for
-              later — miss it consistently and you leave muscle on the table no
-              matter how well the rest of your training goes. Carbs second,
-              because glycogen is what actually fuels a heavy set of five and a
-              hard finisher at the end of a session; starve that and every
-              session past the first gets worse, not better. Fat last, kept
-              moderate rather than cut to the bone, because you need enough of
-              it for hormone production and joint health, but every gram of fat
-              you don&apos;t need is a gram of carbs you&apos;re not eating.
+              Lifters need a different split than desk workers: protein first
+              (you can&apos;t make it up later), carbs second (they fuel hard
+              sets), fat last and moderate (hormones and joints — not more).
             </p>
             <p className="mt-2">
-              Concretely, that&apos;s why this calculator sets protein directly
-              from your bodyweight — about 0.8 grams per pound — instead of as
-              a percentage of calories. A percentage-based protein target
-              quietly shortchanges you the moment you&apos;re in a calorie
-              deficit, which is exactly the situation where protein matters
-              most for holding onto muscle. Fat is set at a flat, moderate 25%
-              of your total calories — enough, not more. Whatever&apos;s left
-              goes to carbs, and for almost anyone training seriously at these
-              calorie levels, that ends up being your single largest macro by
-              a wide margin. That&apos;s not an accident; it&apos;s the point.
-              Carbs are the macro most people cut first when they decide to
-              &quot;eat clean,&quot; and they&apos;re usually the macro that was
-              actually driving their training performance.
+              That&apos;s why protein is set from bodyweight (~0.8 g per lb),
+              not as a percent of calories — percentages quietly underfeed
+              protein in a deficit, when you need it most. Fat stays at 25%;
+              the rest goes to carbs so training stays sharp. Don&apos;t cut
+              carbs first when you &quot;eat clean.&quot;
             </p>
             <p className="mt-2">
-              None of this is exotic. It&apos;s the same basic split I use with
-              in-person clients before we get into anything more individualized
-              — a sane, defensible starting point, not a finished plan. Track
-              it for two weeks, see how your training and your bodyweight trend
-              actually respond, and adjust from there. No calculator, mine
-              included, knows your body better than two weeks of your own data
-              does.
+              It&apos;s a sane starting point, not a finished plan. Run it two
+              weeks, then adjust from your own training and weight data.
             </p>
           </section>
 
@@ -152,33 +129,21 @@ export default function MacroCalculatorPage() {
               Hydration, salt, and muscle performance
             </h2>
             <p className="mt-2">
-              Most people training hard are quietly under-hydrated and
-              under-salted at the same time, and both hurt performance in ways
-              that get blamed on everything except the actual cause. A two
-              percent drop in body water is enough to measurably reduce
-              strength output and blow up your perceived effort on the same
-              weight you moved easily last week. If a session that should feel
-              like a 7 out of 10 suddenly feels like a 9, check your water
-              intake before you touch your program.
+              Under-hydrated and under-salted is the quiet performance killer.
+              A ~2% drop in body water makes the same weight feel harder — if a
+              session jumps from a 7 to a 9, check water before you rewrite the
+              program.
             </p>
             <p className="mt-2">
-              Salt matters just as much and gets a worse reputation than it
-              deserves. Sodium is what actually lets you retain the water
-              you&apos;re drinking and keeps nerve signaling — the thing that
-              tells a muscle fiber to fire — working properly. If you sweat
-              heavily, train in the heat, or you&apos;ve cut processed food
-              hard enough to also cut most of your sodium along with it,
-              plain water alone won&apos;t fix how flat you feel. A pinch of
-              salt in your water, or simply not being afraid of salting your
-              food around training days, is a bigger lever for most lifters
-              than another supplement bottle.
+              Sodium keeps that water where it belongs and keeps nerves firing.
+              Sweaty sessions, heat, or cutting processed food can wipe sodium
+              too — plain water alone won&apos;t fix feeling flat. Salt food
+              around training; it beats most supplement bottles.
             </p>
             <p className="mt-2">
-              Simple targets: water intake in ounces at roughly half your
-              bodyweight in pounds as a daily floor, more on training days and
-              in heat, and don&apos;t treat electrolytes as an endurance-sport
-              problem only — a hard 45-minute lifting session in a warm gym
-              adds up.
+              Floor: water ounces ≈ half your bodyweight in pounds, more on
+              training days and in heat. Electrolytes aren&apos;t just for
+              endurance sports.
             </p>
           </section>
 
@@ -187,30 +152,17 @@ export default function MacroCalculatorPage() {
               Creatine: what it does, how to use it
             </h2>
             <p className="mt-2">
-              Creatine monohydrate is the most well-studied supplement in
-              sports nutrition, and the evidence behind it isn&apos;t close to
-              controversial: it works, it&apos;s safe for long-term use in
-              healthy adults, and it&apos;s cheap. It tops up phosphocreatine
-              stores in muscle, which is what your body uses to rapidly
-              regenerate ATP during short, hard efforts — the exact energy
-              system a heavy set of three to eight reps runs on. The practical
-              result over weeks of consistent use is usually a small but real
-              bump in strength and the ability to squeeze out another rep or
-              two before failure, which compounds into more total training
-              volume over a training block.
+              Creatine monohydrate is the most studied sports supplement for a
+              reason: it works, it&apos;s safe for healthy adults, and it&apos;s
+              cheap. It tops up phosphocreatine so short, hard sets regenerate
+              ATP faster — usually a small real strength bump and an extra rep
+              or two over weeks.
             </p>
             <p className="mt-2">
-              How to actually use it: 3 to 5 grams of creatine monohydrate,
-              every day, including rest days — consistency is what fills the
-              tank, not timing it around your workout. You don&apos;t need a
-              loading phase; it just gets you saturated a few days faster, and
-              most people don&apos;t notice the difference either way. You
-              don&apos;t need a fancy buffered or micronized version either —
-              plain monohydrate is the form almost every study behind this is
-              built on. Take it with water, at whatever time of day you&apos;ll
-              actually remember to take it, and expect a small amount of water
-              retention inside the muscle itself; that&apos;s the mechanism
-              working, not bloating.
+              Use 3–5 g every day, rest days included. No loading phase
+              required, no fancy form required — plain monohydrate. Take it
+              whenever you&apos;ll remember; mild muscle water retention means
+              it&apos;s working, not bloating.
             </p>
           </section>
         </div>
