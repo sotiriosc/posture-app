@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import { vibrateForEvent } from "@/lib/haptics";
 
 export type TimerMode = "exercise" | "rest";
@@ -33,7 +35,10 @@ type DualModeTimerProps = {
   onToggleSessionMute?: () => void;
   /** Phase 6k Commit 4 — haptic feedback for timer events. */
   vibrationEnabled?: boolean;
-  /** Section tempo hint, e.g. "Slow tempo · 4s/rep". */
+  /**
+   * Classic tempo notation (e.g. "2-0-2-0"), or a plain label like "Timed hold".
+   * Notation values get a Tempo ClarifyTerm; other strings render as-is.
+   */
   tempoHint?: string | null;
 };
 
@@ -712,7 +717,16 @@ export default function DualModeTimer({
             className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}
             data-testid="session-timer-tempo-hint"
           >
-            {tempoHint}
+            {/^\d-\d-\d-\d$/.test(tempoHint) ? (
+              <>
+                <ClarifyTerm term="Tempo" explanation={CLARIFY.Tempo}>
+                  Tempo
+                </ClarifyTerm>{" "}
+                {tempoHint}
+              </>
+            ) : (
+              tempoHint
+            )}
           </span>
         ) : null}
         <span className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}>

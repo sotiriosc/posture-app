@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   getEffectiveTimer,
   parseRepTarget,
+  tempoNotationForPace,
   tempoPaceForSection,
+  TEMPO_NOTATION,
   TEMPO_SEC_PER_REP,
   workSecondsFromRepsAndTempo,
 } from "../../src/timerRules";
@@ -14,6 +16,13 @@ describe("timerRules — section tempo + reps×tempo", () => {
     expect(tempoPaceForSection("main")).toBe("slow");
     expect(tempoPaceForSection("cooldown")).toBe("slow");
     expect(tempoPaceForSection("accessory")).toBe("fast");
+  });
+
+  it("uses classic tempo notation for section paces", () => {
+    expect(TEMPO_NOTATION.slow).toBe("2-0-2-0");
+    expect(TEMPO_NOTATION.fast).toBe("1-0-1-0");
+    expect(tempoNotationForPace("slow")).toBe("2-0-2-0");
+    expect(tempoNotationForPace("fast")).toBe("1-0-1-0");
   });
 
   it("parses rep ranges and per-side", () => {

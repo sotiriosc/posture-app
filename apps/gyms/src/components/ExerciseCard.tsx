@@ -1,13 +1,16 @@
 "use client";
 
+import ClarifyTerm from "@/components/ui/ClarifyTerm";
+import { CLARIFY } from "@/components/ui/clarifyTermCopy";
+
 type ExerciseCardProps = {
   name: string;
   targetMuscles: string[];
   cue: string;
   /** Prescribed reps, e.g. "8-12" or "6-8 per side". */
   reps?: string | null;
-  /** Tempo line, e.g. "Slow tempo · 4s/rep". */
-  tempoLabel?: string | null;
+  /** Classic tempo notation, e.g. "2-0-2-0". */
+  tempoNotation?: string | null;
   sets: boolean[];
   onToggleSet: (index: number) => void;
   onSetEnter?: (index: number) => void;
@@ -20,7 +23,7 @@ export default function ExerciseCard({
   targetMuscles,
   cue,
   reps = null,
-  tempoLabel = null,
+  tempoNotation = null,
   sets,
   onToggleSet,
   onSetEnter,
@@ -30,10 +33,10 @@ export default function ExerciseCard({
   const firstIncompleteIndex = sets.findIndex((completed) => !completed);
   const activeSetIndex =
     firstIncompleteIndex === -1 ? sets.length - 1 : firstIncompleteIndex;
-  const prescriptionBits = [
-    reps?.trim() ? `Reps ${reps.trim()}` : null,
-    tempoLabel?.trim() || null,
-  ].filter(Boolean);
+  const hasReps = Boolean(reps?.trim());
+  const notation = tempoNotation?.trim() || null;
+  const isClassicTempo = Boolean(notation && /^\d-\d-\d-\d$/.test(notation));
+  const plainTempoLabel = notation && !isClassicTempo ? notation : null;
 
   return (
     <section className="praxis-panel-strong rounded-lg p-5 sm:p-6">
@@ -42,12 +45,23 @@ export default function ExerciseCard({
         <p className="mt-1 text-sm text-slate-300">
           Targets: {targetMuscles.length ? targetMuscles.join(", ") : "full body"}
         </p>
-        {prescriptionBits.length > 0 ? (
+        {hasReps || isClassicTempo || plainTempoLabel ? (
           <p
             className="mt-2 text-sm font-semibold text-sky-100"
             data-testid="exercise-card-prescription"
           >
-            {prescriptionBits.join(" · ")}
+            {hasReps ? <>Reps {reps!.trim()}</> : null}
+            {hasReps && (isClassicTempo || plainTempoLabel) ? " · " : null}
+            {isClassicTempo ? (
+              <>
+                <ClarifyTerm term="Tempo" explanation={CLARIFY.Tempo}>
+                  Tempo
+                </ClarifyTerm>{" "}
+                {notation}
+              </>
+            ) : plainTempoLabel ? (
+              plainTempoLabel
+            ) : null}
           </p>
         ) : null}
       </div>

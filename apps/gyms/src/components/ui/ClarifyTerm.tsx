@@ -79,7 +79,7 @@ export default function ClarifyTerm({
           id={cardId}
           role="status"
           data-testid={`clarify-term-${slug}-card`}
-          className="ui-card absolute left-0 top-full z-30 mt-1.5 block w-64 max-w-[80vw] rounded-lg border border-slate-700/60 bg-slate-900/95 p-3 text-left text-xs shadow-xl backdrop-blur"
+          className="ui-card absolute left-0 top-full z-50 mt-1.5 block w-72 max-w-[min(18rem,calc(100vw-2rem))] rounded-lg border border-slate-700/60 bg-slate-900/95 p-3 text-left text-xs shadow-xl backdrop-blur"
         >
           <span className="flex items-start justify-between gap-2">
             <span className="font-semibold text-white">{term}</span>
@@ -93,7 +93,7 @@ export default function ClarifyTerm({
               ×
             </button>
           </span>
-          <span className="mt-1 block leading-relaxed text-slate-300">
+          <span className="mt-1 block whitespace-normal break-words leading-relaxed text-slate-300">
             {explanation}
           </span>
           {learnMoreHref ? (

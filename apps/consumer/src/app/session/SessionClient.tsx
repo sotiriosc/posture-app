@@ -54,8 +54,7 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import {
   getEffectiveTimer,
-  TEMPO_SEC_PER_REP,
-  tempoPaceLabel,
+  tempoNotationForPace,
 } from "@/lib/timerRules";
 import {
   deriveNextSessionRecommendationFromSession,
@@ -3154,7 +3153,7 @@ export default function SessionClient() {
             the top of the page, but a sticky descendant re-anchors to the
             viewport on scroll and ignores an ancestor's padding, so it
             needs its own matching offset. */}
-        <div className="sticky top-2 z-30 space-y-2 md:top-16">
+        <div className="sticky top-2 z-30 space-y-2 md:top-16 [&>*:has([aria-expanded=true])]:relative [&>*:has([aria-expanded=true])]:z-40">
           <SessionProgressHeader
             phaseName={phaseLabel}
             dayPositionLabel={dayPositionLabel}
@@ -3304,9 +3303,9 @@ export default function SessionClient() {
                 ? null
                 : currentItem.reps || currentItem.duration || null
             }
-            tempoLabel={
+            tempoNotation={
               currentTimer.fromRepTempo
-                ? `${tempoPaceLabel(currentTimer.tempoPace)} · ${TEMPO_SEC_PER_REP[currentTimer.tempoPace]}s/rep`
+                ? tempoNotationForPace(currentTimer.tempoPace)
                 : currentItem.loadType === "timed"
                   ? "Timed hold"
                   : null
@@ -3355,7 +3354,7 @@ export default function SessionClient() {
               vibrationEnabled={soundPrefs.vibration}
               tempoHint={
                 currentTimer.fromRepTempo
-                  ? `${tempoPaceLabel(currentTimer.tempoPace)} · ${TEMPO_SEC_PER_REP[currentTimer.tempoPace]}s/rep`
+                  ? tempoNotationForPace(currentTimer.tempoPace)
                   : currentItem.loadType === "timed"
                     ? "Timed hold"
                     : null

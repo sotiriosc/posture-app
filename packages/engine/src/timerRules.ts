@@ -7,7 +7,16 @@ type TimerPrefs = {
 
 export type TempoPace = "slow" | "fast";
 
-/** Seconds per rep for section-default tempos. */
+/**
+ * Classic ecc-pause-conc-pause notation for section defaults.
+ * Digits sum to seconds per rep (2-0-2-0 → 4s, 1-0-1-0 → 2s).
+ */
+export const TEMPO_NOTATION: Record<TempoPace, string> = {
+  slow: "2-0-2-0",
+  fast: "1-0-1-0",
+};
+
+/** Seconds per rep for section-default tempos (sum of TEMPO_NOTATION digits). */
 export const TEMPO_SEC_PER_REP: Record<TempoPace, number> = {
   slow: 4,
   fast: 2,
@@ -34,9 +43,12 @@ export const tempoPaceForSection = (
   return "slow";
 };
 
-export const tempoPaceLabel = (pace: TempoPace): string =>
-  pace === "fast" ? "Fast tempo" : "Slow tempo";
+export const tempoNotationForPace = (pace: TempoPace): string =>
+  TEMPO_NOTATION[pace];
 
+/** @deprecated Prefer tempoNotationForPace — kept for any residual callers. */
+export const tempoPaceLabel = (pace: TempoPace): string =>
+  `Tempo ${TEMPO_NOTATION[pace]}`;
 /**
  * Parse a rep prescription into a countable target.
  * Uses the upper end of a range when present ("8-12" → 12) so the timer
