@@ -33,6 +33,8 @@ type DualModeTimerProps = {
   onToggleSessionMute?: () => void;
   /** Phase 6k Commit 4 — haptic feedback for timer events. */
   vibrationEnabled?: boolean;
+  /** Section tempo hint, e.g. "Slow tempo · 4s/rep". */
+  tempoHint?: string | null;
 };
 
 /** Extra seconds so the user can set up before the timing pattern starts. */
@@ -110,6 +112,7 @@ export default function DualModeTimer({
   sessionMuted = false,
   onToggleSessionMute,
   vibrationEnabled = true,
+  tempoHint = null,
 }: DualModeTimerProps) {
   const reconciledPersistedState = useMemo(
     () => reconcileRuntimeState(persistedState),
@@ -704,6 +707,14 @@ export default function DualModeTimer({
         className={`mt-4 flex flex-wrap gap-2 text-xs font-semibold ${secondaryTextClass}`}
         data-testid="session-timer-presets"
       >
+        {tempoHint ? (
+          <span
+            className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}
+            data-testid="session-timer-tempo-hint"
+          >
+            {tempoHint}
+          </span>
+        ) : null}
         <span className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}>
           Working {formatTime(selectedExerciseSeconds)} +{TIMER_SETUP_BUFFER_SEC}s
         </span>

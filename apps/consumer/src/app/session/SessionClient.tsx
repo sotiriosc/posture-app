@@ -52,7 +52,11 @@ import OnboardingInfoButton, {
 import { openAppMenu } from "@/components/AppMenuClient";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
-import { getEffectiveTimer } from "@/lib/timerRules";
+import {
+  getEffectiveTimer,
+  TEMPO_SEC_PER_REP,
+  tempoPaceLabel,
+} from "@/lib/timerRules";
 import {
   deriveNextSessionRecommendationFromSession,
   formatNextSessionRecommendationFromSession,
@@ -1412,9 +1416,10 @@ export default function SessionClient() {
       sets: string | number | null;
       reps?: string | null;
       loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+      section?: "warmup" | "activation" | "main" | "accessory" | "cooldown" | null;
     }) => {
-      // Plan prescription wins when present. Session-local slider tweaks
-      // (timerByExercise) still override for the current visit.
+      // Rep-based work: section tempo × reps. Timed holds: durationSec.
+      // Session-local slider tweaks still override for the current visit.
       const prescribed = getEffectiveTimer(
         {
           exerciseId: params.exerciseId,
@@ -1423,6 +1428,7 @@ export default function SessionClient() {
           sets: params.sets,
           reps: params.reps ?? null,
           loadType: params.loadType,
+          section: params.section ?? undefined,
         },
         prefs?.timerPrefs
       );
@@ -1431,26 +1437,13 @@ export default function SessionClient() {
         return {
           workSeconds: sessionOverride.workSeconds,
           restSeconds: sessionOverride.restSeconds,
-        };
-      }
-      const savedOverride = prefs?.timerPrefsByExercise?.[params.exerciseId];
-      const hasPlanWork =
-        typeof params.durationSec === "number" && params.durationSec > 0;
-      const hasPlanRest =
-        typeof params.restSec === "number" && params.restSec > 0;
-      if (savedOverride) {
-        return {
-          workSeconds: hasPlanWork
-            ? prescribed.workSeconds
-            : savedOverride.workSeconds,
-          restSeconds: hasPlanRest
-            ? prescribed.restSeconds
-            : savedOverride.restSeconds,
+          tempoPace: prescribed.tempoPace,
+          fromRepTempo: prescribed.fromRepTempo,
         };
       }
       return prescribed;
     },
-    [prefs?.timerPrefs, prefs?.timerPrefsByExercise, timerByExercise]
+    [prefs?.timerPrefs, timerByExercise]
   );
 
   const getRecordedTimerForItem = useCallback(
@@ -1462,6 +1455,7 @@ export default function SessionClient() {
       sets: string | number | null;
       reps?: string | null;
       loadType: "weighted" | "bodyweight" | "timed" | "assisted";
+      section?: "warmup" | "activation" | "main" | "accessory" | "cooldown" | null;
     }) => {
       const runtime = timerRuntimeByItemId[item.id];
       if (
@@ -1471,9 +1465,20 @@ export default function SessionClient() {
         Number.isFinite(runtime.restSeconds) &&
         runtime.restSeconds > 0
       ) {
+        const prescribed = getTimerForExercise({
+          exerciseId: item.exerciseId,
+          durationSec: item.durationSec ?? null,
+          restSec: item.restSec ?? null,
+          sets: item.sets,
+          reps: item.reps ?? null,
+          loadType: item.loadType,
+          section: item.section ?? null,
+        });
         return {
           workSeconds: runtime.exerciseSeconds,
           restSeconds: runtime.restSeconds,
+          tempoPace: prescribed.tempoPace,
+          fromRepTempo: prescribed.fromRepTempo,
         };
       }
       return getTimerForExercise({
@@ -1483,6 +1488,7 @@ export default function SessionClient() {
         sets: item.sets,
         reps: item.reps ?? null,
         loadType: item.loadType,
+        section: item.section ?? null,
       });
     },
     [getTimerForExercise, timerRuntimeByItemId]
@@ -2191,8 +2197,14 @@ export default function SessionClient() {
         sets: currentItem.sets,
         reps: currentItem.reps ?? null,
         loadType: currentItem.loadType,
+        section: currentItem.section ?? null,
       })
-    : { workSeconds: 60, restSeconds: 60 };
+    : {
+        workSeconds: 60,
+        restSeconds: 60,
+        tempoPace: "slow" as const,
+        fromRepTempo: false,
+      };
   const soundPrefs = normalizeSoundPrefs(prefs?.soundPrefs);
   const previewWeight =
     currentItem?.loadType === "weighted" && currentItem
@@ -3311,6 +3323,13 @@ export default function SessionClient() {
               sessionMuted={sessionMuted}
               onToggleSessionMute={() => setSessionMuted((prev) => !prev)}
               vibrationEnabled={soundPrefs.vibration}
+              tempoHint={
+                currentTimer.fromRepTempo
+                  ? `${tempoPaceLabel(currentTimer.tempoPace)} · ${TEMPO_SEC_PER_REP[currentTimer.tempoPace]}s/rep`
+                  : currentItem.loadType === "timed"
+                    ? "Timed hold"
+                    : null
+              }
             />
 
             {currentItem.cues.length > 0 ||
