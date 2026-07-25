@@ -1021,7 +1021,9 @@ export default function SessionClient() {
           cues: routineItem.cues ?? exercise?.cues ?? [],
           mistake: exercise?.mistakes?.[0] ?? "Keep form controlled",
           duration: exercise?.durationOrReps ?? routineItem.reps ?? "",
-          loadType: routineItem.loadType ?? exercise?.loadType ?? "bodyweight",
+          // Catalog loadType wins — never keep a weighted slot's loadType after
+          // a bodyweight swap, or the Weight field incorrectly appears.
+          loadType: exercise?.loadType ?? routineItem.loadType ?? "bodyweight",
         };
       });
     }
@@ -2293,6 +2295,8 @@ export default function SessionClient() {
     ? timerRuntimeByItemId[currentItemId] ?? null
     : null;
   const persistedTimerRuntime = currentItemRuntime;
+  // Weight input only for true weighted catalog work — bodyweight / timed /
+  // assisted never prompt for a load value.
   const hasWeightedInput = currentItem?.loadType === "weighted";
   const hasRepsInput = currentItem?.loadType !== "timed";
   const trackingFieldOrder = useMemo<TrackingField[]>(() => {
@@ -3448,7 +3452,7 @@ export default function SessionClient() {
               </div>
             ) : null}
 
-            {currentItem.loadType === "weighted" ? (
+            {hasWeightedInput ? (
               <div className="flex flex-wrap items-center gap-2">
                 <label className="text-xs font-semibold text-slate-700" htmlFor="weight-input">
                   Weight
