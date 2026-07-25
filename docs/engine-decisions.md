@@ -837,3 +837,22 @@ real brand bug
 `praxis-favicon-32.png` first in metadata icon order. Lock with
 `apps/consumer/tests/e2e/faviconRenders.spec.ts`.
 
+## Phase 6i — Knowledge Panel Cleanup + Loose Ends
+
+### SR-6i — Knowledge panels must read as coaching, not templates
+
+**Standing rule:** The Knowledge & Analysis panels are where the app's
+coaching intelligence becomes visible. Duplicated headers, repeated
+paragraphs, or leaked template strings undermine the "the app is thinking
+about you" impression. Section labels stay on the section; list items are
+clean observations only.
+
+### ED-6i.1 — Phase 7 partial ratifications (docs only; not execution)
+
+**Ratified 2026-07-24 (Phase 6i Commit 6):**
+- Patterns: Forward shoulders YES; Rib alignment / rib flare YES. All other
+  draft candidates remain pending individual rulings.
+- Injection aggressiveness: Option B refined — three-button prompt
+  (`Add it` / `Not now` / `Stop suggesting`) matching the incomplete-field
+  prompt pattern from Phase 6i Commit 4. Suppression never silently injects.
+

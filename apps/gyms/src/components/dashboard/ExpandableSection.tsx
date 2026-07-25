@@ -115,7 +115,7 @@ export default function ExpandableSection({
         <div>
           <h3 className="text-base font-semibold text-white">{title}</h3>
           {subtitle ? (
-            <p className="mt-1 text-xs text-slate-400">{subtitle}</p>
+            <p className="mt-1 text-xs text-slate-300">{subtitle}</p>
           ) : null}
         </div>
         <span className={secondaryActionBtn}>

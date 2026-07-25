@@ -2778,10 +2778,11 @@ export default function ResultsRoutine({
     program.sessionAdaptation?.reasons?.[0] ??
     program.sessionAdaptation?.summary ??
     "Adjustments reflect recent completion pace and pain feedback.";
+  // Phase 6i Commit 1.c — do not restate the weekly focus-tag list here;
+  // Movement Insight already names those patterns once.
   const systemAdjustmentFocus =
     program.sessionAdaptation?.masteryChecks?.[0] ??
-    program.phaseObjective?.weekIntent ??
-    "Focus now on clean execution and stable control.";
+    "Keep clean execution on this week's focus patterns — quality before load.";
   const systemAdjustmentChips = [
     program.phaseOptimizerReport
       ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} changed`
@@ -3499,17 +3500,17 @@ export default function ResultsRoutine({
             expanded={systemAdjustmentsExpanded}
             onExpandedChange={setSystemAdjustmentsExpanded}
           >
-            <div className="space-y-2 text-sm text-slate-700">
+            <div className="space-y-2 text-sm text-slate-200">
               <p>
-                <span className="font-medium text-slate-900">What changed:</span>{" "}
+                <span className="font-medium text-white">What changed:</span>{" "}
                 {systemAdjustmentChanged}
               </p>
               <p>
-                <span className="font-medium text-slate-900">Why it changed:</span>{" "}
+                <span className="font-medium text-white">Why it changed:</span>{" "}
                 {systemAdjustmentWhy}
               </p>
               <p>
-                <span className="font-medium text-slate-900">Focus now:</span>{" "}
+                <span className="font-medium text-white">Focus now:</span>{" "}
                 {systemAdjustmentFocus}
               </p>
             </div>
@@ -3536,15 +3537,25 @@ export default function ResultsRoutine({
           onExpandedChange={setKnowledgeExpanded}
         >
           <div className="space-y-3">
+            {/* Phase 6i Commit 1.b — framing once for the section, not per card. */}
+            <div className="rounded-xl border border-slate-500/30 bg-slate-950/35 px-3 py-2 text-xs leading-5 text-slate-200">
+              <p className="font-semibold text-white">Why this matters</p>
+              <p className="mt-1.5">
+                Praxis continuously monitors your movement quality, fatigue
+                patterns, and structural balance. Your plan reflects what your
+                body is ready to improve — and raises complexity as your
+                execution earns it.
+              </p>
+            </div>
             {knowledgeCards.map((card) => {
               const isCardExpanded = knowledgeDetailExpanded[card.key];
               return (
                 <div
                   key={card.key}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
+                  className="rounded-xl border border-slate-500/30 bg-slate-950/40 px-3 py-2"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-white">
                       {card.key === "compensation" ? (
                         <ClarifyTerm
                           term="Compensation"
@@ -3569,7 +3580,7 @@ export default function ResultsRoutine({
                       {isCardExpanded ? "Hide details" : "View details"}
                     </button>
                   </div>
-                  <p className="mt-1 text-sm text-slate-600">{card.summary}</p>
+                  <p className="mt-1 text-sm text-slate-200">{card.summary}</p>
                   <div
                     className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-200 ${
                       isCardExpanded
@@ -3578,30 +3589,20 @@ export default function ResultsRoutine({
                     }`}
                   >
                     <div className="overflow-hidden">
-                      <div className="space-y-1 pt-1 text-xs text-slate-700">
+                      {card.key === "stability" ? (
+                        <p className="pt-1 text-xs font-medium text-slate-300">
+                          Patterns we&apos;re watching this week:
+                        </p>
+                      ) : null}
+                      {card.key === "movement" ? (
+                        <p className="pt-1 text-xs font-medium text-slate-300">
+                          Plan focus:
+                        </p>
+                      ) : null}
+                      <div className="space-y-1 pt-1 text-xs text-slate-200">
                         {card.items.map((item) => (
                           <p key={`${card.key}-${item}`}>• {item}</p>
                         ))}
-                      </div>
-                      <div
-                        className={`mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 transition-[opacity,transform] duration-200 ${
-                          isCardExpanded
-                            ? "translate-y-0 opacity-100"
-                            : "translate-y-1 opacity-0"
-                        }`}
-                      >
-                        <p className="font-semibold text-slate-900">Why this matters</p>
-                        <div className="mt-1.5 space-y-1.5">
-                          <p>
-                            This system continuously monitors your movement quality, fatigue patterns, and structural balance.
-                          </p>
-                          <p>
-                            Your current plan reflects what your body is ready to improve safely and efficiently.
-                          </p>
-                          <p>
-                            As your execution improves, the system will automatically increase complexity and progression.
-                          </p>
-                        </div>
                       </div>
                     </div>
                   </div>
