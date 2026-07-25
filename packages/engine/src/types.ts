@@ -214,6 +214,11 @@ export type ExerciseLog = {
   setsPlanned: number | null;
   setsCompleted: number | null;
   durationSec: number | null;
+  /**
+   * Phase 6j — wall-clock active seconds spent on this exercise/segment
+   * (warmup / main / accessory / cooldown). Analytics only; not user-facing.
+   */
+  activeDurationSec?: number | null;
   workSecondsUsed?: number | null;
   restSecondsUsed?: number | null;
   rpe: number | null;

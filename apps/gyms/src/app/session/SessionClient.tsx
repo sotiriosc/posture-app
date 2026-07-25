@@ -84,6 +84,7 @@ import {
   listAllPrograms,
   listExerciseLogsByExerciseHistory,
   listRecentExerciseLogsForProgram,
+  listSessionsByProgramDay,
   listSessionsByProgramId,
   loadPrefs,
   saveExerciseLog,
@@ -97,6 +98,8 @@ import {
 } from "@/lib/logStore";
 import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
 import { markSessionComplete } from "@/lib/sessionStore";
+import { formatSessionTimeSummary } from "@/lib/sessionActiveTimer";
+import { useSessionActiveTimer } from "@/hooks/useSessionActiveTimer";
 
 const STORAGE_KEY = "posture_questionnaire";
 
@@ -422,7 +425,20 @@ export default function SessionClient({
   const [summaryStats, setSummaryStats] = useState<{
     completedExercises: number;
     estimatedMinutes: number;
+    timePrimary: string;
+    timeSecondary: string | null;
   } | null>(null);
+  const {
+    resumePrompt,
+    chooseResume,
+    chooseRestart,
+    dismissAbandonedPrompt,
+    finalize: finalizeActiveTimer,
+    isRunning: isActiveTimerRunning,
+  } = useSessionActiveTimer({ enabled: !sessionComplete });
+  const segmentActiveMsRef = useRef<Record<string, number>>({});
+  const segmentAnchorRef = useRef<number>(Date.now());
+  const segmentItemIdRef = useRef<string | null>(null);
   const [feedback, setFeedback] = useState<Record<string, ExerciseFeedback>>(
     {}
   );
@@ -958,6 +974,19 @@ export default function SessionClient({
   useEffect(() => {
     activeIndexRef.current = activeIndex;
   }, [activeIndex]);
+
+  // Phase 6j — per-segment active time (analytics only).
+  useEffect(() => {
+    const now = Date.now();
+    const prevId = segmentItemIdRef.current;
+    if (prevId && isActiveTimerRunning()) {
+      const elapsed = Math.max(0, now - segmentAnchorRef.current);
+      segmentActiveMsRef.current[prevId] =
+        (segmentActiveMsRef.current[prevId] ?? 0) + elapsed;
+    }
+    segmentItemIdRef.current = currentItemId;
+    segmentAnchorRef.current = now;
+  }, [currentItemId, isActiveTimerRunning]);
 
   const scrollSessionTop = useCallback((behavior: ScrollBehavior = "smooth") => {
     if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
@@ -1695,18 +1724,49 @@ export default function SessionClient({
     const sessionIdValue = sessionId ?? uuid();
     const startedAt = sessionStartedAt ?? nowIso();
     const completedAt = nowIso();
-    const totalSeconds = flatItems.reduce((sum, item) => {
-      const timer = getRecordedTimerForItem(item);
-      return sum + timer.workSeconds;
-    }, 0);
-    const totalRestSeconds = flatItems.reduce((sum, item) => {
-      const timer = getRecordedTimerForItem(item);
-      return sum + timer.restSeconds;
-    }, 0);
+
+    const nowMs = Date.now();
+    const currentSegId = segmentItemIdRef.current;
+    if (currentSegId && isActiveTimerRunning()) {
+      const elapsed = Math.max(0, nowMs - segmentAnchorRef.current);
+      segmentActiveMsRef.current[currentSegId] =
+        (segmentActiveMsRef.current[currentSegId] ?? 0) + elapsed;
+    }
+    segmentAnchorRef.current = nowMs;
+
+    const timerResult = finalizeActiveTimer();
     const estimatedMinutes = Math.max(
       1,
-      Math.round((totalSeconds + totalRestSeconds) / 60)
+      Math.round(timerResult.activeDurationSec / 60)
     );
+
+    let previousActiveDurationSec: number | null = null;
+    if (program && programDayIndex !== null) {
+      const sameDaySessions = await listSessionsByProgramDay(
+        program.id,
+        programDayIndex
+      );
+      const prior = sameDaySessions
+        .filter(
+          (session) =>
+            Boolean(session.completedAt) &&
+            !session.deletedAt &&
+            session.id !== sessionIdValue
+        )
+        .sort((a, b) =>
+          (b.completedAt ?? "").localeCompare(a.completedAt ?? "")
+        )[0];
+      if (prior) {
+        previousActiveDurationSec =
+          prior.activeDurationSec ?? prior.durationSec ?? null;
+      }
+    }
+
+    const timeCopy = formatSessionTimeSummary({
+      activeDurationSec: timerResult.activeDurationSec,
+      abandoned: timerResult.abandoned,
+      previousActiveDurationSec,
+    });
 
     const sessionRecord: SessionRecord = {
       id: sessionIdValue,
@@ -1716,7 +1776,10 @@ export default function SessionClient({
       createdAt: startedAt,
       updatedAt: completedAt,
       routineId: program?.id ?? null,
-      durationSec: estimatedMinutes * 60,
+      durationSec: timerResult.activeDurationSec,
+      activeDurationSec: timerResult.activeDurationSec,
+      abandoned: timerResult.abandoned,
+      pausedDurationSec: timerResult.pausedDurationSec,
       notes:
         program && programDayIndex !== null
           ? `dayIndex:${programDayIndex}`
@@ -1819,6 +1882,10 @@ export default function SessionClient({
           item.loadType === "timed"
             ? timer.workSeconds
             : item.durationSec ?? null,
+        activeDurationSec: Math.max(
+          0,
+          Math.round((segmentActiveMsRef.current[item.id] ?? 0) / 1000)
+        ),
         workSecondsUsed: timer.workSeconds,
         restSecondsUsed: timer.restSeconds,
         rpe,
@@ -1846,7 +1913,12 @@ export default function SessionClient({
 
     const completedExercises = totalItems;
     setSummary(sessionRecord);
-    setSummaryStats({ completedExercises, estimatedMinutes });
+    setSummaryStats({
+      completedExercises,
+      estimatedMinutes,
+      timePrimary: timeCopy.primary,
+      timeSecondary: timeCopy.secondary,
+    });
     setSessionFeedbackDraft({ completed: "yes" });
     setSessionFeedbackSaveState("idle");
     setSessionComplete(true);
@@ -2511,12 +2583,14 @@ export default function SessionClient({
           </OnImage>
           <div className="ui-card p-6">
             <p className="text-sm text-slate-600">
-              You completed {summaryStats.completedExercises} exercises in about{" "}
-              {summaryStats.estimatedMinutes} minutes.
+              You completed {summaryStats.completedExercises} exercises.
             </p>
-            <p className="mt-2 text-sm text-slate-600">
-              Great work staying consistent today.
+            <p className="mt-2 text-sm text-slate-600" data-testid="session-time-summary">
+              {summaryStats.timePrimary}
             </p>
+            {summaryStats.timeSecondary ? (
+              <p className="mt-1 text-sm text-slate-600">{summaryStats.timeSecondary}</p>
+            ) : null}
           </div>
           <SessionFeedbackCheckIn
             value={sessionFeedbackDraft}
@@ -2585,6 +2659,53 @@ export default function SessionClient({
 
   return (
     <BackgroundShell>
+      {resumePrompt === "resume_or_restart" ? (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/70 p-4 sm:items-center"
+          data-testid="session-timer-resume-prompt"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="session-timer-resume-title"
+        >
+          <div className="ui-card w-full max-w-md rounded-lg p-5">
+            <p id="session-timer-resume-title" className="text-base font-semibold text-white">
+              Continuing where you left off
+            </p>
+            <p className="mt-2 text-sm text-slate-300">
+              Restart timer or resume?
+            </p>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <Button type="button" variant="primary" onClick={chooseResume} className="w-full">
+                Resume
+              </Button>
+              <Button type="button" variant="secondary" onClick={chooseRestart} className="w-full">
+                Restart timer
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {resumePrompt === "abandoned" ? (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/70 p-4 sm:items-center"
+          data-testid="session-timer-abandoned-prompt"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="ui-card w-full max-w-md rounded-lg p-5">
+            <p className="text-base font-semibold text-white">Session paused too long</p>
+            <p className="mt-2 text-sm text-slate-300">
+              Active time stopped after a long break. Finish when you&apos;re ready —
+              the pause won&apos;t count against you.
+            </p>
+            <div className="mt-4">
+              <Button type="button" variant="primary" onClick={dismissAbandonedPrompt} className="w-full">
+                Got it
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
       <div className="ui-shell flex max-w-5xl flex-col gap-4 py-6 sm:py-8">
         <span
           className="sr-only"

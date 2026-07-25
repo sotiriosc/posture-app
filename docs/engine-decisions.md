@@ -884,3 +884,12 @@ unchanged; the floor is an AND on top. Soft max caps scale to 12× (Activation)
 / 14× (Skill) weeks so max never sits below the floor. UI gate thresholds and
 hero copy follow the same frequency-scaled floor.
 
+### ED-6j.3 — Invisible session timer with abandonment + per-segment logs
+
+**Ratified 2026-07-24:** Active session time runs invisibly from session start.
+Idle ≥15m pauses; idle ≥60m abandons. Backgrounding pauses; foreground resume
+in the 15–60m window prompts restart vs resume. End-of-session shows active
+minutes + previous same-day comparison (or abandoned honesty copy). Per-exercise
+`activeDurationSec` is stored on `ExerciseLog` for analytics only. All session
+timing is user-scoped via logStore (Phase 6e).
+
