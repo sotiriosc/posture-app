@@ -1431,17 +1431,9 @@ export default function SessionClient({
       reps?: string | null;
       loadType: "weighted" | "bodyweight" | "timed" | "assisted";
     }) => {
-      const exerciseTimerPref =
-        timerByExercise[params.exerciseId] ??
-        prefs?.timerPrefsByExercise?.[params.exerciseId];
-      if (exerciseTimerPref) {
-        return {
-          workSeconds: exerciseTimerPref.workSeconds,
-          restSeconds: exerciseTimerPref.restSeconds,
-        };
-      }
-
-      return getEffectiveTimer(
+      // Plan prescription wins when present. Session-local slider tweaks
+      // (timerByExercise) still override for the current visit.
+      const prescribed = getEffectiveTimer(
         {
           exerciseId: params.exerciseId,
           durationSec: params.durationSec ?? null,
@@ -1452,6 +1444,29 @@ export default function SessionClient({
         },
         prefs?.timerPrefs
       );
+      const sessionOverride = timerByExercise[params.exerciseId];
+      if (sessionOverride) {
+        return {
+          workSeconds: sessionOverride.workSeconds,
+          restSeconds: sessionOverride.restSeconds,
+        };
+      }
+      const savedOverride = prefs?.timerPrefsByExercise?.[params.exerciseId];
+      const hasPlanWork =
+        typeof params.durationSec === "number" && params.durationSec > 0;
+      const hasPlanRest =
+        typeof params.restSec === "number" && params.restSec > 0;
+      if (savedOverride) {
+        return {
+          workSeconds: hasPlanWork
+            ? prescribed.workSeconds
+            : savedOverride.workSeconds,
+          restSeconds: hasPlanRest
+            ? prescribed.restSeconds
+            : savedOverride.restSeconds,
+        };
+      }
+      return prescribed;
     },
     [prefs?.timerPrefs, prefs?.timerPrefsByExercise, timerByExercise]
   );

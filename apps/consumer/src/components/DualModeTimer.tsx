@@ -60,9 +60,13 @@ const reconcileRuntimeState = (
   const baseline = Math.max(0, Math.floor(state.remainingSeconds));
 
   if (!state.running || !state.updatedAtMs) {
+    // Idle timers always show the full Working/Resting preset — never a
+    // leftover partial countdown from a prior pause (session UX).
+    const idleRemaining =
+      state.mode === "exercise" ? exerciseSeconds : restSeconds;
     return {
       ...state,
-      remainingSeconds: baseline,
+      remainingSeconds: idleRemaining,
       exerciseSeconds,
       restSeconds,
       updatedAtMs: now,
@@ -201,61 +205,64 @@ export default function DualModeTimer({
   const sliderMax = mode === "exercise" ? 180 : 300;
   const isExerciseMode = mode === "exercise";
 
+  // Outer shell wash — mode color bleeds into the card so Working/Resting
+  // read instantly even before the ring spins.
   const modeBackground = isExerciseMode
-    ? "border-sky-200/70 bg-sky-50/80"
-    : "border-amber-200/80 bg-amber-50/85";
+    ? "border-cyan-300/55 bg-cyan-200/25"
+    : "border-amber-200/70 bg-amber-100/20";
   const runningAccent = isExerciseMode
-    ? "shadow-sky-500/28 ring-sky-400/40"
-    : "shadow-yellow-500/38 ring-yellow-300/55";
-  const activeModeButtonClasses =
-    isExerciseMode
-      ? "bg-sky-600 text-white shadow-[0_6px_16px_rgba(2,132,199,0.28)]"
-      : "bg-amber-500 text-slate-900 shadow-[0_6px_16px_rgba(245,158,11,0.26)]";
-  const sliderAccentClass = isExerciseMode ? "accent-sky-600" : "accent-amber-500";
-  // Phase 6k Commit 2 — dark face so the countdown can stay pure white (WCAG AAA).
+    ? "shadow-cyan-400/45 ring-cyan-300/55"
+    : "shadow-amber-400/50 ring-amber-300/60";
+  const activeModeButtonClasses = isExerciseMode
+    ? "bg-gradient-to-r from-sky-500 to-cyan-400 text-white shadow-[0_8px_20px_rgba(34,211,238,0.45)]"
+    : "bg-gradient-to-r from-amber-500 to-orange-400 text-slate-950 shadow-[0_8px_20px_rgba(251,146,60,0.42)]";
+  const sliderAccentClass = isExerciseMode ? "accent-cyan-400" : "accent-amber-400";
+  // Phase 6k — dark face + pure white digits (WCAG AAA), punched accents.
   const timerFaceBackground = isExerciseMode
-    ? "bg-[radial-gradient(circle_at_30%_24%,rgba(15,23,42,.98)_0%,rgba(2,6,23,.98)_55%,rgba(2,6,23,1)_100%)]"
-    : "bg-[radial-gradient(circle_at_28%_22%,rgba(30,20,8,.98)_0%,rgba(15,10,4,.98)_55%,rgba(10,8,4,1)_100%)]";
+    ? "bg-[radial-gradient(circle_at_30%_22%,rgba(8,47,73,.98)_0%,rgba(2,6,23,.99)_52%,rgba(2,6,23,1)_100%)]"
+    : "bg-[radial-gradient(circle_at_28%_20%,rgba(69,26,3,.98)_0%,rgba(20,10,2,.99)_52%,rgba(12,8,2,1)_100%)]";
   const ringGradient = isExerciseMode
-    ? "conic-gradient(from 180deg at 50% 50%, rgba(191,219,254,0.98), rgba(56,189,248,0.96), rgba(37,99,235,0.92), rgba(15,23,42,0.9), rgba(191,219,254,0.98))"
-    : "conic-gradient(from 180deg at 50% 50%, rgba(255,254,240,0.99), rgba(250,204,21,0.98), rgba(245,158,11,0.95), rgba(236,72,153,0.75), rgba(124,58,237,0.62), rgba(255,254,240,0.99))";
+    ? "conic-gradient(from 180deg at 50% 50%, rgba(224,242,254,1), rgba(34,211,238,1), rgba(14,165,233,0.98), rgba(37,99,235,0.95), rgba(2,6,23,0.92), rgba(224,242,254,1))"
+    : "conic-gradient(from 180deg at 50% 50%, rgba(255,251,235,1), rgba(253,224,71,1), rgba(251,146,60,0.98), rgba(234,88,12,0.92), rgba(20,10,2,0.9), rgba(255,251,235,1))";
   const ringProgress = isExerciseMode
-    ? `conic-gradient(from -90deg at 50% 50%, rgba(14,116,234,0.99) 0 ${progressPercent}%, rgba(15,23,42,0.34) ${progressPercent}% 100%)`
-    : `conic-gradient(from -90deg at 50% 50%, rgba(255,215,64,0.99) 0 ${progressPercent}%, rgba(30,27,45,0.34) ${progressPercent}% 100%)`;
+    ? `conic-gradient(from -90deg at 50% 50%, rgba(34,211,238,1) 0 ${progressPercent}%, rgba(2,6,23,0.4) ${progressPercent}% 100%)`
+    : `conic-gradient(from -90deg at 50% 50%, rgba(251,191,36,1) 0 ${progressPercent}%, rgba(20,10,2,0.4) ${progressPercent}% 100%)`;
   const ringShadow = isExerciseMode
-    ? "0 14px 30px rgba(14,116,234,0.34)"
-    : "0 16px 32px rgba(234,179,8,0.36), 0 0 22px rgba(236,72,153,0.2)";
-  const polarShellClasses =
-    isExerciseMode
-      ? "border-sky-500/45 bg-[linear-gradient(145deg,rgba(2,6,23,0.97),rgba(7,25,51,0.95))] text-sky-50"
-      : "border-amber-500/60 bg-[linear-gradient(145deg,rgba(24,14,5,0.97),rgba(58,32,8,0.95))] text-amber-50";
-  const secondaryTextClass = isExerciseMode ? "text-sky-100/95" : "text-amber-100/95";
-  const neutralPillClasses =
-    isExerciseMode
-      ? "border-slate-700 bg-slate-950/60"
-      : "border-amber-900/50 bg-slate-950/45";
-  const inactiveModeButtonClasses =
-    isExerciseMode
-      ? "text-slate-300 hover:bg-slate-800 hover:text-sky-100"
-      : "text-amber-100/85 hover:bg-amber-950/35 hover:text-amber-50";
+    ? "0 0 28px rgba(34,211,238,0.45), 0 16px 36px rgba(14,165,233,0.35)"
+    : "0 0 28px rgba(251,191,36,0.48), 0 16px 36px rgba(234,88,12,0.32)";
+  const polarShellClasses = isExerciseMode
+    ? "border-cyan-400/55 bg-[linear-gradient(160deg,rgba(2,12,32,0.98)_0%,rgba(8,47,73,0.92)_48%,rgba(2,6,23,0.98)_100%)] text-sky-50 shadow-[0_0_40px_rgba(34,211,238,0.18)]"
+    : "border-amber-400/65 bg-[linear-gradient(160deg,rgba(28,12,2,0.98)_0%,rgba(120,53,15,0.88)_48%,rgba(12,8,2,0.98)_100%)] text-amber-50 shadow-[0_0_40px_rgba(251,146,60,0.2)]";
+  const secondaryTextClass = isExerciseMode
+    ? "text-cyan-100"
+    : "text-amber-100";
+  const neutralPillClasses = isExerciseMode
+    ? "border-cyan-500/35 bg-slate-950/70"
+    : "border-amber-500/40 bg-slate-950/55";
+  const inactiveModeButtonClasses = isExerciseMode
+    ? "text-slate-300 hover:bg-cyan-950/50 hover:text-cyan-100"
+    : "text-amber-100/80 hover:bg-amber-950/45 hover:text-amber-50";
   const timerButtonFrameClasses = isExerciseMode
-    ? "border-[5px] border-sky-900/80 text-white shadow-[0_14px_30px_rgba(14,116,234,0.24)]"
-    : "border-[5px] border-amber-900/80 text-white shadow-[0_14px_30px_rgba(234,179,8,0.3)]";
+    ? "border-[5px] border-cyan-400/70 text-white shadow-[0_0_24px_rgba(34,211,238,0.35),0_14px_30px_rgba(14,165,233,0.28)]"
+    : "border-[5px] border-amber-400/75 text-white shadow-[0_0_24px_rgba(251,191,36,0.4),0_14px_30px_rgba(234,88,12,0.3)]";
   const timerInnerRingClasses = isExerciseMode
-    ? "border border-sky-400/25"
-    : "border border-amber-400/25";
+    ? "border border-cyan-300/40"
+    : "border border-amber-300/45";
   const timerInnerShadeClasses = isExerciseMode
-    ? "shadow-[inset_0_8px_14px_rgba(56,189,248,0.08),inset_0_-12px_16px_rgba(2,6,23,0.55)]"
-    : "shadow-[inset_0_8px_14px_rgba(251,191,36,0.08),inset_0_-12px_16px_rgba(15,10,4,0.55)]";
+    ? "shadow-[inset_0_8px_18px_rgba(34,211,238,0.14),inset_0_-14px_20px_rgba(2,6,23,0.65)]"
+    : "shadow-[inset_0_8px_18px_rgba(251,191,36,0.16),inset_0_-14px_20px_rgba(20,10,2,0.65)]";
   const timerTopGlowClasses = isExerciseMode
-    ? "bg-sky-300/10"
-    : "bg-amber-300/10";
+    ? "bg-cyan-300/25"
+    : "bg-amber-300/30";
   const timerNeedleDotClasses = isExerciseMode
-    ? "bg-sky-950/90"
-    : "bg-amber-950/90";
+    ? "bg-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.9)]"
+    : "bg-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.9)]";
   const progressBadgeClasses = isExerciseMode
-    ? "rounded-full border border-sky-300/70 bg-sky-100/95 px-2 py-0.5 text-[11px] font-semibold text-sky-900"
-    : "rounded-full border border-amber-300/80 bg-amber-200/95 px-2 py-0.5 text-[11px] font-semibold text-amber-950";
+    ? "rounded-full border border-cyan-300/80 bg-cyan-100 px-2 py-0.5 text-[11px] font-semibold text-sky-950"
+    : "rounded-full border border-amber-300/90 bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-950";
+  const presetChipClasses = isExerciseMode
+    ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-50"
+    : "border-amber-400/45 bg-amber-400/10 text-amber-50";
 
   useEffect(() => {
     if (!reconciledPersistedState) return;
@@ -276,6 +283,29 @@ export default function DualModeTimer({
       setSelectedRestSeconds(reconciledPersistedState.restSeconds);
     });
   }, [reconciledPersistedState]);
+
+  // Keep idle countdown locked to the plan preset for the active mode.
+  useEffect(() => {
+    if (running) return;
+    if (remainingSeconds === activeSelectedSeconds) return;
+    remainingRef.current = activeSelectedSeconds;
+    runtimeAnchorMsRef.current = getCurrentTimestampMs();
+    setRemainingSeconds(activeSelectedSeconds);
+  }, [running, activeSelectedSeconds, remainingSeconds]);
+
+  // When the plan feeds new work/rest targets (new exercise), adopt them.
+  useEffect(() => {
+    const nextWork = clampDuration(initialExerciseSeconds, "exercise");
+    const nextRest = clampDuration(initialRestSeconds, "rest");
+    if (selectedExerciseRef.current !== nextWork) {
+      selectedExerciseRef.current = nextWork;
+      setSelectedExerciseSeconds(nextWork);
+    }
+    if (selectedRestRef.current !== nextRest) {
+      selectedRestRef.current = nextRest;
+      setSelectedRestSeconds(nextRest);
+    }
+  }, [initialExerciseSeconds, initialRestSeconds]);
 
   useEffect(() => {
     modeRef.current = mode;
@@ -633,13 +663,20 @@ export default function DualModeTimer({
             <span className={`pointer-events-none absolute inset-[9px] rounded-full ${timerInnerShadeClasses}`} />
             <span className={`pointer-events-none absolute top-8 left-10 h-6 w-20 rounded-full blur-sm ${timerTopGlowClasses}`} />
             <span className={`pointer-events-none absolute top-5 h-2 w-2 rounded-full ${timerNeedleDotClasses}`} />
-            {/* Phase 6k — pure white, bold, ≥48px for gym-floor glanceability (WCAG AAA). */}
-            <span
-              className="relative z-10 text-5xl font-bold tracking-tight text-[#FFFFFF] sm:text-6xl"
-              data-testid="session-timer-digits"
-            >
-              {formatTime(remainingSeconds)}
-            </span>
+            <div className="relative z-10 flex flex-col items-center gap-1">
+              <span
+                className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${secondaryTextClass}`}
+              >
+                {isExerciseMode ? "Working" : "Resting"}
+              </span>
+              {/* Phase 6k — pure white, bold, ≥48px for gym-floor glanceability (WCAG AAA). */}
+              <span
+                className="text-5xl font-bold tracking-tight text-[#FFFFFF] sm:text-6xl"
+                data-testid="session-timer-digits"
+              >
+                {formatTime(remainingSeconds)}
+              </span>
+            </div>
           </button>
         </div>
       </div>
@@ -667,7 +704,9 @@ export default function DualModeTimer({
       </p>
 
       <div className="mt-4">
-        <div className={`flex items-center justify-between text-xs font-semibold ${secondaryTextClass}`}>
+        <div
+          className={`flex items-center justify-between text-xs font-semibold ${secondaryTextClass}`}
+        >
           <span>Duration</span>
           <span>{formatTime(activeSelectedSeconds)}</span>
         </div>
@@ -695,12 +734,20 @@ export default function DualModeTimer({
             }
           }}
           className={`mt-3 w-full ${sliderAccentClass}`}
+          data-testid="session-timer-duration-slider"
         />
       </div>
 
-      <div className={`mt-4 flex flex-wrap gap-3 text-xs font-semibold ${secondaryTextClass}`}>
-        <span>Working: {formatTime(selectedExerciseSeconds)}</span>
-        <span>Resting: {formatTime(selectedRestSeconds)}</span>
+      <div
+        className={`mt-4 flex flex-wrap gap-2 text-xs font-semibold ${secondaryTextClass}`}
+        data-testid="session-timer-presets"
+      >
+        <span className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}>
+          Working {formatTime(selectedExerciseSeconds)}
+        </span>
+        <span className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}>
+          Resting {formatTime(selectedRestSeconds)}
+        </span>
       </div>
     </div>
   );
