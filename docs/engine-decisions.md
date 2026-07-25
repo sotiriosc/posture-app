@@ -875,3 +875,12 @@ to Day 1 recurring. Pro unlocks everything ongoing. All day-lock decisions
 read `canAccessWorkoutToday` from `useUserPlan` / `freemiumAccess` — no
 duplicated gating.
 
+### ED-6j.2 — Phase floor is 8 × sessions_per_week (AND with criteria)
+
+**Ratified 2026-07-24:** Each phase requires at least
+`getPhaseMinSessions(sessionsPerWeek) = 8 × sessions_per_week` completed
+sessions before advancement (3x→24, 4x→32, 5x→40). Phase 3.5 criteria remain
+unchanged; the floor is an AND on top. Soft max caps scale to 12× (Activation)
+/ 14× (Skill) weeks so max never sits below the floor. UI gate thresholds and
+hero copy follow the same frequency-scaled floor.
+

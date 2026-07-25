@@ -4,21 +4,60 @@
  * Single source of truth for all min/max session windows and criteria
  * thresholds used by the criteria-based phase gating evaluator.
  *
- * Changing any value here propagates to the evaluator and all tests
- * automatically.  Sotirios-ratified drafts (2026-07-22).
+ * Phase 6j — session floors scale with training frequency:
+ *   minSessions = 8 × sessions_per_week  (~8 weeks of real training)
  *
  * exported from @/lib/program/phaseGatingConstants
  */
 
 // ---------------------------------------------------------------------------
-// Session window constants
+// Session window constants (frequency-scaled — Phase 6j)
 // ---------------------------------------------------------------------------
 
-export const ACTIVATION_MIN_SESSIONS = 10;
-export const ACTIVATION_MAX_SESSIONS = 21;
+/** Weeks of actual training required before a phase may advance. */
+export const PHASE_FLOOR_WEEKS = 8;
 
-export const SKILL_MIN_SESSIONS = 12;
-export const SKILL_MAX_SESSIONS = 28;
+/** Soft ceiling for Activation when criteria never clear (~12 weeks). */
+export const ACTIVATION_MAX_WEEKS = 12;
+
+/** Soft ceiling for Skill when criteria never clear (~14 weeks). */
+export const SKILL_MAX_WEEKS = 14;
+
+const normalizeSessionsPerWeek = (value: number | null | undefined): 3 | 4 | 5 => {
+  const parsed = Math.floor(value ?? 3);
+  return parsed === 4 || parsed === 5 ? parsed : 3;
+};
+
+/**
+ * Phase 6j ratified floor: every phase lasts at least 8 weeks of real
+ * training, scaled to the user's sessions_per_week.
+ *
+ * 3x → 24 · 4x → 32 · 5x → 40
+ */
+export const getPhaseMinSessions = (sessionsPerWeek: number | null | undefined): number =>
+  PHASE_FLOOR_WEEKS * normalizeSessionsPerWeek(sessionsPerWeek);
+
+/**
+ * Soft max cap (still frequency-scaled). Always ≥ min so the evaluator's
+ * max-reached path cannot fire before the floor.
+ */
+export const getPhaseMaxSessions = (
+  phase: "activation" | "skill",
+  sessionsPerWeek: number | null | undefined
+): number => {
+  const weeks = phase === "activation" ? ACTIVATION_MAX_WEEKS : SKILL_MAX_WEEKS;
+  return weeks * normalizeSessionsPerWeek(sessionsPerWeek);
+};
+
+/**
+ * Default-3x aliases kept for tests and call sites that have not yet
+ * threaded sessionsPerWeek. Prefer getPhaseMinSessions / getPhaseMaxSessions.
+ */
+export const ACTIVATION_MIN_SESSIONS = getPhaseMinSessions(3);
+export const ACTIVATION_MAX_SESSIONS = getPhaseMaxSessions("activation", 3);
+
+export const SKILL_MIN_SESSIONS = getPhaseMinSessions(3);
+export const SKILL_MAX_SESSIONS = getPhaseMaxSessions("skill", 3);
 
 /**
  * Growth phase has no auto-advance ceiling — the cycle restarts at activation

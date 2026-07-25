@@ -4,28 +4,27 @@ import { applyCompletedDayToProgramProgress } from "@/lib/programProgress";
 import type { ProgramProgress } from "@/lib/types";
 
 describe("phase gating rules", () => {
-  test("phase 1 passes with either 30 days or daysPerWeek * 4 workouts", () => {
+  test("phase 1 floors at 8 × daysPerWeek workouts (Phase 6j)", () => {
     const blocked = canAdvancePhase(
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-25T00:00:00.000Z",
-        workoutsCompletedInPhase: 11,
+        workoutsCompletedInPhase: 23,
         cyclesCompletedInPhase: 4,
         daysPerWeek: 3,
       },
       "2026-02-05T00:00:00.000Z"
     );
     expect(blocked.ok).toBe(false);
-    expect(blocked.minWorkouts).toBe(12);
-    expect(blocked.reasons.join(" ")).toContain("12 workouts");
-    expect(blocked.reasons.join(" ")).toContain("30 days");
+    expect(blocked.minWorkouts).toBe(24);
+    expect(blocked.reasons.join(" ")).toContain("24 workouts");
     expect(blocked.satisfiedBy).toBeNull();
 
     const passedByWorkouts = canAdvancePhase(
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-25T00:00:00.000Z",
-        workoutsCompletedInPhase: 12,
+        workoutsCompletedInPhase: 24,
         cyclesCompletedInPhase: 0,
         daysPerWeek: 3,
       },
@@ -42,7 +41,7 @@ describe("phase gating rules", () => {
         cyclesCompletedInPhase: 0,
         daysPerWeek: 3,
       },
-      "2026-02-01T00:00:00.000Z"
+      "2026-03-01T00:00:00.000Z"
     );
     expect(passedByDays.ok).toBe(true);
     expect(passedByDays.satisfiedBy).toBe("days");
@@ -51,17 +50,17 @@ describe("phase gating rules", () => {
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-01T00:00:00.000Z",
-        workoutsCompletedInPhase: 12,
+        workoutsCompletedInPhase: 24,
         cyclesCompletedInPhase: 0,
         daysPerWeek: 3,
       },
-      "2026-02-01T00:00:00.000Z"
+      "2026-03-01T00:00:00.000Z"
     );
     expect(passedByBoth.ok).toBe(true);
     expect(passedByBoth.satisfiedBy).toBe("both");
   });
 
-  test("phase 2 and phase 3+ pass with either 60 days or daysPerWeek * 8 workouts", () => {
+  test("phase 2 and phase 3+ also floor at 8 × daysPerWeek (Phase 6j)", () => {
     const phase2Blocked = canAdvancePhase(
       {
         phaseIndex: 2,
@@ -115,7 +114,7 @@ describe("phase gating rules", () => {
     expect(phase3Blocked.ok).toBe(false);
     expect(phase3Blocked.minWorkouts).toBe(40);
     expect(phase3Blocked.reasons.join(" ")).toContain("40 workouts");
-    expect(phase3Blocked.reasons.join(" ")).toContain("60 days");
+    expect(phase3Blocked.reasons.join(" ")).toContain("56 days");
   });
 });
 

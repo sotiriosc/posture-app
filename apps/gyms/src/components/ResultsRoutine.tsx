@@ -2591,7 +2591,7 @@ export default function ResultsRoutine({
       ? gateSatisfiedText
       : gateRemainingText;
   const phaseGateProgressText = `Workouts in phase: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days in phase: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
-  const phaseRequirementsText = `Complete ${phaseGate.minWorkouts} workouts or spend at least ${phaseGate.minDays} days in this phase.`;
+  const phaseRequirementsText = `Phase advances after ${phaseGate.minWorkouts} sessions or when readiness criteria clear — whichever comes later.`;
   const adaptationTrendItems = [
     ...(program.sessionAdaptation?.reasons ?? []),
     ...(program.sessionAdaptation?.appliedChanges ?? []),

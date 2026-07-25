@@ -48,7 +48,7 @@ export default function DashboardHero({
     ? "You're in the final phase — keep building strength and clean execution."
     : phaseGateReady
     ? `You've met what's needed to move to Phase ${nextPhaseIndex}.`
-    : `Phase ${nextPhaseIndex} unlocks after ${workoutTarget} sessions or ${dayTarget} days — you're at ${workoutsCompletedInPhase} ${
+    : `Phase ${nextPhaseIndex} unlocks after ${workoutTarget} sessions or when the criteria signal your body is ready — whichever comes later. You're at ${workoutsCompletedInPhase} ${
         workoutsCompletedInPhase === 1 ? "session" : "sessions"
       }.`;
 

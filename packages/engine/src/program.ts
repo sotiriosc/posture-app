@@ -34209,6 +34209,7 @@ export const generateWeeklyProgram = (
         deferredExerciseCount: options?.deferredExerciseCount,
         activationSacrificeQueueCleared: options?.activationSacrificeQueueCleared,
         trainingIntent: resolvedIntent,
+        sessionsPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
       });
       return buildPhaseTransitionState({
         verdict,
@@ -34221,6 +34222,7 @@ export const generateWeeklyProgram = (
           deferredExerciseCount: options?.deferredExerciseCount,
           activationSacrificeQueueCleared: options?.activationSacrificeQueueCleared,
           trainingIntent: resolvedIntent,
+          sessionsPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
         },
         priorState: options?.priorPhaseTransitionState,
       });
@@ -34246,6 +34248,7 @@ export const generateWeeklyProgram = (
         deferredExerciseCount: options?.deferredExerciseCount,
         activationSacrificeQueueCleared: options?.activationSacrificeQueueCleared,
         trainingIntent: resolvedIntent,
+        sessionsPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
       });
       if (verdict.verdict !== "advance") return options?.priorPhaseHistory;
       // A transition just occurred: append to history.

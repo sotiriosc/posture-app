@@ -30,10 +30,14 @@ export const getPhaseGateThreshold = (
   daysPerWeek?: number | null
 ): PhaseGateThreshold => {
   const safeDaysPerWeek = normalizeDaysPerWeek(daysPerWeek);
+  // Phase 6j — every phase floors at 8 weeks of real training
+  // (8 × sessions_per_week). Calendar-day OR remains as a secondary path
+  // so long-running sparse trainers are not trapped forever.
+  const minWorkouts = safeDaysPerWeek * 8;
   if (phaseIndex <= 1) {
-    return { minDays: 30, minWorkouts: safeDaysPerWeek * 4 };
+    return { minDays: 56, minWorkouts };
   }
-  return { minDays: 60, minWorkouts: safeDaysPerWeek * 8 };
+  return { minDays: 56, minWorkouts };
 };
 
 const safeDaysSince = (phaseStartedAt: string | null | undefined, nowIso: string) => {
