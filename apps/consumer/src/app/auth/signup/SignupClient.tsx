@@ -18,7 +18,8 @@ export default function SignupClient() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [emailOptIn, setEmailOptIn] = useState(true);
+  // Hidden for now — re-enable when marketing email is ready.
+  // const [emailOptIn, setEmailOptIn] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +35,7 @@ export default function SignupClient() {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, emailOptIn }),
+        body: JSON.stringify({ name, email, password, emailOptIn: false }),
       });
       const payload = (await response.json().catch(() => null)) as {
         ok?: boolean;
@@ -115,6 +116,7 @@ export default function SignupClient() {
               required
             />
           </label>
+          {/* Email opt-in — hidden for now; keep for future marketing email.
           <label className="mt-3 flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
             <input
               type="checkbox"
@@ -126,6 +128,7 @@ export default function SignupClient() {
               Email me movement system updates and corrective guidance tips. You can unsubscribe anytime.
             </span>
           </label>
+          */}
           {error ? (
             <p className="ui-feedback-error mt-3">
               {error}
