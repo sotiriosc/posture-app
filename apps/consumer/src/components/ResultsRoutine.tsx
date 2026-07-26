@@ -65,6 +65,7 @@ import {
 } from "@/lib/phaseControls";
 import { getDailyInsight } from "@/lib/insightGenerator";
 import DashboardHero from "@/components/dashboard/DashboardHero";
+import PlanOwnershipCopy from "@/components/marketing/PlanOwnershipCopy";
 import CoachNoteBanner from "@/components/dashboard/CoachNoteBanner";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
@@ -2642,6 +2643,7 @@ export default function ResultsRoutine() {
     program.phaseObjective?.objective ??
     "Build movement control and clean execution.";
   const {
+    focusAreas,
     movementPatternItems,
     stabilityPatternItems,
     compensationPatternItems,
@@ -3302,6 +3304,14 @@ export default function ResultsRoutine() {
       </div>
 
       <AssessmentStatusCard status={assessmentStatus} />
+
+      {/* Phase 6L Commit 1 — ownership proof; photo path only cites real findings. */}
+      {assessmentStatus.tone === "photo" ? (
+        <PlanOwnershipCopy variant="photo" focusAreas={focusAreas} />
+      ) : null}
+      {assessmentStatus.tone === "fallback" ? (
+        <PlanOwnershipCopy variant="profile" />
+      ) : null}
 
       {showRetestPrompt && (
         <RetestPromptCard

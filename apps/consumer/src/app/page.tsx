@@ -3,6 +3,7 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import Footer from "@/components/Footer";
+import ValuePromiseSection from "@/components/marketing/ValuePromiseSection";
 
 export default async function Home() {
   const systemSteps = [
@@ -75,6 +76,8 @@ export default async function Home() {
                 Start with photos or answer the profile questions first. Both paths lead to your plan.
               </p>
             </section>
+
+            <ValuePromiseSection />
 
             <section className="ui-soft-surface w-full rounded-lg px-5 py-6 sm:px-6 sm:py-7">
               <div className="flex flex-wrap items-end justify-center gap-3 text-center sm:justify-between sm:text-left">

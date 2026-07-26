@@ -7,6 +7,7 @@ import {
   FIRST_WEEK_UPGRADE_COPY,
 } from "@/lib/freemiumAccess";
 import { useUserPlan } from "@/hooks/useUserPlan";
+import UpgradeValueContext from "@/components/marketing/UpgradeValueContext";
 
 export default function UpgradePrompt() {
   const { hasCompletedFirstWeek } = useUserPlan();
@@ -95,6 +96,7 @@ export default function UpgradePrompt() {
         <p className="ui-kicker">Praxis Pro</p>
         <p className="mt-1 text-lg font-semibold text-white">{headline}</p>
         <p className="mt-2 text-sm text-slate-300">{body}</p>
+        <UpgradeValueContext />
         {checkoutEnabled ? (
           <div className="mt-4">
             <Button type="button" onClick={startCheckout} disabled={checkoutLoading}>
