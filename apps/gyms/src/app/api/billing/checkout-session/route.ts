@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { readServerSession } from "@/lib/serverAuth";
-import { createStripeCheckoutSession, isStripeConfigured } from "@/lib/stripeServer";
+import {
+  createStripeCheckoutSession,
+  isStripeConfigured,
+  parseStripeCheckoutPlan,
+} from "@/lib/stripeServer";
 import { takeRateLimit } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
@@ -26,15 +30,34 @@ export async function POST(request: Request) {
   if (!isStripeConfigured()) {
     return NextResponse.json({ ok: false, error: "Stripe not configured." }, { status: 500 });
   }
+
+  let plan = parseStripeCheckoutPlan("monthly");
+  try {
+    const body = (await request.json().catch(() => null)) as {
+      plan?: unknown;
+    } | null;
+    const requested = parseStripeCheckoutPlan(body?.plan);
+    if (body?.plan != null && !requested) {
+      return NextResponse.json(
+        { ok: false, error: "Invalid plan. Use monthly, annual, or founders." },
+        { status: 400 }
+      );
+    }
+    if (requested) plan = requested;
+  } catch {
+    // Empty / non-JSON body → default monthly.
+  }
+
   try {
     const checkout = await createStripeCheckoutSession({
       userId: session.id,
       email: session.email,
+      plan: plan ?? "monthly",
     });
     if (!checkout.url) {
       return NextResponse.json({ ok: false, error: "Stripe checkout unavailable." }, { status: 500 });
     }
-    return NextResponse.json({ ok: true, url: checkout.url });
+    return NextResponse.json({ ok: true, url: checkout.url, plan: plan ?? "monthly" });
   } catch (error) {
     return NextResponse.json(
       {

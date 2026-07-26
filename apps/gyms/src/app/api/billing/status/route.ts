@@ -1,16 +1,25 @@
 import { NextResponse } from "next/server";
 import { readServerSession } from "@/lib/serverAuth";
 import { getUserRepository } from "@/lib/userRepository";
-import { isStripeConfigured } from "@/lib/stripeServer";
+import {
+  getStripeCheckoutPlanAvailability,
+  isStripeConfigured,
+} from "@/lib/stripeServer";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
   const session = await readServerSession();
+  const checkoutPlans = getStripeCheckoutPlanAvailability();
   if (!session) {
     return NextResponse.json(
-      { ok: true, authenticated: false, stripeConfigured: isStripeConfigured() },
+      {
+        ok: true,
+        authenticated: false,
+        stripeConfigured: isStripeConfigured(),
+        checkoutPlans,
+      },
       {
         headers: {
           "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
@@ -27,6 +36,7 @@ export async function GET() {
       ok: true,
       authenticated: true,
       stripeConfigured: isStripeConfigured(),
+      checkoutPlans,
       user: {
         id: session.id,
         email: session.email,

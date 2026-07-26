@@ -21,5 +21,10 @@ ADMIN_ACCESS_KEY=replace-with-local-admin-key
 
 # Optional Stripe test-mode values only when testing billing locally.
 STRIPE_SECRET_KEY=
-STRIPE_PRICE_ID=
+STRIPE_PRICE_ID_MONTHLY=
+STRIPE_PRICE_ID_ANNUAL=
+# Optional; otherwise founders resolves via lookup key praxis_founders_monthly
+STRIPE_PRICE_ID_FOUNDERS=
+# Legacy single-price fallback (still accepted as monthly)
+# STRIPE_PRICE_ID=
 STRIPE_WEBHOOK_SECRET=
