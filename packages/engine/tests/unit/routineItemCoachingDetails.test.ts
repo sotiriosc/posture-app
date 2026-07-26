@@ -14,9 +14,12 @@ describe("RoutineItemCoachingDetails", () => {
     const { container } = render(
       React.createElement(RoutineItemCoachingDetails, {
         item: {
+          section: "main",
+          loadType: "weighted",
           prescription: {
             sets: 2,
             reps: "8-12",
+            // legacy prescription.tempo must be ignored in favor of section tempo
             tempo: "3-1-2 controlled",
             restSeconds: 60,
             targetRPE: 6,
@@ -35,7 +38,8 @@ describe("RoutineItemCoachingDetails", () => {
 
     expect(screen.getByText("2 sets")).toBeTruthy();
     expect(screen.getByText("8-12 reps")).toBeTruthy();
-    expect(screen.getByText("3-1-2 controlled")).toBeTruthy();
+    expect(screen.getByText("Tempo 2-0-2-0")).toBeTruthy();
+    expect(screen.queryByText("3-1-2 controlled")).toBeNull();
     expect(screen.getByText("60s rest")).toBeTruthy();
     expect(screen.getByText("RPE 6")).toBeTruthy();
     expect(screen.getByText("Coach notes")).toBeTruthy();

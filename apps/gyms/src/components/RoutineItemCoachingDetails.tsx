@@ -1,8 +1,9 @@
 import type { ProgramRoutineItem } from "@/lib/types";
+import { tempoDisplayForItem } from "@/lib/timerRules";
 import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
 
 type RoutineItemCoachingDetailsProps = {
-  item: Pick<ProgramRoutineItem, "prescription" | "rationale">;
+  item: Pick<ProgramRoutineItem, "prescription" | "rationale" | "section" | "loadType">;
   fallbackDose?: string | null;
   fallbackRationale?: string | null;
   className?: string;
@@ -21,7 +22,7 @@ const formatReps = (reps: string) => {
 };
 
 export const getRoutineItemDoseParts = (
-  item: Pick<ProgramRoutineItem, "prescription">,
+  item: Pick<ProgramRoutineItem, "prescription" | "section" | "loadType">,
   fallbackDose?: string | null
 ) => {
   const prescription = item.prescription;
@@ -30,7 +31,8 @@ export const getRoutineItemDoseParts = (
   const parts = [
     typeof prescription.sets === "number" ? formatSets(prescription.sets) : null,
     prescription.reps ? formatReps(prescription.reps) : null,
-    prescription.tempo,
+    // Section tempo from timerRules — ignore legacy prescription.tempo if present.
+    tempoDisplayForItem(item),
     typeof prescription.restSeconds === "number" ? `${prescription.restSeconds}s rest` : null,
     typeof prescription.targetRPE === "number" ? `RPE ${prescription.targetRPE}` : null,
   ].filter((part): part is string => Boolean(part));
@@ -39,7 +41,7 @@ export const getRoutineItemDoseParts = (
 };
 
 export const formatRoutineItemDose = (
-  item: Pick<ProgramRoutineItem, "prescription">,
+  item: Pick<ProgramRoutineItem, "prescription" | "section" | "loadType">,
   fallbackDose?: string | null
 ) => {
   const parts = getRoutineItemDoseParts(item, fallbackDose);

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   getEffectiveTimer,
   parseRepTarget,
+  tempoDisplayForItem,
+  tempoDisplayForSection,
   tempoNotationForPace,
   tempoPaceForSection,
   TEMPO_NOTATION,
@@ -23,6 +25,17 @@ describe("timerRules — section tempo + reps×tempo", () => {
     expect(TEMPO_NOTATION.fast).toBe("1-0-1-0");
     expect(tempoNotationForPace("slow")).toBe("2-0-2-0");
     expect(tempoNotationForPace("fast")).toBe("1-0-1-0");
+  });
+
+  it("displays section tempo and omits it for timed holds", () => {
+    expect(tempoDisplayForSection("main")).toBe("Tempo 2-0-2-0");
+    expect(tempoDisplayForSection("accessory")).toBe("Tempo 1-0-1-0");
+    expect(
+      tempoDisplayForItem({ section: "warmup", loadType: "bodyweight" })
+    ).toBe("Tempo 2-0-2-0");
+    expect(
+      tempoDisplayForItem({ section: "main", loadType: "timed" })
+    ).toBeNull();
   });
 
   it("parses rep ranges and per-side", () => {

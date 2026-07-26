@@ -52,7 +52,8 @@ const equipmentOptions = [
   { value: "none", label: "None" },
   { value: "bands", label: "Resistance bands" },
   { value: "dumbbells", label: "Dumbbells" },
-  { value: "foam_roller", label: "Foam roller" },
+  // Hidden for now — foam-roll work isn't a core path we need in onboarding.
+  // { value: "foam_roller", label: "Foam roller" },
   { value: "gym", label: "Gym" },
 ];
 
