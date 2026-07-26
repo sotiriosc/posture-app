@@ -77,7 +77,23 @@ APP_URL=...                    (gyms's own production URL, e.g. https://gyms.pra
 NEXT_PUBLIC_APP_URL=...        (same value as APP_URL)
 NEXT_PUBLIC_SITE_URL=...       (gyms's own production URL)
 NEXT_PUBLIC_PLAUSIBLE_SRC=...  (separate — must point at a distinct Plausible site so analytics don't mix the two products)
+
+# Phase 6L — /feedback Google Form → Sheet (consumer only)
+NEXT_PUBLIC_GOOGLE_FEEDBACK_FORM_ACTION=https://docs.google.com/forms/d/e/FORM_ID/formResponse
+NEXT_PUBLIC_GOOGLE_FEEDBACK_ENTRY_WORKING=entry.XXXXXXXXX
+NEXT_PUBLIC_GOOGLE_FEEDBACK_ENTRY_FRUSTRATING=entry.XXXXXXXXX
+NEXT_PUBLIC_GOOGLE_FEEDBACK_ENTRY_BETTER=entry.XXXXXXXXX
+NEXT_PUBLIC_GOOGLE_FEEDBACK_ENTRY_EMAIL=entry.XXXXXXXXX
+NEXT_PUBLIC_GOOGLE_FEEDBACK_ENTRY_RATING=entry.XXXXXXXXX
 ```
+
+Consumer-only Google Form vars: create a Google Form with the five fields
+(working / frustrating / better / email / rating), open the live form,
+inspect each input for `name="entry.…"`, then paste the formResponse URL
+and entry IDs into Vercel. Responses land in the linked Google Sheet —
+nothing is stored in Praxis's DB. Until these are set, production falls
+back to a `mailto:support@praxis.app` compose; local/CI still shows the
+in-app thank-you path for testing.
 
 `ADMIN_ACCESS_KEY`, `DATABASE_URL`, `USER_STORE_DRIVER`, and
 `TRAINING_STORE_DRIVER` can be copied verbatim from the consumer project

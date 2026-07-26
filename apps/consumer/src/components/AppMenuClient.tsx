@@ -80,6 +80,7 @@ export default function AppMenuClient({
     }
     if (isAdmin) nav.push({ href: "/settings", label: "Admin Settings" });
     nav.push({ href: "/faq", label: "Help & FAQ" });
+    nav.push({ href: "/feedback", label: "Send feedback" });
     nav.push({ href: "/", label: "Home" });
     return nav;
   }, [isAdmin, authEnabled, authenticated]);

@@ -66,6 +66,11 @@ import {
 import { getDailyInsight } from "@/lib/insightGenerator";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import PlanOwnershipCopy from "@/components/marketing/PlanOwnershipCopy";
+import FeedbackPromptCard from "@/components/feedback/FeedbackPromptCard";
+import {
+  FEEDBACK_PROMPT_DISMISSED_KEY,
+  FEEDBACK_PROMPT_MIN_SESSIONS,
+} from "@/components/feedback/feedbackFormConfig";
 import CoachNoteBanner from "@/components/dashboard/CoachNoteBanner";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
@@ -895,6 +900,10 @@ export default function ResultsRoutine() {
   const [levelUpNotice, setLevelUpNotice] = useState<LevelUpNotice | null>(null);
   // Phase 4 — retest prompt dismissed state (defers to next transition).
   const [retestPromptDismissed, setRetestPromptDismissed] = useState(false);
+  const [feedbackPromptDismissed, setFeedbackPromptDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(FEEDBACK_PROMPT_DISMISSED_KEY) === "1";
+  });
   const knowledgeSectionRef = useRef<HTMLDivElement | null>(null);
   const systemAdjustmentsSectionRef = useRef<HTMLDivElement | null>(null);
   const weekViewSectionRef = useRef<HTMLElement | null>(null);
@@ -1073,6 +1082,8 @@ export default function ResultsRoutine() {
     if (retestPromptDismissed) return false;
     if (!program) return false;
     const sessionCount = progress?.completedDayIndices?.length ?? 0;
+    // Phase 6L Commit 4 — hold retest prompts until after first session.
+    if (sessionCount < 1) return false;
     const assessmentHistory = program.assessmentHistory ?? [];
     const lastRetestSessionCount =
       assessmentHistory.length > 0 ? (assessmentHistory.length - 1) * 1 : 0;
@@ -1082,6 +1093,18 @@ export default function ResultsRoutine() {
       lastRetestSessionCount,
     });
   }, [progress?.completedDayIndices?.length, program, retestPromptDismissed]);
+
+  // Phase 6L Commit 2 — one-time feedback ask after the 5th session (never first-run).
+  const showFeedbackPrompt = useMemo(() => {
+    if (feedbackPromptDismissed) return false;
+    const sessionCount = progress?.completedDayIndices?.length ?? 0;
+    return sessionCount >= FEEDBACK_PROMPT_MIN_SESSIONS;
+  }, [feedbackPromptDismissed, progress?.completedDayIndices?.length]);
+
+  const dismissFeedbackPrompt = useCallback(() => {
+    localStorage.setItem(FEEDBACK_PROMPT_DISMISSED_KEY, "1");
+    setFeedbackPromptDismissed(true);
+  }, []);
 
   const buildWhyPicked = (exercise: Exercise) => {
     const patterns = exercise.movementPattern;
@@ -3311,6 +3334,10 @@ export default function ResultsRoutine() {
       ) : null}
       {assessmentStatus.tone === "fallback" ? (
         <PlanOwnershipCopy variant="profile" />
+      ) : null}
+
+      {showFeedbackPrompt ? (
+        <FeedbackPromptCard onDismiss={dismissFeedbackPrompt} />
       ) : null}
 
       {showRetestPrompt && (
