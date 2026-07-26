@@ -83,6 +83,7 @@ export * from "./runtimeEnv";
 // ── Stripe / billing ─────────────────────────────────────────────────────────
 export * from "./stripeServer";
 export * from "./stripeWebhookLogic";
+export * from "./billingDisplay";
 
 // ── UI-layer logic (shared helpers consumed by consumer components) ────────────
 export * from "./historyView";

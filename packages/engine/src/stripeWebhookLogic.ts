@@ -19,7 +19,7 @@ type StripeEventObject = {
   cancel_at_period_end?: boolean;
 };
 
-const mapSubscriptionStatusToPlan = (statusRaw: unknown) => {
+export const mapSubscriptionStatusToPlan = (statusRaw: unknown) => {
   const status = String(statusRaw ?? "").toLowerCase();
   if (status === "active" || status === "trialing" || status === "past_due") return "pro" as const;
   if (

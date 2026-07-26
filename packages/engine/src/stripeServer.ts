@@ -193,6 +193,122 @@ export const createStripePortalSession = async (params: { customerId: string }) 
   });
 };
 
+type StripeSubscriptionObject = {
+  id?: string;
+  object?: string;
+  status?: string;
+  customer?: string | { id?: string };
+  cancel_at_period_end?: boolean;
+  current_period_end?: number;
+  items?: { data?: Array<{ price?: { id?: string } }> };
+  plan?: { id?: string };
+};
+
+export type StripeSubscriptionSnapshot = {
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  stripePriceId: string | null;
+  stripeSubscriptionStatus: string | null;
+  stripeCurrentPeriodEnd: string | null;
+  stripeCancelAtPeriodEnd: boolean;
+  plan: "free" | "pro";
+};
+
+const STATUS_RANK: Record<string, number> = {
+  active: 50,
+  trialing: 40,
+  past_due: 30,
+  incomplete: 20,
+  paused: 15,
+  unpaid: 10,
+  canceled: 5,
+  incomplete_expired: 1,
+};
+
+const customerIdFromSubscription = (sub: StripeSubscriptionObject) => {
+  if (typeof sub.customer === "string") return sub.customer;
+  if (sub.customer && typeof sub.customer === "object" && sub.customer.id) {
+    return sub.customer.id;
+  }
+  return null;
+};
+
+export const stripeSubscriptionToSnapshot = (
+  sub: StripeSubscriptionObject
+): StripeSubscriptionSnapshot => {
+  const status = typeof sub.status === "string" ? sub.status : null;
+  const planFromStatus = (() => {
+    const normalized = String(status ?? "").toLowerCase();
+    if (normalized === "active" || normalized === "trialing" || normalized === "past_due") {
+      return "pro" as const;
+    }
+    return "free" as const;
+  })();
+  return {
+    stripeCustomerId: customerIdFromSubscription(sub),
+    stripeSubscriptionId: typeof sub.id === "string" ? sub.id : null,
+    stripePriceId: sub.items?.data?.[0]?.price?.id ?? sub.plan?.id ?? null,
+    stripeSubscriptionStatus: status,
+    stripeCurrentPeriodEnd:
+      typeof sub.current_period_end === "number"
+        ? new Date(sub.current_period_end * 1000).toISOString()
+        : null,
+    stripeCancelAtPeriodEnd: Boolean(sub.cancel_at_period_end),
+    plan: planFromStatus,
+  };
+};
+
+const pickBestSubscription = (subs: StripeSubscriptionObject[]) => {
+  if (subs.length === 0) return null;
+  return [...subs].sort((a, b) => {
+    const rankA = STATUS_RANK[String(a.status ?? "").toLowerCase()] ?? 0;
+    const rankB = STATUS_RANK[String(b.status ?? "").toLowerCase()] ?? 0;
+    if (rankA !== rankB) return rankB - rankA;
+    return (b.current_period_end ?? 0) - (a.current_period_end ?? 0);
+  })[0]!;
+};
+
+/**
+ * Direct Stripe retrieve (not event replay). Prefers subscription id, else the
+ * best subscription for the customer.
+ */
+export const fetchStripeSubscriptionSnapshot = async (params: {
+  subscriptionId?: string | null;
+  customerId?: string | null;
+}): Promise<StripeSubscriptionSnapshot | null> => {
+  if (params.subscriptionId) {
+    try {
+      const sub = await callStripeGet<StripeSubscriptionObject>(
+        `/subscriptions/${encodeURIComponent(params.subscriptionId)}`
+      );
+      return stripeSubscriptionToSnapshot(sub);
+    } catch {
+      // Fall through to customer listing when the stored sub id is stale.
+    }
+  }
+  if (!params.customerId) return null;
+  const query = new URLSearchParams({
+    customer: params.customerId,
+    status: "all",
+    limit: "10",
+  });
+  const listed = await callStripeGet<{ data?: StripeSubscriptionObject[] }>(
+    `/subscriptions?${query.toString()}`
+  );
+  const best = pickBestSubscription(listed.data ?? []);
+  return best ? stripeSubscriptionToSnapshot(best) : null;
+};
+
+export const billingPatchFromSnapshot = (snapshot: StripeSubscriptionSnapshot) => ({
+  plan: snapshot.plan,
+  stripeCustomerId: snapshot.stripeCustomerId,
+  stripeSubscriptionId: snapshot.stripeSubscriptionId,
+  stripePriceId: snapshot.stripePriceId,
+  stripeSubscriptionStatus: snapshot.stripeSubscriptionStatus,
+  stripeCurrentPeriodEnd: snapshot.stripeCurrentPeriodEnd,
+  stripeCancelAtPeriodEnd: snapshot.stripeCancelAtPeriodEnd,
+});
+
 const parseStripeSignature = (header: string) => {
   const parts = header.split(",").map((item) => item.trim());
   const fields = Object.fromEntries(
