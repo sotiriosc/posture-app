@@ -111,6 +111,7 @@ import {
 } from "@/lib/logStore";
 import { loadTrainingSnapshot } from "@/lib/trainingSyncClient";
 import { markSessionComplete } from "@/lib/sessionStore";
+import { hasCompletedFirstSession } from "@/firstRunCalm";
 import {
   FALLBACK_REP_RANGE_COPY,
   FALLBACK_TIMED_DURATION_COPY,
@@ -809,7 +810,8 @@ export default function SessionClient() {
           setSessionPlanIssue(null);
 
           // Phase 3.2 — compute pre-session feedback contract triggers.
-          if (routableDayIndex !== null) {
+          // Phase 6L Commit 4 — hold all contract prompts until after first session.
+          if (routableDayIndex !== null && hasCompletedFirstSession()) {
             try {
               const day = resolvedProgram.week.find(
                 (d) => d.dayIndex === routableDayIndex
@@ -883,23 +885,26 @@ export default function SessionClient() {
           }
 
           // Phase 3.3 — compute maintain-mode phase-transition prompts.
-          try {
-            const intent = resolvedQuestionnaire?.trainingIntent ?? "build";
-            if (intent === "maintain" && resolvedProgram.ladderState) {
-              const phaseIdx = resolvedProgress?.phaseIndex ?? 0;
-              const prompts = computeMaintainPrompts({
-                trainingIntent: "maintain",
-                ladderState: resolvedProgram.ladderState,
-                phaseIndex: phaseIdx,
-              });
-              if (prompts.length > 0) {
-                setMaintainPrompts(prompts);
-                setMaintainPromptIndex(0);
-                setMaintainPromptsDismissed(false);
+          // Phase 6L Commit 4 — hold until after first session.
+          if (hasCompletedFirstSession()) {
+            try {
+              const intent = resolvedQuestionnaire?.trainingIntent ?? "build";
+              if (intent === "maintain" && resolvedProgram.ladderState) {
+                const phaseIdx = resolvedProgress?.phaseIndex ?? 0;
+                const prompts = computeMaintainPrompts({
+                  trainingIntent: "maintain",
+                  ladderState: resolvedProgram.ladderState,
+                  phaseIndex: phaseIdx,
+                });
+                if (prompts.length > 0) {
+                  setMaintainPrompts(prompts);
+                  setMaintainPromptIndex(0);
+                  setMaintainPromptsDismissed(false);
+                }
               }
+            } catch {
+              // Non-critical: proceed with session normally.
             }
-          } catch {
-            // Non-critical: proceed with session normally.
           }
           return;
         }

@@ -71,6 +71,7 @@ import {
   FEEDBACK_PROMPT_DISMISSED_KEY,
   FEEDBACK_PROMPT_MIN_SESSIONS,
 } from "@/components/feedback/feedbackFormConfig";
+import { hasCompletedFirstSession } from "@/firstRunCalm";
 import CoachNoteBanner from "@/components/dashboard/CoachNoteBanner";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
@@ -904,6 +905,18 @@ export default function ResultsRoutine() {
     if (typeof window === "undefined") return false;
     return localStorage.getItem(FEEDBACK_PROMPT_DISMISSED_KEY) === "1";
   });
+  const [firstSessionComplete, setFirstSessionComplete] = useState(() =>
+    hasCompletedFirstSession()
+  );
+
+  useEffect(() => {
+    const sync = () => setFirstSessionComplete(hasCompletedFirstSession());
+    sync();
+    window.addEventListener(SESSION_COMPLETE_EVENT, sync as EventListener);
+    return () => {
+      window.removeEventListener(SESSION_COMPLETE_EVENT, sync as EventListener);
+    };
+  }, []);
   const knowledgeSectionRef = useRef<HTMLDivElement | null>(null);
   const systemAdjustmentsSectionRef = useRef<HTMLDivElement | null>(null);
   const weekViewSectionRef = useRef<HTMLElement | null>(null);
@@ -2854,7 +2867,9 @@ export default function ResultsRoutine() {
   const shouldPulsePrimaryCta =
     heroCta.label === "Start Today's Session" &&
     !completedDaySet.has(effectiveNextDayIndex);
+  // Phase 6L Commit 4 — weekly nudge after first session only.
   const showWeeklyCompletionNudge =
+    firstSessionComplete &&
     completedCount < activeDaysPerWeek &&
     !completedDaySet.has(effectiveNextDayIndex);
 

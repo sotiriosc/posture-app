@@ -12,7 +12,7 @@ export default function UpgradeValueContext() {
         What this actually costs
       </p>
       <p className="mt-2 text-sm leading-relaxed text-slate-200">
-        A good personal trainer runs $6,000 to $15,000 a year. Praxis is $300.
+        A good personal trainer runs $6,000 to $15,000 a year. Praxis is $240.
       </p>
       <p className="mt-2 text-sm leading-relaxed text-slate-300">
         That&apos;s not because an app replaces a great coach — it&apos;s because most

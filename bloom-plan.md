@@ -2532,7 +2532,287 @@ Merge commit.
 
 
 
+# Phase 6L — Value Copy + Feedback + Reviews
 
+Branch: `phase-6l-copy-feedback-reviews` from `origin/main`.
+Multi-commit. Marketing copy, a feedback capture page, and a testimonial
+display system for the landing page.
+
+## Guiding principle (log as SR-6L)
+
+Praxis's positioning is honesty. The value proposition is stated as fact,
+never as hype. The edge over a human trainer isn't "better" — it's
+"consistent, unbiased, and built around your assessment, running every
+day." Copy must never overclaim, never promise medical outcomes, never
+disparage trainers. It states what's true and lets the user decide.
+
+## Commit 1 — Value copy across three surfaces
+
+Draft copy below in Sotirios's voice. Sotirios edits any line that
+doesn't sound like him before merge. The through-line: honesty, meeting
+people where they are, unbiased consistency.
+
+**Core value truths (used across all three surfaces at different
+intensity):**
+- A good trainer costs $6,000-$15,000/year. Praxis is $240/year ($19.99/month).
+- Praxis doesn't replace a great coach's hands — but most people don't
+  have a great coach.
+- The app brings the same attention to your movement every single day.
+  No off days, no blind spots, no preferences imposed on you.
+- Your plan is built around YOUR assessment, not someone else's favorite
+  program.
+
+### Landing page (the promise — aspirational, light on price)
+
+Add a section (below the hero, above or near the "How Praxis builds your
+plan" steps):
+
+Draft:
+
+> **Built around your body. Not someone else's routine.**
+>
+> Most training plans are a coach's favorite workout handed to everyone.
+> Praxis is different. It looks at how you actually move, finds what's
+> holding you back, and builds a plan around that — yours, specifically.
+>
+> And it shows up every single day. Same attention, no off days, no
+> guesswork. It meets you where you are and moves at the pace your body
+> earns.
+
+Keep it short. This is the promise, not the sales pitch.
+
+### Paywall / upgrade page (the value math — honest price reframe)
+
+On the upgrade screen, add a value-context section near the price:
+
+Draft:
+
+> **What this actually costs.**
+>
+> A good personal trainer runs $6,000 to $15,000 a year. Praxis is $240.
+>
+> That's not because an app replaces a great coach — it's because most
+> people don't have one, and everyone deserves a plan that adapts to
+> their body and shows up every day.
+>
+> You're not paying for workouts. You're paying for structure that
+> remembers every rep, notices what's changing, and adjusts before you
+> plateau.
+>
+> $19.99/month. Cancel anytime. First month free for founding members.
+
+The price ($19.99/month, $240/year framing) stated plainly. No fake
+"$6,000 value" claims — just the honest comparison, user does the math.
+
+### Onboarding (the proof — personal, ONLY if photos were taken)
+
+**Conditional display rule:** this copy appears ONLY if the user
+completed the photo assessment. If they chose "answer profile instead"
+and skipped photos, there are no movement findings to reference — so
+showing "built from what we found in your movement" would be a lie.
+
+**Photo-assessment path** (user took photos), after they see their focus
+areas:
+
+> **This plan is yours.**
+>
+> Everything you're about to see was built from what we found in your
+> movement — [reference their actual focus areas]. Not a template. Not
+> someone else's program. Yours.
+
+**Profile-only path** (user skipped photos), softer version that doesn't
+claim photo findings:
+
+> **This plan is built for you.**
+>
+> Your answers shaped this plan around your goals, your equipment, and
+> your experience. Take posture photos anytime to make it even more
+> specific to how you move.
+
+The profile-only version gently invites photos later without demanding
+them, and never claims findings that don't exist.
+
+This lands hardest on the photo path because the user just watched the
+app assess *them* specifically. The differentiation becomes real, not
+claimed. But honesty rules mean we never fake it for the profile path.
+
+**Copy rules (SR-6L enforced):**
+- No medical outcome promises ("fix your pain," "cure your posture")
+- No disparaging trainers ("lazy," "ego-driven," etc.)
+- No fake value numbers ("$6,000 value!!!")
+- Honest comparison only, user draws the conclusion
+- Sotirios's voice — direct, warm, no hype
+
+## Commit 2 — Feedback page
+
+A simple feedback capture accessible from Settings and from a link in the
+nav menu.
+
+**Page: `/feedback`**
+
+Fields:
+- What's working well? (optional textarea)
+- What's not working or frustrating? (optional textarea)
+- One thing that would make Praxis better for you? (optional textarea)
+- Email (optional — "leave it if you want a reply")
+- A 1-5 star overall rating (optional)
+
+**Submission (RATIFIED: Google Form):**
+
+Sotirios has ratified the Google Form + Google Sheet approach for ease of
+management. Use an embedded Google Form OR a form that POSTs to a Google
+Form endpoint. Responses land in a Google Sheet Sotirios owns and reads
+directly. No feedback data stored in Praxis's own DB.
+
+This is the simplest reliable option and keeps management entirely in
+Sotirios's Google account with zero code maintenance.
+
+**After submission:**
+
+Thank-you message in coach voice: "Thanks — I read every one of these
+myself. It's how Praxis gets better." (Sotirios edits.)
+
+**Placement:**
+- Link in nav menu: "Send feedback"
+- Link in Settings
+- Optional: subtle prompt after a user completes their 5th session
+  ("How's Praxis working for you? Send feedback →") — non-nagging, shows
+  once.
+
+## Commit 3 — Testimonial / review display system
+
+**Landing page component that cycles through user reviews.**
+
+**Data structure:**
+
+Reviews stored in a simple structured file (JSON or a
+`docs/testimonials.json`) that Sotirios can edit directly. Each review:
+```
+{
+  name: "First name + last initial, or 'Anonymous'",
+  role: "optional — e.g. 'Desk worker, 42' or 'Recreational lifter'",
+  quote: "The review text",
+  featured: true/false
+}
+```
+
+Start with an empty or minimal set. Sotirios adds real reviews as they
+come in. No fake reviews — ship with whatever's real, even if that's
+zero at launch (component just doesn't render if empty).
+
+**Display:**
+
+- A section on the landing page that cycles through reviews (carousel or
+  auto-rotating cards, ~5 seconds each, pauses on hover/tap).
+- Clean, quiet design matching the app's aesthetic. No star-spam, no
+  fake urgency.
+- If fewer than 3 reviews exist, show them static (no carousel).
+- If zero reviews exist, the section doesn't render at all (don't show
+  an empty "reviews" header).
+
+**Future-ready (documented, not built now):**
+
+- Structure supports a "success stories" section later (longer-form,
+  with before/after posture metrics if the user consents).
+- When review count grows, can add filtering by user type (desk worker,
+  athlete, rehab, etc.).
+
+For now: just the cycling display, editable by Sotirios, honest content
+only.
+
+**SR-6L-reviews rule:** No fabricated reviews, ever. The testimonial
+system displays only real user feedback that users have consented to
+share publicly. Ship with real reviews or none.
+
+## Commit 4 — First-run calm audit (prevent prompt overload)
+
+**The problem Sotirios identified:** Praxis has accumulated many
+intelligent prompts and features across development — focus tags, coach
+notes, Sacrifice/Test/Modify, phase gating notices, corrective injection
+prompts, skip-detection prompts, feedback requests, upgrade nudges,
+tooltips, value copy. Each is individually good. Stacked on a brand-new
+user's first run, they're overwhelming.
+
+**Principle:** first run is dead simple. Complexity reveals itself as the
+user goes deeper — not all at once. A new user's first session should be
+clean and uninterrupted.
+
+**Audit every prompt/interruption a NEW user could encounter before or
+during their first session. For each, decide: show on first run, or hold
+until later.**
+
+**Hold until AFTER first session complete (minimum):**
+- Corrective injection prompts (Phase 7 — not built yet, but spec it to
+  hold)
+- Skip-detection prompts ("did you skip this exercise?")
+- Feedback request prompt (5th session, already specced — confirm it's
+  not first-run)
+- Upgrade nudges beyond the single paywall (no repeated Pro prompts on
+  first run)
+- Any "want to turn on/off X?" self-adapting prompts
+
+**OK to show on first run (essential to the experience):**
+- The one-time guide card per screen (already built, auto-opens once)
+- The value proof copy (Commit 1 — one line, not a prompt)
+- The wake-lock first-session notice (Phase 6k — essential info)
+- Coach notes on exercises (they're reference content, not interruptions
+  — user reads them by choice)
+- The session itself (obviously)
+
+**First-run flow should be:**
+1. Land → assess (or profile) → see plan → start first session
+2. During first session: exercise, cue, timer, log, next. Clean. No
+   interruptions beyond the guide card that auto-shows once.
+3. After first session: check-in, "nice work," done.
+4. THEN the app can start surfacing its deeper intelligence — corrective
+   suggestions, adaptation notices, feedback requests — now that the user
+   has context.
+
+**Implementation:**
+
+- Add a `sessionsCompleted` check that gates all non-essential prompts.
+  Prompts that require context check `sessionsCompleted >= 1` (or higher
+  for some) before firing.
+- Audit the codebase for every prompt/modal/nudge that can fire for a
+  user with `sessionsCompleted === 0`. List them in
+  `docs/first-run-audit-6l.md` with a verdict: keep / gate / remove.
+- Apply gating per the audit.
+
+**Test:**
+
+- `tests/e2e/firstRunCalm.spec.ts` — a brand-new user completes
+  onboarding and their first session encountering ZERO non-essential
+  prompts. Only the guide card (once) and the session itself. Assert no
+  corrective prompts, no skip prompts, no feedback requests, no repeated
+  upgrade nudges fire during first run.
+
+**The test is the guard:** any future feature that adds a first-run
+prompt will break this test, forcing a conscious decision about whether
+it belongs on first run.
+
+- No changes to pricing logic or Stripe (that's Sotirios's dashboard
+  work, separate)
+- No engine changes
+- No fake testimonials or placeholder reviews
+- No medical claims anywhere
+- No native app or store work
+
+## Acceptance
+
+- Value copy live on landing, paywall, and onboarding — in Sotirios's
+  voice, honest, no overclaims
+- Onboarding proof copy conditional: photo path gets "built from your
+  movement," profile path gets softer version, never fakes findings
+- `/feedback` page live, submits to Google Form/Sheet, accessible from
+  nav + settings
+- Testimonial component on landing cycles real reviews (or hides if none)
+- Reviews editable by Sotirios via a simple data file
+- First-run audit complete: brand-new user's first session encounters
+  zero non-essential prompts (first-run calm test passes)
+- All copy passes SR-6L honesty rules
+- Full gate green + Playwright green
+
+Merge commit.
 
 
 
