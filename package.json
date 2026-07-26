@@ -20,7 +20,7 @@
     "test:full": "vitest --run --config packages/engine/vitest.config.ts",
     "test:full:gyms": "vitest --run --config apps/gyms/vitest.config.ts",
     "test:full:consumer": "vitest --run --config apps/consumer/vitest.config.ts",
-    "test:e2e:smoke:consumer": "cd apps/consumer && playwright test tests/e2e/firstRunHappyPath.spec.ts tests/e2e/perAccountStateIsolation.spec.ts",
+    "test:e2e:smoke:consumer": "cd apps/consumer && playwright test tests/e2e/firstRunHappyPath.spec.ts tests/e2e/perAccountStateIsolation.spec.ts tests/e2e/firstRunCalm.spec.ts",
     "test:e2e:smoke:gyms": "cd apps/gyms && PLAYWRIGHT_PORT=3100 playwright test tests/e2e/firstRunHappyPath.spec.ts tests/e2e/perAccountStateIsolation.spec.ts",
     "test:engine": "node --import tsx packages/engine/src/__debug__/engineMatrixTest.ts",
     "audit:catalog": "node --import tsx packages/engine/src/__debug__/catalogAudit.ts",
