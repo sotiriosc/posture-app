@@ -65,8 +65,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/icons/praxis-logo-full.png",
-        width: 1536,
-        height: 1024,
+        width: 921,
+        height: 293,
         alt: "Praxis for Gyms — posture-aware training infrastructure",
       },
     ],

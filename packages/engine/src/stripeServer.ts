@@ -16,22 +16,66 @@ type StripeEvent = {
   };
 };
 
+export type StripeCheckoutPlan = "monthly" | "annual" | "founders";
+
+export const STRIPE_CHECKOUT_PLANS: readonly StripeCheckoutPlan[] = [
+  "monthly",
+  "annual",
+  "founders",
+] as const;
+
+/** Stripe Price lookup_key for the founders monthly offer. */
+export const STRIPE_FOUNDERS_LOOKUP_KEY = "praxis_founders_monthly";
+
 const STRIPE_API_BASE = "https://api.stripe.com/v1";
 
 const encodeForm = (values: Record<string, string>) =>
   new URLSearchParams(values).toString();
 
 const getStripeSecret = () => process.env.STRIPE_SECRET_KEY?.trim() ?? "";
+
+/** Monthly price, with legacy STRIPE_PRICE_ID as fallback for gyms / older envs. */
+export const getMonthlyPriceId = () =>
+  process.env.STRIPE_PRICE_ID_MONTHLY?.trim() ||
+  process.env.STRIPE_PRICE_ID?.trim() ||
+  "";
+
+export const getAnnualPriceId = () =>
+  process.env.STRIPE_PRICE_ID_ANNUAL?.trim() || "";
+
+/** Optional override; when unset, founders resolves via lookup key at checkout. */
+export const getFoundersPriceIdOverride = () =>
+  process.env.STRIPE_PRICE_ID_FOUNDERS?.trim() || "";
+
+export const parseStripeCheckoutPlan = (
+  value: unknown
+): StripeCheckoutPlan | null => {
+  if (value === "monthly" || value === "annual" || value === "founders") {
+    return value;
+  }
+  return null;
+};
+
+export const getStripeCheckoutPlanAvailability = () => {
+  const secret = Boolean(getStripeSecret());
+  const monthly = Boolean(getMonthlyPriceId());
+  const annual = Boolean(getAnnualPriceId());
+  // Founders is available whenever Stripe auth works: resolve by lookup key
+  // (or optional STRIPE_PRICE_ID_FOUNDERS override).
+  const founders = secret;
+  return {
+    monthly,
+    annual,
+    founders,
+  } as const;
+};
+
 export const isStripeConfigured = () =>
   Boolean(getStripeSecret()) &&
-  Boolean(process.env.STRIPE_PRICE_ID?.trim()) &&
+  Boolean(getMonthlyPriceId()) &&
   Boolean(process.env.APP_URL?.trim());
 
-const callStripe = async <T>(
-  path: string,
-  params: Record<string, string>
-): Promise<T> => {
-  const secret = getStripeSecret();
+const assertStripeSecretUsable = (secret: string) => {
   if (!secret) {
     throw new Error("Stripe secret missing.");
   }
@@ -40,6 +84,14 @@ const callStripe = async <T>(
       "Refusing to use live Stripe secret outside production. Use sk_test_ locally."
     );
   }
+};
+
+const callStripe = async <T>(
+  path: string,
+  params: Record<string, string>
+): Promise<T> => {
+  const secret = getStripeSecret();
+  assertStripeSecretUsable(secret);
   const response = await fetch(`${STRIPE_API_BASE}${path}`, {
     method: "POST",
     headers: {
@@ -57,13 +109,64 @@ const callStripe = async <T>(
   return data as T;
 };
 
+const callStripeGet = async <T>(pathWithQuery: string): Promise<T> => {
+  const secret = getStripeSecret();
+  assertStripeSecretUsable(secret);
+  const response = await fetch(`${STRIPE_API_BASE}${pathWithQuery}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${secret}`,
+    },
+  });
+  const data = (await response.json().catch(() => null)) as
+    | { error?: { message?: string } }
+    | null;
+  if (!response.ok) {
+    throw new Error(data?.error?.message ?? "Stripe request failed.");
+  }
+  return data as T;
+};
+
+export const resolvePriceIdByLookupKey = async (lookupKey: string) => {
+  const query = new URLSearchParams();
+  query.append("lookup_keys[]", lookupKey);
+  query.append("active", "true");
+  query.append("limit", "1");
+  const result = await callStripeGet<{
+    data?: Array<{ id?: string }>;
+  }>(`/prices?${query.toString()}`);
+  const priceId = result.data?.[0]?.id?.trim();
+  if (!priceId) {
+    throw new Error(`No active Stripe price for lookup key "${lookupKey}".`);
+  }
+  return priceId;
+};
+
+export const resolveCheckoutPriceId = async (plan: StripeCheckoutPlan) => {
+  if (plan === "monthly") {
+    const priceId = getMonthlyPriceId();
+    if (!priceId) throw new Error("Monthly Stripe price missing.");
+    return priceId;
+  }
+  if (plan === "annual") {
+    const priceId = getAnnualPriceId();
+    if (!priceId) throw new Error("Annual Stripe price missing.");
+    return priceId;
+  }
+  const override = getFoundersPriceIdOverride();
+  if (override) return override;
+  return resolvePriceIdByLookupKey(STRIPE_FOUNDERS_LOOKUP_KEY);
+};
+
 export const createStripeCheckoutSession = async (params: {
   userId: string;
   email: string;
+  plan?: StripeCheckoutPlan;
 }) => {
-  const priceId = process.env.STRIPE_PRICE_ID?.trim();
+  const plan = params.plan ?? "monthly";
+  const priceId = await resolveCheckoutPriceId(plan);
   const appUrl = process.env.APP_URL?.trim();
-  if (!priceId || !appUrl) throw new Error("Stripe price/app URL missing.");
+  if (!appUrl) throw new Error("Stripe price/app URL missing.");
   return callStripe<StripeSession>("/checkout/sessions", {
     mode: "subscription",
     "line_items[0][price]": priceId,
@@ -74,8 +177,10 @@ export const createStripeCheckoutSession = async (params: {
     client_reference_id: params.userId,
     "metadata[userId]": params.userId,
     "metadata[email]": params.email,
+    "metadata[checkoutPlan]": plan,
     "subscription_data[metadata][userId]": params.userId,
     "subscription_data[metadata][email]": params.email,
+    "subscription_data[metadata][checkoutPlan]": plan,
   });
 };
 

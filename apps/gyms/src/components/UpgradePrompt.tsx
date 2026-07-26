@@ -39,6 +39,8 @@ export default function UpgradePrompt() {
         method: "POST",
         cache: "no-store",
         credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: "monthly" }),
       });
       const data = (await res.json().catch(() => null)) as {
         ok?: boolean;
