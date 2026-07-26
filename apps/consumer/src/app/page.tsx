@@ -4,8 +4,12 @@ import Button from "@/components/ui/Button";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import Footer from "@/components/Footer";
 import ValuePromiseSection from "@/components/marketing/ValuePromiseSection";
+import TestimonialsSection from "@/components/marketing/TestimonialsSection";
+import { normalizeTestimonials } from "@/components/marketing/testimonials";
+import testimonialsJson from "../../../../docs/testimonials.json";
 
 export default async function Home() {
+  const testimonials = normalizeTestimonials(testimonialsJson);
   const systemSteps = [
     "Analyze your posture and training inputs",
     "Build a weekly plan around your current capacity",
@@ -111,6 +115,8 @@ export default async function Home() {
                 A clear starting point today. A smarter plan as your history grows.
               </p>
             </section>
+
+            <TestimonialsSection reviews={testimonials} />
           </div>
         </main>
       </div>
