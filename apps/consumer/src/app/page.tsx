@@ -3,8 +3,13 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 import OnboardingInfoButton from "@/components/onboarding/OnboardingInfoButton";
 import Footer from "@/components/Footer";
+import ValuePromiseSection from "@/components/marketing/ValuePromiseSection";
+import TestimonialsSection from "@/components/marketing/TestimonialsSection";
+import { normalizeTestimonials } from "@/components/marketing/testimonials";
+import testimonialsJson from "../../../../docs/testimonials.json";
 
 export default async function Home() {
+  const testimonials = normalizeTestimonials(testimonialsJson);
   const systemSteps = [
     "Analyze your posture and training inputs",
     "Build a weekly plan around your current capacity",
@@ -76,6 +81,8 @@ export default async function Home() {
               </p>
             </section>
 
+            <ValuePromiseSection />
+
             <section className="ui-soft-surface w-full rounded-lg px-5 py-6 sm:px-6 sm:py-7">
               <div className="flex flex-wrap items-end justify-center gap-3 text-center sm:justify-between sm:text-left">
                 <div>
@@ -108,6 +115,8 @@ export default async function Home() {
                 A clear starting point today. A smarter plan as your history grows.
               </p>
             </section>
+
+            <TestimonialsSection reviews={testimonials} />
           </div>
         </main>
       </div>

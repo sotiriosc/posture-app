@@ -495,6 +495,22 @@ export default function AccountSettingsPage() {
           </div>
 
           <div
+            className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6"
+            data-testid="settings-send-feedback"
+          >
+            <p className="ui-kicker">Feedback</p>
+            <h2 className="ui-title mt-1">Help shape Praxis</h2>
+            <p className="mt-2 text-sm text-slate-300">
+              Tell me what&apos;s working and what isn&apos;t. I read every note.
+            </p>
+            <div className="mt-4">
+              <Link href="/feedback" data-testid="settings-send-feedback-link">
+                <Button variant="secondary">Send feedback</Button>
+              </Link>
+            </div>
+          </div>
+
+          <div
             className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6 lg:col-span-2"
             data-testid="settings-interface-section"
           >
