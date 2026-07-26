@@ -71,6 +71,11 @@ export const upsertE2eUser = async (params: {
   password: string;
   plan?: SubscriptionPlan;
   stripeCustomerId?: string | null;
+  stripeSubscriptionId?: string | null;
+  stripePriceId?: string | null;
+  stripeSubscriptionStatus?: string | null;
+  stripeCurrentPeriodEnd?: string | null;
+  stripeCancelAtPeriodEnd?: boolean | null;
 }) => {
   const db = await readUserDb();
   const now = new Date().toISOString();
@@ -87,13 +92,30 @@ export const upsertE2eUser = async (params: {
     emailOptIn: existing?.emailOptIn ?? false,
     emailOptInAt: existing?.emailOptInAt ?? null,
     onboardingSource: existing?.onboardingSource ?? "playwright",
-    stripeCustomerId: params.stripeCustomerId ?? existing?.stripeCustomerId ?? null,
-    stripeSubscriptionId: existing?.stripeSubscriptionId ?? "sub_playwright",
-    stripePriceId: existing?.stripePriceId ?? "price_playwright",
-    stripeSubscriptionStatus: existing?.stripeSubscriptionStatus ?? "active",
+    stripeCustomerId:
+      params.stripeCustomerId !== undefined
+        ? params.stripeCustomerId
+        : existing?.stripeCustomerId ?? null,
+    stripeSubscriptionId:
+      params.stripeSubscriptionId !== undefined
+        ? params.stripeSubscriptionId
+        : existing?.stripeSubscriptionId ?? "sub_playwright",
+    stripePriceId:
+      params.stripePriceId !== undefined
+        ? params.stripePriceId
+        : existing?.stripePriceId ?? "price_playwright",
+    stripeSubscriptionStatus:
+      params.stripeSubscriptionStatus !== undefined
+        ? params.stripeSubscriptionStatus
+        : existing?.stripeSubscriptionStatus ?? "active",
     stripeCurrentPeriodEnd:
-      existing?.stripeCurrentPeriodEnd ?? "2035-01-01T00:00:00.000Z",
-    stripeCancelAtPeriodEnd: existing?.stripeCancelAtPeriodEnd ?? false,
+      params.stripeCurrentPeriodEnd !== undefined
+        ? params.stripeCurrentPeriodEnd
+        : existing?.stripeCurrentPeriodEnd ?? "2035-01-01T00:00:00.000Z",
+    stripeCancelAtPeriodEnd:
+      params.stripeCancelAtPeriodEnd !== undefined
+        ? params.stripeCancelAtPeriodEnd
+        : existing?.stripeCancelAtPeriodEnd ?? false,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };

@@ -40,7 +40,23 @@ export default function ManageSubscriptionButton({
 
   const refreshStatus = async () => {
     setRefreshing(true);
+    setMessage(null);
     try {
+      const res = await fetch("/api/billing/refresh", {
+        method: "POST",
+        cache: "no-store",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "stripe" }),
+      });
+      const data = (await res.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+      } | null;
+      if (!res.ok || !data?.ok) {
+        setMessage(data?.error ?? "Could not refresh subscription status.");
+        return;
+      }
       window.location.reload();
     } finally {
       setRefreshing(false);
@@ -59,7 +75,13 @@ export default function ManageSubscriptionButton({
       </Button>
       {showRefreshAction ? (
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <Button type="button" variant="secondary" onClick={refreshStatus} disabled={refreshing}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => void refreshStatus()}
+            disabled={refreshing}
+            data-testid="billing-refresh-status"
+          >
             {refreshing ? "Refreshing..." : "Refresh subscription status"}
           </Button>
           <p className="text-xs text-slate-400">
