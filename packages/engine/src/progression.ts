@@ -272,7 +272,7 @@ export const getProgressionRecommendation = ({
         reps: isTimed ? undefined : reducedReps,
         durationSeconds: reducedDuration,
         sets: setRange.min ?? undefined,
-        tempo: "slow and controlled",
+        // tempo: "slow and controlled",  // deferred: section tempo is source of truth (timerRules)
         restSeconds:
           typeof prescription?.restSec === "number"
             ? prescription.restSec + 15
@@ -390,9 +390,9 @@ export const getProgressionRecommendation = ({
             repRange.min !== null
               ? clampToRange((repsCompleted ?? repRange.min) - 1, repRange)
               : undefined,
-          tempo: "slow and controlled",
+          // tempo: "slow and controlled",  // deferred: section tempo is source of truth (timerRules)
         },
-        reason: `Next progression step is quality first (${repTargetLabel}, ${setTargetLabel}; ${missReason}). Reduce reps slightly and use slower tempo to rebuild control.`,
+        reason: `Next progression step is quality first (${repTargetLabel}, ${setTargetLabel}; ${missReason}). Reduce reps slightly and rebuild control with the prescribed tempo.`,
         coachNote:
           lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
       };
@@ -406,7 +406,7 @@ export const getProgressionRecommendation = ({
       return {
         recommendedNext: {
           reps: nextRepTarget,
-          tempo: "2-1-2",
+          // tempo: "2-1-2",  // deferred: section tempo is source of truth (timerRules)
           restSeconds:
             typeof prescription?.restSec === "number"
               ? prescription.restSec + 10
@@ -425,7 +425,7 @@ export const getProgressionRecommendation = ({
       return {
         recommendedNext: {
           reps: nextRepTarget,
-          tempo: "3-1-2",
+          // tempo: "3-1-2",  // deferred: section tempo is source of truth (timerRules)
         },
         reason:
           "Band progression gate not yet met: build reps toward the top target for 2 consecutive easy/moderate sessions before increasing tension.",
@@ -439,7 +439,7 @@ export const getProgressionRecommendation = ({
       return {
         recommendedNext: {
           reps: repRange.min ?? repsCompleted ?? undefined,
-          tempo: "2-1-2",
+          // tempo: "2-1-2",  // deferred: section tempo is source of truth (timerRules)
         },
         reason:
           "You hit top reps twice at easy/moderate effort. Progress by increasing band tension or stepping farther from anchor, then reset reps lower.",
@@ -464,9 +464,9 @@ export const getProgressionRecommendation = ({
     return {
       recommendedNext: {
         reps: repRange.max ?? repsCompleted ?? undefined,
-        tempo: "3-1-3",
+        // tempo: "3-1-3",  // deferred: section tempo is source of truth (timerRules)
       },
-      reason: "You are near the top of the rep range. Next progression: keep reps steady and increase time under tension with 3-1-3 tempo.",
+      reason: "You are near the top of the rep range. Next progression: keep reps steady and keep time under tension high with controlled tempo.",
       coachNote:
         lowReadinessCoachNote ?? "Stay smooth—leave 2 reps in reserve and own the range.",
     };
@@ -493,7 +493,7 @@ export const getProgressionRecommendation = ({
           durationSeconds:
             currentDuration !== null ? Math.max(15, currentDuration - 5) : undefined,
           sets: setRange.min ?? undefined,
-          tempo: "controlled",
+          // tempo: "controlled",  // deferred: section tempo is source of truth (timerRules)
         },
         reason: "Next step eases the work for quality: reduce work time slightly and complete all sets with control.",
         coachNote:

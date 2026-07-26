@@ -54,7 +54,7 @@ describe("program prescription and rationale metadata", () => {
     mains.forEach((item) => {
       expect(item.prescription?.sets).toBeGreaterThan(0);
       expect(item.prescription?.reps).toBeTruthy();
-      expect(item.prescription?.tempo).toBeTruthy();
+      expect(item.prescription?.tempo).toBeUndefined();
       expect(item.prescription?.restSeconds).toBeGreaterThan(0);
       expect(item.prescription?.targetRPE).toBeGreaterThanOrEqual(4);
       expect(item.prescription?.progressionRule).toBeTruthy();
@@ -80,8 +80,9 @@ describe("program prescription and rationale metadata", () => {
     const phase2Main = mainItems(phase2)[0];
     const phase3Main = mainItems(phase3)[0];
 
-    expect(phase1Main.prescription?.tempo).toMatch(/3-1-2|controlled/i);
-    expect(phase2Main.prescription?.tempo).toMatch(/2-0-2|steady/i);
+    // Tempo lives in timerRules section defaults — prescription no longer carries it.
+    expect(phase1Main.prescription?.tempo).toBeUndefined();
+    expect(phase2Main.prescription?.tempo).toBeUndefined();
     expect(phase3Main.prescription?.progressionRule).toMatch(/load|difficulty/i);
     expect(phase3Main.prescription?.targetRPE ?? 0).toBeGreaterThan(
       phase1Main.prescription?.targetRPE ?? 0
@@ -106,7 +107,7 @@ describe("program prescription and rationale metadata", () => {
     expect(hingeMains.length).toBeGreaterThan(0);
     hingeMains.forEach((item) => {
       expect(item.prescription?.targetRPE ?? 99).toBeLessThanOrEqual(7);
-      expect(item.prescription?.tempo).toMatch(/controlled/i);
+      expect(item.prescription?.tempo).toBeUndefined();
       expect(item.prescription?.regressionRule).toMatch(/range|tempo|hip-extension/i);
       expect(item.prescription?.stopRule).toMatch(/lower-back pain|brace|travels/i);
       expect(item.rationale?.whyThisExercise).toMatch(/lower-back sensitivity|conservative hinge/i);

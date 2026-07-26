@@ -22053,10 +22053,13 @@ const adjustRoutineForPhase = (
         ? baseReps ?? "8-10"
         : baseReps ?? "10-12";
     const restBase = item.restSec ?? 60;
-    const tempoNote =
-      profile.controlFocus || cycle.tempo
-        ? `Tempo: ${cycle.tempo ?? "controlled"}`
-        : null;
+    // Deferred: section tempo is source of truth (timerRules). Don't stamp
+    // conflicting "Tempo: …" notes onto routine items.
+    const tempoNote = null;
+    // const tempoNote =
+    //   profile.controlFocus || cycle.tempo
+    //     ? `Tempo: ${cycle.tempo ?? "controlled"}`
+    //     : null;
     const strengthBias = goal === "Athletic performance";
     const isProgressionSection = item.section === "main" || item.section === "accessory";
     const strengthRepOverride =

@@ -130,21 +130,26 @@ const isCoreLike = (exercise: Exercise, item: ProgramRoutineItem) =>
 const hasLowerBackPain = (painAreas: string[]) =>
   painAreas.map(normalizePainArea).some((area) => area === "lowerback" || area === "lowback");
 
-const resolveTempo = (params: {
-  phase: PrescriptionPhase;
-  section: ProgramRoutineItem["section"];
-  painAware: boolean;
-  hingeLike: boolean;
-}) => {
-  if (params.section === "warmup" || params.section === "activation") {
-    return "smooth and controlled";
-  }
-  if (params.section === "cooldown") return "easy breathing pace";
-  if (params.painAware && params.hingeLike) return "3-1-2 controlled";
-  if (params.phase === "control") return "3-1-2 controlled";
-  if (params.phase === "capacity") return "2-0-2 steady";
-  return "controlled 2-0-1";
-};
+/**
+ * DEPRECATED — commented out as dual source of truth with timerRules section tempos.
+ * Single source of truth is now packages/engine/src/timerRules.ts
+ * (2-0-2-0 slow / 1-0-1-0 accessory). UI must not read prescription.tempo.
+ */
+// const resolveTempo = (params: {
+//   phase: PrescriptionPhase;
+//   section: ProgramRoutineItem["section"];
+//   painAware: boolean;
+//   hingeLike: boolean;
+// }) => {
+//   if (params.section === "warmup" || params.section === "activation") {
+//     return "smooth and controlled";
+//   }
+//   if (params.section === "cooldown") return "easy breathing pace";
+//   if (params.painAware && params.hingeLike) return "3-1-2 controlled";
+//   if (params.phase === "control") return "3-1-2 controlled";
+//   if (params.phase === "capacity") return "2-0-2 steady";
+//   return "controlled 2-0-1";
+// };
 
 const resolveRestSeconds = (params: {
   item: ProgramRoutineItem;
@@ -217,12 +222,7 @@ const buildPrescription = (params: {
         ? undefined
         : parseSets(item.sets) ?? (section === "warmup" || section === "activation" ? 1 : undefined),
     reps: resolveReps(item, exercise),
-    tempo: resolveTempo({
-      phase,
-      section,
-      painAware,
-      hingeLike: isHingeLike(exercise, item),
-    }),
+    // tempo omitted — see timerRules TEMPO_NOTATION (section defaults).
     restSeconds: resolveRestSeconds({
       item,
       phase,

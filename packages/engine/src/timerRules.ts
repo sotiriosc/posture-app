@@ -8,7 +8,15 @@ type TimerPrefs = {
 export type TempoPace = "slow" | "fast";
 
 /**
- * Classic ecc-pause-conc-pause notation for section defaults.
+ * Classic ecc–pause–conc–pause notation (single source of truth for display + timer).
+ *
+ * Evidence note (hypertrophy / control): meta-analyses find similar hypertrophy
+ * across ~0.5–8s repetition durations; very slow (>~10s/rep) tends to force
+ * loads too light. A moderate controlled tempo (~4s/rep) keeps quality high,
+ * builds time-under-tension in a practical window, and makes “feel the
+ * difference” motor control learnable — without the inefficiency of ultra-slow
+ * tempos. Faster ~2s/rep accessories keep density up on higher-rep support work.
+ *
  * Digits sum to seconds per rep (2-0-2-0 → 4s, 1-0-1-0 → 2s).
  */
 export const TEMPO_NOTATION: Record<TempoPace, string> = {
@@ -45,6 +53,19 @@ export const tempoPaceForSection = (
 
 export const tempoNotationForPace = (pace: TempoPace): string =>
   TEMPO_NOTATION[pace];
+
+/** Display label for UI dose chips / session — always from section, never prescription.tempo. */
+export const tempoDisplayForSection = (
+  section?: ProgramRoutineItem["section"] | string | null
+): string => `Tempo ${tempoNotationForPace(tempoPaceForSection(section))}`;
+
+/** Timed holds have no rep tempo; everything else uses section defaults. */
+export const tempoDisplayForItem = (
+  item: Pick<ProgramRoutineItem, "section" | "loadType"> | null | undefined
+): string | null => {
+  if (!item || item.loadType === "timed") return null;
+  return tempoDisplayForSection(item.section);
+};
 
 /** @deprecated Prefer tempoNotationForPace — kept for any residual callers. */
 export const tempoPaceLabel = (pace: TempoPace): string =>
