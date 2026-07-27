@@ -25,7 +25,7 @@ export default function UpgradeValueContext() {
         plateau.
       </p>
       <p className="mt-3 text-sm font-medium text-slate-100">
-        $19.99/month. Cancel anytime. First month free for founding members.
+        $19.99/month. Cancel anytime.
       </p>
     </div>
   );

@@ -48,7 +48,7 @@ export const STRIPE_MONTHLY_TRIAL_COUPON_ID = "V76yHqfH";
 export const STRIPE_MONTHLY_TRIAL_PROMO_CODE = "PRAXISTRIAL60DAY";
 
 const STRIPE_MONTHLY_CHECKOUT_SUBMIT_MESSAGE =
-  "Have a promo code? First 50 members get 60 days free - use code PRAXISTRIAL60DAY";
+  "Beta testers: 50 free spots. Try Praxis free in exchange for your honest feedback. Use code PRAXISTRIAL60DAY";
 
 /** Optional Coupon id override when promotion-code lookup is not used. */
 const getFoundersCouponIdOverride = () =>
