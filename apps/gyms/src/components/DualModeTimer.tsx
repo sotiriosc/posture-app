@@ -42,7 +42,7 @@ type DualModeTimerProps = {
   tempoHint?: string | null;
 };
 
-/** Extra seconds so the user can set up before the timing pattern starts. */
+/** Extra seconds so the user can set up before the working timing pattern starts. */
 export const TIMER_SETUP_BUFFER_SEC = 5;
 
 const formatTime = (seconds: number) => {
@@ -59,8 +59,11 @@ const clampDuration = (value: number, mode: TimerMode) => {
   return Math.min(max, Math.max(min, value));
 };
 
-const presetWithSetup = (seconds: number) =>
-  Math.max(1, Math.floor(seconds)) + TIMER_SETUP_BUFFER_SEC;
+/** Working sets get a setup buffer; rest starts on the prescribed duration. */
+const durationForMode = (seconds: number, mode: TimerMode) => {
+  const base = Math.max(1, Math.floor(seconds));
+  return mode === "exercise" ? base + TIMER_SETUP_BUFFER_SEC : base;
+};
 
 const getCurrentTimestampMs = () => Date.now();
 
@@ -133,8 +136,9 @@ export default function DualModeTimer({
   const [selectedRestSeconds, setSelectedRestSeconds] = useState(
     reconciledPersistedState?.restSeconds ?? initialRestSeconds
   );
-  const initialPresetSeconds = presetWithSetup(
-    defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds
+  const initialPresetSeconds = durationForMode(
+    defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds,
+    defaultMode
   );
   const [remainingSeconds, setRemainingSeconds] = useState(
     reconciledPersistedState?.remainingSeconds ?? initialPresetSeconds
@@ -164,8 +168,9 @@ export default function DualModeTimer({
   const activeSelectedSeconds =
     mode === "exercise" ? selectedExerciseSeconds : selectedRestSeconds;
   const safeSelectedSeconds = Math.max(1, activeSelectedSeconds);
-  const startSeconds = presetWithSetup(activeSelectedSeconds);
-  const inSetupPhase = remainingSeconds > activeSelectedSeconds;
+  const startSeconds = durationForMode(activeSelectedSeconds, mode);
+  const inSetupPhase =
+    mode === "exercise" && remainingSeconds > activeSelectedSeconds;
   // Cue consistency: 100% when ending exactly on the timing pattern (0:00).
   // Rises as the clock approaches zero, falls again in overtime.
   const cueConsistencyPercent = inSetupPhase
@@ -335,10 +340,11 @@ export default function DualModeTimer({
     runtimeAnchorMsRef.current = getCurrentTimestampMs();
     modeRef.current = nextMode;
     runningRef.current = false;
-    const nextRemaining = presetWithSetup(
+    const nextRemaining = durationForMode(
       nextMode === "exercise"
         ? selectedExerciseRef.current
-        : selectedRestRef.current
+        : selectedRestRef.current,
+      nextMode
     );
     remainingRef.current = nextRemaining;
     setRunning(false);
@@ -351,7 +357,7 @@ export default function DualModeTimer({
     setSelectedExerciseSeconds(next);
     selectedExerciseRef.current = next;
     if (mode === "exercise" && !running) {
-      const withSetup = presetWithSetup(next);
+      const withSetup = durationForMode(next, "exercise");
       setRemainingSeconds(withSetup);
       remainingRef.current = withSetup;
       runtimeAnchorMsRef.current = getCurrentTimestampMs();
@@ -365,9 +371,9 @@ export default function DualModeTimer({
     setSelectedRestSeconds(next);
     selectedRestRef.current = next;
     if (mode === "rest" && !running) {
-      const withSetup = presetWithSetup(next);
-      setRemainingSeconds(withSetup);
-      remainingRef.current = withSetup;
+      const restDuration = durationForMode(next, "rest");
+      setRemainingSeconds(restDuration);
+      remainingRef.current = restDuration;
       runtimeAnchorMsRef.current = getCurrentTimestampMs();
       zeroCrossBeepRef.current = false;
     }
@@ -394,10 +400,10 @@ export default function DualModeTimer({
     runtimeAnchorMsRef.current = getCurrentTimestampMs();
     runningRef.current = false;
     zeroCrossBeepRef.current = false;
-    const withSetup = presetWithSetup(activeSelectedSeconds);
-    remainingRef.current = withSetup;
+    const nextRemaining = durationForMode(activeSelectedSeconds, mode);
+    remainingRef.current = nextRemaining;
     setRunning(false);
-    setRemainingSeconds(withSetup);
+    setRemainingSeconds(nextRemaining);
   };
 
   const playBeep = (type: "start" | "finish") => {
@@ -666,11 +672,17 @@ export default function DualModeTimer({
       <p className={`mt-2 text-center text-[11px] font-medium ${secondaryTextClass}`}>
         {running
           ? remainingSeconds <= 0
-            ? "Pattern complete — tap when you finish the set."
+            ? mode === "exercise"
+              ? "Pattern complete — tap when you finish the set."
+              : "Rest complete — tap when you're ready."
             : inSetupPhase
               ? "Get set. Timing pattern starts after the setup buffer."
-              : "Stay controlled and aligned."
-          : `Includes ${TIMER_SETUP_BUFFER_SEC}s setup. Timer waits until you tap start.`}
+              : mode === "exercise"
+                ? "Stay controlled and aligned."
+                : "Breathe and reset for the next set."
+          : mode === "exercise"
+            ? `Includes ${TIMER_SETUP_BUFFER_SEC}s setup. Timer waits until you tap start.`
+            : "Rest starts when you tap. No setup buffer."}
       </p>
 
       <div className="mt-4">
@@ -737,7 +749,7 @@ export default function DualModeTimer({
         <span
           className={`max-w-full break-words rounded-lg border px-2.5 py-1 ${presetChipClasses}`}
         >
-          Resting {formatTime(selectedRestSeconds)} +{TIMER_SETUP_BUFFER_SEC}s
+          Resting {formatTime(selectedRestSeconds)}
         </span>
       </div>
     </div>
