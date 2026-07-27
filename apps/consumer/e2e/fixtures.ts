@@ -69,6 +69,8 @@ export const e2eEmail = (prefix: string) =>
 export const upsertE2eUser = async (params: {
   email: string;
   password: string;
+  /** Force a stable id (e.g. admin allowlist e2e). */
+  id?: string;
   plan?: SubscriptionPlan;
   stripeCustomerId?: string | null;
   stripeSubscriptionId?: string | null;
@@ -83,7 +85,7 @@ export const upsertE2eUser = async (params: {
   const existing = db.users.find((user) => user.email === normalizedEmail);
   const passwordSalt = existing?.passwordSalt ?? randomBytes(16).toString("hex");
   const patch: StoredE2eUser = {
-    id: existing?.id ?? `e2e-${randomBytes(8).toString("hex")}`,
+    id: params.id ?? existing?.id ?? `e2e-${randomBytes(8).toString("hex")}`,
     email: normalizedEmail,
     name: existing?.name ?? "Playwright Athlete",
     passwordHash: derivePasswordHash(params.password, passwordSalt),
