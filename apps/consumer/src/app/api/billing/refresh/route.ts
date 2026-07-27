@@ -7,8 +7,8 @@ import {
 import { getUserRepository } from "@/lib/userRepository";
 import {
   billingPatchFromSnapshot,
+  canFetchStripeBilling,
   fetchStripeSubscriptionSnapshot,
-  isStripeConfigured,
 } from "@/lib/stripeServer";
 import { takeRateLimit } from "@/lib/rateLimit";
 
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
   }
 
   if (mode === "stripe") {
-    if (!isStripeConfigured()) {
+    if (!canFetchStripeBilling()) {
       return NextResponse.json(
         { ok: false, error: "Stripe not configured." },
         { status: 500 }

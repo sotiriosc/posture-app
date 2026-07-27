@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import {
+  formatStripePriceLabel,
   getAnnualPriceId,
   getFoundersPriceIdOverride,
   getMonthlyPriceId,
@@ -16,6 +17,28 @@ afterEach(() => {
   process.env = { ...originalEnv };
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+});
+
+describe("formatStripePriceLabel", () => {
+  test("formats monthly USD prices", () => {
+    expect(
+      formatStripePriceLabel({
+        unit_amount: 1999,
+        currency: "usd",
+        recurring: { interval: "month" },
+      })
+    ).toBe("$19.99/mo");
+  });
+
+  test("formats annual USD prices", () => {
+    expect(
+      formatStripePriceLabel({
+        unit_amount: 19999,
+        currency: "usd",
+        recurring: { interval: "year" },
+      })
+    ).toBe("$199.99/yr");
+  });
 });
 
 describe("stripe checkout plans", () => {

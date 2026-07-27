@@ -8,13 +8,12 @@ import ManageSubscriptionButton from "@/components/ManageSubscriptionButton";
 import BillingSessionSync from "@/components/BillingSessionSync";
 import {
   deriveBillingDisplay,
-  needsBillingReconcile,
   type LocalBillingRecord,
 } from "@/lib/billingDisplay";
 import {
   billingPatchFromSnapshot,
+  canFetchStripeBilling,
   fetchStripeSubscriptionSnapshot,
-  isStripeConfigured,
 } from "@/lib/stripeServer";
 import type { StoredUser } from "@/lib/userStore";
 
@@ -30,9 +29,12 @@ const toBillingRecord = (user: StoredUser | null): LocalBillingRecord => ({
   stripeSubscriptionId: user?.stripeSubscriptionId ?? null,
 });
 
+const hasStripeBillingLink = (user: StoredUser | null) =>
+  Boolean(user?.stripeCustomerId || user?.stripeSubscriptionId);
+
 const reconcileFromStripe = async (user: StoredUser): Promise<StoredUser> => {
-  if (!isStripeConfigured()) return user;
-  if (!user.stripeCustomerId && !user.stripeSubscriptionId) return user;
+  if (!canFetchStripeBilling()) return user;
+  if (!hasStripeBillingLink(user)) return user;
   try {
     const snapshot = await fetchStripeSubscriptionSnapshot({
       subscriptionId: user.stripeSubscriptionId,
@@ -45,7 +47,7 @@ const reconcileFromStripe = async (user: StoredUser): Promise<StoredUser> => {
       user
     );
   } catch (error) {
-    console.error("[billing] self-heal from Stripe failed", error);
+    console.error("[billing] Stripe subscription retrieve failed", error);
     return user;
   }
 };
@@ -56,8 +58,9 @@ export default async function BillingAccountPage() {
   let user = session ? await repo.findUserById(session.id) : null;
   const showTechnicalBillingDetails = process.env.NODE_ENV !== "production";
 
-  const shouldHeal = user ? needsBillingReconcile(toBillingRecord(user)) : false;
-  if (user && shouldHeal) {
+  const shouldSyncFromStripe =
+    Boolean(user) && canFetchStripeBilling() && hasStripeBillingLink(user);
+  if (user && shouldSyncFromStripe) {
     user = await reconcileFromStripe(user);
   }
 
@@ -65,7 +68,7 @@ export default async function BillingAccountPage() {
 
   return (
     <BackgroundShell>
-      {shouldHeal ? <BillingSessionSync /> : null}
+      {shouldSyncFromStripe ? <BillingSessionSync /> : null}
       <div className="ui-shell flex max-w-6xl flex-col gap-6 py-8 sm:py-12">
         <OnImage>
           <header className="ui-page-heading flex flex-wrap items-end justify-between gap-4">

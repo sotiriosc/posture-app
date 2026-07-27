@@ -75,6 +75,9 @@ export const isStripeConfigured = () =>
   Boolean(getMonthlyPriceId()) &&
   Boolean(process.env.APP_URL?.trim());
 
+/** True when live Stripe API reads (subscription retrieve, price lookup) are available. */
+export const canFetchStripeBilling = () => Boolean(getStripeSecret());
+
 const assertStripeSecretUsable = (secret: string) => {
   if (!secret) {
     throw new Error("Stripe secret missing.");
@@ -308,6 +311,87 @@ export const billingPatchFromSnapshot = (snapshot: StripeSubscriptionSnapshot) =
   stripeCurrentPeriodEnd: snapshot.stripeCurrentPeriodEnd,
   stripeCancelAtPeriodEnd: snapshot.stripeCancelAtPeriodEnd,
 });
+
+export type CheckoutPriceLabel = {
+  label: string;
+  detail: string;
+};
+
+type StripePriceObject = {
+  id?: string;
+  unit_amount?: number | null;
+  currency?: string;
+  recurring?: { interval?: string; interval_count?: number };
+};
+
+export const formatStripePriceLabel = (price: StripePriceObject): string | null => {
+  if (price.unit_amount == null || !price.currency) return null;
+  const amount = price.unit_amount / 100;
+  const formatted = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: price.currency.toUpperCase(),
+    minimumFractionDigits: Number.isInteger(amount) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+  const interval = price.recurring?.interval;
+  if (interval === "month") return `${formatted}/mo`;
+  if (interval === "year") return `${formatted}/yr`;
+  if (interval === "week") return `${formatted}/wk`;
+  return formatted;
+};
+
+const fetchStripePrice = async (priceId: string) =>
+  callStripeGet<StripePriceObject>(`/prices/${encodeURIComponent(priceId)}`);
+
+const labelForPlan = async (
+  priceId: string,
+  detail: string
+): Promise<CheckoutPriceLabel | null> => {
+  try {
+    const price = await fetchStripePrice(priceId);
+    const label = formatStripePriceLabel(price);
+    if (!label) return null;
+    return { label, detail };
+  } catch {
+    return null;
+  }
+};
+
+/** Live price labels from Stripe Price objects (falls back to empty when unavailable). */
+export const fetchCheckoutPriceLabels = async (): Promise<
+  Partial<Record<StripeCheckoutPlan, CheckoutPriceLabel>>
+> => {
+  if (!canFetchStripeBilling()) return {};
+  const labels: Partial<Record<StripeCheckoutPlan, CheckoutPriceLabel>> = {};
+
+  const monthlyId = getMonthlyPriceId();
+  if (monthlyId) {
+    const monthly = await labelForPlan(monthlyId, "Standard monthly");
+    if (monthly) labels.monthly = monthly;
+  }
+
+  const annualId = getAnnualPriceId();
+  if (annualId) {
+    const annual = await labelForPlan(annualId, "Best value");
+    if (annual) labels.annual = annual;
+  }
+
+  const foundersOverride = getFoundersPriceIdOverride();
+  if (foundersOverride) {
+    const founders = await labelForPlan(foundersOverride, "Founders");
+    if (founders) labels.founders = founders;
+  } else {
+    try {
+      const foundersPriceId = await resolvePriceIdByLookupKey(STRIPE_FOUNDERS_LOOKUP_KEY);
+      const founders = await labelForPlan(foundersPriceId, "Founders");
+      if (founders) labels.founders = founders;
+    } catch {
+      // Founders price optional until lookup key exists in Stripe.
+    }
+  }
+
+  return labels;
+};
 
 const parseStripeSignature = (header: string) => {
   const parts = header.split(",").map((item) => item.trim());
