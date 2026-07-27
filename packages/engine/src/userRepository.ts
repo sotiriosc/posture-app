@@ -1,4 +1,5 @@
 import type { SubscriptionPlan } from "@/lib/authTypes";
+import type { MacroCalculatorSavedInputs } from "@/lib/macroCalculatorInputs";
 import {
   createUser,
   ensureBootstrapUser,
@@ -8,6 +9,7 @@ import {
   listUsers,
   type StoredUser,
   updateUserBilling,
+  updateUserMacroCalculatorInputs,
   updateUserPlan,
   verifyUserPassword,
 } from "@/lib/userStore";
@@ -20,6 +22,7 @@ import {
   dbListUsers,
   dbMarkStripeWebhookEvent,
   dbUpdateUserBilling,
+  dbUpdateUserMacroCalculatorInputs,
   dbUpdateUserPlan,
   dbVerifyUserPassword,
 } from "@/lib/userStoreDb";
@@ -32,6 +35,7 @@ import {
   memoryListUsers,
   memoryMarkStripeWebhookEvent,
   memoryUpdateUserBilling,
+  memoryUpdateUserMacroCalculatorInputs,
   memoryUpdateUserPlan,
   memoryVerifyUserPassword,
 } from "@/lib/userStoreMemory";
@@ -71,6 +75,10 @@ export type UserRepository = {
       stripeCancelAtPeriodEnd?: boolean | null;
     }
   ) => Promise<StoredUser | null>;
+  updateUserMacroCalculatorInputs: (
+    userId: string,
+    inputs: MacroCalculatorSavedInputs | null
+  ) => Promise<StoredUser | null>;
   markStripeWebhookEvent: (
     eventId: string,
     eventType: string,
@@ -89,6 +97,7 @@ const fileRepository: UserRepository = {
   createUser,
   updateUserPlan,
   updateUserBilling,
+  updateUserMacroCalculatorInputs,
   markStripeWebhookEvent: async () => true,
   verifyUserPassword,
   ensureBootstrapUser,
@@ -103,6 +112,7 @@ const memoryRepository: UserRepository = {
   createUser: memoryCreateUser,
   updateUserPlan: memoryUpdateUserPlan,
   updateUserBilling: memoryUpdateUserBilling,
+  updateUserMacroCalculatorInputs: memoryUpdateUserMacroCalculatorInputs,
   markStripeWebhookEvent: memoryMarkStripeWebhookEvent,
   verifyUserPassword: memoryVerifyUserPassword,
   ensureBootstrapUser: memoryEnsureBootstrapUser,
@@ -117,6 +127,7 @@ const dbRepository: UserRepository = {
   createUser: dbCreateUser,
   updateUserPlan: dbUpdateUserPlan,
   updateUserBilling: dbUpdateUserBilling,
+  updateUserMacroCalculatorInputs: dbUpdateUserMacroCalculatorInputs,
   markStripeWebhookEvent: dbMarkStripeWebhookEvent,
   verifyUserPassword: dbVerifyUserPassword,
   ensureBootstrapUser: dbEnsureBootstrapUser,

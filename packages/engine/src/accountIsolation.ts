@@ -1,4 +1,4 @@
-import { clearAllLocalStateExceptPhotos } from "./resetAppData";
+import { clearAllLocalState } from "./resetAppData";
 import { setActivePhotoNamespace } from "./photoStore";
 
 /**
@@ -8,7 +8,7 @@ import { setActivePhotoNamespace } from "./photoStore";
  * under this key. It is only ever written here, and it is deliberately NOT
  * on the `resetAppData` LOCAL_KEYS / DB_NAMES lists — it must survive
  * `localStorage.clear()` calls made for other reasons and be the very next
- * thing written after `clearAllLocalStateExceptPhotos()` runs.
+ * thing written after `clearAllLocalState()` runs.
  */
 export const LOCAL_OWNER_KEY = "praxis_local_owner_id";
 
@@ -81,7 +81,7 @@ export const syncLocalOwner = async (
     const normalized = ownerId ?? null;
     if (previous === normalized) return { wiped: false };
 
-    await clearAllLocalStateExceptPhotos();
+    await clearAllLocalState();
     adoptLocalOwner(normalized);
     window.dispatchEvent(new CustomEvent(OWNER_CHANGED_EVENT));
     return { wiped: true };

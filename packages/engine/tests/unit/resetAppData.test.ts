@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import {
+  clearAllLocalState,
   clearAllLocalStateExceptPhotos,
+  clearPraxisOwnedLocalStorageKeys,
   eraseAllLocalData,
   resetAllAppData,
   resetAppDataKeys,
@@ -14,12 +16,28 @@ describe("reset app data", () => {
   test("destructive reset covers history, drafts, and photos", async () => {
     const removedLocalKeys: string[] = [];
     const deletedDatabases: string[] = [];
+    const store: Record<string, string> = {
+      app_state_v1: "{}",
+      posture_questionnaire: "{}",
+      posture_photo_meta: "{}",
+      "phase-ready-dismissed:prog:phase-1": "1",
+      unrelated_third_party: "keep",
+    };
 
     vi.stubGlobal("window", {});
     vi.stubGlobal("localStorage", {
+      get length() {
+        return Object.keys(store).length;
+      },
+      key: (index: number) => Object.keys(store)[index] ?? null,
+      getItem: (key: string) => store[key] ?? null,
       removeItem: vi.fn((key: string) => {
         removedLocalKeys.push(key);
+        delete store[key];
       }),
+      setItem: (key: string, value: string) => {
+        store[key] = value;
+      },
     });
     vi.stubGlobal("indexedDB", {
       deleteDatabase: vi.fn((name: string) => {
@@ -37,8 +55,10 @@ describe("reset app data", () => {
         "app_state_v1",
         "posture_questionnaire",
         "posture_photo_meta",
+        "phase-ready-dismissed:prog:phase-1",
       ])
     );
+    expect(removedLocalKeys).not.toContain("unrelated_third_party");
     expect(deletedDatabases).toEqual(
       expect.arrayContaining([
         "bodycoach-logs",
@@ -46,6 +66,32 @@ describe("reset app data", () => {
         "bodycoach-photos",
       ])
     );
+  });
+
+  test("clearPraxisOwnedLocalStorageKeys covers prefix-matched future keys", () => {
+    const store: Record<string, string> = {
+      praxis_future_feature_v1: "1",
+      posture_new_draft: "1",
+      chrome_extension_junk: "keep",
+    };
+    vi.stubGlobal("localStorage", {
+      get length() {
+        return Object.keys(store).length;
+      },
+      key: (index: number) => Object.keys(store)[index] ?? null,
+      removeItem: (key: string) => {
+        delete store[key];
+      },
+    });
+    const removed = clearPraxisOwnedLocalStorageKeys();
+    expect(removed).toEqual(
+      expect.arrayContaining(["praxis_future_feature_v1", "posture_new_draft"])
+    );
+    expect(store.chrome_extension_junk).toBe("keep");
+  });
+
+  test("clearAllLocalState is the logout wipe alias", async () => {
+    expect(clearAllLocalState).toBe(clearAllLocalStateExceptPhotos);
   });
 
   test("published reset key list includes photos", () => {

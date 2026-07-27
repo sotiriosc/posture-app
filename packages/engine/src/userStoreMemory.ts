@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "crypto";
 import type { SubscriptionPlan } from "@/lib/authTypes";
+import type { MacroCalculatorSavedInputs } from "@/lib/macroCalculatorInputs";
 import type { StoredUser } from "@/lib/userStore";
 
 type MemoryStore = {
@@ -69,6 +70,7 @@ export const memoryCreateUser = async (params: {
     stripeSubscriptionStatus: null,
     stripeCurrentPeriodEnd: null,
     stripeCancelAtPeriodEnd: null,
+    macroCalculatorInputs: null,
     createdAt,
     updatedAt: createdAt,
   };
@@ -127,6 +129,17 @@ export const memoryUpdateUserBilling = async (
   if (patch.stripeCancelAtPeriodEnd !== undefined) {
     user.stripeCancelAtPeriodEnd = patch.stripeCancelAtPeriodEnd;
   }
+  user.updatedAt = nowIso();
+  return user;
+};
+
+export const memoryUpdateUserMacroCalculatorInputs = async (
+  userId: string,
+  inputs: MacroCalculatorSavedInputs | null
+) => {
+  const user = store.users.find((entry) => entry.id === userId);
+  if (!user) return null;
+  user.macroCalculatorInputs = inputs;
   user.updatedAt = nowIso();
   return user;
 };

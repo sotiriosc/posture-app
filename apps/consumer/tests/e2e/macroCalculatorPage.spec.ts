@@ -5,7 +5,22 @@ import { test, expect } from "@playwright/test";
  * Deliberately no auth fixtures: this route is outside middleware.ts's
  * matcher and must be reachable by a fully anonymous visitor (search
  * traffic), which is exactly what this spec exercises.
+ *
+ * Option C: anonymous visitors see a blank calculator (no shared defaults,
+ * no browser persistence).
  */
+
+const fillStandardInputs = async (
+  page: import("@playwright/test").Page,
+  overrides?: { goal?: string; weight?: string }
+) => {
+  await page.getByTestId("macro-input-weight").fill(overrides?.weight ?? "180");
+  await page.getByTestId("macro-input-height").fill("70");
+  await page.getByTestId("macro-input-age").fill("30");
+  await page.getByTestId("macro-input-sex").selectOption("male");
+  await page.getByTestId("macro-input-activity").selectOption("moderate");
+  await page.getByTestId("macro-input-goal").selectOption(overrides?.goal ?? "maintain");
+};
 
 test("renders without requiring a login, with the calculator, coaching content, and an assessment CTA", async ({
   page,
@@ -50,13 +65,19 @@ test("meta title and description are present and tuned for the target keywords",
   expect(parsed.some((entry) => entry["@type"] === "Article")).toBe(true);
 });
 
-test("the calculator computes a calorie and macro target from the default inputs", async ({
+test("anonymous calculator starts blank and computes after the visitor enters inputs", async ({
   page,
 }) => {
   await page.goto("/tools/macro-calculator");
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByTestId("macro-calculator")).toHaveAttribute("data-hydrated", "1");
 
-  // Defaults (180 lb, 70 in, 30 yo, male, moderate, maintain) should already
-  // produce a result with no interaction required.
+  await expect(page.getByTestId("macro-input-weight")).toHaveValue("");
+  await expect(page.getByTestId("macro-input-height")).toHaveValue("");
+  await expect(page.getByTestId("macro-input-age")).toHaveValue("");
+  await expect(page.getByTestId("macro-results-invalid")).toBeVisible();
+
+  await fillStandardInputs(page);
   await expect(page.getByTestId("macro-results")).toBeVisible();
   await expect(page.getByTestId("macro-result-calories")).toHaveText("2763");
   await expect(page.getByTestId("macro-result-protein")).toHaveText("147");
@@ -68,13 +89,10 @@ test("changing an input recomputes the result, and out-of-range values show a va
   page,
 }) => {
   await page.goto("/tools/macro-calculator");
-  // The calculator is a client component with controlled inputs; interacting
-  // before React finishes hydrating can change the native <select>'s DOM
-  // value without firing React's onChange, and hydration then silently
-  // resets it back to the pre-hydration state. Waiting for network idle
-  // gives the (tiny) client bundle time to load and attach listeners before
-  // the first interaction, under slow/loaded CI or dev-server conditions.
   await page.waitForLoadState("networkidle");
+  await expect(page.getByTestId("macro-calculator")).toHaveAttribute("data-hydrated", "1");
+
+  await fillStandardInputs(page);
   await expect(page.getByTestId("macro-results")).toBeVisible();
 
   await page.getByTestId("macro-input-goal").selectOption("build");

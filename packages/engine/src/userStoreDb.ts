@@ -1,10 +1,17 @@
 import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "crypto";
 import { Pool } from "pg";
 import type { SubscriptionPlan } from "@/lib/authTypes";
+import {
+  parseMacroCalculatorSavedInputs,
+  type MacroCalculatorSavedInputs,
+} from "@/lib/macroCalculatorInputs";
 import type { StoredUser } from "@/lib/userStore";
 
 const nowIso = () => new Date().toISOString();
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
+const USER_COLUMNS =
+  "id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, macro_calculator_inputs, created_at, updated_at";
 
 const deriveHash = (password: string, salt: string) =>
   scryptSync(password, salt, 64).toString("hex");
@@ -106,6 +113,10 @@ const ensureDb = async () => {
       ADD COLUMN IF NOT EXISTS stripe_cancel_at_period_end BOOLEAN NULL;
     `);
     await client.query(`
+      ALTER TABLE app_users
+      ADD COLUMN IF NOT EXISTS macro_calculator_inputs JSONB NULL;
+    `);
+    await client.query(`
       CREATE INDEX IF NOT EXISTS idx_app_users_email ON app_users (email);
     `);
     await client.query(`
@@ -138,6 +149,7 @@ const rowToUser = (row: {
   stripe_subscription_status: string | null;
   stripe_current_period_end: string | null;
   stripe_cancel_at_period_end: boolean | null;
+  macro_calculator_inputs?: unknown;
   created_at: string;
   updated_at: string;
 }): StoredUser => ({
@@ -158,6 +170,7 @@ const rowToUser = (row: {
     ? new Date(row.stripe_current_period_end).toISOString()
     : null,
   stripeCancelAtPeriodEnd: row.stripe_cancel_at_period_end,
+  macroCalculatorInputs: parseMacroCalculatorSavedInputs(row.macro_calculator_inputs),
   createdAt: new Date(row.created_at).toISOString(),
   updatedAt: new Date(row.updated_at).toISOString(),
 });
@@ -165,7 +178,7 @@ const rowToUser = (row: {
 export const dbListUsers = async () => {
   await ensureDb();
   const result = await getPool().query(
-    `SELECT id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, created_at, updated_at
+    `SELECT ${USER_COLUMNS}
      FROM app_users
      ORDER BY created_at ASC`
   );
@@ -176,7 +189,7 @@ export const dbFindUserByEmail = async (email: string) => {
   await ensureDb();
   const normalized = normalizeEmail(email);
   const result = await getPool().query(
-    `SELECT id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, created_at, updated_at
+    `SELECT ${USER_COLUMNS}
      FROM app_users
      WHERE email = $1
      LIMIT 1`,
@@ -213,9 +226,9 @@ export const dbCreateUser = async (params: {
     : "web_signup";
 
   const result = await getPool().query(
-    `INSERT INTO app_users (id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, created_at, updated_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NULL, NULL, NULL, NULL, NULL, NULL, $10, $10)
-     RETURNING id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, created_at, updated_at`,
+    `INSERT INTO app_users (${USER_COLUMNS})
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NULL, NULL, NULL, NULL, NULL, NULL, NULL, $10, $10)
+     RETURNING ${USER_COLUMNS}`,
     [id, normalized, name, passwordHash, salt, plan, emailOptIn, emailOptInAt, onboardingSource, createdAt]
   );
   return rowToUser(result.rows[0]);
@@ -232,7 +245,7 @@ export const dbUpdateUserPlan = async (
     `UPDATE app_users
      SET plan = $2, updated_at = $3
      WHERE id = $1
-     RETURNING id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, created_at, updated_at`,
+     RETURNING ${USER_COLUMNS}`,
     [userId, nextPlan, updatedAt]
   );
   const row = result.rows[0];
@@ -242,7 +255,7 @@ export const dbUpdateUserPlan = async (
 export const dbFindUserById = async (userId: string) => {
   await ensureDb();
   const result = await getPool().query(
-    `SELECT id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, created_at, updated_at
+    `SELECT ${USER_COLUMNS}
      FROM app_users
      WHERE id = $1
      LIMIT 1`,
@@ -302,7 +315,7 @@ export const dbUpdateUserBilling = async (
          stripe_cancel_at_period_end = $8,
          updated_at = $9
      WHERE id = $1
-     RETURNING id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, created_at, updated_at`,
+     RETURNING ${USER_COLUMNS}`,
     [
       userId,
       nextPlan,
@@ -319,10 +332,27 @@ export const dbUpdateUserBilling = async (
   return row ? rowToUser(row) : null;
 };
 
+export const dbUpdateUserMacroCalculatorInputs = async (
+  userId: string,
+  inputs: MacroCalculatorSavedInputs | null
+) => {
+  await ensureDb();
+  const updatedAt = nowIso();
+  const result = await getPool().query(
+    `UPDATE app_users
+     SET macro_calculator_inputs = $2::jsonb, updated_at = $3
+     WHERE id = $1
+     RETURNING ${USER_COLUMNS}`,
+    [userId, inputs === null ? null : JSON.stringify(inputs), updatedAt]
+  );
+  const row = result.rows[0];
+  return row ? rowToUser(row) : null;
+};
+
 export const dbFindUserByStripeCustomerId = async (stripeCustomerId: string) => {
   await ensureDb();
   const result = await getPool().query(
-    `SELECT id, email, name, password_hash, password_salt, plan, email_opt_in, email_opt_in_at, onboarding_source, stripe_customer_id, stripe_subscription_id, stripe_price_id, stripe_subscription_status, stripe_current_period_end, stripe_cancel_at_period_end, created_at, updated_at
+    `SELECT ${USER_COLUMNS}
      FROM app_users
      WHERE stripe_customer_id = $1
      LIMIT 1`,
