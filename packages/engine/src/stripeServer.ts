@@ -28,18 +28,25 @@ export const STRIPE_CHECKOUT_PLANS: readonly StripeCheckoutPlan[] = [
 export const STRIPE_FOUNDERS_LOOKUP_KEY = "praxis_founders_monthly";
 
 /**
- * Customer-facing founders code. Prefer resolving this as a Promotion Code
- * (`promo_…`) for Checkout `discounts`; fall back to Coupon id `FOUNDERS`.
+ * Stripe Live — Praxis Founders coupon.
+ * Coupon id: FOUNDERS ($7 off forever). Also has promotion code FOUNDERS.
+ * Applied only on the founders Checkout path via `discounts[0][coupon]`.
  */
 export const STRIPE_FOUNDERS_COUPON_ID = "FOUNDERS";
 
-/** Promo code users may enter on the monthly checkout path only. */
+/**
+ * Stripe Live — Praxis Free Trial coupon.
+ * Coupon id: V76yHqfH (100% off, duration 2 months).
+ * Customer-facing promotion code: PRAXISTRIAL60DAY (not the coupon id).
+ * Monthly Checkout enables the promo field; users type the code themselves.
+ */
+export const STRIPE_MONTHLY_TRIAL_COUPON_ID = "V76yHqfH";
 export const STRIPE_MONTHLY_TRIAL_PROMO_CODE = "PRAXISTRIAL60DAY";
 
 const STRIPE_MONTHLY_CHECKOUT_SUBMIT_MESSAGE =
-  "Have a promo code? First 50 members get 2 months free - use code PRAXISTRIAL60DAY";
+  "Have a promo code? First 50 members get 60 days free - use code PRAXISTRIAL60DAY";
 
-/** Optional Coupon id override when it differs from the FOUNDERS promotion code. */
+/** Optional Coupon id override (defaults to FOUNDERS). */
 const getFoundersCouponIdOverride = () =>
   process.env.STRIPE_FOUNDERS_COUPON_ID?.trim() || "";
 
@@ -213,29 +220,12 @@ const assertDiscountParamsExclusive = (params: Record<string, string>) => {
 };
 
 /**
- * Resolve founders discount for Checkout.
- * Prefer active Promotion Code `FOUNDERS` (correct Stripe object for codes),
- * then env coupon override, then coupon id `FOUNDERS`.
+ * Founders Checkout: server-apply Coupon id FOUNDERS ($7 off forever).
+ * Do not send allow_promotion_codes on this path.
  */
 export const resolveFoundersDiscountParams = async (): Promise<
   Record<string, string>
 > => {
-  const query = new URLSearchParams();
-  query.set("code", STRIPE_FOUNDERS_COUPON_ID);
-  query.set("active", "true");
-  query.set("limit", "1");
-  try {
-    const result = await callStripeGet<{
-      data?: Array<{ id?: string }>;
-    }>(`/promotion_codes?${query.toString()}`);
-    const promoId = result.data?.[0]?.id?.trim();
-    if (promoId) {
-      return { "discounts[0][promotion_code]": promoId };
-    }
-  } catch {
-    // Fall through to coupon id — promotion code list can 404/fail in empty accounts.
-  }
-
   const couponId = getFoundersCouponIdOverride() || STRIPE_FOUNDERS_COUPON_ID;
   return { "discounts[0][coupon]": couponId };
 };
@@ -279,11 +269,20 @@ export const createStripeCheckoutSession = async (params: {
   };
   assertDiscountParamsExclusive(sessionParams);
 
+  const discountKeys = Object.keys(sessionParams).filter(
+    (key) =>
+      key.startsWith("discounts[") ||
+      key === "allow_promotion_codes" ||
+      key.startsWith("custom_text[")
+  );
+  console.info("[billing.checkout]", { plan, priceId, discountKeys });
+
   try {
     return await callStripe<StripeSession>("/checkout/sessions", sessionParams);
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[billing.checkout] Stripe error", { plan, message });
     // If custom_text is rejected, retry monthly with promo codes only.
-    const message = error instanceof Error ? error.message : "";
     const customTextRejected =
       /custom_text/i.test(message) || /submit\[message\]/i.test(message);
     if (
