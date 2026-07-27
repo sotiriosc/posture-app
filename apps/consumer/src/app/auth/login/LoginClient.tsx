@@ -7,6 +7,7 @@ import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import { syncLocalOwner } from "@/lib/accountIsolation";
+import { refreshUserPlan } from "@/hooks/useUserPlan";
 
 export default function LoginClient() {
   const router = useRouter();
@@ -40,6 +41,9 @@ export default function LoginClient() {
       // account's local state never becomes momentarily readable as this
       // account's own on the page we're about to land on.
       await syncLocalOwner(payload?.user?.id ?? null);
+      // Soft navigation keeps the root layout mounted, so clear the shared
+      // client session cache or AuthControls keeps showing "Log in".
+      refreshUserPlan();
       router.replace(next);
       router.refresh();
     } finally {

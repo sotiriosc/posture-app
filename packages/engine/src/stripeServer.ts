@@ -178,6 +178,10 @@ export const createStripeCheckoutSession = async (params: {
     cancel_url: `${appUrl}/results?billing=cancel`,
     customer_email: params.email,
     client_reference_id: params.userId,
+    // Shows Stripe's "Add promotion code" field. Users enter codes they were
+    // given elsewhere (email, founders link, etc.) — Checkout does not list them.
+    // Requires active Promotion Codes in Stripe (not just Coupons).
+    allow_promotion_codes: "true",
     "metadata[userId]": params.userId,
     "metadata[email]": params.email,
     "metadata[checkoutPlan]": plan,

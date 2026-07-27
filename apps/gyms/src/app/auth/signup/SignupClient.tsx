@@ -8,6 +8,7 @@ import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import { markSignupWalkthroughPending } from "@/components/onboarding/onboardingConfig";
 import { syncLocalOwner } from "@/lib/accountIsolation";
+import { refreshUserPlan } from "@/hooks/useUserPlan";
 
 export default function SignupClient() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function SignupClient() {
       // whatever a prior account left on this device.
       await syncLocalOwner(payload?.user?.id ?? null);
       markSignupWalkthroughPending();
+      refreshUserPlan();
       router.replace(next);
       router.refresh();
     } finally {
