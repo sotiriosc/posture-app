@@ -76,4 +76,17 @@ describe("stripe webhook logic", () => {
     });
     expect(mapPlanFromEvent(e)).toBe("free");
   });
+
+  test("invoice.payment_failed keeps pro and marks past_due", () => {
+    const e = event("invoice.payment_failed", {
+      customer: "cus_1",
+      subscription: "sub_1",
+      billing_reason: "subscription_cycle",
+    });
+    expect(mapPlanFromEvent(e)).toBe("pro");
+    const patch = resolveBillingPatch(e);
+    expect(patch.stripeCustomerId).toBe("cus_1");
+    expect(patch.stripeSubscriptionId).toBe("sub_1");
+    expect(patch.stripeSubscriptionStatus).toBe("past_due");
+  });
 });

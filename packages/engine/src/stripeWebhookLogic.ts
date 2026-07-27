@@ -73,6 +73,8 @@ export const mapPlanFromEvent = (event: StripeWebhookEvent) => {
     return mapSubscriptionStatusToPlan(object.status);
   }
   if (event.type === "customer.subscription.deleted") return "free" as const;
+  // Keep Pro access; status patch marks past_due so renewals are visible.
+  if (event.type === "invoice.payment_failed") return "pro" as const;
   return null;
 };
 
@@ -86,7 +88,11 @@ export const resolveBillingPatch = (event: StripeWebhookEvent) => {
     (typeof object.id === "string" && object.object === "subscription" ? object.id : null);
   const stripePriceId = object?.items?.data?.[0]?.price?.id ?? object?.plan?.id ?? null;
   const stripeSubscriptionStatus =
-    typeof object.status === "string" ? object.status : null;
+    event.type === "invoice.payment_failed"
+      ? "past_due"
+      : typeof object.status === "string"
+        ? object.status
+        : null;
   // Basil+: period end may only exist on items.data[].current_period_end.
   const periodEndUnix = (() => {
     if (typeof object.current_period_end === "number") return object.current_period_end;
@@ -94,7 +100,10 @@ export const resolveBillingPatch = (event: StripeWebhookEvent) => {
       .map((item) => item.current_period_end)
       .filter((value): value is number => typeof value === "number");
     if (itemEnds.length > 0) return Math.max(...itemEnds);
-    if (object.cancel_at_period_end && typeof object.cancel_at === "number") {
+    if (
+      (object.cancel_at_period_end === true || typeof object.cancel_at === "number") &&
+      typeof object.cancel_at === "number"
+    ) {
       return object.cancel_at;
     }
     return null;
@@ -106,7 +115,9 @@ export const resolveBillingPatch = (event: StripeWebhookEvent) => {
   const stripeCancelAtPeriodEnd =
     typeof object.cancel_at_period_end === "boolean"
       ? object.cancel_at_period_end
-      : null;
+      : typeof object.cancel_at === "number" && object.cancel_at > 0
+        ? true
+        : null;
   return {
     stripeCustomerId,
     stripeSubscriptionId,

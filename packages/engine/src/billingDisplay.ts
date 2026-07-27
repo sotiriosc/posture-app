@@ -67,20 +67,25 @@ export const resolveBillingPhase = (record: LocalBillingRecord): BillingPhase =>
   const status = String(record.stripeSubscriptionStatus ?? "").toLowerCase();
   const planFromStatus = mapSubscriptionStatusToPlan(status);
   const cancelAtPeriodEnd = record.stripeCancelAtPeriodEnd === true;
+  const proLike =
+    status === "active" ||
+    status === "trialing" ||
+    status === "past_due" ||
+    planFromStatus === "pro" ||
+    record.plan === "pro";
+
+  // Cancel-at-period-end must win over active/trial/past_due so the UI never
+  // shows "Renews on" / "No cancellation scheduled" for a cancelling sub.
+  if (proLike && cancelAtPeriodEnd) return "canceling";
 
   if (status === "trialing") return "trial";
   if (status === "past_due") return "past_due";
-  if (status === "active" && cancelAtPeriodEnd) return "canceling";
   if (status === "active") return "active";
 
-  if (planFromStatus === "pro") {
-    return cancelAtPeriodEnd ? "canceling" : "active";
-  }
+  if (planFromStatus === "pro") return "active";
   if (planFromStatus === "free") return "expired";
 
-  if (record.plan === "pro") {
-    return cancelAtPeriodEnd ? "canceling" : "active";
-  }
+  if (record.plan === "pro") return "active";
   return "free";
 };
 
