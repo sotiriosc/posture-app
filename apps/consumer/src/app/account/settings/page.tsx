@@ -5,6 +5,7 @@ import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import PasswordField from "@/components/ui/PasswordField";
 import { eraseAllLocalData } from "@/lib/resetAppData";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { clearDraftsByProgramId } from "@/lib/sessionDraftStore";
@@ -282,6 +283,11 @@ export default function AccountSettingsPage() {
       setCredentialsWorking(false);
       return;
     }
+    if (passwordChanging && !confirmNewPassword) {
+      setCredentialsMessage("Confirm your new password.");
+      setCredentialsWorking(false);
+      return;
+    }
     if (passwordChanging && newPassword !== confirmNewPassword) {
       setCredentialsMessage("New passwords do not match.");
       setCredentialsWorking(false);
@@ -386,70 +392,83 @@ export default function AccountSettingsPage() {
               <p className="mt-2 text-sm text-slate-400">
                 Signed in as <span className="text-slate-200">{accountEmail}</span>
               </p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <label className="flex flex-col gap-1 text-sm text-slate-200 sm:col-span-2">
-                  <span>Current password</span>
+              <form
+                className="relative mt-4 grid gap-3 sm:grid-cols-2"
+                autoComplete="off"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void handleUpdateCredentials();
+                }}
+              >
+                {/* Absorb browser autofill so change-password fields stay empty. */}
+                <div
+                  className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0"
+                  aria-hidden="true"
+                >
+                  <input type="text" name="username" tabIndex={-1} autoComplete="username" />
                   <input
                     type="password"
+                    name="password"
+                    tabIndex={-1}
                     autoComplete="current-password"
-                    value={currentPassword}
-                    onChange={(event) => setCurrentPassword(event.target.value)}
-                    className="ui-input"
-                    data-testid="settings-current-password"
                   />
-                </label>
+                </div>
+                <PasswordField
+                  label="Current password"
+                  name="praxis-current-password"
+                  autoComplete="off"
+                  value={currentPassword}
+                  onChange={setCurrentPassword}
+                  className="text-sm text-slate-200 sm:col-span-2"
+                  data-testid="settings-current-password"
+                  required
+                />
                 <label className="flex flex-col gap-1 text-sm text-slate-200">
                   <span>New email</span>
                   <input
                     type="email"
-                    autoComplete="email"
+                    name="praxis-new-email"
+                    autoComplete="off"
                     value={newEmail}
                     onChange={(event) => setNewEmail(event.target.value)}
                     className="ui-input"
                     data-testid="settings-new-email"
                   />
                 </label>
-                <label className="flex flex-col gap-1 text-sm text-slate-200">
-                  <span>New password</span>
-                  <input
-                    type="password"
-                    autoComplete="new-password"
-                    value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    className="ui-input"
-                    data-testid="settings-new-password"
-                    placeholder="Leave blank to keep current"
-                  />
-                </label>
-                {newPassword ? (
-                  <label className="flex flex-col gap-1 text-sm text-slate-200 sm:col-span-2">
-                    <span>Confirm new password</span>
-                    <input
-                      type="password"
-                      autoComplete="new-password"
-                      value={confirmNewPassword}
-                      onChange={(event) => setConfirmNewPassword(event.target.value)}
-                      className="ui-input"
-                      data-testid="settings-confirm-new-password"
-                    />
-                  </label>
-                ) : null}
-              </div>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <Button
-                  variant="primary"
-                  disabled={credentialsWorking}
-                  onClick={() => {
-                    void handleUpdateCredentials();
-                  }}
-                  data-testid="settings-save-credentials"
-                >
-                  {credentialsWorking ? "Saving..." : "Save sign-in details"}
-                </Button>
-                {credentialsMessage ? (
-                  <p className="text-sm text-slate-300">{credentialsMessage}</p>
-                ) : null}
-              </div>
+                <PasswordField
+                  label="New password"
+                  name="praxis-new-password"
+                  autoComplete="new-password"
+                  value={newPassword}
+                  onChange={setNewPassword}
+                  className="text-sm text-slate-200"
+                  data-testid="settings-new-password"
+                  placeholder="Leave blank to keep current"
+                />
+                <PasswordField
+                  label="Confirm new password"
+                  name="praxis-confirm-new-password"
+                  autoComplete="new-password"
+                  value={confirmNewPassword}
+                  onChange={setConfirmNewPassword}
+                  className="text-sm text-slate-200 sm:col-span-2"
+                  data-testid="settings-confirm-new-password"
+                  placeholder="Re-enter new password"
+                />
+                <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={credentialsWorking}
+                    data-testid="settings-save-credentials"
+                  >
+                    {credentialsWorking ? "Saving..." : "Save sign-in details"}
+                  </Button>
+                  {credentialsMessage ? (
+                    <p className="text-sm text-slate-300">{credentialsMessage}</p>
+                  ) : null}
+                </div>
+              </form>
             </div>
           ) : null}
 
