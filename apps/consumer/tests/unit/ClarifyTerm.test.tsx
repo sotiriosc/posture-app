@@ -11,13 +11,14 @@ const EXPLANATION =
   "Rate of Perceived Exertion — a 1-10 scale for how hard a set felt.";
 
 describe("ClarifyTerm", () => {
-  test("renders the trigger term and no card initially", () => {
+  test("renders the trigger term, info icon, and no card initially", () => {
     render(
       <ClarifyTerm term="RPE" explanation={EXPLANATION}>
         RPE
       </ClarifyTerm>
     );
     expect(screen.getByText("RPE")).not.toBeNull();
+    expect(screen.getByTestId("clarify-term-rpe-info")).not.toBeNull();
     expect(screen.queryByRole("status")).toBeNull();
   });
 

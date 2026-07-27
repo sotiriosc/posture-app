@@ -75,6 +75,26 @@ export default function AppMenuClient({
     void syncLocalOwner(userId);
   }, [userId]);
 
+  // Phone: lock page scroll while the drawer is open; only the menu scrolls.
+  useEffect(() => {
+    if (!open) return;
+    const { body, documentElement } = document;
+    const previousOverflow = body.style.overflow;
+    const previousPaddingRight = body.style.paddingRight;
+    const previousHtmlOverflow = documentElement.style.overflow;
+    const scrollbarGap = window.innerWidth - documentElement.clientWidth;
+    body.style.overflow = "hidden";
+    documentElement.style.overflow = "hidden";
+    if (scrollbarGap > 0) {
+      body.style.paddingRight = `${scrollbarGap}px`;
+    }
+    return () => {
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPaddingRight;
+      documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [open]);
+
   useEffect(() => {
     function handleExternalOpen() {
       setOpen(true);
@@ -175,8 +195,8 @@ export default function AppMenuClient({
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/55"
           />
-          <aside className="absolute right-0 top-0 h-full w-[min(88vw,360px)] border-l border-slate-400/25 bg-slate-950/95 p-5 text-white shadow-2xl">
-            <div className="flex items-center justify-between gap-3">
+          <aside className="absolute right-0 top-0 flex h-full w-[min(88vw,360px)] flex-col overflow-y-auto overscroll-contain border-l border-slate-400/25 bg-slate-950/95 p-5 text-white shadow-2xl">
+            <div className="flex shrink-0 items-center justify-between gap-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300">
                 Navigation
               </p>
@@ -184,7 +204,7 @@ export default function AppMenuClient({
                 Close
               </Button>
             </div>
-            <nav className="mt-5 space-y-2">
+            <nav className="mt-5 min-h-0 flex-1 space-y-2">
               {showSessionActions ? (
                 <div className="space-y-2 pb-2">
                   <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
