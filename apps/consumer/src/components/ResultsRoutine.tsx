@@ -64,6 +64,14 @@ import {
   getPhaseReadyNoticeState,
 } from "@/lib/phaseControls";
 import { getDailyInsight } from "@/lib/insightGenerator";
+import {
+  BASELINE_CONSISTENCY_COPY,
+  BASELINE_PROGRESSION_SPEED_COPY,
+  BASELINE_READINESS_COPY,
+  gateReadinessConsistencyCopy,
+  gateReadinessConsistencyLines,
+  metricsHaveBaselineFloor,
+} from "@/lib/baselineMetricCopy";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import PlanOwnershipCopy from "@/components/marketing/PlanOwnershipCopy";
 import FeedbackPromptCard from "@/components/feedback/FeedbackPromptCard";
@@ -2690,8 +2698,13 @@ export default function ResultsRoutine() {
     assessmentReport: poseState.report,
     painTrendLabel,
   });
-  const encouragementMessage =
-    consistencyPercent >= 72 && (painTrendLabel === "Stable" || painTrendLabel === "No pain signals")
+  // Below the readiness/consistency display floor, never praise or judge
+  // consistency percentages that are just empty history.
+  const metricFloorMet = metricsHaveBaselineFloor(totalCompletedWorkoutCount);
+  const encouragementMessage = !metricFloorMet
+    ? null
+    : consistencyPercent >= 72 &&
+        (painTrendLabel === "Stable" || painTrendLabel === "No pain signals")
       ? "Your consistency is accelerating adaptation."
       : consistencyPercent >= 62
       ? "Steady consistency is building durable progress."
@@ -2727,13 +2740,14 @@ export default function ResultsRoutine() {
       : gateRemainingText;
   const phaseGateProgressText = `Workouts in phase: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days in phase: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
   const phaseRequirementsText = `Phase advances after ${phaseGate.minWorkouts} sessions or when readiness criteria clear — whichever comes later.`;
-  const adaptationTrendItems = [
-    ...(program.sessionAdaptation?.reasons ?? []),
-    ...(program.sessionAdaptation?.appliedChanges ?? []),
-    ...(program.sessionAdaptation?.masteryChecks ?? []),
-  ]
-    .filter(Boolean)
-    .slice(0, 4);
+  const adaptationTrendItems = gateReadinessConsistencyLines(
+    [
+      ...(program.sessionAdaptation?.reasons ?? []),
+      ...(program.sessionAdaptation?.appliedChanges ?? []),
+      ...(program.sessionAdaptation?.masteryChecks ?? []),
+    ].filter(Boolean),
+    totalCompletedWorkoutCount
+  ).slice(0, 4);
 
   const exerciseRationaleItems = (selectedDayProgram?.routine ?? []).flatMap(
     (item) => {
@@ -2759,16 +2773,18 @@ export default function ResultsRoutine() {
     exerciseRationaleItems.map((item) => [item.exerciseId, item] as const)
   );
 
-  const coachWin =
-    movementQualityPercent >= 75
+  const coachWin = !metricFloorMet
+    ? "Biggest win: You are building momentum by staying engaged."
+    : movementQualityPercent >= 75
       ? "Biggest win: Movement quality is climbing with cleaner execution."
       : consistencyPercent >= 70
       ? "Biggest win: Consistency is strong and adaptation is compounding."
       : adherencePercent >= 65
       ? "Biggest win: Completion is trending up this week."
       : "Biggest win: You are building momentum by staying engaged.";
-  const coachRisk =
-    painTrendLabel === "Needs caution"
+  const coachRisk = !metricFloorMet
+    ? "Biggest risk: Keep recovery habits steady to avoid regression."
+    : painTrendLabel === "Needs caution"
       ? "Biggest risk: Pain trend is elevated; keep range and load conservative."
       : adherencePercent < 50
       ? "Biggest risk: Missed sessions can slow progression and recovery."
@@ -2792,7 +2808,10 @@ export default function ResultsRoutine() {
   const progressPreviewLines = [
     totalCompletedWorkoutCount === 0
       ? "Your first session will start filling this in."
-      : `Consistency ${consistencyPercent}% • Completion ${adherencePercent}%`,
+      : gateReadinessConsistencyCopy(
+          `Consistency ${consistencyPercent}% • Completion ${adherencePercent}%`,
+          totalCompletedWorkoutCount
+        ),
     `Pain trend: ${painTrendLabel} • Movement quality: ${movementQualityTrend}`,
   ];
   const progressPreviewChips = [
@@ -2879,7 +2898,9 @@ export default function ResultsRoutine() {
   // surfaces to users.
   const weekOfCycle = ((Math.max(1, program.cycleIndex ?? cycleCurrent) - 1) % 4) + 1;
   const heroMetricChips = [
-    `Training readiness: ${readinessScore}% (${readinessLabel})`,
+    metricFloorMet
+      ? `Training readiness: ${readinessScore}% (${readinessLabel})`
+      : BASELINE_READINESS_COPY,
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
     `Week ${weekOfCycle} of 4`,
   ].filter((chip): chip is string => Boolean(chip));
@@ -2888,8 +2909,9 @@ export default function ResultsRoutine() {
     if (heroCta.label === "Continue Session") return "Today: Continue your active session.";
     return `Today: Start Day ${effectiveNextDayIndex + 1} and finish all planned sections.`;
   })();
-  const coachWatch =
-    painTrendLabel === "Needs caution"
+  const coachWatch = !metricFloorMet
+    ? "Watch: Stay smooth and pain-free; prioritize control over load."
+    : painTrendLabel === "Needs caution"
       ? "Watch: Keep pain below moderate and reduce range/load if needed."
       : adherencePercent < 60
       ? "Watch: Protect consistency by completing the next planned day."
@@ -2912,8 +2934,10 @@ export default function ResultsRoutine() {
     "System updated your plan from recent completion and pain signals.";
   const systemAdjustmentChanged = program.phaseOptimizerReport
     ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} slots were adjusted.`
-    : program.sessionAdaptation?.appliedChanges?.[0] ??
-      "Session focus and progression guidance were tuned.";
+    : !metricFloorMet
+      ? BASELINE_PROGRESSION_SPEED_COPY
+      : program.sessionAdaptation?.appliedChanges?.[0] ??
+        "Session focus and progression guidance were tuned.";
   const systemAdjustmentWhy =
     program.sessionAdaptation?.reasons?.[0] ??
     program.sessionAdaptation?.summary ??
@@ -2923,12 +2947,22 @@ export default function ResultsRoutine() {
   const systemAdjustmentFocus =
     program.sessionAdaptation?.masteryChecks?.[0] ??
     "Keep clean execution on this week's focus patterns — quality before load.";
-  const systemAdjustmentChips = [
-    program.phaseOptimizerReport
-      ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} changed`
-      : null,
-    ...(program.sessionAdaptation?.dataSignals ?? []).slice(0, 2),
-  ].filter((chip): chip is string => Boolean(chip));
+  const systemAdjustmentChips = (
+    metricFloorMet
+      ? [
+          program.phaseOptimizerReport
+            ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} changed`
+            : null,
+          ...(program.sessionAdaptation?.dataSignals ?? []).slice(0, 2),
+        ]
+      : [
+          program.phaseOptimizerReport
+            ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} changed`
+            : null,
+          BASELINE_READINESS_COPY,
+          BASELINE_CONSISTENCY_COPY,
+        ]
+  ).filter((chip): chip is string => Boolean(chip));
 
   const movementSummary =
     movementPatternItems[0] ?? "Movement patterns will populate as sessions complete.";
@@ -3236,7 +3270,10 @@ export default function ResultsRoutine() {
     {
       key: "progress",
       title: "Progress",
-      summary: `Consistency ${consistencyPercent}% with movement quality ${movementQualityPercent}%.`,
+      summary: gateReadinessConsistencyCopy(
+        `Consistency ${consistencyPercent}% with movement quality ${movementQualityPercent}%.`,
+        totalCompletedWorkoutCount
+      ),
       locked: progressLocked,
       lockReason: "Complete one workout to unlock your progress summary.",
     },
@@ -4016,6 +4053,7 @@ export default function ResultsRoutine() {
             gateStatusLabel={phaseGateStatusLabel}
             gateStatusDetail={phaseGateStatusDetail}
             consistencyPercent={consistencyPercent}
+            consistencyFloorMet={metricFloorMet}
             completionPercent={adherencePercent}
             painTrend={painTrendLabel}
             painTrendPercent={painTrendPercent}

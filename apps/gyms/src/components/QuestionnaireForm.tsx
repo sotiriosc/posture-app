@@ -72,7 +72,7 @@ const emptyData: QuestionnaireData = {
   goals: goalOptions[0],
   painAreas: [],
   experience: experienceOptions[0],
-  equipment: ["none"],
+  equipment: ["gym"],
   daysPerWeek: 3,
 };
 
@@ -94,7 +94,7 @@ const normalizeQuestionnaireData = (
   ...(input ?? {}),
   equipment: lockedEquipmentValues?.length
     ? [...lockedEquipmentValues]
-    : normalizeEquipmentSelectionValues(input?.equipment ?? ["none"]),
+    : normalizeEquipmentSelectionValues(input?.equipment ?? ["gym"]),
   daysPerWeek: normalizeDaysPerWeek(input?.daysPerWeek),
 });
 

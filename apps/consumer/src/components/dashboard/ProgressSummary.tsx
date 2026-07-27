@@ -2,6 +2,8 @@ import ProgressBar from "@/components/ui/ProgressBar";
 
 type ProgressSummaryProps = {
   consistencyPercent: number;
+  /** When false, show baseline copy instead of a near-zero consistency %. */
+  consistencyFloorMet?: boolean;
   completionPercent: number;
   painTrend: string;
   painTrendPercent: number;
@@ -17,6 +19,7 @@ type ProgressSummaryProps = {
 
 export default function ProgressSummary({
   consistencyPercent,
+  consistencyFloorMet = true,
   completionPercent,
   painTrend,
   painTrendPercent,
@@ -57,7 +60,13 @@ export default function ProgressSummary({
         subtitle={`${daysInPhase}/${dayTarget} days in phase`}
       />
 
-      <ProgressBar label="Consistency" value={consistencyPercent} max={100} animate />
+      {consistencyFloorMet ? (
+        <ProgressBar label="Consistency" value={consistencyPercent} max={100} animate />
+      ) : (
+        <p className="text-sm text-slate-400">
+          Consistency: starts tracking after your first few sessions
+        </p>
+      )}
       <ProgressBar label="Completion" value={completionPercent} max={100} animate />
       <ProgressBar
         label="Pain trend"

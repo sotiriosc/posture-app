@@ -1,6 +1,6 @@
 "use client";
 
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useMemo, useState } from "react";
 import {
   type OnboardingKey,
   type OnboardingGuide,
@@ -26,7 +26,21 @@ export default function OnboardingInfoButton({
   onboardingKey,
   autoOpen = true,
 }: OnboardingInfoButtonProps) {
-  const [open, setOpen] = useState(false);
+  // First visit: open immediately via initial state (not an effect) so we avoid
+  // cascading setState-in-effect lint, and mark seen so login/logout never
+  // re-triggers auto-show. Manual Guide button still works anytime.
+  const [open, setOpen] = useState(() => {
+    if (typeof window === "undefined") return false;
+    if (
+      !autoOpen ||
+      isAutomationEnvironment() ||
+      !shouldAutoOpenOnboarding(onboardingKey)
+    ) {
+      return false;
+    }
+    markOnboardingPageSeen(onboardingKey);
+    return true;
+  });
   const panelSafeAreaStyle = useMemo(
     () =>
       ({
@@ -38,21 +52,6 @@ export default function OnboardingInfoButton({
     () => onboardingGuides[onboardingKey],
     [onboardingKey]
   );
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (
-      !autoOpen ||
-      isAutomationEnvironment() ||
-      !shouldAutoOpenOnboarding(onboardingKey)
-    ) {
-      return;
-    }
-    // First visit on this device: show immediately and mark seen so login/logout
-    // never re-triggers auto-show. Manual Guide button still works anytime.
-    markOnboardingPageSeen(onboardingKey);
-    setOpen(true);
-  }, [autoOpen, onboardingKey]);
 
   const closeGuide = () => {
     markOnboardingPageSeen(onboardingKey);

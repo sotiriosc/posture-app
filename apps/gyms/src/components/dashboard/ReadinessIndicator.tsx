@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { BASELINE_READINESS_COPY } from "@/lib/baselineMetricCopy";
 
 interface ReadinessIndicatorProps {
   score: number; // 0–100
+  /** When false, show baseline copy instead of a near-zero readiness %. */
+  floorMet?: boolean;
 }
 
 const SIZE = 56;
@@ -28,11 +31,16 @@ const getReadinessLabel = (score: number) => {
   return "Caution";
 };
 
-export default function ReadinessIndicator({ score }: ReadinessIndicatorProps) {
+export default function ReadinessIndicator({
+  score,
+  floorMet = true,
+}: ReadinessIndicatorProps) {
   const safeScore = useMemo(() => clampScore(score), [score]);
   const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
+    if (!floorMet) return;
+
     let frameId = 0;
     const durationMs = 260;
     const startAt = performance.now();
@@ -52,7 +60,18 @@ export default function ReadinessIndicator({ score }: ReadinessIndicatorProps) {
     return () => {
       window.cancelAnimationFrame(frameId);
     };
-  }, [safeScore]);
+  }, [safeScore, floorMet]);
+
+  if (!floorMet) {
+    return (
+      <div className="space-y-0.5">
+        <p className="text-xs font-semibold uppercase text-slate-400">
+          Training readiness
+        </p>
+        <p className="text-sm text-slate-300">{BASELINE_READINESS_COPY}</p>
+      </div>
+    );
+  }
 
   const color = getReadinessColor(safeScore);
   const dashOffset = CIRCUMFERENCE - (animatedScore / 100) * CIRCUMFERENCE;
