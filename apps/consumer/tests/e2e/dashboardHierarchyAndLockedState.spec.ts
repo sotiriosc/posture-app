@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import {
   completeQuestionnaire,
   e2eEmail,
-  mockAuthSession,
+  loginE2eUser,
   mockTrainingState,
   upsertE2eUser,
 } from "../../e2e/fixtures";
@@ -10,14 +10,8 @@ import {
 /**
  * Phase 6d, Commit 3 — dashboard hierarchy + honest-locked-state.
  *
- * Locks three acceptance criteria:
- * 1. Header pill hierarchy: "Edit profile" / "Account and billing" are
- *    tucked behind a "..." trigger instead of sitting as always-visible
- *    pills competing with the greeting and plan badge.
- * 2. Locked cards read as a small inline lock icon, not a loud full-line
- *    "LOCKED" badge.
- * 3. Card ordering: unlocked cards (Today, Week, Billing) come before
- *    locked-until-earned cards (Progress, Insights, History).
+ * Mobile: secondary account actions live in the bottom Menu (the top "..."
+ * control was redundant and clipped off-screen). Desktop keeps "...".
  */
 
 const MOBILE_VIEWPORTS = [
@@ -26,38 +20,58 @@ const MOBILE_VIEWPORTS = [
 ] as const;
 
 for (const viewport of MOBILE_VIEWPORTS) {
-  test(`dashboard header hides secondary actions behind "..." and locked cards use a small icon, not a badge (${viewport.name})`, async ({
+  test(`mobile dashboard hides top "..." menu; Edit profile is in bottom Menu (${viewport.name})`, async ({
     page,
   }) => {
-    await page.setViewportSize({ width: viewport.width, height: viewport.height });
-    await mockAuthSession(page, { enabled: false, authenticated: false });
+    const email = e2eEmail(`dash-menu-${viewport.name}`);
+    await loginE2eUser(page, {
+      email,
+      password: "playwright-password",
+      plan: "free",
+    });
     await mockTrainingState(page, { authenticated: false });
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    });
 
-    // Fresh onboarding → a brand-new program with zero completed workouts.
-    // dashboardLevel is 1 here, so Progress/Insights/History are locked —
-    // the exact state the honest-locked-state UI needs to be checked against.
     await completeQuestionnaire(page);
 
-    await expect(page.getByTestId("dashboard-edit-profile")).toBeHidden();
-    await expect(page.getByTestId("dashboard-account-billing")).toBeHidden();
+    await expect(page.getByTestId("dashboard-profile-menu-trigger")).toBeHidden();
     await expect(page.getByText("Built from your movement profile")).toBeVisible();
 
-    const trigger = page.getByTestId("dashboard-profile-menu-trigger");
-    await expect(trigger).toBeVisible();
-    const triggerBox = await trigger.boundingBox();
-    expect(triggerBox).not.toBeNull();
-    if (triggerBox) expect(triggerBox.height).toBeGreaterThanOrEqual(44);
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await expect(
+      page.getByRole("link", { name: "Edit profile", exact: true })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Account and billing", exact: true })
+    ).toBeVisible();
 
-    await trigger.click();
-    await expect(page.getByTestId("dashboard-edit-profile")).toBeVisible();
-    await trigger.click(); // close it back down
-
-    // Locked cards: small inline lock icon, never a loud "LOCKED" badge.
+    await page.locator("aside").getByRole("button", { name: "Close" }).click();
     await expect(page.getByText("LOCKED", { exact: true })).toHaveCount(0);
     const lockIcons = page.getByLabel("Locked");
     expect(await lockIcons.count()).toBeGreaterThan(0);
   });
 }
+
+test("desktop dashboard keeps secondary actions behind '...'", async ({ page }) => {
+  const email = e2eEmail("dash-menu-desktop");
+  await loginE2eUser(page, {
+    email,
+    password: "playwright-password",
+    plan: "free",
+  });
+  await mockTrainingState(page, { authenticated: false });
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await completeQuestionnaire(page);
+
+  const trigger = page.getByTestId("dashboard-profile-menu-trigger");
+  await expect(trigger).toBeVisible();
+  await trigger.click();
+  await expect(page.getByTestId("dashboard-edit-profile")).toBeVisible();
+  await expect(page.getByTestId("dashboard-account-billing")).toBeVisible();
+});
 
 test("dashboard card grid orders unlocked cards (Today, Week, Billing) before locked-until-earned cards (Progress, Insights, History)", async ({
   page,
@@ -102,7 +116,8 @@ test("dashboard card grid orders unlocked cards (Today, Week, Billing) before lo
   const cardTitles = await page
     .getByRole("button", { name: /^Today|^Week|^Billing|^Progress|^Insights|^History/ })
     .allTextContents();
-  const indexOf = (needle: string) => cardTitles.findIndex((text) => text.includes(needle));
+  const indexOf = (needle: string) =>
+    cardTitles.findIndex((text) => text.includes(needle));
 
   const todayIndex = indexOf("Today");
   const weekIndex = indexOf("Week");

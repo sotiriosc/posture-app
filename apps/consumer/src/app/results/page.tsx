@@ -30,12 +30,10 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
     <BackgroundShell>
       <div className="ui-shell flex max-w-6xl flex-col gap-8 py-8 sm:py-12">
         <OnImage>
-          {/* Phase 6d, Commit 3.a — pill hierarchy above the fold. Four
-              equal-weight pills demoted to: a small plan badge (top-right of
-              the greeting, not a pill among pills), a caption instead of a
-              pill for "Built from your movement profile", and Edit
-              profile/Account and billing tucked behind "...". Two primary
-              actions max above the fold on phone. */}
+          {/* Phase 6d, Commit 3.a — pill hierarchy above the fold. Plan badge
+              stays; Edit profile / Account and billing live in the bottom Menu
+              on phone (the "..." control was redundant and clipped off-screen).
+              Desktop still has the compact "..." menu. */}
           <header className="ui-page-heading">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -49,7 +47,11 @@ export default async function ResultsPage({ searchParams }: ResultsProps) {
               </div>
               <div className="flex items-center gap-2">
                 <PlanBadge />
-                <DashboardProfileMenu authEnabled={authEnabled} />
+                {/* Mobile: Edit profile / Account live in the bottom Menu.
+                    Desktop keeps the compact "..." control. */}
+                <div className="hidden sm:block">
+                  <DashboardProfileMenu authEnabled={authEnabled} />
+                </div>
               </div>
             </div>
           </header>

@@ -78,9 +78,11 @@ export default function AppMenuClient({
       nav.push({ href: "/progress", label: "Progress" });
     }
     nav.push({ href: "/assessment", label: "Assessment" });
-    nav.push({ href: "/questionnaire", label: "Movement Profile" });
+    // Labels match the (desktop) dashboard "..." menu so mobile users find
+    // the same actions after that control was removed below `sm`.
+    nav.push({ href: "/questionnaire", label: "Edit profile" });
     if (authOn && isAuthed) {
-      nav.push({ href: "/account/billing", label: "Account / Billing" });
+      nav.push({ href: "/account/billing", label: "Account and billing" });
       nav.push({ href: "/account/settings", label: "Settings" });
     }
     if (isAdmin) nav.push({ href: "/settings", label: "Admin Settings" });
