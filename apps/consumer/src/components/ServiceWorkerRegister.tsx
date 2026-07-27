@@ -20,9 +20,24 @@ export default function ServiceWorkerRegister() {
       return;
     }
 
-    navigator.serviceWorker
-      .register("/sw.js")
+    void navigator.serviceWorker
+      .register("/sw.js", { scope: "/", updateViaCache: "none" })
+      .then((registration) => {
+        const onVisible = () => {
+          if (document.visibilityState === "visible") {
+            void registration.update();
+          }
+        };
+        document.addEventListener("visibilitychange", onVisible);
+        removeVisibilityListener = () => {
+          document.removeEventListener("visibilitychange", onVisible);
+        };
+      })
       .catch((error) => console.error("SW registration failed", error));
+
+    return () => {
+      removeVisibilityListener?.();
+    };
   }, []);
 
   return null;

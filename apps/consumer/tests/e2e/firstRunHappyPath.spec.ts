@@ -5,8 +5,8 @@ import {
   e2eEmail,
   getActiveProgramId,
   getStoredDaysPerWeek,
+  loginE2eUser,
   mockTrainingState,
-  upsertE2eUser,
 } from "../../e2e/fixtures";
 
 /**
@@ -25,11 +25,7 @@ test("first run: onboarding → program → session → results headline", async
   // Real session cookie required: middleware gates /results when AUTH_SECRET is set.
   const email = e2eEmail("first-run");
   const password = "playwright-password";
-  await upsertE2eUser({ email, password, plan: "free" });
-  const login = await page.request.post("/api/auth/login", {
-    data: { email, password },
-  });
-  expect(login.ok()).toBeTruthy();
+  await loginE2eUser(page, { email, password, plan: "free" });
   await mockTrainingState(page, { authenticated: false });
 
   // Onboarding + program generation (lands on the results dashboard).
