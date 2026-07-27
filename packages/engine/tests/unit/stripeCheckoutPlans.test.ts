@@ -10,6 +10,7 @@ import {
   isStripeConfigured,
   parseStripeCheckoutPlan,
   resolveCheckoutPriceId,
+  resolveFoundersDiscountParams,
   STRIPE_FOUNDERS_COUPON_ID,
   STRIPE_FOUNDERS_LOOKUP_KEY,
   STRIPE_MONTHLY_TRIAL_PROMO_CODE,
@@ -133,13 +134,45 @@ describe("stripe checkout plans", () => {
     );
     expect(monthly["discounts[0][coupon]"]).toBeUndefined();
 
-    const founders = buildCheckoutDiscountParams("founders");
-    expect(founders["discounts[0][coupon]"]).toBe(STRIPE_FOUNDERS_COUPON_ID);
-    expect(founders.allow_promotion_codes).toBeUndefined();
-    expect(founders["custom_text[submit][message]"]).toBeUndefined();
+    // Founders discounts are resolved async (promotion code → coupon).
+    expect(buildCheckoutDiscountParams("founders")).toEqual({});
 
     const annual = buildCheckoutDiscountParams("annual");
     expect(annual).toEqual({});
+  });
+
+  test("resolveFoundersDiscountParams prefers promotion code object id", async () => {
+    process.env.STRIPE_SECRET_KEY = "sk_test_x";
+    process.env.NODE_ENV = "test";
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [{ id: "promo_founders_1", code: "FOUNDERS" }],
+      }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(resolveFoundersDiscountParams()).resolves.toEqual({
+      "discounts[0][promotion_code]": "promo_founders_1",
+    });
+    expect(String(fetchMock.mock.calls[0]?.[0] ?? "")).toContain(
+      "/promotion_codes?"
+    );
+  });
+
+  test("resolveFoundersDiscountParams falls back to coupon id", async () => {
+    process.env.STRIPE_SECRET_KEY = "sk_test_x";
+    process.env.NODE_ENV = "test";
+    delete process.env.STRIPE_FOUNDERS_COUPON_ID;
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: [] }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(resolveFoundersDiscountParams()).resolves.toEqual({
+      "discounts[0][coupon]": STRIPE_FOUNDERS_COUPON_ID,
+    });
   });
 
   test("monthly checkout enables promo codes and never sends discounts", async () => {
@@ -175,20 +208,30 @@ describe("stripe checkout plans", () => {
     expect(body).toContain("metadata%5BuserId%5D=user-1");
   });
 
-  test("founders checkout applies FOUNDERS coupon without promo codes", async () => {
+  test("founders checkout applies FOUNDERS promotion code without allow_promotion_codes", async () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_x";
     process.env.NODE_ENV = "test";
     process.env.STRIPE_PRICE_ID_FOUNDERS = "price_founders";
     process.env.APP_URL = "https://example.com";
 
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        id: "cs_test_founders",
-        url: "https://checkout.stripe.com/c/pay/cs_test_founders",
-        customer: null,
-        subscription: null,
-      }),
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (String(url).includes("/promotion_codes")) {
+        return {
+          ok: true,
+          json: async () => ({
+            data: [{ id: "promo_founders_1", code: "FOUNDERS" }],
+          }),
+        };
+      }
+      return {
+        ok: true,
+        json: async () => ({
+          id: "cs_test_founders",
+          url: "https://checkout.stripe.com/c/pay/cs_test_founders",
+          customer: null,
+          subscription: null,
+        }),
+      };
     });
     vi.stubGlobal("fetch", fetchMock);
 
@@ -198,10 +241,14 @@ describe("stripe checkout plans", () => {
       plan: "founders",
     });
 
-    const [, init] = fetchMock.mock.calls[0] ?? [];
-    const body = String((init as { body?: string } | undefined)?.body ?? "");
+    const sessionCall = fetchMock.mock.calls.find(([url]) =>
+      String(url).includes("/checkout/sessions")
+    );
+    const body = String(
+      (sessionCall?.[1] as { body?: string } | undefined)?.body ?? ""
+    );
     expect(decodeURIComponent(body)).toContain(
-      `discounts[0][coupon]=${STRIPE_FOUNDERS_COUPON_ID}`
+      "discounts[0][promotion_code]=promo_founders_1"
     );
     expect(body).not.toContain("allow_promotion_codes");
     expect(body).not.toContain("custom_text");

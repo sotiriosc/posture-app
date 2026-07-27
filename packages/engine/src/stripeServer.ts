@@ -27,14 +27,21 @@ export const STRIPE_CHECKOUT_PLANS: readonly StripeCheckoutPlan[] = [
 /** Stripe Price lookup_key for the founders monthly offer. */
 export const STRIPE_FOUNDERS_LOOKUP_KEY = "praxis_founders_monthly";
 
-/** Stripe Coupon id applied server-side on the founders checkout path only. */
+/**
+ * Customer-facing founders code. Prefer resolving this as a Promotion Code
+ * (`promo_…`) for Checkout `discounts`; fall back to Coupon id `FOUNDERS`.
+ */
 export const STRIPE_FOUNDERS_COUPON_ID = "FOUNDERS";
 
 /** Promo code users may enter on the monthly checkout path only. */
 export const STRIPE_MONTHLY_TRIAL_PROMO_CODE = "PRAXISTRIAL60DAY";
 
 const STRIPE_MONTHLY_CHECKOUT_SUBMIT_MESSAGE =
-  "Have a promo code? First 50 members get 2 months free — use code PRAXISTRIAL60DAY";
+  "Have a promo code? First 50 members get 2 months free - use code PRAXISTRIAL60DAY";
+
+/** Optional Coupon id override when it differs from the FOUNDERS promotion code. */
+const getFoundersCouponIdOverride = () =>
+  process.env.STRIPE_FOUNDERS_COUPON_ID?.trim() || "";
 
 const STRIPE_API_BASE = "https://api.stripe.com/v1";
 
@@ -175,7 +182,7 @@ export const resolveCheckoutPriceId = async (plan: StripeCheckoutPlan) => {
  * `allow_promotion_codes`, so each plan path sets at most one of them.
  *
  * - monthly: self-serve promo field + submit hint for PRAXISTRIAL60DAY
- * - founders: server-applies FOUNDERS coupon (no promo field)
+ * - founders: resolved async via {@link resolveCheckoutDiscountParams}
  * - annual: full price only
  */
 export const buildCheckoutDiscountParams = (
@@ -187,12 +194,59 @@ export const buildCheckoutDiscountParams = (
       "custom_text[submit][message]": STRIPE_MONTHLY_CHECKOUT_SUBMIT_MESSAGE,
     };
   }
-  if (plan === "founders") {
-    return {
-      "discounts[0][coupon]": STRIPE_FOUNDERS_COUPON_ID,
-    };
-  }
   return {};
+};
+
+const assertDiscountParamsExclusive = (params: Record<string, string>) => {
+  const hasDiscounts = Object.keys(params).some((key) =>
+    key.startsWith("discounts[")
+  );
+  const hasPromoField = Object.prototype.hasOwnProperty.call(
+    params,
+    "allow_promotion_codes"
+  );
+  if (hasDiscounts && hasPromoField) {
+    throw new Error(
+      "Internal checkout error: discounts and allow_promotion_codes cannot both be set."
+    );
+  }
+};
+
+/**
+ * Resolve founders discount for Checkout.
+ * Prefer active Promotion Code `FOUNDERS` (correct Stripe object for codes),
+ * then env coupon override, then coupon id `FOUNDERS`.
+ */
+export const resolveFoundersDiscountParams = async (): Promise<
+  Record<string, string>
+> => {
+  const query = new URLSearchParams();
+  query.set("code", STRIPE_FOUNDERS_COUPON_ID);
+  query.set("active", "true");
+  query.set("limit", "1");
+  try {
+    const result = await callStripeGet<{
+      data?: Array<{ id?: string }>;
+    }>(`/promotion_codes?${query.toString()}`);
+    const promoId = result.data?.[0]?.id?.trim();
+    if (promoId) {
+      return { "discounts[0][promotion_code]": promoId };
+    }
+  } catch {
+    // Fall through to coupon id — promotion code list can 404/fail in empty accounts.
+  }
+
+  const couponId = getFoundersCouponIdOverride() || STRIPE_FOUNDERS_COUPON_ID;
+  return { "discounts[0][coupon]": couponId };
+};
+
+export const resolveCheckoutDiscountParams = async (
+  plan: StripeCheckoutPlan
+): Promise<Record<string, string>> => {
+  if (plan === "founders") {
+    return resolveFoundersDiscountParams();
+  }
+  return buildCheckoutDiscountParams(plan);
 };
 
 export const createStripeCheckoutSession = async (params: {
@@ -204,8 +258,10 @@ export const createStripeCheckoutSession = async (params: {
   const priceId = await resolveCheckoutPriceId(plan);
   const appUrl = process.env.APP_URL?.trim();
   if (!appUrl) throw new Error("Stripe price/app URL missing.");
-  const discountParams = buildCheckoutDiscountParams(plan);
-  return callStripe<StripeSession>("/checkout/sessions", {
+  const discountParams = await resolveCheckoutDiscountParams(plan);
+  assertDiscountParamsExclusive(discountParams);
+
+  const sessionParams: Record<string, string> = {
     mode: "subscription",
     "line_items[0][price]": priceId,
     "line_items[0][quantity]": "1",
@@ -220,7 +276,28 @@ export const createStripeCheckoutSession = async (params: {
     "subscription_data[metadata][email]": params.email,
     "subscription_data[metadata][checkoutPlan]": plan,
     ...discountParams,
-  });
+  };
+  assertDiscountParamsExclusive(sessionParams);
+
+  try {
+    return await callStripe<StripeSession>("/checkout/sessions", sessionParams);
+  } catch (error) {
+    // If custom_text is rejected, retry monthly with promo codes only.
+    const message = error instanceof Error ? error.message : "";
+    const customTextRejected =
+      /custom_text/i.test(message) || /submit\[message\]/i.test(message);
+    if (
+      plan === "monthly" &&
+      customTextRejected &&
+      sessionParams["custom_text[submit][message]"]
+    ) {
+      const { ["custom_text[submit][message]"]: _removed, ...withoutCustom } =
+        sessionParams;
+      assertDiscountParamsExclusive(withoutCustom);
+      return callStripe<StripeSession>("/checkout/sessions", withoutCustom);
+    }
+    throw error;
+  }
 };
 
 export const createStripePortalSession = async (params: { customerId: string }) => {

@@ -59,10 +59,14 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ ok: true, url: checkout.url, plan: plan ?? "monthly" });
   } catch (error) {
+    const planId = plan ?? "monthly";
+    const detail =
+      error instanceof Error ? error.message : "Checkout failed.";
     return NextResponse.json(
       {
         ok: false,
-        error: error instanceof Error ? error.message : "Checkout failed.",
+        error: detail,
+        plan: planId,
       },
       { status: 500 }
     );
