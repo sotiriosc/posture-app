@@ -24,18 +24,18 @@ export const STRIPE_CHECKOUT_PLANS: readonly StripeCheckoutPlan[] = [
   "founders",
 ] as const;
 
-/** Stripe Price lookup_key for the founders monthly offer. */
-export const STRIPE_FOUNDERS_LOOKUP_KEY = "praxis_founders_monthly";
-
 /**
  * Stripe Live — Praxis Founders ($7 off forever).
- * Customer-facing code `FOUNDERS` is a Promotion Code (`promo_…`).
- * Live API rejected `discounts[0][coupon]=FOUNDERS` ("No such coupon"), so
- * founders Checkout resolves the promotion code and applies it silently via
+ * Checkout uses the standard monthly price ($19.99) and silently applies the
+ * FOUNDERS promotion code → $12.99/mo. (Archived standalone founders price
+ * `praxis_founders_monthly` is no longer used.)
+ *
+ * Live API rejected `discounts[0][coupon]=FOUNDERS` ("No such coupon"), so we
+ * resolve the promotion code to `promo_…` and apply via
  * `discounts[0][promotion_code]` (no promo field shown).
  */
 export const STRIPE_FOUNDERS_PROMO_CODE = "FOUNDERS";
-/** @deprecated Prefer promo-code resolution; kept for env override / fallback. */
+/** Optional coupon-id override via STRIPE_FOUNDERS_COUPON_ID env. */
 export const STRIPE_FOUNDERS_COUPON_ID = "FOUNDERS";
 
 /**
@@ -70,10 +70,6 @@ export const getMonthlyPriceId = () =>
 export const getAnnualPriceId = () =>
   process.env.STRIPE_PRICE_ID_ANNUAL?.trim() || "";
 
-/** Optional override; when unset, founders resolves via lookup key at checkout. */
-export const getFoundersPriceIdOverride = () =>
-  process.env.STRIPE_PRICE_ID_FOUNDERS?.trim() || "";
-
 export const parseStripeCheckoutPlan = (
   value: unknown
 ): StripeCheckoutPlan | null => {
@@ -87,9 +83,8 @@ export const getStripeCheckoutPlanAvailability = () => {
   const secret = Boolean(getStripeSecret());
   const monthly = Boolean(getMonthlyPriceId());
   const annual = Boolean(getAnnualPriceId());
-  // Founders is available whenever Stripe auth works: resolve by lookup key
-  // (or optional STRIPE_PRICE_ID_FOUNDERS override).
-  const founders = secret;
+  // Founders = monthly price + silent FOUNDERS discount.
+  const founders = Boolean(secret && monthly);
   return {
     monthly,
     annual,
@@ -164,35 +159,17 @@ const callStripeGet = async <T>(pathWithQuery: string): Promise<T> => {
   return data as T;
 };
 
-export const resolvePriceIdByLookupKey = async (lookupKey: string) => {
-  const query = new URLSearchParams();
-  query.append("lookup_keys[]", lookupKey);
-  query.append("active", "true");
-  query.append("limit", "1");
-  const result = await callStripeGet<{
-    data?: Array<{ id?: string }>;
-  }>(`/prices?${query.toString()}`);
-  const priceId = result.data?.[0]?.id?.trim();
-  if (!priceId) {
-    throw new Error(`No active Stripe price for lookup key "${lookupKey}".`);
-  }
-  return priceId;
-};
-
 export const resolveCheckoutPriceId = async (plan: StripeCheckoutPlan) => {
-  if (plan === "monthly") {
-    const priceId = getMonthlyPriceId();
-    if (!priceId) throw new Error("Monthly Stripe price missing.");
-    return priceId;
-  }
   if (plan === "annual") {
     const priceId = getAnnualPriceId();
     if (!priceId) throw new Error("Annual Stripe price missing.");
     return priceId;
   }
-  const override = getFoundersPriceIdOverride();
-  if (override) return override;
-  return resolvePriceIdByLookupKey(STRIPE_FOUNDERS_LOOKUP_KEY);
+  // monthly + founders both use STRIPE_PRICE_ID_MONTHLY ($19.99).
+  // Founders then applies the FOUNDERS discount silently → $12.99.
+  const priceId = getMonthlyPriceId();
+  if (!priceId) throw new Error("Monthly Stripe price missing.");
+  return priceId;
 };
 
 /**
@@ -660,18 +637,10 @@ export const fetchCheckoutPriceLabels = async (): Promise<
     if (annual) labels.annual = annual;
   }
 
-  const foundersOverride = getFoundersPriceIdOverride();
-  if (foundersOverride) {
-    const founders = await labelForPlan(foundersOverride, "Founders");
-    if (founders) labels.founders = founders;
-  } else {
-    try {
-      const foundersPriceId = await resolvePriceIdByLookupKey(STRIPE_FOUNDERS_LOOKUP_KEY);
-      const founders = await labelForPlan(foundersPriceId, "Founders");
-      if (founders) labels.founders = founders;
-    } catch {
-      // Founders price optional until lookup key exists in Stripe.
-    }
+  // Founders effective price is monthly − $7 FOUNDERS coupon, not a separate
+  // Stripe Price. Keep a fixed UI label so we do not show $19.99 on that card.
+  if (monthlyId) {
+    labels.founders = { label: "$12.99/mo", detail: "Founders" };
   }
 
   return labels;

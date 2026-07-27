@@ -54,7 +54,7 @@ Do not use the production Neon URL in local `.env.local`.
 - `STRIPE_SECRET_KEY=sk_test_...`
 - `STRIPE_PRICE_ID_MONTHLY=price_...` (test monthly)
 - `STRIPE_PRICE_ID_ANNUAL=price_...` (test annual)
-- `STRIPE_PRICE_ID_FOUNDERS=price_...` (optional; else lookup key `praxis_founders_monthly`)
+- Founders path uses `STRIPE_PRICE_ID_MONTHLY` + silent FOUNDERS promo (no separate founders price)
 - `STRIPE_WEBHOOK_SECRET=whsec_...` (from Stripe test webhook endpoint)
 
 ### Production
@@ -71,7 +71,7 @@ Do not use the production Neon URL in local `.env.local`.
 - `STRIPE_SECRET_KEY=sk_live_...`
 - `STRIPE_PRICE_ID_MONTHLY=price_...` (live $19.99/mo)
 - `STRIPE_PRICE_ID_ANNUAL=price_...` (live $199.99/yr)
-- `STRIPE_PRICE_ID_FOUNDERS=price_...` (optional; else lookup key `praxis_founders_monthly`)
+- Founders path uses `STRIPE_PRICE_ID_MONTHLY` + silent FOUNDERS promo (no separate founders price)
 - `STRIPE_WEBHOOK_SECRET=whsec_...` (from Stripe live webhook endpoint)
 
 ## Stripe dashboard setup

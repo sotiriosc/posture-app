@@ -23,8 +23,8 @@ ADMIN_ACCESS_KEY=replace-with-local-admin-key
 STRIPE_SECRET_KEY=
 STRIPE_PRICE_ID_MONTHLY=
 STRIPE_PRICE_ID_ANNUAL=
-# Optional; otherwise founders resolves via lookup key praxis_founders_monthly
-STRIPE_PRICE_ID_FOUNDERS=
+# Founders checkout uses STRIPE_PRICE_ID_MONTHLY + silent FOUNDERS promo ($19.99 − $7).
+# STRIPE_PRICE_ID_FOUNDERS is unused (archived standalone founders price).
 # Legacy single-price fallback (still accepted as monthly)
 # STRIPE_PRICE_ID=
 STRIPE_WEBHOOK_SECRET=
