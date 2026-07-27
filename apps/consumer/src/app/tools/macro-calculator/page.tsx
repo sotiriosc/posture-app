@@ -72,7 +72,7 @@ const articleJsonLd = {
 
 export default function MacroCalculatorPage() {
   return (
-    <div className="app-bg min-h-screen text-white print:bg-white print:text-black">
+    <div className="app-bg macro-tool-bg min-h-screen text-white print:bg-white print:text-black">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationJsonLd) }}
@@ -82,83 +82,86 @@ export default function MacroCalculatorPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
 
-      <main className="mx-auto max-w-3xl px-6 py-12 pb-[calc(1.25rem+120px+env(safe-area-inset-bottom,0px))] md:pb-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300 print:text-slate-600">
-          Free tool
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">
-          Macro Calculator for Lifters
-        </h1>
-        {/* Phase 6i Commit 2 — slate-200 clears AA against app-bg photo wash. */}
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-200 print:text-slate-700">
-          Enter your stats to get a daily calorie target and a macro split built
-          for people who train — not a generic weight-loss calculator. Moderate
-          fat, high carbs, high protein: enough fuel to lift hard and enough
-          protein to actually keep the muscle you build.
-        </p>
+      <main className="relative z-10 mx-auto max-w-3xl px-4 py-10 pb-[calc(1.25rem+120px+env(safe-area-inset-bottom,0px))] sm:px-6 sm:py-12 md:pb-12">
+        {/* Opaque reading shell — body copy must not sit on the photo wash
+            (especially on phones where slate-200 over the hero reads muted). */}
+        <header className="rounded-2xl border border-slate-500/35 bg-slate-950/88 px-4 py-5 shadow-[0_18px_50px_rgba(2,8,23,0.45)] backdrop-blur-md sm:px-6 sm:py-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-200/90 print:text-slate-600">
+            Free tool
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">
+            Macro Calculator for Lifters
+          </h1>
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-slate-100 sm:text-sm print:text-slate-700">
+            Enter your stats to get a daily calorie target and a macro split built
+            for people who train — not a generic weight-loss calculator. Moderate
+            fat, high carbs, high protein: enough fuel to lift hard and enough
+            protein to actually keep the muscle you build.
+          </p>
+        </header>
 
-        <div className="mt-8 print:hidden">
+        <div className="mt-6 print:hidden sm:mt-8">
           <MacroCalculatorClient />
         </div>
 
-        <div className="mt-12 space-y-10 text-sm leading-relaxed text-slate-200 print:text-slate-800">
-          <section>
+        <div className="mt-6 space-y-4 sm:mt-10 sm:space-y-5">
+          <section className="rounded-2xl border border-slate-500/35 bg-slate-950/90 px-4 py-5 text-[15px] leading-relaxed text-slate-100 shadow-[0_14px_40px_rgba(2,8,23,0.4)] backdrop-blur-md sm:px-6 sm:py-6 sm:text-sm print:border-0 print:bg-transparent print:text-slate-800 print:shadow-none">
             <h2 className="text-lg font-semibold text-white print:text-black">
               Why moderate fat, high carb, high protein for lifters
             </h2>
-            <p className="mt-2">
+            <p className="mt-2.5">
               Lifters need a different split than desk workers: protein first
               (you can&apos;t make it up later), carbs second (they fuel hard
               sets), fat last and moderate (hormones and joints — not more).
             </p>
-            <p className="mt-2">
+            <p className="mt-2.5">
               That&apos;s why protein is set from bodyweight (~0.8 g per lb),
               not as a percent of calories — percentages quietly underfeed
               protein in a deficit, when you need it most. Fat stays at 25%;
               the rest goes to carbs so training stays sharp. Don&apos;t cut
               carbs first when you &quot;eat clean.&quot;
             </p>
-            <p className="mt-2">
+            <p className="mt-2.5">
               It&apos;s a sane starting point, not a finished plan. Run it two
               weeks, then adjust from your own training and weight data.
             </p>
           </section>
 
-          <section>
+          <section className="rounded-2xl border border-slate-500/35 bg-slate-950/90 px-4 py-5 text-[15px] leading-relaxed text-slate-100 shadow-[0_14px_40px_rgba(2,8,23,0.4)] backdrop-blur-md sm:px-6 sm:py-6 sm:text-sm print:border-0 print:bg-transparent print:text-slate-800 print:shadow-none">
             <h2 className="text-lg font-semibold text-white print:text-black">
               Hydration, salt, and muscle performance
             </h2>
-            <p className="mt-2">
+            <p className="mt-2.5">
               Under-hydrated and under-salted is the quiet performance killer.
               A ~2% drop in body water makes the same weight feel harder — if a
               session jumps from a 7 to a 9, check water before you rewrite the
               program.
             </p>
-            <p className="mt-2">
+            <p className="mt-2.5">
               Sodium keeps that water where it belongs and keeps nerves firing.
               Sweaty sessions, heat, or cutting processed food can wipe sodium
               too — plain water alone won&apos;t fix feeling flat. Salt food
               around training; it beats most supplement bottles.
             </p>
-            <p className="mt-2">
+            <p className="mt-2.5">
               Floor: water ounces ≈ half your bodyweight in pounds, more on
               training days and in heat. Electrolytes aren&apos;t just for
               endurance sports.
             </p>
           </section>
 
-          <section>
+          <section className="rounded-2xl border border-slate-500/35 bg-slate-950/90 px-4 py-5 text-[15px] leading-relaxed text-slate-100 shadow-[0_14px_40px_rgba(2,8,23,0.4)] backdrop-blur-md sm:px-6 sm:py-6 sm:text-sm print:border-0 print:bg-transparent print:text-slate-800 print:shadow-none">
             <h2 className="text-lg font-semibold text-white print:text-black">
               Creatine: what it does, how to use it
             </h2>
-            <p className="mt-2">
+            <p className="mt-2.5">
               Creatine monohydrate is the most studied sports supplement for a
               reason: it works, it&apos;s safe for healthy adults, and it&apos;s
               cheap. It tops up phosphocreatine so short, hard sets regenerate
               ATP faster — usually a small real strength bump and an extra rep
               or two over weeks.
             </p>
-            <p className="mt-2">
+            <p className="mt-2.5">
               Use 3–5 g every day, rest days included. No loading phase
               required, no fancy form required — plain monohydrate. Take it
               whenever you&apos;ll remember; mild muscle water retention means
@@ -167,7 +170,7 @@ export default function MacroCalculatorPage() {
           </section>
         </div>
 
-        <div className="ui-card ui-soft-surface-raised mt-12 rounded-2xl p-6 print:hidden">
+        <div className="ui-card ui-soft-surface-raised mt-6 rounded-2xl border border-slate-500/35 bg-slate-950/90 p-5 sm:mt-10 sm:p-6 print:hidden">
           <p className="ui-kicker">Next step</p>
           <p className="mt-2 text-base font-semibold text-white">
             Praxis builds a movement-and-strength plan around your body&apos;s
@@ -175,7 +178,7 @@ export default function MacroCalculatorPage() {
           </p>
           <div className="mt-4">
             <Link href="/assessment">
-              <Button className="h-11 px-6 text-sm font-semibold">
+              <Button className="h-11 w-full px-6 text-sm font-semibold sm:w-auto">
                 Try the assessment →
               </Button>
             </Link>

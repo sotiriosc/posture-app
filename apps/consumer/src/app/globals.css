@@ -180,6 +180,30 @@ textarea {
   );
 }
 
+/* Macro calculator long-form page — stronger scrim so body copy isn't washed
+   out by the hero photo (worse on narrow phone viewports). */
+.macro-tool-bg::before {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2, 8, 23, 0.72) 0%,
+      rgba(2, 8, 23, 0.78) 45%,
+      rgba(2, 8, 23, 0.88) 100%
+    );
+}
+
+@media (max-width: 640px) {
+  .macro-tool-bg::before {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2, 8, 23, 0.82) 0%,
+        rgba(2, 8, 23, 0.88) 50%,
+        rgba(2, 8, 23, 0.94) 100%
+      );
+  }
+}
+
 .page-shell {
   background: transparent;
   color: #cbd5e1;
