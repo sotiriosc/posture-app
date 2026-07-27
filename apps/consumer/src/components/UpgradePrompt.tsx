@@ -208,6 +208,15 @@ export default function UpgradePrompt() {
                       ? "Upgrade — founders"
                       : "Upgrade to Pro"}
               </Button>
+              {selectedPlan === "monthly" ? (
+                <p className="mt-2 text-xs text-slate-400">
+                  Have a promo code? First 50 members get 60 days free — use{" "}
+                  <span className="font-semibold text-slate-200">
+                    PRAXISTRIAL60DAY
+                  </span>{" "}
+                  at checkout.
+                </p>
+              ) : null}
             </div>
           </div>
         ) : (

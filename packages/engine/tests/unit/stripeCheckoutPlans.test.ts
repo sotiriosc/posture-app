@@ -10,6 +10,7 @@ import {
   isStripeConfigured,
   parseStripeCheckoutPlan,
   resolveCheckoutPriceId,
+  resolveFoundersDiscountParams,
   STRIPE_FOUNDERS_COUPON_ID,
   STRIPE_FOUNDERS_LOOKUP_KEY,
   STRIPE_MONTHLY_TRIAL_PROMO_CODE,
@@ -133,13 +134,25 @@ describe("stripe checkout plans", () => {
     );
     expect(monthly["discounts[0][coupon]"]).toBeUndefined();
 
-    const founders = buildCheckoutDiscountParams("founders");
-    expect(founders["discounts[0][coupon]"]).toBe(STRIPE_FOUNDERS_COUPON_ID);
-    expect(founders.allow_promotion_codes).toBeUndefined();
-    expect(founders["custom_text[submit][message]"]).toBeUndefined();
+    // Founders discounts are resolved async (promotion code → coupon).
+    expect(buildCheckoutDiscountParams("founders")).toEqual({});
 
     const annual = buildCheckoutDiscountParams("annual");
     expect(annual).toEqual({});
+  });
+
+  test("resolveFoundersDiscountParams uses Coupon id FOUNDERS", async () => {
+    delete process.env.STRIPE_FOUNDERS_COUPON_ID;
+    await expect(resolveFoundersDiscountParams()).resolves.toEqual({
+      "discounts[0][coupon]": STRIPE_FOUNDERS_COUPON_ID,
+    });
+  });
+
+  test("resolveFoundersDiscountParams honors STRIPE_FOUNDERS_COUPON_ID override", async () => {
+    process.env.STRIPE_FOUNDERS_COUPON_ID = "coupon_override";
+    await expect(resolveFoundersDiscountParams()).resolves.toEqual({
+      "discounts[0][coupon]": "coupon_override",
+    });
   });
 
   test("monthly checkout enables promo codes and never sends discounts", async () => {
@@ -175,11 +188,12 @@ describe("stripe checkout plans", () => {
     expect(body).toContain("metadata%5BuserId%5D=user-1");
   });
 
-  test("founders checkout applies FOUNDERS coupon without promo codes", async () => {
+  test("founders checkout applies Coupon FOUNDERS without allow_promotion_codes", async () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_x";
     process.env.NODE_ENV = "test";
     process.env.STRIPE_PRICE_ID_FOUNDERS = "price_founders";
     process.env.APP_URL = "https://example.com";
+    delete process.env.STRIPE_FOUNDERS_COUPON_ID;
 
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
