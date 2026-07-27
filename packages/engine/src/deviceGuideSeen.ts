@@ -26,7 +26,7 @@ const sanitizeSeenMap = (value: unknown): GuideSeenMap => {
 const readLegacySeenByPage = (): GuideSeenMap => {
   if (!canUseStorage()) return {};
   try {
-    const raw = window.localStorage.getItem(LEGACY_ONBOARDING_STORAGE_KEY);
+    const raw = localStorage.getItem(LEGACY_ONBOARDING_STORAGE_KEY);
     if (!raw) return {};
     const parsed = JSON.parse(raw) as { seenByPage?: unknown };
     return sanitizeSeenMap(parsed?.seenByPage);
@@ -38,7 +38,7 @@ const readLegacySeenByPage = (): GuideSeenMap => {
 export const readDeviceGuideSeen = (): GuideSeenMap => {
   if (!canUseStorage()) return {};
   try {
-    const raw = window.localStorage.getItem(GUIDE_SEEN_STORAGE_KEY);
+    const raw = localStorage.getItem(GUIDE_SEEN_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as unknown;
       // Support legacy accidental string "true" → treat as empty (per-page map).
@@ -58,7 +58,7 @@ export const readDeviceGuideSeen = (): GuideSeenMap => {
 
 export const writeDeviceGuideSeen = (seen: GuideSeenMap) => {
   if (!canUseStorage()) return;
-  window.localStorage.setItem(GUIDE_SEEN_STORAGE_KEY, JSON.stringify(seen));
+  localStorage.setItem(GUIDE_SEEN_STORAGE_KEY, JSON.stringify(seen));
 };
 
 export const isDeviceGuideSeen = (key: string): boolean =>
@@ -74,11 +74,11 @@ export const markDeviceGuideSeen = (key: string) => {
 /** Snapshot before account-isolation localStorage.clear(). */
 export const snapshotDeviceGuideSeen = (): string | null => {
   if (!canUseStorage()) return null;
-  return window.localStorage.getItem(GUIDE_SEEN_STORAGE_KEY);
+  return localStorage.getItem(GUIDE_SEEN_STORAGE_KEY);
 };
 
 /** Restore after account-isolation wipe. */
 export const restoreDeviceGuideSeen = (raw: string | null) => {
   if (!canUseStorage() || raw == null || raw === "") return;
-  window.localStorage.setItem(GUIDE_SEEN_STORAGE_KEY, raw);
+  localStorage.setItem(GUIDE_SEEN_STORAGE_KEY, raw);
 };

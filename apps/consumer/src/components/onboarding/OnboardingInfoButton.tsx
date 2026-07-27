@@ -47,7 +47,21 @@ export default function OnboardingInfoButton({
   autoOpen = true,
   hideTriggerBelowMd = false,
 }: OnboardingInfoButtonProps) {
-  const [open, setOpen] = useState(false);
+  // First visit: open immediately via initial state (not an effect) so we avoid
+  // cascading setState-in-effect lint, and mark seen so login/logout never
+  // re-triggers auto-show. Manual Guide button still works anytime.
+  const [open, setOpen] = useState(() => {
+    if (typeof window === "undefined") return false;
+    if (
+      !autoOpen ||
+      isAutomationEnvironment() ||
+      !shouldAutoOpenOnboarding(onboardingKey)
+    ) {
+      return false;
+    }
+    markOnboardingPageSeen(onboardingKey);
+    return true;
+  });
   const panelSafeAreaStyle = useMemo(
     () =>
       ({
@@ -69,21 +83,6 @@ export default function OnboardingInfoButton({
     return () =>
       window.removeEventListener(OPEN_ONBOARDING_GUIDE_EVENT, handleExternalOpen);
   }, [onboardingKey]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (
-      !autoOpen ||
-      isAutomationEnvironment() ||
-      !shouldAutoOpenOnboarding(onboardingKey)
-    ) {
-      return;
-    }
-    // First visit on this device: show immediately and mark seen so login/logout
-    // never re-triggers auto-show. Manual Guide button still works anytime.
-    markOnboardingPageSeen(onboardingKey);
-    setOpen(true);
-  }, [autoOpen, onboardingKey]);
 
   const closeGuide = () => {
     markOnboardingPageSeen(onboardingKey);
