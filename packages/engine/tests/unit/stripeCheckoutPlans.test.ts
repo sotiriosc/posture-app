@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import {
+  createStripeCheckoutSession,
   formatStripePriceLabel,
   getAnnualPriceId,
   getFoundersPriceIdOverride,
@@ -119,5 +120,36 @@ describe("stripe checkout plans", () => {
     const calledUrl = String(fetchMock.mock.calls[0]?.[0] ?? "");
     expect(calledUrl).toContain("/prices?");
     expect(decodeURIComponent(calledUrl)).toContain(STRIPE_FOUNDERS_LOOKUP_KEY);
+  });
+
+  test("checkout session enables Stripe promotion codes", async () => {
+    process.env.STRIPE_SECRET_KEY = "sk_test_x";
+    process.env.NODE_ENV = "test";
+    process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
+    process.env.APP_URL = "https://example.com";
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        id: "cs_test_1",
+        url: "https://checkout.stripe.com/c/pay/cs_test_1",
+        customer: null,
+        subscription: null,
+      }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await createStripeCheckoutSession({
+      userId: "user-1",
+      email: "athlete@example.com",
+      plan: "monthly",
+    });
+
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [calledUrl, init] = fetchMock.mock.calls[0] ?? [];
+    expect(String(calledUrl)).toContain("/checkout/sessions");
+    const body = String((init as { body?: string } | undefined)?.body ?? "");
+    expect(body).toContain("allow_promotion_codes=true");
+    expect(body).not.toContain("discounts");
   });
 });

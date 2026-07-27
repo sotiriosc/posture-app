@@ -178,6 +178,9 @@ export const createStripeCheckoutSession = async (params: {
     cancel_url: `${appUrl}/results?billing=cancel`,
     customer_email: params.email,
     client_reference_id: params.userId,
+    // Lets customers enter Stripe Promotion Codes (not coupon IDs) at Checkout.
+    // Do not combine with `discounts[]` — Stripe rejects that combination.
+    allow_promotion_codes: "true",
     "metadata[userId]": params.userId,
     "metadata[email]": params.email,
     "metadata[checkoutPlan]": plan,
