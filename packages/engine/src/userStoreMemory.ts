@@ -144,6 +144,42 @@ export const memoryUpdateUserMacroCalculatorInputs = async (
   return user;
 };
 
+export const memoryUpdateUserCredentials = async (
+  userId: string,
+  patch: {
+    email?: string;
+    password?: string;
+  }
+) => {
+  const nextEmail =
+    patch.email !== undefined ? normalizeEmail(patch.email) : undefined;
+  if (nextEmail !== undefined && !nextEmail) {
+    throw new Error("Email is required.");
+  }
+  if (!nextEmail && !patch.password) {
+    throw new Error("Nothing to update.");
+  }
+
+  const user = store.users.find((entry) => entry.id === userId);
+  if (!user) return null;
+
+  if (nextEmail !== undefined && nextEmail !== user.email) {
+    if (store.users.some((entry) => entry.id !== userId && entry.email === nextEmail)) {
+      throw new Error("Email already exists.");
+    }
+    user.email = nextEmail;
+  }
+
+  if (patch.password) {
+    const salt = randomBytes(16).toString("hex");
+    user.passwordSalt = salt;
+    user.passwordHash = deriveHash(patch.password, salt);
+  }
+
+  user.updatedAt = nowIso();
+  return user;
+};
+
 export const memoryMarkStripeWebhookEvent = async (
   eventId: string,
   _eventType: string,

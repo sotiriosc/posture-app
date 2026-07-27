@@ -349,6 +349,73 @@ export const dbUpdateUserMacroCalculatorInputs = async (
   return row ? rowToUser(row) : null;
 };
 
+export const dbUpdateUserCredentials = async (
+  userId: string,
+  patch: {
+    email?: string;
+    password?: string;
+  }
+) => {
+  await ensureDb();
+  const nextEmail =
+    patch.email !== undefined ? normalizeEmail(patch.email) : undefined;
+  if (nextEmail !== undefined && !nextEmail) {
+    throw new Error("Email is required.");
+  }
+  if (!nextEmail && !patch.password) {
+    throw new Error("Nothing to update.");
+  }
+
+  const existing = await dbFindUserById(userId);
+  if (!existing) return null;
+
+  if (nextEmail !== undefined && nextEmail !== existing.email) {
+    const taken = await dbFindUserByEmail(nextEmail);
+    if (taken && taken.id !== userId) {
+      throw new Error("Email already exists.");
+    }
+  }
+
+  const updatedAt = nowIso();
+  if (nextEmail !== undefined && patch.password) {
+    const salt = randomBytes(16).toString("hex");
+    const passwordHash = deriveHash(patch.password, salt);
+    const result = await getPool().query(
+      `UPDATE app_users
+       SET email = $2, password_hash = $3, password_salt = $4, updated_at = $5
+       WHERE id = $1
+       RETURNING ${USER_COLUMNS}`,
+      [userId, nextEmail, passwordHash, salt, updatedAt]
+    );
+    const row = result.rows[0];
+    return row ? rowToUser(row) : null;
+  }
+
+  if (nextEmail !== undefined) {
+    const result = await getPool().query(
+      `UPDATE app_users
+       SET email = $2, updated_at = $3
+       WHERE id = $1
+       RETURNING ${USER_COLUMNS}`,
+      [userId, nextEmail, updatedAt]
+    );
+    const row = result.rows[0];
+    return row ? rowToUser(row) : null;
+  }
+
+  const salt = randomBytes(16).toString("hex");
+  const passwordHash = deriveHash(patch.password!, salt);
+  const result = await getPool().query(
+    `UPDATE app_users
+     SET password_hash = $2, password_salt = $3, updated_at = $4
+     WHERE id = $1
+     RETURNING ${USER_COLUMNS}`,
+    [userId, passwordHash, salt, updatedAt]
+  );
+  const row = result.rows[0];
+  return row ? rowToUser(row) : null;
+};
+
 export const dbFindUserByStripeCustomerId = async (stripeCustomerId: string) => {
   await ensureDb();
   const result = await getPool().query(

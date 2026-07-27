@@ -45,6 +45,14 @@ export default function AccountSettingsPage() {
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [accountEmail, setAccountEmail] = useState<string | null>(null);
+  const [authEnabled, setAuthEnabled] = useState(false);
+  const [credentialsWorking, setCredentialsWorking] = useState(false);
+  const [credentialsMessage, setCredentialsMessage] = useState<string | null>(null);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   // Phase 6f, Commit 8 — shared prefs state backs both the Interface
   // (per-section visibility) toggles and the "incomplete" prompt
   // suppression toggle below (Commit 5.c), mirroring the admin settings
@@ -57,6 +65,20 @@ export default function AccountSettingsPage() {
       if (!active) return;
       setPrefs(loaded);
     });
+    void fetch("/api/auth/session")
+      .then((res) => res.json())
+      .then((data: { enabled?: boolean; authenticated?: boolean; user?: { email?: string } }) => {
+        if (!active) return;
+        setAuthEnabled(Boolean(data.enabled));
+        if (data.authenticated && data.user?.email) {
+          setAccountEmail(data.user.email);
+          setNewEmail(data.user.email);
+        }
+      })
+      .catch(() => {
+        if (!active) return;
+        setAuthEnabled(false);
+      });
     return () => {
       active = false;
     };
@@ -241,6 +263,64 @@ export default function AccountSettingsPage() {
     }
   };
 
+  const handleUpdateCredentials = async () => {
+    setCredentialsWorking(true);
+    setCredentialsMessage(null);
+    const emailChanging =
+      Boolean(newEmail.trim()) &&
+      accountEmail !== null &&
+      newEmail.trim().toLowerCase() !== accountEmail;
+    const passwordChanging = Boolean(newPassword);
+
+    if (!currentPassword) {
+      setCredentialsMessage("Enter your current password.");
+      setCredentialsWorking(false);
+      return;
+    }
+    if (!emailChanging && !passwordChanging) {
+      setCredentialsMessage("Change your email and/or enter a new password.");
+      setCredentialsWorking(false);
+      return;
+    }
+    if (passwordChanging && newPassword !== confirmNewPassword) {
+      setCredentialsMessage("New passwords do not match.");
+      setCredentialsWorking(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/account/credentials", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword,
+          ...(emailChanging ? { newEmail: newEmail.trim() } : {}),
+          ...(passwordChanging ? { newPassword } : {}),
+        }),
+      });
+      const data = (await res.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+        user?: { email?: string };
+      } | null;
+      if (!res.ok || !data?.ok) {
+        setCredentialsMessage(data?.error ?? "Could not update sign-in details.");
+        return;
+      }
+      const nextEmail = data.user?.email ?? newEmail.trim().toLowerCase();
+      setAccountEmail(nextEmail);
+      setNewEmail(nextEmail);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setCredentialsMessage("Sign-in details updated. Your subscription is unchanged.");
+    } catch {
+      setCredentialsMessage("Could not update sign-in details.");
+    } finally {
+      setCredentialsWorking(false);
+    }
+  };
+
   const handleDownloadJson = async () => {
     setExporting(true);
     setMessage(null);
@@ -292,6 +372,87 @@ export default function AccountSettingsPage() {
         </OnImage>
 
         <div className="grid gap-4 lg:grid-cols-2">
+          {authEnabled && accountEmail ? (
+            <div
+              className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6 lg:col-span-2"
+              data-testid="settings-account-credentials"
+            >
+              <p className="ui-kicker">Sign-in</p>
+              <h2 className="ui-title mt-1">Email and password</h2>
+              <p className="mt-2 max-w-2xl text-sm text-slate-300">
+                Update how you sign in. Your subscription stays on the same account — billing
+                is linked by customer ID, not your login email.
+              </p>
+              <p className="mt-2 text-sm text-slate-400">
+                Signed in as <span className="text-slate-200">{accountEmail}</span>
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <label className="flex flex-col gap-1 text-sm text-slate-200 sm:col-span-2">
+                  <span>Current password</span>
+                  <input
+                    type="password"
+                    autoComplete="current-password"
+                    value={currentPassword}
+                    onChange={(event) => setCurrentPassword(event.target.value)}
+                    className="ui-input"
+                    data-testid="settings-current-password"
+                  />
+                </label>
+                <label className="flex flex-col gap-1 text-sm text-slate-200">
+                  <span>New email</span>
+                  <input
+                    type="email"
+                    autoComplete="email"
+                    value={newEmail}
+                    onChange={(event) => setNewEmail(event.target.value)}
+                    className="ui-input"
+                    data-testid="settings-new-email"
+                  />
+                </label>
+                <label className="flex flex-col gap-1 text-sm text-slate-200">
+                  <span>New password</span>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    className="ui-input"
+                    data-testid="settings-new-password"
+                    placeholder="Leave blank to keep current"
+                  />
+                </label>
+                {newPassword ? (
+                  <label className="flex flex-col gap-1 text-sm text-slate-200 sm:col-span-2">
+                    <span>Confirm new password</span>
+                    <input
+                      type="password"
+                      autoComplete="new-password"
+                      value={confirmNewPassword}
+                      onChange={(event) => setConfirmNewPassword(event.target.value)}
+                      className="ui-input"
+                      data-testid="settings-confirm-new-password"
+                    />
+                  </label>
+                ) : null}
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Button
+                  variant="primary"
+                  disabled={credentialsWorking}
+                  onClick={() => {
+                    void handleUpdateCredentials();
+                  }}
+                  data-testid="settings-save-credentials"
+                >
+                  {credentialsWorking ? "Saving..." : "Save sign-in details"}
+                </Button>
+                {credentialsMessage ? (
+                  <p className="text-sm text-slate-300">{credentialsMessage}</p>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+
           <div className="ui-card ui-soft-surface-raised rounded-lg p-5 sm:p-6">
             <p className="ui-kicker">Exports</p>
             <h2 className="ui-title mt-1">Download your data</h2>

@@ -11,6 +11,7 @@ import {
   updateUserBilling,
   updateUserMacroCalculatorInputs,
   updateUserPlan,
+  updateUserCredentials,
   verifyUserPassword,
 } from "@/lib/userStore";
 import {
@@ -24,6 +25,7 @@ import {
   dbUpdateUserBilling,
   dbUpdateUserMacroCalculatorInputs,
   dbUpdateUserPlan,
+  dbUpdateUserCredentials,
   dbVerifyUserPassword,
 } from "@/lib/userStoreDb";
 import {
@@ -37,6 +39,7 @@ import {
   memoryUpdateUserBilling,
   memoryUpdateUserMacroCalculatorInputs,
   memoryUpdateUserPlan,
+  memoryUpdateUserCredentials,
   memoryVerifyUserPassword,
 } from "@/lib/userStoreMemory";
 import { hasDatabaseUrl, shouldUseLocalDbFallback, warnOnce } from "@/lib/runtimeEnv";
@@ -79,6 +82,13 @@ export type UserRepository = {
     userId: string,
     inputs: MacroCalculatorSavedInputs | null
   ) => Promise<StoredUser | null>;
+  updateUserCredentials: (
+    userId: string,
+    patch: {
+      email?: string;
+      password?: string;
+    }
+  ) => Promise<StoredUser | null>;
   markStripeWebhookEvent: (
     eventId: string,
     eventType: string,
@@ -98,6 +108,7 @@ const fileRepository: UserRepository = {
   updateUserPlan,
   updateUserBilling,
   updateUserMacroCalculatorInputs,
+  updateUserCredentials,
   markStripeWebhookEvent: async () => true,
   verifyUserPassword,
   ensureBootstrapUser,
@@ -113,6 +124,7 @@ const memoryRepository: UserRepository = {
   updateUserPlan: memoryUpdateUserPlan,
   updateUserBilling: memoryUpdateUserBilling,
   updateUserMacroCalculatorInputs: memoryUpdateUserMacroCalculatorInputs,
+  updateUserCredentials: memoryUpdateUserCredentials,
   markStripeWebhookEvent: memoryMarkStripeWebhookEvent,
   verifyUserPassword: memoryVerifyUserPassword,
   ensureBootstrapUser: memoryEnsureBootstrapUser,
@@ -128,6 +140,7 @@ const dbRepository: UserRepository = {
   updateUserPlan: dbUpdateUserPlan,
   updateUserBilling: dbUpdateUserBilling,
   updateUserMacroCalculatorInputs: dbUpdateUserMacroCalculatorInputs,
+  updateUserCredentials: dbUpdateUserCredentials,
   markStripeWebhookEvent: dbMarkStripeWebhookEvent,
   verifyUserPassword: dbVerifyUserPassword,
   ensureBootstrapUser: dbEnsureBootstrapUser,

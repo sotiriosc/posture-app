@@ -196,6 +196,18 @@ export const createStripePortalSession = async (params: { customerId: string }) 
   });
 };
 
+/** Best-effort sync when the app email changes; billing linkage is by customer id. */
+export const updateStripeCustomerEmail = async (params: {
+  customerId: string;
+  email: string;
+}) => {
+  if (!canFetchStripeBilling()) return;
+  const customerId = params.customerId.trim();
+  const email = params.email.trim().toLowerCase();
+  if (!customerId || !email) return;
+  await callStripe(`/customers/${encodeURIComponent(customerId)}`, { email });
+};
+
 type StripeSubscriptionObject = {
   id?: string;
   object?: string;
