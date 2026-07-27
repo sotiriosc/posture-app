@@ -27,7 +27,6 @@ export default function OnboardingInfoButton({
   autoOpen = true,
 }: OnboardingInfoButtonProps) {
   const [open, setOpen] = useState(false);
-  const [ready, setReady] = useState(false);
   const panelSafeAreaStyle = useMemo(
     () =>
       ({
@@ -42,46 +41,23 @@ export default function OnboardingInfoButton({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    // The Guide button is always available; reveal it without slamming the
-    // panel open on first paint.
-    const readyTimer = window.setTimeout(() => setReady(true), 0);
-
     if (
       !autoOpen ||
       isAutomationEnvironment() ||
       !shouldAutoOpenOnboarding(onboardingKey)
     ) {
-      return () => window.clearTimeout(readyTimer);
+      return;
     }
-
-    // Don't auto-open on initial paint. Wait for the first scroll, or 3s of
-    // idle — whichever comes first — so the guide feels invited, not intrusive.
-    let opened = false;
-    function openGuide() {
-      if (opened) return;
-      opened = true;
-      window.clearTimeout(idleTimer);
-      window.removeEventListener("scroll", onScroll);
-      setOpen(true);
-    }
-    const onScroll = () => openGuide();
-    const idleTimer = window.setTimeout(openGuide, 3000);
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      window.clearTimeout(readyTimer);
-      window.clearTimeout(idleTimer);
-      window.removeEventListener("scroll", onScroll);
-    };
+    // First visit on this device: show immediately and mark seen so login/logout
+    // never re-triggers auto-show. Manual Guide button still works anytime.
+    markOnboardingPageSeen(onboardingKey);
+    setOpen(true);
   }, [autoOpen, onboardingKey]);
 
   const closeGuide = () => {
     markOnboardingPageSeen(onboardingKey);
     setOpen(false);
   };
-
-  if (!ready) return null;
 
   return (
     <>

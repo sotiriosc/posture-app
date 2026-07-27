@@ -1,6 +1,10 @@
 import { closeDb } from "./logStore";
 import { SUBSCRIPTION_STORAGE_KEY } from "./subscriptionStore";
 import { COACH_NOTE_STORAGE_KEY } from "./coachNoteStore";
+import {
+  restoreDeviceGuideSeen,
+  snapshotDeviceGuideSeen,
+} from "./deviceGuideSeen";
 
 /**
  * Exact localStorage keys Praxis owns (legacy + current). Prefer adding a
@@ -186,6 +190,9 @@ export const clearAllLocalStateExceptPhotos = async (): Promise<void> => {
   );
   await Promise.all(dbNames.map((name) => deleteDatabase(name)));
 
+  // Guide "seen" is device-level UX — must survive login/logout/account switch.
+  const preservedGuideSeen = snapshotDeviceGuideSeen();
+
   const localKeyCount = localStorage.length;
   localStorage.clear();
   try {
@@ -193,6 +200,8 @@ export const clearAllLocalStateExceptPhotos = async (): Promise<void> => {
   } catch {
     // sessionStorage can be unavailable in some embedded contexts; ignore.
   }
+
+  restoreDeviceGuideSeen(preservedGuideSeen);
 
   console.info(
     `[praxis] clear-local-state-except-photos: cleared ${localKeyCount} localStorage keys and ` +
