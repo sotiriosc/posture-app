@@ -20,6 +20,8 @@ export default function ServiceWorkerRegister() {
       return;
     }
 
+    let removeVisibilityListener: (() => void) | undefined;
+
     void navigator.serviceWorker
       .register("/sw.js", { scope: "/", updateViaCache: "none" })
       .then((registration) => {
