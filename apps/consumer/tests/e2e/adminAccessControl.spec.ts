@@ -7,6 +7,8 @@ import { e2eEmail, upsertE2eUser } from "../../e2e/fixtures";
  */
 
 const E2E_ADMIN_ID = "e2e-admin-operator";
+const E2E_ADMIN_EMAIL = "operator-admin@e2e.local";
+const E2E_ADMIN_PASSWORD = "playwright-password";
 
 test("non-admin authenticated user gets 404 on /admin", async ({ page }) => {
   const email = e2eEmail("admin-deny");
@@ -22,15 +24,14 @@ test("non-admin authenticated user gets 404 on /admin", async ({ page }) => {
 });
 
 test("allowlisted admin user sees the operator dashboard", async ({ page }) => {
-  const email = e2eEmail("admin-allow");
   await upsertE2eUser({
     id: E2E_ADMIN_ID,
-    email,
-    password: "playwright-password",
+    email: E2E_ADMIN_EMAIL,
+    password: E2E_ADMIN_PASSWORD,
     plan: "pro",
   });
   const login = await page.request.post("/api/auth/login", {
-    data: { email, password: "playwright-password" },
+    data: { email: E2E_ADMIN_EMAIL, password: E2E_ADMIN_PASSWORD },
   });
   expect(login.ok()).toBeTruthy();
 

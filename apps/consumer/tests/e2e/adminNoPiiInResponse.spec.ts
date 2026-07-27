@@ -7,6 +7,8 @@ import { e2eEmail, upsertE2eUser } from "../../e2e/fixtures";
  */
 
 const E2E_ADMIN_ID = "e2e-admin-operator";
+const E2E_ADMIN_EMAIL = "operator-admin@e2e.local";
+const E2E_ADMIN_PASSWORD = "playwright-password";
 
 const PII_FIELD_RE =
   /"(email|name|userId|accountKey|passwordHash|passwordSalt)"\s*:/i;
@@ -15,15 +17,14 @@ const EMAIL_LITERAL_RE = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i;
 test("admin metrics API response contains no PII fields or email literals", async ({
   page,
 }) => {
-  const email = e2eEmail("admin-pii");
   await upsertE2eUser({
     id: E2E_ADMIN_ID,
-    email,
-    password: "playwright-password",
+    email: E2E_ADMIN_EMAIL,
+    password: E2E_ADMIN_PASSWORD,
     plan: "pro",
   });
   const login = await page.request.post("/api/auth/login", {
-    data: { email, password: "playwright-password" },
+    data: { email: E2E_ADMIN_EMAIL, password: E2E_ADMIN_PASSWORD },
   });
   expect(login.ok()).toBeTruthy();
 
@@ -32,7 +33,7 @@ test("admin metrics API response contains no PII fields or email literals", asyn
   const bodyText = await metrics.text();
   expect(bodyText).not.toMatch(PII_FIELD_RE);
   expect(bodyText).not.toMatch(EMAIL_LITERAL_RE);
-  expect(bodyText).not.toContain(email);
+  expect(bodyText).not.toContain(E2E_ADMIN_EMAIL);
   expect(bodyText).not.toContain(E2E_ADMIN_ID);
 
   const json = JSON.parse(bodyText) as {
