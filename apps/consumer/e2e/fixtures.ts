@@ -84,8 +84,15 @@ export const upsertE2eUser = async (params: {
   const normalizedEmail = params.email.trim().toLowerCase();
   const existing = db.users.find((user) => user.email === normalizedEmail);
   const passwordSalt = existing?.passwordSalt ?? randomBytes(16).toString("hex");
+  const nextId = params.id ?? existing?.id ?? `e2e-${randomBytes(8).toString("hex")}`;
+  // Keep ids unique when a test forces a stable allowlist id.
+  if (params.id) {
+    db.users = db.users.filter(
+      (user) => user.id !== params.id || user.email === normalizedEmail
+    );
+  }
   const patch: StoredE2eUser = {
-    id: params.id ?? existing?.id ?? `e2e-${randomBytes(8).toString("hex")}`,
+    id: nextId,
     email: normalizedEmail,
     name: existing?.name ?? "Playwright Athlete",
     passwordHash: derivePasswordHash(params.password, passwordSalt),
