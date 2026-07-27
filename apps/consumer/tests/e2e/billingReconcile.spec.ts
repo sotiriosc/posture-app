@@ -123,8 +123,8 @@ test("refresh subscription status calls reconcile endpoint then reloads", async 
   await expect(page.getByTestId("billing-field-access-status")).toContainText(
     /Pro \(active\)/i
   );
-  await expect(page.getByTestId("billing-field-renewal-date")).toContainText(
-    "2035-08-01"
+  await expect(page.getByTestId("billing-field-renews-on")).toContainText(
+    "Aug 1, 2035"
   );
   await expect(
     page.getByTestId("billing-field-scheduled-cancellation")
