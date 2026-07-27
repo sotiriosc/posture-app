@@ -38,10 +38,32 @@ describe("timerRules — section tempo + reps×tempo", () => {
     ).toBeNull();
   });
 
-  it("parses rep ranges and per-side", () => {
-    expect(parseRepTarget("8-12")).toEqual({ reps: 12, perSide: false });
-    expect(parseRepTarget("6-8 per side")).toEqual({ reps: 8, perSide: true });
-    expect(parseRepTarget("10 each")).toEqual({ reps: 10, perSide: true });
+  it("parses rep ranges, per-side, and per-letter (Y-T-W)", () => {
+    expect(parseRepTarget("8-12")).toEqual({
+      reps: 12,
+      perSide: false,
+      perLetter: false,
+    });
+    expect(parseRepTarget("6-8 per side")).toEqual({
+      reps: 8,
+      perSide: true,
+      perLetter: false,
+    });
+    expect(parseRepTarget("10 each")).toEqual({
+      reps: 10,
+      perSide: true,
+      perLetter: false,
+    });
+    expect(parseRepTarget("6-8 reps per letter")).toEqual({
+      reps: 8,
+      perSide: false,
+      perLetter: true,
+    });
+    expect(parseRepTarget("5 each direction")).toEqual({
+      reps: 5,
+      perSide: false,
+      perLetter: false,
+    });
   });
 
   it("computes work seconds from reps × tempo", () => {
@@ -54,6 +76,24 @@ describe("timerRules — section tempo + reps×tempo", () => {
     expect(
       workSecondsFromRepsAndTempo({ reps: 8, perSide: true, pace: "slow" })
     ).toBe(16 * TEMPO_SEC_PER_REP.slow);
+    expect(
+      workSecondsFromRepsAndTempo({ reps: 8, perLetter: true, pace: "slow" })
+    ).toBe(24 * TEMPO_SEC_PER_REP.slow);
+  });
+
+  it("aligns prone Y-T-W as reps×tempo (not a timed hold)", () => {
+    const ytw = getEffectiveTimer({
+      exerciseId: "prone-ytw",
+      sets: "2",
+      reps: "6-8 reps per letter",
+      durationSec: null,
+      loadType: "bodyweight",
+      section: "activation",
+      restSec: 30,
+    });
+    expect(ytw.fromRepTempo).toBe(true);
+    expect(ytw.tempoPace).toBe("slow");
+    expect(ytw.workSeconds).toBe(24 * TEMPO_SEC_PER_REP.slow);
   });
 
   it("uses slow reps×tempo for main and fast for accessory", () => {

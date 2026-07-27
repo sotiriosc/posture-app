@@ -2333,6 +2333,43 @@ const makeItem = (
   };
 };
 
+/**
+ * Warmup/activation dose from catalog so timer + prescription stay aligned.
+ * Timed holds use durationSec; everything else uses durationOrReps as reps
+ * (no orphan durationSec that can fight the reps×tempo timer).
+ */
+const prepDoseFromCatalog = (
+  exerciseId: string,
+  opts: { fallbackReps: string; fallbackDurationSec: number }
+): { reps: string | undefined; durationSec: number | undefined } => {
+  const exercise = exerciseById(exerciseId);
+  if (!exercise) {
+    return {
+      reps: opts.fallbackReps,
+      durationSec: opts.fallbackDurationSec,
+    };
+  }
+  if (exercise.loadType === "timed") {
+    const match = exercise.durationOrReps.match(
+      /(\d+)\s*[-–]?\s*(\d+)?\s*(sec|secs|second|seconds|s)\b/i
+    );
+    const seconds = match
+      ? Number(match[2] ?? match[1])
+      : opts.fallbackDurationSec;
+    return {
+      reps: undefined,
+      durationSec:
+        Number.isFinite(seconds) && seconds > 0
+          ? seconds
+          : opts.fallbackDurationSec,
+    };
+  }
+  return {
+    reps: exercise.durationOrReps || opts.fallbackReps,
+    durationSec: undefined,
+  };
+};
+
 const withSelectionDebug = (
   item: ProgramRoutineItem,
   source: ProgramSelectionDebugSource,
@@ -31258,17 +31295,33 @@ const buildStructuredDay = (params: {
     selectedAccessoryExerciseIds: accessoryPlans.map((plan) => plan.selectedId),
   });
 
+  const activationResolved = pickUnique(
+    activationId,
+    ["dead-bug", "bird-dog", "band-pull-aparts", "hip-hinge-drill"],
+    "activation"
+  );
+  const activationDose = prepDoseFromCatalog(activationResolved.id, {
+    fallbackReps: "8-12",
+    fallbackDurationSec: 60,
+  });
+  const warmupDose = prepDoseFromCatalog(warmupId, {
+    fallbackReps: "6-10",
+    fallbackDurationSec: 60,
+  });
   const routine = [
-    makeItem(warmupId, experienceProfile.warmupSets, "6-10", 60, 30, "warmup"),
     makeItem(
-      pickUnique(
-        activationId,
-        ["dead-bug", "bird-dog", "band-pull-aparts", "hip-hinge-drill"],
-        "activation"
-      ).id,
+      warmupId,
+      experienceProfile.warmupSets,
+      warmupDose.reps,
+      warmupDose.durationSec,
+      30,
+      "warmup"
+    ),
+    makeItem(
+      activationResolved.id,
       "2",
-      "8-12",
-      60,
+      activationDose.reps,
+      activationDose.durationSec,
       30,
       "activation"
     ),

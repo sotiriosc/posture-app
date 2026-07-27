@@ -31,6 +31,33 @@ type MenuLink = {
   label: string;
 };
 
+type SessionNavState = {
+  active: boolean;
+  canGoBack: boolean;
+};
+
+export const OPEN_APP_MENU_EVENT = "praxis:open-app-menu";
+export const SESSION_NAV_STATE_EVENT = "praxis:session-nav-state";
+export const SESSION_GO_BACK_EVENT = "praxis:session-go-back";
+export const SESSION_EXIT_EVENT = "praxis:session-exit";
+
+export function openAppMenu() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(OPEN_APP_MENU_EVENT));
+}
+
+export function publishSessionNavState(state: SessionNavState) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(
+    new CustomEvent<SessionNavState>(SESSION_NAV_STATE_EVENT, { detail: state })
+  );
+}
+
+export function requestSessionGoBack() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(SESSION_GO_BACK_EVENT));
+}
+
 export default function AppMenuClient({
   isAdmin,
   authEnabled,
@@ -39,10 +66,35 @@ export default function AppMenuClient({
 }: AppMenuClientProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [sessionNav, setSessionNav] = useState<SessionNavState>({
+    active: false,
+    canGoBack: false,
+  });
 
   useEffect(() => {
     void syncLocalOwner(userId);
   }, [userId]);
+
+  useEffect(() => {
+    function handleExternalOpen() {
+      setOpen(true);
+    }
+    window.addEventListener(OPEN_APP_MENU_EVENT, handleExternalOpen);
+    return () => window.removeEventListener(OPEN_APP_MENU_EVENT, handleExternalOpen);
+  }, []);
+
+  useEffect(() => {
+    function handleSessionNav(event: Event) {
+      const detail = (event as CustomEvent<SessionNavState>).detail;
+      if (!detail) return;
+      setSessionNav({
+        active: Boolean(detail.active),
+        canGoBack: Boolean(detail.canGoBack),
+      });
+    }
+    window.addEventListener(SESSION_NAV_STATE_EVENT, handleSessionNav);
+    return () => window.removeEventListener(SESSION_NAV_STATE_EVENT, handleSessionNav);
+  }, []);
 
   const buyerDemoMode = useMemo(() => {
     if (typeof document === "undefined") return false;
@@ -55,6 +107,7 @@ export default function AppMenuClient({
 
   const hideMenu =
     pathname?.startsWith("/auth/") || pathname?.startsWith("/admin/access");
+  const isSessionRoute = pathname === "/session";
   const links = useMemo(() => {
     if (buyerDemoMode) {
       return [
@@ -92,6 +145,10 @@ export default function AppMenuClient({
 
   if (hideMenu) return null;
 
+  const showSessionActions = isSessionRoute || sessionNav.active;
+  const navItemClass =
+    "block w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold transition border-slate-300/25 bg-slate-900/35 text-slate-100 hover:bg-slate-800/45";
+
   return (
     <>
       {!open ? (
@@ -128,6 +185,37 @@ export default function AppMenuClient({
               </Button>
             </div>
             <nav className="mt-5 space-y-2">
+              {showSessionActions ? (
+                <div className="space-y-2 pb-2">
+                  <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                    Session
+                  </p>
+                  <button
+                    type="button"
+                    data-testid="session-back"
+                    disabled={!sessionNav.canGoBack}
+                    onClick={() => {
+                      setOpen(false);
+                      requestSessionGoBack();
+                    }}
+                    className={`${navItemClass} disabled:cursor-not-allowed disabled:opacity-40`}
+                  >
+                    Go back
+                  </button>
+                  <Link
+                    href="/results"
+                    data-testid="session-exit"
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent(SESSION_EXIT_EVENT));
+                      setOpen(false);
+                    }}
+                    className={navItemClass}
+                  >
+                    Exit session
+                  </Link>
+                  <div className="border-b border-white/10 pb-2" />
+                </div>
+              ) : null}
               {links.map((link) => {
                 const active = pathname === link.href;
                 return (

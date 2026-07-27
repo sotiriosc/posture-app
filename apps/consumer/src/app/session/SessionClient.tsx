@@ -54,7 +54,12 @@ import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import OnboardingInfoButton, {
   openOnboardingGuide,
 } from "@/components/onboarding/OnboardingInfoButton";
-import { openAppMenu } from "@/components/AppMenuClient";
+import {
+  openAppMenu,
+  publishSessionNavState,
+  SESSION_EXIT_EVENT,
+  SESSION_GO_BACK_EVENT,
+} from "@/components/AppMenuClient";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import {
@@ -550,10 +555,8 @@ export default function SessionClient() {
   const [blockMenuExerciseId, setBlockMenuExerciseId] = useState<string | null>(null);
   const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
 
-  // Phase 6d, Commit 2 — Exit session / Back tucked behind a "..." menu;
-  // they're escape hatches, not primary actions during set logging.
-  const [sessionMenuOpen, setSessionMenuOpen] = useState(false);
-
+  // Today's options: collapsed by default; only relevant at session start.
+  const [practiceOptionsOpen, setPracticeOptionsOpen] = useState(false);
 
   const [activeTrackingField, setActiveTrackingField] =
     useState<TrackingField | null>(null);
@@ -573,6 +576,8 @@ export default function SessionClient() {
     allSetsCompleted: false,
   });
   const previousActiveIndexRef = useRef(0);
+  /** Non-sticky sentinel — sticky focus card alone won't reset page scroll. */
+  const focusScrollAnchorRef = useRef<HTMLDivElement | null>(null);
   const focusCardRef = useRef<HTMLButtonElement | null>(null);
   const exerciseCardRef = useRef<HTMLDivElement | null>(null);
   const trackingPanelRef = useRef<HTMLDivElement | null>(null);
@@ -1021,12 +1026,19 @@ export default function SessionClient() {
         const effectiveExerciseId =
           sessionSwapId ?? substitutedId ?? routineItem.exerciseId;
         const exercise = exerciseById(effectiveExerciseId);
+        // Prone Y-T-W is catalog-rep-based (per letter). Prefer catalog dose so
+        // older programs that stored generic "8-12" + durationSec still align.
+        const isProneYtw = effectiveExerciseId === "prone-ytw";
         return {
           exerciseId: effectiveExerciseId,
           originalExerciseId: routineItem.exerciseId,
           sets: routineItem.sets ?? "1",
-          reps: routineItem.reps ?? "",
-          durationSec: routineItem.durationSec ?? undefined,
+          reps: isProneYtw
+            ? exercise?.durationOrReps ?? "6-8 reps per letter"
+            : routineItem.reps ?? "",
+          durationSec: isProneYtw
+            ? undefined
+            : routineItem.durationSec ?? undefined,
           restSec: routineItem.restSec ?? 60,
           section: routineItem.section ?? day.title,
           dayTitle: day.title,
@@ -1086,12 +1098,15 @@ export default function SessionClient() {
     segmentAnchorRef.current = now;
   }, [currentItemId, isActiveTimerRunning]);
 
-  /** Scroll to the Focus card for the current exercise (not the page top). */
+  /** Scroll so the focus/cue card is the first thing in view mid-workout. */
   const scrollSessionTop = useCallback((behavior: ScrollBehavior = "smooth") => {
     if (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent)) {
       return;
     }
-    const target = focusCardRef.current ?? exerciseCardRef.current;
+    const target =
+      focusScrollAnchorRef.current ??
+      focusCardRef.current ??
+      exerciseCardRef.current;
     if (!target || typeof target.scrollIntoView !== "function") return;
     try {
       target.scrollIntoView({
@@ -1112,6 +1127,17 @@ export default function SessionClient() {
     });
     return () => window.cancelAnimationFrame(frame);
   }, [activeIndex, scrollSessionTop]);
+
+  // Publish session nav into the shared Menu (Go back / Exit session).
+  useEffect(() => {
+    publishSessionNavState({
+      active: true,
+      canGoBack: activeIndex > 0,
+    });
+    return () => {
+      publishSessionNavState({ active: false, canGoBack: false });
+    };
+  }, [activeIndex]);
 
   useEffect(() => {
     sessionIdRef.current = sessionId;
@@ -1887,6 +1913,21 @@ export default function SessionClient() {
     setTipIndex(0);
     setActiveIndex((prev) => Math.max(prev - 1, 0));
   };
+
+  useEffect(() => {
+    const onGoBack = () => {
+      void handleBack();
+    };
+    const onExit = () => {
+      trackDropoff("exit_button");
+    };
+    window.addEventListener(SESSION_GO_BACK_EVENT, onGoBack);
+    window.addEventListener(SESSION_EXIT_EVENT, onExit);
+    return () => {
+      window.removeEventListener(SESSION_GO_BACK_EVENT, onGoBack);
+      window.removeEventListener(SESSION_EXIT_EVENT, onExit);
+    };
+  });
 
   const handleStartNewSession = () => {
     setSessionId(uuid());
@@ -3107,83 +3148,104 @@ export default function SessionClient() {
           </div>
         ) : null}
 
-        {practiceOptions.length ? (
+        {activeIndex === 0 && practiceOptions.length ? (
           <section
-            className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5"
+            className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58"
             data-testid="session-practice-options"
           >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold text-white">Today&apos;s options</p>
-                <p className="mt-1 text-xs text-slate-300">
-                  Adjust just today&apos;s session — your plan stays the same.
-                </p>
-              </div>
-              {selectedPracticeOption ? (
-                <span
-                  className="rounded-lg border border-slate-500/30 bg-slate-950/55 px-2 py-1 text-[11px] font-semibold text-slate-300"
-                  data-testid="selected-practice-mode"
-                >
-                  {selectedPracticeOption.label}
+            <button
+              type="button"
+              data-testid="session-practice-options-toggle"
+              aria-expanded={practiceOptionsOpen}
+              onClick={() => setPracticeOptionsOpen((open) => !open)}
+              className="flex min-h-11 w-full items-center justify-between gap-3 px-4 py-3 text-left sm:px-5"
+            >
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-white">
+                  Today&apos;s options
                 </span>
-              ) : null}
-            </div>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {practiceOptions.map((option) => {
-                const selected = option.mode === effectivePracticeMode;
-                return (
-                  <button
-                    key={option.mode}
-                    type="button"
-                    data-testid={`practice-option-${option.mode}`}
-                    onClick={() => handleSelectPracticeMode(option.mode)}
-                    className={`rounded-lg border px-3 py-3 text-left transition ${
-                      selected
-                        ? "border-sky-300 bg-sky-400/15 text-white shadow-[0_14px_28px_rgba(14,165,233,0.12)]"
-                        : "border-slate-500/25 bg-slate-950/35 text-slate-200 hover:border-sky-300/45"
-                    }`}
+                {!practiceOptionsOpen && selectedPracticeOption ? (
+                  <span
+                    className="mt-0.5 block truncate text-xs text-slate-300"
+                    data-testid="selected-practice-mode"
                   >
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-semibold">{option.label}</span>
-                      {option.isRecommended ? (
-                        <span className="rounded-full border border-emerald-300/35 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
-                          Suggested
+                    {selectedPracticeOption.label}
+                  </span>
+                ) : (
+                  <span className="mt-0.5 block text-xs text-slate-400">
+                    Adjust just today — plan stays the same
+                  </span>
+                )}
+              </span>
+              <span
+                className="shrink-0 text-slate-400"
+                aria-hidden="true"
+              >
+                {practiceOptionsOpen ? "▴" : "▾"}
+              </span>
+            </button>
+            {practiceOptionsOpen ? (
+              <div className="space-y-3 border-t border-slate-500/20 px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {practiceOptions.map((option) => {
+                    const selected = option.mode === effectivePracticeMode;
+                    return (
+                      <button
+                        key={option.mode}
+                        type="button"
+                        data-testid={`practice-option-${option.mode}`}
+                        onClick={() => handleSelectPracticeMode(option.mode)}
+                        className={`rounded-lg border px-3 py-3 text-left transition ${
+                          selected
+                            ? "border-sky-300 bg-sky-400/15 text-white shadow-[0_14px_28px_rgba(14,165,233,0.12)]"
+                            : "border-slate-500/25 bg-slate-950/35 text-slate-200 hover:border-sky-300/45"
+                        }`}
+                      >
+                        <span className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-semibold">{option.label}</span>
+                          {option.isRecommended ? (
+                            <span className="rounded-full border border-emerald-300/35 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
+                              Suggested
+                            </span>
+                          ) : null}
                         </span>
-                      ) : null}
-                    </span>
-                    <span className="mt-1 block text-xs leading-5 text-slate-300">
-                      {option.description}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            {selectedPracticeOption ? (
-              <p className="mt-3 text-xs font-semibold text-slate-300">
-                {formatPracticeModeSessionNote(selectedPracticeOption)}
-              </p>
+                        <span className="mt-1 block text-xs leading-5 text-slate-300">
+                          {option.description}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {selectedPracticeOption ? (
+                  <p className="text-xs font-semibold text-slate-300">
+                    {formatPracticeModeSessionNote(selectedPracticeOption)}
+                  </p>
+                ) : null}
+              </div>
             ) : null}
           </section>
         ) : null}
 
-        {/* Phase 6c, Commit 6 — the fixed top-right control cluster
-            (AppMenuClient) only moves to the top at md+; this sticky header
-            must clear it there too, not just at initial scroll position 0.
-            .ui-shell's own padding-top reserves that space for content at
-            the top of the page, but a sticky descendant re-anchors to the
-            viewport on scroll and ignores an ancestor's padding, so it
-            needs its own matching offset. */}
-        <div className="sticky top-2 z-30 space-y-2 md:top-16 [&>*:has([aria-expanded=true])]:relative [&>*:has([aria-expanded=true])]:z-40">
-          <SessionProgressHeader
-            phaseName={phaseLabel}
-            dayPositionLabel={dayPositionLabel}
-            dayTitle={dayTitle}
-            exercisePositionLabel={exercisePositionLabel}
-            progressPercent={sessionProgressPercent}
-            compact={!isSessionStartHeader}
-            compactLabel={compactHeaderLabel}
-          />
+        {/* Metadata scrolls with content; only the focus card stays anchored. */}
+        <SessionProgressHeader
+          phaseName={phaseLabel}
+          dayPositionLabel={dayPositionLabel}
+          dayTitle={dayTitle}
+          exercisePositionLabel={exercisePositionLabel}
+          progressPercent={sessionProgressPercent}
+          compact={!isSessionStartHeader}
+          compactLabel={compactHeaderLabel}
+        />
 
+        <div
+          ref={focusScrollAnchorRef}
+          className="h-0 scroll-mt-2 md:scroll-mt-16"
+          aria-hidden="true"
+        />
+
+        {/* Phase 6c, Commit 6 — sticky focus card must clear the fixed
+            top-right control cluster at md+. */}
+        <div className="sticky top-2 z-30 md:top-16">
           <button
             type="button"
             ref={focusCardRef}
@@ -3837,57 +3899,6 @@ export default function SessionClient() {
           </div>
         ) : null}
 
-        <OnImage className="space-y-3">
-          {/* Phase 6e, Commit 5.b — this row used to restate "{activeIndex +
-              1} / {totalItems}" here too, duplicating the exercise counter
-              that SessionProgressHeader (sticky, above) already shows on
-              every screen of the session, not just at start — the
-              "duplicating mid-view" Sotirios reported past Phase 6d's
-              Commit 5, which only removed a session-start-only duplicate.
-              The "..." menu here is the session's only Back/Exit affordance
-              and stays; just the redundant counter goes. */}
-          <div className="flex items-center justify-end gap-2">
-            <div className="relative">
-              <button
-                type="button"
-                aria-label="Session options"
-                aria-expanded={sessionMenuOpen}
-                data-testid="session-options-trigger"
-                onClick={() => setSessionMenuOpen((current) => !current)}
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-400/35 bg-slate-900/45 text-slate-300 hover:bg-slate-800/55"
-              >
-                ···
-              </button>
-              {sessionMenuOpen ? (
-                <div className="absolute right-0 top-12 z-20 min-w-40 overflow-hidden rounded-lg border border-slate-600/40 bg-slate-900 shadow-lg">
-                  <Link
-                    href="/results"
-                    data-testid="session-exit"
-                    onClick={() => {
-                      trackDropoff("exit_button");
-                      setSessionMenuOpen(false);
-                    }}
-                    className="block px-4 py-3 text-left text-sm text-slate-200 hover:bg-slate-700/50"
-                  >
-                    Exit session
-                  </Link>
-                  <button
-                    type="button"
-                    data-testid="session-back"
-                    onClick={() => {
-                      setSessionMenuOpen(false);
-                      void handleBack();
-                    }}
-                    disabled={activeIndex === 0}
-                    className="block w-full px-4 py-3 text-left text-sm text-slate-200 hover:bg-slate-700/50 disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Back
-                  </button>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </OnImage>
       </div>
       {/* Desktop-only: on phone this same action lives in the consolidated
           bottom bar below (Phase 6d, Commit 1). Desktop is out of scope for

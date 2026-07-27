@@ -392,8 +392,11 @@ const rawExercises: Exercise[] = [
       "band-pull-aparts",
       "wall-slides",
     ],
+    // Rep-based (not a timed hold): 6–8 controlled raises in each letter shape.
+    // "per letter" is countable for timerRules (×3 for Y/T/W); avoid bare "each"
+    // which parseRepTarget treats as bilateral/per-side.
     loadType: "bodyweight",
-    durationOrReps: "6-8 each",
+    durationOrReps: "6-8 reps per letter",
     cues: ["Small range", "Control the tempo"],
     mistakes: ["Lifting with neck", "Winging shoulders"],
     contraindications: ["Shoulder pain (reduce range)"],

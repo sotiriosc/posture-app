@@ -73,39 +73,50 @@ export const tempoPaceLabel = (pace: TempoPace): string =>
 /**
  * Parse a rep prescription into a countable target.
  * Uses the upper end of a range when present ("8-12" → 12) so the timer
- * covers a full quality set. "per side" / "each" doubles total reps.
+ * covers a full quality set.
+ * - "per side" / bare "each" doubles total reps (bilateral).
+ * - "per letter" / "each letter" triples (Y-T-W shapes).
+ * Bare "each" does not apply when qualified (each direction / letter / way).
  */
 export const parseRepTarget = (
   reps?: string | number | null
-): { reps: number; perSide: boolean } | null => {
+): { reps: number; perSide: boolean; perLetter: boolean } | null => {
   if (typeof reps === "number" && Number.isFinite(reps) && reps > 0) {
-    return { reps: Math.round(reps), perSide: false };
+    return { reps: Math.round(reps), perSide: false, perLetter: false };
   }
   if (typeof reps !== "string") return null;
   const raw = reps.trim().toLowerCase();
   if (!raw) return null;
-  const perSide = /\b(per side|each side|\/\s*side|each)\b/i.test(raw);
+  const perLetter = /\b(per letter|each letter)\b/i.test(raw);
+  const qualifiedEach = /\beach\s+(direction|letter|way)\b/i.test(raw);
+  const perSide =
+    /\b(per side|each side|\/\s*side)\b/i.test(raw) ||
+    (/\beach\b/i.test(raw) && !perLetter && !qualifiedEach);
   const range = raw.match(/(\d+)\s*[-–]\s*(\d+)/);
   if (range) {
     const hi = Number(range[2]);
     if (Number.isFinite(hi) && hi > 0) {
-      return { reps: hi, perSide };
+      return { reps: hi, perSide, perLetter };
     }
   }
   const single = raw.match(/(\d+)/);
   if (!single) return null;
   const value = Number(single[1]);
   if (!Number.isFinite(value) || value <= 0) return null;
-  return { reps: value, perSide };
+  return { reps: value, perSide, perLetter };
 };
 
 export const workSecondsFromRepsAndTempo = (params: {
   reps: number;
   perSide?: boolean;
+  perLetter?: boolean;
   pace: TempoPace;
 }): number => {
   const secPerRep = TEMPO_SEC_PER_REP[params.pace];
-  const totalReps = Math.max(1, params.reps) * (params.perSide ? 2 : 1);
+  const totalReps =
+    Math.max(1, params.reps) *
+    (params.perSide ? 2 : 1) *
+    (params.perLetter ? 3 : 1);
   const raw = Math.round(totalReps * secPerRep);
   return Math.min(MAX_WORK_TIMER_SEC, Math.max(15, raw));
 };
@@ -143,6 +154,7 @@ export const getEffectiveTimer = (
       workSeconds: workSecondsFromRepsAndTempo({
         reps: parsed.reps,
         perSide: parsed.perSide,
+        perLetter: parsed.perLetter,
         pace: tempoPace,
       }),
       restSeconds,

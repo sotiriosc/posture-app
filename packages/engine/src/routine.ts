@@ -124,8 +124,8 @@ export const generateRoutine = (data: QuestionnaireData): Routine => {
     main.push({
       exerciseId: "prone-ytw",
       sets,
-      reps: "6-8 each",
-      durationSec: 90,
+      // Match catalog: rep-based Y/T/W raises (not a timed hold).
+      reps: "6-8 reps per letter",
     });
   }
 
