@@ -302,24 +302,63 @@ export const stripeSubscriptionToSnapshot = (
     stripeSubscriptionStatus: status,
     stripeCurrentPeriodEnd:
       periodEndUnix !== null ? new Date(periodEndUnix * 1000).toISOString() : null,
-    stripeCancelAtPeriodEnd: Boolean(sub.cancel_at_period_end),
+    stripeCancelAtPeriodEnd: resolveCancelAtPeriodEnd(sub),
     plan: planFromStatus,
   };
 };
 
+/** True when Stripe has scheduled end-of-period cancellation. */
+export const resolveCancelAtPeriodEnd = (sub: StripeSubscriptionObject) => {
+  if (sub.cancel_at_period_end === true) return true;
+  // Some responses only populate cancel_at when cancellation is scheduled.
+  if (typeof sub.cancel_at === "number" && sub.cancel_at > 0) {
+    const status = String(sub.status ?? "").toLowerCase();
+    if (status === "active" || status === "trialing" || status === "past_due") {
+      return true;
+    }
+  }
+  return false;
+};
+
+const periodEndUnixForSort = (sub: StripeSubscriptionObject) =>
+  resolveSubscriptionPeriodEndUnix(sub) ?? 0;
+
+/**
+ * Prefer the most recent non-canceled subscription (active/trialing/past_due),
+ * then fall back to the newest canceled one if nothing else exists.
+ */
 const pickBestSubscription = (subs: StripeSubscriptionObject[]) => {
   if (subs.length === 0) return null;
-  return [...subs].sort((a, b) => {
+  const nonCanceled = subs.filter((sub) => {
+    const status = String(sub.status ?? "").toLowerCase();
+    return status !== "canceled" && status !== "incomplete_expired";
+  });
+  const pool = nonCanceled.length > 0 ? nonCanceled : subs;
+  return [...pool].sort((a, b) => {
     const rankA = STATUS_RANK[String(a.status ?? "").toLowerCase()] ?? 0;
     const rankB = STATUS_RANK[String(b.status ?? "").toLowerCase()] ?? 0;
     if (rankA !== rankB) return rankB - rankA;
-    return (b.current_period_end ?? 0) - (a.current_period_end ?? 0);
+    return periodEndUnixForSort(b) - periodEndUnixForSort(a);
   })[0]!;
 };
 
+const listSubscriptionsForCustomer = async (customerId: string) => {
+  const query = new URLSearchParams({
+    customer: customerId,
+    status: "all",
+    limit: "10",
+  });
+  const listed = await callStripeGet<{ data?: StripeSubscriptionObject[] }>(
+    `/subscriptions?${query.toString()}`
+  );
+  return listed.data ?? [];
+};
+
 /**
- * Direct Stripe retrieve (not event replay). Prefers subscription id, else the
- * best subscription for the customer.
+ * Direct Stripe retrieve (not event replay).
+ * Customer-first: list subscriptions for the Stripe customer (resilient when
+ * subscription ID was never stored due to webhook outage), then fall back to
+ * a direct subscription retrieve if only the subscription ID is known.
  */
 export const fetchStripeSubscriptionSnapshot = async (params: {
   subscriptionId?: string | null;
@@ -329,8 +368,30 @@ export const fetchStripeSubscriptionSnapshot = async (params: {
     lookup: {
       subscriptionId: params.subscriptionId ?? null,
       customerId: params.customerId ?? null,
+      strategy: "customer-first",
     },
   });
+
+  if (params.customerId) {
+    try {
+      const listed = await listSubscriptionsForCustomer(params.customerId);
+      const best = pickBestSubscription(listed);
+      console.info("[billing:stripe-retrieve] by_customer_list", {
+        customerId: params.customerId,
+        count: listed.length,
+        candidates: listed.map(summarizeStripeSubscriptionForLog),
+        picked: best ? summarizeStripeSubscriptionForLog(best) : null,
+        snapshot: best ? stripeSubscriptionToSnapshot(best) : null,
+      });
+      if (best) return stripeSubscriptionToSnapshot(best);
+    } catch (error) {
+      console.error("[billing:stripe-retrieve] by_customer_list failed", {
+        customerId: params.customerId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      // Fall through to subscription-id retrieve when possible.
+    }
+  }
 
   if (params.subscriptionId) {
     try {
@@ -343,46 +404,18 @@ export const fetchStripeSubscriptionSnapshot = async (params: {
       });
       return stripeSubscriptionToSnapshot(sub);
     } catch (error) {
-      console.error(
-        "[billing:stripe-retrieve] by_subscription_id failed; falling back to customer list",
-        {
-          subscriptionId: params.subscriptionId,
-          error: error instanceof Error ? error.message : String(error),
-        }
-      );
+      console.error("[billing:stripe-retrieve] by_subscription_id failed", {
+        subscriptionId: params.subscriptionId,
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
-  if (!params.customerId) {
-    console.error(
-      "[billing:stripe-retrieve] no customerId after subscription lookup; returning null"
-    );
-    return null;
-  }
-  const query = new URLSearchParams({
-    customer: params.customerId,
-    status: "all",
-    limit: "10",
+
+  console.error("[billing:stripe-retrieve] no subscription found", {
+    subscriptionId: params.subscriptionId ?? null,
+    customerId: params.customerId ?? null,
   });
-  try {
-    const listed = await callStripeGet<{ data?: StripeSubscriptionObject[] }>(
-      `/subscriptions?${query.toString()}`
-    );
-    const best = pickBestSubscription(listed.data ?? []);
-    console.info("[billing:stripe-retrieve] by_customer_list", {
-      customerId: params.customerId,
-      count: listed.data?.length ?? 0,
-      candidates: (listed.data ?? []).map(summarizeStripeSubscriptionForLog),
-      picked: best ? summarizeStripeSubscriptionForLog(best) : null,
-      snapshot: best ? stripeSubscriptionToSnapshot(best) : null,
-    });
-    return best ? stripeSubscriptionToSnapshot(best) : null;
-  } catch (error) {
-    console.error("[billing:stripe-retrieve] by_customer_list failed", {
-      customerId: params.customerId,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    throw error;
-  }
+  return null;
 };
 
 export const billingPatchFromSnapshot = (snapshot: StripeSubscriptionSnapshot) => ({

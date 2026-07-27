@@ -85,69 +85,109 @@ describe("stripe subscription snapshot", () => {
     });
   });
 
-  test("fetchStripeSubscriptionSnapshot retrieves by subscription id", async () => {
+  test("treats cancel_at as scheduled cancellation when cancel_at_period_end missing", () => {
+    const snapshot = stripeSubscriptionToSnapshot({
+      id: "sub_cancel_at",
+      status: "active",
+      customer: "cus_UxVptZte1N4w3y",
+      cancel_at: 1787702400,
+      items: {
+        data: [{ price: { id: "price_1" }, current_period_end: 1787702400 }],
+      },
+    });
+    expect(snapshot.stripeCancelAtPeriodEnd).toBe(true);
+    expect(snapshot.stripeCurrentPeriodEnd).toBe("2026-08-26T00:00:00.000Z");
+  });
+
+  test("customer-first: lists by customer even when subscription id is present", async () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_x";
     process.env.NODE_ENV = "test";
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
-        id: "sub_live",
-        status: "active",
-        customer: "cus_live",
-        cancel_at_period_end: true,
-        current_period_end: 1893456000,
-        items: { data: [{ price: { id: "price_1" } }] },
+        data: [
+          {
+            id: "sub_live",
+            status: "active",
+            customer: "cus_live",
+            cancel_at_period_end: true,
+            items: {
+              data: [{ price: { id: "price_1" }, current_period_end: 1787702400 }],
+            },
+          },
+        ],
       }),
     });
     vi.stubGlobal("fetch", fetchMock);
 
     const snapshot = await fetchStripeSubscriptionSnapshot({
-      subscriptionId: "sub_live",
+      subscriptionId: "sub_stale_or_missing",
       customerId: "cus_live",
     });
     expect(snapshot?.plan).toBe("pro");
     expect(snapshot?.stripeCancelAtPeriodEnd).toBe(true);
-    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/subscriptions/sub_live");
+    expect(snapshot?.stripeCurrentPeriodEnd).toBe("2026-08-26T00:00:00.000Z");
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("customer=cus_live");
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/subscriptions?");
   });
 
-  test("falls back to customer list and picks the best subscription", async () => {
+  test("customer-first with null subscription id self-heals from customer list", async () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_x";
     process.env.NODE_ENV = "test";
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({ error: { message: "No such subscription" } }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          data: [
-            {
-              id: "sub_old",
-              status: "canceled",
-              customer: "cus_1",
-              cancel_at_period_end: false,
-              current_period_end: 1700000000,
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [
+          {
+            id: "sub_old",
+            status: "canceled",
+            customer: "cus_1",
+            cancel_at_period_end: false,
+            current_period_end: 1700000000,
+          },
+          {
+            id: "sub_new",
+            status: "active",
+            customer: "cus_1",
+            cancel_at_period_end: true,
+            items: {
+              data: [{ price: { id: "price_new" }, current_period_end: 1787702400 }],
             },
-            {
-              id: "sub_new",
-              status: "active",
-              customer: "cus_1",
-              cancel_at_period_end: false,
-              current_period_end: 1893456000,
-              items: { data: [{ price: { id: "price_new" } }] },
-            },
-          ],
-        }),
-      });
+          },
+        ],
+      }),
+    });
     vi.stubGlobal("fetch", fetchMock);
 
     const snapshot = await fetchStripeSubscriptionSnapshot({
-      subscriptionId: "sub_missing",
+      subscriptionId: null,
       customerId: "cus_1",
     });
     expect(snapshot?.stripeSubscriptionId).toBe("sub_new");
+    expect(snapshot?.stripeCancelAtPeriodEnd).toBe(true);
     expect(snapshot?.plan).toBe("pro");
+  });
+
+  test("falls back to subscription id when customer id is missing", async () => {
+    process.env.STRIPE_SECRET_KEY = "sk_test_x";
+    process.env.NODE_ENV = "test";
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        id: "sub_only",
+        status: "active",
+        customer: "cus_only",
+        cancel_at_period_end: false,
+        current_period_end: 1893456000,
+      }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const snapshot = await fetchStripeSubscriptionSnapshot({
+      subscriptionId: "sub_only",
+      customerId: null,
+    });
+    expect(snapshot?.stripeSubscriptionId).toBe("sub_only");
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/subscriptions/sub_only");
   });
 });

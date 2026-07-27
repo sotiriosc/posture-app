@@ -81,7 +81,13 @@ Create and maintain two Stripe webhook endpoints:
 1. Test mode endpoint -> `https://staging.yourdomain.com/api/billing/webhook`
 2. Live mode endpoint -> `https://yourdomain.com/api/billing/webhook`
 
-Subscribe both endpoints to the same billing lifecycle events your app expects.
+Subscribe both endpoints to these events:
+
+- `checkout.session.completed`
+- `customer.subscription.created`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+- `invoice.payment_failed`
 
 ## Validation checklist
 
