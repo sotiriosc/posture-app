@@ -1,4 +1,4 @@
-const CACHE_NAME = "body-coach-v3";
+const CACHE_NAME = "body-coach-v4";
 const CORE_ASSETS = [
   "/",
   "/offline",
@@ -35,8 +35,10 @@ self.addEventListener("fetch", (event) => {
   const isNavigation = request.mode === "navigate";
   const isImage = request.destination === "image";
   const isApiRequest = url.pathname.startsWith("/api/");
+  // Account/billing must never be served from SW cache — always network.
+  const isAccountRoute = url.pathname.startsWith("/account");
 
-  if (isApiRequest) {
+  if (isApiRequest || isAccountRoute) {
     event.respondWith(fetch(request));
     return;
   }
@@ -45,7 +47,10 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+          // Only cache marketing/static navigations, not authenticated app routes.
+          if (!url.pathname.startsWith("/results") && !url.pathname.startsWith("/session")) {
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+          }
           return response;
         })
         .catch(() => caches.match("/offline"))

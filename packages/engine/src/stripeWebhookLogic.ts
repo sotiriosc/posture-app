@@ -13,9 +13,15 @@ type StripeEventObject = {
   subscription?: string;
   id?: string;
   object?: string;
-  items?: { data?: Array<{ price?: { id?: string } }> };
+  items?: {
+    data?: Array<{
+      price?: { id?: string };
+      current_period_end?: number;
+    }>;
+  };
   plan?: { id?: string };
   current_period_end?: number;
+  cancel_at?: number;
   cancel_at_period_end?: boolean;
 };
 
@@ -81,9 +87,21 @@ export const resolveBillingPatch = (event: StripeWebhookEvent) => {
   const stripePriceId = object?.items?.data?.[0]?.price?.id ?? object?.plan?.id ?? null;
   const stripeSubscriptionStatus =
     typeof object.status === "string" ? object.status : null;
+  // Basil+: period end may only exist on items.data[].current_period_end.
+  const periodEndUnix = (() => {
+    if (typeof object.current_period_end === "number") return object.current_period_end;
+    const itemEnds = (object.items?.data ?? [])
+      .map((item) => item.current_period_end)
+      .filter((value): value is number => typeof value === "number");
+    if (itemEnds.length > 0) return Math.max(...itemEnds);
+    if (object.cancel_at_period_end && typeof object.cancel_at === "number") {
+      return object.cancel_at;
+    }
+    return null;
+  })();
   const stripeCurrentPeriodEnd =
-    typeof object.current_period_end === "number"
-      ? new Date(object.current_period_end * 1000).toISOString()
+    periodEndUnix !== null
+      ? new Date(periodEndUnix * 1000).toISOString()
       : null;
   const stripeCancelAtPeriodEnd =
     typeof object.cancel_at_period_end === "boolean"
