@@ -4,14 +4,12 @@ import {
   createStripeCheckoutSession,
   formatStripePriceLabel,
   getAnnualPriceId,
-  getFoundersPriceIdOverride,
   getMonthlyPriceId,
   getStripeCheckoutPlanAvailability,
   isStripeConfigured,
   parseStripeCheckoutPlan,
   resolveCheckoutPriceId,
   resolveFoundersDiscountParams,
-  STRIPE_FOUNDERS_LOOKUP_KEY,
   STRIPE_FOUNDERS_PROMO_CODE,
   STRIPE_MONTHLY_TRIAL_PROMO_CODE,
 } from "@/lib/stripeServer";
@@ -79,51 +77,36 @@ describe("stripe checkout plans", () => {
     expect(isStripeConfigured()).toBe(false);
   });
 
-  test("plan availability: founders needs secret; annual needs env", () => {
+  test("plan availability: founders tracks monthly price; annual needs env", () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_x";
     process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
     delete process.env.STRIPE_PRICE_ID_ANNUAL;
-    delete process.env.STRIPE_PRICE_ID_FOUNDERS;
 
     expect(getAnnualPriceId()).toBe("");
-    expect(getFoundersPriceIdOverride()).toBe("");
     expect(getStripeCheckoutPlanAvailability()).toEqual({
       monthly: true,
       annual: false,
       founders: true,
     });
 
+    delete process.env.STRIPE_PRICE_ID_MONTHLY;
+    delete process.env.STRIPE_PRICE_ID;
+    expect(getStripeCheckoutPlanAvailability().founders).toBe(false);
+
+    process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
     process.env.STRIPE_PRICE_ID_ANNUAL = "price_annual";
     expect(getStripeCheckoutPlanAvailability().annual).toBe(true);
   });
 
-  test("resolveCheckoutPriceId uses founders override when set", async () => {
-    process.env.STRIPE_SECRET_KEY = "sk_test_x";
-    process.env.STRIPE_PRICE_ID_FOUNDERS = "price_founders_override";
+  test("resolveCheckoutPriceId uses monthly price for founders", async () => {
+    process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
+    process.env.STRIPE_PRICE_ID_FOUNDERS = "price_archived_founders";
     await expect(resolveCheckoutPriceId("founders")).resolves.toBe(
-      "price_founders_override"
+      "price_monthly"
     );
-  });
-
-  test("resolveCheckoutPriceId resolves founders via lookup key", async () => {
-    process.env.STRIPE_SECRET_KEY = "sk_test_x";
-    process.env.NODE_ENV = "test";
-    delete process.env.STRIPE_PRICE_ID_FOUNDERS;
-
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ data: [{ id: "price_from_lookup" }] }),
-    });
-    vi.stubGlobal("fetch", fetchMock);
-
-    await expect(resolveCheckoutPriceId("founders")).resolves.toBe(
-      "price_from_lookup"
+    await expect(resolveCheckoutPriceId("monthly")).resolves.toBe(
+      "price_monthly"
     );
-
-    expect(fetchMock).toHaveBeenCalledOnce();
-    const calledUrl = String(fetchMock.mock.calls[0]?.[0] ?? "");
-    expect(calledUrl).toContain("/prices?");
-    expect(decodeURIComponent(calledUrl)).toContain(STRIPE_FOUNDERS_LOOKUP_KEY);
   });
 
   test("buildCheckoutDiscountParams gates coupons by plan", () => {
@@ -134,7 +117,7 @@ describe("stripe checkout plans", () => {
     );
     expect(monthly["discounts[0][coupon]"]).toBeUndefined();
 
-    // Founders discounts are resolved async (promotion code → coupon).
+    // Founders discounts are resolved async (promotion code).
     expect(buildCheckoutDiscountParams("founders")).toEqual({});
 
     const annual = buildCheckoutDiscountParams("annual");
@@ -193,6 +176,7 @@ describe("stripe checkout plans", () => {
 
     const [, init] = fetchMock.mock.calls[0] ?? [];
     const body = String((init as { body?: string } | undefined)?.body ?? "");
+    expect(body).toContain("price_monthly");
     expect(body).toContain("allow_promotion_codes=true");
     expect(body).toContain("custom_text%5Bsubmit%5D%5Bmessage%5D=");
     expect(decodeURIComponent(body)).toContain(STRIPE_MONTHLY_TRIAL_PROMO_CODE);
@@ -201,10 +185,11 @@ describe("stripe checkout plans", () => {
     expect(body).toContain("metadata%5BuserId%5D=user-1");
   });
 
-  test("founders checkout silently applies FOUNDERS promotion code", async () => {
+  test("founders checkout uses monthly price + silent FOUNDERS promo", async () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_x";
     process.env.NODE_ENV = "test";
-    process.env.STRIPE_PRICE_ID_FOUNDERS = "price_founders";
+    process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
+    process.env.STRIPE_PRICE_ID_FOUNDERS = "price_archived_founders";
     process.env.APP_URL = "https://example.com";
     delete process.env.STRIPE_FOUNDERS_COUPON_ID;
 
@@ -241,6 +226,8 @@ describe("stripe checkout plans", () => {
     const body = String(
       (sessionCall?.[1] as { body?: string } | undefined)?.body ?? ""
     );
+    expect(body).toContain("price_monthly");
+    expect(body).not.toContain("price_archived_founders");
     expect(decodeURIComponent(body)).toContain(
       "discounts[0][promotion_code]=promo_founders_live"
     );
