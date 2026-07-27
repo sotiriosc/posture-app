@@ -17,7 +17,14 @@ type CheckoutPlans = {
   founders?: boolean;
 };
 
-const PLAN_OPTIONS: Array<{
+type PriceLabel = {
+  label: string;
+  detail: string;
+};
+
+type PriceLabels = Partial<Record<CheckoutPlan, PriceLabel>>;
+
+const DEFAULT_PLAN_OPTIONS: Array<{
   id: CheckoutPlan;
   label: string;
   detail: string;
@@ -49,6 +56,7 @@ export default function UpgradePrompt() {
   const [checkoutPlans, setCheckoutPlans] = useState<CheckoutPlans>({
     monthly: true,
   });
+  const [priceLabels, setPriceLabels] = useState<PriceLabels>({});
   const [selectedPlan, setSelectedPlan] = useState<CheckoutPlan>("monthly");
 
   useEffect(() => {
@@ -61,10 +69,12 @@ export default function UpgradePrompt() {
         const data = (await res.json().catch(() => null)) as {
           stripeConfigured?: boolean;
           checkoutPlans?: CheckoutPlans;
+          priceLabels?: PriceLabels;
         } | null;
         setCheckoutEnabled(Boolean(data?.stripeConfigured));
         const plans = data?.checkoutPlans ?? { monthly: true };
         setCheckoutPlans(plans);
+        setPriceLabels(data?.priceLabels ?? {});
         const preferred =
           (plans.monthly && "monthly") ||
           (plans.annual && "annual") ||
@@ -110,9 +120,13 @@ export default function UpgradePrompt() {
     ? "Keep training every day"
     : "Unlock ongoing full-week access";
 
-  const availableOptions = PLAN_OPTIONS.filter((option) =>
+  const availableOptions = DEFAULT_PLAN_OPTIONS.filter((option) =>
     Boolean(checkoutPlans[option.id])
-  );
+  ).map((option) => ({
+    ...option,
+    label: priceLabels[option.id]?.label ?? option.label,
+    detail: priceLabels[option.id]?.detail ?? option.detail,
+  }));
 
   const planPicker =
     availableOptions.length > 1 ? (

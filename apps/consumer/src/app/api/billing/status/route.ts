@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { readServerSession } from "@/lib/serverAuth";
 import { getUserRepository } from "@/lib/userRepository";
 import {
+  fetchCheckoutPriceLabels,
   getStripeCheckoutPlanAvailability,
   isStripeConfigured,
 } from "@/lib/stripeServer";
@@ -12,6 +13,8 @@ export const revalidate = 0;
 export async function GET() {
   const session = await readServerSession();
   const checkoutPlans = getStripeCheckoutPlanAvailability();
+  const priceLabels = await fetchCheckoutPriceLabels().catch(() => ({}));
+
   if (!session) {
     return NextResponse.json(
       {
@@ -19,6 +22,7 @@ export async function GET() {
         authenticated: false,
         stripeConfigured: isStripeConfigured(),
         checkoutPlans,
+        priceLabels,
       },
       {
         headers: {
@@ -37,6 +41,7 @@ export async function GET() {
       authenticated: true,
       stripeConfigured: isStripeConfigured(),
       checkoutPlans,
+      priceLabels,
       user: {
         id: session.id,
         email: session.email,

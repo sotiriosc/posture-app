@@ -20,7 +20,7 @@ describe("billingDisplay", () => {
     expect(display.planLabel).toBe("Pro");
     expect(display.statusChip.label).toBe("Active");
     expect(display.accessStatus).toBe("Pro (active)");
-    expect(display.renewalValue).toBe("Renews monthly");
+    expect(display.renewalValue).toBe("Not available from Stripe");
     expect(display.cancellationValue).toBe("No cancellation scheduled");
     expect(needsBillingReconcile(record)).toBe(true);
   });
@@ -70,6 +70,7 @@ describe("billingDisplay", () => {
     expect(display.statusChip.label).toBe("Active");
     expect(display.accessStatus).toBe("Pro (scheduled to end on 2035-06-01)");
     expect(display.renewalLabel).toBe("Access ends on");
+    expect(display.renewalValue).toBe("2035-06-01");
     expect(display.cancellationValue).toBe("Yes — ends on 2035-06-01");
   });
 

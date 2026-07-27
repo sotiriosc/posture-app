@@ -114,7 +114,7 @@ export const deriveBillingDisplay = (
   } else if (periodEnd) {
     renewalValue = periodEnd;
   } else {
-    renewalValue = "Renews monthly";
+    renewalValue = "Not available from Stripe";
   }
 
   let cancellationValue: string;

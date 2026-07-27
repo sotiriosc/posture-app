@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 
 /**
- * After the billing page self-heals the DB record from Stripe during RSC
- * render, re-issue the auth cookie so middleware plan matches DB plan.
+ * After the billing page syncs the DB record from Stripe during RSC render,
+ * re-issue the auth cookie so middleware plan matches DB plan.
  */
 export default function BillingSessionSync() {
   useEffect(() => {
