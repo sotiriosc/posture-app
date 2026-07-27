@@ -28,10 +28,14 @@ export const STRIPE_CHECKOUT_PLANS: readonly StripeCheckoutPlan[] = [
 export const STRIPE_FOUNDERS_LOOKUP_KEY = "praxis_founders_monthly";
 
 /**
- * Stripe Live — Praxis Founders coupon.
- * Coupon id: FOUNDERS ($7 off forever). Also has promotion code FOUNDERS.
- * Applied only on the founders Checkout path via `discounts[0][coupon]`.
+ * Stripe Live — Praxis Founders ($7 off forever).
+ * Customer-facing code `FOUNDERS` is a Promotion Code (`promo_…`).
+ * Live API rejected `discounts[0][coupon]=FOUNDERS` ("No such coupon"), so
+ * founders Checkout resolves the promotion code and applies it silently via
+ * `discounts[0][promotion_code]` (no promo field shown).
  */
+export const STRIPE_FOUNDERS_PROMO_CODE = "FOUNDERS";
+/** @deprecated Prefer promo-code resolution; kept for env override / fallback. */
 export const STRIPE_FOUNDERS_COUPON_ID = "FOUNDERS";
 
 /**
@@ -46,7 +50,7 @@ export const STRIPE_MONTHLY_TRIAL_PROMO_CODE = "PRAXISTRIAL60DAY";
 const STRIPE_MONTHLY_CHECKOUT_SUBMIT_MESSAGE =
   "Have a promo code? First 50 members get 60 days free - use code PRAXISTRIAL60DAY";
 
-/** Optional Coupon id override (defaults to FOUNDERS). */
+/** Optional Coupon id override when promotion-code lookup is not used. */
 const getFoundersCouponIdOverride = () =>
   process.env.STRIPE_FOUNDERS_COUPON_ID?.trim() || "";
 
@@ -227,14 +231,33 @@ const assertDiscountParamsExclusive = (params: Record<string, string>) => {
 };
 
 /**
- * Founders Checkout: server-apply Coupon id FOUNDERS ($7 off forever).
- * Do not send allow_promotion_codes on this path.
+ * Founders Checkout: silently apply the FOUNDERS discount.
+ * Prefer Promotion Code object id (works in Live). Optional env coupon id
+ * override. Never sets allow_promotion_codes.
  */
 export const resolveFoundersDiscountParams = async (): Promise<
   Record<string, string>
 > => {
-  const couponId = getFoundersCouponIdOverride() || STRIPE_FOUNDERS_COUPON_ID;
-  return { "discounts[0][coupon]": couponId };
+  const couponOverride = getFoundersCouponIdOverride();
+  if (couponOverride) {
+    return { "discounts[0][coupon]": couponOverride };
+  }
+
+  const query = new URLSearchParams();
+  query.set("code", STRIPE_FOUNDERS_PROMO_CODE);
+  query.set("active", "true");
+  query.set("limit", "1");
+  const result = await callStripeGet<{
+    data?: Array<{ id?: string }>;
+  }>(`/promotion_codes?${query.toString()}`);
+  const promoId = result.data?.[0]?.id?.trim();
+  if (promoId) {
+    return { "discounts[0][promotion_code]": promoId };
+  }
+
+  throw new Error(
+    `Founders discount unavailable: no active Stripe promotion code "${STRIPE_FOUNDERS_PROMO_CODE}". Create one in Stripe or set STRIPE_FOUNDERS_COUPON_ID.`
+  );
 };
 
 export const resolveCheckoutDiscountParams = async (

@@ -6,6 +6,7 @@ import Link from "next/link";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import PasswordField from "@/components/ui/PasswordField";
 import { syncLocalOwner } from "@/lib/accountIsolation";
 import { refreshUserPlan } from "@/hooks/useUserPlan";
 
@@ -75,17 +76,14 @@ export default function LoginClient() {
               required
             />
           </label>
-          <label className="mt-3 block text-xs font-semibold text-slate-700">
-            Password
-            <input
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="ui-input mt-2"
-              required
-            />
-          </label>
+          <PasswordField
+            label="Password"
+            autoComplete="current-password"
+            value={password}
+            onChange={setPassword}
+            className="mt-3 block text-xs font-semibold text-slate-700"
+            required
+          />
           {error ? (
             <p className="ui-feedback-error mt-3">
               {error}

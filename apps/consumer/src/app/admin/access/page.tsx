@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
+import PasswordField from "@/components/ui/PasswordField";
 
 export default function AdminAccessPage() {
   const router = useRouter();
@@ -48,17 +49,16 @@ export default function AdminAccessPage() {
         </OnImage>
 
         <form onSubmit={handleSubmit} className="ui-card p-6">
-          <label className="text-xs font-semibold text-slate-700">
-            Access key
-            <input
-              type="password"
-              value={accessKey}
-              onChange={(event) => setAccessKey(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none focus-visible:border-slate-900"
-              placeholder="Enter admin key"
-              required
-            />
-          </label>
+          <PasswordField
+            label="Access key"
+            value={accessKey}
+            onChange={setAccessKey}
+            className="text-xs font-semibold text-slate-700"
+            inputClassName="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none focus-visible:border-slate-900"
+            placeholder="Enter admin key"
+            autoComplete="off"
+            required
+          />
           {error ? (
             <p className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
               {error}
