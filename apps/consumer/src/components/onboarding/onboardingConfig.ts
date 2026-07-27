@@ -1,3 +1,9 @@
+import {
+  GUIDE_SEEN_STORAGE_KEY,
+  isDeviceGuideSeen,
+  markDeviceGuideSeen,
+} from "@/lib/deviceGuideSeen";
+
 export type OnboardingKey =
   | "home"
   | "assessment"
@@ -132,92 +138,23 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
   },
 };
 
-type OnboardingState = {
-  version: 1;
-  seenByPage: Partial<Record<OnboardingKey, boolean>>;
-  signupWalkthroughSeen: boolean;
-  signupWalkthroughPageSeen: Partial<Record<OnboardingKey, boolean>>;
-};
+/** Device-level guide seen map (`praxis_guide_seen`). Survives auth wipes. */
+export { GUIDE_SEEN_STORAGE_KEY };
 
+/** @deprecated Legacy key retained for migration only. */
 export const ONBOARDING_STORAGE_KEY = "onboarding_state_v1";
 
-const defaultOnboardingState = (): OnboardingState => ({
-  version: 1,
-  seenByPage: {},
-  signupWalkthroughSeen: true,
-  signupWalkthroughPageSeen: {},
-});
-
-const isObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null;
-
-const sanitizePageRecord = (
-  value: unknown
-): Partial<Record<OnboardingKey, boolean>> => {
-  if (!isObject(value)) return {};
-  const next: Partial<Record<OnboardingKey, boolean>> = {};
-  for (const key of onboardingPageOrder) {
-    if (value[key] === true) {
-      next[key] = true;
-    }
-  }
-  return next;
-};
-
-const canUseStorage = () =>
-  typeof window !== "undefined" && Boolean(window.localStorage);
-
-export const readOnboardingState = (): OnboardingState => {
-  if (!canUseStorage()) return defaultOnboardingState();
-  try {
-    const raw = window.localStorage.getItem(ONBOARDING_STORAGE_KEY);
-    if (!raw) return defaultOnboardingState();
-    const parsed = JSON.parse(raw) as unknown;
-    if (!isObject(parsed)) return defaultOnboardingState();
-    return {
-      version: 1,
-      seenByPage: sanitizePageRecord(parsed.seenByPage),
-      signupWalkthroughSeen: parsed.signupWalkthroughSeen !== false,
-      signupWalkthroughPageSeen: sanitizePageRecord(parsed.signupWalkthroughPageSeen),
-    };
-  } catch {
-    return defaultOnboardingState();
-  }
-};
-
-export const writeOnboardingState = (state: OnboardingState) => {
-  if (!canUseStorage()) return;
-  window.localStorage.setItem(ONBOARDING_STORAGE_KEY, JSON.stringify(state));
-};
-
-export const shouldAutoOpenOnboarding = (key: OnboardingKey) => {
-  const state = readOnboardingState();
-  const firstVisit = state.seenByPage[key] !== true;
-  const walkthroughVisit =
-    !state.signupWalkthroughSeen && state.signupWalkthroughPageSeen[key] !== true;
-  return firstVisit || walkthroughVisit;
-};
+export const shouldAutoOpenOnboarding = (key: OnboardingKey) =>
+  !isDeviceGuideSeen(key);
 
 export const markOnboardingPageSeen = (key: OnboardingKey) => {
-  const state = readOnboardingState();
-  state.seenByPage[key] = true;
-
-  if (!state.signupWalkthroughSeen) {
-    state.signupWalkthroughPageSeen[key] = true;
-    const completedWalkthrough = onboardingPageOrder.every(
-      (pageKey) => state.signupWalkthroughPageSeen[pageKey] === true
-    );
-    if (completedWalkthrough) {
-      state.signupWalkthroughSeen = true;
-    }
-  }
-
-  writeOnboardingState(state);
+  markDeviceGuideSeen(key);
 };
 
+/**
+ * Kept for signup call sites. Guide auto-show is device-level and must not
+ * re-arm on account creation — so this is intentionally a no-op.
+ */
 export const markSignupWalkthroughPending = () => {
-  const state = readOnboardingState();
-  state.signupWalkthroughSeen = false;
-  state.signupWalkthroughPageSeen = {};
-  writeOnboardingState(state);
+  // no-op: guide seen state is device-scoped via praxis_guide_seen
 };
