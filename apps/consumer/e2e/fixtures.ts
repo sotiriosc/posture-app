@@ -341,8 +341,33 @@ export const mockTrainingState = async (
 export const prepareCleanQuestionnaire = async (page: Page) => {
   await page.goto("/");
   await resetBrowserState(page);
+  // `resetBrowserState` clears localStorage, including `praxis_local_owner_id`.
+  // If the browser already has a session cookie (smoke tests log in first),
+  // restore the owner marker immediately so AccountIsolationGate's next
+  // syncLocalOwner does not treat this as a brand-new account switch and
+  // race questionnaire / program writes.
+  await page.evaluate(async () => {
+    try {
+      const res = await fetch("/api/auth/session", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const data = (await res.json()) as {
+        authenticated?: boolean;
+        user?: { id?: string };
+      };
+      const id = data.authenticated ? data.user?.id ?? null : null;
+      if (id) {
+        localStorage.setItem("praxis_local_owner_id", id);
+      }
+    } catch {
+      // Best-effort; anonymous questionnaire flows still work.
+    }
+  });
   await page.goto("/questionnaire");
-  await expect(page.getByTestId("questionnaire-form")).toBeVisible();
+  await expect(page.getByTestId("questionnaire-form")).toBeVisible({
+    timeout: 30_000,
+  });
 };
 
 export const completeQuestionnaire = async (
@@ -353,14 +378,21 @@ export const completeQuestionnaire = async (
   await page.getByTestId("equipment-none").check();
   await page.getByTestId(`days-${options.daysPerWeek ?? 3}`).click();
   await page.getByTestId("generate-routine").click();
-  // Program generation runs client-side before the router push to /results,
-  // and on a slower/first-compile CI runner this can comfortably exceed
-  // Playwright's 5s default expect timeout even though nothing is actually
-  // wrong -- matches the 20s tolerance already used for the dashboard text
-  // assertion right below.
-  await expect(page).toHaveURL(/\/results/, { timeout: 20_000 });
+
+  // Stale profile edge case: confirm modal instead of immediate generate.
+  const changeConfirm = page.getByTestId("questionnaire-change-confirm");
+  try {
+    await changeConfirm.waitFor({ state: "visible", timeout: 1_500 });
+    await changeConfirm.click();
+  } catch {
+    // No modal — first-run path.
+  }
+
+  // Program generation is client-side; cold Turbopack compile on CI workers
+  // routinely exceeds 20s when smoke specs run in parallel.
+  await expect(page).toHaveURL(/\/results/, { timeout: 60_000 });
   await expect(page.getByText("Praxis dashboard", { exact: true })).toBeVisible({
-    timeout: 20_000,
+    timeout: 30_000,
   });
 };
 
