@@ -208,15 +208,20 @@ export default function UpgradePrompt() {
                       ? "Upgrade — founders"
                       : "Upgrade to Pro"}
               </Button>
-              {selectedPlan === "monthly" ? (
-                <p className="mt-2 text-xs text-slate-400">
-                  Have a promo code? First 50 members get 60 days free — use{" "}
+              <div className="mt-3 space-y-2 text-xs text-slate-400">
+                <p>
+                  Beta testers: 50 free spots. Try Praxis free in exchange for
+                  your honest feedback. Use code{" "}
                   <span className="font-semibold text-slate-200">
                     PRAXISTRIAL60DAY
                   </span>{" "}
                   at checkout.
                 </p>
-              ) : null}
+                <p>
+                  Founding members: 100 spots. $12.99/month, locked at that price
+                  for as long as you stay subscribed.
+                </p>
+              </div>
             </div>
           </div>
         ) : (
