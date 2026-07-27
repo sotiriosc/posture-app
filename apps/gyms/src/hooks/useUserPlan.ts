@@ -42,8 +42,11 @@ export type UserPlan = PlanState & {
  * forces a free, unlocked, no-chrome state before touching the session API.
  *
  * The session fetch is memoised at module scope so all consumers on a page
- * resolve to the same payload; login/logout do a full navigation which resets it.
+ * resolve to the same payload. Soft login/signup navigations must call
+ * `refreshUserPlan()` so mounted hooks re-fetch.
  */
+export const USER_PLAN_REFRESH_EVENT = "praxis:user-plan-refresh";
+
 let cachedSession: Promise<SessionPlanPayload | null> | null = null;
 
 function loadSession(): Promise<SessionPlanPayload | null> {
@@ -86,6 +89,9 @@ function loadBillingStatus(): Promise<BillingStatusPayload | null> {
 export function refreshUserPlan(): void {
   cachedSession = null;
   cachedBillingStatus = null;
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(USER_PLAN_REFRESH_EVENT));
+  }
 }
 
 function readBuyerDemoMode(): boolean {
@@ -161,39 +167,48 @@ export function useUserPlan(): UserPlan {
       setState(bindAccess(base, hasCompletedFirstWeek));
     };
 
-    void loadSession().then((payload) => {
-      if (!active) return;
+    const applySession = () => {
+      void loadSession().then((payload) => {
+        if (!active) return;
 
-      if (payload === null) {
-        const fallback = offlineFallbackPlanState();
-        const base = {
-          ...(fallback ?? derivePlanState(null)),
-          loading: false,
-          offline: Boolean(fallback),
-        };
+        if (payload === null) {
+          const fallback = offlineFallbackPlanState();
+          const base = {
+            ...(fallback ?? derivePlanState(null)),
+            loading: false,
+            offline: Boolean(fallback),
+          };
+          setState(bindAccess(base, false));
+          void hydrateFreemium(base);
+          return;
+        }
+
+        const next = derivePlanState(payload);
+        const base = { ...next, loading: false, offline: false };
         setState(bindAccess(base, false));
         void hydrateFreemium(base);
-        return;
-      }
 
-      const next = derivePlanState(payload);
-      const base = { ...next, loading: false, offline: false };
-      setState(bindAccess(base, false));
-      void hydrateFreemium(base);
+        if (!next.authenticated) return;
 
-      if (!next.authenticated) return;
-
-      void loadBillingStatus().then((billing) => {
-        if (!active || !billing?.user) return;
-        saveLocalSubscription(
-          deriveLocalSubscriptionStatus({
-            plan: billing.user.plan === "pro" ? "pro" : "free",
-            stripeCancelAtPeriodEnd: billing.user.stripeCancelAtPeriodEnd,
-            stripeCurrentPeriodEnd: billing.user.stripeCurrentPeriodEnd,
-          })
-        );
+        void loadBillingStatus().then((billing) => {
+          if (!active || !billing?.user) return;
+          saveLocalSubscription(
+            deriveLocalSubscriptionStatus({
+              plan: billing.user.plan === "pro" ? "pro" : "free",
+              stripeCancelAtPeriodEnd: billing.user.stripeCancelAtPeriodEnd,
+              stripeCurrentPeriodEnd: billing.user.stripeCurrentPeriodEnd,
+            })
+          );
+        });
       });
-    });
+    };
+
+    applySession();
+
+    const onRefresh = () => {
+      setState((prev) => ({ ...prev, loading: true }));
+      applySession();
+    };
 
     const onSessionComplete = () => {
       void resolveHasCompletedFirstWeek().then((hasCompletedFirstWeek) => {
@@ -214,10 +229,12 @@ export function useUserPlan(): UserPlan {
         );
       });
     };
+    window.addEventListener(USER_PLAN_REFRESH_EVENT, onRefresh);
     window.addEventListener(SESSION_COMPLETE_EVENT, onSessionComplete);
 
     return () => {
       active = false;
+      window.removeEventListener(USER_PLAN_REFRESH_EVENT, onRefresh);
       window.removeEventListener(SESSION_COMPLETE_EVENT, onSessionComplete);
     };
   }, [bindAccess]);

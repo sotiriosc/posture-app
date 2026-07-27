@@ -38,9 +38,11 @@ export type UserPlan = PlanState & {
  * exact same payload; that shared result is what guarantees they can never
  * disagree (the pre-6a bug was three independent fetches racing a server read).
  *
- * The cache lives for the life of the page load. Login and logout both do a full
- * `window.location` navigation, which resets the module and re-fetches.
+ * Soft navigations after login/signup do not remount the layout, so callers must
+ * invoke `refreshUserPlan()` to clear the memo and notify mounted hooks.
  */
+export const USER_PLAN_REFRESH_EVENT = "praxis:user-plan-refresh";
+
 let cachedSession: Promise<SessionPlanPayload | null> | null = null;
 
 function loadSession(): Promise<SessionPlanPayload | null> {
@@ -81,10 +83,13 @@ function loadBillingStatus(): Promise<BillingStatusPayload | null> {
   return cachedBillingStatus;
 }
 
-/** Clear the memoised session (e.g. after a plan change without a full reload). */
+/** Clear the memoised session and notify mounted hooks to re-fetch. */
 export function refreshUserPlan(): void {
   cachedSession = null;
   cachedBillingStatus = null;
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(USER_PLAN_REFRESH_EVENT));
+  }
 }
 
 const offlineFallbackPlanState = (): (PlanState & { offline: boolean }) | null => {
@@ -140,47 +145,56 @@ export function useUserPlan(): UserPlan {
       setState(bindAccess(base, hasCompletedFirstWeek));
     };
 
-    void loadSession().then((payload) => {
-      if (!active) return;
+    const applySession = () => {
+      void loadSession().then((payload) => {
+        if (!active) return;
 
-      if (payload === null) {
-        // Genuine network failure (offline, or the auth/session API itself
-        // unreachable): fall back to whatever subscription status was last
-        // confirmed while online, rather than collapsing a paid user to
-        // "signed out." A device that has never confirmed anything locally
-        // (a guest, or one that's simply never synced) keeps today's
-        // existing safe default.
-        const fallback = offlineFallbackPlanState();
-        const base = {
-          ...(fallback ?? derivePlanState(null)),
-          loading: false,
-          offline: Boolean(fallback),
-        };
+        if (payload === null) {
+          // Genuine network failure (offline, or the auth/session API itself
+          // unreachable): fall back to whatever subscription status was last
+          // confirmed while online, rather than collapsing a paid user to
+          // "signed out." A device that has never confirmed anything locally
+          // (a guest, or one that's simply never synced) keeps today's
+          // existing safe default.
+          const fallback = offlineFallbackPlanState();
+          const base = {
+            ...(fallback ?? derivePlanState(null)),
+            loading: false,
+            offline: Boolean(fallback),
+          };
+          setState(bindAccess(base, false));
+          void hydrateFreemium(base);
+          return;
+        }
+
+        const next = derivePlanState(payload);
+        const base = { ...next, loading: false, offline: false };
         setState(bindAccess(base, false));
         void hydrateFreemium(base);
-        return;
-      }
 
-      const next = derivePlanState(payload);
-      const base = { ...next, loading: false, offline: false };
-      setState(bindAccess(base, false));
-      void hydrateFreemium(base);
+        if (!next.authenticated) return;
 
-      if (!next.authenticated) return;
-
-      // Refresh the local fallback cache in the background — best-effort,
-      // must never block or affect the plan determination above.
-      void loadBillingStatus().then((billing) => {
-        if (!active || !billing?.user) return;
-        saveLocalSubscription(
-          deriveLocalSubscriptionStatus({
-            plan: billing.user.plan === "pro" ? "pro" : "free",
-            stripeCancelAtPeriodEnd: billing.user.stripeCancelAtPeriodEnd,
-            stripeCurrentPeriodEnd: billing.user.stripeCurrentPeriodEnd,
-          })
-        );
+        // Refresh the local fallback cache in the background — best-effort,
+        // must never block or affect the plan determination above.
+        void loadBillingStatus().then((billing) => {
+          if (!active || !billing?.user) return;
+          saveLocalSubscription(
+            deriveLocalSubscriptionStatus({
+              plan: billing.user.plan === "pro" ? "pro" : "free",
+              stripeCancelAtPeriodEnd: billing.user.stripeCancelAtPeriodEnd,
+              stripeCurrentPeriodEnd: billing.user.stripeCurrentPeriodEnd,
+            })
+          );
+        });
       });
-    });
+    };
+
+    applySession();
+
+    const onRefresh = () => {
+      setState((prev) => ({ ...prev, loading: true }));
+      applySession();
+    };
 
     const onSessionComplete = () => {
       void resolveHasCompletedFirstWeek().then((hasCompletedFirstWeek) => {
@@ -201,10 +215,12 @@ export function useUserPlan(): UserPlan {
         );
       });
     };
+    window.addEventListener(USER_PLAN_REFRESH_EVENT, onRefresh);
     window.addEventListener(SESSION_COMPLETE_EVENT, onSessionComplete);
 
     return () => {
       active = false;
+      window.removeEventListener(USER_PLAN_REFRESH_EVENT, onRefresh);
       window.removeEventListener(SESSION_COMPLETE_EVENT, onSessionComplete);
     };
   }, [bindAccess]);

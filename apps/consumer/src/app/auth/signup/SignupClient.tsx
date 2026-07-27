@@ -8,6 +8,7 @@ import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import { markSignupWalkthroughPending } from "@/components/onboarding/onboardingConfig";
 import { syncLocalOwner } from "@/lib/accountIsolation";
+import { refreshUserPlan } from "@/hooks/useUserPlan";
 
 export default function SignupClient() {
   const router = useRouter();
@@ -49,6 +50,7 @@ export default function SignupClient() {
       // new account inheriting stale phase-gating progress).
       await syncLocalOwner(payload?.user?.id ?? null);
       markSignupWalkthroughPending();
+      refreshUserPlan();
       router.replace(next);
       router.refresh();
     } finally {

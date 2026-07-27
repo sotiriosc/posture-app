@@ -7,6 +7,7 @@ import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
 import { syncLocalOwner } from "@/lib/accountIsolation";
+import { refreshUserPlan } from "@/hooks/useUserPlan";
 
 export default function LoginClient() {
   const router = useRouter();
@@ -40,6 +41,7 @@ export default function LoginClient() {
       // to the gyms app: reconcile before navigating so any prior account's
       // local state never becomes momentarily readable as this account's own.
       await syncLocalOwner(payload?.user?.id ?? null);
+      refreshUserPlan();
       router.replace(next);
       router.refresh();
     } finally {

@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import AuthControls from "@/components/AuthControls";
 import { performLogout } from "@/components/authActions";
 import { syncLocalOwner } from "@/lib/accountIsolation";
+import { useUserPlan } from "@/hooks/useUserPlan";
 
 type AppMenuClientProps = {
   isAdmin: boolean;
@@ -42,6 +43,10 @@ export default function AppMenuClient({
 }: AppMenuClientProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const plan = useUserPlan();
+  // Prefer live client session after soft login/signup; fall back to server props.
+  const authOn = plan.loading ? authEnabled : plan.authEnabled;
+  const isAuthed = plan.loading ? authenticated : plan.authenticated;
 
   useEffect(() => {
     function handleExternalOpen() {
@@ -68,13 +73,13 @@ export default function AppMenuClient({
   // signed-in user's home base is the dashboard, not the landing page.
   const links = useMemo(() => {
     const nav: MenuLink[] = [];
-    if (authEnabled) {
+    if (authOn) {
       nav.push({ href: "/results", label: "Praxis Dashboard" });
       nav.push({ href: "/progress", label: "Progress" });
     }
     nav.push({ href: "/assessment", label: "Assessment" });
     nav.push({ href: "/questionnaire", label: "Movement Profile" });
-    if (authEnabled && authenticated) {
+    if (authOn && isAuthed) {
       nav.push({ href: "/account/billing", label: "Account / Billing" });
       nav.push({ href: "/account/settings", label: "Settings" });
     }
@@ -83,7 +88,7 @@ export default function AppMenuClient({
     nav.push({ href: "/feedback", label: "Send feedback" });
     nav.push({ href: "/", label: "Home" });
     return nav;
-  }, [isAdmin, authEnabled, authenticated]);
+  }, [isAdmin, authOn, isAuthed]);
 
   const [loggingOut, setLoggingOut] = useState(false);
   const logout = async () => {
@@ -152,8 +157,8 @@ export default function AppMenuClient({
                   </Link>
                 );
               })}
-              {authEnabled ? (
-                authenticated ? (
+              {authOn ? (
+                isAuthed ? (
                   <button
                     type="button"
                     onClick={logout}
