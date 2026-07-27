@@ -4,6 +4,8 @@ export type LocalBillingRecord = {
   plan: "free" | "pro";
   stripeSubscriptionStatus?: string | null;
   stripeCurrentPeriodEnd?: string | null;
+  /** ISO from live Stripe subscription start_date (or created). */
+  stripeStartDate?: string | null;
   stripeCancelAtPeriodEnd?: boolean | null;
   stripeCustomerId?: string | null;
   stripeSubscriptionId?: string | null;
@@ -18,6 +20,8 @@ export type BillingDisplayModel = {
   planLabel: "Pro" | "Free";
   statusChip: BillingStatusChip;
   accessStatus: string;
+  /** Formatted start date, or null when unavailable (UI should hide the field). */
+  memberSince: string | null;
   renewalLabel: string;
   renewalValue: string;
   cancellationValue: string;
@@ -94,6 +98,7 @@ export const deriveBillingDisplay = (
 ): BillingDisplayModel => {
   const phase = resolveBillingPhase(record);
   const periodEnd = formatBillingDate(record.stripeCurrentPeriodEnd);
+  const memberSince = formatBillingDate(record.stripeStartDate);
   const cancelAtPeriodEnd = record.stripeCancelAtPeriodEnd === true;
 
   const planLabel: "Pro" | "Free" =
@@ -150,6 +155,7 @@ export const deriveBillingDisplay = (
     planLabel,
     statusChip,
     accessStatus,
+    memberSince,
     renewalLabel,
     renewalValue,
     cancellationValue,

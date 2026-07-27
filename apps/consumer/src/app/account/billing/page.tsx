@@ -20,10 +20,14 @@ import type { StoredUser } from "@/lib/userStore";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const toBillingRecord = (user: StoredUser | null): LocalBillingRecord => ({
+const toBillingRecord = (
+  user: StoredUser | null,
+  stripeStartDate: string | null = null
+): LocalBillingRecord => ({
   plan: user?.plan === "pro" ? "pro" : "free",
   stripeSubscriptionStatus: user?.stripeSubscriptionStatus ?? null,
   stripeCurrentPeriodEnd: user?.stripeCurrentPeriodEnd ?? null,
+  stripeStartDate,
   stripeCancelAtPeriodEnd: user?.stripeCancelAtPeriodEnd ?? null,
   stripeCustomerId: user?.stripeCustomerId ?? null,
   stripeSubscriptionId: user?.stripeSubscriptionId ?? null,
@@ -32,17 +36,25 @@ const toBillingRecord = (user: StoredUser | null): LocalBillingRecord => ({
 const hasStripeBillingLink = (user: StoredUser | null) =>
   Boolean(user?.stripeCustomerId || user?.stripeSubscriptionId);
 
-const reconcileFromStripe = async (user: StoredUser): Promise<StoredUser> => {
+type StripeReconcileResult = {
+  user: StoredUser;
+  /** Live start_date/created from Stripe retrieve; not persisted locally. */
+  stripeStartDate: string | null;
+};
+
+const reconcileFromStripe = async (
+  user: StoredUser
+): Promise<StripeReconcileResult> => {
   if (!canFetchStripeBilling()) {
     console.error("[billing:page] sync skipped: Stripe secret missing");
-    return user;
+    return { user, stripeStartDate: null };
   }
   if (!hasStripeBillingLink(user)) {
     console.error("[billing:page] sync skipped: no stripeCustomerId/subscriptionId on user", {
       userId: user.id,
       plan: user.plan,
     });
-    return user;
+    return { user, stripeStartDate: null };
   }
   const before = toBillingRecord(user);
   try {
@@ -55,7 +67,7 @@ const reconcileFromStripe = async (user: StoredUser): Promise<StoredUser> => {
         userId: user.id,
         before,
       });
-      return user;
+      return { user, stripeStartDate: null };
     }
     const repo = getUserRepository();
     const updated =
@@ -65,16 +77,16 @@ const reconcileFromStripe = async (user: StoredUser): Promise<StoredUser> => {
       userId: user.id,
       before,
       snapshot,
-      after: toBillingRecord(updated),
+      after: toBillingRecord(updated, snapshot.stripeStartDate),
     });
-    return updated;
+    return { user: updated, stripeStartDate: snapshot.stripeStartDate };
   } catch (error) {
     console.error("[billing:page] Stripe subscription retrieve failed; keeping local record", {
       userId: user.id,
       before,
       error: error instanceof Error ? error.message : String(error),
     });
-    return user;
+    return { user, stripeStartDate: null };
   }
 };
 
@@ -94,15 +106,19 @@ export default async function BillingAccountPage() {
     shouldSyncFromStripe,
     local: user ? toBillingRecord(user) : null,
   });
+  let stripeStartDate: string | null = null;
   if (user && shouldSyncFromStripe) {
-    user = await reconcileFromStripe(user);
+    const synced = await reconcileFromStripe(user);
+    user = synced.user;
+    stripeStartDate = synced.stripeStartDate;
   }
 
-  const display = deriveBillingDisplay(toBillingRecord(user));
+  const record = toBillingRecord(user, stripeStartDate);
+  const display = deriveBillingDisplay(record);
   console.info("[billing:page] render", {
     userId: user?.id ?? null,
     display,
-    record: toBillingRecord(user),
+    record,
   });
 
   return (
@@ -150,14 +166,17 @@ export default async function BillingAccountPage() {
               {[
                 ["Email", session?.email ?? "Unknown"],
                 ["Access status", display.accessStatus],
+                ...(display.memberSince
+                  ? ([["Member since", display.memberSince]] as const)
+                  : []),
                 [display.renewalLabel, display.renewalValue],
                 ["Scheduled cancellation", display.cancellationValue],
                 ...(showTechnicalBillingDetails
-                  ? [
+                  ? ([
                       ["Billing status", user?.stripeSubscriptionStatus ?? "—"],
                       ["Customer reference", user?.stripeCustomerId ?? "—"],
                       ["Subscription reference", user?.stripeSubscriptionId ?? "—"],
-                    ]
+                    ] as const)
                   : []),
               ].map(([label, value]) => (
                 <div

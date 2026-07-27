@@ -22,11 +22,42 @@ describe("stripe subscription snapshot", () => {
       customer: "cus_UxVptZte1N4w3y",
       cancel_at_period_end: true,
       current_period_end: 1787702400,
+      start_date: 1753488000,
       items: { data: [{ price: { id: "price_abc" } }] },
     });
     expect(snapshot.stripeCancelAtPeriodEnd).toBe(true);
     expect(snapshot.stripeCurrentPeriodEnd).toBe("2026-08-26T00:00:00.000Z");
+    expect(snapshot.stripeStartDate).toBe("2025-07-26T00:00:00.000Z");
     expect(snapshot.plan).toBe("pro");
+  });
+
+  test("maps member-since from start_date, falling back to created", () => {
+    const fromStart = stripeSubscriptionToSnapshot({
+      id: "sub_start",
+      status: "active",
+      customer: "cus_1",
+      start_date: 1753488000,
+      created: 1753401600,
+      current_period_end: 1787702400,
+    });
+    expect(fromStart.stripeStartDate).toBe("2025-07-26T00:00:00.000Z");
+
+    const fromCreated = stripeSubscriptionToSnapshot({
+      id: "sub_created",
+      status: "active",
+      customer: "cus_1",
+      created: 1753488000,
+      current_period_end: 1787702400,
+    });
+    expect(fromCreated.stripeStartDate).toBe("2025-07-26T00:00:00.000Z");
+
+    const missing = stripeSubscriptionToSnapshot({
+      id: "sub_no_start",
+      status: "active",
+      customer: "cus_1",
+      current_period_end: 1787702400,
+    });
+    expect(missing.stripeStartDate).toBeNull();
   });
 
   test("falls back to cancel_at when current_period_end is absent", () => {
