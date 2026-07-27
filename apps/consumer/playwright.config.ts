@@ -29,6 +29,8 @@ export default defineConfig({
       STRIPE_PRICE_ID_MONTHLY: "price_playwright",
       STRIPE_PRICE_ID_ANNUAL: "price_playwright_annual",
       STRIPE_WEBHOOK_SECRET: "",
+      // Phase 9 — operator dashboard allowlist (stable e2e admin user id).
+      ADMIN_USER_IDS: process.env.PLAYWRIGHT_ADMIN_USER_IDS ?? "e2e-admin-operator",
     },
     url: baseURL,
     reuseExistingServer: !process.env.CI,

@@ -2,10 +2,11 @@ import { test, expect } from "@playwright/test";
 import {
   completeCurrentSession,
   completeQuestionnaire,
+  e2eEmail,
   getActiveProgramId,
   getStoredDaysPerWeek,
-  mockAuthSession,
   mockTrainingState,
+  upsertE2eUser,
 } from "../../e2e/fixtures";
 
 /**
@@ -21,7 +22,14 @@ import {
 test("first run: onboarding → program → session → results headline", async ({
   page,
 }) => {
-  await mockAuthSession(page, { enabled: false, authenticated: false });
+  // Real session cookie required: middleware gates /results when AUTH_SECRET is set.
+  const email = e2eEmail("first-run");
+  const password = "playwright-password";
+  await upsertE2eUser({ email, password, plan: "free" });
+  const login = await page.request.post("/api/auth/login", {
+    data: { email, password },
+  });
+  expect(login.ok()).toBeTruthy();
   await mockTrainingState(page, { authenticated: false });
 
   // Onboarding + program generation (lands on the results dashboard).
