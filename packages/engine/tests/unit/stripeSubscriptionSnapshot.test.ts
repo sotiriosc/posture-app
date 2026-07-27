@@ -14,6 +14,33 @@ afterEach(() => {
 });
 
 describe("stripe subscription snapshot", () => {
+  test("maps cancel_at_period_end with current_period_end from subscription retrieve", () => {
+    const snapshot = stripeSubscriptionToSnapshot({
+      id: "sub_cancel",
+      object: "subscription",
+      status: "active",
+      customer: "cus_UxVptZte1N4w3y",
+      cancel_at_period_end: true,
+      current_period_end: 1787702400,
+      items: { data: [{ price: { id: "price_abc" } }] },
+    });
+    expect(snapshot.stripeCancelAtPeriodEnd).toBe(true);
+    expect(snapshot.stripeCurrentPeriodEnd).toBe("2026-08-26T00:00:00.000Z");
+    expect(snapshot.plan).toBe("pro");
+  });
+
+  test("falls back to cancel_at when current_period_end is absent", () => {
+    const snapshot = stripeSubscriptionToSnapshot({
+      id: "sub_cancel",
+      status: "active",
+      customer: "cus_1",
+      cancel_at_period_end: true,
+      cancel_at: 1787702400,
+    });
+    expect(snapshot.stripeCurrentPeriodEnd).toBe("2026-08-26T00:00:00.000Z");
+    expect(snapshot.stripeCancelAtPeriodEnd).toBe(true);
+  });
+
   test("maps a Stripe subscription object into a billing patch", () => {
     const snapshot = stripeSubscriptionToSnapshot({
       id: "sub_123",

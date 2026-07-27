@@ -31,8 +31,20 @@ type BillingPhase =
   | "canceling"
   | "expired";
 
-const formatDate = (iso: string | null | undefined) =>
-  iso ? iso.slice(0, 10) : null;
+const DATE_UNAVAILABLE = "Date not available from Stripe";
+
+/** Human-readable billing date (UTC) e.g. "Aug 26, 2026". */
+export const formatBillingDate = (iso: string | null | undefined): string | null => {
+  if (!iso) return null;
+  const ms = Date.parse(iso);
+  if (!Number.isFinite(ms)) return null;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(ms));
+};
 
 const CHIP_ACTIVE: BillingStatusChip = {
   label: "Active",
@@ -49,7 +61,7 @@ const CHIP_EXPIRED: BillingStatusChip = {
 
 /**
  * Resolve one phase from the local subscription record so plan chip, access
- * status, renewal, and cancellation can never disagree.
+ * status, renewal/access-end, and cancellation can never disagree.
  */
 export const resolveBillingPhase = (record: LocalBillingRecord): BillingPhase => {
   const status = String(record.stripeSubscriptionStatus ?? "").toLowerCase();
@@ -66,7 +78,6 @@ export const resolveBillingPhase = (record: LocalBillingRecord): BillingPhase =>
   }
   if (planFromStatus === "free") return "expired";
 
-  // No mappable Stripe status — fall back to stored plan only.
   if (record.plan === "pro") {
     return cancelAtPeriodEnd ? "canceling" : "active";
   }
@@ -77,7 +88,7 @@ export const deriveBillingDisplay = (
   record: LocalBillingRecord
 ): BillingDisplayModel => {
   const phase = resolveBillingPhase(record);
-  const periodEnd = formatDate(record.stripeCurrentPeriodEnd);
+  const periodEnd = formatBillingDate(record.stripeCurrentPeriodEnd);
   const cancelAtPeriodEnd = record.stripeCancelAtPeriodEnd === true;
 
   const planLabel: "Pro" | "Free" =
@@ -92,42 +103,42 @@ export const deriveBillingDisplay = (
 
   let accessStatus: string;
   if (phase === "free") accessStatus = "Free access";
+  else if (phase === "expired") accessStatus = "Free access";
   else if (phase === "trial") accessStatus = "Pro (trial)";
   else if (phase === "past_due") accessStatus = "Pro (past due)";
   else if (phase === "canceling") {
     accessStatus = periodEnd
-      ? `Pro (scheduled to end on ${periodEnd})`
-      : "Pro (scheduled to end at period close)";
-  } else if (phase === "expired") accessStatus = "Access ended";
-  else accessStatus = "Pro (active)";
+      ? `Pro (access ends ${periodEnd})`
+      : "Pro (access ends at period close)";
+  } else accessStatus = "Pro (active)";
 
-  let renewalLabel = "Renewal date";
+  let renewalLabel: string;
   let renewalValue: string;
-  if (phase === "free") {
-    renewalValue = "Not applicable";
-  } else if (phase === "expired") {
-    renewalLabel = "Access ended on";
-    renewalValue = periodEnd ?? "Not available";
-  } else if (phase === "canceling") {
-    renewalLabel = "Access ends on";
-    renewalValue = periodEnd ?? "At period close";
-  } else if (periodEnd) {
-    renewalValue = periodEnd;
-  } else {
-    renewalValue = "Not available from Stripe";
-  }
-
   let cancellationValue: string;
-  if (phase === "free" || phase === "expired") {
-    cancellationValue = "No cancellation scheduled";
-  } else if (cancelAtPeriodEnd) {
+
+  if (phase === "canceling") {
+    renewalLabel = "Access ends on";
+    renewalValue = periodEnd ?? DATE_UNAVAILABLE;
     cancellationValue = periodEnd
-      ? `Yes — ends on ${periodEnd}`
-      : "Yes — ends at period close";
-  } else if (record.stripeCancelAtPeriodEnd === false) {
+      ? `Yes — access ends ${periodEnd}`
+      : "Yes";
+  } else if (phase === "expired") {
+    renewalLabel = "Subscription ended";
+    renewalValue = periodEnd ?? DATE_UNAVAILABLE;
+    cancellationValue = "No cancellation scheduled";
+  } else if (phase === "free") {
+    renewalLabel = "Renews on";
+    renewalValue = "Not applicable";
     cancellationValue = "No cancellation scheduled";
   } else {
-    cancellationValue = "No cancellation scheduled";
+    // Active, trial, or past_due — subscription will renew unless cancel_at_period_end.
+    renewalLabel = "Renews on";
+    renewalValue = periodEnd ?? DATE_UNAVAILABLE;
+    cancellationValue = cancelAtPeriodEnd
+      ? periodEnd
+        ? `Yes — access ends ${periodEnd}`
+        : "Yes"
+      : "No cancellation scheduled";
   }
 
   return {

@@ -202,7 +202,10 @@ type StripeSubscriptionObject = {
   status?: string;
   customer?: string | { id?: string };
   cancel_at_period_end?: boolean;
+  cancel_at?: number;
   current_period_end?: number;
+  canceled_at?: number | null;
+  ended_at?: number | null;
   items?: { data?: Array<{ price?: { id?: string } }> };
   plan?: { id?: string };
 };
@@ -236,6 +239,17 @@ const customerIdFromSubscription = (sub: StripeSubscriptionObject) => {
   return null;
 };
 
+/** Period end from subscription fields only — never infer from invoices. */
+const resolveSubscriptionPeriodEndUnix = (sub: StripeSubscriptionObject) => {
+  if (typeof sub.current_period_end === "number") return sub.current_period_end;
+  if (sub.cancel_at_period_end && typeof sub.cancel_at === "number") {
+    return sub.cancel_at;
+  }
+  if (typeof sub.ended_at === "number") return sub.ended_at;
+  if (typeof sub.canceled_at === "number") return sub.canceled_at;
+  return null;
+};
+
 export const stripeSubscriptionToSnapshot = (
   sub: StripeSubscriptionObject
 ): StripeSubscriptionSnapshot => {
@@ -247,15 +261,14 @@ export const stripeSubscriptionToSnapshot = (
     }
     return "free" as const;
   })();
+  const periodEndUnix = resolveSubscriptionPeriodEndUnix(sub);
   return {
     stripeCustomerId: customerIdFromSubscription(sub),
     stripeSubscriptionId: typeof sub.id === "string" ? sub.id : null,
     stripePriceId: sub.items?.data?.[0]?.price?.id ?? sub.plan?.id ?? null,
     stripeSubscriptionStatus: status,
     stripeCurrentPeriodEnd:
-      typeof sub.current_period_end === "number"
-        ? new Date(sub.current_period_end * 1000).toISOString()
-        : null,
+      periodEndUnix !== null ? new Date(periodEndUnix * 1000).toISOString() : null,
     stripeCancelAtPeriodEnd: Boolean(sub.cancel_at_period_end),
     plan: planFromStatus,
   };
