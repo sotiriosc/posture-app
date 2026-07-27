@@ -2488,6 +2488,26 @@ export default function SessionClient() {
     feedbackButtonRefs.current = [];
   }, [currentItemId]);
 
+  // Lock page scroll while the pain modal is open (same pattern as Menu).
+  useEffect(() => {
+    if (!painModalOpen) return;
+    const { body, documentElement } = document;
+    const previousOverflow = body.style.overflow;
+    const previousPaddingRight = body.style.paddingRight;
+    const previousHtmlOverflow = documentElement.style.overflow;
+    const scrollbarGap = window.innerWidth - documentElement.clientWidth;
+    body.style.overflow = "hidden";
+    documentElement.style.overflow = "hidden";
+    if (scrollbarGap > 0) {
+      body.style.paddingRight = `${scrollbarGap}px`;
+    }
+    return () => {
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPaddingRight;
+      documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [painModalOpen]);
+
   useEffect(() => {
     const itemChanged = focusedItemIdRef.current !== currentItemId;
     const modalJustClosed = wasPainModalOpenRef.current && !painModalOpen;
@@ -3543,7 +3563,7 @@ export default function SessionClient() {
             </div>
           </div>
           <p
-            className="mt-3 text-xs font-semibold text-slate-300"
+            className="mt-3 min-w-0 break-words text-xs font-semibold text-slate-300"
             data-testid="about-to-record-summary"
           >
             {aboutToRecordSummary}
@@ -3784,117 +3804,136 @@ export default function SessionClient() {
 
         {painModalOpen ? (
           <div
-            className="ui-card rounded-lg border-rose-300/30 bg-rose-400/10 p-5 sm:p-6"
+            className="fixed inset-0 z-[60] flex items-end justify-center p-3 sm:items-center sm:p-4"
             data-testid="pain-report-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pain-report-title"
           >
-            <p className="text-sm font-semibold text-white">
-              Pain check-in for {currentItem.name}
-            </p>
-            <p className="mt-1 text-xs text-slate-300">
-              Select the level you felt on this exercise.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {(["none", "mild", "moderate", "severe"] as const).map((level) => (
-                <button
-                  key={level}
-                  type="button"
-                  data-testid={`pain-level-${level}`}
-                  onClick={() => {
-                    setPainModalLevel(level);
-                    setPainModalMessage(null);
-                  }}
-                  className={`rounded-full border px-3 py-1 text-xs font-semibold ${
-                    painModalLevel === level
-                      ? "border-slate-900 bg-slate-900 text-white"
-                      : "border-slate-200 bg-white text-slate-700"
-                  }`}
-                >
-                  {level}
-                </button>
-              ))}
-            </div>
-            <div className="mt-3 grid gap-3 text-xs">
-              <label className="flex flex-col gap-2">
-                <span className="font-semibold text-slate-700">Location (optional)</span>
-                <select
-                  data-testid="pain-report-location"
-                  value={painModalLocation}
-                  onChange={(event) =>
-                    setPainModalLocation(
-                      event.target.value ? (event.target.value as PainLocation) : ""
-                    )
-                  }
-                  className="ui-select"
-                >
-                  <option value="">Select location</option>
-                  {[
-                    "neck",
-                    "shoulder",
-                    "upper back",
-                    "lower back",
-                    "hips",
-                    "knees",
-                    "other",
-                  ].map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="flex flex-col gap-2">
-                <span className="font-semibold text-slate-700">Notes (optional)</span>
-                <textarea
-                  data-testid="pain-report-notes"
-                  value={painModalNotes}
-                  onChange={(event) => setPainModalNotes(event.target.value)}
-                  rows={2}
-                  className="ui-input"
-                  placeholder="What did you feel?"
-                />
-              </label>
-            </div>
-            {painModalMessage ? (
-              <p className="mt-3 text-xs font-semibold text-rose-700">
-                {painModalMessage}
+            <button
+              type="button"
+              aria-label="Close pain report"
+              className="absolute inset-0 bg-black/60"
+              onClick={() => {
+                setPainModalMessage(null);
+                setPainModalLocation("");
+                setPainModalNotes("");
+                setPainModalOpen(false);
+              }}
+            />
+            <div className="relative z-10 max-h-[min(88vh,640px)] w-full max-w-md overflow-y-auto overscroll-contain rounded-xl border border-rose-300/30 bg-slate-950 p-5 shadow-2xl sm:p-6">
+              <p
+                id="pain-report-title"
+                className="text-sm font-semibold text-white"
+              >
+                Pain check-in for {currentItem.name}
               </p>
-            ) : null}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant="secondary"
-                data-testid="pain-report-cancel"
-                onClick={() => {
-                  setPainModalMessage(null);
-                  setPainModalLocation("");
-                  setPainModalNotes("");
-                  setPainModalOpen(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                data-testid="pain-report-save"
-                onClick={() => {
-                  void handleSavePainReportOnly();
-                }}
-              >
-                Save pain report
-              </Button>
-              {painModalLevel === "moderate" || painModalLevel === "severe" ? (
+              <p className="mt-1 text-xs text-slate-300">
+                Select the level you felt on this exercise.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {(["none", "mild", "moderate", "severe"] as const).map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    data-testid={`pain-level-${level}`}
+                    onClick={() => {
+                      setPainModalLevel(level);
+                      setPainModalMessage(null);
+                    }}
+                    className={`min-h-11 rounded-lg border px-3 py-2 text-xs font-semibold ${
+                      painModalLevel === level
+                        ? "border-slate-100 bg-slate-100 text-slate-950"
+                        : "border-slate-500/40 bg-slate-900/70 text-slate-200"
+                    }`}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-3 grid gap-3 text-xs">
+                <label className="flex flex-col gap-2">
+                  <span className="font-semibold text-slate-300">Location (optional)</span>
+                  <select
+                    data-testid="pain-report-location"
+                    value={painModalLocation}
+                    onChange={(event) =>
+                      setPainModalLocation(
+                        event.target.value ? (event.target.value as PainLocation) : ""
+                      )
+                    }
+                    className="ui-select"
+                  >
+                    <option value="">Select location</option>
+                    {[
+                      "neck",
+                      "shoulder",
+                      "upper back",
+                      "lower back",
+                      "hips",
+                      "knees",
+                      "other",
+                    ].map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="font-semibold text-slate-300">Notes (optional)</span>
+                  <textarea
+                    data-testid="pain-report-notes"
+                    value={painModalNotes}
+                    onChange={(event) => setPainModalNotes(event.target.value)}
+                    rows={2}
+                    className="ui-input"
+                    placeholder="What did you feel?"
+                  />
+                </label>
+              </div>
+              {painModalMessage ? (
+                <p className="mt-3 text-xs font-semibold text-rose-300">
+                  {painModalMessage}
+                </p>
+              ) : null}
+              <div className="mt-4 flex flex-wrap gap-2">
                 <Button
                   type="button"
-                  variant="primary"
-                  data-testid="pain-report-swap"
+                  variant="secondary"
+                  data-testid="pain-report-cancel"
                   onClick={() => {
-                    void handleSwapFromPainReport();
+                    setPainModalMessage(null);
+                    setPainModalLocation("");
+                    setPainModalNotes("");
+                    setPainModalOpen(false);
                   }}
                 >
-                  Swap exercise
+                  Cancel
                 </Button>
-              ) : null}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  data-testid="pain-report-save"
+                  onClick={() => {
+                    void handleSavePainReportOnly();
+                  }}
+                >
+                  Save pain report
+                </Button>
+                {painModalLevel === "moderate" || painModalLevel === "severe" ? (
+                  <Button
+                    type="button"
+                    variant="primary"
+                    data-testid="pain-report-swap"
+                    onClick={() => {
+                      void handleSwapFromPainReport();
+                    }}
+                  >
+                    Swap exercise
+                  </Button>
+                ) : null}
+              </div>
             </div>
           </div>
         ) : null}

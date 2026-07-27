@@ -62,7 +62,7 @@ export default function ClarifyTerm({
   }, [open]);
 
   return (
-    <span ref={wrapperRef} className={`relative inline-block ${className}`}>
+    <span ref={wrapperRef} className={`relative inline ${className}`}>
       <button
         type="button"
         aria-expanded={open}
@@ -70,9 +70,18 @@ export default function ClarifyTerm({
         data-testid={`clarify-term-${slug}`}
         onClick={() => setOpen(true)}
         onMouseEnter={() => setOpen(true)}
-        className="cursor-help text-inherit underline decoration-slate-500/70 decoration-dotted decoration-1 underline-offset-2 hover:decoration-slate-400"
+        className="inline cursor-help text-inherit"
       >
-        {children}
+        <span className="underline decoration-slate-500/70 decoration-dotted decoration-1 underline-offset-2 hover:decoration-slate-400">
+          {children}
+        </span>
+        <span
+          aria-hidden="true"
+          data-testid={`clarify-term-${slug}-info`}
+          className="ml-0.5 inline-flex h-3.5 w-3.5 translate-y-[-0.5px] items-center justify-center rounded-full border border-slate-400/45 text-[9px] font-semibold leading-none text-slate-400/90"
+        >
+          i
+        </span>
       </button>
       {open ? (
         <span

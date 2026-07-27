@@ -46,23 +46,28 @@ export default function ExerciseCard({
           Targets: {targetMuscles.length ? targetMuscles.join(", ") : "full body"}
         </p>
         {hasReps || isClassicTempo || plainTempoLabel ? (
-          <p
-            className="mt-2 text-sm font-semibold text-sky-100"
+          <div
+            className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 text-sm font-semibold text-sky-100"
             data-testid="exercise-card-prescription"
           >
-            {hasReps ? <>Reps {reps!.trim()}</> : null}
-            {hasReps && (isClassicTempo || plainTempoLabel) ? " · " : null}
+            {hasReps ? (
+              <span className="min-w-0 max-w-full break-words">
+                Reps {reps!.trim()}
+              </span>
+            ) : null}
             {isClassicTempo ? (
-              <>
+              <span className="min-w-0 max-w-full break-words">
                 <ClarifyTerm term="Tempo" explanation={CLARIFY.Tempo}>
                   Tempo
                 </ClarifyTerm>{" "}
                 {notation}
-              </>
+              </span>
             ) : plainTempoLabel ? (
-              plainTempoLabel
+              <span className="min-w-0 max-w-full break-words">
+                {plainTempoLabel}
+              </span>
             ) : null}
-          </p>
+          </div>
         ) : null}
       </div>
 

@@ -709,12 +709,12 @@ export default function DualModeTimer({
       </div>
 
       <div
-        className={`mt-4 flex flex-wrap gap-2 text-xs font-semibold ${secondaryTextClass}`}
+        className={`mt-4 flex min-w-0 flex-wrap gap-2 text-xs font-semibold ${secondaryTextClass}`}
         data-testid="session-timer-presets"
       >
         {tempoHint ? (
           <span
-            className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}
+            className={`max-w-full break-words rounded-lg border px-2.5 py-1 ${presetChipClasses}`}
             data-testid="session-timer-tempo-hint"
           >
             {/^\d-\d-\d-\d$/.test(tempoHint) ? (
@@ -729,10 +729,14 @@ export default function DualModeTimer({
             )}
           </span>
         ) : null}
-        <span className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}>
+        <span
+          className={`max-w-full break-words rounded-lg border px-2.5 py-1 ${presetChipClasses}`}
+        >
           Working {formatTime(selectedExerciseSeconds)} +{TIMER_SETUP_BUFFER_SEC}s
         </span>
-        <span className={`rounded-full border px-2.5 py-1 ${presetChipClasses}`}>
+        <span
+          className={`max-w-full break-words rounded-lg border px-2.5 py-1 ${presetChipClasses}`}
+        >
           Resting {formatTime(selectedRestSeconds)} +{TIMER_SETUP_BUFFER_SEC}s
         </span>
       </div>
