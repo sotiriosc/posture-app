@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ACTIVITY_LEVEL_OPTIONS,
   GOAL_OPTIONS,
@@ -11,42 +11,134 @@ import {
   type Goal,
   type Sex,
 } from "@/tools/macroCalculator";
+import type { MacroCalculatorSavedInputs } from "@/lib/macroCalculatorInputs";
 
 type FormState = {
   weightLb: string;
   heightIn: string;
   age: string;
-  sex: Sex;
-  activityLevel: ActivityLevel;
-  goal: Goal;
+  sex: Sex | "";
+  activityLevel: ActivityLevel | "";
+  goal: Goal | "";
 };
 
-const DEFAULT_FORM: FormState = {
-  weightLb: "180",
-  heightIn: "70",
-  age: "30",
-  sex: "male",
-  activityLevel: "moderate",
-  goal: "maintain",
+/** Anonymous / logged-out: blank form — never shared defaults that look like another user. */
+const BLANK_FORM: FormState = {
+  weightLb: "",
+  heightIn: "",
+  age: "",
+  sex: "",
+  activityLevel: "",
+  goal: "",
 };
+
+const savedToForm = (saved: MacroCalculatorSavedInputs): FormState => ({
+  weightLb: String(saved.weightLb),
+  heightIn: String(saved.heightIn),
+  age: String(saved.age),
+  sex: saved.sex,
+  activityLevel: saved.activityLevel,
+  goal: saved.goal,
+});
+
+const isCompleteValidForm = (next: FormState) =>
+  next.sex !== "" &&
+  next.activityLevel !== "" &&
+  next.goal !== "" &&
+  isValidMacroCalculatorInput({
+    weightLb: Number(next.weightLb),
+    heightIn: Number(next.heightIn),
+    age: Number(next.age),
+    sex: next.sex,
+    activityLevel: next.activityLevel,
+    goal: next.goal,
+  });
 
 export default function MacroCalculatorClient() {
-  const [form, setForm] = useState<FormState>(DEFAULT_FORM);
+  const [form, setForm] = useState<FormState>(BLANK_FORM);
+  const [hydrated, setHydrated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const authenticatedRef = useRef(false);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const skipNextSaveRef = useRef(true);
 
   const parsedInput = useMemo(
     () => ({
       weightLb: Number(form.weightLb),
       heightIn: Number(form.heightIn),
       age: Number(form.age),
-      sex: form.sex,
-      activityLevel: form.activityLevel,
-      goal: form.goal,
+      sex: form.sex as Sex,
+      activityLevel: form.activityLevel as ActivityLevel,
+      goal: form.goal as Goal,
     }),
     [form]
   );
 
-  const isValid = isValidMacroCalculatorInput(parsedInput);
+  const isValid = isCompleteValidForm(form);
   const result = isValid ? calculateMacros(parsedInput) : null;
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/tools/macro-calculator", {
+          credentials: "include",
+          cache: "no-store",
+        });
+        const payload = (await res.json().catch(() => null)) as {
+          authenticated?: boolean;
+          inputs?: MacroCalculatorSavedInputs | null;
+        } | null;
+        if (cancelled) return;
+        const isAuth = Boolean(payload?.authenticated);
+        authenticatedRef.current = isAuth;
+        setAuthenticated(isAuth);
+        if (isAuth && payload?.inputs) {
+          skipNextSaveRef.current = true;
+          setForm(savedToForm(payload.inputs));
+        } else {
+          setForm(BLANK_FORM);
+        }
+      } catch {
+        if (!cancelled) {
+          authenticatedRef.current = false;
+          setAuthenticated(false);
+          setForm(BLANK_FORM);
+        }
+      } finally {
+        if (!cancelled) setHydrated(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (skipNextSaveRef.current) {
+      skipNextSaveRef.current = false;
+      return;
+    }
+    if (!authenticatedRef.current || !isCompleteValidForm(form)) return;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      void fetch("/api/tools/macro-calculator", {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          weightLb: Number(form.weightLb),
+          heightIn: Number(form.heightIn),
+          age: Number(form.age),
+          sex: form.sex,
+          activityLevel: form.activityLevel,
+          goal: form.goal,
+        }),
+      }).catch(() => undefined);
+    }, 400);
+  }, [form, hydrated]);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -55,15 +147,23 @@ export default function MacroCalculatorClient() {
   return (
     <div
       data-testid="macro-calculator"
+      data-hydrated={hydrated ? "1" : "0"}
+      data-authenticated={authenticated ? "1" : "0"}
       className="ui-card ui-soft-surface-raised print:break-inside-avoid rounded-2xl p-5 sm:p-6"
     >
-      <div className="grid gap-4 sm:grid-cols-2">
+      <form
+        autoComplete="off"
+        className="grid gap-4 sm:grid-cols-2"
+        onSubmit={(event) => event.preventDefault()}
+      >
         <label className="flex flex-col gap-1 text-sm text-slate-200">
           Weight (lb)
           <input
             className="ui-input"
             type="number"
             inputMode="decimal"
+            name="macro-weight"
+            autoComplete="off"
             data-testid="macro-input-weight"
             min={MACRO_INPUT_BOUNDS.weightLb.min}
             max={MACRO_INPUT_BOUNDS.weightLb.max}
@@ -78,6 +178,8 @@ export default function MacroCalculatorClient() {
             className="ui-input"
             type="number"
             inputMode="decimal"
+            name="macro-height"
+            autoComplete="off"
             data-testid="macro-input-height"
             min={MACRO_INPUT_BOUNDS.heightIn.min}
             max={MACRO_INPUT_BOUNDS.heightIn.max}
@@ -92,6 +194,8 @@ export default function MacroCalculatorClient() {
             className="ui-input"
             type="number"
             inputMode="numeric"
+            name="macro-age"
+            autoComplete="off"
             data-testid="macro-input-age"
             min={MACRO_INPUT_BOUNDS.age.min}
             max={MACRO_INPUT_BOUNDS.age.max}
@@ -104,10 +208,13 @@ export default function MacroCalculatorClient() {
           Sex (for the calorie formula)
           <select
             className="ui-select"
+            name="macro-sex"
+            autoComplete="off"
             data-testid="macro-input-sex"
             value={form.sex}
-            onChange={(event) => update("sex", event.target.value as Sex)}
+            onChange={(event) => update("sex", event.target.value as Sex | "")}
           >
+            <option value="">Select…</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
@@ -117,10 +224,15 @@ export default function MacroCalculatorClient() {
           Activity level
           <select
             className="ui-select"
+            name="macro-activity"
+            autoComplete="off"
             data-testid="macro-input-activity"
             value={form.activityLevel}
-            onChange={(event) => update("activityLevel", event.target.value as ActivityLevel)}
+            onChange={(event) =>
+              update("activityLevel", event.target.value as ActivityLevel | "")
+            }
           >
+            <option value="">Select…</option>
             {ACTIVITY_LEVEL_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -133,10 +245,13 @@ export default function MacroCalculatorClient() {
           Goal
           <select
             className="ui-select"
+            name="macro-goal"
+            autoComplete="off"
             data-testid="macro-input-goal"
             value={form.goal}
-            onChange={(event) => update("goal", event.target.value as Goal)}
+            onChange={(event) => update("goal", event.target.value as Goal | "")}
           >
+            <option value="">Select…</option>
             {GOAL_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -144,7 +259,7 @@ export default function MacroCalculatorClient() {
             ))}
           </select>
         </label>
-      </div>
+      </form>
 
       <div className="mt-6 border-t border-white/10 pt-5">
         {result ? (

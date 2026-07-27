@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { randomBytes, scryptSync, timingSafeEqual } from "crypto";
 import type { SubscriptionPlan } from "@/lib/authTypes";
+import type { MacroCalculatorSavedInputs } from "@/lib/macroCalculatorInputs";
 
 export type StoredUser = {
   id: string;
@@ -19,6 +20,8 @@ export type StoredUser = {
   stripeSubscriptionStatus?: string | null;
   stripeCurrentPeriodEnd?: string | null;
   stripeCancelAtPeriodEnd?: boolean | null;
+  /** Account-scoped macro calculator inputs (Option C); never browser-global. */
+  macroCalculatorInputs?: MacroCalculatorSavedInputs | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -113,6 +116,7 @@ export const createUser = async (params: {
     stripeSubscriptionStatus: null,
     stripeCurrentPeriodEnd: null,
     stripeCancelAtPeriodEnd: null,
+    macroCalculatorInputs: null,
     createdAt,
     updatedAt: createdAt,
   };
@@ -187,6 +191,19 @@ export const updateUserBilling = async (
   if (patch.stripeCancelAtPeriodEnd !== undefined) {
     user.stripeCancelAtPeriodEnd = patch.stripeCancelAtPeriodEnd;
   }
+  user.updatedAt = nowIso();
+  await writeStore(store);
+  return user;
+};
+
+export const updateUserMacroCalculatorInputs = async (
+  userId: string,
+  inputs: MacroCalculatorSavedInputs | null
+) => {
+  const store = await readStore();
+  const user = store.users.find((entry) => entry.id === userId);
+  if (!user) return null;
+  user.macroCalculatorInputs = inputs;
   user.updatedAt = nowIso();
   await writeStore(store);
   return user;
