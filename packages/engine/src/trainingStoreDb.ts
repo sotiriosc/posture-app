@@ -324,3 +324,33 @@ export const patchTrainingSnapshot = async (userId: string, patch: TrainingSnaps
 
   logTrainingSync("training-store", "patch persisted", summary);
 };
+
+/**
+ * Phase 9 — load every user's training snapshot for operator aggregation.
+ * Caller must strip PII / hash user ids before aggregates leave the server.
+ */
+export const listAllUserTrainingSnapshots = async (): Promise<
+  Array<{ userId: string; snapshot: TrainingSnapshot }>
+> => {
+  await ensureDb();
+  const db = getPool();
+  const userIdsResult = await db.query<{ user_id: string }>(
+    `
+    SELECT user_id FROM app_user_state
+    UNION
+    SELECT user_id FROM app_user_programs
+    UNION
+    SELECT user_id FROM app_user_sessions
+    UNION
+    SELECT user_id FROM app_user_exercise_logs
+    `
+  );
+  const userIds = userIdsResult.rows.map((row) => row.user_id);
+  const snapshots = await Promise.all(
+    userIds.map(async (userId) => ({
+      userId,
+      snapshot: await getTrainingSnapshot(userId),
+    }))
+  );
+  return snapshots;
+};

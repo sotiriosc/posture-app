@@ -22,6 +22,7 @@ import {
 test("first run: onboarding → program → session → results headline", async ({
   page,
 }) => {
+  // Real session cookie required: middleware gates /results when AUTH_SECRET is set.
   const email = e2eEmail("first-run");
   const password = "playwright-password";
   await loginE2eUser(page, { email, password, plan: "free" });

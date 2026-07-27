@@ -72,6 +72,7 @@ export const e2eEmail = (prefix: string) =>
   `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}@e2e.local`;
 
 export const upsertE2eUser = async (params: {
+  /** Force a stable id (e.g. admin allowlist e2e). */
   id?: string;
   email: string;
   password: string;
@@ -91,6 +92,7 @@ export const upsertE2eUser = async (params: {
       const existing = db.users.find((user) => user.email === normalizedEmail);
       const passwordSalt = existing?.passwordSalt ?? randomBytes(16).toString("hex");
       const nextId = params.id ?? existing?.id ?? `e2e-${randomBytes(8).toString("hex")}`;
+      // Keep ids unique when a test forces a stable allowlist id.
       if (params.id) {
         db.users = db.users.filter(
           (user) => user.id !== params.id || user.email === normalizedEmail
@@ -98,38 +100,38 @@ export const upsertE2eUser = async (params: {
       }
       const patch: StoredE2eUser = {
         id: nextId,
-    email: normalizedEmail,
-    name: existing?.name ?? "Playwright Athlete",
-    passwordHash: derivePasswordHash(params.password, passwordSalt),
-    passwordSalt,
-    plan: params.plan ?? "free",
-    emailOptIn: existing?.emailOptIn ?? false,
-    emailOptInAt: existing?.emailOptInAt ?? null,
-    onboardingSource: existing?.onboardingSource ?? "playwright",
-    stripeCustomerId:
-      params.stripeCustomerId !== undefined
-        ? params.stripeCustomerId
-        : existing?.stripeCustomerId ?? null,
-    stripeSubscriptionId:
-      params.stripeSubscriptionId !== undefined
-        ? params.stripeSubscriptionId
-        : existing?.stripeSubscriptionId ?? "sub_playwright",
-    stripePriceId:
-      params.stripePriceId !== undefined
-        ? params.stripePriceId
-        : existing?.stripePriceId ?? "price_playwright",
-    stripeSubscriptionStatus:
-      params.stripeSubscriptionStatus !== undefined
-        ? params.stripeSubscriptionStatus
-        : existing?.stripeSubscriptionStatus ?? "active",
-    stripeCurrentPeriodEnd:
-      params.stripeCurrentPeriodEnd !== undefined
-        ? params.stripeCurrentPeriodEnd
-        : existing?.stripeCurrentPeriodEnd ?? "2035-01-01T00:00:00.000Z",
-    stripeCancelAtPeriodEnd:
-      params.stripeCancelAtPeriodEnd !== undefined
-        ? params.stripeCancelAtPeriodEnd
-        : existing?.stripeCancelAtPeriodEnd ?? false,
+        email: normalizedEmail,
+        name: existing?.name ?? "Playwright Athlete",
+        passwordHash: derivePasswordHash(params.password, passwordSalt),
+        passwordSalt,
+        plan: params.plan ?? "free",
+        emailOptIn: existing?.emailOptIn ?? false,
+        emailOptInAt: existing?.emailOptInAt ?? null,
+        onboardingSource: existing?.onboardingSource ?? "playwright",
+        stripeCustomerId:
+          params.stripeCustomerId !== undefined
+            ? params.stripeCustomerId
+            : existing?.stripeCustomerId ?? null,
+        stripeSubscriptionId:
+          params.stripeSubscriptionId !== undefined
+            ? params.stripeSubscriptionId
+            : existing?.stripeSubscriptionId ?? "sub_playwright",
+        stripePriceId:
+          params.stripePriceId !== undefined
+            ? params.stripePriceId
+            : existing?.stripePriceId ?? "price_playwright",
+        stripeSubscriptionStatus:
+          params.stripeSubscriptionStatus !== undefined
+            ? params.stripeSubscriptionStatus
+            : existing?.stripeSubscriptionStatus ?? "active",
+        stripeCurrentPeriodEnd:
+          params.stripeCurrentPeriodEnd !== undefined
+            ? params.stripeCurrentPeriodEnd
+            : existing?.stripeCurrentPeriodEnd ?? "2035-01-01T00:00:00.000Z",
+        stripeCancelAtPeriodEnd:
+          params.stripeCancelAtPeriodEnd !== undefined
+            ? params.stripeCancelAtPeriodEnd
+            : existing?.stripeCancelAtPeriodEnd ?? false,
         createdAt: existing?.createdAt ?? now,
         updatedAt: now,
       };
