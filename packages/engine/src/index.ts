@@ -22,6 +22,7 @@ export * from "./progression";
 // ── Exercise catalog & equipment ──────────────────────────────────────────────
 export * from "./exercises";
 export * from "./exerciseCatalog";
+export * from "./centrationCues";
 export * from "./equipment";
 
 // ── Assessment & pose analysis ────────────────────────────────────────────────

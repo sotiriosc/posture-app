@@ -13,7 +13,12 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { exerciseById } from "@/lib/exercises";
+import {
+  flattenCentrationFocusTips,
+  getCentrationCues,
+} from "@/lib/centrationCues";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import CentrationCuePanel from "@/components/session/CentrationCuePanel";
 import {
   PROGRAM_TEMPLATE_VERSION,
   previewPainSubstitutionChoices,
@@ -1084,11 +1089,17 @@ export default function SessionClient({
     "Relax your jaw and neck",
     "Smooth tempo over speed",
   ];
+  const currentCentrationCues = getCentrationCues(currentItem?.exerciseId);
+  const centrationFocusTips = flattenCentrationFocusTips(currentCentrationCues);
   const exerciseFocusTips = (currentItem?.cues ?? []).filter(
     (cue) => typeof cue === "string" && cue.trim().length > 0
   );
   const tips =
-    exerciseFocusTips.length > 0 ? exerciseFocusTips : genericFocusTips;
+    centrationFocusTips.length > 0
+      ? centrationFocusTips
+      : exerciseFocusTips.length > 0
+        ? exerciseFocusTips
+        : genericFocusTips;
   const safeTipIndex = tips.length > 0 ? tipIndex % tips.length : 0;
   const activeTip = tips[safeTipIndex] ?? "";
   const tipTone = (() => {
@@ -2990,6 +3001,7 @@ export default function SessionClient({
             name={currentItem.name}
             targetMuscles={currentExerciseMeta?.muscleGroups ?? []}
             cue={
+              tips[0] ??
               currentItem.cues[0] ??
               "Move with control, breathe steadily, and keep posture stacked."
             }
@@ -3055,9 +3067,14 @@ export default function SessionClient({
               }
             />
 
-            {currentItem.cues.length > 0 ||
-            (currentItem.mistake &&
-              currentItem.mistake !== "Keep form controlled") ? (
+            {currentCentrationCues ? (
+              <CentrationCuePanel
+                cues={currentCentrationCues}
+                mistake={currentItem.mistake}
+              />
+            ) : currentItem.cues.length > 0 ||
+              (currentItem.mistake &&
+                currentItem.mistake !== "Keep form controlled") ? (
               <div className="flex h-full min-h-[220px] flex-col justify-center rounded-lg border border-sky-300/25 bg-sky-400/10 px-4 py-5 text-sm text-slate-100 sm:px-5 sm:py-6">
                 <div>
                   {currentItem.cues.length > 0 ? (
