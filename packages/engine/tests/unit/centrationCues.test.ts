@@ -12,10 +12,17 @@ describe("centrationCues", () => {
   test("covers every catalog warmup and activation exercise", () => {
     const prepIds = exercises
       .filter((e) => e.category === "warmup" || e.category === "activation")
-      .map((e) => e.id)
-      .sort();
-    const covered = [...CENTRATION_CUES_COVERED_IDS].sort();
-    expect(covered).toEqual(prepIds);
+      .map((e) => e.id);
+    for (const id of prepIds) {
+      expect(hasCentrationCues(id), `missing prep cues: ${id}`).toBe(true);
+    }
+  });
+
+  test("every covered id exists in the catalog", () => {
+    const catalogIds = new Set(exercises.map((e) => e.id));
+    for (const id of CENTRATION_CUES_COVERED_IDS) {
+      expect(catalogIds.has(id), `unknown exercise id: ${id}`).toBe(true);
+    }
   });
 
   test("review order lists every covered id exactly once", () => {
@@ -35,6 +42,14 @@ describe("centrationCues", () => {
     expect(cues!.pattern.length).toBeGreaterThan(10);
     expect(cues!.watchFor.length).toBeGreaterThanOrEqual(1);
     expect(cues!.setup.join(" ").toLowerCase()).toMatch(/rib/);
+  });
+
+  test("high-frequency main (db-rdl) has centration cues", () => {
+    const cues = getCentrationCues("db-rdl");
+    expect(cues).not.toBeNull();
+    expect(cues!.setup.join(" ").toLowerCase()).toMatch(/rib|pelvis|hinge/);
+    expect(cues!.during.length).toBeGreaterThanOrEqual(2);
+    expect(cues!.watchFor.length).toBeGreaterThanOrEqual(1);
   });
 
   test("unknown ids fall back gracefully (null / no focus tips)", () => {
