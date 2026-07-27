@@ -93,10 +93,17 @@ export const getStripeCheckoutPlanAvailability = () => {
   } as const;
 };
 
+/** Canonical app origin for Stripe return URLs (no trailing slash). */
+export const getAppUrl = () => {
+  const raw = process.env.APP_URL?.trim() ?? "";
+  if (!raw) return "";
+  return raw.replace(/\/+$/, "");
+};
+
 export const isStripeConfigured = () =>
   Boolean(getStripeSecret()) &&
   Boolean(getMonthlyPriceId()) &&
-  Boolean(process.env.APP_URL?.trim());
+  Boolean(getAppUrl());
 
 /** True when live Stripe API reads (subscription retrieve, price lookup) are available. */
 export const canFetchStripeBilling = () => Boolean(getStripeSecret());
@@ -246,7 +253,7 @@ export const createStripeCheckoutSession = async (params: {
 }) => {
   const plan = params.plan ?? "monthly";
   const priceId = await resolveCheckoutPriceId(plan);
-  const appUrl = process.env.APP_URL?.trim();
+  const appUrl = getAppUrl();
   if (!appUrl) throw new Error("Stripe price/app URL missing.");
   const discountParams = await resolveCheckoutDiscountParams(plan);
   assertDiscountParamsExclusive(discountParams);
@@ -300,7 +307,7 @@ export const createStripeCheckoutSession = async (params: {
 };
 
 export const createStripePortalSession = async (params: { customerId: string }) => {
-  const appUrl = process.env.APP_URL?.trim();
+  const appUrl = getAppUrl();
   if (!appUrl) throw new Error("APP_URL missing.");
   return callStripe<{ url: string }>("/billing_portal/sessions", {
     customer: params.customerId,
