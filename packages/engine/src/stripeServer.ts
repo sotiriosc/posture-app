@@ -27,6 +27,15 @@ export const STRIPE_CHECKOUT_PLANS: readonly StripeCheckoutPlan[] = [
 /** Stripe Price lookup_key for the founders monthly offer. */
 export const STRIPE_FOUNDERS_LOOKUP_KEY = "praxis_founders_monthly";
 
+/** Stripe Coupon id applied server-side on the founders checkout path only. */
+export const STRIPE_FOUNDERS_COUPON_ID = "FOUNDERS";
+
+/** Promo code users may enter on the monthly checkout path only. */
+export const STRIPE_MONTHLY_TRIAL_PROMO_CODE = "PRAXISTRIAL60DAY";
+
+const STRIPE_MONTHLY_CHECKOUT_SUBMIT_MESSAGE =
+  "Have a promo code? First 50 members get 2 months free — use code PRAXISTRIAL60DAY";
+
 const STRIPE_API_BASE = "https://api.stripe.com/v1";
 
 const encodeForm = (values: Record<string, string>) =>
@@ -161,6 +170,31 @@ export const resolveCheckoutPriceId = async (plan: StripeCheckoutPlan) => {
   return resolvePriceIdByLookupKey(STRIPE_FOUNDERS_LOOKUP_KEY);
 };
 
+/**
+ * Plan-gated checkout fields. Stripe rejects combining `discounts` with
+ * `allow_promotion_codes`, so each plan path sets at most one of them.
+ *
+ * - monthly: self-serve promo field + submit hint for PRAXISTRIAL60DAY
+ * - founders: server-applies FOUNDERS coupon (no promo field)
+ * - annual: full price only
+ */
+export const buildCheckoutDiscountParams = (
+  plan: StripeCheckoutPlan
+): Record<string, string> => {
+  if (plan === "monthly") {
+    return {
+      allow_promotion_codes: "true",
+      "custom_text[submit][message]": STRIPE_MONTHLY_CHECKOUT_SUBMIT_MESSAGE,
+    };
+  }
+  if (plan === "founders") {
+    return {
+      "discounts[0][coupon]": STRIPE_FOUNDERS_COUPON_ID,
+    };
+  }
+  return {};
+};
+
 export const createStripeCheckoutSession = async (params: {
   userId: string;
   email: string;
@@ -170,6 +204,7 @@ export const createStripeCheckoutSession = async (params: {
   const priceId = await resolveCheckoutPriceId(plan);
   const appUrl = process.env.APP_URL?.trim();
   if (!appUrl) throw new Error("Stripe price/app URL missing.");
+  const discountParams = buildCheckoutDiscountParams(plan);
   return callStripe<StripeSession>("/checkout/sessions", {
     mode: "subscription",
     "line_items[0][price]": priceId,
@@ -178,16 +213,13 @@ export const createStripeCheckoutSession = async (params: {
     cancel_url: `${appUrl}/results?billing=cancel`,
     customer_email: params.email,
     client_reference_id: params.userId,
-    // Shows Stripe's "Add promotion code" field. Users enter codes they were
-    // given elsewhere (email, founders link, etc.) — Checkout does not list them.
-    // Requires active Promotion Codes in Stripe (not just Coupons).
-    allow_promotion_codes: "true",
     "metadata[userId]": params.userId,
     "metadata[email]": params.email,
     "metadata[checkoutPlan]": plan,
     "subscription_data[metadata][userId]": params.userId,
     "subscription_data[metadata][email]": params.email,
     "subscription_data[metadata][checkoutPlan]": plan,
+    ...discountParams,
   });
 };
 

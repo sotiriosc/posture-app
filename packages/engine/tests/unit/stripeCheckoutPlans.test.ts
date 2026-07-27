@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import {
+  buildCheckoutDiscountParams,
   createStripeCheckoutSession,
   formatStripePriceLabel,
   getAnnualPriceId,
@@ -9,7 +10,9 @@ import {
   isStripeConfigured,
   parseStripeCheckoutPlan,
   resolveCheckoutPriceId,
+  STRIPE_FOUNDERS_COUPON_ID,
   STRIPE_FOUNDERS_LOOKUP_KEY,
+  STRIPE_MONTHLY_TRIAL_PROMO_CODE,
 } from "@/lib/stripeServer";
 
 const originalEnv = { ...process.env };
@@ -122,7 +125,24 @@ describe("stripe checkout plans", () => {
     expect(decodeURIComponent(calledUrl)).toContain(STRIPE_FOUNDERS_LOOKUP_KEY);
   });
 
-  test("checkout session enables Stripe promotion codes", async () => {
+  test("buildCheckoutDiscountParams gates coupons by plan", () => {
+    const monthly = buildCheckoutDiscountParams("monthly");
+    expect(monthly.allow_promotion_codes).toBe("true");
+    expect(monthly["custom_text[submit][message]"]).toContain(
+      STRIPE_MONTHLY_TRIAL_PROMO_CODE
+    );
+    expect(monthly["discounts[0][coupon]"]).toBeUndefined();
+
+    const founders = buildCheckoutDiscountParams("founders");
+    expect(founders["discounts[0][coupon]"]).toBe(STRIPE_FOUNDERS_COUPON_ID);
+    expect(founders.allow_promotion_codes).toBeUndefined();
+    expect(founders["custom_text[submit][message]"]).toBeUndefined();
+
+    const annual = buildCheckoutDiscountParams("annual");
+    expect(annual).toEqual({});
+  });
+
+  test("monthly checkout enables promo codes and never sends discounts", async () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_x";
     process.env.NODE_ENV = "test";
     process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
@@ -148,5 +168,74 @@ describe("stripe checkout plans", () => {
     const [, init] = fetchMock.mock.calls[0] ?? [];
     const body = String((init as { body?: string } | undefined)?.body ?? "");
     expect(body).toContain("allow_promotion_codes=true");
+    expect(body).toContain("custom_text%5Bsubmit%5D%5Bmessage%5D=");
+    expect(decodeURIComponent(body)).toContain(STRIPE_MONTHLY_TRIAL_PROMO_CODE);
+    expect(body).not.toContain("discounts");
+    expect(body).toContain("client_reference_id=user-1");
+    expect(body).toContain("metadata%5BuserId%5D=user-1");
+  });
+
+  test("founders checkout applies FOUNDERS coupon without promo codes", async () => {
+    process.env.STRIPE_SECRET_KEY = "sk_test_x";
+    process.env.NODE_ENV = "test";
+    process.env.STRIPE_PRICE_ID_FOUNDERS = "price_founders";
+    process.env.APP_URL = "https://example.com";
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        id: "cs_test_founders",
+        url: "https://checkout.stripe.com/c/pay/cs_test_founders",
+        customer: null,
+        subscription: null,
+      }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await createStripeCheckoutSession({
+      userId: "user-1",
+      email: "athlete@example.com",
+      plan: "founders",
+    });
+
+    const [, init] = fetchMock.mock.calls[0] ?? [];
+    const body = String((init as { body?: string } | undefined)?.body ?? "");
+    expect(decodeURIComponent(body)).toContain(
+      `discounts[0][coupon]=${STRIPE_FOUNDERS_COUPON_ID}`
+    );
+    expect(body).not.toContain("allow_promotion_codes");
+    expect(body).not.toContain("custom_text");
+  });
+
+  test("annual checkout has no discounts or promo codes", async () => {
+    process.env.STRIPE_SECRET_KEY = "sk_test_x";
+    process.env.NODE_ENV = "test";
+    process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
+    process.env.STRIPE_PRICE_ID_ANNUAL = "price_annual";
+    process.env.APP_URL = "https://example.com";
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        id: "cs_test_annual",
+        url: "https://checkout.stripe.com/c/pay/cs_test_annual",
+        customer: null,
+        subscription: null,
+      }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await createStripeCheckoutSession({
+      userId: "user-1",
+      email: "athlete@example.com",
+      plan: "annual",
+    });
+
+    const [, init] = fetchMock.mock.calls[0] ?? [];
+    const body = String((init as { body?: string } | undefined)?.body ?? "");
+    expect(body).toContain("price_annual");
+    expect(body).not.toContain("allow_promotion_codes");
+    expect(body).not.toContain("discounts");
+    expect(body).not.toContain("custom_text");
   });
 });
