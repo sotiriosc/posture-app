@@ -94,3 +94,4 @@ export * from "./timerRules";
 export * from "./telemetry";
 export * from "./resetAppData";
 export * from "./macroCalculatorInputs";
+export * from "./metrics/operatorMetrics";
