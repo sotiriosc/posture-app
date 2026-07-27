@@ -33,21 +33,47 @@ const hasStripeBillingLink = (user: StoredUser | null) =>
   Boolean(user?.stripeCustomerId || user?.stripeSubscriptionId);
 
 const reconcileFromStripe = async (user: StoredUser): Promise<StoredUser> => {
-  if (!canFetchStripeBilling()) return user;
-  if (!hasStripeBillingLink(user)) return user;
+  if (!canFetchStripeBilling()) {
+    console.error("[billing:page] sync skipped: Stripe secret missing");
+    return user;
+  }
+  if (!hasStripeBillingLink(user)) {
+    console.error("[billing:page] sync skipped: no stripeCustomerId/subscriptionId on user", {
+      userId: user.id,
+      plan: user.plan,
+    });
+    return user;
+  }
+  const before = toBillingRecord(user);
   try {
     const snapshot = await fetchStripeSubscriptionSnapshot({
       subscriptionId: user.stripeSubscriptionId,
       customerId: user.stripeCustomerId,
     });
-    if (!snapshot) return user;
+    if (!snapshot) {
+      console.error("[billing:page] Stripe retrieve returned null; keeping local record", {
+        userId: user.id,
+        before,
+      });
+      return user;
+    }
     const repo = getUserRepository();
-    return (
+    const updated =
       (await repo.updateUserBilling(user.id, billingPatchFromSnapshot(snapshot))) ??
-      user
-    );
+      user;
+    console.info("[billing:page] synced from Stripe", {
+      userId: user.id,
+      before,
+      snapshot,
+      after: toBillingRecord(updated),
+    });
+    return updated;
   } catch (error) {
-    console.error("[billing] Stripe subscription retrieve failed", error);
+    console.error("[billing:page] Stripe subscription retrieve failed; keeping local record", {
+      userId: user.id,
+      before,
+      error: error instanceof Error ? error.message : String(error),
+    });
     return user;
   }
 };
@@ -60,11 +86,24 @@ export default async function BillingAccountPage() {
 
   const shouldSyncFromStripe =
     Boolean(user) && canFetchStripeBilling() && hasStripeBillingLink(user);
+  console.info("[billing:page] load", {
+    userId: user?.id ?? null,
+    email: session?.email ?? null,
+    canFetchStripeBilling: canFetchStripeBilling(),
+    hasStripeBillingLink: hasStripeBillingLink(user),
+    shouldSyncFromStripe,
+    local: user ? toBillingRecord(user) : null,
+  });
   if (user && shouldSyncFromStripe) {
     user = await reconcileFromStripe(user);
   }
 
   const display = deriveBillingDisplay(toBillingRecord(user));
+  console.info("[billing:page] render", {
+    userId: user?.id ?? null,
+    display,
+    record: toBillingRecord(user),
+  });
 
   return (
     <BackgroundShell>

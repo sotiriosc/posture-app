@@ -41,6 +41,28 @@ describe("stripe subscription snapshot", () => {
     expect(snapshot.stripeCancelAtPeriodEnd).toBe(true);
   });
 
+  test("reads current_period_end from subscription items (Stripe Basil)", () => {
+    const snapshot = stripeSubscriptionToSnapshot({
+      id: "sub_basil",
+      status: "active",
+      customer: "cus_UxVptZte1N4w3y",
+      cancel_at_period_end: true,
+      // Top-level period fields removed in API 2025-03-31.basil
+      items: {
+        data: [
+          {
+            id: "si_1",
+            price: { id: "price_1" },
+            current_period_end: 1787702400,
+          },
+        ],
+      },
+    });
+    expect(snapshot.stripeCurrentPeriodEnd).toBe("2026-08-26T00:00:00.000Z");
+    expect(snapshot.stripeCancelAtPeriodEnd).toBe(true);
+    expect(snapshot.plan).toBe("pro");
+  });
+
   test("maps a Stripe subscription object into a billing patch", () => {
     const snapshot = stripeSubscriptionToSnapshot({
       id: "sub_123",
