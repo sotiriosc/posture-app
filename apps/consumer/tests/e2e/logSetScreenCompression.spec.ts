@@ -72,14 +72,14 @@ for (const viewport of MOBILE_VIEWPORTS) {
     if (repsBox) expect(repsBox.height).toBeGreaterThanOrEqual(44);
     if (rpeBox) expect(rpeBox.height).toBeGreaterThanOrEqual(44);
 
-    // Exit session / Back are not primary actions in the flow anymore —
-    // tucked behind the "..." trigger, not directly visible.
+    // Exit session / Go back live in the shared Menu during an active session —
+    // not as a separate floating control on the session screen.
     await expect(page.getByTestId("session-exit")).toBeHidden();
     await expect(page.getByTestId("session-back")).toBeHidden();
 
-    const optionsTrigger = page.getByTestId("session-options-trigger");
-    await expect(optionsTrigger).toBeVisible();
-    await optionsTrigger.click();
+    const menuTrigger = page.getByTestId("session-bar-menu");
+    await expect(menuTrigger).toBeVisible();
+    await menuTrigger.click();
     await expect(page.getByTestId("session-exit")).toBeVisible();
     await expect(page.getByTestId("session-back")).toBeVisible();
   });

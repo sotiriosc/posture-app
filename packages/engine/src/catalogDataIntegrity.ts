@@ -54,7 +54,7 @@ const PLACEHOLDER_RE =
 const TIMED_DURATION_RE =
   /(\d+)\s*[-–]?\s*(\d+)?\s*(sec|secs|second|seconds|s)\b/i;
 const REP_RANGE_RE =
-  /(\d+)\s*[-–]?\s*(\d+)?\s*(rep|reps|per side|each|\/\s*side)\b/i;
+  /(\d+)\s*[-–]?\s*(\d+)?\s*(rep|reps|per side|per letter|each letter|each|\/\s*side)\b/i;
 const BREATHS_RE = /(\d+)\s*[-–]?\s*(\d+)?\s*breaths?\b/i;
 
 /**
