@@ -1,7 +1,8 @@
 import { test, expect } from "@playwright/test";
 import {
   completeQuestionnaire,
-  mockAuthSession,
+  e2eEmail,
+  loginE2eUser,
   mockTrainingState,
 } from "../../e2e/fixtures";
 
@@ -16,7 +17,9 @@ import {
 test("first run: no non-essential prompts through first session", async ({
   page,
 }) => {
-  await mockAuthSession(page, { enabled: false, authenticated: false });
+  const email = e2eEmail("first-run-calm");
+  const password = "playwright-password";
+  await loginE2eUser(page, { email, password, plan: "free" });
   await mockTrainingState(page, { authenticated: false });
 
   await completeQuestionnaire(page, { daysPerWeek: 3 });

@@ -2,9 +2,10 @@ import { test, expect } from "@playwright/test";
 import {
   completeCurrentSession,
   completeQuestionnaire,
+  e2eEmail,
   getActiveProgramId,
   getStoredDaysPerWeek,
-  mockAuthSession,
+  loginE2eUser,
   mockTrainingState,
 } from "../../e2e/fixtures";
 
@@ -21,7 +22,9 @@ import {
 test("first run: onboarding → program → session → results headline", async ({
   page,
 }) => {
-  await mockAuthSession(page, { enabled: false, authenticated: false });
+  const email = e2eEmail("first-run");
+  const password = "playwright-password";
+  await loginE2eUser(page, { email, password, plan: "free" });
   await mockTrainingState(page, { authenticated: false });
 
   // Onboarding + program generation (lands on the results dashboard).

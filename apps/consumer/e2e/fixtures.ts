@@ -1,7 +1,7 @@
 import { randomBytes, scryptSync } from "crypto";
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, rename, writeFile } from "fs/promises";
 import path from "path";
-import { expect, type Page } from "@playwright/test";
+import { expect, type APIResponse, type Page } from "@playwright/test";
 
 type SubscriptionPlan = "free" | "pro";
 
@@ -60,13 +60,19 @@ const readUserDb = async (): Promise<UserDb> => {
 
 const writeUserDb = async (db: UserDb) => {
   await mkdir(path.dirname(userDbPath), { recursive: true });
-  await writeFile(userDbPath, JSON.stringify(db, null, 2), "utf8");
+  const payload = JSON.stringify(db, null, 2);
+  const tempPath = `${userDbPath}.${process.pid}.${Date.now()}.tmp`;
+  await writeFile(tempPath, payload, "utf8");
+  await rename(tempPath, userDbPath);
 };
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const e2eEmail = (prefix: string) =>
   `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}@e2e.local`;
 
 export const upsertE2eUser = async (params: {
+  id?: string;
   email: string;
   password: string;
   plan?: SubscriptionPlan;
@@ -77,13 +83,21 @@ export const upsertE2eUser = async (params: {
   stripeCurrentPeriodEnd?: string | null;
   stripeCancelAtPeriodEnd?: boolean | null;
 }) => {
-  const db = await readUserDb();
-  const now = new Date().toISOString();
   const normalizedEmail = params.email.trim().toLowerCase();
-  const existing = db.users.find((user) => user.email === normalizedEmail);
-  const passwordSalt = existing?.passwordSalt ?? randomBytes(16).toString("hex");
-  const patch: StoredE2eUser = {
-    id: existing?.id ?? `e2e-${randomBytes(8).toString("hex")}`,
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      const db = await readUserDb();
+      const now = new Date().toISOString();
+      const existing = db.users.find((user) => user.email === normalizedEmail);
+      const passwordSalt = existing?.passwordSalt ?? randomBytes(16).toString("hex");
+      const nextId = params.id ?? existing?.id ?? `e2e-${randomBytes(8).toString("hex")}`;
+      if (params.id) {
+        db.users = db.users.filter(
+          (user) => user.id !== params.id || user.email === normalizedEmail
+        );
+      }
+      const patch: StoredE2eUser = {
+        id: nextId,
     email: normalizedEmail,
     name: existing?.name ?? "Playwright Athlete",
     passwordHash: derivePasswordHash(params.password, passwordSalt),
@@ -116,18 +130,65 @@ export const upsertE2eUser = async (params: {
       params.stripeCancelAtPeriodEnd !== undefined
         ? params.stripeCancelAtPeriodEnd
         : existing?.stripeCancelAtPeriodEnd ?? false,
-    createdAt: existing?.createdAt ?? now,
-    updatedAt: now,
-  };
+        createdAt: existing?.createdAt ?? now,
+        updatedAt: now,
+      };
 
-  if (existing) {
-    Object.assign(existing, patch);
-  } else {
-    db.users.push(patch);
+      if (existing) {
+        Object.assign(existing, patch);
+      } else {
+        db.users.push(patch);
+      }
+
+      await writeUserDb(db);
+      return patch;
+    } catch (error) {
+      if (attempt === 4) throw error;
+      await sleep(25 * (attempt + 1));
+    }
+  }
+  throw new Error("Failed to upsert e2e user.");
+};
+
+export const loginE2eUser = async (
+  page: Page,
+  params: {
+    id?: string;
+    email: string;
+    password: string;
+    plan?: SubscriptionPlan;
+  }
+): Promise<APIResponse> => {
+  await upsertE2eUser(params);
+  const normalizedEmail = params.email.trim().toLowerCase();
+
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    const login = await page.request.post("/api/auth/login", {
+      data: { email: normalizedEmail, password: params.password },
+      headers: {
+        // Playwright requests share one IP ("unknown"); isolate rate-limit buckets per test user.
+        "x-forwarded-for": `playwright-e2e-${normalizedEmail}`,
+      },
+    });
+    if (login.ok()) return login;
+
+    const status = login.status();
+    if (status === 429) {
+      await sleep(500 * (attempt + 1));
+      continue;
+    }
+    if (status === 401 && attempt < 5) {
+      await upsertE2eUser(params);
+      await sleep(50 * (attempt + 1));
+      continue;
+    }
+
+    throw new Error(
+      `E2E login failed (${status}): ${(await login.text()).slice(0, 240)}`
+    );
   }
 
-  await writeUserDb(db);
-  return patch;
+  throw new Error("E2E login failed after retries.");
 };
 
 export const resetBrowserState = async (page: Page) => {
