@@ -203,6 +203,10 @@ type StripeSubscriptionObject = {
   customer?: string | { id?: string };
   cancel_at_period_end?: boolean;
   cancel_at?: number;
+  /** Unix seconds — subscription start (preferred over created). */
+  start_date?: number;
+  /** Unix seconds — object creation time (fallback for member-since). */
+  created?: number;
   current_period_end?: number;
   canceled_at?: number | null;
   ended_at?: number | null;
@@ -223,6 +227,8 @@ export type StripeSubscriptionSnapshot = {
   stripePriceId: string | null;
   stripeSubscriptionStatus: string | null;
   stripeCurrentPeriodEnd: string | null;
+  /** ISO from start_date, else created; null when Stripe omits both. */
+  stripeStartDate: string | null;
   stripeCancelAtPeriodEnd: boolean;
   plan: "free" | "pro";
 };
@@ -295,6 +301,12 @@ export const stripeSubscriptionToSnapshot = (
     return "free" as const;
   })();
   const periodEndUnix = resolveSubscriptionPeriodEndUnix(sub);
+  const startUnix =
+    typeof sub.start_date === "number"
+      ? sub.start_date
+      : typeof sub.created === "number"
+        ? sub.created
+        : null;
   return {
     stripeCustomerId: customerIdFromSubscription(sub),
     stripeSubscriptionId: typeof sub.id === "string" ? sub.id : null,
@@ -302,6 +314,8 @@ export const stripeSubscriptionToSnapshot = (
     stripeSubscriptionStatus: status,
     stripeCurrentPeriodEnd:
       periodEndUnix !== null ? new Date(periodEndUnix * 1000).toISOString() : null,
+    stripeStartDate:
+      startUnix !== null ? new Date(startUnix * 1000).toISOString() : null,
     stripeCancelAtPeriodEnd: resolveCancelAtPeriodEnd(sub),
     plan: planFromStatus,
   };

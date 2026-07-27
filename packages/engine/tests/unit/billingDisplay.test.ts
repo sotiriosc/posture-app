@@ -30,6 +30,7 @@ describe("billingDisplay", () => {
     expect(display.renewalLabel).toBe("Renews on");
     expect(display.renewalValue).toBe("Date not available from Stripe");
     expect(display.cancellationValue).toBe("No cancellation scheduled");
+    expect(display.memberSince).toBeNull();
     expect(needsBillingReconcile(record)).toBe(true);
   });
 
@@ -38,6 +39,7 @@ describe("billingDisplay", () => {
       plan: "pro" as const,
       stripeSubscriptionStatus: "active",
       stripeCurrentPeriodEnd: "2035-06-01T00:00:00.000Z",
+      stripeStartDate: "2026-07-26T00:00:00.000Z",
       stripeCancelAtPeriodEnd: false,
       stripeCustomerId: "cus_1",
     };
@@ -45,10 +47,22 @@ describe("billingDisplay", () => {
     expect(display.planLabel).toBe("Pro");
     expect(display.statusChip.label).toBe("Active");
     expect(display.accessStatus).toBe("Pro (active)");
+    expect(display.memberSince).toBe("Jul 26, 2026");
     expect(display.renewalLabel).toBe("Renews on");
     expect(display.renewalValue).toBe("Jun 1, 2035");
     expect(display.cancellationValue).toBe("No cancellation scheduled");
     expect(needsBillingReconcile(record)).toBe(false);
+  });
+
+  test("memberSince is null when start date is missing — UI should hide the field", () => {
+    const display = deriveBillingDisplay({
+      plan: "pro",
+      stripeSubscriptionStatus: "active",
+      stripeCurrentPeriodEnd: "2035-06-01T00:00:00.000Z",
+      stripeCancelAtPeriodEnd: false,
+      stripeCustomerId: "cus_1",
+    });
+    expect(display.memberSince).toBeNull();
   });
 
   test("active cancel_at_period_end shows access end — not renewal", () => {
