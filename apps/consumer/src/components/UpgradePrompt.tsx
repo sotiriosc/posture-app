@@ -46,6 +46,30 @@ const DEFAULT_PLAN_OPTIONS: Array<{
   },
 ];
 
+function OfferNotes({ compact = false }: { compact?: boolean }) {
+  return (
+    <div
+      className={
+        compact
+          ? "mt-3 space-y-1.5 text-[11px] leading-snug text-slate-400"
+          : "mt-3 space-y-2 text-xs text-slate-400"
+      }
+      data-testid="upgrade-offer-notes"
+    >
+      <p>
+        Beta testers: 50 free spots. Try Praxis free in exchange for your honest
+        feedback. Use code{" "}
+        <span className="font-semibold text-slate-200">PRAXISTRIAL60DAY</span> at
+        checkout.
+      </p>
+      <p>
+        Founding members: 100 spots. $12.99/month, locked at that price for as
+        long as you stay subscribed.
+      </p>
+    </div>
+  );
+}
+
 export default function UpgradePrompt() {
   const { hasCompletedFirstWeek } = useUserPlan();
   const [message, setMessage] = useState<string | null>(null);
@@ -156,10 +180,12 @@ export default function UpgradePrompt() {
 
   return (
     <>
-      {/* dashboard-grid — on phone this collapses to a slim (~80px) banner so
-          it stops dominating the fold; the full card below is desktop-only
-          (hidden sm:block) and unchanged. */}
-      <div className="ui-card ui-soft-surface-raised mt-4 rounded-lg px-4 py-3 sm:hidden">
+      {/* Mobile banner — same offer facts as desktop, tighter type so it
+          stays scannable without dominating the fold. */}
+      <div
+        className="ui-card ui-soft-surface-raised mt-4 rounded-lg px-4 py-3 sm:hidden"
+        data-testid="upgrade-prompt-mobile"
+      >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm font-semibold text-white">
             {hasCompletedFirstWeek ? "Continue past Day 1 — " : "Keep your full week — "}
@@ -180,13 +206,22 @@ export default function UpgradePrompt() {
             </span>
           )}
         </div>
-        {checkoutEnabled ? planPicker : null}
+        {checkoutEnabled ? (
+          <>
+            {planPicker}
+            <OfferNotes compact />
+          </>
+        ) : null}
+        <UpgradeValueContext compact />
         {message ? (
           <p className="mt-2 w-full text-xs text-slate-300">{message}</p>
         ) : null}
       </div>
 
-      <div className="ui-card ui-soft-surface-raised mt-4 hidden rounded-lg p-4 sm:block">
+      <div
+        className="ui-card ui-soft-surface-raised mt-4 hidden rounded-lg p-4 sm:block"
+        data-testid="upgrade-prompt-desktop"
+      >
         <p className="ui-kicker">Praxis Pro</p>
         <p className="mt-1 text-lg font-semibold text-white">{headline}</p>
         <p className="mt-2 text-sm text-slate-300">{body}</p>
@@ -208,20 +243,7 @@ export default function UpgradePrompt() {
                       ? "Upgrade — founders"
                       : "Upgrade to Pro"}
               </Button>
-              <div className="mt-3 space-y-2 text-xs text-slate-400">
-                <p>
-                  Beta testers: 50 free spots. Try Praxis free in exchange for
-                  your honest feedback. Use code{" "}
-                  <span className="font-semibold text-slate-200">
-                    PRAXISTRIAL60DAY
-                  </span>{" "}
-                  at checkout.
-                </p>
-                <p>
-                  Founding members: 100 spots. $12.99/month, locked at that price
-                  for as long as you stay subscribed.
-                </p>
-              </div>
+              <OfferNotes />
             </div>
           </div>
         ) : (
