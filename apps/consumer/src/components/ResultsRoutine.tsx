@@ -106,6 +106,7 @@ import { buildProgramDashboardCopy } from "@/components/results/programDashboard
 import {
   calculateMovementQualityPercent,
   calculateTrainingConsistencyPercent,
+  replaceConsistencyMetricText,
 } from "@/components/results/progressMetrics";
 
 const STORAGE_KEY = "posture_questionnaire";
@@ -2761,7 +2762,9 @@ export default function ResultsRoutine() {
       ...(program.sessionAdaptation?.reasons ?? []),
       ...(program.sessionAdaptation?.appliedChanges ?? []),
       ...(program.sessionAdaptation?.masteryChecks ?? []),
-    ].filter(Boolean),
+    ]
+      .filter(Boolean)
+      .map((line) => replaceConsistencyMetricText(line, consistencyPercent)),
     totalCompletedWorkoutCount
   ).slice(0, 4);
 
@@ -2952,8 +2955,11 @@ export default function ResultsRoutine() {
     ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} slots were adjusted.`
     : !metricFloorMet
       ? BASELINE_PROGRESSION_SPEED_COPY
-      : program.sessionAdaptation?.appliedChanges?.[0] ??
-        "Session focus and progression guidance were tuned.";
+      : replaceConsistencyMetricText(
+          program.sessionAdaptation?.appliedChanges?.[0] ??
+            "Session focus and progression guidance were tuned.",
+          consistencyPercent
+        );
   const systemAdjustmentWhy =
     program.sessionAdaptation?.reasons?.[0] ??
     program.sessionAdaptation?.summary ??
@@ -2969,7 +2975,9 @@ export default function ResultsRoutine() {
           program.phaseOptimizerReport
             ? `${program.phaseOptimizerReport.changedSlots}/${program.phaseOptimizerReport.totalSlots} changed`
             : null,
-          ...(program.sessionAdaptation?.dataSignals ?? []).slice(0, 2),
+          ...(program.sessionAdaptation?.dataSignals ?? [])
+            .slice(0, 2)
+            .map((chip) => replaceConsistencyMetricText(chip, consistencyPercent)),
         ]
       : [
           program.phaseOptimizerReport
