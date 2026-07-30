@@ -195,3 +195,10 @@ export function calculateMovementQualityPercent({
 
   return Math.max(55, consistencyPercent - 5);
 }
+
+export function replaceConsistencyMetricText(text: string, consistencyPercent: number) {
+  return text.replace(
+    /(consistency\s*)\d+%/gi,
+    (_, label: string) => `${label}${clamp(Math.round(consistencyPercent), 0, 100)}%`
+  );
+}

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   calculateMovementQualityPercent,
   calculateTrainingConsistencyPercent,
+  replaceConsistencyMetricText,
 } from "@/components/results/progressMetrics";
 import type { Program, SessionRecord } from "@/lib/types";
 
@@ -118,5 +119,15 @@ describe("progressMetrics", () => {
         consistencyPercent: 100,
       })
     ).toBeGreaterThanOrEqual(78);
+  });
+
+  it("updates stale generated consistency copy with the live metric", () => {
+    expect(
+      replaceConsistencyMetricText(
+        "Readiness 40% and consistency 0% informed progression speed.",
+        100
+      )
+    ).toBe("Readiness 40% and consistency 100% informed progression speed.");
+    expect(replaceConsistencyMetricText("Consistency 0%", 87)).toBe("Consistency 87%");
   });
 });
