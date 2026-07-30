@@ -1,4 +1,5 @@
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import type { AssessmentReport } from "@/lib/assessmentEngine";
 import type { UserTrainingState } from "@/lib/phases";
 import type { PostGenerationWarning } from "@/lib/program/postGenerationPipeline";
 import {
@@ -51,6 +52,7 @@ export const finalizeWeeklyProgramResult = (params: {
   questionnaire: QuestionnaireData;
   trainingState: UserTrainingState;
   consistencyRate: number;
+  assessmentReport?: AssessmentReport | null;
   recentLogs?: ExerciseLog[];
   warnings: PostGenerationWarning[];
   templateVersion?: number;
@@ -85,6 +87,7 @@ export const finalizeWeeklyProgramResult = (params: {
     weekIndex: params.weekIndex,
     week: coachedWeek,
     consistencyRate: params.consistencyRate,
+    assessmentReport: params.assessmentReport,
     recentLogs: params.recentLogs,
     trainingState: params.trainingState,
   });
@@ -125,6 +128,7 @@ export const finalizeAdvancedProgressionResult = (params: {
   painSeverity: "low" | "medium" | "high";
   trainingState: UserTrainingState;
   recentLogs?: ExerciseLog[];
+  assessmentReport?: AssessmentReport | null;
   optimizerResult: Parameters<typeof assembleAdvancedProgressionResult>[0]["optimizerResult"];
 }) => {
   forwardConstraintWarnings({
@@ -153,6 +157,7 @@ export const finalizeAdvancedProgressionResult = (params: {
     painSeverity: params.painSeverity,
     trainingState: params.trainingState,
     recentLogs: params.recentLogs,
+    assessmentReport: params.assessmentReport,
     optimizerResult: params.optimizerResult,
   });
 };

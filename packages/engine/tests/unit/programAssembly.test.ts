@@ -1,10 +1,12 @@
 import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import type { AssessmentReport } from "@/lib/assessmentEngine";
 import { deriveUserTrainingState } from "@/lib/phases";
 import { generateWeeklyProgram } from "@/lib/program";
 import {
   assembleAdvancedProgressionResult,
   buildProgramConstraintWarnings,
+  buildProgramIntelligence,
   buildProgramNextWeekPlan,
   buildProgramPhaseMetadata,
 } from "@/lib/program/programAssembly";
@@ -140,5 +142,73 @@ describe("program assembly helpers", () => {
     expect(result.program.movementProfile).toBeTruthy();
     expect(result.program.phaseObjective).toBeTruthy();
     expect(result.program.sessionAdaptation).toBeTruthy();
+  });
+
+  test("program intelligence uses assessment report when scoring movement profile", () => {
+    const baseProgram = generateWeeklyProgram(questionnaire, "assembly-assessment-report", {
+      phaseIndex: 1,
+      weekIndex: 1,
+      cycleIndex: 1,
+      totalWeekIndex: 1,
+      seed: "assembly-assessment-report",
+    });
+    const assessmentReport: AssessmentReport = {
+      observations: [
+        {
+          id: "pose-hip-shift",
+          title: "Hip balance asymmetry",
+          description:
+            "Pattern suggests uneven hip loading and side-to-side balance drift.",
+          confidence: "high",
+          evidence: ["Metric: lateral hip shift 9% of torso height"],
+          likelyDrivers: ["hip stability"],
+          riskIfIgnored: "May slow progress.",
+          primaryFocusTags: ["glute_medius", "core_anti_rotation"],
+          recommendedInterventions: [],
+        },
+        {
+          id: "pose-trunk-bias",
+          title: "Trunk alignment bias",
+          description: "Pattern suggests torso alignment drift.",
+          confidence: "high",
+          evidence: ["Metric: shoulder-to-hip offset 8% of torso height"],
+          likelyDrivers: ["core bracing"],
+          riskIfIgnored: "May slow progress.",
+          primaryFocusTags: ["core_stability", "posture_endurance"],
+          recommendedInterventions: [],
+        },
+      ],
+      priorities: ["pose-hip-shift", "pose-trunk-bias"],
+      summary: "Key focus areas: Hip balance asymmetry + Trunk alignment bias.",
+      disclaimers: [],
+    };
+
+    const withoutReport = buildProgramIntelligence({
+      questionnaire,
+      phaseIndex: baseProgram.phaseIndex ?? 1,
+      cycleIndex: baseProgram.cycleIndex ?? 1,
+      weekIndex: baseProgram.weekIndex ?? 1,
+      week: baseProgram.week,
+      consistencyRate: 0,
+    });
+    const withReport = buildProgramIntelligence({
+      questionnaire,
+      phaseIndex: baseProgram.phaseIndex ?? 1,
+      cycleIndex: baseProgram.cycleIndex ?? 1,
+      weekIndex: baseProgram.weekIndex ?? 1,
+      week: baseProgram.week,
+      consistencyRate: 0,
+      assessmentReport,
+    });
+
+    expect(withReport.movementProfile.asymmetry).toBeGreaterThan(
+      withoutReport.movementProfile.asymmetry
+    );
+    expect(withReport.movementProfile.skillScores.balance).toBeLessThan(
+      withoutReport.movementProfile.skillScores.balance
+    );
+    expect(withReport.movementProfile.skillScores.core).toBeLessThan(
+      withoutReport.movementProfile.skillScores.core
+    );
   });
 });

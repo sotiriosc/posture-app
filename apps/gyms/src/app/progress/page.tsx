@@ -25,6 +25,7 @@ import { formatNextSessionRecommendationFromSession } from "@/lib/nextSessionRec
 import { formatSessionAdaptationPreviewFromFeedback } from "@/lib/sessionAdaptationPreview";
 import { formatSessionFeedbackCoachSummary } from "@/lib/sessionFeedbackSignals";
 import { resolveActiveProgramFromList } from "@/lib/trainingStateModel";
+import { calculateWeeklyGoalStreak } from "@/lib/progressConsistency";
 import type { ExerciseLog, SessionRecord } from "@/lib/types";
 
 const DAY_MS = 86_400_000;
@@ -354,27 +355,11 @@ export default function ProgressPage() {
   }, [sessions]);
 
   const weeklyGoalStreak = useMemo(() => {
-    const completedSessions = sessions.filter((session) => Boolean(session.completedAt));
-    if (!completedSessions.length) return 0;
-
-    const countsByWeek = new Map<number, number>();
-    completedSessions.forEach((session) => {
-      const timestamp = sessionTimestampMs(session);
-      if (!timestamp) return;
-      const weekStart = weekStartFromTimestampMs(timestamp);
-      countsByWeek.set(weekStart, (countsByWeek.get(weekStart) ?? 0) + 1);
+    return calculateWeeklyGoalStreak({
+      sessions,
+      prescribedWorkoutsPerWeek,
+      nowMs: currentTimestampMs(),
     });
-
-    const requiredPerWeek = Math.max(1, prescribedWorkoutsPerWeek);
-    let streak = 0;
-    let cursorWeekStart = startOfWeekMs();
-    for (let index = 0; index < 260; index += 1) {
-      const weeklyCount = countsByWeek.get(cursorWeekStart) ?? 0;
-      if (weeklyCount < requiredPerWeek) break;
-      streak += 1;
-      cursorWeekStart -= 7 * DAY_MS;
-    }
-    return streak;
   }, [sessions, prescribedWorkoutsPerWeek]);
 
   const difficultyTrendLabel = useMemo<DifficultyTrendLabel>(() => {

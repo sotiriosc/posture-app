@@ -1,4 +1,5 @@
 import type { ProgramProgress } from "@/lib/types";
+import { PHASE_FLOOR_WEEKS } from "@/lib/program/phaseGatingConstants";
 
 export type PhaseGateThreshold = {
   minDays: number;
@@ -26,18 +27,16 @@ const normalizeDaysPerWeek = (daysPerWeek: number | null | undefined) => {
 };
 
 export const getPhaseGateThreshold = (
-  phaseIndex: number,
+  _phaseIndex: number,
   daysPerWeek?: number | null
 ): PhaseGateThreshold => {
   const safeDaysPerWeek = normalizeDaysPerWeek(daysPerWeek);
   // Phase 6j — every phase floors at 8 weeks of real training
   // (8 × sessions_per_week). Calendar-day OR remains as a secondary path
   // so long-running sparse trainers are not trapped forever.
-  const minWorkouts = safeDaysPerWeek * 8;
-  if (phaseIndex <= 1) {
-    return { minDays: 56, minWorkouts };
-  }
-  return { minDays: 56, minWorkouts };
+  const minDays = PHASE_FLOOR_WEEKS * 7;
+  const minWorkouts = safeDaysPerWeek * PHASE_FLOOR_WEEKS;
+  return { minDays, minWorkouts };
 };
 
 const safeDaysSince = (phaseStartedAt: string | null | undefined, nowIso: string) => {

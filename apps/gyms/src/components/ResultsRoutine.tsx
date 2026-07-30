@@ -101,6 +101,39 @@ const DASHBOARD_UNLOCK_LEVEL_KEY = "praxis_dashboard_unlock_level";
 const SHOW_TECHNICAL_PROGRAM_REFERENCE = process.env.NODE_ENV !== "production";
 const SHOW_PHASE_PREVIEW_REFERENCE = false;
 const SHOW_CURRENT_SAVED_PROGRAM_SNAPSHOT_REFERENCE = false;
+const DAYS_PER_WEEK = 7;
+
+const calculatePhaseWeekDisplay = ({
+  daysSincePhaseStart,
+  dayTarget,
+  weekIndex,
+}: {
+  daysSincePhaseStart: number;
+  dayTarget: number;
+  weekIndex?: number | null;
+}) => {
+  const totalWeeks = Math.max(1, Math.ceil(Math.max(1, dayTarget) / DAYS_PER_WEEK));
+  const weekFromDays =
+    Number.isFinite(daysSincePhaseStart) && daysSincePhaseStart > 0
+      ? Math.floor(daysSincePhaseStart / DAYS_PER_WEEK) + 1
+      : null;
+  const fallbackWeek =
+    typeof weekIndex === "number" && Number.isFinite(weekIndex)
+      ? Math.floor(weekIndex)
+      : 1;
+  const currentWeek = Math.max(1, Math.min(totalWeeks, weekFromDays ?? fallbackWeek));
+
+  return {
+    currentWeek,
+    totalWeeks,
+    label: `Week ${currentWeek} of ${totalWeeks}`,
+  };
+};
+
+const replacePhaseWeekLabelText = (text: string, phaseWeekLabel: string) =>
+  /week\s+\d+\s+of\s+\d+/i.test(text)
+    ? text.replace(/week\s+\d+\s+of\s+\d+/i, phaseWeekLabel)
+    : text;
 
 type DashboardMode =
   | "today"
@@ -2545,9 +2578,30 @@ export default function ResultsRoutine({
   }
 
   const selectedDayProgram = program.week[effectiveSelectedDay];
+  const currentPhaseProfile = getPhaseProfile(currentPhaseIndex);
   const phaseName = program.phaseName ?? getPhaseMetaByIndex(currentPhaseIndex).phaseName;
-  const phaseDescription = getPhaseProfile(currentPhaseIndex).description;
-  const cycleCurrent = Math.max(1, phaseGate.cyclesCompletedInPhase + 1);
+  const phaseDescription = currentPhaseProfile.description;
+  const phaseWeekDisplay = calculatePhaseWeekDisplay({
+    daysSincePhaseStart: phaseGate.daysSincePhaseStart,
+    dayTarget: phaseGate.minDays,
+    weekIndex: program.weekIndex ?? program.phase?.weekIndex,
+  });
+  const livePhaseFocus =
+    program.phaseObjective?.phaseFocus
+      ? replacePhaseWeekLabelText(
+          program.phaseObjective.phaseFocus,
+          phaseWeekDisplay.label
+        )
+      : `${phaseWeekDisplay.label} • ${currentPhaseProfile.label}`;
+  const dashboardProgram = program.phaseObjective
+    ? {
+        ...program,
+        phaseObjective: {
+          ...program.phaseObjective,
+          phaseFocus: livePhaseFocus,
+        },
+      }
+    : program;
   const phaseGoalText =
     program.phaseObjective?.weekIntent ??
     program.phaseObjective?.objective ??
@@ -2559,7 +2613,7 @@ export default function ResultsRoutine({
     weeklyPriorities,
     coachFocus,
   } = buildProgramDashboardCopy({
-    program,
+    program: dashboardProgram,
     assessmentReport: poseState.report,
     painTrendLabel,
   });
@@ -2755,17 +2809,12 @@ export default function ResultsRoutine({
     completedCount < activeDaysPerWeek &&
     !completedDaySet.has(effectiveNextDayIndex);
 
-  // Phase 6f, Commit 5.b: "cycle" is engine-internal vocabulary (a 4-week
-  // Base/Build/Push/Deload rotation) that used to leak into this chip
-  // verbatim as "Cycle: N" — renamed to "Week X of 4" everywhere it
-  // surfaces to users.
-  const weekOfCycle = ((Math.max(1, program.cycleIndex ?? cycleCurrent) - 1) % 4) + 1;
   const heroMetricChips = [
     metricFloorMet
       ? `Training readiness: ${readinessScore}% (${readinessLabel})`
       : BASELINE_READINESS_COPY,
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
-    `Week ${weekOfCycle} of 4`,
+    phaseWeekDisplay.label,
   ].filter((chip): chip is string => Boolean(chip));
 
   const coachToday = (() => {

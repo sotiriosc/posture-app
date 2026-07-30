@@ -34245,6 +34245,7 @@ export const generateWeeklyProgram = (
     questionnaire: data,
     trainingState: weeklyRuntimeContext.trainingState,
     consistencyRate: 0,
+    assessmentReport: options?.assessmentReport ?? null,
     warnings: emittedWarnings,
     templateVersion: PROGRAM_TEMPLATE_VERSION,
     ladderState: resolvedLadderState,
@@ -34486,6 +34487,7 @@ export const generateNextPhaseProgram = (params: {
     painSeverity,
     trainingState: progressionState.trainingState,
     recentLogs,
+    assessmentReport,
     optimizerResult: optimizedPhase,
   });
 };
@@ -34645,6 +34647,7 @@ export const generateNextCycleProgram = (params: {
     painSeverity,
     trainingState: progressionState.trainingState,
     recentLogs,
+    assessmentReport,
     optimizerResult: optimizedCycle,
   });
 };

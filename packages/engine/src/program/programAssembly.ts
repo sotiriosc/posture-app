@@ -1,4 +1,5 @@
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import type { AssessmentReport } from "@/lib/assessmentEngine";
 import { buildMovementProfile } from "@/lib/movementProfile";
 import { buildPhaseObjective } from "@/lib/phaseObjectives";
 import {
@@ -97,6 +98,7 @@ export const buildProgramIntelligence = (params: {
   weekIndex: number;
   week: ProgramDay[];
   consistencyRate: number;
+  assessmentReport?: AssessmentReport | null;
   recentLogs?: ExerciseLog[];
   trainingState?: UserTrainingState;
   optimizerReport?: ProgramOptimizerUsageSummary;
@@ -108,6 +110,7 @@ export const buildProgramIntelligence = (params: {
     weekIndex,
     week,
     consistencyRate,
+    assessmentReport,
     recentLogs = [],
     trainingState,
     optimizerReport,
@@ -115,6 +118,7 @@ export const buildProgramIntelligence = (params: {
 
   const movementProfile = buildMovementProfile({
     questionnaire,
+    report: assessmentReport,
     recentLogs,
     consistencyRate,
   });
@@ -241,6 +245,7 @@ export const assembleAdvancedProgressionResult = (params: {
   painSeverity: PainSeverity;
   trainingState: UserTrainingState;
   recentLogs?: ExerciseLog[];
+  assessmentReport?: AssessmentReport | null;
   optimizerResult: ProgramOptimizerSummary;
 }) => {
   const { phaseMeta } = buildProgramPhaseMetadata({
@@ -264,6 +269,7 @@ export const assembleAdvancedProgressionResult = (params: {
     weekIndex: params.weekIndex,
     week: params.week,
     consistencyRate: params.complianceRate,
+    assessmentReport: params.assessmentReport,
     recentLogs: params.recentLogs,
     trainingState: params.trainingState,
     optimizerReport: {
