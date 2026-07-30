@@ -1,4 +1,5 @@
 import { getPhaseProfile } from "@/lib/phases";
+import { PHASE_FLOOR_WEEKS } from "@/lib/program/phaseGatingConstants";
 import type { MovementProfile } from "@/lib/movementProfile";
 
 export type PhaseObjective = {
@@ -60,16 +61,15 @@ export const buildPhaseObjective = (params: {
   weekIndex: number;
   movementProfile: MovementProfile;
 }) => {
-  const { phaseIndex, cycleIndex, weekIndex, movementProfile } = params;
+  const { phaseIndex, weekIndex, movementProfile } = params;
   const profile = getPhaseProfile(phaseIndex);
   const primaryPatterns = topPatterns(movementProfile);
   const weekLabel = `Week ${Math.max(1, weekIndex)}`;
-  // Phase 6f, Commit 5.b: "cycle" is engine-internal vocabulary (a 4-week
-  // Base/Build/Push/Deload rotation — see phases.ts's getCycleLadder, which
-  // treats `cycleIndex` itself as the rotating week counter). User-facing
-  // copy renders this as "Week X of 4" instead.
-  const weekOfCycle = ((Math.max(1, cycleIndex) - 1) % 4) + 1;
-  const cycleLabel = `Week ${weekOfCycle} of 4`;
+  const phaseWeek = Math.max(
+    1,
+    Math.min(PHASE_FLOOR_WEEKS, Math.floor(Math.max(1, weekIndex)))
+  );
+  const phaseWeekLabel = `Week ${phaseWeek} of ${PHASE_FLOOR_WEEKS}`;
   const readinessLabel =
     movementProfile.readiness >= 0.75
       ? "high"
@@ -128,7 +128,7 @@ export const buildPhaseObjective = (params: {
   return {
     title: `${weekLabel} Objective`,
     objective,
-    phaseFocus: `${cycleLabel} • ${profile.label}`,
+    phaseFocus: `${phaseWeekLabel} • ${profile.label}`,
     primaryPatterns,
     successMarkers,
     guardrail,
