@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   calculateMovementQualityPercent,
+  calculatePhaseWeekDisplay,
   calculateTrainingConsistencyPercent,
+  replacePhaseWeekLabelText,
   replaceConsistencyMetricText,
 } from "@/components/results/progressMetrics";
 import type { Program, SessionRecord } from "@/lib/types";
@@ -129,5 +131,25 @@ describe("progressMetrics", () => {
       )
     ).toBe("Readiness 40% and consistency 100% informed progression speed.");
     expect(replaceConsistencyMetricText("Consistency 0%", 87)).toBe("Consistency 87%");
+  });
+
+  it("derives phase week copy from the live phase day gate", () => {
+    const display = calculatePhaseWeekDisplay({
+      daysSincePhaseStart: 27,
+      dayTarget: 56,
+      weekIndex: 1,
+    });
+
+    expect(display).toEqual({
+      currentWeek: 4,
+      totalWeeks: 8,
+      label: "Week 4 of 8",
+    });
+    expect(
+      replacePhaseWeekLabelText(
+        "Week 1 of 4 • Control & Technique",
+        display.label
+      )
+    ).toBe("Week 4 of 8 • Control & Technique");
   });
 });

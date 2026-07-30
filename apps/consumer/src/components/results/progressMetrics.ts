@@ -1,6 +1,7 @@
 import type { Program, SessionRecord } from "@/lib/types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const DAYS_PER_WEEK = 7;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
@@ -201,4 +202,37 @@ export function replaceConsistencyMetricText(text: string, consistencyPercent: n
     /(consistency\s*)\d+%/gi,
     (_, label: string) => `${label}${clamp(Math.round(consistencyPercent), 0, 100)}%`
   );
+}
+
+export function calculatePhaseWeekDisplay({
+  daysSincePhaseStart,
+  dayTarget,
+  weekIndex,
+}: {
+  daysSincePhaseStart: number;
+  dayTarget: number;
+  weekIndex?: number | null;
+}) {
+  const totalWeeks = Math.max(1, Math.ceil(Math.max(1, dayTarget) / DAYS_PER_WEEK));
+  const weekFromDays =
+    Number.isFinite(daysSincePhaseStart) && daysSincePhaseStart > 0
+      ? Math.floor(daysSincePhaseStart / DAYS_PER_WEEK) + 1
+      : null;
+  const fallbackWeek =
+    typeof weekIndex === "number" && Number.isFinite(weekIndex)
+      ? Math.floor(weekIndex)
+      : 1;
+  const currentWeek = clamp(weekFromDays ?? fallbackWeek, 1, totalWeeks);
+
+  return {
+    currentWeek,
+    totalWeeks,
+    label: `Week ${currentWeek} of ${totalWeeks}`,
+  };
+}
+
+export function replacePhaseWeekLabelText(text: string, phaseWeekLabel: string) {
+  return /week\s+\d+\s+of\s+\d+/i.test(text)
+    ? text.replace(/week\s+\d+\s+of\s+\d+/i, phaseWeekLabel)
+    : text;
 }

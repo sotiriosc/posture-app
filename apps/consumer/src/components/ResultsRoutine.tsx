@@ -105,8 +105,10 @@ import InsightsPanel, { type KnowledgeCard } from "@/components/results/Insights
 import { buildProgramDashboardCopy } from "@/components/results/programDashboardSelectors";
 import {
   calculateMovementQualityPercent,
+  calculatePhaseWeekDisplay,
   calculateTrainingConsistencyPercent,
   replaceConsistencyMetricText,
+  replacePhaseWeekLabelText,
 } from "@/components/results/progressMetrics";
 
 const STORAGE_KEY = "posture_questionnaire";
@@ -2696,9 +2698,30 @@ export default function ResultsRoutine() {
   }
 
   const selectedDayProgram = program.week[effectiveSelectedDay];
+  const currentPhaseProfile = getPhaseProfile(currentPhaseIndex);
   const phaseName = program.phaseName ?? getPhaseMetaByIndex(currentPhaseIndex).phaseName;
-  const phaseDescription = getPhaseProfile(currentPhaseIndex).description;
-  const cycleCurrent = Math.max(1, phaseGate.cyclesCompletedInPhase + 1);
+  const phaseDescription = currentPhaseProfile.description;
+  const phaseWeekDisplay = calculatePhaseWeekDisplay({
+    daysSincePhaseStart: phaseGate.daysSincePhaseStart,
+    dayTarget: phaseGate.minDays,
+    weekIndex: program.weekIndex ?? program.phase?.weekIndex,
+  });
+  const livePhaseFocus =
+    program.phaseObjective?.phaseFocus
+      ? replacePhaseWeekLabelText(
+          program.phaseObjective.phaseFocus,
+          phaseWeekDisplay.label
+        )
+      : `${phaseWeekDisplay.label} • ${currentPhaseProfile.label}`;
+  const dashboardProgram = program.phaseObjective
+    ? {
+        ...program,
+        phaseObjective: {
+          ...program.phaseObjective,
+          phaseFocus: livePhaseFocus,
+        },
+      }
+    : program;
   const phaseGoalText =
     program.phaseObjective?.weekIntent ??
     program.phaseObjective?.objective ??
@@ -2711,7 +2734,7 @@ export default function ResultsRoutine() {
     weeklyPriorities,
     coachFocus,
   } = buildProgramDashboardCopy({
-    program,
+    program: dashboardProgram,
     assessmentReport: poseState.report,
     painTrendLabel,
   });
@@ -2911,17 +2934,12 @@ export default function ResultsRoutine() {
     completedCount < activeDaysPerWeek &&
     !completedDaySet.has(effectiveNextDayIndex);
 
-  // Phase 6f, Commit 5.b: "cycle" is engine-internal vocabulary (a 4-week
-  // Base/Build/Push/Deload rotation) that used to leak into this chip
-  // verbatim as "Cycle: N" — renamed to "Week X of 4" everywhere it
-  // surfaces to users.
-  const weekOfCycle = ((Math.max(1, program.cycleIndex ?? cycleCurrent) - 1) % 4) + 1;
   const heroMetricChips = [
     metricFloorMet
       ? `Training readiness: ${readinessScore}% (${readinessLabel})`
       : BASELINE_READINESS_COPY,
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
-    `Week ${weekOfCycle} of 4`,
+    phaseWeekDisplay.label,
   ].filter((chip): chip is string => Boolean(chip));
 
   const coachToday = (() => {
