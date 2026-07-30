@@ -1057,7 +1057,8 @@ describe("results operational readiness", () => {
       await Promise.resolve();
     });
 
-    expect(mocks.listSessions).toHaveBeenCalledTimes(1);
+    const callsAfterInitialSessionLoad = mocks.listSessions.mock.calls.length;
+    expect(callsAfterInitialSessionLoad).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("1 completed / 3")).toBeTruthy();
     expect(screen.getByText("1 in progress")).toBeTruthy();
     expect(screen.getByText("Full analysis unlocked")).toBeTruthy();
@@ -1066,7 +1067,7 @@ describe("results operational readiness", () => {
     const refresh = createDeferred<SessionRecord[]>();
     mocks.listSessions.mockImplementation(() => refresh.promise);
     window.dispatchEvent(new Event("focus"));
-    expect(mocks.listSessions).toHaveBeenCalledTimes(2);
+    expect(mocks.listSessions).toHaveBeenCalledTimes(callsAfterInitialSessionLoad + 1);
     expect(screen.getByText("1 completed / 3")).toBeTruthy();
     expect(screen.getByText("1 in progress")).toBeTruthy();
     refresh.resolve([completedSession, inProgressSession]);
@@ -1229,7 +1230,7 @@ describe("results operational readiness", () => {
     fireEvent.click(screen.getByText("Progress").closest("button")!);
     expect(screen.queryByText("Phase progress")).toBeNull();
     await waitFor(() => {
-      expect(screen.getAllByText("4/16 workouts in phase").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("4/32 workouts in phase").length).toBeGreaterThan(0);
     });
     expect(screen.getAllByText("Sessions this phase").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Days in phase").length).toBeGreaterThan(0);

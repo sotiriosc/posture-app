@@ -102,6 +102,15 @@ export const getHistoryDeltaPills = (
     if (diff !== 0) {
       deltas.push(`${labelWithSign(diff)} reps`);
     }
+  } else {
+    const lastTotalReps = totalReps(last);
+    const prevTotalReps = totalReps(prev);
+    if (lastTotalReps !== null && prevTotalReps !== null) {
+      const diff = lastTotalReps - prevTotalReps;
+      if (diff !== 0) {
+        deltas.push(`${labelWithSign(diff)} total reps`);
+      }
+    }
   }
 
   const lastDuration = safeNumber(last.workSecondsUsed) ?? safeNumber(last.durationSec);

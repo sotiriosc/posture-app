@@ -64,4 +64,23 @@ describe("historyView", () => {
     expect(pills).toContain("+5 lb wt");
     expect(pills).toContain("+2 reps");
   });
+
+  test("falls back to total reps when reps by set are not uniform", () => {
+    const prev = baseLog({
+      loadType: "bodyweight",
+      unit: null,
+      weight: null,
+      reps: 12,
+      repsBySet: [12, 11],
+    });
+    const next = baseLog({
+      loadType: "bodyweight",
+      unit: null,
+      weight: null,
+      reps: 13,
+      repsBySet: [13, 13],
+    });
+    const pills = getHistoryDeltaPills(next, prev);
+    expect(pills).toContain("+3 total reps");
+  });
 });
