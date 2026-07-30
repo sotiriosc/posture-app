@@ -157,6 +157,7 @@ const formatImprovement = (last: PrSnapshot, previous: PrSnapshot) => {
 export default function ProgressPage() {
   const [logs, setLogs] = useState<ExerciseLog[]>([]);
   const [sessions, setSessions] = useState<SessionRecord[]>([]);
+  const [streakSessions, setStreakSessions] = useState<SessionRecord[]>([]);
   const [baselineAt, setBaselineAt] = useState(0);
   const [prescribedWorkoutsPerWeek, setPrescribedWorkoutsPerWeek] = useState(3);
 
@@ -178,6 +179,9 @@ export default function ProgressPage() {
         activeProgramId && activeProgramSessions.length
           ? activeProgramSessions
           : sessionList;
+      const orderedStreakSessions = [...sessionsForActiveProgram].sort(
+        (left, right) => sessionTimestampMs(right) - sessionTimestampMs(left)
+      );
 
       const fallbackBaselineAt = sessionsForActiveProgram.reduce((earliest, session) => {
         const timestamp = sessionTimestampMs(session);
@@ -219,6 +223,7 @@ export default function ProgressPage() {
       setBaselineAt(effectiveBaselineAt);
       setPrescribedWorkoutsPerWeek(activeProgram?.daysPerWeek ?? 3);
       setSessions(orderedSessions);
+      setStreakSessions(orderedStreakSessions);
       setLogs(logsBySession.flat().filter((log) => !log.deletedAt));
     };
 
@@ -356,11 +361,11 @@ export default function ProgressPage() {
 
   const weeklyGoalStreak = useMemo(() => {
     return calculateWeeklyGoalStreak({
-      sessions,
+      sessions: streakSessions,
       prescribedWorkoutsPerWeek,
       nowMs: currentTimestampMs(),
     });
-  }, [sessions, prescribedWorkoutsPerWeek]);
+  }, [streakSessions, prescribedWorkoutsPerWeek]);
 
   const difficultyTrendLabel = useMemo<DifficultyTrendLabel>(() => {
     const difficultyScores = sessions

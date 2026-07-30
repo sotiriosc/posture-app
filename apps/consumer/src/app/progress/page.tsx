@@ -156,6 +156,7 @@ const formatImprovement = (last: PrSnapshot, previous: PrSnapshot) => {
 export default function ProgressPage() {
   const [logs, setLogs] = useState<ExerciseLog[]>([]);
   const [sessions, setSessions] = useState<SessionRecord[]>([]);
+  const [streakSessions, setStreakSessions] = useState<SessionRecord[]>([]);
   const [baselineAt, setBaselineAt] = useState(0);
   const [prescribedWorkoutsPerWeek, setPrescribedWorkoutsPerWeek] = useState(3);
 
@@ -177,6 +178,9 @@ export default function ProgressPage() {
         activeProgramId && activeProgramSessions.length
           ? activeProgramSessions
           : sessionList;
+      const orderedStreakSessions = [...sessionsForActiveProgram].sort(
+        (left, right) => sessionTimestampMs(right) - sessionTimestampMs(left)
+      );
 
       const fallbackBaselineAt = sessionsForActiveProgram.reduce((earliest, session) => {
         const timestamp = sessionTimestampMs(session);
@@ -218,6 +222,7 @@ export default function ProgressPage() {
       setBaselineAt(effectiveBaselineAt);
       setPrescribedWorkoutsPerWeek(activeProgram?.daysPerWeek ?? 3);
       setSessions(orderedSessions);
+      setStreakSessions(orderedStreakSessions);
       setLogs(logsBySession.flat().filter((log) => !log.deletedAt));
     };
 
@@ -355,11 +360,11 @@ export default function ProgressPage() {
 
   const weeklyGoalStreak = useMemo(() => {
     return calculateWeeklyGoalStreak({
-      sessions,
+      sessions: streakSessions,
       prescribedWorkoutsPerWeek,
       nowMs: currentTimestampMs(),
     });
-  }, [sessions, prescribedWorkoutsPerWeek]);
+  }, [streakSessions, prescribedWorkoutsPerWeek]);
 
   // Phase 6d, Commit 4 — all difficulty-derived entries, unsliced, so we can
   // tell "not enough data yet" apart from an actual stable trend. The old
@@ -425,9 +430,21 @@ export default function ProgressPage() {
   );
   const daysSinceBaseline =
     baselineAt > 0 ? Math.floor((currentTimestampMs() - baselineAt) / DAY_MS) : 0;
+  const streakHistoryDays = useMemo(() => {
+    const completedTimestamps = streakSessions
+      .filter((session) => Boolean(session.completedAt))
+      .map(sessionTimestampMs)
+      .filter((timestamp) => timestamp > 0);
+    if (!completedTimestamps.length) return 0;
+    return (
+      Math.floor(
+        (Math.max(...completedTimestamps) - Math.min(...completedTimestamps)) / DAY_MS
+      ) + 1
+    );
+  }, [streakSessions]);
 
   const consistencyFloorMet = completedSessionsCount >= 5;
-  const streakFloorMet = daysSinceBaseline >= 14; // 2 full weeks
+  const streakFloorMet = streakHistoryDays >= 14; // 2 full weeks of streak history
   const trendFloorMet = hasEnoughTrendData;
 
   const recentInsights = useMemo(() => {
