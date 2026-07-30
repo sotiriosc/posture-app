@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { exerciseById } from "@/lib/exercises";
-import type { Program, SessionRecord } from "@/lib/types";
+import { getPhaseGateThreshold } from "@/lib/phaseGating";
+import type { Program, ProgramProgress, SessionRecord } from "@/lib/types";
 
 export type HistoryScope = "current" | "all";
 
@@ -23,10 +24,80 @@ const parseDayIndexFromSession = (session: SessionRecord) => {
   return Number.isInteger(parsed) && parsed >= 0 ? parsed : null;
 };
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+const DAYS_PER_WEEK = 7;
+
+const toTimestampMs = (value: string | null | undefined) => {
+  if (!value) return null;
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const completedTimestampMs = (session: SessionRecord) =>
+  toTimestampMs(session.completedAt ?? session.updatedAt ?? session.createdAt);
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.max(min, Math.min(max, value));
+
+const calculateSessionPhaseWeek = ({
+  daysSincePhaseStart,
+  dayTarget,
+}: {
+  daysSincePhaseStart: number;
+  dayTarget: number;
+}) => {
+  const totalWeeks = Math.max(1, Math.ceil(Math.max(1, dayTarget) / DAYS_PER_WEEK));
+  const weekFromDays =
+    Number.isFinite(daysSincePhaseStart) && daysSincePhaseStart > 0
+      ? Math.floor(daysSincePhaseStart / DAYS_PER_WEEK) + 1
+      : 1;
+  return clamp(weekFromDays, 1, totalWeeks);
+};
+
+export function buildSessionProgramLabel({
+  session,
+  sessionProgram,
+  activeProgramId,
+  programProgress,
+}: {
+  session: SessionRecord;
+  sessionProgram: Program | null | undefined;
+  activeProgramId: string | null;
+  programProgress: ProgramProgress | null | undefined;
+}) {
+  if (!sessionProgram) return session.routineId ?? "Plan";
+
+  const phaseStartedAt =
+    session.routineId === activeProgramId
+      ? programProgress?.phaseStartedAt ?? sessionProgram.createdAt
+      : sessionProgram.createdAt;
+  const phaseStartedAtMs = toTimestampMs(phaseStartedAt);
+  const completedAtMs = completedTimestampMs(session);
+  let weekLabel = `Week ${sessionProgram.weekIndex ?? 1}`;
+
+  if (phaseStartedAtMs !== null && completedAtMs !== null) {
+    const phaseIndex =
+      programProgress?.phaseIndex ??
+      sessionProgram.phaseIndex ??
+      sessionProgram.phase?.phaseIndex ??
+      1;
+    const daysPerWeek = programProgress?.daysPerWeek ?? sessionProgram.daysPerWeek;
+    const { minDays } = getPhaseGateThreshold(phaseIndex, daysPerWeek);
+    const daysSincePhaseStart = Math.max(
+      0,
+      Math.floor((completedAtMs - phaseStartedAtMs) / DAY_MS)
+    );
+    weekLabel = `Week ${calculateSessionPhaseWeek({ daysSincePhaseStart, dayTarget: minDays })}`;
+  }
+
+  return `${sessionProgram.phaseName ?? "Plan"} • ${weekLabel}`;
+}
+
 type UseResultsHistoryProgressParams = {
   allSessions: SessionRecord[];
   activeProgramId: string | null;
   program: Program | null;
+  programProgress?: ProgramProgress | null;
   allPrograms: Program[];
 };
 
@@ -34,6 +105,7 @@ export function useResultsHistoryProgress({
   allSessions,
   activeProgramId,
   program,
+  programProgress,
   allPrograms,
 }: UseResultsHistoryProgressParams) {
   const [historyScope, setHistoryScope] = useState<HistoryScope>("current");
@@ -102,9 +174,12 @@ export function useResultsHistoryProgress({
         const dayLabel =
           day?.title ??
           (dayIndex === null ? "Plan day saved" : `Day ${dayIndex + 1}`);
-        const programLabel = sessionProgram
-          ? `${sessionProgram.phaseName ?? "Plan"} • Week ${sessionProgram.weekIndex ?? 1}`
-          : session.routineId ?? "Plan";
+        const programLabel = buildSessionProgramLabel({
+          session,
+          sessionProgram,
+          activeProgramId,
+          programProgress,
+        });
         const searchText = [
           displayDate,
           isoDate,
@@ -129,7 +204,7 @@ export function useResultsHistoryProgress({
       .filter((entry) =>
         historySearchTerm ? entry.searchText.includes(historySearchTerm) : true
       );
-  }, [historyScopeSessions, historySearchTerm, programById]);
+  }, [historyScopeSessions, historySearchTerm, programById, activeProgramId, programProgress]);
 
   return {
     historyScope,

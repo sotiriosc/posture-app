@@ -1804,6 +1804,7 @@ export default function ResultsRoutine() {
     allSessions,
     activeProgramId,
     program,
+    programProgress: progress,
     allPrograms,
   });
 
@@ -3987,7 +3988,9 @@ export default function ResultsRoutine() {
             <p className="mt-3 text-xs text-slate-400">
               {historyEntries.length} result{historyEntries.length === 1 ? "" : "s"} •{" "}
               {historyScope === "current"
-                ? `${completedWorkoutCount} saved for this plan`
+                ? `${completedWorkoutCount} completed workout${
+                    completedWorkoutCount === 1 ? "" : "s"
+                  } in this plan`
                 : `${totalCompletedWorkoutCount} completed workouts total`}
             </p>
           </div>

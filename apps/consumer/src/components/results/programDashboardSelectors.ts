@@ -25,7 +25,7 @@ const uniqueClean = (values: Array<string | null | undefined>) => {
 
 /**
  * Drop shorter tags that are already covered by a longer tag
- * ("Balance" vs "Balance And Asymmetry Control").
+ * ("Balance" vs "Balance and Asymmetry Control").
  */
 const dropCoveredTags = (values: string[]) => {
   const sortedByLength = [...values].sort((a, b) => b.length - a.length);
@@ -44,11 +44,41 @@ const dropCoveredTags = (values: string[]) => {
   return values.filter((value) => keptKeys.has(value.toLowerCase()));
 };
 
+const LOWERCASE_DISPLAY_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "as",
+  "at",
+  "but",
+  "by",
+  "for",
+  "from",
+  "in",
+  "nor",
+  "of",
+  "on",
+  "or",
+  "per",
+  "the",
+  "to",
+  "via",
+  "vs",
+  "with",
+]);
+
 const humanizeProgramSignal = (value: string) => {
   const cleaned = value.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
   if (!cleaned) return "";
 
-  return cleaned.replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+  return cleaned
+    .split(" ")
+    .map((word, index) => {
+      const lower = word.toLowerCase();
+      if (index > 0 && LOWERCASE_DISPLAY_WORDS.has(lower)) return lower;
+      return word.replace(/^[a-z]/, (letter) => letter.toUpperCase());
+    })
+    .join(" ");
 };
 
 const stripObservationTemplateGlue = (description: string) =>

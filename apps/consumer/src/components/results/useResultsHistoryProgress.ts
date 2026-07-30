@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { exerciseById } from "@/lib/exercises";
-import type { Program, SessionRecord } from "@/lib/types";
+import { getPhaseGateThreshold } from "@/lib/phaseGating";
+import type { Program, ProgramProgress, SessionRecord } from "@/lib/types";
+import { calculatePhaseWeekDisplay } from "@/components/results/progressMetrics";
 
 export type HistoryScope = "current" | "all";
 
@@ -23,10 +25,66 @@ const parseDayIndexFromSession = (session: SessionRecord) => {
   return Number.isInteger(parsed) && parsed >= 0 ? parsed : null;
 };
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+const toTimestampMs = (value: string | null | undefined) => {
+  if (!value) return null;
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const completedTimestampMs = (session: SessionRecord) =>
+  toTimestampMs(session.completedAt ?? session.updatedAt ?? session.createdAt);
+
+export function buildSessionProgramLabel({
+  session,
+  sessionProgram,
+  activeProgramId,
+  programProgress,
+}: {
+  session: SessionRecord;
+  sessionProgram: Program | null | undefined;
+  activeProgramId: string | null;
+  programProgress: ProgramProgress | null | undefined;
+}) {
+  if (!sessionProgram) return session.routineId ?? "Plan";
+
+  const phaseStartedAt =
+    session.routineId === activeProgramId
+      ? programProgress?.phaseStartedAt ?? sessionProgram.createdAt
+      : sessionProgram.createdAt;
+  const phaseStartedAtMs = toTimestampMs(phaseStartedAt);
+  const completedAtMs = completedTimestampMs(session);
+  let weekLabel = `Week ${sessionProgram.weekIndex ?? 1}`;
+
+  if (phaseStartedAtMs !== null && completedAtMs !== null) {
+    const phaseIndex =
+      programProgress?.phaseIndex ??
+      sessionProgram.phaseIndex ??
+      sessionProgram.phase?.phaseIndex ??
+      1;
+    const daysPerWeek = programProgress?.daysPerWeek ?? sessionProgram.daysPerWeek;
+    const { minDays } = getPhaseGateThreshold(phaseIndex, daysPerWeek);
+    const daysSincePhaseStart = Math.max(
+      0,
+      Math.floor((completedAtMs - phaseStartedAtMs) / DAY_MS)
+    );
+    const { currentWeek } = calculatePhaseWeekDisplay({
+      daysSincePhaseStart,
+      dayTarget: minDays,
+      weekIndex: 1,
+    });
+    weekLabel = `Week ${currentWeek}`;
+  }
+
+  return `${sessionProgram.phaseName ?? "Plan"} • ${weekLabel}`;
+}
+
 type UseResultsHistoryProgressParams = {
   allSessions: SessionRecord[];
   activeProgramId: string | null;
   program: Program | null;
+  programProgress?: ProgramProgress | null;
   allPrograms: Program[];
 };
 
@@ -34,6 +92,7 @@ export function useResultsHistoryProgress({
   allSessions,
   activeProgramId,
   program,
+  programProgress,
   allPrograms,
 }: UseResultsHistoryProgressParams) {
   const [historyScope, setHistoryScope] = useState<HistoryScope>("current");
@@ -102,9 +161,12 @@ export function useResultsHistoryProgress({
         const dayLabel =
           day?.title ??
           (dayIndex === null ? "Plan day saved" : `Day ${dayIndex + 1}`);
-        const programLabel = sessionProgram
-          ? `${sessionProgram.phaseName ?? "Plan"} • Week ${sessionProgram.weekIndex ?? 1}`
-          : session.routineId ?? "Plan";
+        const programLabel = buildSessionProgramLabel({
+          session,
+          sessionProgram,
+          activeProgramId,
+          programProgress,
+        });
         const searchText = [
           displayDate,
           isoDate,
@@ -129,7 +191,7 @@ export function useResultsHistoryProgress({
       .filter((entry) =>
         historySearchTerm ? entry.searchText.includes(historySearchTerm) : true
       );
-  }, [historyScopeSessions, historySearchTerm, programById]);
+  }, [historyScopeSessions, historySearchTerm, programById, activeProgramId, programProgress]);
 
   return {
     historyScope,

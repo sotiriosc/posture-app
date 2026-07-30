@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildProgramFocusAreas,
   buildProgramDashboardCopy,
   buildProgramMovementPatternItems,
 } from "@/components/results/programDashboardSelectors";
@@ -30,9 +31,7 @@ describe("programDashboardSelectors (Phase 6i Commit 1)", () => {
   it("lists movement tags without a Plan focus: prefix", () => {
     const items = buildProgramMovementPatternItems({ program: minimalProgram });
     expect(items.every((item) => !item.startsWith("Plan focus:"))).toBe(true);
-    expect(items.some((item) => /Balance And Asymmetry Control/i.test(item))).toBe(
-      true
-    );
+    expect(items).toContain("Balance and Asymmetry Control");
   });
 
   it("drops truncated tags covered by a longer sibling", () => {
@@ -41,8 +40,30 @@ describe("programDashboardSelectors (Phase 6i Commit 1)", () => {
       assessmentReport: null,
       painTrendLabel: "Stable",
     });
-    expect(focusAreas).toContain("Balance And Asymmetry Control");
+    expect(focusAreas).toContain("Balance and Asymmetry Control");
     expect(focusAreas).not.toContain("Balance");
+  });
+
+  it("keeps connector words lower-case in generated display tags", () => {
+    const program = {
+      ...minimalProgram,
+      phaseObjective: {
+        ...minimalProgram.phaseObjective,
+        primaryPatterns: ["week_4_of_8", "balance_and_asymmetry_control"],
+      },
+      movementProfile: {
+        ...minimalProgram.movementProfile,
+        priorities: ["RPE_control"],
+      },
+    } as unknown as Program;
+
+    expect(buildProgramFocusAreas(program, 4)).toEqual(
+      expect.arrayContaining([
+        "Week 4 of 8",
+        "Balance and Asymmetry Control",
+        "RPE Control",
+      ])
+    );
   });
 
   it("strips Pattern suggests / Goal suggests glue from stability items", () => {
