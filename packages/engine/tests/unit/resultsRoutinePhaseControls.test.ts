@@ -28,7 +28,7 @@ describe("results routine phase controls", () => {
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-25T00:00:00.000Z",
-        workoutsCompletedInPhase: 11,
+        workoutsCompletedInPhase: 23,
         daysPerWeek: 3,
       },
       "2026-02-01T00:00:00.000Z"
@@ -37,7 +37,7 @@ describe("results routine phase controls", () => {
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-25T00:00:00.000Z",
-        workoutsCompletedInPhase: 12,
+        workoutsCompletedInPhase: 24,
         daysPerWeek: 3,
       },
       "2026-02-01T00:00:00.000Z"
@@ -49,7 +49,7 @@ describe("results routine phase controls", () => {
         workoutsCompletedInPhase: 1,
         daysPerWeek: 3,
       },
-      "2026-02-01T00:00:00.000Z"
+      "2026-03-01T00:00:00.000Z"
     );
 
     expect(blocked.ok).toBe(false);
@@ -129,7 +129,7 @@ describe("results routine phase controls", () => {
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-25T00:00:00.000Z",
-        workoutsCompletedInPhase: 12,
+        workoutsCompletedInPhase: 24,
         daysPerWeek: 3,
       },
       "2026-02-01T00:00:00.000Z"
@@ -141,7 +141,7 @@ describe("results routine phase controls", () => {
         programId: "program-1",
         phaseIndex: 1,
         gate,
-        previousWorkoutsCompletedInPhase: 11,
+        previousWorkoutsCompletedInPhase: 23,
       })
     ).toMatchObject({
       shouldShow: true,
@@ -153,7 +153,7 @@ describe("results routine phase controls", () => {
         programId: "program-1",
         phaseIndex: 1,
         gate,
-        previousWorkoutsCompletedInPhase: 12,
+        previousWorkoutsCompletedInPhase: 24,
       }).shouldShow
     ).toBe(false);
     expect(
@@ -161,7 +161,7 @@ describe("results routine phase controls", () => {
         programId: "program-1",
         phaseIndex: 1,
         gate,
-        previousWorkoutsCompletedInPhase: 11,
+        previousWorkoutsCompletedInPhase: 23,
         dismissed: true,
       }).shouldShow
     ).toBe(false);
@@ -175,7 +175,7 @@ describe("results routine phase controls", () => {
         workoutsCompletedInPhase: 1,
         daysPerWeek: 3,
       },
-      "2026-02-01T00:00:00.000Z"
+      "2026-03-01T00:00:00.000Z"
     );
     expect(gate.ok).toBe(true);
     expect(gate.satisfiedBy).toBe("days");
@@ -200,7 +200,7 @@ describe("results routine phase controls", () => {
       {
         phaseIndex: 1,
         phaseStartedAt: "2026-01-01T00:00:00.000Z",
-        workoutsCompletedInPhase: 12,
+        workoutsCompletedInPhase: 24,
         daysPerWeek: 3,
       },
       "2026-02-01T00:00:00.000Z"
@@ -211,7 +211,7 @@ describe("results routine phase controls", () => {
         programId: "program-1",
         phaseIndex: 1,
         gate,
-        previousWorkoutsCompletedInPhase: 11,
+        previousWorkoutsCompletedInPhase: 23,
         dismissed: true,
       }).shouldShow
     ).toBe(false);

@@ -103,6 +103,10 @@ import PhaseProgressionSection from "@/components/results/PhaseProgressionSectio
 import WeekViewPanel, { type WeekViewDetailEntry } from "@/components/results/WeekViewPanel";
 import InsightsPanel, { type KnowledgeCard } from "@/components/results/InsightsPanel";
 import { buildProgramDashboardCopy } from "@/components/results/programDashboardSelectors";
+import {
+  calculateMovementQualityPercent,
+  calculateTrainingConsistencyPercent,
+} from "@/components/results/progressMetrics";
 
 const STORAGE_KEY = "posture_questionnaire";
 const SESSION_COMPLETE_ACK_KEY = "results_last_seen_session_complete_at";
@@ -2476,13 +2480,28 @@ export default function ResultsRoutine() {
     return Math.round((completedCount / activeDaysPerWeek) * 100);
   }, [completedCount, activeDaysPerWeek]);
 
+  const liveConsistencyPercent = useMemo(
+    () =>
+      calculateTrainingConsistencyPercent({
+        sessions: currentProgramCompletedSessions,
+        daysPerWeek: activeDaysPerWeek,
+        nowMs: nowAnchor,
+      }),
+    [currentProgramCompletedSessions, activeDaysPerWeek, nowAnchor]
+  );
+
   const consistencyPercent = useMemo(() => {
+    if (liveConsistencyPercent !== null) return liveConsistencyPercent;
     const fromMetrics = program?.phaseObjective?.metrics?.consistency;
     if (typeof fromMetrics === "number") {
       return Math.round(Math.max(0, Math.min(1, fromMetrics)) * 100);
     }
     return adherencePercent;
-  }, [program?.phaseObjective?.metrics?.consistency, adherencePercent]);
+  }, [
+    liveConsistencyPercent,
+    program?.phaseObjective?.metrics?.consistency,
+    adherencePercent,
+  ]);
 
   const painTrendLabel = useMemo(() => {
     const logs = lastTwoLogs.filter((entry) => entry.felt);
@@ -2503,18 +2522,15 @@ export default function ResultsRoutine() {
     return 74;
   }, [painTrendLabel]);
 
-  const movementQualityPercent = useMemo(() => {
-    const readiness = program?.phaseObjective?.metrics?.readiness;
-    const consistency = program?.phaseObjective?.metrics?.consistency;
-    if (typeof readiness === "number" && typeof consistency === "number") {
-      return Math.round(((readiness + consistency) / 2) * 100);
-    }
-    return Math.max(55, consistencyPercent - 5);
-  }, [
-    program?.phaseObjective?.metrics?.readiness,
-    program?.phaseObjective?.metrics?.consistency,
-    consistencyPercent,
-  ]);
+  const movementQualityPercent = useMemo(
+    () =>
+      calculateMovementQualityPercent({
+        program,
+        sessions: currentProgramCompletedSessions,
+        consistencyPercent,
+      }),
+    [program, currentProgramCompletedSessions, consistencyPercent]
+  );
 
   const movementQualityTrend = useMemo(() => {
     if (movementQualityPercent >= 78) return "Stable and improving";

@@ -21,6 +21,7 @@ export default defineConfig({
       "@/components": path.resolve(__dirname, "../../apps/consumer/src/components"),
       "@/app": path.resolve(__dirname, "../../apps/consumer/src/app"),
       "@/hooks": path.resolve(__dirname, "../../apps/consumer/src/hooks"),
+      "@/firstRunCalm": path.resolve(__dirname, "../../apps/consumer/src/firstRunCalm.ts"),
     },
   },
 });

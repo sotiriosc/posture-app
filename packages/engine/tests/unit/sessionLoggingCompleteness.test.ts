@@ -109,6 +109,14 @@ const parseMinSets = (value: string | number | null) => {
 };
 
 vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    back: vi.fn(),
+    forward: vi.fn(),
+    prefetch: vi.fn(),
+    push: vi.fn(),
+    refresh: vi.fn(),
+    replace: vi.fn(),
+  }),
   useSearchParams: () => new URLSearchParams(mocks.searchParams),
 }));
 
@@ -148,6 +156,13 @@ vi.mock("@/lib/logStore", () => ({
   listSessions: vi.fn(async (limit = 20) => mocks.sessions.slice(0, limit)),
   listSessionsByProgramId: vi.fn(async (programId: string) =>
     mocks.sessions.filter((session) => session.routineId === programId)
+  ),
+  listSessionsByProgramDay: vi.fn(async (programId: string, dayIndex: number) =>
+    mocks.sessions.filter(
+      (session) =>
+        session.routineId === programId &&
+        session.notes?.includes(`dayIndex:${dayIndex}`)
+    )
   ),
   loadPrefs: vi.fn(async () => mocks.prefs),
   nowIso: vi.fn(() => "2026-02-15T00:00:00.000Z"),

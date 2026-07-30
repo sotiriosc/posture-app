@@ -70,6 +70,14 @@ const makeProgram = (params: {
 });
 
 vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    back: vi.fn(),
+    forward: vi.fn(),
+    prefetch: vi.fn(),
+    push: vi.fn(),
+    refresh: vi.fn(),
+    replace: vi.fn(),
+  }),
   useSearchParams: () => new URLSearchParams(mocks.searchParams),
 }));
 
@@ -113,6 +121,13 @@ vi.mock("@/lib/logStore", () => ({
   listSessions: vi.fn(async (limit = 20) => mocks.sessions.slice(0, limit)),
   listSessionsByProgramId: vi.fn(async (programId: string) =>
     mocks.sessions.filter((session) => session.routineId === programId)
+  ),
+  listSessionsByProgramDay: vi.fn(async (programId: string, dayIndex: number) =>
+    mocks.sessions.filter(
+      (session) =>
+        session.routineId === programId &&
+        session.notes?.includes(`dayIndex:${dayIndex}`)
+    )
   ),
   loadPrefs: vi.fn(async () => mocks.prefs),
   nowIso: vi.fn(() => "2026-02-15T00:00:00.000Z"),
@@ -211,7 +226,8 @@ describe("session tracking integration flow", () => {
       expect(screen.getByText(/dumbbell rows/i)).toBeTruthy();
     });
     expect(screen.getByText("Today's options")).toBeTruthy();
-    expect(screen.getByText("Adjust just today's session — your plan stays the same.")).toBeTruthy();
+    fireEvent.click(screen.getByTestId("session-practice-options-toggle"));
+    expect(screen.getByText("Adjust just today — plan stays the same")).toBeTruthy();
     fireEvent.click(screen.getByTestId("practice-option-full"));
 
     fireEvent.change(screen.getByTestId("weight-input"), {
@@ -390,7 +406,7 @@ describe("session tracking integration flow", () => {
     render(React.createElement(SessionClient));
     await waitFor(() => {
       expect(screen.getByText(/Plank/i)).toBeTruthy();
-      expect(screen.getByRole("button", { name: "0:45" })).toBeTruthy();
+      expect(screen.getByTestId("session-timer-digits").textContent).toBe("0:50");
     });
     expect(screen.queryByTestId("reps-input")).toBeNull();
 
@@ -399,10 +415,10 @@ describe("session tracking integration flow", () => {
     render(React.createElement(SessionClient));
     await waitFor(() => {
       expect(screen.getByText(/Dumbbell Rows/i)).toBeTruthy();
-      expect(screen.getByRole("button", { name: "0:40" })).toBeTruthy();
+      expect(screen.getByTestId("session-timer-digits").textContent).toBe("0:45");
     });
     expect(screen.getByTestId("reps-input")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "0:40" })).toBeTruthy();
+    expect(screen.getByTestId("session-timer-digits").textContent).toBe("0:45");
   });
 
   test("direct session route loads the active generated program from app state", async () => {
@@ -563,26 +579,31 @@ describe("session tracking integration flow", () => {
       })
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "0:40" }));
+    const timerFace = () => screen.getByTestId("session-timer-face");
+    const expectTimerDigits = (value: string) =>
+      expect(screen.getByTestId("session-timer-digits").textContent).toBe(value);
+
+    expectTimerDigits("0:45");
+    fireEvent.click(timerFace());
     act(() => {
       vi.advanceTimersByTime(3000);
     });
-    expect(screen.getByRole("button", { name: "0:37" })).toBeTruthy();
+    expectTimerDigits("0:42");
 
-    fireEvent.click(screen.getByRole("button", { name: "0:37" }));
+    fireEvent.click(timerFace());
     act(() => {
       vi.advanceTimersByTime(2000);
     });
-    expect(screen.getByRole("button", { name: "0:37" })).toBeTruthy();
+    expectTimerDigits("0:42");
 
-    fireEvent.click(screen.getByRole("button", { name: "0:37" }));
+    fireEvent.click(timerFace());
     act(() => {
       vi.advanceTimersByTime(1000);
     });
-    expect(screen.getByRole("button", { name: "0:36" })).toBeTruthy();
+    expectTimerDigits("0:41");
 
     fireEvent.click(screen.getByRole("button", { name: "Reset" }));
-    expect(screen.getByRole("button", { name: "0:40" })).toBeTruthy();
+    expectTimerDigits("0:45");
     vi.useRealTimers();
   });
 });

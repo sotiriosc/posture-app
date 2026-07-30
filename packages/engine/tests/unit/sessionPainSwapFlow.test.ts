@@ -61,6 +61,14 @@ const makeProgram = (): Program => ({
 });
 
 vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    back: vi.fn(),
+    forward: vi.fn(),
+    prefetch: vi.fn(),
+    push: vi.fn(),
+    refresh: vi.fn(),
+    replace: vi.fn(),
+  }),
   useSearchParams: () => new URLSearchParams(mocks.searchParams),
 }));
 
@@ -97,6 +105,13 @@ vi.mock("@/lib/logStore", () => ({
   listAllPrograms: vi.fn(async () => Array.from(mocks.programs.values())),
   listSessionsByProgramId: vi.fn(async (programId: string) =>
     mocks.sessions.filter((session) => session.routineId === programId)
+  ),
+  listSessionsByProgramDay: vi.fn(async (programId: string, dayIndex: number) =>
+    mocks.sessions.filter(
+      (session) =>
+        session.routineId === programId &&
+        session.notes?.includes(`dayIndex:${dayIndex}`)
+    )
   ),
   loadPrefs: vi.fn(async () => mocks.prefs),
   nowIso: vi.fn(() => "2026-02-15T00:00:00.000Z"),

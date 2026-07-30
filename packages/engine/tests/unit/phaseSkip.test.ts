@@ -63,7 +63,7 @@ describe("phase skip", () => {
       phaseIndex: 1,
       phaseStartedAt: "2026-01-01T00:00:00.000Z",
       cyclesCompletedInPhase: 3,
-      workoutsCompletedInPhase: 12,
+      workoutsCompletedInPhase: 24,
     });
     const gate = canAdvancePhase(
       {
