@@ -77,8 +77,13 @@ STRIPE_PRICE_ID_ANNUAL=...     (optional for gyms; required for consumer multi-p
 # STRIPE_PRICE_ID_FOUNDERS unused (archived)
 STRIPE_WEBHOOK_SECRET=...      (separate — each Stripe webhook endpoint gets its own signing secret)
 APP_URL=...                    (gyms's own production URL, e.g. https://gyms.praxisapp.ca)
-NEXT_PUBLIC_APP_URL=...        (same value as APP_URL)
+NEXT_PUBLIC_APP_URL=...        (same value as APP_URL — required for Open Graph / X card image URLs)
 NEXT_PUBLIC_SITE_URL=...       (gyms's own production URL)
+
+# Social / X ads: if NEXT_PUBLIC_APP_URL (or APP_URL) is missing or set to
+# http://localhost:3000 in the Vercel Production env, og:image / twitter:image
+# become localhost links and X cannot show the logo. Set both to the public
+# https:// origin. Card image: /icons/praxis-og-1200x630.png
 NEXT_PUBLIC_PLAUSIBLE_SRC=...  (separate — must point at a distinct Plausible site so analytics don't mix the two products)
 
 # Phase 6L — /feedback Google Form → Sheet (consumer only)
