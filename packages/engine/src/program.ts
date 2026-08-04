@@ -1819,7 +1819,11 @@ export const ensureEligibleItem = (
     catalog
   );
   const baselinePainSafe =
-    baselineFallback && candidateAvoidsCurrentPain(baselineFallback)
+    baselineFallback &&
+    candidateAvoidsCurrentPain(baselineFallback) &&
+    // Never use a baseline that violates an explicit slot lane / day identity.
+    (!shouldEnforceStrictRoleReplacement ||
+      candidateIsStrictRoleReplacement(baselineFallback))
       ? baselineFallback
       : null;
   const fallback = shouldEnforceStrictRoleReplacement
@@ -1851,39 +1855,61 @@ export const ensureEligibleItem = (
     return { item };
   }
 
-  // Widen after primary substitution failed: same ExerciseCategory, then any
-  // section-legal role/pattern, then omit. Never retain the hard-excluded original.
-  const sameCategoryPainSafe = catalog.find(
+  // Widen after primary substitution failed.
+  // When a slot lane / day identity is locked, only role-legal pain-safe swaps
+  // are allowed — otherwise omit. Safety outranks completeness; role truth
+  // outranks stuffing an unrelated main into the lane.
+  const roleLegalPainSafe = catalog.find(
     (candidate) =>
       candidate.id !== exercise.id &&
-      candidate.category === exercise.category &&
       candidateAvoidsCurrentPain(candidate) &&
-      isContextEligible(candidate)
+      isContextEligible(candidate) &&
+      candidateIsStrictRoleReplacement(candidate) &&
+      (!shouldProtectMainIdentity || candidatePreservesMainIdentity(candidate))
   );
-  if (sameCategoryPainSafe) {
+  if (roleLegalPainSafe) {
     return {
       item: toEligibilitySwapItem(
         item,
-        sameCategoryPainSafe,
-        `pain_safe_category_widen:${exercise.id}->${sameCategoryPainSafe.id}`
+        roleLegalPainSafe,
+        `pain_safe_role_legal:${exercise.id}->${roleLegalPainSafe.id}`
       ),
     };
   }
 
-  const widenedPainSafe = catalog.find(
-    (candidate) =>
-      candidate.id !== exercise.id &&
-      candidateAvoidsCurrentPain(candidate) &&
-      isContextEligible(candidate)
-  );
-  if (widenedPainSafe) {
-    return {
-      item: toEligibilitySwapItem(
-        item,
-        widenedPainSafe,
-        `pain_safe_role_widen:${exercise.id}->${widenedPainSafe.id}`
-      ),
-    };
+  if (!shouldEnforceStrictRoleReplacement) {
+    const sameCategoryPainSafe = catalog.find(
+      (candidate) =>
+        candidate.id !== exercise.id &&
+        candidate.category === exercise.category &&
+        candidateAvoidsCurrentPain(candidate) &&
+        isContextEligible(candidate)
+    );
+    if (sameCategoryPainSafe) {
+      return {
+        item: toEligibilitySwapItem(
+          item,
+          sameCategoryPainSafe,
+          `pain_safe_category_widen:${exercise.id}->${sameCategoryPainSafe.id}`
+        ),
+      };
+    }
+
+    const widenedPainSafe = catalog.find(
+      (candidate) =>
+        candidate.id !== exercise.id &&
+        candidateAvoidsCurrentPain(candidate) &&
+        isContextEligible(candidate)
+    );
+    if (widenedPainSafe) {
+      return {
+        item: toEligibilitySwapItem(
+          item,
+          widenedPainSafe,
+          `pain_safe_role_widen:${exercise.id}->${widenedPainSafe.id}`
+        ),
+      };
+    }
   }
 
   const matchedAreas = evaluateHardPainExclusion(
@@ -2271,6 +2297,43 @@ const normalizeWeekForSelectionContext = (params: {
     ensureDistinctRoutine,
   });
 
+const appendDegradationNotes = (day: ProgramDay, notes: string[]): ProgramDay => {
+  if (!notes.length) return day;
+  return {
+    ...day,
+    degradationNotes: [...(day.degradationNotes ?? []), ...notes],
+  };
+};
+
+const resolveSimpleMainCountTarget = (params: {
+  experienceLevel: SelectionContext["experienceLevel"];
+  daysPerWeek: 3 | 4 | 5;
+  dayTitle: string;
+}) => {
+  const { experienceLevel, daysPerWeek, dayTitle } = params;
+  if (daysPerWeek === 3) {
+    const title = dayTitle.toLowerCase();
+    if (title.includes("back") && title.includes("chest")) {
+      if (experienceLevel === "advanced") return 5;
+      if (experienceLevel === "intermediate") return 4;
+      return 3;
+    }
+    if (title.includes("shoulder") || title.includes("arms")) {
+      if (experienceLevel === "advanced") return 4;
+      if (experienceLevel === "intermediate") return 4;
+      return 3;
+    }
+    if (title.includes("leg") || title.includes("abs")) {
+      if (experienceLevel === "advanced") return 4;
+      if (experienceLevel === "intermediate") return 4;
+      return 3;
+    }
+  }
+  if (experienceLevel === "advanced") return 4;
+  if (experienceLevel === "intermediate") return 3;
+  return 2;
+};
+
 const applyFinalCountCompatibility = (params: {
   week: ProgramDay[];
   programId: string;
@@ -2285,7 +2348,27 @@ const applyFinalCountCompatibility = (params: {
     selectionContext.painAreas.length >= 2 ||
     (selectionContext.goal.toLowerCase().includes("reduce pain") &&
       selectionContext.experienceLevel === "beginner");
-  if (daysPerWeek < 4) return week;
+
+  const annotateMainShortfall = (day: ProgramDay, target: number): ProgramDay => {
+    const mainCount = day.routine.filter((item) => item.section === "main").length;
+    if (mainCount >= target) return day;
+    const shortfall = target - mainCount;
+    return appendDegradationNotes(day, [
+      `unresolved_slot:main_count_shortfall:${shortfall}`,
+    ]);
+  };
+
+  if (daysPerWeek < 4) {
+    // 3-day paths do not pad here, but scarce pain pools must not silently underfill.
+    return week.map((day) => {
+      const target = resolveSimpleMainCountTarget({
+        experienceLevel: selectionContext.experienceLevel,
+        daysPerWeek,
+        dayTitle: day.title,
+      });
+      return annotateMainShortfall(day, target);
+    });
+  }
 
   const simpleTarget =
     selectionContext.experienceLevel === "advanced"
@@ -2403,14 +2486,17 @@ const applyFinalCountCompatibility = (params: {
         })
       );
     }
-    if (!additions.length) return normalizedDay;
-    let insertIndex = -1;
-    normalizedDay.routine.forEach((item, index) => {
-      if (item.section === "main") insertIndex = index;
-    });
-    const routine = [...normalizedDay.routine];
-    routine.splice(insertIndex >= 0 ? insertIndex + 1 : routine.length, 0, ...additions);
-    return { ...normalizedDay, routine };
+    let resultDay = normalizedDay;
+    if (additions.length) {
+      let insertIndex = -1;
+      normalizedDay.routine.forEach((item, index) => {
+        if (item.section === "main") insertIndex = index;
+      });
+      const routine = [...normalizedDay.routine];
+      routine.splice(insertIndex >= 0 ? insertIndex + 1 : routine.length, 0, ...additions);
+      resultDay = { ...normalizedDay, routine };
+    }
+    return annotateMainShortfall(resultDay, simpleTarget);
   });
 };
 
@@ -20304,7 +20390,11 @@ const findConstrainedLegsMainFallback = (params: {
   const allowHamstringCurlPosteriorSlot =
     roleSlotKind === "mainHamstringIsolation" ||
     roleSlotKind === "mainSecondaryPosteriorChain";
+  const wantsSquat = slotLane === "squat" || Boolean(slotKind?.toLowerCase().includes("squat"));
   const candidateIds = [
+    // Pain-safe bodyweight anchors first when hips/knees scarce-pool the loaded family.
+    ...(wantsSquat ? ["bodyweight-squat"] : []),
+    ...(wantsHinge ? ["bodyweight-good-morning"] : []),
     ...(conservativeBandPainHinge
       ? conservativeBandPainHingeIds
       : wantsHinge && lowBackPain
@@ -20336,6 +20426,7 @@ const findConstrainedLegsMainFallback = (params: {
       : []),
     "machine-leg-press",
     "machine-hack-squat",
+    "bodyweight-squat",
     "goblet-squat",
     "band-front-squat",
     "split-squat",
@@ -20705,12 +20796,19 @@ const enforceFinalRoleLegality = (params: {
     });
 
     if (droppedMainItemIndexes.size) {
-      nextDay = {
-        ...nextDay,
-        routine: nextDay.routine.filter(
-          (_item, itemIndex) => !droppedMainItemIndexes.has(itemIndex)
-        ),
-      };
+      const dropNotes = Array.from(droppedMainItemIndexes).map((itemIndex) => {
+        const dropped = day.routine[itemIndex];
+        return `unresolved_slot:legality_unrepairable:${dropped?.exerciseId ?? "unknown"}`;
+      });
+      nextDay = appendDegradationNotes(
+        {
+          ...nextDay,
+          routine: nextDay.routine.filter(
+            (_item, itemIndex) => !droppedMainItemIndexes.has(itemIndex)
+          ),
+        },
+        dropNotes
+      );
     }
 
     return nextDay;
@@ -22470,7 +22568,26 @@ const isHigherFrequencyLowerMainDrift = (params: {
 
   if (slotLane === "squat") {
     if (!matchesMainLanePattern(exercise, "squat")) return true;
-    return !noEquipmentContext && isRegressionOrDrillMovement(exercise);
+    if (noEquipmentContext) return false;
+    if (!isRegressionOrDrillMovement(exercise)) return false;
+    // Under hard hip/knee scarcity, bodyweight-squat is the last truthful squat
+    // anchor — do not treat it as drift when every loaded squat is hard-excluded.
+    if (
+      exercise.id === "bodyweight-squat" &&
+      context.painAreas.length > 0 &&
+      !exercises.some((candidate) => {
+        if (candidate.id === exercise.id) return false;
+        if (candidate.category !== "main") return false;
+        if (!matchesMainLanePattern(candidate, "squat")) return false;
+        if (isRegressionOrDrillMovement(candidate)) return false;
+        if (!isExerciseEligible(candidate, available)) return false;
+        if (exerciseHardExcludedForPain(candidate, context.painAreas)) return false;
+        return true;
+      })
+    ) {
+      return false;
+    }
+    return true;
   }
 
   return (

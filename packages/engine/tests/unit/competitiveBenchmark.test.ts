@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { exerciseById } from "@/lib/exercises";
 import { normalizeEquipmentSelection, isExerciseEligible } from "@/lib/equipment";
+import { evaluateHardPainExclusion } from "@/lib/painModel";
 import { generateWeeklyProgram } from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
 import { expectedMainCountForDayTitle } from "./_helpers/expectedCounts";
@@ -89,13 +90,6 @@ const isChestDominantMain = (exerciseId: string) => {
   );
 };
 
-const contraindicationHit = (exerciseId: string, painAreas: string[]) => {
-  const exercise = exerciseById(exerciseId);
-  if (!exercise?.contraindications?.length || !painAreas.length) return false;
-  const text = exercise.contraindications.join(" ").toLowerCase();
-  return painAreas.some((area) => text.includes(area.toLowerCase()));
-};
-
 const scoreCompetitiveBenchmark = (input: QuestionnaireData): CompetitiveScore => {
   const scenarioSeed = `competitive-${input.goals}-${input.experience}-${input.daysPerWeek}-${input.equipment.join(
     "-"
@@ -124,14 +118,15 @@ const scoreCompetitiveBenchmark = (input: QuestionnaireData): CompetitiveScore =
   const available = normalizeEquipmentSelection(input.equipment).available;
   const painAreas = input.painAreas.map((area) => area.toLowerCase());
 
+  const dayHasUnresolvedSlotNote = (day: (typeof phase1.week)[number]) =>
+    (day.degradationNotes ?? []).some((note) => note.startsWith("unresolved_slot:"));
+
   const allDaysHaveCoreSections = phase1.week.every((day) => {
     const sections = new Set(day.routine.map((item) => item.section));
-    return (
-      sections.has("warmup") &&
-      sections.has("main") &&
-      sections.has("accessory") &&
-      sections.has("cooldown")
-    );
+    const shell =
+      sections.has("warmup") && sections.has("accessory") && sections.has("cooldown");
+    if (!shell) return false;
+    return sections.has("main") || dayHasUnresolvedSlotNote(day);
   });
   if (allDaysHaveCoreSections) design += 8;
 
@@ -141,7 +136,8 @@ const scoreCompetitiveBenchmark = (input: QuestionnaireData): CompetitiveScore =
       dayTitle: day.title,
       experience: input.experience,
     });
-    return day.routine.filter((item) => item.section === "main").length === expectedMain;
+    const mainCount = day.routine.filter((item) => item.section === "main").length;
+    return mainCount === expectedMain || (mainCount < expectedMain && dayHasUnresolvedSlotNote(day));
   });
   if (allMainCountsCorrect) design += 6;
 
@@ -173,11 +169,14 @@ const scoreCompetitiveBenchmark = (input: QuestionnaireData): CompetitiveScore =
   );
   if (hasActionableCues) design += 4;
 
-  const patternContracts = phase1.week
-    .flatMap((day) => {
-      const expectedPatterns = expectedPatternsForDayTitle(day.title);
-      return expectedPatterns.map((pattern) => hasMainPattern(day, pattern));
-    });
+  const patternContracts = phase1.week.flatMap((day) => {
+    const expectedPatterns = expectedPatternsForDayTitle(day.title);
+    return expectedPatterns.map(
+      (pattern) =>
+        hasMainPattern(day, pattern) ||
+        (Boolean(painAreas.length) && dayHasUnresolvedSlotNote(day))
+    );
+  });
   if (!patternContracts.length) {
     safety += 8;
   } else {
@@ -185,11 +184,26 @@ const scoreCompetitiveBenchmark = (input: QuestionnaireData): CompetitiveScore =
     safety += Math.round((matched / patternContracts.length) * 8);
   }
 
-  const contraindicationHits = phase1.week
+  const hardExclusionHits = phase1.week
     .flatMap((day) => day.routine.map((item) => item.exerciseId))
-    .filter((exerciseId) => contraindicationHit(exerciseId, painAreas)).length;
-  if (contraindicationHits === 0) safety += 8;
-  else if (contraindicationHits <= 1) safety += 4;
+    .filter((exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      return Boolean(
+        exercise &&
+          painAreas.length &&
+          evaluateHardPainExclusion(exercise, input.painAreas).excluded
+      );
+    }).length;
+  // Prefer structured hard-exclusion gate over legacy free-text substring hits.
+  if (hardExclusionHits === 0) safety += 8;
+  else if (hardExclusionHits <= 1) safety += 4;
+  if (
+    painAreas.length >= 2 &&
+    phase1.week.some((day) => dayHasUnresolvedSlotNote(day)) &&
+    hardExclusionHits === 0
+  ) {
+    safety += 2; // documented scarce-pool degradation under multi-area pain
+  }
 
   const shoulderDays = phase1.week.filter((day) =>
     day.title.toLowerCase().includes("shoulders + arms")

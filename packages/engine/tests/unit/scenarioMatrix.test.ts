@@ -3,6 +3,7 @@ import { generateWeeklyProgram } from "@/lib/program";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
 import { exerciseById } from "@/lib/exercises";
+import { evaluateHardPainExclusion } from "@/lib/painModel";
 
 const experiences: QuestionnaireData["experience"][] = [
   "Beginner",
@@ -81,11 +82,34 @@ describe("scenario matrix reliability", () => {
 
               const mains = day.routine.filter((item) => item.section === "main");
               const expectedMain = expectedMainCount(experience, daysPerWeek, day.title, equipment);
-              if (Array.isArray(expectedMain)) {
-                expect(mains.length).toBeGreaterThanOrEqual(expectedMain[0]);
-                expect(mains.length).toBeLessThanOrEqual(expectedMain[1]);
+              const minExpected = Array.isArray(expectedMain) ? expectedMain[0] : expectedMain;
+              const maxExpected = Array.isArray(expectedMain) ? expectedMain[1] : expectedMain;
+
+              // Safety-aware count contract: shortfalls are allowed only when
+              // degradationNotes document the unresolved slots.
+              const notes = day.degradationNotes ?? [];
+              expect(mains.length).toBeLessThanOrEqual(maxExpected);
+              if (mains.length === 0) {
+                expect(
+                  notes.some((note) => note.startsWith("unresolved_slot:")),
+                  `${day.title}: empty main section without unresolved_slot note`
+                ).toBe(true);
               } else {
-                expect(mains.length).toBe(expectedMain);
+                expect(mains.length).toBeGreaterThanOrEqual(1);
+              }
+              if (mains.length < minExpected) {
+                const shortfall = minExpected - mains.length;
+                expect(
+                  notes.some((note) => note.startsWith("unresolved_slot:")),
+                  `${day.title}: ${shortfall} main shortfall without unresolved_slot note (${notes.join(" | ") || "none"})`
+                ).toBe(true);
+              }
+
+              expect(day.routine.some((item) => item.section === "warmup")).toBe(true);
+              expect(day.routine.some((item) => item.section === "accessory")).toBe(true);
+              expect(day.routine.some((item) => item.section === "cooldown")).toBe(true);
+              if (mains.length > 0) {
+                expect(day.routine.some((item) => item.section === "main")).toBe(true);
               }
 
               day.routine.forEach((item) => {
@@ -93,6 +117,12 @@ describe("scenario matrix reliability", () => {
                 expect(exercise).toBeTruthy();
                 if (exercise) {
                   expect(isExerciseEligible(exercise, available)).toBe(true);
+                  if (painAreas.length) {
+                    expect(
+                      evaluateHardPainExclusion(exercise, painAreas).excluded,
+                      `hard-excluded ${item.exerciseId}`
+                    ).toBe(false);
+                  }
                 }
               });
             });

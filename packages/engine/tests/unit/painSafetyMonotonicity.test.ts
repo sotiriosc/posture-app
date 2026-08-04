@@ -25,20 +25,17 @@ const baseQ = (painAreas: string[]): QuestionnaireData => ({
 });
 
 const stubExercise = (overrides: Partial<Exercise> & Pick<Exercise, "id">): Exercise => ({
-  id: overrides.id,
   name: overrides.name ?? overrides.id,
-  category: overrides.category ?? "main",
-  equipment: overrides.equipment ?? ["dumbbells", "none"],
-  movementPattern: overrides.movementPattern ?? ["squat"],
-  muscleGroups: overrides.muscleGroups ?? ["quads"],
-  loadType: overrides.loadType ?? "weighted",
-  durationOrReps: overrides.durationOrReps ?? "8-12 reps",
-  cues: overrides.cues ?? ["Brace"],
-  mistakes: overrides.mistakes ?? ["Round back"],
-  painContraindications: overrides.painContraindications,
-  contraindications: overrides.contraindications ?? [],
-  tags: overrides.tags ?? ["lower"],
-  swapOptions: overrides.swapOptions,
+  category: "main",
+  equipment: ["dumbbells", "none"],
+  movementPattern: ["squat"],
+  muscleGroups: ["quads"],
+  loadType: "weighted",
+  durationOrReps: "8-12 reps",
+  cues: ["Brace"],
+  mistakes: ["Round back"],
+  contraindications: [],
+  tags: ["lower"],
   ...overrides,
 });
 
