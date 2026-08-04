@@ -55,6 +55,7 @@ const painOptions = [
   "Lower back",
   "Shoulders",
   "Hips",
+  "Knees",
 ];
 
 const experienceOptions = ["Beginner", "Intermediate", "Advanced"];
