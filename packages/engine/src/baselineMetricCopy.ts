@@ -24,10 +24,10 @@ export const metricsHaveBaselineFloor = (completedSessionCount: number) =>
 export const isReadinessOrConsistencyMetricText = (text: string) => {
   const t = text.trim();
   return (
-    /Training readiness:\s*\d+%/i.test(t) ||
-    /Readiness\s+\d+%/i.test(t) ||
-    /Readiness is \d+%/i.test(t) ||
-    /Consistency\s+\d+%/i.test(t)
+    /Training readiness:\s*-?\d+%/i.test(t) ||
+    /Readiness\s+-?\d+%/i.test(t) ||
+    /Readiness is -?\d+%/i.test(t) ||
+    /Consistency\s+-?\d+%/i.test(t)
   );
 };
 
@@ -44,30 +44,30 @@ export const gateReadinessConsistencyCopy = (
   const t = text.trim();
 
   if (
-    /Readiness\s+\d+%\s+and\s+consistency\s+\d+/i.test(t) ||
-    /Readiness is \d+%.*consistency\s+\d+%/i.test(t)
+    /Readiness\s+-?\d+%\s+and\s+consistency\s+-?\d+/i.test(t) ||
+    /Readiness is -?\d+%.*consistency\s+-?\d+%/i.test(t)
   ) {
     return BASELINE_PROGRESSION_SPEED_COPY;
   }
 
   if (
-    /Training readiness:\s*\d+%/i.test(t) ||
-    /^Readiness\s+\d+%/i.test(t) ||
-    /^Readiness is \d+%/i.test(t)
+    /Training readiness:\s*-?\d+%/i.test(t) ||
+    /^Readiness\s+-?\d+%/i.test(t) ||
+    /^Readiness is -?\d+%/i.test(t)
   ) {
     return BASELINE_READINESS_COPY;
   }
 
   if (
-    /^Consistency\s+\d+%\s*$/i.test(t) ||
-    /Consistency\s+\d+%\s+with\s+movement quality/i.test(t)
+    /^Consistency\s+-?\d+%\s*$/i.test(t) ||
+    /Consistency\s+-?\d+%\s+with\s+movement quality/i.test(t)
   ) {
     return BASELINE_CONSISTENCY_COPY;
   }
 
   // "Consistency 0% • Completion …" — keep completion, swap the judgment score.
-  if (/Consistency\s+\d+%/i.test(t)) {
-    return t.replace(/Consistency\s+\d+%/i, BASELINE_CONSISTENCY_COPY);
+  if (/Consistency\s+-?\d+%/i.test(t)) {
+    return t.replace(/Consistency\s+-?\d+%/i, BASELINE_CONSISTENCY_COPY);
   }
 
   return text;
