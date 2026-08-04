@@ -1350,9 +1350,10 @@ const pickBaselineFallbackExercise = (
   loadType: ProgramRoutineItem["loadType"],
   available: Set<Equipment>,
   section: ProgramRoutineItem["section"] | undefined,
-  context?: SelectionContext
+  context?: SelectionContext,
+  catalog: Exercise[] = exercises
 ) => {
-  const eligible = exercises.filter(
+  const eligible = catalog.filter(
     (exercise) =>
       exercise.category === category &&
       (context
@@ -1367,7 +1368,7 @@ const pickBaselineFallbackExercise = (
   const loadTypeMatch = eligible.filter((exercise) => exercise.loadType === loadType);
   if (loadTypeMatch.length) return loadTypeMatch[0];
   if (eligible.length) return eligible[0];
-  const noneFallback = exercises.filter(
+  const noneFallback = catalog.filter(
     (exercise) =>
       exercise.category === category &&
       exercise.equipment.includes("none") &&
@@ -1456,11 +1457,8 @@ const scoreSubstitutionCandidate = (params: {
   }
 
   if (context) {
-    if (exerciseHardExcludedForPain(candidate, context.painAreas)) {
-      score -= 12;
-      reasons.push("-12 hard_excluded:pain_contraindication");
-    }
-
+    // Hard-excluded candidates must be filtered out before scoring; never rely on
+    // a finite penalty as a safety boundary.
     const rules = getPainRulesForContext(context);
     const candidateTags = new Set([
       ...(candidate.tags ?? []).map(normalizeTagToken),
@@ -1542,22 +1540,29 @@ const scoreSubstitutionCandidate = (params: {
   return { exercise: candidate, score, reasons };
 };
 
+/**
+ * Rank same-category substitution candidates.
+ * Hard-excluded pain candidates are dropped before scoring — never via finite penalty.
+ */
 const rankSubstitutionCandidates = (params: {
   current: Exercise;
   section?: ProgramRoutineItem["section"];
   available: Set<Equipment>;
   context?: SelectionContext;
+  catalog?: Exercise[];
 }) => {
   const { current, section, available, context } = params;
+  const catalog = params.catalog ?? exercises;
   const poolById = new Map<string, Exercise>();
 
   (current.swapOptions ?? []).forEach((candidateId) => {
-    const candidate = exerciseById(candidateId);
+    const candidate =
+      catalog.find((entry) => entry.id === candidateId) ?? exerciseById(candidateId);
     if (!candidate) return;
     poolById.set(candidate.id, candidate);
   });
 
-  exercises.forEach((candidate) => {
+  catalog.forEach((candidate) => {
     if (candidate.id === current.id) return;
     if (candidate.category !== current.category) return;
     poolById.set(candidate.id, candidate);
@@ -1577,6 +1582,11 @@ const rankSubstitutionCandidates = (params: {
         section,
         context,
       });
+    })
+    // Hard-drop before scoring — never select a pain-contraindicated substitute.
+    .filter((candidate) => {
+      if (!context?.painAreas.length) return true;
+      return !evaluateHardPainExclusion(candidate, context.painAreas).excluded;
     })
     .filter((candidate) => {
       const overlaps = candidate.movementPattern.some((pattern) =>
@@ -1603,9 +1613,12 @@ export const previewPainSubstitutionChoices = (params: {
   exerciseId: string;
   section?: ProgramRoutineItem["section"];
   limit?: number;
+  catalog?: Exercise[];
 }) => {
   const { questionnaire, exerciseId, section, limit = 5 } = params;
-  const current = exerciseById(exerciseId);
+  const catalog = params.catalog ?? exercises;
+  const current =
+    catalog.find((entry) => entry.id === exerciseId) ?? exerciseById(exerciseId);
   if (!current) return [] as Array<{
     exerciseId: string;
     name: string;
@@ -1619,6 +1632,7 @@ export const previewPainSubstitutionChoices = (params: {
     section,
     available,
     context,
+    catalog,
   })
     .slice(0, Math.max(1, limit))
     .map((entry) => ({
@@ -1629,14 +1643,65 @@ export const previewPainSubstitutionChoices = (params: {
     }));
 };
 
-const ensureEligibleItem = (
+/** Questionnaire-facing repair entry for pain-safety tests and tooling. */
+export const ensureEligibleItemForQuestionnaire = (params: {
+  item: ProgramRoutineItem;
+  questionnaire: QuestionnaireData;
+  dayTitle?: string;
+  catalog?: Exercise[];
+}) => {
+  const available = normalizeEquipmentSelection(params.questionnaire.equipment).available;
+  const context = buildSelectionContext(params.questionnaire);
+  return ensureEligibleItem(
+    params.item,
+    available,
+    context,
+    params.dayTitle,
+    { catalog: params.catalog }
+  );
+};
+
+type EnsureEligibleResolveResult = {
+  item: ProgramRoutineItem | null;
+  omitReason?: string;
+};
+
+const toEligibilitySwapItem = (
+  item: ProgramRoutineItem,
+  replacement: Exercise,
+  note?: string
+): ProgramRoutineItem =>
+  withSelectionDebug(
+    {
+      ...item,
+      exerciseId: replacement.id,
+      loadType: replacement.loadType,
+      cues: buildProgramCues(replacement, item.section),
+      ...(note
+        ? { notes: [item.notes, note].filter(Boolean).join(" | ") }
+        : {}),
+    },
+    "eligibility_swap"
+  );
+
+/**
+ * Repair / eligibility boundary for a single routine item.
+ * Safety monotonicity: a hard-excluded original is never returned unchanged.
+ * When no pain-safe candidate exists, the item is omitted with an explicit reason.
+ */
+export const ensureEligibleItem = (
   item: ProgramRoutineItem,
   available: Set<Equipment>,
   selectionContext?: SelectionContext,
-  dayTitle?: string
-) => {
-  const exercise = exerciseById(item.exerciseId);
-  if (!exercise) return item;
+  dayTitle?: string,
+  options?: { catalog?: Exercise[] }
+): EnsureEligibleResolveResult => {
+  const catalog = options?.catalog ?? exercises;
+  const exercise =
+    catalog.find((entry) => entry.id === item.exerciseId) ??
+    exerciseById(item.exerciseId);
+  if (!exercise) return { item };
+
   const failsPhaseEligibility = Boolean(
     selectionContext &&
       !isEligibleForPhase(exercise, selectionContext.phaseName, selectionContext)
@@ -1657,7 +1722,7 @@ const ensureEligibleItem = (
     !failsPainFilter &&
     !failsPhaseEligibility
   ) {
-    return item;
+    return { item };
   }
 
   const shouldUsePainAwareSubstitution =
@@ -1668,6 +1733,7 @@ const ensureEligibleItem = (
         section: item.section,
         available,
         context: selectionContext,
+        catalog,
       })
     : [];
   const shouldProtectMainIdentity =
@@ -1714,6 +1780,18 @@ const ensureEligibleItem = (
           context: selectionContext,
         })
       : true;
+  const isContextEligible = (candidate: Exercise) =>
+    selectionContext
+      ? isExerciseEligibleForProgramContext({
+          exercise: candidate,
+          available,
+          section: item.section,
+          context: selectionContext,
+          dayTitle,
+        })
+      : isExerciseEligible(candidate, available) &&
+        isExerciseAllowedForSection(candidate, item.section);
+
   const strictRoleFallback =
     ranked.find(
       (entry) =>
@@ -1721,21 +1799,11 @@ const ensureEligibleItem = (
         candidateIsStrictRoleReplacement(entry.exercise)
     )?.exercise ??
     (shouldEnforceStrictRoleReplacement && selectionContext
-      ? exercises.find((candidate) => {
+      ? catalog.find((candidate) => {
           if (candidate.id === exercise.id) return false;
           if (candidate.category !== exercise.category) return false;
           if (!candidateAvoidsCurrentPain(candidate)) return false;
-          if (
-            !isExerciseEligibleForProgramContext({
-              exercise: candidate,
-              available,
-              section: item.section,
-              context: selectionContext,
-              dayTitle,
-            })
-          ) {
-            return false;
-          }
+          if (!isContextEligible(candidate)) return false;
           return candidateIsStrictRoleReplacement(candidate);
         })
       : undefined);
@@ -1747,7 +1815,8 @@ const ensureEligibleItem = (
     exercise.loadType,
     available,
     item.section,
-    selectionContext
+    selectionContext,
+    catalog
   );
   const baselinePainSafe =
     baselineFallback && candidateAvoidsCurrentPain(baselineFallback)
@@ -1761,42 +1830,78 @@ const ensureEligibleItem = (
       )?.exercise ??
       rankedPainSafe[0]?.exercise ??
       baselinePainSafe;
-  if (!fallback) {
-    // Safety monotonicity: never keep a hard-excluded original item.
-    if (!failsPainFilter) return item;
-    if (!selectionContext) return item;
-    const anyPainSafe = exercises.find(
-      (candidate) =>
-        candidate.id !== exercise.id &&
-        candidate.category === exercise.category &&
-        isExerciseEligibleForProgramContext({
-          exercise: candidate,
-          available,
-          section: item.section,
-          context: selectionContext,
-          dayTitle,
-        })
-    );
-    if (!anyPainSafe) return item;
-    return withSelectionDebug(
-      {
-        ...item,
-        exerciseId: anyPainSafe.id,
-        loadType: anyPainSafe.loadType,
-        cues: buildProgramCues(anyPainSafe, item.section),
-      },
-      "eligibility_swap"
-    );
+
+  if (fallback) {
+    return {
+      item: toEligibilitySwapItem(
+        item,
+        fallback,
+        failsPainFilter
+          ? `pain_safe_substitution:${exercise.id}->${fallback.id}`
+          : undefined
+      ),
+    };
   }
-  return withSelectionDebug(
-    {
-      ...item,
-      exerciseId: fallback.id,
-      loadType: fallback.loadType,
-      cues: buildProgramCues(fallback, item.section),
-    },
-    "eligibility_swap"
+
+  // Non-pain eligibility failure: keep original (phase/equipment/etc.).
+  if (!failsPainFilter) {
+    return { item };
+  }
+  if (!selectionContext) {
+    return { item };
+  }
+
+  // Widen after primary substitution failed: same ExerciseCategory, then any
+  // section-legal role/pattern, then omit. Never retain the hard-excluded original.
+  const sameCategoryPainSafe = catalog.find(
+    (candidate) =>
+      candidate.id !== exercise.id &&
+      candidate.category === exercise.category &&
+      candidateAvoidsCurrentPain(candidate) &&
+      isContextEligible(candidate)
   );
+  if (sameCategoryPainSafe) {
+    return {
+      item: toEligibilitySwapItem(
+        item,
+        sameCategoryPainSafe,
+        `pain_safe_category_widen:${exercise.id}->${sameCategoryPainSafe.id}`
+      ),
+    };
+  }
+
+  const widenedPainSafe = catalog.find(
+    (candidate) =>
+      candidate.id !== exercise.id &&
+      candidateAvoidsCurrentPain(candidate) &&
+      isContextEligible(candidate)
+  );
+  if (widenedPainSafe) {
+    return {
+      item: toEligibilitySwapItem(
+        item,
+        widenedPainSafe,
+        `pain_safe_role_widen:${exercise.id}->${widenedPainSafe.id}`
+      ),
+    };
+  }
+
+  const matchedAreas = evaluateHardPainExclusion(
+    exercise,
+    selectionContext.painAreas
+  ).matchedAreas;
+  const areaTag = matchedAreas[0] ?? canonicalizePainAreas(selectionContext.painAreas).areas[0] ?? "unknown";
+  const omitReason = `unresolved_slot:no_pain_safe_candidate:${areaTag} (dropped ${item.exerciseId})`;
+  pushProgramConstraintWarnings([
+    {
+      programId: "pain-safety",
+      phaseName: selectionContext.phaseName ?? null,
+      dayTitle: dayTitle ?? "unknown",
+      kind: "violation",
+      message: omitReason,
+    },
+  ]);
+  return { item: null, omitReason };
 };
 
 const pickDistinctReplacement = (params: {

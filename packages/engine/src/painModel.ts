@@ -536,15 +536,33 @@ export const activePainAreaTokenSet = (
   return new Set(areas);
 };
 
+export type WarmupAvoidListOptions = {
+  /**
+   * Warmup avoid lists intentionally treat `acute_*` as hard by default.
+   * Protective prep should not load an area the user already flagged (even acutely).
+   * Questionnaire exercise planning remains soft for acute_* via evaluateHardPainExclusion.
+   */
+  treatAcuteAsHard?: boolean;
+};
+
 /**
- * Warmup avoid-list eligibility using structured tokens (and acute_* parity).
- * Returns false when the item should be excluded.
+ * Warmup avoid-list eligibility via the central hard-exclusion evaluator.
+ *
+ * Policy: treatAcuteAsHard defaults to **true** for warmup/prep avoid lists
+ * (explicit; not implicit via painAreasConflict alone). Pass false only when
+ * a caller intentionally wants questionnaire-style acute soft caution.
  */
 export const isPainEligibleAgainstAvoidList = (
   avoidTokens: readonly string[] | null | undefined,
-  activeInputs: readonly string[] | null | undefined
+  activeInputs: readonly string[] | null | undefined,
+  options: WarmupAvoidListOptions = {}
 ): boolean => {
   const { areas } = canonicalizePainAreas(activeInputs);
   if (!areas.length || !avoidTokens?.length) return true;
-  return !painAreasConflict(avoidTokens, areas).excluded;
+  const treatAcuteAsHard = options.treatAcuteAsHard !== false;
+  return !evaluateHardPainExclusion(
+    { painContraindications: [...avoidTokens], contraindications: [] },
+    areas,
+    { treatAcuteAsHard }
+  ).excluded;
 };

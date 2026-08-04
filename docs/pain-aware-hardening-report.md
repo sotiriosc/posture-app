@@ -1,9 +1,10 @@
 # Pain-aware generation hardening — delivery report
 
 Branch: `fix/pain-aware-generation-hardening` (stacked on `fix/questionnaire-knee-pain-input` / PR #74)  
+PR: https://github.com/sotiriosc/posture-app/pull/75  
 Base commit (Knees UI): `4e6f5aa`  
 Date: 2026-08-04  
-Status: **ready for review; do not merge** until PR #74 and this PR are validated.
+Status: **defects fixed; ready for re-review; do not merge** without explicit human approval.
 
 ## Source of truth and precedence
 
@@ -16,13 +17,47 @@ Status: **ready for review; do not merge** until PR #74 and this PR are validate
 Questionnaire pain = persistent planning constraint (display labels persisted; canonicalize at engine boundaries).  
 Session pain = runtime event; shares `CanonicalPainArea` but must not collapse into questionnaire adaptation automatically.
 
-## Safety monotonicity
+## Defects discovered after PR #75 review (and resolutions)
+
+### CRITICAL 1 — hard-excluded original could survive `ensureEligibleItem`
+
+**Defect:** When no same-category replacement existed, the no-replacement path returned the original item (`if (!anyPainSafe) return item`) even when `failsPainFilter` was true — violating safety monotonicity.
+
+**Resolution:**
+
+- `ensureEligibleItem` never returns a hard-excluded original unchanged.
+- Order: ranked substitution → baseline (catalog-scoped) → same-category widen → any section-legal widen → **omit** with  
+  `unresolved_slot:no_pain_safe_candidate:<area> (dropped <exerciseId>)`.
+- Omits land in `day.degradationNotes` via `normalizeWeekForProgramConstraints`.
+- Safety outranks slot completeness.
+
+### CRITICAL 2 — substitution relied on finite score penalty
+
+**Defect:** `scoreSubstitutionCandidate` previously applied a −12 penalty to hard-excluded candidates (finite score is not a safety boundary).
+
+**Resolution:**
+
+- Hard-excluded candidates are **filtered out before scoring** in `rankSubstitutionCandidates` via `evaluateHardPainExclusion`.
+- No finite pain penalty remains in `scoreSubstitutionCandidate`.
+- Eligibility gate still independently rejects hard-excluded candidates.
+
+### Acute token consistency (warmup)
+
+**Decision (explicit):** Warmup / prep avoid lists treat `acute_*` as **hard** (`treatAcuteAsHard: true` by default).
+
+**Rationale:** Protective prep should not load an area the user already flagged, even acutely. This intentionally differs from questionnaire exercise planning (acute = soft caution).
+
+**Implementation:** `isPainEligibleAgainstAvoidList` routes through `evaluateHardPainExclusion` with explicit `treatAcuteAsHard` (default true). `warmupPlanner.isWarmupItemPainEligible` passes `{ treatAcuteAsHard: true }`.
+
+## Safety monotonicity (current)
 
 Once a candidate fails hard pain exclusion for the current context, repair / fallback / scoring / coverage / variation / progression / substitution must not reintroduce it without the input context changing. Enforced via:
 
 - `isExerciseEligibleForProgramContext` (central gate)
-- `ensureEligibleItem` + final `normalizeWeekForSelectionContext` pass
-- Rescue bypasses (phase-bridge / slot purity) that still require `!exerciseHardExcludedForPain`
+- `ensureEligibleItem` (omit-or-replace; never retain hard-excluded original)
+- Final `normalizeWeekForSelectionContext` / `normalizeWeekForProgramConstraints`
+- Substitution hard-drop before score
+- Rescue bypasses that still require pain checks
 - Ladder next-rung eligibility via `evaluateHardPainExclusion`
 
 ## Engine paths audited / wired
@@ -30,102 +65,65 @@ Once a candidate fails hard pain exclusion for the current context, repair / fal
 | Path | Uses central evaluator |
 | --- | --- |
 | `isExerciseEligibleForProgramContext` | yes |
-| `ensureEligibleItem` / uniqueness / baseline fallback | yes |
+| `ensureEligibleItem` / uniqueness / baseline fallback | yes (omit on empty safe pool) |
 | Contract / coverage / budget repair candidates | via eligibility |
-| Substitution ranking | hard-drop via score + eligibility |
+| Substitution ranking | **hard-drop before score** |
 | `enforceHigherFrequencyFinalMainIntegrity` rescue | pain check before bypass |
 | `findLowerSlotPurityReplacement` | pain check before bypass |
-| Final week normalize (post slot-truth) | yes |
-| `warmupPlanner` avoid lists | `painAreasConflict` / canonical |
+| Final week normalize (post slot-truth) | yes (supports omit + degradationNotes) |
+| `warmupPlanner` avoid lists | `evaluateHardPainExclusion` via avoid-list helper, **acute-as-hard** |
 | `ladderAdvancement.checkNextRungEligibility` | yes |
-| `constraints.ts` canonicalization | `painModel` |
-| Soft `PAIN_RULES` / knee novelty tags | soft only (no squat boost under knees) |
+| Soft `PAIN_RULES` / knee novelty tags | soft only |
 
-## Before / after eligibility flow
+## Catalog change review
 
-```
-normalize inputs (canonicalizePainAreas)
-→ validate candidate metadata
-→ hard pain exclusion (evaluateHardPainExclusion)
-→ other eligibility (equipment, phase, day intent, blocks)
-→ soft pain scoring (PAIN_RULES, acute caution reasons)
-→ selection
-→ repair/fallback/substitution through the same gate
-→ final normalizeWeekForSelectionContext
-```
+Full machine-readable demotion table: [`docs/pain-catalog-hard-to-acute-demotions.md`](./pain-catalog-hard-to-acute-demotions.md).
 
-Previously: main hard filter used free-text substring (`contraindicationHitsPainArea`), which missed plurals like `knees` vs `"Knee pain…"`, while structured tokens were ignored in the primary gate.
+Summary:
 
-## Catalog integrity findings (justified edits only)
+- Inference defaults demoted family-wide hard stamps → `acute_*` (metadata was too broad).
+- 26 authored exercises with targeted hard→acute demotions justified by free-text load/ROM language.
+- Hard `knees` retained on `machine-leg-press` (Knees questionnaire fix).
+- Empty-family cases resolved by inference redesign + widen/omit architecture — not by mass demotion alone.
 
-Regenerate: `npm run audit:pain-catalog` → `docs/pain-catalog-integrity-report.md`.
+## Tests proving the five acceptance criteria
 
-Findings that drove edits:
+Suite: `packages/engine/tests/unit/painSafetyMonotonicity.test.ts` (wired into `test:critical`).
 
-1. **Pattern inference** (`inferPainContraindicationsForExercise`) stamped family-wide unmodified `low back` / `knees` / `shoulders` on mains missing explicit tags. Under authoritative hard exclusion that emptied movement families. Defaults now use `acute_*` caution tags.
-2. **Acute vs hard:** questionnaire planning treats `acute_*` as soft; unmodified tokens remain hard. Session can opt into acute-as-hard.
-3. **Targeted authored demotions** (free-text = load/range management, not absolute ban), including:
-   - Shoulder/neck therapeutic + press work: `shoulders`/`neck` → `acute shoulders`/`acute neck` (e.g. pike-pushup, prone-* raises, face-pulls, DB/machine shoulder press, band shoulder accessories)
-   - Common gym hinges/squats used under questionnaire lower-back: `low back` → `acute low back` (e.g. machine-leg-press, barbell-hip-thrust, DB RDL variants, step-up/lunge)
-4. **Band-only + low-back hinge ordering:** prefer `band-rdl` from skill phase onward so phase-demand coherence is preserved when soft acute tags make bodyweight surrogates newly eligible.
+1. No hard-excluded original survives when no replacement exists → omit + reason.
+2. No hard-excluded substitution can win by score → filtered before score; highest-trait contra never selected.
+3. Final normalize cannot preserve an unresolved contraindicated item → injected `machine-leg-press` removed.
+4. Empty safe pools produce explicit degradation/warning → `degradationNotes` + omit reason.
+5. Acute behavior context-explicit → planning soft vs warmup hard defaults.
+6. Multi-area scarce pools remain safe → Shoulders+Knees+Lower back generation.
+7. Critical suite green → see validation table.
 
-No blind mass catalog rewrite. Hard `knees` (e.g. `machine-leg-press`) remains authoritative for the Knees questionnaire fix.
-
-## Known legacy-text fallbacks
-
-Exercises with no usable structured tokens still rely on word-boundary free-text matching (see integrity report `legacy_text_only`). Each use emits `legacy_text_contraindication_used:*`.
-
-## Area parity / wrists–elbows–ankles
-
-| Area | Questionnaire | Hard structured | Soft PAIN_RULES | Warmup | Session |
-| --- | --- | --- | --- | --- | --- |
-| neck, upper_back, lower_back, shoulders, hips, knees | yes (shared labels) | yes | yes | yes | yes |
-| wrists, elbows, ankles | **no UI (this PR)** | catalog tokens only | none dedicated | avoid if listed | **recommended path** |
-
-**Recommendation (option D/C):** keep wrists/elbows/ankles as catalog metadata + session feedback only. Do not add onboarding checkboxes until the six-area hard gate is stable in production. Same `CanonicalPainArea` / evaluator already accepts those tokens when present in feedback or future inputs.
-
-## Knee soft policy
-
-- Hard-exclude only unmodified catalog knee contraindications (e.g. `machine-leg-press`).
-- `acute knees` (e.g. `goblet-squat`) = soft caution; squat pattern deprioritized via `PAIN_RULES.knees`, not blanket-banned.
-- Novelty / priority tags under knees prefer hinge/glute/core (no squat boost).
-- Protective knee warmup injection retained (`warmup_added:pain_protection:knees`).
-
-## Tests and commands run
+## Validation results (2026-08-04)
 
 | Command | Result |
 | --- | --- |
-| `npm run audit:pain-catalog` | wrote integrity report |
-| vitest painModel / painHardExclusion / painKneePolicy / painCatalogIntegrity / golden anchors | pass |
-| `npm run test:critical` (includes new pain suites) | **342/342 pass** |
+| vitest `painSafetyMonotonicity` | **12/12 pass** |
+| vitest painModel / painHardExclusion / related | pass |
+| `npm run test:critical` | **354/354 pass** (was 342; +12 safety tests) |
+| `npm run test:full` | **1017 pass / 8 fail / 133 files pass** — **same 8 failures on pre-fix HEAD** (not introduced by this defect fix). Failures are structural/pain-profile matrix tests that still expect fixed main counts / identities under scarce pain pools. |
+| `tsc -p packages/engine` | pre-existing test typing noise (QuestionnaireForm path aliases, etc.); no new production errors attributed to this change |
+| `npm run build --workspace=apps/gyms` | **pass** |
+| `npm run build --workspace=apps/consumer` | **pass** (local install of missing `@vercel/analytics` from #73; not a pain-engine change) |
 
-New / updated suites:
+Pre-existing full-suite failures (unchanged vs `1af7b14` before this defect fix):
 
-- `packages/engine/tests/unit/painModel.test.ts`
-- `packages/engine/tests/unit/painHardExclusion.test.ts`
-- `packages/engine/tests/unit/painKneePolicy.test.ts`
-- `packages/engine/tests/unit/painCatalogIntegrity.test.ts`
-- `packages/engine/tests/unit/painQuestionnaireParity.test.ts`
+- `program.test.ts` — pain areas influence priorities
+- `programFuzz.test.ts` — structural safety under random questionnaires
+- `programHigherFrequencyContracts.test.ts` — 2 band pain Phase 1 hinge cases
+- `programMatrix.test.ts` — core structure invariants
+- `programSelectionAudit.test.ts` — pain-aware main identity
+- `programSplitContractRepair.test.ts` — 4-day required main patterns
+- `scenarioMatrix.test.ts` — expected main count under pain
 
-## Behavior intentionally not changed
-
-- No wrists/elbows/ankles questionnaire UI
-- No auth / billing / Stripe / deploy / posture-analysis changes
-- Persist questionnaire display labels as today (canonicalize only at engine boundaries)
-- Soft PAIN_RULES area-specific preferences retained
-- User-facing copy remains non-diagnostic
-
-## Manual acceptance (local)
-
-Env: `USER_STORE_DRIVER=memory`, `TRAINING_STORE_DRIVER=disabled`.
-
-1. Select **Knees** in consumer or gyms questionnaire → persist → generate week.
-2. Confirm audit/eligibility reasons show hard excludes for unmodified knee tokens; soft caution for acute-only.
-3. Confirm lower-body work remains; squat pattern may appear only when not hard-excluded.
-4. Simulate session knee pain → substitution / ladder hold should not reintroduce hard-excluded same-area work.
+These are orthogonal follow-ups (slot-count contracts vs safety-first omit). **Safety outranks slot completeness** by design for hard exclusions.
 
 ## Delivery
 
 - Keep PR #74 narrow (Knees UI).
-- This branch is the engine hardening PR (stacked).
+- This branch is the engine hardening PR (stacked) — https://github.com/sotiriosc/posture-app/pull/75
 - **Do not merge** either PR from this workstream without explicit human approval.
