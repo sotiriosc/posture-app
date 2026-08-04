@@ -9,6 +9,7 @@ const REQUIRED_ICON_PATHS = [
   "/icons/praxis-mark-192.png",
   "/icons/praxis-mark-512.png",
   "/icons/praxis-logo-full.png",
+  "/icons/praxis-og-1200x630.png",
   "/icons/icon-192.svg",
   "/icons/icon-512.svg",
 ] as const;

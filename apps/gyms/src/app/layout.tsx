@@ -23,17 +23,47 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
+/**
+ * Absolute site origin for Open Graph / X (Twitter) cards.
+ * Production must never emit localhost URLs — crawlers cannot fetch them,
+ * which makes the share/ad preview show no logo.
+ */
 const resolveMetadataBase = () => {
-  const raw =
-    process.env.NEXT_PUBLIC_APP_URL ??
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    "http://localhost:3000";
-  try {
-    return new URL(raw);
-  } catch {
-    return new URL("http://localhost:3000");
+  const candidates = [
+    process.env.NEXT_PUBLIC_APP_URL,
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.APP_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : undefined,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+  ];
+  const allowLocalhost = process.env.NODE_ENV !== "production";
+  for (const raw of candidates) {
+    const value = raw?.trim();
+    if (!value) continue;
+    try {
+      const url = new URL(value.includes("://") ? value : `https://${value}`);
+      if (
+        !allowLocalhost &&
+        (url.hostname === "localhost" || url.hostname === "127.0.0.1")
+      ) {
+        continue;
+      }
+      return url;
+    } catch {
+      // try next candidate
+    }
   }
+  return new URL("http://localhost:3000");
 };
+
+const OG_IMAGE = {
+  url: "/icons/praxis-og-1200x630.png",
+  width: 1200,
+  height: 630,
+  alt: "Praxis for Gyms — posture-aware training infrastructure",
+} as const;
 
 const APP_TITLE = "Praxis for Gyms";
 const APP_DESCRIPTION =
@@ -62,20 +92,13 @@ export const metadata: Metadata = {
     description: APP_DESCRIPTION,
     url: "/",
     locale: "en_US",
-    images: [
-      {
-        url: "/icons/praxis-logo-full.png",
-        width: 921,
-        height: 293,
-        alt: "Praxis for Gyms — posture-aware training infrastructure",
-      },
-    ],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: APP_TITLE,
     description: APP_DESCRIPTION,
-    images: ["/icons/praxis-logo-full.png"],
+    images: [OG_IMAGE.url],
   },
   icons: {
     // Prefer the PNG favicon first so the browser tab always shows the Praxis

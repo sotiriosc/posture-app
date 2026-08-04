@@ -64,6 +64,7 @@ Do not use the production Neon URL in local `.env.local`.
 - `DATABASE_URL=<production postgres url>`
 - `AUTH_SECRET=<production secret>`
 - `APP_URL=https://yourdomain.com`
+- `NEXT_PUBLIC_APP_URL=https://yourdomain.com` (must match `APP_URL`; required so Open Graph / X card images are absolute public URLs, not `http://localhost:3000`)
 - `ADMIN_ACCESS_KEY=<production admin key>`
 - `AUTH_USER_EMAIL=<production bootstrap user email>`
 - `AUTH_USER_PASSWORD=<production bootstrap user password>`
