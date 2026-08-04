@@ -3,6 +3,7 @@ import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById } from "@/lib/exercises";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { normalizeEquipmentSelection, isExerciseEligible } from "@/lib/equipment";
+import { evaluateHardPainExclusion } from "@/lib/painModel";
 
 type ScoreBreakdown = {
   structure: number;
@@ -30,13 +31,6 @@ const mainDemandScore = (id: string) => {
   if (exercise.tags.includes("advanced")) score += 1;
   if (exercise.movementPattern.includes("single-leg")) score += 1;
   return score;
-};
-
-const contraindicationHit = (id: string, painAreas: string[]) => {
-  const exercise = exerciseById(id);
-  if (!exercise?.contraindications?.length || !painAreas.length) return false;
-  const text = exercise.contraindications.join(" ").toLowerCase();
-  return painAreas.some((area) => text.includes(area.toLowerCase()));
 };
 
 const preferredTagsByPain: Record<string, string[]> = {
@@ -69,23 +63,24 @@ const scoreProgramQuality = (input: QuestionnaireData): ScoreBreakdown => {
   const expectedMain = expectedMainRange(input.experience, input.daysPerWeek);
   const available = normalizeEquipmentSelection(input.equipment).available;
 
+  const dayHasUnresolvedSlotNote = (day: (typeof phase1.week)[number]) =>
+    (day.degradationNotes ?? []).some((note) => note.startsWith("unresolved_slot:"));
+
   const allDaysHaveSections = phase1.week.every((day) => {
     const sections = new Set(day.routine.map((item) => item.section));
-    return (
-      sections.has("warmup") &&
-      sections.has("main") &&
-      sections.has("accessory") &&
-      sections.has("cooldown")
-    );
+    const shell =
+      sections.has("warmup") && sections.has("accessory") && sections.has("cooldown");
+    if (!shell) return false;
+    return sections.has("main") || dayHasUnresolvedSlotNote(day);
   });
   if (allDaysHaveSections) structure += 8;
 
-  const allMainCountsCorrect = phase1.week.every(
-    (day) => {
-      const mainCount = day.routine.filter((item) => item.section === "main").length;
-      return mainCount >= expectedMain.min && mainCount <= expectedMain.max;
-    }
-  );
+  const allMainCountsCorrect = phase1.week.every((day) => {
+    const mainCount = day.routine.filter((item) => item.section === "main").length;
+    if (mainCount >= expectedMain.min && mainCount <= expectedMain.max) return true;
+    // Safety-first scarce pools may underfill when degradation is explicit.
+    return mainCount < expectedMain.min && dayHasUnresolvedSlotNote(day);
+  });
   if (allMainCountsCorrect) structure += 7;
 
   const allMainCategoriesCorrect = phase1.week.every((day) =>
@@ -134,11 +129,13 @@ const scoreProgramQuality = (input: QuestionnaireData): ScoreBreakdown => {
   if (allEligible) practicalFit += 8;
 
   if (available.has("dumbbells") && available.has("bands")) {
-    const dumbbellMainsPerDay = phase1.week.every((day) =>
-      day.routine
-        .filter((item) => item.section === "main")
-        .some((item) => exerciseById(item.exerciseId)?.equipment.includes("dumbbells"))
-    );
+    const dumbbellMainsPerDay = phase1.week.every((day) => {
+      const mains = day.routine.filter((item) => item.section === "main");
+      if (!mains.length) return dayHasUnresolvedSlotNote(day);
+      return mains.some((item) =>
+        exerciseById(item.exerciseId)?.equipment.includes("dumbbells")
+      );
+    });
     if (dumbbellMainsPerDay) practicalFit += 7;
   } else {
     practicalFit += 7;
@@ -160,11 +157,14 @@ const scoreProgramQuality = (input: QuestionnaireData): ScoreBreakdown => {
         exercise.tags.reduce((n, tag) => (preferredTags.has(tag) ? n + 1 : n), 0)
       );
     }, 0);
-    const contraindicationHits = chosenExercises.filter((id) =>
-      contraindicationHit(id, painAreas)
-    ).length;
+    const hardExclusionHits = chosenExercises.filter((id) => {
+      const exercise = exerciseById(id);
+      return Boolean(
+        exercise && evaluateHardPainExclusion(exercise, input.painAreas).excluded
+      );
+    }).length;
     if (tagHits > 0) specificity += 12;
-    if (contraindicationHits === 0) specificity += 8;
+    if (hardExclusionHits === 0) specificity += 8;
   }
 
   const weekCounts = new Map<string, number>();

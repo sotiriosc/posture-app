@@ -14,6 +14,12 @@ export type PostGenerationRepairResult = {
   warnings: PostGenerationWarning[];
 };
 
+export type EnsureEligibleItemResult = {
+  item: ProgramRoutineItem | null;
+  /** Present when the item was omitted for safety (never keep a hard-excluded original). */
+  omitReason?: string;
+};
+
 export const normalizeWeekForProgramConstraints = <TSelectionContext>(params: {
   week: ProgramDay[];
   available: Set<Equipment>;
@@ -27,7 +33,7 @@ export const normalizeWeekForProgramConstraints = <TSelectionContext>(params: {
     available: Set<Equipment>,
     selectionContext: TSelectionContext,
     dayTitle?: string
-  ) => ProgramRoutineItem;
+  ) => ProgramRoutineItem | EnsureEligibleItemResult;
   ensureDistinctRoutine: (
     day: ProgramDay,
     available: Set<Equipment>,
@@ -40,16 +46,30 @@ export const normalizeWeekForProgramConstraints = <TSelectionContext>(params: {
         day.title,
         params.available
       );
+      const omitNotes: string[] = [];
+      const routine = day.routine.flatMap((item) => {
+        const resolved = params.ensureEligibleItem(
+          item,
+          availableForDay,
+          params.selectionContext,
+          day.title
+        );
+        if (resolved && typeof resolved === "object" && "item" in resolved) {
+          const result = resolved as EnsureEligibleItemResult;
+          if (result.omitReason) omitNotes.push(result.omitReason);
+          return result.item ? [result.item] : [];
+        }
+        // Legacy/simple return: ProgramRoutineItem
+        return resolved ? [resolved as ProgramRoutineItem] : [];
+      });
       return {
         ...day,
-        routine: day.routine.map((item) =>
-          params.ensureEligibleItem(
-            item,
-            availableForDay,
-            params.selectionContext,
-            day.title
-          )
-        ),
+        routine,
+        ...(omitNotes.length
+          ? {
+              degradationNotes: [...(day.degradationNotes ?? []), ...omitNotes],
+            }
+          : {}),
       };
     })
     .map((day) =>

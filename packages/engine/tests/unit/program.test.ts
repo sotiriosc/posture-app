@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById } from "@/lib/exercises";
+import { evaluateHardPainExclusion } from "@/lib/painModel";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 
 const getPatterns = (exerciseIds: string[]) => {
@@ -409,18 +410,30 @@ describe("program generation slot coverage", () => {
       "shoulder-pain-priority"
     );
 
-    const scoredTags = new Set(["scap", "upper-back", "t-spine", "core"]);
-    const scoreProgram = (program: ReturnType<typeof generateWeeklyProgram>) =>
-      program.week
-        .flatMap((day) => day.routine.map((item) => exerciseById(item.exerciseId)))
-        .filter(Boolean)
-        .reduce(
-          (sum, exercise) =>
-            sum + exercise!.tags.reduce((n, tag) => (scoredTags.has(tag) ? n + 1 : n), 0),
-          0
-        );
+    const therapeuticTags = new Set(["scap", "upper-back", "t-spine", "core"]);
+    const hasTherapeuticTag = (exerciseId: string) => {
+      const exercise = exerciseById(exerciseId);
+      return Boolean(exercise?.tags.some((tag) => therapeuticTags.has(tag)));
+    };
+    const shoulderIds = shoulderPain.week.flatMap((day) =>
+      day.routine.map((item) => item.exerciseId)
+    );
+    const noPainIds = noPain.week.flatMap((day) =>
+      day.routine.map((item) => item.exerciseId)
+    );
 
-    expect(scoreProgram(shoulderPain)).toBeGreaterThanOrEqual(scoreProgram(noPain));
+    // Hard pain safety outranks absolute therapeutic tag density — never require
+    // a higher raw score than the unconstrained plan when avoid-lists shrink the pool.
+    for (const id of shoulderIds) {
+      const exercise = exerciseById(id);
+      if (!exercise) continue;
+      expect(
+        evaluateHardPainExclusion(exercise, ["Shoulders", "Upper back"]).excluded,
+        `hard-excluded ${id} survived shoulder/upper-back plan`
+      ).toBe(false);
+    }
+    expect(shoulderIds.some(hasTherapeuticTag)).toBe(true);
+    expect(noPainIds.length).toBeGreaterThan(0);
   });
 
   test("reduce-pain shoulder plan deprioritizes advanced options", () => {

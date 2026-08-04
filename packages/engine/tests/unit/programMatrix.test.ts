@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById, type Exercise } from "@/lib/exercises";
 import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
+import { evaluateHardPainExclusion } from "@/lib/painModel";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 
 const experiences: QuestionnaireData["experience"][] = [
@@ -114,13 +115,18 @@ const expectedMainCount = (
   return 2;
 };
 
-const hasSections = (day: ReturnType<typeof generateWeeklyProgram>["week"][number]) => {
+const hasSections = (
+  day: ReturnType<typeof generateWeeklyProgram>["week"][number],
+  options?: { allowEmptyMainWithNotes?: boolean }
+) => {
   const sections = new Set(day.routine.map((item) => item.section));
-  return (
-    sections.has("warmup") &&
-    sections.has("main") &&
-    sections.has("accessory") &&
-    sections.has("cooldown")
+  const hasCoreShell =
+    sections.has("warmup") && sections.has("accessory") && sections.has("cooldown");
+  if (!hasCoreShell) return false;
+  if (sections.has("main")) return true;
+  if (!options?.allowEmptyMainWithNotes) return false;
+  return (day.degradationNotes ?? []).some((note) =>
+    note.startsWith("unresolved_slot:")
   );
 };
 
@@ -415,7 +421,7 @@ describe("program matrix quality", () => {
 
               expect(program.week).toHaveLength(daysPerWeek);
               program.week.forEach((day) => {
-                expect(hasSections(day)).toBe(true);
+                expect(hasSections(day, { allowEmptyMainWithNotes: true })).toBe(true);
                 expectEquipmentEligibleDay(day, available);
 
                 const ids = day.routine.map((item) => item.exerciseId);
@@ -430,14 +436,39 @@ describe("program matrix quality", () => {
                   day.title,
                   equipment
                 );
-                if (Array.isArray(expectedMain)) {
-                  expect(mains.length).toBeGreaterThanOrEqual(expectedMain[0]);
-                  expect(mains.length).toBeLessThanOrEqual(expectedMain[1]);
+                const minExpected = Array.isArray(expectedMain)
+                  ? expectedMain[0]
+                  : expectedMain;
+                const maxExpected = Array.isArray(expectedMain)
+                  ? expectedMain[1]
+                  : expectedMain;
+                const notes = day.degradationNotes ?? [];
+                expect(mains.length).toBeLessThanOrEqual(maxExpected);
+                if (mains.length === 0) {
+                  expect(
+                    notes.some((note) => note.startsWith("unresolved_slot:")),
+                    `${id}/${day.title}: empty main section without unresolved_slot note`
+                  ).toBe(true);
                 } else {
-                  expect(mains.length).toBe(expectedMain);
+                  expect(mains.length).toBeGreaterThanOrEqual(1);
+                }
+                if (mains.length < minExpected) {
+                  const shortfall = minExpected - mains.length;
+                  expect(
+                    notes.some((note) => note.startsWith("unresolved_slot:")),
+                    `${id}/${day.title}: ${shortfall} main shortfall without unresolved_slot note (${notes.join(" | ") || "none"})`
+                  ).toBe(true);
                 }
                 mains.forEach((item) => {
                   expect(exerciseById(item.exerciseId)?.category).toBe("main");
+                  if (painAreas.length) {
+                    const exercise = exerciseById(item.exerciseId);
+                    if (!exercise) return;
+                    expect(
+                      evaluateHardPainExclusion(exercise, painAreas).excluded,
+                      `hard-excluded ${item.exerciseId}`
+                    ).toBe(false);
+                  }
                 });
                 if (daysPerWeek >= 4 && isHigherFrequencyLowerDay(day.title)) {
                   expectTruthfulLowerMainSlots(day);

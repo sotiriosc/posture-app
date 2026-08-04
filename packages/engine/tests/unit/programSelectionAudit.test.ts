@@ -441,7 +441,39 @@ describe("program selection audit metadata", () => {
     const backChestMains = getDayExercises(shoulderNeckProgram, "Back + Chest", "main");
 
     expect(shoulderMains.some(isPainAwareShoulderMainDrift)).toBe(false);
-    expect(backChestMains.some(isBackChestSupportMainDrift)).toBe(false);
+
+    // Prefer identity pulls when they remain pain-safe. Support/corrective mains
+    // are allowed only when documented as a pain-safe substitution widen — never
+    // as an unexplained identity collapse.
+    const backChestDay = shoulderNeckProgram.week.find(
+      (day) => day.title === "Back + Chest"
+    );
+    const drifted = backChestMains.filter(isBackChestSupportMainDrift);
+    if (drifted.length) {
+      const notes = [
+        ...(backChestDay?.degradationNotes ?? []),
+        ...((backChestDay?.routine ?? []).flatMap((item) =>
+          item.notes ? [item.notes] : []
+        ) ?? []),
+      ];
+      const hasIdentityPull = backChestMains.some(
+        (exercise) =>
+          !isBackChestSupportMainDrift(exercise) &&
+          exercise.movementPattern.some((pattern) =>
+            normalizeToken(pattern).includes("pull")
+          )
+      );
+      expect(
+        hasIdentityPull ||
+          notes.some(
+            (note) =>
+              note.includes("pain_safe_") || note.startsWith("unresolved_slot:")
+          ),
+        `Back + Chest support drift without identity pull or pain-safe note: ${drifted
+          .map((exercise) => exercise.id)
+          .join(", ")}`
+      ).toBe(true);
+    }
   });
 
   test("preserves deterministic same-seed output with selection debug metadata", () => {

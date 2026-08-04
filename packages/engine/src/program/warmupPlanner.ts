@@ -20,6 +20,11 @@ import {
 } from "@/lib/program/warmupLibrary";
 import { getJointsForPatterns } from "@/lib/program/patternJointMap";
 import { getPrevLadderRung } from "@/lib/program/ladderAdvancement";
+import {
+  canonicalizePainAreas,
+  isPainEligibleAgainstAvoidList,
+  painReasonCode,
+} from "@/lib/painModel";
 
 type PlannedEntry = {
   item: WarmupItem;
@@ -71,8 +76,25 @@ const isWarmupItemEquipmentEligible = (item: WarmupItem, equipment: Set<Equipmen
   return item.equipment.every((required) => equipment.has(required));
 };
 
+/**
+ * Warmup avoid-list gate.
+ *
+ * Acute policy (explicit): warmup/prep treat `acute_*` catalog avoid tokens as
+ * hard exclusions (`treatAcuteAsHard: true`). This differs from questionnaire
+ * exercise planning, where acute_* is soft caution only.
+ */
 const isWarmupItemPainEligible = (item: WarmupItem, painTokens: Set<string>) => {
   if (!item.painAreasToAvoid?.length || painTokens.size === 0) return true;
+  const activeInputs = Array.from(painTokens);
+  // Central evaluator with warmup acute-as-hard policy (not implicit conflict).
+  if (
+    !isPainEligibleAgainstAvoidList(item.painAreasToAvoid, activeInputs, {
+      treatAcuteAsHard: true,
+    })
+  ) {
+    return false;
+  }
+  // Preserve prior exact-token intersection for non-area tags on avoid lists.
   const avoidTokens = new Set(item.painAreasToAvoid.map(normalizeToken));
   return !hasIntersection(avoidTokens, painTokens);
 };
@@ -1125,8 +1147,10 @@ export const buildFourBlockWarmup = (
   }
 
   // ── Protective injection overlay ──────────────────────────────────────────
+  const canonicalPain = canonicalizePainAreas(pain).areas;
   for (const rule of PAIN_PROTECTIVE_INJECTIONS) {
-    const painMatch = rule.painTokens.some((pt) => painTokens.has(pt));
+    const ruleAreas = canonicalizePainAreas(rule.painTokens).areas;
+    const painMatch = ruleAreas.some((area) => canonicalPain.includes(area));
     if (!painMatch) continue;
     if (rule.requiresLowerDay && !isLower) continue;
     if (rule.requiresUpperDay && !isUpper) continue;
@@ -1138,9 +1162,10 @@ export const buildFourBlockWarmup = (
       if (inject) {
         mobilizeItems.unshift(inject);
         usedIds.add(inject.id);
+        const areaLabel = ruleAreas[0] ?? rule.painTokens[0] ?? "pain";
         decisionTrace.push(
           `MOBILIZE (protective injection): ${inject.name} — ` +
-          `${rule.painTokens.join("/")} pain flag active`
+            `${painReasonCode("warmup_added", areaLabel)}`
         );
         break;
       }

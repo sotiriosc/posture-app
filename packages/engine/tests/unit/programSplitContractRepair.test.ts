@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { exerciseById, type Exercise } from "@/lib/exercises";
+import { evaluateHardPainExclusion, isHardExcludedByPain } from "@/lib/painModel";
 import { generateWeeklyProgram } from "@/lib/program";
 
 type MainPattern = "push" | "verticalPush" | "pull" | "squat" | "hinge";
@@ -38,17 +39,44 @@ const expectDayHasRequiredMainPatterns = (params: {
   program: ReturnType<typeof generateWeeklyProgram>;
   dayTitle: string;
   requiredPatterns: MainPattern[];
+  /** When set, missing required patterns are allowed only with degradation notes
+   *  and only if no pain-safe catalog candidate with that pattern remains. */
+  painAreas?: string[];
+  painSafePatternExists?: (pattern: MainPattern) => boolean;
 }) => {
-  const { program, dayTitle, requiredPatterns } = params;
+  const {
+    program,
+    dayTitle,
+    requiredPatterns,
+    painAreas = [],
+    painSafePatternExists,
+  } = params;
   const day = program.week.find((entry) => entry.title === dayTitle);
   expect(day).toBeTruthy();
   if (!day) return;
   requiredPatterns.forEach((pattern) => {
+    if (hasMainPattern(day, pattern)) return;
+    const safeExists = painSafePatternExists?.(pattern) ?? true;
+    if (safeExists) {
+      expect(
+        hasMainPattern(day, pattern),
+        `${dayTitle} missing required main ${pattern} despite pain-safe candidates`
+      ).toBe(true);
+      return;
+    }
+    const notes = day.degradationNotes ?? [];
     expect(
-      hasMainPattern(day, pattern),
-      `${dayTitle} missing required main ${pattern}`
+      notes.some((note) => note.startsWith("unresolved_slot:")),
+      `${dayTitle} missing ${pattern} without unresolved_slot degradation note`
     ).toBe(true);
   });
+  if (painAreas.length) {
+    day.routine.forEach((item) => {
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) return;
+      expect(evaluateHardPainExclusion(exercise, painAreas).excluded).toBe(false);
+    });
+  }
 };
 
 const expectDayLacksMainPatterns = (params: {
@@ -768,11 +796,19 @@ describe("split contract repair enforcement", () => {
       phaseIndex: 2,
       seed: "split-4-day-repair",
     });
+    const painSafePatternExists = (pattern: MainPattern) => {
+      if (pattern !== "squat") return true;
+      const bodyweightSquat = exerciseById("bodyweight-squat");
+      return Boolean(
+        bodyweightSquat && !isHardExcludedByPain(bodyweightSquat, ["Hips"])
+      );
+    };
 
     expectDayHasRequiredMainPatterns({
       program,
       dayTitle: "Upper Push + Scapular Control",
       requiredPatterns: ["push"],
+      painAreas: ["Hips"],
     });
     expectDayLacksMainPatterns({
       program,
@@ -783,6 +819,8 @@ describe("split contract repair enforcement", () => {
       program,
       dayTitle: "Lower (Squat Emphasis) + Core",
       requiredPatterns: ["squat"],
+      painAreas: ["Hips"],
+      painSafePatternExists,
     });
     expectDayLacksMainPatterns({
       program,
@@ -793,6 +831,7 @@ describe("split contract repair enforcement", () => {
       program,
       dayTitle: "Upper Pull + Thoracic Posture",
       requiredPatterns: ["pull"],
+      painAreas: ["Hips"],
     });
     expectDayLacksMainPatterns({
       program,

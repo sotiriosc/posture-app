@@ -22,6 +22,7 @@
 import { exercises, exerciseById } from "@/lib/exercises";
 import type { Equipment } from "@/lib/equipment";
 import type { ExerciseLog, LadderRungState, LadderState } from "@/lib/types";
+import { evaluateHardPainExclusion } from "@/lib/painModel";
 
 /** Canonical Phase-3 main patterns eligible for ladder tracking (IND-1). */
 export const LADDER_MAIN_PATTERNS = new Set([
@@ -192,9 +193,10 @@ const checkNextRungEligibility = (params: {
     if (userExp < minExp) return { eligible: false, blockedBy: "experience" };
   }
 
-  // Contraindications
+  // Structured (or legacy-fallback) hard pain exclusion — same evaluator as selection.
   if (
-    ex.painContraindications?.some((c) => params.painAreas.includes(c))
+    params.painAreas.length > 0 &&
+    evaluateHardPainExclusion(ex, params.painAreas).excluded
   ) {
     return { eligible: false, blockedBy: "contraindication" };
   }
@@ -343,6 +345,21 @@ export const computePatternLadderDecision = (params: {
     };
   }
 
+  // ── Phase 3.3: maintain mode — criteria met but user prefers no progression ──
+  // Evaluated before next-rung eligibility so persistent pain contraindications
+  // on the next rung do not mask the intentional maintain hold message.
+  if (trainingIntent === "maintain" && !explicitAdvanceRequested) {
+    return {
+      kind: "hold",
+      newExerciseId: exerciseId,
+      newDifficulty: difficulty,
+      cleanSessionsCount: totalClean,
+      requiredForAdvance: required,
+      inHysteresis: false,
+      trace: `maintain intent: advancement criteria met for ${pattern}; holding by user preference`,
+    };
+  }
+
   // ── ADV-4: at ceiling (no next rung) → hold, progression via load/rep ────
   const nextId = getNextLadderRung(exerciseId);
   if (!nextId) {
@@ -381,19 +398,6 @@ export const computePatternLadderDecision = (params: {
       requiredForAdvance: required,
       inHysteresis: false,
       trace: traceMsg,
-    };
-  }
-
-  // ── Phase 3.3: maintain mode — criteria met but user prefers no progression ──
-  if (trainingIntent === "maintain" && !explicitAdvanceRequested) {
-    return {
-      kind: "hold",
-      newExerciseId: exerciseId,
-      newDifficulty: difficulty,
-      cleanSessionsCount: totalClean,
-      requiredForAdvance: required,
-      inHysteresis: false,
-      trace: `maintain intent: advancement criteria met for ${pattern}; holding by user preference`,
     };
   }
 

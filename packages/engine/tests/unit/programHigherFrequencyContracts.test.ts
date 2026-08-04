@@ -3,6 +3,7 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { buildEngineSignals, generateProgram } from "@/lib/engine";
 import { exerciseById, type Exercise } from "@/lib/exercises";
 import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
+import { evaluateHardPainExclusion } from "@/lib/painModel";
 import {
   clearProgramConstraintWarningBuffer,
   clearProgramVariationHistory,
@@ -1105,28 +1106,47 @@ describe("higher-frequency split contracts", () => {
           seed: `hf-${daysPerWeek}day-${experience.toLowerCase()}-bands-pain-conservative-hinge`,
         }
       );
-      const conservativeHingeIds = new Set([
-        "single-leg-glute-bridge-hold",
-        "bodyweight-good-morning",
-        "back-extension-hold",
-        "back-extension",
-        "single-leg-rdl",
+      // Under Lower back + Hips, most loaded/hip-extension hinges are hard-excluded.
+      // Keep only pain-safe hinge anchors (not core braces stuffed into the hinge lane).
+      const conservativeHingeIds = new Set(["bodyweight-good-morning"]);
+      const forbiddenHingeStandIns = new Set([
+        "hollow-body-hold",
+        "pallof-press",
+        "plank",
+        "dead-bug",
+        "side-plank",
       ]);
 
-      const hingeSlotIds = program.week
-        .filter((day) => day.title.toLowerCase().includes("lower"))
-        .flatMap((day) =>
-          day.routine
-            .filter(
-              (item) =>
-                item.section === "main" && item.selectionDebug?.slotLane === "hinge"
-            )
-            .map((item) => item.exerciseId)
-        );
-      expect(hingeSlotIds.length).toBeGreaterThan(0);
-      hingeSlotIds.forEach((id) => {
-        expect(conservativeHingeIds.has(id), id).toBe(true);
-      });
+      const lowerDays = program.week.filter((day) =>
+        day.title.toLowerCase().includes("lower")
+      );
+      const hingeSlotIds = lowerDays.flatMap((day) =>
+        day.routine
+          .filter(
+            (item) =>
+              item.section === "main" && item.selectionDebug?.slotLane === "hinge"
+          )
+          .map((item) => item.exerciseId)
+      );
+      if (hingeSlotIds.length === 0) {
+        const notes = lowerDays.flatMap((day) => day.degradationNotes ?? []);
+        expect(
+          notes.some((note) => note.startsWith("unresolved_slot:")),
+          "missing hinge lane must be documented when no pain-safe hinge remains"
+        ).toBe(true);
+      } else {
+        hingeSlotIds.forEach((id) => {
+          expect(forbiddenHingeStandIns.has(id), `core stand-in in hinge lane: ${id}`).toBe(
+            false
+          );
+          expect(conservativeHingeIds.has(id), id).toBe(true);
+          const exercise = exerciseById(id);
+          expect(exercise).toBeTruthy();
+          expect(
+            evaluateHardPainExclusion(exercise!, ["Lower back", "Hips"]).excluded
+          ).toBe(false);
+        });
+      }
     }
   );
 
