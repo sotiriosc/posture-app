@@ -26,7 +26,30 @@ import {
   isExerciseEligible,
   normalizeEquipmentSelection,
 } from "@/lib/equipment";
+import {
+  deriveProgramCapabilities,
+  type ProgramCapabilities,
+} from "@/lib/program/equipmentCapabilities";
+import {
+  resolvePrimaryProgramEquipmentMode,
+  type PrimaryProgramEquipmentMode,
+} from "@/lib/program/equipmentMode";
 import { derivePoseFocus } from "@/lib/engine/poseFocus";
+
+export type { PrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
+export {
+  deriveLegacyHasLoadIntentEquipmentMode,
+  parsePrimaryProgramEquipmentMode,
+  resolvePrimaryProgramEquipmentMode,
+  serializePrimaryProgramEquipmentMode,
+} from "@/lib/program/equipmentMode";
+export type { ProgramCapabilities, ProgramEquipmentContext } from "@/lib/program/equipmentCapabilities";
+export {
+  buildProgramEquipmentContext,
+  deriveProgramCapabilities,
+  inferExerciseSupportRequirements,
+  isSupportConfirmedByCapabilities,
+} from "@/lib/program/equipmentCapabilities";
 import {
   MAX_PHASE_INDEX,
   deriveUserTrainingState,
@@ -204,7 +227,6 @@ type PainRuleDefinition = {
 
 type IntentPrimaryGoal = "posture" | "hypertrophy" | "strength" | "general";
 type IntentPhase = ProgramPhaseStage;
-type IntentEquipmentMode = "none" | "bands" | "gym";
 type RecoveryBudget = "low" | "medium" | "high";
 
 export type ProgramIntentNeeds = {
@@ -222,7 +244,12 @@ export type ProgramIntentProfile = {
   painAreas: string[];
   experienceLevel: NormalizedExperienceLevel;
   phase: IntentPhase;
-  equipment: IntentEquipmentMode;
+  /**
+   * First-class program equipment identity.
+   * Evolved from the legacy coarse labels (`none` | `bands` | `gym`);
+   * dumbbell-only and mixed-home no longer collapse to `gym`.
+   */
+  equipment: PrimaryProgramEquipmentMode;
   recoveryBudget: RecoveryBudget;
   priorityPatterns: string[];
   avoidPatterns: string[];
@@ -338,6 +365,10 @@ type SelectionContext = {
   phaseName: string;
   experienceLevel: NormalizedExperienceLevel;
   capabilityMode: EquipmentCapabilityMode;
+  /** First-class program identity; not derived from hasLoad. */
+  primaryEquipmentMode: PrimaryProgramEquipmentMode;
+  /** Confirmed physical capabilities; unknown supports stay false. */
+  programCapabilities: ProgramCapabilities;
   trainingContext: TrainingContext;
   intentProfile: ProgramIntentProfile;
   feedbackSummaryByExercise: Map<string, ExerciseFeedbackSummary>;
@@ -863,14 +894,6 @@ const deriveIntentPrimaryGoal = (goal: string): IntentPrimaryGoal => {
   return "general";
 };
 
-const deriveIntentEquipmentMode = (
-  capabilityMode: EquipmentCapabilityMode
-): IntentEquipmentMode => {
-  if (capabilityMode === "hasLoad") return "gym";
-  if (capabilityMode === "bandOnly") return "bands";
-  return "none";
-};
-
 const deriveTrainingContext = (questionnaire: QuestionnaireData): TrainingContext => {
   const equipment = normalizeEquipmentSelection(questionnaire.equipment);
   return equipment.hasGym ? "gym" : "home";
@@ -898,9 +921,11 @@ export const buildProgramIntentProfile = (params: {
     painSeverity,
     phaseStage,
     experienceLevel,
-    capabilityMode,
   } = params;
   const primaryGoal = deriveIntentPrimaryGoal(questionnaire.goals);
+  const primaryEquipmentMode = resolvePrimaryProgramEquipmentMode(
+    questionnaire.equipment
+  );
   const painAreas = questionnaire.painAreas.map(canonicalizePainArea);
   const fatigueHint = getQuestionnaireFatigueHint(questionnaire);
   const lowRecovery =
@@ -976,7 +1001,7 @@ export const buildProgramIntentProfile = (params: {
     painAreas,
     experienceLevel,
     phase: phaseStage,
-    equipment: deriveIntentEquipmentMode(capabilityMode),
+    equipment: primaryEquipmentMode,
     recoveryBudget,
     priorityPatterns,
     avoidPatterns,
@@ -1057,6 +1082,10 @@ const buildSelectionContext = (
   const phaseName = options?.phaseName ?? `Phase ${phaseIndex}`;
   const phaseStage = phaseStageFromName(phaseName, phaseIndex);
   const capabilityMode = options?.capabilityMode ?? "noneOnly";
+  const primaryEquipmentMode = resolvePrimaryProgramEquipmentMode(
+    questionnaire.equipment
+  );
+  const programCapabilities = deriveProgramCapabilities(questionnaire.equipment);
   const trainingContext = deriveTrainingContext(questionnaire);
   const experienceLevel = normalizeExperienceLevel(questionnaire.experience);
   const intentProfile = buildProgramIntentProfile({
@@ -1116,6 +1145,8 @@ const buildSelectionContext = (
     phaseName,
     experienceLevel,
     capabilityMode,
+    primaryEquipmentMode,
+    programCapabilities,
     trainingContext,
     intentProfile,
     feedbackSummaryByExercise,
