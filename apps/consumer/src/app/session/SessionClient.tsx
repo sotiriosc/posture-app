@@ -67,6 +67,10 @@ import {
   tempoNotationForPace,
 } from "@/lib/timerRules";
 import {
+  buildSessionTimerContextId,
+  isStaleSessionTimerUpdate,
+} from "@/lib/sessionSetTimer";
+import {
   deriveNextSessionRecommendationFromSession,
   formatNextSessionRecommendationFromSession,
 } from "@/lib/nextSessionRecommendation";
@@ -2370,7 +2374,26 @@ export default function SessionClient() {
   const currentItemRuntime = currentItemId
     ? timerRuntimeByItemId[currentItemId] ?? null
     : null;
-  const persistedTimerRuntime = currentItemRuntime;
+  const sessionTimerContextId =
+    sessionId && currentItem
+      ? buildSessionTimerContextId({
+          sessionId,
+          dayIndex: programDayIndex ?? 0,
+          itemId: currentItem.id,
+          exerciseId: currentItem.exerciseId,
+          section: currentItem.section ?? null,
+        })
+      : "";
+  const persistedTimerRuntime =
+    currentItemRuntime &&
+    !isStaleSessionTimerUpdate(
+      sessionTimerContextId,
+      currentItemRuntime.contextId
+    )
+      ? currentItemRuntime
+      : currentItemRuntime?.contextId
+        ? null
+        : currentItemRuntime;
   // Weight input only for true weighted catalog work — bodyweight / timed /
   // assisted never prompt for a load value.
   const hasWeightedInput = currentItem?.loadType === "weighted";
@@ -2451,6 +2474,11 @@ export default function SessionClient() {
   const handleTimerRuntimeChange = useCallback(
     (nextState: DualModeTimerRuntimeState) => {
       if (!currentItemId) return;
+      if (
+        isStaleSessionTimerUpdate(sessionTimerContextId, nextState.contextId)
+      ) {
+        return;
+      }
       setTimerRuntimeByItemId((prev) => {
         const existing = prev[currentItemId];
         if (
@@ -2459,7 +2487,9 @@ export default function SessionClient() {
           existing.running === nextState.running &&
           existing.remainingSeconds === nextState.remainingSeconds &&
           existing.exerciseSeconds === nextState.exerciseSeconds &&
-          existing.restSeconds === nextState.restSeconds
+          existing.restSeconds === nextState.restSeconds &&
+          existing.contextId === nextState.contextId &&
+          existing.updatedAtMs === nextState.updatedAtMs
         ) {
           return prev;
         }
@@ -2480,7 +2510,7 @@ export default function SessionClient() {
         return nextRuntimeByItemId;
       });
     },
-    [currentItemId]
+    [currentItemId, sessionTimerContextId]
   );
 
   useEffect(() => {
@@ -3431,7 +3461,8 @@ export default function SessionClient() {
         <div className="ui-card rounded-lg border-slate-500/25 bg-slate-950/58 p-4 sm:p-5">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-stretch">
             <DualModeTimer
-              key={currentItem.id}
+              key={sessionTimerContextId || currentItem.id}
+              contextId={sessionTimerContextId}
               initialExerciseSeconds={currentTimer.workSeconds}
               initialRestSeconds={currentTimer.restSeconds}
               onExerciseDurationChange={(seconds) => {
