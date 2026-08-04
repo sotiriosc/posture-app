@@ -1,5 +1,10 @@
 import { PAIN_RULES } from "@/lib/program";
 import type { EngineSignals } from "@/lib/engine/engineTypes";
+import {
+  canonicalizePainArea,
+  canonicalizePainAreas,
+  normalizePainAreaToken,
+} from "@/lib/painModel";
 
 export type ConstraintReport = {
   blockedTags: string[];
@@ -11,10 +16,15 @@ export type ConstraintReport = {
 
 const unique = (values: string[]) => Array.from(new Set(values));
 
-const normalizePainArea = (value: string) => value.trim().toLowerCase();
+const resolveRules = (area: string) => {
+  const spaced = canonicalizePainArea(area);
+  const underscored = normalizePainAreaToken(spaced);
+  return PAIN_RULES[spaced] ?? PAIN_RULES[underscored] ?? PAIN_RULES[area] ?? null;
+};
 
 export const buildConstraintReport = (signals: EngineSignals): ConstraintReport => {
-  const painAreas = signals.questionnaire.painAreas.map(normalizePainArea);
+  const canonicalized = canonicalizePainAreas(signals.questionnaire.painAreas);
+  const painAreas = canonicalized.areas.map((area) => canonicalizePainArea(area));
   const preferredTags: string[] = [];
   const blockedTags: string[] = [];
   const blockedPatterns: string[] = [];
@@ -24,8 +34,12 @@ export const buildConstraintReport = (signals: EngineSignals): ConstraintReport 
     notes.push("No pain areas selected in questionnaire.");
   }
 
+  for (const warning of canonicalized.warnings) {
+    notes.push(warning);
+  }
+
   painAreas.forEach((area) => {
-    const rules = PAIN_RULES[area];
+    const rules = resolveRules(area);
     if (!rules) {
       notes.push(`No explicit PAIN_RULES mapping found for "${area}".`);
       return;

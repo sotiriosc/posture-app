@@ -48,6 +48,12 @@ import {
   type ProgramSelectionAuditHook,
 } from "@/lib/program/generationObservability";
 import {
+  canonicalizePainArea,
+  canonicalizePainAreas,
+  evaluateHardPainExclusion,
+  normalizePainAreaToken,
+} from "@/lib/painModel";
+import {
   normalizeWeekForProgramConstraints,
 } from "@/lib/program/postGenerationPipeline";
 import {
@@ -445,22 +451,6 @@ const resolvePoseAnalysisFromSources = (params: {
   return maybePose as PoseAnalysis;
 };
 
-const normalizePainAreaToken = (value: string) =>
-  value
-    .trim()
-    .toLowerCase()
-    .replace(/[\s-]+/g, "_");
-
-const canonicalizePainArea = (value: string) => {
-  const token = normalizePainAreaToken(value);
-  if (token === "low_back" || token === "lower_back") return "lower back";
-  if (token === "upper_back") return "upper back";
-  if (token === "shoulder") return "shoulders";
-  if (token === "hip") return "hips";
-  if (token === "knee") return "knees";
-  return token.replace(/_/g, " ");
-};
-
 const normalizeExperienceLevel = (value: string): NormalizedExperienceLevel => {
   const normalized = value.trim().toLowerCase();
   if (normalized === "advanced") return "advanced";
@@ -851,6 +841,20 @@ export const PAIN_RULES: Record<string, PainRuleDefinition> = {
   },
 };
 
+/** Resolve PAIN_RULES by canonical or legacy spaced keys. */
+const resolvePainRulesForArea = (
+  area: string
+): PainRuleDefinition | null => {
+  const spaced = canonicalizePainArea(area);
+  const underscored = normalizePainAreaToken(spaced);
+  return (
+    PAIN_RULES[spaced] ??
+    PAIN_RULES[underscored] ??
+    PAIN_RULES[area] ??
+    null
+  );
+};
+
 const deriveIntentPrimaryGoal = (goal: string): IntentPrimaryGoal => {
   const normalized = goal.trim().toLowerCase();
   if (normalized.includes("posture")) return "posture";
@@ -1011,7 +1015,7 @@ const buildSelectionContext = (
     questionnaire.goals === "Reduce pain" || questionnaire.experience === "Beginner";
 
   painAreas.forEach((area) => {
-    const rules = PAIN_RULES[area];
+    const rules = resolvePainRulesForArea(area);
     if (!rules) return;
     rules.preferredTags.forEach((tag) => preferredTags.add(tag));
     rules.preferredPatterns.forEach((pattern) => preferredPatterns.add(pattern));
@@ -1368,11 +1372,16 @@ const pickBaselineFallbackExercise = (
       exercise.category === category &&
       exercise.equipment.includes("none") &&
       (context
-        ? isExerciseAllowedForSection(exercise, section) &&
-          isEligibleForPhase(exercise, context.phaseName, context)
-        : true)
+        ? isExerciseEligibleForProgramContext({
+            exercise,
+            available,
+            section,
+            context,
+          })
+        : isExerciseEligible(exercise, available))
   );
-  return noneFallback[0] ?? exercises.find((exercise) => exercise.category === category) ?? null;
+  // Never fall back to a pain-hard-excluded or otherwise ineligible exercise.
+  return noneFallback[0] ?? eligible[0] ?? null;
 };
 
 const highPainComfortTags = new Set([
@@ -1408,7 +1417,7 @@ const getPainRulesForContext = (context?: SelectionContext) => {
     const canonical = canonicalizePainArea(area);
     if (seen.has(canonical)) return;
     seen.add(canonical);
-    rules.push(PAIN_RULES[canonical] ?? PAIN_RULES[normalizePainAreaToken(canonical)] ?? EMPTY_PAIN_RULE);
+    rules.push(resolvePainRulesForArea(canonical) ?? EMPTY_PAIN_RULE);
   });
   return rules;
 };
@@ -1447,9 +1456,9 @@ const scoreSubstitutionCandidate = (params: {
   }
 
   if (context) {
-    if (contraindicationHitsPainArea(candidate.contraindications, context.painAreas)) {
+    if (exerciseHardExcludedForPain(candidate, context.painAreas)) {
       score -= 12;
-      reasons.push("-12 pain contraindication overlap");
+      reasons.push("-12 hard_excluded:pain_contraindication");
     }
 
     const rules = getPainRulesForContext(context);
@@ -1634,7 +1643,7 @@ const ensureEligibleItem = (
   );
   const failsPainFilter =
     Boolean(selectionContext?.painAreas.length) &&
-    contraindicationHitsPainArea(exercise.contraindications, selectionContext?.painAreas ?? []);
+    exerciseHardExcludedForPain(exercise, selectionContext?.painAreas ?? []);
   if (
     (selectionContext
       ? isExerciseEligibleForProgramContext({
@@ -1675,7 +1684,7 @@ const ensureEligibleItem = (
       isLegsAbsDayTitle(dayTitle));
   const candidateAvoidsCurrentPain = (candidate: Exercise) =>
     !selectionContext?.painAreas.length ||
-    !contraindicationHitsPainArea(candidate.contraindications, selectionContext.painAreas);
+    !exerciseHardExcludedForPain(candidate, selectionContext.painAreas);
   const shouldEnforceStrictRoleReplacement = Boolean(
     selectionContext &&
       (shouldProtectMainIdentity ||
@@ -1730,24 +1739,55 @@ const ensureEligibleItem = (
           return candidateIsStrictRoleReplacement(candidate);
         })
       : undefined);
+  const rankedPainSafe = ranked.filter((entry) =>
+    candidateAvoidsCurrentPain(entry.exercise)
+  );
+  const baselineFallback = pickBaselineFallbackExercise(
+    exercise.category,
+    exercise.loadType,
+    available,
+    item.section,
+    selectionContext
+  );
+  const baselinePainSafe =
+    baselineFallback && candidateAvoidsCurrentPain(baselineFallback)
+      ? baselineFallback
+      : null;
   const fallback = shouldEnforceStrictRoleReplacement
-    ? strictRoleFallback
+    ? strictRoleFallback ?? baselinePainSafe
     : strictRoleFallback ??
-      ranked.find(
-        (entry) =>
-          candidateAvoidsCurrentPain(entry.exercise) &&
-          candidatePreservesMainIdentity(entry.exercise)
+      rankedPainSafe.find((entry) =>
+        candidatePreservesMainIdentity(entry.exercise)
       )?.exercise ??
-      ranked.find((entry) => candidatePreservesMainIdentity(entry.exercise))?.exercise ??
-      ranked[0]?.exercise ??
-      pickBaselineFallbackExercise(
-        exercise.category,
-        exercise.loadType,
-        available,
-        item.section,
-        selectionContext
-      );
-  if (!fallback) return item;
+      rankedPainSafe[0]?.exercise ??
+      baselinePainSafe;
+  if (!fallback) {
+    // Safety monotonicity: never keep a hard-excluded original item.
+    if (!failsPainFilter) return item;
+    if (!selectionContext) return item;
+    const anyPainSafe = exercises.find(
+      (candidate) =>
+        candidate.id !== exercise.id &&
+        candidate.category === exercise.category &&
+        isExerciseEligibleForProgramContext({
+          exercise: candidate,
+          available,
+          section: item.section,
+          context: selectionContext,
+          dayTitle,
+        })
+    );
+    if (!anyPainSafe) return item;
+    return withSelectionDebug(
+      {
+        ...item,
+        exerciseId: anyPainSafe.id,
+        loadType: anyPainSafe.loadType,
+        cues: buildProgramCues(anyPainSafe, item.section),
+      },
+      "eligibility_swap"
+    );
+  }
   return withSelectionDebug(
     {
       ...item,
@@ -2050,13 +2090,29 @@ const ensureDistinctRoutine = (
       usedIds.add(item.exerciseId);
       return item;
     }
-    const replacement = pickDistinctReplacement({
-      item,
-      dayTitle: day.title,
-      usedIds,
-      available,
-      context,
-    });
+    const replacement =
+      pickDistinctReplacement({
+        item,
+        dayTitle: day.title,
+        usedIds,
+        available,
+        context,
+      }) ??
+      (context
+        ? exercises.find(
+            (candidate) =>
+              !usedIds.has(candidate.id) &&
+              candidate.category ===
+                (exerciseById(item.exerciseId)?.category ?? candidate.category) &&
+              isExerciseEligibleForProgramContext({
+                exercise: candidate,
+                available,
+                section: item.section,
+                context,
+                dayTitle: day.title,
+              })
+          ) ?? null
+        : null);
     if (!replacement) {
       return item;
     }
@@ -3731,7 +3787,11 @@ const buildBudgetRepairCandidateSpec = (params: {
       context.selectionContext.painSeverity === "high" &&
       context.selectionContext.painAreas.some((area) => {
         const token = normalizeTagToken(area);
-        return token.includes("low_back") || token.includes("hip");
+        return (
+          token.includes("low_back") ||
+          token.includes("lower_back") ||
+          token.includes("hip")
+        );
       });
     if (hasHingeCapacity && !painBlocksHingeControl) {
       candidateRules.push(lightHingeControlRule);
@@ -3767,7 +3827,11 @@ const buildBudgetRepairCandidateSpec = (params: {
       context.selectionContext.painSeverity === "high" &&
       context.selectionContext.painAreas.some((area) => {
         const token = normalizeTagToken(area);
-        return token.includes("low_back") || token.includes("hip");
+        return (
+          token.includes("low_back") ||
+          token.includes("lower_back") ||
+          token.includes("hip")
+        );
       });
     if (hasHingeCapacity && !painBlocksHingeControl) {
       candidateRules.push(lightHingeControlRule);
@@ -14944,7 +15008,7 @@ const hasUpperPainSignal = (context: SelectionContext) =>
   hasPainAreaSignal(context, ["shoulder", "neck", "upper_back", "upper back"]);
 
 const hasLowBackPainSignal = (context: SelectionContext) =>
-  hasPainAreaSignal(context, ["lower_back", "low_back", "back"]);
+  hasPainAreaSignal(context, ["lower_back", "low_back", "lower back", "low back", "back"]);
 
 const shouldApplyPainAwareMainIdentityProtection = (params: {
   available: Set<Equipment>;
@@ -18898,6 +18962,18 @@ const ensureThreeDayLegsAbsMainCount = (params: {
       .filter((exercise): exercise is Exercise => Boolean(exercise))
       .find((exercise) => {
         if (usedIds.has(exercise.id)) return false;
+        // Safety monotonicity: hard pain exclusion cannot be bypassed by rescue paths.
+        if (
+          !isExerciseEligibleForProgramContext({
+            exercise,
+            available: context.available,
+            section: "main",
+            context: context.selectionContext,
+            dayTitle: day.title,
+          })
+        ) {
+          return false;
+        }
         const controlledGymHamstringCurlRescue =
           (slot.slotKind === "mainHingePrimary" ||
             slot.slotKind === "mainSecondaryLowerLoaded") &&
@@ -18912,18 +18988,6 @@ const ensureThreeDayLegsAbsMainCount = (params: {
           (exerciseHasLowerMainPattern(exercise) ||
             isLegsIsolationMainPromotionCandidate(exercise)) &&
           !isRegressionOrDrillMovement(exercise);
-        if (
-          !controlledGymHamstringCurlRescue &&
-          !isExerciseEligibleForProgramContext({
-            exercise,
-            available: context.available,
-            section: "main",
-            context: context.selectionContext,
-            dayTitle: day.title,
-          })
-        ) {
-          return false;
-        }
         const legalForSlot = isMainLegalForSlot({
           exercise,
           dayTitle: day.title,
@@ -21392,6 +21456,13 @@ const isExerciseEligibleForProgramContext = (params: {
   // Phase 3.3 — Personal Equipment Blocks: hard-filter before any scoring.
   // Same tier as painContraindications — no exception paths.
   if (context.blockedExerciseIds?.has(exercise.id)) return false;
+  // Structured (or legacy-fallback) hard pain exclusion — before scoring/repair.
+  if (
+    context.painAreas.length > 0 &&
+    exerciseHardExcludedForPain(exercise, context.painAreas)
+  ) {
+    return false;
+  }
   if (exercise.experienceMin) {
     const minimumExperience = normalizeExperienceLevel(exercise.experienceMin);
     if (experienceRankByLevel[context.experienceLevel] < experienceRankByLevel[minimumExperience]) {
@@ -21897,7 +21968,9 @@ const painAreaPriorityTags: Record<string, string[]> = {
   "lower back": ["core", "tva", "hinge", "hips"],
   shoulders: ["scap", "upper-back", "shoulders"],
   hips: ["hips", "glutes", "hinge", "balance"],
-  knees: ["legs", "squat", "ankles", "glutes"],
+  // Prefer hinge/glute/core under knee pain — do not boost squat tags that fight
+  // PAIN_RULES.knees deprioritizePatterns: ["squat"].
+  knees: ["glutes", "hinge", "balance", "core"],
 };
 
 const sharedItemsCount = (a: string[], b: string[]) => {
@@ -22136,14 +22209,14 @@ const adjustRoutineForPhase = (
   return { ...day, routine: updated };
 };
 
-const contraindicationHitsPainArea = (
-  contraindications: string[] | undefined,
+/**
+ * Central hard pain exclusion for selection / repair / substitution.
+ * Structured painContraindications are authoritative; free-text is legacy-only.
+ */
+const exerciseHardExcludedForPain = (
+  exercise: Pick<Exercise, "painContraindications" | "contraindications">,
   painAreas: string[]
-) => {
-  if (!contraindications?.length || !painAreas.length) return false;
-  const lowered = contraindications.join(" ").toLowerCase();
-  return painAreas.some((area) => lowered.includes(area));
-};
+) => evaluateHardPainExclusion(exercise, painAreas).excluded;
 
 const isShoulderIsolationExercise = (exercise: Exercise) =>
   (exercise.tags ?? []).some((tag) => {
@@ -27970,9 +28043,9 @@ const scoreExerciseForContextDetailed = (
   // Phase 4: capture for sourceObservation in return value.
   const poseFocusSourceObservation = poseFocusBonus.sourceObservation;
 
-  if (contraindicationHitsPainArea(exercise.contraindications, context.painAreas)) {
+  if (exerciseHardExcludedForPain(exercise, context.painAreas)) {
     score -= 8;
-    reasons.push("-8 contraindication overlap with pain areas");
+    reasons.push("-8 hard_excluded:pain_contraindication");
   }
 
   const intentSlotBonus = getIntentSlotScoreBonus({
@@ -29138,6 +29211,32 @@ const getHingeCompoundCandidateIds = (
       "back-extension-hold",
       "back-extension",
       "single-leg-glute-bridge-hold",
+      "single-leg-hip-thrust",
+      "single-leg-rdl",
+    ];
+  }
+
+  // Band-only + low-back / high-pain: prefer loaded band hinge from skill onward so
+  // phase demand does not stall on bodyweight hinge surrogates now that acute_*
+  // catalog tags are soft for questionnaire planning.
+  if (
+    context.capabilityMode === "bandOnly" &&
+    (context.painSeverity === "high" || hasLowBackPainSignal(context))
+  ) {
+    if (phaseIndex >= 2) {
+      return [
+        "band-rdl",
+        "single-leg-rdl",
+        "back-extension",
+        "back-extension-hold",
+        "single-leg-glute-bridge-hold",
+        "single-leg-hip-thrust",
+      ];
+    }
+    return [
+      "single-leg-glute-bridge-hold",
+      "back-extension-hold",
+      "back-extension",
       "single-leg-hip-thrust",
       "single-leg-rdl",
     ];
@@ -32071,6 +32170,16 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
                 if (usedIds.has(candidate.id)) return false;
                 if (candidate.id === item.exerciseId) return false;
                 if (candidate.category !== "main") return false;
+                // Safety monotonicity: rescue bypasses may relax phase/equipment
+                // gates, but never hard pain exclusion.
+                if (
+                  exerciseHardExcludedForPain(
+                    candidate,
+                    context.selectionContext.painAreas
+                  )
+                ) {
+                  return false;
+                }
                 const contextEligible = isExerciseEligibleForProgramContext({
                   exercise: candidate,
                   available: context.available,
@@ -32278,6 +32387,14 @@ const findLowerSlotPurityReplacement = (params: {
       if (candidate.id === item.exerciseId) return false;
       if (usedIds.has(candidate.id)) return false;
       if (candidate.category !== "main") return false;
+      if (
+        exerciseHardExcludedForPain(
+          candidate,
+          context.selectionContext.painAreas
+        )
+      ) {
+        return false;
+      }
       const contextEligible = isExerciseEligibleForProgramContext({
         exercise: candidate,
         available: context.available,
@@ -34154,8 +34271,14 @@ export const generateWeeklyProgram = (
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
   });
-  const tracedStructuredPrepWeek = annotateSelectionDecisionTraceForWeek({
+  // Final hard-pain gate: no later stage may reintroduce excluded work.
+  const finalPainSafeWeek = normalizeWeekForSelectionContext({
     week: finalDisplayedSlotTruthWeek,
+    available: weeklyRuntimeContext.availableEquipment,
+    selectionContext: weeklyRuntimeContext.selectionContext,
+  });
+  const tracedStructuredPrepWeek = annotateSelectionDecisionTraceForWeek({
+    week: finalPainSafeWeek,
     daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
     available: weeklyRuntimeContext.availableEquipment,

@@ -11,6 +11,7 @@ import { clearDraft } from "@/lib/sessionDraftStore";
 import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
 import { getProgram, saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
 import type { ProgramProgress } from "@/lib/types";
+import { QUESTIONNAIRE_PAIN_DISPLAY_LABELS } from "@/lib/painModel";
 import {
   BUYER_DEMO_QUERY_PARAM,
   BUYER_DEMO_QUERY_VALUE,
@@ -49,14 +50,7 @@ const goalOptions = [
   "General fitness",
 ];
 
-const painOptions = [
-  "Neck",
-  "Upper back",
-  "Lower back",
-  "Shoulders",
-  "Hips",
-  "Knees",
-];
+const painOptions = [...QUESTIONNAIRE_PAIN_DISPLAY_LABELS];
 
 const experienceOptions = ["Beginner", "Intermediate", "Advanced"];
 
