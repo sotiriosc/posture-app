@@ -228,6 +228,7 @@ export const collectReleaseCriticalExerciseIds = (params?: {
           {
             phaseIndex: persona.phaseIndex,
             seed: String(persona.seed),
+            skipQualityGate: true,
           }
         );
         for (const day of program.week) {

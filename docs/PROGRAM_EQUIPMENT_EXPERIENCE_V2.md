@@ -70,6 +70,23 @@ next recommended phase.
 
 Stop after the phase result. Wait for an explicit instruction before continuing.
 
+## Owner Decision — Binding Delivery and Merge Sequence
+
+This sequencing decision is binding for the remainder of the project:
+
+1. Complete Phases 7, 7B, 8 and 9 on the current checkpoint/release branch.
+2. Create a clean checkpoint after every completed phase.
+3. Do not merge the equipment-experience project into `main` during an incomplete phase.
+4. After all product phases are complete, run the complete release-candidate validation suite.
+5. Compare the release branch against current `main` and resolve any integration drift.
+6. Open or update the final pull request and merge the validated release branch into `main`.
+7. Verify the exact merge commit through CI, application builds and production smoke checks.
+8. Only after the validated merge is on `main`, create a new decomposition branch.
+9. Component and engine separation must be behavior-preserving and must use the validated merged behavior as its baseline.
+10. Do not mix product behavior changes with component separation.
+
+Phase 7 must not merge to `main`.
+
 Initial Cursor command
 
 Read docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md completely. Execute Phase 0 only. Do not change production program behavior. Build the baseline audit, generate the required reports, run the specified tests, update the Phase 0 checklist and Phase Result, then stop.
@@ -2716,45 +2733,103 @@ Union of home template candidate maps, mixed-home ranked candidates, pain/progre
 - Phase 7 — Quality Gate Enforcement, only after explicit instruction
 - Do not begin Phase 7B, Phase 8, telemetry, nutrition, wearables, knowledge portal, or engine decomposition
 
-Phase 7 — Quality Gate Enforcement
+## Phase 7 — Unified Quality-Gate Enforcement
 
-Objective
+### Objective
 
-Move from observation to protection.
+Move from observation to protection: compose mode contracts into one production evaluator with severity policy, bounded recovery, mode fallbacks, and blocking CI.
 
-Tasks
+### Checklist
 
-Run the V2 quality gate in audit-only mode for all tests and local generation.
+- [x] Gate inventory report + binding delivery/merge sequence in this plan
+- [x] Canonical `program/qualityGate/` modules (types, policy, evaluate, recover, signature, observability)
+- [x] Resolve gym 5-day pain calves + upper-hinge baselines; remove out-of-gate bookkeeping after green matrices
+- [x] Production enforcement after finalize / before return; engine `quality_failed` on total failure
+- [x] Mode-template fallback seeds; fallback re-evaluated by the same gate
+- [x] `npm run audit:program-quality` + Phase 7 reports
+- [x] 10k×5 mode fuzz + repeatability
+- [x] Focused quality-gate / cross-mode / score-integrity tests
+- [x] Blocking CI quality jobs (no `continue-on-error`)
+- [x] Manual flagship review report
+- [x] Phase Result appended; stop before Phase 7B
+- [x] Checkpoint commit on current branch (no merge to `main`)
 
-Review false positives.
+### Phase Result
 
-Fix root problems.
+#### Files changed (high level)
 
-Add a safe known-template fallback.
+- `packages/engine/src/program/qualityGate/*` — unified evaluator, policy, recovery, signatures, observability
+- `packages/engine/src/program.ts` — calves/upper-hinge fixes; production gate after finalize
+- `packages/engine/src/engine/engine.ts` + `engineTypes.ts` — `quality_failed` structured status
+- `packages/engine/src/__debug__/programQualityAudit.ts` + mode audits (`skipQualityGate`, exit codes)
+- `packages/engine/tests/unit/programQualityGate.test.ts`
+- `.github/workflows/ci.yml` — parallel quality-* jobs
+- `docs/dev-reports/program-quality-v2-phase7-*`
+- `package.json` — `audit:program-quality`
 
-Enable blocking only after the matrix is clean.
+#### Unified gate location
 
-Log failure reasons in development and internal diagnostics.
+`packages/engine/src/program/qualityGate/` — compose `validate*ProgramContract` + deferred gaps + week coaching reachability + deterministic signatures.
 
-Never expose raw internal failure text to users.
+#### Production enforcement boundary
 
-Acceptance gate
+After `finalizeWeeklyProgramResult`, before `generateWeeklyProgram` returns. Historical stored programs are never mutated. Recovery regenerates with `skipQualityGate: true` then re-evaluates.
 
-Zero hard failures in the full matrix.
+#### Severity model / reason-code registry
 
-Zero hard failures in 10,000 fuzz seeds per primary mode.
+`programQualityPolicy.ts` + `docs/dev-reports/program-quality-v2-phase7-reason-code-policy.md` — hardFailure / warning / capabilityLimitation / deferredContent. Planned demos = deferred.
 
-Every scenario scores at least 90.
+#### Known baseline resolutions
 
-Average at least 95.
+| Former code | Resolution |
+|---|---|
+| `BASELINE_GYM_5D_PAIN_GROWTH_CALVES_ACCESSORY` | Calves accessory planning + HF lower-day coverage repair |
+| `BASELINE_GYM_5D_PAIN_GROWTH_UPPER_HINGE_INTELLIGENCE` | Upper-day hinge eligibility rejects lower-main dual-tagged pulls |
 
-Fallback itself passes the quality gate.
+#### Recovery and fallback
 
-Full test suite and build pass.
+≤2 deterministic seed-offset regenerations, then mode-specific canonical template seed (`modeQualityFallback.ts`). Fallback must pass the same evaluator or generation returns `ProgramQualityGateError` / engine `quality_failed`.
 
-Phase Result added.
+#### Template version
 
-Cursor stops.
+`PROGRAM_TEMPLATE_VERSION` remains **17** (evaluator wiring alone does not bump).
+
+#### Reports
+
+- `docs/dev-reports/program-quality-v2-phase7-gate-inventory.md`
+- `docs/dev-reports/program-quality-v2-phase7-reason-code-policy.md`
+- `docs/dev-reports/program-quality-v2-phase7-unified-gate.md` / `.json`
+- `docs/dev-reports/program-quality-v2-phase7-fuzz-summary.md`
+- `docs/dev-reports/program-quality-v2-phase7-repeatability.md`
+- `docs/dev-reports/program-quality-v2-phase7-recovery-review.md`
+- `docs/dev-reports/program-quality-v2-phase7-manual-review.md`
+- `docs/dev-reports/program-quality-v2-phase7-ci-enforcement.md`
+- `docs/dev-reports/program-quality-v2-phase7-baselines.md`
+- `docs/dev-reports/program-quality-v2-phase7-matrix-blockers.md`
+
+Phase 0–6 artifacts preserved.
+
+#### Matrix status
+
+- `audit:coverage-matrix` (TWO_SCENARIOS including resolved gym 5d pain baseline): **PASS**
+- Broad `audit:phase-matrix`: remaining documented blockers `MATRIX_GYM_4D_BICEPS_TRICEPS_PUSH_COVERAGE`, `MATRIX_CARRY_EXPOSURE_INTELLIGENCE` (not renamed exemptions of the two resolved baselines; mode-contract fuzz remains the hard 50k surface)
+
+#### Command results (Phase 7 acceptance)
+
+- `npm run audit:program-quality`: **PASS** (elapsed ~95 min)
+- Fuzz totals: **50,000** (10k×5 modes) — hardFailures=0, identityCollapse=0, illegalEquipment=0, deterministicRepeat=0, exceptions=0 per mode
+- Repeatability: **0** signature diffs, **0** reason-count diffs
+- Baselines (gym 5d pain growth): coverage + evaluation **PASS**
+- Fallbacks (all five modes): **PASS** (first-pass candidates; fallback path validated)
+- `audit:exercise-coaching`: **PASS**
+- `audit:coverage-matrix`: **PASS**
+- Focused tests: `programQualityGate.test.ts` **7/7 PASS**
+- `PROGRAM_TEMPLATE_VERSION`: **17** (unchanged)
+
+#### Next phase starting point
+
+- **Phase 7B — Program Presentation Contract**, only after explicit instruction
+- Do not begin Phase 8, Phase 9, merge to `main`, nutrition, wearables, knowledge portal, or engine decomposition
 
 ## Phase 7B — Program Presentation Contract
 

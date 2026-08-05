@@ -83,6 +83,11 @@ import {
   finalizeWeeklyProgramResult,
   type ProgramConstraintWarning,
 } from "@/lib/program/programFinalization";
+import { ProgramQualityGateError } from "@/lib/program/qualityGate/ProgramQualityGateError";
+import {
+  attachProgramQualityEvaluation,
+  recoverAndEvaluateProgramQuality,
+} from "@/lib/program/qualityGate/recoverProgramQuality";
 import {
   DEFAULT_PROGRAM_VARIATION_CONFIG,
   createProgramVariationMemoryRuntime,
@@ -1800,26 +1805,28 @@ const ensureEligibleItem = (
           context: selectionContext,
         })
       : true;
+  const candidatePassesProgramContext = (candidate: Exercise) =>
+    !selectionContext ||
+    isExerciseEligibleForProgramContext({
+      exercise: candidate,
+      available,
+      section: item.section,
+      context: selectionContext,
+      dayTitle,
+    });
   const strictRoleFallback =
     ranked.find(
       (entry) =>
         candidateAvoidsCurrentPain(entry.exercise) &&
-        candidateIsStrictRoleReplacement(entry.exercise)
+        candidateIsStrictRoleReplacement(entry.exercise) &&
+        candidatePassesProgramContext(entry.exercise)
     )?.exercise ??
     (shouldEnforceStrictRoleReplacement && selectionContext
       ? exercises.find((candidate) => {
           if (candidate.id === exercise.id) return false;
           if (candidate.category !== exercise.category) return false;
           if (!candidateAvoidsCurrentPain(candidate)) return false;
-          if (
-            !isExerciseEligibleForProgramContext({
-              exercise: candidate,
-              available,
-              section: item.section,
-              context: selectionContext,
-              dayTitle,
-            })
-          ) {
+          if (!candidatePassesProgramContext(candidate)) {
             return false;
           }
           return candidateIsStrictRoleReplacement(candidate);
@@ -5503,15 +5510,32 @@ const appendCoverageAccessory = (params: {
     highPain ? 75 : 45,
     "accessory"
   );
-  const next: ProgramRoutineItem = {
-    ...base,
-    notes: highPain
-      ? appendNote(
-          base.notes,
-          "Comfort-first accessory: smooth tempo, pain-free range, and stop before strain."
-        )
-      : appendNote(base.notes, note),
-  };
+  const coverageExercise = exerciseById(exerciseId);
+  const coverageLane: AccessoryLane | undefined =
+    coverageExercise && isLegsCalvesAccessoryExercise(coverageExercise)
+      ? "lower"
+      : coverageExercise && matchesAccessoryLanePattern(coverageExercise, "core")
+        ? "core"
+        : undefined;
+  const next: ProgramRoutineItem = withSelectionDebug(
+    {
+      ...base,
+      notes: highPain
+        ? appendNote(
+            base.notes,
+            "Comfort-first accessory: smooth tempo, pain-free range, and stop before strain."
+          )
+        : appendNote(base.notes, note),
+    },
+    "coverage_repair",
+    coverageLane
+      ? {
+          slotId: makeDaySlotId(day, day.routine.length, "accessory"),
+          slotKind: accessorySlotKindByLane(coverageLane),
+          slotLane: coverageLane,
+        }
+      : undefined
+  );
   const accessoryIndexes = day.routine
     .map((item, index) => ({ item, index }))
     .filter((entry) => entry.item.section === "accessory")
@@ -6093,8 +6117,18 @@ const applyWeeklyCoverageRepairs = (params: {
     upperPushOrArmsDayIndexes.length > 0
       ? upperPushOrArmsDayIndexes
       : armCoverageIndexes;
+  const lowerHingeDayIndexes = nextWeek
+    .map((day, index) => ({ day, index }))
+    .filter(({ day }) => {
+      const normalized = day.title.toLowerCase();
+      return normalized.includes("lower") && normalized.includes("hinge");
+    })
+    .map((entry) => entry.index);
+  // Phase 7: weekly calvesDays=2 for 5-day needs both lower days in scope.
   const calvesCoverageIndexes =
-    lowerSquatDayIndexes.length > 0 ? lowerSquatDayIndexes : lowerCoverageIndexes;
+    lowerSquatDayIndexes.length > 0
+      ? [...new Set([...lowerSquatDayIndexes, ...lowerHingeDayIndexes])]
+      : lowerCoverageIndexes;
   const bicepsMinDays = Math.min(
     contract.bicepsDays,
     Math.max(1, new Set(bicepsCoverageIndexes).size)
@@ -22802,6 +22836,7 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
       patterns.has("squat") ||
       patterns.has("hinge") ||
       patterns.has("single_leg") ||
+      patterns.has("calf") ||
       tags.has("legs") ||
       tags.has("glutes") ||
       tags.has("quads") ||
@@ -22811,7 +22846,8 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
       token.includes("hinge") ||
       token.includes("lunge") ||
       token.includes("step-up") ||
-      token.includes("stepup")
+      token.includes("stepup") ||
+      token.includes("calf")
     );
   }
   const coreOrBracePattern =
@@ -25002,6 +25038,9 @@ const isMainLegalForSlot = (params: {
       isLegsCarryExercise(exercise) ||
       matchesAccessoryLanePattern(exercise, "core") ||
       !exerciseHasUpperMainPattern(exercise) ||
+      // Phase 7: pull+hinge dual-tagged mains (e.g. bent-over row) must not
+      // satisfy upper-day pull slots — matches coverage intelligence gate.
+      exerciseHasLowerMainPattern(exercise) ||
       (hasUpperPainSignal(context) &&
         (exercise.id === "pike-pushup" ||
           `${exercise.id} ${exercise.name}`.toLowerCase().includes("pike push"))))
@@ -30353,7 +30392,20 @@ const getAccessoryCandidateIds = (params: {
     ];
   }
   if (lane === "lower") {
-    return [
+    // Phase 7: prefer calves first on Lower Squat (and lower lanes generally) so
+    // day-contract calves accessories and weekly calvesDays cannot be starved by
+    // posterior-chain accessories ahead of them in the pool.
+    const lowerSquatDay =
+      typeof dayTitle === "string" &&
+      dayTitle.toLowerCase().includes("lower") &&
+      dayTitle.toLowerCase().includes("squat");
+    const calfFirst = [
+      "standing-calf-raise",
+      "single-leg-calf-raise",
+      "db-calf-raise",
+      "band-calf-raise",
+    ];
+    const lowerRest = [
       "machine-seated-hamstring-curl",
       "machine-glute-drive",
       "barbell-hip-thrust",
@@ -30363,8 +30415,6 @@ const getAccessoryCandidateIds = (params: {
       "single-leg-rdl",
       "single-leg-hip-thrust",
       "glute-bridges",
-      "single-leg-calf-raise",
-      "standing-calf-raise",
       "hip-hinge-drill",
       "band-front-squat",
       "bodyweight-squat",
@@ -30374,6 +30424,13 @@ const getAccessoryCandidateIds = (params: {
       "band-suitcase-march",
       "suitcase-hold-march",
     ];
+    return lowerSquatDay || !dayTitle
+      ? [...calfFirst, ...lowerRest]
+      : [
+          ...lowerRest.slice(0, 8),
+          ...calfFirst,
+          ...lowerRest.slice(8),
+        ];
   }
   return [
     "suitcase-carry",
@@ -33649,9 +33706,19 @@ const findFinalAccessorySlotReplacement = (params: {
           weeklyQuotaAudit,
         }
       );
+      let score = detail.score + focusOverlapScore(exercise, day.focusTags);
+      // Phase 7: Lower-day lower-lane purity must not erase calves needed for
+      // day-contract / weekly calvesDays (posterior accessories score higher otherwise).
+      if (
+        lane === "lower" &&
+        isHigherFrequencyLowerDayTitle(day.title) &&
+        isLegsCalvesAccessoryExercise(exercise)
+      ) {
+        score += 80;
+      }
       return {
         exercise,
-        score: detail.score + focusOverlapScore(exercise, day.focusTags),
+        score,
       };
     })
     .sort((left, right) => {
@@ -35079,6 +35146,11 @@ export const generateWeeklyProgram = (
      * the phase gating verdict is "advance".
      */
     priorPhaseHistory?: import("@/lib/types").PhaseTransitionRecord[];
+    /**
+     * Phase 7 — skip unified quality-gate evaluation/recovery.
+     * Used by recovery re-generation and audit runners that compose their own contracts.
+     */
+    skipQualityGate?: boolean;
   }
 ): Program => {
   const { resolvedFeedbackSummaryByExercise: rawFeedbackSummary, recentlyUsedExerciseIds } =
@@ -35476,7 +35548,7 @@ export const generateWeeklyProgram = (
         }))
       : tracedStructuredPrepWeek;
 
-  return finalizeWeeklyProgramResult({
+  const candidate = finalizeWeeklyProgramResult({
     pushWarnings: pushProgramConstraintWarnings,
     programId,
     phaseName: weeklyRuntimeContext.phaseName,
@@ -35577,7 +35649,51 @@ export const generateWeeklyProgram = (
       ];
     })(),
   });
+
+  if (options?.skipQualityGate) {
+    return candidate;
+  }
+
+  const guarded = recoverAndEvaluateProgramQuality({
+    questionnaire: data,
+    programId,
+    phaseIndex: weeklyRuntimeContext.phaseIndex ?? options?.phaseIndex ?? 1,
+    baseSeed: options?.seed ?? programId,
+    initialProgram: candidate,
+    generate: (questionnaire, id, opts) =>
+      generateWeeklyProgram(questionnaire, id, {
+        ...opts,
+        skipQualityGate: true,
+      }),
+  });
+
+  if (!guarded.ok) {
+    throw new ProgramQualityGateError(guarded.message, guarded.evaluation);
+  }
+
+  return attachProgramQualityEvaluation(guarded.program, guarded.evaluation);
 };
+
+export {
+  evaluateProgramQuality,
+} from "@/lib/program/qualityGate/evaluateProgramQuality";
+export {
+  recoverAndEvaluateProgramQuality,
+  attachProgramQualityEvaluation,
+} from "@/lib/program/qualityGate/recoverProgramQuality";
+export { ProgramQualityGateError } from "@/lib/program/qualityGate/ProgramQualityGateError";
+export type {
+  ProgramQualityEvaluation,
+  ProgramQualityFinding,
+  ProgramQualitySeverity,
+  ProgramQualityGenerationFailure,
+} from "@/lib/program/qualityGate/qualityGateTypes";
+export {
+  resolveProgramQualitySeverity,
+  USER_SAFE_QUALITY_MESSAGE,
+  listKnownSeverityCodes,
+} from "@/lib/program/qualityGate/programQualityPolicy";
+export { computeProgramQualitySignature } from "@/lib/program/qualityGate/programQualitySignature";
 
 export const generateNextPhaseProgram = (params: {
   currentProgram: Program;

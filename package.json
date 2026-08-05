@@ -38,6 +38,7 @@
     "audit:bodyweight-program": "node --import tsx packages/engine/src/__debug__/bodyweightProgramAudit.ts",
     "audit:mixed-home-program": "node --import tsx packages/engine/src/__debug__/mixedHomeProgramAudit.ts",
     "audit:exercise-coaching": "node --import tsx packages/engine/src/__debug__/exerciseCoachingAudit.ts",
+    "audit:program-quality": "node --import tsx packages/engine/src/__debug__/programQualityAudit.ts",
     "audit:decision-trace": "node --import tsx packages/engine/src/__debug__/decisionTraceAudit.ts",
     "debug:program": "node --import tsx packages/engine/src/__debug__/printProgram.ts",
     "smoke:photo-ns": "node --import tsx packages/engine/src/__debug__/photoNamespaceSmoke.ts",

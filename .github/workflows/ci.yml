@@ -59,6 +59,160 @@ jobs:
       - name: Build gyms app
         run: npm run build --workspace=apps/gyms
 
+  # ─── Phase 7 program-quality gate (blocking, parallel) ────────────────────
+  quality-core:
+    name: quality-core
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Focused quality-gate tests
+        run: >-
+          npx vitest run --config packages/engine/vitest.config.ts
+          packages/engine/tests/unit/programQualityGate.test.ts
+      - name: Coverage matrix (includes resolved gym 5d pain baseline)
+        run: npm run audit:coverage-matrix
+
+  quality-gym:
+    name: quality-gym
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Gym 10k fuzz + contract
+        run: npm run audit:gym-program
+        env:
+          GYM_FUZZ_CASES: "10000"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-gym-reports
+          path: docs/dev-reports/equipment-program-audit-phase2*
+
+  quality-dumbbells:
+    name: quality-dumbbells
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Dumbbell 10k fuzz + contract
+        run: npm run audit:dumbbell-program
+        env:
+          DUMBBELL_FUZZ_CASES: "10000"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-dumbbell-reports
+          path: docs/dev-reports/equipment-program-audit-phase3*
+
+  quality-bands:
+    name: quality-bands
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Band 10k fuzz + contract
+        run: npm run audit:band-program
+        env:
+          BAND_FUZZ_CASES: "10000"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-band-reports
+          path: docs/dev-reports/equipment-program-audit-phase4*
+
+  quality-bodyweight:
+    name: quality-bodyweight
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Bodyweight 10k fuzz + contract
+        run: npm run audit:bodyweight-program
+        env:
+          BODYWEIGHT_FUZZ_CASES: "10000"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-bodyweight-reports
+          path: docs/dev-reports/equipment-program-audit-phase5*
+
+  quality-mixed-home:
+    name: quality-mixed-home
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Mixed-home 10k fuzz + contract
+        run: npm run audit:mixed-home-program
+        env:
+          MIXED_HOME_FUZZ_CASES: "10000"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-mixed-home-reports
+          path: docs/dev-reports/equipment-program-audit-phase5b*
+
+  quality-coaching:
+    name: quality-coaching
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Exercise coaching audit
+        run: npm run audit:exercise-coaching
+
+  quality-builds:
+    name: quality-builds
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build consumer app
+        run: npm run build --workspace=apps/consumer
+      - name: Build gyms app
+        run: npm run build --workspace=apps/gyms
+
   # ─── Nightly full suite ───────────────────────────────────────────────────
   # Runs on schedule only. Heavier — allows the full (@full) suite to run,
   # unchanged in scope from before Phase 6f's categorization pass.

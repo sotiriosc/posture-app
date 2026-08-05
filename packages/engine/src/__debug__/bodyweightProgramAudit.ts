@@ -235,6 +235,7 @@ const auditPersona = (persona: FlagshipPersona) => {
     {
       phaseIndex: persona.phaseIndex,
       seed: `phase5-${persona.id}`,
+      skipQualityGate: true,
     }
   );
   const primaryMode = resolvePrimaryProgramEquipmentMode(
@@ -364,6 +365,7 @@ const runFuzz = (targetCases: number) => {
       const programA = generateWeeklyProgram(questionnaire, `bw-fuzz-a-${i}`, {
         phaseIndex,
         seed,
+        skipQualityGate: true,
       });
 
       if (i % 25 === 0) {
@@ -372,6 +374,7 @@ const runFuzz = (targetCases: number) => {
         const programB = generateWeeklyProgram(questionnaire, `bw-fuzz-b-${i}`, {
           phaseIndex,
           seed,
+          skipQualityGate: true,
         });
         const sigA = programA.week
           .map(
@@ -701,10 +704,15 @@ const main = () => {
   ];
   writeFileSync(FUZZ_MD, `${fuzzMd.join("\n").trim()}\n`, "utf8");
 
+  const gateOk =
+    allFailures.length === 0 &&
+    fuzz.buckets.illegalEquipment === 0 &&
+    fuzz.buckets.deterministicRepeat === 0 &&
+    fuzz.buckets.exceptions === 0;
   console.log(
     JSON.stringify(
       {
-        ok: true,
+        ok: gateOk,
         phase: 5,
         hardFailureCount: allFailures.length,
         flagshipStructuralPassCount: structuralPassPersonas.length,
@@ -721,6 +729,7 @@ const main = () => {
       2
     )
   );
+  if (!gateOk) process.exitCode = 1;
 };
 
 main();

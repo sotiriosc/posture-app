@@ -123,6 +123,7 @@ PROFILE_BASES.forEach((profile) => {
         const program = generateWeeklyProgram(questionnaire, programId, {
           phaseIndex: phase.phaseIndex,
           seed: `phase-matrix-${profile.name}-${daysPerWeek}-${equipmentCase.label}-${phase.key}`,
+          skipQualityGate: true,
           selectionAuditHook: (entry) => {
             const isFinalTrace = entry.chosen.reasons.includes("[final_trace]");
             const current =

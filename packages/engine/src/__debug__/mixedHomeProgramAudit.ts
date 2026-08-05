@@ -273,6 +273,7 @@ const auditPersona = (persona: FlagshipPersona) => {
     {
       phaseIndex: persona.phaseIndex,
       seed: `phase5b-${persona.id}`,
+      skipQualityGate: true,
     }
   );
   const primaryMode = resolvePrimaryProgramEquipmentMode(
@@ -446,6 +447,7 @@ const runFuzz = (targetCases: number) => {
       const programA = generateWeeklyProgram(questionnaire, `mh-fuzz-a-${i}`, {
         phaseIndex,
         seed,
+        skipQualityGate: true,
       });
 
       if (i % 25 === 0) {
@@ -454,6 +456,7 @@ const runFuzz = (targetCases: number) => {
         const programB = generateWeeklyProgram(questionnaire, `mh-fuzz-b-${i}`, {
           phaseIndex,
           seed,
+          skipQualityGate: true,
         });
         const sigA = programA.week
           .map(
@@ -824,13 +827,21 @@ const main = () => {
   });
   writeFileSync(SETUP_MD, `${setupMd.join("\n").trim()}\n`, "utf8");
 
+  const gateOk =
+    allFailures.length === 0 &&
+    structuralPassPersonas.length === results.length &&
+    fuzz.buckets.illegalEquipment === 0 &&
+    fuzz.buckets.deterministicRepeat === 0 &&
+    fuzz.buckets.exceptions === 0 &&
+    fuzz.buckets.identityCollapse === 0;
   console.log(
     JSON.stringify(
       {
-        ok: allFailures.length === 0 && structuralPassPersonas.length === results.length,
+        ok: gateOk,
         phase: "5b",
         hardFailureCount: allFailures.length,
         flagshipStructuralPassCount: structuralPassPersonas.length,
+        identityCollapse: fuzz.buckets.identityCollapse,
         fuzz: {
           gymTemplateInheritance: fuzz.buckets.gymTemplateInheritance,
           illegalEquipment: fuzz.buckets.illegalEquipment,
@@ -856,6 +867,7 @@ const main = () => {
       2
     )
   );
+  if (!gateOk) process.exitCode = 1;
 };
 
 main();
