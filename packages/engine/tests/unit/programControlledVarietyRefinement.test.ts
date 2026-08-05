@@ -217,25 +217,30 @@ describe("controlled variety refinement", () => {
     ).toBe(true);
   });
 
-  test("band-only Back + Chest can select a true fly-style chest slot without rear-delt leakage", () => {
+  test("band-only Full Body A keeps honest press without rear-delt chest leakage", () => {
+    const program = generateWeeklyProgram(
+      buildQuestionnaire({
+        goals: "Build strength",
+        experience: "Intermediate",
+        equipment: ["bands"],
+        bandSetup: "long_with_anchor",
+      } as Parameters<typeof buildQuestionnaire>[0]),
+      "bands-chest-isolation-path",
+      {
+        phaseIndex: 2,
+        seed: "bands-chest-isolation-path",
+      }
+    );
     const mains = getDayExercises(
-      generateWeeklyProgram(
-        buildQuestionnaire({
-          goals: "Build strength",
-          experience: "Intermediate",
-          equipment: ["bands"],
-        }),
-        "bands-chest-isolation-path",
-        {
-          phaseIndex: 2,
-          seed: "bands-chest-isolation-path",
-        }
-      ),
-      "Back + Chest",
+      program,
+      "Full Body A — Squat, Press and Row",
       "main"
     );
 
-    expect(mains.some((exercise) => exercise.id === "band-chest-fly")).toBe(true);
+    expect(mains.some((exercise) => exercise.movementPattern.some((p) => p.toLowerCase().includes("push")))).toBe(
+      true
+    );
+    expect(mains.some((exercise) => exercise.id.includes("rear-delt"))).toBe(false);
     expect(exerciseById("band-rear-delt-fly")?.accessoryRoles ?? []).not.toContain(
       "accessoryChestIsolation"
     );

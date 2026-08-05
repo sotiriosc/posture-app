@@ -24,6 +24,16 @@ export type QuestionnaireData = {
   equipment: string[];
   daysPerWeek: 3 | 4 | 5;
   /**
+   * Phase 4 — Band setup (engine parity). Gyms UI may not surface the picker yet;
+   * absent ⇒ legacy_unknown (no type/anchor claim).
+   */
+  bandSetup?:
+    | "loop_only"
+    | "long_no_anchor"
+    | "long_with_anchor"
+    | "both_no_anchor"
+    | "both_with_anchor";
+  /**
    * Phase 3.3 — Training Intent (engine parity with the consumer app).
    * The gyms app does not yet surface a picker for this; the field exists so
    * the shared engine (which reads questionnaire.trainingIntent) type-checks

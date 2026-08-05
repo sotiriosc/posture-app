@@ -193,7 +193,7 @@ describe("merge readiness anchors", () => {
     }
 
     expect(result.seed).toBe(
-      "engine-v1|weekly|target:2:1:1:1|questionnaire:15hyeri|settings:w8rmy8|history:14wgysr"
+      "engine-v1|weekly|target:2:1:1:1|questionnaire:1q7bwio|settings:1psktzc|history:14wgysr"
     );
     expectRoutineShape(result.program.week, engineQuestionnaire);
     expectThreeDayIdentity(result.program.week);

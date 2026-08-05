@@ -4,6 +4,7 @@ import { exerciseById, type Exercise } from "@/lib/exercises";
 import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { getDumbbellDayVolumeContract, resolveDumbbellDayIdentity } from "@/lib/program/dumbbellTemplates";
+import { getBandDayVolumeContract, resolveBandDayIdentity } from "@/lib/program/bandTemplates";
 import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 import {
   routineExerciseIdsAreUnique,
@@ -53,7 +54,8 @@ const expectedMainCount = (
   dayTitle: string,
   equipment: QuestionnaireData["equipment"]
 ) => {
-  if (resolvePrimaryProgramEquipmentMode(equipment) === "dumbbells") {
+  const mode = resolvePrimaryProgramEquipmentMode(equipment);
+  if (mode === "dumbbells") {
     const identity = resolveDumbbellDayIdentity(dayTitle);
     if (
       identity === "practice_restore" ||
@@ -63,6 +65,20 @@ const expectedMainCount = (
       return [2, 3];
     }
     const contract = getDumbbellDayVolumeContract(dayTitle, experience);
+    if (contract) {
+      return [Math.max(2, contract.mainCount - 1), contract.mainCount];
+    }
+  }
+  if (mode === "bands") {
+    const identity = resolveBandDayIdentity(dayTitle);
+    if (
+      identity === "practice_restore" ||
+      identity === "upper_pattern_practice" ||
+      identity === "lower_core_practice"
+    ) {
+      return [2, 3];
+    }
+    const contract = getBandDayVolumeContract(dayTitle, experience);
     if (contract) {
       return [Math.max(2, contract.mainCount - 1), contract.mainCount];
     }

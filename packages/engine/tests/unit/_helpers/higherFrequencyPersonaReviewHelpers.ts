@@ -3,6 +3,7 @@ import { isExerciseEligible, normalizeEquipmentSelection, type Equipment } from 
 import { exerciseById, exercises, type Exercise } from "@/lib/exercises";
 import { auditWeeklyCoverage } from "@/lib/program/coverageAudit";
 import { validateDumbbellProgramContract } from "@/lib/program/dumbbellProgramContract";
+import { validateBandProgramContract } from "@/lib/program/bandProgramContract";
 import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 import type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 import {
@@ -493,12 +494,27 @@ export const evaluateHigherFrequencyPersonaQuality = ({
     });
     failures.push(...contractFailures.map((failure) => failure.detail));
   }
+  if (equipmentMode === "bands") {
+    const contractFailures = validateBandProgramContract({
+      program,
+      persona: "higher-frequency-review",
+      equipment: questionnaire.equipment,
+      bandSetup: questionnaire.bandSetup,
+      experience: questionnaire.experience,
+      phaseIndex,
+    });
+    failures.push(...contractFailures.map((failure) => failure.detail));
+  }
 
   const blockingWarnings = warnings.filter((warning) =>
     ["violation", "missing", "coverage"].includes(warning.kind)
   );
 
-  if (blockingWarnings.length > 0 && equipmentMode !== "dumbbells") {
+  if (
+    blockingWarnings.length > 0 &&
+    equipmentMode !== "dumbbells" &&
+    equipmentMode !== "bands"
+  ) {
     reviewFindings.push(
       `final warning buffer contains blocking warnings: ${blockingWarnings
         .map((warning) => `${warning.kind}:${warning.dayTitle}:${warning.message}`)

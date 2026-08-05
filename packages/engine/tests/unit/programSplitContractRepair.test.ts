@@ -100,11 +100,12 @@ const isCarryLikeExercise = (exercise: Exercise) => {
 
 describe("split contract repair enforcement", () => {
   test("3-day split enforces required main patterns per day", () => {
+    // Gym-shaped body-part contracts; band-only weeks use Full Body A/B/C (Phase 4).
     const input: QuestionnaireData = {
       goals: "Reduce pain",
       painAreas: ["Shoulders", "Lower back"],
       experience: "Beginner",
-      equipment: ["bands"],
+      equipment: ["gym"],
       daysPerWeek: 3,
     };
     const program = generateWeeklyProgram(input, "split-3-day-repair", {

@@ -34,6 +34,7 @@
     "audit:equipment-program": "node --import tsx packages/engine/src/__debug__/equipmentProgramAudit.ts",
     "audit:gym-program": "node --import tsx packages/engine/src/__debug__/gymProgramAudit.ts",
     "audit:dumbbell-program": "node --import tsx packages/engine/src/__debug__/dumbbellProgramAudit.ts",
+    "audit:band-program": "node --import tsx packages/engine/src/__debug__/bandProgramAudit.ts",
     "audit:decision-trace": "node --import tsx packages/engine/src/__debug__/decisionTraceAudit.ts",
     "debug:program": "node --import tsx packages/engine/src/__debug__/printProgram.ts",
     "smoke:photo-ns": "node --import tsx packages/engine/src/__debug__/photoNamespaceSmoke.ts",

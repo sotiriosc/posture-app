@@ -1,0 +1,260 @@
+{
+  "generatedAt": "2026-08-05T04:43:33.648Z",
+  "phase": 4,
+  "objective": "First-class anchor-aware band programming audit and contract",
+  "preservesPriorReports": [
+    "docs/dev-reports/equipment-program-audit-phase0.json",
+    "docs/dev-reports/equipment-program-audit-phase1.json",
+    "docs/dev-reports/equipment-program-audit-phase2.json",
+    "docs/dev-reports/equipment-program-audit-phase3.json",
+    "docs/dev-reports/equipment-program-audit-phase4-baseline-bands.md"
+  ],
+  "elapsedMs": 933799,
+  "flagshipCount": 12,
+  "hardFailureCount": 0,
+  "failuresByReason": {},
+  "flagshipStructuralPassCount": 12,
+  "initialBaselineInventory": [
+    {
+      "reasonCode": "BAND_GYM_TEMPLATE_INHERITANCE",
+      "detail": "Band weeks inherited gym body-part titles (Back + Chest, etc.).",
+      "source": "Phase 0/1 equipment-program audit"
+    },
+    {
+      "reasonCode": "BAND_UNCONFIRMED_ANCHOR",
+      "detail": "Pulldowns / face pulls / Pallof scheduled without confirmed door/high/mid/low anchor.",
+      "source": "Phase 0 equipment assumption findings"
+    },
+    {
+      "reasonCode": "BAND_UNCONFIRMED_TYPE",
+      "detail": "hasLongBand/hasLoopBand stayed false while long-band exercises still scheduled.",
+      "source": "Phase 4 Step A baseline"
+    },
+    {
+      "reasonCode": "BAND_FALSE_VERTICAL_PULL",
+      "detail": "Vertical-pull claims without high-anchor capability.",
+      "source": "Phase 0 pull-honesty findings"
+    },
+    {
+      "reasonCode": "BAND_IDENTITY_COLLAPSE",
+      "detail": "Band programming collapsed toward gym-shaped selection heuristics.",
+      "source": "Phase 0/1 equipment-program audit"
+    }
+  ],
+  "fuzz": {
+    "cases": 10000,
+    "buckets": {
+      "illegalEquipment": 0,
+      "unconfirmedAnchor": 0,
+      "unconfirmedType": 0,
+      "gymTemplateInheritance": 0,
+      "falseVerticalPull": 0,
+      "loopOnlyLongBandLeakage": 0,
+      "anchorHeightMismatch": 0,
+      "dayIdentityMismatch": 0,
+      "excessAnchorChanges": 0,
+      "weeklyCoverage": 0,
+      "exceptions": 0,
+      "identityCollapse": 0,
+      "deterministicRepeat": 0
+    },
+    "topReasons": []
+  },
+  "personas": [
+    {
+      "id": "band_3d_beginner_long_anchor_p1",
+      "label": "Beginner three-day long band with anchor / activation",
+      "bandSetup": "long_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 91,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 18,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_3d_intermediate_long_anchor_p1",
+      "label": "Intermediate three-day long band with anchor / activation",
+      "bandSetup": "long_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 89.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 21,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_3d_advanced_long_anchor_p1",
+      "label": "Advanced three-day long band with anchor / activation",
+      "bandSetup": "long_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 89.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 21,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_3d_long_no_anchor_p1",
+      "label": "Long band without anchor / activation",
+      "bandSetup": "long_no_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 92.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 15,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_3d_loop_only_p1",
+      "label": "Mini loop only / activation",
+      "bandSetup": "loop_only",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 92.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 15,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_3d_both_with_anchor_p2",
+      "label": "Both band types with anchor / skill",
+      "bandSetup": "both_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 90,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 20,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_4d_intermediate_p2",
+      "label": "Four-day bands / skill",
+      "bandSetup": "long_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 88,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 24,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent",
+        "Practice & Restore"
+      ]
+    },
+    {
+      "id": "band_5d_advanced_p3",
+      "label": "Five-day bands / growth",
+      "bandSetup": "long_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 84.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 31,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent",
+        "Upper Pattern Practice",
+        "Lower & Core Practice"
+      ]
+    },
+    {
+      "id": "band_3d_shoulder_pain_p1",
+      "label": "Shoulder-pain bands / activation",
+      "bandSetup": "long_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 91,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 18,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_3d_low_back_pain_p1",
+      "label": "Low-back-pain bands / activation",
+      "bandSetup": "long_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 90.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 19,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_3d_beginner_p3",
+      "label": "Beginner three-day long band with anchor / growth",
+      "bandSetup": "long_with_anchor",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 91.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 17,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "band_3d_legacy_unknown_p1",
+      "label": "Legacy unknown bands (no bandSetup) / activation",
+      "bandSetup": "legacy_unknown",
+      "primaryMode": "bands",
+      "structuralScore": 100,
+      "fullExperienceScore": 92.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 15,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    }
+  ]
+}

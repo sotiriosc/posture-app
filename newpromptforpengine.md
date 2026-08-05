@@ -1,346 +1,486 @@
-Read `docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md` completely, including all Phase 0, Phase 1, and Phase 2 results and reports.
+Read `docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md` completely, including all Phase 0–3 results and reports.
 
-Execute **Phase 3 only: First-Class Dumbbell Programming**.
+Execute **Phase 4 only: First-Class Anchor-Aware Band Programming**.
 
-The objective is to replace inherited gym-shaped programming for `primaryEquipmentMode="dumbbells"` with a simple, complete, recognizable, progressive dumbbell program that assumes no unconfirmed equipment.
-
-Do not begin band, bodyweight, mixed-home, coaching-catalog completion, questionnaire UI, plan-reveal UI, telemetry, or engine-decomposition work.
+The objective is to replace inherited gym-shaped programming for `primaryEquipmentMode="bands"` with simple, complete, progressive band programs that use only confirmed band types and anchor capabilities.
 
 Leave `newpromptforpengine.md` untouched.
 
-## 1. Protect completed phases
+Do not begin bodyweight, mixed-home programming, catalog-wide coaching completion, plan-reveal UI, telemetry, broad questionnaire redesign, or engine decomposition.
+
+## 1. Protect all completed work
 
 Preserve:
 
-* all first-class equipment identities,
-* order-independent mode resolution,
+* first-class equipment identities,
+* order-independent equipment-mode resolution,
 * explicit capability truth,
 * unknown anchors remaining false,
-* the Phase 2 gym contract,
-* all Phase 2 gym structural corrections,
-* gym flagship scores,
-* gym role-truth invariants,
-* deterministic generation,
-* all Phase 0–2 reports,
-* and backward compatibility with existing stored program/questionnaire data.
+* the Phase 2 gym contract and all gym regressions,
+* the Phase 3 dumbbell templates and contract,
+* honest dumbbell pulling classification,
+* no-unconfirmed-bench behavior,
+* fixed-weight dumbbell progression,
+* all passing deterministic tests,
+* all Phase 0–3 reports,
+* and backward compatibility with existing stored programs and questionnaire data.
 
-Do not weaken the gym contract to make dumbbell work easier.
+Do not weaken gym or dumbbell contracts to support bands.
 
-Do not overwrite earlier reports.
+Do not overwrite previous reports.
 
-## 2. Dumbbell mode must receive its own architecture
+## 2. Audit the current meaning of “bands” before changing behavior
 
-When:
+Before implementation, inspect:
+
+* current questionnaire wording,
+* current stored equipment values,
+* any illustrations or descriptions shown to users,
+* equipment normalization,
+* current band exercises,
+* current band-specific selection branches,
+* exercise setup assumptions,
+* and existing stored-user compatibility.
+
+Document whether the current product’s “bands” option clearly means:
+
+* long resistance bands,
+* mini loop bands,
+* either type,
+* or an unspecified category.
+
+Do not silently redefine the meaning of a stored selection.
+
+Record this in the Phase 4 report before selecting the migration policy.
+
+## 3. Add the minimum necessary band-setup input
+
+A generic `hasBands` boolean is not sufficient for safe programming.
+
+Add the smallest focused follow-up shown only when bands are selected.
+
+The user must be able to communicate at least:
+
+* mini loop bands only,
+* long resistance band without a secure anchor,
+* long resistance band with a secure repositionable door or fixed anchor,
+* both mini loops and long bands without an anchor,
+* both mini loops and long bands with a secure repositionable anchor.
+
+Use concise user-facing wording. Do not expose internal capability terminology.
+
+An acceptable single-question presentation would be equivalent to:
+
+> What band setup do you have?
+
+With options equivalent to:
+
+* Mini loop bands only
+* Long resistance band, no anchor
+* Long resistance band with a secure door/fixed anchor
+* Both types, no anchor
+* Both types with a secure door/fixed anchor
+
+Do not add unnecessary questions about brand, resistance colours, exact resistance levels, handles, or accessories during this phase.
+
+## 4. Backward compatibility
+
+Existing users with a stored generic `bands` value must remain valid.
+
+Determine migration behavior from the existing questionnaire semantics:
+
+* If existing product wording clearly promised a long resistance band, legacy `bands` may resolve to long-band capability without an anchor.
+* If existing wording did not establish band type, preserve an explicit legacy-unknown setup and request setup confirmation before the next newly generated band program.
+* A legacy value must never imply a secure anchor.
+* Unknown anchor state remains false.
+* Existing stored programs remain viewable and unchanged.
+* New generation must not schedule exercises requiring capabilities that have not been confirmed.
+
+Document the exact decision and tests.
+
+Do not silently assign high-, middle-, or low-anchor capability to legacy users.
+
+## 5. Canonical band capability truth
+
+Evolve the existing capability contract rather than creating a competing model.
+
+Represent at least:
+
+* has bands,
+* has long resistance band,
+* has mini loop bands,
+* has secure repositionable anchor,
+* high-anchor availability,
+* middle-anchor availability,
+* low-anchor availability,
+* band setup confirmed versus legacy unknown.
+
+A confirmed repositionable door anchor may provide high, middle and low anchor capability only when the UI wording explicitly confirms that the anchor can be safely repositioned.
+
+A generic fixed point must provide only the confirmed height.
+
+Do not infer anchor height from an exercise selection or from the presence of bands.
+
+Unknown means unavailable.
+
+## 6. Exercise setup requirements must be machine-readable
+
+Band exercise eligibility must not rely only on exercise names.
+
+Add or evolve reviewed metadata capable of expressing:
 
 ```ts
-primaryEquipmentMode === "dumbbells"
+type BandTypeRequirement =
+  | "miniLoop"
+  | "longBand"
+  | "either";
+
+type BandAnchorRequirement =
+  | "none"
+  | "high"
+  | "middle"
+  | "low"
+  | "repositionable";
 ```
 
-the program must use a canonical dumbbell template family.
+Use repository conventions rather than duplicating equivalent existing metadata.
 
-It must not inherit:
+Band exercises should be able to declare:
 
-* gym body-part day titles,
-* gym cable or machine slot expectations,
-* gym vertical-pull requirements that cannot be fulfilled,
-* gym accessory counts,
-* or gym repair behavior that replaces unavailable gym exercises after generation.
+* required band type,
+* required anchor height,
+* whether self-anchoring under the feet is valid,
+* whether the band is secured around the feet,
+* whether a stable external support is required,
+* and whether the exercise is safe without a fixed anchor.
 
-The dumbbell template must be selected before exercise selection. Post-generation repair must not be the primary author of the dumbbell program.
+Do not attempt catalog-wide coaching completion in this phase. Only add the minimum setup metadata needed for legal band selection and safe anchor truth.
 
-Add focused dumbbell policy under the existing `packages/engine/src/program/` architecture. Do not add another large block of dumbbell branching directly to `program.ts`.
+## 7. Create a canonical band program contract
 
-Prefer focused modules equivalent to:
+Add focused modules under the existing program architecture, equivalent to:
 
 ```text
-program/dumbbellProgramContract.ts
-program/dumbbellTemplates.ts
+packages/engine/src/program/bandTemplates.ts
+packages/engine/src/program/bandProgramContract.ts
 ```
 
-Use repository naming conventions and avoid unnecessary duplicate abstractions.
+Follow existing naming conventions.
 
-## 3. Equipment assumptions
+Do not add another large band-policy section directly to `program.ts`.
 
-A dumbbell-only program may assume:
+The band contract should define:
 
-* dumbbells,
-* floor space,
-* and a wall where appropriate.
+* session identities,
+* required roles,
+* capability-dependent roles,
+* honest unavailable roles,
+* experience-based volume,
+* anchor-change limits,
+* equipment eligibility,
+* pain-aware allowances,
+* progression expectations,
+* and structural hard failures.
 
-It must not assume:
+Band templates must be selected before exercise selection. Repair must not be the primary author of the band program.
 
-* bench,
-* adjustable bench,
-* chair,
-* box,
-* step,
-* cable,
-* machine,
-* barbell,
-* kettlebell,
-* pull-up bar,
-* resistance band,
-* rack,
-* high anchor,
-* low anchor,
-* or another stable support.
+## 8. Canonical three-day band architecture
 
-An exercise requiring one of those items is legal only when the corresponding capability is explicitly confirmed.
+Use recognizable full-body A/B/C sessions.
 
-Examples:
-
-* floor press is a valid default;
-* bench press is allowed only with confirmed bench capability;
-* chest-supported row requires a confirmed bench;
-* Bulgarian split squat must not assume a bench or chair;
-* step-ups require a confirmed stable step or platform;
-* seated or supported exercises must not silently assume furniture;
-* a pull-up must not appear unless pull-up-bar capability is confirmed.
-
-Unknown capability means unavailable.
-
-## 4. Canonical dumbbell session family
-
-The flagship three-day dumbbell program should use three recognizable full-body identities.
+The exact exercises may vary by phase, experience, pain and capability, but the session identities must remain stable.
 
 ### Full Body A — Squat, Press and Row
 
-Required primary roles:
+Required purposes:
 
-* knee-dominant squat pattern,
-* horizontal press,
-* true horizontal pull.
+* knee-dominant lower-body work,
+* horizontal push,
+* true horizontal pulling when the available band setup supports it,
+* trunk stability,
+* purposeful scapular or lower-body reinforcement.
 
-Required support:
+Suitable families may include:
 
-* anti-extension or trunk-stability role,
-* purposeful scapular or lower-body reinforcement where volume permits.
+* band squat variations,
+* anchored chest press when middle-anchor capability exists,
+* alternative honest push variation without an anchor,
+* seated or standing band rows using valid confirmed setup,
+* appropriate core stability.
 
-Default exercise families should be immediately recognizable and require no unusual setup.
-
-Examples of suitable families include:
-
-* goblet squat,
-* dumbbell floor press,
-* one-arm dumbbell row performed without an assumed bench,
-* dead-bug or other appropriate core stability work.
-
-These examples are not instructions to hardcode the same exercises for every persona.
+Do not hardcode one completed workout for all personas.
 
 ### Full Body B — Hinge, Overhead and Unilateral
 
-Required primary roles:
+Required purposes:
 
-* true dumbbell hinge,
-* unilateral knee-dominant lower-body pattern,
-* vertical press when safe.
+* true hinge or truthful hip-extension pattern,
+* vertical push when safe,
+* unilateral knee-dominant lower-body work,
+* pulling or scapular reinforcement,
+* anti-rotation or lateral stability where capability allows.
 
-Required support:
+A primary hinge cannot be replaced by:
 
-* horizontal or lat-biased pull,
-* anti-rotation or lateral-stability work.
-
-The primary hinge must not be replaced by:
-
-* leg curl,
-* bridge primer,
+* hamstring curl only,
 * preparation drill,
 * calf exercise,
 * carry,
+* pulse,
 * or unrelated unilateral knee work.
 
-A pain-aware hinge surrogate must retain hip-extension intent and be explicitly classified.
+### Full Body C — Single-Leg, Push Variation and Lat Intent
 
-### Full Body C — Single-Leg, Press Variation and Lat Intent
+Required purposes:
 
-Required primary roles:
-
-* unilateral or single-leg lower-body pattern distinct from Day B where practical,
-* horizontal press or push variation distinct from Day A,
-* lat-biased dumbbell pulling intent.
-
-Required support:
-
+* unilateral or single-leg lower-body pattern,
+* push variation distinct from Day A where practical,
+* lat-biased pulling intent,
 * posterior-chain reinforcement,
 * trunk or scapular reinforcement.
 
-Day C must still be recognizable as a full-body training session. It must not become a collection of corrective or low-load accessory exercises.
+When high-anchor capability exists, Day C may include a true band vertical pull.
 
-## 5. Honest pulling contract
+Without high-anchor capability, the program must use an honestly classified alternative and report that true vertical pulling is unavailable.
 
-Dumbbells alone do not provide a true vertical pull.
+The day must remain a recognizable full-body training session rather than a corrective cluster.
 
-Therefore:
+## 9. Three supported setup lanes
 
-* do not label a dumbbell pullover as a true vertical pull;
-* do not label a lat sweep, pulse, reach, or scapular drill as a true vertical pull;
-* do not fill a `mainPullVertical` slot with a surrogate;
-* do not claim complete true vertical-pull coverage when the capability does not exist.
+The band contract must explicitly support different environments.
 
-The dumbbell contract should require:
+### Lane A — Long band with secure repositionable anchor
 
-* true horizontal pulling,
-* meaningful lat-biased pulling intent,
-* scapular support,
-* and honest reporting that a true vertical pull is unavailable unless a pull-up bar or another valid capability is confirmed.
+May use:
 
-A dumbbell pullover may be:
+* high-anchor vertical pulling,
+* middle-anchor pressing and rowing,
+* low-anchor patterns,
+* self-anchored patterns,
+* and mini-loop exercises when mini loops are also confirmed.
 
-* a lat-biased accessory,
-* a supported surrogate,
-* or secondary chest/lat work,
+Required:
 
-but it may not be the only meaningful back exercise and may not satisfy true vertical pulling.
+* true vertical pull exposure where safe and appropriate,
+* anchor-height grouping,
+* no more than two anchor-height changes per session,
+* clear anchor requirement on each anchored exercise.
 
-Where a pull-up bar is explicitly confirmed, the program may use a true vertical pull while retaining `primaryEquipmentMode="dumbbells"`.
+### Lane B — Long band without an anchor
 
-## 6. Experience-based simplicity
+May use:
 
-The dumbbell experience must feel simpler than the gym experience—not cheaper or incomplete.
+* band-under-foot patterns,
+* safe self-anchored pressing,
+* safe rows around the feet where valid,
+* hinges,
+* squats,
+* overhead pressing,
+* unilateral work,
+* and anchor-free core work.
 
-Excluding warmup and finish work, use explicit complexity caps.
+Must not use:
 
-Recommended contract:
+* pulldowns,
+* anchored chest presses,
+* anchored rows,
+* face pulls requiring a fixed point,
+* Pallof presses requiring an anchor,
+* or any exercise requiring unconfirmed high, middle or low attachment.
+
+A true vertical pull is unavailable in this lane and must be reported honestly.
+
+### Lane C — Mini loop only
+
+A mini loop alone cannot be treated as equivalent to a long resistance band.
+
+The program should use an honest **Loop Band + Bodyweight** full-body structure while retaining `primaryEquipmentMode="bands"`.
+
+It may include:
+
+* loop-band lower-body resistance,
+* lateral hip work,
+* selected shoulder/scapular work,
+* bodyweight pushing,
+* bodyweight lower-body work,
+* and trunk training.
+
+It must not schedule:
+
+* long-band rows,
+* band pulldowns,
+* long-band presses,
+* band hinges requiring a long band,
+* or anchored anti-rotation work.
+
+It must not claim that mini loops provide complete loaded upper-body pulling.
+
+Emit a clear capability limitation for missing meaningful upper-body pulling rather than falsifying coverage.
+
+The later bodyweight phase may improve shared bodyweight foundations, but Phase 4 must provide a truthful and usable loop-only program now.
+
+## 10. Anchor-change simplicity
+
+Band workouts can become frustrating when the user repeatedly moves a door anchor.
+
+For each session:
+
+* group exercises by anchor height,
+* use no more than two anchor-height changes,
+* avoid high → low → high sequences,
+* avoid alternating anchored and non-anchored setups without purpose,
+* keep exercises using the same setup adjacent where training order permits,
+* and report the number and sequence of anchor setups.
+
+Recommended interpretation:
+
+* starting without an anchor does not count as an anchor-height change;
+* moving from middle to high counts as one;
+* returning from high to middle counts as another;
+* removing the band from the anchor may count as a setup transition but not a new height.
+
+Define the counting rule canonically and test it.
+
+Do not compromise safe exercise ordering merely to reach zero transitions. The goal is coherent setup grouping, not arbitrary optimisation.
+
+## 11. Door-anchor safety boundary
+
+Anchored band exercises must include the minimum safety truth needed for this phase.
+
+At minimum, the system must know and eventually present:
+
+* the required anchor height,
+* that the anchor must be secure,
+* that the door must not be able to open toward the user,
+* that the band and anchor should be inspected for damage,
+* and that the user should stop if the anchor shifts or the band is damaged.
+
+Do not complete every coaching card yet.
+
+However, an anchored band exercise must not be considered “no research required” unless the workout can identify:
+
+* where the band attaches,
+* the required height,
+* and the basic secure-anchor warning.
+
+Do not infer that every door is suitable.
+
+## 12. Honest pulling truth
+
+Use explicit role truth.
+
+Required rules:
+
+* high-anchor pulldown may satisfy true vertical pulling;
+* middle-anchor row may satisfy true horizontal pulling;
+* a straight-arm pulldown may provide lat-biased intent but must not automatically replace every true pulling role;
+* pull-aparts, face pulls, sweeps, pulses and scapular drills cannot satisfy the only meaningful back-strength role;
+* no-anchor band work cannot claim true fixed-anchor vertical pulling;
+* loop-only work cannot claim full loaded upper-body pulling;
+* preparation and posture drills cannot occupy required main pulling slots.
+
+Where capability prevents a true role, preserve honest classification and return a limitation rather than a false pass.
+
+## 13. Experience-based simplicity
+
+Excluding warmup and finish work:
 
 ### Beginner
 
 * three primary anchors,
-* one or two purposeful support exercises,
-* no more than five total Build/Reinforce exercises,
-* minimal setup changes,
-* common movement families,
-* no advanced stability exercise replacing a basic strength role.
+* one or two support exercises,
+* no more than five Build/Reinforce exercises,
+* no more than one anchor-height change where practical,
+* familiar exercise families,
+* no complex band choreography.
 
 ### Intermediate
 
 * three or four primary anchors,
-* up to two purposeful support exercises,
-* no more than six total Build/Reinforce exercises,
-* one justified secondary pattern or distinct variation.
+* up to two support exercises,
+* no more than six Build/Reinforce exercises,
+* no more than two anchor-height changes,
+* one justified secondary pattern.
 
 ### Advanced
 
 * four or five primary/secondary anchors,
-* up to two purposeful support exercises,
-* no more than seven total Build/Reinforce exercises,
+* up to two support exercises,
+* no more than seven Build/Reinforce exercises,
 * additional volume must have a clear role,
-* no volume added merely to imitate a gym session.
+* anchor complexity must remain controlled.
 
-Do not increase complexity through obscure exercises, redundant variations, or unnecessary floor-to-standing transitions.
+Do not make advanced programming feel advanced merely by adding setup complexity.
 
-The audit should report:
+## 14. Supported frequencies
 
-* exercise count,
-* setup transitions,
-* unilateral complexity,
-* support requirements,
-* and repeated movement families.
-
-## 7. Session flow
-
-Each dumbbell session should present a coherent sequence equivalent to:
-
-1. Prepare
-2. Build
-3. Reinforce
-4. Finish
-
-Required ordering principles:
-
-* warmup prepares the actual primary patterns;
-* demanding compound movements occur before small accessories;
-* exercises using similar setup should be grouped where practical;
-* repeated floor-to-standing transitions should be minimized;
-* core or posture reinforcement should support the day;
-* preparation drills cannot satisfy primary strength roles;
-* the finish should be brief and purposeful.
-
-Do not perform a broad UI redesign during this phase. Establish correct generated structure and metadata using existing presentation capabilities.
-
-## 8. Supported training frequencies
-
-Audit every dumbbell day frequency the product currently supports.
+Audit every band frequency currently supported.
 
 ### Three days
 
-Use the flagship A/B/C architecture.
+Use Full Body A/B/C.
 
-### Two days, when supported
+### Two days, if supported
 
-Use two balanced full-body sessions and rotate the omitted emphasis across program weeks or phases so no major pattern is permanently neglected.
-
-Do not simply discard Day C forever.
+Use two balanced full-body sessions and rotate the omitted emphasis so no major pattern is permanently absent.
 
 ### Four and five days
 
-Do not revert to gym body-part splits.
+Do not revert to gym body-part titles.
 
-Use the A/B/C full-body template family as the foundation and create deliberate frequency extensions.
+Extend the A/B/C family deliberately:
 
-The fourth and fifth sessions must:
+* distribute pattern stress,
+* avoid consecutive heavy exposure to the same pattern,
+* avoid identical repeated sessions,
+* keep session volume controlled,
+* preserve weekly squat, hinge, unilateral, push, pull or honest limitation, trunk and scapular work,
+* and minimise weekly anchor complexity.
 
-* have a truthful identity,
-* remain lower or appropriately distributed in per-session volume,
-* avoid repeating an identical session in the same week,
-* avoid training the same demanding pattern heavily on consecutive days,
-* preserve weekly push, pull, squat, hinge, unilateral, core and scapular coverage,
-* and remain appropriate for recovery.
+Document the higher-frequency rotation before implementing it.
 
-Before implementing higher-frequency policy:
+Do not create five arbitrary workouts simply to make every title unique.
 
-* audit current supported scheduling,
-* document the proposed rotation,
-* document weekly pattern exposure,
-* and demonstrate why the additional sessions are not redundant.
+## 15. Band progression
 
-Do not create five arbitrary unique workouts merely to avoid repeating a title.
+Band progression must not depend only on “use a heavier colour.”
 
-Where the product supports only three-, four-, and five-day schedules, test those exact frequencies and do not invent unsupported public options.
+Support progression through:
 
-## 9. Progression with fixed or limited dumbbells
+1. repetitions within a range,
+2. stronger band where known and available,
+3. shortening the working band length safely,
+4. increased distance from a fixed anchor,
+5. controlled tempo,
+6. pauses,
+7. range of motion,
+8. unilateral progression,
+9. additional sets within recovery limits,
+10. a harder movement variation.
 
-Do not assume the user owns adjustable dumbbells or can always increase load.
+Every main exercise should use one progression target at a time.
 
-Dumbbell progression must support:
+Do not advise unsafe over-stretching.
 
-1. rep progression within a prescribed range,
-2. load progression when available,
-3. controlled tempo,
-4. pauses,
-5. increased range of motion where safe,
-6. unilateral progression,
-7. additional sets within experience and recovery caps,
-8. progression to a more demanding movement variation.
+Do not infer resistance from colour because band colours are not standardised between manufacturers.
 
-Use double progression as the default loaded model where appropriate:
+Integrate with the existing progression, phase, ladder and variation systems rather than creating a separate band progression engine.
 
-* first add clean repetitions within the range;
-* then increase weight when possible;
-* if weight cannot increase, use one approved demand variable;
-* do not increase several demand variables simultaneously.
+## 16. Phase continuity
 
-Every generated main exercise should have one canonical progression path or target available to the engine.
+Across activation, skill and growth:
 
-User-facing progression-card completeness may remain part of the later coaching phase, but actual generated dumbbell progression must be coherent now.
-
-Do not redesign the entire progression engine. Integrate with existing phase, ladder, variation and progression systems.
-
-## 10. Phase continuity
-
-Across activation, skill and growth phases:
-
-* maintain recognizable movement families;
-* progress execution, range, loading opportunity or movement demand;
-* avoid replacing most exercises at once;
-* preserve the full-body A/B/C identities;
-* retain honest pulling classification;
+* preserve recognizable movement families,
+* preserve A/B/C identities,
+* progress band tension opportunity, execution, range, stability or movement demand,
+* avoid changing most anchors simultaneously,
+* avoid changing anchor setup merely to create novelty,
+* retain honest pulling classifications,
 * and document anchor-family changes.
 
-Add semantic assertions against excessive anchor churn.
+Add semantic assertions against excessive anchor churn and excessive movement-family churn.
 
-A phase should feel like the next step of the same program, not a random new collection of exercises.
-
-## 11. Pain-aware dumbbell programming
+## 17. Pain-aware band programming
 
 Test at minimum:
 
@@ -350,234 +490,249 @@ Test at minimum:
 * hip pain,
 * and knee pain where supported.
 
-Pain adaptations must:
+Pain adaptation must:
 
-* remove or modify contraindicated work;
-* preserve full-body session identity;
-* retain a meaningful lower-body, push, pull and trunk training purpose where safe;
-* keep a true hinge or truthful hip-extension surrogate where safe;
-* avoid replacing most of the workout with preparation drills;
-* never introduce unconfirmed support equipment;
-* and emit an explicit unresolved warning when a required role cannot be fulfilled safely.
+* preserve the session’s full-body identity;
+* remove contraindicated work;
+* retain meaningful push, lower-body, pulling or honest pulling limitation, and trunk purpose where safe;
+* retain a true hinge or truthful hip-extension surrogate where safe;
+* avoid replacing the session with preparation drills;
+* avoid adding an unconfirmed anchor;
+* avoid adding an unconfirmed band type;
+* and issue an explicit unresolved warning when a role cannot be fulfilled safely.
 
-Do not invent clinical diagnoses or new medical claims.
+Protect the corrected distinction between upper-back and low-back pain.
 
-Protect the corrected Phase 2 distinction between upper-back and low-back pain.
+Do not introduce new medical claims.
 
-## 12. Exercise familiarity and no-research standard
+## 18. Band structural hard failures
 
-Prefer familiar exercise families that can be understood through Praxis’s eventual embedded instruction.
+Use stable reason codes equivalent to:
 
-Avoid making the core program depend on obscure exercises such as:
+* `BAND_GYM_TEMPLATE_INHERITANCE`
+* `BAND_UNCONFIRMED_TYPE`
+* `BAND_UNCONFIRMED_ANCHOR`
+* `BAND_ANCHOR_HEIGHT_MISMATCH`
+* `BAND_LOOP_ONLY_LONG_BAND_EXERCISE`
+* `BAND_FALSE_VERTICAL_PULL`
+* `BAND_MISSING_HORIZONTAL_PULL`
+* `BAND_MISSING_TRUE_HINGE`
+* `BAND_ILLEGAL_EQUIPMENT`
+* `BAND_UNCONFIRMED_SUPPORT`
+* `BAND_PREP_AS_MAIN`
+* `BAND_DAY_IDENTITY_MISMATCH`
+* `BAND_EXCESS_ANCHOR_CHANGES`
+* `BAND_DUPLICATE_FAMILY`
+* `BAND_EXCESS_COMPLEXITY`
+* `BAND_MISSING_WEEKLY_ROLE`
+* `BAND_EXCESSIVE_PHASE_CHURN`
+* `BAND_NONDETERMINISTIC_OUTPUT`
 
-* unnamed pulses,
-* sweeps,
-* highly specific prone combinations,
-* complex multi-step transitions,
-* or exercises whose purpose cannot be understood from their title.
+Use existing reason-code conventions when available.
 
-An obscure or corrective drill may appear when justified, but not as the defining anchor of a dumbbell session.
-
-For each flagship persona, manually review:
-
-* whether the exercise names are understandable,
-* whether the setup is possible,
-* whether an outside web search would be required,
-* and whether the workout looks like a complete training session.
-
-Missing full coaching-card metadata must remain visible in `deferredExperienceGaps`, but should not automatically fail an otherwise structurally valid Phase 3 program.
-
-## 13. Dumbbell structural hard failures
-
-Add stable reason codes for at least:
-
-* `DUMBBELL_GYM_TEMPLATE_INHERITANCE`
-* `DUMBBELL_FALSE_VERTICAL_PULL`
-* `DUMBBELL_MISSING_HORIZONTAL_PULL`
-* `DUMBBELL_MISSING_TRUE_HINGE`
-* `DUMBBELL_UNCONFIRMED_BENCH`
-* `DUMBBELL_UNCONFIRMED_SUPPORT`
-* `DUMBBELL_ILLEGAL_EQUIPMENT`
-* `DUMBBELL_PREP_AS_MAIN`
-* `DUMBBELL_DAY_IDENTITY_MISMATCH`
-* `DUMBBELL_DUPLICATE_FAMILY`
-* `DUMBBELL_EXCESS_COMPLEXITY`
-* `DUMBBELL_MISSING_WEEKLY_ROLE`
-* `DUMBBELL_EXCESSIVE_PHASE_CHURN`
-* `DUMBBELL_NONDETERMINISTIC_OUTPUT`
-
-Use repository reason-code conventions where they already exist.
-
-Every failure should include:
+Each failure must include:
 
 * persona,
+* setup lane,
 * phase,
-* day frequency,
+* frequency,
 * day and slot,
 * exercise where applicable,
 * expected role,
 * actual role,
-* required capability,
+* required band type,
+* required anchor height,
 * confirmed capabilities,
 * and baseline comparison.
 
-## 14. Audit-first implementation
+## 19. Audit-first implementation
 
 Use this sequence:
 
-### Step A — Baseline dumbbell audit
+### Step A — Baseline audit
 
-Using the Phase 0 and Phase 1 reports, record current dumbbell failures:
+Record existing band failures by setup lane:
 
-* gym-shaped titles,
-* gym template inheritance,
-* false vertical pulls,
-* illegal assumptions,
-* role gaps,
-* session complexity,
+* gym-shaped templates,
+* unconfirmed anchor use,
+* incorrect anchor height,
+* false vertical pull,
+* long-band exercise in loop-only plans,
+* illegal equipment,
+* missing roles,
+* excessive setup changes,
 * and progression issues.
 
-### Step B — Canonical contract and templates
+### Step B — Capability and questionnaire truth
 
-Create the dumbbell contract and template family before changing selection.
+Implement the minimal band setup input and backward-compatible capability derivation.
 
-### Step C — Root policy changes
+### Step C — Contract and templates
 
-Correct template resolution, candidate selection, scoring, substitutions or repair at the narrowest proper ownership point.
+Create the canonical band contract and A/B/C templates.
 
-Do not use a final post-generation swap list as the main implementation.
+### Step D — Root policy corrections
 
-Do not hardcode persona-specific completed workouts.
+Correct template resolution, eligibility, selection, scoring, substitution or repair at the narrowest proper ownership point.
 
-### Step D — Comparison audit
+Do not use final post-generation replacement lists as the main implementation.
+
+Do not hardcode completed persona workouts.
+
+### Step E — Comparison audit
 
 Produce before-and-after counts by stable reason code.
 
-Do not overwrite Phase 0–2 reports.
+Do not overwrite previous phase reports.
 
-## 15. Tests
+## 20. Tests
 
-Add focused semantic tests for:
+Add focused semantic tests covering:
 
-* primary dumbbell mode routing,
-* no gym template inheritance,
+* all band setup options,
+* legacy stored band values,
+* unknown setup,
+* long band with anchor,
+* long band without anchor,
+* mini loop only,
+* both band types,
+* unknown anchors remaining false,
+* correct high/middle/low anchor eligibility,
+* no gym-template inheritance,
 * Full Body A/B/C identities,
-* Beginner, Intermediate and Advanced structures,
-* all supported day frequencies,
-* activation, skill and growth phases,
-* true horizontal pulling,
-* honest absence or presence of true vertical pulling,
-* pullover not satisfying true vertical pull,
-* true dumbbell hinge,
-* no curl-only hinge,
-* no preparation exercise satisfying a main role,
-* no unconfirmed bench,
-* no unconfirmed chair, box, step or support,
-* no cable, machine, barbell, band or kettlebell leakage,
-* fixed-weight progression,
-* duplicate-family limits,
-* setup-transition limits,
-* representative pain adaptations,
+* every supported experience and frequency,
+* every supported phase,
+* true vertical pull only with confirmed high anchor,
+* true horizontal pull truth,
+* no false pulldown,
+* no long-band exercise for loop-only users,
+* no unconfirmed anchor,
+* no unconfirmed furniture or support,
+* true hinge,
+* no preparation drill satisfying a main role,
+* anchor-change limits,
+* setup grouping,
+* band progression,
+* pain adaptations,
 * phase continuity,
 * deterministic repeat generation,
-* gym contract preservation,
-* band/bodyweight/mixed-home identity preservation.
+* gym regression,
+* dumbbell regression,
+* and bodyweight/mixed-home identity preservation.
 
-Do not rely only on full-program snapshots. Assert roles, capabilities and semantic invariants.
+Do not rely only on snapshots. Assert semantic role and capability truth.
 
 Review intentional golden changes individually.
 
-## 16. Fuzz validation
+## 21. Fuzz validation
 
-Run at least 10,000 deterministic dumbbell-focused cases across:
+Run at least 10,000 deterministic band-focused cases across:
 
+* band setup lane,
 * experience,
 * phase,
 * supported frequency,
 * goal,
 * pain combinations,
 * variation seeds,
-* bench confirmed and unconfirmed where representable,
-* pull-up bar confirmed and unconfirmed where representable,
-* and relevant legacy equipment selections.
+* confirmed and unconfirmed anchor states,
+* legacy stored band values,
+* and reordered equipment selections.
 
 Report separately:
 
 * gym-template inheritance,
+* unconfirmed band type,
+* unconfirmed anchor,
+* anchor-height mismatch,
+* loop-only leakage,
 * illegal equipment,
-* unconfirmed support,
-* false vertical-pull truth,
+* false vertical pull,
 * missing horizontal pull,
 * missing hinge,
 * day-identity mismatch,
+* excessive anchor changes,
 * duplicate-family excess,
 * complexity excess,
-* weekly coverage,
+* weekly coverage or honest capability limitation,
 * phase churn,
 * exceptions,
 * identity collapse,
-* and deterministic-repeat mismatches.
+* and deterministic mismatches.
 
-Required fuzz outcomes:
+Required zero outcomes:
 
-* zero illegal equipment,
-* zero unconfirmed support assumptions,
 * zero gym-template inheritance,
+* zero illegal equipment,
+* zero unconfirmed anchor use,
+* zero anchor-height mismatch,
+* zero long-band leakage into loop-only plans,
 * zero false vertical-pull satisfaction,
 * zero identity collapse,
 * zero nondeterministic output.
 
-## 17. Quality scoring
+## 22. Quality scoring
 
-Produce a structural dumbbell-programming score separate from deferred coaching completeness.
+Produce separate scores for:
+
+1. structural band-program quality,
+2. capability honesty,
+3. deferred coaching completeness.
 
 Structural dimensions should include:
 
-* equipment truth,
+* band-type truth,
+* anchor truth,
 * role truth,
-* weekly movement coverage,
-* full-body day identity,
+* full-body identity,
+* weekly coverage appropriate to capability,
 * session simplicity,
+* anchor-change coherence,
 * progression,
 * pain preservation,
 * phase continuity,
 * and exercise familiarity.
 
-Acceptance target:
+Acceptance targets:
 
-* every flagship dumbbell persona scores at least 95/100 structurally;
+* every long-band flagship persona scores at least 95/100 structurally;
+* every loop-only flagship persona passes its honest constrained contract without false pulling claims;
 * zero confirmed structural hard failures;
-* no gym-shaped day titles for dumbbell mode;
-* no illegal or unconfirmed equipment assumptions;
+* zero gym-shaped band titles;
+* zero unconfirmed anchor assumptions;
+* zero illegal band-type assumptions;
 * no false vertical-pull claims;
-* 10,000 fuzz cases meet all required zero-failure outcomes;
-* no gym contract regression;
-* no equipment identity regression;
+* all required 10,000-case zero outcomes pass;
+* no gym regression;
+* no dumbbell regression;
+* no equipment-identity regression;
 * and no new unrelated failure.
 
-Do not weaken the contract if the target is not reached. Report remaining failures honestly.
+Do not weaken the contract if a target cannot be reached safely. Report remaining failures honestly.
 
-## 18. Reports
+## 23. Reports and manual review
 
-Create Phase 3 reports without overwriting prior phases:
+Create Phase 4 reports without overwriting prior phases:
 
 * Markdown summary,
 * machine-readable JSON,
 * flagship persona review,
 * initial-versus-final failure comparison,
+* questionnaire/capability migration decision,
 * and 10,000-case fuzz summary.
 
 Manually inspect at least:
 
-* Beginner three-day dumbbells,
-* Intermediate three-day dumbbells,
-* Advanced three-day dumbbells,
-* four-day dumbbells,
-* five-day dumbbells,
-* no-bench dumbbells,
-* confirmed-bench dumbbells where representable,
-* shoulder-pain dumbbells,
-* low-back-pain dumbbells,
+* Beginner three-day long band with anchor,
+* Intermediate three-day long band with anchor,
+* Advanced three-day long band with anchor,
+* long band without anchor,
+* mini loop only,
+* both band types with anchor,
+* four-day bands,
+* five-day bands,
+* shoulder-pain bands,
+* low-back-pain bands,
 * activation phase,
 * skill phase,
 * and growth phase.
@@ -585,17 +740,18 @@ Manually inspect at least:
 For each flagship plan answer:
 
 * Is the day identity truthful?
-* Does it look deliberately designed for dumbbells?
+* Does it look deliberately built for the confirmed band setup?
 * Can every exercise be performed with confirmed equipment?
-* Are the main exercises recognizable?
+* Is every anchor requirement clear?
+* Are anchor changes controlled?
 * Is pulling represented honestly?
 * Is the hinge truthful?
-* Is the session simple to follow?
-* Is progression possible with fixed dumbbells?
+* Is the session easy to set up and follow?
+* Is progression possible without relying on colour names?
 * Does pain adaptation retain a meaningful workout?
 * Does the next phase feel like progression?
 
-## 19. Required validation
+## 24. Required validation
 
 Run:
 
@@ -603,6 +759,7 @@ Run:
 npm run audit:equipment-program
 npm run audit:gym-program
 npm run audit:dumbbell-program
+npm run audit:band-program
 npm run audit:catalog
 npm run audit:program-contract
 npm run audit:coverage-matrix
@@ -614,41 +771,49 @@ npm run build
 npm run lint
 ```
 
-If `audit:dumbbell-program` does not yet exist, add it as the focused Phase 3 audit command.
+If `audit:band-program` does not exist, add it.
 
-Compare all known matrix failures with Phase 0–2:
+Run focused band-contract, capability-migration, questionnaire and fuzz tests.
 
-* Phase 3 dumbbell failures must be corrected or explicitly reported;
-* pre-existing unrelated failures may remain documented;
+Compare failures with Phase 0–3:
+
+* Phase 4 band failures must be corrected or explicitly reported;
+* existing precisely coded out-of-gate failures may remain documented;
 * no failure may be suppressed;
-* no new gym failure is permitted;
+* no new gym or dumbbell failure is permitted;
 * and no unrelated regression is allowed.
 
-## 20. Phase Result
+## 25. Phase Result
 
-Update only the Phase 3 checklist and append a Phase 3 result containing:
+Update only the Phase 4 checklist and append a Phase 4 result containing:
 
 * files changed,
-* canonical dumbbell contract and template locations,
+* current and new questionnaire semantics,
+* legacy migration policy,
+* canonical band capability fields,
+* canonical band contract and template locations,
+* setup-lane definitions,
 * supported-frequency policy,
 * initial hard-failure inventory,
 * root causes,
 * fixes made,
 * intentional generated-program changes,
 * individual golden changes and rationale,
-* equipment-assumption results,
+* anchor-truth results,
+* anchor-transition results,
 * pulling-truth results,
-* fixed-weight progression behavior,
+* loop-only behavior,
+* band progression behavior,
 * pain-case results,
 * phase-continuity results,
-* flagship structural scores,
+* flagship scores,
 * 10,000-case fuzz results,
-* gym regression results,
+* gym and dumbbell regression results,
 * deferred coaching-completeness gaps,
 * all command results,
 * unchanged baseline failures,
-* and the exact recommended starting point for Phase 4.
+* and the exact recommended starting point for Phase 5.
 
-Stop after Phase 3.
+Stop after Phase 4.
 
-Do not begin band templates, anchor questionnaire work, mixed-home programming, bodyweight templates, coaching-catalog completion, plan-reveal UI, telemetry, or engine decomposition.
+Do not begin first-class bodyweight templates, mixed-home programming, broad coaching-catalog completion, plan-reveal UI, telemetry, or engine decomposition.

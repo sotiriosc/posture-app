@@ -14,7 +14,9 @@ import {
   fullBodyADayTitle,
   fullBodyBDayTitle,
   hingeDayTitle,
+  isBandsOnlyEquipment,
   isDumbbellsOnlyEquipment,
+  isFullBodyTemplateEquipment,
   pushPullDayTitle,
   shoulderDayTitle,
 } from "./_helpers/dumbbellTestTitles";
@@ -44,7 +46,7 @@ const legsMains = (
   program: ReturnType<typeof generateWeeklyProgram>,
   equipment: QuestionnaireData["equipment"] = ["gym"]
 ) => {
-  if (isDumbbellsOnlyEquipment(equipment)) {
+  if (isDumbbellsOnlyEquipment(equipment) || isBandsOnlyEquipment(equipment)) {
     return program.week
       .filter((entry) => entry.title.startsWith("Full Body"))
       .flatMap((day) => day.routine.filter((item) => item.section === "main"));
@@ -194,45 +196,51 @@ describe("program role truthfulness", () => {
     expect(warningMessagesFor(programId).join("\n")).not.toMatch(/main pull pattern|main vertical pull/i);
   });
 
-  test("band chest fly remains a legal chest-isolation main without stale archer-pushup warnings", () => {
-    const programId = "truth-band-chest-fly-final";
+  test("band Full Body A keeps honest press and pull without gym fly-slot inheritance", () => {
+    const programId = "truth-band-full-body-a-final";
     clearProgramConstraintWarningBuffer();
+    const equipment = ["bands"] as QuestionnaireData["equipment"];
     const program = generateWeeklyProgram(
       {
         goals: "General fitness",
         painAreas: [],
         experience: "Intermediate",
-        equipment: ["bands"],
+        equipment,
         daysPerWeek: 3,
+        bandSetup: "long_with_anchor",
       },
       programId,
       { phaseIndex: 3, seed: "three-day-persona-review-9-phase-3" }
     );
-    const fly = backChestMains(program).find((item) => item.exerciseId === "band-chest-fly");
+    const mains = backChestMains(program, equipment);
+    const ids = mains.map((item) => item.exerciseId);
 
-    expect(fly).toBeTruthy();
-    expect(fly?.selectionDebug?.slotKind).toBe("mainPushFly");
-    expect(fly?.selectionDebug?.slotLane).toBe("push");
+    expect(program.week[0]?.title).toBe(fullBodyADayTitle);
+    expect(mains.some((item) => item.selectionDebug?.slotLane === "push")).toBe(true);
+    expect(mains.some((item) => item.selectionDebug?.slotLane === "pull")).toBe(true);
+    expect(ids.some((id) => id.includes("fly"))).toBe(false);
     expect(warningMessagesFor(programId).join("\n")).not.toMatch(
-      /band-chest-fly.*archer-pushup|archer-pushup.*band-chest-fly|main legality replaced|final main integrity replaced/i
+      /main legality replaced|final main integrity replaced/i
     );
   });
 
   test("hip-extension hinge surrogates satisfy lower-back-pain hinge slots without carry noise", () => {
     const programId = "truth-low-back-hinge-surrogate";
     clearProgramConstraintWarningBuffer();
+    const equipment = ["bands"] as QuestionnaireData["equipment"];
     const program = generateWeeklyProgram(
       {
         goals: "Reduce pain",
         painAreas: ["lower back"],
         experience: "Beginner",
-        equipment: ["bands"],
+        equipment,
         daysPerWeek: 3,
+        bandSetup: "long_with_anchor",
       },
       programId,
       { phaseIndex: 1, seed: "three-day-persona-review-10-phase-1" }
     );
-    const hinge = legsMains(program).find(
+    const hinge = legsMains(program, equipment).find(
       (item) => item.selectionDebug?.slotKind === "mainHingePrimary"
     );
     const messages = warningMessagesFor(programId).join("\n");
@@ -319,7 +327,7 @@ describe("program role truthfulness", () => {
       expect(
         mains.every((item) => !["db-calf-raise", "band-calf-raise"].includes(item.exerciseId))
       ).toBe(true);
-      if (!isDumbbellsOnlyEquipment(questionnaire.equipment)) {
+      if (!isFullBodyTemplateEquipment(questionnaire.equipment)) {
         expect(warningMessagesFor(id).join("\n")).not.toMatch(/Final main slot|main hinge pattern/i);
       }
     });
@@ -439,19 +447,6 @@ describe("program role truthfulness", () => {
       expectedExerciseId: string;
     }> = [
       {
-        id: "truth-pallof-final-core",
-        questionnaire: {
-          goals: "General fitness",
-          painAreas: [],
-          experience: "Beginner",
-          equipment: ["bands"],
-          daysPerWeek: 3,
-        },
-        phaseIndex: 3,
-        seed: "slot-core-bands-5",
-        expectedExerciseId: "pallof-press",
-      },
-      {
         id: "truth-side-plank-star-final-core",
         questionnaire: {
           goals: "General fitness",
@@ -477,5 +472,28 @@ describe("program role truthfulness", () => {
       expect(item?.selectionDebug?.slotKind).toBe("accessorycore");
       expect(item?.selectionDebug?.slotLane).toBe("core");
     });
+
+    // Anchored band weeks keep a labeled core accessory (Pallof when selected).
+    clearProgramVariationHistory();
+    const bandProgram = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Beginner",
+        equipment: ["bands"],
+        daysPerWeek: 3,
+        bandSetup: "long_with_anchor",
+      },
+      "truth-band-core-accessory",
+      { phaseIndex: 3, seed: "slot-core-bands-5" }
+    );
+    const coreAccessory = bandProgram.week
+      .flatMap((day) => day.routine)
+      .find(
+        (entry) =>
+          entry.section === "accessory" && entry.selectionDebug?.slotLane === "core"
+      );
+    expect(coreAccessory).toBeTruthy();
+    expect(coreAccessory?.selectionDebug?.slotKind).toMatch(/accessory.*core/i);
   });
 });

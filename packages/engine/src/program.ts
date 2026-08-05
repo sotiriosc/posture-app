@@ -180,10 +180,26 @@ import {
   resolveDumbbellDayIdentity,
   resolveDumbbellThreeDayBlueprint,
 } from "@/lib/program/dumbbellTemplates";
+import {
+  deriveBandCapabilityOverlay,
+  isBandAnchorSatisfied,
+  isBandTypeSatisfied,
+  normalizeBandSetupOption,
+  type BandSetupLane,
+  type BandSetupOption,
+} from "@/lib/program/bandSetup";
+import { resolveBandExerciseRequirement } from "@/lib/program/bandExerciseRequirements";
+import {
+  authorBandMainSelections,
+  buildBandSplitTemplateSpecs,
+  getBandDayVolumeContract,
+  getBandMainLanePlan,
+  isBandProgramDayTitle,
+} from "@/lib/program/bandTemplates";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
-export const PROGRAM_TEMPLATE_VERSION = 14;
+export const PROGRAM_TEMPLATE_VERSION = 15;
 const clampPhaseIndexToSupportedRange = (phaseIndex: number) =>
   Math.min(MAX_PHASE_INDEX, Math.max(1, Math.floor(phaseIndex)));
 
@@ -378,6 +394,10 @@ type SelectionContext = {
   primaryEquipmentMode: PrimaryProgramEquipmentMode;
   /** Confirmed physical capabilities; unknown supports stay false. */
   programCapabilities: ProgramCapabilities;
+  /** Band setup lane for primaryEquipmentMode === "bands". */
+  bandSetupLane: BandSetupLane;
+  /** Confirmed questionnaire band setup option, if any. */
+  bandSetupOption?: BandSetupOption;
   trainingContext: TrainingContext;
   intentProfile: ProgramIntentProfile;
   feedbackSummaryByExercise: Map<string, ExerciseFeedbackSummary>;
@@ -1097,7 +1117,16 @@ const buildSelectionContext = (
   const primaryEquipmentMode = resolvePrimaryProgramEquipmentMode(
     questionnaire.equipment
   );
-  const programCapabilities = deriveProgramCapabilities(questionnaire.equipment);
+  const bandSetupOption = normalizeBandSetupOption(
+    (questionnaire as { bandSetup?: unknown }).bandSetup
+  );
+  const programCapabilities = deriveProgramCapabilities(questionnaire.equipment, {
+    bandSetup: bandSetupOption,
+  });
+  const bandSetupLane = deriveBandCapabilityOverlay({
+    equipment: questionnaire.equipment,
+    bandSetup: bandSetupOption,
+  }).setupLane;
   const trainingContext = deriveTrainingContext(questionnaire);
   const experienceLevel = normalizeExperienceLevel(questionnaire.experience);
   const intentProfile = buildProgramIntentProfile({
@@ -1159,6 +1188,8 @@ const buildSelectionContext = (
     capabilityMode,
     primaryEquipmentMode,
     programCapabilities,
+    bandSetupLane,
+    bandSetupOption,
     trainingContext,
     intentProfile,
     feedbackSummaryByExercise,
@@ -4784,7 +4815,19 @@ const isUpperPushDayTitle = (title: string) => title.toLowerCase().includes("upp
 
 const isUpperPullDayTitle = (title: string) => title.toLowerCase().includes("upper pull");
 
+/** Full-body / practice titles must not be classified as gym 4/5-day upper/lower splits. */
+const isFullBodyOrPracticeDayTitle = (title?: string | null) => {
+  const normalized = String(title ?? "").toLowerCase();
+  return (
+    normalized.includes("full body") ||
+    normalized.includes("practice & restore") ||
+    normalized.includes("pattern practice") ||
+    normalized.includes("lower & core practice")
+  );
+};
+
 const isHigherFrequencyUpperDayTitle = (title?: string | null) => {
+  if (isFullBodyOrPracticeDayTitle(title)) return false;
   const normalized = String(title ?? "").toLowerCase();
   return (
     normalized.includes("upper") ||
@@ -4794,6 +4837,7 @@ const isHigherFrequencyUpperDayTitle = (title?: string | null) => {
 };
 
 const isHigherFrequencyLowerDayTitle = (title?: string | null) => {
+  if (isFullBodyOrPracticeDayTitle(title)) return false;
   const normalized = String(title ?? "").toLowerCase();
   return normalized.includes("lower") || normalized.includes("posterior chain");
 };
@@ -21542,6 +21586,43 @@ const isExerciseEligibleForProgramContext = (params: {
       return false;
     }
   }
+  // Band programs: confirmed type/anchor only; no gym/cable/barbell/dumbbell leakage.
+  if (
+    context.primaryEquipmentMode === "bands" &&
+    (section === "main" || section === "accessory")
+  ) {
+    const illegalForBands = ["machines", "cables", "barbell", "kettlebell", "dumbbells"] as const;
+    if (illegalForBands.some((token) => exercise.equipment.includes(token))) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasBench &&
+      (exercise.equipment.includes("bench") || exerciseRequiresBenchSurface(exercise))
+    ) {
+      return false;
+    }
+    if (exercise.equipment.includes("bands")) {
+      const requirement = resolveBandExerciseRequirement({
+        exerciseId: exercise.id,
+        name: exercise.name,
+        equipment: exercise.equipment,
+        variantKey: exercise.variantKey,
+        cues: exercise.cues,
+      });
+      if (requirement) {
+        const overlay = deriveBandCapabilityOverlay({
+          equipment: ["bands"],
+          bandSetup: context.bandSetupOption,
+        });
+        if (!isBandTypeSatisfied(requirement.bandType, overlay)) {
+          return false;
+        }
+        if (!isBandAnchorSatisfied(requirement.anchor, overlay)) {
+          return false;
+        }
+      }
+    }
+  }
   if (
     section === "main" &&
     context.capabilityMode === "hasLoad" &&
@@ -23324,6 +23405,35 @@ const resolveThreeDayBlueprint = (params: {
             dumbbellBlueprint.constraints.preventDuplicateCarries,
           carryCannotReplaceCore:
             dumbbellBlueprint.constraints.carryCannotReplaceCore,
+        },
+      };
+    }
+  }
+  if (selectionContext.primaryEquipmentMode === "bands") {
+    const volume = getBandDayVolumeContract(
+      dayTitle,
+      selectionContext.experienceLevel
+    );
+    const mainLanePlan = getBandMainLanePlan(
+      dayTitle,
+      selectionContext.experienceLevel
+    );
+    if (volume && mainLanePlan) {
+      return {
+        dayTitle,
+        mainCount: volume.mainCount,
+        accessoryCount: volume.accessoryCount,
+        mainLanePlan,
+        requiredMainFamilies: mainLanePlan.map((entry) => entry.family),
+        accessoryRoles: ["core", "posture_back"] as ThreeDayBlueprintAccessoryRole[],
+        laneSwapRules: {},
+        constraints: {
+          pullMainsAtLeastPressMains: false,
+          noVerticalPushMain: false,
+          noLowerBodyLeakMain: false,
+          maxCarryAccessories: 1,
+          preventDuplicateCarries: true,
+          carryCannotReplaceCore: true,
         },
       };
     }
@@ -25568,6 +25678,15 @@ const isStrictHingeSlotAnchorLegal = (params: {
     return false;
   }
 
+  // Band templates author hip-extension hinge when long-band RDLs are unavailable
+  // or inappropriate (pain / loop / legacy).
+  if (
+    context.primaryEquipmentMode === "bands" &&
+    isHipExtensionHingeSurrogateExercise(exercise)
+  ) {
+    return true;
+  }
+
   if (
     shouldAllowHipExtensionHingeSurrogateForMainSlot({
       exercise,
@@ -25642,6 +25761,19 @@ const isStrictPullSlotAnchorLegal = (params: {
   const wantsVertical = slotKind === "mainPullVertical" || slotKind === "mainVerticalPull";
   const wantsHorizontal =
     slotKind === "mainPullHorizontal" || slotKind === "mainHorizontalPull";
+
+  // Loop/legacy band lanes honestly schedule limited scap/lat work as pull intent.
+  if (
+    context.primaryEquipmentMode === "bands" &&
+    (context.bandSetupLane === "loop_only" ||
+      context.bandSetupLane === "legacy_unknown") &&
+    (exercise.id === "band-pull-apart" ||
+      exercise.id === "band-pull-aparts" ||
+      exercise.id === "band-rear-delt-fly") &&
+    (slotLane === "pull" || Boolean(slotKind?.startsWith("mainPull")))
+  ) {
+    return true;
+  }
 
   if (wantsVertical && !hasTrueVerticalPullAnchor(exercise)) {
     const allowVerticalSurrogate =
@@ -30481,6 +30613,13 @@ const resolveStructuredMainSlotCount = (params: {
     );
     if (volume) return volume.mainCount;
   }
+  if (selectionContext.primaryEquipmentMode === "bands") {
+    const volume = getBandDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.mainCount;
+  }
   if (daysPerWeek < 4) return baseCount;
   if (isArmsPostureConditioningDayTitle(title)) {
     return selectionContext.experienceLevel === "beginner" ? Math.min(baseCount, 2) : baseCount;
@@ -30500,6 +30639,13 @@ const resolveStructuredAccessoryCount = (params: {
   const { daysPerWeek, baseCount, selectionContext, title } = params;
   if (selectionContext.primaryEquipmentMode === "dumbbells" && title) {
     const volume = getDumbbellDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.accessoryCount;
+  }
+  if (selectionContext.primaryEquipmentMode === "bands" && title) {
+    const volume = getBandDayVolumeContract(
       title,
       selectionContext.experienceLevel
     );
@@ -30875,11 +31021,14 @@ const buildStructuredDay = (params: {
       ? threeDayBlueprint.mainLanePlan
       : selectionContext.primaryEquipmentMode === "dumbbells"
       ? getDumbbellMainLanePlan(title, selectionContext.experienceLevel)
+      : selectionContext.primaryEquipmentMode === "bands"
+      ? getBandMainLanePlan(title, selectionContext.experienceLevel)
       : daysPerWeek === 3
       ? get3DayMainLanePlan(title, targetMainSlotCount)
       : null;
   const threeDayTemplateLanePlan =
-    selectionContext.primaryEquipmentMode === "dumbbells"
+    selectionContext.primaryEquipmentMode === "dumbbells" ||
+    selectionContext.primaryEquipmentMode === "bands"
       ? threeDayTemplateLanePlanBase
       : maybeRotateThreeDayTemplateLanePlan({
           dayTitle: title,
@@ -31844,6 +31993,12 @@ const getSplitTemplateSpecs = (
       splitTemplateRuleSet()
     );
   }
+  if (selectionContext?.primaryEquipmentMode === "bands") {
+    return buildBandSplitTemplateSpecs<MainLane, RequirementRule>(
+      daysPerWeek,
+      splitTemplateRuleSet()
+    );
+  }
   return buildRawSplitTemplateSpecs<MainLane, RequirementRule>(
     daysPerWeek,
     splitTemplateRuleSet()
@@ -31877,9 +32032,10 @@ const buildSplitTemplates = (
   selectionRng?: RandomFn
 ) => {
   const rawTemplates = getSplitTemplateSpecs(daysPerWeek, selectionContext);
-  // Dumbbell A/B/C identities must stay stable; skip gym-title adaptive overlays.
+  // Full-body home identities must stay stable; skip gym-title adaptive overlays.
   const templates =
-    selectionContext.primaryEquipmentMode === "dumbbells"
+    selectionContext.primaryEquipmentMode === "dumbbells" ||
+    selectionContext.primaryEquipmentMode === "bands"
       ? rawTemplates
       : applyAdaptiveWeakpointTemplateOverlay({
           templates: rawTemplates,
@@ -31894,15 +32050,17 @@ const buildSplitTemplates = (
     const sameWeekRelatedMainExerciseIds = isHigherFrequencyLowerDayTitle(template.title)
       ? [...sameWeekLowerMainExerciseIds]
       : [];
-    // Prefer dumbbell role lanes from the canonical plan when available so
+    // Prefer template role lanes from the canonical plan when available so
     // selection authors Full Body A/B/C before any gym-shaped repair runs.
-    const dumbbellLanePlan =
+    const homeLanePlan =
       selectionContext.primaryEquipmentMode === "dumbbells"
         ? getDumbbellMainLanePlan(template.title, selectionContext.experienceLevel)
+        : selectionContext.primaryEquipmentMode === "bands"
+        ? getBandMainLanePlan(template.title, selectionContext.experienceLevel)
         : null;
     const templateLanes =
-      dumbbellLanePlan?.length
-        ? dumbbellLanePlan.map((slot) => slot.lane as MainLane)
+      homeLanePlan?.length
+        ? homeLanePlan.map((slot) => slot.lane as MainLane)
         : template.lanes;
     const builtDayBase = buildStructuredDay({
       title: template.title,
@@ -31933,13 +32091,23 @@ const buildSplitTemplates = (
             phaseIndex,
             weekUsedMainIds: sameWeekLowerMainExerciseIds,
           })
+        : selectionContext.primaryEquipmentMode === "bands"
+        ? applyBandTemplateMainAuthorship({
+            day: noteAppliedDay,
+            selectionContext,
+            available,
+            phaseIndex,
+            weekUsedMainIds: sameWeekLowerMainExerciseIds,
+          })
         : noteAppliedDay;
     builtDays.push(builtDay);
     priorDayHeavyPatterns = deriveHeavyPrimaryPatternsForDay(builtDay);
     if (
       isHigherFrequencyLowerDayTitle(builtDay.title) ||
       (selectionContext.primaryEquipmentMode === "dumbbells" &&
-        isDumbbellProgramDayTitle(builtDay.title))
+        isDumbbellProgramDayTitle(builtDay.title)) ||
+      (selectionContext.primaryEquipmentMode === "bands" &&
+        isBandProgramDayTitle(builtDay.title))
     ) {
       sameWeekLowerMainExerciseIds.push(
         ...builtDay.routine
@@ -32046,6 +32214,105 @@ const applyDumbbellTemplateAuthorshipToWeek = (params: {
   const weekUsedMainIds: string[] = [];
   return params.week.map((day) => {
     const nextDay = applyDumbbellTemplateMainAuthorship({
+      day,
+      selectionContext: params.selectionContext,
+      available: params.available,
+      phaseIndex: params.phaseIndex,
+      weekUsedMainIds,
+    });
+    weekUsedMainIds.push(
+      ...nextDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+    );
+    return nextDay;
+  });
+};
+
+const applyBandTemplateMainAuthorship = <Day extends DumbbellAuthoredDay>(params: {
+  day: Day;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+  weekUsedMainIds: string[];
+}): Day => {
+  const { day, selectionContext, available, phaseIndex, weekUsedMainIds } = params;
+  if (!isBandProgramDayTitle(day.title)) return day;
+  const authored = authorBandMainSelections({
+    dayTitle: day.title,
+    experienceLevel: selectionContext.experienceLevel,
+    setupLane: selectionContext.bandSetupLane ?? "legacy_unknown",
+    usedIds: weekUsedMainIds,
+    avoidVerticalPushLoad: selectionContext.intentProfile.avoidPatterns.includes(
+      "vertical_push_load"
+    ),
+    preferPainAwareHinge: hasLowBackPainSignal(selectionContext),
+    phaseIndex,
+    isEligible: (exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      if (!exercise) return false;
+      return isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context: selectionContext,
+        dayTitle: day.title,
+      });
+    },
+  });
+  if (!authored.length) return day;
+
+  const nonMainItems = day.routine.filter((item) => item.section !== "main");
+  const sampleMain = day.routine.find((item) => item.section === "main");
+  const authoredMainItems = authored
+    .map((entry, index) => {
+      const exercise = exerciseById(entry.exerciseId);
+      if (!exercise) return sampleMain;
+      return withSelectionDebug(
+        {
+          exerciseId: exercise.id,
+          section: "main" as const,
+          sets: sampleMain?.sets ?? "3",
+          reps: sampleMain?.reps ?? "8-12",
+          restSec: sampleMain?.restSec ?? 75,
+          loadType: exercise.loadType,
+          cues: buildProgramCues(exercise, "main"),
+          notes: sampleMain?.notes,
+        },
+        "initial_pick",
+        {
+          slotId: `${normalizeSlotToken(day.title)}-main-${index + 1}`,
+          slotKind: entry.slotKind,
+          slotLane: entry.slotLane,
+          phaseIndex,
+        }
+      );
+    })
+    .filter((item): item is ProgramRoutineItem => Boolean(item));
+  if (!authoredMainItems.length) return day;
+
+  const nextRoutine: ProgramRoutineItem[] = [];
+  let mainsInserted = false;
+  nonMainItems.forEach((item) => {
+    if (!mainsInserted && (item.section === "accessory" || item.section === "cooldown")) {
+      nextRoutine.push(...authoredMainItems);
+      mainsInserted = true;
+    }
+    nextRoutine.push(item);
+  });
+  if (!mainsInserted) nextRoutine.push(...authoredMainItems);
+  return { ...day, routine: nextRoutine } as Day;
+};
+
+const applyBandTemplateAuthorshipToWeek = (params: {
+  week: ProgramDay[];
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+}): ProgramDay[] => {
+  const weekUsedMainIds: string[] = [];
+  return params.week.map((day) => {
+    const nextDay = applyBandTemplateMainAuthorship({
       day,
       selectionContext: params.selectionContext,
       available: params.available,
@@ -33250,8 +33517,11 @@ const enforceThreeDayFinalSlotRoleTruth = (params: {
 }): WeekConstraintRepairResult => {
   const { week, daysPerWeek, context, phaseIndex } = params;
   if (daysPerWeek !== 3) return { week, warnings: [] };
-  // Dumbbell Full Body A/B/C is template-authored; gym 3-day slot remaps must not own it.
-  if (context.selectionContext.primaryEquipmentMode === "dumbbells") {
+  // Full-body home A/B/C is template-authored; gym 3-day slot remaps must not own it.
+  if (
+    context.selectionContext.primaryEquipmentMode === "dumbbells" ||
+    context.selectionContext.primaryEquipmentMode === "bands"
+  ) {
     return { week, warnings: [] };
   }
   const warnings: WeekConstraintRepairResult["warnings"] = [];
@@ -34538,7 +34808,7 @@ export const generateWeeklyProgram = (
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
   });
-  const dumbbellAuthoredWeek =
+  const homeAuthoredWeek =
     weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "dumbbells"
       ? applyDumbbellTemplateAuthorshipToWeek({
           week: finalDisplayedSlotTruthWeek,
@@ -34546,9 +34816,16 @@ export const generateWeeklyProgram = (
           available: weeklyRuntimeContext.availableEquipment,
           phaseIndex: weeklyRuntimeContext.phaseIndex,
         })
+      : weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "bands"
+      ? applyBandTemplateAuthorshipToWeek({
+          week: finalDisplayedSlotTruthWeek,
+          selectionContext: weeklyRuntimeContext.selectionContext,
+          available: weeklyRuntimeContext.availableEquipment,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+        })
       : finalDisplayedSlotTruthWeek;
   const tracedStructuredPrepWeek = annotateSelectionDecisionTraceForWeek({
-    week: dumbbellAuthoredWeek,
+    week: homeAuthoredWeek,
     daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
     available: weeklyRuntimeContext.availableEquipment,

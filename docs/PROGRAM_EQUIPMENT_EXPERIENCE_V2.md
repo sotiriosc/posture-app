@@ -2203,59 +2203,118 @@ Cursor stops.
 - Phase 4 — Band Templates and Anchor Capability, only after explicit instruction
 - Stop here.
 
-Phase 4 — Band Templates and Anchor Capability
+### Phase 4 checklist
 
-Objective
+- [x] Step A baseline: document current “bands” meaning + migration policy (`equipment-program-audit-phase4-baseline-bands.md`)
+- [x] Add `bandSetup` questionnaire follow-up (consumer UI + gyms type parity)
+- [x] Legacy `bands` without setup → `legacy_unknown` (never imply type/anchor)
+- [x] Add canonical band modules: `bandSetup.ts`, `bandExerciseRequirements.ts`, `bandTemplates.ts`, `bandProgramContract.ts`
+- [x] Route `primaryEquipmentMode="bands"` to Full Body A/B/C (+ practice); skip gym adaptive overlay / 3-day remaps
+- [x] Anchor truth: no unconfirmed anchor exercises; height mismatch + transition caps
+- [x] Setup lanes: long+anchor / long no-anchor / loop-only / legacy unknown
+- [x] Honest pulling: no false vertical; loop/legacy use limited scap/lat intent (not long-band rows)
+- [x] Add `audit:band-program` + Phase 4 reports (no overwrite of Phase 0–3)
+- [x] Flagship structural scores ≥95 with zero hard failures (12/12)
+- [x] 10k band fuzz: required zero buckets (gym inheritance, illegal equipment, unconfirmed type/anchor, false vertical, loop→long leakage, identity collapse, nondeterminism)
+- [x] Focused tests (`programBandContract.test.ts`); update band title expectations; preserve gym + dumbbell contracts
+- [x] Run required validation; append Phase Result
+- [x] Stop without starting Phase 5
 
-Make band programs complete, safe, and simple to set up.
+## Phase Result — Phase 4
 
-Tasks
+### Changed files
+- `packages/engine/src/program/bandSetup.ts` (new)
+- `packages/engine/src/program/bandExerciseRequirements.ts` (new)
+- `packages/engine/src/program/bandTemplates.ts` (new)
+- `packages/engine/src/program/bandProgramContract.ts` (new)
+- `packages/engine/src/__debug__/bandProgramAudit.ts` (new)
+- `packages/engine/src/program/equipmentCapabilities.ts` (`bandSetup` overlay + `bandSetupConfirmed`)
+- `packages/engine/src/program.ts` (band template routing, authorship, eligibility, HF title exemptions for Full Body/practice)
+- `packages/engine/src/questionnaireSignature.ts` (`bandSetup` / `legacy_unknown`)
+- `apps/consumer/src/components/QuestionnaireForm.tsx` (`bandSetup` field + follow-up UI)
+- `apps/gyms/src/components/QuestionnaireForm.tsx` (`bandSetup` type parity)
+- `packages/engine/tests/unit/programBandContract.test.ts` (new)
+- `package.json` (`audit:band-program`)
+- Engine tests/helpers updated for Full Body band titles (golden/identity/matrix/fuzz/acceptance)
+- `docs/dev-reports/equipment-program-audit-phase4*.md|json`
+- `docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md` (Phase 4 checklist/result only)
 
-Add band setup answer to the questionnaire.
+### Questionnaire semantics
+- Equipment token remains `bands` (label: Resistance bands)
+- New field: `bandSetup` with options: `loop_only`, `long_no_anchor`, `long_with_anchor`, `both_no_anchor`, `both_with_anchor`
 
-Add capability migration/default handling.
+### Legacy migration policy
+1. Stored `bands` without `bandSetup` → `legacy_unknown`
+2. Never imply long/loop type or any anchor from legacy
+3. Unknown anchors remain false
+4. Existing stored programs remain viewable unchanged
+5. New generation must not schedule unconfirmed type/anchor exercises
 
-Add band full-body A/B/C contracts.
+### Canonical capability / contract / templates
+- Capability overlay: `hasLongBand`, `hasLoopBand`, `hasDoorAnchor`, `hasHighAnchor`, `hasMidAnchor`, `hasLowAnchor`, `bandSetupConfirmed`
+- Titles: Full Body A/B/C; 4d adds Practice & Restore; 5d adds Upper Pattern Practice + Lower & Core Practice
+- Hard-failure codes: gym inheritance, unconfirmed type/anchor, height mismatch, loop→long leakage, false vertical, illegal equipment, prep-as-main, excess anchor changes, weekly roles, identity collapse, etc.
+- Structural score separate from deferred coaching/demo/anchor-safety gaps
 
-Add anchor-height metadata.
+### Setup lanes
+| Lane | Setup | Anchors |
+|---|---|---|
+| A | long/both + repositionable anchor | high + mid + low |
+| B | long/both, no anchor | none |
+| C | loop_only | none (loop + bodyweight) |
+| Legacy | unknown type | none |
 
-Add no-anchor fallback paths.
+### Supported-frequency policy
+- 3d: A/B/C flagship
+- 4d: A/B/C + Practice & Restore
+- 5d: A/B/C + Upper Pattern Practice + Lower & Core Practice
 
-Limit anchor changes.
+### Root causes fixed
+- Band weeks inherited gym body-part titles and selection heuristics
+- Anchored exercises scheduled without confirmed door/high/mid/low capability
+- `hasLongBand`/`hasLoopBand`/anchors stayed false while long-band work still appeared
+- Full Body / practice titles were misclassified as gym 4/5-day upper/lower days (`"upper"`/`"lower"` substring match)
 
-Add band safety copy.
+### Intentional generated-program changes
+- Band weeks use deliberately designed Full Body A/B/C for the confirmed setup lane
+- Long+anchor can schedule pulldowns; no-anchor / loop / legacy cannot
+- Loop/legacy use honest limited pull (pull-aparts), not false loaded rows
+- Pain-aware hinge progresses isometric bridge → hip-thrust across phases when RDLs are inappropriate
 
-Add band-specific progression targets.
+### Anchor / pull / progression
+- Zero unconfirmed-anchor and zero false-vertical-pull hard failures on flagship + 10k fuzz
+- Anchor-height changes capped by experience (beginner ≤1, others ≤2)
+- Band progression via phase-aware candidate ordering + existing catalog/ladder systems; colour-name resistance progression not used
 
-Reduce excessive variation families.
+### Scores and fuzz
+- Flagship: **12/12** structural ≥95, **0** hard failures
+- 10k fuzz: all required zero buckets (illegal equipment, unconfirmed type/anchor, gym inheritance, false vertical, loop→long leakage, identity collapse, nondeterminism)
 
-Add golden plans for:
+### Gym / dumbbell regression
+- Gym and dumbbell contracts remain enforced via unit tests + `programBandContract` regression cases
+- Phase 0–3 reports preserved (Phase 4 writes `equipment-program-audit-phase4*` only)
+- Out-of-gate gym 5-day pain codes remain tracked (unchanged)
 
-loop only,
+### Deferred coaching-completeness gaps
+- Demo URLs, cue completeness, and anchored-exercise safety copy remain deferred experience gaps (do not fail structural gate)
 
-long band no anchor,
+### Validation command results
+- `audit:band-program`: pass — 12/12 flagship ≥95, 0 hard failures, 10k fuzz all required zeros
+- `audit:catalog`: pass (0 errors)
+- `test:golden`: 56/56 pass
+- `test:critical`: 326/326 pass
+- `test:full`: 1044/1044 pass
+- `npm run build`: pass
+- `audit:dumbbell-program` / `audit:gym-program`: verification runs do not overwrite Phase 0–3 artifacts as the Phase 4 deliverable set
 
-long band with anchor,
+### Intentional test updates
+- Band-only scenarios assert Full Body A/B/C (+ practice) instead of gym body-part titles
+- Shared helpers treat bands like dumbbells for full-body title routing (`isFullBodyTemplateEquipment`)
+- HF gym upper-push/pull identity tests no longer assume bands produce gym Upper Push/Pull titles
 
-mixed band setup.
-
-Acceptance gate
-
-No anchored exercise appears without legal anchor capability.
-
-No more than two default anchor-height changes per session.
-
-Every anchored exercise has setup and safety instructions.
-
-Every week covers the band contract.
-
-Quality at least 90 in every band scenario.
-
-Manual tester completes sessions without external setup research.
-
-Phase Result added.
-
-Cursor stops.
+### Next phase
+- Phase 5 — Bodyweight Templates and Honest Pulling, only after explicit instruction
+- Stop here.
 
 Phase 5 — Bodyweight Templates and Honest Pulling
 
@@ -2380,6 +2439,608 @@ Full test suite and build pass.
 Phase Result added.
 
 Cursor stops.
+
+## Phase 7B — Program Presentation Contract
+
+### Objective
+
+Ensure every important decision produced by the program engine has a clear, intentional place in the user experience, and ensure the UI is not missing information required to understand, trust, and execute the program.
+
+This phase does not redesign the interface. It creates the canonical contract connecting:
+
+1. questionnaire inputs,
+2. engine decisions,
+3. stored program data,
+4. and visible user-facing presentation.
+
+No engine field should exist without a justified consumer, and no critical user-facing concept should depend on information the engine does not provide.
+
+### Core principle
+
+For every generated or derived program field, determine:
+
+* where it originates,
+* why it exists,
+* whether it is stored,
+* where it is displayed,
+* when it is displayed,
+* whether the user can act on it,
+* and what should happen when it is unavailable.
+
+Every field must receive one status:
+
+```ts
+type PresentationContractStatus =
+  | "visible"
+  | "visibleOnDemand"
+  | "internalOnly"
+  | "telemetryOnly"
+  | "deferred"
+  | "unused";
+```
+
+Definitions:
+
+* `visible`: shown directly in the normal program or workout experience.
+* `visibleOnDemand`: available through expanded details, help, exercise information, or another deliberate interaction.
+* `internalOnly`: required for safe or deterministic engine behavior but intentionally hidden from users.
+* `telemetryOnly`: used only for product measurement or diagnostics.
+* `deferred`: intentionally not displayed yet, with a named future phase or issue.
+* `unused`: has no valid consumer and must be removed or justified before release.
+
+No field may remain uncategorized.
+
+---
+
+### 1. Build the canonical presentation inventory
+
+Create a machine-readable and human-readable inventory covering at minimum:
+
+#### Program-level information
+
+* program generation version,
+* primary equipment mode,
+* confirmed equipment capabilities,
+* selected goal,
+* experience level,
+* days per week,
+* current phase,
+* phase purpose,
+* current week,
+* total phase duration,
+* weekly coverage,
+* program limitations,
+* pain-aware adaptations,
+* unresolved capability warnings,
+* progression state,
+* and regeneration reason.
+
+#### Session-level information
+
+* session title,
+* session identity,
+* one-sentence purpose,
+* expected duration,
+* equipment required today,
+* required support or anchor setup,
+* anchor-height sequence,
+* exercise count,
+* primary movement roles,
+* session difficulty,
+* pain modifications,
+* and completion state.
+
+#### Exercise-level information
+
+* exercise name,
+* section,
+* slot role,
+* movement role,
+* role-truth classification,
+* sets,
+* repetitions or duration,
+* rest,
+* tempo where relevant,
+* load guidance,
+* setup,
+* anchor requirement,
+* support requirement,
+* execution steps,
+* primary cue,
+* expected sensation,
+* common mistake,
+* stop or swap signal,
+* why the exercise was selected,
+* regression,
+* progression,
+* demonstration,
+* and substitution state.
+
+#### Internal-only information
+
+Review and classify:
+
+* candidate scores,
+* deterministic seeds,
+* selection traces,
+* rejected exercises,
+* repair reasons,
+* quality-gate reason codes,
+* fuzz identifiers,
+* internal capability flags,
+* and audit metadata.
+
+Internal-only data must remain available for diagnostics without leaking confusing implementation language into the user interface.
+
+---
+
+### 2. Map the current product surfaces
+
+Inspect the actual consumer application and document the current surfaces that can display program information.
+
+At minimum, inspect:
+
+* questionnaire,
+* onboarding result,
+* program overview,
+* weekly overview,
+* day or session card,
+* active-workout screen,
+* exercise card,
+* expanded exercise details,
+* substitution flow,
+* pain-feedback flow,
+* progress or history view,
+* phase-transition view,
+* settings or equipment-edit flow,
+* and relevant mobile states.
+
+Use the current interface as the source of truth. Do not assume a screen exists because the engine has data for it.
+
+Create a presentation map equivalent to:
+
+```ts
+type PresentationSurface =
+  | "questionnaire"
+  | "programOverview"
+  | "weeklyOverview"
+  | "sessionOverview"
+  | "activeWorkout"
+  | "exerciseCard"
+  | "exerciseDetails"
+  | "substitutionFlow"
+  | "painFeedback"
+  | "progressHistory"
+  | "phaseTransition"
+  | "equipmentSettings"
+  | "internalDiagnostics";
+```
+
+For every visible or visible-on-demand field, assign at least one valid surface.
+
+---
+
+### 3. Create the presentation contract
+
+Add a focused contract under the appropriate application or shared-program boundary.
+
+Suggested location:
+
+```text
+packages/engine/src/program/programPresentationContract.ts
+```
+
+or, if the contract is clearly consumer-specific:
+
+```text
+apps/consumer/src/lib/programPresentationContract.ts
+```
+
+Choose one canonical owner. Do not create competing engine and UI versions.
+
+The contract should describe what the engine must provide and what the UI must consume without importing React components into the engine.
+
+An acceptable shape may be equivalent to:
+
+```ts
+type ProgramPresentationFieldContract = {
+  field: string;
+  source:
+    | "questionnaire"
+    | "engine"
+    | "storedProgram"
+    | "derivedPresentation";
+  status: PresentationContractStatus;
+  surfaces: PresentationSurface[];
+  requiredForRelease: boolean;
+  fallbackBehavior?: string;
+  notes?: string;
+};
+```
+
+Do not force this exact implementation if the repository already contains a suitable contract pattern.
+
+---
+
+### 4. Verify input-to-output continuity
+
+For every questionnaire input that materially changes the generated program, verify that the result is visible or understandable to the user.
+
+Examples:
+
+* selecting dumbbells should produce and display a dumbbell-specific program identity;
+* selecting a band setup should affect eligibility and be reflected in the session equipment/setup information;
+* reporting pain should produce a visible adaptation or explanation;
+* selecting more training days should produce a visibly coherent weekly schedule;
+* progressing to another phase should produce a visible explanation of what changed.
+
+A questionnaire input must not disappear into the engine with no perceptible effect unless it is intentionally safety-only.
+
+Flag:
+
+* collected inputs that never influence generation,
+* collected inputs that influence generation but are never reflected to the user,
+* displayed claims that are not backed by engine data,
+* and engine decisions that the UI cannot currently explain.
+
+---
+
+### 5. Verify engine-to-UI continuity
+
+For every user-relevant engine decision, verify there is a presentation route.
+
+Required examples:
+
+#### Equipment identity
+
+Must be visible on the program overview or equivalent:
+
+* Gym
+* Dumbbells
+* Bands
+* Bodyweight
+* Mixed home
+
+#### Session identity
+
+Must be visible before the workout begins:
+
+* Full Body A — Squat, Press and Row
+* Back + Chest
+* or another canonical session title.
+
+#### Equipment requirements
+
+Must be visible before exercise execution:
+
+* dumbbells,
+* floor space,
+* long band,
+* mini loop,
+* high anchor,
+* bench,
+* wall,
+* or another confirmed support.
+
+#### Capability limitations
+
+Must be communicated honestly where relevant:
+
+* no true vertical pull available,
+* anchor not confirmed,
+* bench not selected,
+* or another meaningful limitation.
+
+The wording should be useful and reassuring, not written like an internal failure.
+
+#### Pain adaptations
+
+The user should be able to understand that the program changed because of reported pain without exposing diagnostic or engine-scoring language.
+
+#### Progression
+
+The user should be able to see the current target and the next progression action.
+
+#### Phase changes
+
+The user should see:
+
+* what stayed,
+* what progressed,
+* what changed,
+* and why.
+
+---
+
+### 6. Prevent duplicate or conflicting presentation logic
+
+Presentation wording and derived values should not be independently reconstructed across multiple screens.
+
+Examples:
+
+* session duration should have one canonical derivation;
+* equipment-needed labels should come from the same source used by exercise eligibility;
+* session titles should come from canonical templates;
+* phase names and purposes should come from canonical phase metadata;
+* role limitations should come from the program contract, not from screen-specific guesses;
+* progression text should come from canonical progression targets.
+
+Do not allow the UI to infer equipment requirements by parsing exercise names.
+
+Do not allow separate screens to display different equipment, duration, phase, or progression information for the same program.
+
+---
+
+### 7. Define required release-visible fields
+
+The following information must have an approved visible destination before release:
+
+#### Program overview
+
+* program equipment identity,
+* training frequency,
+* current phase and phase purpose,
+* current week,
+* expected weekly structure,
+* and high-level movement coverage.
+
+#### Session overview
+
+* session title,
+* session purpose,
+* expected duration,
+* equipment needed,
+* setup requirements,
+* and exercise count.
+
+#### Exercise execution
+
+* exercise name,
+* sets and repetitions or duration,
+* rest,
+* primary cue,
+* setup,
+* demonstration when required,
+* stop or swap signal,
+* and current progression target.
+
+#### Adaptation and trust
+
+* pain-related modifications,
+* capability limitations,
+* substitutions,
+* and major phase changes.
+
+Fields may be visible on demand when that produces a cleaner interface, but the user must be able to find them without leaving Praxis.
+
+---
+
+### 8. Define intentionally internal fields
+
+The following should normally remain internal:
+
+* candidate scores,
+* rejected candidate lists,
+* selection seeds,
+* low-level reason codes,
+* raw quality scores,
+* internal repair traces,
+* fuzz-case identifiers,
+* and engine debugging metadata.
+
+Create user-facing translations only when the underlying issue requires user action.
+
+Example:
+
+Internal:
+
+```text
+BAND_UNCONFIRMED_ANCHOR
+```
+
+User-facing:
+
+```text
+This exercise needs a secure high anchor. Update your band setup to use it.
+```
+
+Do not expose raw internal codes in the consumer interface.
+
+---
+
+### 9. Add contract validation
+
+Create a validation tool that reports:
+
+* fields produced by the engine but absent from the presentation inventory,
+* visible fields with no valid source,
+* required fields with no assigned surface,
+* fields marked unused,
+* contradictory sources,
+* missing fallback behavior,
+* and user-facing labels derived through unsafe heuristics.
+
+Suggested command:
+
+```bash
+npm run audit:program-presentation
+```
+
+Produce:
+
+```text
+docs/dev-reports/program-presentation-contract.md
+docs/dev-reports/program-presentation-contract.json
+```
+
+The report should include:
+
+* field,
+* source,
+* status,
+* destination surface,
+* current implementation,
+* missing implementation,
+* release requirement,
+* and recommended action.
+
+---
+
+### 10. Add integration tests
+
+Add tests proving representative information travels from input through generation to presentation-ready data.
+
+Test at minimum:
+
+* gym program identity,
+* dumbbell program identity,
+* anchored-band requirements,
+* no-anchor band limitations,
+* loop-only band limitations,
+* bodyweight pulling truth,
+* mixed-home equipment requirements,
+* session title and purpose,
+* expected duration,
+* phase information,
+* progression target,
+* pain adaptation,
+* substitution explanation,
+* and capability warning.
+
+These tests do not need to render full pages when a stable presentation-view model exists, but at least one integration layer must prove that generated information reaches the consumer application.
+
+---
+
+### 11. Manual screenshot review
+
+Use the current consumer application and inspect representative screenshots or rendered states for:
+
+* program overview,
+* weekly schedule,
+* session overview,
+* active workout,
+* exercise details,
+* pain substitution,
+* and phase transition.
+
+Review at minimum:
+
+* gym,
+* dumbbells,
+* anchored bands,
+* bands without an anchor,
+* loop bands only,
+* bodyweight,
+* and mixed home.
+
+For each state, answer:
+
+* Can the user tell what kind of program this is?
+* Can the user see what equipment is required?
+* Can the user understand the purpose of the session?
+* Can the user execute the exercise without outside research?
+* Can the user see how to progress?
+* Can the user understand why an exercise changed?
+* Is any internal engine language visible?
+* Is important engine information missing?
+* Is information displayed that the engine does not reliably support?
+
+Store the review under:
+
+```text
+docs/dev-reports/program-presentation-screenshot-review.md
+```
+
+Do not redesign screens during the audit portion of this phase.
+
+---
+
+### 12. Resolve unused work
+
+Every field marked `unused` must receive one of these outcomes:
+
+1. connect it to an approved presentation or internal consumer,
+2. explicitly defer it with a named future destination,
+3. mark it intentionally internal,
+4. or remove it.
+
+Do not keep unused fields because they may be useful someday.
+
+Do not remove internal diagnostics that are actively used by audits, tests, or troubleshooting.
+
+---
+
+### 13. Acceptance gate
+
+Phase 7B passes when:
+
+* every important program field is inventoried,
+* every field has a presentation status,
+* every required visible field has an assigned surface,
+* every visible field has a canonical data source,
+* no critical value is reconstructed inconsistently in multiple screens,
+* no raw internal reason code is exposed to users,
+* every questionnaire input has a documented engine and presentation effect,
+* every user-relevant engine decision has a presentation destination,
+* all unused fields are resolved,
+* representative input-to-presentation integration tests pass,
+* and the screenshot review identifies no release-blocking information gap.
+
+This phase may identify UI work that must be completed in Phase 8.
+
+Do not silently implement a large UI redesign during Phase 7B. Record the exact Phase 8 requirements.
+
+---
+
+### 14. Required validation
+
+Run:
+
+```bash
+npm run audit:program-presentation
+npm run audit:equipment-program
+npm run audit:gym-program
+npm run audit:dumbbell-program
+npm run audit:band-program
+npm run audit:bodyweight-program
+npm run audit:mixed-home-program
+npm run test:golden
+npm run test:critical
+npm run test:full
+npm run build
+npm run lint
+```
+
+Run focused presentation-contract and integration tests.
+
+No program-generation contract may be weakened to make presentation validation pass.
+
+---
+
+### 15. Phase Result
+
+Append a Phase 7B result containing:
+
+* files changed,
+* canonical presentation-contract location,
+* number of fields inventoried,
+* field counts by status,
+* questionnaire-to-engine gaps,
+* engine-to-presentation gaps,
+* visible fields without canonical sources,
+* internal-only fields reviewed,
+* unused fields removed or resolved,
+* required Phase 8 UI changes,
+* integration-test results,
+* screenshot-review results,
+* all command results,
+* unresolved concerns,
+* and the exact recommended starting point for Phase 8.
+
+Stop after Phase 7B.
+
+Do not begin Phase 8 UI implementation, telemetry, release, or engine decomposition.
+
 
 Phase 8 — Plan Reveal and First-Session UX
 

@@ -2,6 +2,7 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { isExerciseEligible, normalizeEquipmentSelection, type Equipment } from "@/lib/equipment";
 import { exerciseById, exercises, type Exercise } from "@/lib/exercises";
 import { validateDumbbellProgramContract } from "@/lib/program/dumbbellProgramContract";
+import { validateBandProgramContract } from "@/lib/program/bandProgramContract";
 import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 import type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 import {
@@ -324,14 +325,23 @@ export const evaluateThreeDayPersonaQuality = ({
   const selectedIds = new Set(allProgramItems(program).map((item) => item.exerciseId));
   const equipmentMode = resolvePrimaryProgramEquipmentMode(questionnaire.equipment);
 
-  if (equipmentMode === "dumbbells") {
-    const contractFailures = validateDumbbellProgramContract({
-      program,
-      persona: "three-day-review",
-      equipment: questionnaire.equipment,
-      experience: questionnaire.experience,
-      painAreas: questionnaire.painAreas,
-    });
+  if (equipmentMode === "dumbbells" || equipmentMode === "bands") {
+    const contractFailures =
+      equipmentMode === "dumbbells"
+        ? validateDumbbellProgramContract({
+            program,
+            persona: "three-day-review",
+            equipment: questionnaire.equipment,
+            experience: questionnaire.experience,
+            painAreas: questionnaire.painAreas,
+          })
+        : validateBandProgramContract({
+            program,
+            persona: "three-day-review",
+            equipment: questionnaire.equipment,
+            bandSetup: questionnaire.bandSetup,
+            experience: questionnaire.experience,
+          });
     failures.push(...contractFailures.map((failure) => failure.detail));
 
     const dayThreeUnilateralFamilies = program.week

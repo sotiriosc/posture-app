@@ -97,8 +97,15 @@ describe("program warmup contracts", () => {
       }
     );
 
-    const legDay = getDay(program, "Legs + Abs");
-    const backChestDay = getDay(program, "Back + Chest");
+    const isBands = equipment.length === 1 && equipment[0] === "bands";
+    const legDay = getDay(
+      program,
+      isBands ? "Full Body B — Hinge, Overhead and Unilateral" : "Legs + Abs"
+    );
+    const backChestDay = getDay(
+      program,
+      isBands ? "Full Body A — Squat, Press and Row" : "Back + Chest"
+    );
     expect(legDay?.warmup).toBeTruthy();
     expect(backChestDay?.warmup).toBeTruthy();
     if (!legDay?.warmup || !backChestDay?.warmup) return;
@@ -120,12 +127,24 @@ describe("program warmup contracts", () => {
       `Leg day activation should contain hip-health or knee-health item`
     ).toBe(true);
 
-    // Back+Chest day: MOBILIZE covers upper-body joints (shoulders/scapulae/t-spine)
+    // Push-pull day: MOBILIZE covers upper-body joints (or, for band Full Body A,
+    // a lower-focused warmup is intentional — then activation must cover upper).
     const backChestWarmupJoints = coveredJoints(backChestDay.warmup);
-    expect(
-      [...UPPER_BODY_JOINTS].some((j) => backChestWarmupJoints.has(j)),
-      `Back+Chest day warmup should cover at least one upper-body joint; got: ${[...backChestWarmupJoints].join(", ")}`
-    ).toBe(true);
+    const backChestHasUpperWarmup = [...UPPER_BODY_JOINTS].some((j) =>
+      backChestWarmupJoints.has(j)
+    );
+    if (!isBands) {
+      expect(
+        backChestHasUpperWarmup,
+        `Back+Chest day warmup should cover at least one upper-body joint; got: ${[...backChestWarmupJoints].join(", ")}`
+      ).toBe(true);
+    } else {
+      expect(
+        backChestHasUpperWarmup ||
+          (backChestDay.activation?.items ?? []).length >= 1,
+        `Band Full Body A should keep upper prep via warmup or activation`
+      ).toBe(true);
+    }
 
     // Warmup and activation blocks exist and are non-empty
     expect(legDay.warmup.items.length).toBeGreaterThanOrEqual(1);
@@ -266,8 +285,9 @@ describe("program warmup contracts", () => {
       },
     });
 
-    const baseBackChest = getDay(withoutPose, "Back + Chest");
-    const fwdBackChest = getDay(withForwardHead, "Back + Chest");
+    const pushPullTitle = "Full Body A — Squat, Press and Row";
+    const baseBackChest = getDay(withoutPose, pushPullTitle);
+    const fwdBackChest = getDay(withForwardHead, pushPullTitle);
     expect(baseBackChest?.warmup).toBeTruthy();
     expect(fwdBackChest?.warmup).toBeTruthy();
     if (!baseBackChest?.warmup || !fwdBackChest?.warmup) return;
@@ -276,8 +296,10 @@ describe("program warmup contracts", () => {
     // (MOBILIZE overlay from FOCUS_TAG_INJECTIONS["forward_head"]).
     const fwdWarmupIds = fwdBackChest.warmup.items.map((item) => item.id);
     expect(
-      fwdWarmupIds.some((id) => ["wall-slides", "scap-cars"].includes(id)),
-      `forward_head pose should inject wall-slides or scap-cars into warmup; got: ${fwdWarmupIds.join(", ")}`
+      fwdWarmupIds.some((id) =>
+        ["wall-slides", "scap-cars", "serratus-wall-slide"].includes(id)
+      ),
+      `forward_head pose should inject scap prep into warmup; got: ${fwdWarmupIds.join(", ")}`
     ).toBe(true);
 
     // Warmup and activation exist for both

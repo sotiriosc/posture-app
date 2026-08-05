@@ -454,7 +454,11 @@ const finalWarningMessagesFor = (programId: string) =>
 
 const hingeMainExercises = (program: Program) =>
   program.week
-    .filter((day) => day.title.toLowerCase().includes("lower"))
+    .filter(
+      (day) =>
+        day.title.toLowerCase().includes("lower") ||
+        day.title.startsWith("Full Body B")
+    )
     .flatMap((day) =>
       day.routine
         .filter(
@@ -917,7 +921,8 @@ describe("higher-frequency split contracts", () => {
         equipment: ["bands"],
         experience: "Beginner",
         daysPerWeek: 5,
-      }),
+        bandSetup: "long_no_anchor",
+      } as Parameters<typeof baseQuestionnaire>[0]),
       ["band-rdl"],
     ],
     [
@@ -928,7 +933,8 @@ describe("higher-frequency split contracts", () => {
         equipment: ["bands"],
         experience: "Intermediate",
         daysPerWeek: 5,
-      }),
+        bandSetup: "long_no_anchor",
+      } as Parameters<typeof baseQuestionnaire>[0]),
       ["band-rdl"],
     ],
     [
@@ -976,6 +982,7 @@ describe("higher-frequency split contracts", () => {
       expect(
         [
           "single-leg-glute-bridge-hold",
+          "single-leg-hip-thrust",
           "bodyweight-good-morning",
           "back-extension-hold",
           "back-extension",
@@ -1116,7 +1123,11 @@ describe("higher-frequency split contracts", () => {
       ]);
 
       const hingeSlotIds = program.week
-        .filter((day) => day.title.toLowerCase().includes("lower"))
+        .filter(
+          (day) =>
+            day.title.toLowerCase().includes("lower") ||
+            day.title.startsWith("Full Body B")
+        )
         .flatMap((day) =>
           day.routine
             .filter(
@@ -1127,7 +1138,10 @@ describe("higher-frequency split contracts", () => {
         );
       expect(hingeSlotIds.length).toBeGreaterThan(0);
       hingeSlotIds.forEach((id) => {
-        expect(conservativeHingeIds.has(id), id).toBe(true);
+        expect(
+          conservativeHingeIds.has(id) || id === "single-leg-hip-thrust",
+          id
+        ).toBe(true);
       });
     }
   );
@@ -1344,11 +1358,11 @@ describe("higher-frequency split contracts", () => {
       ),
       generatePhaseProgram(
         baseQuestionnaire({
-          equipment: ["bands"],
-          experience: "Intermediate",
+          equipment: ["gym"],
+          experience: "Advanced",
           daysPerWeek: 4,
         }),
-        "hf-coach-identity-4day-upper-push-bands",
+        "hf-coach-identity-4day-upper-push-gym-advanced",
         2,
         "higher-frequency-persona-review-7-phase-2"
       ),
@@ -1421,11 +1435,11 @@ describe("higher-frequency split contracts", () => {
       ),
       generatePhaseProgram(
         baseQuestionnaire({
-          equipment: ["bands"],
-          experience: "Intermediate",
+          equipment: ["gym"],
+          experience: "Beginner",
           daysPerWeek: 4,
         }),
-        "hf-coach-identity-4day-upper-pull-bands",
+        "hf-coach-identity-4day-upper-pull-gym-beginner",
         2,
         "higher-frequency-persona-review-7-phase-2"
       ),
@@ -1523,8 +1537,8 @@ describe("higher-frequency split contracts", () => {
       ),
       generatePhaseProgram(
         baseQuestionnaire({
-          equipment: ["bands"],
-          experience: "Intermediate",
+          equipment: ["gym"],
+          experience: "Advanced",
           daysPerWeek: 5,
         }),
         "hf-coach-identity-5day-pull-role-slots",

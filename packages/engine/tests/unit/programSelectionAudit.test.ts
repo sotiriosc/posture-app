@@ -376,7 +376,6 @@ describe("program selection audit metadata", () => {
       maxShoulderSupportMains: number;
       maxLowerRegressionMains: number;
     }> = [
-      { equipment: ["bands"], maxShoulderSupportMains: 1, maxLowerRegressionMains: 0 },
       { equipment: ["dumbbells", "bands"], maxShoulderSupportMains: 0, maxLowerRegressionMains: 0 },
       { equipment: ["none"], maxShoulderSupportMains: 3, maxLowerRegressionMains: 1 },
     ];
@@ -408,31 +407,37 @@ describe("program selection audit metadata", () => {
       expect(backChestMains.some(isLatAccentStyle)).toBe(false);
     });
 
-    // Dumbbell-only weeks use Full Body A/B/C, not gym body-part titles.
-    const dumbbellProgram = generateWeeklyProgram(
-      { ...questionnaire, equipment: ["dumbbells"] },
-      "selection-non-gym-legality-dumbbells",
-      {
-        phaseIndex: 2,
-        weekIndex: 1,
-        cycleIndex: 1,
-        totalWeekIndex: 1,
-        seed: "selection-non-gym-legality-dumbbells-seed",
-      }
-    );
-    expect(dumbbellProgram.week.map((day) => day.title)).toEqual([
-      "Full Body A — Squat, Press and Row",
-      "Full Body B — Hinge, Overhead and Unilateral",
-      "Full Body C — Single-Leg, Press Variation and Lat Intent",
-    ]);
-    const dumbbellMains = dumbbellProgram.week.flatMap((day) =>
-      day.routine
-        .filter((item) => item.section === "main")
-        .map((item) => exerciseById(item.exerciseId))
-        .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise))
-    );
-    expect(dumbbellMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(0);
-    expect(dumbbellMains.some((exercise) => exercise.id === "plank")).toBe(false);
+    // Dumbbell/band-only weeks use Full Body A/B/C, not gym body-part titles.
+    for (const equipment of [["dumbbells"], ["bands"]] as const) {
+      const fullBodyProgram = generateWeeklyProgram(
+        { ...questionnaire, equipment: [...equipment] },
+        `selection-non-gym-legality-${equipment.join("-")}`,
+        {
+          phaseIndex: 2,
+          weekIndex: 1,
+          cycleIndex: 1,
+          totalWeekIndex: 1,
+          seed: `selection-non-gym-legality-${equipment.join("-")}-seed`,
+        }
+      );
+      expect(fullBodyProgram.week.map((day) => day.title)).toEqual([
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent",
+      ]);
+      const fullBodyMains = fullBodyProgram.week.flatMap((day) =>
+        day.routine
+          .filter((item) => item.section === "main")
+          .map((item) => exerciseById(item.exerciseId))
+          .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise))
+      );
+      // Band legacy/loop lanes may honestly schedule pull-aparts as pull-intent mains.
+      const maxSupport = equipment[0] === "bands" ? 3 : 0;
+      expect(fullBodyMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(
+        maxSupport
+      );
+      expect(fullBodyMains.some((exercise) => exercise.id === "plank")).toBe(false);
+    }
   });
 
   test("pain-aware gym profiles preserve main identity before using corrective substitutions", () => {

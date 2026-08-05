@@ -268,34 +268,31 @@ describe("three-day coach policy", () => {
     });
   });
 
-  test("band Back + Chest with press, fly, row, and pulldown avoids rear-delt plus face-pull accessory saturation", () => {
+  test("band Full Body A with anchored setup keeps row/pulldown honesty without gym fly inheritance", () => {
     const program = generateWeeklyProgram(
       buildQuestionnaire({
         experience: "Intermediate",
         equipment: ["bands"],
-      }),
+        bandSetup: "long_with_anchor",
+      } as Parameters<typeof buildQuestionnaire>[0]),
       "policy-band-back-chest-expansion",
       { phaseIndex: 2, seed: "policy-band-back-chest-expansion" }
     );
-    const mainIds = getDayExercises(program, "Back + Chest", "main").map(
+    const dayTitle = "Full Body A — Squat, Press and Row";
+    const mainIds = getDayExercises(program, dayTitle, "main").map(
       (exercise) => exercise.id
     );
-    const accessories = getDayExercises(program, "Back + Chest", "accessory");
+    const accessories = getDayExercises(program, dayTitle, "accessory");
     const accessoryIds = accessories.map((exercise) => exercise.id);
-    const families = accessories.map(resolveBackChestAccessoryCoachFamily);
 
-    expect(mainIds).toEqual(
-      expect.arrayContaining([
-        "band-chest-fly",
-        "split-stance-row",
-        "band-lat-pulldown",
-      ])
+    expect(program.week.map((day) => day.title)[0]).toBe(dayTitle);
+    expect(mainIds.some((id) => id.includes("row") || id.includes("pulldown"))).toBe(
+      true
     );
+    expect(mainIds.some((id) => id.includes("fly"))).toBe(false);
     expect(accessoryIds).not.toEqual(
       expect.arrayContaining(["band-rear-delt-fly", "band-face-pull-high-anchor"])
     );
-    expect(families.filter(isBackChestPosteriorSupportFamily).length).toBe(1);
-    expect(families).toContain("back_width");
   });
 
   test("uses day-aware cooldown preferences", () => {

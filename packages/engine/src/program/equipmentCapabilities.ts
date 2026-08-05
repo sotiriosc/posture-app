@@ -8,6 +8,7 @@ import {
   resolvePrimaryProgramEquipmentMode,
   type PrimaryProgramEquipmentMode,
 } from "@/lib/program/equipmentMode";
+import { deriveBandCapabilityOverlay } from "@/lib/program/bandSetup";
 
 /**
  * Explicit physical capabilities derived from confirmed questionnaire /
@@ -29,8 +30,8 @@ export type ProgramCapabilities = {
   /** True only when gym access is selected (expands facility inventory). */
   hasGymAccess: boolean;
   /**
-   * Band construction / anchor details are not collected yet.
-   * Remain false until the questionnaire confirms them.
+   * Band construction / anchor details stay false until bandSetup confirms them.
+   * Legacy generic `bands` never implies type or anchor.
    */
   hasLoopBand: boolean;
   hasLongBand: boolean;
@@ -38,6 +39,8 @@ export type ProgramCapabilities = {
   hasHighAnchor: boolean;
   hasMidAnchor: boolean;
   hasLowAnchor: boolean;
+  /** True only after an explicit BandSetupOption is stored. */
+  bandSetupConfirmed: boolean;
   /** Assumed for all Praxis environments; not a support-equipment claim. */
   hasFloorSpace: boolean;
   /** Assumed for all Praxis environments; not a support-equipment claim. */
@@ -72,26 +75,30 @@ const hasToken = (
  *
  * - Gym selection expands facility inventory (dumbbells/barbell/kettlebell/
  *   cables/machines/bench) via existing normalizeEquipmentSelection rules.
- * - Band anchor / loop / long-band details stay false (unknown).
+ * - Band type/anchor details come only from confirmed bandSetup (never legacy).
  * - Pull-up bar and foam roller require explicit tokens (gym does not imply them).
  * - Floor + wall are the only always-on bodyweight assumptions.
  */
 export function deriveProgramCapabilities(
-  selection: readonly string[]
+  selection: readonly string[],
+  options?: { bandSetup?: unknown }
 ): ProgramCapabilities {
   const normalizedValues = normalizeEquipmentSelectionValues([...selection]);
   const { available, hasGym } = normalizeEquipmentSelection([...selection]);
   const selected = new Set(normalizedValues);
   const availableSet = available;
 
-  const hasBands = hasToken(selected, "bands") || availableSet.has("bands");
   const hasDumbbells =
     hasToken(selected, "dumbbells") || availableSet.has("dumbbells");
   const primaryMode = resolvePrimaryProgramEquipmentMode(selection);
+  const bandOverlay = deriveBandCapabilityOverlay({
+    equipment: normalizedValues,
+    bandSetup: options?.bandSetup,
+  });
 
   return {
     hasDumbbells,
-    hasBands,
+    hasBands: bandOverlay.hasBands,
     hasBench: availableSet.has("bench") || hasToken(selected, "bench"),
     hasPullupBar:
       availableSet.has("pullup_bar") || hasToken(selected, "pullup_bar"),
@@ -103,12 +110,13 @@ export function deriveProgramCapabilities(
     hasCables: availableSet.has("cables") || hasToken(selected, "cables"),
     hasMachines: availableSet.has("machines") || hasToken(selected, "machines"),
     hasGymAccess: hasGym,
-    hasLoopBand: false,
-    hasLongBand: false,
-    hasDoorAnchor: false,
-    hasHighAnchor: false,
-    hasMidAnchor: false,
-    hasLowAnchor: false,
+    hasLoopBand: bandOverlay.hasLoopBand,
+    hasLongBand: bandOverlay.hasLongBand,
+    hasDoorAnchor: bandOverlay.hasDoorAnchor,
+    hasHighAnchor: bandOverlay.hasHighAnchor,
+    hasMidAnchor: bandOverlay.hasMidAnchor,
+    hasLowAnchor: bandOverlay.hasLowAnchor,
+    bandSetupConfirmed: bandOverlay.bandSetupConfirmed,
     hasFloorSpace: true,
     hasWall: true,
     isFloorWallBodyweightEnvironment: primaryMode === "bodyweight",
@@ -117,7 +125,8 @@ export function deriveProgramCapabilities(
 }
 
 export function buildProgramEquipmentContext(
-  selection: readonly string[]
+  selection: readonly string[],
+  options?: { bandSetup?: unknown }
 ): ProgramEquipmentContext {
   const normalizedSelection = normalizeEquipmentSelectionValues([...selection]);
   const { available, hasGym } = normalizeEquipmentSelection([...selection]);
@@ -126,7 +135,7 @@ export function buildProgramEquipmentContext(
     normalizedSelection,
     available: Array.from(available).sort() as EquipmentSelection[],
     hasGym,
-    capabilities: deriveProgramCapabilities(selection),
+    capabilities: deriveProgramCapabilities(selection, options),
   };
 }
 

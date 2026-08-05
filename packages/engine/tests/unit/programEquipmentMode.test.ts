@@ -97,12 +97,26 @@ describe("deriveProgramCapabilities", () => {
     expect(capabilities.hasHighAnchor).toBe(false);
     expect(capabilities.hasMidAnchor).toBe(false);
     expect(capabilities.hasLowAnchor).toBe(false);
+    expect(capabilities.bandSetupConfirmed).toBe(false);
     expect(
       isSupportConfirmedByCapabilities("high_band_anchor", capabilities)
     ).toBe(false);
     expect(isSupportConfirmedByCapabilities("band_anchor", capabilities)).toBe(
       false
     );
+  });
+
+  test("confirmed repositionable anchor unlocks high/mid/low", () => {
+    const capabilities = deriveProgramCapabilities(["bands"], {
+      bandSetup: "long_with_anchor",
+    });
+    expect(capabilities.hasLongBand).toBe(true);
+    expect(capabilities.hasLoopBand).toBe(false);
+    expect(capabilities.bandSetupConfirmed).toBe(true);
+    expect(capabilities.hasDoorAnchor).toBe(true);
+    expect(capabilities.hasHighAnchor).toBe(true);
+    expect(capabilities.hasMidAnchor).toBe(true);
+    expect(capabilities.hasLowAnchor).toBe(true);
   });
 
   test("no unconfirmed support-equipment assumptions for dumbbells-only", () => {
