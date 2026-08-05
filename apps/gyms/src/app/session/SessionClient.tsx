@@ -17,6 +17,10 @@ import {
   flattenCentrationFocusTips,
   getCentrationCues,
 } from "@/lib/centrationCues";
+import {
+  resolveExerciseCoachingViewModel,
+  resolvePrimaryCue,
+} from "@/lib/coaching/resolveExerciseCoaching";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import CentrationCuePanel from "@/components/session/CentrationCuePanel";
 import {
@@ -2157,6 +2161,12 @@ export default function SessionClient({
   const currentExerciseMeta = currentExerciseId
     ? exerciseById(currentExerciseId)
     : null;
+  const currentCoaching = currentItem
+    ? resolveExerciseCoachingViewModel({
+        exerciseId: currentItem.exerciseId,
+        item: currentItem,
+      })
+    : null;
   const phaseLabel = program?.phaseName ?? program?.phase?.name ?? "Guided session";
   const dayPositionLabel =
     program && programDayIndex !== null
@@ -3079,11 +3089,16 @@ export default function SessionClient({
           <ExerciseCard
             name={currentItem.name}
             targetMuscles={currentExerciseMeta?.muscleGroups ?? []}
-            cue={
-              tips[0] ??
-              currentItem.cues[0] ??
-              "Move with control, breathe steadily, and keep posture stacked."
-            }
+            cue={resolvePrimaryCue({
+              exerciseId: currentItem.exerciseId,
+              rationaleCue: (
+                currentItem as { rationale?: { mainCue?: string } }
+              ).rationale?.mainCue,
+              catalogCue:
+                tips[0] ??
+                currentItem.cues[0] ??
+                "Move with control, breathe steadily, and keep posture stacked.",
+            })}
             reps={
               currentItem.loadType === "timed"
                 ? null
@@ -3095,6 +3110,16 @@ export default function SessionClient({
                 : currentItem.loadType === "timed"
                   ? "Timed hold"
                   : null
+            }
+            setupSummary={currentCoaching?.setupSummary ?? null}
+            progressionTarget={
+              (currentItem as { prescription?: { progressionRule?: string } })
+                .prescription?.progressionRule ??
+              currentCoaching?.progression?.nextTarget ??
+              null
+            }
+            guidanceHref={
+              currentCoaching?.guidanceHref ?? `/exercise/${currentItem.exerciseId}`
             }
             sets={checks}
             onToggleSet={(index) =>

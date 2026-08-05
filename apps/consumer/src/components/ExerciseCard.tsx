@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import ClarifyTerm from "@/components/ui/ClarifyTerm";
 import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 
@@ -11,6 +12,12 @@ type ExerciseCardProps = {
   reps?: string | null;
   /** Classic tempo notation, e.g. "2-0-2-0". */
   tempoNotation?: string | null;
+  /** One-line equipment / setup summary for the active card. */
+  setupSummary?: string | null;
+  /** Single current progression target. */
+  progressionTarget?: string | null;
+  /** Opens full written guidance (exercise detail). */
+  guidanceHref?: string | null;
   sets: boolean[];
   onToggleSet: (index: number) => void;
   onSetEnter?: (index: number) => void;
@@ -24,6 +31,9 @@ export default function ExerciseCard({
   cue,
   reps = null,
   tempoNotation = null,
+  setupSummary = null,
+  progressionTarget = null,
+  guidanceHref = null,
   sets,
   onToggleSet,
   onSetEnter,
@@ -48,6 +58,11 @@ export default function ExerciseCard({
         <p className="mt-1 text-sm text-slate-300">
           Targets: {targetMuscles.length ? targetMuscles.join(", ") : "full body"}
         </p>
+        {setupSummary?.trim() ? (
+          <p className="mt-1 text-xs text-slate-400" data-testid="exercise-card-setup">
+            {setupSummary.trim()}
+          </p>
+        ) : null}
         {hasReps || isClassicTempo || plainTempoLabel ? (
           <div
             className="mt-2 flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 text-sm font-semibold text-sky-100"
@@ -81,6 +96,29 @@ export default function ExerciseCard({
         <p className="mt-1 text-sm text-slate-100">{cue}</p>
       </div>
 
+      {progressionTarget?.trim() ? (
+        <p
+          className="mt-3 text-xs leading-5 text-slate-300"
+          data-testid="exercise-card-progression"
+        >
+          <span className="font-semibold text-slate-200">Next target: </span>
+          {progressionTarget.trim()}
+        </p>
+      ) : null}
+
+      {guidanceHref ? (
+        <div className="mt-3">
+          <Link
+            href={guidanceHref}
+            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-500/50 bg-slate-950/40 px-4 text-sm font-semibold text-sky-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+            data-testid="exercise-card-guidance"
+            aria-label={`Open full guidance for ${name}`}
+          >
+            Guidance
+          </Link>
+        </div>
+      ) : null}
+
       <div className="mt-4 space-y-1.5 rounded-lg border border-slate-600/35 bg-slate-950/45 px-4 py-3">
         <p className="text-xs font-semibold uppercase text-slate-300">
           Set tracking
@@ -106,8 +144,6 @@ export default function ExerciseCard({
           );
 
           if (index < activeSetIndex) {
-            // Already-done set: tiny single-line row, not the big tappable
-            // target — that belongs to whichever set is actually active.
             return (
               <label
                 key={`set-${index}`}

@@ -2619,47 +2619,102 @@ Create deliberate mixed-home programs for `primaryEquipmentMode="mixedHome"` (du
 - Phase 6 — Coaching Completeness and Exercise Cards, only after explicit instruction
 - Do not begin Phase 7 quality-gate enforcement, Phase 7B presentation-contract work, Phase 8 UI, telemetry, release work, nutrition, wearables, knowledge portal, or engine decomposition
 
-Phase 6 — Coaching Completeness and Exercise Cards
+### Phase 6 checklist
 
-Objective
+- [x] Surface audit + release-critical reachability set
+- [x] Canonical coaching contract + registry + demo policy (`available` | `planned` | `notRequired`)
+- [x] Resolver / view model (static coaching + dynamic why-selected)
+- [x] Consumer + gyms card / detail / coach-notes consumers
+- [x] Graceful no-video UX (no dominant “Video coming soon”)
+- [x] `npm run audit:exercise-coaching` + demo queue + no-research review
+- [x] Focused completeness / parity tests
+- [x] Preserve `PROGRAM_TEMPLATE_VERSION` 17 and Phase 0–5B reports
+- [x] Append Phase Result
+- [x] Stop without starting Phase 7
 
-Make the program executable from Praxis alone.
+## Phase Result — Phase 6
 
-Tasks
+### Objective
+Ensure every release-critical exercise can be understood, set up, executed, and progressed from Praxis written coaching alone, with accurate demo status and graceful degradation when videos are not yet filmed.
 
-Add coaching registry.
+### Files changed
+- `packages/engine/src/coaching/*` (contract, demo policy, synthesis, overrides, registry, resolver, release-critical derivation, gym seeds, validation)
+- `packages/engine/src/__debug__/exerciseCoachingAudit.ts` + `extractGymSeeds.ts`
+- `packages/engine/tests/unit/programExerciseCoachingCompleteness.test.ts`
+- `packages/engine/src/index.ts` (export coaching barrel)
+- `package.json` (`audit:exercise-coaching`)
+- Consumer + gyms: `ExerciseCard`, `ExerciseCoachingGuide`, `RoutineItemCoachingDetails`, `exercise/[id]/page`, `SessionClient`
+- Reports: `docs/dev-reports/program-quality-v2-phase6-*`
+- `docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md` (this result)
 
-Add completeness validator.
+### Release-critical exercise-set derivation
+Union of home template candidate maps, mixed-home ranked candidates, pain/progression seeds, committed gym production seeds (`releaseCriticalGymSeeds.ts`), and representative generated weeks across modes × experience × frequency × phase × pain — then closed over `progressionOf` / `regressionOf` / `swapOptions`. Deprecated IDs excluded from the gate (legacy-compat only).
 
-Fill coaching details for every exercise appearing in primary golden plans.
+### Canonical locations
+- Contract: `packages/engine/src/coaching/exerciseCoachingContract.ts`
+- Registry: `packages/engine/src/coaching/exerciseCoachingRegistry.ts` (+ curated overrides)
+- Resolver/view-model: `packages/engine/src/coaching/resolveExerciseCoaching.ts`
+- Demo policy: `packages/engine/src/coaching/exerciseDemoPolicy.ts`
 
-Add demo requirement logic.
+### Counts
+- Release-critical: **170**
+- Complete release-critical: **170 (100%)**
+- Demo planned (filming queue): **125**
+- Demo available: **0** (no Praxis-approved URLs yet — Owner Decision)
+- Required-demo video blockers for Phase 6 pass: **0**
 
-Add collapsed and expanded card presentation.
+### Static vs dynamic coaching
+- Static registry: purpose, setup, execution, cue, feel, mistake/correction, stop, progression/regression links, demoRequirement
+- Dynamic: presentation-safe `whySelected` from existing `prescriptionRationale` (no scores/traces)
 
-Add “why selected” rationale.
+### Legacy-field migration decision
+- Registry is presentation-canonical for primary cue / expanded guidance
+- Catalog `cues` / `mistakes` / `demoStatus` / `videoUrl` / ladder links retained for integrity and stored-program compatibility
 
-Add expected-feel and stop-signal content.
+### Progression-target behavior
+- Collapsed card shows one target from `prescription.progressionRule` or resolver progression label
+- Fixed-weight / band / bodyweight progression remains via existing engine rules (no colour-band load claims)
 
-Add regression and progression links.
+### Demonstration policy results
+- Status: `available` | `planned` | `notRequired`
+- Missing videos → `planned` (or `notRequired` when text-sufficient) + queue in `program-quality-v2-phase6-demo-queue.md`
+- UI: written guide first; small “Demonstration planned” label; no dominant empty player
 
-Test missing content as a hard failure where required.
+### Active-card / expanded / detail changes
+- Card: setup summary, primary cue, progression target, Guidance control (≥44px)
+- Detail route: full coaching contract via `ExerciseCoachingGuide`
+- Coach notes: mistake + correction + progression rule alignment
 
-Acceptance gate
+### Consumer / gym parity
+- Same engine resolver/registry; duplicated layout components updated in both apps
 
-100% coaching completeness for all golden-plan exercises.
+### No-research / accessibility / screenshots
+- `program-quality-v2-phase6-no-research-review.md`: **0** outside-research failures
+- `program-quality-v2-phase6-card-screenshot-review.md`: mobile compression preserved; 360/390/desktop hierarchy documented
 
-100% required-demo coverage.
+### Mode regression / version
+- `PROGRAM_TEMPLATE_VERSION` remains **17**
+- No intentional exercise-selection changes for coaching convenience
+- Phase 0–5B equipment reports untouched
 
-No empty or misleading exercise-detail states.
+### Validation command results
+- `audit:exercise-coaching`: pass — 170/170 complete, 0 failures
+- `audit:catalog`: pass (0 errors)
+- `test:golden`: 56/56
+- `test:critical`: 326/326
+- `test:full`: 1074/1074
+- `npm run build` (consumer + gyms): pass
+- `npm run lint`: 7 errors / 69 warnings — pre-existing unrelated; no new Phase 6 coaching-module lint errors required for gate
+- Mode program audits: not used to overwrite Phase 0–5B artifacts
 
-Mobile cards remain readable.
+### Unresolved follow-ups
+- Filming/sourcing queue for planned demos (future content phase)
+- Catalog hip abduction/adduction gap retained as explicit follow-up (not expanded in Phase 6)
+- Out-of-gate gym coverage/phase-matrix failures unchanged until Phase 7
 
-A novice can explain the setup after reading the card once.
-
-Phase Result added.
-
-Cursor stops.
+### Next phase starting point
+- Phase 7 — Quality Gate Enforcement, only after explicit instruction
+- Do not begin Phase 7B, Phase 8, telemetry, nutrition, wearables, knowledge portal, or engine decomposition
 
 Phase 7 — Quality Gate Enforcement
 

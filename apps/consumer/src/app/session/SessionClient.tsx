@@ -16,6 +16,10 @@ import {
   flattenCentrationFocusTips,
   getCentrationCues,
 } from "@/lib/centrationCues";
+import {
+  resolveExerciseCoachingViewModel,
+  resolvePrimaryCue,
+} from "@/lib/coaching/resolveExerciseCoaching";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import SessionLadderPill from "@/components/session/SessionLadderPill";
 import CentrationCuePanel from "@/components/session/CentrationCuePanel";
@@ -2318,6 +2322,12 @@ export default function SessionClient() {
   const currentExerciseMeta = currentExerciseId
     ? exerciseById(currentExerciseId)
     : null;
+  const currentCoaching = currentItem
+    ? resolveExerciseCoachingViewModel({
+        exerciseId: currentItem.exerciseId,
+        item: currentItem,
+      })
+    : null;
 
   // Phase 3: ladder rung progression message for the session screen (read-only).
   // Only shown for main-section exercises that match the current ladder rung.
@@ -3396,11 +3406,16 @@ export default function SessionClient() {
           <ExerciseCard
             name={currentItem.name}
             targetMuscles={currentExerciseMeta?.muscleGroups ?? []}
-            cue={
-              tips[0] ??
-              currentItem.cues[0] ??
-              "Move with control, breathe steadily, and keep posture stacked."
-            }
+            cue={resolvePrimaryCue({
+              exerciseId: currentItem.exerciseId,
+              rationaleCue: (
+                currentItem as { rationale?: { mainCue?: string } }
+              ).rationale?.mainCue,
+              catalogCue:
+                tips[0] ??
+                currentItem.cues[0] ??
+                "Move with control, breathe steadily, and keep posture stacked.",
+            })}
             reps={
               currentItem.loadType === "timed"
                 ? null
@@ -3413,6 +3428,14 @@ export default function SessionClient() {
                   ? "Timed hold"
                   : null
             }
+            setupSummary={currentCoaching?.setupSummary ?? null}
+            progressionTarget={
+              (currentItem as { prescription?: { progressionRule?: string } })
+                .prescription?.progressionRule ??
+              currentCoaching?.progression?.nextTarget ??
+              null
+            }
+            guidanceHref={currentCoaching?.guidanceHref ?? `/exercise/${currentItem.exerciseId}`}
             sets={checks}
             onToggleSet={(index) =>
               toggleSetComplete(currentItem.id, index, currentSelectedSets)

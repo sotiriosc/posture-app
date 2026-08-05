@@ -1,9 +1,13 @@
 import type { ProgramRoutineItem } from "@/lib/types";
 import { tempoDisplayForItem } from "@/lib/timerRules";
+import { getExerciseCoachingContent } from "@/lib/coaching/exerciseCoachingRegistry";
 import AnimatedDisclosure from "@/components/ui/AnimatedDisclosure";
 
 type RoutineItemCoachingDetailsProps = {
-  item: Pick<ProgramRoutineItem, "prescription" | "rationale" | "section" | "loadType">;
+  item: Pick<
+    ProgramRoutineItem,
+    "exerciseId" | "prescription" | "rationale" | "section" | "loadType"
+  >;
   fallbackDose?: string | null;
   fallbackRationale?: string | null;
   className?: string;
@@ -77,12 +81,20 @@ export default function RoutineItemCoachingDetails({
 }: RoutineItemCoachingDetailsProps) {
   const classes = toneClasses[tone];
   const doseParts = getRoutineItemDoseParts(item, fallbackDose);
+  const staticCoaching = item.exerciseId
+    ? getExerciseCoachingContent(item.exerciseId)
+    : null;
   const detailRows = [
     ["Why this", item.rationale?.whyThisExercise ?? fallbackRationale],
-    ["Cue", item.rationale?.mainCue],
+    ["Cue", staticCoaching?.primaryCue ?? item.rationale?.mainCue],
+    ["Mistake", staticCoaching?.commonMistake ?? item.rationale?.commonMistake],
+    ["Correction", staticCoaching?.correction],
     ["Easier", item.rationale?.easierVersion],
-    ["Harder", item.rationale?.harderVersion],
-    ["Stop if", item.rationale?.stopIf ?? item.prescription?.stopRule],
+    [
+      "Harder",
+      item.prescription?.progressionRule ?? item.rationale?.harderVersion,
+    ],
+    ["Stop if", item.rationale?.stopIf ?? item.prescription?.stopRule ?? staticCoaching?.stopSignals?.[0]],
   ].filter((row): row is [string, string] => Boolean(row[1]));
 
   if (!doseParts.length && (!showDetails || detailRows.length === 0)) return null;
