@@ -2483,6 +2483,142 @@ Replace inherited gym-shaped programming for `primaryEquipmentMode="bodyweight"`
 - Phase 5B — Mixed Home programming (dumbbells + bands / home combinations), only after explicit instruction
 - Do not begin catalog-wide coaching completion, plan-reveal UI, telemetry, nutrition, wearables, knowledge portal, or engine decomposition
 
+### Phase 5B checklist
+
+- [x] Step A baseline mixedHome failure inventory (gym inheritance, dual-tool chaos)
+- [x] Add `packages/engine/src/program/mixedHomeTemplates.ts`
+- [x] Add `packages/engine/src/program/mixedHomeProgramContract.ts`
+- [x] Wire `primaryEquipmentMode === "mixedHome"` into template resolution, volume, authorship, eligibility
+- [x] Capability lanes A–D from `bandSetup` (+ optional pull-up bar); dumbbell structural base
+- [x] Justified band use only (vertical pull / horizontal pull / anti-rotation / scap / pain)
+- [x] Equipment-dominance + setup-transition audit
+- [x] Add `npm run audit:mixed-home-program` + focused contract tests
+- [x] Flagship 13/13 structural ≥95; 10k fuzz required zeros
+- [x] Preserve Phase 0–5 reports; no gym/dumbbell/band/bodyweight contract weakening
+- [x] Append Phase Result
+- [x] Stop without starting Phase 6
+
+## Phase Result — Phase 5B
+
+### Objective
+Create deliberate mixed-home programs for `primaryEquipmentMode="mixedHome"` (dumbbells + bands, no gym) using the dumbbell Full Body A/B/C architecture as the foundation and bands only where they add confirmed capability.
+
+### Files changed
+- `packages/engine/src/program/mixedHomeTemplates.ts` (new)
+- `packages/engine/src/program/mixedHomeProgramContract.ts` (new)
+- `packages/engine/src/__debug__/mixedHomeProgramAudit.ts` (new)
+- `packages/engine/src/program.ts` (thin mixedHome wiring; `PROGRAM_TEMPLATE_VERSION` 16→17)
+- `packages/engine/tests/unit/programMixedHomeContract.test.ts` (new)
+- Shared helpers / intentional golden updates for dumbbells+bands → Full Body titles
+- `package.json` (`audit:mixed-home-program`)
+- `docs/dev-reports/equipment-program-audit-phase5b*` (new; Phase 0–5 preserved after verification restores)
+
+### Canonical contract / templates
+- Templates: `packages/engine/src/program/mixedHomeTemplates.ts`
+- Contract: `packages/engine/src/program/mixedHomeProgramContract.ts`
+- Titles (aligned with dumbbell foundation):
+  - Full Body A — Squat, Press and Row
+  - Full Body B — Hinge, Overhead and Unilateral
+  - Full Body C — Single-Leg, Press Variation and Lat Intent
+  - 4d: + Practice & Restore
+  - 5d: + Upper Pattern Practice + Lower & Core Practice
+
+### Capability-lane policy
+- A `db_long_with_anchor` / `db_both_with_anchor`: DB anchors + high-anchor vertical pull, mid rows, Pallof when useful
+- B `db_long_no_anchor` / `db_both_no_anchor`: DB anchors + self-anchored / under-foot bands; no fixed-anchor work
+- C `db_loop_only`: DB strength + mini-loop scap/hip reinforcement only (no false loaded pulls)
+- D both types: best legal combo; never invent an anchor
+- Legacy unknown: cautious no-anchor / no typed long-band claims
+- Optional `pullup_bar`: may supply true vertical pull while preserving mixed-home identity
+
+### Equipment-dominance policy
+- Dumbbells provide most primary strength anchors
+- Bands win only justified roles (true vertical with high anchor, horizontal pull advantage, anti-rotation, scap/rear-delt, pain-safer substitute)
+- Bodyweight supports trunk / progression where appropriate
+- Sessions flagged for band overuse, random tool thrash, or redundant cross-tool role duplication
+
+### Supported-frequency policy
+- 3d: Full Body A/B/C flagship
+- 4d: A/B/C + Practice & Restore
+- 5d: A/B/C + Upper Pattern Practice + Lower & Core Practice
+- Extra days distribute pattern stress; do not become band-corrective or gym body-part days
+
+### Initial hard-failure inventory (Step A)
+- Gym-shaped titles despite `mixedHome` identity
+- No deliberate DB+band policy (gym fallback)
+- False / missing pull honesty under gym slots
+- Random dual-tool eligibility without rationale
+
+### Root causes
+- `getSplitTemplateSpecs` omitted `mixedHome` → `buildRawSplitTemplateSpecs`
+- Home-mode authorship / remap skips did not include `mixedHome`
+- Band setup lanes unused for dual-tool weeks
+
+### Fixes made
+- First-class mixed-home template family selected before exercise selection
+- Late template authorship after pipeline (same pattern as Phase 3–5)
+- Eligibility allows dumbbells + confirmed band type/anchor; blocks gym load tools
+- Contract hard failures for inheritance, pull truth, band overuse, setup/anchor transitions, dominance
+
+### Intentional generated-program changes
+- `equipment: ["dumbbells","bands"]` weeks now author Full Body A/B/C (+ practice) instead of gym body-part titles
+- Day C may use high-anchor `band-lat-pulldown` / pull-up-bar vertical pull when confirmed; otherwise honest lat-biased / horizontal pull
+- Decision-trace `slotRoleMatch` records `mixedHome:<tool>:<rationale>` on authored mains
+
+### Individual golden changes and rationale
+- Tests that assumed gym titles for dumbbells+bands now assert Full Body A/B/C or use gym-primary equipment when testing gym day contracts
+- Shared `isFullBodyTemplateEquipment` includes `mixedHome`
+- Variation / competitive scenarios that require phase-churn use gym primary where mixed-home authorship is intentionally stable
+
+### Dumbbell-anchor / band-rationale / pulling-truth results
+- Flagship weeks keep dumbbell squat/press/hinge anchors on A/B
+- Anchored long-band lanes schedule justified vertical pull on Day C
+- No-anchor / loop-only lanes never claim fixed-anchor vertical pulling
+- Required pull honesty zeros held on 10k fuzz
+
+### Setup-transition results
+- Main-work setup blocks capped by experience; flagship sequences reported in `equipment-program-audit-phase5b-setup-transitions.md`
+- Fuzz setup/anchor excess buckets: 0
+
+### Progression / pain / phase continuity
+- Progression via existing catalog/ladder systems; no band-colour resistance assumptions
+- Shoulder / low-back / knee / hip pain personas retain Full Body identity with zero hard failures
+- Fuzz phase churn / deterministic-repeat: 0
+
+### Flagship scores
+- **13/13** personas structural ≥95 with zero hard failures
+
+### 10,000-case fuzz results
+- Required zeros: gym inheritance, illegal equipment, unconfirmed anchor/type, false vertical, prep-as-main, identity collapse, nondeterminism, exceptions — all 0
+- Honest capability-limitation notes present when true vertical pull unavailable (3925/10000)
+- Non-required `randomEquipmentMix` observations: 6 (reported, not suppressed)
+
+### Gym / dumbbell / band / bodyweight regression
+- Mode contract tests + flagship verification audits pass
+- Phase 0–5 report files restored to committed baselines after verification
+- Out-of-gate gym coverage/phase-matrix failures unchanged
+
+### Deferred coaching-completeness gaps
+- Demo URLs / cue completeness / progression-link metadata remain Phase 6 work
+
+### Validation command results
+- `audit:mixed-home-program`: pass — 13/13 flagship ≥95, 0 hard failures, 10k required zeros
+- `audit:dumbbell-program` / `audit:band-program` / `audit:bodyweight-program`: verification pass (prior artifacts restored)
+- `audit:catalog`: pass (0 errors)
+- `test:golden`: 56/56
+- `test:critical`: 326/326
+- `test:full`: 1064/1064
+- `npm run build`: pass
+- `npm run lint`: 7 errors / 69 warnings — pre-existing unrelated e2e / catalogLadder; no new Phase 5B lint errors in changed engine modules
+- `audit:coverage-matrix` / `audit:phase-matrix`: expected FAIL on out-of-gate gym baselines (unchanged)
+
+### Unchanged baseline failures
+- Gym 5-day pain calves / upper-day hinge intelligence out-of-gate codes remain documented
+
+### Next phase starting point
+- Phase 6 — Coaching Completeness and Exercise Cards, only after explicit instruction
+- Do not begin Phase 7 quality-gate enforcement, Phase 7B presentation-contract work, Phase 8 UI, telemetry, release work, nutrition, wearables, knowledge portal, or engine decomposition
+
 Phase 6 — Coaching Completeness and Exercise Cards
 
 Objective

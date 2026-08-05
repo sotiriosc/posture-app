@@ -191,7 +191,8 @@ describe("back + chest 3-day final contract", () => {
       ["gym", "bands"],
       ["gym", "bands", "none"],
       ["gym", "dumbbells"],
-      ["bands", "dumbbells", "bench"],
+      // Include gym so this remains a Back + Chest contract (not mixedHome Full Body).
+      ["gym", "bands", "dumbbells", "bench"],
     ];
 
     cases.forEach((equipment, index) => {
@@ -220,7 +221,8 @@ describe("back + chest 3-day final contract", () => {
   test("mixed bands + dumbbells + bench never leaks press+press when fly is eligible", () => {
     const questionnaire = buildQuestionnaire("Intermediate", {
       goals: "General fitness",
-      equipment: ["bands", "dumbbells", "bench"],
+      // Gym primary keeps Back + Chest identity for this contract.
+      equipment: ["gym", "bands", "dumbbells", "bench"],
     });
 
     Array.from({ length: 10 }, (_, variationIndex) => {

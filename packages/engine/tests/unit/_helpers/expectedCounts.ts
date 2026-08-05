@@ -75,6 +75,21 @@ export const expectedMainCountForDayTitle = ({
       return [Math.max(2, contract.mainCount - 1), contract.mainCount];
     }
   }
+  if (mode === "mixedHome") {
+    // Same Full Body volume contract as dumbbells.
+    const identity = resolveDumbbellDayIdentity(dayTitle);
+    if (
+      identity === "practice_restore" ||
+      identity === "upper_pattern_practice" ||
+      identity === "lower_core_practice"
+    ) {
+      return [2, 3];
+    }
+    const contract = getDumbbellDayVolumeContract(dayTitle, experience);
+    if (contract) {
+      return [Math.max(2, contract.mainCount - 1), contract.mainCount];
+    }
+  }
 
   if (daysPerWeek === 3) {
     if (dayTitle === "Back + Chest") {
@@ -134,6 +149,10 @@ export const expectedAccessoryCountForDayTitle = ({
   }
   if (accessoryMode === "bodyweight") {
     const contract = getBodyweightDayVolumeContract(dayTitle, experience);
+    if (contract) return contract.accessoryCount;
+  }
+  if (accessoryMode === "mixedHome") {
+    const contract = getDumbbellDayVolumeContract(dayTitle, experience);
     if (contract) return contract.accessoryCount;
   }
 

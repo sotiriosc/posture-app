@@ -213,11 +213,12 @@ describe("engine program entry point", () => {
 
   test("reference mode stays deterministic while live initial variation slots change main layout", () => {
     clearProgramVariationHistory();
+    // Gym mode retains variation slots; mixed-home authorship is template-stable.
     const mixedEquipmentQuestionnaire: QuestionnaireData = {
       goals: "General fitness",
       painAreas: [],
       experience: "Intermediate",
-      equipment: ["dumbbells", "bands"],
+      equipment: ["gym"],
       daysPerWeek: 3,
     };
     const signals = buildEngineSignals({
@@ -408,11 +409,12 @@ describe("engine program entry point", () => {
 
   test("live 3-day regeneration changes main layout when recent memory has valid alternatives", () => {
     clearProgramVariationHistory();
+    // Gym mode retains variation memory; mixed-home weeks are deliberately authored.
     const mixedEquipmentQuestionnaire: QuestionnaireData = {
       goals: "General fitness",
       painAreas: [],
       experience: "Intermediate",
-      equipment: ["dumbbells", "bands"],
+      equipment: ["gym"],
       daysPerWeek: 3,
     };
     const signals = buildEngineSignals({

@@ -1,0 +1,330 @@
+{
+  "generatedAt": "2026-08-05T11:06:43.769Z",
+  "phase": "5b",
+  "objective": "First-class mixed-home programming (dumbbell base + justified bands)",
+  "preservesPriorReports": [
+    "docs/dev-reports/equipment-program-audit-phase0.json",
+    "docs/dev-reports/equipment-program-audit-phase1.json",
+    "docs/dev-reports/equipment-program-audit-phase2.json",
+    "docs/dev-reports/equipment-program-audit-phase3.json",
+    "docs/dev-reports/equipment-program-audit-phase4.json",
+    "docs/dev-reports/equipment-program-audit-phase5.json"
+  ],
+  "elapsedMs": 1085337,
+  "flagshipCount": 13,
+  "hardFailureCount": 0,
+  "failuresByReason": {},
+  "flagshipStructuralPassCount": 13,
+  "initialBaselineInventory": [
+    {
+      "reasonCode": "MIXED_HOME_GYM_TEMPLATE_INHERITANCE",
+      "detail": "dumbbells+bands resolved to mixedHome but weeks used gym body-part titles (Back + Chest / Shoulders + Arms / Legs + Abs).",
+      "source": "Phase 5B Step A baseline"
+    },
+    {
+      "reasonCode": "MIXED_HOME_DUMBBELL_TEMPLATE_ONLY",
+      "detail": "No deliberate mixed-home policy; bands available via eligibility without justified authorship.",
+      "source": "Phase 5B Step A baseline"
+    },
+    {
+      "reasonCode": "MIXED_HOME_RANDOM_EQUIPMENT_MIX",
+      "detail": "Dual-tool eligibility under gym slots produced incoherent tool thrash.",
+      "source": "Phase 5B Step A baseline"
+    },
+    {
+      "reasonCode": "MIXED_HOME_FALSE_VERTICAL_PULL",
+      "detail": "Gym pull slots claimed vertical pulling without confirmed high anchor / pull-up bar.",
+      "source": "Phase 5B Step A baseline"
+    },
+    {
+      "reasonCode": "MIXED_HOME_IDENTITY_COLLAPSE",
+      "detail": "Identity label mixedHome without first-class template family.",
+      "source": "Phase 5B Step A baseline"
+    }
+  ],
+  "fuzz": {
+    "cases": 10000,
+    "buckets": {
+      "gymTemplateInheritance": 0,
+      "illegalEquipment": 0,
+      "unconfirmedAnchor": 0,
+      "unconfirmedBandType": 0,
+      "falseVerticalPull": 0,
+      "missingHorizontalPull": 0,
+      "missingHinge": 0,
+      "prepAsMain": 0,
+      "randomEquipmentMix": 6,
+      "bandOveruse": 0,
+      "redundantCrossToolRole": 0,
+      "setupTransitionExcess": 0,
+      "anchorChangeExcess": 0,
+      "duplicateFamily": 0,
+      "complexityExcess": 0,
+      "weeklyCoverage": 0,
+      "honestCapabilityLimitations": 3925,
+      "phaseChurn": 0,
+      "exceptions": 0,
+      "identityCollapse": 0,
+      "deterministicRepeat": 0
+    },
+    "topReasons": [
+      [
+        "MIXED_HOME_RANDOM_EQUIPMENT_MIX",
+        6
+      ]
+    ]
+  },
+  "personas": [
+    {
+      "id": "mh_3d_beg_anchored_p1",
+      "label": "Beginner three-day dumbbells + anchored long band / activation",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_with_anchor",
+      "capabilityLane": "db_long_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_int_anchored_p1",
+      "label": "Intermediate three-day dumbbells + anchored long band / activation",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_with_anchor",
+      "capabilityLane": "db_long_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_adv_anchored_p1",
+      "label": "Advanced three-day dumbbells + anchored long band / activation",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_with_anchor",
+      "capabilityLane": "db_long_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_int_no_anchor_p1",
+      "label": "Dumbbells + long band without anchor",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_no_anchor",
+      "capabilityLane": "db_long_no_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_int_loop_only_p1",
+      "label": "Dumbbells + mini loop only",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "loop_only",
+      "capabilityLane": "db_loop_only",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_int_both_anchor_p1",
+      "label": "Dumbbells + both band types with anchor",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "both_with_anchor",
+      "capabilityLane": "db_both_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_4d_int_anchored_p2",
+      "label": "Four-day mixed home / skill",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_with_anchor",
+      "capabilityLane": "db_long_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent",
+        "Practice & Restore"
+      ]
+    },
+    {
+      "id": "mh_5d_adv_anchored_p3",
+      "label": "Five-day mixed home / growth",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_with_anchor",
+      "capabilityLane": "db_long_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent",
+        "Upper Pattern Practice",
+        "Lower & Core Practice"
+      ]
+    },
+    {
+      "id": "mh_3d_shoulder_pain_p1",
+      "label": "Shoulder-pain mixed home / activation",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_with_anchor",
+      "capabilityLane": "db_long_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_low_back_pain_p1",
+      "label": "Low-back-pain mixed home / activation",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_no_anchor",
+      "capabilityLane": "db_long_no_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_beg_skill_p2",
+      "label": "Beginner three-day mixed home / skill",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_with_anchor",
+      "capabilityLane": "db_long_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_beg_growth_p3",
+      "label": "Beginner three-day mixed home / growth",
+      "equipment": [
+        "dumbbells",
+        "bands"
+      ],
+      "bandSetup": "long_with_anchor",
+      "capabilityLane": "db_long_with_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "mh_3d_pullup_bar_p1",
+      "label": "Mixed home with confirmed pull-up bar",
+      "equipment": [
+        "dumbbells",
+        "bands",
+        "pullup_bar"
+      ],
+      "bandSetup": "long_no_anchor",
+      "capabilityLane": "db_long_no_anchor",
+      "primaryMode": "mixedHome",
+      "structuralScore": 100,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    }
+  ]
+}

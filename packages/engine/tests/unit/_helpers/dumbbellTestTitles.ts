@@ -31,13 +31,17 @@ export const isBandsOnlyEquipment = (equipment: QuestionnaireData["equipment"]) 
 export const isBodyweightOnlyEquipment = (equipment: QuestionnaireData["equipment"]) =>
   resolvePrimaryProgramEquipmentMode(equipment) === "bodyweight";
 
-/** Dumbbell, band, or bodyweight weeks use Full Body A/B/C (+ practice) titles. */
+export const isMixedHomeEquipment = (equipment: QuestionnaireData["equipment"]) =>
+  resolvePrimaryProgramEquipmentMode(equipment) === "mixedHome";
+
+/** Dumbbell, band, bodyweight, or mixed-home weeks use Full Body A/B/C (+ practice) titles. */
 export const isFullBodyTemplateEquipment = (
   equipment: QuestionnaireData["equipment"]
 ) =>
   isDumbbellsOnlyEquipment(equipment) ||
   isBandsOnlyEquipment(equipment) ||
-  isBodyweightOnlyEquipment(equipment);
+  isBodyweightOnlyEquipment(equipment) ||
+  isMixedHomeEquipment(equipment);
 
 /** Dumbbell/band Full Body A title (shared string). */
 export const fullBodyADayTitle = DUMBBELL_THREE_DAY_TITLES[0];

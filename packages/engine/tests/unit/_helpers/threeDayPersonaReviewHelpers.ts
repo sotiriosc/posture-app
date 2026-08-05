@@ -4,6 +4,7 @@ import { exerciseById, exercises, type Exercise } from "@/lib/exercises";
 import { validateDumbbellProgramContract } from "@/lib/program/dumbbellProgramContract";
 import { validateBandProgramContract } from "@/lib/program/bandProgramContract";
 import { validateBodyweightProgramContract } from "@/lib/program/bodyweightProgramContract";
+import { validateMixedHomeProgramContract } from "@/lib/program/mixedHomeProgramContract";
 import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 import type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 import {
@@ -329,7 +330,8 @@ export const evaluateThreeDayPersonaQuality = ({
   if (
     equipmentMode === "dumbbells" ||
     equipmentMode === "bands" ||
-    equipmentMode === "bodyweight"
+    equipmentMode === "bodyweight" ||
+    equipmentMode === "mixedHome"
   ) {
     const contractFailures =
       equipmentMode === "dumbbells"
@@ -348,10 +350,19 @@ export const evaluateThreeDayPersonaQuality = ({
             bandSetup: questionnaire.bandSetup,
             experience: questionnaire.experience,
           })
-        : validateBodyweightProgramContract({
+        : equipmentMode === "bodyweight"
+        ? validateBodyweightProgramContract({
             program,
             persona: "three-day-review",
             equipment: questionnaire.equipment,
+            experience: questionnaire.experience,
+            painAreas: questionnaire.painAreas,
+          })
+        : validateMixedHomeProgramContract({
+            program,
+            persona: "three-day-review",
+            equipment: questionnaire.equipment,
+            bandSetup: questionnaire.bandSetup,
             experience: questionnaire.experience,
             painAreas: questionnaire.painAreas,
           });

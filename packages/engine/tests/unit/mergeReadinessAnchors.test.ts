@@ -85,6 +85,9 @@ const expectThreeDayIdentity = (week: GeneratedWeek) => {
   const isBodyweightFullBody = week.some((day) =>
     day.title.startsWith("Full Body A — Squat, Push and Trunk")
   );
+  const isLoadedFullBody = week.some((day) =>
+    day.title.startsWith("Full Body A — Squat, Press and Row")
+  );
 
   if (isBodyweightFullBody) {
     const dayA = findGeneratedDay(week, "Full Body A — Squat, Push and Trunk");
@@ -109,6 +112,42 @@ const expectThreeDayIdentity = (week: GeneratedWeek) => {
         "pull",
         "scapular",
         "horizontalpull",
+      ])
+    ).toBe(true);
+    return;
+  }
+
+  if (isLoadedFullBody) {
+    // Dumbbell / band / mixed-home Full Body A/B/C
+    const dayA = findGeneratedDay(week, "Full Body A — Squat, Press and Row");
+    const dayB = findGeneratedDay(week, "Full Body B — Hinge, Overhead and Unilateral");
+    const dayC = findGeneratedDay(
+      week,
+      "Full Body C — Single-Leg, Press Variation and Lat Intent"
+    );
+    const dayAMains = getSectionExercises(dayA, "main");
+    const dayBMains = getSectionExercises(dayB, "main");
+    const dayCMains = getSectionExercises(dayC, "main");
+    expect(
+      hasExerciseWithAnyToken(dayAMains, [
+        "squat",
+        "kneedominant",
+        "push",
+        "horizontalpush",
+        "pull",
+        "horizontalpull",
+      ])
+    ).toBe(true);
+    expect(
+      hasExerciseWithAnyToken(dayBMains, ["hinge", "glute", "verticalpush", "squat"])
+    ).toBe(true);
+    expect(
+      hasExerciseWithAnyToken(dayCMains, [
+        "squat",
+        "push",
+        "pull",
+        "horizontalpull",
+        "verticalpull",
       ])
     ).toBe(true);
     return;

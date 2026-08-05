@@ -371,43 +371,13 @@ describe("program selection audit metadata", () => {
   });
 
   test("non-gym General Fitness avoids worst support and regression mains when constrained alternatives exist", () => {
-    const gymShapedScenarios: Array<{
-      equipment: QuestionnaireData["equipment"];
-      maxShoulderSupportMains: number;
-      maxLowerRegressionMains: number;
-    }> = [
-      { equipment: ["dumbbells", "bands"], maxShoulderSupportMains: 0, maxLowerRegressionMains: 0 },
-    ];
-
-    gymShapedScenarios.forEach(({ equipment, maxShoulderSupportMains, maxLowerRegressionMains }) => {
-      const program = generateWeeklyProgram(
-        { ...questionnaire, equipment },
-        `selection-non-gym-legality-${equipment.join("-")}`,
-        {
-          phaseIndex: 2,
-          weekIndex: 1,
-          cycleIndex: 1,
-          totalWeekIndex: 1,
-          seed: `selection-non-gym-legality-${equipment.join("-")}-seed`,
-        }
-      );
-
-      const shoulderMains = getDayExercises(program, "Shoulders + Arms", "main");
-      const legMains = getDayExercises(program, "Legs + Abs", "main");
-      const backChestMains = getDayExercises(program, "Back + Chest", "main");
-
-      expect(shoulderMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(
-        maxShoulderSupportMains
-      );
-      expect(legMains.filter(isLowerRegressionOrDrillMain).length).toBeLessThanOrEqual(
-        maxLowerRegressionMains
-      );
-      expect(backChestMains.some((exercise) => exercise.id === "plank")).toBe(false);
-      expect(backChestMains.some(isLatAccentStyle)).toBe(false);
-    });
-
-    // Dumbbell/band/bodyweight weeks use Full Body A/B/C, not gym body-part titles.
-    for (const equipment of [["dumbbells"], ["bands"], ["none"]] as const) {
+    // Dumbbell/band/bodyweight/mixed-home weeks use Full Body A/B/C, not gym body-part titles.
+    for (const equipment of [
+      ["dumbbells"],
+      ["bands"],
+      ["none"],
+      ["dumbbells", "bands"],
+    ] as const) {
       const fullBodyProgram = generateWeeklyProgram(
         { ...questionnaire, equipment: [...equipment] },
         `selection-non-gym-legality-${equipment.join("-")}`,
@@ -440,7 +410,9 @@ describe("program selection audit metadata", () => {
       );
       // Band legacy/loop lanes may honestly schedule pull-aparts as pull-intent mains.
       // Bodyweight Day A intentionally schedules plank as trunk anti-extension.
-      const maxSupport = equipment[0] === "bands" ? 3 : equipment[0] === "none" ? 3 : 0;
+      const isMixedHome = equipment.includes("dumbbells") && equipment.includes("bands");
+      const maxSupport =
+        equipment[0] === "bands" || equipment[0] === "none" || isMixedHome ? 3 : 0;
       expect(fullBodyMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(
         maxSupport
       );

@@ -207,10 +207,20 @@ import {
   resolveBodyweightDayIdentity,
   resolveBodyweightThreeDayBlueprint,
 } from "@/lib/program/bodyweightTemplates";
+import {
+  authorMixedHomeMainSelections,
+  buildMixedHomeSplitTemplateSpecs,
+  getMixedHomeDayVolumeContract,
+  getMixedHomeMainLanePlan,
+  isMixedHomeProgramDayTitle,
+  mixedHomeLaneHasHighAnchor,
+  refineMixedHomeCapabilityLane,
+  resolveMixedHomeThreeDayBlueprint,
+} from "@/lib/program/mixedHomeTemplates";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
-export const PROGRAM_TEMPLATE_VERSION = 16;
+export const PROGRAM_TEMPLATE_VERSION = 17;
 const clampPhaseIndexToSupportedRange = (phaseIndex: number) =>
   Math.min(MAX_PHASE_INDEX, Math.max(1, Math.floor(phaseIndex)));
 
@@ -21634,6 +21644,66 @@ const isExerciseEligibleForProgramContext = (params: {
       }
     }
   }
+  // Mixed home: dumbbells + confirmed band type/anchor; no gym machines/cables/barbell/KB.
+  if (
+    context.primaryEquipmentMode === "mixedHome" &&
+    (section === "main" || section === "accessory")
+  ) {
+    const illegalForMixedHome = ["machines", "cables", "barbell", "kettlebell"] as const;
+    if (illegalForMixedHome.some((token) => exercise.equipment.includes(token))) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasBench &&
+      (exercise.equipment.includes("bench") || exerciseRequiresBenchSurface(exercise))
+    ) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasPullupBar &&
+      exercise.equipment.includes("pullup_bar")
+    ) {
+      return false;
+    }
+    if (exercise.equipment.includes("bands")) {
+      const requirement = resolveBandExerciseRequirement({
+        exerciseId: exercise.id,
+        name: exercise.name,
+        equipment: exercise.equipment,
+        variantKey: exercise.variantKey,
+        cues: exercise.cues,
+      });
+      if (requirement) {
+        const overlay = deriveBandCapabilityOverlay({
+          equipment: ["dumbbells", "bands"],
+          bandSetup: context.bandSetupOption,
+        });
+        if (!isBandTypeSatisfied(requirement.bandType, overlay)) {
+          return false;
+        }
+        if (!isBandAnchorSatisfied(requirement.anchor, overlay)) {
+          return false;
+        }
+      }
+    }
+    const supportNeedsMixed = inferExerciseSupportRequirements({
+      exerciseId: exercise.id,
+      name: exercise.name,
+      equipment: exercise.equipment,
+      cues: exercise.cues,
+      mistakes: exercise.mistakes,
+      tags: exercise.tags,
+      variantKey: exercise.variantKey,
+    });
+    if (
+      supportNeedsMixed.some(
+        (support) =>
+          !isSupportConfirmedByCapabilities(support, context.programCapabilities)
+      )
+    ) {
+      return false;
+    }
+  }
   // Bodyweight: floor + wall only unless support is explicitly confirmed.
   if (
     context.primaryEquipmentMode === "bodyweight" &&
@@ -23553,6 +23623,42 @@ const resolveThreeDayBlueprint = (params: {
       };
     }
   }
+  if (selectionContext.primaryEquipmentMode === "mixedHome") {
+    const capabilityLane = refineMixedHomeCapabilityLane({
+      bandSetupLane: selectionContext.bandSetupLane,
+      resolvedBandSetup: selectionContext.bandSetupOption ?? selectionContext.bandSetupLane,
+    });
+    const canVertical =
+      selectionContext.programCapabilities.hasPullupBar ||
+      mixedHomeLaneHasHighAnchor(capabilityLane);
+    const mixedHomeBlueprint = resolveMixedHomeThreeDayBlueprint({
+      dayTitle,
+      experienceLevel: selectionContext.experienceLevel,
+      hasTrueVerticalPullCapability: canVertical,
+    });
+    if (mixedHomeBlueprint) {
+      return {
+        dayTitle: mixedHomeBlueprint.dayTitle,
+        mainCount: mixedHomeBlueprint.mainCount,
+        accessoryCount: mixedHomeBlueprint.accessoryCount,
+        mainLanePlan: mixedHomeBlueprint.mainLanePlan,
+        requiredMainFamilies: mixedHomeBlueprint.requiredMainFamilies,
+        accessoryRoles: mixedHomeBlueprint.accessoryRoles,
+        laneSwapRules: mixedHomeBlueprint.laneSwapRules,
+        constraints: {
+          pullMainsAtLeastPressMains:
+            mixedHomeBlueprint.constraints.pullMainsAtLeastPressMains,
+          noVerticalPushMain: mixedHomeBlueprint.constraints.noVerticalPushMain,
+          noLowerBodyLeakMain: mixedHomeBlueprint.constraints.noLowerBodyLeakMain,
+          maxCarryAccessories: mixedHomeBlueprint.constraints.maxCarryAccessories,
+          preventDuplicateCarries:
+            mixedHomeBlueprint.constraints.preventDuplicateCarries,
+          carryCannotReplaceCore:
+            mixedHomeBlueprint.constraints.carryCannotReplaceCore,
+        },
+      };
+    }
+  }
   const counts = get3DayTemplateCounts(dayTitle, selectionContext.experienceLevel);
   if (!counts) return null;
 
@@ -24762,6 +24868,19 @@ const isMainLegalForSlot = (params: {
   if (
     context.primaryEquipmentMode === "bodyweight" &&
     isBodyweightProgramDayTitle(dayTitle ?? "")
+  ) {
+    return isExerciseEligibleForProgramContext({
+      exercise,
+      available,
+      section: "main",
+      context,
+      dayTitle: dayTitle ?? undefined,
+    });
+  }
+
+  if (
+    context.primaryEquipmentMode === "mixedHome" &&
+    isMixedHomeProgramDayTitle(dayTitle ?? "")
   ) {
     return isExerciseEligibleForProgramContext({
       exercise,
@@ -30758,6 +30877,13 @@ const resolveStructuredMainSlotCount = (params: {
     );
     if (volume) return volume.mainCount;
   }
+  if (selectionContext.primaryEquipmentMode === "mixedHome") {
+    const volume = getMixedHomeDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.mainCount;
+  }
   if (daysPerWeek < 4) return baseCount;
   if (isArmsPostureConditioningDayTitle(title)) {
     return selectionContext.experienceLevel === "beginner" ? Math.min(baseCount, 2) : baseCount;
@@ -30791,6 +30917,13 @@ const resolveStructuredAccessoryCount = (params: {
   }
   if (selectionContext.primaryEquipmentMode === "bodyweight" && title) {
     const volume = getBodyweightDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.accessoryCount;
+  }
+  if (selectionContext.primaryEquipmentMode === "mixedHome" && title) {
+    const volume = getMixedHomeDayVolumeContract(
       title,
       selectionContext.experienceLevel
     );
@@ -31170,13 +31303,26 @@ const buildStructuredDay = (params: {
       ? getBandMainLanePlan(title, selectionContext.experienceLevel)
       : selectionContext.primaryEquipmentMode === "bodyweight"
       ? getBodyweightMainLanePlan(title, selectionContext.experienceLevel)
+      : selectionContext.primaryEquipmentMode === "mixedHome"
+      ? getMixedHomeMainLanePlan(title, selectionContext.experienceLevel, {
+          hasTrueVerticalPullCapability:
+            selectionContext.programCapabilities.hasPullupBar ||
+            mixedHomeLaneHasHighAnchor(
+              refineMixedHomeCapabilityLane({
+                bandSetupLane: selectionContext.bandSetupLane,
+                resolvedBandSetup:
+                  selectionContext.bandSetupOption ?? selectionContext.bandSetupLane,
+              })
+            ),
+        })
       : daysPerWeek === 3
       ? get3DayMainLanePlan(title, targetMainSlotCount)
       : null;
   const threeDayTemplateLanePlan =
     selectionContext.primaryEquipmentMode === "dumbbells" ||
     selectionContext.primaryEquipmentMode === "bands" ||
-    selectionContext.primaryEquipmentMode === "bodyweight"
+    selectionContext.primaryEquipmentMode === "bodyweight" ||
+    selectionContext.primaryEquipmentMode === "mixedHome"
       ? threeDayTemplateLanePlanBase
       : maybeRotateThreeDayTemplateLanePlan({
           dayTitle: title,
@@ -32153,6 +32299,12 @@ const getSplitTemplateSpecs = (
       splitTemplateRuleSet()
     );
   }
+  if (selectionContext?.primaryEquipmentMode === "mixedHome") {
+    return buildMixedHomeSplitTemplateSpecs<MainLane, RequirementRule>(
+      daysPerWeek,
+      splitTemplateRuleSet()
+    );
+  }
   return buildRawSplitTemplateSpecs<MainLane, RequirementRule>(
     daysPerWeek,
     splitTemplateRuleSet()
@@ -32190,7 +32342,8 @@ const buildSplitTemplates = (
   const templates =
     selectionContext.primaryEquipmentMode === "dumbbells" ||
     selectionContext.primaryEquipmentMode === "bands" ||
-    selectionContext.primaryEquipmentMode === "bodyweight"
+    selectionContext.primaryEquipmentMode === "bodyweight" ||
+    selectionContext.primaryEquipmentMode === "mixedHome"
       ? rawTemplates
       : applyAdaptiveWeakpointTemplateOverlay({
           templates: rawTemplates,
@@ -32207,6 +32360,15 @@ const buildSplitTemplates = (
       : [];
     // Prefer template role lanes from the canonical plan when available so
     // selection authors Full Body A/B/C before any gym-shaped repair runs.
+    const mixedHomeCanVertical =
+      selectionContext.programCapabilities.hasPullupBar ||
+      mixedHomeLaneHasHighAnchor(
+        refineMixedHomeCapabilityLane({
+          bandSetupLane: selectionContext.bandSetupLane,
+          resolvedBandSetup:
+            selectionContext.bandSetupOption ?? selectionContext.bandSetupLane,
+        })
+      );
     const homeLanePlan =
       selectionContext.primaryEquipmentMode === "dumbbells"
         ? getDumbbellMainLanePlan(template.title, selectionContext.experienceLevel)
@@ -32214,6 +32376,10 @@ const buildSplitTemplates = (
         ? getBandMainLanePlan(template.title, selectionContext.experienceLevel)
         : selectionContext.primaryEquipmentMode === "bodyweight"
         ? getBodyweightMainLanePlan(template.title, selectionContext.experienceLevel)
+        : selectionContext.primaryEquipmentMode === "mixedHome"
+        ? getMixedHomeMainLanePlan(template.title, selectionContext.experienceLevel, {
+            hasTrueVerticalPullCapability: mixedHomeCanVertical,
+          })
         : null;
     const templateLanes =
       homeLanePlan?.length
@@ -32264,6 +32430,14 @@ const buildSplitTemplates = (
             phaseIndex,
             weekUsedMainIds: sameWeekLowerMainExerciseIds,
           })
+        : selectionContext.primaryEquipmentMode === "mixedHome"
+        ? applyMixedHomeTemplateMainAuthorship({
+            day: noteAppliedDay,
+            selectionContext,
+            available,
+            phaseIndex,
+            weekUsedMainIds: sameWeekLowerMainExerciseIds,
+          })
         : noteAppliedDay;
     builtDays.push(builtDay);
     priorDayHeavyPatterns = deriveHeavyPrimaryPatternsForDay(builtDay);
@@ -32274,7 +32448,9 @@ const buildSplitTemplates = (
       (selectionContext.primaryEquipmentMode === "bands" &&
         isBandProgramDayTitle(builtDay.title)) ||
       (selectionContext.primaryEquipmentMode === "bodyweight" &&
-        isBodyweightProgramDayTitle(builtDay.title))
+        isBodyweightProgramDayTitle(builtDay.title)) ||
+      (selectionContext.primaryEquipmentMode === "mixedHome" &&
+        isMixedHomeProgramDayTitle(builtDay.title))
     ) {
       sameWeekLowerMainExerciseIds.push(
         ...builtDay.routine
@@ -32582,6 +32758,122 @@ const applyBandTemplateAuthorshipToWeek = (params: {
   const weekUsedMainIds: string[] = [];
   return params.week.map((day) => {
     const nextDay = applyBandTemplateMainAuthorship({
+      day,
+      selectionContext: params.selectionContext,
+      available: params.available,
+      phaseIndex: params.phaseIndex,
+      weekUsedMainIds,
+    });
+    weekUsedMainIds.push(
+      ...nextDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+    );
+    return nextDay;
+  });
+};
+
+const applyMixedHomeTemplateMainAuthorship = <Day extends DumbbellAuthoredDay>(params: {
+  day: Day;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+  weekUsedMainIds: string[];
+}): Day => {
+  const { day, selectionContext, available, phaseIndex, weekUsedMainIds } = params;
+  if (!isMixedHomeProgramDayTitle(day.title)) return day;
+  const capabilityLane = refineMixedHomeCapabilityLane({
+    bandSetupLane: selectionContext.bandSetupLane,
+    resolvedBandSetup:
+      selectionContext.bandSetupOption ?? selectionContext.bandSetupLane,
+  });
+  const authored = authorMixedHomeMainSelections({
+    dayTitle: day.title,
+    experienceLevel: selectionContext.experienceLevel,
+    capabilityLane,
+    hasPullupBar: selectionContext.programCapabilities.hasPullupBar,
+    usedIds: weekUsedMainIds,
+    avoidVerticalPushLoad: selectionContext.intentProfile.avoidPatterns.includes(
+      "vertical_push_load"
+    ),
+    preferPainAwareHinge: hasLowBackPainSignal(selectionContext),
+    preferSoftHorizontalPress: selectionContext.painAreas.some((area) => {
+      const token = normalizeTagToken(area);
+      return token.includes("shoulder") || token.includes("upper_back");
+    }),
+    isEligible: (exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      if (!exercise) return false;
+      return isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context: selectionContext,
+        dayTitle: day.title,
+      });
+    },
+  });
+  if (!authored.length) return day;
+
+  const nonMainItems = day.routine.filter((item) => item.section !== "main");
+  const sampleMain = day.routine.find((item) => item.section === "main");
+  const authoredMainItems = authored
+    .map((entry, index) => {
+      const exercise = exerciseById(entry.exerciseId);
+      if (!exercise) {
+        return sampleMain;
+      }
+      return withSelectionDebug(
+        {
+          exerciseId: exercise.id,
+          section: "main" as const,
+          sets: sampleMain?.sets ?? "3",
+          reps: sampleMain?.reps ?? "8-12",
+          restSec: sampleMain?.restSec ?? 75,
+          loadType: exercise.loadType,
+          cues: buildProgramCues(exercise, "main"),
+          notes: sampleMain?.notes,
+        },
+        "initial_pick",
+        {
+          slotId: `${normalizeSlotToken(day.title)}-main-${index + 1}`,
+          slotKind: entry.slotKind,
+          slotLane: entry.slotLane,
+          phaseIndex,
+          decisionTrace: {
+            slotRoleMatch: `mixedHome:${entry.selectedTool}:${entry.rationale}`,
+          },
+        }
+      );
+    })
+    .filter((item): item is ProgramRoutineItem => Boolean(item));
+
+  if (!authoredMainItems.length) return day;
+
+  const nextRoutine: ProgramRoutineItem[] = [];
+  let mainsInserted = false;
+  nonMainItems.forEach((item) => {
+    if (!mainsInserted && (item.section === "accessory" || item.section === "cooldown")) {
+      nextRoutine.push(...authoredMainItems);
+      mainsInserted = true;
+    }
+    nextRoutine.push(item);
+  });
+  if (!mainsInserted) {
+    nextRoutine.push(...authoredMainItems);
+  }
+  return { ...day, routine: nextRoutine } as Day;
+};
+
+const applyMixedHomeTemplateAuthorshipToWeek = (params: {
+  week: ProgramDay[];
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+}): ProgramDay[] => {
+  const weekUsedMainIds: string[] = [];
+  return params.week.map((day) => {
+    const nextDay = applyMixedHomeTemplateMainAuthorship({
       day,
       selectionContext: params.selectionContext,
       available: params.available,
@@ -33790,7 +34082,8 @@ const enforceThreeDayFinalSlotRoleTruth = (params: {
   if (
     context.selectionContext.primaryEquipmentMode === "dumbbells" ||
     context.selectionContext.primaryEquipmentMode === "bands" ||
-    context.selectionContext.primaryEquipmentMode === "bodyweight"
+    context.selectionContext.primaryEquipmentMode === "bodyweight" ||
+    context.selectionContext.primaryEquipmentMode === "mixedHome"
   ) {
     return { week, warnings: [] };
   }
@@ -35095,6 +35388,13 @@ export const generateWeeklyProgram = (
         })
       : weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "bodyweight"
       ? applyBodyweightTemplateAuthorshipToWeek({
+          week: finalDisplayedSlotTruthWeek,
+          selectionContext: weeklyRuntimeContext.selectionContext,
+          available: weeklyRuntimeContext.availableEquipment,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+        })
+      : weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "mixedHome"
+      ? applyMixedHomeTemplateAuthorshipToWeek({
           week: finalDisplayedSlotTruthWeek,
           selectionContext: weeklyRuntimeContext.selectionContext,
           available: weeklyRuntimeContext.availableEquipment,

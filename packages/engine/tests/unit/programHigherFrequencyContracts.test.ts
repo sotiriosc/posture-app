@@ -646,10 +646,12 @@ describe("higher-frequency split contracts", () => {
   });
 
   test("5-day bands and dumbbells posture split keeps anti-rotation out of mainHinge", () => {
+    // Without gym, bands+dumbbells is mixedHome Full Body (Phase 5B). Keep this
+    // gym-shaped lower-slot purity check on gym primary.
     const program = generateAnchorProgram(
       baseQuestionnaire({
         goals: "Improve posture",
-        equipment: ["bands", "dumbbells"],
+        equipment: ["gym", "bands", "dumbbells"],
         experience: "Advanced",
         daysPerWeek: 5,
       }),
