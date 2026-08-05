@@ -377,7 +377,6 @@ describe("program selection audit metadata", () => {
       maxLowerRegressionMains: number;
     }> = [
       { equipment: ["dumbbells", "bands"], maxShoulderSupportMains: 0, maxLowerRegressionMains: 0 },
-      { equipment: ["none"], maxShoulderSupportMains: 3, maxLowerRegressionMains: 1 },
     ];
 
     gymShapedScenarios.forEach(({ equipment, maxShoulderSupportMains, maxLowerRegressionMains }) => {
@@ -407,8 +406,8 @@ describe("program selection audit metadata", () => {
       expect(backChestMains.some(isLatAccentStyle)).toBe(false);
     });
 
-    // Dumbbell/band-only weeks use Full Body A/B/C, not gym body-part titles.
-    for (const equipment of [["dumbbells"], ["bands"]] as const) {
+    // Dumbbell/band/bodyweight weeks use Full Body A/B/C, not gym body-part titles.
+    for (const equipment of [["dumbbells"], ["bands"], ["none"]] as const) {
       const fullBodyProgram = generateWeeklyProgram(
         { ...questionnaire, equipment: [...equipment] },
         `selection-non-gym-legality-${equipment.join("-")}`,
@@ -420,11 +419,19 @@ describe("program selection audit metadata", () => {
           seed: `selection-non-gym-legality-${equipment.join("-")}-seed`,
         }
       );
-      expect(fullBodyProgram.week.map((day) => day.title)).toEqual([
-        "Full Body A — Squat, Press and Row",
-        "Full Body B — Hinge, Overhead and Unilateral",
-        "Full Body C — Single-Leg, Press Variation and Lat Intent",
-      ]);
+      const expectedTitles =
+        equipment[0] === "none"
+          ? [
+              "Full Body A — Squat, Push and Trunk",
+              "Full Body B — Hinge, Single-Leg and Shoulder",
+              "Full Body C — Single-Leg, Push Variation and Back Intent",
+            ]
+          : [
+              "Full Body A — Squat, Press and Row",
+              "Full Body B — Hinge, Overhead and Unilateral",
+              "Full Body C — Single-Leg, Press Variation and Lat Intent",
+            ];
+      expect(fullBodyProgram.week.map((day) => day.title)).toEqual(expectedTitles);
       const fullBodyMains = fullBodyProgram.week.flatMap((day) =>
         day.routine
           .filter((item) => item.section === "main")
@@ -432,11 +439,14 @@ describe("program selection audit metadata", () => {
           .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise))
       );
       // Band legacy/loop lanes may honestly schedule pull-aparts as pull-intent mains.
-      const maxSupport = equipment[0] === "bands" ? 3 : 0;
+      // Bodyweight Day A intentionally schedules plank as trunk anti-extension.
+      const maxSupport = equipment[0] === "bands" ? 3 : equipment[0] === "none" ? 3 : 0;
       expect(fullBodyMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(
         maxSupport
       );
-      expect(fullBodyMains.some((exercise) => exercise.id === "plank")).toBe(false);
+      if (equipment[0] !== "none") {
+        expect(fullBodyMains.some((exercise) => exercise.id === "plank")).toBe(false);
+      }
     }
   });
 

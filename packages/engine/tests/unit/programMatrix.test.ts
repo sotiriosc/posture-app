@@ -5,6 +5,10 @@ import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { getDumbbellDayVolumeContract, resolveDumbbellDayIdentity } from "@/lib/program/dumbbellTemplates";
 import { getBandDayVolumeContract, resolveBandDayIdentity } from "@/lib/program/bandTemplates";
+import {
+  getBodyweightDayVolumeContract,
+  resolveBodyweightDayIdentity,
+} from "@/lib/program/bodyweightTemplates";
 import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 import {
   routineExerciseIdsAreUnique,
@@ -79,6 +83,20 @@ const expectedMainCount = (
       return [2, 3];
     }
     const contract = getBandDayVolumeContract(dayTitle, experience);
+    if (contract) {
+      return [Math.max(2, contract.mainCount - 1), contract.mainCount];
+    }
+  }
+  if (mode === "bodyweight") {
+    const identity = resolveBodyweightDayIdentity(dayTitle);
+    if (
+      identity === "practice_restore" ||
+      identity === "upper_pattern_practice" ||
+      identity === "lower_core_practice"
+    ) {
+      return [2, 3];
+    }
+    const contract = getBodyweightDayVolumeContract(dayTitle, experience);
     if (contract) {
       return [Math.max(2, contract.mainCount - 1), contract.mainCount];
     }
@@ -408,28 +426,36 @@ const expectEquipmentEligibleDay = (
 const expectNoEquipmentPullQuality = (
   program: ReturnType<typeof generateWeeklyProgram>
 ) => {
-  const pullDay = program.week.find((day) => day.title === "Upper Pull + Thoracic Posture");
+  const pullDay =
+    program.week.find((day) => day.title.includes("Back Intent")) ??
+    program.week.find((day) => day.title.includes("Practice & Restore")) ??
+    program.week.find((day) => day.title === "Upper Pull + Thoracic Posture");
   expect(pullDay).toBeTruthy();
   const pullIds = (pullDay?.routine ?? [])
     .filter(
       (item) =>
         item.section === "main" &&
-        (item.selectionDebug?.slotLane === "pull" ||
+        (item.selectionDebug?.slotKind === "mainUpperBackControl" ||
+          item.selectionDebug?.slotLane === "pull" ||
           item.selectionDebug?.slotKind?.startsWith("mainPull"))
     )
     .map((item) => item.exerciseId);
   expect(pullIds.length).toBeGreaterThan(0);
-  expect(noEquipmentPrimePullIds.has(pullIds[0]), pullIds.join(", ")).toBe(true);
+  const honestUpperBack = new Set([
+    "prone-elbow-row",
+    "back-widow",
+    "reverse-snow-angel",
+    "prone-ytw",
+    "scapular-pushups",
+    ...noEquipmentPrimePullIds,
+  ]);
+  expect(honestUpperBack.has(pullIds[0]), pullIds.join(", ")).toBe(true);
   expect(new Set(pullIds).size, pullIds.join(", ")).toBe(pullIds.length);
 
-  const firstPrimeIndex = pullIds.findIndex((id) => noEquipmentPrimePullIds.has(id));
   const firstLowPriorityIndex = pullIds.findIndex((id) =>
     noEquipmentLowPriorityPullIds.has(id)
   );
-  expect(firstPrimeIndex).toBeGreaterThanOrEqual(0);
-  if (firstLowPriorityIndex >= 0) {
-    expect(firstPrimeIndex).toBeLessThan(firstLowPriorityIndex);
-  }
+  expect(firstLowPriorityIndex === -1 || firstLowPriorityIndex > 0).toBe(true);
 };
 
 describe("program matrix quality", () => {

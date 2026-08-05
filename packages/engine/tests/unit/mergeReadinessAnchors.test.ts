@@ -82,6 +82,38 @@ const expectRoutineShape = (
 };
 
 const expectThreeDayIdentity = (week: GeneratedWeek) => {
+  const isBodyweightFullBody = week.some((day) =>
+    day.title.startsWith("Full Body A — Squat, Push and Trunk")
+  );
+
+  if (isBodyweightFullBody) {
+    const dayA = findGeneratedDay(week, "Full Body A — Squat, Push and Trunk");
+    const dayB = findGeneratedDay(week, "Full Body B — Hinge, Single-Leg and Shoulder");
+    const dayC = findGeneratedDay(
+      week,
+      "Full Body C — Single-Leg, Push Variation and Back Intent"
+    );
+    const dayAMains = getSectionExercises(dayA, "main");
+    const dayBMains = getSectionExercises(dayB, "main");
+    const dayCMains = getSectionExercises(dayC, "main");
+    expect(
+      hasExerciseWithAnyToken(dayAMains, ["squat", "kneedominant", "push", "horizontalpush"])
+    ).toBe(true);
+    expect(
+      hasExerciseWithAnyToken(dayBMains, ["hinge", "glute", "verticalpush", "squat"])
+    ).toBe(true);
+    expect(
+      hasExerciseWithAnyToken(dayCMains, [
+        "squat",
+        "push",
+        "pull",
+        "scapular",
+        "horizontalpull",
+      ])
+    ).toBe(true);
+    return;
+  }
+
   const backChest = findGeneratedDay(week, "Back + Chest");
   const backChestMains = getSectionExercises(backChest, "main");
   const backChestAll = [

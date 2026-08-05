@@ -197,6 +197,32 @@ export function inferExerciseSupportRequirements(input: {
   ) {
     supports.add("high_band_anchor");
   }
+  // Bodyweight furniture / elevated-surface assumptions (Phase 5).
+  // Unknown remains unavailable — never invent questionnaire confirmation.
+  if (
+    blob.includes("countertop") ||
+    blob.includes("counter top") ||
+    (blob.includes("incline") && blob.includes("push") && !blob.includes("wall"))
+  ) {
+    supports.add("elevated_surface");
+  }
+  if (blob.includes("chair") || blob.includes("to-box") || blob.includes("to box")) {
+    supports.add("chair_or_bench");
+  }
+  if (
+    blob.includes("step-up") ||
+    blob.includes("step up") ||
+    blob.includes("stair") ||
+    blob.includes("stairs")
+  ) {
+    supports.add("step_or_stairs");
+  }
+  if (blob.includes("doorway") || blob.includes("door way")) {
+    supports.add("doorway");
+  }
+  if (blob.includes("suspension") || blob.includes("trx")) {
+    supports.add("suspension_or_pullup_bar");
+  }
   return Array.from(supports).sort();
 }
 
@@ -226,6 +252,17 @@ export function isSupportConfirmedByCapabilities(
       );
     case "door_anchor_or_doorway":
       return capabilities.hasDoorAnchor;
+    case "elevated_surface":
+    case "chair_or_bench":
+    case "bench_or_chair":
+    case "step_or_stairs":
+      // No dedicated chair/step questionnaire yet — bench is the only confirmed
+      // elevated-support token. Unknown remains unavailable.
+      return capabilities.hasBench;
+    case "doorway":
+      return capabilities.hasDoorAnchor;
+    case "suspension_or_pullup_bar":
+      return capabilities.hasPullupBar;
     default:
       return false;
   }

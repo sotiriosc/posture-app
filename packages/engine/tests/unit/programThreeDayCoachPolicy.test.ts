@@ -396,7 +396,11 @@ describe("three-day coach policy", () => {
         dayTitle: fullBodyADayTitle,
         expectVerticalSurrogate: false,
       },
-      { equipment: ["none"], dayTitle: "Back + Chest", expectVerticalSurrogate: true },
+      {
+        equipment: ["none"],
+        dayTitle: "Full Body A — Squat, Push and Trunk",
+        expectVerticalSurrogate: false,
+      },
     ];
 
     cases.forEach(({ equipment, dayTitle, expectVerticalSurrogate }) => {
@@ -420,9 +424,19 @@ describe("three-day coach policy", () => {
 
       if (expectVerticalSurrogate) {
         expect(surrogates.length).toBeGreaterThanOrEqual(1);
-      } else {
+      } else if (equipment.includes("dumbbells")) {
         expect(
           mains.some((item) => item.selectionDebug?.slotKind === "mainPullHorizontal")
+        ).toBe(true);
+      } else {
+        // Bodyweight Full Body A uses honest trunk / push / squat — no false vertical pull.
+        expect(surrogates.length).toBe(0);
+        expect(
+          mains.some((item) =>
+            ["mainSquatPrimary", "mainPushCompound", "mainTrunkAntiExtension"].includes(
+              item.selectionDebug?.slotKind ?? ""
+            )
+          )
         ).toBe(true);
       }
       expect(rows.length).toBeLessThanOrEqual(1);

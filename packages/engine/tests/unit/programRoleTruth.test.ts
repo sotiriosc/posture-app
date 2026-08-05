@@ -129,23 +129,23 @@ describe("program role truthfulness", () => {
     expect(movementPatterns.has("push")).toBe(false);
   });
 
-  test("no-equipment Back + Chest keeps push-ups in push slots and rows in pull slots", () => {
+  test("no-equipment Full Body A keeps push-ups in push slots without false pull claims", () => {
     const programId = "truth-none-back-chest-slots";
     clearProgramConstraintWarningBuffer();
+    const equipment = ["none"] as QuestionnaireData["equipment"];
     const program = generateWeeklyProgram(
       {
         goals: "Reduce pain",
         painAreas: ["lower back"],
         experience: "Beginner",
-        equipment: ["none"],
+        equipment,
         daysPerWeek: 3,
       },
       programId,
       { phaseIndex: 1, seed: "three-day-persona-review-12-phase-1" }
     );
-    const mains = backChestMains(program);
-    const pushupLike = new Set(["pushup", "countertop-pushup", "wall-pushup", "archer-pushup"]);
-    const rowLike = new Set(["supine-elbow-drive-row", "prone-elbow-row", "back-widow"]);
+    const mains = backChestMains(program, equipment);
+    const pushupLike = new Set(["pushup", "wall-pushup", "archer-pushup", "close-grip-pushup"]);
 
     expect(mains.some((item) => pushupLike.has(item.exerciseId))).toBe(true);
     expect(
@@ -158,41 +158,35 @@ describe("program role truthfulness", () => {
         )
     ).toBe(true);
     expect(
-      mains
-        .filter((item) => rowLike.has(item.exerciseId))
-        .every(
-          (item) =>
-            item.selectionDebug?.slotLane === "pull" &&
-            item.selectionDebug?.slotKind !== "mainPushSecondary"
-        )
+      mains.some((item) => item.selectionDebug?.slotKind === "mainTrunkAntiExtension")
     ).toBe(true);
     expect(warningMessagesFor(programId)).toEqual([]);
   });
 
-  test("constrained vertical-pull surrogate satisfies Back + Chest without missing-main warnings", () => {
+  test("bodyweight Full Body C uses honest upper-back control instead of false vertical pull", () => {
     const programId = "truth-none-vertical-surrogate";
     clearProgramConstraintWarningBuffer();
+    const equipment = ["none"] as QuestionnaireData["equipment"];
     const program = generateWeeklyProgram(
       {
         goals: "General fitness",
         painAreas: [],
         experience: "Beginner",
-        equipment: ["none"],
+        equipment,
         daysPerWeek: 3,
       },
       programId,
       { phaseIndex: 2, seed: "three-day-persona-review-11-phase-2" }
     );
-    const mains = backChestMains(program);
+    const dayC = program.week.find((day) => day.title.includes("Back Intent"));
+    const mains = dayC?.routine.filter((item) => item.section === "main") ?? [];
 
-    expect(mains.some((item) => item.selectionDebug?.slotKind === "mainPullHorizontal")).toBe(true);
     expect(
-      mains.some(
-        (item) =>
-          item.selectionDebug?.slotKind === "mainPullVertical" &&
-          hasVerticalPullOrSurrogate(item.exerciseId)
-      )
+      mains.some((item) => item.selectionDebug?.slotKind === "mainUpperBackControl")
     ).toBe(true);
+    expect(
+      mains.some((item) => item.selectionDebug?.slotKind === "mainPullVertical")
+    ).toBe(false);
     expect(warningMessagesFor(programId).join("\n")).not.toMatch(/main pull pattern|main vertical pull/i);
   });
 
@@ -266,13 +260,15 @@ describe("program role truthfulness", () => {
       totalWeekIndex: 1,
       seed: "truth-low-back-pain",
     });
-    const legsDay = program.week.find((day) => day.title === "Legs + Abs");
-    const hingeMain = legsDay?.routine.find(
+    const hingeDay = program.week.find((day) =>
+      day.title.includes("Hinge, Single-Leg")
+    );
+    const hingeMain = hingeDay?.routine.find(
       (item) =>
         item.section === "main" && item.selectionDebug?.slotKind === "mainHingePrimary"
     );
 
-    expect(legsDay).toBeTruthy();
+    expect(hingeDay).toBeTruthy();
     expect(hingeMain?.exerciseId).toBeTruthy();
     expect(hingeMain?.exerciseId).not.toBe("back-extension-hold");
   });

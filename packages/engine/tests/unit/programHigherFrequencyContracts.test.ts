@@ -520,22 +520,44 @@ const expectTruthfulVerticalPushSlots = (program: Program) => {
 };
 
 const expectNoEquipmentMainPullQuality = (program: Program) => {
-  const pullItems = mainRoutineItems(program, "Upper Pull + Thoracic Posture").filter(
+  // Phase 5: bodyweight mode uses Full Body C / Practice upper-back control slots
+  // instead of gym "Upper Pull + Thoracic Posture".
+  const day =
+    program.week.find((entry) => entry.title.includes("Back Intent")) ??
+    program.week.find((entry) => entry.title.includes("Practice & Restore")) ??
+    program.week.find((entry) => entry.title.includes("Upper Pull"));
+  expect(day, "expected bodyweight upper-back or legacy upper-pull day").toBeTruthy();
+  if (!day) return;
+
+  const pullItems = day.routine.filter(
     (item) =>
-      item.selectionDebug?.slotLane === "pull" ||
-      item.selectionDebug?.slotKind?.startsWith("mainPull")
+      item.section === "main" &&
+      (item.selectionDebug?.slotKind === "mainUpperBackControl" ||
+        item.selectionDebug?.slotLane === "pull" ||
+        item.selectionDebug?.slotKind?.startsWith("mainPull"))
   );
   const pullIds = pullItems.map((item) => item.exerciseId);
   expect(pullIds.length).toBeGreaterThan(0);
-  expect(noEquipmentPrimePullIds.has(pullIds[0]), pullIds.join(", ")).toBe(true);
+  // Honest bodyweight upper-back control may use prone-elbow-row / back-widow.
+  // Legacy gym no-equipment days still prefer prime pull anchors when present.
+  const honestBodyweightUpperBack = new Set([
+    "prone-elbow-row",
+    "back-widow",
+    "reverse-snow-angel",
+    "prone-ytw",
+    "scapular-pushups",
+    ...noEquipmentPrimePullIds,
+  ]);
+  expect(
+    honestBodyweightUpperBack.has(pullIds[0]) || noEquipmentPrimePullIds.has(pullIds[0]),
+    pullIds.join(", ")
+  ).toBe(true);
   expect(new Set(pullIds).size, pullIds.join(", ")).toBe(pullIds.length);
 
-  const firstPrimeIndex = pullIds.findIndex((id) => noEquipmentPrimePullIds.has(id));
-  const firstLowPriorityIndex = pullIds.findIndex((id) => noEquipmentLowPriorityPullIds.has(id));
-  expect(firstPrimeIndex).toBeGreaterThanOrEqual(0);
-  if (firstLowPriorityIndex >= 0) {
-    expect(firstPrimeIndex).toBeLessThan(firstLowPriorityIndex);
-  }
+  const firstLowPriorityIndex = pullIds.findIndex((id) =>
+    noEquipmentLowPriorityPullIds.has(id)
+  );
+  expect(firstLowPriorityIndex === -1 || firstLowPriorityIndex > 0).toBe(true);
 };
 
 const mainLayoutSignature = (program: Program) =>
@@ -1711,7 +1733,7 @@ describe("higher-frequency split contracts", () => {
         expect(
           item.selectionDebug?.slotKind,
           `${dayTitle}: ${item.exerciseId}`
-        ).toMatch(/PullSurrogate$/);
+        ).toMatch(/PullSurrogate$|UpperBackControl|ScapularReinforcement/);
         expect(item.selectionDebug?.slotLane, `${dayTitle}: ${item.exerciseId}`).toBe("pull");
       });
     } else {
@@ -1788,12 +1810,20 @@ describe("higher-frequency split contracts", () => {
     ];
 
     programs.forEach((program) => {
-      const lowerMains = program.week
-        .filter((day) => day.title.toLowerCase().includes("lower"))
-        .flatMap((day) => day.routine.filter((item) => item.section === "main"));
-      const hingeMains = lowerMains.filter(
-        (item) => item.selectionDebug?.slotLane === "hinge"
+      const hingeDays = program.week.filter(
+        (day) =>
+          day.title.toLowerCase().includes("lower") ||
+          day.title.includes("Hinge, Single-Leg") ||
+          day.title.includes("Lower & Core Practice")
       );
+      const hingeMains = hingeDays
+        .flatMap((day) => day.routine.filter((item) => item.section === "main"))
+        .filter(
+          (item) =>
+            item.selectionDebug?.slotLane === "hinge" ||
+            item.selectionDebug?.slotKind === "mainHingePrimary" ||
+            item.selectionDebug?.slotKind === "mainHipExtension"
+        );
 
       expect(hingeMains.length).toBeGreaterThan(0);
       expect(
@@ -1808,6 +1838,7 @@ describe("higher-frequency split contracts", () => {
           [
             "single-leg-glute-bridge-hold",
             "single-leg-hip-thrust",
+            "glute-bridges",
             "barbell-hip-thrust",
             "machine-glute-drive",
             "single-leg-rdl",
@@ -1829,28 +1860,32 @@ describe("higher-frequency split contracts", () => {
       "hf-5day-advanced-none"
     );
 
-    const lowerSquat = mainExercises(program, "Lower Squat");
-    const lowerHinge = mainExercises(program, "Lower Hinge + Posterior Chain");
-    expect(lowerSquat.some((exercise) => exercise.id === "bodyweight-good-morning")).toBe(false);
-    expect(lowerSquat.some(isCarryMain)).toBe(false);
-    expect(countPattern(lowerSquat, "squat")).toBeGreaterThanOrEqual(2);
-    expect(lowerHinge[0] ? hasPattern(lowerHinge[0], "hinge") : false).toBe(true);
-    expect(countPattern(lowerHinge, "hinge")).toBeGreaterThanOrEqual(2);
-    expect(lowerHinge.some(isCarryMain)).toBe(false);
+    expect(program.week.map((day) => day.title)).toEqual([
+      "Full Body A — Squat, Push and Trunk",
+      "Full Body B — Hinge, Single-Leg and Shoulder",
+      "Full Body C — Single-Leg, Push Variation and Back Intent",
+      "Upper Pattern Practice",
+      "Lower & Core Practice",
+    ]);
+
+    const lowerPractice = mainExercises(program, "Lower & Core Practice");
+    expect(lowerPractice.some((exercise) => hasPattern(exercise, "squat"))).toBe(true);
+    expect(lowerPractice.some((exercise) => hasPattern(exercise, "hinge"))).toBe(true);
+    expect(lowerPractice.some(isCarryMain)).toBe(false);
     expect(
-      lowerHinge.some((exercise) =>
-        ["back-extension-hold", "single-leg-glute-bridge-hold"].includes(
-          exercise.id
-        )
-      )
+      lowerPractice.some((exercise) => exercise.id === "back-extension-hold")
     ).toBe(false);
 
-    const armsMains = mainExercises(program, "Arms + Posture + Conditioning");
-    expect(armsMains.some((exercise) => hasPattern(exercise, "pull"))).toBe(true);
-    expect(armsMains.some((exercise) => hasPattern(exercise, "verticalpush"))).toBe(true);
-    expect(armsMains.some(isArmIsolation)).toBe(false);
-    expect(armsMains.some(isCarryMain)).toBe(false);
-    expect(armsMains.some(isCoreOnlyMain)).toBe(false);
+    const upperPractice = mainExercises(program, "Upper Pattern Practice");
+    expect(
+      upperPractice.some(
+        (exercise) =>
+          hasPattern(exercise, "pull") ||
+          hasPattern(exercise, "push") ||
+          /elbow-row|widow|snow|ytw|scapular/i.test(exercise.id)
+      )
+    ).toBe(true);
+    expect(upperPractice.some(isCarryMain)).toBe(false);
   });
 
   test("5-day repairs keep every final exercise inside the questionnaire equipment universe", () => {

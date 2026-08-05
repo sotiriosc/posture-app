@@ -1,0 +1,314 @@
+{
+  "generatedAt": "2026-08-05T07:55:49.894Z",
+  "phase": 5,
+  "objective": "First-class floor/wall bodyweight programming with honest pulling limitations",
+  "preservesPriorReports": [
+    "docs/dev-reports/equipment-program-audit-phase0.json",
+    "docs/dev-reports/equipment-program-audit-phase1.json",
+    "docs/dev-reports/equipment-program-audit-phase2.json",
+    "docs/dev-reports/equipment-program-audit-phase3.json",
+    "docs/dev-reports/equipment-program-audit-phase4.json"
+  ],
+  "elapsedMs": 746428,
+  "flagshipCount": 12,
+  "hardFailureCount": 0,
+  "failuresByReason": {},
+  "flagshipStructuralPassCount": 12,
+  "initialBaselineInventory": [
+    {
+      "reasonCode": "BODYWEIGHT_GYM_TEMPLATE_INHERITANCE",
+      "detail": "Bodyweight weeks used gym body-part titles (Back + Chest, Shoulders + Arms, Legs + Abs, Upper/Lower HF titles).",
+      "source": "Phase 5 Step A baseline"
+    },
+    {
+      "reasonCode": "BODYWEIGHT_FALSE_VERTICAL_PULL",
+      "detail": "mainPullVertical filled with seated-lat-sweep-pulse / supine-lat-pulldown-isometric style surrogates.",
+      "source": "Phase 0/5 Step A pull-honesty findings"
+    },
+    {
+      "reasonCode": "BODYWEIGHT_FALSE_HORIZONTAL_PULL",
+      "detail": "Prone/elbow-drive drills satisfied true horizontal-pull slots under gym inheritance.",
+      "source": "Phase 5 Step A baseline"
+    },
+    {
+      "reasonCode": "BODYWEIGHT_UNCONFIRMED_SUPPORT",
+      "detail": "countertop-pushup and similar furniture assumptions scheduled without confirmation.",
+      "source": "Phase 5 Step A baseline"
+    },
+    {
+      "reasonCode": "BODYWEIGHT_IDENTITY_COLLAPSE",
+      "detail": "No first-class bodyweight template; generator inherited gym split architecture.",
+      "source": "Phase 0/5 Step A"
+    }
+  ],
+  "defaultEnvironmentAssumptions": [
+    "floor",
+    "wall",
+    "body",
+    "standing_room"
+  ],
+  "confirmedSupportPolicy": {
+    "pullup_bar": "unlocks true vertical pulling",
+    "bench": "only confirmed elevated-surface token today; no chair questionnaire added",
+    "floor_wall": "always assumed"
+  },
+  "fuzz": {
+    "cases": 10000,
+    "buckets": {
+      "gymTemplateInheritance": 0,
+      "illegalEquipment": 0,
+      "unconfirmedSupport": 0,
+      "falseVerticalPull": 0,
+      "falseHorizontalPull": 0,
+      "missingSquat": 0,
+      "missingHinge": 0,
+      "missingUnilateral": 0,
+      "missingPush": 0,
+      "missingTrunk": 0,
+      "prepAsMain": 0,
+      "correctiveCluster": 0,
+      "duplicateFamily": 0,
+      "complexityExcess": 0,
+      "positionTransitionExcess": 0,
+      "weeklyCoverage": 0,
+      "phaseChurn": 0,
+      "exceptions": 0,
+      "identityCollapse": 0,
+      "deterministicRepeat": 0,
+      "honestCapabilityLimitations": 10000
+    },
+    "topReasons": []
+  },
+  "personas": [
+    {
+      "id": "bw_3d_beginner_floor_wall_p1",
+      "label": "Beginner three-day floor-and-wall / activation",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 89,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 22,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_3d_intermediate_p1",
+      "label": "Intermediate three-day bodyweight / activation",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 87,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 26,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_3d_advanced_p1",
+      "label": "Advanced three-day bodyweight / activation",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 85,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 30,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_4d_intermediate_p2",
+      "label": "Four-day bodyweight / skill",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 83,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 34,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent",
+        "Practice & Restore"
+      ]
+    },
+    {
+      "id": "bw_5d_advanced_p3",
+      "label": "Five-day bodyweight / growth",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 75.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 49,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent",
+        "Upper Pattern Practice",
+        "Lower & Core Practice"
+      ]
+    },
+    {
+      "id": "bw_3d_no_support_p1",
+      "label": "No-support bodyweight (floor/wall only) / activation",
+      "equipment": [],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 88.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 23,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_3d_pullup_bar_p1",
+      "label": "Confirmed pull-up-bar bodyweight / activation",
+      "equipment": [
+        "none",
+        "pullup_bar"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 87,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 26,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_3d_shoulder_pain_p1",
+      "label": "Shoulder-pain bodyweight / activation",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 89,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 22,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_3d_low_back_pain_p1",
+      "label": "Low-back-pain bodyweight / activation",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 88.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 23,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_3d_knee_pain_p1",
+      "label": "Knee-pain bodyweight / activation",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 89,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 22,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_3d_beginner_skill_p2",
+      "label": "Beginner three-day bodyweight / skill",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 89,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 22,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    },
+    {
+      "id": "bw_3d_beginner_growth_p3",
+      "label": "Beginner three-day bodyweight / growth",
+      "equipment": [
+        "none"
+      ],
+      "primaryMode": "bodyweight",
+      "structuralScore": 100,
+      "capabilityHonestyScore": 100,
+      "fullExperienceScore": 88,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 24,
+      "dayTitles": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ]
+    }
+  ]
+}

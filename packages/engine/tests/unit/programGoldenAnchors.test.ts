@@ -142,6 +142,10 @@ const expectedDayTitlesForDays = (
     equipment.includes("bands") &&
     !equipment.includes("gym") &&
     !equipment.includes("dumbbells");
+  const isBodyweight =
+    !equipment.includes("gym") &&
+    !equipment.includes("dumbbells") &&
+    !equipment.includes("bands");
   if (isBands) {
     if (daysPerWeek === 3) {
       return [
@@ -162,6 +166,30 @@ const expectedDayTitlesForDays = (
       "Full Body A — Squat, Press and Row",
       "Full Body B — Hinge, Overhead and Unilateral",
       "Full Body C — Single-Leg, Press Variation and Lat Intent",
+      "Upper Pattern Practice",
+      "Lower & Core Practice",
+    ];
+  }
+  if (isBodyweight) {
+    if (daysPerWeek === 3) {
+      return [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent",
+      ];
+    }
+    if (daysPerWeek === 4) {
+      return [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent",
+        "Practice & Restore",
+      ];
+    }
+    return [
+      "Full Body A — Squat, Push and Trunk",
+      "Full Body B — Hinge, Single-Leg and Shoulder",
+      "Full Body C — Single-Leg, Push Variation and Back Intent",
       "Upper Pattern Practice",
       "Lower & Core Practice",
     ];
@@ -195,6 +223,17 @@ const hasAnyPattern = (exercises: Exercise[], patternToken: string) =>
   exercises.some((exercise) => hasPattern(exercise, patternToken));
 
 const hasRequiredMovementCoverage = (dayTitle: string, mainExercises: Exercise[]) => {
+  if (dayTitle.startsWith("Full Body A — Squat, Push and Trunk")) {
+    return (
+      hasAnyPattern(mainExercises, "squat") &&
+      hasAnyPattern(mainExercises, "push") &&
+      (hasAnyPattern(mainExercises, "core") ||
+        mainExercises.some((exercise) =>
+          /plank|dead.?bug|hollow|bird.?dog/i.test(`${exercise.id} ${exercise.name}`)
+        ))
+    );
+  }
+
   if (dayTitle.startsWith("Full Body A")) {
     return (
       hasAnyPattern(mainExercises, "squat") &&

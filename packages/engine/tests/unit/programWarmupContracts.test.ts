@@ -98,13 +98,22 @@ describe("program warmup contracts", () => {
     );
 
     const isBands = equipment.length === 1 && equipment[0] === "bands";
+    const isBodyweight = equipment.length === 1 && equipment[0] === "none";
     const legDay = getDay(
       program,
-      isBands ? "Full Body B — Hinge, Overhead and Unilateral" : "Legs + Abs"
+      isBands
+        ? "Full Body B — Hinge, Overhead and Unilateral"
+        : isBodyweight
+        ? "Full Body B — Hinge, Single-Leg and Shoulder"
+        : "Legs + Abs"
     );
     const backChestDay = getDay(
       program,
-      isBands ? "Full Body A — Squat, Press and Row" : "Back + Chest"
+      isBands
+        ? "Full Body A — Squat, Press and Row"
+        : isBodyweight
+        ? "Full Body A — Squat, Push and Trunk"
+        : "Back + Chest"
     );
     expect(legDay?.warmup).toBeTruthy();
     expect(backChestDay?.warmup).toBeTruthy();
@@ -127,13 +136,14 @@ describe("program warmup contracts", () => {
       `Leg day activation should contain hip-health or knee-health item`
     ).toBe(true);
 
-    // Push-pull day: MOBILIZE covers upper-body joints (or, for band Full Body A,
-    // a lower-focused warmup is intentional — then activation must cover upper).
+    // Push-pull / Full Body A: MOBILIZE covers upper-body joints (or, for
+    // band/bodyweight Full Body A, a lower-focused warmup is intentional —
+    // then activation must cover upper).
     const backChestWarmupJoints = coveredJoints(backChestDay.warmup);
     const backChestHasUpperWarmup = [...UPPER_BODY_JOINTS].some((j) =>
       backChestWarmupJoints.has(j)
     );
-    if (!isBands) {
+    if (!isBands && !isBodyweight) {
       expect(
         backChestHasUpperWarmup,
         `Back+Chest day warmup should cover at least one upper-body joint; got: ${[...backChestWarmupJoints].join(", ")}`
@@ -142,7 +152,7 @@ describe("program warmup contracts", () => {
       expect(
         backChestHasUpperWarmup ||
           (backChestDay.activation?.items ?? []).length >= 1,
-        `Band Full Body A should keep upper prep via warmup or activation`
+        `Full Body A should keep upper prep via warmup or activation`
       ).toBe(true);
     }
 

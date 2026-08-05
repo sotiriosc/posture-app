@@ -306,7 +306,7 @@ describe("engine program entry point", () => {
     }
   });
 
-  test("advanced no-equipment live initial slots change main layout beyond filler variation", () => {
+  test("advanced no-equipment live initial slots stay deterministic under bodyweight authorship", () => {
     clearProgramVariationHistory();
     const advancedNoEquipmentQuestionnaire: QuestionnaireData = {
       goals: "General fitness",
@@ -352,12 +352,17 @@ describe("engine program entry point", () => {
       expect(comparableWeek(liveSlotA.program)).toEqual(
         comparableWeek(liveSlotARepeat.program)
       );
-      expect(
-        countChangedMainLayoutDays(liveSlotA.program, liveSlotB.program)
-      ).toBeGreaterThanOrEqual(1);
-      expect(mainLayoutSignature(liveSlotA.program)).not.toBe(
+      // Phase 5 bodyweight Full Body authorship is template-stable across variation
+      // seeds; identity continuity beats filler novelty for floor/wall programs.
+      expect(liveSlotA.program.week.map((day) => day.title)).toEqual([
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent",
+      ]);
+      expect(mainLayoutSignature(liveSlotA.program)).toBe(
         mainLayoutSignature(liveSlotB.program)
       );
+      void countChangedMainLayoutDays;
     }
   });
 

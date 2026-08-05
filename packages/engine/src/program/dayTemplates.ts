@@ -37,7 +37,19 @@ export type ThreeDayMainLanePlanEntry = {
     /** Dumbbell Full Body C press variation distinct from Day A. */
     | "press_variation"
     /** Dumbbell posterior-chain reinforcement secondary. */
-    | "posterior_chain_secondary";
+    | "posterior_chain_secondary"
+    /** Bodyweight trunk anti-extension / bracing main. */
+    | "trunk_anti_extension"
+    /** Bodyweight hip-extension / bridge family. */
+    | "hip_extension"
+    /** Bodyweight lateral trunk stability. */
+    | "trunk_lateral"
+    /** Bodyweight scapular reinforcement (not a true loaded pull). */
+    | "scapular_reinforcement"
+    /** Bodyweight honest upper-back control / pull-surrogate. */
+    | "upper_back_control"
+    /** Confirmed pull-up-bar vertical pulling. */
+    | "true_vertical_pull";
 };
 
 const normalizeToken = (value: string) =>
