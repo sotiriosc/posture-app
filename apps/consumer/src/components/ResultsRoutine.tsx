@@ -2681,7 +2681,7 @@ export default function ResultsRoutine() {
           We need your movement profile answers to build your Praxis plan.
         </p>
         <Link
-          href="/questionnaire"
+          href="/assessment"
           className="mt-4 inline-flex rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-6 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(37,99,235,0.24)]"
         >
           Build profile
