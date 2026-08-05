@@ -1966,9 +1966,96 @@ Gym quality at least 95 for flagship personas.
 
 Existing gym golden tests pass or are intentionally updated with documented rationale.
 
-Phase Result added.
+### Phase 2 checklist
 
-Cursor stops.
+- [x] Encode canonical gym weekly/per-day role contract (`gymProgramContract.ts`)
+- [x] Add non-blocking gym perfection audit + 10k fuzz (`audit:gym-program`)
+- [x] Audit three-/four-/five-day flagship gym personas with hard slot-truth assertions
+- [x] Keep `Legs + Abs` as the established live day-3 title
+- [x] Ensure pain-free loaded gym users keep meaningful loaded hinge/main work
+- [x] Root-cause repair: upper-back ≠ low-back for hinge softening; no curl-only gym hinge; preserve pain-aware hip-extension hinges
+- [x] Flagship structural scores ≥95 with zero hard failures (10/10)
+- [x] 10k gym fuzz: 0 illegal equipment, 0 role-truth failures, 0 identity collapse, 0 deterministic-repeat mismatches
+- [x] Add/strengthen gym contract tests (`programGymContract.test.ts` + selection audit regression)
+- [x] Run required validation commands; preserve Phase 0/1 reports
+- [x] Append Phase Result
+- [x] Stop without starting Phase 3
+
+## Phase Result — Phase 2
+
+### Changed files
+- `packages/engine/src/program/gymProgramContract.ts` (new canonical gym contract + validator)
+- `packages/engine/src/__debug__/gymProgramAudit.ts` (flagship + 10k fuzz audit writer)
+- `packages/engine/src/program.ts` (gym hinge legality, heavy-hinge scope, activation RDL primer, Legs Abs regression-strip exception)
+- `packages/engine/tests/unit/programGymContract.test.ts` (new)
+- `packages/engine/tests/unit/programSelectionAudit.test.ts` (upper-back hinge regression)
+- `package.json` (`audit:gym-program` script)
+- `docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md` (Phase 2 checklist + result)
+- `docs/dev-reports/equipment-program-audit-phase2.md`
+- `docs/dev-reports/equipment-program-audit-phase2.json`
+- `docs/dev-reports/equipment-program-audit-phase2-gym-personas.md`
+- `docs/dev-reports/equipment-program-audit-phase2-hard-failures-initial-vs-final.md`
+- `docs/dev-reports/equipment-program-audit-phase2-gym-fuzz-10k.md`
+
+### Canonical contract surface
+- Day identities for 3/4/5-day gym titles, including established `Legs + Abs`
+- Experience volume via existing `dayTemplates.ts` counts
+- Movement-role truth labels (`true` / `supportedVariant` / `surrogate` / `preparationOnly`)
+- Hard-failure reason codes for identity, volume, role truth, curl-only/carry hinge, illegal equipment, determinism
+- Structural score vs deferred coaching/demo gaps (non-blocking for Phase 2)
+
+### Root-cause repairs
+- `hasLowBackPainSignal` no longer treats `upper_back` / thoracic pain as low-back pain.
+- `heavy_hinge` avoid-pattern is scoped to true low-back/hip pain, not blanket high severity.
+- Activation `db-rdl` primer remains available under high-severity upper-body pain.
+- Gym `mainHingePrimary` requires strict hinge legality (curl cannot satisfy alone).
+- Gym Legs Abs repair no longer strips deliberate low-back hip-extension hinge surrogates into curls/step-ups.
+
+### Tests added or updated
+- `packages/engine/tests/unit/programGymContract.test.ts`
+- `packages/engine/tests/unit/programSelectionAudit.test.ts` (upper-back ≠ curl-only hinge)
+
+### Commands run
+- `npm run audit:gym-program` (flagship + 10k fuzz)
+- `npm run audit:equipment-program`
+- `npm run audit:catalog`
+- `npm run audit:program-contract`
+- `npm run audit:coverage-matrix`
+- `npm run audit:phase-matrix`
+- `npm run test:golden`
+- `npm run test:critical`
+- `npm run build`
+- `npm run lint`
+- focused: `programGymContract.test.ts`, `programSelectionAudit.test.ts`, related role/split tests
+
+### Results
+- Flagship gym personas: **10/10** structural ≥95 with **0** hard failures.
+- Gym fuzz 10k: illegalEquipment=0, mainRoleTruth=0, identityCollapse=0, deterministicRepeat=0, exceptions=0.
+- Focused gym contract + selection tests: pass.
+- `test:golden`: 56/56 pass.
+- `test:critical`: 326/326 pass.
+- `audit:catalog`: pass.
+- `audit:program-contract`: completed.
+- `npm run build`: pass.
+- `audit:coverage-matrix` / `audit:phase-matrix`: **FAIL** — same pre-existing advanced 5-day pain gym calves/intelligence baseline failures as Phase 0/1 (not suppressed; outside flagship gym-contract hard-failure set).
+- `npm run lint`: pre-existing errors in unrelated e2e specs; no new Phase 2 lint errors in changed engine files.
+- Phase 0/1 equipment-program reports preserved.
+
+### Deferred (non-structural)
+- Demo/cue/progression-link coaching metadata gaps remain on flagship personas and are scored separately from structural quality.
+- Fuzz weeklyCoverage sampling still observes some coverage gaps; these are not gym role-truth hard failures.
+
+### Intentional behavior changes
+- Shoulder/upper-back gym users receive a true loaded hinge (`db-rdl`) instead of curl-only or missing hinge.
+- Low-back/hip gym users keep pain-aware hip-extension hinge surrogates across beginner/intermediate/advanced.
+- Non-gym equipment identities remain non-gym (no identity collapse in gym fuzz).
+
+### Recommendation
+- Proceed to Phase 3 only after explicit instruction.
+- Exact Phase 3 starting point: replace gym-shaped home degradation with first-class dumbbell A/B/C templates and fixed-weight progression, without touching band-anchor questionnaire UI or engine decomposition yet.
+
+### Next phase
+- Phase 3 — Dumbbell-Only Templates, only after explicit instruction
 
 Phase 3 — Dumbbell-Only Templates
 

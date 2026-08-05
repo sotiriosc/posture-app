@@ -986,7 +986,10 @@ export const buildProgramIntentProfile = (params: {
       avoid.add("vertical_push_load");
       avoid.add("aggressive_overhead");
     }
-    if (hasLowBackPain || painSeverity === "high") {
+    // Heavy-hinge avoidance is a low-back/hip loading concern. Do not ban true
+    // hinges for high-severity upper-body pain (e.g. shoulders + upper back),
+    // or gym Legs + Abs collapses to curl-only / missing hinge.
+    if (hasLowBackPain) {
       avoid.add("heavy_hinge");
     }
     if (phaseStage === "activation" && experienceLevel !== "advanced") {
@@ -14975,7 +14978,27 @@ const hasUpperPainSignal = (context: SelectionContext) =>
   hasPainAreaSignal(context, ["shoulder", "neck", "upper_back", "upper back"]);
 
 const hasLowBackPainSignal = (context: SelectionContext) =>
-  hasPainAreaSignal(context, ["lower_back", "low_back", "back"]);
+  context.painAreas.some((area) => {
+    const normalizedArea = normalizeTagToken(area);
+    // Do not treat upper-back / mid-back shoulder-girdle pain as low-back pain.
+    // A bare "back" token previously matched via includes("back") and incorrectly
+    // softened hinge selection for "upper_back" personas.
+    if (
+      normalizedArea.includes("upper_back") ||
+      normalizedArea.includes("upperback") ||
+      normalizedArea.includes("mid_back") ||
+      normalizedArea.includes("thoracic")
+    ) {
+      return false;
+    }
+    return (
+      normalizedArea.includes("lower_back") ||
+      normalizedArea.includes("low_back") ||
+      normalizedArea.includes("lowback") ||
+      normalizedArea === "back" ||
+      normalizedArea.includes("hip")
+    );
+  });
 
 const shouldApplyPainAwareMainIdentityProtection = (params: {
   available: Set<Equipment>;
@@ -17570,14 +17593,14 @@ const getLegsAbsRoleCandidateIds = (
       ];
     }
     return [
-      "single-leg-hip-thrust",
-      "single-leg-glute-bridge-hold",
-      "back-extension-hold",
-      "back-extension",
-      "machine-seated-hamstring-curl",
       "db-rdl",
       "band-rdl",
+      "back-extension",
+      "back-extension-hold",
+      "single-leg-hip-thrust",
+      "single-leg-glute-bridge-hold",
       "single-leg-rdl",
+      "machine-seated-hamstring-curl",
     ];
   }
 
@@ -18038,6 +18061,21 @@ const repairLegsAbsDayIntelligence = (params: {
             descriptor.includes("back-extension-hold")
           ) {
             score += 1.5;
+          }
+          // Shoulder/upper-back pain must not demote a true loaded hinge in gym.
+          if (
+            gymRoleLockedLegsMainContext &&
+            !hasLowBackPainSignal(context.selectionContext) &&
+            hasTrueHingeAnchor(exercise)
+          ) {
+            score += 2.5;
+          }
+          if (
+            gymRoleLockedLegsMainContext &&
+            !hasLowBackPainSignal(context.selectionContext) &&
+            isHamstringCurlExercise(exercise)
+          ) {
+            score -= 4;
           }
         }
         if (experienceLevel === "beginner" && phaseStage === "activation") {
@@ -18837,19 +18875,49 @@ const ensureThreeDayLegsAbsMainCount = (params: {
       if (item.section !== "main") return item;
       const exercise = exerciseById(item.exerciseId);
       if (!exercise || !isRegressionOrDrillMovement(exercise)) return item;
+      // Low-back/hip pain uses hip-extension hinge surrogates on purpose. Do not
+      // strip them into curls/step-ups or Legs + Abs loses its hinge role.
+      if (
+        shouldAllowHipExtensionHingeSurrogateForMainSlot({
+          exercise,
+          available: context.available,
+          context: context.selectionContext,
+          dayTitle: day.title,
+        })
+      ) {
+        return item;
+      }
       usedIds.delete(item.exerciseId);
-      const replacement = [
-        "machine-seated-hamstring-curl",
-        "dumbbell-step-up-loaded",
-        "machine-leg-press",
-        "db-rdl",
-      ]
+      const hingeSlot =
+        item.selectionDebug?.slotLane === "hinge" ||
+        normalizeSlotToken(item.selectionDebug?.slotKind ?? "").includes("hinge");
+      const replacementIds = hingeSlot
+        ? [
+            "db-rdl",
+            "dumbbell-sumo-rdl",
+            "machine-glute-drive",
+            "barbell-hip-thrust",
+            "machine-seated-hamstring-curl",
+          ]
+        : [
+            "machine-seated-hamstring-curl",
+            "dumbbell-step-up-loaded",
+            "machine-leg-press",
+            "db-rdl",
+          ];
+      const replacement = replacementIds
         .map((id) => exerciseById(id))
         .filter((candidate): candidate is Exercise => Boolean(candidate))
         .find((candidate) => {
           if (usedIds.has(candidate.id)) return false;
           if (candidate.regressionOnly || candidate.loadType !== "weighted") return false;
-          return isExerciseEligible(candidate, context.available);
+          return isExerciseEligibleForProgramContext({
+            exercise: candidate,
+            available: context.available,
+            section: "main",
+            context: context.selectionContext,
+            dayTitle: day.title,
+          });
         });
       if (!replacement) {
         usedIds.add(item.exerciseId);
@@ -18904,7 +18972,7 @@ const ensureThreeDayLegsAbsMainCount = (params: {
     );
   const candidateIdsBySlotKind = (slotKind: string) => {
     if (slotKind === "mainHingePrimary") {
-      return ["machine-seated-hamstring-curl", "db-rdl", "band-rdl", "back-extension"];
+      return ["db-rdl", "band-rdl", "back-extension", "machine-seated-hamstring-curl"];
     }
     if (slotKind === "mainUnilateralLowerLoaded") {
       return ["dumbbell-step-up-loaded", "split-squat", "assisted-step-up"];
@@ -18929,9 +18997,10 @@ const ensureThreeDayLegsAbsMainCount = (params: {
       .filter((exercise): exercise is Exercise => Boolean(exercise))
       .find((exercise) => {
         if (usedIds.has(exercise.id)) return false;
+        // Curl may rescue a secondary lower slot, but must not satisfy the
+        // primary hinge role alone (GYM_HINGE_SATISFIED_BY_CURL_ONLY).
         const controlledGymHamstringCurlRescue =
-          (slot.slotKind === "mainHingePrimary" ||
-            slot.slotKind === "mainSecondaryLowerLoaded") &&
+          slot.slotKind === "mainSecondaryLowerLoaded" &&
           exercise.id === "machine-seated-hamstring-curl" &&
           context.selectionContext.trainingContext === "gym";
         const unilateralLowerRescue =
@@ -21353,9 +21422,11 @@ export const isEligibleForPhase = (
     context.capabilityMode === "hasLoad" &&
     hasLowBackPainSignal(context) &&
     (exercise.id === "machine-glute-drive" || exercise.id === "barbell-hip-thrust");
+  // Controlled DB/band RDL primer for activation. High-severity upper-body pain
+  // must still allow this path; otherwise gym Legs + Abs loses every true hinge
+  // and collapses to curl-only or a missing hinge slot.
   const phaseOneHomeHingePrimer =
     inActivation &&
-    context.painSeverity !== "high" &&
     !hasLowBackPainSignal(context) &&
     ((context.capabilityMode === "hasLoad" && ["db-rdl", "band-rdl"].includes(exercise.id)) ||
       (context.capabilityMode === "bandOnly" && exercise.id === "band-rdl"));
@@ -21524,7 +21595,22 @@ const isExerciseEligibleForProgramContext = (params: {
       context.capabilityMode === "hasLoad" &&
       hasLowBackPainSignal(context) &&
       ["machine-glute-drive", "barbell-hip-thrust"].includes(exercise.id);
-    if (!allowControlledGymHamstringCurl && !allowPainAwareGymHipExtensionAnchor) {
+    // Upper-body pain may still carry avoidPatterns.heavy_hinge from legacy
+    // profiles; keep a controlled gym true-hinge path so Legs + Abs can fill
+    // mainHingePrimary without curl-only collapse.
+    const allowControlledGymTrueHinge =
+      lowerIntentDay &&
+      context.trainingContext === "gym" &&
+      context.capabilityMode === "hasLoad" &&
+      !hasLowBackPainSignal(context) &&
+      (exercise.id === "db-rdl" ||
+        exercise.id === "band-rdl" ||
+        exercise.id === "dumbbell-sumo-rdl");
+    if (
+      !allowControlledGymHamstringCurl &&
+      !allowPainAwareGymHipExtensionAnchor &&
+      !allowControlledGymTrueHinge
+    ) {
       return false;
     }
   }
@@ -24055,7 +24141,15 @@ const isThreeDayGymMainSlotEligible = (params: {
       return isLegsPrimarySquatExercise(exercise) && slotLane !== "hinge";
     }
     if (role === "hingePrimary") {
-      return isLegsHingeMainExercise(exercise);
+      // Hamstring curls carry a hinge pattern tag but are isolation, not a true
+      // hinge anchor. Reuse the strict hinge legality gate so gym Legs + Abs
+      // cannot satisfy mainHingePrimary with curl-only selections.
+      return isStrictHingeSlotAnchorLegal({
+        exercise,
+        available: params.available,
+        context,
+        dayTitle,
+      });
     }
     if (role === "unilateralLowerLoaded") {
       return isLegsSingleLegSquatExercise(exercise);

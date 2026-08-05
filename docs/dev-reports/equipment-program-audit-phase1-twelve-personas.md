@@ -311,7 +311,7 @@ Comparison snapshots after first-class equipment identity. Phase 0 baselines wer
 - Main truth mix: true=9, surrogate=0, support_only=0
 - Unconfirmed supports: none
 - Weekly coverage gaps: none
-- Problem flags: [coaching] 25 exercise placements lack demo URL and/or core coaching fields · [progression] 9 loaded/main-or-accessory placements have no progressionOf/regressionOf links
+- Problem flags: [coaching] 25 exercise placements lack demo URL and/or core coaching fields · [progression] 8 loaded/main-or-accessory placements have no progressionOf/regressionOf links
 
 ### Back + Chest
 - Counts: total=8, main=3, accessory=2
@@ -354,7 +354,7 @@ Comparison snapshots after first-class equipment identity. Phase 0 baselines wer
   - `wall-angel-hold` Wall Angel Hold | slot=n/a | role=mobility+scapular | truth=unknown | equip=none | supports=none | source=n/a | demoGap=true | coachingGaps=none | complexity=n/a
 - main:
   - `machine-leg-press` Machine Leg Press | slot=mainSquatPrimary | role=mainSquatPrimary | truth=true | equip=machines | supports=machine | source=legality_repair | demoGap=true | coachingGaps=none | complexity=2
-  - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHingePrimary | role=mainHingePrimary | truth=true | equip=none | supports=none | source=legality_repair | demoGap=true | coachingGaps=none | complexity=2
+  - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | role=mainHingePrimary | truth=true | equip=dumbbells | supports=none | source=legality_repair | demoGap=true | coachingGaps=none | complexity=3
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | role=mainUnilateralLowerLoaded | truth=true | equip=dumbbells | supports=none | source=legality_repair | demoGap=true | coachingGaps=none | complexity=3
 - accessory:
   - `plank` Plank | slot=accessorycore | role=accessorycore | truth=true | equip=none | supports=none | source=initial_pick | demoGap=true | coachingGaps=none | complexity=2
@@ -485,7 +485,7 @@ Comparison snapshots after first-class equipment identity. Phase 0 baselines wer
   - `band-rear-delt-fly` Band Rear Delt Fly | slot=mainShoulderPullPrimary | role=mainShoulderPullPrimary | truth=true | equip=bands | supports=none | source=day_intelligence_repair | demoGap=true | coachingGaps=none | complexity=2
 - accessory:
   - `bodyweight-triceps-extension` Bodyweight Triceps Extension | slot=accessorypush | role=accessorypush | truth=true | equip=none | supports=none | source=day_intelligence_repair | demoGap=true | coachingGaps=none | complexity=1
-  - `band-biceps-curl` Band Biceps Curl | slot=accessorypull | role=accessorypull | truth=true | equip=bands | supports=none | source=day_intelligence_repair | demoGap=true | coachingGaps=none | complexity=1
+  - `single-arm-band-biceps-curl` Single-Arm Band Biceps Curl | slot=accessorypull | role=accessorypull | truth=true | equip=bands | supports=none | source=day_intelligence_repair | demoGap=true | coachingGaps=none | complexity=1
   - `band-suitcase-march` Band Suitcase March | slot=accessorycore | role=accessorycore | truth=true | equip=bands | supports=none | source=day_intelligence_repair | demoGap=true | coachingGaps=none | complexity=1
 - cooldown:
   - `thread-the-needle` Thread-the-Needle | slot=n/a | role=mobility+spine | truth=unknown | equip=none | supports=none | source=n/a | demoGap=true | coachingGaps=none | complexity=n/a
@@ -498,11 +498,11 @@ Comparison snapshots after first-class equipment identity. Phase 0 baselines wer
   - `wall-angel-hold` Wall Angel Hold | slot=n/a | role=mobility+scapular | truth=unknown | equip=none | supports=none | source=n/a | demoGap=true | coachingGaps=none | complexity=n/a
 - main:
   - `band-front-squat` Band Front Squat | slot=mainSquatPrimary | role=mainSquatPrimary | truth=true | equip=bands | supports=none | source=legality_repair | demoGap=true | coachingGaps=none | complexity=2
-  - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHingePrimary | role=mainHingePrimary | truth=true | equip=none | supports=none | source=legality_repair | demoGap=true | coachingGaps=none | complexity=2
+  - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHingePrimary | role=mainHingePrimary | truth=true | equip=none | supports=none | source=legality_repair | demoGap=true | coachingGaps=none | complexity=3
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | role=mainUnilateralLowerLoaded | truth=true | equip=none | supports=none | source=legality_repair | demoGap=true | coachingGaps=none | complexity=2
 - accessory:
   - `pallof-press` Pallof Press | slot=accessorycore | role=accessorycore | truth=true | equip=bands | supports=band_anchor | source=initial_pick | demoGap=true | coachingGaps=none | complexity=2
-  - `standing-calf-raise` Standing Calf Raise | slot=accessorylower | role=accessorylower | truth=true | equip=none | supports=none | source=initial_pick | demoGap=true | coachingGaps=none | complexity=2
+  - `band-calf-raise` Band Calf Raise | slot=accessorylower | role=accessorylower | truth=true | equip=bands | supports=none | source=initial_pick | demoGap=true | coachingGaps=none | complexity=2
 - cooldown:
   - `thread-the-needle` Thread-the-Needle | slot=n/a | role=mobility+spine | truth=unknown | equip=none | supports=none | source=n/a | demoGap=true | coachingGaps=none | complexity=n/a
 

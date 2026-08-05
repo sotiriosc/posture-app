@@ -6,7 +6,7 @@ Comparison audit after first-class `PrimaryProgramEquipmentMode`. Phase 0 Markdo
 
 - Total cases: 160
 - Golden manual-review personas: 12
-- Elapsed: 21.5s
+- Elapsed: 22.8s
 
 Covered dimensions:
 

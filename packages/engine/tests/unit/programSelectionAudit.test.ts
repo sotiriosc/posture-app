@@ -444,6 +444,36 @@ describe("program selection audit metadata", () => {
     expect(backChestMains.some(isBackChestSupportMainDrift)).toBe(false);
   });
 
+  test("upper-back pain does not collapse gym Legs + Abs hinge into curl-only", () => {
+    const program = generateWeeklyProgram(
+      {
+        ...questionnaire,
+        goals: "Reduce pain",
+        painAreas: ["Shoulders", "Upper back"],
+        experience: "Beginner",
+      },
+      "selection-upper-back-hinge",
+      {
+        phaseIndex: 1,
+        weekIndex: 1,
+        cycleIndex: 1,
+        totalWeekIndex: 1,
+        seed: "selection-upper-back-hinge-seed",
+      }
+    );
+    const legsDay = program.week.find((day) => day.title === "Legs + Abs");
+    expect(legsDay).toBeTruthy();
+    const hingeMain = legsDay?.routine.find(
+      (item) =>
+        item.section === "main" &&
+        (item.selectionDebug?.slotKind === "mainHingePrimary" ||
+          item.selectionDebug?.slotLane === "hinge")
+    );
+    expect(hingeMain?.exerciseId).toBeTruthy();
+    expect(hingeMain?.exerciseId).not.toBe("machine-seated-hamstring-curl");
+    expect(hingeMain?.exerciseId).toBe("db-rdl");
+  });
+
   test("preserves deterministic same-seed output with selection debug metadata", () => {
     const run = () =>
       generateWeeklyProgram(questionnaire, "selection-deterministic", {
