@@ -135,6 +135,7 @@ const setupRequirementsForDay = (
         equipment: questionnaire.equipment,
       },
     });
+    if (!vm) continue;
     for (const step of vm.setupSteps.slice(0, 1)) {
       if (/anchor|bench|pull-up|door|loop/i.test(step)) setup.add(step);
     }
