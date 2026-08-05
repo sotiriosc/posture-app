@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { PhotoProvider } from "@/components/PhotoContext";
 import AccountIsolationGate from "@/components/AccountIsolationGate";
 import AppMenu from "@/components/AppMenu";
@@ -6,6 +7,7 @@ import Analytics from "@/components/Analytics";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import InstallApp from "@/components/InstallApp";
 import OfflineBadge from "@/components/OfflineBadge";
+import { getGaMeasurementId } from "@/gaMeasurementId";
 import { readServerSession } from "@/lib/serverAuth";
 import "./globals.css";
 
@@ -116,6 +118,7 @@ export default async function RootLayout({
   // client-side after a fetch resolves. `readServerSession` is cache()'d so
   // this doesn't add a second lookup on top of AppMenu's own session read.
   const session = await readServerSession();
+  const gaMeasurementId = getGaMeasurementId();
   return (
     <html lang="en">
       <body
@@ -133,6 +136,7 @@ export default async function RootLayout({
           </AccountIsolationGate>
         </Analytics>
       </body>
+      {gaMeasurementId ? <GoogleAnalytics gaId={gaMeasurementId} /> : null}
     </html>
   );
 }
