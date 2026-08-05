@@ -566,12 +566,12 @@ export const validateBodyweightProgramContract = (
       >
   ) => {
     failures.push({
+      ...failure,
       phase: failure.phase ?? phaseIndex,
       daysPerWeek: failure.daysPerWeek ?? program.daysPerWeek,
       confirmedCapabilities: failure.confirmedCapabilities ?? confirmed,
       requiredCapability: failure.requiredCapability ?? null,
       roleTruth: failure.roleTruth ?? null,
-      ...failure,
       existedInPhase0Baseline: phase0BaselineReasonCodes?.has(failure.reasonCode),
     });
   };

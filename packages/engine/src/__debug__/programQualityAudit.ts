@@ -380,13 +380,14 @@ const main = () => {
     baselines.weeklyFailures.length === 0 &&
     baselines.intelligenceFailures.length === 0;
 
-  // Coverage matrix must pass the Phase 7 TWO_SCENARIOS preset (includes resolved
-  // gym 5d pain baseline). Full phase-matrix still has documented non-baseline
-  // blockers (4-day arm/push minima, carry intelligence on some profiles).
-  const documentedPhaseMatrixBlockers = [
-    "MATRIX_GYM_4D_BICEPS_TRICEPS_PUSH_COVERAGE",
-    "MATRIX_CARRY_EXPOSURE_INTELLIGENCE",
-  ];
+  // Coverage matrix (TWO_SCENARIOS) and broad phase-matrix are both green after
+  // Phase 7 Completion (4-day arm/push quotas + carry exposure intelligence).
+  const documentedPhaseMatrixBlockers: string[] = matrices.phaseOk
+    ? []
+    : [
+        "MATRIX_GYM_4D_BICEPS_TRICEPS_PUSH_COVERAGE",
+        "MATRIX_CARRY_EXPOSURE_INTELLIGENCE",
+      ];
 
   const verdict =
     severity.ok &&
@@ -396,7 +397,7 @@ const main = () => {
     matrices.coverageOk &&
     coachingOk &&
     fuzzOk &&
-    PROGRAM_TEMPLATE_VERSION === 17;
+    PROGRAM_TEMPLATE_VERSION === 18;
 
   const summary = {
     generatedAt: new Date().toISOString(),
@@ -444,8 +445,12 @@ const main = () => {
     "## Matrices",
     "",
     `- Coverage matrix (TWO_SCENARIOS incl. gym 5d pain baseline): ${matrices.coverageOk ? "PASS" : "FAIL"}`,
-    `- Phase matrix: ${matrices.phaseOk ? "PASS" : "FAIL"} (informational; documented blockers below)`,
-    `- Documented phase-matrix blockers: ${documentedPhaseMatrixBlockers.join(", ")}`,
+    `- Phase matrix: ${matrices.phaseOk ? "PASS" : "FAIL"}`,
+    `- Documented phase-matrix blockers: ${
+      documentedPhaseMatrixBlockers.length
+        ? documentedPhaseMatrixBlockers.join(", ")
+        : "none"
+    }`,
     "",
     "## Baselines (former out-of-gate gym 5d pain)",
     "",

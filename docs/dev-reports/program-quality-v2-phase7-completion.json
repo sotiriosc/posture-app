@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-08-05T16:30:00.000Z",
+  "phase": "7-completion",
+  "checkpointPreserved": "3cbecf298f06c0f378b54fe5ff895621f1cdfd13",
+  "verdict": "PASS",
+  "templateVersion": 18,
+  "templateVersionDecision": "bump",
+  "templateVersionRationale": "Generated-program composition changes: true-carry retention through accessory purity, calves/carry coexistence, home biceps coverage indexes, honest 4-day weekly minima, and personal-block-aware squat/hinge fallbacks.",
+  "blockersResolved": [
+    {
+      "code": "MATRIX_GYM_4D_BICEPS_TRICEPS_PUSH_COVERAGE",
+      "rootCause": "frequency-specific_quota_policy",
+      "fix": "getWeeklyCoverageContract(4) biceps/triceps/push/hinge minima set to 1"
+    },
+    {
+      "code": "MATRIX_CARRY_EXPOSURE_INTELLIGENCE",
+      "rootCause": "audit_unconditional_carry_plus_purity_lane_strip",
+      "fix": "pain/equipment-aware true-carry legality; accessory purity legal-lane fallback; carry/calves preserve rules"
+    }
+  ],
+  "validationFixes": [
+    "quality-gate recovery forwards blockedExerciseIds and other caller options",
+    "goblet-squat allowed when machine squat primaries are blocked/unusable",
+    "band-rdl marked loadedMainEligible for hinge_primary block fallback"
+  ],
+  "matrices": {
+    "coverageMatrix": "PASS",
+    "phaseMatrix": "PASS",
+    "remainingBlockers": []
+  },
+  "fuzz": {
+    "totalCases": 50000,
+    "requiredZeroRegressions": 0,
+    "deterministicMismatches": 0,
+    "newCoachingGaps": 0,
+    "modes": {
+      "gym": { "cases": 10000, "hardFailures": 0, "identityCollapse": 0, "illegalEquipment": 0, "deterministicRepeat": 0, "exceptions": 0 },
+      "dumbbells": { "cases": 10000, "hardFailures": 0, "identityCollapse": 0, "illegalEquipment": 0, "deterministicRepeat": 0, "exceptions": 0 },
+      "bands": { "cases": 10000, "hardFailures": 0, "identityCollapse": 0, "illegalEquipment": 0, "deterministicRepeat": 0, "exceptions": 0 },
+      "bodyweight": { "cases": 10000, "hardFailures": 0, "identityCollapse": 0, "illegalEquipment": 0, "deterministicRepeat": 0, "exceptions": 0 },
+      "mixedHome": { "cases": 10000, "hardFailures": 0, "identityCollapse": 0, "illegalEquipment": 0, "deterministicRepeat": 0, "exceptions": 0 }
+    }
+  },
+  "focusedTests": {
+    "phase7CompletionCoveragePolicy.test.ts": "PASS",
+    "programQualityGate.test.ts": "PASS"
+  },
+  "historicalPhase7ReportsPreserved": true,
+  "nextPhase": "Phase 7B — only after explicit instruction"
+}

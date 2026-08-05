@@ -2831,6 +2831,45 @@ Phase 0–6 artifacts preserved.
 - **Phase 7B — Program Presentation Contract**, only after explicit instruction
 - Do not begin Phase 8, Phase 9, merge to `main`, nutrition, wearables, knowledge portal, or engine decomposition
 
+### Phase 7 Completion Addendum
+
+Checkpoint preserved: `3cbecf298f06c0f378b54fe5ff895621f1cdfd13` (historical Phase 7 evidence). Completion ships as a new commit after that checkpoint.
+
+#### Blockers resolved
+
+| Code | Root cause | Correction |
+|------|------------|------------|
+| `MATRIX_GYM_4D_BICEPS_TRICEPS_PUSH_COVERAGE` | 4-day contract demanded 2 biceps/triceps/push days on Upper/Lower (one push + one pull day) | `getWeeklyCoverageContract(4)` minima: biceps/triceps/push/hinge = 1 |
+| `MATRIX_CARRY_EXPOSURE_INTELLIGENCE` | Audit required carry for all ≥4-day weeks; purity stripped repaired true carries; marches ≠ carries | Pain/equipment-aware true-carry legality; purity legal-lane fallback; carry/calves preserve rules |
+
+Also closed during completion validation: quality-gate recovery now preserves personal equipment blocks; gym machine-preference / hinge eligibility no longer starve squat/hinge roles when preferred exercises are blocked.
+
+#### Relational traces (summary)
+
+- **Arm/push:** persona/phase/4d gym → weekly contract + repair → one direct bi/tri/push day → program week UI → stored in new programs (v18)
+- **Carry:** persona/phase/freq/equipment/pain → true-carry legality + repair + purity → true carry when legal, else capability limitation → lower/carry accessories → stored when placed (v18)
+
+#### Template version
+
+`PROGRAM_TEMPLATE_VERSION` **17 → 18** (composition change).
+
+#### Matrices and fuzz
+
+- `audit:coverage-matrix`: **PASS**
+- `audit:phase-matrix`: **PASS** (no remaining blockers)
+- 50,000/50,000 fuzz cases evaluated — 0 hard failures, 0 deterministic mismatches, 0 new coaching gaps
+
+#### Reports
+
+- `docs/dev-reports/program-quality-v2-phase7-completion.md`
+- `docs/dev-reports/program-quality-v2-phase7-completion.json`
+
+Existing Phase 7 Result and Phase 7 report artifacts above remain historical evidence (not overwritten).
+
+#### Stop
+
+Phase 7 Completion complete. Do not begin Phase 7B until explicitly instructed.
+
 ## Phase 7B — Program Presentation Contract
 
 ### Objective

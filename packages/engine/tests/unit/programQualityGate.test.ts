@@ -88,7 +88,7 @@ describe("program quality gate", () => {
     expect(evaluation.passed).toBe(true);
     expect(evaluation.hardFailures).toEqual([]);
     expect(program.templateVersion).toBe(PROGRAM_TEMPLATE_VERSION);
-    expect(PROGRAM_TEMPLATE_VERSION).toBe(17);
+    expect(PROGRAM_TEMPLATE_VERSION).toBe(18);
   });
 
   test("hard failure cannot be offset by structural score", () => {
@@ -205,7 +205,7 @@ describe("program quality gate", () => {
   });
 
   test("stored template version 17 remains the generation version", () => {
-    expect(PROGRAM_TEMPLATE_VERSION).toBe(17);
+    expect(PROGRAM_TEMPLATE_VERSION).toBe(18);
     const program = generate(
       {
         goals: "General fitness",
@@ -218,6 +218,6 @@ describe("program quality gate", () => {
       1,
       "p7-template-version-seed"
     );
-    expect(program.templateVersion).toBe(17);
+    expect(program.templateVersion).toBe(18);
   });
 });

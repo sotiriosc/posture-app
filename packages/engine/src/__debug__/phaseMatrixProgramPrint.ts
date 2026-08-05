@@ -324,14 +324,17 @@ PROFILE_BASES.forEach((profile) => {
           daysPerWeek === 3 &&
           equipmentCase.label === "bands";
         if (isTargetBandOnlyCase) {
-          const backChestDay = program.week.find((day) => day.title === "Back + Chest");
-          if (!backChestDay) {
+          // Band 3-day authorship uses Full Body A/B/C (not gym Back + Chest).
+          const fullBodyA = program.week.find((day) =>
+            /^full body a\b/i.test(day.title.trim())
+          );
+          if (!fullBodyA) {
             hasFailures = true;
             console.log(
-              "  TARGET ASSERT FAIL: missing Back + Chest day for pain beginner/growth/bands/3d"
+              "  TARGET ASSERT FAIL: missing Full Body A day for pain beginner/growth/bands/3d"
             );
           } else {
-            const mainExercises = backChestDay.routine
+            const mainExercises = fullBodyA.routine
               .filter((item) => item.section === "main")
               .map((item) => requireExerciseById(item.exerciseId));
             const mainPushCount = mainExercises.filter((exercise) =>
@@ -343,11 +346,11 @@ PROFILE_BASES.forEach((profile) => {
             if (mainPushCount < 1 || mainPullCount < 1) {
               hasFailures = true;
               console.log(
-                `  TARGET ASSERT FAIL: Back + Chest mains need push>=1 & pull>=1 (got push=${mainPushCount}, pull=${mainPullCount})`
+                `  TARGET ASSERT FAIL: Full Body A mains need push>=1 & pull>=1 (got push=${mainPushCount}, pull=${mainPullCount})`
               );
             } else {
               console.log(
-                `  TARGET ASSERT PASS: Back + Chest mains push=${mainPushCount}, pull=${mainPullCount}`
+                `  TARGET ASSERT PASS: Full Body A mains push=${mainPushCount}, pull=${mainPullCount}`
               );
             }
           }

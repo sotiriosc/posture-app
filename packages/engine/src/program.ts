@@ -225,7 +225,7 @@ import {
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
-export const PROGRAM_TEMPLATE_VERSION = 17;
+export const PROGRAM_TEMPLATE_VERSION = 18;
 const clampPhaseIndexToSupportedRange = (phaseIndex: number) =>
   Math.min(MAX_PHASE_INDEX, Math.max(1, Math.floor(phaseIndex)));
 
@@ -2867,6 +2867,59 @@ export const deriveExerciseRole = (exercise: Exercise): ExerciseRole => {
 
 const isTrueCarryCoverageExercise = (exercise: Exercise) =>
   exercise.carryType === "carry" || (exercise.weeklyCoverageTags ?? []).includes("carry");
+
+const painContraindicationsHitPainAreas = (
+  painContraindications: string[] | undefined,
+  painAreas: string[]
+) => {
+  if (!painContraindications?.length || !painAreas.length) return false;
+  const normalizedAreas = painAreas.map(canonicalizePainArea);
+  return painContraindications.some((entry) => {
+    const contra = canonicalizePainArea(entry);
+    return normalizedAreas.some((area) => {
+      if (contra === area) return true;
+      if (
+        area === "lower back" &&
+        (contra.includes("low back") || contra.includes("lower back"))
+      ) {
+        return true;
+      }
+      const contraCore = contra.replace(/^acute\s+/, "");
+      return contra.includes(area) || area.includes(contraCore);
+    });
+  });
+};
+
+const isPainSafeTrueCarryCoverageExercise = (
+  exercise: Exercise,
+  painAreas: string[]
+) =>
+  isTrueCarryCoverageExercise(exercise) &&
+  !painContraindicationsHitPainAreas(exercise.painContraindications, painAreas);
+
+const trueCarryPreferredIdsForCapability = (
+  capabilityMode: EquipmentCapabilityMode
+): string[] =>
+  capabilityMode === "hasLoad"
+    ? ["farmers-carry", "suitcase-carry", "suitcase-hold-march"]
+    : capabilityMode === "bandOnly"
+      ? ["band-suitcase-march", "suitcase-hold-march"]
+      : ["suitcase-hold-march"];
+
+/**
+ * True loaded-carry exposure is only required when a pain-safe, equipment-legal
+ * true-carry candidate exists. Core-stability marches are not substitutes.
+ */
+export const hasLegalTrueCarryExposureCandidate = (params: {
+  capabilityMode: EquipmentCapabilityMode;
+  painAreas: string[];
+}): boolean => {
+  const { capabilityMode, painAreas } = params;
+  return trueCarryPreferredIdsForCapability(capabilityMode)
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise))
+    .some((exercise) => isPainSafeTrueCarryCoverageExercise(exercise, painAreas));
+};
 
 export const matchesRule = (
   exercise: Exercise,
@@ -5557,9 +5610,20 @@ const appendCoverageAccessory = (params: {
       const item = day.routine[index];
       const exercise = exerciseById(item.exerciseId);
       if (!exercise) return false;
-      const mustKeepForDaySpec = protectedRules.some((rule) =>
-        matchesRule(exercise, rule, "accessory")
-      );
+      const mustKeepForDaySpec = protectedRules.some((rule) => {
+        if (!matchesRule(exercise, rule, "accessory")) return false;
+        // If another accessory already satisfies this must-include (e.g. a true
+        // carry covering anti-rotation), allow replacing the duplicate slot.
+        const satisfiedElsewhere = accessoryIndexes.some((otherIndex) => {
+          if (otherIndex === index) return false;
+          const otherItem = day.routine[otherIndex];
+          const otherExercise = exerciseById(otherItem.exerciseId);
+          return Boolean(
+            otherExercise && matchesRule(otherExercise, rule, "accessory")
+          );
+        });
+        return !satisfiedElsewhere;
+      });
       const mustKeepByPreserveRule = preserveRules.some((rule) =>
         matchesRule(exercise, rule, "accessory")
       );
@@ -5624,6 +5688,15 @@ const pickCoverageExerciseId = (params: {
     ) {
       continue;
     }
+    if (
+      matchRule.id === "carry_focus" &&
+      !isPainSafeTrueCarryCoverageExercise(
+        exercise,
+        context.selectionContext.painAreas
+      )
+    ) {
+      continue;
+    }
     if (!matchesRule(exercise, matchRule, "accessory")) continue;
     return exercise.id;
   }
@@ -5632,6 +5705,15 @@ const pickCoverageExerciseId = (params: {
     .filter((candidate) => {
       if (usedIds.has(candidate.id)) return false;
       if (!matchesRule(candidate, matchRule, "accessory")) return false;
+      if (
+        matchRule.id === "carry_focus" &&
+        !isPainSafeTrueCarryCoverageExercise(
+          candidate,
+          context.selectionContext.painAreas
+        )
+      ) {
+        return false;
+      }
       return isExerciseEligibleForProgramContext({
         exercise: candidate,
         available: context.available,
@@ -5790,14 +5872,17 @@ export const getWeeklyCoverageContract = (daysPerWeek: 3 | 4 | 5): WeeklyCoverag
     };
   }
   if (daysPerWeek === 4) {
+    // Upper/Lower gym structure has one dedicated push day and one pull day.
+    // Full-body home 4-day templates also land one clear hinge day. Direct arm
+    // work and push compounds are expected once each week, not twice.
     return {
       calvesDays: 2,
-      bicepsDays: 2,
-      tricepsDays: 2,
+      bicepsDays: 1,
+      tricepsDays: 1,
       squatDays: 2,
-      hingeDays: 2,
+      hingeDays: 1,
       pullDays: 2,
-      pushDays: 2,
+      pushDays: 1,
     };
   }
   return {
@@ -6073,18 +6158,16 @@ const applyWeeklyCoverageRepairs = (params: {
       : 1
     : 1;
 
-  const carryPreferredIds =
-    context.capabilityMode === "hasLoad"
-      ? ["farmers-carry", "suitcase-carry", "suitcase-hold-march"]
-      : context.capabilityMode === "bandOnly"
-      ? ["band-suitcase-march", "suitcase-hold-march"]
-      : ["suitcase-hold-march"];
+  const carryPreferredIds = trueCarryPreferredIdsForCapability(context.capabilityMode);
   const hasLegalTrueCarryCandidate = carryPreferredIds
     .map((id) => exerciseById(id))
     .filter((exercise): exercise is Exercise => Boolean(exercise))
     .some(
       (exercise) =>
-        isTrueCarryCoverageExercise(exercise) &&
+        isPainSafeTrueCarryCoverageExercise(
+          exercise,
+          context.selectionContext.painAreas
+        ) &&
         isExerciseEligibleForProgramContext({
           exercise,
           available: context.available,
@@ -6109,14 +6192,26 @@ const applyWeeklyCoverageRepairs = (params: {
         ? 2
         : 1
       : 0;
+  const homeArmCoverageIndexes = nextWeek
+    .map((day, index) => ({ day, index }))
+    .filter(({ day }) => {
+      const normalized = day.title.toLowerCase();
+      return (
+        normalized.includes("full body") ||
+        normalized.includes("upper pattern") ||
+        normalized.includes("practice & restore") ||
+        normalized.includes("practice and restore")
+      );
+    })
+    .map((entry) => entry.index);
   const bicepsCoverageIndexes =
     upperPullOrArmsDayIndexes.length > 0
       ? upperPullOrArmsDayIndexes
-      : armCoverageIndexes;
+      : [...new Set([...armCoverageIndexes, ...homeArmCoverageIndexes])];
   const tricepsCoverageIndexes =
     upperPushOrArmsDayIndexes.length > 0
       ? upperPushOrArmsDayIndexes
-      : armCoverageIndexes;
+      : [...new Set([...armCoverageIndexes, ...homeArmCoverageIndexes])];
   const lowerHingeDayIndexes = nextWeek
     .map((day, index) => ({ day, index }))
     .filter(({ day }) => {
@@ -6167,6 +6262,9 @@ const applyWeeklyCoverageRepairs = (params: {
     dayIndexes: [...lowerCoverageIndexes, ...corePriorityIndexes],
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
+    // Preserve calves/arms so carry repair replaces a core/anti-rotation slot
+    // (true carry role) instead of stealing the lower-lane calf accessory.
+    preserveRules: [calvesRule, bicepsIsolationRule, tricepsIsolationRule],
     context,
     note: "Smart patch: weekly carry exposure.",
     warningLabel: "Carry",
@@ -6251,6 +6349,9 @@ const applyWeeklyCoverageRepairs = (params: {
     dayIndexes: calvesCoverageIndexes,
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
+    // Keep true carries when filling calves so hinge/carry days become
+    // carry + calf rather than plank + carry with calves short for the week.
+    preserveRules: [carryRule],
     context,
     note: "Coverage add: weekly calves minimum.",
     warningLabel: "Calves",
@@ -6400,7 +6501,7 @@ const applyWeeklyCoverageRepairs = (params: {
       dayIndexes: calvesCoverageIndexes,
       daysPerWeek,
       accessoryCapacityByDayIndex: baselineAccessoryCapacity,
-      preserveRules: [bicepsIsolationRule, tricepsIsolationRule],
+      preserveRules: [bicepsIsolationRule, tricepsIsolationRule, carryRule],
       context,
       note: "Fallback coverage add: weekly calves minimum.",
       warningLabel: "Calves fallback",
@@ -17668,6 +17769,7 @@ const getLegsAbsRoleCandidateIds = (
     return [
       "assisted-box-squat",
       "machine-leg-press",
+      "machine-hack-squat",
       "goblet-squat",
       "bodyweight-squat",
       "heels-elevated-squat",
@@ -17691,6 +17793,7 @@ const getLegsAbsRoleCandidateIds = (
     if (phaseStage === "skill") {
       return [
         "db-rdl",
+        "band-rdl",
         "back-extension",
         "barbell-hip-thrust",
         "machine-glute-drive",
@@ -21616,8 +21719,19 @@ const isExerciseEligibleForProgramContext = (params: {
     return false;
   }
   const intent = context.intentProfile;
+  // Prefer machine squat primaries in gym, but do not hard-starve squat_primary
+  // when those machine options are personally blocked/deferred or otherwise unusable.
   if (section === "main" && exercise.id === "goblet-squat" && available.has("machines")) {
-    return false;
+    const machineSquatStillViable = ["machine-leg-press", "machine-hack-squat"].some((id) => {
+      if (context.blockedExerciseIds?.has(id)) return false;
+      if (context.feedbackSummaryByExercise.get(id)?.deferred === true) return false;
+      const machine = exerciseById(id);
+      if (!machine) return false;
+      if (!isExerciseEligible(machine, available)) return false;
+      if (!isEligibleForPhase(machine, context.phaseName, context)) return false;
+      return machine.loadedMainEligible === true;
+    });
+    if (machineSquatStillViable) return false;
   }
   // Dumbbell-only programs must not silently borrow gym/cable/band/barbell tools.
   if (
@@ -23806,6 +23920,7 @@ const resolveThreeDayBlueprint = (params: {
         activation: [
           "assisted-box-squat",
           "machine-leg-press",
+          "machine-hack-squat",
           "bodyweight-squat",
           "goblet-squat",
           "heels-elevated-squat",
@@ -24586,7 +24701,27 @@ const isThreeDayGymMainSlotEligible = (params: {
 
   if (isLegsAbsDayTitle(dayTitle)) {
     if (isRegressionOrDrillMovement(exercise)) return false;
-    if (exercise.loadedMainEligible !== true) return false;
+    // Prefer loaded true-hinge anchors in gym. When every loaded hinge is
+    // blocked/deferred/ineligible, allow band RDL so hinge_primary is not starved.
+    const bandRdlGymHingeFallback =
+      role === "hingePrimary" &&
+      exercise.id === "band-rdl" &&
+      params.available.has("bands") &&
+      !exercises.some((candidate) => {
+        if (candidate.id === exercise.id) return false;
+        if (candidate.category !== "main") return false;
+        if (candidate.loadedMainEligible !== true) return false;
+        if (!hasTrueHingeAnchor(candidate)) return false;
+        if (context.blockedExerciseIds?.has(candidate.id)) return false;
+        if (context.feedbackSummaryByExercise.get(candidate.id)?.deferred === true) {
+          return false;
+        }
+        return (
+          isExerciseEligible(candidate, params.available) &&
+          isEligibleForPhase(candidate, context.phaseName, context)
+        );
+      });
+    if (exercise.loadedMainEligible !== true && !bandRdlGymHingeFallback) return false;
     if (role === "squatPrimary") {
       return isLegsPrimarySquatExercise(exercise) && slotLane !== "hinge";
     }
@@ -24594,12 +24729,15 @@ const isThreeDayGymMainSlotEligible = (params: {
       // Hamstring curls carry a hinge pattern tag but are isolation, not a true
       // hinge anchor. Reuse the strict hinge legality gate so gym Legs + Abs
       // cannot satisfy mainHingePrimary with curl-only selections.
-      return isStrictHingeSlotAnchorLegal({
-        exercise,
-        available: params.available,
-        context,
-        dayTitle,
-      });
+      return (
+        bandRdlGymHingeFallback ||
+        isStrictHingeSlotAnchorLegal({
+          exercise,
+          available: params.available,
+          context,
+          dayTitle,
+        })
+      );
     }
     if (role === "unilateralLowerLoaded") {
       return isLegsSingleLegSquatExercise(exercise);
@@ -33767,18 +33905,33 @@ const enforceFinalAccessorySlotPurity = (params: {
       const debugLane = item.selectionDebug?.slotLane as AccessoryLane | undefined;
       const inferredLane = resolveAccessoryLaneForReplacement(exercise, null);
       const identityPlannedLane = daysPerWeek >= 4 && plannedLane ? plannedLane : undefined;
-      const lane =
+      let lane: AccessoryLane | undefined =
         inferredLane === "core" && !identityPlannedLane
           ? inferredLane
           : identityPlannedLane ?? debugLane ?? plannedLane ?? inferredLane;
       if (!lane) return;
-      const legal = isAccessoryLegalForSlot({
-        exercise,
-        dayTitle: day.title,
-        slotLane: lane,
-        available: context.available,
-        context: context.selectionContext,
-      });
+      // Prefer a legal inferred/debug lane over a planned ordinal that falsely
+      // rejects truthful coverage (e.g. true carry in a lower slot, or calves in a
+      // core slot after accessory reordering).
+      const laneLegal = (candidate: AccessoryLane) =>
+        isAccessoryLegalForSlot({
+          exercise,
+          dayTitle: day.title,
+          slotLane: candidate,
+          available: context.available,
+          context: context.selectionContext,
+        });
+      if (!laneLegal(lane)) {
+        const fallbackCandidates: AccessoryLane[] = [];
+        if (inferredLane) fallbackCandidates.push(inferredLane);
+        if (debugLane) fallbackCandidates.push(debugLane);
+        if (isTrueCarryCoverageExercise(exercise)) fallbackCandidates.push("core");
+        const legalFallback = fallbackCandidates.find(
+          (candidate) => candidate !== lane && laneLegal(candidate)
+        );
+        if (legalFallback) lane = legalFallback;
+      }
+      const legal = laneLegal(lane);
 
       if (legal) {
         const expectedSlotKind = accessorySlotKindByLane(lane);
@@ -35662,6 +35815,8 @@ export const generateWeeklyProgram = (
     initialProgram: candidate,
     generate: (questionnaire, id, opts) =>
       generateWeeklyProgram(questionnaire, id, {
+        // Preserve caller prefs (blocks, ladder, logs, etc.); only seed/id vary.
+        ...options,
         ...opts,
         skipQualityGate: true,
       }),

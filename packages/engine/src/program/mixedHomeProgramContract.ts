@@ -400,6 +400,7 @@ export const validateMixedHomeProgramContract = (
       >
   ) => {
     failures.push({
+      ...failure,
       phase: failure.phase ?? phaseIndex,
       daysPerWeek: failure.daysPerWeek ?? program.daysPerWeek,
       confirmedCapabilities: failure.confirmedCapabilities ?? confirmed,
@@ -413,7 +414,6 @@ export const validateMixedHomeProgramContract = (
       ],
       setupTransitions: failure.setupTransitions ?? [],
       requiredCapability: failure.requiredCapability ?? null,
-      ...failure,
       existedInPhase0Baseline: phase0BaselineReasonCodes?.has(failure.reasonCode),
     });
   };

@@ -310,11 +310,11 @@ export const validateDumbbellProgramContract = (
       Partial<Pick<DumbbellHardFailure, "phase" | "daysPerWeek" | "confirmedCapabilities">>
   ) => {
     failures.push({
+      ...failure,
       phase: failure.phase ?? phaseIndex,
       daysPerWeek: failure.daysPerWeek ?? program.daysPerWeek,
       confirmedCapabilities: failure.confirmedCapabilities ?? confirmed,
       requiredCapability: failure.requiredCapability ?? null,
-      ...failure,
       existedInPhase0Baseline: phase0BaselineReasonCodes?.has(failure.reasonCode),
     });
   };

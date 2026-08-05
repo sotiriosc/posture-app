@@ -660,7 +660,7 @@ export const validateGymProgramContract = (
         }
       }
       const upperLeak = mainExercises.find((entry) => isUpperMainLeak(entry.exercise));
-      if (upperLeak && identity !== "arms_posture") {
+      if (upperLeak) {
         // Allow only if clearly lower; filter false positives from "press" in leg press names later if needed
         const descriptor = descriptorOf(upperLeak.exercise);
         if (
