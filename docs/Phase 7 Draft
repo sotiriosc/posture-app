@@ -1,0 +1,205 @@
+# Phase 7 Draft — Pattern Recognition & Corrective Injection
+
+**Status:** DRAFT for Sotirios review. Not ready to execute. Two questions
+at the bottom need your rulings first.
+
+## What this phase does, in plain language
+
+Right now, Praxis looks at posture photos and identifies **four** things:
+- Forward head
+- Scapular control problems
+- Thoracic (mid-back) issues
+- Hip stability
+
+When it sees one of these, it adds correctives to your program to work on
+them. That's the "focus tag" system from Phase 4.
+
+Phase 7 expands this in two ways:
+
+1. **Detect more patterns** — the four current ones are a start, but a
+   trainer looking at a client can see more than that. What else can the
+   app reliably see from a phone photo?
+
+2. **Actively fix gaps** — right now if the program's already balanced,
+   great. But if someone has (say) tight hips and the program doesn't
+   already have hip mobility work in it, the app should recognize that
+   and either add it or ask the user if they want it added.
+
+That's the whole phase in two sentences: **see more, do more about what
+you see.**
+
+## Why this matters for real users
+
+Right now a beginner shows up, takes photos, and gets a training plan.
+The plan is good because the engine is good. But the plan is mostly the
+same shape for everyone with similar equipment and experience — the four
+focus tags nudge it, but they don't reshape it heavily.
+
+With Phase 7, someone with (say) anterior pelvic tilt gets a program that
+looks visibly different from someone without it. More hip flexor stretching
+built in, more posterior chain work, maybe less overhead pressing until the
+tilt clears. And when the tilt clears at retest, the program shifts back.
+
+That's what "the app noticed and adapted" actually looks like. It's the
+surprise moment you keep asking for — but built into the training, not
+just the copy.
+
+## What the plan would build
+
+### Piece 1: Expand the focus-tag system
+
+Right now the pose analyzer measures certain body landmarks (like ear
+position relative to shoulders for forward head) and creates a "focus tag"
+when a measurement crosses a threshold.
+
+Phase 7 adds new measurements and new tags. The candidates I've drafted
+are below — you rule on which ones are honest.
+
+Each new tag would follow the same pattern as existing tags:
+- A specific measurement from the photo
+- A threshold for "this needs attention"
+- A retest cadence
+- A retirement rule (measurement clears → tag retires → correctives
+  reallocate)
+
+### Piece 2: Corrective injection when programs are missing something
+
+Right now if you have a focus tag, the program has correctives added to
+address it. Phase 7 makes this smarter:
+
+If the engine generates your weekly program and it happens to already
+have work that addresses your focus tag, great, leave it alone. But if
+the generated program doesn't naturally have (say) hip mobility work and
+you have a hip stability focus tag, the engine either injects the work
+automatically or asks you first.
+
+Which of those two behaviors is up to you (question 2 below).
+
+### Piece 3: Show the user why
+
+Whenever the engine injects a corrective because of a detected pattern,
+the user sees the reason. Not clinical language — coaching language.
+
+Example: *"Added glute bridges this week — your assessment showed some hip
+stability we're building up. This one clears fast when you stay consistent."*
+
+That's the transparency the whole app has been designed for. Nothing
+happens without a reason the user can see.
+
+## Question 1 (for you to rule on) — Which patterns should we detect?
+
+I'm listing what a phone camera *might* be able to detect based on standard
+posture assessment practice. **Your twenty years is the ceiling here.**
+Anything you can't reliably see in a real client's photo should not be on
+this list. False confidence is worse than missing coverage.
+
+For each one below, please rule: **YES** (include it), **NO** (exclude,
+photo can't reliably show it), or **MAYBE** (worth testing with real
+client photos before committing).
+
+**Draft candidates:**
+
+1. **Anterior pelvic tilt** — pelvis rotated forward, often with tight
+   hip flexors and lower back. Visible from the side view.
+   Sotirios: ___
+
+2. **Posterior pelvic tilt** — pelvis tucked under, often flat lower back.
+   Visible from the side view.
+   Sotirios: ___
+
+3. **Knee valgus (visible standing)** — knees collapse inward. Visible
+   from the front view, but only prominent cases show at rest without
+   loading.
+   Sotirios: ___
+
+4. **Kyphosis / rounded thoracic** — mid-back rounds forward. Visible
+   from the side view. Related to but distinct from the current thoracic
+   extension tag.
+   Sotirios: ___
+
+5. **Uneven shoulders (visible asymmetry)** — one shoulder sits higher
+   than the other. Visible from front and back.
+   Sotirios: ___
+
+6. **Foot pronation** — arches collapse inward. Visible from front and
+   back if the person is barefoot.
+   Sotirios: ___
+
+7. **Head tilt / lateral neck deviation** — head tilts to one side.
+   Visible from front.
+   Sotirios: ___
+
+8. **Hyperlordosis** — excessive lower back curve. Visible from side.
+   Related to anterior pelvic tilt but not identical.
+   Sotirios: ___
+
+If you want to add patterns I didn't list, add them at the bottom with a
+note on how they'd be measured from a photo.
+
+## Question 2 (for you to rule on) — How aggressive should the app be about adding correctives?
+
+When the engine sees a pattern and the program doesn't already address it,
+what should happen?
+
+Option A: **Just add it automatically.** Corrective work shows up in the
+program without asking. User sees a note explaining why.
+- Pro: Users don't have to make a decision
+- Con: Some users don't want more things added to their plan without say
+
+Option B: **Ask the user first, once per pattern.** Prompt shows up:
+"We noticed [X]. Want us to add corrective work for it? [Yes] [No, I'll
+handle it]." The user's answer sticks. If they say yes, the corrective
+comes in. If they say no, we don't ask again about that pattern until
+their next assessment.
+- Pro: Respects user agency, matches the Sacrifice/Test/Modify pattern
+- Con: One more decision to make
+
+Option C: **Frequency-based.** Add correctives but limit how many new
+things per week. Like: no more than 2 new correctives injected per week
+regardless of how many patterns are detected. If more are needed, they
+queue for next week.
+- Pro: Prevents overwhelming a beginner
+- Con: Some patterns might wait longer than they should
+
+Sotirios: ___
+
+My recommendation is **Option B** because it matches the way the app
+already treats users (asks, doesn't decide). But you might have a better
+read from your practice — if in real training, clients trust you to just
+add what they need, Option A might actually feel more like real coaching.
+
+## What Phase 7 does NOT do
+
+To keep this phase focused, it does not include:
+
+- Any changes to how photos are captured (Phase 4's protocol stays)
+- Any changes to the training program generation logic beyond corrective
+  injection
+- New assessment types (e.g. video, movement screens) — photo-based only
+- Anything related to nutrition, sleep, or non-movement factors
+- Real-time posture correction during exercises
+
+## Estimated scope
+
+If you rule YES on all patterns and pick Option B for injection: ~2 weeks
+of code work, with the biggest chunk being the pose analyzer updates and
+the associated tests. If you rule YES on fewer patterns, less time.
+
+## Sequencing recommendation
+
+- **Phase 8 (Progress Made Visible) first** — surfaces what already
+  exists, small, fast, high emotional payoff for real users testing.
+- **Phase 7 after Phase 8** — bigger, more clinical, but more valuable
+  once you have real users generating photos to test the new detections
+  against.
+
+Order matters here because Phase 7's new detections will need real photos
+to validate. Waiting until you have Motion Care clients on the app means
+you can test Phase 7 against real bodies, not synthetic personas.
+
+## What I need from you before this can be executed
+
+Just the two rulings above. Everything else is drafted. Once you rule,
+I finalize the spec and hand you the prompt.
+
+Take your time. This isn't urgent — go handle the gym stuff first.

@@ -1,0 +1,1097 @@
+Read `docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md` completely, including every Phase 0–6 result and all associated reports.
+
+Execute **Phase 7 only: Unified Quality-Gate Enforcement**.
+
+Work from the current checkpoint branch containing the completed Phase 6 coaching system.
+
+Leave these files untouched:
+
+```text
+latestprompt.md
+newpromptforpengine.md
+```
+
+Do not begin:
+
+* Phase 7B Program Presentation Contract,
+* Phase 8 plan-reveal and first-session UX,
+* Phase 9 telemetry and release,
+* component or engine decomposition,
+* broad application streamlining,
+* nutrition,
+* wearable integrations,
+* or the knowledge portal.
+
+---
+
+# Owner Decision — Binding Delivery and Merge Sequence
+
+Add the following sequencing decision to the master plan near the phase sequence.
+
+This is binding for the remainder of the project:
+
+1. Complete Phases 7, 7B, 8 and 9 on the current checkpoint/release branch.
+2. Create a clean checkpoint after every completed phase.
+3. Do not merge the equipment-experience project into `main` during an incomplete phase.
+4. After all product phases are complete, run the complete release-candidate validation suite.
+5. Compare the release branch against current `main` and resolve any integration drift.
+6. Open or update the final pull request and merge the validated release branch into `main`.
+7. Verify the exact merge commit through CI, application builds and production smoke checks.
+8. Only after the validated merge is on `main`, create a new decomposition branch.
+9. Component and engine separation must be behavior-preserving and must use the validated merged behavior as its baseline.
+10. Do not mix product behavior changes with component separation.
+
+Phase 7 must not merge to `main`.
+
+---
+
+# 1. Objective
+
+Create one enforceable, deterministic quality gate that composes all completed product contracts:
+
+* equipment identity,
+* gym programming,
+* dumbbell programming,
+* band programming,
+* bodyweight programming,
+* mixed-home programming,
+* equipment and support truth,
+* movement-role truth,
+* pain-aware programming,
+* progression continuity,
+* coaching completeness,
+* and deterministic generation.
+
+The current audits must no longer exist only as reports that humans may overlook.
+
+Phase 7 must establish:
+
+```text
+generation
+→ unified evaluation
+→ explicit pass, limitation, warning or hard failure
+→ bounded deterministic recovery where permitted
+→ final re-evaluation
+→ save only an approved result
+```
+
+A generated program that violates a hard contract must not silently reach a new user.
+
+Do not make the score easier to pass.
+
+Correct the underlying behavior.
+
+---
+
+# 2. Protect all completed phases
+
+Preserve:
+
+* the five first-class equipment modes,
+* canonical equipment-mode resolution,
+* explicit capabilities,
+* unknown capabilities remaining false,
+* gym contracts,
+* dumbbell Full Body A/B/C,
+* band setup lanes and anchor truth,
+* bodyweight role honesty,
+* mixed-home equipment coherence,
+* all pain-aware distinctions,
+* all progression behavior,
+* release-critical coaching completeness,
+* consumer and gym coaching surfaces,
+* deterministic generation,
+* `PROGRAM_TEMPLATE_VERSION` 17 unless a genuine generated-program behavior change requires a documented bump,
+* stored-program compatibility,
+* Phase 0–6 reports,
+* and all previously passing flagship and fuzz outcomes.
+
+Do not overwrite previous reports.
+
+Do not weaken a completed mode contract to make the unified gate pass.
+
+Do not remove a difficult persona from an audit denominator.
+
+Do not classify a real structural failure as a capability limitation.
+
+---
+
+# 3. Inventory every existing quality mechanism
+
+Before implementing enforcement, map all current quality systems.
+
+Inspect at minimum:
+
+* equipment-program audit,
+* gym-program contract and audit,
+* dumbbell-program contract and audit,
+* band-program contract and audit,
+* bodyweight-program contract and audit,
+* mixed-home contract and audit,
+* coaching-completeness audit,
+* general program contract,
+* coverage matrix,
+* phase matrix,
+* golden tests,
+* critical tests,
+* fuzz runners,
+* post-generation pipeline,
+* repair logic,
+* generation observability,
+* quality scores,
+* reason codes,
+* warnings,
+* exceptions,
+* and any production fallback behavior.
+
+Create:
+
+```text
+docs/dev-reports/program-quality-v2-phase7-gate-inventory.md
+```
+
+For every mechanism record:
+
+* canonical owner,
+* when it runs,
+* which modes it covers,
+* whether it is test-only or production-capable,
+* hard failures it can detect,
+* warnings it can detect,
+* overlapping responsibilities,
+* conflicting definitions,
+* and whether its output is machine-readable.
+
+Do not create a second implementation of an existing rule when the existing rule can become canonical.
+
+---
+
+# 4. Create one canonical quality result model
+
+Add a focused shared contract under the existing program architecture.
+
+A suitable location may resemble:
+
+```text
+packages/engine/src/program/qualityGate/
+```
+
+With focused files equivalent to:
+
+```text
+qualityGateTypes.ts
+evaluateProgramQuality.ts
+recoverProgramQuality.ts
+programQualityPolicy.ts
+```
+
+Use repository conventions.
+
+An appropriate result model may resemble:
+
+```ts
+type ProgramQualitySeverity =
+  | "hardFailure"
+  | "warning"
+  | "capabilityLimitation"
+  | "deferredContent";
+
+type ProgramQualityFinding = {
+  code: string;
+  severity: ProgramQualitySeverity;
+
+  mode:
+    | "gym"
+    | "dumbbells"
+    | "bands"
+    | "bodyweight"
+    | "mixedHome";
+
+  programId?: string;
+  phase?: string;
+  frequency?: number;
+  dayIndex?: number;
+  slot?: string;
+  exerciseId?: string;
+
+  expected?: unknown;
+  actual?: unknown;
+
+  userActionable: boolean;
+  internalMessage: string;
+  userSafeMessage?: string;
+
+  sourceContract: string;
+};
+
+type ProgramQualityEvaluation = {
+  passed: boolean;
+  hardFailures: ProgramQualityFinding[];
+  warnings: ProgramQualityFinding[];
+  capabilityLimitations: ProgramQualityFinding[];
+  deferredContent: ProgramQualityFinding[];
+
+  structuralScore?: number;
+  coachingComplete: boolean;
+  deterministicSignature?: string;
+};
+```
+
+Do not force this exact shape if equivalent types already exist.
+
+Required principles:
+
+* hard failures are structurally invalid outcomes;
+* warnings are valid outcomes that deserve internal visibility;
+* capability limitations describe what confirmed equipment physically cannot provide;
+* deferred content covers intentionally postponed items such as planned videos;
+* a capability limitation must never satisfy a missing structural role falsely;
+* planned videos are not Phase 7 failures;
+* raw internal reason codes must not be exposed directly to users.
+
+---
+
+# 5. Compose completed mode contracts rather than replacing them
+
+The unified evaluator must delegate to the established mode-specific contracts.
+
+Conceptually:
+
+```ts
+switch (program.primaryEquipmentMode) {
+  case "gym":
+    return evaluateGymProgram(...);
+
+  case "dumbbells":
+    return evaluateDumbbellProgram(...);
+
+  case "bands":
+    return evaluateBandProgram(...);
+
+  case "bodyweight":
+    return evaluateBodyweightProgram(...);
+
+  case "mixedHome":
+    return evaluateMixedHomeProgram(...);
+}
+```
+
+Then apply shared contracts:
+
+* equipment identity,
+* equipment legality,
+* support and anchor truth,
+* section integrity,
+* main-role truth,
+* weekly coverage,
+* pain safety,
+* complexity,
+* phase continuity,
+* coaching reachability,
+* deterministic output,
+* and stored-data integrity.
+
+Do not replace precise mode rules with one vague universal score.
+
+The unified gate should coordinate contracts, not flatten them.
+
+---
+
+# 6. Define canonical severity policy
+
+Create an explicit policy assigning every stable reason code to a canonical severity.
+
+## Hard failures
+
+Hard failures include at minimum:
+
+* wrong equipment identity,
+* gym-template inheritance in another primary mode,
+* illegal equipment,
+* unconfirmed equipment, support or anchor use,
+* incorrect band type,
+* anchor-height mismatch,
+* false vertical or horizontal pulling satisfaction,
+* preparation-only movement satisfying a primary strength role,
+* missing required primary role where the capability exists,
+* day-identity mismatch,
+* excessive complexity beyond the contract,
+* invalid progression or regression reference,
+* deterministic mismatch,
+* unreachable release-critical coaching,
+* missing complete written coaching for a reachable exercise,
+* contradictory exercise setup,
+* and a corrupted or unresolvable generated exercise ID.
+
+## Capability limitations
+
+Examples:
+
+* true vertical pulling unavailable with dumbbells alone;
+* true loaded pulling unavailable in floor-and-wall bodyweight mode;
+* high-anchor pulling unavailable when no secure high anchor is confirmed;
+* loop-only bands cannot supply long-band pulling.
+
+These pass only when the program:
+
+* identifies the limitation honestly,
+* does not falsely claim the role,
+* and remains complete within the physical capability available.
+
+## Warnings
+
+Warnings may include:
+
+* an uncommon but valid exercise family,
+* unusually high but still permitted setup complexity,
+* a valid terminal progression,
+* or another non-blocking review signal.
+
+Warnings must not conceal structural failures.
+
+## Deferred content
+
+Planned exercise videos belong here.
+
+Missing planned videos do not fail Phase 7 when complete written coaching exists.
+
+Document the full code-to-severity map.
+
+---
+
+# 7. Resolve all remaining out-of-gate gym baselines
+
+The following cases have remained deliberately outside earlier equipment-mode gates:
+
+```text
+BASELINE_GYM_5D_PAIN_GROWTH_CALVES_ACCESSORY
+BASELINE_GYM_5D_PAIN_GROWTH_UPPER_HINGE_INTELLIGENCE
+```
+
+Phase 7 is where they must be resolved.
+
+Do not carry them forward merely because they predate the equipment project.
+
+For each:
+
+1. reproduce the exact persona deterministically;
+2. identify the actual ownership layer;
+3. determine whether the contract or behavior is wrong;
+4. correct the narrowest proper policy;
+5. add focused semantic regression tests;
+6. rerun the complete gym matrix;
+7. remove the out-of-gate exemption only after the underlying case passes.
+
+Possible ownership layers include:
+
+* higher-frequency template design,
+* accessory planning,
+* pain classification,
+* hinge intelligence,
+* weekly coverage,
+* slot-role truth,
+* selection scoring,
+* or repair behavior.
+
+Do not hardcode those personas.
+
+Do not exempt them under a renamed reason code.
+
+At the end of Phase 7, `audit:coverage-matrix` and `audit:phase-matrix` should pass unless a genuinely new, precisely documented blocker is discovered.
+
+A new blocker must not be silently accepted.
+
+---
+
+# 8. Production enforcement boundary
+
+Determine the correct location where new program generation becomes enforceable.
+
+The gate should run:
+
+* after a candidate program is completely assembled,
+* after legitimate pain-aware substitutions and defensive repair,
+* before the new program is persisted or presented as approved.
+
+Do not mutate historical stored programs.
+
+Do not run full fuzz audits in production.
+
+The production evaluator should evaluate only the generated program in memory.
+
+The full fuzz and matrix runners remain development and CI validation tools.
+
+---
+
+# 9. Bounded deterministic recovery policy
+
+A hard-failing candidate needs explicit behavior.
+
+Do not allow:
+
+* infinite regeneration,
+* random retries,
+* silent field deletion,
+* arbitrary post-generation swaps,
+* or returning the invalid plan.
+
+Implement or document the smallest safe deterministic recovery policy.
+
+Preferred sequence:
+
+1. Generate the normal candidate.
+2. Evaluate it.
+3. If it passes, approve it.
+4. If it hard-fails, classify whether deterministic recovery is permitted.
+5. Run at most a small, fixed number of deterministic recovery attempts.
+6. Re-evaluate after every attempt.
+7. Approve only a passing candidate.
+8. If all bounded attempts fail, use a tested mode-specific safe fallback only when it preserves:
+
+   * equipment identity,
+   * confirmed capabilities,
+   * pain restrictions,
+   * frequency,
+   * experience,
+   * and honest role truth.
+9. If no truthful fallback exists, return a structured generation failure rather than an invalid program.
+
+Recovery attempts must use stable seeds or a canonical alternative order.
+
+The same input must always produce the same final result.
+
+The fallback must not be one generic gym plan.
+
+Do not create a large secondary generator.
+
+Prefer canonical mode-specific templates and existing approved candidate logic.
+
+---
+
+# 10. Safe fallback contract
+
+Audit whether a fallback already exists.
+
+Where a fallback is required, define a minimal tested fallback family for each mode:
+
+* Gym
+* Dumbbells
+* Bands by setup lane
+* Bodyweight by confirmed support
+* Mixed Home by capability lane
+
+The fallback must:
+
+* retain mode identity,
+* remain pain-aware,
+* use only confirmed equipment,
+* avoid false coverage,
+* provide complete coaching,
+* use familiar exercises,
+* preserve required day count where safely possible,
+* and pass the same unified gate.
+
+A fallback is not allowed to bypass evaluation.
+
+Record whenever a fallback is used through internal observability.
+
+Do not expose frightening internal failure language to users.
+
+---
+
+# 11. Generation observability
+
+Add structured internal observability for:
+
+* first-pass result,
+* hard-failure codes,
+* recovery attempted,
+* recovery strategy,
+* recovery attempt count,
+* fallback used,
+* final result,
+* deterministic signature,
+* template version,
+* and elapsed evaluation time.
+
+Do not log:
+
+* raw photos,
+* sensitive free-text health information,
+* or unnecessary personally identifiable information.
+
+Use existing observability infrastructure.
+
+Do not introduce an external telemetry service in Phase 7.
+
+Phase 9 will determine production telemetry and release monitoring.
+
+---
+
+# 12. Deterministic signatures
+
+Create a stable semantic signature for validation.
+
+The signature should represent at minimum:
+
+* primary equipment mode,
+* phase,
+* frequency,
+* day identities,
+* exercise IDs in order,
+* section assignments,
+* slot roles,
+* prescriptions,
+* capability limitations,
+* and relevant progression targets.
+
+It must exclude unstable fields such as:
+
+* timestamps,
+* random IDs,
+* report-generation dates,
+* or formatting-only metadata.
+
+Use it to prove:
+
+* repeated generation is identical,
+* audit reruns do not change output,
+* recovery is deterministic,
+* and report restoration does not mutate canonical program behavior.
+
+Do not rely solely on serialized object equality if irrelevant fields are unstable.
+
+---
+
+# 13. Unified command
+
+Add:
+
+```bash
+npm run audit:program-quality
+```
+
+This command must run or orchestrate:
+
+* unified contract integrity,
+* mode-contract consistency,
+* reason-code registry validation,
+* severity-map validation,
+* fallback validation,
+* known-baseline regression checks,
+* coaching reachability,
+* deterministic signature checks,
+* and consolidated report generation.
+
+It should not replace the individual audits.
+
+It should summarize and enforce them.
+
+Create:
+
+```text
+docs/dev-reports/program-quality-v2-phase7-unified-gate.md
+docs/dev-reports/program-quality-v2-phase7-unified-gate.json
+```
+
+The report must include:
+
+* total evaluated cases,
+* cases by mode,
+* hard failures by code,
+* warnings by code,
+* capability limitations by code,
+* recovery attempts,
+* fallback uses,
+* deterministic mismatches,
+* coaching failures,
+* matrix status,
+* and final verdict.
+
+---
+
+# 14. Full fuzz validation
+
+Run the complete deterministic fuzz suite.
+
+At minimum:
+
+```text
+Gym:         10,000 cases
+Dumbbells:   10,000 cases
+Bands:       10,000 cases
+Bodyweight:  10,000 cases
+Mixed Home:  10,000 cases
+```
+
+Minimum total:
+
+```text
+50,000 deterministic mode-focused cases
+```
+
+Do not reduce the counts because of runtime.
+
+Test across each mode’s established dimensions:
+
+* experience,
+* phase,
+* frequency,
+* goal or intent,
+* pain combinations,
+* equipment and capability combinations,
+* variation seeds,
+* legacy stored values,
+* reordered equipment selections,
+* anchor configurations,
+* support configurations,
+* and relevant progression states.
+
+Required zeros across the applicable suites:
+
+* identity collapse,
+* illegal equipment,
+* unconfirmed equipment,
+* unconfirmed support,
+* unconfirmed anchor,
+* anchor-height mismatch,
+* incorrect band-type use,
+* false pulling satisfaction,
+* preparation-only primary role,
+* template inheritance,
+* day-identity mismatch,
+* deterministic mismatch,
+* unresolved release-critical coaching,
+* invalid progression reference,
+* and unapproved structural hard failure.
+
+Capability limitations must be counted but must not be misreported as hard failures.
+
+---
+
+# 15. Repeatability run
+
+After the first complete 50,000-case run:
+
+* rerun the deterministic signature portion,
+* compare aggregate signatures,
+* compare reason-code counts,
+* compare hard-failure counts,
+* compare capability-limitation counts,
+* and compare fallback counts.
+
+Required:
+
+```text
+0 semantic signature differences
+0 reason-code count differences
+0 final-verdict differences
+```
+
+A timestamp or report-order difference must not count as a semantic mismatch.
+
+Store the repeatability result.
+
+---
+
+# 16. Cross-mode contamination tests
+
+Add tests proving that improvements to one mode do not leak into another.
+
+Test at minimum:
+
+* gym plus extra selected home equipment remains gym;
+* dumbbells only remains dumbbells;
+* bands only remains bands;
+* none remains bodyweight;
+* dumbbells plus bands remains mixed home;
+* reordered selections preserve identity;
+* gym machines never leak into mixed home;
+* bands never leak into dumbbell-only;
+* dumbbells never leak into band-only;
+* long-band instructions never leak into loop-only;
+* support-dependent bodyweight work never leaks into no-support plans;
+* gym titles never leak into non-gym modes.
+
+Also prove that coaching resolution does not alter selection identity.
+
+---
+
+# 17. Quality-score integrity
+
+Audit every structural score.
+
+Required:
+
+* scores are diagnostic summaries, not replacements for hard contracts;
+* a hard failure cannot be offset by high scores elsewhere;
+* the score cannot be increased by falsely satisfying an unavailable role;
+* capability limitations do not unfairly penalize physically impossible coverage;
+* coaching completeness is binary for release-critical written guidance;
+* planned videos do not lower the written-coaching score;
+* no score threshold was lowered during Phase 7.
+
+Create tests proving that representative hard failures fail regardless of numerical score.
+
+Do not game the metric.
+
+---
+
+# 18. Stored-program compatibility
+
+Test:
+
+* old program template versions still load;
+* old exercise IDs still resolve where intentionally supported;
+* deprecated IDs resolve for history without becoming new selection candidates;
+* new coaching resolves by stable exercise ID;
+* historical programs are not retroactively regenerated;
+* historical capability omissions do not silently invent equipment;
+* generation quality enforcement applies to new generation, not destructive mutation.
+
+If a genuine behavior correction requires:
+
+```text
+PROGRAM_TEMPLATE_VERSION 18
+```
+
+then:
+
+* bump it once,
+* document exactly why,
+* verify old version 17 programs remain usable,
+* and ensure the version change is not caused merely by adding the quality evaluator.
+
+Do not bump the version for report-only changes.
+
+---
+
+# 19. CI enforcement
+
+Inspect the existing GitHub Actions and package-script structure.
+
+Add a required CI path for the complete program-quality gate.
+
+Preferred organization:
+
+```text
+quality-core
+quality-gym
+quality-dumbbells
+quality-bands
+quality-bodyweight
+quality-mixed-home
+quality-coaching
+quality-builds
+```
+
+Jobs may run in parallel.
+
+Runtime is not a reason to omit a required validation.
+
+If CI limits require job splitting:
+
+* split the work,
+* retain all case counts,
+* upload machine-readable reports,
+* aggregate the final verdict,
+* and block merge when any job fails.
+
+Do not make the complete gate informational-only.
+
+Do not allow `continue-on-error` for structural gates.
+
+Planned-video counts may be informational.
+
+The existing out-of-gate gym failures must no longer be allowed once fixed.
+
+---
+
+# 20. Failure diagnostics
+
+When a gate fails, the output must be actionable.
+
+Every hard failure should include:
+
+* mode,
+* persona or deterministic seed,
+* template version,
+* experience,
+* phase,
+* frequency,
+* goal or intent,
+* pain configuration,
+* confirmed equipment,
+* confirmed capabilities,
+* day,
+* slot,
+* exercise,
+* reason code,
+* expected role,
+* actual role,
+* and recovery/fallback history.
+
+Print a reproducible command or fixture reference where practical.
+
+Do not output thousands of duplicate stack traces.
+
+Group failures by stable code while retaining representative reproductions.
+
+---
+
+# 21. Manual flagship review
+
+After automated gates pass, manually inspect representative final programs.
+
+At minimum:
+
+## Gym
+
+* Beginner 3-day
+* Advanced 5-day
+* shoulder pain
+* upper-back pain
+* low-back pain
+* the two formerly out-of-gate cases
+
+## Dumbbells
+
+* Beginner 3-day
+* Advanced 5-day
+* fixed-weight progression
+* no bench
+* shoulder pain
+
+## Bands
+
+* anchored long band
+* no-anchor long band
+* loop only
+* both band types
+* pain case
+
+## Bodyweight
+
+* floor and wall only
+* confirmed pull-up bar
+* Beginner
+* Advanced
+* pain case
+
+## Mixed Home
+
+* anchored band plus dumbbells
+* no-anchor band plus dumbbells
+* mini-loop plus dumbbells
+* Advanced 5-day
+* pain case
+
+For each program answer:
+
+* Is the mode immediately recognizable?
+* Is every exercise legal?
+* Is every main role truthful?
+* Is every limitation honest?
+* Is the day identity clear?
+* Is progression coherent?
+* Is pain adaptation meaningful?
+* Is coaching available?
+* Is the workload understandable?
+* Would a paying user reasonably trust the plan?
+
+Store:
+
+```text
+docs/dev-reports/program-quality-v2-phase7-manual-review.md
+```
+
+---
+
+# 22. Required focused tests
+
+Add tests covering:
+
+* quality-result severity classification,
+* hard-failure precedence,
+* capability-limitation treatment,
+* deferred-video treatment,
+* reason-code registry completeness,
+* mode-contract dispatch,
+* production gate placement,
+* passing first attempt,
+* deterministic recovery,
+* recovery-attempt bound,
+* passing fallback,
+* failing fallback rejection,
+* no infinite retry,
+* no random retry,
+* no invalid persistence,
+* deterministic signature,
+* signature repeatability,
+* legacy program loading,
+* coaching reachability,
+* matrix baseline corrections,
+* and CI command integrity.
+
+Do not rely only on snapshots.
+
+Use semantic assertions.
+
+---
+
+# 23. Required validation commands
+
+Run the complete suite:
+
+```bash
+npm run audit:program-quality
+npm run audit:exercise-coaching
+npm run audit:equipment-program
+npm run audit:gym-program
+npm run audit:dumbbell-program
+npm run audit:band-program
+npm run audit:bodyweight-program
+npm run audit:mixed-home-program
+npm run audit:catalog
+npm run audit:program-contract
+npm run audit:coverage-matrix
+npm run audit:phase-matrix
+npm run test:golden
+npm run test:critical
+npm run test:full
+npm run build
+npm run lint
+```
+
+Also run:
+
+* consumer build,
+* gyms build,
+* focused quality-gate tests,
+* deterministic repeatability tests,
+* stored-program compatibility tests,
+* and critical consumer/gym session smoke tests where scripts exist.
+
+Do not skip a failing command.
+
+Do not restore a previous report to hide a changed result.
+
+Previous reports must remain unchanged as historical artifacts, but current failures must be shown in new Phase 7 reports.
+
+---
+
+# 24. Acceptance gate
+
+Phase 7 passes only when:
+
+* all five equipment-mode contracts pass;
+* all 50,000 required fuzz cases complete;
+* every required zero outcome remains zero;
+* repeated deterministic signatures match;
+* the two previously out-of-gate gym baselines are resolved;
+* coverage matrix passes;
+* phase matrix passes;
+* release-critical coaching remains 170/170 or increases only through justified reachable exercises;
+* missing planned videos remain accurately queued but non-blocking;
+* no invalid new program can pass the production evaluator;
+* recovery is deterministic and bounded;
+* every fallback passes the same gate;
+* stored programs remain compatible;
+* full tests pass;
+* both application builds pass;
+* CI enforcement is blocking;
+* and no previous mode regresses.
+
+Target:
+
+```text
+50,000/50,000 mode-focused fuzz cases evaluated
+0 unapproved structural hard failures
+0 deterministic mismatches
+0 illegal or unconfirmed equipment use
+0 false role satisfaction
+0 unresolved matrix baselines
+100% release-critical written coaching
+100% approved generated programs evaluated before persistence
+```
+
+Do not declare Phase 7 complete with known structural exemptions.
+
+---
+
+# 25. Reports
+
+Create Phase 7-specific reports without overwriting earlier artifacts:
+
+```text
+docs/dev-reports/program-quality-v2-phase7-gate-inventory.md
+docs/dev-reports/program-quality-v2-phase7-reason-code-policy.md
+docs/dev-reports/program-quality-v2-phase7-unified-gate.md
+docs/dev-reports/program-quality-v2-phase7-unified-gate.json
+docs/dev-reports/program-quality-v2-phase7-fuzz-summary.md
+docs/dev-reports/program-quality-v2-phase7-repeatability.md
+docs/dev-reports/program-quality-v2-phase7-recovery-review.md
+docs/dev-reports/program-quality-v2-phase7-manual-review.md
+docs/dev-reports/program-quality-v2-phase7-ci-enforcement.md
+```
+
+Include:
+
+* files changed,
+* canonical quality-gate location,
+* contract composition,
+* severity policy,
+* reason-code inventory,
+* baseline failures before and after,
+* production enforcement location,
+* recovery policy,
+* fallback policy,
+* deterministic signature design,
+* fuzz totals by mode,
+* required-zero results,
+* repeatability comparison,
+* coaching integrity,
+* stored-program compatibility,
+* CI structure,
+* manual review,
+* command results,
+* template-version decision,
+* and unresolved concerns.
+
+---
+
+# 26. Phase Result
+
+Update only the Program Quality V2 Phase 7 checklist and append the Phase 7 Result to:
+
+```text
+docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md
+```
+
+Include:
+
+* files changed,
+* unified gate location,
+* production enforcement boundary,
+* severity model,
+* reason-code registry,
+* mode-contract composition,
+* known baseline resolutions,
+* matrix results,
+* recovery and fallback behavior,
+* deterministic signatures,
+* 50,000-case fuzz results,
+* repeatability results,
+* coaching integrity results,
+* stored-program compatibility,
+* CI enforcement,
+* manual flagship review,
+* all command results,
+* unchanged historical reports,
+* remaining warnings or capability limitations,
+* whether the template version changed,
+* and the exact recommended starting point for Phase 7B.
+
+Stop after Phase 7.
+
+Do not begin Phase 7B, Phase 8, Phase 9, merge to `main`, deployment, component separation, engine decomposition, nutrition, wearables or knowledge-portal work.
