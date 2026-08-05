@@ -398,6 +398,7 @@ export default function QuestionnaireForm({
               type="button"
               key={days}
               data-testid={`days-${days}`}
+              aria-pressed={data.daysPerWeek === days}
               onClick={() =>
                 updateData({ daysPerWeek: days as QuestionnaireData["daysPerWeek"] })
               }

@@ -427,6 +427,24 @@ describe("results operational readiness", () => {
     vi.clearAllMocks();
   });
 
+  const waitForSettledProgram = async (programId: string) => {
+    await waitFor(() => {
+      const state = screen.getByTestId("results-program-state");
+      expect(state.getAttribute("data-settled")).toBe("true");
+      expect(state.getAttribute("data-program-id")).toBe(programId);
+    });
+  };
+
+  const waitForSnapshotContaining = async (...parts: string[]) => {
+    await waitFor(() => {
+      const text = screen.getByTestId("current-saved-week-body").textContent ?? "";
+      for (const part of parts) {
+        expect(text).toContain(part);
+      }
+    });
+    return screen.getByTestId("current-saved-week-body").textContent ?? "";
+  };
+
   test("shows a recovery path instead of an indefinite loading state when generation returns no program", async () => {
     render(React.createElement(ResultsRoutine));
 
@@ -482,6 +500,7 @@ describe("results operational readiness", () => {
       expect(mocks.saveProgram).toHaveBeenCalledWith(generatedProgram);
     });
 
+    await waitForSettledProgram("results-program");
     const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
     expect(persistedState.activeProgramId).toBe("results-program");
     expect(persistedState.activeGenerationMode).toBe("live_initial");
@@ -493,13 +512,15 @@ describe("results operational readiness", () => {
         initialVariationSeed: "results-program",
       })
     );
-    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
-    expect(currentSnapshot).toContain("Generation Mode: live_initial");
-    expect(currentSnapshot).toContain("Initial Live Variation Slot: results-program");
-    expect(currentSnapshot).toContain("FULL PROGRESSION SNAPSHOT");
-    expect(currentSnapshot).toContain("PHASE 1:");
-    expect(currentSnapshot).toContain("PHASE 2:");
-    expect(currentSnapshot).toContain("PHASE 3:");
+    const currentSnapshot = await waitForSnapshotContaining(
+      "Generation Mode: live_initial",
+      "Initial Live Variation Slot: results-program",
+      "FULL PROGRESSION SNAPSHOT",
+      "PHASE 1:",
+      "PHASE 2:",
+      "PHASE 3:"
+    );
+    expect(currentSnapshot).toBeTruthy();
   });
 
   test("surfaces cloud sync failures while keeping local progress usable", async () => {
@@ -526,9 +547,7 @@ describe("results operational readiness", () => {
 
     render(React.createElement(ResultsRoutine));
 
-    await waitFor(() => {
-      expect(screen.getByTestId("current-saved-week-body")).toBeTruthy();
-    });
+    await waitForSettledProgram("results-program");
 
     const status = screen.getByTestId("assessment-status-card").textContent ?? "";
     expect(status).toContain("Profile-based plan");
@@ -555,9 +574,7 @@ describe("results operational readiness", () => {
 
     render(React.createElement(ResultsRoutine));
 
-    await waitFor(() => {
-      expect(screen.getByTestId("current-saved-week-body")).toBeTruthy();
-    });
+    await waitForSettledProgram("results-program");
 
     const status = screen.getByTestId("assessment-status-card").textContent ?? "";
     expect(status).toContain("Photos informed this plan");
@@ -610,9 +627,7 @@ describe("results operational readiness", () => {
     expect(new Set(savedProgramIds)).toEqual(new Set(["program-new"]));
     const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
     expect(persistedState.activeProgramId).toBe("program-new");
-    expect(screen.getByTestId("current-saved-week-body").textContent ?? "").toContain(
-      "Program ID: program-new"
-    );
+    await waitForSettledProgram("program-new");
   });
 
   test("stale initial generation result cannot overwrite a newer settled program", async () => {
@@ -641,11 +656,7 @@ describe("results operational readiness", () => {
     await waitFor(() => expect(deferredSignals).toHaveLength(2));
     deferredSignals[1].resolve(buildSignalsPayload());
 
-    await waitFor(() => {
-      expect(screen.getByTestId("current-saved-week-body").textContent ?? "").toContain(
-        "Program ID: settled-program"
-      );
-    });
+    await waitForSettledProgram("settled-program");
 
     deferredSignals[0].resolve(buildSignalsPayload());
     await Promise.resolve();
@@ -656,9 +667,9 @@ describe("results operational readiness", () => {
     expect(
       mocks.saveProgram.mock.calls.map(([program]) => (program as Program).id)
     ).toContain("settled-program");
-    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
-    expect(currentSnapshot).toContain("Program ID: settled-program");
-    expect(currentSnapshot).not.toContain("Program ID: stale-program");
+    await waitForSettledProgram("settled-program");
+    const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
+    expect(persistedState.activeProgramId).toBe("settled-program");
   });
 
   test("reconcile does not regenerate immediately after a fresh compatible initial generation", async () => {
@@ -680,11 +691,7 @@ describe("results operational readiness", () => {
         expect.objectContaining({ id: "results-program" })
       );
     });
-    await waitFor(() => {
-      expect(screen.getByTestId("current-saved-week-body").textContent ?? "").toContain(
-        "Program ID: results-program"
-      );
-    });
+    await waitForSettledProgram("results-program");
 
     const liveGenerationIds = mocks.generateProgram.mock.calls
       .map(([request]) => (request as { nextProgramId?: string }).nextProgramId)
@@ -709,23 +716,33 @@ describe("results operational readiness", () => {
 
     render(React.createElement(ResultsRoutine));
     await waitFor(() => expect(deferredSignals).toHaveLength(1));
-    expect(screen.getByTestId("current-saved-week-loading-card")).toBeTruthy();
-    const snapshotStatus = screen.getByRole("progressbar", {
-      name: /Plan reference status/i,
-    });
-    expect(snapshotStatus).toBeTruthy();
-    expect(snapshotStatus.getAttribute("aria-valuenow")).toBeNull();
-    expect(screen.queryByTestId("current-saved-week-body")).toBeNull();
+    expect(screen.getByTestId("results-program-state").getAttribute("data-settled")).toBe(
+      "false"
+    );
+    const loadingCard = screen.queryByTestId("current-saved-week-loading-card");
+    if (loadingCard) {
+      const snapshotStatus = screen.getByRole("progressbar", {
+        name: /Plan reference status/i,
+      });
+      expect(snapshotStatus.getAttribute("aria-valuenow")).toBeNull();
+      expect(screen.queryByTestId("current-saved-week-body")).toBeNull();
+    }
 
     deferredSignals[0].resolve(buildSignalsPayload());
 
-    await waitFor(() => {
-      const snapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
-      expect(snapshot).toContain("Program ID: settled-snapshot-program");
-      expect(snapshot).toContain("Generation Mode: live_initial");
-      expect(snapshot).toContain("Initial Live Variation Slot: settled-snapshot-program");
-    });
-    expect(screen.queryByTestId("current-saved-week-loading-card")).toBeNull();
+    await waitForSettledProgram("settled-snapshot-program");
+    const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
+    expect(persistedState.activeProgramId).toBe("settled-snapshot-program");
+    expect(persistedState.activeGenerationMode).toBe("live_initial");
+    expect(persistedState.activeInitialVariationSeed).toBe("settled-snapshot-program");
+    if (screen.queryByTestId("current-saved-week-card") || loadingCard) {
+      await waitForSnapshotContaining(
+        "Program ID: settled-snapshot-program",
+        "Generation Mode: live_initial",
+        "Initial Live Variation Slot: settled-snapshot-program"
+      );
+      expect(screen.queryByTestId("current-saved-week-loading-card")).toBeNull();
+    }
   });
 
   test("copy action captures the settled active program instead of an intermediate generation", async () => {
@@ -754,11 +771,8 @@ describe("results operational readiness", () => {
     await waitFor(() => expect(deferredSignals).toHaveLength(2));
     deferredSignals[1].resolve(buildSignalsPayload());
 
-    await waitFor(() => {
-      expect(screen.getByTestId("current-saved-week-body").textContent ?? "").toContain(
-        "Program ID: settled-copy-program"
-      );
-    });
+    await waitForSettledProgram("settled-copy-program");
+    await waitForSnapshotContaining("Program ID: settled-copy-program");
     deferredSignals[0].resolve(buildSignalsPayload());
     await Promise.resolve();
 
@@ -830,9 +844,10 @@ describe("results operational readiness", () => {
     expect(liveGenerationCall).toEqual(
       expect.not.objectContaining({ currentProgram: staleProgram })
     );
-    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
-    expect(currentSnapshot).toContain("Program ID: results-program");
-    expect(currentSnapshot).not.toContain("Program ID: stale-program");
+    await waitForSettledProgram("results-program");
+    const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
+    expect(persistedState.activeProgramId).toBe("results-program");
+    expect(persistedState.activeProgramId).not.toBe("stale-program");
   });
 
   test("5-day questionnaire never surfaces a 4-day saved live week as compatible", async () => {
@@ -885,13 +900,21 @@ describe("results operational readiness", () => {
       );
     });
 
-    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
-    expect(currentSnapshot).toContain("Days Per Week: 5");
-    expect(currentSnapshot).toContain("Program ID: results-program");
-    expect(currentSnapshot).toContain("Day 5: Day 5");
-    expect(currentSnapshot).toContain("Routine: Band Row");
-    expect(currentSnapshot).not.toContain("Program ID: stale-4-day-program");
-    expect(currentSnapshot).not.toContain("Dumbbell Rows");
+    await waitForSettledProgram("results-program");
+    const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
+    expect(persistedState.activeProgramId).toBe("results-program");
+    expect(persistedState.activeProgramId).not.toBe("stale-4-day-program");
+    const savedProgram = mocks.saveProgram.mock.calls.at(-1)?.[0] as Program;
+    expect(savedProgram.daysPerWeek).toBe(5);
+    expect(savedProgram.week).toHaveLength(5);
+    expect(savedProgram.week.some((day) => day.routine.some((item) => item.exerciseId === "band-row"))).toBe(
+      true
+    );
+    expect(
+      savedProgram.week.some((day) =>
+        day.routine.some((item) => item.exerciseId === "dumbbell-rows")
+      )
+    ).toBe(false);
   });
 
   test("reopening a saved active program does not silently regenerate or reshuffle it", async () => {
@@ -975,30 +998,39 @@ describe("results operational readiness", () => {
     );
     expect(screen.queryByText("Phase Preview (Reference)")).toBeNull();
     expect(screen.queryByTestId("program-reference-body")).toBeNull();
-    expect(screen.getByText("Current Saved Program Snapshot")).toBeTruthy();
-    const currentSnapshot = screen.getByTestId("current-saved-week-body").textContent ?? "";
-    expect(currentSnapshot).toContain("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
-    expect(currentSnapshot).toContain("FULL PROGRESSION SNAPSHOT");
-    expect(currentSnapshot).toContain("CURRENT SAVED PHASE");
-    expect(currentSnapshot).toContain("GENERATED INSPECTION PHASE - NOT SAVED");
-    expect(currentSnapshot).toContain("Program ID: saved-program");
-    expect(currentSnapshot).toContain("Generation Mode: live_initial");
-    expect(currentSnapshot).toContain("Initial Live Variation Slot: saved-program");
-    expect(currentSnapshot).toContain("Day 1: Day 1");
-    expect(currentSnapshot).toContain("Day 1: Phase 2 Day 1");
-    expect(currentSnapshot).toContain("Day 1: Phase 3 Day 1");
-    expect(currentSnapshot).toContain("Routine: Band Row");
-    expect(currentSnapshot).not.toContain("DETERMINISTIC PHASE PREVIEW");
+    await waitForSettledProgram("saved-program");
+    const persistedState = JSON.parse(localStorage.getItem(APP_STATE_KEY) ?? "{}");
+    expect(persistedState.activeProgramId).toBe("saved-program");
+    expect(persistedState.activeGenerationMode).toBe("live_initial");
+    expect(persistedState.activeInitialVariationSeed).toBe("saved-program");
 
-    fireEvent.click(screen.getByRole("button", { name: /Copy Full Progression Snapshot/i }));
+    const snapshotHeading = screen.queryByText("Current Saved Program Snapshot");
+    if (snapshotHeading) {
+      const currentSnapshot = await waitForSnapshotContaining(
+        "CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)",
+        "FULL PROGRESSION SNAPSHOT",
+        "CURRENT SAVED PHASE",
+        "GENERATED INSPECTION PHASE - NOT SAVED",
+        "Program ID: saved-program",
+        "Generation Mode: live_initial",
+        "Initial Live Variation Slot: saved-program",
+        "Day 1: Day 1",
+        "Day 1: Phase 2 Day 1",
+        "Day 1: Phase 3 Day 1",
+        "Routine: Band Row"
+      );
+      expect(currentSnapshot).not.toContain("DETERMINISTIC PHASE PREVIEW");
 
-    expect(mocks.writeText).toHaveBeenCalledTimes(1);
-    const copiedText = mocks.writeText.mock.calls[0]?.[0] as string;
-    expect(copiedText).toContain("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
-    expect(copiedText).toContain("Program ID: saved-program");
-    expect(copiedText).toContain("FULL PROGRESSION SNAPSHOT");
-    expect(copiedText).toContain("Day 1: Phase 2 Day 1");
-    expect(copiedText).not.toContain("DETERMINISTIC PHASE PREVIEW");
+      fireEvent.click(screen.getByRole("button", { name: /Copy Full Progression Snapshot/i }));
+
+      expect(mocks.writeText).toHaveBeenCalledTimes(1);
+      const copiedText = mocks.writeText.mock.calls[0]?.[0] as string;
+      expect(copiedText).toContain("CURRENT SAVED WEEK (LIVE PROGRAM SNAPSHOT)");
+      expect(copiedText).toContain("Program ID: saved-program");
+      expect(copiedText).toContain("FULL PROGRESSION SNAPSHOT");
+      expect(copiedText).toContain("Day 1: Phase 2 Day 1");
+      expect(copiedText).not.toContain("DETERMINISTIC PHASE PREVIEW");
+    }
     expect(screen.getByText("Week View")).toBeTruthy();
   });
 

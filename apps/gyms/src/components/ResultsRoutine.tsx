@@ -69,6 +69,12 @@ import {
   gateReadinessConsistencyLines,
   metricsHaveBaselineFloor,
 } from "@/lib/baselineMetricCopy";
+import {
+  clampDisplayPercent,
+  computeDashboardReadinessScore,
+  formatTrainingReadinessChip,
+  metric01ToDisplayPercent,
+} from "@/lib/dashboardReadiness";
 import DashboardHero from "@/components/dashboard/DashboardHero";
 import CoachNoteBanner from "@/components/dashboard/CoachNoteBanner";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
@@ -426,11 +432,23 @@ type ProgressionInspectionPhaseSnapshot = {
 const formatPhaseMetrics = (program: Program) => {
   const metrics = program.phaseObjective?.metrics;
   if (!metrics) return null;
+  const readiness = metric01ToDisplayPercent(metrics.readiness);
+  const consistency = metric01ToDisplayPercent(metrics.consistency);
+  const painRisk = metric01ToDisplayPercent(metrics.painRisk);
+  const asymmetry = metric01ToDisplayPercent(metrics.asymmetry);
+  if (
+    readiness === null ||
+    consistency === null ||
+    painRisk === null ||
+    asymmetry === null
+  ) {
+    return null;
+  }
   return [
-    `readiness=${Math.round(metrics.readiness * 100)}%`,
-    `consistency=${Math.round(metrics.consistency * 100)}%`,
-    `painRisk=${Math.round(metrics.painRisk * 100)}%`,
-    `asymmetry=${Math.round(metrics.asymmetry * 100)}%`,
+    `readiness=${readiness}%`,
+    `consistency=${consistency}%`,
+    `painRisk=${painRisk}%`,
+    `asymmetry=${asymmetry}%`,
   ].join(", ");
 };
 
@@ -2407,9 +2425,9 @@ export default function ResultsRoutine({
     const readiness = program?.phaseObjective?.metrics?.readiness;
     const consistency = program?.phaseObjective?.metrics?.consistency;
     if (typeof readiness === "number" && typeof consistency === "number") {
-      return Math.round(((readiness + consistency) / 2) * 100);
+      return clampDisplayPercent(((readiness + consistency) / 2) * 100);
     }
-    return Math.max(55, consistencyPercent - 5);
+    return clampDisplayPercent(Math.max(55, consistencyPercent - 5));
   }, [
     program?.phaseObjective?.metrics?.readiness,
     program?.phaseObjective?.metrics?.consistency,
@@ -2514,9 +2532,23 @@ export default function ResultsRoutine({
     );
   }, [programId, activeProgramId, baselineForActiveProgram]);
 
+  const renderProgramStateMarker = (
+    settled: boolean,
+    programIdValue = program?.id ?? ""
+  ) => (
+    <div
+      data-testid="results-program-state"
+      data-settled={settled ? "true" : "false"}
+      data-program-id={programIdValue}
+      className="sr-only"
+      aria-hidden="true"
+    />
+  );
+
   if (!isReady) {
     return (
       <div className="ui-card ui-soft-surface-raised p-6">
+        {renderProgramStateMarker(false)}
         <p className="text-sm text-slate-300">Loading your Praxis plan...</p>
       </div>
     );
@@ -2525,6 +2557,7 @@ export default function ResultsRoutine({
   if (!data) {
     return (
       <div className="ui-card ui-soft-surface-raised rounded-lg border-dashed p-6 text-center">
+        {renderProgramStateMarker(false)}
         <p className="text-sm text-slate-300">
           We need your movement profile answers to build your Praxis plan.
         </p>
@@ -2542,6 +2575,7 @@ export default function ResultsRoutine({
     if (programLoadIssue) {
       return (
         <div className="ui-card ui-soft-surface-raised p-6">
+          {renderProgramStateMarker(false)}
           <p className="text-sm font-semibold text-white">
             We couldn&apos;t build your weekly plan yet.
           </p>
@@ -2566,6 +2600,7 @@ export default function ResultsRoutine({
     }
     return (
       <div className="space-y-4">
+        {renderProgramStateMarker(false)}
         <div className="ui-card ui-soft-surface-raised p-6">
           <p className="text-sm text-slate-300">Building your weekly plan...</p>
         </div>
@@ -2753,56 +2788,12 @@ export default function ResultsRoutine({
     "Adaptation/progression",
   ];
 
-  const readinessScore = (() => {
-    if (heroCta.label === "Continue Session") return 70;
-
-    const now = Date.now();
-    let score = 75;
-
-    const completedSessionTimestamps = completedSessions
-      .map((session) => {
-        const parsed = Date.parse(
-          session.completedAt ?? session.updatedAt ?? session.createdAt
-        );
-        return Number.isNaN(parsed) ? null : parsed;
-      })
-      .filter((timestamp): timestamp is number => timestamp !== null);
-
-    if (completedSessionTimestamps.length > 0) {
-      const latestSessionAt = Math.max(...completedSessionTimestamps);
-      const hoursSinceLatest = (now - latestSessionAt) / (60 * 60 * 1000);
-      if (hoursSinceLatest < 18) {
-        score -= 10;
-      }
-      if (hoursSinceLatest >= 24 * 7) {
-        score -= 5;
-      }
-
-      const sessionsInLast3Days = completedSessionTimestamps.filter(
-        (timestamp) => now - timestamp <= 24 * 3 * 60 * 60 * 1000
-      ).length;
-      if (sessionsInLast3Days >= 2) {
-        score -= 10;
-      }
-    }
-
-    const hasPainFlagToday = lastTwoLogs.some((log) => {
-      const hasPainSignal =
-        (log.painLevel && log.painLevel !== "none") || log.felt === "pain";
-      if (!hasPainSignal) return false;
-      const parsed = Date.parse(log.createdAt ?? "");
-      if (Number.isNaN(parsed)) return false;
-      return now - parsed <= 24 * 60 * 60 * 1000;
-    });
-    if (hasPainFlagToday) {
-      score -= 15;
-    }
-
-    return Math.max(0, Math.min(100, Math.round(score)));
-  })();
-
-  const readinessLabel =
-    readinessScore >= 80 ? "High" : readinessScore >= 55 ? "Good" : "Caution";
+  const readinessScore = computeDashboardReadinessScore({
+    nowMs: Date.now(),
+    completedSessions,
+    recentLogs: lastTwoLogs,
+    continueSession: heroCta.label === "Continue Session",
+  });
   const shouldPulsePrimaryCta =
     heroCta.label === "Start Today's Session" &&
     !completedDaySet.has(effectiveNextDayIndex);
@@ -2812,7 +2803,7 @@ export default function ResultsRoutine({
 
   const heroMetricChips = [
     metricFloorMet
-      ? `Training readiness: ${readinessScore}% (${readinessLabel})`
+      ? formatTrainingReadinessChip(readinessScore)
       : BASELINE_READINESS_COPY,
     `Week: ${completedCount}/${activeDaysPerWeek} days`,
     phaseWeekDisplay.label,
@@ -3231,8 +3222,22 @@ export default function ResultsRoutine({
     trainingSyncStatus.state === "error" &&
     trainingSyncStatus.authenticated !== false;
 
+  const isActiveProgramSettled = Boolean(
+    program &&
+      settledProgramId === program.id &&
+      !initialProgramLoadPending &&
+      !reconcileProgramPending
+  );
+
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+      <div
+        data-testid="results-program-state"
+        data-settled={isActiveProgramSettled ? "true" : "false"}
+        data-program-id={program?.id ?? ""}
+        className="sr-only"
+        aria-hidden="true"
+      />
       {levelUpNotice ? (
         <div
           className="pointer-events-none fixed inset-x-0 top-4 z-[80] flex justify-center px-4 sm:top-6"

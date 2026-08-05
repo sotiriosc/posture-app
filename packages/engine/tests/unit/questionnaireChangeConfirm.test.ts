@@ -202,7 +202,10 @@ describe("questionnaire change confirmation flow", () => {
     fireEvent.click(screen.getByTestId("questionnaire-change-cancel"));
 
     expect(screen.queryByTestId("questionnaire-change-confirm-modal")).toBeNull();
-    expect(screen.getByTestId("days-3").className).toContain("bg-slate-900");
+    // Selected semantics (not a legacy Tailwind color utility — gyms uses
+    // praxis-selected-surface; consumer may still use bg-slate-900).
+    expect(screen.getByTestId("days-3").getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByTestId("days-4").getAttribute("aria-pressed")).toBe("false");
 
     const savedQuestionnaire = JSON.parse(
       localStorage.getItem(STORAGE_KEY) ?? "{}"
