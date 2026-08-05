@@ -28,3 +28,7 @@ STRIPE_PRICE_ID_ANNUAL=
 # Legacy single-price fallback (still accepted as monthly)
 # STRIPE_PRICE_ID=
 STRIPE_WEBHOOK_SECRET=
+
+# Optional Google Analytics 4 (consumer app). Leave unset locally to skip GA.
+# Production: set to the GA4 Measurement ID (e.g. G-XXXXXXXXXX).
+NEXT_PUBLIC_GA_MEASUREMENT_ID=
