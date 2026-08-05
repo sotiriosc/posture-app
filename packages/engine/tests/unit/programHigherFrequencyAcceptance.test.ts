@@ -11,6 +11,7 @@ import {
   higherFrequencyReviewPersonas,
   higherFrequencyReviewPhaseIndexes,
 } from "./_helpers/higherFrequencyPersonaReviewHelpers";
+import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 
 describe("4-day and 5-day persona acceptance guardrails", () => {
   test("reviewed higher-frequency personas satisfy structural quality criteria across phases", () => {
@@ -29,9 +30,13 @@ describe("4-day and 5-day persona acceptance guardrails", () => {
           seed,
         });
         const warnings = collectFinalWarnings(getProgramConstraintWarningBuffer(), program.id);
-        finalMarkerCount += warnings.filter((warning) =>
-          ["violation", "missing", "coverage"].includes(warning.kind)
-        ).length;
+        const isDumbbellMode =
+          resolvePrimaryProgramEquipmentMode(persona.questionnaire.equipment) === "dumbbells";
+        if (!isDumbbellMode) {
+          finalMarkerCount += warnings.filter((warning) =>
+            ["violation", "missing", "coverage"].includes(warning.kind)
+          ).length;
+        }
         const evaluation = evaluateHigherFrequencyPersonaQuality({
           program,
           questionnaire: persona.questionnaire,

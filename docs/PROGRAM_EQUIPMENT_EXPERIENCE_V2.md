@@ -2037,9 +2037,19 @@ Existing gym golden tests pass or are intentionally updated with documented rati
 - `audit:catalog`: pass.
 - `audit:program-contract`: completed.
 - `npm run build`: pass.
-- `audit:coverage-matrix` / `audit:phase-matrix`: **FAIL** — same pre-existing advanced 5-day pain gym calves/intelligence baseline failures as Phase 0/1 (not suppressed; outside flagship gym-contract hard-failure set).
+- `audit:coverage-matrix` / `audit:phase-matrix`: **FAIL** — see precise out-of-gate codes below (not suppressed).
 - `npm run lint`: pre-existing errors in unrelated e2e specs; no new Phase 2 lint errors in changed engine files.
 - Phase 0/1 equipment-program reports preserved.
+
+### Out-of-gate baseline (precise reason codes — not permanent immunity)
+These remain failing in coverage/phase matrix audits. They are **outside** the Phase 2 flagship gym structural contract gate, but must stay tracked for a later gym higher-frequency repair:
+
+| Code | Profile | Failure |
+|---|---|---|
+| `BASELINE_GYM_5D_PAIN_GROWTH_CALVES_ACCESSORY` | advanced / Reduce pain / growth / 5-day / gym | Lower Squat missing calves accessory; weekly `calvesDays 0/2` |
+| `BASELINE_GYM_5D_PAIN_GROWTH_UPPER_HINGE_INTELLIGENCE` | same | Upper Pull / Arms + Posture mains include hinge-tagged pulls that violate the upper-day hinge control-exception intelligence rule |
+
+Ownership: gym 5-day pain/growth coverage + intelligence repair (not Phase 2 3-day role-truth; not Phase 3 dumbbell templates). Do not treat “pre-existing” as a waiver from investigation.
 
 ### Deferred (non-structural)
 - Demo/cue/progression-link coaching metadata gaps remain on flagship personas and are scored separately from structural quality.
@@ -2108,6 +2118,90 @@ Manual tester can complete all three sessions without external research.
 Phase Result added.
 
 Cursor stops.
+
+### Phase 3 checklist
+
+- [x] Bookkeep advanced 5-day gym pain calves/intelligence with precise out-of-gate reason codes (not permanent immunity)
+- [x] Add canonical dumbbell contract (`dumbbellProgramContract.ts`) and template family (`dumbbellTemplates.ts`)
+- [x] Route `primaryEquipmentMode="dumbbells"` to Full Body A/B/C (+ practice days) before selection; no gym title inheritance
+- [x] Template-author dumbbell mains (late authorship after gym remaps); skip gym 3-day slot remaps for dumbbells
+- [x] Enforce no unconfirmed bench/support; no cable/machine/barbell/band/kettlebell leakage; honest pull (no false vertical)
+- [x] Pain-aware: soft horizontal/overhead press for shoulders; hip-extension hinge surrogate for low-back
+- [x] Add `audit:dumbbell-program` + Phase 3 reports (no overwrite of Phase 0–2)
+- [x] Flagship structural scores ≥95 with zero hard failures (11/11)
+- [x] 10k dumbbell fuzz: 0 illegal equipment, 0 unconfirmed support, 0 gym-template inheritance, 0 false vertical pull, 0 identity collapse, 0 nondeterminism
+- [x] Add focused tests (`programDumbbellContract.test.ts`); preserve gym contract tests
+- [x] Run required validation; append Phase Result
+- [x] Stop without starting Phase 4
+
+## Phase Result — Phase 3
+
+### Changed files
+- `packages/engine/src/program/dumbbellProgramContract.ts` (new)
+- `packages/engine/src/program/dumbbellTemplates.ts` (new)
+- `packages/engine/src/__debug__/dumbbellProgramAudit.ts` (new)
+- `packages/engine/src/program.ts` (dumbbell template routing, intent-day exemptions for Full Body titles, late template authorship, skip gym 3-day remap for dumbbells)
+- `packages/engine/src/program/dayTemplates.ts` (family tokens used by dumbbell lane plans)
+- `packages/engine/tests/unit/programDumbbellContract.test.ts` (new)
+- `package.json` (`audit:dumbbell-program`)
+- `docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md` (Phase 2 out-of-gate bookkeeping + Phase 3 checklist/result)
+- `docs/dev-reports/equipment-program-audit-phase3*.md|json`
+
+### Canonical contract / templates
+- Titles: Full Body A/B/C; 4d adds Practice & Restore; 5d adds Upper Pattern Practice + Lower & Core Practice
+- Volume caps by experience; ranked dumbbell role candidates (floor-first, no assumed bench)
+- Hard-failure codes for gym inheritance, false vertical pull, missing horizontal pull/hinge, unconfirmed support, illegal equipment, prep-as-main, complexity, weekly roles, identity collapse, determinism
+- Structural score separate from deferred coaching/demo/progression-link gaps
+
+### Supported-frequency policy
+- 3d: A/B/C flagship
+- 4d: A/B/C + lower-volume Practice & Restore
+- 5d: A/B/C + Upper Pattern Practice + Lower & Core Practice (not gym body-part splits)
+
+### Root causes fixed
+- Full Body titles matched gym `isLowerIntentDayTitle` via “Squat”/“Hinge”, blocking press/pull eligibility
+- Gym post-generation 3-day slot remaps rewrote dumbbell mains; authorship now reapplied after pipeline and gym 3-day remap is skipped for dumbbells
+- Lat-intent candidates preferred rows over pullover-only back programming
+- Pain-aware hinge surrogates recognized despite catalog `regressionOnly` flags
+
+### Intentional generated-program changes
+- Dumbbell weeks use deliberately designed Full Body A/B/C sessions (e.g. goblet squat + floor press + one-arm row) instead of gym-minus-unavailable exercises
+- Shoulder pain softens to push-up / pike-push-up paths; low-back uses hip-extension hinge surrogates
+- No gym-shaped day titles for dumbbell primary mode
+
+### Equipment / pull / progression
+- No unconfirmed bench/chair/step in no-bench flagship; illegal gym tools blocked in eligibility
+- True horizontal pull required; pullover not used as true vertical pull; absence of pull-up bar reported honestly
+- Fixed-weight progression remains via existing catalog `progressionOf`/`regressionOf`, phase/ladder systems, and double-progression intent (reps then load/demand variable); coaching-card completeness stays deferred
+
+### Scores and fuzz
+- Flagship: **11/11** structural ≥95, **0** hard failures
+- 10k fuzz: all required zero buckets (illegal equipment, unconfirmed support, gym inheritance, false vertical, identity collapse, nondeterminism)
+
+### Gym regression / baselines
+- Gym contract unit tests pass; `audit:gym-program` verification run: 10/10 flagship ≥95, 0 hard failures, 0 illegal equipment / role-truth / identity collapse / nondeterminism (Phase 2 report files restored afterward — not overwritten)
+- Phase 0–2 reports preserved
+- Out-of-gate gym 5-day pain codes remain tracked: `BASELINE_GYM_5D_PAIN_GROWTH_CALVES_ACCESSORY`, `BASELINE_GYM_5D_PAIN_GROWTH_UPPER_HINGE_INTELLIGENCE`
+
+### Validation command results
+- `audit:dumbbell-program`: pass — 11/11 flagship ≥95, 0 hard failures, 10k fuzz all required zeros
+- `audit:gym-program`: verification pass (reports restored to Phase 2 artifacts)
+- `audit:catalog`: pass (0 errors)
+- `audit:program-contract`: completed
+- `audit:coverage-matrix` / `audit:phase-matrix`: **FAIL** — same out-of-gate gym 5-day pain codes (not suppressed)
+- `test:golden`: 56/56 pass
+- `test:critical`: 326/326 pass
+- `test:full`: 1035/1035 pass (dumbbell title expectations updated intentionally)
+- `npm run build`: pass
+- `npm run lint`: pre-existing errors in unrelated e2e / catalogLadder tests; no new Phase 3 lint errors in changed engine modules
+
+### Intentional test updates
+- Engine tests that assumed gym body-part titles for `equipment: ["dumbbells"]` now assert Full Body A/B/C (+ practice days) and dumbbell pull/hinge honesty
+- Shared helpers: `packages/engine/tests/unit/_helpers/dumbbellTestTitles.ts`, `expectedCounts.ts`; acceptance helpers route dumbbell personas through `validateDumbbellProgramContract`
+
+### Next phase
+- Phase 4 — Band Templates and Anchor Capability, only after explicit instruction
+- Stop here.
 
 Phase 4 — Band Templates and Anchor Capability
 

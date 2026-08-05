@@ -171,10 +171,19 @@ import {
   buildRawSplitTemplateSpecs,
   type SplitTemplateSpec as RawSplitTemplateSpec,
 } from "@/lib/program/splitTemplatePolicy";
+import {
+  authorDumbbellMainSelections,
+  buildDumbbellSplitTemplateSpecs,
+  getDumbbellDayVolumeContract,
+  getDumbbellMainLanePlan,
+  isDumbbellProgramDayTitle,
+  resolveDumbbellDayIdentity,
+  resolveDumbbellThreeDayBlueprint,
+} from "@/lib/program/dumbbellTemplates";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
-export const PROGRAM_TEMPLATE_VERSION = 13;
+export const PROGRAM_TEMPLATE_VERSION = 14;
 const clampPhaseIndexToSupportedRange = (phaseIndex: number) =>
   Math.min(MAX_PHASE_INDEX, Math.max(1, Math.floor(phaseIndex)));
 
@@ -21511,6 +21520,28 @@ const isExerciseEligibleForProgramContext = (params: {
   if (section === "main" && exercise.id === "goblet-squat" && available.has("machines")) {
     return false;
   }
+  // Dumbbell-only programs must not silently borrow gym/cable/band/barbell tools.
+  if (
+    context.primaryEquipmentMode === "dumbbells" &&
+    (section === "main" || section === "accessory")
+  ) {
+    const illegalForDumbbells = ["machines", "cables", "barbell", "kettlebell", "bands"] as const;
+    if (illegalForDumbbells.some((token) => exercise.equipment.includes(token))) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasBench &&
+      (exercise.equipment.includes("bench") || exerciseRequiresBenchSurface(exercise))
+    ) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasPullupBar &&
+      exercise.equipment.includes("pullup_bar")
+    ) {
+      return false;
+    }
+  }
   if (
     section === "main" &&
     context.capabilityMode === "hasLoad" &&
@@ -22269,6 +22300,18 @@ const isShoulderIsolationExercise = (exercise: Exercise) =>
   });
 
 const isUpperIntentDayTitle = (title: string) => {
+  const dumbbellIdentity = resolveDumbbellDayIdentity(title);
+  // Full-body A/B/C (and practice & restore) mix upper + lower roles by design.
+  if (
+    dumbbellIdentity === "full_body_a" ||
+    dumbbellIdentity === "full_body_b" ||
+    dumbbellIdentity === "full_body_c" ||
+    dumbbellIdentity === "practice_restore"
+  ) {
+    return false;
+  }
+  if (dumbbellIdentity === "upper_pattern_practice") return true;
+  if (dumbbellIdentity === "lower_core_practice") return false;
   const normalized = title.toLowerCase();
   return (
     normalized.includes("upper") ||
@@ -22279,6 +22322,18 @@ const isUpperIntentDayTitle = (title: string) => {
 };
 
 const isLowerIntentDayTitle = (title: string) => {
+  const dumbbellIdentity = resolveDumbbellDayIdentity(title);
+  // Do not treat "Squat" / "Hinge" in Full Body A/B titles as lower-only days.
+  if (
+    dumbbellIdentity === "full_body_a" ||
+    dumbbellIdentity === "full_body_b" ||
+    dumbbellIdentity === "full_body_c" ||
+    dumbbellIdentity === "practice_restore"
+  ) {
+    return false;
+  }
+  if (dumbbellIdentity === "lower_core_practice") return true;
+  if (dumbbellIdentity === "upper_pattern_practice") return false;
   const normalized = title.toLowerCase();
   return (
     normalized.includes("lower") ||
@@ -23245,6 +23300,34 @@ const resolveThreeDayBlueprint = (params: {
   available: Set<Equipment>;
 }): ThreeDayBlueprint | null => {
   const { dayTitle, selectionContext, available } = params;
+  if (selectionContext.primaryEquipmentMode === "dumbbells") {
+    const dumbbellBlueprint = resolveDumbbellThreeDayBlueprint({
+      dayTitle,
+      experienceLevel: selectionContext.experienceLevel,
+    });
+    if (dumbbellBlueprint) {
+      return {
+        dayTitle: dumbbellBlueprint.dayTitle,
+        mainCount: dumbbellBlueprint.mainCount,
+        accessoryCount: dumbbellBlueprint.accessoryCount,
+        mainLanePlan: dumbbellBlueprint.mainLanePlan,
+        requiredMainFamilies: dumbbellBlueprint.requiredMainFamilies,
+        accessoryRoles: dumbbellBlueprint.accessoryRoles,
+        laneSwapRules: dumbbellBlueprint.laneSwapRules,
+        constraints: {
+          pullMainsAtLeastPressMains:
+            dumbbellBlueprint.constraints.pullMainsAtLeastPressMains,
+          noVerticalPushMain: dumbbellBlueprint.constraints.noVerticalPushMain,
+          noLowerBodyLeakMain: dumbbellBlueprint.constraints.noLowerBodyLeakMain,
+          maxCarryAccessories: dumbbellBlueprint.constraints.maxCarryAccessories,
+          preventDuplicateCarries:
+            dumbbellBlueprint.constraints.preventDuplicateCarries,
+          carryCannotReplaceCore:
+            dumbbellBlueprint.constraints.carryCannotReplaceCore,
+        },
+      };
+    }
+  }
   const counts = get3DayTemplateCounts(dayTitle, selectionContext.experienceLevel);
   if (!counts) return null;
 
@@ -30391,6 +30474,13 @@ const resolveStructuredMainSlotCount = (params: {
   selectionContext: SelectionContext;
 }) => {
   const { title, daysPerWeek, baseCount, capabilityMode, selectionContext } = params;
+  if (selectionContext.primaryEquipmentMode === "dumbbells") {
+    const volume = getDumbbellDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.mainCount;
+  }
   if (daysPerWeek < 4) return baseCount;
   if (isArmsPostureConditioningDayTitle(title)) {
     return selectionContext.experienceLevel === "beginner" ? Math.min(baseCount, 2) : baseCount;
@@ -30405,8 +30495,16 @@ const resolveStructuredAccessoryCount = (params: {
   daysPerWeek: 3 | 4 | 5;
   baseCount: number;
   selectionContext: SelectionContext;
+  title?: string;
 }) => {
-  const { daysPerWeek, baseCount, selectionContext } = params;
+  const { daysPerWeek, baseCount, selectionContext, title } = params;
+  if (selectionContext.primaryEquipmentMode === "dumbbells" && title) {
+    const volume = getDumbbellDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.accessoryCount;
+  }
   if (daysPerWeek >= 4 && isQualityFirstDayBudgetContext(selectionContext)) {
     return Math.min(baseCount, 2);
   }
@@ -30775,15 +30873,20 @@ const buildStructuredDay = (params: {
   const threeDayTemplateLanePlanBase =
     threeDayBlueprint?.mainLanePlan.length
       ? threeDayBlueprint.mainLanePlan
+      : selectionContext.primaryEquipmentMode === "dumbbells"
+      ? getDumbbellMainLanePlan(title, selectionContext.experienceLevel)
       : daysPerWeek === 3
       ? get3DayMainLanePlan(title, targetMainSlotCount)
       : null;
-  const threeDayTemplateLanePlan = maybeRotateThreeDayTemplateLanePlan({
-    dayTitle: title,
-    phaseIndex,
-    plan: threeDayTemplateLanePlanBase,
-    selectionContext,
-  });
+  const threeDayTemplateLanePlan =
+    selectionContext.primaryEquipmentMode === "dumbbells"
+      ? threeDayTemplateLanePlanBase
+      : maybeRotateThreeDayTemplateLanePlan({
+          dayTitle: title,
+          phaseIndex,
+          plan: threeDayTemplateLanePlanBase,
+          selectionContext,
+        });
   const expandedLanes =
     threeDayTemplateLanePlan?.length
       ? threeDayTemplateLanePlan.map((slot) => slot.lane as MainLane)
@@ -31357,6 +31460,7 @@ const buildStructuredDay = (params: {
             daysPerWeek,
             baseCount: experienceProfile.accessoryCount,
             selectionContext,
+            title,
           }),
     blueprint: threeDayBlueprint,
   });
@@ -31730,17 +31834,30 @@ const applyAdaptiveTemplateNote = (
   };
 };
 
-const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] =>
-  buildRawSplitTemplateSpecs<MainLane, RequirementRule>(
+const getSplitTemplateSpecs = (
+  daysPerWeek: 3 | 4 | 5,
+  selectionContext?: SelectionContext
+): SplitTemplateSpec[] => {
+  if (selectionContext?.primaryEquipmentMode === "dumbbells") {
+    return buildDumbbellSplitTemplateSpecs<MainLane, RequirementRule>(
+      daysPerWeek,
+      splitTemplateRuleSet()
+    );
+  }
+  return buildRawSplitTemplateSpecs<MainLane, RequirementRule>(
     daysPerWeek,
     splitTemplateRuleSet()
   );
+};
 
 export const previewSplitTemplates = (
   daysPerWeek: 3 | 4 | 5,
-  capabilityMode: EquipmentCapabilityMode
+  capabilityMode: EquipmentCapabilityMode,
+  primaryEquipmentMode?: PrimaryProgramEquipmentMode
 ) =>
-  getSplitTemplateSpecs(daysPerWeek).map((template) => ({
+  getSplitTemplateSpecs(daysPerWeek, {
+    primaryEquipmentMode: primaryEquipmentMode ?? "gym",
+  } as SelectionContext).map((template) => ({
     title: template.title,
     focusTags: [...template.focusTags],
     lanes:
@@ -31759,11 +31876,16 @@ const buildSplitTemplates = (
   selectionAuditHook?: ProgramSelectionAuditHook,
   selectionRng?: RandomFn
 ) => {
-  const templates = applyAdaptiveWeakpointTemplateOverlay({
-    templates: getSplitTemplateSpecs(daysPerWeek),
-    daysPerWeek,
-    selectionContext,
-  });
+  const rawTemplates = getSplitTemplateSpecs(daysPerWeek, selectionContext);
+  // Dumbbell A/B/C identities must stay stable; skip gym-title adaptive overlays.
+  const templates =
+    selectionContext.primaryEquipmentMode === "dumbbells"
+      ? rawTemplates
+      : applyAdaptiveWeakpointTemplateOverlay({
+          templates: rawTemplates,
+          daysPerWeek,
+          selectionContext,
+        });
   const builtDays: ReturnType<typeof buildStructuredDay>[] = [];
   let priorDayHeavyPatterns: PrimaryMotorPattern[] = [];
   const sameWeekLowerMainExerciseIds: string[] = [];
@@ -31772,6 +31894,16 @@ const buildSplitTemplates = (
     const sameWeekRelatedMainExerciseIds = isHigherFrequencyLowerDayTitle(template.title)
       ? [...sameWeekLowerMainExerciseIds]
       : [];
+    // Prefer dumbbell role lanes from the canonical plan when available so
+    // selection authors Full Body A/B/C before any gym-shaped repair runs.
+    const dumbbellLanePlan =
+      selectionContext.primaryEquipmentMode === "dumbbells"
+        ? getDumbbellMainLanePlan(template.title, selectionContext.experienceLevel)
+        : null;
+    const templateLanes =
+      dumbbellLanePlan?.length
+        ? dumbbellLanePlan.map((slot) => slot.lane as MainLane)
+        : template.lanes;
     const builtDayBase = buildStructuredDay({
       title: template.title,
       focusTags: template.focusTags,
@@ -31780,7 +31912,7 @@ const buildSplitTemplates = (
       daysPerWeek,
       phaseIndex,
       available,
-      lanes: template.lanes,
+      lanes: templateLanes,
       warmupFocus: template.warmupFocus,
       cooldownFocus: template.cooldownFocus,
       capabilityMode,
@@ -31789,12 +31921,26 @@ const buildSplitTemplates = (
       selectionAuditHook,
       selectionRng,
     });
-    const builtDay = template.adaptiveNote
+    const noteAppliedDay = template.adaptiveNote
       ? applyAdaptiveTemplateNote(builtDayBase, template.adaptiveNote)
       : builtDayBase;
+    const builtDay =
+      selectionContext.primaryEquipmentMode === "dumbbells"
+        ? applyDumbbellTemplateMainAuthorship({
+            day: noteAppliedDay,
+            selectionContext,
+            available,
+            phaseIndex,
+            weekUsedMainIds: sameWeekLowerMainExerciseIds,
+          })
+        : noteAppliedDay;
     builtDays.push(builtDay);
     priorDayHeavyPatterns = deriveHeavyPrimaryPatternsForDay(builtDay);
-    if (isHigherFrequencyLowerDayTitle(builtDay.title)) {
+    if (
+      isHigherFrequencyLowerDayTitle(builtDay.title) ||
+      (selectionContext.primaryEquipmentMode === "dumbbells" &&
+        isDumbbellProgramDayTitle(builtDay.title))
+    ) {
       sameWeekLowerMainExerciseIds.push(
         ...builtDay.routine
           .filter((item) => item.section === "main")
@@ -31804,6 +31950,115 @@ const buildSplitTemplates = (
   });
 
   return builtDays;
+};
+
+type DumbbellAuthoredDay = Omit<ProgramDay, "dayIndex"> & { dayIndex?: number };
+
+const applyDumbbellTemplateMainAuthorship = <Day extends DumbbellAuthoredDay>(params: {
+  day: Day;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+  weekUsedMainIds: string[];
+}): Day => {
+  const { day, selectionContext, available, phaseIndex, weekUsedMainIds } = params;
+  if (!isDumbbellProgramDayTitle(day.title)) return day;
+  const authored = authorDumbbellMainSelections({
+    dayTitle: day.title,
+    experienceLevel: selectionContext.experienceLevel,
+    usedIds: weekUsedMainIds,
+    avoidVerticalPushLoad: selectionContext.intentProfile.avoidPatterns.includes(
+      "vertical_push_load"
+    ),
+    preferPainAwareHinge: hasLowBackPainSignal(selectionContext),
+    preferSoftHorizontalPress: selectionContext.painAreas.some((area) => {
+      const token = normalizeTagToken(area);
+      return token.includes("shoulder") || token.includes("upper_back");
+    }),
+    isEligible: (exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      if (!exercise) return false;
+      return isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context: selectionContext,
+        dayTitle: day.title,
+      });
+    },
+  });
+  if (!authored.length) return day;
+
+  const nonMainItems = day.routine.filter((item) => item.section !== "main");
+  const sampleMain = day.routine.find((item) => item.section === "main");
+  const authoredMainItems = authored
+    .map((entry, index) => {
+      const exercise = exerciseById(entry.exerciseId);
+      if (!exercise) {
+        return sampleMain;
+      }
+      return withSelectionDebug(
+        {
+          exerciseId: exercise.id,
+          section: "main" as const,
+          sets: sampleMain?.sets ?? "3",
+          reps: sampleMain?.reps ?? "8-12",
+          restSec: sampleMain?.restSec ?? 75,
+          loadType: exercise.loadType,
+          cues: buildProgramCues(exercise, "main"),
+          notes: sampleMain?.notes,
+        },
+        "initial_pick",
+        {
+          slotId: `${normalizeSlotToken(day.title)}-main-${index + 1}`,
+          slotKind: entry.slotKind,
+          slotLane: entry.slotLane,
+          phaseIndex,
+        }
+      );
+    })
+    .filter((item): item is ProgramRoutineItem => Boolean(item));
+
+  if (!authoredMainItems.length) return day;
+
+  // Keep original section order: warmup → activation → mains → accessory → cooldown.
+  const nextRoutine: ProgramRoutineItem[] = [];
+  let mainsInserted = false;
+  nonMainItems.forEach((item) => {
+    if (!mainsInserted && (item.section === "accessory" || item.section === "cooldown")) {
+      nextRoutine.push(...authoredMainItems);
+      mainsInserted = true;
+    }
+    nextRoutine.push(item);
+  });
+  if (!mainsInserted) {
+    nextRoutine.push(...authoredMainItems);
+  }
+  return { ...day, routine: nextRoutine } as Day;
+};
+
+const applyDumbbellTemplateAuthorshipToWeek = (params: {
+  week: ProgramDay[];
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+}): ProgramDay[] => {
+  const weekUsedMainIds: string[] = [];
+  return params.week.map((day) => {
+    const nextDay = applyDumbbellTemplateMainAuthorship({
+      day,
+      selectionContext: params.selectionContext,
+      available: params.available,
+      phaseIndex: params.phaseIndex,
+      weekUsedMainIds,
+    });
+    weekUsedMainIds.push(
+      ...nextDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+    );
+    return nextDay;
+  });
 };
 
 const attachStructuredPrepBlocksToWeek = (params: {
@@ -32995,6 +33250,10 @@ const enforceThreeDayFinalSlotRoleTruth = (params: {
 }): WeekConstraintRepairResult => {
   const { week, daysPerWeek, context, phaseIndex } = params;
   if (daysPerWeek !== 3) return { week, warnings: [] };
+  // Dumbbell Full Body A/B/C is template-authored; gym 3-day slot remaps must not own it.
+  if (context.selectionContext.primaryEquipmentMode === "dumbbells") {
+    return { week, warnings: [] };
+  }
   const warnings: WeekConstraintRepairResult["warnings"] = [];
 
   const nextWeek = week.map((day) => {
@@ -34279,8 +34538,17 @@ export const generateWeeklyProgram = (
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
   });
+  const dumbbellAuthoredWeek =
+    weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "dumbbells"
+      ? applyDumbbellTemplateAuthorshipToWeek({
+          week: finalDisplayedSlotTruthWeek,
+          selectionContext: weeklyRuntimeContext.selectionContext,
+          available: weeklyRuntimeContext.availableEquipment,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+        })
+      : finalDisplayedSlotTruthWeek;
   const tracedStructuredPrepWeek = annotateSelectionDecisionTraceForWeek({
-    week: finalDisplayedSlotTruthWeek,
+    week: dumbbellAuthoredWeek,
     daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
     available: weeklyRuntimeContext.availableEquipment,

@@ -178,26 +178,35 @@ describe("controlled variety refinement", () => {
   test("dumbbell home/core planning rotates beyond side-plank family when truthful alternatives exist", () => {
     const coreAccessoryIds = new Set<string>();
 
-    Array.from({ length: 8 }, (_, variationIndex) => {
-      const program = generateWeeklyProgram(
-        buildQuestionnaire({
-          goals: "General fitness",
-          experience: "Intermediate",
-          equipment: ["dumbbells"],
-        }),
-        `core-variety-${variationIndex}`,
-        {
-          phaseIndex: 2,
-          variation: {
-            seed: "core-variety",
-            variationIndex,
-            useRecentMemory: false,
-          },
-        }
-      );
-      const accessories = getDayExercises(program, "Legs + Abs", "accessory");
-      const coreAccessory = accessories.find((exercise) => !isCalfExercise(exercise));
-      if (coreAccessory) coreAccessoryIds.add(coreAccessory.id);
+    ([1, 2, 3] as const).forEach((phaseIndex) => {
+      Array.from({ length: 8 }, (_, variationIndex) => {
+        const program = generateWeeklyProgram(
+          buildQuestionnaire({
+            goals: "General fitness",
+            experience: "Intermediate",
+            equipment: ["dumbbells"],
+          }),
+          `core-variety-${phaseIndex}-${variationIndex}`,
+          {
+            phaseIndex,
+            variation: {
+              seed: `core-variety-${phaseIndex}`,
+              variationIndex,
+              useRecentMemory: false,
+            },
+          }
+        );
+        program.week
+          .filter((day) => day.title.startsWith("Full Body"))
+          .forEach((day) => {
+            day.routine
+              .filter((item) => item.section === "accessory")
+              .map((item) => exerciseById(item.exerciseId))
+              .filter((exercise): exercise is Exercise => Boolean(exercise))
+              .filter((exercise) => !isCalfExercise(exercise))
+              .forEach((exercise) => coreAccessoryIds.add(exercise.id));
+          });
+      });
     });
 
     expect(coreAccessoryIds.size).toBeGreaterThan(1);

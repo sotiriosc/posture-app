@@ -31,7 +31,13 @@ export type ThreeDayMainLanePlanEntry = {
     | "unilateral_lower_loaded"
     | "secondary_lower_loaded"
     | "single_leg_or_secondary_squat"
-    | "lower_secondary";
+    | "lower_secondary"
+    /** Dumbbell Full Body C lat-biased pull (not a true vertical pull). */
+    | "lat_biased_pull"
+    /** Dumbbell Full Body C press variation distinct from Day A. */
+    | "press_variation"
+    /** Dumbbell posterior-chain reinforcement secondary. */
+    | "posterior_chain_secondary";
 };
 
 const normalizeToken = (value: string) =>

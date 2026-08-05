@@ -26,14 +26,15 @@ const getDay = (program: ReturnType<typeof generateWeeklyProgram>, title: string
 const hasMainPattern = (exercise: Exercise, pattern: "push" | "pull") =>
   exercise.movementPattern.some((entry) => entry.toLowerCase() === pattern);
 
-const assertBackChestMainPushAndPull = (
-  program: ReturnType<typeof generateWeeklyProgram>
+const assertPushPullDayMainPushAndPull = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  dayTitle: string
 ) => {
-  const backChestDay = getDay(program, "Back + Chest");
-  expect(backChestDay).toBeTruthy();
-  if (!backChestDay) return;
+  const pushPullDay = getDay(program, dayTitle);
+  expect(pushPullDay).toBeTruthy();
+  if (!pushPullDay) return;
 
-  const mainExercises = backChestDay.routine
+  const mainExercises = pushPullDay.routine
     .filter((item) => item.section === "main")
     .map((item) => exerciseById(item.exerciseId))
     .filter((exercise): exercise is Exercise => Boolean(exercise));
@@ -43,6 +44,10 @@ const assertBackChestMainPushAndPull = (
   expect(pushMains.length).toBeGreaterThanOrEqual(1);
   expect(pullMains.length).toBeGreaterThanOrEqual(1);
 };
+
+const assertBackChestMainPushAndPull = (
+  program: ReturnType<typeof generateWeeklyProgram>
+) => assertPushPullDayMainPushAndPull(program, "Back + Chest");
 
 // Phase 3W helpers ──────────────────────────────────────────────────────────
 
@@ -372,16 +377,19 @@ describe("program warmup contracts", () => {
         seed: "activate-no-bands-fallback",
       }
     );
-    assertBackChestMainPushAndPull(program);
+    assertPushPullDayMainPushAndPull(
+      program,
+      "Full Body A — Squat, Press and Row"
+    );
 
-    const backChestDay = getDay(program, "Back + Chest");
-    expect(backChestDay?.activation).toBeTruthy();
-    if (!backChestDay?.activation) return;
+    const pushPullDay = getDay(program, "Full Body A — Squat, Press and Row");
+    expect(pushPullDay?.activation).toBeTruthy();
+    if (!pushPullDay?.activation) return;
 
     // ACTIVATE must be non-empty (no silent empty blocks)
     expect(
-      backChestDay.activation.items.length,
-      `Back+Chest ACTIVATE must not be empty even without bands`
+      pushPullDay.activation.items.length,
+      `Full Body A ACTIVATE must not be empty even without bands`
     ).toBeGreaterThanOrEqual(1);
   });
 

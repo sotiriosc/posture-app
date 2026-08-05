@@ -371,18 +371,17 @@ describe("program selection audit metadata", () => {
   });
 
   test("non-gym General Fitness avoids worst support and regression mains when constrained alternatives exist", () => {
-    const scenarios: Array<{
+    const gymShapedScenarios: Array<{
       equipment: QuestionnaireData["equipment"];
       maxShoulderSupportMains: number;
       maxLowerRegressionMains: number;
     }> = [
       { equipment: ["bands"], maxShoulderSupportMains: 1, maxLowerRegressionMains: 0 },
-      { equipment: ["dumbbells"], maxShoulderSupportMains: 2, maxLowerRegressionMains: 0 },
       { equipment: ["dumbbells", "bands"], maxShoulderSupportMains: 0, maxLowerRegressionMains: 0 },
       { equipment: ["none"], maxShoulderSupportMains: 3, maxLowerRegressionMains: 1 },
     ];
 
-    scenarios.forEach(({ equipment, maxShoulderSupportMains, maxLowerRegressionMains }) => {
+    gymShapedScenarios.forEach(({ equipment, maxShoulderSupportMains, maxLowerRegressionMains }) => {
       const program = generateWeeklyProgram(
         { ...questionnaire, equipment },
         `selection-non-gym-legality-${equipment.join("-")}`,
@@ -408,6 +407,32 @@ describe("program selection audit metadata", () => {
       expect(backChestMains.some((exercise) => exercise.id === "plank")).toBe(false);
       expect(backChestMains.some(isLatAccentStyle)).toBe(false);
     });
+
+    // Dumbbell-only weeks use Full Body A/B/C, not gym body-part titles.
+    const dumbbellProgram = generateWeeklyProgram(
+      { ...questionnaire, equipment: ["dumbbells"] },
+      "selection-non-gym-legality-dumbbells",
+      {
+        phaseIndex: 2,
+        weekIndex: 1,
+        cycleIndex: 1,
+        totalWeekIndex: 1,
+        seed: "selection-non-gym-legality-dumbbells-seed",
+      }
+    );
+    expect(dumbbellProgram.week.map((day) => day.title)).toEqual([
+      "Full Body A — Squat, Press and Row",
+      "Full Body B — Hinge, Overhead and Unilateral",
+      "Full Body C — Single-Leg, Press Variation and Lat Intent",
+    ]);
+    const dumbbellMains = dumbbellProgram.week.flatMap((day) =>
+      day.routine
+        .filter((item) => item.section === "main")
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise))
+    );
+    expect(dumbbellMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(0);
+    expect(dumbbellMains.some((exercise) => exercise.id === "plank")).toBe(false);
   });
 
   test("pain-aware gym profiles preserve main identity before using corrective substitutions", () => {

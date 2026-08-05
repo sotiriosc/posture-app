@@ -13,6 +13,13 @@ import {
   resolveLowerUnilateralCoachFamily,
   scoreLowerUnilateralCoachVariety,
 } from "@/lib/program/threeDayCoachPolicy";
+import {
+  fullBodyADayTitle,
+  fullBodyBDayTitle,
+  hingeDayTitle,
+  isDumbbellsOnlyEquipment,
+  pushPullDayTitle,
+} from "./_helpers/dumbbellTestTitles";
 
 const requireExercise = (id: string) => {
   const exercise = exerciseById(id);
@@ -368,9 +375,10 @@ describe("three-day coach policy", () => {
         `policy-low-back-${equipment.join("-")}`,
         { phaseIndex: 1, seed: `policy-low-back-${equipment.join("-")}` }
       );
-      const legsDay = program.week.find((day) => day.title === "Legs + Abs");
+      const hingeTitle = hingeDayTitle(equipment);
+      const hingeDay = program.week.find((day) => day.title === hingeTitle);
       const mainIds =
-        legsDay?.routine
+        hingeDay?.routine
           .filter((item) => item.section === "main")
           .map((item) => item.exerciseId) ?? [];
 
@@ -380,10 +388,21 @@ describe("three-day coach policy", () => {
     });
   });
 
-  test("constrained Back + Chest uses vertical-pull surrogate instead of duplicate row mains", () => {
-    const cases: QuestionnaireData["equipment"][] = [["dumbbells"], ["none"]];
+  test("constrained pull contexts use truthful pull slots without duplicate row mains", () => {
+    const cases: Array<{
+      equipment: QuestionnaireData["equipment"];
+      dayTitle: string;
+      expectVerticalSurrogate: boolean;
+    }> = [
+      {
+        equipment: ["dumbbells"],
+        dayTitle: fullBodyADayTitle,
+        expectVerticalSurrogate: false,
+      },
+      { equipment: ["none"], dayTitle: "Back + Chest", expectVerticalSurrogate: true },
+    ];
 
-    cases.forEach((equipment) => {
+    cases.forEach(({ equipment, dayTitle, expectVerticalSurrogate }) => {
       const program = generateWeeklyProgram(
         buildQuestionnaire({
           experience: "Intermediate",
@@ -392,11 +411,23 @@ describe("three-day coach policy", () => {
         `policy-constrained-pull-${equipment.join("-")}`,
         { phaseIndex: 2, seed: `policy-constrained-pull-${equipment.join("-")}` }
       );
-      const mains = getDayExercises(program, "Back + Chest", "main");
-      const rows = mains.filter(isRowFamily);
-      const surrogates = mains.filter(isVerticalPullSurrogate);
+      const mains = getDayItems(program, dayTitle, "main");
+      const rows = mains
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+        .filter(isRowFamily);
+      const surrogates = mains
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+        .filter(isVerticalPullSurrogate);
 
-      expect(surrogates.length).toBeGreaterThanOrEqual(1);
+      if (expectVerticalSurrogate) {
+        expect(surrogates.length).toBeGreaterThanOrEqual(1);
+      } else {
+        expect(
+          mains.some((item) => item.selectionDebug?.slotKind === "mainPullHorizontal")
+        ).toBe(true);
+      }
       expect(rows.length).toBeLessThanOrEqual(1);
     });
   });

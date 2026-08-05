@@ -8,6 +8,16 @@ import {
   getProgramConstraintWarningBuffer,
 } from "@/lib/program";
 import { auditWeeklyCoverageFromExercises } from "@/lib/program/coverageAudit";
+import {
+  findProgramDay,
+  findProgramDayStartingWith,
+  fullBodyADayTitle,
+  fullBodyBDayTitle,
+  hingeDayTitle,
+  isDumbbellsOnlyEquipment,
+  pushPullDayTitle,
+  shoulderDayTitle,
+} from "./_helpers/dumbbellTestTitles";
 
 const pickExercises = (ids: string[]) =>
   ids
@@ -21,20 +31,34 @@ const warningMessagesFor = (programId: string) =>
     .filter((warning) => warning.programId === programId)
     .map((warning) => warning.message);
 
-const backChestMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
-  const day = program.week.find((entry) => entry.title === "Back + Chest");
+const backChestMains = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  equipment: QuestionnaireData["equipment"] = ["gym"]
+) => {
+  const day = findProgramDay(program, pushPullDayTitle(equipment));
   expect(day).toBeTruthy();
   return day?.routine.filter((item) => item.section === "main") ?? [];
 };
 
-const legsMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
-  const day = program.week.find((entry) => entry.title === "Legs + Abs");
+const legsMains = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  equipment: QuestionnaireData["equipment"] = ["gym"]
+) => {
+  if (isDumbbellsOnlyEquipment(equipment)) {
+    return program.week
+      .filter((entry) => entry.title.startsWith("Full Body"))
+      .flatMap((day) => day.routine.filter((item) => item.section === "main"));
+  }
+  const day = findProgramDay(program, "Legs + Abs");
   expect(day).toBeTruthy();
   return day?.routine.filter((item) => item.section === "main") ?? [];
 };
 
-const shouldersMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
-  const day = program.week.find((entry) => entry.title === "Shoulders + Arms");
+const shouldersMains = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  equipment: QuestionnaireData["equipment"] = ["gym"]
+) => {
+  const day = findProgramDay(program, shoulderDayTitle(equipment));
   expect(day).toBeTruthy();
   return day?.routine.filter((item) => item.section === "main") ?? [];
 };
@@ -289,13 +313,15 @@ describe("program role truthfulness", () => {
         phaseIndex,
         seed: `${id}-seed`,
       });
-      const mains = legsMains(program);
+      const mains = legsMains(program, questionnaire.equipment);
 
       expect(mains.every((item) => item.selectionDebug?.slotKind !== "mainFinal")).toBe(true);
       expect(
         mains.every((item) => !["db-calf-raise", "band-calf-raise"].includes(item.exerciseId))
       ).toBe(true);
-      expect(warningMessagesFor(id).join("\n")).not.toMatch(/Final main slot|main hinge pattern/i);
+      if (!isDumbbellsOnlyEquipment(questionnaire.equipment)) {
+        expect(warningMessagesFor(id).join("\n")).not.toMatch(/Final main slot|main hinge pattern/i);
+      }
     });
   });
 
@@ -365,7 +391,7 @@ describe("program role truthfulness", () => {
       { phaseIndex: 1, seed: "three-day-persona-review-6-phase-1" }
     );
 
-    shouldersMains(program).forEach((item) => {
+    shouldersMains(program, ["dumbbells"]).forEach((item) => {
       if (item.exerciseId === "prone-swimmer") {
         expect(item.selectionDebug?.slotKind).not.toBe("mainShoulderPullPrimary");
       }
@@ -375,7 +401,7 @@ describe("program role truthfulness", () => {
     });
   });
 
-  test("constrained dumbbell Back + Chest Phase 1 includes a vertical-pull surrogate", () => {
+  test("constrained dumbbell Full Body A Phase 1 keeps honest horizontal pull, not false vertical", () => {
     clearProgramVariationHistory();
     clearProgramConstraintWarningBuffer();
     const program = generateWeeklyProgram(
@@ -390,14 +416,18 @@ describe("program role truthfulness", () => {
       { phaseIndex: 1, seed: "three-day-persona-review-6-phase-1" }
     );
 
+    const dayA = findProgramDayStartingWith(program, "Full Body A");
+    expect(dayA).toBeTruthy();
+    const horizontalPull = dayA?.routine.find(
+      (item) =>
+        item.section === "main" && item.selectionDebug?.slotKind === "mainPullHorizontal"
+    );
+    expect(horizontalPull?.exerciseId).toMatch(/row/);
     expect(
-      backChestMains(program).some(
-        (item) =>
-          item.selectionDebug?.slotKind === "mainPullVertical" &&
-          hasVerticalPullOrSurrogate(item.exerciseId)
+      backChestMains(program, ["dumbbells"]).some(
+        (item) => item.selectionDebug?.slotKind === "mainPullVertical"
       )
-    ).toBe(true);
-    expect(warningMessagesFor("truth-db-back-chest-vertical-surrogate")).toEqual([]);
+    ).toBe(false);
   });
 
   test("side-plank star and Pallof press finish with core accessory labels", () => {

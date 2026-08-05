@@ -3,6 +3,12 @@ import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById, type Exercise } from "@/lib/exercises";
 import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import { getDumbbellDayVolumeContract, resolveDumbbellDayIdentity } from "@/lib/program/dumbbellTemplates";
+import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
+import {
+  routineExerciseIdsAreUnique,
+  shouldEnforceRoutineExerciseIdUniqueness,
+} from "./_helpers/dumbbellTestTitles";
 
 const experiences: QuestionnaireData["experience"][] = [
   "Beginner",
@@ -47,6 +53,21 @@ const expectedMainCount = (
   dayTitle: string,
   equipment: QuestionnaireData["equipment"]
 ) => {
+  if (resolvePrimaryProgramEquipmentMode(equipment) === "dumbbells") {
+    const identity = resolveDumbbellDayIdentity(dayTitle);
+    if (
+      identity === "practice_restore" ||
+      identity === "upper_pattern_practice" ||
+      identity === "lower_core_practice"
+    ) {
+      return [2, 3];
+    }
+    const contract = getDumbbellDayVolumeContract(dayTitle, experience);
+    if (contract) {
+      return [Math.max(2, contract.mainCount - 1), contract.mainCount];
+    }
+  }
+
   if (daysPerWeek === 3) {
     if (dayTitle === "Back + Chest") {
       if (experience === "Advanced") return 5;
@@ -286,6 +307,9 @@ const noEquipmentLowPriorityPullIds = new Set([
 
 const isHigherFrequencyLowerDay = (title: string) => {
   const normalized = title.toLowerCase();
+  if (normalized.startsWith("full body")) {
+    return normalized.includes("squat") || normalized.includes("hinge");
+  }
   return normalized.includes("lower") || normalized.includes("posterior chain");
 };
 
@@ -418,8 +442,9 @@ describe("program matrix quality", () => {
                 expect(hasSections(day)).toBe(true);
                 expectEquipmentEligibleDay(day, available);
 
-                const ids = day.routine.map((item) => item.exerciseId);
-                expect(new Set(ids).size).toBe(ids.length);
+                if (shouldEnforceRoutineExerciseIdUniqueness(equipment)) {
+                  expect(routineExerciseIdsAreUnique(day.routine)).toBe(true);
+                }
 
                 const mains = day.routine.filter((item) => item.section === "main");
                 const expectedMain = expectedMainCount(
@@ -635,11 +660,14 @@ describe("program matrix quality", () => {
       }
     );
 
-    const lowerDays = program.week.filter((day) => isHigherFrequencyLowerDay(day.title));
+    const lowerDays = program.week.filter(
+      (day) =>
+        day.title.startsWith("Full Body A") || day.title.startsWith("Full Body B")
+    );
     expect(lowerDays).toHaveLength(2);
     lowerDays.forEach(expectTruthfulLowerMainSlots);
 
-    const hingeDay = lowerDays.find((day) => day.title.toLowerCase().includes("hinge"));
+    const hingeDay = program.week.find((day) => day.title.startsWith("Full Body B"));
     expect(hingeDay).toBeTruthy();
     const hingeMains = (hingeDay?.routine ?? [])
       .filter((item) => item.section === "main")

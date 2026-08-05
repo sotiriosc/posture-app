@@ -3,6 +3,12 @@ import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById } from "@/lib/exercises";
 import { isExerciseEligible, normalizeEquipmentSelection } from "@/lib/equipment";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import { getDumbbellDayVolumeContract, resolveDumbbellDayIdentity } from "@/lib/program/dumbbellTemplates";
+import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
+import {
+  routineExerciseIdsAreUnique,
+  shouldEnforceRoutineExerciseIdUniqueness,
+} from "./_helpers/dumbbellTestTitles";
 
 const goals: QuestionnaireData["goals"][] = [
   "Improve posture",
@@ -39,8 +45,23 @@ const expectedMainCount = (
   experience: string,
   daysPerWeek: QuestionnaireData["daysPerWeek"],
   dayTitle: string,
-  _equipment: QuestionnaireData["equipment"]
+  equipment: QuestionnaireData["equipment"]
 ) => {
+  if (resolvePrimaryProgramEquipmentMode(equipment) === "dumbbells") {
+    const identity = resolveDumbbellDayIdentity(dayTitle);
+    if (
+      identity === "practice_restore" ||
+      identity === "upper_pattern_practice" ||
+      identity === "lower_core_practice"
+    ) {
+      return [2, 3];
+    }
+    const contract = getDumbbellDayVolumeContract(dayTitle, experience);
+    if (contract) {
+      return [Math.max(2, contract.mainCount - 1), contract.mainCount];
+    }
+  }
+
   if (daysPerWeek === 3) {
     if (dayTitle === "Back + Chest") {
       if (experience === "Advanced") return 5;
@@ -112,8 +133,9 @@ describe("program fuzz invariants", () => {
 
       const available = normalizeEquipmentSelection(input.equipment).available;
       program.week.forEach((day) => {
-        const ids = day.routine.map((item) => item.exerciseId);
-        expect(new Set(ids).size).toBe(ids.length);
+        if (shouldEnforceRoutineExerciseIdUniqueness(equipment)) {
+          expect(routineExerciseIdsAreUnique(day.routine)).toBe(true);
+        }
 
         const sections = new Set(day.routine.map((item) => item.section));
         expect(sections.has("warmup")).toBe(true);

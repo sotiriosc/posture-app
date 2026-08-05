@@ -1,9 +1,12 @@
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
+import { getDumbbellDayVolumeContract, resolveDumbbellDayIdentity } from "@/lib/program/dumbbellTemplates";
+import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 
 type ExpectedCountParams = {
   daysPerWeek: QuestionnaireData["daysPerWeek"];
   dayTitle: string;
   experience: QuestionnaireData["experience"];
+  equipment?: QuestionnaireData["equipment"];
 };
 
 const legacyMainCountByExperience = (experience: QuestionnaireData["experience"]) => {
@@ -22,7 +25,23 @@ export const expectedMainCountForDayTitle = ({
   daysPerWeek,
   dayTitle,
   experience,
+  equipment = ["gym"],
 }: ExpectedCountParams) => {
+  if (resolvePrimaryProgramEquipmentMode(equipment) === "dumbbells") {
+    const identity = resolveDumbbellDayIdentity(dayTitle);
+    if (
+      identity === "practice_restore" ||
+      identity === "upper_pattern_practice" ||
+      identity === "lower_core_practice"
+    ) {
+      return [2, 3];
+    }
+    const contract = getDumbbellDayVolumeContract(dayTitle, experience);
+    if (contract) {
+      return [Math.max(2, contract.mainCount - 1), contract.mainCount];
+    }
+  }
+
   if (daysPerWeek === 3) {
     if (dayTitle === "Back + Chest") {
       if (experience === "Advanced") return 5;
@@ -68,7 +87,13 @@ export const expectedAccessoryCountForDayTitle = ({
   daysPerWeek,
   dayTitle,
   experience,
+  equipment = ["gym"],
 }: ExpectedCountParams) => {
+  if (resolvePrimaryProgramEquipmentMode(equipment) === "dumbbells") {
+    const contract = getDumbbellDayVolumeContract(dayTitle, experience);
+    if (contract) return contract.accessoryCount;
+  }
+
   if (daysPerWeek === 3) {
     if (dayTitle === "Back + Chest") return 2;
     if (dayTitle === "Shoulders + Arms") {
