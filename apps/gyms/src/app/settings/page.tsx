@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { loadAppState } from "@/lib/appState";
+import { exerciseById } from "@/lib/exercises";
+import {
+  formatPhaseName,
+  phaseIndexFromPersistedStage,
+} from "@/lib/phases";
 import {
   init,
   listAllExerciseLogs,
@@ -68,12 +73,14 @@ export default function SettingsPage() {
     baselineDate: "--",
     sessionsTracked: 0,
   });
+  const [settingsPrefs, setSettingsPrefs] = useState<LogPrefs | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     const loadSystemStatus = async () => {
       await init();
       const sessions = await listSessions(1000);
+      const prefs = await loadPrefs();
       const appState = loadAppState();
       const baselineAt =
         typeof appState?.activeProgramBaselineAt === "number" &&
@@ -81,6 +88,7 @@ export default function SettingsPage() {
           ? appState.activeProgramBaselineAt
           : 0;
       if (cancelled) return;
+      setSettingsPrefs(prefs);
       setSystemStatus({
         activeProgramId: appState?.activeProgramId ?? "--",
         baselineDate: baselineAt > 0 ? new Date(baselineAt).toISOString().slice(0, 10) : "--",
@@ -511,6 +519,129 @@ export default function SettingsPage() {
             )}
           </div>
         </div>
+
+        {/* Phase 7B — Blocked exercises (consumer parity) */}
+        {(() => {
+          const blocked = settingsPrefs?.blockedExerciseIds ?? {};
+          const blockedEntries = Object.entries(blocked);
+          const hasBlocked = blockedEntries.length > 0;
+
+          const handleUnblock = async (exerciseId: string) => {
+            const currentPrefs = await loadPrefs();
+            const next = { ...(currentPrefs.blockedExerciseIds ?? {}) };
+            delete next[exerciseId];
+            const nextPrefs: LogPrefs = {
+              ...currentPrefs,
+              blockedExerciseIds: next,
+            };
+            await savePrefs(nextPrefs);
+            setSettingsPrefs(nextPrefs);
+          };
+
+          const handleResetEquipmentBlocks = async () => {
+            const currentPrefs = await loadPrefs();
+            const next = Object.fromEntries(
+              Object.entries(currentPrefs.blockedExerciseIds ?? {}).filter(
+                ([, v]) => v.reason !== "no_equipment"
+              )
+            );
+            const nextPrefs: LogPrefs = {
+              ...currentPrefs,
+              blockedExerciseIds: next,
+            };
+            await savePrefs(nextPrefs);
+            setSettingsPrefs(nextPrefs);
+          };
+
+          const handleResetAllBlocks = async () => {
+            const currentPrefs = await loadPrefs();
+            const nextPrefs: LogPrefs = {
+              ...currentPrefs,
+              blockedExerciseIds: {},
+            };
+            await savePrefs(nextPrefs);
+            setSettingsPrefs(nextPrefs);
+          };
+
+          return (
+            <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
+              <h2 className="text-sm font-semibold text-slate-100">
+                Blocked exercises
+              </h2>
+              <p className="mt-1 text-xs text-slate-400">
+                Exercises removed from your program. These stay out of workouts
+                and swaps until you reset them.
+              </p>
+
+              {hasBlocked && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void handleResetEquipmentBlocks();
+                    }}
+                    className="rounded-lg border border-slate-600/40 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-700"
+                  >
+                    Reset equipment blocks
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void handleResetAllBlocks();
+                    }}
+                    className="rounded-lg border border-amber-500/30 bg-amber-950/20 px-3 py-1.5 text-xs font-semibold text-amber-300 hover:bg-amber-950/40"
+                  >
+                    Reset all blocks
+                  </button>
+                </div>
+              )}
+
+              {hasBlocked ? (
+                <ul className="mt-4 space-y-2">
+                  {blockedEntries.map(([exId, info]) => {
+                    const ex = exerciseById(exId);
+                    const name = ex?.name ?? exId;
+                    const reasonLabel =
+                      info.reason === "no_equipment"
+                        ? "No equipment"
+                        : "Personal preference";
+                    const phaseLabel = formatPhaseName(
+                      phaseIndexFromPersistedStage(info.blockedAt.phase)
+                    );
+                    return (
+                      <li
+                        key={exId}
+                        className="flex items-center justify-between gap-3 rounded-lg border border-slate-700/40 bg-slate-900/50 px-3 py-2"
+                      >
+                        <div>
+                          <p className="text-xs font-semibold text-slate-200">
+                            {name}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {reasonLabel} · blocked in {phaseLabel}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            void handleUnblock(exId);
+                          }}
+                          className="rounded-lg border border-slate-600/40 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-800"
+                        >
+                          Unblock
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="mt-3 text-xs text-slate-500">
+                  No blocked exercises right now.
+                </p>
+              )}
+            </div>
+          );
+        })()}
 
         <div className="ui-card ui-soft-surface-raised rounded-lg p-6">
           <h2 className="text-sm font-semibold text-slate-900">System status</h2>

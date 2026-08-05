@@ -36,6 +36,9 @@ import {
   markMaintainPromptsShown,
   applyMaintainProgressionYes,
   applyMaintainProgressionNo,
+  FEEDBACK_CONTRACT_ACTION_LABELS,
+  resolveNoValidSwapMessage,
+  resolveProgramPresentation,
 } from "@/lib/program";
 import type {
   FeedbackContractTrigger,
@@ -385,14 +388,17 @@ const findPainSwapAlternativeExerciseId = (params: {
   questionnaire: QuestionnaireData;
   currentItem: SessionRoutineViewItem;
   usedExerciseIds: Set<string>;
+  blockedExerciseIds?: LogPrefs["blockedExerciseIds"];
 }): string | null => {
-  const { questionnaire, currentItem, usedExerciseIds } = params;
+  const { questionnaire, currentItem, usedExerciseIds, blockedExerciseIds } =
+    params;
   const currentSection = currentItem.section as ProgramRoutineItem["section"];
   const ranked = previewPainSubstitutionChoices({
     questionnaire,
     exerciseId: currentItem.exerciseId,
     section: currentSection,
     limit: 10,
+    blockedExerciseIds,
   });
   if (!ranked.length) return null;
 
@@ -1847,9 +1853,10 @@ export default function SessionClient() {
         originalExerciseId: currentItem.originalExerciseId,
       },
       usedExerciseIds: new Set(flatItems.map((item) => item.exerciseId)),
+      blockedExerciseIds: prefs?.blockedExerciseIds,
     });
     if (!candidateId || candidateId === currentItem.exerciseId) {
-      setPainModalMessage("No safe substitute found for this exercise.");
+      setPainModalMessage(resolveNoValidSwapMessage().text);
       await handleSavePainReportOnly();
       return;
     }
@@ -2375,6 +2382,24 @@ export default function SessionClient() {
     activeIndex + 1
   )}/${Math.max(1, totalItems)}`;
   const compactHeaderLabel = `${compactExercisePositionLabel} \u00b7 ${compactDayLabel} \u00b7 ${compactPhaseLabel}`;
+  // Phase 7B — session purpose / duration / equipment from presentation resolver.
+  const sessionPresentation = useMemo(() => {
+    if (!program || !data || programDayIndex === null) return null;
+    const model = resolveProgramPresentation({
+      program,
+      questionnaire: data,
+    });
+    return model.sessions.find((s) => s.dayIndex === programDayIndex) ?? null;
+  }, [program, data, programDayIndex]);
+  const sessionPurpose = sessionPresentation?.purpose ?? null;
+  const sessionMeta = sessionPresentation
+    ? [
+        sessionPresentation.expectedDuration,
+        sessionPresentation.equipmentNeeded.slice(0, 3).join(", "),
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : null;
   // Only restore this exercise's timer. Never inherit a still-running timer
   // from the previous exercise when the user taps Next/Back.
   const currentItemRuntime = currentItemId
@@ -2871,9 +2896,11 @@ export default function SessionClient() {
                     onClick={() => { void handleContractAction("sacrifice"); }}
                     className="w-full rounded-xl bg-rose-600 px-5 py-3 text-left font-semibold text-white shadow hover:bg-rose-500 active:bg-rose-700"
                   >
-                    <span className="block text-base">Sacrifice</span>
+                    <span className="block text-base">
+                      {FEEDBACK_CONTRACT_ACTION_LABELS.sacrifice.label}
+                    </span>
                     <span className="block text-xs font-normal text-rose-200 mt-0.5">
-                      Skip this exercise for now — I&apos;ll retest it later
+                      {FEEDBACK_CONTRACT_ACTION_LABELS.sacrifice.description}
                     </span>
                   </button>
 
@@ -2881,9 +2908,11 @@ export default function SessionClient() {
                     onClick={() => { void handleContractAction("test"); }}
                     className="w-full rounded-xl bg-slate-700 px-5 py-3 text-left font-semibold text-white shadow hover:bg-slate-600 active:bg-slate-800"
                   >
-                    <span className="block text-base">Test</span>
+                    <span className="block text-base">
+                      {FEEDBACK_CONTRACT_ACTION_LABELS.test.label}
+                    </span>
                     <span className="block text-xs font-normal text-slate-300 mt-0.5">
-                      Keep it in — I&apos;ll try again this session
+                      {FEEDBACK_CONTRACT_ACTION_LABELS.test.description}
                     </span>
                   </button>
 
@@ -2897,7 +2926,9 @@ export default function SessionClient() {
                         : "bg-amber-600 hover:bg-amber-500 active:bg-amber-700",
                     ].join(" ")}
                   >
-                    <span className="block text-base">Modify</span>
+                    <span className="block text-base">
+                      {FEEDBACK_CONTRACT_ACTION_LABELS.modify.label}
+                    </span>
                     <span
                       className={[
                         "block text-xs font-normal mt-0.5",
@@ -2908,7 +2939,7 @@ export default function SessionClient() {
                     >
                       {activeContractTrigger.atFloor
                         ? "Already at the easiest version"
-                        : "Drop to an easier variation"}
+                        : FEEDBACK_CONTRACT_ACTION_LABELS.modify.description}
                     </span>
                   </button>
                 </div>
@@ -3265,6 +3296,8 @@ export default function SessionClient() {
           progressPercent={sessionProgressPercent}
           compact={!isSessionStartHeader}
           compactLabel={compactHeaderLabel}
+          sessionPurpose={isSessionStartHeader ? sessionPurpose : null}
+          sessionMeta={isSessionStartHeader ? sessionMeta : null}
         />
 
         <div
@@ -3372,6 +3405,7 @@ export default function SessionClient() {
                                 originalExerciseId: currentItem.originalExerciseId,
                               },
                               usedExerciseIds: new Set(flatItems.map((i) => i.exerciseId)),
+                              blockedExerciseIds: prefs?.blockedExerciseIds,
                             });
                             if (candidateId && candidateId !== currentItem.exerciseId) {
                               setSessionSwapByItemId((prev) => ({

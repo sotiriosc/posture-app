@@ -1694,6 +1694,8 @@ export const previewPainSubstitutionChoices = (params: {
   exerciseId: string;
   section?: ProgramRoutineItem["section"];
   limit?: number;
+  /** Phase 7B — honor personal blocks in in-session swap previews. */
+  blockedExerciseIds?: LogPrefs["blockedExerciseIds"] | Set<string> | string[];
 }) => {
   const { questionnaire, exerciseId, section, limit = 5 } = params;
   const current = exerciseById(exerciseId);
@@ -1704,7 +1706,17 @@ export const previewPainSubstitutionChoices = (params: {
     reasons: string[];
   }>;
   const available = normalizeEquipmentSelection(questionnaire.equipment).available;
-  const context = buildSelectionContext(questionnaire);
+  const blockedSet =
+    params.blockedExerciseIds instanceof Set
+      ? params.blockedExerciseIds
+      : Array.isArray(params.blockedExerciseIds)
+        ? new Set(params.blockedExerciseIds)
+        : params.blockedExerciseIds
+          ? new Set(Object.keys(params.blockedExerciseIds))
+          : undefined;
+  const context = buildSelectionContext(questionnaire, undefined, undefined, {
+    blockedExerciseIds: blockedSet,
+  });
   return rankSubstitutionCandidates({
     current,
     section,
@@ -35849,6 +35861,37 @@ export {
   listKnownSeverityCodes,
 } from "@/lib/program/qualityGate/programQualityPolicy";
 export { computeProgramQualitySignature } from "@/lib/program/qualityGate/programQualitySignature";
+
+export {
+  getProgramPresentationInventory,
+  PRESENTATION_INVENTORY_VERSION,
+  resolveProgramPresentation,
+  resolveExercisePresentation,
+  resolveSessionPurpose,
+  resolveAdaptationReasonMessage,
+  resolveFeedbackContractActionLabel,
+  FEEDBACK_CONTRACT_ACTION_LABELS,
+  resolvePainAdaptationSummary,
+  resolveAssessmentFocusSummary,
+  resolveNoValidSwapMessage,
+  containsForbiddenInternalUiLanguage,
+  validateProgramPresentationInventory,
+  validateResolvedPresentationModel,
+} from "@/lib/program/presentation";
+export type {
+  PresentationContractStatus,
+  PresentationSurface,
+  PresentationRelationship,
+  PresentationMessage,
+  PresentationPersistenceKind,
+  AdaptationReason,
+  ProgramPresentationModel,
+  SessionPresentationModel,
+  FeedbackContractActionLabel,
+  ProgramPresentationValidation,
+  PresentationValidationFinding,
+  ResolveProgramPresentationInput,
+} from "@/lib/program/presentation";
 
 export const generateNextPhaseProgram = (params: {
   currentProgram: Program;

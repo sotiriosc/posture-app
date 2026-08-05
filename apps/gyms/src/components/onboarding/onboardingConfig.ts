@@ -128,7 +128,7 @@ export const onboardingGuides: Record<OnboardingKey, OnboardingGuide> = {
       },
       {
         type: "text",
-        text: "If something felt off last time, you'll see three choices before we begin — Sacrifice, Test, or Modify. Yours to pick.",
+        text: "If something felt off last time, you'll see three choices before we begin — Skip for now, Keep and retest, or Make it easier. Yours to pick.",
       },
       {
         type: "text",

@@ -10,6 +10,10 @@ type SessionProgressHeaderProps = {
   dayTitle: string;
   exercisePositionLabel: string;
   progressPercent: number;
+  /** Phase 7B — plain-language session purpose from presentation resolver. */
+  sessionPurpose?: string | null;
+  /** Phase 7B — duration / equipment summary from presentation resolver. */
+  sessionMeta?: string | null;
 };
 
 export default function SessionProgressHeader({
@@ -18,6 +22,8 @@ export default function SessionProgressHeader({
   dayTitle,
   exercisePositionLabel,
   progressPercent,
+  sessionPurpose = null,
+  sessionMeta = null,
 }: SessionProgressHeaderProps) {
   return (
     <header className="praxis-panel-strong p-4">
@@ -34,6 +40,12 @@ export default function SessionProgressHeader({
       <h1 className="mt-1 text-xl font-semibold text-white sm:text-2xl">
         <ClarifyWords text={dayTitle} />
       </h1>
+      {sessionPurpose ? (
+        <p className="mt-1 text-sm text-slate-300">{sessionPurpose}</p>
+      ) : null}
+      {sessionMeta ? (
+        <p className="mt-0.5 text-xs font-medium text-slate-400">{sessionMeta}</p>
+      ) : null}
       <p className="mt-1 text-sm font-medium text-slate-300">{exercisePositionLabel}</p>
       <div className="praxis-input-surface mt-3 h-1.5 w-full overflow-hidden rounded-full">
         <div

@@ -18,6 +18,10 @@ type SessionProgressHeaderProps = {
    */
   compact?: boolean;
   compactLabel?: string;
+  /** Phase 7B — plain-language session purpose from presentation resolver. */
+  sessionPurpose?: string | null;
+  /** Phase 7B — duration / equipment summary from presentation resolver. */
+  sessionMeta?: string | null;
 };
 
 export default function SessionProgressHeader({
@@ -28,6 +32,8 @@ export default function SessionProgressHeader({
   progressPercent,
   compact = false,
   compactLabel,
+  sessionPurpose = null,
+  sessionMeta = null,
 }: SessionProgressHeaderProps) {
   if (compact) {
     return (
@@ -60,6 +66,12 @@ export default function SessionProgressHeader({
       <h1 className="mt-1 text-xl font-semibold text-slate-900 sm:text-2xl">
         <ClarifyWords text={dayTitle} />
       </h1>
+      {sessionPurpose ? (
+        <p className="mt-1 text-sm text-slate-600">{sessionPurpose}</p>
+      ) : null}
+      {sessionMeta ? (
+        <p className="mt-0.5 text-xs font-medium text-slate-500">{sessionMeta}</p>
+      ) : null}
       <p className="mt-1 text-sm font-medium text-slate-700">{exercisePositionLabel}</p>
       <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-sky-100">
         <div

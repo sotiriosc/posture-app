@@ -1,0 +1,176 @@
+{
+  "generatedAt": "2026-08-05T20:03:08.384Z",
+  "phase": "7b",
+  "verdict": "PASS",
+  "inventoryVersion": 1,
+  "validation": {
+    "passed": true,
+    "totalRelationships": 43,
+    "totalFields": 43,
+    "countsByStatus": {
+      "visible": 16,
+      "visibleOnDemand": 14,
+      "internalOnly": 7,
+      "telemetryOnly": 3,
+      "deferred": 3,
+      "unused": 0
+    },
+    "relationshipsWithoutGivers": 0,
+    "outputsWithoutReceivers": 0,
+    "visibleWithoutCanonicalSource": 0,
+    "requiredWithoutPersistence": 0,
+    "inputsWithoutOutput": 0,
+    "unresolvedUnused": 0,
+    "rawInternalLanguageLeaks": 0,
+    "findings": []
+  },
+  "feedbackContractLabels": {
+    "sacrifice": {
+      "action": "sacrifice",
+      "label": "Skip for now",
+      "description": "Remove this exercise for now — Praxis can retest it later"
+    },
+    "test": {
+      "action": "test",
+      "label": "Keep and retest",
+      "description": "Keep it in and try again this session"
+    },
+    "modify": {
+      "action": "modify",
+      "label": "Make it easier",
+      "description": "Switch to an easier variation"
+    },
+    "dismiss": {
+      "action": "dismiss",
+      "label": "Keep and retest",
+      "description": "Keep it in and try again this session"
+    }
+  },
+  "modeResults": [
+    {
+      "id": "gym",
+      "equipmentIdentity": "Gym",
+      "frequencyLabel": "3 days / week",
+      "phaseLabel": "Phase 1: Control & Technique",
+      "weekLabel": "Week 1",
+      "weeklyStructure": [
+        "Back + Chest",
+        "Shoulders + Arms",
+        "Legs + Abs"
+      ],
+      "adaptationCount": 1,
+      "capabilityNoteCount": 0,
+      "sessionCount": 3,
+      "modelFindings": [],
+      "samplePurpose": "Back + Chest: emphasizes back and chest."
+    },
+    {
+      "id": "dumbbells",
+      "equipmentIdentity": "Dumbbells",
+      "frequencyLabel": "3 days / week",
+      "phaseLabel": "Phase 1: Control & Technique",
+      "weekLabel": "Week 1",
+      "weeklyStructure": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ],
+      "adaptationCount": 1,
+      "capabilityNoteCount": 0,
+      "sessionCount": 3,
+      "modelFindings": [],
+      "samplePurpose": "Full Body A — Squat, Press and Row: emphasizes full-body and squat."
+    },
+    {
+      "id": "bands-anchored",
+      "equipmentIdentity": "Bands",
+      "frequencyLabel": "3 days / week",
+      "phaseLabel": "Phase 1: Control & Technique",
+      "weekLabel": "Week 1",
+      "weeklyStructure": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ],
+      "adaptationCount": 1,
+      "capabilityNoteCount": 0,
+      "sessionCount": 3,
+      "modelFindings": [],
+      "samplePurpose": "Full Body A — Squat, Press and Row: emphasizes full-body and squat."
+    },
+    {
+      "id": "bands-no-anchor",
+      "equipmentIdentity": "Bands",
+      "frequencyLabel": "3 days / week",
+      "phaseLabel": "Phase 1: Control & Technique",
+      "weekLabel": "Week 1",
+      "weeklyStructure": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ],
+      "adaptationCount": 1,
+      "capabilityNoteCount": 1,
+      "sessionCount": 3,
+      "modelFindings": [],
+      "samplePurpose": "Full Body A — Squat, Press and Row: emphasizes full-body and squat."
+    },
+    {
+      "id": "bands-loop-only",
+      "equipmentIdentity": "Bands",
+      "frequencyLabel": "3 days / week",
+      "phaseLabel": "Phase 1: Control & Technique",
+      "weekLabel": "Week 1",
+      "weeklyStructure": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ],
+      "adaptationCount": 1,
+      "capabilityNoteCount": 1,
+      "sessionCount": 3,
+      "modelFindings": [],
+      "samplePurpose": "Full Body A — Squat, Press and Row: emphasizes full-body and squat."
+    },
+    {
+      "id": "bodyweight",
+      "equipmentIdentity": "Bodyweight",
+      "frequencyLabel": "3 days / week",
+      "phaseLabel": "Phase 1: Control & Technique",
+      "weekLabel": "Week 1",
+      "weeklyStructure": [
+        "Full Body A — Squat, Push and Trunk",
+        "Full Body B — Hinge, Single-Leg and Shoulder",
+        "Full Body C — Single-Leg, Push Variation and Back Intent"
+      ],
+      "adaptationCount": 1,
+      "capabilityNoteCount": 1,
+      "sessionCount": 3,
+      "modelFindings": [],
+      "samplePurpose": "Full Body A — Squat, Push and Trunk: emphasizes full-body and squat."
+    },
+    {
+      "id": "mixedHome",
+      "equipmentIdentity": "Mixed home",
+      "frequencyLabel": "3 days / week",
+      "phaseLabel": "Phase 1: Control & Technique",
+      "weekLabel": "Week 1",
+      "weeklyStructure": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ],
+      "adaptationCount": 3,
+      "capabilityNoteCount": 0,
+      "sessionCount": 3,
+      "modelFindings": [],
+      "samplePurpose": "Full Body A — Squat, Press and Row: emphasizes full-body and squat."
+    }
+  ],
+  "targets": {
+    "criticalRelationshipsMapped": "100%",
+    "requiredOutputsWithoutReceivers": 0,
+    "unresolvedUnused": 0,
+    "rawInternalLanguageLeaks": 0
+  }
+}

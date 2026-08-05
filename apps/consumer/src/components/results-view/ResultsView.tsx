@@ -241,7 +241,7 @@ function SacrificeRetestSection({
           <div key={item.exerciseId} className="rounded-lg border border-slate-800 p-4">
             <p className="text-sm font-semibold text-slate-200">{item.exerciseName}</p>
             <p className="mt-1 text-xs text-slate-500">
-              Sacrificed during{" "}
+              Skipped for now during{" "}
               {formatPhaseName(phaseIndexFromPersistedStage(item.sacrificedAtPhase))}
             </p>
             <div className="mt-3 flex gap-3">
@@ -257,7 +257,7 @@ function SacrificeRetestSection({
                 onClick={() => onDecline(item.exerciseId)}
                 className="rounded-md border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-400 hover:border-slate-500"
               >
-                Keep sacrificed
+                Keep skipped
               </button>
             </div>
           </div>

@@ -31,6 +31,9 @@ import {
   applyAutoSacrifice,
   buildContractPrompt,
   filterSuppressedContractTriggers,
+  FEEDBACK_CONTRACT_ACTION_LABELS,
+  resolveNoValidSwapMessage,
+  resolveProgramPresentation,
 } from "@/lib/program";
 import type { FeedbackContractTrigger } from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
@@ -372,14 +375,17 @@ const findPainSwapAlternativeExerciseId = (params: {
   questionnaire: QuestionnaireData;
   currentItem: SessionRoutineViewItem;
   usedExerciseIds: Set<string>;
+  blockedExerciseIds?: LogPrefs["blockedExerciseIds"];
 }): string | null => {
-  const { questionnaire, currentItem, usedExerciseIds } = params;
+  const { questionnaire, currentItem, usedExerciseIds, blockedExerciseIds } =
+    params;
   const currentSection = currentItem.section as ProgramRoutineItem["section"];
   const ranked = previewPainSubstitutionChoices({
     questionnaire,
     exerciseId: currentItem.exerciseId,
     section: currentSection,
     limit: 10,
+    blockedExerciseIds,
   });
   if (!ranked.length) return null;
 
@@ -516,6 +522,11 @@ export default function SessionClient({
   const [painModalLocation, setPainModalLocation] = useState<PainLocation | "">("");
   const [painModalNotes, setPainModalNotes] = useState("");
   const [painModalMessage, setPainModalMessage] = useState<string | null>(null);
+  const [blockMenuOpen, setBlockMenuOpen] = useState(false);
+  const [blockConfirmOpen, setBlockConfirmOpen] = useState(false);
+  const [blockMenuExerciseId, setBlockMenuExerciseId] = useState<string | null>(
+    null
+  );
   const [painLevelByExercise, setPainLevelByExercise] = useState<
     Record<string, PainLevel>
   >({});
@@ -1322,6 +1333,28 @@ export default function SessionClient({
     setSaveState("saved");
   };
 
+  // Phase 7B — personal equipment / preference block (parity with consumer).
+  const handleBlockExercise = async (
+    exerciseId: string,
+    reason: "no_equipment" | "personal_preference"
+  ) => {
+    const phaseIndex = programProgress?.phaseIndex ?? program?.phaseIndex ?? 0;
+    const sessionCount = programProgress?.completedDayIndices?.length ?? 0;
+    const currentPrefs = await loadPrefs();
+    const nextPrefs: LogPrefs = {
+      ...currentPrefs,
+      blockedExerciseIds: {
+        ...(currentPrefs.blockedExerciseIds ?? {}),
+        [exerciseId]: { reason, blockedAt: { phase: phaseIndex, sessionCount } },
+      },
+    };
+    await savePrefs(nextPrefs);
+    setPrefs(nextPrefs);
+    setBlockMenuOpen(false);
+    setBlockConfirmOpen(false);
+    setBlockMenuExerciseId(null);
+  };
+
   // Phase 3.2 — apply a feedback contract action for the current prompt.
   const handleContractAction = async (
     action: "sacrifice" | "test" | "modify" | "dismiss"
@@ -1716,9 +1749,10 @@ export default function SessionClient({
         originalExerciseId: currentItem.originalExerciseId,
       },
       usedExerciseIds: new Set(flatItems.map((item) => item.exerciseId)),
+      blockedExerciseIds: prefs?.blockedExerciseIds,
     });
     if (!candidateId || candidateId === currentItem.exerciseId) {
-      setPainModalMessage("No safe substitute found for this exercise.");
+      setPainModalMessage(resolveNoValidSwapMessage().text);
       await handleSavePainReportOnly();
       return;
     }
@@ -2185,6 +2219,24 @@ export default function SessionClient({
   const sessionProgressPercent = totalItems
     ? ((activeIndex + 1) / totalItems) * 100
     : 0;
+  // Phase 7B — session purpose / duration / equipment from presentation resolver.
+  const sessionPresentation = useMemo(() => {
+    if (!program || !data || programDayIndex === null) return null;
+    const model = resolveProgramPresentation({
+      program,
+      questionnaire: data,
+    });
+    return model.sessions.find((s) => s.dayIndex === programDayIndex) ?? null;
+  }, [program, data, programDayIndex]);
+  const sessionPurpose = sessionPresentation?.purpose ?? null;
+  const sessionMeta = sessionPresentation
+    ? [
+        sessionPresentation.expectedDuration,
+        sessionPresentation.equipmentNeeded.slice(0, 3).join(", "),
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : null;
   // Only restore this exercise's timer. Never inherit a still-running timer
   // from the previous exercise when the user taps Next/Back.
   const currentItemRuntime = currentItemId
@@ -2618,9 +2670,11 @@ export default function SessionClient({
                       onClick={() => { void handleContractAction("sacrifice"); }}
                       className="w-full rounded-xl bg-rose-600 px-5 py-3 text-left font-semibold text-white shadow hover:bg-rose-500 active:bg-rose-700"
                     >
-                      <span className="block text-base">Sacrifice</span>
+                      <span className="block text-base">
+                        {FEEDBACK_CONTRACT_ACTION_LABELS.sacrifice.label}
+                      </span>
                       <span className="mt-0.5 block text-xs font-normal text-rose-200">
-                        Skip this exercise for now — I&apos;ll retest it later
+                        {FEEDBACK_CONTRACT_ACTION_LABELS.sacrifice.description}
                       </span>
                     </button>
 
@@ -2628,9 +2682,11 @@ export default function SessionClient({
                       onClick={() => { void handleContractAction("test"); }}
                       className="praxis-input-surface w-full rounded-xl px-5 py-3 text-left font-semibold text-white shadow hover:border-sky-300/45"
                     >
-                      <span className="block text-base">Test</span>
+                      <span className="block text-base">
+                        {FEEDBACK_CONTRACT_ACTION_LABELS.test.label}
+                      </span>
                       <span className="mt-0.5 block text-xs font-normal text-slate-300">
-                        Keep it in — I&apos;ll try again this session
+                        {FEEDBACK_CONTRACT_ACTION_LABELS.test.description}
                       </span>
                     </button>
 
@@ -2644,7 +2700,9 @@ export default function SessionClient({
                           : "bg-amber-600 hover:bg-amber-500 active:bg-amber-700",
                       ].join(" ")}
                     >
-                      <span className="block text-base">Modify</span>
+                      <span className="block text-base">
+                        {FEEDBACK_CONTRACT_ACTION_LABELS.modify.label}
+                      </span>
                       <span
                         className={[
                           "mt-0.5 block text-xs font-normal",
@@ -2655,7 +2713,7 @@ export default function SessionClient({
                       >
                         {activeContractTrigger.atFloor
                           ? "Already at the easiest version"
-                          : "Drop to an easier variation"}
+                          : FEEDBACK_CONTRACT_ACTION_LABELS.modify.description}
                       </span>
                     </button>
                   </div>
@@ -3026,6 +3084,8 @@ export default function SessionClient({
           dayTitle={dayTitle}
           exercisePositionLabel={exercisePositionLabel}
           progressPercent={sessionProgressPercent}
+          sessionPurpose={sessionPurpose}
+          sessionMeta={sessionMeta}
         />
 
         <div
@@ -3086,6 +3146,102 @@ export default function SessionClient({
         </div>
 
         <div ref={exerciseCardRef}>
+          {/* Phase 7B — personal block affordance (consumer parity) */}
+          <div className="mb-1 flex justify-end">
+            <div className="relative">
+              <button
+                type="button"
+                data-testid="exercise-block-menu-trigger"
+                onClick={() => {
+                  setBlockMenuExerciseId(currentItem.exerciseId);
+                  setBlockMenuOpen((o) => !o);
+                  setBlockConfirmOpen(false);
+                }}
+                className="flex min-h-11 min-w-11 items-center justify-center rounded text-slate-500 hover:bg-slate-700/50 hover:text-slate-300"
+                aria-label="Exercise options"
+              >
+                ···
+              </button>
+              {blockMenuOpen && blockMenuExerciseId === currentItem.exerciseId && (
+                <div className="absolute right-0 top-full z-20 min-w-44 rounded-lg border border-slate-600/40 bg-slate-900 shadow-lg">
+                  {!blockConfirmOpen ? (
+                    <button
+                      type="button"
+                      data-testid="exercise-block-remove"
+                      onClick={() => setBlockConfirmOpen(true)}
+                      className="block w-full px-4 py-3 text-left text-sm text-slate-200 hover:bg-slate-700/50"
+                    >
+                      Remove from my program
+                    </button>
+                  ) : (
+                    <div className="px-4 py-3">
+                      <p className="mb-3 text-xs font-semibold text-slate-300">
+                        Remove {currentItem.name}?
+                      </p>
+                      <button
+                        type="button"
+                        data-testid="exercise-block-just-today"
+                        onClick={() => {
+                          if (currentItem && data) {
+                            const candidateId = findPainSwapAlternativeExerciseId({
+                              questionnaire: data,
+                              currentItem: {
+                                id: currentItem.id,
+                                dayTitle: currentItem.dayTitle,
+                                section: currentItem.section,
+                                exerciseId: currentItem.exerciseId,
+                                originalExerciseId: currentItem.originalExerciseId,
+                              },
+                              usedExerciseIds: new Set(
+                                flatItems.map((i) => i.exerciseId)
+                              ),
+                              blockedExerciseIds: prefs?.blockedExerciseIds,
+                            });
+                            if (
+                              candidateId &&
+                              candidateId !== currentItem.exerciseId
+                            ) {
+                              setSessionSwapByItemId((prev) => ({
+                                ...prev,
+                                [currentItem.id]: candidateId,
+                              }));
+                            }
+                          }
+                          setBlockMenuOpen(false);
+                          setBlockConfirmOpen(false);
+                        }}
+                        className="mb-2 block w-full rounded-lg border border-slate-600/40 bg-slate-800 px-3 py-2 text-left text-xs text-slate-200 hover:bg-slate-700"
+                      >
+                        <span className="block font-semibold">Just today</span>
+                        <span className="block text-slate-400">
+                          Swap out this session only
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        data-testid="exercise-block-until-reset"
+                        onClick={() => {
+                          void handleBlockExercise(
+                            currentItem.exerciseId,
+                            "personal_preference"
+                          );
+                        }}
+                        className="block w-full rounded-lg border border-red-500/30 bg-red-950/30 px-3 py-2 text-left text-xs text-red-300 hover:bg-red-950/50"
+                      >
+                        <span className="block font-semibold">
+                          Block until I reset
+                        </span>
+                        <span className="block text-red-400/70">
+                          Never appear in my program
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           <ExerciseCard
             name={currentItem.name}
             targetMuscles={currentExerciseMeta?.muscleGroups ?? []}

@@ -3471,6 +3471,77 @@ Stop after Phase 7B.
 
 Do not begin Phase 8 UI implementation, telemetry, release, or engine decomposition.
 
+### Phase 7B checklist
+
+- [x] Presentation types + relational inventory (`presentation/` owner)
+- [x] `resolveProgramPresentation` + adaptation plain-language helpers (reuse Phase 6 coaching)
+- [x] `validateProgramPresentation` + `audit:program-presentation` reports
+- [x] Gyms personal blocks parity + settings unblock/reset
+- [x] Plain-language Sacrifice/Test/Modify labels (enums retained internally)
+- [x] Narrow resolver consumption in consumer + gyms (results + session header)
+- [x] No-valid-swap honesty; blocks honored in swap preview
+- [x] Semantic presentation / pain-swap / continuity tests + gyms reachability
+- [x] Phase 7B reports + Phase 8 requirements written
+- [x] Focused then full sequential gate; template remains **18**
+- [x] Phase Result appended; stop before Phase 8
+
+### Phase Result — Phase 7B
+
+Checkpoint base: `5c88a64` (Phase 7 Completion). Presentation-only; `PROGRAM_TEMPLATE_VERSION` **18** unchanged.
+
+#### Canonical locations
+
+- Contract / inventory / resolver: `packages/engine/src/program/presentation/`
+- Audit: `packages/engine/src/__debug__/programPresentationAudit.ts` → `npm run audit:program-presentation`
+- Re-export: `packages/engine/src/program.ts` / presentation barrel
+
+#### Relational inventory
+
+- Total relationships: **43**
+- Status counts: visible 16 · visibleOnDemand 14 · internalOnly 7 · telemetryOnly 3 · deferred 3 · unused **0**
+- Relationships without givers: **0**
+- Required outputs without UI receivers: **0**
+- Visible without canonical source: **0**
+- Raw internal language leaks: **0**
+
+#### Continuity
+
+- Questionnaire pain → adaptation summary (visible)
+- Photo focus → presentation only when high-confidence
+- In-session discomfort → swap / skip / no-valid-swap with safe copy
+- Personal blocks → generation + swap preview hard-filter; gyms session + settings parity
+- Feedback contract → plain UI labels; internal enums persist in prefs
+
+#### Consumer / gyms parity
+
+- Feedback-contract labels, no-valid-swap message, blocks, presentation resolver on ResultsRoutine, session purpose/meta header — both apps
+
+#### Unused / deferred resolution
+
+- Unused: **0**
+- Deferred (named): planned exercise videos, weekly adaptation record UI, knowledge portal → Phase 8+ / later
+
+#### Required Phase 8 UI (explicit)
+
+See `docs/dev-reports/program-quality-v2-phase7b-phase8-requirements.md` — plan-reveal composition, elevated identity/duration/purpose, coverage summary, coaching-card polish, bodyweight honesty, visual screenshot QA. Do not start until instructed.
+
+#### Reports
+
+- `docs/dev-reports/program-quality-v2-phase7b-relational-inventory.md|.json`
+- `docs/dev-reports/program-quality-v2-phase7b-presentation-contract.md|.json`
+- `docs/dev-reports/program-quality-v2-phase7b-pain-swap-trace.md`
+- `docs/dev-reports/program-quality-v2-phase7b-input-continuity.md`
+- `docs/dev-reports/program-quality-v2-phase7b-screenshot-review.md`
+- `docs/dev-reports/program-quality-v2-phase7b-phase8-requirements.md`
+
+#### Tests / validation (filled after gate)
+
+- Focused: `programPresentationContract.test.ts`, `programPresentationPainSwap.test.ts`, `programPresentationContinuity.test.ts`, gyms `phase7bPresentationReachability.test.ts`
+- Full sequential gate results recorded in the Phase 7B commit message / this result after `p7b-validate-commit`
+
+#### Stop
+
+Phase 7B complete. Do not begin Phase 8 until explicitly instructed.
 
 Phase 8 — Plan Reveal and First-Session UX
 
