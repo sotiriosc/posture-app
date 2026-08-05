@@ -3534,9 +3534,14 @@ See `docs/dev-reports/program-quality-v2-phase7b-phase8-requirements.md` — pla
 - `docs/dev-reports/program-quality-v2-phase7b-screenshot-review.md`
 - `docs/dev-reports/program-quality-v2-phase7b-phase8-requirements.md`
 
+#### Screenshot baseline
+
+- Owner-confirmed current UI (Dashboard, day details, progress/phase, history/insights, assessment patterns) used as receivers in `program-quality-v2-phase7b-screenshot-review.md`. Older mock shots discarded.
+
 #### Tests / validation (filled after gate)
 
-- Focused: `programPresentationContract.test.ts`, `programPresentationPainSwap.test.ts`, `programPresentationContinuity.test.ts`, gyms `phase7bPresentationReachability.test.ts`
+- Focused: `programPresentationContract.test.ts`, `programPresentationPainSwap.test.ts`, `programPresentationContinuity.test.ts`, gyms `phase7bPresentationReachability.test.ts` — **21 passed** (18 engine + 3 gyms)
+- `audit:program-presentation` — **PASS** (43 relationships, 0 required-without-receiver, 0 mode findings)
 - Full sequential gate results recorded in the Phase 7B commit message / this result after `p7b-validate-commit`
 
 #### Stop
