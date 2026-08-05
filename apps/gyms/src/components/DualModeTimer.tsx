@@ -14,6 +14,8 @@ export type DualModeTimerRuntimeState = {
   exerciseSeconds: number;
   restSeconds: number;
   updatedAtMs?: number;
+  /** Workout context that owns this runtime; stale echoes are ignored. */
+  contextId?: string;
 };
 
 type DualModeTimerProps = {
@@ -22,6 +24,11 @@ type DualModeTimerProps = {
   onExerciseDurationChange?: (seconds: number) => void;
   onRestDurationChange?: (seconds: number) => void;
   defaultMode?: TimerMode;
+  /**
+   * Stable workout-context identity. When this changes, the timer may hydrate
+   * or re-initialize once. Same-context parent echoes must not reset countdown.
+   */
+  contextId?: string;
   persistedState?: DualModeTimerRuntimeState | null;
   onStateChange?: (state: DualModeTimerRuntimeState) => void;
   /** Phase 6k — settings master for timer tones. */
@@ -112,6 +119,7 @@ export default function DualModeTimer({
   onExerciseDurationChange,
   onRestDurationChange,
   defaultMode = "exercise",
+  contextId = "",
   persistedState = null,
   onStateChange,
   timerSoundsEnabled = true,
@@ -122,48 +130,69 @@ export default function DualModeTimer({
   vibrationEnabled = true,
   tempoHint = null,
 }: DualModeTimerProps) {
-  const reconciledPersistedState = useMemo(
-    () => reconcileRuntimeState(persistedState),
-    [persistedState]
-  );
-  const [mode, setMode] = useState<TimerMode>(
-    reconciledPersistedState?.mode ?? defaultMode
-  );
-  const [running, setRunning] = useState(reconciledPersistedState?.running ?? false);
+  const initialMountState = useMemo(() => {
+    // Legacy drafts omit contextId — allow hydrate on mount only.
+    // Once contextIds exist, require an exact match.
+    const sameContext = persistedState?.contextId
+      ? persistedState.contextId === contextId
+      : Boolean(persistedState);
+    const reconciled =
+      sameContext && persistedState
+        ? reconcileRuntimeState(persistedState)
+        : null;
+    const exerciseSeconds =
+      reconciled?.exerciseSeconds ?? initialExerciseSeconds;
+    const restSeconds = reconciled?.restSeconds ?? initialRestSeconds;
+    const mode = reconciled?.mode ?? defaultMode;
+    const preset = durationForMode(
+      mode === "exercise" ? exerciseSeconds : restSeconds,
+      mode
+    );
+    return {
+      mode,
+      running: reconciled?.running ?? false,
+      exerciseSeconds,
+      restSeconds,
+      remainingSeconds: reconciled?.remainingSeconds ?? preset,
+      updatedAtMs: reconciled?.updatedAtMs ?? getCurrentTimestampMs(),
+    };
+    // Mount-only seed: later same-context parent echoes must not re-seed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [mode, setMode] = useState<TimerMode>(initialMountState.mode);
+  const [running, setRunning] = useState(initialMountState.running);
   const [selectedExerciseSeconds, setSelectedExerciseSeconds] = useState(
-    reconciledPersistedState?.exerciseSeconds ?? initialExerciseSeconds
+    initialMountState.exerciseSeconds
   );
   const [selectedRestSeconds, setSelectedRestSeconds] = useState(
-    reconciledPersistedState?.restSeconds ?? initialRestSeconds
-  );
-  const initialPresetSeconds = durationForMode(
-    defaultMode === "exercise" ? initialExerciseSeconds : initialRestSeconds,
-    defaultMode
+    initialMountState.restSeconds
   );
   const [remainingSeconds, setRemainingSeconds] = useState(
-    reconciledPersistedState?.remainingSeconds ?? initialPresetSeconds
+    initialMountState.remainingSeconds
   );
-  const modeRef = useRef<TimerMode>(
-    reconciledPersistedState?.mode ?? defaultMode
-  );
-  const runningRef = useRef<boolean>(
-    reconciledPersistedState?.running ?? false
-  );
-  const remainingRef = useRef<number>(
-    reconciledPersistedState?.remainingSeconds ?? initialPresetSeconds
-  );
-  const selectedExerciseRef = useRef<number>(
-    reconciledPersistedState?.exerciseSeconds ?? initialExerciseSeconds
-  );
-  const selectedRestRef = useRef<number>(
-    reconciledPersistedState?.restSeconds ?? initialRestSeconds
-  );
-  const lastRunningRef = useRef(false);
-  const lastRemainingRef = useRef(remainingSeconds);
+  const modeRef = useRef<TimerMode>(initialMountState.mode);
+  const runningRef = useRef<boolean>(initialMountState.running);
+  const remainingRef = useRef<number>(initialMountState.remainingSeconds);
+  const selectedExerciseRef = useRef<number>(initialMountState.exerciseSeconds);
+  const selectedRestRef = useRef<number>(initialMountState.restSeconds);
+  const lastRunningRef = useRef(initialMountState.running);
+  const lastRemainingRef = useRef(initialMountState.remainingSeconds);
   const zeroCrossBeepRef = useRef(false);
-  const runtimeAnchorMsRef = useRef<number>(
-    reconciledPersistedState?.updatedAtMs ?? getCurrentTimestampMs()
-  );
+  const runtimeAnchorMsRef = useRef<number>(initialMountState.updatedAtMs);
+  const appliedContextIdRef = useRef<string | null>(contextId || null);
+  const persistedStateRef = useRef(persistedState);
+  persistedStateRef.current = persistedState;
+  const initialsRef = useRef({
+    initialExerciseSeconds,
+    initialRestSeconds,
+    defaultMode,
+  });
+  initialsRef.current = {
+    initialExerciseSeconds,
+    initialRestSeconds,
+    defaultMode,
+  };
 
   const activeSelectedSeconds =
     mode === "exercise" ? selectedExerciseSeconds : selectedRestSeconds;
@@ -254,25 +283,71 @@ export default function DualModeTimer({
     ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-50"
     : "border-amber-400/45 bg-amber-400/10 text-amber-50";
 
+  // Single context enter path: hydrate same-context persisted runtime once, or
+  // initialize from prescription. Same-context parent echoes are ignored so the
+  // active countdown cannot be overwritten by its own onStateChange loop.
   useEffect(() => {
-    if (!reconciledPersistedState) return;
-    modeRef.current = reconciledPersistedState.mode;
-    runningRef.current = reconciledPersistedState.running;
-    remainingRef.current = reconciledPersistedState.remainingSeconds;
-    selectedExerciseRef.current = reconciledPersistedState.exerciseSeconds;
-    selectedRestRef.current = reconciledPersistedState.restSeconds;
-    runtimeAnchorMsRef.current =
-      reconciledPersistedState.updatedAtMs ?? getCurrentTimestampMs();
+    const nextContextId = contextId || "";
+    if (appliedContextIdRef.current === nextContextId) {
+      return;
+    }
+    appliedContextIdRef.current = nextContextId;
+
+    const persisted = persistedStateRef.current;
+    // Never hydrate a legacy (context-less) runtime onto a changed context —
+    // that was a source of silent duration switches after substitution.
+    const sameContext = persisted?.contextId
+      ? persisted.contextId === nextContextId
+      : false;
+    const reconciled =
+      sameContext && persisted ? reconcileRuntimeState(persisted) : null;
+    const {
+      initialExerciseSeconds: exerciseInitial,
+      initialRestSeconds: restInitial,
+      defaultMode: modeInitial,
+    } = initialsRef.current;
+
+    if (reconciled) {
+      modeRef.current = reconciled.mode;
+      runningRef.current = reconciled.running;
+      remainingRef.current = reconciled.remainingSeconds;
+      selectedExerciseRef.current = reconciled.exerciseSeconds;
+      selectedRestRef.current = reconciled.restSeconds;
+      runtimeAnchorMsRef.current =
+        reconciled.updatedAtMs ?? getCurrentTimestampMs();
+      lastRunningRef.current = reconciled.running;
+      lastRemainingRef.current = reconciled.remainingSeconds;
+      zeroCrossBeepRef.current = false;
+      setMode(reconciled.mode);
+      setRunning(reconciled.running);
+      setRemainingSeconds(reconciled.remainingSeconds);
+      setSelectedExerciseSeconds(reconciled.exerciseSeconds);
+      setSelectedRestSeconds(reconciled.restSeconds);
+      return;
+    }
+
+    const nextMode = modeInitial;
+    const nextExercise = exerciseInitial;
+    const nextRest = restInitial;
+    const nextRemaining = durationForMode(
+      nextMode === "exercise" ? nextExercise : nextRest,
+      nextMode
+    );
+    modeRef.current = nextMode;
+    runningRef.current = false;
+    remainingRef.current = nextRemaining;
+    selectedExerciseRef.current = nextExercise;
+    selectedRestRef.current = nextRest;
+    runtimeAnchorMsRef.current = getCurrentTimestampMs();
     lastRunningRef.current = false;
-    lastRemainingRef.current = reconciledPersistedState.remainingSeconds;
-    queueMicrotask(() => {
-      setMode(reconciledPersistedState.mode);
-      setRunning(reconciledPersistedState.running);
-      setRemainingSeconds(reconciledPersistedState.remainingSeconds);
-      setSelectedExerciseSeconds(reconciledPersistedState.exerciseSeconds);
-      setSelectedRestSeconds(reconciledPersistedState.restSeconds);
-    });
-  }, [reconciledPersistedState]);
+    lastRemainingRef.current = nextRemaining;
+    zeroCrossBeepRef.current = false;
+    setMode(nextMode);
+    setRunning(false);
+    setRemainingSeconds(nextRemaining);
+    setSelectedExerciseSeconds(nextExercise);
+    setSelectedRestSeconds(nextRest);
+  }, [contextId]);
 
   useEffect(() => {
     modeRef.current = mode;
@@ -498,7 +573,10 @@ export default function DualModeTimer({
       remainingSeconds,
       exerciseSeconds: selectedExerciseSeconds,
       restSeconds: selectedRestSeconds,
-      updatedAtMs: getCurrentTimestampMs(),
+      // Persist the local wall-clock anchor — never Date.now() on each emit —
+      // so parent storage cannot invent a newer baseline that jumps remaining.
+      updatedAtMs: runtimeAnchorMsRef.current,
+      contextId: contextId || undefined,
     });
   }, [
     mode,
@@ -507,6 +585,7 @@ export default function DualModeTimer({
     selectedExerciseSeconds,
     selectedRestSeconds,
     onStateChange,
+    contextId,
   ]);
 
   return (
