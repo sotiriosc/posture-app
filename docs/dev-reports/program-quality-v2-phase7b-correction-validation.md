@@ -144,9 +144,7 @@ PR #82 kept **draft** / **unmerged**. Description updated via REST API with fina
 - Base / checkpoint: `5c88a64e71245f137e12178f2d26a38faf5fc8f5`
 - Closure code tip (audits): `96ff2763c8468e8ca825e0dd4980debc62e5fd40`
 - Prior docs tip before this closure validation: `6e1fb7f46d0352d0b4a80516584b20219a87128c`
-- This validation follow-up commit: 
-`cd691f4d512140eb5e90094074ff2c05ee08b522`
-
+- This validation follow-up commit: `cd691f4d512140eb5e90094074ff2c05ee08b522`
 ## Stop
 
 Keep PR #82 draft and unmerged. Do not update `checkpoint/equipment-experience-phase4`. Do not begin Phase 8.
