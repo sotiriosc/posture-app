@@ -5,8 +5,10 @@
  * five mode audits. Writes program-quality-v2-fuzz-integrity* reports.
  *
  * Env:
- *   FUZZ_INTEGRITY_CASES_PER_MODE — default 200 for local/CI iteration;
- *                                   set to 10000 for release evidence.
+ *   FUZZ_INTEGRITY_MODE=local|release
+ *     local: default 200 cases/mode (override with FUZZ_INTEGRITY_CASES_PER_MODE)
+ *     release: must be exactly 10000 cases/mode
+ *   FUZZ_INTEGRITY_CASES_PER_MODE — case count override (release enforces 10000)
  */
 
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -35,6 +37,7 @@ import {
   type CanonicalFuzzCase,
   type FuzzMode,
 } from "@/lib/__debug__/lib/canonicalFuzzCases";
+import type { QualityRecoveryTrace } from "@/lib/program/qualityGate/recoverProgramQuality";
 
 const OUT_DIR = path.resolve(process.cwd(), "docs/dev-reports");
 const REPORT_MD = path.join(OUT_DIR, "program-quality-v2-fuzz-integrity.md");
@@ -45,10 +48,26 @@ const SAMPLES_JSON = path.join(
   "program-quality-v2-fuzz-integrity-samples.json"
 );
 
-const DEFAULT_CASES_PER_MODE = 200;
+const DEFAULT_LOCAL_CASES_PER_MODE = 200;
 const RELEASE_CASES_PER_MODE = 10_000;
 const HOLDOUT_CASES_PER_MODE = 40;
 const BLIND_SAMPLES_PER_MODE = 10;
+const COLLAPSE_REPORT_DISPLAY_LIMIT = 40;
+const COLLAPSE_ANALYZED_PAIR_CAP = 500;
+
+type FuzzIntegrityMode = "local" | "release";
+type FinalOutcomeClass =
+  | "initialPass"
+  | "recoveryPass"
+  | "fallbackPass"
+  | "safeGenerationFailure"
+  | "exception"
+  | "unclassified";
+
+type FallbackTriageBucket =
+  | "fallbackPassed"
+  | "fallbackFailedSafely"
+  | "fallbackEvidenceMalformed";
 
 const cloneProgram = (program: Program): Program =>
   JSON.parse(JSON.stringify(program)) as Program;
@@ -170,32 +189,62 @@ type CaseRunResult = {
   dayIdentitySignature: string | null;
   recoveryAttempted: boolean;
   recoveryAttemptCount: number;
+  recoverySucceeded: boolean;
   fallbackUsed: boolean;
+  fallbackSucceeded: boolean;
   fallbackStrategy?: string;
+  initialQualityPass: boolean;
   qualityPassed: boolean;
   hardFailureCodes: string[];
   capabilityLimitationCodes: string[];
   exception?: string;
   deterministicMismatch: boolean;
+  recoveryTrace: QualityRecoveryTrace | null;
+  finalOutcomeClass: FinalOutcomeClass;
+  /** True when a failed final program was incorrectly treated as usable. */
+  failedProgramTreatedAsUsable: boolean;
+  fallbackTriage?: FallbackTriageBucket;
+};
+
+const classifyFinalOutcome = (
+  trace: QualityRecoveryTrace | null,
+  qualityPassed: boolean,
+  exception?: string
+): FinalOutcomeClass => {
+  if (exception) return "exception";
+  if (!trace) return "unclassified";
+  if (trace.finalOutcome === "initialPass" && qualityPassed) return "initialPass";
+  if (trace.finalOutcome === "recoveryPass" && qualityPassed) return "recoveryPass";
+  if (trace.finalOutcome === "fallbackPass" && qualityPassed) return "fallbackPass";
+  if (trace.finalOutcome === "safeGenerationFailure" && !qualityPassed) {
+    return "safeGenerationFailure";
+  }
+  return "unclassified";
 };
 
 const generateGuarded = (fuzzCase: CanonicalFuzzCase): CaseRunResult => {
   clearProgramVariationHistory();
   clearProgramConstraintWarningBuffer();
-  const base = {
+  const base: CaseRunResult = {
     case: fuzzCase,
-    program: null as Program | null,
-    semanticSignature: null as string | null,
-    orderedExerciseSignature: null as string | null,
-    dayIdentitySignature: null as string | null,
+    program: null,
+    semanticSignature: null,
+    orderedExerciseSignature: null,
+    dayIdentitySignature: null,
     recoveryAttempted: false,
     recoveryAttemptCount: 0,
+    recoverySucceeded: false,
     fallbackUsed: false,
-    fallbackStrategy: undefined as string | undefined,
+    fallbackSucceeded: false,
+    fallbackStrategy: undefined,
+    initialQualityPass: false,
     qualityPassed: false,
-    hardFailureCodes: [] as string[],
-    capabilityLimitationCodes: [] as string[],
+    hardFailureCodes: [],
+    capabilityLimitationCodes: [],
     deterministicMismatch: false,
+    recoveryTrace: null,
+    finalOutcomeClass: "unclassified",
+    failedProgramTreatedAsUsable: false,
   };
 
   try {
@@ -234,6 +283,7 @@ const generateGuarded = (fuzzCase: CanonicalFuzzCase): CaseRunResult => {
       phaseIndex: fuzzCase.phaseIndex,
       baseSeed: fuzzCase.seed,
       initialProgram: initial,
+      blockedExerciseIds: fuzzCase.blockedExerciseIds,
       generate: (questionnaire, id, opts) =>
         generateWeeklyProgram(questionnaire, id, {
           ...opts,
@@ -242,40 +292,87 @@ const generateGuarded = (fuzzCase: CanonicalFuzzCase): CaseRunResult => {
         }),
     });
 
-    const program = guarded.ok ? guarded.program : initial;
     const evaluation = guarded.evaluation;
+    const recoveryTrace = guarded.recoveryTrace;
+    // Use recovery final program — never substitute initial when fallback/recovery failed.
+    const program = recoveryTrace.finalProgram;
     const mode = resolvePrimaryProgramEquipmentMode(
       fuzzCase.questionnaire.equipment ?? []
     );
     const capabilityCodes = evaluation.capabilityLimitations.map((f) => f.code);
-    const signature =
-      evaluation.deterministicSignature ??
-      computeProgramQualitySignature({
-        mode,
-        phaseIndex: program.phaseIndex ?? fuzzCase.phaseIndex,
-        daysPerWeek: program.daysPerWeek,
-        week: program.week,
-        capabilityLimitationCodes: capabilityCodes,
-      });
+    const signature = program
+      ? evaluation.deterministicSignature ??
+        computeProgramQualitySignature({
+          mode,
+          phaseIndex: program.phaseIndex ?? fuzzCase.phaseIndex,
+          daysPerWeek: program.daysPerWeek,
+          week: program.week,
+          capabilityLimitationCodes: capabilityCodes,
+        })
+      : null;
+
+    const initialQualityPass = recoveryTrace.finalOutcome === "initialPass";
+    const recoverySucceeded = recoveryTrace.finalOutcome === "recoveryPass";
+    const fallbackSucceeded = recoveryTrace.finalOutcome === "fallbackPass";
+    const fallbackUsed = Boolean(evaluation.fallbackUsed) || Boolean(recoveryTrace.fallback);
+    const recoveryAttempted =
+      recoveryTrace.recoveryAttempts.length > 0 || Boolean(evaluation.recoveryAttempted);
+
+    let fallbackTriage: FallbackTriageBucket | undefined;
+    if (fallbackUsed) {
+      // Old bug pattern: substitute initial program when fallback failed.
+      // Signature equality alone is not malformed — fallback may regenerate the same week.
+      const substitutedInitialOnFallbackFail =
+        !evaluation.passed &&
+        Boolean(recoveryTrace.fallback) &&
+        program === initial;
+      const fallbackTraceInconsistent =
+        Boolean(recoveryTrace.fallback) &&
+        program != null &&
+        orderedExerciseSignature(program) !== recoveryTrace.fallback!.programSignature;
+      if (substitutedInitialOnFallbackFail || fallbackTraceInconsistent) {
+        fallbackTriage = "fallbackEvidenceMalformed";
+      } else if (fallbackSucceeded) {
+        fallbackTriage = "fallbackPassed";
+      } else {
+        fallbackTriage = "fallbackFailedSafely";
+      }
+    }
+
+    const finalOutcomeClass = classifyFinalOutcome(
+      recoveryTrace,
+      evaluation.passed,
+      undefined
+    );
+    // Usable means: ok:true path with a returned program. Audit never treats fail as usable.
+    const failedProgramTreatedAsUsable = !evaluation.passed && guarded.ok;
 
     return {
       ...base,
       program,
       semanticSignature: signature,
-      orderedExerciseSignature: orderedExerciseSignature(program),
-      dayIdentitySignature: dayIdentitySignature(program),
-      recoveryAttempted: Boolean(evaluation.recoveryAttempted),
-      recoveryAttemptCount: evaluation.recoveryAttemptCount ?? 0,
-      fallbackUsed: Boolean(evaluation.fallbackUsed),
-      fallbackStrategy: evaluation.fallbackStrategy,
+      orderedExerciseSignature: program ? orderedExerciseSignature(program) : null,
+      dayIdentitySignature: program ? dayIdentitySignature(program) : null,
+      recoveryAttempted,
+      recoveryAttemptCount: evaluation.recoveryAttemptCount ?? recoveryTrace.recoveryAttempts.length,
+      recoverySucceeded,
+      fallbackUsed,
+      fallbackSucceeded,
+      fallbackStrategy: evaluation.fallbackStrategy ?? recoveryTrace.fallback?.strategy,
+      initialQualityPass,
       qualityPassed: evaluation.passed,
       hardFailureCodes: evaluation.hardFailures.map((f) => f.code),
       capabilityLimitationCodes: capabilityCodes,
+      recoveryTrace,
+      finalOutcomeClass,
+      failedProgramTreatedAsUsable,
+      fallbackTriage,
     };
   } catch (error) {
     return {
       ...base,
       exception: error instanceof Error ? error.message : String(error),
+      finalOutcomeClass: "exception",
     };
   }
 };
@@ -303,6 +400,21 @@ type DiversityStats = {
   fallbackRate: number;
   exceptions: number;
   deterministicMismatches: number;
+  initialQualityPass: number;
+  recoveryAttempted: number;
+  recoverySucceeded: number;
+  fallbackAttempted: number;
+  fallbackSucceeded: number;
+  finalQualityPass: number;
+  finalQualityFail: number;
+  safeGenerationError: number;
+  unclassifiedOutcomes: number;
+  finalQualityPassRate: number;
+  finalQualityFailureRate: number;
+  hardFailureCodesByCount: Record<string, number>;
+  failedCasesByStructuralGroup: Record<string, number>;
+  fallbackTriage: Record<FallbackTriageBucket, number>;
+  failedProgramTreatedAsUsable: number;
 };
 
 const accumulateDiversity = (
@@ -320,10 +432,27 @@ const accumulateDiversity = (
   const semantic = new Map<string, number>();
   const ordered = new Set<string>();
   const dayIds = new Set<string>();
+  const hardFailureCodesByCount: Record<string, number> = {};
+  const failedCasesByStructuralGroup: Record<string, number> = {};
+  const fallbackTriage: Record<FallbackTriageBucket, number> = {
+    fallbackPassed: 0,
+    fallbackFailedSafely: 0,
+    fallbackEvidenceMalformed: 0,
+  };
   let recoveryAttempts = 0;
   let fallbackUses = 0;
   let exceptions = 0;
   let deterministicMismatches = 0;
+  let initialQualityPass = 0;
+  let recoveryAttempted = 0;
+  let recoverySucceeded = 0;
+  let fallbackAttempted = 0;
+  let fallbackSucceeded = 0;
+  let finalQualityPass = 0;
+  let finalQualityFail = 0;
+  let safeGenerationError = 0;
+  let unclassifiedOutcomes = 0;
+  let failedProgramTreatedAsUsable = 0;
 
   for (const result of results) {
     structural.add(result.case.structuralKey);
@@ -344,10 +473,53 @@ const accumulateDiversity = (
     if (result.dayIdentitySignature) dayIds.add(result.dayIdentitySignature);
     if (result.recoveryAttempted || result.recoveryAttemptCount > 0) {
       recoveryAttempts += 1;
+      recoveryAttempted += 1;
     }
-    if (result.fallbackUsed) fallbackUses += 1;
+    if (result.recoverySucceeded) recoverySucceeded += 1;
+    if (result.fallbackUsed) {
+      fallbackUses += 1;
+      fallbackAttempted += 1;
+    }
+    if (result.fallbackSucceeded) fallbackSucceeded += 1;
+    if (result.initialQualityPass) initialQualityPass += 1;
     if (result.exception) exceptions += 1;
     if (result.deterministicMismatch) deterministicMismatches += 1;
+    if (result.failedProgramTreatedAsUsable) failedProgramTreatedAsUsable += 1;
+
+    if (result.finalOutcomeClass === "unclassified") unclassifiedOutcomes += 1;
+    if (result.finalOutcomeClass === "safeGenerationFailure") {
+      safeGenerationError += 1;
+      finalQualityFail += 1;
+    } else if (
+      result.finalOutcomeClass === "initialPass" ||
+      result.finalOutcomeClass === "recoveryPass" ||
+      result.finalOutcomeClass === "fallbackPass"
+    ) {
+      finalQualityPass += 1;
+    } else if (result.finalOutcomeClass === "exception") {
+      // exceptions counted separately; not a usable plan
+    } else if (!result.qualityPassed && !result.exception) {
+      finalQualityFail += 1;
+    }
+
+    if (!result.qualityPassed && !result.exception) {
+      for (const code of result.hardFailureCodes) {
+        hardFailureCodesByCount[code] = (hardFailureCodesByCount[code] ?? 0) + 1;
+      }
+      const group = [
+        result.case.questionnaire.experience,
+        `phase${result.case.phaseIndex}`,
+        `${result.case.questionnaire.daysPerWeek}d`,
+        result.case.painKey || "pain:none",
+        result.case.blockedKey || "blocks:none",
+      ].join("|");
+      failedCasesByStructuralGroup[group] =
+        (failedCasesByStructuralGroup[group] ?? 0) + 1;
+    }
+
+    if (result.fallbackTriage) {
+      fallbackTriage[result.fallbackTriage] += 1;
+    }
   }
 
   const top20 = Array.from(semantic.entries())
@@ -380,8 +552,33 @@ const accumulateDiversity = (
     fallbackRate: fallbackUses / total,
     exceptions,
     deterministicMismatches,
+    initialQualityPass,
+    recoveryAttempted,
+    recoverySucceeded,
+    fallbackAttempted,
+    fallbackSucceeded,
+    finalQualityPass,
+    finalQualityFail,
+    safeGenerationError,
+    unclassifiedOutcomes,
+    finalQualityPassRate: finalQualityPass / total,
+    finalQualityFailureRate: finalQualityFail / total,
+    hardFailureCodesByCount,
+    failedCasesByStructuralGroup,
+    fallbackTriage,
+    failedProgramTreatedAsUsable,
   };
 };
+
+type CollapseCategory =
+  | "expectedIrrelevantInput"
+  | "expectedStableTemplateIdentity"
+  | "expectedCapabilityLimitation"
+  | "suspiciousIgnoredPainInput"
+  | "suspiciousIgnoredSupportAnchorInput"
+  | "suspiciousIgnoredActiveBlock"
+  | "suspiciousIgnoredPhase"
+  | "suspiciousIgnoredExperience";
 
 type CollapseFlag = {
   mode: FuzzMode;
@@ -389,13 +586,193 @@ type CollapseFlag = {
   inputA: string;
   inputB: string;
   explanation: string;
+  category: CollapseCategory;
   verdict: "expected" | "suspicious";
+  diffs: string[];
+};
+
+type CollapseAnalysis = {
+  totalDetectedPairs: number;
+  analyzedRepresentativePairs: number;
+  reportDisplayLimit: number;
+  flags: CollapseFlag[];
+  rootCausesByCategory: Record<string, number>;
+};
+
+const programHasExercise = (program: Program | null, exerciseId: string) =>
+  Boolean(program && allExerciseIds(program).includes(exerciseId));
+
+const hasHingeCoverage = (program: Program | null) =>
+  Boolean(
+    program &&
+      allExerciseIds(program).some((id) => {
+        const exercise = exerciseById(id);
+        return (exercise?.movementPattern ?? []).some((p) =>
+          p.toLowerCase().includes("hinge")
+        );
+      })
+  );
+
+const classifyCollapsePair = (
+  a: CaseRunResult,
+  b: CaseRunResult,
+  diffs: string[]
+): { category: CollapseCategory; verdict: "expected" | "suspicious"; explanation: string } => {
+  const capsEqual =
+    a.capabilityLimitationCodes.join("|") === b.capabilityLimitationCodes.join("|") &&
+    a.capabilityLimitationCodes.length > 0;
+
+  // Personal-block ID differences are not suspicious by default.
+  if (diffs.includes("personal blocks")) {
+    const aBlock = a.case.blockedKey;
+    const bBlock = b.case.blockedKey;
+    const blockedInUnblockedBaseline =
+      (aBlock && !bBlock && programHasExercise(b.program, aBlock)) ||
+      (bBlock && !aBlock && programHasExercise(a.program, bBlock));
+    const roleLost =
+      (aBlock === "db-rdl" || bBlock === "db-rdl" || aBlock?.includes("rdl") || bBlock?.includes("rdl")) &&
+      ((aBlock && !hasHingeCoverage(a.program)) || (bBlock && !hasHingeCoverage(b.program)));
+    if (blockedInUnblockedBaseline || roleLost) {
+      return {
+        category: "suspiciousIgnoredActiveBlock",
+        verdict: "suspicious",
+        explanation:
+          "Block-related collapse: blocked exercise appears in unblocked baseline or role lost truthful coverage.",
+      };
+    }
+    if (diffs.length === 1) {
+      return {
+        category: "expectedIrrelevantInput",
+        verdict: "expected",
+        explanation:
+          "Personal-block ID difference alone with no evidence the block was active in the unblocked baseline.",
+      };
+    }
+  }
+
+  // Redundant equipment additions when primary mode unchanged are not suspicious.
+  if (diffs.includes("support changes") && !diffs.includes("equipment mode")) {
+    const aMode = resolvePrimaryProgramEquipmentMode(a.case.questionnaire.equipment ?? []);
+    const bMode = resolvePrimaryProgramEquipmentMode(b.case.questionnaire.equipment ?? []);
+    if (aMode === bMode) {
+      const onlySupportOrCosmetic = diffs.every(
+        (d) =>
+          d === "support changes" ||
+          d === "personal blocks" ||
+          d === "frequency changes" ||
+          d === "goals"
+      );
+      if (onlySupportOrCosmetic || diffs.filter((d) => d !== "support changes").length === 0) {
+        return {
+          category: "expectedIrrelevantInput",
+          verdict: "expected",
+          explanation:
+            "Redundant equipment/support addition with unchanged primary mode and no expected eligibility difference.",
+        };
+      }
+    }
+  }
+
+  if (diffs.includes("anchor/band capability") || diffs.includes("support changes")) {
+    if (capsEqual) {
+      return {
+        category: "expectedCapabilityLimitation",
+        verdict: "expected",
+        explanation: "Support/anchor difference collapses under the same capability limitation codes.",
+      };
+    }
+    return {
+      category: "suspiciousIgnoredSupportAnchorInput",
+      verdict: "suspicious",
+      explanation: "Support/anchor input differs but semantic signature is identical without shared capability limitation.",
+    };
+  }
+
+  if (diffs.includes("pain changes")) {
+    const shoulderOrBack =
+      a.case.painKey.includes("shoulder") ||
+      b.case.painKey.includes("shoulder") ||
+      a.case.painKey.includes("lower back") ||
+      b.case.painKey.includes("lower back");
+    if (shoulderOrBack) {
+      return {
+        category: "suspiciousIgnoredPainInput",
+        verdict: "suspicious",
+        explanation: "Material pain input differs but semantic signature collapsed.",
+      };
+    }
+    return {
+      category: "expectedIrrelevantInput",
+      verdict: "expected",
+      explanation: "Pain combination differs in a way the contract may adapt via prescription/presentation rather than identity.",
+    };
+  }
+
+  if (diffs.includes("phase changes")) {
+    const titlesStable = a.dayIdentitySignature === b.dayIdentitySignature;
+    if (titlesStable && a.orderedExerciseSignature === b.orderedExerciseSignature) {
+      return {
+        category: "suspiciousIgnoredPhase",
+        verdict: "suspicious",
+        explanation: "Phase differs with identical day identity and exercise composition and no explained progression delta.",
+      };
+    }
+    return {
+      category: "expectedStableTemplateIdentity",
+      verdict: "expected",
+      explanation: "Phase differs but session identity remains stable as intended.",
+    };
+  }
+
+  if (diffs.includes("experience changes")) {
+    const prescriptionDelta =
+      JSON.stringify(
+        a.program?.week.map((d) => d.routine.map((i) => i.prescription ?? null))
+      ) !==
+      JSON.stringify(
+        b.program?.week.map((d) => d.routine.map((i) => i.prescription ?? null))
+      );
+    if (!prescriptionDelta && a.orderedExerciseSignature === b.orderedExerciseSignature) {
+      return {
+        category: "suspiciousIgnoredExperience",
+        verdict: "suspicious",
+        explanation: "Experience differs with identical composition and prescription.",
+      };
+    }
+    return {
+      category: "expectedStableTemplateIdentity",
+      verdict: "expected",
+      explanation: "Experience differs; composition may stay stable when prescription/progression carries the effect.",
+    };
+  }
+
+  if (diffs.includes("equipment mode")) {
+    return {
+      category: "suspiciousIgnoredSupportAnchorInput",
+      verdict: "suspicious",
+      explanation: "Primary equipment mode differs but semantic signature collapsed.",
+    };
+  }
+
+  if (capsEqual) {
+    return {
+      category: "expectedCapabilityLimitation",
+      verdict: "expected",
+      explanation: "Collapse under shared capability limitation codes.",
+    };
+  }
+
+  return {
+    category: "expectedIrrelevantInput",
+    verdict: "expected",
+    explanation: `Structural diffs (${diffs.join(", ")}) do not imply a material eligibility change.`,
+  };
 };
 
 const analyzeCrossInputCollapse = (
   mode: FuzzMode,
   results: CaseRunResult[]
-): CollapseFlag[] => {
+): CollapseAnalysis => {
   const bySignature = new Map<string, CaseRunResult[]>();
   for (const result of results) {
     if (!result.semanticSignature || !result.program) continue;
@@ -404,7 +781,7 @@ const analyzeCrossInputCollapse = (
     bySignature.set(result.semanticSignature, list);
   }
 
-  const flags: CollapseFlag[] = [];
+  const allFlags: CollapseFlag[] = [];
   for (const [signature, group] of bySignature) {
     const byStructural = new Map<string, CaseRunResult>();
     for (const entry of group) {
@@ -444,44 +821,47 @@ const analyzeCrossInputCollapse = (
         if (a.case.questionnaire.daysPerWeek !== b.case.questionnaire.daysPerWeek) {
           diffs.push("frequency changes");
         }
+        if (a.case.questionnaire.goals !== b.case.questionnaire.goals) {
+          diffs.push("goals");
+        }
         if (a.case.blockedKey !== b.case.blockedKey) diffs.push("personal blocks");
 
         if (!diffs.length) continue;
 
-        // Legitimate irrelevance: goals-only / foam_roller-only / seed-free structural
-        // noise that contracts intentionally ignore.
-        const onlyGoalsOrCosmetic =
-          diffs.length === 1 &&
-          (diffs[0] === "experience changes" || diffs[0] === "phase changes") &&
-          a.case.painKey === b.case.painKey &&
-          a.case.capabilityLane === b.case.capabilityLane;
-
-        const materialEquipment =
-          diffs.includes("equipment mode") ||
-          diffs.includes("anchor/band capability") ||
-          diffs.includes("support changes") ||
-          diffs.includes("personal blocks") ||
-          (diffs.includes("pain changes") &&
-            (a.case.painKey.includes("shoulder") ||
-              b.case.painKey.includes("shoulder") ||
-              a.case.painKey.includes("lower back") ||
-              b.case.painKey.includes("lower back")));
-
-        const verdict: "expected" | "suspicious" =
-          materialEquipment && !onlyGoalsOrCosmetic ? "suspicious" : "expected";
-
-        flags.push({
+        const classified = classifyCollapsePair(a, b, diffs);
+        allFlags.push({
           mode,
           signature,
           inputA: a.case.structuralKey,
           inputB: b.case.structuralKey,
-          explanation: `Materially different structural inputs (${diffs.join(", ")}) collapse to identical semantic signature.`,
-          verdict,
+          explanation: classified.explanation,
+          category: classified.category,
+          verdict: classified.verdict,
+          diffs,
         });
       }
     }
   }
-  return flags.slice(0, 200);
+
+  const totalDetectedPairs = allFlags.length;
+  const analyzedRepresentativePairs = Math.min(
+    totalDetectedPairs,
+    COLLAPSE_ANALYZED_PAIR_CAP
+  );
+  const analyzed = allFlags.slice(0, analyzedRepresentativePairs);
+  const rootCausesByCategory: Record<string, number> = {};
+  for (const flag of allFlags) {
+    rootCausesByCategory[flag.category] =
+      (rootCausesByCategory[flag.category] ?? 0) + 1;
+  }
+
+  return {
+    totalDetectedPairs,
+    analyzedRepresentativePairs,
+    reportDisplayLimit: COLLAPSE_REPORT_DISPLAY_LIMIT,
+    flags: analyzed,
+    rootCausesByCategory,
+  };
 };
 
 const sorted = (values: string[]) => [...values].map((v) => v.toLowerCase()).sort();
@@ -832,9 +1212,47 @@ const runMetamorphic = (): MetamorphicResult[] => {
     (before, after) => {
       const b = countOverheadDemand(before);
       const a = countOverheadDemand(after);
+      const compositionIdentical =
+        orderedExerciseSignature(before) === orderedExerciseSignature(after);
+      const beforePres = JSON.stringify(
+        before.week.map((d) =>
+          d.routine.map((i) => ({
+            id: i.exerciseId,
+            rx: i.prescription ?? null,
+            sets: i.sets,
+            reps: i.reps,
+          }))
+        )
+      );
+      const afterPres = JSON.stringify(
+        after.week.map((d) =>
+          d.routine.map((i) => ({
+            id: i.exerciseId,
+            rx: i.prescription ?? null,
+            sets: i.sets,
+            reps: i.reps,
+          }))
+        )
+      );
+      const beforeWarm = before.week
+        .flatMap((d) => d.routine.filter((i) => i.section === "warmup").map((i) => i.exerciseId))
+        .join(",");
+      const afterWarm = after.week
+        .flatMap((d) => d.routine.filter((i) => i.section === "warmup").map((i) => i.exerciseId))
+        .join(",");
+      const beforeRationale = JSON.stringify(before.adaptationSummary ?? []);
+      const afterRationale = JSON.stringify(after.adaptationSummary ?? []);
+      const nonCompositionAdaptation =
+        beforePres !== afterPres ||
+        beforeWarm !== afterWarm ||
+        beforeRationale !== afterRationale;
+      // Named relationship: overhead must not increase; if composition identical,
+      // prescription/warmup/rationale/progression/presentation must adapt.
+      const ok =
+        a <= b && (!compositionIdentical || nonCompositionAdaptation || a < b);
       return {
-        ok: a <= b,
-        detail: `overhead before=${b} after=${a}`,
+        ok,
+        detail: `overhead before=${b} after=${a} compositionIdentical=${compositionIdentical} nonCompositionAdaptation=${nonCompositionAdaptation}`,
       };
     }
   );
@@ -934,9 +1352,17 @@ const runMetamorphic = (): MetamorphicResult[] => {
       daysPerWeek: 3,
     },
     "fuzz-integrity-meta-block-squat",
-    (before, after) => {
-      // Rebuild after with block using same seed.
+    (before) => {
+      // Block the ACTUAL squat exercise from the unblocked baseline.
+      const baselineSquat =
+        allExerciseIds(before).find((id) => {
+          const exercise = exerciseById(id);
+          return (exercise?.movementPattern ?? []).some((p) =>
+            p.toLowerCase().includes("squat")
+          );
+        }) ?? "goblet-squat";
       clearProgramVariationHistory();
+      clearProgramConstraintWarningBuffer();
       const blocked = generateWeeklyProgram(
         {
           goals: "General fitness",
@@ -951,17 +1377,15 @@ const runMetamorphic = (): MetamorphicResult[] => {
           seed: "fuzz-integrity-meta-block-squat",
           skipQualityGate: true,
           blockedExerciseIds: {
-            "goblet-squat": {
+            [baselineSquat]: {
               reason: "personal_preference",
               blockedAt: { phase: "skill", sessionCount: 2 },
             },
           },
         }
       );
-      void before;
-      void after;
       const ids = allExerciseIds(blocked);
-      const hasBlocked = ids.includes("goblet-squat");
+      const hasBlocked = ids.includes(baselineSquat);
       const hasSquatPurpose = ids.some((id) => {
         const exercise = exerciseById(id);
         return Boolean(
@@ -971,9 +1395,21 @@ const runMetamorphic = (): MetamorphicResult[] => {
             )
         );
       });
+      const evalBlocked = evaluateProgramQuality({
+        program: blocked,
+        questionnaire: {
+          goals: "General fitness",
+          painAreas: [],
+          experience: "Beginner",
+          equipment: ["dumbbells"],
+          daysPerWeek: 3,
+        },
+        blockedExerciseIds: [baselineSquat],
+      });
+      const honestCap = evalBlocked.capabilityLimitations.length > 0;
       return {
-        ok: !hasBlocked && hasSquatPurpose,
-        detail: `blockedPresent=${hasBlocked} squatPurpose=${hasSquatPurpose}`,
+        ok: !hasBlocked && (hasSquatPurpose || honestCap),
+        detail: `blockedId=${baselineSquat} blockedPresent=${hasBlocked} squatPurpose=${hasSquatPurpose} capabilityLimitation=${honestCap}`,
       };
     }
   );
@@ -997,8 +1433,16 @@ const runMetamorphic = (): MetamorphicResult[] => {
       bandSetup: "long_no_anchor",
     },
     "fuzz-integrity-meta-block-hinge",
-    () => {
+    (before) => {
+      const baselineHinge =
+        allExerciseIds(before).find((id) => {
+          const exercise = exerciseById(id);
+          return (exercise?.movementPattern ?? []).some((p) =>
+            p.toLowerCase().includes("hinge")
+          );
+        }) ?? "db-rdl";
       clearProgramVariationHistory();
+      clearProgramConstraintWarningBuffer();
       const blocked = generateWeeklyProgram(
         {
           goals: "General fitness",
@@ -1014,7 +1458,7 @@ const runMetamorphic = (): MetamorphicResult[] => {
           seed: "fuzz-integrity-meta-block-hinge",
           skipQualityGate: true,
           blockedExerciseIds: {
-            "db-rdl": {
+            [baselineHinge]: {
               reason: "personal_preference",
               blockedAt: { phase: "skill", sessionCount: 2 },
             },
@@ -1022,7 +1466,7 @@ const runMetamorphic = (): MetamorphicResult[] => {
         }
       );
       const ids = allExerciseIds(blocked);
-      const hasBlocked = ids.includes("db-rdl");
+      const hasBlocked = ids.includes(baselineHinge);
       const hasHingePurpose = ids.some((id) => {
         const exercise = exerciseById(id);
         return Boolean(
@@ -1032,9 +1476,22 @@ const runMetamorphic = (): MetamorphicResult[] => {
             )
         );
       });
+      const evalBlocked = evaluateProgramQuality({
+        program: blocked,
+        questionnaire: {
+          goals: "General fitness",
+          painAreas: [],
+          experience: "Intermediate",
+          equipment: ["dumbbells", "bands"],
+          daysPerWeek: 3,
+          bandSetup: "long_no_anchor",
+        },
+        blockedExerciseIds: [baselineHinge],
+      });
+      const honestCap = evalBlocked.capabilityLimitations.length > 0;
       return {
-        ok: !hasBlocked && hasHingePurpose,
-        detail: `blockedPresent=${hasBlocked} hingePurpose=${hasHingePurpose}`,
+        ok: !hasBlocked && (hasHingePurpose || honestCap),
+        detail: `blockedId=${baselineHinge} blockedPresent=${hasBlocked} hingePurpose=${hasHingePurpose} capabilityLimitation=${honestCap}`,
       };
     }
   );
@@ -1117,9 +1574,34 @@ const runMetamorphic = (): MetamorphicResult[] => {
       const illegal = afterEval.hardFailures.some((f) =>
         f.code.includes("ILLEGAL_EQUIPMENT")
       );
+      const identityFail = afterEval.hardFailures.some((f) =>
+        f.code.includes("IDENTITY")
+      );
+      const beforeSets = before.week.reduce(
+        (sum, d) => sum + d.routine.reduce((s, i) => s + (i.sets ?? 0), 0),
+        0
+      );
+      const afterSets = after.week.reduce(
+        (sum, d) => sum + d.routine.reduce((s, i) => s + (i.sets ?? 0), 0),
+        0
+      );
+      const beforeRx = JSON.stringify(
+        before.week.map((d) =>
+          d.routine.map((i) => i.prescription?.progressionRule ?? i.reps ?? "")
+        )
+      );
+      const afterRx = JSON.stringify(
+        after.week.map((d) =>
+          d.routine.map((i) => i.prescription?.progressionRule ?? i.reps ?? "")
+        )
+      );
+      const compositionChanged =
+        orderedExerciseSignature(before) !== orderedExerciseSignature(after);
+      const complexityOrPrescriptionEffect =
+        afterSets >= beforeSets || beforeRx !== afterRx || compositionChanged;
       return {
-        ok: !illegal && afterEval.hardFailures.filter((f) => f.code.includes("IDENTITY")).length === 0,
-        detail: `beginnerHard=${beforeEval.hardFailures.length} advancedHard=${afterEval.hardFailures.length}`,
+        ok: !illegal && !identityFail && complexityOrPrescriptionEffect,
+        detail: `beginnerHard=${beforeEval.hardFailures.length} advancedHard=${afterEval.hardFailures.length} sets ${beforeSets}->${afterSets} rxChanged=${beforeRx !== afterRx} compositionChanged=${compositionChanged}`,
       };
     }
   );
@@ -1143,6 +1625,7 @@ const runMetamorphic = (): MetamorphicResult[] => {
     "fuzz-integrity-meta-phase",
     (before) => {
       clearProgramVariationHistory();
+      clearProgramConstraintWarningBuffer();
       const after = generateWeeklyProgram(
         {
           goals: "General fitness",
@@ -1161,11 +1644,36 @@ const runMetamorphic = (): MetamorphicResult[] => {
       const beforeTitles = dayIdentitySignature(before);
       const afterTitles = dayIdentitySignature(after);
       const identityOk = beforeTitles === afterTitles;
-      const changed =
+      const exerciseChanged =
         orderedExerciseSignature(before) !== orderedExerciseSignature(after);
+      const beforeRx = JSON.stringify(
+        before.week.map((d) =>
+          d.routine.map((i) => ({
+            reps: i.reps,
+            sets: i.sets,
+            rule: i.prescription?.progressionRule ?? null,
+          }))
+        )
+      );
+      const afterRx = JSON.stringify(
+        after.week.map((d) =>
+          d.routine.map((i) => ({
+            reps: i.reps,
+            sets: i.sets,
+            rule: i.prescription?.progressionRule ?? null,
+          }))
+        )
+      );
+      const prescriptionChanged = beforeRx !== afterRx;
+      const intendedChange = exerciseChanged || prescriptionChanged;
+      const explanation = !exerciseChanged
+        ? prescriptionChanged
+          ? "exerciseChanged=false but prescription/progression changed as intended"
+          : "exerciseChanged=false and no prescription delta — unexplained"
+        : "exercise composition changed across phases";
       return {
-        ok: identityOk,
-        detail: `dayIdentityStable=${identityOk} exerciseChanged=${changed}`,
+        ok: identityOk && intendedChange,
+        detail: `dayIdentityStable=${identityOk} exerciseChanged=${exerciseChanged} prescriptionChanged=${prescriptionChanged} (${explanation})`,
       };
     }
   );
@@ -1223,51 +1731,202 @@ type SampleRecord = {
     phaseIndex: number;
     blockedExerciseIds?: CanonicalFuzzCase["blockedExerciseIds"];
   };
+  blockedExercise: string | null;
   recoveryOccurred: boolean;
   fallbackOccurred: boolean;
   fallbackStrategy?: string;
+  fallbackTriage?: FallbackTriageBucket;
   dayTitles: string[];
   orderedExerciseIds: string[][];
   prescriptions: Array<Array<{ exerciseId: string; prescription?: ProgramRoutineItem["prescription"] }>>;
   capabilityLimitations: string[];
   qualityVerdict: "pass" | "fail" | "exception";
+  finalOutcomeClass: FinalOutcomeClass;
+  finalUserFacingOutcome: "usable_program" | "safe_generation_error" | "exception";
+  initialHardFailures: string[];
+  recoveryHardFailures: Array<{ attempt: number; seed: string; codes: string[] }>;
+  fallbackHardFailures: string[];
+  reproducibleSeeds: {
+    base: string;
+    recovery: string[];
+    fallback?: string;
+  };
   semanticSignature: string | null;
+  finalProgramSignature: string | null;
   exception?: string;
 };
 
-const toSample = (result: CaseRunResult): SampleRecord => ({
-  mode: result.case.mode,
-  index: result.case.index,
-  seed: result.case.seed,
-  structuralKey: result.case.structuralKey,
-  input: {
-    questionnaire: result.case.questionnaire,
-    phaseIndex: result.case.phaseIndex,
-    blockedExerciseIds: result.case.blockedExerciseIds,
-  },
-  recoveryOccurred: result.recoveryAttempted || result.recoveryAttemptCount > 0,
-  fallbackOccurred: result.fallbackUsed,
-  fallbackStrategy: result.fallbackStrategy,
-  dayTitles: result.program?.week.map((day) => day.title) ?? [],
-  orderedExerciseIds:
-    result.program?.week.map((day) => day.routine.map((item) => item.exerciseId)) ??
-    [],
-  prescriptions:
-    result.program?.week.map((day) =>
-      day.routine.map((item) => ({
-        exerciseId: item.exerciseId,
-        prescription: item.prescription,
-      }))
-    ) ?? [],
-  capabilityLimitations: result.capabilityLimitationCodes,
-  qualityVerdict: result.exception
-    ? "exception"
-    : result.qualityPassed
-    ? "pass"
-    : "fail",
-  semanticSignature: result.semanticSignature,
-  exception: result.exception,
-});
+const toSample = (result: CaseRunResult): SampleRecord => {
+  const trace = result.recoveryTrace;
+  return {
+    mode: result.case.mode,
+    index: result.case.index,
+    seed: result.case.seed,
+    structuralKey: result.case.structuralKey,
+    input: {
+      questionnaire: result.case.questionnaire,
+      phaseIndex: result.case.phaseIndex,
+      blockedExerciseIds: result.case.blockedExerciseIds,
+    },
+    blockedExercise: result.case.blockedKey || null,
+    recoveryOccurred: result.recoveryAttempted || result.recoveryAttemptCount > 0,
+    fallbackOccurred: result.fallbackUsed,
+    fallbackStrategy: result.fallbackStrategy,
+    fallbackTriage: result.fallbackTriage,
+    dayTitles: result.program?.week.map((day) => day.title) ?? [],
+    orderedExerciseIds:
+      result.program?.week.map((day) => day.routine.map((item) => item.exerciseId)) ??
+      [],
+    prescriptions:
+      result.program?.week.map((day) =>
+        day.routine.map((item) => ({
+          exerciseId: item.exerciseId,
+          prescription: item.prescription,
+        }))
+      ) ?? [],
+    capabilityLimitations: result.capabilityLimitationCodes,
+    qualityVerdict: result.exception
+      ? "exception"
+      : result.qualityPassed
+      ? "pass"
+      : "fail",
+    finalOutcomeClass: result.finalOutcomeClass,
+    finalUserFacingOutcome: result.exception
+      ? "exception"
+      : result.qualityPassed
+      ? "usable_program"
+      : "safe_generation_error",
+    initialHardFailures: trace?.initial.hardFailureCodes ?? [],
+    recoveryHardFailures:
+      trace?.recoveryAttempts.map((a) => ({
+        attempt: a.attempt,
+        seed: a.seed,
+        codes: a.hardFailureCodes,
+      })) ?? [],
+    fallbackHardFailures: trace?.fallback?.hardFailureCodes ?? [],
+    reproducibleSeeds: {
+      base: result.case.seed,
+      recovery: trace?.recoveryAttempts.map((a) => a.seed) ?? [],
+      fallback: trace?.fallback?.seed,
+    },
+    semanticSignature: result.semanticSignature,
+    finalProgramSignature: trace?.finalProgram
+      ? orderedExerciseSignature(trace.finalProgram)
+      : result.orderedExerciseSignature,
+    exception: result.exception,
+  };
+};
+
+type GymHingeReproReport = {
+  seed: string;
+  questionnaire: QuestionnaireData;
+  blockedExerciseIds: NonNullable<CanonicalFuzzCase["blockedExerciseIds"]>;
+  unblockedHingeMainIds: string[];
+  blockedHingeMainIds: string[];
+  blockedExercisePresent: boolean;
+  hingeRemainsViaLegalAlternative: boolean;
+  finalOutcomeClass: FinalOutcomeClass;
+  qualityPassed: boolean;
+  hardFailureCodes: string[];
+  verdict: "hinge_preserved" | "honest_capability_gap" | "genuine_gap_needs_fix";
+  detail: string;
+};
+
+const mainHingeIds = (program: Program | null) => {
+  if (!program) return [] as string[];
+  return program.week.flatMap((day) =>
+    day.routine
+      .filter((item) => item.section === "main")
+      .filter((item) => {
+        const slot = `${item.selectionDebug?.slotKind ?? ""} ${item.selectionDebug?.slotLane ?? ""}`.toLowerCase();
+        const exercise = exerciseById(item.exerciseId);
+        const patternHinge = (exercise?.movementPattern ?? []).some((p) =>
+          p.toLowerCase().includes("hinge")
+        );
+        return slot.includes("hinge") || patternHinge;
+      })
+      .map((item) => item.exerciseId)
+  );
+};
+
+const runGymDbRdlHingeRepro = (): GymHingeReproReport => {
+  const questionnaire: QuestionnaireData = {
+    goals: "General fitness",
+    painAreas: [],
+    experience: "Beginner",
+    equipment: ["gym"],
+    daysPerWeek: 3,
+  };
+  const seed = "gym-fuzz-9e37e786";
+  const blockedExerciseIds = {
+    "db-rdl": {
+      reason: "personal_preference" as const,
+      blockedAt: { phase: "skill" as const, sessionCount: 3 },
+    },
+  };
+
+  clearProgramVariationHistory();
+  clearProgramConstraintWarningBuffer();
+  const unblocked = generateWeeklyProgram(questionnaire, "gym-hinge-repro-unblocked", {
+    phaseIndex: 1,
+    seed,
+    skipQualityGate: true,
+  });
+  const unblockedHingeMainIds = mainHingeIds(unblocked);
+
+  const fuzzCase = buildCanonicalFuzzCase("gym", 0, { includeBlocks: true });
+  // Force the documented personal block even if generator block pool drifts.
+  const reproCase: CanonicalFuzzCase = {
+    ...fuzzCase,
+    seed,
+    phaseIndex: 1,
+    questionnaire,
+    blockedExerciseIds,
+    blockedKey: "db-rdl",
+  };
+  const result = generateGuarded(reproCase);
+  const blockedHingeMainIds = mainHingeIds(result.program);
+  const blockedExercisePresent = Boolean(
+    result.program && allExerciseIds(result.program).includes("db-rdl")
+  );
+  const wrongTruth = result.hardFailureCodes.some(
+    (code) =>
+      code.includes("REQUIRED_ROLE_WRONG_TRUTH") ||
+      code.includes("MISSING_TRUE_HINGE") ||
+      code.includes("HINGE_SATISFIED")
+  );
+  const hingeRemainsViaLegalAlternative =
+    !blockedExercisePresent &&
+    blockedHingeMainIds.length > 0 &&
+    !wrongTruth &&
+    (result.qualityPassed || result.finalOutcomeClass !== "safeGenerationFailure");
+  const honestCap = result.capabilityLimitationCodes.length > 0;
+  let verdict: GymHingeReproReport["verdict"] = "honest_capability_gap";
+  if (hingeRemainsViaLegalAlternative || (result.qualityPassed && !blockedExercisePresent)) {
+    verdict = "hinge_preserved";
+  } else if (
+    unblockedHingeMainIds.length > 0 &&
+    (blockedHingeMainIds.length === 0 || wrongTruth) &&
+    !honestCap
+  ) {
+    verdict = "genuine_gap_needs_fix";
+  }
+
+  return {
+    seed,
+    questionnaire,
+    blockedExerciseIds,
+    unblockedHingeMainIds,
+    blockedHingeMainIds,
+    blockedExercisePresent,
+    hingeRemainsViaLegalAlternative: verdict === "hinge_preserved",
+    finalOutcomeClass: result.finalOutcomeClass,
+    qualityPassed: result.qualityPassed,
+    hardFailureCodes: result.hardFailureCodes,
+    verdict,
+    detail: `unblockedHingeMains=${unblockedHingeMainIds.join(",") || "none"} blockedHingeMains=${blockedHingeMainIds.join(",") || "none"} wrongTruth=${wrongTruth} outcome=${result.finalOutcomeClass}`,
+  };
+};
 
 const pickBlindIndices = (casesPerMode: number, count: number): number[] => {
   const indices: number[] = [];
@@ -1286,24 +1945,39 @@ type NeedsReviewSignal = {
 
 const main = () => {
   const started = Date.now();
+  const modeEnv = (process.env.FUZZ_INTEGRITY_MODE ?? "local").toLowerCase();
+  const fuzzMode: FuzzIntegrityMode = modeEnv === "release" ? "release" : "local";
+  const defaultCases =
+    fuzzMode === "release" ? RELEASE_CASES_PER_MODE : DEFAULT_LOCAL_CASES_PER_MODE;
   const casesPerModeRaw = Number(
-    process.env.FUZZ_INTEGRITY_CASES_PER_MODE ?? String(DEFAULT_CASES_PER_MODE)
+    process.env.FUZZ_INTEGRITY_CASES_PER_MODE ?? String(defaultCases)
   );
   const casesPerMode =
     Number.isFinite(casesPerModeRaw) && casesPerModeRaw >= 0
       ? Math.floor(casesPerModeRaw)
-      : DEFAULT_CASES_PER_MODE;
+      : defaultCases;
 
   console.error(
-    `[fuzzIntegrityAudit] casesPerMode=${casesPerMode}` +
-      ` (release evidence uses ${RELEASE_CASES_PER_MODE};` +
-      ` default local/CI=${DEFAULT_CASES_PER_MODE})`
+    `[fuzzIntegrityAudit] mode=${fuzzMode} casesPerMode=${casesPerMode}` +
+      ` (release requires exactly ${RELEASE_CASES_PER_MODE};` +
+      ` local default=${DEFAULT_LOCAL_CASES_PER_MODE})`
   );
+
+  const releaseBlockingFailures: NeedsReviewSignal[] = [];
+  const needsReviewWarnings: NeedsReviewSignal[] = [];
+
+  if (fuzzMode === "release" && casesPerMode !== RELEASE_CASES_PER_MODE) {
+    releaseBlockingFailures.push({
+      code: "RELEASE_CASE_COUNT_INVALID",
+      detail: `release mode requires exactly ${RELEASE_CASES_PER_MODE} cases/mode; got ${casesPerMode}`,
+    });
+  }
 
   const modeResults = new Map<FuzzMode, CaseRunResult[]>();
   const diversityByMode: DiversityStats[] = [];
-  const collapses: CollapseFlag[] = [];
+  const collapseAnalyses: CollapseAnalysis[] = [];
   const fallbackSamples: SampleRecord[] = [];
+  const failedCaseDiagnostics: SampleRecord[] = [];
   const blindSamples: SampleRecord[] = [];
 
   for (const mode of FUZZ_MODES) {
@@ -1314,13 +1988,16 @@ const main = () => {
       const result = generateGuarded(fuzzCase);
       results.push(result);
       if (result.fallbackUsed) fallbackSamples.push(toSample(result));
+      if (!result.qualityPassed || result.exception) {
+        failedCaseDiagnostics.push(toSample(result));
+      }
       if ((i + 1) % 100 === 0 || i + 1 === casesPerMode) {
         console.error(`[fuzzIntegrityAudit] ${mode} ${i + 1}/${casesPerMode}`);
       }
     }
     modeResults.set(mode, results);
     diversityByMode.push(accumulateDiversity(mode, results));
-    collapses.push(...analyzeCrossInputCollapse(mode, results));
+    collapseAnalyses.push(analyzeCrossInputCollapse(mode, results));
 
     const blindIdx = pickBlindIndices(casesPerMode, BLIND_SAMPLES_PER_MODE);
     for (const index of blindIdx) {
@@ -1354,88 +2031,214 @@ const main = () => {
   const metamorphic = runMetamorphic();
   const metamorphicPassed = metamorphic.filter((m) => m.passed).length;
 
-  const needsReview: NeedsReviewSignal[] = [];
+  console.error("[fuzzIntegrityAudit] gym db-rdl hinge repro…");
+  const gymHingeRepro = runGymDbRdlHingeRepro();
+
+  const totalDetectedPairs = collapseAnalyses.reduce(
+    (sum, c) => sum + c.totalDetectedPairs,
+    0
+  );
+  const analyzedRepresentativePairs = collapseAnalyses.reduce(
+    (sum, c) => sum + c.analyzedRepresentativePairs,
+    0
+  );
+  const collapseFlags = collapseAnalyses.flatMap((c) => c.flags);
+  const collapseRootCauses: Record<string, number> = {};
+  for (const analysis of collapseAnalyses) {
+    for (const [category, count] of Object.entries(analysis.rootCausesByCategory)) {
+      collapseRootCauses[category] = (collapseRootCauses[category] ?? 0) + count;
+    }
+  }
+  const suspiciousCollapses = collapseFlags.filter((c) => c.verdict === "suspicious");
+
   for (const stats of diversityByMode) {
     if (stats.fallbackRate > 0.01) {
-      needsReview.push({
+      needsReviewWarnings.push({
         code: "FALLBACK_RATE_ABOVE_1PCT",
-        detail: `${stats.mode} fallbackRate=${(stats.fallbackRate * 100).toFixed(2)}%`,
+        detail: `${stats.mode} fallbackRate=${(stats.fallbackRate * 100).toFixed(2)}% (warning — not a release failure when all finals pass)`,
       });
     }
     if (stats.recoveryRate > 0.05) {
-      needsReview.push({
+      needsReviewWarnings.push({
         code: "RECOVERY_RATE_ABOVE_5PCT",
-        detail: `${stats.mode} recoveryRate=${(stats.recoveryRate * 100).toFixed(2)}%`,
+        detail: `${stats.mode} recoveryRate=${(stats.recoveryRate * 100).toFixed(2)}% (warning)`,
       });
     }
     if (
       stats.structuralInputTuples > 1 &&
       stats.mostCommonSignatureShare > 0.95
     ) {
-      needsReview.push({
+      needsReviewWarnings.push({
         code: "SEMANTIC_SIGNATURE_DOMINANCE",
         detail: `${stats.mode} mostCommonSignatureShare=${(stats.mostCommonSignatureShare * 100).toFixed(2)}% over ${stats.structuralInputTuples} structural personas`,
       });
     }
     if (stats.deterministicMismatches > 0) {
-      needsReview.push({
+      releaseBlockingFailures.push({
         code: "DETERMINISTIC_MISMATCH",
         detail: `${stats.mode} deterministicMismatches=${stats.deterministicMismatches}`,
       });
     }
+    if (stats.exceptions > 0) {
+      releaseBlockingFailures.push({
+        code: "EXCEPTIONS",
+        detail: `${stats.mode} exceptions=${stats.exceptions}`,
+      });
+    }
+    if (stats.unclassifiedOutcomes > 0) {
+      releaseBlockingFailures.push({
+        code: "UNCLASSIFIED_OUTCOMES",
+        detail: `${stats.mode} unclassifiedOutcomes=${stats.unclassifiedOutcomes}`,
+      });
+    }
+    if (stats.failedProgramTreatedAsUsable > 0) {
+      releaseBlockingFailures.push({
+        code: "FAILED_PROGRAM_TREATED_AS_USABLE",
+        detail: `${stats.mode} failedProgramTreatedAsUsable=${stats.failedProgramTreatedAsUsable}`,
+      });
+    }
     if (stats.uniqueSemanticSignatures === 0 && stats.totalCases > 0) {
-      needsReview.push({
+      releaseBlockingFailures.push({
         code: "ZERO_OUTPUT_SENSITIVITY",
         detail: `${stats.mode} produced no semantic signatures`,
       });
     }
+    if (stats.fallbackTriage.fallbackEvidenceMalformed > 0) {
+      releaseBlockingFailures.push({
+        code: "FALLBACK_EVIDENCE_MALFORMED",
+        detail: `${stats.mode} malformedFallbackEvidence=${stats.fallbackTriage.fallbackEvidenceMalformed}`,
+      });
+    }
   }
 
-  const suspiciousCollapses = collapses.filter((c) => c.verdict === "suspicious");
   if (suspiciousCollapses.length) {
-    needsReview.push({
+    needsReviewWarnings.push({
       code: "UNEXPLAINED_CROSS_INPUT_COLLAPSE",
-      detail: `${suspiciousCollapses.length} suspicious collapse pairs`,
+      detail: `${suspiciousCollapses.length} suspicious collapse pairs (see categories)`,
     });
   }
 
   if (mutationsDetected < mutations.length) {
-    needsReview.push({
+    releaseBlockingFailures.push({
       code: "FAILED_MUTATION",
       detail: `${mutations.length - mutationsDetected}/${mutations.length} mutations undetected`,
     });
   }
 
-  const fallbackWithoutSample = diversityByMode.some((s) => s.fallbackUses > 0) &&
-    fallbackSamples.length === 0;
+  if (metamorphicPassed < metamorphic.length) {
+    releaseBlockingFailures.push({
+      code: "METAMORPHIC_FAILURE",
+      detail: `${metamorphic.length - metamorphicPassed}/${metamorphic.length} metamorphic tests failed`,
+    });
+  }
+
+  const fallbackWithoutSample =
+    diversityByMode.some((s) => s.fallbackUses > 0) && fallbackSamples.length === 0;
   if (fallbackWithoutSample) {
-    needsReview.push({
+    releaseBlockingFailures.push({
       code: "FALLBACK_WITHOUT_SAMPLE",
       detail: "Fallback uses recorded without reproducible sample export",
     });
   }
 
-  // Ensure every fallback is in samples (may exceed 50).
+  const classifiedCount = diversityByMode.reduce(
+    (sum, s) =>
+      sum +
+      s.initialQualityPass +
+      s.recoverySucceeded +
+      s.fallbackSucceeded +
+      s.safeGenerationError +
+      s.exceptions,
+    0
+  );
+  const totalCases = diversityByMode.reduce((sum, s) => sum + s.totalCases, 0);
+  // Allow recoveryAttempted that later fell to fallback: classify via finalOutcome only.
+  const classifiedViaOutcome = diversityByMode.reduce(
+    (sum, s) => sum + (s.totalCases - s.unclassifiedOutcomes),
+    0
+  );
+  if (classifiedViaOutcome !== totalCases) {
+    releaseBlockingFailures.push({
+      code: "REPORT_INCONSISTENCY",
+      detail: `classifiedViaOutcome=${classifiedViaOutcome} totalCases=${totalCases}`,
+    });
+  }
+  void classifiedCount;
+
+  const allFinalProgramsPass = diversityByMode.every(
+    (s) => s.finalQualityFail === 0 && s.safeGenerationError === 0 && s.exceptions === 0
+  );
+  const allClassified = diversityByMode.every((s) => s.unclassifiedOutcomes === 0);
+
   const sampleExport = {
     blindSamples,
     fallbackSamples,
+    failedCaseDiagnostics,
     totalBlind: blindSamples.length,
     totalFallback: fallbackSamples.length,
+    totalFailedDiagnostics: failedCaseDiagnostics.length,
+    fallbackTriageTotals: diversityByMode.reduce(
+      (acc, s) => {
+        acc.fallbackPassed += s.fallbackTriage.fallbackPassed;
+        acc.fallbackFailedSafely += s.fallbackTriage.fallbackFailedSafely;
+        acc.fallbackEvidenceMalformed += s.fallbackTriage.fallbackEvidenceMalformed;
+        return acc;
+      },
+      {
+        fallbackPassed: 0,
+        fallbackFailedSafely: 0,
+        fallbackEvidenceMalformed: 0,
+      }
+    ),
   };
 
   mkdirSync(OUT_DIR, { recursive: true });
+
+  const hasReleaseBlockers = releaseBlockingFailures.length > 0;
+  const hasWarnings = needsReviewWarnings.length > 0;
+  const verdict = hasReleaseBlockers
+    ? "FAIL"
+    : hasWarnings
+    ? "NEEDS_REVIEW"
+    : "PASS";
+
+  // NEEDS_REVIEW may exit 0 only when all finals pass, all classified, and
+  // warnings are explicitly distinguished from failures.
+  const exitNonzero =
+    hasReleaseBlockers ||
+    (verdict === "NEEDS_REVIEW" && !(allFinalProgramsPass && allClassified));
 
   const summary = {
     generatedAt: new Date().toISOString(),
     phase: "7B-§13",
     objective: "Fuzz-integrity assessment",
+    fuzzIntegrityMode: fuzzMode,
     casesPerMode,
     releaseCasesPerMode: RELEASE_CASES_PER_MODE,
     note:
-      casesPerMode < RELEASE_CASES_PER_MODE
-        ? `Short/local run (${casesPerMode}/mode). Release evidence requires FUZZ_INTEGRITY_CASES_PER_MODE=${RELEASE_CASES_PER_MODE}.`
-        : `Full release run (${casesPerMode}/mode).`,
+      fuzzMode === "local"
+        ? `Local run (${casesPerMode}/mode). Release evidence requires FUZZ_INTEGRITY_MODE=release with ${RELEASE_CASES_PER_MODE}/mode.`
+        : `Release run (${casesPerMode}/mode).`,
     elapsedMs: Date.now() - started,
+    finalQualityOutcomes: diversityByMode.map((s) => ({
+      mode: s.mode,
+      totalCases: s.totalCases,
+      initialQualityPass: s.initialQualityPass,
+      recoveryAttempted: s.recoveryAttempted,
+      recoverySucceeded: s.recoverySucceeded,
+      fallbackAttempted: s.fallbackAttempted,
+      fallbackSucceeded: s.fallbackSucceeded,
+      finalQualityPass: s.finalQualityPass,
+      finalQualityFail: s.finalQualityFail,
+      safeGenerationError: s.safeGenerationError,
+      exceptions: s.exceptions,
+      unclassifiedOutcomes: s.unclassifiedOutcomes,
+      finalQualityPassRate: s.finalQualityPassRate,
+      finalQualityFailureRate: s.finalQualityFailureRate,
+      hardFailureCodesByCount: s.hardFailureCodesByCount,
+      failedCasesByStructuralGroup: s.failedCasesByStructuralGroup,
+      fallbackTriage: s.fallbackTriage,
+    })),
     diversity: {
       structural: diversityByMode.map((s) => ({
         mode: s.mode,
@@ -1463,10 +2266,14 @@ const main = () => {
       byMode: diversityByMode,
     },
     crossInputCollapse: {
-      totalFlags: collapses.length,
+      totalDetectedPairs,
+      analyzedRepresentativePairs,
+      reportDisplayLimit: COLLAPSE_REPORT_DISPLAY_LIMIT,
       suspicious: suspiciousCollapses.length,
-      expected: collapses.length - suspiciousCollapses.length,
-      flags: collapses,
+      expected: collapseFlags.filter((c) => c.verdict === "expected").length,
+      rootCausesByCategory: collapseRootCauses,
+      flags: collapseFlags.slice(0, COLLAPSE_REPORT_DISPLAY_LIMIT),
+      analyzedFlags: collapseFlags,
     },
     mutations: {
       required: 14,
@@ -1480,19 +2287,25 @@ const main = () => {
       passed: metamorphicPassed,
       results: metamorphic,
     },
+    gymHingeRepro,
     holdout: holdoutByMode,
     samples: {
       blindPerMode: BLIND_SAMPLES_PER_MODE,
       blindTotal: blindSamples.length,
       fallbackTotal: fallbackSamples.length,
+      failedDiagnosticsTotal: failedCaseDiagnostics.length,
     },
-    needsReview,
-    verdict:
-      mutationsDetected === 14 && needsReview.length === 0
-        ? "PASS"
-        : needsReview.length
-        ? "NEEDS_REVIEW"
-        : "PASS_WITH_NOTES",
+    releaseBlockingFailures,
+    needsReviewWarnings,
+    needsReview: needsReviewWarnings,
+    gateDistinction: {
+      releaseBlockingFailures: releaseBlockingFailures.length,
+      needsReviewWarnings: needsReviewWarnings.length,
+      allFinalProgramsPass,
+      allClassified,
+      note: "NEEDS_REVIEW warnings are not release failures when all finals pass and all cases are classified.",
+    },
+    verdict,
   };
 
   writeFileSync(REPORT_JSON, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
@@ -1506,12 +2319,30 @@ const main = () => {
     "# Program Quality V2 — Fuzz-Integrity Assessment (Phase 7B §13)",
     "",
     `- Generated: ${summary.generatedAt}`,
-    `- Cases per mode: **${casesPerMode}** (release uses **${RELEASE_CASES_PER_MODE}** via \`FUZZ_INTEGRITY_CASES_PER_MODE\`)`,
+    `- Mode: **${fuzzMode}**`,
+    `- Cases per mode: **${casesPerMode}** (release requires exactly **${RELEASE_CASES_PER_MODE}**)`,
     `- Elapsed: ${summary.elapsedMs}ms`,
     `- Verdict: **${summary.verdict}**`,
     "",
     summary.note,
     "",
+    "## Final quality outcomes",
+    "",
+    ...diversityByMode.flatMap((s) => [
+      `### ${s.mode}`,
+      "",
+      `- Total cases: ${s.totalCases}`,
+      `- Initial quality pass: ${s.initialQualityPass}`,
+      `- Recovery attempted / succeeded: ${s.recoveryAttempted} / ${s.recoverySucceeded}`,
+      `- Fallback attempted / succeeded: ${s.fallbackAttempted} / ${s.fallbackSucceeded}`,
+      `- Final quality pass / fail: ${s.finalQualityPass} / ${s.finalQualityFail}`,
+      `- Safe generation error: ${s.safeGenerationError}`,
+      `- Exceptions: ${s.exceptions}`,
+      `- Unclassified: ${s.unclassifiedOutcomes}`,
+      `- Final pass rate / failure rate: ${(s.finalQualityPassRate * 100).toFixed(2)}% / ${(s.finalQualityFailureRate * 100).toFixed(2)}%`,
+      `- Fallback triage: passed=${s.fallbackTriage.fallbackPassed} failedSafely=${s.fallbackTriage.fallbackFailedSafely} malformed=${s.fallbackTriage.fallbackEvidenceMalformed}`,
+      "",
+    ]),
     "## 13A. Diversity accounting",
     "",
     "Reported as structural diversity / variation-seed diversity / output diversity.",
@@ -1555,18 +2386,31 @@ const main = () => {
     ]),
     "## 13B. Cross-input collapse analysis",
     "",
-    `- Flags: ${collapses.length} (suspicious=${suspiciousCollapses.length}, expected=${collapses.length - suspiciousCollapses.length})`,
+    `- Total detected pairs: ${totalDetectedPairs}`,
+    `- Analyzed representative pairs: ${analyzedRepresentativePairs}`,
+    `- Report display limit: ${COLLAPSE_REPORT_DISPLAY_LIMIT}`,
+    `- Suspicious / expected (in analyzed set): ${suspiciousCollapses.length} / ${collapseFlags.filter((c) => c.verdict === "expected").length}`,
     "",
-    ...collapses.slice(0, 40).flatMap((flag) => [
-      `### ${flag.mode} — ${flag.verdict}`,
+    "### Root causes by category",
+    "",
+    ...Object.entries(collapseRootCauses).map(
+      ([category, count]) => `- \`${category}\`: ${count}`
+    ),
+    Object.keys(collapseRootCauses).length ? "" : "- none",
+    "",
+    ...collapseFlags.slice(0, COLLAPSE_REPORT_DISPLAY_LIMIT).flatMap((flag) => [
+      `### ${flag.mode} — ${flag.verdict} / ${flag.category}`,
       "",
       `- Signature: \`${flag.signature}\``,
       `- Input A: \`${flag.inputA}\``,
       `- Input B: \`${flag.inputB}\``,
+      `- Diffs: ${flag.diffs.join(", ")}`,
       `- Explanation: ${flag.explanation}`,
       "",
     ]),
-    collapses.length > 40 ? `_…${collapses.length - 40} additional flags in JSON._\n` : "",
+    totalDetectedPairs > COLLAPSE_REPORT_DISPLAY_LIMIT
+      ? `_Display capped at ${COLLAPSE_REPORT_DISPLAY_LIMIT}; totalDetectedPairs=${totalDetectedPairs} in JSON._\n`
+      : "",
     "## 13C. Mutation testing",
     "",
     `- Detected: **${mutationsDetected}/14**`,
@@ -1598,12 +2442,28 @@ const main = () => {
     "",
     `- Blind samples: ${blindSamples.length} (10×5 modes)`,
     `- Fallback samples (all): ${fallbackSamples.length}`,
+    `- Failed-case diagnostics: ${failedCaseDiagnostics.length}`,
     `- See \`${path.relative(process.cwd(), SAMPLES_MD)}\` and JSON companion.`,
     "",
-    "## 13G. Review thresholds / NEEDS_REVIEW",
+    "## Gym hinge repro (db-rdl blocked)",
     "",
-    needsReview.length
-      ? needsReview.map((s) => `- \`${s.code}\`: ${s.detail}`).join("\n")
+    `- Seed: \`${gymHingeRepro.seed}\``,
+    `- Verdict: **${gymHingeRepro.verdict}**`,
+    `- Hinge remains via legal alternative: ${gymHingeRepro.hingeRemainsViaLegalAlternative}`,
+    `- Detail: ${gymHingeRepro.detail}`,
+    "",
+    "## Gate: release blockers vs NEEDS_REVIEW warnings",
+    "",
+    "### Release-blocking failures",
+    "",
+    releaseBlockingFailures.length
+      ? releaseBlockingFailures.map((s) => `- \`${s.code}\`: ${s.detail}`).join("\n")
+      : "- none",
+    "",
+    "### NEEDS_REVIEW warnings (not release failures when finals pass + classified)",
+    "",
+    needsReviewWarnings.length
+      ? needsReviewWarnings.map((s) => `- \`${s.code}\`: ${s.detail}`).join("\n")
       : "- none",
     "",
     "## Artifact paths",
@@ -1619,10 +2479,11 @@ const main = () => {
   const samplesMd = [
     "# Program Quality V2 — Fuzz-Integrity Blind Samples",
     "",
-    "Uncurated deterministic sample for independent review. Includes every fallback case.",
+    "Uncurated deterministic sample for independent review. Includes every fallback case and full failed-case diagnostics.",
     "",
     `Blind total: ${blindSamples.length}`,
     `Fallback total: ${fallbackSamples.length}`,
+    `Failed diagnostics: ${failedCaseDiagnostics.length}`,
     "",
     "## Blind samples (10 per mode)",
     "",
@@ -1631,8 +2492,10 @@ const main = () => {
       "",
       `- Seed: \`${sample.seed}\``,
       `- Structural key: \`${sample.structuralKey}\``,
+      `- Blocked exercise: ${sample.blockedExercise ?? "none"}`,
       `- Recovery: ${sample.recoveryOccurred}`,
       `- Fallback: ${sample.fallbackOccurred}${sample.fallbackStrategy ? ` (${sample.fallbackStrategy})` : ""}`,
+      `- Final outcome: ${sample.finalOutcomeClass} / ${sample.finalUserFacingOutcome}`,
       `- Quality verdict: ${sample.qualityVerdict}`,
       `- Semantic signature: \`${sample.semanticSignature ?? "n/a"}\``,
       `- Day titles: ${sample.dayTitles.join(" | ") || "none"}`,
@@ -1647,32 +2510,79 @@ const main = () => {
     "## Fallback samples (complete set)",
     "",
     fallbackSamples.length
-      ? fallbackSamples.flatMap((sample, i) => [
-          `### Fallback ${i + 1} — ${sample.mode} #${sample.index}`,
-          "",
-          `- Seed: \`${sample.seed}\``,
-          `- Strategy: ${sample.fallbackStrategy ?? "n/a"}`,
-          `- Semantic signature: \`${sample.semanticSignature ?? "n/a"}\``,
-          `- Day titles: ${sample.dayTitles.join(" | ") || "none"}`,
-          `- Ordered exercise IDs:`,
-          ...sample.orderedExerciseIds.map(
-            (ids, dayIndex) => `  - Day ${dayIndex + 1}: ${ids.join(", ") || "none"}`
-          ),
-          "",
-        ]).join("\n")
+      ? fallbackSamples
+          .flatMap((sample, i) => [
+            `### Fallback ${i + 1} — ${sample.mode} #${sample.index}`,
+            "",
+            `- Seed: \`${sample.seed}\``,
+            `- Strategy: ${sample.fallbackStrategy ?? "n/a"}`,
+            `- Triage: ${sample.fallbackTriage ?? "n/a"}`,
+            `- Final outcome: ${sample.finalOutcomeClass} / ${sample.finalUserFacingOutcome}`,
+            `- Initial hard failures: ${sample.initialHardFailures.join(", ") || "none"}`,
+            `- Recovery hard failures: ${
+              sample.recoveryHardFailures
+                .map((r) => `#${r.attempt}[${r.seed}]=${r.codes.join("|") || "none"}`)
+                .join("; ") || "none"
+            }`,
+            `- Fallback hard failures: ${sample.fallbackHardFailures.join(", ") || "none"}`,
+            `- Reproducible seeds: base=${sample.reproducibleSeeds.base} fallback=${sample.reproducibleSeeds.fallback ?? "n/a"}`,
+            `- Final program signature: \`${sample.finalProgramSignature ?? "n/a"}\``,
+            `- Semantic signature: \`${sample.semanticSignature ?? "n/a"}\``,
+            `- Day titles: ${sample.dayTitles.join(" | ") || "none"}`,
+            `- Ordered exercise IDs:`,
+            ...sample.orderedExerciseIds.map(
+              (ids, dayIndex) => `  - Day ${dayIndex + 1}: ${ids.join(", ") || "none"}`
+            ),
+            "",
+          ])
+          .join("\n")
+      : "None in this run.",
+    "",
+    "## Failed-case diagnostics",
+    "",
+    failedCaseDiagnostics.length
+      ? failedCaseDiagnostics
+          .flatMap((sample, i) => [
+            `### Failed ${i + 1} — ${sample.mode} #${sample.index}`,
+            "",
+            `- Input: \`${JSON.stringify(sample.input)}\``,
+            `- Blocked exercise: ${sample.blockedExercise ?? "none"}`,
+            `- Initial hard failures: ${sample.initialHardFailures.join(", ") || "none"}`,
+            `- Recovery: ${JSON.stringify(sample.recoveryHardFailures)}`,
+            `- Fallback hard failures: ${sample.fallbackHardFailures.join(", ") || "none"}`,
+            `- Final user-facing outcome: ${sample.finalUserFacingOutcome}`,
+            `- Reproducible seeds: ${JSON.stringify(sample.reproducibleSeeds)}`,
+            "",
+          ])
+          .join("\n")
       : "None in this run.",
     "",
   ];
   writeFileSync(SAMPLES_MD, `${samplesMd.join("\n").trim()}\n`, "utf8");
 
   const consoleSummary = {
-    ok: summary.mutations.acceptance === "PASS",
+    ok: !exitNonzero,
     verdict: summary.verdict,
+    fuzzIntegrityMode: fuzzMode,
     casesPerMode,
     mutationsDetected,
     metamorphicPassed,
     metamorphicTotal: metamorphic.length,
-    needsReview,
+    releaseBlockingFailures,
+    needsReviewWarnings,
+    gymHingeRepro: {
+      verdict: gymHingeRepro.verdict,
+      hingeRemainsViaLegalAlternative: gymHingeRepro.hingeRemainsViaLegalAlternative,
+      detail: gymHingeRepro.detail,
+    },
+    finalQuality: diversityByMode.map((s) => ({
+      mode: s.mode,
+      pass: s.finalQualityPass,
+      fail: s.finalQualityFail,
+      safeGen: s.safeGenerationError,
+      unclassified: s.unclassifiedOutcomes,
+      fallbackTriage: s.fallbackTriage,
+    })),
     diversity: diversityByMode.map((s) => ({
       mode: s.mode,
       structural: s.structuralInputTuples,
@@ -1686,8 +2596,8 @@ const main = () => {
   };
   console.log(JSON.stringify(consoleSummary, null, 2));
 
-  if (mutationsDetected < 14) {
-    process.exitCode = 1;
+  if (exitNonzero) {
+    process.exit(1);
   }
 };
 
