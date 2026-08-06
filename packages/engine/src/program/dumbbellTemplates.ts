@@ -295,7 +295,17 @@ export const getDumbbellMainLanePlan = (
  * Not hardcoded persona workouts — selection still chooses among eligibles.
  */
 export const DUMBBELL_ROLE_CANDIDATE_IDS: Record<string, string[]> = {
-  squat_primary: ["goblet-squat", "heels-elevated-squat", "bodyweight-squat"],
+  // Prefer loaded goblet; when blocked/unavailable, use legal knee-dominant
+  // alternatives (never leave practice/main slots on prep-only drills).
+  squat_primary: [
+    "goblet-squat",
+    "heels-elevated-squat",
+    "split-squat",
+    "dumbbell-reverse-lunge",
+    "dumbbell-bulgarian-split-squat",
+    "dumbbell-step-up-loaded",
+    "bodyweight-squat",
+  ],
   horizontal_press_compound: [
     "dumbbell-floor-press",
     "pushup",

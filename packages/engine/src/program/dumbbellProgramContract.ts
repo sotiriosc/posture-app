@@ -101,6 +101,15 @@ const isPrepOnly = (exercise: Exercise) => {
   if (PAIN_AWARE_HIP_EXTENSION_IDS.has(exercise.id)) return false;
   // Catalog marks some legal unilateral hinges as regressionOnly; still valid mains here.
   if (exercise.id === "single-leg-rdl") return false;
+  // Bodyweight / heels-elevated squat are legal squat_primary alternatives when
+  // goblet-squat is blocked — catalog regressionOnly is gym-context semantics.
+  if (
+    exercise.id === "bodyweight-squat" ||
+    exercise.id === "heels-elevated-squat" ||
+    exercise.id === "split-squat"
+  ) {
+    return false;
+  }
   return (
     Boolean(exercise.supportOnly) ||
     Boolean(exercise.regressionOnly) ||

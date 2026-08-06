@@ -6,6 +6,7 @@ import {
   type EvaluateProgramQualityInput,
 } from "@/lib/program/qualityGate/evaluateProgramQuality";
 import { resolveModeQualityFallbackSeed } from "@/lib/program/qualityGate/modeQualityFallback";
+import { tryDeterministicQualityRepair } from "@/lib/program/qualityGate/repairProgramQualityContracts";
 import {
   MAX_QUALITY_RECOVERY_ATTEMPTS,
   type ProgramQualityEvaluation,
@@ -108,6 +109,31 @@ export const recoverAndEvaluateProgramQuality = (params: {
   };
 
   if (!evaluation.passed) {
+    // Deterministic contract-aware repair before blind seed retries.
+    const deterministic = tryDeterministicQualityRepair({
+      program,
+      questionnaire: params.questionnaire,
+      persona: `quality-gate:${mode}`,
+      blockedExerciseIds,
+    });
+    if (deterministic.repaired) {
+      recoveryAttemptCount = Math.max(recoveryAttemptCount, 1);
+      program = deterministic.program;
+      evaluation = deterministic.evaluation;
+      recoveryTrace.recoveryAttempts.push({
+        attempt: 0,
+        seed: `${params.baseSeed}:quality-deterministic-repair`,
+        programSignature: programSignatureOf(program),
+        hardFailureCodes: hardFailureCodesOf(evaluation),
+      });
+      recoveryTrace.finalProgram = program;
+      if (evaluation.passed) {
+        recoveryTrace.finalOutcome = "recoveryPass";
+      }
+    }
+  }
+
+  if (!evaluation.passed) {
     for (let attempt = 1; attempt <= MAX_QUALITY_RECOVERY_ATTEMPTS; attempt += 1) {
       recoveryAttemptCount = attempt;
       const seed = `${params.baseSeed}:quality-recovery:${attempt}`;
@@ -115,12 +141,14 @@ export const recoverAndEvaluateProgramQuality = (params: {
         phaseIndex: params.phaseIndex,
         seed,
       });
-      evaluation = evaluateProgramQuality({
+      const repaired = tryDeterministicQualityRepair({
         program,
         questionnaire: params.questionnaire,
         persona: `quality-gate:${mode}:recovery-${attempt}`,
         blockedExerciseIds,
       });
+      program = repaired.program;
+      evaluation = repaired.evaluation;
       recoveryTrace.recoveryAttempts.push({
         attempt,
         seed,
@@ -150,12 +178,14 @@ export const recoverAndEvaluateProgramQuality = (params: {
         seed: fallback.seed,
       }
     );
-    evaluation = evaluateProgramQuality({
+    const repairedFallback = tryDeterministicQualityRepair({
       program,
       questionnaire: params.questionnaire,
       persona: `quality-gate:${mode}:fallback`,
       blockedExerciseIds,
     });
+    program = repairedFallback.program;
+    evaluation = repairedFallback.evaluation;
     recoveryTrace.fallback = {
       strategy: fallback.strategy,
       seed: fallback.seed,

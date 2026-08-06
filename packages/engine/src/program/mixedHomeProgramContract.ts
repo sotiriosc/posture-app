@@ -267,6 +267,82 @@ export const classifyMixedHomeSessionTools = (
   };
 };
 
+/**
+ * Coalesce main+accessory work into contiguous setup blocks so dual-tool
+ * sessions do not thrash (MIXED_HOME_RANDOM_EQUIPMENT_MIX).
+ * Preserves relative order within each tool and keeps non-work sections fixed.
+ */
+export const coalesceMixedHomeSessionWorkOrder = <
+  Day extends { routine: ProgramRoutineItem[] }
+>(
+  day: Day
+): Day => {
+  const workIndexes: number[] = [];
+  const workItems: ProgramRoutineItem[] = [];
+  day.routine.forEach((item, index) => {
+    if (item.section === "main" || item.section === "accessory") {
+      workIndexes.push(index);
+      workItems.push(item);
+    }
+  });
+  if (workItems.length < 2) return day;
+
+  const toolOf = (item: ProgramRoutineItem): MixedHomeSelectedTool => {
+    const exercise = exerciseById(item.exerciseId);
+    return exercise ? classifyTool(exercise) : "bodyweight";
+  };
+
+  // Prefer dominant loaded tools first, then bodyweight polish.
+  const toolRank: Record<MixedHomeSelectedTool, number> = {
+    dumbbell: 0,
+    band: 1,
+    bodyweight: 2,
+  };
+  const mains = workItems.filter((item) => item.section === "main");
+  const accessories = workItems.filter((item) => item.section === "accessory");
+  const sortStableByTool = (items: ProgramRoutineItem[]) =>
+    [...items]
+      .map((item, index) => ({ item, index, tool: toolOf(item) }))
+      .sort((left, right) => {
+        const rankDelta = toolRank[left.tool] - toolRank[right.tool];
+        if (rankDelta !== 0) return rankDelta;
+        return left.index - right.index;
+      })
+      .map((entry) => entry.item);
+
+  const coalesced = [...sortStableByTool(mains), ...sortStableByTool(accessories)];
+  const before = classifyMixedHomeSessionTools(day);
+  const probeDay = {
+    ...day,
+    routine: day.routine.map((item, index) => {
+      const workPos = workIndexes.indexOf(index);
+      return workPos >= 0 ? coalesced[workPos]! : item;
+    }),
+  };
+  const after = classifyMixedHomeSessionTools(probeDay);
+  const beforePathological =
+    before.setupBlocks.length >= 5 &&
+    before.setupBlocks.every((block) => block.exerciseIds.length === 1) &&
+    before.dumbbell > 0 &&
+    before.band > 0;
+  const afterPathological =
+    after.setupBlocks.length >= 5 &&
+    after.setupBlocks.every((block) => block.exerciseIds.length === 1) &&
+    after.dumbbell > 0 &&
+    after.band > 0;
+  // Only rewrite when we improve pathological thrash or reduce setup blocks.
+  if (
+    !beforePathological &&
+    after.setupBlocks.length >= before.setupBlocks.length
+  ) {
+    return day;
+  }
+  if (afterPathological && after.setupBlocks.length >= before.setupBlocks.length) {
+    return day;
+  }
+  return probeDay;
+};
+
 export const collectDeferredMixedHomeExperienceGaps = (
   program: Program,
   options?: { hasTrueVerticalPullCapability?: boolean }

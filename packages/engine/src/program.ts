@@ -223,6 +223,7 @@ import {
   refineMixedHomeCapabilityLane,
   resolveMixedHomeThreeDayBlueprint,
 } from "@/lib/program/mixedHomeTemplates";
+import { coalesceMixedHomeSessionWorkOrder } from "@/lib/program/mixedHomeProgramContract";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
@@ -20638,6 +20639,9 @@ const findConstrainedLegsMainFallback = (params: {
     .find((exercise) => {
       if (exercise.id === currentExerciseId) return false;
       if (usedIds.has(exercise.id)) return false;
+      if (context.selectionContext.blockedExerciseIds?.has(exercise.id)) {
+        return false;
+      }
       const conservativeBandPainHingeFallback =
         conservativeBandPainHinge && conservativeBandPainHingeIds.includes(exercise.id);
       const painHipExtensionHingeFallback =
@@ -33245,7 +33249,7 @@ const applyMixedHomeTemplateAuthorshipToWeek = (params: {
         .filter((item) => item.section === "main")
         .map((item) => item.exerciseId)
     );
-    return nextDay;
+    return coalesceMixedHomeSessionWorkOrder(nextDay);
   });
 };
 
@@ -33639,6 +33643,9 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
                 if (usedIds.has(candidate.id)) return false;
                 if (candidate.id === item.exerciseId) return false;
                 if (candidate.category !== "main") return false;
+                if (context.selectionContext.blockedExerciseIds?.has(candidate.id)) {
+                  return false;
+                }
                 const contextEligible = isExerciseEligibleForProgramContext({
                   exercise: candidate,
                   available: context.available,
@@ -33846,6 +33853,10 @@ const findLowerSlotPurityReplacement = (params: {
       if (candidate.id === item.exerciseId) return false;
       if (usedIds.has(candidate.id)) return false;
       if (candidate.category !== "main") return false;
+      // Personal blocks are never bypassed by slot-purity rescue.
+      if (context.selectionContext.blockedExerciseIds?.has(candidate.id)) {
+        return false;
+      }
       const contextEligible = isExerciseEligibleForProgramContext({
         exercise: candidate,
         available: context.available,
@@ -34672,6 +34683,35 @@ const enforceThreeDayFinalSlotRoleTruth = (params: {
   return { week: nextWeek, warnings };
 };
 
+const pickBlockAwarePreferredExerciseId = (params: {
+  preferredIds: string[];
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+  dayTitle: string;
+}) => {
+  const { preferredIds, usedIds, context, dayTitle } = params;
+  for (const id of preferredIds) {
+    if (usedIds.has(id)) continue;
+    if (context.selectionContext.blockedExerciseIds?.has(id)) continue;
+    const candidate = exerciseById(id);
+    if (!candidate) continue;
+    if (
+      !isExerciseEligibleForProgramContext({
+        exercise: candidate,
+        available: context.available,
+        section: "main",
+        context: context.selectionContext,
+        dayTitle,
+      })
+    ) {
+      continue;
+    }
+    if (!isExerciseAllowedForSection(candidate, "main")) continue;
+    return id;
+  }
+  return null;
+};
+
 const forceThreeDayFinalDisplayedSlotTruth = (params: {
   week: ProgramDay[];
   daysPerWeek: 3 | 4 | 5;
@@ -34698,37 +34738,87 @@ const forceThreeDayFinalDisplayedSlotTruth = (params: {
         hasLowBackPainSignal(context.selectionContext) &&
         mainOrdinal === 1 &&
         isHamstringCurlExercise(exercise);
+      const needsTruePrimaryHingeReplacement =
+        mainOrdinal === 1 &&
+        !hasTrueHingeAnchor(exercise) &&
+        !isHamstringCurlExercise(exercise);
       const needsLoadedPrimaryHingeReplacement =
         !hasLowBackPainSignal(context.selectionContext) &&
         mainOrdinal === 1 &&
-        exercise.id === "single-leg-rdl" &&
-        (context.available.has("bands") || context.available.has("dumbbells"));
+        (exercise.id === "single-leg-rdl" || needsTruePrimaryHingeReplacement) &&
+        (context.available.has("bands") ||
+          context.available.has("dumbbells") ||
+          context.available.has("machines") ||
+          context.available.has("barbell"));
+      const trueHingePreferredIds = [
+        ...(hasLowBackPainSignal(context.selectionContext)
+          ? [
+              "single-leg-hip-thrust",
+              "single-leg-glute-bridge-hold",
+              "machine-glute-drive",
+              "barbell-hip-thrust",
+            ]
+          : []),
+        ...(context.available.has("dumbbells") || context.available.has("gym")
+          ? ["dumbbell-sumo-rdl", "db-rdl"]
+          : []),
+        ...(context.available.has("bands") ? ["band-rdl"] : []),
+        "machine-glute-drive",
+        "barbell-romanian-deadlift",
+        "barbell-hip-thrust",
+        "single-leg-hip-thrust",
+      ];
       const backExtensionReplacementId = (() => {
         if (!needsBackExtensionReplacement) return null;
-        const preferredIds = [
-          ...(context.available.has("bands") ? ["band-rdl"] : []),
-          ...(context.available.has("dumbbells") ? ["db-rdl"] : []),
-          "cossack-squat",
-          "heels-elevated-squat",
-          "split-squat",
-          "single-leg-rdl",
-        ];
-        return preferredIds.find((id) => !usedIds.has(id)) ?? null;
+        return pickBlockAwarePreferredExerciseId({
+          preferredIds: [
+            ...(context.available.has("bands") ? ["band-rdl"] : []),
+            ...(context.available.has("dumbbells") ? ["dumbbell-sumo-rdl", "db-rdl"] : []),
+            "machine-glute-drive",
+            "barbell-romanian-deadlift",
+            "cossack-squat",
+            "heels-elevated-squat",
+            "split-squat",
+            "single-leg-rdl",
+          ],
+          usedIds,
+          context,
+          dayTitle: day.title,
+        });
       })();
+      const loadedHingeReplacementId =
+        needsLoadedPrimaryHingeReplacement || needsTruePrimaryHingeReplacement
+          ? pickBlockAwarePreferredExerciseId({
+              preferredIds: trueHingePreferredIds,
+              usedIds,
+              context,
+              dayTitle: day.title,
+            })
+          : null;
       const replacementId = needsLowBackHamstringReplacement
-        ? "single-leg-glute-bridge-hold"
-        : needsLoadedPrimaryHingeReplacement && context.available.has("bands") && !usedIds.has("band-rdl")
-        ? "band-rdl"
-        : needsLoadedPrimaryHingeReplacement &&
-          context.available.has("dumbbells") &&
-          !usedIds.has("db-rdl")
-        ? "db-rdl"
-        : backExtensionReplacementId;
+        ? pickBlockAwarePreferredExerciseId({
+            preferredIds: [
+              "single-leg-glute-bridge-hold",
+              "single-leg-hip-thrust",
+              "machine-glute-drive",
+            ],
+            usedIds,
+            context,
+            dayTitle: day.title,
+          })
+        : loadedHingeReplacementId ?? backExtensionReplacementId;
       const replacement = replacementId ? exerciseById(replacementId) : null;
       if (
         replacement &&
         !usedIds.has(replacement.id) &&
-        isExerciseEligible(replacement, context.available) &&
+        !context.selectionContext.blockedExerciseIds?.has(replacement.id) &&
+        isExerciseEligibleForProgramContext({
+          exercise: replacement,
+          available: context.available,
+          section: "main",
+          context: context.selectionContext,
+          dayTitle: day.title,
+        }) &&
         isExerciseAllowedForSection(replacement, "main")
       ) {
         usedIds.delete(nextItem.exerciseId);
@@ -34856,6 +34946,10 @@ const findFinalEquipmentLegalReplacement = (params: {
 
   const isRelaxedEquipmentSlotLegal = (candidate: Exercise) => {
     if (candidate.id === item.exerciseId) return false;
+    // Relaxed equipment rescue must still honor personal blocks.
+    if (context.selectionContext.blockedExerciseIds?.has(candidate.id)) {
+      return false;
+    }
     if (!isExerciseEligible(candidate, context.available)) return false;
     if (!isExerciseAllowedForSection(candidate, item.section)) return false;
     if (item.section === "main") {
