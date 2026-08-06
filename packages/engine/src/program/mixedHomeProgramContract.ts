@@ -224,7 +224,7 @@ const isScapOrPullApartOnly = (exercise: Exercise) => {
 const illegalEquipmentTokens = ["machines", "cables", "barbell", "kettlebell"] as const;
 
 export const classifyMixedHomeSessionTools = (
-  day: Program["week"][number],
+  day: { routine: ProgramRoutineItem[] },
   options?: { mainsOnly?: boolean }
 ): {
   dumbbell: number;
