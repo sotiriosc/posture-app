@@ -1,6 +1,7 @@
 {
   "artifact": "program-quality-v2-phase7b-correction-validation",
   "phase": "7B-correction",
+  "generatedAt": "2026-08-06T19:55:42Z",
   "templateVersion": 18,
   "draftUnmerged": true,
   "pr": 82,
@@ -10,6 +11,24 @@
   "checkpointSha": "5c88a64e71245f137e12178f2d26a38faf5fc8f5",
   "checkpointUpdated": false,
   "phase8Started": false,
+  "closureCodeTip": "96ff2763c8468e8ca825e0dd4980debc62e5fd40",
+  "rootCauseClosure": {
+    "before": {
+      "QUALITY_BLOCKED_EXERCISE_PRESENT": 10,
+      "GYM_REQUIRED_ROLE_WRONG_TRUTH": 15,
+      "DUMBBELL_PREP_AS_MAIN": 97,
+      "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 128,
+      "safeGenerationFailures": 244
+    },
+    "after": {
+      "QUALITY_BLOCKED_EXERCISE_PRESENT": 0,
+      "GYM_REQUIRED_ROLE_WRONG_TRUTH": 0,
+      "DUMBBELL_PREP_AS_MAIN": 0,
+      "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 0,
+      "safeGenerationFailures": 0
+    },
+    "note": "Closure series through 96ff276; release fuzz-integrity + program-quality closure2 both EXIT 0 with 0 safe-gen fails."
+  },
   "historicalReportsRestoredFrom": "5c88a64e71245f137e12178f2d26a38faf5fc8f5",
   "historicalReportsRestored": [
     "docs/dev-reports/equipment-program-audit-phase2*",
@@ -34,26 +53,26 @@
       "command": "FUZZ_INTEGRITY_CASES_PER_MODE=10000 npm run audit:fuzz-integrity",
       "mode": "release",
       "casesPerMode": 10000,
-      "log": "/tmp/phase7b-gates/fuzz-integrity-r2.log",
-      "startedAt": "2026-08-06T05:34:38-04:00",
-      "finishedAt": "2026-08-06T07:07:21-04:00",
-      "exitCode": 1,
+      "log": "/tmp/phase7b-gates/fuzz-integrity-closure2.log",
+      "startedAt": "2026-08-06T14:18:40-04:00",
+      "finishedAt": "2026-08-06T15:53:51-04:00",
+      "exitCode": 0,
       "verdict": "NEEDS_REVIEW",
-      "generatedAt": "2026-08-06T11:07:20.814Z",
-      "elapsedMs": 5562443,
+      "generatedAt": "2026-08-06T19:53:51.311Z",
+      "elapsedMs": 5710987,
       "reports": [
         "docs/dev-reports/program-quality-v2-fuzz-integrity.md",
         "docs/dev-reports/program-quality-v2-fuzz-integrity.json",
         "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md",
         "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.json"
       ],
-      "headAtRunNote": "Working tree on PR branch tip a96862f (correction commits already present); release audit rewrote fuzz-integrity reports only."
+      "headAtRunNote": "Working tree on PR branch tip 96ff2763c8468e8ca825e0dd4980debc62e5fd40 (closure fixes through 96ff276); release audit rewrote fuzz-integrity reports only."
     },
     "programQuality": {
       "command": "npm run audit:program-quality",
-      "log": "/tmp/phase7b-gates/program-quality-r2.log",
-      "startedAt": "2026-08-06T06:55:16-04:00",
-      "finishedAt": "2026-08-06T08:28:50-04:00",
+      "log": "/tmp/phase7b-gates/program-quality-closure2.log",
+      "startedAt": "2026-08-06T13:10:12-04:00",
+      "finishedAt": "2026-08-06T14:45:13-04:00",
       "exitCode": 0,
       "verdict": "PASS",
       "ok": true,
@@ -80,20 +99,23 @@
     "releaseBlockingFailures": [],
     "needsReviewWarnings": [
       {
-        "code": "FALLBACK_RATE_ABOVE_1PCT",
-        "detail": "mixedHome fallbackRate=1.28% (warning \u2014 not a release failure when all finals pass)"
-      },
-      {
         "code": "UNEXPLAINED_CROSS_INPUT_COLLAPSE",
-        "detail": "618 suspicious collapse pairs (see categories)"
+        "detail": "399 suspicious collapse pairs (see categories)"
       }
     ],
+    "gateDistinction": {
+      "releaseBlockingFailures": 0,
+      "needsReviewWarnings": 1,
+      "allFinalProgramsPass": true,
+      "allClassified": true,
+      "note": "NEEDS_REVIEW warnings are not release failures when all finals pass and all cases are classified."
+    },
     "finalQualityTotals": {
-      "finalQualityPass": 49756,
-      "finalQualityFail": 244,
-      "safeGenerationError": 244,
+      "finalQualityPass": 50000,
+      "finalQualityFail": 0,
+      "safeGenerationError": 0,
       "fallbackPassed": 0,
-      "fallbackFailedSafely": 244,
+      "fallbackFailedSafely": 0,
       "fallbackEvidenceMalformed": 0,
       "exceptions": 0,
       "unclassified": 0
@@ -101,38 +123,33 @@
     "byMode": [
       {
         "mode": "gym",
-        "finalQualityPass": 9981,
-        "finalQualityFail": 19,
-        "safeGenerationError": 19,
-        "fallbackRate": 0.0019,
-        "recoveryRate": 0.0019,
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0009,
         "fallbackTriage": {
           "fallbackPassed": 0,
-          "fallbackFailedSafely": 19,
+          "fallbackFailedSafely": 0,
           "fallbackEvidenceMalformed": 0
         },
-        "hardFailureCodesByCount": {
-          "QUALITY_BLOCKED_EXERCISE_PRESENT": 10,
-          "GYM_REQUIRED_ROLE_WRONG_TRUTH": 15
-        },
+        "hardFailureCodesByCount": {},
         "deterministicMismatches": 0,
         "exceptions": 0
       },
       {
         "mode": "dumbbells",
-        "finalQualityPass": 9903,
-        "finalQualityFail": 97,
-        "safeGenerationError": 97,
-        "fallbackRate": 0.0097,
-        "recoveryRate": 0.0097,
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0,
         "fallbackTriage": {
           "fallbackPassed": 0,
-          "fallbackFailedSafely": 97,
+          "fallbackFailedSafely": 0,
           "fallbackEvidenceMalformed": 0
         },
-        "hardFailureCodesByCount": {
-          "DUMBBELL_PREP_AS_MAIN": 97
-        },
+        "hardFailureCodesByCount": {},
         "deterministicMismatches": 0,
         "exceptions": 0
       },
@@ -141,8 +158,8 @@
         "finalQualityPass": 10000,
         "finalQualityFail": 0,
         "safeGenerationError": 0,
-        "fallbackRate": 0,
-        "recoveryRate": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0,
         "fallbackTriage": {
           "fallbackPassed": 0,
           "fallbackFailedSafely": 0,
@@ -157,8 +174,8 @@
         "finalQualityPass": 10000,
         "finalQualityFail": 0,
         "safeGenerationError": 0,
-        "fallbackRate": 0,
-        "recoveryRate": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0,
         "fallbackTriage": {
           "fallbackPassed": 0,
           "fallbackFailedSafely": 0,
@@ -170,36 +187,29 @@
       },
       {
         "mode": "mixedHome",
-        "finalQualityPass": 9872,
-        "finalQualityFail": 128,
-        "safeGenerationError": 128,
-        "fallbackRate": 0.0128,
-        "recoveryRate": 0.0128,
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0,
         "fallbackTriage": {
           "fallbackPassed": 0,
-          "fallbackFailedSafely": 128,
+          "fallbackFailedSafely": 0,
           "fallbackEvidenceMalformed": 0
         },
-        "hardFailureCodesByCount": {
-          "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 128
-        },
+        "hardFailureCodesByCount": {},
         "deterministicMismatches": 0,
         "exceptions": 0
       }
     ],
     "fallbackRates": {
-      "gym": 0.0019,
-      "dumbbells": 0.0097,
-      "bands": 0,
-      "bodyweight": 0,
-      "mixedHome": 0.0128
+      "gym": 0.0,
+      "dumbbells": 0.0,
+      "bands": 0.0,
+      "bodyweight": 0.0,
+      "mixedHome": 0.0
     },
-    "failureCodes": {
-      "QUALITY_BLOCKED_EXERCISE_PRESENT": 10,
-      "GYM_REQUIRED_ROLE_WRONG_TRUTH": 15,
-      "DUMBBELL_PREP_AS_MAIN": 97,
-      "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 128
-    },
+    "failureCodes": {},
     "mutations": {
       "required": 14,
       "detected": 14,
@@ -218,18 +228,17 @@
     },
     "exceptions": 0,
     "collapseCategories": {
-      "expectedIrrelevantInput": 11028,
-      "suspiciousIgnoredPainInput": 1955,
-      "suspiciousIgnoredActiveBlock": 1,
-      "suspiciousIgnoredSupportAnchorInput": 677,
+      "expectedIrrelevantInput": 12057,
+      "suspiciousIgnoredPainInput": 1410,
       "expectedStableTemplateIdentity": 34,
+      "suspiciousIgnoredSupportAnchorInput": 190,
       "expectedCapabilityLimitation": 10531
     },
     "collapseAnalyzed": {
-      "totalDetectedPairs": 24226,
+      "totalDetectedPairs": 24222,
       "analyzedRepresentativePairs": 2500,
-      "suspicious": 618,
-      "expected": 1882
+      "suspicious": 399,
+      "expected": 2101
     },
     "gymHingeRepro": {
       "seed": "gym-fuzz-9e37e786",
@@ -245,32 +254,21 @@
   },
   "ci": {
     "available": true,
-    "priorTip": "a96862fbd4fe430213e29c44c478474160dc47fc",
-    "priorTipConclusion": "SUCCESS",
-    "checks": [
-      "PR gate (lint + critical tests + smoke e2e + both builds): SUCCESS",
-      "quality-core: SUCCESS",
-      "quality-gym: SUCCESS",
-      "quality-dumbbells: SUCCESS",
-      "quality-bands: SUCCESS",
-      "quality-bodyweight: SUCCESS",
-      "quality-mixed-home: SUCCESS",
-      "quality-coaching: SUCCESS",
-      "quality-builds: SUCCESS",
-      "GitGuardian Security Checks: SUCCESS",
-      "Full engine suite (nightly): SKIPPED"
-    ],
-    "note": "Recorded from PR statusCheckRollup for tip a96862f before docs follow-up push. Re-confirm checks for tip 4193b57 on PR #82 after push."
+    "finalHead": null,
+    "conclusion": "pending_after_docs_push",
+    "checks": [],
+    "note": "Will wait/poll GitHub CI on final pushed head; record actual conclusion when finished or pending status after reasonable wait."
   },
   "prMetadataUpdate": {
     "attempted": true,
     "keptDraft": true,
     "merged": false,
-    "result": "updated_via_rest_api",
-    "note": "gh pr edit GraphQL failed (projectCards deprecation); REST PATCH succeeded. Stale full-gate-running text removed.",
+    "result": "pending_rest_api_update",
+    "note": "Update PR #82 body via gh api REST after push with final head SHA, audit results, CI note, template-version 18, draft/unmerged, stop-before-Phase-8.",
     "url": "https://github.com/sotiriosc/posture-app/pull/82"
   },
   "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4.",
-  "validationCommit": "a63f5fecb3a6a64513107f54ba5d945a64df8c04",
-  "branchTipAtValidationCommit": "a63f5fecb3a6a64513107f54ba5d945a64df8c04"
+  "validationCommit": "",
+  "validationFollowUpCommit": "",
+  "branchTipAtValidationCommit": ""
 }

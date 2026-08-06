@@ -1,9 +1,9 @@
 # Program Quality V2 — Fuzz-Integrity Assessment (Phase 7B §13)
 
-- Generated: 2026-08-06T11:07:20.814Z
+- Generated: 2026-08-06T19:53:51.311Z
 - Mode: **release**
 - Cases per mode: **10000** (release requires exactly **10000**)
-- Elapsed: 5562443ms
+- Elapsed: 5710987ms
 - Verdict: **NEEDS_REVIEW**
 
 Release run (10000/mode).
@@ -13,28 +13,28 @@ Release run (10000/mode).
 ### gym
 
 - Total cases: 10000
-- Initial quality pass: 9981
-- Recovery attempted / succeeded: 19 / 0
-- Fallback attempted / succeeded: 19 / 0
-- Final quality pass / fail: 9981 / 19
-- Safe generation error: 19
+- Initial quality pass: 9991
+- Recovery attempted / succeeded: 9 / 9
+- Fallback attempted / succeeded: 0 / 0
+- Final quality pass / fail: 10000 / 0
+- Safe generation error: 0
 - Exceptions: 0
 - Unclassified: 0
-- Final pass rate / failure rate: 99.81% / 0.19%
-- Fallback triage: passed=0 failedSafely=19 malformed=0
+- Final pass rate / failure rate: 100.00% / 0.00%
+- Fallback triage: passed=0 failedSafely=0 malformed=0
 
 ### dumbbells
 
 - Total cases: 10000
-- Initial quality pass: 9903
-- Recovery attempted / succeeded: 97 / 0
-- Fallback attempted / succeeded: 97 / 0
-- Final quality pass / fail: 9903 / 97
-- Safe generation error: 97
+- Initial quality pass: 10000
+- Recovery attempted / succeeded: 0 / 0
+- Fallback attempted / succeeded: 0 / 0
+- Final quality pass / fail: 10000 / 0
+- Safe generation error: 0
 - Exceptions: 0
 - Unclassified: 0
-- Final pass rate / failure rate: 99.03% / 0.97%
-- Fallback triage: passed=0 failedSafely=97 malformed=0
+- Final pass rate / failure rate: 100.00% / 0.00%
+- Fallback triage: passed=0 failedSafely=0 malformed=0
 
 ### bands
 
@@ -65,15 +65,15 @@ Release run (10000/mode).
 ### mixedHome
 
 - Total cases: 10000
-- Initial quality pass: 9872
-- Recovery attempted / succeeded: 128 / 0
-- Fallback attempted / succeeded: 128 / 0
-- Final quality pass / fail: 9872 / 128
-- Safe generation error: 128
+- Initial quality pass: 10000
+- Recovery attempted / succeeded: 0 / 0
+- Fallback attempted / succeeded: 0 / 0
+- Final quality pass / fail: 10000 / 0
+- Safe generation error: 0
 - Exceptions: 0
 - Unclassified: 0
-- Final pass rate / failure rate: 98.72% / 1.28%
-- Fallback triage: passed=0 failedSafely=128 malformed=0
+- Final pass rate / failure rate: 100.00% / 0.00%
+- Fallback triage: passed=0 failedSafely=0 malformed=0
 
 ## 13A. Diversity accounting
 
@@ -102,8 +102,8 @@ Reported as structural diversity / variation-seed diversity / output diversity.
 - Unique ordered weekly exercise signatures: 4961
 - Unique day-identity signatures: 3
 - Most common signature count/share: 24 / 0.24%
-- Recovery attempts / rate: 19 / 0.19%
-- Fallback uses / rate: 19 / 0.19%
+- Recovery attempts / rate: 9 / 0.09%
+- Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
@@ -150,12 +150,12 @@ Top 20 repeated semantic signatures:
 
 **Output diversity**
 
-- Unique semantic program signatures: 1364
-- Unique ordered weekly exercise signatures: 1135
+- Unique semantic program signatures: 1366
+- Unique ordered weekly exercise signatures: 1137
 - Unique day-identity signatures: 3
 - Most common signature count/share: 37 / 0.37%
-- Recovery attempts / rate: 97 / 0.97%
-- Fallback uses / rate: 97 / 0.97%
+- Recovery attempts / rate: 0 / 0.00%
+- Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
@@ -310,8 +310,8 @@ Top 20 repeated semantic signatures:
 - Unique ordered weekly exercise signatures: 2542
 - Unique day-identity signatures: 3
 - Most common signature count/share: 14 / 0.14%
-- Recovery attempts / rate: 128 / 1.28%
-- Fallback uses / rate: 128 / 1.28%
+- Recovery attempts / rate: 0 / 0.00%
+- Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
@@ -334,25 +334,24 @@ Top 20 repeated semantic signatures:
 - `b81a92f0`: 12
 - `7abcecd3`: 12
 - `688c2b55`: 12
-- `1a4eb132`: 12
+- `6620831c`: 12
 - `6d97a4ab`: 12
 - `8ba48d34`: 12
 
 
 ## 13B. Cross-input collapse analysis
 
-- Total detected pairs: 24226
+- Total detected pairs: 24222
 - Analyzed representative pairs: 2500
 - Report display limit: 40
-- Suspicious / expected (in analyzed set): 618 / 1882
+- Suspicious / expected (in analyzed set): 399 / 2101
 
 ### Root causes by category
 
-- `expectedIrrelevantInput`: 11028
-- `suspiciousIgnoredPainInput`: 1955
-- `suspiciousIgnoredActiveBlock`: 1
-- `suspiciousIgnoredSupportAnchorInput`: 677
+- `expectedIrrelevantInput`: 12057
+- `suspiciousIgnoredPainInput`: 1410
 - `expectedStableTemplateIdentity`: 34
+- `suspiciousIgnoredSupportAnchorInput`: 190
 - `expectedCapabilityLimitation`: 10531
 
 
@@ -676,7 +675,7 @@ Top 20 repeated semantic signatures:
 - Diffs: goals
 - Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-_Display capped at 40; totalDetectedPairs=24226 in JSON._
+_Display capped at 40; totalDetectedPairs=24222 in JSON._
 
 ## 13C. Mutation testing
 
@@ -719,7 +718,7 @@ _Display capped at 40; totalDetectedPairs=24226 in JSON._
 - Cases per mode: 40
 
 - gym: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
-- dumbbells: semanticSignatures=40 recoveryRate=2.50% fallbackRate=2.50% exceptions=0 deterministicMismatches=0
+- dumbbells: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
 - bands: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
 - bodyweight: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
 - mixedHome: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
@@ -727,8 +726,8 @@ _Display capped at 40; totalDetectedPairs=24226 in JSON._
 ## 13F. Reproducible blind sample
 
 - Blind samples: 50 (10×5 modes)
-- Fallback samples (all): 244
-- Failed-case diagnostics: 244
+- Fallback samples (all): 0
+- Failed-case diagnostics: 0
 - See `docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md` and JSON companion.
 
 ## Gym hinge repro (db-rdl blocked)
@@ -746,8 +745,7 @@ _Display capped at 40; totalDetectedPairs=24226 in JSON._
 
 ### NEEDS_REVIEW warnings (not release failures when finals pass + classified)
 
-- `FALLBACK_RATE_ABOVE_1PCT`: mixedHome fallbackRate=1.28% (warning — not a release failure when all finals pass)
-- `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 618 suspicious collapse pairs (see categories)
+- `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 399 suspicious collapse pairs (see categories)
 
 ## Artifact paths
 

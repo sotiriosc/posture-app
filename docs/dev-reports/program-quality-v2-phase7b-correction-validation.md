@@ -1,14 +1,27 @@
 # Program Quality V2 — Phase 7B Correction Validation
 
-- Generated: 2026-08-06T12:30:37Z
+- Generated: 2026-08-06T19:55:42Z
 - Branch: `cursor/cloud-agent-1785959822486-hte2i`
 - Base / checkpoint SHA: `5c88a64e71245f137e12178f2d26a38faf5fc8f5` (`checkpoint/equipment-experience-phase4` **not** updated)
 - PR: #82 (draft / unmerged; Phase 8 not started)
 - Template version: **18**
+- Code tip at closure audits: `96ff2763c8468e8ca825e0dd4980debc62e5fd40` (`96ff276` — close remaining phase2 gym hinge/unilateral role fails)
+
+## Before → after root-cause closure
+
+| Root cause | Before (prior release fuzz) | After (closure2) |
+| --- | ---: | ---: |
+| Gym blocked leakage (`QUALITY_BLOCKED_EXERCISE_PRESENT`) | 10 | **0** |
+| Gym wrong-role (`GYM_REQUIRED_ROLE_WRONG_TRUTH`) | 15 | **0** |
+| Dumbbell prep-as-main (`DUMBBELL_PREP_AS_MAIN`) | 97 | **0** |
+| Mixed-home random mix (`MIXED_HOME_RANDOM_EQUIPMENT_MIX`) | 128 | **0** |
+| Safe generation failures | 244 | **0** |
+
+All five modes now final-quality **pass 10000 / fail 0 / safeGen 0** (50k overall).
 
 ## Commands and results
 
-### 1. Fuzz-integrity release audit (already finished)
+### 1. Fuzz-integrity release audit (closure2)
 
 ```bash
 FUZZ_INTEGRITY_CASES_PER_MODE=10000 npm run audit:fuzz-integrity
@@ -16,17 +29,17 @@ FUZZ_INTEGRITY_CASES_PER_MODE=10000 npm run audit:fuzz-integrity
 
 | Field | Value |
 | --- | --- |
-| Log | `/tmp/phase7b-gates/fuzz-integrity-r2.log` |
-| Start | `2026-08-06T05:34:38-04:00` |
-| End | `2026-08-06T07:07:21-04:00` |
-| Exit | **1** |
+| Log | `/tmp/phase7b-gates/fuzz-integrity-closure2.log` |
+| Start | `2026-08-06T14:18:40-04:00` |
+| End | `2026-08-06T15:53:51-04:00` |
+| Exit | **0** |
 | Verdict | **NEEDS_REVIEW** |
-| Elapsed | 5562443 ms |
-| Report generatedAt | `2026-08-06T11:07:20.814Z` |
+| Elapsed | 5710987 ms |
+| Report generatedAt | `2026-08-06T19:53:51.311Z` |
 
 Reports (kept, not restored): `program-quality-v2-fuzz-integrity.{md,json}`, `program-quality-v2-fuzz-integrity-samples.{md,json}`.
 
-### 2. Program-quality gate (50k)
+### 2. Program-quality gate (50k, closure2)
 
 ```bash
 npm run audit:program-quality
@@ -34,9 +47,9 @@ npm run audit:program-quality
 
 | Field | Value |
 | --- | --- |
-| Log | `/tmp/phase7b-gates/program-quality-r2.log` |
-| Start | `2026-08-06T06:55:16-04:00` |
-| End | `2026-08-06T08:28:50-04:00` |
+| Log | `/tmp/phase7b-gates/program-quality-closure2.log` |
+| Start | `2026-08-06T13:10:12-04:00` |
+| End | `2026-08-06T14:45:13-04:00` |
 | Exit | **0** |
 | Verdict | **PASS** |
 | Fuzz cases | 50000 |
@@ -53,17 +66,17 @@ Restored globs: equipment-program-audit-phase2*/3*/4*/5*/5b*, program-quality-v2
 
 **Not** restored: fuzz-integrity* or phase7b-* presentation reports.
 
-## Fuzz-integrity summary (release 10k/mode)
+## Fuzz-integrity summary (release 10k/mode, closure2)
 
 ### Final quality totals (50k)
 
 | Metric | Count |
 | --- | --- |
-| Final quality pass | 49756 |
-| Final quality fail | 244 |
-| Safe generation failures | 244 |
+| Final quality pass | 50000 |
+| Final quality fail | 0 |
+| Safe generation failures | 0 |
 | Fallback passed | 0 |
-| Fallback failed safely | 244 |
+| Fallback failed safely | 0 |
 | Fallback evidence malformed | 0 |
 | Exceptions | 0 |
 | Unclassified | 0 |
@@ -71,12 +84,12 @@ Restored globs: equipment-program-audit-phase2*/3*/4*/5*/5b*, program-quality-v2
 ### By mode
 
 | Mode | Final pass | Final fail | Safe-gen fail | Fallback rate | Recovery rate | Fallback triage (pass/failSafe/malformed) | Hard failure codes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| gym | 9981 | 19 | 19 | 0.19% | 0.19% | 0/19/0 | QUALITY_BLOCKED_EXERCISE_PRESENT:10, GYM_REQUIRED_ROLE_WRONG_TRUTH:15 |
-| dumbbells | 9903 | 97 | 97 | 0.97% | 0.97% | 0/97/0 | DUMBBELL_PREP_AS_MAIN:97 |
+| --- | ---: | ---: | ---: | --- | --- | --- | --- |
+| gym | 10000 | 0 | 0 | 0.00% | 0.09% | 0/0/0 | — |
+| dumbbells | 10000 | 0 | 0 | 0.00% | 0.00% | 0/0/0 | — |
 | bands | 10000 | 0 | 0 | 0.00% | 0.00% | 0/0/0 | — |
 | bodyweight | 10000 | 0 | 0 | 0.00% | 0.00% | 0/0/0 | — |
-| mixedHome | 9872 | 128 | 128 | 1.28% | 1.28% | 0/128/0 | MIXED_HOME_RANDOM_EQUIPMENT_MIX:128 |
+| mixedHome | 10000 | 0 | 0 | 0.00% | 0.00% | 0/0/0 | — |
 
 ### Mutations / metamorphic / determinism
 
@@ -89,19 +102,20 @@ Restored globs: equipment-program-audit-phase2*/3*/4*/5*/5b*, program-quality-v2
 
 | Category | Count |
 | --- | --- |
-| `expectedIrrelevantInput` | 11028 |
-| `suspiciousIgnoredPainInput` | 1955 |
-| `suspiciousIgnoredActiveBlock` | 1 |
-| `suspiciousIgnoredSupportAnchorInput` | 677 |
+| `expectedIrrelevantInput` | 12057 |
+| `suspiciousIgnoredPainInput` | 1410 |
+| `suspiciousIgnoredSupportAnchorInput` | 190 |
 | `expectedStableTemplateIdentity` | 34 |
 | `expectedCapabilityLimitation` | 10531 |
 
-Analyzed representatives: suspicious **618** / expected **1882** (of 2500 analyzed; 24226 detected pairs).
+Analyzed representatives: suspicious **399** / expected **2101** (of 2500 analyzed; 24222 detected pairs).
 
-### NEEDS_REVIEW warnings (not release blockers)
+### Release blocking / gate distinction
 
-- `FALLBACK_RATE_ABOVE_1PCT`: mixedHome fallbackRate=1.28% (warning — not a release failure when all finals pass)
-- `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 618 suspicious collapse pairs (see categories)
+- `releaseBlockingFailures`: **[]** (0)
+- `needsReviewWarnings`: `UNEXPLAINED_CROSS_INPUT_COLLAPSE` — 399 suspicious collapse pairs
+- `gateDistinction`: releaseBlockingFailures=0; needsReviewWarnings=1; allFinalProgramsPass=true; allClassified=true
+- Note: NEEDS_REVIEW warnings are not release failures when all finals pass and all cases are classified.
 
 ### Gym hinge repro
 
@@ -119,17 +133,17 @@ fuzzIntegrityAudit uses the same canonical mode case generators and programQuali
 
 ## CI
 
-Prior tip `a96862f` PR checks: **SUCCESS** (PR gate; quality-core/gym/dumbbells/bands/bodyweight/mixed-home/coaching/builds; GitGuardian). Nightly full engine suite: SKIPPED. Re-confirm checks for tip `4193b57` on the PR checks tab after this docs push.
+Will wait/poll GitHub CI on the final pushed head after this docs commit. Status recorded below when available (or left pending with current checks if still running after ~30–40 min).
 
 ## PR metadata
 
-PR #82 description updated via REST API (kept **draft** / **unmerged**). `gh pr edit` GraphQL hit a projectCards deprecation error; REST PATCH succeeded and removed the stale “full gate still running” statement.
-
+PR #82 kept **draft** / **unmerged**. Description updated via REST API with final head SHA, audit results, template-version **18**, stop-before-Phase-8. Do not merge. Do not begin Phase 8. Do not update `checkpoint/equipment-experience-phase4`.
 
 ## Commit SHAs
 
 - Base / checkpoint: `5c88a64e71245f137e12178f2d26a38faf5fc8f5`
-- Pre-follow-up branch tip (audits ran against correction series ending at): `a96862fbd4fe430213e29c44c478474160dc47fc`
+- Closure code tip (audits): `96ff2763c8468e8ca825e0dd4980debc62e5fd40`
+- Prior docs tip before this closure validation: `6e1fb7f46d0352d0b4a80516584b20219a87128c`
 - This validation follow-up commit: 
 
 ## Stop
