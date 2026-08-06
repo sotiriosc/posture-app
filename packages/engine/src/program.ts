@@ -17929,10 +17929,13 @@ const getLegsAbsRoleCandidateIds = (
     if (phaseStage === "skill") {
       return [
         "db-rdl",
-        "band-rdl",
-        "back-extension",
-        "barbell-hip-thrust",
+        // Role-preserving true hinges when personal block removes db-rdl.
+        "dumbbell-sumo-rdl",
+        "barbell-romanian-deadlift",
         "machine-glute-drive",
+        "band-rdl",
+        "barbell-hip-thrust",
+        "back-extension",
         "single-leg-rdl",
         "machine-seated-hamstring-curl",
         "back-extension-hold",
@@ -17941,6 +17944,10 @@ const getLegsAbsRoleCandidateIds = (
     }
     return [
       "db-rdl",
+      // Keep gym-legal true hinges available in activation when db-rdl is blocked.
+      "dumbbell-sumo-rdl",
+      "barbell-romanian-deadlift",
+      "machine-glute-drive",
       "band-rdl",
       "back-extension",
       "back-extension-hold",
@@ -21772,11 +21779,29 @@ export const isEligibleForPhase = (
   // Controlled DB/band RDL primer for activation. High-severity upper-body pain
   // must still allow this path; otherwise gym Legs + Abs loses every true hinge
   // and collapses to curl-only or a missing hinge slot.
+  // When db-rdl is personally blocked, allow role-preserving true-hinge alternatives
+  // that remain equipment-legal (still filtered by eligibility/equipment gates).
+  const phaseOneHingeBlockFallbacks = [
+    "dumbbell-sumo-rdl",
+    "barbell-romanian-deadlift",
+    "machine-glute-drive",
+  ] as const;
+  const phaseOneBlockedHingeFallback =
+    inActivation &&
+    !hasLowBackPainSignal(context) &&
+    context.capabilityMode === "hasLoad" &&
+    Boolean(context.blockedExerciseIds?.has("db-rdl")) &&
+    (phaseOneHingeBlockFallbacks as readonly string[]).includes(exercise.id) &&
+    !context.blockedExerciseIds?.has(exercise.id);
   const phaseOneHomeHingePrimer =
     inActivation &&
     !hasLowBackPainSignal(context) &&
-    ((context.capabilityMode === "hasLoad" && ["db-rdl", "band-rdl"].includes(exercise.id)) ||
-      (context.capabilityMode === "bandOnly" && exercise.id === "band-rdl"));
+    ((context.capabilityMode === "hasLoad" &&
+      (["db-rdl", "band-rdl"] as const).includes(
+        exercise.id as "db-rdl" | "band-rdl"
+      )) ||
+      (context.capabilityMode === "bandOnly" && exercise.id === "band-rdl") ||
+      phaseOneBlockedHingeFallback);
   const allowActivationMachineMainPrimer =
     inActivation &&
     minimumStage === "activation" &&
@@ -21809,7 +21834,11 @@ export const isEligibleForPhase = (
   const isBeginnerOrIntermediate =
     isBeginner || context.experienceLevel === "intermediate";
   if (inActivation && isBeginnerOrIntermediate) {
-    if (exercise.difficultyTier === "hard" && !activationPrimerException) {
+    if (
+      exercise.difficultyTier === "hard" &&
+      !activationPrimerException &&
+      !phaseOneBlockedHingeFallback
+    ) {
       return false;
     }
   }
@@ -35949,6 +35978,7 @@ export const generateWeeklyProgram = (
     phaseIndex: weeklyRuntimeContext.phaseIndex ?? options?.phaseIndex ?? 1,
     baseSeed: options?.seed ?? programId,
     initialProgram: candidate,
+    blockedExerciseIds: options?.blockedExerciseIds,
     generate: (questionnaire, id, opts) =>
       generateWeeklyProgram(questionnaire, id, {
         // Preserve caller prefs (blocks, ladder, logs, etc.); only seed/id vary.
@@ -35972,6 +36002,7 @@ export {
   recoverAndEvaluateProgramQuality,
   attachProgramQualityEvaluation,
 } from "@/lib/program/qualityGate/recoverProgramQuality";
+export type { QualityRecoveryTrace } from "@/lib/program/qualityGate/recoverProgramQuality";
 export { ProgramQualityGateError } from "@/lib/program/qualityGate/ProgramQualityGateError";
 export type {
   ProgramQualityEvaluation,
