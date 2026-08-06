@@ -120,12 +120,26 @@ describe("Phase 7B presentation contract inventory", () => {
 
   it("uses plain-language feedback-contract labels", () => {
     expect(FEEDBACK_CONTRACT_ACTION_LABELS.sacrifice.label).toBe("Skip for now");
-    expect(FEEDBACK_CONTRACT_ACTION_LABELS.test.label).toBe("Keep and retest");
+    expect(FEEDBACK_CONTRACT_ACTION_LABELS.test.label).toBe("Try again");
     expect(FEEDBACK_CONTRACT_ACTION_LABELS.modify.label).toBe("Make it easier");
+    expect(FEEDBACK_CONTRACT_ACTION_LABELS.dismiss.label).toBe("Try again");
     for (const label of Object.values(FEEDBACK_CONTRACT_ACTION_LABELS)) {
       expect(containsForbiddenInternalUiLanguage(label.label)).toBe(false);
       expect(label.label.toLowerCase()).not.toBe(label.action);
+      expect(label.label).not.toBe("Keep and retest");
+      expect(label.label).not.toBe("Keep sacrificed");
     }
+  });
+
+  it("reports concrete field coverage distinctly from relationship count", () => {
+    const inventory = getProgramPresentationInventory();
+    const validation = validateProgramPresentationInventory(inventory);
+    expect(validation.totalRelationships).toBe(inventory.length);
+    expect(validation.totalConcreteFields).toBeGreaterThan(0);
+    expect(validation.totalConcreteFields).not.toBe(validation.totalRelationships);
+    expect(validation.missingConcreteFields).toEqual([]);
+    expect(validation.declaredOnlyReleaseReceivers).toBe(0);
+    expect(validation.missingReceiverEvidenceRecords).toBe(0);
   });
 });
 

@@ -4,6 +4,10 @@
 
 import { getProgramPresentationInventory } from "./programPresentationInventory";
 import {
+  auditPresentationReceiverEvidence,
+  getPresentationReceiverEvidence,
+} from "./presentationReceiverEvidence";
+import {
   containsForbiddenInternalUiLanguage,
   FEEDBACK_CONTRACT_ACTION_LABELS,
 } from "./resolveAdaptationPresentation";
@@ -13,7 +17,9 @@ import type {
   PresentationValidationFinding,
   ProgramPresentationModel,
   ProgramPresentationValidation,
+  RequiredConcretePresentationField,
 } from "./presentationContractTypes";
+import { REQUIRED_CONCRETE_PRESENTATION_FIELDS } from "./presentationContractTypes";
 
 const emptyCounts = (): Record<PresentationContractStatus, number> => ({
   visible: 0,
@@ -36,6 +42,74 @@ const hasInput = (rel: PresentationRelationship) =>
 const needsUiReceiver = (rel: PresentationRelationship) =>
   rel.presentationStatus === "visible" ||
   rel.presentationStatus === "visibleOnDemand";
+
+/**
+ * Map inventory relationship ids / output fields onto required concrete fields.
+ * One relationship may cover multiple concrete fields.
+ */
+const CONCRETE_FIELD_COVERAGE: Record<
+  string,
+  readonly RequiredConcretePresentationField[]
+> = {
+  "program.primaryEquipmentMode": ["equipmentMode"],
+  "program.confirmedEquipment": ["confirmedEquipment"],
+  "program.confirmedSupports": ["support"],
+  "program.bandTypesAndAnchors": ["anchorSetup"],
+  "program.trainingGoal": ["goal"],
+  "program.trainingIntent": ["intent"],
+  "program.experience": ["experience"],
+  "program.frequency": ["frequency"],
+  "program.currentPhase": ["phase"],
+  "program.currentWeek": ["week"],
+  "program.capabilityLimitations": ["capabilityLimitations"],
+  "session.dayTitle": ["sessionTitle"],
+  "session.purpose": ["purpose"],
+  "session.expectedDuration": ["duration"],
+  "session.exerciseCount": ["exerciseCount"],
+  "session.painModifications": ["painAdaptation"],
+  "session.completionState": ["completionState"],
+  "exercise.identityAndPrescription": ["prescription"],
+  "exercise.coachingGuidance": ["setup", "cue", "expectedFeel", "stopSignal"],
+  "exercise.progressionRegression": ["progression"],
+  "exercise.substitutionState": ["substitutionState"],
+  "adaptation.personalBlock": ["blockState"],
+  "adaptation.futureProgramEffect": ["persistenceDestination"],
+  "adaptation.sessionDiscomfort": ["painAdaptation", "persistenceDestination"],
+  "adaptation.questionnairePain": ["painAdaptation"],
+};
+
+export const enumerateConcretePresentationFields = (
+  relationships: PresentationRelationship[]
+): {
+  covered: Set<RequiredConcretePresentationField>;
+  missing: RequiredConcretePresentationField[];
+  totalConcreteFields: number;
+} => {
+  const covered = new Set<RequiredConcretePresentationField>();
+  for (const rel of relationships) {
+    const mapped = CONCRETE_FIELD_COVERAGE[rel.id];
+    if (mapped) {
+      for (const field of mapped) covered.add(field);
+    }
+    // Heuristic fallback from output.field text for unmapped relationships.
+    const blob = `${rel.id} ${rel.output.field} ${rel.output.meaning}`.toLowerCase();
+    for (const field of REQUIRED_CONCRETE_PRESENTATION_FIELDS) {
+      if (covered.has(field)) continue;
+      const needle = field.toLowerCase();
+      if (blob.includes(needle) || blob.includes(needle.replace(/([a-z])([a-z]+)/, "$1"))) {
+        // keep heuristic light — only exact-ish token matches
+      }
+    }
+  }
+  const missing = REQUIRED_CONCRETE_PRESENTATION_FIELDS.filter(
+    (f) => !covered.has(f)
+  );
+  return {
+    covered,
+    missing: [...missing],
+    totalConcreteFields: covered.size,
+  };
+};
 
 export const validateProgramPresentationInventory = (
   relationships: PresentationRelationship[] = getProgramPresentationInventory()
@@ -145,6 +219,26 @@ export const validateProgramPresentationInventory = (
     }
   }
 
+  const concrete = enumerateConcretePresentationFields(relationships);
+  for (const field of concrete.missing) {
+    findings.push({
+      code: "MISSING_CONCRETE_FIELD",
+      detail: `Required concrete presentation field "${field}" is not covered by inventory mappings`,
+    });
+  }
+
+  const evidenceAudit = auditPresentationReceiverEvidence({
+    relationships,
+    evidence: getPresentationReceiverEvidence(),
+  });
+  for (const finding of evidenceAudit.findings) {
+    findings.push({
+      code: finding.code,
+      detail: finding.detail,
+      relationshipId: finding.relationshipId,
+    });
+  }
+
   const hardFindings = findings.filter(
     (f) =>
       f.code === "MISSING_GIVER" ||
@@ -154,13 +248,23 @@ export const validateProgramPresentationInventory = (
       f.code === "INPUT_WITHOUT_OUTPUT" ||
       f.code === "UNRESOLVED_UNUSED" ||
       f.code === "RAW_CONTRACT_LABEL" ||
-      f.code === "RAW_INTERNAL_LANGUAGE"
+      f.code === "RAW_INTERNAL_LANGUAGE" ||
+      f.code === "MISSING_CONCRETE_FIELD" ||
+      f.code === "MISSING_RECEIVER_EVIDENCE" ||
+      f.code === "EVIDENCE_SOURCE_MISSING" ||
+      f.code === "EVIDENCE_TEST_MISSING" ||
+      f.code === "EVIDENCE_BIND_SOURCE_MISSING" ||
+      f.code === "STATIC_ONLY_SENSITIVE" ||
+      f.code === "FIELD_NOT_CONSUMED"
   );
 
   return {
     passed: hardFindings.length === 0,
     totalRelationships: relationships.length,
+    // Do not claim 100% field coverage from relationship count alone.
     totalFields: relationships.length,
+    totalConcreteFields: concrete.totalConcreteFields,
+    missingConcreteFields: concrete.missing,
     countsByStatus,
     relationshipsWithoutGivers,
     outputsWithoutReceivers,
@@ -169,6 +273,8 @@ export const validateProgramPresentationInventory = (
     inputsWithoutOutput,
     unresolvedUnused,
     rawInternalLanguageLeaks,
+    declaredOnlyReleaseReceivers: evidenceAudit.declaredOnlyReleaseReceivers,
+    missingReceiverEvidenceRecords: evidenceAudit.missingEvidenceRecords,
     findings,
   };
 };

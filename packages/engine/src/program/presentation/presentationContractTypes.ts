@@ -130,10 +130,51 @@ export type PresentationValidationFinding = {
   relationshipId?: string;
 };
 
+/** Required concrete presentation fields (not 1:1 with relationships). */
+export const REQUIRED_CONCRETE_PRESENTATION_FIELDS = [
+  "equipmentMode",
+  "confirmedEquipment",
+  "support",
+  "anchorSetup",
+  "goal",
+  "intent",
+  "experience",
+  "frequency",
+  "phase",
+  "week",
+  "capabilityLimitations",
+  "sessionTitle",
+  "purpose",
+  "duration",
+  "exerciseCount",
+  "prescription",
+  "setup",
+  "cue",
+  "expectedFeel",
+  "stopSignal",
+  "progression",
+  "substitutionState",
+  "painAdaptation",
+  "blockState",
+  "completionState",
+  "persistenceDestination",
+] as const;
+
+export type RequiredConcretePresentationField =
+  (typeof REQUIRED_CONCRETE_PRESENTATION_FIELDS)[number];
+
 export type ProgramPresentationValidation = {
   passed: boolean;
+  /** Count of inventory relationship records. */
   totalRelationships: number;
+  /**
+   * @deprecated Prefer totalConcreteFields — relationship count is not field coverage.
+   * Kept for transitional report readers; equals totalRelationships historically.
+   */
   totalFields: number;
+  /** Distinct concrete presentation fields covered by inventory mappings. */
+  totalConcreteFields: number;
+  missingConcreteFields: RequiredConcretePresentationField[];
   countsByStatus: Record<PresentationContractStatus, number>;
   relationshipsWithoutGivers: number;
   outputsWithoutReceivers: number;
@@ -142,5 +183,7 @@ export type ProgramPresentationValidation = {
   inputsWithoutOutput: number;
   unresolvedUnused: number;
   rawInternalLanguageLeaks: number;
+  declaredOnlyReleaseReceivers: number;
+  missingReceiverEvidenceRecords: number;
   findings: PresentationValidationFinding[];
 };
