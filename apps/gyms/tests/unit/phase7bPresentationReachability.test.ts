@@ -35,7 +35,7 @@ describe("Phase 7B gyms presentation reachability", () => {
 
   it("engine plain labels remain non-internal", () => {
     expect(FEEDBACK_CONTRACT_ACTION_LABELS.sacrifice.label).toBe("Skip for now");
-    expect(FEEDBACK_CONTRACT_ACTION_LABELS.test.label).toBe("Keep and retest");
+    expect(FEEDBACK_CONTRACT_ACTION_LABELS.test.label).toBe("Try again");
     expect(FEEDBACK_CONTRACT_ACTION_LABELS.modify.label).toBe("Make it easier");
   });
 });
