@@ -3538,11 +3538,14 @@ See `docs/dev-reports/program-quality-v2-phase7b-phase8-requirements.md` — pla
 
 - Owner-confirmed current UI (Dashboard, day details, progress/phase, history/insights, assessment patterns) used as receivers in `program-quality-v2-phase7b-screenshot-review.md`. Older mock shots discarded.
 
-#### Tests / validation (filled after gate)
+#### Tests / validation
 
 - Focused: `programPresentationContract.test.ts`, `programPresentationPainSwap.test.ts`, `programPresentationContinuity.test.ts`, gyms `phase7bPresentationReachability.test.ts` — **21 passed** (18 engine + 3 gyms)
 - `audit:program-presentation` — **PASS** (43 relationships, 0 required-without-receiver, 0 mode findings)
-- Full sequential gate results recorded in the Phase 7B commit message / this result after `p7b-validate-commit`
+- Full sequential gate (`/tmp/p7b-full-gate.log`):
+  - PASS: presentation, program-quality (50k nested fuzz), exercise-coaching, equipment-program, gym/dumbbell/band/bodyweight/mixed-home, catalog, program-contract, coverage-matrix, phase-matrix, test:golden, test:critical, test:full, build:consumer, build:gyms
+  - FAIL then fixed: `npm run lint` (7 pre-existing `@typescript-eslint/no-explicit-any` in e2e + catalogLadderInvariants) → typed; lint now **0 errors**
+  - No generation/pain/swap/persistence changes after the quality pass — 50k not re-run (guide §22)
 
 #### Stop
 
