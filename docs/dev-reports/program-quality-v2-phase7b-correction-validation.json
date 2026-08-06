@@ -268,7 +268,7 @@
     "url": "https://github.com/sotiriosc/posture-app/pull/82"
   },
   "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4.",
-  "validationCommit": "",
-  "validationFollowUpCommit": "",
-  "branchTipAtValidationCommit": ""
+  "validationCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522",
+  "validationFollowUpCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522",
+  "branchTipAtValidationCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522"
 }
