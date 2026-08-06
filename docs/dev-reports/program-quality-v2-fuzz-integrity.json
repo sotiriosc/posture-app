@@ -1,0 +1,1838 @@
+{
+  "generatedAt": "2026-08-06T00:50:42.876Z",
+  "phase": "7B-§13",
+  "objective": "Fuzz-integrity assessment",
+  "casesPerMode": 20,
+  "releaseCasesPerMode": 10000,
+  "note": "Short/local run (20/mode). Release evidence requires FUZZ_INTEGRITY_CASES_PER_MODE=10000.",
+  "elapsedMs": 32185,
+  "diversity": {
+    "structural": [
+      {
+        "mode": "gym",
+        "structuralInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3
+      },
+      {
+        "mode": "dumbbells",
+        "structuralInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3
+      },
+      {
+        "mode": "bands",
+        "structuralInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3
+      },
+      {
+        "mode": "bodyweight",
+        "structuralInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3
+      },
+      {
+        "mode": "mixedHome",
+        "structuralInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3
+      }
+    ],
+    "variationSeed": [
+      {
+        "mode": "gym",
+        "uniqueCompleteInputTuples": 20,
+        "totalCases": 20
+      },
+      {
+        "mode": "dumbbells",
+        "uniqueCompleteInputTuples": 20,
+        "totalCases": 20
+      },
+      {
+        "mode": "bands",
+        "uniqueCompleteInputTuples": 20,
+        "totalCases": 20
+      },
+      {
+        "mode": "bodyweight",
+        "uniqueCompleteInputTuples": 20,
+        "totalCases": 20
+      },
+      {
+        "mode": "mixedHome",
+        "uniqueCompleteInputTuples": 20,
+        "totalCases": 20
+      }
+    ],
+    "output": [
+      {
+        "mode": "gym",
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 20,
+        "uniqueDayIdentitySignatures": 3,
+        "mostCommonSignatureShare": 0.05,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "7768303d",
+            "count": 1
+          },
+          {
+            "signature": "a64604ed",
+            "count": 1
+          },
+          {
+            "signature": "0c382616",
+            "count": 1
+          },
+          {
+            "signature": "cc32267f",
+            "count": 1
+          },
+          {
+            "signature": "54c0dcf5",
+            "count": 1
+          },
+          {
+            "signature": "6e3f027d",
+            "count": 1
+          },
+          {
+            "signature": "d34e34e0",
+            "count": 1
+          },
+          {
+            "signature": "9c57ed1c",
+            "count": 1
+          },
+          {
+            "signature": "8ec5b9fd",
+            "count": 1
+          },
+          {
+            "signature": "b9770ea1",
+            "count": 1
+          },
+          {
+            "signature": "d6361b6f",
+            "count": 1
+          },
+          {
+            "signature": "6115bf36",
+            "count": 1
+          },
+          {
+            "signature": "fd20b79a",
+            "count": 1
+          },
+          {
+            "signature": "1f75f11a",
+            "count": 1
+          },
+          {
+            "signature": "e28a4f2e",
+            "count": 1
+          },
+          {
+            "signature": "16b273b7",
+            "count": 1
+          },
+          {
+            "signature": "635680b8",
+            "count": 1
+          },
+          {
+            "signature": "6ad5614e",
+            "count": 1
+          },
+          {
+            "signature": "3e77d733",
+            "count": 1
+          },
+          {
+            "signature": "cb8b0178",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "mode": "dumbbells",
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 20,
+        "uniqueDayIdentitySignatures": 3,
+        "mostCommonSignatureShare": 0.05,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "e325f8b5",
+            "count": 1
+          },
+          {
+            "signature": "d236a0f5",
+            "count": 1
+          },
+          {
+            "signature": "1f7d3768",
+            "count": 1
+          },
+          {
+            "signature": "8e4a8920",
+            "count": 1
+          },
+          {
+            "signature": "77f09cdf",
+            "count": 1
+          },
+          {
+            "signature": "1db05560",
+            "count": 1
+          },
+          {
+            "signature": "85f7e7aa",
+            "count": 1
+          },
+          {
+            "signature": "031aca9a",
+            "count": 1
+          },
+          {
+            "signature": "362b412f",
+            "count": 1
+          },
+          {
+            "signature": "04c9ad51",
+            "count": 1
+          },
+          {
+            "signature": "4ccdb876",
+            "count": 1
+          },
+          {
+            "signature": "767f725f",
+            "count": 1
+          },
+          {
+            "signature": "15ffeb2a",
+            "count": 1
+          },
+          {
+            "signature": "cd1e8dbf",
+            "count": 1
+          },
+          {
+            "signature": "85737b4e",
+            "count": 1
+          },
+          {
+            "signature": "ee12cfa6",
+            "count": 1
+          },
+          {
+            "signature": "fc16763e",
+            "count": 1
+          },
+          {
+            "signature": "90b52636",
+            "count": 1
+          },
+          {
+            "signature": "489a0f4f",
+            "count": 1
+          },
+          {
+            "signature": "4e942c94",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "mode": "bands",
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 14,
+        "uniqueDayIdentitySignatures": 3,
+        "mostCommonSignatureShare": 0.05,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "0ae1ba53",
+            "count": 1
+          },
+          {
+            "signature": "c120f054",
+            "count": 1
+          },
+          {
+            "signature": "134630fc",
+            "count": 1
+          },
+          {
+            "signature": "4b94918c",
+            "count": 1
+          },
+          {
+            "signature": "c6fb073a",
+            "count": 1
+          },
+          {
+            "signature": "b5e7f85e",
+            "count": 1
+          },
+          {
+            "signature": "3ee79651",
+            "count": 1
+          },
+          {
+            "signature": "60f7bd40",
+            "count": 1
+          },
+          {
+            "signature": "dd2ec01c",
+            "count": 1
+          },
+          {
+            "signature": "9a748336",
+            "count": 1
+          },
+          {
+            "signature": "171920c1",
+            "count": 1
+          },
+          {
+            "signature": "e29d61d9",
+            "count": 1
+          },
+          {
+            "signature": "b37617cf",
+            "count": 1
+          },
+          {
+            "signature": "51ba5607",
+            "count": 1
+          },
+          {
+            "signature": "99f93a69",
+            "count": 1
+          },
+          {
+            "signature": "0238211f",
+            "count": 1
+          },
+          {
+            "signature": "652c1eee",
+            "count": 1
+          },
+          {
+            "signature": "2503d117",
+            "count": 1
+          },
+          {
+            "signature": "f1b8ea11",
+            "count": 1
+          },
+          {
+            "signature": "66dafc4b",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "mode": "bodyweight",
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 20,
+        "uniqueDayIdentitySignatures": 3,
+        "mostCommonSignatureShare": 0.05,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "f16e8032",
+            "count": 1
+          },
+          {
+            "signature": "45aa2982",
+            "count": 1
+          },
+          {
+            "signature": "0461b700",
+            "count": 1
+          },
+          {
+            "signature": "513f7d97",
+            "count": 1
+          },
+          {
+            "signature": "c439e19d",
+            "count": 1
+          },
+          {
+            "signature": "f672fa78",
+            "count": 1
+          },
+          {
+            "signature": "75308647",
+            "count": 1
+          },
+          {
+            "signature": "e8f17d3a",
+            "count": 1
+          },
+          {
+            "signature": "f114047d",
+            "count": 1
+          },
+          {
+            "signature": "debae0d6",
+            "count": 1
+          },
+          {
+            "signature": "036b9e5f",
+            "count": 1
+          },
+          {
+            "signature": "56f27a8b",
+            "count": 1
+          },
+          {
+            "signature": "c85c4bd6",
+            "count": 1
+          },
+          {
+            "signature": "20863e9d",
+            "count": 1
+          },
+          {
+            "signature": "e9773184",
+            "count": 1
+          },
+          {
+            "signature": "c1ee7ac6",
+            "count": 1
+          },
+          {
+            "signature": "ae03bbb4",
+            "count": 1
+          },
+          {
+            "signature": "8355b490",
+            "count": 1
+          },
+          {
+            "signature": "21ae4f7a",
+            "count": 1
+          },
+          {
+            "signature": "39e0ba2b",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "mode": "mixedHome",
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 20,
+        "uniqueDayIdentitySignatures": 3,
+        "mostCommonSignatureShare": 0.05,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "015e0570",
+            "count": 1
+          },
+          {
+            "signature": "fa2e076b",
+            "count": 1
+          },
+          {
+            "signature": "976ba51e",
+            "count": 1
+          },
+          {
+            "signature": "7b863fd9",
+            "count": 1
+          },
+          {
+            "signature": "5c14f1eb",
+            "count": 1
+          },
+          {
+            "signature": "45234c1a",
+            "count": 1
+          },
+          {
+            "signature": "86239214",
+            "count": 1
+          },
+          {
+            "signature": "c9c29f1d",
+            "count": 1
+          },
+          {
+            "signature": "5aa390da",
+            "count": 1
+          },
+          {
+            "signature": "f1ab7c73",
+            "count": 1
+          },
+          {
+            "signature": "f2b25961",
+            "count": 1
+          },
+          {
+            "signature": "b8b3576a",
+            "count": 1
+          },
+          {
+            "signature": "e6b148f1",
+            "count": 1
+          },
+          {
+            "signature": "5e3ce7ac",
+            "count": 1
+          },
+          {
+            "signature": "24903361",
+            "count": 1
+          },
+          {
+            "signature": "0fe8fa99",
+            "count": 1
+          },
+          {
+            "signature": "5698b374",
+            "count": 1
+          },
+          {
+            "signature": "85c5bab1",
+            "count": 1
+          },
+          {
+            "signature": "2304ec52",
+            "count": 1
+          },
+          {
+            "signature": "3061ea2a",
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "byMode": [
+      {
+        "mode": "gym",
+        "totalCases": 20,
+        "structuralInputTuples": 20,
+        "uniqueCompleteInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3,
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 20,
+        "uniqueDayIdentitySignatures": 3,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "7768303d",
+            "count": 1
+          },
+          {
+            "signature": "a64604ed",
+            "count": 1
+          },
+          {
+            "signature": "0c382616",
+            "count": 1
+          },
+          {
+            "signature": "cc32267f",
+            "count": 1
+          },
+          {
+            "signature": "54c0dcf5",
+            "count": 1
+          },
+          {
+            "signature": "6e3f027d",
+            "count": 1
+          },
+          {
+            "signature": "d34e34e0",
+            "count": 1
+          },
+          {
+            "signature": "9c57ed1c",
+            "count": 1
+          },
+          {
+            "signature": "8ec5b9fd",
+            "count": 1
+          },
+          {
+            "signature": "b9770ea1",
+            "count": 1
+          },
+          {
+            "signature": "d6361b6f",
+            "count": 1
+          },
+          {
+            "signature": "6115bf36",
+            "count": 1
+          },
+          {
+            "signature": "fd20b79a",
+            "count": 1
+          },
+          {
+            "signature": "1f75f11a",
+            "count": 1
+          },
+          {
+            "signature": "e28a4f2e",
+            "count": 1
+          },
+          {
+            "signature": "16b273b7",
+            "count": 1
+          },
+          {
+            "signature": "635680b8",
+            "count": 1
+          },
+          {
+            "signature": "6ad5614e",
+            "count": 1
+          },
+          {
+            "signature": "3e77d733",
+            "count": 1
+          },
+          {
+            "signature": "cb8b0178",
+            "count": 1
+          }
+        ],
+        "mostCommonSignatureCount": 1,
+        "mostCommonSignatureShare": 0.05,
+        "recoveryAttempts": 1,
+        "recoveryRate": 0.05,
+        "fallbackUses": 1,
+        "fallbackRate": 0.05,
+        "exceptions": 0,
+        "deterministicMismatches": 0
+      },
+      {
+        "mode": "dumbbells",
+        "totalCases": 20,
+        "structuralInputTuples": 20,
+        "uniqueCompleteInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3,
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 20,
+        "uniqueDayIdentitySignatures": 3,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "e325f8b5",
+            "count": 1
+          },
+          {
+            "signature": "d236a0f5",
+            "count": 1
+          },
+          {
+            "signature": "1f7d3768",
+            "count": 1
+          },
+          {
+            "signature": "8e4a8920",
+            "count": 1
+          },
+          {
+            "signature": "77f09cdf",
+            "count": 1
+          },
+          {
+            "signature": "1db05560",
+            "count": 1
+          },
+          {
+            "signature": "85f7e7aa",
+            "count": 1
+          },
+          {
+            "signature": "031aca9a",
+            "count": 1
+          },
+          {
+            "signature": "362b412f",
+            "count": 1
+          },
+          {
+            "signature": "04c9ad51",
+            "count": 1
+          },
+          {
+            "signature": "4ccdb876",
+            "count": 1
+          },
+          {
+            "signature": "767f725f",
+            "count": 1
+          },
+          {
+            "signature": "15ffeb2a",
+            "count": 1
+          },
+          {
+            "signature": "cd1e8dbf",
+            "count": 1
+          },
+          {
+            "signature": "85737b4e",
+            "count": 1
+          },
+          {
+            "signature": "ee12cfa6",
+            "count": 1
+          },
+          {
+            "signature": "fc16763e",
+            "count": 1
+          },
+          {
+            "signature": "90b52636",
+            "count": 1
+          },
+          {
+            "signature": "489a0f4f",
+            "count": 1
+          },
+          {
+            "signature": "4e942c94",
+            "count": 1
+          }
+        ],
+        "mostCommonSignatureCount": 1,
+        "mostCommonSignatureShare": 0.05,
+        "recoveryAttempts": 2,
+        "recoveryRate": 0.1,
+        "fallbackUses": 2,
+        "fallbackRate": 0.1,
+        "exceptions": 0,
+        "deterministicMismatches": 0
+      },
+      {
+        "mode": "bands",
+        "totalCases": 20,
+        "structuralInputTuples": 20,
+        "uniqueCompleteInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3,
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 14,
+        "uniqueDayIdentitySignatures": 3,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "0ae1ba53",
+            "count": 1
+          },
+          {
+            "signature": "c120f054",
+            "count": 1
+          },
+          {
+            "signature": "134630fc",
+            "count": 1
+          },
+          {
+            "signature": "4b94918c",
+            "count": 1
+          },
+          {
+            "signature": "c6fb073a",
+            "count": 1
+          },
+          {
+            "signature": "b5e7f85e",
+            "count": 1
+          },
+          {
+            "signature": "3ee79651",
+            "count": 1
+          },
+          {
+            "signature": "60f7bd40",
+            "count": 1
+          },
+          {
+            "signature": "dd2ec01c",
+            "count": 1
+          },
+          {
+            "signature": "9a748336",
+            "count": 1
+          },
+          {
+            "signature": "171920c1",
+            "count": 1
+          },
+          {
+            "signature": "e29d61d9",
+            "count": 1
+          },
+          {
+            "signature": "b37617cf",
+            "count": 1
+          },
+          {
+            "signature": "51ba5607",
+            "count": 1
+          },
+          {
+            "signature": "99f93a69",
+            "count": 1
+          },
+          {
+            "signature": "0238211f",
+            "count": 1
+          },
+          {
+            "signature": "652c1eee",
+            "count": 1
+          },
+          {
+            "signature": "2503d117",
+            "count": 1
+          },
+          {
+            "signature": "f1b8ea11",
+            "count": 1
+          },
+          {
+            "signature": "66dafc4b",
+            "count": 1
+          }
+        ],
+        "mostCommonSignatureCount": 1,
+        "mostCommonSignatureShare": 0.05,
+        "recoveryAttempts": 0,
+        "recoveryRate": 0,
+        "fallbackUses": 0,
+        "fallbackRate": 0,
+        "exceptions": 0,
+        "deterministicMismatches": 0
+      },
+      {
+        "mode": "bodyweight",
+        "totalCases": 20,
+        "structuralInputTuples": 20,
+        "uniqueCompleteInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3,
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 20,
+        "uniqueDayIdentitySignatures": 3,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "f16e8032",
+            "count": 1
+          },
+          {
+            "signature": "45aa2982",
+            "count": 1
+          },
+          {
+            "signature": "0461b700",
+            "count": 1
+          },
+          {
+            "signature": "513f7d97",
+            "count": 1
+          },
+          {
+            "signature": "c439e19d",
+            "count": 1
+          },
+          {
+            "signature": "f672fa78",
+            "count": 1
+          },
+          {
+            "signature": "75308647",
+            "count": 1
+          },
+          {
+            "signature": "e8f17d3a",
+            "count": 1
+          },
+          {
+            "signature": "f114047d",
+            "count": 1
+          },
+          {
+            "signature": "debae0d6",
+            "count": 1
+          },
+          {
+            "signature": "036b9e5f",
+            "count": 1
+          },
+          {
+            "signature": "56f27a8b",
+            "count": 1
+          },
+          {
+            "signature": "c85c4bd6",
+            "count": 1
+          },
+          {
+            "signature": "20863e9d",
+            "count": 1
+          },
+          {
+            "signature": "e9773184",
+            "count": 1
+          },
+          {
+            "signature": "c1ee7ac6",
+            "count": 1
+          },
+          {
+            "signature": "ae03bbb4",
+            "count": 1
+          },
+          {
+            "signature": "8355b490",
+            "count": 1
+          },
+          {
+            "signature": "21ae4f7a",
+            "count": 1
+          },
+          {
+            "signature": "39e0ba2b",
+            "count": 1
+          }
+        ],
+        "mostCommonSignatureCount": 1,
+        "mostCommonSignatureShare": 0.05,
+        "recoveryAttempts": 0,
+        "recoveryRate": 0,
+        "fallbackUses": 0,
+        "fallbackRate": 0,
+        "exceptions": 0,
+        "deterministicMismatches": 0
+      },
+      {
+        "mode": "mixedHome",
+        "totalCases": 20,
+        "structuralInputTuples": 20,
+        "uniqueCompleteInputTuples": 20,
+        "uniquePainCombinations": 1,
+        "uniqueExperienceValues": 3,
+        "uniquePhases": 3,
+        "uniqueFrequencies": 3,
+        "uniqueEquipmentCapabilityLanes": 1,
+        "uniqueBlockedConfigurations": 3,
+        "uniqueSemanticSignatures": 20,
+        "uniqueOrderedWeeklyExerciseSignatures": 20,
+        "uniqueDayIdentitySignatures": 3,
+        "top20RepeatedSemanticSignatures": [
+          {
+            "signature": "015e0570",
+            "count": 1
+          },
+          {
+            "signature": "fa2e076b",
+            "count": 1
+          },
+          {
+            "signature": "976ba51e",
+            "count": 1
+          },
+          {
+            "signature": "7b863fd9",
+            "count": 1
+          },
+          {
+            "signature": "5c14f1eb",
+            "count": 1
+          },
+          {
+            "signature": "45234c1a",
+            "count": 1
+          },
+          {
+            "signature": "86239214",
+            "count": 1
+          },
+          {
+            "signature": "c9c29f1d",
+            "count": 1
+          },
+          {
+            "signature": "5aa390da",
+            "count": 1
+          },
+          {
+            "signature": "f1ab7c73",
+            "count": 1
+          },
+          {
+            "signature": "f2b25961",
+            "count": 1
+          },
+          {
+            "signature": "b8b3576a",
+            "count": 1
+          },
+          {
+            "signature": "e6b148f1",
+            "count": 1
+          },
+          {
+            "signature": "5e3ce7ac",
+            "count": 1
+          },
+          {
+            "signature": "24903361",
+            "count": 1
+          },
+          {
+            "signature": "0fe8fa99",
+            "count": 1
+          },
+          {
+            "signature": "5698b374",
+            "count": 1
+          },
+          {
+            "signature": "85c5bab1",
+            "count": 1
+          },
+          {
+            "signature": "2304ec52",
+            "count": 1
+          },
+          {
+            "signature": "3061ea2a",
+            "count": 1
+          }
+        ],
+        "mostCommonSignatureCount": 1,
+        "mostCommonSignatureShare": 0.05,
+        "recoveryAttempts": 0,
+        "recoveryRate": 0,
+        "fallbackUses": 0,
+        "fallbackRate": 0,
+        "exceptions": 0,
+        "deterministicMismatches": 0
+      }
+    ]
+  },
+  "crossInputCollapse": {
+    "totalFlags": 0,
+    "suspicious": 0,
+    "expected": 0,
+    "flags": []
+  },
+  "mutations": {
+    "required": 14,
+    "detected": 14,
+    "falsePass": 0,
+    "acceptance": "PASS",
+    "results": [
+      {
+        "id": 1,
+        "name": "cable exercise in dumbbell-only",
+        "expectedReasonFamily": "DUMBBELL_ILLEGAL_EQUIPMENT|ILLEGAL",
+        "actualFindings": [
+          "DUMBBELL_ILLEGAL_EQUIPMENT",
+          "DUMBBELL_UNCONFIRMED_SUPPORT"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 2,
+        "name": "high-anchor exercise in no-anchor bands",
+        "expectedReasonFamily": "BAND_UNCONFIRMED_ANCHOR|BAND_FALSE_VERTICAL",
+        "actualFindings": [
+          "BAND_UNCONFIRMED_ANCHOR",
+          "BAND_FALSE_VERTICAL_PULL"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 3,
+        "name": "long-band exercise in loop-only",
+        "expectedReasonFamily": "BAND_LOOP_ONLY_LONG_BAND",
+        "actualFindings": [
+          "BAND_LOOP_ONLY_LONG_BAND_EXERCISE"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 4,
+        "name": "gym machine in mixed home",
+        "expectedReasonFamily": "MIXED_HOME_ILLEGAL_EQUIPMENT|ILLEGAL",
+        "actualFindings": [
+          "MIXED_HOME_ILLEGAL_EQUIPMENT",
+          "MIXED_HOME_ILLEGAL_EQUIPMENT"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 5,
+        "name": "unsupported chair/bench in bodyweight",
+        "expectedReasonFamily": "BODYWEIGHT_UNCONFIRMED_SUPPORT",
+        "actualFindings": [
+          "BODYWEIGHT_UNCONFIRMED_SUPPORT",
+          "BODYWEIGHT_MISSING_SQUAT"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 6,
+        "name": "pullover falsely occupying true vertical pull",
+        "expectedReasonFamily": "GYM_VERTICAL_PULL_SURROGATE|FALSE_VERTICAL",
+        "actualFindings": [
+          "GYM_VERTICAL_PULL_SURROGATE"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 7,
+        "name": "preparation drill replacing a main hinge",
+        "expectedReasonFamily": "PREP_AS_MAIN|DUMBBELL_PREP_AS_MAIN",
+        "actualFindings": [
+          "DUMBBELL_PREP_AS_MAIN"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 8,
+        "name": "curl replacing a primary hinge",
+        "expectedReasonFamily": "CURL_ONLY_HINGE|GYM_HINGE_SATISFIED_BY_CURL",
+        "actualFindings": [
+          "GYM_HINGE_SATISFIED_BY_CURL_ONLY"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 9,
+        "name": "personally blocked exercise reinserted",
+        "expectedReasonFamily": "QUALITY_BLOCKED_EXERCISE_PRESENT",
+        "actualFindings": [
+          "QUALITY_BLOCKED_EXERCISE_PRESENT",
+          "QUALITY_BLOCKED_EXERCISE_PRESENT",
+          "QUALITY_BLOCKED_EXERCISE_PRESENT",
+          "QUALITY_BLOCKED_EXERCISE_PRESENT"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 10,
+        "name": "required coaching removed",
+        "expectedReasonFamily": "QUALITY_UNRESOLVABLE_EXERCISE_ID|COACHING_MISSING",
+        "actualFindings": [
+          "QUALITY_UNRESOLVABLE_EXERCISE_ID"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 11,
+        "name": "bodyweight program given a gym title",
+        "expectedReasonFamily": "BODYWEIGHT_GYM_TEMPLATE_INHERITANCE|DAY_IDENTITY",
+        "actualFindings": [
+          "BODYWEIGHT_GYM_TEMPLATE_INHERITANCE",
+          "BODYWEIGHT_GYM_TEMPLATE_INHERITANCE",
+          "BODYWEIGHT_GYM_TEMPLATE_INHERITANCE",
+          "BODYWEIGHT_DAY_IDENTITY_MISMATCH",
+          "BODYWEIGHT_DAY_IDENTITY_MISMATCH",
+          "BODYWEIGHT_DAY_IDENTITY_MISMATCH"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 12,
+        "name": "nondeterministic order mutation",
+        "expectedReasonFamily": "QUALITY_NONDETERMINISTIC_REPEAT",
+        "actualFindings": [
+          "QUALITY_NONDETERMINISTIC_REPEAT"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 13,
+        "name": "invalid progression reference",
+        "expectedReasonFamily": "QUALITY_INVALID_PROGRESSION_REFERENCE",
+        "actualFindings": [
+          "QUALITY_INVALID_PROGRESSION_REFERENCE"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      },
+      {
+        "id": 14,
+        "name": "wrong primary equipment identity",
+        "expectedReasonFamily": "DUMBBELL_GYM_TEMPLATE_INHERITANCE|IDENTITY",
+        "actualFindings": [
+          "DUMBBELL_GYM_TEMPLATE_INHERITANCE",
+          "DUMBBELL_GYM_TEMPLATE_INHERITANCE",
+          "DUMBBELL_GYM_TEMPLATE_INHERITANCE",
+          "DUMBBELL_DAY_IDENTITY_MISMATCH",
+          "DUMBBELL_DAY_IDENTITY_MISMATCH",
+          "DUMBBELL_DAY_IDENTITY_MISMATCH"
+        ],
+        "detected": true,
+        "usedIndependentCanonicalMetadata": true
+      }
+    ]
+  },
+  "metamorphic": {
+    "total": 9,
+    "passed": 9,
+    "results": [
+      {
+        "name": "add shoulder pain → overhead demand must not increase",
+        "passed": true,
+        "detail": "overhead before=2 after=1"
+      },
+      {
+        "name": "remove high anchor → high-anchor exercises disappear",
+        "passed": true,
+        "detail": "remaining high-anchor ids: none"
+      },
+      {
+        "name": "change long band to loop-only → long-band exercises disappear",
+        "passed": true,
+        "detail": "remaining long-band ids: none"
+      },
+      {
+        "name": "block selected squat → blocked squat disappears while squat purpose remains when possible",
+        "passed": true,
+        "detail": "blockedPresent=false squatPurpose=true"
+      },
+      {
+        "name": "block selected hinge → blocked hinge disappears while hinge purpose remains when possible",
+        "passed": true,
+        "detail": "blockedPresent=false hingePurpose=true"
+      },
+      {
+        "name": "change dumbbells to bodyweight → equipment identity and legality change",
+        "passed": true,
+        "detail": "beforeDb=true afterDb=false afterMode=bodyweight"
+      },
+      {
+        "name": "increase experience → complexity may increase but equipment/role truth remain stable",
+        "passed": true,
+        "detail": "beginnerHard=0 advancedHard=0"
+      },
+      {
+        "name": "advance phase → progression changes without arbitrary identity collapse",
+        "passed": true,
+        "detail": "dayIdentityStable=true exerciseChanged=true"
+      },
+      {
+        "name": "lower photo confidence → unsupported presentation rationale disappears",
+        "passed": true,
+        "detail": "highClaim=true lowClaim=false"
+      }
+    ]
+  },
+  "holdout": {
+    "gym": {
+      "mode": "gym",
+      "totalCases": 40,
+      "structuralInputTuples": 40,
+      "uniqueCompleteInputTuples": 40,
+      "uniquePainCombinations": 1,
+      "uniqueExperienceValues": 3,
+      "uniquePhases": 3,
+      "uniqueFrequencies": 3,
+      "uniqueEquipmentCapabilityLanes": 1,
+      "uniqueBlockedConfigurations": 4,
+      "uniqueSemanticSignatures": 40,
+      "uniqueOrderedWeeklyExerciseSignatures": 40,
+      "uniqueDayIdentitySignatures": 3,
+      "top20RepeatedSemanticSignatures": [
+        {
+          "signature": "dcd01f40",
+          "count": 1
+        },
+        {
+          "signature": "26caddb9",
+          "count": 1
+        },
+        {
+          "signature": "e67d217f",
+          "count": 1
+        },
+        {
+          "signature": "73ba829d",
+          "count": 1
+        },
+        {
+          "signature": "5dd5f482",
+          "count": 1
+        },
+        {
+          "signature": "0ba9208f",
+          "count": 1
+        },
+        {
+          "signature": "604f58e4",
+          "count": 1
+        },
+        {
+          "signature": "d97a20e2",
+          "count": 1
+        },
+        {
+          "signature": "0d14d9b1",
+          "count": 1
+        },
+        {
+          "signature": "b9770ea1",
+          "count": 1
+        },
+        {
+          "signature": "d6361b6f",
+          "count": 1
+        },
+        {
+          "signature": "6115bf36",
+          "count": 1
+        },
+        {
+          "signature": "fd20b79a",
+          "count": 1
+        },
+        {
+          "signature": "0793cede",
+          "count": 1
+        },
+        {
+          "signature": "e28a4f2e",
+          "count": 1
+        },
+        {
+          "signature": "cb8a9603",
+          "count": 1
+        },
+        {
+          "signature": "fb1a154c",
+          "count": 1
+        },
+        {
+          "signature": "6cb03126",
+          "count": 1
+        },
+        {
+          "signature": "3e77d733",
+          "count": 1
+        },
+        {
+          "signature": "cb8b0178",
+          "count": 1
+        }
+      ],
+      "mostCommonSignatureCount": 1,
+      "mostCommonSignatureShare": 0.025,
+      "recoveryAttempts": 1,
+      "recoveryRate": 0.025,
+      "fallbackUses": 1,
+      "fallbackRate": 0.025,
+      "exceptions": 0,
+      "deterministicMismatches": 0,
+      "namespace": "fuzz-integrity-holdout-v1"
+    },
+    "dumbbells": {
+      "mode": "dumbbells",
+      "totalCases": 40,
+      "structuralInputTuples": 40,
+      "uniqueCompleteInputTuples": 40,
+      "uniquePainCombinations": 1,
+      "uniqueExperienceValues": 3,
+      "uniquePhases": 3,
+      "uniqueFrequencies": 3,
+      "uniqueEquipmentCapabilityLanes": 1,
+      "uniqueBlockedConfigurations": 4,
+      "uniqueSemanticSignatures": 40,
+      "uniqueOrderedWeeklyExerciseSignatures": 40,
+      "uniqueDayIdentitySignatures": 3,
+      "top20RepeatedSemanticSignatures": [
+        {
+          "signature": "e325f8b5",
+          "count": 1
+        },
+        {
+          "signature": "d236a0f5",
+          "count": 1
+        },
+        {
+          "signature": "1f7d3768",
+          "count": 1
+        },
+        {
+          "signature": "8e4a8920",
+          "count": 1
+        },
+        {
+          "signature": "77f09cdf",
+          "count": 1
+        },
+        {
+          "signature": "1db05560",
+          "count": 1
+        },
+        {
+          "signature": "85f7e7aa",
+          "count": 1
+        },
+        {
+          "signature": "031aca9a",
+          "count": 1
+        },
+        {
+          "signature": "362b412f",
+          "count": 1
+        },
+        {
+          "signature": "04c9ad51",
+          "count": 1
+        },
+        {
+          "signature": "4ccdb876",
+          "count": 1
+        },
+        {
+          "signature": "767f725f",
+          "count": 1
+        },
+        {
+          "signature": "15ffeb2a",
+          "count": 1
+        },
+        {
+          "signature": "cd1e8dbf",
+          "count": 1
+        },
+        {
+          "signature": "85737b4e",
+          "count": 1
+        },
+        {
+          "signature": "ee12cfa6",
+          "count": 1
+        },
+        {
+          "signature": "fc16763e",
+          "count": 1
+        },
+        {
+          "signature": "90b52636",
+          "count": 1
+        },
+        {
+          "signature": "489a0f4f",
+          "count": 1
+        },
+        {
+          "signature": "4e942c94",
+          "count": 1
+        }
+      ],
+      "mostCommonSignatureCount": 1,
+      "mostCommonSignatureShare": 0.025,
+      "recoveryAttempts": 2,
+      "recoveryRate": 0.05,
+      "fallbackUses": 2,
+      "fallbackRate": 0.05,
+      "exceptions": 0,
+      "deterministicMismatches": 0,
+      "namespace": "fuzz-integrity-holdout-v1"
+    },
+    "bands": {
+      "mode": "bands",
+      "totalCases": 40,
+      "structuralInputTuples": 40,
+      "uniqueCompleteInputTuples": 40,
+      "uniquePainCombinations": 1,
+      "uniqueExperienceValues": 3,
+      "uniquePhases": 3,
+      "uniqueFrequencies": 3,
+      "uniqueEquipmentCapabilityLanes": 1,
+      "uniqueBlockedConfigurations": 4,
+      "uniqueSemanticSignatures": 40,
+      "uniqueOrderedWeeklyExerciseSignatures": 29,
+      "uniqueDayIdentitySignatures": 3,
+      "top20RepeatedSemanticSignatures": [
+        {
+          "signature": "0ae1ba53",
+          "count": 1
+        },
+        {
+          "signature": "c120f054",
+          "count": 1
+        },
+        {
+          "signature": "134630fc",
+          "count": 1
+        },
+        {
+          "signature": "4b94918c",
+          "count": 1
+        },
+        {
+          "signature": "c6fb073a",
+          "count": 1
+        },
+        {
+          "signature": "b5e7f85e",
+          "count": 1
+        },
+        {
+          "signature": "3ee79651",
+          "count": 1
+        },
+        {
+          "signature": "60f7bd40",
+          "count": 1
+        },
+        {
+          "signature": "dd2ec01c",
+          "count": 1
+        },
+        {
+          "signature": "9a748336",
+          "count": 1
+        },
+        {
+          "signature": "171920c1",
+          "count": 1
+        },
+        {
+          "signature": "e29d61d9",
+          "count": 1
+        },
+        {
+          "signature": "b37617cf",
+          "count": 1
+        },
+        {
+          "signature": "51ba5607",
+          "count": 1
+        },
+        {
+          "signature": "99f93a69",
+          "count": 1
+        },
+        {
+          "signature": "0238211f",
+          "count": 1
+        },
+        {
+          "signature": "652c1eee",
+          "count": 1
+        },
+        {
+          "signature": "2503d117",
+          "count": 1
+        },
+        {
+          "signature": "f1b8ea11",
+          "count": 1
+        },
+        {
+          "signature": "66dafc4b",
+          "count": 1
+        }
+      ],
+      "mostCommonSignatureCount": 1,
+      "mostCommonSignatureShare": 0.025,
+      "recoveryAttempts": 0,
+      "recoveryRate": 0,
+      "fallbackUses": 0,
+      "fallbackRate": 0,
+      "exceptions": 0,
+      "deterministicMismatches": 0,
+      "namespace": "fuzz-integrity-holdout-v1"
+    },
+    "bodyweight": {
+      "mode": "bodyweight",
+      "totalCases": 40,
+      "structuralInputTuples": 40,
+      "uniqueCompleteInputTuples": 40,
+      "uniquePainCombinations": 1,
+      "uniqueExperienceValues": 3,
+      "uniquePhases": 3,
+      "uniqueFrequencies": 3,
+      "uniqueEquipmentCapabilityLanes": 1,
+      "uniqueBlockedConfigurations": 4,
+      "uniqueSemanticSignatures": 40,
+      "uniqueOrderedWeeklyExerciseSignatures": 40,
+      "uniqueDayIdentitySignatures": 3,
+      "top20RepeatedSemanticSignatures": [
+        {
+          "signature": "0d5884e8",
+          "count": 1
+        },
+        {
+          "signature": "15d42fb0",
+          "count": 1
+        },
+        {
+          "signature": "0461b700",
+          "count": 1
+        },
+        {
+          "signature": "513f7d97",
+          "count": 1
+        },
+        {
+          "signature": "c439e19d",
+          "count": 1
+        },
+        {
+          "signature": "f672fa78",
+          "count": 1
+        },
+        {
+          "signature": "d8b93719",
+          "count": 1
+        },
+        {
+          "signature": "4d83a748",
+          "count": 1
+        },
+        {
+          "signature": "293f87a1",
+          "count": 1
+        },
+        {
+          "signature": "debae0d6",
+          "count": 1
+        },
+        {
+          "signature": "036b9e5f",
+          "count": 1
+        },
+        {
+          "signature": "56f27a8b",
+          "count": 1
+        },
+        {
+          "signature": "c85c4bd6",
+          "count": 1
+        },
+        {
+          "signature": "20863e9d",
+          "count": 1
+        },
+        {
+          "signature": "e9773184",
+          "count": 1
+        },
+        {
+          "signature": "c1ee7ac6",
+          "count": 1
+        },
+        {
+          "signature": "ae03bbb4",
+          "count": 1
+        },
+        {
+          "signature": "8355b490",
+          "count": 1
+        },
+        {
+          "signature": "21ae4f7a",
+          "count": 1
+        },
+        {
+          "signature": "39e0ba2b",
+          "count": 1
+        }
+      ],
+      "mostCommonSignatureCount": 1,
+      "mostCommonSignatureShare": 0.025,
+      "recoveryAttempts": 0,
+      "recoveryRate": 0,
+      "fallbackUses": 0,
+      "fallbackRate": 0,
+      "exceptions": 0,
+      "deterministicMismatches": 0,
+      "namespace": "fuzz-integrity-holdout-v1"
+    },
+    "mixedHome": {
+      "mode": "mixedHome",
+      "totalCases": 40,
+      "structuralInputTuples": 40,
+      "uniqueCompleteInputTuples": 40,
+      "uniquePainCombinations": 1,
+      "uniqueExperienceValues": 3,
+      "uniquePhases": 3,
+      "uniqueFrequencies": 3,
+      "uniqueEquipmentCapabilityLanes": 1,
+      "uniqueBlockedConfigurations": 4,
+      "uniqueSemanticSignatures": 40,
+      "uniqueOrderedWeeklyExerciseSignatures": 40,
+      "uniqueDayIdentitySignatures": 3,
+      "top20RepeatedSemanticSignatures": [
+        {
+          "signature": "015e0570",
+          "count": 1
+        },
+        {
+          "signature": "fa2e076b",
+          "count": 1
+        },
+        {
+          "signature": "976ba51e",
+          "count": 1
+        },
+        {
+          "signature": "7b863fd9",
+          "count": 1
+        },
+        {
+          "signature": "5c14f1eb",
+          "count": 1
+        },
+        {
+          "signature": "45234c1a",
+          "count": 1
+        },
+        {
+          "signature": "86239214",
+          "count": 1
+        },
+        {
+          "signature": "c9c29f1d",
+          "count": 1
+        },
+        {
+          "signature": "5aa390da",
+          "count": 1
+        },
+        {
+          "signature": "f1ab7c73",
+          "count": 1
+        },
+        {
+          "signature": "f2b25961",
+          "count": 1
+        },
+        {
+          "signature": "b8b3576a",
+          "count": 1
+        },
+        {
+          "signature": "e6b148f1",
+          "count": 1
+        },
+        {
+          "signature": "5e3ce7ac",
+          "count": 1
+        },
+        {
+          "signature": "24903361",
+          "count": 1
+        },
+        {
+          "signature": "0fe8fa99",
+          "count": 1
+        },
+        {
+          "signature": "5698b374",
+          "count": 1
+        },
+        {
+          "signature": "85c5bab1",
+          "count": 1
+        },
+        {
+          "signature": "2304ec52",
+          "count": 1
+        },
+        {
+          "signature": "3061ea2a",
+          "count": 1
+        }
+      ],
+      "mostCommonSignatureCount": 1,
+      "mostCommonSignatureShare": 0.025,
+      "recoveryAttempts": 0,
+      "recoveryRate": 0,
+      "fallbackUses": 0,
+      "fallbackRate": 0,
+      "exceptions": 0,
+      "deterministicMismatches": 0,
+      "namespace": "fuzz-integrity-holdout-v1"
+    }
+  },
+  "samples": {
+    "blindPerMode": 10,
+    "blindTotal": 50,
+    "fallbackTotal": 3
+  },
+  "needsReview": [
+    {
+      "code": "FALLBACK_RATE_ABOVE_1PCT",
+      "detail": "gym fallbackRate=5.00%"
+    },
+    {
+      "code": "FALLBACK_RATE_ABOVE_1PCT",
+      "detail": "dumbbells fallbackRate=10.00%"
+    },
+    {
+      "code": "RECOVERY_RATE_ABOVE_5PCT",
+      "detail": "dumbbells recoveryRate=10.00%"
+    }
+  ],
+  "verdict": "NEEDS_REVIEW"
+}

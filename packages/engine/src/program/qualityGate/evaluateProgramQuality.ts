@@ -51,6 +51,11 @@ export type EvaluateProgramQualityInput = {
   questionnaire: QuestionnaireData;
   persona?: string;
   compareProgram?: Program | null;
+  /**
+   * Optional personal blocks. When provided, any blocked exercise present in the
+   * program is a hard failure (independent of generation-time filtering).
+   */
+  blockedExerciseIds?: string[] | Set<string> | Record<string, unknown>;
 };
 
 const toFinding = (params: {
@@ -353,6 +358,94 @@ const collectCoachingFindings = (
   return findings;
 };
 
+const resolveBlockedIdSet = (
+  blocked?: EvaluateProgramQualityInput["blockedExerciseIds"]
+): Set<string> => {
+  if (!blocked) return new Set();
+  if (blocked instanceof Set) return blocked;
+  if (Array.isArray(blocked)) return new Set(blocked);
+  return new Set(Object.keys(blocked));
+};
+
+const collectBlockedFindings = (
+  input: EvaluateProgramQualityInput,
+  mode: PrimaryProgramEquipmentMode
+): ProgramQualityFinding[] => {
+  const blocked = resolveBlockedIdSet(input.blockedExerciseIds);
+  if (!blocked.size) return [];
+  const findings: ProgramQualityFinding[] = [];
+  for (const day of input.program.week) {
+    for (const item of day.routine) {
+      if (!blocked.has(item.exerciseId)) continue;
+      findings.push(
+        toFinding({
+          code: "QUALITY_BLOCKED_EXERCISE_PRESENT",
+          mode,
+          internalMessage: `Personally blocked exercise ${item.exerciseId} present in program`,
+          sourceContract: "evaluateProgramQuality",
+          exerciseId: item.exerciseId,
+          dayTitle: day.title,
+          programId: input.program.id,
+        })
+      );
+    }
+  }
+  return findings;
+};
+
+/** Validates explicit progress-to:<exerciseId> refs and catalog progression links. */
+const collectProgressionFindings = (
+  program: Program,
+  mode: PrimaryProgramEquipmentMode
+): ProgramQualityFinding[] => {
+  const findings: ProgramQualityFinding[] = [];
+  for (const day of program.week) {
+    for (const item of day.routine) {
+      const rule = item.prescription?.progressionRule ?? "";
+      const explicit = /^progress-to:(.+)$/.exec(rule.trim());
+      if (explicit) {
+        const targetId = explicit[1].trim();
+        if (!exerciseById(targetId)) {
+          findings.push(
+            toFinding({
+              code: "QUALITY_INVALID_PROGRESSION_REFERENCE",
+              mode,
+              internalMessage: `Invalid progression reference progress-to:${targetId}`,
+              sourceContract: "evaluateProgramQuality",
+              exerciseId: item.exerciseId,
+              dayTitle: day.title,
+              programId: program.id,
+              expected: "resolvable exercise id",
+              actual: targetId,
+            })
+          );
+        }
+      }
+      const exercise = exerciseById(item.exerciseId);
+      if (!exercise) continue;
+      for (const field of ["progressionOf", "regressionOf"] as const) {
+        const ref = exercise[field];
+        if (ref && !exerciseById(ref)) {
+          findings.push(
+            toFinding({
+              code: "QUALITY_INVALID_PROGRESSION_REFERENCE",
+              mode,
+              internalMessage: `Catalog ${field}=${ref} does not resolve for ${exercise.id}`,
+              sourceContract: "exerciseCatalog",
+              exerciseId: exercise.id,
+              dayTitle: day.title,
+              programId: program.id,
+              expected: "resolvable exercise id",
+              actual: ref,
+            })
+          );
+        }
+      }
+    }
+  }
+  return findings;
+};
+
 const structuralScoreFor = (
   mode: PrimaryProgramEquipmentMode,
   hardFailureCount: number,
@@ -402,6 +495,8 @@ export const evaluateProgramQuality = (
     ...collectModeFailures(input, mode),
     ...collectDeferredFindings(input.program, mode),
     ...collectCoachingFindings(input.program, mode),
+    ...collectBlockedFindings(input, mode),
+    ...collectProgressionFindings(input.program, mode),
   ];
 
   if (input.compareProgram) {
