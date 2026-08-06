@@ -253,5 +253,7 @@
     "result": "blocked_gh_auth_invalid",
     "note": "Could not update PR #82 description via gh; leave draft. Paste summary from this validation artifact if needed."
   },
-  "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4."
+  "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4.",
+  "validationCommit": "a63f5fecb3a6a64513107f54ba5d945a64df8c04",
+  "branchTipAtValidationCommit": "a63f5fecb3a6a64513107f54ba5d945a64df8c04"
 }

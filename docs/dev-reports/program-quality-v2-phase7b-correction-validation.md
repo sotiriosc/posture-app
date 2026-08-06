@@ -125,7 +125,7 @@ GitHub `gh` auth is invalid in this environment (`authentication failed` / Graph
 
 - Base / checkpoint: `5c88a64e71245f137e12178f2d26a38faf5fc8f5`
 - Pre-follow-up branch tip (audits ran against correction series ending at): `a96862fbd4fe430213e29c44c478474160dc47fc`
-- This validation follow-up commit: *(filled after commit; see git log on branch)*
+- This validation follow-up commit: 
 
 ## Stop
 
