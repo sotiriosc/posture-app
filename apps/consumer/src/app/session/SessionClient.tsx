@@ -2393,15 +2393,18 @@ export default function SessionClient() {
     activeIndex + 1
   )}/${Math.max(1, totalItems)}`;
   const compactHeaderLabel = `${compactExercisePositionLabel} \u00b7 ${compactDayLabel} \u00b7 ${compactPhaseLabel}`;
-  // Phase 7B — session purpose / duration / equipment from presentation resolver.
-  const sessionPresentation = useMemo(() => {
+  // Phase 7B/8 — session purpose / duration / equipment from presentation resolver.
+  const sessionPresentationBundle = useMemo(() => {
     if (!program || !data || programDayIndex === null) return null;
     const model = resolveProgramPresentation({
       program,
       questionnaire: data,
     });
-    return model.sessions.find((s) => s.dayIndex === programDayIndex) ?? null;
+    const session =
+      model.sessions.find((s) => s.dayIndex === programDayIndex) ?? null;
+    return { model, session };
   }, [program, data, programDayIndex]);
+  const sessionPresentation = sessionPresentationBundle?.session ?? null;
   const sessionPurpose = sessionPresentation?.purpose ?? null;
   const sessionMeta = sessionPresentation
     ? [
@@ -2411,6 +2414,22 @@ export default function SessionClient() {
         .filter(Boolean)
         .join(" · ")
     : null;
+  const sessionExpectedDuration = sessionPresentation?.expectedDuration ?? null;
+  const sessionEquipmentLabel = sessionPresentation
+    ? sessionPresentation.equipmentNeeded.slice(0, 3).join(", ") ||
+      sessionPresentationBundle?.model.program.equipmentIdentity ||
+      null
+    : null;
+  const sessionFocusLabel =
+    sessionPresentationBundle?.model.program.adaptationSummary[0]?.text?.slice(
+      0,
+      48
+    ) ??
+    sessionPresentation?.purpose?.split(":")[0] ??
+    null;
+  const sessionCapabilityNote =
+    sessionPresentationBundle?.model.program.capabilityNotes[0]?.text ?? null;
+  const sessionExerciseCount = sessionPresentation?.exerciseCount ?? null;
   // Only restore this exercise's timer. Never inherit a still-running timer
   // from the previous exercise when the user taps Next/Back.
   const currentItemRuntime = currentItemId
@@ -3309,6 +3328,30 @@ export default function SessionClient() {
           compactLabel={compactHeaderLabel}
           sessionPurpose={isSessionStartHeader ? sessionPurpose : null}
           sessionMeta={isSessionStartHeader ? sessionMeta : null}
+          expectedDuration={isSessionStartHeader ? sessionExpectedDuration : null}
+          equipmentLabel={isSessionStartHeader ? sessionEquipmentLabel : null}
+          focusLabel={isSessionStartHeader ? sessionFocusLabel : null}
+          capabilityNote={isSessionStartHeader ? sessionCapabilityNote : null}
+          exerciseCount={isSessionStartHeader ? sessionExerciseCount : null}
+          onBeginSession={
+            isSessionStartHeader
+              ? () => {
+                  const target =
+                    focusScrollAnchorRef.current ?? focusCardRef.current;
+                  if (target && typeof target.scrollIntoView === "function") {
+                    try {
+                      target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                    } catch {
+                      target.scrollIntoView();
+                    }
+                  }
+                  focusCardRef.current?.focus();
+                }
+              : null
+          }
         />
 
         <div

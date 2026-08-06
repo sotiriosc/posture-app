@@ -3,6 +3,7 @@
 import ClarifyTerm from "@/components/ui/ClarifyTerm";
 import ClarifyWords from "@/components/ui/ClarifyWords";
 import { CLARIFY } from "@/components/ui/clarifyTermCopy";
+import SessionStartSummary from "@/components/session/SessionStartSummary";
 
 type SessionProgressHeaderProps = {
   phaseName: string;
@@ -22,6 +23,13 @@ type SessionProgressHeaderProps = {
   sessionPurpose?: string | null;
   /** Phase 7B — duration / equipment summary from presentation resolver. */
   sessionMeta?: string | null;
+  /** Phase 8 — structured session-start fields. */
+  expectedDuration?: string | null;
+  equipmentLabel?: string | null;
+  focusLabel?: string | null;
+  capabilityNote?: string | null;
+  exerciseCount?: number | null;
+  onBeginSession?: (() => void) | null;
 };
 
 export default function SessionProgressHeader({
@@ -34,6 +42,12 @@ export default function SessionProgressHeader({
   compactLabel,
   sessionPurpose = null,
   sessionMeta = null,
+  expectedDuration = null,
+  equipmentLabel = null,
+  focusLabel = null,
+  capabilityNote = null,
+  exerciseCount = null,
+  onBeginSession = null,
 }: SessionProgressHeaderProps) {
   if (compact) {
     return (
@@ -75,8 +89,20 @@ export default function SessionProgressHeader({
       <p className="mt-1 text-sm font-medium text-slate-700">{exercisePositionLabel}</p>
       <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-sky-100">
         <div
-          className="h-full rounded-full bg-[linear-gradient(135deg,#0284C7_0%,#2563EB_54%,#7C3AED_100%)] transition-[width] duration-300 ease-out"
+          className="h-full rounded-full bg-[linear-gradient(135deg,#0284C7_0%,#2563EB_54%,#7C3AED_100%)] transition-[width] duration-[180ms] ease-out motion-reduce:transition-none"
           style={{ width: `${Math.max(0, Math.min(100, progressPercent))}%` }}
+        />
+      </div>
+
+      <div className="[&_.ui-soft-surface]:border-indigo-200/60 [&_.ui-soft-surface]:bg-white/70 [&_li]:border-indigo-200/70 [&_li]:bg-indigo-50/80 [&_li]:text-slate-700 [&_p]:text-slate-700 [&_[data-testid=session-start-capability]]:text-amber-800">
+        <SessionStartSummary
+          purpose={null}
+          expectedDuration={expectedDuration}
+          equipmentLabel={equipmentLabel}
+          focusLabel={focusLabel}
+          capabilityNote={capabilityNote}
+          exerciseCount={exerciseCount}
+          onBegin={onBeginSession}
         />
       </div>
     </header>
