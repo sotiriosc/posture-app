@@ -36012,16 +36012,23 @@ export const generateWeeklyProgram = (
       : tracedStructuredPrepWeek;
 
   // Phase 8 — constraint-aware sequencing after truthful selection, before quality.
-  const sequencedWeek = options?.skipSequencing
-    ? annotatedWeek
-    : applyConstraintAwareSequencing({
-        week: annotatedWeek,
-        seed: options?.seed ?? programId,
-        cycleIndex: weeklyRuntimeContext.cycleIndex,
-        weekIndex: weeklyRuntimeContext.weekIndex,
-        phaseIndex: weeklyRuntimeContext.phaseIndex,
-        previousWeek: options?.previousWeek,
-      }).week;
+  // Gym days use positional role-truth contracts; reordering mains breaks
+  // GYM_REQUIRED_ROLE_WRONG_TRUTH. Scope sequencing to at-home modes only.
+  const atHomeSequencingMode =
+    weeklyRuntimeContext.selectionContext.primaryEquipmentMode !== "gym";
+  const sequencedWeek =
+    options?.skipSequencing || !atHomeSequencingMode
+      ? annotatedWeek
+      : applyConstraintAwareSequencing({
+          // Use the same deterministic seed base as selection — never programId —
+          // so identical questionnaire/options stay order-stable across ids.
+          week: annotatedWeek,
+          seed: deterministicSelectionSeed,
+          cycleIndex: weeklyRuntimeContext.cycleIndex,
+          weekIndex: weeklyRuntimeContext.weekIndex,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+          previousWeek: options?.previousWeek,
+        }).week;
 
   const candidate = finalizeWeeklyProgramResult({
     pushWarnings: pushProgramConstraintWarnings,
