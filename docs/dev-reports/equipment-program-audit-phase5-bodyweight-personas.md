@@ -217,7 +217,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
   - `side-plank` Side Plank | slot=mainTrunkLateral | lane=pull
-- Accessories: reverse-snow-angel, suitcase-hold-march
+- Accessories: towel-biceps-curl-hold, suitcase-hold-march
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:

@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-08-05T00:25:18.029Z",
+  "generatedAt": "2026-08-06T01:24:35.303Z",
   "phase": 2,
   "objective": "Gym perfection audit and contract",
   "preservesPriorReports": [
     "docs/dev-reports/equipment-program-audit-phase0.json",
     "docs/dev-reports/equipment-program-audit-phase1.json"
   ],
-  "elapsedMs": 1663120,
+  "elapsedMs": 1609281,
   "flagshipCount": 10,
   "hardFailureCount": 0,
   "failuresByReason": {},
@@ -17,7 +17,7 @@
     "buckets": {
       "illegalEquipment": 0,
       "mainRoleTruth": 0,
-      "weeklyCoverage": 1332,
+      "weeklyCoverage": 0,
       "duplicateFamily": 0,
       "dayIdentity": 0,
       "progressionContinuity": 0,
@@ -80,15 +80,11 @@
       "label": "Four-day gym / skill",
       "primaryMode": "gym",
       "structuralScore": 100,
-      "fullExperienceScore": 72.5,
+      "fullExperienceScore": 72,
       "hardFailureCount": 0,
       "hardFailures": [],
-      "coverageGaps": [
-        "calvesDays 1/2",
-        "bicepsDays 1/2",
-        "tricepsDays 1/2"
-      ],
-      "deferredGapCount": 55,
+      "coverageGaps": [],
+      "deferredGapCount": 56,
       "dayTitles": [
         "Upper Push + Scapular Control",
         "Lower (Squat Emphasis) + Core",
@@ -104,10 +100,8 @@
       "fullExperienceScore": 60,
       "hardFailureCount": 0,
       "hardFailures": [],
-      "coverageGaps": [
-        "calvesDays 1/2"
-      ],
-      "deferredGapCount": 86,
+      "coverageGaps": [],
+      "deferredGapCount": 88,
       "dayTitles": [
         "Upper Push",
         "Lower Squat",
@@ -185,13 +179,11 @@
       "label": "Five-day advanced pain gym / growth (baseline hotspot)",
       "primaryMode": "gym",
       "structuralScore": 100,
-      "fullExperienceScore": 60.5,
+      "fullExperienceScore": 60,
       "hardFailureCount": 0,
       "hardFailures": [],
-      "coverageGaps": [
-        "calvesDays 0/2"
-      ],
-      "deferredGapCount": 79,
+      "coverageGaps": [],
+      "deferredGapCount": 81,
       "dayTitles": [
         "Upper Push",
         "Lower Squat",

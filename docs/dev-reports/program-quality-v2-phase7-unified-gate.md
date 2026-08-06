@@ -2,15 +2,15 @@
 
 Verdict: **PASS**
 
-- Template version: 17
+- Template version: 18
 - Total fuzz cases: 50000
-- Elapsed: 5707572ms
+- Elapsed: 5454778ms
 
 ## Matrices
 
 - Coverage matrix (TWO_SCENARIOS incl. gym 5d pain baseline): PASS
-- Phase matrix: FAIL (informational; documented blockers below)
-- Documented phase-matrix blockers: MATRIX_GYM_4D_BICEPS_TRICEPS_PUSH_COVERAGE, MATRIX_CARRY_EXPOSURE_INTELLIGENCE
+- Phase matrix: PASS
+- Documented phase-matrix blockers: none
 
 ## Baselines (former out-of-gate gym 5d pain)
 

@@ -1,11 +1,11 @@
 # Program Quality V2 — Fuzz-Integrity Assessment (Phase 7B §13)
 
-- Generated: 2026-08-06T00:50:42.876Z
-- Cases per mode: **20** (release uses **10000** via `FUZZ_INTEGRITY_CASES_PER_MODE`)
-- Elapsed: 32185ms
+- Generated: 2026-08-06T09:03:27.198Z
+- Cases per mode: **10000** (release uses **10000** via `FUZZ_INTEGRITY_CASES_PER_MODE`)
+- Elapsed: 5456370ms
 - Verdict: **NEEDS_REVIEW**
 
-Short/local run (20/mode). Release evidence requires FUZZ_INTEGRITY_CASES_PER_MODE=10000.
+Full release run (10000/mode).
 
 ## 13A. Diversity accounting
 
@@ -15,129 +15,129 @@ Reported as structural diversity / variation-seed diversity / output diversity.
 
 **Structural diversity**
 
-- Total cases: 20
-- Structural input tuples (excluding seed): 20
-- Unique pain combinations: 1
+- Total cases: 10000
+- Structural input tuples (excluding seed): 3756
+- Unique pain combinations: 10
 - Unique experience values: 3
 - Unique phases: 3
 - Unique frequencies: 3
-- Unique equipment/capability lanes: 1
-- Unique blocked-exercise configurations: 3
+- Unique equipment/capability lanes: 3
+- Unique blocked-exercise configurations: 5
 
 **Variation-seed diversity**
 
-- Unique complete input tuples (including seed): 20
+- Unique complete input tuples (including seed): 10000
 
 **Output diversity**
 
-- Unique semantic program signatures: 20
-- Unique ordered weekly exercise signatures: 20
+- Unique semantic program signatures: 5168
+- Unique ordered weekly exercise signatures: 4959
 - Unique day-identity signatures: 3
-- Most common signature count/share: 1 / 5.00%
-- Recovery attempts / rate: 1 / 5.00%
-- Fallback uses / rate: 1 / 5.00%
+- Most common signature count/share: 24 / 0.24%
+- Recovery attempts / rate: 21 / 0.21%
+- Fallback uses / rate: 21 / 0.21%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
 Top 20 repeated semantic signatures:
 
-- `7768303d`: 1
-- `a64604ed`: 1
-- `0c382616`: 1
-- `cc32267f`: 1
-- `54c0dcf5`: 1
-- `6e3f027d`: 1
-- `d34e34e0`: 1
-- `9c57ed1c`: 1
-- `8ec5b9fd`: 1
-- `b9770ea1`: 1
-- `d6361b6f`: 1
-- `6115bf36`: 1
-- `fd20b79a`: 1
-- `1f75f11a`: 1
-- `e28a4f2e`: 1
-- `16b273b7`: 1
-- `635680b8`: 1
-- `6ad5614e`: 1
-- `3e77d733`: 1
-- `cb8b0178`: 1
+- `89d52a62`: 24
+- `40e6f39b`: 24
+- `1c0a9f3c`: 22
+- `f47837d0`: 22
+- `7f09af3c`: 22
+- `763d6f57`: 22
+- `a8cffc5c`: 22
+- `3f0ee810`: 21
+- `dc5ce7df`: 20
+- `b0807df4`: 20
+- `a9315fc4`: 20
+- `9c6f7d11`: 18
+- `51c828a2`: 17
+- `b516e5d3`: 16
+- `3cadec7d`: 16
+- `699c22a5`: 16
+- `097b36fb`: 16
+- `9ecc1b40`: 16
+- `b9770ea1`: 15
+- `d6361b6f`: 15
 
 
 ### dumbbells
 
 **Structural diversity**
 
-- Total cases: 20
-- Structural input tuples (excluding seed): 20
-- Unique pain combinations: 1
+- Total cases: 10000
+- Structural input tuples (excluding seed): 3505
+- Unique pain combinations: 9
 - Unique experience values: 3
 - Unique phases: 3
 - Unique frequencies: 3
-- Unique equipment/capability lanes: 1
-- Unique blocked-exercise configurations: 3
+- Unique equipment/capability lanes: 4
+- Unique blocked-exercise configurations: 5
 
 **Variation-seed diversity**
 
-- Unique complete input tuples (including seed): 20
+- Unique complete input tuples (including seed): 10000
 
 **Output diversity**
 
-- Unique semantic program signatures: 20
-- Unique ordered weekly exercise signatures: 20
+- Unique semantic program signatures: 1364
+- Unique ordered weekly exercise signatures: 1135
 - Unique day-identity signatures: 3
-- Most common signature count/share: 1 / 5.00%
-- Recovery attempts / rate: 2 / 10.00%
-- Fallback uses / rate: 2 / 10.00%
+- Most common signature count/share: 37 / 0.37%
+- Recovery attempts / rate: 133 / 1.33%
+- Fallback uses / rate: 133 / 1.33%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
 Top 20 repeated semantic signatures:
 
-- `e325f8b5`: 1
-- `d236a0f5`: 1
-- `1f7d3768`: 1
-- `8e4a8920`: 1
-- `77f09cdf`: 1
-- `1db05560`: 1
-- `85f7e7aa`: 1
-- `031aca9a`: 1
-- `362b412f`: 1
-- `04c9ad51`: 1
-- `4ccdb876`: 1
-- `767f725f`: 1
-- `15ffeb2a`: 1
-- `cd1e8dbf`: 1
-- `85737b4e`: 1
-- `ee12cfa6`: 1
-- `fc16763e`: 1
-- `90b52636`: 1
-- `489a0f4f`: 1
-- `4e942c94`: 1
+- `557b0e9a`: 37
+- `633439c5`: 35
+- `b71e874d`: 35
+- `a1edee9e`: 35
+- `6144142e`: 34
+- `12bf26c5`: 34
+- `d84e2725`: 33
+- `74e2153e`: 26
+- `351cc01e`: 26
+- `7b25a9e4`: 25
+- `2e9b8bfa`: 25
+- `740858fd`: 25
+- `c2430d80`: 25
+- `be40a196`: 25
+- `64a3a9e6`: 25
+- `21acab86`: 24
+- `28d43b21`: 24
+- `5dc64fcc`: 24
+- `c474e98c`: 24
+- `ad253a30`: 24
 
 
 ### bands
 
 **Structural diversity**
 
-- Total cases: 20
-- Structural input tuples (excluding seed): 20
-- Unique pain combinations: 1
+- Total cases: 10000
+- Structural input tuples (excluding seed): 2480
+- Unique pain combinations: 9
 - Unique experience values: 3
 - Unique phases: 3
 - Unique frequencies: 3
-- Unique equipment/capability lanes: 1
-- Unique blocked-exercise configurations: 3
+- Unique equipment/capability lanes: 6
+- Unique blocked-exercise configurations: 5
 
 **Variation-seed diversity**
 
-- Unique complete input tuples (including seed): 20
+- Unique complete input tuples (including seed): 10000
 
 **Output diversity**
 
-- Unique semantic program signatures: 20
-- Unique ordered weekly exercise signatures: 14
+- Unique semantic program signatures: 1217
+- Unique ordered weekly exercise signatures: 620
 - Unique day-identity signatures: 3
-- Most common signature count/share: 1 / 5.00%
+- Most common signature count/share: 43 / 0.43%
 - Recovery attempts / rate: 0 / 0.00%
 - Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
@@ -145,51 +145,51 @@ Top 20 repeated semantic signatures:
 
 Top 20 repeated semantic signatures:
 
-- `0ae1ba53`: 1
-- `c120f054`: 1
-- `134630fc`: 1
-- `4b94918c`: 1
-- `c6fb073a`: 1
-- `b5e7f85e`: 1
-- `3ee79651`: 1
-- `60f7bd40`: 1
-- `dd2ec01c`: 1
-- `9a748336`: 1
-- `171920c1`: 1
-- `e29d61d9`: 1
-- `b37617cf`: 1
-- `51ba5607`: 1
-- `99f93a69`: 1
-- `0238211f`: 1
-- `652c1eee`: 1
-- `2503d117`: 1
-- `f1b8ea11`: 1
-- `66dafc4b`: 1
+- `d3bfd9bd`: 43
+- `d14c47f1`: 37
+- `c1bf26f3`: 37
+- `52000e59`: 37
+- `d0ce52cc`: 37
+- `bbce38c0`: 36
+- `e2ef8620`: 36
+- `025a87ec`: 36
+- `eae1a103`: 36
+- `3d332a1e`: 36
+- `1ac6dee2`: 36
+- `11e6eafd`: 36
+- `712271d5`: 36
+- `f8ae9509`: 36
+- `3c141560`: 36
+- `563375b3`: 36
+- `67959c00`: 35
+- `129dafe4`: 35
+- `cb2b7167`: 26
+- `22b4ba67`: 26
 
 
 ### bodyweight
 
 **Structural diversity**
 
-- Total cases: 20
-- Structural input tuples (excluding seed): 20
-- Unique pain combinations: 1
+- Total cases: 10000
+- Structural input tuples (excluding seed): 2480
+- Unique pain combinations: 9
 - Unique experience values: 3
 - Unique phases: 3
 - Unique frequencies: 3
-- Unique equipment/capability lanes: 1
-- Unique blocked-exercise configurations: 3
+- Unique equipment/capability lanes: 6
+- Unique blocked-exercise configurations: 5
 
 **Variation-seed diversity**
 
-- Unique complete input tuples (including seed): 20
+- Unique complete input tuples (including seed): 10000
 
 **Output diversity**
 
-- Unique semantic program signatures: 20
-- Unique ordered weekly exercise signatures: 20
+- Unique semantic program signatures: 1445
+- Unique ordered weekly exercise signatures: 805
 - Unique day-identity signatures: 3
-- Most common signature count/share: 1 / 5.00%
+- Most common signature count/share: 42 / 0.42%
 - Recovery attempts / rate: 0 / 0.00%
 - Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
@@ -197,84 +197,365 @@ Top 20 repeated semantic signatures:
 
 Top 20 repeated semantic signatures:
 
-- `f16e8032`: 1
-- `45aa2982`: 1
-- `0461b700`: 1
-- `513f7d97`: 1
-- `c439e19d`: 1
-- `f672fa78`: 1
-- `75308647`: 1
-- `e8f17d3a`: 1
-- `f114047d`: 1
-- `debae0d6`: 1
-- `036b9e5f`: 1
-- `56f27a8b`: 1
-- `c85c4bd6`: 1
-- `20863e9d`: 1
-- `e9773184`: 1
-- `c1ee7ac6`: 1
-- `ae03bbb4`: 1
-- `8355b490`: 1
-- `21ae4f7a`: 1
-- `39e0ba2b`: 1
+- `23b88119`: 42
+- `7dca086a`: 41
+- `45fb94f7`: 41
+- `91620c92`: 41
+- `cc5aee27`: 41
+- `1707368b`: 41
+- `5158271e`: 40
+- `59f9284b`: 40
+- `48cd0406`: 40
+- `67924fce`: 40
+- `e9127130`: 39
+- `ac959d1b`: 39
+- `28e13b3c`: 39
+- `f62942b8`: 38
+- `95f84efb`: 38
+- `87249a4f`: 32
+- `3493ba2b`: 32
+- `f87b4b34`: 31
+- `5c1e80be`: 31
+- `4812a1f6`: 30
 
 
 ### mixedHome
 
 **Structural diversity**
 
-- Total cases: 20
-- Structural input tuples (excluding seed): 20
-- Unique pain combinations: 1
+- Total cases: 10000
+- Structural input tuples (excluding seed): 8264
+- Unique pain combinations: 8
 - Unique experience values: 3
 - Unique phases: 3
 - Unique frequencies: 3
-- Unique equipment/capability lanes: 1
-- Unique blocked-exercise configurations: 3
+- Unique equipment/capability lanes: 18
+- Unique blocked-exercise configurations: 5
 
 **Variation-seed diversity**
 
-- Unique complete input tuples (including seed): 20
+- Unique complete input tuples (including seed): 10000
 
 **Output diversity**
 
-- Unique semantic program signatures: 20
-- Unique ordered weekly exercise signatures: 20
+- Unique semantic program signatures: 3393
+- Unique ordered weekly exercise signatures: 2541
 - Unique day-identity signatures: 3
-- Most common signature count/share: 1 / 5.00%
-- Recovery attempts / rate: 0 / 0.00%
-- Fallback uses / rate: 0 / 0.00%
+- Most common signature count/share: 14 / 0.14%
+- Recovery attempts / rate: 134 / 1.34%
+- Fallback uses / rate: 134 / 1.34%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
 Top 20 repeated semantic signatures:
 
-- `015e0570`: 1
-- `fa2e076b`: 1
-- `976ba51e`: 1
-- `7b863fd9`: 1
-- `5c14f1eb`: 1
-- `45234c1a`: 1
-- `86239214`: 1
-- `c9c29f1d`: 1
-- `5aa390da`: 1
-- `f1ab7c73`: 1
-- `f2b25961`: 1
-- `b8b3576a`: 1
-- `e6b148f1`: 1
-- `5e3ce7ac`: 1
-- `24903361`: 1
-- `0fe8fa99`: 1
-- `5698b374`: 1
-- `85c5bab1`: 1
-- `2304ec52`: 1
-- `3061ea2a`: 1
+- `e54f8e8b`: 14
+- `30029330`: 14
+- `8f501a12`: 14
+- `758fd1c2`: 14
+- `1f8e5bdf`: 14
+- `51f0aa98`: 14
+- `be8dcfc6`: 14
+- `ec8ad5bc`: 14
+- `f2481b96`: 13
+- `d543afe3`: 13
+- `7fa518d6`: 13
+- `ed90e113`: 13
+- `57cf894a`: 12
+- `e709de5b`: 12
+- `b81a92f0`: 12
+- `7abcecd3`: 12
+- `688c2b55`: 12
+- `1a4eb132`: 12
+- `6d97a4ab`: 12
+- `8ba48d34`: 12
 
 
 ## 13B. Cross-input collapse analysis
 
-- Flags: 0 (suspicious=0, expected=0)
+- Flags: 1000 (suspicious=888, expected=112)
 
+### gym — suspicious
+
+- Signature: `b9770ea1`
+- Input A: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `b9770ea1`
+- Input A: `gym||Beginner||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `b9770ea1`
+- Input A: `gym||Beginner||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `b9770ea1`
+- Input A: `gym||Beginner||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
+- Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `55eba719`
+- Input A: `gym||Advanced||1||5||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `55eba719`
+- Input A: `gym||Advanced||1||5||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `55eba719`
+- Input A: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `55eba719`
+- Input A: `gym||Advanced||1||5||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `021841d3`
+- Input A: `gym||Beginner||2||5||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `021841d3`
+- Input A: `gym||Beginner||2||5||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `021841d3`
+- Input A: `gym||Beginner||2||5||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `021841d3`
+- Input A: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `933996c3`
+- Input A: `gym||Beginner||1||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `933996c3`
+- Input A: `gym||Beginner||1||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||Improve posture||upper back||gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `933996c3`
+- Input A: `gym||Beginner||1||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||Improve posture||||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `933996c3`
+- Input A: `gym||Beginner||1||4||Improve posture||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||Improve posture||upper back||gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `e50dcd7a`
+- Input A: `gym||Advanced||2||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||2||4||Improve posture||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `e50dcd7a`
+- Input A: `gym||Advanced||2||4||Improve posture||||dumbbells,gym|bandSetup:none||goblet-squat`
+- Input B: `gym||Advanced||2||4||Improve posture||||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `2587f2b6`
+- Input A: `gym||Beginner||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `2587f2b6`
+- Input A: `gym||Beginner||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||3||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `2587f2b6`
+- Input A: `gym||Beginner||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||3||4||General fitness||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `2587f2b6`
+- Input A: `gym||Beginner||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||3||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `2587f2b6`
+- Input A: `gym||Beginner||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||3||4||General fitness||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `e3c4a7e0`
+- Input A: `gym||Intermediate||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `36a56316`
+- Input A: `gym||Advanced||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||3||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `36a56316`
+- Input A: `gym||Advanced||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `36a56316`
+- Input A: `gym||Advanced||3||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `3e08599f`
+- Input A: `gym||Beginner||1||5||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||5||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `3e08599f`
+- Input A: `gym||Beginner||1||5||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||5||Improve posture||upper back||gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+### gym — suspicious
+
+- Signature: `3e08599f`
+- Input A: `gym||Beginner||1||5||Improve posture||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||5||Improve posture||upper back||gym|bandSetup:none||goblet-squat`
+- Explanation: Materially different structural inputs (pain changes, personal blocks) collapse to identical semantic signature.
+
+### gym — expected
+
+- Signature: `3e08599f`
+- Input A: `gym||Beginner||1||5||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||5||Improve posture||||dumbbells,gym|bandSetup:none||blocks:none`
+- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+
+_…960 additional flags in JSON._
 
 ## 13C. Mutation testing
 
@@ -325,14 +606,14 @@ Top 20 repeated semantic signatures:
 ## 13F. Reproducible blind sample
 
 - Blind samples: 50 (10×5 modes)
-- Fallback samples (all): 3
+- Fallback samples (all): 288
 - See `docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md` and JSON companion.
 
 ## 13G. Review thresholds / NEEDS_REVIEW
 
-- `FALLBACK_RATE_ABOVE_1PCT`: gym fallbackRate=5.00%
-- `FALLBACK_RATE_ABOVE_1PCT`: dumbbells fallbackRate=10.00%
-- `RECOVERY_RATE_ABOVE_5PCT`: dumbbells recoveryRate=10.00%
+- `FALLBACK_RATE_ABOVE_1PCT`: dumbbells fallbackRate=1.33%
+- `FALLBACK_RATE_ABOVE_1PCT`: mixedHome fallbackRate=1.34%
+- `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 888 suspicious collapse pairs
 
 ## Artifact paths
 

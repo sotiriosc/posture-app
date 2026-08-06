@@ -10,7 +10,7 @@ Total cases: 50000
 - Illegal equipment: 0
 - Deterministic repeat: 0
 - Exceptions: 0
-- Elapsed: 1661548ms
+- Elapsed: 1609631ms
 - Verdict: PASS
 
 ## dumbbells
@@ -21,7 +21,7 @@ Total cases: 50000
 - Illegal equipment: 0
 - Deterministic repeat: 0
 - Exceptions: 0
-- Elapsed: 1087532ms
+- Elapsed: 1109253ms
 - Verdict: PASS
 
 ## bands
@@ -32,7 +32,7 @@ Total cases: 50000
 - Illegal equipment: 0
 - Deterministic repeat: 0
 - Exceptions: 0
-- Elapsed: 1047427ms
+- Elapsed: 1027909ms
 - Verdict: PASS
 
 ## bodyweight
@@ -43,7 +43,7 @@ Total cases: 50000
 - Illegal equipment: 0
 - Deterministic repeat: 0
 - Exceptions: 0
-- Elapsed: 772433ms
+- Elapsed: 704664ms
 - Verdict: PASS
 
 ## mixedHome
@@ -54,6 +54,6 @@ Total cases: 50000
 - Illegal equipment: 0
 - Deterministic repeat: 0
 - Exceptions: 0
-- Elapsed: 1108192ms
+- Elapsed: 971386ms
 - Verdict: PASS
 

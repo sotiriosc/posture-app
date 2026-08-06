@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T02:14:33.230Z",
+  "generatedAt": "2026-08-06T01:43:04.558Z",
   "phase": 3,
   "objective": "First-class dumbbell programming audit and contract",
   "preservesPriorReports": [
@@ -7,7 +7,7 @@
     "docs/dev-reports/equipment-program-audit-phase1.json",
     "docs/dev-reports/equipment-program-audit-phase2.json"
   ],
-  "elapsedMs": 1039465,
+  "elapsedMs": 1108922,
   "flagshipCount": 11,
   "hardFailureCount": 0,
   "failuresByReason": {},
@@ -183,10 +183,10 @@
       "label": "Low-back-pain dumbbells / activation",
       "primaryMode": "dumbbells",
       "structuralScore": 100,
-      "fullExperienceScore": 88,
+      "fullExperienceScore": 88.5,
       "hardFailureCount": 0,
       "hardFailures": [],
-      "deferredGapCount": 24,
+      "deferredGapCount": 23,
       "dayTitles": [
         "Full Body A — Squat, Press and Row",
         "Full Body B — Hinge, Overhead and Unilateral",

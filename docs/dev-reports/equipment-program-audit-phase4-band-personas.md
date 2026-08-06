@@ -309,7 +309,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
   - `band-rdl` Band Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: standing-calf-raise, band-suitcase-march
+- Accessories: standing-calf-raise, band-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:

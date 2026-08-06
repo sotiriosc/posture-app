@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T11:06:43.769Z",
+  "generatedAt": "2026-08-06T02:28:08.523Z",
   "phase": "5b",
   "objective": "First-class mixed-home programming (dumbbell base + justified bands)",
   "preservesPriorReports": [
@@ -10,7 +10,7 @@
     "docs/dev-reports/equipment-program-audit-phase4.json",
     "docs/dev-reports/equipment-program-audit-phase5.json"
   ],
-  "elapsedMs": 1085337,
+  "elapsedMs": 971089,
   "flagshipCount": 13,
   "hardFailureCount": 0,
   "failuresByReason": {},
@@ -53,7 +53,7 @@
       "missingHorizontalPull": 0,
       "missingHinge": 0,
       "prepAsMain": 0,
-      "randomEquipmentMix": 6,
+      "randomEquipmentMix": 129,
       "bandOveruse": 0,
       "redundantCrossToolRole": 0,
       "setupTransitionExcess": 0,
@@ -70,7 +70,7 @@
     "topReasons": [
       [
         "MIXED_HOME_RANDOM_EQUIPMENT_MIX",
-        6
+        129
       ]
     ]
   },

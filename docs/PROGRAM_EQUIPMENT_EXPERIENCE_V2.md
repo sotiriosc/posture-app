@@ -3579,13 +3579,20 @@ Correction pass on PR branch `cursor/cloud-agent-1785959822486-hte2i` only (base
 - Runner: `npm run audit:fuzz-integrity` (`packages/engine/src/__debug__/fuzzIntegrityAudit.ts`)
 - Reports: `docs/dev-reports/program-quality-v2-fuzz-integrity.{md,json}` and `…-samples.{md,json}`
 - Uses canonical mode case generators + `programQualitySignature`
-- Short sample (`FUZZ_INTEGRITY_CASES_PER_MODE=20`): mutations **14/14**, metamorphic **9/9**, verdict **NEEDS_REVIEW** (elevated fallback/recovery rates on tiny sample — not a product failure by itself)
-- Release evidence: `FUZZ_INTEGRITY_CASES_PER_MODE=10000`
+- Full release run (`FUZZ_INTEGRITY_CASES_PER_MODE=10000`, ~91 min): mutations **14/14**, metamorphic **9/9**, 0 deterministic mismatches, 0 exceptions
+- Verdict: **NEEDS_REVIEW** (not an automatic product failure):
+  - dumbbells fallbackRate **1.33%** (>1%)
+  - mixedHome fallbackRate **1.34%** (>1%)
+  - unexplained cross-input collapse pairs flagged for independent review
+- Recovery rates: gym 0.21%; dumbbells/mixedHome ~1.33–1.34%; bands/bodyweight 0%
+
+##### Program-quality re-run (required after substitution / quality-gate evaluation changes)
+- `npm run audit:program-quality` completed **PASS** (50k nested fuzz, exit 0) at 2026-08-05T22:28:08-04:00
+- Artifacts: `docs/dev-reports/program-quality-v2-phase7-unified-gate.{md,json}`
 
 ##### Unresolved review signals
-- Fuzz-integrity full 10k/mode evidence and any NEEDS_REVIEW explanations after that run
-- Ordinary `audit:program-quality` re-run required because substitution filtering + quality-gate evaluation checks changed
-- CI conclusion after push of correction commits
+- Fuzz-integrity **NEEDS_REVIEW** signals above (fallback rates; collapse pairs) — explain in Phase 7B review, do not claim fuzz integrity fully established without that explanation
+- CI conclusion on latest pushed correction head (record when GitHub checks finish)
 
 #### Stop
 

@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-05T14:06:20.209Z",
+  "generatedAt": "2026-08-06T02:28:08.564Z",
   "phase": 7,
   "objective": "Unified quality-gate enforcement",
-  "templateVersion": 17,
-  "elapsedMs": 5707572,
+  "templateVersion": 18,
+  "elapsedMs": 5454778,
   "verdict": "PASS",
   "totals": {
     "fuzzCases": 50000,
@@ -93,26 +93,23 @@
     "signatureDiff": false,
     "reasonDiff": false,
     "signatures": [
-      "c0131e62",
-      "c0131e62"
+      "70242a07",
+      "70242a07"
     ]
   },
   "matrices": {
     "coverageOk": true,
-    "phaseOk": false,
-    "coverageElapsedMs": 751,
-    "phaseElapsedMs": 18633,
+    "phaseOk": true,
+    "coverageElapsedMs": 1003,
+    "phaseElapsedMs": 18049,
     "coverageStderr": "npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\n",
-    "phaseStderr": "npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nCoverage matrix audit failed.\n",
+    "phaseStderr": "npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\n",
     "phaseMatrixRequiredForVerdict": false,
-    "documentedPhaseMatrixBlockers": [
-      "MATRIX_GYM_4D_BICEPS_TRICEPS_PUSH_COVERAGE",
-      "MATRIX_CARRY_EXPOSURE_INTELLIGENCE"
-    ]
+    "documentedPhaseMatrixBlockers": []
   },
   "coaching": {
     "ok": true,
-    "elapsedMs": 10175
+    "elapsedMs": 11617
   },
   "modes": [
     {
@@ -125,7 +122,7 @@
       "deterministicRepeat": 0,
       "exceptions": 0,
       "topReasons": [],
-      "elapsedMs": 1661548
+      "elapsedMs": 1609631
     },
     {
       "mode": "dumbbells",
@@ -137,7 +134,7 @@
       "deterministicRepeat": 0,
       "exceptions": 0,
       "topReasons": [],
-      "elapsedMs": 1087532
+      "elapsedMs": 1109253
     },
     {
       "mode": "bands",
@@ -149,7 +146,7 @@
       "deterministicRepeat": 0,
       "exceptions": 0,
       "topReasons": [],
-      "elapsedMs": 1047427
+      "elapsedMs": 1027909
     },
     {
       "mode": "bodyweight",
@@ -161,7 +158,7 @@
       "deterministicRepeat": 0,
       "exceptions": 0,
       "topReasons": [],
-      "elapsedMs": 772433
+      "elapsedMs": 704664
     },
     {
       "mode": "mixedHome",
@@ -173,7 +170,7 @@
       "deterministicRepeat": 0,
       "exceptions": 0,
       "topReasons": [],
-      "elapsedMs": 1108192
+      "elapsedMs": 971386
     }
   ]
 }
