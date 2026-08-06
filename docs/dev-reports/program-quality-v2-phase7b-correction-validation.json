@@ -270,5 +270,5 @@
   "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4.",
   "validationCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522",
   "validationFollowUpCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522",
-  "branchTipAtValidationCommit": "1a16df02823f9feda1f1686a2d22cb9b59cc75cf"
+  "branchTipAtValidationCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522"
 }
