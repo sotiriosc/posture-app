@@ -3600,7 +3600,7 @@ Correction pass on PR branch `cursor/cloud-agent-1785959822486-hte2i` only (base
 
 ##### Unresolved review signals
 - Fuzz-integrity **NEEDS_REVIEW** signals above (mixedHome fallback rate; collapse pairs) — explain in Phase 7B review, do not claim fuzz integrity fully established without that explanation
-- CI conclusion on latest pushed correction head — GitHub `gh` auth was invalid/Forbidden in the correction environment; re-check PR #82 checks after push
+- CI on prior tip `a96862f`: **SUCCESS** (PR gate + quality-* jobs). Re-confirm checks for tip `4193b57` after docs push; PR #82 description updated (draft retained)
 
 #### Stop
 

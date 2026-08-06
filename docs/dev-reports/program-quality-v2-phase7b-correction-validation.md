@@ -119,7 +119,12 @@ fuzzIntegrityAudit uses the same canonical mode case generators and programQuali
 
 ## CI
 
-GitHub `gh` auth is invalid in this environment (`authentication failed` / GraphQL Forbidden). CI conclusion not available here — re-check with `gh pr checks 82` after re-auth. **PR #82 description could not be updated via API**; keep draft and use this validation artifact (plus the Phase 7B Review Corrections section) as the source of truth for the latest head, PASS, NEEDS_REVIEW, fallback triage, template version 18, and stop-before-Phase-8 status.
+Prior tip `a96862f` PR checks: **SUCCESS** (PR gate; quality-core/gym/dumbbells/bands/bodyweight/mixed-home/coaching/builds; GitGuardian). Nightly full engine suite: SKIPPED. Re-confirm checks for tip `4193b57` on the PR checks tab after this docs push.
+
+## PR metadata
+
+PR #82 description updated via REST API (kept **draft** / **unmerged**). `gh pr edit` GraphQL hit a projectCards deprecation error; REST PATCH succeeded and removed the stale “full gate still running” statement.
+
 
 ## Commit SHAs
 

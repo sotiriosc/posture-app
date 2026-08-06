@@ -244,14 +244,31 @@
     "templateVersion": 18
   },
   "ci": {
-    "available": false,
-    "note": "gh auth token invalid (github.com authentication failed / GraphQL Forbidden). CI conclusion not retrieved. Re-check with `gh pr checks 82` after re-auth."
+    "available": true,
+    "priorTip": "a96862fbd4fe430213e29c44c478474160dc47fc",
+    "priorTipConclusion": "SUCCESS",
+    "checks": [
+      "PR gate (lint + critical tests + smoke e2e + both builds): SUCCESS",
+      "quality-core: SUCCESS",
+      "quality-gym: SUCCESS",
+      "quality-dumbbells: SUCCESS",
+      "quality-bands: SUCCESS",
+      "quality-bodyweight: SUCCESS",
+      "quality-mixed-home: SUCCESS",
+      "quality-coaching: SUCCESS",
+      "quality-builds: SUCCESS",
+      "GitGuardian Security Checks: SUCCESS",
+      "Full engine suite (nightly): SKIPPED"
+    ],
+    "note": "Recorded from PR statusCheckRollup for tip a96862f before docs follow-up push. Re-confirm checks for tip 4193b57 on PR #82 after push."
   },
   "prMetadataUpdate": {
     "attempted": true,
     "keptDraft": true,
-    "result": "blocked_gh_auth_invalid",
-    "note": "Could not update PR #82 description via gh; leave draft. Paste summary from this validation artifact if needed."
+    "merged": false,
+    "result": "updated_via_rest_api",
+    "note": "gh pr edit GraphQL failed (projectCards deprecation); REST PATCH succeeded. Stale full-gate-running text removed.",
+    "url": "https://github.com/sotiriosc/posture-app/pull/82"
   },
   "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4.",
   "validationCommit": "a63f5fecb3a6a64513107f54ba5d945a64df8c04",
