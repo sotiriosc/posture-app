@@ -128,7 +128,6 @@ const main = () => {
       {
         phaseIndex: 1,
         seed: `p7b-presentation-${modeCase.id}`,
-        skipQualityGate: true,
       }
     );
     const model = resolveProgramPresentation({
@@ -159,6 +158,8 @@ const main = () => {
     phase: "7b",
     inventoryVersion: PRESENTATION_INVENTORY_VERSION,
     totalRelationships: inventory.length,
+    totalConcreteFields: validation.totalConcreteFields,
+    missingConcreteFields: validation.missingConcreteFields,
     countsByStatus: validation.countsByStatus,
     relationships: inventory,
   };
@@ -174,8 +175,14 @@ const main = () => {
     feedbackContractLabels: FEEDBACK_CONTRACT_ACTION_LABELS,
     modeResults,
     targets: {
-      criticalRelationshipsMapped: "100%",
+      // Field coverage is measured by concrete fields, not relationship count alone.
+      criticalConcreteFieldsMapped:
+        validation.missingConcreteFields.length === 0 ? "100%" : "incomplete",
+      totalRelationships: validation.totalRelationships,
+      totalConcreteFields: validation.totalConcreteFields,
       requiredOutputsWithoutReceivers: validation.outputsWithoutReceivers,
+      declaredOnlyReleaseReceivers: validation.declaredOnlyReleaseReceivers,
+      missingReceiverEvidenceRecords: validation.missingReceiverEvidenceRecords,
       unresolvedUnused: validation.unresolvedUnused,
       rawInternalLanguageLeaks: validation.rawInternalLanguageLeaks,
     },
@@ -192,6 +199,8 @@ const main = () => {
     `Inventory version: **${PRESENTATION_INVENTORY_VERSION}**`,
     "",
     `Total relationships: **${inventory.length}**`,
+    "",
+    `Total concrete fields: **${validation.totalConcreteFields}**`,
     "",
     "## Status counts",
     "",
@@ -222,6 +231,10 @@ const main = () => {
     "## Validation summary",
     "",
     `- Total relationships: ${validation.totalRelationships}`,
+    `- Total concrete fields: ${validation.totalConcreteFields}`,
+    `- Missing concrete fields: ${validation.missingConcreteFields.length}`,
+    `- Declared-only release receivers: ${validation.declaredOnlyReleaseReceivers}`,
+    `- Missing receiver-evidence records: ${validation.missingReceiverEvidenceRecords}`,
     `- Relationships without givers: ${validation.relationshipsWithoutGivers}`,
     `- Outputs without receivers: ${validation.outputsWithoutReceivers}`,
     `- Visible without canonical source: ${validation.visibleWithoutCanonicalSource}`,

@@ -4,7 +4,7 @@
 
 import { describe, expect, it, beforeEach } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
-import type { LogPrefs, Program } from "@/lib/types";
+import type { Program } from "@/lib/types";
 import {
   clearProgramVariationHistory,
   generateWeeklyProgram,
@@ -77,7 +77,7 @@ describe("Phase 7B input continuity", () => {
     expect(modify.action).toBe("modify");
   });
 
-  it("end-to-end: input → generate → resolver → persisted prefs/logs shape", () => {
+  it("end-to-end: input → generate → resolver presentation (persistence covered in round-trip suite)", () => {
     const questionnaire: QuestionnaireData = {
       ...baseQuestionnaire,
       painAreas: ["Lower back", "Knees"],
@@ -101,29 +101,9 @@ describe("Phase 7B input continuity", () => {
     expect(model.program.equipmentIdentityMode).toBe("mixedHome");
     expect(model.program.adaptationSummary.length).toBeGreaterThanOrEqual(2);
     expect(model.sessions[0]?.purpose).toBeTruthy();
-
-    // Persistence shape consumers write for blocks / feedback continuity.
-    const prefsShape: LogPrefs = {
-      blockedExerciseIds: {
-        "db-rdl": {
-          reason: "personal_preference",
-          blockedAt: { phase: "activation", sessionCount: 1 },
-        },
-      },
-      contractStateByExercise: {
-        "goblet-squat": {
-          deferred: true,
-          probation: true,
-          sacrificedAt: { phase: "activation", sessionCount: 1 },
-          autoSacrificed: false,
-        },
-      },
-    };
-    expect(Object.keys(prefsShape.blockedExerciseIds ?? {})).toContain("db-rdl");
-    expect(prefsShape.contractStateByExercise?.["goblet-squat"]?.deferred).toBe(
-      true
-    );
     // Presentation layer never exposes the raw action as the UI label.
-    expect(FEEDBACK_CONTRACT_ACTION_LABELS.sacrifice.label).not.toBe("sacrifice");
+    expect(FEEDBACK_CONTRACT_ACTION_LABELS.sacrifice.label).toBe("Skip for now");
+    expect(FEEDBACK_CONTRACT_ACTION_LABELS.test.label).toBe("Try again");
+    expect(FEEDBACK_CONTRACT_ACTION_LABELS.modify.label).toBe("Make it easier");
   });
 });

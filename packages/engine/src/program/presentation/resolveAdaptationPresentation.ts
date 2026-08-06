@@ -52,7 +52,7 @@ export const FEEDBACK_CONTRACT_ACTION_LABELS: Record<
   },
   test: {
     action: "test",
-    label: "Keep and retest",
+    label: "Try again",
     description: "Keep it in and try again this session",
   },
   modify: {
@@ -62,7 +62,7 @@ export const FEEDBACK_CONTRACT_ACTION_LABELS: Record<
   },
   dismiss: {
     action: "dismiss",
-    label: "Keep and retest",
+    label: "Try again",
     description: "Keep it in and try again this session",
   },
 };
@@ -122,7 +122,12 @@ export const resolveAssessmentFocusSummary = (params: {
   highConfidence: boolean;
 }): PresentationMessage | null => {
   if (!params.highConfidence || !params.focusTags.length) return null;
-  const focus = params.focusTags.slice(0, 2).join(" and ");
+  const focus = params.focusTags
+    .slice(0, 2)
+    .map((tag) => tag.replace(/_/g, " ").replace(/\s+/g, " ").trim())
+    .filter(Boolean)
+    .join(" and ");
+  if (!focus) return null;
   return resolveAdaptationReasonMessage(
     "assessmentFocus",
     `Your program emphasizes ${focus} based on your assessment.`

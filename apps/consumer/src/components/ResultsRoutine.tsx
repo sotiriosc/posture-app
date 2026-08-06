@@ -13,6 +13,7 @@ import {
 import { derivePoseFocus } from "@/lib/engine/poseFocus";
 import {
   PROGRAM_TEMPLATE_VERSION,
+  resolveAssessmentFocusFromPose,
   resolveProgramPresentation,
 } from "@/lib/program";
 import {
@@ -2817,17 +2818,15 @@ export default function ResultsRoutine() {
   const phaseGateProgressText = `Workouts in phase: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days in phase: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
   const phaseRequirementsText = `Phase advances after ${phaseGate.minWorkouts} sessions or when readiness criteria clear — whichever comes later.`;
   // Phase 7B — canonical presentation resolver (equipment identity + adaptations).
+  // Photo focus must go through derivePoseFocus confidence gate — never observation titles.
+  const assessmentFocus = resolveAssessmentFocusFromPose(poseState.analysis);
   const presentationModel = data
     ? resolveProgramPresentation({
         program,
         questionnaire: data,
         programProgress: progress,
-        assessmentFocusTags: (poseState.report?.observations ?? [])
-          .map((obs) => obs.title)
-          .filter(Boolean)
-          .slice(0, 3),
-        assessmentFocusHighConfidence:
-          (poseState.report?.observations?.length ?? 0) > 0,
+        assessmentFocusTags: assessmentFocus.focusTags,
+        assessmentFocusHighConfidence: assessmentFocus.highConfidence,
       })
     : null;
   const adaptationTrendItems = gateReadinessConsistencyLines(

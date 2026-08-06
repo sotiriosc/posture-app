@@ -540,6 +540,7 @@ export default function SessionClient() {
   const [painModalLocation, setPainModalLocation] = useState<PainLocation | "">("");
   const [painModalNotes, setPainModalNotes] = useState("");
   const [painModalMessage, setPainModalMessage] = useState<string | null>(null);
+  const [noValidSwapActive, setNoValidSwapActive] = useState(false);
   const [painLevelByExercise, setPainLevelByExercise] = useState<
     Record<string, PainLevel>
   >({});
@@ -1827,6 +1828,7 @@ export default function SessionClient() {
     setPainModalMessage(null);
     setPainModalLocation("");
     setPainModalNotes("");
+    setNoValidSwapActive(false);
     setPainModalOpen(false);
   };
 
@@ -1856,8 +1858,16 @@ export default function SessionClient() {
       blockedExerciseIds: prefs?.blockedExerciseIds,
     });
     if (!candidateId || candidateId === currentItem.exerciseId) {
+      // Persist discomfort, then keep the modal open with no-valid-swap actions.
+      await persistPainLevelFeedback({
+        painLevel: painModalLevel,
+        painLocation: painModalLocation
+          ? (painModalLocation as PainLocation)
+          : null,
+        notes: painModalNotes.trim() || null,
+      });
       setPainModalMessage(resolveNoValidSwapMessage().text);
-      await handleSavePainReportOnly();
+      setNoValidSwapActive(true);
       return;
     }
 
@@ -1961,6 +1971,7 @@ export default function SessionClient() {
     setPainModalLocation("");
     setPainModalNotes("");
     setPainModalMessage(null);
+    setNoValidSwapActive(false);
     setSelectedPracticeMode("full");
     scrollSessionTop("auto");
   };
@@ -2948,7 +2959,7 @@ export default function SessionClient() {
                   onClick={() => { void handleContractAction("dismiss"); }}
                   className="mt-4 w-full text-center text-xs text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline"
                 >
-                  Skip for now
+                  {FEEDBACK_CONTRACT_ACTION_LABELS.dismiss.label}
                 </button>
               </>
             )}
@@ -3576,6 +3587,7 @@ export default function SessionClient() {
                   );
                   setPainModalNotes(currentFeedback?.notes ?? "");
                   setPainModalMessage(null);
+                  setNoValidSwapActive(false);
                   setPainModalOpen(true);
                 }}
                 className="min-h-11 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-700 shadow-sm"
@@ -3950,7 +3962,10 @@ export default function SessionClient() {
                 </label>
               </div>
               {painModalMessage ? (
-                <p className="mt-3 text-xs font-semibold text-rose-300">
+                <p
+                  className="mt-3 text-xs font-semibold text-rose-300"
+                  data-testid="pain-no-valid-swap-message"
+                >
                   {painModalMessage}
                 </p>
               ) : null}
@@ -3963,10 +3978,11 @@ export default function SessionClient() {
                     setPainModalMessage(null);
                     setPainModalLocation("");
                     setPainModalNotes("");
+                    setNoValidSwapActive(false);
                     setPainModalOpen(false);
                   }}
                 >
-                  Cancel
+                  Close
                 </Button>
                 <Button
                   type="button"
@@ -3976,9 +3992,43 @@ export default function SessionClient() {
                     void handleSavePainReportOnly();
                   }}
                 >
-                  Save pain report
+                  Save discomfort
                 </Button>
-                {painModalLevel === "moderate" || painModalLevel === "severe" ? (
+                {noValidSwapActive ? (
+                  <>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      data-testid="pain-skip-exercise"
+                      onClick={() => {
+                        setPainModalMessage(null);
+                        setPainModalLocation("");
+                        setPainModalNotes("");
+                        setNoValidSwapActive(false);
+                        setPainModalOpen(false);
+                        void handleNext();
+                      }}
+                    >
+                      Skip this exercise
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="primary"
+                      data-testid="pain-end-session"
+                      onClick={() => {
+                        setPainModalMessage(null);
+                        setPainModalLocation("");
+                        setPainModalNotes("");
+                        setNoValidSwapActive(false);
+                        setPainModalOpen(false);
+                        void handleCompleteSession();
+                      }}
+                    >
+                      End session
+                    </Button>
+                  </>
+                ) : painModalLevel === "moderate" ||
+                  painModalLevel === "severe" ? (
                   <Button
                     type="button"
                     variant="primary"

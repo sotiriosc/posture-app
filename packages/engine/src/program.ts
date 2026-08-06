@@ -36,6 +36,7 @@ import {
   resolvePrimaryProgramEquipmentMode,
   type PrimaryProgramEquipmentMode,
 } from "@/lib/program/equipmentMode";
+import { classifyGymMovementRoleTruth } from "@/lib/program/gymProgramContract";
 import { derivePoseFocus } from "@/lib/engine/poseFocus";
 
 export type { PrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
@@ -1689,6 +1690,94 @@ const rankSubstitutionCandidates = (params: {
     });
 };
 
+/** Infer canonical role family for presentation-safe pain swaps. */
+const inferPainSwapRoleFamily = (exercise: Exercise): string | null => {
+  const patterns = new Set(
+    (exercise.movementPattern ?? []).map((p) =>
+      p.trim().toLowerCase().replace(/[\s_-]+/g, "")
+    )
+  );
+  const patternField = (exercise.pattern ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g, "");
+  if (patterns.has("verticalpull") || patternField.includes("verticalpull")) {
+    return "vertical_pull";
+  }
+  if (patterns.has("verticalpush") || patternField.includes("verticalpush")) {
+    return "vertical_push";
+  }
+  if (
+    patterns.has("horizontalpull") ||
+    patternField.includes("horizontalpull") ||
+    patterns.has("pull")
+  ) {
+    return "horizontal_pull";
+  }
+  if (
+    patterns.has("horizontalpush") ||
+    patternField.includes("horizontalpush") ||
+    patterns.has("push")
+  ) {
+    return "horizontal_press";
+  }
+  if (patterns.has("hinge") || patternField.includes("hinge")) return "hinge";
+  // Unilateral before squat — split squat / lunges carry squat tokens too.
+  if (
+    patterns.has("singleleg") ||
+    patternField.includes("unilateral") ||
+    exercise.slotRoles?.includes("unilateralLowerLoaded")
+  ) {
+    return "unilateral";
+  }
+  if (patterns.has("squat") || patternField.includes("squat") || patternField.includes("kneedominant")) {
+    return "squat";
+  }
+  if (
+    patterns.has("core") ||
+    patterns.has("corestability") ||
+    patterns.has("antirotation") ||
+    patterns.has("antiextension") ||
+    patterns.has("carry") ||
+    exercise.carryType === "coreStability"
+  ) {
+    return "core";
+  }
+  return null;
+};
+
+const isPresentationSafePainSwapCandidate = (params: {
+  current: Exercise;
+  candidate: Exercise;
+  section?: ProgramRoutineItem["section"];
+}): boolean => {
+  const { current, candidate, section } = params;
+  if (candidate.supportOnly) return false;
+  if (
+    section === "main" &&
+    (candidate.category === "warmup" ||
+      candidate.category === "activation" ||
+      candidate.category === "cooldown")
+  ) {
+    return false;
+  }
+
+  const family = inferPainSwapRoleFamily(current);
+  if (!family) {
+    // Unknown role — still block preparation-only / support-only leaks.
+    return classifyGymMovementRoleTruth(candidate, "hinge") !== "preparationOnly";
+  }
+
+  if (family === "core") {
+    // Core swaps may use regression-tagged holds; never allow support-only primers.
+    return !candidate.supportOnly && candidate.category === "main";
+  }
+
+  const truth = classifyGymMovementRoleTruth(candidate, family);
+  // Main roles require true role satisfaction — never prep-only, surrogate, or curl-as-hinge.
+  return truth === "true";
+};
+
 export const previewPainSubstitutionChoices = (params: {
   questionnaire: QuestionnaireData;
   exerciseId: string;
@@ -1717,19 +1806,54 @@ export const previewPainSubstitutionChoices = (params: {
   const context = buildSelectionContext(questionnaire, undefined, undefined, {
     blockedExerciseIds: blockedSet,
   });
-  return rankSubstitutionCandidates({
-    current,
-    section,
-    available,
-    context,
-  })
-    .slice(0, Math.max(1, limit))
-    .map((entry) => ({
-      exerciseId: entry.exercise.id,
-      name: entry.exercise.name,
-      score: Number(entry.score.toFixed(2)),
-      reasons: entry.reasons,
-    }));
+  const painAreas = questionnaire.painAreas ?? [];
+
+  const toPreview = (
+    ranked: Array<{ exercise: Exercise; score: number; reasons: string[] }>
+  ) =>
+    ranked
+      .filter((entry) => !blockedSet?.has(entry.exercise.id))
+      .filter(
+        (entry) =>
+          !contraindicationHitsPainArea(
+            entry.exercise.contraindications,
+            painAreas
+          )
+      )
+      .filter((entry) =>
+        isPresentationSafePainSwapCandidate({
+          current,
+          candidate: entry.exercise,
+          section,
+        })
+      )
+      .slice(0, Math.max(1, limit))
+      .map((entry) => ({
+        exerciseId: entry.exercise.id,
+        name: entry.exercise.name,
+        score: Number(entry.score.toFixed(2)),
+        reasons: entry.reasons,
+      }));
+
+  const contextual = toPreview(
+    rankSubstitutionCandidates({
+      current,
+      section,
+      available,
+      context,
+    })
+  );
+  if (contextual.length) return contextual;
+
+  // Presentation honesty fallback: when context ranking only surfaces prep/surrogate
+  // options, re-rank with equipment legality + role-truth (still honors pain/blocks).
+  return toPreview(
+    rankSubstitutionCandidates({
+      current,
+      section,
+      available,
+    })
+  );
 };
 
 const ensureEligibleItem = (
@@ -35873,10 +35997,13 @@ export {
   FEEDBACK_CONTRACT_ACTION_LABELS,
   resolvePainAdaptationSummary,
   resolveAssessmentFocusSummary,
+  resolveAssessmentFocusFromPose,
+  formatFocusTagForPresentation,
   resolveNoValidSwapMessage,
   containsForbiddenInternalUiLanguage,
   validateProgramPresentationInventory,
   validateResolvedPresentationModel,
+  getPresentationReceiverEvidence,
 } from "@/lib/program/presentation";
 export type {
   PresentationContractStatus,
@@ -35891,6 +36018,8 @@ export type {
   ProgramPresentationValidation,
   PresentationValidationFinding,
   ResolveProgramPresentationInput,
+  AssessmentFocusFromPose,
+  PresentationReceiverEvidence,
 } from "@/lib/program/presentation";
 
 export const generateNextPhaseProgram = (params: {
