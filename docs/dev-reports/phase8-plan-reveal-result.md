@@ -2,7 +2,7 @@
 
 - Branch: `phase8/plan-reveal-experience`
 - Base: `921bd35bf17eeaaf32c0decd2638a45671687354` (`checkpoint/equipment-experience-phase4`)
-- Final tip: see git log on branch after commits
+- Final tip: `69e21a9` (docs result commit; branch tip after Phase 8 delivery)
 - `PROGRAM_TEMPLATE_VERSION`: **18** (unchanged)
 - Engine generation / eligibility / pain policy / substitution / quality / mode contracts / fuzz / progression composition / template composition: **not modified**
 
