@@ -324,7 +324,7 @@ describe("Phase 7 Completion — carry exposure intelligence", () => {
     const farmersCount = accessories.filter((id) => id === "farmers-carry").length;
     expect(farmersCount).toBeGreaterThanOrEqual(1);
     expect(farmersCount).toBeLessThanOrEqual(2);
-    expect(PROGRAM_TEMPLATE_VERSION).toBe(18);
+    expect(PROGRAM_TEMPLATE_VERSION).toBe(19);
   });
 });
 

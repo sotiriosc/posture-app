@@ -118,7 +118,7 @@ describe("recoverAndEvaluateProgramQuality blockedExerciseIds", () => {
       daysPerWeek: 3,
       phaseIndex: 1,
       week: [],
-      templateVersion: 18,
+      templateVersion: 19,
     } as unknown as ReturnType<typeof generateWeeklyProgram>;
 
     const guarded = recoverAndEvaluateProgramQuality({

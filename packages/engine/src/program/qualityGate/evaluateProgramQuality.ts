@@ -554,6 +554,6 @@ export const evaluateProgramQuality = (
     coachingComplete: !coachingHard,
     deterministicSignature: signature,
     elapsedMs: Date.now() - started,
-    templateVersion: input.program.templateVersion ?? 18,
+    templateVersion: input.program.templateVersion ?? 19,
   };
 };

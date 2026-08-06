@@ -224,10 +224,18 @@ import {
   resolveMixedHomeThreeDayBlueprint,
 } from "@/lib/program/mixedHomeTemplates";
 import { coalesceMixedHomeSessionWorkOrder } from "@/lib/program/mixedHomeProgramContract";
+import { applyConstraintAwareSequencing } from "@/lib/program/sequencingPolicy";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
-export const PROGRAM_TEMPLATE_VERSION = 18;
+/**
+ * Phase 8 composition refinement bumps 18 → 19 because newly generated
+ * stored program order is part of the composition contract (constraint-aware
+ * sequencing). Existing active programs remain unchanged in storage; apps
+ * treat mismatched templateVersion as incompatible and regenerate on the
+ * next user-driven program load — not via a silent batch rewrite.
+ */
+export const PROGRAM_TEMPLATE_VERSION = 19;
 const clampPhaseIndexToSupportedRange = (phaseIndex: number) =>
   Math.min(MAX_PHASE_INDEX, Math.max(1, Math.floor(phaseIndex)));
 
@@ -21888,20 +21896,9 @@ const isExerciseEligibleForProgramContext = (params: {
     return false;
   }
   const intent = context.intentProfile;
-  // Prefer machine squat primaries in gym, but do not hard-starve squat_primary
-  // when those machine options are personally blocked/deferred or otherwise unusable.
-  if (section === "main" && exercise.id === "goblet-squat" && available.has("machines")) {
-    const machineSquatStillViable = ["machine-leg-press", "machine-hack-squat"].some((id) => {
-      if (context.blockedExerciseIds?.has(id)) return false;
-      if (context.feedbackSummaryByExercise.get(id)?.deferred === true) return false;
-      const machine = exerciseById(id);
-      if (!machine) return false;
-      if (!isExerciseEligible(machine, available)) return false;
-      if (!isEligibleForPhase(machine, context.phaseName, context)) return false;
-      return machine.loadedMainEligible === true;
-    });
-    if (machineSquatStillViable) return false;
-  }
+  // Phase 8 gate audit: do not hard-exclude goblet when machines are viable.
+  // Machine squat preference remains a scoring signal (see scoreExerciseForContextDetailed),
+  // so beginners can still receive goblet when context ranks it highest.
   // Dumbbell-only programs must not silently borrow gym/cable/band/barbell tools.
   if (
     context.primaryEquipmentMode === "dumbbells" &&
@@ -28878,13 +28875,14 @@ const scoreExerciseForContextDetailed = (
     const conservativeActivationPushBias =
       context.experienceLevel === "beginner" || context.painSeverity === "high";
     if (conservativeActivationPushBias) {
-      // Beginner/high-pain profiles can stay machine-stable in phase 1.
+      // Phase 8 gate audit: keep machine stability as a preference, not a pseudo-gate.
+      // Prior +16 collapsed push selection to machine-chest-press in practice.
       if (exercise.id === "machine-chest-press") {
-        score += 16;
-        reasons.push("+16 activation main push machine chest preference (beginner/high-pain)");
-      } else if (exercise.id === "dumbbell-bench-press") {
         score += 4;
-        reasons.push("+4 activation main push dumbbell bench secondary preference");
+        reasons.push("+4 activation main push machine chest preference (beginner/high-pain)");
+      } else if (exercise.id === "dumbbell-bench-press") {
+        score += 2;
+        reasons.push("+2 activation main push dumbbell bench secondary preference");
       }
     } else if (
       context.experienceLevel !== "beginner" &&
@@ -28893,6 +28891,24 @@ const scoreExerciseForContextDetailed = (
     ) {
       score -= 1.25;
       reasons.push("-1.25 activation push de-prioritizes machine chest default for intermediate/advanced");
+    }
+  }
+
+  // Soft gym squat preference (replaces prior goblet hard-exclude).
+  if (
+    section === "main" &&
+    available.has("machines") &&
+    (context.experienceLevel === "beginner" || context.painSeverity === "high") &&
+    (exercise.id === "machine-leg-press" ||
+      exercise.id === "machine-hack-squat" ||
+      exercise.id === "goblet-squat")
+  ) {
+    if (exercise.id === "machine-leg-press" || exercise.id === "machine-hack-squat") {
+      score += 2.5;
+      reasons.push("+2.5 gym machine squat stability preference (beginner/high-pain)");
+    } else {
+      score += 1;
+      reasons.push("+1 goblet squat remains legal beginner-appropriate alternative");
     }
   }
 
@@ -35593,6 +35609,11 @@ export const generateWeeklyProgram = (
      * Used by recovery re-generation and audit runners that compose their own contracts.
      */
     skipQualityGate?: boolean;
+    /**
+     * Phase 8 — skip constraint-aware sequencing (audit/baseline comparison only).
+     * Production callers must leave this unset.
+     */
+    skipSequencing?: boolean;
   }
 ): Program => {
   const { resolvedFeedbackSummaryByExercise: rawFeedbackSummary, recentlyUsedExerciseIds } =
@@ -35990,6 +36011,18 @@ export const generateWeeklyProgram = (
         }))
       : tracedStructuredPrepWeek;
 
+  // Phase 8 — constraint-aware sequencing after truthful selection, before quality.
+  const sequencedWeek = options?.skipSequencing
+    ? annotatedWeek
+    : applyConstraintAwareSequencing({
+        week: annotatedWeek,
+        seed: options?.seed ?? programId,
+        cycleIndex: weeklyRuntimeContext.cycleIndex,
+        weekIndex: weeklyRuntimeContext.weekIndex,
+        phaseIndex: weeklyRuntimeContext.phaseIndex,
+        previousWeek: options?.previousWeek,
+      }).week;
+
   const candidate = finalizeWeeklyProgramResult({
     pushWarnings: pushProgramConstraintWarnings,
     programId,
@@ -36002,7 +36035,7 @@ export const generateWeeklyProgram = (
     totalWeekIndex: weeklyRuntimeContext.totalWeekIndex,
     cycleIndex: weeklyRuntimeContext.cycleIndex,
     nextWeekPlan: weeklyRuntimeContext.nextWeekPlan,
-    week: annotatedWeek,
+    week: sequencedWeek,
     questionnaire: data,
     trainingState: weeklyRuntimeContext.trainingState,
     consistencyRate: 0,
