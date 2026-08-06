@@ -1,0 +1,257 @@
+{
+  "artifact": "program-quality-v2-phase7b-correction-validation",
+  "phase": "7B-correction",
+  "templateVersion": 18,
+  "draftUnmerged": true,
+  "pr": 82,
+  "branch": "cursor/cloud-agent-1785959822486-hte2i",
+  "baseCommit": "5c88a64e71245f137e12178f2d26a38faf5fc8f5",
+  "checkpointBranch": "checkpoint/equipment-experience-phase4",
+  "checkpointSha": "5c88a64e71245f137e12178f2d26a38faf5fc8f5",
+  "checkpointUpdated": false,
+  "phase8Started": false,
+  "historicalReportsRestoredFrom": "5c88a64e71245f137e12178f2d26a38faf5fc8f5",
+  "historicalReportsRestored": [
+    "docs/dev-reports/equipment-program-audit-phase2*",
+    "docs/dev-reports/equipment-program-audit-phase3*",
+    "docs/dev-reports/equipment-program-audit-phase4*",
+    "docs/dev-reports/equipment-program-audit-phase5*",
+    "docs/dev-reports/equipment-program-audit-phase5b*",
+    "docs/dev-reports/program-quality-v2-phase6-*",
+    "docs/dev-reports/program-quality-v2-phase7-fuzz-summary.md",
+    "docs/dev-reports/program-quality-v2-phase7-repeatability.md",
+    "docs/dev-reports/program-quality-v2-phase7-unified-gate.*"
+  ],
+  "preservedNewReports": [
+    "docs/dev-reports/program-quality-v2-fuzz-integrity.md",
+    "docs/dev-reports/program-quality-v2-fuzz-integrity.json",
+    "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md",
+    "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.json",
+    "docs/dev-reports/program-quality-v2-phase7b-*"
+  ],
+  "runs": {
+    "fuzzIntegrity": {
+      "command": "FUZZ_INTEGRITY_CASES_PER_MODE=10000 npm run audit:fuzz-integrity",
+      "mode": "release",
+      "casesPerMode": 10000,
+      "log": "/tmp/phase7b-gates/fuzz-integrity-r2.log",
+      "startedAt": "2026-08-06T05:34:38-04:00",
+      "finishedAt": "2026-08-06T07:07:21-04:00",
+      "exitCode": 1,
+      "verdict": "NEEDS_REVIEW",
+      "generatedAt": "2026-08-06T11:07:20.814Z",
+      "elapsedMs": 5562443,
+      "reports": [
+        "docs/dev-reports/program-quality-v2-fuzz-integrity.md",
+        "docs/dev-reports/program-quality-v2-fuzz-integrity.json",
+        "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md",
+        "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.json"
+      ],
+      "headAtRunNote": "Working tree on PR branch tip a96862f (correction commits already present); release audit rewrote fuzz-integrity reports only."
+    },
+    "programQuality": {
+      "command": "npm run audit:program-quality",
+      "log": "/tmp/phase7b-gates/program-quality-r2.log",
+      "startedAt": "2026-08-06T06:55:16-04:00",
+      "finishedAt": "2026-08-06T08:28:50-04:00",
+      "exitCode": 0,
+      "verdict": "PASS",
+      "ok": true,
+      "phase": 7,
+      "fuzzCases": 50000,
+      "summary": {
+        "ok": true,
+        "phase": 7,
+        "verdict": "PASS",
+        "fuzzCases": 50000,
+        "priorModeReports": [
+          "equipment-program-audit-phase2.json"
+        ],
+        "outputs": [
+          "docs/dev-reports/program-quality-v2-phase7-unified-gate.md",
+          "docs/dev-reports/program-quality-v2-phase7-unified-gate.json"
+        ]
+      },
+      "note": "Audit rewrote historical Phase 2\u20137 unified-gate/persona artifacts locally; those were restored to base 5c88a64 and must not be committed. PASS evidence recorded here only."
+    }
+  },
+  "fuzzIntegritySummary": {
+    "verdict": "NEEDS_REVIEW",
+    "releaseBlockingFailures": [],
+    "needsReviewWarnings": [
+      {
+        "code": "FALLBACK_RATE_ABOVE_1PCT",
+        "detail": "mixedHome fallbackRate=1.28% (warning \u2014 not a release failure when all finals pass)"
+      },
+      {
+        "code": "UNEXPLAINED_CROSS_INPUT_COLLAPSE",
+        "detail": "618 suspicious collapse pairs (see categories)"
+      }
+    ],
+    "finalQualityTotals": {
+      "finalQualityPass": 49756,
+      "finalQualityFail": 244,
+      "safeGenerationError": 244,
+      "fallbackPassed": 0,
+      "fallbackFailedSafely": 244,
+      "fallbackEvidenceMalformed": 0,
+      "exceptions": 0,
+      "unclassified": 0
+    },
+    "byMode": [
+      {
+        "mode": "gym",
+        "finalQualityPass": 9981,
+        "finalQualityFail": 19,
+        "safeGenerationError": 19,
+        "fallbackRate": 0.0019,
+        "recoveryRate": 0.0019,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 19,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {
+          "QUALITY_BLOCKED_EXERCISE_PRESENT": 10,
+          "GYM_REQUIRED_ROLE_WRONG_TRUTH": 15
+        },
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      },
+      {
+        "mode": "dumbbells",
+        "finalQualityPass": 9903,
+        "finalQualityFail": 97,
+        "safeGenerationError": 97,
+        "fallbackRate": 0.0097,
+        "recoveryRate": 0.0097,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 97,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {
+          "DUMBBELL_PREP_AS_MAIN": 97
+        },
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      },
+      {
+        "mode": "bands",
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0,
+        "recoveryRate": 0,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 0,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {},
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      },
+      {
+        "mode": "bodyweight",
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0,
+        "recoveryRate": 0,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 0,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {},
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      },
+      {
+        "mode": "mixedHome",
+        "finalQualityPass": 9872,
+        "finalQualityFail": 128,
+        "safeGenerationError": 128,
+        "fallbackRate": 0.0128,
+        "recoveryRate": 0.0128,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 128,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {
+          "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 128
+        },
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      }
+    ],
+    "fallbackRates": {
+      "gym": 0.0019,
+      "dumbbells": 0.0097,
+      "bands": 0,
+      "bodyweight": 0,
+      "mixedHome": 0.0128
+    },
+    "failureCodes": {
+      "QUALITY_BLOCKED_EXERCISE_PRESENT": 10,
+      "GYM_REQUIRED_ROLE_WRONG_TRUTH": 15,
+      "DUMBBELL_PREP_AS_MAIN": 97,
+      "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 128
+    },
+    "mutations": {
+      "required": 14,
+      "detected": 14,
+      "falsePass": 0,
+      "acceptance": "PASS"
+    },
+    "metamorphic": {
+      "total": 9,
+      "passed": 9
+    },
+    "deterministicChecks": {
+      "performed": 50000,
+      "total": 50000,
+      "mismatches": 0,
+      "note": "Each of 5 modes \u00d7 10000 cases performs one generateWeeklyProgram repeat; mismatches across all modes = 0."
+    },
+    "exceptions": 0,
+    "collapseCategories": {
+      "expectedIrrelevantInput": 11028,
+      "suspiciousIgnoredPainInput": 1955,
+      "suspiciousIgnoredActiveBlock": 1,
+      "suspiciousIgnoredSupportAnchorInput": 677,
+      "expectedStableTemplateIdentity": 34,
+      "expectedCapabilityLimitation": 10531
+    },
+    "collapseAnalyzed": {
+      "totalDetectedPairs": 24226,
+      "analyzedRepresentativePairs": 2500,
+      "suspicious": 618,
+      "expected": 1882
+    },
+    "gymHingeRepro": {
+      "seed": "gym-fuzz-9e37e786",
+      "verdict": "hinge_preserved",
+      "qualityPassed": true,
+      "blockedExercisePresent": false,
+      "hingeRemainsViaLegalAlternative": true,
+      "finalOutcomeClass": "initialPass",
+      "detail": "unblockedHingeMains=db-rdl blockedHingeMains=machine-glute-drive wrongTruth=false outcome=initialPass"
+    },
+    "generatorParityNote": "fuzzIntegrityAudit uses the same canonical mode case generators and programQualitySignature as the ordinary program-quality gate (packages/engine/src/__debug__/fuzzIntegrityAudit.ts). Executable parity: packages/engine/tests/unit/canonicalFuzzCasesParity.test.ts (commit 6d5247d).",
+    "templateVersion": 18
+  },
+  "ci": {
+    "available": false,
+    "note": "gh auth token invalid (github.com authentication failed / GraphQL Forbidden). CI conclusion not retrieved. Re-check with `gh pr checks 82` after re-auth."
+  },
+  "prMetadataUpdate": {
+    "attempted": true,
+    "keptDraft": true,
+    "result": "blocked_gh_auth_invalid",
+    "note": "Could not update PR #82 description via gh; leave draft. Paste summary from this validation artifact if needed."
+  },
+  "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4."
+}

@@ -1,11 +1,79 @@
 # Program Quality V2 — Fuzz-Integrity Assessment (Phase 7B §13)
 
-- Generated: 2026-08-06T09:03:27.198Z
-- Cases per mode: **10000** (release uses **10000** via `FUZZ_INTEGRITY_CASES_PER_MODE`)
-- Elapsed: 5456370ms
+- Generated: 2026-08-06T11:07:20.814Z
+- Mode: **release**
+- Cases per mode: **10000** (release requires exactly **10000**)
+- Elapsed: 5562443ms
 - Verdict: **NEEDS_REVIEW**
 
-Full release run (10000/mode).
+Release run (10000/mode).
+
+## Final quality outcomes
+
+### gym
+
+- Total cases: 10000
+- Initial quality pass: 9981
+- Recovery attempted / succeeded: 19 / 0
+- Fallback attempted / succeeded: 19 / 0
+- Final quality pass / fail: 9981 / 19
+- Safe generation error: 19
+- Exceptions: 0
+- Unclassified: 0
+- Final pass rate / failure rate: 99.81% / 0.19%
+- Fallback triage: passed=0 failedSafely=19 malformed=0
+
+### dumbbells
+
+- Total cases: 10000
+- Initial quality pass: 9903
+- Recovery attempted / succeeded: 97 / 0
+- Fallback attempted / succeeded: 97 / 0
+- Final quality pass / fail: 9903 / 97
+- Safe generation error: 97
+- Exceptions: 0
+- Unclassified: 0
+- Final pass rate / failure rate: 99.03% / 0.97%
+- Fallback triage: passed=0 failedSafely=97 malformed=0
+
+### bands
+
+- Total cases: 10000
+- Initial quality pass: 10000
+- Recovery attempted / succeeded: 0 / 0
+- Fallback attempted / succeeded: 0 / 0
+- Final quality pass / fail: 10000 / 0
+- Safe generation error: 0
+- Exceptions: 0
+- Unclassified: 0
+- Final pass rate / failure rate: 100.00% / 0.00%
+- Fallback triage: passed=0 failedSafely=0 malformed=0
+
+### bodyweight
+
+- Total cases: 10000
+- Initial quality pass: 10000
+- Recovery attempted / succeeded: 0 / 0
+- Fallback attempted / succeeded: 0 / 0
+- Final quality pass / fail: 10000 / 0
+- Safe generation error: 0
+- Exceptions: 0
+- Unclassified: 0
+- Final pass rate / failure rate: 100.00% / 0.00%
+- Fallback triage: passed=0 failedSafely=0 malformed=0
+
+### mixedHome
+
+- Total cases: 10000
+- Initial quality pass: 9872
+- Recovery attempted / succeeded: 128 / 0
+- Fallback attempted / succeeded: 128 / 0
+- Final quality pass / fail: 9872 / 128
+- Safe generation error: 128
+- Exceptions: 0
+- Unclassified: 0
+- Final pass rate / failure rate: 98.72% / 1.28%
+- Fallback triage: passed=0 failedSafely=128 malformed=0
 
 ## 13A. Diversity accounting
 
@@ -30,12 +98,12 @@ Reported as structural diversity / variation-seed diversity / output diversity.
 
 **Output diversity**
 
-- Unique semantic program signatures: 5168
-- Unique ordered weekly exercise signatures: 4959
+- Unique semantic program signatures: 5169
+- Unique ordered weekly exercise signatures: 4961
 - Unique day-identity signatures: 3
 - Most common signature count/share: 24 / 0.24%
-- Recovery attempts / rate: 21 / 0.21%
-- Fallback uses / rate: 21 / 0.21%
+- Recovery attempts / rate: 19 / 0.19%
+- Fallback uses / rate: 19 / 0.19%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
@@ -86,8 +154,8 @@ Top 20 repeated semantic signatures:
 - Unique ordered weekly exercise signatures: 1135
 - Unique day-identity signatures: 3
 - Most common signature count/share: 37 / 0.37%
-- Recovery attempts / rate: 133 / 1.33%
-- Fallback uses / rate: 133 / 1.33%
+- Recovery attempts / rate: 97 / 0.97%
+- Fallback uses / rate: 97 / 0.97%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
@@ -238,12 +306,12 @@ Top 20 repeated semantic signatures:
 
 **Output diversity**
 
-- Unique semantic program signatures: 3393
-- Unique ordered weekly exercise signatures: 2541
+- Unique semantic program signatures: 3394
+- Unique ordered weekly exercise signatures: 2542
 - Unique day-identity signatures: 3
 - Most common signature count/share: 14 / 0.14%
-- Recovery attempts / rate: 134 / 1.34%
-- Fallback uses / rate: 134 / 1.34%
+- Recovery attempts / rate: 128 / 1.28%
+- Fallback uses / rate: 128 / 1.28%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
@@ -273,289 +341,342 @@ Top 20 repeated semantic signatures:
 
 ## 13B. Cross-input collapse analysis
 
-- Flags: 1000 (suspicious=888, expected=112)
+- Total detected pairs: 24226
+- Analyzed representative pairs: 2500
+- Report display limit: 40
+- Suspicious / expected (in analyzed set): 618 / 1882
 
-### gym — suspicious
+### Root causes by category
+
+- `expectedIrrelevantInput`: 11028
+- `suspiciousIgnoredPainInput`: 1955
+- `suspiciousIgnoredActiveBlock`: 1
+- `suspiciousIgnoredSupportAnchorInput`: 677
+- `expectedStableTemplateIdentity`: 34
+- `expectedCapabilityLimitation`: 10531
+
+
+### gym — expected / expectedIrrelevantInput
+
+- Signature: `b9770ea1`
+- Input A: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
+
+### gym — expected / expectedIrrelevantInput
+
+- Signature: `b9770ea1`
+- Input A: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
+
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `b9770ea1`
 - Input A: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: personal blocks
+- Explanation: Personal-block ID difference alone with no evidence the block was active in the unblocked baseline.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
+
+- Signature: `b9770ea1`
+- Input A: `gym||Beginner||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
+
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `b9770ea1`
 - Input A: `gym||Beginner||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: goals, personal blocks
+- Explanation: Structural diffs (goals, personal blocks) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
+
+- Signature: `b9770ea1`
+- Input A: `gym||Beginner||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
+
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `b9770ea1`
 - Input A: `gym||Beginner||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
 - Input B: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: goals, personal blocks
+- Explanation: Structural diffs (goals, personal blocks) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `b9770ea1`
 - Input A: `gym||Beginner||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
 - Input B: `gym||Beginner||1||4||General fitness||||gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: personal blocks
+- Explanation: Personal-block ID difference alone with no evidence the block was active in the unblocked baseline.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
+
+### gym — expected / expectedIrrelevantInput
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
+
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||General fitness||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: personal blocks
+- Explanation: Personal-block ID difference alone with no evidence the block was active in the unblocked baseline.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||General fitness||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: goals, personal blocks
+- Explanation: Structural diffs (goals, personal blocks) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
+
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: goals, personal blocks
+- Explanation: Structural diffs (goals, personal blocks) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: personal blocks
+- Explanation: Personal-block ID difference alone with no evidence the block was active in the unblocked baseline.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
+
+- Signature: `d6361b6f`
+- Input A: `gym||Intermediate||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
+
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
 - Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: goals, personal blocks
+- Explanation: Structural diffs (goals, personal blocks) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
 - Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: personal blocks
+- Explanation: Personal-block ID difference alone with no evidence the block was active in the unblocked baseline.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
 - Input B: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: personal blocks
+- Explanation: Personal-block ID difference alone with no evidence the block was active in the unblocked baseline.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
 - Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: goals, personal blocks
+- Explanation: Structural diffs (goals, personal blocks) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
 - Signature: `d6361b6f`
 - Input A: `gym||Intermediate||1||4||General fitness||||dumbbells,gym|bandSetup:none||bodyweight-squat`
 - Input B: `gym||Intermediate||1||4||Athletic performance||||gym|bandSetup:none||band-rdl`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Diffs: goals, personal blocks
+- Explanation: Structural diffs (goals, personal blocks) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `55eba719`
-- Input A: `gym||Advanced||1||5||General fitness||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `6115bf36`
+- Input A: `gym||Advanced||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `55eba719`
-- Input A: `gym||Advanced||1||5||Athletic performance||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `6115bf36`
+- Input A: `gym||Advanced||1||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `55eba719`
-- Input A: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `6115bf36`
+- Input A: `gym||Advanced||1||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `55eba719`
-- Input A: `gym||Advanced||1||5||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Advanced||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `6115bf36`
+- Input A: `gym||Advanced||1||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||1||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `021841d3`
-- Input A: `gym||Beginner||2||5||General fitness||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `fd20b79a`
+- Input A: `gym||Beginner||2||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||2||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `021841d3`
-- Input A: `gym||Beginner||2||5||Athletic performance||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `fd20b79a`
+- Input A: `gym||Beginner||2||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||2||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `021841d3`
-- Input A: `gym||Beginner||2||5||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `fd20b79a`
+- Input A: `gym||Beginner||2||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||2||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `021841d3`
-- Input A: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||2||5||General fitness||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `fd20b79a`
+- Input A: `gym||Beginner||2||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||2||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — expected
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `933996c3`
-- Input A: `gym||Beginner||1||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||1||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `1f75f11a`
+- Input A: `gym||Intermediate||2||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||2||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — expected
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `933996c3`
-- Input A: `gym||Beginner||1||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||1||4||Improve posture||upper back||gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `1f75f11a`
+- Input A: `gym||Intermediate||2||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||2||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — expected
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `933996c3`
-- Input A: `gym||Beginner||1||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||1||4||Improve posture||||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `e28a4f2e`
+- Input A: `gym||Advanced||2||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||2||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — expected
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `933996c3`
-- Input A: `gym||Beginner||1||4||Improve posture||||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||1||4||Improve posture||upper back||gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `e28a4f2e`
+- Input A: `gym||Advanced||2||4||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||2||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `e50dcd7a`
-- Input A: `gym||Advanced||2||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Advanced||2||4||Improve posture||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `e28a4f2e`
+- Input A: `gym||Advanced||2||4||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||2||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `e50dcd7a`
-- Input A: `gym||Advanced||2||4||Improve posture||||dumbbells,gym|bandSetup:none||goblet-squat`
-- Input B: `gym||Advanced||2||4||Improve posture||||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (personal blocks) collapse to identical semantic signature.
+- Signature: `e28a4f2e`
+- Input A: `gym||Advanced||2||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Advanced||2||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `2587f2b6`
-- Input A: `gym||Beginner||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `3e77d733`
+- Input A: `gym||Beginner||1||5||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||5||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — expected
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `2587f2b6`
-- Input A: `gym||Beginner||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||3||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `3e77d733`
+- Input A: `gym||Beginner||1||5||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — expected
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `2587f2b6`
-- Input A: `gym||Beginner||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||3||4||General fitness||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `3e77d733`
+- Input A: `gym||Beginner||1||5||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||5||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `2587f2b6`
-- Input A: `gym||Beginner||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||3||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `3e77d733`
+- Input A: `gym||Beginner||1||5||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
+- Input B: `gym||Beginner||1||5||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
+### gym — expected / expectedIrrelevantInput
 
-- Signature: `2587f2b6`
-- Input A: `gym||Beginner||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||3||4||General fitness||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
+- Signature: `cb8b0178`
+- Input A: `gym||Intermediate||1||5||General fitness||||gym|bandSetup:none||blocks:none`
+- Input B: `gym||Intermediate||1||5||Athletic performance||||gym|bandSetup:none||blocks:none`
+- Diffs: goals
+- Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-### gym — suspicious
-
-- Signature: `e3c4a7e0`
-- Input A: `gym||Intermediate||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Intermediate||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
-
-### gym — expected
-
-- Signature: `36a56316`
-- Input A: `gym||Advanced||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Advanced||3||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
-
-### gym — suspicious
-
-- Signature: `36a56316`
-- Input A: `gym||Advanced||3||4||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Advanced||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
-
-### gym — suspicious
-
-- Signature: `36a56316`
-- Input A: `gym||Advanced||3||4||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Advanced||3||4||Improve posture||shoulders||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
-
-### gym — expected
-
-- Signature: `3e08599f`
-- Input A: `gym||Beginner||1||5||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||1||5||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
-
-### gym — expected
-
-- Signature: `3e08599f`
-- Input A: `gym||Beginner||1||5||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||1||5||Improve posture||upper back||gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
-
-### gym — suspicious
-
-- Signature: `3e08599f`
-- Input A: `gym||Beginner||1||5||Improve posture||||gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||1||5||Improve posture||upper back||gym|bandSetup:none||goblet-squat`
-- Explanation: Materially different structural inputs (pain changes, personal blocks) collapse to identical semantic signature.
-
-### gym — expected
-
-- Signature: `3e08599f`
-- Input A: `gym||Beginner||1||5||Improve posture||upper back||dumbbells,gym|bandSetup:none||blocks:none`
-- Input B: `gym||Beginner||1||5||Improve posture||||dumbbells,gym|bandSetup:none||blocks:none`
-- Explanation: Materially different structural inputs (pain changes) collapse to identical semantic signature.
-
-_…960 additional flags in JSON._
+_Display capped at 40; totalDetectedPairs=24226 in JSON._
 
 ## 13C. Mutation testing
 
@@ -582,14 +703,14 @@ _…960 additional flags in JSON._
 
 - Passed: **9/9**
 
-- PASS — add shoulder pain → overhead demand must not increase (overhead before=2 after=1)
+- PASS — add shoulder pain → overhead demand must not increase (overhead before=2 after=1 compositionIdentical=false nonCompositionAdaptation=true)
 - PASS — remove high anchor → high-anchor exercises disappear (remaining high-anchor ids: none)
 - PASS — change long band to loop-only → long-band exercises disappear (remaining long-band ids: none)
-- PASS — block selected squat → blocked squat disappears while squat purpose remains when possible (blockedPresent=false squatPurpose=true)
-- PASS — block selected hinge → blocked hinge disappears while hinge purpose remains when possible (blockedPresent=false hingePurpose=true)
+- PASS — block selected squat → blocked squat disappears while squat purpose remains when possible (blockedId=goblet-squat blockedPresent=false squatPurpose=true capabilityLimitation=false)
+- PASS — block selected hinge → blocked hinge disappears while hinge purpose remains when possible (blockedId=db-rdl blockedPresent=false hingePurpose=true capabilityLimitation=true)
 - PASS — change dumbbells to bodyweight → equipment identity and legality change (beforeDb=true afterDb=false afterMode=bodyweight)
-- PASS — increase experience → complexity may increase but equipment/role truth remain stable (beginnerHard=0 advancedHard=0)
-- PASS — advance phase → progression changes without arbitrary identity collapse (dayIdentityStable=true exerciseChanged=true)
+- PASS — increase experience → complexity may increase but equipment/role truth remain stable (beginnerHard=0 advancedHard=0 sets 0022222221-2022222221-2022222221-2->00223-43-43-43-43-42220223-43-43-43-43-42220223-43-43-43-43-43-43-42 rxChanged=true compositionChanged=true)
+- PASS — advance phase → progression changes without arbitrary identity collapse (dayIdentityStable=true exerciseChanged=true prescriptionChanged=true (exercise composition changed across phases))
 - PASS — lower photo confidence → unsupported presentation rationale disappears (highClaim=true lowClaim=false)
 
 ## 13E. Holdout seeds
@@ -597,8 +718,8 @@ _…960 additional flags in JSON._
 - Namespace: `fuzz-integrity-holdout-v1`
 - Cases per mode: 40
 
-- gym: semanticSignatures=40 recoveryRate=2.50% fallbackRate=2.50% exceptions=0 deterministicMismatches=0
-- dumbbells: semanticSignatures=40 recoveryRate=5.00% fallbackRate=5.00% exceptions=0 deterministicMismatches=0
+- gym: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
+- dumbbells: semanticSignatures=40 recoveryRate=2.50% fallbackRate=2.50% exceptions=0 deterministicMismatches=0
 - bands: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
 - bodyweight: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
 - mixedHome: semanticSignatures=40 recoveryRate=0.00% fallbackRate=0.00% exceptions=0 deterministicMismatches=0
@@ -606,14 +727,27 @@ _…960 additional flags in JSON._
 ## 13F. Reproducible blind sample
 
 - Blind samples: 50 (10×5 modes)
-- Fallback samples (all): 288
+- Fallback samples (all): 244
+- Failed-case diagnostics: 244
 - See `docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md` and JSON companion.
 
-## 13G. Review thresholds / NEEDS_REVIEW
+## Gym hinge repro (db-rdl blocked)
 
-- `FALLBACK_RATE_ABOVE_1PCT`: dumbbells fallbackRate=1.33%
-- `FALLBACK_RATE_ABOVE_1PCT`: mixedHome fallbackRate=1.34%
-- `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 888 suspicious collapse pairs
+- Seed: `gym-fuzz-9e37e786`
+- Verdict: **hinge_preserved**
+- Hinge remains via legal alternative: true
+- Detail: unblockedHingeMains=db-rdl blockedHingeMains=machine-glute-drive wrongTruth=false outcome=initialPass
+
+## Gate: release blockers vs NEEDS_REVIEW warnings
+
+### Release-blocking failures
+
+- none
+
+### NEEDS_REVIEW warnings (not release failures when finals pass + classified)
+
+- `FALLBACK_RATE_ABOVE_1PCT`: mixedHome fallbackRate=1.28% (warning — not a release failure when all finals pass)
+- `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 618 suspicious collapse pairs (see categories)
 
 ## Artifact paths
 

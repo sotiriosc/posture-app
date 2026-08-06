@@ -3575,24 +3575,32 @@ Correction pass on PR branch `cursor/cloud-agent-1785959822486-hte2i` only (base
 ##### Release presentation audit
 - Removed `skipQualityGate: true` from `programPresentationAudit.ts` mode smoke.
 
-##### Fuzz-integrity (§13)
+##### Fuzz-integrity (§13) — latest full release run
 - Runner: `npm run audit:fuzz-integrity` (`packages/engine/src/__debug__/fuzzIntegrityAudit.ts`)
 - Reports: `docs/dev-reports/program-quality-v2-fuzz-integrity.{md,json}` and `…-samples.{md,json}`
-- Uses canonical mode case generators + `programQualitySignature`
-- Full release run (`FUZZ_INTEGRITY_CASES_PER_MODE=10000`, ~91 min): mutations **14/14**, metamorphic **9/9**, 0 deterministic mismatches, 0 exceptions
-- Verdict: **NEEDS_REVIEW** (not an automatic product failure):
-  - dumbbells fallbackRate **1.33%** (>1%)
-  - mixedHome fallbackRate **1.34%** (>1%)
-  - unexplained cross-input collapse pairs flagged for independent review
-- Recovery rates: gym 0.21%; dumbbells/mixedHome ~1.33–1.34%; bands/bodyweight 0%
+- Uses canonical mode case generators + `programQualitySignature` (executable generator parity in `canonicalFuzzCasesParity.test.ts`)
+- Full release re-run (`FUZZ_INTEGRITY_CASES_PER_MODE=10000`, log `/tmp/phase7b-gates/fuzz-integrity-r2.log`, EXIT **1**):
+  - Start `2026-08-06T05:34:38-04:00` → end `2026-08-06T07:07:21-04:00` (elapsed ~5562s)
+  - Mutations **14/14**, metamorphic **9/9**, deterministic checks **50000/50000**, mismatches **0**, exceptions **0**
+  - Final quality: pass **49756** / fail **244** (all fails classified as safe-generation; fallback triage pass=0 / failedSafely=244 / malformed=0)
+  - Fallback rates: gym **0.19%**; dumbbells **0.97%**; bands **0%**; bodyweight **0%**; mixedHome **1.28%**
+  - Hard failure codes (counts): `QUALITY_BLOCKED_EXERCISE_PRESENT` 10; `GYM_REQUIRED_ROLE_WRONG_TRUTH` 15; `DUMBBELL_PREP_AS_MAIN` 97; `MIXED_HOME_RANDOM_EQUIPMENT_MIX` 128
+  - Collapse categories: expectedIrrelevantInput 11028; expectedCapabilityLimitation 10531; expectedStableTemplateIdentity 34; suspiciousIgnoredPainInput 1955; suspiciousIgnoredSupportAnchorInput 677; suspiciousIgnoredActiveBlock 1 (analyzed: suspicious 618 / expected 1882)
+  - Gym hinge repro (`gym-fuzz-9e37e786`, db-rdl blocked): **hinge_preserved** (qualityPassed=true)
+  - Template version: **18**
+- Verdict: **NEEDS_REVIEW** (not an automatic product/release failure):
+  - `FALLBACK_RATE_ABOVE_1PCT`: mixedHome **1.28%**
+  - `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 618 suspicious collapse pairs
+- Validation artifact (new only): `docs/dev-reports/program-quality-v2-phase7b-correction-validation.{md,json}`
 
-##### Program-quality re-run (required after substitution / quality-gate evaluation changes)
-- `npm run audit:program-quality` completed **PASS** (50k nested fuzz, exit 0) at 2026-08-05T22:28:08-04:00
-- Artifacts: `docs/dev-reports/program-quality-v2-phase7-unified-gate.{md,json}`
+##### Program-quality re-run (latest)
+- `npm run audit:program-quality` completed **PASS** (50k nested fuzz, EXIT **0**)
+- Log: `/tmp/phase7b-gates/program-quality-r2.log` — restart `2026-08-06T06:55:16-04:00` → EXIT 0 `2026-08-06T08:28:50-04:00`
+- Historical Phase 2–7 reports rewritten by the audit were restored to base `5c88a64` and not committed; PASS recorded in the correction-validation artifact above (not by overwriting historical unified-gate evidence)
 
 ##### Unresolved review signals
-- Fuzz-integrity **NEEDS_REVIEW** signals above (fallback rates; collapse pairs) — explain in Phase 7B review, do not claim fuzz integrity fully established without that explanation
-- CI conclusion on latest pushed correction head (record when GitHub checks finish)
+- Fuzz-integrity **NEEDS_REVIEW** signals above (mixedHome fallback rate; collapse pairs) — explain in Phase 7B review, do not claim fuzz integrity fully established without that explanation
+- CI conclusion on latest pushed correction head — GitHub `gh` auth was invalid/Forbidden in the correction environment; re-check PR #82 checks after push
 
 #### Stop
 
