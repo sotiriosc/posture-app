@@ -2,10 +2,10 @@
   "label": "Program Quality V2 — Phase 6 Coaching Completeness",
   "catalogCount": 225,
   "activeCatalogCount": 224,
-  "releaseCriticalCount": 201,
-  "completeReleaseCriticalCount": 201,
+  "releaseCriticalCount": 170,
+  "completeReleaseCriticalCount": 170,
   "completenessPct": 100,
-  "catalogOnlyCount": 23,
+  "catalogOnlyCount": 54,
   "deprecated": [
     "cable-upright-row"
   ],
@@ -14,8 +14,8 @@
   ],
   "demoCounts": {
     "available": 0,
-    "planned": 151,
-    "notRequired": 50
+    "planned": 125,
+    "notRequired": 45
   },
   "requiredDemoBlockers": 0,
   "byCode": {},
@@ -43,15 +43,6 @@
       "guidanceHref": "/exercise/archer-pushup"
     },
     {
-      "exerciseId": "assisted-box-squat",
-      "hasPurpose": true,
-      "hasSetup": true,
-      "hasExecution": true,
-      "primaryCue": "Move with controlled tempo and stacked posture",
-      "demoStatus": "planned",
-      "guidanceHref": "/exercise/assisted-box-squat"
-    },
-    {
       "exerciseId": "assisted-hip-thrust",
       "hasPurpose": true,
       "hasSetup": true,
@@ -68,24 +59,6 @@
       "primaryCue": "Move with controlled tempo and stacked posture",
       "demoStatus": "planned",
       "guidanceHref": "/exercise/assisted-nordic-eccentric"
-    },
-    {
-      "exerciseId": "assisted-pistol-squat",
-      "hasPurpose": true,
-      "hasSetup": true,
-      "hasExecution": true,
-      "primaryCue": "Move with controlled tempo and stacked posture",
-      "demoStatus": "planned",
-      "guidanceHref": "/exercise/assisted-pistol-squat"
-    },
-    {
-      "exerciseId": "assisted-reverse-lunge",
-      "hasPurpose": true,
-      "hasSetup": true,
-      "hasExecution": true,
-      "primaryCue": "Move with controlled tempo and stacked posture",
-      "demoStatus": "planned",
-      "guidanceHref": "/exercise/assisted-reverse-lunge"
     },
     {
       "exerciseId": "assisted-single-leg-hip-thrust",
@@ -106,31 +79,58 @@
       "guidanceHref": "/exercise/assisted-single-leg-rdl"
     },
     {
-      "exerciseId": "assisted-skater-squat",
+      "exerciseId": "back-extension",
       "hasPurpose": true,
       "hasSetup": true,
       "hasExecution": true,
-      "primaryCue": "Move with controlled tempo and stacked posture",
+      "primaryCue": "Lift chest with neutral spine",
       "demoStatus": "planned",
-      "guidanceHref": "/exercise/assisted-skater-squat"
+      "guidanceHref": "/exercise/back-extension"
     },
     {
-      "exerciseId": "assisted-split-squat",
+      "exerciseId": "back-extension-hold",
       "hasPurpose": true,
       "hasSetup": true,
       "hasExecution": true,
-      "primaryCue": "Move with controlled tempo and stacked posture",
-      "demoStatus": "planned",
-      "guidanceHref": "/exercise/assisted-split-squat"
+      "primaryCue": "Brace and keep ribs stacked",
+      "demoStatus": "notRequired",
+      "guidanceHref": "/exercise/back-extension-hold"
     },
     {
-      "exerciseId": "assisted-step-up",
+      "exerciseId": "back-widow",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Drive elbows into floor",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/back-widow"
+    },
+    {
+      "exerciseId": "band-assisted-pullup",
       "hasPurpose": true,
       "hasSetup": true,
       "hasExecution": true,
       "primaryCue": "Move with controlled tempo and stacked posture",
       "demoStatus": "planned",
-      "guidanceHref": "/exercise/assisted-step-up"
+      "guidanceHref": "/exercise/band-assisted-pullup"
+    },
+    {
+      "exerciseId": "band-biceps-curl",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Keep wrists neutral",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/band-biceps-curl"
+    },
+    {
+      "exerciseId": "band-chest-fly",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Keep a soft bend in elbows and sweep hands together with control",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/band-chest-fly"
     }
   ],
   "hipAbductionAdductionGap": "Catalog hip abduction/adduction gap retained as follow-up — not auto-expanded in Phase 6; not treated as a new exercise redesign."

@@ -17,12 +17,12 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=4 band=0 bw=1
-- Setup sequence: dumbbell(4) → bodyweight(1)
+- Setup sequence: dumbbell(3) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=5 band=0 bw=0
@@ -57,13 +57,13 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=5 band=0 bw=1
-- Setup sequence: dumbbell(5) → bodyweight(1)
+- Setup sequence: dumbbell(4) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=5 band=1 bw=0
@@ -100,14 +100,14 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=6 band=0 bw=1
-- Setup sequence: dumbbell(6) → bodyweight(1)
+- Setup sequence: dumbbell(5) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | tool=dumbbell | slot=mainUnilateralLowerLoaded | unilateralLowerLoaded
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=7 band=0 bw=0
@@ -146,13 +146,13 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=5 band=0 bw=1
-- Setup sequence: dumbbell(5) → bodyweight(1)
+- Setup sequence: dumbbell(4) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=6 band=0 bw=0
@@ -189,13 +189,13 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=5 band=0 bw=1
-- Setup sequence: dumbbell(5) → bodyweight(1)
+- Setup sequence: dumbbell(4) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=6 band=0 bw=0
@@ -232,13 +232,13 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=5 band=0 bw=1
-- Setup sequence: dumbbell(5) → bodyweight(1)
+- Setup sequence: dumbbell(4) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=5 band=1 bw=0
@@ -270,7 +270,7 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 - Structural score: 100/100
 - Equipment honesty score: 100/100
 - Setup coherence score: 100/100
-- Full-experience score: 83/100
+- Full-experience score: 82.5/100
 - Hard failures: none
 
 ### Full Body A — Squat, Press and Row
@@ -284,24 +284,24 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 - Accessories: standing-calf-raise, farmers-carry
 
 ### Full Body B — Hinge, Overhead and Unilateral
-- Tools: db=5 band=0 bw=1
-- Setup sequence: dumbbell(4) → bodyweight(1) → dumbbell(1)
+- Tools: db=4 band=1 bw=1
+- Setup sequence: dumbbell(4) → band(1) → bodyweight(1)
 - Mains:
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | tool=dumbbell | slot=mainUnilateralLowerLoaded | unilateralLowerLoaded
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | tool=dumbbell | slot=mainVerticalPushPrimary | verticalPush
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
-- Accessories: standing-calf-raise, farmers-carry
+- Accessories: single-arm-band-biceps-curl, standing-calf-raise
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
-- Tools: db=4 band=1 bw=1
-- Setup sequence: dumbbell(2) → band(1) → dumbbell(2) → bodyweight(1)
+- Tools: db=5 band=1 bw=0
+- Setup sequence: dumbbell(2) → band(1) → dumbbell(3)
 - Mains:
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | tool=dumbbell | slot=mainUnilateralLowerLoaded | unilateralLowerLoaded
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushSecondary | mainPushSecondary
   - `band-lat-pulldown` Band Lat Pulldown | tool=band | slot=mainPullVertical | pullVertical
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
-- Accessories: db-triceps-extension, side-plank-star
+- Accessories: db-triceps-extension, farmers-carry
 
 ### Practice & Restore
 - Tools: db=2 band=1 bw=1
@@ -333,7 +333,7 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | tool=dumbbell | slot=mainUnilateralLowerLoaded | unilateralLowerLoaded
-- Accessories: standing-calf-raise, db-biceps-curl
+- Accessories: standing-calf-raise, suitcase-carry
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=6 band=1 bw=0
@@ -368,12 +368,12 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Lower & Core Practice
 - Tools: db=4 band=0 bw=1
-- Setup sequence: dumbbell(3) → bodyweight(1) → dumbbell(1)
+- Setup sequence: dumbbell(4) → bodyweight(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | tool=dumbbell | slot=mainUnilateralLowerLoaded | unilateralLowerLoaded
-- Accessories: standing-calf-raise, farmers-carry
+- Accessories: dumbbell-sumo-rdl, standing-calf-raise
 
 ## Shoulder-pain mixed home / activation
 
@@ -385,7 +385,7 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 - Structural score: 100/100
 - Equipment honesty score: 100/100
 - Setup coherence score: 100/100
-- Full-experience score: 89/100
+- Full-experience score: 88.5/100
 - Hard failures: none
 
 ### Full Body A — Squat, Press and Row
@@ -398,13 +398,13 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 - Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
-- Tools: db=3 band=1 bw=1
-- Setup sequence: dumbbell(2) → bodyweight(1) → dumbbell(1) → band(1)
+- Tools: db=4 band=0 bw=1
+- Setup sequence: dumbbell(2) → bodyweight(1) → dumbbell(2)
 - Mains:
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | tool=dumbbell | slot=mainUnilateralLowerLoaded | unilateralLowerLoaded
   - `pike-pushup` Pike Push-Up | tool=bodyweight | slot=mainVerticalPushPrimary | verticalPush
-- Accessories: db-triceps-extension, pallof-press
+- Accessories: db-triceps-extension, farmers-carry
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Tools: db=2 band=2 bw=1
@@ -425,7 +425,7 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 - Structural score: 100/100
 - Equipment honesty score: 100/100
 - Setup coherence score: 100/100
-- Full-experience score: 87/100
+- Full-experience score: 86.5/100
 - Hard failures: none
 
 ### Full Body A — Squat, Press and Row
@@ -438,22 +438,22 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 - Accessories: db-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
-- Tools: db=2 band=2 bw=1
-- Setup sequence: bodyweight(1) → dumbbell(2) → band(2)
+- Tools: db=3 band=1 bw=1
+- Setup sequence: bodyweight(1) → dumbbell(2) → band(1) → dumbbell(1)
 - Mains:
   - `single-leg-hip-thrust` Single-Leg Hip Thrust | tool=bodyweight | slot=mainHingePrimary | hingePrimary
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | tool=dumbbell | slot=mainUnilateralLowerLoaded | unilateralLowerLoaded
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | tool=dumbbell | slot=mainVerticalPushPrimary | verticalPush
-- Accessories: band-external-rotation, split-stance-row
+- Accessories: band-external-rotation, farmers-carry
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
-- Tools: db=3 band=0 bw=2
-- Setup sequence: dumbbell(3) → bodyweight(2)
+- Tools: db=3 band=1 bw=1
+- Setup sequence: dumbbell(3) → band(1) → bodyweight(1)
 - Mains:
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | tool=dumbbell | slot=mainUnilateralLowerLoaded | unilateralLowerLoaded
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushSecondary | mainPushSecondary
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullSupport | extraBackLoaded
-- Accessories: side-plank, single-leg-hip-thrust
+- Accessories: split-stance-row, single-leg-hip-thrust
 
 ## Beginner three-day mixed home / skill
 
@@ -470,12 +470,12 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=4 band=0 bw=1
-- Setup sequence: dumbbell(4) → bodyweight(1)
+- Setup sequence: dumbbell(3) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=5 band=0 bw=0
@@ -510,12 +510,12 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=4 band=0 bw=1
-- Setup sequence: dumbbell(4) → bodyweight(1)
+- Setup sequence: dumbbell(3) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=5 band=0 bw=0
@@ -550,13 +550,13 @@ Manual-review snapshots. Phase 0–5 reports were not overwritten.
 
 ### Full Body A — Squat, Press and Row
 - Tools: db=5 band=0 bw=1
-- Setup sequence: dumbbell(5) → bodyweight(1)
+- Setup sequence: dumbbell(4) → bodyweight(1) → dumbbell(1)
 - Mains:
   - `goblet-squat` Goblet Squat | tool=dumbbell | slot=mainSquatPrimary | squatPrimary
   - `dumbbell-floor-press` Dumbbell Floor Press | tool=dumbbell | slot=mainPushCompound | pushCompound
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | tool=dumbbell | slot=mainPullHorizontal | pullHorizontal
   - `db-rdl` Dumbbell Romanian Deadlift | tool=dumbbell | slot=mainHingePrimary | hingePrimary
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Tools: db=6 band=0 bw=0
