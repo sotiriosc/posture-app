@@ -2,7 +2,7 @@
 
 - Branch: `phase8/plan-reveal-experience`
 - Base: `921bd35bf17eeaaf32c0decd2638a45671687354` (`checkpoint/equipment-experience-phase4`)
-- Final tip: `13bd2525277fbd9efe86c84c3f4f9e04b3dcf42e`
+- Final tip: `87ee6c49380625e29d5b3b80a219747a7c2297be`
 - `PROGRAM_TEMPLATE_VERSION`: **18** (unchanged)
 - Engine generation / eligibility / pain policy / substitution / quality / mode contracts / fuzz / progression composition / template composition: **not modified**
 
