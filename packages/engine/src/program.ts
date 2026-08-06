@@ -36159,6 +36159,11 @@ export {
   validateProgramPresentationInventory,
   validateResolvedPresentationModel,
   getPresentationReceiverEvidence,
+  buildPlanRevealModel,
+  buildInfluencePoints,
+  buildWeeklyPathDays,
+  buildProgressionPreview,
+  PHASE8_CRITICAL_CONTROL_LABELS,
 } from "@/lib/program/presentation";
 export type {
   PresentationContractStatus,
@@ -36175,6 +36180,10 @@ export type {
   ResolveProgramPresentationInput,
   AssessmentFocusFromPose,
   PresentationReceiverEvidence,
+  PlanRevealModel,
+  PlanRevealInfluencePoint,
+  PlanRevealDayNode,
+  PlanRevealProgressionPreview,
 } from "@/lib/program/presentation";
 
 export const generateNextPhaseProgram = (params: {
