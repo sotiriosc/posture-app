@@ -325,18 +325,13 @@ export const coalesceMixedHomeSessionWorkOrder = <
     before.setupBlocks.every((block) => block.exerciseIds.length === 1) &&
     before.dumbbell > 0 &&
     before.band > 0;
+  // Only rewrite previously-invalid thrash; do not reorder already-coherent days.
+  if (!beforePathological) return day;
   const afterPathological =
     after.setupBlocks.length >= 5 &&
     after.setupBlocks.every((block) => block.exerciseIds.length === 1) &&
     after.dumbbell > 0 &&
     after.band > 0;
-  // Only rewrite when we improve pathological thrash or reduce setup blocks.
-  if (
-    !beforePathological &&
-    after.setupBlocks.length >= before.setupBlocks.length
-  ) {
-    return day;
-  }
   if (afterPathological && after.setupBlocks.length >= before.setupBlocks.length) {
     return day;
   }
