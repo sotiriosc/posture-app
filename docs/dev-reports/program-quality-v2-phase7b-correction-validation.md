@@ -133,7 +133,15 @@ fuzzIntegrityAudit uses the same canonical mode case generators and programQuali
 
 ## CI
 
-Will wait/poll GitHub CI on the final pushed head after this docs commit. Status recorded below when available (or left pending with current checks if still running after ~30–40 min).
+Final head polled: `be65fbf7de470d6958f1cc74d0b9ff27a2fa20c7`
+
+| Check | Conclusion |
+| --- | --- |
+| Vercel Preview Comments | **SUCCESS** |
+| Vercel – praxis-gyms | **SUCCESS** (commit status) |
+| GitGuardian Security Checks | **NEUTRAL** (completed) |
+
+Overall recorded conclusion: **SUCCESS** (no failing checks; GitGuardian neutral).
 
 ## PR metadata
 

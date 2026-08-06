@@ -254,21 +254,34 @@
   },
   "ci": {
     "available": true,
-    "finalHead": null,
-    "conclusion": "pending_after_docs_push",
-    "checks": [],
-    "note": "Will wait/poll GitHub CI on final pushed head; record actual conclusion when finished or pending status after reasonable wait."
+    "finalHead": "be65fbf7de470d6958f1cc74d0b9ff27a2fa20c7",
+    "conclusion": "SUCCESS",
+    "checks": [
+      {
+        "name": "Vercel Preview Comments",
+        "conclusion": "SUCCESS"
+      },
+      {
+        "name": "Vercel – praxis-gyms",
+        "conclusion": "SUCCESS"
+      },
+      {
+        "name": "GitGuardian Security Checks",
+        "conclusion": "NEUTRAL"
+      }
+    ],
+    "note": "Polled completed checks on be65fbf; no failing checks (GitGuardian neutral)."
   },
   "prMetadataUpdate": {
     "attempted": true,
     "keptDraft": true,
     "merged": false,
-    "result": "pending_rest_api_update",
-    "note": "Update PR #82 body via gh api REST after push with final head SHA, audit results, CI note, template-version 18, draft/unmerged, stop-before-Phase-8.",
+    "result": "updated",
+    "note": "PR #82 body updated via REST with final head SHA, audit results, CI SUCCESS, template-version 18, draft/unmerged, stop-before-Phase-8.",
     "url": "https://github.com/sotiriosc/posture-app/pull/82"
   },
   "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4.",
   "validationCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522",
   "validationFollowUpCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522",
-  "branchTipAtValidationCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522"
+  "branchTipAtValidationCommit": "be65fbf7de470d6958f1cc74d0b9ff27a2fa20c7"
 }
