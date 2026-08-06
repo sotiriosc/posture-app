@@ -1,0 +1,418 @@
+{
+  "meta": {
+    "branch": "phase8/plan-reveal-experience",
+    "base": "921bd35bf17eeaaf32c0decd2638a45671687354",
+    "generated": "2026-08-06",
+    "relationalVocabulary": "system input → giver → output → UI receiver → persistence effect → recovery / restore path",
+    "sectionRegistryIds": [
+      "results.headline",
+      "results.ladders",
+      "results.sacrificeRetest",
+      "results.posture",
+      "results.retiredTags",
+      "results.phaseHistory",
+      "results.provenanceFooter",
+      "session.ladderPill",
+      "day.correctiveSource",
+      "day.warmupBreakdown"
+    ]
+  },
+  "revealIntegrationDecisions": [
+    {
+      "element": "phase identity / purpose / days / duration / equipment / critical capability / primary CTA",
+      "decision": "always_required_first_reveal"
+    },
+    {
+      "element": "why Praxis chose this / technical detail / full rationale / exact progression conditions",
+      "decision": "progressive_disclosure_not_user_hidden"
+    },
+    {
+      "element": "progression detail on /results/view",
+      "decision": "existing_section_id",
+      "sectionId": "results.ladders"
+    },
+    {
+      "element": "Plan Reveal ProgressionPreview",
+      "decision": "progressive_disclosure_not_user_hidden",
+      "note": "Does not inherit results.ladders hide state on first reveal"
+    },
+    {
+      "element": "posture/focus on analytical results",
+      "decision": "existing_section_id",
+      "sectionId": "results.posture"
+    },
+    {
+      "element": "phase timeline",
+      "decision": "existing_section_id",
+      "sectionId": "results.phaseHistory"
+    },
+    {
+      "element": "provenance",
+      "decision": "existing_section_id",
+      "sectionId": "results.provenanceFooter"
+    }
+  ],
+  "noLossMatrix": [
+    {
+      "route": "/questionnaire",
+      "surface": "questionnaire completion",
+      "component": "QuestionnaireForm",
+      "status": "preserved unchanged"
+    },
+    {
+      "route": "/results",
+      "surface": "first plan reveal",
+      "component": "PlanRevealExperience",
+      "status": "restyled"
+    },
+    {
+      "route": "/results",
+      "surface": "dashboard returning",
+      "component": "DashboardHero",
+      "status": "preserved unchanged"
+    },
+    {
+      "route": "/results#week-view",
+      "surface": "week view",
+      "component": "WeekViewPanel",
+      "status": "progressively disclosed"
+    },
+    {
+      "route": "/session",
+      "surface": "session start",
+      "component": "SessionStartSummary",
+      "status": "restyled"
+    },
+    {
+      "route": "/session",
+      "surface": "active exercise / pain",
+      "component": "SessionClient",
+      "status": "preserved unchanged"
+    },
+    {
+      "route": "/results/view",
+      "surface": "movement-pattern results",
+      "component": "ResultsView",
+      "status": "visibility-controlled"
+    },
+    {
+      "route": "/account/settings",
+      "surface": "account settings",
+      "component": "settings pages",
+      "status": "preserved unchanged"
+    },
+    {
+      "route": "/dev/body-map",
+      "surface": "body-map prototype",
+      "component": "BodyMapPrototype",
+      "status": "progressively disclosed"
+    }
+  ],
+  "items": [
+    {
+      "path": "apps/consumer/src/components/dashboard/DashboardHero.tsx",
+      "symbol": "DashboardHero",
+      "classification": "ACTIVE_COMPATIBILITY",
+      "imports": ["ResultsRoutine"],
+      "route": "/results (dashboardLevel > 1)",
+      "deps": ["phase gate props", "CTA href"],
+      "tests": ["apps/consumer/tests/e2e/dashboardHierarchyAndLockedState.spec.ts"],
+      "scope": "consumer + gyms mirror",
+      "replacement": "PlanRevealExperience for first-reveal only",
+      "recommendedAction": "PRESERVE — returning-user hero",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/gyms/src/components/dashboard/DashboardHero.tsx",
+      "symbol": "DashboardHero",
+      "classification": "DUPLICATE_IMPLEMENTATION",
+      "imports": ["ResultsRoutine"],
+      "route": "/results (dashboardLevel > 1)",
+      "deps": ["phase gate props", "CTA href"],
+      "tests": [],
+      "scope": "gyms",
+      "replacement": "consumer DashboardHero (future packages/ui)",
+      "recommendedAction": "PRESERVE_AND_DEFER — do not consolidate in Phase 8",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/consumer/src/components/plan-reveal/*",
+      "symbol": "PlanRevealExperience and subcomponents",
+      "classification": "ACTIVE_CANONICAL",
+      "imports": ["ResultsRoutine"],
+      "route": "/results (dashboardLevel === 1)",
+      "deps": ["buildPlanRevealModel", "resolveProgramPresentation"],
+      "tests": ["packages/engine/tests/unit/planRevealModel.test.ts", "apps/consumer/tests/unit/phase8PlanRevealParity.test.ts"],
+      "scope": "consumer",
+      "replacement": null,
+      "recommendedAction": "KEEP",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/gyms/src/components/plan-reveal/*",
+      "symbol": "PlanRevealExperience and subcomponents",
+      "classification": "DUPLICATE_IMPLEMENTATION",
+      "imports": ["ResultsRoutine"],
+      "route": "/results (dashboardLevel === 1)",
+      "deps": ["buildPlanRevealModel", "resolveProgramPresentation"],
+      "tests": ["apps/gyms/tests/unit/phase8PlanRevealParity.test.ts"],
+      "scope": "gyms",
+      "replacement": "consumer plan-reveal (future packages/ui)",
+      "recommendedAction": "PRESERVE_AND_DEFER — intentional Phase 8 mirror",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/consumer/src/components/ResultsRoutine.tsx",
+      "symbol": "ResultsRoutine",
+      "classification": "ACTIVE_CANONICAL",
+      "imports": ["/results page"],
+      "route": "/results",
+      "deps": ["presentation", "program", "progress", "section prefs"],
+      "tests": ["apps/consumer/tests/e2e/firstRunHappyPath.spec.ts"],
+      "scope": "consumer",
+      "replacement": null,
+      "recommendedAction": "KEEP",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/gyms/src/components/ResultsRoutine.tsx",
+      "symbol": "ResultsRoutine",
+      "classification": "DUPLICATE_IMPLEMENTATION",
+      "imports": ["/results page"],
+      "route": "/results",
+      "deps": ["presentation", "program", "progress"],
+      "tests": [],
+      "scope": "gyms",
+      "replacement": "consumer ResultsRoutine (future shared shell)",
+      "recommendedAction": "PRESERVE_AND_DEFER",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/consumer/src/components/session/SessionProgressHeader.tsx",
+      "symbol": "SessionProgressHeader",
+      "classification": "ACTIVE_CANONICAL",
+      "imports": ["SessionClient"],
+      "route": "/session",
+      "deps": ["presentation session fields"],
+      "tests": ["apps/consumer/tests/e2e/sessionStartRedundancy.spec.ts"],
+      "scope": "consumer",
+      "replacement": null,
+      "recommendedAction": "KEEP",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/gyms/src/components/session/SessionProgressHeader.tsx",
+      "symbol": "SessionProgressHeader",
+      "classification": "DUPLICATE_IMPLEMENTATION",
+      "imports": ["SessionClient"],
+      "route": "/session",
+      "deps": ["presentation session fields"],
+      "tests": [],
+      "scope": "gyms",
+      "replacement": "consumer SessionProgressHeader",
+      "recommendedAction": "PRESERVE_AND_DEFER",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/consumer/src/components/session/SessionStartSummary.tsx",
+      "symbol": "SessionStartSummary",
+      "classification": "ACTIVE_CANONICAL",
+      "imports": ["SessionProgressHeader"],
+      "route": "/session",
+      "deps": ["presentation"],
+      "tests": ["apps/consumer/tests/unit/phase8PlanRevealParity.test.ts"],
+      "scope": "consumer",
+      "replacement": null,
+      "recommendedAction": "KEEP",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/gyms/src/components/session/SessionStartSummary.tsx",
+      "symbol": "SessionStartSummary",
+      "classification": "DUPLICATE_IMPLEMENTATION",
+      "imports": ["SessionProgressHeader"],
+      "route": "/session",
+      "deps": ["presentation"],
+      "tests": [],
+      "scope": "gyms",
+      "replacement": "consumer SessionStartSummary",
+      "recommendedAction": "PRESERVE_AND_DEFER",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/consumer/src/components/body-map/BodyMapPrototype.tsx",
+      "symbol": "BodyMapPrototype",
+      "classification": "TEST_ONLY",
+      "imports": ["apps/consumer/src/app/dev/body-map/page.tsx"],
+      "route": "/dev/body-map",
+      "deps": ["local React state only — no LogPrefs / session draft writes"],
+      "tests": ["apps/consumer/tests/unit/phase8BodyMapPrototype.test.tsx"],
+      "scope": "consumer",
+      "replacement": "production discomfort pills until gate PASS",
+      "recommendedAction": "PRESERVE_AND_DEFER — demo only",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/gyms/src/components/body-map/BodyMapPrototype.tsx",
+      "symbol": "BodyMapPrototype",
+      "classification": "DUPLICATE_IMPLEMENTATION",
+      "imports": ["apps/gyms/src/app/dev/body-map/page.tsx"],
+      "route": "/dev/body-map",
+      "deps": ["local React state only"],
+      "tests": [],
+      "scope": "gyms",
+      "replacement": "consumer BodyMapPrototype",
+      "recommendedAction": "PRESERVE_AND_DEFER",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/gyms/src/app/account/settings/page.tsx",
+      "symbol": "GymsAccountSettingsPage",
+      "classification": "ACTIVE_CANONICAL",
+      "imports": ["/account/settings"],
+      "route": "/account/settings",
+      "deps": ["soundPrefs", "exports"],
+      "tests": [],
+      "scope": "gyms-only",
+      "replacement": null,
+      "recommendedAction": "KEEP — intentionally no Interface section",
+      "confidence": "high"
+    },
+    {
+      "path": "LogPrefs.sectionVisibility (gyms runtime)",
+      "symbol": "sectionVisibility",
+      "classification": "DORMANT_INTENDED",
+      "imports": ["shared LogPrefs type"],
+      "route": "none in gyms UI",
+      "deps": ["IndexedDB prefs schema"],
+      "tests": ["packages/engine/tests/unit/sectionVisibility.test.ts"],
+      "scope": "gyms-only UI absence; shared type",
+      "replacement": "consumer Interface if product later requires",
+      "recommendedAction": "PRESERVE_AND_DEFER — fail-open; do not strip field",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/consumer/src/app/settings/page.tsx",
+      "symbol": "AdminSettingsPage",
+      "classification": "ADMIN_ONLY",
+      "imports": ["/settings"],
+      "route": "/settings",
+      "deps": ["sectionVisibility", "blockedExerciseIds", "backup JSON"],
+      "tests": ["apps/consumer/tests/e2e/adminAccessControl.spec.ts"],
+      "scope": "admin-only",
+      "replacement": null,
+      "recommendedAction": "KEEP",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/gyms/src/app/settings/page.tsx",
+      "symbol": "GymsAdminSettingsPage",
+      "classification": "ADMIN_ONLY",
+      "imports": ["/settings"],
+      "route": "/settings",
+      "deps": ["blockedExerciseIds", "backup"],
+      "tests": [],
+      "scope": "admin-only",
+      "replacement": null,
+      "recommendedAction": "KEEP — no Interface section",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/consumer/src/components/ResultsRoutine.tsx",
+      "symbol": "SHOW_PHASE_PREVIEW_REFERENCE",
+      "classification": "DORMANT_INTENDED",
+      "imports": ["local const false"],
+      "route": "/results (gated off)",
+      "deps": ["ProgramReferenceCard"],
+      "tests": [],
+      "scope": "consumer",
+      "replacement": "unknown",
+      "recommendedAction": "PRESERVE_AND_DEFER",
+      "confidence": "medium"
+    },
+    {
+      "path": "apps/consumer/src/components/results-view/ResultsView.tsx",
+      "symbol": "ResultsView",
+      "classification": "ACTIVE_CANONICAL",
+      "imports": ["/results/view"],
+      "route": "/results/view",
+      "deps": ["sectionVisibility gates"],
+      "tests": ["apps/consumer/tests/e2e/settingsInterfaceSectionVisible.spec.ts"],
+      "scope": "consumer-only",
+      "replacement": null,
+      "recommendedAction": "KEEP",
+      "confidence": "high"
+    },
+    {
+      "path": "unknown unused dashboard decorative card candidates",
+      "symbol": "DISCONNECTED_UNKNOWN_CARDS",
+      "classification": "DISCONNECTED_UNKNOWN",
+      "imports": "unverified",
+      "route": "possibly /results",
+      "deps": "unknown",
+      "tests": [],
+      "scope": "shared suspicion",
+      "replacement": "unknown",
+      "recommendedAction": "PRESERVE_AND_DEFER — do not delete",
+      "confidence": "low"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/buildPlanRevealModel.ts",
+      "symbol": "buildPlanRevealModel",
+      "classification": "ACTIVE_CANONICAL",
+      "imports": ["plan-reveal UI", "tests"],
+      "route": "n/a (engine)",
+      "deps": ["resolveProgramPresentation outputs", "phases meta"],
+      "tests": ["packages/engine/tests/unit/planRevealModel.test.ts"],
+      "scope": "shared",
+      "replacement": null,
+      "recommendedAction": "KEEP",
+      "confidence": "high"
+    },
+    {
+      "path": "apps/consumer/src/components/visibility/SectionVisibility.tsx",
+      "symbol": "SectionVisibilityProvider et al.",
+      "classification": "ACTIVE_CANONICAL",
+      "imports": ["settings", "ResultsView", "WeekViewPanel", "SessionLadderPill"],
+      "route": "consumer settings + results + session + day",
+      "deps": ["LogPrefs.sectionVisibility"],
+      "tests": ["packages/engine/tests/unit/sectionVisibility.test.ts", "apps/consumer/tests/e2e/settingsInterfaceSectionVisible.spec.ts"],
+      "scope": "consumer-only",
+      "replacement": null,
+      "recommendedAction": "KEEP",
+      "confidence": "high"
+    }
+  ],
+  "deferredFindings": [
+    {
+      "finding": "Consumer/gyms ResultsRoutine duplication (~4k LOC)",
+      "classification": "DUPLICATE_IMPLEMENTATION",
+      "recommendedAction": "PRESERVE_AND_DEFER",
+      "confidence": "high"
+    },
+    {
+      "finding": "Consumer/gyms plan-reveal mirror",
+      "classification": "DUPLICATE_IMPLEMENTATION",
+      "recommendedAction": "PRESERVE_AND_DEFER — intentional until packages/ui",
+      "confidence": "high"
+    },
+    {
+      "finding": "Gyms lacks sectionVisibility Interface UI",
+      "classification": "DORMANT_INTENDED",
+      "recommendedAction": "PRESERVE_AND_DEFER",
+      "confidence": "high"
+    },
+    {
+      "finding": "Body-map not wired to production pain persistence",
+      "classification": "TEST_ONLY",
+      "recommendedAction": "Keep demo-only; production decision in later phase",
+      "confidence": "high"
+    },
+    {
+      "finding": "Unproven dead-code deletion candidates",
+      "classification": "SUPERSEDED_RESIDUAL",
+      "recommendedAction": "Do not delete in Phase 8",
+      "confidence": "medium"
+    }
+  ]
+}
