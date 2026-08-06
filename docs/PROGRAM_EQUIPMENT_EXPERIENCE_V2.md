@@ -3547,6 +3547,46 @@ See `docs/dev-reports/program-quality-v2-phase7b-phase8-requirements.md` — pla
   - FAIL then fixed: `npm run lint` (7 pre-existing `@typescript-eslint/no-explicit-any` in e2e + catalogLadderInvariants) → typed; lint now **0 errors**
   - No generation/pain/swap/persistence changes after the quality pass — 50k not re-run (guide §22)
 
+#### Review Corrections and Fuzz Integrity
+
+Correction pass on PR branch `cursor/cloud-agent-1785959822486-hte2i` only (base remains `5c88a64`). Checkpoint `checkpoint/equipment-experience-phase4` was not updated. PR #82 remains draft. Phase 8 not started.
+
+##### Scope pollution removed
+- Restored protected prompt state: deleted PR-added `latestprompt.md` (absent at base); `newpromptforpengine.md` unchanged (same blob as base).
+- Removed unrelated docs (`docs/Phase 7 Draft`, `docs/enginev2.md`, `docs/newprompt2.md`, `docs/prompt1.md`, `docs/ux-observations.md`), phase prompt dumps (`phase5b`/`phase6`/`phase7`/`phase7bguide`), one-off `__debug__/dbg*` / dump / seed scripts, orphan `src/lib/program/dayTemplates.ts`, and unreferenced screenshot image bundles.
+- Restored `package-lock.json` to base; later `fake-indexeddb` was added as a real test dependency for persistence proof.
+
+##### Photo-confidence correction
+- Consumer + gyms `ResultsRoutine` now use `poseState.analysis → resolveAssessmentFocusFromPose → derivePoseFocus`.
+- `status="insufficient_confidence"` yields no photo-informed adaptation claim; observation titles are never treated as focus tags.
+
+##### Receiver-evidence / field accounting
+- Independent `presentationReceiverEvidence.ts` registry (separate from inventory `uiReceivers`).
+- Validator reports `totalRelationships` and `totalConcreteFields` distinctly; missing concrete fields are listed.
+- Target: 0 declared-only release receivers; 0 missing receiver-evidence records for required visible relationships.
+
+##### Persistence / role-truth / labels / no-valid-swap / capability reload
+- Real IndexedDB round-trip tests via `fake-indexeddb` + `sessionDraftStore` / `logStore` (not object-literal prefs).
+- Pain-swap previews filtered with `classifyGymMovementRoleTruth` (no loose posterior-chain string matching).
+- Visible labels: sacrifice→Skip for now, test→Try again, modify→Make it easier (internal enums unchanged).
+- No-valid-swap keeps usable Save discomfort / Skip this exercise / End session actions.
+- Capability notes re-derived from stored questionnaire + capabilities after reload.
+
+##### Release presentation audit
+- Removed `skipQualityGate: true` from `programPresentationAudit.ts` mode smoke.
+
+##### Fuzz-integrity (§13)
+- Runner: `npm run audit:fuzz-integrity` (`packages/engine/src/__debug__/fuzzIntegrityAudit.ts`)
+- Reports: `docs/dev-reports/program-quality-v2-fuzz-integrity.{md,json}` and `…-samples.{md,json}`
+- Uses canonical mode case generators + `programQualitySignature`
+- Short sample (`FUZZ_INTEGRITY_CASES_PER_MODE=20`): mutations **14/14**, metamorphic **9/9**, verdict **NEEDS_REVIEW** (elevated fallback/recovery rates on tiny sample — not a product failure by itself)
+- Release evidence: `FUZZ_INTEGRITY_CASES_PER_MODE=10000`
+
+##### Unresolved review signals
+- Fuzz-integrity full 10k/mode evidence and any NEEDS_REVIEW explanations after that run
+- Ordinary `audit:program-quality` re-run required because substitution filtering + quality-gate evaluation checks changed
+- CI conclusion after push of correction commits
+
 #### Stop
 
 Phase 7B complete. Do not begin Phase 8 until explicitly instructed.

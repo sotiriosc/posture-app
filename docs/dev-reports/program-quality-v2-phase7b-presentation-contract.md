@@ -2,11 +2,15 @@
 
 Verdict: **PASS**
 
-Generated: 2026-08-06T00:20:05.405Z
+Generated: 2026-08-06T00:56:30.708Z
 
 ## Validation summary
 
 - Total relationships: 43
+- Total concrete fields: 26
+- Missing concrete fields: 0
+- Declared-only release receivers: 0
+- Missing receiver-evidence records: 0
 - Relationships without givers: 0
 - Outputs without receivers: 0
 - Visible without canonical source: 0
@@ -18,9 +22,9 @@ Generated: 2026-08-06T00:20:05.405Z
 ## Feedback-contract plain labels
 
 - `sacrifice` → **Skip for now** — Remove this exercise for now — Praxis can retest it later
-- `test` → **Keep and retest** — Keep it in and try again this session
+- `test` → **Try again** — Keep it in and try again this session
 - `modify` → **Make it easier** — Switch to an easier variation
-- `dismiss` → **Keep and retest** — Keep it in and try again this session
+- `dismiss` → **Try again** — Keep it in and try again this session
 
 ## Mode presentation smoke
 

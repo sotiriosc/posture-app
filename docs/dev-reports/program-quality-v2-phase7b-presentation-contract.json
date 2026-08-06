@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T00:20:05.405Z",
+  "generatedAt": "2026-08-06T00:56:30.708Z",
   "phase": "7b",
   "verdict": "PASS",
   "inventoryVersion": 1,
@@ -7,6 +7,8 @@
     "passed": true,
     "totalRelationships": 43,
     "totalFields": 43,
+    "totalConcreteFields": 26,
+    "missingConcreteFields": [],
     "countsByStatus": {
       "visible": 16,
       "visibleOnDemand": 14,
@@ -22,6 +24,8 @@
     "inputsWithoutOutput": 0,
     "unresolvedUnused": 0,
     "rawInternalLanguageLeaks": 0,
+    "declaredOnlyReleaseReceivers": 0,
+    "missingReceiverEvidenceRecords": 0,
     "findings": []
   },
   "feedbackContractLabels": {
@@ -32,7 +36,7 @@
     },
     "test": {
       "action": "test",
-      "label": "Keep and retest",
+      "label": "Try again",
       "description": "Keep it in and try again this session"
     },
     "modify": {
@@ -42,7 +46,7 @@
     },
     "dismiss": {
       "action": "dismiss",
-      "label": "Keep and retest",
+      "label": "Try again",
       "description": "Keep it in and try again this session"
     }
   },
@@ -168,8 +172,12 @@
     }
   ],
   "targets": {
-    "criticalRelationshipsMapped": "100%",
+    "criticalConcreteFieldsMapped": "100%",
+    "totalRelationships": 43,
+    "totalConcreteFields": 26,
     "requiredOutputsWithoutReceivers": 0,
+    "declaredOnlyReleaseReceivers": 0,
+    "missingReceiverEvidenceRecords": 0,
     "unresolvedUnused": 0,
     "rawInternalLanguageLeaks": 0
   }

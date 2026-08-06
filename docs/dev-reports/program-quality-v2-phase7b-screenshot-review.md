@@ -2,7 +2,7 @@
 
 Generated: 2026-08-05
 
-Capture policy: review against **current live UI surfaces**. Owner confirmed the latest screenshot batch is closer to the product that exists today; older marketing/mock shots are ignored as stale. Browser tooling supplements when the apps are running; otherwise structural evidence is used. No Phase 8 redesign during this review.
+Capture policy: review against **current live UI surfaces**. Owner confirmed the latest screenshot batch is closer to the product that exists today; those user-supplied current-product screenshots were used as qualitative baseline evidence only (not newly captured by browser automation). Unreferenced duplicate image bundles under `docs/Photos-*` were removed from the PR during the review-correction pass. Browser tooling supplements when the apps are running; otherwise structural evidence is used. No Phase 8 redesign during this review.
 
 ## Current UI receivers (source of truth)
 
