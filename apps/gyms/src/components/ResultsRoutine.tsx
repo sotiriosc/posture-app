@@ -78,6 +78,7 @@ import {
   metric01ToDisplayPercent,
 } from "@/lib/dashboardReadiness";
 import DashboardHero from "@/components/dashboard/DashboardHero";
+import PlanRevealExperience from "@/components/plan-reveal/PlanRevealExperience";
 import CoachNoteBanner from "@/components/dashboard/CoachNoteBanner";
 import ProgressSummary from "@/components/dashboard/ProgressSummary";
 import ExpandableSection from "@/components/dashboard/ExpandableSection";
@@ -3281,34 +3282,42 @@ export default function ResultsRoutine({
 
       <div className="order-1">
         <CoachNoteBanner note={coachAction} />
-        <DashboardHero
-          greeting={heroGreeting}
-          phaseName={phaseName}
-          workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
-          workoutTarget={phaseGate.minWorkouts}
-          dayTarget={phaseGate.minDays}
-          weekCompletedDays={completedCount}
-          weekTargetDays={activeDaysPerWeek}
-          nextPhaseIndex={nextPhaseIndex}
-          phaseAtMax={currentPhaseIndex >= MAX_PHASE_INDEX}
-          phaseGateReady={phaseAdvanceReady}
-          phaseGateActionLabel={
-            phaseAdvanceReady && !phaseReadyNoticeOpen
-              ? `Move to Phase ${nextPhaseIndex}`
-              : null
-          }
-          onPhaseGateAction={
-            phaseAdvanceReady && !phaseReadyNoticeOpen
-              ? openPhaseAdvancePrompt
-              : null
-          }
-          phaseGoal={phaseGoalText}
-          encouragement={encouragementMessage}
-          metricChips={heroMetricChips}
-          ctaLabel={heroCta.label}
-          ctaHref={heroCta.href}
-          ctaPulse={shouldPulsePrimaryCta}
-        />
+        {dashboardLevel === 1 && presentationModel ? (
+          <PlanRevealExperience
+            presentationModel={presentationModel}
+            startHref={heroCta.href}
+            ctaPulse={shouldPulsePrimaryCta}
+          />
+        ) : (
+          <DashboardHero
+            greeting={heroGreeting}
+            phaseName={phaseName}
+            workoutsCompletedInPhase={phaseGate.workoutsCompletedInPhase}
+            workoutTarget={phaseGate.minWorkouts}
+            dayTarget={phaseGate.minDays}
+            weekCompletedDays={completedCount}
+            weekTargetDays={activeDaysPerWeek}
+            nextPhaseIndex={nextPhaseIndex}
+            phaseAtMax={currentPhaseIndex >= MAX_PHASE_INDEX}
+            phaseGateReady={phaseAdvanceReady}
+            phaseGateActionLabel={
+              phaseAdvanceReady && !phaseReadyNoticeOpen
+                ? `Move to Phase ${nextPhaseIndex}`
+                : null
+            }
+            onPhaseGateAction={
+              phaseAdvanceReady && !phaseReadyNoticeOpen
+                ? openPhaseAdvancePrompt
+                : null
+            }
+            phaseGoal={phaseGoalText}
+            encouragement={encouragementMessage}
+            metricChips={heroMetricChips}
+            ctaLabel={heroCta.label}
+            ctaHref={heroCta.href}
+            ctaPulse={shouldPulsePrimaryCta}
+          />
+        )}
       </div>
 
       <AssessmentStatusCard status={assessmentStatus} />
