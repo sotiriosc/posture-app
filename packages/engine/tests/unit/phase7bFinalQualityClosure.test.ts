@@ -243,4 +243,108 @@ describe("Phase 7B final-quality closure families", () => {
       )
     ).toBe(false);
   });
+
+  /**
+   * Remaining release-fuzz family (7/50000): phase-2 3-day gym with db-rdl
+   * blocked — prep-only hip thrust as hinge and/or hamstring curl as unilateral.
+   */
+  test.each([
+    {
+      seed: "gym-fuzz-89f65acb",
+      q: {
+        goals: "General fitness",
+        painAreas: ["Neck"],
+        experience: "Intermediate",
+        equipment: ["gym"],
+        daysPerWeek: 3,
+      } satisfies QuestionnaireData,
+    },
+    {
+      seed: "gym-fuzz-976fee2a",
+      q: {
+        goals: "Improve posture",
+        painAreas: ["Shoulders"],
+        experience: "Advanced",
+        equipment: ["gym", "dumbbells"],
+        daysPerWeek: 3,
+      } satisfies QuestionnaireData,
+    },
+    {
+      seed: "gym-fuzz-325adcfb",
+      q: {
+        goals: "Athletic performance",
+        painAreas: [],
+        experience: "Beginner",
+        equipment: ["gym", "dumbbells"],
+        daysPerWeek: 3,
+      } satisfies QuestionnaireData,
+    },
+    {
+      seed: "gym-fuzz-328ff35",
+      q: {
+        goals: "Improve posture",
+        painAreas: ["Shoulders", "Upper back"],
+        experience: "Advanced",
+        equipment: ["gym", "dumbbells"],
+        daysPerWeek: 3,
+      } satisfies QuestionnaireData,
+    },
+    {
+      seed: "gym-fuzz-b905048c",
+      q: {
+        goals: "Improve posture",
+        painAreas: ["Neck"],
+        experience: "Advanced",
+        equipment: ["gym"],
+        daysPerWeek: 3,
+      } satisfies QuestionnaireData,
+    },
+    {
+      seed: "gym-fuzz-6169b984",
+      q: {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Intermediate",
+        equipment: ["gym", "dumbbells"],
+        daysPerWeek: 3,
+      } satisfies QuestionnaireData,
+    },
+    {
+      seed: "gym-fuzz-6ee21017",
+      q: {
+        goals: "Improve posture",
+        painAreas: ["Shoulders"],
+        experience: "Advanced",
+        equipment: ["gym", "dumbbells"],
+        daysPerWeek: 3,
+      } satisfies QuestionnaireData,
+    },
+  ])(
+    "$seed: phase2 3d db-rdl block keeps hinge/unilateral role truth",
+    ({ seed, q }) => {
+      const blockedExerciseIds = block("db-rdl");
+      const guarded = genGuarded(q, seed, seed, 2, blockedExerciseIds);
+      expect(guarded.ok).toBe(true);
+      if (!guarded.ok) return;
+      expect(allIds(guarded.program)).not.toContain("db-rdl");
+      expect(
+        guarded.evaluation.hardFailures.some((f) =>
+          [
+            "GYM_REQUIRED_ROLE_WRONG_TRUTH",
+            "GYM_PAIN_FREE_MAIN_IS_PREP_ONLY",
+            "QUALITY_BLOCKED_EXERCISE_PRESENT",
+          ].includes(f.code)
+        )
+      ).toBe(false);
+      const legs = guarded.program.week.find((d) =>
+        d.title.toLowerCase().includes("legs")
+      );
+      const mains = legs?.routine
+        .filter((i) => i.section === "main")
+        .map((i) => i.exerciseId);
+      expect(mains?.[1]).not.toBe("single-leg-hip-thrust");
+      expect(mains?.[1]).not.toBe("single-leg-glute-bridge-hold");
+      expect(mains?.[2]).not.toBe("machine-seated-hamstring-curl");
+    }
+  );
 });

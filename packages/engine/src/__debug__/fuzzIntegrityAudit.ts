@@ -613,6 +613,77 @@ const hasHingeCoverage = (program: Program | null) =>
       })
   );
 
+/** §8: pain/experience/phase may adapt via non-ID channels. */
+const programsShowAdaptationEffect = (
+  a: Program | null,
+  b: Program | null
+): boolean => {
+  if (!a || !b) return false;
+  const rxOf = (program: Program) =>
+    JSON.stringify(
+      program.week.map((d) =>
+        d.routine.map((i) => ({
+          id: i.exerciseId,
+          rx: i.prescription ?? null,
+          sets: i.sets,
+          reps: i.reps,
+          rule: i.prescription?.progressionRule ?? null,
+        }))
+      )
+    );
+  const warmOf = (program: Program) =>
+    program.week
+      .flatMap((d) =>
+        d.routine
+          .filter((i) => i.section === "warmup" || i.section === "activation")
+          .map((i) => i.exerciseId)
+      )
+      .join(",");
+  const rationaleOf = (program: Program) =>
+    JSON.stringify(program.adaptationSummary ?? []);
+  return (
+    rxOf(a) !== rxOf(b) ||
+    warmOf(a) !== warmOf(b) ||
+    rationaleOf(a) !== rationaleOf(b)
+  );
+};
+
+const programDependsOnDifferingSupport = (
+  a: CaseRunResult,
+  b: CaseRunResult
+): boolean => {
+  const aEquip = new Set(
+    (a.case.questionnaire.equipment ?? []).map((e) => e.toLowerCase())
+  );
+  const bEquip = new Set(
+    (b.case.questionnaire.equipment ?? []).map((e) => e.toLowerCase())
+  );
+  const differingSupports = ["bench", "pullup_bar"].filter(
+    (token) => aEquip.has(token) !== bEquip.has(token)
+  );
+  const bandSetupDiffers =
+    a.case.questionnaire.bandSetup !== b.case.questionnaire.bandSetup;
+  if (!differingSupports.length && !bandSetupDiffers) return false;
+
+  const ids = new Set([
+    ...(a.program ? allExerciseIds(a.program) : []),
+    ...(b.program ? allExerciseIds(b.program) : []),
+  ]);
+  for (const id of ids) {
+    const exercise = exerciseById(id);
+    if (!exercise) continue;
+    const equip = (exercise.equipment ?? []).map((e) => e.toLowerCase());
+    if (differingSupports.some((token) => equip.includes(token))) return true;
+    if (
+      bandSetupDiffers &&
+      (equip.includes("bands") || id.includes("band") || id.includes("anchor"))
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
+
 const classifyCollapsePair = (
   a: CaseRunResult,
   b: CaseRunResult,
@@ -681,6 +752,24 @@ const classifyCollapsePair = (
         explanation: "Support/anchor difference collapses under the same capability limitation codes.",
       };
     }
+    // Support/anchor only matters when it would change eligibility for selected work.
+    if (programsShowAdaptationEffect(a.program, b.program)) {
+      return {
+        category: "expectedIrrelevantInput",
+        verdict: "expected",
+        explanation:
+          "Support/anchor differs but prescription/warmup/rationale/progression already carries an adaptation effect under shared exercise identity.",
+      };
+    }
+    const aNeedsDifferingSupport = programDependsOnDifferingSupport(a, b);
+    if (!aNeedsDifferingSupport) {
+      return {
+        category: "expectedIrrelevantInput",
+        verdict: "expected",
+        explanation:
+          "Support/anchor difference does not affect eligibility of either program's selected exercises.",
+      };
+    }
     return {
       category: "suspiciousIgnoredSupportAnchorInput",
       verdict: "suspicious",
@@ -689,16 +778,28 @@ const classifyCollapsePair = (
   }
 
   if (diffs.includes("pain changes")) {
+    // §8: pain may change selection, warmup, prescription, rationale, or progression.
+    if (programsShowAdaptationEffect(a.program, b.program)) {
+      return {
+        category: "expectedIrrelevantInput",
+        verdict: "expected",
+        explanation:
+          "Pain differs; non-composition adaptation (prescription/warmup/rationale/progression) is present as intended.",
+      };
+    }
     const shoulderOrBack =
       a.case.painKey.includes("shoulder") ||
       b.case.painKey.includes("shoulder") ||
       a.case.painKey.includes("lower back") ||
-      b.case.painKey.includes("lower back");
+      b.case.painKey.includes("lower back") ||
+      a.case.painKey.includes("hip") ||
+      b.case.painKey.includes("hip");
     if (shoulderOrBack) {
       return {
         category: "suspiciousIgnoredPainInput",
         verdict: "suspicious",
-        explanation: "Material pain input differs but semantic signature collapsed.",
+        explanation:
+          "Material pain input differs with identical composition and no prescription/warmup/rationale/progression adaptation.",
       };
     }
     return {

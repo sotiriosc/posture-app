@@ -7,6 +7,7 @@ import { exerciseById } from "@/lib/exercises";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { coalesceMixedHomeSessionWorkOrder } from "@/lib/program/mixedHomeProgramContract";
 import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
+import { classifyGymMovementRoleTruth } from "@/lib/program/gymProgramContract";
 import type { Program, ProgramDay, ProgramRoutineItem, LogPrefs } from "@/lib/types";
 import {
   evaluateProgramQuality,
@@ -20,9 +21,24 @@ const TRUE_HINGE_ALTERNATIVES = [
   "machine-glute-drive",
   "barbell-romanian-deadlift",
   "barbell-hip-thrust",
+] as const;
+
+const PAIN_AWARE_HINGE_ALTERNATIVES = [
+  "machine-glute-drive",
+  "barbell-hip-thrust",
   "single-leg-hip-thrust",
   "single-leg-glute-bridge-hold",
   "dumbbell-sumo-rdl",
+  "db-rdl",
+] as const;
+
+const UNILATERAL_ALTERNATIVES = [
+  "dumbbell-bulgarian-split-squat",
+  "dumbbell-reverse-lunge",
+  "dumbbell-step-up-loaded",
+  "split-squat",
+  "heels-elevated-squat",
+  "cossack-squat",
 ] as const;
 
 const SQUAT_PRIMARY_ALTERNATIVES = [
@@ -77,6 +93,18 @@ const firstUnblockedAlternative = (
     return Boolean(exerciseById(id));
   }) ?? null;
 
+const hasLowBackOrHipPain = (questionnaire: QuestionnaireData) =>
+  (questionnaire.painAreas ?? []).some((area) => {
+    const token = area.toLowerCase().replace(/\s+/g, "_");
+    if (token.includes("upper_back") || token.includes("upperback")) return false;
+    return (
+      token.includes("lower_back") ||
+      token.includes("low_back") ||
+      token.includes("hip") ||
+      token === "back"
+    );
+  });
+
 const repairBlockedPresent = (
   program: Program,
   blocked: Set<string>
@@ -119,7 +147,12 @@ const repairPrepAsMain = (
   blocked: Set<string>,
   hardCodes: string[]
 ): Program => {
-  if (!hardCodes.includes("DUMBBELL_PREP_AS_MAIN")) return program;
+  if (
+    !hardCodes.includes("DUMBBELL_PREP_AS_MAIN") &&
+    !hardCodes.includes("GYM_PAIN_FREE_MAIN_IS_PREP_ONLY")
+  ) {
+    return program;
+  }
   return {
     ...program,
     week: program.week.map((day) => {
@@ -145,6 +178,8 @@ const repairPrepAsMain = (
         const pool =
           slot.includes("hinge") || item.selectionDebug?.slotLane === "hinge"
             ? TRUE_HINGE_ALTERNATIVES
+            : slot.includes("unilateral")
+            ? UNILATERAL_ALTERNATIVES
             : SQUAT_PRIMARY_ALTERNATIVES;
         const replacementId = firstUnblockedAlternative(pool, blocked, used);
         if (!replacementId) return;
@@ -157,12 +192,18 @@ const repairPrepAsMain = (
   };
 };
 
-const repairGymWrongRoleTruth = (
+const repairGymLegsRolePlan = (
   program: Program,
   blocked: Set<string>,
+  questionnaire: QuestionnaireData,
   hardCodes: string[]
 ): Program => {
-  if (!hardCodes.includes("GYM_REQUIRED_ROLE_WRONG_TRUTH")) return program;
+  const needsGymRoleRepair =
+    hardCodes.includes("GYM_REQUIRED_ROLE_WRONG_TRUTH") ||
+    hardCodes.includes("GYM_PAIN_FREE_MAIN_IS_PREP_ONLY");
+  if (!needsGymRoleRepair) return program;
+  const painAware = hasLowBackOrHipPain(questionnaire);
+
   return {
     ...program,
     week: program.week.map((day) => {
@@ -170,35 +211,66 @@ const repairGymWrongRoleTruth = (
       const mains = day.routine
         .map((item, itemIndex) => ({ item, itemIndex }))
         .filter((entry) => entry.item.section === "main");
-      // Gym Legs + Abs role plan: squat (0), hinge (1), unilateral (2).
+      // Gym Legs + Abs role plan: squat (0), hinge (1), unilateral (2), …
+      let next = day;
+
       const hingeEntry = mains[1];
-      if (!hingeEntry) return day;
-      const exercise = exerciseById(hingeEntry.item.exerciseId);
-      if (!exercise) return day;
-      const descriptor = `${exercise.id} ${exercise.name}`.toLowerCase();
-      const isTrueHinge =
-        !exercise.supportOnly &&
-        !exercise.regressionOnly &&
-        (exercise.movementPattern.some((p) => p.toLowerCase() === "hinge") ||
-          descriptor.includes("rdl") ||
-          descriptor.includes("deadlift") ||
-          descriptor.includes("hip thrust") ||
-          descriptor.includes("glute drive") ||
-          descriptor.includes("glute bridge"));
-      if (isTrueHinge) return day;
-      const used = dayUsedIds(day, hingeEntry.itemIndex);
-      const replacementId = firstUnblockedAlternative(
-        TRUE_HINGE_ALTERNATIVES,
-        blocked,
-        used
-      );
-      if (!replacementId) return day;
-      const routine = [...day.routine];
-      routine[hingeEntry.itemIndex] = replaceItemExercise(
-        hingeEntry.item,
-        replacementId
-      );
-      return { ...day, routine };
+      if (hingeEntry) {
+        const exercise = exerciseById(hingeEntry.item.exerciseId);
+        if (exercise) {
+          const truth = classifyGymMovementRoleTruth(exercise, "hinge_primary");
+          const painAwareAllowed =
+            painAware &&
+            (truth === "supportedVariant" ||
+              truth === "preparationOnly" ||
+              `${exercise.id} ${exercise.name}`.toLowerCase().includes("glute bridge") ||
+              `${exercise.id} ${exercise.name}`.toLowerCase().includes("hip thrust"));
+          if ((truth === "surrogate" || truth === "preparationOnly") && !painAwareAllowed) {
+            const used = dayUsedIds(next, hingeEntry.itemIndex);
+            const pool = painAware
+              ? PAIN_AWARE_HINGE_ALTERNATIVES
+              : TRUE_HINGE_ALTERNATIVES;
+            const replacementId = firstUnblockedAlternative(pool, blocked, used);
+            if (replacementId) {
+              const routine = [...next.routine];
+              routine[hingeEntry.itemIndex] = replaceItemExercise(
+                hingeEntry.item,
+                replacementId
+              );
+              next = { ...next, routine };
+            }
+          }
+        }
+      }
+
+      const unilateralEntry = mains[2];
+      if (unilateralEntry) {
+        const exercise = exerciseById(unilateralEntry.item.exerciseId);
+        if (exercise) {
+          const truth = classifyGymMovementRoleTruth(
+            exercise,
+            "unilateral_lower_loaded"
+          );
+          if (truth !== "true") {
+            const used = dayUsedIds(next, unilateralEntry.itemIndex);
+            const replacementId = firstUnblockedAlternative(
+              UNILATERAL_ALTERNATIVES,
+              blocked,
+              used
+            );
+            if (replacementId) {
+              const routine = [...next.routine];
+              routine[unilateralEntry.itemIndex] = replaceItemExercise(
+                unilateralEntry.item,
+                replacementId
+              );
+              next = { ...next, routine };
+            }
+          }
+        }
+      }
+
+      return next;
     }),
   };
 };
@@ -221,10 +293,14 @@ const repairMixedHomeEquipmentMix = (
 export const repairProgramQualityContracts = (params: {
   program: Program;
   questionnaire: QuestionnaireData;
-  blockedExerciseIds?: EvaluateProgramQualityInput["blockedExerciseIds"] | LogPrefs["blockedExerciseIds"];
+  blockedExerciseIds?:
+    | EvaluateProgramQualityInput["blockedExerciseIds"]
+    | LogPrefs["blockedExerciseIds"];
   hardFailureCodes: string[];
 }): Program => {
-  const blocked = blockedIdSet(params.blockedExerciseIds as EvaluateProgramQualityInput["blockedExerciseIds"]);
+  const blocked = blockedIdSet(
+    params.blockedExerciseIds as EvaluateProgramQualityInput["blockedExerciseIds"]
+  );
   const codes = params.hardFailureCodes;
   let next = params.program;
 
@@ -232,7 +308,7 @@ export const repairProgramQualityContracts = (params: {
     next = repairBlockedPresent(next, blocked);
   }
   next = repairPrepAsMain(next, blocked, codes);
-  next = repairGymWrongRoleTruth(next, blocked, codes);
+  next = repairGymLegsRolePlan(next, blocked, params.questionnaire, codes);
 
   const mode = resolvePrimaryProgramEquipmentMode(
     params.questionnaire.equipment ?? []

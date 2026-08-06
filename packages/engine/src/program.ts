@@ -34738,9 +34738,20 @@ const forceThreeDayFinalDisplayedSlotTruth = (params: {
         hasLowBackPainSignal(context.selectionContext) &&
         mainOrdinal === 1 &&
         isHamstringCurlExercise(exercise);
+      // Role-truth prep (regressionOnly/supportOnly) can still match hinge patterns;
+      // treat them as needing a true loaded hinge unless pain-aware LBP policy applies.
+      const hingeRoleTruth = classifyGymMovementRoleTruth(exercise, "hinge_primary");
+      const painAwareHipExtensionOk =
+        hasLowBackPainSignal(context.selectionContext) &&
+        (hingeRoleTruth === "preparationOnly" ||
+          hingeRoleTruth === "supportedVariant" ||
+          isHipExtensionHingeSurrogateExercise(exercise));
       const needsTruePrimaryHingeReplacement =
         mainOrdinal === 1 &&
-        !hasTrueHingeAnchor(exercise) &&
+        !painAwareHipExtensionOk &&
+        (hingeRoleTruth !== "true" ||
+          !hasTrueHingeAnchor(exercise) ||
+          Boolean(exercise.supportOnly || exercise.regressionOnly)) &&
         !isHamstringCurlExercise(exercise);
       const needsLoadedPrimaryHingeReplacement =
         !hasLowBackPainSignal(context.selectionContext) &&
@@ -34750,15 +34761,14 @@ const forceThreeDayFinalDisplayedSlotTruth = (params: {
           context.available.has("dumbbells") ||
           context.available.has("machines") ||
           context.available.has("barbell"));
+      const unilateralRoleTruth = classifyGymMovementRoleTruth(
+        exercise,
+        "unilateral_lower_loaded"
+      );
+      const needsTrueUnilateralReplacement =
+        mainOrdinal === 2 &&
+        (unilateralRoleTruth !== "true" || isHamstringCurlExercise(exercise));
       const trueHingePreferredIds = [
-        ...(hasLowBackPainSignal(context.selectionContext)
-          ? [
-              "single-leg-hip-thrust",
-              "single-leg-glute-bridge-hold",
-              "machine-glute-drive",
-              "barbell-hip-thrust",
-            ]
-          : []),
         ...(context.available.has("dumbbells") || context.available.has("gym")
           ? ["dumbbell-sumo-rdl", "db-rdl"]
           : []),
@@ -34766,7 +34776,17 @@ const forceThreeDayFinalDisplayedSlotTruth = (params: {
         "machine-glute-drive",
         "barbell-romanian-deadlift",
         "barbell-hip-thrust",
-        "single-leg-hip-thrust",
+        ...(hasLowBackPainSignal(context.selectionContext)
+          ? ["single-leg-hip-thrust", "single-leg-glute-bridge-hold"]
+          : []),
+      ];
+      const trueUnilateralPreferredIds = [
+        "dumbbell-bulgarian-split-squat",
+        "dumbbell-reverse-lunge",
+        "dumbbell-step-up-loaded",
+        "split-squat",
+        "heels-elevated-squat",
+        "cossack-squat",
       ];
       const backExtensionReplacementId = (() => {
         if (!needsBackExtensionReplacement) return null;
@@ -34795,18 +34815,28 @@ const forceThreeDayFinalDisplayedSlotTruth = (params: {
               dayTitle: day.title,
             })
           : null;
+      const unilateralReplacementId = needsTrueUnilateralReplacement
+        ? pickBlockAwarePreferredExerciseId({
+            preferredIds: trueUnilateralPreferredIds,
+            usedIds,
+            context,
+            dayTitle: day.title,
+          })
+        : null;
       const replacementId = needsLowBackHamstringReplacement
         ? pickBlockAwarePreferredExerciseId({
             preferredIds: [
+              "machine-glute-drive",
               "single-leg-glute-bridge-hold",
               "single-leg-hip-thrust",
-              "machine-glute-drive",
             ],
             usedIds,
             context,
             dayTitle: day.title,
           })
-        : loadedHingeReplacementId ?? backExtensionReplacementId;
+        : loadedHingeReplacementId ??
+          unilateralReplacementId ??
+          backExtensionReplacementId;
       const replacement = replacementId ? exerciseById(replacementId) : null;
       if (
         replacement &&
