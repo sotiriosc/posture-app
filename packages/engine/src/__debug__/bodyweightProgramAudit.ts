@@ -20,6 +20,7 @@ import {
   type BodyweightHardFailure,
 } from "@/lib/program/bodyweightProgramContract";
 import { exerciseById } from "@/lib/exercises";
+import { buildCanonicalFuzzCase } from "@/lib/__debug__/lib/canonicalFuzzCases";
 
 const OUT_DIR = path.resolve(process.cwd(), "docs/dev-reports");
 const SUMMARY_MD = path.join(OUT_DIR, "equipment-program-audit-phase5.md");
@@ -279,42 +280,7 @@ const auditPersona = (persona: FlagshipPersona) => {
   };
 };
 
-const hashSeed = (index: number) => {
-  let x = (index + 1) * 2654435761;
-  x ^= x >>> 16;
-  return `bw-fuzz-${(x >>> 0).toString(16)}`;
-};
-
 const runFuzz = (targetCases: number) => {
-  const experiences = ["Beginner", "Intermediate", "Advanced"] as const;
-  const phases = [1, 2, 3] as const;
-  const days = [3, 4, 5] as const;
-  const goals = [
-    "General fitness",
-    "Improve posture",
-    "Reduce pain",
-    "Athletic performance",
-  ] as const;
-  const painCombos: string[][] = [
-    [],
-    ["Shoulders"],
-    ["Upper back"],
-    ["Lower back"],
-    ["Hips"],
-    ["Knees"],
-    ["Shoulders", "Upper back"],
-    ["Lower back", "Hips"],
-    ["Neck"],
-  ];
-  const equipmentCombos = [
-    ["none"],
-    [],
-    ["none", "pullup_bar"],
-    ["pullup_bar"],
-    ["none", "bench"],
-    ["foam_roller"],
-  ];
-
   const buckets = {
     gymTemplateInheritance: 0,
     illegalEquipment: 0,
@@ -341,20 +307,9 @@ const runFuzz = (targetCases: number) => {
   const reasonCounts = new Map<string, number>();
 
   for (let i = 0; i < targetCases; i += 1) {
-    const experience = experiences[i % experiences.length];
-    const phaseIndex = phases[Math.floor(i / 3) % phases.length];
-    const daysPerWeek = days[Math.floor(i / 9) % days.length];
-    const goalsValue = goals[Math.floor(i / 27) % goals.length];
-    const painAreas = painCombos[Math.floor(i / 81) % painCombos.length];
-    const equipment = equipmentCombos[Math.floor(i / 243) % equipmentCombos.length];
-    const seed = hashSeed(i);
-    const questionnaire: QuestionnaireData = {
-      goals: goalsValue,
-      painAreas: [...painAreas],
-      experience,
-      equipment: [...equipment] as QuestionnaireData["equipment"],
-      daysPerWeek,
-    };
+    const fuzzCase = buildCanonicalFuzzCase("bodyweight", i);
+    const { questionnaire, phaseIndex, seed } = fuzzCase;
+    const { experience, painAreas, equipment } = questionnaire;
 
     try {
       if (resolvePrimaryProgramEquipmentMode(equipment) !== "bodyweight") {

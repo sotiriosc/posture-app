@@ -22,6 +22,18 @@ import {
 } from "@/lib/program";
 import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 import { auditCoverageContract } from "@/lib/__debug__/coverageContractAudit";
+import {
+  buildCanonicalFuzzCase,
+  FUZZ_MODES,
+  type FuzzMode,
+} from "@/lib/__debug__/lib/canonicalFuzzCases";
+
+const STRUCTURAL_BLOCK_AWARE_CODES = [
+  "QUALITY_BLOCKED_EXERCISE_PRESENT",
+  "GYM_REQUIRED_ROLE_WRONG_TRUTH",
+  "DUMBBELL_PREP_AS_MAIN",
+  "MIXED_HOME_RANDOM_EQUIPMENT_MIX",
+] as const;
 
 const OUT_DIR = path.resolve(process.cwd(), "docs/dev-reports");
 const UNIFIED_MD = path.join(OUT_DIR, "program-quality-v2-phase7-unified-gate.md");
@@ -337,6 +349,122 @@ const runCoachingAudit = () => {
   return runNpmScript("audit:exercise-coaching");
 };
 
+/**
+ * Mandatory sequential block-aware quality gate.
+ *
+ * Ordinary mode 50k audits intentionally omit personal blocks (includeBlocks
+ * false). Fuzz-integrity injects blocks on index%17===0 — that gap produced
+ * the Phase 7B 244 safe-generation failures while program-quality still PASS'd.
+ * This gate closes the gap inside audit:program-quality.
+ */
+const runBlockAwareQualityGate = () => {
+  const targetBlockedCasesPerMode = Number(
+    process.env.BLOCK_AWARE_QUALITY_CASES ?? "120"
+  );
+  console.error(
+    `[programQualityAudit] block-aware quality gate (${targetBlockedCasesPerMode}/mode)…`
+  );
+  const started = Date.now();
+  const structuralCounts: Record<string, number> = {};
+  for (const code of STRUCTURAL_BLOCK_AWARE_CODES) structuralCounts[code] = 0;
+  let cases = 0;
+  let safeGenerationFailures = 0;
+  let exceptions = 0;
+  const modeRows: Array<{
+    mode: FuzzMode;
+    cases: number;
+    safeGenerationFailures: number;
+    structuralHits: number;
+  }> = [];
+
+  for (const mode of FUZZ_MODES) {
+    let modeCases = 0;
+    let modeSafeFails = 0;
+    let modeStructural = 0;
+    let index = 0;
+    while (modeCases < targetBlockedCasesPerMode) {
+      const fuzzCase = buildCanonicalFuzzCase(mode, index, { includeBlocks: true });
+      index += 1;
+      if (!fuzzCase.blockedExerciseIds) continue;
+      modeCases += 1;
+      cases += 1;
+      try {
+        clearProgramVariationHistory();
+        clearProgramConstraintWarningBuffer();
+        const initial = generateWeeklyProgram(
+          fuzzCase.questionnaire,
+          `block-aware-${mode}-${fuzzCase.index}`,
+          {
+            phaseIndex: fuzzCase.phaseIndex,
+            seed: fuzzCase.seed,
+            skipQualityGate: true,
+            blockedExerciseIds: fuzzCase.blockedExerciseIds,
+          }
+        );
+        const guarded = recoverAndEvaluateProgramQuality({
+          questionnaire: fuzzCase.questionnaire,
+          programId: `block-aware-${mode}-${fuzzCase.index}`,
+          phaseIndex: fuzzCase.phaseIndex,
+          baseSeed: fuzzCase.seed,
+          initialProgram: initial,
+          blockedExerciseIds: fuzzCase.blockedExerciseIds,
+          generate: (q, id, opts) =>
+            generateWeeklyProgram(q, id, {
+              ...opts,
+              skipQualityGate: true,
+              blockedExerciseIds: fuzzCase.blockedExerciseIds,
+            }),
+        });
+        if (!guarded.ok) {
+          safeGenerationFailures += 1;
+          modeSafeFails += 1;
+        }
+        for (const finding of guarded.evaluation.hardFailures) {
+          if (
+            (STRUCTURAL_BLOCK_AWARE_CODES as readonly string[]).includes(
+              finding.code
+            )
+          ) {
+            structuralCounts[finding.code] =
+              (structuralCounts[finding.code] ?? 0) + 1;
+            modeStructural += 1;
+          }
+        }
+      } catch {
+        exceptions += 1;
+        safeGenerationFailures += 1;
+        modeSafeFails += 1;
+      }
+    }
+    modeRows.push({
+      mode,
+      cases: modeCases,
+      safeGenerationFailures: modeSafeFails,
+      structuralHits: modeStructural,
+    });
+  }
+
+  const structuralTotal = Object.values(structuralCounts).reduce(
+    (sum, n) => sum + n,
+    0
+  );
+  return {
+    ok:
+      safeGenerationFailures === 0 &&
+      structuralTotal === 0 &&
+      exceptions === 0,
+    cases,
+    safeGenerationFailures,
+    exceptions,
+    structuralCounts,
+    structuralTotal,
+    modes: modeRows,
+    elapsedMs: Date.now() - started,
+    gapExplanation:
+      "Ordinary mode audits omit personal blocks; fuzz-integrity injects them on index%17===0. This gate is the mandatory block-aware PASS boundary inside audit:program-quality.",
+  };
+};
+
 const runMatrices = () => {
   console.error("[programQualityAudit] coverage + phase matrices…");
   const coverage = runNpmScript("audit:coverage-matrix");
@@ -370,6 +498,9 @@ const main = () => {
     runModeAudit("mixedHome", "audit:mixed-home-program", "MIXED_HOME_FUZZ_CASES"),
   ];
 
+  // Sequential after ordinary mode fuzz — closes the block-aware domain gap.
+  const blockAware = runBlockAwareQualityGate();
+
   const totalFuzzCases = modeResults.reduce((sum, row) => sum + row.cases, 0);
   const fuzzOk = modeResults.every((row) => row.ok);
   const fallbackOk = fallbacks.every((row) => row.ok);
@@ -397,6 +528,7 @@ const main = () => {
     matrices.coverageOk &&
     coachingOk &&
     fuzzOk &&
+    blockAware.ok &&
     PROGRAM_TEMPLATE_VERSION === 18;
 
   const summary = {
@@ -409,6 +541,7 @@ const main = () => {
     totals: {
       fuzzCases: totalFuzzCases,
       modes: modeResults.length,
+      blockAwareCases: blockAware.cases,
     },
     severity,
     baselines,
@@ -429,6 +562,7 @@ const main = () => {
       elapsedMs: coaching.elapsedMs,
     },
     modes: modeResults,
+    blockAware,
   };
 
   writeFileSync(UNIFIED_JSON, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
@@ -464,6 +598,22 @@ const main = () => {
     ...modeResults.map(
       (row) =>
         `- ${row.mode}: cases=${row.cases} hardFailures=${row.hardFailureCount} identityCollapse=${row.identityCollapse} illegalEquipment=${row.illegalEquipment} deterministicRepeat=${row.deterministicRepeat} exceptions=${row.exceptions} → ${row.ok ? "PASS" : "FAIL"}`
+    ),
+    "",
+    "## Block-aware quality gate (mandatory)",
+    "",
+    `- Cases: ${blockAware.cases}`,
+    `- Safe generation failures: ${blockAware.safeGenerationFailures}`,
+    `- Structural hits: ${blockAware.structuralTotal}`,
+    `- Exceptions: ${blockAware.exceptions}`,
+    `- Elapsed: ${blockAware.elapsedMs}ms`,
+    `- Verdict: ${blockAware.ok ? "PASS" : "FAIL"}`,
+    "",
+    blockAware.gapExplanation,
+    "",
+    ...blockAware.modes.map(
+      (row) =>
+        `- ${row.mode}: blockedCases=${row.cases} safeFails=${row.safeGenerationFailures} structuralHits=${row.structuralHits}`
     ),
     "",
     "## Fallbacks",
