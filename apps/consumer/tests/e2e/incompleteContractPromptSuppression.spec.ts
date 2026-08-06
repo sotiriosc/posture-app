@@ -26,21 +26,27 @@ const seedIncompleteContractTrigger = async (
       request.onerror = () => reject(request.error);
     });
 
+    type StoredProgramDay = {
+      dayIndex?: number;
+      routine?: Array<{ section?: string; exerciseId?: string; name?: string }>;
+    };
+    type StoredProgram = { week?: StoredProgramDay[] };
+
     const getStore = (name: string) =>
-      new Promise<any>((resolve, reject) => {
+      new Promise<unknown>((resolve, reject) => {
         const tx = db.transaction(name, "readonly");
         const request = tx.objectStore(name).get(programId);
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
       });
 
-    const program = await getStore("programs");
+    const program = (await getStore("programs")) as StoredProgram | undefined;
     if (!program) throw new Error(`No stored program for id ${programId}`);
-    const day0 = (program.week ?? []).find((d: any) => d.dayIndex === 0);
+    const day0 = (program.week ?? []).find((d) => d.dayIndex === 0);
     const mainExercise = (day0?.routine ?? []).find(
-      (item: any) => item.section === "main"
+      (item) => item.section === "main"
     );
-    if (!mainExercise) throw new Error("Day 0 has no main-section exercise");
+    if (!mainExercise?.exerciseId) throw new Error("Day 0 has no main-section exercise");
     const exerciseId: string = mainExercise.exerciseId;
     const exerciseName: string = mainExercise.name ?? exerciseId;
 
@@ -99,10 +105,10 @@ const seedIncompleteContractTrigger = async (
 
     const existingPrefsTx = db.transaction("prefs", "readonly");
     const existingPrefsRequest = existingPrefsTx.objectStore("prefs").get("prefs");
-    const existingPrefs: any = await new Promise((resolve, reject) => {
+    const existingPrefs = (await new Promise<unknown>((resolve, reject) => {
       existingPrefsRequest.onsuccess = () => resolve(existingPrefsRequest.result);
       existingPrefsRequest.onerror = () => reject(existingPrefsRequest.error);
-    });
+    })) as { value?: Record<string, unknown> } | undefined;
 
     await putRecord("prefs", {
       key: "prefs",
@@ -160,12 +166,12 @@ test("Stop asking persists suppression without navigating to Settings", async ({
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error);
         });
-        const value: any = await new Promise((resolve, reject) => {
+        const value = (await new Promise<unknown>((resolve, reject) => {
           const tx = db.transaction("prefs", "readonly");
           const request = tx.objectStore("prefs").get("prefs");
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error);
-        });
+        })) as { value?: { suppressIncompleteContractPrompts?: boolean } } | undefined;
         db.close();
         return value?.value?.suppressIncompleteContractPrompts ?? false;
       })
