@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Phase 8 Plan Reveal — Gym</title>
+<style>
+  body { margin:0; font-family: "Segoe UI", system-ui, sans-serif; background:#020617; color:#e2e8f0; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+  .kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#7dd3fc; font-weight:600; }
+  h1 { margin:6px 0 0; font-size:32px; color:#fff; }
+  .purpose { margin-top:10px; font-size:17px; line-height:1.45; color:#cbd5e1; }
+  .rail { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+  .pill { min-height:44px; display:inline-flex; align-items:center; padding:8px 12px; border:1px solid rgba(148,163,184,.3); border-radius:10px; background:rgba(2,6,23,.55); font-size:14px; }
+  .cap { margin-top:14px; padding:10px 12px; border-radius:10px; border:1px solid rgba(251,191,36,.35); background:rgba(245,158,11,.1); color:#fef3c7; font-size:14px; }
+  .cta { margin-top:22px; display:flex; min-height:56px; align-items:center; justify-content:space-between; padding:0 20px; border-radius:12px; background:linear-gradient(135deg,#38BDF8,#2563EB); color:#fff; font-weight:650; font-size:16px; text-decoration:none; }
+  .secondary { margin-top:12px; min-height:44px; width:100%; border-radius:10px; border:1px solid rgba(148,163,184,.35); background:transparent; color:#e2e8f0; font-size:14px; }
+  .section { margin-top:28px; }
+  .section h2 { margin:0; font-size:20px; color:#fff; }
+  .muted { color:#94a3b8; font-size:13px; margin-top:6px; }
+  .days { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .day { min-height:44px; padding:8px 12px; border-radius:10px; border:1px solid rgba(56,189,248,.4); background:rgba(56,189,248,.12); color:#e0f2fe; }
+  .card { margin-top:12px; padding:12px; border:1px solid rgba(148,163,184,.2); border-radius:10px; background:rgba(15,23,42,.55); }
+</style>
+</head>
+<body>
+  <main class="wrap" data-testid="plan-reveal-hero">
+    <p class="kicker">Your first phase · Gym</p>
+    <h1 data-testid="plan-reveal-phase-label">Phase 1: Control &amp; Technique</h1>
+    <p class="purpose" data-testid="plan-reveal-phase-purpose">Build reliable push mechanics, pull mechanics, mobility quality with slow, precise control this week.</p>
+    <div class="rail" data-testid="plan-reveal-setup-rail">
+      <span class="pill">3 days / week</span>
+      <span class="pill">About 25 minutes</span>
+      <span class="pill">Gym</span>
+    </div>
+    
+    <a class="cta" data-testid="plan-reveal-start-day-1" href="#">Start Day 1 <span aria-hidden="true">→</span></a>
+    <button class="secondary" data-testid="plan-reveal-secondary-cta">See why Praxis chose this</button>
+    <section class="section" data-testid="plan-reveal-weekly-path">
+      <h2>Your weekly path</h2>
+      <p class="muted">Select a day for purpose, duration, and equipment.</p>
+      <div class="days">
+        <span class="day">Day 1 · Back + Chest</span><span class="day">Day 2 · Shoulders + Arms</span><span class="day">Day 3 · Legs + Abs</span>
+      </div>
+      <div class="card"><strong>Back + Chest</strong><p class="muted">Back + Chest: emphasizes back and chest.</p><p class="muted">About 25 minutes · 5 main exercises</p></div>
+    </section>
+    <section class="section" data-testid="plan-reveal-progression">
+      <h2>What comes next?</h2>
+      <p class="muted">After this phase: Phase 2: Hypertrophy &amp; Capacity — Moderate loads, more volume, steady effort.</p>
+      <ul class="muted">
+        <li>Slow tempo, position control, clean movement.</li><li>Complete your 3 days / week consistently.</li><li>Advance when session consistency and readiness criteria clear.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
