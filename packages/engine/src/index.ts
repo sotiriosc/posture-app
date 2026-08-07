@@ -92,6 +92,7 @@ export * from "./historyView";
 export * from "./insightGenerator";
 export * from "./nextSessionRecommendation";
 export * from "./questionnaireSignature";
+export * from "./programStorageCompat";
 export * from "./timerRules";
 export * from "./telemetry";
 export * from "./resetAppData";

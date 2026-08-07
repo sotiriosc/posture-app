@@ -98,6 +98,21 @@ describe("stripe checkout plans", () => {
     expect(getStripeCheckoutPlanAvailability().annual).toBe(true);
   });
 
+  test("live-like env: monthly+founders available, annual absent", () => {
+    process.env.STRIPE_SECRET_KEY = "sk_test_x";
+    process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
+    process.env.APP_URL = "https://example.com";
+    delete process.env.STRIPE_PRICE_ID_ANNUAL;
+    const plans = getStripeCheckoutPlanAvailability();
+    expect(plans.monthly).toBe(true);
+    expect(plans.founders).toBe(true);
+    expect(plans.annual).toBe(false);
+    const visible = (["monthly", "annual", "founders"] as const).filter(
+      (id) => plans[id]
+    );
+    expect(visible).toEqual(["monthly", "founders"]);
+  });
+
   test("resolveCheckoutPriceId uses monthly price for founders", async () => {
     process.env.STRIPE_PRICE_ID_MONTHLY = "price_monthly";
     process.env.STRIPE_PRICE_ID_FOUNDERS = "price_archived_founders";

@@ -3,6 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
+import {
+  BAND_SETUP_OPTIONS,
+  normalizeBandSetupOption,
+  type BandSetupOption,
+} from "@/lib/program/bandSetup";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
 import { loadTrainingSnapshot, pushTrainingPatch } from "@/lib/trainingSyncClient";
@@ -18,6 +23,11 @@ export type QuestionnaireData = {
   experience: string;
   equipment: string[];
   daysPerWeek: 3 | 4 | 5;
+  /**
+   * Band setup follow-up for v19 equipment modes. Only meaningful when equipment
+   * includes bands. Absent/undefined on legacy profiles = legacy_unknown.
+   */
+  bandSetup?: BandSetupOption;
   /**
    * Phase 3.3 — Training Intent.  Controls how the ladder advancement engine
    * interprets advancement criteria.
@@ -78,12 +88,20 @@ const normalizeDaysPerWeek = (value: unknown): QuestionnaireData["daysPerWeek"] 
 
 const normalizeQuestionnaireData = (
   input?: Partial<QuestionnaireData> | null
-): QuestionnaireData => ({
-  ...emptyData,
-  ...(input ?? {}),
-  equipment: normalizeEquipmentSelectionValues(input?.equipment ?? ["gym"]),
-  daysPerWeek: normalizeDaysPerWeek(input?.daysPerWeek),
-});
+): QuestionnaireData => {
+  const equipment = normalizeEquipmentSelectionValues(input?.equipment ?? ["gym"]);
+  const hasBands = equipment.includes("bands");
+  const bandSetup = hasBands
+    ? normalizeBandSetupOption(input?.bandSetup)
+    : undefined;
+  return {
+    ...emptyData,
+    ...(input ?? {}),
+    equipment,
+    daysPerWeek: normalizeDaysPerWeek(input?.daysPerWeek),
+    bandSetup,
+  };
+};
 
 const hasProgramAffectingChange = (
   next: QuestionnaireData,
@@ -296,13 +314,18 @@ export default function QuestionnaireForm() {
 
     if (key === "equipment") {
       if (value === "none") {
-        updateData({ equipment: ["none"] });
+        updateData({ equipment: ["none"], bandSetup: undefined });
         return;
       }
-      if (list.includes("none")) {
-        updateData({ equipment: list.filter((item) => item !== "none") });
-        return;
-      }
+      const nextEquipment = list.includes("none")
+        ? list.filter((item) => item !== "none")
+        : list;
+      const hasBands = nextEquipment.includes("bands");
+      updateData({
+        equipment: nextEquipment,
+        bandSetup: hasBands ? data.bandSetup : undefined,
+      });
+      return;
     }
 
     updateData({ [key]: list } as Partial<QuestionnaireData>);
@@ -453,6 +476,32 @@ export default function QuestionnaireForm() {
             </label>
           ))}
         </div>
+        {data.equipment.includes("bands") ? (
+          <div className="mt-4 space-y-2" data-testid="band-setup-followup">
+            <p className="text-sm font-semibold text-white">What band setup do you have?</p>
+            <p className="text-xs text-slate-300">
+              Needed so we only program exercises that match your bands and anchor.
+            </p>
+            <div className="grid gap-2">
+              {BAND_SETUP_OPTIONS.map((option) => (
+                <label
+                  key={option.value}
+                  className="flex min-h-12 items-center gap-2 rounded-lg border border-slate-500/25 bg-slate-950/45 px-3 py-3 text-sm text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                >
+                  <input
+                    type="radio"
+                    name="band-setup"
+                    data-testid={`band-setup-${option.value}`}
+                    checked={data.bandSetup === option.value}
+                    onChange={() => updateData({ bandSetup: option.value })}
+                    className="h-4 w-4 accent-slate-900"
+                  />
+                  {option.label}
+                </label>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <button

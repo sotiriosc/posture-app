@@ -20,7 +20,6 @@ import { normalizeEquipmentSelectionValues } from "@/lib/equipment";
 import SessionLadderPill from "@/components/session/SessionLadderPill";
 import CentrationCuePanel from "@/components/session/CentrationCuePanel";
 import {
-  PROGRAM_TEMPLATE_VERSION,
   previewPainSubstitutionChoices,
   getLadderProgressionMessage,
   computeFlaggedExercises,
@@ -38,7 +37,10 @@ import type {
   MaintainProgressionPrompt,
 } from "@/lib/program";
 import { generateNextTimeGuidance } from "@/lib/progression";
-import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
+import {
+  isQuestionnaireSignatureCompatible,
+  isStoredProgramTemplateCompatible,
+} from "@/lib/programStorageCompat";
 import BackgroundShell from "@/components/BackgroundShell";
 import OnImage from "@/components/OnImage";
 import Button from "@/components/ui/Button";
@@ -245,19 +247,15 @@ const isProgramCompatibleWithSessionProfile = (
 ) => {
   if (!hasRoutableProgram(candidate)) return false;
   if (!questionnaire) return true;
-  if (
-    typeof candidate.templateVersion === "number" &&
-    candidate.templateVersion !== PROGRAM_TEMPLATE_VERSION
-  ) {
+  if (!isStoredProgramTemplateCompatible(candidate.templateVersion)) {
     return false;
   }
   if (candidate.daysPerWeek !== questionnaire.daysPerWeek) return false;
   if (candidate.goalTrack && candidate.goalTrack !== questionnaire.goals) return false;
 
-  const expectedSignature = buildQuestionnaireSignature(questionnaire);
   const persistedSignature =
     candidate.questionnaireSignature ?? savedQuestionnaireSignature ?? null;
-  return !persistedSignature || persistedSignature === expectedSignature;
+  return isQuestionnaireSignatureCompatible(persistedSignature, questionnaire);
 };
 
 const resolveLatestCompatibleProgram = async (

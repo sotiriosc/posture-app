@@ -11,9 +11,6 @@ import {
   generateProgram,
 } from "@/lib/engine";
 import {
-  PROGRAM_TEMPLATE_VERSION,
-} from "@/lib/program";
-import {
   normalizeEquipmentSelectionValues,
 } from "@/lib/equipment";
 import { usePhotoContext } from "@/components/PhotoContext";
@@ -24,6 +21,10 @@ import ClarifyTerm from "@/components/ui/ClarifyTerm";
 import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
+import {
+  isQuestionnaireSignatureCompatible,
+  isStoredProgramTemplateCompatible,
+} from "@/lib/programStorageCompat";
 import type { Exercise } from "@/lib/exercises";
 import type {
   ExerciseLog,
@@ -799,17 +800,15 @@ const isProgramCompatibleWithQuestionnaire = (
   } = {}
 ) => {
   if (!candidate) return false;
-  const expectedSignature =
-    options.questionnaireSignature ?? buildQuestionnaireSignature(questionnaire);
   const persistedSignature =
     typeof candidate.questionnaireSignature === "string" && candidate.questionnaireSignature
       ? candidate.questionnaireSignature
       : options.savedQuestionnaireSignature ?? null;
   return (
-    candidate.templateVersion === PROGRAM_TEMPLATE_VERSION &&
+    isStoredProgramTemplateCompatible(candidate.templateVersion) &&
     candidate.daysPerWeek === questionnaire.daysPerWeek &&
     candidate.goalTrack === questionnaire.goals &&
-    persistedSignature === expectedSignature &&
+    isQuestionnaireSignatureCompatible(persistedSignature, questionnaire) &&
     hasValidWeekStructure(candidate)
   );
 };
