@@ -2,9 +2,11 @@
 
 ## Verdict
 
-**READY_FOR_RELEASE_REVIEW**
+**NOT_READY**
 
-Do not merge until human release review. Draft PR targets `main` only.
+Engine transplant and automated gates are green, but the required side-by-side golden/candidate screenshot matrix (same fixtures A–H, 390×844 + desktop) was not executed. Do not merge until that visual parity pass completes with 0 unexplained regressions.
+
+Draft PR targets `main` only; do not merge.
 
 ## Frozen SHAs
 
@@ -13,7 +15,7 @@ Do not merge until human release review. Draft PR targets `main` only.
 | LIVE_MAIN (golden) | `1aafcc93c287a3f09914454a431a4ef23c43535d` |
 | ENGINE_V19 (PR #84 tip) | `3cb036939f13061db6383f58e0112960f10face3` |
 | OLD_CHECKPOINT | `921bd35bf17eeaaf32c0decd2638a45671687354` |
-| Candidate tip | see git tip of `release/engine-v19-main-ui-parity` |
+| Candidate tip | `7ded71abcb7f559307d98e312bb3d76e8cea4114` (plus follow-up docs stamp if any) |
 
 ## What was transplanted
 
