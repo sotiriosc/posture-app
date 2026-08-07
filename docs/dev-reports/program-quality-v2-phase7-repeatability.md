@@ -9,18 +9,18 @@ Required: 0 semantic signature differences, 0 reason-code count differences, 0 f
 ```json
 {
   "signatures": [
-    "c0131e62",
-    "c0131e62"
+    "70242a07",
+    "70242a07"
   ],
   "reasonCounts": [
     {
       "DEFERRED_MISSING_DEMO": 32,
-      "DEFERRED_MISSING_PROGRESSION_LINKS": 24,
+      "DEFERRED_MISSING_PROGRESSION_LINKS": 25,
       "COACHING_DEMO_PLANNED": 16
     },
     {
       "DEFERRED_MISSING_DEMO": 32,
-      "DEFERRED_MISSING_PROGRESSION_LINKS": 24,
+      "DEFERRED_MISSING_PROGRESSION_LINKS": 25,
       "COACHING_DEMO_PLANNED": 16
     }
   ]

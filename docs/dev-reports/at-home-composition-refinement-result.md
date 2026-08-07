@@ -70,10 +70,23 @@ Profiles with ≥10 seeds → one identical main/accessory order are classified 
 
 ## Collapse warnings
 
-Prior fuzz-integrity retained 399 cross-input collapse warnings. This work does not chase that number. Reclassify honestly after release fuzz: identical structure may remain valid under pain-dose, redundant equipment, shared architecture, or intentional stability.
+Prior fuzz-integrity retained 399 cross-input collapse warnings. Post-change release run reported **448** `UNEXPLAINED_CROSS_INPUT_COLLAPSE` pairs as NEEDS_REVIEW (not a release blocker). This work does not chase that number. Identical structure may remain valid under pain-dose, redundant equipment, shared architecture, or intentional stability.
+
+## Validation (§16)
+
+| Gate | Result |
+|---|---|
+| `test:critical` | PASS (326/326) |
+| `audit:program-presentation` | PASS |
+| `audit:exercise-coaching` | PASS (202/202) |
+| `lint` | PASS (0 errors) |
+| `build` consumer / gyms | PASS |
+| `audit:program-quality` | PASS — 50,000 fuzz cases |
+| `audit:fuzz-integrity` release 10k/mode | **50,000 final pass**, 0 fail, 0 safeGen, 0 exceptions, 0 unclassified, 0 deterministic mismatches, **14/14 mutations**, **9/9 metamorphic**; verdict NEEDS_REVIEW only for collapse warnings |
 
 ## Deferred items
 
 - Catalog `contraindications` vs `painContraindications` dual-field inconsistency (documented STALE_OR_REDUNDANT; not unified this phase).
 - Broader family/rung-aware `phaseMin` refinement beyond machine-primer exceptions.
+- Gym sequencing remains out of scope (positional role-truth contracts).
 - UI / plan-reveal / body-map work remains abandoned Phase 8 UI scope (not this branch).

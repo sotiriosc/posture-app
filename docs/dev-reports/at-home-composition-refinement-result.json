@@ -60,12 +60,30 @@
     "abandoned_phase8_ui_surfaces"
   ],
   "validation": {
-    "status": "pending_release_gates",
-    "required": {
-      "fuzzFinalPass": 50000,
-      "safeFails": 0,
+    "status": "passed_release_boundary",
+    "criticalTests": "326/326",
+    "programPresentation": "pass",
+    "exerciseCoaching": "pass",
+    "lintErrors": 0,
+    "consumerBuild": "pass",
+    "gymsBuild": "pass",
+    "programQuality": {
+      "verdict": "PASS",
+      "fuzzCases": 50000
+    },
+    "fuzzIntegrity": {
+      "verdict": "NEEDS_REVIEW",
+      "releaseBlockingFailures": [],
+      "finalPass": 50000,
+      "finalFail": 0,
+      "safeGen": 0,
+      "exceptions": 0,
+      "unclassified": 0,
+      "deterministicMismatches": 0,
       "mutations": "14/14",
-      "metamorphic": "9/9"
+      "metamorphic": "9/9",
+      "collapseWarnings": 448,
+      "collapsePolicy": "classify_honestly_do_not_chase"
     }
   }
 }

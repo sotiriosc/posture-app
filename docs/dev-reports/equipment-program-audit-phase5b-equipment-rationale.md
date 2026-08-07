@@ -23,8 +23,8 @@ Band vs dumbbell rationale from authored mains (`slotRoleMatch`).
 
 ### Full Body A — Squat, Press and Row
 - `goblet-squat` tool=dumbbell rationale=squatPrimary
-- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `single-arm-dumbbell-row` tool=dumbbell rationale=pullHorizontal
+- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `db-rdl` tool=dumbbell rationale=hingePrimary
 
 ### Full Body B — Hinge, Overhead and Unilateral
@@ -43,8 +43,8 @@ Band vs dumbbell rationale from authored mains (`slotRoleMatch`).
 
 ### Full Body A — Squat, Press and Row
 - `goblet-squat` tool=dumbbell rationale=squatPrimary
-- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `single-arm-dumbbell-row` tool=dumbbell rationale=pullHorizontal
+- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `db-rdl` tool=dumbbell rationale=hingePrimary
 - `dumbbell-reverse-lunge` tool=dumbbell rationale=unilateralLowerLoaded
 
@@ -98,16 +98,16 @@ Band vs dumbbell rationale from authored mains (`slotRoleMatch`).
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - `dumbbell-reverse-lunge` tool=dumbbell rationale=unilateralLowerLoaded
-- `dumbbell-floor-press` tool=dumbbell rationale=mainPushSecondary
 - `single-arm-dumbbell-row` tool=dumbbell rationale=extraBackLoaded
+- `dumbbell-floor-press` tool=dumbbell rationale=mainPushSecondary
 - `db-rdl` tool=dumbbell rationale=hingePrimary
 
 ## mh_3d_int_both_anchor_p1
 
 ### Full Body A — Squat, Press and Row
 - `goblet-squat` tool=dumbbell rationale=squatPrimary
-- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `single-arm-dumbbell-row` tool=dumbbell rationale=pullHorizontal
+- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `db-rdl` tool=dumbbell rationale=hingePrimary
 
 ### Full Body B — Hinge, Overhead and Unilateral
@@ -126,8 +126,8 @@ Band vs dumbbell rationale from authored mains (`slotRoleMatch`).
 
 ### Full Body A — Squat, Press and Row
 - `goblet-squat` tool=dumbbell rationale=squatPrimary
-- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `single-arm-dumbbell-row` tool=dumbbell rationale=pullHorizontal
+- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `db-rdl` tool=dumbbell rationale=hingePrimary
 
 ### Full Body B — Hinge, Overhead and Unilateral
@@ -183,8 +183,8 @@ Band vs dumbbell rationale from authored mains (`slotRoleMatch`).
 
 ### Full Body A — Squat, Press and Row
 - `goblet-squat` tool=dumbbell rationale=squatPrimary
-- `pushup` tool=bodyweight rationale=pushCompound
 - `single-arm-dumbbell-row` tool=dumbbell rationale=pullHorizontal
+- `pushup` tool=bodyweight rationale=pushCompound
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - `db-rdl` tool=dumbbell rationale=hingePrimary
@@ -234,8 +234,8 @@ Band vs dumbbell rationale from authored mains (`slotRoleMatch`).
 
 ### Full Body A — Squat, Press and Row
 - `goblet-squat` tool=dumbbell rationale=squatPrimary
-- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 - `single-arm-dumbbell-row` tool=dumbbell rationale=pullHorizontal
+- `dumbbell-floor-press` tool=dumbbell rationale=pushCompound
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - `db-rdl` tool=dumbbell rationale=hingePrimary

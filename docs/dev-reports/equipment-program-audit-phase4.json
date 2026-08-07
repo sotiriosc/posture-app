@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T04:43:33.648Z",
+  "generatedAt": "2026-08-06T23:11:38.732Z",
   "phase": 4,
   "objective": "First-class anchor-aware band programming audit and contract",
   "preservesPriorReports": [
@@ -9,7 +9,7 @@
     "docs/dev-reports/equipment-program-audit-phase3.json",
     "docs/dev-reports/equipment-program-audit-phase4-baseline-bands.md"
   ],
-  "elapsedMs": 933799,
+  "elapsedMs": 1140116,
   "flagshipCount": 12,
   "hardFailureCount": 0,
   "failuresByReason": {},

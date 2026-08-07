@@ -12,7 +12,7 @@
 - missingHorizontalPull: 0
 - missingHinge: 0
 - prepAsMain: 0
-- randomEquipmentMix: 6
+- randomEquipmentMix: 243
 - bandOveruse: 0
 - redundantCrossToolRole: 0
 - setupTransitionExcess: 0
@@ -28,4 +28,4 @@
 
 ## Top reason codes
 
-- `MIXED_HOME_RANDOM_EQUIPMENT_MIX`: 6
+- `MIXED_HOME_RANDOM_EQUIPMENT_MIX`: 243
