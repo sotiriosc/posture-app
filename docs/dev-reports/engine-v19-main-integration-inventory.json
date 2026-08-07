@@ -1,0 +1,2229 @@
+{
+  "frozen_shas": {
+    "LIVE_MAIN": "1aafcc93c287a3f09914454a431a4ef23c43535d",
+    "ENGINE_V19": "3cb036939f13061db6383f58e0112960f10face3",
+    "OLD_CHECKPOINT": "921bd35bf17eeaaf32c0decd2638a45671687354"
+  },
+  "diff_direction": "files differing between LIVE_MAIN and ENGINE_V19 (status relative to LIVE_MAIN\u2192ENGINE_V19)",
+  "classification_legend": [
+    "ENGINE_REQUIRED",
+    "ENGINE_TEST",
+    "ENGINE_AUDIT",
+    "FUNCTIONAL_RECEIVER_REQUIRED",
+    "LIVE_MAIN_MUST_WIN",
+    "DOC_ONLY",
+    "DEPENDENCY_REQUIRED",
+    "UNKNOWN_REVIEW"
+  ],
+  "notes": [
+    "By default apps/consumer/** and apps/gyms/** classified LIVE_MAIN_MUST_WIN.",
+    "FUNCTIONAL_RECEIVER_REQUIRED reserved for post-transplant compile/runtime gaps; none pre-assigned.",
+    "No file left unclassified."
+  ],
+  "summary": {
+    "ENGINE_AUDIT": 19,
+    "LIVE_MAIN_MUST_WIN": 35,
+    "DOC_ONLY": 81,
+    "DEPENDENCY_REQUIRED": 3,
+    "ENGINE_REQUIRED": 51,
+    "ENGINE_TEST": 55
+  },
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "CI quality gate jobs for engine audits; transplant carefully if releasing; expensive CI jobs \u2014 bring audit scripts first; CI workflow optional for draft PR",
+      "transplant": true,
+      "action": "SELECTIVE_MERGE_OR_DEFER"
+    },
+    {
+      "path": "apps/consumer/package.json",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App deps (e.g. @next/third-parties/GA) \u2014 main must win",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/app/exercise/[id]/page.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/app/layout.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/app/robots.ts",
+      "status_vs_live_main": "deleted_on_engine",
+      "git_status": "D",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/app/session/SessionClient.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/app/sitemap.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/Analytics.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/DualModeTimer.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/ExerciseCard.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/ExerciseCoachingGuide.tsx",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "Checkpoint/Phase7b UI or tests \u2014 keep main by default; reclassify only if engine compile requires receiver",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/QuestionnaireForm.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/ResultsRoutine.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/RoutineItemCoachingDetails.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/onboarding/onboardingConfig.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/results-view/ResultsView.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/components/session/SessionProgressHeader.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/gaMeasurementId.ts",
+      "status_vs_live_main": "deleted_on_engine",
+      "git_status": "D",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/src/siteUrl.ts",
+      "status_vs_live_main": "deleted_on_engine",
+      "git_status": "D",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/tests/e2e/incompleteContractPromptSuppression.spec.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/tests/unit/gaMeasurementId.test.ts",
+      "status_vs_live_main": "deleted_on_engine",
+      "git_status": "D",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/tests/unit/phase7bPresentationParity.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "Checkpoint/Phase7b UI or tests \u2014 keep main by default; reclassify only if engine compile requires receiver",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/consumer/tests/unit/siteUrl.test.ts",
+      "status_vs_live_main": "deleted_on_engine",
+      "git_status": "D",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/app/exercise/[id]/page.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/app/session/SessionClient.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/app/settings/page.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/components/DualModeTimer.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/components/ExerciseCard.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/components/ExerciseCoachingGuide.tsx",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "Checkpoint/Phase7b UI or tests \u2014 keep main by default; reclassify only if engine compile requires receiver",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/components/QuestionnaireForm.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/components/ResultsRoutine.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/components/RoutineItemCoachingDetails.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/components/onboarding/onboardingConfig.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/src/components/session/SessionProgressHeader.tsx",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "App UI/runtime from live main golden baseline \u2014 do not transplant checkpoint UI",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/tests/unit/phase7bPresentationParity.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "Checkpoint/Phase7b UI or tests \u2014 keep main by default; reclassify only if engine compile requires receiver",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "apps/gyms/tests/unit/phase7bPresentationReachability.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "LIVE_MAIN_MUST_WIN",
+      "rationale": "Checkpoint/Phase7b UI or tests \u2014 keep main by default; reclassify only if engine compile requires receiver",
+      "transplant": false,
+      "action": "KEEP_LIVE_MAIN"
+    },
+    {
+      "path": "docs/PROGRAM_EQUIPMENT_EXPERIENCE_V2.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/at-home-composition-refinement-baseline.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/at-home-composition-refinement-baseline.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/at-home-composition-refinement-result.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/at-home-composition-refinement-result.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/at-home-longitudinal-repeat.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/at-home-longitudinal-repeat.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/at-home-repeat-blind-samples.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/engine-gate-intelligence-audit.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/engine-gate-intelligence-audit.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase0-twelve-personas.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase0.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase0.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase1-twelve-personas.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase1-vs-phase0.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase1.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase1.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase2-gym-fuzz-10k.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase2-gym-personas.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase2-hard-failures-initial-vs-final.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase2.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase2.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase3-dumbbell-fuzz-10k.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase3-dumbbell-personas.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase3-hard-failures-initial-vs-final.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase3.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase3.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase4-band-fuzz-10k.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase4-band-personas.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase4-baseline-bands.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase4-capability-migration.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase4-hard-failures-initial-vs-final.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase4.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase4.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5-bodyweight-fuzz-10k.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5-bodyweight-personas.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5-hard-failures-initial-vs-final.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5b-equipment-rationale.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5b-hard-failures-initial-vs-final.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5b-mixed-home-fuzz-10k.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5b-mixed-home-personas.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5b-setup-transitions.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5b.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/equipment-program-audit-phase5b.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-fuzz-integrity.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-fuzz-integrity.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase6-card-screenshot-review.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase6-coaching-audit.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase6-coaching-audit.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase6-demo-queue.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase6-no-research-review.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase6-surface-audit.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-baselines.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-ci-enforcement.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-completion.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-completion.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-fuzz-summary.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-gate-inventory.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-manual-review.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-matrix-blockers.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-reason-code-policy.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-recovery-review.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-repeatability.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-unified-gate.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7-unified-gate.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-correction-validation.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-correction-validation.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-input-continuity.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-pain-swap-trace.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-phase8-requirements.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-presentation-contract.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-presentation-contract.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-relational-inventory.json",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-relational-inventory.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/dev-reports/program-quality-v2-phase7b-screenshot-review.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine/equipment audit and phase reports from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "docs/local-env.example",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "DOC_ONLY",
+      "rationale": "Env example doc delta; review separately from UI",
+      "transplant": false,
+      "action": "SKIP"
+    },
+    {
+      "path": "newpromptforpengine.md",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "DOC_ONLY",
+      "rationale": "Engine prompt/notes doc on ENGINE_V19; not required for live UI",
+      "transplant": false,
+      "action": "SKIP"
+    },
+    {
+      "path": "package-lock.json",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "DEPENDENCY_REQUIRED",
+      "rationale": "Root scripts/lockfile for audit:* scripts and test:critical path updates",
+      "transplant": true,
+      "action": "REGENERATE_AFTER_DEPS"
+    },
+    {
+      "path": "package.json",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "DEPENDENCY_REQUIRED",
+      "rationale": "Root scripts/lockfile for audit:* scripts and test:critical path updates; add audit scripts + update test:critical; keep other main scripts",
+      "transplant": true,
+      "action": "SELECTIVE_PATCH"
+    },
+    {
+      "path": "packages/engine/package.json",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "DEPENDENCY_REQUIRED",
+      "rationale": "Engine package deps (fake-indexeddb) needed for tests",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/atHomeCompositionBaselineAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/atHomeLongitudinalRepeatAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/bandProgramAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/bodyweightProgramAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/coverageContractAudit.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/dumbbellProgramAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/engineGateIntelligenceAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/equipmentProgramAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/exerciseCoachingAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/extractGymSeeds.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/fuzzIntegrityAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/gymProgramAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/lib/canonicalFuzzCases.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/mixedHomeProgramAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/phaseMatrixProgramPrint.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/programPresentationAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/programQualityAudit.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/__debug__/reproGym5dPainBaselines.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_AUDIT",
+      "rationale": "Engine audit/debug utilities required for release gates",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/exerciseCoachingContract.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/exerciseCoachingOverrides.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/exerciseCoachingRegistry.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/exerciseDemoPolicy.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/index.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/releaseCriticalExercises.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/releaseCriticalGymSeeds.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/resolveExerciseCoaching.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/synthesizeExerciseCoaching.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/coaching/validateExerciseCoaching.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/engine/engine.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/engine/engineTypes.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/exercises.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/index.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/bandExerciseRequirements.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/bandProgramContract.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/bandSetup.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/bandTemplates.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/bodyweightProgramContract.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/bodyweightTemplates.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/dayTemplates.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/dumbbellProgramContract.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/dumbbellTemplates.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/equipmentCapabilities.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/equipmentMode.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/gymProgramContract.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/mixedHomeProgramContract.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/mixedHomeTemplates.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/index.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/presentationContractTypes.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/presentationReceiverEvidence.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/programPresentationInventory.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/resolveAdaptationPresentation.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/resolveAssessmentFocusFromPose.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/resolveProgramPresentation.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/presentation/validateProgramPresentation.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/ProgramQualityGateError.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/evaluateProgramQuality.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/index.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/modeQualityFallback.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/programQualityObservability.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/programQualityPolicy.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/programQualitySignature.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/qualityGateTypes.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/recoverProgramQuality.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/qualityGate/repairProgramQualityContracts.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/sequencingPolicy.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/program/splitTemplatePolicy.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/questionnaireSignature.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/src/sessionSetTimer.ts",
+      "status_vs_live_main": "deleted_on_engine",
+      "git_status": "D",
+      "classification": "ENGINE_REQUIRED",
+      "rationale": "Validated v19 engine production source",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/_helpers/dumbbellTestTitles.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/_helpers/expectedCounts.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/_helpers/higherFrequencyPersonaReviewHelpers.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/_helpers/phaseProgressionQuality.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/_helpers/threeDayPersonaReviewHelpers.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/atHomeCompositionSequencing.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/canonicalFuzzCasesParity.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/catalogLadderInvariants.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/competitiveBenchmark.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/dualModeTimerSingleWriter.test.ts",
+      "status_vs_live_main": "deleted_on_engine",
+      "git_status": "D",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/engineProgramEntry.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/fuzzIntegrityMetamorphic.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/mergeReadinessAnchors.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/phase7CompletionCoveragePolicy.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/phase7bFinalQualityClosure.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/program.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programBackChestContract.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programBandContract.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programBodyweightContract.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programControlledVariety.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programControlledVarietyRefinement.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programDumbbellContract.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programEnvironmentEligibility.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programEquipmentMode.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programExerciseCoachingCompleteness.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programFuzz.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programGoldenAnchors.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programGymContract.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programHigherFrequencyAcceptance.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programHigherFrequencyContracts.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programIdentityAnchors.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programMatrix.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programMixedHomeContract.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programPresentationCapabilityReload.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programPresentationContinuity.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programPresentationContract.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programPresentationNoValidSwap.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programPresentationPainSwap.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programPresentationPersistenceRoundTrip.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programPresentationPhotoFocus.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programQuality.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programQualityGate.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programRoleTruth.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programSelectionAudit.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programShouldersArmsDay2Contract.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programSplitContractRepair.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programThreeDayCoachPolicy.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/programWarmupContracts.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/recoverProgramQualityBlocks.test.ts",
+      "status_vs_live_main": "added_on_engine",
+      "git_status": "A",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/scenarioMatrix.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/sessionSetTimer.test.ts",
+      "status_vs_live_main": "deleted_on_engine",
+      "git_status": "D",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/slotDegradationContract.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/warmupContract.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/warmupDegradation.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    },
+    {
+      "path": "packages/engine/tests/unit/warmupProtectiveInjection.test.ts",
+      "status_vs_live_main": "modified",
+      "git_status": "M",
+      "classification": "ENGINE_TEST",
+      "rationale": "Engine unit/integration tests from ENGINE_V19",
+      "transplant": true,
+      "action": "CHECKOUT_ENGINE_V19"
+    }
+  ]
+}
