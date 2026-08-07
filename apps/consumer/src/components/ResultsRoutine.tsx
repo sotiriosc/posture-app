@@ -14,6 +14,10 @@ import { derivePoseFocus } from "@/lib/engine/poseFocus";
 import {
   normalizeEquipmentSelectionValues,
 } from "@/lib/equipment";
+import {
+  resolveAssessmentFocusFromPose,
+  resolveProgramPresentation,
+} from "@/lib/program";
 import { usePhotoContext } from "@/components/PhotoContext";
 import CorrectiveSourceLine from "@/components/session/CorrectiveSourceLine";
 import type { PoseAnalysis } from "@/lib/poseAnalyzer";
@@ -2814,8 +2818,21 @@ export default function ResultsRoutine() {
       : gateRemainingText;
   const phaseGateProgressText = `Workouts in phase: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days in phase: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
   const phaseRequirementsText = `Phase advances after ${phaseGate.minWorkouts} sessions or when readiness criteria clear — whichever comes later.`;
+  // Phase 7B — canonical presentation resolver (equipment identity + adaptations).
+  // Photo focus must go through derivePoseFocus confidence gate — never observation titles.
+  const assessmentFocus = resolveAssessmentFocusFromPose(poseState.analysis);
+  const presentationModel = data
+    ? resolveProgramPresentation({
+        program,
+        questionnaire: data,
+        programProgress: progress,
+        assessmentFocusTags: assessmentFocus.focusTags,
+        assessmentFocusHighConfidence: assessmentFocus.highConfidence,
+      })
+    : null;
   const adaptationTrendItems = gateReadinessConsistencyLines(
     [
+      ...(presentationModel?.program.adaptationSummary.map((m) => m.text) ?? []),
       ...(program.sessionAdaptation?.reasons ?? []),
       ...(program.sessionAdaptation?.appliedChanges ?? []),
       ...(program.sessionAdaptation?.masteryChecks ?? []),
@@ -2947,6 +2964,14 @@ export default function ResultsRoutine() {
     { label: "Today", text: coachToday.replace(/^Today:\s*/i, "") },
     { label: "Focus", text: coachFocus },
     { label: "Watch", text: coachWatch.replace(/^Watch:\s*/i, "") },
+    ...(presentationModel?.program.equipmentIdentity
+      ? [
+          {
+            label: "Setup",
+            text: `${presentationModel.program.equipmentIdentity} · ${presentationModel.program.frequencyLabel}`,
+          },
+        ]
+      : []),
   ];
 
   const hasAdaptationCallout = Boolean(
