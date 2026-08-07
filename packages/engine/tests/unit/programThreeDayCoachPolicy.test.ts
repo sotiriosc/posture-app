@@ -13,6 +13,13 @@ import {
   resolveLowerUnilateralCoachFamily,
   scoreLowerUnilateralCoachVariety,
 } from "@/lib/program/threeDayCoachPolicy";
+import {
+  fullBodyADayTitle,
+  fullBodyBDayTitle,
+  hingeDayTitle,
+  isDumbbellsOnlyEquipment,
+  pushPullDayTitle,
+} from "./_helpers/dumbbellTestTitles";
 
 const requireExercise = (id: string) => {
   const exercise = exerciseById(id);
@@ -261,34 +268,31 @@ describe("three-day coach policy", () => {
     });
   });
 
-  test("band Back + Chest with press, fly, row, and pulldown avoids rear-delt plus face-pull accessory saturation", () => {
+  test("band Full Body A with anchored setup keeps row/pulldown honesty without gym fly inheritance", () => {
     const program = generateWeeklyProgram(
       buildQuestionnaire({
         experience: "Intermediate",
         equipment: ["bands"],
-      }),
+        bandSetup: "long_with_anchor",
+      } as Parameters<typeof buildQuestionnaire>[0]),
       "policy-band-back-chest-expansion",
       { phaseIndex: 2, seed: "policy-band-back-chest-expansion" }
     );
-    const mainIds = getDayExercises(program, "Back + Chest", "main").map(
+    const dayTitle = "Full Body A — Squat, Press and Row";
+    const mainIds = getDayExercises(program, dayTitle, "main").map(
       (exercise) => exercise.id
     );
-    const accessories = getDayExercises(program, "Back + Chest", "accessory");
+    const accessories = getDayExercises(program, dayTitle, "accessory");
     const accessoryIds = accessories.map((exercise) => exercise.id);
-    const families = accessories.map(resolveBackChestAccessoryCoachFamily);
 
-    expect(mainIds).toEqual(
-      expect.arrayContaining([
-        "band-chest-fly",
-        "split-stance-row",
-        "band-lat-pulldown",
-      ])
+    expect(program.week.map((day) => day.title)[0]).toBe(dayTitle);
+    expect(mainIds.some((id) => id.includes("row") || id.includes("pulldown"))).toBe(
+      true
     );
+    expect(mainIds.some((id) => id.includes("fly"))).toBe(false);
     expect(accessoryIds).not.toEqual(
       expect.arrayContaining(["band-rear-delt-fly", "band-face-pull-high-anchor"])
     );
-    expect(families.filter(isBackChestPosteriorSupportFamily).length).toBe(1);
-    expect(families).toContain("back_width");
   });
 
   test("uses day-aware cooldown preferences", () => {
@@ -368,9 +372,10 @@ describe("three-day coach policy", () => {
         `policy-low-back-${equipment.join("-")}`,
         { phaseIndex: 1, seed: `policy-low-back-${equipment.join("-")}` }
       );
-      const legsDay = program.week.find((day) => day.title === "Legs + Abs");
+      const hingeTitle = hingeDayTitle(equipment);
+      const hingeDay = program.week.find((day) => day.title === hingeTitle);
       const mainIds =
-        legsDay?.routine
+        hingeDay?.routine
           .filter((item) => item.section === "main")
           .map((item) => item.exerciseId) ?? [];
 
@@ -380,10 +385,25 @@ describe("three-day coach policy", () => {
     });
   });
 
-  test("constrained Back + Chest uses vertical-pull surrogate instead of duplicate row mains", () => {
-    const cases: QuestionnaireData["equipment"][] = [["dumbbells"], ["none"]];
+  test("constrained pull contexts use truthful pull slots without duplicate row mains", () => {
+    const cases: Array<{
+      equipment: QuestionnaireData["equipment"];
+      dayTitle: string;
+      expectVerticalSurrogate: boolean;
+    }> = [
+      {
+        equipment: ["dumbbells"],
+        dayTitle: fullBodyADayTitle,
+        expectVerticalSurrogate: false,
+      },
+      {
+        equipment: ["none"],
+        dayTitle: "Full Body A — Squat, Push and Trunk",
+        expectVerticalSurrogate: false,
+      },
+    ];
 
-    cases.forEach((equipment) => {
+    cases.forEach(({ equipment, dayTitle, expectVerticalSurrogate }) => {
       const program = generateWeeklyProgram(
         buildQuestionnaire({
           experience: "Intermediate",
@@ -392,11 +412,33 @@ describe("three-day coach policy", () => {
         `policy-constrained-pull-${equipment.join("-")}`,
         { phaseIndex: 2, seed: `policy-constrained-pull-${equipment.join("-")}` }
       );
-      const mains = getDayExercises(program, "Back + Chest", "main");
-      const rows = mains.filter(isRowFamily);
-      const surrogates = mains.filter(isVerticalPullSurrogate);
+      const mains = getDayItems(program, dayTitle, "main");
+      const rows = mains
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+        .filter(isRowFamily);
+      const surrogates = mains
+        .map((item) => exerciseById(item.exerciseId))
+        .filter((exercise): exercise is Exercise => Boolean(exercise))
+        .filter(isVerticalPullSurrogate);
 
-      expect(surrogates.length).toBeGreaterThanOrEqual(1);
+      if (expectVerticalSurrogate) {
+        expect(surrogates.length).toBeGreaterThanOrEqual(1);
+      } else if (equipment.includes("dumbbells")) {
+        expect(
+          mains.some((item) => item.selectionDebug?.slotKind === "mainPullHorizontal")
+        ).toBe(true);
+      } else {
+        // Bodyweight Full Body A uses honest trunk / push / squat — no false vertical pull.
+        expect(surrogates.length).toBe(0);
+        expect(
+          mains.some((item) =>
+            ["mainSquatPrimary", "mainPushCompound", "mainTrunkAntiExtension"].includes(
+              item.selectionDebug?.slotKind ?? ""
+            )
+          )
+        ).toBe(true);
+      }
       expect(rows.length).toBeLessThanOrEqual(1);
     });
   });

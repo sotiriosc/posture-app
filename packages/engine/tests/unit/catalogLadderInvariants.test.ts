@@ -418,7 +418,7 @@ describe("VOCAB-P — primes values are drawn from the closed vocabulary", () =>
     const violations: string[] = [];
 
     for (const exercise of exercises) {
-      const primes = (exercise as any).primes as string[] | undefined;
+      const primes = exercise.primes;
       if (!primes) continue;
       for (const term of primes) {
         if (!VALID_PRIMES.has(term)) {
@@ -436,7 +436,7 @@ describe("VOCAB-M — mobilizes values are drawn from the closed vocabulary", ()
     const violations: string[] = [];
 
     for (const exercise of exercises) {
-      const mobilizes = (exercise as any).mobilizes as string[] | undefined;
+      const mobilizes = exercise.mobilizes;
       if (!mobilizes) continue;
       for (const term of mobilizes) {
         if (!VALID_MOBILIZES.has(term)) {

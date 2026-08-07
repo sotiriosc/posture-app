@@ -90,7 +90,7 @@ export type EngineProgramResult =
       debug: EngineDebugInfo;
     }
   | {
-      status: "repeat" | "blocked";
+      status: "repeat" | "blocked" | "quality_failed";
       message: string;
       seed: string;
       debug: EngineDebugInfo;

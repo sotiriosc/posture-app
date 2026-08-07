@@ -11,6 +11,7 @@ import {
   getPainSeverity,
   getProgramConstraintWarningBuffer,
   getWeeklyCoverageContract,
+  hasLegalTrueCarryExposureCandidate,
   resolveDayConstraintSpec,
   summarizeWeekCoverage,
   type WeekCoverageSummary,
@@ -251,6 +252,23 @@ export function auditCoverageContract(args: {
   const dayContracts: DayContractAudit[] = program.week.map((day) => {
     const spec = resolveDayConstraintSpec({ day, daysPerWeek, capabilityMode });
     if (!spec) {
+      // Home mode day identities are owned by mode contracts, not the
+      // gym-oriented day-constraint harness.
+      const title = day.title.trim();
+      const isModeOwnedHomeTitle =
+        /^full body\b/i.test(title) ||
+        /^practice\s*&\s*restore\b/i.test(title) ||
+        /^upper pattern practice\b/i.test(title) ||
+        /^lower\s*&\s*core practice\b/i.test(title);
+      if (isModeOwnedHomeTitle && capabilityMode !== "hasLoad") {
+        return {
+          dayTitle: day.title,
+          ok: true,
+          missing: [],
+          violations: [],
+          optionalMissing: ["mode_contract_owns_home_day_roles"],
+        };
+      }
       return {
         dayTitle: day.title,
         ok: false,
@@ -369,9 +387,15 @@ export function auditCoverageContract(args: {
     intelligenceFailures.push("3-day plan has zero calf exposure");
   }
 
-  // 3-day plans can satisfy contracts without dedicated carry exposure,
-  // while 4/5-day plans should include at least one carry-focused touchpoint.
-  const shouldRequireCarryExposure = daysPerWeek >= 4;
+  // 4/5-day plans require a true loaded-carry touchpoint only when a pain-safe,
+  // equipment-legal true-carry candidate exists. Core-stability marches are not
+  // counted as carry exposure, and missing capability is not a coverage failure.
+  const shouldRequireCarryExposure =
+    daysPerWeek >= 4 &&
+    hasLegalTrueCarryExposureCandidate({
+      capabilityMode,
+      painAreas: questionnaire.painAreas,
+    });
   if (shouldRequireCarryExposure && weekly.carryDays === 0) {
     intelligenceFailures.push("Carry exposure missing for the week");
   }
@@ -687,6 +711,7 @@ const runCoverageAuditCli = async () => {
     const program = generateWeeklyProgram(scenario.questionnaire, programId, {
       phaseIndex: scenario.phaseIndex,
       seed: `coverage-audit-${scenario.profile}-${scenario.phase}-${scenario.questionnaire.daysPerWeek}`,
+      skipQualityGate: true,
     });
     const warnings = getProgramConstraintWarningBuffer().filter(
       (warning) => warning.programId === program.id

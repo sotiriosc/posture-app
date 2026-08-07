@@ -1,0 +1,137 @@
+{
+  "label": "Program Quality V2 — Phase 6 Coaching Completeness",
+  "catalogCount": 225,
+  "activeCatalogCount": 224,
+  "releaseCriticalCount": 202,
+  "completeReleaseCriticalCount": 202,
+  "completenessPct": 100,
+  "catalogOnlyCount": 22,
+  "deprecated": [
+    "cable-upright-row"
+  ],
+  "legacyCompat": [
+    "cable-upright-row"
+  ],
+  "demoCounts": {
+    "available": 0,
+    "planned": 152,
+    "notRequired": 50
+  },
+  "requiredDemoBlockers": 0,
+  "byCode": {},
+  "failures": [],
+  "missingRegistry": [],
+  "canonicalRegistry": "packages/engine/src/coaching/exerciseCoachingRegistry.ts",
+  "resolver": "packages/engine/src/coaching/resolveExerciseCoaching.ts",
+  "paritySample": [
+    {
+      "exerciseId": "ankle-mobility",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Drive the knee forward while the heel stays down and the arch doesn’t collapse",
+      "demoStatus": "notRequired",
+      "guidanceHref": "/exercise/ankle-mobility"
+    },
+    {
+      "exerciseId": "archer-pushup",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Shift weight with control",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/archer-pushup"
+    },
+    {
+      "exerciseId": "assisted-box-squat",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-box-squat"
+    },
+    {
+      "exerciseId": "assisted-hip-thrust",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-hip-thrust"
+    },
+    {
+      "exerciseId": "assisted-nordic-eccentric",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-nordic-eccentric"
+    },
+    {
+      "exerciseId": "assisted-pistol-squat",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-pistol-squat"
+    },
+    {
+      "exerciseId": "assisted-reverse-lunge",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-reverse-lunge"
+    },
+    {
+      "exerciseId": "assisted-single-leg-hip-thrust",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-single-leg-hip-thrust"
+    },
+    {
+      "exerciseId": "assisted-single-leg-rdl",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-single-leg-rdl"
+    },
+    {
+      "exerciseId": "assisted-skater-squat",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-skater-squat"
+    },
+    {
+      "exerciseId": "assisted-split-squat",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-split-squat"
+    },
+    {
+      "exerciseId": "assisted-step-up",
+      "hasPurpose": true,
+      "hasSetup": true,
+      "hasExecution": true,
+      "primaryCue": "Move with controlled tempo and stacked posture",
+      "demoStatus": "planned",
+      "guidanceHref": "/exercise/assisted-step-up"
+    }
+  ],
+  "hipAbductionAdductionGap": "Catalog hip abduction/adduction gap retained as follow-up — not auto-expanded in Phase 6; not treated as a new exercise redesign."
+}

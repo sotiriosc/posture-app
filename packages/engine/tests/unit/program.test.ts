@@ -86,10 +86,10 @@ describe("program generation slot coverage", () => {
     expect(program.daysPerWeek).toBe(4);
     expect(program.week).toHaveLength(4);
     expect(program.week.map((day) => day.title)).toEqual([
-      "Upper Push + Scapular Control",
-      "Lower (Squat Emphasis) + Core",
-      "Upper Pull + Thoracic Posture",
-      "Lower (Hinge Emphasis) + Carry/Anti-rotation",
+      "Full Body A — Squat, Push and Trunk",
+      "Full Body B — Hinge, Single-Leg and Shoulder",
+      "Full Body C — Single-Leg, Push Variation and Back Intent",
+      "Practice & Restore",
     ]);
   });
 
@@ -101,9 +101,9 @@ describe("program generation slot coverage", () => {
     expect(program.daysPerWeek).toBe(3);
     expect(program.week).toHaveLength(3);
     expect(program.week.map((day) => day.title)).toEqual([
-      "Back + Chest",
-      "Shoulders + Arms",
-      "Legs + Abs",
+      "Full Body A — Squat, Push and Trunk",
+      "Full Body B — Hinge, Single-Leg and Shoulder",
+      "Full Body C — Single-Leg, Push Variation and Back Intent",
     ]);
   });
 
@@ -115,11 +115,11 @@ describe("program generation slot coverage", () => {
     expect(program.daysPerWeek).toBe(5);
     expect(program.week).toHaveLength(5);
     expect(program.week.map((day) => day.title)).toEqual([
-      "Upper Push",
-      "Lower Squat",
-      "Upper Pull",
-      "Lower Hinge + Posterior Chain",
-      "Arms + Posture + Conditioning",
+      "Full Body A — Squat, Push and Trunk",
+      "Full Body B — Hinge, Single-Leg and Shoulder",
+      "Full Body C — Single-Leg, Push Variation and Back Intent",
+      "Upper Pattern Practice",
+      "Lower & Core Practice",
     ]);
   });
 

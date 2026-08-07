@@ -1,0 +1,287 @@
+{
+  "artifact": "program-quality-v2-phase7b-correction-validation",
+  "phase": "7B-correction",
+  "generatedAt": "2026-08-06T19:55:42Z",
+  "templateVersion": 18,
+  "draftUnmerged": true,
+  "pr": 82,
+  "branch": "cursor/cloud-agent-1785959822486-hte2i",
+  "baseCommit": "5c88a64e71245f137e12178f2d26a38faf5fc8f5",
+  "checkpointBranch": "checkpoint/equipment-experience-phase4",
+  "checkpointSha": "5c88a64e71245f137e12178f2d26a38faf5fc8f5",
+  "checkpointUpdated": false,
+  "phase8Started": false,
+  "closureCodeTip": "96ff2763c8468e8ca825e0dd4980debc62e5fd40",
+  "rootCauseClosure": {
+    "before": {
+      "QUALITY_BLOCKED_EXERCISE_PRESENT": 10,
+      "GYM_REQUIRED_ROLE_WRONG_TRUTH": 15,
+      "DUMBBELL_PREP_AS_MAIN": 97,
+      "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 128,
+      "safeGenerationFailures": 244
+    },
+    "after": {
+      "QUALITY_BLOCKED_EXERCISE_PRESENT": 0,
+      "GYM_REQUIRED_ROLE_WRONG_TRUTH": 0,
+      "DUMBBELL_PREP_AS_MAIN": 0,
+      "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 0,
+      "safeGenerationFailures": 0
+    },
+    "note": "Closure series through 96ff276; release fuzz-integrity + program-quality closure2 both EXIT 0 with 0 safe-gen fails."
+  },
+  "historicalReportsRestoredFrom": "5c88a64e71245f137e12178f2d26a38faf5fc8f5",
+  "historicalReportsRestored": [
+    "docs/dev-reports/equipment-program-audit-phase2*",
+    "docs/dev-reports/equipment-program-audit-phase3*",
+    "docs/dev-reports/equipment-program-audit-phase4*",
+    "docs/dev-reports/equipment-program-audit-phase5*",
+    "docs/dev-reports/equipment-program-audit-phase5b*",
+    "docs/dev-reports/program-quality-v2-phase6-*",
+    "docs/dev-reports/program-quality-v2-phase7-fuzz-summary.md",
+    "docs/dev-reports/program-quality-v2-phase7-repeatability.md",
+    "docs/dev-reports/program-quality-v2-phase7-unified-gate.*"
+  ],
+  "preservedNewReports": [
+    "docs/dev-reports/program-quality-v2-fuzz-integrity.md",
+    "docs/dev-reports/program-quality-v2-fuzz-integrity.json",
+    "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md",
+    "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.json",
+    "docs/dev-reports/program-quality-v2-phase7b-*"
+  ],
+  "runs": {
+    "fuzzIntegrity": {
+      "command": "FUZZ_INTEGRITY_CASES_PER_MODE=10000 npm run audit:fuzz-integrity",
+      "mode": "release",
+      "casesPerMode": 10000,
+      "log": "/tmp/phase7b-gates/fuzz-integrity-closure2.log",
+      "startedAt": "2026-08-06T14:18:40-04:00",
+      "finishedAt": "2026-08-06T15:53:51-04:00",
+      "exitCode": 0,
+      "verdict": "NEEDS_REVIEW",
+      "generatedAt": "2026-08-06T19:53:51.311Z",
+      "elapsedMs": 5710987,
+      "reports": [
+        "docs/dev-reports/program-quality-v2-fuzz-integrity.md",
+        "docs/dev-reports/program-quality-v2-fuzz-integrity.json",
+        "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.md",
+        "docs/dev-reports/program-quality-v2-fuzz-integrity-samples.json"
+      ],
+      "headAtRunNote": "Working tree on PR branch tip 96ff2763c8468e8ca825e0dd4980debc62e5fd40 (closure fixes through 96ff276); release audit rewrote fuzz-integrity reports only."
+    },
+    "programQuality": {
+      "command": "npm run audit:program-quality",
+      "log": "/tmp/phase7b-gates/program-quality-closure2.log",
+      "startedAt": "2026-08-06T13:10:12-04:00",
+      "finishedAt": "2026-08-06T14:45:13-04:00",
+      "exitCode": 0,
+      "verdict": "PASS",
+      "ok": true,
+      "phase": 7,
+      "fuzzCases": 50000,
+      "summary": {
+        "ok": true,
+        "phase": 7,
+        "verdict": "PASS",
+        "fuzzCases": 50000,
+        "priorModeReports": [
+          "equipment-program-audit-phase2.json"
+        ],
+        "outputs": [
+          "docs/dev-reports/program-quality-v2-phase7-unified-gate.md",
+          "docs/dev-reports/program-quality-v2-phase7-unified-gate.json"
+        ]
+      },
+      "note": "Audit rewrote historical Phase 2\u20137 unified-gate/persona artifacts locally; those were restored to base 5c88a64 and must not be committed. PASS evidence recorded here only."
+    }
+  },
+  "fuzzIntegritySummary": {
+    "verdict": "NEEDS_REVIEW",
+    "releaseBlockingFailures": [],
+    "needsReviewWarnings": [
+      {
+        "code": "UNEXPLAINED_CROSS_INPUT_COLLAPSE",
+        "detail": "399 suspicious collapse pairs (see categories)"
+      }
+    ],
+    "gateDistinction": {
+      "releaseBlockingFailures": 0,
+      "needsReviewWarnings": 1,
+      "allFinalProgramsPass": true,
+      "allClassified": true,
+      "note": "NEEDS_REVIEW warnings are not release failures when all finals pass and all cases are classified."
+    },
+    "finalQualityTotals": {
+      "finalQualityPass": 50000,
+      "finalQualityFail": 0,
+      "safeGenerationError": 0,
+      "fallbackPassed": 0,
+      "fallbackFailedSafely": 0,
+      "fallbackEvidenceMalformed": 0,
+      "exceptions": 0,
+      "unclassified": 0
+    },
+    "byMode": [
+      {
+        "mode": "gym",
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0009,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 0,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {},
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      },
+      {
+        "mode": "dumbbells",
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 0,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {},
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      },
+      {
+        "mode": "bands",
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 0,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {},
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      },
+      {
+        "mode": "bodyweight",
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 0,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {},
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      },
+      {
+        "mode": "mixedHome",
+        "finalQualityPass": 10000,
+        "finalQualityFail": 0,
+        "safeGenerationError": 0,
+        "fallbackRate": 0.0,
+        "recoveryRate": 0.0,
+        "fallbackTriage": {
+          "fallbackPassed": 0,
+          "fallbackFailedSafely": 0,
+          "fallbackEvidenceMalformed": 0
+        },
+        "hardFailureCodesByCount": {},
+        "deterministicMismatches": 0,
+        "exceptions": 0
+      }
+    ],
+    "fallbackRates": {
+      "gym": 0.0,
+      "dumbbells": 0.0,
+      "bands": 0.0,
+      "bodyweight": 0.0,
+      "mixedHome": 0.0
+    },
+    "failureCodes": {},
+    "mutations": {
+      "required": 14,
+      "detected": 14,
+      "falsePass": 0,
+      "acceptance": "PASS"
+    },
+    "metamorphic": {
+      "total": 9,
+      "passed": 9
+    },
+    "deterministicChecks": {
+      "performed": 50000,
+      "total": 50000,
+      "mismatches": 0,
+      "note": "Each of 5 modes \u00d7 10000 cases performs one generateWeeklyProgram repeat; mismatches across all modes = 0."
+    },
+    "exceptions": 0,
+    "collapseCategories": {
+      "expectedIrrelevantInput": 12057,
+      "suspiciousIgnoredPainInput": 1410,
+      "expectedStableTemplateIdentity": 34,
+      "suspiciousIgnoredSupportAnchorInput": 190,
+      "expectedCapabilityLimitation": 10531
+    },
+    "collapseAnalyzed": {
+      "totalDetectedPairs": 24222,
+      "analyzedRepresentativePairs": 2500,
+      "suspicious": 399,
+      "expected": 2101
+    },
+    "gymHingeRepro": {
+      "seed": "gym-fuzz-9e37e786",
+      "verdict": "hinge_preserved",
+      "qualityPassed": true,
+      "blockedExercisePresent": false,
+      "hingeRemainsViaLegalAlternative": true,
+      "finalOutcomeClass": "initialPass",
+      "detail": "unblockedHingeMains=db-rdl blockedHingeMains=machine-glute-drive wrongTruth=false outcome=initialPass"
+    },
+    "generatorParityNote": "fuzzIntegrityAudit uses the same canonical mode case generators and programQualitySignature as the ordinary program-quality gate (packages/engine/src/__debug__/fuzzIntegrityAudit.ts). Executable parity: packages/engine/tests/unit/canonicalFuzzCasesParity.test.ts (commit 6d5247d).",
+    "templateVersion": 18
+  },
+  "ci": {
+    "available": true,
+    "finalHead": "be65fbf7de470d6958f1cc74d0b9ff27a2fa20c7",
+    "conclusion": "SUCCESS",
+    "checks": [
+      {
+        "name": "Vercel Preview Comments",
+        "conclusion": "SUCCESS"
+      },
+      {
+        "name": "Vercel – praxis-gyms",
+        "conclusion": "SUCCESS"
+      },
+      {
+        "name": "GitGuardian Security Checks",
+        "conclusion": "NEUTRAL"
+      }
+    ],
+    "note": "Polled completed checks on be65fbf; no failing checks (GitGuardian neutral)."
+  },
+  "prMetadataUpdate": {
+    "attempted": true,
+    "keptDraft": true,
+    "merged": false,
+    "result": "updated",
+    "note": "PR #82 body updated via REST with final head SHA, audit results, CI SUCCESS, template-version 18, draft/unmerged, stop-before-Phase-8.",
+    "url": "https://github.com/sotiriosc/posture-app/pull/82"
+  },
+  "stop": "Do not begin Phase 8. Do not merge PR #82. Do not update checkpoint/equipment-experience-phase4.",
+  "validationCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522",
+  "validationFollowUpCommit": "cd691f4d512140eb5e90094074ff2c05ee08b522",
+  "branchTipAtValidationCommit": "be65fbf7de470d6958f1cc74d0b9ff27a2fa20c7"
+}

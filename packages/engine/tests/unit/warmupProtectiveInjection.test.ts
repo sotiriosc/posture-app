@@ -28,8 +28,13 @@ const SCAP_PREP_IDS = new Set([
   "scap-pushup-plus",
 ]);
 
+const isFullBodyDay = (day: ProgramDay) =>
+  day.title.toLowerCase().includes("full body");
+
 const isLowerBodyDay = (day: ProgramDay) => {
   const title = day.title.toLowerCase();
+  // Bodyweight Full Body A/B/C all include lower-body patterns.
+  if (isFullBodyDay(day)) return true;
   return (
     title.includes("leg") ||
     title.includes("lower") ||
@@ -42,6 +47,14 @@ const isLowerBodyDay = (day: ProgramDay) => {
 
 const isUpperBodyDay = (day: ProgramDay) => {
   const title = day.title.toLowerCase();
+  // Full Body days are mixed; only B/C carry primary upper protective emphasis.
+  if (isFullBodyDay(day)) {
+    return (
+      title.includes("shoulder") ||
+      title.includes("back intent") ||
+      title.includes("push variation")
+    );
+  }
   return (
     title.includes("upper") ||
     title.includes("back") ||
@@ -107,11 +120,13 @@ describe("warmupProtectiveInjection", () => {
   });
 
   test("knee-pain persona on an upper-body day does NOT get knee mobilizer", () => {
+    // Pure upper gym days must not receive knee protective overlays. Bodyweight
+    // Full Body days are mixed lower+upper and correctly keep knee prep.
     const kneePain: QuestionnaireData = {
       goals: "Improve posture",
       painAreas: ["Knees"],
       experience: "Beginner",
-      equipment: ["none"],
+      equipment: ["gym"],
       daysPerWeek: 3,
     };
 
@@ -120,10 +135,13 @@ describe("warmupProtectiveInjection", () => {
       seed: "protective-knee-upper",
     });
 
-    const upperDays = program.week.filter(isUpperBodyDay);
+    const upperDays = program.week.filter(
+      (day) => isUpperBodyDay(day) && !isFullBodyDay(day) && !isLowerBodyDay(day)
+    );
+    expect(upperDays.length).toBeGreaterThan(0);
     upperDays.forEach((day) => {
       const warmupIds = warmupItemIds(day);
-      // Knee mobilizers should NOT be injected on upper-body days
+      // Knee mobilizers should NOT be injected on pure upper-body days
       expect(
         warmupIds.some((id) => KNEE_MOBILIZER_IDS.has(id)),
         `Upper-body day "${day.title}" should NOT include knee protective mobilizer; ` +

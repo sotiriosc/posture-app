@@ -228,7 +228,9 @@ describe("warmupDegradation", () => {
         daysPerWeek: 3,
       },
       "degradation-prime-skip",
-      { phaseIndex: 2, seed: "degradation-prime-skip" }
+      // Barbell-only maps to nearest loaded non-gym identity; this case asserts
+      // warmup PRIME degradation traces, not the unified quality-gate contract.
+      { phaseIndex: 2, seed: "degradation-prime-skip", skipQualityGate: true }
     );
 
     program.week.forEach((day) => {

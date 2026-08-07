@@ -2,6 +2,9 @@ import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { isExerciseEligible, normalizeEquipmentSelection, type Equipment } from "@/lib/equipment";
 import { exerciseById, exercises, type Exercise } from "@/lib/exercises";
 import { auditWeeklyCoverage } from "@/lib/program/coverageAudit";
+import { validateDumbbellProgramContract } from "@/lib/program/dumbbellProgramContract";
+import { validateBandProgramContract } from "@/lib/program/bandProgramContract";
+import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
 import type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 import {
   isBackChestPosteriorSupportFamily,
@@ -479,11 +482,39 @@ export const evaluateHigherFrequencyPersonaQuality = ({
   const reviewFindings: string[] = [];
   const available = normalizeEquipmentSelection(questionnaire.equipment).available;
   const selectedIds = new Set(allProgramItems(program).map((item) => item.exerciseId));
+  const equipmentMode = resolvePrimaryProgramEquipmentMode(questionnaire.equipment);
+
+  if (equipmentMode === "dumbbells") {
+    const contractFailures = validateDumbbellProgramContract({
+      program,
+      persona: "higher-frequency-review",
+      equipment: questionnaire.equipment,
+      experience: questionnaire.experience,
+      painAreas: questionnaire.painAreas,
+    });
+    failures.push(...contractFailures.map((failure) => failure.detail));
+  }
+  if (equipmentMode === "bands") {
+    const contractFailures = validateBandProgramContract({
+      program,
+      persona: "higher-frequency-review",
+      equipment: questionnaire.equipment,
+      bandSetup: questionnaire.bandSetup,
+      experience: questionnaire.experience,
+      phaseIndex,
+    });
+    failures.push(...contractFailures.map((failure) => failure.detail));
+  }
+
   const blockingWarnings = warnings.filter((warning) =>
     ["violation", "missing", "coverage"].includes(warning.kind)
   );
 
-  if (blockingWarnings.length > 0) {
+  if (
+    blockingWarnings.length > 0 &&
+    equipmentMode !== "dumbbells" &&
+    equipmentMode !== "bands"
+  ) {
     reviewFindings.push(
       `final warning buffer contains blocking warnings: ${blockingWarnings
         .map((warning) => `${warning.kind}:${warning.dayTitle}:${warning.message}`)
@@ -497,8 +528,18 @@ export const evaluateHigherFrequencyPersonaQuality = ({
       daysPerWeek: questionnaire.daysPerWeek,
       dayTitle: day.title,
       experience: questionnaire.experience,
+      equipment: questionnaire.equipment,
     });
-    if (mains.length !== expectedMainCount) {
+    if (Array.isArray(expectedMainCount)) {
+      if (
+        mains.length < expectedMainCount[0] ||
+        mains.length > expectedMainCount[1]
+      ) {
+        reviewFindings.push(
+          `${day.title}: expected ${expectedMainCount[0]}-${expectedMainCount[1]} mains, received ${mains.length}`
+        );
+      }
+    } else if (mains.length !== expectedMainCount) {
       reviewFindings.push(
         `${day.title}: expected ${expectedMainCount} mains, received ${mains.length}`
       );
@@ -506,7 +547,10 @@ export const evaluateHigherFrequencyPersonaQuality = ({
 
     const seenDayIds = new Set<string>();
     day.routine.forEach((item) => {
-      if (seenDayIds.has(item.exerciseId)) {
+      if (
+        resolvePrimaryProgramEquipmentMode(questionnaire.equipment) !== "dumbbells" &&
+        seenDayIds.has(item.exerciseId)
+      ) {
         failures.push(`${day.title}: duplicate exercise appears in same day (${item.exerciseId})`);
       }
       seenDayIds.add(item.exerciseId);

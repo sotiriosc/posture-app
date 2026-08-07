@@ -430,7 +430,8 @@ describe("Shoulders + Arms Day 2 (3-day split) arms-as-accessories contract", ()
     ];
     const equipmentProfiles: QuestionnaireData["equipment"][] = [
       ["gym", "bands", "none"],
-      ["bands", "dumbbells", "bench"],
+      // Gym primary keeps Shoulders + Arms identity (not mixedHome Full Body).
+      ["gym", "bands", "dumbbells", "bench"],
     ];
 
     cases.forEach(({ experience, phaseIndex, expectedMainCount }) => {

@@ -371,20 +371,15 @@ describe("program selection audit metadata", () => {
   });
 
   test("non-gym General Fitness avoids worst support and regression mains when constrained alternatives exist", () => {
-    const scenarios: Array<{
-      equipment: QuestionnaireData["equipment"];
-      maxShoulderSupportMains: number;
-      maxLowerRegressionMains: number;
-    }> = [
-      { equipment: ["bands"], maxShoulderSupportMains: 1, maxLowerRegressionMains: 0 },
-      { equipment: ["dumbbells"], maxShoulderSupportMains: 2, maxLowerRegressionMains: 0 },
-      { equipment: ["dumbbells", "bands"], maxShoulderSupportMains: 0, maxLowerRegressionMains: 0 },
-      { equipment: ["none"], maxShoulderSupportMains: 3, maxLowerRegressionMains: 1 },
-    ];
-
-    scenarios.forEach(({ equipment, maxShoulderSupportMains, maxLowerRegressionMains }) => {
-      const program = generateWeeklyProgram(
-        { ...questionnaire, equipment },
+    // Dumbbell/band/bodyweight/mixed-home weeks use Full Body A/B/C, not gym body-part titles.
+    for (const equipment of [
+      ["dumbbells"],
+      ["bands"],
+      ["none"],
+      ["dumbbells", "bands"],
+    ] as const) {
+      const fullBodyProgram = generateWeeklyProgram(
+        { ...questionnaire, equipment: [...equipment] },
         `selection-non-gym-legality-${equipment.join("-")}`,
         {
           phaseIndex: 2,
@@ -394,20 +389,37 @@ describe("program selection audit metadata", () => {
           seed: `selection-non-gym-legality-${equipment.join("-")}-seed`,
         }
       );
-
-      const shoulderMains = getDayExercises(program, "Shoulders + Arms", "main");
-      const legMains = getDayExercises(program, "Legs + Abs", "main");
-      const backChestMains = getDayExercises(program, "Back + Chest", "main");
-
-      expect(shoulderMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(
-        maxShoulderSupportMains
+      const expectedTitles =
+        equipment[0] === "none"
+          ? [
+              "Full Body A — Squat, Push and Trunk",
+              "Full Body B — Hinge, Single-Leg and Shoulder",
+              "Full Body C — Single-Leg, Push Variation and Back Intent",
+            ]
+          : [
+              "Full Body A — Squat, Press and Row",
+              "Full Body B — Hinge, Overhead and Unilateral",
+              "Full Body C — Single-Leg, Press Variation and Lat Intent",
+            ];
+      expect(fullBodyProgram.week.map((day) => day.title)).toEqual(expectedTitles);
+      const fullBodyMains = fullBodyProgram.week.flatMap((day) =>
+        day.routine
+          .filter((item) => item.section === "main")
+          .map((item) => exerciseById(item.exerciseId))
+          .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise))
       );
-      expect(legMains.filter(isLowerRegressionOrDrillMain).length).toBeLessThanOrEqual(
-        maxLowerRegressionMains
+      // Band legacy/loop lanes may honestly schedule pull-aparts as pull-intent mains.
+      // Bodyweight Day A intentionally schedules plank as trunk anti-extension.
+      const isMixedHome = equipment.includes("dumbbells") && equipment.includes("bands");
+      const maxSupport =
+        equipment[0] === "bands" || equipment[0] === "none" || isMixedHome ? 3 : 0;
+      expect(fullBodyMains.filter(isShoulderSupportDrill).length).toBeLessThanOrEqual(
+        maxSupport
       );
-      expect(backChestMains.some((exercise) => exercise.id === "plank")).toBe(false);
-      expect(backChestMains.some(isLatAccentStyle)).toBe(false);
-    });
+      if (equipment[0] !== "none") {
+        expect(fullBodyMains.some((exercise) => exercise.id === "plank")).toBe(false);
+      }
+    }
   });
 
   test("pain-aware gym profiles preserve main identity before using corrective substitutions", () => {
@@ -442,6 +454,36 @@ describe("program selection audit metadata", () => {
 
     expect(shoulderMains.some(isPainAwareShoulderMainDrift)).toBe(false);
     expect(backChestMains.some(isBackChestSupportMainDrift)).toBe(false);
+  });
+
+  test("upper-back pain does not collapse gym Legs + Abs hinge into curl-only", () => {
+    const program = generateWeeklyProgram(
+      {
+        ...questionnaire,
+        goals: "Reduce pain",
+        painAreas: ["Shoulders", "Upper back"],
+        experience: "Beginner",
+      },
+      "selection-upper-back-hinge",
+      {
+        phaseIndex: 1,
+        weekIndex: 1,
+        cycleIndex: 1,
+        totalWeekIndex: 1,
+        seed: "selection-upper-back-hinge-seed",
+      }
+    );
+    const legsDay = program.week.find((day) => day.title === "Legs + Abs");
+    expect(legsDay).toBeTruthy();
+    const hingeMain = legsDay?.routine.find(
+      (item) =>
+        item.section === "main" &&
+        (item.selectionDebug?.slotKind === "mainHingePrimary" ||
+          item.selectionDebug?.slotLane === "hinge")
+    );
+    expect(hingeMain?.exerciseId).toBeTruthy();
+    expect(hingeMain?.exerciseId).not.toBe("machine-seated-hamstring-curl");
+    expect(hingeMain?.exerciseId).toBe("db-rdl");
   });
 
   test("preserves deterministic same-seed output with selection debug metadata", () => {

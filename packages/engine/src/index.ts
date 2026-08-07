@@ -24,6 +24,7 @@ export * from "./exercises";
 export * from "./exerciseCatalog";
 export * from "./centrationCues";
 export * from "./equipment";
+export * from "./coaching";
 
 // ── Assessment & pose analysis ────────────────────────────────────────────────
 export * from "./assessmentEngine";

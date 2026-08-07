@@ -2,6 +2,12 @@ import { describe, expect, test } from "vitest";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { exerciseById, type Exercise } from "@/lib/exercises";
 import { generateWeeklyProgram } from "@/lib/program";
+import {
+  findProgramDay,
+  fullBodyADayTitle,
+  isDumbbellsOnlyEquipment,
+  pushPullDayTitle,
+} from "./_helpers/dumbbellTestTitles";
 
 const baseQuestionnaire: QuestionnaireData = {
   goals: "General fitness",
@@ -11,8 +17,11 @@ const baseQuestionnaire: QuestionnaireData = {
   daysPerWeek: 3,
 };
 
-const backChestMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
-  const day = program.week.find((entry) => entry.title === "Back + Chest");
+const pushDayMains = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  equipment: QuestionnaireData["equipment"]
+) => {
+  const day = findProgramDay(program, pushPullDayTitle(equipment));
   expect(day).toBeTruthy();
   return (day?.routine ?? [])
     .filter((item) => item.section === "main")
@@ -45,7 +54,7 @@ describe("program environment eligibility", () => {
       seed: "env-home-db",
     });
 
-    const mains = backChestMains(program);
+    const mains = pushDayMains(program, baseQuestionnaire.equipment);
     const mainIds = mains.map((exercise) => exercise.id);
 
     expect(mainIds).toContain("dumbbell-floor-press");
@@ -77,12 +86,13 @@ describe("program environment eligibility", () => {
       }
     );
 
-    expect(backChestMains(withBench).map((exercise) => exercise.id)).toContain(
+    expect(pushDayMains(gym, ["gym"]).map((exercise) => exercise.id)).toContain(
       "dumbbell-bench-press"
     );
-    expect(backChestMains(gym).map((exercise) => exercise.id)).toContain(
-      "dumbbell-bench-press"
-    );
+    // Dumbbell-only mode keeps floor press even when bench is confirmed (Phase 3 honesty).
+    expect(
+      pushDayMains(withBench, ["dumbbells", "bench"]).map((exercise) => exercise.id)
+    ).toContain("dumbbell-floor-press");
   });
 
   test("environment filtering preserves basic generator invariants", () => {
@@ -96,6 +106,8 @@ describe("program environment eligibility", () => {
 
     expect(program.daysPerWeek).toBe(3);
     expect(program.week).toHaveLength(3);
+    expect(isDumbbellsOnlyEquipment(baseQuestionnaire.equipment)).toBe(true);
+    expect(program.week.map((day) => day.title)).toContain(fullBodyADayTitle);
     program.week.forEach((day) => {
       const sections = new Set(day.routine.map((item) => item.section));
       const ids = day.routine.map((item) => item.exerciseId);
