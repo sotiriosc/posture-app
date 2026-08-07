@@ -529,7 +529,7 @@ const main = () => {
     coachingOk &&
     fuzzOk &&
     blockAware.ok &&
-    PROGRAM_TEMPLATE_VERSION === 18;
+    PROGRAM_TEMPLATE_VERSION === 19;
 
   const summary = {
     generatedAt: new Date().toISOString(),

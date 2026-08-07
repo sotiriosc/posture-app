@@ -1,9 +1,9 @@
 # Program Quality V2 — Fuzz-Integrity Assessment (Phase 7B §13)
 
-- Generated: 2026-08-06T19:53:51.311Z
+- Generated: 2026-08-07T01:32:02.332Z
 - Mode: **release**
 - Cases per mode: **10000** (release requires exactly **10000**)
-- Elapsed: 5710987ms
+- Elapsed: 6360426ms
 - Verdict: **NEEDS_REVIEW**
 
 Release run (10000/mode).
@@ -65,8 +65,8 @@ Release run (10000/mode).
 ### mixedHome
 
 - Total cases: 10000
-- Initial quality pass: 10000
-- Recovery attempted / succeeded: 0 / 0
+- Initial quality pass: 9756
+- Recovery attempted / succeeded: 244 / 244
 - Fallback attempted / succeeded: 0 / 0
 - Final quality pass / fail: 10000 / 0
 - Safe generation error: 0
@@ -98,10 +98,10 @@ Reported as structural diversity / variation-seed diversity / output diversity.
 
 **Output diversity**
 
-- Unique semantic program signatures: 5169
-- Unique ordered weekly exercise signatures: 4961
+- Unique semantic program signatures: 4887
+- Unique ordered weekly exercise signatures: 4696
 - Unique day-identity signatures: 3
-- Most common signature count/share: 24 / 0.24%
+- Most common signature count/share: 28 / 0.28%
 - Recovery attempts / rate: 9 / 0.09%
 - Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
@@ -109,26 +109,26 @@ Reported as structural diversity / variation-seed diversity / output diversity.
 
 Top 20 repeated semantic signatures:
 
-- `89d52a62`: 24
-- `40e6f39b`: 24
+- `e50459e3`: 28
+- `51c828a2`: 28
+- `e19dca4a`: 24
+- `6b6f5f74`: 24
+- `e42e50bb`: 24
+- `14b7de8c`: 24
 - `1c0a9f3c`: 22
 - `f47837d0`: 22
-- `7f09af3c`: 22
+- `7e110b28`: 22
 - `763d6f57`: 22
-- `a8cffc5c`: 22
-- `3f0ee810`: 21
-- `dc5ce7df`: 20
+- `fc1e8f70`: 22
+- `2088a784`: 21
+- `69409f0b`: 20
 - `b0807df4`: 20
 - `a9315fc4`: 20
 - `9c6f7d11`: 18
-- `51c828a2`: 17
 - `b516e5d3`: 16
 - `3cadec7d`: 16
-- `699c22a5`: 16
+- `ba452db9`: 16
 - `097b36fb`: 16
-- `9ecc1b40`: 16
-- `b9770ea1`: 15
-- `d6361b6f`: 15
 
 
 ### dumbbells
@@ -150,10 +150,10 @@ Top 20 repeated semantic signatures:
 
 **Output diversity**
 
-- Unique semantic program signatures: 1366
-- Unique ordered weekly exercise signatures: 1137
+- Unique semantic program signatures: 4836
+- Unique ordered weekly exercise signatures: 4092
 - Unique day-identity signatures: 3
-- Most common signature count/share: 37 / 0.37%
+- Most common signature count/share: 15 / 0.15%
 - Recovery attempts / rate: 0 / 0.00%
 - Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
@@ -161,26 +161,26 @@ Top 20 repeated semantic signatures:
 
 Top 20 repeated semantic signatures:
 
-- `557b0e9a`: 37
-- `633439c5`: 35
-- `b71e874d`: 35
-- `a1edee9e`: 35
-- `6144142e`: 34
-- `12bf26c5`: 34
-- `d84e2725`: 33
-- `74e2153e`: 26
-- `351cc01e`: 26
-- `7b25a9e4`: 25
-- `2e9b8bfa`: 25
-- `740858fd`: 25
-- `c2430d80`: 25
-- `be40a196`: 25
-- `64a3a9e6`: 25
-- `21acab86`: 24
-- `28d43b21`: 24
-- `5dc64fcc`: 24
-- `c474e98c`: 24
-- `ad253a30`: 24
+- `6bdb338b`: 15
+- `798eeae6`: 15
+- `52d9fb10`: 13
+- `374fb825`: 12
+- `7c84f27d`: 12
+- `fb0d9d45`: 12
+- `fdd24b75`: 12
+- `0610bbb5`: 12
+- `4678284c`: 11
+- `560d57e4`: 11
+- `527a5314`: 10
+- `096be92b`: 9
+- `ab0ec4ec`: 9
+- `ba80025e`: 9
+- `b3ffb246`: 9
+- `341b913a`: 9
+- `2515ae46`: 9
+- `6eb2cc8a`: 9
+- `07371ca0`: 9
+- `0ed9db85`: 9
 
 
 ### bands
@@ -202,10 +202,10 @@ Top 20 repeated semantic signatures:
 
 **Output diversity**
 
-- Unique semantic program signatures: 1217
-- Unique ordered weekly exercise signatures: 620
+- Unique semantic program signatures: 3454
+- Unique ordered weekly exercise signatures: 1857
 - Unique day-identity signatures: 3
-- Most common signature count/share: 43 / 0.43%
+- Most common signature count/share: 26 / 0.26%
 - Recovery attempts / rate: 0 / 0.00%
 - Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
@@ -213,26 +213,26 @@ Top 20 repeated semantic signatures:
 
 Top 20 repeated semantic signatures:
 
-- `d3bfd9bd`: 43
-- `d14c47f1`: 37
-- `c1bf26f3`: 37
-- `52000e59`: 37
-- `d0ce52cc`: 37
-- `bbce38c0`: 36
-- `e2ef8620`: 36
-- `025a87ec`: 36
-- `eae1a103`: 36
-- `3d332a1e`: 36
-- `1ac6dee2`: 36
-- `11e6eafd`: 36
-- `712271d5`: 36
-- `f8ae9509`: 36
-- `3c141560`: 36
-- `563375b3`: 36
-- `67959c00`: 35
-- `129dafe4`: 35
-- `cb2b7167`: 26
-- `22b4ba67`: 26
+- `0007d13d`: 26
+- `a77d1297`: 26
+- `59118e77`: 26
+- `ef7f0ac5`: 23
+- `155632bf`: 22
+- `92ec4b4a`: 21
+- `9249fe84`: 21
+- `15c34a3d`: 19
+- `d4dc98e8`: 19
+- `886cc78b`: 19
+- `bd719532`: 18
+- `a88acefb`: 18
+- `caf6aebd`: 18
+- `225daa00`: 18
+- `47f25df5`: 18
+- `7c87e733`: 18
+- `27b2c290`: 17
+- `7aefce52`: 16
+- `968d74c9`: 16
+- `155fd0e7`: 16
 
 
 ### bodyweight
@@ -254,10 +254,10 @@ Top 20 repeated semantic signatures:
 
 **Output diversity**
 
-- Unique semantic program signatures: 1445
-- Unique ordered weekly exercise signatures: 805
+- Unique semantic program signatures: 4651
+- Unique ordered weekly exercise signatures: 2906
 - Unique day-identity signatures: 3
-- Most common signature count/share: 42 / 0.42%
+- Most common signature count/share: 16 / 0.16%
 - Recovery attempts / rate: 0 / 0.00%
 - Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
@@ -265,26 +265,26 @@ Top 20 repeated semantic signatures:
 
 Top 20 repeated semantic signatures:
 
-- `23b88119`: 42
-- `7dca086a`: 41
-- `45fb94f7`: 41
-- `91620c92`: 41
-- `cc5aee27`: 41
-- `1707368b`: 41
-- `5158271e`: 40
-- `59f9284b`: 40
-- `48cd0406`: 40
-- `67924fce`: 40
-- `e9127130`: 39
-- `ac959d1b`: 39
-- `28e13b3c`: 39
-- `f62942b8`: 38
-- `95f84efb`: 38
-- `87249a4f`: 32
-- `3493ba2b`: 32
-- `f87b4b34`: 31
-- `5c1e80be`: 31
-- `4812a1f6`: 30
+- `21d4570b`: 16
+- `931a90fc`: 14
+- `d499f2b3`: 14
+- `34220107`: 14
+- `3b33add2`: 13
+- `d3861671`: 13
+- `29d50ee0`: 12
+- `13e5398b`: 12
+- `6e969e9b`: 12
+- `2e2c7284`: 12
+- `912f494a`: 11
+- `adfdbc92`: 11
+- `1b7c000c`: 11
+- `b8411819`: 11
+- `7898cb43`: 11
+- `a71b63da`: 11
+- `30588cb0`: 11
+- `fdaa1df0`: 10
+- `f46b780c`: 10
+- `602ac932`: 10
 
 
 ### mixedHome
@@ -306,53 +306,53 @@ Top 20 repeated semantic signatures:
 
 **Output diversity**
 
-- Unique semantic program signatures: 3394
-- Unique ordered weekly exercise signatures: 2542
+- Unique semantic program signatures: 6331
+- Unique ordered weekly exercise signatures: 5227
 - Unique day-identity signatures: 3
-- Most common signature count/share: 14 / 0.14%
-- Recovery attempts / rate: 0 / 0.00%
+- Most common signature count/share: 12 / 0.12%
+- Recovery attempts / rate: 244 / 2.44%
 - Fallback uses / rate: 0 / 0.00%
 - Exceptions: 0
 - Deterministic mismatches: 0
 
 Top 20 repeated semantic signatures:
 
-- `e54f8e8b`: 14
-- `30029330`: 14
-- `8f501a12`: 14
-- `758fd1c2`: 14
-- `1f8e5bdf`: 14
-- `51f0aa98`: 14
-- `be8dcfc6`: 14
-- `ec8ad5bc`: 14
-- `f2481b96`: 13
-- `d543afe3`: 13
-- `7fa518d6`: 13
-- `ed90e113`: 13
-- `57cf894a`: 12
-- `e709de5b`: 12
-- `b81a92f0`: 12
-- `7abcecd3`: 12
-- `688c2b55`: 12
 - `6620831c`: 12
-- `6d97a4ab`: 12
-- `8ba48d34`: 12
+- `9c456c97`: 12
+- `4b940906`: 12
+- `b63353e7`: 10
+- `699a7789`: 10
+- `6af1a7bf`: 9
+- `f52b9dcb`: 9
+- `5cd3c946`: 9
+- `a2d3a2f9`: 9
+- `f3129a53`: 8
+- `c2525ac5`: 8
+- `a19f2458`: 8
+- `d79df138`: 8
+- `2f7b95ad`: 8
+- `9da6e376`: 8
+- `da75ed2f`: 8
+- `f09b1b94`: 8
+- `2d82c0bd`: 8
+- `0a58282a`: 7
+- `835a5f57`: 7
 
 
 ## 13B. Cross-input collapse analysis
 
-- Total detected pairs: 24222
+- Total detected pairs: 19818
 - Analyzed representative pairs: 2500
 - Report display limit: 40
-- Suspicious / expected (in analyzed set): 399 / 2101
+- Suspicious / expected (in analyzed set): 448 / 2052
 
 ### Root causes by category
 
-- `expectedIrrelevantInput`: 12057
-- `suspiciousIgnoredPainInput`: 1410
-- `expectedStableTemplateIdentity`: 34
-- `suspiciousIgnoredSupportAnchorInput`: 190
-- `expectedCapabilityLimitation`: 10531
+- `expectedIrrelevantInput`: 12419
+- `suspiciousIgnoredPainInput`: 1635
+- `expectedStableTemplateIdentity`: 53
+- `suspiciousIgnoredSupportAnchorInput`: 269
+- `expectedCapabilityLimitation`: 5442
 
 
 ### gym — expected / expectedIrrelevantInput
@@ -557,7 +557,7 @@ Top 20 repeated semantic signatures:
 
 ### gym — expected / expectedIrrelevantInput
 
-- Signature: `fd20b79a`
+- Signature: `d4f6817a`
 - Input A: `gym||Beginner||2||4||General fitness||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Beginner||2||4||Athletic performance||||gym|bandSetup:none||blocks:none`
 - Diffs: goals
@@ -565,7 +565,7 @@ Top 20 repeated semantic signatures:
 
 ### gym — expected / expectedIrrelevantInput
 
-- Signature: `fd20b79a`
+- Signature: `d4f6817a`
 - Input A: `gym||Beginner||2||4||General fitness||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Beginner||2||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
 - Diffs: goals
@@ -573,7 +573,7 @@ Top 20 repeated semantic signatures:
 
 ### gym — expected / expectedIrrelevantInput
 
-- Signature: `fd20b79a`
+- Signature: `d4f6817a`
 - Input A: `gym||Beginner||2||4||Athletic performance||||gym|bandSetup:none||blocks:none`
 - Input B: `gym||Beginner||2||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
 - Diffs: goals
@@ -581,7 +581,7 @@ Top 20 repeated semantic signatures:
 
 ### gym — expected / expectedIrrelevantInput
 
-- Signature: `fd20b79a`
+- Signature: `d4f6817a`
 - Input A: `gym||Beginner||2||4||Athletic performance||||dumbbells,gym|bandSetup:none||blocks:none`
 - Input B: `gym||Beginner||2||4||General fitness||||dumbbells,gym|bandSetup:none||blocks:none`
 - Diffs: goals
@@ -675,7 +675,7 @@ Top 20 repeated semantic signatures:
 - Diffs: goals
 - Explanation: Structural diffs (goals) do not imply a material eligibility change.
 
-_Display capped at 40; totalDetectedPairs=24222 in JSON._
+_Display capped at 40; totalDetectedPairs=19818 in JSON._
 
 ## 13C. Mutation testing
 
@@ -745,7 +745,7 @@ _Display capped at 40; totalDetectedPairs=24222 in JSON._
 
 ### NEEDS_REVIEW warnings (not release failures when finals pass + classified)
 
-- `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 399 suspicious collapse pairs (see categories)
+- `UNEXPLAINED_CROSS_INPUT_COLLAPSE`: 448 suspicious collapse pairs (see categories)
 
 ## Artifact paths
 

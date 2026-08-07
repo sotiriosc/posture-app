@@ -89,7 +89,7 @@ describe("Phase 7B input continuity", () => {
       "p7b-continuity-e2e",
       { seed: "p7b-continuity-e2e" }
     );
-    expect(program.templateVersion ?? PROGRAM_TEMPLATE_VERSION).toBe(18);
+    expect(program.templateVersion ?? PROGRAM_TEMPLATE_VERSION).toBe(19);
     expect(program.week.length).toBeGreaterThan(0);
 
     const model = resolveProgramPresentation({

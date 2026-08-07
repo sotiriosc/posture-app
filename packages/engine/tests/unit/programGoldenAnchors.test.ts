@@ -1105,9 +1105,25 @@ describe("Phase 3.3 persona anchors", () => {
         blockedExerciseIds: {},
         seed: "deterministic-seed-gym",
       });
+      const extractIds = (p: ReturnType<typeof generateWeeklyProgram>) =>
+        p.week
+          .flatMap((d) => d.routine)
+          .map((i) => i.exerciseId)
+          .join(",");
+      const afterResetIds = extractIds(afterReset).split(",").filter(Boolean);
+      // Block an exercise that is actually present so the candidate-pool change is observable.
+      const blockTarget =
+        afterResetIds.find((id) => id.startsWith("machine-")) ??
+        afterResetIds.find((id) =>
+          afterReset.week.some((day) =>
+            day.routine.some((item) => item.section === "main" && item.exerciseId === id)
+          )
+        ) ??
+        "machine-leg-press";
+
       const withBlock = generateWeeklyProgram(gymQuestionnaire, "prog-gym-blocked", {
         blockedExerciseIds: {
-          "machine-leg-press": {
+          [blockTarget]: {
             reason: "no_equipment",
             blockedAt: { phase: "skill", sessionCount: 6 },
           },
@@ -1115,19 +1131,9 @@ describe("Phase 3.3 persona anchors", () => {
         seed: "deterministic-seed-gym",
       });
 
-      // Programs differ when machine-leg-press is blocked vs not.
-      // (The exercise might or might not appear, but the programs are different
-      // because the blocked path picks an alternative.)
-      const extractIds = (p: ReturnType<typeof generateWeeklyProgram>) =>
-        p.week
-          .flatMap((d) => d.routine)
-          .map((i) => i.exerciseId)
-          .join(",");
-
-      // machine-leg-press never appears when blocked.
-      expect(extractIds(withBlock)).not.toMatch("machine-leg-press");
-      // Reset version might include it (depends on seed) — but programs differ.
-      // The key invariant: blocking changes the candidate pool.
+      // Blocked exercise never appears.
+      expect(extractIds(withBlock).split(",")).not.toContain(blockTarget);
+      // Blocking a selected exercise must change the emitted program.
       expect(extractIds(withBlock)).not.toBe(extractIds(afterReset));
     });
 

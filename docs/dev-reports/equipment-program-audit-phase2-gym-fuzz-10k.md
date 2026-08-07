@@ -7,7 +7,7 @@
 
 - illegalEquipment: 0
 - mainRoleTruth: 0
-- weeklyCoverage: 1332
+- weeklyCoverage: 0
 - duplicateFamily: 0
 - dayIdentity: 0
 - progressionContinuity: 0

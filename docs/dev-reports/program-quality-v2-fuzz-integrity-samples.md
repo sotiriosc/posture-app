@@ -35,12 +35,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `e3ec207c`
+- Semantic signature: `4c455e4a`
 - Day titles: Back + Chest | Shoulders + Arms | Legs + Abs
 - Ordered exercise IDs:
   - Day 1: wall-slides, wall-angel-hold, barbell-bench-press-paused, dumbbell-chest-fly, cable-seated-row, cable-lat-pulldown, dumbbell-rows, dumbbell-rear-delt-fly, cable-external-rotation, thread-the-needle
   - Day 2: wall-slides, wall-angel-hold, barbell-strict-press, cable-lateral-raise, cable-rear-delt-fly, dumbbell-lateral-raise, dumbbell-triceps-kickback, cable-biceps-curl, db-triceps-extension, hammer-curl, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, machine-leg-press, db-rdl, dumbbell-bulgarian-split-squat, machine-seated-hamstring-curl, cable-woodchop-standing, db-calf-raise, barbell-rollout, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, goblet-squat, db-rdl, dumbbell-reverse-lunge, machine-seated-hamstring-curl, cable-woodchop-standing, db-calf-raise, machine-ab-crunch, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Upper back"],"experience":"Advanced","equipment":["gym","dumbbells"],"daysPerWeek":3},"phaseIndex":3}`
 
@@ -92,12 +92,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `434e8f84`
+- Semantic signature: `65150b1c`
 - Day titles: Back + Chest | Shoulders + Arms | Legs + Abs
 - Ordered exercise IDs:
   - Day 1: wall-slides, wall-angel-hold, dumbbell-bench-press, dumbbell-chest-fly, dumbbell-rows, machine-lat-pulldown, single-arm-dumbbell-row, dumbbell-rear-delt-fly, cable-external-rotation-pressout, thread-the-needle
   - Day 2: wall-slides, wall-angel-hold, machine-shoulder-press, cable-lateral-raise, dumbbell-rear-delt-fly, dumbbell-lateral-raise, dumbbell-triceps-kickback, cable-biceps-curl, db-triceps-extension, hammer-curl, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, machine-leg-press, db-rdl, dumbbell-reverse-lunge, machine-seated-hamstring-curl, plank, db-calf-raise, side-plank-star, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, goblet-squat, db-rdl, dumbbell-reverse-lunge, machine-seated-hamstring-curl, plank, db-calf-raise, side-plank-star, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Neck"],"experience":"Advanced","equipment":["gym","dumbbells"],"daysPerWeek":3},"phaseIndex":2}`
 
@@ -129,13 +129,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `dd49dbf1`
+- Semantic signature: `b0e32c71`
 - Day titles: Upper Push | Lower Squat | Upper Pull | Lower Hinge + Posterior Chain | Arms + Posture + Conditioning
 - Ordered exercise IDs:
   - Day 1: cat-cow, wall-angel-hold, dumbbell-floor-press, dumbbell-shoulder-press, db-triceps-extension, cable-rear-delt-fly, thread-the-needle
-  - Day 2: cat-cow, glute-bridges, dumbbell-step-up-loaded, barbell-hip-thrust, side-plank-star, single-leg-calf-raise, hip-flexor-stretch
+  - Day 2: cat-cow, glute-bridges, dumbbell-bulgarian-split-squat, barbell-hip-thrust, side-plank-star, single-leg-calf-raise, hip-flexor-stretch
   - Day 3: cat-cow, wall-angel-hold, dumbbell-rows, machine-lat-pulldown, cable-biceps-curl, machine-rear-delt-row, thread-the-needle
-  - Day 4: cat-cow, glute-bridges, machine-glute-drive, dumbbell-bulgarian-split-squat, standing-calf-raise, farmers-carry, hip-flexor-stretch
+  - Day 4: cat-cow, glute-bridges, machine-glute-drive, dumbbell-step-up-loaded, standing-calf-raise, farmers-carry, hip-flexor-stretch
   - Day 5: cat-cow, wall-angel-hold, machine-seated-row, dumbbell-shoulder-press, bodyweight-triceps-extension, cable-biceps-curl, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Athletic performance","painAreas":["Hips"],"experience":"Beginner","equipment":["gym"],"daysPerWeek":5},"phaseIndex":2}`
@@ -206,12 +206,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `f2bfbd70`
+- Semantic signature: `4bb24368`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: ankle-mobility, glute-bridges, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, db-biceps-curl, standing-calf-raise, breathing-90-90
-  - Day 2: wall-slides, prone-ytw, dumbbell-sumo-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, db-triceps-extension, farmers-carry, breathing-90-90
-  - Day 3: ankle-mobility, glute-bridges, split-squat, pushup, dumbbell-rows, hollow-body-hold, single-leg-hip-thrust, breathing-90-90
+  - Day 1: ankle-mobility, glute-bridges, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, standing-calf-raise, db-biceps-curl, breathing-90-90
+  - Day 2: wall-slides, prone-ytw, dumbbell-sumo-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, farmers-carry, db-triceps-extension, breathing-90-90
+  - Day 3: ankle-mobility, glute-bridges, split-squat, dumbbell-rows, pushup, hollow-body-hold, single-leg-hip-thrust, breathing-90-90
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"General fitness","painAreas":[],"experience":"Beginner","equipment":["dumbbells"],"daysPerWeek":3},"phaseIndex":1,"blockedExerciseIds":{"db-rdl":{"reason":"personal_preference","blockedAt":{"phase":"skill","sessionCount":3}}}}`
 
@@ -224,12 +224,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `4492a67c`
+- Semantic signature: `f34e5922`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, dumbbell-reverse-lunge, db-biceps-curl, standing-calf-raise, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, dumbbell-shoulder-press, dumbbell-rows, dumbbell-sumo-rdl, single-arm-dumbbell-row, db-triceps-extension, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, pushup, dumbbell-pullover, single-leg-rdl, single-arm-dumbbell-row, farmers-carry, single-leg-hip-thrust, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, single-arm-dumbbell-row, dumbbell-floor-press, single-leg-hip-thrust, dumbbell-reverse-lunge, db-biceps-curl, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, dumbbell-shoulder-press, dumbbell-rows, dumbbell-sumo-rdl, db-triceps-extension, single-arm-dumbbell-row, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, dumbbell-pullover, single-arm-dumbbell-row, single-leg-rdl, pushup, single-leg-hip-thrust, farmers-carry, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Lower back"],"experience":"Advanced","equipment":["dumbbells"],"daysPerWeek":3},"phaseIndex":3}`
 
@@ -242,13 +242,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `231424d9`
+- Semantic signature: `f94bfd17`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, db-rdl, standing-calf-raise, farmers-carry, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, dumbbell-sumo-rdl, dumbbell-reverse-lunge, pike-pushup, dumbbell-rows, standing-calf-raise, farmers-carry, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, split-squat, dumbbell-floor-press, dumbbell-pullover, single-leg-rdl, db-triceps-extension, farmers-carry, thread-the-needle
-  - Day 4: cat-cow, wall-angel-hold, single-arm-dumbbell-row, heels-elevated-squat, db-biceps-curl, farmers-carry, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, db-rdl, farmers-carry, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, dumbbell-sumo-rdl, dumbbell-reverse-lunge, pike-pushup, dumbbell-rows, farmers-carry, standing-calf-raise, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, split-squat, dumbbell-pullover, dumbbell-floor-press, single-leg-rdl, db-triceps-extension, farmers-carry, thread-the-needle
+  - Day 4: cat-cow, wall-angel-hold, single-arm-dumbbell-row, heels-elevated-squat, farmers-carry, db-biceps-curl, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":["Shoulders","Upper back"],"experience":"Intermediate","equipment":["dumbbells"],"daysPerWeek":4},"phaseIndex":3}`
 
@@ -261,12 +261,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `12bf26c5`
+- Semantic signature: `6bdb338b`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, standing-calf-raise, db-biceps-curl, thread-the-needle
-  - Day 2: wall-slides, dead-bug, db-rdl, dumbbell-reverse-lunge, pike-pushup, db-biceps-curl, farmers-carry, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, split-squat, dumbbell-floor-press, dumbbell-rows, db-triceps-extension, farmers-carry, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, db-biceps-curl, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, dead-bug, db-rdl, dumbbell-reverse-lunge, pike-pushup, farmers-carry, db-biceps-curl, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, split-squat, dumbbell-rows, dumbbell-floor-press, db-triceps-extension, farmers-carry, thread-the-needle
   - Day 4: wall-slides, wall-angel-hold, pushup, single-arm-dumbbell-row, db-triceps-extension, thread-the-needle
   - Day 5: cat-cow, dead-bug, heels-elevated-squat, dumbbell-sumo-rdl, standing-calf-raise, thread-the-needle
 - Capability limitations: none
@@ -281,12 +281,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `06bf97f2`
+- Semantic signature: `869b7ab4`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, dumbbell-reverse-lunge, db-biceps-curl, standing-calf-raise, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, dumbbell-shoulder-press, dumbbell-rows, db-triceps-extension, farmers-carry, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, pushup, dumbbell-pullover, single-leg-hip-thrust, single-arm-dumbbell-row, side-plank-star, cossack-squat, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, dumbbell-reverse-lunge, standing-calf-raise, db-biceps-curl, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, dumbbell-shoulder-press, dumbbell-rows, farmers-carry, db-triceps-extension, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, dumbbell-pullover, single-arm-dumbbell-row, single-leg-hip-thrust, pushup, cossack-squat, side-plank-star, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Hips"],"experience":"Advanced","equipment":["dumbbells"],"daysPerWeek":3},"phaseIndex":2}`
 
@@ -299,13 +299,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `329645fa`
+- Semantic signature: `260953ea`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, db-rdl, standing-calf-raise, farmers-carry, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-rdl, dumbbell-reverse-lunge, pike-pushup, dumbbell-rows, standing-calf-raise, farmers-carry, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, split-squat, dumbbell-floor-press, dumbbell-pullover, db-rdl, db-triceps-extension, farmers-carry, thread-the-needle
-  - Day 4: cat-cow, wall-angel-hold, single-arm-dumbbell-row, heels-elevated-squat, db-biceps-curl, farmers-carry, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, single-arm-dumbbell-row, pushup, db-rdl, standing-calf-raise, farmers-carry, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-rdl, dumbbell-reverse-lunge, pike-pushup, dumbbell-rows, farmers-carry, standing-calf-raise, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, split-squat, dumbbell-pullover, dumbbell-floor-press, db-rdl, db-triceps-extension, farmers-carry, thread-the-needle
+  - Day 4: cat-cow, wall-angel-hold, single-arm-dumbbell-row, heels-elevated-squat, farmers-carry, db-biceps-curl, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":["Neck"],"experience":"Intermediate","equipment":["dumbbells"],"daysPerWeek":4},"phaseIndex":2}`
 
@@ -318,12 +318,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `38da37a2`
+- Semantic signature: `fcf2b9ba`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, standing-calf-raise, db-biceps-curl, thread-the-needle
-  - Day 2: wall-slides, hip-hinge-drill, db-rdl, dumbbell-reverse-lunge, pike-pushup, cossack-squat, db-biceps-curl, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, split-squat, dumbbell-floor-press, dumbbell-rows, db-triceps-extension, farmers-carry, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, single-arm-dumbbell-row, pushup, standing-calf-raise, db-biceps-curl, thread-the-needle
+  - Day 2: wall-slides, hip-hinge-drill, db-rdl, dumbbell-reverse-lunge, pike-pushup, db-biceps-curl, cossack-squat, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, split-squat, dumbbell-rows, dumbbell-floor-press, db-triceps-extension, farmers-carry, thread-the-needle
   - Day 4: wall-slides, wall-angel-hold, pushup, single-arm-dumbbell-row, db-triceps-extension, thread-the-needle
   - Day 5: cat-cow, hip-hinge-drill, heels-elevated-squat, single-leg-rdl, standing-calf-raise, thread-the-needle
 - Capability limitations: none
@@ -338,12 +338,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `694dad7a`
+- Semantic signature: `4f522e74`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, incline-pushup, single-arm-dumbbell-row, db-rdl, dumbbell-reverse-lunge, standing-calf-raise, db-biceps-curl, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, db-rdl, split-squat, pike-pushup, dumbbell-rows, db-rdl, db-triceps-extension, side-plank, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, dumbbell-step-up-loaded, pushup, single-arm-dumbbell-row, db-rdl, single-arm-dumbbell-row, side-plank, bodyweight-good-morning, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, single-arm-dumbbell-row, incline-pushup, db-rdl, dumbbell-reverse-lunge, standing-calf-raise, db-biceps-curl, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, db-rdl, split-squat, pike-pushup, dumbbell-rows, db-rdl, side-plank, db-triceps-extension, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, dumbbell-step-up-loaded, single-arm-dumbbell-row, single-arm-dumbbell-row, db-rdl, pushup, bodyweight-good-morning, side-plank, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Shoulders","Upper back"],"experience":"Advanced","equipment":["dumbbells","bench"],"daysPerWeek":3},"phaseIndex":1}`
 
@@ -356,13 +356,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `0a84f2dd`
+- Semantic signature: `1059b04b`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, db-rdl, standing-calf-raise, farmers-carry, breathing-90-90
-  - Day 2: cat-cow, dead-bug, db-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, dumbbell-rows, farmers-carry, standing-calf-raise, breathing-90-90
-  - Day 3: cat-cow, dead-bug, split-squat, pushup, dumbbell-pullover, db-rdl, db-triceps-extension, plank, breathing-90-90
-  - Day 4: cat-cow, dead-bug, single-arm-dumbbell-row, heels-elevated-squat, db-biceps-curl, plank, breathing-90-90
+  - Day 1: cat-cow, dead-bug, goblet-squat, single-arm-dumbbell-row, dumbbell-floor-press, db-rdl, standing-calf-raise, farmers-carry, breathing-90-90
+  - Day 2: cat-cow, dead-bug, db-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, dumbbell-rows, standing-calf-raise, farmers-carry, breathing-90-90
+  - Day 3: cat-cow, dead-bug, split-squat, dumbbell-pullover, pushup, db-rdl, db-triceps-extension, plank, breathing-90-90
+  - Day 4: cat-cow, dead-bug, single-arm-dumbbell-row, heels-elevated-squat, plank, db-biceps-curl, breathing-90-90
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":[],"experience":"Intermediate","equipment":["dumbbells","bench"],"daysPerWeek":4},"phaseIndex":1}`
 
@@ -375,12 +375,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `eced40f6`
+- Semantic signature: `bf3c778c`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, standing-calf-raise, db-biceps-curl, breathing-90-90
-  - Day 2: wall-slides, hip-hinge-drill, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, db-biceps-curl, side-plank, breathing-90-90
-  - Day 3: cat-cow, dead-bug, split-squat, pushup, dumbbell-rows, db-triceps-extension, side-plank, breathing-90-90
+  - Day 1: cat-cow, dead-bug, goblet-squat, single-arm-dumbbell-row, dumbbell-floor-press, standing-calf-raise, db-biceps-curl, breathing-90-90
+  - Day 2: wall-slides, hip-hinge-drill, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, side-plank, db-biceps-curl, breathing-90-90
+  - Day 3: cat-cow, dead-bug, split-squat, dumbbell-rows, pushup, db-triceps-extension, side-plank, breathing-90-90
   - Day 4: wall-slides, dead-bug, dumbbell-bench-press, single-arm-dumbbell-row, db-triceps-extension, thread-the-needle
   - Day 5: cat-cow, hip-hinge-drill, heels-elevated-squat, single-leg-glute-bridge-hold, standing-calf-raise, breathing-90-90
 - Capability limitations: none
@@ -395,12 +395,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `0ae1ba53`
+- Semantic signature: `fc7124b3`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: ankle-mobility, glute-bridges, heels-elevated-squat, pushup, band-pull-apart, standing-calf-raise, towel-biceps-curl-hold, breathing-90-90
-  - Day 2: wall-slides, glute-bridges, single-leg-hip-thrust, split-squat, pike-pushup, bodyweight-triceps-extension, supine-elbow-drive-row, breathing-90-90
-  - Day 3: ankle-mobility, glute-bridges, split-squat, close-grip-pushup, band-pull-apart, hollow-body-hold, supine-elbow-drive-row, breathing-90-90
+  - Day 1: ankle-mobility, glute-bridges, heels-elevated-squat, band-pull-apart, pushup, standing-calf-raise, towel-biceps-curl-hold, breathing-90-90
+  - Day 2: wall-slides, glute-bridges, single-leg-hip-thrust, split-squat, pike-pushup, supine-elbow-drive-row, bodyweight-triceps-extension, breathing-90-90
+  - Day 3: ankle-mobility, glute-bridges, split-squat, close-grip-pushup, band-pull-apart, supine-elbow-drive-row, hollow-body-hold, breathing-90-90
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"General fitness","painAreas":[],"experience":"Beginner","equipment":["bands"],"daysPerWeek":3},"phaseIndex":1,"blockedExerciseIds":{"db-rdl":{"reason":"personal_preference","blockedAt":{"phase":"skill","sessionCount":3}}}}`
 
@@ -413,12 +413,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `2b699f5c`
+- Semantic signature: `25463858`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, band-front-squat, band-chest-press, split-stance-row, single-leg-hip-thrust, standing-calf-raise, band-biceps-curl, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, band-overhead-press, band-row, bodyweight-triceps-extension, supine-elbow-drive-row, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, split-stance-row, band-rdl, marching-brace-hold, supine-elbow-drive-row, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, band-front-squat, band-chest-press, split-stance-row, single-leg-hip-thrust, band-biceps-curl, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, band-overhead-press, band-row, supine-elbow-drive-row, bodyweight-triceps-extension, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, split-stance-row, band-rdl, supine-elbow-drive-row, marching-brace-hold, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Lower back"],"experience":"Advanced","equipment":["bands"],"daysPerWeek":3,"bandSetup":"both_no_anchor"},"phaseIndex":3}`
 
@@ -431,12 +431,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `35bd85b8`
+- Semantic signature: `9ea9dcf8`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, band-front-squat, band-chest-press, split-stance-row, band-rdl, standing-calf-raise, marching-brace-hold, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, split-squat, pike-pushup, band-row, face-pull, standing-calf-raise, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, split-stance-row, single-leg-glute-bridge-hold, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, band-front-squat, band-chest-press, split-stance-row, band-rdl, marching-brace-hold, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, split-squat, pike-pushup, band-row, standing-calf-raise, face-pull, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, split-stance-row, pushup, single-leg-glute-bridge-hold, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
   - Day 4: cat-cow, wall-angel-hold, single-arm-band-row, band-front-squat, face-pull, band-biceps-curl, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":["Shoulders","Upper back"],"experience":"Intermediate","equipment":["bands"],"daysPerWeek":4,"bandSetup":"long_no_anchor"},"phaseIndex":3}`
@@ -450,12 +450,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `0fd3e4dd`
+- Semantic signature: `c97da829`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, band-pull-aparts, heels-elevated-squat, pushup, band-pull-apart, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
-  - Day 2: wall-slides, band-pull-aparts, single-leg-hip-thrust, split-squat, pike-pushup, towel-biceps-curl-hold, marching-brace-hold, thread-the-needle
-  - Day 3: cat-cow, band-pull-aparts, split-squat, close-grip-pushup, band-pull-apart, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
+  - Day 1: cat-cow, band-pull-aparts, heels-elevated-squat, band-pull-apart, pushup, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
+  - Day 2: wall-slides, band-pull-aparts, single-leg-hip-thrust, split-squat, pike-pushup, marching-brace-hold, towel-biceps-curl-hold, thread-the-needle
+  - Day 3: cat-cow, band-pull-aparts, split-squat, close-grip-pushup, band-pull-apart, marching-brace-hold, bodyweight-triceps-extension, thread-the-needle
   - Day 4: wall-slides, band-pull-aparts, pushup, band-pull-apart, bodyweight-triceps-extension, thread-the-needle
   - Day 5: cat-cow, dead-bug, heels-elevated-squat, single-leg-glute-bridge-hold, standing-calf-raise, thread-the-needle
 - Capability limitations: none
@@ -470,12 +470,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `68557768`
+- Semantic signature: `de6c08c8`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, band-front-squat, band-chest-press, split-stance-row, single-leg-hip-thrust, standing-calf-raise, band-biceps-curl, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, band-overhead-press, band-row, bodyweight-triceps-extension, supine-elbow-drive-row, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, split-stance-row, single-leg-hip-thrust, side-plank-star, supine-elbow-drive-row, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, band-front-squat, split-stance-row, band-chest-press, single-leg-hip-thrust, standing-calf-raise, band-biceps-curl, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, band-overhead-press, band-row, supine-elbow-drive-row, bodyweight-triceps-extension, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, split-stance-row, single-leg-hip-thrust, supine-elbow-drive-row, side-plank-star, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Hips"],"experience":"Advanced","equipment":["bands"],"daysPerWeek":3,"bandSetup":"both_no_anchor"},"phaseIndex":2}`
 
@@ -488,13 +488,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `94e5ec09`
+- Semantic signature: `891648e9`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, band-front-squat, band-chest-press, split-stance-row, band-rdl, standing-calf-raise, marching-brace-hold, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, split-squat, pike-pushup, band-row, standing-calf-raise, marching-brace-hold, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, split-stance-row, single-leg-glute-bridge-hold, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
-  - Day 4: cat-cow, wall-angel-hold, single-arm-band-row, band-front-squat, band-biceps-curl, marching-brace-hold, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, band-front-squat, split-stance-row, band-chest-press, band-rdl, standing-calf-raise, marching-brace-hold, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, split-squat, pike-pushup, band-row, marching-brace-hold, standing-calf-raise, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, split-stance-row, single-leg-glute-bridge-hold, marching-brace-hold, bodyweight-triceps-extension, thread-the-needle
+  - Day 4: cat-cow, wall-angel-hold, single-arm-band-row, band-front-squat, marching-brace-hold, band-biceps-curl, thread-the-needle
 - Capability limitations: none
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":["Neck"],"experience":"Intermediate","equipment":["bands"],"daysPerWeek":4,"bandSetup":"long_no_anchor"},"phaseIndex":2}`
 
@@ -507,12 +507,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `e28baa67`
+- Semantic signature: `6bcd39c3`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, band-pull-apart, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, split-squat, pike-pushup, towel-biceps-curl-hold, standing-calf-raise, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, split-squat, close-grip-pushup, band-pull-apart, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, heels-elevated-squat, band-pull-apart, pushup, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, split-squat, pike-pushup, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, split-squat, close-grip-pushup, band-pull-apart, marching-brace-hold, bodyweight-triceps-extension, thread-the-needle
   - Day 4: wall-slides, wall-angel-hold, pushup, band-pull-apart, bodyweight-triceps-extension, thread-the-needle
   - Day 5: cat-cow, hip-hinge-drill, heels-elevated-squat, single-leg-glute-bridge-hold, side-plank, thread-the-needle
 - Capability limitations: none
@@ -527,10 +527,10 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `764cc53f`
+- Semantic signature: `13a3fd4f`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, band-front-squat, split-stance-band-chest-press, split-stance-row, single-leg-hip-thrust, standing-calf-raise, band-biceps-curl, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, band-front-squat, split-stance-row, split-stance-band-chest-press, single-leg-hip-thrust, standing-calf-raise, band-biceps-curl, thread-the-needle
   - Day 2: wall-slides, wall-angel-hold, single-leg-glute-bridge-hold, split-squat, pike-pushup, band-row, band-triceps-pressdown, supine-elbow-drive-row, thread-the-needle
   - Day 3: cat-cow, wall-angel-hold, heels-elevated-squat, pushup, band-lat-pulldown, single-leg-hip-thrust, band-woodchop, supine-elbow-drive-row, thread-the-needle
 - Capability limitations: none
@@ -545,10 +545,10 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `c401796f`
+- Semantic signature: `b522d67f`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, band-front-squat, split-stance-band-chest-press, split-stance-row, band-rdl, standing-calf-raise, pallof-press, breathing-90-90
+  - Day 1: cat-cow, dead-bug, band-front-squat, split-stance-row, split-stance-band-chest-press, band-rdl, standing-calf-raise, pallof-press, breathing-90-90
   - Day 2: cat-cow, dead-bug, single-leg-hip-thrust, split-squat, band-overhead-press, band-row, standing-calf-raise, pallof-press, breathing-90-90
   - Day 3: cat-cow, dead-bug, heels-elevated-squat, pushup, band-lat-pulldown, single-leg-glute-bridge-hold, band-triceps-pressdown, pallof-press, breathing-90-90
   - Day 4: cat-cow, dead-bug, single-arm-band-row, band-front-squat, band-biceps-curl, pallof-press, breathing-90-90
@@ -564,12 +564,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `d213f8ab`
+- Semantic signature: `96b75499`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, heels-elevated-squat, pushup, band-pull-apart, standing-calf-raise, towel-biceps-curl-hold, breathing-90-90
-  - Day 2: wall-slides, dead-bug, single-leg-glute-bridge-hold, split-squat, pike-pushup, towel-biceps-curl-hold, side-plank, breathing-90-90
-  - Day 3: cat-cow, dead-bug, split-squat, close-grip-pushup, band-rear-delt-fly, bodyweight-triceps-extension, side-plank, breathing-90-90
+  - Day 1: cat-cow, dead-bug, heels-elevated-squat, pushup, band-pull-apart, towel-biceps-curl-hold, standing-calf-raise, breathing-90-90
+  - Day 2: wall-slides, dead-bug, single-leg-glute-bridge-hold, split-squat, pike-pushup, side-plank, towel-biceps-curl-hold, breathing-90-90
+  - Day 3: cat-cow, dead-bug, split-squat, close-grip-pushup, band-rear-delt-fly, side-plank, bodyweight-triceps-extension, breathing-90-90
   - Day 4: wall-slides, dead-bug, pushup, band-pull-apart, bodyweight-triceps-extension, thread-the-needle
   - Day 5: cat-cow, hip-hinge-drill, heels-elevated-squat, single-leg-hip-thrust, standing-calf-raise, breathing-90-90
 - Capability limitations: none
@@ -584,12 +584,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `f16e8032`
+- Semantic signature: `6b58d4be`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent
 - Ordered exercise IDs:
-  - Day 1: ankle-mobility, glute-bridges, bodyweight-squat, pushup, plank, standing-calf-raise, towel-biceps-curl-hold, breathing-90-90
-  - Day 2: wall-slides, prone-ytw, bodyweight-good-morning, split-squat, pike-pushup, bodyweight-triceps-extension, hollow-body-hold, breathing-90-90
-  - Day 3: ankle-mobility, glute-bridges, cossack-squat, close-grip-pushup, prone-elbow-row, hollow-body-hold, reverse-snow-angel, breathing-90-90
+  - Day 1: ankle-mobility, glute-bridges, bodyweight-squat, plank, pushup, standing-calf-raise, towel-biceps-curl-hold, breathing-90-90
+  - Day 2: wall-slides, prone-ytw, bodyweight-good-morning, split-squat, pike-pushup, hollow-body-hold, bodyweight-triceps-extension, breathing-90-90
+  - Day 3: ankle-mobility, glute-bridges, cossack-squat, prone-elbow-row, close-grip-pushup, hollow-body-hold, reverse-snow-angel, breathing-90-90
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"General fitness","painAreas":[],"experience":"Beginner","equipment":["none"],"daysPerWeek":3},"phaseIndex":1,"blockedExerciseIds":{"db-rdl":{"reason":"personal_preference","blockedAt":{"phase":"skill","sessionCount":3}}}}`
 
@@ -602,12 +602,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `55f76115`
+- Semantic signature: `918035cf`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, pushup, plank, single-leg-glute-bridge-hold, split-squat, towel-biceps-curl-hold, standing-calf-raise, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, cossack-squat, pike-pushup, side-plank, reverse-snow-angel, marching-brace-hold, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, shrimp-squat, close-grip-pushup, prone-elbow-row, single-leg-glute-bridge-hold, hollow-body-hold, marching-brace-hold, reverse-snow-angel, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, plank, pushup, single-leg-glute-bridge-hold, split-squat, towel-biceps-curl-hold, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, cossack-squat, pike-pushup, side-plank, marching-brace-hold, reverse-snow-angel, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, shrimp-squat, close-grip-pushup, prone-elbow-row, single-leg-glute-bridge-hold, hollow-body-hold, reverse-snow-angel, marching-brace-hold, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Lower back"],"experience":"Advanced","equipment":["none","bench"],"daysPerWeek":3},"phaseIndex":3}`
 
@@ -620,13 +620,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `a159e849`
+- Semantic signature: `642a6ecf`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, wall-pushup, plank, single-leg-glute-bridge-hold, standing-calf-raise, marching-brace-hold, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, bodyweight-good-morning, split-squat, pike-pushup, side-plank, standing-calf-raise, marching-brace-hold, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, cossack-squat, pushup, scap-pullup, single-leg-hip-thrust, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
-  - Day 4: cat-cow, wall-angel-hold, neutral-grip-pullup, heels-elevated-squat, towel-biceps-curl-hold, marching-brace-hold, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, plank, wall-pushup, single-leg-glute-bridge-hold, standing-calf-raise, marching-brace-hold, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, bodyweight-good-morning, split-squat, pike-pushup, side-plank, marching-brace-hold, standing-calf-raise, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, cossack-squat, scap-pullup, pushup, single-leg-hip-thrust, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
+  - Day 4: cat-cow, wall-angel-hold, neutral-grip-pullup, heels-elevated-squat, marching-brace-hold, towel-biceps-curl-hold, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":["Shoulders","Upper back"],"experience":"Intermediate","equipment":["none","pullup_bar"],"daysPerWeek":4},"phaseIndex":3}`
 
@@ -639,12 +639,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `48cd0406`
+- Semantic signature: `60ca385a`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, pushup, plank, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
-  - Day 2: wall-slides, dead-bug, bodyweight-good-morning, split-squat, pike-pushup, towel-biceps-curl-hold, marching-brace-hold, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, cossack-squat, close-grip-pushup, prone-elbow-row, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, plank, pushup, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
+  - Day 2: wall-slides, dead-bug, bodyweight-good-morning, split-squat, pike-pushup, marching-brace-hold, towel-biceps-curl-hold, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, cossack-squat, close-grip-pushup, prone-elbow-row, marching-brace-hold, bodyweight-triceps-extension, thread-the-needle
   - Day 4: wall-slides, wall-angel-hold, pushup, back-widow, bodyweight-triceps-extension, thread-the-needle
   - Day 5: cat-cow, dead-bug, heels-elevated-squat, single-leg-glute-bridge-hold, standing-calf-raise, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
@@ -659,12 +659,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `2219a71b`
+- Semantic signature: `40e5319d`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, pushup, plank, single-leg-glute-bridge-hold, split-squat, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, cossack-squat, pike-pushup, side-plank, bodyweight-triceps-extension, side-plank-star, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, shrimp-squat, close-grip-pushup, prone-elbow-row, single-leg-glute-bridge-hold, hollow-body-hold, side-plank-star, reverse-snow-angel, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, pushup, plank, single-leg-glute-bridge-hold, split-squat, towel-biceps-curl-hold, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, cossack-squat, pike-pushup, side-plank, side-plank-star, bodyweight-triceps-extension, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, shrimp-squat, hollow-body-hold, close-grip-pushup, single-leg-glute-bridge-hold, prone-elbow-row, reverse-snow-angel, side-plank-star, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Hips"],"experience":"Advanced","equipment":["none","bench"],"daysPerWeek":3},"phaseIndex":2}`
 
@@ -677,13 +677,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `46db64a2`
+- Semantic signature: `19f02886`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, wall-pushup, plank, single-leg-glute-bridge-hold, standing-calf-raise, marching-brace-hold, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, bodyweight-good-morning, split-squat, pike-pushup, side-plank, standing-calf-raise, marching-brace-hold, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, cossack-squat, pushup, scap-pullup, single-leg-hip-thrust, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
-  - Day 4: cat-cow, wall-angel-hold, neutral-grip-pullup, heels-elevated-squat, towel-biceps-curl-hold, marching-brace-hold, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, wall-pushup, plank, single-leg-glute-bridge-hold, marching-brace-hold, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, bodyweight-good-morning, split-squat, pike-pushup, side-plank, marching-brace-hold, standing-calf-raise, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, cossack-squat, scap-pullup, pushup, single-leg-hip-thrust, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
+  - Day 4: cat-cow, wall-angel-hold, neutral-grip-pullup, heels-elevated-squat, marching-brace-hold, towel-biceps-curl-hold, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":["Neck"],"experience":"Intermediate","equipment":["none","pullup_bar"],"daysPerWeek":4},"phaseIndex":2}`
 
@@ -696,12 +696,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `c8b15191`
+- Semantic signature: `10473da1`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, pushup, plank, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
-  - Day 2: wall-slides, hip-hinge-drill, bodyweight-good-morning, split-squat, pike-pushup, towel-biceps-curl-hold, standing-calf-raise, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, cossack-squat, close-grip-pushup, prone-elbow-row, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, pushup, plank, towel-biceps-curl-hold, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, hip-hinge-drill, bodyweight-good-morning, split-squat, pike-pushup, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, cossack-squat, prone-elbow-row, close-grip-pushup, bodyweight-triceps-extension, marching-brace-hold, thread-the-needle
   - Day 4: wall-slides, wall-angel-hold, pushup, back-widow, bodyweight-triceps-extension, thread-the-needle
   - Day 5: cat-cow, hip-hinge-drill, heels-elevated-squat, single-leg-glute-bridge-hold, side-plank, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
@@ -716,12 +716,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `a1320494`
+- Semantic signature: `b45b9f18`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, pushup, plank, single-leg-glute-bridge-hold, split-squat, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, bodyweight-good-morning, cossack-squat, pike-pushup, side-plank, reverse-snow-angel, hollow-body-hold, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, shrimp-squat, close-grip-pushup, prone-elbow-row, single-leg-hip-thrust, hollow-body-hold, side-plank, reverse-snow-angel, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, bodyweight-squat, plank, pushup, single-leg-glute-bridge-hold, split-squat, standing-calf-raise, towel-biceps-curl-hold, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, bodyweight-good-morning, cossack-squat, pike-pushup, side-plank, hollow-body-hold, reverse-snow-angel, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, shrimp-squat, hollow-body-hold, close-grip-pushup, single-leg-hip-thrust, prone-elbow-row, side-plank, reverse-snow-angel, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Shoulders","Upper back"],"experience":"Advanced","equipment":["foam_roller"],"daysPerWeek":3},"phaseIndex":1}`
 
@@ -734,13 +734,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `fabbd631`
+- Semantic signature: `8ae52359`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, bodyweight-squat, wall-pushup, plank, single-leg-glute-bridge-hold, standing-calf-raise, hollow-body-hold, breathing-90-90
-  - Day 2: cat-cow, dead-bug, bodyweight-good-morning, split-squat, pike-pushup, side-plank, standing-calf-raise, plank, breathing-90-90
-  - Day 3: cat-cow, dead-bug, cossack-squat, pushup, scap-pullup, single-leg-hip-thrust, bodyweight-triceps-extension, plank, breathing-90-90
-  - Day 4: cat-cow, dead-bug, neutral-grip-pullup, heels-elevated-squat, towel-biceps-curl-hold, plank, breathing-90-90
+  - Day 1: cat-cow, dead-bug, bodyweight-squat, plank, wall-pushup, single-leg-glute-bridge-hold, standing-calf-raise, hollow-body-hold, breathing-90-90
+  - Day 2: cat-cow, dead-bug, bodyweight-good-morning, split-squat, pike-pushup, side-plank, plank, standing-calf-raise, breathing-90-90
+  - Day 3: cat-cow, dead-bug, cossack-squat, scap-pullup, pushup, single-leg-hip-thrust, bodyweight-triceps-extension, plank, breathing-90-90
+  - Day 4: cat-cow, dead-bug, neutral-grip-pullup, heels-elevated-squat, plank, towel-biceps-curl-hold, breathing-90-90
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":[],"experience":"Intermediate","equipment":["pullup_bar"],"daysPerWeek":4},"phaseIndex":1}`
 
@@ -753,12 +753,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `4be55423`
+- Semantic signature: `daf4c21d`
 - Day titles: Full Body A — Squat, Push and Trunk | Full Body B — Hinge, Single-Leg and Shoulder | Full Body C — Single-Leg, Push Variation and Back Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, bodyweight-squat, pushup, plank, standing-calf-raise, towel-biceps-curl-hold, breathing-90-90
-  - Day 2: wall-slides, hip-hinge-drill, single-leg-glute-bridge-hold, split-squat, pike-pushup, single-leg-hip-thrust, towel-biceps-curl-hold, breathing-90-90
-  - Day 3: cat-cow, dead-bug, cossack-squat, close-grip-pushup, prone-elbow-row, bodyweight-triceps-extension, side-plank, breathing-90-90
+  - Day 1: cat-cow, dead-bug, bodyweight-squat, plank, pushup, standing-calf-raise, towel-biceps-curl-hold, breathing-90-90
+  - Day 2: wall-slides, hip-hinge-drill, single-leg-glute-bridge-hold, split-squat, pike-pushup, towel-biceps-curl-hold, single-leg-hip-thrust, breathing-90-90
+  - Day 3: cat-cow, dead-bug, cossack-squat, prone-elbow-row, close-grip-pushup, bodyweight-triceps-extension, side-plank, breathing-90-90
   - Day 4: wall-slides, dead-bug, pushup, back-widow, bodyweight-triceps-extension, thread-the-needle
   - Day 5: cat-cow, hip-hinge-drill, heels-elevated-squat, single-leg-hip-thrust, standing-calf-raise, breathing-90-90
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
@@ -773,11 +773,11 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `81258ad1`
+- Semantic signature: `50d7db73`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: ankle-mobility, glute-bridges, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, db-biceps-curl, standing-calf-raise, breathing-90-90
-  - Day 2: wall-slides, band-pull-aparts, dumbbell-sumo-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, db-triceps-extension, farmers-carry, breathing-90-90
+  - Day 1: ankle-mobility, glute-bridges, goblet-squat, single-arm-dumbbell-row, dumbbell-floor-press, db-biceps-curl, standing-calf-raise, breathing-90-90
+  - Day 2: wall-slides, band-pull-aparts, dumbbell-sumo-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, farmers-carry, db-triceps-extension, breathing-90-90
   - Day 3: ankle-mobility, glute-bridges, dumbbell-reverse-lunge, dumbbell-floor-press, band-lat-pulldown, band-woodchop, band-rdl, breathing-90-90
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"General fitness","painAreas":[],"experience":"Beginner","equipment":["dumbbells","bands"],"daysPerWeek":3,"bandSetup":"long_with_anchor"},"phaseIndex":1,"blockedExerciseIds":{"db-rdl":{"reason":"personal_preference","blockedAt":{"phase":"skill","sessionCount":3}}}}`
@@ -791,12 +791,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `3bb061c9`
+- Semantic signature: `e5d885f1`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, dumbbell-reverse-lunge, standing-calf-raise, db-biceps-curl, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, single-arm-dumbbell-row, dumbbell-sumo-rdl, db-triceps-extension, farmers-carry, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, dumbbell-floor-press, split-stance-row, single-leg-hip-thrust, single-arm-dumbbell-row, side-plank-star, cossack-squat, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, dumbbell-reverse-lunge, db-biceps-curl, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, single-arm-dumbbell-row, dumbbell-sumo-rdl, farmers-carry, db-triceps-extension, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, split-stance-row, single-arm-dumbbell-row, single-leg-hip-thrust, dumbbell-floor-press, cossack-squat, side-plank-star, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Hips"],"experience":"Advanced","equipment":["pullup_bar","bands","dumbbells"],"daysPerWeek":3,"bandSetup":"long_no_anchor"},"phaseIndex":3}`
 
@@ -809,13 +809,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `7baeff41`
+- Semantic signature: `d16d12df`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, db-rdl, standing-calf-raise, suitcase-carry, breathing-90-90
-  - Day 2: cat-cow, dead-bug, db-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, single-arm-dumbbell-row, standing-calf-raise, suitcase-carry, breathing-90-90
-  - Day 3: cat-cow, dead-bug, dumbbell-bulgarian-split-squat, dumbbell-chest-fly, single-arm-dumbbell-row, db-rdl, dumbbell-bench-press, suitcase-carry, breathing-90-90
-  - Day 4: cat-cow, dead-bug, single-arm-dumbbell-row, goblet-squat, db-biceps-curl, db-triceps-extension, breathing-90-90
+  - Day 1: cat-cow, dead-bug, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, db-rdl, suitcase-carry, standing-calf-raise, breathing-90-90
+  - Day 2: cat-cow, dead-bug, db-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, single-arm-dumbbell-row, suitcase-carry, standing-calf-raise, breathing-90-90
+  - Day 3: cat-cow, dead-bug, dumbbell-bulgarian-split-squat, dumbbell-chest-fly, single-arm-dumbbell-row, db-rdl, suitcase-carry, dumbbell-bench-press, breathing-90-90
+  - Day 4: cat-cow, dead-bug, single-arm-dumbbell-row, goblet-squat, db-triceps-extension, db-biceps-curl, breathing-90-90
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":[],"experience":"Intermediate","equipment":["dumbbells","bands","bench"],"daysPerWeek":4,"bandSetup":"loop_only"},"phaseIndex":3}`
 
@@ -828,12 +828,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `1cb6a459`
+- Semantic signature: `cb2165a7`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, standing-calf-raise, db-biceps-curl, thread-the-needle
-  - Day 2: wall-slides, hip-hinge-drill, db-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, db-biceps-curl, standing-calf-raise, thread-the-needle
-  - Day 3: cat-cow, dead-bug, dumbbell-reverse-lunge, dumbbell-floor-press, split-stance-row, db-triceps-extension, side-plank-star, thread-the-needle
+  - Day 1: cat-cow, dead-bug, goblet-squat, single-arm-dumbbell-row, dumbbell-floor-press, standing-calf-raise, db-biceps-curl, thread-the-needle
+  - Day 2: wall-slides, hip-hinge-drill, db-rdl, dumbbell-reverse-lunge, dumbbell-shoulder-press, standing-calf-raise, db-biceps-curl, thread-the-needle
+  - Day 3: cat-cow, dead-bug, dumbbell-reverse-lunge, split-stance-row, dumbbell-floor-press, db-triceps-extension, side-plank-star, thread-the-needle
   - Day 4: wall-slides, dead-bug, dumbbell-floor-press, single-arm-dumbbell-row, db-triceps-extension, thread-the-needle
   - Day 5: cat-cow, hip-hinge-drill, goblet-squat, db-rdl, farmers-carry, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
@@ -848,12 +848,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `25242ca9`
+- Semantic signature: `678394f9`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, db-rdl, dumbbell-reverse-lunge, db-biceps-curl, standing-calf-raise, thread-the-needle
-  - Day 2: wall-slides, wall-angel-hold, db-rdl, dumbbell-reverse-lunge, pike-pushup, single-arm-dumbbell-row, db-rdl, db-triceps-extension, farmers-carry, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, dumbbell-floor-press, single-arm-dumbbell-row, db-rdl, single-arm-dumbbell-row, farmers-carry, cossack-squat, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, single-arm-dumbbell-row, pushup, db-rdl, dumbbell-reverse-lunge, db-biceps-curl, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, wall-angel-hold, db-rdl, dumbbell-reverse-lunge, pike-pushup, single-arm-dumbbell-row, db-rdl, farmers-carry, db-triceps-extension, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, dumbbell-floor-press, single-arm-dumbbell-row, db-rdl, single-arm-dumbbell-row, cossack-squat, farmers-carry, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Improve posture","painAreas":["Shoulders"],"experience":"Advanced","equipment":["bands","dumbbells"],"daysPerWeek":3},"phaseIndex":2}`
 
@@ -866,10 +866,10 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `2571b081`
+- Semantic signature: `916924f1`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, db-rdl, standing-calf-raise, pallof-press, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, single-arm-dumbbell-row, pushup, db-rdl, standing-calf-raise, pallof-press, thread-the-needle
   - Day 2: wall-slides, wall-angel-hold, db-rdl, dumbbell-reverse-lunge, pike-pushup, single-arm-dumbbell-row, standing-calf-raise, pallof-press, thread-the-needle
   - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, dumbbell-floor-press, band-lat-pulldown, db-rdl, db-triceps-extension, pallof-press, thread-the-needle
   - Day 4: cat-cow, wall-angel-hold, single-arm-dumbbell-row, goblet-squat, db-biceps-curl, pallof-press, thread-the-needle
@@ -885,12 +885,12 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `eca2d08c`
+- Semantic signature: `37546f62`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, standing-calf-raise, db-biceps-curl, thread-the-needle
-  - Day 2: wall-slides, hip-hinge-drill, db-rdl, dumbbell-reverse-lunge, pike-pushup, cossack-squat, db-biceps-curl, thread-the-needle
-  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, dumbbell-floor-press, band-pull-apart, db-triceps-extension, farmers-carry, thread-the-needle
+  - Day 1: cat-cow, wall-angel-hold, goblet-squat, pushup, single-arm-dumbbell-row, db-biceps-curl, standing-calf-raise, thread-the-needle
+  - Day 2: wall-slides, hip-hinge-drill, db-rdl, dumbbell-reverse-lunge, pike-pushup, db-biceps-curl, cossack-squat, thread-the-needle
+  - Day 3: cat-cow, wall-angel-hold, dumbbell-reverse-lunge, dumbbell-floor-press, band-pull-apart, farmers-carry, db-triceps-extension, thread-the-needle
   - Day 4: wall-slides, wall-angel-hold, pushup, single-arm-dumbbell-row, db-triceps-extension, thread-the-needle
   - Day 5: cat-cow, hip-hinge-drill, goblet-squat, db-rdl, standing-calf-raise, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
@@ -905,10 +905,10 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `e2a0e9d5`
+- Semantic signature: `69023101`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent
 - Ordered exercise IDs:
-  - Day 1: cat-cow, glute-bridges, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, dumbbell-reverse-lunge, standing-calf-raise, db-biceps-curl, thread-the-needle
+  - Day 1: cat-cow, glute-bridges, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, dumbbell-reverse-lunge, db-biceps-curl, standing-calf-raise, thread-the-needle
   - Day 2: wall-slides, wall-angel-hold, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, single-arm-dumbbell-row, db-triceps-extension, pallof-press, thread-the-needle
   - Day 3: cat-cow, glute-bridges, dumbbell-reverse-lunge, dumbbell-floor-press, band-lat-pulldown, single-leg-hip-thrust, single-arm-dumbbell-row, pallof-press, split-squat, thread-the-needle
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
@@ -923,13 +923,13 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `5f2e1642`
+- Semantic signature: `0fb1cdd0`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Practice & Restore
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, band-external-rotation, side-plank, breathing-90-90
-  - Day 2: cat-cow, dead-bug, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, single-arm-dumbbell-row, standing-calf-raise, side-plank, breathing-90-90
-  - Day 3: cat-cow, dead-bug, dumbbell-step-up-loaded, dumbbell-chest-fly, single-arm-dumbbell-row, single-leg-hip-thrust, db-triceps-extension, standing-calf-raise, breathing-90-90
-  - Day 4: cat-cow, dead-bug, single-arm-dumbbell-row, goblet-squat, db-biceps-curl, side-plank, breathing-90-90
+  - Day 1: cat-cow, dead-bug, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, single-leg-hip-thrust, side-plank, band-external-rotation, breathing-90-90
+  - Day 2: cat-cow, dead-bug, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, single-arm-dumbbell-row, side-plank, standing-calf-raise, breathing-90-90
+  - Day 3: cat-cow, dead-bug, dumbbell-step-up-loaded, single-arm-dumbbell-row, dumbbell-chest-fly, single-leg-hip-thrust, db-triceps-extension, standing-calf-raise, breathing-90-90
+  - Day 4: cat-cow, dead-bug, single-arm-dumbbell-row, goblet-squat, side-plank, db-biceps-curl, breathing-90-90
 - Capability limitations: QUALITY_CAPABILITY_LIMITATION_NOTE
 - Input: `{"questionnaire":{"goals":"Reduce pain","painAreas":["Lower back"],"experience":"Intermediate","equipment":["dumbbells","bands","bench"],"daysPerWeek":4},"phaseIndex":1}`
 
@@ -942,11 +942,11 @@ Failed diagnostics: 0
 - Fallback: false
 - Final outcome: initialPass / usable_program
 - Quality verdict: pass
-- Semantic signature: `901d474e`
+- Semantic signature: `3bac04c6`
 - Day titles: Full Body A — Squat, Press and Row | Full Body B — Hinge, Overhead and Unilateral | Full Body C — Single-Leg, Press Variation and Lat Intent | Upper Pattern Practice | Lower & Core Practice
 - Ordered exercise IDs:
-  - Day 1: cat-cow, dead-bug, goblet-squat, dumbbell-floor-press, single-arm-dumbbell-row, standing-calf-raise, db-biceps-curl, breathing-90-90
-  - Day 2: cat-cow, glute-bridges, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, db-biceps-curl, standing-calf-raise, breathing-90-90
+  - Day 1: cat-cow, dead-bug, goblet-squat, single-arm-dumbbell-row, dumbbell-floor-press, standing-calf-raise, db-biceps-curl, breathing-90-90
+  - Day 2: cat-cow, glute-bridges, single-leg-hip-thrust, dumbbell-reverse-lunge, dumbbell-shoulder-press, standing-calf-raise, db-biceps-curl, breathing-90-90
   - Day 3: cat-cow, dead-bug, dumbbell-reverse-lunge, dumbbell-floor-press, band-lat-pulldown, db-triceps-extension, pallof-press, breathing-90-90
   - Day 4: cat-cow, dead-bug, dumbbell-floor-press, single-arm-dumbbell-row, face-pull, thread-the-needle
   - Day 5: cat-cow, glute-bridges, goblet-squat, single-leg-hip-thrust, face-pull, breathing-90-90

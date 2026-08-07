@@ -18,21 +18,21 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
-- Accessories: standing-calf-raise, towel-biceps-curl-hold
+- Accessories: towel-biceps-curl-hold, standing-calf-raise
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
 - Mains:
   - `bodyweight-good-morning` Bodyweight Good Morning | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, hollow-body-hold
+- Accessories: hollow-body-hold, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
-- Accessories: hollow-body-hold, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, hollow-body-hold
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -62,7 +62,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
   - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHipExtension | lane=hinge
-- Accessories: standing-calf-raise, towel-biceps-curl-hold
+- Accessories: towel-biceps-curl-hold, standing-calf-raise
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
 - Mains:
@@ -70,7 +70,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
   - `side-plank` Side Plank | slot=mainTrunkLateral | lane=pull
-- Accessories: supine-elbow-drive-row, hollow-body-hold
+- Accessories: hollow-body-hold, supine-elbow-drive-row
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
@@ -78,7 +78,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
   - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHipExtension | lane=hinge
-- Accessories: side-plank, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, side-plank
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -109,7 +109,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
   - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHipExtension | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
-- Accessories: standing-calf-raise, towel-biceps-curl-hold
+- Accessories: towel-biceps-curl-hold, standing-calf-raise
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
 - Mains:
@@ -117,15 +117,15 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
   - `side-plank` Side Plank | slot=mainTrunkLateral | lane=pull
-- Accessories: reverse-snow-angel, hollow-body-hold
+- Accessories: hollow-body-hold, reverse-snow-angel
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
   - `shrimp-squat` Shrimp Squat | slot=mainUnilateralLowerLoaded | lane=squat
-  - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
-  - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
-  - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHipExtension | lane=hinge
   - `hollow-body-hold` Hollow Body Hold | slot=mainTrunkAntiExtension | lane=pull
+  - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
+  - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHipExtension | lane=hinge
+  - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
 - Accessories: side-plank-star, reverse-snow-angel
 
 ### Manual review checklist
@@ -153,8 +153,8 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
 ### Full Body A — Squat, Push and Trunk
 - Mains:
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
-  - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
+  - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHipExtension | lane=hinge
 - Accessories: standing-calf-raise, side-plank-star
 
@@ -164,7 +164,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
   - `side-plank` Side Plank | slot=mainTrunkLateral | lane=pull
-- Accessories: standing-calf-raise, side-plank-star
+- Accessories: side-plank-star, standing-calf-raise
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
@@ -172,13 +172,13 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
   - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHipExtension | lane=hinge
-- Accessories: bodyweight-triceps-extension, side-plank-star
+- Accessories: side-plank-star, bodyweight-triceps-extension
 
 ### Practice & Restore
 - Mains:
   - `back-widow` Back Widow Pulls | slot=mainUpperBackControl | lane=pull
   - `heels-elevated-squat` Heels-Elevated Tempo Squat | slot=mainSquatPrimary | lane=squat
-- Accessories: towel-biceps-curl-hold, side-plank-star
+- Accessories: side-plank-star, towel-biceps-curl-hold
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -209,7 +209,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
   - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHipExtension | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
-- Accessories: bodyweight-triceps-extension, standing-calf-raise
+- Accessories: standing-calf-raise, bodyweight-triceps-extension
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
 - Mains:
@@ -217,7 +217,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
   - `side-plank` Side Plank | slot=mainTrunkLateral | lane=pull
-- Accessories: reverse-snow-angel, suitcase-hold-march
+- Accessories: suitcase-hold-march, towel-biceps-curl-hold
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
@@ -226,21 +226,21 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
   - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHipExtension | lane=hinge
   - `hollow-body-hold` Hollow Body Hold | slot=mainTrunkAntiExtension | lane=pull
-- Accessories: bodyweight-triceps-extension, suitcase-hold-march
+- Accessories: suitcase-hold-march, bodyweight-triceps-extension
 
 ### Upper Pattern Practice
 - Mains:
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `back-widow` Back Widow Pulls | slot=mainUpperBackControl | lane=pull
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, towel-biceps-curl-hold
+- Accessories: towel-biceps-curl-hold, bodyweight-triceps-extension
 
 ### Lower & Core Practice
 - Mains:
   - `heels-elevated-squat` Heels-Elevated Tempo Squat | slot=mainSquatPrimary | lane=squat
   - `single-leg-rdl` Single-Leg RDL (Bodyweight) | slot=mainHingePrimary | lane=hinge
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
-- Accessories: standing-calf-raise, marching-brace-hold
+- Accessories: marching-brace-hold, standing-calf-raise
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -267,8 +267,8 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
 ### Full Body A — Squat, Push and Trunk
 - Mains:
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
-  - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
+  - `pushup` Push-Up | slot=mainPushCompound | lane=push
 - Accessories: standing-calf-raise, towel-biceps-curl-hold
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
@@ -276,13 +276,13 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `bodyweight-good-morning` Bodyweight Good Morning | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, hollow-body-hold
+- Accessories: hollow-body-hold, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
-  - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
+  - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
 - Accessories: hollow-body-hold, reverse-snow-angel
 
 ### Manual review checklist
@@ -310,8 +310,8 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
 ### Full Body A — Squat, Push and Trunk
 - Mains:
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
-  - `wall-pushup` Wall Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
+  - `wall-pushup` Wall Push-Up | slot=mainPushCompound | lane=push
   - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHipExtension | lane=hinge
 - Accessories: standing-calf-raise, towel-biceps-curl-hold
 
@@ -321,7 +321,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
   - `side-plank` Side Plank | slot=mainTrunkLateral | lane=pull
-- Accessories: bodyweight-triceps-extension, hollow-body-hold
+- Accessories: hollow-body-hold, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
@@ -329,7 +329,7 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `scap-pullup` Scap Pull-Up | slot=mainPullVertical | lane=pull
   - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHipExtension | lane=hinge
-- Accessories: hollow-body-hold, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, hollow-body-hold
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -358,21 +358,21 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
-- Accessories: standing-calf-raise, towel-biceps-curl-hold
+- Accessories: towel-biceps-curl-hold, standing-calf-raise
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
 - Mains:
   - `bodyweight-good-morning` Bodyweight Good Morning | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: supine-elbow-drive-row, bodyweight-triceps-extension
+- Accessories: bodyweight-triceps-extension, supine-elbow-drive-row
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
-- Accessories: side-plank, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, side-plank
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -399,8 +399,8 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
 ### Full Body A — Squat, Push and Trunk
 - Mains:
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
-  - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
+  - `pushup` Push-Up | slot=mainPushCompound | lane=push
 - Accessories: towel-biceps-curl-hold, standing-calf-raise
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
@@ -408,14 +408,14 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, side-plank
+- Accessories: side-plank, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
-- Accessories: side-plank, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, side-plank
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -444,21 +444,21 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
-- Accessories: towel-biceps-curl-hold, standing-calf-raise
+- Accessories: standing-calf-raise, towel-biceps-curl-hold
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
 - Mains:
   - `bodyweight-good-morning` Bodyweight Good Morning | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, side-plank-star
+- Accessories: side-plank-star, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
-- Accessories: side-plank-star, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, side-plank-star
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -487,21 +487,21 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
-- Accessories: towel-biceps-curl-hold, standing-calf-raise
+- Accessories: standing-calf-raise, towel-biceps-curl-hold
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
 - Mains:
   - `bodyweight-good-morning` Bodyweight Good Morning | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, side-plank-star
+- Accessories: side-plank-star, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
-- Accessories: side-plank-star, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, side-plank-star
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?
@@ -530,21 +530,21 @@ Manual-review snapshots for bodyweight personas. Phase 0–4 reports were not ov
   - `bodyweight-squat` Bodyweight Squat | slot=mainSquatPrimary | lane=squat
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `plank` Plank | slot=mainTrunkAntiExtension | lane=pull
-- Accessories: standing-calf-raise, towel-biceps-curl-hold
+- Accessories: towel-biceps-curl-hold, standing-calf-raise
 
 ### Full Body B — Hinge, Single-Leg and Shoulder
 - Mains:
   - `bodyweight-good-morning` Bodyweight Good Morning | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, suitcase-hold-march
+- Accessories: suitcase-hold-march, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Push Variation and Back Intent
 - Mains:
   - `cossack-squat` Cossack Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `prone-elbow-row` Prone Elbow Row | slot=mainUpperBackControl | lane=pull
-- Accessories: suitcase-hold-march, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, suitcase-hold-march
 
 ### Manual review checklist
 - Day identity truthful and deliberately bodyweight-shaped?

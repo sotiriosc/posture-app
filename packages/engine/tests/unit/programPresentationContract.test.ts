@@ -152,7 +152,7 @@ describe("Phase 7B presentation resolver equipment-mode parity", () => {
         `p7b-presentation-${id}`,
         { seed: `p7b-presentation-${id}` }
       );
-      expect(program.templateVersion ?? PROGRAM_TEMPLATE_VERSION).toBe(18);
+      expect(program.templateVersion ?? PROGRAM_TEMPLATE_VERSION).toBe(19);
 
       const model = resolveProgramPresentation({
         program,

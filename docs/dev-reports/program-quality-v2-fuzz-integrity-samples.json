@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T19:53:51.311Z",
+  "generatedAt": "2026-08-07T01:32:02.332Z",
   "blindSamples": [
     {
       "mode": "gym",
@@ -414,13 +414,13 @@
         [
           "cat-cow",
           "wall-angel-hold",
-          "machine-leg-press",
+          "goblet-squat",
           "db-rdl",
-          "dumbbell-bulgarian-split-squat",
+          "dumbbell-reverse-lunge",
           "machine-seated-hamstring-curl",
           "cable-woodchop-standing",
           "db-calf-raise",
-          "barbell-rollout",
+          "machine-ab-crunch",
           "thread-the-needle"
         ]
       ],
@@ -679,7 +679,7 @@
             }
           },
           {
-            "exerciseId": "machine-leg-press",
+            "exerciseId": "goblet-squat",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -703,7 +703,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-bulgarian-split-squat",
+            "exerciseId": "dumbbell-reverse-lunge",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -751,7 +751,7 @@
             }
           },
           {
-            "exerciseId": "barbell-rollout",
+            "exerciseId": "machine-ab-crunch",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -782,8 +782,8 @@
         "base": "gym-fuzz-fa6fd29f",
         "recovery": []
       },
-      "semanticSignature": "e3ec207c",
-      "finalProgramSignature": "Back + Chest:wall-slides,wall-angel-hold,barbell-bench-press-paused,dumbbell-chest-fly,cable-seated-row,cable-lat-pulldown,dumbbell-rows,dumbbell-rear-delt-fly,cable-external-rotation,thread-the-needle|Shoulders + Arms:wall-slides,wall-angel-hold,barbell-strict-press,cable-lateral-raise,cable-rear-delt-fly,dumbbell-lateral-raise,dumbbell-triceps-kickback,cable-biceps-curl,db-triceps-extension,hammer-curl,thread-the-needle|Legs + Abs:cat-cow,wall-angel-hold,machine-leg-press,db-rdl,dumbbell-bulgarian-split-squat,machine-seated-hamstring-curl,cable-woodchop-standing,db-calf-raise,barbell-rollout,thread-the-needle"
+      "semanticSignature": "4c455e4a",
+      "finalProgramSignature": "Back + Chest:wall-slides,wall-angel-hold,barbell-bench-press-paused,dumbbell-chest-fly,cable-seated-row,cable-lat-pulldown,dumbbell-rows,dumbbell-rear-delt-fly,cable-external-rotation,thread-the-needle|Shoulders + Arms:wall-slides,wall-angel-hold,barbell-strict-press,cable-lateral-raise,cable-rear-delt-fly,dumbbell-lateral-raise,dumbbell-triceps-kickback,cable-biceps-curl,db-triceps-extension,hammer-curl,thread-the-needle|Legs + Abs:cat-cow,wall-angel-hold,goblet-squat,db-rdl,dumbbell-reverse-lunge,machine-seated-hamstring-curl,cable-woodchop-standing,db-calf-raise,machine-ab-crunch,thread-the-needle"
     },
     {
       "mode": "gym",
@@ -1745,7 +1745,7 @@
         [
           "cat-cow",
           "wall-angel-hold",
-          "machine-leg-press",
+          "goblet-squat",
           "db-rdl",
           "dumbbell-reverse-lunge",
           "machine-seated-hamstring-curl",
@@ -2010,7 +2010,7 @@
             }
           },
           {
-            "exerciseId": "machine-leg-press",
+            "exerciseId": "goblet-squat",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -2113,8 +2113,8 @@
         "base": "gym-fuzz-f1639bb",
         "recovery": []
       },
-      "semanticSignature": "434e8f84",
-      "finalProgramSignature": "Back + Chest:wall-slides,wall-angel-hold,dumbbell-bench-press,dumbbell-chest-fly,dumbbell-rows,machine-lat-pulldown,single-arm-dumbbell-row,dumbbell-rear-delt-fly,cable-external-rotation-pressout,thread-the-needle|Shoulders + Arms:wall-slides,wall-angel-hold,machine-shoulder-press,cable-lateral-raise,dumbbell-rear-delt-fly,dumbbell-lateral-raise,dumbbell-triceps-kickback,cable-biceps-curl,db-triceps-extension,hammer-curl,thread-the-needle|Legs + Abs:cat-cow,wall-angel-hold,machine-leg-press,db-rdl,dumbbell-reverse-lunge,machine-seated-hamstring-curl,plank,db-calf-raise,side-plank-star,thread-the-needle"
+      "semanticSignature": "65150b1c",
+      "finalProgramSignature": "Back + Chest:wall-slides,wall-angel-hold,dumbbell-bench-press,dumbbell-chest-fly,dumbbell-rows,machine-lat-pulldown,single-arm-dumbbell-row,dumbbell-rear-delt-fly,cable-external-rotation-pressout,thread-the-needle|Shoulders + Arms:wall-slides,wall-angel-hold,machine-shoulder-press,cable-lateral-raise,dumbbell-rear-delt-fly,dumbbell-lateral-raise,dumbbell-triceps-kickback,cable-biceps-curl,db-triceps-extension,hammer-curl,thread-the-needle|Legs + Abs:cat-cow,wall-angel-hold,goblet-squat,db-rdl,dumbbell-reverse-lunge,machine-seated-hamstring-curl,plank,db-calf-raise,side-plank-star,thread-the-needle"
     },
     {
       "mode": "gym",
@@ -2593,7 +2593,7 @@
         [
           "cat-cow",
           "glute-bridges",
-          "dumbbell-step-up-loaded",
+          "dumbbell-bulgarian-split-squat",
           "barbell-hip-thrust",
           "side-plank-star",
           "single-leg-calf-raise",
@@ -2612,7 +2612,7 @@
           "cat-cow",
           "glute-bridges",
           "machine-glute-drive",
-          "dumbbell-bulgarian-split-squat",
+          "dumbbell-step-up-loaded",
           "standing-calf-raise",
           "farmers-carry",
           "hip-flexor-stretch"
@@ -2723,7 +2723,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-step-up-loaded",
+            "exerciseId": "dumbbell-bulgarian-split-squat",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -2885,7 +2885,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-bulgarian-split-squat",
+            "exerciseId": "dumbbell-step-up-loaded",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -3015,8 +3015,8 @@
         "base": "gym-fuzz-c78552ae",
         "recovery": []
       },
-      "semanticSignature": "dd49dbf1",
-      "finalProgramSignature": "Upper Push:cat-cow,wall-angel-hold,dumbbell-floor-press,dumbbell-shoulder-press,db-triceps-extension,cable-rear-delt-fly,thread-the-needle|Lower Squat:cat-cow,glute-bridges,dumbbell-step-up-loaded,barbell-hip-thrust,side-plank-star,single-leg-calf-raise,hip-flexor-stretch|Upper Pull:cat-cow,wall-angel-hold,dumbbell-rows,machine-lat-pulldown,cable-biceps-curl,machine-rear-delt-row,thread-the-needle|Lower Hinge + Posterior Chain:cat-cow,glute-bridges,machine-glute-drive,dumbbell-bulgarian-split-squat,standing-calf-raise,farmers-carry,hip-flexor-stretch|Arms + Posture + Conditioning:cat-cow,wall-angel-hold,machine-seated-row,dumbbell-shoulder-press,bodyweight-triceps-extension,cable-biceps-curl,thread-the-needle"
+      "semanticSignature": "b0e32c71",
+      "finalProgramSignature": "Upper Push:cat-cow,wall-angel-hold,dumbbell-floor-press,dumbbell-shoulder-press,db-triceps-extension,cable-rear-delt-fly,thread-the-needle|Lower Squat:cat-cow,glute-bridges,dumbbell-bulgarian-split-squat,barbell-hip-thrust,side-plank-star,single-leg-calf-raise,hip-flexor-stretch|Upper Pull:cat-cow,wall-angel-hold,dumbbell-rows,machine-lat-pulldown,cable-biceps-curl,machine-rear-delt-row,thread-the-needle|Lower Hinge + Posterior Chain:cat-cow,glute-bridges,machine-glute-drive,dumbbell-step-up-loaded,standing-calf-raise,farmers-carry,hip-flexor-stretch|Arms + Posture + Conditioning:cat-cow,wall-angel-hold,machine-seated-row,dumbbell-shoulder-press,bodyweight-triceps-extension,cable-biceps-curl,thread-the-needle"
     },
     {
       "mode": "gym",
@@ -4390,8 +4390,8 @@
           "goblet-squat",
           "dumbbell-floor-press",
           "single-arm-dumbbell-row",
-          "db-biceps-curl",
           "standing-calf-raise",
+          "db-biceps-curl",
           "breathing-90-90"
         ],
         [
@@ -4400,16 +4400,16 @@
           "dumbbell-sumo-rdl",
           "dumbbell-reverse-lunge",
           "dumbbell-shoulder-press",
-          "db-triceps-extension",
           "farmers-carry",
+          "db-triceps-extension",
           "breathing-90-90"
         ],
         [
           "ankle-mobility",
           "glute-bridges",
           "split-squat",
-          "pushup",
           "dumbbell-rows",
+          "pushup",
           "hollow-body-hold",
           "single-leg-hip-thrust",
           "breathing-90-90"
@@ -4472,7 +4472,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -4484,7 +4484,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -4559,7 +4559,7 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -4571,7 +4571,7 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -4622,7 +4622,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "dumbbell-rows",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -4634,7 +4634,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-rows",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -4689,8 +4689,8 @@
         "base": "db-fuzz-9e37e786",
         "recovery": []
       },
-      "semanticSignature": "f2bfbd70",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:ankle-mobility,glute-bridges,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,db-biceps-curl,standing-calf-raise,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,prone-ytw,dumbbell-sumo-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,db-triceps-extension,farmers-carry,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:ankle-mobility,glute-bridges,split-squat,pushup,dumbbell-rows,hollow-body-hold,single-leg-hip-thrust,breathing-90-90"
+      "semanticSignature": "4bb24368",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:ankle-mobility,glute-bridges,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,standing-calf-raise,db-biceps-curl,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,prone-ytw,dumbbell-sumo-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,farmers-carry,db-triceps-extension,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:ankle-mobility,glute-bridges,split-squat,dumbbell-rows,pushup,hollow-body-hold,single-leg-hip-thrust,breathing-90-90"
     },
     {
       "mode": "dumbbells",
@@ -4724,8 +4724,8 @@
           "cat-cow",
           "wall-angel-hold",
           "goblet-squat",
-          "dumbbell-floor-press",
           "single-arm-dumbbell-row",
+          "dumbbell-floor-press",
           "single-leg-hip-thrust",
           "dumbbell-reverse-lunge",
           "db-biceps-curl",
@@ -4740,20 +4740,20 @@
           "dumbbell-shoulder-press",
           "dumbbell-rows",
           "dumbbell-sumo-rdl",
-          "single-arm-dumbbell-row",
           "db-triceps-extension",
+          "single-arm-dumbbell-row",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "dumbbell-reverse-lunge",
-          "pushup",
           "dumbbell-pullover",
-          "single-leg-rdl",
           "single-arm-dumbbell-row",
-          "farmers-carry",
+          "single-leg-rdl",
+          "pushup",
           "single-leg-hip-thrust",
+          "farmers-carry",
           "thread-the-needle"
         ]
       ],
@@ -4790,7 +4790,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -4802,7 +4802,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -4949,11 +4949,11 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
-              "sets": 3,
-              "reps": "6-10",
-              "restSeconds": 95,
+              "sets": 2,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -4961,11 +4961,11 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
-              "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "sets": 3,
+              "reps": "6-10",
+              "restSeconds": 95,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5012,7 +5012,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "dumbbell-pullover",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -5024,7 +5024,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-pullover",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -5048,7 +5048,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -5056,18 +5056,6 @@
               "targetRPE": 7,
               "progressionRule": "Add load or a small difficulty step only after all sets stay crisp at the target effort.",
               "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
-              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
-            }
-          },
-          {
-            "exerciseId": "farmers-carry",
-            "prescription": {
-              "sets": 3,
-              "reps": "6-10",
-              "restSeconds": 95,
-              "targetRPE": 6,
-              "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
-              "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
               "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
             }
           },
@@ -5081,6 +5069,18 @@
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
               "stopRule": "Stop if lower-back pain increases, travels, or changes your brace."
+            }
+          },
+          {
+            "exerciseId": "farmers-carry",
+            "prescription": {
+              "sets": 3,
+              "reps": "6-10",
+              "restSeconds": 95,
+              "targetRPE": 6,
+              "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
+              "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
+              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
             }
           },
           {
@@ -5103,8 +5103,8 @@
         "base": "db-fuzz-fa6fd29f",
         "recovery": []
       },
-      "semanticSignature": "4492a67c",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,dumbbell-reverse-lunge,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,dumbbell-shoulder-press,dumbbell-rows,dumbbell-sumo-rdl,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,pushup,dumbbell-pullover,single-leg-rdl,single-arm-dumbbell-row,farmers-carry,single-leg-hip-thrust,thread-the-needle"
+      "semanticSignature": "f34e5922",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,single-arm-dumbbell-row,dumbbell-floor-press,single-leg-hip-thrust,dumbbell-reverse-lunge,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,dumbbell-shoulder-press,dumbbell-rows,dumbbell-sumo-rdl,db-triceps-extension,single-arm-dumbbell-row,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-pullover,single-arm-dumbbell-row,single-leg-rdl,pushup,single-leg-hip-thrust,farmers-carry,thread-the-needle"
     },
     {
       "mode": "dumbbells",
@@ -5143,8 +5143,8 @@
           "pushup",
           "single-arm-dumbbell-row",
           "db-rdl",
-          "standing-calf-raise",
           "farmers-carry",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -5154,16 +5154,16 @@
           "dumbbell-reverse-lunge",
           "pike-pushup",
           "dumbbell-rows",
-          "standing-calf-raise",
           "farmers-carry",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "split-squat",
-          "dumbbell-floor-press",
           "dumbbell-pullover",
+          "dumbbell-floor-press",
           "single-leg-rdl",
           "db-triceps-extension",
           "farmers-carry",
@@ -5174,8 +5174,8 @@
           "wall-angel-hold",
           "single-arm-dumbbell-row",
           "heels-elevated-squat",
-          "db-biceps-curl",
           "farmers-carry",
+          "db-biceps-curl",
           "thread-the-needle"
         ]
       ],
@@ -5248,11 +5248,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "farmers-carry",
             "prescription": {
-              "sets": 1,
+              "sets": 2,
               "reps": "8-12",
-              "restSeconds": 75,
+              "restSeconds": 80,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5260,11 +5260,11 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
-              "sets": 2,
+              "sets": 1,
               "reps": "8-12",
-              "restSeconds": 80,
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5347,11 +5347,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "farmers-carry",
             "prescription": {
-              "sets": 1,
+              "sets": 2,
               "reps": "8-12",
-              "restSeconds": 75,
+              "restSeconds": 80,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5359,11 +5359,11 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
-              "sets": 2,
+              "sets": 1,
               "reps": "8-12",
-              "restSeconds": 80,
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5410,7 +5410,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "dumbbell-pullover",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -5422,7 +5422,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-pullover",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -5521,11 +5521,11 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "farmers-carry",
             "prescription": {
-              "sets": 1,
+              "sets": 2,
               "reps": "8-12",
-              "restSeconds": 75,
+              "restSeconds": 80,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5533,11 +5533,11 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
-              "sets": 2,
+              "sets": 1,
               "reps": "8-12",
-              "restSeconds": 80,
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5564,8 +5564,8 @@
         "base": "db-fuzz-56a68e89",
         "recovery": []
       },
-      "semanticSignature": "231424d9",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,db-rdl,standing-calf-raise,farmers-carry,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,dumbbell-sumo-rdl,dumbbell-reverse-lunge,pike-pushup,dumbbell-rows,standing-calf-raise,farmers-carry,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,dumbbell-floor-press,dumbbell-pullover,single-leg-rdl,db-triceps-extension,farmers-carry,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-dumbbell-row,heels-elevated-squat,db-biceps-curl,farmers-carry,thread-the-needle"
+      "semanticSignature": "f94bfd17",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,db-rdl,farmers-carry,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,dumbbell-sumo-rdl,dumbbell-reverse-lunge,pike-pushup,dumbbell-rows,farmers-carry,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,dumbbell-pullover,dumbbell-floor-press,single-leg-rdl,db-triceps-extension,farmers-carry,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-dumbbell-row,heels-elevated-squat,farmers-carry,db-biceps-curl,thread-the-needle"
     },
     {
       "mode": "dumbbells",
@@ -5603,8 +5603,8 @@
           "goblet-squat",
           "pushup",
           "single-arm-dumbbell-row",
-          "standing-calf-raise",
           "db-biceps-curl",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -5613,16 +5613,16 @@
           "db-rdl",
           "dumbbell-reverse-lunge",
           "pike-pushup",
-          "db-biceps-curl",
           "farmers-carry",
+          "db-biceps-curl",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "split-squat",
-          "dumbbell-floor-press",
           "dumbbell-rows",
+          "dumbbell-floor-press",
           "db-triceps-extension",
           "farmers-carry",
           "thread-the-needle"
@@ -5701,7 +5701,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -5713,7 +5713,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -5788,11 +5788,11 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5800,11 +5800,11 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -5851,7 +5851,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "dumbbell-rows",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -5863,7 +5863,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-rows",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -6044,8 +6044,8 @@
         "base": "db-fuzz-b2de35b0",
         "recovery": []
       },
-      "semanticSignature": "12bf26c5",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,dead-bug,db-rdl,dumbbell-reverse-lunge,pike-pushup,db-biceps-curl,farmers-carry,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,dumbbell-floor-press,dumbbell-rows,db-triceps-extension,farmers-carry,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,dead-bug,heels-elevated-squat,dumbbell-sumo-rdl,standing-calf-raise,thread-the-needle"
+      "semanticSignature": "6bdb338b",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,dead-bug,db-rdl,dumbbell-reverse-lunge,pike-pushup,farmers-carry,db-biceps-curl,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,dumbbell-rows,dumbbell-floor-press,db-triceps-extension,farmers-carry,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,dead-bug,heels-elevated-squat,dumbbell-sumo-rdl,standing-calf-raise,thread-the-needle"
     },
     {
       "mode": "dumbbells",
@@ -6083,8 +6083,8 @@
           "single-arm-dumbbell-row",
           "single-leg-hip-thrust",
           "dumbbell-reverse-lunge",
-          "db-biceps-curl",
           "standing-calf-raise",
+          "db-biceps-curl",
           "thread-the-needle"
         ],
         [
@@ -6094,20 +6094,20 @@
           "split-squat",
           "dumbbell-shoulder-press",
           "dumbbell-rows",
-          "db-triceps-extension",
           "farmers-carry",
+          "db-triceps-extension",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "dumbbell-reverse-lunge",
-          "pushup",
           "dumbbell-pullover",
-          "single-leg-hip-thrust",
           "single-arm-dumbbell-row",
-          "side-plank-star",
+          "single-leg-hip-thrust",
+          "pushup",
           "cossack-squat",
+          "side-plank-star",
           "thread-the-needle"
         ]
       ],
@@ -6192,7 +6192,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -6204,7 +6204,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -6291,7 +6291,7 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -6303,7 +6303,7 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -6354,31 +6354,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
-            "prescription": {
-              "sets": 4,
-              "reps": "8-12",
-              "restSeconds": 115,
-              "targetRPE": 6,
-              "progressionRule": "Add reps first; progress the variation only when every set is smooth and repeatable.",
-              "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
-              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
-            }
-          },
-          {
             "exerciseId": "dumbbell-pullover",
-            "prescription": {
-              "sets": 4,
-              "reps": "8-12",
-              "restSeconds": 115,
-              "targetRPE": 6,
-              "progressionRule": "Add reps first; progress the variation only when every set is smooth and repeatable.",
-              "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
-              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
-            }
-          },
-          {
-            "exerciseId": "single-leg-hip-thrust",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -6402,7 +6378,31 @@
             }
           },
           {
-            "exerciseId": "side-plank-star",
+            "exerciseId": "single-leg-hip-thrust",
+            "prescription": {
+              "sets": 4,
+              "reps": "8-12",
+              "restSeconds": 115,
+              "targetRPE": 6,
+              "progressionRule": "Add reps first; progress the variation only when every set is smooth and repeatable.",
+              "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
+              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
+            }
+          },
+          {
+            "exerciseId": "pushup",
+            "prescription": {
+              "sets": 4,
+              "reps": "8-12",
+              "restSeconds": 115,
+              "targetRPE": 6,
+              "progressionRule": "Add reps first; progress the variation only when every set is smooth and repeatable.",
+              "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
+              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
+            }
+          },
+          {
+            "exerciseId": "cossack-squat",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -6414,7 +6414,7 @@
             }
           },
           {
-            "exerciseId": "cossack-squat",
+            "exerciseId": "side-plank-star",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -6445,8 +6445,8 @@
         "base": "db-fuzz-f1639bb",
         "recovery": []
       },
-      "semanticSignature": "06bf97f2",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,dumbbell-reverse-lunge,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,dumbbell-shoulder-press,dumbbell-rows,db-triceps-extension,farmers-carry,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,pushup,dumbbell-pullover,single-leg-hip-thrust,single-arm-dumbbell-row,side-plank-star,cossack-squat,thread-the-needle"
+      "semanticSignature": "869b7ab4",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,dumbbell-reverse-lunge,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,dumbbell-shoulder-press,dumbbell-rows,farmers-carry,db-triceps-extension,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-pullover,single-arm-dumbbell-row,single-leg-hip-thrust,pushup,cossack-squat,side-plank-star,thread-the-needle"
     },
     {
       "mode": "dumbbells",
@@ -6481,8 +6481,8 @@
           "cat-cow",
           "wall-angel-hold",
           "goblet-squat",
-          "pushup",
           "single-arm-dumbbell-row",
+          "pushup",
           "db-rdl",
           "standing-calf-raise",
           "farmers-carry",
@@ -6495,16 +6495,16 @@
           "dumbbell-reverse-lunge",
           "pike-pushup",
           "dumbbell-rows",
-          "standing-calf-raise",
           "farmers-carry",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "split-squat",
-          "dumbbell-floor-press",
           "dumbbell-pullover",
+          "dumbbell-floor-press",
           "db-rdl",
           "db-triceps-extension",
           "farmers-carry",
@@ -6515,8 +6515,8 @@
           "wall-angel-hold",
           "single-arm-dumbbell-row",
           "heels-elevated-squat",
-          "db-biceps-curl",
           "farmers-carry",
+          "db-biceps-curl",
           "thread-the-needle"
         ]
       ],
@@ -6553,7 +6553,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -6565,7 +6565,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -6688,11 +6688,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -6700,11 +6700,11 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 70,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -6751,7 +6751,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "dumbbell-pullover",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -6763,7 +6763,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-pullover",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -6862,11 +6862,11 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -6874,11 +6874,11 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 70,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -6905,8 +6905,8 @@
         "base": "db-fuzz-6b4d8ea1",
         "recovery": []
       },
-      "semanticSignature": "329645fa",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,db-rdl,standing-calf-raise,farmers-carry,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-rdl,dumbbell-reverse-lunge,pike-pushup,dumbbell-rows,standing-calf-raise,farmers-carry,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,dumbbell-floor-press,dumbbell-pullover,db-rdl,db-triceps-extension,farmers-carry,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-dumbbell-row,heels-elevated-squat,db-biceps-curl,farmers-carry,thread-the-needle"
+      "semanticSignature": "260953ea",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,single-arm-dumbbell-row,pushup,db-rdl,standing-calf-raise,farmers-carry,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-rdl,dumbbell-reverse-lunge,pike-pushup,dumbbell-rows,farmers-carry,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,dumbbell-pullover,dumbbell-floor-press,db-rdl,db-triceps-extension,farmers-carry,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-dumbbell-row,heels-elevated-squat,farmers-carry,db-biceps-curl,thread-the-needle"
     },
     {
       "mode": "dumbbells",
@@ -6942,8 +6942,8 @@
           "cat-cow",
           "wall-angel-hold",
           "goblet-squat",
-          "pushup",
           "single-arm-dumbbell-row",
+          "pushup",
           "standing-calf-raise",
           "db-biceps-curl",
           "thread-the-needle"
@@ -6954,16 +6954,16 @@
           "db-rdl",
           "dumbbell-reverse-lunge",
           "pike-pushup",
-          "cossack-squat",
           "db-biceps-curl",
+          "cossack-squat",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "split-squat",
-          "dumbbell-floor-press",
           "dumbbell-rows",
+          "dumbbell-floor-press",
           "db-triceps-extension",
           "farmers-carry",
           "thread-the-needle"
@@ -7018,7 +7018,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -7030,7 +7030,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -7129,11 +7129,11 @@
             }
           },
           {
-            "exerciseId": "cossack-squat",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 65,
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -7141,11 +7141,11 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "cossack-squat",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 45,
+              "restSeconds": 65,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -7192,7 +7192,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "dumbbell-rows",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -7204,7 +7204,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-rows",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -7385,8 +7385,8 @@
         "base": "db-fuzz-c78552ae",
         "recovery": []
       },
-      "semanticSignature": "38da37a2",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,hip-hinge-drill,db-rdl,dumbbell-reverse-lunge,pike-pushup,cossack-squat,db-biceps-curl,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,dumbbell-floor-press,dumbbell-rows,db-triceps-extension,farmers-carry,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-rdl,standing-calf-raise,thread-the-needle"
+      "semanticSignature": "fcf2b9ba",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,single-arm-dumbbell-row,pushup,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,hip-hinge-drill,db-rdl,dumbbell-reverse-lunge,pike-pushup,db-biceps-curl,cossack-squat,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,dumbbell-rows,dumbbell-floor-press,db-triceps-extension,farmers-carry,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-rdl,standing-calf-raise,thread-the-needle"
     },
     {
       "mode": "dumbbells",
@@ -7422,8 +7422,8 @@
           "cat-cow",
           "wall-angel-hold",
           "goblet-squat",
-          "incline-pushup",
           "single-arm-dumbbell-row",
+          "incline-pushup",
           "db-rdl",
           "dumbbell-reverse-lunge",
           "standing-calf-raise",
@@ -7438,20 +7438,20 @@
           "pike-pushup",
           "dumbbell-rows",
           "db-rdl",
-          "db-triceps-extension",
           "side-plank",
+          "db-triceps-extension",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "dumbbell-step-up-loaded",
-          "pushup",
+          "single-arm-dumbbell-row",
           "single-arm-dumbbell-row",
           "db-rdl",
-          "single-arm-dumbbell-row",
-          "side-plank",
+          "pushup",
           "bodyweight-good-morning",
+          "side-plank",
           "thread-the-needle"
         ]
       ],
@@ -7488,7 +7488,7 @@
             }
           },
           {
-            "exerciseId": "incline-pushup",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -7500,7 +7500,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "incline-pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -7647,11 +7647,11 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "side-plank",
             "prescription": {
-              "sets": 1,
+              "sets": 3,
               "reps": "8-12",
-              "restSeconds": 75,
+              "restSeconds": 80,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -7659,11 +7659,11 @@
             }
           },
           {
-            "exerciseId": "side-plank",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
-              "sets": 3,
+              "sets": 1,
               "reps": "8-12",
-              "restSeconds": 80,
+              "restSeconds": 75,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -7710,7 +7710,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -7746,7 +7746,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -7758,7 +7758,7 @@
             }
           },
           {
-            "exerciseId": "side-plank",
+            "exerciseId": "bodyweight-good-morning",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -7770,7 +7770,7 @@
             }
           },
           {
-            "exerciseId": "bodyweight-good-morning",
+            "exerciseId": "side-plank",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -7801,8 +7801,8 @@
         "base": "db-fuzz-23bd67d7",
         "recovery": []
       },
-      "semanticSignature": "694dad7a",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,incline-pushup,single-arm-dumbbell-row,db-rdl,dumbbell-reverse-lunge,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,db-rdl,split-squat,pike-pushup,dumbbell-rows,db-rdl,db-triceps-extension,side-plank,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-step-up-loaded,pushup,single-arm-dumbbell-row,db-rdl,single-arm-dumbbell-row,side-plank,bodyweight-good-morning,thread-the-needle"
+      "semanticSignature": "4f522e74",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,single-arm-dumbbell-row,incline-pushup,db-rdl,dumbbell-reverse-lunge,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,db-rdl,split-squat,pike-pushup,dumbbell-rows,db-rdl,side-plank,db-triceps-extension,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-step-up-loaded,single-arm-dumbbell-row,single-arm-dumbbell-row,db-rdl,pushup,bodyweight-good-morning,side-plank,thread-the-needle"
     },
     {
       "mode": "dumbbells",
@@ -7836,8 +7836,8 @@
           "cat-cow",
           "dead-bug",
           "goblet-squat",
-          "dumbbell-floor-press",
           "single-arm-dumbbell-row",
+          "dumbbell-floor-press",
           "db-rdl",
           "standing-calf-raise",
           "farmers-carry",
@@ -7850,16 +7850,16 @@
           "dumbbell-reverse-lunge",
           "dumbbell-shoulder-press",
           "dumbbell-rows",
-          "farmers-carry",
           "standing-calf-raise",
+          "farmers-carry",
           "breathing-90-90"
         ],
         [
           "cat-cow",
           "dead-bug",
           "split-squat",
-          "pushup",
           "dumbbell-pullover",
+          "pushup",
           "db-rdl",
           "db-triceps-extension",
           "plank",
@@ -7870,8 +7870,8 @@
           "dead-bug",
           "single-arm-dumbbell-row",
           "heels-elevated-squat",
-          "db-biceps-curl",
           "plank",
+          "db-biceps-curl",
           "breathing-90-90"
         ]
       ],
@@ -7908,7 +7908,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -7920,7 +7920,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -8043,7 +8043,7 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -8055,7 +8055,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -8106,7 +8106,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "dumbbell-pullover",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -8118,7 +8118,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-pullover",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -8217,11 +8217,11 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -8229,11 +8229,11 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -8260,8 +8260,8 @@
         "base": "db-fuzz-7ff48c5d",
         "recovery": []
       },
-      "semanticSignature": "0a84f2dd",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,db-rdl,standing-calf-raise,farmers-carry,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,dead-bug,db-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,dumbbell-rows,farmers-carry,standing-calf-raise,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,split-squat,pushup,dumbbell-pullover,db-rdl,db-triceps-extension,plank,breathing-90-90|Practice & Restore:cat-cow,dead-bug,single-arm-dumbbell-row,heels-elevated-squat,db-biceps-curl,plank,breathing-90-90"
+      "semanticSignature": "1059b04b",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,single-arm-dumbbell-row,dumbbell-floor-press,db-rdl,standing-calf-raise,farmers-carry,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,dead-bug,db-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,dumbbell-rows,standing-calf-raise,farmers-carry,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,split-squat,dumbbell-pullover,pushup,db-rdl,db-triceps-extension,plank,breathing-90-90|Practice & Restore:cat-cow,dead-bug,single-arm-dumbbell-row,heels-elevated-squat,plank,db-biceps-curl,breathing-90-90"
     },
     {
       "mode": "dumbbells",
@@ -8298,8 +8298,8 @@
           "cat-cow",
           "dead-bug",
           "goblet-squat",
-          "dumbbell-floor-press",
           "single-arm-dumbbell-row",
+          "dumbbell-floor-press",
           "standing-calf-raise",
           "db-biceps-curl",
           "breathing-90-90"
@@ -8310,16 +8310,16 @@
           "single-leg-hip-thrust",
           "dumbbell-reverse-lunge",
           "dumbbell-shoulder-press",
-          "db-biceps-curl",
           "side-plank",
+          "db-biceps-curl",
           "breathing-90-90"
         ],
         [
           "cat-cow",
           "dead-bug",
           "split-squat",
-          "pushup",
           "dumbbell-rows",
+          "pushup",
           "db-triceps-extension",
           "side-plank",
           "breathing-90-90"
@@ -8374,7 +8374,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -8386,7 +8386,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -8485,11 +8485,11 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "side-plank",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 45,
+              "restSeconds": 70,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -8497,11 +8497,11 @@
             }
           },
           {
-            "exerciseId": "side-plank",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 70,
+              "restSeconds": 45,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -8548,7 +8548,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "dumbbell-rows",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -8560,7 +8560,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-rows",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -8741,8 +8741,8 @@
         "base": "db-fuzz-dc2c7ec4",
         "recovery": []
       },
-      "semanticSignature": "eced40f6",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,standing-calf-raise,db-biceps-curl,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,hip-hinge-drill,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,db-biceps-curl,side-plank,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,split-squat,pushup,dumbbell-rows,db-triceps-extension,side-plank,breathing-90-90|Upper Pattern Practice:wall-slides,dead-bug,dumbbell-bench-press,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-glute-bridge-hold,standing-calf-raise,breathing-90-90"
+      "semanticSignature": "bf3c778c",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,single-arm-dumbbell-row,dumbbell-floor-press,standing-calf-raise,db-biceps-curl,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,hip-hinge-drill,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,side-plank,db-biceps-curl,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,split-squat,dumbbell-rows,pushup,db-triceps-extension,side-plank,breathing-90-90|Upper Pattern Practice:wall-slides,dead-bug,dumbbell-bench-press,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-glute-bridge-hold,standing-calf-raise,breathing-90-90"
     },
     {
       "mode": "bands",
@@ -8783,8 +8783,8 @@
           "ankle-mobility",
           "glute-bridges",
           "heels-elevated-squat",
-          "pushup",
           "band-pull-apart",
+          "pushup",
           "standing-calf-raise",
           "towel-biceps-curl-hold",
           "breathing-90-90"
@@ -8795,8 +8795,8 @@
           "single-leg-hip-thrust",
           "split-squat",
           "pike-pushup",
-          "bodyweight-triceps-extension",
           "supine-elbow-drive-row",
+          "bodyweight-triceps-extension",
           "breathing-90-90"
         ],
         [
@@ -8805,8 +8805,8 @@
           "split-squat",
           "close-grip-pushup",
           "band-pull-apart",
-          "hollow-body-hold",
           "supine-elbow-drive-row",
+          "hollow-body-hold",
           "breathing-90-90"
         ]
       ],
@@ -8843,7 +8843,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "band-pull-apart",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -8855,7 +8855,7 @@
             }
           },
           {
-            "exerciseId": "band-pull-apart",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -8954,11 +8954,11 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "supine-elbow-drive-row",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 45,
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -8966,11 +8966,11 @@
             }
           },
           {
-            "exerciseId": "supine-elbow-drive-row",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 70,
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -9041,7 +9041,7 @@
             }
           },
           {
-            "exerciseId": "hollow-body-hold",
+            "exerciseId": "supine-elbow-drive-row",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -9053,7 +9053,7 @@
             }
           },
           {
-            "exerciseId": "supine-elbow-drive-row",
+            "exerciseId": "hollow-body-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -9084,8 +9084,8 @@
         "base": "band-fuzz-9e37e786",
         "recovery": []
       },
-      "semanticSignature": "0ae1ba53",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:ankle-mobility,glute-bridges,heels-elevated-squat,pushup,band-pull-apart,standing-calf-raise,towel-biceps-curl-hold,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,glute-bridges,single-leg-hip-thrust,split-squat,pike-pushup,bodyweight-triceps-extension,supine-elbow-drive-row,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:ankle-mobility,glute-bridges,split-squat,close-grip-pushup,band-pull-apart,hollow-body-hold,supine-elbow-drive-row,breathing-90-90"
+      "semanticSignature": "fc7124b3",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:ankle-mobility,glute-bridges,heels-elevated-squat,band-pull-apart,pushup,standing-calf-raise,towel-biceps-curl-hold,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,glute-bridges,single-leg-hip-thrust,split-squat,pike-pushup,supine-elbow-drive-row,bodyweight-triceps-extension,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:ankle-mobility,glute-bridges,split-squat,close-grip-pushup,band-pull-apart,supine-elbow-drive-row,hollow-body-hold,breathing-90-90"
     },
     {
       "mode": "bands",
@@ -9123,8 +9123,8 @@
           "band-chest-press",
           "split-stance-row",
           "single-leg-hip-thrust",
-          "standing-calf-raise",
           "band-biceps-curl",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -9134,8 +9134,8 @@
           "split-squat",
           "band-overhead-press",
           "band-row",
-          "bodyweight-triceps-extension",
           "supine-elbow-drive-row",
+          "bodyweight-triceps-extension",
           "thread-the-needle"
         ],
         [
@@ -9145,8 +9145,8 @@
           "pushup",
           "split-stance-row",
           "band-rdl",
-          "marching-brace-hold",
           "supine-elbow-drive-row",
+          "marching-brace-hold",
           "thread-the-needle"
         ]
       ],
@@ -9219,7 +9219,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "band-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -9231,7 +9231,7 @@
             }
           },
           {
-            "exerciseId": "band-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -9318,11 +9318,11 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "supine-elbow-drive-row",
             "prescription": {
-              "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "sets": 3,
+              "reps": "6-10",
+              "restSeconds": 95,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -9330,11 +9330,11 @@
             }
           },
           {
-            "exerciseId": "supine-elbow-drive-row",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
-              "sets": 3,
-              "reps": "6-10",
-              "restSeconds": 95,
+              "sets": 2,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -9417,7 +9417,7 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "supine-elbow-drive-row",
             "prescription": {
               "sets": 3,
               "reps": "6-10",
@@ -9429,7 +9429,7 @@
             }
           },
           {
-            "exerciseId": "supine-elbow-drive-row",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 3,
               "reps": "6-10",
@@ -9460,8 +9460,8 @@
         "base": "band-fuzz-fa6fd29f",
         "recovery": []
       },
-      "semanticSignature": "2b699f5c",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,band-chest-press,split-stance-row,single-leg-hip-thrust,standing-calf-raise,band-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,band-overhead-press,band-row,bodyweight-triceps-extension,supine-elbow-drive-row,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,split-stance-row,band-rdl,marching-brace-hold,supine-elbow-drive-row,thread-the-needle"
+      "semanticSignature": "25463858",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,band-chest-press,split-stance-row,single-leg-hip-thrust,band-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,band-overhead-press,band-row,supine-elbow-drive-row,bodyweight-triceps-extension,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,split-stance-row,band-rdl,supine-elbow-drive-row,marching-brace-hold,thread-the-needle"
     },
     {
       "mode": "bands",
@@ -9501,8 +9501,8 @@
           "band-chest-press",
           "split-stance-row",
           "band-rdl",
-          "standing-calf-raise",
           "marching-brace-hold",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -9512,16 +9512,16 @@
           "split-squat",
           "pike-pushup",
           "band-row",
-          "face-pull",
           "standing-calf-raise",
+          "face-pull",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "heels-elevated-squat",
-          "pushup",
           "split-stance-row",
+          "pushup",
           "single-leg-glute-bridge-hold",
           "bodyweight-triceps-extension",
           "marching-brace-hold",
@@ -9606,11 +9606,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
-              "sets": 1,
+              "sets": 2,
               "reps": "8-12",
-              "restSeconds": 75,
+              "restSeconds": 80,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -9618,11 +9618,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
-              "sets": 2,
+              "sets": 1,
               "reps": "8-12",
-              "restSeconds": 80,
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -9705,11 +9705,11 @@
             }
           },
           {
-            "exerciseId": "face-pull",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
-              "sets": 2,
+              "sets": 1,
               "reps": "8-12",
-              "restSeconds": 80,
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -9717,11 +9717,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "face-pull",
             "prescription": {
-              "sets": 1,
+              "sets": 2,
               "reps": "8-12",
-              "restSeconds": 75,
+              "restSeconds": 80,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -9768,7 +9768,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "split-stance-row",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -9780,7 +9780,7 @@
             }
           },
           {
-            "exerciseId": "split-stance-row",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -9922,8 +9922,8 @@
         "base": "band-fuzz-56a68e89",
         "recovery": []
       },
-      "semanticSignature": "35bd85b8",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,band-chest-press,split-stance-row,band-rdl,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,split-squat,pike-pushup,band-row,face-pull,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,split-stance-row,single-leg-glute-bridge-hold,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-band-row,band-front-squat,face-pull,band-biceps-curl,thread-the-needle"
+      "semanticSignature": "9ea9dcf8",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,band-chest-press,split-stance-row,band-rdl,marching-brace-hold,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,split-squat,pike-pushup,band-row,standing-calf-raise,face-pull,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,split-stance-row,pushup,single-leg-glute-bridge-hold,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-band-row,band-front-squat,face-pull,band-biceps-curl,thread-the-needle"
     },
     {
       "mode": "bands",
@@ -9959,8 +9959,8 @@
           "cat-cow",
           "band-pull-aparts",
           "heels-elevated-squat",
-          "pushup",
           "band-pull-apart",
+          "pushup",
           "standing-calf-raise",
           "towel-biceps-curl-hold",
           "thread-the-needle"
@@ -9971,8 +9971,8 @@
           "single-leg-hip-thrust",
           "split-squat",
           "pike-pushup",
-          "towel-biceps-curl-hold",
           "marching-brace-hold",
+          "towel-biceps-curl-hold",
           "thread-the-needle"
         ],
         [
@@ -9981,8 +9981,8 @@
           "split-squat",
           "close-grip-pushup",
           "band-pull-apart",
-          "bodyweight-triceps-extension",
           "marching-brace-hold",
+          "bodyweight-triceps-extension",
           "thread-the-needle"
         ],
         [
@@ -10035,7 +10035,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "band-pull-apart",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -10047,7 +10047,7 @@
             }
           },
           {
-            "exerciseId": "band-pull-apart",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -10146,11 +10146,11 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -10158,11 +10158,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -10233,7 +10233,7 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -10245,7 +10245,7 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -10402,8 +10402,8 @@
         "base": "band-fuzz-b2de35b0",
         "recovery": []
       },
-      "semanticSignature": "0fd3e4dd",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,band-pull-aparts,heels-elevated-squat,pushup,band-pull-apart,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,band-pull-aparts,single-leg-hip-thrust,split-squat,pike-pushup,towel-biceps-curl-hold,marching-brace-hold,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,band-pull-aparts,split-squat,close-grip-pushup,band-pull-apart,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Upper Pattern Practice:wall-slides,band-pull-aparts,pushup,band-pull-apart,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,dead-bug,heels-elevated-squat,single-leg-glute-bridge-hold,standing-calf-raise,thread-the-needle"
+      "semanticSignature": "c97da829",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,band-pull-aparts,heels-elevated-squat,band-pull-apart,pushup,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,band-pull-aparts,single-leg-hip-thrust,split-squat,pike-pushup,marching-brace-hold,towel-biceps-curl-hold,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,band-pull-aparts,split-squat,close-grip-pushup,band-pull-apart,marching-brace-hold,bodyweight-triceps-extension,thread-the-needle|Upper Pattern Practice:wall-slides,band-pull-aparts,pushup,band-pull-apart,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,dead-bug,heels-elevated-squat,single-leg-glute-bridge-hold,standing-calf-raise,thread-the-needle"
     },
     {
       "mode": "bands",
@@ -10438,8 +10438,8 @@
           "cat-cow",
           "wall-angel-hold",
           "band-front-squat",
-          "band-chest-press",
           "split-stance-row",
+          "band-chest-press",
           "single-leg-hip-thrust",
           "standing-calf-raise",
           "band-biceps-curl",
@@ -10452,8 +10452,8 @@
           "split-squat",
           "band-overhead-press",
           "band-row",
-          "bodyweight-triceps-extension",
           "supine-elbow-drive-row",
+          "bodyweight-triceps-extension",
           "thread-the-needle"
         ],
         [
@@ -10463,8 +10463,8 @@
           "pushup",
           "split-stance-row",
           "single-leg-hip-thrust",
-          "side-plank-star",
           "supine-elbow-drive-row",
+          "side-plank-star",
           "thread-the-needle"
         ]
       ],
@@ -10501,7 +10501,7 @@
             }
           },
           {
-            "exerciseId": "band-chest-press",
+            "exerciseId": "split-stance-row",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -10513,7 +10513,7 @@
             }
           },
           {
-            "exerciseId": "split-stance-row",
+            "exerciseId": "band-chest-press",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -10636,11 +10636,11 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "supine-elbow-drive-row",
             "prescription": {
-              "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "sets": 3,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -10648,11 +10648,11 @@
             }
           },
           {
-            "exerciseId": "supine-elbow-drive-row",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
-              "sets": 3,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "sets": 2,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -10735,7 +10735,7 @@
             }
           },
           {
-            "exerciseId": "side-plank-star",
+            "exerciseId": "supine-elbow-drive-row",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -10747,7 +10747,7 @@
             }
           },
           {
-            "exerciseId": "supine-elbow-drive-row",
+            "exerciseId": "side-plank-star",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -10778,8 +10778,8 @@
         "base": "band-fuzz-f1639bb",
         "recovery": []
       },
-      "semanticSignature": "68557768",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,band-chest-press,split-stance-row,single-leg-hip-thrust,standing-calf-raise,band-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,band-overhead-press,band-row,bodyweight-triceps-extension,supine-elbow-drive-row,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,split-stance-row,single-leg-hip-thrust,side-plank-star,supine-elbow-drive-row,thread-the-needle"
+      "semanticSignature": "de6c08c8",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,split-stance-row,band-chest-press,single-leg-hip-thrust,standing-calf-raise,band-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,band-overhead-press,band-row,supine-elbow-drive-row,bodyweight-triceps-extension,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,split-stance-row,single-leg-hip-thrust,supine-elbow-drive-row,side-plank-star,thread-the-needle"
     },
     {
       "mode": "bands",
@@ -10815,8 +10815,8 @@
           "cat-cow",
           "wall-angel-hold",
           "band-front-squat",
-          "band-chest-press",
           "split-stance-row",
+          "band-chest-press",
           "band-rdl",
           "standing-calf-raise",
           "marching-brace-hold",
@@ -10829,8 +10829,8 @@
           "split-squat",
           "pike-pushup",
           "band-row",
-          "standing-calf-raise",
           "marching-brace-hold",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -10840,8 +10840,8 @@
           "pushup",
           "split-stance-row",
           "single-leg-glute-bridge-hold",
-          "bodyweight-triceps-extension",
           "marching-brace-hold",
+          "bodyweight-triceps-extension",
           "thread-the-needle"
         ],
         [
@@ -10849,8 +10849,8 @@
           "wall-angel-hold",
           "single-arm-band-row",
           "band-front-squat",
-          "band-biceps-curl",
           "marching-brace-hold",
+          "band-biceps-curl",
           "thread-the-needle"
         ]
       ],
@@ -10887,7 +10887,7 @@
             }
           },
           {
-            "exerciseId": "band-chest-press",
+            "exerciseId": "split-stance-row",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -10899,7 +10899,7 @@
             }
           },
           {
-            "exerciseId": "split-stance-row",
+            "exerciseId": "band-chest-press",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -11022,11 +11022,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -11034,11 +11034,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 70,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -11121,7 +11121,7 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -11133,7 +11133,7 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -11196,11 +11196,11 @@
             }
           },
           {
-            "exerciseId": "band-biceps-curl",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -11208,11 +11208,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "band-biceps-curl",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 70,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -11239,8 +11239,8 @@
         "base": "band-fuzz-6b4d8ea1",
         "recovery": []
       },
-      "semanticSignature": "94e5ec09",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,band-chest-press,split-stance-row,band-rdl,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,split-squat,pike-pushup,band-row,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,split-stance-row,single-leg-glute-bridge-hold,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-band-row,band-front-squat,band-biceps-curl,marching-brace-hold,thread-the-needle"
+      "semanticSignature": "891648e9",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,split-stance-row,band-chest-press,band-rdl,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,split-squat,pike-pushup,band-row,marching-brace-hold,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,split-stance-row,single-leg-glute-bridge-hold,marching-brace-hold,bodyweight-triceps-extension,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-band-row,band-front-squat,marching-brace-hold,band-biceps-curl,thread-the-needle"
     },
     {
       "mode": "bands",
@@ -11276,8 +11276,8 @@
           "cat-cow",
           "wall-angel-hold",
           "heels-elevated-squat",
-          "pushup",
           "band-pull-apart",
+          "pushup",
           "standing-calf-raise",
           "towel-biceps-curl-hold",
           "thread-the-needle"
@@ -11288,8 +11288,8 @@
           "single-leg-hip-thrust",
           "split-squat",
           "pike-pushup",
-          "towel-biceps-curl-hold",
           "standing-calf-raise",
+          "towel-biceps-curl-hold",
           "thread-the-needle"
         ],
         [
@@ -11298,8 +11298,8 @@
           "split-squat",
           "close-grip-pushup",
           "band-pull-apart",
-          "bodyweight-triceps-extension",
           "marching-brace-hold",
+          "bodyweight-triceps-extension",
           "thread-the-needle"
         ],
         [
@@ -11352,7 +11352,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "band-pull-apart",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -11364,7 +11364,7 @@
             }
           },
           {
-            "exerciseId": "band-pull-apart",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -11463,7 +11463,7 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -11475,7 +11475,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -11550,7 +11550,7 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -11562,7 +11562,7 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -11719,8 +11719,8 @@
         "base": "band-fuzz-c78552ae",
         "recovery": []
       },
-      "semanticSignature": "e28baa67",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,band-pull-apart,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,split-squat,pike-pushup,towel-biceps-curl-hold,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,close-grip-pushup,band-pull-apart,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,band-pull-apart,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-glute-bridge-hold,side-plank,thread-the-needle"
+      "semanticSignature": "6bcd39c3",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,heels-elevated-squat,band-pull-apart,pushup,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,split-squat,pike-pushup,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,split-squat,close-grip-pushup,band-pull-apart,marching-brace-hold,bodyweight-triceps-extension,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,band-pull-apart,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-glute-bridge-hold,side-plank,thread-the-needle"
     },
     {
       "mode": "bands",
@@ -11756,8 +11756,8 @@
           "cat-cow",
           "wall-angel-hold",
           "band-front-squat",
-          "split-stance-band-chest-press",
           "split-stance-row",
+          "split-stance-band-chest-press",
           "single-leg-hip-thrust",
           "standing-calf-raise",
           "band-biceps-curl",
@@ -11819,7 +11819,7 @@
             }
           },
           {
-            "exerciseId": "split-stance-band-chest-press",
+            "exerciseId": "split-stance-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -11831,7 +11831,7 @@
             }
           },
           {
-            "exerciseId": "split-stance-row",
+            "exerciseId": "split-stance-band-chest-press",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -12096,8 +12096,8 @@
         "base": "band-fuzz-23bd67d7",
         "recovery": []
       },
-      "semanticSignature": "764cc53f",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,split-stance-band-chest-press,split-stance-row,single-leg-hip-thrust,standing-calf-raise,band-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,pike-pushup,band-row,band-triceps-pressdown,supine-elbow-drive-row,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,band-lat-pulldown,single-leg-hip-thrust,band-woodchop,supine-elbow-drive-row,thread-the-needle"
+      "semanticSignature": "13a3fd4f",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,band-front-squat,split-stance-row,split-stance-band-chest-press,single-leg-hip-thrust,standing-calf-raise,band-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-glute-bridge-hold,split-squat,pike-pushup,band-row,band-triceps-pressdown,supine-elbow-drive-row,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,heels-elevated-squat,pushup,band-lat-pulldown,single-leg-hip-thrust,band-woodchop,supine-elbow-drive-row,thread-the-needle"
     },
     {
       "mode": "bands",
@@ -12131,8 +12131,8 @@
           "cat-cow",
           "dead-bug",
           "band-front-squat",
-          "split-stance-band-chest-press",
           "split-stance-row",
+          "split-stance-band-chest-press",
           "band-rdl",
           "standing-calf-raise",
           "pallof-press",
@@ -12203,7 +12203,7 @@
             }
           },
           {
-            "exerciseId": "split-stance-band-chest-press",
+            "exerciseId": "split-stance-row",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -12215,7 +12215,7 @@
             }
           },
           {
-            "exerciseId": "split-stance-row",
+            "exerciseId": "split-stance-band-chest-press",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -12555,8 +12555,8 @@
         "base": "band-fuzz-7ff48c5d",
         "recovery": []
       },
-      "semanticSignature": "c401796f",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,band-front-squat,split-stance-band-chest-press,split-stance-row,band-rdl,standing-calf-raise,pallof-press,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,dead-bug,single-leg-hip-thrust,split-squat,band-overhead-press,band-row,standing-calf-raise,pallof-press,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,heels-elevated-squat,pushup,band-lat-pulldown,single-leg-glute-bridge-hold,band-triceps-pressdown,pallof-press,breathing-90-90|Practice & Restore:cat-cow,dead-bug,single-arm-band-row,band-front-squat,band-biceps-curl,pallof-press,breathing-90-90"
+      "semanticSignature": "b522d67f",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,band-front-squat,split-stance-row,split-stance-band-chest-press,band-rdl,standing-calf-raise,pallof-press,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,dead-bug,single-leg-hip-thrust,split-squat,band-overhead-press,band-row,standing-calf-raise,pallof-press,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,heels-elevated-squat,pushup,band-lat-pulldown,single-leg-glute-bridge-hold,band-triceps-pressdown,pallof-press,breathing-90-90|Practice & Restore:cat-cow,dead-bug,single-arm-band-row,band-front-squat,band-biceps-curl,pallof-press,breathing-90-90"
     },
     {
       "mode": "bands",
@@ -12595,8 +12595,8 @@
           "heels-elevated-squat",
           "pushup",
           "band-pull-apart",
-          "standing-calf-raise",
           "towel-biceps-curl-hold",
+          "standing-calf-raise",
           "breathing-90-90"
         ],
         [
@@ -12605,8 +12605,8 @@
           "single-leg-glute-bridge-hold",
           "split-squat",
           "pike-pushup",
-          "towel-biceps-curl-hold",
           "side-plank",
+          "towel-biceps-curl-hold",
           "breathing-90-90"
         ],
         [
@@ -12615,8 +12615,8 @@
           "split-squat",
           "close-grip-pushup",
           "band-rear-delt-fly",
-          "bodyweight-triceps-extension",
           "side-plank",
+          "bodyweight-triceps-extension",
           "breathing-90-90"
         ],
         [
@@ -12693,7 +12693,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -12705,7 +12705,7 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -12780,11 +12780,11 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "side-plank",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 45,
+              "restSeconds": 70,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -12792,11 +12792,11 @@
             }
           },
           {
-            "exerciseId": "side-plank",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 70,
+              "restSeconds": 45,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -12867,7 +12867,7 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "side-plank",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -12879,7 +12879,7 @@
             }
           },
           {
-            "exerciseId": "side-plank",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -13036,8 +13036,8 @@
         "base": "band-fuzz-dc2c7ec4",
         "recovery": []
       },
-      "semanticSignature": "d213f8ab",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,heels-elevated-squat,pushup,band-pull-apart,standing-calf-raise,towel-biceps-curl-hold,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,dead-bug,single-leg-glute-bridge-hold,split-squat,pike-pushup,towel-biceps-curl-hold,side-plank,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,split-squat,close-grip-pushup,band-rear-delt-fly,bodyweight-triceps-extension,side-plank,breathing-90-90|Upper Pattern Practice:wall-slides,dead-bug,pushup,band-pull-apart,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-hip-thrust,standing-calf-raise,breathing-90-90"
+      "semanticSignature": "96b75499",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,heels-elevated-squat,pushup,band-pull-apart,towel-biceps-curl-hold,standing-calf-raise,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,dead-bug,single-leg-glute-bridge-hold,split-squat,pike-pushup,side-plank,towel-biceps-curl-hold,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,split-squat,close-grip-pushup,band-rear-delt-fly,side-plank,bodyweight-triceps-extension,breathing-90-90|Upper Pattern Practice:wall-slides,dead-bug,pushup,band-pull-apart,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-hip-thrust,standing-calf-raise,breathing-90-90"
     },
     {
       "mode": "bodyweight",
@@ -13078,8 +13078,8 @@
           "ankle-mobility",
           "glute-bridges",
           "bodyweight-squat",
-          "pushup",
           "plank",
+          "pushup",
           "standing-calf-raise",
           "towel-biceps-curl-hold",
           "breathing-90-90"
@@ -13090,16 +13090,16 @@
           "bodyweight-good-morning",
           "split-squat",
           "pike-pushup",
-          "bodyweight-triceps-extension",
           "hollow-body-hold",
+          "bodyweight-triceps-extension",
           "breathing-90-90"
         ],
         [
           "ankle-mobility",
           "glute-bridges",
           "cossack-squat",
-          "close-grip-pushup",
           "prone-elbow-row",
+          "close-grip-pushup",
           "hollow-body-hold",
           "reverse-snow-angel",
           "breathing-90-90"
@@ -13138,7 +13138,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -13150,7 +13150,7 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -13249,11 +13249,11 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "hollow-body-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 45,
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -13261,11 +13261,11 @@
             }
           },
           {
-            "exerciseId": "hollow-body-hold",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 70,
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -13312,7 +13312,7 @@
             }
           },
           {
-            "exerciseId": "close-grip-pushup",
+            "exerciseId": "prone-elbow-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -13324,7 +13324,7 @@
             }
           },
           {
-            "exerciseId": "prone-elbow-row",
+            "exerciseId": "close-grip-pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -13381,8 +13381,8 @@
         "base": "bw-fuzz-9e37e786",
         "recovery": []
       },
-      "semanticSignature": "f16e8032",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:ankle-mobility,glute-bridges,bodyweight-squat,pushup,plank,standing-calf-raise,towel-biceps-curl-hold,breathing-90-90|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,prone-ytw,bodyweight-good-morning,split-squat,pike-pushup,bodyweight-triceps-extension,hollow-body-hold,breathing-90-90|Full Body C — Single-Leg, Push Variation and Back Intent:ankle-mobility,glute-bridges,cossack-squat,close-grip-pushup,prone-elbow-row,hollow-body-hold,reverse-snow-angel,breathing-90-90"
+      "semanticSignature": "6b58d4be",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:ankle-mobility,glute-bridges,bodyweight-squat,plank,pushup,standing-calf-raise,towel-biceps-curl-hold,breathing-90-90|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,prone-ytw,bodyweight-good-morning,split-squat,pike-pushup,hollow-body-hold,bodyweight-triceps-extension,breathing-90-90|Full Body C — Single-Leg, Push Variation and Back Intent:ankle-mobility,glute-bridges,cossack-squat,prone-elbow-row,close-grip-pushup,hollow-body-hold,reverse-snow-angel,breathing-90-90"
     },
     {
       "mode": "bodyweight",
@@ -13417,8 +13417,8 @@
           "cat-cow",
           "wall-angel-hold",
           "bodyweight-squat",
-          "pushup",
           "plank",
+          "pushup",
           "single-leg-glute-bridge-hold",
           "split-squat",
           "towel-biceps-curl-hold",
@@ -13432,8 +13432,8 @@
           "cossack-squat",
           "pike-pushup",
           "side-plank",
-          "reverse-snow-angel",
           "marching-brace-hold",
+          "reverse-snow-angel",
           "thread-the-needle"
         ],
         [
@@ -13444,8 +13444,8 @@
           "prone-elbow-row",
           "single-leg-glute-bridge-hold",
           "hollow-body-hold",
-          "marching-brace-hold",
           "reverse-snow-angel",
+          "marching-brace-hold",
           "thread-the-needle"
         ]
       ],
@@ -13482,7 +13482,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -13494,7 +13494,7 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -13629,7 +13629,7 @@
             }
           },
           {
-            "exerciseId": "reverse-snow-angel",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 3,
               "reps": "6-10",
@@ -13641,7 +13641,7 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "reverse-snow-angel",
             "prescription": {
               "sets": 3,
               "reps": "6-10",
@@ -13740,7 +13740,7 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "reverse-snow-angel",
             "prescription": {
               "sets": 3,
               "reps": "6-10",
@@ -13752,7 +13752,7 @@
             }
           },
           {
-            "exerciseId": "reverse-snow-angel",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 3,
               "reps": "6-10",
@@ -13785,8 +13785,8 @@
         "base": "bw-fuzz-fa6fd29f",
         "recovery": []
       },
-      "semanticSignature": "55f76115",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,pushup,plank,single-leg-glute-bridge-hold,split-squat,towel-biceps-curl-hold,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,single-leg-hip-thrust,cossack-squat,pike-pushup,side-plank,reverse-snow-angel,marching-brace-hold,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,shrimp-squat,close-grip-pushup,prone-elbow-row,single-leg-glute-bridge-hold,hollow-body-hold,marching-brace-hold,reverse-snow-angel,thread-the-needle"
+      "semanticSignature": "918035cf",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,plank,pushup,single-leg-glute-bridge-hold,split-squat,towel-biceps-curl-hold,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,single-leg-hip-thrust,cossack-squat,pike-pushup,side-plank,marching-brace-hold,reverse-snow-angel,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,shrimp-squat,close-grip-pushup,prone-elbow-row,single-leg-glute-bridge-hold,hollow-body-hold,reverse-snow-angel,marching-brace-hold,thread-the-needle"
     },
     {
       "mode": "bodyweight",
@@ -13823,8 +13823,8 @@
           "cat-cow",
           "wall-angel-hold",
           "bodyweight-squat",
-          "wall-pushup",
           "plank",
+          "wall-pushup",
           "single-leg-glute-bridge-hold",
           "standing-calf-raise",
           "marching-brace-hold",
@@ -13837,16 +13837,16 @@
           "split-squat",
           "pike-pushup",
           "side-plank",
-          "standing-calf-raise",
           "marching-brace-hold",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "cossack-squat",
-          "pushup",
           "scap-pullup",
+          "pushup",
           "single-leg-hip-thrust",
           "bodyweight-triceps-extension",
           "marching-brace-hold",
@@ -13857,8 +13857,8 @@
           "wall-angel-hold",
           "neutral-grip-pullup",
           "heels-elevated-squat",
-          "towel-biceps-curl-hold",
           "marching-brace-hold",
+          "towel-biceps-curl-hold",
           "thread-the-needle"
         ]
       ],
@@ -13895,7 +13895,7 @@
             }
           },
           {
-            "exerciseId": "wall-pushup",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -13907,7 +13907,7 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "wall-pushup",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -14030,11 +14030,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
-              "sets": 1,
+              "sets": 2,
               "reps": "8-12",
-              "restSeconds": 75,
+              "restSeconds": 80,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -14042,11 +14042,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
-              "sets": 2,
+              "sets": 1,
               "reps": "8-12",
-              "restSeconds": 80,
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -14093,7 +14093,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "scap-pullup",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -14105,7 +14105,7 @@
             }
           },
           {
-            "exerciseId": "scap-pullup",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -14204,11 +14204,11 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
-              "sets": 1,
+              "sets": 2,
               "reps": "8-12",
-              "restSeconds": 75,
+              "restSeconds": 80,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -14216,11 +14216,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
-              "sets": 2,
+              "sets": 1,
               "reps": "8-12",
-              "restSeconds": 80,
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -14249,8 +14249,8 @@
         "base": "bw-fuzz-56a68e89",
         "recovery": []
       },
-      "semanticSignature": "a159e849",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,wall-pushup,plank,single-leg-glute-bridge-hold,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,bodyweight-good-morning,split-squat,pike-pushup,side-plank,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,cossack-squat,pushup,scap-pullup,single-leg-hip-thrust,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,neutral-grip-pullup,heels-elevated-squat,towel-biceps-curl-hold,marching-brace-hold,thread-the-needle"
+      "semanticSignature": "642a6ecf",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,plank,wall-pushup,single-leg-glute-bridge-hold,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,bodyweight-good-morning,split-squat,pike-pushup,side-plank,marching-brace-hold,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,cossack-squat,scap-pullup,pushup,single-leg-hip-thrust,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,neutral-grip-pullup,heels-elevated-squat,marching-brace-hold,towel-biceps-curl-hold,thread-the-needle"
     },
     {
       "mode": "bodyweight",
@@ -14286,8 +14286,8 @@
           "cat-cow",
           "wall-angel-hold",
           "bodyweight-squat",
-          "pushup",
           "plank",
+          "pushup",
           "standing-calf-raise",
           "towel-biceps-curl-hold",
           "thread-the-needle"
@@ -14298,8 +14298,8 @@
           "bodyweight-good-morning",
           "split-squat",
           "pike-pushup",
-          "towel-biceps-curl-hold",
           "marching-brace-hold",
+          "towel-biceps-curl-hold",
           "thread-the-needle"
         ],
         [
@@ -14308,8 +14308,8 @@
           "cossack-squat",
           "close-grip-pushup",
           "prone-elbow-row",
-          "bodyweight-triceps-extension",
           "marching-brace-hold",
+          "bodyweight-triceps-extension",
           "thread-the-needle"
         ],
         [
@@ -14362,7 +14362,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -14374,7 +14374,7 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -14473,11 +14473,11 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -14485,11 +14485,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 6,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -14560,7 +14560,7 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -14572,7 +14572,7 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -14731,8 +14731,8 @@
         "base": "bw-fuzz-b2de35b0",
         "recovery": []
       },
-      "semanticSignature": "48cd0406",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,pushup,plank,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,dead-bug,bodyweight-good-morning,split-squat,pike-pushup,towel-biceps-curl-hold,marching-brace-hold,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,cossack-squat,close-grip-pushup,prone-elbow-row,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,back-widow,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,dead-bug,heels-elevated-squat,single-leg-glute-bridge-hold,standing-calf-raise,thread-the-needle"
+      "semanticSignature": "60ca385a",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,plank,pushup,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,dead-bug,bodyweight-good-morning,split-squat,pike-pushup,marching-brace-hold,towel-biceps-curl-hold,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,cossack-squat,close-grip-pushup,prone-elbow-row,marching-brace-hold,bodyweight-triceps-extension,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,back-widow,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,dead-bug,heels-elevated-squat,single-leg-glute-bridge-hold,standing-calf-raise,thread-the-needle"
     },
     {
       "mode": "bodyweight",
@@ -14771,8 +14771,8 @@
           "plank",
           "single-leg-glute-bridge-hold",
           "split-squat",
-          "standing-calf-raise",
           "towel-biceps-curl-hold",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -14782,20 +14782,20 @@
           "cossack-squat",
           "pike-pushup",
           "side-plank",
-          "bodyweight-triceps-extension",
           "side-plank-star",
+          "bodyweight-triceps-extension",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "shrimp-squat",
-          "close-grip-pushup",
-          "prone-elbow-row",
-          "single-leg-glute-bridge-hold",
           "hollow-body-hold",
-          "side-plank-star",
+          "close-grip-pushup",
+          "single-leg-glute-bridge-hold",
+          "prone-elbow-row",
           "reverse-snow-angel",
+          "side-plank-star",
           "thread-the-needle"
         ]
       ],
@@ -14880,7 +14880,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -14892,7 +14892,7 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -14979,11 +14979,11 @@
             }
           },
           {
-            "exerciseId": "bodyweight-triceps-extension",
+            "exerciseId": "side-plank-star",
             "prescription": {
-              "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "sets": 3,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -14991,11 +14991,11 @@
             }
           },
           {
-            "exerciseId": "side-plank-star",
+            "exerciseId": "bodyweight-triceps-extension",
             "prescription": {
-              "sets": 3,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "sets": 2,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -15042,7 +15042,7 @@
             }
           },
           {
-            "exerciseId": "close-grip-pushup",
+            "exerciseId": "hollow-body-hold",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -15054,7 +15054,7 @@
             }
           },
           {
-            "exerciseId": "prone-elbow-row",
+            "exerciseId": "close-grip-pushup",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -15078,7 +15078,7 @@
             }
           },
           {
-            "exerciseId": "hollow-body-hold",
+            "exerciseId": "prone-elbow-row",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -15090,7 +15090,7 @@
             }
           },
           {
-            "exerciseId": "side-plank-star",
+            "exerciseId": "reverse-snow-angel",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -15102,7 +15102,7 @@
             }
           },
           {
-            "exerciseId": "reverse-snow-angel",
+            "exerciseId": "side-plank-star",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -15135,8 +15135,8 @@
         "base": "bw-fuzz-f1639bb",
         "recovery": []
       },
-      "semanticSignature": "2219a71b",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,pushup,plank,single-leg-glute-bridge-hold,split-squat,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,single-leg-hip-thrust,cossack-squat,pike-pushup,side-plank,bodyweight-triceps-extension,side-plank-star,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,shrimp-squat,close-grip-pushup,prone-elbow-row,single-leg-glute-bridge-hold,hollow-body-hold,side-plank-star,reverse-snow-angel,thread-the-needle"
+      "semanticSignature": "40e5319d",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,pushup,plank,single-leg-glute-bridge-hold,split-squat,towel-biceps-curl-hold,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,single-leg-hip-thrust,cossack-squat,pike-pushup,side-plank,side-plank-star,bodyweight-triceps-extension,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,shrimp-squat,hollow-body-hold,close-grip-pushup,single-leg-glute-bridge-hold,prone-elbow-row,reverse-snow-angel,side-plank-star,thread-the-needle"
     },
     {
       "mode": "bodyweight",
@@ -15175,8 +15175,8 @@
           "wall-pushup",
           "plank",
           "single-leg-glute-bridge-hold",
-          "standing-calf-raise",
           "marching-brace-hold",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -15186,16 +15186,16 @@
           "split-squat",
           "pike-pushup",
           "side-plank",
-          "standing-calf-raise",
           "marching-brace-hold",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "cossack-squat",
-          "pushup",
           "scap-pullup",
+          "pushup",
           "single-leg-hip-thrust",
           "bodyweight-triceps-extension",
           "marching-brace-hold",
@@ -15206,8 +15206,8 @@
           "wall-angel-hold",
           "neutral-grip-pullup",
           "heels-elevated-squat",
-          "towel-biceps-curl-hold",
           "marching-brace-hold",
+          "towel-biceps-curl-hold",
           "thread-the-needle"
         ]
       ],
@@ -15280,11 +15280,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -15292,11 +15292,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 70,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -15379,11 +15379,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -15391,11 +15391,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 70,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -15442,7 +15442,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "scap-pullup",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -15454,7 +15454,7 @@
             }
           },
           {
-            "exerciseId": "scap-pullup",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -15553,11 +15553,11 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "marching-brace-hold",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 70,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -15565,11 +15565,11 @@
             }
           },
           {
-            "exerciseId": "marching-brace-hold",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 70,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -15598,8 +15598,8 @@
         "base": "bw-fuzz-6b4d8ea1",
         "recovery": []
       },
-      "semanticSignature": "46db64a2",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,wall-pushup,plank,single-leg-glute-bridge-hold,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,bodyweight-good-morning,split-squat,pike-pushup,side-plank,standing-calf-raise,marching-brace-hold,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,cossack-squat,pushup,scap-pullup,single-leg-hip-thrust,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,neutral-grip-pullup,heels-elevated-squat,towel-biceps-curl-hold,marching-brace-hold,thread-the-needle"
+      "semanticSignature": "19f02886",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,wall-pushup,plank,single-leg-glute-bridge-hold,marching-brace-hold,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,bodyweight-good-morning,split-squat,pike-pushup,side-plank,marching-brace-hold,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,cossack-squat,scap-pullup,pushup,single-leg-hip-thrust,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,neutral-grip-pullup,heels-elevated-squat,marching-brace-hold,towel-biceps-curl-hold,thread-the-needle"
     },
     {
       "mode": "bodyweight",
@@ -15637,8 +15637,8 @@
           "bodyweight-squat",
           "pushup",
           "plank",
-          "standing-calf-raise",
           "towel-biceps-curl-hold",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -15647,16 +15647,16 @@
           "bodyweight-good-morning",
           "split-squat",
           "pike-pushup",
-          "towel-biceps-curl-hold",
           "standing-calf-raise",
+          "towel-biceps-curl-hold",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "cossack-squat",
-          "close-grip-pushup",
           "prone-elbow-row",
+          "close-grip-pushup",
           "bodyweight-triceps-extension",
           "marching-brace-hold",
           "thread-the-needle"
@@ -15735,7 +15735,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -15747,7 +15747,7 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -15822,7 +15822,7 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -15834,7 +15834,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -15885,7 +15885,7 @@
             }
           },
           {
-            "exerciseId": "close-grip-pushup",
+            "exerciseId": "prone-elbow-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -15897,7 +15897,7 @@
             }
           },
           {
-            "exerciseId": "prone-elbow-row",
+            "exerciseId": "close-grip-pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -16080,8 +16080,8 @@
         "base": "bw-fuzz-c78552ae",
         "recovery": []
       },
-      "semanticSignature": "c8b15191",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,pushup,plank,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,hip-hinge-drill,bodyweight-good-morning,split-squat,pike-pushup,towel-biceps-curl-hold,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,cossack-squat,close-grip-pushup,prone-elbow-row,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,back-widow,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-glute-bridge-hold,side-plank,thread-the-needle"
+      "semanticSignature": "10473da1",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,pushup,plank,towel-biceps-curl-hold,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,hip-hinge-drill,bodyweight-good-morning,split-squat,pike-pushup,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,cossack-squat,prone-elbow-row,close-grip-pushup,bodyweight-triceps-extension,marching-brace-hold,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,back-widow,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-glute-bridge-hold,side-plank,thread-the-needle"
     },
     {
       "mode": "bodyweight",
@@ -16116,8 +16116,8 @@
           "cat-cow",
           "wall-angel-hold",
           "bodyweight-squat",
-          "pushup",
           "plank",
+          "pushup",
           "single-leg-glute-bridge-hold",
           "split-squat",
           "standing-calf-raise",
@@ -16131,18 +16131,18 @@
           "cossack-squat",
           "pike-pushup",
           "side-plank",
-          "reverse-snow-angel",
           "hollow-body-hold",
+          "reverse-snow-angel",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "shrimp-squat",
-          "close-grip-pushup",
-          "prone-elbow-row",
-          "single-leg-hip-thrust",
           "hollow-body-hold",
+          "close-grip-pushup",
+          "single-leg-hip-thrust",
+          "prone-elbow-row",
           "side-plank",
           "reverse-snow-angel",
           "thread-the-needle"
@@ -16181,7 +16181,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -16193,7 +16193,7 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -16328,7 +16328,7 @@
             }
           },
           {
-            "exerciseId": "reverse-snow-angel",
+            "exerciseId": "hollow-body-hold",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -16340,7 +16340,7 @@
             }
           },
           {
-            "exerciseId": "hollow-body-hold",
+            "exerciseId": "reverse-snow-angel",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -16391,7 +16391,7 @@
             }
           },
           {
-            "exerciseId": "close-grip-pushup",
+            "exerciseId": "hollow-body-hold",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -16403,7 +16403,7 @@
             }
           },
           {
-            "exerciseId": "prone-elbow-row",
+            "exerciseId": "close-grip-pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -16427,7 +16427,7 @@
             }
           },
           {
-            "exerciseId": "hollow-body-hold",
+            "exerciseId": "prone-elbow-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -16484,8 +16484,8 @@
         "base": "bw-fuzz-23bd67d7",
         "recovery": []
       },
-      "semanticSignature": "a1320494",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,pushup,plank,single-leg-glute-bridge-hold,split-squat,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,bodyweight-good-morning,cossack-squat,pike-pushup,side-plank,reverse-snow-angel,hollow-body-hold,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,shrimp-squat,close-grip-pushup,prone-elbow-row,single-leg-hip-thrust,hollow-body-hold,side-plank,reverse-snow-angel,thread-the-needle"
+      "semanticSignature": "b45b9f18",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,wall-angel-hold,bodyweight-squat,plank,pushup,single-leg-glute-bridge-hold,split-squat,standing-calf-raise,towel-biceps-curl-hold,thread-the-needle|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,wall-angel-hold,bodyweight-good-morning,cossack-squat,pike-pushup,side-plank,hollow-body-hold,reverse-snow-angel,thread-the-needle|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,wall-angel-hold,shrimp-squat,hollow-body-hold,close-grip-pushup,single-leg-hip-thrust,prone-elbow-row,side-plank,reverse-snow-angel,thread-the-needle"
     },
     {
       "mode": "bodyweight",
@@ -16518,8 +16518,8 @@
           "cat-cow",
           "dead-bug",
           "bodyweight-squat",
-          "wall-pushup",
           "plank",
+          "wall-pushup",
           "single-leg-glute-bridge-hold",
           "standing-calf-raise",
           "hollow-body-hold",
@@ -16532,16 +16532,16 @@
           "split-squat",
           "pike-pushup",
           "side-plank",
-          "standing-calf-raise",
           "plank",
+          "standing-calf-raise",
           "breathing-90-90"
         ],
         [
           "cat-cow",
           "dead-bug",
           "cossack-squat",
-          "pushup",
           "scap-pullup",
+          "pushup",
           "single-leg-hip-thrust",
           "bodyweight-triceps-extension",
           "plank",
@@ -16552,8 +16552,8 @@
           "dead-bug",
           "neutral-grip-pullup",
           "heels-elevated-squat",
-          "towel-biceps-curl-hold",
           "plank",
+          "towel-biceps-curl-hold",
           "breathing-90-90"
         ]
       ],
@@ -16590,7 +16590,7 @@
             }
           },
           {
-            "exerciseId": "wall-pushup",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -16602,7 +16602,7 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "wall-pushup",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -16725,11 +16725,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -16737,11 +16737,11 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -16788,7 +16788,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "scap-pullup",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -16800,7 +16800,7 @@
             }
           },
           {
-            "exerciseId": "scap-pullup",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -16899,11 +16899,11 @@
             }
           },
           {
-            "exerciseId": "towel-biceps-curl-hold",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -16911,11 +16911,11 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -16944,8 +16944,8 @@
         "base": "bw-fuzz-7ff48c5d",
         "recovery": []
       },
-      "semanticSignature": "fabbd631",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,dead-bug,bodyweight-squat,wall-pushup,plank,single-leg-glute-bridge-hold,standing-calf-raise,hollow-body-hold,breathing-90-90|Full Body B — Hinge, Single-Leg and Shoulder:cat-cow,dead-bug,bodyweight-good-morning,split-squat,pike-pushup,side-plank,standing-calf-raise,plank,breathing-90-90|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,dead-bug,cossack-squat,pushup,scap-pullup,single-leg-hip-thrust,bodyweight-triceps-extension,plank,breathing-90-90|Practice & Restore:cat-cow,dead-bug,neutral-grip-pullup,heels-elevated-squat,towel-biceps-curl-hold,plank,breathing-90-90"
+      "semanticSignature": "8ae52359",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,dead-bug,bodyweight-squat,plank,wall-pushup,single-leg-glute-bridge-hold,standing-calf-raise,hollow-body-hold,breathing-90-90|Full Body B — Hinge, Single-Leg and Shoulder:cat-cow,dead-bug,bodyweight-good-morning,split-squat,pike-pushup,side-plank,plank,standing-calf-raise,breathing-90-90|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,dead-bug,cossack-squat,scap-pullup,pushup,single-leg-hip-thrust,bodyweight-triceps-extension,plank,breathing-90-90|Practice & Restore:cat-cow,dead-bug,neutral-grip-pullup,heels-elevated-squat,plank,towel-biceps-curl-hold,breathing-90-90"
     },
     {
       "mode": "bodyweight",
@@ -16979,8 +16979,8 @@
           "cat-cow",
           "dead-bug",
           "bodyweight-squat",
-          "pushup",
           "plank",
+          "pushup",
           "standing-calf-raise",
           "towel-biceps-curl-hold",
           "breathing-90-90"
@@ -16991,16 +16991,16 @@
           "single-leg-glute-bridge-hold",
           "split-squat",
           "pike-pushup",
-          "single-leg-hip-thrust",
           "towel-biceps-curl-hold",
+          "single-leg-hip-thrust",
           "breathing-90-90"
         ],
         [
           "cat-cow",
           "dead-bug",
           "cossack-squat",
-          "close-grip-pushup",
           "prone-elbow-row",
+          "close-grip-pushup",
           "bodyweight-triceps-extension",
           "side-plank",
           "breathing-90-90"
@@ -17055,7 +17055,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "plank",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -17067,7 +17067,7 @@
             }
           },
           {
-            "exerciseId": "plank",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -17166,18 +17166,6 @@
             }
           },
           {
-            "exerciseId": "single-leg-hip-thrust",
-            "prescription": {
-              "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 70,
-              "targetRPE": 4,
-              "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
-              "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
-              "stopRule": "Stop if lower-back pain increases, travels, or changes your brace."
-            }
-          },
-          {
             "exerciseId": "towel-biceps-curl-hold",
             "prescription": {
               "sets": 2,
@@ -17187,6 +17175,18 @@
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
               "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
+            }
+          },
+          {
+            "exerciseId": "single-leg-hip-thrust",
+            "prescription": {
+              "sets": 2,
+              "reps": "10-15",
+              "restSeconds": 70,
+              "targetRPE": 4,
+              "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
+              "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
+              "stopRule": "Stop if lower-back pain increases, travels, or changes your brace."
             }
           },
           {
@@ -17229,7 +17229,7 @@
             }
           },
           {
-            "exerciseId": "close-grip-pushup",
+            "exerciseId": "prone-elbow-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -17241,7 +17241,7 @@
             }
           },
           {
-            "exerciseId": "prone-elbow-row",
+            "exerciseId": "close-grip-pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -17424,8 +17424,8 @@
         "base": "bw-fuzz-dc2c7ec4",
         "recovery": []
       },
-      "semanticSignature": "4be55423",
-      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,dead-bug,bodyweight-squat,pushup,plank,standing-calf-raise,towel-biceps-curl-hold,breathing-90-90|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,hip-hinge-drill,single-leg-glute-bridge-hold,split-squat,pike-pushup,single-leg-hip-thrust,towel-biceps-curl-hold,breathing-90-90|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,dead-bug,cossack-squat,close-grip-pushup,prone-elbow-row,bodyweight-triceps-extension,side-plank,breathing-90-90|Upper Pattern Practice:wall-slides,dead-bug,pushup,back-widow,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-hip-thrust,standing-calf-raise,breathing-90-90"
+      "semanticSignature": "daf4c21d",
+      "finalProgramSignature": "Full Body A — Squat, Push and Trunk:cat-cow,dead-bug,bodyweight-squat,plank,pushup,standing-calf-raise,towel-biceps-curl-hold,breathing-90-90|Full Body B — Hinge, Single-Leg and Shoulder:wall-slides,hip-hinge-drill,single-leg-glute-bridge-hold,split-squat,pike-pushup,towel-biceps-curl-hold,single-leg-hip-thrust,breathing-90-90|Full Body C — Single-Leg, Push Variation and Back Intent:cat-cow,dead-bug,cossack-squat,prone-elbow-row,close-grip-pushup,bodyweight-triceps-extension,side-plank,breathing-90-90|Upper Pattern Practice:wall-slides,dead-bug,pushup,back-widow,bodyweight-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,heels-elevated-squat,single-leg-hip-thrust,standing-calf-raise,breathing-90-90"
     },
     {
       "mode": "mixedHome",
@@ -17468,8 +17468,8 @@
           "ankle-mobility",
           "glute-bridges",
           "goblet-squat",
-          "dumbbell-floor-press",
           "single-arm-dumbbell-row",
+          "dumbbell-floor-press",
           "db-biceps-curl",
           "standing-calf-raise",
           "breathing-90-90"
@@ -17480,8 +17480,8 @@
           "dumbbell-sumo-rdl",
           "dumbbell-reverse-lunge",
           "dumbbell-shoulder-press",
-          "db-triceps-extension",
           "farmers-carry",
+          "db-triceps-extension",
           "breathing-90-90"
         ],
         [
@@ -17528,7 +17528,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -17540,7 +17540,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -17639,7 +17639,7 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -17651,7 +17651,7 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -17771,8 +17771,8 @@
         "base": "mh-fuzz-9e37e786",
         "recovery": []
       },
-      "semanticSignature": "81258ad1",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:ankle-mobility,glute-bridges,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,db-biceps-curl,standing-calf-raise,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,band-pull-aparts,dumbbell-sumo-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,db-triceps-extension,farmers-carry,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:ankle-mobility,glute-bridges,dumbbell-reverse-lunge,dumbbell-floor-press,band-lat-pulldown,band-woodchop,band-rdl,breathing-90-90"
+      "semanticSignature": "50d7db73",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:ankle-mobility,glute-bridges,goblet-squat,single-arm-dumbbell-row,dumbbell-floor-press,db-biceps-curl,standing-calf-raise,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:wall-slides,band-pull-aparts,dumbbell-sumo-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,farmers-carry,db-triceps-extension,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:ankle-mobility,glute-bridges,dumbbell-reverse-lunge,dumbbell-floor-press,band-lat-pulldown,band-woodchop,band-rdl,breathing-90-90"
     },
     {
       "mode": "mixedHome",
@@ -17813,8 +17813,8 @@
           "single-arm-dumbbell-row",
           "single-leg-hip-thrust",
           "dumbbell-reverse-lunge",
-          "standing-calf-raise",
           "db-biceps-curl",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -17825,20 +17825,20 @@
           "dumbbell-shoulder-press",
           "single-arm-dumbbell-row",
           "dumbbell-sumo-rdl",
-          "db-triceps-extension",
           "farmers-carry",
+          "db-triceps-extension",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "wall-angel-hold",
           "dumbbell-reverse-lunge",
-          "dumbbell-floor-press",
           "split-stance-row",
-          "single-leg-hip-thrust",
           "single-arm-dumbbell-row",
-          "side-plank-star",
+          "single-leg-hip-thrust",
+          "dumbbell-floor-press",
           "cossack-squat",
+          "side-plank-star",
           "thread-the-needle"
         ]
       ],
@@ -17923,7 +17923,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -17935,7 +17935,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -18034,7 +18034,7 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -18046,7 +18046,7 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -18097,31 +18097,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
-            "prescription": {
-              "sets": 4,
-              "reps": "4-8",
-              "restSeconds": 140,
-              "targetRPE": 7,
-              "progressionRule": "Add load or a small difficulty step only after all sets stay crisp at the target effort.",
-              "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
-              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
-            }
-          },
-          {
             "exerciseId": "split-stance-row",
-            "prescription": {
-              "sets": 4,
-              "reps": "4-8",
-              "restSeconds": 140,
-              "targetRPE": 7,
-              "progressionRule": "Add load or a small difficulty step only after all sets stay crisp at the target effort.",
-              "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
-              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
-            }
-          },
-          {
-            "exerciseId": "single-leg-hip-thrust",
             "prescription": {
               "sets": 4,
               "reps": "4-8",
@@ -18145,7 +18121,31 @@
             }
           },
           {
-            "exerciseId": "side-plank-star",
+            "exerciseId": "single-leg-hip-thrust",
+            "prescription": {
+              "sets": 4,
+              "reps": "4-8",
+              "restSeconds": 140,
+              "targetRPE": 7,
+              "progressionRule": "Add load or a small difficulty step only after all sets stay crisp at the target effort.",
+              "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
+              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
+            }
+          },
+          {
+            "exerciseId": "dumbbell-floor-press",
+            "prescription": {
+              "sets": 4,
+              "reps": "4-8",
+              "restSeconds": 140,
+              "targetRPE": 7,
+              "progressionRule": "Add load or a small difficulty step only after all sets stay crisp at the target effort.",
+              "regressionRule": "Reduce load, range, or variation difficulty if tempo or control breaks.",
+              "stopRule": "Stop if symptoms increase or the movement stops feeling controlled."
+            }
+          },
+          {
+            "exerciseId": "cossack-squat",
             "prescription": {
               "sets": 3,
               "reps": "6-10",
@@ -18157,7 +18157,7 @@
             }
           },
           {
-            "exerciseId": "cossack-squat",
+            "exerciseId": "side-plank-star",
             "prescription": {
               "sets": 3,
               "reps": "6-10",
@@ -18190,8 +18190,8 @@
         "base": "mh-fuzz-fa6fd29f",
         "recovery": []
       },
-      "semanticSignature": "3bb061c9",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,dumbbell-reverse-lunge,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,single-arm-dumbbell-row,dumbbell-sumo-rdl,db-triceps-extension,farmers-carry,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-floor-press,split-stance-row,single-leg-hip-thrust,single-arm-dumbbell-row,side-plank-star,cossack-squat,thread-the-needle"
+      "semanticSignature": "e5d885f1",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,dumbbell-reverse-lunge,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,single-arm-dumbbell-row,dumbbell-sumo-rdl,farmers-carry,db-triceps-extension,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,split-stance-row,single-arm-dumbbell-row,single-leg-hip-thrust,dumbbell-floor-press,cossack-squat,side-plank-star,thread-the-needle"
     },
     {
       "mode": "mixedHome",
@@ -18230,8 +18230,8 @@
           "dumbbell-floor-press",
           "single-arm-dumbbell-row",
           "db-rdl",
-          "standing-calf-raise",
           "suitcase-carry",
+          "standing-calf-raise",
           "breathing-90-90"
         ],
         [
@@ -18241,8 +18241,8 @@
           "dumbbell-reverse-lunge",
           "dumbbell-shoulder-press",
           "single-arm-dumbbell-row",
-          "standing-calf-raise",
           "suitcase-carry",
+          "standing-calf-raise",
           "breathing-90-90"
         ],
         [
@@ -18252,8 +18252,8 @@
           "dumbbell-chest-fly",
           "single-arm-dumbbell-row",
           "db-rdl",
-          "dumbbell-bench-press",
           "suitcase-carry",
+          "dumbbell-bench-press",
           "breathing-90-90"
         ],
         [
@@ -18261,8 +18261,8 @@
           "dead-bug",
           "single-arm-dumbbell-row",
           "goblet-squat",
-          "db-biceps-curl",
           "db-triceps-extension",
+          "db-biceps-curl",
           "breathing-90-90"
         ]
       ],
@@ -18335,11 +18335,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "suitcase-carry",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 80,
               "targetRPE": 7,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -18347,11 +18347,11 @@
             }
           },
           {
-            "exerciseId": "suitcase-carry",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 80,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 7,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -18434,11 +18434,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "suitcase-carry",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 80,
               "targetRPE": 7,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -18446,11 +18446,11 @@
             }
           },
           {
-            "exerciseId": "suitcase-carry",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 80,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 7,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -18533,7 +18533,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-bench-press",
+            "exerciseId": "suitcase-carry",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -18545,7 +18545,7 @@
             }
           },
           {
-            "exerciseId": "suitcase-carry",
+            "exerciseId": "dumbbell-bench-press",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -18608,7 +18608,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -18620,7 +18620,7 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -18653,8 +18653,8 @@
         "base": "mh-fuzz-56a68e89",
         "recovery": []
       },
-      "semanticSignature": "7baeff41",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,db-rdl,standing-calf-raise,suitcase-carry,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,dead-bug,db-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,single-arm-dumbbell-row,standing-calf-raise,suitcase-carry,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,dumbbell-bulgarian-split-squat,dumbbell-chest-fly,single-arm-dumbbell-row,db-rdl,dumbbell-bench-press,suitcase-carry,breathing-90-90|Practice & Restore:cat-cow,dead-bug,single-arm-dumbbell-row,goblet-squat,db-biceps-curl,db-triceps-extension,breathing-90-90"
+      "semanticSignature": "d16d12df",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,db-rdl,suitcase-carry,standing-calf-raise,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,dead-bug,db-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,single-arm-dumbbell-row,suitcase-carry,standing-calf-raise,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,dumbbell-bulgarian-split-squat,dumbbell-chest-fly,single-arm-dumbbell-row,db-rdl,suitcase-carry,dumbbell-bench-press,breathing-90-90|Practice & Restore:cat-cow,dead-bug,single-arm-dumbbell-row,goblet-squat,db-triceps-extension,db-biceps-curl,breathing-90-90"
     },
     {
       "mode": "mixedHome",
@@ -18693,8 +18693,8 @@
           "cat-cow",
           "dead-bug",
           "goblet-squat",
-          "dumbbell-floor-press",
           "single-arm-dumbbell-row",
+          "dumbbell-floor-press",
           "standing-calf-raise",
           "db-biceps-curl",
           "thread-the-needle"
@@ -18705,16 +18705,16 @@
           "db-rdl",
           "dumbbell-reverse-lunge",
           "dumbbell-shoulder-press",
-          "db-biceps-curl",
           "standing-calf-raise",
+          "db-biceps-curl",
           "thread-the-needle"
         ],
         [
           "cat-cow",
           "dead-bug",
           "dumbbell-reverse-lunge",
-          "dumbbell-floor-press",
           "split-stance-row",
+          "dumbbell-floor-press",
           "db-triceps-extension",
           "side-plank-star",
           "thread-the-needle"
@@ -18769,7 +18769,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -18781,7 +18781,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -18880,7 +18880,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -18892,7 +18892,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -18943,7 +18943,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "split-stance-row",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -18955,7 +18955,7 @@
             }
           },
           {
-            "exerciseId": "split-stance-row",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "4-8",
@@ -19138,8 +19138,8 @@
         "base": "mh-fuzz-b2de35b0",
         "recovery": []
       },
-      "semanticSignature": "1cb6a459",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,hip-hinge-drill,db-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,dumbbell-reverse-lunge,dumbbell-floor-press,split-stance-row,db-triceps-extension,side-plank-star,thread-the-needle|Upper Pattern Practice:wall-slides,dead-bug,dumbbell-floor-press,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,goblet-squat,db-rdl,farmers-carry,thread-the-needle"
+      "semanticSignature": "cb2165a7",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,single-arm-dumbbell-row,dumbbell-floor-press,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,hip-hinge-drill,db-rdl,dumbbell-reverse-lunge,dumbbell-shoulder-press,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,dumbbell-reverse-lunge,split-stance-row,dumbbell-floor-press,db-triceps-extension,side-plank-star,thread-the-needle|Upper Pattern Practice:wall-slides,dead-bug,dumbbell-floor-press,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,goblet-squat,db-rdl,farmers-carry,thread-the-needle"
     },
     {
       "mode": "mixedHome",
@@ -19174,8 +19174,8 @@
           "cat-cow",
           "wall-angel-hold",
           "goblet-squat",
-          "pushup",
           "single-arm-dumbbell-row",
+          "pushup",
           "db-rdl",
           "dumbbell-reverse-lunge",
           "db-biceps-curl",
@@ -19190,8 +19190,8 @@
           "pike-pushup",
           "single-arm-dumbbell-row",
           "db-rdl",
-          "db-triceps-extension",
           "farmers-carry",
+          "db-triceps-extension",
           "thread-the-needle"
         ],
         [
@@ -19202,8 +19202,8 @@
           "single-arm-dumbbell-row",
           "db-rdl",
           "single-arm-dumbbell-row",
-          "farmers-carry",
           "cossack-squat",
+          "farmers-carry",
           "thread-the-needle"
         ]
       ],
@@ -19240,7 +19240,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -19252,7 +19252,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 4,
               "reps": "8-12",
@@ -19399,11 +19399,11 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "farmers-carry",
             "prescription": {
-              "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "sets": 3,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -19411,11 +19411,11 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
-              "sets": 3,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "sets": 2,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -19510,7 +19510,7 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "cossack-squat",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -19522,7 +19522,7 @@
             }
           },
           {
-            "exerciseId": "cossack-squat",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 3,
               "reps": "8-12",
@@ -19555,8 +19555,8 @@
         "base": "mh-fuzz-f1639bb",
         "recovery": []
       },
-      "semanticSignature": "25242ca9",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,db-rdl,dumbbell-reverse-lunge,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,db-rdl,dumbbell-reverse-lunge,pike-pushup,single-arm-dumbbell-row,db-rdl,db-triceps-extension,farmers-carry,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-floor-press,single-arm-dumbbell-row,db-rdl,single-arm-dumbbell-row,farmers-carry,cossack-squat,thread-the-needle"
+      "semanticSignature": "678394f9",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,single-arm-dumbbell-row,pushup,db-rdl,dumbbell-reverse-lunge,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,db-rdl,dumbbell-reverse-lunge,pike-pushup,single-arm-dumbbell-row,db-rdl,farmers-carry,db-triceps-extension,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-floor-press,single-arm-dumbbell-row,db-rdl,single-arm-dumbbell-row,cossack-squat,farmers-carry,thread-the-needle"
     },
     {
       "mode": "mixedHome",
@@ -19594,8 +19594,8 @@
           "cat-cow",
           "wall-angel-hold",
           "goblet-squat",
-          "pushup",
           "single-arm-dumbbell-row",
+          "pushup",
           "db-rdl",
           "standing-calf-raise",
           "pallof-press",
@@ -19666,7 +19666,7 @@
             }
           },
           {
-            "exerciseId": "pushup",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -19678,7 +19678,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "pushup",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -20020,8 +20020,8 @@
         "base": "mh-fuzz-6b4d8ea1",
         "recovery": []
       },
-      "semanticSignature": "2571b081",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,db-rdl,standing-calf-raise,pallof-press,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,db-rdl,dumbbell-reverse-lunge,pike-pushup,single-arm-dumbbell-row,standing-calf-raise,pallof-press,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-floor-press,band-lat-pulldown,db-rdl,db-triceps-extension,pallof-press,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-dumbbell-row,goblet-squat,db-biceps-curl,pallof-press,thread-the-needle"
+      "semanticSignature": "916924f1",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,single-arm-dumbbell-row,pushup,db-rdl,standing-calf-raise,pallof-press,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,db-rdl,dumbbell-reverse-lunge,pike-pushup,single-arm-dumbbell-row,standing-calf-raise,pallof-press,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-floor-press,band-lat-pulldown,db-rdl,db-triceps-extension,pallof-press,thread-the-needle|Practice & Restore:cat-cow,wall-angel-hold,single-arm-dumbbell-row,goblet-squat,db-biceps-curl,pallof-press,thread-the-needle"
     },
     {
       "mode": "mixedHome",
@@ -20062,8 +20062,8 @@
           "goblet-squat",
           "pushup",
           "single-arm-dumbbell-row",
-          "standing-calf-raise",
           "db-biceps-curl",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -20072,8 +20072,8 @@
           "db-rdl",
           "dumbbell-reverse-lunge",
           "pike-pushup",
-          "cossack-squat",
           "db-biceps-curl",
+          "cossack-squat",
           "thread-the-needle"
         ],
         [
@@ -20082,8 +20082,8 @@
           "dumbbell-reverse-lunge",
           "dumbbell-floor-press",
           "band-pull-apart",
-          "db-triceps-extension",
           "farmers-carry",
+          "db-triceps-extension",
           "thread-the-needle"
         ],
         [
@@ -20160,7 +20160,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -20172,7 +20172,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -20247,11 +20247,11 @@
             }
           },
           {
-            "exerciseId": "cossack-squat",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 65,
+              "restSeconds": 45,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -20259,11 +20259,11 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "cossack-squat",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
-              "restSeconds": 45,
+              "restSeconds": 65,
               "targetRPE": 5,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -20334,7 +20334,7 @@
             }
           },
           {
-            "exerciseId": "db-triceps-extension",
+            "exerciseId": "farmers-carry",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -20346,7 +20346,7 @@
             }
           },
           {
-            "exerciseId": "farmers-carry",
+            "exerciseId": "db-triceps-extension",
             "prescription": {
               "sets": 2,
               "reps": "10-15",
@@ -20505,8 +20505,8 @@
         "base": "mh-fuzz-c78552ae",
         "recovery": []
       },
-      "semanticSignature": "eca2d08c",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,hip-hinge-drill,db-rdl,dumbbell-reverse-lunge,pike-pushup,cossack-squat,db-biceps-curl,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-floor-press,band-pull-apart,db-triceps-extension,farmers-carry,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,goblet-squat,db-rdl,standing-calf-raise,thread-the-needle"
+      "semanticSignature": "37546f62",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,wall-angel-hold,goblet-squat,pushup,single-arm-dumbbell-row,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,hip-hinge-drill,db-rdl,dumbbell-reverse-lunge,pike-pushup,db-biceps-curl,cossack-squat,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,wall-angel-hold,dumbbell-reverse-lunge,dumbbell-floor-press,band-pull-apart,farmers-carry,db-triceps-extension,thread-the-needle|Upper Pattern Practice:wall-slides,wall-angel-hold,pushup,single-arm-dumbbell-row,db-triceps-extension,thread-the-needle|Lower & Core Practice:cat-cow,hip-hinge-drill,goblet-squat,db-rdl,standing-calf-raise,thread-the-needle"
     },
     {
       "mode": "mixedHome",
@@ -20548,8 +20548,8 @@
           "single-arm-dumbbell-row",
           "single-leg-hip-thrust",
           "dumbbell-reverse-lunge",
-          "standing-calf-raise",
           "db-biceps-curl",
+          "standing-calf-raise",
           "thread-the-needle"
         ],
         [
@@ -20657,7 +20657,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 1,
               "reps": "8-12",
@@ -20669,7 +20669,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 1,
               "reps": "8-12",
@@ -20912,8 +20912,8 @@
         "base": "mh-fuzz-23bd67d7",
         "recovery": []
       },
-      "semanticSignature": "e2a0e9d5",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,glute-bridges,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,dumbbell-reverse-lunge,standing-calf-raise,db-biceps-curl,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,single-arm-dumbbell-row,db-triceps-extension,pallof-press,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,glute-bridges,dumbbell-reverse-lunge,dumbbell-floor-press,band-lat-pulldown,single-leg-hip-thrust,single-arm-dumbbell-row,pallof-press,split-squat,thread-the-needle"
+      "semanticSignature": "69023101",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,glute-bridges,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,dumbbell-reverse-lunge,db-biceps-curl,standing-calf-raise,thread-the-needle|Full Body B — Hinge, Overhead and Unilateral:wall-slides,wall-angel-hold,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,single-arm-dumbbell-row,db-triceps-extension,pallof-press,thread-the-needle|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,glute-bridges,dumbbell-reverse-lunge,dumbbell-floor-press,band-lat-pulldown,single-leg-hip-thrust,single-arm-dumbbell-row,pallof-press,split-squat,thread-the-needle"
     },
     {
       "mode": "mixedHome",
@@ -20953,8 +20953,8 @@
           "dumbbell-floor-press",
           "single-arm-dumbbell-row",
           "single-leg-hip-thrust",
-          "band-external-rotation",
           "side-plank",
+          "band-external-rotation",
           "breathing-90-90"
         ],
         [
@@ -20964,16 +20964,16 @@
           "dumbbell-reverse-lunge",
           "dumbbell-shoulder-press",
           "single-arm-dumbbell-row",
-          "standing-calf-raise",
           "side-plank",
+          "standing-calf-raise",
           "breathing-90-90"
         ],
         [
           "cat-cow",
           "dead-bug",
           "dumbbell-step-up-loaded",
-          "dumbbell-chest-fly",
           "single-arm-dumbbell-row",
+          "dumbbell-chest-fly",
           "single-leg-hip-thrust",
           "db-triceps-extension",
           "standing-calf-raise",
@@ -20984,8 +20984,8 @@
           "dead-bug",
           "single-arm-dumbbell-row",
           "goblet-squat",
-          "db-biceps-curl",
           "side-plank",
+          "db-biceps-curl",
           "breathing-90-90"
         ]
       ],
@@ -21058,11 +21058,11 @@
             }
           },
           {
-            "exerciseId": "band-external-rotation",
+            "exerciseId": "side-plank",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -21070,11 +21070,11 @@
             }
           },
           {
-            "exerciseId": "side-plank",
+            "exerciseId": "band-external-rotation",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -21157,11 +21157,11 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "side-plank",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -21169,11 +21169,11 @@
             }
           },
           {
-            "exerciseId": "side-plank",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -21220,7 +21220,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-chest-fly",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -21232,7 +21232,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "dumbbell-chest-fly",
             "prescription": {
               "sets": 2,
               "reps": "6-10",
@@ -21331,11 +21331,11 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "side-plank",
             "prescription": {
               "sets": 2,
-              "reps": "10-15",
-              "restSeconds": 45,
+              "reps": "8-12",
+              "restSeconds": 75,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -21343,11 +21343,11 @@
             }
           },
           {
-            "exerciseId": "side-plank",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 2,
-              "reps": "8-12",
-              "restSeconds": 75,
+              "reps": "10-15",
+              "restSeconds": 45,
               "targetRPE": 4,
               "progressionRule": "Add reps before load, keeping the movement quiet and controlled.",
               "regressionRule": "Use a smaller range or lighter variation if form gets noisy.",
@@ -21376,8 +21376,8 @@
         "base": "mh-fuzz-7ff48c5d",
         "recovery": []
       },
-      "semanticSignature": "5f2e1642",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,band-external-rotation,side-plank,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,dead-bug,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,single-arm-dumbbell-row,standing-calf-raise,side-plank,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,dumbbell-step-up-loaded,dumbbell-chest-fly,single-arm-dumbbell-row,single-leg-hip-thrust,db-triceps-extension,standing-calf-raise,breathing-90-90|Practice & Restore:cat-cow,dead-bug,single-arm-dumbbell-row,goblet-squat,db-biceps-curl,side-plank,breathing-90-90"
+      "semanticSignature": "0fb1cdd0",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,single-leg-hip-thrust,side-plank,band-external-rotation,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,dead-bug,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,single-arm-dumbbell-row,side-plank,standing-calf-raise,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,dumbbell-step-up-loaded,single-arm-dumbbell-row,dumbbell-chest-fly,single-leg-hip-thrust,db-triceps-extension,standing-calf-raise,breathing-90-90|Practice & Restore:cat-cow,dead-bug,single-arm-dumbbell-row,goblet-squat,side-plank,db-biceps-curl,breathing-90-90"
     },
     {
       "mode": "mixedHome",
@@ -21417,8 +21417,8 @@
           "cat-cow",
           "dead-bug",
           "goblet-squat",
-          "dumbbell-floor-press",
           "single-arm-dumbbell-row",
+          "dumbbell-floor-press",
           "standing-calf-raise",
           "db-biceps-curl",
           "breathing-90-90"
@@ -21429,8 +21429,8 @@
           "single-leg-hip-thrust",
           "dumbbell-reverse-lunge",
           "dumbbell-shoulder-press",
-          "db-biceps-curl",
           "standing-calf-raise",
+          "db-biceps-curl",
           "breathing-90-90"
         ],
         [
@@ -21493,7 +21493,7 @@
             }
           },
           {
-            "exerciseId": "dumbbell-floor-press",
+            "exerciseId": "single-arm-dumbbell-row",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -21505,7 +21505,7 @@
             }
           },
           {
-            "exerciseId": "single-arm-dumbbell-row",
+            "exerciseId": "dumbbell-floor-press",
             "prescription": {
               "sets": 2,
               "reps": "8-12",
@@ -21604,7 +21604,7 @@
             }
           },
           {
-            "exerciseId": "db-biceps-curl",
+            "exerciseId": "standing-calf-raise",
             "prescription": {
               "sets": 1,
               "reps": "8-12",
@@ -21616,7 +21616,7 @@
             }
           },
           {
-            "exerciseId": "standing-calf-raise",
+            "exerciseId": "db-biceps-curl",
             "prescription": {
               "sets": 1,
               "reps": "8-12",
@@ -21862,8 +21862,8 @@
         "base": "mh-fuzz-dc2c7ec4",
         "recovery": []
       },
-      "semanticSignature": "901d474e",
-      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,dumbbell-floor-press,single-arm-dumbbell-row,standing-calf-raise,db-biceps-curl,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,glute-bridges,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,db-biceps-curl,standing-calf-raise,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,dumbbell-reverse-lunge,dumbbell-floor-press,band-lat-pulldown,db-triceps-extension,pallof-press,breathing-90-90|Upper Pattern Practice:cat-cow,dead-bug,dumbbell-floor-press,single-arm-dumbbell-row,face-pull,thread-the-needle|Lower & Core Practice:cat-cow,glute-bridges,goblet-squat,single-leg-hip-thrust,face-pull,breathing-90-90"
+      "semanticSignature": "3bac04c6",
+      "finalProgramSignature": "Full Body A — Squat, Press and Row:cat-cow,dead-bug,goblet-squat,single-arm-dumbbell-row,dumbbell-floor-press,standing-calf-raise,db-biceps-curl,breathing-90-90|Full Body B — Hinge, Overhead and Unilateral:cat-cow,glute-bridges,single-leg-hip-thrust,dumbbell-reverse-lunge,dumbbell-shoulder-press,standing-calf-raise,db-biceps-curl,breathing-90-90|Full Body C — Single-Leg, Press Variation and Lat Intent:cat-cow,dead-bug,dumbbell-reverse-lunge,dumbbell-floor-press,band-lat-pulldown,db-triceps-extension,pallof-press,breathing-90-90|Upper Pattern Practice:cat-cow,dead-bug,dumbbell-floor-press,single-arm-dumbbell-row,face-pull,thread-the-needle|Lower & Core Practice:cat-cow,glute-bridges,goblet-squat,single-leg-hip-thrust,face-pull,breathing-90-90"
     }
   ],
   "fallbackSamples": [],

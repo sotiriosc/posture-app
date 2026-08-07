@@ -23,13 +23,13 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: db-triceps-extension, farmers-carry
+- Accessories: farmers-carry, db-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
-  - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullSupport | lane=pull
+  - `pushup` Push-Up | slot=mainPushSecondary | lane=push
 - Accessories: hollow-body-hold, single-leg-hip-thrust
 
 ### Manual review checklist
@@ -53,10 +53,10 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
 ### Full Body A — Squat, Press and Row
 - Mains:
   - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | lane=squat
-  - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
+  - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: standing-calf-raise, db-biceps-curl
+- Accessories: db-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -64,7 +64,7 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullHorizontal | lane=pull
-- Accessories: db-triceps-extension, farmers-carry
+- Accessories: farmers-carry, db-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
@@ -72,7 +72,7 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `dumbbell-pullover` Dumbbell Pullover | slot=mainPullSupport | lane=pull
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: side-plank, cossack-squat
+- Accessories: cossack-squat, side-plank
 
 ### Manual review checklist
 - Day identity truthful and deliberately dumbbell-shaped?
@@ -108,16 +108,16 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullHorizontal | lane=pull
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainSecondaryLowerLoaded | lane=hinge
-- Accessories: db-triceps-extension, farmers-carry
+- Accessories: farmers-carry, db-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
-  - `pushup` Push-Up | slot=mainPushSecondary | lane=push
-  - `dumbbell-pullover` Dumbbell Pullover | slot=mainPullSupport | lane=pull
-  - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
-- Accessories: hollow-body-hold, single-leg-hip-thrust
+  - `pushup` Push-Up | slot=mainPushSecondary | lane=push
+  - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
+  - `dumbbell-pullover` Dumbbell Pullover | slot=mainPullSupport | lane=pull
+- Accessories: single-leg-hip-thrust, hollow-body-hold
 
 ### Manual review checklist
 - Day identity truthful and deliberately dumbbell-shaped?
@@ -143,7 +143,7 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: standing-calf-raise, farmers-carry
+- Accessories: farmers-carry, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -159,13 +159,13 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `dumbbell-pullover` Dumbbell Pullover | slot=mainPullSupport | lane=pull
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: db-triceps-extension, side-plank-star
+- Accessories: side-plank-star, db-triceps-extension
 
 ### Practice & Restore
 - Mains:
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
   - `heels-elevated-squat` Heels-Elevated Tempo Squat | slot=mainSquatPrimary | lane=squat
-- Accessories: db-biceps-curl, side-plank-star
+- Accessories: side-plank-star, db-biceps-curl
 
 ### Manual review checklist
 - Day identity truthful and deliberately dumbbell-shaped?
@@ -188,11 +188,11 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
 ### Full Body A — Squat, Press and Row
 - Mains:
   - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | lane=squat
-  - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
+  - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
-- Accessories: standing-calf-raise, suitcase-carry
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -201,7 +201,7 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullHorizontal | lane=pull
   - `single-leg-rdl` Single-Leg RDL (Bodyweight) | slot=mainSecondaryLowerLoaded | lane=hinge
-- Accessories: reverse-snow-angel, suitcase-carry
+- Accessories: suitcase-carry, reverse-snow-angel
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
@@ -210,21 +210,21 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `dumbbell-pullover` Dumbbell Pullover | slot=mainPullSupport | lane=pull
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
-- Accessories: db-triceps-extension, suitcase-carry
+- Accessories: suitcase-carry, db-triceps-extension
 
 ### Upper Pattern Practice
 - Mains:
   - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
   - `dumbbell-arnold-press` Dumbbell Arnold Press | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: db-triceps-extension, db-biceps-curl
+- Accessories: db-biceps-curl, db-triceps-extension
 
 ### Lower & Core Practice
 - Mains:
   - `heels-elevated-squat` Heels-Elevated Tempo Squat | slot=mainSquatPrimary | lane=squat
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
-- Accessories: dumbbell-sumo-rdl, standing-calf-raise
+- Accessories: farmers-carry, standing-calf-raise
 
 ### Manual review checklist
 - Day identity truthful and deliberately dumbbell-shaped?
@@ -256,13 +256,13 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: db-triceps-extension, farmers-carry
+- Accessories: farmers-carry, db-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
-  - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullSupport | lane=pull
+  - `pushup` Push-Up | slot=mainPushSecondary | lane=push
 - Accessories: hollow-body-hold, single-leg-hip-thrust
 
 ### Manual review checklist
@@ -297,7 +297,7 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullHorizontal | lane=pull
-- Accessories: db-triceps-extension, farmers-carry
+- Accessories: farmers-carry, db-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
@@ -305,7 +305,7 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `dumbbell-pullover` Dumbbell Pullover | slot=mainPullSupport | lane=pull
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: side-plank-star, single-leg-rdl
+- Accessories: single-leg-rdl, side-plank-star
 
 ### Manual review checklist
 - Day identity truthful and deliberately dumbbell-shaped?
@@ -330,21 +330,21 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | lane=squat
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
-- Accessories: standing-calf-raise, db-biceps-curl
+- Accessories: db-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: dumbbell-rows, db-triceps-extension
+- Accessories: db-triceps-extension, dumbbell-rows
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushSecondary | lane=push
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullSupport | lane=pull
-- Accessories: side-plank, farmers-carry
+- Accessories: cossack-squat, side-plank
 
 ### Manual review checklist
 - Day identity truthful and deliberately dumbbell-shaped?
@@ -360,30 +360,30 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
 - Id: `db_3d_low_back_pain_p1`
 - Primary mode: dumbbells
 - Structural score: 100/100
-- Full-experience score (includes deferred coaching gaps): 88/100
+- Full-experience score (includes deferred coaching gaps): 88.5/100
 - Hard failures: none
-- Deferred experience gaps: 24 (demo/cues/progression-link metadata)
+- Deferred experience gaps: 23 (demo/cues/progression-link metadata)
 
 ### Full Body A — Squat, Press and Row
 - Mains:
   - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | lane=squat
   - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
-- Accessories: db-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, db-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
   - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHingePrimary | lane=hinge
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: prone-elbow-row, farmers-carry
+- Accessories: side-plank, prone-elbow-row
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullSupport | lane=pull
-- Accessories: side-plank, single-leg-hip-thrust
+- Accessories: single-leg-hip-thrust, side-plank
 
 ### Manual review checklist
 - Day identity truthful and deliberately dumbbell-shaped?
@@ -406,23 +406,23 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
 ### Full Body A — Squat, Press and Row
 - Mains:
   - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | lane=squat
-  - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
   - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainPullHorizontal | lane=pull
-- Accessories: standing-calf-raise, db-biceps-curl
+  - `dumbbell-floor-press` Dumbbell Floor Press | slot=mainPushCompound | lane=push
+- Accessories: db-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: db-triceps-extension, farmers-carry
+- Accessories: farmers-carry, db-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullSupport | lane=pull
-- Accessories: side-plank-star, single-leg-rdl
+- Accessories: single-leg-rdl, side-plank-star
 
 ### Manual review checklist
 - Day identity truthful and deliberately dumbbell-shaped?
@@ -454,13 +454,13 @@ Manual-review snapshots for dumbbell-only personas. Phase 0–2 reports were not
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | lane=squat
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: db-triceps-extension, suitcase-carry
+- Accessories: suitcase-carry, db-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
-  - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `dumbbell-rows` Dumbbell Rows | slot=mainPullSupport | lane=pull
+  - `pushup` Push-Up | slot=mainPushSecondary | lane=push
 - Accessories: suitcase-carry, db-rdl
 
 ### Manual review checklist

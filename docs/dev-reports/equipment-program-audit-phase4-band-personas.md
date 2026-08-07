@@ -17,7 +17,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `band-front-squat` Band Front Squat | slot=mainSquatPrimary | lane=squat
   - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
-- Accessories: standing-calf-raise, band-biceps-curl
+- Accessories: band-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -57,7 +57,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
   - `band-rdl` Band Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: standing-calf-raise, band-biceps-curl
+- Accessories: band-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -96,8 +96,8 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
 ### Full Body A — Squat, Press and Row
 - Mains:
   - `band-front-squat` Band Front Squat | slot=mainSquatPrimary | lane=squat
-  - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
+  - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `band-rdl` Band Romanian Deadlift | slot=mainHingePrimary | lane=hinge
 - Accessories: standing-calf-raise, band-biceps-curl
 
@@ -138,8 +138,8 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
 ### Full Body A — Squat, Press and Row
 - Mains:
   - `band-front-squat` Band Front Squat | slot=mainSquatPrimary | lane=squat
-  - `band-chest-press` Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
+  - `band-chest-press` Band Chest Press | slot=mainPushCompound | lane=push
 - Accessories: standing-calf-raise, band-biceps-curl
 
 ### Full Body B — Hinge, Overhead and Unilateral
@@ -147,14 +147,14 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `band-rdl` Band Romanian Deadlift | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `band-overhead-press` Band Overhead Press | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `heels-elevated-squat` Heels-Elevated Tempo Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `band-row` Band Row | slot=mainPullSupport | lane=pull
-- Accessories: hollow-body-hold, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, hollow-body-hold
 
 ### Manual review checklist
 - Day identity truthful and deliberately band-shaped?
@@ -179,21 +179,21 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `heels-elevated-squat` Heels-Elevated Tempo Squat | slot=mainSquatPrimary | lane=squat
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `band-pull-apart` Band Pull-Apart | slot=mainPullHorizontal | lane=pull
-- Accessories: standing-calf-raise, towel-biceps-curl-hold
+- Accessories: towel-biceps-curl-hold, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
   - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `band-rear-delt-fly` Band Rear Delt Fly | slot=mainPullSupport | lane=pull
-- Accessories: hollow-body-hold, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, hollow-body-hold
 
 ### Manual review checklist
 - Day identity truthful and deliberately band-shaped?
@@ -219,7 +219,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
   - `band-rdl` Band Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: standing-calf-raise, band-biceps-curl
+- Accessories: band-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -235,7 +235,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `band-lat-pulldown` Band Lat Pulldown | slot=mainPullSupport | lane=pull
   - `single-leg-glute-bridge-hold` Single-Leg Glute Bridge Hold | slot=mainHingePrimary | lane=hinge
-- Accessories: side-plank-star, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, side-plank-star
 
 ### Manual review checklist
 - Day identity truthful and deliberately band-shaped?
@@ -261,7 +261,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
   - `band-rdl` Band Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: standing-calf-raise, side-plank-star
+- Accessories: side-plank-star, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -269,7 +269,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `band-overhead-press` Band Overhead Press | slot=mainVerticalPushPrimary | lane=verticalPush
   - `band-row` Band Row | slot=mainPullHorizontal | lane=pull
-- Accessories: single-arm-band-biceps-curl, standing-calf-raise
+- Accessories: standing-calf-raise, single-arm-band-biceps-curl
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
@@ -283,7 +283,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
 - Mains:
   - `single-arm-band-row` Single-Arm Band Row | slot=mainPullHorizontal | lane=pull
   - `band-front-squat` Band Front Squat | slot=mainSquatPrimary | lane=squat
-- Accessories: single-arm-band-biceps-curl, side-plank-star
+- Accessories: side-plank-star, single-arm-band-biceps-curl
 
 ### Manual review checklist
 - Day identity truthful and deliberately band-shaped?
@@ -309,7 +309,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
   - `band-rdl` Band Romanian Deadlift | slot=mainHingePrimary | lane=hinge
-- Accessories: standing-calf-raise, band-suitcase-march
+- Accessories: band-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -317,7 +317,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `band-overhead-press` Band Overhead Press | slot=mainVerticalPushPrimary | lane=verticalPush
   - `band-row` Band Row | slot=mainPullHorizontal | lane=pull
-- Accessories: face-pull, band-suitcase-march
+- Accessories: band-suitcase-march, face-pull
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
@@ -364,7 +364,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `band-front-squat` Band Front Squat | slot=mainSquatPrimary | lane=squat
   - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
-- Accessories: standing-calf-raise, band-biceps-curl
+- Accessories: band-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -401,8 +401,8 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
 ### Full Body A — Squat, Press and Row
 - Mains:
   - `band-front-squat` Band Front Squat | slot=mainSquatPrimary | lane=squat
-  - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
+  - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
 - Accessories: band-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
@@ -442,7 +442,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `band-front-squat` Band Front Squat | slot=mainSquatPrimary | lane=squat
   - `split-stance-band-chest-press` Split Stance Band Chest Press | slot=mainPushCompound | lane=push
   - `split-stance-row` Split Stance Row | slot=mainPullHorizontal | lane=pull
-- Accessories: standing-calf-raise, band-biceps-curl
+- Accessories: band-biceps-curl, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
@@ -456,7 +456,7 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `heels-elevated-squat` Heels-Elevated Tempo Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pushup` Push-Up | slot=mainPushSecondary | lane=push
   - `band-lat-pulldown` Band Lat Pulldown | slot=mainPullSupport | lane=pull
-- Accessories: band-suitcase-march, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, band-suitcase-march
 
 ### Manual review checklist
 - Day identity truthful and deliberately band-shaped?
@@ -481,21 +481,21 @@ Manual-review snapshots for band-only personas. Phase 0–3 reports were not ove
   - `heels-elevated-squat` Heels-Elevated Tempo Squat | slot=mainSquatPrimary | lane=squat
   - `pushup` Push-Up | slot=mainPushCompound | lane=push
   - `band-pull-apart` Band Pull-Apart | slot=mainPullHorizontal | lane=pull
-- Accessories: standing-calf-raise, towel-biceps-curl-hold
+- Accessories: towel-biceps-curl-hold, standing-calf-raise
 
 ### Full Body B — Hinge, Overhead and Unilateral
 - Mains:
   - `single-leg-hip-thrust` Single-Leg Hip Thrust | slot=mainHingePrimary | lane=hinge
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `pike-pushup` Pike Push-Up | slot=mainVerticalPushPrimary | lane=verticalPush
-- Accessories: bodyweight-triceps-extension, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, bodyweight-triceps-extension
 
 ### Full Body C — Single-Leg, Press Variation and Lat Intent
 - Mains:
   - `split-squat` Split Squat | slot=mainUnilateralLowerLoaded | lane=squat
   - `close-grip-pushup` Close-Grip Push-Up | slot=mainPushSecondary | lane=push
   - `band-pull-apart` Band Pull-Apart | slot=mainPullSupport | lane=pull
-- Accessories: hollow-body-hold, supine-elbow-drive-row
+- Accessories: supine-elbow-drive-row, hollow-body-hold
 
 ### Manual review checklist
 - Day identity truthful and deliberately band-shaped?

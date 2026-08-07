@@ -83,7 +83,7 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
 - Warmup: cat-cow
 - Activation: wall-angel-hold
 - Mains:
-  - `machine-leg-press` Machine Leg Press | slot=mainSquatPrimary | source=legality_repair
+  - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | source=legality_repair
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | source=legality_repair
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | source=legality_repair
   - `machine-seated-hamstring-curl` Machine Seated Hamstring Curl | slot=mainHamstringIsolation | source=legality_repair
@@ -134,7 +134,7 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
 - Warmup: ankle-mobility
 - Activation: dead-bug
 - Mains:
-  - `machine-leg-press` Machine Leg Press | slot=mainSquatPrimary | source=legality_repair
+  - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | source=legality_repair
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | source=legality_repair
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | source=legality_repair
   - `machine-seated-hamstring-curl` Machine Seated Hamstring Curl | slot=mainHamstringIsolation | source=legality_repair
@@ -155,10 +155,10 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
 - Id: `gym_4d_intermediate_p2`
 - Primary mode: gym
 - Structural score: 100/100
-- Full-experience score (includes deferred coaching gaps): 72.5/100
+- Full-experience score (includes deferred coaching gaps): 72/100
 - Hard failures: none
-- Coverage gaps: calvesDays 1/2, bicepsDays 1/2, tricepsDays 1/2
-- Deferred experience gaps: 55 (demo/cues/progression-link metadata)
+- Coverage gaps: none
+- Deferred experience gaps: 56 (demo/cues/progression-link metadata)
 
 ### Upper Push + Scapular Control
 - Warmup: wall-slides
@@ -194,7 +194,7 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHinge | source=initial_pick
   - `split-squat` Split Squat | slot=mainSquat | source=initial_pick
   - `single-leg-rdl` Single-Leg RDL (Bodyweight) | slot=mainHinge | source=initial_pick
-- Accessories: side-plank-star, single-leg-hip-thrust
+- Accessories: standing-calf-raise, farmers-carry
 
 ### Manual review checklist
 - Day title matches workout?
@@ -213,8 +213,8 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
 - Structural score: 100/100
 - Full-experience score (includes deferred coaching gaps): 60/100
 - Hard failures: none
-- Coverage gaps: calvesDays 1/2
-- Deferred experience gaps: 86 (demo/cues/progression-link metadata)
+- Coverage gaps: none
+- Deferred experience gaps: 88 (demo/cues/progression-link metadata)
 
 ### Upper Push
 - Warmup: wall-slides
@@ -233,7 +233,7 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
   - `machine-leg-press` Machine Leg Press | slot=mainSquat | source=initial_pick
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHinge | source=initial_pick
   - `dumbbell-step-up-loaded` Dumbbell Step-Up (Loaded) | slot=mainSquat | source=initial_pick
-- Accessories: barbell-rollout, standing-calf-raise, farmers-carry, cossack-squat
+- Accessories: barbell-rollout, farmers-carry, standing-calf-raise, suitcase-carry
 
 ### Upper Pull
 - Warmup: wall-slides
@@ -252,7 +252,7 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
   - `dumbbell-sumo-rdl` Dumbbell Sumo RDL | slot=mainHinge | source=initial_pick
   - `machine-hack-squat` Machine Hack Squat | slot=mainSquat | source=initial_pick
   - `barbell-hip-thrust` Barbell Hip Thrust | slot=mainHinge | source=initial_pick
-- Accessories: barbell-rollout, db-rdl, suitcase-carry, machine-glute-drive
+- Accessories: standing-calf-raise, suitcase-carry, machine-glute-drive, farmers-carry
 
 ### Arms + Posture + Conditioning
 - Warmup: wall-slides
@@ -400,7 +400,7 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
 - Warmup: ankle-mobility
 - Activation: glute-bridges
 - Mains:
-  - `machine-leg-press` Machine Leg Press | slot=mainSquatPrimary | source=legality_repair
+  - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | source=legality_repair
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | source=legality_repair
   - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | source=legality_repair
 - Accessories: hollow-body-hold, db-calf-raise
@@ -441,15 +441,15 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPushPrimary | source=day_intelligence_repair
   - `cable-lateral-raise` Cable Lateral Raise | slot=mainLateralDeltPrimary | source=day_intelligence_repair
   - `cable-rear-delt-fly` Cable Rear Delt Fly | slot=mainShoulderPullPrimary | source=day_intelligence_repair
-- Accessories: overhead-cable-triceps-extension, cable-biceps-curl, suitcase-carry
+- Accessories: overhead-cable-triceps-extension, cable-biceps-curl, farmers-carry
 
 ### Legs + Abs
 - Warmup: ankle-mobility
 - Activation: glute-bridges
 - Mains:
-  - `machine-hack-squat` Machine Hack Squat | slot=mainSquatPrimary | source=legality_repair
+  - `goblet-squat` Goblet Squat | slot=mainSquatPrimary | source=legality_repair
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHingePrimary | source=legality_repair
-  - `dumbbell-bulgarian-split-squat` Dumbbell Bulgarian Split Squat | slot=mainUnilateralLowerLoaded | source=legality_repair
+  - `dumbbell-reverse-lunge` Dumbbell Reverse Lunge | slot=mainUnilateralLowerLoaded | source=legality_repair
 - Accessories: cable-woodchop-standing, db-calf-raise
 
 ### Manual review checklist
@@ -467,10 +467,10 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
 - Id: `gym_5d_pain_advanced_p3`
 - Primary mode: gym
 - Structural score: 100/100
-- Full-experience score (includes deferred coaching gaps): 60.5/100
+- Full-experience score (includes deferred coaching gaps): 60/100
 - Hard failures: none
-- Coverage gaps: calvesDays 0/2
-- Deferred experience gaps: 79 (demo/cues/progression-link metadata)
+- Coverage gaps: none
+- Deferred experience gaps: 81 (demo/cues/progression-link metadata)
 
 ### Upper Push
 - Warmup: wall-slides
@@ -489,7 +489,7 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
   - `machine-leg-press` Machine Leg Press | slot=mainSquat | source=initial_pick
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHinge | source=initial_pick
   - `dumbbell-step-up-loaded` Dumbbell Step-Up (Loaded) | slot=mainSquat | source=initial_pick
-- Accessories: contralateral-reach-march, barbell-hip-thrust, farmers-carry
+- Accessories: contralateral-reach-march, farmers-carry, db-calf-raise
 
 ### Upper Pull
 - Warmup: wall-slides
@@ -497,7 +497,7 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
 - Mains:
   - `dumbbell-rows` Dumbbell Rows | slot=mainHorizontalPull | source=initial_pick
   - `cable-lat-pulldown` Cable Lat Pulldown | slot=mainVerticalPull | source=initial_pick
-  - `barbell-bent-over-row` Barbell Bent-Over Row | slot=mainExtraBackLoaded | source=eligibility_swap
+  - `single-arm-dumbbell-row` Single-Arm Dumbbell Row | slot=mainExtraBackLoaded | source=eligibility_swap
   - `cable-seated-row` Cable Seated Row | slot=mainExtraBackLoaded | source=initial_pick
 - Accessories: cable-biceps-curl, machine-rear-delt-row
 
@@ -506,17 +506,17 @@ Manual-review snapshots for gym-only personas. Phase 0/1 reports were not overwr
 - Activation: wall-angel-hold
 - Mains:
   - `db-rdl` Dumbbell Romanian Deadlift | slot=mainHinge | source=day_intelligence_repair
-  - `machine-hack-squat` Machine Hack Squat | slot=mainSquat | source=initial_pick
+  - `barbell-back-squat` Barbell Back Squat | slot=mainSquat | source=initial_pick
   - `barbell-hip-thrust` Barbell Hip Thrust | slot=mainHingeSurrogate | source=initial_pick
-- Accessories: contralateral-reach-march, machine-glute-drive, farmers-carry
+- Accessories: standing-calf-raise, farmers-carry, machine-seated-hamstring-curl
 
 ### Arms + Posture + Conditioning
 - Warmup: wall-slides
 - Activation: wall-angel-hold
 - Mains:
-  - `barbell-bent-over-row` Barbell Bent-Over Row | slot=mainHorizontalPull | source=eligibility_swap
+  - `cable-seated-row` Cable Seated Row | slot=mainHorizontalPull | source=eligibility_swap
   - `dumbbell-shoulder-press` Dumbbell Shoulder Press | slot=mainVerticalPush | source=initial_pick
-  - `dumbbell-rows` Dumbbell Rows | slot=mainExtraBackLoaded | source=uniqueness_swap
+  - `dumbbell-rows` Dumbbell Rows | slot=mainExtraBackLoaded | source=initial_pick
   - `dumbbell-arnold-press` Dumbbell Arnold Press | slot=mainVerticalPush | source=initial_pick
 - Accessories: bodyweight-triceps-extension, cable-biceps-curl
 
