@@ -16,6 +16,7 @@
     "react": "19.2.3"
   },
   "devDependencies": {
-    "@types/pg": "^8.16.0"
+    "@types/pg": "^8.16.0",
+    "fake-indexeddb": "^6.2.5"
   }
 }

@@ -31,7 +31,25 @@ export type ThreeDayMainLanePlanEntry = {
     | "unilateral_lower_loaded"
     | "secondary_lower_loaded"
     | "single_leg_or_secondary_squat"
-    | "lower_secondary";
+    | "lower_secondary"
+    /** Dumbbell Full Body C lat-biased pull (not a true vertical pull). */
+    | "lat_biased_pull"
+    /** Dumbbell Full Body C press variation distinct from Day A. */
+    | "press_variation"
+    /** Dumbbell posterior-chain reinforcement secondary. */
+    | "posterior_chain_secondary"
+    /** Bodyweight trunk anti-extension / bracing main. */
+    | "trunk_anti_extension"
+    /** Bodyweight hip-extension / bridge family. */
+    | "hip_extension"
+    /** Bodyweight lateral trunk stability. */
+    | "trunk_lateral"
+    /** Bodyweight scapular reinforcement (not a true loaded pull). */
+    | "scapular_reinforcement"
+    /** Bodyweight honest upper-back control / pull-surrogate. */
+    | "upper_back_control"
+    /** Confirmed pull-up-bar vertical pulling. */
+    | "true_vertical_pull";
 };
 
 const normalizeToken = (value: string) =>

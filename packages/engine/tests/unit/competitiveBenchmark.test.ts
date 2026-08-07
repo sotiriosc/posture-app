@@ -51,6 +51,15 @@ const expectedPatternsForDayTitle = (title: string): MainPattern[] => {
   if (normalized.includes("back + chest")) return ["pull", "push"];
   if (normalized.includes("shoulders + arms")) return ["verticalPush", "pull"];
   if (normalized.includes("legs + abs")) return ["squat", "hinge"];
+  if (normalized.includes("full body a") && normalized.includes("press and row")) {
+    return ["squat", "push", "pull"];
+  }
+  if (normalized.includes("full body b") && normalized.includes("overhead")) {
+    return ["hinge", "squat", "verticalPush"];
+  }
+  if (normalized.includes("full body c") && normalized.includes("lat")) {
+    return ["squat", "push", "pull"];
+  }
   if (normalized.includes("upper push")) return ["push"];
   if (normalized.includes("upper pull")) return ["pull"];
   if (normalized.includes("lower squat") || normalized.includes("(squat")) return ["squat"];
@@ -319,7 +328,8 @@ describe("competitive benchmark scorecard", () => {
       goals: "Reduce pain",
       painAreas: ["Shoulders", "Upper back"],
       experience: "Beginner",
-      equipment: ["dumbbells", "bands", "machines"],
+      // Gym primary keeps competitive phase-churn scoring meaningful.
+      equipment: ["gym", "dumbbells", "bands", "machines"],
       daysPerWeek: 3,
     },
     {
@@ -327,7 +337,8 @@ describe("competitive benchmark scorecard", () => {
       painAreas: [],
       experience: "Intermediate",
       equipment: ["dumbbells", "bands"],
-      daysPerWeek: 4,
+      daysPerWeek: 3,
+      bandSetup: "long_with_anchor",
     },
     {
       goals: "Athletic performance",
@@ -340,7 +351,7 @@ describe("competitive benchmark scorecard", () => {
       goals: "Athletic performance",
       painAreas: ["Lower back", "Hips"],
       experience: "Advanced",
-      equipment: ["dumbbells", "bands", "bench"],
+      equipment: ["gym", "dumbbells", "bands", "bench"],
       daysPerWeek: 5,
     },
   ];

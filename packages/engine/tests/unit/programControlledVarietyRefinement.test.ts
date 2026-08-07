@@ -178,26 +178,35 @@ describe("controlled variety refinement", () => {
   test("dumbbell home/core planning rotates beyond side-plank family when truthful alternatives exist", () => {
     const coreAccessoryIds = new Set<string>();
 
-    Array.from({ length: 8 }, (_, variationIndex) => {
-      const program = generateWeeklyProgram(
-        buildQuestionnaire({
-          goals: "General fitness",
-          experience: "Intermediate",
-          equipment: ["dumbbells"],
-        }),
-        `core-variety-${variationIndex}`,
-        {
-          phaseIndex: 2,
-          variation: {
-            seed: "core-variety",
-            variationIndex,
-            useRecentMemory: false,
-          },
-        }
-      );
-      const accessories = getDayExercises(program, "Legs + Abs", "accessory");
-      const coreAccessory = accessories.find((exercise) => !isCalfExercise(exercise));
-      if (coreAccessory) coreAccessoryIds.add(coreAccessory.id);
+    ([1, 2, 3] as const).forEach((phaseIndex) => {
+      Array.from({ length: 8 }, (_, variationIndex) => {
+        const program = generateWeeklyProgram(
+          buildQuestionnaire({
+            goals: "General fitness",
+            experience: "Intermediate",
+            equipment: ["dumbbells"],
+          }),
+          `core-variety-${phaseIndex}-${variationIndex}`,
+          {
+            phaseIndex,
+            variation: {
+              seed: `core-variety-${phaseIndex}`,
+              variationIndex,
+              useRecentMemory: false,
+            },
+          }
+        );
+        program.week
+          .filter((day) => day.title.startsWith("Full Body"))
+          .forEach((day) => {
+            day.routine
+              .filter((item) => item.section === "accessory")
+              .map((item) => exerciseById(item.exerciseId))
+              .filter((exercise): exercise is Exercise => Boolean(exercise))
+              .filter((exercise) => !isCalfExercise(exercise))
+              .forEach((exercise) => coreAccessoryIds.add(exercise.id));
+          });
+      });
     });
 
     expect(coreAccessoryIds.size).toBeGreaterThan(1);
@@ -208,25 +217,30 @@ describe("controlled variety refinement", () => {
     ).toBe(true);
   });
 
-  test("band-only Back + Chest can select a true fly-style chest slot without rear-delt leakage", () => {
+  test("band-only Full Body A keeps honest press without rear-delt chest leakage", () => {
+    const program = generateWeeklyProgram(
+      buildQuestionnaire({
+        goals: "Build strength",
+        experience: "Intermediate",
+        equipment: ["bands"],
+        bandSetup: "long_with_anchor",
+      } as Parameters<typeof buildQuestionnaire>[0]),
+      "bands-chest-isolation-path",
+      {
+        phaseIndex: 2,
+        seed: "bands-chest-isolation-path",
+      }
+    );
     const mains = getDayExercises(
-      generateWeeklyProgram(
-        buildQuestionnaire({
-          goals: "Build strength",
-          experience: "Intermediate",
-          equipment: ["bands"],
-        }),
-        "bands-chest-isolation-path",
-        {
-          phaseIndex: 2,
-          seed: "bands-chest-isolation-path",
-        }
-      ),
-      "Back + Chest",
+      program,
+      "Full Body A — Squat, Press and Row",
       "main"
     );
 
-    expect(mains.some((exercise) => exercise.id === "band-chest-fly")).toBe(true);
+    expect(mains.some((exercise) => exercise.movementPattern.some((p) => p.toLowerCase().includes("push")))).toBe(
+      true
+    );
+    expect(mains.some((exercise) => exercise.id.includes("rear-delt"))).toBe(false);
     expect(exerciseById("band-rear-delt-fly")?.accessoryRoles ?? []).not.toContain(
       "accessoryChestIsolation"
     );

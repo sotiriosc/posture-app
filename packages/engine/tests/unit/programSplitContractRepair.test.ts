@@ -100,11 +100,12 @@ const isCarryLikeExercise = (exercise: Exercise) => {
 
 describe("split contract repair enforcement", () => {
   test("3-day split enforces required main patterns per day", () => {
+    // Gym-shaped body-part contracts; band-only weeks use Full Body A/B/C (Phase 4).
     const input: QuestionnaireData = {
       goals: "Reduce pain",
       painAreas: ["Shoulders", "Lower back"],
       experience: "Beginner",
-      equipment: ["bands"],
+      equipment: ["gym"],
       daysPerWeek: 3,
     };
     const program = generateWeeklyProgram(input, "split-3-day-repair", {
@@ -267,7 +268,7 @@ describe("split contract repair enforcement", () => {
         goals: "General fitness",
         painAreas: [],
         experience: "Beginner",
-        equipment: ["bands", "dumbbells"],
+        equipment: ["gym"],
         daysPerWeek: 3,
       },
       "split-3-day-legs-accessory-beginner",
@@ -370,7 +371,7 @@ describe("split contract repair enforcement", () => {
       goals: "Reduce pain",
       painAreas: ["Shoulders", "Upper back"],
       experience: "Beginner",
-      equipment: ["dumbbells", "bands", "machines"],
+      equipment: ["gym", "dumbbells", "bands", "machines"],
       daysPerWeek: 3,
     };
     const program = generateWeeklyProgram(input, "split-3-day-shoulders-safety", {
@@ -761,7 +762,7 @@ describe("split contract repair enforcement", () => {
       goals: "General fitness",
       painAreas: ["Hips"],
       experience: "Intermediate",
-      equipment: ["dumbbells", "bands"],
+      equipment: ["gym"],
       daysPerWeek: 4,
     };
     const program = generateWeeklyProgram(input, "split-4-day-repair", {
@@ -816,7 +817,7 @@ describe("split contract repair enforcement", () => {
       goals: "Athletic performance",
       painAreas: [],
       experience: "Advanced",
-      equipment: ["dumbbells", "bands", "bench"],
+      equipment: ["gym"],
       daysPerWeek: 5,
     };
     const program = generateWeeklyProgram(input, "split-5-day-repair", {

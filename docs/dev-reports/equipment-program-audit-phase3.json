@@ -1,0 +1,227 @@
+{
+  "generatedAt": "2026-08-06T22:52:38.257Z",
+  "phase": 3,
+  "objective": "First-class dumbbell programming audit and contract",
+  "preservesPriorReports": [
+    "docs/dev-reports/equipment-program-audit-phase0.json",
+    "docs/dev-reports/equipment-program-audit-phase1.json",
+    "docs/dev-reports/equipment-program-audit-phase2.json"
+  ],
+  "elapsedMs": 1177961,
+  "flagshipCount": 11,
+  "hardFailureCount": 0,
+  "failuresByReason": {},
+  "flagshipStructuralPassCount": 11,
+  "initialBaselineInventory": [
+    {
+      "reasonCode": "DUMBBELL_GYM_TEMPLATE_INHERITANCE",
+      "detail": "Dumbbells/mixedHome collapsed toward gym-shaped body-part titles via hasLoad identity.",
+      "source": "Phase 0/1 equipment-program audit"
+    },
+    {
+      "reasonCode": "DUMBBELL_IDENTITY_COLLAPSE",
+      "detail": "primaryEquipmentMode did not remain first-class dumbbells before Phase 1.",
+      "source": "Phase 0/1 equipment-program audit"
+    },
+    {
+      "reasonCode": "DUMBBELL_UNCONFIRMED_BENCH",
+      "detail": "Home loaded programming could assume bench/chair/step support without confirmation.",
+      "source": "Phase 0 equipment assumption findings"
+    },
+    {
+      "reasonCode": "DUMBBELL_FALSE_VERTICAL_PULL",
+      "detail": "Pullover/lat-sweep style work could be treated as vertical-pull coverage.",
+      "source": "Phase 0 pull-honesty findings"
+    }
+  ],
+  "fuzz": {
+    "cases": 10000,
+    "buckets": {
+      "illegalEquipment": 0,
+      "unconfirmedSupport": 0,
+      "gymTemplateInheritance": 0,
+      "falseVerticalPull": 0,
+      "missingHorizontalPull": 0,
+      "missingHinge": 0,
+      "dayIdentityMismatch": 0,
+      "duplicateFamily": 0,
+      "complexityExcess": 0,
+      "weeklyCoverage": 0,
+      "phaseChurn": 0,
+      "exceptions": 0,
+      "identityCollapse": 0,
+      "deterministicRepeat": 0
+    },
+    "topReasons": []
+  },
+  "personas": [
+    {
+      "id": "db_3d_beginner_p1",
+      "label": "Beginner three-day dumbbells / activation",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 88,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 24,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "db_3d_intermediate_p1",
+      "label": "Intermediate three-day dumbbells / activation",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 86,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 28,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "db_3d_advanced_p1",
+      "label": "Advanced three-day dumbbells / activation",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 84,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 32,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "db_4d_intermediate_p2",
+      "label": "Four-day dumbbells / skill",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 82.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 35,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent",
+        "Practice & Restore"
+      ]
+    },
+    {
+      "id": "db_5d_advanced_p3",
+      "label": "Five-day dumbbells / growth",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 75,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 52,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent",
+        "Upper Pattern Practice",
+        "Lower & Core Practice"
+      ]
+    },
+    {
+      "id": "db_3d_no_bench_p1",
+      "label": "No-bench dumbbells / activation",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 88,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 24,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "db_3d_bench_confirmed_p2",
+      "label": "Confirmed-bench dumbbells / skill",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 86.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 27,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "db_3d_shoulder_pain_p1",
+      "label": "Shoulder-pain dumbbells / activation",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 88,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 24,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "db_3d_low_back_pain_p1",
+      "label": "Low-back-pain dumbbells / activation",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 88.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 23,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "db_3d_beginner_p2",
+      "label": "Beginner three-day dumbbells / skill",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 88.5,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 23,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    },
+    {
+      "id": "db_3d_beginner_p3",
+      "label": "Beginner three-day dumbbells / growth",
+      "primaryMode": "dumbbells",
+      "structuralScore": 100,
+      "fullExperienceScore": 88,
+      "hardFailureCount": 0,
+      "hardFailures": [],
+      "deferredGapCount": 24,
+      "dayTitles": [
+        "Full Body A — Squat, Press and Row",
+        "Full Body B — Hinge, Overhead and Unilateral",
+        "Full Body C — Single-Leg, Press Variation and Lat Intent"
+      ]
+    }
+  ]
+}

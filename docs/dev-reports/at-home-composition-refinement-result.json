@@ -1,0 +1,89 @@
+{
+  "generatedAt": "2026-08-06T21:58:00.000Z",
+  "checkpointSha": "921bd35bf17eeaaf32c0decd2638a45671687354",
+  "branch": "engine/at-home-composition-refinement",
+  "templateVersion": {
+    "from": 18,
+    "to": 19,
+    "reason": "Newly generated stored program order is part of the composition contract after constraint-aware sequencing.",
+    "existingActivePrograms": "unchanged_in_storage",
+    "regeneration": "on_next_user_driven_compatible_program_load_when_templateVersion_mismatches",
+    "silentBatchRewrite": false
+  },
+  "gateCorrections": [
+    {
+      "id": "goblet-vs-machine-squat-hard-exclude",
+      "action": "converted_to_soft_preference",
+      "detail": "Removed hard eligibility exclude; +2.5 machine squat / +1 goblet scoring"
+    },
+    {
+      "id": "activation-push-machine-chest-plus16",
+      "action": "reduced_to_moderate_preference",
+      "detail": "machine-chest-press +16→+4; dumbbell-bench-press +4→+2"
+    }
+  ],
+  "sequencing": {
+    "module": "packages/engine/src/program/sequencingPolicy.ts",
+    "pipeline": "selected → priorities → constraints → equivalent groups → deterministic rotate → quality",
+    "preserves": [
+      "section_order",
+      "primary_main_early",
+      "prep_never_main",
+      "anchor_transition_budget",
+      "determinism",
+      "stored_program_immutability"
+    ]
+  },
+  "metrics": {
+    "structuralCorrectness": "preserved_by_design_and_focused_tests",
+    "baseline": {
+      "report": "at-home-composition-refinement-baseline.json",
+      "flaggedIdenticalMainAccessoryProfiles": 3
+    },
+    "longitudinal": {
+      "report": "at-home-longitudinal-repeat.json",
+      "weeks": 12,
+      "series": 18,
+      "meanUniqueMainAccessoryOrders": 11.39,
+      "maxConsecutiveIdentical": 1,
+      "avoidableRepeatSuspectedSeries": 0
+    },
+    "collapseWarnings": {
+      "prior": 399,
+      "objective": "do_not_chase",
+      "policy": "classify_honestly_after_release_fuzz"
+    }
+  },
+  "deferred": [
+    "painContraindications_vs_contraindications_field_duality",
+    "broader_family_rung_aware_phaseMin",
+    "abandoned_phase8_ui_surfaces"
+  ],
+  "validation": {
+    "status": "passed_release_boundary",
+    "criticalTests": "326/326",
+    "programPresentation": "pass",
+    "exerciseCoaching": "pass",
+    "lintErrors": 0,
+    "consumerBuild": "pass",
+    "gymsBuild": "pass",
+    "programQuality": {
+      "verdict": "PASS",
+      "fuzzCases": 50000
+    },
+    "fuzzIntegrity": {
+      "verdict": "NEEDS_REVIEW",
+      "releaseBlockingFailures": [],
+      "finalPass": 50000,
+      "finalFail": 0,
+      "safeGen": 0,
+      "exceptions": 0,
+      "unclassified": 0,
+      "deterministicMismatches": 0,
+      "mutations": "14/14",
+      "metamorphic": "9/9",
+      "collapseWarnings": 448,
+      "collapsePolicy": "classify_honestly_do_not_chase"
+    }
+  }
+}

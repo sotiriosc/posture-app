@@ -1,0 +1,893 @@
+{
+  "generatedAt": "2026-08-06T21:59:35.594Z",
+  "checkpointSha": "921bd35bf17eeaaf32c0decd2638a45671687354",
+  "philosophy": "Beginner = lower complexity/stability — NOT machine-only and NOT forced free-weights",
+  "gateInventory": [
+    {
+      "id": "blocked-exercise-hard-filter",
+      "file": "packages/engine/src/program.ts",
+      "function": "isExerciseEligibleForProgramContext",
+      "condition": "blockedExerciseIds.has(exercise.id)",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "all"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Excludes personally blocked exercises",
+      "originalRationale": "Personal Equipment Blocks — user-controlled hard contract",
+      "currentEvidence": "Injected as deferred=true at generation entry; same tier as pain",
+      "classification": "HARD_INVARIANT",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "experience-min-hard",
+      "file": "packages/engine/src/program.ts",
+      "function": "isExerciseEligibleForProgramContext / isBackChestExperienceEligible",
+      "condition": "user experience rank < exercise.experienceMin",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "beginner",
+        "intermediate"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "main",
+        "accessory"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Excludes exercises above experience floor",
+      "originalRationale": "Skill / complexity floor from catalog",
+      "currentEvidence": "Applied in eligibility before scoring",
+      "classification": "HARD_INVARIANT",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "beginner-back-squat-ban",
+      "file": "packages/engine/src/program.ts",
+      "function": "isExerciseEligibleForProgramContext",
+      "condition": "beginner + main + back squat pattern",
+      "affectedModes": [
+        "gym",
+        "dumbbells",
+        "mixedHome"
+      ],
+      "affectedExperience": [
+        "beginner"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "main"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Excludes unsupported barbell back squat for beginners",
+      "originalRationale": "Avoid advanced unsupported barbell for beginners",
+      "currentEvidence": "Aligned with Beginner ≠ advanced barbell assertion",
+      "classification": "CONTEXTUAL_HARD_GATE",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "goblet-vs-machine-squat-hard-exclude",
+      "file": "packages/engine/src/program.ts",
+      "function": "isExerciseEligibleForProgramContext",
+      "condition": "main + goblet-squat + machines available + machine squat still viable",
+      "affectedModes": [
+        "gym"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "main / squat_primary"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Hard-excludes goblet squat whenever machine leg press/hack squat viable",
+      "originalRationale": "Prefer machine squat primaries in gym",
+      "currentEvidence": "Over-broad: erases a lawful beginner-appropriate free-weight option even when context supports goblet; creates machine-only funnel for squat_primary",
+      "classification": "CONTEXTUAL_HARD_GATE",
+      "recommendedAction": "applied: convert_to_soft_preference (+2.5 machine squat / +1 goblet; hard exclude removed)"
+    },
+    {
+      "id": "phase-min-eligibility",
+      "file": "packages/engine/src/program.ts",
+      "function": "isEligibleForPhase",
+      "condition": "phase stage < exercise.phaseMin (with listed exceptions)",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "activation",
+        "skill",
+        "growth"
+      ],
+      "affectedSectionsRoles": [
+        "main",
+        "activation"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Excludes later-stage exercises early; exceptions for machine primers / bridges",
+      "originalRationale": "Developmental stage gating",
+      "currentEvidence": "Machine primer exception expands machine availability below phaseMin",
+      "classification": "CONTEXTUAL_HARD_GATE",
+      "recommendedAction": "preserve_with_family_aware_review; do not broaden machine exceptions"
+    },
+    {
+      "id": "activation-hard-tier-beg-int",
+      "file": "packages/engine/src/program.ts",
+      "function": "isEligibleForPhase",
+      "condition": "activation + difficultyTier===hard + beginner/intermediate",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "beginner",
+        "intermediate"
+      ],
+      "affectedPhases": [
+        "activation"
+      ],
+      "affectedSectionsRoles": [
+        "main"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Excludes hard-tier mains in activation for beg/int",
+      "originalRationale": "Lower complexity in Control & Technique",
+      "currentEvidence": "Supports Beginner = lower complexity; not machine-only",
+      "classification": "CONTEXTUAL_HARD_GATE",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "bc-tier-ceilings",
+      "file": "packages/engine/src/program.ts",
+      "function": "resolveBackChestTierProfile / isBackChestAnchorTierAllowed",
+      "condition": "min(equipCeiling, painCap); beginner reduce-pain → tier≤2; growth T3 requires allowTier3",
+      "affectedModes": [
+        "gym"
+      ],
+      "affectedExperience": [
+        "beginner",
+        "all"
+      ],
+      "affectedPhases": [
+        "activation≤1",
+        "skill≤2",
+        "growth=ceiling"
+      ],
+      "affectedSectionsRoles": [
+        "back-chest anchors"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Caps equipment tier by pain/experience/phase",
+      "originalRationale": "Stability and loadability ceilings",
+      "currentEvidence": "Tier≤2 still admits dumbbells/cables; not machine-only",
+      "classification": "CONTEXTUAL_HARD_GATE",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "bc-beginner-growth-t3-safety",
+      "file": "packages/engine/src/program.ts",
+      "function": "isBackChestBeginnerSafeTier3Anchor / isBackChestAnchorTierAllowed",
+      "condition": "3-day beginner growth + horizontal push/pull + tier≥3 → machine/cable/landmine/chest-supported only",
+      "affectedModes": [
+        "gym"
+      ],
+      "affectedExperience": [
+        "beginner"
+      ],
+      "affectedPhases": [
+        "growth"
+      ],
+      "affectedSectionsRoles": [
+        "horizontalPush",
+        "horizontalPull"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Blocks unsupported barbell T3; allows supported free-weight T3",
+      "originalRationale": "Beginner growth safety — avoid unsupported barbell bench/row",
+      "currentEvidence": "Not machine-only: chest-supported and landmine pass; tier≤2 free weights still legal",
+      "classification": "CONTEXTUAL_HARD_GATE",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "activation-machine-main-score-bias",
+      "file": "packages/engine/src/program.ts",
+      "function": "getIntentSlotScoreBonus",
+      "condition": "activation + hasLoad + beginner|high pain + foundational pattern + machines",
+      "affectedModes": [
+        "gym"
+      ],
+      "affectedExperience": [
+        "beginner"
+      ],
+      "affectedPhases": [
+        "activation"
+      ],
+      "affectedSectionsRoles": [
+        "main push/pull/squat/hinge"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "+5 machines / −1 non-machine weighted",
+      "originalRationale": "Control & Technique machine-main priority",
+      "currentEvidence": "Legitimate soft stability preference; magnitude rarely erases all non-machines alone",
+      "classification": "SCORING_SIGNAL",
+      "recommendedAction": "preserve_as_preference"
+    },
+    {
+      "id": "activation-push-machine-chest-plus16",
+      "file": "packages/engine/src/program.ts",
+      "function": "scoreExerciseForContextDetailed",
+      "condition": "activation + push lane + back-chest + beginner|high pain + machine-chest-press",
+      "affectedModes": [
+        "gym"
+      ],
+      "affectedExperience": [
+        "beginner"
+      ],
+      "affectedPhases": [
+        "activation"
+      ],
+      "affectedSectionsRoles": [
+        "main push"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "+16 machine-chest-press vs +4 dumbbell-bench-press",
+      "originalRationale": "Beginner/high-pain machine-stable push default",
+      "currentEvidence": "Pseudo-gate magnitude: +16 dominates typical score spreads and collapses push to machine-only in practice",
+      "classification": "SCORING_SIGNAL",
+      "recommendedAction": "applied: reduce_to_moderate_preference (+4 machine chest / +2 DB bench)"
+    },
+    {
+      "id": "gym-implement-preference-penalty",
+      "file": "packages/engine/src/program.ts",
+      "function": "resolveBackChestAnchorImplementPreferencePenalty",
+      "condition": "gym implements available → penalize DB/bands for anchors",
+      "affectedModes": [
+        "gym"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "back-chest anchors"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Ranks gym implements above casual substitutes",
+      "originalRationale": "Full gym should prefer gym-capable work",
+      "currentEvidence": "Soft ranking; still allows DB when better contextually",
+      "classification": "SOFT_PREFERENCE",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "main-role-legality",
+      "file": "packages/engine/src/program.ts",
+      "function": "isMainLegalForSlot / isRoleLegalForSlot / isThreeDayGymMainSlotEligible",
+      "condition": "slot role / loadedMainEligible / support_corrective rejection",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "main slots"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Rejects prep/support as true main",
+      "originalRationale": "Movement-role truth",
+      "currentEvidence": "Required hard invariant",
+      "classification": "HARD_INVARIANT",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "pain-contraindications-hard",
+      "file": "packages/engine/src/program.ts",
+      "function": "ensureEligibleItem / ladderAdvancement",
+      "condition": "exercise.contraindications / painContraindications hit pain areas",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "all"
+      ],
+      "stage": "repair",
+      "excludesOrRewards": "Hard-swaps or blocks contraindicated work",
+      "originalRationale": "True pain safety",
+      "currentEvidence": "Catalog painContraindications vs contraindications dual path — flag inconsistency for later, do not weaken",
+      "classification": "CONTEXTUAL_HARD_GATE",
+      "recommendedAction": "preserve; document dual-field inconsistency as STALE risk"
+    },
+    {
+      "id": "pain-soft-score",
+      "file": "packages/engine/src/program.ts",
+      "function": "scoreExerciseForContextDetailed / scoreSubstitutionCandidate",
+      "condition": "contraindicationHitsPainArea soft path",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "all"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "−8 / −12 soft pain penalties",
+      "originalRationale": "Prefer safer alternatives among legal options",
+      "currentEvidence": "Soft preference when hard path does not fire",
+      "classification": "SCORING_SIGNAL",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "feedback-penalty-not-hard-block",
+      "file": "packages/engine/src/program.ts",
+      "function": "getFeedbackSelectionScoreBonus / shouldAvoidFeedbackRiskCandidate",
+      "condition": "prior pain/fail/hard feedback",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "all"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Heavy score penalty; remains selectable if no better option",
+      "originalRationale": "Feedback risk ≠ personal block",
+      "currentEvidence": "Matches documented philosophy",
+      "classification": "SCORING_SIGNAL",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "deferred-repair-hard-block",
+      "file": "packages/engine/src/program.ts",
+      "function": "multiple repair insertion paths",
+      "condition": "feedbackSummary.deferred === true",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "all"
+      ],
+      "stage": "repair",
+      "excludesOrRewards": "Hard-excludes deferred from repair reinsert; initial uses score only",
+      "originalRationale": "User-controlled deferral contract",
+      "currentEvidence": "Documented 8 repair sites; initial not hard-blocked",
+      "classification": "REPAIR_ONLY_RULE",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "equipment-capability-support-anchor",
+      "file": "packages/engine/src/program.ts + equipmentCapabilities.ts",
+      "function": "isExerciseEligibleForProgramContext / isSupportConfirmedByCapabilities",
+      "condition": "mode illegal equipment; band anchor/type; bench/support unconfirmed",
+      "affectedModes": [
+        "dumbbells",
+        "bands",
+        "bodyweight",
+        "mixedHome",
+        "gym"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "main",
+        "accessory"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Excludes unavailable equipment/support/anchor patterns",
+      "originalRationale": "Capability honesty",
+      "currentEvidence": "Hard legality — must not weaken",
+      "classification": "HARD_INVARIANT",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "uniqueness-coverage-contract-dayintel-repairs",
+      "file": "packages/engine/src/program.ts",
+      "function": "ensureDistinctRoutine / applyWeeklyCoverageRepairs / repairDayToMeetSpec / repair*DayIntelligence",
+      "condition": "missing coverage, duplicates, day curriculum gaps",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "main",
+        "accessory"
+      ],
+      "stage": "repair",
+      "excludesOrRewards": "Replaces/reinserts from preferred pools and rescue lists",
+      "originalRationale": "Contract and day intelligence integrity",
+      "currentEvidence": "Repair pools can reassert machine-first preferences; parity with initial selection must be tested",
+      "classification": "REPAIR_ONLY_RULE",
+      "recommendedAction": "preserve_intelligence_parity_tests"
+    },
+    {
+      "id": "quality-recovery-mode-fallback",
+      "file": "packages/engine/src/program/qualityGate/recoverProgramQuality.ts + modeQualityFallback.ts",
+      "function": "recoverAndEvaluateProgramQuality / resolveModeQualityFallbackSeed",
+      "condition": "quality gate fail → seed retry → mode canonical seed fallback",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "all"
+      ],
+      "stage": "fallback",
+      "excludesOrRewards": "Replaces failed generation with mode-identity-preserving seed",
+      "originalRationale": "Never return failed-quality programs",
+      "currentEvidence": "Canonical seeds re-enter same generator; not a second generator",
+      "classification": "REPAIR_ONLY_RULE",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "hardcoded-rescue-lists",
+      "file": "packages/engine/src/program.ts + qualityGate/repairProgramQualityContracts.ts",
+      "function": "HF integrity / forceThreeDayFinalDisplayedSlotTruth / quality alt lists",
+      "condition": "integrity/truth/quality repair needs a replacement ID",
+      "affectedModes": [
+        "gym primarily"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "main / hinge / unilateral"
+      ],
+      "stage": "repair",
+      "excludesOrRewards": "Forces preferred rescue IDs",
+      "originalRationale": "Last-resort truthful replacements",
+      "currentEvidence": "Can reintroduce machine bias if lists are machine-heavy; audit parity",
+      "classification": "REPAIR_ONLY_RULE",
+      "recommendedAction": "preserve; ensure lists include truthful non-machine options"
+    },
+    {
+      "id": "quality-observability",
+      "file": "packages/engine/src/program/qualityGate/programQualityObservability.ts",
+      "function": "observability helpers",
+      "condition": "audit/debug emission",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "n/a"
+      ],
+      "stage": "observability",
+      "excludesOrRewards": "Does not exclude candidates",
+      "originalRationale": "Debug / audit",
+      "currentEvidence": "No selection effect",
+      "classification": "OBSERVABILITY_ONLY",
+      "recommendedAction": "preserve"
+    },
+    {
+      "id": "pain-contraindications-field-duality",
+      "file": "packages/engine/src/program.ts + ladderAdvancement.ts + catalog",
+      "function": "contraindications vs painContraindications",
+      "condition": "two catalog fields used by different stages",
+      "affectedModes": [
+        "all"
+      ],
+      "affectedExperience": [
+        "all"
+      ],
+      "affectedPhases": [
+        "all"
+      ],
+      "affectedSectionsRoles": [
+        "all"
+      ],
+      "stage": "initial_selection",
+      "excludesOrRewards": "Inconsistent hard/soft application across stages",
+      "originalRationale": "Historical field split",
+      "currentEvidence": "Potential STALE_OR_REDUNDANT inconsistency; out of sequencing scope",
+      "classification": "STALE_OR_REDUNDANT",
+      "recommendedAction": "document_only_this_phase; do not blindly unify tags"
+    }
+  ],
+  "correctionPlan": [
+    {
+      "id": "goblet-vs-machine-squat-hard-exclude",
+      "action": "applied: convert_to_soft_preference (+2.5 machine squat / +1 goblet; hard exclude removed)",
+      "classification": "CONTEXTUAL_HARD_GATE"
+    },
+    {
+      "id": "activation-push-machine-chest-plus16",
+      "action": "applied: reduce_to_moderate_preference (+4 machine chest / +2 DB bench)",
+      "classification": "SCORING_SIGNAL"
+    }
+  ],
+  "beginnerRulingMatrix": {
+    "personas": [
+      {
+        "personaId": "beg_gym_3d_nopain_p1_gf",
+        "label": "Beginner 3d no pain Phase1 general fitness",
+        "seedCount": 12,
+        "avgMachineShare": 0.6666666666666666,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": false,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 1,
+        "sampleMains": [
+          "machine-chest-press",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "machine-shoulder-press",
+          "machine-reverse-pec-deck",
+          "dumbbell-lateral-raise",
+          "machine-leg-press",
+          "db-rdl",
+          "dumbbell-reverse-lunge"
+        ],
+        "familyShareAggregate": {
+          "machines": 72,
+          "dumbbells": 36
+        }
+      },
+      {
+        "personaId": "beg_gym_3d_shoulder_p1",
+        "label": "Beginner 3d shoulder pain Phase1",
+        "seedCount": 12,
+        "avgMachineShare": 0.6666666666666666,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": false,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 1,
+        "sampleMains": [
+          "machine-chest-press",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "machine-shoulder-press",
+          "machine-reverse-pec-deck",
+          "dumbbell-lateral-raise",
+          "machine-leg-press",
+          "db-rdl",
+          "dumbbell-reverse-lunge"
+        ],
+        "familyShareAggregate": {
+          "machines": 72,
+          "dumbbells": 36
+        }
+      },
+      {
+        "personaId": "beg_gym_3d_lbp_p1",
+        "label": "Beginner 3d lower-back pain Phase1",
+        "seedCount": 12,
+        "avgMachineShare": 0.6666666666666666,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": false,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 1,
+        "sampleMains": [
+          "machine-chest-press",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "machine-shoulder-press",
+          "machine-reverse-pec-deck",
+          "dumbbell-lateral-raise",
+          "machine-leg-press",
+          "single-leg-glute-bridge-hold",
+          "dumbbell-reverse-lunge"
+        ],
+        "familyShareAggregate": {
+          "machines": 72,
+          "dumbbells": 24,
+          "bodyweight": 12
+        }
+      },
+      {
+        "personaId": "beg_gym_3d_knee_p1",
+        "label": "Beginner 3d knee pain Phase1",
+        "seedCount": 12,
+        "avgMachineShare": 0.6666666666666666,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": false,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 1,
+        "sampleMains": [
+          "machine-chest-press",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "machine-shoulder-press",
+          "machine-reverse-pec-deck",
+          "dumbbell-lateral-raise",
+          "machine-leg-press",
+          "db-rdl",
+          "dumbbell-reverse-lunge"
+        ],
+        "familyShareAggregate": {
+          "machines": 72,
+          "dumbbells": 36
+        }
+      },
+      {
+        "personaId": "beg_gym_3d_multi_pain_p1",
+        "label": "Beginner 3d multi pain Phase1",
+        "seedCount": 12,
+        "avgMachineShare": 0.6666666666666666,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": false,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 1,
+        "sampleMains": [
+          "machine-chest-press",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "machine-shoulder-press",
+          "machine-reverse-pec-deck",
+          "dumbbell-lateral-raise",
+          "machine-leg-press",
+          "single-leg-glute-bridge-hold",
+          "dumbbell-reverse-lunge"
+        ],
+        "familyShareAggregate": {
+          "machines": 72,
+          "dumbbells": 24,
+          "bodyweight": 12
+        }
+      },
+      {
+        "personaId": "beg_gym_4d_nopain_p2_gf",
+        "label": "Beginner 4d no pain Phase2 general fitness",
+        "seedCount": 12,
+        "avgMachineShare": 0.25,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": true,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 0,
+        "sampleMains": [
+          "dumbbell-floor-press",
+          "dumbbell-shoulder-press",
+          "machine-leg-press",
+          "db-rdl",
+          "dumbbell-rows",
+          "machine-lat-pulldown",
+          "db-rdl",
+          "dumbbell-step-up-loaded"
+        ],
+        "familyShareAggregate": {
+          "dumbbells": 72,
+          "machines": 24
+        }
+      },
+      {
+        "personaId": "beg_gym_5d_nopain_p3_gf",
+        "label": "Beginner 5d no pain Phase3 general fitness",
+        "seedCount": 12,
+        "avgMachineShare": 0.2916666666666667,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": true,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 0,
+        "sampleMains": [
+          "dumbbell-incline-press",
+          "dumbbell-arnold-press",
+          "machine-leg-press",
+          "db-rdl",
+          "dumbbell-rows",
+          "machine-lat-pulldown",
+          "machine-glute-drive",
+          "dumbbell-step-up-loaded",
+          "machine-seated-row",
+          "dumbbell-shoulder-press"
+        ],
+        "familyShareAggregate": {
+          "dumbbells": 72,
+          "machines": 35,
+          "cables": 7,
+          "barbells": 6
+        }
+      },
+      {
+        "personaId": "beg_gym_3d_nopain_p1_mg",
+        "label": "Beginner 3d no pain Phase1 muscle gain",
+        "seedCount": 12,
+        "avgMachineShare": 0.6666666666666666,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": false,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 1,
+        "sampleMains": [
+          "machine-chest-press",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "machine-shoulder-press",
+          "machine-reverse-pec-deck",
+          "dumbbell-lateral-raise",
+          "machine-leg-press",
+          "db-rdl",
+          "dumbbell-reverse-lunge"
+        ],
+        "familyShareAggregate": {
+          "machines": 72,
+          "dumbbells": 36
+        }
+      },
+      {
+        "personaId": "beg_gym_3d_nopain_p2_gf",
+        "label": "Beginner 3d no pain Phase2 general fitness",
+        "seedCount": 12,
+        "avgMachineShare": 0.11111111111111115,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": true,
+        "anyDbPress": true,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 0,
+        "sampleMains": [
+          "dumbbell-bench-press",
+          "dumbbell-rows",
+          "machine-lat-pulldown",
+          "dumbbell-shoulder-press",
+          "cable-lateral-raise",
+          "cable-rear-delt-fly",
+          "goblet-squat",
+          "db-rdl",
+          "dumbbell-bulgarian-split-squat"
+        ],
+        "familyShareAggregate": {
+          "dumbbells": 72,
+          "machines": 12,
+          "cables": 24
+        }
+      },
+      {
+        "personaId": "beg_gym_3d_nopain_p3_gf",
+        "label": "Beginner 3d no pain Phase3 general fitness",
+        "seedCount": 12,
+        "avgMachineShare": 0,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": true,
+        "anyDbPress": true,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 0,
+        "sampleMains": [
+          "dumbbell-bench-press",
+          "cable-seated-row",
+          "cable-lat-pulldown",
+          "dumbbell-shoulder-press",
+          "cable-rear-delt-fly",
+          "cable-lateral-raise",
+          "goblet-squat",
+          "db-rdl",
+          "dumbbell-reverse-lunge"
+        ],
+        "familyShareAggregate": {
+          "dumbbells": 60,
+          "cables": 48
+        }
+      },
+      {
+        "personaId": "beg_gym_3d_block_machine_press",
+        "label": "Beginner 3d block machine-chest-press Phase1",
+        "seedCount": 12,
+        "avgMachineShare": 0.5555555555555555,
+        "alwaysMachineOnly": false,
+        "anyNonMachine": true,
+        "anyGoblet": false,
+        "anyDbPress": true,
+        "anyBarbellBackSquat": false,
+        "machineChestRate": 0,
+        "sampleMains": [
+          "dumbbell-bench-press",
+          "machine-seated-row",
+          "machine-lat-pulldown",
+          "machine-shoulder-press",
+          "machine-reverse-pec-deck",
+          "dumbbell-lateral-raise",
+          "machine-leg-press",
+          "db-rdl",
+          "dumbbell-reverse-lunge"
+        ],
+        "familyShareAggregate": {
+          "dumbbells": 48,
+          "machines": 60
+        }
+      }
+    ],
+    "seedCountPerPersona": 12,
+    "assertions": {
+      "beginnerDoesNotImplyMachineOnly": true,
+      "beginnerDoesNotImplyFreeWeightAvoidance": true,
+      "beginnerDoesNotImplyAdvancedBarbell": true,
+      "machinesCanStillWin": true,
+      "painOverridesPreference": true,
+      "personalBlocksOverride": true
+    },
+    "unexplainedMachineOnlyPersonas": [],
+    "funnelNotes": [
+      "Candidate funnel stages inspected via code audit: raw → equipment → pain → experience → phase → tier → scored → selected → repair → fallback → final",
+      "Primary machine-only collapse points: goblet hard-exclude when machines viable; +16 machine-chest-press activation push bonus",
+      "Beginner growth T3 safety is NOT machine-only (chest-supported/landmine/tier≤2 free weights remain)",
+      "At-home modes are unaffected by machine gates (machines illegal); sequencing work proceeds after minimal gym gate correction"
+    ]
+  },
+  "acceptanceCriteriaStatus": {
+    "unexplainedMachineOnlyBeginnerGates": 0,
+    "freeWeightOnlyPreferences": 0,
+    "scorePenaltiesActingAsUndocumentedHardGates": 2,
+    "safetyInvariantsWeakened": 0
+  }
+}

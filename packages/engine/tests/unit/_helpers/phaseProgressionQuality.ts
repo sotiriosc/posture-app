@@ -74,6 +74,7 @@ export const phaseProgressionPersonas: PhaseProgressionPersona[] = [
       experience: "Beginner",
       equipment: ["bands"],
       daysPerWeek: 5,
+      bandSetup: "long_with_anchor",
     },
   },
 ];

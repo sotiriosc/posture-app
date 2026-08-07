@@ -12,11 +12,12 @@ import {
 } from "@/lib/engine";
 import { derivePoseFocus } from "@/lib/engine/poseFocus";
 import {
-  PROGRAM_TEMPLATE_VERSION,
-} from "@/lib/program";
-import {
   normalizeEquipmentSelectionValues,
 } from "@/lib/equipment";
+import {
+  resolveAssessmentFocusFromPose,
+  resolveProgramPresentation,
+} from "@/lib/program";
 import { usePhotoContext } from "@/components/PhotoContext";
 import CorrectiveSourceLine from "@/components/session/CorrectiveSourceLine";
 import type { PoseAnalysis } from "@/lib/poseAnalyzer";
@@ -26,6 +27,10 @@ import ClarifyTerm from "@/components/ui/ClarifyTerm";
 import { CLARIFY } from "@/components/ui/clarifyTermCopy";
 import { loadAppState, saveAppState } from "@/lib/appState";
 import { buildQuestionnaireSignature } from "@/lib/questionnaireSignature";
+import {
+  isQuestionnaireSignatureCompatible,
+  isStoredProgramTemplateCompatible,
+} from "@/lib/programStorageCompat";
 import type { Exercise } from "@/lib/exercises";
 import type {
   ExerciseLog,
@@ -842,17 +847,15 @@ const isProgramCompatibleWithQuestionnaire = (
   } = {}
 ) => {
   if (!candidate) return false;
-  const expectedSignature =
-    options.questionnaireSignature ?? buildQuestionnaireSignature(questionnaire);
   const persistedSignature =
     typeof candidate.questionnaireSignature === "string" && candidate.questionnaireSignature
       ? candidate.questionnaireSignature
       : options.savedQuestionnaireSignature ?? null;
   return (
-    candidate.templateVersion === PROGRAM_TEMPLATE_VERSION &&
+    isStoredProgramTemplateCompatible(candidate.templateVersion) &&
     candidate.daysPerWeek === questionnaire.daysPerWeek &&
     candidate.goalTrack === questionnaire.goals &&
-    persistedSignature === expectedSignature &&
+    isQuestionnaireSignatureCompatible(persistedSignature, questionnaire) &&
     hasValidWeekStructure(candidate)
   );
 };
@@ -2815,8 +2818,21 @@ export default function ResultsRoutine() {
       : gateRemainingText;
   const phaseGateProgressText = `Workouts in phase: ${phaseGate.workoutsCompletedInPhase}/${phaseGate.minWorkouts} • Days in phase: ${phaseGate.daysSincePhaseStart}/${phaseGate.minDays}`;
   const phaseRequirementsText = `Phase advances after ${phaseGate.minWorkouts} sessions or when readiness criteria clear — whichever comes later.`;
+  // Phase 7B — canonical presentation resolver (equipment identity + adaptations).
+  // Photo focus must go through derivePoseFocus confidence gate — never observation titles.
+  const assessmentFocus = resolveAssessmentFocusFromPose(poseState.analysis);
+  const presentationModel = data
+    ? resolveProgramPresentation({
+        program,
+        questionnaire: data,
+        programProgress: progress,
+        assessmentFocusTags: assessmentFocus.focusTags,
+        assessmentFocusHighConfidence: assessmentFocus.highConfidence,
+      })
+    : null;
   const adaptationTrendItems = gateReadinessConsistencyLines(
     [
+      ...(presentationModel?.program.adaptationSummary.map((m) => m.text) ?? []),
       ...(program.sessionAdaptation?.reasons ?? []),
       ...(program.sessionAdaptation?.appliedChanges ?? []),
       ...(program.sessionAdaptation?.masteryChecks ?? []),
@@ -2948,6 +2964,14 @@ export default function ResultsRoutine() {
     { label: "Today", text: coachToday.replace(/^Today:\s*/i, "") },
     { label: "Focus", text: coachFocus },
     { label: "Watch", text: coachWatch.replace(/^Watch:\s*/i, "") },
+    ...(presentationModel?.program.equipmentIdentity
+      ? [
+          {
+            label: "Setup",
+            text: `${presentationModel.program.equipmentIdentity} · ${presentationModel.program.frequencyLabel}`,
+          },
+        ]
+      : []),
   ];
 
   const hasAdaptationCallout = Boolean(

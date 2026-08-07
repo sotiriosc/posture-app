@@ -24,6 +24,7 @@ export * from "./exercises";
 export * from "./exerciseCatalog";
 export * from "./centrationCues";
 export * from "./equipment";
+export * from "./coaching";
 
 // ── Assessment & pose analysis ────────────────────────────────────────────────
 export * from "./assessmentEngine";
@@ -91,6 +92,7 @@ export * from "./historyView";
 export * from "./insightGenerator";
 export * from "./nextSessionRecommendation";
 export * from "./questionnaireSignature";
+export * from "./programStorageCompat";
 export * from "./timerRules";
 export * from "./telemetry";
 export * from "./resetAppData";

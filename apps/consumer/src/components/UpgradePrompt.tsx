@@ -46,6 +46,20 @@ const DEFAULT_PLAN_OPTIONS: Array<{
   },
 ];
 
+/** Pure filter used by the upgrade plan picker (testable without network). */
+export function resolveVisibleCheckoutPlanOptions(
+  checkoutPlans: CheckoutPlans,
+  priceLabels: PriceLabels = {}
+) {
+  return DEFAULT_PLAN_OPTIONS.filter((option) =>
+    Boolean(checkoutPlans[option.id])
+  ).map((option) => ({
+    ...option,
+    label: priceLabels[option.id]?.label ?? option.label,
+    detail: priceLabels[option.id]?.detail ?? option.detail,
+  }));
+}
+
 function OfferNotes({ compact = false }: { compact?: boolean }) {
   return (
     <div
@@ -144,13 +158,10 @@ export default function UpgradePrompt() {
     ? "Keep training every day"
     : "Unlock ongoing full-week access";
 
-  const availableOptions = DEFAULT_PLAN_OPTIONS.filter((option) =>
-    Boolean(checkoutPlans[option.id])
-  ).map((option) => ({
-    ...option,
-    label: priceLabels[option.id]?.label ?? option.label,
-    detail: priceLabels[option.id]?.detail ?? option.detail,
-  }));
+  const availableOptions = resolveVisibleCheckoutPlanOptions(
+    checkoutPlans,
+    priceLabels
+  );
 
   const planPicker =
     availableOptions.length > 1 ? (

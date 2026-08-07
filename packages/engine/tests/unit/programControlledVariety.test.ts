@@ -362,11 +362,13 @@ describe("controlled variety engine pass", () => {
   });
 
   test("limited-option slot may repeat across variation seeds (acceptable)", () => {
+    // Gym body-part days still expose constrained lateral slots; bodyweight Full Body
+    // authorship is intentionally more deterministic and does not use Shoulders + Arms.
     const input: QuestionnaireData = {
       goals: "General fitness",
       painAreas: [],
       experience: "Beginner",
-      equipment: ["none"],
+      equipment: ["gym"],
       daysPerWeek: 3,
     };
 

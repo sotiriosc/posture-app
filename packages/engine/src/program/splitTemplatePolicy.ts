@@ -25,7 +25,7 @@ export type SplitTemplateSpec<
   };
 };
 
-type SplitTemplateRuleSet<RequirementRule extends SplitTemplateRequirementRule> = {
+export type SplitTemplateRuleSet<RequirementRule extends SplitTemplateRequirementRule> = {
   antiRotationRule: RequirementRule;
   bicepsIsolationRule: RequirementRule;
   calvesRule: RequirementRule;

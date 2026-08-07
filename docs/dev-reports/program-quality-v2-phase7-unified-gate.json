@@ -1,0 +1,227 @@
+{
+  "generatedAt": "2026-08-06T23:45:50.111Z",
+  "phase": 7,
+  "objective": "Unified quality-gate enforcement",
+  "templateVersion": 19,
+  "elapsedMs": 6102874,
+  "verdict": "PASS",
+  "totals": {
+    "fuzzCases": 50000,
+    "modes": 5,
+    "blockAwareCases": 600
+  },
+  "severity": {
+    "ok": true,
+    "known": {
+      "capabilityLimitation": [
+        "BODYWEIGHT_TRUE_VERTICAL_UNAVAILABLE",
+        "BODYWEIGHT_LOADED_PULL_UNAVAILABLE",
+        "BAND_HIGH_ANCHOR_UNAVAILABLE",
+        "BAND_LONG_BAND_UNAVAILABLE_LOOP_ONLY",
+        "DUMBBELL_TRUE_VERTICAL_UNAVAILABLE",
+        "MIXED_HOME_TRUE_VERTICAL_UNAVAILABLE"
+      ],
+      "deferredContent": [
+        "COACHING_DEMO_PLANNED",
+        "DEFERRED_DEMO",
+        "DEFERRED_CUES",
+        "DEFERRED_PROGRESSION_LINK",
+        "DEFERRED_ANCHOR_SAFETY_NOTE"
+      ],
+      "warning": [
+        "QUALITY_UNCOMMON_FAMILY",
+        "QUALITY_HIGH_SETUP_COMPLEXITY",
+        "QUALITY_TERMINAL_PROGRESSION"
+      ],
+      "hardFailurePrefixes": [
+        "GYM_",
+        "DUMBBELL_",
+        "BAND_",
+        "BODYWEIGHT_",
+        "MIXED_HOME_",
+        "QUALITY_",
+        "COACHING_"
+      ]
+    },
+    "mismatches": []
+  },
+  "baselines": {
+    "coverageOk": true,
+    "weeklyFailures": [],
+    "intelligenceFailures": [],
+    "evaluationPassed": true,
+    "hardFailures": []
+  },
+  "fallbacks": [
+    {
+      "mode": "gym",
+      "ok": true,
+      "passed": true,
+      "fallbackUsed": false,
+      "hardFailures": []
+    },
+    {
+      "mode": "dumbbells",
+      "ok": true,
+      "passed": true,
+      "fallbackUsed": false,
+      "hardFailures": []
+    },
+    {
+      "mode": "bands",
+      "ok": true,
+      "passed": true,
+      "fallbackUsed": false,
+      "hardFailures": []
+    },
+    {
+      "mode": "bodyweight",
+      "ok": true,
+      "passed": true,
+      "fallbackUsed": false,
+      "hardFailures": []
+    },
+    {
+      "mode": "mixedHome",
+      "ok": true,
+      "passed": true,
+      "fallbackUsed": false,
+      "hardFailures": []
+    }
+  ],
+  "repeatability": {
+    "ok": true,
+    "signatureDiff": false,
+    "reasonDiff": false,
+    "signatures": [
+      "70242a07",
+      "70242a07"
+    ]
+  },
+  "matrices": {
+    "coverageOk": true,
+    "phaseOk": false,
+    "coverageElapsedMs": 808,
+    "phaseElapsedMs": 17934,
+    "coverageStderr": "npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\n",
+    "phaseStderr": "npm warn Unknown env config \"devdir\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nCoverage matrix audit failed.\n",
+    "phaseMatrixRequiredForVerdict": false,
+    "documentedPhaseMatrixBlockers": [
+      "MATRIX_GYM_4D_BICEPS_TRICEPS_PUSH_COVERAGE",
+      "MATRIX_CARRY_EXPOSURE_INTELLIGENCE"
+    ]
+  },
+  "coaching": {
+    "ok": true,
+    "elapsedMs": 11921
+  },
+  "modes": [
+    {
+      "mode": "gym",
+      "ok": true,
+      "cases": 10000,
+      "hardFailureCount": 0,
+      "identityCollapse": 0,
+      "illegalEquipment": 0,
+      "deterministicRepeat": 0,
+      "exceptions": 0,
+      "topReasons": [],
+      "elapsedMs": 1700940
+    },
+    {
+      "mode": "dumbbells",
+      "ok": true,
+      "cases": 10000,
+      "hardFailureCount": 0,
+      "identityCollapse": 0,
+      "illegalEquipment": 0,
+      "deterministicRepeat": 0,
+      "exceptions": 0,
+      "topReasons": [],
+      "elapsedMs": 1178389
+    },
+    {
+      "mode": "bands",
+      "ok": true,
+      "cases": 10000,
+      "hardFailureCount": 0,
+      "identityCollapse": 0,
+      "illegalEquipment": 0,
+      "deterministicRepeat": 0,
+      "exceptions": 0,
+      "topReasons": [],
+      "elapsedMs": 1140472
+    },
+    {
+      "mode": "bodyweight",
+      "ok": true,
+      "cases": 10000,
+      "hardFailureCount": 0,
+      "identityCollapse": 0,
+      "illegalEquipment": 0,
+      "deterministicRepeat": 0,
+      "exceptions": 0,
+      "topReasons": [],
+      "elapsedMs": 822977
+    },
+    {
+      "mode": "mixedHome",
+      "ok": true,
+      "cases": 10000,
+      "hardFailureCount": 0,
+      "identityCollapse": 0,
+      "illegalEquipment": 0,
+      "deterministicRepeat": 0,
+      "exceptions": 0,
+      "topReasons": [],
+      "elapsedMs": 1152939
+    }
+  ],
+  "blockAware": {
+    "ok": true,
+    "cases": 600,
+    "safeGenerationFailures": 0,
+    "exceptions": 0,
+    "structuralCounts": {
+      "QUALITY_BLOCKED_EXERCISE_PRESENT": 0,
+      "GYM_REQUIRED_ROLE_WRONG_TRUTH": 0,
+      "DUMBBELL_PREP_AS_MAIN": 0,
+      "MIXED_HOME_RANDOM_EQUIPMENT_MIX": 0
+    },
+    "structuralTotal": 0,
+    "modes": [
+      {
+        "mode": "gym",
+        "cases": 120,
+        "safeGenerationFailures": 0,
+        "structuralHits": 0
+      },
+      {
+        "mode": "dumbbells",
+        "cases": 120,
+        "safeGenerationFailures": 0,
+        "structuralHits": 0
+      },
+      {
+        "mode": "bands",
+        "cases": 120,
+        "safeGenerationFailures": 0,
+        "structuralHits": 0
+      },
+      {
+        "mode": "bodyweight",
+        "cases": 120,
+        "safeGenerationFailures": 0,
+        "structuralHits": 0
+      },
+      {
+        "mode": "mixedHome",
+        "cases": 120,
+        "safeGenerationFailures": 0,
+        "structuralHits": 0
+      }
+    ],
+    "elapsedMs": 75415,
+    "gapExplanation": "Ordinary mode audits omit personal blocks; fuzz-integrity injects them on index%17===0. This gate is the mandatory block-aware PASS boundary inside audit:program-quality."
+  }
+}

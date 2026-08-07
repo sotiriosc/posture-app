@@ -1,7 +1,12 @@
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { isExerciseEligible, normalizeEquipmentSelection, type Equipment } from "@/lib/equipment";
 import { exerciseById, exercises, type Exercise } from "@/lib/exercises";
-import type { Program, ProgramDay, ProgramRoutineItem } from "@/lib/types";
+import { validateDumbbellProgramContract } from "@/lib/program/dumbbellProgramContract";
+import { validateBandProgramContract } from "@/lib/program/bandProgramContract";
+import { validateBodyweightProgramContract } from "@/lib/program/bodyweightProgramContract";
+import { validateMixedHomeProgramContract } from "@/lib/program/mixedHomeProgramContract";
+import { resolvePrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
+import type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
 import {
   buildThreeDayCoachAuditHints,
   canUseUprightRowForThreeDayShoulder,
@@ -13,7 +18,7 @@ import {
   resolveCoreCoachFamily,
   resolveLowerUnilateralCoachFamily,
 } from "@/lib/program/threeDayCoachPolicy";
-import type { ProgramConstraintWarning } from "@/lib/program/programFinalization";
+import type { Program, ProgramDay, ProgramRoutineItem } from "@/lib/types";
 
 export type ThreeDayReviewPersona = {
   name: string;
@@ -320,6 +325,80 @@ export const evaluateThreeDayPersonaQuality = ({
   const failures: string[] = [];
   const available = normalizeEquipmentSelection(questionnaire.equipment).available;
   const selectedIds = new Set(allProgramItems(program).map((item) => item.exerciseId));
+  const equipmentMode = resolvePrimaryProgramEquipmentMode(questionnaire.equipment);
+
+  if (
+    equipmentMode === "dumbbells" ||
+    equipmentMode === "bands" ||
+    equipmentMode === "bodyweight" ||
+    equipmentMode === "mixedHome"
+  ) {
+    const contractFailures =
+      equipmentMode === "dumbbells"
+        ? validateDumbbellProgramContract({
+            program,
+            persona: "three-day-review",
+            equipment: questionnaire.equipment,
+            experience: questionnaire.experience,
+            painAreas: questionnaire.painAreas,
+          })
+        : equipmentMode === "bands"
+        ? validateBandProgramContract({
+            program,
+            persona: "three-day-review",
+            equipment: questionnaire.equipment,
+            bandSetup: questionnaire.bandSetup,
+            experience: questionnaire.experience,
+          })
+        : equipmentMode === "bodyweight"
+        ? validateBodyweightProgramContract({
+            program,
+            persona: "three-day-review",
+            equipment: questionnaire.equipment,
+            experience: questionnaire.experience,
+            painAreas: questionnaire.painAreas,
+          })
+        : validateMixedHomeProgramContract({
+            program,
+            persona: "three-day-review",
+            equipment: questionnaire.equipment,
+            bandSetup: questionnaire.bandSetup,
+            experience: questionnaire.experience,
+            painAreas: questionnaire.painAreas,
+          });
+    failures.push(...contractFailures.map((failure) => failure.detail));
+
+    const dayThreeUnilateralFamilies = program.week
+      .flatMap((day) => getSectionExercises(day, "main"))
+      .map((exercise) => resolveLowerUnilateralCoachFamily(exercise))
+      .filter((family) => family !== "other");
+
+    const uprightRows = allProgramExercises(program).filter(isUprightRowFamilyExercise);
+    const uprightRowSafe = canUseUprightRowForThreeDayShoulder({
+      experience: experienceForPolicy(questionnaire),
+      painSeverity: questionnaire.painAreas.length > 0 ? "medium" : "low",
+      painAreas: questionnaire.painAreas,
+      trainingContext: trainingContextFor(questionnaire),
+      availableEquipment: available,
+    });
+    if (uprightRows.length > 0 && !uprightRowSafe) {
+      failures.push(`upright row selected outside safe profile: ${formatExerciseIds(uprightRows)}`);
+    }
+
+    const ineligibleExercises = allProgramExercises(program).filter(
+      (exercise) => !isExerciseEligible(exercise, available)
+    );
+    if (ineligibleExercises.length > 0) {
+      failures.push(
+        `selected exercises violate equipment context: ${formatExerciseIds(ineligibleExercises)}`
+      );
+    }
+
+    return {
+      failures,
+      unilateralFamilies: dayThreeUnilateralFamilies,
+    };
+  }
 
   const blockingWarnings = warnings.filter((warning) =>
     ["violation", "missing", "coverage"].includes(warning.kind)

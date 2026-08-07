@@ -3,6 +3,8 @@ import { generateWeeklyProgram } from "@/lib/program";
 import { exerciseById } from "@/lib/exercises";
 import type { QuestionnaireData } from "@/components/QuestionnaireForm";
 import { normalizeEquipmentSelection, isExerciseEligible } from "@/lib/equipment";
+import { expectedMainCountForDayTitle } from "./_helpers/expectedCounts";
+import { shouldEnforceRoutineExerciseIdUniqueness } from "./_helpers/dumbbellTestTitles";
 
 type ScoreBreakdown = {
   structure: number;
@@ -66,7 +68,6 @@ const scoreProgramQuality = (input: QuestionnaireData): ScoreBreakdown => {
   let variety = 0;
   let practicalFit = 0;
 
-  const expectedMain = expectedMainRange(input.experience, input.daysPerWeek);
   const available = normalizeEquipmentSelection(input.equipment).available;
 
   const allDaysHaveSections = phase1.week.every((day) => {
@@ -80,12 +81,23 @@ const scoreProgramQuality = (input: QuestionnaireData): ScoreBreakdown => {
   });
   if (allDaysHaveSections) structure += 8;
 
-  const allMainCountsCorrect = phase1.week.every(
-    (day) => {
-      const mainCount = day.routine.filter((item) => item.section === "main").length;
-      return mainCount >= expectedMain.min && mainCount <= expectedMain.max;
+  const allMainCountsCorrect = phase1.week.every((day) => {
+    const mainCount = day.routine.filter((item) => item.section === "main").length;
+    const expected = expectedMainCountForDayTitle({
+      daysPerWeek: input.daysPerWeek,
+      dayTitle: day.title,
+      experience: input.experience,
+      equipment: input.equipment,
+    });
+    if (Array.isArray(expected)) {
+      return mainCount >= expected[0] && mainCount <= expected[1];
     }
-  );
+    if (typeof expected === "number") {
+      return mainCount === expected;
+    }
+    const fallback = expectedMainRange(input.experience, input.daysPerWeek);
+    return mainCount >= fallback.min && mainCount <= fallback.max;
+  });
   if (allMainCountsCorrect) structure += 7;
 
   const allMainCategoriesCorrect = phase1.week.every((day) =>
@@ -95,10 +107,12 @@ const scoreProgramQuality = (input: QuestionnaireData): ScoreBreakdown => {
   );
   if (allMainCategoriesCorrect) structure += 5;
 
-  const allDaysUnique = phase1.week.every((day) => {
-    const ids = day.routine.map((item) => item.exerciseId);
-    return new Set(ids).size === ids.length;
-  });
+  const allDaysUnique =
+    !shouldEnforceRoutineExerciseIdUniqueness(input.equipment) ||
+    phase1.week.every((day) => {
+      const ids = day.routine.map((item) => item.exerciseId);
+      return new Set(ids).size === ids.length;
+    });
   if (allDaysUnique) {
     structure += 5;
     variety += 8;

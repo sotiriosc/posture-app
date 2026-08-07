@@ -7,6 +7,7 @@ import {
   generateNextCycleProgram,
   generateNextPhaseProgram,
   generateWeeklyProgram,
+  ProgramQualityGateError,
 } from "@/lib/program";
 import { buildProgramVariationOptions } from "@/lib/programVariationClient";
 import { uuid } from "@/lib/logStore";
@@ -510,35 +511,53 @@ const buildWeeklyProgram = (
         initialLiveVariation: Boolean(seedPolicy.initialVariationSeed),
       }
     : undefined;
-  const program = generateWeeklyProgram(request.signals.questionnaire, request.nextProgramId, {
-    phaseIndex: target.phaseIndex,
-    weekIndex: target.weekIndex,
-    cycleIndex: target.cycleIndex,
-    totalWeekIndex: target.totalWeekIndex,
+  const debug = buildDebugInfo({
+    mode: request.mode,
     seed: seedPolicy.seed,
-    poseAnalysis: request.signals.poseAnalysis ?? null,
-    assessmentReport: request.signals.assessmentReport ?? null,
-    recentLogs: progression.recentLogs,
-    previousWeek: request.currentProgram?.week,
-    feedbackSummaryByExercise: progression.feedbackSummaryByExercise,
-    variation: variation ? { ...variation, seed: seedPolicy.seed } : undefined,
-    // Phase 3.3: pass blocked exercises and training intent through from signals.
-    blockedExerciseIds: request.signals.prefs?.blockedExerciseIds ?? undefined,
-    trainingIntent: request.signals.questionnaire.trainingIntent ?? "build",
+    settingsHash: seedPolicy.settingsHash,
+    target,
+    progression,
   });
 
-  return {
-    status: "generated",
-    program,
-    seed: seedPolicy.seed,
-    debug: buildDebugInfo({
-      mode: request.mode,
+  try {
+    const program = generateWeeklyProgram(
+      request.signals.questionnaire,
+      request.nextProgramId,
+      {
+        phaseIndex: target.phaseIndex,
+        weekIndex: target.weekIndex,
+        cycleIndex: target.cycleIndex,
+        totalWeekIndex: target.totalWeekIndex,
+        seed: seedPolicy.seed,
+        poseAnalysis: request.signals.poseAnalysis ?? null,
+        assessmentReport: request.signals.assessmentReport ?? null,
+        recentLogs: progression.recentLogs,
+        previousWeek: request.currentProgram?.week,
+        feedbackSummaryByExercise: progression.feedbackSummaryByExercise,
+        variation: variation ? { ...variation, seed: seedPolicy.seed } : undefined,
+        // Phase 3.3: pass blocked exercises and training intent through from signals.
+        blockedExerciseIds: request.signals.prefs?.blockedExerciseIds ?? undefined,
+        trainingIntent: request.signals.questionnaire.trainingIntent ?? "build",
+      }
+    );
+
+    return {
+      status: "generated",
+      program,
       seed: seedPolicy.seed,
-      settingsHash: seedPolicy.settingsHash,
-      target,
-      progression,
-    }),
-  };
+      debug,
+    };
+  } catch (error) {
+    if (error instanceof ProgramQualityGateError) {
+      return {
+        status: "quality_failed",
+        message: error.message,
+        seed: seedPolicy.seed,
+        debug,
+      };
+    }
+    throw error;
+  }
 };
 
 const buildAdvancedResult = (params: {
@@ -590,14 +609,39 @@ export const generateProgram: EngineGenerator = (
     progression,
   });
 
-  if (request.mode === "nextCycle") {
+  try {
+    if (request.mode === "nextCycle") {
+      return buildAdvancedResult({
+        request,
+        progression,
+        target,
+        seed: seedPolicy.seed,
+        settingsHash: seedPolicy.settingsHash,
+        result: generateNextCycleProgram({
+          currentProgram: request.currentProgram,
+          questionnaire: request.signals.questionnaire,
+          painFlag: progression.painFlag,
+          complianceRate: progression.complianceRate,
+          fatigueFlag: progression.fatigueFlag,
+          completedSessionsCount: progression.completedSessionsCount,
+          completedWeeksCount: progression.completedWeeksCount,
+          recentLogs: progression.recentLogs,
+          feedbackSummaryByExercise: progression.feedbackSummaryByExercise,
+          poseAnalysis: request.signals.poseAnalysis ?? null,
+          assessmentReport: request.signals.assessmentReport ?? null,
+          nextProgramId: request.nextProgramId,
+          seed: seedPolicy.seed,
+        }),
+      });
+    }
+
     return buildAdvancedResult({
       request,
       progression,
       target,
       seed: seedPolicy.seed,
       settingsHash: seedPolicy.settingsHash,
-      result: generateNextCycleProgram({
+      result: generateNextPhaseProgram({
         currentProgram: request.currentProgram,
         questionnaire: request.signals.questionnaire,
         painFlag: progression.painFlag,
@@ -613,30 +657,23 @@ export const generateProgram: EngineGenerator = (
         seed: seedPolicy.seed,
       }),
     });
+  } catch (error) {
+    if (error instanceof ProgramQualityGateError) {
+      return {
+        status: "quality_failed",
+        message: error.message,
+        seed: seedPolicy.seed,
+        debug: buildDebugInfo({
+          mode: request.mode,
+          seed: seedPolicy.seed,
+          settingsHash: seedPolicy.settingsHash,
+          target,
+          progression,
+        }),
+      };
+    }
+    throw error;
   }
-
-  return buildAdvancedResult({
-    request,
-    progression,
-    target,
-    seed: seedPolicy.seed,
-    settingsHash: seedPolicy.settingsHash,
-    result: generateNextPhaseProgram({
-      currentProgram: request.currentProgram,
-      questionnaire: request.signals.questionnaire,
-      painFlag: progression.painFlag,
-      complianceRate: progression.complianceRate,
-      fatigueFlag: progression.fatigueFlag,
-      completedSessionsCount: progression.completedSessionsCount,
-      completedWeeksCount: progression.completedWeeksCount,
-      recentLogs: progression.recentLogs,
-      feedbackSummaryByExercise: progression.feedbackSummaryByExercise,
-      poseAnalysis: request.signals.poseAnalysis ?? null,
-      assessmentReport: request.signals.assessmentReport ?? null,
-      nextProgramId: request.nextProgramId,
-      seed: seedPolicy.seed,
-    }),
-  });
 };
 
 export function generateProgramV2(signals: EngineSignals): Program {

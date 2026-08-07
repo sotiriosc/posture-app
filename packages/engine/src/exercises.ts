@@ -1683,6 +1683,8 @@ const rawExercises: Exercise[] = [
     movementPattern: ["hinge"],
     muscleGroups: ["hamstrings", "glutes", "lower back"],
     loadType: "assisted",
+    // Honest hinge main for band/mixed contexts and gym personal-block fallbacks.
+    loadedMainEligible: true,
     durationOrReps: "8-12 reps",
     cues: ["Push hips back", "Keep shins mostly vertical"],
     mistakes: ["Rounding back", "Bending knees too much"],

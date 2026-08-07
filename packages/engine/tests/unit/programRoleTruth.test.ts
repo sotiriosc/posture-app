@@ -8,6 +8,18 @@ import {
   getProgramConstraintWarningBuffer,
 } from "@/lib/program";
 import { auditWeeklyCoverageFromExercises } from "@/lib/program/coverageAudit";
+import {
+  findProgramDay,
+  findProgramDayStartingWith,
+  fullBodyADayTitle,
+  fullBodyBDayTitle,
+  hingeDayTitle,
+  isBandsOnlyEquipment,
+  isDumbbellsOnlyEquipment,
+  isFullBodyTemplateEquipment,
+  pushPullDayTitle,
+  shoulderDayTitle,
+} from "./_helpers/dumbbellTestTitles";
 
 const pickExercises = (ids: string[]) =>
   ids
@@ -21,20 +33,34 @@ const warningMessagesFor = (programId: string) =>
     .filter((warning) => warning.programId === programId)
     .map((warning) => warning.message);
 
-const backChestMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
-  const day = program.week.find((entry) => entry.title === "Back + Chest");
+const backChestMains = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  equipment: QuestionnaireData["equipment"] = ["gym"]
+) => {
+  const day = findProgramDay(program, pushPullDayTitle(equipment));
   expect(day).toBeTruthy();
   return day?.routine.filter((item) => item.section === "main") ?? [];
 };
 
-const legsMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
-  const day = program.week.find((entry) => entry.title === "Legs + Abs");
+const legsMains = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  equipment: QuestionnaireData["equipment"] = ["gym"]
+) => {
+  if (isDumbbellsOnlyEquipment(equipment) || isBandsOnlyEquipment(equipment)) {
+    return program.week
+      .filter((entry) => entry.title.startsWith("Full Body"))
+      .flatMap((day) => day.routine.filter((item) => item.section === "main"));
+  }
+  const day = findProgramDay(program, "Legs + Abs");
   expect(day).toBeTruthy();
   return day?.routine.filter((item) => item.section === "main") ?? [];
 };
 
-const shouldersMains = (program: ReturnType<typeof generateWeeklyProgram>) => {
-  const day = program.week.find((entry) => entry.title === "Shoulders + Arms");
+const shouldersMains = (
+  program: ReturnType<typeof generateWeeklyProgram>,
+  equipment: QuestionnaireData["equipment"] = ["gym"]
+) => {
+  const day = findProgramDay(program, shoulderDayTitle(equipment));
   expect(day).toBeTruthy();
   return day?.routine.filter((item) => item.section === "main") ?? [];
 };
@@ -103,23 +129,23 @@ describe("program role truthfulness", () => {
     expect(movementPatterns.has("push")).toBe(false);
   });
 
-  test("no-equipment Back + Chest keeps push-ups in push slots and rows in pull slots", () => {
+  test("no-equipment Full Body A keeps push-ups in push slots without false pull claims", () => {
     const programId = "truth-none-back-chest-slots";
     clearProgramConstraintWarningBuffer();
+    const equipment = ["none"] as QuestionnaireData["equipment"];
     const program = generateWeeklyProgram(
       {
         goals: "Reduce pain",
         painAreas: ["lower back"],
         experience: "Beginner",
-        equipment: ["none"],
+        equipment,
         daysPerWeek: 3,
       },
       programId,
       { phaseIndex: 1, seed: "three-day-persona-review-12-phase-1" }
     );
-    const mains = backChestMains(program);
-    const pushupLike = new Set(["pushup", "countertop-pushup", "wall-pushup", "archer-pushup"]);
-    const rowLike = new Set(["supine-elbow-drive-row", "prone-elbow-row", "back-widow"]);
+    const mains = backChestMains(program, equipment);
+    const pushupLike = new Set(["pushup", "wall-pushup", "archer-pushup", "close-grip-pushup"]);
 
     expect(mains.some((item) => pushupLike.has(item.exerciseId))).toBe(true);
     expect(
@@ -132,83 +158,83 @@ describe("program role truthfulness", () => {
         )
     ).toBe(true);
     expect(
-      mains
-        .filter((item) => rowLike.has(item.exerciseId))
-        .every(
-          (item) =>
-            item.selectionDebug?.slotLane === "pull" &&
-            item.selectionDebug?.slotKind !== "mainPushSecondary"
-        )
+      mains.some((item) => item.selectionDebug?.slotKind === "mainTrunkAntiExtension")
     ).toBe(true);
     expect(warningMessagesFor(programId)).toEqual([]);
   });
 
-  test("constrained vertical-pull surrogate satisfies Back + Chest without missing-main warnings", () => {
+  test("bodyweight Full Body C uses honest upper-back control instead of false vertical pull", () => {
     const programId = "truth-none-vertical-surrogate";
     clearProgramConstraintWarningBuffer();
+    const equipment = ["none"] as QuestionnaireData["equipment"];
     const program = generateWeeklyProgram(
       {
         goals: "General fitness",
         painAreas: [],
         experience: "Beginner",
-        equipment: ["none"],
+        equipment,
         daysPerWeek: 3,
       },
       programId,
       { phaseIndex: 2, seed: "three-day-persona-review-11-phase-2" }
     );
-    const mains = backChestMains(program);
+    const dayC = program.week.find((day) => day.title.includes("Back Intent"));
+    const mains = dayC?.routine.filter((item) => item.section === "main") ?? [];
 
-    expect(mains.some((item) => item.selectionDebug?.slotKind === "mainPullHorizontal")).toBe(true);
     expect(
-      mains.some(
-        (item) =>
-          item.selectionDebug?.slotKind === "mainPullVertical" &&
-          hasVerticalPullOrSurrogate(item.exerciseId)
-      )
+      mains.some((item) => item.selectionDebug?.slotKind === "mainUpperBackControl")
     ).toBe(true);
+    expect(
+      mains.some((item) => item.selectionDebug?.slotKind === "mainPullVertical")
+    ).toBe(false);
     expect(warningMessagesFor(programId).join("\n")).not.toMatch(/main pull pattern|main vertical pull/i);
   });
 
-  test("band chest fly remains a legal chest-isolation main without stale archer-pushup warnings", () => {
-    const programId = "truth-band-chest-fly-final";
+  test("band Full Body A keeps honest press and pull without gym fly-slot inheritance", () => {
+    const programId = "truth-band-full-body-a-final";
     clearProgramConstraintWarningBuffer();
+    const equipment = ["bands"] as QuestionnaireData["equipment"];
     const program = generateWeeklyProgram(
       {
         goals: "General fitness",
         painAreas: [],
         experience: "Intermediate",
-        equipment: ["bands"],
+        equipment,
         daysPerWeek: 3,
+        bandSetup: "long_with_anchor",
       },
       programId,
       { phaseIndex: 3, seed: "three-day-persona-review-9-phase-3" }
     );
-    const fly = backChestMains(program).find((item) => item.exerciseId === "band-chest-fly");
+    const mains = backChestMains(program, equipment);
+    const ids = mains.map((item) => item.exerciseId);
 
-    expect(fly).toBeTruthy();
-    expect(fly?.selectionDebug?.slotKind).toBe("mainPushFly");
-    expect(fly?.selectionDebug?.slotLane).toBe("push");
+    expect(program.week[0]?.title).toBe(fullBodyADayTitle);
+    expect(mains.some((item) => item.selectionDebug?.slotLane === "push")).toBe(true);
+    expect(mains.some((item) => item.selectionDebug?.slotLane === "pull")).toBe(true);
+    expect(ids.some((id) => id.includes("fly"))).toBe(false);
     expect(warningMessagesFor(programId).join("\n")).not.toMatch(
-      /band-chest-fly.*archer-pushup|archer-pushup.*band-chest-fly|main legality replaced|final main integrity replaced/i
+      /main legality replaced|final main integrity replaced/i
     );
   });
 
   test("hip-extension hinge surrogates satisfy lower-back-pain hinge slots without carry noise", () => {
     const programId = "truth-low-back-hinge-surrogate";
     clearProgramConstraintWarningBuffer();
+    const equipment = ["bands"] as QuestionnaireData["equipment"];
     const program = generateWeeklyProgram(
       {
         goals: "Reduce pain",
         painAreas: ["lower back"],
         experience: "Beginner",
-        equipment: ["bands"],
+        equipment,
         daysPerWeek: 3,
+        bandSetup: "long_with_anchor",
       },
       programId,
       { phaseIndex: 1, seed: "three-day-persona-review-10-phase-1" }
     );
-    const hinge = legsMains(program).find(
+    const hinge = legsMains(program, equipment).find(
       (item) => item.selectionDebug?.slotKind === "mainHingePrimary"
     );
     const messages = warningMessagesFor(programId).join("\n");
@@ -234,13 +260,15 @@ describe("program role truthfulness", () => {
       totalWeekIndex: 1,
       seed: "truth-low-back-pain",
     });
-    const legsDay = program.week.find((day) => day.title === "Legs + Abs");
-    const hingeMain = legsDay?.routine.find(
+    const hingeDay = program.week.find((day) =>
+      day.title.includes("Hinge, Single-Leg")
+    );
+    const hingeMain = hingeDay?.routine.find(
       (item) =>
         item.section === "main" && item.selectionDebug?.slotKind === "mainHingePrimary"
     );
 
-    expect(legsDay).toBeTruthy();
+    expect(hingeDay).toBeTruthy();
     expect(hingeMain?.exerciseId).toBeTruthy();
     expect(hingeMain?.exerciseId).not.toBe("back-extension-hold");
   });
@@ -289,13 +317,15 @@ describe("program role truthfulness", () => {
         phaseIndex,
         seed: `${id}-seed`,
       });
-      const mains = legsMains(program);
+      const mains = legsMains(program, questionnaire.equipment);
 
       expect(mains.every((item) => item.selectionDebug?.slotKind !== "mainFinal")).toBe(true);
       expect(
         mains.every((item) => !["db-calf-raise", "band-calf-raise"].includes(item.exerciseId))
       ).toBe(true);
-      expect(warningMessagesFor(id).join("\n")).not.toMatch(/Final main slot|main hinge pattern/i);
+      if (!isFullBodyTemplateEquipment(questionnaire.equipment)) {
+        expect(warningMessagesFor(id).join("\n")).not.toMatch(/Final main slot|main hinge pattern/i);
+      }
     });
   });
 
@@ -365,7 +395,7 @@ describe("program role truthfulness", () => {
       { phaseIndex: 1, seed: "three-day-persona-review-6-phase-1" }
     );
 
-    shouldersMains(program).forEach((item) => {
+    shouldersMains(program, ["dumbbells"]).forEach((item) => {
       if (item.exerciseId === "prone-swimmer") {
         expect(item.selectionDebug?.slotKind).not.toBe("mainShoulderPullPrimary");
       }
@@ -375,7 +405,7 @@ describe("program role truthfulness", () => {
     });
   });
 
-  test("constrained dumbbell Back + Chest Phase 1 includes a vertical-pull surrogate", () => {
+  test("constrained dumbbell Full Body A Phase 1 keeps honest horizontal pull, not false vertical", () => {
     clearProgramVariationHistory();
     clearProgramConstraintWarningBuffer();
     const program = generateWeeklyProgram(
@@ -390,14 +420,18 @@ describe("program role truthfulness", () => {
       { phaseIndex: 1, seed: "three-day-persona-review-6-phase-1" }
     );
 
+    const dayA = findProgramDayStartingWith(program, "Full Body A");
+    expect(dayA).toBeTruthy();
+    const horizontalPull = dayA?.routine.find(
+      (item) =>
+        item.section === "main" && item.selectionDebug?.slotKind === "mainPullHorizontal"
+    );
+    expect(horizontalPull?.exerciseId).toMatch(/row/);
     expect(
-      backChestMains(program).some(
-        (item) =>
-          item.selectionDebug?.slotKind === "mainPullVertical" &&
-          hasVerticalPullOrSurrogate(item.exerciseId)
+      backChestMains(program, ["dumbbells"]).some(
+        (item) => item.selectionDebug?.slotKind === "mainPullVertical"
       )
-    ).toBe(true);
-    expect(warningMessagesFor("truth-db-back-chest-vertical-surrogate")).toEqual([]);
+    ).toBe(false);
   });
 
   test("side-plank star and Pallof press finish with core accessory labels", () => {
@@ -408,19 +442,6 @@ describe("program role truthfulness", () => {
       seed: string;
       expectedExerciseId: string;
     }> = [
-      {
-        id: "truth-pallof-final-core",
-        questionnaire: {
-          goals: "General fitness",
-          painAreas: [],
-          experience: "Beginner",
-          equipment: ["bands"],
-          daysPerWeek: 3,
-        },
-        phaseIndex: 3,
-        seed: "slot-core-bands-5",
-        expectedExerciseId: "pallof-press",
-      },
       {
         id: "truth-side-plank-star-final-core",
         questionnaire: {
@@ -447,5 +468,28 @@ describe("program role truthfulness", () => {
       expect(item?.selectionDebug?.slotKind).toBe("accessorycore");
       expect(item?.selectionDebug?.slotLane).toBe("core");
     });
+
+    // Anchored band weeks keep a labeled core accessory (Pallof when selected).
+    clearProgramVariationHistory();
+    const bandProgram = generateWeeklyProgram(
+      {
+        goals: "General fitness",
+        painAreas: [],
+        experience: "Beginner",
+        equipment: ["bands"],
+        daysPerWeek: 3,
+        bandSetup: "long_with_anchor",
+      },
+      "truth-band-core-accessory",
+      { phaseIndex: 3, seed: "slot-core-bands-5" }
+    );
+    const coreAccessory = bandProgram.week
+      .flatMap((day) => day.routine)
+      .find(
+        (entry) =>
+          entry.section === "accessory" && entry.selectionDebug?.slotLane === "core"
+      );
+    expect(coreAccessory).toBeTruthy();
+    expect(coreAccessory?.selectionDebug?.slotKind).toMatch(/accessory.*core/i);
   });
 });

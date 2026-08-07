@@ -26,7 +26,33 @@ import {
   isExerciseEligible,
   normalizeEquipmentSelection,
 } from "@/lib/equipment";
+import {
+  deriveProgramCapabilities,
+  inferExerciseSupportRequirements,
+  isSupportConfirmedByCapabilities,
+  type ProgramCapabilities,
+} from "@/lib/program/equipmentCapabilities";
+import {
+  resolvePrimaryProgramEquipmentMode,
+  type PrimaryProgramEquipmentMode,
+} from "@/lib/program/equipmentMode";
+import { classifyGymMovementRoleTruth } from "@/lib/program/gymProgramContract";
 import { derivePoseFocus } from "@/lib/engine/poseFocus";
+
+export type { PrimaryProgramEquipmentMode } from "@/lib/program/equipmentMode";
+export {
+  deriveLegacyHasLoadIntentEquipmentMode,
+  parsePrimaryProgramEquipmentMode,
+  resolvePrimaryProgramEquipmentMode,
+  serializePrimaryProgramEquipmentMode,
+} from "@/lib/program/equipmentMode";
+export type { ProgramCapabilities, ProgramEquipmentContext } from "@/lib/program/equipmentCapabilities";
+export {
+  buildProgramEquipmentContext,
+  deriveProgramCapabilities,
+  inferExerciseSupportRequirements,
+  isSupportConfirmedByCapabilities,
+} from "@/lib/program/equipmentCapabilities";
 import {
   MAX_PHASE_INDEX,
   deriveUserTrainingState,
@@ -58,6 +84,11 @@ import {
   finalizeWeeklyProgramResult,
   type ProgramConstraintWarning,
 } from "@/lib/program/programFinalization";
+import { ProgramQualityGateError } from "@/lib/program/qualityGate/ProgramQualityGateError";
+import {
+  attachProgramQualityEvaluation,
+  recoverAndEvaluateProgramQuality,
+} from "@/lib/program/qualityGate/recoverProgramQuality";
 import {
   DEFAULT_PROGRAM_VARIATION_CONFIG,
   createProgramVariationMemoryRuntime,
@@ -148,10 +179,63 @@ import {
   buildRawSplitTemplateSpecs,
   type SplitTemplateSpec as RawSplitTemplateSpec,
 } from "@/lib/program/splitTemplatePolicy";
+import {
+  authorDumbbellMainSelections,
+  buildDumbbellSplitTemplateSpecs,
+  getDumbbellDayVolumeContract,
+  getDumbbellMainLanePlan,
+  isDumbbellProgramDayTitle,
+  resolveDumbbellDayIdentity,
+  resolveDumbbellThreeDayBlueprint,
+} from "@/lib/program/dumbbellTemplates";
+import {
+  deriveBandCapabilityOverlay,
+  isBandAnchorSatisfied,
+  isBandTypeSatisfied,
+  normalizeBandSetupOption,
+  type BandSetupLane,
+  type BandSetupOption,
+} from "@/lib/program/bandSetup";
+import { resolveBandExerciseRequirement } from "@/lib/program/bandExerciseRequirements";
+import {
+  authorBandMainSelections,
+  buildBandSplitTemplateSpecs,
+  getBandDayVolumeContract,
+  getBandMainLanePlan,
+  isBandProgramDayTitle,
+} from "@/lib/program/bandTemplates";
+import {
+  authorBodyweightMainSelections,
+  buildBodyweightSplitTemplateSpecs,
+  getBodyweightDayVolumeContract,
+  getBodyweightMainLanePlan,
+  isBodyweightProgramDayTitle,
+  resolveBodyweightDayIdentity,
+  resolveBodyweightThreeDayBlueprint,
+} from "@/lib/program/bodyweightTemplates";
+import {
+  authorMixedHomeMainSelections,
+  buildMixedHomeSplitTemplateSpecs,
+  getMixedHomeDayVolumeContract,
+  getMixedHomeMainLanePlan,
+  isMixedHomeProgramDayTitle,
+  mixedHomeLaneHasHighAnchor,
+  refineMixedHomeCapabilityLane,
+  resolveMixedHomeThreeDayBlueprint,
+} from "@/lib/program/mixedHomeTemplates";
+import { coalesceMixedHomeSessionWorkOrder } from "@/lib/program/mixedHomeProgramContract";
+import { applyConstraintAwareSequencing } from "@/lib/program/sequencingPolicy";
 
 const nowIso = () => new Date().toISOString();
 const MIN_WEEKS_FOR_PHASE_ADVANCE = 2;
-export const PROGRAM_TEMPLATE_VERSION = 13;
+/**
+ * Phase 8 composition refinement bumps 18 → 19 because newly generated
+ * stored program order is part of the composition contract (constraint-aware
+ * sequencing). Existing active programs remain unchanged in storage; apps
+ * treat mismatched templateVersion as incompatible and regenerate on the
+ * next user-driven program load — not via a silent batch rewrite.
+ */
+export const PROGRAM_TEMPLATE_VERSION = 19;
 const clampPhaseIndexToSupportedRange = (phaseIndex: number) =>
   Math.min(MAX_PHASE_INDEX, Math.max(1, Math.floor(phaseIndex)));
 
@@ -204,7 +288,6 @@ type PainRuleDefinition = {
 
 type IntentPrimaryGoal = "posture" | "hypertrophy" | "strength" | "general";
 type IntentPhase = ProgramPhaseStage;
-type IntentEquipmentMode = "none" | "bands" | "gym";
 type RecoveryBudget = "low" | "medium" | "high";
 
 export type ProgramIntentNeeds = {
@@ -222,7 +305,12 @@ export type ProgramIntentProfile = {
   painAreas: string[];
   experienceLevel: NormalizedExperienceLevel;
   phase: IntentPhase;
-  equipment: IntentEquipmentMode;
+  /**
+   * First-class program equipment identity.
+   * Evolved from the legacy coarse labels (`none` | `bands` | `gym`);
+   * dumbbell-only and mixed-home no longer collapse to `gym`.
+   */
+  equipment: PrimaryProgramEquipmentMode;
   recoveryBudget: RecoveryBudget;
   priorityPatterns: string[];
   avoidPatterns: string[];
@@ -338,6 +426,14 @@ type SelectionContext = {
   phaseName: string;
   experienceLevel: NormalizedExperienceLevel;
   capabilityMode: EquipmentCapabilityMode;
+  /** First-class program identity; not derived from hasLoad. */
+  primaryEquipmentMode: PrimaryProgramEquipmentMode;
+  /** Confirmed physical capabilities; unknown supports stay false. */
+  programCapabilities: ProgramCapabilities;
+  /** Band setup lane for primaryEquipmentMode === "bands". */
+  bandSetupLane: BandSetupLane;
+  /** Confirmed questionnaire band setup option, if any. */
+  bandSetupOption?: BandSetupOption;
   trainingContext: TrainingContext;
   intentProfile: ProgramIntentProfile;
   feedbackSummaryByExercise: Map<string, ExerciseFeedbackSummary>;
@@ -863,14 +959,6 @@ const deriveIntentPrimaryGoal = (goal: string): IntentPrimaryGoal => {
   return "general";
 };
 
-const deriveIntentEquipmentMode = (
-  capabilityMode: EquipmentCapabilityMode
-): IntentEquipmentMode => {
-  if (capabilityMode === "hasLoad") return "gym";
-  if (capabilityMode === "bandOnly") return "bands";
-  return "none";
-};
-
 const deriveTrainingContext = (questionnaire: QuestionnaireData): TrainingContext => {
   const equipment = normalizeEquipmentSelection(questionnaire.equipment);
   return equipment.hasGym ? "gym" : "home";
@@ -898,9 +986,11 @@ export const buildProgramIntentProfile = (params: {
     painSeverity,
     phaseStage,
     experienceLevel,
-    capabilityMode,
   } = params;
   const primaryGoal = deriveIntentPrimaryGoal(questionnaire.goals);
+  const primaryEquipmentMode = resolvePrimaryProgramEquipmentMode(
+    questionnaire.equipment
+  );
   const painAreas = questionnaire.painAreas.map(canonicalizePainArea);
   const fatigueHint = getQuestionnaireFatigueHint(questionnaire);
   const lowRecovery =
@@ -961,7 +1051,10 @@ export const buildProgramIntentProfile = (params: {
       avoid.add("vertical_push_load");
       avoid.add("aggressive_overhead");
     }
-    if (hasLowBackPain || painSeverity === "high") {
+    // Heavy-hinge avoidance is a low-back/hip loading concern. Do not ban true
+    // hinges for high-severity upper-body pain (e.g. shoulders + upper back),
+    // or gym Legs + Abs collapses to curl-only / missing hinge.
+    if (hasLowBackPain) {
       avoid.add("heavy_hinge");
     }
     if (phaseStage === "activation" && experienceLevel !== "advanced") {
@@ -976,7 +1069,7 @@ export const buildProgramIntentProfile = (params: {
     painAreas,
     experienceLevel,
     phase: phaseStage,
-    equipment: deriveIntentEquipmentMode(capabilityMode),
+    equipment: primaryEquipmentMode,
     recoveryBudget,
     priorityPatterns,
     avoidPatterns,
@@ -1057,6 +1150,19 @@ const buildSelectionContext = (
   const phaseName = options?.phaseName ?? `Phase ${phaseIndex}`;
   const phaseStage = phaseStageFromName(phaseName, phaseIndex);
   const capabilityMode = options?.capabilityMode ?? "noneOnly";
+  const primaryEquipmentMode = resolvePrimaryProgramEquipmentMode(
+    questionnaire.equipment
+  );
+  const bandSetupOption = normalizeBandSetupOption(
+    (questionnaire as { bandSetup?: unknown }).bandSetup
+  );
+  const programCapabilities = deriveProgramCapabilities(questionnaire.equipment, {
+    bandSetup: bandSetupOption,
+  });
+  const bandSetupLane = deriveBandCapabilityOverlay({
+    equipment: questionnaire.equipment,
+    bandSetup: bandSetupOption,
+  }).setupLane;
   const trainingContext = deriveTrainingContext(questionnaire);
   const experienceLevel = normalizeExperienceLevel(questionnaire.experience);
   const intentProfile = buildProgramIntentProfile({
@@ -1116,6 +1222,10 @@ const buildSelectionContext = (
     phaseName,
     experienceLevel,
     capabilityMode,
+    primaryEquipmentMode,
+    programCapabilities,
+    bandSetupLane,
+    bandSetupOption,
     trainingContext,
     intentProfile,
     feedbackSummaryByExercise,
@@ -1589,11 +1699,101 @@ const rankSubstitutionCandidates = (params: {
     });
 };
 
+/** Infer canonical role family for presentation-safe pain swaps. */
+const inferPainSwapRoleFamily = (exercise: Exercise): string | null => {
+  const patterns = new Set(
+    (exercise.movementPattern ?? []).map((p) =>
+      p.trim().toLowerCase().replace(/[\s_-]+/g, "")
+    )
+  );
+  const patternField = (exercise.pattern ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g, "");
+  if (patterns.has("verticalpull") || patternField.includes("verticalpull")) {
+    return "vertical_pull";
+  }
+  if (patterns.has("verticalpush") || patternField.includes("verticalpush")) {
+    return "vertical_push";
+  }
+  if (
+    patterns.has("horizontalpull") ||
+    patternField.includes("horizontalpull") ||
+    patterns.has("pull")
+  ) {
+    return "horizontal_pull";
+  }
+  if (
+    patterns.has("horizontalpush") ||
+    patternField.includes("horizontalpush") ||
+    patterns.has("push")
+  ) {
+    return "horizontal_press";
+  }
+  if (patterns.has("hinge") || patternField.includes("hinge")) return "hinge";
+  // Unilateral before squat — split squat / lunges carry squat tokens too.
+  if (
+    patterns.has("singleleg") ||
+    patternField.includes("unilateral") ||
+    exercise.slotRoles?.includes("unilateralLowerLoaded")
+  ) {
+    return "unilateral";
+  }
+  if (patterns.has("squat") || patternField.includes("squat") || patternField.includes("kneedominant")) {
+    return "squat";
+  }
+  if (
+    patterns.has("core") ||
+    patterns.has("corestability") ||
+    patterns.has("antirotation") ||
+    patterns.has("antiextension") ||
+    patterns.has("carry") ||
+    exercise.carryType === "coreStability"
+  ) {
+    return "core";
+  }
+  return null;
+};
+
+const isPresentationSafePainSwapCandidate = (params: {
+  current: Exercise;
+  candidate: Exercise;
+  section?: ProgramRoutineItem["section"];
+}): boolean => {
+  const { current, candidate, section } = params;
+  if (candidate.supportOnly) return false;
+  if (
+    section === "main" &&
+    (candidate.category === "warmup" ||
+      candidate.category === "activation" ||
+      candidate.category === "cooldown")
+  ) {
+    return false;
+  }
+
+  const family = inferPainSwapRoleFamily(current);
+  if (!family) {
+    // Unknown role — still block preparation-only / support-only leaks.
+    return classifyGymMovementRoleTruth(candidate, "hinge") !== "preparationOnly";
+  }
+
+  if (family === "core") {
+    // Core swaps may use regression-tagged holds; never allow support-only primers.
+    return !candidate.supportOnly && candidate.category === "main";
+  }
+
+  const truth = classifyGymMovementRoleTruth(candidate, family);
+  // Main roles require true role satisfaction — never prep-only, surrogate, or curl-as-hinge.
+  return truth === "true";
+};
+
 export const previewPainSubstitutionChoices = (params: {
   questionnaire: QuestionnaireData;
   exerciseId: string;
   section?: ProgramRoutineItem["section"];
   limit?: number;
+  /** Phase 7B — honor personal blocks in in-session swap previews. */
+  blockedExerciseIds?: LogPrefs["blockedExerciseIds"] | Set<string> | string[];
 }) => {
   const { questionnaire, exerciseId, section, limit = 5 } = params;
   const current = exerciseById(exerciseId);
@@ -1604,20 +1804,65 @@ export const previewPainSubstitutionChoices = (params: {
     reasons: string[];
   }>;
   const available = normalizeEquipmentSelection(questionnaire.equipment).available;
-  const context = buildSelectionContext(questionnaire);
-  return rankSubstitutionCandidates({
-    current,
-    section,
-    available,
-    context,
-  })
-    .slice(0, Math.max(1, limit))
-    .map((entry) => ({
-      exerciseId: entry.exercise.id,
-      name: entry.exercise.name,
-      score: Number(entry.score.toFixed(2)),
-      reasons: entry.reasons,
-    }));
+  const blockedSet =
+    params.blockedExerciseIds instanceof Set
+      ? params.blockedExerciseIds
+      : Array.isArray(params.blockedExerciseIds)
+        ? new Set(params.blockedExerciseIds)
+        : params.blockedExerciseIds
+          ? new Set(Object.keys(params.blockedExerciseIds))
+          : undefined;
+  const context = buildSelectionContext(questionnaire, undefined, undefined, {
+    blockedExerciseIds: blockedSet,
+  });
+  const painAreas = questionnaire.painAreas ?? [];
+
+  const toPreview = (
+    ranked: Array<{ exercise: Exercise; score: number; reasons: string[] }>
+  ) =>
+    ranked
+      .filter((entry) => !blockedSet?.has(entry.exercise.id))
+      .filter(
+        (entry) =>
+          !contraindicationHitsPainArea(
+            entry.exercise.contraindications,
+            painAreas
+          )
+      )
+      .filter((entry) =>
+        isPresentationSafePainSwapCandidate({
+          current,
+          candidate: entry.exercise,
+          section,
+        })
+      )
+      .slice(0, Math.max(1, limit))
+      .map((entry) => ({
+        exerciseId: entry.exercise.id,
+        name: entry.exercise.name,
+        score: Number(entry.score.toFixed(2)),
+        reasons: entry.reasons,
+      }));
+
+  const contextual = toPreview(
+    rankSubstitutionCandidates({
+      current,
+      section,
+      available,
+      context,
+    })
+  );
+  if (contextual.length) return contextual;
+
+  // Presentation honesty fallback: when context ranking only surfaces prep/surrogate
+  // options, re-rank with equipment legality + role-truth (still honors pain/blocks).
+  return toPreview(
+    rankSubstitutionCandidates({
+      current,
+      section,
+      available,
+    })
+  );
 };
 
 const ensureEligibleItem = (
@@ -1705,26 +1950,28 @@ const ensureEligibleItem = (
           context: selectionContext,
         })
       : true;
+  const candidatePassesProgramContext = (candidate: Exercise) =>
+    !selectionContext ||
+    isExerciseEligibleForProgramContext({
+      exercise: candidate,
+      available,
+      section: item.section,
+      context: selectionContext,
+      dayTitle,
+    });
   const strictRoleFallback =
     ranked.find(
       (entry) =>
         candidateAvoidsCurrentPain(entry.exercise) &&
-        candidateIsStrictRoleReplacement(entry.exercise)
+        candidateIsStrictRoleReplacement(entry.exercise) &&
+        candidatePassesProgramContext(entry.exercise)
     )?.exercise ??
     (shouldEnforceStrictRoleReplacement && selectionContext
       ? exercises.find((candidate) => {
           if (candidate.id === exercise.id) return false;
           if (candidate.category !== exercise.category) return false;
           if (!candidateAvoidsCurrentPain(candidate)) return false;
-          if (
-            !isExerciseEligibleForProgramContext({
-              exercise: candidate,
-              available,
-              section: item.section,
-              context: selectionContext,
-              dayTitle,
-            })
-          ) {
+          if (!candidatePassesProgramContext(candidate)) {
             return false;
           }
           return candidateIsStrictRoleReplacement(candidate);
@@ -2765,6 +3012,59 @@ export const deriveExerciseRole = (exercise: Exercise): ExerciseRole => {
 
 const isTrueCarryCoverageExercise = (exercise: Exercise) =>
   exercise.carryType === "carry" || (exercise.weeklyCoverageTags ?? []).includes("carry");
+
+const painContraindicationsHitPainAreas = (
+  painContraindications: string[] | undefined,
+  painAreas: string[]
+) => {
+  if (!painContraindications?.length || !painAreas.length) return false;
+  const normalizedAreas = painAreas.map(canonicalizePainArea);
+  return painContraindications.some((entry) => {
+    const contra = canonicalizePainArea(entry);
+    return normalizedAreas.some((area) => {
+      if (contra === area) return true;
+      if (
+        area === "lower back" &&
+        (contra.includes("low back") || contra.includes("lower back"))
+      ) {
+        return true;
+      }
+      const contraCore = contra.replace(/^acute\s+/, "");
+      return contra.includes(area) || area.includes(contraCore);
+    });
+  });
+};
+
+const isPainSafeTrueCarryCoverageExercise = (
+  exercise: Exercise,
+  painAreas: string[]
+) =>
+  isTrueCarryCoverageExercise(exercise) &&
+  !painContraindicationsHitPainAreas(exercise.painContraindications, painAreas);
+
+const trueCarryPreferredIdsForCapability = (
+  capabilityMode: EquipmentCapabilityMode
+): string[] =>
+  capabilityMode === "hasLoad"
+    ? ["farmers-carry", "suitcase-carry", "suitcase-hold-march"]
+    : capabilityMode === "bandOnly"
+      ? ["band-suitcase-march", "suitcase-hold-march"]
+      : ["suitcase-hold-march"];
+
+/**
+ * True loaded-carry exposure is only required when a pain-safe, equipment-legal
+ * true-carry candidate exists. Core-stability marches are not substitutes.
+ */
+export const hasLegalTrueCarryExposureCandidate = (params: {
+  capabilityMode: EquipmentCapabilityMode;
+  painAreas: string[];
+}): boolean => {
+  const { capabilityMode, painAreas } = params;
+  return trueCarryPreferredIdsForCapability(capabilityMode)
+    .map((id) => exerciseById(id))
+    .filter((exercise): exercise is Exercise => Boolean(exercise))
+    .some((exercise) => isPainSafeTrueCarryCoverageExercise(exercise, painAreas));
+};
 
 export const matchesRule = (
   exercise: Exercise,
@@ -4741,7 +5041,19 @@ const isUpperPushDayTitle = (title: string) => title.toLowerCase().includes("upp
 
 const isUpperPullDayTitle = (title: string) => title.toLowerCase().includes("upper pull");
 
+/** Full-body / practice titles must not be classified as gym 4/5-day upper/lower splits. */
+const isFullBodyOrPracticeDayTitle = (title?: string | null) => {
+  const normalized = String(title ?? "").toLowerCase();
+  return (
+    normalized.includes("full body") ||
+    normalized.includes("practice & restore") ||
+    normalized.includes("pattern practice") ||
+    normalized.includes("lower & core practice")
+  );
+};
+
 const isHigherFrequencyUpperDayTitle = (title?: string | null) => {
+  if (isFullBodyOrPracticeDayTitle(title)) return false;
   const normalized = String(title ?? "").toLowerCase();
   return (
     normalized.includes("upper") ||
@@ -4751,6 +5063,7 @@ const isHigherFrequencyUpperDayTitle = (title?: string | null) => {
 };
 
 const isHigherFrequencyLowerDayTitle = (title?: string | null) => {
+  if (isFullBodyOrPracticeDayTitle(title)) return false;
   const normalized = String(title ?? "").toLowerCase();
   return normalized.includes("lower") || normalized.includes("posterior chain");
 };
@@ -5395,15 +5708,32 @@ const appendCoverageAccessory = (params: {
     highPain ? 75 : 45,
     "accessory"
   );
-  const next: ProgramRoutineItem = {
-    ...base,
-    notes: highPain
-      ? appendNote(
-          base.notes,
-          "Comfort-first accessory: smooth tempo, pain-free range, and stop before strain."
-        )
-      : appendNote(base.notes, note),
-  };
+  const coverageExercise = exerciseById(exerciseId);
+  const coverageLane: AccessoryLane | undefined =
+    coverageExercise && isLegsCalvesAccessoryExercise(coverageExercise)
+      ? "lower"
+      : coverageExercise && matchesAccessoryLanePattern(coverageExercise, "core")
+        ? "core"
+        : undefined;
+  const next: ProgramRoutineItem = withSelectionDebug(
+    {
+      ...base,
+      notes: highPain
+        ? appendNote(
+            base.notes,
+            "Comfort-first accessory: smooth tempo, pain-free range, and stop before strain."
+          )
+        : appendNote(base.notes, note),
+    },
+    "coverage_repair",
+    coverageLane
+      ? {
+          slotId: makeDaySlotId(day, day.routine.length, "accessory"),
+          slotKind: accessorySlotKindByLane(coverageLane),
+          slotLane: coverageLane,
+        }
+      : undefined
+  );
   const accessoryIndexes = day.routine
     .map((item, index) => ({ item, index }))
     .filter((entry) => entry.item.section === "accessory")
@@ -5425,9 +5755,20 @@ const appendCoverageAccessory = (params: {
       const item = day.routine[index];
       const exercise = exerciseById(item.exerciseId);
       if (!exercise) return false;
-      const mustKeepForDaySpec = protectedRules.some((rule) =>
-        matchesRule(exercise, rule, "accessory")
-      );
+      const mustKeepForDaySpec = protectedRules.some((rule) => {
+        if (!matchesRule(exercise, rule, "accessory")) return false;
+        // If another accessory already satisfies this must-include (e.g. a true
+        // carry covering anti-rotation), allow replacing the duplicate slot.
+        const satisfiedElsewhere = accessoryIndexes.some((otherIndex) => {
+          if (otherIndex === index) return false;
+          const otherItem = day.routine[otherIndex];
+          const otherExercise = exerciseById(otherItem.exerciseId);
+          return Boolean(
+            otherExercise && matchesRule(otherExercise, rule, "accessory")
+          );
+        });
+        return !satisfiedElsewhere;
+      });
       const mustKeepByPreserveRule = preserveRules.some((rule) =>
         matchesRule(exercise, rule, "accessory")
       );
@@ -5492,6 +5833,15 @@ const pickCoverageExerciseId = (params: {
     ) {
       continue;
     }
+    if (
+      matchRule.id === "carry_focus" &&
+      !isPainSafeTrueCarryCoverageExercise(
+        exercise,
+        context.selectionContext.painAreas
+      )
+    ) {
+      continue;
+    }
     if (!matchesRule(exercise, matchRule, "accessory")) continue;
     return exercise.id;
   }
@@ -5500,6 +5850,15 @@ const pickCoverageExerciseId = (params: {
     .filter((candidate) => {
       if (usedIds.has(candidate.id)) return false;
       if (!matchesRule(candidate, matchRule, "accessory")) return false;
+      if (
+        matchRule.id === "carry_focus" &&
+        !isPainSafeTrueCarryCoverageExercise(
+          candidate,
+          context.selectionContext.painAreas
+        )
+      ) {
+        return false;
+      }
       return isExerciseEligibleForProgramContext({
         exercise: candidate,
         available: context.available,
@@ -5658,14 +6017,17 @@ export const getWeeklyCoverageContract = (daysPerWeek: 3 | 4 | 5): WeeklyCoverag
     };
   }
   if (daysPerWeek === 4) {
+    // Upper/Lower gym structure has one dedicated push day and one pull day.
+    // Full-body home 4-day templates also land one clear hinge day. Direct arm
+    // work and push compounds are expected once each week, not twice.
     return {
       calvesDays: 2,
-      bicepsDays: 2,
-      tricepsDays: 2,
+      bicepsDays: 1,
+      tricepsDays: 1,
       squatDays: 2,
-      hingeDays: 2,
+      hingeDays: 1,
       pullDays: 2,
-      pushDays: 2,
+      pushDays: 1,
     };
   }
   return {
@@ -5941,18 +6303,16 @@ const applyWeeklyCoverageRepairs = (params: {
       : 1
     : 1;
 
-  const carryPreferredIds =
-    context.capabilityMode === "hasLoad"
-      ? ["farmers-carry", "suitcase-carry", "suitcase-hold-march"]
-      : context.capabilityMode === "bandOnly"
-      ? ["band-suitcase-march", "suitcase-hold-march"]
-      : ["suitcase-hold-march"];
+  const carryPreferredIds = trueCarryPreferredIdsForCapability(context.capabilityMode);
   const hasLegalTrueCarryCandidate = carryPreferredIds
     .map((id) => exerciseById(id))
     .filter((exercise): exercise is Exercise => Boolean(exercise))
     .some(
       (exercise) =>
-        isTrueCarryCoverageExercise(exercise) &&
+        isPainSafeTrueCarryCoverageExercise(
+          exercise,
+          context.selectionContext.painAreas
+        ) &&
         isExerciseEligibleForProgramContext({
           exercise,
           available: context.available,
@@ -5977,16 +6337,38 @@ const applyWeeklyCoverageRepairs = (params: {
         ? 2
         : 1
       : 0;
+  const homeArmCoverageIndexes = nextWeek
+    .map((day, index) => ({ day, index }))
+    .filter(({ day }) => {
+      const normalized = day.title.toLowerCase();
+      return (
+        normalized.includes("full body") ||
+        normalized.includes("upper pattern") ||
+        normalized.includes("practice & restore") ||
+        normalized.includes("practice and restore")
+      );
+    })
+    .map((entry) => entry.index);
   const bicepsCoverageIndexes =
     upperPullOrArmsDayIndexes.length > 0
       ? upperPullOrArmsDayIndexes
-      : armCoverageIndexes;
+      : [...new Set([...armCoverageIndexes, ...homeArmCoverageIndexes])];
   const tricepsCoverageIndexes =
     upperPushOrArmsDayIndexes.length > 0
       ? upperPushOrArmsDayIndexes
-      : armCoverageIndexes;
+      : [...new Set([...armCoverageIndexes, ...homeArmCoverageIndexes])];
+  const lowerHingeDayIndexes = nextWeek
+    .map((day, index) => ({ day, index }))
+    .filter(({ day }) => {
+      const normalized = day.title.toLowerCase();
+      return normalized.includes("lower") && normalized.includes("hinge");
+    })
+    .map((entry) => entry.index);
+  // Phase 7: weekly calvesDays=2 for 5-day needs both lower days in scope.
   const calvesCoverageIndexes =
-    lowerSquatDayIndexes.length > 0 ? lowerSquatDayIndexes : lowerCoverageIndexes;
+    lowerSquatDayIndexes.length > 0
+      ? [...new Set([...lowerSquatDayIndexes, ...lowerHingeDayIndexes])]
+      : lowerCoverageIndexes;
   const bicepsMinDays = Math.min(
     contract.bicepsDays,
     Math.max(1, new Set(bicepsCoverageIndexes).size)
@@ -6025,6 +6407,9 @@ const applyWeeklyCoverageRepairs = (params: {
     dayIndexes: [...lowerCoverageIndexes, ...corePriorityIndexes],
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
+    // Preserve calves/arms so carry repair replaces a core/anti-rotation slot
+    // (true carry role) instead of stealing the lower-lane calf accessory.
+    preserveRules: [calvesRule, bicepsIsolationRule, tricepsIsolationRule],
     context,
     note: "Smart patch: weekly carry exposure.",
     warningLabel: "Carry",
@@ -6109,6 +6494,9 @@ const applyWeeklyCoverageRepairs = (params: {
     dayIndexes: calvesCoverageIndexes,
     daysPerWeek,
     accessoryCapacityByDayIndex: baselineAccessoryCapacity,
+    // Keep true carries when filling calves so hinge/carry days become
+    // carry + calf rather than plank + carry with calves short for the week.
+    preserveRules: [carryRule],
     context,
     note: "Coverage add: weekly calves minimum.",
     warningLabel: "Calves",
@@ -6258,7 +6646,7 @@ const applyWeeklyCoverageRepairs = (params: {
       dayIndexes: calvesCoverageIndexes,
       daysPerWeek,
       accessoryCapacityByDayIndex: baselineAccessoryCapacity,
-      preserveRules: [bicepsIsolationRule, tricepsIsolationRule],
+      preserveRules: [bicepsIsolationRule, tricepsIsolationRule, carryRule],
       context,
       note: "Fallback coverage add: weekly calves minimum.",
       warningLabel: "Calves fallback",
@@ -14944,7 +15332,27 @@ const hasUpperPainSignal = (context: SelectionContext) =>
   hasPainAreaSignal(context, ["shoulder", "neck", "upper_back", "upper back"]);
 
 const hasLowBackPainSignal = (context: SelectionContext) =>
-  hasPainAreaSignal(context, ["lower_back", "low_back", "back"]);
+  context.painAreas.some((area) => {
+    const normalizedArea = normalizeTagToken(area);
+    // Do not treat upper-back / mid-back shoulder-girdle pain as low-back pain.
+    // A bare "back" token previously matched via includes("back") and incorrectly
+    // softened hinge selection for "upper_back" personas.
+    if (
+      normalizedArea.includes("upper_back") ||
+      normalizedArea.includes("upperback") ||
+      normalizedArea.includes("mid_back") ||
+      normalizedArea.includes("thoracic")
+    ) {
+      return false;
+    }
+    return (
+      normalizedArea.includes("lower_back") ||
+      normalizedArea.includes("low_back") ||
+      normalizedArea.includes("lowback") ||
+      normalizedArea === "back" ||
+      normalizedArea.includes("hip")
+    );
+  });
 
 const shouldApplyPainAwareMainIdentityProtection = (params: {
   available: Set<Equipment>;
@@ -17506,6 +17914,7 @@ const getLegsAbsRoleCandidateIds = (
     return [
       "assisted-box-squat",
       "machine-leg-press",
+      "machine-hack-squat",
       "goblet-squat",
       "bodyweight-squat",
       "heels-elevated-squat",
@@ -17529,9 +17938,13 @@ const getLegsAbsRoleCandidateIds = (
     if (phaseStage === "skill") {
       return [
         "db-rdl",
-        "back-extension",
-        "barbell-hip-thrust",
+        // Role-preserving true hinges when personal block removes db-rdl.
+        "dumbbell-sumo-rdl",
+        "barbell-romanian-deadlift",
         "machine-glute-drive",
+        "band-rdl",
+        "barbell-hip-thrust",
+        "back-extension",
         "single-leg-rdl",
         "machine-seated-hamstring-curl",
         "back-extension-hold",
@@ -17539,14 +17952,18 @@ const getLegsAbsRoleCandidateIds = (
       ];
     }
     return [
+      "db-rdl",
+      // Keep gym-legal true hinges available in activation when db-rdl is blocked.
+      "dumbbell-sumo-rdl",
+      "barbell-romanian-deadlift",
+      "machine-glute-drive",
+      "band-rdl",
+      "back-extension",
+      "back-extension-hold",
       "single-leg-hip-thrust",
       "single-leg-glute-bridge-hold",
-      "back-extension-hold",
-      "back-extension",
-      "machine-seated-hamstring-curl",
-      "db-rdl",
-      "band-rdl",
       "single-leg-rdl",
+      "machine-seated-hamstring-curl",
     ];
   }
 
@@ -18007,6 +18424,21 @@ const repairLegsAbsDayIntelligence = (params: {
             descriptor.includes("back-extension-hold")
           ) {
             score += 1.5;
+          }
+          // Shoulder/upper-back pain must not demote a true loaded hinge in gym.
+          if (
+            gymRoleLockedLegsMainContext &&
+            !hasLowBackPainSignal(context.selectionContext) &&
+            hasTrueHingeAnchor(exercise)
+          ) {
+            score += 2.5;
+          }
+          if (
+            gymRoleLockedLegsMainContext &&
+            !hasLowBackPainSignal(context.selectionContext) &&
+            isHamstringCurlExercise(exercise)
+          ) {
+            score -= 4;
           }
         }
         if (experienceLevel === "beginner" && phaseStage === "activation") {
@@ -18806,19 +19238,49 @@ const ensureThreeDayLegsAbsMainCount = (params: {
       if (item.section !== "main") return item;
       const exercise = exerciseById(item.exerciseId);
       if (!exercise || !isRegressionOrDrillMovement(exercise)) return item;
+      // Low-back/hip pain uses hip-extension hinge surrogates on purpose. Do not
+      // strip them into curls/step-ups or Legs + Abs loses its hinge role.
+      if (
+        shouldAllowHipExtensionHingeSurrogateForMainSlot({
+          exercise,
+          available: context.available,
+          context: context.selectionContext,
+          dayTitle: day.title,
+        })
+      ) {
+        return item;
+      }
       usedIds.delete(item.exerciseId);
-      const replacement = [
-        "machine-seated-hamstring-curl",
-        "dumbbell-step-up-loaded",
-        "machine-leg-press",
-        "db-rdl",
-      ]
+      const hingeSlot =
+        item.selectionDebug?.slotLane === "hinge" ||
+        normalizeSlotToken(item.selectionDebug?.slotKind ?? "").includes("hinge");
+      const replacementIds = hingeSlot
+        ? [
+            "db-rdl",
+            "dumbbell-sumo-rdl",
+            "machine-glute-drive",
+            "barbell-hip-thrust",
+            "machine-seated-hamstring-curl",
+          ]
+        : [
+            "machine-seated-hamstring-curl",
+            "dumbbell-step-up-loaded",
+            "machine-leg-press",
+            "db-rdl",
+          ];
+      const replacement = replacementIds
         .map((id) => exerciseById(id))
         .filter((candidate): candidate is Exercise => Boolean(candidate))
         .find((candidate) => {
           if (usedIds.has(candidate.id)) return false;
           if (candidate.regressionOnly || candidate.loadType !== "weighted") return false;
-          return isExerciseEligible(candidate, context.available);
+          return isExerciseEligibleForProgramContext({
+            exercise: candidate,
+            available: context.available,
+            section: "main",
+            context: context.selectionContext,
+            dayTitle: day.title,
+          });
         });
       if (!replacement) {
         usedIds.add(item.exerciseId);
@@ -18873,7 +19335,7 @@ const ensureThreeDayLegsAbsMainCount = (params: {
     );
   const candidateIdsBySlotKind = (slotKind: string) => {
     if (slotKind === "mainHingePrimary") {
-      return ["machine-seated-hamstring-curl", "db-rdl", "band-rdl", "back-extension"];
+      return ["db-rdl", "band-rdl", "back-extension", "machine-seated-hamstring-curl"];
     }
     if (slotKind === "mainUnilateralLowerLoaded") {
       return ["dumbbell-step-up-loaded", "split-squat", "assisted-step-up"];
@@ -18898,9 +19360,10 @@ const ensureThreeDayLegsAbsMainCount = (params: {
       .filter((exercise): exercise is Exercise => Boolean(exercise))
       .find((exercise) => {
         if (usedIds.has(exercise.id)) return false;
+        // Curl may rescue a secondary lower slot, but must not satisfy the
+        // primary hinge role alone (GYM_HINGE_SATISFIED_BY_CURL_ONLY).
         const controlledGymHamstringCurlRescue =
-          (slot.slotKind === "mainHingePrimary" ||
-            slot.slotKind === "mainSecondaryLowerLoaded") &&
+          slot.slotKind === "mainSecondaryLowerLoaded" &&
           exercise.id === "machine-seated-hamstring-curl" &&
           context.selectionContext.trainingContext === "gym";
         const unilateralLowerRescue =
@@ -20184,6 +20647,9 @@ const findConstrainedLegsMainFallback = (params: {
     .find((exercise) => {
       if (exercise.id === currentExerciseId) return false;
       if (usedIds.has(exercise.id)) return false;
+      if (context.selectionContext.blockedExerciseIds?.has(exercise.id)) {
+        return false;
+      }
       const conservativeBandPainHingeFallback =
         conservativeBandPainHinge && conservativeBandPainHingeIds.includes(exercise.id);
       const painHipExtensionHingeFallback =
@@ -21322,12 +21788,32 @@ export const isEligibleForPhase = (
     context.capabilityMode === "hasLoad" &&
     hasLowBackPainSignal(context) &&
     (exercise.id === "machine-glute-drive" || exercise.id === "barbell-hip-thrust");
+  // Controlled DB/band RDL primer for activation. High-severity upper-body pain
+  // must still allow this path; otherwise gym Legs + Abs loses every true hinge
+  // and collapses to curl-only or a missing hinge slot.
+  // When db-rdl is personally blocked, allow role-preserving true-hinge alternatives
+  // that remain equipment-legal (still filtered by eligibility/equipment gates).
+  const phaseOneHingeBlockFallbacks = [
+    "dumbbell-sumo-rdl",
+    "barbell-romanian-deadlift",
+    "machine-glute-drive",
+  ] as const;
+  const phaseOneBlockedHingeFallback =
+    inActivation &&
+    !hasLowBackPainSignal(context) &&
+    context.capabilityMode === "hasLoad" &&
+    Boolean(context.blockedExerciseIds?.has("db-rdl")) &&
+    (phaseOneHingeBlockFallbacks as readonly string[]).includes(exercise.id) &&
+    !context.blockedExerciseIds?.has(exercise.id);
   const phaseOneHomeHingePrimer =
     inActivation &&
-    context.painSeverity !== "high" &&
     !hasLowBackPainSignal(context) &&
-    ((context.capabilityMode === "hasLoad" && ["db-rdl", "band-rdl"].includes(exercise.id)) ||
-      (context.capabilityMode === "bandOnly" && exercise.id === "band-rdl"));
+    ((context.capabilityMode === "hasLoad" &&
+      (["db-rdl", "band-rdl"] as const).includes(
+        exercise.id as "db-rdl" | "band-rdl"
+      )) ||
+      (context.capabilityMode === "bandOnly" && exercise.id === "band-rdl") ||
+      phaseOneBlockedHingeFallback);
   const allowActivationMachineMainPrimer =
     inActivation &&
     minimumStage === "activation" &&
@@ -21360,7 +21846,11 @@ export const isEligibleForPhase = (
   const isBeginnerOrIntermediate =
     isBeginner || context.experienceLevel === "intermediate";
   if (inActivation && isBeginnerOrIntermediate) {
-    if (exercise.difficultyTier === "hard" && !activationPrimerException) {
+    if (
+      exercise.difficultyTier === "hard" &&
+      !activationPrimerException &&
+      !phaseOneBlockedHingeFallback
+    ) {
       return false;
     }
   }
@@ -21406,8 +21896,173 @@ const isExerciseEligibleForProgramContext = (params: {
     return false;
   }
   const intent = context.intentProfile;
-  if (section === "main" && exercise.id === "goblet-squat" && available.has("machines")) {
-    return false;
+  // Phase 8 gate audit: do not hard-exclude goblet when machines are viable.
+  // Machine squat preference remains a scoring signal (see scoreExerciseForContextDetailed),
+  // so beginners can still receive goblet when context ranks it highest.
+  // Dumbbell-only programs must not silently borrow gym/cable/band/barbell tools.
+  if (
+    context.primaryEquipmentMode === "dumbbells" &&
+    (section === "main" || section === "accessory")
+  ) {
+    const illegalForDumbbells = ["machines", "cables", "barbell", "kettlebell", "bands"] as const;
+    if (illegalForDumbbells.some((token) => exercise.equipment.includes(token))) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasBench &&
+      (exercise.equipment.includes("bench") || exerciseRequiresBenchSurface(exercise))
+    ) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasPullupBar &&
+      exercise.equipment.includes("pullup_bar")
+    ) {
+      return false;
+    }
+  }
+  // Band programs: confirmed type/anchor only; no gym/cable/barbell/dumbbell leakage.
+  if (
+    context.primaryEquipmentMode === "bands" &&
+    (section === "main" || section === "accessory")
+  ) {
+    const illegalForBands = ["machines", "cables", "barbell", "kettlebell", "dumbbells"] as const;
+    if (illegalForBands.some((token) => exercise.equipment.includes(token))) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasBench &&
+      (exercise.equipment.includes("bench") || exerciseRequiresBenchSurface(exercise))
+    ) {
+      return false;
+    }
+    if (exercise.equipment.includes("bands")) {
+      const requirement = resolveBandExerciseRequirement({
+        exerciseId: exercise.id,
+        name: exercise.name,
+        equipment: exercise.equipment,
+        variantKey: exercise.variantKey,
+        cues: exercise.cues,
+      });
+      if (requirement) {
+        const overlay = deriveBandCapabilityOverlay({
+          equipment: ["bands"],
+          bandSetup: context.bandSetupOption,
+        });
+        if (!isBandTypeSatisfied(requirement.bandType, overlay)) {
+          return false;
+        }
+        if (!isBandAnchorSatisfied(requirement.anchor, overlay)) {
+          return false;
+        }
+      }
+    }
+  }
+  // Mixed home: dumbbells + confirmed band type/anchor; no gym machines/cables/barbell/KB.
+  if (
+    context.primaryEquipmentMode === "mixedHome" &&
+    (section === "main" || section === "accessory")
+  ) {
+    const illegalForMixedHome = ["machines", "cables", "barbell", "kettlebell"] as const;
+    if (illegalForMixedHome.some((token) => exercise.equipment.includes(token))) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasBench &&
+      (exercise.equipment.includes("bench") || exerciseRequiresBenchSurface(exercise))
+    ) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasPullupBar &&
+      exercise.equipment.includes("pullup_bar")
+    ) {
+      return false;
+    }
+    if (exercise.equipment.includes("bands")) {
+      const requirement = resolveBandExerciseRequirement({
+        exerciseId: exercise.id,
+        name: exercise.name,
+        equipment: exercise.equipment,
+        variantKey: exercise.variantKey,
+        cues: exercise.cues,
+      });
+      if (requirement) {
+        const overlay = deriveBandCapabilityOverlay({
+          equipment: ["dumbbells", "bands"],
+          bandSetup: context.bandSetupOption,
+        });
+        if (!isBandTypeSatisfied(requirement.bandType, overlay)) {
+          return false;
+        }
+        if (!isBandAnchorSatisfied(requirement.anchor, overlay)) {
+          return false;
+        }
+      }
+    }
+    const supportNeedsMixed = inferExerciseSupportRequirements({
+      exerciseId: exercise.id,
+      name: exercise.name,
+      equipment: exercise.equipment,
+      cues: exercise.cues,
+      mistakes: exercise.mistakes,
+      tags: exercise.tags,
+      variantKey: exercise.variantKey,
+    });
+    if (
+      supportNeedsMixed.some(
+        (support) =>
+          !isSupportConfirmedByCapabilities(support, context.programCapabilities)
+      )
+    ) {
+      return false;
+    }
+  }
+  // Bodyweight: floor + wall only unless support is explicitly confirmed.
+  if (
+    context.primaryEquipmentMode === "bodyweight" &&
+    (section === "main" || section === "accessory")
+  ) {
+    const illegalForBodyweight = [
+      "machines",
+      "cables",
+      "barbell",
+      "kettlebell",
+      "dumbbells",
+      "bands",
+    ] as const;
+    if (illegalForBodyweight.some((token) => exercise.equipment.includes(token))) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasBench &&
+      (exercise.equipment.includes("bench") || exerciseRequiresBenchSurface(exercise))
+    ) {
+      return false;
+    }
+    if (
+      !context.programCapabilities.hasPullupBar &&
+      exercise.equipment.includes("pullup_bar")
+    ) {
+      return false;
+    }
+    const supportNeeds = inferExerciseSupportRequirements({
+      exerciseId: exercise.id,
+      name: exercise.name,
+      equipment: exercise.equipment,
+      cues: exercise.cues,
+      mistakes: exercise.mistakes,
+      tags: exercise.tags,
+      variantKey: exercise.variantKey,
+    });
+    if (
+      supportNeeds.some(
+        (support) =>
+          !isSupportConfirmedByCapabilities(support, context.programCapabilities)
+      )
+    ) {
+      return false;
+    }
   }
   if (
     section === "main" &&
@@ -21493,7 +22148,22 @@ const isExerciseEligibleForProgramContext = (params: {
       context.capabilityMode === "hasLoad" &&
       hasLowBackPainSignal(context) &&
       ["machine-glute-drive", "barbell-hip-thrust"].includes(exercise.id);
-    if (!allowControlledGymHamstringCurl && !allowPainAwareGymHipExtensionAnchor) {
+    // Upper-body pain may still carry avoidPatterns.heavy_hinge from legacy
+    // profiles; keep a controlled gym true-hinge path so Legs + Abs can fill
+    // mainHingePrimary without curl-only collapse.
+    const allowControlledGymTrueHinge =
+      lowerIntentDay &&
+      context.trainingContext === "gym" &&
+      context.capabilityMode === "hasLoad" &&
+      !hasLowBackPainSignal(context) &&
+      (exercise.id === "db-rdl" ||
+        exercise.id === "band-rdl" ||
+        exercise.id === "dumbbell-sumo-rdl");
+    if (
+      !allowControlledGymHamstringCurl &&
+      !allowPainAwareGymHipExtensionAnchor &&
+      !allowControlledGymTrueHinge
+    ) {
       return false;
     }
   }
@@ -22152,6 +22822,33 @@ const isShoulderIsolationExercise = (exercise: Exercise) =>
   });
 
 const isUpperIntentDayTitle = (title: string) => {
+  const dumbbellIdentity = resolveDumbbellDayIdentity(title);
+  const bodyweightIdentity = resolveBodyweightDayIdentity(title);
+  // Full-body A/B/C (and practice & restore) mix upper + lower roles by design.
+  if (
+    dumbbellIdentity === "full_body_a" ||
+    dumbbellIdentity === "full_body_b" ||
+    dumbbellIdentity === "full_body_c" ||
+    dumbbellIdentity === "practice_restore" ||
+    bodyweightIdentity === "full_body_a" ||
+    bodyweightIdentity === "full_body_b" ||
+    bodyweightIdentity === "full_body_c" ||
+    bodyweightIdentity === "practice_restore"
+  ) {
+    return false;
+  }
+  if (
+    dumbbellIdentity === "upper_pattern_practice" ||
+    bodyweightIdentity === "upper_pattern_practice"
+  ) {
+    return true;
+  }
+  if (
+    dumbbellIdentity === "lower_core_practice" ||
+    bodyweightIdentity === "lower_core_practice"
+  ) {
+    return false;
+  }
   const normalized = title.toLowerCase();
   return (
     normalized.includes("upper") ||
@@ -22162,6 +22859,33 @@ const isUpperIntentDayTitle = (title: string) => {
 };
 
 const isLowerIntentDayTitle = (title: string) => {
+  const dumbbellIdentity = resolveDumbbellDayIdentity(title);
+  const bodyweightIdentity = resolveBodyweightDayIdentity(title);
+  // Do not treat "Squat" / "Hinge" in Full Body A/B titles as lower-only days.
+  if (
+    dumbbellIdentity === "full_body_a" ||
+    dumbbellIdentity === "full_body_b" ||
+    dumbbellIdentity === "full_body_c" ||
+    dumbbellIdentity === "practice_restore" ||
+    bodyweightIdentity === "full_body_a" ||
+    bodyweightIdentity === "full_body_b" ||
+    bodyweightIdentity === "full_body_c" ||
+    bodyweightIdentity === "practice_restore"
+  ) {
+    return false;
+  }
+  if (
+    dumbbellIdentity === "lower_core_practice" ||
+    bodyweightIdentity === "lower_core_practice"
+  ) {
+    return true;
+  }
+  if (
+    dumbbellIdentity === "upper_pattern_practice" ||
+    bodyweightIdentity === "upper_pattern_practice"
+  ) {
+    return false;
+  }
   const normalized = title.toLowerCase();
   return (
     normalized.includes("lower") ||
@@ -22392,6 +23116,7 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
       patterns.has("squat") ||
       patterns.has("hinge") ||
       patterns.has("single_leg") ||
+      patterns.has("calf") ||
       tags.has("legs") ||
       tags.has("glutes") ||
       tags.has("quads") ||
@@ -22401,7 +23126,8 @@ const matchesAccessoryLanePattern = (exercise: Exercise, lane: AccessoryLane) =>
       token.includes("hinge") ||
       token.includes("lunge") ||
       token.includes("step-up") ||
-      token.includes("stepup")
+      token.includes("stepup") ||
+      token.includes("calf")
     );
   }
   const coreOrBracePattern =
@@ -23128,6 +23854,127 @@ const resolveThreeDayBlueprint = (params: {
   available: Set<Equipment>;
 }): ThreeDayBlueprint | null => {
   const { dayTitle, selectionContext, available } = params;
+  if (selectionContext.primaryEquipmentMode === "dumbbells") {
+    const dumbbellBlueprint = resolveDumbbellThreeDayBlueprint({
+      dayTitle,
+      experienceLevel: selectionContext.experienceLevel,
+    });
+    if (dumbbellBlueprint) {
+      return {
+        dayTitle: dumbbellBlueprint.dayTitle,
+        mainCount: dumbbellBlueprint.mainCount,
+        accessoryCount: dumbbellBlueprint.accessoryCount,
+        mainLanePlan: dumbbellBlueprint.mainLanePlan,
+        requiredMainFamilies: dumbbellBlueprint.requiredMainFamilies,
+        accessoryRoles: dumbbellBlueprint.accessoryRoles,
+        laneSwapRules: dumbbellBlueprint.laneSwapRules,
+        constraints: {
+          pullMainsAtLeastPressMains:
+            dumbbellBlueprint.constraints.pullMainsAtLeastPressMains,
+          noVerticalPushMain: dumbbellBlueprint.constraints.noVerticalPushMain,
+          noLowerBodyLeakMain: dumbbellBlueprint.constraints.noLowerBodyLeakMain,
+          maxCarryAccessories: dumbbellBlueprint.constraints.maxCarryAccessories,
+          preventDuplicateCarries:
+            dumbbellBlueprint.constraints.preventDuplicateCarries,
+          carryCannotReplaceCore:
+            dumbbellBlueprint.constraints.carryCannotReplaceCore,
+        },
+      };
+    }
+  }
+  if (selectionContext.primaryEquipmentMode === "bands") {
+    const volume = getBandDayVolumeContract(
+      dayTitle,
+      selectionContext.experienceLevel
+    );
+    const mainLanePlan = getBandMainLanePlan(
+      dayTitle,
+      selectionContext.experienceLevel
+    );
+    if (volume && mainLanePlan) {
+      return {
+        dayTitle,
+        mainCount: volume.mainCount,
+        accessoryCount: volume.accessoryCount,
+        mainLanePlan,
+        requiredMainFamilies: mainLanePlan.map((entry) => entry.family),
+        accessoryRoles: ["core", "posture_back"] as ThreeDayBlueprintAccessoryRole[],
+        laneSwapRules: {},
+        constraints: {
+          pullMainsAtLeastPressMains: false,
+          noVerticalPushMain: false,
+          noLowerBodyLeakMain: false,
+          maxCarryAccessories: 1,
+          preventDuplicateCarries: true,
+          carryCannotReplaceCore: true,
+        },
+      };
+    }
+  }
+  if (selectionContext.primaryEquipmentMode === "bodyweight") {
+    const bodyweightBlueprint = resolveBodyweightThreeDayBlueprint({
+      dayTitle,
+      experienceLevel: selectionContext.experienceLevel,
+    });
+    if (bodyweightBlueprint) {
+      return {
+        dayTitle: bodyweightBlueprint.dayTitle,
+        mainCount: bodyweightBlueprint.mainCount,
+        accessoryCount: bodyweightBlueprint.accessoryCount,
+        mainLanePlan: bodyweightBlueprint.mainLanePlan,
+        requiredMainFamilies: bodyweightBlueprint.requiredMainFamilies,
+        accessoryRoles: bodyweightBlueprint.accessoryRoles,
+        laneSwapRules: bodyweightBlueprint.laneSwapRules,
+        constraints: {
+          pullMainsAtLeastPressMains:
+            bodyweightBlueprint.constraints.pullMainsAtLeastPressMains,
+          noVerticalPushMain: bodyweightBlueprint.constraints.noVerticalPushMain,
+          noLowerBodyLeakMain: bodyweightBlueprint.constraints.noLowerBodyLeakMain,
+          maxCarryAccessories: bodyweightBlueprint.constraints.maxCarryAccessories,
+          preventDuplicateCarries:
+            bodyweightBlueprint.constraints.preventDuplicateCarries,
+          carryCannotReplaceCore:
+            bodyweightBlueprint.constraints.carryCannotReplaceCore,
+        },
+      };
+    }
+  }
+  if (selectionContext.primaryEquipmentMode === "mixedHome") {
+    const capabilityLane = refineMixedHomeCapabilityLane({
+      bandSetupLane: selectionContext.bandSetupLane,
+      resolvedBandSetup: selectionContext.bandSetupOption ?? selectionContext.bandSetupLane,
+    });
+    const canVertical =
+      selectionContext.programCapabilities.hasPullupBar ||
+      mixedHomeLaneHasHighAnchor(capabilityLane);
+    const mixedHomeBlueprint = resolveMixedHomeThreeDayBlueprint({
+      dayTitle,
+      experienceLevel: selectionContext.experienceLevel,
+      hasTrueVerticalPullCapability: canVertical,
+    });
+    if (mixedHomeBlueprint) {
+      return {
+        dayTitle: mixedHomeBlueprint.dayTitle,
+        mainCount: mixedHomeBlueprint.mainCount,
+        accessoryCount: mixedHomeBlueprint.accessoryCount,
+        mainLanePlan: mixedHomeBlueprint.mainLanePlan,
+        requiredMainFamilies: mixedHomeBlueprint.requiredMainFamilies,
+        accessoryRoles: mixedHomeBlueprint.accessoryRoles,
+        laneSwapRules: mixedHomeBlueprint.laneSwapRules,
+        constraints: {
+          pullMainsAtLeastPressMains:
+            mixedHomeBlueprint.constraints.pullMainsAtLeastPressMains,
+          noVerticalPushMain: mixedHomeBlueprint.constraints.noVerticalPushMain,
+          noLowerBodyLeakMain: mixedHomeBlueprint.constraints.noLowerBodyLeakMain,
+          maxCarryAccessories: mixedHomeBlueprint.constraints.maxCarryAccessories,
+          preventDuplicateCarries:
+            mixedHomeBlueprint.constraints.preventDuplicateCarries,
+          carryCannotReplaceCore:
+            mixedHomeBlueprint.constraints.carryCannotReplaceCore,
+        },
+      };
+    }
+  }
   const counts = get3DayTemplateCounts(dayTitle, selectionContext.experienceLevel);
   if (!counts) return null;
 
@@ -23239,6 +24086,7 @@ const resolveThreeDayBlueprint = (params: {
         activation: [
           "assisted-box-squat",
           "machine-leg-press",
+          "machine-hack-squat",
           "bodyweight-squat",
           "goblet-squat",
           "heels-elevated-squat",
@@ -24019,12 +24867,43 @@ const isThreeDayGymMainSlotEligible = (params: {
 
   if (isLegsAbsDayTitle(dayTitle)) {
     if (isRegressionOrDrillMovement(exercise)) return false;
-    if (exercise.loadedMainEligible !== true) return false;
+    // Prefer loaded true-hinge anchors in gym. When every loaded hinge is
+    // blocked/deferred/ineligible, allow band RDL so hinge_primary is not starved.
+    const bandRdlGymHingeFallback =
+      role === "hingePrimary" &&
+      exercise.id === "band-rdl" &&
+      params.available.has("bands") &&
+      !exercises.some((candidate) => {
+        if (candidate.id === exercise.id) return false;
+        if (candidate.category !== "main") return false;
+        if (candidate.loadedMainEligible !== true) return false;
+        if (!hasTrueHingeAnchor(candidate)) return false;
+        if (context.blockedExerciseIds?.has(candidate.id)) return false;
+        if (context.feedbackSummaryByExercise.get(candidate.id)?.deferred === true) {
+          return false;
+        }
+        return (
+          isExerciseEligible(candidate, params.available) &&
+          isEligibleForPhase(candidate, context.phaseName, context)
+        );
+      });
+    if (exercise.loadedMainEligible !== true && !bandRdlGymHingeFallback) return false;
     if (role === "squatPrimary") {
       return isLegsPrimarySquatExercise(exercise) && slotLane !== "hinge";
     }
     if (role === "hingePrimary") {
-      return isLegsHingeMainExercise(exercise);
+      // Hamstring curls carry a hinge pattern tag but are isolation, not a true
+      // hinge anchor. Reuse the strict hinge legality gate so gym Legs + Abs
+      // cannot satisfy mainHingePrimary with curl-only selections.
+      return (
+        bandRdlGymHingeFallback ||
+        isStrictHingeSlotAnchorLegal({
+          exercise,
+          available: params.available,
+          context,
+          dayTitle,
+        })
+      );
     }
     if (role === "unilateralLowerLoaded") {
       return isLegsSingleLegSquatExercise(exercise);
@@ -24323,6 +25202,35 @@ const isMainLegalForSlot = (params: {
   const { exercise, dayTitle, slotKind, slotLane, available, context } = params;
   if (exercise.category !== "main") return false;
 
+  // Bodyweight Full Body / practice days are template-authored. Gym slot-identity
+  // strictness (pull/hinge primers, HF lower drift, etc.) must not reject legal
+  // floor/wall strength work that the bodyweight contract explicitly schedules.
+  if (
+    context.primaryEquipmentMode === "bodyweight" &&
+    isBodyweightProgramDayTitle(dayTitle ?? "")
+  ) {
+    return isExerciseEligibleForProgramContext({
+      exercise,
+      available,
+      section: "main",
+      context,
+      dayTitle: dayTitle ?? undefined,
+    });
+  }
+
+  if (
+    context.primaryEquipmentMode === "mixedHome" &&
+    isMixedHomeProgramDayTitle(dayTitle ?? "")
+  ) {
+    return isExerciseEligibleForProgramContext({
+      exercise,
+      available,
+      section: "main",
+      context,
+      dayTitle: dayTitle ?? undefined,
+    });
+  }
+
   if (isLegsAbsDayTitle(dayTitle) && isLegsCalvesAccessoryExercise(exercise)) {
     return false;
   }
@@ -24434,6 +25342,9 @@ const isMainLegalForSlot = (params: {
       isLegsCarryExercise(exercise) ||
       matchesAccessoryLanePattern(exercise, "core") ||
       !exerciseHasUpperMainPattern(exercise) ||
+      // Phase 7: pull+hinge dual-tagged mains (e.g. bent-over row) must not
+      // satisfy upper-day pull slots — matches coverage intelligence gate.
+      exerciseHasLowerMainPattern(exercise) ||
       (hasUpperPainSignal(context) &&
         (exercise.id === "pike-pushup" ||
           `${exercise.id} ${exercise.name}`.toLowerCase().includes("pike push"))))
@@ -25360,6 +26271,15 @@ const isStrictHingeSlotAnchorLegal = (params: {
     return false;
   }
 
+  // Band templates author hip-extension hinge when long-band RDLs are unavailable
+  // or inappropriate (pain / loop / legacy).
+  if (
+    context.primaryEquipmentMode === "bands" &&
+    isHipExtensionHingeSurrogateExercise(exercise)
+  ) {
+    return true;
+  }
+
   if (
     shouldAllowHipExtensionHingeSurrogateForMainSlot({
       exercise,
@@ -25434,6 +26354,19 @@ const isStrictPullSlotAnchorLegal = (params: {
   const wantsVertical = slotKind === "mainPullVertical" || slotKind === "mainVerticalPull";
   const wantsHorizontal =
     slotKind === "mainPullHorizontal" || slotKind === "mainHorizontalPull";
+
+  // Loop/legacy band lanes honestly schedule limited scap/lat work as pull intent.
+  if (
+    context.primaryEquipmentMode === "bands" &&
+    (context.bandSetupLane === "loop_only" ||
+      context.bandSetupLane === "legacy_unknown") &&
+    (exercise.id === "band-pull-apart" ||
+      exercise.id === "band-pull-aparts" ||
+      exercise.id === "band-rear-delt-fly") &&
+    (slotLane === "pull" || Boolean(slotKind?.startsWith("mainPull")))
+  ) {
+    return true;
+  }
 
   if (wantsVertical && !hasTrueVerticalPullAnchor(exercise)) {
     const allowVerticalSurrogate =
@@ -27942,13 +28875,14 @@ const scoreExerciseForContextDetailed = (
     const conservativeActivationPushBias =
       context.experienceLevel === "beginner" || context.painSeverity === "high";
     if (conservativeActivationPushBias) {
-      // Beginner/high-pain profiles can stay machine-stable in phase 1.
+      // Phase 8 gate audit: keep machine stability as a preference, not a pseudo-gate.
+      // Prior +16 collapsed push selection to machine-chest-press in practice.
       if (exercise.id === "machine-chest-press") {
-        score += 16;
-        reasons.push("+16 activation main push machine chest preference (beginner/high-pain)");
-      } else if (exercise.id === "dumbbell-bench-press") {
         score += 4;
-        reasons.push("+4 activation main push dumbbell bench secondary preference");
+        reasons.push("+4 activation main push machine chest preference (beginner/high-pain)");
+      } else if (exercise.id === "dumbbell-bench-press") {
+        score += 2;
+        reasons.push("+2 activation main push dumbbell bench secondary preference");
       }
     } else if (
       context.experienceLevel !== "beginner" &&
@@ -27957,6 +28891,24 @@ const scoreExerciseForContextDetailed = (
     ) {
       score -= 1.25;
       reasons.push("-1.25 activation push de-prioritizes machine chest default for intermediate/advanced");
+    }
+  }
+
+  // Soft gym squat preference (replaces prior goblet hard-exclude).
+  if (
+    section === "main" &&
+    available.has("machines") &&
+    (context.experienceLevel === "beginner" || context.painSeverity === "high") &&
+    (exercise.id === "machine-leg-press" ||
+      exercise.id === "machine-hack-squat" ||
+      exercise.id === "goblet-squat")
+  ) {
+    if (exercise.id === "machine-leg-press" || exercise.id === "machine-hack-squat") {
+      score += 2.5;
+      reasons.push("+2.5 gym machine squat stability preference (beginner/high-pain)");
+    } else {
+      score += 1;
+      reasons.push("+1 goblet squat remains legal beginner-appropriate alternative");
     }
   }
 
@@ -29763,7 +30715,20 @@ const getAccessoryCandidateIds = (params: {
     ];
   }
   if (lane === "lower") {
-    return [
+    // Phase 7: prefer calves first on Lower Squat (and lower lanes generally) so
+    // day-contract calves accessories and weekly calvesDays cannot be starved by
+    // posterior-chain accessories ahead of them in the pool.
+    const lowerSquatDay =
+      typeof dayTitle === "string" &&
+      dayTitle.toLowerCase().includes("lower") &&
+      dayTitle.toLowerCase().includes("squat");
+    const calfFirst = [
+      "standing-calf-raise",
+      "single-leg-calf-raise",
+      "db-calf-raise",
+      "band-calf-raise",
+    ];
+    const lowerRest = [
       "machine-seated-hamstring-curl",
       "machine-glute-drive",
       "barbell-hip-thrust",
@@ -29773,8 +30738,6 @@ const getAccessoryCandidateIds = (params: {
       "single-leg-rdl",
       "single-leg-hip-thrust",
       "glute-bridges",
-      "single-leg-calf-raise",
-      "standing-calf-raise",
       "hip-hinge-drill",
       "band-front-squat",
       "bodyweight-squat",
@@ -29784,6 +30747,13 @@ const getAccessoryCandidateIds = (params: {
       "band-suitcase-march",
       "suitcase-hold-march",
     ];
+    return lowerSquatDay || !dayTitle
+      ? [...calfFirst, ...lowerRest]
+      : [
+          ...lowerRest.slice(0, 8),
+          ...calfFirst,
+          ...lowerRest.slice(8),
+        ];
   }
   return [
     "suitcase-carry",
@@ -30266,6 +31236,34 @@ const resolveStructuredMainSlotCount = (params: {
   selectionContext: SelectionContext;
 }) => {
   const { title, daysPerWeek, baseCount, capabilityMode, selectionContext } = params;
+  if (selectionContext.primaryEquipmentMode === "dumbbells") {
+    const volume = getDumbbellDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.mainCount;
+  }
+  if (selectionContext.primaryEquipmentMode === "bands") {
+    const volume = getBandDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.mainCount;
+  }
+  if (selectionContext.primaryEquipmentMode === "bodyweight") {
+    const volume = getBodyweightDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.mainCount;
+  }
+  if (selectionContext.primaryEquipmentMode === "mixedHome") {
+    const volume = getMixedHomeDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.mainCount;
+  }
   if (daysPerWeek < 4) return baseCount;
   if (isArmsPostureConditioningDayTitle(title)) {
     return selectionContext.experienceLevel === "beginner" ? Math.min(baseCount, 2) : baseCount;
@@ -30280,8 +31278,37 @@ const resolveStructuredAccessoryCount = (params: {
   daysPerWeek: 3 | 4 | 5;
   baseCount: number;
   selectionContext: SelectionContext;
+  title?: string;
 }) => {
-  const { daysPerWeek, baseCount, selectionContext } = params;
+  const { daysPerWeek, baseCount, selectionContext, title } = params;
+  if (selectionContext.primaryEquipmentMode === "dumbbells" && title) {
+    const volume = getDumbbellDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.accessoryCount;
+  }
+  if (selectionContext.primaryEquipmentMode === "bands" && title) {
+    const volume = getBandDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.accessoryCount;
+  }
+  if (selectionContext.primaryEquipmentMode === "bodyweight" && title) {
+    const volume = getBodyweightDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.accessoryCount;
+  }
+  if (selectionContext.primaryEquipmentMode === "mixedHome" && title) {
+    const volume = getMixedHomeDayVolumeContract(
+      title,
+      selectionContext.experienceLevel
+    );
+    if (volume) return volume.accessoryCount;
+  }
   if (daysPerWeek >= 4 && isQualityFirstDayBudgetContext(selectionContext)) {
     return Math.min(baseCount, 2);
   }
@@ -30650,15 +31677,39 @@ const buildStructuredDay = (params: {
   const threeDayTemplateLanePlanBase =
     threeDayBlueprint?.mainLanePlan.length
       ? threeDayBlueprint.mainLanePlan
+      : selectionContext.primaryEquipmentMode === "dumbbells"
+      ? getDumbbellMainLanePlan(title, selectionContext.experienceLevel)
+      : selectionContext.primaryEquipmentMode === "bands"
+      ? getBandMainLanePlan(title, selectionContext.experienceLevel)
+      : selectionContext.primaryEquipmentMode === "bodyweight"
+      ? getBodyweightMainLanePlan(title, selectionContext.experienceLevel)
+      : selectionContext.primaryEquipmentMode === "mixedHome"
+      ? getMixedHomeMainLanePlan(title, selectionContext.experienceLevel, {
+          hasTrueVerticalPullCapability:
+            selectionContext.programCapabilities.hasPullupBar ||
+            mixedHomeLaneHasHighAnchor(
+              refineMixedHomeCapabilityLane({
+                bandSetupLane: selectionContext.bandSetupLane,
+                resolvedBandSetup:
+                  selectionContext.bandSetupOption ?? selectionContext.bandSetupLane,
+              })
+            ),
+        })
       : daysPerWeek === 3
       ? get3DayMainLanePlan(title, targetMainSlotCount)
       : null;
-  const threeDayTemplateLanePlan = maybeRotateThreeDayTemplateLanePlan({
-    dayTitle: title,
-    phaseIndex,
-    plan: threeDayTemplateLanePlanBase,
-    selectionContext,
-  });
+  const threeDayTemplateLanePlan =
+    selectionContext.primaryEquipmentMode === "dumbbells" ||
+    selectionContext.primaryEquipmentMode === "bands" ||
+    selectionContext.primaryEquipmentMode === "bodyweight" ||
+    selectionContext.primaryEquipmentMode === "mixedHome"
+      ? threeDayTemplateLanePlanBase
+      : maybeRotateThreeDayTemplateLanePlan({
+          dayTitle: title,
+          phaseIndex,
+          plan: threeDayTemplateLanePlanBase,
+          selectionContext,
+        });
   const expandedLanes =
     threeDayTemplateLanePlan?.length
       ? threeDayTemplateLanePlan.map((slot) => slot.lane as MainLane)
@@ -31232,6 +32283,7 @@ const buildStructuredDay = (params: {
             daysPerWeek,
             baseCount: experienceProfile.accessoryCount,
             selectionContext,
+            title,
           }),
     blueprint: threeDayBlueprint,
   });
@@ -31605,17 +32657,48 @@ const applyAdaptiveTemplateNote = (
   };
 };
 
-const getSplitTemplateSpecs = (daysPerWeek: 3 | 4 | 5): SplitTemplateSpec[] =>
-  buildRawSplitTemplateSpecs<MainLane, RequirementRule>(
+const getSplitTemplateSpecs = (
+  daysPerWeek: 3 | 4 | 5,
+  selectionContext?: SelectionContext
+): SplitTemplateSpec[] => {
+  if (selectionContext?.primaryEquipmentMode === "dumbbells") {
+    return buildDumbbellSplitTemplateSpecs<MainLane, RequirementRule>(
+      daysPerWeek,
+      splitTemplateRuleSet()
+    );
+  }
+  if (selectionContext?.primaryEquipmentMode === "bands") {
+    return buildBandSplitTemplateSpecs<MainLane, RequirementRule>(
+      daysPerWeek,
+      splitTemplateRuleSet()
+    );
+  }
+  if (selectionContext?.primaryEquipmentMode === "bodyweight") {
+    return buildBodyweightSplitTemplateSpecs<MainLane, RequirementRule>(
+      daysPerWeek,
+      splitTemplateRuleSet()
+    );
+  }
+  if (selectionContext?.primaryEquipmentMode === "mixedHome") {
+    return buildMixedHomeSplitTemplateSpecs<MainLane, RequirementRule>(
+      daysPerWeek,
+      splitTemplateRuleSet()
+    );
+  }
+  return buildRawSplitTemplateSpecs<MainLane, RequirementRule>(
     daysPerWeek,
     splitTemplateRuleSet()
   );
+};
 
 export const previewSplitTemplates = (
   daysPerWeek: 3 | 4 | 5,
-  capabilityMode: EquipmentCapabilityMode
+  capabilityMode: EquipmentCapabilityMode,
+  primaryEquipmentMode?: PrimaryProgramEquipmentMode
 ) =>
-  getSplitTemplateSpecs(daysPerWeek).map((template) => ({
+  getSplitTemplateSpecs(daysPerWeek, {
+    primaryEquipmentMode: primaryEquipmentMode ?? "gym",
+  } as SelectionContext).map((template) => ({
     title: template.title,
     focusTags: [...template.focusTags],
     lanes:
@@ -31634,11 +32717,19 @@ const buildSplitTemplates = (
   selectionAuditHook?: ProgramSelectionAuditHook,
   selectionRng?: RandomFn
 ) => {
-  const templates = applyAdaptiveWeakpointTemplateOverlay({
-    templates: getSplitTemplateSpecs(daysPerWeek),
-    daysPerWeek,
-    selectionContext,
-  });
+  const rawTemplates = getSplitTemplateSpecs(daysPerWeek, selectionContext);
+  // Full-body home identities must stay stable; skip gym-title adaptive overlays.
+  const templates =
+    selectionContext.primaryEquipmentMode === "dumbbells" ||
+    selectionContext.primaryEquipmentMode === "bands" ||
+    selectionContext.primaryEquipmentMode === "bodyweight" ||
+    selectionContext.primaryEquipmentMode === "mixedHome"
+      ? rawTemplates
+      : applyAdaptiveWeakpointTemplateOverlay({
+          templates: rawTemplates,
+          daysPerWeek,
+          selectionContext,
+        });
   const builtDays: ReturnType<typeof buildStructuredDay>[] = [];
   let priorDayHeavyPatterns: PrimaryMotorPattern[] = [];
   const sameWeekLowerMainExerciseIds: string[] = [];
@@ -31647,6 +32738,33 @@ const buildSplitTemplates = (
     const sameWeekRelatedMainExerciseIds = isHigherFrequencyLowerDayTitle(template.title)
       ? [...sameWeekLowerMainExerciseIds]
       : [];
+    // Prefer template role lanes from the canonical plan when available so
+    // selection authors Full Body A/B/C before any gym-shaped repair runs.
+    const mixedHomeCanVertical =
+      selectionContext.programCapabilities.hasPullupBar ||
+      mixedHomeLaneHasHighAnchor(
+        refineMixedHomeCapabilityLane({
+          bandSetupLane: selectionContext.bandSetupLane,
+          resolvedBandSetup:
+            selectionContext.bandSetupOption ?? selectionContext.bandSetupLane,
+        })
+      );
+    const homeLanePlan =
+      selectionContext.primaryEquipmentMode === "dumbbells"
+        ? getDumbbellMainLanePlan(template.title, selectionContext.experienceLevel)
+        : selectionContext.primaryEquipmentMode === "bands"
+        ? getBandMainLanePlan(template.title, selectionContext.experienceLevel)
+        : selectionContext.primaryEquipmentMode === "bodyweight"
+        ? getBodyweightMainLanePlan(template.title, selectionContext.experienceLevel)
+        : selectionContext.primaryEquipmentMode === "mixedHome"
+        ? getMixedHomeMainLanePlan(template.title, selectionContext.experienceLevel, {
+            hasTrueVerticalPullCapability: mixedHomeCanVertical,
+          })
+        : null;
+    const templateLanes =
+      homeLanePlan?.length
+        ? homeLanePlan.map((slot) => slot.lane as MainLane)
+        : template.lanes;
     const builtDayBase = buildStructuredDay({
       title: template.title,
       focusTags: template.focusTags,
@@ -31655,7 +32773,7 @@ const buildSplitTemplates = (
       daysPerWeek,
       phaseIndex,
       available,
-      lanes: template.lanes,
+      lanes: templateLanes,
       warmupFocus: template.warmupFocus,
       cooldownFocus: template.cooldownFocus,
       capabilityMode,
@@ -31664,12 +32782,56 @@ const buildSplitTemplates = (
       selectionAuditHook,
       selectionRng,
     });
-    const builtDay = template.adaptiveNote
+    const noteAppliedDay = template.adaptiveNote
       ? applyAdaptiveTemplateNote(builtDayBase, template.adaptiveNote)
       : builtDayBase;
+    const builtDay =
+      selectionContext.primaryEquipmentMode === "dumbbells"
+        ? applyDumbbellTemplateMainAuthorship({
+            day: noteAppliedDay,
+            selectionContext,
+            available,
+            phaseIndex,
+            weekUsedMainIds: sameWeekLowerMainExerciseIds,
+          })
+        : selectionContext.primaryEquipmentMode === "bands"
+        ? applyBandTemplateMainAuthorship({
+            day: noteAppliedDay,
+            selectionContext,
+            available,
+            phaseIndex,
+            weekUsedMainIds: sameWeekLowerMainExerciseIds,
+          })
+        : selectionContext.primaryEquipmentMode === "bodyweight"
+        ? applyBodyweightTemplateMainAuthorship({
+            day: noteAppliedDay,
+            selectionContext,
+            available,
+            phaseIndex,
+            weekUsedMainIds: sameWeekLowerMainExerciseIds,
+          })
+        : selectionContext.primaryEquipmentMode === "mixedHome"
+        ? applyMixedHomeTemplateMainAuthorship({
+            day: noteAppliedDay,
+            selectionContext,
+            available,
+            phaseIndex,
+            weekUsedMainIds: sameWeekLowerMainExerciseIds,
+          })
+        : noteAppliedDay;
     builtDays.push(builtDay);
     priorDayHeavyPatterns = deriveHeavyPrimaryPatternsForDay(builtDay);
-    if (isHigherFrequencyLowerDayTitle(builtDay.title)) {
+    if (
+      isHigherFrequencyLowerDayTitle(builtDay.title) ||
+      (selectionContext.primaryEquipmentMode === "dumbbells" &&
+        isDumbbellProgramDayTitle(builtDay.title)) ||
+      (selectionContext.primaryEquipmentMode === "bands" &&
+        isBandProgramDayTitle(builtDay.title)) ||
+      (selectionContext.primaryEquipmentMode === "bodyweight" &&
+        isBodyweightProgramDayTitle(builtDay.title)) ||
+      (selectionContext.primaryEquipmentMode === "mixedHome" &&
+        isMixedHomeProgramDayTitle(builtDay.title))
+    ) {
       sameWeekLowerMainExerciseIds.push(
         ...builtDay.routine
           .filter((item) => item.section === "main")
@@ -31679,6 +32841,432 @@ const buildSplitTemplates = (
   });
 
   return builtDays;
+};
+
+type DumbbellAuthoredDay = Omit<ProgramDay, "dayIndex"> & { dayIndex?: number };
+
+const applyDumbbellTemplateMainAuthorship = <Day extends DumbbellAuthoredDay>(params: {
+  day: Day;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+  weekUsedMainIds: string[];
+}): Day => {
+  const { day, selectionContext, available, phaseIndex, weekUsedMainIds } = params;
+  if (!isDumbbellProgramDayTitle(day.title)) return day;
+  const authored = authorDumbbellMainSelections({
+    dayTitle: day.title,
+    experienceLevel: selectionContext.experienceLevel,
+    usedIds: weekUsedMainIds,
+    avoidVerticalPushLoad: selectionContext.intentProfile.avoidPatterns.includes(
+      "vertical_push_load"
+    ),
+    preferPainAwareHinge: hasLowBackPainSignal(selectionContext),
+    preferSoftHorizontalPress: selectionContext.painAreas.some((area) => {
+      const token = normalizeTagToken(area);
+      return token.includes("shoulder") || token.includes("upper_back");
+    }),
+    isEligible: (exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      if (!exercise) return false;
+      return isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context: selectionContext,
+        dayTitle: day.title,
+      });
+    },
+  });
+  if (!authored.length) return day;
+
+  const nonMainItems = day.routine.filter((item) => item.section !== "main");
+  const sampleMain = day.routine.find((item) => item.section === "main");
+  const authoredMainItems = authored
+    .map((entry, index) => {
+      const exercise = exerciseById(entry.exerciseId);
+      if (!exercise) {
+        return sampleMain;
+      }
+      return withSelectionDebug(
+        {
+          exerciseId: exercise.id,
+          section: "main" as const,
+          sets: sampleMain?.sets ?? "3",
+          reps: sampleMain?.reps ?? "8-12",
+          restSec: sampleMain?.restSec ?? 75,
+          loadType: exercise.loadType,
+          cues: buildProgramCues(exercise, "main"),
+          notes: sampleMain?.notes,
+        },
+        "initial_pick",
+        {
+          slotId: `${normalizeSlotToken(day.title)}-main-${index + 1}`,
+          slotKind: entry.slotKind,
+          slotLane: entry.slotLane,
+          phaseIndex,
+        }
+      );
+    })
+    .filter((item): item is ProgramRoutineItem => Boolean(item));
+
+  if (!authoredMainItems.length) return day;
+
+  // Keep original section order: warmup → activation → mains → accessory → cooldown.
+  const nextRoutine: ProgramRoutineItem[] = [];
+  let mainsInserted = false;
+  nonMainItems.forEach((item) => {
+    if (!mainsInserted && (item.section === "accessory" || item.section === "cooldown")) {
+      nextRoutine.push(...authoredMainItems);
+      mainsInserted = true;
+    }
+    nextRoutine.push(item);
+  });
+  if (!mainsInserted) {
+    nextRoutine.push(...authoredMainItems);
+  }
+  return { ...day, routine: nextRoutine } as Day;
+};
+
+const applyDumbbellTemplateAuthorshipToWeek = (params: {
+  week: ProgramDay[];
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+}): ProgramDay[] => {
+  const weekUsedMainIds: string[] = [];
+  return params.week.map((day) => {
+    const nextDay = applyDumbbellTemplateMainAuthorship({
+      day,
+      selectionContext: params.selectionContext,
+      available: params.available,
+      phaseIndex: params.phaseIndex,
+      weekUsedMainIds,
+    });
+    weekUsedMainIds.push(
+      ...nextDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+    );
+    return nextDay;
+  });
+};
+
+const applyBandTemplateMainAuthorship = <Day extends DumbbellAuthoredDay>(params: {
+  day: Day;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+  weekUsedMainIds: string[];
+}): Day => {
+  const { day, selectionContext, available, phaseIndex, weekUsedMainIds } = params;
+  if (!isBandProgramDayTitle(day.title)) return day;
+  const authored = authorBandMainSelections({
+    dayTitle: day.title,
+    experienceLevel: selectionContext.experienceLevel,
+    setupLane: selectionContext.bandSetupLane ?? "legacy_unknown",
+    usedIds: weekUsedMainIds,
+    avoidVerticalPushLoad: selectionContext.intentProfile.avoidPatterns.includes(
+      "vertical_push_load"
+    ),
+    preferPainAwareHinge: hasLowBackPainSignal(selectionContext),
+    phaseIndex,
+    isEligible: (exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      if (!exercise) return false;
+      return isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context: selectionContext,
+        dayTitle: day.title,
+      });
+    },
+  });
+  if (!authored.length) return day;
+
+  const nonMainItems = day.routine.filter((item) => item.section !== "main");
+  const sampleMain = day.routine.find((item) => item.section === "main");
+  const authoredMainItems = authored
+    .map((entry, index) => {
+      const exercise = exerciseById(entry.exerciseId);
+      if (!exercise) return sampleMain;
+      return withSelectionDebug(
+        {
+          exerciseId: exercise.id,
+          section: "main" as const,
+          sets: sampleMain?.sets ?? "3",
+          reps: sampleMain?.reps ?? "8-12",
+          restSec: sampleMain?.restSec ?? 75,
+          loadType: exercise.loadType,
+          cues: buildProgramCues(exercise, "main"),
+          notes: sampleMain?.notes,
+        },
+        "initial_pick",
+        {
+          slotId: `${normalizeSlotToken(day.title)}-main-${index + 1}`,
+          slotKind: entry.slotKind,
+          slotLane: entry.slotLane,
+          phaseIndex,
+        }
+      );
+    })
+    .filter((item): item is ProgramRoutineItem => Boolean(item));
+  if (!authoredMainItems.length) return day;
+
+  const nextRoutine: ProgramRoutineItem[] = [];
+  let mainsInserted = false;
+  nonMainItems.forEach((item) => {
+    if (!mainsInserted && (item.section === "accessory" || item.section === "cooldown")) {
+      nextRoutine.push(...authoredMainItems);
+      mainsInserted = true;
+    }
+    nextRoutine.push(item);
+  });
+  if (!mainsInserted) nextRoutine.push(...authoredMainItems);
+  return { ...day, routine: nextRoutine } as Day;
+};
+
+const applyBodyweightTemplateMainAuthorship = <Day extends DumbbellAuthoredDay>(params: {
+  day: Day;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+  weekUsedMainIds: string[];
+}): Day => {
+  const { day, selectionContext, available, phaseIndex, weekUsedMainIds } = params;
+  if (!isBodyweightProgramDayTitle(day.title)) return day;
+  const authored = authorBodyweightMainSelections({
+    dayTitle: day.title,
+    experienceLevel: selectionContext.experienceLevel,
+    usedIds: weekUsedMainIds,
+    hasPullupBar: selectionContext.programCapabilities.hasPullupBar,
+    avoidVerticalPushLoad: selectionContext.intentProfile.avoidPatterns.includes(
+      "vertical_push_load"
+    ),
+    preferPainAwareHinge: hasLowBackPainSignal(selectionContext),
+    preferSoftHorizontalPress: selectionContext.painAreas.some((area) => {
+      const token = normalizeTagToken(area);
+      return token.includes("shoulder") || token.includes("upper_back");
+    }),
+    isEligible: (exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      if (!exercise) return false;
+      return isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context: selectionContext,
+        dayTitle: day.title,
+      });
+    },
+  });
+  if (!authored.length) return day;
+
+  const nonMainItems = day.routine.filter((item) => item.section !== "main");
+  const sampleMain = day.routine.find((item) => item.section === "main");
+  const authoredMainItems = authored
+    .map((entry, index) => {
+      const exercise = exerciseById(entry.exerciseId);
+      if (!exercise) return sampleMain;
+      return withSelectionDebug(
+        {
+          exerciseId: exercise.id,
+          section: "main" as const,
+          sets: sampleMain?.sets ?? "3",
+          reps: sampleMain?.reps ?? "8-12",
+          restSec: sampleMain?.restSec ?? 60,
+          loadType: exercise.loadType,
+          cues: buildProgramCues(exercise, "main"),
+          notes: sampleMain?.notes,
+        },
+        "initial_pick",
+        {
+          slotId: `${normalizeSlotToken(day.title)}-main-${index + 1}`,
+          slotKind: entry.slotKind,
+          slotLane: entry.slotLane,
+          phaseIndex,
+        }
+      );
+    })
+    .filter((item): item is ProgramRoutineItem => Boolean(item));
+  if (!authoredMainItems.length) return day;
+
+  const nextRoutine: ProgramRoutineItem[] = [];
+  let mainsInserted = false;
+  nonMainItems.forEach((item) => {
+    if (!mainsInserted && (item.section === "accessory" || item.section === "cooldown")) {
+      nextRoutine.push(...authoredMainItems);
+      mainsInserted = true;
+    }
+    nextRoutine.push(item);
+  });
+  if (!mainsInserted) nextRoutine.push(...authoredMainItems);
+  return { ...day, routine: nextRoutine } as Day;
+};
+
+const applyBodyweightTemplateAuthorshipToWeek = (params: {
+  week: ProgramDay[];
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+}): ProgramDay[] => {
+  const weekUsedMainIds: string[] = [];
+  return params.week.map((day) => {
+    const nextDay = applyBodyweightTemplateMainAuthorship({
+      day,
+      selectionContext: params.selectionContext,
+      available: params.available,
+      phaseIndex: params.phaseIndex,
+      weekUsedMainIds,
+    });
+    weekUsedMainIds.push(
+      ...nextDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+    );
+    return nextDay;
+  });
+};
+
+const applyBandTemplateAuthorshipToWeek = (params: {
+  week: ProgramDay[];
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+}): ProgramDay[] => {
+  const weekUsedMainIds: string[] = [];
+  return params.week.map((day) => {
+    const nextDay = applyBandTemplateMainAuthorship({
+      day,
+      selectionContext: params.selectionContext,
+      available: params.available,
+      phaseIndex: params.phaseIndex,
+      weekUsedMainIds,
+    });
+    weekUsedMainIds.push(
+      ...nextDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+    );
+    return nextDay;
+  });
+};
+
+const applyMixedHomeTemplateMainAuthorship = <Day extends DumbbellAuthoredDay>(params: {
+  day: Day;
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+  weekUsedMainIds: string[];
+}): Day => {
+  const { day, selectionContext, available, phaseIndex, weekUsedMainIds } = params;
+  if (!isMixedHomeProgramDayTitle(day.title)) return day;
+  const capabilityLane = refineMixedHomeCapabilityLane({
+    bandSetupLane: selectionContext.bandSetupLane,
+    resolvedBandSetup:
+      selectionContext.bandSetupOption ?? selectionContext.bandSetupLane,
+  });
+  const authored = authorMixedHomeMainSelections({
+    dayTitle: day.title,
+    experienceLevel: selectionContext.experienceLevel,
+    capabilityLane,
+    hasPullupBar: selectionContext.programCapabilities.hasPullupBar,
+    usedIds: weekUsedMainIds,
+    avoidVerticalPushLoad: selectionContext.intentProfile.avoidPatterns.includes(
+      "vertical_push_load"
+    ),
+    preferPainAwareHinge: hasLowBackPainSignal(selectionContext),
+    preferSoftHorizontalPress: selectionContext.painAreas.some((area) => {
+      const token = normalizeTagToken(area);
+      return token.includes("shoulder") || token.includes("upper_back");
+    }),
+    isEligible: (exerciseId) => {
+      const exercise = exerciseById(exerciseId);
+      if (!exercise) return false;
+      return isExerciseEligibleForProgramContext({
+        exercise,
+        available,
+        section: "main",
+        context: selectionContext,
+        dayTitle: day.title,
+      });
+    },
+  });
+  if (!authored.length) return day;
+
+  const nonMainItems = day.routine.filter((item) => item.section !== "main");
+  const sampleMain = day.routine.find((item) => item.section === "main");
+  const authoredMainItems = authored
+    .map((entry, index) => {
+      const exercise = exerciseById(entry.exerciseId);
+      if (!exercise) {
+        return sampleMain;
+      }
+      return withSelectionDebug(
+        {
+          exerciseId: exercise.id,
+          section: "main" as const,
+          sets: sampleMain?.sets ?? "3",
+          reps: sampleMain?.reps ?? "8-12",
+          restSec: sampleMain?.restSec ?? 75,
+          loadType: exercise.loadType,
+          cues: buildProgramCues(exercise, "main"),
+          notes: sampleMain?.notes,
+        },
+        "initial_pick",
+        {
+          slotId: `${normalizeSlotToken(day.title)}-main-${index + 1}`,
+          slotKind: entry.slotKind,
+          slotLane: entry.slotLane,
+          phaseIndex,
+          decisionTrace: {
+            slotRoleMatch: `mixedHome:${entry.selectedTool}:${entry.rationale}`,
+          },
+        }
+      );
+    })
+    .filter((item): item is ProgramRoutineItem => Boolean(item));
+
+  if (!authoredMainItems.length) return day;
+
+  const nextRoutine: ProgramRoutineItem[] = [];
+  let mainsInserted = false;
+  nonMainItems.forEach((item) => {
+    if (!mainsInserted && (item.section === "accessory" || item.section === "cooldown")) {
+      nextRoutine.push(...authoredMainItems);
+      mainsInserted = true;
+    }
+    nextRoutine.push(item);
+  });
+  if (!mainsInserted) {
+    nextRoutine.push(...authoredMainItems);
+  }
+  return { ...day, routine: nextRoutine } as Day;
+};
+
+const applyMixedHomeTemplateAuthorshipToWeek = (params: {
+  week: ProgramDay[];
+  selectionContext: SelectionContext;
+  available: Set<Equipment>;
+  phaseIndex: number;
+}): ProgramDay[] => {
+  const weekUsedMainIds: string[] = [];
+  return params.week.map((day) => {
+    const nextDay = applyMixedHomeTemplateMainAuthorship({
+      day,
+      selectionContext: params.selectionContext,
+      available: params.available,
+      phaseIndex: params.phaseIndex,
+      weekUsedMainIds,
+    });
+    weekUsedMainIds.push(
+      ...nextDay.routine
+        .filter((item) => item.section === "main")
+        .map((item) => item.exerciseId)
+    );
+    return coalesceMixedHomeSessionWorkOrder(nextDay);
+  });
 };
 
 const attachStructuredPrepBlocksToWeek = (params: {
@@ -32071,6 +33659,9 @@ const enforceHigherFrequencyFinalMainIntegrity = (params: {
                 if (usedIds.has(candidate.id)) return false;
                 if (candidate.id === item.exerciseId) return false;
                 if (candidate.category !== "main") return false;
+                if (context.selectionContext.blockedExerciseIds?.has(candidate.id)) {
+                  return false;
+                }
                 const contextEligible = isExerciseEligibleForProgramContext({
                   exercise: candidate,
                   available: context.available,
@@ -32278,6 +33869,10 @@ const findLowerSlotPurityReplacement = (params: {
       if (candidate.id === item.exerciseId) return false;
       if (usedIds.has(candidate.id)) return false;
       if (candidate.category !== "main") return false;
+      // Personal blocks are never bypassed by slot-purity rescue.
+      if (context.selectionContext.blockedExerciseIds?.has(candidate.id)) {
+        return false;
+      }
       const contextEligible = isExerciseEligibleForProgramContext({
         exercise: candidate,
         available: context.available,
@@ -32441,9 +34036,19 @@ const findFinalAccessorySlotReplacement = (params: {
           weeklyQuotaAudit,
         }
       );
+      let score = detail.score + focusOverlapScore(exercise, day.focusTags);
+      // Phase 7: Lower-day lower-lane purity must not erase calves needed for
+      // day-contract / weekly calvesDays (posterior accessories score higher otherwise).
+      if (
+        lane === "lower" &&
+        isHigherFrequencyLowerDayTitle(day.title) &&
+        isLegsCalvesAccessoryExercise(exercise)
+      ) {
+        score += 80;
+      }
       return {
         exercise,
-        score: detail.score + focusOverlapScore(exercise, day.focusTags),
+        score,
       };
     })
     .sort((left, right) => {
@@ -32492,18 +34097,33 @@ const enforceFinalAccessorySlotPurity = (params: {
       const debugLane = item.selectionDebug?.slotLane as AccessoryLane | undefined;
       const inferredLane = resolveAccessoryLaneForReplacement(exercise, null);
       const identityPlannedLane = daysPerWeek >= 4 && plannedLane ? plannedLane : undefined;
-      const lane =
+      let lane: AccessoryLane | undefined =
         inferredLane === "core" && !identityPlannedLane
           ? inferredLane
           : identityPlannedLane ?? debugLane ?? plannedLane ?? inferredLane;
       if (!lane) return;
-      const legal = isAccessoryLegalForSlot({
-        exercise,
-        dayTitle: day.title,
-        slotLane: lane,
-        available: context.available,
-        context: context.selectionContext,
-      });
+      // Prefer a legal inferred/debug lane over a planned ordinal that falsely
+      // rejects truthful coverage (e.g. true carry in a lower slot, or calves in a
+      // core slot after accessory reordering).
+      const laneLegal = (candidate: AccessoryLane) =>
+        isAccessoryLegalForSlot({
+          exercise,
+          dayTitle: day.title,
+          slotLane: candidate,
+          available: context.available,
+          context: context.selectionContext,
+        });
+      if (!laneLegal(lane)) {
+        const fallbackCandidates: AccessoryLane[] = [];
+        if (inferredLane) fallbackCandidates.push(inferredLane);
+        if (debugLane) fallbackCandidates.push(debugLane);
+        if (isTrueCarryCoverageExercise(exercise)) fallbackCandidates.push("core");
+        const legalFallback = fallbackCandidates.find(
+          (candidate) => candidate !== lane && laneLegal(candidate)
+        );
+        if (legalFallback) lane = legalFallback;
+      }
+      const legal = laneLegal(lane);
 
       if (legal) {
         const expectedSlotKind = accessorySlotKindByLane(lane);
@@ -32870,6 +34490,15 @@ const enforceThreeDayFinalSlotRoleTruth = (params: {
 }): WeekConstraintRepairResult => {
   const { week, daysPerWeek, context, phaseIndex } = params;
   if (daysPerWeek !== 3) return { week, warnings: [] };
+  // Full-body home A/B/C is template-authored; gym 3-day slot remaps must not own it.
+  if (
+    context.selectionContext.primaryEquipmentMode === "dumbbells" ||
+    context.selectionContext.primaryEquipmentMode === "bands" ||
+    context.selectionContext.primaryEquipmentMode === "bodyweight" ||
+    context.selectionContext.primaryEquipmentMode === "mixedHome"
+  ) {
+    return { week, warnings: [] };
+  }
   const warnings: WeekConstraintRepairResult["warnings"] = [];
 
   const nextWeek = week.map((day) => {
@@ -33070,6 +34699,35 @@ const enforceThreeDayFinalSlotRoleTruth = (params: {
   return { week: nextWeek, warnings };
 };
 
+const pickBlockAwarePreferredExerciseId = (params: {
+  preferredIds: string[];
+  usedIds: Set<string>;
+  context: DayConstraintRepairContext;
+  dayTitle: string;
+}) => {
+  const { preferredIds, usedIds, context, dayTitle } = params;
+  for (const id of preferredIds) {
+    if (usedIds.has(id)) continue;
+    if (context.selectionContext.blockedExerciseIds?.has(id)) continue;
+    const candidate = exerciseById(id);
+    if (!candidate) continue;
+    if (
+      !isExerciseEligibleForProgramContext({
+        exercise: candidate,
+        available: context.available,
+        section: "main",
+        context: context.selectionContext,
+        dayTitle,
+      })
+    ) {
+      continue;
+    }
+    if (!isExerciseAllowedForSection(candidate, "main")) continue;
+    return id;
+  }
+  return null;
+};
+
 const forceThreeDayFinalDisplayedSlotTruth = (params: {
   week: ProgramDay[];
   daysPerWeek: 3 | 4 | 5;
@@ -33096,37 +34754,117 @@ const forceThreeDayFinalDisplayedSlotTruth = (params: {
         hasLowBackPainSignal(context.selectionContext) &&
         mainOrdinal === 1 &&
         isHamstringCurlExercise(exercise);
+      // Role-truth prep (regressionOnly/supportOnly) can still match hinge patterns;
+      // treat them as needing a true loaded hinge unless pain-aware LBP policy applies.
+      const hingeRoleTruth = classifyGymMovementRoleTruth(exercise, "hinge_primary");
+      const painAwareHipExtensionOk =
+        hasLowBackPainSignal(context.selectionContext) &&
+        (hingeRoleTruth === "preparationOnly" ||
+          hingeRoleTruth === "supportedVariant" ||
+          isHipExtensionHingeSurrogateExercise(exercise));
+      const needsTruePrimaryHingeReplacement =
+        mainOrdinal === 1 &&
+        !painAwareHipExtensionOk &&
+        (hingeRoleTruth !== "true" ||
+          !hasTrueHingeAnchor(exercise) ||
+          Boolean(exercise.supportOnly || exercise.regressionOnly)) &&
+        !isHamstringCurlExercise(exercise);
       const needsLoadedPrimaryHingeReplacement =
         !hasLowBackPainSignal(context.selectionContext) &&
         mainOrdinal === 1 &&
-        exercise.id === "single-leg-rdl" &&
-        (context.available.has("bands") || context.available.has("dumbbells"));
+        (exercise.id === "single-leg-rdl" || needsTruePrimaryHingeReplacement) &&
+        (context.available.has("bands") ||
+          context.available.has("dumbbells") ||
+          context.available.has("machines") ||
+          context.available.has("barbell"));
+      const unilateralRoleTruth = classifyGymMovementRoleTruth(
+        exercise,
+        "unilateral_lower_loaded"
+      );
+      const needsTrueUnilateralReplacement =
+        mainOrdinal === 2 &&
+        (unilateralRoleTruth !== "true" || isHamstringCurlExercise(exercise));
+      const trueHingePreferredIds = [
+        ...(context.available.has("dumbbells") || context.available.has("gym")
+          ? ["dumbbell-sumo-rdl", "db-rdl"]
+          : []),
+        ...(context.available.has("bands") ? ["band-rdl"] : []),
+        "machine-glute-drive",
+        "barbell-romanian-deadlift",
+        "barbell-hip-thrust",
+        ...(hasLowBackPainSignal(context.selectionContext)
+          ? ["single-leg-hip-thrust", "single-leg-glute-bridge-hold"]
+          : []),
+      ];
+      const trueUnilateralPreferredIds = [
+        "dumbbell-bulgarian-split-squat",
+        "dumbbell-reverse-lunge",
+        "dumbbell-step-up-loaded",
+        "split-squat",
+        "heels-elevated-squat",
+        "cossack-squat",
+      ];
       const backExtensionReplacementId = (() => {
         if (!needsBackExtensionReplacement) return null;
-        const preferredIds = [
-          ...(context.available.has("bands") ? ["band-rdl"] : []),
-          ...(context.available.has("dumbbells") ? ["db-rdl"] : []),
-          "cossack-squat",
-          "heels-elevated-squat",
-          "split-squat",
-          "single-leg-rdl",
-        ];
-        return preferredIds.find((id) => !usedIds.has(id)) ?? null;
+        return pickBlockAwarePreferredExerciseId({
+          preferredIds: [
+            ...(context.available.has("bands") ? ["band-rdl"] : []),
+            ...(context.available.has("dumbbells") ? ["dumbbell-sumo-rdl", "db-rdl"] : []),
+            "machine-glute-drive",
+            "barbell-romanian-deadlift",
+            "cossack-squat",
+            "heels-elevated-squat",
+            "split-squat",
+            "single-leg-rdl",
+          ],
+          usedIds,
+          context,
+          dayTitle: day.title,
+        });
       })();
+      const loadedHingeReplacementId =
+        needsLoadedPrimaryHingeReplacement || needsTruePrimaryHingeReplacement
+          ? pickBlockAwarePreferredExerciseId({
+              preferredIds: trueHingePreferredIds,
+              usedIds,
+              context,
+              dayTitle: day.title,
+            })
+          : null;
+      const unilateralReplacementId = needsTrueUnilateralReplacement
+        ? pickBlockAwarePreferredExerciseId({
+            preferredIds: trueUnilateralPreferredIds,
+            usedIds,
+            context,
+            dayTitle: day.title,
+          })
+        : null;
       const replacementId = needsLowBackHamstringReplacement
-        ? "single-leg-glute-bridge-hold"
-        : needsLoadedPrimaryHingeReplacement && context.available.has("bands") && !usedIds.has("band-rdl")
-        ? "band-rdl"
-        : needsLoadedPrimaryHingeReplacement &&
-          context.available.has("dumbbells") &&
-          !usedIds.has("db-rdl")
-        ? "db-rdl"
-        : backExtensionReplacementId;
+        ? pickBlockAwarePreferredExerciseId({
+            preferredIds: [
+              "machine-glute-drive",
+              "single-leg-glute-bridge-hold",
+              "single-leg-hip-thrust",
+            ],
+            usedIds,
+            context,
+            dayTitle: day.title,
+          })
+        : loadedHingeReplacementId ??
+          unilateralReplacementId ??
+          backExtensionReplacementId;
       const replacement = replacementId ? exerciseById(replacementId) : null;
       if (
         replacement &&
         !usedIds.has(replacement.id) &&
-        isExerciseEligible(replacement, context.available) &&
+        !context.selectionContext.blockedExerciseIds?.has(replacement.id) &&
+        isExerciseEligibleForProgramContext({
+          exercise: replacement,
+          available: context.available,
+          section: "main",
+          context: context.selectionContext,
+          dayTitle: day.title,
+        }) &&
         isExerciseAllowedForSection(replacement, "main")
       ) {
         usedIds.delete(nextItem.exerciseId);
@@ -33254,6 +34992,10 @@ const findFinalEquipmentLegalReplacement = (params: {
 
   const isRelaxedEquipmentSlotLegal = (candidate: Exercise) => {
     if (candidate.id === item.exerciseId) return false;
+    // Relaxed equipment rescue must still honor personal blocks.
+    if (context.selectionContext.blockedExerciseIds?.has(candidate.id)) {
+      return false;
+    }
     if (!isExerciseEligible(candidate, context.available)) return false;
     if (!isExerciseAllowedForSection(candidate, item.section)) return false;
     if (item.section === "main") {
@@ -33862,6 +35604,16 @@ export const generateWeeklyProgram = (
      * the phase gating verdict is "advance".
      */
     priorPhaseHistory?: import("@/lib/types").PhaseTransitionRecord[];
+    /**
+     * Phase 7 — skip unified quality-gate evaluation/recovery.
+     * Used by recovery re-generation and audit runners that compose their own contracts.
+     */
+    skipQualityGate?: boolean;
+    /**
+     * Phase 8 — skip constraint-aware sequencing (audit/baseline comparison only).
+     * Production callers must leave this unset.
+     */
+    skipSequencing?: boolean;
   }
 ): Program => {
   const { resolvedFeedbackSummaryByExercise: rawFeedbackSummary, recentlyUsedExerciseIds } =
@@ -34154,8 +35906,38 @@ export const generateWeeklyProgram = (
     context: dayRepairContext,
     phaseIndex: weeklyRuntimeContext.phaseIndex,
   });
+  const homeAuthoredWeek =
+    weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "dumbbells"
+      ? applyDumbbellTemplateAuthorshipToWeek({
+          week: finalDisplayedSlotTruthWeek,
+          selectionContext: weeklyRuntimeContext.selectionContext,
+          available: weeklyRuntimeContext.availableEquipment,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+        })
+      : weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "bands"
+      ? applyBandTemplateAuthorshipToWeek({
+          week: finalDisplayedSlotTruthWeek,
+          selectionContext: weeklyRuntimeContext.selectionContext,
+          available: weeklyRuntimeContext.availableEquipment,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+        })
+      : weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "bodyweight"
+      ? applyBodyweightTemplateAuthorshipToWeek({
+          week: finalDisplayedSlotTruthWeek,
+          selectionContext: weeklyRuntimeContext.selectionContext,
+          available: weeklyRuntimeContext.availableEquipment,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+        })
+      : weeklyRuntimeContext.selectionContext.primaryEquipmentMode === "mixedHome"
+      ? applyMixedHomeTemplateAuthorshipToWeek({
+          week: finalDisplayedSlotTruthWeek,
+          selectionContext: weeklyRuntimeContext.selectionContext,
+          available: weeklyRuntimeContext.availableEquipment,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+        })
+      : finalDisplayedSlotTruthWeek;
   const tracedStructuredPrepWeek = annotateSelectionDecisionTraceForWeek({
-    week: finalDisplayedSlotTruthWeek,
+    week: homeAuthoredWeek,
     daysPerWeek: weeklyRuntimeContext.normalizedDaysPerWeek,
     selectionContext: weeklyRuntimeContext.selectionContext,
     available: weeklyRuntimeContext.availableEquipment,
@@ -34229,7 +36011,26 @@ export const generateWeeklyProgram = (
         }))
       : tracedStructuredPrepWeek;
 
-  return finalizeWeeklyProgramResult({
+  // Phase 8 — constraint-aware sequencing after truthful selection, before quality.
+  // Gym days use positional role-truth contracts; reordering mains breaks
+  // GYM_REQUIRED_ROLE_WRONG_TRUTH. Scope sequencing to at-home modes only.
+  const atHomeSequencingMode =
+    weeklyRuntimeContext.selectionContext.primaryEquipmentMode !== "gym";
+  const sequencedWeek =
+    options?.skipSequencing || !atHomeSequencingMode
+      ? annotatedWeek
+      : applyConstraintAwareSequencing({
+          // Use the same deterministic seed base as selection — never programId —
+          // so identical questionnaire/options stay order-stable across ids.
+          week: annotatedWeek,
+          seed: deterministicSelectionSeed,
+          cycleIndex: weeklyRuntimeContext.cycleIndex,
+          weekIndex: weeklyRuntimeContext.weekIndex,
+          phaseIndex: weeklyRuntimeContext.phaseIndex,
+          previousWeek: options?.previousWeek,
+        }).week;
+
+  const candidate = finalizeWeeklyProgramResult({
     pushWarnings: pushProgramConstraintWarnings,
     programId,
     phaseName: weeklyRuntimeContext.phaseName,
@@ -34241,7 +36042,7 @@ export const generateWeeklyProgram = (
     totalWeekIndex: weeklyRuntimeContext.totalWeekIndex,
     cycleIndex: weeklyRuntimeContext.cycleIndex,
     nextWeekPlan: weeklyRuntimeContext.nextWeekPlan,
-    week: annotatedWeek,
+    week: sequencedWeek,
     questionnaire: data,
     trainingState: weeklyRuntimeContext.trainingState,
     consistencyRate: 0,
@@ -34330,7 +36131,91 @@ export const generateWeeklyProgram = (
       ];
     })(),
   });
+
+  if (options?.skipQualityGate) {
+    return candidate;
+  }
+
+  const guarded = recoverAndEvaluateProgramQuality({
+    questionnaire: data,
+    programId,
+    phaseIndex: weeklyRuntimeContext.phaseIndex ?? options?.phaseIndex ?? 1,
+    baseSeed: options?.seed ?? programId,
+    initialProgram: candidate,
+    blockedExerciseIds: options?.blockedExerciseIds,
+    generate: (questionnaire, id, opts) =>
+      generateWeeklyProgram(questionnaire, id, {
+        // Preserve caller prefs (blocks, ladder, logs, etc.); only seed/id vary.
+        ...options,
+        ...opts,
+        skipQualityGate: true,
+      }),
+  });
+
+  if (!guarded.ok) {
+    throw new ProgramQualityGateError(guarded.message, guarded.evaluation);
+  }
+
+  return attachProgramQualityEvaluation(guarded.program, guarded.evaluation);
 };
+
+export {
+  evaluateProgramQuality,
+} from "@/lib/program/qualityGate/evaluateProgramQuality";
+export {
+  recoverAndEvaluateProgramQuality,
+  attachProgramQualityEvaluation,
+} from "@/lib/program/qualityGate/recoverProgramQuality";
+export type { QualityRecoveryTrace } from "@/lib/program/qualityGate/recoverProgramQuality";
+export { ProgramQualityGateError } from "@/lib/program/qualityGate/ProgramQualityGateError";
+export type {
+  ProgramQualityEvaluation,
+  ProgramQualityFinding,
+  ProgramQualitySeverity,
+  ProgramQualityGenerationFailure,
+} from "@/lib/program/qualityGate/qualityGateTypes";
+export {
+  resolveProgramQualitySeverity,
+  USER_SAFE_QUALITY_MESSAGE,
+  listKnownSeverityCodes,
+} from "@/lib/program/qualityGate/programQualityPolicy";
+export { computeProgramQualitySignature } from "@/lib/program/qualityGate/programQualitySignature";
+
+export {
+  getProgramPresentationInventory,
+  PRESENTATION_INVENTORY_VERSION,
+  resolveProgramPresentation,
+  resolveExercisePresentation,
+  resolveSessionPurpose,
+  resolveAdaptationReasonMessage,
+  resolveFeedbackContractActionLabel,
+  FEEDBACK_CONTRACT_ACTION_LABELS,
+  resolvePainAdaptationSummary,
+  resolveAssessmentFocusSummary,
+  resolveAssessmentFocusFromPose,
+  formatFocusTagForPresentation,
+  resolveNoValidSwapMessage,
+  containsForbiddenInternalUiLanguage,
+  validateProgramPresentationInventory,
+  validateResolvedPresentationModel,
+  getPresentationReceiverEvidence,
+} from "@/lib/program/presentation";
+export type {
+  PresentationContractStatus,
+  PresentationSurface,
+  PresentationRelationship,
+  PresentationMessage,
+  PresentationPersistenceKind,
+  AdaptationReason,
+  ProgramPresentationModel,
+  SessionPresentationModel,
+  FeedbackContractActionLabel,
+  ProgramPresentationValidation,
+  PresentationValidationFinding,
+  ResolveProgramPresentationInput,
+  AssessmentFocusFromPose,
+  PresentationReceiverEvidence,
+} from "@/lib/program/presentation";
 
 export const generateNextPhaseProgram = (params: {
   currentProgram: Program;

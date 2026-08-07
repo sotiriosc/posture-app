@@ -82,6 +82,77 @@ const expectRoutineShape = (
 };
 
 const expectThreeDayIdentity = (week: GeneratedWeek) => {
+  const isBodyweightFullBody = week.some((day) =>
+    day.title.startsWith("Full Body A — Squat, Push and Trunk")
+  );
+  const isLoadedFullBody = week.some((day) =>
+    day.title.startsWith("Full Body A — Squat, Press and Row")
+  );
+
+  if (isBodyweightFullBody) {
+    const dayA = findGeneratedDay(week, "Full Body A — Squat, Push and Trunk");
+    const dayB = findGeneratedDay(week, "Full Body B — Hinge, Single-Leg and Shoulder");
+    const dayC = findGeneratedDay(
+      week,
+      "Full Body C — Single-Leg, Push Variation and Back Intent"
+    );
+    const dayAMains = getSectionExercises(dayA, "main");
+    const dayBMains = getSectionExercises(dayB, "main");
+    const dayCMains = getSectionExercises(dayC, "main");
+    expect(
+      hasExerciseWithAnyToken(dayAMains, ["squat", "kneedominant", "push", "horizontalpush"])
+    ).toBe(true);
+    expect(
+      hasExerciseWithAnyToken(dayBMains, ["hinge", "glute", "verticalpush", "squat"])
+    ).toBe(true);
+    expect(
+      hasExerciseWithAnyToken(dayCMains, [
+        "squat",
+        "push",
+        "pull",
+        "scapular",
+        "horizontalpull",
+      ])
+    ).toBe(true);
+    return;
+  }
+
+  if (isLoadedFullBody) {
+    // Dumbbell / band / mixed-home Full Body A/B/C
+    const dayA = findGeneratedDay(week, "Full Body A — Squat, Press and Row");
+    const dayB = findGeneratedDay(week, "Full Body B — Hinge, Overhead and Unilateral");
+    const dayC = findGeneratedDay(
+      week,
+      "Full Body C — Single-Leg, Press Variation and Lat Intent"
+    );
+    const dayAMains = getSectionExercises(dayA, "main");
+    const dayBMains = getSectionExercises(dayB, "main");
+    const dayCMains = getSectionExercises(dayC, "main");
+    expect(
+      hasExerciseWithAnyToken(dayAMains, [
+        "squat",
+        "kneedominant",
+        "push",
+        "horizontalpush",
+        "pull",
+        "horizontalpull",
+      ])
+    ).toBe(true);
+    expect(
+      hasExerciseWithAnyToken(dayBMains, ["hinge", "glute", "verticalpush", "squat"])
+    ).toBe(true);
+    expect(
+      hasExerciseWithAnyToken(dayCMains, [
+        "squat",
+        "push",
+        "pull",
+        "horizontalpull",
+        "verticalpull",
+      ])
+    ).toBe(true);
+    return;
+  }
+
   const backChest = findGeneratedDay(week, "Back + Chest");
   const backChestMains = getSectionExercises(backChest, "main");
   const backChestAll = [
@@ -193,7 +264,7 @@ describe("merge readiness anchors", () => {
     }
 
     expect(result.seed).toBe(
-      "engine-v1|weekly|target:2:1:1:1|questionnaire:15hyeri|settings:w8rmy8|history:14wgysr"
+      "engine-v1|weekly|target:2:1:1:1|questionnaire:1q7bwio|settings:1psktzc|history:14wgysr"
     );
     expectRoutineShape(result.program.week, engineQuestionnaire);
     expectThreeDayIdentity(result.program.week);
