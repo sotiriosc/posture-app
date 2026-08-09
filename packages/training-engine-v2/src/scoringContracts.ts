@@ -7,6 +7,7 @@ export type ScoreComponentSource =
   | "session_intent"
   | "weekly_intent"
   | "assessment"
+  | "alignment"
   | "pain_injury"
   | "equipment"
   | "phase"
@@ -17,9 +18,11 @@ export type ScoreComponentSource =
 export type ScoreComponentFamily =
   | "role_fit"
   | "goal_fit"
+  | "muscle_target_fit"
   | "session_intent"
   | "weekly_need"
   | "assessment_relevance"
+  | "alignment_fit"
   | "pain_suitability"
   | "experience_suitability"
   | "phase_suitability"
@@ -48,7 +51,9 @@ export interface CandidateScore {
   readonly exerciseId: string;
   readonly components: readonly ScoreComponent[];
   readonly aggregate: {
-    readonly method: "unweighted_mean_foundation_placeholder";
+    readonly method:
+      | "unweighted_mean_foundation_placeholder"
+      | "weighted_mean_candidate_intelligence_v0";
     readonly value: number;
   };
 }

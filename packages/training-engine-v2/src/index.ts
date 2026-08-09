@@ -1,4 +1,5 @@
 export * from "./alignment";
+export * from "./candidate";
 export * from "./componentContracts";
 export * from "./decisionTrace";
 export * from "./eligibility";
@@ -8,6 +9,7 @@ export * from "./prescriptionProgression";
 export * from "./reasonCodes";
 export * from "./scoringContracts";
 export * from "./validation";
+export * from "./data/candidateScenarios";
 export * from "./data/goldenPersonas";
 export * from "./data/referenceExercises";
 export * from "./domain/assessment";
