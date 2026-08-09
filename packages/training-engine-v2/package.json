@@ -1,0 +1,15 @@
+{
+  "name": "@praxis/training-engine-v2",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest --run --config vitest.config.ts"
+  }
+}
