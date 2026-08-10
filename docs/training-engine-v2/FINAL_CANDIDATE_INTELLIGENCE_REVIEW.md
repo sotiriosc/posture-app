@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. Feature-specific target fit is resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration, phase calibration, continuity reason-code precedence, and review-visible transition-purpose/context gaps.
+Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. Feature-specific target fit and continuity reason-code precedence are resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration, phase calibration, and review-visible transition-purpose/context gaps.
 
 ## Contract Review
 
@@ -44,7 +44,7 @@ Architecture is sound and the candidate pipeline is deterministic/explainable, b
 | pain_suitability + joint_cost | POTENTIAL_DOUBLE_COUNT | Both react to pain/stress tags; this is conceptually distinct pain suitability vs joint cost, but the combined demotion still needs pain calibration review. |
 | phase_fit + experience_fit + skill_fit | INTENTIONAL_DISTINCT_SIGNAL | Phase intent, athlete prior, and exercise demand are separate, but phase suitability remains influential enough to require calibration review. |
 | support/stability/path | RESOLVED_FOR_PAIN_SUPPORT_BONUS | Structured row path knowledge is observability-only, and pain_suitability no longer adds positive support credit from exercise ID, name, prose, or structured bodySupport. |
-| progression_value + continuity_value | INTENTIONAL_DISTINCT_SIGNAL | progression_value is same-exercise runway/readiness; continuity_value is current/productive/plateau/pain history. Transition edges do not add replacement pressure. |
+| progression_value + continuity_value | INTENTIONAL_DISTINCT_SIGNAL | progression_value is same-exercise runway/readiness; continuity_value combines retention and reconsideration evidence numerically while reconsideration owns reason-code precedence. Transition edges do not add replacement pressure. |
 | unknown metadata | NOT_APPLICABLE | Unknown demand/path/challenge values remain neutral/not_applicable in assessment traces and do not create positive evidence by themselves. |
 
 ## UNKNOWN / NEEDS_REVIEW Policy
@@ -149,16 +149,26 @@ Verdict: **GOOD_WITH_REVIEW_CAVEATS**. Beginner does not become machine-only, ad
 
 ## History / Continuity Review
 
-Verdict: **GOOD_WITH_POLICY_REVIEW**. Productive + progression runway keeps the current exercise defensible; readyToProgress means same-exercise prescription progression, not replacement pressure. Plateau, failed progression, pain response, and blocked history can justify replacement consideration. transitionRelationships still report automaticSelectionEffect=none.
+Verdict: **GOOD**. Productive + progression runway keeps the current exercise defensible; readyToProgress means same-exercise prescription progression, not replacement pressure. Plateau, failed progression, pain response, and blocked history now receive truthful reconsideration reason-code precedence while transitionRelationships still report automaticSelectionEffect=none.
 
-| Scenario | Current | Transition Candidate | Current Rank | Candidate Rank | Continuity Signal | Verdict |
-| --- | --- | --- | --- | --- | --- | --- |
-| no history | chest-supported-dumbbell-row | seated-cable-row | 3 / chest-supported-dumbbell-row / 8.065 | 2 / seated-cable-row / 8.069 | SCORE_NEUTRAL | GOOD: keep/progress remains defensible |
-| productive + stable | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.238 | 3 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | GOOD: keep/progress remains defensible |
-| readyToProgress + appropriate challenge | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | GOOD: keep/progress remains defensible |
-| too easy + progression success | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | GOOD: keep/progress remains defensible |
-| plateau + failed progression | chest-supported-dumbbell-row | seated-cable-row | 4 / chest-supported-dumbbell-row / 7.854 | 2 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | PLAUSIBLE_NEEDS_REVIEW: value demotes, reason code should expose replacement signal |
-| pain response + blocked | chest-supported-dumbbell-row | seated-cable-row | 4 / chest-supported-dumbbell-row / 7.871 | 2 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | PLAUSIBLE_NEEDS_REVIEW: value demotes, reason code should expose replacement signal |
+| Scenario | Current | Transition Candidate | Current Rank | Candidate Rank | Continuity Raw | Reason Code | Evidence | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| no history | chest-supported-dumbbell-row | seated-cable-row | 3 / chest-supported-dumbbell-row / 8.065 | 2 / seated-cable-row / 8.069 | 5.600 | SCORE_NEUTRAL | Chest-Supported Dumbbell Row continuity evidence: retention=[none]; reconsideration=[none]. | GOOD: keep/progress remains defensible |
+| productive + stable | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.238 | 3 / seated-cable-row / 8.069 | 8.700 | CONTINUITY_FAVORED | Chest-Supported Dumbbell Row continuity evidence: retention=[current, productive, stable]; reconsideration=[none]. | GOOD: keep/progress remains defensible |
+| readyToProgress + productive | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.254 | 3 / seated-cable-row / 8.069 | 8.000 | CONTINUITY_FAVORED | Chest-Supported Dumbbell Row continuity evidence: retention=[current, productive]; reconsideration=[none]. | GOOD: keep/progress remains defensible |
+| too easy + progression success | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | 8.700 | CONTINUITY_FAVORED | Chest-Supported Dumbbell Row continuity evidence: retention=[current, productive, stable]; reconsideration=[none]. | GOOD: keep/progress remains defensible |
+| plateau + failed progression | chest-supported-dumbbell-row | seated-cable-row | 4 / chest-supported-dumbbell-row / 7.854 | 2 / seated-cable-row / 8.069 | 4.000 | REPLACEMENT_JUSTIFIED | Chest-Supported Dumbbell Row continuity evidence: retention=[current]; reconsideration=[plateaued, failed_progression]. Replacement consideration is justified; this component does not replace the exercise automatically. | GOOD: reconsideration evidence has reason-code precedence without automatic replacement |
+| pain response + blocked | chest-supported-dumbbell-row | seated-cable-row | 4 / chest-supported-dumbbell-row / 7.871 | 2 / seated-cable-row / 8.069 | 2.100 | REPLACEMENT_JUSTIFIED | Chest-Supported Dumbbell Row continuity evidence: retention=[current]; reconsideration=[pain_response, blocked]. Replacement consideration is justified; this component does not replace the exercise automatically. | GOOD: reconsideration evidence has reason-code precedence without automatic replacement |
+
+### CONTINUITY_REASON_CODE_PRECEDENCE_RESOLVED
+
+- Positive retention evidence and negative reconsideration evidence remain numerically combined with the existing continuity arithmetic.
+- Any plateau, failed progression, pain response, or blocked-history evidence owns `REPLACEMENT_JUSTIFIED` precedence, while all active retention evidence remains visible in the reason text.
+- `previousExerciseId` is retention evidence, so a previous-only exercise now reports `CONTINUITY_FAVORED` instead of `SCORE_NEUTRAL`.
+- `REPLACEMENT_JUSTIFIED` means the exercise deserves reconsideration; it is not a replacement command and does not select a transition target or bypass ranking, pain, equipment, eligibility, or future composition.
+- Focused baseline comparisons confirm continuity raw values, candidate totals, and ranks did not change; only reason-code and reason observability changed.
+
+Before resolution, mixed retention/reconsideration evidence could report `CONTINUITY_FAVORED`, and previous-only evidence could report `SCORE_NEUTRAL`. After resolution, reconsideration wins reason-code precedence and previous-only evidence reports positive continuity truth.
 
 ## Row Knowledge Review
 
@@ -203,8 +213,8 @@ Contextual or unknown-supported purpose tags remain review-visible when structur
 | Low-back row pain context | Prefer lower lumbar demand/support, but keep equipment truth hard. | chest-supported-dumbbell-row | one-arm-dumbbell-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | ID-derived support bonus resolved; remaining pain effect is stress-overlap based | not primary | material | none | PLAUSIBLE_NEEDS_REVIEW |
 | Phase contrast horizontal push | Phase 1 should prefer usable control/support; Phase 3 should value loadable stimulus without hardest-is-best. | dumbbell-bench-press (8.024) over machine-chest-press (7.909) | machine-chest-press (7.815) over push-up (7.793) | phase_fit, loadability, stimulus_potential shift the winner across phases | phaseSuitability has meaningful influence and still needs human calibration | none | none | none | GOOD |
 | Feature-specific serratus/protraction assessment | Identify feature relevance without conflating expression with feature difficulty. | band-face-pull | serratus-wall-slide | reviewed feature target fit affects assessment_fit; feature challenge remains not modeled | feature challenge remains unknown while target fit can still be selection-relevant | target=0.390; development=0.000; alignment=0.000 | none | none | GOOD |
-| Ready-to-progress current row | Keep productive current exercise and progress prescription before replacement. | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | continuity_value and progression_value reward same-exercise runway | none | none | none | CONTINUITY_FAVORED | GOOD |
-| Plateau/failed progression row | Replacement may become justified by real performance signal. | 2 / seated-cable-row / 8.069 | 4 / chest-supported-dumbbell-row / 7.854 | continuity/progression penalties reduce current exercise | transition edge remains knowledge-only | none | none | CONTINUITY_FAVORED | GOOD |
+| Ready-to-progress current row | Keep productive current exercise and progress prescription before replacement. | 1 / chest-supported-dumbbell-row / 8.254 | 3 / seated-cable-row / 8.069 | continuity_value and progression_value reward same-exercise runway | none | none | none | CONTINUITY_FAVORED | GOOD |
+| Plateau/failed progression row | Replacement may become justified by real performance signal. | 2 / seated-cable-row / 8.069 | 4 / chest-supported-dumbbell-row / 7.854 | continuity/progression penalties reduce current exercise | transition edge remains knowledge-only | none | none | REPLACEMENT_JUSTIFIED | GOOD |
 
 ## Blocker Classification
 
@@ -216,7 +226,6 @@ Contextual or unknown-supported purpose tags remain review-visible when structur
 
 - Moderate pain calibration remains human-review-needed before a session composer can depend on candidate rank alone.
 - Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.
-- Continuity reason-code precedence can report CONTINUITY_FAVORED for a current exercise even when plateau, failed-progression, or pain-response values demote it.
 - Transition purpose audit has contextual/unknown-supported cases that should remain review-visible before automatic replacement logic.
 
 ### P2

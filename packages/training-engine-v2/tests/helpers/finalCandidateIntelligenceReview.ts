@@ -131,7 +131,9 @@ interface HistoryRow {
   readonly candidate: string;
   readonly currentRank: string;
   readonly candidateRank: string;
-  readonly continuity: string;
+  readonly continuityRawValue: string;
+  readonly continuityReasonCode: string;
+  readonly continuityReason: string;
   readonly verdict: string;
 }
 
@@ -878,10 +880,10 @@ function historyRows(): readonly HistoryRow[] {
       target: "seated-cable-row",
     },
     {
-      scenario: "readyToProgress + appropriate challenge",
+      scenario: "readyToProgress + productive",
       request: {
         ...base,
-        id: "final-history-ready-appropriate",
+        id: "final-history-ready-productive",
         continuity: {
           ...EMPTY_CONTINUITY,
           currentExerciseId: "chest-supported-dumbbell-row",
@@ -889,17 +891,8 @@ function historyRows(): readonly HistoryRow[] {
         },
         history: history({
           exerciseHistory: {
-            events: [
-              {
-                id: "final-current-appropriate",
-                exerciseId: "chest-supported-dumbbell-row",
-                type: "appropriate_challenge",
-                movementRole: "horizontal_pull",
-                occurredAt: "2026-08-08T00:00:00.000Z",
-                notes: "Appropriate challenge on current row.",
-              },
-            ],
-            stableExerciseIds: ["chest-supported-dumbbell-row"],
+            events: [],
+            stableExerciseIds: [],
             blockedExerciseIds: [],
           },
           progressionState: {
@@ -1032,6 +1025,9 @@ function historyRows(): readonly HistoryRow[] {
     const result = runCandidateRankingLab(entry.request);
     const current = ranked(result, entry.current);
     const target = ranked(result, entry.target);
+    const continuity = current ? component(current, "continuity_value") : undefined;
+    const reconsiderationScenario =
+      entry.scenario.includes("plateau") || entry.scenario.includes("pain");
 
     return {
       scenario: entry.scenario,
@@ -1039,13 +1035,14 @@ function historyRows(): readonly HistoryRow[] {
       candidate: entry.target,
       currentRank: rankLabel(current),
       candidateRank: rankLabel(target),
-      continuity: current ? component(current, "continuity_value").reasonCode : "hard_rejected_or_absent",
-      verdict:
-        entry.scenario.includes("plateau") || entry.scenario.includes("pain")
-          ? current && component(current, "continuity_value").reasonCode === "CONTINUITY_FAVORED"
-            ? "PLAUSIBLE_NEEDS_REVIEW: value demotes, reason code should expose replacement signal"
-            : "GOOD: replacement may be justified by real signal"
-          : "GOOD: keep/progress remains defensible",
+      continuityRawValue: continuity ? fmt(continuity.rawValue) : "hard_rejected_or_absent",
+      continuityReasonCode: continuity?.reasonCode ?? "hard_rejected_or_absent",
+      continuityReason: continuity?.reason ?? "hard_rejected_or_absent",
+      verdict: reconsiderationScenario
+        ? continuity?.reasonCode === "REPLACEMENT_JUSTIFIED"
+          ? "GOOD: reconsideration evidence has reason-code precedence without automatic replacement"
+          : "INCORRECT: reconsideration evidence is not visible in reason-code precedence"
+        : "GOOD: keep/progress remains defensible",
     };
   });
 }
@@ -1119,7 +1116,7 @@ function scienceRows(data: {
   }));
   const phasePush = data.phaseRows.find((row) => row.need === "horizontal push");
   const feature = data.assessmentRows.find((row) => row.assessment === FEATURE_LABELS.serratus_or_protraction_control);
-  const productive = data.historyRows.find((row) => row.scenario === "readyToProgress + appropriate challenge");
+  const productive = data.historyRows.find((row) => row.scenario === "readyToProgress + productive");
   const plateau = data.historyRows.find((row) => row.scenario === "plateau + failed progression");
   const neutralTrace = buildHorizontalRowSelectionTrace(neutralPull);
   const [neutralWinner, neutralRunnerUp] = topTwo(neutralPull);
@@ -1183,7 +1180,7 @@ function scienceRows(data: {
       surprisingComponent: "none",
       assessmentEffect: "none",
       painEffect: "none",
-      continuityEffect: productive?.continuity ?? "-",
+      continuityEffect: productive?.continuityReasonCode ?? "-",
       verdict: "GOOD",
     },
     {
@@ -1195,7 +1192,7 @@ function scienceRows(data: {
       surprisingComponent: "transition edge remains knowledge-only",
       assessmentEffect: "none",
       painEffect: "none",
-      continuityEffect: plateau?.continuity ?? "-",
+      continuityEffect: plateau?.continuityReasonCode ?? "-",
       verdict: "GOOD",
     },
   ];
@@ -1379,7 +1376,6 @@ function catalogSummary(): CatalogSummary {
     p1Gaps: [
       "Moderate pain calibration remains human-review-needed before a session composer can depend on candidate rank alone.",
       "Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.",
-      "Continuity reason-code precedence can report CONTINUITY_FAVORED for a current exercise even when plateau, failed-progression, or pain-response values demote it.",
       "Transition purpose audit has contextual/unknown-supported cases that should remain review-visible before automatic replacement logic.",
     ],
     p2Gaps: [
@@ -1553,7 +1549,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     `Classification: **${readiness}**`,
     "",
-    "Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. Feature-specific target fit is resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration, phase calibration, continuity reason-code precedence, and review-visible transition-purpose/context gaps.",
+    "Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. Feature-specific target fit and continuity reason-code precedence are resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration, phase calibration, and review-visible transition-purpose/context gaps.",
     "",
     "## Contract Review",
     "",
@@ -1581,7 +1577,7 @@ function renderMarkdown(data: FinalReviewData): string {
         ["pain_suitability + joint_cost", "POTENTIAL_DOUBLE_COUNT", "Both react to pain/stress tags; this is conceptually distinct pain suitability vs joint cost, but the combined demotion still needs pain calibration review."],
         ["phase_fit + experience_fit + skill_fit", "INTENTIONAL_DISTINCT_SIGNAL", "Phase intent, athlete prior, and exercise demand are separate, but phase suitability remains influential enough to require calibration review."],
         ["support/stability/path", "RESOLVED_FOR_PAIN_SUPPORT_BONUS", "Structured row path knowledge is observability-only, and pain_suitability no longer adds positive support credit from exercise ID, name, prose, or structured bodySupport."],
-        ["progression_value + continuity_value", "INTENTIONAL_DISTINCT_SIGNAL", "progression_value is same-exercise runway/readiness; continuity_value is current/productive/plateau/pain history. Transition edges do not add replacement pressure."],
+        ["progression_value + continuity_value", "INTENTIONAL_DISTINCT_SIGNAL", "progression_value is same-exercise runway/readiness; continuity_value combines retention and reconsideration evidence numerically while reconsideration owns reason-code precedence. Transition edges do not add replacement pressure."],
         ["unknown metadata", "NOT_APPLICABLE", "Unknown demand/path/challenge values remain neutral/not_applicable in assessment traces and do not create positive evidence by themselves."],
       ],
     ),
@@ -1707,12 +1703,42 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "## History / Continuity Review",
     "",
-    "Verdict: **GOOD_WITH_POLICY_REVIEW**. Productive + progression runway keeps the current exercise defensible; readyToProgress means same-exercise prescription progression, not replacement pressure. Plateau, failed progression, pain response, and blocked history can justify replacement consideration. transitionRelationships still report automaticSelectionEffect=none.",
+    "Verdict: **GOOD**. Productive + progression runway keeps the current exercise defensible; readyToProgress means same-exercise prescription progression, not replacement pressure. Plateau, failed progression, pain response, and blocked history now receive truthful reconsideration reason-code precedence while transitionRelationships still report automaticSelectionEffect=none.",
     "",
     table(
-      ["Scenario", "Current", "Transition Candidate", "Current Rank", "Candidate Rank", "Continuity Signal", "Verdict"],
-      data.historyRows.map((row) => [row.scenario, row.current, row.candidate, row.currentRank, row.candidateRank, row.continuity, row.verdict]),
+      [
+        "Scenario",
+        "Current",
+        "Transition Candidate",
+        "Current Rank",
+        "Candidate Rank",
+        "Continuity Raw",
+        "Reason Code",
+        "Evidence",
+        "Verdict",
+      ],
+      data.historyRows.map((row) => [
+        row.scenario,
+        row.current,
+        row.candidate,
+        row.currentRank,
+        row.candidateRank,
+        row.continuityRawValue,
+        row.continuityReasonCode,
+        row.continuityReason,
+        row.verdict,
+      ]),
     ),
+    "",
+    "### CONTINUITY_REASON_CODE_PRECEDENCE_RESOLVED",
+    "",
+    "- Positive retention evidence and negative reconsideration evidence remain numerically combined with the existing continuity arithmetic.",
+    "- Any plateau, failed progression, pain response, or blocked-history evidence owns `REPLACEMENT_JUSTIFIED` precedence, while all active retention evidence remains visible in the reason text.",
+    "- `previousExerciseId` is retention evidence, so a previous-only exercise now reports `CONTINUITY_FAVORED` instead of `SCORE_NEUTRAL`.",
+    "- `REPLACEMENT_JUSTIFIED` means the exercise deserves reconsideration; it is not a replacement command and does not select a transition target or bypass ranking, pain, equipment, eligibility, or future composition.",
+    "- Focused baseline comparisons confirm continuity raw values, candidate totals, and ranks did not change; only reason-code and reason observability changed.",
+    "",
+    "Before resolution, mixed retention/reconsideration evidence could report `CONTINUITY_FAVORED`, and previous-only evidence could report `SCORE_NEUTRAL`. After resolution, reconsideration wins reason-code precedence and previous-only evidence reports positive continuity truth.",
     "",
     "## Row Knowledge Review",
     "",

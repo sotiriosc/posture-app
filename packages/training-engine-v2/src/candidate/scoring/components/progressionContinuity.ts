@@ -42,6 +42,18 @@ export const continuityValueComponent: CandidateScoreComponent = {
     const failedProgression = request.continuity.failedProgressionExerciseIds.includes(exercise.id);
     const painResponse = request.continuity.painResponseExerciseIds.includes(exercise.id);
     const blocked = request.history.exerciseHistory.blockedExerciseIds.includes(exercise.id);
+    const retentionEvidence = [
+      ...(isCurrent ? ["current" as const] : []),
+      ...(isPrevious ? ["previous" as const] : []),
+      ...(productive ? ["productive" as const] : []),
+      ...(stable ? ["stable" as const] : []),
+    ];
+    const reconsiderationEvidence = [
+      ...(plateaued ? ["plateaued" as const] : []),
+      ...(failedProgression ? ["failed_progression" as const] : []),
+      ...(painResponse ? ["pain_response" as const] : []),
+      ...(blocked ? ["blocked" as const] : []),
+    ];
     const value =
       5.6 +
       (isCurrent ? 1.1 : 0) +
@@ -58,12 +70,19 @@ export const continuityValueComponent: CandidateScoreComponent = {
       family: "continuity_value",
       value,
       reasonCode:
-        productive || isCurrent || stable
-          ? "CONTINUITY_FAVORED"
-          : plateaued || failedProgression || painResponse || blocked
-            ? "REPLACEMENT_JUSTIFIED"
+        reconsiderationEvidence.length > 0
+          ? "REPLACEMENT_JUSTIFIED"
+          : retentionEvidence.length > 0
+            ? "CONTINUITY_FAVORED"
             : "SCORE_NEUTRAL",
-      reason: `${exercise.name} continuity signals: current=${isCurrent}, productive=${productive}, plateaued=${plateaued}, painResponse=${painResponse}.`,
+      reason: [
+        `${exercise.name} continuity evidence:`,
+        `retention=[${retentionEvidence.join(", ") || "none"}];`,
+        `reconsideration=[${reconsiderationEvidence.join(", ") || "none"}].`,
+        ...(reconsiderationEvidence.length > 0
+          ? ["Replacement consideration is justified; this component does not replace the exercise automatically."]
+          : []),
+      ].join(" "),
       source: "history",
     });
   },
