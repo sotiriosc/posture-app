@@ -167,7 +167,7 @@ describe("Candidate Intelligence foundation", () => {
       expect.objectContaining({
         assessmentFeature: "serratus_or_protraction_control",
         candidateFeatureLevel: "low",
-        featureMatch: "conflict",
+        featureMatch: "low_expression",
       }),
     );
   });

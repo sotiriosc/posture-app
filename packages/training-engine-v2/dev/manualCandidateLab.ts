@@ -862,24 +862,61 @@ function demandReductionSummary(trace: AssessmentRelevanceTrace): string {
 }
 
 function featureCells(trace: AssessmentRelevanceTrace): readonly string[] {
-  if (trace.featureMatches.length === 0) {
-    return ["generic", "unknown", "not_applicable", "unknown", "not_applicable"];
+  if (trace.featureDevelopment.length === 0) {
+    return ["generic", "unknown", "not_applicable", "not_applicable", "not_applicable"];
   }
 
   return [
-    trace.featureMatches.map((match) => match.assessmentFeature).join(", "),
+    trace.featureDevelopment.map((feature) => feature.assessmentFeature).join(", "),
     trace.featureMatches.map((match) => match.assessmentFeatureSource).join(", "),
-    trace.featureMatches
-      .map((match) => `${match.candidateFeature}:${match.candidateFeatureLevel}`)
-      .join(", "),
-    trace.featureMatches
+    trace.featureDevelopment
       .map(
-        (match) =>
-          `${match.candidateFeatureReviewStatus}/profile:${match.candidateFeatureProfileReviewStatus}`,
+        (feature, index) =>
+          `${trace.featureMatches[index]?.candidateFeature ?? "unknown"}:${feature.featureEmphasisLevel}/${feature.featureEmphasisSource}`,
       )
       .join(", "),
-    trace.featureMatches.map((match) => match.featureMatch).join(", "),
+    trace.featureDevelopment.map((feature) => feature.featureReviewStatus).join(", "),
+    trace.featureDevelopment.map((feature) => feature.featureMatch).join(", "),
   ];
+}
+
+function featureDevelopmentCells(trace: AssessmentRelevanceTrace): readonly string[] {
+  if (trace.featureDevelopment.length === 0) {
+    return ["not_applicable", "not_applicable", "not_applicable"];
+  }
+
+  return [
+    trace.featureDevelopment
+      .map(
+        (feature) =>
+          `${formatNullable(feature.featureChallengeDemand)}/${feature.featureChallengeDemandSource}`,
+      )
+      .join(", "),
+    trace.featureDevelopment
+      .map(
+        (feature) =>
+          `${formatNullable(feature.featureCapabilityEstimate)}/${feature.featureCapabilitySource}/${feature.featureCapabilityEvidenceQuality}`,
+      )
+      .join(", "),
+    trace.featureDevelopment.map((feature) => feature.featureDemandCapabilityMatch).join(", "),
+  ];
+}
+
+function taskDemandCell(trace: AssessmentRelevanceTrace): string {
+  return [
+    formatNullable(trace.demandCapability.candidateDemand),
+    trace.demandCapability.candidateDemandSource.level,
+    trace.demandCapability.candidateDemandSource.source,
+    trace.demandCapability.candidateDemandSource.reviewStatus,
+  ].join("/");
+}
+
+function taskCapabilityCell(trace: AssessmentRelevanceTrace): string {
+  return [
+    formatNumber(trace.demandCapability.currentCapability),
+    trace.demandCapability.capabilityEstimate.estimateSource,
+    trace.demandCapability.capabilityEstimate.evidenceQuality,
+  ].join("/");
 }
 
 function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 3): void {
@@ -899,14 +936,16 @@ function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 
         "Rel",
         "Feature",
         "Feature Src",
-        "Candidate Feature",
+        "Feature Emphasis",
         "Feature Review",
         "Feature Match",
         "Relationship",
-        "Demand",
-        "Capability",
-        "Phase",
-        "Match",
+        "Task Demand",
+        "Task Capability",
+        "Task Match",
+        "Feature Challenge",
+        "Feature Capability",
+        "Feature Dev Match",
         "Severity",
         "Bounded",
       ],
@@ -915,10 +954,10 @@ function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 
         trace.relevance,
         ...featureCells(trace),
         trace.relationship,
-        formatNullable(trace.demandCapability.candidateDemand),
-        formatNumber(trace.demandCapability.currentCapability),
-        formatNumber(trace.demandCapability.phaseIntentDemand),
+        taskDemandCell(trace),
+        taskCapabilityCell(trace),
         trace.demandCapability.match,
+        ...featureDevelopmentCells(trace),
         `${trace.signalInterpretation.severity}/${trace.signalInterpretation.severitySource}`,
         formatNumber(trace.boundedInfluence),
       ]),

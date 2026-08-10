@@ -155,8 +155,24 @@ AssessmentRelevanceTrace {
     candidateFeatureLevel
     candidateFeatureReviewStatus
     candidateFeatureProfileReviewStatus
-    featureMatch: strong | moderate | weak | conflict | unknown
+    featureMatch: strong | moderate | weak | low_expression | conflict | unknown
     featureReason
+  }
+  featureDevelopment {
+    assessmentFeature
+    featureMatch
+    featureEmphasisLevel
+    featureEmphasisSource
+    featureReviewStatus
+    overallTaskDemand
+    overallTaskDemandSource
+    featureChallengeDemand
+    featureChallengeDemandSource
+    featureCapabilityEstimate
+    featureCapabilitySource
+    featureCapabilityEvidenceQuality
+    featureDemandCapabilityMatch
+    evidence
   }
   relationship
   relationshipReason
@@ -226,8 +242,8 @@ Feature-specific scapular findings use a stricter order:
 3. normalized feature extraction;
 4. broad scapular/upper-body domain check;
 5. candidate-specific feature matching from `exercise.mechanics.scapularMechanics`;
-6. generic scapular demand/capability;
-7. developmental relationship;
+6. overall scapular task demand/capability context;
+7. feature challenge/capability relationship when feature challenge is explicitly modeled;
 8. bounded influence.
 
 That order prevents `movementRole: "scapular_control"` from short-circuiting candidate-specific mechanics when a signal also carries feature-specific meaning.
@@ -251,7 +267,16 @@ Candidate feature matching reads the existing scapular mechanics fields:
 | `external_rotation_or_cuff_control` | `scapularMechanics.externalRotationContribution` |
 | `loaded_scapular_stability` | `scapularMechanics.loadedScapularControl` |
 
-Feature match determines feature relevance, not automatic score direction. Demand/capability and developmental relationship still decide whether a candidate supports control, provides appropriate exposure, under-challenges development, exceeds capability, or stays neutral. Unknown or `needs_review` feature metadata is traced explicitly and is not promoted into high-confidence certainty.
+Feature match determines feature relevance, not automatic score direction. The current `scapularMechanics` fields are treated as feature emphasis/expression metadata. They answer whether the exercise meaningfully exposes serratus/protraction, upward rotation, retraction, cuff/external rotation, or loaded scapular stability. They do not automatically define the difficulty of executing that feature.
+
+Feature-specific traces now separate four concepts:
+
+- `featureEmphasisLevel` says how much the exercise expresses the assessment feature.
+- `overallTaskDemand` keeps generic `mechanics.demands.scapular_control` visible as the task's overall control requirement.
+- `featureChallengeDemand` is the difficulty of executing that exact feature in the exercise. It is currently `unknown/not_modeled` unless future reviewed metadata explicitly provides it.
+- `featureCapabilityEstimate` scopes assessment severity to the feature-specific capability estimate rather than reducing broad/global scapular task capability.
+
+If feature relevance is strong/moderate/low but `featureChallengeDemand` is unknown, the feature demand/capability match remains `not_applicable`; the developmental relationship remains neutral; and bounded influence is zero. Low feature expression is labeled `low_expression`, not `conflict`. `conflict` is reserved for actual opposing or contraindicating mechanics if those are modeled later. Unknown or `needs_review` feature metadata is traced explicitly and is not promoted into high-confidence certainty.
 
 ## Assessment Semantics Modules
 
@@ -261,6 +286,7 @@ Assessment semantics are split by training responsibility:
 | --- | --- |
 | `candidate/scoring/assessment/classifySignal.ts` | Classifies assessment signals into trunk, scapular, lower-body, or fallback demand dimensions. |
 | `candidate/scoring/assessment/features.ts` | Normalizes assessment features and matches them against candidate scapular mechanics. |
+| `candidate/scoring/assessment/featureDevelopment.ts` | Separates feature emphasis, overall task demand, feature challenge demand, and feature-scoped capability in traces. |
 | `candidate/scoring/assessment/specificity.ts` | Calculates candidate/request specificity after training-role truth is established. |
 | `candidate/scoring/assessment/relevance.ts` | Decides whether a signal is relevant to this candidate in this requested role. |
 | `candidate/scoring/assessment/candidateDemand.ts` | Reads explicit exercise demand metadata or known structured loading fields. |

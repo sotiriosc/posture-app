@@ -1,7 +1,11 @@
 import type { AssessmentInfluence } from "../../../alignment";
 import type { AssessmentSignal } from "../../../domain/assessment";
 import type { ExerciseDefinition } from "../../../domain/exercise";
-import type { AssessmentRelevanceTrace } from "../../../scoringContracts";
+import type {
+  AssessmentCandidateRelationship,
+  AssessmentRelevanceTrace,
+  AssessmentSignalInterpretationTrace,
+} from "../../../scoringContracts";
 import type { CandidateRequest } from "../../request";
 import { interpretAssessmentSignal } from "./athleteCapability";
 import { calculateDemandCapabilityTrace } from "./demandCapabilityMatch";
@@ -11,8 +15,45 @@ import {
   relationshipReason,
   relationshipReasonCode,
 } from "./developmentalRelationship";
+import {
+  buildFeatureDevelopmentTraces,
+  hasUnassertedFeatureChallenge,
+} from "./featureDevelopment";
 import { calculateInfluenceBudget } from "./influenceBudget";
 import type { AssessmentRelevanceDecision } from "./relevance";
+
+function overallTaskSignalInterpretation(input: {
+  readonly signalInterpretation: AssessmentSignalInterpretationTrace;
+  readonly hasFeatureSpecificEvidence: boolean;
+  readonly dimension: string;
+}): AssessmentSignalInterpretationTrace {
+  if (!input.hasFeatureSpecificEvidence) {
+    return input.signalInterpretation;
+  }
+
+  return {
+    ...input.signalInterpretation,
+    severity: "unknown",
+    severitySource: "not_applicable",
+    deficitMagnitude: 0,
+    evidence: [
+      ...input.signalInterpretation.evidence,
+      `Feature-specific severity is scoped to feature capability; overall ${input.dimension} task capability does not inherit it.`,
+    ],
+  };
+}
+
+function featureUnknownRelationshipReason(input: {
+  readonly relationship: AssessmentCandidateRelationship;
+  readonly signalId: string;
+  readonly features: readonly string[];
+}): string | undefined {
+  if (input.relationship !== "neutral" || input.features.length === 0) {
+    return undefined;
+  }
+
+  return `${input.signalId} is feature-relevant for ${input.features.join(", ")}, but feature-specific challenge demand is unknown; feature demand/capability relationship is not asserted. Overall task demand is traced separately.`;
+}
 
 export function makeAssessmentRelevanceTrace(input: {
   readonly signal: AssessmentSignal;
@@ -23,24 +64,47 @@ export function makeAssessmentRelevanceTrace(input: {
   readonly alignmentEligible: boolean;
 }): AssessmentRelevanceTrace {
   const signalInterpretation = interpretAssessmentSignal(input.signal);
+  const taskInterpretation = overallTaskSignalInterpretation({
+    signalInterpretation,
+    hasFeatureSpecificEvidence: input.relevanceDecision.featureMatches.length > 0,
+    dimension: input.relevanceDecision.dimension,
+  });
   const demandCapability = calculateDemandCapabilityTrace({
     request: input.request,
     exercise: input.exercise,
     signal: input.signal,
     dimension: input.relevanceDecision.dimension,
     relevance: input.relevanceDecision.relevance,
+    signalInterpretation: taskInterpretation,
+  });
+  const featureDevelopment = buildFeatureDevelopmentTraces({
+    request: input.request,
+    exercise: input.exercise,
+    signal: input.signal,
     signalInterpretation,
+    featureMatches: input.relevanceDecision.featureMatches,
+    overallTaskDemand: demandCapability,
   });
   const demandReductionContext = demandReductionContextFor({
     request: input.request,
     exercise: input.exercise,
     signal: input.signal,
   });
-  const relationship = relationshipFromDemand({
-    influence: input.influence,
-    demandCapability,
-    request: input.request,
-    demandReductionContext,
+  const featureChallengeNotAsserted =
+    input.relevanceDecision.relevance !== "none" &&
+    hasUnassertedFeatureChallenge(featureDevelopment);
+  const relationship = featureChallengeNotAsserted
+    ? "neutral"
+    : relationshipFromDemand({
+        influence: input.influence,
+        demandCapability,
+        request: input.request,
+        demandReductionContext,
+      });
+  const featureRelationshipReason = featureUnknownRelationshipReason({
+    relationship,
+    signalId: input.signal.id,
+    features: featureDevelopment.map((trace) => trace.assessmentFeature),
   });
   const budget = calculateInfluenceBudget({
     signal: input.signal,
@@ -62,8 +126,11 @@ export function makeAssessmentRelevanceTrace(input: {
     relevanceReason: input.relevanceDecision.relevanceReason,
     signalInterpretation,
     featureMatches: input.relevanceDecision.featureMatches,
+    featureDevelopment,
     relationship,
-    relationshipReason: relationshipReason(relationship, demandCapability, demandReductionContext),
+    relationshipReason:
+      featureRelationshipReason ??
+      relationshipReason(relationship, demandCapability, demandReductionContext),
     demandReductionContext,
     demandCapability,
     confidence: input.signal.confidence,

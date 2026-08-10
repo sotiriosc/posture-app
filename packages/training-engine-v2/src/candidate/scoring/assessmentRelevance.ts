@@ -50,5 +50,5 @@ export function sumAlignmentContribution(
 export function relevantAssessmentTraces(
   traces: readonly AssessmentRelevanceTrace[],
 ): readonly AssessmentRelevanceTrace[] {
-  return traces.filter((trace) => trace.relevance !== "none" && trace.boundedInfluence !== 0);
+  return traces.filter((trace) => trace.relevance !== "none");
 }

@@ -221,14 +221,16 @@ function scapularAssessment(confidence: AssessmentSignal["confidence"]): Assessm
   };
 }
 
-function genericScapularAssessment(): AssessmentState {
+function genericScapularAssessment(
+  confidence: AssessmentSignal["confidence"] = "high",
+): AssessmentState {
   return {
     signals: [
       {
         id: "synthetic-generic-scapular-control",
         type: "control_finding",
         source: "movement_screen",
-        confidence: "high",
+        confidence,
         priority: "primary",
         region: "shoulder",
         movementRole: "scapular_control",
@@ -403,9 +405,9 @@ describe("assessment relevance scoping", () => {
 
   it("keeps confidence scaling meaningful after relevance is established", () => {
     const baseRequest = controlledRequest("scapular-activation-high-confidence");
-    const low = runCandidateRankingLab(withAssessment(baseRequest, scapularAssessment("low")));
-    const medium = runCandidateRankingLab(withAssessment(baseRequest, scapularAssessment("medium")));
-    const high = runCandidateRankingLab(withAssessment(baseRequest, scapularAssessment("high")));
+    const low = runCandidateRankingLab(withAssessment(baseRequest, genericScapularAssessment("low")));
+    const medium = runCandidateRankingLab(withAssessment(baseRequest, genericScapularAssessment("medium")));
+    const high = runCandidateRankingLab(withAssessment(baseRequest, genericScapularAssessment("high")));
     const lowWallSlide = ranked(low.rankedCandidates, "serratus-wall-slide");
     const mediumWallSlide = ranked(medium.rankedCandidates, "serratus-wall-slide");
     const highWallSlide = ranked(high.rankedCandidates, "serratus-wall-slide");
@@ -515,7 +517,8 @@ describe("assessment relevance scoping", () => {
     expect(wallSlideTrace).toEqual(
       expect.objectContaining({
         relevance: "moderate",
-        relationship: "provides_appropriate_exposure",
+        relationship: "neutral",
+        boundedInfluence: 0,
       }),
     );
     expect(facePullTrace).toEqual(
@@ -542,12 +545,21 @@ describe("assessment relevance scoping", () => {
       expect.objectContaining({
         assessmentFeature: "serratus_or_protraction_control",
         candidateFeatureLevel: "low",
-        featureMatch: "conflict",
+        featureMatch: "low_expression",
       }),
     );
-    expect(wallSlideTrace?.assessmentContribution).toBeGreaterThan(
-      bandRowTrace?.assessmentContribution ?? 0,
+    expect(wallSlideTrace?.featureDevelopment[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "serratus_or_protraction_control",
+        featureEmphasisLevel: "high",
+        overallTaskDemand: 2,
+        featureChallengeDemand: null,
+        featureChallengeDemandSource: "not_modeled",
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
     );
+    expect(wallSlideTrace?.assessmentContribution).toBe(0);
+    expect(bandRowTrace?.assessmentContribution).toBe(0);
     expect(facePullTrace?.assessmentContribution).toBe(0);
   });
 
@@ -561,7 +573,8 @@ describe("assessment relevance scoping", () => {
     expect(wallSlide).toEqual(
       expect.objectContaining({
         relevance: "moderate",
-        relationship: "provides_appropriate_exposure",
+        relationship: "neutral",
+        boundedInfluence: 0,
       }),
     );
     expect(wallSlide.featureMatches[0]).toEqual(
@@ -585,7 +598,14 @@ describe("assessment relevance scoping", () => {
         expect.objectContaining({
           assessmentFeature: "serratus_or_protraction_control",
           candidateFeatureLevel: "low",
-          featureMatch: "conflict",
+          featureMatch: "low_expression",
+        }),
+      );
+      expect(trace.featureDevelopment[0]).toEqual(
+        expect.objectContaining({
+          featureEmphasisLevel: "low",
+          featureChallengeDemand: null,
+          featureDemandCapabilityMatch: "not_applicable",
         }),
       );
     });
@@ -613,7 +633,7 @@ describe("assessment relevance scoping", () => {
       expect(trace.featureMatches[0]).toEqual(
         expect.objectContaining({
           candidateFeatureLevel: "low",
-          featureMatch: "conflict",
+          featureMatch: "low_expression",
         }),
       );
       expect(trace.relevance).toBe("none");
@@ -642,6 +662,19 @@ describe("assessment relevance scoping", () => {
       }),
     );
     expect(facePull.relevance).toBe("moderate");
+    expect(facePull.featureDevelopment[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "retraction_control",
+        featureEmphasisLevel: "high",
+        overallTaskDemand: 3,
+        featureChallengeDemand: null,
+        featureChallengeDemandSource: "not_modeled",
+        featureCapabilityEvidenceQuality: "weak",
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
+    );
+    expect(facePull.relationship).toBe("neutral");
+    expect(facePull.boundedInfluence).toBe(0);
     [reversePecDeck, bandRow].forEach((trace) => {
       expect(trace.featureMatches[0]).toEqual(
         expect.objectContaining({
@@ -654,7 +687,7 @@ describe("assessment relevance scoping", () => {
     expect(wallSlide.featureMatches[0]).toEqual(
       expect.objectContaining({
         candidateFeatureLevel: "low",
-        featureMatch: "conflict",
+        featureMatch: "low_expression",
       }),
     );
     expect(wallSlide.relevance).toBe("none");
@@ -676,11 +709,22 @@ describe("assessment relevance scoping", () => {
       }),
     );
     expect(facePull.relevance).toBe("low");
+    expect(facePull.featureDevelopment[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "external_rotation_or_cuff_control",
+        featureEmphasisLevel: "moderate",
+        overallTaskDemand: 3,
+        featureChallengeDemand: null,
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
+    );
+    expect(facePull.relationship).toBe("neutral");
+    expect(facePull.boundedInfluence).toBe(0);
     [wallSlide, reversePecDeck].forEach((trace) => {
       expect(trace.featureMatches[0]).toEqual(
         expect.objectContaining({
           candidateFeatureLevel: "low",
-          featureMatch: "conflict",
+          featureMatch: "low_expression",
         }),
       );
       expect(trace.relevance).toBe("none");
@@ -707,10 +751,18 @@ describe("assessment relevance scoping", () => {
     expect(wallSlide.featureMatches[0]).toEqual(
       expect.objectContaining({
         candidateFeatureLevel: "low",
-        featureMatch: "conflict",
+        featureMatch: "low_expression",
       }),
     );
     expect(wallSlide.relevance).toBe("none");
+    expect(wallSlide.featureDevelopment[0]).toEqual(
+      expect.objectContaining({
+        featureEmphasisLevel: "low",
+        featureMatch: "low_expression",
+        featureChallengeDemand: null,
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
+    );
     [facePull, reversePecDeck].forEach((trace) => {
       expect(trace.featureMatches[0]).toEqual(
         expect.objectContaining({
@@ -719,6 +771,13 @@ describe("assessment relevance scoping", () => {
         }),
       );
       expect(trace.relevance).toBe("low");
+      expect(trace.featureDevelopment[0]).toEqual(
+        expect.objectContaining({
+          featureChallengeDemand: null,
+          featureDemandCapabilityMatch: "not_applicable",
+        }),
+      );
+      expect(trace.relationship).toBe("neutral");
     });
     expect(oneArmRow.featureMatches[0]).toEqual(
       expect.objectContaining({
@@ -794,9 +853,11 @@ describe("assessment relevance scoping", () => {
     expect(lowTrace?.demandCapability.currentCapability).toBe(
       highTrace?.demandCapability.currentCapability,
     );
-    expect(Math.abs(highTrace?.boundedInfluence ?? 0)).toBeGreaterThan(
-      Math.abs(lowTrace?.boundedInfluence ?? 0),
+    expect(lowTrace?.featureDevelopment[0].featureCapabilityEstimate).toBe(
+      highTrace?.featureDevelopment[0].featureCapabilityEstimate,
     );
+    expect(lowTrace?.boundedInfluence).toBe(0);
+    expect(highTrace?.boundedInfluence).toBe(0);
   });
 
   it("exposes capability provenance without treating default estimates as measured capacity", () => {
@@ -1222,7 +1283,7 @@ describe("assessment relevance scoping", () => {
     );
   });
 
-  it("limits exact demand-capability influence when capability evidence quality is weak", () => {
+  it("scopes feature-specific severity to feature capability instead of global task capability", () => {
     const baseRequest = controlledRequest("scapular-activation-high-confidence");
     const defaultSeverity = runCandidateRankingLab(withAssessment(baseRequest, scapularAssessment("high")));
     const explicitSeverity = runCandidateRankingLab(
@@ -1259,8 +1320,21 @@ describe("assessment relevance scoping", () => {
         severitySource: "provided",
       }),
     );
-    expect(explicitTrace?.demandCapability.capabilityEstimate.evidenceQuality).toBe("moderate");
-    expect(defaultTrace?.boundedInfluence).toBeLessThan(explicitTrace?.boundedInfluence ?? 0);
+    expect(defaultTrace?.demandCapability.currentCapability).toBe(
+      explicitTrace?.demandCapability.currentCapability,
+    );
+    expect(explicitTrace?.demandCapability.capabilityEstimate.evidenceQuality).toBe("weak");
+    expect(explicitTrace?.featureDevelopment[0]).toEqual(
+      expect.objectContaining({
+        featureCapabilityEvidenceQuality: "moderate",
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
+    );
+    expect(defaultTrace?.featureDevelopment[0].featureCapabilityEstimate).toBeGreaterThan(
+      explicitTrace?.featureDevelopment[0].featureCapabilityEstimate ?? 0,
+    );
+    expect(defaultTrace?.boundedInfluence).toBe(0);
+    expect(explicitTrace?.boundedInfluence).toBe(0);
   });
 
   it("uses explicit mechanics metadata instead of prose to determine support and demand", () => {

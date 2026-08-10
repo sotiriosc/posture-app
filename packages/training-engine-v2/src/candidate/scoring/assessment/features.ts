@@ -147,7 +147,7 @@ function matchForAnnotation(input: {
   }
 
   if (input.annotation.level === "low") {
-    return "conflict";
+    return "low_expression";
   }
 
   if (input.annotation.level === "moderate") {
@@ -167,6 +167,7 @@ export function relevanceFromFeatureMatch(
       return "moderate";
     case "weak":
       return "low";
+    case "low_expression":
     case "conflict":
     case "unknown":
       return "none";
@@ -181,8 +182,10 @@ function matchRank(match: AssessmentFeatureMatch): number {
       return 3;
     case "weak":
       return 2;
-    case "conflict":
+    case "low_expression":
       return 1;
+    case "conflict":
+      return 0;
     case "unknown":
       return 0;
   }
@@ -231,7 +234,7 @@ export function matchScapularAssessmentFeatures(input: {
       featureMatch,
       featureReason: [
         feature.evidence,
-        `${input.exercise.id} ${field.label} is ${annotation.level} (${reviewStatus}).`,
+        `${input.exercise.id} ${field.label} expresses the feature at ${annotation.level} level (${reviewStatus}).`,
         annotation.notes,
       ].join(" "),
     };

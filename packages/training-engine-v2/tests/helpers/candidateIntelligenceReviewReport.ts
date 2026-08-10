@@ -1398,9 +1398,10 @@ function renderScapularSemanticsTrace(): string {
       trace.relevance,
       trace.relevanceReasonCode,
       featureTraceCell(trace),
-      `${formatNumber(trace.demandCapability.candidateDemand)} (${trace.demandCapability.candidateDemandSource.level}/${trace.demandCapability.candidateDemandSource.source}/${trace.demandCapability.candidateDemandSource.reviewStatus})`,
-      `${formatNumber(trace.demandCapability.capabilityEstimate.value)} (${trace.demandCapability.capabilityEstimate.estimateSource}/${trace.demandCapability.capabilityEstimate.evidenceQuality})`,
+      taskDemandCell(trace),
+      taskCapabilityCell(trace),
       trace.demandCapability.match,
+      featureDevelopmentCell(trace),
       trace.relationship,
       `${trace.boundedInfluence.toFixed(3)}; assessment=${trace.assessmentContribution.toFixed(3)}; alignment=${trace.alignmentContribution.toFixed(3)}`,
       candidate ? componentValue(candidate, "assessment_fit") : "n/a",
@@ -1409,8 +1410,8 @@ function renderScapularSemanticsTrace(): string {
   });
 
   const table = [
-    "| Exercise | Classification | Training-Need Truth | Direct Role Short-Circuit | Specificity | Relevance | Reason Code | Feature Trace | Candidate Demand | Capability | Match | Relationship | Influence Budget | Assessment Fit | Alignment Fit |",
-    "|---|---|---|---|---:|---|---|---|---|---|---|---|---|---:|---:|",
+    "| Exercise | Classification | Training-Need Truth | Direct Role Short-Circuit | Specificity | Relevance | Reason Code | Feature Trace | Overall Task Demand | Task Capability | Task Match | Feature Development | Relationship | Influence Budget | Assessment Fit | Alignment Fit |",
+    "|---|---|---|---|---:|---|---|---|---|---|---|---|---|---|---:|---:|",
     ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
   ].join("\n");
 
@@ -1436,7 +1437,7 @@ function renderAssessmentFeatureSemanticsAudit(): string {
     "| upward rotation | `assessmentFeatures`; `scapularMechanics.upwardRotationControl` | Explicit feature matching before generic role relevance | Now consumed when supplied explicitly. |",
     "| retraction | `assessmentFeatures`; posterior shoulder/upper-back normalized signal; `scapularMechanics.retractionDemand` | Explicit or normalized feature matching | Now consumed; rows/face pulls/reverse pec deck separate from wall-slide mechanics. |",
     "| external rotation / cuff | `muscleGroup: rotator_cuff`; `assessmentFeatures`; `scapularMechanics.externalRotationContribution` | Explicit or normalized feature matching | Now consumed without inferring cuff from shoulder region alone. |",
-    "| scapular stability under load | `assessmentFeatures`; `scapularMechanics.loadedScapularControl`; generic `demands.scapular_control` | Explicit feature matching plus demand/capability relationship | Now distinguishes loaded scapular stability from low-load preparation. |",
+    "| scapular stability under load | `assessmentFeatures`; `scapularMechanics.loadedScapularControl`; generic `demands.scapular_control` | Explicit feature matching as emphasis; generic demand remains overall task context | Now distinguishes loaded scapular stability from low-load preparation without treating the emphasis field as a validated feature challenge scale. |",
     "",
     "Recommendation: keep the normalized feature layer narrow and continue reviewing profile-level `needs_review` metadata before Session Composer relies on feature-specific scapular selection.",
     "",
@@ -1949,19 +1950,57 @@ function featureReviewRequest(id: string, assessmentState: AssessmentState): Can
 }
 
 function featureTraceCell(trace: ReturnType<typeof calculateAssessmentRelevanceTraces>[number]): string {
-  if (trace.featureMatches.length === 0) {
-    return "generic; source=unknown; candidate=not_applicable; review=not_applicable; match=none";
+  if (trace.featureDevelopment.length === 0) {
+    return "generic; source=unknown; emphasis=not_applicable; review=not_applicable; match=none; challenge=not_applicable";
   }
 
-  return trace.featureMatches
-    .map((feature) =>
+  return trace.featureDevelopment
+    .map((development, index) => {
+      const feature = trace.featureMatches[index];
+
+      return [
+        development.assessmentFeature,
+        `source=${feature?.assessmentFeatureSource ?? "unknown"}`,
+        `emphasis=${development.featureEmphasisLevel}/${development.featureEmphasisSource}`,
+        `candidate=${feature?.candidateFeature ?? "unknown"}`,
+        `review=${development.featureReviewStatus}`,
+        `match=${development.featureMatch}`,
+        `challenge=${formatNumber(development.featureChallengeDemand)}/${development.featureChallengeDemandSource}`,
+        `featureCapability=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+        `featureDemandCapability=${development.featureDemandCapabilityMatch}`,
+      ].join("; ");
+    })
+    .join("<br>");
+}
+
+function taskDemandCell(trace: ReturnType<typeof calculateAssessmentRelevanceTraces>[number]): string {
+  return [
+    formatNumber(trace.demandCapability.candidateDemand),
+    trace.demandCapability.candidateDemandSource.level,
+    trace.demandCapability.candidateDemandSource.source,
+    trace.demandCapability.candidateDemandSource.reviewStatus,
+  ].join("/");
+}
+
+function taskCapabilityCell(trace: ReturnType<typeof calculateAssessmentRelevanceTraces>[number]): string {
+  return [
+    formatNumber(trace.demandCapability.currentCapability),
+    trace.demandCapability.capabilityEstimate.estimateSource,
+    trace.demandCapability.capabilityEstimate.evidenceQuality,
+  ].join("/");
+}
+
+function featureDevelopmentCell(trace: ReturnType<typeof calculateAssessmentRelevanceTraces>[number]): string {
+  if (trace.featureDevelopment.length === 0) {
+    return "not_applicable";
+  }
+
+  return trace.featureDevelopment
+    .map((development) =>
       [
-        feature.assessmentFeature,
-        `source=${feature.assessmentFeatureSource}`,
-        `candidate=${feature.candidateFeature}:${feature.candidateFeatureLevel}`,
-        `review=${feature.candidateFeatureReviewStatus}`,
-        `profileReview=${feature.candidateFeatureProfileReviewStatus}`,
-        `match=${feature.featureMatch}`,
+        `challenge=${formatNumber(development.featureChallengeDemand)}/${development.featureChallengeDemandSource}`,
+        `capability=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+        `match=${development.featureDemandCapabilityMatch}`,
       ].join("; "),
     )
     .join("<br>");
@@ -1994,8 +2033,10 @@ function renderFeatureContrastTable(input: {
       trace.relevance,
       trace.relationship,
       featureTraceCell(trace),
-      formatNumber(trace.demandCapability.candidateDemand),
+      taskDemandCell(trace),
+      taskCapabilityCell(trace),
       trace.demandCapability.match,
+      featureDevelopmentCell(trace),
       trace.boundedInfluence.toFixed(3),
       trace.assessmentContribution.toFixed(3),
       trace.alignmentContribution.toFixed(3),
@@ -2005,8 +2046,8 @@ function renderFeatureContrastTable(input: {
   return [
     `### ${input.title}`,
     "",
-    "| Exercise | Rank | Total | Truth | Relevance | Relationship | Feature Trace | Demand | Demand Match | Bounded | Assessment | Alignment |",
-    "|---|---:|---:|---|---|---|---|---:|---|---:|---:|---:|",
+    "| Exercise | Rank | Total | Truth | Relevance | Relationship | Feature Trace | Overall Task Demand | Task Capability | Task Match | Feature Development | Bounded | Assessment | Alignment |",
+    "|---|---:|---:|---|---|---|---|---|---|---|---|---:|---:|---:|",
     ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
     "",
   ].join("\n");
@@ -2074,6 +2115,135 @@ function renderFeatureSpecificScapularAssessmentReview(): string {
   ].join("\n");
 }
 
+function legacyFeatureDemandCell(
+  trace: ReturnType<typeof calculateAssessmentRelevanceTraces>[number],
+): string {
+  if (trace.featureDevelopment.length === 0) {
+    return "Generic signal: broad movement-role relevance uses overall task demand directly.";
+  }
+
+  const development = trace.featureDevelopment[0];
+
+  return [
+    `Legacy interpretation treated ${trace.demandCapability.dimension} task demand ${formatNumber(trace.demandCapability.candidateDemand)} as the target ${development.assessmentFeature} demand`,
+    `task match=${trace.demandCapability.match}`,
+    "feature challenge was not separated",
+  ].join("; ");
+}
+
+function currentFeatureDemandCell(
+  trace: ReturnType<typeof calculateAssessmentRelevanceTraces>[number],
+): string {
+  if (trace.featureDevelopment.length === 0) {
+    return "No normalized feature: generic task semantics remain in force.";
+  }
+
+  const development = trace.featureDevelopment[0];
+
+  return [
+    `emphasis=${development.featureEmphasisLevel}/${development.featureEmphasisSource}`,
+    `overallTaskDemand=${formatNumber(development.overallTaskDemand)}/${development.overallTaskDemandSource.level}`,
+    `featureChallenge=${formatNumber(development.featureChallengeDemand)}/${development.featureChallengeDemandSource}`,
+    `featureCapability=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+    `featureDemandCapability=${development.featureDemandCapabilityMatch}`,
+  ].join("; ");
+}
+
+function renderFeatureDemandSeparationTable(input: {
+  readonly title: string;
+  readonly requestId: string;
+  readonly assessmentState: AssessmentState;
+}): string {
+  const request = featureReviewRequest(input.requestId, input.assessmentState);
+  const result = rankCandidateRequest(request);
+  const rankedById = new Map(result.rankedCandidates.map((candidate) => [candidate.exercise.id, candidate]));
+  const rows = FEATURE_CONTRAST_EXERCISE_IDS.map((exerciseId) => {
+    const trace = calculateAssessmentRelevanceTraces({
+      request,
+      exercise: referenceExerciseById(exerciseId),
+    })[0];
+    const candidate = rankedById.get(exerciseId);
+
+    return [
+      exerciseId,
+      candidate ? String(candidate.rank) : "rejected",
+      candidate ? candidate.total.toFixed(3) : "n/a",
+      trace.relevance,
+      featureTraceCell(trace),
+      legacyFeatureDemandCell(trace),
+      currentFeatureDemandCell(trace),
+      trace.relationship,
+      trace.boundedInfluence.toFixed(3),
+    ];
+  });
+
+  return [
+    `### ${input.title}`,
+    "",
+    "| Exercise | Rank | Total | Relevance | Feature Trace | Before Trace Semantics | After Trace Semantics | Relationship | Bounded |",
+    "|---|---:|---:|---|---|---|---|---|---:|",
+    ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
+    "",
+  ].join("\n");
+}
+
+function renderFeatureEmphasisVsCapabilityDemandReview(): string {
+  return [
+    "# Feature Emphasis vs Capability Demand Review",
+    "",
+    "This section reruns the same Phase 1 / Scapular Activation / full-gym feature contrasts after separating feature expression from task demand and feature challenge. The `Before Trace Semantics` column describes the legacy interpretation now avoided: overall scapular task demand could be read as target-feature demand. The `After Trace Semantics` column is generated from the current trace contract.",
+    "",
+    renderFeatureDemandSeparationTable({
+      title: "Serratus / Protraction Control",
+      requestId: "feature-demand-review-serratus-protraction",
+      assessmentState: scapularPriority,
+    }),
+    renderFeatureDemandSeparationTable({
+      title: "Upward Rotation Control",
+      requestId: "feature-demand-review-upward-rotation",
+      assessmentState: featureSpecificScapularPriority({
+        id: "demand-review-upward-rotation-control",
+        feature: "upward_rotation_control",
+        description: "High-confidence upward-rotation scapular-control priority.",
+      }),
+    }),
+    renderFeatureDemandSeparationTable({
+      title: "Retraction Control",
+      requestId: "feature-demand-review-retraction",
+      assessmentState: featureSpecificScapularPriority({
+        id: "demand-review-retraction-control",
+        feature: "retraction_control",
+        description: "High-confidence retraction scapular-control priority.",
+      }),
+    }),
+    renderFeatureDemandSeparationTable({
+      title: "External Rotation / Cuff Control",
+      requestId: "feature-demand-review-cuff",
+      assessmentState: featureSpecificScapularPriority({
+        id: "demand-review-external-rotation-cuff-control",
+        feature: "external_rotation_or_cuff_control",
+        description: "High-confidence external-rotation/cuff scapular-control priority.",
+      }),
+    }),
+    renderFeatureDemandSeparationTable({
+      title: "Loaded Scapular Stability",
+      requestId: "feature-demand-review-loaded-stability",
+      assessmentState: featureSpecificScapularPriority({
+        id: "demand-review-loaded-scapular-stability",
+        feature: "loaded_scapular_stability",
+        description: "High-confidence loaded scapular-stability priority.",
+      }),
+    }),
+    "Review notes:",
+    "- Existing `scapularMechanics` fields are consumed as feature emphasis/expression metadata.",
+    "- Overall `mechanics.demands.scapular_control` remains visible as task demand, not target-feature challenge.",
+    "- Feature challenge demand is currently `unknown/not_modeled`, so feature demand/capability match is `not_applicable` and feature-specific bounded influence is zero.",
+    "- Feature-specific severity affects the feature capability estimate, while overall task capability stays a weak/default programming prior unless direct or relevant history evidence exists.",
+    "- Low feature expression is labeled `low_expression`, not conflict.",
+    "",
+  ].join("\n");
+}
+
 function renderRankingReviewMarkdown(): string {
   const scenarios = buildScenarios();
   const sections: string[] = [
@@ -2100,11 +2270,12 @@ function renderRankingReviewMarkdown(): string {
 
   sections.push(renderPostureRegression());
   sections.push(renderFeatureSpecificScapularAssessmentReview());
+  sections.push(renderFeatureEmphasisVsCapabilityDemandReview());
   sections.push("## Questionable Rankings / Modeling Gaps");
   sections.push("");
   sections.push("- Capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.");
   sections.push("- `too_easy` and `appropriate_challenge` history events can now influence inferred capability when movement-role matched, but continuity/progression semantics still need more domain nuance.");
-  sections.push("- Scapular candidates now expose feature-specific differentiation, but many scapular mechanics annotations remain `NEEDS_REVIEW`, especially for pressing and rowing candidates.");
+  sections.push("- Scapular candidates now expose feature-specific differentiation, but feature challenge demand is not yet modeled; feature-specific signals therefore stay neutral for bounded influence until that challenge scale exists.");
   sections.push("- Unknown metadata is now neutral and observable, but the catalog still has unknown fields that should not be promoted into production prescription without review.");
   sections.push("");
   sections.push("## Candidate Intelligence Sign-Off");

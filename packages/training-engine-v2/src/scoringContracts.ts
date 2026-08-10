@@ -64,6 +64,7 @@ export type AssessmentFeatureMatch =
   | "strong"
   | "moderate"
   | "weak"
+  | "low_expression"
   | "conflict"
   | "unknown";
 
@@ -160,6 +161,26 @@ export interface AssessmentFeatureMatchTrace {
   readonly featureReason: string;
 }
 
+export type FeatureEmphasisSource = "scapular_mechanics" | "unknown";
+export type FeatureChallengeDemandSource = "not_modeled" | "unknown";
+
+export interface AssessmentFeatureDevelopmentTrace {
+  readonly assessmentFeature: AssessmentFeature;
+  readonly featureMatch: AssessmentFeatureMatch;
+  readonly featureEmphasisLevel: ExerciseDemandAnnotationLevel;
+  readonly featureEmphasisSource: FeatureEmphasisSource;
+  readonly featureReviewStatus: ExerciseMechanicsReviewStatus | "not_applicable";
+  readonly overallTaskDemand: number | null;
+  readonly overallTaskDemandSource: CandidateDemandSourceTrace;
+  readonly featureChallengeDemand: number | null;
+  readonly featureChallengeDemandSource: FeatureChallengeDemandSource;
+  readonly featureCapabilityEstimate: number | null;
+  readonly featureCapabilitySource: CapabilityEstimateSource | "not_applicable";
+  readonly featureCapabilityEvidenceQuality: CapabilityEvidenceQuality;
+  readonly featureDemandCapabilityMatch: DemandCapabilityMatch;
+  readonly evidence: readonly string[];
+}
+
 export interface AssessmentRelevanceTrace {
   readonly signalId: string;
   readonly candidateId: string;
@@ -169,6 +190,7 @@ export interface AssessmentRelevanceTrace {
   readonly relevanceReason: string;
   readonly signalInterpretation: AssessmentSignalInterpretationTrace;
   readonly featureMatches: readonly AssessmentFeatureMatchTrace[];
+  readonly featureDevelopment: readonly AssessmentFeatureDevelopmentTrace[];
   readonly relationship: AssessmentCandidateRelationship;
   readonly relationshipReason: string;
   readonly demandReductionContext: DemandReductionContextTrace;
