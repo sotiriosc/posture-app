@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. The main blockers are feature-specific assessment influence being observability-only, an ID-based pain support bonus, moderate-pain calibration, phase calibration, and review-visible transition-purpose/context gaps.
+Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. The main blockers are feature-specific assessment influence being observability-only, moderate-pain calibration, phase calibration, continuity reason-code precedence, and review-visible transition-purpose/context gaps.
 
 ## Contract Review
 
@@ -43,7 +43,7 @@ Architecture is sound and the candidate pipeline is deterministic/explainable, b
 | assessment_fit + alignment_fit | INTENTIONAL_DISTINCT_SIGNAL | Both read one relevance trace, but bounded influence is split across assessment/alignment contributions rather than added twice. |
 | pain_suitability + joint_cost | POTENTIAL_DOUBLE_COUNT | Both react to pain/stress tags; this is conceptually distinct pain suitability vs joint cost, but the combined demotion still needs pain calibration review. |
 | phase_fit + experience_fit + skill_fit | INTENTIONAL_DISTINCT_SIGNAL | Phase intent, athlete prior, and exercise demand are separate, but phase suitability remains influential enough to require calibration review. |
-| support/stability/path | POTENTIAL_DOUBLE_COUNT | Structured row path knowledge is observability-only, but stability/support also influence scoring. Current path metadata does not add score; support currently leaks through an ID-based pain bonus. |
+| support/stability/path | RESOLVED_FOR_PAIN_SUPPORT_BONUS | Structured row path knowledge is observability-only, and pain_suitability no longer adds positive support credit from exercise ID, name, prose, or structured bodySupport. |
 | progression_value + continuity_value | INTENTIONAL_DISTINCT_SIGNAL | progression_value is same-exercise runway/readiness; continuity_value is current/productive/plateau/pain history. Transition edges do not add replacement pressure. |
 | unknown metadata | NOT_APPLICABLE | Unknown demand/path/challenge values remain neutral/not_applicable in assessment traces and do not create positive evidence by themselves. |
 
@@ -51,7 +51,7 @@ Architecture is sound and the candidate pipeline is deterministic/explainable, b
 
 Catalog coverage: fully usable=2; usable with review caveats=20; materially under-specified=8.
 
-UNKNOWN does not become easy/safe/preferred/developmentally superior/feature matched in assessment demand traces. NEEDS_REVIEW remains visible in catalog review and row trace context. Material promotion risk remains P1 where behavior uses an ID-based support bonus instead of mechanics, because that can make support preference appear structured when it is not.
+UNKNOWN does not become easy/safe/preferred/developmentally superior/feature matched in assessment demand traces. NEEDS_REVIEW remains visible in catalog review and row trace context. The prior ID-derived support promotion risk is resolved in pain_suitability; remaining uncertainty risks are moderate-pain calibration and incomplete reviewed mechanics.
 
 ## Feature-Specific Assessment Review
 
@@ -98,7 +98,7 @@ Verdict: **PLAUSIBLE_NEEDS_REVIEW**. Phase behavior is directionally coherent an
 
 ## Pain / Injury Review
 
-Verdict: **TARGETED_FIX_REQUIRED**. Hard contraindication works, moderate/current pain is visible and demotes relevant stress overlap, and unrelated pain does not hard-gate legal pools. Remaining human review is needed for pain calibration, and the ID-based chest-supported support bonus should be replaced by structured support mechanics before Session Composer.
+Verdict: **TARGETED_FIX_REQUIRED_FOR_CALIBRATION_ONLY**. Hard contraindication works, moderate/current pain is visible and demotes relevant stress overlap, and unrelated pain does not hard-gate legal pools. The ID-derived chest-supported support bonus is resolved; remaining human review is needed for moderate-pain calibration before Session Composer.
 
 | Scenario | Winner | Runner-Up | Contraindicated Rejections | Pain Effect | Verdict |
 | --- | --- | --- | --- | --- | --- |
@@ -107,6 +107,16 @@ Verdict: **TARGETED_FIX_REQUIRED**. Hard contraindication works, moderate/curren
 | low-back hinge, moderate pain | cable-pull-through / 7.456 | dumbbell-romanian-deadlift / 7.200 | none | PAIN_REQUIRES_REVIEW; pain=6.40; joint=6.00 | PLAUSIBLE_NEEDS_REVIEW |
 | knee squat, historical sensitivity | goblet-squat / 7.931 | leg-press / 7.930 | none | PAIN_REQUIRES_REVIEW; pain=7.40; joint=7.40 | GOOD |
 | hard contraindication | dumbbell-bench-press / 7.961 | machine-chest-press / 7.846 | push-up | PAIN_SUITABLE; pain=8.20; joint=8.80 | GOOD |
+
+### ID_BASED_SUPPORT_BONUS_RESOLVED
+
+Before behavior: in the full-gym low-back horizontal-pull contrast, `chest-supported-dumbbell-row` received `pain_suitability=9.200` while `machine-row` and `seated-cable-row` stayed at `8.200`, solely because the pain component checked the exercise ID for `chest-supported`.
+
+After behavior: `machine-row`, `seated-cable-row`, and `chest-supported-dumbbell-row` all report `pain_suitability=8.200` when they have no lumbar pain-stressor overlap. Chest support and low trunk demand remain mechanical facts for traces/review, not positive pain score effects.
+
+Ranking delta: low-back full-gym horizontal pull changed from `chest-supported-dumbbell-row` rank 1 / `8.176` to rank 3 / `8.102`; `machine-row` and `seated-cable-row` are now rank 1 and 2 at `8.104`; `one-arm-dumbbell-row` remains rank 4 / `7.616` because its structured stress tags overlap the lumbar concern.
+
+Remaining pain P1: moderate-pain coefficient calibration is still unresolved and intentionally out of scope for this resolution.
 
 ## Experience / Capability Review
 
@@ -142,7 +152,7 @@ Verdict: **GOOD_WITH_POLICY_REVIEW**. Productive + progression runway keeps the 
 
 ## Row Knowledge Review
 
-Verdict: **TARGETED_FIX_REQUIRED_FOR_PAIN_PATH_ONLY**. Row selection knowledge itself uses structured support/resistance/path values and preserves neutral machine/cable ties as SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT with CONTEXT_REQUIRED_TO_DIFFERENTIATE. Mechanical equivalence does not rely on notes/provenance/review status. Separate finding: pain_suitability still uses `exercise.id.includes("chest-supported")`, which should be replaced by structured support mechanics before Session Composer.
+Verdict: **GOOD_WITH_REMAINING_CALIBRATION_REVIEW**. Row selection knowledge itself uses structured support/resistance/path values and preserves neutral machine/cable ties as SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT with CONTEXT_REQUIRED_TO_DIFFERENTIATE. Mechanical equivalence does not rely on notes/provenance/review status. pain_suitability no longer uses `exercise.id.includes("chest-supported")` or a generic support bonus.
 
 ## Progression / Transition Review
 
@@ -180,7 +190,7 @@ Contextual or unknown-supported purpose tags remain review-visible when structur
 | Scenario | Expected Coaching Logic | Actual Winner | Runner-Up | Why Winner Won | Surprising Component | Assessment Effect | Pain Effect | Continuity Effect | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Neutral full-gym horizontal pull | Prefer a legal loadable row; preserve machine/cable tie when no context separates them. | machine-row | seated-cable-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | row tie is deliberate context-required evidence | none | none | none | GOOD |
-| Low-back row pain context | Prefer lower lumbar demand/support, but keep equipment truth hard. | chest-supported-dumbbell-row | one-arm-dumbbell-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | pain_suitability still has an ID-based chest-supported support bonus | not primary | material | none | PLAUSIBLE_NEEDS_REVIEW |
+| Low-back row pain context | Prefer lower lumbar demand/support, but keep equipment truth hard. | chest-supported-dumbbell-row | one-arm-dumbbell-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | ID-derived support bonus resolved; remaining pain effect is stress-overlap based | not primary | material | none | PLAUSIBLE_NEEDS_REVIEW |
 | Phase contrast horizontal push | Phase 1 should prefer usable control/support; Phase 3 should value loadable stimulus without hardest-is-best. | dumbbell-bench-press (8.024) over machine-chest-press (7.909) | machine-chest-press (7.815) over push-up (7.793) | phase_fit, loadability, stimulus_potential shift the winner across phases | phaseSuitability has meaningful influence and still needs human calibration | none | none | none | GOOD |
 | Feature-specific serratus/protraction assessment | Identify feature relevance without conflating expression with feature difficulty. | band-face-pull | serratus-wall-slide | feature relevance is visible, but feature challenge is not modeled, so influence is zero | feature relevance can be observability-only because challenge demand is not modeled | visible but boundedInfluence=0 for feature-specific challenge | none | none | PLAUSIBLE_NEEDS_REVIEW |
 | Ready-to-progress current row | Keep productive current exercise and progress prescription before replacement. | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | continuity_value and progression_value reward same-exercise runway | none | none | none | CONTINUITY_FAVORED | GOOD |
@@ -195,7 +205,6 @@ Contextual or unknown-supported purpose tags remain review-visible when structur
 ### P1
 
 - Feature-specific assessment relevance is visible, but feature challenge demand is not modeled; feature-specific signals are observability-only at boundedInfluence=0.
-- pain_suitability still contains an ID-based chest-supported low-back support bonus; this violates the structured-mechanics doctrine for support reasoning.
 - Moderate pain calibration remains human-review-needed before a session composer can depend on candidate rank alone.
 - Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.
 - Continuity reason-code precedence can report CONTINUITY_FAVORED for a current exercise even when plateau, failed-progression, or pain-response values demote it.

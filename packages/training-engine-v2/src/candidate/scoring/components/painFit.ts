@@ -38,15 +38,11 @@ export const painSuitabilityComponent: CandidateScoreComponent = {
       (sum, pain) => sum + stressOverlapCount(pain.stressTags, exerciseStressTags),
       0,
     );
-    const supportiveLowBack =
-      request.painAndInjury.currentDiscomforts.some((pain) => pain.region === "lumbar_spine") &&
-      exercise.id.includes("chest-supported");
     const value =
       8.2 -
       discomfortOverlap * 0.9 -
       moderateOverlap * 1.8 -
-      sensitivityOverlap * 0.4 +
-      (supportiveLowBack ? 1 : 0);
+      sensitivityOverlap * 0.4;
 
     return component({
       id: "pain_suitability",
