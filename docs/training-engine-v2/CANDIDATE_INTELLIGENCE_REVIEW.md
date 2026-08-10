@@ -2104,6 +2104,88 @@ Overall task capability and feature capability now have separate provenance. Gen
 
 Current limitation: feature capability is a weak phase/experience prior unless the assessment signal supplies feature-specific severity. Future feature-aware history needs explicit normalized feature evidence at the history boundary before it can support retraction, serratus/protraction, upward-rotation, cuff, or loaded-scapular-stability capability.
 
+# Horizontal Row Selection Review
+
+This section audits the four primary horizontal-row variants through the real Candidate Intelligence request/ranking pipeline. Resistance/path metadata is observational only: it does not add score weights, generic path bonuses, or forced machine/cable ordering.
+
+The neutral full-gym request may still tie `machine-row` and `seated-cable-row`. That tie is now classified as `SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT` plus `CONTEXT_REQUIRED_TO_DIFFERENTIATE`, not as identical exercise knowledge.
+
+### Neutral Full Gym
+
+| Scenario | Exercise | Rank | Total | Legal | Support | Resistance Path | Demand | Loading | Contextual Differentiators | Context Required |
+|---|---|---:|---:|---|---|---|---|---|---|---|
+| Neutral Full Gym | machine-row | 1 | 8.069 | legal | machine/seated_supported/needs_review | machine_guided; trajectory=low; line=unknown; laterality=unknown; fit=machine_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | machine geometry and anthropometric fit feedback |
+| Neutral Full Gym | seated-cable-row | 2 | 8.069 | legal | cable_or_band_anchor/seated_supported/accepted | cable_anchored; trajectory=moderate; line=moderate; laterality=bilateral_linked; fit=setup_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>cable attachment, pulley geometry, and line-of-pull preference |
+| Neutral Full Gym | chest-supported-dumbbell-row | 3 | 8.065 | legal | bench/chest_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=bilateral_independent; fit=setup_geometry; review=accepted | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+| Neutral Full Gym | one-arm-dumbbell-row | 4 | 7.911 | legal | bench/hands_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=unilateral; fit=setup_geometry; review=accepted | trunk=high; stability=high; coordination=moderate; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+
+### Low-Back Concern
+
+| Scenario | Exercise | Rank | Total | Legal | Support | Resistance Path | Demand | Loading | Contextual Differentiators | Context Required |
+|---|---|---:|---:|---|---|---|---|---|---|---|
+| Low-Back Concern | machine-row | 2 | 8.104 | legal | machine/seated_supported/needs_review | machine_guided; trajectory=low; line=unknown; laterality=unknown; fit=machine_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | machine geometry and anthropometric fit feedback |
+| Low-Back Concern | seated-cable-row | 3 | 8.104 | legal | cable_or_band_anchor/seated_supported/accepted | cable_anchored; trajectory=moderate; line=moderate; laterality=bilateral_linked; fit=setup_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>cable attachment, pulley geometry, and line-of-pull preference |
+| Low-Back Concern | chest-supported-dumbbell-row | 1 | 8.176 | legal | bench/chest_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=bilateral_independent; fit=setup_geometry; review=accepted | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | existing pain component: low-back support preference | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+| Low-Back Concern | one-arm-dumbbell-row | 4 | 7.616 | legal | bench/hands_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=unilateral; fit=setup_geometry; review=accepted | trunk=high; stability=high; coordination=moderate; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | pain/stress overlap: review-mild-low-back-discomfort | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+
+### No Bench
+
+| Scenario | Exercise | Rank | Total | Legal | Support | Resistance Path | Demand | Loading | Contextual Differentiators | Context Required |
+|---|---|---:|---:|---|---|---|---|---|---|---|
+| No Bench | machine-row | rejected | n/a | rejected: EQUIPMENT_UNAVAILABLE | machine/seated_supported/needs_review | machine_guided; trajectory=low; line=unknown; laterality=unknown; fit=machine_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | hard eligibility: EQUIPMENT_UNAVAILABLE | machine geometry and anthropometric fit feedback |
+| No Bench | seated-cable-row | rejected | n/a | rejected: EQUIPMENT_UNAVAILABLE | cable_or_band_anchor/seated_supported/accepted | cable_anchored; trajectory=moderate; line=moderate; laterality=bilateral_linked; fit=setup_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | hard eligibility: EQUIPMENT_UNAVAILABLE | setup geometry or path preference<br>cable attachment, pulley geometry, and line-of-pull preference |
+| No Bench | chest-supported-dumbbell-row | rejected | n/a | rejected: EQUIPMENT_UNAVAILABLE | bench/chest_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=bilateral_independent; fit=setup_geometry; review=accepted | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | hard eligibility: EQUIPMENT_UNAVAILABLE | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+| No Bench | one-arm-dumbbell-row | 1 | 7.882 | legal | bench/hands_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=unilateral; fit=setup_geometry; review=accepted | trunk=high; stability=high; coordination=moderate; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+
+### No Row Machine
+
+| Scenario | Exercise | Rank | Total | Legal | Support | Resistance Path | Demand | Loading | Contextual Differentiators | Context Required |
+|---|---|---:|---:|---|---|---|---|---|---|---|
+| No Row Machine | machine-row | rejected | n/a | rejected: EQUIPMENT_UNAVAILABLE | machine/seated_supported/needs_review | machine_guided; trajectory=low; line=unknown; laterality=unknown; fit=machine_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | hard eligibility: EQUIPMENT_UNAVAILABLE | machine geometry and anthropometric fit feedback |
+| No Row Machine | seated-cable-row | 1 | 8.069 | legal | cable_or_band_anchor/seated_supported/accepted | cable_anchored; trajectory=moderate; line=moderate; laterality=bilateral_linked; fit=setup_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>cable attachment, pulley geometry, and line-of-pull preference |
+| No Row Machine | chest-supported-dumbbell-row | 2 | 8.065 | legal | bench/chest_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=bilateral_independent; fit=setup_geometry; review=accepted | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+| No Row Machine | one-arm-dumbbell-row | 3 | 7.911 | legal | bench/hands_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=unilateral; fit=setup_geometry; review=accepted | trunk=high; stability=high; coordination=moderate; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+
+### No Cable
+
+| Scenario | Exercise | Rank | Total | Legal | Support | Resistance Path | Demand | Loading | Contextual Differentiators | Context Required |
+|---|---|---:|---:|---|---|---|---|---|---|---|
+| No Cable | machine-row | 1 | 8.069 | legal | machine/seated_supported/needs_review | machine_guided; trajectory=low; line=unknown; laterality=unknown; fit=machine_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | machine geometry and anthropometric fit feedback |
+| No Cable | seated-cable-row | rejected | n/a | rejected: EQUIPMENT_UNAVAILABLE | cable_or_band_anchor/seated_supported/accepted | cable_anchored; trajectory=moderate; line=moderate; laterality=bilateral_linked; fit=setup_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | hard eligibility: EQUIPMENT_UNAVAILABLE | setup geometry or path preference<br>cable attachment, pulley geometry, and line-of-pull preference |
+| No Cable | chest-supported-dumbbell-row | 2 | 8.065 | legal | bench/chest_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=bilateral_independent; fit=setup_geometry; review=accepted | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+| No Cable | one-arm-dumbbell-row | 3 | 7.911 | legal | bench/hands_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=unilateral; fit=setup_geometry; review=accepted | trunk=high; stability=high; coordination=moderate; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+
+### Dumbbells + Bench Only
+
+| Scenario | Exercise | Rank | Total | Legal | Support | Resistance Path | Demand | Loading | Contextual Differentiators | Context Required |
+|---|---|---:|---:|---|---|---|---|---|---|---|
+| Dumbbells + Bench Only | machine-row | rejected | n/a | rejected: EQUIPMENT_UNAVAILABLE | machine/seated_supported/needs_review | machine_guided; trajectory=low; line=unknown; laterality=unknown; fit=machine_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | hard eligibility: EQUIPMENT_UNAVAILABLE | machine geometry and anthropometric fit feedback |
+| Dumbbells + Bench Only | seated-cable-row | rejected | n/a | rejected: EQUIPMENT_UNAVAILABLE | cable_or_band_anchor/seated_supported/accepted | cable_anchored; trajectory=moderate; line=moderate; laterality=bilateral_linked; fit=setup_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | hard eligibility: EQUIPMENT_UNAVAILABLE | setup geometry or path preference<br>cable attachment, pulley geometry, and line-of-pull preference |
+| Dumbbells + Bench Only | chest-supported-dumbbell-row | 1 | 8.106 | legal | bench/chest_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=bilateral_independent; fit=setup_geometry; review=accepted | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+| Dumbbells + Bench Only | one-arm-dumbbell-row | 2 | 7.882 | legal | bench/hands_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=unilateral; fit=setup_geometry; review=accepted | trunk=high; stability=high; coordination=moderate; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+
+### Machine Row Productive Continuity
+
+| Scenario | Exercise | Rank | Total | Legal | Support | Resistance Path | Demand | Loading | Contextual Differentiators | Context Required |
+|---|---|---:|---:|---|---|---|---|---|---|---|
+| Machine Row Productive Continuity | machine-row | 1 | 8.297 | legal | machine/seated_supported/needs_review | machine_guided; trajectory=low; line=unknown; laterality=unknown; fit=machine_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | exercise-specific continuity: current exercise<br>exercise-specific continuity: productive<br>exercise-specific history: stable exercise<br>exercise-specific history: recorded exposure | machine geometry and anthropometric fit feedback |
+| Machine Row Productive Continuity | seated-cable-row | 2 | 8.069 | legal | cable_or_band_anchor/seated_supported/accepted | cable_anchored; trajectory=moderate; line=moderate; laterality=bilateral_linked; fit=setup_geometry; review=needs_review | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>cable attachment, pulley geometry, and line-of-pull preference |
+| Machine Row Productive Continuity | chest-supported-dumbbell-row | 3 | 8.065 | legal | bench/chest_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=bilateral_independent; fit=setup_geometry; review=accepted | trunk=low; stability=low; coordination=low; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+| Machine Row Productive Continuity | one-arm-dumbbell-row | 4 | 7.911 | legal | bench/hands_supported/accepted | free_implement; trajectory=high; line=moderate; laterality=unilateral; fit=setup_geometry; review=accepted | trunk=high; stability=high; coordination=moderate; joint=moderate | loadability=high; potential=high; localFatigue=moderate; systemicFatigue=low | none | setup geometry or path preference<br>preference/tolerance for self-selected trajectory |
+
+## Horizontal Row Tie Status
+
+| Scenario | Pair | Tie Status | Evidence |
+|---|---|---|---|
+| Neutral Full Gym | machine-row <-> seated-cable-row | SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT, CONTEXT_REQUIRED_TO_DIFFERENTIATE | Score vectors are equal at three-decimal component precision.<br>Support/resistance-path/demand/loading metadata differ.<br>Current request has no exercise-specific history, pain, equipment, fit, or path-preference signal that should break this tie. |
+| Low-Back Concern | machine-row <-> seated-cable-row | SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT, CONTEXT_REQUIRED_TO_DIFFERENTIATE | Score vectors are equal at three-decimal component precision.<br>Support/resistance-path/demand/loading metadata differ.<br>Current request has no exercise-specific history, pain, equipment, fit, or path-preference signal that should break this tie. |
+
+Review notes:
+- Machine row exposes `machine_guided`, `machine_geometry`, and unknown line/laterality fields because generic row-machine identity does not identify exact path, grip, convergence/divergence, chest support, or fit.
+- Seated cable row exposes `cable_anchored` setup geometry and `needs_review` path semantics because attachment, pulley geometry, grip, and exact line of pull vary.
+- Chest-supported and one-arm dumbbell rows expose free-implement trajectory/laterality differences while trunk, stability, support, loading, and pain behavior remain owned by existing components.
+- Exercise-specific history and continuity remain valid discriminators; path metadata does not generalize one exercise's success to all machines, cables, or free-implement rows.
+
 ## Questionable Rankings / Modeling Gaps
 
 - Overall task capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.

@@ -3,10 +3,14 @@ import { createInterface } from "node:readline/promises";
 import {
   deriveAlignmentPriorities,
   EMPTY_TRAINING_HISTORY,
+  DUMBBELLS_AND_BENCH_EQUIPMENT,
+  DUMBBELLS_NO_BENCH_EQUIPMENT,
+  FULL_GYM_EQUIPMENT,
   GOLDEN_PERSONAS,
   NO_PAIN_OR_INJURY,
   REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
+  buildHorizontalRowSelectionTrace,
   runCandidateRankingLab,
   type AssessmentFeature,
   type AssessmentRelevanceTrace,
@@ -14,6 +18,8 @@ import {
   type CandidateNeed,
   type CandidateRankingResult,
   type CandidateRequest,
+  type ContinuityContext,
+  type EquipmentCapabilities,
   type FatigueSignal,
   type GoldenPersona,
   type PainAndInjuryState,
@@ -41,6 +47,11 @@ const EMPTY_CONTINUITY = {
   failedProgressionExerciseIds: [],
   painResponseExerciseIds: [],
 } as const;
+
+interface ContinuityChoiceValue {
+  readonly continuity: ContinuityContext;
+  readonly historyOverlay: (baseHistory: TrainingHistory) => TrainingHistory;
+}
 
 function requireValue<T>(value: T | undefined, label: string): T {
   if (!value) {
@@ -138,6 +149,27 @@ function history(overrides: Partial<TrainingHistory> = {}): TrainingHistory {
         ...EMPTY_TRAINING_HISTORY.fatigueState.byMovementRole,
         ...overrides.fatigueState?.byMovementRole,
       },
+    },
+  };
+}
+
+function withoutRowMachine(equipment: EquipmentCapabilities): EquipmentCapabilities {
+  return {
+    ...equipment,
+    machines: {
+      availableMachineIds: equipment.machines.availableMachineIds.filter(
+        (machineId) => machineId !== "row",
+      ),
+    },
+  };
+}
+
+function withoutCable(equipment: EquipmentCapabilities): EquipmentCapabilities {
+  return {
+    ...equipment,
+    cables: {
+      available: false,
+      adjustableHeight: false,
     },
   };
 }
@@ -654,6 +686,90 @@ function historyChoices(
   ];
 }
 
+function equipmentChoices(selectedPersona: GoldenPersona): readonly Choice<EquipmentCapabilities>[] {
+  return [
+    {
+      label: "Persona Equipment",
+      description: `${selectedPersona.fixtureId} fixture equipment.`,
+      value: selectedPersona.equipment,
+    },
+    {
+      label: "Full Gym",
+      description: "Full gym fixture equipment.",
+      value: FULL_GYM_EQUIPMENT,
+    },
+    {
+      label: "No Row Machine",
+      description: "Full gym with the row machine capability removed.",
+      value: withoutRowMachine(FULL_GYM_EQUIPMENT),
+    },
+    {
+      label: "No Cable",
+      description: "Full gym with cable capability removed.",
+      value: withoutCable(FULL_GYM_EQUIPMENT),
+    },
+    {
+      label: "Dumbbells + Bench",
+      description: "Dumbbells with a stable bench, no machine or cable.",
+      value: DUMBBELLS_AND_BENCH_EQUIPMENT,
+    },
+    {
+      label: "Dumbbells No Bench",
+      description: "Dumbbells without a stable bench, no machine or cable.",
+      value: DUMBBELLS_NO_BENCH_EQUIPMENT,
+    },
+  ];
+}
+
+function continuityChoices(asOf: string): readonly Choice<ContinuityChoiceValue>[] {
+  return [
+    {
+      label: "None",
+      description: "No exercise-specific continuity override.",
+      value: {
+        continuity: EMPTY_CONTINUITY,
+        historyOverlay: (baseHistory) => baseHistory,
+      },
+    },
+    {
+      label: "Machine Row Productive",
+      description: "Machine row is current, productive, stable, and recently exposed.",
+      value: {
+        continuity: {
+          ...EMPTY_CONTINUITY,
+          currentExerciseId: "machine-row",
+          productiveExerciseIds: ["machine-row"],
+        },
+        historyOverlay: (baseHistory) => history({
+          ...baseHistory,
+          exerciseHistory: {
+            ...baseHistory.exerciseHistory,
+            events: [
+              ...baseHistory.exerciseHistory.events,
+              {
+                id: "manual-machine-row-productive-history",
+                exerciseId: "machine-row",
+                type: "appropriate_challenge",
+                occurredAt: recentIso(asOf, 3),
+                movementRole: "horizontal_pull",
+                notes: "Machine row was productively challenging.",
+              },
+            ],
+            stableExerciseIds: [...baseHistory.exerciseHistory.stableExerciseIds, "machine-row"],
+          },
+          progressionState: {
+            ...baseHistory.progressionState,
+            readyToProgressExerciseIds: [
+              ...baseHistory.progressionState.readyToProgressExerciseIds,
+              "machine-row",
+            ],
+          },
+        }),
+      },
+    },
+  ];
+}
+
 function personaChoices(): readonly Choice<GoldenPersona>[] {
   const preferredOrder = [
     "intermediate-gym-muscle-gain",
@@ -733,9 +849,12 @@ function buildRequest(input: {
   readonly assessmentChoice: Choice<AssessmentState>;
   readonly painChoice: Choice<PainAndInjuryState>;
   readonly historyChoice: Choice<TrainingHistory>;
+  readonly equipmentChoice: Choice<EquipmentCapabilities>;
+  readonly continuityChoice: Choice<ContinuityChoiceValue>;
   readonly asOf: string;
 }): CandidateRequest {
   const assessment = input.assessmentChoice.value;
+  const selectedHistory = input.continuityChoice.value.historyOverlay(input.historyChoice.value);
 
   return {
     id: [
@@ -754,12 +873,12 @@ function buildRequest(input: {
     assessment,
     alignmentPriorities: deriveAlignmentPriorities(assessment).priorities,
     painAndInjury: input.painChoice.value,
-    equipment: input.personaChoice.value.equipment,
-    history: input.historyChoice.value,
-    continuity: EMPTY_CONTINUITY,
+    equipment: input.equipmentChoice.value,
+    history: selectedHistory,
+    continuity: input.continuityChoice.value.continuity,
     candidatePool: REFERENCE_EXERCISES,
     satisfiedPrerequisiteIds: ["push-up-plank-control", "hinge-control", "overhead-control"],
-    fatigueSignals: fatigueSignalsForHistory(input.historyChoice.value),
+    fatigueSignals: fatigueSignalsForHistory(selectedHistory),
     notes: [
       `Manual lab persona: ${input.personaChoice.label}`,
       `Manual lab assessment: ${input.assessmentChoice.label}`,
@@ -988,6 +1107,74 @@ function printHardRejections(result: CandidateRankingResult): void {
   );
 }
 
+function formatList(values: readonly string[]): string {
+  return values.length > 0 ? values.join("; ") : "none";
+}
+
+function printHorizontalRowKnowledge(result: CandidateRankingResult): void {
+  const trace = buildHorizontalRowSelectionTrace(result);
+
+  console.log("\nHorizontal Row Knowledge");
+  printTable(
+    [
+      "Exercise",
+      "Rank",
+      "Total",
+      "Legal",
+      "Support",
+      "Resistance Path",
+      "Demand",
+      "Loading",
+      "Contextual Differentiators",
+      "Context Required",
+    ],
+    trace.candidates.map((candidate) => [
+      `${candidate.exerciseId} / ${candidate.name}`,
+      candidate.rank ? String(candidate.rank) : "rejected",
+      candidate.total === null ? "-" : formatNumber(candidate.total),
+      candidate.legal ? "yes" : candidate.rejectionCodes.join(", "),
+      `${candidate.support.externalSupport}/${candidate.support.bodySupport}/${candidate.support.reviewStatus}`,
+      [
+        candidate.resistancePath.resistancePath,
+        `trajectory=${candidate.resistancePath.trajectoryFreedom}`,
+        `line=${candidate.resistancePath.lineOfPullAdjustability}`,
+        `laterality=${candidate.resistancePath.laterality}`,
+        `fit=${candidate.resistancePath.fitDependency}`,
+        `review=${candidate.resistancePath.reviewStatus}`,
+      ].join("; "),
+      [
+        `trunk=${candidate.demand.trunk}`,
+        `stability=${candidate.demand.stability}`,
+        `coordination=${candidate.demand.coordination}`,
+        `joint=${candidate.demand.jointControl}`,
+      ].join("; "),
+      [
+        `load=${candidate.loading.loadability}`,
+        `potential=${candidate.loading.loadingPotential}`,
+        `localFatigue=${candidate.loading.localFatigue}`,
+        `systemicFatigue=${candidate.loading.systemicFatigue}`,
+      ].join("; "),
+      formatList(candidate.contextualDifferentiators),
+      formatList(candidate.contextRequired),
+    ]),
+  );
+
+  console.log("\nHorizontal Row Tie Status");
+  if (trace.tieStatus.length === 0) {
+    console.log("No score-equivalent legal row pairs at current component precision.");
+    return;
+  }
+
+  printTable(
+    ["Pair", "Status", "Evidence"],
+    trace.tieStatus.map((tie) => [
+      tie.exerciseIds.join(" <-> "),
+      tie.statusCodes.join(", "),
+      tie.evidence.join("; "),
+    ]),
+  );
+}
+
 function printAssessmentComparison(off: CandidateRankingResult, on: CandidateRankingResult): void {
   console.log("\nAssessment OFF/ON Comparison");
   const offById = new Map(off.rankedCandidates.map((candidate) => [candidate.exercise.id, candidate]));
@@ -1060,6 +1247,7 @@ async function main(): Promise<void> {
       },
     ] as const;
     const useDefaults = process.argv.includes("--defaults");
+    const showRowKnowledge = process.argv.includes("--row-knowledge");
     const asOf = argumentValue("as-of") ?? currentAsOf();
     const personaOptions = personaChoices();
     const phaseOptions = phaseChoices();
@@ -1082,6 +1270,8 @@ async function main(): Promise<void> {
     const assessmentOptions = assessmentChoices(selectedPersona.value);
     const painOptions = painChoices(selectedPersona.value);
     const historyOptions = historyChoices(selectedPersona.value, asOf);
+    const equipmentOptions = equipmentChoices(selectedPersona.value);
+    const continuityOptions = continuityChoices(asOf);
     const selectedNeed = useDefaults
       ? LAB_NEEDS[0]
       : choiceFromArgument(
@@ -1106,6 +1296,14 @@ async function main(): Promise<void> {
       ? historyOptions[0]
       : choiceFromArgument(argumentValue("history"), historyOptions, "History") ??
         await choose(rl, "History", historyOptions);
+    const selectedEquipment = useDefaults
+      ? equipmentOptions[0]
+      : choiceFromArgument(argumentValue("equipment"), equipmentOptions, "Equipment") ??
+        await choose(rl, "Equipment", equipmentOptions);
+    const selectedContinuity = useDefaults
+      ? continuityOptions[0]
+      : choiceFromArgument(argumentValue("continuity"), continuityOptions, "Continuity") ??
+        await choose(rl, "Continuity", continuityOptions);
     const selectedMode = useDefaults
       ? outputModeChoices[0]
       : choiceFromArgument(
@@ -1127,6 +1325,8 @@ async function main(): Promise<void> {
           ["Assessment", selectedAssessment.label],
           ["Pain / Concern", selectedPain.label],
           ["History", selectedHistory.label],
+          ["Equipment", selectedEquipment.label],
+          ["Continuity", selectedContinuity.label],
           ["Output Mode", selectedMode.label],
         ],
       );
@@ -1139,6 +1339,8 @@ async function main(): Promise<void> {
       assessmentChoice: selectedAssessment,
       painChoice: selectedPain,
       historyChoice: selectedHistory,
+      equipmentChoice: selectedEquipment,
+      continuityChoice: selectedContinuity,
       asOf,
     });
     const result = runCandidateRankingLab(request);
@@ -1155,6 +1357,9 @@ async function main(): Promise<void> {
     }
 
     renderResult(result);
+    if (showRowKnowledge) {
+      printHorizontalRowKnowledge(result);
+    }
   } finally {
     rl.close();
   }

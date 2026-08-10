@@ -2,6 +2,7 @@ export * from "./eligibility";
 export * from "./lab";
 export * from "./ranking";
 export * from "./request";
+export * from "./rowSelectionKnowledge";
 export * from "./scoring/aggregate";
 export * from "./scoring/assessmentRelevance";
 export * from "./scoring/components";

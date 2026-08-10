@@ -2,12 +2,18 @@ import { describe, expect, it } from "vitest";
 import {
   CANDIDATE_SCORE_COMPONENTS,
   CONTROLLED_CANDIDATE_SCENARIOS,
+  DUMBBELLS_AND_BENCH_EQUIPMENT,
+  FULL_GYM_EQUIPMENT,
   getControlledCandidateScenario,
   HARD_ELIGIBILITY_COMPONENTS,
+  EMPTY_TRAINING_HISTORY,
   REFERENCE_EXERCISES,
+  buildHorizontalRowSelectionTrace,
   evaluateHardEligibility,
   runCandidateRankingLab,
+  type CandidateRequest,
   type CandidateRankingResult,
+  type EquipmentCapabilities,
   type RankedCandidate,
 } from "../../src";
 
@@ -56,6 +62,61 @@ function rejectedCodes(resultValue: CandidateRankingResult, exerciseId: string):
     resultValue.hardRejectedCandidates.find((candidate) => candidate.exercise.id === exerciseId)
       ?.eligibility.rejectionReasons.map((reason) => reason.code) ?? []
   );
+}
+
+function withoutRowMachine(equipment: EquipmentCapabilities): EquipmentCapabilities {
+  return {
+    ...equipment,
+    machines: {
+      availableMachineIds: equipment.machines.availableMachineIds.filter(
+        (machineId) => machineId !== "row",
+      ),
+    },
+  };
+}
+
+function withoutCable(equipment: EquipmentCapabilities): EquipmentCapabilities {
+  return {
+    ...equipment,
+    cables: {
+      available: false,
+      adjustableHeight: false,
+    },
+  };
+}
+
+function withMachineRowContinuity(request: CandidateRequest): CandidateRequest {
+  return {
+    ...request,
+    id: `${request.id}-machine-row-continuity`,
+    continuity: {
+      ...request.continuity,
+      currentExerciseId: "machine-row",
+      productiveExerciseIds: ["machine-row"],
+    },
+    history: {
+      ...request.history,
+      exerciseHistory: {
+        ...EMPTY_TRAINING_HISTORY.exerciseHistory,
+        events: [
+          {
+            id: "machine-row-appropriate-challenge",
+            exerciseId: "machine-row",
+            type: "appropriate_challenge",
+            occurredAt: "2026-08-07T00:00:00.000Z",
+            movementRole: "horizontal_pull",
+            notes: "Machine row was productively challenging.",
+          },
+        ],
+        stableExerciseIds: ["machine-row"],
+        blockedExerciseIds: [],
+      },
+      progressionState: {
+        ...request.history.progressionState,
+        readyToProgressExerciseIds: ["machine-row"],
+      },
+    },
+  };
 }
 
 describe("Candidate Intelligence foundation", () => {
@@ -130,11 +191,129 @@ describe("Candidate Intelligence foundation", () => {
     );
   });
 
+  it("models horizontal row path mechanics without making path a generic score bonus", () => {
+    const machine = REFERENCE_EXERCISES.find((candidate) => candidate.id === "machine-row");
+    const cable = REFERENCE_EXERCISES.find((candidate) => candidate.id === "seated-cable-row");
+    const chestSupported = REFERENCE_EXERCISES.find(
+      (candidate) => candidate.id === "chest-supported-dumbbell-row",
+    );
+    const oneArm = REFERENCE_EXERCISES.find((candidate) => candidate.id === "one-arm-dumbbell-row");
+
+    expect(machine?.mechanics?.resistancePath).toEqual(
+      expect.objectContaining({
+        resistancePath: "machine_guided",
+        trajectoryFreedom: "low",
+        lineOfPullAdjustability: "unknown",
+        laterality: "unknown",
+        fitDependency: "machine_geometry",
+        reviewStatus: "needs_review",
+      }),
+    );
+    expect(cable?.mechanics?.resistancePath).toEqual(
+      expect.objectContaining({
+        resistancePath: "cable_anchored",
+        trajectoryFreedom: "moderate",
+        lineOfPullAdjustability: "moderate",
+        laterality: "bilateral_linked",
+        fitDependency: "setup_geometry",
+        reviewStatus: "needs_review",
+      }),
+    );
+    expect(chestSupported?.mechanics?.resistancePath).toEqual(
+      expect.objectContaining({
+        resistancePath: "free_implement",
+        trajectoryFreedom: "high",
+        laterality: "bilateral_independent",
+        fitDependency: "setup_geometry",
+        reviewStatus: "accepted",
+      }),
+    );
+    expect(oneArm?.mechanics?.resistancePath).toEqual(
+      expect.objectContaining({
+        resistancePath: "free_implement",
+        trajectoryFreedom: "high",
+        laterality: "unilateral",
+        fitDependency: "setup_geometry",
+        reviewStatus: "accepted",
+      }),
+    );
+    expect(CANDIDATE_SCORE_COMPONENTS.map((scoreComponent) => scoreComponent.id)).not.toContain(
+      "path_freedom_bonus",
+    );
+  });
+
+  it("classifies a neutral machine/cable row tie as mechanically distinct and context-required", () => {
+    const neutral = result("horizontal-pull-gym-neutral");
+    const machine = ranked(neutral, "machine-row");
+    const cable = ranked(neutral, "seated-cable-row");
+    const trace = buildHorizontalRowSelectionTrace(neutral);
+    const tie = trace.tieStatus.find(
+      (entry) =>
+        entry.exerciseIds.includes("machine-row") &&
+        entry.exerciseIds.includes("seated-cable-row"),
+    );
+    const machineTrace = trace.candidates.find((candidate) => candidate.exerciseId === "machine-row");
+    const cableTrace = trace.candidates.find((candidate) => candidate.exerciseId === "seated-cable-row");
+
+    expect(machine.total).toBe(cable.total);
+    expect(tie).toEqual(
+      expect.objectContaining({
+        scoreEquivalent: true,
+        mechanicallyDistinct: true,
+        statusCodes: [
+          "SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT",
+          "CONTEXT_REQUIRED_TO_DIFFERENTIATE",
+        ],
+      }),
+    );
+    expect(machineTrace?.contextualDifferentiators).toEqual(["none"]);
+    expect(cableTrace?.contextualDifferentiators).toEqual(["none"]);
+    expect(machineTrace?.resistancePath.resistancePath).toBe("machine_guided");
+    expect(cableTrace?.resistancePath.resistancePath).toBe("cable_anchored");
+  });
+
   it("treats bench support as a hard equipment fact without eliminating dumbbell rows entirely", () => {
     const noBench = result("home-dumbbells-no-bench-horizontal-pull");
 
     expect(rejectedCodes(noBench, "chest-supported-dumbbell-row")).toContain("EQUIPMENT_UNAVAILABLE");
     expect(noBench.rankedCandidates[0].exercise.id).toBe("one-arm-dumbbell-row");
+  });
+
+  it("keeps row equipment constraints hard and reduces legal comparisons appropriately", () => {
+    const baseRequest = scenario("horizontal-pull-gym-neutral").request;
+    const noMachine = runCandidateRankingLab({
+      ...baseRequest,
+      id: "horizontal-pull-no-row-machine",
+      equipment: withoutRowMachine(FULL_GYM_EQUIPMENT),
+    });
+    const noCable = runCandidateRankingLab({
+      ...baseRequest,
+      id: "horizontal-pull-no-cable",
+      equipment: withoutCable(FULL_GYM_EQUIPMENT),
+    });
+    const dumbbellsAndBenchOnly = runCandidateRankingLab({
+      ...baseRequest,
+      id: "horizontal-pull-dumbbells-bench-only",
+      equipment: DUMBBELLS_AND_BENCH_EQUIPMENT,
+    });
+
+    expect(rejectedCodes(noMachine, "machine-row")).toContain("EQUIPMENT_UNAVAILABLE");
+    expect(noMachine.rankedCandidates.map((candidate) => candidate.exercise.id)).toContain(
+      "seated-cable-row",
+    );
+    expect(rejectedCodes(noCable, "seated-cable-row")).toContain("EQUIPMENT_UNAVAILABLE");
+    expect(noCable.rankedCandidates.map((candidate) => candidate.exercise.id)).toContain(
+      "machine-row",
+    );
+    expect(rejectedCodes(dumbbellsAndBenchOnly, "machine-row")).toContain(
+      "EQUIPMENT_UNAVAILABLE",
+    );
+    expect(rejectedCodes(dumbbellsAndBenchOnly, "seated-cable-row")).toContain(
+      "EQUIPMENT_UNAVAILABLE",
+    );
+    expect(dumbbellsAndBenchOnly.rankedCandidates.map((candidate) => candidate.exercise.id)).toEqual(
+      expect.arrayContaining(["chest-supported-dumbbell-row", "one-arm-dumbbell-row"]),
+    );
   });
 
   it("keeps low-confidence assessment visible while confirmed priorities expose relationship semantics", () => {
@@ -196,6 +375,34 @@ describe("Candidate Intelligence foundation", () => {
     expect(componentValue(productiveRow, "continuity_value")).toBeGreaterThan(
       componentValue(plateauRow, "continuity_value"),
     );
+  });
+
+  it("allows exercise-specific history to distinguish rows without path generalization", () => {
+    const baseRequest = scenario("horizontal-pull-gym-neutral").request;
+    const continuity = runCandidateRankingLab(withMachineRowContinuity(baseRequest));
+    const machine = ranked(continuity, "machine-row");
+    const cable = ranked(continuity, "seated-cable-row");
+    const chestSupported = ranked(continuity, "chest-supported-dumbbell-row");
+    const trace = buildHorizontalRowSelectionTrace(continuity);
+    const machineTrace = trace.candidates.find((candidate) => candidate.exerciseId === "machine-row");
+    const cableTrace = trace.candidates.find((candidate) => candidate.exerciseId === "seated-cable-row");
+
+    expect(machine.rank).toBeLessThan(cable.rank);
+    expect(componentValue(machine, "continuity_value")).toBeGreaterThan(
+      componentValue(cable, "continuity_value"),
+    );
+    expect(componentValue(chestSupported, "continuity_value")).toBe(
+      componentValue(cable, "continuity_value"),
+    );
+    expect(machineTrace?.contextualDifferentiators).toEqual(
+      expect.arrayContaining([
+        "exercise-specific continuity: current exercise",
+        "exercise-specific continuity: productive",
+        "exercise-specific history: stable exercise",
+        "exercise-specific history: recorded exposure",
+      ]),
+    );
+    expect(cableTrace?.contextualDifferentiators).toEqual(["none"]);
   });
 
   it("distinguishes anchored tube bands from bands without an anchor or loop bands only", () => {

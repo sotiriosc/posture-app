@@ -98,6 +98,7 @@ const defaultDemands = {
 
 function mechanics(input: {
   readonly support?: ExerciseMechanicsProfile["support"];
+  readonly resistancePath?: ExerciseMechanicsProfile["resistancePath"];
   readonly demands?: Partial<ExerciseMechanicsProfile["demands"]>;
   readonly scapularMechanics?: ScapularMechanicsProfile;
 }): ExerciseMechanicsProfile {
@@ -108,6 +109,7 @@ function mechanics(input: {
       reviewStatus: "needs_review",
       notes: "Support mechanics not yet reviewed.",
     },
+    resistancePath: input.resistancePath,
     demands: {
       ...defaultDemands,
       ...input.demands,
@@ -584,6 +586,20 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         reviewStatus: "accepted",
         notes: "Chest support intentionally reduces lumbar/trunk stabilization demand.",
       },
+      resistancePath: {
+        resistancePath: "free_implement",
+        trajectoryFreedom: "high",
+        lineOfPullAdjustability: "moderate",
+        laterality: "bilateral_independent",
+        fitDependency: "setup_geometry",
+        reviewStatus: "accepted",
+        notes: "Dumbbells are independently controlled free implements; bench angle and athlete setup affect the row line without guaranteeing one universal elbow path.",
+        provenance: [
+          "equipmentRequirements: dumbbells + stable bench",
+          "support profile: bench/chest_supported",
+          "catalog identity: chest-supported dumbbell row",
+        ],
+      },
       demands: {
         trunk_control: demand("low", "Chest support keeps trunk-control demand low."),
         scapular_control: demand("moderate", "Horizontal pull needs scapular control but is externally supported."),
@@ -652,6 +668,20 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         reviewStatus: "accepted",
         notes: "Bench may support the free hand, but torso/trunk position remains athlete-controlled.",
       },
+      resistancePath: {
+        resistancePath: "free_implement",
+        trajectoryFreedom: "high",
+        lineOfPullAdjustability: "moderate",
+        laterality: "unilateral",
+        fitDependency: "setup_geometry",
+        reviewStatus: "accepted",
+        notes: "One dumbbell creates a unilateral free-implement row with athlete-selected arm path and torso setup; trunk/stability demand remains modeled in existing demand/loading fields.",
+        provenance: [
+          "equipmentRequirements: dumbbells",
+          "optionalEquipment: stable bench",
+          "catalog identity: one-arm dumbbell row",
+        ],
+      },
       demands: {
         trunk_control: demand("high", "Unsupported torso position plus load creates high trunk-control demand."),
         scapular_control: demand("moderate", "Horizontal pull requires scapular control under load."),
@@ -683,7 +713,7 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
   {
     id: "machine-row",
     name: "Machine Row",
-    summary: "Machine-guided horizontal pull with low setup variability.",
+    summary: "Machine-based horizontal pull with machine-specific path and fit constraints.",
     family: "upper_pull",
     movementRoles: ["horizontal_pull"],
     trainingRoles: ["primary_strength", "secondary_strength"],
@@ -717,8 +747,22 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       support: {
         externalSupport: "machine",
         bodySupport: "seated_supported",
-        reviewStatus: "accepted",
-        notes: "Machine-guided row with stable seated support.",
+        reviewStatus: "needs_review",
+        notes: "Generic machine-row identity implies machine support but does not guarantee chest support, grip, exact path, or anthropometric fit.",
+      },
+      resistancePath: {
+        resistancePath: "machine_guided",
+        trajectoryFreedom: "low",
+        lineOfPullAdjustability: "unknown",
+        laterality: "unknown",
+        fitDependency: "machine_geometry",
+        reviewStatus: "needs_review",
+        notes: "Row-machine resistance is guided, but generic catalog identity does not identify the commercial machine, convergence/divergence, grip, line of pull, or athlete fit.",
+        provenance: [
+          "equipmentRequirements: selectorized row machine",
+          "catalog identity: generic machine row",
+          "machine-specific path and fit require context before selection preference",
+        ],
       },
       demands: {
         trunk_control: demand("low", "Machine support keeps trunk-control demand low."),
@@ -751,7 +795,7 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
   {
     id: "seated-cable-row",
     name: "Seated Cable Row",
-    summary: "Cable horizontal pull with stable setup.",
+    summary: "Cable-anchored horizontal pull with setup-dependent line of pull.",
     family: "upper_pull",
     movementRoles: ["horizontal_pull"],
     trainingRoles: ["primary_strength", "secondary_strength"],
@@ -787,6 +831,20 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         bodySupport: "seated_supported",
         reviewStatus: "accepted",
         notes: "Seated cable setup with stable lower-body support.",
+      },
+      resistancePath: {
+        resistancePath: "cable_anchored",
+        trajectoryFreedom: "moderate",
+        lineOfPullAdjustability: "moderate",
+        laterality: "bilateral_linked",
+        fitDependency: "setup_geometry",
+        reviewStatus: "needs_review",
+        notes: "Cable anchor makes resistance setup-dependent; attachment, pulley geometry, grip, and exact line of pull can vary across cable stations.",
+        provenance: [
+          "equipmentRequirements: cable stack",
+          "support profile: cable_or_band_anchor/seated_supported",
+          "attachment and pulley geometry remain setup-dependent",
+        ],
       },
       demands: {
         trunk_control: demand("low", "Seated stable setup keeps trunk-control demand low to moderate."),

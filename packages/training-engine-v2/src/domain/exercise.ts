@@ -98,6 +98,39 @@ export interface ExerciseSupportProfile {
   readonly notes: string;
 }
 
+export type ExerciseResistancePathType =
+  | "machine_guided"
+  | "cable_anchored"
+  | "free_implement"
+  | "bodyweight"
+  | "band_anchored"
+  | "unknown";
+
+export type ExerciseTrajectoryFreedom = "low" | "moderate" | "high" | "unknown";
+export type ExerciseLineOfPullAdjustability = "low" | "moderate" | "high" | "unknown";
+export type ExerciseLaterality =
+  | "bilateral_linked"
+  | "bilateral_independent"
+  | "unilateral"
+  | "alternating"
+  | "unknown";
+export type ExerciseFitDependency =
+  | "machine_geometry"
+  | "setup_geometry"
+  | "low"
+  | "unknown";
+
+export interface ExerciseResistancePathProfile {
+  readonly resistancePath: ExerciseResistancePathType;
+  readonly trajectoryFreedom: ExerciseTrajectoryFreedom;
+  readonly lineOfPullAdjustability: ExerciseLineOfPullAdjustability;
+  readonly laterality: ExerciseLaterality;
+  readonly fitDependency: ExerciseFitDependency;
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly notes: string;
+  readonly provenance: readonly string[];
+}
+
 export interface ScapularMechanicsProfile {
   readonly serratusContribution: ExerciseDemandAnnotation;
   readonly upwardRotationControl: ExerciseDemandAnnotation;
@@ -111,6 +144,7 @@ export interface ScapularMechanicsProfile {
 
 export interface ExerciseMechanicsProfile {
   readonly support: ExerciseSupportProfile;
+  readonly resistancePath?: ExerciseResistancePathProfile;
   readonly demands: Readonly<Record<ExerciseDemandDimension, ExerciseDemandAnnotation>>;
   readonly scapularMechanics?: ScapularMechanicsProfile;
 }

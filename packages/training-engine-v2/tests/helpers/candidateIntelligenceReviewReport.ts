@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { deriveAlignmentPriorities } from "../../src/alignment";
 import { rankCandidateRequest } from "../../src/candidate/ranking/rankCandidates";
+import { buildHorizontalRowSelectionTrace } from "../../src/candidate/rowSelectionKnowledge";
 import { calculateAssessmentRelevanceTraces } from "../../src/candidate/scoring/assessmentRelevance";
 import { signalDemandDimension } from "../../src/candidate/scoring/assessment/classifySignal";
 import {
@@ -46,6 +47,7 @@ import {
   ANCHORED_BANDS_EQUIPMENT,
   BODYWEIGHT_EQUIPMENT,
   DUMBBELLS_AND_BENCH_EQUIPMENT,
+  DUMBBELLS_NO_BENCH_EQUIPMENT,
   FULL_GYM_EQUIPMENT,
   GOLDEN_PERSONAS,
 } from "../../src/data/goldenPersonas";
@@ -59,7 +61,8 @@ import { createPosturePhotoCandidateExperimentRequests } from "../fixtures/postu
 type Provenance = "CONFIDENT" | "REASONABLE_INFERENCE" | "NEEDS_REVIEW" | "UNKNOWN";
 type EquivalenceClassification =
   | "LEGITIMATELY_EQUIVALENT_AT_CURRENT_SCOPE"
-  | "INSUFFICIENT_KNOWLEDGE_TO_DIFFERENTIATE";
+  | "SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT"
+  | "CONTEXT_REQUIRED_TO_DIFFERENTIATE";
 type ProgressionEdgeClassification =
   | "VALID_DEVELOPMENTAL_RELATIONSHIP"
   | "CONTEXT_DEPENDENT"
@@ -1046,6 +1049,16 @@ function provenanceForSupport(exercise: ExerciseDefinition): Provenance {
   return support.reviewStatus === "accepted" ? "CONFIDENT" : "NEEDS_REVIEW";
 }
 
+function provenanceForResistancePath(exercise: ExerciseDefinition): Provenance {
+  const path = exercise.mechanics?.resistancePath;
+
+  if (!path || path.resistancePath === "unknown") {
+    return "UNKNOWN";
+  }
+
+  return path.reviewStatus === "accepted" ? "CONFIDENT" : "NEEDS_REVIEW";
+}
+
 function withProvenance(text: string, provenance: Provenance): string {
   return `${text} [${provenance}]`;
 }
@@ -1068,6 +1081,29 @@ function formatSupport(exercise: ExerciseDefinition): string {
 
   return withProvenance(
     `${support.externalSupport}/${support.bodySupport}; ${support.notes}`,
+    provenance,
+  );
+}
+
+function formatResistancePath(exercise: ExerciseDefinition): string {
+  const path = exercise.mechanics?.resistancePath;
+  const provenance = provenanceForResistancePath(exercise);
+
+  if (!path) {
+    return withProvenance("unknown resistance/path metadata", provenance);
+  }
+
+  return withProvenance(
+    [
+      `path=${path.resistancePath}`,
+      `trajectory=${path.trajectoryFreedom}`,
+      `lineOfPull=${path.lineOfPullAdjustability}`,
+      `laterality=${path.laterality}`,
+      `fit=${path.fitDependency}`,
+      `review=${path.reviewStatus}`,
+      `notes=${path.notes}`,
+      `provenance=${path.provenance.join("; ")}`,
+    ].join("; "),
     provenance,
   );
 }
@@ -1098,6 +1134,15 @@ function supportCell(
   const provenance = provenanceForSupport(exercise);
   counts[provenance] += 1;
   return formatSupport(exercise);
+}
+
+function resistancePathCell(
+  counts: Record<Provenance, number>,
+  exercise: ExerciseDefinition,
+): string {
+  const provenance = provenanceForResistancePath(exercise);
+  counts[provenance] += 1;
+  return formatResistancePath(exercise);
 }
 
 function catalogCell(
@@ -1241,6 +1286,7 @@ function renderIndividualReferenceExerciseSections(): string {
     sections.push(
       `- Setup/loading truth: equipment=${equipmentRequirements(exercise)}; optionalEquipment=${exercise.optionalEquipment.length > 0 ? exercise.optionalEquipment.map((requirement) => requirement.label).join(", ") : "none"}; support=${formatSupport(exercise)}; loadability=${exercise.loading.loadability}; loadingPotential=${exercise.loading.loadingPotential}; skill=${exercise.loading.skillDemand}; stability=${exercise.loading.stabilityDemand}; coordination=${exercise.loading.coordinationDemand}; localFatigue=${exercise.loading.localFatigue}; systemicFatigue=${exercise.loading.systemicFatigue}; axialLoading=${exercise.loading.axialLoading}`,
     );
+    sections.push(`- Resistance/path mechanics: ${formatResistancePath(exercise)}`);
     sections.push(`- Mechanics: ${formatMechanicsDemands(exercise)}`);
     sections.push(`- Scapular mechanics: ${formatScapularMechanics(exercise)}`);
     sections.push(
@@ -1302,7 +1348,7 @@ function classifyEquivalentTie(ids: readonly string[]): EquivalenceClassificatio
   const sorted = [...ids].sort().join(",");
 
   if (sorted === "machine-row,seated-cable-row") {
-    return "INSUFFICIENT_KNOWLEDGE_TO_DIFFERENTIATE";
+    return "CONTEXT_REQUIRED_TO_DIFFERENTIATE";
   }
 
   return "LEGITIMATELY_EQUIVALENT_AT_CURRENT_SCOPE";
@@ -1346,7 +1392,7 @@ function renderEquivalentMetadataAudit(): string {
     "",
     tieTable,
     "",
-    "`machine-row` and `seated-cable-row` are the important audited pair. They differ by equipment/setup label, but the current scoring-relevant fields that reach the ranking components are equivalent in the default horizontal-pull context: role, section intent, muscle target, pain, phase, stimulus, loadability, skill, stability, fatigue, joint cost, continuity, assessment, and alignment all match. This is classified as `INSUFFICIENT_KNOWLEDGE_TO_DIFFERENTIATE`, not a legitimate exercise-science claim that the exercises are identical.",
+    "`machine-row` and `seated-cable-row` are the important audited pair. They now differ by resistance/path metadata as well as equipment/setup label. In the default horizontal-pull context, the scoring-relevant fields that reach ranking components can still be equivalent: role, section intent, muscle target, pain, phase, stimulus, loadability, skill, stability, fatigue, joint cost, continuity, assessment, and alignment all match. This is now classified as `CONTEXT_REQUIRED_TO_DIFFERENTIATE`: the catalog knows the exercises are mechanically distinct, but the request does not contain a legitimate machine-fit, cable-setup, path-preference, or exercise-specific history discriminator.",
     "",
   ].join("\n");
 }
@@ -1600,7 +1646,7 @@ function renderStrongDecisionReview(): string {
   return [
     "## Strong Decisions From Weak Or Coarse Metadata",
     "",
-    "- `machine-row` and `seated-cable-row` can tie exactly because current scoring-relevant metadata does not encode enough machine-path versus cable-path distinction. That tie is observable and should not be interpreted as an exercise-science equivalence.",
+    "- `machine-row` and `seated-cable-row` can tie exactly because current scoring components do not consume resistance-path preference without request evidence. The catalog now exposes them as mechanically distinct rather than knowledge-equivalent.",
     "- Generic `scapular_control` movement-role matching can still assign broad relevance when the signal has no feature-specific evidence. Feature-specific scapular findings now use candidate scapular mechanics before relevance is established.",
     "- Unknown mechanics are neutral rather than favorable, but unknown support/demand metadata remains broad for several accessory exercises. Those exercises should not receive production-level prescription confidence until reviewed.",
     "",
@@ -1614,6 +1660,9 @@ function renderKnowledgeGapAudit(): string {
   const unknownScapular = REFERENCE_EXERCISES
     .filter((exercise) => scapularRelevant(exercise) && !exercise.mechanics?.scapularMechanics)
     .map((exercise) => exercise.id);
+  const missingResistancePath = REFERENCE_EXERCISES
+    .filter((exercise) => !exercise.mechanics?.resistancePath)
+    .map((exercise) => exercise.id);
 
   return [
     "## Unknown And Missing Knowledge Gaps",
@@ -1621,16 +1670,17 @@ function renderKnowledgeGapAudit(): string {
     "P0 gaps:",
     "- Review and harden normalized scapular feature semantics before relying on scapular findings for session composition: serratus/protraction, upward rotation, retraction, external rotation/cuff, and loaded scapular stability now match explicitly, but profile-level review remains incomplete.",
     "- Keep direct movement-role relevance generic-only so `scapular_control` does not bypass candidate-specific mechanics when a signal is feature-specific.",
-    "- Resolve row differentiation if machine/cable/chest-supported row ordering will be used for targeted prescription beyond coarse candidate ranking.",
+    "- Row resistance/path knowledge now distinguishes the four primary row variants, but machine fit, cable attachment, pulley geometry, and self-selected path preferences still require explicit request/history context before they should break ties.",
     "",
     "P1 gaps:",
     `- Unknown support metadata: ${list(unknownSupport)}.`,
     `- Missing scapular mechanics profiles for scapular-relevant upper-body exercises: ${list(unknownScapular)}.`,
+    `- Missing resistance/path profiles outside the targeted row set: ${list(missingResistancePath)}.`,
     "- Review progression graph semantics before any whole-session or multi-week composition uses `progressionExerciseIds` as strict harder/better edges.",
     "- Add human-reviewed phase suitability rationale where phase ordering is intended to express development rather than convenience.",
     "",
     "P2 gaps:",
-    "- Add finer equipment/setup distinctions: guided path, line of pull, chest pad angle, bench dependence, unilateral setup friction, and cable/band resistance profile.",
+    "- Extend resistance/path profiles beyond the targeted row set only when a real selection question needs them.",
     "- Add dosage and intent context for whether an exercise is being selected as preparation, motor-control exposure, hypertrophy accessory, or main strength work.",
     "- Add side/limb specificity and posture-photo feature mapping before asymmetric findings drive unilateral selections.",
     "",
@@ -1683,6 +1733,7 @@ function buildReferenceExerciseKnowledgeReviewMarkdown(): AuditBuildResult {
       list(exercise.bodyRegions),
       equipmentRequirements(exercise),
       supportCell(counts, exercise),
+      resistancePathCell(counts, exercise),
       catalogCell(counts, exercise.loading.loadability),
       catalogCell(counts, exercise.loading.loadingPotential),
       demandCell(counts, demands?.trunk_control),
@@ -1704,8 +1755,8 @@ function buildReferenceExerciseKnowledgeReviewMarkdown(): AuditBuildResult {
   });
 
   const table = [
-    "| Exercise ID | Name | Family | Summary | Movement Roles | Training Roles | Section Suitability | Phase Suitability | Primary Muscles | Secondary Muscles | Body Regions | Equipment / Setup | Support | Loadability | Loading Potential | Trunk Control | Scapular Control | Stability | Coordination | Range | Joint Control | Scapular Mechanics | Pain / Risk Metadata | Progression Relationships |",
-    "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
+    "| Exercise ID | Name | Family | Summary | Movement Roles | Training Roles | Section Suitability | Phase Suitability | Primary Muscles | Secondary Muscles | Body Regions | Equipment / Setup | Support | Resistance Path | Loadability | Loading Potential | Trunk Control | Scapular Control | Stability | Coordination | Range | Joint Control | Scapular Mechanics | Pain / Risk Metadata | Progression Relationships |",
+    "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
     ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
   ].join("\n");
 
@@ -2371,6 +2422,248 @@ function renderFeatureCapabilityProvenanceReview(): string {
   ].join("\n");
 }
 
+function withoutRowMachine(equipment: EquipmentCapabilities): EquipmentCapabilities {
+  return {
+    ...equipment,
+    machines: {
+      availableMachineIds: equipment.machines.availableMachineIds.filter(
+        (machineId) => machineId !== "row",
+      ),
+    },
+  };
+}
+
+function withoutCable(equipment: EquipmentCapabilities): EquipmentCapabilities {
+  return {
+    ...equipment,
+    cables: {
+      available: false,
+      adjustableHeight: false,
+    },
+  };
+}
+
+function rowContinuityRequest(): CandidateRequest {
+  return makeRequest({
+    id: "horizontal-row-review-machine-continuity",
+    athleteId: "intermediate-gym-muscle-gain",
+    goal: "strength",
+    phaseId: "phase_2",
+    need: horizontalPullNeed("strength"),
+    equipment: FULL_GYM_EQUIPMENT,
+    continuity: {
+      ...EMPTY_CONTINUITY,
+      currentExerciseId: "machine-row",
+      productiveExerciseIds: ["machine-row"],
+    },
+    history: history({
+      exerciseHistory: {
+        events: [
+          {
+            id: "machine-row-productive-history",
+            exerciseId: "machine-row",
+            type: "appropriate_challenge",
+            occurredAt: "2026-08-07T00:00:00.000Z",
+            movementRole: "horizontal_pull",
+            notes: "Machine row was productive and appropriately challenging.",
+          },
+        ],
+        stableExerciseIds: ["machine-row"],
+        blockedExerciseIds: [],
+      },
+      progressionState: {
+        ...EMPTY_TRAINING_HISTORY.progressionState,
+        readyToProgressExerciseIds: ["machine-row"],
+      },
+    }),
+  });
+}
+
+function horizontalRowSelectionScenarios(): readonly ReviewScenario[] {
+  return [
+    {
+      id: "horizontal-row-neutral-full-gym",
+      group: "Horizontal Row Selection",
+      title: "Neutral Full Gym",
+      request: makeRequest({
+        id: "horizontal-row-review-neutral-full-gym",
+        athleteId: "intermediate-gym-muscle-gain",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        equipment: FULL_GYM_EQUIPMENT,
+        assessment: EMPTY_ASSESSMENT,
+        painAndInjury: NO_PAIN_OR_INJURY,
+      }),
+    },
+    {
+      id: "horizontal-row-low-back",
+      group: "Horizontal Row Selection",
+      title: "Low-Back Concern",
+      request: makeRequest({
+        id: "horizontal-row-review-low-back",
+        athleteId: "intermediate-gym-muscle-gain",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        equipment: FULL_GYM_EQUIPMENT,
+        assessment: lowBackHingePriority,
+        painAndInjury: lowBackDiscomfort,
+      }),
+    },
+    {
+      id: "horizontal-row-no-bench",
+      group: "Horizontal Row Selection",
+      title: "No Bench",
+      request: makeRequest({
+        id: "horizontal-row-review-no-bench",
+        athleteId: "dumbbells-without-bench",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        equipment: DUMBBELLS_NO_BENCH_EQUIPMENT,
+      }),
+    },
+    {
+      id: "horizontal-row-no-machine",
+      group: "Horizontal Row Selection",
+      title: "No Row Machine",
+      request: makeRequest({
+        id: "horizontal-row-review-no-machine",
+        athleteId: "intermediate-gym-muscle-gain",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        equipment: withoutRowMachine(FULL_GYM_EQUIPMENT),
+      }),
+    },
+    {
+      id: "horizontal-row-no-cable",
+      group: "Horizontal Row Selection",
+      title: "No Cable",
+      request: makeRequest({
+        id: "horizontal-row-review-no-cable",
+        athleteId: "intermediate-gym-muscle-gain",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        equipment: withoutCable(FULL_GYM_EQUIPMENT),
+      }),
+    },
+    {
+      id: "horizontal-row-dumbbells-bench-only",
+      group: "Horizontal Row Selection",
+      title: "Dumbbells + Bench Only",
+      request: makeRequest({
+        id: "horizontal-row-review-dumbbells-bench-only",
+        athleteId: "beginner-dumbbells-bench",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        equipment: DUMBBELLS_AND_BENCH_EQUIPMENT,
+      }),
+    },
+    {
+      id: "horizontal-row-continuity",
+      group: "Horizontal Row Selection",
+      title: "Machine Row Productive Continuity",
+      request: rowContinuityRequest(),
+    },
+  ];
+}
+
+function renderHorizontalRowTraceTable(scenario: ReviewScenario): string {
+  const result = rankCandidateRequest(scenario.request);
+  const trace = buildHorizontalRowSelectionTrace(result);
+  const rows = trace.candidates.map((candidate) => [
+    scenario.title,
+    candidate.exerciseId,
+    candidate.rank ? String(candidate.rank) : "rejected",
+    candidate.total === null ? "n/a" : candidate.total.toFixed(3),
+    candidate.legal ? "legal" : `rejected: ${candidate.rejectionCodes.join(", ")}`,
+    `${candidate.support.externalSupport}/${candidate.support.bodySupport}/${candidate.support.reviewStatus}`,
+    [
+      candidate.resistancePath.resistancePath,
+      `trajectory=${candidate.resistancePath.trajectoryFreedom}`,
+      `line=${candidate.resistancePath.lineOfPullAdjustability}`,
+      `laterality=${candidate.resistancePath.laterality}`,
+      `fit=${candidate.resistancePath.fitDependency}`,
+      `review=${candidate.resistancePath.reviewStatus}`,
+    ].join("; "),
+    [
+      `trunk=${candidate.demand.trunk}`,
+      `stability=${candidate.demand.stability}`,
+      `coordination=${candidate.demand.coordination}`,
+      `joint=${candidate.demand.jointControl}`,
+    ].join("; "),
+    [
+      `loadability=${candidate.loading.loadability}`,
+      `potential=${candidate.loading.loadingPotential}`,
+      `localFatigue=${candidate.loading.localFatigue}`,
+      `systemicFatigue=${candidate.loading.systemicFatigue}`,
+    ].join("; "),
+    candidate.contextualDifferentiators.join("<br>"),
+    candidate.contextRequired.join("<br>"),
+  ]);
+
+  return [
+    `### ${scenario.title}`,
+    "",
+    "| Scenario | Exercise | Rank | Total | Legal | Support | Resistance Path | Demand | Loading | Contextual Differentiators | Context Required |",
+    "|---|---|---:|---:|---|---|---|---|---|---|---|",
+    ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
+    "",
+  ].join("\n");
+}
+
+function renderHorizontalRowTieTable(scenarios: readonly ReviewScenario[]): string {
+  const rows = scenarios.flatMap((scenario) => {
+    const result = rankCandidateRequest(scenario.request);
+    const trace = buildHorizontalRowSelectionTrace(result);
+
+    return trace.tieStatus.map((tie) => [
+      scenario.title,
+      tie.exerciseIds.join(" <-> "),
+      tie.statusCodes.join(", "),
+      tie.evidence.join("<br>"),
+    ]);
+  });
+
+  if (rows.length === 0) {
+    return "No score-equivalent legal horizontal-row pairs were found in these scenarios.";
+  }
+
+  return [
+    "| Scenario | Pair | Tie Status | Evidence |",
+    "|---|---|---|---|",
+    ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
+  ].join("\n");
+}
+
+function renderHorizontalRowSelectionReview(): string {
+  const scenarios = horizontalRowSelectionScenarios();
+
+  return [
+    "# Horizontal Row Selection Review",
+    "",
+    "This section audits the four primary horizontal-row variants through the real Candidate Intelligence request/ranking pipeline. Resistance/path metadata is observational only: it does not add score weights, generic path bonuses, or forced machine/cable ordering.",
+    "",
+    "The neutral full-gym request may still tie `machine-row` and `seated-cable-row`. That tie is now classified as `SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT` plus `CONTEXT_REQUIRED_TO_DIFFERENTIATE`, not as identical exercise knowledge.",
+    "",
+    ...scenarios.map(renderHorizontalRowTraceTable),
+    "## Horizontal Row Tie Status",
+    "",
+    renderHorizontalRowTieTable(scenarios),
+    "",
+    "Review notes:",
+    "- Machine row exposes `machine_guided`, `machine_geometry`, and unknown line/laterality fields because generic row-machine identity does not identify exact path, grip, convergence/divergence, chest support, or fit.",
+    "- Seated cable row exposes `cable_anchored` setup geometry and `needs_review` path semantics because attachment, pulley geometry, grip, and exact line of pull vary.",
+    "- Chest-supported and one-arm dumbbell rows expose free-implement trajectory/laterality differences while trunk, stability, support, loading, and pain behavior remain owned by existing components.",
+    "- Exercise-specific history and continuity remain valid discriminators; path metadata does not generalize one exercise's success to all machines, cables, or free-implement rows.",
+    "",
+  ].join("\n");
+}
+
 function renderRankingReviewMarkdown(): string {
   const scenarios = buildScenarios();
   const sections: string[] = [
@@ -2399,6 +2692,7 @@ function renderRankingReviewMarkdown(): string {
   sections.push(renderFeatureSpecificScapularAssessmentReview());
   sections.push(renderFeatureEmphasisVsCapabilityDemandReview());
   sections.push(renderFeatureCapabilityProvenanceReview());
+  sections.push(renderHorizontalRowSelectionReview());
   sections.push("## Questionable Rankings / Modeling Gaps");
   sections.push("");
   sections.push("- Overall task capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.");

@@ -308,10 +308,13 @@ Mechanical truth lives in `ExerciseDefinition.mechanics`:
 
 - `support.externalSupport`
 - `support.bodySupport`
+- optional `resistancePath` annotations for resistance path type, trajectory freedom, line-of-pull adjustability, laterality, fit dependency, review status, notes, and provenance;
 - independent demand annotations for `trunk_control`, `scapular_control`, `stability`, `coordination`, `range`, and `joint_control`;
 - optional `scapularMechanics` annotations for serratus contribution, upward rotation, retraction, external rotation, loaded scapular control, and preparation suitability.
 
 Candidate scoring does not infer support by searching summary, equipment labels, or coaching text. Unknown mechanics remain `unknown` with `needs_review` status.
+
+Resistance/path mechanics are observational selection knowledge, not a generic score bonus. They answer what constrains the resistance path, how much trajectory freedom exists, how adjustable the line of pull is, whether the exercise is linked/independent bilateral or unilateral, and whether fit depends on machine or setup geometry. They do not duplicate support, trunk demand, stability, coordination, loadability, fatigue, or joint-control fields. Current ranking only changes when existing request signals already justify it, such as hard equipment eligibility, pain/stress overlap, exercise-specific continuity, or exercise-specific history.
 
 Relevance reason codes:
 
