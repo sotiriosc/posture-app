@@ -1,0 +1,212 @@
+# Final Candidate Intelligence Readiness Review
+
+`ENGINE_V2_BLUEPRINT.md` is authoritative. This review is audit/evidence/classification only; it does not tune weights, change exercise metadata, create Session Composer, create Week Composer, or implement prescription progression.
+
+## Scope
+
+Current review inputs: 30 reference exercises, 22 existing controlled scenarios, 12 golden personas, and 82 deterministic CandidateRequest executions across final audit matrices.
+
+Current Candidate Intelligence pipeline remains:
+
+CandidateRequest -> interpreted context -> hard eligibility -> legal candidate pool -> modular candidate scoring -> deterministic ranking -> DecisionTrace / pipeline observability.
+
+## Final Decision
+
+Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
+
+Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. The main blockers are feature-specific assessment influence being observability-only, an ID-based pain support bonus, moderate-pain calibration, phase calibration, and review-visible transition-purpose/context gaps.
+
+## Contract Review
+
+| Area | Verdict | Evidence |
+| --- | --- | --- |
+| Hard eligibility | GOOD | equipment, setup, personal block, contraindication, capability prerequisites, role, section, movement-role, and target-muscle truth are hard rejection reasons before scoring |
+| Soft selection | GOOD | goal, phase, assessment, alignment, pain suitability, experience, skill/stability, progression, continuity, loadability, stimulus, fatigue, joint cost, and equipment practicality appear only in score components |
+| Score-as-gate | GOOD | audit did not find giant negative score gates; true exclusions are structured hard rejections |
+| Pipeline observability | GOOD | ranked candidates carry component values/reason codes/sources/weights; pipeline snapshots localize eligibility and scoring |
+| Pure architecture | GOOD | existing source scan/test covers no Date.now, no no-arg new Date, no performance.now; package boundary docs and source contain no React/Next/UI/storage/network/DB/auth/billing dependency path |
+
+## Invariant Results
+
+- PASS: identical CandidateRequest produced byte-equivalent rank/component/trace semantics.
+- PASS: unavailable bench equipment cannot win.
+- PASS: personal block cannot win.
+- PASS: hard contraindication cannot win.
+- PASS: wrong role/section/movement/target truth is handled in hard eligibility before scoring.
+- PASS: transition edge alone has no scoring effect; covered by progressionTransitionSemantics invariant.
+- PASS: unknown mechanics remain neutral/not_applicable and do not create positive evidence by themselves.
+
+## Score Math And Double-Count Audit
+
+| Fact Pair | Classification | Finding |
+| --- | --- | --- |
+| assessment_fit + alignment_fit | INTENTIONAL_DISTINCT_SIGNAL | Both read one relevance trace, but bounded influence is split across assessment/alignment contributions rather than added twice. |
+| pain_suitability + joint_cost | POTENTIAL_DOUBLE_COUNT | Both react to pain/stress tags; this is conceptually distinct pain suitability vs joint cost, but the combined demotion still needs pain calibration review. |
+| phase_fit + experience_fit + skill_fit | INTENTIONAL_DISTINCT_SIGNAL | Phase intent, athlete prior, and exercise demand are separate, but phase suitability remains influential enough to require calibration review. |
+| support/stability/path | POTENTIAL_DOUBLE_COUNT | Structured row path knowledge is observability-only, but stability/support also influence scoring. Current path metadata does not add score; support currently leaks through an ID-based pain bonus. |
+| progression_value + continuity_value | INTENTIONAL_DISTINCT_SIGNAL | progression_value is same-exercise runway/readiness; continuity_value is current/productive/plateau/pain history. Transition edges do not add replacement pressure. |
+| unknown metadata | NOT_APPLICABLE | Unknown demand/path/challenge values remain neutral/not_applicable in assessment traces and do not create positive evidence by themselves. |
+
+## UNKNOWN / NEEDS_REVIEW Policy
+
+Catalog coverage: fully usable=2; usable with review caveats=20; materially under-specified=8.
+
+UNKNOWN does not become easy/safe/preferred/developmentally superior/feature matched in assessment demand traces. NEEDS_REVIEW remains visible in catalog review and row trace context. Material promotion risk remains P1 where behavior uses an ID-based support bonus instead of mechanics, because that can make support preference appear structured when it is not.
+
+## Feature-Specific Assessment Review
+
+Verdict: **B. TARGETED_FIX_REQUIRED**
+
+Feature relevance/expression is now explicit, and it correctly avoids conflating feature expression with feature challenge difficulty. However, under the blueprint doctrine assessment must be able to contribute meaningfully to candidate selection once it is relevant and truthful. Current feature-specific findings can identify WHAT the athlete needs while bounded influence remains zero because feature challenge demand is not modeled. That is scientifically conservative, but it is a product-semantics P1 before Session Composer.
+
+The missing piece is a reviewed feature-challenge model that is separate from feature relevance/expression, overall task demand, and athlete feature capability. The fix should not restore generic scapular demand as a proxy and should not make high feature expression automatically good.
+
+| Assessment | Winner OFF | Winner ON | Changed | Inspected | Assessment Fit | Alignment Fit | Relevance | Feature Expression | Overall Demand | Feature Challenge | Capability Provenance | Relationship | Bounded | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Generic Scapular Control | band-face-pull | band-face-pull | score only | 1 / band-face-pull / 8.012 | 5.694 | 5.796 | high | generic | 3 | not_applicable | phase_default/weak | exceeds_current_capability | -0.510 | assessment changes score without reordering the legal pool |
+| Serratus / Protraction | band-face-pull | band-face-pull | observability only | 3 / serratus-wall-slide / 7.812 | 6.000 | 6.000 | moderate | high/moderate | 2 (moderate) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
+| Upward Rotation | band-face-pull | band-face-pull | observability only | 3 / serratus-wall-slide / 7.812 | 6.000 | 6.000 | moderate | high/moderate | 2 (moderate) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
+| Retraction | band-face-pull | band-face-pull | observability only | 1 / band-face-pull / 8.040 | 6.000 | 6.000 | moderate | high/moderate | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
+| External Rotation / Cuff | band-face-pull | band-face-pull | observability only | 1 / band-face-pull / 8.040 | 6.000 | 6.000 | low | moderate/weak | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
+| Loaded Scapular Stability | band-face-pull | band-face-pull | observability only | 1 / band-face-pull / 8.040 | 6.000 | 6.000 | low | moderate/weak | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
+
+## Real Posture Regression
+
+Verdict: **GOOD_WITH_P1_FEATURE_CAVEAT**. V2 consumes normalized assessment signals only; there is no image handling in the engine. OFF/ON review did not show lower-body findings legalizing upper-body candidates or assessment bypassing role truth. Trunk signals remain candidate/request specific. Feature-specific scapular signals remain conservative/neutral until feature challenge is modeled.
+
+| Need | Winner OFF | Winner ON | Changed | Legal Pool | Assessment Effect | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| photo-exp-horizontal-push | dumbbell-bench-press | dumbbell-bench-press | no | 3 | irrelevant or neutral signals remained neutral | GOOD |
+| photo-exp-horizontal-pull | machine-row | machine-row | no | 4 | irrelevant or neutral signals remained neutral | GOOD |
+| photo-exp-trunk-activation | pallof-press | pallof-press | no | 2 | photo-pose-trunk-bias:high/exceeds_current_capability/-0.306 | GOOD |
+| photo-exp-squat-main | goblet-squat | goblet-squat | no | 2 | photo-pose-trunk-bias:moderate/develops_priority/0.211; photo-pose-hip-shift:high/develops_priority/0.324; photo-pose-knee-alignment:high/develops_priority/0.211 | GOOD |
+| photo-exp-single-leg-accessory | step-up | step-up | no | 2 | photo-pose-trunk-bias:moderate/develops_priority/0.211; photo-pose-hip-shift:high/develops_priority/0.324; photo-pose-knee-alignment:high/develops_priority/0.211 | GOOD |
+
+## Phase Review
+
+Verdict: **PLAUSIBLE_NEEDS_REVIEW**. Phase behavior is directionally coherent and does not equate Phase 3 with hardest-looking exercise, but phaseSuitability is still a meaningful rank driver and should be calibrated before Session Composer multiplies candidate choices across slots.
+
+| Need | Phase 1 | Phase 2 | Phase 3 | Verdict |
+| --- | --- | --- | --- | --- |
+| horizontal push | machine-chest-press (7.815) over push-up (7.793) | dumbbell-bench-press (7.961) over push-up (7.930) | dumbbell-bench-press (8.024) over machine-chest-press (7.909) | GOOD |
+| horizontal pull | chest-supported-dumbbell-row (8.003) over machine-row (7.976) | machine-row (8.069) over seated-cable-row (8.069) | chest-supported-dumbbell-row (8.128) over machine-row (8.070) | PLAUSIBLE_NEEDS_REVIEW: phase suitability leaves machine/cable nearly tied without path/fit context |
+| squat | goblet-squat (7.910) over leg-press (7.850) | goblet-squat (8.059) over leg-press (8.041) | leg-press (8.073) over goblet-squat (7.797) | GOOD |
+| hinge | cable-pull-through (7.783) over dumbbell-romanian-deadlift (7.653) | dumbbell-romanian-deadlift (8.002) over cable-pull-through (7.840) | dumbbell-romanian-deadlift (8.033) over cable-pull-through (7.640) | GOOD |
+| single-leg | goblet-squat (7.863) over step-up (7.853) | goblet-squat (8.013) over step-up (8.011) | leg-press (8.027) over split-squat (7.929) | GOOD |
+| trunk activation | dead-bug (7.808) over pallof-press (7.785) | pallof-press (7.749) over dead-bug (7.670) | pallof-press (7.709) over dead-bug (7.470) | GOOD |
+| scapular activation | band-face-pull (8.204) over serratus-wall-slide (8.007) | band-face-pull (8.040) over reverse-pec-deck (7.901) | reverse-pec-deck (7.891) over band-face-pull (7.870) | GOOD |
+
+## Pain / Injury Review
+
+Verdict: **TARGETED_FIX_REQUIRED**. Hard contraindication works, moderate/current pain is visible and demotes relevant stress overlap, and unrelated pain does not hard-gate legal pools. Remaining human review is needed for pain calibration, and the ID-based chest-supported support bonus should be replaced by structured support mechanics before Session Composer.
+
+| Scenario | Winner | Runner-Up | Contraindicated Rejections | Pain Effect | Verdict |
+| --- | --- | --- | --- | --- | --- |
+| shoulder push, no pain | dumbbell-bench-press / 7.961 | push-up / 7.930 | none | PAIN_SUITABLE; pain=8.20; joint=8.80 | GOOD |
+| shoulder push, mild/current discomfort | push-up / 7.539 | machine-chest-press / 7.404 | none | PAIN_REQUIRES_REVIEW; pain=7.30; joint=7.20 | GOOD |
+| low-back hinge, moderate pain | cable-pull-through / 7.456 | dumbbell-romanian-deadlift / 7.200 | none | PAIN_REQUIRES_REVIEW; pain=6.40; joint=6.00 | PLAUSIBLE_NEEDS_REVIEW |
+| knee squat, historical sensitivity | goblet-squat / 7.931 | leg-press / 7.930 | none | PAIN_REQUIRES_REVIEW; pain=7.40; joint=7.40 | GOOD |
+| hard contraindication | dumbbell-bench-press / 7.961 | machine-chest-press / 7.846 | push-up | PAIN_SUITABLE; pain=8.20; joint=8.80 | GOOD |
+
+## Experience / Capability Review
+
+Verdict: **GOOD_WITH_REVIEW_CAVEATS**. Beginner does not become machine-only, advanced does not become unstable/free-weight-only, and capability traces distinguish phase_default, experience prior, assessment inference, and history inference. No prior is described as measured physical capability; direct observed capability remains not consumed.
+
+| Persona | Experience | Equipment Env | Need | Winner | Legal Pool | Reasoning Focus |
+| --- | --- | --- | --- | --- | --- | --- |
+| beginner-gym-no-pain | beginner | commercial_gym | final-horizontal-push-main | machine-chest-press / 7.815 | 3 | beginner is not machine-only; equipment truth; phase 1 control |
+| beginner-gym-shoulder-concern | beginner | commercial_gym | final-horizontal-push-main | machine-chest-press / 7.861 | 3 | assessment affects warmup and main work; mild discomfort is not a blanket hard gate |
+| intermediate-gym-muscle-gain | intermediate | commercial_gym | final-horizontal-pull-main | machine-row / 8.069 | 4 | productive continuity; hypertrophy accessories; weekly exposure |
+| advanced-gym-muscle-gain | advanced | commercial_gym | final-hinge-accessory | dumbbell-romanian-deadlift / 7.479 | 2 | advanced is not hardest-is-best; pain changes suitability and prescription |
+| beginner-dumbbells-bench | beginner | home | final-horizontal-pull-main | chest-supported-dumbbell-row / 8.003 | 2 | free weights are legal when capability fits; bench support matters |
+| intermediate-dumbbells | intermediate | home | final-horizontal-push-main | dumbbell-bench-press / 7.961 | 2 | dumbbell progression; loadability limits |
+| dumbbells-without-bench | beginner | home | final-horizontal-pull-main | one-arm-dumbbell-row / 7.655 | 1 | bench-dependent exercises are illegal; floor/bodyweight alternatives remain possible |
+| anchored-bands | beginner | home | final-scapular-activation | band-face-pull / 8.176 | 3 | anchor height matters; band rows and pulldowns can be represented |
+| bands-without-anchor | beginner | travel | final-horizontal-pull-main | none | 0 | band ownership is not anchor capability; setup impossibility is hard eligibility |
+| loop-bands-only | novice | travel | final-scapular-activation | serratus-wall-slide / 7.983 | 1 | loop bands differ from anchored tube bands; limited loading path |
+| bodyweight | novice | home | final-horizontal-push-main | none | 0 | personal block is not contraindication; bodyweight-only constraints |
+| mixed-home | intermediate | home | final-squat-main | goblet-squat / 8.110 | 1 | continuity vs replacement; mixed capability realism |
+
+## History / Continuity Review
+
+Verdict: **GOOD_WITH_POLICY_REVIEW**. Productive + progression runway keeps the current exercise defensible; readyToProgress means same-exercise prescription progression, not replacement pressure. Plateau, failed progression, pain response, and blocked history can justify replacement consideration. transitionRelationships still report automaticSelectionEffect=none.
+
+| Scenario | Current | Transition Candidate | Current Rank | Candidate Rank | Continuity Signal | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| no history | chest-supported-dumbbell-row | seated-cable-row | 3 / chest-supported-dumbbell-row / 8.065 | 2 / seated-cable-row / 8.069 | SCORE_NEUTRAL | GOOD: keep/progress remains defensible |
+| productive + stable | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.238 | 3 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | GOOD: keep/progress remains defensible |
+| readyToProgress + appropriate challenge | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | GOOD: keep/progress remains defensible |
+| too easy + progression success | chest-supported-dumbbell-row | seated-cable-row | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | GOOD: keep/progress remains defensible |
+| plateau + failed progression | chest-supported-dumbbell-row | seated-cable-row | 4 / chest-supported-dumbbell-row / 7.854 | 2 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | PLAUSIBLE_NEEDS_REVIEW: value demotes, reason code should expose replacement signal |
+| pain response + blocked | chest-supported-dumbbell-row | seated-cable-row | 4 / chest-supported-dumbbell-row / 7.871 | 2 / seated-cable-row / 8.069 | CONTINUITY_FAVORED | PLAUSIBLE_NEEDS_REVIEW: value demotes, reason code should expose replacement signal |
+
+## Row Knowledge Review
+
+Verdict: **TARGETED_FIX_REQUIRED_FOR_PAIN_PATH_ONLY**. Row selection knowledge itself uses structured support/resistance/path values and preserves neutral machine/cable ties as SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT with CONTEXT_REQUIRED_TO_DIFFERENTIATE. Mechanical equivalence does not rely on notes/provenance/review status. Separate finding: pain_suitability still uses `exercise.id.includes("chest-supported")`, which should be replaced by structured support mechanics before Session Composer.
+
+## Progression / Transition Review
+
+Verdict: **GOOD_WITH_REVIEW_CAVEATS**. All 36 legacy cross-exercise edges are migrated into transitionRelationships; progressionAxes remain same-exercise advancement. Transition traces expose direction, classification, purposes, structural delta, review status, and automaticSelectionEffect=none. No transition edge selects, boosts, penalizes, bypasses eligibility, or bypasses pain.
+
+Purpose tag checks: consistent=65; unknown_supported_by_notes=53; mismatch=4.
+
+| Source | Target | Purpose | Evidence |
+| --- | --- | --- | --- |
+| dead-bug | pallof-press | increase_stability_demand | moderate->moderate (same) |
+| push-up | machine-chest-press | reduce_coordination_demand | low->low (same) |
+| band-face-pull | serratus-wall-slide | reduce_loadability | limited->limited (same) |
+| pallof-press | dead-bug | reduce_stability_demand | moderate->moderate (same) |
+
+Contextual or unknown-supported purpose tags remain review-visible when structural metadata is intentionally incomplete or the purpose is program-context intent rather than a direct mechanical delta.
+| Source | Target | Purpose | Evidence |
+| --- | --- | --- | --- |
+| ninety-ninety-breathing | dead-bug | movement_pattern_development | purpose is contextual/programming intent; notes=Develops from low-load breathing/position control toward an anti-extension trunk drill; not a readiness or dosage guarantee. |
+| ninety-ninety-breathing | dead-bug | preparation_to_loaded_training | purpose is contextual/programming intent; notes=Develops from low-load breathing/position control toward an anti-extension trunk drill; not a readiness or dosage guarantee. |
+| serratus-wall-slide | band-face-pull | preparation_to_loaded_training | purpose is contextual/programming intent; notes=General scapular-development transition that shifts from serratus/upward-rotation emphasis to band-loaded retraction/cuff emphasis. |
+| serratus-wall-slide | band-face-pull | change_resistance_path | path=unknown->unknown (same); trajectory=unknown->unknown (same); line=unknown->unknown (same) |
+| dead-bug | pallof-press | movement_pattern_development | purpose is contextual/programming intent; notes=Can move from supine anti-extension toward standing anti-rotation when trunk-development context supports the role change. |
+| dead-bug | pallof-press | change_resistance_path | path=unknown->unknown (same); trajectory=unknown->unknown (same); line=unknown->unknown (same) |
+| dead-bug | ninety-ninety-breathing | pain_or_tolerance_regression | purpose is contextual/programming intent; notes=Regresses trunk-control exposure toward lower-load breathing/position work. |
+| dead-bug | ninety-ninety-breathing | movement_pattern_development | purpose is contextual/programming intent; notes=Regresses trunk-control exposure toward lower-load breathing/position work. |
+| push-up | dumbbell-bench-press | increase_support | purpose is contextual/programming intent; notes=May increase external loadability but changes from bodyweight/floor support to bench-supported free implements. |
+| push-up | dumbbell-bench-press | change_resistance_path | path=unknown->unknown (same); trajectory=unknown->unknown (same); line=unknown->unknown (same) |
+| push-up | dumbbell-bench-press | stimulus_shift | purpose is contextual/programming intent; notes=May increase external loadability but changes from bodyweight/floor support to bench-supported free implements. |
+| push-up | machine-chest-press | increase_support | purpose is contextual/programming intent; notes=Can reduce free-body trunk/stability demands through a guided machine press when equipment and fit are appropriate. |
+| push-up | machine-chest-press | pain_or_tolerance_regression | purpose is contextual/programming intent; notes=Can reduce free-body trunk/stability demands through a guided machine press when equipment and fit are appropriate. |
+| dumbbell-bench-press | machine-chest-press | increase_support | purpose is contextual/programming intent; notes=May regress toward a more guided press when free dumbbell stability or shoulder tolerance is limiting. |
+
+## Manual Science Review Table
+
+| Scenario | Expected Coaching Logic | Actual Winner | Runner-Up | Why Winner Won | Surprising Component | Assessment Effect | Pain Effect | Continuity Effect | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Neutral full-gym horizontal pull | Prefer a legal loadable row; preserve machine/cable tie when no context separates them. | machine-row | seated-cable-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | row tie is deliberate context-required evidence | none | none | none | GOOD |
+| Low-back row pain context | Prefer lower lumbar demand/support, but keep equipment truth hard. | chest-supported-dumbbell-row | one-arm-dumbbell-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | pain_suitability still has an ID-based chest-supported support bonus | not primary | material | none | PLAUSIBLE_NEEDS_REVIEW |
+| Phase contrast horizontal push | Phase 1 should prefer usable control/support; Phase 3 should value loadable stimulus without hardest-is-best. | dumbbell-bench-press (8.024) over machine-chest-press (7.909) | machine-chest-press (7.815) over push-up (7.793) | phase_fit, loadability, stimulus_potential shift the winner across phases | phaseSuitability has meaningful influence and still needs human calibration | none | none | none | GOOD |
+| Feature-specific serratus/protraction assessment | Identify feature relevance without conflating expression with feature difficulty. | band-face-pull | serratus-wall-slide | feature relevance is visible, but feature challenge is not modeled, so influence is zero | feature relevance can be observability-only because challenge demand is not modeled | visible but boundedInfluence=0 for feature-specific challenge | none | none | PLAUSIBLE_NEEDS_REVIEW |
+| Ready-to-progress current row | Keep productive current exercise and progress prescription before replacement. | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | continuity_value and progression_value reward same-exercise runway | none | none | none | CONTINUITY_FAVORED | GOOD |
+| Plateau/failed progression row | Replacement may become justified by real performance signal. | 2 / seated-cable-row / 8.069 | 4 / chest-supported-dumbbell-row / 7.854 | continuity/progression penalties reduce current exercise | transition edge remains knowledge-only | none | none | CONTINUITY_FAVORED | GOOD |
+
+## Blocker Classification
+
+### P0
+
+- None found. Candidate Intelligence architecture can continue targeted review; no evidence showed hard eligibility/role truth collapse, nondeterminism, or assessment legalizing wrong-role candidates.
+
+### P1
+
+- Feature-specific assessment relevance is visible, but feature challenge demand is not modeled; feature-specific signals are observability-only at boundedInfluence=0.
+- pain_suitability still contains an ID-based chest-supported low-back support bonus; this violates the structured-mechanics doctrine for support reasoning.
+- Moderate pain calibration remains human-review-needed before a session composer can depend on candidate rank alone.
+- Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.
+- Continuity reason-code precedence can report CONTINUITY_FAVORED for a current exercise even when plateau, failed-progression, or pain-response values demote it.
+- Transition purpose audit has contextual/unknown-supported cases that should remain review-visible before automatic replacement logic.
+
+### P2
+
+- Several non-row exercises still have unknown support or resistance-path metadata.
+- Many upper-body exercises still need reviewed scapularMechanics profiles before fine feature selection can be high confidence.
+- Catalog remains intentionally small; expansion should follow reviewed selection questions rather than broad migration.
+
+## Readiness Rationale
+
+The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, and progression/replacement semantics are now separated. The remaining P1 items would become harder to correct after Session Composer starts depending on candidate scores, so the correct next state is targeted fixes before composition.
