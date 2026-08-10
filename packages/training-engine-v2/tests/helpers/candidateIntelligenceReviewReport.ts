@@ -52,6 +52,11 @@ import {
   GOLDEN_PERSONAS,
 } from "../../src/data/goldenPersonas";
 import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import {
+  buildExerciseTransitionTrace,
+  type ExerciseTransitionTrace,
+  type TransitionValueDelta,
+} from "../../src/transitionComparison";
 import type {
   CandidateRankingResult,
   RankedCandidate,
@@ -63,11 +68,6 @@ type EquivalenceClassification =
   | "LEGITIMATELY_EQUIVALENT_AT_CURRENT_SCOPE"
   | "SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT"
   | "CONTEXT_REQUIRED_TO_DIFFERENTIATE";
-type ProgressionEdgeClassification =
-  | "VALID_DEVELOPMENTAL_RELATIONSHIP"
-  | "CONTEXT_DEPENDENT"
-  | "QUESTIONABLE"
-  | "NEEDS_REVIEW";
 
 interface AuditBuildResult {
   readonly markdown: string;
@@ -1175,9 +1175,12 @@ function painRiskMetadata(exercise: ExerciseDefinition): string {
 
 function progressionMetadata(exercise: ExerciseDefinition): string {
   return [
-    `progressions=${list(exercise.progression.progressionExerciseIds)}`,
-    `regressions=${list(exercise.progression.regressionExerciseIds)}`,
-    `axes=${list(exercise.progression.progressionAxes)}`,
+    `sameExerciseAxes=${list(exercise.progression.progressionAxes)}`,
+    `transitions=${exercise.progression.transitionRelationships.length > 0
+      ? exercise.progression.transitionRelationships
+        .map((relationship) => `${relationship.direction}:${relationship.targetExerciseId}:${relationship.classification}`)
+        .join(", ")
+      : "none"}`,
   ].join("; ");
 }
 
@@ -1290,7 +1293,11 @@ function renderIndividualReferenceExerciseSections(): string {
     sections.push(`- Mechanics: ${formatMechanicsDemands(exercise)}`);
     sections.push(`- Scapular mechanics: ${formatScapularMechanics(exercise)}`);
     sections.push(
-      `- Progression: progressions=${list(exercise.progression.progressionExerciseIds)}; regressions=${list(exercise.progression.regressionExerciseIds)}; axes=${list(exercise.progression.progressionAxes)}`,
+      `- Progression/transition: sameExerciseAxes=${list(exercise.progression.progressionAxes)}; transitions=${exercise.progression.transitionRelationships.length > 0
+        ? exercise.progression.transitionRelationships
+          .map((relationship) => `${relationship.direction}:${relationship.targetExerciseId}:${relationship.classification}; purposes=${list(relationship.purposes)}`)
+          .join(" | ")
+        : "none"}`,
     );
     sections.push(
       `- Risk/coaching: ${painRiskMetadata(exercise)}; coachingFocus=${list(exercise.coachingFocus)}`,
@@ -1540,104 +1547,68 @@ function renderPhaseAudit(): string {
   ].join("\n");
 }
 
-const PROGRESSION_EDGE_OVERRIDES: Readonly<
-  Record<string, { readonly classification: ProgressionEdgeClassification; readonly note: string }>
-> = {
-  "serratus-wall-slide->band-face-pull": {
-    classification: "CONTEXT_DEPENDENT",
-    note: "Coarse scapular-control progression only; it does not preserve a serratus/upward-rotation/protraction target.",
-  },
-  "band-face-pull->serratus-wall-slide": {
-    classification: "CONTEXT_DEPENDENT",
-    note: "Reasonable as a lower-load regression for general scapular control, not a same-feature regression.",
-  },
-  "band-face-pull->reverse-pec-deck": {
-    classification: "QUESTIONABLE",
-    note: "Moves from band face pull/cuff-retraction control to machine rear-delt isolation; progression depends on goal and should not be assumed for serratus findings.",
-  },
-  "reverse-pec-deck->band-face-pull": {
-    classification: "QUESTIONABLE",
-    note: "Reasonable load regression for rear-delt work, but weak as a developmental scapular-control relationship.",
-  },
-  "machine-row->chest-supported-dumbbell-row": {
-    classification: "CONTEXT_DEPENDENT",
-    note: "May be a useful free-implement/load progression, but it also changes machine path, setup, and support semantics.",
-  },
-  "seated-cable-row->chest-supported-dumbbell-row": {
-    classification: "CONTEXT_DEPENDENT",
-    note: "May progress loading/control, but cable and chest-supported dumbbell rows are not ordered by one universal difficulty axis.",
-  },
-};
-
-function hasOverlap(left: readonly string[], right: readonly string[]): boolean {
-  return left.some((value) => right.includes(value));
+function formatDelta(delta: TransitionValueDelta): string {
+  return `${delta.source}->${delta.target} (${delta.delta})`;
 }
 
-function classifyProgressionEdge(
-  source: ExerciseDefinition,
-  target: ExerciseDefinition | undefined,
-): { readonly classification: ProgressionEdgeClassification; readonly note: string } {
-  if (!target) {
-    return {
-      classification: "NEEDS_REVIEW",
-      note: "Target exercise id is not present in REFERENCE_EXERCISES.",
-    };
-  }
+function formatFeatureChanges(trace: ExerciseTransitionTrace): string {
+  const changed = trace.structuralDelta.assessmentFeatures.filter(
+    (feature) => feature.delta !== "same",
+  );
 
-  const override = PROGRESSION_EDGE_OVERRIDES[`${source.id}->${target.id}`];
-  if (override) {
-    return override;
-  }
+  return changed.length > 0
+    ? changed
+      .map((feature) => `${feature.feature}:${feature.source}->${feature.target} (${feature.delta})`)
+      .join("<br>")
+    : "none modeled";
+}
 
-  if (!hasOverlap(source.movementRoles, target.movementRoles)) {
-    return {
-      classification: "NEEDS_REVIEW",
-      note: "No shared movement role; review whether this is a real developmental relationship.",
-    };
-  }
+function transitionTraceRows(): readonly ExerciseTransitionTrace[] {
+  const byId = new Map(REFERENCE_EXERCISES.map((exercise) => [exercise.id, exercise]));
 
-  if (
-    !hasOverlap(
-      [...source.primaryMuscles, ...source.secondaryMuscles],
-      [...target.primaryMuscles, ...target.secondaryMuscles],
-    )
-  ) {
-    return {
-      classification: "CONTEXT_DEPENDENT",
-      note: "Movement family overlaps, but muscle emphasis changes materially.",
-    };
-  }
+  return REFERENCE_EXERCISES.flatMap((source) =>
+    source.progression.transitionRelationships.flatMap((relationship) => {
+      const target = byId.get(relationship.targetExerciseId);
 
-  return {
-    classification: "VALID_DEVELOPMENTAL_RELATIONSHIP",
-    note: "Valid at current coarse movement-family scope; still not a dosage or readiness guarantee.",
-  };
+      if (!target) {
+        return [];
+      }
+
+      return [
+        buildExerciseTransitionTrace({
+          source,
+          target,
+          relationship,
+        }),
+      ];
+    }),
+  );
 }
 
 function renderProgressionGraphAudit(): string {
-  const rows = REFERENCE_EXERCISES.flatMap((source) => {
-    const progressionRows = source.progression.progressionExerciseIds.map((targetId) => {
-      const target = REFERENCE_EXERCISES.find((exercise) => exercise.id === targetId);
-      const review = classifyProgressionEdge(source, target);
-      return `| ${md(source.id)} | progression | ${md(targetId)} | ${review.classification} | ${md(review.note)} |`;
-    });
-    const regressionRows = source.progression.regressionExerciseIds.map((targetId) => {
-      const target = REFERENCE_EXERCISES.find((exercise) => exercise.id === targetId);
-      const review = classifyProgressionEdge(source, target);
-      return `| ${md(source.id)} | regression | ${md(targetId)} | ${review.classification} | ${md(review.note)} |`;
-    });
-
-    return [...progressionRows, ...regressionRows];
-  });
+  const rows = transitionTraceRows();
+  const classificationCounts = rows.reduce<Record<string, number>>((counts, row) => {
+    counts[row.classification] = (counts[row.classification] ?? 0) + 1;
+    return counts;
+  }, {});
 
   return [
-    "## Progression Graph Audit",
+    "## Structured Exercise Transition Audit",
     "",
-    "| Source | Edge Type | Target | Classification | Notes |",
-    "|---|---|---|---|---|",
-    ...rows,
+    "Same-exercise progression now lives in `progressionAxes`. Cross-exercise replacements live in `transitionRelationships` and have no automatic selection effect at Candidate Intelligence stage.",
     "",
-    "Key inspected relationships: `serratus-wall-slide -> band-face-pull` is `CONTEXT_DEPENDENT`; `band-face-pull -> reverse-pec-deck` is `QUESTIONABLE`; `machine-row`/`seated-cable-row -> chest-supported-dumbbell-row` is `CONTEXT_DEPENDENT`. These should not be promoted to session-composition logic as universal harder/better progressions without a richer progression-feature model.",
+    `Transition count: ${rows.length}. Classification counts: ${Object.entries(classificationCounts)
+      .map(([classification, count]) => `${classification}=${count}`)
+      .join(", ")}.`,
+    "",
+    "| Source | Target | Direction | Classification | Purposes | Shared Roles | Changed Roles | Support Change | Resistance/Path Change | Demand Deltas | Loadability Delta | Equipment Change | Feature Change | Review | Automatic Selection Effect | Notes |",
+    "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
+    ...rows.map((row) => {
+      const delta = row.structuralDelta;
+      return `| ${md(row.sourceExerciseId)} | ${md(row.targetExerciseId)} | ${row.direction} | ${row.classification} | ${list(row.purposes)} | ${list(delta.sharedMovementRoles)} | sourceOnly=${list(delta.sourceOnlyMovementRoles)}<br>targetOnly=${list(delta.targetOnlyMovementRoles)} | external=${formatDelta(delta.support.externalSupport)}<br>body=${formatDelta(delta.support.bodySupport)} | path=${formatDelta(delta.resistancePath.resistancePath)}<br>trajectory=${formatDelta(delta.resistancePath.trajectoryFreedom)}<br>line=${formatDelta(delta.resistancePath.lineOfPullAdjustability)}<br>laterality=${formatDelta(delta.resistancePath.laterality)}<br>fit=${formatDelta(delta.resistancePath.fitDependency)} | trunk=${formatDelta(delta.demand.trunk)}<br>stability=${formatDelta(delta.demand.stability)}<br>coordination=${formatDelta(delta.demand.coordination)} | ${formatDelta(delta.loading.loadability)} | shared=${list(delta.equipment.shared)}<br>sourceOnly=${list(delta.equipment.sourceOnly)}<br>targetOnly=${list(delta.equipment.targetOnly)} | ${formatFeatureChanges(row)} | ${row.reviewStatus} | ${row.automaticSelectionEffect} | ${md(row.notes)} |`;
+    }),
+    "",
+    "Key reviewed relationships: `serratus-wall-slide -> band-face-pull` remains context-dependent because it shifts scapular feature emphasis; `band-face-pull -> reverse-pec-deck` remains questionable; `machine-row`/`seated-cable-row -> chest-supported-dumbbell-row` remain context-dependent row transitions, not universal progressions.",
     "",
   ].join("\n");
 }
@@ -1676,7 +1647,7 @@ function renderKnowledgeGapAudit(): string {
     `- Unknown support metadata: ${list(unknownSupport)}.`,
     `- Missing scapular mechanics profiles for scapular-relevant upper-body exercises: ${list(unknownScapular)}.`,
     `- Missing resistance/path profiles outside the targeted row set: ${list(missingResistancePath)}.`,
-    "- Review progression graph semantics before any whole-session or multi-week composition uses `progressionExerciseIds` as strict harder/better edges.",
+    "- Transition relationships are now separated from same-exercise progression axes; whole-session or multi-week composition still must not treat them as automatic replacement commands.",
     "- Add human-reviewed phase suitability rationale where phase ordering is intended to express development rather than convenience.",
     "",
     "P2 gaps:",
@@ -1693,7 +1664,7 @@ function renderReadinessClassification(): string {
     "",
     "Classification: **READY_FOR_TARGETED_FIXES**",
     "",
-    "Rationale: the current V2 candidate engine is deterministic, observable, and safe enough for targeted semantics fixes. Feature-specific scapular consumption is now implemented at Candidate Intelligence scope, but it is still not ready for Session Composer because row equivalence gaps, phase suitability calibration, and progression graph relationships remain unresolved.",
+    "Rationale: the current V2 candidate engine is deterministic, observable, and safe enough for targeted semantics fixes. Feature-specific scapular consumption is now implemented at Candidate Intelligence scope, but it is still not ready for Session Composer because row equivalence gaps, phase suitability calibration, and transition/readiness policy remain unresolved.",
     "",
   ].join("\n");
 }
@@ -2664,6 +2635,126 @@ function renderHorizontalRowSelectionReview(): string {
   ].join("\n");
 }
 
+function transitionCandidateRow(input: {
+  readonly label: string;
+  readonly request: CandidateRequest;
+  readonly sourceId: string;
+  readonly targetId: string;
+}): readonly string[] {
+  const result = rankCandidateRequest(input.request);
+  const source = result.rankedCandidates.find((candidate) => candidate.exercise.id === input.sourceId);
+  const target = result.rankedCandidates.find((candidate) => candidate.exercise.id === input.targetId);
+  const sourceProgression = source ? componentValue(source, "progression_value") : "rejected";
+  const targetProgression = target ? componentValue(target, "progression_value") : "rejected";
+
+  return [
+    input.label,
+    source ? `${source.rank} / ${source.total.toFixed(3)}` : "rejected",
+    target ? `${target.rank} / ${target.total.toFixed(3)}` : "rejected",
+    sourceProgression,
+    targetProgression,
+    "transition knowledge only; automatic selection effect = none",
+  ];
+}
+
+function renderProgressionVsTransitionReview(): string {
+  const productive = continuityFor("chest-supported-dumbbell-row", "successful_current");
+  const plateau = continuityFor("chest-supported-dumbbell-row", "plateau");
+  const failed = continuityFor("chest-supported-dumbbell-row", "repeated_failure");
+  const pain = continuityFor("chest-supported-dumbbell-row", "pain_response");
+  const rows = [
+    transitionCandidateRow({
+      label: "Productive current exercise + ready to progress",
+      request: makeRequest({
+        id: "progression-transition-productive-current",
+        athleteId: "intermediate-gym-muscle-gain",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        continuity: productive.continuity,
+        history: productive.history,
+      }),
+      sourceId: "chest-supported-dumbbell-row",
+      targetId: "seated-cable-row",
+    }),
+    transitionCandidateRow({
+      label: "Plateaued current exercise",
+      request: makeRequest({
+        id: "progression-transition-plateau",
+        athleteId: "intermediate-gym-muscle-gain",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        continuity: plateau.continuity,
+        history: plateau.history,
+      }),
+      sourceId: "chest-supported-dumbbell-row",
+      targetId: "seated-cable-row",
+    }),
+    transitionCandidateRow({
+      label: "Failed progression current exercise",
+      request: makeRequest({
+        id: "progression-transition-failed",
+        athleteId: "intermediate-gym-muscle-gain",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        continuity: failed.continuity,
+        history: failed.history,
+      }),
+      sourceId: "chest-supported-dumbbell-row",
+      targetId: "seated-cable-row",
+    }),
+    transitionCandidateRow({
+      label: "Pain-response current exercise",
+      request: makeRequest({
+        id: "progression-transition-pain-response",
+        athleteId: "intermediate-gym-muscle-gain",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        continuity: pain.continuity,
+        history: pain.history,
+        painAndInjury: lowBackDiscomfort,
+      }),
+      sourceId: "chest-supported-dumbbell-row",
+      targetId: "seated-cable-row",
+    }),
+    transitionCandidateRow({
+      label: "Equipment-limited dumbbells + bench only",
+      request: makeRequest({
+        id: "progression-transition-equipment-limited",
+        athleteId: "beginner-dumbbells-bench",
+        goal: "strength",
+        phaseId: "phase_2",
+        need: horizontalPullNeed("strength"),
+        equipment: DUMBBELLS_AND_BENCH_EQUIPMENT,
+      }),
+      sourceId: "machine-row",
+      targetId: "chest-supported-dumbbell-row",
+    }),
+  ];
+  const transitionRows = transitionTraceRows();
+  const questionable = transitionRows.filter((trace) => trace.classification === "questionable");
+  const needsReview = transitionRows.filter((trace) => trace.classification === "needs_review");
+
+  return [
+    "# Progression vs Exercise Transition Review",
+    "",
+    "`progressionAxes` now describe how the same exercise can advance while preserving identity. `transitionRelationships` describe cross-exercise replacement knowledge and always report `automaticSelectionEffect = none` at Candidate Intelligence scope.",
+    "",
+    "| Scenario | Source Rank/Total | Target Rank/Total | Source Progression Value | Target Progression Value | Interpretation |",
+    "|---|---:|---:|---:|---:|---|",
+    ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
+    "",
+    `Questionable transitions: ${questionable.map((trace) => `${trace.sourceExerciseId}->${trace.targetExerciseId}`).join(", ") || "none"}.`,
+    `Needs-review transitions: ${needsReview.map((trace) => `${trace.sourceExerciseId}->${trace.targetExerciseId}`).join(", ") || "none"}.`,
+    "",
+    "Continuity principle: productive current exercises with same-exercise progression runway should generally be kept and progressed before replacement is considered. Plateau, failed progression, pain response, and equipment changes can justify considering replacement, but the target still has to win normal Candidate Intelligence with hard eligibility and pain constraints intact.",
+    "",
+  ].join("\n");
+}
+
 function renderRankingReviewMarkdown(): string {
   const scenarios = buildScenarios();
   const sections: string[] = [
@@ -2693,6 +2784,7 @@ function renderRankingReviewMarkdown(): string {
   sections.push(renderFeatureEmphasisVsCapabilityDemandReview());
   sections.push(renderFeatureCapabilityProvenanceReview());
   sections.push(renderHorizontalRowSelectionReview());
+  sections.push(renderProgressionVsTransitionReview());
   sections.push("## Questionable Rankings / Modeling Gaps");
   sections.push("");
   sections.push("- Overall task capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.");
@@ -2707,7 +2799,7 @@ function renderRankingReviewMarkdown(): string {
   sections.push("");
   sections.push("Reasons:");
   sections.push("- Role truth, equipment truth, pain behavior, assessment relevance, bounded influence, and unknown-metadata safety are working at the current foundation scope.");
-  sections.push("- Session composition should still wait for additional targeted fixes to row differentiation, phase calibration, and progression graph semantics.");
+  sections.push("- Session composition should still wait for additional targeted fixes to row differentiation, phase calibration, and transition/readiness policy.");
   sections.push("- Observed capability evidence is not yet represented, and history-based capability evidence remains movement-role-inferred rather than measured.");
   sections.push("- Continuity/progression semantics need more domain review before they drive whole-session or whole-week decisions.");
   sections.push("");

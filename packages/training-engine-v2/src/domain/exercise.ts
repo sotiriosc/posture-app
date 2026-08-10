@@ -149,20 +149,53 @@ export interface ExerciseMechanicsProfile {
   readonly scapularMechanics?: ScapularMechanicsProfile;
 }
 
+export type ExerciseProgressionAxis =
+  | "load"
+  | "reps"
+  | "sets"
+  | "range"
+  | "tempo"
+  | "support_reduction"
+  | "stability"
+  | "coordination"
+  | "complexity";
+
+export type ExerciseTransitionDirection = "progression" | "regression" | "lateral";
+export type ExerciseTransitionClassification =
+  | "developmental"
+  | "context_dependent"
+  | "questionable"
+  | "needs_review";
+export type ExerciseTransitionPurpose =
+  | "increase_loadability"
+  | "reduce_loadability"
+  | "increase_support"
+  | "reduce_support"
+  | "increase_stability_demand"
+  | "reduce_stability_demand"
+  | "increase_coordination_demand"
+  | "reduce_coordination_demand"
+  | "change_resistance_path"
+  | "equipment_transition"
+  | "movement_pattern_development"
+  | "preparation_to_loaded_training"
+  | "feature_shift"
+  | "stimulus_shift"
+  | "pain_or_tolerance_regression";
+
+export interface ExerciseTransitionRelationship {
+  readonly targetExerciseId: string;
+  readonly direction: ExerciseTransitionDirection;
+  readonly classification: ExerciseTransitionClassification;
+  readonly purposes: readonly ExerciseTransitionPurpose[];
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly notes: string;
+  readonly provenance: readonly string[];
+}
+
 export interface ExerciseProgressionProfile {
-  readonly regressionExerciseIds: readonly string[];
-  readonly progressionExerciseIds: readonly string[];
-  readonly progressionAxes: readonly (
-    | "load"
-    | "reps"
-    | "sets"
-    | "range"
-    | "tempo"
-    | "support_reduction"
-    | "stability"
-    | "coordination"
-    | "complexity"
-  )[];
+  readonly progressionAxes: readonly ExerciseProgressionAxis[];
+  readonly transitionRelationships: readonly ExerciseTransitionRelationship[];
 }
 
 export interface ExerciseDefinition {

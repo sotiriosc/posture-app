@@ -8,16 +8,14 @@ export const progressionValueComponent: CandidateScoreComponent = {
       exercise.progression.progressionAxes,
       request.phase.progressionIntent.preferredProgressionAxes,
     );
-    const hasProgressionPath =
-      exercise.progression.progressionAxes.length > 0 ||
-      exercise.progression.progressionExerciseIds.length > 0;
+    const hasSameExerciseProgression = exercise.progression.progressionAxes.length > 0;
     const readyToProgress = request.history.progressionState.readyToProgressExerciseIds.includes(exercise.id);
     const stalled = request.history.progressionState.stalledExerciseIds.includes(exercise.id);
     const failedRecently = request.continuity.failedProgressionExerciseIds.includes(exercise.id);
     const value =
       5.7 +
       Math.min(2.2, preferredAxisMatches * 0.55) +
-      (hasProgressionPath ? 0.8 : 0) +
+      (hasSameExerciseProgression ? 0.8 : 0) +
       (readyToProgress ? 1 : 0) -
       (stalled ? 1.2 : 0) -
       (failedRecently ? 1 : 0);
@@ -26,8 +24,8 @@ export const progressionValueComponent: CandidateScoreComponent = {
       id: "progression_value",
       family: "progression_value",
       value,
-      reasonCode: hasProgressionPath || readyToProgress ? "PROGRESSION_AVAILABLE" : "SCORE_NEUTRAL",
-      reason: `${exercise.name} has ${preferredAxisMatches} phase-preferred progression axis match(es).`,
+      reasonCode: hasSameExerciseProgression || readyToProgress ? "PROGRESSION_AVAILABLE" : "SCORE_NEUTRAL",
+      reason: `${exercise.name} has ${preferredAxisMatches} phase-preferred same-exercise progression axis match(es).`,
       source: "history",
     });
   },

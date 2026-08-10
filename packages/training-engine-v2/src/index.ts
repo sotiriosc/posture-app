@@ -8,6 +8,7 @@ export * from "./pipelineObservability";
 export * from "./prescriptionProgression";
 export * from "./reasonCodes";
 export * from "./scoringContracts";
+export * from "./transitionComparison";
 export * from "./validation";
 export * from "./data/candidateScenarios";
 export * from "./data/goldenPersonas";

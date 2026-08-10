@@ -316,6 +316,16 @@ Candidate scoring does not infer support by searching summary, equipment labels,
 
 Resistance/path mechanics are observational selection knowledge, not a generic score bonus. They answer what constrains the resistance path, how much trajectory freedom exists, how adjustable the line of pull is, whether the exercise is linked/independent bilateral or unilateral, and whether fit depends on machine or setup geometry. They do not duplicate support, trunk demand, stability, coordination, loadability, fatigue, or joint-control fields. Current ranking only changes when existing request signals already justify it, such as hard equipment eligibility, pain/stress overlap, exercise-specific continuity, or exercise-specific history.
 
+## Progression vs Exercise Transition
+
+Same-exercise progression is not exercise replacement.
+
+`ExerciseProgressionProfile.progressionAxes` answers how the same exercise can advance while preserving identity, such as load, reps, sets, range, tempo, support reduction, stability, coordination, or complexity. `progression_value` scores this same-exercise progression runway and readiness signals such as `readyToProgress`, stalled state, or failed progression.
+
+Cross-exercise replacement knowledge lives in `transitionRelationships`. A transition can be developmental, context-dependent, questionable, or needs-review, but it never automatically selects the target, boosts the target, penalizes the source, bypasses hard eligibility, or bypasses pain constraints at Candidate Intelligence scope.
+
+Productive continuity should generally mean keep the exercise and progress prescription before considering replacement. Replacement requires a real signal such as pain response, blocked exercise, failed progression, plateau, equipment change, insufficient stimulus runway, poor exercise response, skill-development intent, or explicit preference.
+
 Relevance reason codes:
 
 - `ASSESSMENT_ROLE_RELEVANT`

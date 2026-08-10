@@ -2186,6 +2186,23 @@ Review notes:
 - Chest-supported and one-arm dumbbell rows expose free-implement trajectory/laterality differences while trunk, stability, support, loading, and pain behavior remain owned by existing components.
 - Exercise-specific history and continuity remain valid discriminators; path metadata does not generalize one exercise's success to all machines, cables, or free-implement rows.
 
+# Progression vs Exercise Transition Review
+
+`progressionAxes` now describe how the same exercise can advance while preserving identity. `transitionRelationships` describe cross-exercise replacement knowledge and always report `automaticSelectionEffect = none` at Candidate Intelligence scope.
+
+| Scenario | Source Rank/Total | Target Rank/Total | Source Progression Value | Target Progression Value | Interpretation |
+|---|---:|---:|---:|---:|---|
+| Productive current exercise + ready to progress | 1 / 8.293 | 3 / 8.069 | 9.150 | 8.150 | transition knowledge only; automatic selection effect = none |
+| Plateaued current exercise | 3 / 7.977 | 2 / 8.069 | 6.950 | 8.150 | transition knowledge only; automatic selection effect = none |
+| Failed progression current exercise | 3 / 7.938 | 2 / 8.069 | 5.950 | 8.150 | transition knowledge only; automatic selection effect = none |
+| Pain-response current exercise | 1 / 8.113 | 3 / 8.104 | 8.150 | 8.150 | transition knowledge only; automatic selection effect = none |
+| Equipment-limited dumbbells + bench only | rejected | 1 / 8.106 | rejected | 8.150 | transition knowledge only; automatic selection effect = none |
+
+Questionable transitions: reverse-pec-deck->band-face-pull, band-face-pull->reverse-pec-deck.
+Needs-review transitions: cable-chest-fly->machine-chest-press, pallof-press->dead-bug.
+
+Continuity principle: productive current exercises with same-exercise progression runway should generally be kept and progressed before replacement is considered. Plateau, failed progression, pain response, and equipment changes can justify considering replacement, but the target still has to win normal Candidate Intelligence with hard eligibility and pain constraints intact.
+
 ## Questionable Rankings / Modeling Gaps
 
 - Overall task capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.
@@ -2200,7 +2217,7 @@ Classification: **READY_FOR_TARGETED_FIXES**
 
 Reasons:
 - Role truth, equipment truth, pain behavior, assessment relevance, bounded influence, and unknown-metadata safety are working at the current foundation scope.
-- Session composition should still wait for additional targeted fixes to row differentiation, phase calibration, and progression graph semantics.
+- Session composition should still wait for additional targeted fixes to row differentiation, phase calibration, and transition/readiness policy.
 - Observed capability evidence is not yet represented, and history-based capability evidence remains movement-role-inferred rather than measured.
 - Continuity/progression semantics need more domain review before they drive whole-session or whole-week decisions.
 

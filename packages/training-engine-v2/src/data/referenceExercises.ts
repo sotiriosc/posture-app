@@ -6,6 +6,10 @@ import type {
   ExerciseMechanicsProfile,
   ExerciseMechanicsReviewStatus,
   ExerciseSuitability,
+  ExerciseTransitionClassification,
+  ExerciseTransitionDirection,
+  ExerciseTransitionPurpose,
+  ExerciseTransitionRelationship,
   ScapularMechanicsProfile,
 } from "../domain/exercise";
 import type { SessionSection } from "../domain/session";
@@ -132,6 +136,30 @@ function scapularMechanics(input: Partial<ScapularMechanicsProfile>): ScapularMe
   };
 }
 
+function transition(input: {
+  readonly targetExerciseId: string;
+  readonly direction: ExerciseTransitionDirection;
+  readonly classification: ExerciseTransitionClassification;
+  readonly purposes: readonly ExerciseTransitionPurpose[];
+  readonly notes: string;
+  readonly reviewStatus?: ExerciseMechanicsReviewStatus;
+  readonly provenance?: readonly string[];
+}): ExerciseTransitionRelationship {
+  return {
+    targetExerciseId: input.targetExerciseId,
+    direction: input.direction,
+    classification: input.classification,
+    purposes: input.purposes,
+    reviewStatus:
+      input.reviewStatus ??
+      (input.classification === "developmental" || input.classification === "context_dependent"
+        ? "accepted"
+        : "needs_review"),
+    notes: input.notes,
+    provenance: input.provenance ?? ["migrated from legacy cross-exercise progression edge"],
+  };
+}
+
 export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
   {
     id: "ninety-ninety-breathing",
@@ -182,9 +210,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: ["dead-bug"],
       progressionAxes: ["tempo", "range"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "dead-bug",
+          direction: "progression",
+          classification: "developmental",
+          purposes: [
+            "movement_pattern_development",
+            "preparation_to_loaded_training",
+            "increase_stability_demand",
+            "increase_coordination_demand",
+          ],
+          notes: "Develops from low-load breathing/position control toward an anti-extension trunk drill; not a readiness or dosage guarantee.",
+        }),
+      ],
     },
     cautionStressTags: [],
     contraindicatedStressTags: [],
@@ -250,9 +290,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: ["band-face-pull"],
       progressionAxes: ["range", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "band-face-pull",
+          direction: "progression",
+          classification: "context_dependent",
+          purposes: ["feature_shift", "preparation_to_loaded_training", "change_resistance_path"],
+          notes: "General scapular-development transition that shifts from serratus/upward-rotation emphasis to band-loaded retraction/cuff emphasis.",
+        }),
+      ],
     },
     cautionStressTags: ["overhead_pressing"],
     contraindicatedStressTags: [],
@@ -307,9 +354,33 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: ["ninety-ninety-breathing"],
-      progressionExerciseIds: ["pallof-press"],
       progressionAxes: ["range", "tempo", "complexity"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "pallof-press",
+          direction: "progression",
+          classification: "context_dependent",
+          purposes: [
+            "movement_pattern_development",
+            "change_resistance_path",
+            "increase_loadability",
+            "increase_stability_demand",
+          ],
+          notes: "Can move from supine anti-extension toward standing anti-rotation when trunk-development context supports the role change.",
+        }),
+        transition({
+          targetExerciseId: "ninety-ninety-breathing",
+          direction: "regression",
+          classification: "developmental",
+          purposes: [
+            "pain_or_tolerance_regression",
+            "reduce_stability_demand",
+            "reduce_coordination_demand",
+            "movement_pattern_development",
+          ],
+          notes: "Regresses trunk-control exposure toward lower-load breathing/position work.",
+        }),
+      ],
     },
     cautionStressTags: ["long_lever_core"],
     contraindicatedStressTags: [],
@@ -381,9 +452,33 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: ["machine-chest-press"],
-      progressionExerciseIds: ["dumbbell-bench-press"],
       progressionAxes: ["reps", "sets", "tempo", "support_reduction"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "dumbbell-bench-press",
+          direction: "progression",
+          classification: "context_dependent",
+          purposes: [
+            "increase_loadability",
+            "increase_support",
+            "change_resistance_path",
+            "stimulus_shift",
+          ],
+          notes: "May increase external loadability but changes from bodyweight/floor support to bench-supported free implements.",
+        }),
+        transition({
+          targetExerciseId: "machine-chest-press",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: [
+            "increase_support",
+            "reduce_stability_demand",
+            "reduce_coordination_demand",
+            "pain_or_tolerance_regression",
+          ],
+          notes: "Can reduce free-body trunk/stability demands through a guided machine press when equipment and fit are appropriate.",
+        }),
+      ],
     },
     cautionStressTags: ["horizontal_pressing", "wrist_extension_loading"],
     contraindicatedStressTags: [],
@@ -439,9 +534,28 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: ["machine-chest-press", "push-up"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "machine-chest-press",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: [
+            "increase_support",
+            "reduce_stability_demand",
+            "reduce_coordination_demand",
+            "pain_or_tolerance_regression",
+          ],
+          notes: "May regress toward a more guided press when free dumbbell stability or shoulder tolerance is limiting.",
+        }),
+        transition({
+          targetExerciseId: "push-up",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["reduce_loadability", "equipment_transition", "change_resistance_path"],
+          notes: "Can substitute bodyweight pressing when equipment or loading constraints matter, but it increases trunk/bodyweight support demands.",
+        }),
+      ],
     },
     cautionStressTags: ["horizontal_pressing"],
     contraindicatedStressTags: [],
@@ -497,9 +611,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: ["dumbbell-bench-press"],
       progressionAxes: ["load", "reps", "sets"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "dumbbell-bench-press",
+          direction: "progression",
+          classification: "developmental",
+          purposes: [
+            "reduce_support",
+            "increase_stability_demand",
+            "increase_coordination_demand",
+            "change_resistance_path",
+          ],
+          notes: "Developmental option from guided machine pressing to free dumbbell pressing when stability/coordination development is intended.",
+        }),
+      ],
     },
     cautionStressTags: ["horizontal_pressing"],
     contraindicatedStressTags: [],
@@ -538,9 +664,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       jointStressTags: ["horizontal_pressing", "shoulder_abduction_external_rotation"],
     },
     progression: {
-      regressionExerciseIds: ["machine-chest-press"],
-      progressionExerciseIds: [],
       progressionAxes: ["reps", "sets", "tempo", "range"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "machine-chest-press",
+          direction: "regression",
+          classification: "needs_review",
+          purposes: ["increase_loadability", "stimulus_shift", "equipment_transition"],
+          notes: "Legacy edge changes from accessory isolation to a primary guided press; review before treating as a true regression.",
+        }),
+      ],
     },
     cautionStressTags: ["shoulder_abduction_external_rotation"],
     contraindicatedStressTags: [],
@@ -620,9 +753,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: ["seated-cable-row"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "seated-cable-row",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["change_resistance_path", "equipment_transition", "stimulus_shift"],
+          notes: "Moves from chest-supported free implements to a seated cable path; useful only when setup, equipment, or tolerance context supports the swap.",
+        }),
+      ],
     },
     cautionStressTags: ["grip_intensive"],
     contraindicatedStressTags: [],
@@ -702,9 +842,33 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: ["chest-supported-dumbbell-row", "seated-cable-row"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "chest-supported-dumbbell-row",
+          direction: "regression",
+          classification: "developmental",
+          purposes: [
+            "increase_support",
+            "reduce_stability_demand",
+            "reduce_coordination_demand",
+            "pain_or_tolerance_regression",
+          ],
+          notes: "Regresses unilateral unsupported rowing toward chest support and lower trunk/stability demand.",
+        }),
+        transition({
+          targetExerciseId: "seated-cable-row",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: [
+            "increase_support",
+            "reduce_stability_demand",
+            "change_resistance_path",
+            "equipment_transition",
+          ],
+          notes: "Can reduce unilateral/free-implement demands through a seated cable setup, but line of pull and setup remain context dependent.",
+        }),
+      ],
     },
     cautionStressTags: ["loaded_hinge", "loaded_spinal_flexion", "grip_intensive"],
     contraindicatedStressTags: [],
@@ -784,9 +948,30 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: ["band-row", "seated-cable-row"],
-      progressionExerciseIds: ["chest-supported-dumbbell-row"],
       progressionAxes: ["load", "reps", "sets"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "chest-supported-dumbbell-row",
+          direction: "progression",
+          classification: "context_dependent",
+          purposes: ["change_resistance_path", "equipment_transition", "stimulus_shift"],
+          notes: "Changes from generic machine-guided row mechanics to chest-supported free implements; not universally harder or better.",
+        }),
+        transition({
+          targetExerciseId: "band-row",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["reduce_loadability", "change_resistance_path", "equipment_transition"],
+          notes: "May regress equipment/loading demands from machine to band resistance when machine access or tolerance changes.",
+        }),
+        transition({
+          targetExerciseId: "seated-cable-row",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["change_resistance_path", "equipment_transition", "stimulus_shift"],
+          notes: "Machine-to-cable row transition changes path and setup; classify as contextual rather than a universal regression.",
+        }),
+      ],
     },
     cautionStressTags: ["grip_intensive"],
     contraindicatedStressTags: [],
@@ -866,9 +1051,23 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: ["band-row"],
-      progressionExerciseIds: ["chest-supported-dumbbell-row"],
       progressionAxes: ["load", "reps", "sets"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "chest-supported-dumbbell-row",
+          direction: "progression",
+          classification: "context_dependent",
+          purposes: ["change_resistance_path", "equipment_transition", "stimulus_shift"],
+          notes: "Cable-to-chest-supported dumbbell row changes resistance path, laterality, and setup; do not rank it universally.",
+        }),
+        transition({
+          targetExerciseId: "band-row",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["reduce_loadability", "change_resistance_path", "equipment_transition"],
+          notes: "May regress cable loading/setup toward band resistance when equipment or tolerance requires it.",
+        }),
+      ],
     },
     cautionStressTags: ["grip_intensive"],
     contraindicatedStressTags: [],
@@ -934,9 +1133,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: ["seated-cable-row"],
       progressionAxes: ["reps", "sets", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "seated-cable-row",
+          direction: "progression",
+          classification: "developmental",
+          purposes: ["increase_loadability", "change_resistance_path", "equipment_transition"],
+          notes: "Moves from anchored band resistance toward cable loading when equipment access and target stimulus support it.",
+        }),
+      ],
     },
     cautionStressTags: [],
     contraindicatedStressTags: [],
@@ -1008,9 +1214,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: ["serratus-wall-slide"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "serratus-wall-slide",
+          direction: "regression",
+          classification: "developmental",
+          purposes: [
+            "reduce_loadability",
+            "reduce_stability_demand",
+            "preparation_to_loaded_training",
+            "pain_or_tolerance_regression",
+          ],
+          notes: "Regresses loaded overhead pressing toward a lower-load wall-supported scapular drill.",
+        }),
+      ],
     },
     cautionStressTags: ["overhead_pressing", "loaded_spinal_extension"],
     contraindicatedStressTags: [],
@@ -1050,9 +1268,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       jointStressTags: ["grip_intensive"],
     },
     progression: {
-      regressionExerciseIds: ["band-lat-pulldown"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "band-lat-pulldown",
+          direction: "regression",
+          classification: "developmental",
+          purposes: ["reduce_loadability", "change_resistance_path", "equipment_transition"],
+          notes: "Regresses vertical pulling from machine/cable station loading to anchored band resistance.",
+        }),
+      ],
     },
     cautionStressTags: ["grip_intensive"],
     contraindicatedStressTags: [],
@@ -1092,9 +1317,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       jointStressTags: [],
     },
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: ["lat-pulldown"],
       progressionAxes: ["reps", "sets", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "lat-pulldown",
+          direction: "progression",
+          classification: "developmental",
+          purposes: ["increase_loadability", "change_resistance_path", "equipment_transition"],
+          notes: "Progresses anchored-band vertical pulling toward a more loadable lat-pulldown station.",
+        }),
+      ],
     },
     cautionStressTags: [],
     contraindicatedStressTags: [],
@@ -1149,9 +1381,28 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: ["bodyweight-box-squat"],
-      progressionExerciseIds: ["leg-press"],
       progressionAxes: ["load", "reps", "range", "sets"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "leg-press",
+          direction: "progression",
+          classification: "context_dependent",
+          purposes: ["increase_loadability", "increase_support", "equipment_transition", "stimulus_shift"],
+          notes: "May increase machine loadability and support, but machine loading is not universally a progression from goblet squatting.",
+        }),
+        transition({
+          targetExerciseId: "bodyweight-box-squat",
+          direction: "regression",
+          classification: "developmental",
+          purposes: [
+            "reduce_loadability",
+            "increase_support",
+            "reduce_stability_demand",
+            "pain_or_tolerance_regression",
+          ],
+          notes: "Regresses loaded squat exposure toward bodyweight box-supported range control.",
+        }),
+      ],
     },
     cautionStressTags: ["deep_knee_flexion", "loaded_knee_flexion"],
     contraindicatedStressTags: [],
@@ -1206,9 +1457,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: ["goblet-squat"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "range"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "goblet-squat",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["reduce_support", "increase_stability_demand", "equipment_transition"],
+          notes: "Moves from machine-supported leg press to free standing squatting; not a universal regression despite lower external loading.",
+        }),
+      ],
     },
     cautionStressTags: ["loaded_knee_flexion"],
     contraindicatedStressTags: [],
@@ -1264,9 +1522,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: ["goblet-squat"],
       progressionAxes: ["range", "reps", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "goblet-squat",
+          direction: "progression",
+          classification: "developmental",
+          purposes: ["increase_loadability", "reduce_support", "increase_stability_demand"],
+          notes: "Progresses bodyweight box squat toward externally loaded standing squat when range and control are ready.",
+        }),
+      ],
     },
     cautionStressTags: ["deep_knee_flexion"],
     contraindicatedStressTags: [],
@@ -1327,9 +1592,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: ["cable-pull-through"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "range"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "cable-pull-through",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["reduce_loadability", "change_resistance_path", "equipment_transition", "pain_or_tolerance_regression"],
+          notes: "May reduce free-implement hinge loading through cable resistance, but equipment and tolerance context must justify the swap.",
+        }),
+      ],
     },
     cautionStressTags: ["loaded_hinge", "loaded_spinal_flexion"],
     contraindicatedStressTags: ["loaded_spinal_flexion"],
@@ -1384,9 +1656,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: ["dumbbell-romanian-deadlift"],
       progressionAxes: ["load", "reps", "range"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "dumbbell-romanian-deadlift",
+          direction: "progression",
+          classification: "developmental",
+          purposes: ["increase_loadability", "change_resistance_path", "movement_pattern_development"],
+          notes: "Can progress cable hinge practice toward a more loadable free-implement Romanian deadlift.",
+        }),
+      ],
     },
     cautionStressTags: ["loaded_hinge"],
     contraindicatedStressTags: [],
@@ -1441,9 +1720,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: ["step-up"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "range", "support_reduction"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "step-up",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["movement_pattern_development", "stimulus_shift"],
+          notes: "Split squat and step-up share single-leg/squat roles but do not have one universal difficulty order.",
+        }),
+      ],
     },
     cautionStressTags: ["deep_knee_flexion", "loaded_knee_flexion"],
     contraindicatedStressTags: [],
@@ -1498,9 +1784,28 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: ["bodyweight-box-squat"],
-      progressionExerciseIds: ["split-squat"],
       progressionAxes: ["load", "range", "reps"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "split-squat",
+          direction: "progression",
+          classification: "context_dependent",
+          purposes: ["movement_pattern_development", "stimulus_shift"],
+          notes: "Step-up to split squat can be useful for unilateral development but should not be treated as universally harder.",
+        }),
+        transition({
+          targetExerciseId: "bodyweight-box-squat",
+          direction: "regression",
+          classification: "developmental",
+          purposes: [
+            "reduce_loadability",
+            "reduce_stability_demand",
+            "reduce_coordination_demand",
+            "pain_or_tolerance_regression",
+          ],
+          notes: "Regresses unilateral step pattern toward bilateral bodyweight squat-to-box control.",
+        }),
+      ],
     },
     cautionStressTags: ["loaded_knee_flexion"],
     contraindicatedStressTags: [],
@@ -1539,9 +1844,8 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       jointStressTags: [],
     },
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "tempo"],
+      transitionRelationships: [],
     },
     cautionStressTags: [],
     contraindicatedStressTags: [],
@@ -1581,9 +1885,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       jointStressTags: ["loaded_spinal_extension"],
     },
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: ["dumbbell-romanian-deadlift"],
       progressionAxes: ["load", "reps", "sets", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "dumbbell-romanian-deadlift",
+          direction: "progression",
+          classification: "context_dependent",
+          purposes: [
+            "increase_loadability",
+            "increase_stability_demand",
+            "movement_pattern_development",
+            "stimulus_shift",
+          ],
+          notes: "Can develop from supine hip-extension work toward loaded hinge training when hinge readiness and tolerance support it.",
+        }),
+      ],
     },
     cautionStressTags: ["loaded_spinal_extension"],
     contraindicatedStressTags: [],
@@ -1622,9 +1938,8 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       jointStressTags: ["shoulder_abduction_external_rotation"],
     },
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: [],
       progressionAxes: ["reps", "sets", "tempo", "load"],
+      transitionRelationships: [],
     },
     cautionStressTags: ["shoulder_abduction_external_rotation"],
     contraindicatedStressTags: [],
@@ -1689,9 +2004,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: ["band-face-pull"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "band-face-pull",
+          direction: "regression",
+          classification: "questionable",
+          purposes: ["reduce_loadability", "change_resistance_path", "feature_shift"],
+          notes: "May reduce loading and change scapular feature emphasis, but reverse pec deck to face pull is not a universal regression.",
+        }),
+      ],
     },
     cautionStressTags: [],
     contraindicatedStressTags: [],
@@ -1756,9 +2078,23 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       }),
     }),
     progression: {
-      regressionExerciseIds: ["serratus-wall-slide"],
-      progressionExerciseIds: ["reverse-pec-deck"],
       progressionAxes: ["reps", "sets", "tempo"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "reverse-pec-deck",
+          direction: "progression",
+          classification: "questionable",
+          purposes: ["increase_loadability", "change_resistance_path", "feature_shift"],
+          notes: "Changes from band face-pull retraction/cuff emphasis to machine rear-delt/retraction loading; review before calling this progression.",
+        }),
+        transition({
+          targetExerciseId: "serratus-wall-slide",
+          direction: "regression",
+          classification: "context_dependent",
+          purposes: ["reduce_loadability", "feature_shift", "preparation_to_loaded_training"],
+          notes: "Regresses load but shifts toward serratus/upward-rotation work, so feature preservation is context dependent.",
+        }),
+      ],
     },
     cautionStressTags: [],
     contraindicatedStressTags: [],
@@ -1797,9 +2133,8 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       jointStressTags: ["grip_intensive"],
     },
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "tempo"],
+      transitionRelationships: [],
     },
     cautionStressTags: ["grip_intensive"],
     contraindicatedStressTags: [],
@@ -1838,9 +2173,8 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       jointStressTags: [],
     },
     progression: {
-      regressionExerciseIds: [],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "sets", "tempo"],
+      transitionRelationships: [],
     },
     cautionStressTags: [],
     contraindicatedStressTags: [],
@@ -1901,9 +2235,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       },
     }),
     progression: {
-      regressionExerciseIds: ["dead-bug"],
-      progressionExerciseIds: [],
       progressionAxes: ["load", "reps", "tempo", "stability"],
+      transitionRelationships: [
+        transition({
+          targetExerciseId: "dead-bug",
+          direction: "regression",
+          classification: "needs_review",
+          purposes: [
+            "reduce_loadability",
+            "reduce_stability_demand",
+            "movement_pattern_development",
+            "pain_or_tolerance_regression",
+          ],
+          notes: "Standing anti-rotation to supine anti-extension changes movement role; review before treating as a simple regression.",
+        }),
+      ],
     },
     cautionStressTags: ["long_lever_core"],
     contraindicatedStressTags: [],

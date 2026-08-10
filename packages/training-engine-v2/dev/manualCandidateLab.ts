@@ -10,6 +10,7 @@ import {
   NO_PAIN_OR_INJURY,
   REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
+  buildExerciseTransitionTraces,
   buildHorizontalRowSelectionTrace,
   runCandidateRankingLab,
   type AssessmentFeature,
@@ -27,6 +28,7 @@ import {
   type RankedCandidate,
   type ScoreComponent,
   type TrainingHistory,
+  type TransitionValueDelta,
 } from "../src";
 import { POSTURE_PHOTO_ASSESSMENT_STATE } from "../tests/fixtures/posture/realPostureAssessmentFixture";
 
@@ -1175,6 +1177,133 @@ function printHorizontalRowKnowledge(result: CandidateRankingResult): void {
   );
 }
 
+function formatDelta(delta: TransitionValueDelta): string {
+  return `${delta.source}->${delta.target} (${delta.delta})`;
+}
+
+function printProgressionTransitionKnowledge(
+  result: CandidateRankingResult,
+  exerciseId: string | undefined,
+): void {
+  const selectedId = exerciseId ?? result.rankedCandidates[0]?.exercise.id;
+  const exercise = REFERENCE_EXERCISES.find((candidate) => candidate.id === selectedId);
+
+  if (!exercise) {
+    throw new Error(`Unknown exercise for transition knowledge: ${selectedId ?? "none"}.`);
+  }
+
+  const preferredAxes = result.request.phase.progressionIntent.preferredProgressionAxes;
+  const matchingAxes = exercise.progression.progressionAxes.filter((axis) =>
+    preferredAxes.includes(axis),
+  );
+  const readinessRows = [
+    ["currentExercise", result.request.continuity.currentExerciseId === exercise.id ? "yes" : "no"],
+    ["previousExercise", result.request.continuity.previousExerciseId === exercise.id ? "yes" : "no"],
+    ["productive", result.request.continuity.productiveExerciseIds.includes(exercise.id) ? "yes" : "no"],
+    ["plateaued", result.request.continuity.plateauedExerciseIds.includes(exercise.id) ? "yes" : "no"],
+    [
+      "failedProgression",
+      result.request.continuity.failedProgressionExerciseIds.includes(exercise.id) ? "yes" : "no",
+    ],
+    ["painResponse", result.request.continuity.painResponseExerciseIds.includes(exercise.id) ? "yes" : "no"],
+    [
+      "readyToProgress",
+      result.request.history.progressionState.readyToProgressExerciseIds.includes(exercise.id) ? "yes" : "no",
+    ],
+    [
+      "stalled",
+      result.request.history.progressionState.stalledExerciseIds.includes(exercise.id) ? "yes" : "no",
+    ],
+    [
+      "stableHistory",
+      result.request.history.exerciseHistory.stableExerciseIds.includes(exercise.id) ? "yes" : "no",
+    ],
+    [
+      "blockedHistory",
+      result.request.history.exerciseHistory.blockedExerciseIds.includes(exercise.id) ? "yes" : "no",
+    ],
+  ];
+  const traces = buildExerciseTransitionTraces(exercise, REFERENCE_EXERCISES);
+
+  console.log(`\nProgression / Transition Knowledge: ${exercise.id} / ${exercise.name}`);
+  printTable(
+    ["Field", "Value"],
+    [
+      ["sameExerciseAxes", formatList(exercise.progression.progressionAxes)],
+      ["phasePreferredAxes", formatList(preferredAxes)],
+      ["matchingPhaseAxes", formatList(matchingAxes)],
+      ["transitionCount", String(traces.length)],
+      ["automaticSelectionEffect", "none"],
+    ],
+  );
+
+  console.log("\nSame-Exercise Readiness");
+  printTable(["Signal", "Value"], readinessRows);
+
+  console.log("\nCross-Exercise Transitions");
+  if (traces.length === 0) {
+    console.log("No transition relationships modeled for this exercise.");
+    return;
+  }
+
+  printTable(
+    [
+      "Target",
+      "Direction",
+      "Classification",
+      "Purposes",
+      "Support",
+      "Resistance Path",
+      "Demand",
+      "Loadability",
+      "Equipment",
+      "Feature Change",
+      "Review",
+      "Automatic Selection Effect",
+    ],
+    traces.map((trace) => {
+      const delta = trace.structuralDelta;
+      const changedFeatures = delta.assessmentFeatures.filter((feature) => feature.delta !== "same");
+
+      return [
+        trace.targetExerciseId,
+        trace.direction,
+        trace.classification,
+        formatList(trace.purposes),
+        [
+          `external=${formatDelta(delta.support.externalSupport)}`,
+          `body=${formatDelta(delta.support.bodySupport)}`,
+        ].join("; "),
+        [
+          `path=${formatDelta(delta.resistancePath.resistancePath)}`,
+          `trajectory=${formatDelta(delta.resistancePath.trajectoryFreedom)}`,
+          `line=${formatDelta(delta.resistancePath.lineOfPullAdjustability)}`,
+          `laterality=${formatDelta(delta.resistancePath.laterality)}`,
+          `fit=${formatDelta(delta.resistancePath.fitDependency)}`,
+        ].join("; "),
+        [
+          `trunk=${formatDelta(delta.demand.trunk)}`,
+          `stability=${formatDelta(delta.demand.stability)}`,
+          `coordination=${formatDelta(delta.demand.coordination)}`,
+        ].join("; "),
+        formatDelta(delta.loading.loadability),
+        [
+          `shared=${formatList(delta.equipment.shared)}`,
+          `sourceOnly=${formatList(delta.equipment.sourceOnly)}`,
+          `targetOnly=${formatList(delta.equipment.targetOnly)}`,
+        ].join("; "),
+        changedFeatures.length > 0
+          ? changedFeatures
+            .map((feature) => `${feature.feature}:${feature.source}->${feature.target} (${feature.delta})`)
+            .join("; ")
+          : "none modeled",
+        `${trace.reviewStatus}; ${trace.notes}`,
+        trace.automaticSelectionEffect,
+      ];
+    }),
+  );
+}
+
 function printAssessmentComparison(off: CandidateRankingResult, on: CandidateRankingResult): void {
   console.log("\nAssessment OFF/ON Comparison");
   const offById = new Map(off.rankedCandidates.map((candidate) => [candidate.exercise.id, candidate]));
@@ -1248,6 +1377,8 @@ async function main(): Promise<void> {
     ] as const;
     const useDefaults = process.argv.includes("--defaults");
     const showRowKnowledge = process.argv.includes("--row-knowledge");
+    const showTransitionKnowledge = process.argv.includes("--transition-knowledge");
+    const transitionExerciseId = argumentValue("exercise");
     const asOf = argumentValue("as-of") ?? currentAsOf();
     const personaOptions = personaChoices();
     const phaseOptions = phaseChoices();
@@ -1359,6 +1490,9 @@ async function main(): Promise<void> {
     renderResult(result);
     if (showRowKnowledge) {
       printHorizontalRowKnowledge(result);
+    }
+    if (showTransitionKnowledge) {
+      printProgressionTransitionKnowledge(result, transitionExerciseId);
     }
   } finally {
     rl.close();
