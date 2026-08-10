@@ -243,6 +243,7 @@ function genericScapularAssessment(
 
 function explicitScapularFeatureAssessment(
   feature: NonNullable<AssessmentSignal["assessmentFeatures"]>[number],
+  severity?: AssessmentSignal["severity"],
 ): AssessmentState {
   return {
     signals: [
@@ -254,6 +255,7 @@ function explicitScapularFeatureAssessment(
         priority: "primary",
         region: "shoulder",
         movementRole: "scapular_control",
+        ...(severity ? { severity } : {}),
         assessmentFeatures: [feature],
         description: `Synthetic ${feature} finding.`,
       },
@@ -1369,62 +1371,123 @@ describe("assessment relevance scoping", () => {
     );
   });
 
-  it("scopes feature-specific severity to feature capability instead of global task capability", () => {
+  it("uses only provided feature-specific severity to adjust feature capability", () => {
     const baseRequest = controlledRequest("scapular-activation-high-confidence");
-    const defaultSeverity = runCandidateRankingLab(withAssessment(baseRequest, scapularAssessment("high")));
-    const explicitSeverity = runCandidateRankingLab(
-      withAssessment(baseRequest, {
-        signals: [
-          {
-            ...scapularAssessment("high").signals[0],
-            id: "synthetic-high-scapular-control-moderate-severity",
-            severity: "moderate",
-          },
-        ],
-        historicalWeaknesses: [],
-      }),
+    const noSeverity = runCandidateRankingLab(
+      withAssessment(
+        baseRequest,
+        explicitScapularFeatureAssessment("serratus_or_protraction_control"),
+      ),
     );
-    const defaultTrace = component(
-      ranked(defaultSeverity.rankedCandidates, "serratus-wall-slide"),
+    const mildSeverity = runCandidateRankingLab(
+      withAssessment(
+        baseRequest,
+        explicitScapularFeatureAssessment("serratus_or_protraction_control", "mild"),
+      ),
+    );
+    const moderateSeverity = runCandidateRankingLab(
+      withAssessment(
+        baseRequest,
+        explicitScapularFeatureAssessment("serratus_or_protraction_control", "moderate"),
+      ),
+    );
+    const noSeverityTrace = component(
+      ranked(noSeverity.rankedCandidates, "serratus-wall-slide"),
       "assessment_fit",
     ).assessmentRelevance?.[0];
-    const explicitTrace = component(
-      ranked(explicitSeverity.rankedCandidates, "serratus-wall-slide"),
+    const mildTrace = component(
+      ranked(mildSeverity.rankedCandidates, "serratus-wall-slide"),
       "assessment_fit",
     ).assessmentRelevance?.[0];
+    const moderateTrace = component(
+      ranked(moderateSeverity.rankedCandidates, "serratus-wall-slide"),
+      "assessment_fit",
+    ).assessmentRelevance?.[0];
+    const noSeverityFeature = noSeverityTrace?.featureDevelopment[0];
+    const mildFeature = mildTrace?.featureDevelopment[0];
+    const moderateFeature = moderateTrace?.featureDevelopment[0];
 
-    expect(defaultTrace?.signalInterpretation).toEqual(
+    expect(noSeverityTrace?.signalInterpretation).toEqual(
       expect.objectContaining({
         severity: "unknown",
         severitySource: "default_conservative",
+        deficitMagnitude: 0.45,
       }),
     );
-    expect(defaultTrace?.demandCapability.capabilityEstimate.evidenceQuality).toBe("weak");
-    expect(explicitTrace?.signalInterpretation).toEqual(
+    expect(mildTrace?.signalInterpretation).toEqual(
+      expect.objectContaining({
+        severity: "mild",
+        severitySource: "provided",
+      }),
+    );
+    expect(moderateTrace?.signalInterpretation).toEqual(
       expect.objectContaining({
         severity: "moderate",
         severitySource: "provided",
       }),
     );
-    expect(defaultTrace?.demandCapability.currentCapability).toBe(
-      explicitTrace?.demandCapability.currentCapability,
+
+    expect(noSeverityTrace?.demandCapability.currentCapability).toBe(
+      mildTrace?.demandCapability.currentCapability,
     );
-    expect(explicitTrace?.demandCapability.capabilityEstimate.evidenceQuality).toBe("weak");
-    expect(explicitTrace?.featureDevelopment[0]).toEqual(
+    expect(noSeverityTrace?.demandCapability.currentCapability).toBe(
+      moderateTrace?.demandCapability.currentCapability,
+    );
+    expect(noSeverityFeature).toEqual(
       expect.objectContaining({
+        featureCapabilityEstimate: 1.5,
+        featureCapabilitySource: "phase_default",
+        featureCapabilityEvidenceQuality: "weak",
+        featureCapabilityPriorSource: "phase_experience_default",
+        featureSpecificEvidenceSources: [],
+        featureSpecificHistorySupport: "unavailable_not_modeled",
+        featureChallengeDemand: null,
+        featureChallengeDemandSource: "not_modeled",
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
+    );
+    expect(noSeverityFeature?.evidence.join(" ")).toContain(
+      "Feature-specific severity adjustment 0.000 because no feature severity was provided.",
+    );
+    expect(mildFeature).toEqual(
+      expect.objectContaining({
+        featureCapabilityEstimate: 1.25,
         featureCapabilitySource: "assessment_inferred",
         featureCapabilityEvidenceQuality: "moderate",
         featureCapabilityPriorSource: "phase_experience_default",
         featureSpecificEvidenceSources: ["assessment_severity"],
         featureSpecificHistorySupport: "unavailable_not_modeled",
+        featureChallengeDemand: null,
         featureDemandCapabilityMatch: "not_applicable",
       }),
     );
-    expect(defaultTrace?.featureDevelopment[0].featureCapabilityEstimate).toBeGreaterThan(
-      explicitTrace?.featureDevelopment[0].featureCapabilityEstimate ?? 0,
+    expect(mildFeature?.evidence.join(" ")).toContain(
+      "Feature-specific severity adjustment -0.250 from provided mild severity.",
     );
-    expect(defaultTrace?.boundedInfluence).toBe(0);
-    expect(explicitTrace?.boundedInfluence).toBe(0);
+    expect(moderateFeature).toEqual(
+      expect.objectContaining({
+        featureCapabilityEstimate: 1,
+        featureCapabilitySource: "assessment_inferred",
+        featureCapabilityEvidenceQuality: "moderate",
+        featureCapabilityPriorSource: "phase_experience_default",
+        featureSpecificEvidenceSources: ["assessment_severity"],
+        featureSpecificHistorySupport: "unavailable_not_modeled",
+        featureChallengeDemand: null,
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
+    );
+    expect(moderateFeature?.evidence.join(" ")).toContain(
+      "Feature-specific severity adjustment -0.500 from provided moderate severity.",
+    );
+    expect(noSeverityFeature?.featureCapabilityEstimate).toBeGreaterThan(
+      mildFeature?.featureCapabilityEstimate ?? 0,
+    );
+    expect(mildFeature?.featureCapabilityEstimate).toBeGreaterThan(
+      moderateFeature?.featureCapabilityEstimate ?? 0,
+    );
+    expect(noSeverityTrace?.boundedInfluence).toBe(0);
+    expect(mildTrace?.boundedInfluence).toBe(0);
+    expect(moderateTrace?.boundedInfluence).toBe(0);
   });
 
   it("uses explicit mechanics metadata instead of prose to determine support and demand", () => {

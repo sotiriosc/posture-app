@@ -81,11 +81,16 @@ function estimateFeatureCapability(input: {
 } {
   const phasePrior = phaseCapabilityPriorForDimension(input.request, input.dimension);
   const experienceAdjustment = experienceWeakPrior(input.request.athlete.experience);
-  const severityAdjustment = -input.signalInterpretation.deficitMagnitude;
   const hasProvidedSeverity = input.signalInterpretation.severitySource === "provided";
+  const severityAdjustment = hasProvidedSeverity
+    ? -input.signalInterpretation.deficitMagnitude
+    : 0;
   const value = clampCapability(
     Math.max(0.75, phasePrior + experienceAdjustment + severityAdjustment),
   );
+  const severityEvidence = hasProvidedSeverity
+    ? `Feature-specific severity adjustment ${severityAdjustment.toFixed(3)} from provided ${input.signalInterpretation.severity} severity.`
+    : "Feature-specific severity adjustment 0.000 because no feature severity was provided.";
 
   return {
     value,
@@ -94,7 +99,7 @@ function estimateFeatureCapability(input: {
     featureSpecificEvidenceSources: hasProvidedSeverity ? ["assessment_severity"] : [],
     evidence: [
       `Feature capability uses phase/experience prior ${phasePrior.toFixed(3)} plus experience adjustment ${experienceAdjustment.toFixed(3)}.`,
-      `Feature-specific severity adjustment ${severityAdjustment.toFixed(3)} from ${input.signalInterpretation.severity}.`,
+      severityEvidence,
       "Generic movement-role history is not used as feature-specific capability evidence because ExerciseHistoryEvent has no normalized assessment-feature field.",
       "Feature-aware history support is unavailable/not_modeled at the current history boundary.",
     ],
