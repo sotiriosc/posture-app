@@ -30,6 +30,7 @@ export const ASSESSMENT_SOURCES = [
 export type AssessmentSource = (typeof ASSESSMENT_SOURCES)[number];
 export type AssessmentConfidence = ConfidenceLevel;
 export type AssessmentPriority = PriorityLevel;
+export type AssessmentSeverity = "unknown" | "mild" | "moderate" | "substantial";
 
 export interface AssessmentSignal {
   readonly id: string;
@@ -41,6 +42,7 @@ export interface AssessmentSignal {
   readonly movementRole?: MovementRole;
   readonly muscleGroup?: MuscleGroup;
   readonly side?: Side;
+  readonly severity?: AssessmentSeverity;
   readonly description: string;
 }
 

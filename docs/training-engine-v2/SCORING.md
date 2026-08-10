@@ -11,14 +11,21 @@ ScoreComponent {
   id
   family
   value
+  rawValue
+  weight
+  unnormalizedWeight
+  weightedContribution
   reason
   reasonCode
   source
   assessmentInfluence?
+  assessmentRelevance?
 }
 ```
 
-`CandidateScore` is a named list of components plus an aggregate. Foundation tests still cover the original placeholder aggregate; Candidate Intelligence uses `weighted_mean_candidate_intelligence_v0`.
+`value` and `rawValue` are the raw component score after component-local clamping. `weight` is the normalized aggregate weight used to reproduce the final score. `unnormalizedWeight` is the configured family weight before normalization. `weightedContribution` is `rawValue * weight`.
+
+`CandidateScore` is a named list of components plus an aggregate. Foundation tests still cover the original placeholder aggregate; Candidate Intelligence uses `weighted_mean_candidate_intelligence_v0`. The aggregate exposes `totalWeight`, `unroundedValue`, and `weightNormalization` so score reports do not require implicit math.
 
 ## Component Families
 
@@ -133,6 +140,40 @@ AssessmentRelevanceTrace {
   relevance
   relevanceReasonCode
   relevanceReason
+  signalInterpretation {
+    confidence
+    priority
+    severity
+    severitySource
+    deficitMagnitude
+    evidence
+  }
+  relationship
+  relationshipReason
+  demandCapability {
+    dimension
+    candidateDemand // number when known, null when unknown
+    candidateDemandSource {
+      level
+      value
+      source
+      reviewStatus
+      evidence
+    }
+    currentCapability
+    capabilityEstimate {
+      value
+      estimateSource
+      contributingSources
+      evidenceQuality
+      evidence
+    }
+    phaseIntentDemand
+    phaseIntentSource
+    developmentalValue
+    match
+    evidence
+  }
   confidence
   priority
   direction
@@ -145,6 +186,44 @@ AssessmentRelevanceTrace {
 
 `assessmentFit` owns general compatibility with normalized assessment findings. `alignmentFit` owns the specific alignment/control effect for the candidate. When the same signal contributes to both, its single bounded influence is split between the two components rather than added twice.
 
+Assessment relevance and assessment relationship are intentionally separate:
+
+- relevance answers whether the finding belongs in this candidate's context;
+- relationship answers whether the candidate supports control, reduces excess demand, provides appropriate exposure, develops the priority, conflicts with the priority, exceeds current capability, or remains neutral;
+- demand/capability compares candidate demand, estimated current capability, and phase intent demand by dimension instead of using a single generic difficulty number;
+- confidence scales trust in the influence budget, not estimated physical capability;
+- severity/deficit magnitude is represented separately from confidence and priority. Existing fixtures without severity use a documented conservative `unknown` default.
+- capability provenance is visible through `estimateSource`, `contributingSources`, and `evidenceQuality`; low-quality capability evidence limits bounded assessment/alignment influence;
+- unknown exercise mechanics use `candidateDemand: null` and `match: not_applicable`, so unknown does not silently become zero demand, easy, safe, ideal, or inappropriate.
+
+## Assessment Semantics Modules
+
+Assessment semantics are split by training responsibility:
+
+| Module | Responsibility |
+| --- | --- |
+| `candidate/scoring/assessment/classifySignal.ts` | Classifies assessment signals into trunk, scapular, lower-body, or fallback demand dimensions. |
+| `candidate/scoring/assessment/specificity.ts` | Calculates candidate/request specificity after training-role truth is established. |
+| `candidate/scoring/assessment/relevance.ts` | Decides whether a signal is relevant to this candidate in this requested role. |
+| `candidate/scoring/assessment/candidateDemand.ts` | Reads explicit exercise demand metadata or known structured loading fields. |
+| `candidate/scoring/assessment/athleteCapability.ts` | Estimates current capability from phase, weak experience prior, severity, and pain context while exposing source/evidence quality. |
+| `candidate/scoring/assessment/demandCapabilityMatch.ts` | Compares candidate demand, capability, and phase intent. |
+| `candidate/scoring/assessment/developmentalRelationship.ts` | Interprets below/match/challenge/exceeds states by section, role, pain, fatigue, and goal context. |
+| `candidate/scoring/assessment/influenceBudget.ts` | Applies relevance, confidence, priority, relationship, and capability evidence quality to bounded assessment/alignment contributions. |
+| `candidate/scoring/assessment/trace.ts` | Assembles the developer-facing trace. |
+| `candidate/scoring/assessmentRelevance.ts` | Thin orchestrator retained for existing imports. |
+
+## Explicit Mechanics
+
+Mechanical truth lives in `ExerciseDefinition.mechanics`:
+
+- `support.externalSupport`
+- `support.bodySupport`
+- independent demand annotations for `trunk_control`, `scapular_control`, `stability`, `coordination`, `range`, and `joint_control`;
+- optional `scapularMechanics` annotations for serratus contribution, upward rotation, retraction, external rotation, loaded scapular control, and preparation suitability.
+
+Candidate scoring does not infer support by searching summary, equipment labels, or coaching text. Unknown mechanics remain `unknown` with `needs_review` status.
+
 Relevance reason codes:
 
 - `ASSESSMENT_ROLE_RELEVANT`
@@ -152,6 +231,13 @@ Relevance reason codes:
 - `ASSESSMENT_STABILITY_RELEVANT`
 - `ASSESSMENT_JOINT_RELEVANT`
 - `ASSESSMENT_NOT_RELEVANT`
+- `ASSESSMENT_SUPPORTS_CONTROL`
+- `ASSESSMENT_REDUCES_EXCESS_DEMAND`
+- `ASSESSMENT_APPROPRIATE_EXPOSURE`
+- `ASSESSMENT_DEVELOPS_PRIORITY`
+- `ASSESSMENT_UNDER_CHALLENGES_DEVELOPMENT`
+- `ASSESSMENT_EXCEEDS_CAPABILITY`
+- `ASSESSMENT_NEUTRAL_RELATIONSHIP`
 
 Body-region overlap alone is not enough to establish assessment relevance.
 

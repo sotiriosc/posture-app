@@ -42,6 +42,15 @@ function componentValue(candidate: RankedCandidate, componentId: string): number
   return found.value;
 }
 
+function component(candidate: RankedCandidate, componentId: string) {
+  const found = candidate.components.find((scoreComponent) => scoreComponent.id === componentId);
+  if (!found) {
+    throw new Error(`Missing component ${componentId} for ${candidate.exercise.id}`);
+  }
+
+  return found;
+}
+
 function rejectedCodes(resultValue: CandidateRankingResult, exerciseId: string): readonly string[] {
   return (
     resultValue.hardRejectedCandidates.find((candidate) => candidate.exercise.id === exerciseId)
@@ -128,10 +137,11 @@ describe("Candidate Intelligence foundation", () => {
     expect(noBench.rankedCandidates[0].exercise.id).toBe("one-arm-dumbbell-row");
   });
 
-  it("keeps low-confidence assessment visible while confirmed alignment priorities influence activation ranking", () => {
+  it("keeps low-confidence assessment visible while confirmed priorities expose relationship semantics", () => {
     const lowConfidence = result("horizontal-pull-low-confidence-scapular");
     const highConfidence = result("scapular-activation-high-confidence");
     const facePull = ranked(highConfidence, "band-face-pull");
+    const facePullTrace = component(facePull, "assessment_fit").assessmentRelevance?.[0];
 
     expect(lowConfidence.alignmentPriorities).toHaveLength(0);
     expect(lowConfidence.assessmentInfluence[0]).toEqual(
@@ -144,8 +154,14 @@ describe("Candidate Intelligence foundation", () => {
       "alignment-confirmed-scapular-control-priority",
     );
     expect(highConfidence.rankedCandidates[0].exercise.id).toBe("band-face-pull");
-    expect(componentValue(facePull, "assessment_fit")).toBeGreaterThan(6);
-    expect(componentValue(facePull, "alignment_fit")).toBeGreaterThan(6);
+    expect(componentValue(facePull, "assessment_fit")).toBeLessThan(6);
+    expect(componentValue(facePull, "alignment_fit")).toBeLessThan(6);
+    expect(facePullTrace).toEqual(
+      expect.objectContaining({
+        relationship: "exceeds_current_capability",
+        relevanceReasonCode: "ASSESSMENT_EXCEEDS_CAPABILITY",
+      }),
+    );
   });
 
   it("changes horizontal-push ranking by phase without assuming advanced means hardest", () => {

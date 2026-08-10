@@ -53,6 +53,68 @@ export interface ExerciseLoadingProfile {
   readonly jointStressTags: readonly JointStressTag[];
 }
 
+export type ExerciseDemandDimension =
+  | "trunk_control"
+  | "scapular_control"
+  | "stability"
+  | "coordination"
+  | "range"
+  | "joint_control";
+
+export type ExerciseDemandAnnotationLevel = DemandLevel | "unknown";
+export type ExerciseMechanicsReviewStatus = "accepted" | "needs_review";
+
+export interface ExerciseDemandAnnotation {
+  readonly level: ExerciseDemandAnnotationLevel;
+  readonly source:
+    | "reference_catalog"
+    | "existing_loading_profile"
+    | "human_review_needed"
+    | "unknown";
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly notes: string;
+}
+
+export interface ExerciseSupportProfile {
+  readonly externalSupport:
+    | "none"
+    | "floor"
+    | "wall"
+    | "bench"
+    | "machine"
+    | "box"
+    | "cable_or_band_anchor"
+    | "unknown";
+  readonly bodySupport:
+    | "none"
+    | "supine"
+    | "prone"
+    | "chest_supported"
+    | "seated_supported"
+    | "hands_supported"
+    | "standing"
+    | "unknown";
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly notes: string;
+}
+
+export interface ScapularMechanicsProfile {
+  readonly serratusContribution: ExerciseDemandAnnotation;
+  readonly upwardRotationControl: ExerciseDemandAnnotation;
+  readonly retractionDemand: ExerciseDemandAnnotation;
+  readonly externalRotationContribution: ExerciseDemandAnnotation;
+  readonly loadedScapularControl: ExerciseDemandAnnotation;
+  readonly preparationSuitability: "poor" | "possible" | "good" | "excellent" | "unknown";
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly notes: string;
+}
+
+export interface ExerciseMechanicsProfile {
+  readonly support: ExerciseSupportProfile;
+  readonly demands: Readonly<Record<ExerciseDemandDimension, ExerciseDemandAnnotation>>;
+  readonly scapularMechanics?: ScapularMechanicsProfile;
+}
+
 export interface ExerciseProgressionProfile {
   readonly regressionExerciseIds: readonly string[];
   readonly progressionExerciseIds: readonly string[];
@@ -85,6 +147,7 @@ export interface ExerciseDefinition {
   readonly sectionSuitability: Partial<Record<SessionSection, ExerciseSuitability>>;
   readonly phaseSuitability: Partial<Record<PhaseId, ExerciseSuitability>>;
   readonly loading: ExerciseLoadingProfile;
+  readonly mechanics?: ExerciseMechanicsProfile;
   readonly progression: ExerciseProgressionProfile;
   readonly cautionStressTags: readonly JointStressTag[];
   readonly contraindicatedStressTags: readonly JointStressTag[];

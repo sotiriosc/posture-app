@@ -52,10 +52,16 @@ export function component(input: {
   readonly assessmentInfluence?: AssessmentInfluence;
   readonly assessmentRelevance?: readonly AssessmentRelevanceTrace[];
 }): ScoreComponent {
+  const rawValue = clampScore(input.value);
+
   return {
     id: input.id,
     family: input.family,
-    value: clampScore(input.value),
+    value: rawValue,
+    rawValue,
+    weight: 0,
+    unnormalizedWeight: 0,
+    weightedContribution: 0,
     reasonCode: input.reasonCode,
     reason: input.reason,
     source: input.source,

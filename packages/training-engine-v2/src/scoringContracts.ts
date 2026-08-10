@@ -1,4 +1,10 @@
 import type { AssessmentInfluence } from "./alignment";
+import type { AssessmentSeverity } from "./domain/assessment";
+import type {
+  ExerciseDemandAnnotationLevel,
+  ExerciseDemandDimension,
+  ExerciseMechanicsReviewStatus,
+} from "./domain/exercise";
 import type { ReasonCode } from "./reasonCodes";
 
 export type ScoreComponentSource =
@@ -39,6 +45,76 @@ export type ScoreComponentFamily =
 
 export type AssessmentRelevanceLevel = "none" | "low" | "moderate" | "high";
 
+export type AssessmentCandidateRelationship =
+  | "supports_control"
+  | "reduces_excess_demand"
+  | "provides_appropriate_exposure"
+  | "develops_priority"
+  | "under_challenges_development"
+  | "neutral"
+  | "conflicts_with_priority"
+  | "exceeds_current_capability";
+
+export type AssessmentDemandDimension = ExerciseDemandDimension;
+
+export type DemandCapabilityMatch =
+  | "below_current_capability"
+  | "matches_current_capability"
+  | "appropriate_challenge"
+  | "exceeds_current_capability"
+  | "not_applicable";
+
+export interface AssessmentSignalInterpretationTrace {
+  readonly confidence: string;
+  readonly priority: string;
+  readonly severity: AssessmentSeverity;
+  readonly severitySource: "provided" | "default_conservative" | "not_applicable";
+  readonly deficitMagnitude: number;
+  readonly evidence: readonly string[];
+}
+
+export interface CandidateDemandSourceTrace {
+  readonly level: ExerciseDemandAnnotationLevel;
+  readonly value: number | null;
+  readonly source:
+    | "exercise_definition"
+    | "existing_loading_profile"
+    | "human_review_needed"
+    | "unknown";
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly evidence: readonly string[];
+}
+
+export type CapabilityEstimateSource =
+  | "observed"
+  | "history_inferred"
+  | "assessment_inferred"
+  | "phase_default"
+  | "generic_default";
+
+export type CapabilityEvidenceQuality = "strong" | "moderate" | "weak" | "unknown";
+
+export interface AthleteCapabilityEstimateTrace {
+  readonly value: number;
+  readonly estimateSource: CapabilityEstimateSource;
+  readonly contributingSources: readonly CapabilityEstimateSource[];
+  readonly evidenceQuality: CapabilityEvidenceQuality;
+  readonly evidence: readonly string[];
+}
+
+export interface AssessmentDemandCapabilityTrace {
+  readonly dimension: AssessmentDemandDimension;
+  readonly candidateDemand: number | null;
+  readonly candidateDemandSource: CandidateDemandSourceTrace;
+  readonly currentCapability: number;
+  readonly capabilityEstimate: AthleteCapabilityEstimateTrace;
+  readonly phaseIntentDemand: number;
+  readonly phaseIntentSource: readonly string[];
+  readonly developmentalValue: number;
+  readonly match: DemandCapabilityMatch;
+  readonly evidence: readonly string[];
+}
+
 export interface AssessmentRelevanceTrace {
   readonly signalId: string;
   readonly candidateId: string;
@@ -46,6 +122,10 @@ export interface AssessmentRelevanceTrace {
   readonly relevance: AssessmentRelevanceLevel;
   readonly relevanceReasonCode: ReasonCode;
   readonly relevanceReason: string;
+  readonly signalInterpretation: AssessmentSignalInterpretationTrace;
+  readonly relationship: AssessmentCandidateRelationship;
+  readonly relationshipReason: string;
+  readonly demandCapability: AssessmentDemandCapabilityTrace;
   readonly confidence: string;
   readonly priority: string;
   readonly direction: "supports" | "neutral" | "conflicts";
@@ -59,6 +139,10 @@ export interface ScoreComponent {
   readonly id: string;
   readonly family: ScoreComponentFamily;
   readonly value: number;
+  readonly rawValue: number;
+  readonly weight: number;
+  readonly unnormalizedWeight: number;
+  readonly weightedContribution: number;
   readonly reason: string;
   readonly reasonCode: ReasonCode;
   readonly source: ScoreComponentSource;
@@ -74,6 +158,11 @@ export interface CandidateScore {
       | "unweighted_mean_foundation_placeholder"
       | "weighted_mean_candidate_intelligence_v0";
     readonly value: number;
+    readonly unroundedValue: number;
+    readonly totalWeight: number;
+    readonly weightNormalization:
+      | "equal_component_weight"
+      | "component_family_weight_divided_by_total_family_weight";
   };
 }
 
@@ -87,15 +176,30 @@ export interface CandidateScoringInput {
 }
 
 export function composeCandidateScore(input: CandidateScoringInput): CandidateScore {
-  const total = input.components.reduce((sum, component) => sum + component.value, 0);
-  const value = input.components.length === 0 ? 0 : Number((total / input.components.length).toFixed(3));
+  const sortedComponents = [...input.components].sort((left, right) => left.id.localeCompare(right.id));
+  const componentWeight = sortedComponents.length === 0 ? 0 : 1 / sortedComponents.length;
+  const components = sortedComponents.map((component) => ({
+    ...component,
+    rawValue: component.value,
+    weight: Number(componentWeight.toFixed(6)),
+    unnormalizedWeight: 1,
+    weightedContribution: Number((component.value * componentWeight).toFixed(6)),
+  }));
+  const unroundedValue = components.reduce(
+    (sum, component) => sum + component.weightedContribution,
+    0,
+  );
+  const value = Number(unroundedValue.toFixed(3));
 
   return {
     exerciseId: input.exerciseId,
-    components: [...input.components].sort((left, right) => left.id.localeCompare(right.id)),
+    components,
     aggregate: {
       method: "unweighted_mean_foundation_placeholder",
       value,
+      unroundedValue: Number(unroundedValue.toFixed(6)),
+      totalWeight: sortedComponents.length,
+      weightNormalization: "equal_component_weight",
     },
   };
 }

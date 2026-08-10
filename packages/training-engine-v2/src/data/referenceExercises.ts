@@ -1,5 +1,13 @@
 import type { EquipmentRequirement, MachineId } from "../domain/equipment";
-import type { ExerciseDefinition, ExerciseSuitability } from "../domain/exercise";
+import type {
+  ExerciseDefinition,
+  ExerciseDemandAnnotation,
+  ExerciseDemandAnnotationLevel,
+  ExerciseMechanicsProfile,
+  ExerciseMechanicsReviewStatus,
+  ExerciseSuitability,
+  ScapularMechanicsProfile,
+} from "../domain/exercise";
 import type { SessionSection } from "../domain/session";
 
 const excellent = (reason: string): ExerciseSuitability => ({ suitability: "excellent", reason });
@@ -59,6 +67,69 @@ function sections(values: Partial<Record<SessionSection, ExerciseSuitability>>) 
   return values;
 }
 
+function demand(
+  level: ExerciseDemandAnnotationLevel,
+  notes: string,
+  input: {
+    readonly source?: ExerciseDemandAnnotation["source"];
+    readonly reviewStatus?: ExerciseMechanicsReviewStatus;
+  } = {},
+): ExerciseDemandAnnotation {
+  return {
+    level,
+    source: input.source ?? (level === "unknown" ? "unknown" : "reference_catalog"),
+    reviewStatus: input.reviewStatus ?? (level === "unknown" ? "needs_review" : "accepted"),
+    notes,
+  };
+}
+
+function unknownDemand(notes = "Reference catalog has not explicitly reviewed this demand."): ExerciseDemandAnnotation {
+  return demand("unknown", notes, { source: "unknown", reviewStatus: "needs_review" });
+}
+
+const defaultDemands = {
+  trunk_control: unknownDemand(),
+  scapular_control: unknownDemand(),
+  stability: unknownDemand(),
+  coordination: unknownDemand(),
+  range: unknownDemand(),
+  joint_control: unknownDemand(),
+} satisfies ExerciseMechanicsProfile["demands"];
+
+function mechanics(input: {
+  readonly support?: ExerciseMechanicsProfile["support"];
+  readonly demands?: Partial<ExerciseMechanicsProfile["demands"]>;
+  readonly scapularMechanics?: ScapularMechanicsProfile;
+}): ExerciseMechanicsProfile {
+  return {
+    support: input.support ?? {
+      externalSupport: "unknown",
+      bodySupport: "unknown",
+      reviewStatus: "needs_review",
+      notes: "Support mechanics not yet reviewed.",
+    },
+    demands: {
+      ...defaultDemands,
+      ...input.demands,
+    },
+    scapularMechanics: input.scapularMechanics,
+  };
+}
+
+function scapularMechanics(input: Partial<ScapularMechanicsProfile>): ScapularMechanicsProfile {
+  return {
+    serratusContribution: input.serratusContribution ?? unknownDemand("Serratus contribution needs review."),
+    upwardRotationControl: input.upwardRotationControl ?? unknownDemand("Upward-rotation relevance needs review."),
+    retractionDemand: input.retractionDemand ?? unknownDemand("Retraction demand needs review."),
+    externalRotationContribution:
+      input.externalRotationContribution ?? unknownDemand("External-rotation/cuff contribution needs review."),
+    loadedScapularControl: input.loadedScapularControl ?? unknownDemand("Loaded scapular-control demand needs review."),
+    preparationSuitability: input.preparationSuitability ?? "unknown",
+    reviewStatus: input.reviewStatus ?? "needs_review",
+    notes: input.notes ?? "Scapular mechanics annotation needs human exercise-science review.",
+  };
+}
+
 export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
   {
     id: "ninety-ninety-breathing",
@@ -93,6 +164,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: [],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "floor",
+        bodySupport: "supine",
+        reviewStatus: "accepted",
+        notes: "Floor-supported breathing position with minimal external load.",
+      },
+      demands: {
+        trunk_control: demand("low", "Low-load positional trunk control."),
+        stability: demand("low", "Supine floor support keeps stability demand low."),
+        coordination: demand("low", "Breathing and position coordination only."),
+        range: demand("low", "No large joint range challenge."),
+        joint_control: demand("low", "No meaningful joint-control loading."),
+      },
+    }),
     progression: {
       regressionExerciseIds: [],
       progressionExerciseIds: ["dead-bug"],
@@ -135,6 +221,32 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["overhead_pressing"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "wall",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Wall support constrains setup and reduces load demand.",
+      },
+      demands: {
+        trunk_control: demand("low", "Rib control is relevant but not externally loaded."),
+        scapular_control: demand("moderate", "Direct low-load scapular control drill."),
+        stability: demand("low", "Wall-supported setup."),
+        coordination: demand("moderate", "Requires coordinated upward reach without shrugging."),
+        range: demand("moderate", "Shoulder elevation range is involved."),
+        joint_control: demand("moderate", "Shoulder/scapular control is the target."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("high", "Primary serratus contribution in reference catalog."),
+        upwardRotationControl: demand("high", "Modeled as upward-rotation/reach control."),
+        retractionDemand: demand("low", "Not primarily a retraction exercise."),
+        externalRotationContribution: demand("low", "Rotator cuff is secondary."),
+        loadedScapularControl: demand("low", "Wall drill with low external loading."),
+        preparationSuitability: "excellent",
+        reviewStatus: "needs_review",
+        notes: "Serratus/upward-rotation emphasis is plausible but should be reviewed.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: [],
       progressionExerciseIds: ["band-face-pull"],
@@ -177,6 +289,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["long_lever_core"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "floor",
+        bodySupport: "supine",
+        reviewStatus: "accepted",
+        notes: "Supine floor support with long-lever progression options.",
+      },
+      demands: {
+        trunk_control: demand("moderate", "Direct anti-extension control with low external load."),
+        stability: demand("moderate", "Limb movement challenges trunk position."),
+        coordination: demand("moderate", "Contralateral limb coordination."),
+        range: demand("moderate", "Range can be scaled through limb reach."),
+        joint_control: demand("low", "Low joint loading."),
+      },
+    }),
     progression: {
       regressionExerciseIds: ["ninety-ninety-breathing"],
       progressionExerciseIds: ["pallof-press"],
@@ -225,6 +352,32 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["horizontal_pressing", "wrist_extension_loading", "long_lever_core"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "floor",
+        bodySupport: "hands_supported",
+        reviewStatus: "accepted",
+        notes: "Hands-to-floor bodyweight press with plank-like trunk control.",
+      },
+      demands: {
+        trunk_control: demand("moderate", "Push-up requires anti-extension plank control."),
+        scapular_control: demand("moderate", "Scapular protraction/reach contributes to clean pressing."),
+        stability: demand("moderate", "Bodyweight plank stability."),
+        coordination: demand("low", "Simple press pattern once plank is controlled."),
+        range: demand("moderate", "Pressing range can be scaled."),
+        joint_control: demand("moderate", "Shoulder/wrist/elbow control under bodyweight."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("moderate", "Serratus is secondary in push-up mechanics."),
+        upwardRotationControl: demand("low", "Horizontal press, not primary upward rotation."),
+        retractionDemand: demand("low", "Not a retraction-focused exercise."),
+        externalRotationContribution: demand("low", "Cuff contribution not explicit in current catalog."),
+        loadedScapularControl: demand("moderate", "Scapula controls loaded bodyweight press."),
+        preparationSuitability: "possible",
+        reviewStatus: "needs_review",
+        notes: "Push-up scapular control details need review before precision claims.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: ["machine-chest-press"],
       progressionExerciseIds: ["dumbbell-bench-press"],
@@ -267,6 +420,22 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["horizontal_pressing"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "bench",
+        bodySupport: "supine",
+        reviewStatus: "accepted",
+        notes: "Bench-supported external-load horizontal press.",
+      },
+      demands: {
+        trunk_control: demand("low", "Bench support limits trunk-control demand."),
+        scapular_control: demand("moderate", "Scapular control matters for shoulder path under load."),
+        stability: demand("moderate", "Dumbbells require shoulder and implement stability."),
+        coordination: demand("moderate", "Independent dumbbells require bilateral coordination."),
+        range: demand("moderate", "Pressing range must be controlled."),
+        joint_control: demand("moderate", "Shoulder/elbow control under external load."),
+      },
+    }),
     progression: {
       regressionExerciseIds: ["machine-chest-press", "push-up"],
       progressionExerciseIds: [],
@@ -309,6 +478,22 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["horizontal_pressing"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "machine",
+        bodySupport: "seated_supported",
+        reviewStatus: "accepted",
+        notes: "Machine path and seat support reduce free stability demand.",
+      },
+      demands: {
+        trunk_control: demand("low", "Supported machine press has low trunk demand."),
+        scapular_control: demand("low", "Guided path reduces scapular-control demand relative to free pressing."),
+        stability: demand("low", "Machine support lowers stability demand."),
+        coordination: demand("low", "Guided bilateral press."),
+        range: demand("moderate", "Pressing range is still relevant."),
+        joint_control: demand("moderate", "Shoulder/elbow path still needs fit."),
+      },
+    }),
     progression: {
       regressionExerciseIds: [],
       progressionExerciseIds: ["dumbbell-bench-press"],
@@ -392,6 +577,32 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["grip_intensive"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "bench",
+        bodySupport: "chest_supported",
+        reviewStatus: "accepted",
+        notes: "Chest support intentionally reduces lumbar/trunk stabilization demand.",
+      },
+      demands: {
+        trunk_control: demand("low", "Chest support keeps trunk-control demand low."),
+        scapular_control: demand("moderate", "Horizontal pull needs scapular control but is externally supported."),
+        stability: demand("low", "Bench support reduces stability demand."),
+        coordination: demand("low", "Simple supported pull."),
+        range: demand("moderate", "Scapular reach/retraction range is relevant."),
+        joint_control: demand("moderate", "Shoulder/elbow control under load."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("low", "Not a serratus-emphasis exercise."),
+        upwardRotationControl: demand("low", "Horizontal row does not primarily train upward rotation."),
+        retractionDemand: demand("moderate", "Rowing emphasizes scapular retraction/control."),
+        externalRotationContribution: demand("low", "Cuff contribution is not primary in catalog."),
+        loadedScapularControl: demand("moderate", "Loadable row with chest support."),
+        preparationSuitability: "possible",
+        reviewStatus: "needs_review",
+        notes: "Retraction/loading emphasis should be reviewed.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: ["seated-cable-row"],
       progressionExerciseIds: [],
@@ -434,6 +645,32 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "moderate",
       jointStressTags: ["loaded_hinge", "loaded_spinal_flexion", "grip_intensive"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "bench",
+        bodySupport: "hands_supported",
+        reviewStatus: "accepted",
+        notes: "Bench may support the free hand, but torso/trunk position remains athlete-controlled.",
+      },
+      demands: {
+        trunk_control: demand("high", "Unsupported torso position plus load creates high trunk-control demand."),
+        scapular_control: demand("moderate", "Horizontal pull requires scapular control under load."),
+        stability: demand("high", "Unilateral loaded row has high stability demand."),
+        coordination: demand("moderate", "Unilateral pull with torso control."),
+        range: demand("moderate", "Row range must be controlled."),
+        joint_control: demand("moderate", "Shoulder/elbow and lumbar position control."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("low", "Not serratus-focused."),
+        upwardRotationControl: demand("low", "Not upward-rotation-focused."),
+        retractionDemand: demand("moderate", "Rowing emphasizes retraction/control."),
+        externalRotationContribution: demand("low", "External rotation not explicit in current catalog."),
+        loadedScapularControl: demand("high", "Loaded unilateral row with trunk control demand."),
+        preparationSuitability: "possible",
+        reviewStatus: "needs_review",
+        notes: "Loaded scapular-control demand should be reviewed.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: ["chest-supported-dumbbell-row", "seated-cable-row"],
       progressionExerciseIds: [],
@@ -476,6 +713,32 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["grip_intensive"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "machine",
+        bodySupport: "seated_supported",
+        reviewStatus: "accepted",
+        notes: "Machine-guided row with stable seated support.",
+      },
+      demands: {
+        trunk_control: demand("low", "Machine support keeps trunk-control demand low."),
+        scapular_control: demand("moderate", "Horizontal pulling still needs scapular control."),
+        stability: demand("low", "Machine path and support lower stability demand."),
+        coordination: demand("low", "Guided row pattern."),
+        range: demand("moderate", "Scapular reach/retraction range is relevant."),
+        joint_control: demand("moderate", "Shoulder/elbow control under load."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("low", "Not serratus-emphasis."),
+        upwardRotationControl: demand("low", "Not upward-rotation-emphasis."),
+        retractionDemand: demand("moderate", "Rowing emphasizes retraction/control."),
+        externalRotationContribution: demand("low", "External rotation not explicit."),
+        loadedScapularControl: demand("moderate", "Loadable machine row."),
+        preparationSuitability: "possible",
+        reviewStatus: "needs_review",
+        notes: "Machine-specific scapular path needs review.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: ["band-row", "seated-cable-row"],
       progressionExerciseIds: ["chest-supported-dumbbell-row"],
@@ -518,6 +781,32 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["grip_intensive"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "cable_or_band_anchor",
+        bodySupport: "seated_supported",
+        reviewStatus: "accepted",
+        notes: "Seated cable setup with stable lower-body support.",
+      },
+      demands: {
+        trunk_control: demand("low", "Seated stable setup keeps trunk-control demand low to moderate."),
+        scapular_control: demand("moderate", "Scapular control is relevant to reach and finish."),
+        stability: demand("low", "Stable seated setup."),
+        coordination: demand("low", "Simple bilateral pull pattern."),
+        range: demand("moderate", "Reach/row range is relevant."),
+        joint_control: demand("moderate", "Shoulder/elbow path under load."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("low", "Not serratus-emphasis."),
+        upwardRotationControl: demand("low", "Not upward-rotation-emphasis."),
+        retractionDemand: demand("moderate", "Rowing emphasizes retraction/control."),
+        externalRotationContribution: demand("low", "External rotation not explicit."),
+        loadedScapularControl: demand("moderate", "Loadable cable row."),
+        preparationSuitability: "possible",
+        reviewStatus: "needs_review",
+        notes: "Cable row scapular mechanics need review.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: ["band-row"],
       progressionExerciseIds: ["chest-supported-dumbbell-row"],
@@ -560,6 +849,32 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: [],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "cable_or_band_anchor",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Anchored band provides resistance but not body support.",
+      },
+      demands: {
+        trunk_control: demand("low", "Low-load row with modest trunk demand."),
+        scapular_control: demand("low", "Accessible scapular exposure without heavy loading."),
+        stability: demand("low", "Low external load and simple setup."),
+        coordination: demand("low", "Simple band pull."),
+        range: demand("moderate", "Row reach/retraction range is relevant."),
+        joint_control: demand("low", "Low joint loading."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("low", "Not serratus-emphasis."),
+        upwardRotationControl: demand("low", "Not upward-rotation-emphasis."),
+        retractionDemand: demand("moderate", "Band row rehearses retraction/control."),
+        externalRotationContribution: demand("low", "External rotation not explicit."),
+        loadedScapularControl: demand("low", "Band loading is limited."),
+        preparationSuitability: "good",
+        reviewStatus: "needs_review",
+        notes: "Band row is preparation-friendly but exact scapular emphasis needs review.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: [],
       progressionExerciseIds: ["seated-cable-row"],
@@ -608,6 +923,32 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "moderate",
       jointStressTags: ["overhead_pressing", "loaded_spinal_extension"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "none",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "External-load overhead press without fixed path unless bench is optionally used.",
+      },
+      demands: {
+        trunk_control: demand("moderate", "Overhead loading can demand trunk position control."),
+        scapular_control: demand("high", "Overhead press requires scapular upward rotation/control."),
+        stability: demand("moderate", "Dumbbell overhead stability demand."),
+        coordination: demand("moderate", "Coordinated overhead press."),
+        range: demand("high", "Overhead shoulder range is central."),
+        joint_control: demand("high", "Shoulder/scapular control under overhead load."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("moderate", "Serratus contribution likely relevant."),
+        upwardRotationControl: demand("high", "Overhead pressing requires upward rotation."),
+        retractionDemand: demand("low", "Not retraction-focused."),
+        externalRotationContribution: demand("moderate", "Cuff contribution likely relevant."),
+        loadedScapularControl: demand("high", "Loaded overhead scapular control."),
+        preparationSuitability: "poor",
+        reviewStatus: "needs_review",
+        notes: "Overhead press scapular demands should be reviewed.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: ["serratus-wall-slide"],
       progressionExerciseIds: [],
@@ -734,6 +1075,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["deep_knee_flexion", "loaded_knee_flexion"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "none",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Free-standing loaded squat pattern.",
+      },
+      demands: {
+        trunk_control: demand("moderate", "Anterior load requires trunk position control."),
+        stability: demand("moderate", "Free squat pattern with implement."),
+        coordination: demand("low", "Bilateral squat coordination is modest."),
+        range: demand("moderate", "Squat depth range is adjustable."),
+        joint_control: demand("moderate", "Hip/knee/ankle control under load."),
+      },
+    }),
     progression: {
       regressionExerciseIds: ["bodyweight-box-squat"],
       progressionExerciseIds: ["leg-press"],
@@ -776,6 +1132,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["deep_knee_flexion", "loaded_knee_flexion"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "machine",
+        bodySupport: "seated_supported",
+        reviewStatus: "accepted",
+        notes: "Machine-guided lower-body press with trunk support.",
+      },
+      demands: {
+        trunk_control: demand("low", "Seat/back support limits trunk demand."),
+        stability: demand("low", "Machine path reduces stability demand."),
+        coordination: demand("low", "Guided bilateral lower-body pattern."),
+        range: demand("moderate", "Depth/range must still be controlled."),
+        joint_control: demand("moderate", "Hip/knee control under load."),
+      },
+    }),
     progression: {
       regressionExerciseIds: ["goblet-squat"],
       progressionExerciseIds: [],
@@ -819,6 +1190,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["deep_knee_flexion"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "box",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Box target constrains depth and confidence.",
+      },
+      demands: {
+        trunk_control: demand("low", "Low-load squat control."),
+        stability: demand("low", "Box target reduces uncontrolled range."),
+        coordination: demand("low", "Simple squat pattern."),
+        range: demand("low", "Range can be constrained by box height."),
+        joint_control: demand("low", "Low-load joint-control exposure."),
+      },
+    }),
     progression: {
       regressionExerciseIds: [],
       progressionExerciseIds: ["goblet-squat"],
@@ -867,6 +1253,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "moderate",
       jointStressTags: ["loaded_hinge", "loaded_spinal_flexion", "grip_intensive"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "none",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Free-standing loaded hinge.",
+      },
+      demands: {
+        trunk_control: demand("high", "Loaded hinge requires trunk and lumbar position control."),
+        stability: demand("moderate", "Free hinge stability demand."),
+        coordination: demand("moderate", "Hip hinge coordination under load."),
+        range: demand("moderate", "Hip hinge range must be controlled."),
+        joint_control: demand("high", "Hip/lumbar control under load."),
+      },
+    }),
     progression: {
       regressionExerciseIds: ["cable-pull-through"],
       progressionExerciseIds: [],
@@ -909,6 +1310,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["loaded_hinge"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "cable_or_band_anchor",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Cable load guides hinge direction with lower axial loading.",
+      },
+      demands: {
+        trunk_control: demand("moderate", "Hinge exposure with lower axial demand than RDL."),
+        stability: demand("moderate", "Standing cable hinge."),
+        coordination: demand("low", "Cable direction can simplify hinge learning."),
+        range: demand("moderate", "Hip hinge range is trained."),
+        joint_control: demand("moderate", "Hip/lumbar control under moderate demand."),
+      },
+    }),
     progression: {
       regressionExerciseIds: [],
       progressionExerciseIds: ["dumbbell-romanian-deadlift"],
@@ -951,6 +1367,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["deep_knee_flexion", "loaded_knee_flexion"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "none",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Unilateral stance can be externally supported but is not inherently supported.",
+      },
+      demands: {
+        trunk_control: demand("moderate", "Unilateral lower-body work requires trunk control."),
+        stability: demand("moderate", "Single-leg stance pattern."),
+        coordination: demand("moderate", "Split stance and depth control."),
+        range: demand("moderate", "Depth can be scaled."),
+        joint_control: demand("moderate", "Hip/knee/ankle control under unilateral load."),
+      },
+    }),
     progression: {
       regressionExerciseIds: ["step-up"],
       progressionExerciseIds: [],
@@ -993,6 +1424,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["loaded_knee_flexion"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "box",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Box/step height constrains range; external hand support is optional.",
+      },
+      demands: {
+        trunk_control: demand("moderate", "Unilateral step requires trunk control."),
+        stability: demand("moderate", "Step-up balance and stance control."),
+        coordination: demand("moderate", "Stepping pattern coordination."),
+        range: demand("moderate", "Range depends on step height."),
+        joint_control: demand("moderate", "Hip/knee/ankle control."),
+      },
+    }),
     progression: {
       regressionExerciseIds: ["bodyweight-box-squat"],
       progressionExerciseIds: ["split-squat"],
@@ -1159,6 +1605,31 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: [],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "machine",
+        bodySupport: "seated_supported",
+        reviewStatus: "accepted",
+        notes: "Machine-supported rear-delt/scapular isolation.",
+      },
+      demands: {
+        scapular_control: demand("moderate", "Supported loaded scapular/rear-delt control."),
+        stability: demand("low", "Machine support lowers stability demand."),
+        coordination: demand("low", "Guided accessory movement."),
+        range: demand("moderate", "Scapular/rear-delt range is relevant."),
+        joint_control: demand("moderate", "Shoulder control under load."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("low", "Not serratus-focused."),
+        upwardRotationControl: demand("low", "Not upward-rotation-focused."),
+        retractionDemand: demand("moderate", "Rear-delt/retraction control."),
+        externalRotationContribution: demand("low", "External rotation not primary."),
+        loadedScapularControl: demand("moderate", "Loaded machine-supported scapular work."),
+        preparationSuitability: "good",
+        reviewStatus: "needs_review",
+        notes: "Machine-specific scapular path needs human review.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: ["band-face-pull"],
       progressionExerciseIds: [],
@@ -1201,6 +1672,31 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: [],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "cable_or_band_anchor",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Anchored band resistance with standing body position.",
+      },
+      demands: {
+        scapular_control: demand("high", "Direct scapular-control drill with cuff/rear-delt contribution."),
+        stability: demand("low", "Low-load standing setup."),
+        coordination: demand("moderate", "Requires coordinated pull and external-rotation/retraction control."),
+        range: demand("moderate", "Pull-to-face range is controlled."),
+        joint_control: demand("moderate", "Shoulder/scapular control is central."),
+      },
+      scapularMechanics: scapularMechanics({
+        serratusContribution: demand("low", "Not serratus-emphasis."),
+        upwardRotationControl: demand("low", "Not upward-rotation-focused."),
+        retractionDemand: demand("high", "Face pull emphasizes retraction/posterior shoulder control."),
+        externalRotationContribution: demand("moderate", "Rotator cuff contribution is modeled from catalog secondary muscle."),
+        loadedScapularControl: demand("moderate", "Band load is limited but active."),
+        preparationSuitability: "excellent",
+        reviewStatus: "needs_review",
+        notes: "Face-pull cuff/retraction emphasis needs human review.",
+      }),
+    }),
     progression: {
       regressionExerciseIds: ["serratus-wall-slide"],
       progressionExerciseIds: ["reverse-pec-deck"],
@@ -1331,6 +1827,21 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["long_lever_core"],
     },
+    mechanics: mechanics({
+      support: {
+        externalSupport: "cable_or_band_anchor",
+        bodySupport: "standing",
+        reviewStatus: "accepted",
+        notes: "Standing anti-rotation drill with external cable or band resistance.",
+      },
+      demands: {
+        trunk_control: demand("high", "Anti-rotation resistance creates higher trunk-control demand than supine drills."),
+        stability: demand("moderate", "Standing posture against lateral pull."),
+        coordination: demand("low", "Simple press-and-hold pattern."),
+        range: demand("low", "Small press-out range."),
+        joint_control: demand("low", "Low joint stress; trunk control is primary."),
+      },
+    }),
     progression: {
       regressionExerciseIds: ["dead-bug"],
       progressionExerciseIds: [],
