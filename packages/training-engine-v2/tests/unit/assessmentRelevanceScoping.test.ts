@@ -788,6 +788,92 @@ describe("assessment relevance scoping", () => {
     expect(oneArmRow.relevance).toBe("none");
   });
 
+  it("keeps generic scapular history out of retraction feature-capability evidence", () => {
+    const baseRequest = fullGymScapularActivationRequest(
+      explicitScapularFeatureAssessment("retraction_control"),
+    );
+    const historyRequest = withEvaluationAsOf(
+      withTrainingHistory(baseRequest, {
+        exerciseHistory: {
+          events: [
+            {
+              id: "generic-scapular-success",
+              exerciseId: "serratus-wall-slide",
+              type: "too_easy",
+              occurredAt: "2026-08-07T00:00:00.000Z",
+              movementRole: "scapular_control",
+              notes: "Generic scapular-control drill was easy.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+        progressionState: {
+          ...EMPTY_TRAINING_HISTORY.progressionState,
+          successfulMovementRoles: ["scapular_control"],
+        },
+      }),
+      FIXED_AS_OF,
+    );
+    const baseTrace = assessmentTraceForRequest(baseRequest, "band-face-pull");
+    const historyTrace = assessmentTraceForRequest(historyRequest, "band-face-pull");
+
+    expect(historyTrace.demandCapability.currentCapability).toBeGreaterThan(
+      baseTrace.demandCapability.currentCapability,
+    );
+    expect(historyTrace.demandCapability.capabilityEstimate.estimateSource).toBe("history_inferred");
+    expect(historyTrace.featureDevelopment[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "retraction_control",
+        featureCapabilityEstimate: baseTrace.featureDevelopment[0].featureCapabilityEstimate,
+        featureCapabilitySource: "phase_default",
+        featureCapabilityEvidenceQuality: "weak",
+        featureCapabilityPriorSource: "phase_experience_default",
+        featureSpecificEvidenceSources: [],
+        featureSpecificHistorySupport: "unavailable_not_modeled",
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
+    );
+    expect(historyTrace.featureDevelopment[0].evidence.join(" ")).toContain(
+      "Generic movement-role history is not used as feature-specific capability evidence",
+    );
+  });
+
+  it("does not label unrelated scapular history as serratus feature-specific evidence", () => {
+    const request = withEvaluationAsOf(
+      withTrainingHistory(fullGymScapularActivationRequest(scapularAssessment("high")), {
+        exerciseHistory: {
+          events: [
+            {
+              id: "generic-retraction-history",
+              exerciseId: "band-face-pull",
+              type: "appropriate_challenge",
+              occurredAt: "2026-08-07T00:00:00.000Z",
+              movementRole: "scapular_control",
+              notes: "Generic scapular-control history from a retraction-emphasis exercise.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+      }),
+      FIXED_AS_OF,
+    );
+    const wallSlide = assessmentTraceForRequest(request, "serratus-wall-slide");
+
+    expect(wallSlide.relevance).toBe("moderate");
+    expect(wallSlide.demandCapability.capabilityEstimate.estimateSource).toBe("history_inferred");
+    expect(wallSlide.featureDevelopment[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "serratus_or_protraction_control",
+        featureSpecificEvidenceSources: [],
+        featureSpecificHistorySupport: "unavailable_not_modeled",
+        featureCapabilityEvidenceQuality: "weak",
+        featureDemandCapabilityMatch: "not_applicable",
+      }),
+    );
+  });
+
   it("keeps generic scapular-control signals broad when no feature evidence exists", () => {
     const request = fullGymScapularActivationRequest(genericScapularAssessment());
     const wallSlide = assessmentTraceForRequest(request, "serratus-wall-slide");
@@ -1326,7 +1412,11 @@ describe("assessment relevance scoping", () => {
     expect(explicitTrace?.demandCapability.capabilityEstimate.evidenceQuality).toBe("weak");
     expect(explicitTrace?.featureDevelopment[0]).toEqual(
       expect.objectContaining({
+        featureCapabilitySource: "assessment_inferred",
         featureCapabilityEvidenceQuality: "moderate",
+        featureCapabilityPriorSource: "phase_experience_default",
+        featureSpecificEvidenceSources: ["assessment_severity"],
+        featureSpecificHistorySupport: "unavailable_not_modeled",
         featureDemandCapabilityMatch: "not_applicable",
       }),
     );

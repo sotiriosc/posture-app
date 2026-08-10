@@ -1966,7 +1966,10 @@ function featureTraceCell(trace: ReturnType<typeof calculateAssessmentRelevanceT
         `review=${development.featureReviewStatus}`,
         `match=${development.featureMatch}`,
         `challenge=${formatNumber(development.featureChallengeDemand)}/${development.featureChallengeDemandSource}`,
-        `featureCapability=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+        `featureCapabilityPrior=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilityPriorSource}`,
+        `featureCapabilityEvidence=${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+        `featureSpecificEvidence=${development.featureSpecificEvidenceSources.join(",") || "none"}`,
+        `featureHistory=${development.featureSpecificHistorySupport}`,
         `featureDemandCapability=${development.featureDemandCapabilityMatch}`,
       ].join("; ");
     })
@@ -1999,7 +2002,10 @@ function featureDevelopmentCell(trace: ReturnType<typeof calculateAssessmentRele
     .map((development) =>
       [
         `challenge=${formatNumber(development.featureChallengeDemand)}/${development.featureChallengeDemandSource}`,
-        `capability=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+        `prior=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilityPriorSource}`,
+        `evidence=${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+        `specificEvidence=${development.featureSpecificEvidenceSources.join(",") || "none"}`,
+        `history=${development.featureSpecificHistorySupport}`,
         `match=${development.featureDemandCapabilityMatch}`,
       ].join("; "),
     )
@@ -2144,7 +2150,10 @@ function currentFeatureDemandCell(
     `emphasis=${development.featureEmphasisLevel}/${development.featureEmphasisSource}`,
     `overallTaskDemand=${formatNumber(development.overallTaskDemand)}/${development.overallTaskDemandSource.level}`,
     `featureChallenge=${formatNumber(development.featureChallengeDemand)}/${development.featureChallengeDemandSource}`,
-    `featureCapability=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+    `featureCapabilityPrior=${formatNumber(development.featureCapabilityEstimate)}/${development.featureCapabilityPriorSource}`,
+    `featureCapabilityEvidence=${development.featureCapabilitySource}/${development.featureCapabilityEvidenceQuality}`,
+    `featureSpecificEvidence=${development.featureSpecificEvidenceSources.join(",") || "none"}`,
+    `featureHistory=${development.featureSpecificHistorySupport}`,
     `featureDemandCapability=${development.featureDemandCapabilityMatch}`,
   ].join("; ");
 }
@@ -2244,6 +2253,124 @@ function renderFeatureEmphasisVsCapabilityDemandReview(): string {
   ].join("\n");
 }
 
+function withGenericScapularHistory(request: CandidateRequest, exerciseId: string): CandidateRequest {
+  return {
+    ...request,
+    evaluationContext: {
+      asOf: "2026-08-10T00:00:00.000Z",
+    },
+    history: history({
+      exerciseHistory: {
+        events: [
+          {
+            id: `${request.id}-generic-scapular-history`,
+            exerciseId,
+            type: "too_easy",
+            occurredAt: "2026-08-07T00:00:00.000Z",
+            movementRole: "scapular_control",
+            notes: "Generic scapular-control history without normalized assessment-feature tags.",
+          },
+        ],
+        stableExerciseIds: [],
+        blockedExerciseIds: [],
+      },
+      progressionState: {
+        ...EMPTY_TRAINING_HISTORY.progressionState,
+        successfulMovementRoles: ["scapular_control"],
+      },
+    }),
+  };
+}
+
+function featureCapabilityProvenanceRow(input: {
+  readonly label: string;
+  readonly request: CandidateRequest;
+  readonly exerciseId: string;
+}): readonly string[] {
+  const trace = calculateAssessmentRelevanceTraces({
+    request: input.request,
+    exercise: referenceExerciseById(input.exerciseId),
+  })[0];
+  const feature = trace.featureDevelopment[0];
+
+  return [
+    input.label,
+    input.exerciseId,
+    trace.relevance,
+    taskCapabilityCell(trace),
+    feature
+      ? [
+          formatNumber(feature.featureCapabilityEstimate),
+          feature.featureCapabilitySource,
+          feature.featureCapabilityEvidenceQuality,
+          feature.featureCapabilityPriorSource,
+        ].join("/")
+      : "not_applicable",
+    feature?.featureSpecificEvidenceSources.join(",") || "none",
+    feature?.featureSpecificHistorySupport ?? "not_applicable",
+    feature?.featureDemandCapabilityMatch ?? "not_applicable",
+    trace.boundedInfluence.toFixed(3),
+  ];
+}
+
+function renderFeatureCapabilityProvenanceReview(): string {
+  const retractionRequest = withGenericScapularHistory(
+    featureReviewRequest(
+      "feature-capability-provenance-retraction-history",
+      featureSpecificScapularPriority({
+        id: "provenance-retraction-control",
+        feature: "retraction_control",
+        description: "High-confidence retraction scapular-control priority.",
+      }),
+    ),
+    "serratus-wall-slide",
+  );
+  const serratusRequest = withGenericScapularHistory(
+    featureReviewRequest("feature-capability-provenance-serratus-history", scapularPriority),
+    "band-face-pull",
+  );
+  const severityRequest = featureReviewRequest(
+    "feature-capability-provenance-serratus-severity",
+    assessment([
+      {
+        ...scapularPriority.signals[0],
+        id: "provenance-serratus-moderate-severity",
+        severity: "moderate",
+      },
+    ]),
+  );
+  const rows = [
+    featureCapabilityProvenanceRow({
+      label: "Retraction assessment + generic scapular history",
+      request: retractionRequest,
+      exerciseId: "band-face-pull",
+    }),
+    featureCapabilityProvenanceRow({
+      label: "Serratus assessment + generic retraction/scapular history",
+      request: serratusRequest,
+      exerciseId: "serratus-wall-slide",
+    }),
+    featureCapabilityProvenanceRow({
+      label: "Serratus assessment + explicit feature severity",
+      request: severityRequest,
+      exerciseId: "serratus-wall-slide",
+    }),
+  ];
+
+  return [
+    "# Feature Capability Provenance Review",
+    "",
+    "Overall task capability and feature capability now have separate provenance. Generic `scapular_control` history may still contribute to overall task capability, but it is not feature-specific evidence because `ExerciseHistoryEvent` currently carries only `movementRole`, not normalized assessment features.",
+    "",
+    "| Scenario | Exercise | Relevance | Overall Task Capability | Feature Capability Prior/Evidence | Feature-Specific Evidence | Feature History Support | Feature Match | Bounded |",
+    "|---|---|---|---|---|---|---|---|---:|",
+    ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
+    "",
+    "Current limitation: feature capability is a weak phase/experience prior unless the assessment signal supplies feature-specific severity. Future feature-aware history needs explicit normalized feature evidence at the history boundary before it can support retraction, serratus/protraction, upward-rotation, cuff, or loaded-scapular-stability capability.",
+    "",
+  ].join("\n");
+}
+
 function renderRankingReviewMarkdown(): string {
   const scenarios = buildScenarios();
   const sections: string[] = [
@@ -2271,9 +2398,11 @@ function renderRankingReviewMarkdown(): string {
   sections.push(renderPostureRegression());
   sections.push(renderFeatureSpecificScapularAssessmentReview());
   sections.push(renderFeatureEmphasisVsCapabilityDemandReview());
+  sections.push(renderFeatureCapabilityProvenanceReview());
   sections.push("## Questionable Rankings / Modeling Gaps");
   sections.push("");
-  sections.push("- Capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.");
+  sections.push("- Overall task capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.");
+  sections.push("- Feature capability estimates do not consume generic movement-role history; current history records do not carry normalized feature tags.");
   sections.push("- `too_easy` and `appropriate_challenge` history events can now influence inferred capability when movement-role matched, but continuity/progression semantics still need more domain nuance.");
   sections.push("- Scapular candidates now expose feature-specific differentiation, but feature challenge demand is not yet modeled; feature-specific signals therefore stay neutral for bounded influence until that challenge scale exists.");
   sections.push("- Unknown metadata is now neutral and observable, but the catalog still has unknown fields that should not be promoted into production prescription without review.");

@@ -171,6 +171,9 @@ AssessmentRelevanceTrace {
     featureCapabilityEstimate
     featureCapabilitySource
     featureCapabilityEvidenceQuality
+    featureCapabilityPriorSource
+    featureSpecificEvidenceSources
+    featureSpecificHistorySupport
     featureDemandCapabilityMatch
     evidence
   }
@@ -274,9 +277,11 @@ Feature-specific traces now separate four concepts:
 - `featureEmphasisLevel` says how much the exercise expresses the assessment feature.
 - `overallTaskDemand` keeps generic `mechanics.demands.scapular_control` visible as the task's overall control requirement.
 - `featureChallengeDemand` is the difficulty of executing that exact feature in the exercise. It is currently `unknown/not_modeled` unless future reviewed metadata explicitly provides it.
-- `featureCapabilityEstimate` scopes assessment severity to the feature-specific capability estimate rather than reducing broad/global scapular task capability.
+- `featureCapabilityEstimate` scopes assessment severity to the feature-specific capability prior rather than reducing broad/global scapular task capability.
 
 If feature relevance is strong/moderate/low but `featureChallengeDemand` is unknown, the feature demand/capability match remains `not_applicable`; the developmental relationship remains neutral; and bounded influence is zero. Low feature expression is labeled `low_expression`, not `conflict`. `conflict` is reserved for actual opposing or contraindicating mechanics if those are modeled later. Unknown or `needs_review` feature metadata is traced explicitly and is not promoted into high-confidence certainty.
+
+Feature capability provenance is deliberately stricter than overall task capability provenance. Overall scapular task capability may use movement-role-matched training history. Feature capability does not, because current `ExerciseHistoryEvent` values carry only `movementRole` and not normalized assessment features. Until feature-aware history exists at that boundary, feature-specific history support is traced as `unavailable_not_modeled`; generic `scapular_control` history cannot become retraction, serratus, upward-rotation, cuff, or loaded-scapular-stability evidence. The feature capability estimate is therefore a weak `phase_experience_default` prior unless the assessment signal supplies feature-specific severity, which is traced through `featureSpecificEvidenceSources`.
 
 ## Assessment Semantics Modules
 

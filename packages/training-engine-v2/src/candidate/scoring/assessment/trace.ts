@@ -80,7 +80,6 @@ export function makeAssessmentRelevanceTrace(input: {
   const featureDevelopment = buildFeatureDevelopmentTraces({
     request: input.request,
     exercise: input.exercise,
-    signal: input.signal,
     signalInterpretation,
     featureMatches: input.relevanceDecision.featureMatches,
     overallTaskDemand: demandCapability,

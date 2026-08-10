@@ -163,6 +163,9 @@ export interface AssessmentFeatureMatchTrace {
 
 export type FeatureEmphasisSource = "scapular_mechanics" | "unknown";
 export type FeatureChallengeDemandSource = "not_modeled" | "unknown";
+export type FeatureCapabilityPriorSource = "phase_experience_default" | "not_applicable";
+export type FeatureSpecificEvidenceSource = "assessment_severity";
+export type FeatureSpecificHistorySupport = "unavailable_not_modeled";
 
 export interface AssessmentFeatureDevelopmentTrace {
   readonly assessmentFeature: AssessmentFeature;
@@ -177,6 +180,9 @@ export interface AssessmentFeatureDevelopmentTrace {
   readonly featureCapabilityEstimate: number | null;
   readonly featureCapabilitySource: CapabilityEstimateSource | "not_applicable";
   readonly featureCapabilityEvidenceQuality: CapabilityEvidenceQuality;
+  readonly featureCapabilityPriorSource: FeatureCapabilityPriorSource;
+  readonly featureSpecificEvidenceSources: readonly FeatureSpecificEvidenceSource[];
+  readonly featureSpecificHistorySupport: FeatureSpecificHistorySupport;
   readonly featureDemandCapabilityMatch: DemandCapabilityMatch;
   readonly evidence: readonly string[];
 }

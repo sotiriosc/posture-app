@@ -882,7 +882,7 @@ function featureCells(trace: AssessmentRelevanceTrace): readonly string[] {
 
 function featureDevelopmentCells(trace: AssessmentRelevanceTrace): readonly string[] {
   if (trace.featureDevelopment.length === 0) {
-    return ["not_applicable", "not_applicable", "not_applicable"];
+    return ["not_applicable", "not_applicable", "not_applicable", "not_applicable"];
   }
 
   return [
@@ -895,7 +895,13 @@ function featureDevelopmentCells(trace: AssessmentRelevanceTrace): readonly stri
     trace.featureDevelopment
       .map(
         (feature) =>
-          `${formatNullable(feature.featureCapabilityEstimate)}/${feature.featureCapabilitySource}/${feature.featureCapabilityEvidenceQuality}`,
+          `${formatNullable(feature.featureCapabilityEstimate)}/${feature.featureCapabilityPriorSource}`,
+      )
+      .join(", "),
+    trace.featureDevelopment
+      .map(
+        (feature) =>
+          `${feature.featureCapabilitySource}/${feature.featureCapabilityEvidenceQuality}/specific=${feature.featureSpecificEvidenceSources.join(",") || "none"}/history=${feature.featureSpecificHistorySupport}`,
       )
       .join(", "),
     trace.featureDevelopment.map((feature) => feature.featureDemandCapabilityMatch).join(", "),
@@ -944,7 +950,8 @@ function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 
         "Task Capability",
         "Task Match",
         "Feature Challenge",
-        "Feature Capability",
+        "Feature Cap Prior",
+        "Feature Cap Evidence",
         "Feature Dev Match",
         "Severity",
         "Bounded",
