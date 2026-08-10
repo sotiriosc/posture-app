@@ -32,6 +32,20 @@ export type AssessmentConfidence = ConfidenceLevel;
 export type AssessmentPriority = PriorityLevel;
 export type AssessmentSeverity = "unknown" | "mild" | "moderate" | "substantial";
 
+export const ASSESSMENT_FEATURES = [
+  "serratus_or_protraction_control",
+  "upward_rotation_control",
+  "retraction_control",
+  "external_rotation_or_cuff_control",
+  "loaded_scapular_stability",
+] as const;
+
+export type AssessmentFeature = (typeof ASSESSMENT_FEATURES)[number];
+export type AssessmentFeatureSource =
+  | "explicit"
+  | "normalized_from_signal"
+  | "unknown";
+
 export interface AssessmentSignal {
   readonly id: string;
   readonly type: AssessmentSignalType;
@@ -43,6 +57,7 @@ export interface AssessmentSignal {
   readonly muscleGroup?: MuscleGroup;
   readonly side?: Side;
   readonly severity?: AssessmentSeverity;
+  readonly assessmentFeatures?: readonly AssessmentFeature[];
   readonly description: string;
 }
 

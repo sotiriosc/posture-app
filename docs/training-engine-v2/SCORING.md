@@ -148,6 +148,16 @@ AssessmentRelevanceTrace {
     deficitMagnitude
     evidence
   }
+  featureMatches {
+    assessmentFeature
+    assessmentFeatureSource: explicit | normalized_from_signal | unknown
+    candidateFeature
+    candidateFeatureLevel
+    candidateFeatureReviewStatus
+    candidateFeatureProfileReviewStatus
+    featureMatch: strong | moderate | weak | conflict | unknown
+    featureReason
+  }
   relationship
   relationshipReason
   demandCapability {
@@ -197,6 +207,52 @@ Assessment relevance and assessment relationship are intentionally separate:
 - history recency is deterministic: `CandidateRequest.evaluationContext.asOf` is the only evaluation time used by the engine. If `asOf` is absent or unparsable, timestamped history falls back to `no_recency` rather than reading the system clock;
 - unknown exercise mechanics use `candidateDemand: null` and `match: not_applicable`, so unknown does not silently become zero demand, easy, safe, ideal, or inappropriate.
 
+## Feature-Specific Scapular Semantics
+
+Scapular assessment findings now have a small normalized feature layer. The current contract supports:
+
+- `serratus_or_protraction_control`
+- `upward_rotation_control`
+- `retraction_control`
+- `external_rotation_or_cuff_control`
+- `loaded_scapular_stability`
+
+Generic scapular findings still work: a signal with `movementRole: "scapular_control"` and no feature-specific evidence may use broad movement-role relevance after training-need truth is established.
+
+Feature-specific scapular findings use a stricter order:
+
+1. hard training-need truth;
+2. signal classification;
+3. normalized feature extraction;
+4. broad scapular/upper-body domain check;
+5. candidate-specific feature matching from `exercise.mechanics.scapularMechanics`;
+6. generic scapular demand/capability;
+7. developmental relationship;
+8. bounded influence.
+
+That order prevents `movementRole: "scapular_control"` from short-circuiting candidate-specific mechanics when a signal also carries feature-specific meaning.
+
+Normalization is conservative:
+
+- explicit `assessmentFeatures` on `AssessmentSignal` produce `assessmentFeatureSource: explicit`;
+- `movementRole: "scapular_control"` or another scapular/shoulder signal plus `muscleGroup: "serratus"` derives `serratus_or_protraction_control`;
+- a scapular/shoulder signal plus `muscleGroup: "rotator_cuff"` derives `external_rotation_or_cuff_control`;
+- a scapular/shoulder signal plus `muscleGroup: "upper_back"` or `muscleGroup: "rear_delts"` derives `retraction_control`;
+- shoulder region alone does not derive upward rotation, cuff control, loaded stability, or any other fine feature;
+- insufficient evidence leaves the feature list empty and preserves generic behavior.
+
+Candidate feature matching reads the existing scapular mechanics fields:
+
+| Assessment Feature | Candidate Field |
+| --- | --- |
+| `serratus_or_protraction_control` | `scapularMechanics.serratusContribution` |
+| `upward_rotation_control` | `scapularMechanics.upwardRotationControl` |
+| `retraction_control` | `scapularMechanics.retractionDemand` |
+| `external_rotation_or_cuff_control` | `scapularMechanics.externalRotationContribution` |
+| `loaded_scapular_stability` | `scapularMechanics.loadedScapularControl` |
+
+Feature match determines feature relevance, not automatic score direction. Demand/capability and developmental relationship still decide whether a candidate supports control, provides appropriate exposure, under-challenges development, exceeds capability, or stays neutral. Unknown or `needs_review` feature metadata is traced explicitly and is not promoted into high-confidence certainty.
+
 ## Assessment Semantics Modules
 
 Assessment semantics are split by training responsibility:
@@ -204,6 +260,7 @@ Assessment semantics are split by training responsibility:
 | Module | Responsibility |
 | --- | --- |
 | `candidate/scoring/assessment/classifySignal.ts` | Classifies assessment signals into trunk, scapular, lower-body, or fallback demand dimensions. |
+| `candidate/scoring/assessment/features.ts` | Normalizes assessment features and matches them against candidate scapular mechanics. |
 | `candidate/scoring/assessment/specificity.ts` | Calculates candidate/request specificity after training-role truth is established. |
 | `candidate/scoring/assessment/relevance.ts` | Decides whether a signal is relevant to this candidate in this requested role. |
 | `candidate/scoring/assessment/candidateDemand.ts` | Reads explicit exercise demand metadata or known structured loading fields. |

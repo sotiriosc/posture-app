@@ -32,6 +32,7 @@ import type {
 } from "../../src/domain/primitives";
 import type { SessionSection, TrainingRole } from "../../src/domain/session";
 import type {
+  AssessmentFeature,
   AssessmentSignal,
   AssessmentState,
 } from "../../src/domain/assessment";
@@ -107,6 +108,12 @@ const SCAPULAR_SEMANTICS_EXERCISE_IDS = [
   "seated-cable-row",
   "chest-supported-dumbbell-row",
   "one-arm-dumbbell-row",
+] as const;
+const FEATURE_CONTRAST_EXERCISE_IDS = [
+  "serratus-wall-slide",
+  "band-face-pull",
+  "reverse-pec-deck",
+  "band-row",
 ] as const;
 
 function md(value: string | number | null | undefined): string {
@@ -372,6 +379,39 @@ const scapularPriority = assessment([
     description: "High-confidence scapular-control priority for audit tables.",
   },
 ]);
+
+const genericScapularPriority = assessment([
+  {
+    id: "review-generic-scapular-control-priority",
+    type: "control_finding",
+    source: "movement_screen",
+    confidence: "high",
+    priority: "primary",
+    region: "shoulder",
+    movementRole: "scapular_control",
+    description: "High-confidence generic scapular-control priority for contrast tables.",
+  },
+]);
+
+function featureSpecificScapularPriority(input: {
+  readonly id: string;
+  readonly feature: AssessmentFeature;
+  readonly description: string;
+}): AssessmentState {
+  return assessment([
+    {
+      id: input.id,
+      type: "control_finding",
+      source: "movement_screen",
+      confidence: "high",
+      priority: "primary",
+      region: "shoulder",
+      movementRole: "scapular_control",
+      assessmentFeatures: [input.feature],
+      description: input.description,
+    },
+  ]);
+}
 
 const shoulderScapularPriority = assessment([
   {
@@ -1340,6 +1380,7 @@ function renderScapularSemanticsTrace(): string {
     const trace = calculateAssessmentRelevanceTraces({ request, exercise })[0];
     const specificity = specificityForSignal({ signal, exercise, request, dimension });
     const directShortCircuit =
+      trace.featureMatches.length === 0 &&
       truthful &&
       Boolean(signal.movementRole) &&
       request.need.targetMovementRoles.includes(signal.movementRole as MovementRole) &&
@@ -1356,6 +1397,7 @@ function renderScapularSemanticsTrace(): string {
       specificity.toFixed(3),
       trace.relevance,
       trace.relevanceReasonCode,
+      featureTraceCell(trace),
       `${formatNumber(trace.demandCapability.candidateDemand)} (${trace.demandCapability.candidateDemandSource.level}/${trace.demandCapability.candidateDemandSource.source}/${trace.demandCapability.candidateDemandSource.reviewStatus})`,
       `${formatNumber(trace.demandCapability.capabilityEstimate.value)} (${trace.demandCapability.capabilityEstimate.estimateSource}/${trace.demandCapability.capabilityEstimate.evidenceQuality})`,
       trace.demandCapability.match,
@@ -1367,8 +1409,8 @@ function renderScapularSemanticsTrace(): string {
   });
 
   const table = [
-    "| Exercise | Classification | Training-Need Truth | Direct Role Short-Circuit | Specificity | Relevance | Reason Code | Candidate Demand | Capability | Match | Relationship | Influence Budget | Assessment Fit | Alignment Fit |",
-    "|---|---|---|---|---:|---|---|---|---|---|---|---|---:|---:|",
+    "| Exercise | Classification | Training-Need Truth | Direct Role Short-Circuit | Specificity | Relevance | Reason Code | Feature Trace | Candidate Demand | Capability | Match | Relationship | Influence Budget | Assessment Fit | Alignment Fit |",
+    "|---|---|---|---|---:|---|---|---|---|---|---|---|---|---:|---:|",
     ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
   ].join("\n");
 
@@ -1379,7 +1421,7 @@ function renderScapularSemanticsTrace(): string {
     "",
     table,
     "",
-    "Direct movement-role matching does short-circuit candidate-specific scapular mechanics. In `decideAssessmentRelevance`, if the signal movement role matches both the request and the candidate movement role, the engine returns high relevance immediately. The later scapular branch, which calls `specificityForSignal` and checks explicit `scapular_control` demand metadata, only runs when that direct movement-role path does not fire. As a result, `serratus-wall-slide`, `band-face-pull`, and `reverse-pec-deck` can all receive high relevance from the shared `scapular_control` role before the engine distinguishes serratus/upward-rotation/protraction versus retraction/external-rotation/loading details.",
+    "Direct movement-role matching no longer short-circuits candidate-specific scapular mechanics when a normalized scapular feature is present. A generic `scapular_control` signal can still use broad role relevance; a serratus/protraction, upward-rotation, retraction, cuff, or loaded-stability signal now has to pass candidate feature matching first.",
     "",
   ].join("\n");
 }
@@ -1390,13 +1432,13 @@ function renderAssessmentFeatureSemanticsAudit(): string {
     "",
     "| Feature Need | Current Expression | Current Consumption | Audit Finding |",
     "|---|---|---|---|",
-    "| serratus / protraction | `muscleGroup: serratus`; `scapularMechanics.serratusContribution`; no explicit protraction field | Generic muscle/role matching and generic `scapular_control` demand | Partially expressible, not specifically matched as protraction. |",
-    "| upward rotation | `scapularMechanics.upwardRotationControl` | Not consumed by relevance/specificity; only the generic scapular demand dimension is consumed | Metadata exists but does not yet drive candidate differentiation. |",
-    "| retraction | `scapularMechanics.retractionDemand` | Not consumed by relevance/specificity except through role/muscle/region and generic demand | Rows/face pulls/reverse pec deck are coarsely separated, not feature-matched. |",
-    "| external rotation / cuff | `muscleGroup: rotator_cuff`; `scapularMechanics.externalRotationContribution` | Generic scapular signal detection and muscle overlap; no feature-level cuff/external-rotation match | Partially expressible, weakly consumed. |",
-    "| scapular stability under load | `scapularMechanics.loadedScapularControl`; generic `demands.scapular_control` | Generic demand/capability matching; preparation-vs-loaded distinction does not govern relevance | The distinction is present in metadata but underused. |",
+    "| serratus / protraction | `muscleGroup: serratus`; `assessmentFeatures`; `scapularMechanics.serratusContribution` | Normalized feature matching before generic role relevance | Now consumed; current feature confidence is limited by profile-level review status. |",
+    "| upward rotation | `assessmentFeatures`; `scapularMechanics.upwardRotationControl` | Explicit feature matching before generic role relevance | Now consumed when supplied explicitly. |",
+    "| retraction | `assessmentFeatures`; posterior shoulder/upper-back normalized signal; `scapularMechanics.retractionDemand` | Explicit or normalized feature matching | Now consumed; rows/face pulls/reverse pec deck separate from wall-slide mechanics. |",
+    "| external rotation / cuff | `muscleGroup: rotator_cuff`; `assessmentFeatures`; `scapularMechanics.externalRotationContribution` | Explicit or normalized feature matching | Now consumed without inferring cuff from shoulder region alone. |",
+    "| scapular stability under load | `assessmentFeatures`; `scapularMechanics.loadedScapularControl`; generic `demands.scapular_control` | Explicit feature matching plus demand/capability relationship | Now distinguishes loaded scapular stability from low-load preparation. |",
     "",
-    "Recommendation: add a normalized assessment feature/tag layer before Session Composer relies on scapular selection. The catalog now contains useful annotations, but relevance and specificity still consume mostly movement role, muscle, region, section, and a single generic `scapular_control` demand dimension.",
+    "Recommendation: keep the normalized feature layer narrow and continue reviewing profile-level `needs_review` metadata before Session Composer relies on feature-specific scapular selection.",
     "",
   ].join("\n");
 }
@@ -1558,7 +1600,7 @@ function renderStrongDecisionReview(): string {
     "## Strong Decisions From Weak Or Coarse Metadata",
     "",
     "- `machine-row` and `seated-cable-row` can tie exactly because current scoring-relevant metadata does not encode enough machine-path versus cable-path distinction. That tie is observable and should not be interpreted as an exercise-science equivalence.",
-    "- Direct `scapular_control` movement-role matching can assign high assessment relevance before candidate-specific scapular mechanics are considered. This is strongest for `serratus-wall-slide`, `band-face-pull`, and `reverse-pec-deck`, where the shared role can hide different serratus/upward-rotation/retraction/cuff/loading emphases.",
+    "- Generic `scapular_control` movement-role matching can still assign broad relevance when the signal has no feature-specific evidence. Feature-specific scapular findings now use candidate scapular mechanics before relevance is established.",
     "- Unknown mechanics are neutral rather than favorable, but unknown support/demand metadata remains broad for several accessory exercises. Those exercises should not receive production-level prescription confidence until reviewed.",
     "",
   ].join("\n");
@@ -1576,8 +1618,8 @@ function renderKnowledgeGapAudit(): string {
     "## Unknown And Missing Knowledge Gaps",
     "",
     "P0 gaps:",
-    "- Add normalized scapular feature semantics before relying on scapular findings for session composition: serratus/protraction, upward rotation, retraction, external rotation/cuff, and loaded scapular stability need explicit feature matching.",
-    "- Review direct movement-role relevance so `scapular_control` does not bypass candidate-specific mechanics when a signal is feature-specific.",
+    "- Review and harden normalized scapular feature semantics before relying on scapular findings for session composition: serratus/protraction, upward rotation, retraction, external rotation/cuff, and loaded scapular stability now match explicitly, but profile-level review remains incomplete.",
+    "- Keep direct movement-role relevance generic-only so `scapular_control` does not bypass candidate-specific mechanics when a signal is feature-specific.",
     "- Resolve row differentiation if machine/cable/chest-supported row ordering will be used for targeted prescription beyond coarse candidate ranking.",
     "",
     "P1 gaps:",
@@ -1600,7 +1642,7 @@ function renderReadinessClassification(): string {
     "",
     "Classification: **READY_FOR_TARGETED_FIXES**",
     "",
-    "Rationale: the current V2 candidate engine is now deterministic, observable, and safe enough to target specific semantics fixes. It is not ready for Session Composer because the audit found coarse scapular feature consumption, row equivalence gaps, and progression graph relationships that are still context-dependent or questionable.",
+    "Rationale: the current V2 candidate engine is deterministic, observable, and safe enough for targeted semantics fixes. Feature-specific scapular consumption is now implemented at Candidate Intelligence scope, but it is still not ready for Session Composer because row equivalence gaps, phase suitability calibration, and progression graph relationships remain unresolved.",
     "",
   ].join("\n");
 }
@@ -1769,9 +1811,18 @@ function assessmentSemanticsCell(candidate: RankedCandidate): string {
   return traces
     .map((trace) => {
       const capability = trace.demandCapability.capabilityEstimate;
+      const features = trace.featureMatches.length === 0
+        ? "generic"
+        : trace.featureMatches
+            .map(
+              (feature) =>
+                `${feature.assessmentFeature}/${feature.assessmentFeatureSource}/${feature.candidateFeatureLevel}/${feature.candidateFeatureReviewStatus}/${feature.featureMatch}`,
+            )
+            .join(", ");
 
       return [
         `signal ${trace.signalId}`,
+        `feature ${features}`,
         `conf ${trace.confidence}`,
         `priority ${trace.priority}`,
         `severity ${trace.signalInterpretation.severity}`,
@@ -1885,6 +1936,144 @@ function renderPostureRegression(): string {
   return sections.join("\n");
 }
 
+function featureReviewRequest(id: string, assessmentState: AssessmentState): CandidateRequest {
+  return makeRequest({
+    id,
+    athleteId: "intermediate-gym-muscle-gain",
+    goal: "posture_and_movement_quality",
+    phaseId: "phase_1",
+    need: scapularActivationNeed,
+    equipment: FULL_GYM_EQUIPMENT,
+    assessment: assessmentState,
+  });
+}
+
+function featureTraceCell(trace: ReturnType<typeof calculateAssessmentRelevanceTraces>[number]): string {
+  if (trace.featureMatches.length === 0) {
+    return "generic; source=unknown; candidate=not_applicable; review=not_applicable; match=none";
+  }
+
+  return trace.featureMatches
+    .map((feature) =>
+      [
+        feature.assessmentFeature,
+        `source=${feature.assessmentFeatureSource}`,
+        `candidate=${feature.candidateFeature}:${feature.candidateFeatureLevel}`,
+        `review=${feature.candidateFeatureReviewStatus}`,
+        `profileReview=${feature.candidateFeatureProfileReviewStatus}`,
+        `match=${feature.featureMatch}`,
+      ].join("; "),
+    )
+    .join("<br>");
+}
+
+function renderFeatureContrastTable(input: {
+  readonly title: string;
+  readonly requestId: string;
+  readonly assessmentState: AssessmentState;
+}): string {
+  const request = featureReviewRequest(input.requestId, input.assessmentState);
+  const result = rankCandidateRequest(request);
+  const rankedById = new Map(result.rankedCandidates.map((candidate) => [candidate.exercise.id, candidate]));
+  const rejectedById = new Map(
+    result.hardRejectedCandidates.map((candidate) => [candidate.exercise.id, candidate]),
+  );
+  const rows = FEATURE_CONTRAST_EXERCISE_IDS.map((exerciseId) => {
+    const exercise = referenceExerciseById(exerciseId);
+    const candidate = rankedById.get(exerciseId);
+    const rejection = rejectedById.get(exerciseId);
+    const trace = calculateAssessmentRelevanceTraces({ request, exercise })[0];
+
+    return [
+      exerciseId,
+      candidate ? String(candidate.rank) : "rejected",
+      candidate ? candidate.total.toFixed(3) : "n/a",
+      rejection
+        ? rejection.eligibility.rejectionReasons.map((reason) => reason.code).join(", ")
+        : "legal",
+      trace.relevance,
+      trace.relationship,
+      featureTraceCell(trace),
+      formatNumber(trace.demandCapability.candidateDemand),
+      trace.demandCapability.match,
+      trace.boundedInfluence.toFixed(3),
+      trace.assessmentContribution.toFixed(3),
+      trace.alignmentContribution.toFixed(3),
+    ];
+  });
+
+  return [
+    `### ${input.title}`,
+    "",
+    "| Exercise | Rank | Total | Truth | Relevance | Relationship | Feature Trace | Demand | Demand Match | Bounded | Assessment | Alignment |",
+    "|---|---:|---:|---|---|---|---|---:|---|---:|---:|---:|",
+    ...rows.map((row) => `| ${row.map(md).join(" | ")} |`),
+    "",
+  ].join("\n");
+}
+
+function renderFeatureSpecificScapularAssessmentReview(): string {
+  return [
+    "## Feature-Specific Scapular Assessment Review",
+    "",
+    "This section reruns Phase 1 / Scapular Activation / full-gym contrast requests. It is observational and uses the feature-specific scapular semantics added after the reference knowledge audit.",
+    "",
+    renderFeatureContrastTable({
+      title: "Generic Scapular Control",
+      requestId: "feature-review-generic-scapular",
+      assessmentState: genericScapularPriority,
+    }),
+    renderFeatureContrastTable({
+      title: "Serratus / Protraction Control",
+      requestId: "feature-review-serratus-protraction",
+      assessmentState: scapularPriority,
+    }),
+    renderFeatureContrastTable({
+      title: "Upward Rotation Control",
+      requestId: "feature-review-upward-rotation",
+      assessmentState: featureSpecificScapularPriority({
+        id: "review-upward-rotation-control",
+        feature: "upward_rotation_control",
+        description: "High-confidence upward-rotation scapular-control priority.",
+      }),
+    }),
+    renderFeatureContrastTable({
+      title: "Retraction Control",
+      requestId: "feature-review-retraction",
+      assessmentState: featureSpecificScapularPriority({
+        id: "review-retraction-control",
+        feature: "retraction_control",
+        description: "High-confidence retraction scapular-control priority.",
+      }),
+    }),
+    renderFeatureContrastTable({
+      title: "External Rotation / Cuff Control",
+      requestId: "feature-review-cuff",
+      assessmentState: featureSpecificScapularPriority({
+        id: "review-external-rotation-cuff-control",
+        feature: "external_rotation_or_cuff_control",
+        description: "High-confidence external-rotation/cuff scapular-control priority.",
+      }),
+    }),
+    renderFeatureContrastTable({
+      title: "Loaded Scapular Stability",
+      requestId: "feature-review-loaded-stability",
+      assessmentState: featureSpecificScapularPriority({
+        id: "review-loaded-scapular-stability",
+        feature: "loaded_scapular_stability",
+        description: "High-confidence loaded scapular-stability priority.",
+      }),
+    }),
+    "Review notes:",
+    "- Generic `scapular_control` keeps broad movement-role relevance when no feature evidence is present.",
+    "- Serratus/protraction and upward-rotation findings distinguish `serratus-wall-slide` from candidates explicitly modeled with low serratus/upward-rotation contribution.",
+    "- Retraction and cuff findings shift relevance toward face-pull/row/reverse-pec-deck metadata instead of the wall-slide shortcut.",
+    "- Loaded-stability findings no longer treat low-load preparation and loaded scapular work as identical.",
+    "- Most current scapular profiles still carry profile-level `needs_review`, so feature traces should be treated as transparent working metadata, not final exercise-science certainty.",
+    "",
+  ].join("\n");
+}
+
 function renderRankingReviewMarkdown(): string {
   const scenarios = buildScenarios();
   const sections: string[] = [
@@ -1910,20 +2099,21 @@ function renderRankingReviewMarkdown(): string {
   });
 
   sections.push(renderPostureRegression());
+  sections.push(renderFeatureSpecificScapularAssessmentReview());
   sections.push("## Questionable Rankings / Modeling Gaps");
   sections.push("");
   sections.push("- Capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.");
   sections.push("- `too_easy` and `appropriate_challenge` history events can now influence inferred capability when movement-role matched, but continuity/progression semantics still need more domain nuance.");
-  sections.push("- Scapular candidates are differentiated coarsely, but many scapular mechanics annotations remain `NEEDS_REVIEW`, especially for pressing and rowing candidates.");
+  sections.push("- Scapular candidates now expose feature-specific differentiation, but many scapular mechanics annotations remain `NEEDS_REVIEW`, especially for pressing and rowing candidates.");
   sections.push("- Unknown metadata is now neutral and observable, but the catalog still has unknown fields that should not be promoted into production prescription without review.");
   sections.push("");
   sections.push("## Candidate Intelligence Sign-Off");
   sections.push("");
-  sections.push("Classification: **NOT_READY**");
+  sections.push("Classification: **READY_FOR_TARGETED_FIXES**");
   sections.push("");
   sections.push("Reasons:");
   sections.push("- Role truth, equipment truth, pain behavior, assessment relevance, bounded influence, and unknown-metadata safety are working at the current foundation scope.");
-  sections.push("- Session composition should wait for human review of reference exercise metadata, especially scapular mechanics, demand levels, and pain/risk annotations.");
+  sections.push("- Session composition should still wait for additional targeted fixes to row differentiation, phase calibration, and progression graph semantics.");
   sections.push("- Observed capability evidence is not yet represented, and history-based capability evidence remains movement-role-inferred rather than measured.");
   sections.push("- Continuity/progression semantics need more domain review before they drive whole-session or whole-week decisions.");
   sections.push("");

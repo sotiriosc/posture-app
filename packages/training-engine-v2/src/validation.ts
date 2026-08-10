@@ -1,4 +1,4 @@
-import { ASSESSMENT_SIGNAL_TYPES } from "./domain/assessment";
+import { ASSESSMENT_FEATURES, ASSESSMENT_SIGNAL_TYPES } from "./domain/assessment";
 import type { AssessmentSignal } from "./domain/assessment";
 import type { ExerciseDefinition } from "./domain/exercise";
 import { THREE_PHASE_FOUNDATION } from "./domain/phase";
@@ -86,17 +86,27 @@ export function validateExerciseCatalog(exercises: readonly ExerciseDefinition[]
 }
 
 export function validateAssessmentSignal(signal: AssessmentSignal): readonly ValidationFinding[] {
+  const findings: ValidationFinding[] = [];
+
   if (!ASSESSMENT_SIGNAL_TYPES.includes(signal.type)) {
     return [finding("error", "unknown_assessment_signal_type", `Unknown assessment type: ${signal.type}.`, signal.id)];
   }
 
   if (signal.confidence === "low" && signal.priority === "blocking") {
-    return [
+    findings.push(
       finding("warning", "low_confidence_blocking_signal", "Low-confidence signals should not block without review.", signal.id),
-    ];
+    );
   }
 
-  return [];
+  for (const feature of signal.assessmentFeatures ?? []) {
+    if (!ASSESSMENT_FEATURES.includes(feature)) {
+      findings.push(
+        finding("error", "unknown_assessment_feature", `Unknown assessment feature: ${feature}.`, signal.id),
+      );
+    }
+  }
+
+  return findings;
 }
 
 export function validateTrainingInput(input: TrainingEngineInput): readonly ValidationFinding[] {

@@ -3,6 +3,7 @@ import {
   calculateAssessmentRelevanceTraces,
   deriveAlignmentPriorities,
   EMPTY_TRAINING_HISTORY,
+  FULL_GYM_EQUIPMENT,
   getControlledCandidateScenario,
   NO_PAIN_OR_INJURY,
   REFERENCE_EXERCISES,
@@ -137,6 +138,13 @@ function assessmentTrace(
   return trace;
 }
 
+function assessmentTraceForRequest(request: CandidateRequest, exerciseId: string) {
+  return calculateAssessmentRelevanceTraces({
+    request,
+    exercise: exercise(exerciseId),
+  })[0];
+}
+
 function rejectedCodes(result: ReturnType<typeof runCandidateRankingLab>, exerciseId: string): readonly string[] {
   return (
     result.hardRejectedCandidates.find((candidate) => candidate.exercise.id === exerciseId)
@@ -211,6 +219,58 @@ function scapularAssessment(confidence: AssessmentSignal["confidence"]): Assessm
     ],
     historicalWeaknesses: [],
   };
+}
+
+function genericScapularAssessment(): AssessmentState {
+  return {
+    signals: [
+      {
+        id: "synthetic-generic-scapular-control",
+        type: "control_finding",
+        source: "movement_screen",
+        confidence: "high",
+        priority: "primary",
+        region: "shoulder",
+        movementRole: "scapular_control",
+        description: "Generic scapular control finding without feature evidence.",
+      },
+    ],
+    historicalWeaknesses: [],
+  };
+}
+
+function explicitScapularFeatureAssessment(
+  feature: NonNullable<AssessmentSignal["assessmentFeatures"]>[number],
+): AssessmentState {
+  return {
+    signals: [
+      {
+        id: `synthetic-${feature}`,
+        type: "control_finding",
+        source: "movement_screen",
+        confidence: "high",
+        priority: "primary",
+        region: "shoulder",
+        movementRole: "scapular_control",
+        assessmentFeatures: [feature],
+        description: `Synthetic ${feature} finding.`,
+      },
+    ],
+    historicalWeaknesses: [],
+  };
+}
+
+function fullGymScapularActivationRequest(assessment: AssessmentState): CandidateRequest {
+  const baseRequest = controlledRequest("scapular-activation-high-confidence");
+
+  return withAssessment(
+    {
+      ...baseRequest,
+      id: `${baseRequest.id}-full-gym-feature-contrast`,
+      equipment: FULL_GYM_EQUIPMENT,
+    },
+    assessment,
+  );
 }
 
 const trunkControlAssessment: AssessmentState = {
@@ -454,26 +514,234 @@ describe("assessment relevance scoping", () => {
 
     expect(wallSlideTrace).toEqual(
       expect.objectContaining({
-        relevance: "high",
+        relevance: "moderate",
         relationship: "provides_appropriate_exposure",
       }),
     );
     expect(facePullTrace).toEqual(
       expect.objectContaining({
-        relevance: "high",
-        relationship: "exceeds_current_capability",
+        relevance: "none",
+        relationship: "neutral",
       }),
     );
     expect(bandRowTrace).toEqual(
       expect.objectContaining({
-        relevance: "moderate",
-        relationship: "provides_appropriate_exposure",
+        relevance: "none",
+        relationship: "neutral",
+      }),
+    );
+    expect(wallSlideTrace?.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "serratus_or_protraction_control",
+        assessmentFeatureSource: "normalized_from_signal",
+        candidateFeatureLevel: "high",
+        featureMatch: "moderate",
+      }),
+    );
+    expect(facePullTrace?.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "serratus_or_protraction_control",
+        candidateFeatureLevel: "low",
+        featureMatch: "conflict",
       }),
     );
     expect(wallSlideTrace?.assessmentContribution).toBeGreaterThan(
       bandRowTrace?.assessmentContribution ?? 0,
     );
-    expect(facePullTrace?.assessmentContribution).toBeLessThan(0);
+    expect(facePullTrace?.assessmentContribution).toBe(0);
+  });
+
+  it("uses serratus/protraction feature matching instead of generic scapular role matching", () => {
+    const request = fullGymScapularActivationRequest(scapularAssessment("high"));
+    const wallSlide = assessmentTraceForRequest(request, "serratus-wall-slide");
+    const facePull = assessmentTraceForRequest(request, "band-face-pull");
+    const reversePecDeck = assessmentTraceForRequest(request, "reverse-pec-deck");
+    const bandRow = assessmentTraceForRequest(request, "band-row");
+
+    expect(wallSlide).toEqual(
+      expect.objectContaining({
+        relevance: "moderate",
+        relationship: "provides_appropriate_exposure",
+      }),
+    );
+    expect(wallSlide.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "serratus_or_protraction_control",
+        assessmentFeatureSource: "normalized_from_signal",
+        candidateFeatureLevel: "high",
+        candidateFeatureReviewStatus: "needs_review",
+        featureMatch: "moderate",
+      }),
+    );
+    [facePull, reversePecDeck, bandRow].forEach((trace) => {
+      expect(trace).toEqual(
+        expect.objectContaining({
+          relevance: "none",
+          relationship: "neutral",
+          boundedInfluence: 0,
+        }),
+      );
+      expect(trace.featureMatches[0]).toEqual(
+        expect.objectContaining({
+          assessmentFeature: "serratus_or_protraction_control",
+          candidateFeatureLevel: "low",
+          featureMatch: "conflict",
+        }),
+      );
+    });
+  });
+
+  it("uses upward-rotation feature matching without inferring it from shoulder alone", () => {
+    const request = fullGymScapularActivationRequest(
+      explicitScapularFeatureAssessment("upward_rotation_control"),
+    );
+    const wallSlide = assessmentTraceForRequest(request, "serratus-wall-slide");
+    const facePull = assessmentTraceForRequest(request, "band-face-pull");
+    const reversePecDeck = assessmentTraceForRequest(request, "reverse-pec-deck");
+    const bandRow = assessmentTraceForRequest(request, "band-row");
+
+    expect(wallSlide.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "upward_rotation_control",
+        assessmentFeatureSource: "explicit",
+        candidateFeatureLevel: "high",
+        featureMatch: "moderate",
+      }),
+    );
+    expect(wallSlide.relevance).toBe("moderate");
+    [facePull, reversePecDeck, bandRow].forEach((trace) => {
+      expect(trace.featureMatches[0]).toEqual(
+        expect.objectContaining({
+          candidateFeatureLevel: "low",
+          featureMatch: "conflict",
+        }),
+      );
+      expect(trace.relevance).toBe("none");
+    });
+
+    const generic = assessmentTraceForRequest(
+      fullGymScapularActivationRequest(genericScapularAssessment()),
+      "serratus-wall-slide",
+    );
+    expect(generic.featureMatches).toEqual([]);
+  });
+
+  it("makes retraction findings favor current retraction metadata over wall-slide mechanics", () => {
+    const request = fullGymScapularActivationRequest(
+      explicitScapularFeatureAssessment("retraction_control"),
+    );
+    const wallSlide = assessmentTraceForRequest(request, "serratus-wall-slide");
+    const facePull = assessmentTraceForRequest(request, "band-face-pull");
+    const reversePecDeck = assessmentTraceForRequest(request, "reverse-pec-deck");
+    const bandRow = assessmentTraceForRequest(request, "band-row");
+
+    expect(facePull.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        candidateFeatureLevel: "high",
+        featureMatch: "moderate",
+      }),
+    );
+    expect(facePull.relevance).toBe("moderate");
+    [reversePecDeck, bandRow].forEach((trace) => {
+      expect(trace.featureMatches[0]).toEqual(
+        expect.objectContaining({
+          candidateFeatureLevel: "moderate",
+          featureMatch: "weak",
+        }),
+      );
+      expect(trace.relevance).toBe("low");
+    });
+    expect(wallSlide.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        candidateFeatureLevel: "low",
+        featureMatch: "conflict",
+      }),
+    );
+    expect(wallSlide.relevance).toBe("none");
+  });
+
+  it("distinguishes cuff/external-rotation findings from explicitly low or unknown cuff metadata", () => {
+    const request = fullGymScapularActivationRequest(
+      explicitScapularFeatureAssessment("external_rotation_or_cuff_control"),
+    );
+    const facePull = assessmentTraceForRequest(request, "band-face-pull");
+    const wallSlide = assessmentTraceForRequest(request, "serratus-wall-slide");
+    const reversePecDeck = assessmentTraceForRequest(request, "reverse-pec-deck");
+    const dumbbellBench = assessmentTraceForRequest(request, "dumbbell-bench-press");
+
+    expect(facePull.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        candidateFeatureLevel: "moderate",
+        featureMatch: "weak",
+      }),
+    );
+    expect(facePull.relevance).toBe("low");
+    [wallSlide, reversePecDeck].forEach((trace) => {
+      expect(trace.featureMatches[0]).toEqual(
+        expect.objectContaining({
+          candidateFeatureLevel: "low",
+          featureMatch: "conflict",
+        }),
+      );
+      expect(trace.relevance).toBe("none");
+    });
+    expect(dumbbellBench.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        candidateFeatureLevel: "unknown",
+        candidateFeatureReviewStatus: "needs_review",
+        featureMatch: "unknown",
+      }),
+    );
+    expect(dumbbellBench.relevance).toBe("none");
+  });
+
+  it("does not treat preparation and loaded scapular-stability candidates identically", () => {
+    const request = fullGymScapularActivationRequest(
+      explicitScapularFeatureAssessment("loaded_scapular_stability"),
+    );
+    const wallSlide = assessmentTraceForRequest(request, "serratus-wall-slide");
+    const facePull = assessmentTraceForRequest(request, "band-face-pull");
+    const reversePecDeck = assessmentTraceForRequest(request, "reverse-pec-deck");
+    const oneArmRow = assessmentTraceForRequest(request, "one-arm-dumbbell-row");
+
+    expect(wallSlide.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        candidateFeatureLevel: "low",
+        featureMatch: "conflict",
+      }),
+    );
+    expect(wallSlide.relevance).toBe("none");
+    [facePull, reversePecDeck].forEach((trace) => {
+      expect(trace.featureMatches[0]).toEqual(
+        expect.objectContaining({
+          candidateFeatureLevel: "moderate",
+          featureMatch: "weak",
+        }),
+      );
+      expect(trace.relevance).toBe("low");
+    });
+    expect(oneArmRow.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        candidateFeatureLevel: "high",
+        featureMatch: "moderate",
+      }),
+    );
+    expect(oneArmRow.relevance).toBe("none");
+  });
+
+  it("keeps generic scapular-control signals broad when no feature evidence exists", () => {
+    const request = fullGymScapularActivationRequest(genericScapularAssessment());
+    const wallSlide = assessmentTraceForRequest(request, "serratus-wall-slide");
+    const facePull = assessmentTraceForRequest(request, "band-face-pull");
+    const reversePecDeck = assessmentTraceForRequest(request, "reverse-pec-deck");
+    const bandRow = assessmentTraceForRequest(request, "band-row");
+
+    [wallSlide, facePull, reversePecDeck].forEach((trace) => {
+      expect(trace.featureMatches).toEqual([]);
+      expect(trace.relevance).toBe("high");
+    });
+    expect(bandRow.featureMatches).toEqual([]);
+    expect(bandRow.relevance).toBe("moderate");
   });
 
   it("uses developmental context to compare trunk-control demand with current capability", () => {

@@ -61,6 +61,7 @@ export function makeAssessmentRelevanceTrace(input: {
         : relationshipReasonCode(relationship),
     relevanceReason: input.relevanceDecision.relevanceReason,
     signalInterpretation,
+    featureMatches: input.relevanceDecision.featureMatches,
     relationship,
     relationshipReason: relationshipReason(relationship, demandCapability, demandReductionContext),
     demandReductionContext,

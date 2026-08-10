@@ -154,12 +154,20 @@ describe("Candidate Intelligence foundation", () => {
       "alignment-confirmed-scapular-control-priority",
     );
     expect(highConfidence.rankedCandidates[0].exercise.id).toBe("band-face-pull");
-    expect(componentValue(facePull, "assessment_fit")).toBeLessThan(6);
-    expect(componentValue(facePull, "alignment_fit")).toBeLessThan(6);
+    expect(componentValue(facePull, "assessment_fit")).toBe(6);
+    expect(componentValue(facePull, "alignment_fit")).toBe(6);
     expect(facePullTrace).toEqual(
       expect.objectContaining({
-        relationship: "exceeds_current_capability",
-        relevanceReasonCode: "ASSESSMENT_EXCEEDS_CAPABILITY",
+        relationship: "neutral",
+        relevance: "none",
+        relevanceReasonCode: "ASSESSMENT_NOT_RELEVANT",
+      }),
+    );
+    expect(facePullTrace?.featureMatches[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "serratus_or_protraction_control",
+        candidateFeatureLevel: "low",
+        featureMatch: "conflict",
       }),
     );
   });

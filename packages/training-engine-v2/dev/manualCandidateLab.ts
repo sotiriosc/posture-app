@@ -8,6 +8,7 @@ import {
   REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
   runCandidateRankingLab,
+  type AssessmentFeature,
   type AssessmentRelevanceTrace,
   type AssessmentState,
   type CandidateNeed,
@@ -67,6 +68,39 @@ function argumentValue(name: string): string | undefined {
   const prefix = `--${name}=`;
 
   return process.argv.find((argument) => argument.startsWith(prefix))?.slice(prefix.length);
+}
+
+function slug(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function choiceFromArgument<T>(
+  argument: string | undefined,
+  choices: readonly Choice<T>[],
+  prompt: string,
+  identifiers: (choice: Choice<T>) => readonly string[] = () => [],
+): Choice<T> | undefined {
+  if (!argument) {
+    return undefined;
+  }
+
+  const normalized = slug(argument);
+  const selected = choices.find((choice, index) => {
+    const keys = [
+      String(index + 1),
+      slug(choice.label),
+      slug(choice.description),
+      ...identifiers(choice).map(slug),
+    ];
+
+    return keys.includes(normalized);
+  });
+
+  if (!selected) {
+    throw new Error(`Unknown ${prompt} choice: ${argument}.`);
+  }
+
+  return selected;
 }
 
 function currentAsOf(): string {
@@ -228,7 +262,7 @@ function trunkAssessment(): AssessmentState {
   };
 }
 
-function scapularAssessment(): AssessmentState {
+function genericScapularAssessment(): AssessmentState {
   return {
     signals: [
       {
@@ -239,8 +273,49 @@ function scapularAssessment(): AssessmentState {
         priority: "primary",
         region: "shoulder",
         movementRole: "scapular_control",
+        description: "Manual lab generic scapular-control finding.",
+      },
+    ],
+    historicalWeaknesses: [],
+  };
+}
+
+function serratusScapularAssessment(): AssessmentState {
+  return {
+    signals: [
+      {
+        id: "lab-serratus-protraction-control",
+        type: "control_finding",
+        source: "movement_screen",
+        confidence: "high",
+        priority: "primary",
+        region: "shoulder",
+        movementRole: "scapular_control",
         muscleGroup: "serratus",
-        description: "Manual lab scapular-control finding.",
+        description: "Manual lab serratus/protraction-control finding.",
+      },
+    ],
+    historicalWeaknesses: [],
+  };
+}
+
+function explicitScapularFeatureAssessment(input: {
+  readonly id: string;
+  readonly feature: AssessmentFeature;
+  readonly description: string;
+}): AssessmentState {
+  return {
+    signals: [
+      {
+        id: input.id,
+        type: "control_finding",
+        source: "movement_screen",
+        confidence: "high",
+        priority: "primary",
+        region: "shoulder",
+        movementRole: "scapular_control",
+        assessmentFeatures: [input.feature],
+        description: input.description,
       },
     ],
     historicalWeaknesses: [],
@@ -368,9 +443,50 @@ function assessmentChoices(selectedPersona: GoldenPersona): readonly Choice<Asse
       value: trunkAssessment(),
     },
     {
-      label: "Scapular Control",
-      description: "High-confidence scapular-control finding.",
-      value: scapularAssessment(),
+      label: "Generic Scapular Control",
+      description: "High-confidence scapular-control finding with no feature-specific evidence.",
+      value: genericScapularAssessment(),
+    },
+    {
+      label: "Serratus / Protraction Control",
+      description: "High-confidence serratus/protraction scapular-control finding.",
+      value: serratusScapularAssessment(),
+    },
+    {
+      label: "Upward Rotation Control",
+      description: "High-confidence explicit upward-rotation scapular-control finding.",
+      value: explicitScapularFeatureAssessment({
+        id: "lab-upward-rotation-control",
+        feature: "upward_rotation_control",
+        description: "Manual lab upward-rotation control finding.",
+      }),
+    },
+    {
+      label: "Retraction Control",
+      description: "High-confidence explicit scapular retraction-control finding.",
+      value: explicitScapularFeatureAssessment({
+        id: "lab-retraction-control",
+        feature: "retraction_control",
+        description: "Manual lab retraction-control finding.",
+      }),
+    },
+    {
+      label: "External Rotation / Cuff Control",
+      description: "High-confidence explicit external-rotation/cuff finding.",
+      value: explicitScapularFeatureAssessment({
+        id: "lab-external-rotation-cuff-control",
+        feature: "external_rotation_or_cuff_control",
+        description: "Manual lab external-rotation/cuff-control finding.",
+      }),
+    },
+    {
+      label: "Loaded Scapular Stability",
+      description: "High-confidence explicit loaded scapular-stability finding.",
+      value: explicitScapularFeatureAssessment({
+        id: "lab-loaded-scapular-stability",
+        feature: "loaded_scapular_stability",
+        description: "Manual lab loaded scapular-stability finding.",
+      }),
     },
     {
       label: "Knee Control",
@@ -745,6 +861,27 @@ function demandReductionSummary(trace: AssessmentRelevanceTrace): string {
   ].join(" ");
 }
 
+function featureCells(trace: AssessmentRelevanceTrace): readonly string[] {
+  if (trace.featureMatches.length === 0) {
+    return ["generic", "unknown", "not_applicable", "unknown", "not_applicable"];
+  }
+
+  return [
+    trace.featureMatches.map((match) => match.assessmentFeature).join(", "),
+    trace.featureMatches.map((match) => match.assessmentFeatureSource).join(", "),
+    trace.featureMatches
+      .map((match) => `${match.candidateFeature}:${match.candidateFeatureLevel}`)
+      .join(", "),
+    trace.featureMatches
+      .map(
+        (match) =>
+          `${match.candidateFeatureReviewStatus}/profile:${match.candidateFeatureProfileReviewStatus}`,
+      )
+      .join(", "),
+    trace.featureMatches.map((match) => match.featureMatch).join(", "),
+  ];
+}
+
 function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 3): void {
   console.log(`\nAssessment Traces (top ${Math.min(candidateCount, result.rankedCandidates.length)})`);
   result.rankedCandidates.slice(0, candidateCount).forEach((candidate) => {
@@ -760,6 +897,11 @@ function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 
       [
         "Signal",
         "Rel",
+        "Feature",
+        "Feature Src",
+        "Candidate Feature",
+        "Feature Review",
+        "Feature Match",
         "Relationship",
         "Demand",
         "Capability",
@@ -771,6 +913,7 @@ function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 
       traces.map((trace) => [
         trace.signalId,
         trace.relevance,
+        ...featureCells(trace),
         trace.relationship,
         formatNullable(trace.demandCapability.candidateDemand),
         formatNumber(trace.demandCapability.currentCapability),
@@ -872,27 +1015,59 @@ async function main(): Promise<void> {
     ] as const;
     const useDefaults = process.argv.includes("--defaults");
     const asOf = argumentValue("as-of") ?? currentAsOf();
+    const personaOptions = personaChoices();
+    const phaseOptions = phaseChoices();
     const selectedPersona = useDefaults
-      ? personaChoices()[0]
-      : await choose(rl, "Persona", personaChoices());
+      ? personaOptions[0]
+      : choiceFromArgument(
+          argumentValue("persona"),
+          personaOptions,
+          "Persona",
+          (choice) => [choice.value.fixtureId],
+        ) ?? await choose(rl, "Persona", personaOptions);
     const selectedPhase = useDefaults
-      ? phaseChoices()[0]
-      : await choose(rl, "Phase", phaseChoices());
+      ? phaseOptions[0]
+      : choiceFromArgument(
+          argumentValue("phase"),
+          phaseOptions,
+          "Phase",
+          (choice) => [choice.value.id],
+        ) ?? await choose(rl, "Phase", phaseOptions);
+    const assessmentOptions = assessmentChoices(selectedPersona.value);
+    const painOptions = painChoices(selectedPersona.value);
+    const historyOptions = historyChoices(selectedPersona.value, asOf);
     const selectedNeed = useDefaults
       ? LAB_NEEDS[0]
-      : await choose(rl, "Training Need", LAB_NEEDS);
+      : choiceFromArgument(
+          argumentValue("need"),
+          LAB_NEEDS,
+          "Training Need",
+          (choice) => [choice.value.id],
+        ) ?? await choose(rl, "Training Need", LAB_NEEDS);
     const selectedAssessment = useDefaults
-      ? assessmentChoices(selectedPersona.value)[0]
-      : await choose(rl, "Assessment", assessmentChoices(selectedPersona.value));
+      ? assessmentOptions[0]
+      : choiceFromArgument(
+          argumentValue("assessment"),
+          assessmentOptions,
+          "Assessment",
+          (choice) => choice.value.signals.map((signal) => signal.id),
+        ) ?? await choose(rl, "Assessment", assessmentOptions);
     const selectedPain = useDefaults
-      ? painChoices(selectedPersona.value)[0]
-      : await choose(rl, "Pain / Concern", painChoices(selectedPersona.value));
+      ? painOptions[0]
+      : choiceFromArgument(argumentValue("pain"), painOptions, "Pain / Concern") ??
+        await choose(rl, "Pain / Concern", painOptions);
     const selectedHistory = useDefaults
-      ? historyChoices(selectedPersona.value, asOf)[0]
-      : await choose(rl, "History", historyChoices(selectedPersona.value, asOf));
+      ? historyOptions[0]
+      : choiceFromArgument(argumentValue("history"), historyOptions, "History") ??
+        await choose(rl, "History", historyOptions);
     const selectedMode = useDefaults
       ? outputModeChoices[0]
-      : await choose(rl, "Output Mode", outputModeChoices);
+      : choiceFromArgument(
+          argumentValue("mode"),
+          outputModeChoices,
+          "Output Mode",
+          (choice) => [choice.value],
+        ) ?? await choose(rl, "Output Mode", outputModeChoices);
 
     if (useDefaults) {
       console.log("\nUsing --defaults Quick Start scenario.");

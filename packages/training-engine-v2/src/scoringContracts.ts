@@ -1,5 +1,9 @@
 import type { AssessmentInfluence } from "./alignment";
-import type { AssessmentSeverity } from "./domain/assessment";
+import type {
+  AssessmentFeature,
+  AssessmentFeatureSource,
+  AssessmentSeverity,
+} from "./domain/assessment";
 import type {
   ExerciseDemandAnnotationLevel,
   ExerciseDemandDimension,
@@ -56,6 +60,12 @@ export type AssessmentCandidateRelationship =
   | "exceeds_current_capability";
 
 export type AssessmentDemandDimension = ExerciseDemandDimension;
+export type AssessmentFeatureMatch =
+  | "strong"
+  | "moderate"
+  | "weak"
+  | "conflict"
+  | "unknown";
 
 export type DemandCapabilityMatch =
   | "below_current_capability"
@@ -139,6 +149,17 @@ export interface AssessmentDemandCapabilityTrace {
   readonly evidence: readonly string[];
 }
 
+export interface AssessmentFeatureMatchTrace {
+  readonly assessmentFeature: AssessmentFeature;
+  readonly assessmentFeatureSource: AssessmentFeatureSource;
+  readonly candidateFeature: string;
+  readonly candidateFeatureLevel: ExerciseDemandAnnotationLevel;
+  readonly candidateFeatureReviewStatus: ExerciseMechanicsReviewStatus;
+  readonly candidateFeatureProfileReviewStatus: ExerciseMechanicsReviewStatus | "not_applicable";
+  readonly featureMatch: AssessmentFeatureMatch;
+  readonly featureReason: string;
+}
+
 export interface AssessmentRelevanceTrace {
   readonly signalId: string;
   readonly candidateId: string;
@@ -147,6 +168,7 @@ export interface AssessmentRelevanceTrace {
   readonly relevanceReasonCode: ReasonCode;
   readonly relevanceReason: string;
   readonly signalInterpretation: AssessmentSignalInterpretationTrace;
+  readonly featureMatches: readonly AssessmentFeatureMatchTrace[];
   readonly relationship: AssessmentCandidateRelationship;
   readonly relationshipReason: string;
   readonly demandReductionContext: DemandReductionContextTrace;

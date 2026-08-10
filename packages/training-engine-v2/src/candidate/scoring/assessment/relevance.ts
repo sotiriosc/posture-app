@@ -2,6 +2,7 @@ import type { AssessmentSignal } from "../../../domain/assessment";
 import type { ExerciseDefinition } from "../../../domain/exercise";
 import type { ReasonCode } from "../../../reasonCodes";
 import type {
+  AssessmentFeatureMatchTrace,
   AssessmentDemandDimension,
   AssessmentRelevanceLevel,
 } from "../../../scoringContracts";
@@ -22,23 +23,31 @@ import {
   relevanceFromSpecificity,
   specificityForSignal,
 } from "./specificity";
+import {
+  bestFeatureMatch,
+  bestFeatureRelevance,
+  matchScapularAssessmentFeatures,
+} from "./features";
 
 export interface AssessmentRelevanceDecision {
   readonly relevance: AssessmentRelevanceLevel;
   readonly relevanceReasonCode: ReasonCode;
   readonly relevanceReason: string;
   readonly dimension: AssessmentDemandDimension;
+  readonly featureMatches: readonly AssessmentFeatureMatchTrace[];
 }
 
 export function notRelevantDecision(input: {
   readonly signal: AssessmentSignal;
   readonly reason: string;
+  readonly featureMatches?: readonly AssessmentFeatureMatchTrace[];
 }): AssessmentRelevanceDecision {
   return {
     relevance: "none",
     relevanceReasonCode: "ASSESSMENT_NOT_RELEVANT",
     relevanceReason: input.reason,
     dimension: signalDemandDimension(input.signal),
+    featureMatches: input.featureMatches ?? [],
   };
 }
 
@@ -58,20 +67,55 @@ export function decideAssessmentRelevance(input: {
     request.need.targetMovementRoles,
   );
   const candidateMuscles = [...exercise.primaryMuscles, ...exercise.secondaryMuscles];
+  const scapularFeatureMatches = signalIsScapular(signal)
+    ? matchScapularAssessmentFeatures({ signal, exercise })
+    : [];
+  const hasScapularFeatureEvidence = scapularFeatureMatches.length > 0;
 
   if (!candidateIsTruthful) {
     return notRelevantDecision({
       signal,
       reason: `${exercise.name} is not a truthful candidate for ${request.need.requestedRole}; assessment cannot create role relevance.`,
+      featureMatches: scapularFeatureMatches,
     });
   }
 
-  if (movementRoleMatchesNeed && movementRoleMatchesCandidate) {
+  if (
+    signalIsScapular(signal) &&
+    hasScapularFeatureEvidence &&
+    hasAny(request.need.targetMovementRoles, UPPER_ROLES) &&
+    hasAny(exercise.movementRoles, UPPER_ROLES)
+  ) {
+    const relevance = bestFeatureRelevance(scapularFeatureMatches);
+    const bestMatch = bestFeatureMatch(scapularFeatureMatches);
+
+    if (relevance === "none" || !candidateHasKnownDemand(exercise, "scapular_control")) {
+      return notRelevantDecision({
+        signal,
+        reason:
+          relevance === "none"
+            ? `${signal.id} is feature-specific, but ${exercise.name} does not have a usable matching scapular feature.`
+            : `${signal.id} is feature-specific, but ${exercise.name} lacks explicit scapular-control demand metadata.`,
+        featureMatches: scapularFeatureMatches,
+      });
+    }
+
+    return {
+      relevance,
+      relevanceReasonCode: "ASSESSMENT_MOVEMENT_RELEVANT",
+      relevanceReason: `${signal.id} matched ${exercise.name} through candidate-specific ${bestMatch?.assessmentFeature ?? "scapular"} metadata with ${bestMatch?.featureMatch ?? "unknown"} feature match.`,
+      dimension: "scapular_control",
+      featureMatches: scapularFeatureMatches,
+    };
+  }
+
+  if (movementRoleMatchesNeed && movementRoleMatchesCandidate && !hasScapularFeatureEvidence) {
     return {
       relevance: "high",
       relevanceReasonCode: "ASSESSMENT_MOVEMENT_RELEVANT",
       relevanceReason: `${signal.id} directly matches the requested and candidate movement role ${signal.movementRole}.`,
       dimension: signalDemandDimension(signal),
+      featureMatches: [],
     };
   }
 
@@ -88,6 +132,7 @@ export function decideAssessmentRelevance(input: {
       return notRelevantDecision({
         signal,
         reason: `${signal.id} is scapular/shoulder related, but ${exercise.name} lacks enough explicit scapular-control metadata to use the signal.`,
+        featureMatches: scapularFeatureMatches,
       });
     }
 
@@ -98,6 +143,7 @@ export function decideAssessmentRelevance(input: {
         : "ASSESSMENT_JOINT_RELEVANT",
       relevanceReason: `${signal.id} is scapular/shoulder related; ${exercise.name} has scapular specificity ${specificity.toFixed(3)} from role, muscle, region, and section metadata.`,
       dimension,
+      featureMatches: scapularFeatureMatches,
     };
   }
 
@@ -117,6 +163,7 @@ export function decideAssessmentRelevance(input: {
         : "ASSESSMENT_MOVEMENT_RELEVANT",
       relevanceReason: `${signal.id} is lower-body related and both the request and candidate are lower-body movement candidates.`,
       dimension,
+      featureMatches: [],
     };
   }
 
@@ -136,6 +183,7 @@ export function decideAssessmentRelevance(input: {
         relevanceReasonCode: "ASSESSMENT_STABILITY_RELEVANT",
         relevanceReason: `${signal.id} directly matches a requested core-control role; ${exercise.name} has trunk-control specificity ${specificity.toFixed(3)}.`,
         dimension,
+        featureMatches: [],
       };
     }
 
@@ -159,6 +207,7 @@ export function decideAssessmentRelevance(input: {
         relevanceReasonCode: "ASSESSMENT_STABILITY_RELEVANT",
         relevanceReason: `${signal.id} is trunk-control related; ${exercise.name} has trunk specificity ${specificity.toFixed(3)} and explicit trunk-control demand for the requested movement.`,
         dimension,
+        featureMatches: [],
       };
     }
   }
@@ -174,6 +223,7 @@ export function decideAssessmentRelevance(input: {
       relevanceReasonCode: "ASSESSMENT_ROLE_RELEVANT",
       relevanceReason: `${signal.id} matches a requested target muscle on a truthful movement candidate.`,
       dimension: signalDemandDimension(signal),
+      featureMatches: [],
     };
   }
 
