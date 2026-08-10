@@ -57,6 +57,14 @@ function withPainAndInjury(
   };
 }
 
+function withEvaluationAsOf(request: CandidateRequest, asOf?: string): CandidateRequest {
+  return {
+    ...request,
+    id: `${request.id}-as-of-override`,
+    evaluationContext: asOf ? { asOf } : undefined,
+  };
+}
+
 function withTrainingHistory(
   request: CandidateRequest,
   overrides: Partial<TrainingHistory>,
@@ -136,9 +144,8 @@ function rejectedCodes(result: ReturnType<typeof runCandidateRankingLab>, exerci
   );
 }
 
-function recentIso(daysAgo: number): string {
-  return new Date(Date.now() - daysAgo * 86_400_000).toISOString();
-}
+const FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
+const LATE_AS_OF = "2027-03-01T00:00:00.000Z";
 
 const highConfidenceKneeAssessment: AssessmentState = {
   signals: [
@@ -286,12 +293,12 @@ describe("assessment relevance scoping", () => {
       "chest-supported-dumbbell-row",
       "one-arm-dumbbell-row",
     ]);
-    expect(rejectedCodes(push, "goblet-squat")).toContain("TRAINING_NEED_MISMATCH");
-    expect(rejectedCodes(push, "dumbbell-romanian-deadlift")).toContain("TRAINING_NEED_MISMATCH");
-    expect(rejectedCodes(pull, "goblet-squat")).toContain("TRAINING_NEED_MISMATCH");
-    expect(rejectedCodes(pull, "dumbbell-romanian-deadlift")).toContain("TRAINING_NEED_MISMATCH");
-    expect(rejectedCodes(squat, "dumbbell-bench-press")).toContain("TRAINING_NEED_MISMATCH");
-    expect(rejectedCodes(squat, "push-up")).toContain("TRAINING_NEED_MISMATCH");
+    expect(rejectedCodes(push, "goblet-squat")).toContain("MOVEMENT_ROLE_MISMATCH");
+    expect(rejectedCodes(push, "dumbbell-romanian-deadlift")).toContain("MOVEMENT_ROLE_MISMATCH");
+    expect(rejectedCodes(pull, "goblet-squat")).toContain("MOVEMENT_ROLE_MISMATCH");
+    expect(rejectedCodes(pull, "dumbbell-romanian-deadlift")).toContain("MOVEMENT_ROLE_MISMATCH");
+    expect(rejectedCodes(squat, "dumbbell-bench-press")).toContain("MOVEMENT_ROLE_MISMATCH");
+    expect(rejectedCodes(squat, "push-up")).toContain("MOVEMENT_ROLE_MISMATCH");
     expect(runCandidateRankingLab(squatOff).rankedCandidates[0].exercise.id).toBe("goblet-squat");
     expect(squat.rankedCandidates[0].exercise.id).toBe("goblet-squat");
   });
@@ -301,9 +308,10 @@ describe("assessment relevance scoping", () => {
     const primaryPush = runCandidateRankingLab(controlledRequest("horizontal-push-phase-3"));
 
     expect(rejectedCodes(primaryPull, "band-face-pull")).toContain("ROLE_MISMATCH");
-    expect(rejectedCodes(primaryPull, "band-face-pull")).toContain("TRAINING_NEED_MISMATCH");
+    expect(rejectedCodes(primaryPull, "band-face-pull")).toContain("SECTION_MISMATCH");
+    expect(rejectedCodes(primaryPull, "band-face-pull")).toContain("TARGET_MUSCLE_MISMATCH");
     expect(rejectedCodes(primaryPush, "cable-chest-fly")).toContain("ROLE_MISMATCH");
-    expect(rejectedCodes(primaryPush, "cable-chest-fly")).toContain("TRAINING_NEED_MISMATCH");
+    expect(rejectedCodes(primaryPush, "cable-chest-fly")).toContain("SECTION_MISMATCH");
   });
 
   it("keeps irrelevant high-confidence regional findings neutral for unrelated roles", () => {
@@ -598,34 +606,37 @@ describe("assessment relevance scoping", () => {
   it("allows multiple consistent recent successes to moderately corroborate capability", () => {
     const baseRequest = controlledRequest("scapular-activation-high-confidence");
     const matchedHistory = runCandidateRankingLab(
-      withTrainingHistory(baseRequest, {
-        exerciseHistory: {
-          events: [
-            {
-              id: "recent-scapular-appropriate-challenge",
-              exerciseId: "serratus-wall-slide",
-              type: "appropriate_challenge",
-              occurredAt: recentIso(7),
-              movementRole: "scapular_control",
-              notes: "Scapular-control work was appropriately challenging.",
-            },
-            {
-              id: "recent-scapular-too-easy",
-              exerciseId: "serratus-wall-slide",
-              type: "too_easy",
-              occurredAt: recentIso(3),
-              movementRole: "scapular_control",
-              notes: "Scapular-control work was easy enough to progress.",
-            },
-          ],
-          stableExerciseIds: [],
-          blockedExerciseIds: [],
-        },
-        progressionState: {
-          ...EMPTY_TRAINING_HISTORY.progressionState,
-          successfulMovementRoles: ["scapular_control"],
-        },
-      }),
+      withEvaluationAsOf(
+        withTrainingHistory(baseRequest, {
+          exerciseHistory: {
+            events: [
+              {
+                id: "recent-scapular-appropriate-challenge",
+                exerciseId: "serratus-wall-slide",
+                type: "appropriate_challenge",
+                occurredAt: "2026-08-03T00:00:00.000Z",
+                movementRole: "scapular_control",
+                notes: "Scapular-control work was appropriately challenging.",
+              },
+              {
+                id: "recent-scapular-too-easy",
+                exerciseId: "serratus-wall-slide",
+                type: "too_easy",
+                occurredAt: "2026-08-07T00:00:00.000Z",
+                movementRole: "scapular_control",
+                notes: "Scapular-control work was easy enough to progress.",
+              },
+            ],
+            stableExerciseIds: [],
+            blockedExerciseIds: [],
+          },
+          progressionState: {
+            ...EMPTY_TRAINING_HISTORY.progressionState,
+            successfulMovementRoles: ["scapular_control"],
+          },
+        }),
+        FIXED_AS_OF,
+      ),
     );
     const matchedTrace = assessmentTrace(ranked(matchedHistory.rankedCandidates, "serratus-wall-slide"));
 
@@ -658,19 +669,105 @@ describe("assessment relevance scoping", () => {
     );
   });
 
-  it("dampens contradictory movement-role history instead of treating it as clean evidence", () => {
-    const baseRequest = controlledRequest("scapular-activation-high-confidence");
-    const singleSuccess = runCandidateRankingLab(
-      withTrainingHistory(baseRequest, {
+  it("produces identical rankings and capability traces for the same request and asOf", () => {
+    const request = withEvaluationAsOf(
+      withTrainingHistory(controlledRequest("scapular-activation-high-confidence"), {
         exerciseHistory: {
           events: [
             {
-              id: "recent-single-scapular-too-easy",
+              id: "deterministic-scapular-appropriate",
+              exerciseId: "serratus-wall-slide",
+              type: "appropriate_challenge",
+              occurredAt: "2026-08-03T00:00:00.000Z",
+              movementRole: "scapular_control",
+              notes: "Scapular-control work was appropriately challenging.",
+            },
+            {
+              id: "deterministic-scapular-too-easy",
               exerciseId: "serratus-wall-slide",
               type: "too_easy",
-              occurredAt: recentIso(5),
+              occurredAt: "2026-08-07T00:00:00.000Z",
+              movementRole: "scapular_control",
+              notes: "Scapular-control work was ready to progress.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+        progressionState: {
+          ...EMPTY_TRAINING_HISTORY.progressionState,
+          successfulMovementRoles: ["scapular_control"],
+        },
+      }),
+      FIXED_AS_OF,
+    );
+    const first = runCandidateRankingLab(request);
+    const second = runCandidateRankingLab(request);
+    const firstTrace = assessmentTrace(ranked(first.rankedCandidates, "serratus-wall-slide"));
+    const secondTrace = assessmentTrace(ranked(second.rankedCandidates, "serratus-wall-slide"));
+
+    expect(first.rankedCandidates.map((candidate) => [candidate.exercise.id, candidate.total])).toEqual(
+      second.rankedCandidates.map((candidate) => [candidate.exercise.id, candidate.total]),
+    );
+    expect(firstTrace.demandCapability.capabilityEstimate).toEqual(
+      secondTrace.demandCapability.capabilityEstimate,
+    );
+  });
+
+  it("changes recency evidence only when the explicit asOf changes", () => {
+    const requestWithHistory = withTrainingHistory(
+      controlledRequest("scapular-activation-high-confidence"),
+      {
+        exerciseHistory: {
+          events: [
+            {
+              id: "as-of-sensitive-scapular-too-easy",
+              exerciseId: "serratus-wall-slide",
+              type: "too_easy",
+              occurredAt: "2026-08-05T00:00:00.000Z",
               movementRole: "scapular_control",
               notes: "Scapular-control work was easy.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+      },
+    );
+    const recentResult = runCandidateRankingLab(withEvaluationAsOf(requestWithHistory, FIXED_AS_OF));
+    const staleResult = runCandidateRankingLab(withEvaluationAsOf(requestWithHistory, LATE_AS_OF));
+    const recentTrace = assessmentTrace(ranked(recentResult.rankedCandidates, "serratus-wall-slide"));
+    const staleTrace = assessmentTrace(ranked(staleResult.rankedCandidates, "serratus-wall-slide"));
+
+    expect(recentTrace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        staleEventCount: 0,
+        noRecencyEventCount: 0,
+      }),
+    );
+    expect(staleTrace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        staleEventCount: 1,
+        noRecencyEventCount: 0,
+      }),
+    );
+    expect(recentTrace.demandCapability.capabilityEstimate.historyEvidence.adjustment).toBeGreaterThan(
+      staleTrace.demandCapability.capabilityEstimate.historyEvidence.adjustment,
+    );
+  });
+
+  it("treats timestamped history as no_recency when no evaluation asOf is supplied", () => {
+    const result = runCandidateRankingLab(
+      withTrainingHistory(controlledRequest("scapular-activation-high-confidence"), {
+        exerciseHistory: {
+          events: [
+            {
+              id: "timestamped-without-as-of",
+              exerciseId: "serratus-wall-slide",
+              type: "too_easy",
+              occurredAt: "2026-08-05T00:00:00.000Z",
+              movementRole: "scapular_control",
+              notes: "Timestamped event with no explicit evaluation time.",
             },
           ],
           stableExerciseIds: [],
@@ -678,31 +775,72 @@ describe("assessment relevance scoping", () => {
         },
       }),
     );
-    const contradiction = runCandidateRankingLab(
-      withTrainingHistory(baseRequest, {
-        exerciseHistory: {
-          events: [
-            {
-              id: "recent-scapular-too-easy",
-              exerciseId: "serratus-wall-slide",
-              type: "too_easy",
-              occurredAt: recentIso(5),
-              movementRole: "scapular_control",
-              notes: "Scapular-control work was easy.",
-            },
-            {
-              id: "recent-scapular-too-difficult",
-              exerciseId: "band-face-pull",
-              type: "too_difficult",
-              occurredAt: recentIso(2),
-              movementRole: "scapular_control",
-              notes: "Scapular-control work was too difficult.",
-            },
-          ],
-          stableExerciseIds: [],
-          blockedExerciseIds: [],
-        },
+    const trace = assessmentTrace(ranked(result.rankedCandidates, "serratus-wall-slide"));
+
+    expect(trace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        matchingEventCount: 1,
+        staleEventCount: 0,
+        noRecencyEventCount: 1,
+        evidenceQuality: "weak",
       }),
+    );
+    expect(trace.demandCapability.capabilityEstimate.evidence.join(" ")).toContain(
+      "No evaluationContext.asOf was supplied",
+    );
+  });
+
+  it("dampens contradictory movement-role history instead of treating it as clean evidence", () => {
+    const baseRequest = controlledRequest("scapular-activation-high-confidence");
+    const singleSuccess = runCandidateRankingLab(
+      withEvaluationAsOf(
+        withTrainingHistory(baseRequest, {
+          exerciseHistory: {
+            events: [
+              {
+                id: "recent-single-scapular-too-easy",
+                exerciseId: "serratus-wall-slide",
+                type: "too_easy",
+                occurredAt: "2026-08-05T00:00:00.000Z",
+                movementRole: "scapular_control",
+                notes: "Scapular-control work was easy.",
+              },
+            ],
+            stableExerciseIds: [],
+            blockedExerciseIds: [],
+          },
+        }),
+        FIXED_AS_OF,
+      ),
+    );
+    const contradiction = runCandidateRankingLab(
+      withEvaluationAsOf(
+        withTrainingHistory(baseRequest, {
+          exerciseHistory: {
+            events: [
+              {
+                id: "recent-scapular-too-easy",
+                exerciseId: "serratus-wall-slide",
+                type: "too_easy",
+                occurredAt: "2026-08-05T00:00:00.000Z",
+                movementRole: "scapular_control",
+                notes: "Scapular-control work was easy.",
+              },
+              {
+                id: "recent-scapular-too-difficult",
+                exerciseId: "band-face-pull",
+                type: "too_difficult",
+                occurredAt: "2026-08-08T00:00:00.000Z",
+                movementRole: "scapular_control",
+                notes: "Scapular-control work was too difficult.",
+              },
+            ],
+            stableExerciseIds: [],
+            blockedExerciseIds: [],
+          },
+        }),
+        FIXED_AS_OF,
+      ),
     );
     const singleTrace = assessmentTrace(ranked(singleSuccess.rankedCandidates, "serratus-wall-slide"));
     const contradictionTrace = assessmentTrace(
@@ -726,29 +864,32 @@ describe("assessment relevance scoping", () => {
   it("lets repeated failures lower capability while exposing stale and missing recency", () => {
     const baseRequest = controlledRequest("scapular-activation-high-confidence");
     const repeatedFailures = runCandidateRankingLab(
-      withTrainingHistory(baseRequest, {
-        exerciseHistory: {
-          events: [
-            {
-              id: "stale-scapular-progression-failure",
-              exerciseId: "band-face-pull",
-              type: "progression_failure",
-              occurredAt: "2020-01-01T00:00:00.000Z",
-              movementRole: "scapular_control",
-              notes: "Old progression failure.",
-            },
-            {
-              id: "undated-scapular-failed-target",
-              exerciseId: "serratus-wall-slide",
-              type: "failed_target",
-              movementRole: "scapular_control",
-              notes: "Failed a target without a recorded date.",
-            },
-          ],
-          stableExerciseIds: [],
-          blockedExerciseIds: [],
-        },
-      }),
+      withEvaluationAsOf(
+        withTrainingHistory(baseRequest, {
+          exerciseHistory: {
+            events: [
+              {
+                id: "stale-scapular-progression-failure",
+                exerciseId: "band-face-pull",
+                type: "progression_failure",
+                occurredAt: "2020-01-01T00:00:00.000Z",
+                movementRole: "scapular_control",
+                notes: "Old progression failure.",
+              },
+              {
+                id: "undated-scapular-failed-target",
+                exerciseId: "serratus-wall-slide",
+                type: "failed_target",
+                movementRole: "scapular_control",
+                notes: "Failed a target without a recorded date.",
+              },
+            ],
+            stableExerciseIds: [],
+            blockedExerciseIds: [],
+          },
+        }),
+        FIXED_AS_OF,
+      ),
     );
     const trace = assessmentTrace(ranked(repeatedFailures.rankedCandidates, "serratus-wall-slide"));
 
@@ -1045,9 +1186,9 @@ describe("assessment relevance scoping", () => {
       "dead-bug",
       "pallof-press",
     ]);
-    expect(rejectedCodes(result, "band-face-pull")).toContain("TRAINING_NEED_MISMATCH");
-    expect(rejectedCodes(result, "serratus-wall-slide")).toContain("TRAINING_NEED_MISMATCH");
-    expect(rejectedCodes(result, "band-row")).toContain("TRAINING_NEED_MISMATCH");
+    expect(rejectedCodes(result, "band-face-pull")).toContain("MOVEMENT_ROLE_MISMATCH");
+    expect(rejectedCodes(result, "serratus-wall-slide")).toContain("MOVEMENT_ROLE_MISMATCH");
+    expect(rejectedCodes(result, "band-row")).toContain("MOVEMENT_ROLE_MISMATCH");
   });
 
   it("keeps trunk signals neutral for irrelevant scapular activation candidates", () => {

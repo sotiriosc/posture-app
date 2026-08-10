@@ -1,3 +1,6 @@
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   FOUNDATION_COMPONENT_BOUNDARIES,
@@ -10,6 +13,19 @@ import {
   type AssessmentSignal,
   type PipelineObservationLog,
 } from "../../src";
+
+function tsFilesUnder(directory: string): readonly string[] {
+  return readdirSync(directory).flatMap((entry) => {
+    const entryPath = join(directory, entry);
+    const stats = statSync(entryPath);
+
+    if (stats.isDirectory()) {
+      return tsFilesUnder(entryPath);
+    }
+
+    return entry.endsWith(".ts") ? [entryPath] : [];
+  });
+}
 
 describe("architecture hardening contracts", () => {
   it("defines modular component boundaries by training responsibility", () => {
@@ -37,7 +53,26 @@ describe("architecture hardening contracts", () => {
     expect(isReasonCode("EQUIPMENT_UNAVAILABLE")).toBe(true);
     expect(isReasonCode("PERSONAL_BLOCK")).toBe(true);
     expect(isReasonCode("ROLE_MISMATCH")).toBe(true);
+    expect(isReasonCode("SECTION_MISMATCH")).toBe(true);
+    expect(isReasonCode("MOVEMENT_ROLE_MISMATCH")).toBe(true);
+    expect(isReasonCode("TARGET_MUSCLE_MISMATCH")).toBe(true);
     expect(isReasonCode("equipment_unavailable")).toBe(false);
+  });
+
+  it("keeps training-engine-v2 source free of implicit current-time decisions", () => {
+    const srcRoot = fileURLToPath(new URL("../../src", import.meta.url));
+    const forbiddenClockReads = [
+      /\bDate\.now\(/,
+      /\bnew Date\(\s*\)/,
+      /\bperformance\.now\(/,
+    ];
+    const offenders = tsFilesUnder(srcRoot).flatMap((filePath) => {
+      const source = readFileSync(filePath, "utf8");
+
+      return forbiddenClockReads.some((pattern) => pattern.test(source)) ? [filePath] : [];
+    });
+
+    expect(offenders).toEqual([]);
   });
 
   it("derives alignment priorities from assessment without allowing low confidence to dominate", () => {

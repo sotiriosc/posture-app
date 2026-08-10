@@ -63,8 +63,18 @@ function persona(id: string): GoldenPersona {
   );
 }
 
-function recentIso(daysAgo: number): string {
-  return new Date(Date.now() - daysAgo * 86_400_000).toISOString();
+function argumentValue(name: string): string | undefined {
+  const prefix = `--${name}=`;
+
+  return process.argv.find((argument) => argument.startsWith(prefix))?.slice(prefix.length);
+}
+
+function currentAsOf(): string {
+  return new Date().toISOString();
+}
+
+function recentIso(asOf: string, daysAgo: number): string {
+  return new Date(Date.parse(asOf) - daysAgo * 86_400_000).toISOString();
 }
 
 function history(overrides: Partial<TrainingHistory> = {}): TrainingHistory {
@@ -410,7 +420,10 @@ function painChoices(selectedPersona: GoldenPersona): readonly Choice<PainAndInj
   ];
 }
 
-function historyChoices(selectedPersona: GoldenPersona): readonly Choice<TrainingHistory>[] {
+function historyChoices(
+  selectedPersona: GoldenPersona,
+  asOf: string,
+): readonly Choice<TrainingHistory>[] {
   return [
     {
       label: "None",
@@ -432,7 +445,7 @@ function historyChoices(selectedPersona: GoldenPersona): readonly Choice<Trainin
               id: "lab-scapular-appropriate",
               exerciseId: "serratus-wall-slide",
               type: "appropriate_challenge",
-              occurredAt: recentIso(6),
+              occurredAt: recentIso(asOf, 6),
               movementRole: "scapular_control",
               notes: "Scapular drill was appropriately challenging.",
             },
@@ -440,7 +453,7 @@ function historyChoices(selectedPersona: GoldenPersona): readonly Choice<Trainin
               id: "lab-scapular-too-easy",
               exerciseId: "serratus-wall-slide",
               type: "too_easy",
-              occurredAt: recentIso(2),
+              occurredAt: recentIso(asOf, 2),
               movementRole: "scapular_control",
               notes: "Scapular drill was ready to progress.",
             },
@@ -464,7 +477,7 @@ function historyChoices(selectedPersona: GoldenPersona): readonly Choice<Trainin
               id: "lab-scapular-easy",
               exerciseId: "serratus-wall-slide",
               type: "too_easy",
-              occurredAt: recentIso(5),
+              occurredAt: recentIso(asOf, 5),
               movementRole: "scapular_control",
               notes: "Scapular work was easy.",
             },
@@ -472,7 +485,7 @@ function historyChoices(selectedPersona: GoldenPersona): readonly Choice<Trainin
               id: "lab-scapular-difficult",
               exerciseId: "band-face-pull",
               type: "too_difficult",
-              occurredAt: recentIso(1),
+              occurredAt: recentIso(asOf, 1),
               movementRole: "scapular_control",
               notes: "Loaded scapular work was too difficult.",
             },
@@ -492,7 +505,7 @@ function historyChoices(selectedPersona: GoldenPersona): readonly Choice<Trainin
               id: "lab-squat-progression-failure",
               exerciseId: "goblet-squat",
               type: "progression_failure",
-              occurredAt: recentIso(14),
+              occurredAt: recentIso(asOf, 14),
               movementRole: "squat",
               notes: "Squat load progression failed.",
             },
@@ -500,7 +513,7 @@ function historyChoices(selectedPersona: GoldenPersona): readonly Choice<Trainin
               id: "lab-squat-failed-target",
               exerciseId: "leg-press",
               type: "failed_target",
-              occurredAt: recentIso(7),
+              occurredAt: recentIso(asOf, 7),
               movementRole: "squat",
               notes: "Squat-pattern target was missed.",
             },
@@ -604,6 +617,7 @@ function buildRequest(input: {
   readonly assessmentChoice: Choice<AssessmentState>;
   readonly painChoice: Choice<PainAndInjuryState>;
   readonly historyChoice: Choice<TrainingHistory>;
+  readonly asOf: string;
 }): CandidateRequest {
   const assessment = input.assessmentChoice.value;
 
@@ -614,6 +628,9 @@ function buildRequest(input: {
       input.phaseChoice.value.id,
       input.needChoice.value.id,
     ].join(":"),
+    evaluationContext: {
+      asOf: input.asOf,
+    },
     athlete: input.personaChoice.value.athlete,
     goal: input.needChoice.value.goal,
     phase: input.phaseChoice.value,
@@ -818,6 +835,7 @@ function renderResult(result: CandidateRankingResult): void {
     ["Field", "Value"],
     [
       ["id", result.request.id],
+      ["asOf", result.request.evaluationContext?.asOf ?? "not supplied"],
       ["athlete", result.request.athlete.label],
       ["phase", result.request.phase.id],
       ["need", `${result.request.need.id} / ${result.request.need.requestedRole}`],
@@ -853,6 +871,7 @@ async function main(): Promise<void> {
       },
     ] as const;
     const useDefaults = process.argv.includes("--defaults");
+    const asOf = argumentValue("as-of") ?? currentAsOf();
     const selectedPersona = useDefaults
       ? personaChoices()[0]
       : await choose(rl, "Persona", personaChoices());
@@ -869,8 +888,8 @@ async function main(): Promise<void> {
       ? painChoices(selectedPersona.value)[0]
       : await choose(rl, "Pain / Concern", painChoices(selectedPersona.value));
     const selectedHistory = useDefaults
-      ? historyChoices(selectedPersona.value)[0]
-      : await choose(rl, "History", historyChoices(selectedPersona.value));
+      ? historyChoices(selectedPersona.value, asOf)[0]
+      : await choose(rl, "History", historyChoices(selectedPersona.value, asOf));
     const selectedMode = useDefaults
       ? outputModeChoices[0]
       : await choose(rl, "Output Mode", outputModeChoices);
@@ -881,6 +900,7 @@ async function main(): Promise<void> {
         ["Choice", "Selection"],
         [
           ["Persona", selectedPersona.label],
+          ["As Of", asOf],
           ["Phase", selectedPhase.label],
           ["Training Need", selectedNeed.label],
           ["Assessment", selectedAssessment.label],
@@ -898,6 +918,7 @@ async function main(): Promise<void> {
       assessmentChoice: selectedAssessment,
       painChoice: selectedPain,
       historyChoice: selectedHistory,
+      asOf,
     });
     const result = runCandidateRankingLab(request);
 

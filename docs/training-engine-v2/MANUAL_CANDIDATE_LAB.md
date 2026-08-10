@@ -15,6 +15,12 @@ To run the first scenario without prompts:
 npm run engine:v2:lab --workspace=@praxis/training-engine-v2 -- --defaults
 ```
 
+For a reproducible manual run with an explicit evaluation time:
+
+```bash
+npm run engine:v2:lab --workspace=@praxis/training-engine-v2 -- --defaults --as-of=2026-08-10T00:00:00.000Z
+```
+
 ## Scenario 1: Real Posture Horizontal Pull
 
 Use this as the first smoke scenario.

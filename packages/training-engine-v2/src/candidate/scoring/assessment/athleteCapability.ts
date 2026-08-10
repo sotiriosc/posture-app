@@ -188,24 +188,31 @@ function clampHistoryAdjustment(value: number): number {
   return Number(Math.max(-0.35, Math.min(0.35, value)).toFixed(3));
 }
 
-function daysSince(occurredAt?: string): number | null {
-  if (!occurredAt) {
+function daysSince(input: {
+  readonly occurredAt?: string;
+  readonly asOf?: string;
+}): number | null {
+  if (!input.occurredAt || !input.asOf) {
     return null;
   }
 
-  const parsed = Date.parse(occurredAt);
-  if (Number.isNaN(parsed)) {
+  const occurredAt = Date.parse(input.occurredAt);
+  const asOf = Date.parse(input.asOf);
+  if (Number.isNaN(occurredAt) || Number.isNaN(asOf)) {
     return null;
   }
 
-  return Math.max(0, Math.floor((Date.now() - parsed) / 86_400_000));
+  return Math.max(0, Math.floor((asOf - occurredAt) / 86_400_000));
 }
 
-function historyEventRecencyWeight(event: ExerciseHistoryEvent): {
+function historyEventRecencyWeight(
+  event: ExerciseHistoryEvent,
+  asOf?: string,
+): {
   readonly weight: number;
   readonly status: "recent" | "stale" | "no_recency";
 } {
-  const eventDaysSince = daysSince(event.occurredAt);
+  const eventDaysSince = daysSince({ occurredAt: event.occurredAt, asOf });
 
   if (eventDaysSince === null) {
     return { weight: 0.5, status: "no_recency" };
@@ -216,6 +223,22 @@ function historyEventRecencyWeight(event: ExerciseHistoryEvent): {
   }
 
   return { weight: 1, status: "recent" };
+}
+
+function evaluationTimeEvidence(asOf?: string): readonly string[] {
+  if (!asOf) {
+    return [
+      "No evaluationContext.asOf was supplied; timestamped history recency is treated as no_recency.",
+    ];
+  }
+
+  if (Number.isNaN(Date.parse(asOf))) {
+    return [
+      `evaluationContext.asOf (${asOf}) could not be parsed; timestamped history recency is treated as no_recency.`,
+    ];
+  }
+
+  return [`History recency evaluated as of ${asOf}.`];
 }
 
 function strongerQuality(
@@ -274,9 +297,10 @@ function historyCapabilityEvidence(input: {
     .map((event) => ({
       event,
       adjustment: historyEventCapabilityAdjustment(event),
-      recency: historyEventRecencyWeight(event),
+      recency: historyEventRecencyWeight(event, input.request.evaluationContext?.asOf),
     }))
     .filter((result) => result.adjustment !== 0);
+  const asOfEvidence = evaluationTimeEvidence(input.request.evaluationContext?.asOf);
   const progressionStateCorroborates = input.request.history.progressionState.successfulMovementRoles.some(
     (movementRole) =>
       movementRoleMatchesSignal({
@@ -341,6 +365,7 @@ function historyCapabilityEvidence(input: {
     adjustment,
     evidenceQuality,
     evidence: [
+      ...asOfEvidence,
       ...matchingEvents.map(
         ({ event, adjustment: eventAdjustment, recency }) =>
           `${event.id} (${event.type}) matched ${event.movementRole} with ${recency.status} recency and raw adjustment ${eventAdjustment.toFixed(3)}.`,

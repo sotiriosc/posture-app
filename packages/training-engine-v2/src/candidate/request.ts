@@ -36,8 +36,13 @@ export interface CandidateNeed {
   readonly goal: TrainingGoal;
 }
 
+export interface CandidateEvaluationContext {
+  readonly asOf?: string;
+}
+
 export interface CandidateRequest {
   readonly id: string;
+  readonly evaluationContext?: CandidateEvaluationContext;
   readonly athlete: AthleteProfile;
   readonly goal: TrainingGoal;
   readonly phase: PhaseIntent;
@@ -57,6 +62,7 @@ export interface CandidateRequest {
 
 export interface InterpretedCandidateContext {
   readonly requestId: string;
+  readonly evaluationAsOf?: string;
   readonly athleteId: string;
   readonly goal: TrainingGoal;
   readonly phaseId: PhaseIntent["id"];
@@ -75,6 +81,7 @@ export function interpretCandidateRequest(
 ): InterpretedCandidateContext {
   return {
     requestId: request.id,
+    evaluationAsOf: request.evaluationContext?.asOf,
     athleteId: request.athlete.id,
     goal: request.goal,
     phaseId: request.phase.id,

@@ -194,6 +194,7 @@ Assessment relevance and assessment relationship are intentionally separate:
 - confidence scales trust in the influence budget, not estimated physical capability;
 - severity/deficit magnitude is represented separately from confidence and priority. Existing fixtures without severity use a documented conservative `unknown` default.
 - capability provenance is visible through `estimateSource`, `contributingSources`, and `evidenceQuality`; movement-role-matched training history can contribute inferred capability evidence, while low-quality capability evidence limits bounded assessment/alignment influence;
+- history recency is deterministic: `CandidateRequest.evaluationContext.asOf` is the only evaluation time used by the engine. If `asOf` is absent or unparsable, timestamped history falls back to `no_recency` rather than reading the system clock;
 - unknown exercise mechanics use `candidateDemand: null` and `match: not_applicable`, so unknown does not silently become zero demand, easy, safe, ideal, or inappropriate.
 
 ## Assessment Semantics Modules

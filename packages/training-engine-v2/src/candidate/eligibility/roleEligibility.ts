@@ -22,7 +22,7 @@ export const roleEligibility: HardEligibilityComponent = {
       const sectionSuitability = exercise.sectionSuitability[context.requestedSection]?.suitability;
       if (!sectionSuitability || sectionSuitability === "poor") {
         rejectionReasons.push({
-          code: "TRAINING_NEED_MISMATCH" as const,
+          code: "SECTION_MISMATCH" as const,
           message: `${exercise.name} is not suitable for the requested ${context.requestedSection} section.`,
           source: "session_intent" as const,
           evidence: [`section: ${context.requestedSection}`, `defined sections: ${Object.keys(exercise.sectionSuitability).join(", ") || "none"}`],
@@ -35,7 +35,7 @@ export const roleEligibility: HardEligibilityComponent = {
       !overlaps(exercise.movementRoles, context.targetMovementRoles)
     ) {
       rejectionReasons.push({
-        code: "TRAINING_NEED_MISMATCH" as const,
+        code: "MOVEMENT_ROLE_MISMATCH" as const,
         message: `${exercise.name} does not match the requested movement role(s).`,
         source: "session_intent" as const,
         evidence: [
@@ -50,7 +50,7 @@ export const roleEligibility: HardEligibilityComponent = {
       !overlaps([...exercise.primaryMuscles, ...exercise.secondaryMuscles], context.targetMuscles)
     ) {
       rejectionReasons.push({
-        code: "TRAINING_NEED_MISMATCH" as const,
+        code: "TARGET_MUSCLE_MISMATCH" as const,
         message: `${exercise.name} does not train the requested target muscle(s).`,
         source: "session_intent" as const,
         evidence: [
