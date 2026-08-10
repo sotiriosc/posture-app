@@ -54,6 +54,20 @@ export interface RowLoadingTrace {
   readonly systemicFatigue: string;
 }
 
+interface RowMechanicalSignature {
+  readonly support: Pick<RowSupportTrace, "externalSupport" | "bodySupport">;
+  readonly resistancePath: Pick<
+    RowResistancePathTrace,
+    | "resistancePath"
+    | "trajectoryFreedom"
+    | "lineOfPullAdjustability"
+    | "laterality"
+    | "fitDependency"
+  >;
+  readonly demand: RowDemandTrace;
+  readonly loading: RowLoadingTrace;
+}
+
 export interface RowSelectionCandidateTrace {
   readonly exerciseId: string;
   readonly name: string;
@@ -149,13 +163,35 @@ function scoreVectorSignature(candidate: RankedCandidate): string {
     .join("|");
 }
 
-function mechanicsSignature(exercise: ExerciseDefinition): string {
-  return JSON.stringify({
-    support: supportTrace(exercise),
-    resistancePath: resistancePathTrace(exercise),
+function mechanicalSignature(exercise: ExerciseDefinition): RowMechanicalSignature {
+  const support = supportTrace(exercise);
+  const resistancePath = resistancePathTrace(exercise);
+
+  return {
+    support: {
+      externalSupport: support.externalSupport,
+      bodySupport: support.bodySupport,
+    },
+    resistancePath: {
+      resistancePath: resistancePath.resistancePath,
+      trajectoryFreedom: resistancePath.trajectoryFreedom,
+      lineOfPullAdjustability: resistancePath.lineOfPullAdjustability,
+      laterality: resistancePath.laterality,
+      fitDependency: resistancePath.fitDependency,
+    },
     demand: demandTrace(exercise),
     loading: loadingTrace(exercise),
-  });
+  };
+}
+
+function mechanicsSignature(exercise: ExerciseDefinition): string {
+  return JSON.stringify(mechanicalSignature(exercise));
+}
+
+function hasCurrentLumbarDiscomfort(request: CandidateRequest): boolean {
+  return request.painAndInjury.currentDiscomforts.some(
+    (pain) => pain.region === "lumbar_spine",
+  );
 }
 
 function contextualDifferentiators(
@@ -213,10 +249,10 @@ function contextualDifferentiators(
   );
 
   if (
-    request.painAndInjury.currentDiscomforts.some((pain) => pain.region === "lumbar_spine") &&
-    exercise.id.includes("chest-supported")
+    hasCurrentLumbarDiscomfort(request) &&
+    exercise.mechanics?.support.bodySupport === "chest_supported"
   ) {
-    differentiators.push("existing pain component: low-back support preference");
+    differentiators.push("structured support: chest_supported body support in lumbar-spine context");
   }
 
   return differentiators.length > 0 ? differentiators : ["none"];

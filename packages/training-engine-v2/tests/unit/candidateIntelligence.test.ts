@@ -14,6 +14,7 @@ import {
   type CandidateRequest,
   type CandidateRankingResult,
   type EquipmentCapabilities,
+  type ExerciseDefinition,
   type RankedCandidate,
 } from "../../src";
 
@@ -117,6 +118,88 @@ function withMachineRowContinuity(request: CandidateRequest): CandidateRequest {
       },
     },
   };
+}
+
+function referenceExercise(id: string): ExerciseDefinition {
+  const found = REFERENCE_EXERCISES.find((exercise) => exercise.id === id);
+  if (!found) {
+    throw new Error(`Missing reference exercise ${id}`);
+  }
+
+  return found;
+}
+
+function rowVariant(
+  base: ExerciseDefinition,
+  input: {
+    readonly id: string;
+    readonly name?: string;
+    readonly summary?: string;
+    readonly support?: Partial<NonNullable<ExerciseDefinition["mechanics"]>["support"]>;
+    readonly resistancePath?: Partial<
+      NonNullable<NonNullable<ExerciseDefinition["mechanics"]>["resistancePath"]>
+    >;
+  },
+): ExerciseDefinition {
+  if (!base.mechanics?.resistancePath) {
+    throw new Error(`Exercise ${base.id} needs mechanics and resistance path for row variant tests.`);
+  }
+
+  return {
+    ...base,
+    id: input.id,
+    name: input.name ?? base.name,
+    summary: input.summary ?? base.summary,
+    mechanics: {
+      ...base.mechanics,
+      support: {
+        ...base.mechanics.support,
+        ...input.support,
+      },
+      resistancePath: {
+        ...base.mechanics.resistancePath,
+        ...input.resistancePath,
+      },
+    },
+  };
+}
+
+function syntheticRowResult(
+  exercises: readonly ExerciseDefinition[],
+  request: CandidateRequest = scenario("horizontal-pull-gym-neutral").request,
+): CandidateRankingResult {
+  const base = result("horizontal-pull-gym-neutral");
+  const template = ranked(base, "machine-row");
+  const rankedCandidates: readonly RankedCandidate[] = exercises.map((exercise, index) => ({
+    ...template,
+    rank: index + 1,
+    exercise,
+    score: {
+      ...template.score,
+      exerciseId: exercise.id,
+    },
+    total: template.total,
+    components: template.components,
+    summary: `Synthetic row trace candidate for ${exercise.id}.`,
+  }));
+
+  return {
+    ...base,
+    request: {
+      ...request,
+      id: `${request.id}:synthetic-row-trace`,
+      candidatePool: exercises,
+    },
+    hardRejectedCandidates: [],
+    legalCandidateCount: rankedCandidates.length,
+    rankedCandidates,
+  };
+}
+
+function tieBetween(resultValue: CandidateRankingResult, leftId: string, rightId: string) {
+  return buildHorizontalRowSelectionTrace(resultValue, [leftId, rightId]).tieStatus.find(
+    (tie) => tie.exerciseIds.includes(leftId) && tie.exerciseIds.includes(rightId),
+  );
 }
 
 describe("Candidate Intelligence foundation", () => {
@@ -270,6 +353,173 @@ describe("Candidate Intelligence foundation", () => {
     expect(cableTrace?.contextualDifferentiators).toEqual(["none"]);
     expect(machineTrace?.resistancePath.resistancePath).toBe("machine_guided");
     expect(cableTrace?.resistancePath.resistancePath).toBe("cable_anchored");
+  });
+
+  it("keeps row mechanical equivalence independent from notes, provenance, and review status", () => {
+    const base = referenceExercise("machine-row");
+    const left = rowVariant(base, {
+      id: "semantic-row-left",
+      name: "Semantic Row Left",
+      support: {
+        reviewStatus: "accepted",
+        notes: "Different support review wording.",
+      },
+      resistancePath: {
+        reviewStatus: "accepted",
+        notes: "Different path review wording.",
+        provenance: ["different provenance"],
+      },
+    });
+    const right = rowVariant(base, {
+      id: "semantic-row-right",
+      name: "Semantic Row Right",
+      support: {
+        reviewStatus: "needs_review",
+        notes: "Another support review note.",
+      },
+      resistancePath: {
+        reviewStatus: "needs_review",
+        notes: "Another path review note.",
+        provenance: ["another provenance"],
+      },
+    });
+    const trace = buildHorizontalRowSelectionTrace(
+      syntheticRowResult([left, right]),
+      [left.id, right.id],
+    );
+    const tie = trace.tieStatus[0];
+    const leftTrace = trace.candidates.find((candidate) => candidate.exerciseId === left.id);
+    const rightTrace = trace.candidates.find((candidate) => candidate.exerciseId === right.id);
+
+    expect(tie).toEqual(
+      expect.objectContaining({
+        mechanicallyDistinct: false,
+        statusCodes: ["SCORE_EQUIVALENT_AND_KNOWLEDGE_EQUIVALENT"],
+      }),
+    );
+    expect(leftTrace?.mechanicsSignature).toBe(rightTrace?.mechanicsSignature);
+    expect(leftTrace?.mechanicsSignature).not.toContain("reviewStatus");
+    expect(leftTrace?.mechanicsSignature).not.toContain("provenance");
+    expect(leftTrace?.mechanicsSignature).not.toContain("notes");
+    expect(leftTrace?.support.reviewStatus).toBe("accepted");
+    expect(rightTrace?.resistancePath.provenance).toEqual(["another provenance"]);
+  });
+
+  it("treats structured resistance path and trajectory changes as mechanical distinctions", () => {
+    const base = referenceExercise("machine-row");
+    const guided = rowVariant(base, { id: "guided-row" });
+    const anchored = rowVariant(base, {
+      id: "anchored-row",
+      resistancePath: {
+        resistancePath: "cable_anchored",
+      },
+    });
+    const highFreedom = rowVariant(base, {
+      id: "high-freedom-row",
+      resistancePath: {
+        trajectoryFreedom: "high",
+      },
+    });
+
+    expect(tieBetween(syntheticRowResult([guided, anchored]), guided.id, anchored.id)).toEqual(
+      expect.objectContaining({
+        mechanicallyDistinct: true,
+        statusCodes: [
+          "SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT",
+          "CONTEXT_REQUIRED_TO_DIFFERENTIATE",
+        ],
+      }),
+    );
+    expect(tieBetween(syntheticRowResult([guided, highFreedom]), guided.id, highFreedom.id)).toEqual(
+      expect.objectContaining({
+        mechanicallyDistinct: true,
+        statusCodes: [
+          "SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT",
+          "CONTEXT_REQUIRED_TO_DIFFERENTIATE",
+        ],
+      }),
+    );
+  });
+
+  it("treats structured support changes as mechanical distinctions", () => {
+    const base = referenceExercise("machine-row");
+    const seated = rowVariant(base, { id: "seated-support-row" });
+    const chestSupported = rowVariant(base, {
+      id: "structured-support-row",
+      support: {
+        bodySupport: "chest_supported",
+      },
+    });
+
+    expect(tieBetween(syntheticRowResult([seated, chestSupported]), seated.id, chestSupported.id)).toEqual(
+      expect.objectContaining({
+        mechanicallyDistinct: true,
+        statusCodes: [
+          "SCORE_EQUIVALENT_BUT_MECHANICALLY_DISTINCT",
+          "CONTEXT_REQUIRED_TO_DIFFERENTIATE",
+        ],
+      }),
+    );
+  });
+
+  it("derives low-back row diagnostics from structured support instead of exercise id or name text", () => {
+    const base = referenceExercise("machine-row");
+    const lowBackRequest = scenario("horizontal-pull-low-back-discomfort").request;
+    const textOnly = rowVariant(base, {
+      id: "decoy-chest-supported-name-only",
+      name: "Chest Supported Name Decoy",
+      support: {
+        bodySupport: "seated_supported",
+      },
+    });
+    const structuredSupport = rowVariant(base, {
+      id: "opaque-row-structure-only",
+      name: "Opaque Row",
+      support: {
+        bodySupport: "chest_supported",
+      },
+    });
+    const trace = buildHorizontalRowSelectionTrace(
+      syntheticRowResult([textOnly, structuredSupport], lowBackRequest),
+      [textOnly.id, structuredSupport.id],
+    );
+    const textOnlyTrace = trace.candidates.find((candidate) => candidate.exerciseId === textOnly.id);
+    const structuredTrace = trace.candidates.find(
+      (candidate) => candidate.exerciseId === structuredSupport.id,
+    );
+
+    expect(textOnlyTrace?.contextualDifferentiators).toEqual(["none"]);
+    expect(structuredTrace?.contextualDifferentiators).toContain(
+      "structured support: chest_supported body support in lumbar-spine context",
+    );
+    expect(structuredTrace?.contextualDifferentiators.join(" ")).not.toContain(
+      structuredSupport.id,
+    );
+    expect(structuredTrace?.contextualDifferentiators.join(" ")).not.toContain(
+      structuredSupport.name,
+    );
+  });
+
+  it("keeps neutral row totals and order unchanged by row diagnostics", () => {
+    const neutral = result("horizontal-pull-gym-neutral");
+
+    expect(
+      neutral.rankedCandidates
+        .filter((candidate) =>
+          [
+            "machine-row",
+            "seated-cable-row",
+            "chest-supported-dumbbell-row",
+            "one-arm-dumbbell-row",
+          ].includes(candidate.exercise.id),
+        )
+        .map((candidate) => [candidate.exercise.id, candidate.total]),
+    ).toEqual([
+      ["machine-row", 8.069],
+      ["seated-cable-row", 8.069],
+      ["chest-supported-dumbbell-row", 8.065],
+      ["one-arm-dumbbell-row", 7.911],
+    ]);
   });
 
   it("treats bench support as a hard equipment fact without eliminating dumbbell rows entirely", () => {
