@@ -33,6 +33,7 @@ import {
   type ScoreComponent,
   type TrainingGoal,
   type TrainingHistory,
+  type TransitionPurposeEvidenceStatus,
 } from "../../src";
 import { createPosturePhotoCandidateExperimentRequests } from "../fixtures/posture/postureCandidateExperimentFixture";
 
@@ -164,7 +165,7 @@ interface TransitionPurposeFinding {
   readonly source: string;
   readonly target: string;
   readonly purpose: string;
-  readonly classification: "consistent" | "unknown_supported_by_notes" | "mismatch";
+  readonly status: TransitionPurposeEvidenceStatus;
   readonly evidence: string;
 }
 
@@ -1198,150 +1199,17 @@ function scienceRows(data: {
   ];
 }
 
-function deltaEvidence(delta: { readonly source: string; readonly target: string; readonly delta: string }): string {
-  return `${delta.source}->${delta.target} (${delta.delta})`;
-}
-
 function transitionPurposeFindings(): readonly TransitionPurposeFinding[] {
   return REFERENCE_EXERCISES.flatMap((source) =>
-    buildExerciseTransitionTraces(source, REFERENCE_EXERCISES).flatMap((trace) => {
-      const delta = trace.structuralDelta;
-
-      return trace.purposes.map((purpose): TransitionPurposeFinding => {
-        if (purpose === "increase_loadability") {
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification:
-              delta.loading.loadability.delta === "increase"
-                ? "consistent"
-                : delta.loading.loadability.delta === "unknown"
-                  ? "unknown_supported_by_notes"
-                  : "mismatch",
-            evidence: deltaEvidence(delta.loading.loadability),
-          };
-        }
-        if (purpose === "reduce_loadability") {
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification:
-              delta.loading.loadability.delta === "decrease"
-                ? "consistent"
-                : delta.loading.loadability.delta === "unknown"
-                  ? "unknown_supported_by_notes"
-                  : "mismatch",
-            evidence: deltaEvidence(delta.loading.loadability),
-          };
-        }
-        if (purpose === "increase_stability_demand") {
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification:
-              delta.demand.stability.delta === "increase"
-                ? "consistent"
-                : delta.demand.stability.delta === "unknown"
-                  ? "unknown_supported_by_notes"
-                  : "mismatch",
-            evidence: deltaEvidence(delta.demand.stability),
-          };
-        }
-        if (purpose === "reduce_stability_demand") {
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification:
-              delta.demand.stability.delta === "decrease"
-                ? "consistent"
-                : delta.demand.stability.delta === "unknown"
-                  ? "unknown_supported_by_notes"
-                  : "mismatch",
-            evidence: deltaEvidence(delta.demand.stability),
-          };
-        }
-        if (purpose === "increase_coordination_demand") {
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification:
-              delta.demand.coordination.delta === "increase"
-                ? "consistent"
-                : delta.demand.coordination.delta === "unknown"
-                  ? "unknown_supported_by_notes"
-                  : "mismatch",
-            evidence: deltaEvidence(delta.demand.coordination),
-          };
-        }
-        if (purpose === "reduce_coordination_demand") {
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification:
-              delta.demand.coordination.delta === "decrease"
-                ? "consistent"
-                : delta.demand.coordination.delta === "unknown"
-                  ? "unknown_supported_by_notes"
-                  : "mismatch",
-            evidence: deltaEvidence(delta.demand.coordination),
-          };
-        }
-        if (purpose === "equipment_transition") {
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification:
-              delta.equipment.sourceOnly.length > 0 || delta.equipment.targetOnly.length > 0
-                ? "consistent"
-                : "mismatch",
-            evidence: `sourceOnly=${delta.equipment.sourceOnly.join(", ") || "none"}; targetOnly=${delta.equipment.targetOnly.join(", ") || "none"}`,
-          };
-        }
-        if (purpose === "feature_shift") {
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification:
-              delta.assessmentFeatures.some((feature) => feature.delta !== "same")
-                ? "consistent"
-                : "unknown_supported_by_notes",
-            evidence: delta.assessmentFeatures
-              .filter((feature) => feature.delta !== "same")
-              .map((feature) => `${feature.feature}:${feature.source}->${feature.target}`)
-              .join("; ") || "no feature metadata modeled for this edge",
-          };
-        }
-        if (purpose === "change_resistance_path") {
-          const pathChanged = Object.values(delta.resistancePath).some(
-            (value) => value.source !== value.target || value.delta !== "same",
-          );
-
-          return {
-            source: trace.sourceExerciseId,
-            target: trace.targetExerciseId,
-            purpose,
-            classification: pathChanged ? "consistent" : "unknown_supported_by_notes",
-            evidence: `path=${deltaEvidence(delta.resistancePath.resistancePath)}; trajectory=${deltaEvidence(delta.resistancePath.trajectoryFreedom)}; line=${deltaEvidence(delta.resistancePath.lineOfPullAdjustability)}`,
-          };
-        }
-
-        return {
-          source: trace.sourceExerciseId,
-          target: trace.targetExerciseId,
-          purpose,
-          classification: "unknown_supported_by_notes",
-          evidence: `purpose is contextual/programming intent; notes=${trace.notes}`,
-        };
-      });
-    }),
+    buildExerciseTransitionTraces(source, REFERENCE_EXERCISES).flatMap((trace) =>
+      trace.purposeEvidence.map((finding): TransitionPurposeFinding => ({
+        source: trace.sourceExerciseId,
+        target: trace.targetExerciseId,
+        purpose: finding.purpose,
+        status: finding.status,
+        evidence: finding.evidence,
+      })),
+    ),
   );
 }
 
@@ -1376,7 +1244,6 @@ function catalogSummary(): CatalogSummary {
     p1Gaps: [
       "Moderate pain calibration remains human-review-needed before a session composer can depend on candidate rank alone.",
       "Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.",
-      "Transition purpose audit has contextual/unknown-supported cases that should remain review-visible before automatic replacement logic.",
     ],
     p2Gaps: [
       "Several non-row exercises still have unknown support or resistance-path metadata.",
@@ -1503,28 +1370,58 @@ function table(headers: readonly string[], rows: readonly (readonly string[])[])
 
 function renderTransitionPurposeSummary(findings: readonly TransitionPurposeFinding[]): string {
   const counts = findings.reduce<Record<string, number>>((accumulator, finding) => {
-    accumulator[finding.classification] = (accumulator[finding.classification] ?? 0) + 1;
+    accumulator[finding.status] = (accumulator[finding.status] ?? 0) + 1;
 
     return accumulator;
   }, {});
-  const mismatches = findings.filter((finding) => finding.classification === "mismatch");
-  const unknownSupported = findings.filter((finding) => finding.classification === "unknown_supported_by_notes");
+  const edgeCount = new Set(findings.map((finding) => `${finding.source}->${finding.target}`)).size;
+  const contradicted = findings.filter((finding) => finding.status === "contradicted");
+  const unknown = findings.filter((finding) => finding.status === "unknown_metadata");
+  const contextual = findings.filter((finding) => finding.status === "contextual_intent");
 
   return [
-    `Purpose tag checks: consistent=${counts.consistent ?? 0}; unknown_supported_by_notes=${counts.unknown_supported_by_notes ?? 0}; mismatch=${counts.mismatch ?? 0}.`,
+    `Purpose-evidence audit: edges=${edgeCount}; purposes=${findings.length}; structurally_confirmed=${counts.structurally_confirmed ?? 0}; contextual_intent=${counts.contextual_intent ?? 0}; unknown_metadata=${counts.unknown_metadata ?? 0}; contradicted=${counts.contradicted ?? 0}.`,
     "",
-    mismatches.length > 0
+    contradicted.length > 0
       ? table(
-          ["Source", "Target", "Purpose", "Evidence"],
-          mismatches.map((finding) => [finding.source, finding.target, finding.purpose, finding.evidence]),
+          ["Source", "Target", "Purpose", "Status", "Evidence"],
+          contradicted.map((finding) => [
+            finding.source,
+            finding.target,
+            finding.purpose,
+            finding.status,
+            finding.evidence,
+          ]),
         )
-      : "No direct structural mismatches were found for loadability, stability, coordination, equipment, or feature-shift purpose checks.",
+      : "Contradicted purpose findings: **none**.",
     "",
-    "Contextual or unknown-supported purpose tags remain review-visible when structural metadata is intentionally incomplete or the purpose is program-context intent rather than a direct mechanical delta.",
-    table(
-      ["Source", "Target", "Purpose", "Evidence"],
-      unknownSupported.slice(0, 14).map((finding) => [finding.source, finding.target, finding.purpose, finding.evidence]),
-    ),
+    "Unknown metadata remains explicit and does not become mechanical confirmation:",
+    unknown.length > 0
+      ? table(
+          ["Source", "Target", "Purpose", "Status", "Evidence"],
+          unknown.map((finding) => [
+            finding.source,
+            finding.target,
+            finding.purpose,
+            finding.status,
+            finding.evidence,
+          ]),
+        )
+      : "None.",
+    "",
+    "Contextual programming intent remains explicit and retains reviewed transition provenance without pretending to be an ordinal mechanics claim:",
+    contextual.length > 0
+      ? table(
+          ["Source", "Target", "Purpose", "Status", "Evidence"],
+          contextual.map((finding) => [
+            finding.source,
+            finding.target,
+            finding.purpose,
+            finding.status,
+            finding.evidence,
+          ]),
+        )
+      : "None.",
   ].join("\n");
 }
 
@@ -1549,7 +1446,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     `Classification: **${readiness}**`,
     "",
-    "Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. Feature-specific target fit and continuity reason-code precedence are resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration, phase calibration, and review-visible transition-purpose/context gaps.",
+    "Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 calibration issues remain. Feature-specific target fit, continuity reason-code precedence, and transition-purpose truth are resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration and phase calibration.",
     "",
     "## Contract Review",
     "",
@@ -1746,9 +1643,17 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "## Progression / Transition Review",
     "",
-    "Verdict: **GOOD_WITH_REVIEW_CAVEATS**. All 36 legacy cross-exercise edges are migrated into transitionRelationships; progressionAxes remain same-exercise advancement. Transition traces expose direction, classification, purposes, structural delta, review status, and automaticSelectionEffect=none. No transition edge selects, boosts, penalizes, bypasses eligibility, or bypasses pain.",
+    "Verdict: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**. All 36 legacy cross-exercise edges are migrated into transitionRelationships; progressionAxes remain same-exercise advancement. Transition traces expose direction, classification, per-purpose evidence status, structural delta, review status, provenance, and automaticSelectionEffect=none. No transition edge selects, boosts, penalizes, bypasses eligibility, or bypasses pain.",
     "",
     renderTransitionPurposeSummary(data.transitionPurposeFindings),
+    "",
+    "### TRANSITION_PURPOSE_TRUTH_RESOLVED",
+    "",
+    "- Four direct structural contradictions were corrected without changing exercise mechanics metadata.",
+    "- Direct purposes are structurally confirmed, unknown because required metadata is incomplete, or contradicted solely from normalized source/target deltas; transition notes cannot alter that status.",
+    "- Programming and multidimensional support purposes remain explicit `contextual_intent` with review provenance retained.",
+    "- Every transition remains observational with `automaticSelectionEffect=none`; no candidate score, total, rank, or full ordering changed.",
+    "- No automatic replacement behavior was added, and questionable or needs-review relationships retain their review qualification.",
     "",
     "## Manual Science Review Table",
     "",
@@ -1819,8 +1724,8 @@ export function writeFinalCandidateIntelligenceReview(rootDir = process.cwd()): 
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const result = writeFinalCandidateIntelligenceReview();
-  const mismatches = result.data.transitionPurposeFindings.filter(
-    (finding) => finding.classification === "mismatch",
+  const contradictions = result.data.transitionPurposeFindings.filter(
+    (finding) => finding.status === "contradicted",
   ).length;
 
   console.log(`Wrote ${result.outputPath}`);
@@ -1828,7 +1733,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     exercises: result.data.catalogSummary.total,
     existingControlledScenarios: result.data.controlledScenarioCount,
     totalRequestsReviewed: result.data.totalRequestsReviewed,
-    transitionPurposeMismatches: mismatches,
+    transitionPurposeContradictions: contradictions,
     finalReadiness: "TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION",
   }, null, 2));
 }

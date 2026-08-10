@@ -364,7 +364,6 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
             "movement_pattern_development",
             "change_resistance_path",
             "increase_loadability",
-            "increase_stability_demand",
           ],
           notes: "Can move from supine anti-extension toward standing anti-rotation when trunk-development context supports the role change.",
         }),
@@ -473,7 +472,6 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
           purposes: [
             "increase_support",
             "reduce_stability_demand",
-            "reduce_coordination_demand",
             "pain_or_tolerance_regression",
           ],
           notes: "Can reduce free-body trunk/stability demands through a guided machine press when equipment and fit are appropriate.",
@@ -2089,10 +2087,10 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         }),
         transition({
           targetExerciseId: "serratus-wall-slide",
-          direction: "regression",
+          direction: "lateral",
           classification: "context_dependent",
-          purposes: ["reduce_loadability", "feature_shift", "preparation_to_loaded_training"],
-          notes: "Regresses load but shifts toward serratus/upward-rotation work, so feature preservation is context dependent.",
+          purposes: ["feature_shift", "equipment_transition"],
+          notes: "Context-dependent lateral transition from band-loaded retraction/cuff preparation to wall-supported serratus/upward-rotation preparation. Neither exercise is a universal progression or regression of the other.",
         }),
       ],
     },
@@ -2243,7 +2241,6 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
           classification: "needs_review",
           purposes: [
             "reduce_loadability",
-            "reduce_stability_demand",
             "movement_pattern_development",
             "pain_or_tolerance_regression",
           ],

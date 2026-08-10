@@ -377,6 +377,7 @@ Equipment should describe actual capability rather than merely broad labels.
 - AssessmentFeatureTargetFitTrace
 - AssessmentFeatureDevelopmentTrace
 - ExerciseTransitionRelationship
+- TransitionPurposeEvidenceTrace
 - ExerciseTransitionTrace
 - SessionEvaluation
 - WeekEvaluation
@@ -1141,6 +1142,8 @@ Examples:
 Should the current exercise be replaced by another exercise, in which direction, and for what reviewed purpose?
 
 A transition must retain source, target, direction, classification, purpose, review status, provenance, and relevant structural deltas such as movement roles, muscles, support, resistance path, demand, loading, equipment, and assessment-feature expression.
+
+Each transition purpose must expose whether it is structurally confirmed, contextual intent, unknown because required metadata is incomplete, or contradicted. Notes may explain contextual intent but must not override normalized structural evidence.
 
 Transition direction may be `progression`, `regression`, or `lateral`. Classification may be `developmental`, `context_dependent`, `questionable`, or `needs_review`.
 

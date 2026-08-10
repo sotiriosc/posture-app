@@ -2,6 +2,7 @@ import type { AssessmentFeature } from "./domain/assessment";
 import type {
   ExerciseDefinition,
   ExerciseDemandAnnotationLevel,
+  ExerciseTransitionPurpose,
   ExerciseTransitionRelationship,
 } from "./domain/exercise";
 
@@ -61,6 +62,18 @@ export interface ExerciseTransitionStructuralDelta {
   readonly assessmentFeatures: readonly TransitionScapularFeatureDelta[];
 }
 
+export type TransitionPurposeEvidenceStatus =
+  | "structurally_confirmed"
+  | "contextual_intent"
+  | "unknown_metadata"
+  | "contradicted";
+
+export interface TransitionPurposeEvidenceTrace {
+  readonly purpose: ExerciseTransitionPurpose;
+  readonly status: TransitionPurposeEvidenceStatus;
+  readonly evidence: string;
+}
+
 export interface ExerciseTransitionTrace {
   readonly sourceExerciseId: string;
   readonly targetExerciseId: string;
@@ -71,6 +84,7 @@ export interface ExerciseTransitionTrace {
   readonly notes: string;
   readonly provenance: readonly string[];
   readonly structuralDelta: ExerciseTransitionStructuralDelta;
+  readonly purposeEvidence: readonly TransitionPurposeEvidenceTrace[];
   readonly automaticSelectionEffect: "none";
 }
 
@@ -273,11 +287,258 @@ export function compareExerciseTransition(
   };
 }
 
+function valueDeltaEvidence(label: string, delta: TransitionValueDelta): string {
+  return `${label}: ${delta.source} -> ${delta.target} (${delta.delta})`;
+}
+
+function categoricalDeltaEvidence(label: string, delta: TransitionValueDelta): string {
+  return `${label}: ${delta.source} -> ${delta.target}`;
+}
+
+function directionalPurposeEvidence(input: {
+  readonly purpose: ExerciseTransitionPurpose;
+  readonly label: string;
+  readonly delta: TransitionValueDelta;
+  readonly expected: "increase" | "decrease";
+}): TransitionPurposeEvidenceTrace {
+  const metadataUnknown = input.delta.source === "unknown" || input.delta.target === "unknown";
+
+  if (metadataUnknown) {
+    return {
+      purpose: input.purpose,
+      status: "unknown_metadata",
+      evidence: `${valueDeltaEvidence(input.label, input.delta)}; source and/or target metadata is unknown`,
+    };
+  }
+
+  return {
+    purpose: input.purpose,
+    status:
+      input.delta.delta === input.expected ? "structurally_confirmed" : "contradicted",
+    evidence: `${valueDeltaEvidence(input.label, input.delta)}; expected ${input.expected}`,
+  };
+}
+
+function resistancePathPurposeEvidence(
+  purpose: ExerciseTransitionPurpose,
+  delta: TransitionResistancePathDelta,
+): TransitionPurposeEvidenceTrace {
+  const entries = [
+    ["path", delta.resistancePath],
+    ["trajectory", delta.trajectoryFreedom],
+    ["line", delta.lineOfPullAdjustability],
+    ["laterality", delta.laterality],
+    ["fit", delta.fitDependency],
+  ] as const;
+  const knownChanges = entries.filter(
+    ([, value]) =>
+      value.source !== "unknown" &&
+      value.target !== "unknown" &&
+      value.source !== value.target,
+  );
+
+  if (knownChanges.length > 0) {
+    return {
+      purpose,
+      status: "structurally_confirmed",
+      evidence: knownChanges.map(([label, value]) => categoricalDeltaEvidence(label, value)).join("; "),
+    };
+  }
+
+  const hasUnknownMetadata = entries.some(
+    ([, value]) => value.source === "unknown" || value.target === "unknown",
+  );
+
+  return {
+    purpose,
+    status: hasUnknownMetadata ? "unknown_metadata" : "contradicted",
+    evidence: hasUnknownMetadata
+      ? "source and/or target resistance-path profile is not modeled"
+      : `all modeled resistance-path fields are unchanged: ${entries
+          .map(([label, value]) => categoricalDeltaEvidence(label, value))
+          .join("; ")}`,
+  };
+}
+
+function equipmentPurposeEvidence(
+  purpose: ExerciseTransitionPurpose,
+  delta: TransitionSetDelta,
+): TransitionPurposeEvidenceTrace {
+  const changed = delta.sourceOnly.length > 0 || delta.targetOnly.length > 0;
+
+  return {
+    purpose,
+    status: changed ? "structurally_confirmed" : "contradicted",
+    evidence: `equipment: sourceOnly=[${delta.sourceOnly.join(", ") || "none"}]; targetOnly=[${delta.targetOnly.join(", ") || "none"}]`,
+  };
+}
+
+function featurePurposeEvidence(
+  purpose: ExerciseTransitionPurpose,
+  features: readonly TransitionScapularFeatureDelta[],
+): TransitionPurposeEvidenceTrace {
+  const knownChanges = features.filter(
+    (feature) =>
+      feature.source !== "unknown" &&
+      feature.target !== "unknown" &&
+      feature.source !== feature.target,
+  );
+
+  if (knownChanges.length > 0) {
+    return {
+      purpose,
+      status: "structurally_confirmed",
+      evidence: knownChanges
+        .map((feature) => `${feature.feature}: ${feature.source} -> ${feature.target}`)
+        .join("; "),
+    };
+  }
+
+  const hasUnknownMetadata =
+    features.length === 0 ||
+    features.some((feature) => feature.source === "unknown" || feature.target === "unknown");
+
+  return {
+    purpose,
+    status: hasUnknownMetadata ? "unknown_metadata" : "contradicted",
+    evidence: hasUnknownMetadata
+      ? "source and/or target assessment-feature mechanics are not modeled"
+      : "all modeled assessment-feature levels are unchanged",
+  };
+}
+
+function contextualRelationshipEvidence(
+  relationship: ExerciseTransitionRelationship,
+  structuredEvidence: string,
+): string {
+  return `${structuredEvidence}; contextual intent; transition note retained; review=${relationship.reviewStatus}; provenance=[${relationship.provenance.join(", ") || "none"}]`;
+}
+
+function movementRoleEvidence(delta: ExerciseTransitionStructuralDelta): string {
+  const source = unique([...delta.sharedMovementRoles, ...delta.sourceOnlyMovementRoles]);
+  const target = unique([...delta.sharedMovementRoles, ...delta.targetOnlyMovementRoles]);
+
+  return `movement roles: source=[${source.join(", ") || "none"}] -> target=[${target.join(", ") || "none"}]`;
+}
+
+function supportEvidence(delta: ExerciseTransitionStructuralDelta): string {
+  return [
+    categoricalDeltaEvidence("external support", delta.support.externalSupport),
+    categoricalDeltaEvidence("body support", delta.support.bodySupport),
+  ].join("; ");
+}
+
+function contextualPurposeEvidence(input: {
+  readonly purpose: ExerciseTransitionPurpose;
+  readonly relationship: ExerciseTransitionRelationship;
+  readonly delta: ExerciseTransitionStructuralDelta;
+}): TransitionPurposeEvidenceTrace {
+  let structuredEvidence: string;
+
+  switch (input.purpose) {
+    case "increase_support":
+    case "reduce_support":
+      structuredEvidence = supportEvidence(input.delta);
+      break;
+    case "movement_pattern_development":
+      structuredEvidence = movementRoleEvidence(input.delta);
+      break;
+    case "preparation_to_loaded_training":
+      structuredEvidence = valueDeltaEvidence("loadability", input.delta.loading.loadability);
+      break;
+    case "stimulus_shift":
+      structuredEvidence = `${movementRoleEvidence(input.delta)}; muscles: sourceOnly=[${input.delta.sourceOnlyMuscles.join(", ") || "none"}]; targetOnly=[${input.delta.targetOnlyMuscles.join(", ") || "none"}]; ${valueDeltaEvidence("loadability", input.delta.loading.loadability)}`;
+      break;
+    case "pain_or_tolerance_regression":
+      structuredEvidence = `${supportEvidence(input.delta)}; ${valueDeltaEvidence("trunk demand", input.delta.demand.trunk)}; ${valueDeltaEvidence("stability demand", input.delta.demand.stability)}`;
+      break;
+    default:
+      throw new Error(`Purpose ${input.purpose} is not contextual.`);
+  }
+
+  return {
+    purpose: input.purpose,
+    status: "contextual_intent",
+    evidence: contextualRelationshipEvidence(input.relationship, structuredEvidence),
+  };
+}
+
+export function buildTransitionPurposeEvidenceTraces(input: {
+  readonly relationship: ExerciseTransitionRelationship;
+  readonly structuralDelta: ExerciseTransitionStructuralDelta;
+}): readonly TransitionPurposeEvidenceTrace[] {
+  return input.relationship.purposes.map((purpose) => {
+    switch (purpose) {
+      case "increase_loadability":
+        return directionalPurposeEvidence({
+          purpose,
+          label: "loadability",
+          delta: input.structuralDelta.loading.loadability,
+          expected: "increase",
+        });
+      case "reduce_loadability":
+        return directionalPurposeEvidence({
+          purpose,
+          label: "loadability",
+          delta: input.structuralDelta.loading.loadability,
+          expected: "decrease",
+        });
+      case "increase_stability_demand":
+        return directionalPurposeEvidence({
+          purpose,
+          label: "stability demand",
+          delta: input.structuralDelta.demand.stability,
+          expected: "increase",
+        });
+      case "reduce_stability_demand":
+        return directionalPurposeEvidence({
+          purpose,
+          label: "stability demand",
+          delta: input.structuralDelta.demand.stability,
+          expected: "decrease",
+        });
+      case "increase_coordination_demand":
+        return directionalPurposeEvidence({
+          purpose,
+          label: "coordination demand",
+          delta: input.structuralDelta.demand.coordination,
+          expected: "increase",
+        });
+      case "reduce_coordination_demand":
+        return directionalPurposeEvidence({
+          purpose,
+          label: "coordination demand",
+          delta: input.structuralDelta.demand.coordination,
+          expected: "decrease",
+        });
+      case "change_resistance_path":
+        return resistancePathPurposeEvidence(purpose, input.structuralDelta.resistancePath);
+      case "equipment_transition":
+        return equipmentPurposeEvidence(purpose, input.structuralDelta.equipment);
+      case "feature_shift":
+        return featurePurposeEvidence(purpose, input.structuralDelta.assessmentFeatures);
+      case "increase_support":
+      case "reduce_support":
+      case "movement_pattern_development":
+      case "preparation_to_loaded_training":
+      case "stimulus_shift":
+      case "pain_or_tolerance_regression":
+        return contextualPurposeEvidence({
+          purpose,
+          relationship: input.relationship,
+          delta: input.structuralDelta,
+        });
+    }
+  });
+}
+
 export function buildExerciseTransitionTrace(input: {
   readonly source: ExerciseDefinition;
   readonly target: ExerciseDefinition;
   readonly relationship: ExerciseTransitionRelationship;
 }): ExerciseTransitionTrace {
+  const structuralDelta = compareExerciseTransition(input.source, input.target);
+
   return {
     sourceExerciseId: input.source.id,
     targetExerciseId: input.relationship.targetExerciseId,
@@ -287,7 +548,11 @@ export function buildExerciseTransitionTrace(input: {
     reviewStatus: input.relationship.reviewStatus,
     notes: input.relationship.notes,
     provenance: input.relationship.provenance,
-    structuralDelta: compareExerciseTransition(input.source, input.target),
+    structuralDelta,
+    purposeEvidence: buildTransitionPurposeEvidenceTraces({
+      relationship: input.relationship,
+      structuralDelta,
+    }),
     automaticSelectionEffect: "none",
   };
 }

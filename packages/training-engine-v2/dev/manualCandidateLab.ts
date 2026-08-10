@@ -1294,7 +1294,7 @@ function printProgressionTransitionKnowledge(
       "Loadability",
       "Equipment",
       "Feature Change",
-      "Review",
+      "Review / Provenance / Notes",
       "Automatic Selection Effect",
     ],
     traces.map((trace) => {
@@ -1333,10 +1333,23 @@ function printProgressionTransitionKnowledge(
             .map((feature) => `${feature.feature}:${feature.source}->${feature.target} (${feature.delta})`)
             .join("; ")
           : "none modeled",
-        `${trace.reviewStatus}; ${trace.notes}`,
+        `${trace.reviewStatus}; provenance=${formatList(trace.provenance)}; notes=${trace.notes}`,
         trace.automaticSelectionEffect,
       ];
     }),
+  );
+
+  console.log("\nTransition Purpose Evidence");
+  printTable(
+    ["Target", "PURPOSE", "EVIDENCE STATUS", "EVIDENCE"],
+    traces.flatMap((trace) =>
+      trace.purposeEvidence.map((finding) => [
+        trace.targetExerciseId,
+        finding.purpose,
+        finding.status,
+        finding.evidence,
+      ]),
+    ),
   );
 }
 

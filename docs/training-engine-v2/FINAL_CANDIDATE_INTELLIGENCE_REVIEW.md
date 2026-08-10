@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. Feature-specific target fit and continuity reason-code precedence are resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration, phase calibration, and review-visible transition-purpose/context gaps.
+Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 calibration issues remain. Feature-specific target fit, continuity reason-code precedence, and transition-purpose truth are resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration and phase calibration.
 
 ## Contract Review
 
@@ -176,34 +176,82 @@ Verdict: **GOOD_WITH_REMAINING_CALIBRATION_REVIEW**. Row selection knowledge its
 
 ## Progression / Transition Review
 
-Verdict: **GOOD_WITH_REVIEW_CAVEATS**. All 36 legacy cross-exercise edges are migrated into transitionRelationships; progressionAxes remain same-exercise advancement. Transition traces expose direction, classification, purposes, structural delta, review status, and automaticSelectionEffect=none. No transition edge selects, boosts, penalizes, bypasses eligibility, or bypasses pain.
+Verdict: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**. All 36 legacy cross-exercise edges are migrated into transitionRelationships; progressionAxes remain same-exercise advancement. Transition traces expose direction, classification, per-purpose evidence status, structural delta, review status, provenance, and automaticSelectionEffect=none. No transition edge selects, boosts, penalizes, bypasses eligibility, or bypasses pain.
 
-Purpose tag checks: consistent=65; unknown_supported_by_notes=53; mismatch=4.
+Purpose-evidence audit: edges=36; purposes=118; structurally_confirmed=63; contextual_intent=40; unknown_metadata=15; contradicted=0.
 
-| Source | Target | Purpose | Evidence |
-| --- | --- | --- | --- |
-| dead-bug | pallof-press | increase_stability_demand | moderate->moderate (same) |
-| push-up | machine-chest-press | reduce_coordination_demand | low->low (same) |
-| band-face-pull | serratus-wall-slide | reduce_loadability | limited->limited (same) |
-| pallof-press | dead-bug | reduce_stability_demand | moderate->moderate (same) |
+Contradicted purpose findings: **none**.
 
-Contextual or unknown-supported purpose tags remain review-visible when structural metadata is intentionally incomplete or the purpose is program-context intent rather than a direct mechanical delta.
-| Source | Target | Purpose | Evidence |
-| --- | --- | --- | --- |
-| ninety-ninety-breathing | dead-bug | movement_pattern_development | purpose is contextual/programming intent; notes=Develops from low-load breathing/position control toward an anti-extension trunk drill; not a readiness or dosage guarantee. |
-| ninety-ninety-breathing | dead-bug | preparation_to_loaded_training | purpose is contextual/programming intent; notes=Develops from low-load breathing/position control toward an anti-extension trunk drill; not a readiness or dosage guarantee. |
-| serratus-wall-slide | band-face-pull | preparation_to_loaded_training | purpose is contextual/programming intent; notes=General scapular-development transition that shifts from serratus/upward-rotation emphasis to band-loaded retraction/cuff emphasis. |
-| serratus-wall-slide | band-face-pull | change_resistance_path | path=unknown->unknown (same); trajectory=unknown->unknown (same); line=unknown->unknown (same) |
-| dead-bug | pallof-press | movement_pattern_development | purpose is contextual/programming intent; notes=Can move from supine anti-extension toward standing anti-rotation when trunk-development context supports the role change. |
-| dead-bug | pallof-press | change_resistance_path | path=unknown->unknown (same); trajectory=unknown->unknown (same); line=unknown->unknown (same) |
-| dead-bug | ninety-ninety-breathing | pain_or_tolerance_regression | purpose is contextual/programming intent; notes=Regresses trunk-control exposure toward lower-load breathing/position work. |
-| dead-bug | ninety-ninety-breathing | movement_pattern_development | purpose is contextual/programming intent; notes=Regresses trunk-control exposure toward lower-load breathing/position work. |
-| push-up | dumbbell-bench-press | increase_support | purpose is contextual/programming intent; notes=May increase external loadability but changes from bodyweight/floor support to bench-supported free implements. |
-| push-up | dumbbell-bench-press | change_resistance_path | path=unknown->unknown (same); trajectory=unknown->unknown (same); line=unknown->unknown (same) |
-| push-up | dumbbell-bench-press | stimulus_shift | purpose is contextual/programming intent; notes=May increase external loadability but changes from bodyweight/floor support to bench-supported free implements. |
-| push-up | machine-chest-press | increase_support | purpose is contextual/programming intent; notes=Can reduce free-body trunk/stability demands through a guided machine press when equipment and fit are appropriate. |
-| push-up | machine-chest-press | pain_or_tolerance_regression | purpose is contextual/programming intent; notes=Can reduce free-body trunk/stability demands through a guided machine press when equipment and fit are appropriate. |
-| dumbbell-bench-press | machine-chest-press | increase_support | purpose is contextual/programming intent; notes=May regress toward a more guided press when free dumbbell stability or shoulder tolerance is limiting. |
+Unknown metadata remains explicit and does not become mechanical confirmation:
+| Source | Target | Purpose | Status | Evidence |
+| --- | --- | --- | --- | --- |
+| serratus-wall-slide | band-face-pull | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| dead-bug | pallof-press | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| push-up | dumbbell-bench-press | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| dumbbell-bench-press | push-up | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| machine-chest-press | dumbbell-bench-press | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| machine-row | band-row | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| seated-cable-row | band-row | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| band-row | seated-cable-row | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| lat-pulldown | band-lat-pulldown | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| band-lat-pulldown | lat-pulldown | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| dumbbell-romanian-deadlift | cable-pull-through | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| cable-pull-through | dumbbell-romanian-deadlift | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| glute-bridge | dumbbell-romanian-deadlift | increase_stability_demand | unknown_metadata | stability demand: unknown -> moderate (unknown); source and/or target metadata is unknown |
+| reverse-pec-deck | band-face-pull | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+| band-face-pull | reverse-pec-deck | change_resistance_path | unknown_metadata | source and/or target resistance-path profile is not modeled |
+
+Contextual programming intent remains explicit and retains reviewed transition provenance without pretending to be an ordinal mechanics claim:
+| Source | Target | Purpose | Status | Evidence |
+| --- | --- | --- | --- | --- |
+| ninety-ninety-breathing | dead-bug | movement_pattern_development | contextual_intent | movement roles: source=[anti_extension_core, breathing_position] -> target=[anti_extension_core]; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| ninety-ninety-breathing | dead-bug | preparation_to_loaded_training | contextual_intent | loadability: none -> limited (increase); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| serratus-wall-slide | band-face-pull | preparation_to_loaded_training | contextual_intent | loadability: limited -> limited (same); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| dead-bug | pallof-press | movement_pattern_development | contextual_intent | movement roles: source=[anti_extension_core] -> target=[anti_rotation_core]; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| dead-bug | ninety-ninety-breathing | pain_or_tolerance_regression | contextual_intent | external support: floor -> floor; body support: supine -> supine; trunk demand: moderate -> low (decrease); stability demand: moderate -> low (decrease); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| dead-bug | ninety-ninety-breathing | movement_pattern_development | contextual_intent | movement roles: source=[anti_extension_core] -> target=[anti_extension_core, breathing_position]; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| push-up | dumbbell-bench-press | increase_support | contextual_intent | external support: floor -> bench; body support: hands_supported -> supine; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| push-up | dumbbell-bench-press | stimulus_shift | contextual_intent | movement roles: source=[anti_extension_core, horizontal_push] -> target=[horizontal_push]; muscles: sourceOnly=[serratus, trunk]; targetOnly=[none]; loadability: moderate -> high (increase); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| push-up | machine-chest-press | increase_support | contextual_intent | external support: floor -> machine; body support: hands_supported -> seated_supported; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| push-up | machine-chest-press | pain_or_tolerance_regression | contextual_intent | external support: floor -> machine; body support: hands_supported -> seated_supported; trunk demand: moderate -> low (decrease); stability demand: moderate -> low (decrease); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| dumbbell-bench-press | machine-chest-press | increase_support | contextual_intent | external support: bench -> machine; body support: supine -> seated_supported; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| dumbbell-bench-press | machine-chest-press | pain_or_tolerance_regression | contextual_intent | external support: bench -> machine; body support: supine -> seated_supported; trunk demand: low -> low (same); stability demand: moderate -> low (decrease); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| machine-chest-press | dumbbell-bench-press | reduce_support | contextual_intent | external support: machine -> bench; body support: seated_supported -> supine; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| cable-chest-fly | machine-chest-press | stimulus_shift | contextual_intent | movement roles: source=[horizontal_push] -> target=[horizontal_push]; muscles: sourceOnly=[none]; targetOnly=[triceps]; loadability: moderate -> high (increase); contextual intent; transition note retained; review=needs_review; provenance=[migrated from legacy cross-exercise progression edge] |
+| chest-supported-dumbbell-row | seated-cable-row | stimulus_shift | contextual_intent | movement roles: source=[horizontal_pull] -> target=[horizontal_pull]; muscles: sourceOnly=[none]; targetOnly=[none]; loadability: high -> high (same); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| one-arm-dumbbell-row | chest-supported-dumbbell-row | increase_support | contextual_intent | external support: bench -> bench; body support: hands_supported -> chest_supported; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| one-arm-dumbbell-row | chest-supported-dumbbell-row | pain_or_tolerance_regression | contextual_intent | external support: bench -> bench; body support: hands_supported -> chest_supported; trunk demand: high -> low (decrease); stability demand: high -> low (decrease); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| one-arm-dumbbell-row | seated-cable-row | increase_support | contextual_intent | external support: bench -> cable_or_band_anchor; body support: hands_supported -> seated_supported; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| machine-row | chest-supported-dumbbell-row | stimulus_shift | contextual_intent | movement roles: source=[horizontal_pull] -> target=[horizontal_pull]; muscles: sourceOnly=[none]; targetOnly=[none]; loadability: high -> high (same); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| machine-row | seated-cable-row | stimulus_shift | contextual_intent | movement roles: source=[horizontal_pull] -> target=[horizontal_pull]; muscles: sourceOnly=[none]; targetOnly=[none]; loadability: high -> high (same); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| seated-cable-row | chest-supported-dumbbell-row | stimulus_shift | contextual_intent | movement roles: source=[horizontal_pull] -> target=[horizontal_pull]; muscles: sourceOnly=[none]; targetOnly=[none]; loadability: high -> high (same); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| dumbbell-shoulder-press | serratus-wall-slide | preparation_to_loaded_training | contextual_intent | loadability: high -> limited (decrease); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| dumbbell-shoulder-press | serratus-wall-slide | pain_or_tolerance_regression | contextual_intent | external support: none -> wall; body support: standing -> standing; trunk demand: moderate -> low (decrease); stability demand: moderate -> low (decrease); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| goblet-squat | leg-press | increase_support | contextual_intent | external support: none -> machine; body support: standing -> seated_supported; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| goblet-squat | leg-press | stimulus_shift | contextual_intent | movement roles: source=[squat] -> target=[squat]; muscles: sourceOnly=[trunk]; targetOnly=[hamstrings]; loadability: moderate -> high (increase); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| goblet-squat | bodyweight-box-squat | increase_support | contextual_intent | external support: none -> box; body support: standing -> standing; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| goblet-squat | bodyweight-box-squat | pain_or_tolerance_regression | contextual_intent | external support: none -> box; body support: standing -> standing; trunk demand: moderate -> low (decrease); stability demand: moderate -> low (decrease); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| leg-press | goblet-squat | reduce_support | contextual_intent | external support: machine -> none; body support: seated_supported -> standing; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| bodyweight-box-squat | goblet-squat | reduce_support | contextual_intent | external support: box -> none; body support: standing -> standing; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| dumbbell-romanian-deadlift | cable-pull-through | pain_or_tolerance_regression | contextual_intent | external support: none -> cable_or_band_anchor; body support: standing -> standing; trunk demand: high -> moderate (decrease); stability demand: moderate -> moderate (same); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| cable-pull-through | dumbbell-romanian-deadlift | movement_pattern_development | contextual_intent | movement roles: source=[hinge] -> target=[hinge]; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| split-squat | step-up | movement_pattern_development | contextual_intent | movement roles: source=[single_leg, squat] -> target=[single_leg, squat]; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| split-squat | step-up | stimulus_shift | contextual_intent | movement roles: source=[single_leg, squat] -> target=[single_leg, squat]; muscles: sourceOnly=[hip_adductors]; targetOnly=[hamstrings]; loadability: moderate -> moderate (same); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| step-up | split-squat | movement_pattern_development | contextual_intent | movement roles: source=[single_leg, squat] -> target=[single_leg, squat]; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| step-up | split-squat | stimulus_shift | contextual_intent | movement roles: source=[single_leg, squat] -> target=[single_leg, squat]; muscles: sourceOnly=[hamstrings]; targetOnly=[hip_adductors]; loadability: moderate -> moderate (same); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| step-up | bodyweight-box-squat | pain_or_tolerance_regression | contextual_intent | external support: box -> box; body support: standing -> standing; trunk demand: moderate -> low (decrease); stability demand: moderate -> low (decrease); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| glute-bridge | dumbbell-romanian-deadlift | movement_pattern_development | contextual_intent | movement roles: source=[hinge] -> target=[hinge]; contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| glute-bridge | dumbbell-romanian-deadlift | stimulus_shift | contextual_intent | movement roles: source=[hinge] -> target=[hinge]; muscles: sourceOnly=[none]; targetOnly=[mid_back]; loadability: moderate -> high (increase); contextual intent; transition note retained; review=accepted; provenance=[migrated from legacy cross-exercise progression edge] |
+| pallof-press | dead-bug | movement_pattern_development | contextual_intent | movement roles: source=[anti_rotation_core] -> target=[anti_extension_core]; contextual intent; transition note retained; review=needs_review; provenance=[migrated from legacy cross-exercise progression edge] |
+| pallof-press | dead-bug | pain_or_tolerance_regression | contextual_intent | external support: cable_or_band_anchor -> floor; body support: standing -> supine; trunk demand: high -> moderate (decrease); stability demand: moderate -> moderate (same); contextual intent; transition note retained; review=needs_review; provenance=[migrated from legacy cross-exercise progression edge] |
+
+### TRANSITION_PURPOSE_TRUTH_RESOLVED
+
+- Four direct structural contradictions were corrected without changing exercise mechanics metadata.
+- Direct purposes are structurally confirmed, unknown because required metadata is incomplete, or contradicted solely from normalized source/target deltas; transition notes cannot alter that status.
+- Programming and multidimensional support purposes remain explicit `contextual_intent` with review provenance retained.
+- Every transition remains observational with `automaticSelectionEffect=none`; no candidate score, total, rank, or full ordering changed.
+- No automatic replacement behavior was added, and questionable or needs-review relationships retain their review qualification.
 
 ## Manual Science Review Table
 
@@ -226,7 +274,6 @@ Contextual or unknown-supported purpose tags remain review-visible when structur
 
 - Moderate pain calibration remains human-review-needed before a session composer can depend on candidate rank alone.
 - Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.
-- Transition purpose audit has contextual/unknown-supported cases that should remain review-visible before automatic replacement logic.
 
 ### P2
 

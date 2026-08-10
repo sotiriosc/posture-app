@@ -1563,6 +1563,12 @@ function formatFeatureChanges(trace: ExerciseTransitionTrace): string {
     : "none modeled";
 }
 
+function formatPurposeEvidence(trace: ExerciseTransitionTrace): string {
+  return trace.purposeEvidence
+    .map((finding) => `${finding.purpose}: ${finding.status}<br>${finding.evidence}`)
+    .join("<br>");
+}
+
 function transitionTraceRows(): readonly ExerciseTransitionTrace[] {
   const byId = new Map(REFERENCE_EXERCISES.map((exercise) => [exercise.id, exercise]));
 
@@ -1587,8 +1593,13 @@ function transitionTraceRows(): readonly ExerciseTransitionTrace[] {
 
 function renderProgressionGraphAudit(): string {
   const rows = transitionTraceRows();
+  const purposeEvidence = rows.flatMap((row) => row.purposeEvidence);
   const classificationCounts = rows.reduce<Record<string, number>>((counts, row) => {
     counts[row.classification] = (counts[row.classification] ?? 0) + 1;
+    return counts;
+  }, {});
+  const purposeStatusCounts = purposeEvidence.reduce<Record<string, number>>((counts, finding) => {
+    counts[finding.status] = (counts[finding.status] ?? 0) + 1;
     return counts;
   }, {});
 
@@ -1601,14 +1612,18 @@ function renderProgressionGraphAudit(): string {
       .map(([classification, count]) => `${classification}=${count}`)
       .join(", ")}.`,
     "",
-    "| Source | Target | Direction | Classification | Purposes | Shared Roles | Changed Roles | Support Change | Resistance/Path Change | Demand Deltas | Loadability Delta | Equipment Change | Feature Change | Review | Automatic Selection Effect | Notes |",
-    "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
+    `Purpose evidence: total=${purposeEvidence.length}; structurally_confirmed=${purposeStatusCounts.structurally_confirmed ?? 0}; contextual_intent=${purposeStatusCounts.contextual_intent ?? 0}; unknown_metadata=${purposeStatusCounts.unknown_metadata ?? 0}; contradicted=${purposeStatusCounts.contradicted ?? 0}.`,
+    "",
+    "Direct structural purposes use only normalized mechanics deltas. Contextual programming and multidimensional support purposes retain review provenance without becoming structural confirmation. Unknown mechanics remain explicit.",
+    "",
+    "| Source | Target | Direction | Classification | Purposes | Purpose Evidence | Shared Roles | Changed Roles | Support Change | Resistance/Path Change | Demand Deltas | Loadability Delta | Equipment Change | Feature Change | Review | Automatic Selection Effect | Notes |",
+    "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
     ...rows.map((row) => {
       const delta = row.structuralDelta;
-      return `| ${md(row.sourceExerciseId)} | ${md(row.targetExerciseId)} | ${row.direction} | ${row.classification} | ${list(row.purposes)} | ${list(delta.sharedMovementRoles)} | sourceOnly=${list(delta.sourceOnlyMovementRoles)}<br>targetOnly=${list(delta.targetOnlyMovementRoles)} | external=${formatDelta(delta.support.externalSupport)}<br>body=${formatDelta(delta.support.bodySupport)} | path=${formatDelta(delta.resistancePath.resistancePath)}<br>trajectory=${formatDelta(delta.resistancePath.trajectoryFreedom)}<br>line=${formatDelta(delta.resistancePath.lineOfPullAdjustability)}<br>laterality=${formatDelta(delta.resistancePath.laterality)}<br>fit=${formatDelta(delta.resistancePath.fitDependency)} | trunk=${formatDelta(delta.demand.trunk)}<br>stability=${formatDelta(delta.demand.stability)}<br>coordination=${formatDelta(delta.demand.coordination)} | ${formatDelta(delta.loading.loadability)} | shared=${list(delta.equipment.shared)}<br>sourceOnly=${list(delta.equipment.sourceOnly)}<br>targetOnly=${list(delta.equipment.targetOnly)} | ${formatFeatureChanges(row)} | ${row.reviewStatus} | ${row.automaticSelectionEffect} | ${md(row.notes)} |`;
+      return `| ${md(row.sourceExerciseId)} | ${md(row.targetExerciseId)} | ${row.direction} | ${row.classification} | ${list(row.purposes)} | ${formatPurposeEvidence(row)} | ${list(delta.sharedMovementRoles)} | sourceOnly=${list(delta.sourceOnlyMovementRoles)}<br>targetOnly=${list(delta.targetOnlyMovementRoles)} | external=${formatDelta(delta.support.externalSupport)}<br>body=${formatDelta(delta.support.bodySupport)} | path=${formatDelta(delta.resistancePath.resistancePath)}<br>trajectory=${formatDelta(delta.resistancePath.trajectoryFreedom)}<br>line=${formatDelta(delta.resistancePath.lineOfPullAdjustability)}<br>laterality=${formatDelta(delta.resistancePath.laterality)}<br>fit=${formatDelta(delta.resistancePath.fitDependency)} | trunk=${formatDelta(delta.demand.trunk)}<br>stability=${formatDelta(delta.demand.stability)}<br>coordination=${formatDelta(delta.demand.coordination)} | ${formatDelta(delta.loading.loadability)} | shared=${list(delta.equipment.shared)}<br>sourceOnly=${list(delta.equipment.sourceOnly)}<br>targetOnly=${list(delta.equipment.targetOnly)} | ${formatFeatureChanges(row)} | ${row.reviewStatus}; provenance=${list(row.provenance)} | ${row.automaticSelectionEffect} | ${md(row.notes)} |`;
     }),
     "",
-    "Key reviewed relationships: `serratus-wall-slide -> band-face-pull` remains context-dependent because it shifts scapular feature emphasis; `band-face-pull -> reverse-pec-deck` remains questionable; `machine-row`/`seated-cable-row -> chest-supported-dumbbell-row` remain context-dependent row transitions, not universal progressions.",
+    "Key reviewed relationships: `band-face-pull -> serratus-wall-slide` is a context-dependent lateral feature/equipment transition; both `reverse-pec-deck <-> band-face-pull` directions remain questionable; `pallof-press -> dead-bug` remains needs-review; `machine-row`/`seated-cable-row -> chest-supported-dumbbell-row` remain context-dependent row transitions, not universal progressions.",
     "",
   ].join("\n");
 }
