@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   calculateAssessmentRelevanceTraces,
   deriveAlignmentPriorities,
+  EMPTY_TRAINING_HISTORY,
   getControlledCandidateScenario,
   REFERENCE_EXERCISES,
   runCandidateRankingLab,
@@ -11,6 +12,7 @@ import {
   type CandidateRequest,
   type RankedCandidate,
   type ScoreComponent,
+  type TrainingHistory,
 } from "../../src";
 import { candidateDemandForDimension } from "../../src/candidate/scoring/assessment/candidateDemand";
 import { createPosturePhotoCandidateExperimentRequests } from "../fixtures/posture/postureCandidateExperimentFixture";
@@ -39,6 +41,44 @@ function withAssessment(request: CandidateRequest, assessment: AssessmentState):
     id: `${request.id}-assessment-override`,
     assessment,
     alignmentPriorities: deriveAlignmentPriorities(assessment).priorities,
+  };
+}
+
+function withTrainingHistory(
+  request: CandidateRequest,
+  overrides: Partial<TrainingHistory>,
+): CandidateRequest {
+  return {
+    ...request,
+    id: `${request.id}-history-override`,
+    history: {
+      ...EMPTY_TRAINING_HISTORY,
+      ...overrides,
+      exerciseHistory: {
+        ...EMPTY_TRAINING_HISTORY.exerciseHistory,
+        ...overrides.exerciseHistory,
+      },
+      sessionHistory: {
+        ...EMPTY_TRAINING_HISTORY.sessionHistory,
+        ...overrides.sessionHistory,
+      },
+      programHistory: {
+        ...EMPTY_TRAINING_HISTORY.programHistory,
+        ...overrides.programHistory,
+      },
+      progressionState: {
+        ...EMPTY_TRAINING_HISTORY.progressionState,
+        ...overrides.progressionState,
+      },
+      fatigueState: {
+        ...EMPTY_TRAINING_HISTORY.fatigueState,
+        ...overrides.fatigueState,
+        byMovementRole: {
+          ...EMPTY_TRAINING_HISTORY.fatigueState.byMovementRole,
+          ...overrides.fatigueState?.byMovementRole,
+        },
+      },
+    },
   };
 }
 
@@ -440,6 +480,79 @@ describe("assessment relevance scoping", () => {
     );
     expect(wallSlideTrace?.demandCapability.capabilityEstimate.evidence.join(" ")).toContain(
       "No direct observed capability measurement",
+    );
+  });
+
+  it("uses only movement-role-matched history as inferred capability evidence", () => {
+    const baseRequest = controlledRequest("scapular-activation-high-confidence");
+    const noHistory = runCandidateRankingLab(baseRequest);
+    const matchedHistory = runCandidateRankingLab(
+      withTrainingHistory(baseRequest, {
+        exerciseHistory: {
+          events: [
+            {
+              id: "recent-scapular-appropriate-challenge",
+              exerciseId: "serratus-wall-slide",
+              type: "appropriate_challenge",
+              movementRole: "scapular_control",
+              notes: "Scapular-control work was appropriately challenging.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+        progressionState: {
+          ...EMPTY_TRAINING_HISTORY.progressionState,
+          successfulMovementRoles: ["scapular_control"],
+        },
+      }),
+    );
+    const unrelatedHistory = runCandidateRankingLab(
+      withTrainingHistory(baseRequest, {
+        exerciseHistory: {
+          events: [
+            {
+              id: "recent-horizontal-pull-too-easy",
+              exerciseId: "band-row",
+              type: "too_easy",
+              movementRole: "horizontal_pull",
+              notes: "Horizontal pulling was easy, but this is not direct scapular-control evidence.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+      }),
+    );
+    const baseTrace = component(ranked(noHistory.rankedCandidates, "serratus-wall-slide"), "assessment_fit")
+      .assessmentRelevance?.[0];
+    const matchedTrace = component(ranked(matchedHistory.rankedCandidates, "serratus-wall-slide"), "assessment_fit")
+      .assessmentRelevance?.[0];
+    const unrelatedTrace = component(
+      ranked(unrelatedHistory.rankedCandidates, "serratus-wall-slide"),
+      "assessment_fit",
+    ).assessmentRelevance?.[0];
+
+    expect(matchedTrace?.demandCapability.currentCapability).toBeGreaterThan(
+      baseTrace?.demandCapability.currentCapability ?? 0,
+    );
+    expect(matchedTrace?.demandCapability.capabilityEstimate).toEqual(
+      expect.objectContaining({
+        estimateSource: "history_inferred",
+        evidenceQuality: "moderate",
+      }),
+    );
+    expect(matchedTrace?.demandCapability.capabilityEstimate.contributingSources).toContain(
+      "history_inferred",
+    );
+    expect(matchedTrace?.demandCapability.capabilityEstimate.evidence.join(" ")).toContain(
+      "Movement-role-matched training exposure history",
+    );
+    expect(unrelatedTrace?.demandCapability.currentCapability).toBe(
+      baseTrace?.demandCapability.currentCapability,
+    );
+    expect(unrelatedTrace?.demandCapability.capabilityEstimate.contributingSources).not.toContain(
+      "history_inferred",
     );
   });
 

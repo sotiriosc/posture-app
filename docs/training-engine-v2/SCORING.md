@@ -193,7 +193,7 @@ Assessment relevance and assessment relationship are intentionally separate:
 - demand/capability compares candidate demand, estimated current capability, and phase intent demand by dimension instead of using a single generic difficulty number;
 - confidence scales trust in the influence budget, not estimated physical capability;
 - severity/deficit magnitude is represented separately from confidence and priority. Existing fixtures without severity use a documented conservative `unknown` default.
-- capability provenance is visible through `estimateSource`, `contributingSources`, and `evidenceQuality`; low-quality capability evidence limits bounded assessment/alignment influence;
+- capability provenance is visible through `estimateSource`, `contributingSources`, and `evidenceQuality`; movement-role-matched training history can contribute inferred capability evidence, while low-quality capability evidence limits bounded assessment/alignment influence;
 - unknown exercise mechanics use `candidateDemand: null` and `match: not_applicable`, so unknown does not silently become zero demand, easy, safe, ideal, or inappropriate.
 
 ## Assessment Semantics Modules
@@ -206,7 +206,7 @@ Assessment semantics are split by training responsibility:
 | `candidate/scoring/assessment/specificity.ts` | Calculates candidate/request specificity after training-role truth is established. |
 | `candidate/scoring/assessment/relevance.ts` | Decides whether a signal is relevant to this candidate in this requested role. |
 | `candidate/scoring/assessment/candidateDemand.ts` | Reads explicit exercise demand metadata or known structured loading fields. |
-| `candidate/scoring/assessment/athleteCapability.ts` | Estimates current capability from phase, weak experience prior, severity, and pain context while exposing source/evidence quality. |
+| `candidate/scoring/assessment/athleteCapability.ts` | Estimates current capability from phase, weak experience prior, severity, pain context, and movement-role-matched history while exposing source/evidence quality. |
 | `candidate/scoring/assessment/demandCapabilityMatch.ts` | Compares candidate demand, capability, and phase intent. |
 | `candidate/scoring/assessment/developmentalRelationship.ts` | Interprets below/match/challenge/exceeds states by section, role, pain, fatigue, and goal context. |
 | `candidate/scoring/assessment/influenceBudget.ts` | Applies relevance, confidence, priority, relationship, and capability evidence quality to bounded assessment/alignment contributions. |

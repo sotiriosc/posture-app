@@ -76,7 +76,7 @@ Metadata gaps:
 
 ## Capability Provenance Result
 
-Candidate Intelligence v0 does not treat demand-capability numbers as measured athlete capacity. Capability estimates expose `estimateSource`, `contributingSources`, and `evidenceQuality`. With the current fixtures, most estimates are `phase_default` with `weak` evidence because assessment signals generally do not provide explicit severity and no direct observed training-capability measurement is consumed yet.
+Candidate Intelligence v0 does not treat demand-capability numbers as measured athlete capacity. Capability estimates expose `estimateSource`, `contributingSources`, and `evidenceQuality`. Movement-role-matched training history can contribute `history_inferred` evidence, but direct observed training-capability measurement is not consumed yet.
 
 Low-quality capability evidence limits bounded assessment/alignment influence. This keeps exact demand-capability matching from dominating when the number is mostly default-derived.
 

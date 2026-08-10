@@ -1164,7 +1164,7 @@ function buildReferenceExerciseKnowledgeReviewMarkdown(): AuditBuildResult {
     "",
     "## Capability Provenance Result",
     "",
-    "Candidate Intelligence v0 does not treat demand-capability numbers as measured athlete capacity. Capability estimates expose `estimateSource`, `contributingSources`, and `evidenceQuality`. With the current fixtures, most estimates are `phase_default` with `weak` evidence because assessment signals generally do not provide explicit severity and no direct observed training-capability measurement is consumed yet.",
+    "Candidate Intelligence v0 does not treat demand-capability numbers as measured athlete capacity. Capability estimates expose `estimateSource`, `contributingSources`, and `evidenceQuality`. Movement-role-matched training history can contribute `history_inferred` evidence, but direct observed training-capability measurement is not consumed yet.",
     "",
     "Low-quality capability evidence limits bounded assessment/alignment influence. This keeps exact demand-capability matching from dominating when the number is mostly default-derived.",
     "",
@@ -1340,8 +1340,8 @@ function renderRankingReviewMarkdown(): string {
   sections.push(renderPostureRegression());
   sections.push("## Questionable Rankings / Modeling Gaps");
   sections.push("");
-  sections.push("- Capability estimates are mostly weak phase/default estimates because signals do not yet carry explicit severity and observed capability/history is not yet consumed.");
-  sections.push("- `too_easy` and `appropriate_challenge` history events are documented in the audit scenarios, but current scoring only acts on continuity buckets and progression-state arrays. This limits nuance in continuity/progression review.");
+  sections.push("- Capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.");
+  sections.push("- `too_easy` and `appropriate_challenge` history events can now influence inferred capability when movement-role matched, but continuity/progression semantics still need more domain nuance.");
   sections.push("- Scapular candidates are differentiated coarsely, but many scapular mechanics annotations remain `NEEDS_REVIEW`, especially for pressing and rowing candidates.");
   sections.push("- Unknown metadata is now neutral and observable, but the catalog still has unknown fields that should not be promoted into production prescription without review.");
   sections.push("");
@@ -1352,7 +1352,7 @@ function renderRankingReviewMarkdown(): string {
   sections.push("Reasons:");
   sections.push("- Role truth, equipment truth, pain behavior, assessment relevance, bounded influence, and unknown-metadata safety are working at the current foundation scope.");
   sections.push("- Session composition should wait for human review of reference exercise metadata, especially scapular mechanics, demand levels, and pain/risk annotations.");
-  sections.push("- Observed/history-based capability evidence is not yet represented strongly enough for exact demand-capability matching to be production-level.");
+  sections.push("- Observed capability evidence is not yet represented, and history-based capability evidence remains movement-role-inferred rather than measured.");
   sections.push("- Continuity/progression semantics need more domain review before they drive whole-session or whole-week decisions.");
   sections.push("");
 

@@ -493,7 +493,7 @@ Candidate: `push-up` in healthy Phase 3 horizontal push with trunk-control signa
 | candidate demand | `2.000` |
 | demand level/source/review | `moderate` / `exercise_definition` / `accepted` |
 | estimated capability | `2.200` |
-| capability evidence | phase prior `2.500`, weak experience prior `0.150`, severity adjustment `-0.450`, pain adjustment `0.000` |
+| capability evidence | phase prior `2.500`, weak experience prior `0.150`, severity adjustment `-0.450`, pain adjustment `0.000`, history adjustment `0.000` when no movement-role-matched evidence exists |
 | phase intent demand | `3.000` |
 | demand-capability match | `below_current_capability` |
 | developmental relationship | `under_challenges_development` |
@@ -554,7 +554,7 @@ Changing confidence changes trust in the influence budget; it does not change th
 
 - Scapular subfields are intentionally marked `needs_review` for several exercises: upward rotation, retraction, external rotation/cuff contribution, and loaded scapular control.
 - Severity is not present in the real photo fixture, so capability uses the conservative unknown-severity default.
-- Training-history exposure success/failure is not yet used directly as capability evidence.
+- Movement-role-matched training-history exposure can now contribute inferred capability evidence; direct observed capability measurement is still not used.
 - Demand annotations are explicit but still coarse categorical levels; they need human calibration before production use.
 <!-- ASSESSMENT_SEMANTICS_ARCHITECTURE_REFACTOR_END -->
 
@@ -1973,8 +1973,8 @@ Regression notes:
 
 ## Questionable Rankings / Modeling Gaps
 
-- Capability estimates are mostly weak phase/default estimates because signals do not yet carry explicit severity and observed capability/history is not yet consumed.
-- `too_easy` and `appropriate_challenge` history events are documented in the audit scenarios, but current scoring only acts on continuity buckets and progression-state arrays. This limits nuance in continuity/progression review.
+- Capability estimates are mostly weak phase/default estimates unless assessment signals carry explicit severity or movement-role-matched training history exists.
+- `too_easy` and `appropriate_challenge` history events can now influence inferred capability when movement-role matched, but continuity/progression semantics still need more domain nuance.
 - Scapular candidates are differentiated coarsely, but many scapular mechanics annotations remain `NEEDS_REVIEW`, especially for pressing and rowing candidates.
 - Unknown metadata is now neutral and observable, but the catalog still has unknown fields that should not be promoted into production prescription without review.
 
@@ -1985,7 +1985,7 @@ Classification: **NOT_READY**
 Reasons:
 - Role truth, equipment truth, pain behavior, assessment relevance, bounded influence, and unknown-metadata safety are working at the current foundation scope.
 - Session composition should wait for human review of reference exercise metadata, especially scapular mechanics, demand levels, and pain/risk annotations.
-- Observed/history-based capability evidence is not yet represented strongly enough for exact demand-capability matching to be production-level.
+- Observed capability evidence is not yet represented, and history-based capability evidence remains movement-role-inferred rather than measured.
 - Continuity/progression semantics need more domain review before they drive whole-session or whole-week decisions.
 
 <!-- POST_REFACTOR_CANDIDATE_INTELLIGENCE_REVIEW_END -->
