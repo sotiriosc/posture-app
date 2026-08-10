@@ -4,12 +4,14 @@ import {
   deriveAlignmentPriorities,
   EMPTY_TRAINING_HISTORY,
   getControlledCandidateScenario,
+  NO_PAIN_OR_INJURY,
   REFERENCE_EXERCISES,
   runCandidateRankingLab,
   THREE_PHASE_FOUNDATION,
   type AssessmentSignal,
   type AssessmentState,
   type CandidateRequest,
+  type PainAndInjuryState,
   type RankedCandidate,
   type ScoreComponent,
   type TrainingHistory,
@@ -41,6 +43,17 @@ function withAssessment(request: CandidateRequest, assessment: AssessmentState):
     id: `${request.id}-assessment-override`,
     assessment,
     alignmentPriorities: deriveAlignmentPriorities(assessment).priorities,
+  };
+}
+
+function withPainAndInjury(
+  request: CandidateRequest,
+  painAndInjury: PainAndInjuryState,
+): CandidateRequest {
+  return {
+    ...request,
+    id: `${request.id}-pain-override`,
+    painAndInjury,
   };
 }
 
@@ -104,11 +117,27 @@ function componentValue(candidate: RankedCandidate, id: string): number {
   return component(candidate, id).value;
 }
 
+function assessmentTrace(
+  candidate: RankedCandidate,
+  componentId: "assessment_fit" | "alignment_fit" = "assessment_fit",
+) {
+  const trace = component(candidate, componentId).assessmentRelevance?.[0];
+  if (!trace) {
+    throw new Error(`Missing assessment trace for ${candidate.exercise.id}`);
+  }
+
+  return trace;
+}
+
 function rejectedCodes(result: ReturnType<typeof runCandidateRankingLab>, exerciseId: string): readonly string[] {
   return (
     result.hardRejectedCandidates.find((candidate) => candidate.exercise.id === exerciseId)
       ?.eligibility.rejectionReasons.map((reason) => reason.code) ?? []
   );
+}
+
+function recentIso(daysAgo: number): string {
+  return new Date(Date.now() - daysAgo * 86_400_000).toISOString();
 }
 
 const highConfidenceKneeAssessment: AssessmentState = {
@@ -126,6 +155,36 @@ const highConfidenceKneeAssessment: AssessmentState = {
     },
   ],
   historicalWeaknesses: [],
+};
+
+const wristDiscomfort: PainAndInjuryState = {
+  ...NO_PAIN_OR_INJURY,
+  currentDiscomforts: [
+    {
+      kind: "current_discomfort",
+      id: "mild-wrist-extension-discomfort",
+      region: "wrist",
+      severity0To10: 2,
+      stressTags: ["wrist_extension_loading"],
+      effect: "prefer_support",
+      description: "Mild wrist extension discomfort.",
+    },
+  ],
+};
+
+const kneeDiscomfort: PainAndInjuryState = {
+  ...NO_PAIN_OR_INJURY,
+  currentDiscomforts: [
+    {
+      kind: "current_discomfort",
+      id: "mild-knee-flexion-discomfort",
+      region: "knee",
+      severity0To10: 2,
+      stressTags: ["loaded_knee_flexion"],
+      effect: "reduce_range",
+      description: "Mild knee discomfort with loaded flexion.",
+    },
+  ],
 };
 
 function scapularAssessment(confidence: AssessmentSignal["confidence"]): AssessmentState {
@@ -466,26 +525,78 @@ describe("assessment relevance scoping", () => {
 
   it("exposes capability provenance without treating default estimates as measured capacity", () => {
     const result = runCandidateRankingLab(controlledRequest("scapular-activation-high-confidence"));
-    const wallSlideTrace = component(ranked(result.rankedCandidates, "serratus-wall-slide"), "assessment_fit")
-      .assessmentRelevance?.[0];
+    const wallSlideTrace = assessmentTrace(ranked(result.rankedCandidates, "serratus-wall-slide"));
 
-    expect(wallSlideTrace?.demandCapability.capabilityEstimate).toEqual(
+    expect(wallSlideTrace.demandCapability.capabilityEstimate).toEqual(
       expect.objectContaining({
         estimateSource: "phase_default",
         evidenceQuality: "weak",
       }),
     );
-    expect(wallSlideTrace?.demandCapability.capabilityEstimate.contributingSources).toContain(
+    expect(wallSlideTrace.demandCapability.capabilityEstimate.contributingSources).toContain(
       "phase_default",
     );
-    expect(wallSlideTrace?.demandCapability.capabilityEstimate.evidence.join(" ")).toContain(
+    expect(wallSlideTrace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        matchingEventCount: 0,
+        evidenceQuality: "unknown",
+        adjustment: 0,
+      }),
+    );
+    expect(wallSlideTrace.demandCapability.capabilityEstimate.evidence.join(" ")).toContain(
       "No direct observed capability measurement",
     );
   });
 
-  it("uses only movement-role-matched history as inferred capability evidence", () => {
+  it("keeps a single matching history success weak and proportional", () => {
     const baseRequest = controlledRequest("scapular-activation-high-confidence");
     const noHistory = runCandidateRankingLab(baseRequest);
+    const singleSuccess = runCandidateRankingLab(
+      withTrainingHistory(baseRequest, {
+        exerciseHistory: {
+          events: [
+            {
+              id: "undated-scapular-success",
+              exerciseId: "serratus-wall-slide",
+              type: "successful_completion",
+              movementRole: "scapular_control",
+              notes: "Scapular-control work was completed once.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+      }),
+    );
+    const baseTrace = assessmentTrace(ranked(noHistory.rankedCandidates, "serratus-wall-slide"));
+    const singleTrace = assessmentTrace(ranked(singleSuccess.rankedCandidates, "serratus-wall-slide"));
+
+    expect(singleTrace.demandCapability.currentCapability).toBeGreaterThan(
+      baseTrace.demandCapability.currentCapability,
+    );
+    expect(singleTrace.demandCapability.capabilityEstimate).toEqual(
+      expect.objectContaining({
+        estimateSource: "history_inferred",
+        evidenceQuality: "weak",
+      }),
+    );
+    expect(singleTrace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        matchingEventCount: 1,
+        positiveEvidenceCount: 1,
+        negativeEvidenceCount: 0,
+        noRecencyEventCount: 1,
+        contradiction: false,
+        progressionStateCorroborates: false,
+        evidenceQuality: "weak",
+      }),
+    );
+    expect(singleTrace.demandCapability.capabilityEstimate.historyEvidence.adjustment).toBeGreaterThan(0);
+    expect(singleTrace.demandCapability.capabilityEstimate.historyEvidence.adjustment).toBeLessThan(0.08);
+  });
+
+  it("allows multiple consistent recent successes to moderately corroborate capability", () => {
+    const baseRequest = controlledRequest("scapular-activation-high-confidence");
     const matchedHistory = runCandidateRankingLab(
       withTrainingHistory(baseRequest, {
         exerciseHistory: {
@@ -494,8 +605,17 @@ describe("assessment relevance scoping", () => {
               id: "recent-scapular-appropriate-challenge",
               exerciseId: "serratus-wall-slide",
               type: "appropriate_challenge",
+              occurredAt: recentIso(7),
               movementRole: "scapular_control",
               notes: "Scapular-control work was appropriately challenging.",
+            },
+            {
+              id: "recent-scapular-too-easy",
+              exerciseId: "serratus-wall-slide",
+              type: "too_easy",
+              occurredAt: recentIso(3),
+              movementRole: "scapular_control",
+              notes: "Scapular-control work was easy enough to progress.",
             },
           ],
           stableExerciseIds: [],
@@ -507,6 +627,148 @@ describe("assessment relevance scoping", () => {
         },
       }),
     );
+    const matchedTrace = assessmentTrace(ranked(matchedHistory.rankedCandidates, "serratus-wall-slide"));
+
+    expect(matchedTrace.demandCapability.capabilityEstimate).toEqual(
+      expect.objectContaining({
+        estimateSource: "history_inferred",
+        evidenceQuality: "moderate",
+      }),
+    );
+    expect(matchedTrace.demandCapability.capabilityEstimate.contributingSources).toContain(
+      "history_inferred",
+    );
+    expect(matchedTrace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        matchingEventCount: 2,
+        positiveEvidenceCount: 2,
+        negativeEvidenceCount: 0,
+        staleEventCount: 0,
+        noRecencyEventCount: 0,
+        contradiction: false,
+        progressionStateCorroborates: true,
+        evidenceQuality: "moderate",
+      }),
+    );
+    expect(matchedTrace.demandCapability.capabilityEstimate.historyEvidence.adjustment).toBeGreaterThan(
+      0.2,
+    );
+    expect(matchedTrace.demandCapability.capabilityEstimate.evidence.join(" ")).toContain(
+      "Movement-role-matched training exposure history",
+    );
+  });
+
+  it("dampens contradictory movement-role history instead of treating it as clean evidence", () => {
+    const baseRequest = controlledRequest("scapular-activation-high-confidence");
+    const singleSuccess = runCandidateRankingLab(
+      withTrainingHistory(baseRequest, {
+        exerciseHistory: {
+          events: [
+            {
+              id: "recent-single-scapular-too-easy",
+              exerciseId: "serratus-wall-slide",
+              type: "too_easy",
+              occurredAt: recentIso(5),
+              movementRole: "scapular_control",
+              notes: "Scapular-control work was easy.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+      }),
+    );
+    const contradiction = runCandidateRankingLab(
+      withTrainingHistory(baseRequest, {
+        exerciseHistory: {
+          events: [
+            {
+              id: "recent-scapular-too-easy",
+              exerciseId: "serratus-wall-slide",
+              type: "too_easy",
+              occurredAt: recentIso(5),
+              movementRole: "scapular_control",
+              notes: "Scapular-control work was easy.",
+            },
+            {
+              id: "recent-scapular-too-difficult",
+              exerciseId: "band-face-pull",
+              type: "too_difficult",
+              occurredAt: recentIso(2),
+              movementRole: "scapular_control",
+              notes: "Scapular-control work was too difficult.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+      }),
+    );
+    const singleTrace = assessmentTrace(ranked(singleSuccess.rankedCandidates, "serratus-wall-slide"));
+    const contradictionTrace = assessmentTrace(
+      ranked(contradiction.rankedCandidates, "serratus-wall-slide"),
+    );
+
+    expect(contradictionTrace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        matchingEventCount: 2,
+        positiveEvidenceCount: 1,
+        negativeEvidenceCount: 1,
+        contradiction: true,
+        evidenceQuality: "weak",
+      }),
+    );
+    expect(
+      Math.abs(contradictionTrace.demandCapability.capabilityEstimate.historyEvidence.adjustment),
+    ).toBeLessThan(singleTrace.demandCapability.capabilityEstimate.historyEvidence.adjustment);
+  });
+
+  it("lets repeated failures lower capability while exposing stale and missing recency", () => {
+    const baseRequest = controlledRequest("scapular-activation-high-confidence");
+    const repeatedFailures = runCandidateRankingLab(
+      withTrainingHistory(baseRequest, {
+        exerciseHistory: {
+          events: [
+            {
+              id: "stale-scapular-progression-failure",
+              exerciseId: "band-face-pull",
+              type: "progression_failure",
+              occurredAt: "2020-01-01T00:00:00.000Z",
+              movementRole: "scapular_control",
+              notes: "Old progression failure.",
+            },
+            {
+              id: "undated-scapular-failed-target",
+              exerciseId: "serratus-wall-slide",
+              type: "failed_target",
+              movementRole: "scapular_control",
+              notes: "Failed a target without a recorded date.",
+            },
+          ],
+          stableExerciseIds: [],
+          blockedExerciseIds: [],
+        },
+      }),
+    );
+    const trace = assessmentTrace(ranked(repeatedFailures.rankedCandidates, "serratus-wall-slide"));
+
+    expect(trace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        matchingEventCount: 2,
+        positiveEvidenceCount: 0,
+        negativeEvidenceCount: 2,
+        staleEventCount: 1,
+        noRecencyEventCount: 1,
+        contradiction: false,
+        evidenceQuality: "weak",
+      }),
+    );
+    expect(trace.demandCapability.capabilityEstimate.historyEvidence.adjustment).toBeLessThan(0);
+  });
+
+  it("uses only movement-role-matched history as inferred capability evidence", () => {
+    const baseRequest = controlledRequest("scapular-activation-high-confidence");
+    const noHistory = runCandidateRankingLab(baseRequest);
     const unrelatedHistory = runCandidateRankingLab(
       withTrainingHistory(baseRequest, {
         exerciseHistory: {
@@ -524,34 +786,29 @@ describe("assessment relevance scoping", () => {
         },
       }),
     );
-    const baseTrace = component(ranked(noHistory.rankedCandidates, "serratus-wall-slide"), "assessment_fit")
-      .assessmentRelevance?.[0];
-    const matchedTrace = component(ranked(matchedHistory.rankedCandidates, "serratus-wall-slide"), "assessment_fit")
-      .assessmentRelevance?.[0];
-    const unrelatedTrace = component(
-      ranked(unrelatedHistory.rankedCandidates, "serratus-wall-slide"),
-      "assessment_fit",
-    ).assessmentRelevance?.[0];
+    const baseTrace = assessmentTrace(ranked(noHistory.rankedCandidates, "serratus-wall-slide"));
+    const unrelatedTrace = assessmentTrace(ranked(unrelatedHistory.rankedCandidates, "serratus-wall-slide"));
 
-    expect(matchedTrace?.demandCapability.currentCapability).toBeGreaterThan(
-      baseTrace?.demandCapability.currentCapability ?? 0,
-    );
-    expect(matchedTrace?.demandCapability.capabilityEstimate).toEqual(
+    expect(baseTrace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
       expect.objectContaining({
-        estimateSource: "history_inferred",
-        evidenceQuality: "moderate",
+        matchingEventCount: 0,
+        evidenceQuality: "unknown",
+        adjustment: 0,
       }),
     );
-    expect(matchedTrace?.demandCapability.capabilityEstimate.contributingSources).toContain(
-      "history_inferred",
+    expect(unrelatedTrace.demandCapability.currentCapability).toBe(
+      baseTrace.demandCapability.currentCapability,
     );
-    expect(matchedTrace?.demandCapability.capabilityEstimate.evidence.join(" ")).toContain(
-      "Movement-role-matched training exposure history",
+    expect(unrelatedTrace.demandCapability.capabilityEstimate.historyEvidence).toEqual(
+      expect.objectContaining({
+        matchingEventCount: 0,
+        positiveEvidenceCount: 0,
+        negativeEvidenceCount: 0,
+        evidenceQuality: "unknown",
+        adjustment: 0,
+      }),
     );
-    expect(unrelatedTrace?.demandCapability.currentCapability).toBe(
-      baseTrace?.demandCapability.currentCapability,
-    );
-    expect(unrelatedTrace?.demandCapability.capabilityEstimate.contributingSources).not.toContain(
+    expect(unrelatedTrace.demandCapability.capabilityEstimate.contributingSources).not.toContain(
       "history_inferred",
     );
   });
@@ -580,7 +837,19 @@ describe("assessment relevance scoping", () => {
       "assessment_fit",
     ).assessmentRelevance?.[0];
 
+    expect(defaultTrace?.signalInterpretation).toEqual(
+      expect.objectContaining({
+        severity: "unknown",
+        severitySource: "default_conservative",
+      }),
+    );
     expect(defaultTrace?.demandCapability.capabilityEstimate.evidenceQuality).toBe("weak");
+    expect(explicitTrace?.signalInterpretation).toEqual(
+      expect.objectContaining({
+        severity: "moderate",
+        severitySource: "provided",
+      }),
+    );
     expect(explicitTrace?.demandCapability.capabilityEstimate.evidenceQuality).toBe("moderate");
     expect(defaultTrace?.boundedInfluence).toBeLessThan(explicitTrace?.boundedInfluence ?? 0);
   });
@@ -681,12 +950,87 @@ describe("assessment relevance scoping", () => {
     const result = runCandidateRankingLab(controlledRequest("horizontal-pull-low-back-discomfort"));
     const supported = ranked(result.rankedCandidates, "chest-supported-dumbbell-row");
     const unsupported = ranked(result.rankedCandidates, "one-arm-dumbbell-row");
-    const supportedTrace = component(supported, "assessment_fit").assessmentRelevance?.[0];
-    const unsupportedTrace = component(unsupported, "assessment_fit").assessmentRelevance?.[0];
+    const supportedTrace = assessmentTrace(supported);
+    const unsupportedTrace = assessmentTrace(unsupported);
 
-    expect(supportedTrace?.relationship).toBe("reduces_excess_demand");
-    expect(unsupportedTrace?.relationship).toBe("exceeds_current_capability");
+    expect(supportedTrace.relationship).toBe("reduces_excess_demand");
+    expect(supportedTrace.demandReductionContext).toEqual(
+      expect.objectContaining({
+        relevant: true,
+        matchedPainConcernIds: ["mild-low-back-discomfort"],
+      }),
+    );
+    expect(unsupportedTrace.relationship).toBe("exceeds_current_capability");
     expect(supported.rank).toBeLessThan(unsupported.rank);
+  });
+
+  it("does not let unrelated wrist discomfort convert squat trunk under-demand into reduced demand", () => {
+    const result = runCandidateRankingLab(
+      withPainAndInjury(
+        withAssessment(controlledRequest("lower-squat-phase-3"), trunkControlAssessment),
+        wristDiscomfort,
+      ),
+    );
+    const trace = assessmentTrace(ranked(result.rankedCandidates, "goblet-squat"));
+
+    expect(trace.relationship).toBe("under_challenges_development");
+    expect(trace.demandReductionContext).toEqual(
+      expect.objectContaining({
+        relevant: false,
+        matchedPainConcernIds: [],
+        matchedHistoricalSensitivityIds: [],
+        matchedFatigueMovementRoles: [],
+      }),
+    );
+    expect(trace.demandReductionContext.evidence.join(" ")).toContain(
+      "No scoped pain, sensitivity, or fatigue context matched",
+    );
+  });
+
+  it("allows relevant knee discomfort to justify reduced squat demand", () => {
+    const result = runCandidateRankingLab(
+      withPainAndInjury(
+        withAssessment(controlledRequest("lower-squat-phase-3"), highConfidenceKneeAssessment),
+        kneeDiscomfort,
+      ),
+    );
+    const trace = assessmentTrace(ranked(result.rankedCandidates, "goblet-squat"));
+
+    expect(trace.relationship).toBe("reduces_excess_demand");
+    expect(trace.demandReductionContext).toEqual(
+      expect.objectContaining({
+        relevant: true,
+        matchedPainConcernIds: ["mild-knee-flexion-discomfort"],
+      }),
+    );
+  });
+
+  it("does not let unrelated movement fatigue convert squat trunk under-demand into reduced demand", () => {
+    const request = withTrainingHistory(
+      withAssessment(controlledRequest("lower-squat-phase-3"), trunkControlAssessment),
+      {
+        fatigueState: {
+          overall: "low",
+          byMovementRole: {
+            horizontal_pull: "high",
+          },
+        },
+      },
+    );
+    const result = runCandidateRankingLab({
+      ...request,
+      id: `${request.id}-local-fatigue`,
+      fatigueSignals: ["local_fatigue"],
+    });
+    const trace = assessmentTrace(ranked(result.rankedCandidates, "goblet-squat"));
+
+    expect(trace.relationship).toBe("under_challenges_development");
+    expect(trace.demandReductionContext).toEqual(
+      expect.objectContaining({
+        relevant: false,
+        matchedFatigueMovementRoles: [],
+      }),
+    );
   });
 
   it("uses a legitimate trunk activation request for trunk-control contrast", () => {

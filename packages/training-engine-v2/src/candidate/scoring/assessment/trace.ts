@@ -6,6 +6,7 @@ import type { CandidateRequest } from "../../request";
 import { interpretAssessmentSignal } from "./athleteCapability";
 import { calculateDemandCapabilityTrace } from "./demandCapabilityMatch";
 import {
+  demandReductionContextFor,
   relationshipFromDemand,
   relationshipReason,
   relationshipReasonCode,
@@ -30,10 +31,16 @@ export function makeAssessmentRelevanceTrace(input: {
     relevance: input.relevanceDecision.relevance,
     signalInterpretation,
   });
+  const demandReductionContext = demandReductionContextFor({
+    request: input.request,
+    exercise: input.exercise,
+    signal: input.signal,
+  });
   const relationship = relationshipFromDemand({
     influence: input.influence,
     demandCapability,
     request: input.request,
+    demandReductionContext,
   });
   const budget = calculateInfluenceBudget({
     signal: input.signal,
@@ -55,7 +62,8 @@ export function makeAssessmentRelevanceTrace(input: {
     relevanceReason: input.relevanceDecision.relevanceReason,
     signalInterpretation,
     relationship,
-    relationshipReason: relationshipReason(relationship, demandCapability),
+    relationshipReason: relationshipReason(relationship, demandCapability, demandReductionContext),
+    demandReductionContext,
     demandCapability,
     confidence: input.signal.confidence,
     priority: input.signal.priority,

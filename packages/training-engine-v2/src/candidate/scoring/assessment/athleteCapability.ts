@@ -7,6 +7,7 @@ import type {
   AthleteCapabilityEstimateTrace,
   CapabilityEstimateSource,
   CapabilityEvidenceQuality,
+  HistoryCapabilityEvidenceTrace,
 } from "../../../scoringContracts";
 import type { CandidateRequest } from "../../request";
 import { demandLevelToValue } from "./candidateDemand";
@@ -187,15 +188,80 @@ function clampHistoryAdjustment(value: number): number {
   return Number(Math.max(-0.35, Math.min(0.35, value)).toFixed(3));
 }
 
+function daysSince(occurredAt?: string): number | null {
+  if (!occurredAt) {
+    return null;
+  }
+
+  const parsed = Date.parse(occurredAt);
+  if (Number.isNaN(parsed)) {
+    return null;
+  }
+
+  return Math.max(0, Math.floor((Date.now() - parsed) / 86_400_000));
+}
+
+function historyEventRecencyWeight(event: ExerciseHistoryEvent): {
+  readonly weight: number;
+  readonly status: "recent" | "stale" | "no_recency";
+} {
+  const eventDaysSince = daysSince(event.occurredAt);
+
+  if (eventDaysSince === null) {
+    return { weight: 0.5, status: "no_recency" };
+  }
+
+  if (eventDaysSince > 180) {
+    return { weight: 0.25, status: "stale" };
+  }
+
+  return { weight: 1, status: "recent" };
+}
+
+function strongerQuality(
+  left: CapabilityEvidenceQuality,
+  right: CapabilityEvidenceQuality,
+): CapabilityEvidenceQuality {
+  const qualityRank: Record<CapabilityEvidenceQuality, number> = {
+    unknown: 0,
+    weak: 1,
+    moderate: 2,
+    strong: 3,
+  };
+
+  return qualityRank[right] > qualityRank[left] ? right : left;
+}
+
+function historyEvidenceQuality(input: {
+  readonly matchingEventCount: number;
+  readonly recentEventCount: number;
+  readonly contradiction: boolean;
+  readonly progressionStateCorroborates: boolean;
+}): CapabilityEvidenceQuality {
+  if (input.matchingEventCount === 0 && !input.progressionStateCorroborates) {
+    return "unknown";
+  }
+
+  if (input.contradiction) {
+    return "weak";
+  }
+
+  if (
+    input.matchingEventCount >= 2 &&
+    (input.recentEventCount >= 2 ||
+      (input.recentEventCount >= 1 && input.progressionStateCorroborates))
+  ) {
+    return "moderate";
+  }
+
+  return "weak";
+}
+
 function historyCapabilityEvidence(input: {
   readonly request: CandidateRequest;
   readonly signal: AssessmentSignal;
   readonly dimension: AssessmentDemandDimension;
-}): {
-  readonly adjustment: number;
-  readonly hasMatchingEvidence: boolean;
-  readonly evidence: readonly string[];
-} {
+}): HistoryCapabilityEvidenceTrace {
   const matchingEvents = input.request.history.exerciseHistory.events
     .filter((event) =>
       event.movementRole &&
@@ -208,22 +274,56 @@ function historyCapabilityEvidence(input: {
     .map((event) => ({
       event,
       adjustment: historyEventCapabilityAdjustment(event),
+      recency: historyEventRecencyWeight(event),
     }))
     .filter((result) => result.adjustment !== 0);
-  const successfulMovementRoleEvidence =
-    input.signal.movementRole &&
-    input.request.history.progressionState.successfulMovementRoles.includes(input.signal.movementRole)
-      ? 0.12
-      : 0;
-  const adjustment = clampHistoryAdjustment(
-    matchingEvents.reduce((sum, result) => sum + result.adjustment, 0) +
-      successfulMovementRoleEvidence,
+  const progressionStateCorroborates = input.request.history.progressionState.successfulMovementRoles.some(
+    (movementRole) =>
+      movementRoleMatchesSignal({
+        movementRole,
+        signal: input.signal,
+        dimension: input.dimension,
+      }),
   );
+  const positiveEvidenceCount = matchingEvents.filter((result) => result.adjustment > 0).length;
+  const negativeEvidenceCount = matchingEvents.filter((result) => result.adjustment < 0).length;
+  const staleEventCount = matchingEvents.filter((result) => result.recency.status === "stale").length;
+  const noRecencyEventCount = matchingEvents.filter(
+    (result) => result.recency.status === "no_recency",
+  ).length;
+  const recentEventCount = matchingEvents.filter((result) => result.recency.status === "recent").length;
+  const contradiction = positiveEvidenceCount > 0 && negativeEvidenceCount > 0;
+  const totalRecencyWeight = matchingEvents.reduce((sum, result) => sum + result.recency.weight, 0);
+  const weightedEventAdjustment =
+    totalRecencyWeight === 0
+      ? 0
+      : matchingEvents.reduce(
+          (sum, result) => sum + result.adjustment * result.recency.weight,
+          0,
+        ) / totalRecencyWeight;
+  const volumeScale = Math.min(1, totalRecencyWeight / 2);
+  const progressionEvidence = progressionStateCorroborates ? 0.06 : 0;
+  const adjustment = clampHistoryAdjustment(
+    (weightedEventAdjustment * volumeScale + progressionEvidence) * (contradiction ? 0.5 : 1),
+  );
+  const evidenceQuality = historyEvidenceQuality({
+    matchingEventCount: matchingEvents.length,
+    recentEventCount,
+    contradiction,
+    progressionStateCorroborates,
+  });
 
-  if (matchingEvents.length === 0 && successfulMovementRoleEvidence === 0) {
+  if (matchingEvents.length === 0 && !progressionStateCorroborates) {
     return {
+      matchingEventCount: 0,
+      positiveEvidenceCount: 0,
+      negativeEvidenceCount: 0,
+      staleEventCount: 0,
+      noRecencyEventCount: 0,
+      contradiction: false,
+      progressionStateCorroborates: false,
       adjustment: 0,
-      hasMatchingEvidence: false,
+      evidenceQuality: "unknown",
       evidence: [
         "No movement-role-matched training history evidence was used for this capability estimate.",
       ],
@@ -231,19 +331,29 @@ function historyCapabilityEvidence(input: {
   }
 
   return {
+    matchingEventCount: matchingEvents.length,
+    positiveEvidenceCount,
+    negativeEvidenceCount,
+    staleEventCount,
+    noRecencyEventCount,
+    contradiction,
+    progressionStateCorroborates,
     adjustment,
-    hasMatchingEvidence: true,
+    evidenceQuality,
     evidence: [
       ...matchingEvents.map(
-        ({ event, adjustment: eventAdjustment }) =>
-          `${event.id} (${event.type}) matched ${event.movementRole} and contributed ${eventAdjustment.toFixed(3)}.`,
+        ({ event, adjustment: eventAdjustment, recency }) =>
+          `${event.id} (${event.type}) matched ${event.movementRole} with ${recency.status} recency and raw adjustment ${eventAdjustment.toFixed(3)}.`,
       ),
-      ...(successfulMovementRoleEvidence > 0 && input.signal.movementRole
+      ...(progressionStateCorroborates
         ? [
-            `Progression state lists successful ${input.signal.movementRole} exposure and contributed ${successfulMovementRoleEvidence.toFixed(3)}.`,
+            `Progression state corroborates matching movement-role capability and contributed ${progressionEvidence.toFixed(3)}.`,
           ]
         : []),
-      `Clamped history capability adjustment ${adjustment.toFixed(3)}.`,
+      contradiction
+        ? "Positive and negative movement-role history both exist, so the adjustment is damped."
+        : "Movement-role history is directionally consistent.",
+      `History evidence quality ${evidenceQuality}; clamped proportional adjustment ${adjustment.toFixed(3)}.`,
     ],
   };
 }
@@ -282,12 +392,14 @@ export function estimateAthleteCapability(input: {
     ),
   );
   const assessmentEstimateSource = estimateSourceForSignal(input.signalInterpretation);
-  const estimateSource = historyEvidence.hasMatchingEvidence
+  const hasHistoryEvidence = historyEvidence.evidenceQuality !== "unknown";
+  const estimateSource = hasHistoryEvidence
     ? "history_inferred"
     : assessmentEstimateSource;
-  const evidenceQuality = historyEvidence.hasMatchingEvidence
-    ? "moderate"
-    : evidenceQualityForSignal(input.signalInterpretation);
+  const evidenceQuality = strongerQuality(
+    evidenceQualityForSignal(input.signalInterpretation),
+    historyEvidence.evidenceQuality,
+  );
 
   return {
     value,
@@ -295,10 +407,11 @@ export function estimateAthleteCapability(input: {
     contributingSources: uniqueSources([
       "phase_default",
       assessmentEstimateSource,
-      ...(historyEvidence.hasMatchingEvidence ? ["history_inferred" as const] : []),
+      ...(hasHistoryEvidence ? ["history_inferred" as const] : []),
       "generic_default",
     ]),
     evidenceQuality,
+    historyEvidence,
     evidence: [
       `Phase prior ${phasePrior.toFixed(3)} from ${input.request.phase.id} capability expectation.`,
       `Experience weak contextual prior ${experienceAdjustment.toFixed(3)} from ${input.request.athlete.experience}.`,
@@ -307,7 +420,7 @@ export function estimateAthleteCapability(input: {
       ...historyEvidence.evidence,
       `Capability estimate source ${estimateSource} with ${evidenceQuality} evidence quality.`,
       "No direct observed capability measurement is used in Candidate Intelligence v0.",
-      historyEvidence.hasMatchingEvidence
+      hasHistoryEvidence
         ? "Movement-role-matched training exposure history is used as inferred capability evidence."
         : "Training exposure history without matching movement-role evidence is not used as direct capability evidence.",
     ],

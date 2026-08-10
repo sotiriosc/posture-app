@@ -94,11 +94,35 @@ export type CapabilityEstimateSource =
 
 export type CapabilityEvidenceQuality = "strong" | "moderate" | "weak" | "unknown";
 
+export interface HistoryCapabilityEvidenceTrace {
+  readonly matchingEventCount: number;
+  readonly positiveEvidenceCount: number;
+  readonly negativeEvidenceCount: number;
+  readonly staleEventCount: number;
+  readonly noRecencyEventCount: number;
+  readonly contradiction: boolean;
+  readonly progressionStateCorroborates: boolean;
+  readonly adjustment: number;
+  readonly evidenceQuality: CapabilityEvidenceQuality;
+  readonly evidence: readonly string[];
+}
+
 export interface AthleteCapabilityEstimateTrace {
   readonly value: number;
   readonly estimateSource: CapabilityEstimateSource;
   readonly contributingSources: readonly CapabilityEstimateSource[];
   readonly evidenceQuality: CapabilityEvidenceQuality;
+  readonly historyEvidence: HistoryCapabilityEvidenceTrace;
+  readonly evidence: readonly string[];
+}
+
+export interface DemandReductionContextTrace {
+  readonly relevant: boolean;
+  readonly matchedPainConcernIds: readonly string[];
+  readonly matchedHistoricalSensitivityIds: readonly string[];
+  readonly matchedFatigueMovementRoles: readonly string[];
+  readonly systemicFatigueUsed: boolean;
+  readonly globalPainAwareGoalUsed: boolean;
   readonly evidence: readonly string[];
 }
 
@@ -125,6 +149,7 @@ export interface AssessmentRelevanceTrace {
   readonly signalInterpretation: AssessmentSignalInterpretationTrace;
   readonly relationship: AssessmentCandidateRelationship;
   readonly relationshipReason: string;
+  readonly demandReductionContext: DemandReductionContextTrace;
   readonly demandCapability: AssessmentDemandCapabilityTrace;
   readonly confidence: string;
   readonly priority: string;
