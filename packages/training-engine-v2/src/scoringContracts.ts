@@ -37,6 +37,24 @@ export type ScoreComponentFamily =
   | "equipment_practicality"
   | "session_synergy";
 
+export type AssessmentRelevanceLevel = "none" | "low" | "moderate" | "high";
+
+export interface AssessmentRelevanceTrace {
+  readonly signalId: string;
+  readonly candidateId: string;
+  readonly requestedRole: string;
+  readonly relevance: AssessmentRelevanceLevel;
+  readonly relevanceReasonCode: ReasonCode;
+  readonly relevanceReason: string;
+  readonly confidence: string;
+  readonly priority: string;
+  readonly direction: "supports" | "neutral" | "conflicts";
+  readonly boundedInfluence: number;
+  readonly assessmentContribution: number;
+  readonly alignmentContribution: number;
+  readonly contributesTo: readonly ("assessment_fit" | "alignment_fit")[];
+}
+
 export interface ScoreComponent {
   readonly id: string;
   readonly family: ScoreComponentFamily;
@@ -45,6 +63,7 @@ export interface ScoreComponent {
   readonly reasonCode: ReasonCode;
   readonly source: ScoreComponentSource;
   readonly assessmentInfluence?: AssessmentInfluence;
+  readonly assessmentRelevance?: readonly AssessmentRelevanceTrace[];
 }
 
 export interface CandidateScore {

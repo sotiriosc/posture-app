@@ -3,6 +3,7 @@ export * from "./lab";
 export * from "./ranking";
 export * from "./request";
 export * from "./scoring/aggregate";
+export * from "./scoring/assessmentRelevance";
 export * from "./scoring/components";
 export * from "./scoring/config";
 export * from "./scoring/types";

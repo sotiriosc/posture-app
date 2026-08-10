@@ -2,7 +2,8 @@ import type { AssessmentState } from "./domain/assessment";
 import type { EquipmentCapabilities } from "./domain/equipment";
 import type { ExerciseDefinition } from "./domain/exercise";
 import type { PainAndInjuryState } from "./domain/painInjury";
-import type { TrainingRole } from "./domain/session";
+import type { MovementRole, MuscleGroup } from "./domain/primitives";
+import type { SessionSection, TrainingRole } from "./domain/session";
 import type { ReasonCode, ReasonSource } from "./reasonCodes";
 import { evaluateHardEligibilityComponents } from "./candidate/eligibility";
 
@@ -14,6 +15,7 @@ export type RejectionReasonCode = Extract<
   | "HARD_CONTRAINDICATION"
   | "CAPABILITY_MISSING"
   | "ROLE_MISMATCH"
+  | "TRAINING_NEED_MISMATCH"
   | "PAIN_REQUIRES_REVIEW"
 >;
 
@@ -36,6 +38,9 @@ export interface HardEligibilityContext {
   readonly painAndInjury: PainAndInjuryState;
   readonly assessment: AssessmentState;
   readonly requestedRole?: TrainingRole;
+  readonly requestedSection?: SessionSection;
+  readonly targetMovementRoles?: readonly MovementRole[];
+  readonly targetMuscles?: readonly MuscleGroup[];
   readonly satisfiedPrerequisiteIds: readonly string[];
 }
 

@@ -98,6 +98,9 @@ export function rankCandidateRequest(
       painAndInjury: request.painAndInjury,
       assessment: request.assessment,
       requestedRole: request.need.requestedRole,
+      requestedSection: request.need.requestedSection,
+      targetMovementRoles: request.need.targetMovementRoles,
+      targetMuscles: request.need.targetMuscles,
       satisfiedPrerequisiteIds: request.satisfiedPrerequisiteIds,
     });
 

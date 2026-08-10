@@ -2,7 +2,12 @@ import type { AssessmentInfluence } from "../../alignment";
 import type { ExerciseDefinition } from "../../domain/exercise";
 import type { DemandLevel, Loadability, MovementRole, MuscleGroup } from "../../domain/primitives";
 import type { ReasonCode } from "../../reasonCodes";
-import type { ScoreComponent, ScoreComponentFamily, ScoreComponentSource } from "../../scoringContracts";
+import type {
+  AssessmentRelevanceTrace,
+  ScoreComponent,
+  ScoreComponentFamily,
+  ScoreComponentSource,
+} from "../../scoringContracts";
 
 export function overlapCount<T extends string>(left: readonly T[], right: readonly T[]): number {
   return left.filter((value) => right.includes(value)).length;
@@ -45,6 +50,7 @@ export function component(input: {
   readonly reason: string;
   readonly source: ScoreComponentSource;
   readonly assessmentInfluence?: AssessmentInfluence;
+  readonly assessmentRelevance?: readonly AssessmentRelevanceTrace[];
 }): ScoreComponent {
   return {
     id: input.id,
@@ -54,6 +60,7 @@ export function component(input: {
     reason: input.reason,
     source: input.source,
     assessmentInfluence: input.assessmentInfluence,
+    assessmentRelevance: input.assessmentRelevance,
   };
 }
 

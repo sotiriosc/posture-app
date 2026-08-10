@@ -110,6 +110,51 @@ AssessmentInfluence {
 
 This makes assessment impact visible in candidate score breakdowns without letting low-confidence findings dominate.
 
+## Assessment Relevance Scoping
+
+Assessment influence is applied only after hard eligibility has established that an exercise is a truthful candidate for the requested training need.
+
+Role/training-need truth includes:
+
+- requested training role;
+- requested session section;
+- requested movement role;
+- requested target muscles where supplied.
+
+Assessment can rank among truthful candidates. It cannot create role relevance. A squat/hinge candidate cannot become a horizontal-push or horizontal-pull candidate because it overlaps a posture finding by body region.
+
+`assessmentFit` and `alignmentFit` now share a bounded assessment-relevance trace:
+
+```ts
+AssessmentRelevanceTrace {
+  signalId
+  candidateId
+  requestedRole
+  relevance
+  relevanceReasonCode
+  relevanceReason
+  confidence
+  priority
+  direction
+  boundedInfluence
+  assessmentContribution
+  alignmentContribution
+  contributesTo
+}
+```
+
+`assessmentFit` owns general compatibility with normalized assessment findings. `alignmentFit` owns the specific alignment/control effect for the candidate. When the same signal contributes to both, its single bounded influence is split between the two components rather than added twice.
+
+Relevance reason codes:
+
+- `ASSESSMENT_ROLE_RELEVANT`
+- `ASSESSMENT_MOVEMENT_RELEVANT`
+- `ASSESSMENT_STABILITY_RELEVANT`
+- `ASSESSMENT_JOINT_RELEVANT`
+- `ASSESSMENT_NOT_RELEVANT`
+
+Body-region overlap alone is not enough to establish assessment relevance.
+
 ## Deliberately Not Done
 
 These weights are not final exercise-science tuning. No giant score matrix exists. Hard exclusions remain explicit rejection reasons rather than hidden negative scores.
