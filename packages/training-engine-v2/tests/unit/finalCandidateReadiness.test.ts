@@ -198,7 +198,11 @@ describe("final Candidate Intelligence readiness invariants", () => {
       expect.objectContaining({
         relevance: "moderate",
         relationship: "neutral",
-        boundedInfluence: 0,
+        featureTargetFitInfluence: 0.39,
+        developmentalChallengeInfluence: 0,
+        boundedInfluence: 0.39,
+        assessmentContribution: 0.39,
+        alignmentContribution: 0,
       }),
     );
     expect(trace?.featureDevelopment[0]).toEqual(

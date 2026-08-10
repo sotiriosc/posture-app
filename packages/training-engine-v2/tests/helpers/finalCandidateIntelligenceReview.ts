@@ -92,6 +92,8 @@ interface AssessmentContrastRow {
   readonly featureChallenge: string;
   readonly capabilityProvenance: string;
   readonly relationship: string;
+  readonly featureTargetFit: string;
+  readonly developmentalChallengeInfluence: string;
   readonly boundedInfluence: string;
   readonly why: string;
 }
@@ -580,9 +582,13 @@ function assessmentContrasts(): readonly AssessmentContrastRow[] {
         ? `${featureDevelopment.featureCapabilitySource}/${featureDevelopment.featureCapabilityEvidenceQuality}`
         : `${trace?.demandCapability.capabilityEstimate.estimateSource}/${trace?.demandCapability.capabilityEstimate.evidenceQuality}`,
       relationship: trace?.relationship ?? "neutral",
+      featureTargetFit: (trace?.featureTargetFitInfluence ?? 0).toFixed(3),
+      developmentalChallengeInfluence: (trace?.developmentalChallengeInfluence ?? 0).toFixed(3),
       boundedInfluence: (trace?.boundedInfluence ?? 0).toFixed(3),
-      why: observabilityOnly
-        ? "feature relevance is visible, but feature challenge is not modeled, so influence is zero"
+      why: (trace?.featureTargetFitInfluence ?? 0) > 0
+        ? "reviewed feature target fit affects assessment_fit; feature challenge remains not modeled"
+        : observabilityOnly
+          ? "relevance is visible, but no positive target or developmental evidence is available"
         : scoreChangedOnly
           ? "assessment changes score without reordering the legal pool"
           : changedRanking
@@ -1162,11 +1168,11 @@ function scienceRows(data: {
       winner: feature?.winnerOn ?? "-",
       runnerUp: feature?.inspectedExercise ?? "-",
       why: feature?.why ?? "-",
-      surprisingComponent: "feature relevance can be observability-only because challenge demand is not modeled",
-      assessmentEffect: "visible but boundedInfluence=0 for feature-specific challenge",
+      surprisingComponent: "feature challenge remains unknown while target fit can still be selection-relevant",
+      assessmentEffect: `target=${feature?.featureTargetFit ?? "-"}; development=${feature?.developmentalChallengeInfluence ?? "-"}; alignment=0.000`,
       painEffect: "none",
       continuityEffect: "none",
-      verdict: "PLAUSIBLE_NEEDS_REVIEW",
+      verdict: "GOOD",
     },
     {
       scenario: "Ready-to-progress current row",
@@ -1371,7 +1377,6 @@ function catalogSummary(): CatalogSummary {
     materiallyUnderSpecified: materiallyUnderSpecified.length,
     p0Gaps: [],
     p1Gaps: [
-      "Feature-specific assessment relevance is visible, but feature challenge demand is not modeled; feature-specific signals are observability-only at boundedInfluence=0.",
       "Moderate pain calibration remains human-review-needed before a session composer can depend on candidate rank alone.",
       "Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.",
       "Continuity reason-code precedence can report CONTINUITY_FAVORED for a current exercise even when plateau, failed-progression, or pain-response values demote it.",
@@ -1528,7 +1533,7 @@ function renderTransitionPurposeSummary(findings: readonly TransitionPurposeFind
 }
 
 function renderMarkdown(data: FinalReviewData): string {
-  const featureVerdict = "B. TARGETED_FIX_REQUIRED";
+  const featureVerdict = "RESOLVED_FOR_CANDIDATE_INTELLIGENCE";
   const readiness = "TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION";
 
   return [
@@ -1548,7 +1553,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     `Classification: **${readiness}**`,
     "",
-    "Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. The main blockers are feature-specific assessment influence being observability-only, moderate-pain calibration, phase calibration, continuity reason-code precedence, and review-visible transition-purpose/context gaps.",
+    "Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. Feature-specific target fit is resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration, phase calibration, continuity reason-code precedence, and review-visible transition-purpose/context gaps.",
     "",
     "## Contract Review",
     "",
@@ -1591,9 +1596,9 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     `Verdict: **${featureVerdict}**`,
     "",
-    "Feature relevance/expression is now explicit, and it correctly avoids conflating feature expression with feature challenge difficulty. However, under the blueprint doctrine assessment must be able to contribute meaningfully to candidate selection once it is relevant and truthful. Current feature-specific findings can identify WHAT the athlete needs while bounded influence remains zero because feature challenge demand is not modeled. That is scientifically conservative, but it is a product-semantics P1 before Session Composer.",
+    "Feature relevance/expression is explicit and now has a separate conservative target-fit channel. A legal candidate can receive bounded assessment_fit influence when reviewed metadata shows that it trains the assessed feature, even while feature challenge difficulty remains unknown.",
     "",
-    "The missing piece is a reviewed feature-challenge model that is separate from feature relevance/expression, overall task demand, and athlete feature capability. The fix should not restore generic scapular demand as a proxy and should not make high feature expression automatically good.",
+    "Target fit answers what quality the candidate trains. Developmental challenge remains a separate NOT_MODELED question, so current feature-specific traces retain neutral developmental relationships, zero developmental challenge influence, and zero alignment contribution. NEEDS_REVIEW annotations remain downgraded through the existing feature matcher.",
     "",
     table(
       [
@@ -1610,6 +1615,8 @@ function renderMarkdown(data: FinalReviewData): string {
         "Feature Challenge",
         "Capability Provenance",
         "Relationship",
+        "Target Fit",
+        "Developmental Influence",
         "Bounded",
         "Why",
       ],
@@ -1627,14 +1634,26 @@ function renderMarkdown(data: FinalReviewData): string {
         row.featureChallenge,
         row.capabilityProvenance,
         row.relationship,
+        row.featureTargetFit,
+        row.developmentalChallengeInfluence,
         row.boundedInfluence,
         row.why,
       ]),
     ),
     "",
+    "### FEATURE_SPECIFIC_TARGET_FIT_RESOLUTION",
+    "",
+    "Classification: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**.",
+    "",
+    "Before: a reviewed feature match could be relevant in observability while contributing zero to candidate selection whenever feature challenge demand was unknown.",
+    "",
+    "After: feature relevance can contribute a nonnegative target-fit influence to assessment_fit even when challenge fit remains unknown. The target channel is capped at 0.600 and scales once by feature relevance, assessment confidence, and priority. It does not use severity, generic task demand, capability, phase prior, history capability, or feature challenge demand.",
+    "",
+    "Feature challenge remains intentionally **NOT_MODELED**. Current feature-specific cases therefore retain `featureChallengeDemand=null`, `featureChallengeDemandSource=not_modeled`, `featureDemandCapabilityMatch=not_applicable`, `developmentalChallengeInfluence=0`, and `alignmentContribution=0`. Combined target and future developmental channels remain clamped to the existing 1.200 per-signal assessment envelope.",
+    "",
     "## Real Posture Regression",
     "",
-    "Verdict: **GOOD_WITH_P1_FEATURE_CAVEAT**. V2 consumes normalized assessment signals only; there is no image handling in the engine. OFF/ON review did not show lower-body findings legalizing upper-body candidates or assessment bypassing role truth. Trunk signals remain candidate/request specific. Feature-specific scapular signals remain conservative/neutral until feature challenge is modeled.",
+    "Verdict: **GOOD**. V2 consumes normalized assessment signals only; there is no image handling in the engine. OFF/ON review did not show lower-body findings legalizing upper-body candidates or assessment bypassing role truth. Trunk signals remain candidate/request specific, and the feature-target channel is absent when no feature-specific evidence exists.",
     "",
     table(
       ["Need", "Winner OFF", "Winner ON", "Changed", "Legal Pool", "Assessment Effect", "Verdict"],

@@ -19,6 +19,10 @@ import {
   buildFeatureDevelopmentTraces,
   hasUnassertedFeatureChallenge,
 } from "./featureDevelopment";
+import {
+  buildFeatureTargetFitTraces,
+  strongestFeatureTargetFitInfluence,
+} from "./featureTargetFit";
 import { calculateInfluenceBudget } from "./influenceBudget";
 import type { AssessmentRelevanceDecision } from "./relevance";
 
@@ -84,6 +88,12 @@ export function makeAssessmentRelevanceTrace(input: {
     featureMatches: input.relevanceDecision.featureMatches,
     overallTaskDemand: demandCapability,
   });
+  const featureTargetFit = buildFeatureTargetFitTraces({
+    signal: input.signal,
+    relevance: input.relevanceDecision.relevance,
+    featureMatches: input.relevanceDecision.featureMatches,
+  });
+  const featureTargetFitInfluence = strongestFeatureTargetFitInfluence(featureTargetFit);
   const demandReductionContext = demandReductionContextFor({
     request: input.request,
     exercise: input.exercise,
@@ -111,6 +121,7 @@ export function makeAssessmentRelevanceTrace(input: {
     relationship,
     capabilityEvidenceQuality: demandCapability.capabilityEstimate.evidenceQuality,
     alignmentEligible: input.alignmentEligible,
+    featureTargetFitInfluence,
   });
 
   return {
@@ -125,7 +136,10 @@ export function makeAssessmentRelevanceTrace(input: {
     relevanceReason: input.relevanceDecision.relevanceReason,
     signalInterpretation,
     featureMatches: input.relevanceDecision.featureMatches,
+    featureTargetFit,
+    featureTargetFitInfluence: budget.featureTargetFitInfluence,
     featureDevelopment,
+    developmentalChallengeInfluence: budget.developmentalChallengeInfluence,
     relationship,
     relationshipReason:
       featureRelationshipReason ??

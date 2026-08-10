@@ -89,13 +89,10 @@ export function decideAssessmentRelevance(input: {
     const relevance = bestFeatureRelevance(scapularFeatureMatches);
     const bestMatch = bestFeatureMatch(scapularFeatureMatches);
 
-    if (relevance === "none" || !candidateHasKnownDemand(exercise, "scapular_control")) {
+    if (relevance === "none") {
       return notRelevantDecision({
         signal,
-        reason:
-          relevance === "none"
-            ? `${signal.id} is feature-specific, but ${exercise.name} does not have a usable matching scapular feature.`
-            : `${signal.id} is feature-specific, but ${exercise.name} lacks explicit scapular-control demand metadata.`,
+        reason: `${signal.id} is feature-specific, but ${exercise.name} does not have a usable matching scapular feature.`,
         featureMatches: scapularFeatureMatches,
       });
     }

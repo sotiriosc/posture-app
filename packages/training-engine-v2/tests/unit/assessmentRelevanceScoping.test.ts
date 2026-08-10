@@ -343,6 +343,7 @@ describe("assessment relevance scoping", () => {
     const push = runCandidateRankingLab(pushOn);
     const pull = runCandidateRankingLab(pullOn);
     const squat = runCandidateRankingLab(squatOn);
+    const lowerBodySignalIds = ["photo-pose-hip-shift", "photo-pose-knee-alignment"];
 
     expect(runCandidateRankingLab(pushOff).legalCandidateCount).toBe(push.legalCandidateCount);
     expect(runCandidateRankingLab(pullOff).legalCandidateCount).toBe(pull.legalCandidateCount);
@@ -365,6 +366,20 @@ describe("assessment relevance scoping", () => {
     expect(rejectedCodes(squat, "push-up")).toContain("MOVEMENT_ROLE_MISMATCH");
     expect(runCandidateRankingLab(squatOff).rankedCandidates[0].exercise.id).toBe("goblet-squat");
     expect(squat.rankedCandidates[0].exercise.id).toBe("goblet-squat");
+    expect(JSON.stringify([pushOn, pullOn, squatOn])).not.toMatch(/\.(?:png|jpe?g|webp)\b/i);
+    [push, pull].forEach((result) => {
+      result.rankedCandidates.forEach((candidate) => {
+        const lowerBodyTraces = component(candidate, "assessment_fit")
+          .assessmentRelevance?.filter((trace) => lowerBodySignalIds.includes(trace.signalId)) ?? [];
+
+        expect(lowerBodyTraces.length).toBe(2);
+        lowerBodyTraces.forEach((trace) => {
+          expect(trace.relevance).toBe("none");
+          expect(trace.featureTargetFitInfluence).toBe(0);
+          expect(trace.boundedInfluence).toBe(0);
+        });
+      });
+    });
   });
 
   it("does not let activation or accessory suitability satisfy loaded main roles", () => {
@@ -520,7 +535,11 @@ describe("assessment relevance scoping", () => {
       expect.objectContaining({
         relevance: "moderate",
         relationship: "neutral",
-        boundedInfluence: 0,
+        featureTargetFitInfluence: 0.39,
+        developmentalChallengeInfluence: 0,
+        boundedInfluence: 0.39,
+        assessmentContribution: 0.39,
+        alignmentContribution: 0,
       }),
     );
     expect(facePullTrace).toEqual(
@@ -560,7 +579,17 @@ describe("assessment relevance scoping", () => {
         featureDemandCapabilityMatch: "not_applicable",
       }),
     );
-    expect(wallSlideTrace?.assessmentContribution).toBe(0);
+    expect(wallSlideTrace?.featureTargetFit[0]).toEqual(
+      expect.objectContaining({
+        assessmentFeature: "serratus_or_protraction_control",
+        candidateFeatureLevel: "high",
+        featureMatch: "moderate",
+        relevance: "moderate",
+        influence: 0.39,
+        source: "scapular_feature_match",
+      }),
+    );
+    expect(wallSlideTrace?.assessmentContribution).toBe(0.39);
     expect(bandRowTrace?.assessmentContribution).toBe(0);
     expect(facePullTrace?.assessmentContribution).toBe(0);
   });
@@ -576,7 +605,11 @@ describe("assessment relevance scoping", () => {
       expect.objectContaining({
         relevance: "moderate",
         relationship: "neutral",
-        boundedInfluence: 0,
+        featureTargetFitInfluence: 0.39,
+        developmentalChallengeInfluence: 0,
+        boundedInfluence: 0.39,
+        assessmentContribution: 0.39,
+        alignmentContribution: 0,
       }),
     );
     expect(wallSlide.featureMatches[0]).toEqual(
@@ -593,6 +626,8 @@ describe("assessment relevance scoping", () => {
         expect.objectContaining({
           relevance: "none",
           relationship: "neutral",
+          featureTargetFitInfluence: 0,
+          developmentalChallengeInfluence: 0,
           boundedInfluence: 0,
         }),
       );
@@ -631,6 +666,8 @@ describe("assessment relevance scoping", () => {
       }),
     );
     expect(wallSlide.relevance).toBe("moderate");
+    expect(wallSlide.featureTargetFitInfluence).toBe(0.39);
+    expect(wallSlide.developmentalChallengeInfluence).toBe(0);
     [facePull, reversePecDeck, bandRow].forEach((trace) => {
       expect(trace.featureMatches[0]).toEqual(
         expect.objectContaining({
@@ -639,6 +676,7 @@ describe("assessment relevance scoping", () => {
         }),
       );
       expect(trace.relevance).toBe("none");
+      expect(trace.featureTargetFitInfluence).toBe(0);
     });
 
     const generic = assessmentTraceForRequest(
@@ -646,6 +684,8 @@ describe("assessment relevance scoping", () => {
       "serratus-wall-slide",
     );
     expect(generic.featureMatches).toEqual([]);
+    expect(generic.featureTargetFit).toEqual([]);
+    expect(generic.featureTargetFitInfluence).toBe(0);
   });
 
   it("makes retraction findings favor current retraction metadata over wall-slide mechanics", () => {
@@ -676,7 +716,11 @@ describe("assessment relevance scoping", () => {
       }),
     );
     expect(facePull.relationship).toBe("neutral");
-    expect(facePull.boundedInfluence).toBe(0);
+    expect(facePull.featureTargetFitInfluence).toBe(0.39);
+    expect(facePull.developmentalChallengeInfluence).toBe(0);
+    expect(facePull.boundedInfluence).toBe(0.39);
+    expect(facePull.assessmentContribution).toBe(0.39);
+    expect(facePull.alignmentContribution).toBe(0);
     [reversePecDeck, bandRow].forEach((trace) => {
       expect(trace.featureMatches[0]).toEqual(
         expect.objectContaining({
@@ -685,6 +729,8 @@ describe("assessment relevance scoping", () => {
         }),
       );
       expect(trace.relevance).toBe("low");
+      expect(trace.featureTargetFitInfluence).toBe(0.21);
+      expect(trace.developmentalChallengeInfluence).toBe(0);
     });
     expect(wallSlide.featureMatches[0]).toEqual(
       expect.objectContaining({
@@ -721,7 +767,11 @@ describe("assessment relevance scoping", () => {
       }),
     );
     expect(facePull.relationship).toBe("neutral");
-    expect(facePull.boundedInfluence).toBe(0);
+    expect(facePull.featureTargetFitInfluence).toBe(0.21);
+    expect(facePull.developmentalChallengeInfluence).toBe(0);
+    expect(facePull.boundedInfluence).toBe(0.21);
+    expect(facePull.assessmentContribution).toBe(0.21);
+    expect(facePull.alignmentContribution).toBe(0);
     [wallSlide, reversePecDeck].forEach((trace) => {
       expect(trace.featureMatches[0]).toEqual(
         expect.objectContaining({
@@ -773,6 +823,8 @@ describe("assessment relevance scoping", () => {
         }),
       );
       expect(trace.relevance).toBe("low");
+      expect(trace.featureTargetFitInfluence).toBe(0.21);
+      expect(trace.developmentalChallengeInfluence).toBe(0);
       expect(trace.featureDevelopment[0]).toEqual(
         expect.objectContaining({
           featureChallengeDemand: null,
@@ -944,8 +996,13 @@ describe("assessment relevance scoping", () => {
     expect(lowTrace?.featureDevelopment[0].featureCapabilityEstimate).toBe(
       highTrace?.featureDevelopment[0].featureCapabilityEstimate,
     );
-    expect(lowTrace?.boundedInfluence).toBe(0);
-    expect(highTrace?.boundedInfluence).toBe(0);
+    expect(lowTrace?.featureTargetFitInfluence).toBe(0.078);
+    expect(highTrace?.featureTargetFitInfluence).toBe(0.39);
+    expect(lowTrace?.featureTargetFitInfluence).toBeLessThan(
+      highTrace?.featureTargetFitInfluence ?? 0,
+    );
+    expect(lowTrace?.developmentalChallengeInfluence).toBe(0);
+    expect(highTrace?.developmentalChallengeInfluence).toBe(0);
   });
 
   it("exposes capability provenance without treating default estimates as measured capacity", () => {
@@ -1485,9 +1542,12 @@ describe("assessment relevance scoping", () => {
     expect(mildFeature?.featureCapabilityEstimate).toBeGreaterThan(
       moderateFeature?.featureCapabilityEstimate ?? 0,
     );
-    expect(noSeverityTrace?.boundedInfluence).toBe(0);
-    expect(mildTrace?.boundedInfluence).toBe(0);
-    expect(moderateTrace?.boundedInfluence).toBe(0);
+    expect(noSeverityTrace?.featureTargetFitInfluence).toBe(0.39);
+    expect(mildTrace?.featureTargetFitInfluence).toBe(0.39);
+    expect(moderateTrace?.featureTargetFitInfluence).toBe(0.39);
+    expect(noSeverityTrace?.developmentalChallengeInfluence).toBe(0);
+    expect(mildTrace?.developmentalChallengeInfluence).toBe(0);
+    expect(moderateTrace?.developmentalChallengeInfluence).toBe(0);
   });
 
   it("uses explicit mechanics metadata instead of prose to determine support and demand", () => {

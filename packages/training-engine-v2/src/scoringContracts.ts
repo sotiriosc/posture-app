@@ -1,7 +1,9 @@
 import type { AssessmentInfluence } from "./alignment";
 import type {
+  AssessmentConfidence,
   AssessmentFeature,
   AssessmentFeatureSource,
+  AssessmentPriority,
   AssessmentSeverity,
 } from "./domain/assessment";
 import type {
@@ -187,6 +189,24 @@ export interface AssessmentFeatureDevelopmentTrace {
   readonly evidence: readonly string[];
 }
 
+export type AssessmentFeatureTargetFitSource = "scapular_feature_match";
+
+export interface AssessmentFeatureTargetFitTrace {
+  readonly assessmentFeature: AssessmentFeature;
+  readonly assessmentFeatureSource: AssessmentFeatureSource;
+  readonly candidateFeature: string;
+  readonly candidateFeatureLevel: ExerciseDemandAnnotationLevel;
+  readonly candidateFeatureReviewStatus: ExerciseMechanicsReviewStatus;
+  readonly candidateFeatureProfileReviewStatus: ExerciseMechanicsReviewStatus | "not_applicable";
+  readonly featureMatch: AssessmentFeatureMatch;
+  readonly relevance: AssessmentRelevanceLevel;
+  readonly confidence: AssessmentConfidence;
+  readonly priority: AssessmentPriority;
+  readonly influence: number;
+  readonly source: AssessmentFeatureTargetFitSource;
+  readonly evidence: readonly string[];
+}
+
 export interface AssessmentRelevanceTrace {
   readonly signalId: string;
   readonly candidateId: string;
@@ -196,7 +216,10 @@ export interface AssessmentRelevanceTrace {
   readonly relevanceReason: string;
   readonly signalInterpretation: AssessmentSignalInterpretationTrace;
   readonly featureMatches: readonly AssessmentFeatureMatchTrace[];
+  readonly featureTargetFit: readonly AssessmentFeatureTargetFitTrace[];
+  readonly featureTargetFitInfluence: number;
   readonly featureDevelopment: readonly AssessmentFeatureDevelopmentTrace[];
+  readonly developmentalChallengeInfluence: number;
   readonly relationship: AssessmentCandidateRelationship;
   readonly relationshipReason: string;
   readonly demandReductionContext: DemandReductionContextTrace;

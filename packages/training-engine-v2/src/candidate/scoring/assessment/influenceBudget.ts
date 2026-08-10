@@ -8,16 +8,27 @@ import { relationshipScalar } from "./developmentalRelationship";
 
 export interface AssessmentInfluenceBudget {
   readonly boundedInfluence: number;
+  readonly featureTargetFitInfluence: number;
+  readonly developmentalChallengeInfluence: number;
   readonly assessmentContribution: number;
   readonly alignmentContribution: number;
   readonly contributesTo: readonly ("assessment_fit" | "alignment_fit")[];
 }
 
+export const ASSESSMENT_INFLUENCE_MAX = 1.2;
+export const FEATURE_TARGET_FIT_MAX = 0.6;
+
 function clampInfluence(value: number): number {
-  return Number(Math.max(-1.2, Math.min(1.2, value)).toFixed(3));
+  return Number(
+    Math.max(-ASSESSMENT_INFLUENCE_MAX, Math.min(ASSESSMENT_INFLUENCE_MAX, value)).toFixed(3),
+  );
 }
 
-function confidenceScalar(confidence: AssessmentSignal["confidence"]): number {
+function clampFeatureTargetFit(value: number): number {
+  return Number(Math.max(0, Math.min(FEATURE_TARGET_FIT_MAX, value)).toFixed(3));
+}
+
+export function confidenceScalar(confidence: AssessmentSignal["confidence"]): number {
   switch (confidence) {
     case "high":
       return 1;
@@ -28,7 +39,7 @@ function confidenceScalar(confidence: AssessmentSignal["confidence"]): number {
   }
 }
 
-function priorityScalar(priority: AssessmentSignal["priority"]): number {
+export function priorityScalar(priority: AssessmentSignal["priority"]): number {
   switch (priority) {
     case "blocking":
     case "primary":
@@ -40,7 +51,7 @@ function priorityScalar(priority: AssessmentSignal["priority"]): number {
   }
 }
 
-function relevanceScalar(relevance: AssessmentRelevanceLevel): number {
+export function relevanceScalar(relevance: AssessmentRelevanceLevel): number {
   switch (relevance) {
     case "high":
       return 1;
@@ -72,21 +83,32 @@ export function calculateInfluenceBudget(input: {
   readonly relationship: AssessmentCandidateRelationship;
   readonly capabilityEvidenceQuality: CapabilityEvidenceQuality;
   readonly alignmentEligible: boolean;
+  readonly featureTargetFitInfluence?: number;
 }): AssessmentInfluenceBudget {
-  const boundedInfluence = clampInfluence(
+  const featureTargetFitInfluence = clampFeatureTargetFit(input.featureTargetFitInfluence ?? 0);
+  const developmentalChallengeInfluence = clampInfluence(
     relevanceScalar(input.relevance) *
       confidenceScalar(input.signal.confidence) *
       priorityScalar(input.signal.priority) *
       relationshipScalar(input.relationship) *
       capabilityEvidenceScalar(input.capabilityEvidenceQuality) *
-      1.2,
+      ASSESSMENT_INFLUENCE_MAX,
   );
   const alignmentShare =
-    input.alignmentEligible && boundedInfluence !== 0 ? 0.4 : 0;
-  const assessmentContribution = clampInfluence(
-    boundedInfluence * (alignmentShare > 0 ? 0.6 : 1),
-  );
-  const alignmentContribution = clampInfluence(boundedInfluence * alignmentShare);
+    input.alignmentEligible && developmentalChallengeInfluence !== 0 ? 0.4 : 0;
+  const developmentalAssessmentContribution =
+    developmentalChallengeInfluence * (alignmentShare > 0 ? 0.6 : 1);
+  const developmentalAlignmentContribution = developmentalChallengeInfluence * alignmentShare;
+  const rawAssessmentContribution =
+    featureTargetFitInfluence + developmentalAssessmentContribution;
+  const rawCombinedInfluence = rawAssessmentContribution + developmentalAlignmentContribution;
+  const boundedInfluence = clampInfluence(rawCombinedInfluence);
+  const scale =
+    rawCombinedInfluence !== 0 && Math.abs(rawCombinedInfluence) > ASSESSMENT_INFLUENCE_MAX
+      ? boundedInfluence / rawCombinedInfluence
+      : 1;
+  const assessmentContribution = clampInfluence(rawAssessmentContribution * scale);
+  const alignmentContribution = clampInfluence(developmentalAlignmentContribution * scale);
   const contributesTo = [
     ...(assessmentContribution !== 0 ? ["assessment_fit" as const] : []),
     ...(alignmentContribution !== 0 ? ["alignment_fit" as const] : []),
@@ -94,6 +116,8 @@ export function calculateInfluenceBudget(input: {
 
   return {
     boundedInfluence,
+    featureTargetFitInfluence,
+    developmentalChallengeInfluence,
     assessmentContribution,
     alignmentContribution,
     contributesTo,

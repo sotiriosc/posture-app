@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. The main blockers are feature-specific assessment influence being observability-only, moderate-pain calibration, phase calibration, continuity reason-code precedence, and review-visible transition-purpose/context gaps.
+Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 semantic issues remain. Feature-specific target fit is resolved for Candidate Intelligence; the remaining blockers are moderate-pain calibration, phase calibration, continuity reason-code precedence, and review-visible transition-purpose/context gaps.
 
 ## Contract Review
 
@@ -55,24 +55,34 @@ UNKNOWN does not become easy/safe/preferred/developmentally superior/feature mat
 
 ## Feature-Specific Assessment Review
 
-Verdict: **B. TARGETED_FIX_REQUIRED**
+Verdict: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**
 
-Feature relevance/expression is now explicit, and it correctly avoids conflating feature expression with feature challenge difficulty. However, under the blueprint doctrine assessment must be able to contribute meaningfully to candidate selection once it is relevant and truthful. Current feature-specific findings can identify WHAT the athlete needs while bounded influence remains zero because feature challenge demand is not modeled. That is scientifically conservative, but it is a product-semantics P1 before Session Composer.
+Feature relevance/expression is explicit and now has a separate conservative target-fit channel. A legal candidate can receive bounded assessment_fit influence when reviewed metadata shows that it trains the assessed feature, even while feature challenge difficulty remains unknown.
 
-The missing piece is a reviewed feature-challenge model that is separate from feature relevance/expression, overall task demand, and athlete feature capability. The fix should not restore generic scapular demand as a proxy and should not make high feature expression automatically good.
+Target fit answers what quality the candidate trains. Developmental challenge remains a separate NOT_MODELED question, so current feature-specific traces retain neutral developmental relationships, zero developmental challenge influence, and zero alignment contribution. NEEDS_REVIEW annotations remain downgraded through the existing feature matcher.
 
-| Assessment | Winner OFF | Winner ON | Changed | Inspected | Assessment Fit | Alignment Fit | Relevance | Feature Expression | Overall Demand | Feature Challenge | Capability Provenance | Relationship | Bounded | Why |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Generic Scapular Control | band-face-pull | band-face-pull | score only | 1 / band-face-pull / 8.012 | 5.694 | 5.796 | high | generic | 3 | not_applicable | phase_default/weak | exceeds_current_capability | -0.510 | assessment changes score without reordering the legal pool |
-| Serratus / Protraction | band-face-pull | band-face-pull | observability only | 3 / serratus-wall-slide / 7.812 | 6.000 | 6.000 | moderate | high/moderate | 2 (moderate) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
-| Upward Rotation | band-face-pull | band-face-pull | observability only | 3 / serratus-wall-slide / 7.812 | 6.000 | 6.000 | moderate | high/moderate | 2 (moderate) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
-| Retraction | band-face-pull | band-face-pull | observability only | 1 / band-face-pull / 8.040 | 6.000 | 6.000 | moderate | high/moderate | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
-| External Rotation / Cuff | band-face-pull | band-face-pull | observability only | 1 / band-face-pull / 8.040 | 6.000 | 6.000 | low | moderate/weak | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
-| Loaded Scapular Stability | band-face-pull | band-face-pull | observability only | 1 / band-face-pull / 8.040 | 6.000 | 6.000 | low | moderate/weak | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.000 | feature relevance is visible, but feature challenge is not modeled, so influence is zero |
+| Assessment | Winner OFF | Winner ON | Changed | Inspected | Assessment Fit | Alignment Fit | Relevance | Feature Expression | Overall Demand | Feature Challenge | Capability Provenance | Relationship | Target Fit | Developmental Influence | Bounded | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Generic Scapular Control | band-face-pull | band-face-pull | score only | 1 / band-face-pull / 8.012 | 5.694 | 5.796 | high | generic | 3 | not_applicable | phase_default/weak | exceeds_current_capability | 0.000 | -0.510 | -0.510 | assessment changes score without reordering the legal pool |
+| Serratus / Protraction | band-face-pull | band-face-pull | score only | 3 / serratus-wall-slide / 7.834 | 6.390 | 6.000 | moderate | high/moderate | 2 (moderate) | unknown/not_modeled | phase_default/weak | neutral | 0.390 | 0.000 | 0.390 | reviewed feature target fit affects assessment_fit; feature challenge remains not modeled |
+| Upward Rotation | band-face-pull | band-face-pull | score only | 3 / serratus-wall-slide / 7.834 | 6.390 | 6.000 | moderate | high/moderate | 2 (moderate) | unknown/not_modeled | phase_default/weak | neutral | 0.390 | 0.000 | 0.390 | reviewed feature target fit affects assessment_fit; feature challenge remains not modeled |
+| Retraction | band-face-pull | band-face-pull | score only | 1 / band-face-pull / 8.062 | 6.390 | 6.000 | moderate | high/moderate | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.390 | 0.000 | 0.390 | reviewed feature target fit affects assessment_fit; feature challenge remains not modeled |
+| External Rotation / Cuff | band-face-pull | band-face-pull | score only | 1 / band-face-pull / 8.052 | 6.210 | 6.000 | low | moderate/weak | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.210 | 0.000 | 0.210 | reviewed feature target fit affects assessment_fit; feature challenge remains not modeled |
+| Loaded Scapular Stability | band-face-pull | band-face-pull | score only | 1 / band-face-pull / 8.052 | 6.210 | 6.000 | low | moderate/weak | 3 (high) | unknown/not_modeled | phase_default/weak | neutral | 0.210 | 0.000 | 0.210 | reviewed feature target fit affects assessment_fit; feature challenge remains not modeled |
+
+### FEATURE_SPECIFIC_TARGET_FIT_RESOLUTION
+
+Classification: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**.
+
+Before: a reviewed feature match could be relevant in observability while contributing zero to candidate selection whenever feature challenge demand was unknown.
+
+After: feature relevance can contribute a nonnegative target-fit influence to assessment_fit even when challenge fit remains unknown. The target channel is capped at 0.600 and scales once by feature relevance, assessment confidence, and priority. It does not use severity, generic task demand, capability, phase prior, history capability, or feature challenge demand.
+
+Feature challenge remains intentionally **NOT_MODELED**. Current feature-specific cases therefore retain `featureChallengeDemand=null`, `featureChallengeDemandSource=not_modeled`, `featureDemandCapabilityMatch=not_applicable`, `developmentalChallengeInfluence=0`, and `alignmentContribution=0`. Combined target and future developmental channels remain clamped to the existing 1.200 per-signal assessment envelope.
 
 ## Real Posture Regression
 
-Verdict: **GOOD_WITH_P1_FEATURE_CAVEAT**. V2 consumes normalized assessment signals only; there is no image handling in the engine. OFF/ON review did not show lower-body findings legalizing upper-body candidates or assessment bypassing role truth. Trunk signals remain candidate/request specific. Feature-specific scapular signals remain conservative/neutral until feature challenge is modeled.
+Verdict: **GOOD**. V2 consumes normalized assessment signals only; there is no image handling in the engine. OFF/ON review did not show lower-body findings legalizing upper-body candidates or assessment bypassing role truth. Trunk signals remain candidate/request specific, and the feature-target channel is absent when no feature-specific evidence exists.
 
 | Need | Winner OFF | Winner ON | Changed | Legal Pool | Assessment Effect | Verdict |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -192,7 +202,7 @@ Contextual or unknown-supported purpose tags remain review-visible when structur
 | Neutral full-gym horizontal pull | Prefer a legal loadable row; preserve machine/cable tie when no context separates them. | machine-row | seated-cable-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | row tie is deliberate context-required evidence | none | none | none | GOOD |
 | Low-back row pain context | Prefer lower lumbar demand/support, but keep equipment truth hard. | chest-supported-dumbbell-row | one-arm-dumbbell-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | ID-derived support bonus resolved; remaining pain effect is stress-overlap based | not primary | material | none | PLAUSIBLE_NEEDS_REVIEW |
 | Phase contrast horizontal push | Phase 1 should prefer usable control/support; Phase 3 should value loadable stimulus without hardest-is-best. | dumbbell-bench-press (8.024) over machine-chest-press (7.909) | machine-chest-press (7.815) over push-up (7.793) | phase_fit, loadability, stimulus_potential shift the winner across phases | phaseSuitability has meaningful influence and still needs human calibration | none | none | none | GOOD |
-| Feature-specific serratus/protraction assessment | Identify feature relevance without conflating expression with feature difficulty. | band-face-pull | serratus-wall-slide | feature relevance is visible, but feature challenge is not modeled, so influence is zero | feature relevance can be observability-only because challenge demand is not modeled | visible but boundedInfluence=0 for feature-specific challenge | none | none | PLAUSIBLE_NEEDS_REVIEW |
+| Feature-specific serratus/protraction assessment | Identify feature relevance without conflating expression with feature difficulty. | band-face-pull | serratus-wall-slide | reviewed feature target fit affects assessment_fit; feature challenge remains not modeled | feature challenge remains unknown while target fit can still be selection-relevant | target=0.390; development=0.000; alignment=0.000 | none | none | GOOD |
 | Ready-to-progress current row | Keep productive current exercise and progress prescription before replacement. | 1 / chest-supported-dumbbell-row / 8.293 | 3 / seated-cable-row / 8.069 | continuity_value and progression_value reward same-exercise runway | none | none | none | CONTINUITY_FAVORED | GOOD |
 | Plateau/failed progression row | Replacement may become justified by real performance signal. | 2 / seated-cable-row / 8.069 | 4 / chest-supported-dumbbell-row / 7.854 | continuity/progression penalties reduce current exercise | transition edge remains knowledge-only | none | none | CONTINUITY_FAVORED | GOOD |
 
@@ -204,7 +214,6 @@ Contextual or unknown-supported purpose tags remain review-visible when structur
 
 ### P1
 
-- Feature-specific assessment relevance is visible, but feature challenge demand is not modeled; feature-specific signals are observability-only at boundedInfluence=0.
 - Moderate pain calibration remains human-review-needed before a session composer can depend on candidate rank alone.
 - Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.
 - Continuity reason-code precedence can report CONTINUITY_FAVORED for a current exercise even when plateau, failed-progression, or pain-response values demote it.

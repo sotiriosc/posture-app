@@ -1029,6 +1029,26 @@ function featureDevelopmentCells(trace: AssessmentRelevanceTrace): readonly stri
   ];
 }
 
+function featureTargetFitCell(trace: AssessmentRelevanceTrace): string {
+  if (trace.featureTargetFit.length === 0) {
+    return "not_applicable";
+  }
+
+  return trace.featureTargetFit
+    .map(
+      (targetFit) =>
+        [
+          `feature=${targetFit.assessmentFeature}`,
+          `expression=${targetFit.candidateFeatureLevel}`,
+          `match=${targetFit.featureMatch}`,
+          `relevance=${targetFit.relevance}`,
+          `influence=${formatNumber(targetFit.influence)}`,
+          `source=${targetFit.source}`,
+        ].join("; "),
+    )
+    .join(", ");
+}
+
 function taskDemandCell(trace: AssessmentRelevanceTrace): string {
   return [
     formatNullable(trace.demandCapability.candidateDemand),
@@ -1066,21 +1086,26 @@ function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 
         "Feature Emphasis",
         "Feature Review",
         "Feature Match",
+        "TARGET FIT",
         "Relationship",
         "Task Demand",
         "Task Capability",
         "Task Match",
-        "Feature Challenge",
-        "Feature Cap Prior",
-        "Feature Cap Evidence",
-        "Feature Dev Match",
+        "CHALLENGE Demand",
+        "CHALLENGE Cap Prior",
+        "CHALLENGE Cap Evidence",
+        "CHALLENGE Match",
         "Severity",
-        "Bounded",
+        "TOTAL Bounded",
+        "TOTAL Assessment",
+        "TOTAL Alignment",
+        "CHALLENGE Influence",
       ],
       traces.map((trace) => [
         trace.signalId,
         trace.relevance,
         ...featureCells(trace),
+        featureTargetFitCell(trace),
         trace.relationship,
         taskDemandCell(trace),
         taskCapabilityCell(trace),
@@ -1088,12 +1113,23 @@ function printAssessmentTraces(result: CandidateRankingResult, candidateCount = 
         ...featureDevelopmentCells(trace),
         `${trace.signalInterpretation.severity}/${trace.signalInterpretation.severitySource}`,
         formatNumber(trace.boundedInfluence),
+        formatNumber(trace.assessmentContribution),
+        formatNumber(trace.alignmentContribution),
+        formatNumber(trace.developmentalChallengeInfluence),
       ]),
     );
 
     traces.forEach((trace) => {
       console.log(`  ${trace.signalId} history: ${historySummary(trace)}`);
       console.log(`  ${trace.signalId} demand-reduction: ${demandReductionSummary(trace)}`);
+      if (trace.featureTargetFit.length > 0) {
+        const evidence = trace.featureTargetFit
+          .map((targetFit) => targetFit.evidence.join(" "))
+          .join(" ");
+        console.log(
+          `  ${trace.signalId} target-fit: influence=${formatNumber(trace.featureTargetFitInfluence)}; ${evidence}`,
+        );
+      }
     });
   });
 }
