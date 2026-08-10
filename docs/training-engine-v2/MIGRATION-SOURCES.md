@@ -9,8 +9,10 @@ The existing engine is a source of product knowledge, not a source architecture 
 - Exercise identities that remain meaningful.
 - Movement/muscle/equipment labels after normalization.
 - Coaching cues that describe real execution.
-- Known regression/progression relationships after review.
+- Same-exercise progression axes after review.
+- Cross-exercise transition facts after review, without automatic selection effect.
 - Known equipment setup facts.
+- Reviewed mechanics knowledge normalized into explicit support, demand, scapular-feature, and resistance/path fields.
 
 ## REIMPLEMENT_FROM_PRINCIPLE
 
@@ -38,6 +40,8 @@ The existing engine is a source of product knowledge, not a source architecture 
 - UI/storage/auth/billing/account logic.
 - Large legacy generator modules copied wholesale.
 - Any behavior where beginner implies machine-only or advanced implies hardest-is-best.
+- Runtime biomechanics inferred from exercise IDs, names, summaries, labels, equipment prose, or coaching cues.
+- Legacy progression labels treated as automatic replacement decisions.
 
 ## NEEDS_REVIEW
 
@@ -47,4 +51,4 @@ The existing engine is a source of product knowledge, not a source architecture 
 - Appropriate weekly volume and exposure targets.
 - Fatigue and recovery assumptions.
 - Support reduction criteria.
-- When to progress prescription versus replace an exercise.
+- When to progress the same exercise's prescription versus choose a reviewed cross-exercise transition.

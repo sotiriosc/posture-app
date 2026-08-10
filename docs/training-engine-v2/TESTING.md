@@ -2,9 +2,9 @@
 
 `ENGINE_V2_BLUEPRINT.md` is authoritative.
 
-## Foundation Tests
+## Current Test Responsibilities
 
-The initial tests are small and readable. They cover:
+Tests should remain small and readable at the component boundary. Current responsibilities include:
 
 - reference exercise validation;
 - equipment capability representation;
@@ -20,6 +20,12 @@ The initial tests are small and readable. They cover:
 - modular component boundaries;
 - structured reason codes;
 - assessment/alignment influence;
+- truthful assessment relevance and feature matching;
+- feature target fit independent of feature challenge;
+- explicit unknown/`not_modeled`/`not_applicable` behavior;
+- deterministic history recency through `CandidateEvaluationContext.asOf`;
+- source scans that prohibit hidden wall-clock decisions;
+- same-exercise progression versus observational cross-exercise transitions;
 - pipeline snapshots for bug localization.
 
 ## Current Command
@@ -47,6 +53,12 @@ The intended hierarchy is:
 
 Lower-level component failures should be diagnosable without relying on full-program fuzz tests.
 
+## Candidate Intelligence Readiness
+
+Green build and test results are necessary but insufficient to begin Session Composer. Readiness also requires deterministic Candidate Lab review, legal-pool inspection, reason-code and trace audits, tie review, uncertainty review, exercise-science judgment, and explicit acceptance of the permanent gate in `ENGINE_V2_BLUEPRINT.md`.
+
+Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
+
 ## Bug Localization
 
-Tests should preserve enough pipeline context to identify whether a failure came from input interpretation, assessment interpretation, phase intent, session intent, eligibility, candidate scoring, session composition, week composition, prescription, progression, or validation.
+Tests should preserve enough pipeline context to identify whether a failure came from input interpretation, assessment interpretation, phase intent, session intent, eligibility, candidate scoring, session composition, week composition, prescription, same-exercise progression, cross-exercise transition, or validation.

@@ -2,9 +2,9 @@
 
 `ENGINE_V2_BLUEPRINT.md` is authoritative.
 
-## Foundation Contract
+## Inspectable Contract
 
-The foundation does not implement final candidate ranking behavior. It defines an inspectable scoring contract:
+Candidate Intelligence implements an inspectable weighted ranking contract:
 
 ```ts
 ScoreComponent {
@@ -25,7 +25,7 @@ ScoreComponent {
 
 `value` and `rawValue` are the raw component score after component-local clamping. `weight` is the normalized aggregate weight used to reproduce the final score. `unnormalizedWeight` is the configured family weight before normalization. `weightedContribution` is `rawValue * weight`.
 
-`CandidateScore` is a named list of components plus an aggregate. Foundation tests still cover the original placeholder aggregate; Candidate Intelligence uses `weighted_mean_candidate_intelligence_v0`. The aggregate exposes `totalWeight`, `unroundedValue`, and `weightNormalization` so score reports do not require implicit math.
+`CandidateScore` is a named list of components plus an aggregate. The package retains its original foundation placeholder composer for focused contract coverage; the Candidate Intelligence ranker uses `weighted_mean_candidate_intelligence_v0`. The aggregate exposes `totalWeight`, `unroundedValue`, and `weightNormalization` so score reports do not require implicit math.
 
 ## Component Families
 
@@ -148,7 +148,7 @@ AssessmentRelevanceTrace {
     deficitMagnitude
     evidence
   }
-  featureMatches {
+  featureMatches: AssessmentFeatureMatchTrace[] {
     assessmentFeature
     assessmentFeatureSource: explicit | normalized_from_signal | unknown
     candidateFeature
@@ -158,7 +158,23 @@ AssessmentRelevanceTrace {
     featureMatch: strong | moderate | weak | low_expression | conflict | unknown
     featureReason
   }
-  featureDevelopment {
+  featureTargetFit: AssessmentFeatureTargetFitTrace[] {
+    assessmentFeature
+    assessmentFeatureSource
+    candidateFeature
+    candidateFeatureLevel
+    candidateFeatureReviewStatus
+    candidateFeatureProfileReviewStatus
+    featureMatch
+    relevance
+    confidence
+    priority
+    influence
+    source: scapular_feature_match
+    evidence
+  }
+  featureTargetFitInfluence
+  featureDevelopment: AssessmentFeatureDevelopmentTrace[] {
     assessmentFeature
     featureMatch
     featureEmphasisLevel
@@ -177,8 +193,18 @@ AssessmentRelevanceTrace {
     featureDemandCapabilityMatch
     evidence
   }
+  developmentalChallengeInfluence
   relationship
   relationshipReason
+  demandReductionContext {
+    relevant
+    matchedPainConcernIds
+    matchedHistoricalSensitivityIds
+    matchedFatigueMovementRoles
+    systemicFatigueUsed
+    globalPainAwareGoalUsed
+    evidence
+  }
   demandCapability {
     dimension
     candidateDemand // number when known, null when unknown
@@ -195,6 +221,18 @@ AssessmentRelevanceTrace {
       estimateSource
       contributingSources
       evidenceQuality
+      historyEvidence {
+        matchingEventCount
+        positiveEvidenceCount
+        negativeEvidenceCount
+        staleEventCount
+        noRecencyEventCount
+        contradiction
+        progressionStateCorroborates
+        adjustment
+        evidenceQuality
+        evidence
+      }
       evidence
     }
     phaseIntentDemand
@@ -213,6 +251,21 @@ AssessmentRelevanceTrace {
 }
 ```
 
+The settled per-signal influence limits are:
+
+```ts
+FEATURE_TARGET_FIT_MAX = 0.600
+ASSESSMENT_INFLUENCE_MAX = 1.200
+```
+
+Each child target influence is `FEATURE_TARGET_FIT_MAX * relevanceScalar * confidenceScalar * priorityScalar`, clamped to the feature-target range. Overall candidate relevance `none` gates child relevance to `none`; otherwise feature matches map `strong -> high`, `moderate -> moderate`, `weak -> low`, and `low_expression | conflict | unknown -> none`. Candidate mechanics review state is already reflected when the feature match is formed. Lack of expression therefore receives no target-fit reward and no automatic punishment; actual conflicting mechanics remain a separate future assertion.
+
+`featureTargetFitInfluence` is non-negative, assessment-only influence. `developmentalChallengeInfluence` is the separately calculated demand/capability relationship influence. The raw assessment contribution receives all target fit plus the assessment share of developmental influence; when alignment is eligible, developmental influence may be split between `assessmentContribution` and `alignmentContribution`. Target fit itself is never routed to alignment.
+
+The combined assessment and alignment influence for one signal is clamped once to `ASSESSMENT_INFLUENCE_MAX`. If clamping is required, receiver contributions are scaled proportionally so `assessmentContribution + alignmentContribution` reproduces `boundedInfluence`.
+
+For a signal with multiple feature matches, only its strongest feature target influence enters the budget. Sibling feature matches do not stack. Different assessment targets remain independent signals. Generic non-feature scapular signals do not receive feature target fit and preserve the existing developmental demand/capability channel.
+
 `assessmentFit` owns general compatibility with normalized assessment findings. `alignmentFit` owns the specific alignment/control effect for the candidate. When the same signal contributes to both, its single bounded influence is split between the two components rather than added twice.
 
 Assessment relevance and assessment relationship are intentionally separate:
@@ -221,7 +274,7 @@ Assessment relevance and assessment relationship are intentionally separate:
 - relationship answers whether the candidate supports control, reduces excess demand, provides appropriate exposure, develops the priority, conflicts with the priority, exceeds current capability, or remains neutral;
 - demand/capability compares candidate demand, estimated current capability, and phase intent demand by dimension instead of using a single generic difficulty number;
 - confidence scales trust in the influence budget, not estimated physical capability;
-- severity/deficit magnitude is represented separately from confidence and priority. Existing fixtures without severity use a documented conservative `unknown` default.
+- severity/deficit magnitude is represented separately from confidence and priority. Existing fixtures without severity use a documented conservative `unknown` default;
 - capability provenance is visible through `estimateSource`, `contributingSources`, and `evidenceQuality`; movement-role-matched training history can contribute inferred capability evidence, while low-quality capability evidence limits bounded assessment/alignment influence;
 - history recency is deterministic: `CandidateRequest.evaluationContext.asOf` is the only evaluation time used by the engine. If `asOf` is absent or unparsable, timestamped history falls back to `no_recency` rather than reading the system clock;
 - unknown exercise mechanics use `candidateDemand: null` and `match: not_applicable`, so unknown does not silently become zero demand, easy, safe, ideal, or inappropriate.
@@ -245,9 +298,11 @@ Feature-specific scapular findings use a stricter order:
 3. normalized feature extraction;
 4. broad scapular/upper-body domain check;
 5. candidate-specific feature matching from `exercise.mechanics.scapularMechanics`;
-6. overall scapular task demand/capability context;
-7. feature challenge/capability relationship when feature challenge is explicitly modeled;
-8. bounded influence.
+6. feature target-fit trace and strongest per-signal target influence;
+7. overall scapular task demand/capability context;
+8. feature development/challenge trace, with a relationship only when feature challenge is explicitly modeled;
+9. combined bounded influence;
+10. assessment/alignment score receivers.
 
 That order prevents `movementRole: "scapular_control"` from short-circuiting candidate-specific mechanics when a signal also carries feature-specific meaning.
 
@@ -270,16 +325,19 @@ Candidate feature matching reads the existing scapular mechanics fields:
 | `external_rotation_or_cuff_control` | `scapularMechanics.externalRotationContribution` |
 | `loaded_scapular_stability` | `scapularMechanics.loadedScapularControl` |
 
-Feature match determines feature relevance, not automatic score direction. The current `scapularMechanics` fields are treated as feature emphasis/expression metadata. They answer whether the exercise meaningfully exposes serratus/protraction, upward rotation, retraction, cuff/external rotation, or loaded scapular stability. They do not automatically define the difficulty of executing that feature.
+Feature match determines feature relevance and can produce non-negative target-fit influence; it does not automatically define developmental score direction. The current `scapularMechanics` fields are feature emphasis/expression metadata. They answer whether the exercise meaningfully exposes serratus/protraction, upward rotation, retraction, cuff/external rotation, or loaded scapular stability. They do not define the difficulty of executing that feature.
 
-Feature-specific traces now separate four concepts:
+Feature-specific traces now separate five concepts:
 
 - `featureEmphasisLevel` says how much the exercise expresses the assessment feature.
+- `featureTargetFit` says how strongly that truthful expression makes the legal exercise a relevant assessment target. It is independent of severity, generic task demand, athlete capability, movement-role history, phase prior, and feature challenge.
 - `overallTaskDemand` keeps generic `mechanics.demands.scapular_control` visible as the task's overall control requirement.
 - `featureChallengeDemand` is the difficulty of executing that exact feature in the exercise. It is currently `unknown/not_modeled` unless future reviewed metadata explicitly provides it.
 - `featureCapabilityEstimate` scopes assessment severity to the feature-specific capability prior rather than reducing broad/global scapular task capability.
 
-If feature relevance is strong/moderate/low but `featureChallengeDemand` is unknown, the feature demand/capability match remains `not_applicable`; the developmental relationship remains neutral; and bounded influence is zero. Low feature expression is labeled `low_expression`, not `conflict`. `conflict` is reserved for actual opposing or contraindicating mechanics if those are modeled later. Unknown or `needs_review` feature metadata is traced explicitly and is not promoted into high-confidence certainty.
+If feature relevance is strong/moderate/low but `featureChallengeDemand` is unknown, the feature demand/capability match remains `not_applicable`, the developmental relationship remains neutral, and `developmentalChallengeInfluence` is zero. A positive `featureTargetFitInfluence` may still flow to `assessmentContribution`; therefore `boundedInfluence` is not required to be zero. Low feature expression is labeled `low_expression`, not `conflict`. `conflict` is reserved for actual opposing or contraindicating mechanics if those are modeled later. Unknown or `needs_review` feature metadata is traced explicitly and is not promoted into high-confidence certainty.
+
+For one signal, the strongest child `AssessmentFeatureTargetFitTrace` determines `featureTargetFitInfluence`; child target fits are not summed. Separately supplied assessment signals remain independently traceable. Generic signals with no normalized feature do not enter feature target fit and preserve existing generic assessment behavior.
 
 Feature capability provenance is deliberately stricter than overall task capability provenance. Overall scapular task capability may use movement-role-matched training history. Feature capability does not, because current `ExerciseHistoryEvent` values carry only `movementRole` and not normalized assessment features. Until feature-aware history exists at that boundary, feature-specific history support is traced as `unavailable_not_modeled`; generic `scapular_control` history cannot become retraction, serratus, upward-rotation, cuff, or loaded-scapular-stability evidence. The feature capability estimate is therefore a weak `phase_experience_default` prior unless the assessment signal supplies feature-specific severity, which is traced through `featureSpecificEvidenceSources`. Default conservative unknown severity is not feature-specific evidence and does not reduce the feature capability prior.
 
@@ -291,6 +349,7 @@ Assessment semantics are split by training responsibility:
 | --- | --- |
 | `candidate/scoring/assessment/classifySignal.ts` | Classifies assessment signals into trunk, scapular, lower-body, or fallback demand dimensions. |
 | `candidate/scoring/assessment/features.ts` | Normalizes assessment features and matches them against candidate scapular mechanics. |
+| `candidate/scoring/assessment/featureTargetFit.ts` | Converts truthful feature matches into non-negative, assessment-only target-fit traces and selects the strongest target influence per signal. |
 | `candidate/scoring/assessment/featureDevelopment.ts` | Separates feature emphasis, overall task demand, feature challenge demand, and feature-scoped capability in traces. |
 | `candidate/scoring/assessment/specificity.ts` | Calculates candidate/request specificity after training-role truth is established. |
 | `candidate/scoring/assessment/relevance.ts` | Decides whether a signal is relevant to this candidate in this requested role. |
@@ -298,7 +357,7 @@ Assessment semantics are split by training responsibility:
 | `candidate/scoring/assessment/athleteCapability.ts` | Estimates current capability from phase, weak experience prior, severity, pain context, and movement-role-matched history while exposing source/evidence quality. |
 | `candidate/scoring/assessment/demandCapabilityMatch.ts` | Compares candidate demand, capability, and phase intent. |
 | `candidate/scoring/assessment/developmentalRelationship.ts` | Interprets below/match/challenge/exceeds states by section, role, pain, fatigue, and goal context. |
-| `candidate/scoring/assessment/influenceBudget.ts` | Applies relevance, confidence, priority, relationship, and capability evidence quality to bounded assessment/alignment contributions. |
+| `candidate/scoring/assessment/influenceBudget.ts` | Combines target fit with developmental challenge influence, routes contributions to assessment/alignment receivers, and enforces the shared bound. |
 | `candidate/scoring/assessment/trace.ts` | Assembles the developer-facing trace. |
 | `candidate/scoring/assessmentRelevance.ts` | Thin orchestrator retained for existing imports. |
 
@@ -312,7 +371,7 @@ Mechanical truth lives in `ExerciseDefinition.mechanics`:
 - independent demand annotations for `trunk_control`, `scapular_control`, `stability`, `coordination`, `range`, and `joint_control`;
 - optional `scapularMechanics` annotations for serratus contribution, upward rotation, retraction, external rotation, loaded scapular control, and preparation suitability.
 
-Candidate scoring does not infer support by searching summary, equipment labels, or coaching text. Unknown mechanics remain `unknown` with `needs_review` status.
+Candidate scoring does not infer support, resistance path, demand, laterality, or assessment-feature expression by searching exercise ID, name, summary, labels, equipment prose, or coaching cues. Structured metadata drives behavior. Unknown mechanics remain `unknown` with `needs_review` status.
 
 Resistance/path mechanics are observational selection knowledge, not a generic score bonus. They answer what constrains the resistance path, how much trajectory freedom exists, how adjustable the line of pull is, whether the exercise is linked/independent bilateral or unilateral, and whether fit depends on machine or setup geometry. They do not duplicate support, trunk demand, stability, coordination, loadability, fatigue, or joint-control fields. Current ranking only changes when existing request signals already justify it, such as hard equipment eligibility, pain/stress overlap, exercise-specific continuity, or exercise-specific history.
 
@@ -323,6 +382,8 @@ Same-exercise progression is not exercise replacement.
 `ExerciseProgressionProfile.progressionAxes` answers how the same exercise can advance while preserving identity, such as load, reps, sets, range, tempo, support reduction, stability, coordination, or complexity. `progression_value` scores this same-exercise progression runway and readiness signals such as `readyToProgress`, stalled state, or failed progression.
 
 Cross-exercise replacement knowledge lives in `transitionRelationships`. A transition can be developmental, context-dependent, questionable, or needs-review, but it never automatically selects the target, boosts the target, penalizes the source, bypasses hard eligibility, or bypasses pain constraints at Candidate Intelligence scope.
+
+`transitionComparison.ts` exposes observational deltas for movement roles, muscles, support, resistance path, trunk/stability/coordination demand, loadability/loading potential, equipment, and assessment-feature expression. `ExerciseTransitionTrace.automaticSelectionEffect` is `none`; the trace describes a possible transition rather than making the replacement decision.
 
 Productive continuity should generally mean keep the exercise and progress prescription before considering replacement. Replacement requires a real signal such as pain response, blocked exercise, failed progression, plateau, equipment change, insufficient stimulus runway, poor exercise response, skill-development intent, or explicit preference.
 
