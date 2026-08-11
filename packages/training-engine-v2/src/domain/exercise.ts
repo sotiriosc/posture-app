@@ -15,6 +15,7 @@ export type ExerciseFamily =
   | "mobility_preparation"
   | "scapular_preparation"
   | "core_control"
+  | "carry_load"
   | "squat_pattern"
   | "hinge_pattern"
   | "single_leg_pattern"

@@ -1,6 +1,11 @@
 import { ASSESSMENT_FEATURES, ASSESSMENT_SIGNAL_TYPES } from "./domain/assessment";
 import type { AssessmentSignal } from "./domain/assessment";
 import {
+  MACHINE_IDS,
+  type EquipmentCapabilities,
+  type MachineId,
+} from "./domain/equipment";
+import {
   TRUNK_FUNCTION_EVIDENCE_SOURCES,
   TRUNK_FUNCTION_LEVELS,
   TRUNK_MECHANICS_FUNCTIONS,
@@ -257,6 +262,97 @@ export function validateExerciseCatalog(exercises: readonly ExerciseDefinition[]
   return findings;
 }
 
+export function validateEquipmentCapabilities(
+  equipment: EquipmentCapabilities,
+  targetId?: string,
+): readonly ValidationFinding[] {
+  const findings: ValidationFinding[] = [];
+
+  if (
+    equipment.trainingSpace.loadedGait.available &&
+    !equipment.trainingSpace.stableLoadedStandingSpace
+  ) {
+    findings.push(
+      finding(
+        "error",
+        "loaded_gait_requires_stable_loaded_standing_space",
+        "Loaded-gait availability is inconsistent when stable loaded standing space is unavailable.",
+        targetId,
+      ),
+    );
+  }
+
+  const straightLineMeters =
+    equipment.trainingSpace.loadedGait.straightLineMeters;
+  if (
+    straightLineMeters !== undefined &&
+    (!Number.isFinite(straightLineMeters) || straightLineMeters <= 0)
+  ) {
+    findings.push(
+      finding(
+        "error",
+        "invalid_loaded_gait_straight_line_distance",
+        "Known loaded-gait straight-line distance must be a positive finite number.",
+        targetId,
+      ),
+    );
+  }
+
+  if (equipment.dumbbells.pairAvailable && !equipment.dumbbells.available) {
+    findings.push(
+      finding(
+        "error",
+        "dumbbell_pair_requires_dumbbell_availability",
+        "Dumbbell-pair availability is inconsistent when generic dumbbell availability is false.",
+        targetId,
+      ),
+    );
+  }
+
+  if (
+    equipment.dumbbells.maxPairWeightKg !== undefined &&
+    !equipment.dumbbells.pairAvailable
+  ) {
+    findings.push(
+      finding(
+        "error",
+        "dumbbell_pair_load_requires_pair_availability",
+        "A maximum pair weight cannot be supplied when no usable dumbbell pair is available.",
+        targetId,
+      ),
+    );
+  }
+
+  if (
+    equipment.cables.availableHeights.length > 0 &&
+    !equipment.cables.available
+  ) {
+    findings.push(
+      finding(
+        "error",
+        "cable_heights_require_cable_availability",
+        "Cable attachment heights cannot be available when the cable stack is unavailable.",
+        targetId,
+      ),
+    );
+  }
+
+  for (const machineId of equipment.machines.availableMachineIds) {
+    if (!MACHINE_IDS.includes(machineId as MachineId)) {
+      findings.push(
+        finding(
+          "error",
+          "unknown_machine_id",
+          `Unknown machine identity: ${machineId}.`,
+          targetId,
+        ),
+      );
+    }
+  }
+
+  return findings;
+}
+
 export function validateAssessmentSignal(signal: AssessmentSignal): readonly ValidationFinding[] {
   const findings: ValidationFinding[] = [];
 
@@ -293,6 +389,7 @@ export function validateTrainingInput(input: TrainingEngineInput): readonly Vali
   }
 
   findings.push(...input.assessment.signals.flatMap(validateAssessmentSignal));
+  findings.push(...validateEquipmentCapabilities(input.equipment, input.athlete.id));
 
   return findings;
 }

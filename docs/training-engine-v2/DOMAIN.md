@@ -70,7 +70,11 @@ Stress-overlap breadth and reported pain intensity remain separate. Candidate In
 
 ## Equipment
 
-Equipment is capability-based. It can distinguish bench type, dumbbell availability and load range, barbell and rack availability, cable availability, machine IDs, band type, anchor height, bodyweight space, pull-up bar, and support surfaces.
+Equipment is capability-based. It distinguishes bench type, one-or-more dumbbells versus a usable pair, dumbbell load range, barbell and rack availability, cable availability and explicit low/mid/high cable attachment heights, exact machine IDs, band type and independent band-anchor heights, bodyweight space, pull-up bar, support surfaces, stable loaded-standing space, and loaded-gait space.
+
+`bodyweight.floorSpace`, `trainingSpace.stableLoadedStandingSpace`, and `trainingSpace.loadedGait.available` are separate facts. Neither a broad environment label nor ordinary floor space manufactures loaded-standing or loaded-gait truth. Loaded gait may additionally expose straight-line distance, turning availability, and overhead clearance; omitted optional detail remains unknown. Loaded gait marked available while stable loaded standing is false is preserved as inconsistent input and reported by validation rather than silently normalized.
+
+`CableCapability.adjustableHeight` describes the stack characteristic but does not prove a usable attachment height. `availableHeights` is the authority for `cable_anchor_low`, `cable_anchor_mid`, and `cable_anchor_high`; band-anchor keys remain separate. `MachineId.abdominal_crunch`, `dumbbell_pair`, and `ExerciseFamily.carry_load` exist for future catalog truth, but no current exercise consumes them.
 
 The model is intentionally extensible without attempting a complete commercial-gym catalog.
 

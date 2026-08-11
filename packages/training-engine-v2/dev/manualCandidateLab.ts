@@ -173,6 +173,7 @@ function withoutCable(equipment: EquipmentCapabilities): EquipmentCapabilities {
     cables: {
       available: false,
       adjustableHeight: false,
+      availableHeights: [],
     },
   };
 }

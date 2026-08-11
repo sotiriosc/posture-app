@@ -26,7 +26,7 @@ export const PROPOSED_TRUNK_CARRY_CANDIDATE_IDS = [
   "stability-ball-rollout",
   "ab-wheel-rollout",
   "barbell-rollout",
-  "side-plank",
+  "forearm-side-plank",
   "bent-knee-side-plank",
   "suitcase-hold",
   "suitcase-carry",
@@ -35,7 +35,7 @@ export const PROPOSED_TRUNK_CARRY_CANDIDATE_IDS = [
   "reverse-crunch",
   "hanging-knee-raise",
   "standing-cable-chop",
-  "half-kneeling-cable-chop",
+  "half-kneeling-high-to-low-cable-chop",
   "band-chop",
   "cable-lift",
   "farmer-carry",
@@ -52,9 +52,9 @@ export type ProposedTrunkCarryCandidateId =
 
 export const SELECTED_MINIMAL_TRUNK_CARRY_TRANCHE = [
   "forearm-plank",
-  "side-plank",
+  "forearm-side-plank",
   "machine-abdominal-crunch",
-  "half-kneeling-cable-chop",
+  "half-kneeling-high-to-low-cable-chop",
   "farmer-carry",
   "suitcase-carry",
   "wall-supported-suitcase-march",
@@ -857,7 +857,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
       "Preserve the rollout concept only after equipment, path, prerequisites, and stress are normalized.",
   },
   {
-    id: "side-plank",
+    id: "forearm-side-plank",
     displayName: "Forearm Side Plank",
     exerciseFamily: "core_control",
     movementRoles: ["anti_lateral_flexion_core"],
@@ -880,7 +880,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
       "Forearm and lateral foot or knee support on floor; bent-knee support is a prescription variant, not a second exercise.",
     resistancePathMechanics:
       "Bodyweight isometric lateral support; no implement path.",
-    genericDemands: demandSet("side-plank", {
+    genericDemands: demandSet("forearm-side-plank", {
       trunk_control: "high",
       scapular_control: "moderate",
       stability: "high",
@@ -888,7 +888,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
       range: "low",
       joint_control: "moderate",
     }),
-    trunkMechanicsProfile: trunkProfile("side-plank", {
+    trunkMechanicsProfile: trunkProfile("forearm-side-plank", {
       antiLateralFlexionContribution: {
         level: "high",
         evidenceBasis: [
@@ -1026,7 +1026,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
     progressionAxes: ["hold_duration", "lever", "support_reduction", "side"],
     possibleTransitions: [
       transition(
-        "side-plank",
+        "forearm-side-plank",
         "Progress lever inside one Side Plank definition when readiness is earned.",
       ),
     ],
@@ -1826,7 +1826,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
     progressionAxes: ["load", "reps", "sets", "range", "tempo", "stance"],
     possibleTransitions: [
       transition(
-        "half-kneeling-cable-chop",
+        "half-kneeling-high-to-low-cable-chop",
         "Use only when stance/pelvis-control context justifies the setup change.",
       ),
     ],
@@ -1878,8 +1878,8 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
       "Preserve controlled rotation only after separating it from Pallof anti-rotation and fixing stance/pelvis/path truth.",
   },
   {
-    id: "half-kneeling-cable-chop",
-    displayName: "Half-Kneeling Cable Chop",
+    id: "half-kneeling-high-to-low-cable-chop",
+    displayName: "Half-Kneeling High-to-Low Cable Chop",
     exerciseFamily: "core_control",
     movementRoles: ["trunk_rotation"],
     trainingRoles: ["activation", "hypertrophy_accessory"],
@@ -1912,7 +1912,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
       "Half-kneeling floor support reduces stance variability while leaving trunk rotation intentional.",
     resistancePathMechanics:
       "High-to-low adjustable cable path with defined pelvis policy and per-side execution.",
-    genericDemands: demandSet("half-kneeling-cable-chop", {
+    genericDemands: demandSet("half-kneeling-high-to-low-cable-chop", {
       trunk_control: "high",
       scapular_control: "moderate",
       stability: "moderate",
@@ -1920,7 +1920,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
       range: "high",
       joint_control: "high",
     }),
-    trunkMechanicsProfile: trunkProfile("half-kneeling-cable-chop", {
+    trunkMechanicsProfile: trunkProfile("half-kneeling-high-to-low-cable-chop", {
       controlledRotationContribution: {
         level: "high",
         evidenceBasis: [
@@ -2062,7 +2062,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
     progressionAxes: ["band_tension", "reps", "sets", "range", "tempo", "stance"],
     possibleTransitions: [
       transition(
-        "half-kneeling-cable-chop",
+        "half-kneeling-high-to-low-cable-chop",
         "Only for a real path, loadability, stance, or equipment reason.",
       ),
     ],
@@ -2161,7 +2161,7 @@ const CANDIDATES: readonly ProposedExerciseContract[] = [
     progressionAxes: ["load", "reps", "sets", "range", "tempo", "stance_control"],
     possibleTransitions: [
       transition(
-        "half-kneeling-cable-chop",
+        "half-kneeling-high-to-low-cable-chop",
         "Treat as a directional stimulus shift only when the request and reviewed path evidence justify it.",
       ),
     ],
@@ -3297,7 +3297,7 @@ const REQUIRED_GAP_COVERAGE: readonly RequiredGapCoverage[] = [
   {
     gap: "anti-lateral flexion",
     status: "ADDRESSED_BY_SELECTED_TRANCHE",
-    candidates: ["side-plank", "suitcase-carry", "wall-supported-suitcase-march"],
+    candidates: ["forearm-side-plank", "suitcase-carry", "wall-supported-suitcase-march"],
     finding:
       "The tranche provides one no-carry floor option, one unsupported loaded-gait option, and one supported stationary loaded-march option.",
   },
@@ -3311,9 +3311,9 @@ const REQUIRED_GAP_COVERAGE: readonly RequiredGapCoverage[] = [
   {
     gap: "controlled trunk rotation",
     status: "ADDRESSED_BY_SELECTED_TRANCHE",
-    candidates: ["half-kneeling-cable-chop"],
+    candidates: ["half-kneeling-high-to-low-cable-chop"],
     finding:
-      "Half-Kneeling Cable Chop is a single-candidate bootstrap with a constrained stance; it remains distinct from Pallof anti-rotation.",
+      "Half-Kneeling High-to-Low Cable Chop is a single-candidate bootstrap with a constrained stance; it remains distinct from Pallof anti-rotation.",
   },
   {
     gap: "loaded bracing as intentional selection purpose",
@@ -3365,7 +3365,7 @@ const SELECTED_RATIONALES: readonly SelectedCandidateRationale[] = [
     humanReviewRequired: "anti-extension profile, shoulder-support stress, prerequisites, and phase contexts",
   },
   {
-    candidateId: "side-plank",
+    candidateId: "forearm-side-plank",
     whyIncluded: "Provides direct lateral trunk control without grip, load, or walking space.",
     gapClosed: "Anti-lateral-flexion role plus a bodyweight alternative to suitcase loading.",
     competingOptionDeferred:
@@ -3390,7 +3390,7 @@ const SELECTED_RATIONALES: readonly SelectedCandidateRationale[] = [
     humanReviewRequired: "machine identity/fit, controlled-flexion mechanics, load/range, and accessory context",
   },
   {
-    candidateId: "half-kneeling-cable-chop",
+    candidateId: "half-kneeling-high-to-low-cable-chop",
     whyIncluded: "Creates the clearest first controlled-rotation definition by constraining stance variability.",
     gapClosed: "Intentional controlled trunk rotation, separate from resisting rotation.",
     competingOptionDeferred:
@@ -3446,7 +3446,7 @@ const EQUIPMENT_AUDIT: readonly EquipmentAuditFinding[] = [
   {
     capability: "bodyweight / floor",
     currentSupport: "bodyweight and floor_space are explicit",
-    selectedCandidates: ["forearm-plank", "side-plank"],
+    selectedCandidates: ["forearm-plank", "forearm-side-plank"],
     finding: "Sufficient for stationary floor legality, not for lever/side/hold prescription.",
     contractAction: "Keep equipment capability; add prescription semantics rather than new near-duplicate exercises.",
   },
@@ -3467,7 +3467,7 @@ const EQUIPMENT_AUDIT: readonly EquipmentAuditFinding[] = [
   {
     capability: "cable anchor height",
     currentSupport: "CableCapability.adjustableHeight exists but EquipmentRequirement exposes only cable_stack",
-    selectedCandidates: ["half-kneeling-cable-chop"],
+    selectedCandidates: ["half-kneeling-high-to-low-cable-chop"],
     finding: "A high cable position cannot be hard-verified today.",
     contractAction: "Add cable_anchor_high/low requirement semantics or an equivalent setup capability.",
   },
@@ -3549,7 +3549,7 @@ const STRESS_VOCABULARY_AUDIT: readonly StressVocabularyFinding[] = [
 const CANDIDATE_POOL_ADEQUACY: readonly CandidatePoolAdequacy[] = [
   {
     movementRole: "anti_lateral_flexion_core",
-    prospectiveCandidates: ["side-plank", "suitcase-carry", "wall-supported-suitcase-march"],
+    prospectiveCandidates: ["forearm-side-plank", "suitcase-carry", "wall-supported-suitcase-march"],
     classification: "MINIMAL_COMPARABLE_POOL",
     limitation:
       "The options differ meaningfully by load, gait, support, grip, and space, but the two suitcase rows share one family.",
@@ -3562,7 +3562,7 @@ const CANDIDATE_POOL_ADEQUACY: readonly CandidatePoolAdequacy[] = [
   },
   {
     movementRole: "trunk_rotation",
-    prospectiveCandidates: ["half-kneeling-cable-chop"],
+    prospectiveCandidates: ["half-kneeling-high-to-low-cable-chop"],
     classification: "SINGLE_CANDIDATE_BOOTSTRAP",
     limitation: "No first-tranche band/home alternative; loaded-rotation stress and feature challenge remain unmodeled.",
   },
@@ -3586,9 +3586,9 @@ const ASSESSMENT_HANDOFF: readonly AssessmentHandoff[] = [
     feature: "ribcage_pelvis_control",
     candidateCoverage: [
       "forearm-plank",
-      "side-plank",
+      "forearm-side-plank",
       "machine-abdominal-crunch",
-      "half-kneeling-cable-chop",
+      "half-kneeling-high-to-low-cable-chop",
     ],
     mechanicsCoverage:
       "Proposed anti-extension, anti-lateral, controlled-flexion, and controlled-rotation expression may contextualize ribcage-pelvis control after review.",
@@ -3626,7 +3626,7 @@ const ASSESSMENT_HANDOFF: readonly AssessmentHandoff[] = [
   {
     feature: "lateral_trunk_control",
     candidateCoverage: [
-      "side-plank",
+      "forearm-side-plank",
       "suitcase-carry",
       "wall-supported-suitcase-march",
     ],
@@ -3641,9 +3641,9 @@ const ASSESSMENT_HANDOFF: readonly AssessmentHandoff[] = [
   },
   {
     feature: "controlled_rotation_control",
-    candidateCoverage: ["half-kneeling-cable-chop"],
+    candidateCoverage: ["half-kneeling-high-to-low-cable-chop"],
     mechanicsCoverage:
-      "Half-Kneeling Cable Chop proposes high intentional controlled rotation and remains distinct from Pallof anti-rotation.",
+      "Half-Kneeling High-to-Low Cable Chop proposes high intentional controlled rotation and remains distinct from Pallof anti-rotation.",
     missingChallengeEvidence:
       "No reviewed challenge model covers cable load, anchor height, range, tempo, pelvis allowance, side, or stance support.",
     potentialTargetFitUse:
@@ -3674,9 +3674,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "novice bodyweight general fitness",
     statuses: {
       "forearm-plank": "CONTEXT_DEPENDENT",
-      "side-plank": "CONTEXT_DEPENDENT",
+      "forearm-side-plank": "CONTEXT_DEPENDENT",
       "machine-abdominal-crunch": "UNAVAILABLE",
-      "half-kneeling-cable-chop": "UNAVAILABLE",
+      "half-kneeling-high-to-low-cable-chop": "UNAVAILABLE",
       "farmer-carry": "UNAVAILABLE",
       "suitcase-carry": "UNAVAILABLE",
       "wall-supported-suitcase-march": "UNAVAILABLE",
@@ -3688,9 +3688,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "beginner home dumbbells",
     statuses: {
       "forearm-plank": "POTENTIALLY_LEGAL",
-      "side-plank": "CONTEXT_DEPENDENT",
+      "forearm-side-plank": "CONTEXT_DEPENDENT",
       "machine-abdominal-crunch": "UNAVAILABLE",
-      "half-kneeling-cable-chop": "UNAVAILABLE",
+      "half-kneeling-high-to-low-cable-chop": "UNAVAILABLE",
       "farmer-carry": "CONTEXT_DEPENDENT",
       "suitcase-carry": "CONTEXT_DEPENDENT",
       "wall-supported-suitcase-march": "POTENTIALLY_LEGAL",
@@ -3702,9 +3702,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "intermediate gym hypertrophy",
     statuses: {
       "forearm-plank": "POTENTIALLY_LEGAL",
-      "side-plank": "POTENTIALLY_LEGAL",
+      "forearm-side-plank": "POTENTIALLY_LEGAL",
       "machine-abdominal-crunch": "POTENTIALLY_LEGAL",
-      "half-kneeling-cable-chop": "CONTEXT_DEPENDENT",
+      "half-kneeling-high-to-low-cable-chop": "CONTEXT_DEPENDENT",
       "farmer-carry": "CONTEXT_DEPENDENT",
       "suitcase-carry": "CONTEXT_DEPENDENT",
       "wall-supported-suitcase-march": "CONTEXT_DEPENDENT",
@@ -3716,9 +3716,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "strength user with substantial compound bracing",
     statuses: {
       "forearm-plank": "CONTEXT_DEPENDENT",
-      "side-plank": "CONTEXT_DEPENDENT",
+      "forearm-side-plank": "CONTEXT_DEPENDENT",
       "machine-abdominal-crunch": "POTENTIALLY_LEGAL",
-      "half-kneeling-cable-chop": "POTENTIALLY_LEGAL",
+      "half-kneeling-high-to-low-cable-chop": "POTENTIALLY_LEGAL",
       "farmer-carry": "CONTEXT_DEPENDENT",
       "suitcase-carry": "CONTEXT_DEPENDENT",
       "wall-supported-suitcase-march": "INAPPROPRIATE_FOR_PURPOSE",
@@ -3730,9 +3730,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "posture and movement-quality user",
     statuses: {
       "forearm-plank": "CONTEXT_DEPENDENT",
-      "side-plank": "CONTEXT_DEPENDENT",
+      "forearm-side-plank": "CONTEXT_DEPENDENT",
       "machine-abdominal-crunch": "INAPPROPRIATE_FOR_PURPOSE",
-      "half-kneeling-cable-chop": "CONTEXT_DEPENDENT",
+      "half-kneeling-high-to-low-cable-chop": "CONTEXT_DEPENDENT",
       "farmer-carry": "CONTEXT_DEPENDENT",
       "suitcase-carry": "CONTEXT_DEPENDENT",
       "wall-supported-suitcase-march": "POTENTIALLY_LEGAL",
@@ -3744,9 +3744,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "pain-aware return user",
     statuses: {
       "forearm-plank": "REVIEW_REQUIRED",
-      "side-plank": "REVIEW_REQUIRED",
+      "forearm-side-plank": "REVIEW_REQUIRED",
       "machine-abdominal-crunch": "REVIEW_REQUIRED",
-      "half-kneeling-cable-chop": "REVIEW_REQUIRED",
+      "half-kneeling-high-to-low-cable-chop": "REVIEW_REQUIRED",
       "farmer-carry": "REVIEW_REQUIRED",
       "suitcase-carry": "REVIEW_REQUIRED",
       "wall-supported-suitcase-march": "CONTEXT_DEPENDENT",
@@ -3758,9 +3758,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "user with grip limitation",
     statuses: {
       "forearm-plank": "POTENTIALLY_LEGAL",
-      "side-plank": "CONTEXT_DEPENDENT",
+      "forearm-side-plank": "CONTEXT_DEPENDENT",
       "machine-abdominal-crunch": "POTENTIALLY_LEGAL",
-      "half-kneeling-cable-chop": "CONTEXT_DEPENDENT",
+      "half-kneeling-high-to-low-cable-chop": "CONTEXT_DEPENDENT",
       "farmer-carry": "INAPPROPRIATE_FOR_PURPOSE",
       "suitcase-carry": "INAPPROPRIATE_FOR_PURPOSE",
       "wall-supported-suitcase-march": "REVIEW_REQUIRED",
@@ -3772,9 +3772,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "user with shoulder limitation",
     statuses: {
       "forearm-plank": "REVIEW_REQUIRED",
-      "side-plank": "REVIEW_REQUIRED",
+      "forearm-side-plank": "REVIEW_REQUIRED",
       "machine-abdominal-crunch": "POTENTIALLY_LEGAL",
-      "half-kneeling-cable-chop": "REVIEW_REQUIRED",
+      "half-kneeling-high-to-low-cable-chop": "REVIEW_REQUIRED",
       "farmer-carry": "CONTEXT_DEPENDENT",
       "suitcase-carry": "CONTEXT_DEPENDENT",
       "wall-supported-suitcase-march": "CONTEXT_DEPENDENT",
@@ -3786,9 +3786,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "user with low-back concern",
     statuses: {
       "forearm-plank": "REVIEW_REQUIRED",
-      "side-plank": "REVIEW_REQUIRED",
+      "forearm-side-plank": "REVIEW_REQUIRED",
       "machine-abdominal-crunch": "REVIEW_REQUIRED",
-      "half-kneeling-cable-chop": "REVIEW_REQUIRED",
+      "half-kneeling-high-to-low-cable-chop": "REVIEW_REQUIRED",
       "farmer-carry": "REVIEW_REQUIRED",
       "suitcase-carry": "REVIEW_REQUIRED",
       "wall-supported-suitcase-march": "REVIEW_REQUIRED",
@@ -3800,9 +3800,9 @@ const PERSONA_REVIEW: readonly PersonaReviewRow[] = [
     persona: "user with little safe walking space",
     statuses: {
       "forearm-plank": "POTENTIALLY_LEGAL",
-      "side-plank": "POTENTIALLY_LEGAL",
+      "forearm-side-plank": "POTENTIALLY_LEGAL",
       "machine-abdominal-crunch": "POTENTIALLY_LEGAL",
-      "half-kneeling-cable-chop": "CONTEXT_DEPENDENT",
+      "half-kneeling-high-to-low-cable-chop": "CONTEXT_DEPENDENT",
       "farmer-carry": "UNAVAILABLE",
       "suitcase-carry": "UNAVAILABLE",
       "wall-supported-suitcase-march": "POTENTIALLY_LEGAL",
@@ -3818,7 +3818,7 @@ const ROLE_MECHANICS_DOCTRINE = [
   "Side Plank proposes anti_lateral_flexion_core without carry, loaded_bracing, or gait selection roles.",
   "Farmer Carry proposes carry and loaded_bracing roles; bilateral loading may express anti-lateral control without granting an anti_lateral_flexion_core role.",
   "Suitcase Carry proposes carry, anti_lateral_flexion_core, and loaded_bracing only as explicit owner-review items, not as inferred consequences of its mechanics.",
-  "Half-Kneeling Cable Chop proposes trunk_rotation and controlled rotation; Pallof Press remains anti_rotation_core with no controlled-rotation equivalence.",
+  "Half-Kneeling High-to-Low Cable Chop proposes trunk_rotation and controlled rotation; Pallof Press remains anti_rotation_core with no controlled-rotation equivalence.",
 ] as const;
 
 const TRANSITION_DOCTRINE = [
@@ -4157,6 +4157,14 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     `Protected golden ancestor: \`${data.goldenAncestor}\`. Legacy is migration evidence only.`,
     "",
+    "## Owner Identity and Equipment Dependency Update",
+    "",
+    "The owner directionally accepts the seven-concept tranche and settles these future identities: `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, and `suitcase-carry`.",
+    "",
+    "`wall-supported-suitcase-march` remains provisional until structured support-side, load-side, steps/time, and stationary-gait prescription semantics exist.",
+    "",
+    "The separate training-space and equipment dependency is now classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. It adds capability types and synthetic future requirements but no exercise. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. The overall exercise tranche remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`, and the next dependency is the structured dose / prescription and progression-axis contract.",
+    "",
     "## Current Gap Statement",
     "",
     "The current catalog directly represents breathing/position, early anti-extension through Dead Bug, and anti-rotation through Pallof Press. It lacks a truthful direct candidate pool for anti-lateral flexion, controlled trunk flexion, controlled trunk rotation, later anti-extension, intentional loaded bracing, bilateral and unilateral carries, a supported stationary carry regression, and capacity-oriented loaded gait.",
@@ -4481,7 +4489,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     `**${data.classification}**`,
     "",
-    "The seven-candidate tranche is coherent enough for owner review, but production implementation is not ready until the equipment, pain/stress, prescription, provenance, and bootstrap-pool decisions above are resolved. No exercise is implemented by this classification.",
+    "The seven-candidate tranche is accepted directionally, and its equipment dependency is resolved by a separate capability contract. Production implementation remains blocked on structured dose / prescription and progression-axis semantics plus the later unresolved review dependencies above. No exercise is implemented by this classification.",
     "",
   ].join("\n");
 }

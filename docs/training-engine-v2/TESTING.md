@@ -8,6 +8,10 @@ Tests should remain small and readable at the component boundary. Current respon
 
 - reference exercise validation;
 - equipment capability representation;
+- explicit floor-space, stable-loaded-standing, and loaded-gait non-implication tests;
+- cable-height, band/cable separation, exact-machine, and dumbbell single/pair tests;
+- synthetic future trunk/carry requirements without production exercise rows;
+- current equipment-legality and expanded-fixture serialization fingerprints;
 - assessment confidence and priority;
 - pain-state distinctions;
 - personal blocks;
@@ -71,7 +75,7 @@ Green build and test results are necessary but insufficient to begin Session Com
 
 Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
 
-The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual tests use synthetic exercises; all reference exercises retain their prior movement roles and no `TrunkMechanicsProfile` until human catalog curation. Catalog curation is the next approved implementation boundary, followed by normalized trunk assessment features before Session Composer.
+The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual equipment tests use synthetic requirements; all reference exercises retain their prior equipment requirements and none uses `carry_load`. Only 90/90 Breathing, Dead Bug, and Pallof Press carry the separately approved trunk profiles. The trunk/carry equipment contract adds no proposed exercise; its next dependency is structured dose / prescription and progression-axis truth before any catalog implementation.
 
 ## Bug Localization
 

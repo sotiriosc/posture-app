@@ -76,6 +76,12 @@ const phase3: CurrentTrainingState = {
 function baseEquipment(environment: EquipmentCapabilities["environment"]): EquipmentCapabilities {
   return {
     environment,
+    trainingSpace: {
+      stableLoadedStandingSpace: false,
+      loadedGait: {
+        available: false,
+      },
+    },
     bodyweight: {
       floorSpace: true,
       wallAvailable: true,
@@ -87,6 +93,7 @@ function baseEquipment(environment: EquipmentCapabilities["environment"]): Equip
     },
     dumbbells: {
       available: false,
+      pairAvailable: false,
       adjustable: false,
     },
     barbell: {
@@ -96,6 +103,7 @@ function baseEquipment(environment: EquipmentCapabilities["environment"]): Equip
     cables: {
       available: false,
       adjustableHeight: false,
+      availableHeights: [],
     },
     bands: {
       types: [],
@@ -110,12 +118,22 @@ function baseEquipment(environment: EquipmentCapabilities["environment"]): Equip
 
 export const FULL_GYM_EQUIPMENT: EquipmentCapabilities = {
   ...baseEquipment("commercial_gym"),
+  trainingSpace: {
+    stableLoadedStandingSpace: true,
+    loadedGait: {
+      available: true,
+      straightLineMeters: 12,
+      turningAvailable: true,
+      overheadClearance: true,
+    },
+  },
   bench: {
     types: ["flat", "adjustable"],
     stable: true,
   },
   dumbbells: {
     available: true,
+    pairAvailable: true,
     adjustable: false,
     maxPairWeightKg: 50,
   },
@@ -127,6 +145,7 @@ export const FULL_GYM_EQUIPMENT: EquipmentCapabilities = {
   cables: {
     available: true,
     adjustableHeight: true,
+    availableHeights: ["low", "mid", "high"],
   },
   bands: {
     types: ["loop", "tube_handles"],
@@ -152,12 +171,19 @@ export const FULL_GYM_EQUIPMENT: EquipmentCapabilities = {
 
 export const DUMBBELLS_AND_BENCH_EQUIPMENT: EquipmentCapabilities = {
   ...baseEquipment("home"),
+  trainingSpace: {
+    stableLoadedStandingSpace: true,
+    loadedGait: {
+      available: false,
+    },
+  },
   bench: {
     types: ["flat", "adjustable"],
     stable: true,
   },
   dumbbells: {
     available: true,
+    pairAvailable: true,
     adjustable: true,
     maxPairWeightKg: 32,
   },
@@ -166,8 +192,15 @@ export const DUMBBELLS_AND_BENCH_EQUIPMENT: EquipmentCapabilities = {
 
 export const DUMBBELLS_NO_BENCH_EQUIPMENT: EquipmentCapabilities = {
   ...baseEquipment("home"),
+  trainingSpace: {
+    stableLoadedStandingSpace: true,
+    loadedGait: {
+      available: false,
+    },
+  },
   dumbbells: {
     available: true,
+    pairAvailable: true,
     adjustable: true,
     maxPairWeightKg: 24,
   },
@@ -176,6 +209,12 @@ export const DUMBBELLS_NO_BENCH_EQUIPMENT: EquipmentCapabilities = {
 
 export const ANCHORED_BANDS_EQUIPMENT: EquipmentCapabilities = {
   ...baseEquipment("home"),
+  trainingSpace: {
+    stableLoadedStandingSpace: false,
+    loadedGait: {
+      available: false,
+    },
+  },
   bands: {
     types: ["tube_handles", "loop"],
     anchors: [
@@ -188,6 +227,12 @@ export const ANCHORED_BANDS_EQUIPMENT: EquipmentCapabilities = {
 
 export const BANDS_WITHOUT_ANCHOR_EQUIPMENT: EquipmentCapabilities = {
   ...baseEquipment("travel"),
+  trainingSpace: {
+    stableLoadedStandingSpace: false,
+    loadedGait: {
+      available: false,
+    },
+  },
   bands: {
     types: ["tube_handles"],
     anchors: [],
@@ -196,22 +241,43 @@ export const BANDS_WITHOUT_ANCHOR_EQUIPMENT: EquipmentCapabilities = {
 
 export const LOOP_BANDS_ONLY_EQUIPMENT: EquipmentCapabilities = {
   ...baseEquipment("travel"),
+  trainingSpace: {
+    stableLoadedStandingSpace: false,
+    loadedGait: {
+      available: false,
+    },
+  },
   bands: {
     types: ["loop", "mini_loop"],
     anchors: [],
   },
 };
 
-export const BODYWEIGHT_EQUIPMENT: EquipmentCapabilities = baseEquipment("home");
+export const BODYWEIGHT_EQUIPMENT: EquipmentCapabilities = {
+  ...baseEquipment("home"),
+  trainingSpace: {
+    stableLoadedStandingSpace: false,
+    loadedGait: {
+      available: false,
+    },
+  },
+};
 
 export const MIXED_HOME_EQUIPMENT: EquipmentCapabilities = {
   ...baseEquipment("home"),
+  trainingSpace: {
+    stableLoadedStandingSpace: true,
+    loadedGait: {
+      available: false,
+    },
+  },
   bench: {
     types: ["flat"],
     stable: true,
   },
   dumbbells: {
     available: true,
+    pairAvailable: true,
     adjustable: true,
     maxPairWeightKg: 18,
   },

@@ -176,6 +176,9 @@ describe("trunk/core domain and coverage review", () => {
     expect(data.implementationOrder[4]).toContain(
       "TRUNK_CARRY_CONTRACT_FIXES_REQUIRED",
     );
+    expect(data.implementationOrder[5]).toContain(
+      "TRUNK_CARRY_EQUIPMENT_CONTRACT_READY",
+    );
     expect(data.implementationOrder.at(-1)).toContain("before Session Composer");
     expect(data.uncertainties).toHaveLength(7);
   });
@@ -192,6 +195,7 @@ describe("trunk/core domain and coverage review", () => {
     expect(rendered).toContain(
       "## Minimal Direct Trunk / Carry Catalog Proposal Status",
     );
+    expect(rendered).toContain("TRUNK_CARRY_EQUIPMENT_CONTRACT_READY");
     expect(rendered).toContain("15 `PROPOSE_ACCEPTED`");
     expect(rendered).toContain("ten accepted fields and fourteen explicit unknowns");
     expect(rendered).toContain("all 17 needs-review proposals remain unresolved");

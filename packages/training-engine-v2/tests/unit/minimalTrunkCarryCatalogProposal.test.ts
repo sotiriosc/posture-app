@@ -129,7 +129,7 @@ describe("minimal direct trunk/core and carry catalog proposal", () => {
   });
 
   it("keeps movement-role truth separate from mechanics expression", () => {
-    const sidePlank = candidate("side-plank");
+    const sidePlank = candidate("forearm-side-plank");
     const farmerCarry = candidate("farmer-carry");
     const suitcaseCarry = candidate("suitcase-carry");
 
@@ -153,7 +153,7 @@ describe("minimal direct trunk/core and carry catalog proposal", () => {
   });
 
   it("keeps anti-rotation and controlled rotation distinct", () => {
-    const chop = candidate("half-kneeling-cable-chop");
+    const chop = candidate("half-kneeling-high-to-low-cable-chop");
     const pallof = REFERENCE_EXERCISES.find(
       (exercise) => exercise.id === "pallof-press",
     );
@@ -176,7 +176,7 @@ describe("minimal direct trunk/core and carry catalog proposal", () => {
   });
 
   it("keeps carry and anti-lateral-flexion purposes distinct", () => {
-    expect(candidate("side-plank").movementRoles).not.toContain("carry");
+    expect(candidate("forearm-side-plank").movementRoles).not.toContain("carry");
     expect(candidate("farmer-carry").movementRoles).not.toContain(
       "anti_lateral_flexion_core",
     );
@@ -280,6 +280,10 @@ describe("minimal direct trunk/core and carry catalog proposal", () => {
     const rendered = renderMinimalTrunkCarryCatalogProposal(data);
 
     expect(rendered).toContain("## Complete Proposed Exercise Contracts");
+    expect(rendered).toContain("## Owner Identity and Equipment Dependency Update");
+    expect(rendered).toContain("`forearm-side-plank`");
+    expect(rendered).toContain("`half-kneeling-high-to-low-cable-chop`");
+    expect(rendered).toContain("TRUNK_CARRY_EQUIPMENT_CONTRACT_READY");
     expect(rendered).toContain("## Assessment Handoff");
     expect(rendered).toContain("## Weekly Development Ledger Handoff");
     expect(rendered).toContain("**TRUNK_CARRY_CONTRACT_FIXES_REQUIRED**");

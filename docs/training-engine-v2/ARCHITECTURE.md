@@ -26,7 +26,7 @@ The package models the intended reasoning order without implementing production 
 - `domain/athlete.ts`: athlete, preferences, availability, current state, future engine input.
 - `domain/assessment.ts`: confidence-aware assessment signals and historical weaknesses.
 - `domain/painInjury.ts`: historical injury, sensitivity, current discomfort, moderate pain, acute pain, contraindication, and personal block.
-- `domain/equipment.ts`: capability-based equipment model.
+- `domain/equipment.ts`: capability-based equipment and training-space model with pure requirement evidence.
 - `domain/phase.ts`: first-class Phase 1, Phase 2, Phase 3 intents.
 - `domain/session.ts`: warmup, activation, main, accessory, cooldown, and preparation dependencies.
 - `domain/programming.ts`: weekly intent and planned-program contracts.
@@ -67,6 +67,12 @@ Training decisions should live in components with coherent responsibility:
 - isolated unit tests.
 
 Future modules should be extracted by training responsibility, not by arbitrary file-size limits. Examples include assessment interpretation, alignment-priority derivation, equipment eligibility, pain eligibility, capability eligibility, role eligibility, assessment scoring, phase scoring, progression value, continuity value, fatigue evaluation, joint-cost evaluation, session evaluation, week evaluation, prescription, same-exercise progression, cross-exercise transition selection, and phase readiness.
+
+## Equipment And Training-Space Truth
+
+`EquipmentCapabilities` carries explicit environment-independent facts for ordinary floor space, stable loaded standing, loaded gait, optional distance/turn/overhead detail, cable attachment heights, dumbbell-pair availability, and exact machine identities. Environment labels are descriptive inputs only. Pure requirement evaluation exposes requested, available, and missing capabilities plus the relevant snapshot; it does not infer space or machine truth from an exercise name, role, gym label, or generic equipment availability.
+
+`carry_load` is a future exercise-family identity only. It grants no movement role, score, capacity credit, composition slot, or mandatory programming behavior.
 
 ## Candidate Assessment Pipeline
 
@@ -172,4 +178,4 @@ Do not impose tiny files. Do flag modules that start combining unrelated trainin
 
 ## Non-Goals In This Phase
 
-Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The next approved trunk boundary is human catalog curation, followed by normalized trunk assessment features before Session Composer; no catalog curation or assessment-feature behavior is part of the type/validation/observability contract.
+Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The direct trunk/carry candidate direction remains unimplemented. Its equipment contract is ready, and its next dependency is structured dose / prescription and progression-axis truth; no catalog row or assessment-feature behavior is authorized by the equipment contract.

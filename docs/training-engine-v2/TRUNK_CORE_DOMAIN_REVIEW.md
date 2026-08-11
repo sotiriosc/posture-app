@@ -23,9 +23,9 @@ Those profiles contain ten accepted fields and fourteen explicit unknowns. Every
 
 ## Minimal Direct Trunk / Carry Catalog Proposal Status
 
-A separate deterministic review evaluated 24 new direct trunk/core and carry concepts and selected a seven-candidate minimal tranche: Forearm Plank, Forearm Side Plank, Machine Abdominal Crunch, Half-Kneeling Cable Chop, Bilateral Farmer Carry, Suitcase Carry, and Wall-Supported Suitcase March.
+A separate deterministic review evaluated 24 new direct trunk/core and carry concepts and selected a seven-candidate minimal tranche: Forearm Plank, Forearm Side Plank, Machine Abdominal Crunch, Half-Kneeling High-to-Low Cable Chop, Bilateral Farmer Carry, Suitcase Carry, and Wall-Supported Suitcase March.
 
-Its classification is `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`. The proposal changes no production exercise or behavior and does not authorize implementation. Equipment, pain/stress, prescription, provenance, and single-candidate bootstrap decisions remain owner dependencies. The 17 qualified secondary-mechanics proposals remain independently unresolved; they do not block review of this separate catalog proposal.
+Its classification remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`; the proposal authorizes no exercise. The first dependency is now resolved as `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`: explicit training-space, cable-height, abdominal-machine, dumbbell-pair, and `carry_load` family contracts exist without changing any current exercise requirement or behavior. The provisional wall-supported march still awaits side and dose semantics. The next dependency is structured dose / prescription and progression-axis truth. The 17 qualified secondary-mechanics proposals remain independently unresolved.
 
 ## Scope and Evidence
 
@@ -326,10 +326,10 @@ No phase coefficient or final suitability value is selected here. Catalog curati
 3. COMPLETED: Added a compact, review/provenance-bearing TrunkMechanicsProfile, pure validation, and an observability-only trace without scoring or hidden behavior.
 4. COMPLETED: Added owner-reviewed complete profiles for 90/90 Breathing, Dead Bug, and Pallof Press with ten accepted fields and fourteen explicit unknowns.
 5. COMPLETED PROPOSAL: Evaluated 24 direct trunk/carry candidate concepts and selected a seven-candidate minimal tranche; classification TRUNK_CARRY_CONTRACT_FIXES_REQUIRED authorizes no production metadata.
-6. Resolve the proposed trunk/carry equipment, pain/stress, prescription, provenance, and single-candidate bootstrap decisions before any catalog implementation.
-7. Resolve the 17 needs-review proposals and expand only approved complete profiles, then add a minimal progression runway for each approved function and carry regression family.
-8. Add normalized trunk assessment features and bounded feature-specific relevance before Session Composer consumes assessment priorities.
-9. Add prescription units for sets/reps/time/distance/trips/load/side and implement separate direct, secondary, incidental, and capacity ledger lanes.
+6. COMPLETED CONTRACT: Added explicit training-space, cable-height, abdominal-machine, dumbbell-pair, and carry-family types; classification TRUNK_CARRY_EQUIPMENT_CONTRACT_READY adds no exercise.
+7. Resolve structured dose / prescription and progression-axis semantics, including side, load, hold, distance, trips, steps, turns, and stationary-gait truth.
+8. Resolve the 17 needs-review proposals and expand only approved complete profiles, then add a minimal progression runway for each approved function and carry regression family.
+9. Add normalized trunk assessment features and bounded feature-specific relevance before Session Composer consumes assessment priorities.
 10. Apply accepted role/section-scoped phase annotations and re-run cross-goal, pain, phase, history, weekly-coverage, and longitudinal counterfactuals before Session Composer.
 
 ## Explicit Uncertainties

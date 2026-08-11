@@ -343,6 +343,8 @@ Do not collapse them into one generic pain field.
 
 Equipment should describe actual capability rather than merely broad labels.
 
+Training environment and space capabilities are explicit inputs. Environment labels and ordinary floor space must not manufacture stable loaded-standing, loaded-gait, turning, distance, or overhead-clearance truth. Optional space detail is unknown when absent, not false. Loaded-gait availability is a capability statement rather than a medical or absolute safety guarantee.
+
 ### Training State
 
 - TrainingPhase
