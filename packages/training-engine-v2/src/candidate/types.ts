@@ -5,7 +5,11 @@ import type { PipelineObservationLog } from "../pipelineObservability";
 import type { CandidateScore, ScoreComponent } from "../scoringContracts";
 import type { CandidateRequest, InterpretedCandidateContext } from "./request";
 import type { DecisionTrace } from "../decisionTrace";
-import type { CandidatePainMatchTrace } from "./pain";
+import type {
+  CandidatePainExecutionReadinessTrace,
+  CandidatePainMatchTrace,
+  CandidatePainResultExecutionReadinessTrace,
+} from "./pain";
 
 export interface LegalCandidate {
   readonly exercise: ExerciseDefinition;
@@ -26,6 +30,7 @@ export interface RankedCandidate {
   readonly components: readonly ScoreComponent[];
   readonly summary: string;
   readonly painMatchTrace: CandidatePainMatchTrace;
+  readonly painExecutionReadiness: CandidatePainExecutionReadinessTrace;
 }
 
 export interface CandidateRankingResult {
@@ -34,6 +39,7 @@ export interface CandidateRankingResult {
   readonly hardRejectedCandidates: readonly RejectedCandidate[];
   readonly legalCandidateCount: number;
   readonly rankedCandidates: readonly RankedCandidate[];
+  readonly painExecutionReadiness: CandidatePainResultExecutionReadinessTrace;
   readonly assessmentInfluence: readonly AssessmentInfluence[];
   readonly alignmentPriorities: readonly AlignmentPriority[];
   readonly decisionTrace: DecisionTrace;

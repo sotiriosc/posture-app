@@ -8,6 +8,10 @@ import {
 import type { ReasonCode } from "../../reasonCodes";
 import { evaluateHardEligibilityComponents } from "../eligibility";
 import {
+  buildCandidatePainExecutionReadinessTrace,
+  buildCandidatePainResultExecutionReadinessTrace,
+} from "../pain";
+import {
   interpretCandidateRequest,
   type CandidateRequest,
 } from "../request";
@@ -68,6 +72,9 @@ function rankLegalCandidates(input: {
       total: score.aggregate.value,
       components: score.components,
       painMatchTrace: candidate.eligibility.painMatchTrace,
+      painExecutionReadiness: buildCandidatePainExecutionReadinessTrace(
+        candidate.eligibility.painMatchTrace,
+      ),
     };
   });
 
@@ -127,6 +134,14 @@ export function rankCandidateRequest(
     legalCandidates,
     scoreComponents,
     weights: options.weights,
+  });
+  const painExecutionReadiness = buildCandidatePainResultExecutionReadinessTrace({
+    rankedCandidateReadiness: rankedCandidates.map(
+      (candidate) => candidate.painExecutionReadiness,
+    ),
+    allCandidateReadiness: evaluatedCandidates.map((candidate) =>
+      buildCandidatePainExecutionReadinessTrace(candidate.eligibility.painMatchTrace),
+    ),
   });
   const scoresByExerciseId = new Map(
     rankedCandidates.map((candidate) => [candidate.exercise.id, candidate.score] as const),
@@ -229,6 +244,7 @@ export function rankCandidateRequest(
     candidates: candidateTraces,
     selectedExerciseId: winner?.exercise.id,
     whyItWon: winner?.summary,
+    painExecutionReadiness,
     pipelineSnapshots: pipeline.snapshots,
   });
 
@@ -238,6 +254,7 @@ export function rankCandidateRequest(
     hardRejectedCandidates,
     legalCandidateCount: legalCandidates.length,
     rankedCandidates,
+    painExecutionReadiness,
     assessmentInfluence,
     alignmentPriorities: request.alignmentPriorities,
     decisionTrace,

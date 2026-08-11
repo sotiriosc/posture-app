@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 calibration issues remain. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, and the canonical pain-match contract are resolved for Candidate Intelligence. The moderate-pain laboratory settles the signal-level receiver shape but finds insufficient evidence for a production coefficient; project-owner pain calibration and phase calibration remain blockers.
+Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because phase calibration remains P1. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.
 
 ## Contract Review
 
@@ -51,7 +51,7 @@ Architecture is sound and the candidate pipeline is deterministic/explainable, b
 
 Catalog coverage: fully usable=2; usable with review caveats=20; materially under-specified=8.
 
-UNKNOWN does not become easy/safe/preferred/developmentally superior/feature matched in assessment demand traces. NEEDS_REVIEW remains visible in catalog review and row trace context. Pain matching now exposes unknown/missing evidence and deferred actions explicitly; remaining pain work is human severity/coefficient calibration, alongside incomplete reviewed mechanics.
+UNKNOWN does not become easy/safe/preferred/developmentally superior/feature matched in assessment demand traces. NEEDS_REVIEW remains visible in catalog review and row trace context. Pain matching exposes unknown/missing evidence and deferred actions explicitly; numeric moderate-severity calibration is deferred to longitudinal adaptation rather than represented as current precision.
 
 ## Feature-Specific Assessment Review
 
@@ -108,7 +108,7 @@ Verdict: **PLAUSIBLE_NEEDS_REVIEW**. Phase behavior is directionally coherent an
 
 ## Pain / Injury Review
 
-Verdict: **PAIN_CONTRACT_READY_FOR_HUMAN_CALIBRATION**. One source-aware canonical match trace now supports explicit receiver policies. Joint/caution duplicate charging is removed, moderate warning observes every structured source without becoming hard, required responses and acute/hard provenance remain structured, and unrelated pain is stability-neutral. Severity and coefficients are not calibrated by this result.
+Verdict: **PAIN_CONTRACT_READY**. One source-aware canonical match trace supports explicit receiver policies. Joint/caution duplicate charging is removed, moderate warning observes every structured source without becoming hard, required responses and acute/hard provenance remain structured, and unrelated pain is stability-neutral. The owner-approved response-led policy keeps severity 3-6 numerically flat while exposing standard/elevated non-hard urgency and candidate-aware execution readiness.
 
 | Scenario | Winner | Runner-Up | Contraindicated Rejections | Pain Effect | Verdict |
 | --- | --- | --- | --- | --- | --- |
@@ -134,15 +134,15 @@ The reviewed post-contract 22-scenario fingerprint is `d6a6452537e1436c3ecbbc035
 
 ### MODERATE_PAIN_CALIBRATION_LABORATORY
 
-Classification: **MORE_CALIBRATION_EVIDENCE_REQUIRED**.
+Classification: **RESPONSE_LED_FLAT_POLICY_ADOPTED_NUMERIC_CALIBRATION_DEFERRED**.
 
 The deterministic non-production laboratory in `MODERATE_PAIN_CALIBRATION_DECISION.md` evaluates 9 policy variants across 60 fixed-time production requests and 1,512 complete policy/candidate rows. It compares the current flat policy, four two-band probes, three explicit four-level grids, and a response-led flat policy without changing the production scoring path.
 
 The laboratory confirms one bounded intensity adjustment per matched moderate signal, never per stress fact; joint cost remains severity-invariant; required response remains separate execution truth; and no moderate severity becomes a hard gate. The tested 0.125-1.000 raw adjustments produce zero rank changes and zero winner changes. That stability reflects the controlled pools' matched-signal topology and does not justify selecting a coefficient.
 
-`CandidateRankingResult.decisionTrace.candidatePainSummaries[].responseRequirements` preserves substitute-role ownership and unexecutable status. The laboratory derives explicit result-readiness classes so a future adapter cannot treat evidence ranking as an executable prescription. No role substitution, prescription, Session Composer, or production behavior is added.
+Each ranked candidate now exposes candidate-specific pain execution readiness. `CandidateRankingResult.painExecutionReadiness` reflects rank 1 only, lists executable legal candidates and the best executable alternative without reranking, excludes hard-rejected candidates from selected-result readiness, and preserves explicit urgent signals globally. No role substitution, prescription, or Session Composer behavior is added.
 
-Remaining pain P1: the project owner must approve whether numeric moderate severity belongs in Candidate Intelligence at all and, if so, choose a bounded policy and coefficient using discriminating and longitudinal evidence. The canonical evidence contract and signal-level receiver shape are resolved; pain is not numerically calibrated.
+PAIN_CONTRACT: **READY**. MODERATE_PAIN_CANDIDATE_POLICY: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**. NUMERIC_MODERATE_SEVERITY_CALIBRATION: **DEFERRED_TO_LONGITUDINAL_ADAPTATION**. The remaining Candidate Intelligence P1 list contains phase calibration only; this does not claim pain is universally calibrated.
 
 ## Experience / Capability Review
 
@@ -288,7 +288,6 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ### P1
 
-- Moderate-pain numeric policy and the frozen pain/joint coefficients still need project-owner approval informed by discriminating and longitudinal evidence; the signal-level calibration shape is settled.
 - Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.
 
 ### P2

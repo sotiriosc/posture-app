@@ -4,6 +4,7 @@ import type {
   HardContraindication,
   HistoricalSensitivity,
   ModeratePain,
+  ModeratePainReviewUrgency,
 } from "../../domain/painInjury";
 import type { BodyRegion, JointStressTag, Side } from "../../domain/primitives";
 
@@ -60,6 +61,7 @@ export interface CandidatePainSignalTrace {
   readonly uniqueMatchCount: number;
   readonly invalidatedTrainingRoles: readonly string[];
   readonly hardExerciseIds: readonly string[];
+  readonly moderateReviewUrgency: ModeratePainReviewUrgency | null;
   readonly urgentReviewRecommended: boolean | null;
   readonly hardContraindicationSource: HardContraindication["source"] | null;
   readonly hardContraindicationReason: string | null;
@@ -152,6 +154,31 @@ export interface PainResponseRequirementTrace {
   readonly evidence: readonly string[];
 }
 
+export type CandidatePainExecutionReadiness =
+  | "EXECUTABLE_AT_CANDIDATE_SCOPE"
+  | "REQUIRES_CANDIDATE_REVIEW"
+  | "REQUIRES_PRESCRIPTION"
+  | "REQUIRES_SESSION_ROLE_SUBSTITUTION"
+  | "URGENT_EXTERNAL_REVIEW";
+
+export interface CandidatePainExecutionReadinessTrace {
+  readonly candidateExerciseId: string;
+  readonly readiness: CandidatePainExecutionReadiness;
+  readonly applicableRequirements: readonly PainResponseRequirementTrace[];
+  readonly ignoredNotApplicableRequirements: readonly PainResponseRequirementTrace[];
+  readonly urgencySignals: readonly PainResponseRequirementTrace[];
+  readonly reason: string;
+}
+
+export interface CandidatePainResultExecutionReadinessTrace {
+  readonly selectedCandidateId: string | null;
+  readonly selectedCandidatePainReadiness: CandidatePainExecutionReadiness | null;
+  readonly executableCandidateIds: readonly string[];
+  readonly bestExecutableCandidateId: string | null;
+  readonly hasExecutableCandidate: boolean;
+  readonly urgentReviewSignalIds: readonly string[];
+}
+
 export interface CandidatePainMatchTrace extends CanonicalPainEvidence {
   readonly receiverDecisions: readonly PainReceiverDecisionTrace[];
   readonly responseRequirements: readonly PainResponseRequirementTrace[];
@@ -162,6 +189,7 @@ export interface PainEligibilityEvidenceTrace {
   readonly signalId: string;
   readonly signalKind: CandidatePainSignalKind;
   readonly severity: number | null;
+  readonly moderateReviewUrgency: ModeratePainReviewUrgency | null;
   readonly requestedAction: PainRequestedAction | null;
   readonly urgentReviewRecommended: boolean | null;
   readonly authoritySource: HardContraindication["source"] | null;

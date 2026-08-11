@@ -9,6 +9,7 @@ import type {
 } from "../../domain/painInjury";
 import type { JointStressTag } from "../../domain/primitives";
 import { buildExerciseStressProfile } from "./exerciseStressProfile";
+import { reviewUrgencyForModeratePain } from "./reviewUrgency";
 import type {
   CandidatePainSignalTrace,
   CanonicalPainEvidence,
@@ -139,6 +140,10 @@ function signalTraceFor(input: {
       input.signal.kind === "hard_contraindication"
         ? [...unique(input.signal.exerciseIds ?? [])].sort()
         : [],
+    moderateReviewUrgency:
+      input.signal.kind === "moderate_pain"
+        ? reviewUrgencyForModeratePain(input.signal.severity0To10)
+        : null,
     urgentReviewRecommended:
       input.signal.kind === "acute_severe_pain"
         ? input.signal.urgentReviewRecommended

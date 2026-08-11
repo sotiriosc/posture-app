@@ -6,10 +6,13 @@ import {
   aggregateCandidateScore,
   receiverDecision,
   runCandidateRankingLab,
+  type CandidatePainExecutionReadiness,
+  type CandidatePainExecutionReadinessTrace,
   type CandidatePainMatchTrace,
   type CandidateRankingResult,
   type CandidateRequest,
   type ModeratePain,
+  type ModeratePainReviewUrgency,
   type PainResponseExecutionStatus,
   type PainResponseOwner,
   type PainResponseRequirementTrace,
@@ -25,17 +28,11 @@ export type ModeratePainCalibrationSeverity = 3 | 4 | 5 | 6;
 export type ModeratePainCalibrationResponse = ModeratePain["requiredResponse"];
 export type ModeratePainCalibrationFamily = "A" | "B" | "C" | "D";
 
-export type PainResultReadiness =
-  | "EXECUTABLE_AT_CANDIDATE_SCOPE"
-  | "REQUIRES_CANDIDATE_REVIEW"
-  | "REQUIRES_PRESCRIPTION"
-  | "REQUIRES_SESSION_ROLE_SUBSTITUTION"
-  | "URGENT_EXTERNAL_REVIEW";
-
 export type ModeratePainCalibrationClassification =
   | "READY_FOR_OWNER_CALIBRATION_DECISION"
   | "MORE_CALIBRATION_EVIDENCE_REQUIRED"
-  | "PAIN_POLICY_ARCHITECTURE_REOPEN_REQUIRED";
+  | "PAIN_POLICY_ARCHITECTURE_REOPEN_REQUIRED"
+  | "RESPONSE_LED_FLAT_POLICY_ADOPTED_NUMERIC_CALIBRATION_DEFERRED";
 
 export interface ModeratePainCalibrationPolicy {
   readonly id: string;
@@ -129,7 +126,7 @@ const RESPONSES = [
 ] as const;
 const FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 const FINAL_CLASSIFICATION: ModeratePainCalibrationClassification =
-  "MORE_CALIBRATION_EVIDENCE_REQUIRED";
+  "RESPONSE_LED_FLAT_POLICY_ADOPTED_NUMERIC_CALIBRATION_DEFERRED";
 
 export interface ModeratePainCalibrationMatrixRow {
   readonly policyId: string;
@@ -145,7 +142,7 @@ export interface ModeratePainCalibrationMatrixRow {
   readonly severity: ModeratePainCalibrationSeverity;
   readonly severityBand: "lower_moderate_3_4" | "upper_moderate_5_6";
   readonly requiredResponse: ModeratePainCalibrationResponse;
-  readonly reviewUrgency: string;
+  readonly reviewUrgency: ModeratePainReviewUrgency;
   readonly canonicalMatchedStressFacts: readonly string[];
   readonly painSuitabilityOverlapUnits: number;
   readonly matchedModerateSignalCount: number;
@@ -163,7 +160,20 @@ export interface ModeratePainCalibrationMatrixRow {
   readonly rankDeltaFromFlat: number | null;
   readonly responseOwner: PainResponseOwner | null;
   readonly responseExecutionStatus: PainResponseExecutionStatus | null;
-  readonly resultReadiness: PainResultReadiness;
+  readonly candidateReadiness: CandidatePainExecutionReadiness;
+  readonly selectedCandidateId: string | null;
+  readonly selectedCandidatePainReadiness: CandidatePainExecutionReadiness | null;
+}
+
+export interface ModeratePainReadinessCorrection {
+  readonly requiredResponse: ModeratePainCalibrationResponse;
+  readonly before: CandidatePainExecutionReadiness;
+  readonly after: "EXECUTABLE_AT_CANDIDATE_SCOPE";
+  readonly scenarioIds: readonly string[];
+  readonly candidateIds: readonly string[];
+  readonly candidateMatrixRowsChanged: number;
+  readonly selectedProductionCasesChanged: number;
+  readonly selectedMatrixCellsChanged: number;
 }
 
 export interface ModeratePainPolicySummary {
@@ -223,7 +233,10 @@ export interface ModeratePainCalibrationData {
   readonly nearTies: readonly ModeratePainNearTie[];
   readonly winnerChanges: readonly ModeratePainWinnerChange[];
   readonly signalCountingProof: ModeratePainSignalCountingProof;
-  readonly resultReadinessByResponse: Readonly<Record<ModeratePainCalibrationResponse, PainResultReadiness>>;
+  readonly applicableReadinessByResponse: Readonly<
+    Record<ModeratePainCalibrationResponse, CandidatePainExecutionReadiness>
+  >;
+  readonly readinessCorrections: readonly ModeratePainReadinessCorrection[];
   readonly resultTraceExposesSubstituteRole: boolean;
 }
 
@@ -239,6 +252,7 @@ interface BaselineCandidateEvidence {
   readonly painOverlapUnits: number;
   readonly matchedSignalCount: number;
   readonly responseRequirement: PainResponseRequirementTrace | null;
+  readonly painExecutionReadiness: CandidatePainExecutionReadinessTrace;
 }
 
 interface BaselineCase {
@@ -248,7 +262,8 @@ interface BaselineCase {
   readonly signalId: string;
   readonly request: CandidateRequest;
   readonly result: CandidateRankingResult;
-  readonly resultReadiness: PainResultReadiness;
+  readonly selectedCandidateId: string | null;
+  readonly selectedCandidatePainReadiness: CandidatePainExecutionReadiness | null;
   readonly candidates: readonly BaselineCandidateEvidence[];
 }
 
@@ -283,29 +298,6 @@ function severityBand(
   return severity <= 4 ? "lower_moderate_3_4" : "upper_moderate_5_6";
 }
 
-function reviewUrgency(
-  policy: ModeratePainCalibrationPolicy,
-  severity: ModeratePainCalibrationSeverity,
-): string {
-  if (policy.family === "A") {
-    return "current_flat_moderate_review";
-  }
-
-  if (policy.family === "D") {
-    return severity <= 4
-      ? "standard_moderate_review"
-      : "elevated_moderate_review_non_hard";
-  }
-
-  if (policy.family === "B") {
-    return severity <= 4
-      ? "lower_band_moderate_review"
-      : "upper_band_elevated_review_non_hard";
-  }
-
-  return `ordinal_severity_${severity}_review_non_hard`;
-}
-
 function clampScore(value: number): number {
   return Math.max(0, Math.min(10, value));
 }
@@ -318,50 +310,6 @@ function formatCanonicalFact(
   match: CandidatePainMatchTrace["signalMatches"][number],
 ): string {
   return `${match.matchId}[${match.exerciseSources.join("+")}]`;
-}
-
-export function classifyCandidateRankingResultPainReadiness(
-  result: CandidateRankingResult,
-): PainResultReadiness {
-  const requirements = result.decisionTrace.candidatePainSummaries.flatMap(
-    (summary) => summary.responseRequirements,
-  );
-
-  if (
-    requirements.some(
-      (requirement) =>
-        requirement.requestedAction === "urgent_review" ||
-        requirement.primaryFutureOwner === "external_urgent_review",
-    )
-  ) {
-    return "URGENT_EXTERNAL_REVIEW";
-  }
-
-  if (
-    requirements.some(
-      (requirement) => requirement.requestedAction === "substitute_role",
-    )
-  ) {
-    return "REQUIRES_SESSION_ROLE_SUBSTITUTION";
-  }
-
-  if (
-    requirements.some(
-      (requirement) => requirement.requestedAction === "reduce_load_and_range",
-    )
-  ) {
-    return "REQUIRES_PRESCRIPTION";
-  }
-
-  if (
-    requirements.some(
-      (requirement) => requirement.requestedAction === "avoid_aggravator",
-    )
-  ) {
-    return "REQUIRES_CANDIDATE_REVIEW";
-  }
-
-  return "EXECUTABLE_AT_CANDIDATE_SCOPE";
 }
 
 function moderatePainSignal(input: {
@@ -431,6 +379,14 @@ function buildBaselineCase(input: {
       matchedSignalCount: unique(painMatches.map((match) => match.signalId)).length,
       responseRequirement:
         trace.responseRequirements.find((requirement) => requirement.signalId === signal.id) ?? null,
+      painExecutionReadiness:
+        ranked?.painExecutionReadiness ??
+        result.decisionTrace.candidatePainSummaries.find(
+          (summary) => summary.candidateExerciseId === candidateId,
+        )?.executionReadiness ??
+        (() => {
+          throw new Error(`Missing pain readiness for ${candidateId} in ${request.id}.`);
+        })(),
     };
   });
 
@@ -441,7 +397,9 @@ function buildBaselineCase(input: {
     signalId: signal.id,
     request,
     result,
-    resultReadiness: classifyCandidateRankingResultPainReadiness(result),
+    selectedCandidateId: result.painExecutionReadiness.selectedCandidateId,
+    selectedCandidatePainReadiness:
+      result.painExecutionReadiness.selectedCandidatePainReadiness,
     candidates,
   };
 }
@@ -518,7 +476,14 @@ function experimentalRowsFor(
       severity: baseline.severity,
       severityBand: severityBand(baseline.severity),
       requiredResponse: baseline.requiredResponse,
-      reviewUrgency: reviewUrgency(policy, baseline.severity),
+      reviewUrgency:
+        candidate.trace.signalTraces.find((signal) => signal.signalId === baseline.signalId)
+          ?.moderateReviewUrgency ??
+        (() => {
+          throw new Error(
+            `Missing moderate review urgency for ${baseline.signalId}/${candidate.candidateId}.`,
+          );
+        })(),
       canonicalMatchedStressFacts: candidate.canonicalFacts,
       painSuitabilityOverlapUnits: candidate.painOverlapUnits,
       matchedModerateSignalCount: candidate.matchedSignalCount,
@@ -538,7 +503,9 @@ function experimentalRowsFor(
         rank !== null && baselineRank !== null ? rank - baselineRank : null,
       responseOwner: candidate.responseRequirement?.primaryFutureOwner ?? null,
       responseExecutionStatus: candidate.responseRequirement?.executionStatus ?? null,
-      resultReadiness: baseline.resultReadiness,
+      candidateReadiness: candidate.painExecutionReadiness.readiness,
+      selectedCandidateId: baseline.selectedCandidateId,
+      selectedCandidatePainReadiness: baseline.selectedCandidatePainReadiness,
     };
   });
 }
@@ -728,20 +695,79 @@ function signalCountingProof(
   };
 }
 
-function resultReadinessByResponse(
+function applicableReadinessByResponse(
   cases: readonly BaselineCase[],
-): Readonly<Record<ModeratePainCalibrationResponse, PainResultReadiness>> {
-  return {
-    avoid_aggravator:
-      cases.find((candidate) => candidate.requiredResponse === "avoid_aggravator")?.resultReadiness ??
-      "EXECUTABLE_AT_CANDIDATE_SCOPE",
-    reduce_load_and_range:
-      cases.find((candidate) => candidate.requiredResponse === "reduce_load_and_range")?.resultReadiness ??
-      "EXECUTABLE_AT_CANDIDATE_SCOPE",
-    substitute_role:
-      cases.find((candidate) => candidate.requiredResponse === "substitute_role")?.resultReadiness ??
-      "EXECUTABLE_AT_CANDIDATE_SCOPE",
-  };
+): Readonly<Record<ModeratePainCalibrationResponse, CandidatePainExecutionReadiness>> {
+  return Object.fromEntries(
+    RESPONSES.map((response) => {
+      const matchedCandidate = cases
+        .filter((candidate) => candidate.requiredResponse === response)
+        .flatMap((candidate) => candidate.candidates)
+        .find((candidate) => candidate.painOverlapUnits > 0);
+
+      if (!matchedCandidate) {
+        throw new Error(`Missing applicable ${response} calibration candidate.`);
+      }
+
+      return [response, matchedCandidate.painExecutionReadiness.readiness] as const;
+    }),
+  ) as Readonly<Record<ModeratePainCalibrationResponse, CandidatePainExecutionReadiness>>;
+}
+
+function readinessCorrections(input: {
+  readonly cases: readonly BaselineCase[];
+  readonly matrix: readonly ModeratePainCalibrationMatrixRow[];
+  readonly applicableByResponse: Readonly<
+    Record<ModeratePainCalibrationResponse, CandidatePainExecutionReadiness>
+  >;
+}): readonly ModeratePainReadinessCorrection[] {
+  return RESPONSES.map((requiredResponse) => {
+    const changedCandidateRows = input.matrix.filter(
+      (row) =>
+        row.requiredResponse === requiredResponse &&
+        row.responseExecutionStatus === "not_applicable_no_candidate_stress_match" &&
+        row.candidateReadiness === "EXECUTABLE_AT_CANDIDATE_SCOPE",
+    );
+    const changedCases = input.cases.filter((candidateCase) => {
+      if (
+        candidateCase.requiredResponse !== requiredResponse ||
+        candidateCase.selectedCandidatePainReadiness !== "EXECUTABLE_AT_CANDIDATE_SCOPE"
+      ) {
+        return false;
+      }
+
+      return candidateCase.candidates.some(
+        (candidate) =>
+          candidate.painExecutionReadiness.readiness ===
+          input.applicableByResponse[requiredResponse],
+      );
+    });
+    const changedCaseKeys = new Set(
+      changedCases.map((candidateCase) =>
+        [
+          candidateCase.scenario.id,
+          candidateCase.severity,
+          candidateCase.requiredResponse,
+        ].join("|"),
+      ),
+    );
+    const selectedMatrixCellsChanged = input.matrix.filter((row) =>
+      changedCaseKeys.has(
+        [row.scenarioId, row.severity, row.requiredResponse].join("|"),
+      ),
+    ).length;
+
+    return {
+      requiredResponse,
+      before: input.applicableByResponse[requiredResponse],
+      after: "EXECUTABLE_AT_CANDIDATE_SCOPE" as const,
+      scenarioIds: [...unique(changedCandidateRows.map((row) => row.scenarioId))].sort(),
+      candidateIds: [...unique(changedCandidateRows.map((row) => row.candidateId))].sort(),
+      candidateMatrixRowsChanged: changedCandidateRows.length,
+      selectedProductionCasesChanged: changedCases.length,
+      selectedMatrixCellsChanged,
+    };
+  });
 }
 
 export function buildModeratePainCalibrationData(): ModeratePainCalibrationData {
@@ -757,6 +783,7 @@ export function buildModeratePainCalibrationData(): ModeratePainCalibrationData 
     baselineCases.flatMap((baseline) => experimentalRowsFor(baseline, policy)),
   );
   const changes = winnerChanges(matrix);
+  const applicableByResponse = applicableReadinessByResponse(baselineCases);
   const substituteCase = baselineCases.find(
     (candidate) => candidate.requiredResponse === "substitute_role",
   );
@@ -801,7 +828,12 @@ export function buildModeratePainCalibrationData(): ModeratePainCalibrationData 
     nearTies: nearTies(matrix),
     winnerChanges: changes,
     signalCountingProof: signalCountingProof(matrix),
-    resultReadinessByResponse: resultReadinessByResponse(baselineCases),
+    applicableReadinessByResponse: applicableByResponse,
+    readinessCorrections: readinessCorrections({
+      cases: baselineCases,
+      matrix,
+      applicableByResponse,
+    }),
     resultTraceExposesSubstituteRole,
   };
 }
@@ -854,7 +886,8 @@ function matrixTable(rows: readonly ModeratePainCalibrationMatrixRow[]): string 
       "Rank delta",
       "Review urgency",
       "Response owner / status",
-      "Result readiness",
+      "Candidate readiness",
+      "Selected candidate / readiness",
     ],
     rows.map((row) => [
       row.severity,
@@ -875,7 +908,8 @@ function matrixTable(rows: readonly ModeratePainCalibrationMatrixRow[]): string 
       rankDelta(row.rankDeltaFromFlat),
       row.reviewUrgency,
       `${row.responseOwner ?? "-"} / ${row.responseExecutionStatus ?? "-"}`,
-      row.resultReadiness,
+      row.candidateReadiness,
+      `${row.selectedCandidateId ?? "-"} / ${row.selectedCandidatePainReadiness ?? "-"}`,
     ]),
   );
 }
@@ -925,7 +959,13 @@ export function renderModeratePainCalibrationDecision(
     "",
     `Classification: **${data.classification}**`,
     "",
-    "The architectural shape is clear, but this matrix does not support a production coefficient choice. Every tested signal-level grid leaves all controlled ranks and winners unchanged, and the engine does not yet have longitudinal symptom-response evidence with which to validate dosage or outcome. The project owner can accept the signal-level receiver doctrine now; a numeric production policy still needs broader discriminating and longitudinal evidence.",
+    "The project owner adopts **RESPONSE-LED FLAT MODERATE SEVERITY** at Candidate Intelligence scope. Severity 3-6 remains structured evidence and changes review urgency, but adds no numeric pain-suitability adjustment beyond canonical stress overlap. Numeric calibration is deferred because every tested grid leaves all controlled ranks and winners unchanged and no longitudinal symptom/function evidence currently supports a coefficient.",
+    "",
+    "PAIN_CONTRACT: **READY**",
+    "",
+    "MODERATE_PAIN_CANDIDATE_POLICY: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**",
+    "",
+    "NUMERIC_MODERATE_SEVERITY_CALIBRATION: **DEFERRED_TO_LONGITUDINAL_ADAPTATION**",
     "",
     "Overall Candidate Intelligence remains **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**.",
     "",
@@ -937,13 +977,13 @@ export function renderModeratePainCalibrationDecision(
     "",
     `Current-flat parity violations: ${data.productionParityViolations.length}. Joint-cost severity-invariance violations: ${data.jointCostInvariantViolations.length}.`,
     "",
-    "Production behavior remains byte-for-byte on the existing path: the laboratory reads production results, creates new experimental component arrays, changes only the copied pain-suitability value, and reuses the unchanged aggregate weights. It never mutates a `CandidateRequest`, `CandidateRankingResult`, score component, coefficient object, eligibility rule, warning, exercise, or phase record.",
+    "Production numeric behavior remains unchanged: the laboratory reads production results, creates new experimental component arrays, changes only copied pain-suitability values for non-production probes, and reuses the unchanged aggregate weights. Production traces now add review urgency and candidate-aware execution readiness; no score component, coefficient, eligibility authority, exercise, or phase record is mutated.",
     "",
     "## Calibration Doctrine",
     "",
     "- Pain intensity is a reported experience, not a direct measurement of tissue damage.",
     "- No numeric severity threshold is universally appropriate across conditions, regions, exercises, athletes, and contexts.",
-    "- Moderate severity may affect bounded suitability and review urgency, but severity alone is never hard authority.",
+    "- At Candidate Intelligence scope, moderate severity 3-6 is numerically flat and affects review urgency only; severity alone is never hard authority.",
     "- Canonical stress overlap measures modeled breadth. Severity measures reported intensity. They remain separate quantities.",
     "- Any severity adjustment is applied once per distinct matched moderate-pain signal, not once per matched stress fact.",
     "- `pain_suitability` owns current intensity/tolerance compatibility. `joint_cost` owns modeled exposure and is not severity-scaled.",
@@ -966,7 +1006,7 @@ export function renderModeratePainCalibrationDecision(
       ]),
     ),
     "",
-    "Policy A is the production baseline. Policy B tests four upper-moderate bands. Policy C reports three explicit ordinal grids rather than silently choosing one. Policy D asks whether Candidate Intelligence needs numeric severity at all when response ownership and review urgency remain visible.",
+    "Policy A was the production baseline when the sensitivity matrix was built. Policy B tested four upper-moderate bands, and Policy C tested three explicit ordinal grids. The owner adopts Policy D: response-led flat severity with structured urgency and unresolved execution ownership. Policies B and C remain historical sensitivity probes, not production candidates.",
     "",
     "## Experimental Math",
     "",
@@ -1004,22 +1044,44 @@ export function renderModeratePainCalibrationDecision(
     "",
     "No current production behavior violates this severity invariant. The canonical overlap itself may legitimately affect both receivers under their distinct source policies, but severity adds no second joint-cost deduction.",
     "",
-    "## Required Response And Result Readiness",
+    "## Required Response And Candidate Readiness",
     "",
     table(
-      ["Required response", "Numeric effect", "Primary owner", "Candidate execution status", "Laboratory result readiness"],
+      ["Required response", "Numeric effect", "Primary owner", "Applicable candidate status", "Applicable candidate readiness"],
       [
-        ["avoid_aggravator", "canonical overlap + optional policy severity adjustment; no response penalty", "candidate_review", "policy_unresolved_candidate_review_required", data.resultReadinessByResponse.avoid_aggravator],
-        ["reduce_load_and_range", "canonical overlap + optional policy severity adjustment; no response penalty", "prescription", "deferred_unexecutable_at_candidate_layer", data.resultReadinessByResponse.reduce_load_and_range],
-        ["substitute_role", "canonical overlap + optional policy severity adjustment; no response penalty", "session_intent_or_session_composer", "deferred_unexecutable_at_candidate_layer", data.resultReadinessByResponse.substitute_role],
+        ["avoid_aggravator", "canonical overlap only; no response penalty", "candidate_review", "policy_unresolved_candidate_review_required", data.applicableReadinessByResponse.avoid_aggravator],
+        ["reduce_load_and_range", "canonical overlap only; no response penalty", "prescription", "deferred_unexecutable_at_candidate_layer", data.applicableReadinessByResponse.reduce_load_and_range],
+        ["substitute_role", "canonical overlap only; no response penalty", "session_intent_or_session_composer", "deferred_unexecutable_at_candidate_layer", data.applicableReadinessByResponse.substitute_role],
       ],
     ),
     "",
-    `CandidateRankingResult observability audit: substitute-role evidence is ${data.resultTraceExposesSubstituteRole ? "present" : "MISSING"} in \`decisionTrace.candidatePainSummaries[].responseRequirements\`, including the exact action, future owner, execution status, and matched facts. Candidate Intelligence still ranks the truthful requested-role pool for evidence; it does not perform the substitution.`,
+    `CandidateRankingResult observability audit: substitute-role evidence is ${data.resultTraceExposesSubstituteRole ? "present" : "MISSING"} in \`decisionTrace.candidatePainSummaries[].responseRequirements\`, including the exact action, future owner, execution status, and matched facts. Each ranked candidate now also exposes \`painExecutionReadiness\`. Candidate Intelligence still ranks the truthful requested-role pool for evidence; it does not perform the substitution.`,
     "",
-    "The existing result does not expose a top-level executable/not-executable enum. The laboratory derives one from the structured result trace. Future integration must make this derived readiness a required adapter gate so a ranked list cannot be mistaken for an executable prescription. Adding that integration contract belongs with the future receiver and is not implemented here.",
+    "`CandidateRankingResult.painExecutionReadiness` reports rank 1 through `selectedCandidateId` and `selectedCandidatePainReadiness`, lists every legal candidate with no unresolved candidate-scope pain action in `executableCandidateIds`, exposes the first such ranked option in `bestExecutableCandidateId`, and preserves explicit acute urgency in `urgentReviewSignalIds`. It never reranks or silently replaces the selected candidate.",
     "",
-    "`URGENT_EXTERNAL_REVIEW` remains reserved for explicit acute/severe urgent-review input. An upper-moderate laboratory band may raise non-hard review attention, but it does not manufacture acute authority.",
+    "`EXECUTABLE_AT_CANDIDATE_SCOPE` means only that Candidate Intelligence has no unresolved pain-response action for that candidate. It does not claim a full session, dosage, weekly stress, finished workout, or medical safety. Prescription, Session Composer, and final validation remain separate future gates.",
+    "",
+    "`URGENT_EXTERNAL_REVIEW` remains reserved for explicit acute/severe urgent-review input and remains globally visible without a candidate stress match. Severity 5-6 produces `elevated_moderate_review_non_hard`; it never manufactures acute authority.",
+    "",
+    "### Corrected Readiness Classifications",
+    "",
+    "The retired helper flattened every candidate requirement, including non-applicable and hard-rejected candidates, into one whole-result status. Production classification now ignores `not_applicable_no_candidate_stress_match` for non-urgent actions, classifies each candidate independently, and derives selected-result readiness from rank 1 among legal candidates only.",
+    "",
+    table(
+      ["Response", "Before", "After", "Scenarios", "Candidates", "Candidate matrix rows", "Selected production cases", "Selected matrix cells"],
+      data.readinessCorrections.map((correction) => [
+        correction.requiredResponse,
+        correction.before,
+        correction.after,
+        correction.scenarioIds.join(", ") || "none",
+        correction.candidateIds.join(", ") || "none",
+        correction.candidateMatrixRowsChanged,
+        correction.selectedProductionCasesChanged,
+        correction.selectedMatrixCellsChanged,
+      ]),
+    ),
+    "",
+    "Every changed calibration row is in `low-back-horizontal-row`: `machine-row`, `seated-cable-row`, and `chest-supported-dumbbell-row` have no matched low-back stress fact and are now `EXECUTABLE_AT_CANDIDATE_SCOPE`; `one-arm-dumbbell-row` retains the applicable response readiness. The selected machine row is executable in those cases, so the lower one-arm requirement no longer poisons the result. Scores, ranks, and winners are unchanged.",
     "",
     "## Policy Sensitivity Summary",
     "",
@@ -1080,7 +1142,7 @@ export function renderModeratePainCalibrationDecision(
     "",
     "## Complete Controlled Matrix",
     "",
-    "Every row below reports production legality/warning truth, canonical facts and overlap units, the laboratory-only signal adjustment, recomputed pain and unchanged joint contributions, aggregate/rank delta, response execution status, and result readiness. Rank delta is experimental rank minus current-flat rank; a positive value means the candidate moved lower.",
+    "Every row below reports production legality/warning truth, canonical facts and overlap units, the laboratory-only signal adjustment, recomputed pain and unchanged joint contributions, aggregate/rank delta, response execution status, candidate readiness, and selected-result readiness. Rank delta is experimental rank minus current-flat rank; a positive value means the candidate moved lower.",
     "",
     ...completeMatrixSections(data),
     "## Longitudinal Pain-Response Requirement",
@@ -1103,8 +1165,8 @@ export function renderModeratePainCalibrationDecision(
     "",
     "## Human Exercise-Science Questions",
     "",
-    "- Should Candidate Intelligence use numeric moderate severity at all, or should Policy D remain the candidate-scope contract until longitudinal response exists?",
-    "- If a numeric effect is retained, should the owner prefer a two-band or four-level shape, and what evidence justifies the boundary or increments?",
+    "- What future longitudinal evidence would be sufficient to reopen the response-led flat Candidate Intelligence policy?",
+    "- If reviewed evidence later supports a numeric effect, should it use a two-band or four-level shape, and what evidence justifies the boundary or increments?",
     "- What bounded maximum prevents intensity from overpowering training-purpose evidence while still creating a useful distinction?",
     "- Should review urgency vary by severity, response, symptom trajectory, body region, exercise, athlete context, or a combination?",
     "- How should `avoid_aggravator` be resolved without converting broad self-report into hard contraindication authority?",
@@ -1115,19 +1177,18 @@ export function renderModeratePainCalibrationDecision(
     "",
     "## Recommended Shape And Coefficient Evidence",
     "",
-    "Recommended architectural shape: retain canonical overlap breadth, add at most one bounded intensity adjustment per distinct matched moderate signal, route that adjustment only to pain suitability, keep joint exposure invariant, keep required response out of score arithmetic, and require an explicit result-readiness gate. This shape is supported regardless of whether the owner ultimately chooses flat, two-band, or four-level numeric severity.",
+    "Adopted Candidate Intelligence shape: retain canonical overlap breadth, add no numeric moderate-severity adjustment, keep joint exposure severity-invariant, keep required response out of score arithmetic, expose severity through standard/elevated non-hard review urgency, and require candidate-aware result readiness. If longitudinal evidence later reopens numeric calibration, any reviewed adjustment remains bounded, signal-level, and owned only by pain suitability.",
     "",
     "Recommended production coefficient range: **none supported by this laboratory**. The explored raw range was 0.125-1.000 per matched signal, with 0.25-1.00 used for the required two-band grid. Those are sensitivity probes, not calibration recommendations. No rank threshold, outcome data, or longitudinal response supports selecting a value from that interval.",
     "",
-    "The next useful evidence is deliberately discriminating: controlled pools where the current winner and a plausible alternative differ in matched-signal topology, reviewed region/exercise cases, and longitudinal before/during/after/next-day response tied to actual prescription. The owner should not choose a coefficient merely to make this matrix reorder.",
+    "Numeric calibration is deferred until structured history can connect actual prescription with during-session, immediate post-session, recovery-interval, next-morning, next-session, function/performance, and repeated-versus-isolated response. Future evidence may support prescription adjustment, progression/regression, candidate-policy refinement, or a bounded numeric severity channel; it does not retroactively rewrite this checkpoint without review.",
     "",
     "## Blueprint Maintenance",
     "",
-    "The blueprint records only the enduring principles established here: intensity calibration is signal-level rather than per stress fact; pain suitability owns intensity/tolerance while joint cost owns exposure; and longitudinal response is required before pain drives progression. Temporary grids and candidate coefficients remain outside the blueprint.",
+    "The blueprint records only the enduring principles established here: pre-session moderate severity is non-numeric at Candidate Intelligence scope until reviewed longitudinal evidence supports calibration; any future intensity calibration remains signal-level rather than per stress fact; pain suitability owns intensity/tolerance while joint cost owns exposure. Temporary grids and candidate coefficients remain outside the blueprint.",
     "",
     "## Remaining P1",
     "",
-    "- Moderate-pain numeric policy and the existing pain/joint coefficients still require project-owner approval informed by discriminating and longitudinal evidence.",
     "- Phase suitability still requires human exercise-science calibration across full session context.",
     "",
     `Final calibration-lab classification: **${data.classification}**`,

@@ -110,9 +110,11 @@ Pain scoring consumes `CandidatePainMatchTrace`; score components do not reconst
 
 `joint_cost` counts the same supported signal kinds only when a fact has joint-stress or caution provenance. A fact with both sources counts once; contraindicated-only provenance remains visible but uncharged. Its unchanged deductions are `0.8`, `1.4`, and `0.35`, with axial cost `0.35` and accumulated-joint-fatigue cost `0.7`.
 
-Severity, current effect, moderate required response, and historical preferred modification do not add score magnitude in this contract increment. They remain structured trace evidence for calibration or their future receiver. `stability_fit` compares exercise stability demand with phase expectation and does not read pain state.
+Severity, current effect, moderate required response, and historical preferred modification do not add score magnitude. The owner-approved Candidate Intelligence policy is response-led flat moderate severity: values 3-6 retain identical pain suitability, joint cost, total, and rank when canonical facts are held constant. Severity 3-4 carries `standard_moderate_review`; severity 5-6 carries `elevated_moderate_review_non_hard`. These are structured urgency signals, not score inputs or hard authority. `stability_fit` compares exercise stability demand with phase expectation and does not read pain state.
 
-The enduring boundary for any later moderate-intensity calibration is settled even though no production coefficient is selected: apply at most one bounded adjustment per distinct matched moderate-pain signal, route it only to `pain_suitability`, and never multiply it by that signal's canonical stress-fact count. `joint_cost` remains severity-invariant because it owns modeled exposure. `requiredResponse` remains an execution/readiness contract rather than another numeric penalty, and moderate severity alone never becomes a hard gate.
+Numeric moderate-severity calibration is deferred until longitudinal symptom/function evidence supports a reviewed coefficient. If that decision is ever reopened, apply at most one bounded adjustment per distinct matched moderate-pain signal, route it only to `pain_suitability`, and never multiply it by canonical stress-fact count. `joint_cost` remains severity-invariant because it owns modeled exposure. `requiredResponse` remains a numerically neutral execution-readiness contract, and moderate severity alone never becomes a hard gate.
+
+Candidate execution readiness is not part of aggregate math. A rank-1 candidate may require prescription or session role substitution. The result reports that selected truth, any lower-ranked executable candidate, and urgent signals without changing score, rank, or selection.
 
 Assessment-specific influence is modeled as:
 

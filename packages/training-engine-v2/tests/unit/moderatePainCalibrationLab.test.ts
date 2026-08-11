@@ -9,7 +9,6 @@ import {
 import {
   MODERATE_PAIN_CALIBRATION_POLICIES,
   buildModeratePainCalibrationData,
-  classifyCandidateRankingResultPainReadiness,
   renderModeratePainCalibrationDecision,
 } from "../helpers/moderatePainCalibrationLab";
 
@@ -116,7 +115,7 @@ describe("moderate-pain human calibration laboratory", () => {
   });
 
   it("keeps required response out of numeric scoring and exposes its distinct owner", () => {
-    expect(data.resultReadinessByResponse).toEqual({
+    expect(data.applicableReadinessByResponse).toEqual({
       avoid_aggravator: "REQUIRES_CANDIDATE_REVIEW",
       reduce_load_and_range: "REQUIRES_PRESCRIPTION",
       substitute_role: "REQUIRES_SESSION_ROLE_SUBSTITUTION",
@@ -142,8 +141,15 @@ describe("moderate-pain human calibration laboratory", () => {
     const substituteRows = data.matrix.filter(
       (row) => row.requiredResponse === "substitute_role",
     );
-    expect(substituteRows.every(
-      (row) => row.resultReadiness === "REQUIRES_SESSION_ROLE_SUBSTITUTION",
+    expect(substituteRows.filter(
+      (row) => row.responseExecutionStatus !== "not_applicable_no_candidate_stress_match",
+    ).every(
+      (row) => row.candidateReadiness === "REQUIRES_SESSION_ROLE_SUBSTITUTION",
+    )).toBe(true);
+    expect(substituteRows.filter(
+      (row) => row.responseExecutionStatus === "not_applicable_no_candidate_stress_match",
+    ).every(
+      (row) => row.candidateReadiness === "EXECUTABLE_AT_CANDIDATE_SCOPE",
     )).toBe(true);
     expect(substituteRows.every(
       (row) => row.responseOwner === "session_intent_or_session_composer",
@@ -151,6 +157,62 @@ describe("moderate-pain human calibration laboratory", () => {
     expect(new Set(substituteRows.map((row) => row.candidateId))).toEqual(
       new Set(data.scenarios.flatMap((scenario) => scenario.exerciseIds)),
     );
+  });
+
+  it("records the exact candidate-aware readiness reclassification", () => {
+    expect(data.readinessCorrections).toEqual([
+      {
+        requiredResponse: "avoid_aggravator",
+        before: "REQUIRES_CANDIDATE_REVIEW",
+        after: "EXECUTABLE_AT_CANDIDATE_SCOPE",
+        scenarioIds: ["low-back-horizontal-row"],
+        candidateIds: [
+          "chest-supported-dumbbell-row",
+          "machine-row",
+          "seated-cable-row",
+        ],
+        candidateMatrixRowsChanged: 108,
+        selectedProductionCasesChanged: 4,
+        selectedMatrixCellsChanged: 144,
+      },
+      {
+        requiredResponse: "reduce_load_and_range",
+        before: "REQUIRES_PRESCRIPTION",
+        after: "EXECUTABLE_AT_CANDIDATE_SCOPE",
+        scenarioIds: ["low-back-horizontal-row"],
+        candidateIds: [
+          "chest-supported-dumbbell-row",
+          "machine-row",
+          "seated-cable-row",
+        ],
+        candidateMatrixRowsChanged: 108,
+        selectedProductionCasesChanged: 4,
+        selectedMatrixCellsChanged: 144,
+      },
+      {
+        requiredResponse: "substitute_role",
+        before: "REQUIRES_SESSION_ROLE_SUBSTITUTION",
+        after: "EXECUTABLE_AT_CANDIDATE_SCOPE",
+        scenarioIds: ["low-back-horizontal-row"],
+        candidateIds: [
+          "chest-supported-dumbbell-row",
+          "machine-row",
+          "seated-cable-row",
+        ],
+        candidateMatrixRowsChanged: 108,
+        selectedProductionCasesChanged: 4,
+        selectedMatrixCellsChanged: 144,
+      },
+    ]);
+
+    const selectedRows = data.matrix.filter(
+      (row) =>
+        row.scenarioId === "low-back-horizontal-row" &&
+        row.selectedCandidateId === "machine-row",
+    );
+    expect(selectedRows.every(
+      (row) => row.selectedCandidatePainReadiness === "EXECUTABLE_AT_CANDIDATE_SCOPE",
+    )).toBe(true);
   });
 
   it("does not turn moderate severity 5 or 6 into hard rejection", () => {
@@ -188,18 +250,21 @@ describe("moderate-pain human calibration laboratory", () => {
     expect(upper?.total).toBe(lower?.total);
   });
 
-  it("reports no manufactured rank threshold and requests more calibration evidence", () => {
+  it("reports no manufactured rank threshold and records the response-led owner decision", () => {
     expect(data.matrix.filter(
       (row) => row.rankDeltaFromFlat !== null && row.rankDeltaFromFlat !== 0,
     )).toEqual([]);
     expect(data.winnerChanges).toEqual([]);
     expect(data.policySummaries.every((summary) => summary.rankChanges === 0)).toBe(true);
     expect(data.policySummaries.every((summary) => summary.winnerChanges === 0)).toBe(true);
-    expect(data.classification).toBe("MORE_CALIBRATION_EVIDENCE_REQUIRED");
+    expect(data.classification).toBe(
+      "RESPONSE_LED_FLAT_POLICY_ADOPTED_NUMERIC_CALIBRATION_DEFERRED",
+    );
 
     const report = renderModeratePainCalibrationDecision(data);
     expect(report).toContain("No policy produced a meaningful winner change");
     expect(report).toContain("Recommended production coefficient range: **none supported by this laboratory**");
+    expect(report).toContain("MODERATE_PAIN_CANDIDATE_POLICY: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**");
     expect(report).toContain("session feedback\n  -> longitudinal adaptation\n  -> next prescription/progression decision");
     expect(report.match(/^\| [3-6] \|/gm)?.length).toBe(1512);
     expect(readFileSync(
@@ -235,9 +300,12 @@ describe("moderate-pain human calibration laboratory", () => {
     };
     const result = runCandidateRankingLab(request);
 
-    expect(classifyCandidateRankingResultPainReadiness(result)).toBe(
+    expect(result.painExecutionReadiness.selectedCandidatePainReadiness).toBe(
       "URGENT_EXTERNAL_REVIEW",
     );
+    expect(result.painExecutionReadiness.urgentReviewSignalIds).toEqual([
+      "explicit-urgent-review",
+    ]);
     expect(result.rankedCandidates.length).toBeGreaterThan(0);
   });
 });

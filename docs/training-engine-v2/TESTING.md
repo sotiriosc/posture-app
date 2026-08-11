@@ -25,6 +25,11 @@ Tests should remain small and readable at the component boundary. Current respon
 - explicit unknown/`not_modeled`/`not_applicable` behavior;
 - deterministic history recency through `CandidateEvaluationContext.asOf`;
 - source scans that prohibit hidden wall-clock decisions;
+- response-led flat moderate severity across values 3-6;
+- standard versus elevated non-hard moderate review urgency;
+- candidate-specific response applicability and readiness precedence;
+- selected-result readiness, executable alternatives, all-non-executable pools, and global urgent-review visibility;
+- numeric and ranking invariance when only severity or required response changes;
 - same-exercise progression versus observational cross-exercise transitions;
 - pipeline snapshots for bug localization.
 

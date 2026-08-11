@@ -60,9 +60,13 @@ Pain observation/diagnosis, hard legality, candidate suitability, prescription a
 
 Candidate pain matching normalizes `loading.jointStressTags`, `cautionStressTags`, and `contraindicatedStressTags` into source-aware stress facts. One pain signal and one matched stress tag form one canonical fact even when several exercise metadata sources contain that tag. Distinct pain signal IDs remain distinct evidence. Receiver policies then decide independently whether that fact can warn, score, hard-reject, inform assessment context, or create a deferred response requirement.
 
-Stress-overlap breadth and reported pain intensity remain separate. Any future Candidate Intelligence intensity calibration is signal-level, bounded, and owned by pain suitability; it is not multiplied per matched stress fact or duplicated in joint cost. Moderate severity alone is not hard authority. Future dosage and progression decisions also require longitudinal symptom/function response rather than pre-session severity alone.
+Stress-overlap breadth and reported pain intensity remain separate. Candidate Intelligence uses response-led flat moderate severity: severity 3-6 adds no numeric suitability or joint-cost adjustment beyond canonical overlap. Severity 3-4 emits `standard_moderate_review`; severity 5-6 emits `elevated_moderate_review_non_hard`. Neither urgency is hard authority or acute/severe evidence. Any future reviewed intensity calibration remains signal-level, bounded, owned by pain suitability, and dependent on longitudinal symptom/function evidence.
 
-`HistoricalInjury` remains intentionally unconsumed at Candidate Intelligence scope. Current effects, moderate required responses, acute urgency, historical preferred modifications, and hard-authority provenance remain observable even when their future owner is prescription, Session Intent / Session Composer, or external review.
+`CandidatePainExecutionReadinessTrace` classifies only requirements applicable to one candidate, ignoring non-urgent `not_applicable_no_candidate_stress_match` requirements. Its precedence is urgent external review, session role substitution, prescription, candidate review, then `EXECUTABLE_AT_CANDIDATE_SCOPE`. Each `RankedCandidate` exposes this trace. Result readiness reflects rank 1 only, separately lists executable legal candidates and the best executable alternative, and preserves explicit urgent signal IDs across the evaluated pool. It never reranks or silently replaces the selected candidate.
+
+`EXECUTABLE_AT_CANDIDATE_SCOPE` means only that Candidate Intelligence has no unresolved pain-response action for that candidate. It does not establish prescription, session, week, product-display, or medical-safety readiness.
+
+`HistoricalInjury` remains intentionally unconsumed at Candidate Intelligence scope. Current effects, moderate required responses and review urgency, acute urgency, historical preferred modifications, and hard-authority provenance remain observable even when their future owner is prescription, Session Intent / Session Composer, or external review.
 
 ## Equipment
 

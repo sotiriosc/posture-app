@@ -10,6 +10,7 @@ import {
   NO_PAIN_OR_INJURY,
   REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
+  buildCandidatePainExecutionReadinessTrace,
   buildExerciseTransitionTraces,
   buildHorizontalRowSelectionTrace,
   runCandidateRankingLab,
@@ -955,7 +956,7 @@ function assessmentTraces(candidate: RankedCandidate): readonly AssessmentReleva
 function printRankedTable(result: CandidateRankingResult): void {
   console.log("\nRanked Candidates");
   printTable(
-    ["Rank", "Exercise", "Total", "Assessment", "Alignment", "Pain", "Phase"],
+    ["Rank", "Exercise", "Total", "Assessment", "Alignment", "Pain", "Phase", "Pain Readiness"],
     result.rankedCandidates.map((candidate) => {
       const components = new Map(candidate.components.map((component) => [component.id, component.value]));
 
@@ -967,6 +968,7 @@ function printRankedTable(result: CandidateRankingResult): void {
         formatNumber(components.get("alignment_fit") ?? 0),
         formatNumber(components.get("pain_suitability") ?? 0),
         formatNumber(components.get("phase_fit") ?? 0),
+        candidate.painExecutionReadiness.readiness,
       ];
     }),
   );
@@ -1188,17 +1190,25 @@ function printPainEvidence(result: CandidateRankingResult): void {
       exerciseId: candidate.exercise.id,
       exerciseName: candidate.exercise.name,
       trace: candidate.painMatchTrace,
+      readiness: candidate.painExecutionReadiness,
       assessmentTraces: assessmentTraces(candidate),
     })),
     ...result.hardRejectedCandidates
-      .filter((candidate) =>
-        candidate.eligibility.rejectionReasons.some((reason) => reason.painEvidence),
-      )
+      .filter((candidate) => {
+        const readiness = buildCandidatePainExecutionReadinessTrace(
+          candidate.eligibility.painMatchTrace,
+        );
+
+        return readiness.applicableRequirements.length > 0;
+      })
       .filter((candidate) => !rankedById.has(candidate.exercise.id))
       .map((candidate) => ({
         exerciseId: candidate.exercise.id,
         exerciseName: candidate.exercise.name,
         trace: candidate.eligibility.painMatchTrace,
+        readiness: buildCandidatePainExecutionReadinessTrace(
+          candidate.eligibility.painMatchTrace,
+        ),
         assessmentTraces: [] as readonly AssessmentRelevanceTrace[],
       })),
   ];
@@ -1211,12 +1221,16 @@ function printPainEvidence(result: CandidateRankingResult): void {
 
   entries.forEach((entry) => {
     console.log(`\n${entry.exerciseId} / ${entry.exerciseName}`);
+    console.log(
+      `Candidate pain readiness: ${entry.readiness.readiness}; ${entry.readiness.reason}`,
+    );
     printTable(
-      ["PAIN SIGNAL", "Kind", "Severity", "Region / Side", "Requested Action", "Unique Matches"],
+      ["PAIN SIGNAL", "Kind", "Severity", "Review Urgency", "Region / Side", "Requested Action", "Unique Matches"],
       entry.trace.signalTraces.map((signal) => [
         signal.signalId,
         signal.signalKind,
         signal.severity === null ? "unknown" : String(signal.severity),
+        signal.moderateReviewUrgency ?? "not_applicable",
         `${signal.region ?? "unknown"} / ${signal.side ?? "unknown"}`,
         signal.requestedAction ?? "none",
         String(signal.uniqueMatchCount),
@@ -1542,6 +1556,19 @@ function renderResult(result: CandidateRankingResult): void {
       ["painConcerns", String(result.interpretedContext.relevantPainIds.length)],
       ["fatigueSignals", result.request.fatigueSignals.join(", ")],
       ["legalCandidates", String(result.legalCandidateCount)],
+      ["selectedCandidateId", result.painExecutionReadiness.selectedCandidateId ?? "none"],
+      [
+        "selectedCandidatePainReadiness",
+        result.painExecutionReadiness.selectedCandidatePainReadiness ?? "none",
+      ],
+      [
+        "bestExecutableCandidateId",
+        result.painExecutionReadiness.bestExecutableCandidateId ?? "none",
+      ],
+      [
+        "urgentReviewSignalIds",
+        result.painExecutionReadiness.urgentReviewSignalIds.join(", ") || "none",
+      ],
     ],
   );
   printRankedTable(result);

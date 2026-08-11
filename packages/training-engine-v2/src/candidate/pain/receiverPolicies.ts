@@ -385,6 +385,7 @@ export function painEligibilityEvidence(input: {
     signalId: input.signalId,
     signalKind: signal.signalKind,
     severity: signal.severity,
+    moderateReviewUrgency: signal.moderateReviewUrgency,
     requestedAction: signal.requestedAction,
     urgentReviewRecommended: signal.urgentReviewRecommended,
     authoritySource: signal.hardContraindicationSource,

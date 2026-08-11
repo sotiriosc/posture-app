@@ -43,7 +43,7 @@ The package models the intended reasoning order without implementing production 
 - `alignment.ts`: assessment-derived alignment priority contracts.
 - `pipelineObservability.ts`: stage snapshots for debugging and bug localization.
 - `candidate/request.ts`: serializable Candidate Intelligence context, including explicit evaluation time.
-- `candidate/pain/*`: canonical source-aware exercise stress facts, signal/tag matching, receiver-specific policies, response ownership, and serializable pain traces.
+- `candidate/pain/*`: canonical source-aware exercise stress facts, signal/tag matching, review urgency, receiver-specific policies, candidate/result execution readiness, response ownership, and serializable pain traces.
 - `candidate/scoring/assessment/*`: modular assessment normalization, relevance, feature target, demand/capability, challenge, budget, and trace responsibilities.
 - `transitionComparison.ts`: observational structural deltas for reviewed cross-exercise transitions with no automatic selection effect.
 
@@ -85,12 +85,16 @@ The settled Candidate Intelligence pain path is:
 ```text
 normalized pain inputs + structured exercise stress metadata
   -> canonical source-aware signal/tag facts
+  -> response-led flat moderate review urgency
   -> receiver-specific warning, score, eligibility, and assessment decisions
   -> structured response ownership and execution/defer status
+  -> candidate-aware and selected-result execution readiness
   -> eligibility, score components, DecisionTrace, and developer lab
 ```
 
-Canonical matching owns shared evidence, not shared policy. Pain suitability counts all supported soft signal/tag facts; joint cost counts only facts with joint-stress or caution provenance; hard contraindication and acute/severe eligibility retain their narrower explicit authority filters. Assessment may also use structured region or movement context, but it reuses canonical facts whenever stress matching is required. Prescription and Session Composer requirements are exposed without being executed in Candidate Intelligence.
+Canonical matching owns shared evidence, not shared policy. Pain suitability counts all supported soft signal/tag facts; joint cost counts only facts with joint-stress or caution provenance; hard contraindication and acute/severe eligibility retain their narrower explicit authority filters. Moderate severity 3-6 is numerically flat and changes non-hard review urgency only. Assessment may also use structured region or movement context, but it reuses canonical facts whenever stress matching is required.
+
+Execution readiness is candidate-specific. Non-urgent actions with `not_applicable_no_candidate_stress_match` are ignored for that candidate; explicit acute urgency remains globally visible. Result readiness reflects the selected legal candidate, exposes lower-ranked executable candidates without choosing them, and excludes hard-rejected candidates from selected-result readiness. Prescription and Session Composer requirements are visible but are not executed in Candidate Intelligence.
 
 ## Thin Orchestrators
 

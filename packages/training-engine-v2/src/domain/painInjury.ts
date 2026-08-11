@@ -48,6 +48,10 @@ export interface ModeratePain {
   readonly description: string;
 }
 
+export type ModeratePainReviewUrgency =
+  | "standard_moderate_review"
+  | "elevated_moderate_review_non_hard";
+
 export interface AcuteSeverePain {
   readonly kind: "acute_severe_pain";
   readonly id: string;

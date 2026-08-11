@@ -65,7 +65,7 @@ describe("pain semantics and calibration audit", () => {
     expect(second).toEqual(data);
     expect(renderPainSemanticsCalibrationReview(second)).toBe(rendered);
     expect(
-      rendered.match(/PAIN_CONTRACT_READY_FOR_HUMAN_CALIBRATION/g),
+      rendered.match(/PAIN_CONTRACT_READY/g),
     ).toHaveLength(1);
 
     const requiredFields = [
