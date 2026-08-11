@@ -76,6 +76,20 @@ function progressionReadinessBlockers(
   if (evidence.continuityRunwayEvidence.includes("unknown")) {
     blockers.push("continuity_runway_unknown");
   }
+  if (
+    !evidence.continuityRunwayEvidence.includes(
+      "same_exercise_remains_productive",
+    )
+  ) {
+    blockers.push("same_exercise_productivity_evidence_missing");
+  }
+  if (
+    !evidence.continuityRunwayEvidence.includes(
+      "progression_axes_remain_available",
+    )
+  ) {
+    blockers.push("progression_axes_runway_evidence_missing");
+  }
 
   if (evidence.repeatedEvidence !== "repeated_success") {
     blockers.push(`repeated_evidence_${evidence.repeatedEvidence}`);
@@ -114,6 +128,8 @@ function classifyProgressionReadiness(
         "recovery_insufficient_observation",
         "recovery_unknown",
         "continuity_runway_unknown",
+        "same_exercise_productivity_evidence_missing",
+        "progression_axes_runway_evidence_missing",
         "repeated_evidence_isolated_success",
         "repeated_evidence_insufficient_history",
         "repeated_evidence_mixed_response",
@@ -132,6 +148,12 @@ function classifyProgressionReadiness(
     evidence.executionQualityEvidence === "all_required_criteria_met" &&
     evidence.painResponseEvidence === "no_unresolved_response_requirement" &&
     evidence.recoveryEvidence === "recovered_as_expected" &&
+    evidence.continuityRunwayEvidence.includes(
+      "same_exercise_remains_productive",
+    ) &&
+    evidence.continuityRunwayEvidence.includes(
+      "progression_axes_remain_available",
+    ) &&
     evidence.repeatedEvidence === "repeated_success"
   ) {
     return "READY_FOR_PROGRESSION_REVIEW";

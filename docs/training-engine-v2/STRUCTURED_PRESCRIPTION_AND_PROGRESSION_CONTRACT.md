@@ -216,6 +216,7 @@ It distinguishes:
 - `VALID_PRESCRIPTION_CONTEXT`;
 - `INVALID_EQUIPMENT_INPUT`;
 - `MISSING_REQUIRED_EQUIPMENT`;
+- `INVALID_PRESCRIPTION`;
 - `INVALID_DOSE`;
 - `UNRESOLVED_EXECUTION_REQUIREMENT`.
 
@@ -224,8 +225,11 @@ Invalid `EquipmentCapabilities` cannot become executable prescription truth. `lo
 Validation proves:
 
 - all dose modes are discriminated;
+- prescription identity, source exposure event identity, phase ID, exercise ID, created time, rationale, provenance, and canonical progression axes are valid;
+- prescription exercise identity matches the exercise definition being validated;
 - mode-required fields are present;
 - mode-incompatible fields are rejected;
+- target units match their owned field, and unknown or not-prescribed targets cannot hide numeric values;
 - counts are positive integers;
 - ranges are ordered;
 - time, distance, rest, and load are finite and positive where prescribed;
@@ -240,11 +244,21 @@ Validation proves:
 - RPE and RIR ranges are bounded and not converted;
 - required form criteria have unique IDs and provenance;
 - quality-limited effort references valid required criteria;
+- completed-performance records validate planned-vs-actual identity, occurrence time, completion status, actual dose, quality observations, pain/recovery references, substitutions, notes, and provenance;
+- progression evidence validates prescription/performance references, category enums, continuity/runway evidence, repeated evidence, and notes;
 - failed required quality prevents readiness;
 - unresolved pain response prevents readiness;
 - recovery concern prevents readiness;
-- insufficient observation remains insufficient evidence;
+- missing same-exercise productivity evidence or progression-axis runway evidence remains insufficient evidence;
 - readiness never selects an exercise transition.
+
+## Runtime Truth Hardening
+
+The validation boundary now rejects malformed prescription runtime truth before it can be classified as executable. A context with any prescription identity, binding, timestamp, phase, rationale, provenance, progression-axis, dose, load, laterality, support, lever, range, tempo, effort, execution-standard, performance-record, or progression-evidence error cannot fall through to `VALID_PRESCRIPTION_CONTEXT`.
+
+`createdAt` and completed-performance `occurredAt` values must be explicit ISO-8601 datetimes with timezone truth. Local-time strings and impossible calendar dates are invalid. Validation does not synthesize the current wall-clock time.
+
+Readiness for progression review requires both positive continuity facts: the same exercise remains productive, and progression axes remain available. Missing either fact is `INSUFFICIENT_EVIDENCE`; the trace still keeps `selectedAxis=null`, `selectedTransition=null`, and `automaticProgressionDecision=false`.
 
 ## Counterfactual Invariants
 

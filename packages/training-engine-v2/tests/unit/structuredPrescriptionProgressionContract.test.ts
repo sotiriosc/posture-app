@@ -25,9 +25,13 @@ import {
   getControlledCandidateScenario,
   runCandidateRankingLab,
   validateDose,
+  validateExercisePerformanceContext,
+  validateExercisePerformanceRecord,
   validatePrescription,
+  validateProgressionEvidence,
   validateStructuredPrescriptionContext,
   type ExerciseDose,
+  type ExercisePerformanceRecord,
   type ExercisePrescription,
   type ProgressionEvidence,
 } from "../../src";
@@ -61,6 +65,36 @@ function withDose(
   dose: ExerciseDose,
 ): ExercisePrescription {
   return { ...prescription, dose };
+}
+
+function performanceRecord(
+  overrides: Partial<ExercisePerformanceRecord> = {},
+): ExercisePerformanceRecord {
+  const prescription = fixture("forearm-plank");
+  const criterionId = prescription.executionStandard.criteria[0]!.id;
+  return {
+    performanceRecordId: "fixture-performance-forearm-plank-1",
+    prescriptionId: prescription.prescriptionId,
+    exerciseId: prescription.exerciseId,
+    occurredAt: "2026-08-12T12:00:00.000Z",
+    completionStatus: "completed_as_planned",
+    actualDose: prescription.dose,
+    qualityObservations: [
+      {
+        criterionId,
+        result: "met",
+        source: "self_report",
+        provenance: prescription.provenance,
+      },
+    ],
+    unresolvedPainResponseEvidenceIds: [],
+    recoveryEvidenceIds: ["fixture-recovery-1"],
+    recoveryStatus: "recovered_as_expected",
+    substitutions: [],
+    notes: [],
+    provenance: prescription.provenance,
+    ...overrides,
+  };
 }
 
 function readyEvidence(
@@ -387,6 +421,399 @@ describe("structured prescription and same-exercise progression contract", () =>
         } as ExerciseDose),
       }).status,
     ).toBe("INVALID_DOSE");
+  });
+
+  it("never returns valid prescription context for identity, binding, phase, time, rationale, provenance, or axis errors", () => {
+    const plank = fixture("forearm-plank");
+    const validContext = {
+      exercise: syntheticExerciseForFixture("forearm-plank"),
+      equipment: CAPABILITY_COMPLETE_TRUNK_CARRY_EQUIPMENT,
+    };
+
+    const invalidPrescriptions: ExercisePrescription[] = [
+      { ...plank, prescriptionId: "" },
+      { ...plank, sourceExposureEventId: "" },
+      { ...plank, createdAt: "" },
+      { ...plank, createdAt: "2026-08-11T12:00:00" },
+      { ...plank, createdAt: "2026-02-31T12:00:00Z" },
+      { ...plank, phaseId: "phase_4" as ExercisePrescription["phaseId"] },
+      { ...plank, exerciseId: "" },
+      { ...plank, rationale: [] },
+      { ...plank, rationale: [""] },
+      { ...plank, provenance: { ...plank.provenance, sourceRef: "" } },
+      {
+        ...plank,
+        provenance: {
+          ...plank.provenance,
+          source: "fabricated" as ExercisePrescription["provenance"]["source"],
+        },
+      },
+      { ...plank, intendedProgressionAxes: ["duration", "duration"] },
+      {
+        ...plank,
+        intendedProgressionAxes: [
+          "duration",
+          "magic_axis" as ExercisePrescription["intendedProgressionAxes"][number],
+        ],
+      },
+    ];
+
+    for (const prescription of invalidPrescriptions) {
+      const result = validateStructuredPrescriptionContext({
+        ...validContext,
+        prescription,
+      });
+      expect(result.status).toBe("INVALID_PRESCRIPTION");
+      expect(result.findings.some((finding) => finding.severity === "error")).toBe(true);
+      expect(result.status).not.toBe("VALID_PRESCRIPTION_CONTEXT");
+    }
+
+    expect(
+      validateStructuredPrescriptionContext({
+        ...validContext,
+        prescription: { ...plank, exerciseId: "different-exercise" },
+      }).status,
+    ).toBe("INVALID_PRESCRIPTION");
+  });
+
+  it("rejects wrong numeric target units and unknown or not-prescribed hidden numeric values", () => {
+    expect(
+      codes(
+        validateDose({
+          ...fixture("machine-abdominal-crunch").dose,
+          sets: { kind: "exact", value: 2, unit: "seconds" },
+        } as unknown as ExerciseDose),
+      ),
+    ).toContain("invalid_target_unit");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("farmer-carry").dose,
+          distancePerTrip: { kind: "exact", value: 20, unit: "count" },
+        } as unknown as ExerciseDose),
+      ),
+    ).toContain("invalid_target_unit");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("forearm-plank").dose,
+          duration: { kind: "exact", value: 20, unit: "metres" },
+        } as unknown as ExerciseDose),
+      ),
+    ).toContain("invalid_target_unit");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("forearm-plank").dose,
+          duration: { kind: "unknown", unit: "seconds" },
+        } as unknown as ExerciseDose),
+      ),
+    ).toContain("invalid_target_unknown_reason");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("forearm-plank").dose,
+          rest: { kind: "not_prescribed", unit: "count", value: 0 },
+        } as unknown as ExerciseDose),
+      ),
+    ).toEqual(
+      expect.arrayContaining([
+        "invalid_target_unit",
+        "invalid_target_unknown_has_numeric_value",
+      ]),
+    );
+  });
+
+  it("rejects arbitrary or mode-incompatible dose fields and empty explanatory standards", () => {
+    const modeFixtures = [
+      fixture("machine-abdominal-crunch").dose,
+      fixture("forearm-plank").dose,
+      { mode: "breath_cycles", rounds: exactCount(2), breathCycles: { kind: "exact", value: 4, unit: "breath_cycles" } },
+      fixture("farmer-carry").dose,
+      fixture("suitcase-carry").dose,
+      fixture("wall-supported-suitcase-march").dose,
+    ] as readonly ExerciseDose[];
+
+    for (const dose of modeFixtures) {
+      expect(codes(validateDose({ ...dose, arbitrary: true } as unknown as ExerciseDose))).toContain(
+        "mode_incompatible_dose_field",
+      );
+    }
+
+    expect(
+      codes(validateDose({ ...fixture("farmer-carry").dose, sets: exactCount(2) } as unknown as ExerciseDose)),
+    ).toContain("mode_incompatible_dose_field");
+    expect(
+      codes(validateDose({ ...fixture("farmer-carry").dose, repetitions: exactCount(8) } as unknown as ExerciseDose)),
+    ).toContain("mode_incompatible_dose_field");
+    expect(
+      codes(validateDose({ ...fixture("suitcase-carry").dose, distancePerTrip: exactMetres(10) } as unknown as ExerciseDose)),
+    ).toContain("mode_incompatible_dose_field");
+    expect(
+      codes(
+        validateDose({
+          mode: "breath_cycles",
+          rounds: exactCount(2),
+          breathCycles: { kind: "exact", value: 4, unit: "breath_cycles" },
+          gaitControlStandard: "not owned here",
+        } as unknown as ExerciseDose),
+      ),
+    ).toContain("mode_incompatible_dose_field");
+    expect(
+      codes(validateDose({ ...fixture("wall-supported-suitcase-march").dose, trips: exactCount(2) } as unknown as ExerciseDose)),
+    ).toContain("mode_incompatible_dose_field");
+    expect(
+      codes(validateDose({ ...fixture("wall-supported-suitcase-march").dose, durationPerTrip: exactSeconds(20) } as unknown as ExerciseDose)),
+    ).toContain("mode_incompatible_dose_field");
+    expect(
+      codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, stationary: true } as unknown as ExerciseDose)),
+    ).toContain("mode_incompatible_dose_field");
+    expect(
+      codes(validateDose({ ...fixture("farmer-carry").dose, gaitControlStandard: "" } as ExerciseDose)),
+    ).toContain("invalid_dose_gait_control_standard");
+    expect(
+      codes(validateDose({ ...fixture("wall-supported-suitcase-march").dose, marchControlStandard: "" } as ExerciseDose)),
+    ).toContain("invalid_dose_march_control_standard");
+    expect(
+      codes(
+        validateDose({
+          mode: "breath_cycles",
+          rounds: exactCount(2),
+          breathCycles: { kind: "exact", value: 4, unit: "breath_cycles" },
+          breathingPhaseStandard: "",
+        } as ExerciseDose),
+      ),
+    ).toContain("invalid_dose_breathing_phase_standard");
+  });
+
+  it("rejects invalid laterality, side behavior, side relationships, and load-side conflicts", () => {
+    expect(
+      codes(
+        validateDose({
+          ...fixture("forearm-plank").dose,
+          laterality: { kind: "diagonal" },
+        } as unknown as ExerciseDose),
+      ),
+    ).toContain("invalid_laterality_kind");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("forearm-plank").dose,
+          laterality: { kind: "single_side" },
+        } as unknown as ExerciseDose),
+      ),
+    ).toContain("invalid_laterality_side");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("wall-supported-suitcase-march").dose,
+          sideBehavior: {
+            loadSide: "left",
+            supportSide: "right",
+            sideRelationship: "same_side",
+          },
+        } as ExerciseDose),
+      ),
+    ).toContain("invalid_side_relationship_truth");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("wall-supported-suitcase-march").dose,
+          sideBehavior: {
+            loadSide: "left",
+            supportSide: "left",
+            sideRelationship: "opposite_side",
+          },
+        } as ExerciseDose),
+      ),
+    ).toContain("invalid_side_relationship_truth");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("suitcase-carry").dose,
+          sideBehavior: {
+            movementSide: { kind: "each_side" },
+            loadSide: "right",
+            startingSide: "right",
+            alternates: true,
+          },
+        } as ExerciseDose),
+      ),
+    ).toContain("invalid_load_side_behavior_mismatch");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("suitcase-carry").dose,
+          sideBehavior: { alternates: "yes" },
+        } as unknown as ExerciseDose),
+      ),
+    ).toContain("invalid_side_behavior_alternates");
+  });
+
+  it("rejects invalid support, lever, range, tempo, effort, and band load values", () => {
+    expect(
+      codes(validateDose({ ...fixture("forearm-plank").dose, support: { level: "floating" } } as unknown as ExerciseDose)),
+    ).toContain("invalid_support_level");
+    expect(
+      codes(validateDose({ ...fixture("forearm-plank").dose, support: { level: "partial", surface: "cloud" } } as unknown as ExerciseDose)),
+    ).toContain("invalid_support_surface");
+    expect(
+      codes(validateDose({ ...fixture("forearm-plank").dose, lever: { state: "longerish" } } as unknown as ExerciseDose)),
+    ).toContain("invalid_lever_state");
+    expect(
+      codes(
+        validateDose({
+          ...fixture("forearm-plank").dose,
+          lever: {
+            state: "standard",
+            variant: { exerciseId: "forearm-plank", variantId: "", description: "" },
+          },
+        } as ExerciseDose),
+      ),
+    ).toEqual(expect.arrayContaining(["invalid_lever_variant_id", "invalid_lever_variant_description"]));
+    expect(
+      codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, range: { kind: "mystery" } } as unknown as ExerciseDose)),
+    ).toContain("invalid_range_kind");
+    expect(
+      codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, range: { kind: "intentionally_partial", description: "" } } as ExerciseDose)),
+    ).toContain("invalid_range_description");
+    expect(
+      codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, tempo: { concentricIntent: "warp" } } as unknown as ExerciseDose)),
+    ).toContain("invalid_tempo_concentric_intent");
+    expect(
+      codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, effort: { kind: "maximalish" } } as unknown as ExerciseDose)),
+    ).toContain("invalid_effort_kind");
+    expect(
+      codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, effort: { kind: "phase_qualitative_band", band: "extreme" } } as unknown as ExerciseDose)),
+    ).toContain("invalid_effort_qualitative_band");
+    expect(
+      codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, effort: { kind: "rir", target: { kind: "exact", value: 2, min: 1 } } } as unknown as ExerciseDose)),
+    ).toContain("invalid_effort_target_field");
+    expect(
+      codes(validateDose({ ...fixture("forearm-plank").dose, effort: { kind: "quality_limited", requiredCriterionIds: ["forearm-plank-position-control", "forearm-plank-position-control"], description: "" } } as ExerciseDose)),
+    ).toEqual(
+      expect.arrayContaining([
+        "duplicate_quality_limited_effort_criterion_ref",
+        "invalid_quality_limited_effort_description",
+      ]),
+    );
+    expect(
+      codes(validateDose({ ...fixture("forearm-plank").dose, effort: { kind: "self_selected_by_reviewed_standard", standardId: "", description: "" } } as ExerciseDose)),
+    ).toEqual(expect.arrayContaining(["invalid_effort_standard_id", "invalid_effort_description"]));
+    expect(
+      codes(validateDose({ ...fixture("forearm-plank").dose, load: { kind: "band_tension", target: { kind: "elastic_guess", level: "heavy" } } } as unknown as ExerciseDose)),
+    ).toContain("invalid_load_band_tension_kind");
+    expect(
+      codes(validateDose({ ...fixture("forearm-plank").dose, load: { kind: "band_tension", target: { kind: "band_level", level: "super_heavy" } } } as unknown as ExerciseDose)),
+    ).toContain("invalid_load_band_level");
+    expect(
+      codes(validateDose({ ...fixture("forearm-plank").dose, load: { kind: "band_tension", target: { kind: "reviewed_band_reference", referenceId: "", description: "" } } } as ExerciseDose)),
+    ).toEqual(expect.arrayContaining(["invalid_load_band_reference", "invalid_load_band_reference_description"]));
+  });
+
+  it("validates malformed performance records and performance/prescription context", () => {
+    const plank = fixture("forearm-plank");
+    const duplicateObservation = performanceRecord().qualityObservations[0]!;
+    const malformed = performanceRecord({
+      performanceRecordId: "",
+      occurredAt: "2026-08-12T12:00:00",
+      completionStatus: "mostly_done" as ExercisePerformanceRecord["completionStatus"],
+      qualityObservations: [
+        duplicateObservation,
+        { ...duplicateObservation },
+        {
+          criterionId: "",
+          result: "excellent" as ExercisePerformanceRecord["qualityObservations"][number]["result"],
+          source: "coachish" as ExercisePerformanceRecord["qualityObservations"][number]["source"],
+          provenance: { ...plank.provenance, sourceRef: "" },
+        },
+      ],
+      unresolvedPainResponseEvidenceIds: [""],
+      recoveryEvidenceIds: [""],
+      substitutions: [
+        {
+          originalExerciseId: "",
+          substitutedExerciseId: "",
+          reason: "",
+          provenance: { ...plank.provenance, sourceRef: "" },
+        },
+      ],
+    });
+    expect(codes(validateExercisePerformanceRecord(malformed))).toEqual(
+      expect.arrayContaining([
+        "missing_performance_record_id",
+        "invalid_performance_occurred_at",
+        "invalid_performance_completion_status",
+        "duplicate_performance_quality_observation",
+        "invalid_performance_quality_criterion_id",
+        "invalid_performance_quality_result",
+        "invalid_performance_quality_source",
+        "invalid_performance_pain_response_id",
+        "invalid_performance_recovery_evidence_id",
+        "invalid_performance_substitution_reason",
+      ]),
+    );
+
+    const context = validateExercisePerformanceContext({
+      prescription: plank,
+      performance: performanceRecord({
+        prescriptionId: "other-prescription",
+        exerciseId: "other-exercise",
+        qualityObservations: [
+          {
+            ...duplicateObservation,
+            criterionId: "missing-criterion",
+          },
+        ],
+      }),
+    });
+    expect(context.status).toBe("INVALID_PERFORMANCE_RECORD");
+    expect(codes(context.findings)).toEqual(
+      expect.arrayContaining([
+        "invalid_performance_prescription_mismatch",
+        "invalid_performance_exercise_mismatch",
+        "invalid_performance_quality_criterion_ref",
+      ]),
+    );
+  });
+
+  it("validates malformed progression evidence without selecting policy thresholds", () => {
+    const plank = fixture("forearm-plank");
+    const findings = validateProgressionEvidence(
+      {
+        prescriptionId: "",
+        exerciseId: "",
+        doseEvidence: "great" as ProgressionEvidence["doseEvidence"],
+        executionQualityEvidence:
+          "excellent" as ProgressionEvidence["executionQualityEvidence"],
+        painResponseEvidence: "fine" as ProgressionEvidence["painResponseEvidence"],
+        recoveryEvidence: "fast" as ProgressionEvidence["recoveryEvidence"],
+        continuityRunwayEvidence: [
+          "unknown",
+          "unknown",
+          "magic" as ProgressionEvidence["continuityRunwayEvidence"][number],
+        ],
+        repeatedEvidence: "sometimes" as ProgressionEvidence["repeatedEvidence"],
+        evidenceRecordIds: [""],
+        notes: [1 as unknown as string],
+      },
+      { prescription: plank, performanceRecords: [performanceRecord()] },
+    );
+    expect(codes(findings)).toEqual(
+      expect.arrayContaining([
+        "missing_progression_prescription_id",
+        "missing_progression_exercise_id",
+        "invalid_progression_dose_evidence",
+        "invalid_progression_execution_quality_evidence",
+        "invalid_progression_pain_response_evidence",
+        "invalid_progression_recovery_evidence",
+        "invalid_progression_repeated_evidence",
+        "invalid_progression_continuity_evidence",
+        "duplicate_progression_continuity_evidence",
+        "invalid_progression_evidence_record_id",
+        "invalid_notes_array",
+      ]),
+    );
   });
 
   it("classifies progression readiness without selecting an axis, dose increase, or transition", () => {

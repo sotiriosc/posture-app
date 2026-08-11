@@ -132,6 +132,8 @@ Direct developmental, meaningful secondary, incidental bracing, and capacity exp
 
 `domain/progression.ts` owns the canonical progression-axis vocabulary. Structured prescription modules represent dose, load, laterality, support, lever, range, tempo, effort, rest, execution criteria, completed performance, and readiness evidence. A readiness trace can hold, regress/review, report insufficient evidence, or mark readiness for progression review, but it never chooses a dose increase, axis, phase change, or exercise transition.
 
+Runtime validation binds each prescription to its exercise definition and requires stable prescription/source IDs, explicit ISO-8601 timestamps with timezone, valid provenance, canonical progression axes, valid mode-owned dose fields, execution-standard references, completed-performance records, and progression evidence. Malformed runtime evidence remains invalid or insufficient; readiness for progression review requires both same-exercise productivity evidence and progression-axis runway evidence.
+
 One prescription is one source exposure event. Structured dose and performance evidence may later feed ledgers and progression models, but this contract adds no production exercise metadata and changes no current candidate ranking, eligibility, phase, pain, assessment, or transition behavior.
 
 Each purpose in an `ExerciseTransitionTrace` has a deterministic evidence trace with status `structurally_confirmed`, `contextual_intent`, `unknown_metadata`, or `contradicted`. Direct mechanics purposes use normalized source/target deltas only. Programming intent and multidimensional support purposes remain contextual, and transition notes cannot convert missing or contradictory mechanics into structural confirmation.

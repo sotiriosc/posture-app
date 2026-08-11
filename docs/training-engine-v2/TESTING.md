@@ -43,8 +43,10 @@ Tests should remain small and readable at the component boundary. Current respon
 - numeric and ranking invariance when only severity or required response changes;
 - same-exercise progression versus observational cross-exercise transitions;
 - structured prescription dose modes, load/laterality/support/tempo/effort validation, and execution-quality criteria;
+- runtime prescription truth validation for identity, source exposure event, exercise binding, phase, explicit timestamp, rationale, provenance, canonical progression axes, units, mode-owned fields, side truth, range/tempo/effort/load variants, and execution-standard references;
+- completed-performance and progression-evidence validation for planned-vs-actual identity, explicit occurrence time, criterion references, pain/recovery references, substitutions, continuity/runway evidence, and malformed notes;
 - synthetic structured trunk/carry prescription fixtures with no production exercise rows or recommended values;
-- same-exercise progression-readiness blockers for form, pain response, recovery, and insufficient observation;
+- same-exercise progression-readiness blockers for form, pain response, recovery, insufficient observation, missing same-exercise productivity evidence, and missing progression-axis runway evidence;
 - prescription-only counterfactuals proving hard eligibility, ranking, phase, pain, assessment, and transition behavior remain unchanged;
 - structured prescription contract report and current-behavior fingerprints;
 - pipeline snapshots for bug localization.
