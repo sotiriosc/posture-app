@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable. The first trunk profile tranche is implemented without behavioral influence. The first phase calibration laboratory is accepted, and the contextual phase-annotation contract is now ready for project-owner decision. Final coefficient calibration remains deferred until role/section evidence, unknown-versus-poor semantics, review status and provenance are approved and implemented. Session Composer should not consume these rankings before that revalidation. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.
+Architecture is sound and the candidate pipeline is deterministic/explainable. The first trunk profile tranche is implemented without behavioral influence, and a separate seven-candidate direct trunk/carry catalog tranche is now proposed without production metadata. The first phase calibration laboratory is accepted, and the contextual phase-annotation contract is now ready for project-owner decision. Final coefficient calibration remains deferred until role/section evidence, unknown-versus-poor semantics, review status and provenance are approved and implemented. Session Composer should not consume these rankings before that revalidation. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.
 
 ## Trunk / Core Domain Contract Implementation
 
@@ -33,6 +33,14 @@ The first complete metadata tranche is limited to 90/90 Breathing, Dead Bug, and
 The owner accepted all 15 `PROPOSE_ACCEPTED` field judgments from the representative 14-exercise by 8-function proposal. Ten are implemented in the direct trio; five accepted Push-Up and supported-row judgments remain approved but deferred. The proposal classification remains **TRUNK_PROFILE_TRANCHE_READY_FOR_OWNER_APPROVAL** as the record of the accepted review.
 
 All 17 `PROPOSE_NEEDS_REVIEW` fields remain unresolved. Dead Bug breathing/pressure coordination and Pallof Press anti-lateral-flexion and loaded-bracing values stay unknown; no secondary/support exercise has a partial profile. The full catalog fingerprint is `e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c`, while removing only `mechanics.trunkMechanics` restores `6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a`.
+
+### Minimal Direct Trunk / Carry Catalog Proposal
+
+A deterministic proposal evaluated 24 new candidate concepts and selected Forearm Plank, Forearm Side Plank, Machine Abdominal Crunch, Half-Kneeling Cable Chop, Bilateral Farmer Carry, Suitcase Carry, and Wall-Supported Suitcase March as the smallest coherent first tranche.
+
+Status: **TRUNK_CARRY_CONTRACT_FIXES_REQUIRED**. The review changes no production reference exercise, metadata, score, rank, or behavior. Before a later production tranche, the owner must resolve loaded-gait space and setup capabilities, pain/stress vocabulary, structured load/side/distance/trip/step prescription, provenance, and the transparent single-candidate bootstrap limits for trunk flexion and controlled rotation.
+
+The 17 representative secondary-mechanics proposals remain independently unresolved. They do not block review of the new candidate concepts, and the catalog proposal does not authorize their profile implementation.
 
 ## Contract Review
 
@@ -144,7 +152,7 @@ The 90-row audit recommends 0 annotations as accepted, 16 as needs-review contex
 
 Recommended future boundary: contextual annotation-only phase preference downstream of hard eligibility, owner-approved role/section scope and provenance, removal of both duplicated mechanical bonuses, and explicit omission of phase influence for unknown/conflicting evidence. Final gaps, weight and review attenuation remain unselected.
 
-Remaining P1 work includes contextual-phase contract approval/curation/implementation and owner resolution of the 17 trunk-mechanics needs-review proposals before additional profiles or trunk assessment features. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.
+Remaining P1 work includes contextual-phase contract approval/curation/implementation, owner resolution of the 17 trunk-mechanics needs-review proposals before additional profiles or trunk assessment features, and owner approval plus contract fixes before the proposed direct trunk/carry candidates can become production metadata. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.
 
 ## Pain / Injury Review
 
@@ -182,7 +190,7 @@ The laboratory confirms one bounded intensity adjustment per matched moderate si
 
 Each ranked candidate now exposes candidate-specific pain execution readiness. `CandidateRankingResult.painExecutionReadiness` reflects rank 1 only, lists executable legal candidates and the best executable alternative without reranking, excludes hard-rejected candidates from selected-result readiness, and preserves explicit urgent signals globally. No role substitution, prescription, or Session Composer behavior is added.
 
-PAIN_CONTRACT: **READY**. MODERATE_PAIN_CANDIDATE_POLICY: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**. NUMERIC_MODERATE_SEVERITY_CALIBRATION: **DEFERRED_TO_LONGITUDINAL_ADAPTATION**. The remaining Candidate Intelligence P1 list contains phase calibration only; this does not claim pain is universally calibrated.
+PAIN_CONTRACT: **READY**. MODERATE_PAIN_CANDIDATE_POLICY: **RESOLVED_FOR_CANDIDATE_INTELLIGENCE**. NUMERIC_MODERATE_SEVERITY_CALIBRATION: **DEFERRED_TO_LONGITUDINAL_ADAPTATION**. Pain adds no Candidate Intelligence P1 item; the remaining list contains phase and trunk-domain work and does not claim pain is universally calibrated.
 
 ## Experience / Capability Review
 
@@ -332,6 +340,7 @@ Contextual programming intent remains explicit and retains reviewed transition p
 - Human curation of contextual phase annotations with accepted/needs-review/unknown status and structured provenance.
 - Implementation of the approved resolver, unknown-versus-poor semantics, mechanical-bonus removal, final coefficients and full revalidation before Session Composer.
 - Project-owner resolution of the 17 remaining trunk-mechanics proposals before any additional complete profiles or normalized trunk assessment features.
+- Project-owner approval and contract fixes for the proposed seven-candidate direct trunk/carry tranche before any new production reference exercises are implemented.
 
 ### P2
 
@@ -342,4 +351,4 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ## Readiness Rationale
 
-The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, and the first trunk profiles remain observability-only. Contextual phase evidence still needs approval, curation, implementation and full coefficient revalidation; the remaining trunk proposals also need owner resolution before assessment expansion. The correct state remains targeted fixes before composition.
+The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, and the first trunk profiles remain observability-only. Contextual phase evidence still needs approval, curation, implementation and full coefficient revalidation; the remaining trunk-mechanics proposals need owner resolution before assessment expansion; and the proposed trunk/carry catalog needs contract fixes before production implementation. The correct state remains targeted fixes before composition.

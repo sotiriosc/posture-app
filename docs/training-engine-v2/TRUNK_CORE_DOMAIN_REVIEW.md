@@ -21,6 +21,12 @@ The project owner accepted all 15 `PROPOSE_ACCEPTED` judgments and authorized co
 
 Those profiles contain ten accepted fields and fourteen explicit unknowns. Every accepted annotation uses `human_exercise_science_review`; no qualified proposal was promoted. Five accepted secondary/support judgments are approved but deferred, all 17 needs-review proposals remain unresolved, and secondary/support exercises remain unprofiled.
 
+## Minimal Direct Trunk / Carry Catalog Proposal Status
+
+A separate deterministic review evaluated 24 new direct trunk/core and carry concepts and selected a seven-candidate minimal tranche: Forearm Plank, Forearm Side Plank, Machine Abdominal Crunch, Half-Kneeling Cable Chop, Bilateral Farmer Carry, Suitcase Carry, and Wall-Supported Suitcase March.
+
+Its classification is `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`. The proposal changes no production exercise or behavior and does not authorize implementation. Equipment, pain/stress, prescription, provenance, and single-candidate bootstrap decisions remain owner dependencies. The 17 qualified secondary-mechanics proposals remain independently unresolved; they do not block review of this separate catalog proposal.
+
 ## Scope and Evidence
 
 - Current branch reference catalog: 30/30 exercises audited.
@@ -319,10 +325,12 @@ No phase coefficient or final suitability value is selected here. Catalog curati
 2. COMPLETED: Added typed MovementRole values for anti_lateral_flexion_core, trunk_flexion, trunk_rotation, and loaded_bracing; carry remains separate as loaded gait/transport.
 3. COMPLETED: Added a compact, review/provenance-bearing TrunkMechanicsProfile, pure validation, and an observability-only trace without scoring or hidden behavior.
 4. COMPLETED: Added owner-reviewed complete profiles for 90/90 Breathing, Dead Bug, and Pallof Press with ten accepted fields and fourteen explicit unknowns.
-5. Resolve the 17 needs-review proposals and expand only approved complete profiles, then add a minimal progression runway for each approved function and carry regression family.
-6. Add normalized trunk assessment features and bounded feature-specific relevance before Session Composer consumes assessment priorities.
-7. Add prescription units for sets/reps/time/distance/trips/load/side and implement separate direct, secondary, incidental, and capacity ledger lanes.
-8. Apply accepted role/section-scoped phase annotations and re-run cross-goal, pain, phase, history, weekly-coverage, and longitudinal counterfactuals before Session Composer.
+5. COMPLETED PROPOSAL: Evaluated 24 direct trunk/carry candidate concepts and selected a seven-candidate minimal tranche; classification TRUNK_CARRY_CONTRACT_FIXES_REQUIRED authorizes no production metadata.
+6. Resolve the proposed trunk/carry equipment, pain/stress, prescription, provenance, and single-candidate bootstrap decisions before any catalog implementation.
+7. Resolve the 17 needs-review proposals and expand only approved complete profiles, then add a minimal progression runway for each approved function and carry regression family.
+8. Add normalized trunk assessment features and bounded feature-specific relevance before Session Composer consumes assessment priorities.
+9. Add prescription units for sets/reps/time/distance/trips/load/side and implement separate direct, secondary, incidental, and capacity ledger lanes.
+10. Apply accepted role/section-scoped phase annotations and re-run cross-goal, pain, phase, history, weekly-coverage, and longitudinal counterfactuals before Session Composer.
 
 ## Explicit Uncertainties
 

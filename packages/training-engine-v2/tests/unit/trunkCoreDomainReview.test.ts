@@ -170,9 +170,12 @@ describe("trunk/core domain and coverage review", () => {
   it("records owner acceptance and the next pre-Composer implementation boundary", () => {
     expect(data.classification).toBe("TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION");
     expect(data.implementationStatus).toBe("FIRST_TRUNK_PROFILE_TRANCHE_IMPLEMENTED");
-    expect(data.implementationOrder).toHaveLength(8);
+    expect(data.implementationOrder).toHaveLength(10);
     expect(data.implementationOrder.slice(0, 4).every((step) => step.startsWith("COMPLETED:")))
       .toBe(true);
+    expect(data.implementationOrder[4]).toContain(
+      "TRUNK_CARRY_CONTRACT_FIXES_REQUIRED",
+    );
     expect(data.implementationOrder.at(-1)).toContain("before Session Composer");
     expect(data.uncertainties).toHaveLength(7);
   });
@@ -185,6 +188,9 @@ describe("trunk/core domain and coverage review", () => {
     expect(rendered).toContain("## Owner-Accepted Contract Implementation");
     expect(rendered).toContain(
       "## First Tranche Owner Approval and Implementation",
+    );
+    expect(rendered).toContain(
+      "## Minimal Direct Trunk / Carry Catalog Proposal Status",
     );
     expect(rendered).toContain("15 `PROPOSE_ACCEPTED`");
     expect(rendered).toContain("ten accepted fields and fourteen explicit unknowns");
