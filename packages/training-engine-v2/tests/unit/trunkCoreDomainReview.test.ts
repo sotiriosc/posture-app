@@ -14,7 +14,7 @@ import {
 const data = buildTrunkCoreDomainReviewData();
 
 describe("trunk/core domain and coverage review", () => {
-  it("records the current primitive contract without inventing anatomy or functions", () => {
+  it("records the owner-approved primitive contract without inventing anatomy", () => {
     expect(MUSCLE_GROUPS).toContain("trunk");
     expect(MUSCLE_GROUPS).not.toEqual(
       expect.arrayContaining(["abdominals", "obliques", "spinal_extensors"]),
@@ -28,15 +28,11 @@ describe("trunk/core domain and coverage review", () => {
         "breathing_position",
         "anti_extension_core",
         "anti_rotation_core",
-        "carry",
-      ]),
-    );
-    expect(MOVEMENT_ROLES).not.toEqual(
-      expect.arrayContaining([
         "anti_lateral_flexion_core",
         "trunk_flexion",
         "trunk_rotation",
         "loaded_bracing",
+        "carry",
       ]),
     );
   });
@@ -168,11 +164,14 @@ describe("trunk/core domain and coverage review", () => {
     );
   });
 
-  it("stops at owner decision with an explicit pre-Composer implementation order", () => {
+  it("records owner acceptance and the next pre-Composer implementation boundary", () => {
     expect(data.classification).toBe("TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION");
+    expect(data.implementationStatus).toBe("TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED");
     expect(data.implementationOrder).toHaveLength(8);
+    expect(data.implementationOrder.slice(0, 3).every((step) => step.startsWith("COMPLETED:")))
+      .toBe(true);
     expect(data.implementationOrder.at(-1)).toContain("start Session Composer only after");
-    expect(data.uncertainties).toHaveLength(8);
+    expect(data.uncertainties).toHaveLength(7);
   });
 
   it("renders the deterministic complete report", () => {
@@ -180,8 +179,10 @@ describe("trunk/core domain and coverage review", () => {
     expect(rendered).toContain("## Current Inventory and Receivers");
     expect(rendered).toContain("## Current Catalog: Direct and Meaningful Secondary Exposure");
     expect(rendered).toContain("## Protected Legacy Knowledge Review");
+    expect(rendered).toContain("## Owner-Accepted Contract Implementation");
     expect(rendered).toContain("## Weekly Development Ledger Handoff");
     expect(rendered).toContain("**TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION**");
+    expect(rendered).toContain("**TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED**");
     expect(
       readFileSync(
         new URL(

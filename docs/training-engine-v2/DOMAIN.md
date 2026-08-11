@@ -86,6 +86,29 @@ The package includes Phase 1, Phase 2, and Phase 3 representations. Phase change
 
 Engine behavior must not derive biomechanics from exercise ID, name, summary, labels, equipment prose, or coaching cues. Missing structured mechanics stay unknown or `needs_review`.
 
+## Trunk / Core Functions
+
+`MuscleGroup.trunk` remains the umbrella muscle-system label. `abdominals`, `obliques`, `spinal_extensors`, and `abs` are not separate current muscle groups, and `abdomen` / `abdominal_wall` are not current body regions. Those concepts require future receiver and credit decisions rather than premature aliases.
+
+Trunk selection purpose is represented by movement roles:
+
+- `breathing_position`: breathing and ribcage-pelvis positioning purpose;
+- `anti_extension_core`: intentional resistance to trunk extension;
+- `anti_rotation_core`: intentional resistance to trunk rotation;
+- `anti_lateral_flexion_core`: intentional resistance to lateral trunk displacement;
+- `trunk_flexion`: intentional controlled trunk-flexion or abdominal-shortening purpose;
+- `trunk_rotation`: intentional controlled rotational movement purpose;
+- `loaded_bracing`: intentional loaded-bracing development purpose;
+- `carry`: loaded transport/gait purpose, distinct from lateral control and bracing.
+
+`ExerciseMechanicsProfile.trunkMechanics` separately describes function expression during execution. Its eight fields are `breathingPressureCoordination`, `antiExtensionContribution`, `antiRotationContribution`, `antiLateralFlexionContribution`, `controlledFlexionContribution`, `controlledRotationContribution`, `loadedBracingContribution`, and `gaitLoadTransferContribution`.
+
+Each `TrunkFunctionAnnotation` has a level (`unknown | none | low | moderate | high`), field-level review status, evidence source, structured provenance with source references and evidence basis, and notes. `none` is reviewed absence. `unknown` is unavailable or unreviewed evidence and is not a numeric zero, low expression, poor fit, safety claim, or penalty. An accepted unknown requires a structured reviewed basis; known levels always require structured provenance.
+
+The profile is optional. Absence yields explicit profile-unavailable unknown evidence in `TrunkMechanicsTrace` and changes no legal or ranked result. Mechanics never grant movement-role eligibility: a row, squat, press, or hinge may express a trunk function without becoming a direct trunk-role candidate.
+
+Direct developmental, meaningful secondary, incidental bracing, and capacity exposure are future contextual accounting outcomes, not permanent exercise properties. Their eventual classification depends on actual role, section, prescription, phase, and use.
+
 ## Progression And Transition
 
 `ExerciseProgressionProfile.progressionAxes` describes how prescription can advance while exercise identity remains the same. `transitionRelationships` describes reviewed cross-exercise possibilities with direction, classification, purpose, provenance, and structural deltas.

@@ -123,6 +123,7 @@ export interface TrunkCoreDomainReviewData {
   readonly implementationOrder: readonly string[];
   readonly uncertainties: readonly string[];
   readonly classification: "TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION";
+  readonly implementationStatus: "TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED";
 }
 
 interface TrunkCoreDecisions {
@@ -284,6 +285,16 @@ export const CURRENT_INVENTORY: readonly InventoryRow[] = [
     traceVisibility: "Assessment demand traces, transition traces, row-selection trace",
     usage: "PARTIALLY_USED",
     futureOwner: "Candidate Intelligence mechanics contract",
+  },
+  {
+    input: "ExerciseMechanicsProfile.trunkMechanics",
+    giver: "Human-reviewed exercise knowledge",
+    currentReceiver: "Pure validation and buildTrunkMechanicsTrace",
+    output: "Eight field-level trunk-function annotations or explicit profile-unavailable trace evidence",
+    behavioralEffect: "Observability only; no legality, score, pain, phase, assessment, or transition effect.",
+    traceVisibility: "TrunkMechanicsTrace exposes level, review status, source, provenance, and notes",
+    usage: "PARTIALLY_USED",
+    futureOwner: "Reference catalog curation before trunk assessment features",
   },
   {
     input: "Exercise mechanics: stability and coordination",
@@ -724,7 +735,7 @@ export const LEGACY_MIGRATION_DECISIONS: readonly LegacyMigrationDecision[] = [
 export const FUNCTIONAL_COVERAGE: readonly FunctionalCoverageRow[] = [
   {
     function: "Breathing / ribcage-pelvis position",
-    currentTypeSupport: "breathing_position role, breathing_reset family, trunk_control demand",
+    currentTypeSupport: "breathing_position role plus optional breathingPressureCoordination evidence",
     currentExerciseSupport: "90/90 Breathing only",
     legacySupport: "90/90 Breathing and brace-oriented preparation",
     assessmentSupport: "Generic role/muscle/region signal; no normalized feature",
@@ -734,7 +745,7 @@ export const FUNCTIONAL_COVERAGE: readonly FunctionalCoverageRow[] = [
   },
   {
     function: "Anti-extension",
-    currentTypeSupport: "anti_extension_core role + generic trunk_control",
+    currentTypeSupport: "anti_extension_core role plus optional antiExtensionContribution evidence",
     currentExerciseSupport: "90/90 Breathing, Dead Bug, Push-Up",
     legacySupport: "Dead Bug, Plank, Hollow, Rollout, hanging/suspension variants",
     assessmentSupport: "Role-specific input collapses to trunk_control",
@@ -744,7 +755,7 @@ export const FUNCTIONAL_COVERAGE: readonly FunctionalCoverageRow[] = [
   },
   {
     function: "Anti-rotation",
-    currentTypeSupport: "anti_rotation_core role + generic trunk_control",
+    currentTypeSupport: "anti_rotation_core role plus optional antiRotationContribution evidence",
     currentExerciseSupport: "Pallof Press only",
     legacySupport: "Band/cable Pallof, anti-rotation holds, offset marches",
     assessmentSupport: "Role-specific input collapses to trunk_control",
@@ -754,47 +765,47 @@ export const FUNCTIONAL_COVERAGE: readonly FunctionalCoverageRow[] = [
   },
   {
     function: "Anti-lateral flexion",
-    currentTypeSupport: "No movement role or function-specific mechanics field",
+    currentTypeSupport: "anti_lateral_flexion_core role plus optional antiLateralFlexionContribution evidence",
     currentExerciseSupport: "No direct exercise; unilateral work has only generic trunk demand",
     legacySupport: "Side Plank, Side Plank Star, Suitcase Carry/Hold/March",
     assessmentSupport: "Only generic trunk muscle/region signals",
-    weeklyLedgerSupport: "No typed channel",
-    gap: "Cannot request, rank, trace, or credit lateral control directly",
-    recommendedOwner: "Movement role + mechanics + catalog + ledger",
+    weeklyLedgerSupport: "Movement role is typed; no ledger receiver",
+    gap: "No reviewed reference candidate, assessment feature, or exposure-credit receiver",
+    recommendedOwner: "Catalog + assessment + ledger",
   },
   {
     function: "Controlled flexion / abdominal shortening",
-    currentTypeSupport: "No movement role or function-specific mechanics field",
+    currentTypeSupport: "trunk_flexion role plus optional controlledFlexionContribution evidence",
     currentExerciseSupport: "None",
     legacySupport: "Machine Ab Crunch; hanging raises require function review",
     assessmentSupport: "Only generic trunk muscle/region signals",
-    weeklyLedgerSupport: "No typed channel or direct-volume lane",
-    gap: "No direct progressively overloadable shortening exercise",
-    recommendedOwner: "Movement role + mechanics + catalog + prescription + ledger",
+    weeklyLedgerSupport: "Movement role is typed; no direct-volume lane",
+    gap: "No reviewed direct progressively overloadable shortening exercise",
+    recommendedOwner: "Catalog + prescription + ledger",
   },
   {
     function: "Controlled rotation",
-    currentTypeSupport: "No movement role or function-specific mechanics field",
+    currentTypeSupport: "trunk_rotation role plus optional controlledRotationContribution evidence",
     currentExerciseSupport: "None; Pallof is anti-rotation",
     legacySupport: "Band/Cable Woodchop with metadata caveats",
     assessmentSupport: "Only generic trunk muscle/region signals",
-    weeklyLedgerSupport: "No typed channel",
-    gap: "Anti-rotation and rotation cannot be distinguished",
-    recommendedOwner: "Movement role + mechanics + catalog + assessment",
+    weeklyLedgerSupport: "Movement role is typed; no ledger receiver",
+    gap: "No reviewed rotation candidate or normalized assessment feature",
+    recommendedOwner: "Catalog + assessment",
   },
   {
     function: "Loaded bracing",
-    currentTypeSupport: "Generic trunk_control and loading/stress fields only",
+    currentTypeSupport: "loaded_bracing role plus optional loadedBracingContribution evidence",
     currentExerciseSupport: "Several compounds have moderate/high demand but no loaded_bracing role",
     legacySupport: "Compounds, brace marches, carries",
     assessmentSupport: "Generic trunk_control demand/capability comparison",
     weeklyLedgerSupport: "At most coarse trunk muscle exposure; no secondary lane",
-    gap: "Cannot distinguish bracing demand from direct trunk development",
-    recommendedOwner: "Mechanics + ledger; role only when bracing is the selection purpose",
+    gap: "No reviewed direct-role candidate, curated function profile, or secondary ledger lane",
+    recommendedOwner: "Catalog + ledger; role only when bracing is the selection purpose",
   },
   {
     function: "Loaded gait / carries",
-    currentTypeSupport: "carry role exists; capacity TrainingRole exists",
+    currentTypeSupport: "carry role, capacity TrainingRole, and optional gaitLoadTransferContribution evidence",
     currentExerciseSupport: "Zero carry exercises and zero capacity-role exercises",
     legacySupport: "Farmer, suitcase, band/dumbbell march and supported regressions",
     assessmentSupport: "carry is not classified as a direct trunk role today",
@@ -887,12 +898,12 @@ const GOAL_COVERAGE: readonly GoalCoverageRow[] = [
   {
     surface: "Health and movement quality",
     currentSupport: "PARTIAL",
-    finding: "Breathing, anti-extension, and anti-rotation are present, but lateral control, rotation, gait transfer, and progression breadth are missing.",
+    finding: "The function vocabulary is present, but reviewed lateral-control, rotation, gait-transfer, and progression catalog coverage is missing.",
   },
   {
     surface: "Strength",
     currentSupport: "PARTIAL",
-    finding: "Compounds expose generic trunk demand, but loaded bracing is not a requestable function and carries are absent.",
+    finding: "Loaded bracing is requestable in the domain, but no current exercise carries that role and carries remain absent.",
   },
   {
     surface: "Hypertrophy",
@@ -922,7 +933,7 @@ const GOAL_COVERAGE: readonly GoalCoverageRow[] = [
   {
     surface: "Session Composer",
     currentSupport: "CONTRACT_ONLY",
-    finding: "Slots can ask for current roles, but the missing functions and exposure classes would produce incomplete composition truth.",
+    finding: "Slots can ask for the approved roles, but catalog coverage and contextual exposure classification remain incomplete.",
   },
   {
     surface: "Weekly Development Ledger",
@@ -937,9 +948,9 @@ const GOAL_COVERAGE: readonly GoalCoverageRow[] = [
 ] as const;
 
 export const RECOMMENDED_IMPLEMENTATION_ORDER: readonly string[] = [
-  "Owner approves Option B, the four exposure classes, function vocabulary, unknown semantics, and the decision to defer abdominal_wall.",
-  "Add typed MovementRole values for anti_lateral_flexion_core, trunk_flexion, trunk_rotation, and loaded_bracing; keep carry separate as loaded gait/transport.",
-  "Add a compact, review/provenance-bearing TrunkMechanicsProfile and trace it without adding score weight or hidden behavior.",
+  "COMPLETED: Owner approved Option B, the four exposure classes, function vocabulary, unknown semantics, and the decision to defer abdominal_wall.",
+  "COMPLETED: Added typed MovementRole values for anti_lateral_flexion_core, trunk_flexion, trunk_rotation, and loaded_bracing; carry remains separate as loaded gait/transport.",
+  "COMPLETED: Added a compact, review/provenance-bearing TrunkMechanicsProfile, pure validation, and an observability-only trace without scoring or hidden behavior.",
   "Human-review the existing 30 exercises, then expand the reference catalog with a minimal progression runway for each approved function and carry regression family.",
   "Add normalized trunk assessment features and bounded feature-specific relevance before Session Composer consumes assessment priorities.",
   "Add prescription units for sets/reps/time/distance/trips/load/side and implement separate direct, secondary, incidental, and capacity ledger lanes.",
@@ -948,7 +959,6 @@ export const RECOMMENDED_IMPLEMENTATION_ORDER: readonly string[] = [
 ] as const;
 
 export const EXPLICIT_UNCERTAINTIES: readonly string[] = [
-  "Whether the public and internal name should be trunk_flexion or controlled_trunk_flexion; behavior must remain controlled and non-diagnostic either way.",
   "Whether controlled rotation needs one role or later direction/range qualifiers; the first contract should avoid side/direction proliferation.",
   "Whether abdominal_wall can be truthfully captured by intake without implying internal-organ or diagnostic semantics.",
   "Which compounds merit reviewed meaningful-secondary credit and what evidence threshold is sufficient; current inferences are not accepted metadata.",
@@ -984,6 +994,10 @@ function assertCurrentPrimitiveContract(): void {
     "breathing_position",
     "anti_extension_core",
     "anti_rotation_core",
+    "anti_lateral_flexion_core",
+    "trunk_flexion",
+    "trunk_rotation",
+    "loaded_bracing",
     "carry",
   ];
 
@@ -1143,6 +1157,7 @@ export function buildTrunkCoreDomainReviewData(): TrunkCoreDomainReviewData {
     implementationOrder: RECOMMENDED_IMPLEMENTATION_ORDER,
     uncertainties: EXPLICIT_UNCERTAINTIES,
     classification: "TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION",
+    implementationStatus: "TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED",
   };
 }
 
@@ -1184,9 +1199,18 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
     "",
     "## Decision Summary",
     "",
-    "The project-owner concern is valid: current V2 `trunk` is a useful umbrella, but it is not a complete core-programming contract. The reference catalog can select breathing/position, anti-extension, and anti-rotation work and can observe generic bracing demand in several compounds. It cannot truthfully request, compare, compose, or credit anti-lateral flexion, controlled flexion, controlled rotation, loaded bracing, or carry capacity as distinct functions.",
+    "The project owner accepted the review finding that `trunk` is a useful umbrella but was not a complete core-programming contract. The production domain can now represent anti-lateral flexion, controlled flexion, controlled rotation, and loaded bracing as selection purposes while keeping carry distinct.",
     "",
-    "This review recommends **Option B**: keep `trunk` as the single umbrella `MuscleGroup`, add a small set of selection-purpose `MovementRole` values, and add a compact, review/provenance-bearing `TrunkMechanicsProfile`. Weekly accounting must preserve direct developmental, meaningful secondary, incidental, and capacity exposure as separate lanes. No production type, metadata, score, weight, phase behavior, pain behavior, assessment behavior, or ranking changed in this review.",
+    "**Option B is accepted and implemented at domain-contract scope**: keep `trunk` as the single umbrella `MuscleGroup`, use explicit selection-purpose `MovementRole` values, and keep function expression in an optional review/provenance-bearing `TrunkMechanicsProfile`. No reference exercise metadata, score, weight, eligibility rule, phase behavior, pain behavior, assessment behavior, or ranking changed in this implementation.",
+    "",
+    "## Owner-Accepted Contract Implementation",
+    "",
+    "- Production roles now include `anti_lateral_flexion_core`, `trunk_flexion`, `trunk_rotation`, and `loaded_bracing`; `carry` remains distinct.",
+    "- `ExerciseMechanicsProfile.trunkMechanics` is optional and contains eight field-level function annotations.",
+    "- Each annotation exposes `unknown | none | low | moderate | high`, field-level review status, source, structured provenance, and notes. Reviewed `none` remains distinct from unavailable `unknown`.",
+    "- `buildTrunkMechanicsTrace` is observability-only. An absent profile yields explicit `profile_unavailable` / `unknown` evidence rather than fabricated `none` values.",
+    "- Pure validation requires all eight valid annotations, structured provenance for known levels, and a reviewed basis for accepted unknown evidence.",
+    "- Existing reference exercises retain their exact roles and contain no trunk profile. Catalog curation is the next approved boundary; normalized trunk assessment features follow it before Session Composer.",
     "",
     "## Scope and Evidence",
     "",
@@ -1250,7 +1274,7 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
       data.goalCoverage.map((row) => [row.surface, row.currentSupport, row.finding]),
     ),
     "",
-    "Current V2 therefore cannot yet support *excellent, coherent* trunk/core programming across every requested surface. It has a sound partial foundation, not a complete representation. The proposed compact contract closes the representation gap without pretending the catalog, assessment evidence, ledger, and calibration are already complete.",
+    "Current V2 still cannot support *excellent, coherent* trunk/core programming across every requested surface. The compact type contract closes the representation gap without pretending the catalog, assessment evidence, ledger, and calibration are already complete.",
     "",
     "## Current Catalog: Direct and Meaningful Secondary Exposure",
     "",
@@ -1350,7 +1374,7 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
     "",
     "## Movement / Function Decision",
     "",
-    "Keep the existing `breathing_position`, `anti_extension_core`, `anti_rotation_core`, and `carry` roles. Before Composer, add the minimum missing selection-purpose roles:",
+    "The production domain keeps `breathing_position`, `anti_extension_core`, `anti_rotation_core`, and `carry` and now includes these additional selection-purpose roles:",
     "",
     "- `anti_lateral_flexion_core`",
     "- `trunk_flexion` (or owner-approved `controlled_trunk_flexion` naming)",
@@ -1363,7 +1387,7 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
     "",
     "## Compact Trunk Mechanics Contract",
     "",
-    "Add one optional `TrunkMechanicsProfile` with these compact function annotations:",
+    "The production domain now includes one optional `TrunkMechanicsProfile` with these compact function annotations:",
     "",
     "1. `breathingPressureCoordination`",
     "2. `antiExtensionContribution`",
@@ -1502,7 +1526,9 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
     "",
     `**${data.classification}**`,
     "",
-    "The current representation is incomplete, but the next contract decision is sufficiently bounded: approve Option B and the exposure model before production implementation. Catalog breadth, assessment feature evidence, body-region intake, weekly targets, prescription normalization, phase annotations, and scoring calibration remain separate reviewed follow-ons.",
+    `Implementation status: **${data.implementationStatus}**.`,
+    "",
+    "The owner accepted Option B and the production type, validation, and trace contracts are implemented. Catalog breadth, assessment feature evidence, body-region intake, weekly targets, prescription normalization, phase annotations, and scoring calibration remain separate reviewed follow-ons.",
     "",
   ].join("\n");
 }

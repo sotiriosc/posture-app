@@ -25,6 +25,13 @@ Tests should remain small and readable at the component boundary. Current respon
 - explicit unknown/`not_modeled`/`not_applicable` behavior;
 - deterministic history recency through `CandidateEvaluationContext.asOf`;
 - source scans that prohibit hidden wall-clock decisions;
+- all approved trunk/core movement-role values and unchanged reference-role metadata;
+- field-complete `TrunkMechanicsProfile` validation, structured provenance, and accepted-unknown review basis;
+- structural separation of reviewed `none`, field-level `unknown`, and profile-unavailable evidence;
+- role-legality counterfactuals proving strong trunk mechanics cannot manufacture a movement role;
+- trunk trace completeness and source-consumer scans prohibiting ID/name/prose/cue/tag inference;
+- eligibility, ranking, pain-readiness, phase, assessment, transition, notes, and provenance invariance under trunk-profile-only changes;
+- fixed comprehensive production fingerprints covering ranks, totals, component raw values, rejection codes, pain readiness, phase, and assessment traces;
 - response-led flat moderate severity across values 3-6;
 - standard versus elevated non-hard moderate review urgency;
 - candidate-specific response applicability and readiness precedence;
@@ -63,6 +70,8 @@ Lower-level component failures should be diagnosable without relying on full-pro
 Green build and test results are necessary but insufficient to begin Session Composer. Readiness also requires deterministic Candidate Lab review, legal-pool inspection, reason-code and trace audits, tie review, uncertainty review, exercise-science judgment, and explicit acceptance of the permanent gate in `ENGINE_V2_BLUEPRINT.md`.
 
 Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
+
+The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual tests use synthetic exercises; all reference exercises retain their prior movement roles and no `TrunkMechanicsProfile` until human catalog curation. Catalog curation is the next approved implementation boundary, followed by normalized trunk assessment features before Session Composer.
 
 ## Bug Localization
 

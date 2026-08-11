@@ -859,6 +859,25 @@ Legacy prose may help a reviewer curate structured metadata outside the engine. 
 
 Resistance/path metadata is observational selection knowledge. It describes how resistance is constrained, how freely the athlete can choose a trajectory, whether the line of pull is adjustable, how laterality is organized, and whether fit depends on machine or setup geometry. It does not duplicate support, control demand, loadability, fatigue, or joint stress, and it is not a generic score bonus.
 
+### Trunk / Core Domain Doctrine
+
+`MuscleGroup.trunk` remains the current umbrella muscle system. Do not split it into overlapping abdominal, oblique, or spinal-extensor buckets without a future receiver and an approved credit contract. An abdominal-wall body region is likewise deferred until a concrete non-diagnostic intake and explicit assessment or pain receiver exist.
+
+Selection purpose and function expression are separate truths:
+
+- `MovementRole` states what an exercise may intentionally be selected to train.
+- optional `TrunkMechanicsProfile` metadata states which trunk functions the exercise expresses while being performed.
+
+The trunk selection-purpose vocabulary includes breathing/position, anti-extension, anti-rotation, anti-lateral flexion, controlled trunk flexion, controlled trunk rotation, loaded bracing, and carry. `carry` remains distinct from lateral-control and bracing roles. A compound exercise does not gain a direct trunk role merely because reviewed mechanics show meaningful trunk contribution; mechanics cannot create role legality.
+
+`TrunkMechanicsProfile` keeps breathing/pressure coordination, anti-extension, anti-rotation, anti-lateral-flexion, controlled-flexion, controlled-rotation, loaded-bracing, and gait/load-transfer expression independently reviewable. Every function annotation retains its own level, review status, source, structured provenance, and notes. No profile-level label may conceal a field-level unknown.
+
+Reviewed `none` and `unknown` are different domain states. `none` means reviewed evidence says the function is not meaningfully expressed. `unknown` means evidence is unavailable or unreviewed; it must not become zero, low, poor, easy, safe, a penalty, or accepted absence. An absent profile is explicit unavailable/unknown evidence and creates no eligibility, score, pain, phase, assessment, or transition behavior.
+
+Direct developmental, meaningful secondary, incidental bracing, and capacity exposure remain separate future accounting lanes. They are contextual outcomes of actual role, section, prescription, phase, and use; they must not be attached as one permanent `ExerciseDefinition` class. One completed prescription remains one source exposure even when it has several function descriptors.
+
+The approved pre-Session-Composer order is: typed roles and profile, human-reviewed catalog curation, then normalized trunk assessment features. Future core and carry phase evidence must be scoped to the exercise's actual activation, accessory, capacity, preparation, recovery, or main use. This contract adds no phase coefficient, scoring term, prescription behavior, Session Composer behavior, or Weekly Development Ledger.
+
 ## 22. Exercise Selection Intelligence
 
 Candidate evaluation should be inspectable.

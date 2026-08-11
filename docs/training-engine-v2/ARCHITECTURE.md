@@ -31,7 +31,7 @@ The package models the intended reasoning order without implementing production 
 - `domain/session.ts`: warmup, activation, main, accessory, cooldown, and preparation dependencies.
 - `domain/programming.ts`: weekly intent and planned-program contracts.
 - `domain/history.ts`: exercise, session, program, progression, and fatigue history.
-- `domain/exercise.ts`: normalized exercise schema, structured mechanics, same-exercise progression axes, and reviewed transition relationships.
+- `domain/exercise.ts`: normalized exercise schema, structured mechanics including the optional field-reviewed trunk function profile, same-exercise progression axes, and reviewed transition relationships.
 - `eligibility.ts`: hard eligibility contracts.
 - `scoringContracts.ts`: inspectable score component contracts.
 - `optimizerContracts.ts`: candidate set, session candidate/evaluation, and week candidate/evaluation contracts.
@@ -46,6 +46,15 @@ The package models the intended reasoning order without implementing production 
 - `candidate/pain/*`: canonical source-aware exercise stress facts, signal/tag matching, review urgency, receiver-specific policies, candidate/result execution readiness, response ownership, and serializable pain traces.
 - `candidate/scoring/assessment/*`: modular assessment normalization, relevance, feature target, demand/capability, challenge, budget, and trace responsibilities.
 - `transitionComparison.ts`: observational structural deltas for reviewed cross-exercise transitions with no automatic selection effect.
+- `trunkMechanics.ts`: pure trunk-function observability; copies reviewed profile evidence or emits explicit profile-unavailable unknown traces without influencing decisions.
+
+## Trunk Role And Mechanics Boundary
+
+`MuscleGroup.trunk` remains the umbrella muscle system. Selection purpose belongs to `MovementRole`; function expression belongs to optional `ExerciseMechanicsProfile.trunkMechanics`. The added selection roles are `anti_lateral_flexion_core`, `trunk_flexion`, `trunk_rotation`, and `loaded_bracing`; `carry` remains a separate loaded transport/gait purpose.
+
+The profile exposes eight independent fields for breathing/pressure coordination, anti-extension, anti-rotation, anti-lateral flexion, controlled flexion, controlled rotation, loaded bracing, and gait/load transfer. Review authority is field-local. Reviewed `none` is meaningful absence; `unknown` and an absent profile are unavailable evidence and have no automatic behavioral interpretation.
+
+Validation and `buildTrunkMechanicsTrace` are the only current production consumers. Eligibility continues to read explicit movement roles. Candidate scoring, assessment, pain, phase, progression, and transition modules do not consume the profile. Direct, secondary, incidental, and capacity exposure classification remains future contextual ledger work rather than static exercise metadata.
 
 ## Modular Components
 
@@ -163,4 +172,4 @@ Do not impose tiny files. Do flag modules that start combining unrelated trainin
 
 ## Non-Goals In This Phase
 
-Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program.
+Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The next approved trunk boundary is human catalog curation, followed by normalized trunk assessment features before Session Composer; no catalog curation or assessment-feature behavior is part of the type/validation/observability contract.

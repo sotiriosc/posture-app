@@ -64,6 +64,64 @@ export type ExerciseDemandDimension =
 export type ExerciseDemandAnnotationLevel = DemandLevel | "unknown";
 export type ExerciseMechanicsReviewStatus = "accepted" | "needs_review";
 
+export const TRUNK_FUNCTION_LEVELS = [
+  "unknown",
+  "none",
+  "low",
+  "moderate",
+  "high",
+] as const;
+
+export type TrunkFunctionLevel = (typeof TRUNK_FUNCTION_LEVELS)[number];
+
+export const TRUNK_FUNCTION_EVIDENCE_SOURCES = [
+  "reference_catalog",
+  "human_exercise_science_review",
+  "external_reference",
+  "unknown",
+] as const;
+
+export type TrunkFunctionEvidenceSource =
+  (typeof TRUNK_FUNCTION_EVIDENCE_SOURCES)[number];
+
+export interface TrunkFunctionProvenance {
+  readonly sourceRef: string;
+  readonly evidenceBasis: readonly string[];
+}
+
+export interface TrunkFunctionAnnotation {
+  readonly level: TrunkFunctionLevel;
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly source: TrunkFunctionEvidenceSource;
+  readonly provenance: readonly TrunkFunctionProvenance[];
+  readonly notes: string;
+}
+
+export const TRUNK_MECHANICS_FUNCTIONS = [
+  "breathingPressureCoordination",
+  "antiExtensionContribution",
+  "antiRotationContribution",
+  "antiLateralFlexionContribution",
+  "controlledFlexionContribution",
+  "controlledRotationContribution",
+  "loadedBracingContribution",
+  "gaitLoadTransferContribution",
+] as const;
+
+export type TrunkMechanicsFunction =
+  (typeof TRUNK_MECHANICS_FUNCTIONS)[number];
+
+export interface TrunkMechanicsProfile {
+  readonly breathingPressureCoordination: TrunkFunctionAnnotation;
+  readonly antiExtensionContribution: TrunkFunctionAnnotation;
+  readonly antiRotationContribution: TrunkFunctionAnnotation;
+  readonly antiLateralFlexionContribution: TrunkFunctionAnnotation;
+  readonly controlledFlexionContribution: TrunkFunctionAnnotation;
+  readonly controlledRotationContribution: TrunkFunctionAnnotation;
+  readonly loadedBracingContribution: TrunkFunctionAnnotation;
+  readonly gaitLoadTransferContribution: TrunkFunctionAnnotation;
+}
+
 export interface ExerciseDemandAnnotation {
   readonly level: ExerciseDemandAnnotationLevel;
   readonly source:
@@ -147,6 +205,7 @@ export interface ExerciseMechanicsProfile {
   readonly resistancePath?: ExerciseResistancePathProfile;
   readonly demands: Readonly<Record<ExerciseDemandDimension, ExerciseDemandAnnotation>>;
   readonly scapularMechanics?: ScapularMechanicsProfile;
+  readonly trunkMechanics?: TrunkMechanicsProfile;
 }
 
 export type ExerciseProgressionAxis =

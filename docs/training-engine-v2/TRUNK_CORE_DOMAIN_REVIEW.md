@@ -2,9 +2,18 @@
 
 ## Decision Summary
 
-The project-owner concern is valid: current V2 `trunk` is a useful umbrella, but it is not a complete core-programming contract. The reference catalog can select breathing/position, anti-extension, and anti-rotation work and can observe generic bracing demand in several compounds. It cannot truthfully request, compare, compose, or credit anti-lateral flexion, controlled flexion, controlled rotation, loaded bracing, or carry capacity as distinct functions.
+The project owner accepted the review finding that `trunk` is a useful umbrella but was not a complete core-programming contract. The production domain can now represent anti-lateral flexion, controlled flexion, controlled rotation, and loaded bracing as selection purposes while keeping carry distinct.
 
-This review recommends **Option B**: keep `trunk` as the single umbrella `MuscleGroup`, add a small set of selection-purpose `MovementRole` values, and add a compact, review/provenance-bearing `TrunkMechanicsProfile`. Weekly accounting must preserve direct developmental, meaningful secondary, incidental, and capacity exposure as separate lanes. No production type, metadata, score, weight, phase behavior, pain behavior, assessment behavior, or ranking changed in this review.
+**Option B is accepted and implemented at domain-contract scope**: keep `trunk` as the single umbrella `MuscleGroup`, use explicit selection-purpose `MovementRole` values, and keep function expression in an optional review/provenance-bearing `TrunkMechanicsProfile`. No reference exercise metadata, score, weight, eligibility rule, phase behavior, pain behavior, assessment behavior, or ranking changed in this implementation.
+
+## Owner-Accepted Contract Implementation
+
+- Production roles now include `anti_lateral_flexion_core`, `trunk_flexion`, `trunk_rotation`, and `loaded_bracing`; `carry` remains distinct.
+- `ExerciseMechanicsProfile.trunkMechanics` is optional and contains eight field-level function annotations.
+- Each annotation exposes `unknown | none | low | moderate | high`, field-level review status, source, structured provenance, and notes. Reviewed `none` remains distinct from unavailable `unknown`.
+- `buildTrunkMechanicsTrace` is observability-only. An absent profile yields explicit `profile_unavailable` / `unknown` evidence rather than fabricated `none` values.
+- Pure validation requires all eight valid annotations, structured provenance for known levels, and a reviewed basis for accepted unknown evidence.
+- Existing reference exercises retain their exact roles and contain no trunk profile. Catalog curation is the next approved boundary; normalized trunk assessment features follow it before Session Composer.
 
 ## Scope and Evidence
 
@@ -51,6 +60,7 @@ This review recommends **Option B**: keep `trunk` as the single umbrella `Muscle
 | ExerciseFamily.core_control | Reference exercise metadata | Personal block eligibility | Family-level personal block match | Does not itself improve ranking or distinguish core functions. | Personal-block rejection reason | PARTIALLY_USED | Catalog taxonomy and personal-block policy |
 | ExerciseFamily.breathing_reset | Reference exercise metadata | Personal block eligibility | Family-level personal block match | Preserves catalog identity; role and section metadata do the candidate-selection work. | Personal-block rejection reason | PARTIALLY_USED | Catalog taxonomy |
 | Exercise mechanics: trunk_control | Reference exercise mechanics profile | Assessment demand/capability comparison, transition comparison, row observability | Generic low/moderate/high trunk-control demand | Can influence relevant assessment scoring, but collapses all trunk functions into one dimension. | Assessment demand traces, transition traces, row-selection trace | PARTIALLY_USED | Candidate Intelligence mechanics contract |
+| ExerciseMechanicsProfile.trunkMechanics | Human-reviewed exercise knowledge | Pure validation and buildTrunkMechanicsTrace | Eight field-level trunk-function annotations or explicit profile-unavailable trace evidence | Observability only; no legality, score, pain, phase, assessment, or transition effect. | TrunkMechanicsTrace exposes level, review status, source, provenance, and notes | PARTIALLY_USED | Reference catalog curation before trunk assessment features |
 | Exercise mechanics: stability and coordination | Mechanics annotations or loading-profile fallback | Assessment demand/capability and transition comparison | General demand and transition deltas | Useful context, but neither field identifies which trunk function creates the demand. | Assessment and transition traces | PARTIALLY_USED | Candidate Intelligence mechanics contract |
 | Exercise mechanics: range and joint_control | Mechanics annotations or temporary skill-demand proxy | Assessment demand/capability and transition comparison | Range/joint-control demand, sometimes review-qualified | Cannot substitute for controlled trunk flexion or rotation semantics. | Assessment and transition traces include source/review status | PARTIALLY_USED | Mechanics review |
 | AssessmentSignal movementRole / muscleGroup / region | Assessment adapter or fixture | signalIsTrunk, specificity, relevance, demand/capability match | Generic trunk_control assessment influence | Candidate-specific and role-bounded, but cannot express a normalized trunk feature beyond generic control. | Assessment relevance, interpretation, capability, demand, and relationship traces | PARTIALLY_USED | Assessment semantics |
@@ -72,18 +82,18 @@ This review recommends **Option B**: keep `trunk` as the single umbrella `Muscle
 
 | Surface | Current support | Finding |
 | --- | --- | --- |
-| Health and movement quality | PARTIAL | Breathing, anti-extension, and anti-rotation are present, but lateral control, rotation, gait transfer, and progression breadth are missing. |
-| Strength | PARTIAL | Compounds expose generic trunk demand, but loaded bracing is not a requestable function and carries are absent. |
+| Health and movement quality | PARTIAL | The function vocabulary is present, but reviewed lateral-control, rotation, gait-transfer, and progression catalog coverage is missing. |
+| Strength | PARTIAL | Loaded bracing is requestable in the domain, but no current exercise carries that role and carries remain absent. |
 | Hypertrophy | INSUFFICIENT | Dead Bug and Pallof are tagged as accessories, but there is no direct flexion/shortening option, direct-volume semantics, or broad loading runway. |
 | Pain-aware return | PARTIAL | Stress tags and lumbar/ribcage/pelvis context exist; anterior abdominal localization and function-specific dose response do not. |
 | General fitness | PARTIAL | The generic goal path can rank legal exercises, but functional balance and weekly trunk development are not evaluated. |
 | Conditioning | INSUFFICIENT | No reference exercise has the capacity role, no carry exists, and goal-fit has no trunk/capacity-specific policy. |
 | All three phases | PARTIAL | Global phase labels exist for the three direct exercises, but accepted role/section-scoped evidence is not implemented or curated. |
-| Session Composer | CONTRACT_ONLY | Slots can ask for current roles, but the missing functions and exposure classes would produce incomplete composition truth. |
+| Session Composer | CONTRACT_ONLY | Slots can ask for the approved roles, but catalog coverage and contextual exposure classification remain incomplete. |
 | Weekly Development Ledger | CONTRACT_ONLY | WeeklyIntent and TrainingStimulusSummary types exist without an evaluator or direct/secondary/capacity semantics. |
 | Longitudinal adaptation | PARTIAL | Exercise/session history and progression evidence exist, but no trunk-function dose/response history can be accumulated. |
 
-Current V2 therefore cannot yet support *excellent, coherent* trunk/core programming across every requested surface. It has a sound partial foundation, not a complete representation. The proposed compact contract closes the representation gap without pretending the catalog, assessment evidence, ledger, and calibration are already complete.
+Current V2 still cannot support *excellent, coherent* trunk/core programming across every requested surface. The compact type contract closes the representation gap without pretending the catalog, assessment evidence, ledger, and calibration are already complete.
 
 ## Current Catalog: Direct and Meaningful Secondary Exposure
 
@@ -172,7 +182,7 @@ It could truthfully localize user-reported anterior abdominal-wall discomfort th
 
 ## Movement / Function Decision
 
-Keep the existing `breathing_position`, `anti_extension_core`, `anti_rotation_core`, and `carry` roles. Before Composer, add the minimum missing selection-purpose roles:
+The production domain keeps `breathing_position`, `anti_extension_core`, `anti_rotation_core`, and `carry` and now includes these additional selection-purpose roles:
 
 - `anti_lateral_flexion_core`
 - `trunk_flexion` (or owner-approved `controlled_trunk_flexion` naming)
@@ -185,7 +195,7 @@ Do not add a role merely because a function contributes secondarily. A goblet sq
 
 ## Compact Trunk Mechanics Contract
 
-Add one optional `TrunkMechanicsProfile` with these compact function annotations:
+The production domain now includes one optional `TrunkMechanicsProfile` with these compact function annotations:
 
 1. `breathingPressureCoordination`
 2. `antiExtensionContribution`
@@ -227,14 +237,14 @@ The reverse claim is also false: every user does not need isolated abdominal fle
 
 | Function | Current V2 type support | Current V2 exercise support | Legacy support | Assessment support | Weekly ledger support | Gap | Recommended owner |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Breathing / ribcage-pelvis position | breathing_position role, breathing_reset family, trunk_control demand | 90/90 Breathing only | 90/90 Breathing and brace-oriented preparation | Generic role/muscle/region signal; no normalized feature | movementExposure can name the role; no receiver | One low-load option; no pressure-coordination profile or progression family | Catalog + trunk mechanics + assessment |
-| Anti-extension | anti_extension_core role + generic trunk_control | 90/90 Breathing, Dead Bug, Push-Up | Dead Bug, Plank, Hollow, Rollout, hanging/suspension variants | Role-specific input collapses to trunk_control | Role target is representable; direct/secondary credit is not | No reviewed direct loading runway beyond Dead Bug; Push-Up is secondary | Catalog + mechanics + ledger |
-| Anti-rotation | anti_rotation_core role + generic trunk_control | Pallof Press only | Band/cable Pallof, anti-rotation holds, offset marches | Role-specific input collapses to trunk_control | Role target is representable; no receiver | Single exercise and no reviewed regression/loading family | Catalog + mechanics + ledger |
-| Anti-lateral flexion | No movement role or function-specific mechanics field | No direct exercise; unilateral work has only generic trunk demand | Side Plank, Side Plank Star, Suitcase Carry/Hold/March | Only generic trunk muscle/region signals | No typed channel | Cannot request, rank, trace, or credit lateral control directly | Movement role + mechanics + catalog + ledger |
-| Controlled flexion / abdominal shortening | No movement role or function-specific mechanics field | None | Machine Ab Crunch; hanging raises require function review | Only generic trunk muscle/region signals | No typed channel or direct-volume lane | No direct progressively overloadable shortening exercise | Movement role + mechanics + catalog + prescription + ledger |
-| Controlled rotation | No movement role or function-specific mechanics field | None; Pallof is anti-rotation | Band/Cable Woodchop with metadata caveats | Only generic trunk muscle/region signals | No typed channel | Anti-rotation and rotation cannot be distinguished | Movement role + mechanics + catalog + assessment |
-| Loaded bracing | Generic trunk_control and loading/stress fields only | Several compounds have moderate/high demand but no loaded_bracing role | Compounds, brace marches, carries | Generic trunk_control demand/capability comparison | At most coarse trunk muscle exposure; no secondary lane | Cannot distinguish bracing demand from direct trunk development | Mechanics + ledger; role only when bracing is the selection purpose |
-| Loaded gait / carries | carry role exists; capacity TrainingRole exists | Zero carry exercises and zero capacity-role exercises | Farmer, suitcase, band/dumbbell march and supported regressions | carry is not classified as a direct trunk role today | movementExposure can name carry; no receiver or prescription units | No catalog, laterality, gait, grip, shoulder, fatigue, or dose contract | Catalog + prescription + Composer + ledger |
+| Breathing / ribcage-pelvis position | breathing_position role plus optional breathingPressureCoordination evidence | 90/90 Breathing only | 90/90 Breathing and brace-oriented preparation | Generic role/muscle/region signal; no normalized feature | movementExposure can name the role; no receiver | One low-load option; no pressure-coordination profile or progression family | Catalog + trunk mechanics + assessment |
+| Anti-extension | anti_extension_core role plus optional antiExtensionContribution evidence | 90/90 Breathing, Dead Bug, Push-Up | Dead Bug, Plank, Hollow, Rollout, hanging/suspension variants | Role-specific input collapses to trunk_control | Role target is representable; direct/secondary credit is not | No reviewed direct loading runway beyond Dead Bug; Push-Up is secondary | Catalog + mechanics + ledger |
+| Anti-rotation | anti_rotation_core role plus optional antiRotationContribution evidence | Pallof Press only | Band/cable Pallof, anti-rotation holds, offset marches | Role-specific input collapses to trunk_control | Role target is representable; no receiver | Single exercise and no reviewed regression/loading family | Catalog + mechanics + ledger |
+| Anti-lateral flexion | anti_lateral_flexion_core role plus optional antiLateralFlexionContribution evidence | No direct exercise; unilateral work has only generic trunk demand | Side Plank, Side Plank Star, Suitcase Carry/Hold/March | Only generic trunk muscle/region signals | Movement role is typed; no ledger receiver | No reviewed reference candidate, assessment feature, or exposure-credit receiver | Catalog + assessment + ledger |
+| Controlled flexion / abdominal shortening | trunk_flexion role plus optional controlledFlexionContribution evidence | None | Machine Ab Crunch; hanging raises require function review | Only generic trunk muscle/region signals | Movement role is typed; no direct-volume lane | No reviewed direct progressively overloadable shortening exercise | Catalog + prescription + ledger |
+| Controlled rotation | trunk_rotation role plus optional controlledRotationContribution evidence | None; Pallof is anti-rotation | Band/Cable Woodchop with metadata caveats | Only generic trunk muscle/region signals | Movement role is typed; no ledger receiver | No reviewed rotation candidate or normalized assessment feature | Catalog + assessment |
+| Loaded bracing | loaded_bracing role plus optional loadedBracingContribution evidence | Several compounds have moderate/high demand but no loaded_bracing role | Compounds, brace marches, carries | Generic trunk_control demand/capability comparison | At most coarse trunk muscle exposure; no secondary lane | No reviewed direct-role candidate, curated function profile, or secondary ledger lane | Catalog + ledger; role only when bracing is the selection purpose |
+| Loaded gait / carries | carry role, capacity TrainingRole, and optional gaitLoadTransferContribution evidence | Zero carry exercises and zero capacity-role exercises | Farmer, suitcase, band/dumbbell march and supported regressions | carry is not classified as a direct trunk role today | movementExposure can name carry; no receiver or prescription units | No catalog, laterality, gait, grip, shoulder, fatigue, or dose contract | Catalog + prescription + Composer + ledger |
 | Posterior-trunk contribution | trunk muscle, hinge role, trunk_control and spinal stress tags | RDL and pull-through provide secondary evidence; no direct posterior-trunk exercise | Hinges/back-extension concepts, often coarsely tagged | Generic trunk/lumbar signal only | No direct/secondary distinction | Anatomical contribution and loaded-bracing function are conflated | Mechanics + catalog review + ledger |
 
 ## Health and Hypertrophy Are Separate
@@ -298,9 +308,9 @@ No phase coefficient or final suitability value is selected here. Catalog curati
 
 ## Recommended Implementation Order
 
-1. Owner approves Option B, the four exposure classes, function vocabulary, unknown semantics, and the decision to defer abdominal_wall.
-2. Add typed MovementRole values for anti_lateral_flexion_core, trunk_flexion, trunk_rotation, and loaded_bracing; keep carry separate as loaded gait/transport.
-3. Add a compact, review/provenance-bearing TrunkMechanicsProfile and trace it without adding score weight or hidden behavior.
+1. COMPLETED: Owner approved Option B, the four exposure classes, function vocabulary, unknown semantics, and the decision to defer abdominal_wall.
+2. COMPLETED: Added typed MovementRole values for anti_lateral_flexion_core, trunk_flexion, trunk_rotation, and loaded_bracing; carry remains separate as loaded gait/transport.
+3. COMPLETED: Added a compact, review/provenance-bearing TrunkMechanicsProfile, pure validation, and an observability-only trace without scoring or hidden behavior.
 4. Human-review the existing 30 exercises, then expand the reference catalog with a minimal progression runway for each approved function and carry regression family.
 5. Add normalized trunk assessment features and bounded feature-specific relevance before Session Composer consumes assessment priorities.
 6. Add prescription units for sets/reps/time/distance/trips/load/side and implement separate direct, secondary, incidental, and capacity ledger lanes.
@@ -309,7 +319,6 @@ No phase coefficient or final suitability value is selected here. Catalog curati
 
 ## Explicit Uncertainties
 
-- Whether the public and internal name should be trunk_flexion or controlled_trunk_flexion; behavior must remain controlled and non-diagnostic either way.
 - Whether controlled rotation needs one role or later direction/range qualifiers; the first contract should avoid side/direction proliferation.
 - Whether abdominal_wall can be truthfully captured by intake without implying internal-organ or diagnostic semantics.
 - Which compounds merit reviewed meaningful-secondary credit and what evidence threshold is sufficient; current inferences are not accepted metadata.
@@ -322,4 +331,6 @@ No phase coefficient or final suitability value is selected here. Catalog curati
 
 **TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION**
 
-The current representation is incomplete, but the next contract decision is sufficiently bounded: approve Option B and the exposure model before production implementation. Catalog breadth, assessment feature evidence, body-region intake, weekly targets, prescription normalization, phase annotations, and scoring calibration remain separate reviewed follow-ons.
+Implementation status: **TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED**.
+
+The owner accepted Option B and the production type, validation, and trace contracts are implemented. Catalog breadth, assessment feature evidence, body-region intake, weekly targets, prescription normalization, phase annotations, and scoring calibration remain separate reviewed follow-ons.

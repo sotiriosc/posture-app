@@ -9,6 +9,7 @@ export * from "./prescriptionProgression";
 export * from "./reasonCodes";
 export * from "./scoringContracts";
 export * from "./transitionComparison";
+export * from "./trunkMechanics";
 export * from "./validation";
 export * from "./data/candidateScenarios";
 export * from "./data/goldenPersonas";
