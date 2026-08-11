@@ -10,6 +10,11 @@ import type {
 } from "../../../scoringContracts";
 import type { CandidateRequest } from "../../request";
 import type { ReasonCode } from "../../../reasonCodes";
+import type {
+  AssessmentPainContextMatchTrace,
+  CandidatePainMatchTrace,
+  PainStressMatchFact,
+} from "../../pain";
 
 function unique<T>(values: readonly T[]): readonly T[] {
   return [...new Set(values)];
@@ -17,14 +22,6 @@ function unique<T>(values: readonly T[]): readonly T[] {
 
 function hasOverlap<T>(left: readonly T[], right: readonly T[]): boolean {
   return left.some((value) => right.includes(value));
-}
-
-function exerciseStressTags(exercise: ExerciseDefinition): readonly JointStressTag[] {
-  return unique([
-    ...exercise.loading.jointStressTags,
-    ...exercise.cautionStressTags,
-    ...exercise.contraindicatedStressTags,
-  ]);
 }
 
 function movementRolesForStressTag(stressTag: JointStressTag): readonly MovementRole[] {
@@ -71,31 +68,51 @@ function contextualMovementRoles(input: {
   readonly signal: AssessmentSignal;
   readonly exercise: ExerciseDefinition;
   readonly request: CandidateRequest;
+  readonly painMatchTrace: CandidatePainMatchTrace;
 }): readonly MovementRole[] {
   return unique([
     ...(input.signal.movementRole ? [input.signal.movementRole] : []),
     ...input.exercise.movementRoles,
     ...input.request.need.targetMovementRoles,
-    ...movementRolesForStressTags(exerciseStressTags(input.exercise)),
+    ...movementRolesForStressTags(
+      input.painMatchTrace.exerciseStressFacts.map((fact) => fact.tag),
+    ),
   ]);
 }
 
-function concernMatchesContext(input: {
+function concernContextMatch(input: {
+  readonly signalId: string;
   readonly region: BodyRegion;
   readonly stressTags: readonly JointStressTag[];
   readonly signal: AssessmentSignal;
   readonly exercise: ExerciseDefinition;
   readonly request: CandidateRequest;
-}): boolean {
+  readonly painMatchTrace: CandidatePainMatchTrace;
+}): {
+  readonly matchedBy: readonly ("region" | "stress_fact" | "movement_role")[];
+  readonly matchedStressFacts: readonly PainStressMatchFact[];
+} {
   const bodyRegions = contextualBodyRegions(input);
   const movementRoles = contextualMovementRoles(input);
-  const stressTags = exerciseStressTags(input.exercise);
-
-  return (
-    bodyRegions.includes(input.region) ||
-    hasOverlap(input.stressTags, stressTags) ||
-    hasOverlap(movementRolesForStressTags(input.stressTags), movementRoles)
+  const matchedStressFacts = input.painMatchTrace.signalMatches.filter(
+    (match) => match.signalId === input.signalId,
   );
+  const matchedBy: ("region" | "stress_fact" | "movement_role")[] = [];
+
+  if (bodyRegions.includes(input.region)) {
+    matchedBy.push("region");
+  }
+  if (matchedStressFacts.length > 0) {
+    matchedBy.push("stress_fact");
+  }
+  if (hasOverlap(movementRolesForStressTags(input.stressTags), movementRoles)) {
+    matchedBy.push("movement_role");
+  }
+
+  return {
+    matchedBy,
+    matchedStressFacts,
+  };
 }
 
 function fatigueSignalAllowsMovementRoleMatch(signal: FatigueSignal): boolean {
@@ -106,40 +123,57 @@ export function demandReductionContextFor(input: {
   readonly request: CandidateRequest;
   readonly exercise: ExerciseDefinition;
   readonly signal: AssessmentSignal;
+  readonly painMatchTrace: CandidatePainMatchTrace;
 }): DemandReductionContextTrace {
-  const matchedCurrentDiscomforts = input.request.painAndInjury.currentDiscomforts.filter(
-    (pain) =>
-      pain.effect !== "monitor" &&
-      concernMatchesContext({
+  const matchedCurrentDiscomforts = input.request.painAndInjury.currentDiscomforts
+    .filter((pain) => pain.effect !== "monitor")
+    .map((pain) => ({
+      pain,
+      context: concernContextMatch({
+        signalId: pain.id,
         region: pain.region,
         stressTags: pain.stressTags,
         signal: input.signal,
         exercise: input.exercise,
         request: input.request,
+        painMatchTrace: input.painMatchTrace,
       }),
-  );
-  const matchedModeratePain = input.request.painAndInjury.moderatePain.filter((pain) =>
-    concernMatchesContext({
-      region: pain.region,
-      stressTags: pain.stressTags,
-      signal: input.signal,
-      exercise: input.exercise,
-      request: input.request,
-    }),
-  );
-  const matchedHistoricalSensitivities = input.request.painAndInjury.historicalSensitivities.filter(
-    (sensitivity) =>
+    }))
+    .filter((entry) => entry.context.matchedBy.length > 0);
+  const matchedModeratePain = input.request.painAndInjury.moderatePain
+    .map((pain) => ({
+      pain,
+      context: concernContextMatch({
+        signalId: pain.id,
+        region: pain.region,
+        stressTags: pain.stressTags,
+        signal: input.signal,
+        exercise: input.exercise,
+        request: input.request,
+        painMatchTrace: input.painMatchTrace,
+      }),
+    }))
+    .filter((entry) => entry.context.matchedBy.length > 0);
+  const matchedHistoricalSensitivities = input.request.painAndInjury.historicalSensitivities
+    .filter(
+      (sensitivity) =>
       (sensitivity.preferredModification === "increase_support" ||
         sensitivity.preferredModification === "reduce_load" ||
-        sensitivity.preferredModification === "reduce_range") &&
-      concernMatchesContext({
+        sensitivity.preferredModification === "reduce_range"),
+    )
+    .map((sensitivity) => ({
+      sensitivity,
+      context: concernContextMatch({
+        signalId: sensitivity.id,
         region: sensitivity.region,
         stressTags: sensitivity.stressTags,
         signal: input.signal,
         exercise: input.exercise,
         request: input.request,
+        painMatchTrace: input.painMatchTrace,
       }),
-  );
+    }))
+    .filter((entry) => entry.context.matchedBy.length > 0);
   const movementRoles = contextualMovementRoles(input);
   const fatigueSignals = input.request.fatigueSignals;
   const matchedFatigueMovementRoles = unique(
@@ -157,22 +191,24 @@ export function demandReductionContextFor(input: {
     (input.request.history.fatigueState.overall === "moderate" ||
       input.request.history.fatigueState.overall === "high");
   const matchedPainConcernIds = [
-    ...matchedCurrentDiscomforts.map((pain) => pain.id),
-    ...matchedModeratePain.map((pain) => pain.id),
+    ...matchedCurrentDiscomforts.map(({ pain }) => pain.id),
+    ...matchedModeratePain.map(({ pain }) => pain.id),
   ];
   const hasPainOrSensitivityMatch =
     matchedPainConcernIds.length > 0 || matchedHistoricalSensitivities.length > 0;
   const globalPainAwareGoalUsed = input.request.goal === "pain_aware_return" && hasPainOrSensitivityMatch;
   const evidence = [
     ...matchedCurrentDiscomforts.map(
-      (pain) => `${pain.id} current discomfort matches this signal/candidate context.`,
+      ({ pain, context }) =>
+        `${pain.id} current discomfort requests ${pain.effect} and matches by ${context.matchedBy.join(", ")}.`,
     ),
     ...matchedModeratePain.map(
-      (pain) => `${pain.id} moderate pain matches this signal/candidate context.`,
+      ({ pain, context }) =>
+        `${pain.id} moderate pain requests ${pain.requiredResponse} and matches by ${context.matchedBy.join(", ")}.`,
     ),
     ...matchedHistoricalSensitivities.map(
-      (sensitivity) =>
-        `${sensitivity.id} historical sensitivity requests ${sensitivity.preferredModification} in this signal/candidate context.`,
+      ({ sensitivity, context }) =>
+        `${sensitivity.id} historical sensitivity requests ${sensitivity.preferredModification} and matches by ${context.matchedBy.join(", ")}.`,
     ),
     ...matchedFatigueMovementRoles.map(
       (movementRole) => `${movementRole} fatigue matches the signal/candidate movement context.`,
@@ -196,8 +232,33 @@ export function demandReductionContextFor(input: {
       hasPainOrSensitivityMatch || matchedFatigueMovementRoles.length > 0 || systemicFatigueUsed,
     matchedPainConcernIds,
     matchedHistoricalSensitivityIds: matchedHistoricalSensitivities.map(
-      (sensitivity) => sensitivity.id,
+      ({ sensitivity }) => sensitivity.id,
     ),
+    painContextMatches: [
+      ...matchedCurrentDiscomforts.map(({ pain, context }): AssessmentPainContextMatchTrace => ({
+        signalId: pain.id,
+        signalKind: pain.kind,
+        requestedAction: pain.effect,
+        matchedBy: context.matchedBy,
+        matchedStressFacts: context.matchedStressFacts,
+      })),
+      ...matchedModeratePain.map(({ pain, context }): AssessmentPainContextMatchTrace => ({
+        signalId: pain.id,
+        signalKind: pain.kind,
+        requestedAction: pain.requiredResponse,
+        matchedBy: context.matchedBy,
+        matchedStressFacts: context.matchedStressFacts,
+      })),
+      ...matchedHistoricalSensitivities.map(
+        ({ sensitivity, context }): AssessmentPainContextMatchTrace => ({
+          signalId: sensitivity.id,
+          signalKind: sensitivity.kind,
+          requestedAction: sensitivity.preferredModification ?? null,
+          matchedBy: context.matchedBy,
+          matchedStressFacts: context.matchedStressFacts,
+        }),
+      ),
+    ],
     matchedFatigueMovementRoles,
     systemicFatigueUsed,
     globalPainAwareGoalUsed,

@@ -58,6 +58,10 @@ A personal block is not a medical contraindication. Mild discomfort is not autom
 
 Pain observation/diagnosis, hard legality, candidate suitability, prescription adjustment, composition, and progression/transition are separate responsibilities. No score may override a contraindication, and the training engine does not diagnose.
 
+Candidate pain matching normalizes `loading.jointStressTags`, `cautionStressTags`, and `contraindicatedStressTags` into source-aware stress facts. One pain signal and one matched stress tag form one canonical fact even when several exercise metadata sources contain that tag. Distinct pain signal IDs remain distinct evidence. Receiver policies then decide independently whether that fact can warn, score, hard-reject, inform assessment context, or create a deferred response requirement.
+
+`HistoricalInjury` remains intentionally unconsumed at Candidate Intelligence scope. Current effects, moderate required responses, acute urgency, historical preferred modifications, and hard-authority provenance remain observable even when their future owner is prescription, Session Intent / Session Composer, or external review.
+
 ## Equipment
 
 Equipment is capability-based. It can distinguish bench type, dumbbell availability and load range, barbell and rack availability, cable availability, machine IDs, band type, anchor height, bodyweight space, pull-up bar, and support surfaces.

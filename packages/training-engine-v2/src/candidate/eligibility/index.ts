@@ -7,6 +7,7 @@ import { painReviewEligibility } from "./painReviewEligibility";
 import { personalBlockEligibility } from "./personalBlockEligibility";
 import { roleEligibility } from "./roleEligibility";
 import { setupEligibility } from "./setupEligibility";
+import { buildCandidatePainMatchTrace } from "../pain";
 import {
   combineEligibilityComponentResults,
   type HardEligibilityComponent,
@@ -27,9 +28,20 @@ export function evaluateHardEligibilityComponents(
   context: HardEligibilityContext,
   components: readonly HardEligibilityComponent[] = HARD_ELIGIBILITY_COMPONENTS,
 ): CandidateEligibility {
+  const painMatchTrace = context.painMatchTrace ?? buildCandidatePainMatchTrace({
+    exercise,
+    painAndInjury: context.painAndInjury,
+    requestedRole: context.requestedRole,
+  });
+  const resolvedContext: HardEligibilityContext = {
+    ...context,
+    painMatchTrace,
+  };
+
   return combineEligibilityComponentResults({
     exerciseId: exercise.id,
-    results: components.map((component) => component.evaluate(exercise, context)),
+    results: components.map((component) => component.evaluate(exercise, resolvedContext)),
+    painMatchTrace,
   });
 }
 

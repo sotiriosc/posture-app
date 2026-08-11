@@ -8,6 +8,10 @@ import type {
   ScoreComponentFamily,
   ScoreComponentSource,
 } from "../../scoringContracts";
+import type {
+  CandidatePainMatchTrace,
+  PainReceiverDecisionTrace,
+} from "../pain";
 
 export function overlapCount<T extends string>(left: readonly T[], right: readonly T[]): number {
   return left.filter((value) => right.includes(value)).length;
@@ -51,6 +55,8 @@ export function component(input: {
   readonly source: ScoreComponentSource;
   readonly assessmentInfluence?: AssessmentInfluence;
   readonly assessmentRelevance?: readonly AssessmentRelevanceTrace[];
+  readonly painMatchTrace?: CandidatePainMatchTrace;
+  readonly painReceiverDecision?: PainReceiverDecisionTrace;
 }): ScoreComponent {
   const rawValue = clampScore(input.value);
 
@@ -67,6 +73,8 @@ export function component(input: {
     source: input.source,
     assessmentInfluence: input.assessmentInfluence,
     assessmentRelevance: input.assessmentRelevance,
+    painMatchTrace: input.painMatchTrace,
+    painReceiverDecision: input.painReceiverDecision,
   };
 }
 

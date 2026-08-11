@@ -9,8 +9,8 @@ import { component } from "../utils";
 
 export const assessmentFitComponent: CandidateScoreComponent = {
   id: "assessment_fit",
-  score({ request, exercise }) {
-    const traces = calculateAssessmentRelevanceTraces({ request, exercise });
+  score({ request, exercise, painMatchTrace }) {
+    const traces = calculateAssessmentRelevanceTraces({ request, exercise, painMatchTrace });
     const relevantTraces = relevantAssessmentTraces(traces);
     const conflict = relevantTraces.some((trace) => trace.direction === "conflicts");
     const contribution = sumAssessmentContribution(traces);
@@ -35,8 +35,8 @@ export const assessmentFitComponent: CandidateScoreComponent = {
 
 export const alignmentFitComponent: CandidateScoreComponent = {
   id: "alignment_fit",
-  score({ request, exercise }) {
-    const traces = calculateAssessmentRelevanceTraces({ request, exercise });
+  score({ request, exercise, painMatchTrace }) {
+    const traces = calculateAssessmentRelevanceTraces({ request, exercise, painMatchTrace });
     const alignmentTraces = traces.filter((trace) => trace.alignmentContribution !== 0);
     const conflict = alignmentTraces.some((trace) => trace.direction === "conflicts");
     const contribution = sumAlignmentContribution(traces);

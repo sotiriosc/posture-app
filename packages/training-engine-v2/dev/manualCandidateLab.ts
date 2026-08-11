@@ -454,6 +454,25 @@ const SHOULDER_DISCOMFORT: PainAndInjuryState = {
   ],
 };
 
+function moderateLowBackPain(
+  requiredResponse: PainAndInjuryState["moderatePain"][number]["requiredResponse"],
+): PainAndInjuryState {
+  return {
+    ...NO_PAIN_OR_INJURY,
+    moderatePain: [
+      {
+        kind: "moderate_pain",
+        id: `lab-moderate-low-back-${requiredResponse}`,
+        region: "lumbar_spine",
+        severity0To10: 4,
+        stressTags: ["loaded_hinge", "loaded_spinal_flexion"],
+        requiredResponse,
+        description: "Moderate low-back pain for receiver-ownership inspection.",
+      },
+    ],
+  };
+}
+
 function assessmentChoices(selectedPersona: GoldenPersona): readonly Choice<AssessmentState>[] {
   return [
     {
@@ -566,6 +585,21 @@ function painChoices(selectedPersona: GoldenPersona): readonly Choice<PainAndInj
       label: "Shoulder Discomfort",
       description: "Mild shoulder pressing support preference.",
       value: SHOULDER_DISCOMFORT,
+    },
+    {
+      label: "Moderate Low-Back Avoid Aggravator",
+      description: "Moderate hinge concern requiring candidate review.",
+      value: moderateLowBackPain("avoid_aggravator"),
+    },
+    {
+      label: "Moderate Low-Back Reduce Load And Range",
+      description: "Moderate hinge concern deferred to prescription.",
+      value: moderateLowBackPain("reduce_load_and_range"),
+    },
+    {
+      label: "Moderate Low-Back Substitute Role",
+      description: "Moderate hinge concern deferred to session composition.",
+      value: moderateLowBackPain("substitute_role"),
     },
   ];
 }
@@ -1145,6 +1179,117 @@ function printHardRejections(result: CandidateRankingResult): void {
   );
 }
 
+function printPainEvidence(result: CandidateRankingResult): void {
+  const rankedById = new Map(
+    result.rankedCandidates.map((candidate) => [candidate.exercise.id, candidate] as const),
+  );
+  const entries = [
+    ...result.rankedCandidates.map((candidate) => ({
+      exerciseId: candidate.exercise.id,
+      exerciseName: candidate.exercise.name,
+      trace: candidate.painMatchTrace,
+      assessmentTraces: assessmentTraces(candidate),
+    })),
+    ...result.hardRejectedCandidates
+      .filter((candidate) =>
+        candidate.eligibility.rejectionReasons.some((reason) => reason.painEvidence),
+      )
+      .filter((candidate) => !rankedById.has(candidate.exercise.id))
+      .map((candidate) => ({
+        exerciseId: candidate.exercise.id,
+        exerciseName: candidate.exercise.name,
+        trace: candidate.eligibility.painMatchTrace,
+        assessmentTraces: [] as readonly AssessmentRelevanceTrace[],
+      })),
+  ];
+
+  console.log("\nPain Evidence");
+  if (entries.every((entry) => entry.trace.signalTraces.length === 0)) {
+    console.log("No pain signals supplied.");
+    return;
+  }
+
+  entries.forEach((entry) => {
+    console.log(`\n${entry.exerciseId} / ${entry.exerciseName}`);
+    printTable(
+      ["PAIN SIGNAL", "Kind", "Severity", "Region / Side", "Requested Action", "Unique Matches"],
+      entry.trace.signalTraces.map((signal) => [
+        signal.signalId,
+        signal.signalKind,
+        signal.severity === null ? "unknown" : String(signal.severity),
+        `${signal.region ?? "unknown"} / ${signal.side ?? "unknown"}`,
+        signal.requestedAction ?? "none",
+        String(signal.uniqueMatchCount),
+      ]),
+    );
+
+    console.log("\nMATCHED STRESS FACTS");
+    if (entry.trace.signalMatches.length === 0) {
+      console.log("none");
+    } else {
+      printTable(
+        ["Signal", "Tag", "Exercise Metadata Sources"],
+        entry.trace.signalMatches.map((match) => [
+          match.signalId,
+          match.stressTag,
+          match.exerciseSources.join(", "),
+        ]),
+      );
+    }
+
+    console.log("\nRECEIVER DECISIONS");
+    printTable(
+      ["Receiver", "Count", "Signals", "Status", "Excluded"],
+      entry.trace.receiverDecisions.map((decision) => [
+        decision.receiver,
+        String(decision.countedMatchUnitCount),
+        decision.affectedSignalIds.join(", ") || "none",
+        decision.executionStatus,
+        decision.excludedMatchUnits
+          .map((excluded) => `${excluded.match.matchId}:${excluded.reason}`)
+          .join(", ") || "none",
+      ]),
+    );
+
+    console.log("\nRESPONSE REQUIREMENTS");
+    if (entry.trace.responseRequirements.length === 0) {
+      console.log("none");
+    } else {
+      printTable(
+        ["Signal", "Action", "Owner", "Execution / Defer Status"],
+        entry.trace.responseRequirements.map((requirement) => [
+          requirement.signalId,
+          requirement.requestedAction,
+          requirement.primaryFutureOwner,
+          requirement.executionStatus,
+        ]),
+      );
+    }
+
+    const assessmentPainContext = entry.assessmentTraces.flatMap((trace) =>
+      trace.demandReductionContext.painContextMatches.map((match) => ({
+        assessmentSignalId: trace.signalId,
+        match,
+      })),
+    );
+    console.log("\nASSESSMENT DEMAND-REDUCTION CONTEXT");
+    if (assessmentPainContext.length === 0) {
+      console.log("none");
+    } else {
+      printTable(
+        ["Assessment Signal", "Pain Signal", "Action", "Matched By", "Stress Facts"],
+        assessmentPainContext.map(({ assessmentSignalId, match }) => [
+          assessmentSignalId,
+          match.signalId,
+          match.requestedAction ?? "none",
+          match.matchedBy.join(", "),
+          match.matchedStressFacts.map((fact) => fact.stressTag).join(", ") || "none",
+        ]),
+      );
+    }
+  });
+}
+
 function formatList(values: readonly string[]): string {
   return values.length > 0 ? values.join("; ") : "none";
 }
@@ -1427,6 +1572,7 @@ async function main(): Promise<void> {
     const useDefaults = process.argv.includes("--defaults");
     const showRowKnowledge = process.argv.includes("--row-knowledge");
     const showTransitionKnowledge = process.argv.includes("--transition-knowledge");
+    const showPainTrace = process.argv.includes("--pain-trace");
     const transitionExerciseId = argumentValue("exercise");
     const asOf = argumentValue("as-of") ?? currentAsOf();
     const personaOptions = personaChoices();
@@ -1542,6 +1688,9 @@ async function main(): Promise<void> {
     }
     if (showTransitionKnowledge) {
       printProgressionTransitionKnowledge(result, transitionExerciseId);
+    }
+    if (showPainTrace) {
+      printPainEvidence(result);
     }
   } finally {
     rl.close();

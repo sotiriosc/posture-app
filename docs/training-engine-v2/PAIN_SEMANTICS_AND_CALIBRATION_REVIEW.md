@@ -504,3 +504,137 @@ Before any calibration values change, add a deterministic source-aware `PainMatc
 Then make the smallest contract fixes: resolve the joint/caution duplicate unit; scope or remove the unrelated global stability bonus; emit `requiredResponse` and urgent/provenance requirements to the correct future receiver without implementing Session Composer or prescription. Only after those contracts are tested should human review choose severity categories and calibrate pain/joint coefficients.
 
 This boundary does not authorize ranking-weight changes, exercise-science calibration, automatic role substitution, Session Composer, prescription, or medical diagnosis.
+
+## CANONICAL_PAIN_MATCH_CONTRACT_RESULT
+
+The accepted audit above remains the before-state evidence. This appendix records the deterministic contract result implemented on top of `d0dbd06b63b6ed8579db1bdb48400f5e1bed8090` without changing pain severity policy, coefficients, score-family weights, exercise metadata, prescription, or Session Composer.
+
+Final state: **PAIN_CONTRACT_READY_FOR_HUMAN_CALIBRATION**
+
+Overall Candidate Intelligence remains **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION** because moderate-pain calibration and phase calibration are still P1.
+
+### Canonical Evidence
+
+`candidate/pain/*` now derives one serializable `CandidatePainMatchTrace` from normalized pain input and structured exercise metadata. `loading.jointStressTags`, `cautionStressTags`, and `contraindicatedStressTags` become unique stress facts with controlled `joint_stress`, `caution`, and `contraindicated` provenance. Exercise ID, name, summary, coaching cues, notes, and equipment labels do not infer stress.
+
+The canonical match key is `painSignalId + stressTag`. Duplicate occurrences inside one signal and duplicate exercise metadata sources produce one fact; all matching sources remain visible. Distinct signal IDs remain distinct evidence. `HistoricalInjury` remains intentionally unconsumed.
+
+| Receiver | Count / Authority | Source Policy | Result |
+| --- | --- | --- | --- |
+| pain suitability | one unit per current/moderate/historical signal-tag fact | joint, caution, or contraindicated | relative score among legal candidates; native count and facts |
+| joint cost | one unit per owned fact | joint or caution qualifies; both still count once; contraindicated-only is visible but uncharged | modeled exposure and accumulation |
+| moderate warning | one warning per matched moderate signal/candidate | any structured source | warning only; never creates hard authority |
+| hard contraindication | exact exercise ID or explicit hard stress criterion | joint or contraindicated qualifies; caution-only does not | hard rejection with criterion and `athlete_report/clinician/coach/safety_rule` provenance |
+| acute/severe eligibility | requested-role invalidation or matched stress criterion | joint qualifies; caution-only and contraindicated-only do not | preserved current hard filter plus structured urgency |
+| assessment demand reduction | canonical stress facts plus independent structured region/movement context | every structured source for stress context | exact requested action is observable; no prescription/composition action is executed |
+
+### Counting And Warning Result
+
+- The 19 representative exercise/tag rows each expose one canonical fact and one pain-suitability unit.
+- The 16 rows with both joint and caution provenance changed from two joint-cost units to one. The other three remain one unit. No coefficient was tuned to offset this correction.
+- Moderate warning coverage changed from the 16 caution-bearing representative rows to all 19 structured-source rows. Joint-only, caution-only, and contraindicated-only tests each emit one non-hard warning.
+- A synthetic contraindicated-only match remains visible to pain suitability, remains uncharged by joint cost, warns for moderate pain, rejects only under explicit hard authority, and does not broaden acute hard authority.
+
+### Response And Provenance Result
+
+| Input action | Primary owner | Candidate Intelligence status |
+| --- | --- | --- |
+| moderate `avoid_aggravator` | candidate review | `policy_unresolved_candidate_review_required` |
+| moderate `reduce_load_and_range` | prescription | `deferred_unexecutable_at_candidate_layer` |
+| moderate `substitute_role` | Session Intent / Session Composer | `deferred_unexecutable_at_candidate_layer`; no role substitution |
+| current `monitor` | observation | `observed_no_modification_applied` |
+| current `prefer_support` | future candidate/prescription/session | deferred; no support preference claimed as executed |
+| current `reduce_range` / `reduce_load` | prescription | deferred |
+| historical `monitor` | observation | `observed_no_modification_applied` |
+| historical `increase_support` | future selection/prescription/session | deferred |
+| historical `reduce_range` / `reduce_load` | prescription | deferred |
+| acute `urgentReviewRecommended=true` | external urgent review | `unresolved_urgent_review_required`, whether legal or already rejected |
+
+`HardContraindication.source`, acute severity/role/urgency, current effect, moderate required response, and historical preferred modification are now structured evidence. Their different values do not add score magnitude in this increment.
+
+### Stability Ownership Result
+
+The global `+0.8` low-stability reward for any current/moderate pain record is removed. `stability_fit` now answers only exercise stability demand versus phase expectation. Unrelated wrist discomfort during squat, knee discomfort during horizontal pull, and shoulder discomfort during hinge are byte-for-byte score/rank neutral against their no-pain controls. No replacement pain bonus was introduced.
+
+### Coefficient Freeze
+
+| Quantity | Unchanged value |
+| --- | ---: |
+| pain suitability: current / moderate / historical | `0.9 / 1.8 / 0.4` |
+| joint cost: current / moderate / historical | `0.8 / 1.4 / 0.35` |
+| axial cost | `0.35` |
+| joint accumulation | `0.7` |
+| score-family weights: pain / joint / stability | `1.2 / 0.8 / 0.7` |
+
+No severity multiplier was added. Severity 1 and 2 remain numerically identical; moderate severity 3 through 6 remains numerically identical. All three moderate required responses retain identical numeric candidate scores while exposing different ownership traces.
+
+### Before / After Controlled Matrix
+
+`B->A` shows accepted-audit before and canonical-contract after. An unchanged cell prints once. `U/P/J` means canonical unique stress facts, pain-suitability units, and joint-cost units. Current severity 1 equals the shown severity 2 row; moderate severity 3, 5, and 6 equal the shown severity 4 row. Every no-pain row is unchanged.
+
+| Matrix / State | Candidate | Rank B->A | Total B->A | Pain B->A | Joint B->A | Stability B->A | Warning | Hard | Units U/P/J B->A | Response status |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- | --- |
+| shoulder-horizontal-push / no pain | push-up | 2 | 7.793 | 8.200 | 8.800 | 7.200 | - | - | 0/0/0 | none |
+| shoulder-horizontal-push / no pain | dumbbell-bench-press | 3 | 7.643 | 8.200 | 8.800 | 7.200 | - | - | 0/0/0 | none |
+| shoulder-horizontal-push / no pain | machine-chest-press | 1 | 7.815 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| shoulder-horizontal-push / discomfort severity 2 | push-up | 2 | 7.647->7.686 | 7.300 | 7.200->8.000 | 7.200 | - | - | 1/1/2->1/1/1 | deferred |
+| shoulder-horizontal-push / discomfort severity 2 | dumbbell-bench-press | 3 | 7.497->7.537 | 7.300 | 7.200->8.000 | 7.200 | - | - | 1/1/2->1/1/1 | deferred |
+| shoulder-horizontal-push / discomfort severity 2 | machine-chest-press | 1 | 7.704->7.709 | 7.300 | 7.200->8.000 | 9.300->8.500 | - | - | 1/1/2->1/1/1 | deferred |
+| shoulder-horizontal-push / moderate severity 4 | push-up | 2 | 7.521->7.590 | 6.400 | 6.000->7.400 | 7.200 | review | - | 1/1/2->1/1/1 | candidate review |
+| shoulder-horizontal-push / moderate severity 4 | dumbbell-bench-press | 3 | 7.371->7.441 | 6.400 | 6.000->7.400 | 7.200 | review | - | 1/1/2->1/1/1 | candidate review |
+| shoulder-horizontal-push / moderate severity 4 | machine-chest-press | 1 | 7.578->7.612 | 6.400 | 6.000->7.400 | 9.300->8.500 | review | - | 1/1/2->1/1/1 | candidate review |
+| low-back-hinge / no pain | dumbbell-romanian-deadlift | 1 | 7.961 | 8.200 | 8.450 | 8.500 | - | - | 0/0/0 | none |
+| low-back-hinge / no pain | cable-pull-through | 2 | 7.823 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| low-back-hinge / discomfort severity 2 | dumbbell-romanian-deadlift | 2->1 | 7.670->7.749 | 6.400 | 5.250->6.850 | 8.500 | - | - | 2/2/4->2/2/2 | deferred |
+| low-back-hinge / discomfort severity 2 | cable-pull-through | 1->2 | 7.677->7.717 | 7.300 | 7.200->8.000 | 8.500 | - | - | 1/1/2->1/1/1 | deferred |
+| low-back-hinge / moderate severity 4 | dumbbell-romanian-deadlift | 2 | 7.418->7.556 | 4.600 | 2.850->5.650 | 8.500 | review | - | 2/2/4->2/2/2 | candidate review |
+| low-back-hinge / moderate severity 4 | cable-pull-through | 1 | 7.551->7.620 | 6.400 | 6.000->7.400 | 8.500 | review | - | 1/1/2->1/1/1 | candidate review |
+| low-back-horizontal-row / no pain | machine-row | 1 | 8.069 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| low-back-horizontal-row / no pain | seated-cable-row | 2 | 8.069 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| low-back-horizontal-row / no pain | chest-supported-dumbbell-row | 3 | 8.064 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| low-back-horizontal-row / no pain | one-arm-dumbbell-row | 4 | 7.908 | 8.200 | 8.450 | 7.200 | - | - | 0/0/0 | none |
+| low-back-horizontal-row / discomfort severity 2 | machine-row | 1 | 8.104->8.069 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| low-back-horizontal-row / discomfort severity 2 | seated-cable-row | 2 | 8.104->8.069 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| low-back-horizontal-row / discomfort severity 2 | chest-supported-dumbbell-row | 3 | 8.102->8.068 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| low-back-horizontal-row / discomfort severity 2 | one-arm-dumbbell-row | 4 | 7.616->7.695 | 6.400 | 5.250->6.850 | 7.200 | - | - | 2/2/4->2/2/2 | deferred |
+| low-back-horizontal-row / moderate severity 4 | machine-row | 1 | 8.104->8.069 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| low-back-horizontal-row / moderate severity 4 | seated-cable-row | 2 | 8.104->8.069 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| low-back-horizontal-row / moderate severity 4 | chest-supported-dumbbell-row | 3 | 8.102->8.068 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| low-back-horizontal-row / moderate severity 4 | one-arm-dumbbell-row | 4 | 7.364->7.503 | 4.600 | 2.850->5.650 | 7.200 | review | - | 2/2/4->2/2/2 | candidate review |
+| knee-squat / no pain | goblet-squat | 2 | 7.705 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| knee-squat / no pain | leg-press | 1 | 7.981 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| knee-squat / no pain | bodyweight-box-squat | 3 | 7.311 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| knee-squat / discomfort severity 2 | goblet-squat | 2 | 7.440->7.519 | 6.400 | 5.600->7.200 | 8.500 | - | - | 2/2/4->2/2/2 | deferred |
+| knee-squat / discomfort severity 2 | leg-press | 1 | 7.790->7.795 | 6.400 | 6.400->7.200 | 9.300->8.500 | - | - | 2/2/3->2/2/2 | deferred |
+| knee-squat / discomfort severity 2 | bodyweight-box-squat | 3 | 7.227->7.232 | 7.300 | 7.200->8.000 | 9.300->8.500 | - | - | 1/1/2->1/1/1 | deferred |
+| knee-squat / moderate severity 4 | goblet-squat | 2 | 7.188->7.327 | 4.600 | 3.200->6.000 | 8.500 | review | - | 2/2/4->2/2/2 | candidate review |
+| knee-squat / moderate severity 4 | leg-press | 1 | 7.568->7.603 | 4.600 | 4.600->6.000 | 9.300->8.500 | review | - | 2/2/3->2/2/2 | candidate review |
+| knee-squat / moderate severity 4 | bodyweight-box-squat | 3 | 7.101->7.136 | 6.400 | 6.000->7.400 | 9.300->8.500 | review | - | 1/1/2->1/1/1 | candidate review |
+| single-leg / no pain | split-squat | 1 | 7.985 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| single-leg / no pain | step-up | 2 | 7.965 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | none |
+| single-leg / discomfort severity 2 | split-squat | 2 | 7.721->7.800 | 6.400 | 5.600->7.200 | 8.500 | - | - | 2/2/4->2/2/2 | deferred |
+| single-leg / discomfort severity 2 | step-up | 1 | 7.846->7.886 | 7.300 | 7.200->8.000 | 8.500 | - | - | 1/1/2->1/1/1 | deferred |
+| single-leg / moderate severity 4 | split-squat | 2 | 7.469->7.607 | 4.600 | 3.200->6.000 | 8.500 | review | - | 2/2/4->2/2/2 | candidate review |
+| single-leg / moderate severity 4 | step-up | 1 | 7.720->7.790 | 6.400 | 6.000->7.400 | 8.500 | review | - | 1/1/2->1/1/1 | candidate review |
+| unrelated wrist / squat | goblet-squat | 2 | 7.705 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | not applicable |
+| unrelated wrist / squat | leg-press | 1 | 8.016->7.981 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| unrelated wrist / squat | bodyweight-box-squat | 3 | 7.346->7.311 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| unrelated knee / horizontal pull | machine-row | 1 | 8.104->8.069 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| unrelated knee / horizontal pull | seated-cable-row | 2 | 8.104->8.069 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| unrelated knee / horizontal pull | chest-supported-dumbbell-row | 3 | 8.098->8.064 | 8.200 | 8.800 | 9.300->8.500 | - | - | 0/0/0 | not applicable |
+| unrelated knee / horizontal pull | one-arm-dumbbell-row | 4 | 7.908 | 8.200 | 8.450 | 7.200 | - | - | 0/0/0 | not applicable |
+| unrelated shoulder / hinge | dumbbell-romanian-deadlift | 1 | 7.961 | 8.200 | 8.450 | 8.500 | - | - | 0/0/0 | not applicable |
+| unrelated shoulder / hinge | cable-pull-through | 2 | 7.823 | 8.200 | 8.800 | 8.500 | - | - | 0/0/0 | not applicable |
+
+The only rank reversal is the severity 1/2 low-back hinge pair: deduplicating repeated joint/caution source charges restores dumbbell Romanian deadlift above cable pull-through. All other controlled orders remain unchanged. Of 144 rows, 89 totals change only through source deduplication, global stability-bonus removal, or both. No no-pain total changes.
+
+Acute/severe and hard-contraindication legality is unchanged. Every stress-matched candidate in shoulder push, low-back hinge, knee squat, and single-leg remains rejected. In the low-back row matrix, machine, cable, and chest-supported rows remain legal because they have no matching lumbar stress fact; the stress-matched one-arm row remains rejected. Every acute row now retains `unresolved_urgent_review_required`, including the legal rows, while hard rows retain the supplied authority source and exact qualifying criterion. Canonical reuse did not broaden caution-only or contraindicated-only acute rejection.
+
+### Remaining Human Review
+
+- Choose whether moderate severity should affect relative suitability, warning urgency, prescription requirements, or separate bounded channels.
+- Choose severity bands or another reviewed policy; severity 3 through 6 is still intentionally uncalibrated.
+- Calibrate the frozen pain and joint coefficients against the settled one-fact counting unit.
+- Keep `HistoricalInjury` as P2 until an explicit future consumption or non-consumption decision is authorized.
+
+Post-contract controlled-scenario fingerprint: `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782`.

@@ -52,6 +52,7 @@ function rankLegalCandidates(input: {
       scoreComponent.score({
         request: input.request,
         exercise: candidate.exercise,
+        painMatchTrace: candidate.eligibility.painMatchTrace,
       }),
     );
     const score = aggregateCandidateScore({
@@ -62,9 +63,11 @@ function rankLegalCandidates(input: {
 
     return {
       exercise: candidate.exercise,
+      eligibility: candidate.eligibility,
       score,
       total: score.aggregate.value,
       components: score.components,
+      painMatchTrace: candidate.eligibility.painMatchTrace,
     };
   });
 

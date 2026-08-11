@@ -6,11 +6,19 @@ import type { AssessmentRelevanceTrace } from "../../scoringContracts";
 import type { CandidateRequest } from "../request";
 import { decideAssessmentRelevance } from "./assessment/relevance";
 import { makeAssessmentRelevanceTrace } from "./assessment/trace";
+import type { CandidatePainMatchTrace } from "../pain";
+import { buildCandidatePainMatchTrace } from "../pain";
 
 export function calculateAssessmentRelevanceTraces(input: {
   readonly request: CandidateRequest;
   readonly exercise: ExerciseDefinition;
+  readonly painMatchTrace?: CandidatePainMatchTrace;
 }): readonly AssessmentRelevanceTrace[] {
+  const painMatchTrace = input.painMatchTrace ?? buildCandidatePainMatchTrace({
+    exercise: input.exercise,
+    painAndInjury: input.request.painAndInjury,
+    requestedRole: input.request.need.requestedRole,
+  });
   const alignmentPrioritySignalIds = new Set(
     input.request.alignmentPriorities.flatMap((priority) => priority.sourceAssessmentSignalIds),
   );
@@ -29,6 +37,7 @@ export function calculateAssessmentRelevanceTraces(input: {
         signal,
       }),
       alignmentEligible: alignmentPrioritySignalIds.has(signal.id),
+      painMatchTrace,
     });
   });
 }

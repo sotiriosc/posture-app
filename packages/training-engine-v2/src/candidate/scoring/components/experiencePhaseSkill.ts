@@ -59,8 +59,7 @@ export const stabilityFitComponent: CandidateScoreComponent = {
   score({ request, exercise }) {
     const phaseTarget = demandValue(request.phase.capabilityExpectation.stability);
     const stabilityDemand = demandValue(exercise.loading.stabilityDemand);
-    const painNeedsSupport = request.painAndInjury.currentDiscomforts.length + request.painAndInjury.moderatePain.length > 0;
-    const value = 8.5 - Math.max(0, stabilityDemand - phaseTarget) * 1.3 + (painNeedsSupport && stabilityDemand === 1 ? 0.8 : 0);
+    const value = 8.5 - Math.max(0, stabilityDemand - phaseTarget) * 1.3;
 
     return component({
       id: "stability_fit",

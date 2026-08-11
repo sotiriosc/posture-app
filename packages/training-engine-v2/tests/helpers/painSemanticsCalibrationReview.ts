@@ -6,11 +6,14 @@ import {
   FULL_GYM_EQUIPMENT,
   NO_PAIN_OR_INJURY,
   REFERENCE_EXERCISES,
+  buildCandidatePainMatchTrace,
+  buildExerciseStressProfile,
   deriveAlignmentPriorities,
   evaluateHardEligibility,
   getControlledCandidateScenario,
   jointCostComponent,
   painSuitabilityComponent,
+  receiverDecision,
   runCandidateRankingLab,
   type AssessmentState,
   type BodyRegion,
@@ -30,7 +33,7 @@ import {
 const FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 const AUDIT_BASELINE_HEAD = "1449d46e122cadd8a445e07365c242983afa64eb";
 const EXPECTED_EXISTING_SCENARIO_FINGERPRINT =
-  "f5a39f62f2ef24026a7e3e490fe822204f6f7224870f5f1557d8f36556bf748d";
+  "d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782";
 
 const EMPTY_ASSESSMENT: AssessmentState = {
   signals: [],
@@ -152,6 +155,7 @@ export interface PainMatrixRow {
   readonly uniqueOverlapCount: number;
   readonly painCountedOverlap: number;
   readonly jointCountedOverlap: number;
+  readonly responseRequirementStatus: string;
   readonly painSuitabilityRaw: number | null;
   readonly painSuitabilityWeightedContribution: number | null;
   readonly jointCostRaw: number | null;
@@ -193,6 +197,7 @@ export interface StressTagAuditRow {
     | "INTENTIONAL_DISTINCT_EVIDENCE"
     | "POTENTIAL_DOUBLE_COUNT"
     | "ACTUAL_DOUBLE_COUNT"
+    | "RESOLVED_SOURCE_DEDUPLICATION"
     | "NOT_APPLICABLE";
 }
 
@@ -616,64 +621,21 @@ function component(candidate: RankedCandidate, id: string): ScoreComponent {
 }
 
 function exerciseStressTags(candidate: ExerciseDefinition): readonly JointStressTag[] {
-  return unique([
-    ...candidate.loading.jointStressTags,
-    ...candidate.cautionStressTags,
-    ...candidate.contraindicatedStressTags,
-  ]);
+  return buildExerciseStressProfile(candidate).map((fact) => fact.tag);
 }
 
 function metadataSourcesForTag(
   candidate: ExerciseDefinition,
   tag: JointStressTag,
 ): readonly StressMetadataSource[] {
-  const sources: StressMetadataSource[] = [];
-  if (candidate.loading.jointStressTags.includes(tag)) {
-    sources.push("loading.jointStressTags");
-  }
-  if (candidate.cautionStressTags.includes(tag)) {
-    sources.push("cautionStressTags");
-  }
-  if (candidate.contraindicatedStressTags.includes(tag)) {
-    sources.push("contraindicatedStressTags");
-  }
+  const sourceNames = {
+    joint_stress: "loading.jointStressTags",
+    caution: "cautionStressTags",
+    contraindicated: "contraindicatedStressTags",
+  } as const;
+  const fact = buildExerciseStressProfile(candidate).find((candidateFact) => candidateFact.tag === tag);
 
-  return sources;
-}
-
-function countedPainOverlap(
-  painAndInjury: PainAndInjuryState,
-  candidate: ExerciseDefinition,
-): number {
-  const tags = new Set(exerciseStressTags(candidate));
-  return [
-    ...painAndInjury.currentDiscomforts,
-    ...painAndInjury.moderatePain,
-    ...painAndInjury.historicalSensitivities,
-  ].reduce(
-    (sum, pain) => sum + pain.stressTags.filter((tag) => tags.has(tag)).length,
-    0,
-  );
-}
-
-function overlapCount(left: readonly JointStressTag[], right: readonly JointStressTag[]): number {
-  return left.filter((tag) => right.includes(tag)).length;
-}
-
-function countedJointOverlap(
-  painAndInjury: PainAndInjuryState,
-  candidate: ExerciseDefinition,
-): number {
-  const painTags = [
-    ...painAndInjury.currentDiscomforts.flatMap((pain) => pain.stressTags),
-    ...painAndInjury.moderatePain.flatMap((pain) => pain.stressTags),
-    ...painAndInjury.historicalSensitivities.flatMap((pain) => pain.stressTags),
-  ];
-
-  return (
-    overlapCount(candidate.loading.jointStressTags, painTags) +
-    overlapCount(candidate.cautionStressTags, painTags)
-  );
+  return fact?.sources.map((source) => sourceNames[source]) ?? [];
 }
 
 function eligibilityFor(request: CandidateRequest, candidate: ExerciseDefinition) {
@@ -724,14 +686,22 @@ function matrixRowsFor(input: {
     return input.exerciseIds.map((exerciseId): PainMatrixRow => {
       const candidate = exercise(exerciseId);
       const eligibility = eligibilityFor(request, candidate);
+      const painTrace = eligibility.painMatchTrace;
       const ranked = result.rankedCandidates.find(
         (rankedCandidate) => rankedCandidate.exercise.id === exerciseId,
       );
-      const matchedTags = state.stressTags.filter((tag) =>
-        exerciseStressTags(candidate).includes(tag),
+      const matchedFacts = painTrace.signalMatches.filter(
+        (match) => match.signalId === state.signalId,
       );
-      const matchedMetadataSources = matchedTags.map(
-        (tag) => `${tag}:${metadataSourcesForTag(candidate, tag).join("+")}`,
+      const matchedTags = matchedFacts.map((match) => match.stressTag);
+      const sourceNames = {
+        joint_stress: "loading.jointStressTags",
+        caution: "cautionStressTags",
+        contraindicated: "contraindicatedStressTags",
+      } as const;
+      const matchedMetadataSources = matchedFacts.map(
+        (match) =>
+          `${match.stressTag}:${match.exerciseSources.map((source) => sourceNames[source]).join("+")}`,
       );
       const painComponent = ranked ? component(ranked, "pain_suitability") : undefined;
       const jointComponent = ranked ? component(ranked, "joint_cost") : undefined;
@@ -759,9 +729,19 @@ function matrixRowsFor(input: {
         stressTags: state.stressTags,
         matchedExerciseStressTags: matchedTags,
         matchedMetadataSources,
-        uniqueOverlapCount: unique(matchedTags).length,
-        painCountedOverlap: countedPainOverlap(state.painAndInjury, candidate),
-        jointCountedOverlap: countedJointOverlap(state.painAndInjury, candidate),
+        uniqueOverlapCount: matchedFacts.length,
+        painCountedOverlap: receiverDecision(
+          painTrace,
+          "pain_suitability",
+        ).countedMatchUnitCount,
+        jointCountedOverlap: receiverDecision(
+          painTrace,
+          "joint_cost",
+        ).countedMatchUnitCount,
+        responseRequirementStatus:
+          painTrace.responseRequirements.find(
+            (requirement) => requirement.signalId === state.signalId,
+          )?.executionStatus ?? "none",
         painSuitabilityRaw: painComponent?.rawValue ?? null,
         painSuitabilityWeightedContribution: painComponent?.weightedContribution ?? null,
         jointCostRaw: jointComponent?.rawValue ?? null,
@@ -1096,17 +1076,80 @@ function buildStressTagAudit(): readonly StressTagAuditRow[] {
 
     return exerciseStressTags(candidate).map((tag): StressTagAuditRow => {
       const metadataSources = metadataSourcesForTag(candidate, tag);
-      const painSuitabilityCount = 1;
-      const jointCostCount =
-        Number(candidate.loading.jointStressTags.includes(tag)) +
-        Number(candidate.cautionStressTags.includes(tag));
-      const warningResult = candidate.cautionStressTags.includes(tag) ? "warning" : "none";
-      const hardContraindicationResult =
-        candidate.loading.jointStressTags.includes(tag) ||
-        candidate.contraindicatedStressTags.includes(tag)
-          ? "reject"
-          : "legal";
-      const acuteSevereResult = candidate.loading.jointStressTags.includes(tag)
+      const currentTrace = buildCandidatePainMatchTrace({
+        exercise: candidate,
+        painAndInjury: {
+          ...NO_PAIN_OR_INJURY,
+          currentDiscomforts: [currentDiscomfort({
+            id: `${exerciseId}-${tag}-current-source-probe`,
+            region: "general",
+            stressTags: [tag],
+            severity: 2,
+          })],
+        },
+      });
+      const moderateTrace = buildCandidatePainMatchTrace({
+        exercise: candidate,
+        painAndInjury: {
+          ...NO_PAIN_OR_INJURY,
+          moderatePain: [moderatePain({
+            id: `${exerciseId}-${tag}-moderate-source-probe`,
+            region: "general",
+            stressTags: [tag],
+            severity: 4,
+          })],
+        },
+      });
+      const hardTrace = buildCandidatePainMatchTrace({
+        exercise: candidate,
+        painAndInjury: {
+          ...NO_PAIN_OR_INJURY,
+          hardContraindications: [hardContraindication({
+            id: `${exerciseId}-${tag}-hard-source-probe`,
+            stressTags: [tag],
+          })],
+        },
+      });
+      const acuteTrace = buildCandidatePainMatchTrace({
+        exercise: candidate,
+        painAndInjury: {
+          ...NO_PAIN_OR_INJURY,
+          acuteSeverePain: [{
+            kind: "acute_severe_pain",
+            id: `${exerciseId}-${tag}-acute-source-probe`,
+            region: "general",
+            severity0To10: 7,
+            stressTags: [tag],
+            invalidatesTrainingRoles: [],
+            urgentReviewRecommended: true,
+            description: "Controlled acute source probe.",
+          }],
+        },
+      });
+      const painSuitabilityCount = receiverDecision(
+        currentTrace,
+        "pain_suitability",
+      ).countedMatchUnitCount;
+      const jointCostCount = receiverDecision(
+        currentTrace,
+        "joint_cost",
+      ).countedMatchUnitCount;
+      const warningResult = receiverDecision(
+        moderateTrace,
+        "moderate_warning",
+      ).affectedSignalIds.length > 0
+        ? "warning"
+        : "none";
+      const hardContraindicationResult = receiverDecision(
+        hardTrace,
+        "hard_contraindication",
+      ).executionStatus === "hard_rejected"
+        ? "reject"
+        : "legal";
+      const acuteSevereResult = receiverDecision(
+        acuteTrace,
+        "acute_severe_eligibility",
+      ).executionStatus === "hard_rejected"
         ? "reject"
         : "legal";
 
@@ -1121,7 +1164,10 @@ function buildStressTagAudit(): readonly StressTagAuditRow[] {
         hardContraindicationResult,
         acuteSevereResult,
         duplicateClassification:
-          jointCostCount > 1 ? "ACTUAL_DOUBLE_COUNT" : "NOT_APPLICABLE",
+          metadataSources.includes("loading.jointStressTags") &&
+          metadataSources.includes("cautionStressTags")
+            ? "RESOLVED_SOURCE_DEDUPLICATION"
+            : "NOT_APPLICABLE",
       };
     });
   });
@@ -1148,6 +1194,15 @@ function buildContraindicatedOnlyProbe(): ContraindicatedOnlyProbe {
   const currentRequest = sourceProbeRequest({
     ...NO_PAIN_OR_INJURY,
     currentDiscomforts: [discomfort],
+  });
+  const moderateRequest = sourceProbeRequest({
+    ...NO_PAIN_OR_INJURY,
+    moderatePain: [moderatePain({
+      id: "pain-audit-contraindicated-only-moderate",
+      region: "knee",
+      stressTags: ["high_impact"],
+      severity: 4,
+    })],
   });
   const hardRequest = sourceProbeRequest({
     ...NO_PAIN_OR_INJURY,
@@ -1177,7 +1232,7 @@ function buildContraindicatedOnlyProbe(): ContraindicatedOnlyProbe {
   return {
     painSuitability: painSuitabilityComponent.score({ request: currentRequest, exercise: candidate }).rawValue,
     jointCost: jointCostComponent.score({ request: currentRequest, exercise: candidate }).rawValue,
-    warning: eligibilityFor(currentRequest, candidate).warnings.length > 0,
+    warning: eligibilityFor(moderateRequest, candidate).warnings.length > 0,
     hardContraindicationRejects: !eligibilityFor(hardRequest, candidate).legal,
     acuteSevereRejects: !eligibilityFor(acuteRequest, candidate).legal,
   };
@@ -1215,41 +1270,41 @@ export const PAIN_FIELD_CONSUMPTION: readonly PainFieldConsumptionRow[] = [
   { field: "HistoricalInjury.side", primaryOwnerGiver: "normalized athlete/history adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "left, right, bilateral, and absent are identical", traceVisibility: "absent", status: "UNUSED" },
   { field: "HistoricalInjury.relevantStressTags", primaryOwnerGiver: "normalized athlete/history adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "does not enter eligibility, warning, pain suitability, joint cost, stability, or assessment context", traceVisibility: "absent", status: "UNUSED" },
   { field: "HistoricalInjury.description", primaryOwnerGiver: "normalized athlete/history adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "none", traceVisibility: "absent", status: "UNUSED" },
-  { field: "HistoricalSensitivity.kind", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "collection membership supplies the category", traceVisibility: "input only", status: "UNUSED" },
-  { field: "HistoricalSensitivity.id", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "score reason and assessment demand-reduction evidence", downstreamReceiver: "pain_suitability, demandReductionContext, row diagnostics", behavioralEffect: "identifies matched evidence but does not change magnitude", traceVisibility: "partial", status: "PARTIALLY USED" },
-  { field: "HistoricalSensitivity.region", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "assessment demand-reduction match", downstreamReceiver: "developmentalRelationship", behavioralEffect: "can scope a non-monitor modification to an assessment/candidate context", traceVisibility: "assessment trace only", status: "PARTIALLY USED" },
-  { field: "HistoricalSensitivity.stressTags", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "pain_suitability, joint_cost, assessment context, row diagnostic", downstreamReceiver: "candidate scoring and assessment trace", behavioralEffect: "0.4 per pain overlap; 0.35 per joint/caution occurrence; may justify demand reduction", traceVisibility: "score reason/count and assessment IDs; matched tags/sources are not native trace fields", status: "FULLY USED" },
-  { field: "HistoricalSensitivity.preferredModification", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "binary demand-reduction relevance", downstreamReceiver: "developmentalRelationship", behavioralEffect: "monitor is ignored; increase_support, reduce_range, and reduce_load are treated identically", traceVisibility: "non-monitor value appears in assessment evidence", status: "PARTIALLY USED" },
+  { field: "HistoricalSensitivity.kind", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "canonical signal kind", downstreamReceiver: "pain trace and receiver policies", behavioralEffect: "selects owned receiver policies without changing coefficient magnitude", traceVisibility: "native signal trace", status: "FULLY USED" },
+  { field: "HistoricalSensitivity.id", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "canonical match identity, score reason, response and assessment evidence", downstreamReceiver: "pain receivers, demandReductionContext, row diagnostics", behavioralEffect: "keeps distinct signals separately traceable", traceVisibility: "native signal/match/response trace", status: "FULLY USED" },
+  { field: "HistoricalSensitivity.region", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "canonical signal trace and assessment context", downstreamReceiver: "pain trace and developmentalRelationship", behavioralEffect: "can scope a non-monitor modification to an assessment/candidate context", traceVisibility: "native signal and assessment trace", status: "FULLY USED" },
+  { field: "HistoricalSensitivity.stressTags", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "canonical matches, pain_suitability, joint_cost, assessment context", downstreamReceiver: "pain receiver policies and assessment trace", behavioralEffect: "0.4 per unique signal/tag pain unit; 0.35 per qualifying unique joint unit; may justify demand reduction", traceVisibility: "native matched tag/source and receiver counts", status: "FULLY USED" },
+  { field: "HistoricalSensitivity.preferredModification", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "structured response requirement and exact assessment action", downstreamReceiver: "response ownership and developmentalRelationship", behavioralEffect: "monitor is observation-only; other actions are explicitly deferred to their future owner", traceVisibility: "native response and assessment trace", status: "FULLY USED" },
   { field: "HistoricalSensitivity.description", primaryOwnerGiver: "athlete/coach adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "none", traceVisibility: "absent", status: "UNUSED" },
-  { field: "CurrentDiscomfort.kind", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "collection membership supplies the category", traceVisibility: "input only", status: "UNUSED" },
-  { field: "CurrentDiscomfort.id", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "interpreted pain ID, score reason, assessment evidence", downstreamReceiver: "request trace, pain_suitability, demandReductionContext, row diagnostics", behavioralEffect: "identifies evidence but does not change magnitude", traceVisibility: "partial", status: "PARTIALLY USED" },
-  { field: "CurrentDiscomfort.severity0To10", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "severity 1 and 2 are identical", traceVisibility: "absent", status: "UNUSED" },
-  { field: "CurrentDiscomfort.region", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "capability adjustment and scoped demand-reduction context", downstreamReceiver: "athleteCapability, developmentalRelationship, row diagnostics", behavioralEffect: "matching assessment-signal region applies -0.15 capability; may establish context even without tag overlap", traceVisibility: "indirect capability evidence/context", status: "PARTIALLY USED" },
-  { field: "CurrentDiscomfort.stressTags", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "pain_suitability, joint_cost, assessment context, row diagnostic", downstreamReceiver: "candidate scoring and assessment trace", behavioralEffect: "0.9 per pain overlap; 0.8 per joint/caution occurrence; may justify demand reduction", traceVisibility: "score reason/count and assessment IDs; matched tags/sources are not native trace fields", status: "FULLY USED" },
-  { field: "CurrentDiscomfort.effect", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "binary demand-reduction relevance", downstreamReceiver: "developmentalRelationship", behavioralEffect: "monitor is ignored; prefer_support, reduce_range, and reduce_load are treated identically; no direct prescription exists", traceVisibility: "matched ID only; exact effect is absent", status: "PARTIALLY USED" },
+  { field: "CurrentDiscomfort.kind", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal kind", downstreamReceiver: "pain trace and receiver policies", behavioralEffect: "selects owned receiver policies without changing coefficient magnitude", traceVisibility: "native signal trace", status: "FULLY USED" },
+  { field: "CurrentDiscomfort.id", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical match identity, score reason, response and assessment evidence", downstreamReceiver: "pain receivers, demandReductionContext, row diagnostics", behavioralEffect: "keeps distinct signals separately traceable", traceVisibility: "native signal/match/response trace", status: "FULLY USED" },
+  { field: "CurrentDiscomfort.severity0To10", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal and match severity", downstreamReceiver: "trace consumers", behavioralEffect: "severity 1 and 2 remain numerically identical pending calibration", traceVisibility: "native signal/match/eligibility trace", status: "PARTIALLY USED" },
+  { field: "CurrentDiscomfort.region", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal trace, capability adjustment, and scoped assessment context", downstreamReceiver: "pain trace, athleteCapability, developmentalRelationship", behavioralEffect: "matching assessment-signal region applies existing capability context and may establish demand-reduction relevance", traceVisibility: "native signal and assessment trace", status: "FULLY USED" },
+  { field: "CurrentDiscomfort.stressTags", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical matches, pain_suitability, joint_cost, assessment context", downstreamReceiver: "pain receiver policies and assessment trace", behavioralEffect: "0.9 per unique signal/tag pain unit; 0.8 per qualifying unique joint unit; may justify demand reduction", traceVisibility: "native matched tag/source and receiver counts", status: "FULLY USED" },
+  { field: "CurrentDiscomfort.effect", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "structured response requirement and exact assessment action", downstreamReceiver: "response ownership and developmentalRelationship", behavioralEffect: "monitor is observation-only; support/range/load actions are explicitly deferred and not scored", traceVisibility: "native response and assessment trace", status: "FULLY USED" },
   { field: "CurrentDiscomfort.description", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "none", traceVisibility: "absent", status: "UNUSED" },
-  { field: "ModeratePain.kind", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "collection membership supplies the category", traceVisibility: "input only", status: "UNUSED" },
-  { field: "ModeratePain.id", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "interpreted pain ID, warning evidence, score reason, assessment evidence", downstreamReceiver: "request trace, pain warning, pain_suitability, demandReductionContext, row diagnostics", behavioralEffect: "identifies evidence but does not change magnitude", traceVisibility: "partial", status: "PARTIALLY USED" },
-  { field: "ModeratePain.severity0To10", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "severity 3, 4, 5, and 6 are identical", traceVisibility: "absent", status: "UNUSED" },
-  { field: "ModeratePain.region", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "capability adjustment and scoped demand-reduction context", downstreamReceiver: "athleteCapability, developmentalRelationship", behavioralEffect: "matching assessment-signal region applies -0.35 capability; can establish assessment context", traceVisibility: "indirect capability evidence/context", status: "PARTIALLY USED" },
-  { field: "ModeratePain.stressTags", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "warning, pain_suitability, joint_cost, assessment context, row diagnostic", downstreamReceiver: "eligibility warning, candidate scoring, assessment trace", behavioralEffect: "warning on caution overlap; 1.8 per pain overlap; 1.4 per joint/caution occurrence", traceVisibility: "warning evidence, score reason/count, assessment ID; native matched tag/source trace is absent", status: "FULLY USED" },
-  { field: "ModeratePain.requiredResponse", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none implemented", behavioralEffect: "avoid_aggravator, reduce_load_and_range, and substitute_role are identical", traceVisibility: "absent", status: "UNUSED" },
+  { field: "ModeratePain.kind", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal kind", downstreamReceiver: "pain trace and receiver policies", behavioralEffect: "selects warning, suitability, joint, and assessment receiver policies", traceVisibility: "native signal trace", status: "FULLY USED" },
+  { field: "ModeratePain.id", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical match identity, warning, score, response, and assessment evidence", downstreamReceiver: "pain receivers, demandReductionContext, row diagnostics", behavioralEffect: "emits at most one warning per signal/candidate and keeps distinct signals traceable", traceVisibility: "native signal/match/eligibility/response trace", status: "FULLY USED" },
+  { field: "ModeratePain.severity0To10", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal, match, and warning severity", downstreamReceiver: "trace consumers", behavioralEffect: "severity 3 through 6 remain numerically identical pending calibration", traceVisibility: "native signal/match/eligibility trace", status: "PARTIALLY USED" },
+  { field: "ModeratePain.region", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal trace, capability adjustment, and scoped assessment context", downstreamReceiver: "pain trace, athleteCapability, developmentalRelationship", behavioralEffect: "matching assessment-signal region applies existing capability context and can establish assessment relevance", traceVisibility: "native signal and assessment trace", status: "FULLY USED" },
+  { field: "ModeratePain.stressTags", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical warning, pain_suitability, joint_cost, and assessment matches", downstreamReceiver: "pain receiver policies and assessment trace", behavioralEffect: "warning on any structured source; 1.8 per unique signal/tag pain unit; 1.4 per qualifying unique joint unit", traceVisibility: "native matched tag/source and receiver counts", status: "FULLY USED" },
+  { field: "ModeratePain.requiredResponse", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "structured response requirement and exact assessment action", downstreamReceiver: "candidate review, prescription, or Session Intent / Session Composer", behavioralEffect: "numeric scores remain identical; ownership and deferred execution status differ", traceVisibility: "native response, warning, and assessment trace", status: "FULLY USED" },
   { field: "ModeratePain.description", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "warning message", downstreamReceiver: "painReviewEligibility", behavioralEffect: "changes warning prose only", traceVisibility: "warning message", status: "FULLY USED" },
-  { field: "AcuteSeverePain.kind", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "collection membership supplies the category", traceVisibility: "input only", status: "UNUSED" },
-  { field: "AcuteSeverePain.id", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "interpreted pain ID and rejection evidence", downstreamReceiver: "request trace and contraindicationEligibility", behavioralEffect: "identifies rejection evidence", traceVisibility: "rejection evidence", status: "FULLY USED" },
-  { field: "AcuteSeverePain.severity0To10", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "severity 7 through 10 are identical", traceVisibility: "absent", status: "UNUSED" },
-  { field: "AcuteSeverePain.region", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "none", traceVisibility: "absent", status: "UNUSED" },
-  { field: "AcuteSeverePain.stressTags", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "hard rejection", downstreamReceiver: "contraindicationEligibility", behavioralEffect: "rejects only on loading.jointStressTags overlap; caution and contraindicated-only tags are ignored", traceVisibility: "signal ID only, not matched tag/source", status: "PARTIALLY USED" },
-  { field: "AcuteSeverePain.invalidatesTrainingRoles", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "hard rejection", downstreamReceiver: "contraindicationEligibility", behavioralEffect: "rejects every candidate evaluated for a listed requested role", traceVisibility: "signal ID only, not matched role", status: "FULLY USED" },
-  { field: "AcuteSeverePain.urgentReviewRecommended", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "true and false are identical", traceVisibility: "absent", status: "UNUSED" },
+  { field: "AcuteSeverePain.kind", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal kind", downstreamReceiver: "acute eligibility and response trace", behavioralEffect: "selects the explicit acute authority filter", traceVisibility: "native signal trace", status: "FULLY USED" },
+  { field: "AcuteSeverePain.id", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical match, rejection, urgency, and response evidence", downstreamReceiver: "acute eligibility and DecisionTrace", behavioralEffect: "identifies rejection and unresolved urgency evidence", traceVisibility: "native signal/match/eligibility/response trace", status: "FULLY USED" },
+  { field: "AcuteSeverePain.severity0To10", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal, match, and eligibility severity", downstreamReceiver: "trace consumers", behavioralEffect: "severity 7 through 10 remain identical under the preserved acute authority filter", traceVisibility: "native signal/match/eligibility trace", status: "PARTIALLY USED" },
+  { field: "AcuteSeverePain.region", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical signal and match region", downstreamReceiver: "trace consumers", behavioralEffect: "observability only at Candidate Intelligence scope", traceVisibility: "native signal/match trace", status: "PARTIALLY USED" },
+  { field: "AcuteSeverePain.stressTags", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "canonical matched facts and explicit acute criterion", downstreamReceiver: "acute eligibility", behavioralEffect: "rejects only when a canonical match has joint_stress provenance; caution/contraindicated-only remains legal", traceVisibility: "native matched tag/source and criterion", status: "FULLY USED" },
+  { field: "AcuteSeverePain.invalidatesTrainingRoles", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "hard rejection criterion", downstreamReceiver: "acute eligibility", behavioralEffect: "rejects candidates evaluated for an explicitly invalidated requested role", traceVisibility: "native training-role criterion", status: "FULLY USED" },
+  { field: "AcuteSeverePain.urgentReviewRecommended", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "structured urgent-review requirement", downstreamReceiver: "DecisionTrace and external urgent review", behavioralEffect: "preserved whether the candidate is legal or already rejected", traceVisibility: "native signal and response trace", status: "FULLY USED" },
   { field: "AcuteSeverePain.description", primaryOwnerGiver: "athlete/assessment adapter", currentOutput: "hard-rejection message", downstreamReceiver: "contraindicationEligibility", behavioralEffect: "changes rejection prose only", traceVisibility: "rejection message", status: "FULLY USED" },
-  { field: "HardContraindication.kind", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "collection membership supplies the category", traceVisibility: "input only", status: "UNUSED" },
-  { field: "HardContraindication.id", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "interpreted pain ID and rejection evidence", downstreamReceiver: "request trace and contraindicationEligibility", behavioralEffect: "identifies rejection evidence", traceVisibility: "rejection evidence", status: "FULLY USED" },
+  { field: "HardContraindication.kind", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "canonical signal kind", downstreamReceiver: "hard eligibility", behavioralEffect: "selects explicit hard authority", traceVisibility: "native signal trace", status: "FULLY USED" },
+  { field: "HardContraindication.id", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "canonical match and rejection identity", downstreamReceiver: "hard eligibility and DecisionTrace", behavioralEffect: "identifies exact hard criteria", traceVisibility: "native signal/match/eligibility trace", status: "FULLY USED" },
   { field: "HardContraindication.region", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "none", traceVisibility: "absent", status: "UNUSED" },
-  { field: "HardContraindication.exerciseIds", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "hard rejection", downstreamReceiver: "contraindicationEligibility", behavioralEffect: "exact exercise ID match rejects", traceVisibility: "signal ID, not matched exercise criterion", status: "FULLY USED" },
-  { field: "HardContraindication.stressTags", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "hard rejection", downstreamReceiver: "contraindicationEligibility", behavioralEffect: "loading.jointStressTags or contraindicatedStressTags overlap rejects; caution-only overlap does not", traceVisibility: "signal ID, not matched tag/source", status: "PARTIALLY USED" },
+  { field: "HardContraindication.exerciseIds", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "hard rejection", downstreamReceiver: "hard eligibility", behavioralEffect: "exact exercise ID match rejects", traceVisibility: "native exercise-ID criterion", status: "FULLY USED" },
+  { field: "HardContraindication.stressTags", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "canonical matched facts and hard criterion", downstreamReceiver: "hard eligibility", behavioralEffect: "joint_stress or contraindicated provenance rejects; caution-only does not", traceVisibility: "native matched tag/source and criterion", status: "FULLY USED" },
   { field: "HardContraindication.reason", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "hard-rejection message", downstreamReceiver: "contraindicationEligibility", behavioralEffect: "changes rejection prose only", traceVisibility: "rejection message", status: "FULLY USED" },
-  { field: "HardContraindication.source", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "none; output source is hard-coded pain_injury", downstreamReceiver: "none", behavioralEffect: "athlete_report, clinician, coach, and safety_rule are identical", traceVisibility: "absent", status: "UNUSED" },
+  { field: "HardContraindication.source", primaryOwnerGiver: "athlete/clinician/coach/safety adapter", currentOutput: "hard authority provenance", downstreamReceiver: "eligibility evidence and DecisionTrace", behavioralEffect: "does not change rejection magnitude; preserves who supplied the authority", traceVisibility: "native signal and criterion trace", status: "FULLY USED" },
   { field: "PersonalExerciseBlock.kind", primaryOwnerGiver: "athlete/coach", currentOutput: "none", downstreamReceiver: "none", behavioralEffect: "collection membership supplies the category", traceVisibility: "input only", status: "UNUSED" },
   { field: "PersonalExerciseBlock.id", primaryOwnerGiver: "athlete/coach", currentOutput: "rejection evidence", downstreamReceiver: "personalBlockEligibility", behavioralEffect: "identifies block evidence", traceVisibility: "rejection evidence", status: "FULLY USED" },
   { field: "PersonalExerciseBlock.exerciseIds", primaryOwnerGiver: "athlete/coach", currentOutput: "hard preference rejection", downstreamReceiver: "personalBlockEligibility", behavioralEffect: "exact exercise ID match rejects", traceVisibility: "block ID, not matched criterion", status: "FULLY USED" },
@@ -1259,24 +1314,25 @@ export const PAIN_FIELD_CONSUMPTION: readonly PainFieldConsumptionRow[] = [
 ];
 
 export const PAIN_PIPELINE: readonly PainPipelineRow[] = [
-  { stage: "pain/injury input", reads: "typed PainAndInjuryState collections", ignores: "no validation or canonical matched-stress trace is produced here", reject: "no", warn: "no", score: "no", deferredResponsibility: "upstream owns observation/normalization and diagnosis; V2 does not diagnose" },
-  { stage: "hard contraindication eligibility", reads: "hard exerciseIds; hard stressTags against joint+contraindicated; acute invalidated roles; acute stressTags against joint", ignores: "hard region/source; caution-only hard overlap; acute severity/region/urgent flag/contraindicated-only tags", reject: "yes", warn: "no", score: "no", deferredResponsibility: "none when explicit hard truth matches" },
-  { stage: "acute/severe eligibility", reads: "implemented inside contraindicationEligibility using requested role or jointStressTags overlap", ignores: "severity value, region, urgentReviewRecommended, cautionStressTags, contraindicatedStressTags", reject: "yes", warn: "no", score: "no", deferredResponsibility: "urgent review is not emitted separately" },
-  { stage: "moderate-pain warning", reads: "moderate stressTags against cautionStressTags; id and description", ignores: "severity, region, requiredResponse, joint-only tags, contraindicated-only tags", reject: "no", warn: "yes", score: "no", deferredResponsibility: "warning text says prescription review, but no executable requirement is emitted" },
-  { stage: "pain_suitability", reads: "current, moderate, and historical-sensitivity stressTags against a deduped joint+caution+contraindicated union", ignores: "severity, region, effect, requiredResponse, preferredModification, historical injury, acute pain", reject: "no", warn: "reason code only", score: "yes", deferredResponsibility: "relative suitability only" },
-  { stage: "joint_cost", reads: "current, moderate, and historical-sensitivity stressTags against joint and caution lists separately; axial loading; joint accumulation", ignores: "contraindicatedStressTags, severity, region, effect/response/modification, historical injury, acute pain", reject: "no", warn: "reason code only", score: "yes", deferredResponsibility: "session-level accumulation remains future composition work" },
-  { stage: "stability_fit", reads: "whether any current or moderate record exists plus exercise stability demand and phase target", ignores: "pain kind detail, region, tags, severity, effect, requiredResponse, actual support metadata", reject: "no", warn: "no", score: "yes", deferredResponsibility: "support selection/prescription is not implemented" },
-  { stage: "assessment demand/capability", reads: "current/moderate region for capability; non-monitor current effect; all moderate signals; non-monitor historical modification; union stress/context", ignores: "pain severity and requiredResponse; historical injury; side", reject: "no", warn: "no", score: "indirectly through assessment/alignment when a relevant assessment signal exists", deferredResponsibility: "does not execute load/range/support or role substitution" },
-  { stage: "candidate aggregate / trace", reads: "legal candidates and emitted component values", ignores: "unconsumed pain fields and rejected-candidate score values", reject: "already decided upstream", warn: "eligibility warnings retained", score: "weighted mean", deferredResponsibility: "prescription, composition, and progression receivers are not implemented here" },
+  { stage: "pain/injury input", reads: "typed PainAndInjuryState collections", ignores: "HistoricalInjury remains intentionally unconsumed", reject: "no", warn: "no", score: "no", deferredResponsibility: "upstream owns observation/normalization and diagnosis; V2 does not diagnose" },
+  { stage: "canonical pain evidence", reads: "pain signal IDs/kinds/regions/severity/actions/tags plus structured exercise stress metadata", ignores: "exercise ID/name/prose/equipment as inferred stress", reject: "no", warn: "no", score: "no", deferredResponsibility: "creates one deterministic signalId+stressTag fact with source provenance" },
+  { stage: "hard contraindication eligibility", reads: "exact exercise IDs or canonical hard stress matches through joint_stress/contraindicated provenance", ignores: "caution-only hard overlap", reject: "yes", warn: "no", score: "no", deferredResponsibility: "preserves athlete_report/clinician/coach/safety_rule authority" },
+  { stage: "acute/severe eligibility", reads: "requested-role invalidation or canonical joint_stress match", ignores: "caution-only and contraindicated-only matches as hard authority", reject: "yes", warn: "no", score: "no", deferredResponsibility: "urgent review remains structured and unresolved even when candidate is legal or rejected" },
+  { stage: "moderate-pain warning", reads: "canonical moderate matches from any structured stress source", ignores: "none of the structured source types", reject: "no", warn: "yes", score: "no", deferredResponsibility: "one warning per signal/candidate includes response ownership and execution status" },
+  { stage: "pain_suitability", reads: "unique current/moderate/historical signal-tag facts from every structured source", ignores: "severity/action as score magnitude; HistoricalInjury; acute/hard signals", reject: "no", warn: "reason code only", score: "yes", deferredResponsibility: "relative compatibility among legal candidates" },
+  { stage: "joint_cost", reads: "unique owned facts with joint_stress or caution provenance; axial loading; joint accumulation", ignores: "contraindicated-only facts as cost units; severity/action as score magnitude", reject: "no", warn: "reason code only", score: "yes", deferredResponsibility: "session-level accumulation remains future composition work" },
+  { stage: "stability_fit", reads: "exercise stability demand and phase target", ignores: "all pain inputs", reject: "no", warn: "no", score: "yes", deferredResponsibility: "pain-related support preference belongs to an explicit future receiver" },
+  { stage: "assessment demand/capability", reads: "canonical stress facts plus independent structured region/movement context and exact requested actions", ignores: "HistoricalInjury and unmodeled side", reject: "no", warn: "no", score: "indirectly through assessment/alignment when relevant", deferredResponsibility: "does not execute load/range/support or role substitution" },
+  { stage: "candidate aggregate / trace", reads: "legal candidates, receiver counts, structured eligibility evidence, and response requirements", ignores: "rejected-candidate score values", reject: "already decided upstream", warn: "eligibility warnings retained", score: "weighted mean", deferredResponsibility: "prescription, composition, and progression receivers remain unimplemented" },
 ];
 
 export const PAIN_STRESS_UNIVERSE: readonly StressUniverseRow[] = [
-  { receiver: "painReviewEligibility", jointStressTags: "ignored", cautionStressTags: "read", contraindicatedStressTags: "ignored", deduplication: "boolean some() per moderate signal" },
-  { receiver: "pain_suitability", jointStressTags: "read", cautionStressTags: "read", contraindicatedStressTags: "read", deduplication: "exercise union is Set-deduped; duplicate/multiple input pain tags can still stack" },
-  { receiver: "joint_cost", jointStressTags: "read", cautionStressTags: "read", contraindicatedStressTags: "ignored", deduplication: "none across sources; the same tag in joint+caution counts twice" },
-  { receiver: "hard contraindication", jointStressTags: "read", cautionStressTags: "ignored", contraindicatedStressTags: "read", deduplication: "boolean match" },
-  { receiver: "acute/severe eligibility", jointStressTags: "read", cautionStressTags: "ignored", contraindicatedStressTags: "ignored", deduplication: "boolean match" },
-  { receiver: "assessment demand-reduction context", jointStressTags: "read", cautionStressTags: "read", contraindicatedStressTags: "read", deduplication: "exercise union is Set-deduped" },
+  { receiver: "moderate warning", jointStressTags: "read", cautionStressTags: "read", contraindicatedStressTags: "read", deduplication: "one warning per signal/candidate; canonical signal-tag facts retain every source" },
+  { receiver: "pain_suitability", jointStressTags: "read", cautionStressTags: "read", contraindicatedStressTags: "read", deduplication: "one unit per signalId+stressTag regardless of source count or duplicate tag occurrence" },
+  { receiver: "joint_cost", jointStressTags: "read", cautionStressTags: "read", contraindicatedStressTags: "visible, not counted alone", deduplication: "one unit per qualifying signalId+stressTag even when joint and caution both establish it" },
+  { receiver: "hard contraindication", jointStressTags: "read", cautionStressTags: "visible, not authority alone", contraindicatedStressTags: "read", deduplication: "canonical facts plus exact exercise-ID criteria; authority source retained" },
+  { receiver: "acute/severe eligibility", jointStressTags: "read", cautionStressTags: "visible, not authority alone", contraindicatedStressTags: "visible, not authority alone", deduplication: "canonical facts; requested-role invalidation remains independent hard authority" },
+  { receiver: "assessment demand-reduction context", jointStressTags: "read", cautionStressTags: "read", contraindicatedStressTags: "read", deduplication: "canonical stress facts; region and movement context remain independent structured matches" },
 ];
 
 export function buildPainAuditData(): PainAuditData {
@@ -1390,8 +1446,8 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
     const title = rows[0]?.matrix ?? matrixId;
     return [`### ${title}`, "", matrixTable(rows), ""];
   });
-  const duplicateRows = data.stressTagAudit.filter(
-    (row) => row.duplicateClassification === "ACTUAL_DOUBLE_COUNT",
+  const resolvedDuplicateRows = data.stressTagAudit.filter(
+    (row) => row.duplicateClassification === "RESOLVED_SOURCE_DEDUPLICATION",
   );
 
   return [
@@ -1399,15 +1455,15 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
     "",
     `Audit baseline: \`${data.baselineHead}\` on \`engine-v2/candidate-intelligence\`.` ,
     "",
-    "Scope: deterministic audit and documentation only. No pain coefficient, joint coefficient, hard gate, warning, exercise metadata, phase value, component weight, or ranking behavior is changed here. Training Engine V2 consumes normalized training inputs and does not diagnose injury or disease.",
+    "Scope: post-contract deterministic evidence. Pain/joint coefficients, exercise metadata, phase values, component weights, severity calibration, prescription, and Session Composer remain unchanged. Training Engine V2 consumes normalized training inputs and does not diagnose injury or disease.",
     "",
     "## Audit Result",
     "",
-    "The pain architecture has recognizable owners, hard contraindications remain upstream of scoring, moderate/current pain is visible, and behavior is deterministic. Calibration is not yet the next safe step: the candidate layer does not consume severity or `requiredResponse`, stress-tag receivers use inconsistent universes, `joint_cost` demonstrably counts many duplicated joint/caution tags twice, and `stability_fit` gives a global low-stability bonus for unrelated pain with no shared stress fact.",
+    "Candidate pain decisions now derive from one deterministic, source-aware evidence set. Receiver policies retain independent warning, scoring, hard-authority, acute-authority, assessment-context, and deferred-response responsibilities. Joint/caution provenance no longer multiplies one physiological match unit, and stability fit no longer reads pain.",
     "",
-    "Final state: **PAIN_CONTRACT_FIXES_REQUIRED_BEFORE_CALIBRATION**",
+    "Final state: **PAIN_CONTRACT_READY_FOR_HUMAN_CALIBRATION**",
     "",
-    `Existing controlled-scenario ranking fingerprint: \`${data.existingScenarioFingerprint}\` (${data.existingScenarioFingerprint === data.expectedExistingScenarioFingerprint ? "unchanged from audit baseline" : "CHANGED"}).`,
+    `Post-contract controlled-scenario ranking fingerprint: \`${data.existingScenarioFingerprint}\` (${data.existingScenarioFingerprint === data.expectedExistingScenarioFingerprint ? "matches the reviewed post-contract fixture" : "CHANGED"}).`,
     "",
     "## Authority And Method",
     "",
@@ -1425,15 +1481,17 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
     "Key field conclusions:",
     "",
     "- Every `HistoricalInjury` field is currently dead input for Candidate Intelligence.",
-    "- Current and moderate severity values are valid domain distinctions but have no candidate behavior or native trace output.",
-    "- `ModeratePain.requiredResponse`, `AcuteSeverePain.urgentReviewRecommended`, and `HardContraindication.source` are not consumed or deferred through an explicit requirement trace.",
-    "- Region is partially consumed by assessment capability/context logic; side is not consumed.",
-    "- Current effect and historical preferred modification are binary assessment-context switches: `monitor` is excluded and all actionable values are otherwise equivalent at this layer.",
+    "- Current and moderate severity values are visible in native trace output but still do not scale candidate scores; that policy remains for human calibration.",
+    "- `ModeratePain.requiredResponse`, `AcuteSeverePain.urgentReviewRecommended`, and `HardContraindication.source` are preserved in structured response or eligibility evidence.",
+    "- Region remains structured assessment context; side is explicit as unknown for current matchable signal types and `HistoricalInjury.side` remains unconsumed.",
+    "- Current effect and historical preferred modification retain their exact action and truthful observation/deferred ownership status without changing score magnitude.",
     "",
     "## Current Decision Pipeline",
     "",
     "```text",
     "pain/injury input",
+    "  -> canonical source-aware candidate pain facts",
+    "  -> explicit receiver policies and response ownership",
     "  -> hard contraindication + acute/severe eligibility",
     "  -> moderate-pain review warning",
     "  -> legal candidate pool",
@@ -1476,25 +1534,25 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
     "",
     "## Moderate Severity Contrast",
     "",
-    "Severity 3, 4, 5, and 6 produce identical warning state, pain suitability, joint cost, stability fit, assessment/alignment values, totals, and ranks for otherwise identical low-back hinge requests. The severity number is not present in component or warning traces.",
+    "Severity 3, 4, 5, and 6 produce identical warning state, pain suitability, joint cost, stability fit, assessment/alignment values, totals, and ranks for otherwise identical low-back hinge requests. The supplied severity remains visible in canonical, warning, and score-component evidence; scaling is intentionally deferred.",
     "",
     contrastTable(data.severityContrasts),
     "",
     "## Required Response Contrast",
     "",
-    "`avoid_aggravator`, `reduce_load_and_range`, and `substitute_role` produce identical candidate behavior and traces. Candidate Intelligence neither executes nor emits an unresolved structured response requirement.",
+    "`avoid_aggravator`, `reduce_load_and_range`, and `substitute_role` remain numerically identical, but their structured requirements now identify candidate review, prescription, and Session Intent / Session Composer ownership respectively. None is falsely reported as executed.",
     "",
     contrastTable(data.requiredResponseContrasts),
     "",
     "## Current Discomfort Effect Contrast",
     "",
-    "Pain suitability, joint cost, stability fit, and capability ignore the effect value. In assessment developmental context, `monitor` is excluded; `prefer_support`, `reduce_range`, and `reduce_load` all set the same demand-reduction relevance and can change assessment/alignment contributions when the candidate is below capability. Those three actions are not distinguished or executed.",
+    "Pain suitability, joint cost, stability fit, and capability ignore the effect value as score magnitude. `monitor` is observation-only; `prefer_support`, `reduce_range`, and `reduce_load` preserve distinct actions and deferred owners. Actionable values can still establish the existing scoped assessment context but are not executed here.",
     "",
     contrastTable(data.discomfortEffectContrasts),
     "",
     "## Historical Modification Contrast",
     "",
-    "Pain suitability and joint cost ignore the preferred-modification value. In assessment developmental context, `monitor` is excluded; `increase_support`, `reduce_range`, and `reduce_load` are behaviorally equivalent, although their exact value appears in assessment evidence text.",
+    "Pain suitability and joint cost ignore preferred modification as score magnitude. `monitor` remains observation-only; `increase_support`, `reduce_range`, and `reduce_load` retain distinct structured actions and truthful deferred owners while preserving existing assessment-context semantics.",
     "",
     contrastTable(data.historicalModificationContrasts),
     "",
@@ -1514,9 +1572,9 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
       data.stressUniverse.map((row) => [row.receiver, row.jointStressTags, row.cautionStressTags, row.contraindicatedStressTags, row.deduplication]),
     ),
     "",
-    "`pain_suitability` counts one matched tag once when the same exercise tag appears in multiple metadata sources because it constructs a `Set`. It does not deduplicate duplicate tags supplied inside pain arrays or the same tag supplied by multiple pain signals. `joint_cost` adds joint-list and caution-list matches, so a tag present in both is charged twice. That is observed arithmetic, not merely a possible future risk.",
+    "The canonical unit is `signalId + stressTag`. Duplicate tag occurrences within one signal and duplicate exercise metadata sources do not multiply that fact; all matching sources remain visible as provenance. Distinct signal IDs remain distinct evidence.",
     "",
-    `Across the required representative exercises, ${duplicateRows.length} exercise/tag rows are classified \`ACTUAL_DOUBLE_COUNT\`. No current code or domain contract labels the duplicate source occurrences as distinct units of joint cost.`,
+    `Across the required representative exercises, ${resolvedDuplicateRows.length} exercise/tag rows are classified \`RESOLVED_SOURCE_DEDUPLICATION\`: every one now has one pain-suitability unit and one joint-cost unit despite joint+caution provenance.`,
     "",
     table(
       ["Exercise", "Tag", "Metadata Sources", "Unique Facts", "Pain Count", "Joint Count", "Moderate Warning", "Hard Contra", "Acute/Severe", "Classification"],
@@ -1527,52 +1585,48 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
     "",
     `A synthetic exercise with \`high_impact\` only in \`contraindicatedStressTags\` proves the source roles: current discomfort gives pain suitability ${data.contraindicatedOnlyProbe.painSuitability.toFixed(3)}; joint cost remains ${data.contraindicatedOnlyProbe.jointCost.toFixed(3)}; moderate warning is ${data.contraindicatedOnlyProbe.warning ? "present" : "absent"}; an explicit hard contraindication ${data.contraindicatedOnlyProbe.hardContraindicationRejects ? "rejects" : "does not reject"}; acute/severe stress overlap ${data.contraindicatedOnlyProbe.acuteSevereRejects ? "rejects" : "does not reject"}. Thus contraindicated tags affect soft pain suitability and explicit hard-contraindication matching, but are neither an automatic hard gate nor part of acute/severe matching or joint cost.`,
     "",
-    "Warning and scoring do not share one stress universe. A moderate signal can change pain suitability on a joint-only or contraindicated-only tag without a warning; a caution-only tag can warn and affect pain suitability/joint cost but cannot trigger explicit hard-contraindication or acute matching. The native trace reports signal IDs and aggregate counts, not the matched tag and metadata source needed to explain this discrepancy.",
+    "Moderate warning now observes canonical matches from joint, caution, and contraindicated sources and emits at most one warning per signal/candidate. Hard and acute receivers intentionally keep narrower authority filters, and the trace identifies both matched and qualifying sources.",
     "",
     "## Controlled Pain Matrix",
     "",
-    "Counts are `U/P/J`: unique matched stress facts, overlap currently counted by pain suitability, and overlap currently counted by joint cost. Weighted values use the fixed 18-component denominator. Acute/severe signals use stress overlap with an empty `invalidatesTrainingRoles` list so the table isolates stress-universe behavior. Hard contraindications use stress tags rather than exercise IDs.",
+    "Counts are `U/P/J`: canonical unique matched facts, units counted by pain suitability, and units counted by joint cost. Weighted values use the unchanged 18-component denominator. Acute/severe signals use stress overlap with an empty `invalidatesTrainingRoles` list so the table isolates receiver authority; hard contraindications use stress tags rather than exercise IDs.",
     "",
     ...matrixSections,
     "## Unrelated-Pain Finding",
     "",
-    "The unrelated pain examples have zero matched stress tags, no pain-suitability or joint-cost change, no warning, and no hard rejection. They are not fully neutral: `stability_fit` checks only whether any current/moderate record exists and adds `0.8` to every low-stability candidate. Therefore unrelated wrist discomfort raises the low-stability leg press and box squat, unrelated knee discomfort raises the low-stability machine/cable/chest-supported rows, and unrelated shoulder discomfort leaves the two moderate-stability hinge candidates unchanged. This global bonus can change totals and ordering despite no explicit shared stress fact.",
+    "The unrelated pain examples have zero matched stress tags, no pain-suitability or joint-cost change, no warning, and no hard rejection. They are now fully score-neutral: `stability_fit` reads only exercise stability demand and phase expectation, so each unrelated-pain row is identical to its no-pain baseline.",
     "",
     "## Component Ownership Audit",
     "",
     table(
       ["Owner", "Current Finding", "Ownership Assessment"],
       [
-        ["Hard eligibility", "Explicit exercise/stress contraindications and acute role/joint overlap reject before scoring.", "Correct layer, but hard and acute stress universes differ and provenance/urgent flags are not traced."],
-        ["Pain review warning", "Moderate caution overlap emits a review warning.", "Correct layer, but it ignores severity/requiredResponse and sees a narrower universe than scoring."],
-        ["Pain suitability", "Current/moderate/historical-sensitivity overlap compares legal candidates.", "Correct primary owner for direct compatibility; missing matched-tag/source trace and unconsumed response semantics."],
-        ["Joint cost", "Joint/caution overlap, axial loading, and accumulated joint fatigue affect cost.", "Correct owner for exposure, but duplicated joint/caution facts are charged twice and partially duplicate direct pain suitability."],
-        ["Stability fit", "Any current/moderate record globally rewards low stability.", "Ownership leak: pain compatibility/support preference is asserted without relevance or support metadata."],
-        ["Assessment/demand reduction", "Region, stress context, current effect, and historical modification can change developmental relationship.", "Scoped receiver is valid, but it cannot execute the requested pain response and treats actionable variants as equivalent."],
+        ["Hard eligibility", "Explicit exercise/stress contraindications and acute role/joint overlap reject before scoring.", "Correct layer; source provenance, qualifying criteria, severity, role evidence, and urgency are structured."],
+        ["Pain review warning", "Any canonical moderate stress match emits one warning per signal/candidate.", "Correct non-hard receiver; required response and defer status are attached."],
+        ["Pain suitability", "Unique current/moderate/historical signal-tag facts compare legal candidates.", "Correct direct-compatibility owner with native tag/source/count trace."],
+        ["Joint cost", "Unique joint/caution-qualified facts, axial loading, and accumulated joint fatigue affect cost.", "Correct exposure owner; duplicate source charging is removed and contraindicated-only facts remain visible but uncharged."],
+        ["Stability fit", "Exercise stability demand is compared with phase expectation.", "Correct owner; pain no longer leaks into this component."],
+        ["Assessment/demand reduction", "Canonical stress facts plus region/movement context and exact actions can change developmental relationship.", "Correct scoped receiver; execution remains truthfully deferred."],
         ["Prescription", "Not implemented in Candidate Intelligence.", "Future owner for load, range, support, tempo, effort, and volume actions."],
         ["Session Composer", "Not implemented and not started.", "Future owner for role substitution, ordering, accumulated stress, replacement context, and session redirection."],
       ],
     ),
     "",
-    "The same pain signal currently reaches pain suitability and joint cost through overlapping stress evidence, and can also trigger a global stability bonus plus assessment influence. Multiple receivers are not inherently wrong, but each needs a distinct semantic quantity. Current duplicate source counting and the unscoped stability bonus do not establish that distinction.",
+    "One canonical matched truth now supports multiple explicit receiver policies. Pain suitability owns direct compatibility, joint cost owns qualified stress exposure, warning owns review observability, hard/acute receivers own distinct authority, and assessment owns contextual developmental reasoning; no receiver reconstructs stress truth independently.",
     "",
-    "## Required-Response Ownership Options",
+    "## Required-Response Ownership",
     "",
     "### avoid_aggravator",
     "",
-    "- Candidate hard gate: appropriate only if the input contract explicitly elevates matched exposure to prohibited truth. Risk: a broad stress tag or self-reported response becomes indistinguishable from a hard contraindication.",
-    "- Strong candidate demotion plus unresolved requirement: preserves legal alternatives while making the concern visible. Risk: a legal winner may still be unusable if no downstream layer can satisfy avoidance.",
-    "- Prescription/session instruction: appropriate when aggravation can be avoided through range, setup, load, or replacement context. Risk: Candidate Intelligence cannot prove executability today.",
-    "",
-    "No current authority establishes one universal choice. Candidate Intelligence should at minimum emit a structured matched response requirement with execution status rather than silently treating the field as absent.",
+    "Candidate Intelligence preserves this as `policy_unresolved_candidate_review_required`. It does not silently convert the request into hard authority or claim that a later prescription/composition action is executable.",
     "",
     "### reduce_load_and_range",
     "",
-    "Primary future receiver is prescription because load and range modify the selected exercise. Candidate ranking may still account for whether a candidate can truthfully support those modifications. Risk: a ranking penalty without a prescription requirement loses the requested action; automatic modification without validated prescription capabilities invents safety certainty.",
+    "Primary future receiver is prescription because load and range modify the selected exercise. Current status is `deferred_unexecutable_at_candidate_layer`; no automatic modification or extra score magnitude is invented.",
     "",
     "### substitute_role",
     "",
-    "Primary future receiver is Session Intent / Session Composer because isolated candidate scoring cannot replace a requested role while preserving session purpose and coverage. Candidate Intelligence should emit `deferred/unexecutable_at_candidate_layer` with the matched signal and requested response. Risk: letting one candidate component substitute roles would bypass training-need truth; ignoring it lets the original role proceed without the requested redirection.",
+    "Primary future receiver is Session Intent / Session Composer because isolated candidate scoring cannot replace a requested role while preserving session purpose and coverage. Current status is `deferred_unexecutable_at_candidate_layer`; training-role truth remains hard and no substitution is performed.",
     "",
     "## Human Exercise-Science Review",
     "",
@@ -1583,8 +1637,8 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
     "- Should severity affect relative pain suitability, review urgency, prescription requirements, or all three with separate bounds?",
     "- Is pain intensity alone ever sufficient for hard exclusion, or must hard exclusion require an explicit role/stress prohibition or contraindication source?",
     "- Should `requiredResponse` and specific stress overlap carry more authority than the raw severity number?",
-    "- Are joint exposure and caution annotation genuinely distinct cost evidence when they repeat the same tag, and if so what explicit units distinguish them?",
-    "- When pain is unrelated to candidate stress, should low stability receive any generic preference, or must support preference be signal- and mechanics-specific?",
+    "- Should future source-specific physiology distinguish joint exposure from caution provenance, and if so what new explicit evidence would justify more than one canonical unit?",
+    "- Which explicit support mechanics and pain actions should a future prescription or composition receiver require before preferring support?",
     "",
     "## Findings By Priority",
     "",
@@ -1594,29 +1648,20 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
     "",
     "### P1",
     "",
-    "- Define one canonical, source-aware stress-match contract before tuning pain or joint coefficients. Warning, pain suitability, joint cost, hard contraindication, and acute/severe eligibility currently consume different universes.",
-    "- Remove or explicitly justify actual duplicate charging of the same joint/caution stress tag in `joint_cost`; coefficient calibration cannot compensate for an unsettled counting unit.",
-    "- Consume or explicitly defer `ModeratePain.requiredResponse`; current traces cannot distinguish avoidance, load/range reduction, and role substitution.",
-    "- Scope the pain-driven `stability_fit` effect to relevant evidence and an owned semantic quantity; unrelated pain currently changes low-stability candidate totals without shared stress.",
-    "- Establish a human-reviewed moderate-severity policy only after the match/count/response contracts are fixed. Severity 3 through 6 are currently identical.",
-    "- Preserve acute review/provenance truth in structured output: `urgentReviewRecommended` and hard-contraindication `source` currently disappear, while acute and hard stress matching differ.",
+    "- Establish a human-reviewed moderate-severity policy and calibrate the frozen pain/joint coefficients against the now-settled canonical counting unit. Severity 3 through 6 remain numerically identical.",
     "",
     "### P2",
     "",
     "- Decide whether and how `HistoricalInjury` should influence Candidate Intelligence; every field is currently unused and invisible.",
-    "- Add native matched pain tag, metadata source, unique fact count, and counted overlap to traces so audit tooling does not need to reconstruct them.",
-    "- Decide whether current effect and historical modification variants need distinct candidate observability even when execution belongs to prescription.",
     "- Validate or normalize duplicate tags and duplicate same-kind pain signals at the input boundary if they are not intended to stack.",
     "",
     "## Blueprint Maintenance",
     "",
-    "No blueprint amendment is made. The authoritative blueprint already separates pain categories, eligibility, ranking, prescription, composition, and progression; it also prohibits diagnosis. Current formulas, duplicate-count findings, unconsumed fields, and calibration questions are implementation-review evidence rather than new enduring architecture.",
+    "The blueprint now records the enduring rule that pain decisions derive from canonical source-aware matched facts while receiver authority remains independent. Multiple metadata sources for one signal/tag fact do not automatically represent multiple physiological units.",
     "",
-    "## Recommended Targeted Implementation Boundary",
+    "## Remaining Calibration Boundary",
     "",
-    "Before any calibration values change, add a deterministic source-aware `PainMatchTrace` (exact name open) that derives one canonical set of matched stress facts per candidate and records signal ID/kind, severity, region, matched tag, metadata source, unique fact count, receiver-specific counted units, required response, and execution/defer status. Reuse that evidence in warning, pain suitability, joint cost, hard/acute matching, stability relevance, and assessment context while preserving each layer's distinct authority.",
-    "",
-    "Then make the smallest contract fixes: resolve the joint/caution duplicate unit; scope or remove the unrelated global stability bonus; emit `requiredResponse` and urgent/provenance requirements to the correct future receiver without implementing Session Composer or prescription. Only after those contracts are tested should human review choose severity categories and calibrate pain/joint coefficients.",
+    "The deterministic `CandidatePainMatchTrace` now records signal identity, severity, region, canonical signal/tag matches, all structured metadata sources, receiver-specific units, explicit criteria, response ownership, and execution/defer status. Human review may now choose severity policy and calibrate the unchanged coefficients without compensating for a hidden counting defect.",
     "",
     "This boundary does not authorize ranking-weight changes, exercise-science calibration, automatic role substitution, Session Composer, prescription, or medical diagnosis.",
     "",
@@ -1647,7 +1692,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         fieldRows: result.data.fieldConsumption.length,
         stressRows: result.data.stressTagAudit.length,
         rankingFingerprint: result.data.existingScenarioFingerprint,
-        finalState: "PAIN_CONTRACT_FIXES_REQUIRED_BEFORE_CALIBRATION",
+        finalState: "PAIN_CONTRACT_READY_FOR_HUMAN_CALIBRATION",
       },
       null,
       2,

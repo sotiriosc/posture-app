@@ -1,63 +1,50 @@
+import {
+  CANDIDATE_PAIN_SCORING_COEFFICIENTS,
+  buildCandidatePainMatchTrace,
+  receiverDecision,
+} from "../../pain";
 import type { CandidateScoreComponent } from "../types";
 import { component } from "../utils";
 
-function stressOverlapCount(
-  painTags: readonly string[],
-  exerciseTags: readonly string[],
-): number {
-  const exerciseTagSet = new Set(exerciseTags);
-  return painTags.filter((tag) => exerciseTagSet.has(tag)).length;
-}
-
 export const painSuitabilityComponent: CandidateScoreComponent = {
   id: "pain_suitability",
-  score({ request, exercise }) {
-    const exerciseStressTags = [
-      ...exercise.loading.jointStressTags,
-      ...exercise.cautionStressTags,
-      ...exercise.contraindicatedStressTags,
-    ];
-    const discomfortStress = request.painAndInjury.currentDiscomforts.filter(
-      (pain) => stressOverlapCount(pain.stressTags, exerciseStressTags) > 0,
-    );
-    const moderateStress = request.painAndInjury.moderatePain.filter(
-      (pain) => stressOverlapCount(pain.stressTags, exerciseStressTags) > 0,
-    );
-    const sensitivityStress = request.painAndInjury.historicalSensitivities.filter(
-      (pain) => stressOverlapCount(pain.stressTags, exerciseStressTags) > 0,
-    );
-    const discomfortOverlap = request.painAndInjury.currentDiscomforts.reduce(
-      (sum, pain) => sum + stressOverlapCount(pain.stressTags, exerciseStressTags),
-      0,
-    );
-    const moderateOverlap = request.painAndInjury.moderatePain.reduce(
-      (sum, pain) => sum + stressOverlapCount(pain.stressTags, exerciseStressTags),
-      0,
-    );
-    const sensitivityOverlap = request.painAndInjury.historicalSensitivities.reduce(
-      (sum, pain) => sum + stressOverlapCount(pain.stressTags, exerciseStressTags),
-      0,
-    );
+  score({ request, exercise, painMatchTrace }) {
+    const resolvedPainMatchTrace = painMatchTrace ?? buildCandidatePainMatchTrace({
+      exercise,
+      painAndInjury: request.painAndInjury,
+      requestedRole: request.need.requestedRole,
+    });
+    const receiver = receiverDecision(resolvedPainMatchTrace, "pain_suitability");
+    const discomfortOverlap = receiver.countedMatchUnits.filter(
+      (match) => match.signalKind === "current_discomfort",
+    ).length;
+    const moderateOverlap = receiver.countedMatchUnits.filter(
+      (match) => match.signalKind === "moderate_pain",
+    ).length;
+    const sensitivityOverlap = receiver.countedMatchUnits.filter(
+      (match) => match.signalKind === "historical_sensitivity",
+    ).length;
     const value =
       8.2 -
-      discomfortOverlap * 0.9 -
-      moderateOverlap * 1.8 -
-      sensitivityOverlap * 0.4;
+      discomfortOverlap *
+        CANDIDATE_PAIN_SCORING_COEFFICIENTS.painSuitability.currentDiscomfort -
+      moderateOverlap * CANDIDATE_PAIN_SCORING_COEFFICIENTS.painSuitability.moderatePain -
+      sensitivityOverlap *
+        CANDIDATE_PAIN_SCORING_COEFFICIENTS.painSuitability.historicalSensitivity;
+    const matchedSignalIds = receiver.affectedSignalIds;
 
     return component({
       id: "pain_suitability",
       family: "pain_suitability",
       value,
-      reasonCode: discomfortStress.length + moderateStress.length + sensitivityStress.length === 0 ? "PAIN_SUITABLE" : "PAIN_REQUIRES_REVIEW",
+      reasonCode: matchedSignalIds.length === 0 ? "PAIN_SUITABLE" : "PAIN_REQUIRES_REVIEW",
       reason:
-        discomfortStress.length + moderateStress.length + sensitivityStress.length === 0
+        matchedSignalIds.length === 0
           ? `${exercise.name} has no active pain-stressor overlap.`
-          : `${exercise.name} overlaps pain/sensitivity signals: ${[
-              ...discomfortStress,
-              ...moderateStress,
-              ...sensitivityStress,
-            ].map((pain) => pain.id).join(", ")}.`,
+          : `${exercise.name} overlaps pain/sensitivity signals: ${matchedSignalIds.join(", ")}. Unique units: current=${discomfortOverlap}, moderate=${moderateOverlap}, historical=${sensitivityOverlap}.`,
       source: "pain_injury",
+      painMatchTrace: resolvedPainMatchTrace,
+      painReceiverDecision: receiver,
     });
   },
 };

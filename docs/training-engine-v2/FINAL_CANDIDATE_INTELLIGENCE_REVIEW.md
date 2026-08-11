@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 contract and calibration issues remain. Feature-specific target fit, continuity reason-code precedence, and transition-purpose truth are resolved for Candidate Intelligence; the remaining blockers are pain contract fixes followed by moderate-pain calibration, plus phase calibration.
+Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because P1 calibration issues remain. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, and the canonical pain-match contract are resolved for Candidate Intelligence; the remaining blockers are human moderate-pain calibration and phase calibration.
 
 ## Contract Review
 
@@ -41,9 +41,9 @@ Architecture is sound and the candidate pipeline is deterministic/explainable, b
 | Fact Pair | Classification | Finding |
 | --- | --- | --- |
 | assessment_fit + alignment_fit | INTENTIONAL_DISTINCT_SIGNAL | Both read one relevance trace, but bounded influence is split across assessment/alignment contributions rather than added twice. |
-| pain_suitability + joint_cost | ACTUAL_DOUBLE_COUNT_IN_JOINT_TAG_SOURCES | pain_suitability deduplicates the exercise stress union, while joint_cost separately adds matching jointStressTags and cautionStressTags. The pain audit proves 16 representative exercise/tag rows charge one repeated tag twice in joint_cost; the semantic counting unit must be fixed before calibration. |
+| pain_suitability + joint_cost | RESOLVED_CANONICAL_RECEIVER_UNITS | Both receivers consume one canonical signalId+stressTag fact. Pain suitability counts every structured source once per fact; joint cost counts the same fact once only when joint_stress or caution provenance qualifies it. Sixteen representative joint+caution rows now remain one joint unit. |
 | phase_fit + experience_fit + skill_fit | INTENTIONAL_DISTINCT_SIGNAL | Phase intent, athlete prior, and exercise demand are separate, but phase suitability remains influential enough to require calibration review. |
-| support/stability/path | RESOLVED_FOR_PAIN_SUPPORT_BONUS | Structured row path knowledge is observability-only, and pain_suitability no longer adds positive support credit from exercise ID, name, prose, or structured bodySupport. |
+| support/stability/path | RESOLVED_PAIN_OWNERSHIP | Structured row path knowledge is observability-only, pain_suitability has no ID/prose/support bonus, and stability_fit no longer reads global pain state. |
 | progression_value + continuity_value | INTENTIONAL_DISTINCT_SIGNAL | progression_value is same-exercise runway/readiness; continuity_value combines retention and reconsideration evidence numerically while reconsideration owns reason-code precedence. Transition edges do not add replacement pressure. |
 | unknown metadata | NOT_APPLICABLE | Unknown demand/path/challenge values remain neutral/not_applicable in assessment traces and do not create positive evidence by themselves. |
 
@@ -51,7 +51,7 @@ Architecture is sound and the candidate pipeline is deterministic/explainable, b
 
 Catalog coverage: fully usable=2; usable with review caveats=20; materially under-specified=8.
 
-UNKNOWN does not become easy/safe/preferred/developmentally superior/feature matched in assessment demand traces. NEEDS_REVIEW remains visible in catalog review and row trace context. The prior ID-derived support promotion risk is resolved in pain_suitability; remaining pain risks are contract fixes before calibration, alongside incomplete reviewed mechanics.
+UNKNOWN does not become easy/safe/preferred/developmentally superior/feature matched in assessment demand traces. NEEDS_REVIEW remains visible in catalog review and row trace context. Pain matching now exposes unknown/missing evidence and deferred actions explicitly; remaining pain work is human severity/coefficient calibration, alongside incomplete reviewed mechanics.
 
 ## Feature-Specific Assessment Review
 
@@ -108,14 +108,14 @@ Verdict: **PLAUSIBLE_NEEDS_REVIEW**. Phase behavior is directionally coherent an
 
 ## Pain / Injury Review
 
-Verdict: **PAIN_CONTRACT_FIXES_REQUIRED_BEFORE_CALIBRATION**. Hard contraindication works, moderate/current pain is visible and demotes relevant stress overlap, and unrelated pain does not hard-gate legal pools. The deterministic pain audit found unresolved stress-universe/counting, required-response, stability-relevance, and acute-provenance contracts that must be fixed before coefficient calibration or Session Composer.
+Verdict: **PAIN_CONTRACT_READY_FOR_HUMAN_CALIBRATION**. One source-aware canonical match trace now supports explicit receiver policies. Joint/caution duplicate charging is removed, moderate warning observes every structured source without becoming hard, required responses and acute/hard provenance remain structured, and unrelated pain is stability-neutral. Severity and coefficients are not calibrated by this result.
 
 | Scenario | Winner | Runner-Up | Contraindicated Rejections | Pain Effect | Verdict |
 | --- | --- | --- | --- | --- | --- |
 | shoulder push, no pain | dumbbell-bench-press / 7.961 | push-up / 7.930 | none | PAIN_SUITABLE; pain=8.20; joint=8.80 | GOOD |
-| shoulder push, mild/current discomfort | push-up / 7.539 | machine-chest-press / 7.404 | none | PAIN_REQUIRES_REVIEW; pain=7.30; joint=7.20 | GOOD |
-| low-back hinge, moderate pain | cable-pull-through / 7.456 | dumbbell-romanian-deadlift / 7.200 | none | PAIN_REQUIRES_REVIEW; pain=6.40; joint=6.00 | PLAUSIBLE_NEEDS_REVIEW |
-| knee squat, historical sensitivity | goblet-squat / 7.931 | leg-press / 7.930 | none | PAIN_REQUIRES_REVIEW; pain=7.40; joint=7.40 | GOOD |
+| shoulder push, mild/current discomfort | push-up / 7.579 | machine-chest-press / 7.409 | none | PAIN_REQUIRES_REVIEW; pain=7.30; joint=8.00 | GOOD |
+| low-back hinge, moderate pain | cable-pull-through / 7.525 | dumbbell-romanian-deadlift / 7.338 | none | PAIN_REQUIRES_REVIEW; pain=6.40; joint=7.40 | PLAUSIBLE_NEEDS_REVIEW |
+| knee squat, historical sensitivity | goblet-squat / 7.965 | leg-press / 7.948 | none | PAIN_REQUIRES_REVIEW; pain=7.40; joint=8.10 | GOOD |
 | hard contraindication | dumbbell-bench-press / 7.961 | machine-chest-press / 7.846 | push-up | PAIN_SUITABLE; pain=8.20; joint=8.80 | GOOD |
 
 ### ID_BASED_SUPPORT_BONUS_RESOLVED
@@ -124,15 +124,15 @@ Before behavior: in the full-gym low-back horizontal-pull contrast, `chest-suppo
 
 After behavior: `machine-row`, `seated-cable-row`, and `chest-supported-dumbbell-row` all report `pain_suitability=8.200` when they have no lumbar pain-stressor overlap. Chest support and low trunk demand remain mechanical facts for traces/review, not positive pain score effects.
 
-Ranking delta: low-back full-gym horizontal pull changed from `chest-supported-dumbbell-row` rank 1 / `8.176` to rank 3 / `8.102`; `machine-row` and `seated-cable-row` are now rank 1 and 2 at `8.104`; `one-arm-dumbbell-row` remains rank 4 / `7.616` because its structured stress tags overlap the lumbar concern.
+The canonical contract subsequently removed the separate global stability pain bonus. Current low-back row and unrelated-pain totals are reported in the post-contract matrix; support remains structured observability rather than an implicit pain or stability reward.
 
-### MODERATE_PAIN_SEMANTICS_AUDITED
+### CANONICAL_PAIN_MATCH_CONTRACT_RESOLVED
 
-The full evidence is in `PAIN_SEMANTICS_AND_CALIBRATION_REVIEW.md`: 48 field-consumption rows, 19 representative exercise/tag rows, and 144 fixed-time candidate/state rows. Severity 3 through 6 and all three `requiredResponse` values are currently identical. Warning, pain suitability, joint cost, hard contraindication, and acute/severe logic use different stress universes; joint_cost demonstrably counts repeated joint/caution tags twice; and unrelated pain changes low-stability totals through a global stability bonus despite zero shared stress facts.
+The full evidence is in `PAIN_SEMANTICS_AND_CALIBRATION_REVIEW.md`: 48 field-consumption rows, 19 representative exercise/tag rows, and 144 fixed-time candidate/state rows. The canonical unit is `signalId + stressTag`; every matching exercise source remains provenance rather than another unit. Receiver policies explicitly own warning, suitability, joint cost, hard authority, acute authority, assessment context, and deferred response requirements.
 
-Existing 22-scenario ranking fingerprint remained unchanged at `f5a39f62f2ef24026a7e3e490fe822204f6f7224870f5f1557d8f36556bf748d`. No pain coefficient, joint coefficient, gate, warning, exercise metadata, weight, or ranking behavior changed.
+The reviewed post-contract 22-scenario fingerprint is `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782`. Controlled ranking changes are limited to joint/caution source deduplication and removal of the global stability pain bonus; no coefficient, weight, severity multiplier, phase value, or exercise metadata changed.
 
-Remaining pain P1: establish canonical source-aware pain matching/counting, route or defer required responses and urgent/provenance evidence, and scope stability influence before human moderate-severity policy and coefficient calibration. This P1 is not resolved.
+Remaining pain P1: human review must choose the moderate-severity policy and calibrate the frozen pain/joint coefficients. The evidence contract is resolved; pain is not yet calibrated.
 
 ## Experience / Capability Review
 
@@ -141,9 +141,9 @@ Verdict: **GOOD_WITH_REVIEW_CAVEATS**. Beginner does not become machine-only, ad
 | Persona | Experience | Equipment Env | Need | Winner | Legal Pool | Reasoning Focus |
 | --- | --- | --- | --- | --- | --- | --- |
 | beginner-gym-no-pain | beginner | commercial_gym | final-horizontal-push-main | machine-chest-press / 7.815 | 3 | beginner is not machine-only; equipment truth; phase 1 control |
-| beginner-gym-shoulder-concern | beginner | commercial_gym | final-horizontal-push-main | machine-chest-press / 7.861 | 3 | assessment affects warmup and main work; mild discomfort is not a blanket hard gate |
+| beginner-gym-shoulder-concern | beginner | commercial_gym | final-horizontal-push-main | machine-chest-press / 7.827 | 3 | assessment affects warmup and main work; mild discomfort is not a blanket hard gate |
 | intermediate-gym-muscle-gain | intermediate | commercial_gym | final-horizontal-pull-main | machine-row / 8.069 | 4 | productive continuity; hypertrophy accessories; weekly exposure |
-| advanced-gym-muscle-gain | advanced | commercial_gym | final-hinge-accessory | dumbbell-romanian-deadlift / 7.479 | 2 | advanced is not hardest-is-best; pain changes suitability and prescription |
+| advanced-gym-muscle-gain | advanced | commercial_gym | final-hinge-accessory | dumbbell-romanian-deadlift / 7.617 | 2 | advanced is not hardest-is-best; pain changes suitability and prescription |
 | beginner-dumbbells-bench | beginner | home | final-horizontal-pull-main | chest-supported-dumbbell-row / 8.003 | 2 | free weights are legal when capability fits; bench support matters |
 | intermediate-dumbbells | intermediate | home | final-horizontal-push-main | dumbbell-bench-press / 7.961 | 2 | dumbbell progression; loadability limits |
 | dumbbells-without-bench | beginner | home | final-horizontal-pull-main | one-arm-dumbbell-row / 7.655 | 1 | bench-dependent exercises are illegal; floor/bodyweight alternatives remain possible |
@@ -278,7 +278,7 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ### P1
 
-- Moderate pain remains open: canonical stress matching/counting, required-response observability, scoped stability influence, and acute provenance must be fixed before human exercise-science calibration.
+- Moderate-pain severity policy and the frozen pain/joint coefficients still need human exercise-science calibration against the settled canonical counting contract.
 - Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.
 
 ### P2

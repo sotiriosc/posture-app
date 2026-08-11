@@ -1,13 +1,13 @@
-import type { JointStressTag } from "../../../domain/primitives";
+import {
+  CANDIDATE_PAIN_SCORING_COEFFICIENTS,
+  buildCandidatePainMatchTrace,
+  receiverDecision,
+} from "../../pain";
 import type { CandidateScoreComponent } from "../types";
-import { component, demandValue, loadabilityValue, overlapCount } from "../utils";
+import { component, demandValue, loadabilityValue } from "../utils";
 
 function phaseLoadingTarget(loading: "low" | "moderate" | "high"): number {
   return loading === "low" ? 1 : loading === "moderate" ? 2 : 3;
-}
-
-function stressOverlapCount(left: readonly JointStressTag[], right: readonly JointStressTag[]): number {
-  return overlapCount(left, right);
 }
 
 export const loadabilityComponent: CandidateScoreComponent = {
@@ -92,27 +92,33 @@ export const fatigueCostComponent: CandidateScoreComponent = {
 
 export const jointCostComponent: CandidateScoreComponent = {
   id: "joint_cost",
-  score({ request, exercise }) {
-    const discomfortTags = request.painAndInjury.currentDiscomforts.flatMap((pain) => pain.stressTags);
-    const moderateTags = request.painAndInjury.moderatePain.flatMap((pain) => pain.stressTags);
-    const historicalTags = request.painAndInjury.historicalSensitivities.flatMap((pain) => pain.stressTags);
-    const activeOverlap =
-      stressOverlapCount(exercise.loading.jointStressTags, discomfortTags) +
-      stressOverlapCount(exercise.cautionStressTags, discomfortTags);
-    const moderateOverlap =
-      stressOverlapCount(exercise.loading.jointStressTags, moderateTags) +
-      stressOverlapCount(exercise.cautionStressTags, moderateTags);
-    const historicalOverlap =
-      stressOverlapCount(exercise.loading.jointStressTags, historicalTags) +
-      stressOverlapCount(exercise.cautionStressTags, historicalTags);
+  score({ request, exercise, painMatchTrace }) {
+    const resolvedPainMatchTrace = painMatchTrace ?? buildCandidatePainMatchTrace({
+      exercise,
+      painAndInjury: request.painAndInjury,
+      requestedRole: request.need.requestedRole,
+    });
+    const receiver = receiverDecision(resolvedPainMatchTrace, "joint_cost");
+    const activeOverlap = receiver.countedMatchUnits.filter(
+      (match) => match.signalKind === "current_discomfort",
+    ).length;
+    const moderateOverlap = receiver.countedMatchUnits.filter(
+      (match) => match.signalKind === "moderate_pain",
+    ).length;
+    const historicalOverlap = receiver.countedMatchUnits.filter(
+      (match) => match.signalKind === "historical_sensitivity",
+    ).length;
     const axialCost = demandValue(exercise.loading.axialLoading) - 1;
-    const jointAccumulation = request.fatigueSignals.includes("joint_stress_accumulated") ? 0.7 : 0;
+    const jointAccumulation = request.fatigueSignals.includes("joint_stress_accumulated")
+      ? CANDIDATE_PAIN_SCORING_COEFFICIENTS.jointCost.accumulation
+      : 0;
     const value =
       8.8 -
-      activeOverlap * 0.8 -
-      moderateOverlap * 1.4 -
-      historicalOverlap * 0.35 -
-      axialCost * 0.35 -
+      activeOverlap * CANDIDATE_PAIN_SCORING_COEFFICIENTS.jointCost.currentDiscomfort -
+      moderateOverlap * CANDIDATE_PAIN_SCORING_COEFFICIENTS.jointCost.moderatePain -
+      historicalOverlap *
+        CANDIDATE_PAIN_SCORING_COEFFICIENTS.jointCost.historicalSensitivity -
+      axialCost * CANDIDATE_PAIN_SCORING_COEFFICIENTS.jointCost.axial -
       jointAccumulation;
 
     return component({
@@ -122,6 +128,8 @@ export const jointCostComponent: CandidateScoreComponent = {
       reasonCode: activeOverlap + moderateOverlap > 0 ? "PAIN_REQUIRES_REVIEW" : "JOINT_COST_ACCEPTABLE",
       reason: `${exercise.name} joint stress overlap: active=${activeOverlap}, moderate=${moderateOverlap}, historical=${historicalOverlap}.`,
       source: "pain_injury",
+      painMatchTrace: resolvedPainMatchTrace,
+      painReceiverDecision: receiver,
     });
   },
 };

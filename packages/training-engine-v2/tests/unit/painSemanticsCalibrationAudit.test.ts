@@ -52,7 +52,7 @@ function matrixRow(input: {
 }
 
 describe("pain semantics and calibration audit", () => {
-  it("builds a deterministic complete audit without changing existing scenario rankings", () => {
+  it("builds deterministic post-contract evidence with a controlled scenario fingerprint", () => {
     const second = buildPainAuditData();
     const rendered = renderPainSemanticsCalibrationReview(data);
 
@@ -65,7 +65,7 @@ describe("pain semantics and calibration audit", () => {
     expect(second).toEqual(data);
     expect(renderPainSemanticsCalibrationReview(second)).toBe(rendered);
     expect(
-      rendered.match(/PAIN_CONTRACT_FIXES_REQUIRED_BEFORE_CALIBRATION/g),
+      rendered.match(/PAIN_CONTRACT_READY_FOR_HUMAN_CALIBRATION/g),
     ).toHaveLength(1);
 
     const requiredFields = [
@@ -156,7 +156,7 @@ describe("pain semantics and calibration audit", () => {
         variant: "monitor",
         candidateId: "goblet-squat",
         painSuitability: 7.3,
-        jointCost: 7.2,
+        jointCost: 8,
         stabilityFit: 8.5,
         relationship: "under_challenges_development",
         demandReductionRelevant: false,
@@ -191,7 +191,7 @@ describe("pain semantics and calibration audit", () => {
         variant: "monitor",
         candidateId: "goblet-squat",
         painSuitability: 7.8,
-        jointCost: 8.1,
+        jointCost: 8.45,
         relationship: "under_challenges_development",
         demandReductionRelevant: false,
       }),
@@ -259,23 +259,24 @@ describe("pain semantics and calibration audit", () => {
   });
 
   it("proves source-specific stress counting and contraindicated-only behavior", () => {
-    const duplicates = data.stressTagAudit.filter(
-      (row) => row.duplicateClassification === "ACTUAL_DOUBLE_COUNT",
+    const resolvedDuplicates = data.stressTagAudit.filter(
+      (row) => row.duplicateClassification === "RESOLVED_SOURCE_DEDUPLICATION",
     );
     const nonDuplicates = data.stressTagAudit.filter(
       (row) => row.duplicateClassification === "NOT_APPLICABLE",
     );
 
-    expect(duplicates).toHaveLength(16);
-    expect(duplicates.every((row) => row.uniqueFactCount === 1)).toBe(true);
-    expect(duplicates.every((row) => row.painSuitabilityCount === 1)).toBe(true);
-    expect(duplicates.every((row) => row.jointCostCount === 2)).toBe(true);
+    expect(resolvedDuplicates).toHaveLength(16);
+    expect(resolvedDuplicates.every((row) => row.uniqueFactCount === 1)).toBe(true);
+    expect(resolvedDuplicates.every((row) => row.painSuitabilityCount === 1)).toBe(true);
+    expect(resolvedDuplicates.every((row) => row.jointCostCount === 1)).toBe(true);
     expect(nonDuplicates).toHaveLength(3);
     expect(nonDuplicates.every((row) => row.jointCostCount === 1)).toBe(true);
+    expect(data.stressTagAudit.every((row) => row.warningResult === "warning")).toBe(true);
     expect(data.contraindicatedOnlyProbe).toEqual({
       painSuitability: 7.3,
       jointCost: 8.8,
-      warning: false,
+      warning: true,
       hardContraindicationRejects: true,
       acuteSevereRejects: false,
     });
@@ -328,7 +329,7 @@ describe("pain semantics and calibration audit", () => {
     }
   });
 
-  it("proves hard states gate matched stress while unrelated pain leaks through global stability", () => {
+  it("proves hard states gate matched stress while unrelated pain is stability-neutral", () => {
     const relevantMatrixIds = [
       "shoulder-horizontal-push",
       "low-back-hinge",
@@ -380,32 +381,15 @@ describe("pain semantics and calibration audit", () => {
       expect(row.jointCostRaw).toBe(baseline.jointCostRaw);
     }
 
-    expect(
-      matrixRow({
-        matrixId: "unrelated-wrist-during-squat",
-        state: "unrelated discomfort",
-        candidateId: "leg-press",
-      }).stabilityFit,
-    ).toBe(9.3);
-    expect(
-      matrixRow({
-        matrixId: "unrelated-knee-during-horizontal-pull",
-        state: "unrelated discomfort",
-        candidateId: "machine-row",
-      }).stabilityFit,
-    ).toBe(9.3);
-    expect(
-      matrixRow({
-        matrixId: "unrelated-shoulder-during-hinge",
-        state: "unrelated discomfort",
-        candidateId: "cable-pull-through",
-      }).stabilityFit,
-    ).toBe(
-      matrixRow({
-        matrixId: "unrelated-shoulder-during-hinge",
+    for (const row of unrelatedRows) {
+      const baseline = matrixRow({
+        matrixId: row.matrixId,
         state: "no pain baseline",
-        candidateId: "cable-pull-through",
-      }).stabilityFit,
-    );
+        candidateId: row.candidateId,
+      });
+      expect(row.stabilityFit).toBe(baseline.stabilityFit);
+      expect(row.total).toBe(baseline.total);
+      expect(row.rank).toBe(baseline.rank);
+    }
   });
 });

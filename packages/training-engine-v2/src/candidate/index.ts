@@ -1,5 +1,6 @@
 export * from "./eligibility";
 export * from "./lab";
+export * from "./pain";
 export * from "./ranking";
 export * from "./request";
 export * from "./rowSelectionKnowledge";

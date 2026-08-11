@@ -6,6 +6,10 @@ import type { MovementRole, MuscleGroup } from "./domain/primitives";
 import type { SessionSection, TrainingRole } from "./domain/session";
 import type { ReasonCode, ReasonSource } from "./reasonCodes";
 import { evaluateHardEligibilityComponents } from "./candidate/eligibility";
+import type {
+  CandidatePainMatchTrace,
+  PainEligibilityEvidenceTrace,
+} from "./candidate/pain";
 
 export type RejectionReasonCode = Extract<
   ReasonCode,
@@ -27,6 +31,7 @@ export interface RejectionReason {
   readonly message: string;
   readonly source: ReasonSource;
   readonly evidence: readonly string[];
+  readonly painEvidence?: PainEligibilityEvidenceTrace;
 }
 
 export interface CandidateEligibility {
@@ -34,6 +39,7 @@ export interface CandidateEligibility {
   readonly legal: boolean;
   readonly rejectionReasons: readonly RejectionReason[];
   readonly warnings: readonly RejectionReason[];
+  readonly painMatchTrace: CandidatePainMatchTrace;
 }
 
 export interface HardEligibilityContext {
@@ -45,6 +51,7 @@ export interface HardEligibilityContext {
   readonly targetMovementRoles?: readonly MovementRole[];
   readonly targetMuscles?: readonly MuscleGroup[];
   readonly satisfiedPrerequisiteIds: readonly string[];
+  readonly painMatchTrace?: CandidatePainMatchTrace;
 }
 
 export function evaluateHardEligibility(

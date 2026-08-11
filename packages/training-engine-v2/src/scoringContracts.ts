@@ -12,6 +12,11 @@ import type {
   ExerciseMechanicsReviewStatus,
 } from "./domain/exercise";
 import type { ReasonCode } from "./reasonCodes";
+import type {
+  AssessmentPainContextMatchTrace,
+  CandidatePainMatchTrace,
+  PainReceiverDecisionTrace,
+} from "./candidate/pain";
 
 export type ScoreComponentSource =
   | "athlete_profile"
@@ -133,6 +138,7 @@ export interface DemandReductionContextTrace {
   readonly relevant: boolean;
   readonly matchedPainConcernIds: readonly string[];
   readonly matchedHistoricalSensitivityIds: readonly string[];
+  readonly painContextMatches: readonly AssessmentPainContextMatchTrace[];
   readonly matchedFatigueMovementRoles: readonly string[];
   readonly systemicFatigueUsed: boolean;
   readonly globalPainAwareGoalUsed: boolean;
@@ -246,6 +252,8 @@ export interface ScoreComponent {
   readonly source: ScoreComponentSource;
   readonly assessmentInfluence?: AssessmentInfluence;
   readonly assessmentRelevance?: readonly AssessmentRelevanceTrace[];
+  readonly painMatchTrace?: CandidatePainMatchTrace;
+  readonly painReceiverDecision?: PainReceiverDecisionTrace;
 }
 
 export interface CandidateScore {

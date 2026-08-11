@@ -1,5 +1,6 @@
 import type { ExerciseDefinition } from "../../domain/exercise";
 import type { CandidateEligibility, HardEligibilityContext, RejectionReason } from "../../eligibility";
+import type { CandidatePainMatchTrace } from "../pain";
 
 export interface EligibilityComponentResult {
   readonly rejectionReasons: readonly RejectionReason[];
@@ -21,6 +22,7 @@ export function emptyEligibilityComponentResult(): EligibilityComponentResult {
 export function combineEligibilityComponentResults(input: {
   readonly exerciseId: string;
   readonly results: readonly EligibilityComponentResult[];
+  readonly painMatchTrace: CandidatePainMatchTrace;
 }): CandidateEligibility {
   const rejectionReasons = input.results.flatMap((result) => result.rejectionReasons);
   const warnings = input.results.flatMap((result) => result.warnings);
@@ -30,5 +32,6 @@ export function combineEligibilityComponentResults(input: {
     legal: rejectionReasons.length === 0,
     rejectionReasons,
     warnings,
+    painMatchTrace: input.painMatchTrace,
   };
 }

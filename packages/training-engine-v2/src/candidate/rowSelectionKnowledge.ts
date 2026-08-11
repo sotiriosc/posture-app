@@ -1,6 +1,6 @@
 import type { ExerciseDefinition } from "../domain/exercise";
-import type { JointStressTag } from "../domain/primitives";
 import type { CandidateRequest } from "./request";
+import type { CandidatePainMatchTrace } from "./pain";
 import type {
   CandidateRankingResult,
   RankedCandidate,
@@ -99,18 +99,6 @@ export interface HorizontalRowSelectionTrace {
   readonly tieStatus: readonly RowTieTrace[];
 }
 
-function stressTags(exercise: ExerciseDefinition): readonly JointStressTag[] {
-  return [
-    ...exercise.loading.jointStressTags,
-    ...exercise.cautionStressTags,
-    ...exercise.contraindicatedStressTags,
-  ];
-}
-
-function overlaps(left: readonly string[], right: readonly string[]): boolean {
-  return left.some((value) => right.includes(value));
-}
-
 function supportTrace(exercise: ExerciseDefinition): RowSupportTrace {
   const support = exercise.mechanics?.support;
 
@@ -198,9 +186,9 @@ function contextualDifferentiators(
   request: CandidateRequest,
   exercise: ExerciseDefinition,
   rejection: RejectedCandidate | undefined,
+  painMatchTrace: CandidatePainMatchTrace,
 ): readonly string[] {
   const differentiators: string[] = [];
-  const exerciseStressTags = stressTags(exercise);
 
   if (rejection) {
     differentiators.push(
@@ -239,13 +227,15 @@ function contextualDifferentiators(
     differentiators.push("exercise-specific history: recorded exposure");
   }
 
-  const painOverlap = [
-    ...request.painAndInjury.currentDiscomforts,
-    ...request.painAndInjury.moderatePain,
-    ...request.painAndInjury.historicalSensitivities,
-  ].filter((pain) => overlaps(pain.stressTags, exerciseStressTags));
-  painOverlap.forEach((pain) =>
-    differentiators.push(`pain/stress overlap: ${pain.id}`),
+  const painOverlap = painMatchTrace.signalTraces.filter(
+    (signal) =>
+      signal.uniqueMatchCount > 0 &&
+      (signal.signalKind === "current_discomfort" ||
+        signal.signalKind === "moderate_pain" ||
+        signal.signalKind === "historical_sensitivity"),
+  );
+  painOverlap.forEach((signal) =>
+    differentiators.push(`pain/stress overlap: ${signal.signalId}`),
   );
 
   if (
@@ -361,8 +351,9 @@ export function buildHorizontalRowSelectionTrace(
     const ranked = rankedById.get(exerciseId);
     const rejected = rejectedById.get(exerciseId);
     const exercise = ranked?.exercise ?? rejected?.exercise ?? allById.get(exerciseId);
+    const painMatchTrace = ranked?.painMatchTrace ?? rejected?.eligibility.painMatchTrace;
 
-    if (!exercise) {
+    if (!exercise || !painMatchTrace) {
       return [];
     }
 
@@ -378,7 +369,12 @@ export function buildHorizontalRowSelectionTrace(
         resistancePath: resistancePathTrace(exercise),
         demand: demandTrace(exercise),
         loading: loadingTrace(exercise),
-        contextualDifferentiators: contextualDifferentiators(result.request, exercise, rejected),
+        contextualDifferentiators: contextualDifferentiators(
+          result.request,
+          exercise,
+          rejected,
+          painMatchTrace,
+        ),
         contextRequired: contextRequired(exercise),
         scoreVectorSignature: ranked ? scoreVectorSignature(ranked) : null,
         mechanicsSignature: mechanicsSignature(exercise),

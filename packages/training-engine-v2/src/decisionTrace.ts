@@ -7,11 +7,26 @@ import type { SessionEvaluation, WeekEvaluation } from "./optimizerContracts";
 import type { ExercisePrescription, ProgressionDecision } from "./prescriptionProgression";
 import type { CandidateScore } from "./scoringContracts";
 import type { PipelineSnapshot } from "./pipelineObservability";
+import type {
+  CandidatePainMatchTrace,
+  PainResponseRequirementTrace,
+} from "./candidate/pain";
 
 export interface CandidateTrace {
   readonly exerciseId: string;
   readonly eligibility: CandidateEligibility;
   readonly score?: CandidateScore;
+}
+
+export interface CandidatePainSummaryTrace {
+  readonly candidateExerciseId: string;
+  readonly uniqueMatchCount: number;
+  readonly painSuitabilityCount: number;
+  readonly jointCostCount: number;
+  readonly warningSignalIds: readonly string[];
+  readonly hardRejectedSignalIds: readonly string[];
+  readonly urgentReviewSignalIds: readonly string[];
+  readonly responseRequirements: readonly PainResponseRequirementTrace[];
 }
 
 export interface DecisionTrace {
@@ -24,6 +39,7 @@ export interface DecisionTrace {
   readonly candidateCount: number;
   readonly hardRejections: readonly CandidateEligibility[];
   readonly topCandidateScores: readonly CandidateScore[];
+  readonly candidatePainSummaries: readonly CandidatePainSummaryTrace[];
   readonly selectedExerciseId?: string;
   readonly whyItWon?: string;
   readonly sessionLevelEffects?: SessionEvaluation;
@@ -32,6 +48,28 @@ export interface DecisionTrace {
   readonly prescriptionDecision?: ExercisePrescription;
   readonly progressionDecision?: ProgressionDecision;
   readonly pipelineSnapshots?: readonly PipelineSnapshot[];
+}
+
+function painSummary(trace: CandidatePainMatchTrace): CandidatePainSummaryTrace {
+  const decision = (receiver: string) =>
+    trace.receiverDecisions.find((candidate) => candidate.receiver === receiver);
+  const hardRejectedSignalIds = [
+    ...(decision("hard_contraindication")?.affectedSignalIds ?? []),
+    ...(decision("acute_severe_eligibility")?.affectedSignalIds ?? []),
+  ];
+
+  return {
+    candidateExerciseId: trace.candidateExerciseId,
+    uniqueMatchCount: trace.uniqueMatchCount,
+    painSuitabilityCount: decision("pain_suitability")?.countedMatchUnitCount ?? 0,
+    jointCostCount: decision("joint_cost")?.countedMatchUnitCount ?? 0,
+    warningSignalIds: decision("moderate_warning")?.affectedSignalIds ?? [],
+    hardRejectedSignalIds: [...new Set(hardRejectedSignalIds)].sort(),
+    urgentReviewSignalIds: trace.signalTraces
+      .filter((signal) => signal.urgentReviewRecommended === true)
+      .map((signal) => signal.signalId),
+    responseRequirements: trace.responseRequirements,
+  };
 }
 
 export function createDecisionTrace(input: {
@@ -57,6 +95,9 @@ export function createDecisionTrace(input: {
       .flatMap((candidate) => (candidate.score ? [candidate.score] : []))
       .sort((left, right) => right.aggregate.value - left.aggregate.value)
       .slice(0, 5),
+    candidatePainSummaries: input.candidates.map((candidate) =>
+      painSummary(candidate.eligibility.painMatchTrace),
+    ),
     selectedExerciseId: input.selectedExerciseId,
     whyItWon: input.whyItWon,
     pipelineSnapshots: input.pipelineSnapshots ?? [],

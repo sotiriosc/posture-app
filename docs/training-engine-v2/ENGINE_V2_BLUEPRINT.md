@@ -788,6 +788,8 @@ Pain responsibility is intentionally split:
 - session and week composition own ordering, accumulated stress, fatigue interaction, and replacement context;
 - progression and transition logic owns whether to keep and adjust an exercise, regress its prescription, or consider a reviewed replacement.
 
+Candidate pain decisions derive from one deterministic, source-aware set of matched facts. A matched fact is unique by pain signal and stress tag, while all structured exercise metadata sources remain visible as provenance. Multiple metadata sources for one matched tag do not automatically represent multiple physiological stress units. Hard eligibility, acute eligibility, warning, suitability, joint cost, assessment context, prescription requirements, and composition requirements retain explicit independent receiver authority over that shared evidence.
+
 No one layer may disguise another layer's responsibility. A pain score cannot override a contraindication, a legal candidate is not automatically an appropriate prescription, and a transition label is not permission to replace an exercise automatically.
 
 Within Candidate Intelligence, the primary semantic owners are:

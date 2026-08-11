@@ -25,6 +25,7 @@ import {
 } from "./featureTargetFit";
 import { calculateInfluenceBudget } from "./influenceBudget";
 import type { AssessmentRelevanceDecision } from "./relevance";
+import type { CandidatePainMatchTrace } from "../../pain";
 
 function overallTaskSignalInterpretation(input: {
   readonly signalInterpretation: AssessmentSignalInterpretationTrace;
@@ -66,6 +67,7 @@ export function makeAssessmentRelevanceTrace(input: {
   readonly influence: AssessmentInfluence;
   readonly relevanceDecision: AssessmentRelevanceDecision;
   readonly alignmentEligible: boolean;
+  readonly painMatchTrace: CandidatePainMatchTrace;
 }): AssessmentRelevanceTrace {
   const signalInterpretation = interpretAssessmentSignal(input.signal);
   const taskInterpretation = overallTaskSignalInterpretation({
@@ -98,6 +100,7 @@ export function makeAssessmentRelevanceTrace(input: {
     request: input.request,
     exercise: input.exercise,
     signal: input.signal,
+    painMatchTrace: input.painMatchTrace,
   });
   const featureChallengeNotAsserted =
     input.relevanceDecision.relevance !== "none" &&

@@ -102,6 +102,16 @@ Weights live in `DEFAULT_CANDIDATE_SCORING_WEIGHTS`. They are deliberately modes
 | `session_synergy` | 0.4 |
 | `muscle_target_fit` | 1.0 |
 
+## Canonical Pain Receiver Contract
+
+Pain scoring consumes `CandidatePainMatchTrace`; score components do not reconstruct exercise stress overlap. The canonical counting unit is one `painSignalId + stressTag` fact. Repeated occurrences of the tag inside one signal and repeated exercise metadata sources do not multiply it, while distinct signal IDs remain distinct facts.
+
+`pain_suitability` counts current discomfort, moderate pain, and historical sensitivity across joint-stress, caution, and contraindicated sources once per canonical fact. Its unchanged deductions are `0.9`, `1.8`, and `0.4` respectively.
+
+`joint_cost` counts the same supported signal kinds only when a fact has joint-stress or caution provenance. A fact with both sources counts once; contraindicated-only provenance remains visible but uncharged. Its unchanged deductions are `0.8`, `1.4`, and `0.35`, with axial cost `0.35` and accumulated-joint-fatigue cost `0.7`.
+
+Severity, current effect, moderate required response, and historical preferred modification do not add score magnitude in this contract increment. They remain structured trace evidence for calibration or their future receiver. `stability_fit` compares exercise stability demand with phase expectation and does not read pain state.
+
 Assessment-specific influence is modeled as:
 
 ```ts
