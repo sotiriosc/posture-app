@@ -125,6 +125,15 @@ interface MatrixGroup {
   readonly stressTags: readonly JointStressTag[];
 }
 
+export interface ModeratePainCalibrationScenario {
+  readonly id: string;
+  readonly label: string;
+  readonly request: CandidateRequest;
+  readonly exerciseIds: readonly string[];
+  readonly region: BodyRegion;
+  readonly stressTags: readonly JointStressTag[];
+}
+
 interface MatrixState {
   readonly label: string;
   readonly signalId: string;
@@ -397,6 +406,10 @@ function matrixGroups(): readonly MatrixGroup[] {
       stressTags: ["deep_knee_flexion", "loaded_knee_flexion"],
     },
   ];
+}
+
+export function buildModeratePainCalibrationScenarios(): readonly ModeratePainCalibrationScenario[] {
+  return matrixGroups().map((group) => ({ ...group }));
 }
 
 function currentDiscomfort(input: {

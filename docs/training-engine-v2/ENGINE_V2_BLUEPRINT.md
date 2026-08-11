@@ -790,6 +790,8 @@ Pain responsibility is intentionally split:
 
 Candidate pain decisions derive from one deterministic, source-aware set of matched facts. A matched fact is unique by pain signal and stress tag, while all structured exercise metadata sources remain visible as provenance. Multiple metadata sources for one matched tag do not automatically represent multiple physiological stress units. Hard eligibility, acute eligibility, warning, suitability, joint cost, assessment context, prescription requirements, and composition requirements retain explicit independent receiver authority over that shared evidence.
 
+Reported pain intensity and canonical stress-overlap breadth are separate quantities. Any future Candidate Intelligence intensity calibration must be bounded and applied once per distinct matched moderate-pain signal, never multiplied by that signal's matched stress facts. Intensity belongs to pain suitability; joint cost continues to represent modeled exposure. Scaling one reported intensity through both score channels would require separate reviewed evidence rather than an implicit duplicate deduction. Moderate severity alone must not become hard contraindication authority.
+
 No one layer may disguise another layer's responsibility. A pain score cannot override a contraindication, a legal candidate is not automatically an appropriate prescription, and a transition label is not permission to replace an exercise automatically.
 
 Within Candidate Intelligence, the primary semantic owners are:
@@ -800,6 +802,8 @@ Within Candidate Intelligence, the primary semantic owners are:
 - **Assessment/demand relationship:** structured developmental support or exposure reasoning when the required evidence exists.
 
 Support mechanics may inform later selection, prescription, and session reasoning, but generic support must not receive an undocumented pain bonus. Pain suitability requires the pain/tolerance evidence owned by that component.
+
+A pre-session pain-intensity value cannot validate exercise dosage or progression by itself. Longitudinal adaptation must eventually consume symptom and function response before, during, immediately after, after recovery, the following morning, and at the next session, including repeated versus isolated responses. Session feedback should feed longitudinal adaptation and then the next prescription or progression decision.
 
 ## 21. Exercise Definition Must Be Multi-Dimensional
 

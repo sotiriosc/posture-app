@@ -60,6 +60,8 @@ Pain observation/diagnosis, hard legality, candidate suitability, prescription a
 
 Candidate pain matching normalizes `loading.jointStressTags`, `cautionStressTags`, and `contraindicatedStressTags` into source-aware stress facts. One pain signal and one matched stress tag form one canonical fact even when several exercise metadata sources contain that tag. Distinct pain signal IDs remain distinct evidence. Receiver policies then decide independently whether that fact can warn, score, hard-reject, inform assessment context, or create a deferred response requirement.
 
+Stress-overlap breadth and reported pain intensity remain separate. Any future Candidate Intelligence intensity calibration is signal-level, bounded, and owned by pain suitability; it is not multiplied per matched stress fact or duplicated in joint cost. Moderate severity alone is not hard authority. Future dosage and progression decisions also require longitudinal symptom/function response rather than pre-session severity alone.
+
 `HistoricalInjury` remains intentionally unconsumed at Candidate Intelligence scope. Current effects, moderate required responses, acute urgency, historical preferred modifications, and hard-authority provenance remain observable even when their future owner is prescription, Session Intent / Session Composer, or external review.
 
 ## Equipment

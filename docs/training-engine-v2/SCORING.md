@@ -112,6 +112,8 @@ Pain scoring consumes `CandidatePainMatchTrace`; score components do not reconst
 
 Severity, current effect, moderate required response, and historical preferred modification do not add score magnitude in this contract increment. They remain structured trace evidence for calibration or their future receiver. `stability_fit` compares exercise stability demand with phase expectation and does not read pain state.
 
+The enduring boundary for any later moderate-intensity calibration is settled even though no production coefficient is selected: apply at most one bounded adjustment per distinct matched moderate-pain signal, route it only to `pain_suitability`, and never multiply it by that signal's canonical stress-fact count. `joint_cost` remains severity-invariant because it owns modeled exposure. `requiredResponse` remains an execution/readiness contract rather than another numeric penalty, and moderate severity alone never becomes a hard gate.
+
 Assessment-specific influence is modeled as:
 
 ```ts
