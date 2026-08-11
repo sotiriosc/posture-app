@@ -180,6 +180,13 @@ describe("trunk/core domain and coverage review", () => {
     expect(rendered).toContain("## Current Catalog: Direct and Meaningful Secondary Exposure");
     expect(rendered).toContain("## Protected Legacy Knowledge Review");
     expect(rendered).toContain("## Owner-Accepted Contract Implementation");
+    expect(rendered).toContain(
+      "## Representative Trunk Mechanics Curation Under Owner Review",
+    );
+    expect(rendered).toContain("15 `PROPOSE_ACCEPTED`");
+    expect(rendered).toContain("17 `PROPOSE_NEEDS_REVIEW`");
+    expect(rendered).toContain("80 `REMAIN_UNKNOWN`");
+    expect(rendered).toContain("**TRUNK_PROFILE_TRANCHE_READY_FOR_OWNER_APPROVAL**");
     expect(rendered).toContain("## Weekly Development Ledger Handoff");
     expect(rendered).toContain("**TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION**");
     expect(rendered).toContain("**TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED**");

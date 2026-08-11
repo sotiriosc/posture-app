@@ -28,6 +28,12 @@ The accepted 22-scenario ranking fingerprint remains `d6a6452537e1436c3ecbbc035d
 
 Next approved boundary: human-review and curate reference exercise roles/profiles, then add normalized trunk assessment features before Session Composer. No scoring, phase, assessment, prescription, exposure-ledger, or composition behavior is implemented here.
 
+### Representative Curation Proposal Under Owner Review
+
+The representative 14-exercise by 8-function proposal is complete with 15 `PROPOSE_ACCEPTED`, 17 `PROPOSE_NEEDS_REVIEW`, and 80 `REMAIN_UNKNOWN` fields. It is classified **TRUNK_PROFILE_TRANCHE_READY_FOR_OWNER_APPROVAL** and has not changed production reference metadata or behavior.
+
+If the owner approves the individual fields and the required review artifacts, the recommended first metadata tranche is limited to 90/90 Breathing, Dead Bug, and Pallof Press. This proposal does not authorize secondary/support rows, scoring changes, assessment features, or Session Composer work.
+
 ## Contract Review
 
 | Area | Verdict | Evidence |
