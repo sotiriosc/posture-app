@@ -103,6 +103,9 @@ export interface TrunkCoreCoverageSnapshot {
   readonly trunkDemandHighCount: number;
   readonly trunkDemandUnknownCount: number;
   readonly mechanicsAbsentCount: number;
+  readonly trunkProfileCount: number;
+  readonly acceptedTrunkFunctionCount: number;
+  readonly unknownTrunkFunctionCount: number;
   readonly directDevelopmentalCount: number;
   readonly meaningfulSecondaryCount: number;
   readonly incidentalBracingCount: number;
@@ -123,7 +126,7 @@ export interface TrunkCoreDomainReviewData {
   readonly implementationOrder: readonly string[];
   readonly uncertainties: readonly string[];
   readonly classification: "TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION";
-  readonly implementationStatus: "TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED";
+  readonly implementationStatus: "FIRST_TRUNK_PROFILE_TRANCHE_IMPLEMENTED";
 }
 
 interface TrunkCoreDecisions {
@@ -384,8 +387,8 @@ export const CATALOG_TRUNK_DECISIONS: readonly CatalogTrunkDecision[] = [
     primaryTrunkRole: "Breathing / ribcage-pelvis position",
     secondaryTrunkRole: "Anti-extension position control",
     exposureClass: "DIRECT_DEVELOPMENTAL",
-    movementFunction: "breathing_position + anti_extension_core (typed)",
-    evidence: "Trunk is primary; both roles are explicit; trunk_control is low.",
+    movementFunction: "breathing high; anti-extension low; loaded bracing none; gait transfer none; four functions unknown",
+    evidence: "Owner-reviewed profile cites explicit roles, trunk primary, floor/supine support, and low trunk_control.",
   },
   {
     exerciseId: "serratus-wall-slide",
@@ -400,8 +403,8 @@ export const CATALOG_TRUNK_DECISIONS: readonly CatalogTrunkDecision[] = [
     primaryTrunkRole: "Anti-extension control",
     secondaryTrunkRole: "Ribcage-pelvis coordination is plausible but not separately typed",
     exposureClass: "DIRECT_DEVELOPMENTAL",
-    movementFunction: "anti_extension_core (typed)",
-    evidence: "core_control family; trunk primary; moderate trunk_control.",
+    movementFunction: "anti-extension high; loaded bracing none; gait transfer none; five functions unknown",
+    evidence: "Owner-reviewed profile cites core_control, anti_extension_core, trunk primary, floor/supine support, and moderate trunk_control.",
   },
   {
     exerciseId: "push-up",
@@ -616,8 +619,8 @@ export const CATALOG_TRUNK_DECISIONS: readonly CatalogTrunkDecision[] = [
     primaryTrunkRole: "Anti-rotation control",
     secondaryTrunkRole: "Standing position / hip contribution",
     exposureClass: "DIRECT_DEVELOPMENTAL",
-    movementFunction: "anti_rotation_core (typed)",
-    evidence: "core_control family; trunk primary; trunk_control is high.",
+    movementFunction: "anti-rotation high; controlled rotation none; gait transfer none; five functions unknown",
+    evidence: "Owner-reviewed profile cites core_control, anti_rotation_core, trunk primary, standing support, and high trunk_control.",
   },
 ] as const;
 
@@ -736,17 +739,17 @@ export const FUNCTIONAL_COVERAGE: readonly FunctionalCoverageRow[] = [
   {
     function: "Breathing / ribcage-pelvis position",
     currentTypeSupport: "breathing_position role plus optional breathingPressureCoordination evidence",
-    currentExerciseSupport: "90/90 Breathing only",
+    currentExerciseSupport: "90/90 Breathing has an owner-reviewed high breathing/pressure profile",
     legacySupport: "90/90 Breathing and brace-oriented preparation",
     assessmentSupport: "Generic role/muscle/region signal; no normalized feature",
     weeklyLedgerSupport: "movementExposure can name the role; no receiver",
-    gap: "One low-load option; no pressure-coordination profile or progression family",
+    gap: "One profiled low-load option and no reviewed breathing progression family",
     recommendedOwner: "Catalog + trunk mechanics + assessment",
   },
   {
     function: "Anti-extension",
     currentTypeSupport: "anti_extension_core role plus optional antiExtensionContribution evidence",
-    currentExerciseSupport: "90/90 Breathing, Dead Bug, Push-Up",
+    currentExerciseSupport: "90/90 low and Dead Bug high are profiled; Push-Up remains approved but deferred",
     legacySupport: "Dead Bug, Plank, Hollow, Rollout, hanging/suspension variants",
     assessmentSupport: "Role-specific input collapses to trunk_control",
     weeklyLedgerSupport: "Role target is representable; direct/secondary credit is not",
@@ -756,7 +759,7 @@ export const FUNCTIONAL_COVERAGE: readonly FunctionalCoverageRow[] = [
   {
     function: "Anti-rotation",
     currentTypeSupport: "anti_rotation_core role plus optional antiRotationContribution evidence",
-    currentExerciseSupport: "Pallof Press only",
+    currentExerciseSupport: "Pallof Press has owner-reviewed high anti-rotation expression",
     legacySupport: "Band/cable Pallof, anti-rotation holds, offset marches",
     assessmentSupport: "Role-specific input collapses to trunk_control",
     weeklyLedgerSupport: "Role target is representable; no receiver",
@@ -786,7 +789,7 @@ export const FUNCTIONAL_COVERAGE: readonly FunctionalCoverageRow[] = [
   {
     function: "Controlled rotation",
     currentTypeSupport: "trunk_rotation role plus optional controlledRotationContribution evidence",
-    currentExerciseSupport: "None; Pallof is anti-rotation",
+    currentExerciseSupport: "No positive expression; Pallof has reviewed none because it resists rotation",
     legacySupport: "Band/Cable Woodchop with metadata caveats",
     assessmentSupport: "Only generic trunk muscle/region signals",
     weeklyLedgerSupport: "Movement role is typed; no ledger receiver",
@@ -800,7 +803,7 @@ export const FUNCTIONAL_COVERAGE: readonly FunctionalCoverageRow[] = [
     legacySupport: "Compounds, brace marches, carries",
     assessmentSupport: "Generic trunk_control demand/capability comparison",
     weeklyLedgerSupport: "At most coarse trunk muscle exposure; no secondary lane",
-    gap: "No reviewed direct-role candidate, curated function profile, or secondary ledger lane",
+    gap: "No reviewed positive loaded-bracing profile, direct-role candidate, or secondary ledger lane",
     recommendedOwner: "Catalog + ledger; role only when bracing is the selection purpose",
   },
   {
@@ -951,17 +954,17 @@ export const RECOMMENDED_IMPLEMENTATION_ORDER: readonly string[] = [
   "COMPLETED: Owner approved Option B, the four exposure classes, function vocabulary, unknown semantics, and the decision to defer abdominal_wall.",
   "COMPLETED: Added typed MovementRole values for anti_lateral_flexion_core, trunk_flexion, trunk_rotation, and loaded_bracing; carry remains separate as loaded gait/transport.",
   "COMPLETED: Added a compact, review/provenance-bearing TrunkMechanicsProfile, pure validation, and an observability-only trace without scoring or hidden behavior.",
-  "Human-review the existing 30 exercises, then expand the reference catalog with a minimal progression runway for each approved function and carry regression family.",
+  "COMPLETED: Added owner-reviewed complete profiles for 90/90 Breathing, Dead Bug, and Pallof Press with ten accepted fields and fourteen explicit unknowns.",
+  "Resolve the 17 needs-review proposals and expand only approved complete profiles, then add a minimal progression runway for each approved function and carry regression family.",
   "Add normalized trunk assessment features and bounded feature-specific relevance before Session Composer consumes assessment priorities.",
   "Add prescription units for sets/reps/time/distance/trips/load/side and implement separate direct, secondary, incidental, and capacity ledger lanes.",
-  "Apply accepted role/section-scoped phase annotations to each new use context; calibrate Candidate Intelligence only after metadata review.",
-  "Re-run cross-goal, pain, phase, history, weekly-coverage, and longitudinal counterfactuals; start Session Composer only after owner acceptance.",
+  "Apply accepted role/section-scoped phase annotations and re-run cross-goal, pain, phase, history, weekly-coverage, and longitudinal counterfactuals before Session Composer.",
 ] as const;
 
 export const EXPLICIT_UNCERTAINTIES: readonly string[] = [
   "Whether controlled rotation needs one role or later direction/range qualifiers; the first contract should avoid side/direction proliferation.",
   "Whether abdominal_wall can be truthfully captured by intake without implying internal-organ or diagnostic semantics.",
-  "Which compounds merit reviewed meaningful-secondary credit and what evidence threshold is sufficient; current inferences are not accepted metadata.",
+  "Which compounds merit complete reviewed profiles and meaningful-secondary credit; five individual judgments are approved but deliberately deferred and all qualified values remain unapproved.",
   "How non-set direct work should normalize dosage without pretending seconds, distance, and hypertrophy sets are interchangeable.",
   "Whether posterior-trunk direct development needs a future function or can remain hinge plus loaded-bracing metadata.",
   "Which trunk assessment features can be normalized from movement screens, coach review, or explicit self-report without inventing image findings.",
@@ -1124,6 +1127,29 @@ export function buildCurrentCoverageSnapshot(
       (exercise) => exercise.mechanics?.demands.trunk_control.level === "unknown",
     ),
     mechanicsAbsentCount: countExercises((exercise) => exercise.mechanics === undefined),
+    trunkProfileCount: countExercises(
+      (exercise) => exercise.mechanics?.trunkMechanics !== undefined,
+    ),
+    acceptedTrunkFunctionCount: REFERENCE_EXERCISES.reduce(
+      (count, exercise) =>
+        count +
+        (exercise.mechanics?.trunkMechanics
+          ? Object.values(exercise.mechanics.trunkMechanics).filter(
+              (annotation) => annotation.reviewStatus === "accepted",
+            ).length
+          : 0),
+      0,
+    ),
+    unknownTrunkFunctionCount: REFERENCE_EXERCISES.reduce(
+      (count, exercise) =>
+        count +
+        (exercise.mechanics?.trunkMechanics
+          ? Object.values(exercise.mechanics.trunkMechanics).filter(
+              (annotation) => annotation.level === "unknown",
+            ).length
+          : 0),
+      0,
+    ),
     directDevelopmentalCount: catalogRows.filter(
       (row) => row.exposureClass === "DIRECT_DEVELOPMENTAL",
     ).length,
@@ -1157,7 +1183,7 @@ export function buildTrunkCoreDomainReviewData(): TrunkCoreDomainReviewData {
     implementationOrder: RECOMMENDED_IMPLEMENTATION_ORDER,
     uncertainties: EXPLICIT_UNCERTAINTIES,
     classification: "TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION",
-    implementationStatus: "TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED",
+    implementationStatus: "FIRST_TRUNK_PROFILE_TRANCHE_IMPLEMENTED",
   };
 }
 
@@ -1201,7 +1227,7 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
     "",
     "The project owner accepted the review finding that `trunk` is a useful umbrella but was not a complete core-programming contract. The production domain can now represent anti-lateral flexion, controlled flexion, controlled rotation, and loaded bracing as selection purposes while keeping carry distinct.",
     "",
-    "**Option B is accepted and implemented at domain-contract scope**: keep `trunk` as the single umbrella `MuscleGroup`, use explicit selection-purpose `MovementRole` values, and keep function expression in an optional review/provenance-bearing `TrunkMechanicsProfile`. No reference exercise metadata, score, weight, eligibility rule, phase behavior, pain behavior, assessment behavior, or ranking changed in this implementation.",
+    "**Option B is accepted and implemented through the first metadata tranche**: keep `trunk` as the single umbrella `MuscleGroup`, use explicit selection-purpose `MovementRole` values, and keep function expression in an optional review/provenance-bearing `TrunkMechanicsProfile`. Exactly three reference exercises now carry profiles; no score, weight, eligibility rule, phase behavior, pain behavior, assessment behavior, or ranking changed.",
     "",
     "## Owner-Accepted Contract Implementation",
     "",
@@ -1210,13 +1236,13 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
     "- Each annotation exposes `unknown | none | low | moderate | high`, field-level review status, source, structured provenance, and notes. Reviewed `none` remains distinct from unavailable `unknown`.",
     "- `buildTrunkMechanicsTrace` is observability-only. An absent profile yields explicit `profile_unavailable` / `unknown` evidence rather than fabricated `none` values.",
     "- Pure validation requires all eight valid annotations, structured provenance for known levels, and a reviewed basis for accepted unknown evidence.",
-    "- Existing reference exercises retain their exact roles and contain no trunk profile. Catalog curation is the next approved boundary; normalized trunk assessment features follow it before Session Composer.",
+    "- Existing reference exercises retain their exact roles. Only 90/90 Breathing, Dead Bug, and Pallof Press carry complete owner-reviewed trunk profiles.",
     "",
-    "## Representative Trunk Mechanics Curation Under Owner Review",
+    "## First Tranche Owner Approval and Implementation",
     "",
-    "A deterministic 14-exercise by 8-function curation proposal is complete and remains under project-owner review. Its 112 fields are classified as 15 `PROPOSE_ACCEPTED`, 17 `PROPOSE_NEEDS_REVIEW`, and 80 `REMAIN_UNKNOWN`; none of those proposals have been written into production reference metadata.",
+    "The project owner accepted all 15 `PROPOSE_ACCEPTED` judgments and authorized complete production profiles only for 90/90 Breathing, Dead Bug, and Pallof Press. The genuine review artifact is `TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche`.",
     "",
-    "The proposal classification is **TRUNK_PROFILE_TRANCHE_READY_FOR_OWNER_APPROVAL**. After field-by-field owner decisions and replacement of pending review references with genuine artifacts, the recommended first implementation tranche is limited to 90/90 Breathing, Dead Bug, and Pallof Press. Secondary and supported rows remain proposal evidence only.",
+    "Those profiles contain ten accepted fields and fourteen explicit unknowns. Every accepted annotation uses `human_exercise_science_review`; no qualified proposal was promoted. Five accepted secondary/support judgments are approved but deferred, all 17 needs-review proposals remain unresolved, and secondary/support exercises remain unprofiled.",
     "",
     "## Scope and Evidence",
     "",
@@ -1240,6 +1266,7 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
         ["Meaningful secondary trunk exercises", snapshot.meaningfulSecondaryCount, "Eight catalog-supported generic-demand rows; specific functions still need human review"],
         ["Incidental/unreviewed bracing rows", snapshot.incidentalBracingCount, "No direct developmental credit"],
         ["Rows with no current trunk evidence", snapshot.noCurrentTrunkEvidenceCount, "Unknown/absent must remain unknown"],
+        ["Trunk profiles / accepted fields / explicit unknown fields", `${snapshot.trunkProfileCount} / ${snapshot.acceptedTrunkFunctionCount} / ${snapshot.unknownTrunkFunctionCount}`, "First authorized tranche only; remaining exercises stay profile-unavailable"],
         ["breathing_position / anti-extension / anti-rotation / carry", `${snapshot.breathingRoleCount} / ${snapshot.antiExtensionRoleCount} / ${snapshot.antiRotationRoleCount} / ${snapshot.carryRoleCount}`, "Carry is typed but has no reference exercise"],
         ["capacity training-role exercises", snapshot.capacityTrainingRoleCount, "Conditioning/carry composition cannot be exercised"],
         ["ribcage / lumbar_spine / pelvis / general exercises", `${snapshot.ribcageRegionCount} / ${snapshot.lumbarSpineRegionCount} / ${snapshot.pelvisRegionCount} / ${snapshot.generalRegionCount}`, "No abdomen or abdominal_wall region exists"],
@@ -1247,7 +1274,7 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
       ],
     ),
     "",
-    "**Dedicated core-control count: 2.** `90/90 Breathing` is trunk-primary and directly develops breathing/position, but its family and training roles correctly identify preparation/recovery rather than a third generic core-control accessory. A future pressure-coordination annotation still requires review. Heavy compounds provide useful bracing exposure; they do not increase the dedicated count.",
+    "**Dedicated core-control count: 2.** `90/90 Breathing` is trunk-primary and directly develops breathing/position, but its family and training roles correctly identify preparation/recovery rather than a third generic core-control accessory. Its owner-reviewed profile captures high breathing/pressure and low anti-extension expression without changing that role truth. Heavy compounds provide useful bracing exposure; they do not increase the dedicated count.",
     "",
     "## Current Inventory and Receivers",
     "",
@@ -1471,7 +1498,7 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
     "",
     "Current generic `movementRole`, `muscleGroup`, and `region` inputs are sufficient only for coarse trunk influence. `signalIsTrunk` maps lumbar_spine, ribcage, pelvis, trunk, breathing_position, anti_extension_core, and anti_rotation_core into the single `trunk_control` dimension. Candidate-specific demand prevents unrelated influence, but the engine cannot distinguish ribcage-pelvis control from lateral, rotational, or loaded-bracing evidence.",
     "",
-    "**Timing decision: BEFORE_SESSION_COMPOSER.** After the function/mechanics vocabulary is approved, add normalized features such as `ribcage_pelvis_control`, `anti_extension_control`, `anti_rotation_control`, `controlled_rotation_control`, `lateral_trunk_control`, and `loaded_bracing_control` in the same pre-Composer catalog tranche. A broad `rotational_control` input must remain broad/unknown unless its source distinguishes resisting rotation from producing controlled rotation. Only explicit or reviewed normalization from movement screens, coach review, training history, or sufficiently specific self-report may populate these features. Do not infer them from descriptions, photos without a validated signal, or diagnosis-like assumptions.",
+    "**Timing decision: BEFORE_SESSION_COMPOSER.** With the function/mechanics vocabulary and first profile tranche implemented, the next separately approved boundary is normalized features such as `ribcage_pelvis_control`, `anti_extension_control`, `anti_rotation_control`, `controlled_rotation_control`, `lateral_trunk_control`, and `loaded_bracing_control`. A broad `rotational_control` input must remain broad/unknown unless its source distinguishes resisting rotation from producing controlled rotation. Only explicit or reviewed normalization from movement screens, coach review, training history, or sufficiently specific self-report may populate these features. Do not infer them from descriptions, photos without a validated signal, or diagnosis-like assumptions.",
     "",
     "Feature evidence should remain bounded exactly as the existing assessment doctrine requires: feature-specific evidence can influence only a truthful candidate with reviewed matching mechanics; missing feature evidence remains unknown; assessment cannot legalize a wrong role; severity, confidence, capability, challenge, and developmental relationship stay separate.",
     "",
@@ -1534,7 +1561,7 @@ export function renderTrunkCoreDomainReview(data: TrunkCoreDomainReviewData): st
     "",
     `Implementation status: **${data.implementationStatus}**.`,
     "",
-    "The owner accepted Option B and the production type, validation, and trace contracts are implemented. Catalog breadth, assessment feature evidence, body-region intake, weekly targets, prescription normalization, phase annotations, and scoring calibration remain separate reviewed follow-ons.",
+    "The owner accepted Option B, the production type/validation/trace contracts, and the first three complete profiles. Remaining profile curation, catalog breadth, assessment feature evidence, body-region intake, weekly targets, prescription normalization, phase annotations, and scoring calibration remain separate reviewed follow-ons.",
     "",
   ].join("\n");
 }

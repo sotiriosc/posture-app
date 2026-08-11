@@ -8,6 +8,7 @@ import {
   CAPTURED_COMPREHENSIVE_BEHAVIOR_FINGERPRINT,
   CAPTURED_PRODUCTION_RANKING_FINGERPRINT,
   CAPTURED_REFERENCE_CATALOG_FINGERPRINT,
+  FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT,
   TRUNK_CURATION_EXERCISE_IDS,
   buildTrunkMechanicsCurationProposalData,
   renderTrunkMechanicsCurationProposal,
@@ -160,19 +161,23 @@ describe("trunk mechanics representative curation proposal", () => {
     expect(referenceCatalog).not.toContain("INCIDENTAL_BRACING");
   });
 
-  it("does not change production reference metadata", () => {
-    expect(data.behaviorBoundary.referenceCatalogMatches).toBe(true);
+  it("changes only the authorized production trunk-profile metadata", () => {
+    expect(data.behaviorBoundary.fullReferenceCatalogMatchesFirstTranche).toBe(true);
     expect(data.behaviorBoundary.capturedReferenceCatalogFingerprint).toBe(
       CAPTURED_REFERENCE_CATALOG_FINGERPRINT,
     );
     expect(data.behaviorBoundary.currentReferenceCatalogFingerprint).toBe(
+      FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT,
+    );
+    expect(data.behaviorBoundary.strippedReferenceCatalogMatchesBaseline).toBe(true);
+    expect(data.behaviorBoundary.strippedReferenceCatalogFingerprint).toBe(
       CAPTURED_REFERENCE_CATALOG_FINGERPRINT,
     );
     expect(
-      REFERENCE_EXERCISES.every(
-        (exercise) => exercise.mechanics?.trunkMechanics === undefined,
-      ),
-    ).toBe(true);
+      REFERENCE_EXERCISES.filter(
+        (exercise) => exercise.mechanics?.trunkMechanics !== undefined,
+      ).map((exercise) => exercise.id),
+    ).toEqual(["ninety-ninety-breathing", "dead-bug", "pallof-press"]);
   });
 
   it("preserves current production ranking and comprehensive behavior fingerprints", () => {
@@ -228,6 +233,7 @@ describe("trunk mechanics representative curation proposal", () => {
   it("matches the checked-in deterministic proposal report", () => {
     const rendered = renderTrunkMechanicsCurationProposal(data);
     expect(rendered).toContain("## Complete 14 x 8 Function Matrix");
+    expect(rendered).toContain("## Owner Approval and First-Tranche Implementation");
     expect(rendered).toContain("## Future Trace Preview");
     expect(rendered).toContain("## Protected Legacy Review");
     expect(rendered).toContain(

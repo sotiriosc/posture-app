@@ -227,13 +227,17 @@ describe("trunk mechanics production domain contract", () => {
     }
   });
 
-  it("does not add new roles or trunk profiles to any current reference exercise", () => {
+  it("does not add new roles and limits reference profiles to the approved trio", () => {
     const newRoleSet = new Set<MovementRole>(NEW_TRUNK_ROLES);
 
     for (const candidate of REFERENCE_EXERCISES) {
       expect(candidate.movementRoles.some((role) => newRoleSet.has(role))).toBe(false);
-      expect(candidate.mechanics?.trunkMechanics).toBeUndefined();
     }
+    expect(
+      REFERENCE_EXERCISES.filter(
+        (candidate) => candidate.mechanics?.trunkMechanics !== undefined,
+      ).map((candidate) => candidate.id),
+    ).toEqual(["ninety-ninety-breathing", "dead-bug", "pallof-press"]);
   });
 
   it("requires explicit role truth even when trunk mechanics expression is high", () => {
@@ -377,9 +381,9 @@ describe("trunk mechanics production domain contract", () => {
   });
 
   it("exposes explicit unavailable unknown evidence when the profile is absent", () => {
-    const trace = buildTrunkMechanicsTrace(exercise("pallof-press"));
+    const trace = buildTrunkMechanicsTrace(exercise("push-up"));
 
-    expect(trace.exerciseId).toBe("pallof-press");
+    expect(trace.exerciseId).toBe("push-up");
     expect(trace.profilePresent).toBe(false);
     expect(Object.keys(trace.functions)).toEqual([...TRUNK_MECHANICS_FUNCTIONS]);
     expect(Object.values(trace.functions)).toHaveLength(8);
@@ -533,6 +537,7 @@ describe("trunk mechanics production domain contract", () => {
     ];
 
     expect(trunkMechanicsConsumers).toEqual([
+      "data/referenceExercises.ts",
       "domain/exercise.ts",
       "index.ts",
       "trunkMechanics.ts",

@@ -2,9 +2,17 @@
 
 ## Purpose and Boundary
 
-This is a conservative human-curation proposal for a representative tranche of 14 existing reference exercises. It does not implement `TrunkMechanicsProfile` metadata, add exercises or roles, or change eligibility, scoring, ranking, pain, phase, assessment, transitions, prescription, composition, or weekly accounting.
+This is the accepted conservative human-curation proposal for a representative tranche of 14 existing reference exercises. The owner-approved first production tranche now implements complete profiles only for 90/90 Breathing, Dead Bug, and Pallof Press. It adds no exercise or role and changes no eligibility, scoring, ranking, pain, phase, assessment, transitions, prescription, composition, or weekly accounting.
 
 Exercise ID, name, summary, coaching cues, tags, and free-text contraindications are used only to locate records for review. Every non-unknown proposal cites independent structured fields or identifies an explicit future review artifact.
+
+## Owner Approval and First-Tranche Implementation
+
+The project owner accepted all 15 `PROPOSE_ACCEPTED` judgments as defensible conclusions and authorized production profiles only for `ninety-ninety-breathing`, `dead-bug`, and `pallof-press`. The stable human-review artifact is `TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche`.
+
+The three complete profiles contain ten accepted fields and fourteen explicit unknown fields. All accepted annotations use `human_exercise_science_review` and cite the owner artifact; all unknown annotations remain `needs_review` with `source=unknown` and empty provenance. No proposed needs-review value was promoted.
+
+The five accepted Push-Up, Chest-Supported Dumbbell Row, and Seated Cable Row judgments remain approved but deferred. Those exercises do not receive partial profiles in this tranche, and all 17 needs-review proposals remain unresolved.
 
 ## Operational Definitions
 
@@ -34,12 +42,12 @@ These fields describe expression while an exercise is performed. They do not gra
 
 | Class | Meaning | Future source rule |
 | --- | --- | --- |
-| A_STRUCTURED_EXISTING_EVIDENCE | Existing independent typed fields directly support the proposal. | A future reference_catalog annotation must cite those pre-existing fields, not itself. |
+| A_STRUCTURED_EXISTING_EVIDENCE | Existing independent typed fields directly support the proposal. | The implemented accepted annotation uses human_exercise_science_review and the owner artifact; these pre-existing fields remain its evidence basis. |
 | B_HUMAN_EXERCISE_SCIENCE_REVIEW_REQUIRED | Structured facts make a biomechanical judgment plausible but do not settle it. | The pending sourceRef must be replaced by a genuine signed/recorded review artifact before acceptance. |
 | C_EXTERNAL_REFERENCE_RECOMMENDED | A primary technical source would materially improve confidence. | The pending sourceRef must be replaced by an actual citation and human review before acceptance. |
 | D_INSUFFICIENT_EVIDENCE_REMAIN_UNKNOWN | Current evidence cannot support a level. | Future evidence source remains unknown and provenance remains empty. |
 
-`reference_catalog` is not independent evidence merely because a future profile would be stored there. Proposal refs identify the current fields that existed before the proposed profile.
+`reference_catalog` is not independent authority merely because a profile is stored there. Proposal refs identify fields that existed before the profile; the implemented direct-trio annotations use `human_exercise_science_review` and cite the owner-decision artifact.
 
 ## Tranche and Counts
 
@@ -123,7 +131,7 @@ These are report interpretations, not `ExerciseDefinition` metadata. Requested r
 
 ## Future Trace Preview
 
-Each row previews the exact field-level evidence a future implemented profile would expose after owner decisions. `profilePresent=true` is hypothetical here; every production reference exercise still reports profile unavailable.
+Each row preserves the original proposal trace for owner and migration review. `profilePresent=true` is now real for the three approved direct exercises and remains hypothetical for the other eleven rows. Production annotations for the direct trio cite the owner-decision artifact rather than these proposal references.
 
 | exerciseId | profilePresent | function | proposed level | proposed review status | future field status | source class | future source | proposed sourceRef | evidence basis | notes | remaining uncertainty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -280,33 +288,33 @@ Name/tag sniffing, free-text pain authority, fixed core quotas, and automatic pr
 
 ## Behavioral Boundary Proof
 
-| Artifact | Captured before proposal | Current | Match |
+| Artifact | Required/captured | Current | Result |
 | --- | --- | --- | --- |
 | 22-scenario production ranking | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | true |
 | Comprehensive totals/components/rejections/pain/phase/assessment behavior | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | true |
-| Serialized production reference catalog | 6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a | 6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a | true |
+| Full serialized reference catalog after approved profiles | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | true |
+| Reference catalog with only mechanics.trunkMechanics removed | 6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a | 6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a | true |
 
-Synthetic-profile invariants remain covered by the accepted trunk contract suite: profiles cannot alter hard eligibility, role truth, totals, ranking, pain readiness, phase, assessment, or transitions because no production consumer exists beyond validation and trace observability.
+The full catalog fingerprint changes intentionally because the three profiles are serialized. Removing only `mechanics.trunkMechanics` restores the exact pre-implementation catalog fingerprint. Contract invariants prove profiles cannot alter hard eligibility, role truth, totals, ranking, pain readiness, phase, assessment, or transitions because no production consumer exists beyond validation and trace observability.
 
-## Recommended First Metadata Implementation Tranche
+## Implemented First Metadata Tranche
 
 - ninety-ninety-breathing
 - dead-bug
 - pallof-press
 
-These three direct rows have the strongest explicit role and trunk-target evidence. Implement them only after owner decisions on every field and genuine review artifacts for qualified annotations. Do not implement the secondary or supported rows merely because this proposal records plausible levels.
+These three direct rows now carry complete owner-reviewed profiles. Secondary and supported rows remain unprofiled even where individual proposal judgments were accepted; no partial profile is inferred from approval.
 
-## Project-Owner Decisions Required
+## Remaining Project-Owner Decisions
 
-- Approve, revise, or reject each PROPOSE_ACCEPTED field before any production metadata is added.
-- Resolve the 17 needs-review fields, including whether the three external-reference recommendations require commissioned source review.
+- Resolve the 17 remaining needs-review fields, including whether the three external-reference recommendations require commissioned source review.
 - Decide whether Dumbbell Shoulder Press and generic Machine Row need variant/setup-specific catalog identities before profile curation.
 - Confirm that optional load/support keeps Split Squat and Step-Up loaded bracing unknown at exercise-definition scope.
-- Confirm that the first implementation tranche is limited to 90/90 Breathing, Dead Bug, and Pallof Press.
+- Decide when the five accepted-but-deferred Push-Up and supported-row judgments should receive complete exercise profiles.
 - Keep exposure classifications report-only until prescription and Weekly Development Ledger contracts exist.
 
 ## Final Classification
 
 **TRUNK_PROFILE_TRANCHE_READY_FOR_OWNER_APPROVAL**
 
-The matrix is complete, conservative, non-circular, and behaviorally isolated. It is ready for field-by-field owner approval, revision, or rejection; no profile is implemented by this classification.
+The proposal remains complete, conservative, non-circular, and behaviorally isolated. Its first authorized tranche is implemented with ten accepted fields and fourteen explicit unknowns; all secondary/support implementation and all needs-review proposals remain deferred.

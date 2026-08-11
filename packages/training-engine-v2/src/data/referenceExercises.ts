@@ -11,6 +11,9 @@ import type {
   ExerciseTransitionPurpose,
   ExerciseTransitionRelationship,
   ScapularMechanicsProfile,
+  TrunkFunctionAnnotation,
+  TrunkFunctionLevel,
+  TrunkMechanicsProfile,
 } from "../domain/exercise";
 import type { SessionSection } from "../domain/session";
 
@@ -91,6 +94,38 @@ function unknownDemand(notes = "Reference catalog has not explicitly reviewed th
   return demand("unknown", notes, { source: "unknown", reviewStatus: "needs_review" });
 }
 
+const TRUNK_MECHANICS_OWNER_DECISION_REF =
+  "docs/training-engine-v2/TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche";
+
+function reviewedTrunkFunction(
+  level: Exclude<TrunkFunctionLevel, "unknown">,
+  evidenceBasis: readonly string[],
+  notes: string,
+): TrunkFunctionAnnotation {
+  return {
+    level,
+    reviewStatus: "accepted",
+    source: "human_exercise_science_review",
+    provenance: [
+      {
+        sourceRef: TRUNK_MECHANICS_OWNER_DECISION_REF,
+        evidenceBasis,
+      },
+    ],
+    notes,
+  };
+}
+
+function unknownTrunkFunction(notes: string): TrunkFunctionAnnotation {
+  return {
+    level: "unknown",
+    reviewStatus: "needs_review",
+    source: "unknown",
+    provenance: [],
+    notes,
+  };
+}
+
 const defaultDemands = {
   trunk_control: unknownDemand(),
   scapular_control: unknownDemand(),
@@ -105,6 +140,7 @@ function mechanics(input: {
   readonly resistancePath?: ExerciseMechanicsProfile["resistancePath"];
   readonly demands?: Partial<ExerciseMechanicsProfile["demands"]>;
   readonly scapularMechanics?: ScapularMechanicsProfile;
+  readonly trunkMechanics?: TrunkMechanicsProfile;
 }): ExerciseMechanicsProfile {
   return {
     support: input.support ?? {
@@ -119,6 +155,7 @@ function mechanics(input: {
       ...input.demands,
     },
     scapularMechanics: input.scapularMechanics,
+    ...(input.trunkMechanics ? { trunkMechanics: input.trunkMechanics } : {}),
   };
 }
 
@@ -207,6 +244,61 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         coordination: demand("low", "Breathing and position coordination only."),
         range: demand("low", "No large joint range challenge."),
         joint_control: demand("low", "No meaningful joint-control loading."),
+      },
+      trunkMechanics: {
+        breathingPressureCoordination: reviewedTrunkFunction(
+          "high",
+          [
+            "movementRoles includes breathing_position.",
+            "primaryMuscles includes trunk.",
+            "trainingRoles include preparation and recovery.",
+            "mechanics.support is accepted floor/supine.",
+            "mechanics.demands.trunk_control is accepted low.",
+            "Project-owner review approves breathing/pressure coordination as the central function expression.",
+          ],
+          "Owner-reviewed high breathing and pressure-coordination expression in a low-load supine position drill.",
+        ),
+        antiExtensionContribution: reviewedTrunkFunction(
+          "low",
+          [
+            "movementRoles includes anti_extension_core.",
+            "Floor-supported supine mechanics and low loading establish a low-load position-control context.",
+            "mechanics.demands.trunk_control is accepted low.",
+            "Project-owner review approves low anti-extension expression.",
+          ],
+          "Owner-reviewed low anti-extension contribution during supine position control.",
+        ),
+        antiRotationContribution: unknownTrunkFunction(
+          "No approved evidence currently classifies anti-rotation expression for this supine breathing and position drill.",
+        ),
+        antiLateralFlexionContribution: unknownTrunkFunction(
+          "No approved evidence currently classifies anti-lateral-flexion expression for this floor-supported breathing drill.",
+        ),
+        controlledFlexionContribution: unknownTrunkFunction(
+          "No approved evidence currently classifies intentional controlled trunk-flexion expression for this exercise.",
+        ),
+        controlledRotationContribution: unknownTrunkFunction(
+          "No approved evidence currently classifies intentional controlled trunk-rotation expression for this exercise.",
+        ),
+        loadedBracingContribution: reviewedTrunkFunction(
+          "none",
+          [
+            "No external load is modeled for the exercise.",
+            "mechanics.support is accepted floor/supine.",
+            "loading.loadability is none.",
+            "Project-owner review applies the loaded-bracing definition that requires meaningful trunk-position maintenance under external load.",
+          ],
+          "Owner-reviewed absence of loaded bracing in the unloaded floor-supported exercise definition.",
+        ),
+        gaitLoadTransferContribution: reviewedTrunkFunction(
+          "none",
+          [
+            "mechanics.support is accepted floor/supine.",
+            "The exercise has no stepping, marching, carrying, or locomotor movement role.",
+            "Project-owner review confirms no meaningful gait or load-transfer expression.",
+          ],
+          "Owner-reviewed absence of gait or locomotor load transfer in the supine exercise definition.",
+        ),
       },
     }),
     progression: {
@@ -351,6 +443,52 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         coordination: demand("moderate", "Contralateral limb coordination."),
         range: demand("moderate", "Range can be scaled through limb reach."),
         joint_control: demand("low", "Low joint loading."),
+      },
+      trunkMechanics: {
+        breathingPressureCoordination: unknownTrunkFunction(
+          "The proposed moderate breathing/pressure value remains unapproved; no approved evidence currently classifies this function for Dead Bug.",
+        ),
+        antiExtensionContribution: reviewedTrunkFunction(
+          "high",
+          [
+            "movementRoles includes anti_extension_core.",
+            "primaryMuscles includes trunk.",
+            "mechanics.demands.trunk_control is accepted moderate.",
+            "family is core_control.",
+            "Project-owner review approves anti-extension as the central function expression.",
+          ],
+          "Owner-reviewed high anti-extension contribution as the exercise's direct trunk-control purpose.",
+        ),
+        antiRotationContribution: unknownTrunkFunction(
+          "Contralateral limb coordination is not approved as anti-rotation evidence, so this function remains unclassified.",
+        ),
+        antiLateralFlexionContribution: unknownTrunkFunction(
+          "No approved evidence currently isolates anti-lateral-flexion expression during the supine limb-control task.",
+        ),
+        controlledFlexionContribution: unknownTrunkFunction(
+          "No approved evidence currently classifies intentional controlled trunk flexion; anti-extension purpose does not establish reviewed absence.",
+        ),
+        controlledRotationContribution: unknownTrunkFunction(
+          "No approved evidence currently classifies intentional controlled trunk rotation during Dead Bug execution.",
+        ),
+        loadedBracingContribution: reviewedTrunkFunction(
+          "none",
+          [
+            "No external loading is modeled for the exercise.",
+            "mechanics.support is accepted floor/supine.",
+            "Project-owner review applies the loaded-bracing definition that requires meaningful trunk-position maintenance under external load.",
+          ],
+          "Owner-reviewed absence of loaded bracing in the unloaded supine exercise definition.",
+        ),
+        gaitLoadTransferContribution: reviewedTrunkFunction(
+          "none",
+          [
+            "mechanics.support is accepted floor/supine.",
+            "The exercise has no gait, stepping, marching, carrying, or locomotor purpose.",
+            "Project-owner review confirms that contralateral supine limb motion is not gait/load-transfer expression.",
+          ],
+          "Owner-reviewed absence of gait or locomotor load transfer in the supine exercise definition.",
+        ),
       },
     }),
     progression: {
@@ -2230,6 +2368,51 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         coordination: demand("low", "Simple press-and-hold pattern."),
         range: demand("low", "Small press-out range."),
         joint_control: demand("low", "Low joint stress; trunk control is primary."),
+      },
+      trunkMechanics: {
+        breathingPressureCoordination: unknownTrunkFunction(
+          "No approved evidence currently classifies breathing or pressure-coordination expression for Pallof Press.",
+        ),
+        antiExtensionContribution: unknownTrunkFunction(
+          "No approved evidence currently isolates anti-extension expression from the exercise's anti-rotation purpose.",
+        ),
+        antiRotationContribution: reviewedTrunkFunction(
+          "high",
+          [
+            "movementRoles includes anti_rotation_core.",
+            "primaryMuscles includes trunk.",
+            "mechanics.demands.trunk_control is accepted high.",
+            "Project-owner review approves anti-rotation as the central function expression.",
+          ],
+          "Owner-reviewed high anti-rotation contribution as the exercise's direct trunk-control purpose.",
+        ),
+        antiLateralFlexionContribution: unknownTrunkFunction(
+          "The proposed low anti-lateral-flexion value remains unapproved and no approved evidence currently classifies this function.",
+        ),
+        controlledFlexionContribution: unknownTrunkFunction(
+          "No approved evidence currently classifies intentional controlled trunk flexion during Pallof Press execution.",
+        ),
+        controlledRotationContribution: reviewedTrunkFunction(
+          "none",
+          [
+            "The explicit movement purpose is resisting rotation through anti_rotation_core.",
+            "movementRoles does not include trunk_rotation.",
+            "Project-owner review keeps anti-rotation and intentional controlled rotation as separate concepts.",
+          ],
+          "Owner-reviewed absence of intentional controlled rotation; the exercise resists rather than produces trunk rotation.",
+        ),
+        loadedBracingContribution: unknownTrunkFunction(
+          "The proposed moderate loaded-bracing value remains unapproved and no approved evidence currently classifies it separately from anti-rotation.",
+        ),
+        gaitLoadTransferContribution: reviewedTrunkFunction(
+          "none",
+          [
+            "The current exercise has no stepping, marching, carrying, or locomotor purpose.",
+            "Standing support alone is not gait/load-transfer evidence.",
+            "Project-owner review confirms no meaningful gait or load-transfer expression.",
+          ],
+          "Owner-reviewed absence of gait or locomotor load transfer in the standing press-and-hold definition.",
+        ),
       },
     }),
     progression: {

@@ -56,6 +56,9 @@ describe("trunk/core domain and coverage review", () => {
         meaningfulSecondaryCount: 8,
         incidentalBracingCount: 10,
         noCurrentTrunkEvidenceCount: 9,
+        trunkProfileCount: 3,
+        acceptedTrunkFunctionCount: 10,
+        unknownTrunkFunctionCount: 14,
       }),
     );
     expect(
@@ -166,11 +169,11 @@ describe("trunk/core domain and coverage review", () => {
 
   it("records owner acceptance and the next pre-Composer implementation boundary", () => {
     expect(data.classification).toBe("TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION");
-    expect(data.implementationStatus).toBe("TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED");
+    expect(data.implementationStatus).toBe("FIRST_TRUNK_PROFILE_TRANCHE_IMPLEMENTED");
     expect(data.implementationOrder).toHaveLength(8);
-    expect(data.implementationOrder.slice(0, 3).every((step) => step.startsWith("COMPLETED:")))
+    expect(data.implementationOrder.slice(0, 4).every((step) => step.startsWith("COMPLETED:")))
       .toBe(true);
-    expect(data.implementationOrder.at(-1)).toContain("start Session Composer only after");
+    expect(data.implementationOrder.at(-1)).toContain("before Session Composer");
     expect(data.uncertainties).toHaveLength(7);
   });
 
@@ -181,15 +184,18 @@ describe("trunk/core domain and coverage review", () => {
     expect(rendered).toContain("## Protected Legacy Knowledge Review");
     expect(rendered).toContain("## Owner-Accepted Contract Implementation");
     expect(rendered).toContain(
-      "## Representative Trunk Mechanics Curation Under Owner Review",
+      "## First Tranche Owner Approval and Implementation",
     );
     expect(rendered).toContain("15 `PROPOSE_ACCEPTED`");
-    expect(rendered).toContain("17 `PROPOSE_NEEDS_REVIEW`");
-    expect(rendered).toContain("80 `REMAIN_UNKNOWN`");
-    expect(rendered).toContain("**TRUNK_PROFILE_TRANCHE_READY_FOR_OWNER_APPROVAL**");
+    expect(rendered).toContain("ten accepted fields and fourteen explicit unknowns");
+    expect(rendered).toContain("all 17 needs-review proposals remain unresolved");
+    expect(rendered).toContain("Five accepted secondary/support judgments");
+    expect(rendered).toContain(
+      "TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche",
+    );
     expect(rendered).toContain("## Weekly Development Ledger Handoff");
     expect(rendered).toContain("**TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION**");
-    expect(rendered).toContain("**TYPES_VALIDATION_OBSERVABILITY_IMPLEMENTED**");
+    expect(rendered).toContain("**FIRST_TRUNK_PROFILE_TRANCHE_IMPLEMENTED**");
     expect(
       readFileSync(
         new URL(

@@ -12,6 +12,7 @@ import {
   type TrunkFunctionLevel,
   type TrunkMechanicsFunction,
 } from "../../src";
+import { APPROVED_TRUNK_PROFILE_EXERCISE_IDS } from "./trunkMechanicsOwnerDecisions";
 
 export const TRUNK_CURATION_FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 export const CAPTURED_PRODUCTION_RANKING_FINGERPRINT =
@@ -20,6 +21,8 @@ export const CAPTURED_COMPREHENSIVE_BEHAVIOR_FINGERPRINT =
   "216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9";
 export const CAPTURED_REFERENCE_CATALOG_FINGERPRINT =
   "6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a";
+export const FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT =
+  "e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c";
 
 export const TRUNK_CURATION_EXERCISE_IDS = [
   "ninety-ninety-breathing",
@@ -135,7 +138,9 @@ export interface TrunkMechanicsCurationProposalData {
     readonly comprehensiveBehaviorMatches: boolean;
     readonly capturedReferenceCatalogFingerprint: string;
     readonly currentReferenceCatalogFingerprint: string;
-    readonly referenceCatalogMatches: boolean;
+    readonly fullReferenceCatalogMatchesFirstTranche: boolean;
+    readonly strippedReferenceCatalogFingerprint: string;
+    readonly strippedReferenceCatalogMatchesBaseline: boolean;
   };
   readonly recommendedFirstImplementationTranche: readonly TrunkCurationExerciseId[];
   readonly ownerDecisionItems: readonly string[];
@@ -1200,15 +1205,37 @@ function comprehensiveBehaviorFingerprint(): string {
   );
 }
 
+export function stripTrunkMechanicsFromCatalog(
+  exercises: readonly ExerciseDefinition[],
+): readonly ExerciseDefinition[] {
+  return exercises.map((exercise) => {
+    if (!exercise.mechanics?.trunkMechanics) {
+      return exercise;
+    }
+
+    const mechanics = {
+      support: exercise.mechanics.support,
+      resistancePath: exercise.mechanics.resistancePath,
+      demands: exercise.mechanics.demands,
+      scapularMechanics: exercise.mechanics.scapularMechanics,
+    };
+    return { ...exercise, mechanics };
+  });
+}
+
 export function buildCurrentTrunkCurationFingerprints(): {
   readonly productionRanking: string;
   readonly comprehensiveBehavior: string;
   readonly referenceCatalog: string;
+  readonly referenceCatalogWithoutTrunkMechanics: string;
 } {
   return {
     productionRanking: rankingFingerprint(),
     comprehensiveBehavior: comprehensiveBehaviorFingerprint(),
     referenceCatalog: hash(REFERENCE_EXERCISES),
+    referenceCatalogWithoutTrunkMechanics: hash(
+      stripTrunkMechanicsFromCatalog(REFERENCE_EXERCISES),
+    ),
   };
 }
 
@@ -1355,8 +1382,13 @@ export function buildTrunkMechanicsCurationProposalData(): TrunkMechanicsCuratio
 
   const exercises = RAW_EXERCISE_PROPOSALS.map((raw) => {
     const current = referenceExercise(raw.exerciseId);
-    if (current.mechanics?.trunkMechanics) {
-      throw new Error(`${raw.exerciseId} unexpectedly has production trunk metadata.`);
+    const profileIsAuthorized = APPROVED_TRUNK_PROFILE_EXERCISE_IDS.some(
+      (exerciseId) => exerciseId === raw.exerciseId,
+    );
+    if (Boolean(current.mechanics?.trunkMechanics) !== profileIsAuthorized) {
+      throw new Error(
+        `${raw.exerciseId} production trunk-profile presence does not match the approved first tranche.`,
+      );
     }
     return {
       ...raw,
@@ -1415,8 +1447,13 @@ export function buildTrunkMechanicsCurationProposalData(): TrunkMechanicsCuratio
       capturedReferenceCatalogFingerprint:
         CAPTURED_REFERENCE_CATALOG_FINGERPRINT,
       currentReferenceCatalogFingerprint: fingerprints.referenceCatalog,
-      referenceCatalogMatches:
+      fullReferenceCatalogMatchesFirstTranche:
         fingerprints.referenceCatalog ===
+        FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT,
+      strippedReferenceCatalogFingerprint:
+        fingerprints.referenceCatalogWithoutTrunkMechanics,
+      strippedReferenceCatalogMatchesBaseline:
+        fingerprints.referenceCatalogWithoutTrunkMechanics ===
         CAPTURED_REFERENCE_CATALOG_FINGERPRINT,
     },
     recommendedFirstImplementationTranche: [
@@ -1425,11 +1462,10 @@ export function buildTrunkMechanicsCurationProposalData(): TrunkMechanicsCuratio
       "pallof-press",
     ],
     ownerDecisionItems: [
-      "Approve, revise, or reject each PROPOSE_ACCEPTED field before any production metadata is added.",
-      "Resolve the 17 needs-review fields, including whether the three external-reference recommendations require commissioned source review.",
+      "Resolve the 17 remaining needs-review fields, including whether the three external-reference recommendations require commissioned source review.",
       "Decide whether Dumbbell Shoulder Press and generic Machine Row need variant/setup-specific catalog identities before profile curation.",
       "Confirm that optional load/support keeps Split Squat and Step-Up loaded bracing unknown at exercise-definition scope.",
-      "Confirm that the first implementation tranche is limited to 90/90 Breathing, Dead Bug, and Pallof Press.",
+      "Decide when the five accepted-but-deferred Push-Up and supported-row judgments should receive complete exercise profiles.",
       "Keep exposure classifications report-only until prescription and Weekly Development Ledger contracts exist.",
     ],
     classification: "TRUNK_PROFILE_TRANCHE_READY_FOR_OWNER_APPROVAL",
@@ -1471,9 +1507,17 @@ export function renderTrunkMechanicsCurationProposal(
     "",
     "## Purpose and Boundary",
     "",
-    "This is a conservative human-curation proposal for a representative tranche of 14 existing reference exercises. It does not implement `TrunkMechanicsProfile` metadata, add exercises or roles, or change eligibility, scoring, ranking, pain, phase, assessment, transitions, prescription, composition, or weekly accounting.",
+    "This is the accepted conservative human-curation proposal for a representative tranche of 14 existing reference exercises. The owner-approved first production tranche now implements complete profiles only for 90/90 Breathing, Dead Bug, and Pallof Press. It adds no exercise or role and changes no eligibility, scoring, ranking, pain, phase, assessment, transitions, prescription, composition, or weekly accounting.",
     "",
     "Exercise ID, name, summary, coaching cues, tags, and free-text contraindications are used only to locate records for review. Every non-unknown proposal cites independent structured fields or identifies an explicit future review artifact.",
+    "",
+    "## Owner Approval and First-Tranche Implementation",
+    "",
+    "The project owner accepted all 15 `PROPOSE_ACCEPTED` judgments as defensible conclusions and authorized production profiles only for `ninety-ninety-breathing`, `dead-bug`, and `pallof-press`. The stable human-review artifact is `TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche`.",
+    "",
+    "The three complete profiles contain ten accepted fields and fourteen explicit unknown fields. All accepted annotations use `human_exercise_science_review` and cite the owner artifact; all unknown annotations remain `needs_review` with `source=unknown` and empty provenance. No proposed needs-review value was promoted.",
+    "",
+    "The five accepted Push-Up, Chest-Supported Dumbbell Row, and Seated Cable Row judgments remain approved but deferred. Those exercises do not receive partial profiles in this tranche, and all 17 needs-review proposals remain unresolved.",
     "",
     "## Operational Definitions",
     "",
@@ -1507,7 +1551,7 @@ export function renderTrunkMechanicsCurationProposal(
         [
           "A_STRUCTURED_EXISTING_EVIDENCE",
           "Existing independent typed fields directly support the proposal.",
-          "A future reference_catalog annotation must cite those pre-existing fields, not itself.",
+          "The implemented accepted annotation uses human_exercise_science_review and the owner artifact; these pre-existing fields remain its evidence basis.",
         ],
         [
           "B_HUMAN_EXERCISE_SCIENCE_REVIEW_REQUIRED",
@@ -1527,7 +1571,7 @@ export function renderTrunkMechanicsCurationProposal(
       ],
     ),
     "",
-    "`reference_catalog` is not independent evidence merely because a future profile would be stored there. Proposal refs identify the current fields that existed before the proposed profile.",
+    "`reference_catalog` is not independent authority merely because a profile is stored there. Proposal refs identify fields that existed before the profile; the implemented direct-trio annotations use `human_exercise_science_review` and cite the owner-decision artifact.",
     "",
     "## Tranche and Counts",
     "",
@@ -1623,7 +1667,7 @@ export function renderTrunkMechanicsCurationProposal(
     "",
     "## Future Trace Preview",
     "",
-    "Each row previews the exact field-level evidence a future implemented profile would expose after owner decisions. `profilePresent=true` is hypothetical here; every production reference exercise still reports profile unavailable.",
+    "Each row preserves the original proposal trace for owner and migration review. `profilePresent=true` is now real for the three approved direct exercises and remains hypothetical for the other eleven rows. Production annotations for the direct trio cite the owner-decision artifact rather than these proposal references.",
     "",
     table(
       [
@@ -1688,7 +1732,7 @@ export function renderTrunkMechanicsCurationProposal(
     "## Behavioral Boundary Proof",
     "",
     table(
-      ["Artifact", "Captured before proposal", "Current", "Match"],
+      ["Artifact", "Required/captured", "Current", "Result"],
       [
         [
           "22-scenario production ranking",
@@ -1703,23 +1747,29 @@ export function renderTrunkMechanicsCurationProposal(
           behaviorBoundary.comprehensiveBehaviorMatches,
         ],
         [
-          "Serialized production reference catalog",
-          behaviorBoundary.capturedReferenceCatalogFingerprint,
+          "Full serialized reference catalog after approved profiles",
+          FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT,
           behaviorBoundary.currentReferenceCatalogFingerprint,
-          behaviorBoundary.referenceCatalogMatches,
+          behaviorBoundary.fullReferenceCatalogMatchesFirstTranche,
+        ],
+        [
+          "Reference catalog with only mechanics.trunkMechanics removed",
+          behaviorBoundary.capturedReferenceCatalogFingerprint,
+          behaviorBoundary.strippedReferenceCatalogFingerprint,
+          behaviorBoundary.strippedReferenceCatalogMatchesBaseline,
         ],
       ],
     ),
     "",
-    "Synthetic-profile invariants remain covered by the accepted trunk contract suite: profiles cannot alter hard eligibility, role truth, totals, ranking, pain readiness, phase, assessment, or transitions because no production consumer exists beyond validation and trace observability.",
+    "The full catalog fingerprint changes intentionally because the three profiles are serialized. Removing only `mechanics.trunkMechanics` restores the exact pre-implementation catalog fingerprint. Contract invariants prove profiles cannot alter hard eligibility, role truth, totals, ranking, pain readiness, phase, assessment, or transitions because no production consumer exists beyond validation and trace observability.",
     "",
-    "## Recommended First Metadata Implementation Tranche",
+    "## Implemented First Metadata Tranche",
     "",
     bullets(data.recommendedFirstImplementationTranche),
     "",
-    "These three direct rows have the strongest explicit role and trunk-target evidence. Implement them only after owner decisions on every field and genuine review artifacts for qualified annotations. Do not implement the secondary or supported rows merely because this proposal records plausible levels.",
+    "These three direct rows now carry complete owner-reviewed profiles. Secondary and supported rows remain unprofiled even where individual proposal judgments were accepted; no partial profile is inferred from approval.",
     "",
-    "## Project-Owner Decisions Required",
+    "## Remaining Project-Owner Decisions",
     "",
     bullets(data.ownerDecisionItems),
     "",
@@ -1727,7 +1777,7 @@ export function renderTrunkMechanicsCurationProposal(
     "",
     `**${data.classification}**`,
     "",
-    "The matrix is complete, conservative, non-circular, and behaviorally isolated. It is ready for field-by-field owner approval, revision, or rejection; no profile is implemented by this classification.",
+    "The proposal remains complete, conservative, non-circular, and behaviorally isolated. Its first authorized tranche is implemented with ten accepted fields and fourteen explicit unknowns; all secondary/support implementation and all needs-review proposals remain deferred.",
     "",
   ].join("\n");
 }

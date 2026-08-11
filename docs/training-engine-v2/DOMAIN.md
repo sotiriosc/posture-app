@@ -107,6 +107,19 @@ Each `TrunkFunctionAnnotation` has a level (`unknown | none | low | moderate | h
 
 The profile is optional. Absence yields explicit profile-unavailable unknown evidence in `TrunkMechanicsTrace` and changes no legal or ranked result. Mechanics never grant movement-role eligibility: a row, squat, press, or hinge may express a trunk function without becoming a direct trunk-role candidate.
 
+### First Reviewed Profile Tranche
+
+The first project-owner-reviewed production tranche contains complete profiles only for `ninety-ninety-breathing`, `dead-bug`, and `pallof-press`. The authority is `TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche`.
+
+- Ten fields are accepted: four on 90/90 Breathing, three on Dead Bug, and three on Pallof Press.
+- Fourteen remaining fields are explicit `unknown` / `needs_review` annotations with `source=unknown`, empty provenance, and field-specific notes.
+- Every accepted annotation uses `source=human_exercise_science_review`, cites the owner artifact, and names the pre-existing structured evidence supporting the decision.
+- Dead Bug breathing/pressure coordination remains unknown. Pallof Press anti-lateral-flexion and loaded-bracing contributions remain unknown. No needs-review proposal was promoted.
+- Five accepted Push-Up and supported-row judgments are approved but deferred; those exercises have no partial profile.
+- All movement roles, training roles, muscles, body regions, equipment, loading, section/phase metadata, transitions, and pain/stress tags remain unchanged.
+
+The full serialized catalog fingerprint after this intentional metadata addition is `e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c`. Removing only `mechanics.trunkMechanics` restores the prior catalog fingerprint `6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a`. Ranking and comprehensive controlled-behavior fingerprints remain `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782` and `216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9` respectively.
+
 Direct developmental, meaningful secondary, incidental bracing, and capacity exposure are future contextual accounting outcomes, not permanent exercise properties. Their eventual classification depends on actual role, section, prescription, phase, and use.
 
 ## Progression And Transition
