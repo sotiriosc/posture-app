@@ -1,5 +1,6 @@
 import type { EquipmentRequirement } from "./equipment";
 import type { PhaseId } from "./phase";
+import type { ProgressionAxis } from "./progression";
 import type {
   BodyRegion,
   DemandLevel,
@@ -209,16 +210,7 @@ export interface ExerciseMechanicsProfile {
   readonly trunkMechanics?: TrunkMechanicsProfile;
 }
 
-export type ExerciseProgressionAxis =
-  | "load"
-  | "reps"
-  | "sets"
-  | "range"
-  | "tempo"
-  | "support_reduction"
-  | "stability"
-  | "coordination"
-  | "complexity";
+export type ExerciseProgressionAxis = ProgressionAxis;
 
 export type ExerciseTransitionDirection = "progression" | "regression" | "lateral";
 export type ExerciseTransitionClassification =

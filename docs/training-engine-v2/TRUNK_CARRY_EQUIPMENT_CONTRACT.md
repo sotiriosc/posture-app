@@ -9,14 +9,14 @@ This contract resolves only training-space and equipment truth for the accepted 
 | Future identity | Status | Equipment finding |
 | --- | --- | --- |
 | forearm-plank | SETTLED | Ordinary stationary floor space is sufficient; loaded standing and loaded gait are irrelevant. |
-| forearm-side-plank | SETTLED | Ordinary stationary floor space is sufficient; side prescription remains a later dose-contract concern. |
+| forearm-side-plank | SETTLED | Ordinary stationary floor space is sufficient; side prescription is now representable by the structured prescription contract. |
 | machine-abdominal-crunch | SETTLED | Generic selectorized-machine availability and exact abdominal-crunch identity are both required. |
 | half-kneeling-high-to-low-cable-chop | SETTLED | Generic cable availability and adjustableHeight do not replace explicit high-attachment truth. |
 | farmer-carry | SETTLED | The pair and loaded-gait facts are explicit; no minimum effective load or distance is manufactured. |
 | suitcase-carry | SETTLED | One-or-more dumbbell truth remains distinct from pair truth; no minimum effective load is a hard gate. |
-| wall-supported-suitcase-march | PROVISIONAL | The stationary march does not request loaded-gait space; final identity awaits side and dose semantics. |
+| wall-supported-suitcase-march | PROVISIONAL | The stationary march does not request loaded-gait space; side, support, load, and no-distance dose semantics are now representable, but final identity still awaits owner curation. |
 
-`wall-supported-suitcase-march` remains provisional until structured support-side, load-side, steps/time, and stationary-gait prescription semantics exist.
+`wall-supported-suitcase-march` remains provisional for exercise-science curation. The structured prescription contract can represent support side, load side, steps/time, stationary gait, and no-distance semantics, but it does not approve production metadata.
 
 ## Training-Space Contract
 
@@ -93,6 +93,8 @@ Focused tests cover explicit space fields, all non-implication boundaries, incon
 
 **TRUNK_CARRY_EQUIPMENT_CONTRACT_READY**
 
-The exercise tranche is not production-ready. The next dependency is:
+Structured prescription and same-exercise progression semantics are now represented by `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. The exercise tranche is still not production-ready. The next dependency is:
 
-**STRUCTURED DOSE / PRESCRIPTION AND PROGRESSION-AXIS CONTRACT**
+**TRUNK / CARRY PAIN-STRESS VOCABULARY AND RECEIVER REVIEW**
+
+Then exact seven-exercise owner curation and production metadata.

@@ -78,7 +78,7 @@ export const FUTURE_TRUNK_CARRY_EQUIPMENT_REQUIREMENTS: readonly FutureEquipment
       },
     ],
     finding:
-      "Ordinary stationary floor space is sufficient; side prescription remains a later dose-contract concern.",
+      "Ordinary stationary floor space is sufficient; side prescription is now representable by the structured prescription contract.",
   },
   {
     exerciseId: "machine-abdominal-crunch",
@@ -144,7 +144,7 @@ export const FUTURE_TRUNK_CARRY_EQUIPMENT_REQUIREMENTS: readonly FutureEquipment
       },
     ],
     finding:
-      "The stationary march does not request loaded-gait space; final identity awaits side and dose semantics.",
+      "The stationary march does not request loaded-gait space; side, support, load, and no-distance dose semantics are now representable, but final identity still awaits owner curation.",
   },
 ];
 
@@ -343,7 +343,7 @@ export interface TrunkCarryEquipmentContractData {
   readonly referenceCatalogFingerprint: string;
   readonly referenceCatalogMatches: boolean;
   readonly classification: "TRUNK_CARRY_EQUIPMENT_CONTRACT_READY";
-  readonly nextDependency: "STRUCTURED DOSE / PRESCRIPTION AND PROGRESSION-AXIS CONTRACT";
+  readonly nextDependency: "TRUNK / CARRY PAIN-STRESS VOCABULARY AND RECEIVER REVIEW";
 }
 
 export function buildTrunkCarryEquipmentContractData(): TrunkCarryEquipmentContractData {
@@ -414,7 +414,7 @@ export function buildTrunkCarryEquipmentContractData(): TrunkCarryEquipmentContr
       FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT,
     classification: "TRUNK_CARRY_EQUIPMENT_CONTRACT_READY",
     nextDependency:
-      "STRUCTURED DOSE / PRESCRIPTION AND PROGRESSION-AXIS CONTRACT",
+      "TRUNK / CARRY PAIN-STRESS VOCABULARY AND RECEIVER REVIEW",
   };
 }
 
@@ -454,7 +454,7 @@ export function renderTrunkCarryEquipmentContract(
       ]),
     ),
     "",
-    "`wall-supported-suitcase-march` remains provisional until structured support-side, load-side, steps/time, and stationary-gait prescription semantics exist.",
+    "`wall-supported-suitcase-march` remains provisional for exercise-science curation. The structured prescription contract can represent support side, load side, steps/time, stationary gait, and no-distance semantics, but it does not approve production metadata.",
     "",
     "## Training-Space Contract",
     "",
@@ -592,9 +592,11 @@ export function renderTrunkCarryEquipmentContract(
     "",
     `**${data.classification}**`,
     "",
-    "The exercise tranche is not production-ready. The next dependency is:",
+    "Structured prescription and same-exercise progression semantics are now represented by `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. The exercise tranche is still not production-ready. The next dependency is:",
     "",
     `**${data.nextDependency}**`,
+    "",
+    "Then exact seven-exercise owner curation and production metadata.",
     "",
   ].join("\n");
 }

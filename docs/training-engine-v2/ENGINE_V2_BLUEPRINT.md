@@ -457,6 +457,13 @@ A phase change must not automatically cause exercise replacement.
 
 A good exercise may remain across multiple phases while its prescription evolves.
 
+Structured prescription follows the same enduring doctrine across exercises:
+task-appropriate alignment, repeatable form, structured dose, observed response,
+then earned progression. Progression modifies prescription before exercise
+identity. Form gates and pain/recovery gates must remain visible evidence, and a
+single prescription maps to one source exposure event even when that exposure
+has several reviewed characteristics.
+
 Example:
 
 ```text

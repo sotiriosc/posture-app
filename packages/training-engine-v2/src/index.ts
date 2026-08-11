@@ -22,5 +22,6 @@ export * from "./domain/history";
 export * from "./domain/painInjury";
 export * from "./domain/phase";
 export * from "./domain/primitives";
+export * from "./domain/progression";
 export * from "./domain/programming";
 export * from "./domain/session";

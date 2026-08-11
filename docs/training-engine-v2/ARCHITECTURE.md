@@ -31,11 +31,13 @@ The package models the intended reasoning order without implementing production 
 - `domain/session.ts`: warmup, activation, main, accessory, cooldown, and preparation dependencies.
 - `domain/programming.ts`: weekly intent and planned-program contracts.
 - `domain/history.ts`: exercise, session, program, progression, and fatigue history.
+- `domain/progression.ts`: canonical same-exercise progression-axis vocabulary.
 - `domain/exercise.ts`: normalized exercise schema, structured mechanics including the optional field-reviewed trunk function profile, same-exercise progression axes, and reviewed transition relationships.
 - `eligibility.ts`: hard eligibility contracts.
 - `scoringContracts.ts`: inspectable score component contracts.
 - `optimizerContracts.ts`: candidate set, session candidate/evaluation, and week candidate/evaluation contracts.
-- `prescriptionProgression.ts`: selection, prescription, and progression boundary.
+- `prescription/*`: structured dose, load, execution standard, prescription identity, performance outcome, validation, and same-exercise progression-readiness trace contracts.
+- `prescriptionProgression.ts`: public compatibility re-export boundary for prescription and progression contracts.
 - `decisionTrace.ts`: developer-facing structured trace.
 - `validation.ts`: foundation validation utilities.
 - `reasonCodes.ts`: stable structured decision reason codes.
@@ -178,4 +180,4 @@ Do not impose tiny files. Do flag modules that start combining unrelated trainin
 
 ## Non-Goals In This Phase
 
-Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The direct trunk/carry candidate direction remains unimplemented. Its equipment contract is ready, and its next dependency is structured dose / prescription and progression-axis truth; no catalog row or assessment-feature behavior is authorized by the equipment contract.
+Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The structured prescription and same-exercise progression contract is ready as a type, validation, and observability boundary only; it does not calibrate prescriptions or select progressions. The direct trunk/carry candidate direction remains unimplemented. Its equipment and structured prescription dependencies are ready, and its next dependency is trunk/carry pain-stress vocabulary and receiver review; no catalog row or assessment-feature behavior is authorized by those contracts.

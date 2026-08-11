@@ -42,6 +42,11 @@ Tests should remain small and readable at the component boundary. Current respon
 - selected-result readiness, executable alternatives, all-non-executable pools, and global urgent-review visibility;
 - numeric and ranking invariance when only severity or required response changes;
 - same-exercise progression versus observational cross-exercise transitions;
+- structured prescription dose modes, load/laterality/support/tempo/effort validation, and execution-quality criteria;
+- synthetic structured trunk/carry prescription fixtures with no production exercise rows or recommended values;
+- same-exercise progression-readiness blockers for form, pain response, recovery, and insufficient observation;
+- prescription-only counterfactuals proving hard eligibility, ranking, phase, pain, assessment, and transition behavior remain unchanged;
+- structured prescription contract report and current-behavior fingerprints;
 - pipeline snapshots for bug localization.
 
 ## Current Command
@@ -75,7 +80,7 @@ Green build and test results are necessary but insufficient to begin Session Com
 
 Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
 
-The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual equipment tests use synthetic requirements; all reference exercises retain their prior equipment requirements and none uses `carry_load`. Only 90/90 Breathing, Dead Bug, and Pallof Press carry the separately approved trunk profiles. The trunk/carry equipment contract adds no proposed exercise; its next dependency is structured dose / prescription and progression-axis truth before any catalog implementation.
+The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual equipment tests use synthetic requirements; all reference exercises retain their prior equipment requirements and none uses `carry_load`. Only 90/90 Breathing, Dead Bug, and Pallof Press carry the separately approved trunk profiles. The trunk/carry equipment and structured prescription contracts add no proposed exercise; the next dependency is trunk/carry pain-stress vocabulary and receiver review before any catalog implementation.
 
 ## Bug Localization
 

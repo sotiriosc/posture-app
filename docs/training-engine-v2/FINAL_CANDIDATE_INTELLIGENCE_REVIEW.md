@@ -1,6 +1,6 @@
 # Final Candidate Intelligence Readiness Review
 
-`ENGINE_V2_BLUEPRINT.md` is authoritative. This review is audit/evidence/classification only; it does not tune weights, change exercise metadata, create Session Composer, create Week Composer, or implement prescription progression.
+`ENGINE_V2_BLUEPRINT.md` is authoritative. This review is audit/evidence/classification only; it does not tune weights, change exercise metadata, create Session Composer, create Week Composer, or implement production prescription progression.
 
 ## Scope
 
@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable. The first trunk profile tranche is implemented without behavioral influence, a separate seven-concept direct trunk/carry catalog tranche is directionally accepted without exercise metadata, and its equipment dependency is resolved. The first phase calibration laboratory is accepted, and the contextual phase-annotation contract is now ready for project-owner decision. Final coefficient calibration remains deferred until role/section evidence, unknown-versus-poor semantics, review status and provenance are approved and implemented. Session Composer should not consume these rankings before that revalidation. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.
+Architecture is sound and the candidate pipeline is deterministic/explainable. The first trunk profile tranche is implemented without behavioral influence, a separate seven-concept direct trunk/carry catalog tranche is directionally accepted without exercise metadata, and its equipment plus structured prescription/progression dependencies are resolved as contracts. The first phase calibration laboratory is accepted, and the contextual phase-annotation contract is now ready for project-owner decision. Final coefficient calibration remains deferred until role/section evidence, unknown-versus-poor semantics, review status and provenance are approved and implemented. Session Composer should not consume these rankings before that revalidation. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, the response-led moderate-pain candidate policy, and the structured prescription/progression observability contract are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.
 
 ## Trunk / Core Domain Contract Implementation
 
@@ -38,9 +38,9 @@ All 17 `PROPOSE_NEEDS_REVIEW` fields remain unresolved. Dead Bug breathing/press
 
 A deterministic proposal evaluated 24 new candidate concepts and selected Forearm Plank, Forearm Side Plank, Machine Abdominal Crunch, Half-Kneeling High-to-Low Cable Chop, Bilateral Farmer Carry, Suitcase Carry, and Wall-Supported Suitcase March as the smallest coherent first tranche.
 
-Overall status: **TRUNK_CARRY_CONTRACT_FIXES_REQUIRED**. Equipment dependency: **TRUNK_CARRY_EQUIPMENT_CONTRACT_READY**. Explicit training-space, cable-height, abdominal-machine, dumbbell-pair, and `carry_load` family contracts now exist without assigning them to any exercise or changing a current requirement, score, rank, or behavior. The wall-supported march identity remains provisional pending side and dose semantics.
+Overall status: **TRUNK_CARRY_CONTRACT_FIXES_REQUIRED**. Equipment dependency: **TRUNK_CARRY_EQUIPMENT_CONTRACT_READY**. Prescription/progression dependency: **STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY**. Explicit training-space, cable-height, abdominal-machine, dumbbell-pair, `carry_load` family, structured dose, execution quality, performance outcome, and same-exercise readiness contracts now exist without assigning them to any exercise or changing a current requirement, score, rank, or behavior. The wall-supported march identity remains provisional pending owner curation, not because side/dose semantics are unrepresentable.
 
-The next dependency is **STRUCTURED DOSE / PRESCRIPTION AND PROGRESSION-AXIS CONTRACT**. No future identity is a production exercise yet.
+The next dependency is **TRUNK / CARRY PAIN-STRESS VOCABULARY AND RECEIVER REVIEW**, followed by exact seven-exercise owner curation and production metadata. No future identity is a production exercise yet.
 
 The 17 representative secondary-mechanics proposals remain independently unresolved. They do not block review of the new candidate concepts, and the catalog proposal does not authorize their profile implementation.
 
@@ -154,7 +154,7 @@ The 90-row audit recommends 0 annotations as accepted, 16 as needs-review contex
 
 Recommended future boundary: contextual annotation-only phase preference downstream of hard eligibility, owner-approved role/section scope and provenance, removal of both duplicated mechanical bonuses, and explicit omission of phase influence for unknown/conflicting evidence. Final gaps, weight and review attenuation remain unselected.
 
-Remaining P1 work includes contextual-phase contract approval/curation/implementation, owner resolution of the 17 trunk-mechanics needs-review proposals before additional profiles or trunk assessment features, and the structured dose / prescription and progression-axis contract before proposed trunk/carry candidates can become production metadata. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.
+Remaining P1 work includes contextual-phase contract approval/curation/implementation, owner resolution of the 17 trunk-mechanics needs-review proposals before additional profiles or trunk assessment features, and trunk/carry pain-stress vocabulary plus receiver review before proposed trunk/carry candidates can become production metadata. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.
 
 ## Pain / Injury Review
 
@@ -342,7 +342,7 @@ Contextual programming intent remains explicit and retains reviewed transition p
 - Human curation of contextual phase annotations with accepted/needs-review/unknown status and structured provenance.
 - Implementation of the approved resolver, unknown-versus-poor semantics, mechanical-bonus removal, final coefficients and full revalidation before Session Composer.
 - Project-owner resolution of the 17 remaining trunk-mechanics proposals before any additional complete profiles or normalized trunk assessment features.
-- Structured dose / prescription and progression-axis contract for the directionally accepted trunk/carry tranche before any new production reference exercises are implemented.
+- Trunk/carry pain-stress vocabulary and receiver review for the directionally accepted tranche, followed by exact seven-exercise owner curation and production metadata before any new production reference exercises are implemented.
 
 ### P2
 
@@ -353,4 +353,4 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ## Readiness Rationale
 
-The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, and the first trunk profiles remain observability-only. Contextual phase evidence still needs approval, curation, implementation and full coefficient revalidation; the remaining trunk-mechanics proposals need owner resolution before assessment expansion; and the directionally accepted trunk/carry catalog needs its structured dose / prescription and progression-axis contract before production implementation. The correct state remains targeted fixes before composition.
+The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, the first trunk profiles remain observability-only, and the structured prescription/progression contract is ready without production calibration. Contextual phase evidence still needs approval, curation, implementation and full coefficient revalidation; the remaining trunk-mechanics proposals need owner resolution before assessment expansion; and the directionally accepted trunk/carry catalog needs trunk/carry pain-stress vocabulary and receiver review before exact seven-exercise owner curation and production implementation. The correct state remains targeted fixes before composition.

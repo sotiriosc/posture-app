@@ -3454,8 +3454,10 @@ const EQUIPMENT_AUDIT: readonly EquipmentAuditFinding[] = [
     capability: "wall support",
     currentSupport: "wall is explicit",
     selectedCandidates: ["wall-supported-suitcase-march"],
-    finding: "Wall presence is representable, but support side and degree are not.",
-    contractAction: "Add structured support-side/level prescription or setup metadata.",
+    finding:
+      "Wall presence, support side, and support degree are representable by structured prescription semantics.",
+    contractAction:
+      "Use structured support-side/level prescription during owner curation rather than approving production metadata from equipment truth alone.",
   },
   {
     capability: "dumbbells and load range",
@@ -3840,9 +3842,10 @@ const REJECTED_LEGACY_POLICIES = [
 
 const IMPLEMENTATION_DEPENDENCIES = [
   "Project-owner approval of each selected exercise identity, role set, mechanics profile, stress mapping, prerequisites, and provenance artifact.",
-  "Equipment-contract decisions for loaded_gait_space or safe_walkway, stable loaded standing space, cable anchor height, abdominal-crunch MachineId, support side, and minimum usable load.",
+  "Equipment-contract decisions for loaded_gait_space or safe_walkway, stable loaded standing space, cable anchor height, abdominal-crunch MachineId, support side, and minimum usable load are represented as contracts, with final exercise identity still pending owner curation.",
   "Pain/stress owner review for loaded rotation, lateral trunk loading, loaded carry/locomotion, and sustained upper-limb support; no new tags should be added without a receiver.",
-  "Prescription-contract support for structured load, side, hold purpose, distance, trips, steps, turns, lever, support, gait standard, and per-side semantics.",
+  "Pain-stress vocabulary and receiver review for the exact seven concepts before any stress tags or pain-response requirements are added.",
+  "Prescription-contract support for structured load, side, hold purpose, distance, trips, steps, turns, lever, support, gait standard, and per-side semantics is represented by `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`; final values remain owner-curated production metadata.",
   "Owner acceptance of single-candidate bootstrap limitations for trunk_flexion and trunk_rotation.",
   "A later production-metadata tranche with isolated validation and behavior-fingerprint review; this proposal does not authorize that implementation.",
   "Future normalized assessment features and challenge evidence must be reviewed separately and cannot be inferred from this catalog proposal.",
@@ -4161,9 +4164,9 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     "The owner directionally accepts the seven-concept tranche and settles these future identities: `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, and `suitcase-carry`.",
     "",
-    "`wall-supported-suitcase-march` remains provisional until structured support-side, load-side, steps/time, and stationary-gait prescription semantics exist.",
+    "`wall-supported-suitcase-march` remains provisional for owner curation. Structured support-side, load-side, steps/time, and stationary-gait prescription semantics now exist as a contract, but they do not approve this identity as production metadata.",
     "",
-    "The separate training-space and equipment dependency is now classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. It adds capability types and synthetic future requirements but no exercise. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. The overall exercise tranche remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`, and the next dependency is the structured dose / prescription and progression-axis contract.",
+    "The separate training-space and equipment dependency is classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. The structured dose, prescription, and same-exercise progression dependency is classified `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. Both add contracts and synthetic future requirements but no exercise. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. The overall exercise tranche remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`, and the next dependency is trunk/carry pain-stress vocabulary and receiver review.",
     "",
     "## Current Gap Statement",
     "",
@@ -4489,7 +4492,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     `**${data.classification}**`,
     "",
-    "The seven-candidate tranche is accepted directionally, and its equipment dependency is resolved by a separate capability contract. Production implementation remains blocked on structured dose / prescription and progression-axis semantics plus the later unresolved review dependencies above. No exercise is implemented by this classification.",
+    "The seven-candidate tranche is accepted directionally, and its equipment plus structured prescription dependencies are resolved as separate contracts. Production implementation remains blocked on trunk/carry pain-stress vocabulary and receiver review, followed by exact seven-exercise owner curation and production metadata. No exercise is implemented by this classification.",
     "",
   ].join("\n");
 }

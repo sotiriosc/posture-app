@@ -130,6 +130,10 @@ Direct developmental, meaningful secondary, incidental bracing, and capacity exp
 
 `ExerciseProgressionProfile.progressionAxes` describes how prescription can advance while exercise identity remains the same. `transitionRelationships` describes reviewed cross-exercise possibilities with direction, classification, purpose, provenance, and structural deltas.
 
+`domain/progression.ts` owns the canonical progression-axis vocabulary. Structured prescription modules represent dose, load, laterality, support, lever, range, tempo, effort, rest, execution criteria, completed performance, and readiness evidence. A readiness trace can hold, regress/review, report insufficient evidence, or mark readiness for progression review, but it never chooses a dose increase, axis, phase change, or exercise transition.
+
+One prescription is one source exposure event. Structured dose and performance evidence may later feed ledgers and progression models, but this contract adds no production exercise metadata and changes no current candidate ranking, eligibility, phase, pain, assessment, or transition behavior.
+
 Each purpose in an `ExerciseTransitionTrace` has a deterministic evidence trace with status `structurally_confirmed`, `contextual_intent`, `unknown_metadata`, or `contradicted`. Direct mechanics purposes use normalized source/target deltas only. Programming intent and multidimensional support purposes remain contextual, and transition notes cannot convert missing or contradictory mechanics into structural confirmation.
 
 An `ExerciseTransitionTrace` has `automaticSelectionEffect: none`. Productive continuity favors keeping and progressing the current exercise before replacement; a transition still requires legal, contextual evidence.

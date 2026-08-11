@@ -17,6 +17,8 @@ Future optimizers should be thin orchestrators over domain components. If a sess
 
 Candidate ranking is not program generation. The optimizer may compose only from legal candidates and may use their inspectable contextual scores, but it must not treat ranking order as a completed session, infer dosage from feature target fit, or rewrite eligibility truth.
 
+Future prescription and ledger layers must consume one explicit source exposure event with structured planned dose, completed performance, execution-quality evidence, pain response, and recovery evidence. Candidate ranking does not infer those values, and the structured prescription contract does not start Session Composer.
+
 Session Composer work begins only after the permanent Candidate Intelligence readiness gate in `ENGINE_V2_BLUEPRINT.md` is explicitly accepted. Green tests alone do not satisfy that gate.
 
 ## Session Evaluation

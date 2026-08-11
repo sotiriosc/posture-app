@@ -481,7 +481,7 @@ describe("trunk/carry training-space and equipment contract", () => {
 
     expect(data.classification).toBe("TRUNK_CARRY_EQUIPMENT_CONTRACT_READY");
     expect(data.nextDependency).toBe(
-      "STRUCTURED DOSE / PRESCRIPTION AND PROGRESSION-AXIS CONTRACT",
+      "TRUNK / CARRY PAIN-STRESS VOCABULARY AND RECEIVER REVIEW",
     );
     expect(rendered).toContain("## Loaded Standing Versus Loaded Gait");
     expect(rendered).toContain("## Synthetic Future Requirements");

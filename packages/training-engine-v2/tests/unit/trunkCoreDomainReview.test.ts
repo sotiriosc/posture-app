@@ -170,7 +170,7 @@ describe("trunk/core domain and coverage review", () => {
   it("records owner acceptance and the next pre-Composer implementation boundary", () => {
     expect(data.classification).toBe("TRUNK_CORE_CONTRACT_READY_FOR_OWNER_DECISION");
     expect(data.implementationStatus).toBe("FIRST_TRUNK_PROFILE_TRANCHE_IMPLEMENTED");
-    expect(data.implementationOrder).toHaveLength(10);
+    expect(data.implementationOrder).toHaveLength(11);
     expect(data.implementationOrder.slice(0, 4).every((step) => step.startsWith("COMPLETED:")))
       .toBe(true);
     expect(data.implementationOrder[4]).toContain(
@@ -178,6 +178,12 @@ describe("trunk/core domain and coverage review", () => {
     );
     expect(data.implementationOrder[5]).toContain(
       "TRUNK_CARRY_EQUIPMENT_CONTRACT_READY",
+    );
+    expect(data.implementationOrder[6]).toContain(
+      "STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY",
+    );
+    expect(data.implementationOrder[7]).toContain(
+      "pain-stress vocabulary and receiver review",
     );
     expect(data.implementationOrder.at(-1)).toContain("before Session Composer");
     expect(data.uncertainties).toHaveLength(7);
