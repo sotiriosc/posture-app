@@ -48,6 +48,14 @@ Session Composer work begins only after the permanent Candidate Intelligence rea
 - phase intent;
 - stimulus summary.
 
+## Future Weekly Development Ledger
+
+Weekly Composer should eventually derive individualized minimum, target-range, and soft-ceiling bands for muscle exposure, with direct and meaningful secondary credit kept distinct. It should also track movement exposure, assessment-priority exposure, joint/stress exposure, recovery spacing, and capacity exposure such as grip, trunk, loaded gait, conditioning, and carries where appropriate.
+
+Those targets should begin from experience-level priors and adjust for the athlete's enduring goal, phase, pain, assessment, priority muscles, available days and time, equipment, adherence, fatigue, and longitudinal response history. Candidate Intelligence does not implement this ledger, and phase fit for one exercise must not impersonate whole-week phase coherence.
+
+A carry is not mandatory filler. Future carry allocation requires a real weekly need and must account for grip, hinge, trunk and unilateral fatigue, neighboring-session recovery, equipment, duration, and carry-specific prescription units.
+
 ## Non-Goals
 
 No beam search, session composition, week composition, fallback chain, or repair loop is implemented at Candidate Intelligence scope.

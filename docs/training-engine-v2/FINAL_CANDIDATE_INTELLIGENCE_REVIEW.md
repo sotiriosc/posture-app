@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because phase calibration remains P1. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.
+Architecture is sound and the candidate pipeline is deterministic/explainable. The phase calibration laboratory is complete and classified ready for project-owner policy decision, but Session Composer should not consume these rankings until the owner approves a phase policy and that policy is implemented and revalidated. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.
 
 ## Contract Review
 
@@ -42,7 +42,7 @@ Architecture is sound and the candidate pipeline is deterministic/explainable, b
 | --- | --- | --- |
 | assessment_fit + alignment_fit | INTENTIONAL_DISTINCT_SIGNAL | Both read one relevance trace, but bounded influence is split across assessment/alignment contributions rather than added twice. |
 | pain_suitability + joint_cost | RESOLVED_CANONICAL_RECEIVER_UNITS | Both receivers consume one canonical signalId+stressTag fact. Pain suitability counts every structured source once per fact; joint cost counts the same fact once only when joint_stress or caution provenance qualifies it. Sixteen representative joint+caution rows now remain one joint unit. |
-| phase_fit + experience_fit + skill_fit | INTENTIONAL_DISTINCT_SIGNAL | Phase intent, athlete prior, and exercise demand are separate, but phase suitability remains influential enough to require calibration review. |
+| phase_fit + experience_fit + skill_fit | ACTUAL_AND_POTENTIAL_OVERLAP_AUDITED | Phase intent, athlete prior, and exercise demand are conceptually separate, but the current Phase 1 bonus rereads skill and stability facts and the Phase 3 bonus rereads loadability. Annotation rationale can also overlap dedicated components. Full evidence is in PHASE_SUITABILITY_CALIBRATION_REVIEW.md. |
 | support/stability/path | RESOLVED_PAIN_OWNERSHIP | Structured row path knowledge is observability-only, pain_suitability has no ID/prose/support bonus, and stability_fit no longer reads global pain state. |
 | progression_value + continuity_value | INTENTIONAL_DISTINCT_SIGNAL | progression_value is same-exercise runway/readiness; continuity_value combines retention and reconsideration evidence numerically while reconsideration owns reason-code precedence. Transition edges do not add replacement pressure. |
 | unknown metadata | NOT_APPLICABLE | Unknown demand/path/challenge values remain neutral/not_applicable in assessment traces and do not create positive evidence by themselves. |
@@ -94,17 +94,29 @@ Verdict: **GOOD**. V2 consumes normalized assessment signals only; there is no i
 
 ## Phase Review
 
-Verdict: **PLAUSIBLE_NEEDS_REVIEW**. Phase behavior is directionally coherent and does not equate Phase 3 with hardest-looking exercise, but phaseSuitability is still a meaningful rank driver and should be calibrated before Session Composer multiplies candidate choices across slots.
+Verdict: **PHASE_POLICY_READY_FOR_OWNER_DECISION**. The deterministic laboratory in `PHASE_SUITABILITY_CALIBRATION_REVIEW.md` holds athlete, experience, enduring goal, equipment, training need, assessment, pain, history, continuity, fatigue and evaluation time fixed while phase changes. It audits all 30 annotations, every legal candidate and hard rejection, goal/experience independence, continuity, pain/assessment interaction, copied non-production policy variants and counterfactual boundaries.
 
 | Need | Phase 1 | Phase 2 | Phase 3 | Verdict |
 | --- | --- | --- | --- | --- |
-| horizontal push | machine-chest-press (7.815) over push-up (7.793) | dumbbell-bench-press (7.961) over push-up (7.930) | dumbbell-bench-press (8.024) over machine-chest-press (7.909) | GOOD |
-| horizontal pull | chest-supported-dumbbell-row (8.003) over machine-row (7.976) | machine-row (8.069) over seated-cable-row (8.069) | chest-supported-dumbbell-row (8.128) over machine-row (8.070) | PLAUSIBLE_NEEDS_REVIEW: phase suitability leaves machine/cable nearly tied without path/fit context |
-| squat | goblet-squat (7.910) over leg-press (7.850) | goblet-squat (8.059) over leg-press (8.041) | leg-press (8.073) over goblet-squat (7.797) | GOOD |
-| hinge | cable-pull-through (7.783) over dumbbell-romanian-deadlift (7.653) | dumbbell-romanian-deadlift (8.002) over cable-pull-through (7.840) | dumbbell-romanian-deadlift (8.033) over cable-pull-through (7.640) | GOOD |
-| single-leg | goblet-squat (7.863) over step-up (7.853) | goblet-squat (8.013) over step-up (8.011) | leg-press (8.027) over split-squat (7.929) | GOOD |
-| trunk activation | dead-bug (7.808) over pallof-press (7.785) | pallof-press (7.749) over dead-bug (7.670) | pallof-press (7.709) over dead-bug (7.470) | GOOD |
-| scapular activation | band-face-pull (8.204) over serratus-wall-slide (8.007) | band-face-pull (8.040) over reverse-pec-deck (7.901) | reverse-pec-deck (7.891) over band-face-pull (7.870) | GOOD |
+| horizontal push | machine-chest-press (7.774) over push-up (7.763) | dumbbell-bench-press (7.961) over push-up (7.930) | dumbbell-bench-press (8.053) over machine-chest-press (7.938) | GOOD |
+| horizontal pull | chest-supported-dumbbell-row (7.962) over machine-row (7.935) | machine-row (8.069) over seated-cable-row (8.069) | chest-supported-dumbbell-row (8.157) over machine-row (8.099) | OWNER_REVIEW: phase annotations create a phase-specific row ordering without path/fit context |
+| squat | goblet-squat (7.869) over leg-press (7.809) | goblet-squat (8.059) over leg-press (8.041) | leg-press (8.102) over goblet-squat (7.826) | GOOD |
+| hinge | cable-pull-through (7.742) over dumbbell-romanian-deadlift (7.682) | dumbbell-romanian-deadlift (8.002) over cable-pull-through (7.840) | dumbbell-romanian-deadlift (8.062) over cable-pull-through (7.669) | GOOD |
+| single-leg | step-up (7.882) over goblet-squat (7.823) | goblet-squat (8.013) over step-up (8.011) | leg-press (8.056) over split-squat (7.958) | GOOD |
+| trunk activation | dead-bug (7.779) over pallof-press (7.744) | pallof-press (7.749) over dead-bug (7.670) | pallof-press (7.738) over dead-bug (7.499) | GOOD |
+| scapular activation | band-face-pull (8.175) over serratus-wall-slide (7.977) | band-face-pull (8.040) over reverse-pec-deck (7.901) | reverse-pec-deck (7.920) over band-face-pull (7.900) | GOOD |
+
+### PHASE_SUITABILITY_CALIBRATION_LABORATORY
+
+The production 22-scenario fingerprint remains unchanged. Current phase_fit uses categorical bases 8.8/7.8/6.2/5.5, a Phase 3 +0.8 high-loadability bonus, a Phase 1 +0.5 low-skill/stability bonus, and configured weight 1.0 over an emitted total weight of 16.2.
+
+The audit identifies actual repeated consumption where phase_fit rereads loadability, skill and stability facts already owned by dedicated components. Removing only those bonuses changes the Phase 1 horizontal-push winner; lowering phase weight to 0.75 also changes that near tie and the Phase 3 scapular-activation winner. These are sensitivity findings, not evidence that an experimental policy is better.
+
+`CandidateRequest.goal` remains the goal-fit authority; `PhaseIntent.primaryGoal` is currently unused. Productive continuity survives all phase changes, ready-to-progress remains same-exercise progression, pain readiness and hard eligibility remain independent, and every transition retains `automaticSelectionEffect=none`.
+
+Recommended shape for owner review: one bounded annotation-led phase preference, no hidden eligibility or replacement authority, explicit phase-annotation provenance/review status in a later approved metadata change, and removal or independent justification of duplicated mechanical bonuses. The laboratory does not choose production category gaps or weight.
+
+Remaining P1 work is project-owner phase-policy approval followed by implementation and full revalidation. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.
 
 ## Pain / Injury Review
 
@@ -275,7 +287,7 @@ Contextual programming intent remains explicit and retains reviewed transition p
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Neutral full-gym horizontal pull | Prefer a legal loadable row; preserve machine/cable tie when no context separates them. | machine-row | seated-cable-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | row tie is deliberate context-required evidence | none | none | none | GOOD |
 | Low-back row pain context | Prefer lower lumbar demand/support, but keep equipment truth hard. | chest-supported-dumbbell-row | one-arm-dumbbell-row | role_fit 8.00; pain_suitability 8.20; session_intent_fit 9.50 | ID-derived support bonus resolved; remaining pain effect is stress-overlap based | not primary | material | none | PLAUSIBLE_NEEDS_REVIEW |
-| Phase contrast horizontal push | Phase 1 should prefer usable control/support; Phase 3 should value loadable stimulus without hardest-is-best. | dumbbell-bench-press (8.024) over machine-chest-press (7.909) | machine-chest-press (7.815) over push-up (7.793) | phase_fit, loadability, stimulus_potential shift the winner across phases | phaseSuitability has meaningful influence and still needs human calibration | none | none | none | GOOD |
+| Phase contrast horizontal push | Phase 1 should prefer usable control/support; Phase 3 should value loadable stimulus without hardest-is-best. | dumbbell-bench-press (8.053) over machine-chest-press (7.938) | machine-chest-press (7.774) over push-up (7.763) | phase_fit, loadability, stimulus_potential shift the winner across phases | the phase laboratory found exact mechanical double counts and near-tie winner sensitivity | none | none | none | GOOD |
 | Feature-specific serratus/protraction assessment | Identify feature relevance without conflating expression with feature difficulty. | band-face-pull | serratus-wall-slide | reviewed feature target fit affects assessment_fit; feature challenge remains not modeled | feature challenge remains unknown while target fit can still be selection-relevant | target=0.390; development=0.000; alignment=0.000 | none | none | GOOD |
 | Ready-to-progress current row | Keep productive current exercise and progress prescription before replacement. | 1 / chest-supported-dumbbell-row / 8.254 | 3 / seated-cable-row / 8.069 | continuity_value and progression_value reward same-exercise runway | none | none | none | CONTINUITY_FAVORED | GOOD |
 | Plateau/failed progression row | Replacement may become justified by real performance signal. | 2 / seated-cable-row / 8.069 | 4 / chest-supported-dumbbell-row / 7.854 | continuity/progression penalties reduce current exercise | transition edge remains knowledge-only | none | none | REPLACEMENT_JUSTIFIED | GOOD |
@@ -288,7 +300,8 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ### P1
 
-- Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.
+- Project-owner approval of the final Candidate Intelligence phase policy.
+- Implementation and full revalidation of the approved phase policy before Session Composer.
 
 ### P2
 
@@ -299,4 +312,4 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ## Readiness Rationale
 
-The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, and progression/replacement semantics are now separated. The remaining P1 items would become harder to correct after Session Composer starts depending on candidate scores, so the correct next state is targeted fixes before composition.
+The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, and the phase audit is ready for owner decision. The approved phase policy still needs implementation and full revalidation before Session Composer depends on candidate scores, so the correct state remains targeted fixes before composition.

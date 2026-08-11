@@ -654,7 +654,7 @@ function phaseRows(): readonly PhaseRow[] {
   return entries.map(([label, candidateNeed, goal]) => {
     const phase1 = runCandidateRankingLab(request({
       id: `final-phase-${label}-phase-1`,
-      personaId: "beginner-gym-no-pain",
+      personaId: "intermediate-gym-muscle-gain",
       goal,
       phaseId: "phase_1",
       need: candidateNeed,
@@ -672,7 +672,7 @@ function phaseRows(): readonly PhaseRow[] {
     }));
     const phase3 = runCandidateRankingLab(request({
       id: `final-phase-${label}-phase-3`,
-      personaId: "advanced-gym-muscle-gain",
+      personaId: "intermediate-gym-muscle-gain",
       goal,
       phaseId: "phase_3",
       need: candidateNeed,
@@ -687,7 +687,7 @@ function phaseRows(): readonly PhaseRow[] {
       phase3Winner: resultSummary(phase3),
       verdict:
         label === "horizontal pull"
-          ? "PLAUSIBLE_NEEDS_REVIEW: phase suitability leaves machine/cable nearly tied without path/fit context"
+          ? "OWNER_REVIEW: phase annotations create a phase-specific row ordering without path/fit context"
           : "GOOD",
     };
   });
@@ -1154,7 +1154,7 @@ function scienceRows(data: {
       winner: phasePush?.phase3Winner ?? "-",
       runnerUp: phasePush?.phase1Winner ?? "-",
       why: "phase_fit, loadability, stimulus_potential shift the winner across phases",
-      surprisingComponent: "phaseSuitability has meaningful influence and still needs human calibration",
+      surprisingComponent: "the phase laboratory found exact mechanical double counts and near-tie winner sensitivity",
       assessmentEffect: "none",
       painEffect: "none",
       continuityEffect: "none",
@@ -1242,7 +1242,8 @@ function catalogSummary(): CatalogSummary {
     materiallyUnderSpecified: materiallyUnderSpecified.length,
     p0Gaps: [],
     p1Gaps: [
-      "Phase suitability carries meaningful rank influence and still needs human exercise-science calibration across full session context.",
+      "Project-owner approval of the final Candidate Intelligence phase policy.",
+      "Implementation and full revalidation of the approved phase policy before Session Composer.",
     ],
     p2Gaps: [
       "Several non-row exercises still have unknown support or resistance-path metadata.",
@@ -1446,7 +1447,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     `Classification: **${readiness}**`,
     "",
-    "Architecture is sound and the candidate pipeline is deterministic/explainable, but Session Composer should not consume these rankings yet because phase calibration remains P1. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.",
+    "Architecture is sound and the candidate pipeline is deterministic/explainable. The phase calibration laboratory is complete and classified ready for project-owner policy decision, but Session Composer should not consume these rankings until the owner approves a phase policy and that policy is implemented and revalidated. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.",
     "",
     "## Contract Review",
     "",
@@ -1472,7 +1473,7 @@ function renderMarkdown(data: FinalReviewData): string {
       [
         ["assessment_fit + alignment_fit", "INTENTIONAL_DISTINCT_SIGNAL", "Both read one relevance trace, but bounded influence is split across assessment/alignment contributions rather than added twice."],
         ["pain_suitability + joint_cost", "RESOLVED_CANONICAL_RECEIVER_UNITS", "Both receivers consume one canonical signalId+stressTag fact. Pain suitability counts every structured source once per fact; joint cost counts the same fact once only when joint_stress or caution provenance qualifies it. Sixteen representative joint+caution rows now remain one joint unit."],
-        ["phase_fit + experience_fit + skill_fit", "INTENTIONAL_DISTINCT_SIGNAL", "Phase intent, athlete prior, and exercise demand are separate, but phase suitability remains influential enough to require calibration review."],
+        ["phase_fit + experience_fit + skill_fit", "ACTUAL_AND_POTENTIAL_OVERLAP_AUDITED", "Phase intent, athlete prior, and exercise demand are conceptually separate, but the current Phase 1 bonus rereads skill and stability facts and the Phase 3 bonus rereads loadability. Annotation rationale can also overlap dedicated components. Full evidence is in PHASE_SUITABILITY_CALIBRATION_REVIEW.md."],
         ["support/stability/path", "RESOLVED_PAIN_OWNERSHIP", "Structured row path knowledge is observability-only, pain_suitability has no ID/prose/support bonus, and stability_fit no longer reads global pain state."],
         ["progression_value + continuity_value", "INTENTIONAL_DISTINCT_SIGNAL", "progression_value is same-exercise runway/readiness; continuity_value combines retention and reconsideration evidence numerically while reconsideration owns reason-code precedence. Transition edges do not add replacement pressure."],
         ["unknown metadata", "NOT_APPLICABLE", "Unknown demand/path/challenge values remain neutral/not_applicable in assessment traces and do not create positive evidence by themselves."],
@@ -1563,12 +1564,24 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "## Phase Review",
     "",
-    "Verdict: **PLAUSIBLE_NEEDS_REVIEW**. Phase behavior is directionally coherent and does not equate Phase 3 with hardest-looking exercise, but phaseSuitability is still a meaningful rank driver and should be calibrated before Session Composer multiplies candidate choices across slots.",
+    "Verdict: **PHASE_POLICY_READY_FOR_OWNER_DECISION**. The deterministic laboratory in `PHASE_SUITABILITY_CALIBRATION_REVIEW.md` holds athlete, experience, enduring goal, equipment, training need, assessment, pain, history, continuity, fatigue and evaluation time fixed while phase changes. It audits all 30 annotations, every legal candidate and hard rejection, goal/experience independence, continuity, pain/assessment interaction, copied non-production policy variants and counterfactual boundaries.",
     "",
     table(
       ["Need", "Phase 1", "Phase 2", "Phase 3", "Verdict"],
       data.phaseRows.map((row) => [row.need, row.phase1Winner, row.phase2Winner, row.phase3Winner, row.verdict]),
     ),
+    "",
+    "### PHASE_SUITABILITY_CALIBRATION_LABORATORY",
+    "",
+    "The production 22-scenario fingerprint remains unchanged. Current phase_fit uses categorical bases 8.8/7.8/6.2/5.5, a Phase 3 +0.8 high-loadability bonus, a Phase 1 +0.5 low-skill/stability bonus, and configured weight 1.0 over an emitted total weight of 16.2.",
+    "",
+    "The audit identifies actual repeated consumption where phase_fit rereads loadability, skill and stability facts already owned by dedicated components. Removing only those bonuses changes the Phase 1 horizontal-push winner; lowering phase weight to 0.75 also changes that near tie and the Phase 3 scapular-activation winner. These are sensitivity findings, not evidence that an experimental policy is better.",
+    "",
+    "`CandidateRequest.goal` remains the goal-fit authority; `PhaseIntent.primaryGoal` is currently unused. Productive continuity survives all phase changes, ready-to-progress remains same-exercise progression, pain readiness and hard eligibility remain independent, and every transition retains `automaticSelectionEffect=none`.",
+    "",
+    "Recommended shape for owner review: one bounded annotation-led phase preference, no hidden eligibility or replacement authority, explicit phase-annotation provenance/review status in a later approved metadata change, and removal or independent justification of duplicated mechanical bonuses. The laboratory does not choose production category gaps or weight.",
+    "",
+    "Remaining P1 work is project-owner phase-policy approval followed by implementation and full revalidation. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.",
     "",
     "## Pain / Injury Review",
     "",
@@ -1718,7 +1731,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "## Readiness Rationale",
     "",
-    "The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, and progression/replacement semantics are now separated. The remaining P1 items would become harder to correct after Session Composer starts depending on candidate scores, so the correct next state is targeted fixes before composition.",
+    "The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, and the phase audit is ready for owner decision. The approved phase policy still needs implementation and full revalidation before Session Composer depends on candidate scores, so the correct state remains targeted fixes before composition.",
     "",
   ].join("\n");
 }
