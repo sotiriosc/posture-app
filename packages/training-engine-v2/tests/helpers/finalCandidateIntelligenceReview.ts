@@ -687,8 +687,10 @@ function phaseRows(): readonly PhaseRow[] {
       phase3Winner: resultSummary(phase3),
       verdict:
         label === "horizontal pull"
-          ? "OWNER_REVIEW: phase annotations create a phase-specific row ordering without path/fit context"
-          : "GOOD",
+          ? "CONTEXT_REVIEW_REQUIRED: row ordering relies on global progression/path/setup rationale"
+          : label === "scapular activation"
+            ? "CONTEXT_REVIEW_REQUIRED: accessory rationale leaks into activation phase evidence"
+            : "PROVISIONAL: first laboratory accepted; contextual annotation evidence remains unapproved",
     };
   });
 }
@@ -1158,7 +1160,7 @@ function scienceRows(data: {
       assessmentEffect: "none",
       painEffect: "none",
       continuityEffect: "none",
-      verdict: "GOOD",
+      verdict: "PLAUSIBLE_NEEDS_REVIEW",
     },
     {
       scenario: "Feature-specific serratus/protraction assessment",
@@ -1242,8 +1244,9 @@ function catalogSummary(): CatalogSummary {
     materiallyUnderSpecified: materiallyUnderSpecified.length,
     p0Gaps: [],
     p1Gaps: [
-      "Project-owner approval of the final Candidate Intelligence phase policy.",
-      "Implementation and full revalidation of the approved phase policy before Session Composer.",
+      "Project-owner approval of the contextual phase-annotation contract and PhaseIntent.primaryGoal future treatment.",
+      "Human curation of contextual phase annotations with accepted/needs-review/unknown status and structured provenance.",
+      "Implementation of the approved resolver, unknown-versus-poor semantics, mechanical-bonus removal, final coefficients and full revalidation before Session Composer.",
     ],
     p2Gaps: [
       "Several non-row exercises still have unknown support or resistance-path metadata.",
@@ -1447,7 +1450,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     `Classification: **${readiness}**`,
     "",
-    "Architecture is sound and the candidate pipeline is deterministic/explainable. The phase calibration laboratory is complete and classified ready for project-owner policy decision, but Session Composer should not consume these rankings until the owner approves a phase policy and that policy is implemented and revalidated. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.",
+    "Architecture is sound and the candidate pipeline is deterministic/explainable. The first phase calibration laboratory is accepted, and the contextual phase-annotation contract is now ready for project-owner decision. Final coefficient calibration remains deferred until role/section evidence, unknown-versus-poor semantics, review status and provenance are approved and implemented. Session Composer should not consume these rankings before that revalidation. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, and the response-led moderate-pain candidate policy are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.",
     "",
     "## Contract Review",
     "",
@@ -1473,7 +1476,7 @@ function renderMarkdown(data: FinalReviewData): string {
       [
         ["assessment_fit + alignment_fit", "INTENTIONAL_DISTINCT_SIGNAL", "Both read one relevance trace, but bounded influence is split across assessment/alignment contributions rather than added twice."],
         ["pain_suitability + joint_cost", "RESOLVED_CANONICAL_RECEIVER_UNITS", "Both receivers consume one canonical signalId+stressTag fact. Pain suitability counts every structured source once per fact; joint cost counts the same fact once only when joint_stress or caution provenance qualifies it. Sixteen representative joint+caution rows now remain one joint unit."],
-        ["phase_fit + experience_fit + skill_fit", "ACTUAL_AND_POTENTIAL_OVERLAP_AUDITED", "Phase intent, athlete prior, and exercise demand are conceptually separate, but the current Phase 1 bonus rereads skill and stability facts and the Phase 3 bonus rereads loadability. Annotation rationale can also overlap dedicated components. Full evidence is in PHASE_SUITABILITY_CALIBRATION_REVIEW.md."],
+        ["phase_fit + experience_fit + skill_fit", "CONTEXT_AND_OVERLAP_CONTRACT_READY_FOR_OWNER_DECISION", "The current Phase 1 bonus rereads skill/stability and Phase 3 rereads loadability. Current global annotation reasons also mix phase, goal, section, mechanics, progression and continuity ownership. PHASE_SUITABILITY_CALIBRATION_REVIEW.md and PHASE_ANNOTATION_CONTEXT_REVIEW.md contain the full evidence."],
         ["support/stability/path", "RESOLVED_PAIN_OWNERSHIP", "Structured row path knowledge is observability-only, pain_suitability has no ID/prose/support bonus, and stability_fit no longer reads global pain state."],
         ["progression_value + continuity_value", "INTENTIONAL_DISTINCT_SIGNAL", "progression_value is same-exercise runway/readiness; continuity_value combines retention and reconsideration evidence numerically while reconsideration owns reason-code precedence. Transition edges do not add replacement pressure."],
         ["unknown metadata", "NOT_APPLICABLE", "Unknown demand/path/challenge values remain neutral/not_applicable in assessment traces and do not create positive evidence by themselves."],
@@ -1484,7 +1487,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     `Catalog coverage: fully usable=${data.catalogSummary.fullyUsable}; usable with review caveats=${data.catalogSummary.usableWithReviewCaveats}; materially under-specified=${data.catalogSummary.materiallyUnderSpecified}.`,
     "",
-    "UNKNOWN does not become easy/safe/preferred/developmentally superior/feature matched in assessment demand traces. NEEDS_REVIEW remains visible in catalog review and row trace context. Pain matching exposes unknown/missing evidence and deferred actions explicitly; numeric moderate-severity calibration is deferred to longitudinal adaptation rather than represented as current precision.",
+    "UNKNOWN does not become easy/safe/preferred/poor/developmentally superior/feature matched. NEEDS_REVIEW remains visibly qualified in assessment and proposed contextual phase evidence. Pain matching exposes unknown/missing evidence and deferred actions explicitly; numeric moderate-severity calibration is deferred to longitudinal adaptation rather than represented as current precision.",
     "",
     "## Feature-Specific Assessment Review",
     "",
@@ -1564,7 +1567,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "## Phase Review",
     "",
-    "Verdict: **PHASE_POLICY_READY_FOR_OWNER_DECISION**. The deterministic laboratory in `PHASE_SUITABILITY_CALIBRATION_REVIEW.md` holds athlete, experience, enduring goal, equipment, training need, assessment, pain, history, continuity, fatigue and evaluation time fixed while phase changes. It audits all 30 annotations, every legal candidate and hard rejection, goal/experience independence, continuity, pain/assessment interaction, copied non-production policy variants and counterfactual boundaries.",
+    "Verdict: **PHASE_CONTEXT_CONTRACT_READY_FOR_OWNER_DECISION**. The first deterministic laboratory in `PHASE_SUITABILITY_CALIBRATION_REVIEW.md` is accepted. `PHASE_ANNOTATION_CONTEXT_REVIEW.md` adds the remaining contract evidence: all 90 current exercise/phase reasons, role/section specificity, explicit unknown-versus-poor states, provenance/review qualification, 35 controlled scenarios, eight policy variants including the current control, and structured counterfactual boundaries.",
     "",
     table(
       ["Need", "Phase 1", "Phase 2", "Phase 3", "Verdict"],
@@ -1581,7 +1584,17 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "Recommended shape for owner review: one bounded annotation-led phase preference, no hidden eligibility or replacement authority, explicit phase-annotation provenance/review status in a later approved metadata change, and removal or independent justification of duplicated mechanical bonuses. The laboratory does not choose production category gaps or weight.",
     "",
-    "Remaining P1 work is project-owner phase-policy approval followed by implementation and full revalidation. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.",
+    "### PHASE_ANNOTATION_CONTEXT_AND_UNCERTAINTY_REVIEW",
+    "",
+    "Current `ExerciseDefinition.phaseSuitability` is global to the exercise, so accessory, hypertrophy, loadability, setup, progression or continuity rationale can influence a different legal use. The Phase 3 scapular-activation contrast demonstrates the defect: reverse pec deck's `High-value rear-delt accessory` evidence and band face pull's accessory-loadability evidence must not apply to activation.",
+    "",
+    "The proposed deterministic resolver orders role+section, section, training-role and genuinely general matches. No match becomes `UNKNOWN_NO_MATCH`; conflicting equal-specificity annotations become `CONFLICTING_ANNOTATIONS`. Neither receives a hidden phase value. Explicit reviewed poor remains a distinct selected category. Reason prose and provenance do not create score, legality, pain, progression or transition behavior.",
+    "",
+    "The 90-row audit recommends 0 annotations as accepted, 16 as needs-review contextual candidates and 74 as unknown because the current schema has no structured phase provenance. This is conservative migration evidence, not a claim that 74 exercises are poor fits. Copied contextual policies change 19 ranks and 8 winners in the controlled matrix, while productive continuity and pain readiness remain unchanged.",
+    "",
+    "Recommended future boundary: contextual annotation-only phase preference downstream of hard eligibility, owner-approved role/section scope and provenance, removal of both duplicated mechanical bonuses, and explicit omission of phase influence for unknown/conflicting evidence. Final gaps, weight and review attenuation remain unselected.",
+    "",
+    "Remaining P1 work is contextual-contract approval, annotation curation, and implementation of the approved resolver/uncertainty/calibration policy followed by full revalidation. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.",
     "",
     "## Pain / Injury Review",
     "",
@@ -1731,7 +1744,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "## Readiness Rationale",
     "",
-    "The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, and the phase audit is ready for owner decision. The approved phase policy still needs implementation and full revalidation before Session Composer depends on candidate scores, so the correct state remains targeted fixes before composition.",
+    "The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, the first phase laboratory is accepted, and the contextual phase contract is ready for owner decision. Contextual evidence still needs approval, curation, implementation and full coefficient revalidation before Session Composer depends on candidate scores, so the correct state remains targeted fixes before composition.",
     "",
   ].join("\n");
 }

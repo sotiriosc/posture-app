@@ -425,6 +425,8 @@ Which successful exercises should remain stable?
 
 What demonstrates readiness for the next phase?
 
+Candidate-level phase evidence must apply to the exercise's actual requested training-role and session-section context. A rationale for one legal use must not influence another use through a global annotation. No matching contextual phase evidence is unknown, not reviewed poor fit, and explanatory reason prose must not create scoring behavior by itself.
+
 ## 10. Phase Progression Must Be Real Progression
 
 Moving from one phase to another must create meaningful development.
