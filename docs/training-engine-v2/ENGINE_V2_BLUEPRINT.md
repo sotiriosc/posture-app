@@ -1052,11 +1052,20 @@ score the complete week
 choose the strongest valid program
 ```
 
-A bounded deterministic search such as beam search is a suitable design direction.
+A bounded deterministic search such as beam search remains a suitable production direction, but the authorized Session Composer design begins one step earlier: derive actual session needs rather than assuming a fixed set of slots. Warm-up, activation, main, accessory and cooldown remain useful presentation and sequencing concepts; they do not each require an exercise.
 
-Do not implement a giant optimizer during the foundation phase.
+The approved handoff is:
 
-Design interfaces that permit it.
+```text
+needs-first Session Intent
+-> exact legal Candidate Intelligence pools per need
+-> smallest complete exercise set
+-> whole-set continuity/redundancy/fatigue/setup evaluation
+-> separate dependency-preserving sequencing
+-> separate Prescription handoff
+```
+
+The non-production laboratory uses bounded exhaustive search to make the policy inspectable. It minimizes selected identities before applying equal-size tie-breaks. It cannot widen a candidate pool, repair illegality, invent coverage, prescribe dose, progress, replace, rotate or advance phase. See `SESSION_COMPOSER_ARCHITECTURE.md` and `SESSION_COMPOSER_IMPLEMENTATION_CONTRACT.md`.
 
 ## 25. Whole-Session Evaluation
 
