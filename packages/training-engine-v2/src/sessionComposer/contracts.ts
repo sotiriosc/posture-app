@@ -1,5 +1,6 @@
 import type { CandidateRankingResult } from "../candidate";
 import type { JointStressTag } from "../domain/primitives";
+import type { Side } from "../domain/primitives";
 import type {
   SessionIntent,
   SessionSection,
@@ -173,8 +174,26 @@ export interface SessionPrescriptionAssignmentHandoff {
   readonly requiredPrescriptionResolutionIds: readonly string[];
   readonly potentialStressTags: readonly JointStressTag[];
   readonly explicitRequirementRefs: readonly string[];
+  readonly knownRequirements: SessionPrescriptionKnownRequirements;
   readonly orderingConstraints: readonly SessionOrderingConstraint[];
   readonly sourceExposureEventExpected: true;
+}
+
+export interface SessionPrescriptionSideRequirement {
+  readonly requirementId: string;
+  readonly side: Side;
+}
+
+export interface SessionPrescriptionKnownRequirements {
+  readonly sideRequirements: readonly SessionPrescriptionSideRequirement[];
+  readonly supportRequirementIds: readonly string[];
+  readonly rangeRequirementIds: readonly string[];
+  readonly loadRequirementIds: readonly string[];
+  readonly leverRequirementIds: readonly string[];
+  readonly durationRequirementIds: readonly string[];
+  readonly distanceRequirementIds: readonly string[];
+  readonly stepRequirementIds: readonly string[];
+  readonly unclassifiedRequirementIds: readonly string[];
 }
 
 export interface SessionPrescriptionHandoff {

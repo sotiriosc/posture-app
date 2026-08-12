@@ -414,6 +414,19 @@ describe("production Session Composer kernel", () => {
     expect(bench).toBeTruthy();
     expect(bench.executionBlockingPrescriptionRequirementIds).not.toEqual([]);
     expect(skeleton.executionReadiness).toBe("prescription_resolution_required");
+    const handoff = buildSessionPrescriptionHandoff({
+      intent,
+      skeleton,
+      candidateResultsByNeed: changed,
+    });
+    const benchHandoff = handoff.assignments.find((entry) =>
+      entry.exerciseId === "dumbbell-bench-press",
+    )!;
+    expect(benchHandoff.knownRequirements.rangeRequirementIds).toEqual(
+      bench.executionBlockingPrescriptionRequirementIds,
+    );
+    expect(benchHandoff.knownRequirements.loadRequirementIds).toEqual([]);
+    expect(benchHandoff).not.toHaveProperty("selectedModificationAxis");
   });
 
   it("prefers an equivalent executable candidate for a new non-anchor prescription burden", () => {
