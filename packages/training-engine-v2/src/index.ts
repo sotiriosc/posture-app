@@ -10,7 +10,6 @@ export * from "./prescription";
 export * from "./prescriptionProgression";
 export * from "./reasonCodes";
 export * from "./scoringContracts";
-export * from "./sessionComposer";
 export * from "./transitionComparison";
 export * from "./trainingResponseHistory";
 export * from "./trainingResponseReceiver";

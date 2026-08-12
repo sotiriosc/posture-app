@@ -1065,7 +1065,7 @@ needs-first Session Intent
 -> separate Prescription handoff
 ```
 
-The non-production laboratory uses bounded exhaustive search to make the policy inspectable. It minimizes selected identities before applying equal-size tie-breaks. It cannot widen a candidate pool, repair illegality, invent coverage, prescribe dose, progress, replace, rotate or advance phase. See `SESSION_COMPOSER_ARCHITECTURE.md` and `SESSION_COMPOSER_IMPLEMENTATION_CONTRACT.md`.
+The non-production laboratory uses exhaustive enumeration over small controlled pools to make consequences inspectable. Hard validity and required coverage are gates; complete skeletons are then compared lexicographically by readiness, productive-anchor continuity, required preparation, dominant purpose, preferred coverage, redundancy, potential concentration, optional marginal value, structural setup efficiency and deterministic tie evidence. Candidate totals remain local evidence and are never summed as session quality. It cannot widen a pool, repair illegality, invent coverage or duration, prescribe dose, progress, replace, rotate, finalize sequence or advance phase. See `SESSION_COMPOSER_DESIGN_CONTRACT.md`, `SESSION_COMPOSITION_EVALUATION_POLICY.md`, and `SESSION_COMPOSER_IMPLEMENTATION_READINESS.md`.
 
 ## 25. Whole-Session Evaluation
 

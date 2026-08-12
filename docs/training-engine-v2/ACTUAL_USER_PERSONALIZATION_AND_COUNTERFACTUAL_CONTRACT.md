@@ -54,9 +54,13 @@ The reviewed cohort holds candidate pool, need shell, phase, and equipment const
 
 The consequence may be a legality delta, score/component delta, rank delta, readiness delta, or explicit trace delta. A winner change is not required.
 
-## Future Composer Acceptance Signatures
+## Session Composer Design Acceptance
 
-Documentation-only signatures: `composeSession(candidateResults, availability, sessionIntent)`, `composeWeek(sessionOptions, daysPerWeek, preferredTrainingDays)`, and `applyVarietyPolicy(legalRankings, varietyPreference, recentExposure)`. Candidate Intelligence must not implement those owners, reserve exercise IDs, award set credits, or infer availability/variety effects early.
+The authorized design laboratory now consumes availability and structured Session Intent after Candidate Intelligence. Its pure proposed seam separates normalized needs, per-need candidate evidence, explicit evaluation time, readiness, continuity/response context and deterministic search policy. It remains test-only and exports no production `composeSession` API.
+
+The eleven-user fixed-shell session cohort holds experience, full-gym equipment, Phase 1, evaluation time and the 45-row catalog constant. Goal, pain context, assessment, continuity, adverse response, preference, availability and fatigue create material skeleton differences, same-anchor need differences, prescription requirements or justified convergence; unresponsive-material-input failures are zero. Availability changes priority admission and structural condensation, never exercise truth or exact duration claims.
+
+Variety remains acceptance-contract-only: low variety may reinforce stable supporting work; moderate/high variety may make comparable accessories rotation-eligible under a future explicit budget. No randomization, rotation or productive-anchor displacement is implemented.
 
 ## P0 Whole-Body Fixed-Shell Results
 

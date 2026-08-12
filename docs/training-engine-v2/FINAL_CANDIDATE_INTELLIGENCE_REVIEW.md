@@ -368,3 +368,7 @@ Contextual programming intent remains explicit and retains reviewed transition p
 ## Readiness Rationale
 
 Candidate Intelligence graduates because the 45-row legal pools are truthful, deterministic ranking and DecisionTrace remain inspectable, direct actions and primary-required muscles are selectable, preparation dependencies have bounded candidates, equipment gaps stay explicit, response-led continuity remains separate from replacement, TrainingSafety affects downstream readiness without changing rank, and contextual phase abstention adds no synthetic vote. P1 concepts are improvements rather than blockers. Session Composer design remains separately authorized and unimplemented.
+
+## Subsequent Session Composer Design Review
+
+Owner authorization subsequently permitted design and whole-session laboratory work only. Candidate Intelligence remains unchanged and continues to supply exact legal per-need evidence. The design audit rejects fixed `SessionIntent.slots` as future authority and proposes normalized needs plus non-prescribed assignments. Sixteen controlled scenarios, nine greedy failures, three availability structures and an eleven-user fixed-shell cohort classify the design `TARGETED_DESIGN_DECISIONS_REQUIRED`. This does not revise the Candidate Intelligence graduation result or authorize production composition.
