@@ -234,7 +234,7 @@ describe("Candidate Intelligence foundation", () => {
       "joint_cost",
       "equipment_practicality",
     ]);
-    expect(REFERENCE_EXERCISES).toHaveLength(37);
+    expect(REFERENCE_EXERCISES).toHaveLength(45);
     expect(CONTROLLED_CANDIDATE_SCENARIOS.length).toBeGreaterThanOrEqual(20);
   });
 

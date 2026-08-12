@@ -1,6 +1,6 @@
 # Role, Muscle, and Personalization Regression Matrix
 
-Production inventory: 37 rows / 37 stable IDs. P0 proposals: 8; production additions: 0.
+Production inventory: 45 rows / 45 stable IDs. P0 production additions: 8.
 
 ## Role And Action Corrections
 
@@ -41,22 +41,22 @@ Equivalent active facts may produce JUSTIFIED_CONVERGENCE; uniqueness is never f
 | safety/response | 539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562 | 539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562 | true |
 | equipment metadata | 83fa2d16310e0965d84ef1416cfedbb7961aefdaa37414396a102f066b53bc46 | 83fa2d16310e0965d84ef1416cfedbb7961aefdaa37414396a102f066b53bc46 | true |
 | progression metadata | faf82d77f021267fbc32beeb9c796c54340dec02443981880039df1fa7632fd5 | faf82d77f021267fbc32beeb9c796c54340dec02443981880039df1fa7632fd5 | true |
-| 37-row identity inventory | 2bd3669bc06d91d09408a72d455520a62758c644e529ea0a732a7acf95915a44 | 2bd3669bc06d91d09408a72d455520a62758c644e529ea0a732a7acf95915a44 | true |
+| pre-P0 37-row identity inventory | 2bd3669bc06d91d09408a72d455520a62758c644e529ea0a732a7acf95915a44 | 2bd3669bc06d91d09408a72d455520a62758c644e529ea0a732a7acf95915a44 | true |
 
 ## Isolated Fingerprints
 
 | Dimension | Fingerprint |
 | --- | --- |
-| movementRoles | b48b64d14532d54c27cc5507c9b9d85204282250d7b1b895da11c4ea27f06814 |
-| actionFunctions | 99678806b52242e5dd53aa9d8867d79b8b9d025b5d92eea06bae96648b74c911 |
-| muscleMigration | 78e094ea7ab34c0654a022151e63860ea7e2a603ebfe2f225402d1fd35a4ad06 |
+| movementRoles | c84bb01430131d4ac4277ba60c02c1401373729013991aef34fcb357edaa9b27 |
+| actionFunctions | 4dd47e3a6da5a031ba6da5d9751bb0d89d44a3813ab13db3b420689052df2d97 |
+| muscleMigration | e08f6fb538436278aa75ddaf7398a77a8a53d9a83c76b32c025e7e4d97ff8e35 |
 | needRequirements | 7d22119311f861aa51a451d8c29c7a845e4514c485439b23ca76f17bb556df95 |
 | personalization | 6d44c963065778de33b3a53c32702013e16cb73e2246e1bb3ecde314a59bf408 |
-| rolePools | 771781c7d834b7aeb1000d08fff0129691b9847d42e8f799a5674c19d8b83a09 |
-| phaseMetadata | 86a0ca4631d76772ba1dc579f668f624d8aea958be11544ee6e38e245b4e16f3 |
+| rolePools | 453977b9ef75bbbf9fb886517b756079f71e57b6ce2b4fed63104afc81abb7a7 |
+| phaseMetadata | dbd76206430c24ff600d12bc1d46724c25e18d3dad43ed118a96fcb21b71cec7 |
 | safetyResponse | 539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562 |
-| equipmentMetadata | 83fa2d16310e0965d84ef1416cfedbb7961aefdaa37414396a102f066b53bc46 |
-| progressionMetadata | faf82d77f021267fbc32beeb9c796c54340dec02443981880039df1fa7632fd5 |
-| identityInventory | 2bd3669bc06d91d09408a72d455520a62758c644e529ea0a732a7acf95915a44 |
-| p0Proposals | d7e55b198bafb4210f227ef766da4a0d8fde7455f3909cc51373803a037043df |
-| combined | 0eb9d84e31d1e2641d5a4259741e5be79a32673d80c16036475a0aa1cf61cc77 |
+| equipmentMetadata | 7a7864d3f2de8b1d25dfbb781dc77e5476a8faa441013a488a2b91beadd224e8 |
+| progressionMetadata | 280b519cf271f9641220313b1a3589463ded13920face5e8522ba927c9a96623 |
+| identityInventory | 49b38724c2aa562d6471f09d62cb0d1b09b9900b474139a0279c2adb82919c90 |
+| p0Production | 4b10a34a5a524992f499d5bc5bee3db7b382be0a506c2dde3aca7ef2005e9384 |
+| combined | a1082c30e93ebc318d129dea702bde0795dde829bc9b64afbff7767c8c565144 |

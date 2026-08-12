@@ -30,7 +30,7 @@ describe("phase suitability calibration laboratory", () => {
     expect(data.productionFingerprintMatches).toBe(true);
     expect(data.phaseOnlySummaries).toHaveLength(30);
     expect(data.phaseCandidateMatrix).toHaveLength(72);
-    expect(data.phaseRejectionMatrix).toHaveLength(1038);
+    expect(data.phaseRejectionMatrix).toHaveLength(1278);
   });
 
   it("records the exact current phase math, normalized weight and maximum effect", () => {
@@ -89,13 +89,13 @@ describe("phase suitability calibration laboratory", () => {
     ).toBe("UNUSED_SEMANTIC");
   });
 
-  it("audits all 37 phase annotation sets without inventing provenance", () => {
-    expect(data.catalogAudit).toHaveLength(37);
-    expect(new Set(data.catalogAudit.map((row) => row.exerciseId)).size).toBe(37);
+  it("audits all 45 phase annotation sets without inventing provenance", () => {
+    expect(data.catalogAudit).toHaveLength(45);
+    expect(new Set(data.catalogAudit.map((row) => row.exerciseId)).size).toBe(45);
     expect(data.catalogAudit.every((row) =>
       row.provenanceReviewStatus.includes("not modeled")
     )).toBe(true);
-    expect(data.catalogAudit.filter((row) => row.classification === "WELL_JUSTIFIED")).toHaveLength(26);
+    expect(data.catalogAudit.filter((row) => row.classification === "WELL_JUSTIFIED")).toHaveLength(34);
     expect(data.catalogAudit.filter((row) => row.classification === "PLAUSIBLE_NEEDS_REVIEW")).toHaveLength(8);
     expect(data.catalogAudit.filter((row) => row.classification === "ARBITRARY_OR_UNDERSPECIFIED")).toHaveLength(3);
     expect(data.catalogAudit.filter((row) => row.classification === "CONTRADICTORY")).toEqual([]);

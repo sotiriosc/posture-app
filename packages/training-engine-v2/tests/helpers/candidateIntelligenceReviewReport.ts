@@ -1808,7 +1808,7 @@ function buildReferenceExerciseKnowledgeReviewMarkdown(): AuditBuildResult {
     "",
     "This report presents contextual phase annotations as current production truth. Accepted matching annotations contribute a bounded component; unknown, needs-review, no-match, conflict, and incomplete provenance abstain. Legacy global `phaseSuitability` categories and mechanical phase bonuses are retained only as migration/audit material and are not rendered as current phase evidence.",
     "",
-    "The one canonical `REFERENCE_EXERCISES` catalog contains exactly 37 stable IDs. The future Knowledge Layer, Library, Coaching Rail, Session Composer, and Week Composer remain unimplemented.",
+    "The one canonical `REFERENCE_EXERCISES` catalog contains exactly 45 stable IDs. The future Knowledge Layer, Library, Coaching Rail, Session Composer, and Week Composer remain unimplemented.",
     "",
     "Generated from `REFERENCE_EXERCISES` by `packages/training-engine-v2/tests/helpers/candidateIntelligenceReviewReport.ts`.",
     "",

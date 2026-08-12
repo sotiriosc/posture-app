@@ -31,10 +31,10 @@ function matrix(archetypeId: string, environmentId = "full-commercial-gym") {
 }
 
 describe("whole-body exercise knowledge and candidate-pool audit", () => {
-  it("freezes all production baselines while auditing exactly one 37-row catalog", () => {
+  it("freezes all production baselines while auditing exactly one 45-row catalog", () => {
     expect(data.productionBehaviorChanged).toBe(true);
-    expect(data.catalogCount).toBe(37);
-    expect(data.uniqueCatalogCount).toBe(37);
+    expect(data.catalogCount).toBe(45);
+    expect(data.uniqueCatalogCount).toBe(45);
     expect(data.productionRankingFingerprint).toBe(PRODUCTION_RANKING_FINGERPRINT);
     expect(data.comprehensiveBehaviorFingerprint).toBe(COMPREHENSIVE_BEHAVIOR_FINGERPRINT);
     expect(data.contextualPhaseFingerprint)
@@ -78,13 +78,17 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
       "reverse-pec-deck",
       "band-face-pull",
     ]);
-    expect(matrix("direct-calves").truthfulLegalIds).toEqual([]);
-    expect(matrix("direct-hip-abductors").truthfulLegalIds).toEqual([]);
-    expect(matrix("direct-hip-adductors").truthfulLegalIds).toEqual([]);
-    expect(matrix("direct-rotator-cuff").truthfulLegalIds).toEqual([]);
+    expect(matrix("direct-calves").truthfulLegalIds).toEqual(["standing-calf-raise"]);
+    expect(matrix("direct-hip-abductors").truthfulLegalIds).toEqual(["loop-band-lateral-walk"]);
+    expect(matrix("direct-hip-adductors").truthfulLegalIds).toEqual(["side-lying-hip-adduction"]);
+    expect(matrix("direct-rotator-cuff").truthfulLegalIds).toEqual(["side-lying-dumbbell-external-rotation"]);
     expect(matrix("hamstring-knee-flexion").classification)
-      .toBe("SINGLE_CANDIDATE_DEPENDENCY");
-    expect(matrix("hamstring-knee-flexion").truthfulLegalIds).toEqual(["lying-leg-curl"]);
+      .toBe("SUFFICIENT_AND_DISTINCT");
+    expect(matrix("hamstring-knee-flexion").truthfulLegalIds).toEqual(["lying-leg-curl", "supine-hamstring-walkout"]);
+    expect(matrix("prep-cuff")).toEqual(expect.objectContaining({
+      truthfulLegalIds: ["side-lying-dumbbell-external-rotation"],
+      classification: "SINGLE_CANDIDATE_DEPENDENCY",
+    }));
     expect(data.recommendedDomainOption)
       .toBe("OPTION_D_HYBRID_MACRO_SELECTION_ROLES_PLUS_OPTIONAL_ACTION_FUNCTION_PROFILE");
   });
@@ -116,7 +120,7 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
 
   it("keeps pain, response, support, and stable-adaptive boundaries observable", () => {
     expect(data.fingerprints.painAwareCoverage)
-      .toBe("244ad0e4c024dc9d39245a93a1ea90611e66effd731396c11db9bc931f5ee78e");
+      .toBe("0326b5b0e3a2e806617dab3838c740ec2ec3b70a3c4eaef562c0a184d4331e7d");
     expect(matrix("horizontal-pull").supportedIds).toEqual(expect.arrayContaining([
       "chest-supported-dumbbell-row",
       "machine-row",
@@ -133,23 +137,23 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
     expect(carries.filter((id) => id === "farmer-carry")).toHaveLength(1);
     expect(carries.filter((id) => id === "suitcase-carry")).toHaveLength(1);
     expect(exercise("suitcase-carry").movementRoles).toHaveLength(3);
-    expect(data.proposedConcepts.every((concept) => !REFERENCE_EXERCISES.some((row) => row.id === concept.id)))
-      .toBe(true);
-    expect(data.catalogCount).toBe(37);
+    expect(data.proposedConcepts.filter((concept) => concept.priority === "P0").every((concept) => REFERENCE_EXERCISES.some((row) => row.id === concept.id))).toBe(true);
+    expect(data.proposedConcepts.filter((concept) => concept.priority === "P1").every((concept) => !REFERENCE_EXERCISES.some((row) => row.id === concept.id))).toBe(true);
+    expect(data.catalogCount).toBe(45);
   });
 
   it("freezes separate whole-body fingerprints and the owner proposal tranches", () => {
     expect(data.fingerprints).toEqual({
-      catalogInventory: "ddaf455d18b6b6039afc24f72938b3e8123afa632533dff57ab19ba94ed2ae2d",
-      rolePurity: "5cc82700144df493b8b0cc22044cf68a053214aa935c5b2e9fb01830dc6b4bb8",
-      muscleTargetExposure: "2120876fef166a594b2bad0a087b6b98fd4994b7d5a9a0900fe82fe87066f09f",
-      candidatePoolMatrix: "979903c769a1a36a1f0d4d431c860e57ad1b8c1cdae304a6c1b042e21e78e71d",
-      equipmentModeCoverage: "b1f503e7d62d0d9f50729ff68659da565454bdd66fa1627ba3c0fbdecbb17ae0",
-      painAwareCoverage: "244ad0e4c024dc9d39245a93a1ea90611e66effd731396c11db9bc931f5ee78e",
-      progressionContinuity: "310b9068b0dab7b091ffbe1203e719037cee013b9573f2a9e02c8e3676ae53f5",
-      minimalExpansionProposal: "696fae395bd6383729493d65ac0d4e656799b8797ecf75fdaa327ba33564c5d1",
-      knowledgeCompatibility: "4ae9b04a475f5243b387932d1e24da70cdaa044260156a4c17b9a346106009cf",
-      combinedWholeBodyAudit: "9f7578381b18c5afb381049a11d703a7c79de4851ac3994f33e67da3847978e7",
+      catalogInventory: "510372defce7b9893d4523fe5f763616bdba47b9700d863874b715150049e2d8",
+      rolePurity: "64a83992f33f42489b6f0229de5052f4416f65f050998f4ec5ec907fc6e5f7fd",
+      muscleTargetExposure: "64dbfe124198a6e6c6a4728c61fb1af5844c0ece946f0c01339719239557c422",
+      candidatePoolMatrix: "29eb15f92f4f6d8fd7049255aed6430c99ed6c3780866daa8c38c044080349bf",
+      equipmentModeCoverage: "af01c56f31a3a0d54ad063d92c34bb0a6d35e2bf7b827e40ddb3615bf86d5b15",
+      painAwareCoverage: "0326b5b0e3a2e806617dab3838c740ec2ec3b70a3c4eaef562c0a184d4331e7d",
+      progressionContinuity: "fd8c3f13a7c7ec4549ea8fb4bb9e628b8c4503af63323b953d3588b6816f22ad",
+      minimalExpansionProposal: "3041dc5d491d5d41d314f6bcea033e259baec63382c70fff89e4b4c29fff4a6e",
+      knowledgeCompatibility: "dfb8a57bb6fa5755c606590f69ec7ce6feb6c8d33077a9753e7c6c741dd9ee82",
+      combinedWholeBodyAudit: "58ff39398893487e5a4474210fffb6df06395d7abf2d70efadef15e334e0b098",
     });
     expect(data.proposedConcepts.filter((row) => row.priority === "P0")).toHaveLength(8);
     expect(data.proposedConcepts.filter((row) => row.priority === "P1")).toHaveLength(9);
@@ -159,7 +163,7 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
     const audit = renderWholeBodyExerciseKnowledgeAudit(data);
     const matrixReport = renderWholeBodyCandidatePoolMatrix(data);
     const proposal = renderWholeBodyMinimalCatalogExpansionProposal(data);
-    expect(audit).toContain("ROLE_MUSCLE_CONTRACT_IMPLEMENTED_P0_PROPOSALS_CURATED");
+    expect(audit).toContain("P0_WHOLE_BODY_PRODUCTION_ADMITTED");
     expect(audit).toContain("canonical muscle");
     expect(matrixReport).toContain("Production legal");
     expect(matrixReport).toContain("EQUIPMENT_UNAVAILABLE");
@@ -167,7 +171,7 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
     expect(proposal).toContain("DO_NOT_ADD_WHEN");
     expect(proposal).toContain("WHY_CURRENT_CATALOG_CANNOT_ALREADY_SOLVE_THIS");
     expect(data.fingerprints.knowledgeCompatibility)
-      .toBe("4ae9b04a475f5243b387932d1e24da70cdaa044260156a4c17b9a346106009cf");
+      .toBe("dfb8a57bb6fa5755c606590f69ec7ce6feb6c8d33077a9753e7c6c741dd9ee82");
   });
 
   it("regenerates the current reference report with contextual rather than legacy phase truth", () => {

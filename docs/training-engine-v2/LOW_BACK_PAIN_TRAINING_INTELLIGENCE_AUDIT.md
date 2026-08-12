@@ -76,8 +76,8 @@ The implemented support/stance model can distinguish chest-supported and unsuppo
 | horizontal pull | chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row |
 | vertical pull | lat-pulldown, band-lat-pulldown |
 | squat | goblet-squat, bodyweight-box-squat |
-| hinge | dumbbell-romanian-deadlift, cable-pull-through |
-| single-leg | split-squat, step-up |
+| hinge | dumbbell-romanian-deadlift, cable-pull-through, bodyweight-hip-hinge-rehearsal |
+| single-leg | split-squat, step-up, single-leg-balance-rehearsal |
 | trunk anti-extension | ninety-ninety-breathing, dead-bug, push-up, forearm-plank |
 | anti-rotation | pallof-press |
 | anti-lateral-flexion | forearm-side-plank, suitcase-carry |
@@ -141,10 +141,10 @@ These clinician-facing guidelines inform safety boundaries, exercise-program pri
 
 | Artifact | Fingerprint | Behavior meaning |
 | --- | --- | --- |
-| Production ranking | 6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56 | Intentionally changed by approved catalog/stress truth |
-| Comprehensive behavior | fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de | Intentionally changed by approved catalog/stress truth |
-| Reference catalog | 1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8 | Intentionally changed by seven rows and focused migrations |
-| Support/stance contract | 6542bc249181f0e1a010323763a7e51505dee7ee87229c4c43b65e0d2cc2963f | Intentionally changed by implementation |
+| Production ranking | d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7 | Intentionally changed by approved catalog/stress truth |
+| Comprehensive behavior | 1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e | Intentionally changed by approved catalog/stress truth |
+| Reference catalog | bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91 | Intentionally changed by seven rows and focused migrations |
+| Support/stance contract | 2716a8b17c37a2e46d98441a8b2fb840fe7ba4497dcb433bc5d1def301d970f4 | Intentionally changed by implementation |
 | Contextual phase laboratory | 8a1b0bdd4caf699d8b61ffb790388a518cda10699da9eec3481f50afaa1f7ef8 | Resolver/trace contract implementation |
 | Training safety | 0a0805117529073887fe7aca94a1bc2f097e53e1de14d320b1e37093a8825048 | Independent global readiness contract |
 | Training response | 33aec8bb8433d0bf27f63b3fe76e0c6349708e4da47608a5d6957687818453ec | Exposure-linked observation and ledger contract |
@@ -152,7 +152,7 @@ These clinician-facing guidelines inform safety boundaries, exercise-program pri
 | Stable-adaptive policy | 2e941653546cac2e8d8a8151c91d9470123b80dd06e8b387b734e882a83734a6 | Continuity doctrine and selected contextual phase policy |
 | Focused row stress curation | 8fada7ea2f07b7ddedea8d181a6d862e2d4d654ec74aea763766445f5db0cfc7 | Current low-back-relevant migration decisions |
 | Safety/response combined | 539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562 | Training intelligence foundation |
-| Low-back audit | bc4f00a942e0041dee25af23d7e13099f450eff090e6aa91f12ed779080f7f4c | Deterministic review artifact |
+| Low-back audit | db0ff63cddbaa32dc272f3b4b7bb4cd062ee95f6b926c3309d4068b3bc078931 | Deterministic review artifact |
 
 ## Exact Next Dependency
 

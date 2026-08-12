@@ -46,9 +46,9 @@ describe("knowledge-compatible seven-row production implementation", () => {
   it("adds exactly seven valid canonical rows with compact fallback coaching", () => {
     const rows = REFERENCE_EXERCISES.filter((candidate) => sevenIds.has(candidate.id));
 
-    expect(REFERENCE_EXERCISES).toHaveLength(37);
+    expect(REFERENCE_EXERCISES).toHaveLength(45);
     expect(rows.map((candidate) => candidate.id)).toEqual([...SEVEN_PRODUCTION_EXERCISE_IDS]);
-    expect(new Set(REFERENCE_EXERCISES.map((candidate) => candidate.id)).size).toBe(37);
+    expect(new Set(REFERENCE_EXERCISES.map((candidate) => candidate.id)).size).toBe(45);
     for (const candidate of rows) {
       expect(validateExerciseDefinition(candidate).filter((finding) => finding.severity === "error"))
         .toEqual([]);
@@ -180,18 +180,18 @@ describe("knowledge-compatible seven-row production implementation", () => {
 
   it("freezes isolated migration and compatibility fingerprints", () => {
     expect(data.productionRankingBefore).toBe("d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782");
-    expect(data.productionRankingAfter).toBe("6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56");
+    expect(data.productionRankingAfter).toBe("d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7");
     expect(data.comprehensiveBefore).toBe("216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9");
-    expect(data.comprehensiveAfter).toBe("fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de");
+    expect(data.comprehensiveAfter).toBe("1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e");
     expect(data.phaseFingerprint).toBe("afb247f02ed461d2e07516d90d66bf6ccb0928f049cdd7ff9f70095bd733c3de");
     expect(data.stressMigrationFingerprint).toBe("5de2302d5427dce372e9826a4b3c670fed01a101c16a72b0fb143bd383e15504");
     expect(data.longLeverMigrationFingerprint).toBe("9b8f06c32d71bafe7b1d3d78c1bd56c180faad0c7e1b6e6e6de6e3e150f70646");
     expect(data.sevenRowCatalogFingerprint).toBe("c7c5346d87901af43af07c506b7c6afda6fb3e2d10623075d77325f3a776eab1");
     expect(data.supportStanceFingerprint).toBe("fce834f056dbb6383b3576d1f8c33419cfe19cde213784474b4f5f72fc9d3bfd");
     expect(data.roleCandidatePoolFingerprint).toBe("3107254d1a9a349a898a0f8f39ea4d823264b861161e75df08bde3e6dd372d6c");
-    expect(data.knowledgeCompatibilityFingerprint).toBe("4ae9b04a475f5243b387932d1e24da70cdaa044260156a4c17b9a346106009cf");
+    expect(data.knowledgeCompatibilityFingerprint).toBe("1f31ff87378887f56349fec7a9a130144496cee974e40adbd0117eaf77af37e6");
     expect(data.knowledgePayload).toEqual(expect.objectContaining({
-      canonicalCatalogCount: 37,
+      canonicalCatalogCount: 45,
       canonicalCatalogCountOfSevenIds: 7,
       libraryImplemented: false,
       knowledgeLayerImplemented: false,

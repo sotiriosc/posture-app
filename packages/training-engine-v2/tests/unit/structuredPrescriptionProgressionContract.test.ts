@@ -49,7 +49,7 @@ const CURRENT_AXIS_VALUES = [
 ] as const;
 
 const CURRENT_EXERCISE_AXIS_VALUES = [
-  ...CURRENT_AXIS_VALUES.filter((axis) => axis !== "coordination"),
+  ...CURRENT_AXIS_VALUES,
   "duration",
   "distance",
   "trips",

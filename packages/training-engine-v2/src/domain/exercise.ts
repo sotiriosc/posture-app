@@ -24,6 +24,9 @@ export type ExerciseFamily =
   | "upper_pull"
   | "arm_accessory"
   | "delt_accessory"
+  | "calf_accessory"
+  | "hip_accessory"
+  | "cuff_control"
   | "glute_hamstring";
 
 export type ExercisePrerequisiteType =
@@ -385,6 +388,7 @@ export type ExerciseBasePosition =
 
 export type ExerciseStance =
   | "bilateral"
+  | "single_leg"
   | "split"
   | "half_kneeling_lead_side"
   | "staggered"
@@ -419,6 +423,7 @@ export type ExerciseSupportContactSource =
   | "bench"
   | "machine"
   | "box"
+  | "stable_support_surface"
   | "unknown";
 
 export type ExerciseSupportContactMode =
@@ -430,6 +435,7 @@ export type ExerciseSupportContactMode =
 export type ExerciseSupportContactSide =
   | "left"
   | "right"
+  | "prescription_side"
   | "bilateral"
   | "alternating"
   | "side_neutral"
@@ -476,6 +482,8 @@ export type ExerciseResistancePathType =
   | "free_implement"
   | "bodyweight"
   | "band_anchored"
+  | "band_unanchored"
+  | "prescription_dependent"
   | "unknown";
 
 export type ExerciseTrajectoryFreedom = "low" | "moderate" | "high" | "unknown";

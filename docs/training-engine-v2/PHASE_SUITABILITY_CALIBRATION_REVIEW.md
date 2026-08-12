@@ -4,9 +4,9 @@
 
 Fixed evaluation time: `2026-08-10T00:00:00.000Z`.
 
-Production 22-scenario ranking fingerprint: `70ff2f16037eed38bc6d8dddc098cfa0d6bbe3d833eaf3a1e53de61a5e252436` (matches the captured HEAD 7aa7ccd baseline).
+Production 22-scenario ranking fingerprint: `b17b55690f2d222f14975547f9663368c63b399f9052f8924d76583a8edf6e15` (matches the captured HEAD 7aa7ccd baseline).
 
-Experimental phase-laboratory fingerprint: `63177599c045a20d0c5fb6aa0e5cb8c7217ff19d76ac82f9d21c833071fb2094`.
+Experimental phase-laboratory fingerprint: `df3b33a52aaa597f914b3f7cd4839314822d6ae04ebaf78088e56312b7b0c718`.
 
 Phase audit classification: **PHASE_POLICY_READY_FOR_OWNER_DECISION**
 
@@ -91,7 +91,7 @@ The explicit Phase 3 loadability branch and Phase 1 skill/stability branch are a
 
 ## Reference-Catalog Phase Audit
 
-Catalog classifications: WELL_JUSTIFIED=26; PLAUSIBLE_NEEDS_REVIEW=8; ARBITRARY_OR_UNDERSPECIFIED=3; CONTRADICTORY=0. These are audit judgments about internal coherence, not missing provenance supplied after the fact.
+Catalog classifications: WELL_JUSTIFIED=34; PLAUSIBLE_NEEDS_REVIEW=8; ARBITRARY_OR_UNDERSPECIFIED=3; CONTRADICTORY=0. These are audit judgments about internal coherence, not missing provenance supplied after the fact.
 
 | Exercise | Training Roles | Movement Roles | Section Suitability | Phase 1 | Phase 2 | Phase 3 | Loadability | Skill | Stability | Coordination | Progression Axes | Continuity Potential | Assessment Feature Role | Phase Provenance / Review | Classification | Audit Reason |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -132,6 +132,14 @@ Catalog classifications: WELL_JUSTIFIED=26; PLAUSIBLE_NEEDS_REVIEW=8; ARBITRARY_
 | farmer-carry / Farmer Carry | capacity, hypertrophy_accessory, secondary_strength | carry, loaded_bracing | main:good, accessory:good | possible: Legacy migration value pending contextual evidence. | good: Legacy migration value for loaded capacity. | possible: Legacy migration value pending contextual evidence. | high | moderate | moderate | moderate | load, distance, trips, duration, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 2 capacity-main evidence is owner-approved. |
 | suitcase-carry / Suitcase Carry | capacity, hypertrophy_accessory, secondary_strength | carry, anti_lateral_flexion_core, loaded_bracing | main:good, accessory:good | possible: Legacy migration value pending contextual evidence. | good: Legacy migration value for unilateral loaded capacity. | possible: Legacy migration value pending contextual evidence. | high | moderate | moderate | moderate | load, distance, trips, duration, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 2 unilateral capacity-main evidence is owner-approved. |
 | wall-supported-suitcase-march / Wall-Supported Suitcase March | activation, capacity | loaded_bracing | activation:excellent, accessory:good | good: Legacy migration value for supported control. | possible: Legacy migration value pending contextual evidence. | possible: Legacy migration remains unknown rather than poor. | moderate | low | moderate | moderate | load, steps, duration, support_reduction, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 1 supported loaded-bracing activation is owner-approved. |
+| standing-calf-raise / Standing Calf Raise | hypertrophy_accessory | accessory | accessory:excellent | unspecified: no annotation | unspecified: no annotation | unspecified: no annotation | moderate | low | moderate | low | load, reps, sets, range, tempo, support_reduction, stability | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Contextual phase abstention preserves direct accessory ownership without inventing a phase vote. |
+| side-lying-hip-adduction / Side-Lying Hip Adduction | activation, hypertrophy_accessory | accessory | activation:good, accessory:good | unspecified: no annotation | unspecified: no annotation | unspecified: no annotation | limited | low | low | moderate | reps, sets, range, tempo, lever | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Contextual phase abstention leaves direct adduction relevance to the requested need. |
+| loop-band-lateral-walk / Loop-Band Lateral Walk | activation, hypertrophy_accessory | accessory | activation:good, accessory:good | unspecified: no annotation | unspecified: no annotation | unspecified: no annotation | limited | moderate | moderate | moderate | load, steps, sets, range, tempo, effort, support_reduction | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Contextual phase abstention leaves direct abduction relevance to the requested need and equipment. |
+| side-lying-dumbbell-external-rotation / Side-Lying Dumbbell External Rotation | activation, hypertrophy_accessory | accessory | activation:good, accessory:good | unspecified: no annotation | unspecified: no annotation | unspecified: no annotation | limited | moderate | low | moderate | load, reps, sets, range, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Contextual phase abstention leaves direct cuff relevance to action and muscle ownership. |
+| supine-hamstring-walkout / Supine Hamstring Walkout | activation, hypertrophy_accessory | accessory | activation:good, accessory:good | unspecified: no annotation | unspecified: no annotation | unspecified: no annotation | limited | moderate | moderate | moderate | steps, reps, sets, range, tempo, duration, lever | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Contextual phase abstention avoids treating home equipment fit as phase evidence. |
+| wall-ankle-dorsiflexion-rock / Wall Ankle Dorsiflexion Rock | preparation | mobility | warmup:good | unspecified: no annotation | unspecified: no annotation | unspecified: no annotation | none | low | low | low | range, reps, tempo, duration | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Contextual phase abstention leaves ankle preparation to an explicit dependency. |
+| bodyweight-hip-hinge-rehearsal / Bodyweight Hip-Hinge Rehearsal | preparation, activation | hinge | warmup:excellent, activation:good | unspecified: no annotation | unspecified: no annotation | unspecified: no annotation | none | low | low | moderate | range, reps, tempo, support_reduction, coordination | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Contextual phase abstention leaves unloaded hinge rehearsal to role and section context. |
+| single-leg-balance-rehearsal / Single-Leg Balance Rehearsal | preparation, activation | single_leg | warmup:good, activation:good | unspecified: no annotation | unspecified: no annotation | unspecified: no annotation | none | moderate | high | moderate | duration, reps, support_reduction, range, stability, coordination | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Contextual phase abstention leaves stance-control preparation to an explicit need. |
 
 No phase annotation has a phase-specific provenance or review-status field. Existing reason text cannot substitute for that contract and is not read by scoring.
 
@@ -291,6 +299,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -325,6 +341,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -359,6 +383,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -392,6 +424,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -425,6 +465,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -458,6 +506,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -494,6 +550,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -530,6 +594,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -566,6 +638,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -601,6 +681,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical pull secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -636,6 +724,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical pull secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -671,6 +767,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical pull secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -707,6 +811,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -743,6 +855,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -779,6 +899,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | side-lying-hip-adduction | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | loop-band-lateral-walk | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | supine-hamstring-walkout | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -814,6 +942,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH |
+| hinge secondary | phase_1 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -849,6 +985,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH |
+| hinge secondary | phase_2 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -884,6 +1028,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | standing-calf-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | side-lying-hip-adduction | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | loop-band-lateral-walk | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | side-lying-dumbbell-external-rotation | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | supine-hamstring-walkout | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH |
+| hinge secondary | phase_3 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -919,6 +1071,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | standing-calf-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -954,6 +1114,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | standing-calf-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -989,6 +1157,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | standing-calf-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_1 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1024,6 +1200,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | bodyweight-hip-hinge-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | single-leg-balance-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_2 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1059,6 +1243,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | bodyweight-hip-hinge-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | single-leg-balance-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_3 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1094,6 +1286,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | bodyweight-hip-hinge-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | single-leg-balance-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1127,6 +1327,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_1 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | bodyweight-hip-hinge-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | single-leg-balance-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1160,6 +1368,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_2 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | bodyweight-hip-hinge-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | single-leg-balance-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1193,6 +1409,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | standing-calf-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_3 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | bodyweight-hip-hinge-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | single-leg-balance-rehearsal | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH |
 | rear-delt accessory | phase_1 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1227,6 +1451,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | rear-delt accessory | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | rear-delt accessory | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | standing-calf-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH |
 | rear-delt accessory | phase_2 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1261,6 +1493,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | rear-delt accessory | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | rear-delt accessory | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | standing-calf-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH |
 | rear-delt accessory | phase_3 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1295,6 +1535,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | rear-delt accessory | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | rear-delt accessory | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | standing-calf-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | side-lying-hip-adduction | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | loop-band-lateral-walk | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | side-lying-dumbbell-external-rotation | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | supine-hamstring-walkout | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | wall-ankle-dorsiflexion-rock | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | bodyweight-hip-hinge-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | single-leg-balance-rehearsal | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 
 ## Goal-Independence Matrix
 

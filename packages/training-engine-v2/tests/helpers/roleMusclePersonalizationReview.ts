@@ -27,7 +27,7 @@ export const KNEE_DOMINANT_REVIEW_IDS = [
   "step-up",
 ] as const;
 
-export const P0_CURATED_PROPOSAL_IDS = [
+export const P0_PRODUCTION_IDS = [
   "standing-calf-raise",
   "side-lying-hip-adduction",
   "loop-band-lateral-walk",
@@ -35,7 +35,7 @@ export const P0_CURATED_PROPOSAL_IDS = [
   "supine-hamstring-walkout",
   "wall-ankle-dorsiflexion-rock",
   "bodyweight-hip-hinge-rehearsal",
-  "supported-single-leg-balance-rehearsal",
+  "single-leg-balance-rehearsal",
 ] as const;
 
 const personalization = {
@@ -72,6 +72,9 @@ function rolePools() {
 
 export function buildRoleMusclePersonalizationReviewData() {
   const safetyResponse = buildTrainingSafetyAndResponseFoundationData();
+  const legacyRows = REFERENCE_EXERCISES.filter((exercise) =>
+    !P0_PRODUCTION_IDS.includes(exercise.id as typeof P0_PRODUCTION_IDS[number]),
+  );
   const identityInventory = REFERENCE_EXERCISES.map((exercise) => ({ id: exercise.id, name: exercise.name }));
   const phaseMetadata = REFERENCE_EXERCISES.map((exercise) => ({
     id: exercise.id,
@@ -103,7 +106,7 @@ export function buildRoleMusclePersonalizationReviewData() {
     equipmentMetadata: hash(equipmentMetadata),
     progressionMetadata: hash(progressionMetadata),
     identityInventory: hash(identityInventory),
-    p0Proposals: hash(P0_CURATED_PROPOSAL_IDS),
+    p0Production: hash(P0_PRODUCTION_IDS),
   };
   return {
     productionCount: REFERENCE_EXERCISES.length,
@@ -112,18 +115,18 @@ export function buildRoleMusclePersonalizationReviewData() {
     kneeDominantReview: KNEE_DOMINANT_REVIEW_IDS.map((id) => REFERENCE_EXERCISES.find((exercise) => exercise.id === id)!),
     personalization,
     rolePools: rolePools(),
-    p0ProposalIds: P0_CURATED_PROPOSAL_IDS,
+    p0ProductionIds: P0_PRODUCTION_IDS,
     invariants: {
-      phaseMetadataPre: fingerprints.phaseMetadata,
-      phaseMetadataPost: fingerprints.phaseMetadata,
+      phaseMetadataPre: "86a0ca4631d76772ba1dc579f668f624d8aea958be11544ee6e38e245b4e16f3",
+      phaseMetadataPost: hash(legacyRows.map((exercise) => ({ id: exercise.id, phaseSuitability: exercise.phaseSuitability, phaseSuitabilityAnnotations: exercise.phaseSuitabilityAnnotations ?? [] }))),
       safetyResponsePre: "539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562",
       safetyResponsePost: fingerprints.safetyResponse,
-      equipmentMetadataPre: fingerprints.equipmentMetadata,
-      equipmentMetadataPost: fingerprints.equipmentMetadata,
-      progressionMetadataPre: fingerprints.progressionMetadata,
-      progressionMetadataPost: fingerprints.progressionMetadata,
-      identityInventoryPre: fingerprints.identityInventory,
-      identityInventoryPost: fingerprints.identityInventory,
+      equipmentMetadataPre: "83fa2d16310e0965d84ef1416cfedbb7961aefdaa37414396a102f066b53bc46",
+      equipmentMetadataPost: hash(legacyRows.map((exercise) => ({ id: exercise.id, required: exercise.equipmentRequirements, optional: exercise.optionalEquipment }))),
+      progressionMetadataPre: "faf82d77f021267fbc32beeb9c796c54340dec02443981880039df1fa7632fd5",
+      progressionMetadataPost: hash(legacyRows.map((exercise) => ({ id: exercise.id, progression: exercise.progression }))),
+      identityInventoryPre: "2bd3669bc06d91d09408a72d455520a62758c644e529ea0a732a7acf95915a44",
+      identityInventoryPost: hash(legacyRows.map((exercise) => ({ id: exercise.id, name: exercise.name }))),
     },
     fingerprints: {
       ...fingerprints,
@@ -145,7 +148,7 @@ export function renderRoleMusclePersonalizationReview() {
   return [
     "# Role, Muscle, and Personalization Regression Matrix",
     "",
-    `Production inventory: ${data.productionCount} rows / ${data.uniqueProductionCount} stable IDs. P0 proposals: ${data.p0ProposalIds.length}; production additions: 0.`,
+    `Production inventory: ${data.productionCount} rows / ${data.uniqueProductionCount} stable IDs. P0 production additions: ${data.p0ProductionIds.length}.`,
     "",
     "## Role And Action Corrections",
     "",
@@ -169,7 +172,7 @@ export function renderRoleMusclePersonalizationReview() {
       ["safety/response", data.invariants.safetyResponsePre, data.invariants.safetyResponsePost, data.invariants.safetyResponsePre === data.invariants.safetyResponsePost],
       ["equipment metadata", data.invariants.equipmentMetadataPre, data.invariants.equipmentMetadataPost, data.invariants.equipmentMetadataPre === data.invariants.equipmentMetadataPost],
       ["progression metadata", data.invariants.progressionMetadataPre, data.invariants.progressionMetadataPost, data.invariants.progressionMetadataPre === data.invariants.progressionMetadataPost],
-      ["37-row identity inventory", data.invariants.identityInventoryPre, data.invariants.identityInventoryPost, data.invariants.identityInventoryPre === data.invariants.identityInventoryPost],
+      ["pre-P0 37-row identity inventory", data.invariants.identityInventoryPre, data.invariants.identityInventoryPost, data.invariants.identityInventoryPre === data.invariants.identityInventoryPost],
     ]),
     "",
     "## Isolated Fingerprints",

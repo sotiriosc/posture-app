@@ -6,7 +6,7 @@ The contextual annotation schema, deterministic resolver, provenance validation,
 
 Fixed evaluation time: `2026-08-10T00:00:00.000Z`.
 
-Accepted production ranking fingerprint: `70ff2f16037eed38bc6d8dddc098cfa0d6bbe3d833eaf3a1e53de61a5e252436` (matches captured HEAD dc9336e baseline).
+Accepted production ranking fingerprint: `b17b55690f2d222f14975547f9663368c63b399f9052f8924d76583a8edf6e15` (matches captured HEAD dc9336e baseline).
 
 Context laboratory fingerprint: `8a1b0bdd4caf699d8b61ffb790388a518cda10699da9eec3481f50afaa1f7ef8`.
 

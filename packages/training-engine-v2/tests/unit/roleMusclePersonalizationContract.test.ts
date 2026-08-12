@@ -65,14 +65,14 @@ function response(exerciseId: string, kind: "tolerated" | "adverse") {
 describe("role, muscle, and actual-user personalization contract", () => {
   it("freezes isolated migration fingerprints and unchanged owners", () => {
     const data = buildRoleMusclePersonalizationReviewData();
-    expect(data.productionCount).toBe(37);
-    expect(data.uniqueProductionCount).toBe(37);
-    expect(data.p0ProposalIds).toHaveLength(8);
+    expect(data.productionCount).toBe(45);
+    expect(data.uniqueProductionCount).toBe(45);
+    expect(data.p0ProductionIds).toHaveLength(8);
     expect(Object.entries(data.invariants).filter(([key]) => key.endsWith("Pre")).every(([key, value]) => value === data.invariants[key.replace(/Pre$/, "Post") as keyof typeof data.invariants])).toBe(true);
     expect(data.fingerprints.safetyResponse).toBe("539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562");
   });
-  it("migrates all 37 rows to one valid canonical muscle source", () => {
-    expect(REFERENCE_EXERCISES).toHaveLength(37);
+  it("keeps all 45 rows on one valid canonical muscle source", () => {
+    expect(REFERENCE_EXERCISES).toHaveLength(45);
     expect(validateExerciseCatalog(REFERENCE_EXERCISES).filter((finding) => finding.severity === "error")).toEqual([]);
     for (const exercise of REFERENCE_EXERCISES) {
       expect(exercise.primaryMuscles).toEqual(

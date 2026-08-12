@@ -246,7 +246,7 @@ describe("minimal direct trunk/core and carry catalog proposal", () => {
   });
 
   it("retains the proposal evidence after the exact seven rows enter production", () => {
-    expect(REFERENCE_EXERCISES).toHaveLength(37);
+    expect(REFERENCE_EXERCISES).toHaveLength(45);
     expect(
       REFERENCE_EXERCISES.filter(
         (exercise) => exercise.mechanics?.trunkMechanics !== undefined,

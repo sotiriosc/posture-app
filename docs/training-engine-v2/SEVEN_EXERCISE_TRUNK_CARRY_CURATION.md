@@ -1047,10 +1047,10 @@ No unresolved owner-decision questions remain inside this seven-exercise curatio
 
 | Artifact | Current | Matches |
 | --- | --- | --- |
-| Production ranking fingerprint | 6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56 | true |
-| Comprehensive behavior fingerprint | fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de | true |
-| Reference catalog fingerprint | 1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8 | true |
-| Equipment legality fingerprint | 5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869 | true |
+| Production ranking fingerprint | d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7 | true |
+| Comprehensive behavior fingerprint | 1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e | true |
+| Reference catalog fingerprint | bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91 | true |
+| Equipment legality fingerprint | ac3d2d4e8c8c3acc3cf3b57610bfb7e958c9879eef19e525887468646bbc1fd5 | true |
 | Expanded equipment fixture fingerprint | bb07188480cab4134ba4f2eb36dfa4f17e5d4d62d6139b539c5603ad602b482a | true |
 
 ## Whole-Body Roadmap Handoff

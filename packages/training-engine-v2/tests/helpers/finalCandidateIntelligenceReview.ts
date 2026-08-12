@@ -1244,10 +1244,9 @@ function catalogSummary(): CatalogSummary {
     materiallyUnderSpecified: materiallyUnderSpecified.length,
     p0Gaps: [],
     p1Gaps: [
-      "Human curation of contextual phase annotations with accepted/needs-review/unknown status and structured provenance.",
-      "Owner selection of contextual phase category spacing/weight after calibration review, followed by duplicated mechanical-bonus removal and full revalidation before Session Composer.",
-      "Project-owner resolution of the 17 remaining trunk-mechanics proposals before any additional complete profiles or normalized trunk assessment features.",
-      "Final owner approval of contextual phase proposals and focused stress migration decisions, followed by isolated behavior-equivalent implementation tests before any new trunk/carry reference exercises are added.",
+      "Nine equipment- or task-specific whole-body catalog concepts remain optional future improvements, not Candidate Intelligence blockers.",
+      "Project-owner resolution of the 17 remaining trunk-mechanics proposals is required before adding further complete profiles or normalized trunk assessment features, not before composition over current legal pools.",
+      "Golden-product TrainingSafety adapter wiring remains separately classified as PRODUCT_ADAPTER_PENDING.",
     ],
     p2Gaps: [
       "Several non-row exercises still have unknown support or resistance-path metadata.",
@@ -1432,7 +1431,7 @@ function renderTransitionPurposeSummary(findings: readonly TransitionPurposeFind
 
 function renderMarkdown(data: FinalReviewData): string {
   const featureVerdict = "RESOLVED_FOR_CANDIDATE_INTELLIGENCE";
-  const readiness = "TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION";
+  const readiness = "CANDIDATE_INTELLIGENCE_READY_FOR_SESSION_COMPOSER_DESIGN";
 
   return [
     "# Final Candidate Intelligence Readiness Review",
@@ -1451,7 +1450,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     `Classification: **${readiness}**`,
     "",
-    "Architecture is sound and the candidate pipeline is deterministic/explainable. The stable-adaptive doctrine is binding: retain productive legal exercises, progress or purposefully modify their prescriptions, and replace only when evidence or phase development justifies reconsideration. Future composition must preserve anchors, bound accessory rotation, remove redundancy when time contracts, and preserve useful exercise identities across phase transitions. No Session/Week Composer behavior is implemented. The response receiver, TrainingSafety input/result boundary, and selected non-default contextual phase scorer are implemented without changing production ranking. Final contextual annotation and focused stress-migration decisions remain with the owner before seven-row production implementation.",
+    "Architecture is sound and the candidate pipeline is deterministic/explainable. The canonical 45-row catalog now includes the eight approved P0 whole-body identities, and the fixed-shell matrix shows truthful direct-action, primary-muscle, preparation, equipment, pain, response, and continuity behavior. The stable-adaptive doctrine remains binding. No Session/Week Composer behavior is implemented; Composer design is the next separately authorized dependency.",
     "",
     "## Trunk / Core Domain Contract Implementation",
     "",
@@ -1461,7 +1460,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "Validation and `buildTrunkMechanicsTrace` remain the only consumers. Strong mechanics cannot manufacture role eligibility, an absent profile emits explicit unavailable/unknown trace evidence, and notes/provenance are non-behavioral. Existing movement roles remain unchanged.",
     "",
-    "The accepted 22-scenario ranking fingerprint remains `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782`. The broader fixed contract fingerprint covering totals, component raw values, rejection codes, pain readiness, phase behavior, and assessment traces remains `216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9`.",
+    "The accepted post-P0 22-scenario ranking fingerprint is `d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7`. The broader fixed contract fingerprint covering totals, component raw values, rejection codes, pain readiness, phase behavior, and assessment traces is `1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e`.",
     "",
     "The first complete metadata tranche is limited to 90/90 Breathing, Dead Bug, and Pallof Press. It contains ten accepted fields and fourteen explicit unknowns, all accepted provenance points to `TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche`, and no scoring, phase, assessment, prescription, exposure-ledger, or composition behavior consumes it.",
     "",
@@ -1469,15 +1468,15 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "The owner accepted all 15 `PROPOSE_ACCEPTED` field judgments from the representative 14-exercise by 8-function proposal. Ten are implemented in the direct trio; five accepted Push-Up and supported-row judgments remain approved but deferred. The proposal classification remains **TRUNK_PROFILE_TRANCHE_READY_FOR_OWNER_APPROVAL** as the record of the accepted review.",
     "",
-    "All 17 `PROPOSE_NEEDS_REVIEW` fields remain unresolved. Dead Bug breathing/pressure coordination and Pallof Press anti-lateral-flexion and loaded-bracing values stay unknown; no secondary/support exercise has a partial profile. The full catalog fingerprint after the intentional support/stance migration is `124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9`; the earlier trunk-profile-only fingerprint is retained in prior review history.",
+    "All 17 `PROPOSE_NEEDS_REVIEW` fields remain unresolved. Dead Bug breathing/pressure coordination and Pallof Press anti-lateral-flexion and loaded-bracing values stay unknown; no secondary/support exercise has a partial profile. The post-P0 full catalog fingerprint is `bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91`; removing only `mechanics.trunkMechanics` yields `9f50087c224ba18d2dda29ccb50e4e3ee2e69fa416f438a186070b7cd174c779`.",
     "",
     "### Minimal Direct Trunk / Carry Catalog Proposal",
     "",
     "A deterministic proposal evaluated 24 new candidate concepts and selected Forearm Plank, Forearm Side Plank, Machine Abdominal Crunch, Half-Kneeling High-to-Low Cable Chop, Bilateral Farmer Carry, Suitcase Carry, and Wall-Supported Suitcase March as the smallest coherent first tranche.",
     "",
-    "Overall status: **SEVEN_EXERCISE_STRESS_SUPPORT_READY_FOR_FINAL_OWNER_APPROVAL** for curation, while production metadata remains blocked. Equipment, prescription/progression, response receivers, safety input/result wiring, support/stance, focused stress curation, and the selected non-default contextual phase scorer now exist. No seven-exercise production row is assigned. Remaining blockers are final phase-annotation and stress-migration owner decisions plus behavior-equivalent implementation tests. Wall-supported suitcase march remains constrained to `loaded_bracing`; it must not satisfy `carry` or hard `anti_lateral_flexion_core` in the first production implementation.",
+    "Historical milestone status: **SEVEN_EXERCISE_PRODUCTION_COMPLETE**. Those seven trunk/carry rows remain production knowledge with approved phase/stress, equipment, support/stance, prescription/progression, response, and safety contracts. Wall-supported suitcase march remains constrained to `loaded_bracing`; it does not satisfy `carry` or hard `anti_lateral_flexion_core`.",
     "",
-    "The exact next dependency is final owner decisions on the contextual phase proposals and focused current-row stress migration questions, followed by isolated behavior-equivalent implementation tests for the seven rows. Golden-product TrainingSafety wiring remains separately classified as PRODUCT_ADAPTER_PENDING. No future identity is a production exercise yet.",
+    "The exact next dependency is separate owner authorization for Session Composer design over the truthful legal candidate pools. Golden-product TrainingSafety wiring remains separately classified as PRODUCT_ADAPTER_PENDING, and P1 catalog concepts remain unimplemented future improvements.",
     "",
     "The 17 representative secondary-mechanics proposals remain independently unresolved. They do not block review of the new candidate concepts, and the catalog proposal does not authorize their profile implementation.",
     "",
@@ -1619,11 +1618,11 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "The implemented deterministic resolver orders role+section, section, training-role and genuinely general matches. No match becomes `UNKNOWN_NO_MATCH`; conflicting equal-specificity annotations become `CONFLICTING_ANNOTATIONS`. Neither receives a hidden phase value. Explicit reviewed poor remains a distinct selected category. Reason prose and provenance do not create score, legality, pain, progression or transition behavior.",
     "",
-    "The production curation classifies all 90 current annotations: 16 PROPOSE_ACCEPT, 5 KEEP_NEEDS_REVIEW, 6 KEEP_UNKNOWN, and 63 REJECT_AS_WRONG_OWNER. Proposed acceptance is not production acceptance. The separate seven-row curation contains 21 contextual proposals for final owner review.",
+    "The accepted contextual scorer consumes only owner-approved, scoped annotations. Needs-review, unknown, conflict, and no-match evidence omits the component and denominator weight. The eight P0 whole-body rows add no accepted phase vote.",
     "",
     "The implemented boundary keeps contextual phase evidence downstream of hard eligibility, requires complete accepted provenance for future scoring eligibility, omits `needs_review`, unknown, no-match, and conflict from both component and denominator, and preserves accepted poor as a bounded negative preference. Legacy production scoring remains active until annotation approval and an explicit deterministic switch.",
     "",
-    "Remaining P1 work includes final owner decisions for the 16 proposed current contextual annotations, seven-row phase proposals, focused low-back stress migration, and the 17 trunk-mechanics needs-review proposals before assessment expansion. Golden-product safety wiring remains `PRODUCT_ADAPTER_PENDING`. Production activation and seven-row implementation require isolated revalidation. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.",
+    "Remaining P1 work is optional catalog and mechanics depth, including the 17 trunk-mechanics needs-review proposals before assessment expansion. Golden-product safety wiring remains `PRODUCT_ADAPTER_PENDING`. These are explicit future improvements, not blockers to truthful composition over current legal pools. Overall readiness is CANDIDATE_INTELLIGENCE_READY_FOR_SESSION_COMPOSER_DESIGN.",
     "",
     "## Pain / Injury Review",
     "",
@@ -1646,7 +1645,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "The full evidence is in `PAIN_SEMANTICS_AND_CALIBRATION_REVIEW.md`: 48 field-consumption rows, 19 representative exercise/tag rows, and 144 fixed-time candidate/state rows. The canonical unit is `signalId + stressTag`; every matching exercise source remains provenance rather than another unit. Receiver policies explicitly own warning, suitability, joint cost, hard authority, acute authority, assessment context, and deferred response requirements.",
     "",
-    "The reviewed post-contract 22-scenario fingerprint is `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782`. Controlled ranking changes are limited to joint/caution source deduplication and removal of the global stability pain bonus; no coefficient, weight, severity multiplier, phase value, or exercise metadata changed.",
+    "The reviewed post-P0 22-scenario fingerprint is `d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7`. The change from the pre-P0 fingerprint is an intentional consequence of catalog admission into truthful tested pools; no score coefficient, severity multiplier, or synthetic phase value changed.",
     "",
     "### MODERATE_PAIN_CALIBRATION_LABORATORY",
     "",
@@ -1773,7 +1772,7 @@ function renderMarkdown(data: FinalReviewData): string {
     "",
     "## Readiness Rationale",
     "",
-    "The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, response-led progression and continuity semantics are separated from replacement, and TrainingSafety affects downstream readiness without changing rank. Production phase scoring remains unchanged pending final contextual-annotation approval. The seven rows still require owner phase/stress decisions and isolated implementation revalidation; whole-body audit and composition remain deliberately deferred.",
+    "Candidate Intelligence graduates because the 45-row legal pools are truthful, deterministic ranking and DecisionTrace remain inspectable, direct actions and primary-required muscles are selectable, preparation dependencies have bounded candidates, equipment gaps stay explicit, response-led continuity remains separate from replacement, TrainingSafety affects downstream readiness without changing rank, and contextual phase abstention adds no synthetic vote. P1 concepts are improvements rather than blockers. Session Composer design remains separately authorized and unimplemented.",
     "",
   ].join("\n");
 }
@@ -1805,6 +1804,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     existingControlledScenarios: result.data.controlledScenarioCount,
     totalRequestsReviewed: result.data.totalRequestsReviewed,
     transitionPurposeContradictions: contradictions,
-    finalReadiness: "TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION",
+    finalReadiness: "CANDIDATE_INTELLIGENCE_READY_FOR_SESSION_COMPOSER_DESIGN",
   }, null, 2));
 }

@@ -9,7 +9,7 @@ import {
 describe("foundation reference data", () => {
   it("keeps the reference catalog small, representative, and schema-valid", () => {
     expect(REFERENCE_EXERCISES.length).toBeGreaterThanOrEqual(20);
-    expect(REFERENCE_EXERCISES).toHaveLength(37);
+    expect(REFERENCE_EXERCISES).toHaveLength(45);
 
     const validationErrors = validateExerciseCatalog(REFERENCE_EXERCISES).filter(
       (finding) => finding.severity === "error",

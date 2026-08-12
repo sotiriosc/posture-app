@@ -29,7 +29,7 @@ The proposal authorizes no production exercise. Equipment, structured prescripti
 
 ## Scope and Evidence
 
-- Current branch reference catalog: 37/37 exercises audited.
+- Current branch reference catalog: 45/45 exercises audited.
 - Protected legacy source: golden ancestor `8af4934641c46da9abbe77a62881151cca9cbf34`; inspected without checking it out or modifying it.
 - Current receiver inspection: role eligibility/scoring, assessment relevance/demand, pain evidence, transition comparison, row observability, optimizer contracts, and DecisionTrace.
 - This is a contract review. Inferred biomechanical functions are labeled `needs review`; they are not silently promoted into exercise facts.
@@ -39,20 +39,20 @@ The proposal authorizes no production exercise. Equipment, structured prescripti
 
 | Measure | Current count | Meaning |
 | --- | --- | --- |
-| Reference exercises | 37 | Small architecture-test catalog, not a complete catalog |
+| Reference exercises | 45 | Small architecture-test catalog, not a complete catalog |
 | Dedicated `core_control` exercises | 6 | Dead Bug and Pallof Press |
 | Additional trunk-primary breathing resets | 1 | 90/90 Breathing |
 | Primary `trunk` exercises | 10 | 90/90 Breathing, Dead Bug, Pallof Press |
 | Secondary `trunk` exercises | 0 | Coarse anatomy; not automatic direct credit |
 | Direct developmental trunk exercises | 10 | Three, including one preparation/recovery drill |
 | Meaningful secondary trunk exercises | 8 | Eight catalog-supported generic-demand rows; specific functions still need human review |
-| Incidental/unreviewed bracing rows | 10 | No direct developmental credit |
-| Rows with no current trunk evidence | 9 | Unknown/absent must remain unknown |
+| Incidental/unreviewed bracing rows | 16 | No direct developmental credit |
+| Rows with no current trunk evidence | 11 | Unknown/absent must remain unknown |
 | Trunk profiles / accepted fields / explicit unknown fields | 10 / 24 / 56 | First authorized tranche only; remaining exercises stay profile-unavailable |
 | breathing_position / anti-extension / anti-rotation / carry | 1 / 4 / 1 / 2 | Carry is typed but has no reference exercise |
 | capacity training-role exercises | 3 | Conditioning/carry composition cannot be exercised |
-| ribcage / lumbar_spine / pelvis / general exercises | 7 / 18 / 11 / 0 | No abdomen or abdominal_wall region exists |
-| trunk_control low / moderate / high / unknown / mechanics absent | 10 / 8 / 9 / 2 / 8 | Generic demand coverage is broader than function-specific truth |
+| ribcage / lumbar_spine / pelvis / general exercises | 7 / 19 / 16 / 0 | No abdomen or abdominal_wall region exists |
+| trunk_control low / moderate / high / unknown / mechanics absent | 14 / 12 / 9 / 2 / 8 | Generic demand coverage is broader than function-specific truth |
 
 **Dedicated core-control count: 2.** `90/90 Breathing` is trunk-primary and directly develops breathing/position, but its family and training roles correctly identify preparation/recovery rather than a third generic core-control accessory. Its owner-reviewed profile captures high breathing/pressure and low anti-extension expression without changing that role truth. Heavy compounds provide useful bracing exposure; they do not increase the dedicated count.
 
@@ -154,6 +154,14 @@ Current V2 still cannot support *excellent, coherent* trunk/core programming acr
 | Band Face Pull | None modeled | Unknown | NO_CURRENT_TRUNK_EVIDENCE | trunk_control is explicitly unknown; Unknown is not evidence of contribution. | limited/low | reps, sets, tempo | none | roles=activation, hypertrophy_accessory; sections=activation:excellent, accessory:good | phase_1:excellent, phase_2:good, phase_3:possible | None from current metadata. |
 | Dumbbell Curl | None modeled | None modeled | NO_CURRENT_TRUNK_EVIDENCE | No trunk mechanics profile; No trunk muscle, role, region, or mechanics annotation. | moderate/moderate | load, reps, sets, tempo | grip_intensive | roles=hypertrophy_accessory; sections=accessory:excellent | phase_1:possible, phase_2:good, phase_3:excellent | None from current metadata. |
 | Cable Triceps Pressdown | None modeled | None modeled | NO_CURRENT_TRUNK_EVIDENCE | No trunk mechanics profile; No trunk muscle, role, region, or mechanics annotation. | moderate/moderate | load, reps, sets, tempo | none | roles=hypertrophy_accessory; sections=accessory:excellent | phase_1:possible, phase_2:good, phase_3:excellent | None from current metadata. |
+| Standing Calf Raise | None; calf development is primary | Low upright position control | INCIDENTAL_BRACING | Contextual trunk contribution only; Trunk is contextual and mechanics classify low trunk demand. | moderate/moderate | load, reps, sets, range, tempo, support_reduction, stability | none | roles=hypertrophy_accessory; sections=accessory:excellent |  | No developmental credit is justified; generic demand is observational and no receiver aggregates it. |
+| Side-Lying Hip Adduction | None; hip adduction is primary | Low supported position control | INCIDENTAL_BRACING | Contextual trunk contribution only; Trunk is contextual under substantial lateral floor support. | limited/moderate | reps, sets, range, tempo, lever | none | roles=activation, hypertrophy_accessory; sections=activation:good, accessory:good |  | No developmental credit is justified; generic demand is observational and no receiver aggregates it. |
+| Loop-Band Lateral Walk | None; hip abduction is primary | Upright lateral-step position control | INCIDENTAL_BRACING | Contextual trunk contribution only; Trunk is contextual; no loaded gait, carry, or direct trunk role is assigned. | limited/moderate | load, steps, sets, range, tempo, effort, support_reduction | none | roles=activation, hypertrophy_accessory; sections=activation:good, accessory:good |  | No developmental credit is justified; generic demand is observational and no receiver aggregates it. |
+| Side-Lying Dumbbell External Rotation | None modeled | None modeled | NO_CURRENT_TRUNK_EVIDENCE | No trunk contribution or role; The supported cuff identity has no canonical trunk contribution. | limited/low | load, reps, sets, range, tempo | none | roles=activation, hypertrophy_accessory; sections=activation:good, accessory:good |  | None from current metadata. |
+| Supine Hamstring Walkout | None; knee flexion is primary | Pelvic position control | INCIDENTAL_BRACING | Contextual trunk contribution only; Trunk is contextual in a substantially floor-supported bridge position. | limited/moderate | steps, reps, sets, range, tempo, duration, lever | none | roles=activation, hypertrophy_accessory; sections=activation:good, accessory:good |  | No developmental credit is justified; generic demand is observational and no receiver aggregates it. |
+| Wall Ankle Dorsiflexion Rock | None modeled | None modeled | NO_CURRENT_TRUNK_EVIDENCE | No trunk contribution or role; The ankle preparation identity has no canonical trunk contribution. | none/low | range, reps, tempo, duration | none | roles=preparation; sections=warmup:good |  | None from current metadata. |
+| Bodyweight Hip-Hinge Rehearsal | None; hinge preparation is primary | Unloaded trunk organization | INCIDENTAL_BRACING | Contextual trunk contribution only; Trunk is contextual and the identity has no loaded-bracing truth. | none/low | range, reps, tempo, support_reduction, coordination | none | roles=preparation, activation; sections=warmup:excellent, activation:good |  | No developmental credit is justified; generic demand is observational and no receiver aggregates it. |
+| Single-Leg Balance Rehearsal | None; stance control is primary | Upright single-leg position control | INCIDENTAL_BRACING | Contextual trunk contribution only; Trunk is contextual and no carry, gait, march, or loaded-bracing role is assigned. | none/low | duration, reps, support_reduction, range, stability, coordination | none | roles=preparation, activation; sections=warmup:good, activation:good |  | No developmental credit is justified; generic demand is observational and no receiver aggregates it. |
 
 The phase column reports the current global catalog labels for inventory only. Per the accepted phase-context review, those labels are not accepted contextual evidence and cannot leak between activation, accessory, capacity, recovery, or other role/section uses.
 

@@ -1,23 +1,23 @@
 # P0 Whole-Body Catalog Curation
 
-Status: exactly eight curated proposals. None is a production `ExerciseDefinition`; the production catalog remains 37 rows.
+Status: exactly eight owner-curated identities admitted once each to the canonical production catalog, taking it from 37 to 45 rows. The detailed proposal record below is retained as admission history; `P0_WHOLE_BODY_PRODUCTION_REPORT.md` is the current production contract.
 
 | Proposed identity | Proposed ID | Broad roles | Exact action/functions | Canonical muscle contributions | Equipment | Intended roles/sections | Review note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Standing Calf Raise | `standing-calf-raise` | accessory | ankle plantar flexion | calves primary | stable standing space; external load optional | activation, hypertrophy accessory / accessory | ID is equipment-neutral; loaded variants belong to prescription/equipment realization |
 | Side-Lying Hip Adduction | `side-lying-hip-adduction` | accessory | hip adduction | hip adductors primary; trunk contextual | bodyweight, floor space | activation, hypertrophy accessory / activation, accessory | direct adduction receiver |
-| Loop-Band Lateral Walk | `loop-band-lateral-walk` | accessory | hip abduction | hip abductors primary; glutes key secondary; trunk contextual | loop band, stable standing space | activation, capacity / activation, accessory | direction and band position remain prescription details |
+| Loop-Band Lateral Walk | `loop-band-lateral-walk` | accessory | hip abduction | hip abductors primary; glutes key secondary; quads incidental; trunk contextual | loop band, floor space; stable support optional | activation, hypertrophy accessory / activation, accessory | direction and band position remain prescription details |
 | Side-Lying Dumbbell External Rotation | `side-lying-dumbbell-external-rotation` | accessory | shoulder external rotation | rotator cuff primary; rear delts contextual | dumbbell, floor or bench support | activation, hypertrophy accessory / activation, accessory | support surface represented explicitly |
-| Supine Hamstring Walkout | `supine-hamstring-walkout` | accessory | knee flexion, hip extension | hamstrings primary; glutes key secondary; trunk contextual | bodyweight, floor space | activation, capacity / activation, accessory | not assigned the hinge role |
+| Supine Hamstring Walkout | `supine-hamstring-walkout` | accessory | knee flexion, hip extension | hamstrings primary; glutes key secondary; trunk contextual | bodyweight, floor space | activation, hypertrophy accessory / activation, accessory | not assigned the hinge role |
 | Wall Ankle Dorsiflexion Rock | `wall-ankle-dorsiflexion-rock` | mobility | ankle dorsiflexion | calves contextual; no muscle target required | wall, floor space | mobility, preparation / preparation | movement/action need should select it, not a false primary muscle claim |
 | Bodyweight Hip-Hinge Rehearsal | `bodyweight-hip-hinge-rehearsal` | hinge | hip extension | glutes and hamstrings key secondary; trunk contextual | bodyweight, floor space | preparation, activation / preparation, activation | pattern rehearsal, not a strength-row duplicate |
-| Supported Single-Leg Balance Rehearsal | `supported-single-leg-balance-rehearsal` | single_leg | single-leg stance control | hip abductors key secondary; trunk contextual | wall or stable support, standing space | preparation, activation / preparation, activation | support side and reduction are prescription details |
+| Single-Leg Balance Rehearsal | `single-leg-balance-rehearsal` | single_leg | single-leg stance control | hip abductors key secondary; calves incidental; trunk contextual | bodyweight, floor space; stable support optional | preparation, activation / preparation, activation | support side and reduction are prescription details |
 
-Every future row requires stable ID review, complete section and phase suitability, loading and mechanics profiles, structured action/muscle provenance, stress review, prerequisites, progression relationships, and coaching focus before production admission. This document authorizes no row addition.
+The eight rows passed stable-ID, section, loading, mechanics, action/muscle provenance, stress, prerequisite, progression, and compact-coaching review before admission. All begin with contextual phase abstention. This document records the owner curation; it authorizes no P1 addition.
 
 ## Shared Proposal Rules
 
-All eight are `PROPOSE_CURATED_NOT_PRODUCTION`. Contextual phase evidence is explicitly `unknown` until separately reviewed. Each may become relevant only when the structured need names its broad role, exact action, or muscle relationship and the equipment/safety boundary permits it. None creates a mandatory slot. Stable IDs are compatible with a future Knowledge Layer but create no current engine dependency.
+All eight are `P0_WHOLE_BODY_PRODUCTION_ADMITTED`. Contextual phase behavior explicitly abstains until separately reviewed. Each becomes relevant only when the structured need names its broad role, exact action, muscle relationship, or preparation dependency and the equipment/safety boundary permits it. None creates a mandatory slot. Stable IDs are compatible with a future Knowledge Layer but create no current engine dependency.
 
 ## Complete Contracts
 
@@ -119,13 +119,13 @@ All eight are `PROPOSE_CURATED_NOT_PRODUCTION`. Contextual phase evidence is exp
 - `NEW_SLOT_WHEN`: hinge-pattern preparation is explicitly needed. `DO_NOT_ADD_WHEN`: it is generic filler or loaded work is already appropriate. `WHY_CURRENT_CATALOG_CANNOT_ALREADY_SOLVE_THIS`: production hinges are loaded strength/accessory identities.
 - Owner questions: approve no-primary-target contribution model; approve wall/dowel as same-identity cues and loaded transitions as separate IDs.
 
-### Supported Single-Leg Balance Rehearsal
+### Single-Leg Balance Rehearsal
 
-- Stable ID / identity / family: `supported-single-leg-balance-rehearsal`; stationary supported single-leg stance control; `single_leg_pattern`.
+- Stable ID / identity / family: `single-leg-balance-rehearsal`; stationary single-leg stance control with prescription-modifiable support; `single_leg_pattern`.
 - Same identity: side, support amount/surface, duration, reach/stance bounds. New IDs: loaded march, step-up, dynamic reach task, or unsupported locomotion.
 - Roles / action / use: `single_leg`; `single_leg_stance_control`; preparation or activation in warmup/activation.
 - Contributions / regions: hip abductors key secondary; trunk stabilizer/contextual; hip, pelvis, ankle.
-- Equipment / prerequisites: wall or stable support and standing space; supported standing tolerance.
+- Equipment / prerequisites: bodyweight and floor space required; explicit stable support surface optional; no hard prerequisite.
 - Support / path / demands / mechanics: unilateral base with balance assist; no external resistance; low load, moderate-high balance/joint-control demand.
 - Stress / side / phase: standing balance/ankle-hip control exposure; prescription-side; phase unknown.
 - Progression / response: duration, support reduction, reps, bounded reach, side; modify support/duration/range after response review.
@@ -135,4 +135,4 @@ All eight are `PROPOSE_CURATED_NOT_PRODUCTION`. Contextual phase evidence is exp
 
 ## Personalization Interaction
 
-Representative fixed-shell differences can activate a P0 proposal through a direct calf/adductor/abductor/cuff goal, home knee-flexion equipment gap, real ankle-range dependency, hinge-rehearsal dependency, or unilateral-control dependency. Removing that one structured need must remove the proposal’s relevance. Availability and variety remain future Composer concerns; prose cannot activate any proposal. Equal outputs for users without a distinguishing need are `JUSTIFIED_CONVERGENCE`.
+Representative fixed-shell differences activate a production P0 row through a direct calf/adductor/abductor/cuff goal, home knee-flexion equipment gap, real ankle-range dependency, hinge-rehearsal dependency, or unilateral-control dependency. Removing that one structured need removes the row’s relevance. Availability and variety remain future Composer concerns; prose cannot activate a row. Equal outputs for users without a distinguishing need are `JUSTIFIED_CONVERGENCE`.

@@ -210,19 +210,19 @@ describe("seven exercise trunk/carry curation review", () => {
 
   it("preserves current behavior fingerprints", () => {
     expect(data.behaviorFingerprints.productionRankingFingerprint).toBe(
-      "6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56",
+      "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
     );
     expect(data.behaviorFingerprints.productionRankingMatches).toBe(true);
     expect(data.behaviorFingerprints.comprehensiveBehaviorFingerprint).toBe(
-      "fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de",
+      "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
     );
     expect(data.behaviorFingerprints.comprehensiveBehaviorMatches).toBe(true);
     expect(data.behaviorFingerprints.referenceCatalogFingerprint).toBe(
-      "1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8",
+      "bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91",
     );
     expect(data.behaviorFingerprints.referenceCatalogMatches).toBe(true);
     expect(data.behaviorFingerprints.equipmentLegalityFingerprint).toBe(
-      "5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869",
+      "ac3d2d4e8c8c3acc3cf3b57610bfb7e958c9879eef19e525887468646bbc1fd5",
     );
     expect(data.behaviorFingerprints.equipmentLegalityMatches).toBe(true);
     expect(data.behaviorFingerprints.expandedEquipmentFixtureFingerprint).toBe(

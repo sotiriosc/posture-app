@@ -57,3 +57,9 @@ The consequence may be a legality delta, score/component delta, rank delta, read
 ## Future Composer Acceptance Signatures
 
 Documentation-only signatures: `composeSession(candidateResults, availability, sessionIntent)`, `composeWeek(sessionOptions, daysPerWeek, preferredTrainingDays)`, and `applyVarietyPolicy(legalRankings, varietyPreference, recentExposure)`. Candidate Intelligence must not implement those owners, reserve exercise IDs, award set credits, or infer availability/variety effects early.
+
+## P0 Whole-Body Fixed-Shell Results
+
+The fixed-shell P0 cohort holds athlete, experience, phase, evaluation time, and unrelated context constant. One-variable direct calf, adductor, abductor, cuff, home knee-flexion, ankle-preparation, hinge-preparation, and single-leg-preparation requests each admit only their truthful P0 row. Removing the direct need removes that relevance. Loaded main hinge and loaded single-leg accessory requests do not admit the low-load rehearsal rows as strength substitutes. Shared full-gym hamstring outcomes are `JUSTIFIED_CONVERGENCE` when both legal rows express the same requested primary hamstring/knee-flexion truth.
+
+No cohort request receives all eight rows. Athlete IDs, labels, notes, coaching prose, and action metadata without a matching structured need remain behaviorally inert.

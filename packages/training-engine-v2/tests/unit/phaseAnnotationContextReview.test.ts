@@ -56,7 +56,7 @@ describe("phase annotation context and uncertainty review", () => {
     expect(data.fixedAsOf).toBe("2026-08-10T00:00:00.000Z");
     expect(data.productionFingerprintMatches).toBe(true);
     expect(data.productionRankingFingerprint).toBe(
-      "70ff2f16037eed38bc6d8dddc098cfa0d6bbe3d833eaf3a1e53de61a5e252436",
+      "b17b55690f2d222f14975547f9663368c63b399f9052f8924d76583a8edf6e15",
     );
   });
 

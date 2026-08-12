@@ -21,6 +21,7 @@ export const EQUIPMENT_CAPABILITY_KEYS = [
   "stable_loaded_standing_space",
   "loaded_gait_space",
   "wall",
+  "stable_support_surface",
   "flat_bench",
   "adjustable_bench",
   "box",
@@ -215,6 +216,10 @@ export function hasEquipmentCapability(
       return equipment.trainingSpace.loadedGait.available;
     case "wall":
       return equipment.bodyweight.wallAvailable || equipment.supportSurfaces.includes("wall");
+    case "stable_support_surface":
+      return equipment.supportSurfaces.some((surface) =>
+        ["wall", "box", "chair", "stable_table"].includes(surface),
+      );
     case "flat_bench":
       return equipment.bench.stable && equipment.bench.types.includes("flat");
     case "adjustable_bench":

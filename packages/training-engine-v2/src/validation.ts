@@ -206,7 +206,7 @@ const SUPPORT_BASE_POSITIONS = new Set([
   "supine", "seated", "quadruped", "hanging", "unknown",
 ]);
 const SUPPORT_STANCES = new Set([
-  "bilateral", "split", "half_kneeling_lead_side", "staggered", "stacked_feet",
+  "bilateral", "single_leg", "split", "half_kneeling_lead_side", "staggered", "stacked_feet",
   "bent_knee_side_support", "alternating_march", "unknown",
 ]);
 const SUPPORT_ORIENTATIONS = new Set([
@@ -222,13 +222,13 @@ const SUPPORT_CONTACT_BODY_REGIONS = new Set([
   "forearm", "hand", "foot", "knee", "chest", "back", "pelvis", "seat", "unknown",
 ]);
 const SUPPORT_CONTACT_SOURCES = new Set([
-  "floor", "wall", "bench", "machine", "box", "unknown",
+  "floor", "wall", "bench", "machine", "box", "stable_support_surface", "unknown",
 ]);
 const SUPPORT_CONTACT_MODES = new Set([
   "weight_bearing", "balance_assist", "positioning", "unknown",
 ]);
 const SUPPORT_CONTACT_SIDES = new Set([
-  "left", "right", "bilateral", "alternating", "side_neutral", "unknown",
+  "left", "right", "prescription_side", "bilateral", "alternating", "side_neutral", "unknown",
 ]);
 const SUPPORT_CONTACT_TASK_ROLES = new Set(["primary", "secondary", "unknown"]);
 
@@ -290,10 +290,6 @@ export function validateExerciseDefinition(exercise: ExerciseDefinition): readon
 
   if (exercise.movementRoles.length === 0) {
     findings.push(finding("error", "missing_movement_role", "Exercise needs at least one movement role.", exercise.id));
-  }
-
-  if (exercise.primaryMuscles.length === 0) {
-    findings.push(finding("error", "missing_primary_muscle", "Exercise needs a primary muscle target.", exercise.id));
   }
 
   if (exercise.muscleContributions.length === 0) {

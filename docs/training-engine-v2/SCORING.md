@@ -403,6 +403,10 @@ Same-exercise progression is not exercise replacement.
 
 Cross-exercise replacement knowledge lives in `transitionRelationships`. A transition can be developmental, context-dependent, questionable, or needs-review, but it never automatically selects the target, boosts the target, penalizes the source, bypasses hard eligibility, or bypasses pain constraints at Candidate Intelligence scope.
 
+## P0 Whole-Body Selection Boundary
+
+The 45-row catalog separates broad movement role, exact action/function, and canonical muscle relationship. The eight P0 rows enter only requests whose role/section and action, primary-muscle requirement, or preparation dependency they truthfully satisfy. Family membership and body region do not create eligibility or score. All eight phase-abstain, so no-match omits the phase component and denominator weight. Action metadata does not manufacture pain or joint-cost input; only accepted stress facts and later prescription/response evidence may do so.
+
 `transitionComparison.ts` exposes observational deltas for movement roles, muscles, support, resistance path, trunk/stability/coordination demand, loadability/loading potential, equipment, and assessment-feature expression. `ExerciseTransitionTrace.automaticSelectionEffect` is `none`; the trace describes a possible transition rather than making the replacement decision.
 
 Productive continuity should generally mean keep the exercise and progress prescription before considering replacement. Replacement requires a real signal such as pain response, blocked exercise, failed progression, plateau, equipment change, insufficient stimulus runway, poor exercise response, skill-development intent, or explicit preference.

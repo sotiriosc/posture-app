@@ -1,8 +1,8 @@
 # Whole-Body Minimal Catalog Expansion Proposal
 
-Proposal fingerprint: `696fae395bd6383729493d65ac0d4e656799b8797ecf75fdaa327ba33564c5d1`. Exactly eight P0 concepts are owner-curated proposals; none is production data. P1 concepts remain review input only.
+Admission-evidence fingerprint: `3041dc5d491d5d41d314f6bcea033e259baec63382c70fff89e4b4c29fff4a6e`. Exactly eight P0 concepts are now production data; these retained rows document their admission rationale. P1 concepts remain unimplemented review input only.
 
-P0 (8): standing-calf-raise, side-lying-hip-adduction, loop-band-lateral-walk, side-lying-dumbbell-external-rotation, supine-hamstring-walkout, wall-ankle-dorsiflexion-rock, bodyweight-hip-hinge-rehearsal, supported-single-leg-balance-rehearsal.
+P0 (8): standing-calf-raise, side-lying-hip-adduction, loop-band-lateral-walk, side-lying-dumbbell-external-rotation, supine-hamstring-walkout, wall-ankle-dorsiflexion-rock, bodyweight-hip-hinge-rehearsal, single-leg-balance-rehearsal.
 
 P1 (9): machine-shoulder-press, assisted-pull-up, machine-leg-extension, incline-dumbbell-bench-press, suspension-row, half-kneeling-hip-flexor-mobility, side-lying-thoracic-rotation, cable-hip-adduction, cable-hip-abduction.
 
@@ -131,22 +131,22 @@ Legacy concepts are `REUSE_AS_DATA` only for stable definitional facts, `KEEP_AS
 - WHY_CURRENT_CATALOG_CANNOT_ALREADY_SOLVE_THIS: No current preparation-role row truthfully rehearses a hinge.
 - Owner decision: Approve wall-target variant within identity?
 
-## P0: supported-single-leg-balance-rehearsal
+## P0: single-leg-balance-rehearsal
 
-- Identity: **Supported Single-Leg Balance Rehearsal**. Boundary: Low-load supported single-leg preparation; not split squat or step-up strength work.
-- Family/roles/sections: single_leg_preparation; movement=single_leg; training=activation, preparation; sections=warmup, activation.
-- Muscles/regions: primary=glutes; secondary=hip_abductors, trunk; incidental=calves; regions=hip, knee, ankle.
-- Equipment/setup: required=wall, stable_loaded_standing_space; optional=none; prerequisites=supported standing tolerance; single-leg with prescription-modifiable wall support; path=bodyweight.
+- Identity: **Single-Leg Balance Rehearsal**. Boundary: Low-load supported single-leg preparation; not split squat or step-up strength work.
+- Family/roles/sections: single_leg_pattern; movement=single_leg; training=activation, preparation; sections=warmup, activation.
+- Muscles/regions: primary=none; secondary=hip_abductors, glutes, trunk; incidental=calves; regions=hip, knee, ankle.
+- Equipment/setup: required=stable_loaded_standing_space; optional=stable_support_surface; prerequisites=none; single-leg with prescription-modifiable stable support; path=bodyweight.
 - Mechanics/stress: low load; scalable balance and joint control; scapular=not relevant; trunk=contextual upright control; stress=single-leg stance; prescription side.
-- Loading/progression: none to limited; low fatigue; axes=duration, reps, support_reduction, range; runway=Preparation-only bounded runway.; transitions=Split squat/step-up are separate loaded identities..
-- Phase/evidence: EXTERNAL_REFERENCE_PENDING; Mechanically definitional review pending.
-- Pool/environment: Creates missing single-leg preparation pool. Wall and standing-space environments.
-- Pain/response: Support is explicit and modifiable; side-specific response remains visible. Support, duration, side, and range vary by response.
-- Stable-adaptive review: TEMPORARY_CONTEXTUAL_TOOL. Stable ID compatible.
+- Loading/progression: none to limited; low fatigue; axes=duration, support_reduction, coordination_demand; runway=Preparation-only bounded runway.; transitions=Split squat/step-up are separate loaded identities..
+- Phase/evidence: ABSTAIN_PENDING_CALIBRATION; Production identity contract reviewed.
+- Pool/environment: Creates missing single-leg preparation pool. Standing-space environments; wall, box, chair, or stable table may derive optional support.
+- Pain/response: Support is explicit and modifiable; side-specific response remains visible. Support, duration, side, and coordination vary by response.
+- Stable-adaptive review: PRODUCTION_CONTEXTUAL_TOOL. Stable ID compatible.
 - NEW_SLOT_WHEN: A loaded unilateral task has a real preparation dependency.
 - DO_NOT_ADD_WHEN: No single-leg task or assessed dependency exists.
-- WHY_CURRENT_CATALOG_CANNOT_ALREADY_SOLVE_THIS: Current single-leg rows are loaded accessory/strength identities, not preparation-role warm-ups.
-- Owner decision: Approve balance rehearsal as a selection role without a new movement vocabulary?
+- WHY_CURRENT_CATALOG_CANNOT_ALREADY_SOLVE_THIS: Prior single-leg rows are loaded accessory/strength identities, not preparation-role warm-ups.
+- Owner decision: None for P0 admission.
 
 ## P1: machine-shoulder-press
 
@@ -303,7 +303,5 @@ Legacy concepts are `REUSE_AS_DATA` only for stable definitional facts, `KEEP_AS
 
 ## Implementation Gates
 
-- Separate owner authorization is required before any P0 proposal becomes a production row.
-- Exercise-science review complete P0 mechanics, stress, phase, equipment, and provenance contracts before admission.
 
-Any proposal-to-production admission remains a separately authorized task. It must not begin Session Composer, Week Composer, automatic rotation/replacement/progression, or Knowledge UI work.
+The eight P0 identities are production knowledge. Any remaining P1 proposal-to-production admission is separately authorized and must not begin Session Composer, Week Composer, automatic rotation/replacement/progression, or Knowledge UI work.

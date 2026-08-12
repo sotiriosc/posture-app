@@ -38,6 +38,18 @@ const bodyweight: EquipmentRequirement = {
   allOf: ["bodyweight", "floor_space"],
 };
 
+const floorSpace: EquipmentRequirement = {
+  id: "floor-space",
+  label: "Floor space",
+  allOf: ["floor_space"],
+};
+
+const wallAndFloor: EquipmentRequirement = {
+  id: "wall-and-floor-space",
+  label: "Wall and floor space",
+  allOf: ["wall", "floor_space"],
+};
+
 const wall: EquipmentRequirement = {
   id: "wall-support",
   label: "Wall support",
@@ -105,6 +117,18 @@ const loopBand: EquipmentRequirement = {
   allOf: ["loop_band"],
 };
 
+const stableSupportSurface: EquipmentRequirement = {
+  id: "stable-support-surface",
+  label: "Stable support surface",
+  allOf: ["stable_support_surface"],
+};
+
+const floorOrBenchSupport: EquipmentRequirement = {
+  id: "floor-or-bench-support",
+  label: "Floor space or stable flat/adjustable bench",
+  oneOf: ["floor_space", "flat_bench", "adjustable_bench"],
+};
+
 function sections(values: Partial<Record<SessionSection, ExerciseSuitability>>) {
   return values;
 }
@@ -142,13 +166,15 @@ const STRESS_OWNER_DECISION_REF =
 const OWNER_REVIEWED_AT = "2026-08-12T00:00:00-04:00";
 const ROLE_MUSCLE_OWNER_DECISION_REF =
   "docs/training-engine-v2/ROLE_AND_MUSCLE_CONTRIBUTION_CONTRACT.md#production-catalog-migration";
+const P0_OWNER_DECISION_REF =
+  "docs/training-engine-v2/P0_WHOLE_BODY_PRODUCTION_REPORT.md#production-contract";
 
 function contributions(input: {
   readonly primary: readonly ExerciseMuscleContribution["muscle"][];
   readonly keySecondary?: readonly ExerciseMuscleContribution["muscle"][];
   readonly incidental?: readonly ExerciseMuscleContribution["muscle"][];
   readonly contextual?: readonly ExerciseMuscleContribution["muscle"][];
-}): readonly ExerciseMuscleContribution[] {
+}, sourceRef = ROLE_MUSCLE_OWNER_DECISION_REF): readonly ExerciseMuscleContribution[] {
   const entries = [
     ...input.primary.map((muscle) => ({ muscle, relationship: "primary_target" as const })),
     ...(input.keySecondary ?? []).map((muscle) => ({ muscle, relationship: "key_secondary_target" as const })),
@@ -161,24 +187,31 @@ function contributions(input: {
     reviewStatus: "accepted",
     provenance: [{
       source: "owner_decision",
-      sourceRef: ROLE_MUSCLE_OWNER_DECISION_REF,
+      sourceRef,
       evidenceBasis: [`Owner-reviewed ${relationship} classification for ${muscle}.`],
     }],
     notes: `${muscle} is classified as ${relationship.replaceAll("_", " ")} for this exercise identity.`,
   }));
 }
 
-function actions(...values: readonly ExerciseActionFunction[]): readonly ExerciseActionFunctionAnnotation[] {
+function actionsWithSource(
+  sourceRef: string,
+  ...values: readonly ExerciseActionFunction[]
+): readonly ExerciseActionFunctionAnnotation[] {
   return values.map((action) => ({
     action,
     reviewStatus: "accepted",
     provenance: [{
       source: "owner_decision",
-      sourceRef: ROLE_MUSCLE_OWNER_DECISION_REF,
+      sourceRef,
       evidenceBasis: [`Owner-reviewed ${action} action/function assignment.`],
     }],
     notes: `${action.replaceAll("_", " ")} is a direct selection function for this exercise.`,
   }));
+}
+
+function actions(...values: readonly ExerciseActionFunction[]): readonly ExerciseActionFunctionAnnotation[] {
+  return actionsWithSource(ROLE_MUSCLE_OWNER_DECISION_REF, ...values);
 }
 
 type CanonicalExerciseDefinition = Omit<
@@ -3732,6 +3765,386 @@ const REFERENCE_EXERCISE_DEFINITIONS = [
     cautionStressTags: [],
     contraindicatedStressTags: [],
     coachingFocus: ["Use light wall support", "March without drifting toward the load"],
+  },
+  {
+    id: "standing-calf-raise",
+    name: "Standing Calf Raise",
+    summary: "Equipment-neutral standing ankle plantar-flexion accessory exercise.",
+    family: "calf_accessory",
+    movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(P0_OWNER_DECISION_REF, "ankle_plantar_flexion"),
+    trainingRoles: ["hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["calves"], contextual: ["trunk"] }, P0_OWNER_DECISION_REF),
+    bodyRegions: ["ankle"],
+    equipmentRequirements: [bodyweight],
+    optionalEquipment: [dumbbells, stableSupportSurface],
+    prerequisites: [],
+    sectionSuitability: sections({ accessory: excellent("Provides direct calf accessory work.") }),
+    phaseSuitability: {},
+    phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "moderate", loadingPotential: "moderate", skillDemand: "low",
+      stabilityDemand: "moderate", coordinationDemand: "low", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "bilateral", orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+          { bodyRegion: "hand", source: "stable_support_surface", mode: "balance_assist", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "prescription_modifiable", supportRelationship: "side_neutral",
+        reviewStatus: "accepted", notes: "Bilateral standing is standard; load, support, and unilateral realization are prescription-owned.",
+      },
+      resistancePath: {
+        resistancePath: "prescription_dependent", trajectoryFreedom: "high", lineOfPullAdjustability: "low",
+        laterality: "unknown", fitDependency: "low", reviewStatus: "accepted",
+        notes: "The same identity may be bodyweight or free-implement loaded.", provenance: [P0_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Upright position requires little trunk control."),
+        scapular_control: demand("low", "No scapular selection purpose is intrinsic."),
+        stability: demand("moderate", "Standing balance varies with support and laterality."),
+        coordination: demand("low", "The bilateral task is simple."),
+        range: demand("moderate", "Owned plantar-flexion range is a direct prescription variable."),
+        joint_control: demand("moderate", "Ankle control is required through the rise and return."),
+      },
+    }),
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "grip_loading", exposureScope: "dose_created", sideScope: "prescription_side", notes: "Grip loading exists only when a held implement is prescribed." }),
+    ],
+    progression: { progressionAxes: ["load", "reps", "sets", "range", "tempo", "support_reduction", "stability"], transitionRelationships: [] },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: ["Rise through the ball of the foot", "Control the full return"],
+  },
+  {
+    id: "side-lying-hip-adduction",
+    name: "Side-Lying Hip Adduction",
+    summary: "Floor-supported direct hip-adduction accessory exercise.",
+    family: "hip_accessory",
+    movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(P0_OWNER_DECISION_REF, "hip_adduction"),
+    trainingRoles: ["activation", "hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["hip_adductors"], contextual: ["trunk"] }, P0_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "pelvis"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ activation: good("Provides direct low-load adductor activation."), accessory: good("Provides direct adductor accessory work.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "limited", loadingPotential: "moderate", skillDemand: "low",
+      stabilityDemand: "low", coordinationDemand: "moderate", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "side_support", stance: "unknown", orientation: "lateral",
+        supportContacts: [{ bodyRegion: "pelvis", source: "floor", mode: "weight_bearing", side: "prescription_side", taskRole: "primary" }],
+        supportAmount: "substantial", supportRelationship: "side_neutral", reviewStatus: "accepted",
+        notes: "The prescription identifies the working side; top-leg clearance remains setup detail.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "low",
+        laterality: "unilateral", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "The first production identity is bodyweight only.", provenance: [P0_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Floor support limits trunk demand."),
+        scapular_control: demand("low", "No scapular purpose is intrinsic."),
+        stability: demand("low", "Substantial lateral support limits stability demand."),
+        coordination: demand("moderate", "The working leg and pelvic position must remain distinct."),
+        range: demand("moderate", "Lever and range are prescription variables."),
+        joint_control: demand("moderate", "Hip and pelvic control are required."),
+      },
+    }),
+    progression: { progressionAxes: ["reps", "sets", "range", "tempo", "lever"], transitionRelationships: [] },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: ["Lift with the inner thigh", "Keep the pelvis stacked"],
+  },
+  {
+    id: "loop-band-lateral-walk",
+    name: "Loop-Band Lateral Walk",
+    summary: "Standing lateral stepping against unanchored loop-band resistance.",
+    family: "hip_accessory",
+    movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(P0_OWNER_DECISION_REF, "hip_abduction"),
+    trainingRoles: ["activation", "hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["hip_abductors"], keySecondary: ["glutes"], incidental: ["quads"], contextual: ["trunk"] }, P0_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "pelvis", "knee"],
+    equipmentRequirements: [loopBand, floorSpace], optionalEquipment: [stableSupportSurface], prerequisites: [],
+    sectionSuitability: sections({ activation: good("Provides direct abductor activation."), accessory: good("Provides direct abductor accessory work with bounded loadability.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "limited", loadingPotential: "moderate", skillDemand: "moderate",
+      stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "alternating_march", orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+          { bodyRegion: "hand", source: "stable_support_surface", mode: "balance_assist", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "prescription_modifiable", supportRelationship: "alternating", reviewStatus: "accepted",
+        notes: "Alternating lateral steps are primary; optional hand support is prescription-modifiable.",
+      },
+      resistancePath: {
+        resistancePath: "band_unanchored", trajectoryFreedom: "high", lineOfPullAdjustability: "moderate",
+        laterality: "alternating", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "The loop band is worn on the athlete and has no external anchor.", provenance: [P0_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "Upright lateral stepping requires position control."),
+        scapular_control: demand("low", "No scapular purpose is intrinsic."),
+        stability: demand("moderate", "Alternating lateral support creates frontal-plane demand."),
+        coordination: demand("moderate", "Band tension and alternating steps must coordinate."),
+        range: demand("moderate", "Step width and band position are prescription variables."),
+        joint_control: demand("moderate", "Hip and knee alignment require control."),
+      },
+    }),
+    progression: { progressionAxes: ["load", "steps", "sets", "range", "tempo", "effort", "support_reduction"], transitionRelationships: [] },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: ["Step without letting the knees collapse", "Keep steady band tension"],
+  },
+  {
+    id: "side-lying-dumbbell-external-rotation",
+    name: "Side-Lying Dumbbell External Rotation",
+    summary: "Supported direct shoulder external-rotation accessory exercise.",
+    family: "cuff_control",
+    movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(P0_OWNER_DECISION_REF, "shoulder_external_rotation"),
+    trainingRoles: ["activation", "hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["rotator_cuff"], incidental: ["rear_delts"] }, P0_OWNER_DECISION_REF),
+    bodyRegions: ["shoulder"],
+    equipmentRequirements: [dumbbells, floorOrBenchSupport], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ activation: good("Provides direct cuff activation."), accessory: good("Provides direct cuff accessory work.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "limited", loadingPotential: "low", skillDemand: "moderate",
+      stabilityDemand: "low", coordinationDemand: "moderate", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "side_support", stance: "unknown", orientation: "lateral",
+        supportContacts: [{ bodyRegion: "pelvis", source: "floor", mode: "weight_bearing", side: "prescription_side", taskRole: "primary" }],
+        supportAmount: "substantial", supportRelationship: "side_neutral", reviewStatus: "accepted",
+        notes: "Substantial lateral floor or bench support is the same identity; the working side is prescribed.",
+      },
+      resistancePath: {
+        resistancePath: "free_implement", trajectoryFreedom: "high", lineOfPullAdjustability: "low",
+        laterality: "unilateral", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "A light free implement supplies gravity resistance.", provenance: [P0_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Lateral support limits trunk demand."),
+        scapular_control: demand("moderate", "Shoulder position must remain controlled without becoming a pull."),
+        stability: demand("low", "Substantial support limits whole-body stability demand."),
+        coordination: demand("moderate", "External rotation must remain isolated from elbow drift."),
+        range: demand("moderate", "Owned shoulder rotation range is prescribed."),
+        joint_control: demand("high", "Precise shoulder control is central to the identity."),
+      },
+    }),
+    progression: { progressionAxes: ["load", "reps", "sets", "range", "tempo"], transitionRelationships: [] },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: ["Rotate from the shoulder", "Keep the elbow position quiet"],
+  },
+  {
+    id: "supine-hamstring-walkout",
+    name: "Supine Hamstring Walkout",
+    summary: "Floor-supported bridge-position heel walkout for direct hamstring work.",
+    family: "glute_hamstring",
+    movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(P0_OWNER_DECISION_REF, "knee_flexion", "hip_extension"),
+    trainingRoles: ["activation", "hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["hamstrings"], keySecondary: ["glutes"], contextual: ["trunk"] }, P0_OWNER_DECISION_REF),
+    bodyRegions: ["knee", "hip", "pelvis"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ activation: good("Provides bodyweight knee-flexion activation."), accessory: good("Provides direct hamstring accessory work without a machine.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "limited", loadingPotential: "moderate", skillDemand: "moderate",
+      stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "high",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "supine", stance: "bilateral", orientation: "supine",
+        supportContacts: [
+          { bodyRegion: "back", source: "floor", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+        ],
+        supportAmount: "substantial", supportRelationship: "alternating", reviewStatus: "accepted",
+        notes: "Bilateral or alternating heel walkout is prescribed within the same floor-supported identity.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "low",
+        laterality: "alternating", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "Bodyweight lever and walkout distance create resistance without sliders.", provenance: [P0_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "Pelvic position must remain controlled."),
+        scapular_control: demand("low", "No scapular purpose is intrinsic."),
+        stability: demand("moderate", "Bridge position and moving feet create stability demand."),
+        coordination: demand("moderate", "Heel steps and hip position must coordinate."),
+        range: demand("moderate", "Walkout distance and bridge height are prescribed."),
+        joint_control: demand("moderate", "Knee, hip, and pelvic control remain relevant."),
+      },
+    }),
+    progression: { progressionAxes: ["steps", "reps", "sets", "range", "tempo", "duration", "lever"], transitionRelationships: [] },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: ["Keep the hips controlled", "Walk only as far as you can own"],
+  },
+  {
+    id: "wall-ankle-dorsiflexion-rock",
+    name: "Wall Ankle Dorsiflexion Rock",
+    summary: "Wall-referenced ankle dorsiflexion preparation exercise.",
+    family: "mobility_preparation",
+    movementRoles: ["mobility"],
+    actionFunctions: actionsWithSource(P0_OWNER_DECISION_REF, "ankle_dorsiflexion"),
+    trainingRoles: ["preparation"],
+    muscleContributions: contributions({ primary: [], contextual: ["calves"] }, P0_OWNER_DECISION_REF),
+    bodyRegions: ["ankle", "knee"],
+    equipmentRequirements: [wallAndFloor], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ warmup: good("Provides explicit ankle-range preparation when needed.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "none", loadingPotential: "low", skillDemand: "low",
+      stabilityDemand: "low", coordinationDemand: "low", localFatigue: "low",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "split", orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+          { bodyRegion: "hand", source: "wall", mode: "balance_assist", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "light_touch", supportRelationship: "side_neutral", reviewStatus: "accepted",
+        notes: "The wall is a required range reference and optional hand support; the working side is prescribed.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high",
+        laterality: "unilateral", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "An unloaded forward rock explores prescribed ankle range.", provenance: [P0_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "The task has little trunk demand."),
+        scapular_control: demand("low", "Wall contact is not a scapular purpose."),
+        stability: demand("low", "Split stance and wall reference keep stability demand low."),
+        coordination: demand("low", "The movement path is simple."),
+        range: demand("high", "Ankle dorsiflexion range is the direct preparation purpose."),
+        joint_control: demand("moderate", "Heel and knee path must remain controlled."),
+      },
+    }),
+    progression: { progressionAxes: ["range", "reps", "tempo", "duration"], transitionRelationships: [] },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: ["Guide the knee forward over the foot", "Keep the heel grounded"],
+  },
+  {
+    id: "bodyweight-hip-hinge-rehearsal",
+    name: "Bodyweight Hip-Hinge Rehearsal",
+    summary: "Unloaded standing hip-hinge pattern preparation.",
+    family: "hinge_pattern",
+    movementRoles: ["hinge"],
+    actionFunctions: actionsWithSource(P0_OWNER_DECISION_REF, "hip_extension"),
+    trainingRoles: ["preparation", "activation"],
+    muscleContributions: contributions({ primary: [], keySecondary: ["glutes", "hamstrings"], contextual: ["trunk"] }, P0_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "pelvis", "lumbar_spine"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [wall, stableSupportSurface], prerequisites: [],
+    sectionSuitability: sections({ warmup: excellent("Provides unloaded hinge-pattern preparation."), activation: good("Provides low-load hinge activation when explicitly needed.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "none", loadingPotential: "low", skillDemand: "low",
+      stabilityDemand: "low", coordinationDemand: "moderate", localFatigue: "low",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "bilateral", orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+          { bodyRegion: "hand", source: "stable_support_surface", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "prescription_modifiable", supportRelationship: "bilateral", reviewStatus: "accepted",
+        notes: "The unloaded bilateral hinge may use a wall or dowel cue without changing identity.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high",
+        laterality: "bilateral_linked", fitDependency: "low", reviewStatus: "accepted",
+        notes: "No external load or loaded support is part of this rehearsal.", provenance: [P0_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "Trunk organization supports the unloaded pattern."),
+        scapular_control: demand("low", "No scapular purpose is intrinsic."),
+        stability: demand("low", "Bilateral unloaded standing has low stability demand."),
+        coordination: demand("moderate", "Hip motion and trunk position must coordinate."),
+        range: demand("moderate", "Owned hinge range is prescribed."),
+        joint_control: demand("moderate", "Hip and lumbar relationship requires control."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["range", "reps", "tempo", "support_reduction", "coordination"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "cable-pull-through", direction: "progression", classification: "context_dependent", purposes: ["preparation_to_loaded_training", "increase_loadability", "movement_pattern_development"], notes: "A reviewed context may transition rehearsal toward cable-loaded hinge training without automatic selection.", provenance: [P0_OWNER_DECISION_REF] }),
+        transition({ targetExerciseId: "dumbbell-romanian-deadlift", direction: "progression", classification: "context_dependent", purposes: ["preparation_to_loaded_training", "increase_loadability", "movement_pattern_development"], notes: "A reviewed context may transition rehearsal toward free-implement hinge training without implying readiness.", provenance: [P0_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: ["Send the hips back", "Keep the trunk organized"],
+  },
+  {
+    id: "single-leg-balance-rehearsal",
+    name: "Single-Leg Balance Rehearsal",
+    summary: "Stationary single-leg stance-control preparation with prescription-modifiable support.",
+    family: "single_leg_pattern",
+    movementRoles: ["single_leg"],
+    actionFunctions: actionsWithSource(P0_OWNER_DECISION_REF, "single_leg_stance_control"),
+    trainingRoles: ["preparation", "activation"],
+    muscleContributions: contributions({ primary: [], keySecondary: ["hip_abductors"], incidental: ["calves"], contextual: ["trunk"] }, P0_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "pelvis", "ankle"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [stableSupportSurface], prerequisites: [],
+    sectionSuitability: sections({ warmup: good("Provides explicit stationary stance-control preparation."), activation: good("Provides low-load unilateral control activation.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "none", loadingPotential: "low", skillDemand: "moderate",
+      stabilityDemand: "high", coordinationDemand: "moderate", localFatigue: "low",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "single_leg", orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "prescription_side", taskRole: "primary" },
+          { bodyRegion: "hand", source: "stable_support_surface", mode: "balance_assist", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "prescription_modifiable", supportRelationship: "side_neutral", reviewStatus: "accepted",
+        notes: "Substantial support, light touch, and unsupported stationary stance are prescription realizations of one identity.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high",
+        laterality: "unilateral", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "The stationary task has no external resistance; the stance side is prescribed.", provenance: [P0_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "Upright single-leg stance requires position control."),
+        scapular_control: demand("low", "Optional support is not a scapular purpose."),
+        stability: demand("high", "Single-leg stance control is the direct task."),
+        coordination: demand("moderate", "Stance and optional support must coordinate."),
+        range: demand("low", "Large joint range is not intrinsic."),
+        joint_control: demand("high", "Hip and ankle control are central to the stationary task."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["duration", "reps", "support_reduction", "range", "stability", "coordination"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "split-squat", direction: "progression", classification: "context_dependent", purposes: ["preparation_to_loaded_training", "increase_loadability"], notes: "A reviewed context may transition stationary control toward loaded split-stance training without automatic selection.", provenance: [P0_OWNER_DECISION_REF] }),
+        transition({ targetExerciseId: "step-up", direction: "progression", classification: "context_dependent", purposes: ["preparation_to_loaded_training", "increase_loadability"], notes: "A reviewed context may transition stationary control toward a dynamic loaded task without implying readiness.", provenance: [P0_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: ["Use only the support you need", "Keep the stance side controlled"],
   },
 ] satisfies readonly CanonicalExerciseDefinition[];
 

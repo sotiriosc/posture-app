@@ -36,7 +36,7 @@ import { component } from "../../src/candidate/scoring/utils";
 
 export const PHASE_CALIBRATION_FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 export const EXPECTED_PRODUCTION_RANKING_FINGERPRINT =
-  "70ff2f16037eed38bc6d8dddc098cfa0d6bbe3d833eaf3a1e53de61a5e252436";
+  "b17b55690f2d222f14975547f9663368c63b399f9052f8924d76583a8edf6e15";
 
 const PHASE_IDS: readonly PhaseId[] = ["phase_1", "phase_2", "phase_3"];
 const GOALS: readonly TrainingGoal[] = [
@@ -1111,6 +1111,14 @@ const PHASE_ANNOTATION_REVIEWS: Readonly<
   "farmer-carry": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 2 capacity-main evidence is owner-approved." },
   "suitcase-carry": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 2 unilateral capacity-main evidence is owner-approved." },
   "wall-supported-suitcase-march": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 1 supported loaded-bracing activation is owner-approved." },
+  "standing-calf-raise": { classification: "WELL_JUSTIFIED", reason: "Contextual phase abstention preserves direct accessory ownership without inventing a phase vote." },
+  "side-lying-hip-adduction": { classification: "WELL_JUSTIFIED", reason: "Contextual phase abstention leaves direct adduction relevance to the requested need." },
+  "loop-band-lateral-walk": { classification: "WELL_JUSTIFIED", reason: "Contextual phase abstention leaves direct abduction relevance to the requested need and equipment." },
+  "side-lying-dumbbell-external-rotation": { classification: "WELL_JUSTIFIED", reason: "Contextual phase abstention leaves direct cuff relevance to action and muscle ownership." },
+  "supine-hamstring-walkout": { classification: "WELL_JUSTIFIED", reason: "Contextual phase abstention avoids treating home equipment fit as phase evidence." },
+  "wall-ankle-dorsiflexion-rock": { classification: "WELL_JUSTIFIED", reason: "Contextual phase abstention leaves ankle preparation to an explicit dependency." },
+  "bodyweight-hip-hinge-rehearsal": { classification: "WELL_JUSTIFIED", reason: "Contextual phase abstention leaves unloaded hinge rehearsal to role and section context." },
+  "single-leg-balance-rehearsal": { classification: "WELL_JUSTIFIED", reason: "Contextual phase abstention leaves stance-control preparation to an explicit need." },
 };
 
 function suitabilityList(values: ExerciseDefinition["sectionSuitability"]): string {

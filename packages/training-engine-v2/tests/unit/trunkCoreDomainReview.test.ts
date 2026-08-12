@@ -38,7 +38,7 @@ describe("trunk/core domain and coverage review", () => {
   });
 
   it("audits every reference exercise exactly once", () => {
-    expect(data.snapshot.referenceExerciseCount).toBe(37);
+    expect(data.snapshot.referenceExerciseCount).toBe(45);
     expect(data.catalogRows).toHaveLength(REFERENCE_EXERCISES.length);
     expect(new Set(data.catalogRows.map((row) => row.exerciseId))).toEqual(
       new Set(REFERENCE_EXERCISES.map((exercise) => exercise.id)),
@@ -54,8 +54,8 @@ describe("trunk/core domain and coverage review", () => {
         secondaryTrunkCount: 0,
         directDevelopmentalCount: 10,
         meaningfulSecondaryCount: 8,
-        incidentalBracingCount: 10,
-        noCurrentTrunkEvidenceCount: 9,
+        incidentalBracingCount: 16,
+        noCurrentTrunkEvidenceCount: 11,
         trunkProfileCount: 10,
         acceptedTrunkFunctionCount: 24,
         unknownTrunkFunctionCount: 56,

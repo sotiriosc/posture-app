@@ -909,7 +909,7 @@ The future boundary is: **Engine makes decisions; Praxis Knowledge Layer stores 
 
 Engine behavior remains complete without educational content. Stable `ExerciseDefinition.id` is the future adapter seam; a conceptual `resolveExerciseKnowledge({ exerciseId, context, reasonCodes?, mechanicsIds?, stressTags? })` may later enrich presentation without affecting eligibility, ranking, identity, stress matching, progression, support, phase, response, or validation. It must consume structured output and never parse prose. `coachingFocus` remains one or two compact immediate fallback cues, not the future canonical schema. Future Coaching Rail categories are `focus`, `cues`, `setup`, `during`, `pattern`, and `watchFor`; no schema, UI, route, CMS, second catalog, or competing cue ID is approved here. See `FUTURE_PRAXIS_KNOWLEDGE_LAYER_COMPATIBILITY.md`.
 
-Exactly seven trunk/carry rows are now implemented once each in `REFERENCE_EXERCISES`, taking the catalog from 30 to 37. They add candidate knowledge only: no Composer, mandatory carry, workout-length rule, automatic substitution, or automatic progression. `CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN` is production phase authority after the revised semantic gate explained all three winner changes as removal of invalid legacy phase behavior. A changed winner does not require a phase vote when phase truthfully abstains. Legacy global phase values and the Phase 1 skill/stability and Phase 3 loadability bonuses are migration/audit material only. See `CONTEXTUAL_PHASE_ACTIVATION_ROOT_CAUSE_REVIEW.md`.
+Exactly seven trunk/carry rows and eight P0 whole-body rows are now implemented once each in `REFERENCE_EXERCISES`, taking the catalog from 30 to 37 and then 37 to 45. They add candidate knowledge only: no Composer, mandatory circuit, workout-length rule, automatic substitution, or automatic progression. `CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN` is production phase authority; the eight P0 rows truthfully abstain. A changed winner does not require a phase vote when phase has no accepted contextual evidence. Legacy global phase values and mechanical phase bonuses remain migration/audit material only. See `CONTEXTUAL_PHASE_ACTIVATION_ROOT_CAUSE_REVIEW.md` and `P0_WHOLE_BODY_PRODUCTION_REPORT.md`.
 
 ## 22. Exercise Selection Intelligence
 
@@ -1556,6 +1556,8 @@ Candidate Intelligence is ready to hand off to Session Composer only after expli
 - the blueprint, supporting architecture docs, source contracts, tests, and review evidence do not contradict one another.
 
 Green builds and tests are necessary evidence, but they are not sufficient for this gate. A large test count does not replace semantic audit, manual Candidate Lab review, and explicit project-owner acceptance. Session Composer must not begin merely because automated checks pass.
+
+Current gate result (2026-08-12): **`CANDIDATE_INTELLIGENCE_READY_FOR_SESSION_COMPOSER_DESIGN`**. The 45-row whole-body matrix, fixed-shell personalization, role/action/muscle contracts, explicit equipment gaps, pain/safety/response regressions, stable-adaptive continuity, and contextual phase abstention passed the owner-authorized graduation review. This authorizes no Composer implementation by itself; the exact next dependency is separate owner authorization for Session Composer design.
 
 ## 40. Candidate Ranking Laboratory
 

@@ -30,7 +30,7 @@ import {
 
 const FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 const EXPECTED_COMPREHENSIVE_CONTRACT_FINGERPRINT =
-  "fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de";
+  "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e";
 const NEW_TRUNK_ROLES = [
   "anti_lateral_flexion_core",
   "trunk_flexion",

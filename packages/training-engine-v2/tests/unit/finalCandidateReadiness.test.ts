@@ -249,13 +249,13 @@ describe("final Candidate Intelligence readiness invariants", () => {
 
   it("keeps existing scenario corpus and source catalog stable for final audit coverage", () => {
     expect(CONTROLLED_CANDIDATE_SCENARIOS).toHaveLength(22);
-    expect(REFERENCE_EXERCISES).toHaveLength(37);
+    expect(REFERENCE_EXERCISES).toHaveLength(45);
     expect(
       REFERENCE_EXERCISES.reduce(
         (sum, candidate) => sum + candidate.progression.transitionRelationships.length,
         0,
       ),
-    ).toBe(43);
+    ).toBe(47);
     expect(
       REFERENCE_EXERCISES.filter(
         (candidate) =>

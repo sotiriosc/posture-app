@@ -290,10 +290,10 @@ Name/tag sniffing, free-text pain authority, fixed core quotas, and automatic pr
 
 | Artifact | Required/captured | Current | Result |
 | --- | --- | --- | --- |
-| 22-scenario production ranking | 6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56 | 6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56 | true |
-| Comprehensive totals/components/rejections/pain/phase/assessment behavior | fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de | fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de | true |
-| Full serialized reference catalog after approved profiles | 1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8 | 1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8 | true |
-| Reference catalog with only mechanics.trunkMechanics removed | 0c12fc94aaffc8df81cb3beb3e2f038cad9c495e9cbe89065c42b76cf269829a | 0c12fc94aaffc8df81cb3beb3e2f038cad9c495e9cbe89065c42b76cf269829a | true |
+| 22-scenario production ranking | d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7 | d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7 | true |
+| Comprehensive totals/components/rejections/pain/phase/assessment behavior | 1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e | 1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e | true |
+| Full serialized reference catalog after approved profiles | bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91 | bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91 | true |
+| Reference catalog with only mechanics.trunkMechanics removed | 9f50087c224ba18d2dda29ccb50e4e3ee2e69fa416f438a186070b7cd174c779 | 9f50087c224ba18d2dda29ccb50e4e3ee2e69fa416f438a186070b7cd174c779 | true |
 
 The full catalog fingerprint changes intentionally because the three profiles are serialized. Removing only `mechanics.trunkMechanics` restores the exact pre-implementation catalog fingerprint. Contract invariants prove profiles cannot alter hard eligibility, role truth, totals, ranking, pain readiness, phase, assessment, or transitions because no production consumer exists beyond validation and trace observability.
 

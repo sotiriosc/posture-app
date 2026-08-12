@@ -74,7 +74,7 @@ Equipment is capability-based. It distinguishes bench type, one-or-more dumbbell
 
 `bodyweight.floorSpace`, `trainingSpace.stableLoadedStandingSpace`, and `trainingSpace.loadedGait.available` are separate facts. Neither a broad environment label nor ordinary floor space manufactures loaded-standing or loaded-gait truth. Loaded gait may additionally expose straight-line distance, turning availability, and overhead clearance; omitted optional detail remains unknown. Loaded gait marked available while stable loaded standing is false is preserved as inconsistent input and reported by validation rather than silently normalized.
 
-`CableCapability.adjustableHeight` describes the stack characteristic but does not prove a usable attachment height. `availableHeights` is the authority for `cable_anchor_low`, `cable_anchor_mid`, and `cable_anchor_high`; band-anchor keys remain separate. `MachineId.abdominal_crunch`, `dumbbell_pair`, and `ExerciseFamily.carry_load` exist for future catalog truth, but no current exercise consumes them.
+`CableCapability.adjustableHeight` describes the stack characteristic but does not prove a usable attachment height. `availableHeights` is the authority for `cable_anchor_low`, `cable_anchor_mid`, and `cable_anchor_high`; band-anchor keys remain separate. Derived `stable_support_surface` is true only when `supportSurfaces` explicitly contains `wall`, `box`, `chair`, or `stable_table`; environment labels cannot manufacture it.
 
 The model is intentionally extensible without attempting a complete commercial-gym catalog.
 
@@ -152,9 +152,9 @@ Pain-stress tags describe modeled training exposure, not diagnosis, tissue damag
 
 `ExerciseStressAnnotation` is a generic optional contract on `ExerciseDefinition`. It records source (`joint_stress | caution | contraindicated`), exposure scope (`intrinsic | prescription_modifiable | variant_dependent | dose_created | unknown`), side scope, review status, provenance, and notes. Accepted annotations require nonempty owner, human, or external provenance with evidence basis; legacy catalog arrays remain behaviorally authoritative and unscoped.
 
-The canonical catalog now contains 37 rows: the prior 30 plus exactly `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, `suitcase-carry`, and `wall-supported-suitcase-march`. Stable exercise IDs are the only future Praxis Knowledge Layer seam; no second catalog or Library ID exists. Focused stress migration removed false intrinsic row/RDL flexion and shoulder-press/bridge extension, moved long-lever claims to potential structured scope, and retained heavy axial loading as dose-created potential without an engine threshold.
+The canonical catalog now contains 45 rows: the prior 37 plus exactly `standing-calf-raise`, `side-lying-hip-adduction`, `loop-band-lateral-walk`, `side-lying-dumbbell-external-rotation`, `supine-hamstring-walkout`, `wall-ankle-dorsiflexion-rock`, `bodyweight-hip-hinge-rehearsal`, and `single-leg-balance-rehearsal`. New families are limited to `calf_accessory`, `hip_accessory`, and `cuff_control`; new mechanics vocabulary is limited to `single_leg`, `prescription_dependent`, and `band_unanchored` plus the derived support capability. Stable exercise IDs are the only future Praxis Knowledge Layer seam; no alias, second catalog, or Library ID exists.
 
-Owner-approved contextual annotations have complete provenance, but contextual scoring is not production authority: three dual-run winner changes lacked accepted phase evidence on the new winner. Unknown, needs-review, conflict, and no-match omit both component and denominator weight; legacy phase scoring remains authoritative.
+Owner-approved contextual scoring is production authority. Unknown, needs-review, conflict, and no-match omit both component and denominator weight. The eight P0 rows intentionally have no accepted contextual phase annotation, so phase contributes neither a synthetic fallback nor a mechanical bonus for them.
 
 Candidate pain matching counts accepted intrinsic structured stress as canonical facts. Prescription-modifiable, variant-dependent, dose-created, and unknown stress stays potential evidence until a prescription realizes or removes it. Potential evidence can require prescription resolution when it matches a pain signal, but it does not create pain units, joint units, hard criteria, acute criteria, or a hidden risk score.
 
@@ -163,6 +163,8 @@ Pain signals may preserve optional side. Missing side remains null, and tags rem
 Each purpose in an `ExerciseTransitionTrace` has a deterministic evidence trace with status `structurally_confirmed`, `contextual_intent`, `unknown_metadata`, or `contradicted`. Direct mechanics purposes use normalized source/target deltas only. Programming intent and multidimensional support purposes remain contextual, and transition notes cannot convert missing or contradictory mechanics into structural confirmation.
 
 An `ExerciseTransitionTrace` has `automaticSelectionEffect: none`. Productive continuity favors keeping and progressing the current exercise before replacement; a transition still requires legal, contextual evidence.
+
+The P0 production rows have no hard prerequisites. Their ordinary setup and execution requirements stay in prescription/coaching. Standing Calf Raise alone records `grip_loading` as dose-created potential when a held implement is prescribed; action/function metadata does not create pain or danger truth.
 
 ## Session Structure
 

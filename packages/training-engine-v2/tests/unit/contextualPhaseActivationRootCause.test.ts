@@ -204,12 +204,12 @@ describe("contextual phase activation root cause", () => {
   });
 
   it("keeps Knowledge compatibility non-behavioral and the catalog exact", () => {
-    expect(data.catalogCount).toBe(37);
-    expect(data.catalogUniqueCount).toBe(37);
+    expect(data.catalogCount).toBe(45);
+    expect(data.catalogUniqueCount).toBe(45);
     expect(data.sevenIdsExact).toBe(true);
-    expect(REFERENCE_EXERCISES).toHaveLength(37);
+    expect(REFERENCE_EXERCISES).toHaveLength(45);
     expect(data.knowledgeCompatibilityFingerprint)
-      .toBe("4ae9b04a475f5243b387932d1e24da70cdaa044260156a4c17b9a346106009cf");
+      .toBe("1f31ff87378887f56349fec7a9a130144496cee974e40adbd0117eaf77af37e6");
   });
 
   it("is deterministic across repeated final-policy evaluations", () => {
