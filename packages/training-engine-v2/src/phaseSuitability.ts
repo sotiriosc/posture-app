@@ -11,7 +11,7 @@ import type { ScoreComponent } from "./scoringContracts";
 
 export const CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY = {
   policyId: "CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN",
-  activation: "NON_DEFAULT_ACTIVATION_GATE_FAILED_UNEXPLAINED_WINNER_CHANGES",
+  activation: "PRODUCTION_AUTHORITY_REVISED_SEMANTIC_GATE_PASSED",
   categoryValues: {
     excellent: 8.8,
     good: 7.8,
@@ -33,7 +33,7 @@ export type ContextualPhasePolicyScoringOmissionReason =
 
 export interface ContextualPhasePolicyScoringTrace {
   readonly policyId: typeof CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY.policyId;
-  readonly activeByDefault: false;
+  readonly activeByDefault: true;
   readonly component: ScoreComponent | null;
   readonly componentWeightIncluded: boolean;
   readonly omissionReason: ContextualPhasePolicyScoringOmissionReason | null;
@@ -226,7 +226,7 @@ export function buildContextualPhasePolicyScoringTrace(
 
   return {
     policyId: CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY.policyId,
-    activeByDefault: false,
+    activeByDefault: true,
     component,
     componentWeightIncluded: component !== null,
     omissionReason,

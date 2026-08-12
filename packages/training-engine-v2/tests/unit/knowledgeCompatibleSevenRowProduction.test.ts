@@ -84,12 +84,12 @@ describe("knowledge-compatible seven-row production implementation", () => {
       .not.toContain("anti_extension_core");
   });
 
-  it("applies the exact contextual owner decisions and leaves the failed scorer non-default", () => {
+  it("applies the exact contextual owner decisions and retains the activated scorer", () => {
     const current = REFERENCE_EXERCISES.filter((candidate) => !sevenIds.has(candidate.id));
     const currentAnnotations = phaseAnnotations(current);
     const sevenAnnotations = phaseAnnotations(REFERENCE_EXERCISES.filter((candidate) => sevenIds.has(candidate.id)));
 
-    expect(currentAnnotations.filter((annotation) => annotation.reviewStatus === "accepted")).toHaveLength(10);
+    expect(currentAnnotations.filter((annotation) => annotation.reviewStatus === "accepted")).toHaveLength(11);
     expect(currentAnnotations.filter((annotation) => annotation.reviewStatus === "needs_review")).toHaveLength(1);
     expect(currentAnnotations.filter((annotation) => annotation.reviewStatus === "unknown")).toHaveLength(6);
     expect(sevenAnnotations.filter((annotation) => annotation.reviewStatus === "accepted")).toHaveLength(6);
@@ -108,13 +108,9 @@ describe("knowledge-compatible seven-row production implementation", () => {
     }
 
     expect(CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY.activation)
-      .toBe("NON_DEFAULT_ACTIVATION_GATE_FAILED_UNEXPLAINED_WINNER_CHANGES");
-    expect(data.productionContextualPhaseActivated).toBe(false);
-    expect(data.activationFailures).toEqual([
-      expect.objectContaining({ scenarioId: "controlled:horizontal-push-phase-1", legacyWinner: "machine-chest-press", contextualWinner: "push-up" }),
-      expect.objectContaining({ scenarioId: "controlled:lower-squat-phase-1", legacyWinner: "goblet-squat", contextualWinner: "leg-press" }),
-      expect.objectContaining({ scenarioId: "golden:advanced-gym-muscle-gain", legacyWinner: "chest-supported-dumbbell-row", contextualWinner: "machine-row" }),
-    ]);
+      .toBe("PRODUCTION_AUTHORITY_REVISED_SEMANTIC_GATE_PASSED");
+    expect(data.productionContextualPhaseActivated).toBe(true);
+    expect(data.activationFailures).toEqual([]);
     expect(data.continuityComparisons.filter((row) => row.winnerChanged)).toEqual([]);
     expect(data.continuityComparisons.filter((row) => row.orderChanged).map((row) => row.id))
       .toEqual(["continuity:phase_3"]);
@@ -184,10 +180,10 @@ describe("knowledge-compatible seven-row production implementation", () => {
 
   it("freezes isolated migration and compatibility fingerprints", () => {
     expect(data.productionRankingBefore).toBe("d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782");
-    expect(data.productionRankingAfter).toBe("237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118");
+    expect(data.productionRankingAfter).toBe("f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c");
     expect(data.comprehensiveBefore).toBe("216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9");
-    expect(data.comprehensiveAfter).toBe("2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02");
-    expect(data.phaseFingerprint).toBe("0a025f127927a51fffaf257bfe16f8e1b0bcfa21c3d0b0d14f10de21e3c95dcc");
+    expect(data.comprehensiveAfter).toBe("3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f");
+    expect(data.phaseFingerprint).toBe("e50c8a96fae906665021deeab240efbe798c6dfcd0e20b0d35b55b4af2590155");
     expect(data.stressMigrationFingerprint).toBe("5de2302d5427dce372e9826a4b3c670fed01a101c16a72b0fb143bd383e15504");
     expect(data.longLeverMigrationFingerprint).toBe("9b8f06c32d71bafe7b1d3d78c1bd56c180faad0c7e1b6e6e6de6e3e150f70646");
     expect(data.sevenRowCatalogFingerprint).toBe("5f785e769222d08e073382d264831196799c7e7dc258ec3a8dccc9617c93597e");

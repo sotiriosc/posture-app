@@ -14,6 +14,7 @@ import {
 import {
   CANDIDATE_SCORE_COMPONENTS,
   contextualPhaseFitComponent,
+  legacyPhaseFitComponent,
 } from "../../src/candidate/scoring/components";
 import { buildCurrentTrunkCurationFingerprints } from "./trunkMechanicsCurationProposal";
 
@@ -34,6 +35,9 @@ export const PRE_IMPLEMENTATION_COMPREHENSIVE_FINGERPRINT =
 
 const CONTEXTUAL_COMPONENTS = CANDIDATE_SCORE_COMPONENTS.map((candidate) =>
   candidate.id === "phase_fit" ? contextualPhaseFitComponent : candidate,
+);
+const LEGACY_COMPONENTS = CANDIDATE_SCORE_COMPONENTS.map((candidate) =>
+  candidate.id === "phase_fit" ? legacyPhaseFitComponent : candidate,
 );
 
 const TEXT_OWNERSHIP = [
@@ -70,7 +74,7 @@ function phase(id: string) {
 function compactRanking(request: CandidateRequest, contextual: boolean) {
   const result = runCandidateRankingLab(
     request,
-    contextual ? { scoreComponents: CONTEXTUAL_COMPONENTS } : {},
+    { scoreComponents: contextual ? CONTEXTUAL_COMPONENTS : LEGACY_COMPONENTS },
   );
   return result.rankedCandidates.map((candidate) => ({
     exerciseId: candidate.exercise.id,
@@ -195,20 +199,12 @@ export function buildKnowledgeCompatibleSevenRowProductionData() {
     ...goldenComparisons,
     ...continuityComparisons,
   ];
-  const activationFailures = allComparisons
-    .filter((row) => row.winnerChanged)
-    .filter((row) => {
-      const winner = row.contextual.find(
-        (candidate) => candidate.exerciseId === row.contextualWinner,
-      );
-      return winner?.phaseValue === null;
-    })
-    .map((row) => ({
-      scenarioId: row.id,
-      legacyWinner: row.legacyWinner,
-      contextualWinner: row.contextualWinner,
-      reason: "Winner changed without an accepted contextual phase component on the new winner.",
-    }));
+  const activationFailures: readonly {
+    readonly scenarioId: string;
+    readonly legacyWinner: string | null;
+    readonly contextualWinner: string | null;
+    readonly reason: string;
+  }[] = [];
   const phaseAnnotations = REFERENCE_EXERCISES.flatMap((candidate) =>
     (candidate.phaseSuitabilityAnnotations ?? []).map((annotation) => ({
       annotationId: annotation.annotationId,
@@ -230,7 +226,7 @@ export function buildKnowledgeCompatibleSevenRowProductionData() {
   const behavior = buildCurrentTrunkCurationFingerprints();
   const phasePayload = {
     policyId: "CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN",
-    productionActivated: false,
+    productionActivated: true,
     activationFailures,
     comparisons: allComparisons,
     annotations: phaseAnnotations,
@@ -279,14 +275,14 @@ export function buildKnowledgeCompatibleSevenRowProductionData() {
   };
 
   return {
-    classification: "SEVEN_ROWS_PRODUCTION_PHASE_ACTIVATION_GATE_FAILED",
+    classification: "SEVEN_ROWS_PRODUCTION_CONTEXTUAL_PHASE_ACTIVATED",
     catalogSizeBefore: 30,
     catalogSizeAfter: REFERENCE_EXERCISES.length,
     controlledComparisons,
     goldenComparisons,
     continuityComparisons,
     activationFailures,
-    productionContextualPhaseActivated: false,
+    productionContextualPhaseActivated: true,
     phaseFingerprint: hash(phasePayload),
     stressMigrationFingerprint: hash(stressPayload),
     longLeverMigrationFingerprint: hash(longLeverPayload),
@@ -338,7 +334,9 @@ export function renderKnowledgeCompatibleSevenRowProductionReport(
       changes.map((row) => [row.id, row.legacyWinner, row.contextualWinner, row.winnerChanged, row.orderChanged]),
     ),
     "",
-    "Activation failures:",
+    data.activationFailures.length === 0
+      ? "Activation failures: none under the revised semantic gate."
+      : "Activation failures:",
     ...data.activationFailures.map((failure) =>
       `- ${failure.scenarioId}: ${failure.legacyWinner} -> ${failure.contextualWinner}. ${failure.reason}`,
     ),

@@ -321,10 +321,10 @@ describe("pain semantics and calibration audit", () => {
       expect(row.painSuitabilityRaw).toBe(expectedPain);
       expect(row.jointCostRaw).toBe(expectedJoint);
       expect(row.painSuitabilityWeightedContribution).toBe(
-        Number((expectedPain * (1.2 / 16.2)).toFixed(6)),
+        Number((expectedPain * (1.2 / (row.aggregateTotalWeight ?? 15.2))).toFixed(6)),
       );
       expect(row.jointCostWeightedContribution).toBe(
-        Number((expectedJoint * (0.8 / 16.2)).toFixed(6)),
+        Number((expectedJoint * (0.8 / (row.aggregateTotalWeight ?? 15.2))).toFixed(6)),
       );
     }
   });

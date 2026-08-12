@@ -38,6 +38,28 @@ Suitcase March Phase 1 activation/activation good.
 All other seven-row proposals retain their reviewed needs-review, unknown, or
 wrong-owner disposition. They remain non-scoring.
 
+## Contextual Phase Activation Finalization
+
+Goblet Squat Phase 1 `primary_strength` / `main` is accepted as `good`. Its
+coordinated free-standing loaded squat task directly develops Phase 1 position,
+repeatable technique, and movement confidence for squat-pattern development.
+This is a scoped developmental judgment about performing the actual squat task;
+it is not inferred from low skill, low stability, manageable load, equipment
+availability, progression runway, or any other already-owned score component.
+
+Provenance is `sourceType: owner_decision`, `reviewerId: sotiriosc`, and
+`reviewedAt: 2026-08-12T00:00:00-04:00`. The consequence is one accepted
+contextual vote only when both the requested role and section match. It is not
+an attempt to restore the legacy winner, and its `good` value may lower a
+candidate whose non-phase mean is already higher than `7.8`.
+
+The revised activation gate accepts winner or lower-order changes when they are
+fully explained by accepted scoped phase evidence or removal of invalid legacy
+phase behavior. A changed winner does not need a phase vote when phase
+truthfully abstains. The contextual scorer is production authority; legacy
+global categories and Phase 1/Phase 3 mechanical bonuses remain migration/audit
+material only.
+
 ## Approved Structured Stress Decisions
 
 - Dumbbell Romanian Deadlift and Cable Pull-Through intrinsically expose `loaded_hinge`; magnitude and range remain prescription-realized.

@@ -257,7 +257,9 @@ describe("Candidate Intelligence foundation", () => {
       "legal_candidate_pool",
       "candidate_score_breakdowns",
     ]);
-    expect(first.rankedCandidates[0].components).toHaveLength(CANDIDATE_SCORE_COMPONENTS.length);
+    expect(first.rankedCandidates[0].components).toHaveLength(CANDIDATE_SCORE_COMPONENTS.length - 1);
+    expect(first.rankedCandidates[0].components.some((component) => component.id === "phase_fit"))
+      .toBe(false);
   });
 
   it("prefers supported rows over unsupported rows when low-back discomfort overlaps hinge stress", () => {
@@ -521,10 +523,10 @@ describe("Candidate Intelligence foundation", () => {
         )
         .map((candidate) => [candidate.exercise.id, candidate.total]),
     ).toEqual([
-      ["machine-row", 8.069],
-      ["seated-cable-row", 8.069],
-      ["chest-supported-dumbbell-row", 8.065],
-      ["one-arm-dumbbell-row", 7.911],
+      ["machine-row", 8.021],
+      ["seated-cable-row", 8.021],
+      ["chest-supported-dumbbell-row", 8.017],
+      ["one-arm-dumbbell-row", 7.919],
     ]);
   });
 
@@ -607,17 +609,18 @@ describe("Candidate Intelligence foundation", () => {
     );
   });
 
-  it("changes horizontal-push ranking by phase without assuming advanced means hardest", () => {
+  it("lets contextual phase abstain without assuming beginner means machine-only", () => {
     const phase1 = result("horizontal-push-phase-1");
     const phase3 = result("horizontal-push-phase-3");
     const phase1Bench = ranked(phase1, "dumbbell-bench-press");
     const phase3Bench = ranked(phase3, "dumbbell-bench-press");
 
-    expect(phase1.rankedCandidates[0].exercise.id).toBe("machine-chest-press");
+    expect(phase1.rankedCandidates[0].exercise.id).toBe("push-up");
     expect(phase3.rankedCandidates[0].exercise.id).toBe("dumbbell-bench-press");
-    expect(componentValue(phase3Bench, "phase_fit")).toBeGreaterThan(
-      componentValue(phase1Bench, "phase_fit"),
-    );
+    expect(phase1Bench.components.find((component) => component.id === "phase_fit"))
+      .toBeUndefined();
+    expect(phase3Bench.components.find((component) => component.id === "phase_fit"))
+      .toBeUndefined();
   });
 
   it("favors productive continuity but supports replacement when progression has stalled", () => {

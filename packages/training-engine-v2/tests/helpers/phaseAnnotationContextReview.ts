@@ -11,6 +11,7 @@ import {
   REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
   buildExerciseTransitionTraces,
+  legacyPhaseFitComponent,
   acceptedPhaseAnnotationHasProductionProvenance,
   deriveAlignmentPriorities,
   runCandidateRankingLab,
@@ -46,6 +47,10 @@ const PHASE_IDS: readonly PhaseId[] = ["phase_1", "phase_2", "phase_3"];
 const PHASELESS_COMPONENTS = CANDIDATE_SCORE_COMPONENTS.filter(
   (candidate) => candidate.id !== "phase_fit",
 );
+const LEGACY_COMPONENTS = CANDIDATE_SCORE_COMPONENTS.map((candidate) =>
+  candidate.id === "phase_fit" ? legacyPhaseFitComponent : candidate,
+);
+const LEGACY_OPTIONS = { scoreComponents: LEGACY_COMPONENTS } as const;
 
 const EMPTY_ASSESSMENT: AssessmentState = {
   signals: [],
@@ -1762,7 +1767,7 @@ function buildCounterfactualProof(): ContextCounterfactualProof {
       candidatePool: pool(["band-face-pull"]),
     }),
   };
-  const reasonCurrent = runCandidateRankingLab(reasonScenario.request);
+  const reasonCurrent = runCandidateRankingLab(reasonScenario.request, LEGACY_OPTIONS);
   const reasonA = syntheticAnnotation({
     annotationId: "counterfactual-reason-a",
     scope: SCOPES.activation,
@@ -1845,7 +1850,7 @@ function buildCounterfactualProof(): ContextCounterfactualProof {
   if (!painScenario) {
     throw new Error("Missing pain counterfactual scenario.");
   }
-  const painCurrent = runCandidateRankingLab(painScenario.request);
+  const painCurrent = runCandidateRankingLab(painScenario.request, LEGACY_OPTIONS);
   const painContext = rankScenarioForPolicy({
     scenario: painScenario,
     policy: contextPolicy,
@@ -1887,7 +1892,7 @@ function buildCounterfactualProof(): ContextCounterfactualProof {
     provenanceDoesNotChangeScoringOrLegality:
       reasonRowsA[0]?.total === provenanceRows[0]?.total &&
       JSON.stringify(rejectionSignature(reasonCurrent)) ===
-        JSON.stringify(rejectionSignature(runCandidateRankingLab(reasonScenario.request))),
+        JSON.stringify(rejectionSignature(runCandidateRankingLab(reasonScenario.request, LEGACY_OPTIONS))),
     equalSpecificityConflictIsExplicitAndDeterministic:
       conflictForward.evidenceStatus === "CONFLICTING_ANNOTATIONS" &&
       conflictForward.selectedAnnotation === null &&
@@ -1993,7 +1998,7 @@ export function buildPhaseAnnotationContextReviewData(): PhaseAnnotationContextR
   const controlledScenarios = buildControlledScenarios();
   const currentResults = new Map(
     controlledScenarios.map(
-      (scenario) => [scenario.id, runCandidateRankingLab(scenario.request)] as const,
+      (scenario) => [scenario.id, runCandidateRankingLab(scenario.request, LEGACY_OPTIONS)] as const,
     ),
   );
   const candidateRows = CONTEXTUAL_PHASE_POLICIES.flatMap((policy) =>

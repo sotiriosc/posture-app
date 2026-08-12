@@ -365,15 +365,15 @@ describe("trunk/carry pain-stress vocabulary and receiver review", () => {
 
   it("preserves all current behavior fingerprints from the accepted contracts", () => {
     expect(data.behaviorFingerprints.productionRankingFingerprint).toBe(
-      "237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118",
+      "f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c",
     );
     expect(data.behaviorFingerprints.productionRankingMatches).toBe(true);
     expect(data.behaviorFingerprints.comprehensiveBehaviorFingerprint).toBe(
-      "2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02",
+      "3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f",
     );
     expect(data.behaviorFingerprints.comprehensiveBehaviorMatches).toBe(true);
     expect(data.behaviorFingerprints.referenceCatalogFingerprint).toBe(
-      "649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6",
+      "903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c",
     );
     expect(data.behaviorFingerprints.referenceCatalogMatches).toBe(true);
     expect(data.behaviorFingerprints.equipmentLegalityFingerprint).toBe(

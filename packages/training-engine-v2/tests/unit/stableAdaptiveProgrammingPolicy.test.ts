@@ -297,7 +297,7 @@ describe("stable adaptive programming and response receivers", () => {
     expect(proseChanged.nextOwner).toBe(plain.nextOwner);
   });
 
-  it("implements the selected contextual scorer as explicit non-default omission semantics", () => {
+  it("implements the selected contextual scorer as production omission semantics", () => {
     expect(CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY).toEqual(expect.objectContaining({
       categoryValues: { excellent: 8.8, good: 7.8, possible: 6.2, poor: 5.5 },
       phaseFamilyWeight: 1,
@@ -315,7 +315,7 @@ describe("stable adaptive programming and response receivers", () => {
     expect(poorScore.componentWeightIncluded).toBe(true);
     expect(poorScore.phase1MechanicalControlBonusApplied).toBe(false);
     expect(poorScore.phase3LoadabilityBonusApplied).toBe(false);
-    expect(poorScore.activeByDefault).toBe(false);
+    expect(poorScore.activeByDefault).toBe(true);
 
     const noMatch = resolveContextualPhaseAnnotation({
       phaseId: "phase_2",
@@ -364,10 +364,10 @@ describe("stable adaptive programming and response receivers", () => {
     const phase = buildContextualPhaseProductionCurationData();
     expect(phase.currentRows).toHaveLength(90);
     expect(phase.currentCounts).toEqual({
-      PROPOSE_ACCEPT: 10,
+      PROPOSE_ACCEPT: 11,
       KEEP_NEEDS_REVIEW: 1,
       KEEP_UNKNOWN: 6,
-      REJECT_AS_WRONG_OWNER: 73,
+      REJECT_AS_WRONG_OWNER: 72,
     });
     expect(phase.sevenRows).toHaveLength(21);
     expect(readFileSync(join(
@@ -392,13 +392,13 @@ describe("stable adaptive programming and response receivers", () => {
       "26fe112e7c0fced67912e38e9118fed1808c973d74172d78af64f2ae4b6bb7d2",
     );
     expect(data.policyFingerprint).toBe(
-      "9fef70fb01f26cc9adf356d73392a6382f2eae97ebb5e780d738a532e7dba760",
+      "2e941653546cac2e8d8a8151c91d9470123b80dd06e8b387b734e882a83734a6",
     );
     expect(data.stressFingerprint).toBe(
       "8fada7ea2f07b7ddedea8d181a6d862e2d4d654ec74aea763766445f5db0cfc7",
     );
     expect(data.combinedFingerprint).toBe(
-      "f680a0342256a07634157fadf1ba910baf5c0ca96e4d285bb828dca7e80fc617",
+      "58067eee7d9e34836e15150caf8be5de1ae4d896db43199f40583dd45020c72a",
     );
   });
 

@@ -231,7 +231,7 @@ describe("continuity reason-code truth", () => {
         reasonCode: "CONTINUITY_FAVORED",
       }),
     );
-    expect(candidate.total).toBe(8.099);
+    expect(candidate.total).toBe(8.053);
     expect(candidate.rank).toBe(1);
   });
 
@@ -241,7 +241,7 @@ describe("continuity reason-code truth", () => {
       {},
       5.6,
       "SCORE_NEUTRAL",
-      8.065,
+      8.017,
       3,
       ["machine-row", "seated-cable-row", EXERCISE_ID, "one-arm-dumbbell-row"],
     ],
@@ -250,7 +250,7 @@ describe("continuity reason-code truth", () => {
       { current: true, productive: true, stable: true },
       8.7,
       "CONTINUITY_FAVORED",
-      8.238,
+      8.201,
       1,
       [EXERCISE_ID, "machine-row", "seated-cable-row", "one-arm-dumbbell-row"],
     ],
@@ -259,7 +259,7 @@ describe("continuity reason-code truth", () => {
       { current: true, productive: true, readyToProgress: true },
       8,
       "CONTINUITY_FAVORED",
-      8.254,
+      8.218,
       1,
       [EXERCISE_ID, "machine-row", "seated-cable-row", "one-arm-dumbbell-row"],
     ],
@@ -268,7 +268,7 @@ describe("continuity reason-code truth", () => {
       { current: true, plateaued: true, failedProgression: true, stalled: true },
       4,
       "REPLACEMENT_JUSTIFIED",
-      7.854,
+      7.792,
       4,
       ["machine-row", "seated-cable-row", "one-arm-dumbbell-row", EXERCISE_ID],
     ],
@@ -277,7 +277,7 @@ describe("continuity reason-code truth", () => {
       { current: true, painResponse: true, blocked: true },
       2.1,
       "REPLACEMENT_JUSTIFIED",
-      7.871,
+      7.81,
       4,
       ["machine-row", "seated-cable-row", "one-arm-dumbbell-row", EXERCISE_ID],
     ],

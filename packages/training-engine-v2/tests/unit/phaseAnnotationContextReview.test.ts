@@ -326,7 +326,7 @@ describe("phase annotation context and uncertainty review", () => {
     expect(findings).toContain("phase_annotation_section_outside_legal_use");
   });
 
-  it("adds contextual phase resolution to DecisionTrace without changing production scoring", () => {
+  it("adds contextual phase resolution to DecisionTrace and applies accepted production evidence", () => {
     const scenario = getControlledCandidateScenario("horizontal-pull-gym-neutral");
     const exercise = REFERENCE_EXERCISES.find((candidate) => candidate.id === "machine-row");
     if (!scenario || !exercise) throw new Error("Missing phase trace fixtures.");
@@ -372,14 +372,14 @@ describe("phase annotation context and uncertainty review", () => {
         productionScoringEligible: true,
       }),
     ]);
-    expect(traced.rankedCandidates[0].total).toBe(baseline.rankedCandidates[0].total);
+    expect(traced.rankedCandidates[0].total).toBeLessThan(baseline.rankedCandidates[0].total);
     expect(
       traced.rankedCandidates[0].components.find((component) => component.id === "phase_fit")
         ?.value,
-    ).toBe(
-      baseline.rankedCandidates[0].components.find((component) => component.id === "phase_fit")
-        ?.value,
-    );
+    ).toBe(5.5);
+    expect(
+      baseline.rankedCandidates[0].components.find((component) => component.id === "phase_fit"),
+    ).toBeUndefined();
   });
 
   it("scopes accessory rationale away from the Phase 3 activation request", () => {

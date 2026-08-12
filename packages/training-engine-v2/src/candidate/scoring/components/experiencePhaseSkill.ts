@@ -88,9 +88,8 @@ export const contextualPhaseFitComponent: CandidateScoreComponent = {
   },
 };
 
-// The activation gate switches this explicit authority only after the dual-run
-// report satisfies every owner-approved low-churn semantic invariant.
-export const phaseFitComponent = legacyPhaseFitComponent;
+// Legacy scoring remains exported for migration/root-cause audit only.
+export const phaseFitComponent = contextualPhaseFitComponent;
 
 export const stabilityFitComponent: CandidateScoreComponent = {
   id: "stability_fit",

@@ -3445,9 +3445,9 @@ Explicitly rejected legacy policies:
 
 | Artifact | Required fingerprint | Current fingerprint | Unchanged |
 | --- | --- | --- | --- |
-| Full serialized reference catalog after accepted first profiles | 649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6 | 649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6 | true |
-| 22-scenario production ranking | 237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118 | 237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118 | true |
-| Comprehensive behavior | 2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02 | 2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02 | true |
+| Full serialized reference catalog after accepted first profiles | 903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c | 903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c | true |
+| 22-scenario production ranking | f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c | f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c | true |
+| Comprehensive behavior | 3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f | 3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f | true |
 
 Current production reference-exercise count: 37. The proposal renderer reads production state only to prove the boundary; it writes documentation only.
 

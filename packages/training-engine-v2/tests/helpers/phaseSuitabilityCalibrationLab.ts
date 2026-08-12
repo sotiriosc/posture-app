@@ -13,6 +13,7 @@ import {
   THREE_PHASE_FOUNDATION,
   buildExerciseTransitionTraces,
   deriveAlignmentPriorities,
+  legacyPhaseFitComponent,
   runCandidateRankingLab,
   type AssessmentState,
   type CandidateNeed,
@@ -64,6 +65,11 @@ const EMPTY_CONTINUITY: ContinuityContext = {
   failedProgressionExerciseIds: [],
   painResponseExerciseIds: [],
 };
+
+const LEGACY_COMPONENTS = CANDIDATE_SCORE_COMPONENTS.map((candidate) =>
+  candidate.id === "phase_fit" ? legacyPhaseFitComponent : candidate,
+);
+const LEGACY_OPTIONS = { scoreComponents: LEGACY_COMPONENTS } as const;
 
 export type FieldConsumptionStatus = "UNUSED" | "PARTIALLY_USED" | "FULLY_USED";
 export type OverlapClassification =
@@ -730,7 +736,7 @@ function policyOptions(policy: PhasePolicyDefinition): {
   readonly weights?: CandidateScoringWeights;
 } {
   if (policy.family === "CURRENT") {
-    return {};
+    return LEGACY_OPTIONS;
   }
   if (policy.family === "NO_PHASE") {
     return {
@@ -1168,10 +1174,13 @@ function buildCatalogAudit(): readonly PhaseCatalogAuditRow[] {
 
 function buildProductionRankingFingerprint(): string {
   const rows = CONTROLLED_CANDIDATE_SCENARIOS.map((scenario) => {
-    const result = runCandidateRankingLab({
-      ...scenario.request,
-      evaluationContext: { asOf: PHASE_CALIBRATION_FIXED_AS_OF },
-    });
+    const result = runCandidateRankingLab(
+      {
+        ...scenario.request,
+        evaluationContext: { asOf: PHASE_CALIBRATION_FIXED_AS_OF },
+      },
+      LEGACY_OPTIONS,
+    );
     return {
       id: scenario.id,
       ranked: result.rankedCandidates.map((candidate) => [
@@ -1246,7 +1255,7 @@ function buildPhaseOnlyMatrix(input: readonly PhaseLabRequest[]): {
 } {
   const resultEntries = input.map((labRequest) => [
     labRequest.request.id,
-    runCandidateRankingLab(labRequest.request),
+    runCandidateRankingLab(labRequest.request, LEGACY_OPTIONS),
   ] as const);
   const results = new Map(resultEntries);
   const summaries: PhaseOnlySummaryRow[] = [];
@@ -1303,7 +1312,7 @@ function buildGoalMatrix(): readonly GoalMatrixRow[] {
         phaseId,
         goal: requestGoal,
         candidateNeed: GOAL_MATRIX_NEED,
-      }));
+      }), LEGACY_OPTIONS);
       const selected = winner(result);
       return {
         phaseId,
@@ -1331,7 +1340,7 @@ function buildExperienceMatrix(): readonly ExperienceMatrixRow[] {
         goal: "strength",
         candidateNeed: horizontalPush.need,
         experience,
-      }));
+      }), LEGACY_OPTIONS);
       const selected = winner(result);
       const freeWeights = result.rankedCandidates.filter((candidate) =>
         candidate.exercise.id === "dumbbell-bench-press" || candidate.exercise.id === "push-up",
@@ -1453,7 +1462,7 @@ function buildContinuityMatrix(
           continuity: state.continuity,
           history: state.history,
         }),
-        policy ? policyOptions(policy) : {},
+        policy ? policyOptions(policy) : LEGACY_OPTIONS,
       );
       const current = ranked(result, "chest-supported-dumbbell-row");
       const phaseFit = current?.components.find((candidate) => candidate.id === "phase_fit");
@@ -1629,7 +1638,7 @@ function buildInteractionMatrix(): readonly PhaseInteractionRow[] {
         continuity: scenario.continuity,
         history: scenario.trainingHistory,
         candidatePool: ROW_POOL,
-      }));
+      }), LEGACY_OPTIONS);
       const oneArm = ranked(result, "one-arm-dumbbell-row");
       const oneArmRejected = result.hardRejectedCandidates.some(
         (candidate) => candidate.exercise.id === "one-arm-dumbbell-row",
@@ -2032,7 +2041,7 @@ function buildCounterfactualProof(): PhaseCounterfactualProof {
     goal: "strength",
     candidateNeed: horizontalPull.need,
     candidatePool: [excellent, possible],
-  }));
+  }), LEGACY_OPTIONS);
   const excellentRanked = ranked(annotationResult, excellent.id);
   const possibleRanked = ranked(annotationResult, possible.id);
   if (!excellentRanked || !possibleRanked) {
@@ -2055,7 +2064,7 @@ function buildCounterfactualProof(): PhaseCounterfactualProof {
     goal: "strength",
     candidateNeed: horizontalPull.need,
     candidatePool: [reasonA, reasonB],
-  }));
+  }), LEGACY_OPTIONS);
   const reasonARanked = ranked(reasonResult, reasonA.id);
   const reasonBRanked = ranked(reasonResult, reasonB.id);
   if (!reasonARanked || !reasonBRanked) {
@@ -2069,7 +2078,7 @@ function buildCounterfactualProof(): PhaseCounterfactualProof {
     goal: "strength",
     candidateNeed: horizontalPull.need,
     candidatePool: [unspecified],
-  }));
+  }), LEGACY_OPTIONS);
   const unspecifiedRanked = ranked(unspecifiedResult, unspecified.id);
   if (!unspecifiedRanked) {
     throw new Error("Unspecified phase counterfactual unexpectedly failed eligibility.");

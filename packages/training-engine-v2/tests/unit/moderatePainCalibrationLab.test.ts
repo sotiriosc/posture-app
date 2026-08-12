@@ -110,8 +110,9 @@ describe("moderate-pain human calibration laboratory", () => {
     );
     expect(new Set(rdlRows.map((row) => row.jointCostRaw))).toEqual(new Set([7.05]));
     expect(new Set(rdlRows.map((row) => row.jointCostWeightedContribution))).toEqual(
-      new Set([0.348148]),
+      new Set([0.371053]),
     );
+    expect(new Set(rdlRows.map((row) => row.aggregateTotalWeight))).toEqual(new Set([15.2]));
   });
 
   it("keeps required response out of numeric scoring and exposes its distinct owner", () => {

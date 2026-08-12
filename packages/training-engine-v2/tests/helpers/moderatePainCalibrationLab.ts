@@ -153,6 +153,7 @@ export interface ModeratePainCalibrationMatrixRow {
   readonly painSuitabilityWeightedContribution: number | null;
   readonly jointCostRaw: number | null;
   readonly jointCostWeightedContribution: number | null;
+  readonly aggregateTotalWeight: number | null;
   readonly baselineTotal: number | null;
   readonly total: number | null;
   readonly baselineRank: number | null;
@@ -495,6 +496,10 @@ function experimentalRowsFor(
       painSuitabilityWeightedContribution: pain?.weightedContribution ?? null,
       jointCostRaw: joint?.rawValue ?? null,
       jointCostWeightedContribution: joint?.weightedContribution ?? null,
+      aggregateTotalWeight:
+        experimental?.score.aggregate.totalWeight ??
+        candidate.ranked?.score.aggregate.totalWeight ??
+        null,
       baselineTotal: candidate.ranked?.total ?? null,
       total: experimental?.score.aggregate.value ?? null,
       baselineRank,

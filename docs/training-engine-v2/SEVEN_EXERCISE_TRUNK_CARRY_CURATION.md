@@ -1047,9 +1047,9 @@ No unresolved owner-decision questions remain inside this seven-exercise curatio
 
 | Artifact | Current | Matches |
 | --- | --- | --- |
-| Production ranking fingerprint | 237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118 | true |
-| Comprehensive behavior fingerprint | 2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02 | true |
-| Reference catalog fingerprint | 649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6 | true |
+| Production ranking fingerprint | f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c | true |
+| Comprehensive behavior fingerprint | 3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f | true |
+| Reference catalog fingerprint | 903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c | true |
 | Equipment legality fingerprint | 5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869 | true |
 | Expanded equipment fixture fingerprint | bb07188480cab4134ba4f2eb36dfa4f17e5d4d62d6139b539c5603ad602b482a | true |
 

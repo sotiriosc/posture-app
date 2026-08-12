@@ -33,7 +33,7 @@ import {
 const FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 const AUDIT_BASELINE_HEAD = "1449d46e122cadd8a445e07365c242983afa64eb";
 const EXPECTED_EXISTING_SCENARIO_FINGERPRINT =
-  "237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118";
+  "f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c";
 
 const EMPTY_ASSESSMENT: AssessmentState = {
   signals: [],
@@ -169,6 +169,7 @@ export interface PainMatrixRow {
   readonly painSuitabilityWeightedContribution: number | null;
   readonly jointCostRaw: number | null;
   readonly jointCostWeightedContribution: number | null;
+  readonly aggregateTotalWeight: number | null;
   readonly stabilityFit: number | null;
   readonly assessmentRelationship: string;
   readonly total: number | null;
@@ -759,6 +760,7 @@ function matrixRowsFor(input: {
         painSuitabilityWeightedContribution: painComponent?.weightedContribution ?? null,
         jointCostRaw: jointComponent?.rawValue ?? null,
         jointCostWeightedContribution: jointComponent?.weightedContribution ?? null,
+        aggregateTotalWeight: ranked?.score.aggregate.totalWeight ?? null,
         stabilityFit: stabilityComponent?.rawValue ?? null,
         assessmentRelationship: assessmentRelationship(ranked),
         total: ranked?.total ?? null,
@@ -1541,7 +1543,7 @@ export function renderPainSemanticsCalibrationReview(data: PainAuditData): strin
     "jointAccumulation = 0.7 when joint_stress_accumulated is present, else 0",
     "```",
     "",
-    "The emitted 18-component candidate score has total weight `16.2`. `pain_suitability` has configured weight `1.2`, normalized weight `0.074074`; `joint_cost` has configured weight `0.8`, normalized weight `0.049383`; `stability_fit` has configured weight `0.7`, normalized weight `0.043210`. Each weighted contribution is raw component value multiplied by the exact unrounded configured-weight share, then rounded to six decimals. The aggregate is the weighted mean and is rounded to three decimals for `total`.",
+    "The contextual production score emits total weight `16.2` when an accepted phase vote exists and `15.2` when phase abstains. Each configured family weight is normalized by that candidate's emitted total weight; each weighted contribution is raw value multiplied by the exact unrounded share, then rounded to six decimals. The aggregate is the weighted mean and is rounded to three decimals for `total`.",
     "",
     "`pain_suitability` emits `PAIN_SUITABLE` with no current/moderate/sensitivity overlap and `PAIN_REQUIRES_REVIEW` otherwise. `joint_cost` emits `PAIN_REQUIRES_REVIEW` only for current or moderate overlap; historical overlap alone retains `JOINT_COST_ACCEPTABLE`. Moderate warning eligibility emits `PAIN_REQUIRES_REVIEW` on caution overlap. Hard contraindication and acute/severe matches emit `HARD_CONTRAINDICATION` and prevent all scoring.",
     "",

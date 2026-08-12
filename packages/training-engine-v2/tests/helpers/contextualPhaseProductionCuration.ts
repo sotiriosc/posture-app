@@ -17,7 +17,7 @@ import {
 } from "./sevenExerciseTrunkCarryCuration";
 
 export const CONTEXTUAL_PHASE_PRODUCTION_CURATION_CLASSIFICATION =
-  "OWNER_DECISIONS_APPLIED_CONTEXTUAL_ACTIVATION_GATE_FAILED";
+  "OWNER_DECISIONS_APPLIED_CONTEXTUAL_PRODUCTION_ACTIVATED";
 
 export type PhaseCurationDecision =
   | "PROPOSE_ACCEPT"
@@ -66,6 +66,7 @@ function currentDecision(row: PhaseAnnotationOwnershipAuditRow): PhaseCurationDe
     "reverse-pec-deck:phase_1",
     "band-face-pull:phase_1",
     "pallof-press:phase_1",
+    "goblet-squat:phase_1",
   ]);
   const unknown = new Set([
     "ninety-ninety-breathing:phase_2",
@@ -83,18 +84,26 @@ function currentDecision(row: PhaseAnnotationOwnershipAuditRow): PhaseCurationDe
 
 function currentRow(row: PhaseAnnotationOwnershipAuditRow): ContextualPhaseCurationRow {
   const decision = currentDecision(row);
+  const isScopedGoblet = row.exerciseId === "goblet-squat" && row.phaseId === "phase_1";
+  const independentPhaseRationale = isScopedGoblet
+    ? "The coordinated free-standing loaded squat task directly develops Phase 1 position, repeatable technique, and movement confidence for primary-strength main use."
+    : row.auditFinding;
   return {
     exerciseId: row.exerciseId,
     phaseId: row.phaseId,
-    scope: scopeLabel(row),
-    trainingRoles: row.proposedScope.trainingRoles ?? row.trainingRoles,
-    sessionSections: row.proposedScope.sessionSections ?? row.sessionSections,
+    scope: isScopedGoblet ? "primary_strength @ main" : scopeLabel(row),
+    trainingRoles: isScopedGoblet
+      ? ["primary_strength"]
+      : row.proposedScope.trainingRoles ?? row.trainingRoles,
+    sessionSections: isScopedGoblet
+      ? ["main"]
+      : row.proposedScope.sessionSections ?? row.sessionSections,
     suitability: row.currentSuitability,
     decision,
-    independentPhaseRationale: row.auditFinding,
+    independentPhaseRationale,
     evidenceBasis: [
       `Existing catalog annotation: ${row.currentReason}`,
-      `Context ownership audit: ${row.auditFinding}`,
+      `Context ownership audit: ${independentPhaseRationale}`,
       "Final owner decisions are recorded in PHASE_AND_STRESS_OWNER_DECISIONS.md.",
     ],
     notGoalFit:
@@ -111,7 +120,7 @@ function currentRow(row: PhaseAnnotationOwnershipAuditRow): ContextualPhaseCurat
       decision === "PROPOSE_ACCEPT"
         ? "Implemented as an accepted contextual annotation with complete owner provenance."
         : decision === "REJECT_AS_WRONG_OWNER"
-          ? "Remove the legacy phase claim when contextual policy activates and leave the fact with its dedicated owner."
+          ? "The rejected legacy claim is non-behavioral; leave the fact with its dedicated owner."
           : "Keep the annotation non-scoring until an owner supplies a narrower truthful judgment or confirms unknown.",
   };
 }
@@ -188,7 +197,7 @@ export const PHASE_OWNER_QUESTIONS: readonly string[] = [];
 export interface ContextualPhaseProductionCurationData {
   readonly classification: typeof CONTEXTUAL_PHASE_PRODUCTION_CURATION_CLASSIFICATION;
   readonly selectedPolicy: typeof CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY;
-  readonly productionActivated: false;
+  readonly productionActivated: true;
   readonly currentRows: readonly ContextualPhaseCurationRow[];
   readonly sevenRows: readonly ContextualPhaseCurationRow[];
   readonly currentCounts: Readonly<Record<PhaseCurationDecision, number>>;
@@ -212,7 +221,7 @@ export function buildContextualPhaseProductionCurationData(): ContextualPhasePro
   const payload = {
     classification: CONTEXTUAL_PHASE_PRODUCTION_CURATION_CLASSIFICATION as typeof CONTEXTUAL_PHASE_PRODUCTION_CURATION_CLASSIFICATION,
     selectedPolicy: CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY,
-    productionActivated: false as const,
+    productionActivated: true as const,
     currentRows,
     sevenRows,
     currentCounts: counts(currentRows),
@@ -244,7 +253,7 @@ export function renderContextualPhaseProductionCuration(
     "",
     `Selected owner policy: \`${data.selectedPolicy.policyId}\`. Category values are excellent ${data.selectedPolicy.categoryValues.excellent}, good ${data.selectedPolicy.categoryValues.good}, possible ${data.selectedPolicy.categoryValues.possible}, poor ${data.selectedPolicy.categoryValues.poor}; phase-family weight ${data.selectedPolicy.phaseFamilyWeight}.`,
     "",
-    "Owner-approved annotations are implemented, but the contextual policy is not active in production because three winner changes lacked accepted phase evidence on the new winner. Unknown, needs-review, no-match and conflict omit the component and its denominator weight; accepted poor remains a bounded 5.5 preference. The contextual scorer adds no skill/stability or loadability bonus and creates no replacement effect.",
+    "Owner-approved annotations are implemented and the contextual policy is production authority after the revised semantic gate explained every winner change. Unknown, needs-review, no-match and conflict omit the component and its denominator weight; accepted poor remains a bounded 5.5 preference. The scorer adds no skill/stability or loadability bonus and creates no replacement effect. Legacy global phase categories and mechanical bonuses remain audit material only.",
     "",
     `Fingerprint: \`${data.fingerprint}\`.`,
     "",
@@ -286,7 +295,7 @@ export function renderContextualPhaseProductionCuration(
     "## Exact Owner Questions",
     "",
     data.ownerQuestions.length === 0
-      ? "No owner questions remain in this focused curation. Contextual activation needs review of the three unexplained winner changes."
+      ? "No owner questions remain in this focused curation. The exact next dependency is owner authorization for the separately scoped whole-body audit."
       : data.ownerQuestions.map((question) => `- ${question}`).join("\n"),
     "",
   ].join("\n");

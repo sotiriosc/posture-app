@@ -141,18 +141,18 @@ These clinician-facing guidelines inform safety boundaries, exercise-program pri
 
 | Artifact | Fingerprint | Behavior meaning |
 | --- | --- | --- |
-| Production ranking | 237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118 | Intentionally changed by approved catalog/stress truth |
-| Comprehensive behavior | 2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02 | Intentionally changed by approved catalog/stress truth |
-| Reference catalog | 649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6 | Intentionally changed by seven rows and focused migrations |
+| Production ranking | f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c | Intentionally changed by approved catalog/stress truth |
+| Comprehensive behavior | 3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f | Intentionally changed by approved catalog/stress truth |
+| Reference catalog | 903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c | Intentionally changed by seven rows and focused migrations |
 | Support/stance contract | 6542bc249181f0e1a010323763a7e51505dee7ee87229c4c43b65e0d2cc2963f | Intentionally changed by implementation |
 | Contextual phase laboratory | c63fd8b986e0fd485d31525eaabeac102d769beaa6ec74e559167451bb341445 | Resolver/trace contract implementation |
 | Training safety | 0a0805117529073887fe7aca94a1bc2f097e53e1de14d320b1e37093a8825048 | Independent global readiness contract |
 | Training response | 33aec8bb8433d0bf27f63b3fe76e0c6349708e4da47608a5d6957687818453ec | Exposure-linked observation and ledger contract |
 | Response receiver | 26fe112e7c0fced67912e38e9118fed1808c973d74172d78af64f2ae4b6bb7d2 | Applicability, prescription-first routing, progression and continuity policy |
-| Stable-adaptive policy | 9fef70fb01f26cc9adf356d73392a6382f2eae97ebb5e780d738a532e7dba760 | Continuity doctrine and selected contextual phase policy |
+| Stable-adaptive policy | 2e941653546cac2e8d8a8151c91d9470123b80dd06e8b387b734e882a83734a6 | Continuity doctrine and selected contextual phase policy |
 | Focused row stress curation | 8fada7ea2f07b7ddedea8d181a6d862e2d4d654ec74aea763766445f5db0cfc7 | Current low-back-relevant migration decisions |
 | Safety/response combined | 539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562 | Training intelligence foundation |
-| Low-back audit | 7ea487c87a4c5630db973f281ffcb1c1c0abb189fa869c05306543cbe4cf8637 | Deterministic review artifact |
+| Low-back audit | a9dbd692fc406315c6786b9116ffed1de1df171dfdba4b4f9d8dbc38fed22cb5 | Deterministic review artifact |
 
 ## Exact Next Dependency
 

@@ -130,6 +130,8 @@ const TRUNK_MECHANICS_OWNER_DECISION_REF =
   "docs/training-engine-v2/TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche";
 const PHASE_OWNER_DECISION_REF =
   "docs/training-engine-v2/PHASE_AND_STRESS_OWNER_DECISIONS.md#approved-current-contextual-phase-annotations";
+const PHASE_ACTIVATION_OWNER_DECISION_REF =
+  "docs/training-engine-v2/PHASE_AND_STRESS_OWNER_DECISIONS.md#contextual-phase-activation-finalization";
 const SEVEN_PHASE_OWNER_DECISION_REF =
   "docs/training-engine-v2/PHASE_AND_STRESS_OWNER_DECISIONS.md#approved-seven-row-contextual-phase-annotations";
 const STRESS_OWNER_DECISION_REF =
@@ -1841,6 +1843,19 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: excellent("Progression-friendly until load ceiling."),
       phase_3: possible("May be load-limited for advanced users."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "goblet-squat-phase-1-main-owner-approved",
+        exerciseId: "goblet-squat",
+        phaseId: "phase_1",
+        suitability: "good",
+        reason: "The coordinated free-standing loaded squat task directly develops Phase 1 position, repeatable technique, and movement confidence for primary-strength main use; this judgment does not derive from low skill, stability, equipment, or loadability.",
+        reviewStatus: "accepted",
+        sourceRef: PHASE_ACTIVATION_OWNER_DECISION_REF,
+        trainingRoles: ["primary_strength"],
+        sessionSections: ["main"],
+      }),
+    ],
     loading: {
       loadability: "moderate",
       loadingPotential: "moderate",
