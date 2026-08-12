@@ -1,3 +1,5 @@
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import type {
   BodyRegion,
   EquipmentCapabilityKey,
@@ -36,14 +38,14 @@ import {
 } from "./trunkMechanicsCurationProposal";
 
 export const SEVEN_EXERCISE_TRUNK_CARRY_CURATION_CLASSIFICATION =
-  "SEVEN_EXERCISE_TRUNK_CARRY_CURATION_READY_FOR_OWNER_APPROVAL";
+  "SEVEN_EXERCISE_STRESS_SUPPORT_READY_FOR_FINAL_OWNER_APPROVAL";
 
 export const PRODUCTION_CATALOG_IMPLEMENTATION_READINESS =
   "PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKED";
 
 export const PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKERS = [
-  "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST",
-  "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_LOW_BACK_PAIN_TRAINING_INTELLIGENCE_AUDIT_FIRST",
+  "OWNER_APPROVAL_REQUIRED_FOR_CONTEXTUAL_PHASE_PROPOSALS",
+  "OWNER_APPROVAL_REQUIRED_FOR_CURRENT_AND_SEVEN_ROW_STRESS_MIGRATION",
   "Production implementation must add isolated behavior-fingerprint tests for the rows and any structured/legacy stress compatibility.",
 ] as const;
 
@@ -199,8 +201,8 @@ export interface PhaseContextAudit {
   readonly acceptedPhaseEvidenceAvailable: "no";
   readonly needsReview: "yes";
   readonly unknown: "yes";
-  readonly productionImplementationBlockedByCurrentPhaseSchema:
-    "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST";
+  readonly productionImplementationPhaseStatus:
+    "OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL";
 }
 
 export interface CandidatePoolEffect {
@@ -262,6 +264,7 @@ export interface CuratedExerciseContract {
   readonly structuredStress: readonly StressProposal[];
   readonly legacyStressRecommendation: LegacyStressRecommendation;
   readonly progressionAxes: readonly ProgressionAxis[];
+  readonly responseSensitiveModificationPossibilities: readonly string[];
   readonly progressionRunway: {
     readonly earlyPrescriptionState: string;
     readonly standardState: string;
@@ -407,8 +410,8 @@ function phaseAudit(): PhaseContextAudit {
     acceptedPhaseEvidenceAvailable: "no",
     needsReview: "yes",
     unknown: "yes",
-    productionImplementationBlockedByCurrentPhaseSchema:
-      "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST",
+    productionImplementationPhaseStatus:
+      "OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL",
   };
 }
 
@@ -526,6 +529,11 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       compatibilityPolicy: "If structured and legacy intrinsic tags both exist, current profile building deduplicates same tag/source; production tests must prove no double-count before row merge.",
     },
     progressionAxes: ["duration", "lever", "support_reduction", "effort"],
+    responseSensitiveModificationPossibilities: [
+      "Shorten duration or reduce sets while retaining forearm-plank identity.",
+      "Use knee support or a shorter lever after limited response, then preserve later full-lever re-exposure evidence.",
+      "Hold the current support/lever realization when tolerated; do not progress automatically.",
+    ],
     progressionRunway: {
       earlyPrescriptionState: "Short duration or support/lever regression if accepted.",
       standardState: "Standard full-lever timed hold.",
@@ -656,6 +664,11 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       compatibilityPolicy: "Same tag/source dedupe must be retained; long_lever_core should not go in legacy arrays unless realized by reviewed variant.",
     },
     progressionAxes: ["duration", "lever", "support_reduction", "load", "effort"],
+    responseSensitiveModificationPossibilities: [
+      "Use bent-knee support, shorter duration or reduced effort after limited response.",
+      "Preserve side-specific response and review load/support side before changing identity.",
+      "Represent later tolerated long-lever or reduced-support re-exposure without erasing prior evidence.",
+    ],
     progressionRunway: {
       earlyPrescriptionState: "Bent-knee or short-duration side support.",
       standardState: "Full side support timed hold.",
@@ -780,6 +793,11 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       compatibilityPolicy: "Structured/legacy same tag/source dedupe must be tested; no caution/contra placement without reviewed reason.",
     },
     progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    responseSensitiveModificationPossibilities: [
+      "Review load, range, repetitions, sets or tempo before considering another exercise.",
+      "A reduced-range tolerated exposure remains distinct from a prior full-range limited exposure.",
+      "Do not infer that loaded flexion is tolerated at every future dose.",
+    ],
     progressionRunway: {
       earlyPrescriptionState: "Low load, controlled partial range if tolerated.",
       standardState: "Reviewed machine setup, controlled range, repetition sets.",
@@ -901,6 +919,11 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       compatibilityPolicy: "Do not add flexion, extension, or overhead tags from path/anchor alone.",
     },
     progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    responseSensitiveModificationPossibilities: [
+      "Review cable load, rotational range, stance, side and tempo after a limited response.",
+      "Preserve half-kneeling side and load direction in the linked prescription.",
+      "Allow later tolerated re-exposure at a modified range without manufacturing permanent rotation intolerance.",
+    ],
     progressionRunway: {
       earlyPrescriptionState: "Light load and controlled partial range.",
       standardState: "Per-side repetition sets through reviewed range.",
@@ -1024,6 +1047,11 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       compatibilityPolicy: "Do not place grip_intensive or heavy_axial_loading statically; future thresholds must create realized exposure from the same source event.",
     },
     progressionAxes: ["load", "distance", "trips", "duration", "effort"],
+    responseSensitiveModificationPossibilities: [
+      "Review load, trip distance, trip count, duration, effort and grip demands before substitution.",
+      "Shorter-distance tolerated exposure does not prove longer-distance tolerance.",
+      "Later tolerated re-exposure remains possible after a limited high-dose carry.",
+    ],
     progressionRunway: {
       earlyPrescriptionState: "Light implements and short distance/time.",
       standardState: "Reviewed loaded walking distance or timed carry.",
@@ -1159,6 +1187,11 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       compatibilityPolicy: "Do not statically add grip_intensive/heavy_axial_loading; one source event must not become multiple full grip events.",
     },
     progressionAxes: ["load", "distance", "trips", "duration", "effort"],
+    responseSensitiveModificationPossibilities: [
+      "Review load, distance, trips, effort and load side before considering replacement.",
+      "Preserve left/right load-side response separately and expose both sides when performed.",
+      "A later tolerated exposure on the same side or opposite side does not erase prior side-specific evidence.",
+    ],
     progressionRunway: {
       earlyPrescriptionState: "Light implement, short distance/time, reviewed side plan.",
       standardState: "Single-side or each-side distance/timed carry.",
@@ -1292,6 +1325,11 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       compatibilityPolicy: "Do not add loaded_gait, carry, distance, or hard anti-lateral truth. lateral_trunk_loading remains structured, prescription-realized, and needs_review until support magnitude is modeled.",
     },
     progressionAxes: ["load", "steps", "duration", "support_reduction", "effort"],
+    responseSensitiveModificationPossibilities: [
+      "Review load, steps, duration, wall-support amount, support side and effort after limited response.",
+      "A tolerated highly supported realization does not create permanent support dependence.",
+      "Preserve later reduced-support re-exposure while keeping stationary march distinct from walking carry.",
+    ],
     progressionRunway: {
       earlyPrescriptionState: "Light load, high support, low step count or short duration.",
       standardState: "Opposite wall support, alternating stationary march, both load sides across sets.",
@@ -1393,7 +1431,7 @@ export function buildSevenExerciseTrunkCarryCurationData(): SevenExerciseCuratio
         expandedEquipmentFixtureFingerprint === CAPTURED_EXPANDED_EQUIPMENT_FIXTURE_FINGERPRINT,
     },
     wholeBodyRoadmapHandoff:
-      "Whole-body audit is not started. Keep `WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT` scheduled after contextual phase contract resolution, support/stance contract resolution, and truthful implementation of the seven-exercise tranche. The later audit must decide whether `MuscleGroup` should add forearm/grip or hip-flexor target status; do not add either now.",
+      "Whole-body audit is not started. Keep `WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT` scheduled after final contextual phase/stress owner decisions and truthful behavior-equivalent implementation of the seven-exercise tranche. The later audit must decide whether `MuscleGroup` should add forearm/grip or hip-flexor target status; do not add either now.",
   };
 }
 
@@ -1456,7 +1494,8 @@ function contractSection(exercise: CuratedExerciseContract): readonly string[] {
       ["Scapular mechanics", exercise.scapularMechanics],
       ["Prescription modes", list(exercise.prescriptionModes)],
       ["Progression axes", list(exercise.progressionAxes)],
-      ["Phase blocker", exercise.phaseContext.productionImplementationBlockedByCurrentPhaseSchema],
+      ["Response-sensitive modifications", list(exercise.responseSensitiveModificationPossibilities)],
+      ["Phase status", exercise.phaseContext.productionImplementationPhaseStatus],
       ["Unresolved unknowns", list(exercise.unresolvedUnknowns)],
       ["Contract gaps", list(exercise.contractGaps)],
     ]),
@@ -1494,6 +1533,8 @@ function contractSection(exercise: CuratedExerciseContract): readonly string[] {
     "",
     `Progression runway: early=${exercise.progressionRunway.earlyPrescriptionState}; standard=${exercise.progressionRunway.standardState}; later=${exercise.progressionRunway.laterProgressionOptions}; runs out=${exercise.progressionRunway.runsOutOfRunwayWhen}; not progression=${exercise.progressionRunway.notProgression}.`,
     "",
+    `Response-sensitive modification possibilities: ${list(exercise.responseSensitiveModificationPossibilities)} These preserve exact-realization evidence and never authorize automatic progression, regression or replacement.`,
+    "",
     "Transition proposals:",
     "",
     table(["Target", "Direction", "Class", "Effect", "Reason"], exercise.transitionRelationships.map((row) => [
@@ -1520,7 +1561,7 @@ function contractSection(exercise: CuratedExerciseContract): readonly string[] {
       ["ACCEPTED PHASE EVIDENCE AVAILABLE?", exercise.phaseContext.acceptedPhaseEvidenceAvailable],
       ["NEEDS_REVIEW?", exercise.phaseContext.needsReview],
       ["UNKNOWN?", exercise.phaseContext.unknown],
-      ["PRODUCTION IMPLEMENTATION BLOCKED?", exercise.phaseContext.productionImplementationBlockedByCurrentPhaseSchema],
+      ["PRODUCTION PHASE STATUS", exercise.phaseContext.productionImplementationPhaseStatus],
     ]),
     "",
     "Candidate-pool effect:",
@@ -1621,7 +1662,7 @@ export function renderSevenExerciseTrunkCarryCurationReport(
       list(exercise.structuredStress.filter((row) => row.exposureScope !== "intrinsic").map((row) => `${row.tag}:${row.exposureScope}`)),
       list(exercise.progressionAxes),
       list(exercise.prescriptionModes),
-      exercise.phaseContext.productionImplementationBlockedByCurrentPhaseSchema,
+      exercise.phaseContext.productionImplementationPhaseStatus,
       list(exercise.contractGaps),
       exercise.finalVerdict,
     ])),
@@ -1673,4 +1714,14 @@ export function renderSevenExerciseTrunkCarryCurationReport(
     "The later audit must cover chest, lats, mid/upper back, shoulders, arms, legs, glutes, calves, hip adductors/abductors, trunk, serratus/cuff/scapular work, and carries/capacity. The goal is meaningfully distinct, well-understood candidates, not a huge exercise count.",
     "",
   ].join("\n");
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const data = buildSevenExerciseTrunkCarryCurationData();
+  const outputPath = join(
+    process.cwd(),
+    "docs/training-engine-v2/SEVEN_EXERCISE_TRUNK_CARRY_CURATION.md",
+  );
+  writeFileSync(outputPath, renderSevenExerciseTrunkCarryCurationReport(data));
+  console.log(`Wrote ${outputPath}`);
 }

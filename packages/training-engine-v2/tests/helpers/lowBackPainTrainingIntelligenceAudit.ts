@@ -9,6 +9,7 @@ import { buildPhaseAnnotationContextReviewData } from "./phaseAnnotationContextR
 import { buildSupportAndStanceMechanicsContractData } from "./supportAndStanceMechanicsContract";
 import { buildCurrentTrunkCurationFingerprints } from "./trunkMechanicsCurationProposal";
 import { buildTrainingSafetyAndResponseFoundationData } from "./trainingSafetyAndResponseFoundation";
+import { buildStableAdaptiveProgrammingPolicyData } from "./stableAdaptiveProgrammingPolicy";
 
 export const LOW_BACK_PAIN_AUDIT_FIXED_AS_OF = "2026-08-12T00:00:00.000Z";
 export const LOW_BACK_PAIN_AUDIT_OVERALL_CLASSIFICATION =
@@ -38,7 +39,7 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
     finding:
       "TrainingSafetyState now carries explicit review or urgent-review authority independently of pain severity. Unresolved signals block result-level downstream readiness without changing candidate scores or manufacturing contraindications. The legacy AcuteSeverePain bridge reads only explicit urgentReviewRecommended authority, never severity alone.",
     minimumContract:
-      "Engine contract implemented. Upstream adapters must supply only explicit authority with provenance, and future execution layers must consume downstreamTrainingAllowed. Only external resolution evidence can clear a signal.",
+      "Normalized engine input/result contract implemented and regression-tested. Golden-product wiring remains separately PRODUCT_ADAPTER_PENDING; future execution layers must consume downstreamTrainingAllowed. Only external resolution evidence can clear a signal.",
   },
   {
     id: "region_intolerance_separation",
@@ -54,9 +55,9 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
     title: "Symptom behavior and training tolerance",
     classification: "READY",
     finding:
-      "TrainingResponseObservation now records tolerance, reported symptom change, onset, persistence, consequence, descriptive region/side locations, and structured provenance against a specific exposure. Exact dose, range, load, support, and laterality remain owned by linked prescription/performance records; partial historical reports preserve unknown.",
+      "TrainingResponseObservation records factual response, and the deterministic receiver now distinguishes exact, related, and identity-only applicability. Exact dose, range, load, support, and laterality remain owned by linked prescription/performance records; partial historical reports preserve unknown.",
     minimumContract:
-      "Observation and linkage contract implemented. Owner-reviewed receiver policy is still required before history can request candidate review, prescription modification, continuity, or progression action.",
+      "Observation, linkage and owner receiver policy implemented. It routes prescription review, progression readiness and continuity without candidate scoring or automatic action.",
   },
   {
     id: "historical_injury",
@@ -81,9 +82,9 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
     title: "Exercise stress knowledge",
     classification: "CATALOG_KNOWLEDGE_REQUIRED",
     finding:
-      "The structured exposure-scope schema is adequate, but the 30-row production catalog still relies on legacy unscoped stress arrays. Several low-back-relevant tags are absent, and existing flexion/extension labels require row-level review before they can be treated as intrinsic exposure.",
+      "Focused curation now proposes intrinsic loaded-hinge facts only for RDL and cable pull-through, rejects legacy flexion/extension as intrinsic, and keeps lever/row/heavy-load contexts realization-dependent. Production arrays remain unchanged pending owner decisions and equivalence tests.",
     minimumContract:
-      "Curate each relevant row with intrinsic, prescription-modifiable, variant-dependent, dose-created, or unknown scope and human/external provenance. Exposure metadata must never be interpreted as danger or pathology.",
+      "Owner approval and behavior-equivalent structured/legacy migration remain required. Exposure metadata must never be interpreted as danger or pathology.",
   },
   {
     id: "support_prescription",
@@ -106,11 +107,11 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
   {
     id: "response_led_progression",
     title: "Response-led progression",
-    classification: "LONGITUDINAL_OWNER",
+    classification: "READY",
     finding:
-      "The deterministic response ledger now orders applicable observations at explicit asOf, exposes latest and prior events, distinguishes factual tolerance/symptom outcomes, preserves conflicts/unknowns, and identifies later tolerated re-exposure after limited/not-tolerated exposure. It intentionally selects no numeric threshold or automatic action.",
+      "The response receiver integrates exact current evidence with progression readiness: tolerated may permit review, limited holds, aggravated requests regression/review, and mixed/unknown remains insufficient. Later tolerated re-exposure removes permanent-failure pressure while preserving prior history.",
     minimumContract:
-      "Evidence foundation implemented. A longitudinal owner must define interpretation and receiver policy for hold, review, re-exposure, prescription modification, and progression without arbitrary thresholds.",
+      "Candidate Intelligence receiver policy implemented. It selects no axis, threshold, progression, regression, replacement or score; later composition remains responsible for any actual program change.",
   },
   {
     id: "fear_overprotection_guard",
@@ -119,7 +120,7 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
     finding:
       "Regression tests prove region/severity/history do not manufacture intolerance, safety escalation, permanent blocks, or support preference; explicit restrictions retain hard authority; one adverse response remains prescription-specific; and later tolerated re-exposure stays visible.",
     minimumContract:
-      "Current Candidate Intelligence invariant is implemented. Future response receivers must retain these tests before any automatic policy is approved.",
+      "Current Candidate Intelligence invariant and receiver regressions are implemented. Future composers must retain them before any program-change policy is approved.",
   },
   {
     id: "whole_body_interaction",
@@ -214,6 +215,7 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
   const support = buildSupportAndStanceMechanicsContractData();
   const phase = buildPhaseAnnotationContextReviewData();
   const safetyAndResponse = buildTrainingSafetyAndResponseFoundationData();
+  const stableAdaptive = buildStableAdaptiveProgrammingPolicyData();
   const payload = {
     areas: LOW_BACK_AUDIT_AREAS,
     stressReview: LOW_BACK_STRESS_REVIEW,
@@ -224,6 +226,9 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
     phaseFingerprint: phase.contextualFingerprint,
     safetyFingerprint: safetyAndResponse.safetyFingerprint,
     responseFingerprint: safetyAndResponse.responseFingerprint,
+    responseReceiverFingerprint: stableAdaptive.responseReceiverFingerprint,
+    stableAdaptivePolicyFingerprint: stableAdaptive.policyFingerprint,
+    rowStressCurationFingerprint: stableAdaptive.stressFingerprint,
     phaseCalibrationConsequences: safetyAndResponse.phaseCalibrationConsequences,
   };
 
@@ -240,22 +245,22 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
     phaseFingerprint: phase.contextualFingerprint,
     safetyFingerprint: safetyAndResponse.safetyFingerprint,
     responseFingerprint: safetyAndResponse.responseFingerprint,
+    responseReceiverFingerprint: stableAdaptive.responseReceiverFingerprint,
+    stableAdaptivePolicyFingerprint: stableAdaptive.policyFingerprint,
+    rowStressCurationFingerprint: stableAdaptive.stressFingerprint,
     safetyAndResponseFingerprint: safetyAndResponse.combinedFingerprint,
     phaseCalibrationConsequences: safetyAndResponse.phaseCalibrationConsequences,
     blockersBeforeSevenRows: [
-      "Wire explicit TrainingSafetyState authority into upstream adapters and require future execution layers to consume downstreamTrainingAllowed.",
-      "Owner-reviewed response receiver policy for candidate review, prescription modification, continuity, re-exposure review, and progression without a numeric score.",
-      "Row-level structured low-back stress curation and legacy compatibility tests for the seven proposals.",
-      "Owner-reviewed support/prescription policy that uses exact response evidence without creating permanent support dependence.",
-      "Owner-reviewed contextual phase scoring policy after calibration, or an explicit temporary policy for rows while legacy phase scoring remains authoritative.",
-      "Longitudinal interpretation owner for mixed history and successful re-exposure; the ledger exposes evidence but selects no threshold or action.",
+      "Final owner approval, narrowing, or rejection of the current and seven-row contextual phase proposals.",
+      "Final owner decisions for current-row flexion/extension removal, hinge acceptance, long-lever scope, row support/stance scope, and dose-created heavy axial authority.",
+      "Behavior-equivalent structured/legacy stress migration tests and isolated fingerprints when the seven production rows are implemented.",
     ],
     blockersBeforeWholeBodyAudit: [
-      "No blocker prevents a review-only whole-body audit from starting after this task.",
-      "Owner sequencing still defers that audit; a production-readiness claim remains blocked by safety adapter wiring, response receiver policy, stress/support curation, phase policy, and longitudinal interpretation ownership.",
+      "No technical blocker prevents the separately requested review-only whole-body audit.",
+      "Owner sequencing still defers it until final phase/stress decisions and seven-row implementation; this task does not start that audit.",
     ],
     exactNextDependency:
-      "Obtain owner decisions for response-history receivers and contextual phase scoring, then curate row-level stress/support policy before adding the seven production rows; separately wire explicit TrainingSafetyState into upstream and future execution adapters.",
+      "Obtain final owner decisions on the contextual phase proposals and focused stress migration questions, then implement the seven rows with isolated behavior-equivalence fingerprints; product safety adapter wiring remains a separate integration task.",
     fingerprint: hash(payload),
   };
 }
@@ -288,7 +293,7 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "## Readiness Answer",
     "",
-    "Can Candidate Intelligence currently be described as ready to intelligently train around reported low-back pain? **No.** It now has independent explicit safety authority, global downstream readiness, exposure-linked response observations, side-aware history, deterministic re-exposure evidence, region/stress separation, and compositional support mechanics. It still lacks upstream/future-execution adapter wiring, owner-approved response receivers, curated low-back stress scopes, support/prescription policy, final phase policy, and longitudinal interpretation policy.",
+    "Can Candidate Intelligence currently be described as ready to intelligently train around reported low-back pain? **No.** Its normalized safety boundary, response receiver, progression integration, side-aware history, re-exposure evidence, phase owner policy and focused stress curation now exist. Final contextual annotation approval, stress migration decisions, production row implementation, and future composer consumption remain incomplete.",
     "",
     "## Classification Summary",
     "",
@@ -343,7 +348,7 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "The intended doctrine remains: appropriate task -> tolerable starting prescription -> repeatable form -> observed symptom/performance response -> maintain or modify -> earned progression -> broader capacity. TrainingResponseObservation records tolerance, symptom change, onset, persistence, completion/modification consequence, locations, and provenance. ExercisePerformanceRecord references observation IDs; the completed prescription remains source of truth for dose, range, load, support, and side.",
     "",
-    "The deterministic ledger orders applicable observations at explicit `asOf`, exposes latest and previous events, preserves unknown and mixed evidence, and identifies later tolerated exposure after earlier limited/not-tolerated exposure. It does not choose a threshold, score, hold, regression, progression, replacement, or ban.",
+    "The deterministic receiver classifies exact, related and identity-only evidence. Current tolerated evidence may permit progression review; limited evidence holds/monitors; aggravated evidence requests regression or review; mixed/unknown evidence stays insufficient. It preserves earlier adverse and later tolerated re-exposure, but selects no axis, threshold, progression, replacement or ban.",
     "",
     "## Fear And Overprotection Guard",
     "",
@@ -353,7 +358,7 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "## Phase Calibration Consequences",
     "",
-    "These are non-production sensitivity results from the existing calibration laboratory. Close-order changes are candidate rank changes. Continuity disruptions remain zero because no variant changes continuity evidence; contextual unknown/no-match and accepted poor remain distinguishable while final scoring policy is pending.",
+    "These are non-production sensitivity results from the existing calibration laboratory. The owner selected the annotation-only low-churn shape with 8.8/7.8/6.2/5.5 and weight 1.0. Production remains legacy until accepted contextual curation is approved; continuity disruptions remain zero.",
     "",
     table(
       ["Policy", "Category spacing", "Phase weight", "Winner changes", "Close-order changes", "Continuity disruptions", "Unknown evidence", "Accepted poor", "Representative Phase 1/2/3 effects"],
@@ -403,6 +408,9 @@ export function renderLowBackPainTrainingIntelligenceAudit(
         ["Contextual phase laboratory", data.phaseFingerprint, "Resolver/trace contract implementation"],
         ["Training safety", data.safetyFingerprint, "Independent global readiness contract"],
         ["Training response", data.responseFingerprint, "Exposure-linked observation and ledger contract"],
+        ["Response receiver", data.responseReceiverFingerprint, "Applicability, prescription-first routing, progression and continuity policy"],
+        ["Stable-adaptive policy", data.stableAdaptivePolicyFingerprint, "Continuity doctrine and selected contextual phase policy"],
+        ["Focused row stress curation", data.rowStressCurationFingerprint, "Current low-back-relevant migration decisions"],
         ["Safety/response combined", data.safetyAndResponseFingerprint, "Training intelligence foundation"],
         ["Low-back audit", data.fingerprint, "Deterministic review artifact"],
       ],

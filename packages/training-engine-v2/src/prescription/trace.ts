@@ -2,11 +2,13 @@ import type {
   ProgressionEvidence,
   ProgressionReadinessTrace,
 } from "./progressionEvidence";
+import type { TrainingResponseReceiverTrace } from "../trainingResponseReceiver";
 
 export function buildProgressionReadinessTrace(
   evidence: ProgressionEvidence,
+  trainingResponseReceiver?: TrainingResponseReceiverTrace,
 ): ProgressionReadinessTrace {
-  const blockers = progressionReadinessBlockers(evidence);
+  const blockers = progressionReadinessBlockers(evidence, trainingResponseReceiver);
   const classification = classifyProgressionReadiness(evidence, blockers);
 
   return {
@@ -15,6 +17,7 @@ export function buildProgressionReadinessTrace(
     classification,
     blockers,
     evidence,
+    ...(trainingResponseReceiver ? { trainingResponseReceiver } : {}),
     selectedAxis: null,
     selectedTransition: null,
     automaticProgressionDecision: false,
@@ -23,6 +26,7 @@ export function buildProgressionReadinessTrace(
 
 function progressionReadinessBlockers(
   evidence: ProgressionEvidence,
+  trainingResponseReceiver?: TrainingResponseReceiverTrace,
 ): readonly string[] {
   const blockers: string[] = [];
 
@@ -45,8 +49,58 @@ function progressionReadinessBlockers(
     blockers.push("execution_quality_not_sufficiently_observed");
   }
 
-  if (evidence.painResponseEvidence !== "no_unresolved_response_requirement") {
+  const currentResponseOwnsPrescriptionRequirement = Boolean(
+    trainingResponseReceiver &&
+      (trainingResponseReceiver.classifications.includes(
+        "PROGRESSION_REVIEW_PERMITTED",
+      ) ||
+        trainingResponseReceiver.classifications.includes(
+          "PRESCRIPTION_MODIFICATION_REVIEW_REQUIRED",
+        )),
+  );
+  if (
+    evidence.painResponseEvidence !== "no_unresolved_response_requirement" &&
+    !(
+      evidence.painResponseEvidence === "prescription_response_unresolved" &&
+      currentResponseOwnsPrescriptionRequirement
+    )
+  ) {
     blockers.push(`pain_response_${evidence.painResponseEvidence}`);
+  }
+
+  if (trainingResponseReceiver) {
+    if (
+      trainingResponseReceiver.classifications.includes(
+        "PRESCRIPTION_MODIFICATION_REVIEW_REQUIRED",
+      )
+    ) {
+      const aggravated = trainingResponseReceiver.latestExactResponse &&
+        (trainingResponseReceiver.latestExactResponse.observation.tolerance ===
+          "not_tolerated" ||
+          trainingResponseReceiver.latestExactResponse.observation.symptomChange ===
+            "worsened" ||
+          trainingResponseReceiver.latestExactResponse.observation.consequence ===
+            "stopped_exercise" ||
+          trainingResponseReceiver.latestExactResponse.observation.consequence ===
+            "stopped_session");
+      blockers.push(
+        aggravated
+          ? "training_response_regression_or_review_required"
+          : "training_response_hold_monitor_current_prescription",
+      );
+    } else if (
+      trainingResponseReceiver.classifications.includes(
+        "INSUFFICIENT_OR_MIXED_EVIDENCE",
+      )
+    ) {
+      blockers.push("training_response_insufficient_or_mixed_evidence");
+    } else if (
+      trainingResponseReceiver.classifications.includes(
+        "NO_APPLICABLE_RESPONSE_EVIDENCE",
+      )
+    ) {
+      blockers.push("training_response_no_applicable_evidence");
+    }
   }
 
   if (evidence.recoveryEvidence === "recovery_concern") {
@@ -113,6 +167,7 @@ function classifyProgressionReadiness(
         "recovery_concern",
         "failed_progression_evidence",
         "replacement_consideration_evidence",
+        "training_response_regression_or_review_required",
       ].includes(blocker),
     )
   ) {
@@ -133,6 +188,8 @@ function classifyProgressionReadiness(
         "repeated_evidence_isolated_success",
         "repeated_evidence_insufficient_history",
         "repeated_evidence_mixed_response",
+        "training_response_insufficient_or_mixed_evidence",
+        "training_response_no_applicable_evidence",
       ].includes(blocker),
     )
   ) {
@@ -146,7 +203,8 @@ function classifyProgressionReadiness(
   if (
     evidence.doseEvidence === "target_met" &&
     evidence.executionQualityEvidence === "all_required_criteria_met" &&
-    evidence.painResponseEvidence === "no_unresolved_response_requirement" &&
+    (evidence.painResponseEvidence === "no_unresolved_response_requirement" ||
+      !blockers.some((blocker) => blocker.startsWith("pain_response_"))) &&
     evidence.recoveryEvidence === "recovered_as_expected" &&
     evidence.continuityRunwayEvidence.includes(
       "same_exercise_remains_productive",

@@ -12,6 +12,7 @@ export * from "./reasonCodes";
 export * from "./scoringContracts";
 export * from "./transitionComparison";
 export * from "./trainingResponseHistory";
+export * from "./trainingResponseReceiver";
 export * from "./trunkMechanics";
 export * from "./validation";
 export * from "./data/candidateScenarios";

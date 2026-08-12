@@ -1,13 +1,13 @@
 # Seven Exercise Trunk / Carry Curation
 
-Overall classification: `SEVEN_EXERCISE_TRUNK_CARRY_CURATION_READY_FOR_OWNER_APPROVAL`
+Overall classification: `SEVEN_EXERCISE_STRESS_SUPPORT_READY_FOR_FINAL_OWNER_APPROVAL`
 
 Production implementation readiness: `PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKED`
 
 Production blockers:
 
-- PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST
-- PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_LOW_BACK_PAIN_TRAINING_INTELLIGENCE_AUDIT_FIRST
+- OWNER_APPROVAL_REQUIRED_FOR_CONTEXTUAL_PHASE_PROPOSALS
+- OWNER_APPROVAL_REQUIRED_FOR_CURRENT_AND_SEVEN_ROW_STRESS_MIGRATION
 - Production implementation must add isolated behavior-fingerprint tests for the rows and any structured/legacy stress compatibility.
 
 ## Owner Decisions Recorded
@@ -35,13 +35,13 @@ Doctrine: task-appropriate alignment -> repeatable form -> appropriate dose -> o
 
 | ID | Identity | Family | Movement roles | Training roles | Primary muscles | Key secondary | Equipment | Prerequisites | Principal mechanics | Accepted trunk mechanics | Unresolved trunk mechanics | Intrinsic stress | Potential/modifiable stress | Progression axes | Prescription modes | Phase status | Production blocker | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| forearm-plank | Ordinary straight-body forearm plank, stationary, bodyweight, full-lever unless prescription states a reviewed lever variant. | core_control | anti_extension_core | activation, hypertrophy_accessory | trunk | serratus, front_delts | bodyweight, floor_space | basic forearm-supported upper-limb tolerance | bodyweight | antiExtensionContribution:high, loadedBracingContribution:none | breathingPressureCoordination, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | upper_limb_support_loading | long_lever_core:variant_dependent | duration, lever, support_reduction, effort | timed_hold | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | none | READY_FOR_OWNER_APPROVAL |
-| forearm-side-plank | Bodyweight side-oriented forearm plank with pelvis facing sideways and support through one forearm plus feet or accepted bent-knee variant. | core_control | anti_lateral_flexion_core | activation, hypertrophy_accessory | trunk | serratus, front_delts, hip_abductors | bodyweight, floor_space | side-bearing forearm support tolerance | bodyweight | antiLateralFlexionContribution:high, loadedBracingContribution:none | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | upper_limb_support_loading, lateral_trunk_loading | long_lever_core:variant_dependent | duration, lever, support_reduction, load, effort | timed_hold | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | none | READY_FOR_OWNER_APPROVAL |
-| machine-abdominal-crunch | Selectorized abdominal-crunch machine where pads/seat guide intentional controlled trunk flexion. | core_control | trunk_flexion | hypertrophy_accessory, secondary_strength | trunk | none | selectorized_machine | ability to set up and exit the specific machine safely | machine_guided | controlledFlexionContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledRotationContribution, loadedBracingContribution, gaitLoadTransferContribution | loaded_spinal_flexion | none | load, reps, sets, range, tempo | repetition_sets | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Equipment requirement can name abdominal_crunch machine via machineIds, but capability key itself is selectorized_machine. | READY_FOR_OWNER_APPROVAL |
-| half-kneeling-high-to-low-cable-chop | Half-kneeling stance, high cable anchor, high-to-low resisted chop with intentional controlled trunk rotation. | core_control | trunk_rotation | activation, hypertrophy_accessory, secondary_strength | trunk | glutes | cable_stack, cable_anchor_high, floor_space | ability to understand cable setup and half-kneeling side setup | cable_anchored | controlledRotationContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, loadedBracingContribution, gaitLoadTransferContribution | loaded_trunk_rotation | none | load, reps, sets, range, tempo | repetition_sets | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | none | READY_FOR_OWNER_APPROVAL |
-| farmer-carry | Upright loaded walking with one external implement in each hand and symmetrical load unless prescription states otherwise. | carry_load | carry, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength | trunk, upper_back | glutes, quads, hamstrings | dumbbell_pair, loaded_gait_space, stable_loaded_standing_space | ability to walk while holding two implements, ability to grip two implements | free_implement | loadedBracingContribution:high, gaitLoadTransferContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution | loaded_gait, grip_loading | grip_intensive:dose_created, heavy_axial_loading:dose_created | load, distance, trips, duration, effort | distance_carry, timed_carry | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | No forearm/grip MuscleGroup; loaded gait trip/set-down standards remain prescription-detail only. | READY_FOR_OWNER_APPROVAL |
-| suitcase-carry | Upright loaded walking with one external implement held on one side. | carry_load | carry, anti_lateral_flexion_core, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength | trunk | upper_back, glutes, quads, hamstrings | dumbbells, loaded_gait_space, stable_loaded_standing_space | ability to walk while holding one implement, side-specific load tolerance | free_implement | antiRotationContribution:moderate, antiLateralFlexionContribution:high, loadedBracingContribution:high, gaitLoadTransferContribution:high | breathingPressureCoordination, antiExtensionContribution, controlledFlexionContribution, controlledRotationContribution | loaded_gait, grip_loading, lateral_trunk_loading | grip_intensive:dose_created, heavy_axial_loading:dose_created | load, distance, trips, duration, effort | distance_carry, timed_carry | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | No forearm/grip MuscleGroup. | READY_FOR_OWNER_APPROVAL |
-| wall-supported-suitcase-march | One dumbbell in one hand, opposite hand supported on wall, stationary alternating march, both load sides trained across sets, no walking distance. | carry_load | loaded_bracing | activation, capacity | trunk | glutes, quads | dumbbells, wall, stable_loaded_standing_space | ability to march while supported, ability to grip one dumbbell | free_implement | loadedBracingContribution:moderate | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | loaded_march, grip_loading | lateral_trunk_loading:prescription_modifiable | load, steps, duration, support_reduction, effort | step_march | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Anti-lateral exposure remains contextual/needs_review until support-force effects receive human exercise-science review. | READY_FOR_OWNER_APPROVAL |
+| forearm-plank | Ordinary straight-body forearm plank, stationary, bodyweight, full-lever unless prescription states a reviewed lever variant. | core_control | anti_extension_core | activation, hypertrophy_accessory | trunk | serratus, front_delts | bodyweight, floor_space | basic forearm-supported upper-limb tolerance | bodyweight | antiExtensionContribution:high, loadedBracingContribution:none | breathingPressureCoordination, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | upper_limb_support_loading | long_lever_core:variant_dependent | duration, lever, support_reduction, effort | timed_hold | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL | none | READY_FOR_OWNER_APPROVAL |
+| forearm-side-plank | Bodyweight side-oriented forearm plank with pelvis facing sideways and support through one forearm plus feet or accepted bent-knee variant. | core_control | anti_lateral_flexion_core | activation, hypertrophy_accessory | trunk | serratus, front_delts, hip_abductors | bodyweight, floor_space | side-bearing forearm support tolerance | bodyweight | antiLateralFlexionContribution:high, loadedBracingContribution:none | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | upper_limb_support_loading, lateral_trunk_loading | long_lever_core:variant_dependent | duration, lever, support_reduction, load, effort | timed_hold | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL | none | READY_FOR_OWNER_APPROVAL |
+| machine-abdominal-crunch | Selectorized abdominal-crunch machine where pads/seat guide intentional controlled trunk flexion. | core_control | trunk_flexion | hypertrophy_accessory, secondary_strength | trunk | none | selectorized_machine | ability to set up and exit the specific machine safely | machine_guided | controlledFlexionContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledRotationContribution, loadedBracingContribution, gaitLoadTransferContribution | loaded_spinal_flexion | none | load, reps, sets, range, tempo | repetition_sets | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL | Equipment requirement can name abdominal_crunch machine via machineIds, but capability key itself is selectorized_machine. | READY_FOR_OWNER_APPROVAL |
+| half-kneeling-high-to-low-cable-chop | Half-kneeling stance, high cable anchor, high-to-low resisted chop with intentional controlled trunk rotation. | core_control | trunk_rotation | activation, hypertrophy_accessory, secondary_strength | trunk | glutes | cable_stack, cable_anchor_high, floor_space | ability to understand cable setup and half-kneeling side setup | cable_anchored | controlledRotationContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, loadedBracingContribution, gaitLoadTransferContribution | loaded_trunk_rotation | none | load, reps, sets, range, tempo | repetition_sets | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL | none | READY_FOR_OWNER_APPROVAL |
+| farmer-carry | Upright loaded walking with one external implement in each hand and symmetrical load unless prescription states otherwise. | carry_load | carry, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength | trunk, upper_back | glutes, quads, hamstrings | dumbbell_pair, loaded_gait_space, stable_loaded_standing_space | ability to walk while holding two implements, ability to grip two implements | free_implement | loadedBracingContribution:high, gaitLoadTransferContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution | loaded_gait, grip_loading | grip_intensive:dose_created, heavy_axial_loading:dose_created | load, distance, trips, duration, effort | distance_carry, timed_carry | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL | No forearm/grip MuscleGroup; loaded gait trip/set-down standards remain prescription-detail only. | READY_FOR_OWNER_APPROVAL |
+| suitcase-carry | Upright loaded walking with one external implement held on one side. | carry_load | carry, anti_lateral_flexion_core, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength | trunk | upper_back, glutes, quads, hamstrings | dumbbells, loaded_gait_space, stable_loaded_standing_space | ability to walk while holding one implement, side-specific load tolerance | free_implement | antiRotationContribution:moderate, antiLateralFlexionContribution:high, loadedBracingContribution:high, gaitLoadTransferContribution:high | breathingPressureCoordination, antiExtensionContribution, controlledFlexionContribution, controlledRotationContribution | loaded_gait, grip_loading, lateral_trunk_loading | grip_intensive:dose_created, heavy_axial_loading:dose_created | load, distance, trips, duration, effort | distance_carry, timed_carry | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL | No forearm/grip MuscleGroup. | READY_FOR_OWNER_APPROVAL |
+| wall-supported-suitcase-march | One dumbbell in one hand, opposite hand supported on wall, stationary alternating march, both load sides trained across sets, no walking distance. | carry_load | loaded_bracing | activation, capacity | trunk | glutes, quads | dumbbells, wall, stable_loaded_standing_space | ability to march while supported, ability to grip one dumbbell | free_implement | loadedBracingContribution:moderate | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | loaded_march, grip_loading | lateral_trunk_loading:prescription_modifiable | load, steps, duration, support_reduction, effort | step_march | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL | Anti-lateral exposure remains contextual/needs_review until support-force effects receive human exercise-science review. | READY_FOR_OWNER_APPROVAL |
 
 ## Exact Identity Definitions
 
@@ -196,7 +196,8 @@ Verdict: `READY_FOR_OWNER_APPROVAL`
 | Scapular mechanics | Loaded scapular support is relevant but this is not a scapular-control selection row. |
 | Prescription modes | timed_hold |
 | Progression axes | duration, lever, support_reduction, effort |
-| Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| Response-sensitive modifications | Shorten duration or reduce sets while retaining forearm-plank identity., Use knee support or a shorter lever after limited response, then preserve later full-lever re-exposure evidence., Hold the current support/lever realization when tolerated; do not progress automatically. |
+| Phase status | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 | Unresolved unknowns | none |
 | Contract gaps | none |
 
@@ -235,6 +236,8 @@ Legacy stress recommendation: jointStressTags=upper_limb_support_loading, cautio
 
 Progression runway: early=Short duration or support/lever regression if accepted.; standard=Standard full-lever timed hold.; later=Longer duration, harder effort target, lever change, or reduced support.; runs out=Further challenge would require loading/dynamic variants or another anti-extension exercise.; not progression=Dead Bug to Forearm Plank is not automatic progression; high plank is a different support identity..
 
+Response-sensitive modification possibilities: Shorten duration or reduce sets while retaining forearm-plank identity., Use knee support or a shorter lever after limited response, then preserve later full-lever re-exposure evidence., Hold the current support/lever realization when tolerated; do not progress automatically. These preserve exact-realization evidence and never authorize automatic progression, regression or replacement.
+
 Transition proposals:
 
 | Target | Direction | Class | Effect | Reason |
@@ -258,7 +261,7 @@ Phase-context audit:
 | ACCEPTED PHASE EVIDENCE AVAILABLE? | no |
 | NEEDS_REVIEW? | yes |
 | UNKNOWN? | yes |
-| PRODUCTION IMPLEMENTATION BLOCKED? | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| PRODUCTION PHASE STATUS | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 
 Candidate-pool effect:
 
@@ -310,7 +313,8 @@ Persona review:
 | Scapular mechanics | Support scapular control is meaningful context, not a scapular-preparation row. |
 | Prescription modes | timed_hold |
 | Progression axes | duration, lever, support_reduction, load, effort |
-| Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| Response-sensitive modifications | Use bent-knee support, shorter duration or reduced effort after limited response., Preserve side-specific response and review load/support side before changing identity., Represent later tolerated long-lever or reduced-support re-exposure without erasing prior evidence. |
+| Phase status | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 | Unresolved unknowns | Whether foot stacking/staggered stance should be prescribed or separate variants., Whether external loading remains same identity. |
 | Contract gaps | none |
 
@@ -350,6 +354,8 @@ Legacy stress recommendation: jointStressTags=upper_limb_support_loading, latera
 
 Progression runway: early=Bent-knee or short-duration side support.; standard=Full side support timed hold.; later=Duration, lever, reduced support, or carefully reviewed external load.; runs out=Further challenge becomes a different side-plank variation or a carry/lateral-control exercise.; not progression=Side Plank to Suitcase Carry is not same-exercise progression..
 
+Response-sensitive modification possibilities: Use bent-knee support, shorter duration or reduced effort after limited response., Preserve side-specific response and review load/support side before changing identity., Represent later tolerated long-lever or reduced-support re-exposure without erasing prior evidence. These preserve exact-realization evidence and never authorize automatic progression, regression or replacement.
+
 Transition proposals:
 
 | Target | Direction | Class | Effect | Reason |
@@ -373,7 +379,7 @@ Phase-context audit:
 | ACCEPTED PHASE EVIDENCE AVAILABLE? | no |
 | NEEDS_REVIEW? | yes |
 | UNKNOWN? | yes |
-| PRODUCTION IMPLEMENTATION BLOCKED? | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| PRODUCTION PHASE STATUS | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 
 Candidate-pool effect:
 
@@ -425,7 +431,8 @@ Persona review:
 | Scapular mechanics | Not relevant beyond setup contact. |
 | Prescription modes | repetition_sets |
 | Progression axes | load, reps, sets, range, tempo |
-| Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| Response-sensitive modifications | Review load, range, repetitions, sets or tempo before considering another exercise., A reduced-range tolerated exposure remains distinct from a prior full-range limited exposure., Do not infer that loaded flexion is tolerated at every future dose. |
+| Phase status | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 | Unresolved unknowns | Specific machine geometry can change exercise truth., Phase context cannot be globally fixed. |
 | Contract gaps | Equipment requirement can name abdominal_crunch machine via machineIds, but capability key itself is selectorized_machine. |
 
@@ -463,6 +470,8 @@ Legacy stress recommendation: jointStressTags=loaded_spinal_flexion, cautionStre
 
 Progression runway: early=Low load, controlled partial range if tolerated.; standard=Reviewed machine setup, controlled range, repetition sets.; later=Load, reps, sets, range, or tempo.; runs out=Machine stack/setup no longer fits productive stimulus or tolerance.; not progression=Cable crunch or reverse crunch is a different exercise identity..
 
+Response-sensitive modification possibilities: Review load, range, repetitions, sets or tempo before considering another exercise., A reduced-range tolerated exposure remains distinct from a prior full-range limited exposure., Do not infer that loaded flexion is tolerated at every future dose. These preserve exact-realization evidence and never authorize automatic progression, regression or replacement.
+
 Transition proposals:
 
 | Target | Direction | Class | Effect | Reason |
@@ -485,7 +494,7 @@ Phase-context audit:
 | ACCEPTED PHASE EVIDENCE AVAILABLE? | no |
 | NEEDS_REVIEW? | yes |
 | UNKNOWN? | yes |
-| PRODUCTION IMPLEMENTATION BLOCKED? | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| PRODUCTION PHASE STATUS | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 
 Candidate-pool effect:
 
@@ -537,7 +546,8 @@ Persona review:
 | Scapular mechanics | Shoulder/scapular participation is contextual, not a scapular-control row. |
 | Prescription modes | repetition_sets |
 | Progression axes | load, reps, sets, range, tempo |
-| Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| Response-sensitive modifications | Review cable load, rotational range, stance, side and tempo after a limited response., Preserve half-kneeling side and load direction in the linked prescription., Allow later tolerated re-exposure at a modified range without manufacturing permanent rotation intolerance. |
+| Phase status | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 | Unresolved unknowns | Allowed pelvis rotation amount needs owner confirmation., Half-kneeling support is not represented exactly. |
 | Contract gaps | none |
 
@@ -575,6 +585,8 @@ Legacy stress recommendation: jointStressTags=loaded_trunk_rotation, cautionStre
 
 Progression runway: early=Light load and controlled partial range.; standard=Per-side repetition sets through reviewed range.; later=Load, reps, sets, range, or tempo.; runs out=Further challenge becomes another rotational exercise or different anchor/stance identity.; not progression=Pallof Press to Cable Chop is not same-exercise progression..
 
+Response-sensitive modification possibilities: Review cable load, rotational range, stance, side and tempo after a limited response., Preserve half-kneeling side and load direction in the linked prescription., Allow later tolerated re-exposure at a modified range without manufacturing permanent rotation intolerance. These preserve exact-realization evidence and never authorize automatic progression, regression or replacement.
+
 Transition proposals:
 
 | Target | Direction | Class | Effect | Reason |
@@ -598,7 +610,7 @@ Phase-context audit:
 | ACCEPTED PHASE EVIDENCE AVAILABLE? | no |
 | NEEDS_REVIEW? | yes |
 | UNKNOWN? | yes |
-| PRODUCTION IMPLEMENTATION BLOCKED? | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| PRODUCTION PHASE STATUS | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 
 Candidate-pool effect:
 
@@ -650,7 +662,8 @@ Persona review:
 | Scapular mechanics | Upper-quarter support of implements is meaningful but not a scapular-control selection row. |
 | Prescription modes | distance_carry, timed_carry |
 | Progression axes | load, distance, trips, duration, effort |
-| Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| Response-sensitive modifications | Review load, trip distance, trip count, duration, effort and grip demands before substitution., Shorter-distance tolerated exposure does not prove longer-distance tolerance., Later tolerated re-exposure remains possible after a limited high-dose carry. |
+| Phase status | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 | Unresolved unknowns | Exact turn/set-down representation needs prescription standards., Forearm muscle target cannot be represented. |
 | Contract gaps | No forearm/grip MuscleGroup; loaded gait trip/set-down standards remain prescription-detail only. |
 
@@ -691,6 +704,8 @@ Legacy stress recommendation: jointStressTags=loaded_gait, grip_loading, caution
 
 Progression runway: early=Light implements and short distance/time.; standard=Reviewed loaded walking distance or timed carry.; later=Load, distance, trips, duration, or effort.; runs out=Gait space, grip, recovery, or carry goal no longer supports more carry exposure.; not progression=Making it maximal strongman loading or a mandatory finisher is not progression..
 
+Response-sensitive modification possibilities: Review load, trip distance, trip count, duration, effort and grip demands before substitution., Shorter-distance tolerated exposure does not prove longer-distance tolerance., Later tolerated re-exposure remains possible after a limited high-dose carry. These preserve exact-realization evidence and never authorize automatic progression, regression or replacement.
+
 Transition proposals:
 
 | Target | Direction | Class | Effect | Reason |
@@ -714,7 +729,7 @@ Phase-context audit:
 | ACCEPTED PHASE EVIDENCE AVAILABLE? | no |
 | NEEDS_REVIEW? | yes |
 | UNKNOWN? | yes |
-| PRODUCTION IMPLEMENTATION BLOCKED? | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| PRODUCTION PHASE STATUS | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 
 Candidate-pool effect:
 
@@ -766,7 +781,8 @@ Persona review:
 | Scapular mechanics | Loaded upper-quarter position is context; not a scapular row. |
 | Prescription modes | distance_carry, timed_carry |
 | Progression axes | load, distance, trips, duration, effort |
-| Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| Response-sensitive modifications | Review load, distance, trips, effort and load side before considering replacement., Preserve left/right load-side response separately and expose both sides when performed., A later tolerated exposure on the same side or opposite side does not erase prior side-specific evidence. |
+| Phase status | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 | Unresolved unknowns | Anti-rotation magnitude is likely but not independently proven from lateral/gait cluster., Forearm muscle target cannot be represented. |
 | Contract gaps | No forearm/grip MuscleGroup. |
 
@@ -808,6 +824,8 @@ Legacy stress recommendation: jointStressTags=loaded_gait, grip_loading, lateral
 
 Progression runway: early=Light implement, short distance/time, reviewed side plan.; standard=Single-side or each-side distance/timed carry.; later=Load, distance, trips, duration, or effort.; runs out=Side tolerance, grip, gait space, or fatigue makes added carry exposure low value.; not progression=Side plank to suitcase carry is not same-exercise progression..
 
+Response-sensitive modification possibilities: Review load, distance, trips, effort and load side before considering replacement., Preserve left/right load-side response separately and expose both sides when performed., A later tolerated exposure on the same side or opposite side does not erase prior side-specific evidence. These preserve exact-realization evidence and never authorize automatic progression, regression or replacement.
+
 Transition proposals:
 
 | Target | Direction | Class | Effect | Reason |
@@ -832,7 +850,7 @@ Phase-context audit:
 | ACCEPTED PHASE EVIDENCE AVAILABLE? | no |
 | NEEDS_REVIEW? | yes |
 | UNKNOWN? | yes |
-| PRODUCTION IMPLEMENTATION BLOCKED? | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| PRODUCTION PHASE STATUS | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 
 Candidate-pool effect:
 
@@ -884,7 +902,8 @@ Persona review:
 | Scapular mechanics | Wall support is support mechanics, not scapular preparation. |
 | Prescription modes | step_march |
 | Progression axes | load, steps, duration, support_reduction, effort |
-| Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| Response-sensitive modifications | Review load, steps, duration, wall-support amount, support side and effort after limited response., A tolerated highly supported realization does not create permanent support dependence., Preserve later reduced-support re-exposure while keeping stationary march distinct from walking carry. |
+| Phase status | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 | Unresolved unknowns | Lateral trunk and gait/load-transfer mechanics are support-force dependent. |
 | Contract gaps | Anti-lateral exposure remains contextual/needs_review until support-force effects receive human exercise-science review. |
 
@@ -924,6 +943,8 @@ Legacy stress recommendation: jointStressTags=loaded_march, grip_loading, cautio
 
 Progression runway: early=Light load, high support, low step count or short duration.; standard=Opposite wall support, alternating stationary march, both load sides across sets.; later=Load, steps, duration, reduced support, or effort.; runs out=Reduced support or walking starts changing identity toward suitcase carry or unsupported march.; not progression=Wall march to suitcase carry is not same-exercise progression; adding walking distance changes identity..
 
+Response-sensitive modification possibilities: Review load, steps, duration, wall-support amount, support side and effort after limited response., A tolerated highly supported realization does not create permanent support dependence., Preserve later reduced-support re-exposure while keeping stationary march distinct from walking carry. These preserve exact-realization evidence and never authorize automatic progression, regression or replacement.
+
 Transition proposals:
 
 | Target | Direction | Class | Effect | Reason |
@@ -947,7 +968,7 @@ Phase-context audit:
 | ACCEPTED PHASE EVIDENCE AVAILABLE? | no |
 | NEEDS_REVIEW? | yes |
 | UNKNOWN? | yes |
-| PRODUCTION IMPLEMENTATION BLOCKED? | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
+| PRODUCTION PHASE STATUS | OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL |
 
 Candidate-pool effect:
 
@@ -1037,6 +1058,6 @@ No unresolved owner-decision questions remain inside this seven-exercise curatio
 
 ## Whole-Body Roadmap Handoff
 
-Whole-body audit is not started. Keep `WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT` scheduled after contextual phase contract resolution, support/stance contract resolution, and truthful implementation of the seven-exercise tranche. The later audit must decide whether `MuscleGroup` should add forearm/grip or hip-flexor target status; do not add either now.
+Whole-body audit is not started. Keep `WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT` scheduled after final contextual phase/stress owner decisions and truthful behavior-equivalent implementation of the seven-exercise tranche. The later audit must decide whether `MuscleGroup` should add forearm/grip or hip-flexor target status; do not add either now.
 
 The later audit must cover chest, lats, mid/upper back, shoulders, arms, legs, glutes, calves, hip adductors/abductors, trunk, serratus/cuff/scapular work, and carries/capacity. The goal is meaningfully distinct, well-understood candidates, not a huge exercise count.

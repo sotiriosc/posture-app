@@ -7,6 +7,40 @@ import type {
 } from "./domain/exercise";
 import type { PhaseId } from "./domain/phase";
 import type { SessionSection, TrainingRole } from "./domain/session";
+import type { ScoreComponent } from "./scoringContracts";
+
+export const CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY = {
+  policyId: "CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN",
+  activation: "NON_DEFAULT_PENDING_ACCEPTED_CONTEXTUAL_CURATION",
+  categoryValues: {
+    excellent: 8.8,
+    good: 7.8,
+    possible: 6.2,
+    poor: 5.5,
+  },
+  phaseFamilyWeight: 1,
+  unknownBehavior: "OMIT_COMPONENT_AND_WEIGHT",
+  duplicateMechanicalBonuses: "OMITTED",
+  continuityOwner: "INDEPENDENT",
+} as const;
+
+export type ContextualPhasePolicyScoringOmissionReason =
+  | "NEEDS_REVIEW"
+  | "UNKNOWN"
+  | "NO_CONTEXTUAL_MATCH"
+  | "CONFLICT"
+  | "ACCEPTED_PROVENANCE_INCOMPLETE";
+
+export interface ContextualPhasePolicyScoringTrace {
+  readonly policyId: typeof CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY.policyId;
+  readonly activeByDefault: false;
+  readonly component: ScoreComponent | null;
+  readonly componentWeightIncluded: boolean;
+  readonly omissionReason: ContextualPhasePolicyScoringOmissionReason | null;
+  readonly phase1MechanicalControlBonusApplied: false;
+  readonly phase3LoadabilityBonusApplied: false;
+  readonly automaticReplacementEffect: "none";
+}
 
 export const PHASE_ACCEPTED_PROVENANCE_SOURCE_TYPES = [
   "owner_decision",
@@ -151,6 +185,55 @@ export function phaseResolutionCanAffectProductionScoring(
   resolution: ContextualPhaseResolutionTrace,
 ): boolean {
   return resolution.productionScoringEligible;
+}
+
+export function buildContextualPhasePolicyScoringTrace(
+  resolution: ContextualPhaseResolutionTrace,
+): ContextualPhasePolicyScoringTrace {
+  const selected = resolution.selectedAnnotation;
+  const omissionReason: ContextualPhasePolicyScoringOmissionReason | null =
+    resolution.evidenceStatus === "REVIEW_QUALIFIED_ANNOTATION"
+      ? "NEEDS_REVIEW"
+      : resolution.evidenceStatus === "UNKNOWN_ANNOTATION"
+        ? "UNKNOWN"
+        : resolution.evidenceStatus === "UNKNOWN_NO_MATCH"
+          ? "NO_CONTEXTUAL_MATCH"
+          : resolution.evidenceStatus === "CONFLICTING_ANNOTATIONS"
+            ? "CONFLICT"
+            : !resolution.productionScoringEligible
+              ? "ACCEPTED_PROVENANCE_INCOMPLETE"
+              : null;
+  const value = selected
+    ? CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY.categoryValues[
+        selected.suitability
+      ]
+    : null;
+  const component = omissionReason === null && value !== null
+    ? {
+        id: "phase_fit",
+        family: "phase_suitability" as const,
+        value,
+        rawValue: value,
+        weight: 0,
+        unnormalizedWeight:
+          CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY.phaseFamilyWeight,
+        weightedContribution: 0,
+        reason: `${selected?.exerciseId} accepted contextual phase suitability for ${resolution.activePhase} is ${selected?.suitability}.`,
+        reasonCode: "PHASE_DEVELOPMENT_FIT" as const,
+        source: "phase" as const,
+      }
+    : null;
+
+  return {
+    policyId: CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY.policyId,
+    activeByDefault: false,
+    component,
+    componentWeightIncluded: component !== null,
+    omissionReason,
+    phase1MechanicalControlBonusApplied: false,
+    phase3LoadabilityBonusApplied: false,
+    automaticReplacementEffect: "none",
+  };
 }
 
 export function resolveContextualPhaseAnnotation(input: {

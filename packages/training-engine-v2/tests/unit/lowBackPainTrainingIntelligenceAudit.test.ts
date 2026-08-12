@@ -41,7 +41,6 @@ describe("low-back pain training intelligence audit", () => {
         "READY",
         "TARGETED_CONTRACT_REQUIRED",
         "CATALOG_KNOWLEDGE_REQUIRED",
-        "LONGITUDINAL_OWNER",
         "OUT_OF_SCOPE_MEDICAL_DIAGNOSIS",
       ]),
     );
@@ -94,10 +93,10 @@ describe("low-back pain training intelligence audit", () => {
   });
 
   it("keeps the seven-row tranche blocked and permits only a review-only whole-body audit", () => {
-    expect(data.blockersBeforeSevenRows).toHaveLength(6);
-    expect(data.blockersBeforeWholeBodyAudit[0]).toContain("review-only");
-    expect(data.exactNextDependency).toContain("response-history receivers");
-    expect(data.exactNextDependency).toContain("phase scoring");
+    expect(data.blockersBeforeSevenRows).toHaveLength(3);
+    expect(data.blockersBeforeWholeBodyAudit[0]).toContain("No technical blocker");
+    expect(data.exactNextDependency).toContain("final owner decisions");
+    expect(data.exactNextDependency).toContain("contextual phase proposals");
   });
 
   it("records implemented safety/response fingerprints and phase consequences", () => {

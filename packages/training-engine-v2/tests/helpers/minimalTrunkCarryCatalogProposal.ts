@@ -3860,7 +3860,7 @@ const EXPLICIT_UNCERTAINTIES = [
   "The safe geometry, length, turns, traffic clearance, and set-down meaning of loaded_gait_space remain owner decisions.",
   "Support side, load side, support force, and no-distance semantics for Wall-Supported Suitcase March remain unmodeled.",
   "Pain/stress tag additions require canonical matching receivers; this proposal does not assume every mechanical function is itself a pain stress.",
-  "Role-and-section-specific phase evidence is not yet curated, and no final phase score is proposed.",
+  "Role-and-section-specific phase proposals are curated for final owner approval; the selected scorer remains non-default until accepted evidence is implemented.",
   "Feature challenge, athlete capability matching, weekly dose equivalence, fatigue accounting, and hypertrophy contribution remain future contracts.",
 ] as const;
 
@@ -4166,7 +4166,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     "`wall-supported-suitcase-march` is curated as a stationary supported loaded march with no loaded-gait or distance truth, but its `carry` movement-role status remains an owner-decision question. Structured support-side, load-side, steps/time, and stationary-march prescription semantics now exist as a contract, but they do not approve this identity as production metadata.",
     "",
-    "The training-space/equipment (`TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`), structured prescription/progression (`STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`), pain-stress exposure (`TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY`), exact curation (`SEVEN_EXERCISE_TRUNK_CARRY_CURATION_READY_FOR_OWNER_APPROVAL`), compositional support/stance (`SUPPORT_AND_STANCE_SCHEMA_IMPLEMENTED`), contextual phase-resolution (`PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING`), training-safety, and response-history contracts now exist. These reviews add contracts and synthetic future requirements but no production exercise row or production exercise stress metadata. Production implementation remains blocked by safety adapter wiring, response receiver policy, row-level stress/support curation, phase scoring policy, and longitudinal interpretation ownership.",
+    "The training-space/equipment contract is `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`; structured prescription/progression, pain-stress exposure, exact curation (`SEVEN_EXERCISE_STRESS_SUPPORT_READY_FOR_FINAL_OWNER_APPROVAL`), compositional support/stance, response receiver, normalized training-safety, focused row-stress curation, and the selected non-default contextual phase policy also exist. These reviews add contracts and owner-ready proposals but no production exercise row or production stress metadata. Production implementation remains blocked by final owner phase/stress decisions and behavior-equivalent implementation tests.",
     "",
     "## Current Gap Statement",
     "",
@@ -4492,7 +4492,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     `**${data.classification}**`,
     "",
-    "The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, pain-stress exposure, exact curation, compositional support/stance, contextual phase-resolution, training-safety, and response-history dependencies now exist. Production implementation remains blocked by safety adapter wiring, response receiver policy, row-level stress/support curation, phase scoring policy, and longitudinal interpretation ownership. No production exercise row or exercise stress metadata is implemented by this classification.",
+    "The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, response receiver, support/stance, normalized safety, focused stress, and selected contextual phase-policy dependencies now exist. Production implementation remains blocked by final owner approval of phase/stress proposals and isolated behavior-equivalent migration tests. No production exercise row or exercise stress metadata is implemented by this classification.",
     "",
   ].join("\n");
 }

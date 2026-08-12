@@ -50,6 +50,8 @@ Tests should remain small and readable at the component boundary. Current respon
 - prescription-only counterfactuals proving hard eligibility, ranking, phase, pain, assessment, and transition behavior remain unchanged;
 - independent training-safety regression proving low-severity explicit authority can gate downstream readiness while candidate scores/ranks remain unchanged, severity alone cannot create escalation, external resolution is required, and explicit legacy urgent authority remains bridged;
 - exposure-linked training-response regression covering exact prescription/performance references, tolerance/symptom/timing/consequence semantics, explicit unknown, side scope, support-context distinction, successful later re-exposure, mixed history, and inert prose;
+- response-receiver regression covering exact/related/identity applicability, structured realization differences, prescription-first routing, progression hold/regression/review, continuity support, repeated-adverse observability, no automatic replacement, and no prose parsing;
+- contextual annotation-only scorer regression proving omitted unknown/no-match/conflict components and denominator weights, accepted poor `5.5`, no duplicate mechanical bonuses, explicit non-default activation, and unchanged legacy production ranking;
 - historical-injury doctrine proving resolved history alone leaves rankings unchanged while explicit hard restrictions retain authority;
 - structured prescription contract report and current-behavior fingerprints;
 - structured pain-stress exposure vocabulary, annotation validation, optional pain side preservation, potential-versus-realized traces, prescription stress exposure traces, and no ID/name/prose stress inference;
@@ -88,7 +90,7 @@ Green build and test results are necessary but insufficient to begin Session Com
 
 Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
 
-The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual equipment tests use synthetic requirements; all reference exercises retain their prior equipment requirements and none uses `carry_load`. Only 90/90 Breathing, Dead Bug, and Pallof Press carry the separately approved trunk profiles. The trunk/carry equipment, structured prescription, pain-stress exposure, exact curation, support/stance, contextual phase-resolution, training-safety, and training-response artifacts add no production exercise. Remaining dependencies before the seven rows are upstream/future execution safety wiring, owner-reviewed response receivers, row-level stress/support curation, final phase policy, and longitudinal interpretation ownership.
+The trunk/core domain contract does not make current exercises more specific by assertion. The response receiver, progression integration, engine safety boundary, selected non-default phase scorer, 90-row phase disposition, focused low-back stress curation, and seven-row response-sensitive support/stress proposals add no production exercise. Remaining dependencies before the seven rows are final owner approval of contextual annotations and stress migration decisions, then isolated structured/legacy compatibility fingerprints. Golden-product safety adapter work remains separately `PRODUCT_ADAPTER_PENDING` and does not make the normalized engine boundary incomplete.
 
 ## Bug Localization
 

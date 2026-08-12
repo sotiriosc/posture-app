@@ -72,10 +72,11 @@ describe("seven exercise trunk/carry curation review", () => {
       expect(candidate.trunkMechanics).toHaveLength(8);
       expect(candidate.structuredStress.length).toBeGreaterThan(0);
       expect(candidate.progressionAxes.length).toBeGreaterThan(0);
+      expect(candidate.responseSensitiveModificationPossibilities.length).toBeGreaterThan(0);
       expect(candidate.prescriptionModes.length).toBeGreaterThan(0);
       expect(candidate.executionStandardNeeds.length).toBeGreaterThan(0);
-      expect(candidate.phaseContext.productionImplementationBlockedByCurrentPhaseSchema)
-        .toBe("PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST");
+      expect(candidate.phaseContext.productionImplementationPhaseStatus)
+        .toBe("OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL");
       expect(candidate.provenance.length).toBeGreaterThan(0);
     }
   });
@@ -239,10 +240,10 @@ describe("seven exercise trunk/carry curation review", () => {
     }
     expect(data.ownerQuestions).toHaveLength(0);
     expect(data.productionBlockers).toContain(
-      "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST",
+      "OWNER_APPROVAL_REQUIRED_FOR_CONTEXTUAL_PHASE_PROPOSALS",
     );
     expect(data.productionBlockers).toContain(
-      "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_LOW_BACK_PAIN_TRAINING_INTELLIGENCE_AUDIT_FIRST",
+      "OWNER_APPROVAL_REQUIRED_FOR_CURRENT_AND_SEVEN_ROW_STRESS_MIGRATION",
     );
     expect(data.wholeBodyRoadmapHandoff).toContain(
       "WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT",

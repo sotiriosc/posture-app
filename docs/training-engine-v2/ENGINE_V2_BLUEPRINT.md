@@ -487,6 +487,14 @@ PROGRESS its prescription when earned
 REPLACE it only when evidence justifies a cross-exercise transition
 ```
 
+This order remains authoritative across phase boundaries. A new phase is a
+developmental review point, not an instruction to replace every exercise.
+Future phase transition policy must reassess productive anchors, retain useful
+exercise identities, progress prescription variables and emphasis, and replace
+only where a reviewed developmental reason or clearly greater contextual value
+exists. Phase progression must feel like development of the same person and
+program rather than a sequence of unrelated templates.
+
 ## 11. Result-Oriented Programming
 
 The goal is not to maximize variation.
@@ -1090,6 +1098,17 @@ A locally excellent workout may be wrong if it makes the week worse.
 
 ## 27. Productive Stability vs Novelty
 
+Praxis is not a continuously regenerating workout system. The binding default
+programming doctrine is:
+
+```text
+select a strong base
+-> retain what is working
+-> progress the prescription
+-> make small purposeful adjustments
+-> replace exercises only when evidence or phase development justifies it
+```
+
 The default assumption should be:
 
 Productive stability is valuable.
@@ -1104,6 +1123,23 @@ An exercise should generally stay when:
 - the broader program remains coherent.
 
 Exercise change requires a reason.
+
+Within a phase, successful exercises should normally remain stable long enough
+to develop skill, accumulate useful exposure, reveal actual response, establish
+progression and determine whether the exercise genuinely suits the person.
+Variation is not a goal. More exercise knowledge must improve selection quality,
+not increase exercise count or produce constant rotation.
+
+Future Session and Week Composer policy must preserve this continuity hierarchy:
+
+1. Keep a productive legal exercise.
+2. Progress or modify its prescription.
+3. Temporarily modify support, range, load, volume or effort where evidence justifies it.
+4. Use a purposeful temporary substitution where necessary.
+5. Replace the exercise only when meaningful evidence justifies reconsideration.
+
+No current Candidate Intelligence trace, transition relationship, response
+observation or close-scoring alternative creates an automatic replacement.
 
 Valid reasons may include:
 
@@ -1134,9 +1170,33 @@ The system may rotate equivalent accessory movements when:
 
 Primary movements should generally be more stable than minor accessories.
 
+Future composition should distinguish conceptually between stable anchor work,
+stable supporting work, rotation-eligible accessory work, temporary
+substitutions and replacement candidates. Exact executable types are deferred.
+A productive major anchor must not be displaced merely because another legal
+candidate scores closely.
+
+Bounded rotation may later be useful for trunk and accessory work, arms, delts,
+calves, selected weak-point work and capacity/carry work. It must not create
+session bloat or destroy progression continuity. Future composition requires an
+explicit rotation-budget concept, but no rotation budget or rotation behavior is
+implemented during Candidate Intelligence.
+
+Time-constrained composition must preserve the highest-value anchors and the
+most important weekly exposures, remove redundancy, reduce lower-priority
+accessory volume and use efficient choices where appropriate. The invariant is
+`less time -> less redundancy`, not `less time -> regenerate everything`.
+
 Random shuffling is prohibited.
 
 Any seeded variation must remain deterministic.
+
+Future Session/Week Composer acceptance tests must prove that productive anchors
+survive close-score alternatives, reduced time removes redundancy before
+anchors, bounded rotation cannot exceed its approved budget, temporary
+substitution does not silently become replacement, and phase transitions retain
+useful identities while progressing prescriptions. These are recorded test
+requirements, not dummy composer implementation.
 
 ## 29. Selection, Prescription, Progression, and Transition Are Different Decisions
 

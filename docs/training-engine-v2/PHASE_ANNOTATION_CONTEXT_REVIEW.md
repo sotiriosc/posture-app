@@ -2,7 +2,7 @@
 
 `ENGINE_V2_BLUEPRINT.md` remains authoritative. The accepted Phase Suitability Calibration Laboratory established bounded phase preference and exposed duplicated mechanical bonuses. This second deterministic laboratory examines whether phase evidence applies to the candidate's actual role and section and whether missing evidence remains distinct from reviewed poor fit.
 
-The contextual annotation schema, deterministic resolver, provenance validation, conflict semantics, and DecisionTrace support are implemented in production code. Phase scores, coefficients, mechanical bonuses, rankings, eligibility, pain, assessment, continuity, prescription, Session Composer, and Weekly Composer remain unchanged while calibration and owner policy are pending.
+The contextual annotation schema, deterministic resolver, provenance validation, conflict semantics, DecisionTrace support, and selected annotation-only non-default scorer are implemented. Legacy production phase scoring, rankings, eligibility, pain, assessment, continuity, prescription, Session Composer, and Weekly Composer remain unchanged while accepted annotation curation awaits owner approval.
 
 Fixed evaluation time: `2026-08-10T00:00:00.000Z`.
 
@@ -10,9 +10,9 @@ Accepted production ranking fingerprint: `d6a6452537e1436c3ecbbc035d9ea7a3126e77
 
 Context laboratory fingerprint: `b114b80cba21918c9292fc025686fec3fe82f79cc18477fb9a6a25f893060550`.
 
-Classification: **PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING**.
+Classification: **PHASE_CONTEXT_OWNER_POLICY_SELECTED_CURATION_PENDING**.
 
-The schema and resolver contract are implemented. The current catalog is not being declared accepted contextual evidence, and no coefficient or final production scoring policy is selected here.
+The owner selected CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN with excellent 8.8, good 7.8, possible 6.2, poor 5.5 and phase-family weight 1.0. The current catalog is not being declared accepted contextual evidence and production activation remains deferred.
 
 ## Accepted Owner Direction
 
@@ -20,16 +20,16 @@ The schema and resolver contract are implemented. The current catalog is not bei
 - `CandidateRequest.goal` is authoritative and is never replaced by phase intent.
 - Phase evidence is scoped by the actual requested `trainingRole` and/or `sessionSection`.
 - General annotations are legal only when evidence covers every legal use.
-- `UNKNOWN_NO_MATCH` is not poor.
+- `UNKNOWN_NO_MATCH` is not poor and omits the contextual component and denominator weight.
 - `CONFLICTING_ANNOTATIONS` is not poor and must not choose the favorable annotation.
 - Reviewed `poor` remains a bounded contextual phase judgment.
 - Reason prose is non-executable.
-- The Phase 1 low-skill/stability bonus is scheduled for removal.
-- The Phase 3 high-loadability bonus is scheduled for removal.
+- The selected contextual scorer contains no Phase 1 low-skill/stability bonus; legacy production keeps it only until explicit activation.
+- The selected contextual scorer contains no Phase 3 high-loadability bonus; legacy production keeps it only until explicit activation.
 - Progression-axis matching remains same-exercise progression evidence, not `phase_fit`.
 - Phase changes never create automatic replacement pressure; KEEP -> PROGRESS -> REPLACE WHEN JUSTIFIED remains authoritative.
 
-Category values and phase weight remain unapproved.
+Category values and phase-family weight are owner-approved as the starting policy only after accepted contextual annotation coverage is ready.
 
 ## Implemented Contextual Annotation Contract
 
@@ -74,12 +74,12 @@ Every trace exposes active phase, requested role/section, candidate exercise, al
 | Review status / state | Production scoring | Trace behavior |
 | --- | --- | --- |
 | accepted | eligible_only_with_complete_contextual_provenance | May affect production candidate ranking only when role/section scope matches and provenance is complete. |
-| needs_review | zero | Visible in DecisionTrace and curation tooling; eligible only for non-production sensitivity labs. |
-| unknown | zero | No production scoring influence. |
+| needs_review | omit_component_and_weight | Visible in DecisionTrace and curation tooling; eligible only for non-production sensitivity labs. |
+| unknown | omit_component_and_weight | No production scoring influence. |
 | no_contextual_match | omit_effective_evidence_no_fallback | Do not emit a fallback score or poor category. |
 | conflict | omit_effective_evidence_require_review | Expose conflict and never choose the favorable annotation. |
 
-Only accepted contextual phase annotations with complete provenance may affect production candidate ranking. `needs_review` remains visible to DecisionTrace and curation tooling but has zero production scoring effect. `unknown` has zero influence. No contextual match omits effective evidence with no fallback score. Conflict omits evidence, exposes the conflict, and requires review.
+Only accepted contextual phase annotations with complete provenance may emit the non-default phase component. `needs_review`, `unknown`, no match and conflict omit the component and its denominator weight. Accepted poor remains a real bounded category. Conflict remains visible and requires review.
 
 ## Accepted Evidence Provenance Contract
 
@@ -324,12 +324,12 @@ Every proposed owner-policy variant is `ANNOTATION_ONLY_NO_MECHANICAL_BONUSES`. 
 
 ## Contextual Policy Laboratory
 
-The next lab is deterministic and non-production. It must let the owner choose excellent/good/possible/poor spacing and bounded phase-family weight from observable consequences instead of selecting coefficients here.
+The deterministic laboratory remains non-production consequence evidence. The owner selected its low-churn annotation-only shape; it does not activate the incompletely curated catalog.
 
 | Field | Status |
 | --- | --- |
-| Lab status | DESIGNED_NOT_IMPLEMENTED_PRODUCTION |
-| Coefficient status | NO_FINAL_CATEGORY_VALUES_OR_PHASE_WEIGHT_SELECTED |
+| Lab status | OWNER_POLICY_SELECTED_NON_DEFAULT_SCORER_IMPLEMENTED |
+| Coefficient status | EXCELLENT_8_8_GOOD_7_8_POSSIBLE_6_2_POOR_5_5_WEIGHT_1_0 |
 | Production behavior | UNCHANGED |
 | Comparison axes | current controlled scenarios, golden personas, role/section changes, phase 1/2/3 continuity, cases where the best candidate remains best across phases, close legal reorders, unknown not disadvantaged, accepted poor versus unknown, conflict cases, excellent/good/possible/poor spacing, bounded phase-family weight |
 
@@ -888,20 +888,20 @@ Candidate Intelligence may resolve and score contextual phase appropriateness fo
 - Should any current global annotation survive as genuinely general across every legal role and section?
 - What structured source, reviewer identity and review date are required for accepted phase evidence?
 - Which contextual annotations need separate role+section variants rather than one broad scope?
-- What final category gaps, phase weight and needs-review influence should be approved after contextual curation?
+- Which proposed contextual annotations should receive final owner approval and accepted provenance?
 - How should explicit poor evidence be calibrated without turning missing evidence into a penalty?
-- Which deterministic calibration-lab policy consequences should become the final excellent/good/possible/poor spacing and phase-family weight?
+- When approved annotation coverage is sufficient, which explicit release should activate the selected non-default policy?
 
 ## Recommended Implementation Boundary
 
 - Keep contextual phase resolution strictly downstream of hard eligibility.
 - Represent one or more structured role/section annotations per exercise and phase; general annotations require evidence that covers every legal use.
-- Only accepted contextual phase annotations with complete provenance may affect production ranking; needs_review and unknown remain zero-production-scoring states.
+- Only accepted contextual phase annotations with complete provenance may affect the non-default contextual scorer; needs_review and unknown omit the component and denominator weight.
 - Remove the explicit Phase 1 skill/stability and Phase 3 loadability bonuses when the owner-approved production policy is implemented.
 - Treat no match and conflict as omitted effective evidence, not as a numeric poor category; preserve explicit reviewed poor as a separate bounded category.
 - Keep reason prose explanatory only and expose annotation, specificity, review status, provenance, conflicts and evidence status in the trace.
 - Leave enduring goal, section intent, mechanics, progression, continuity, assessment, pain and weekly allocation with their existing owners.
-- Select category values, phase weight and needs-review attenuation only through a separate owner decision followed by full revalidation.
+- Use the owner-selected 8.8/7.8/6.2/5.5 categories and phase-family weight 1.0 only after accepted contextual curation is approved and explicitly activated.
 
 ## Blueprint Maintenance
 
@@ -909,14 +909,14 @@ A minimal enduring-principle amendment is appropriate: candidate phase evidence 
 
 ## Final Classification And Remaining P1
 
-Phase context review: **PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING**.
+Phase context review: **PHASE_CONTEXT_OWNER_POLICY_SELECTED_CURATION_PENDING**.
 
-The schema and resolver are implemented. Final owner calibration remains deferred until the annotation catalog is reviewed with structured provenance and scoring consequences are approved.
+The schema, resolver and selected non-default scorer are implemented. Final annotation approval and explicit activation remain deferred until the catalog has truthful accepted coverage.
 
 Remaining Candidate Intelligence P1:
 
-- Production implementation of the accepted contextual phase resolver, review-status behavior, provenance checks and trace fields.
-- Human curation of contextual phase annotations with accepted/needs-review/unknown status and structured provenance.
-- Deterministic calibration lab execution and owner selection of category spacing/phase-family weight, followed by mechanical-bonus removal and full revalidation before Session Composer.
+- Final owner decisions for the proposed contextual annotations and accepted provenance.
+- Explicit production activation only after truthful accepted annotation coverage is sufficient.
+- Full ranking revalidation at activation, including removal of the duplicate legacy mechanical bonuses.
 
-Overall Candidate Intelligence remains **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**. Do not start Session Composer or choose production coefficients from this laboratory.
+Overall Candidate Intelligence remains **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**. Do not start Session Composer or activate contextual production phase scoring from this laboratory.

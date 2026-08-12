@@ -419,14 +419,14 @@ describe("phase annotation context and uncertainty review", () => {
   it("records owner policies, review-status behavior, provenance, and calibration-lab design", () => {
     expect(CONTEXTUAL_PHASE_OWNER_POLICIES).toHaveLength(12);
     expect(CONTEXTUAL_PHASE_OWNER_POLICIES).toContain(
-      "`UNKNOWN_NO_MATCH` is not poor.",
+      "`UNKNOWN_NO_MATCH` is not poor and omits the contextual component and denominator weight.",
     );
     expect(CONTEXTUAL_PHASE_OWNER_POLICIES).toContain(
-      "The Phase 1 low-skill/stability bonus is scheduled for removal.",
+      "The selected contextual scorer contains no Phase 1 low-skill/stability bonus; legacy production keeps it only until explicit activation.",
     );
     expect(PHASE_REVIEW_STATUS_PRODUCTION_BEHAVIOR.find((row) =>
       row.reviewStatus === "needs_review"
-    )?.productionScoring).toBe("zero");
+    )?.productionScoring).toBe("omit_component_and_weight");
     expect(PHASE_REVIEW_STATUS_PRODUCTION_BEHAVIOR.find((row) =>
       row.reviewStatus === "conflict"
     )?.productionScoring).toBe("omit_effective_evidence_require_review");
@@ -438,7 +438,7 @@ describe("phase annotation context and uncertainty review", () => {
       "reviewedAt",
     ]);
     expect(PHASE_CALIBRATION_LAB_DESIGN.coefficientStatus).toBe(
-      "NO_FINAL_CATEGORY_VALUES_OR_PHASE_WEIGHT_SELECTED",
+      "EXCELLENT_8_8_GOOD_7_8_POSSIBLE_6_2_POOR_5_5_WEIGHT_1_0",
     );
     expect(PHASE_CALIBRATION_LAB_DESIGN.comparisonAxes).toEqual(
       expect.arrayContaining([
@@ -529,7 +529,7 @@ describe("phase annotation context and uncertainty review", () => {
 
   it("stops at owner decision with the approved future PhaseIntent treatment", () => {
     expect(data.classification).toBe(
-      "PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING",
+      "PHASE_CONTEXT_OWNER_POLICY_SELECTED_CURATION_PENDING",
     );
     expect(data.primaryGoalRecommendation).toContain("developmentalEmphasis");
     expect(data.remainingP1).toHaveLength(3);
@@ -543,7 +543,7 @@ describe("phase annotation context and uncertainty review", () => {
     expect(rendered).toContain("## Accepted Evidence Provenance Contract");
     expect(rendered).toContain("## Counterfactual Contract Tests");
     expect(rendered).toContain(
-      "**PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING**",
+      "**PHASE_CONTEXT_OWNER_POLICY_SELECTED_CURATION_PENDING**",
     );
     expect(
       readFileSync(

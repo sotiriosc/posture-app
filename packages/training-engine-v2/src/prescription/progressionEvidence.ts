@@ -2,6 +2,7 @@ import type { ExerciseHistoryEvent } from "../domain/history";
 import type { ProgressionAxis } from "../domain/progression";
 import type { ExercisePerformanceRecord } from "./performanceOutcome";
 import type { ExercisePrescription } from "./prescription";
+import type { TrainingResponseReceiverTrace } from "../trainingResponseReceiver";
 
 export type DoseEvidenceStatus =
   | "target_met"
@@ -67,6 +68,7 @@ export interface ProgressionReadinessTrace {
   readonly classification: ProgressionReadinessClassification;
   readonly blockers: readonly string[];
   readonly evidence: ProgressionEvidence;
+  readonly trainingResponseReceiver?: TrainingResponseReceiverTrace;
   readonly selectedAxis: null;
   readonly selectedTransition: null;
   readonly automaticProgressionDecision: false;

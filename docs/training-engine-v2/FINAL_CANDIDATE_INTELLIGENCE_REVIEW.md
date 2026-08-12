@@ -14,7 +14,7 @@ CandidateRequest -> interpreted context -> hard eligibility -> legal candidate p
 
 Classification: **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**
 
-Architecture is sound and the candidate pipeline is deterministic/explainable. The first trunk profile tranche is implemented without behavioral influence, a separate seven-concept direct trunk/carry catalog tranche is owner-curated without exercise metadata, and its equipment, structured prescription/progression, pain-stress, and support/stance dependencies are resolved or explicitly classified as blocking contracts/reviews. The first phase calibration laboratory is accepted, and the contextual phase-annotation contract now has resolver, review-status, provenance, and non-production calibration-lab design boundaries. Final coefficient calibration remains deferred until accepted role/section evidence and observable calibration consequences are reviewed. Session Composer should not consume these rankings before that revalidation. Feature-specific target fit, continuity reason-code precedence, transition-purpose truth, the canonical pain-match contract, the response-led moderate-pain candidate policy, and the structured prescription/progression observability contract are resolved for Candidate Intelligence. Numeric moderate-severity calibration is explicitly deferred to longitudinal adaptation rather than treated as a current blocker.
+Architecture is sound and the candidate pipeline is deterministic/explainable. The stable-adaptive doctrine is binding: retain productive legal exercises, progress or purposefully modify their prescriptions, and replace only when evidence or phase development justifies reconsideration. Future composition must preserve anchors, bound accessory rotation, remove redundancy when time contracts, and preserve useful exercise identities across phase transitions. No Session/Week Composer behavior is implemented. The response receiver, TrainingSafety input/result boundary, and selected non-default contextual phase scorer are implemented without changing production ranking. Final contextual annotation and focused stress-migration decisions remain with the owner before seven-row production implementation.
 
 ## Trunk / Core Domain Contract Implementation
 
@@ -38,9 +38,9 @@ All 17 `PROPOSE_NEEDS_REVIEW` fields remain unresolved. Dead Bug breathing/press
 
 A deterministic proposal evaluated 24 new candidate concepts and selected Forearm Plank, Forearm Side Plank, Machine Abdominal Crunch, Half-Kneeling High-to-Low Cable Chop, Bilateral Farmer Carry, Suitcase Carry, and Wall-Supported Suitcase March as the smallest coherent first tranche.
 
-Overall status: **TRUNK_CARRY_CONTRACT_FIXES_REQUIRED** for production metadata. Equipment, prescription/progression, pain-stress, support/stance, exact curation, contextual phase-resolution, independent training-safety, and exposure-linked response-history contracts now exist. No seven-exercise production row is assigned. Remaining blockers are upstream/future-execution safety wiring, owner-approved response receivers, row-level stress/support curation, phase scoring policy, and longitudinal interpretation ownership. Wall-supported suitcase march remains constrained to `loaded_bracing`; it must not satisfy `carry` or hard `anti_lateral_flexion_core` in the first production implementation.
+Overall status: **SEVEN_EXERCISE_STRESS_SUPPORT_READY_FOR_FINAL_OWNER_APPROVAL** for curation, while production metadata remains blocked. Equipment, prescription/progression, response receivers, safety input/result wiring, support/stance, focused stress curation, and the selected non-default contextual phase scorer now exist. No seven-exercise production row is assigned. Remaining blockers are final phase-annotation and stress-migration owner decisions plus behavior-equivalent implementation tests. Wall-supported suitcase march remains constrained to `loaded_bracing`; it must not satisfy `carry` or hard `anti_lateral_flexion_core` in the first production implementation.
 
-The next dependency is owner direction for response-history receivers and contextual phase scoring, followed by row-level stress/support curation; explicit TrainingSafetyState also needs upstream and future-execution adapter wiring. No future identity is a production exercise yet.
+The exact next dependency is final owner decisions on the contextual phase proposals and focused current-row stress migration questions, followed by isolated behavior-equivalent implementation tests for the seven rows. Golden-product TrainingSafety wiring remains separately classified as PRODUCT_ADAPTER_PENDING. No future identity is a production exercise yet.
 
 The 17 representative secondary-mechanics proposals remain independently unresolved. They do not block review of the new candidate concepts, and the catalog proposal does not authorize their profile implementation.
 
@@ -122,7 +122,7 @@ Verdict: **GOOD**. V2 consumes normalized assessment signals only; there is no i
 
 ## Phase Review
 
-Verdict: **PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING**. The deterministic contextual resolver, provenance validation, conflict semantics, and DecisionTrace evidence now exist. The non-production calibration laboratory remains accepted for consequence review, while final coefficients and removal of duplicate legacy mechanical bonuses remain an owner scoring-policy decision.
+Verdict: **PHASE_CONTEXT_OWNER_POLICY_SELECTED_CURATION_PENDING**. The owner selected `CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN` with 8.8/7.8/6.2/5.5 and weight 1.0. The deterministic non-default scorer omits unknown/no-match/conflict and duplicate mechanical bonuses. Legacy production behavior remains active until accepted contextual annotations receive final approval and explicit activation.
 
 | Need | Phase 1 | Phase 2 | Phase 3 | Verdict |
 | --- | --- | --- | --- | --- |
@@ -142,19 +142,19 @@ The audit identifies actual repeated consumption where phase_fit rereads loadabi
 
 `CandidateRequest.goal` remains the goal-fit authority; `PhaseIntent.primaryGoal` is currently unused. Productive continuity survives all phase changes, ready-to-progress remains same-exercise progression, pain readiness and hard eligibility remain independent, and every transition retains `automaticSelectionEffect=none`.
 
-Recommended shape for owner review: one bounded annotation-led phase preference, no hidden eligibility or replacement authority, explicit phase-annotation provenance/review status in a later approved metadata change, and removal or independent justification of duplicated mechanical bonuses. The laboratory does not choose production category gaps or weight.
+Selected owner policy: one bounded annotation-led phase preference with no hidden eligibility or replacement authority. The approved starting categories are excellent 8.8, good 7.8, possible 6.2, poor 5.5, at weight 1.0; duplicate mechanical bonuses are absent from the contextual scorer.
 
 ### PHASE_ANNOTATION_CONTEXT_AND_UNCERTAINTY_REVIEW
 
-Legacy `ExerciseDefinition.phaseSuitability` remains global to the exercise, so accessory, hypertrophy, loadability, setup, progression or continuity rationale can influence a different legal use. Optional contextual annotations and their resolver now expose truthful role/section evidence in DecisionTrace, but production scoring intentionally remains legacy pending owner coefficient review.
+Legacy `ExerciseDefinition.phaseSuitability` remains global to the exercise, so accessory, hypertrophy, loadability, setup, progression or continuity rationale can influence a different legal use. Optional contextual annotations and their resolver now expose truthful role/section evidence in DecisionTrace, but production scoring intentionally remains legacy pending final approval of the proposed contextual annotations.
 
 The implemented deterministic resolver orders role+section, section, training-role and genuinely general matches. No match becomes `UNKNOWN_NO_MATCH`; conflicting equal-specificity annotations become `CONFLICTING_ANNOTATIONS`. Neither receives a hidden phase value. Explicit reviewed poor remains a distinct selected category. Reason prose and provenance do not create score, legality, pain, progression or transition behavior.
 
-The 90-row audit recommends 0 annotations as accepted, 16 as needs-review contextual candidates and 74 as unknown because the current schema has no structured phase provenance. This is conservative migration evidence, not a claim that 74 exercises are poor fits. Copied contextual policies change 19 ranks and 8 winners in the controlled matrix, while productive continuity and pain readiness remain unchanged.
+The production curation classifies all 90 current annotations: 16 PROPOSE_ACCEPT, 5 KEEP_NEEDS_REVIEW, 6 KEEP_UNKNOWN, and 63 REJECT_AS_WRONG_OWNER. Proposed acceptance is not production acceptance. The separate seven-row curation contains 21 contextual proposals for final owner review.
 
-The implemented boundary keeps contextual phase evidence downstream of hard eligibility, requires complete accepted provenance for future scoring eligibility, and gives `needs_review`, unknown, no-match, and conflict zero production influence. Removal of both duplicated mechanical bonuses and final category spacing/weight remain pending owner review of the deterministic calibration lab.
+The implemented boundary keeps contextual phase evidence downstream of hard eligibility, requires complete accepted provenance for future scoring eligibility, omits `needs_review`, unknown, no-match, and conflict from both component and denominator, and preserves accepted poor as a bounded negative preference. Legacy production scoring remains active until annotation approval and an explicit deterministic switch.
 
-Remaining P1 work includes human curation of accepted contextual phase annotations, owner scoring-policy selection after calibration review, owner resolution of the 17 trunk-mechanics needs-review proposals before assessment expansion, safety adapter wiring, response receiver policy, row stress/support curation, and longitudinal interpretation ownership before proposed trunk/carry candidates become production metadata. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.
+Remaining P1 work includes final owner decisions for the 16 proposed current contextual annotations, seven-row phase proposals, focused low-back stress migration, and the 17 trunk-mechanics needs-review proposals before assessment expansion. Golden-product safety wiring remains `PRODUCT_ADAPTER_PENDING`. Production activation and seven-row implementation require isolated revalidation. Overall readiness remains TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION.
 
 ## Pain / Injury Review
 
@@ -341,7 +341,7 @@ Contextual programming intent remains explicit and retains reviewed transition p
 - Human curation of contextual phase annotations with accepted/needs-review/unknown status and structured provenance.
 - Owner selection of contextual phase category spacing/weight after calibration review, followed by duplicated mechanical-bonus removal and full revalidation before Session Composer.
 - Project-owner resolution of the 17 remaining trunk-mechanics proposals before any additional complete profiles or normalized trunk assessment features.
-- Upstream/future-execution safety wiring plus owner-approved response receivers, row-level stress/support curation, phase policy, and longitudinal interpretation before any new trunk/carry reference exercises are implemented.
+- Final owner approval of contextual phase proposals and focused stress migration decisions, followed by isolated behavior-equivalent implementation tests before any new trunk/carry reference exercises are added.
 
 ### P2
 
@@ -352,4 +352,4 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ## Readiness Rationale
 
-The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, compositional support/stance and contextual phase resolution are implemented, and production phase scoring remains unchanged pending owner calibration review. Accepted phase-evidence curation, the remaining trunk-mechanics decisions, and the low-back audit's safety/tolerance/longitudinal dependencies remain targeted work before composition.
+The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, response-led progression and continuity semantics are separated from replacement, and TrainingSafety affects downstream readiness without changing rank. Production phase scoring remains unchanged pending final contextual-annotation approval. The seven rows still require owner phase/stress decisions and isolated implementation revalidation; whole-body audit and composition remain deliberately deferred.
