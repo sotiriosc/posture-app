@@ -7,8 +7,23 @@ Production implementation readiness: `PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKED`
 Production blockers:
 
 - PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST
-- Owner must approve the exact seven-exercise curation decisions before catalog rows are added.
+- PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_SUPPORT_AND_STANCE_CONTRACT_FIRST
 - Production implementation must add isolated behavior-fingerprint tests for the rows and any structured/legacy stress compatibility.
+
+## Owner Decisions Recorded
+
+- Decision: Knee-supported forearm plank is approved as a same-exercise prescription/support/lever variant of `forearm-plank`.
+  Effect: `forearm-plank` keeps one identity row; knee support is a prescribed lever/support variant, not a duplicate exercise.
+- Decision: Bent-knee forearm side plank is approved as a same-exercise variant of `forearm-side-plank`.
+  Effect: `forearm-side-plank` keeps one identity row; bent-knee support is a prescribed side-support/lever variant.
+- Decision: Approved production identities are `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, and `suitcase-carry`.
+  Effect: These identities are owner-approved, but production rows still wait for contextual phase and support/stance contracts.
+- Decision: `wall-supported-suitcase-march` must not satisfy `carry` in the first production implementation.
+  Effect: The row is not allowed to satisfy a loaded walking/carry request or inherit carry semantics.
+- Decision: `wall-supported-suitcase-march` must not receive hard `anti_lateral_flexion_core` yet.
+  Effect: Anti-lateral mechanics and lateral trunk exposure remain contextual/needs_review until support magnitude/control can be represented and reviewed.
+- Decision: `wall-supported-suitcase-march` proposed movement role is `loaded_bracing`; proposed training roles are `activation` and `capacity`; sections are `activation` and `accessory` as appropriate.
+  Effect: No new movement role is created to rescue the row.
 
 ## Boundary
 
@@ -26,7 +41,7 @@ Doctrine: task-appropriate alignment -> repeatable form -> appropriate dose -> o
 | half-kneeling-high-to-low-cable-chop | Half-kneeling stance, high cable anchor, high-to-low resisted chop with intentional controlled trunk rotation. | core_control | trunk_rotation | activation, hypertrophy_accessory, secondary_strength | trunk | glutes | cable_stack, cable_anchor_high, floor_space | ability to understand cable setup and half-kneeling side setup | cable_anchored | controlledRotationContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, loadedBracingContribution, gaitLoadTransferContribution | loaded_trunk_rotation | none | load, reps, sets, range, tempo | repetition_sets | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | bodySupport lacks half-kneeling. | READY_FOR_OWNER_APPROVAL |
 | farmer-carry | Upright loaded walking with one external implement in each hand and symmetrical load unless prescription states otherwise. | carry_load | carry, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength | trunk, upper_back | glutes, quads, hamstrings | dumbbell_pair, loaded_gait_space, stable_loaded_standing_space | ability to walk while holding two implements, ability to grip two implements | free_implement | loadedBracingContribution:high, gaitLoadTransferContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution | loaded_gait, grip_loading | grip_intensive:dose_created, heavy_axial_loading:dose_created | load, distance, trips, duration, effort | distance_carry, timed_carry | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | No forearm/grip MuscleGroup; loaded gait trip/set-down standards remain prescription-detail only. | READY_FOR_OWNER_APPROVAL |
 | suitcase-carry | Upright loaded walking with one external implement held on one side. | carry_load | carry, anti_lateral_flexion_core, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength | trunk | upper_back, glutes, quads, hamstrings | dumbbells, loaded_gait_space, stable_loaded_standing_space | ability to walk while holding one implement, side-specific load tolerance | free_implement | antiRotationContribution:moderate, antiLateralFlexionContribution:high, loadedBracingContribution:high, gaitLoadTransferContribution:high | breathingPressureCoordination, antiExtensionContribution, controlledFlexionContribution, controlledRotationContribution | loaded_gait, grip_loading, lateral_trunk_loading | grip_intensive:dose_created, heavy_axial_loading:dose_created | load, distance, trips, duration, effort | distance_carry, timed_carry | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | No forearm/grip MuscleGroup. | READY_FOR_OWNER_APPROVAL |
-| wall-supported-suitcase-march | One dumbbell in one hand, opposite hand supported on wall, stationary alternating march, both load sides trained across sets, no walking distance. | carry_load | anti_lateral_flexion_core, loaded_bracing | activation, capacity | trunk | glutes, quads | dumbbells, wall, stable_loaded_standing_space | ability to march while supported, ability to grip one dumbbell | free_implement | loadedBracingContribution:moderate | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | loaded_march, grip_loading | lateral_trunk_loading:prescription_modifiable | load, steps, duration, support_reduction, effort | step_march | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Current carry role may be semantically awkward for stationary supported march; support-force magnitude has no current typed prescription field. | OWNER_DECISION_REQUIRED |
+| wall-supported-suitcase-march | One dumbbell in one hand, opposite hand supported on wall, stationary alternating march, both load sides trained across sets, no walking distance. | carry_load | loaded_bracing | activation, capacity | trunk | glutes, quads | dumbbells, wall, stable_loaded_standing_space | ability to march while supported, ability to grip one dumbbell | free_implement | loadedBracingContribution:moderate | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | loaded_march, grip_loading | lateral_trunk_loading:prescription_modifiable | load, steps, duration, support_reduction, effort | step_march | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Support-force magnitude and support-side relationship have no current typed prescription field; anti-lateral exposure remains contextual/needs_review. | READY_FOR_OWNER_APPROVAL |
 
 ## Exact Identity Definitions
 
@@ -45,7 +60,7 @@ Verdict: `READY_FOR_OWNER_APPROVAL`
 | PELVIS / RIBCAGE RELATIONSHIP | Maintain controlled ribcage-pelvis relationship without sagging into extension. |
 | LATERALITY | Bilateral/midline. |
 | END CONDITION | Time, quality loss, symptom response, or prescribed stop. |
-| SAME IDENTITY PRESCRIPTION CHANGES | duration, effort, standard lever, shortened lever, knee-supported variant pending owner approval, support changes |
+| SAME IDENTITY PRESCRIPTION CHANGES | duration, effort, standard lever, shortened lever, knee-supported variant, support changes |
 | NEW EXERCISE ID REQUIRED | high plank/wrist-supported plank, dynamic body saw, long-lever plank if owner wants separate row, loaded plank |
 
 ### Forearm Side Plank (forearm-side-plank)
@@ -56,7 +71,7 @@ Verdict: `READY_FOR_OWNER_APPROVAL`
 | --- | --- |
 | EXACT IDENTITY | Bodyweight side-oriented forearm plank with pelvis facing sideways and support through one forearm plus feet or accepted bent-knee variant. |
 | START POSITION | Side-lying setup lifted into forearm-supported side support. |
-| SUPPORT | One forearm and lateral foot/feet contact, with bent-knee support as a proposed same-exercise regression. |
+| SUPPORT | One forearm and lateral foot/feet contact, with bent-knee support as an approved same-exercise regression. |
 | IMPLEMENT / RESISTANCE | Bodyweight only unless a future external-load variant is explicitly retained. |
 | MOVEMENT PATH | Static timed side support. |
 | INTENDED TRUNK ACTION | Anti-lateral-flexion trunk control. |
@@ -140,7 +155,7 @@ Verdict: `READY_FOR_OWNER_APPROVAL`
 
 ### Wall-Supported Suitcase March (wall-supported-suitcase-march)
 
-Verdict: `OWNER_DECISION_REQUIRED`
+Verdict: `READY_FOR_OWNER_APPROVAL`
 
 | Field | Review |
 | --- | --- |
@@ -149,7 +164,7 @@ Verdict: `OWNER_DECISION_REQUIRED`
 | SUPPORT | Opposite hand on wall; support level explicitly prescribed. |
 | IMPLEMENT / RESISTANCE | One dumbbell. |
 | MOVEMENT PATH | Stationary alternating march; no travel/distance. |
-| INTENDED TRUNK ACTION | Loaded bracing with support-aware lateral-control/capacity question. |
+| INTENDED TRUNK ACTION | Loaded bracing with contextual support-aware lateral-control exposure left unclaimed. |
 | PELVIS / RIBCAGE RELATIONSHIP | Maintain controlled trunk/pelvis position while alternating march steps under supported unilateral load. |
 | LATERALITY | Load side and support side are opposite; both load sides across sets. |
 | END CONDITION | Steps, time, side completion, support-quality loss, symptom response, or prescribed stop. |
@@ -182,7 +197,7 @@ Verdict: `OWNER_DECISION_REQUIRED`
 | Prescription modes | timed_hold |
 | Progression axes | duration, lever, support_reduction, effort |
 | Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
-| Unresolved unknowns | Whether knee-supported plank remains same identity or a narrower variant mechanism is required., Forearm support cannot be represented exactly by bodySupport enum. |
+| Unresolved unknowns | Forearm support cannot be represented exactly by bodySupport enum. |
 | Contract gaps | Support taxonomy lacks forearm-supported body support. |
 
 Generic demands:
@@ -517,7 +532,7 @@ Persona review:
 | Prerequisites | ability to understand cable setup and half-kneeling side setup |
 | Prerequisite notes | Cable setup skill is a setup prerequisite; load/range tolerance belongs to prescription. |
 | Loading profile | Cable-guided external load, moderate loadability, controlled rotational range. |
-| Support mechanics | cable_or_band_anchor / standing: Current bodySupport enum cannot represent half-kneeling; production should flag taxonomy gap rather than misuse standing. |
+| Support mechanics | cable_or_band_anchor / unknown: Current bodySupport enum cannot represent half-kneeling; production must wait for support/stance representation rather than encode this as standing. |
 | Resistance/path | cable_anchored; trajectory=moderate; line=high; laterality=unilateral; fit=setup_geometry. High-anchor setup and user position determine path. |
 | Scapular mechanics | Shoulder/scapular participation is contextual, not a scapular-control row. |
 | Prescription modes | repetition_sets |
@@ -851,8 +866,8 @@ Persona review:
 | Field | Proposal |
 | --- | --- |
 | Family | carry_load |
-| Movement roles | anti_lateral_flexion_core, loaded_bracing |
-| Movement-role notes | Do not grant carry until owner confirms stationary supported march legally satisfies carry. |
+| Movement roles | loaded_bracing |
+| Movement-role notes | Do not grant carry or hard anti-lateral-flexion role. Anti-lateral mechanics remain contextual/needs_review until support magnitude and control can be represented. |
 | Training roles | activation, capacity |
 | Sections | activation, accessory |
 | Primary muscles | trunk |
@@ -870,8 +885,8 @@ Persona review:
 | Prescription modes | step_march |
 | Progression axes | load, steps, duration, support_reduction, effort |
 | Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
-| Unresolved unknowns | Whether stationary supported march should legally satisfy carry., Lateral trunk and gait/load-transfer mechanics are support-force dependent. |
-| Contract gaps | Current carry role may be semantically awkward for stationary supported march; support-force magnitude has no current typed prescription field. |
+| Unresolved unknowns | Lateral trunk and gait/load-transfer mechanics are support-force dependent. |
+| Contract gaps | Support-force magnitude and support-side relationship have no current typed prescription field; anti-lateral exposure remains contextual/needs_review. |
 
 Generic demands:
 
@@ -903,9 +918,9 @@ Structured stress:
 | --- | --- | --- | --- | --- | --- |
 | loaded_march | joint_stress | intrinsic | bilateral_or_systemic | accepted | Stationary loaded march is intrinsic. |
 | grip_loading | joint_stress | intrinsic | prescription_side | accepted | One dumbbell creates load-side grip exposure. |
-| lateral_trunk_loading | joint_stress | prescription_modifiable | prescription_side | accepted | Wall support/load/support-force relationship must realize or remove lateral trunk loading. |
+| lateral_trunk_loading | joint_stress | prescription_modifiable | prescription_side | needs_review | Wall support/load/support-force relationship must realize or remove lateral trunk loading; production scoring must not treat this as accepted anti-lateral exposure yet. |
 
-Legacy stress recommendation: jointStressTags=loaded_march, grip_loading, cautionStressTags=none, contraindicatedStressTags=none. Do not add loaded_gait or distance truth. lateral_trunk_loading should remain structured prescription-realized until reviewed support behavior is implemented.
+Legacy stress recommendation: jointStressTags=loaded_march, grip_loading, cautionStressTags=none, contraindicatedStressTags=none. Do not add loaded_gait, carry, distance, or hard anti-lateral truth. lateral_trunk_loading remains structured, prescription-realized, and needs_review until support magnitude is modeled.
 
 Progression runway: early=Light load, high support, low step count or short duration.; standard=Opposite wall support, alternating stationary march, both load sides across sets.; later=Load, steps, duration, reduced support, or effort.; runs out=Reduced support or walking starts changing identity toward suitcase carry or unsupported march.; not progression=Wall march to suitcase carry is not same-exercise progression; adding walking distance changes identity..
 
@@ -938,13 +953,13 @@ Candidate-pool effect:
 
 | Requested roles | Competes with | Bootstrap? | Diversity | Redundancy risk |
 | --- | --- | --- | --- | --- |
-| anti_lateral_flexion_core, loaded_bracing | none | true | Adds stationary supported loaded-march option for limited walking space. | Could overlap suitcase carry if walking space and tolerance are already available. |
+| loaded_bracing | none | true | Adds stationary supported loaded-march option for limited walking space. | Could overlap suitcase carry only after walking space, support removal, and lateral trunk exposure are explicitly requested and reviewed. |
 
 Marginal-value / workout-length review:
 
 | Unique value | Redundancy risk | Existing coverage | Ledger | New slot when | Do not add when |
 | --- | --- | --- | --- | --- | --- |
-| Supported stationary loaded march with no gait-space requirement. | Should not be added if suitcase carry or simpler marching already covers the need. | Forearm side plank covers lateral control or suitcase carry covers loaded gait/carry need. | One supported loaded-march event with side/support descriptors, no distance. | A user needs supported loaded marching or has little walking space. | The goal is loaded walking gait or support-free carry capacity. |
+| Supported stationary loaded march with no gait-space requirement. | Should not be added if suitcase carry or simpler marching already covers the need. | Suitcase carry covers loaded gait/carry need or side plank covers direct anti-lateral control. | One supported loaded-march event with side/support descriptors, no distance. | A user needs supported loaded bracing through marching or has little walking space. | The goal is loaded walking gait, support-free carry capacity, or accepted anti-lateral trunk exposure. |
 
 Persona review:
 
@@ -1008,25 +1023,7 @@ Every accepted non-unknown trunk-mechanics field includes curation provenance. E
 
 ## Owner Decision Questions
 
-1. Should knee-supported forearm plank remain a same-exercise prescription variant of `forearm-plank`?
-   Recommended option: Yes, but only as a reviewed lever/support variant under the ordinary forearm-plank identity.
-   Consequences: Allows one row to cover early support/lever regression without adding a duplicate plank row.
-   Alternatives: Create a separate knee-forearm-plank row, or exclude knee support until variant semantics are narrower.
-
-2. Should bent-knee forearm side plank remain a same-exercise variant of `forearm-side-plank`?
-   Recommended option: Yes, with side, support, and lever explicitly prescribed.
-   Consequences: Keeps the first tranche compact while preserving lateral side-support identity.
-   Alternatives: Create a separate bent-knee side-plank row or defer bent-knee support.
-
-3. Should `wall-supported-suitcase-march` legally satisfy the `carry` movement role?
-   Recommended option: No for the first production row; use `anti_lateral_flexion_core` and `loaded_bracing` until owner approves stationary supported carry semantics.
-   Consequences: Avoids granting loaded walking/carry truth to a no-distance supported march.
-   Alternatives: Grant `carry` as stationary capacity carry, or create a new movement role for supported loaded march later.
-
-4. Should production catalog implementation wait for the contextual phase contract?
-   Recommended option: Yes; do not invent global phase suitability values for these rows.
-   Consequences: Keeps unknown/contextual phase evidence honest and prevents false phase scoring certainty.
-   Alternatives: Add conservative global phase values now, accepting known false certainty and future churn.
+No unresolved owner-decision questions remain inside this seven-exercise curation artifact. Production remains blocked by contextual phase and support/stance contracts.
 
 ## Current-Behavior Invariance
 
@@ -1040,6 +1037,6 @@ Every accepted non-unknown trunk-mechanics field includes curation provenance. E
 
 ## Whole-Body Roadmap Handoff
 
-After seven-exercise owner approval and truthful production catalog implementation, the next major candidate-knowledge milestone is WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT.
+Whole-body audit is not started. Keep `WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT` scheduled after contextual phase contract resolution, support/stance contract resolution, and truthful implementation of the seven-exercise tranche. The later audit must decide whether `MuscleGroup` should add forearm/grip or hip-flexor target status; do not add either now.
 
 The later audit must cover chest, lats, mid/upper back, shoulders, arms, legs, glutes, calves, hip adductors/abductors, trunk, serratus/cuff/scapular work, and carries/capacity. The goal is meaningfully distinct, well-understood candidates, not a huge exercise count.

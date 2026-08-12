@@ -50,7 +50,8 @@ Tests should remain small and readable at the component boundary. Current respon
 - prescription-only counterfactuals proving hard eligibility, ranking, phase, pain, assessment, and transition behavior remain unchanged;
 - structured prescription contract report and current-behavior fingerprints;
 - structured pain-stress exposure vocabulary, annotation validation, optional pain side preservation, potential-versus-realized traces, prescription stress exposure traces, and no ID/name/prose stress inference;
-- exact seven-exercise trunk/carry curation review, including complete proposed contracts, provenance-bearing mechanics, explicit unknown/phase blockers, no production rows, no mandatory carry policy, no loaded-gait wall march, and unchanged behavior fingerprints;
+- exact seven-exercise trunk/carry curation review, including recorded owner decisions, complete proposed contracts, provenance-bearing mechanics, explicit unknown/phase and support/stance blockers, no production rows, no mandatory carry policy, no loaded-gait wall march, no hard anti-lateral wall march, and unchanged behavior fingerprints;
+- support/stance mechanics contract review, including current support consumer audit, compositional schema recommendation, seven-exercise blocking gaps, no existing support/stance lie findings, and unchanged production behavior;
 - pipeline snapshots for bug localization.
 
 ## Current Command
@@ -84,7 +85,7 @@ Green build and test results are necessary but insufficient to begin Session Com
 
 Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
 
-The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual equipment tests use synthetic requirements; all reference exercises retain their prior equipment requirements and none uses `carry_load`. Only 90/90 Breathing, Dead Bug, and Pallof Press carry the separately approved trunk profiles. The trunk/carry equipment, structured prescription, pain-stress exposure, and exact curation artifacts add no production exercise. The next dependency is owner approval of the exact curation decisions, then contextual phase contract resolution before production catalog implementation.
+The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual equipment tests use synthetic requirements; all reference exercises retain their prior equipment requirements and none uses `carry_load`. Only 90/90 Breathing, Dead Bug, and Pallof Press carry the separately approved trunk profiles. The trunk/carry equipment, structured prescription, pain-stress exposure, exact curation, and support/stance artifacts add no production exercise. The next dependency is contextual phase contract implementation plus truthful support/stance schema implementation before exact seven-exercise production metadata.
 
 ## Bug Localization
 

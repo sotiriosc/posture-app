@@ -3,8 +3,14 @@ import { describe, expect, it } from "vitest";
 import { REFERENCE_EXERCISES } from "../../src";
 import {
   CONTEXTUAL_PHASE_POLICIES,
+  CONTEXTUAL_PHASE_OWNER_POLICIES,
+  PHASE_ACCEPTED_PROVENANCE_CONTRACT,
   PHASE_ANNOTATION_AUDIT_PLAN,
+  PHASE_CALIBRATION_LAB_DESIGN,
+  PHASE_REVIEW_STATUS_PRODUCTION_BEHAVIOR,
+  acceptedPhaseAnnotationHasProductionProvenance,
   buildPhaseAnnotationContextReviewData,
+  phaseResolutionCanAffectProductionScoring,
   renderPhaseAnnotationContextReview,
   resolveContextualPhaseAnnotation,
   type ExercisePhaseSuitabilityAnnotation,
@@ -144,6 +150,47 @@ describe("phase annotation context and uncertainty review", () => {
     );
     expect(poor.selectedAnnotation?.suitability).toBe("poor");
     expect(poor.evidenceStatus).toBe("ACCEPTED_ANNOTATION");
+    expect(phaseResolutionCanAffectProductionScoring(unknown)).toBe(false);
+    expect(phaseResolutionCanAffectProductionScoring(poor)).toBe(false);
+  });
+
+  it("requires accepted provenance before production phase scoring can use evidence", () => {
+    const reviewedAccepted = annotation({
+      annotationId: "accepted-owner",
+      suitability: "good",
+      roles: ["activation"],
+      sections: ["activation"],
+    });
+    const complete: ExercisePhaseSuitabilityAnnotation = {
+      ...reviewedAccepted,
+      provenance: {
+        sourceType: "owner_decision",
+        sourceRef: "OWNER-PHASE-CONTEXT-2026-08-12",
+        evidenceBasis: ["Owner exercise-science decision for exact role/section context."],
+        reviewerId: "project-owner",
+        reviewedAt: "2026-08-12T00:00:00.000Z",
+      },
+    };
+
+    const incompleteResolution = resolveContextualPhaseAnnotation({
+      phaseId: "phase_3",
+      requestedRole: "activation",
+      requestedSection: "activation",
+      exerciseId: "band-face-pull",
+      annotations: [reviewedAccepted],
+    });
+    const completeResolution = resolveContextualPhaseAnnotation({
+      phaseId: "phase_3",
+      requestedRole: "activation",
+      requestedSection: "activation",
+      exerciseId: "band-face-pull",
+      annotations: [complete],
+    });
+
+    expect(acceptedPhaseAnnotationHasProductionProvenance(reviewedAccepted)).toBe(false);
+    expect(acceptedPhaseAnnotationHasProductionProvenance(complete)).toBe(true);
+    expect(phaseResolutionCanAffectProductionScoring(incompleteResolution)).toBe(false);
+    expect(phaseResolutionCanAffectProductionScoring(completeResolution)).toBe(true);
   });
 
   it("returns an explicit deterministic conflict for equally specific disagreement", () => {
@@ -208,6 +255,41 @@ describe("phase annotation context and uncertainty review", () => {
     ).toBe(true);
     expect(data.controlledScenarios).toHaveLength(35);
     expect(data.candidateRows).toHaveLength(832);
+  });
+
+  it("records owner policies, review-status behavior, provenance, and calibration-lab design", () => {
+    expect(CONTEXTUAL_PHASE_OWNER_POLICIES).toHaveLength(12);
+    expect(CONTEXTUAL_PHASE_OWNER_POLICIES).toContain(
+      "`UNKNOWN_NO_MATCH` is not poor.",
+    );
+    expect(CONTEXTUAL_PHASE_OWNER_POLICIES).toContain(
+      "The Phase 1 low-skill/stability bonus is scheduled for removal.",
+    );
+    expect(PHASE_REVIEW_STATUS_PRODUCTION_BEHAVIOR.find((row) =>
+      row.reviewStatus === "needs_review"
+    )?.productionScoring).toBe("zero");
+    expect(PHASE_REVIEW_STATUS_PRODUCTION_BEHAVIOR.find((row) =>
+      row.reviewStatus === "conflict"
+    )?.productionScoring).toBe("omit_effective_evidence_require_review");
+    expect(PHASE_ACCEPTED_PROVENANCE_CONTRACT.requiredFields).toEqual([
+      "sourceType",
+      "sourceRef",
+      "evidenceBasis",
+      "reviewerId",
+      "reviewedAt",
+    ]);
+    expect(PHASE_CALIBRATION_LAB_DESIGN.coefficientStatus).toBe(
+      "NO_FINAL_CATEGORY_VALUES_OR_PHASE_WEIGHT_SELECTED",
+    );
+    expect(PHASE_CALIBRATION_LAB_DESIGN.comparisonAxes).toEqual(
+      expect.arrayContaining([
+        "golden personas",
+        "unknown not disadvantaged",
+        "accepted poor versus unknown",
+        "conflict cases",
+      ]),
+    );
+    expect(data.calibrationLabDesign.productionBehavior).toBe("UNCHANGED");
   });
 
   it("omits phase weight for unknown evidence and exposes review attenuation", () => {
@@ -296,6 +378,8 @@ describe("phase annotation context and uncertainty review", () => {
     const rendered = renderPhaseAnnotationContextReview(data);
     expect(rendered).toContain("## All 90 Current Annotation Ownership Decisions");
     expect(rendered).toContain("## Focus Contrast: Phase 3 Scapular Activation");
+    expect(rendered).toContain("## Review Status Production Behavior");
+    expect(rendered).toContain("## Accepted Evidence Provenance Contract");
     expect(rendered).toContain("## Counterfactual Contract Tests");
     expect(rendered).toContain("**PHASE_CONTEXT_CONTRACT_READY_FOR_OWNER_DECISION**");
     expect(

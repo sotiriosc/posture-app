@@ -4166,7 +4166,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     "`wall-supported-suitcase-march` is curated as a stationary supported loaded march with no loaded-gait or distance truth, but its `carry` movement-role status remains an owner-decision question. Structured support-side, load-side, steps/time, and stationary-march prescription semantics now exist as a contract, but they do not approve this identity as production metadata.",
     "",
-    "The separate training-space and equipment dependency is classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. The structured dose, prescription, and same-exercise progression dependency is classified `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. The pain-stress exposure dependency is classified `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY`. The exact seven-exercise curation artifact is classified `SEVEN_EXERCISE_TRUNK_CARRY_CURATION_READY_FOR_OWNER_APPROVAL`. These reviews add contracts and synthetic future requirements but no production exercise row or production exercise stress metadata. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. Production implementation is blocked pending owner approval and contextual phase contract resolution.",
+    "The separate training-space and equipment dependency is classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. The structured dose, prescription, and same-exercise progression dependency is classified `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. The pain-stress exposure dependency is classified `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY`. The exact seven-exercise curation artifact is classified `SEVEN_EXERCISE_TRUNK_CARRY_CURATION_READY_FOR_OWNER_APPROVAL`. The support/stance dependency is classified `SUPPORT_AND_STANCE_SCHEMA_CHANGE_REQUIRED_BEFORE_SEVEN_EXERCISE_PRODUCTION_ROWS`. These reviews add contracts and synthetic future requirements but no production exercise row or production exercise stress metadata. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. Production implementation is blocked pending contextual phase contract resolution and truthful support/stance representation.",
     "",
     "## Current Gap Statement",
     "",
@@ -4492,7 +4492,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     `**${data.classification}**`,
     "",
-    "The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, pain-stress exposure, and exact seven-exercise curation dependencies are resolved as separate review artifacts. Production implementation remains blocked on owner approval of the curation decisions and contextual phase contract resolution. No production exercise row or exercise stress metadata is implemented by this classification.",
+    "The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, pain-stress exposure, and exact seven-exercise curation dependencies are resolved as separate review artifacts. Production implementation remains blocked on contextual phase contract resolution and truthful support/stance representation. No production exercise row or exercise stress metadata is implemented by this classification.",
     "",
   ].join("\n");
 }

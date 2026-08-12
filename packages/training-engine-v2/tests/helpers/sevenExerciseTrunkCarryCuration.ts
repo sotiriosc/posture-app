@@ -42,8 +42,47 @@ export const PRODUCTION_CATALOG_IMPLEMENTATION_READINESS =
 
 export const PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKERS = [
   "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST",
-  "Owner must approve the exact seven-exercise curation decisions before catalog rows are added.",
+  "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_SUPPORT_AND_STANCE_CONTRACT_FIRST",
   "Production implementation must add isolated behavior-fingerprint tests for the rows and any structured/legacy stress compatibility.",
+] as const;
+
+export const OWNER_DECISIONS_RECORDED = [
+  {
+    decision:
+      "Knee-supported forearm plank is approved as a same-exercise prescription/support/lever variant of `forearm-plank`.",
+    effect:
+      "`forearm-plank` keeps one identity row; knee support is a prescribed lever/support variant, not a duplicate exercise.",
+  },
+  {
+    decision:
+      "Bent-knee forearm side plank is approved as a same-exercise variant of `forearm-side-plank`.",
+    effect:
+      "`forearm-side-plank` keeps one identity row; bent-knee support is a prescribed side-support/lever variant.",
+  },
+  {
+    decision:
+      "Approved production identities are `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, and `suitcase-carry`.",
+    effect:
+      "These identities are owner-approved, but production rows still wait for contextual phase and support/stance contracts.",
+  },
+  {
+    decision:
+      "`wall-supported-suitcase-march` must not satisfy `carry` in the first production implementation.",
+    effect:
+      "The row is not allowed to satisfy a loaded walking/carry request or inherit carry semantics.",
+  },
+  {
+    decision:
+      "`wall-supported-suitcase-march` must not receive hard `anti_lateral_flexion_core` yet.",
+    effect:
+      "Anti-lateral mechanics and lateral trunk exposure remain contextual/needs_review until support magnitude/control can be represented and reviewed.",
+  },
+  {
+    decision:
+      "`wall-supported-suitcase-march` proposed movement role is `loaded_bracing`; proposed training roles are `activation` and `capacity`; sections are `activation` and `accessory` as appropriate.",
+    effect:
+      "No new movement role is created to rescue the row.",
+  },
 ] as const;
 
 export const CURATED_TRUNK_CARRY_IDS = [
@@ -269,6 +308,13 @@ export interface CuratedExerciseContract {
   readonly contractGaps: readonly string[];
 }
 
+export interface OwnerDecisionQuestion {
+  readonly question: string;
+  readonly recommendedOption: string;
+  readonly consequences: string;
+  readonly alternatives: string;
+}
+
 const AUTHORITY_PROVENANCE = [
   "docs/training-engine-v2/TRUNK_CORE_DOMAIN_REVIEW.md",
   "docs/training-engine-v2/TRUNK_MECHANICS_OWNER_DECISIONS.md",
@@ -323,13 +369,14 @@ function stress(
   exposureScope: ExerciseStressExposureScope,
   sideScope: ExerciseStressSideScope,
   notes: string,
+  reviewStatus: ExerciseStressAnnotation["reviewStatus"] = "accepted",
 ): StressProposal {
   return {
     tag,
     source: "joint_stress",
     exposureScope,
     sideScope,
-    reviewStatus: "accepted",
+    reviewStatus,
     provenance: ["TRUNK-CARRY-PAIN-STRESS-OWNER-2026-08-12"],
     notes,
   };
@@ -435,7 +482,7 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       pelvisRibcageRelationship: "Maintain controlled ribcage-pelvis relationship without sagging into extension.",
       laterality: "Bilateral/midline.",
       endCondition: "Time, quality loss, symptom response, or prescribed stop.",
-      prescriptionChangesSameIdentity: ["duration", "effort", "standard lever", "shortened lever", "knee-supported variant pending owner approval", "support changes"],
+      prescriptionChangesSameIdentity: ["duration", "effort", "standard lever", "shortened lever", "knee-supported variant", "support changes"],
       newExerciseIdRequired: ["high plank/wrist-supported plank", "dynamic body saw", "long-lever plank if owner wants separate row", "loaded plank"],
     },
     family: "core_control",
@@ -532,7 +579,7 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       "low-back-sensitive user": "prescription_review_required",
     }),
     provenance: [...AUTHORITY_PROVENANCE],
-    unresolvedUnknowns: ["Whether knee-supported plank remains same identity or a narrower variant mechanism is required.", "Forearm support cannot be represented exactly by bodySupport enum."],
+    unresolvedUnknowns: ["Forearm support cannot be represented exactly by bodySupport enum."],
     contractGaps: ["Support taxonomy lacks forearm-supported body support."],
   },
   {
@@ -543,7 +590,7 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     identity: {
       exactIdentity: "Bodyweight side-oriented forearm plank with pelvis facing sideways and support through one forearm plus feet or accepted bent-knee variant.",
       startPosition: "Side-lying setup lifted into forearm-supported side support.",
-      support: "One forearm and lateral foot/feet contact, with bent-knee support as a proposed same-exercise regression.",
+      support: "One forearm and lateral foot/feet contact, with bent-knee support as an approved same-exercise regression.",
       implementResistance: "Bodyweight only unless a future external-load variant is explicitly retained.",
       movementPath: "Static timed side support.",
       intendedTrunkAction: "Anti-lateral-flexion trunk control.",
@@ -807,8 +854,8 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     loadingProfile: "Cable-guided external load, moderate loadability, controlled rotational range.",
     supportMechanics: {
       externalSupport: "cable_or_band_anchor",
-      bodySupport: "standing",
-      notes: "Current bodySupport enum cannot represent half-kneeling; production should flag taxonomy gap rather than misuse standing.",
+      bodySupport: "unknown",
+      notes: "Current bodySupport enum cannot represent half-kneeling; production must wait for support/stance representation rather than encode this as standing.",
     },
     resistancePathMechanics: {
       resistancePath: "cable_anchored",
@@ -1140,14 +1187,14 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     id: "wall-supported-suitcase-march",
     displayName: "Wall-Supported Suitcase March",
     summary: "Stationary alternating loaded march with one dumbbell and opposite-hand wall support.",
-    finalVerdict: "OWNER_DECISION_REQUIRED",
+    finalVerdict: "READY_FOR_OWNER_APPROVAL",
     identity: {
       exactIdentity: "One dumbbell in one hand, opposite hand supported on wall, stationary alternating march, both load sides trained across sets, no walking distance.",
       startPosition: "Standing near wall with one hand on wall and opposite hand holding dumbbell.",
       support: "Opposite hand on wall; support level explicitly prescribed.",
       implementResistance: "One dumbbell.",
       movementPath: "Stationary alternating march; no travel/distance.",
-      intendedTrunkAction: "Loaded bracing with support-aware lateral-control/capacity question.",
+      intendedTrunkAction: "Loaded bracing with contextual support-aware lateral-control exposure left unclaimed.",
       pelvisRibcageRelationship: "Maintain controlled trunk/pelvis position while alternating march steps under supported unilateral load.",
       laterality: "Load side and support side are opposite; both load sides across sets.",
       endCondition: "Steps, time, side completion, support-quality loss, symptom response, or prescribed stop.",
@@ -1155,8 +1202,8 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       newExerciseIdRequired: ["walking suitcase carry", "unsupported suitcase march", "same-side wall support", "two-dumbbell march", "static suitcase hold"],
     },
     family: "carry_load",
-    movementRoles: ["anti_lateral_flexion_core", "loaded_bracing"],
-    movementRoleNotes: "Do not grant carry until owner confirms stationary supported march legally satisfies carry.",
+    movementRoles: ["loaded_bracing"],
+    movementRoleNotes: "Do not grant carry or hard anti-lateral-flexion role. Anti-lateral mechanics remain contextual/needs_review until support magnitude and control can be represented.",
     trainingRoles: ["activation", "capacity"],
     sectionSuitability: ["activation", "accessory"],
     primaryMuscles: ["trunk"],
@@ -1202,13 +1249,19 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     structuredStress: [
       stress("loaded_march", "intrinsic", "bilateral_or_systemic", "Stationary loaded march is intrinsic."),
       stress("grip_loading", "intrinsic", "prescription_side", "One dumbbell creates load-side grip exposure."),
-      stress("lateral_trunk_loading", "prescription_modifiable", "prescription_side", "Wall support/load/support-force relationship must realize or remove lateral trunk loading."),
+      stress(
+        "lateral_trunk_loading",
+        "prescription_modifiable",
+        "prescription_side",
+        "Wall support/load/support-force relationship must realize or remove lateral trunk loading; production scoring must not treat this as accepted anti-lateral exposure yet.",
+        "needs_review",
+      ),
     ],
     legacyStressRecommendation: {
       jointStressTags: ["loaded_march", "grip_loading"],
       cautionStressTags: [],
       contraindicatedStressTags: [],
-      compatibilityPolicy: "Do not add loaded_gait or distance truth. lateral_trunk_loading should remain structured prescription-realized until reviewed support behavior is implemented.",
+      compatibilityPolicy: "Do not add loaded_gait, carry, distance, or hard anti-lateral truth. lateral_trunk_loading remains structured, prescription-realized, and needs_review until support magnitude is modeled.",
     },
     progressionAxes: ["load", "steps", "duration", "support_reduction", "effort"],
     progressionRunway: {
@@ -1230,19 +1283,19 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     ],
     phaseContext: phaseAudit(),
     candidatePoolEffect: {
-      requestedMovementRoles: ["anti_lateral_flexion_core", "loaded_bracing"],
+      requestedMovementRoles: ["loaded_bracing"],
       likelyCompetingExistingCandidates: [],
       createsNewBootstrapRole: true,
       genuineDiversity: "Adds stationary supported loaded-march option for limited walking space.",
-      redundancyRisk: "Could overlap suitcase carry if walking space and tolerance are already available.",
+      redundancyRisk: "Could overlap suitcase carry only after walking space, support removal, and lateral trunk exposure are explicitly requested and reviewed.",
     },
     marginalValue: {
       uniqueValue: "Supported stationary loaded march with no gait-space requirement.",
       redundancyRisk: "Should not be added if suitcase carry or simpler marching already covers the need.",
-      existingExerciseCouldCoverNeedWhen: "Forearm side plank covers lateral control or suitcase carry covers loaded gait/carry need.",
+      existingExerciseCouldCoverNeedWhen: "Suitcase carry covers loaded gait/carry need or side plank covers direct anti-lateral control.",
       futureLedgerCharacteristics: "One supported loaded-march event with side/support descriptors, no distance.",
-      newSlotWhen: "A user needs supported loaded marching or has little walking space.",
-      doNotAddWhen: "The goal is loaded walking gait or support-free carry capacity.",
+      newSlotWhen: "A user needs supported loaded bracing through marching or has little walking space.",
+      doNotAddWhen: "The goal is loaded walking gait, support-free carry capacity, or accepted anti-lateral trunk exposure.",
     },
     personaReview: personas({
       "novice general fitness": "context_dependent",
@@ -1253,43 +1306,19 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       "grip-limited user": "prescription_review_required",
     }),
     provenance: [...AUTHORITY_PROVENANCE],
-    unresolvedUnknowns: ["Whether stationary supported march should legally satisfy carry.", "Lateral trunk and gait/load-transfer mechanics are support-force dependent."],
-    contractGaps: ["Current carry role may be semantically awkward for stationary supported march; support-force magnitude has no current typed prescription field."],
+    unresolvedUnknowns: ["Lateral trunk and gait/load-transfer mechanics are support-force dependent."],
+    contractGaps: ["Support-force magnitude and support-side relationship have no current typed prescription field; anti-lateral exposure remains contextual/needs_review."],
   },
 ];
 
-export const OWNER_DECISION_QUESTIONS = [
-  {
-    question: "Should knee-supported forearm plank remain a same-exercise prescription variant of `forearm-plank`?",
-    recommendedOption: "Yes, but only as a reviewed lever/support variant under the ordinary forearm-plank identity.",
-    consequences: "Allows one row to cover early support/lever regression without adding a duplicate plank row.",
-    alternatives: "Create a separate knee-forearm-plank row, or exclude knee support until variant semantics are narrower.",
-  },
-  {
-    question: "Should bent-knee forearm side plank remain a same-exercise variant of `forearm-side-plank`?",
-    recommendedOption: "Yes, with side, support, and lever explicitly prescribed.",
-    consequences: "Keeps the first tranche compact while preserving lateral side-support identity.",
-    alternatives: "Create a separate bent-knee side-plank row or defer bent-knee support.",
-  },
-  {
-    question: "Should `wall-supported-suitcase-march` legally satisfy the `carry` movement role?",
-    recommendedOption: "No for the first production row; use `anti_lateral_flexion_core` and `loaded_bracing` until owner approves stationary supported carry semantics.",
-    consequences: "Avoids granting loaded walking/carry truth to a no-distance supported march.",
-    alternatives: "Grant `carry` as stationary capacity carry, or create a new movement role for supported loaded march later.",
-  },
-  {
-    question: "Should production catalog implementation wait for the contextual phase contract?",
-    recommendedOption: "Yes; do not invent global phase suitability values for these rows.",
-    consequences: "Keeps unknown/contextual phase evidence honest and prevents false phase scoring certainty.",
-    alternatives: "Add conservative global phase values now, accepting known false certainty and future churn.",
-  },
-] as const;
+export const OWNER_DECISION_QUESTIONS: readonly OwnerDecisionQuestion[] = [];
 
 export interface SevenExerciseCurationData {
   readonly classification: typeof SEVEN_EXERCISE_TRUNK_CARRY_CURATION_CLASSIFICATION;
   readonly productionReadiness: typeof PRODUCTION_CATALOG_IMPLEMENTATION_READINESS;
   readonly productionBlockers: readonly string[];
   readonly exercises: readonly CuratedExerciseContract[];
+  readonly ownerDecisions: typeof OWNER_DECISIONS_RECORDED;
   readonly ownerQuestions: typeof OWNER_DECISION_QUESTIONS;
   readonly behaviorFingerprints: {
     readonly productionRankingFingerprint: string;
@@ -1316,6 +1345,7 @@ export function buildSevenExerciseTrunkCarryCurationData(): SevenExerciseCuratio
     productionReadiness: PRODUCTION_CATALOG_IMPLEMENTATION_READINESS,
     productionBlockers: PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKERS,
     exercises: CURATED_TRUNK_CARRY_EXERCISES,
+    ownerDecisions: OWNER_DECISIONS_RECORDED,
     ownerQuestions: OWNER_DECISION_QUESTIONS,
     behaviorFingerprints: {
       productionRankingFingerprint: fingerprints.productionRanking,
@@ -1335,7 +1365,7 @@ export function buildSevenExerciseTrunkCarryCurationData(): SevenExerciseCuratio
         expandedEquipmentFixtureFingerprint === CAPTURED_EXPANDED_EQUIPMENT_FIXTURE_FINGERPRINT,
     },
     wholeBodyRoadmapHandoff:
-      "After seven-exercise owner approval and truthful production catalog implementation, the next major candidate-knowledge milestone is WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT.",
+      "Whole-body audit is not started. Keep `WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT` scheduled after contextual phase contract resolution, support/stance contract resolution, and truthful implementation of the seven-exercise tranche. The later audit must decide whether `MuscleGroup` should add forearm/grip or hip-flexor target status; do not add either now.",
   };
 }
 
@@ -1511,6 +1541,13 @@ export function renderSevenExerciseTrunkCarryCurationReport(
     "",
     ...data.productionBlockers.map((blocker) => `- ${blocker}`),
     "",
+    "## Owner Decisions Recorded",
+    "",
+    ...data.ownerDecisions.flatMap((decision) => [
+      `- Decision: ${decision.decision}`,
+      `  Effect: ${decision.effect}`,
+    ]),
+    "",
     "## Boundary",
     "",
     "This is a review-only owner curation artifact. It does not add production exercises, reference-catalog rows, stress arrays, scoring behavior, phase behavior, prescription doses, Session Composer, Weekly Composer, or ledger behavior.",
@@ -1582,13 +1619,15 @@ export function renderSevenExerciseTrunkCarryCurationReport(
     ]),
     "## Owner Decision Questions",
     "",
-    ...data.ownerQuestions.flatMap((question, index) => [
-      `${index + 1}. ${question.question}`,
-      `   Recommended option: ${question.recommendedOption}`,
-      `   Consequences: ${question.consequences}`,
-      `   Alternatives: ${question.alternatives}`,
-      "",
-    ]),
+    ...(data.ownerQuestions.length === 0
+      ? ["No unresolved owner-decision questions remain inside this seven-exercise curation artifact. Production remains blocked by contextual phase and support/stance contracts.", ""]
+      : data.ownerQuestions.flatMap((question, index) => [
+        `${index + 1}. ${question.question}`,
+        `   Recommended option: ${question.recommendedOption}`,
+        `   Consequences: ${question.consequences}`,
+        `   Alternatives: ${question.alternatives}`,
+        "",
+      ])),
     "## Current-Behavior Invariance",
     "",
     table(["Artifact", "Current", "Matches"], [

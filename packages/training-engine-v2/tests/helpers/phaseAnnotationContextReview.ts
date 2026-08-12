@@ -88,7 +88,9 @@ export interface ExercisePhaseAnnotationScope {
 export interface ExercisePhaseAnnotationProvenance {
   readonly sourceType:
     | "legacy_reference_catalog_migration"
+    | "owner_decision"
     | "human_exercise_science_review"
+    | "external_reference"
     | "synthetic_counterfactual";
   readonly sourceRef: string;
   readonly evidenceBasis: readonly string[];
@@ -121,6 +123,88 @@ export interface ContextualPhaseResolutionTrace {
   readonly unresolvedConflictIds: readonly string[];
   readonly evidenceStatus: ContextualPhaseEvidenceStatus;
 }
+
+export const CONTEXTUAL_PHASE_OWNER_POLICIES = [
+  "Phase is one bounded candidate preference downstream of hard eligibility.",
+  "`CandidateRequest.goal` is authoritative and is never replaced by phase intent.",
+  "Phase evidence is scoped by the actual requested `trainingRole` and/or `sessionSection`.",
+  "General annotations are legal only when evidence covers every legal use.",
+  "`UNKNOWN_NO_MATCH` is not poor.",
+  "`CONFLICTING_ANNOTATIONS` is not poor and must not choose the favorable annotation.",
+  "Reviewed `poor` remains a bounded contextual phase judgment.",
+  "Reason prose is non-executable.",
+  "The Phase 1 low-skill/stability bonus is scheduled for removal.",
+  "The Phase 3 high-loadability bonus is scheduled for removal.",
+  "Progression-axis matching remains same-exercise progression evidence, not `phase_fit`.",
+  "Phase changes never create automatic replacement pressure; KEEP -> PROGRESS -> REPLACE WHEN JUSTIFIED remains authoritative.",
+] as const;
+
+export const PHASE_REVIEW_STATUS_PRODUCTION_BEHAVIOR = [
+  {
+    reviewStatus: "accepted",
+    productionScoring: "eligible_only_with_complete_contextual_provenance",
+    traceBehavior:
+      "May affect production candidate ranking only when role/section scope matches and provenance is complete.",
+  },
+  {
+    reviewStatus: "needs_review",
+    productionScoring: "zero",
+    traceBehavior:
+      "Visible in DecisionTrace and curation tooling; eligible only for non-production sensitivity labs.",
+  },
+  {
+    reviewStatus: "unknown",
+    productionScoring: "zero",
+    traceBehavior: "No production scoring influence.",
+  },
+  {
+    reviewStatus: "no_contextual_match",
+    productionScoring: "omit_effective_evidence_no_fallback",
+    traceBehavior: "Do not emit a fallback score or poor category.",
+  },
+  {
+    reviewStatus: "conflict",
+    productionScoring: "omit_effective_evidence_require_review",
+    traceBehavior:
+      "Expose conflict and never choose the favorable annotation.",
+  },
+] as const;
+
+export const PHASE_ACCEPTED_PROVENANCE_CONTRACT = {
+  requiredFields: [
+    "sourceType",
+    "sourceRef",
+    "evidenceBasis",
+    "reviewerId",
+    "reviewedAt",
+  ],
+  allowedSourceTypes: [
+    "owner_decision",
+    "human_exercise_science_review",
+    "external_reference",
+  ],
+  externalEvidencePolicy:
+    "External references may supplement owner/human exercise-science review, but this contract does not fabricate literature.",
+} as const;
+
+export const PHASE_CALIBRATION_LAB_DESIGN = {
+  status: "DESIGNED_NOT_IMPLEMENTED_PRODUCTION",
+  coefficientStatus: "NO_FINAL_CATEGORY_VALUES_OR_PHASE_WEIGHT_SELECTED",
+  productionBehavior: "UNCHANGED",
+  comparisonAxes: [
+    "current controlled scenarios",
+    "golden personas",
+    "role/section changes",
+    "phase 1/2/3 continuity",
+    "cases where the best candidate remains best across phases",
+    "close legal reorders",
+    "unknown not disadvantaged",
+    "accepted poor versus unknown",
+    "conflict cases",
+    "excellent/good/possible/poor spacing",
+    "bounded phase-family weight",
+  ],
+} as const;
 
 export interface PhaseAnnotationOwnershipAuditRow {
   readonly exerciseId: string;
@@ -581,6 +665,32 @@ export function resolveContextualPhaseAnnotation(input: {
       : [],
     evidenceStatus,
   };
+}
+
+export function acceptedPhaseAnnotationHasProductionProvenance(
+  annotation: ExercisePhaseSuitabilityAnnotation,
+): boolean {
+  const allowedSourceTypes = new Set<string>(
+    PHASE_ACCEPTED_PROVENANCE_CONTRACT.allowedSourceTypes,
+  );
+  return (
+    annotation.reviewStatus === "accepted" &&
+    allowedSourceTypes.has(annotation.provenance.sourceType) &&
+    annotation.provenance.sourceRef.length > 0 &&
+    annotation.provenance.evidenceBasis.length > 0 &&
+    Boolean(annotation.provenance.reviewerId) &&
+    Boolean(annotation.provenance.reviewedAt)
+  );
+}
+
+export function phaseResolutionCanAffectProductionScoring(
+  resolution: ContextualPhaseResolutionTrace,
+): boolean {
+  return (
+    resolution.evidenceStatus === "ACCEPTED_ANNOTATION" &&
+    resolution.selectedAnnotation !== null &&
+    acceptedPhaseAnnotationHasProductionProvenance(resolution.selectedAnnotation)
+  );
 }
 
 function currentExercise(exerciseId: string): ExerciseDefinition {
@@ -1345,6 +1455,10 @@ export interface PhaseAnnotationContextReviewData {
   readonly unknownAnnotationCount: number;
   readonly contextualFingerprint: string;
   readonly primaryGoalRecommendation: string;
+  readonly ownerPolicies: typeof CONTEXTUAL_PHASE_OWNER_POLICIES;
+  readonly reviewStatusProductionBehavior: typeof PHASE_REVIEW_STATUS_PRODUCTION_BEHAVIOR;
+  readonly acceptedProvenanceContract: typeof PHASE_ACCEPTED_PROVENANCE_CONTRACT;
+  readonly calibrationLabDesign: typeof PHASE_CALIBRATION_LAB_DESIGN;
   readonly recommendedImplementationBoundary: readonly string[];
   readonly humanReviewQuestions: readonly string[];
   readonly remainingP1: readonly string[];
@@ -2126,11 +2240,16 @@ export function buildPhaseAnnotationContextReviewData(): PhaseAnnotationContextR
     contextualFingerprint,
     primaryGoalRecommendation:
       "Rename PhaseIntent.primaryGoal in a future approved domain migration to a typed developmentalEmphasis concept. Until then it remains non-behavioral metadata and must never overwrite CandidateRequest.goal.",
+    ownerPolicies: CONTEXTUAL_PHASE_OWNER_POLICIES,
+    reviewStatusProductionBehavior: PHASE_REVIEW_STATUS_PRODUCTION_BEHAVIOR,
+    acceptedProvenanceContract: PHASE_ACCEPTED_PROVENANCE_CONTRACT,
+    calibrationLabDesign: PHASE_CALIBRATION_LAB_DESIGN,
     recommendedImplementationBoundary: [
       "Keep contextual phase resolution strictly downstream of hard eligibility.",
       "Represent one or more structured role/section annotations per exercise and phase; general annotations require evidence that covers every legal use.",
+      "Only accepted contextual phase annotations with complete provenance may affect production ranking; needs_review and unknown remain zero-production-scoring states.",
       "Remove the explicit Phase 1 skill/stability and Phase 3 loadability bonuses when the owner-approved production policy is implemented.",
-      "Treat no match and conflict as zero effective phase evidence, not as a numeric poor category; preserve explicit reviewed poor as a separate category.",
+      "Treat no match and conflict as omitted effective evidence, not as a numeric poor category; preserve explicit reviewed poor as a separate bounded category.",
       "Keep reason prose explanatory only and expose annotation, specificity, review status, provenance, conflicts and evidence status in the trace.",
       "Leave enduring goal, section intent, mechanics, progression, continuity, assessment, pain and weekly allocation with their existing owners.",
       "Select category values, phase weight and needs-review attenuation only through a separate owner decision followed by full revalidation.",
@@ -2142,11 +2261,12 @@ export function buildPhaseAnnotationContextReviewData(): PhaseAnnotationContextR
       "Which contextual annotations need separate role+section variants rather than one broad scope?",
       "What final category gaps, phase weight and needs-review influence should be approved after contextual curation?",
       "How should explicit poor evidence be calibrated without turning missing evidence into a penalty?",
+      "Which deterministic calibration-lab policy consequences should become the final excellent/good/possible/poor spacing and phase-family weight?",
     ],
     remainingP1: [
-      "Project-owner approval of the contextual phase-annotation contract and PhaseIntent.primaryGoal future treatment.",
+      "Production implementation of the accepted contextual phase resolver, review-status behavior, provenance checks and trace fields.",
       "Human curation of contextual phase annotations with accepted/needs-review/unknown status and structured provenance.",
-      "Implementation of the approved resolver, unknown-versus-poor semantics, mechanical-bonus removal, final coefficients and full revalidation before Session Composer.",
+      "Deterministic calibration lab execution and owner selection of category spacing/phase-family weight, followed by mechanical-bonus removal and full revalidation before Session Composer.",
     ],
   };
 }
@@ -2221,10 +2341,9 @@ export function renderPhaseAnnotationContextReview(
     "",
     "## Accepted Owner Direction",
     "",
-    "- Phase remains one bounded candidate preference after hard eligibility.",
-    "- Phase does not replace `CandidateRequest.goal`, create replacement pressure, or prevent productive continuity across phases.",
-    "- The explicit Phase 1 skill/stability and Phase 3 loadability bonuses should be removed in the eventual approved production implementation.",
-    "- Category values and phase weight remain unapproved.",
+    data.ownerPolicies.map((policy) => `- ${policy}`).join("\n"),
+    "",
+    "Category values and phase weight remain unapproved.",
     "",
     "## Proposed Contextual Annotation Contract",
     "",
@@ -2265,6 +2384,32 @@ export function renderPhaseAnnotationContextReview(
     "The resolver filters by exercise and active phase, evaluates structured scope, selects only the highest specificity, and sorts annotation IDs for deterministic trace order. Equally specific annotations with different suitability or review meaning produce `CONFLICTING_ANNOTATIONS`; the resolver never chooses the favorable value. Equivalent duplicates resolve deterministically to the lowest annotation ID but remain visible in `consideredAnnotationIds`.",
     "",
     "Every trace exposes active phase, requested role/section, candidate exercise, all considered and matching annotations, selected annotation, specificity, review status, provenance, conflicts and evidence status.",
+    "",
+    "## Review Status Production Behavior",
+    "",
+    table(
+      ["Review status / state", "Production scoring", "Trace behavior"],
+      data.reviewStatusProductionBehavior.map((row) => [
+        row.reviewStatus,
+        row.productionScoring,
+        row.traceBehavior,
+      ]),
+    ),
+    "",
+    "Only accepted contextual phase annotations with complete provenance may affect production candidate ranking. `needs_review` remains visible to DecisionTrace and curation tooling but has zero production scoring effect. `unknown` has zero influence. No contextual match omits effective evidence with no fallback score. Conflict omits evidence, exposes the conflict, and requires review.",
+    "",
+    "## Accepted Evidence Provenance Contract",
+    "",
+    table(
+      ["Requirement", "Value"],
+      [
+        ["Required fields", data.acceptedProvenanceContract.requiredFields.join(", ")],
+        ["Allowed source types", data.acceptedProvenanceContract.allowedSourceTypes.join(", ")],
+        ["External evidence policy", data.acceptedProvenanceContract.externalEvidencePolicy],
+      ],
+    ),
+    "",
+    "Owner decision and human exercise-science review are valid provenance sources. External literature can supplement that evidence, but this report does not fabricate citations.",
     "",
     "## Unknown Is Not Poor",
     "",
@@ -2408,6 +2553,18 @@ export function renderPhaseAnnotationContextReview(
     "Every proposed owner-policy variant is `ANNOTATION_ONLY_NO_MECHANICAL_BONUSES`. The production Phase 1 low-skill/non-high-stability and Phase 3 high-loadability bonuses remain untouched in this task, but the owner-approved future semantic shape removes them because they reread skill, stability, experience, loadability and potentially stimulus facts.",
     "",
     "## Contextual Policy Laboratory",
+    "",
+    "The next lab is deterministic and non-production. It must let the owner choose excellent/good/possible/poor spacing and bounded phase-family weight from observable consequences instead of selecting coefficients here.",
+    "",
+    table(
+      ["Field", "Status"],
+      [
+        ["Lab status", data.calibrationLabDesign.status],
+        ["Coefficient status", data.calibrationLabDesign.coefficientStatus],
+        ["Production behavior", data.calibrationLabDesign.productionBehavior],
+        ["Comparison axes", data.calibrationLabDesign.comparisonAxes.join(", ")],
+      ],
+    ),
     "",
     table(
       ["Policy", "Family", "Phase Weight", "Mechanical Bonuses", "Resolver", "Review Treatment", "Description"],

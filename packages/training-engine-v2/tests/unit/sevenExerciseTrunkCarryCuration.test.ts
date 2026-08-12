@@ -115,7 +115,7 @@ describe("seven exercise trunk/carry curation review", () => {
   it("keeps side, lever, support, and distance boundaries explicit", () => {
     expect(
       exercise("forearm-plank").identity.prescriptionChangesSameIdentity,
-    ).toEqual(expect.arrayContaining(["knee-supported variant pending owner approval"]));
+    ).toEqual(expect.arrayContaining(["knee-supported variant"]));
     expect(exercise("forearm-plank").identity.newExerciseIdRequired)
       .toContain("long-lever plank if owner wants separate row");
     expect(
@@ -134,6 +134,38 @@ describe("seven exercise trunk/carry curation review", () => {
       .not.toContain("loaded_gait");
     expect(exercise("wall-supported-suitcase-march").progressionAxes)
       .not.toContain("distance");
+    expect(exercise("half-kneeling-high-to-low-cable-chop").supportMechanics.bodySupport)
+      .toBe("unknown");
+    expect(exercise("half-kneeling-high-to-low-cable-chop").supportMechanics.notes)
+      .toContain("rather than encode this as standing");
+  });
+
+  it("records binding owner decisions and tightens wall-supported march", () => {
+    expect(data.ownerDecisions.map((row) => row.decision)).toEqual([
+      "Knee-supported forearm plank is approved as a same-exercise prescription/support/lever variant of `forearm-plank`.",
+      "Bent-knee forearm side plank is approved as a same-exercise variant of `forearm-side-plank`.",
+      "Approved production identities are `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, and `suitcase-carry`.",
+      "`wall-supported-suitcase-march` must not satisfy `carry` in the first production implementation.",
+      "`wall-supported-suitcase-march` must not receive hard `anti_lateral_flexion_core` yet.",
+      "`wall-supported-suitcase-march` proposed movement role is `loaded_bracing`; proposed training roles are `activation` and `capacity`; sections are `activation` and `accessory` as appropriate.",
+    ]);
+
+    const wallMarch = exercise("wall-supported-suitcase-march");
+    expect(wallMarch.finalVerdict).toBe("READY_FOR_OWNER_APPROVAL");
+    expect(wallMarch.movementRoles).toEqual(["loaded_bracing"]);
+    expect(wallMarch.movementRoles).not.toContain("carry");
+    expect(wallMarch.movementRoles).not.toContain("anti_lateral_flexion_core");
+    expect(wallMarch.trainingRoles).toEqual(["activation", "capacity"]);
+    expect(wallMarch.sectionSuitability).toEqual(["activation", "accessory"]);
+    expect(wallMarch.candidatePoolEffect.requestedMovementRoles).toEqual([
+      "loaded_bracing",
+    ]);
+    expect(wallMarch.structuredStress.find((stress) =>
+      stress.tag === "lateral_trunk_loading"
+    )).toEqual(expect.objectContaining({
+      exposureScope: "prescription_modifiable",
+      reviewStatus: "needs_review",
+    }));
   });
 
   it("does not make carries statically heavy, mandatory, or universally transitional", () => {
@@ -196,17 +228,24 @@ describe("seven exercise trunk/carry curation review", () => {
     expect(data.behaviorFingerprints.expandedEquipmentFixtureMatches).toBe(true);
   });
 
-  it("covers personas, owner questions, external evidence, and roadmap handoff", () => {
+  it("covers personas, resolved owner questions, external evidence, blockers, and roadmap handoff", () => {
     for (const candidate of data.exercises) {
       expect(candidate.personaReview).toHaveLength(10);
       expect(candidate.trunkMechanics.every(
         (field) => field.externalPrimaryEvidenceStatus === "EXTERNAL_REFERENCE_PENDING",
       )).toBe(true);
     }
-    expect(data.ownerQuestions.length).toBeGreaterThan(0);
-    expect(data.ownerQuestions.length).toBeLessThanOrEqual(4);
+    expect(data.ownerQuestions).toHaveLength(0);
+    expect(data.productionBlockers).toContain(
+      "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST",
+    );
+    expect(data.productionBlockers).toContain(
+      "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_SUPPORT_AND_STANCE_CONTRACT_FIRST",
+    );
     expect(data.wholeBodyRoadmapHandoff).toContain(
       "WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT",
     );
+    expect(data.wholeBodyRoadmapHandoff).toContain("forearm/grip");
+    expect(data.wholeBodyRoadmapHandoff).toContain("hip-flexor");
   });
 });
