@@ -6,6 +6,7 @@ import type {
   PriorityLevel,
   Side,
 } from "./primitives";
+import type { ExerciseActionFunction } from "./exercise";
 
 export const ASSESSMENT_SIGNAL_TYPES = [
   "movement_limitation",
@@ -58,6 +59,7 @@ export interface AssessmentSignal {
   readonly side?: Side;
   readonly severity?: AssessmentSeverity;
   readonly assessmentFeatures?: readonly AssessmentFeature[];
+  readonly actionFunctions?: readonly ExerciseActionFunction[];
   readonly description: string;
 }
 

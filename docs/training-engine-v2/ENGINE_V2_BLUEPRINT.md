@@ -1999,3 +1999,7 @@ That is the standard for Training Engine V2.
 # 2026-08-12 Causal Personalization Doctrine
 
 Candidate Intelligence consumes relevant structured athlete, need, assessment, pain, safety, equipment, history, continuity, response, phase, and fatigue facts. It is not an experience-plus-equipment template. Equal results are acceptable only as `JUSTIFIED_CONVERGENCE`; the engine must not force cosmetic user-specific differences. Field ownership and one-variable acceptance cases are binding in `ACTUAL_USER_PERSONALIZATION_AND_COUNTERFACTUAL_CONTRACT.md`.
+
+# 2026-08-12 Session Intent Planner Authority
+
+The production Session Intent Planner now converts an explicit Week or standalone session allocation into the smallest truthful needs-first `SessionIntent`. It never infers a workout from profile defaults. Outcome goal, pain-aware context, ordinary session type, current availability, and current equipment are separate contracts. Week allocation, Prescription, and final Sequencing remain future authorities; see `SESSION_INTENT_PLANNER_PRODUCTION_KERNEL.md`.

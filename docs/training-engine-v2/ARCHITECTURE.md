@@ -219,3 +219,7 @@ Current implementation classification is `SESSION_COMPOSER_PRODUCTION_KERNEL_REA
 Candidate ranking owns structured facts that can alter candidate legality, score, rank, readiness, or trace. Composer owns availability, weekly scheduling, and variety policy. Athlete labels, IDs, and prose remain trace-only. Identical outputs from materially equivalent active inputs are `JUSTIFIED_CONVERGENCE`; forced uniqueness is prohibited. See `ACTUAL_USER_PERSONALIZATION_AND_COUNTERFACTUAL_CONTRACT.md`.
 
 Exercise selection now separates broad `MovementRole`, exact reviewed `actionFunctions`, and canonical `muscleContributions`. Primary/secondary arrays are generated projections, not authoring inputs.
+
+# Session Intent Planner Layer (2026-08-12)
+
+The Session Intent Planner is now the production authority between explicit session allocation and Candidate Intelligence. `planSessionIntent` owns validation, fixed objective-to-need mapping, bounded assessment enrichment, need merging, and active-need continuity projection. Candidate owns exercise legality/ranking; Composer owns whole-session identity coexistence; Prescription owns dose and executable range/load/support; Sequencing owns final order; the future Week Composer owns split, frequency, volume, and reallocation. No application adapter is included.

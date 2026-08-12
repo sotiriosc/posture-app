@@ -194,3 +194,7 @@ History distinguishes exercise, session, and program history. Exercise history e
 # Role and Muscle Domain Addendum (2026-08-12)
 
 `MovementRole` includes broad `accessory` and `knee_dominant` purposes. Exact action/function vocabulary and reviewed provenance live on `ExerciseDefinition.actionFunctions`. `ExerciseDefinition.muscleContributions` is canonical with primary, key-secondary, incidental, stabilizer/contextual, and unknown relationships; primary/secondary arrays are derived compatibility views. Candidate muscle requirements select any meaningful, primary-preferred, or primary-required semantics.
+
+# Planner Domain Addendum (2026-08-12)
+
+Planner authority uses `TrainingOutcomeGoal` separately from `ProgrammingContextMode`, and only `ordinary_training` as the authoritative session type. `SessionAllocationDirective` is mandatory. Current availability and equipment carry provenance. `AssessmentSignal.actionFunctions` and `SessionRangeRequirement` preserve structured action/range truth. Legacy `TrainingGoal`, legacy session kinds, `requiredRangeIds`, and current `WeeklyIntent` numeric maps are compatibility-only on this path.

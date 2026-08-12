@@ -1,6 +1,9 @@
 import type { ExerciseSelectionNeed } from "./exerciseSelectionNeed";
+import type { ExerciseActionFunction, ExerciseMechanicsReviewStatus } from "./exercise";
 import type { PhaseIntent } from "./phase";
 import type { BodyRegion, MovementRole, MuscleGroup, TrainingGoal } from "./primitives";
+import type { ProgrammingContextMode, TrainingOutcomeGoal } from "./sessionPlanningDirective";
+import type { Side } from "./primitives";
 
 export const SESSION_SECTIONS = [
   "warmup",
@@ -50,6 +53,7 @@ export type SessionNeedSourceKind =
   | "continuity_requirement"
   | "phase_intent"
   | "user_preference"
+  | "user_explicit_session_request"
   | "recovery_requirement";
 
 export interface SessionNeedSourceEvidence {
@@ -63,12 +67,25 @@ export interface SessionNeedDependency {
   readonly targetNeedIds: readonly string[];
   readonly targetExerciseIds: readonly string[];
   readonly movementRoles: readonly MovementRole[];
-  readonly actionFunctions: readonly string[];
+  readonly actionFunctions: readonly ExerciseActionFunction[];
   readonly bodyRegions: readonly BodyRegion[];
   readonly assessmentSignalIds: readonly string[];
-  readonly requiredRangeIds: readonly string[];
+  /** @deprecated Planner authority uses rangeRequirements. */
+  readonly requiredRangeIds?: readonly string[];
+  readonly rangeRequirements?: readonly SessionRangeRequirement[];
   readonly painResponseRequirementIds: readonly string[];
   readonly required: boolean;
+}
+
+export interface SessionRangeRequirement {
+  readonly requirementId: string;
+  readonly sourceAssessmentSignalId: string;
+  readonly bodyRegion: BodyRegion;
+  readonly actionFunction?: ExerciseActionFunction;
+  readonly side?: Side;
+  readonly provenance: string;
+  readonly reviewStatus: ExerciseMechanicsReviewStatus | "unknown";
+  readonly explanation: string;
 }
 
 export interface SessionNeed {
@@ -82,10 +99,26 @@ export interface SessionNeed {
   readonly reasonCode: string;
   readonly explanation: string;
   readonly selection: ExerciseSelectionNeed;
+  readonly relevantPainResponseRequirementRefs?: readonly string[];
+  readonly plannerProvenance?: SessionNeedPlannerProvenance;
 }
 
-export type SessionKind =
-  | "ordinary_training"
+export interface SessionNeedPlannerProvenance {
+  readonly objectiveIds: readonly string[];
+  readonly owner: string;
+  readonly transformationRuleId: string;
+  readonly sourceEvidenceRefs: readonly string[];
+  readonly assessmentSignalRefs: readonly string[];
+  readonly dependencyRefs: readonly string[];
+  readonly mergeHistory: readonly string[];
+  readonly priorityOrigin: string;
+  readonly sectionRoleMappingOrigin: string;
+  readonly standaloneAdmissionOrigin: string;
+  readonly unknowns: readonly string[];
+}
+
+export type SessionKind = "ordinary_training";
+export type LegacySessionKind =
   | "strength"
   | "hypertrophy"
   | "general_fitness"
@@ -103,6 +136,7 @@ export interface SessionContinuityIdentityEvidence {
   readonly equipmentLost: boolean;
   readonly explicitlyBlocked: boolean;
   readonly repeatedAdverseEvidence: boolean;
+  readonly sourceEvidenceRefs?: readonly string[];
 }
 
 export interface SessionContinuityEvidence {
@@ -120,6 +154,8 @@ export interface SessionIntent {
   readonly kind: SessionKind;
   readonly phaseIntent: PhaseIntent;
   readonly primaryGoal: TrainingGoal;
+  readonly outcomeGoal?: TrainingOutcomeGoal;
+  readonly programmingContextModes?: readonly ProgrammingContextMode[];
   readonly needs: readonly SessionNeed[];
   readonly structuralCapacity: StructuralCapacityMode;
   readonly availableMinutes: number;

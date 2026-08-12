@@ -30,3 +30,7 @@ The production matrix contains 16 named scenarios, 11 fixed-shell users, multipl
 | antiBloat | `c05d7643bceeb2710aed42891977d5ddf980b1badb7510b683e41c2362217cc9` |
 | productionSessionComposer | `29ada3407e6f22e4f5c05dd70954ce1c49c32bfbb0e904c6a08ef76a6240f14b` |
 | combinedSessionComposerKernel | `3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9` |
+
+## Planner Regression
+
+Real `SessionAllocationDirective -> Planner -> Candidate -> Composer -> SessionSkeleton` tests now prove the upstream adapter preserves athlete, outcome, phase, assessment, pain, safety, equipment, history, fatigue, and timestamp ownership. Existing direct-Composer fixtures remain byte-identical and the combined kernel fingerprint above is unchanged.

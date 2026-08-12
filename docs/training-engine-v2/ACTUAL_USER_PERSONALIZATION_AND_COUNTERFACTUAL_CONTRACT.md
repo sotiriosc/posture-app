@@ -67,3 +67,7 @@ Variety remains acceptance-contract-only: low variety may reinforce stable suppo
 The fixed-shell P0 cohort holds athlete, experience, phase, evaluation time, and unrelated context constant. One-variable direct calf, adductor, abductor, cuff, home knee-flexion, ankle-preparation, hinge-preparation, and single-leg-preparation requests each admit only their truthful P0 row. Removing the direct need removes that relevance. Loaded main hinge and loaded single-leg accessory requests do not admit the low-load rehearsal rows as strength substitutes. Shared full-gym hamstring outcomes are `JUSTIFIED_CONVERGENCE` when both legal rows express the same requested primary hamstring/knee-flexion truth.
 
 No cohort request receives all eight rows. Athlete IDs, labels, notes, coaching prose, and action metadata without a matching structured need remain behaviorally inert.
+
+## Session Planner Fixed Shell
+
+The Planner adds an 18-user fixed shell and a 10+ same-experience/equipment regression. Explicit allocation, outcome, structural capacity, high-confidence relevant assessment, direct priority, and active continuity have bounded receivers. Pain, current equipment, and execution requirements may preserve identical Planner needs while changing Candidate/Composer or future Prescription behavior. Missed sessions route to Week; no directive returns an allocation-required status. Convergence is accepted when the changed fact is irrelevant or owned by another layer.

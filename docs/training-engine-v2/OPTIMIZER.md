@@ -72,4 +72,4 @@ Knowledge breadth must not become longer workouts or redundant accumulation. Pre
 
 ## Non-Goals
 
-No Session Intent Planner, week composition, fallback chain, repair loop, final sequencing, or Prescription generation is implemented. Candidate Intelligence remains unchanged and session composition stays downstream.
+Session Intent Planner and Session Composer production kernels are implemented. Week composition, fallback chain, repair loop, final sequencing, and Prescription generation remain unimplemented. Candidate Intelligence remains unchanged. The Planner cannot allocate a week or select exercises, and Composer cannot infer missing needs or dose.

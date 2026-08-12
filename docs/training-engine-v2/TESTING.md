@@ -111,3 +111,7 @@ Tests should preserve enough pipeline context to identify whether a failure came
 # Role, Muscle, and Personalization Matrix (2026-08-12)
 
 Focused tests verify all 45 canonical contribution projections, the role/action corrections, the five knee-dominant rows, action hard requirements, all three muscle relationship requirements, goal authority diagnostics, and fixed-shell counterfactuals. Fingerprints are isolated for movement roles, actions, muscle migration, need requirements, personalization, role pools, unchanged pre-P0 phase/safety/response boundaries, the 37-row identity inventory, the eight admitted P0 rows, whole-body matrix, Knowledge compatibility, and graduation.
+
+# Session Intent Planner Validation (2026-08-12)
+
+Planner tests cover ontology and fact ownership, all nine objective mappings, allocation-required and Week-reallocation statuses, goal/context separation, assessment clustering/actions/typed range requirements, pain/safety/phase boundaries, availability provenance, anti-bloat, equivalent merge, active-need continuity, unresolved context, 18 fixed-shell users, 10+ same-experience/equipment users, real Planner-to-Candidate-to-Composer execution, 23 fingerprints, and 10,000 fixed-seed deterministic cases. Week allocation algorithms, dose, and final sequencing remain intentionally absent.

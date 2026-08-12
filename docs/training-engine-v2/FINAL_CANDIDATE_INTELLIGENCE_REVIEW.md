@@ -372,3 +372,7 @@ Candidate Intelligence graduates because the 45-row legal pools are truthful, de
 ## Subsequent Session Composer Milestones
 
 The design laboratory historically classified policy gaps as `TARGETED_DESIGN_DECISIONS_REQUIRED`. The owner then approved those policies and authorized the production kernel. Candidate Intelligence remains unchanged and continues to supply exact legal per-need evidence. Fixed `SessionIntent.slots` are no longer authoritative; normalized needs, production whole-session search, non-prescribed assignments, and explicit downstream handoffs are exported. Current classification is `SESSION_COMPOSER_PRODUCTION_KERNEL_READY_FOR_SESSION_INTENT_PLANNER`, without application wiring, Week Composer, dose generation, or final sequencing.
+
+## Subsequent Session Intent Planner Milestone
+
+The production Planner now supplies explicit needs from `SessionAllocationDirective`; Candidate Intelligence still receives one canonical goal source and unchanged selection, context, and evaluation facts. Candidate ranking, comprehensive review, catalog, and Knowledge fingerprints remain frozen. Planner ontology graduates as `SESSION_INTENT_PLANNER_READY_FOR_WEEK_COMPOSER_DESIGN`; unresolved real-user contexts retain explicit future owners rather than being guessed.

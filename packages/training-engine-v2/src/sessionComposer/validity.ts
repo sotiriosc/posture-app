@@ -143,7 +143,8 @@ export function dependencyTargetExerciseIds(input: {
   const contextualTargetActive =
     overlaps(input.dependency.assessmentSignalIds, input.intent.assessmentContextRefs) ||
     overlaps(input.dependency.painResponseRequirementIds, input.intent.painResponseContextRefs) ||
-    input.dependency.requiredRangeIds.length > 0;
+    (input.dependency.rangeRequirements?.length ?? 0) > 0 ||
+    (input.dependency.requiredRangeIds?.length ?? 0) > 0;
   if (!hasIdentityTarget && targets.size === 0 && contextualTargetActive) {
     for (const exerciseId of selectedExerciseIds) targets.add(exerciseId);
   }
