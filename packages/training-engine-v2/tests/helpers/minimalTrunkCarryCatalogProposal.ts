@@ -3843,8 +3843,8 @@ const REJECTED_LEGACY_POLICIES = [
 const IMPLEMENTATION_DEPENDENCIES = [
   "Project-owner approval of each selected exercise identity, role set, mechanics profile, stress mapping, prerequisites, and provenance artifact.",
   "Equipment-contract decisions for loaded_gait_space or safe_walkway, stable loaded standing space, cable anchor height, abdominal-crunch MachineId, support side, and minimum usable load are represented as contracts, with final exercise identity still pending owner curation.",
-  "Pain/stress owner review for loaded rotation, lateral trunk loading, loaded carry/locomotion, and sustained upper-limb support; no new tags should be added without a receiver.",
-  "Pain-stress vocabulary and receiver review for the exact seven concepts before any stress tags or pain-response requirements are added.",
+  "Pain-stress vocabulary and receiver review is documented in `TRUNK_CARRY_PAIN_STRESS_REVIEW.md` as `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY_FOR_OWNER_DECISION`; no new tags should be added without owner approval of source placement, side semantics, hard-authority scope, and provenance.",
+  "Project-owner decisions for loaded trunk rotation, lateral trunk loading, loaded gait, loaded march, neutral grip loading, and sustained upper-limb support before any stress tags or pain-response requirements are added.",
   "Prescription-contract support for structured load, side, hold purpose, distance, trips, steps, turns, lever, support, gait standard, and per-side semantics is represented by `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`; final values remain owner-curated production metadata.",
   "Owner acceptance of single-candidate bootstrap limitations for trunk_flexion and trunk_rotation.",
   "A later production-metadata tranche with isolated validation and behavior-fingerprint review; this proposal does not authorize that implementation.",
@@ -4166,7 +4166,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     "`wall-supported-suitcase-march` remains provisional for owner curation. Structured support-side, load-side, steps/time, and stationary-gait prescription semantics now exist as a contract, but they do not approve this identity as production metadata.",
     "",
-    "The separate training-space and equipment dependency is classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. The structured dose, prescription, and same-exercise progression dependency is classified `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. Both add contracts and synthetic future requirements but no exercise. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. The overall exercise tranche remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`, and the next dependency is trunk/carry pain-stress vocabulary and receiver review.",
+    "The separate training-space and equipment dependency is classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. The structured dose, prescription, and same-exercise progression dependency is classified `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. The pain-stress vocabulary and receiver dependency is classified `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY_FOR_OWNER_DECISION`. These reviews add contracts and synthetic future requirements but no exercise, production stress tag, or production stress metadata. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. The overall exercise tranche remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`, and the next dependency is project-owner resolution of pain-stress decisions followed by exact seven-exercise curation.",
     "",
     "## Current Gap Statement",
     "",
@@ -4492,7 +4492,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     `**${data.classification}**`,
     "",
-    "The seven-candidate tranche is accepted directionally, and its equipment plus structured prescription dependencies are resolved as separate contracts. Production implementation remains blocked on trunk/carry pain-stress vocabulary and receiver review, followed by exact seven-exercise owner curation and production metadata. No exercise is implemented by this classification.",
+    "The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, and pain-stress vocabulary dependencies are resolved as separate proposal/contract reviews. Production implementation remains blocked on project-owner pain-stress decisions, followed by exact seven-exercise owner curation and production metadata. No exercise, tag, or stress metadata is implemented by this classification.",
     "",
   ].join("\n");
 }
