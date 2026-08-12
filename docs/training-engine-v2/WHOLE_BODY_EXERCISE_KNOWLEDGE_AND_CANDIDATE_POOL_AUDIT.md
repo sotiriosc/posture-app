@@ -1,0 +1,248 @@
+# Whole-Body Exercise Knowledge and Candidate-Pool Audit
+
+As of: 2026-08-12. Classification: **TARGETED_DOMAIN_AND_CATALOG_FIXES_REQUIRED_BEFORE_COMPOSITION**. Graduation: **NOT_READY_TARGETED_BLOCKERS**.
+
+Canonical source: `src/data/referenceExercises.ts#REFERENCE_EXERCISES`; 37 rows / 37 stable IDs. Production behavior changed: **false**.
+
+## Graduation Verdict
+
+The 37-row catalog is not ready for Session Composer. It can bootstrap gym-based strength and general fitness, preserve continuity, and provide useful trunk/carry coverage, but role impurity can falsely satisfy macro patterns, direct-versus-secondary ownership is not requestable, several first-class muscles have no primary candidate, and preparation/home pulling pools are materially incomplete.
+
+Smallest blocker set: role/action ownership contract, contributor-relationship contract, and owner-curated P0 rows. Session/Week composition, set-credit math, and automatic adaptation remain separate owners.
+
+## Authoritative Domain Findings
+
+- MovementRole: MovementRole is authoritative selection-purpose truth. Current use mixes macro patterns, trunk functions, and historical muscle/action proxies; training-role and section gates reduce but do not remove false pattern exposure.
+- Recommended model: **OPTION_D_HYBRID_MACRO_SELECTION_ROLES_PLUS_OPTIONAL_ACTION_FUNCTION_PROFILE**. Keep macro selection roles clean and add an optional action/function profile only for real receivers such as knee flexion, hip ab/adduction, and cuff control.
+- Muscle-only slots: Empty movement-role direct-muscle requests are legal and work for basic biceps, triceps, delt, and chest accessory selection, but current eligibility cannot require primary ownership or distinguish knee flexion, hip ab/adduction, or cuff action.
+- Primary versus secondary: Hard eligibility accepts either primary or secondary overlap. This is adequate only for any-meaningful-contributor needs; CandidateNeed needs an explicit contributor relationship before direct weak-point and Week composition.
+- Weekly exposure: Before Week Composer, add a reviewed contribution relationship of primary target, key secondary target, incidental contributor, stabilizer/contextual contributor, or unknown. Keep one exercise/set event singular and do not invent set-equivalence coefficients.
+- Leg Press may own knee-dominant strength but must not silently prove coordinated squat rehearsal. Lying Leg Curl and Glute Bridge must not prove hinge-pattern exposure.
+- One exercise remains one candidate and one exposure event even when it has several roles, muscles, mechanics, or stress descriptors.
+
+## Role Purity
+
+| Exercise | Classification | Macro truth | Section gate sufficient | Finding |
+| --- | --- | --- | --- | --- |
+| ninety-ninety-breathing | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| serratus-wall-slide | MECHANICALLY_RELATED_BUT_NOT_SLOT_TRUTH | false | false | Upward-rotation preparation is not loaded vertical pressing. |
+| dead-bug | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| push-up | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| dumbbell-bench-press | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| machine-chest-press | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| cable-chest-fly | MECHANICALLY_RELATED_BUT_NOT_SLOT_TRUTH | false | false | Chest isolation is not a horizontal pressing pattern exposure. |
+| chest-supported-dumbbell-row | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| one-arm-dumbbell-row | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| machine-row | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| seated-cable-row | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| band-row | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| dumbbell-shoulder-press | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| lat-pulldown | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| band-lat-pulldown | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| goblet-squat | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| leg-press | AMBIGUOUS_ROLE_SEMANTICS | true | false | It truthfully supplies knee-dominant strength but should not automatically count as coordinated squat-pattern practice. |
+| bodyweight-box-squat | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| dumbbell-romanian-deadlift | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| cable-pull-through | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| split-squat | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| step-up | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| lying-leg-curl | MECHANICALLY_RELATED_BUT_NOT_SLOT_TRUTH | false | false | Knee flexion trains hamstrings but does not rehearse or satisfy a hip hinge. |
+| glute-bridge | MECHANICALLY_RELATED_BUT_NOT_SLOT_TRUTH | false | false | Supine hip extension is useful glute work but not loaded hinge-pattern practice. |
+| dumbbell-lateral-raise | MUSCLE_ASSOCIATION_WRONG_OWNER | false | false | Shoulder abduction does not satisfy loaded vertical-press coverage. |
+| reverse-pec-deck | MECHANICALLY_RELATED_BUT_NOT_SLOT_TRUTH | false | false | Rear-delt/retraction work is not a horizontal pulling pattern exposure. |
+| band-face-pull | MECHANICALLY_RELATED_BUT_NOT_SLOT_TRUTH | false | false | Scapular/cuff preparation is not a horizontal pulling pattern exposure. |
+| dumbbell-curl | MUSCLE_ASSOCIATION_WRONG_OWNER | false | false | Elbow flexion/biceps work does not satisfy horizontal-pull pattern coverage. |
+| cable-triceps-pressdown | MUSCLE_ASSOCIATION_WRONG_OWNER | false | false | Elbow extension/triceps work does not satisfy horizontal-push pattern coverage. |
+| pallof-press | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| forearm-plank | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| forearm-side-plank | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| machine-abdominal-crunch | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| half-kneeling-high-to-low-cable-chop | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| farmer-carry | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| suitcase-carry | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+| wall-supported-suitcase-march | SELECTION_ROLE_TRUTHFUL | true | true | Current role is a defensible selection purpose at catalog scope. |
+
+## Muscle Taxonomy
+
+| Muscle | Primary | Secondary | Equipment | Roles | Loadability | Direct | Pool |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| chest | 4: push-up, dumbbell-bench-press, machine-chest-press, cable-chest-fly | 0: none | Bodyweight with floor space, Cable stack, Chest press machine, Dumbbells, Stable flat or adjustable bench | hypertrophy_accessory, primary_strength, secondary_strength | high, moderate | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| lats | 7: chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row, lat-pulldown, band-lat-pulldown | 0: none | Band with high anchor, Band with mid anchor, Cable stack, Dumbbells, Lat pulldown station, Row machine, Stable flat or adjustable bench | activation, hypertrophy_accessory, primary_strength, secondary_strength | high, limited | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| mid_back | 5: chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row | 4: lat-pulldown, band-lat-pulldown, dumbbell-romanian-deadlift, reverse-pec-deck | Band with mid anchor, Cable stack, Dumbbells, Row machine, Stable flat or adjustable bench | activation, hypertrophy_accessory, primary_strength, secondary_strength | high, limited | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| upper_back | 2: band-face-pull, farmer-carry | 4: serratus-wall-slide, dumbbell-lateral-raise, reverse-pec-deck, suitcase-carry | Band with mid anchor, Dumbbell pair and loaded gait space | activation, capacity, hypertrophy_accessory, secondary_strength | high, limited | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| front_delts | 1: dumbbell-shoulder-press | 6: push-up, dumbbell-bench-press, machine-chest-press, cable-chest-fly, forearm-plank, forearm-side-plank | Dumbbells | primary_strength, secondary_strength | high | false | COMPOUND_OR_NON_ACCESSORY_ONLY |
+| side_delts | 1: dumbbell-lateral-raise | 1: dumbbell-shoulder-press | Dumbbells | hypertrophy_accessory | moderate | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| rear_delts | 2: reverse-pec-deck, band-face-pull | 5: chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row | Band with mid anchor, Reverse pec deck | activation, hypertrophy_accessory | limited, moderate | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| biceps | 1: dumbbell-curl | 7: chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row, lat-pulldown, band-lat-pulldown | Dumbbells | hypertrophy_accessory | moderate | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| triceps | 3: push-up, dumbbell-shoulder-press, cable-triceps-pressdown | 2: dumbbell-bench-press, machine-chest-press | Bodyweight with floor space, Cable stack, Dumbbells | hypertrophy_accessory, primary_strength, secondary_strength | high, moderate | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| quads | 5: goblet-squat, leg-press, bodyweight-box-squat, split-squat, step-up | 3: farmer-carry, suitcase-carry, wall-supported-suitcase-march | Bodyweight with floor space, Box or stable chair, Box or step, Dumbbells, Leg press machine | activation, hypertrophy_accessory, preparation, primary_strength, secondary_strength | high, limited, moderate | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| hamstrings | 3: dumbbell-romanian-deadlift, cable-pull-through, lying-leg-curl | 5: leg-press, step-up, glute-bridge, farmer-carry, suitcase-carry | Cable stack, Dumbbells, Leg curl machine | activation, hypertrophy_accessory, primary_strength, secondary_strength | high, moderate | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| glutes | 8: goblet-squat, leg-press, bodyweight-box-squat, dumbbell-romanian-deadlift, cable-pull-through, split-squat, step-up, glute-bridge | 5: pallof-press, half-kneeling-high-to-low-cable-chop, farmer-carry, suitcase-carry, wall-supported-suitcase-march | Bodyweight with floor space, Box or stable chair, Box or step, Cable stack, Dumbbells, Leg press machine | activation, hypertrophy_accessory, preparation, primary_strength, secondary_strength | high, limited, moderate | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| calves | 0: none | 0: none | none | none | none | false | NOMINAL_ONLY_NO_PRIMARY |
+| trunk | 10: ninety-ninety-breathing, dead-bug, pallof-press, forearm-plank, forearm-side-plank, machine-abdominal-crunch, half-kneeling-high-to-low-cable-chop, farmer-carry, suitcase-carry, wall-supported-suitcase-march | 10: push-up, one-arm-dumbbell-row, dumbbell-shoulder-press, goblet-squat, bodyweight-box-squat, dumbbell-romanian-deadlift, cable-pull-through, split-squat, step-up, glute-bridge | Abdominal crunch machine, Bodyweight with floor space, Cable or mid-anchor tube band, Cable stack with high anchor, Dumbbell pair and loaded gait space, One dumbbell and loaded gait space, One dumbbell, wall, and stable standing space | activation, capacity, hypertrophy_accessory, preparation, recovery, secondary_strength | high, limited, moderate, none | true | MEANINGFUL_AT_LEAST_ONE_DIRECT |
+| serratus | 1: serratus-wall-slide | 4: ninety-ninety-breathing, push-up, forearm-plank, forearm-side-plank | Wall support | activation, preparation | limited | false | COMPOUND_OR_NON_ACCESSORY_ONLY |
+| rotator_cuff | 0: none | 2: serratus-wall-slide, band-face-pull | none | none | none | false | NOMINAL_ONLY_NO_PRIMARY |
+| hip_adductors | 0: none | 2: dead-bug, split-squat | none | none | none | false | NOMINAL_ONLY_NO_PRIMARY |
+| hip_abductors | 0: none | 1: forearm-side-plank | none | none | none | false | NOMINAL_ONLY_NO_PRIMARY |
+
+Taxonomy decisions:
+- Keep trunk as the approved umbrella.
+- Do not add chest-region or abdominal subdivisions until a programming receiver exists; use optional emphasis metadata if later approved.
+- Decide whether forearms/grip requires first-class target ownership before Week Composer; current stress/carry metadata is not developmental credit.
+- Defer hip flexors and spinal erectors as first-class MuscleGroup values until direct-volume or assessment receivers exist.
+- Calves, hip adductors, hip abductors, and rotator cuff already exist but need truthful primary candidates.
+
+## Complete 37-Row Audit
+
+| ID | Family | Movement roles | Training roles/sections | Primary / secondary | Equipment | Phase accepted/review | Support / path | Stress accepted | Progression axes/transitions | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ninety-ninety-breathing | breathing_reset | breathing_position, anti_extension_core | preparation, recovery / warmup, cooldown | trunk / serratus | bodyweight-floor | 1/1 | substantial / unknown | none | tempo, range / 1 | READY_WITH_NONBLOCKING_UNKNOWNS |
+| serratus-wall-slide | scapular_preparation | scapular_control, vertical_push | activation, preparation / warmup, activation | serratus / upper_back, rotator_cuff | wall-support | 2/0 | partial / unknown | none | range, tempo / 1 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| dead-bug | core_control | anti_extension_core | activation, hypertrophy_accessory / activation, accessory | trunk / hip_adductors | bodyweight-floor | 1/0 | substantial / unknown | long_lever_core | range, tempo, complexity / 2 | READY_WITH_NONBLOCKING_UNKNOWNS |
+| push-up | upper_push | horizontal_push, anti_extension_core | primary_strength, secondary_strength, hypertrophy_accessory / main, accessory | chest, triceps / front_delts, trunk, serratus | bodyweight-floor | 0/0 | substantial / unknown | long_lever_core | reps, sets, tempo, support_reduction / 2 | READY_WITH_NONBLOCKING_UNKNOWNS |
+| dumbbell-bench-press | upper_push | horizontal_push | primary_strength, secondary_strength / main, accessory | chest / triceps, front_delts | dumbbells, stable-bench | 0/0 | substantial / unknown | none | load, reps, sets, tempo / 2 | TARGETED_METADATA_CURATION_REQUIRED |
+| machine-chest-press | upper_push | horizontal_push | primary_strength, secondary_strength / main, accessory | chest / triceps, front_delts | machine-chest_press | 0/0 | substantial / unknown | none | load, reps, sets / 1 | TARGETED_METADATA_CURATION_REQUIRED |
+| cable-chest-fly | upper_push | horizontal_push | hypertrophy_accessory / accessory | chest / front_delts | cable-stack | 0/0 | unknown / unknown | none | reps, sets, tempo, range / 1 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| chest-supported-dumbbell-row | upper_pull | horizontal_pull | primary_strength, secondary_strength / main, accessory | mid_back, lats / rear_delts, biceps | dumbbells, stable-bench | 0/0 | substantial / free_implement | none | load, reps, sets, tempo / 1 | READY_AS_CURRENT_CANDIDATE |
+| one-arm-dumbbell-row | upper_pull | horizontal_pull | primary_strength, secondary_strength / main, accessory | mid_back, lats / rear_delts, biceps, trunk | dumbbells | 0/0 | partial / free_implement | none | load, reps, sets, tempo / 2 | READY_AS_CURRENT_CANDIDATE |
+| machine-row | upper_pull | horizontal_pull | primary_strength, secondary_strength / main, accessory | mid_back, lats / rear_delts, biceps | machine-row | 0/1 | substantial / machine_guided | none | load, reps, sets / 3 | READY_AS_CURRENT_CANDIDATE |
+| seated-cable-row | upper_pull | horizontal_pull | primary_strength, secondary_strength / main, accessory | mid_back, lats / biceps, rear_delts | cable-stack | 0/1 | substantial / cable_anchored | none | load, reps, sets / 2 | READY_AS_CURRENT_CANDIDATE |
+| band-row | upper_pull | horizontal_pull | activation, hypertrophy_accessory, secondary_strength / activation, accessory | mid_back, lats / biceps, rear_delts | anchored-band-mid | 0/0 | none / unknown | none | reps, sets, tempo / 1 | TARGETED_METADATA_CURATION_REQUIRED |
+| dumbbell-shoulder-press | upper_push | vertical_push | primary_strength, secondary_strength / main, accessory | front_delts, triceps / side_delts, trunk | dumbbells | 0/0 | none / unknown | heavy_axial_loading | load, reps, sets / 1 | TARGETED_METADATA_CURATION_REQUIRED |
+| lat-pulldown | upper_pull | vertical_pull | primary_strength, secondary_strength / main, accessory | lats / mid_back, biceps | machine-lat_pulldown | 0/0 | unknown / unknown | none | load, reps, sets / 1 | TARGETED_METADATA_CURATION_REQUIRED |
+| band-lat-pulldown | upper_pull | vertical_pull | activation, hypertrophy_accessory, secondary_strength / activation, accessory | lats / biceps, mid_back | anchored-band-high | 0/0 | unknown / unknown | none | reps, sets, tempo / 1 | TARGETED_METADATA_CURATION_REQUIRED |
+| goblet-squat | squat_pattern | squat | primary_strength, secondary_strength / main, accessory | quads, glutes / trunk | dumbbells | 1/0 | none / unknown | heavy_axial_loading | load, reps, range, sets / 2 | READY_WITH_NONBLOCKING_UNKNOWNS |
+| leg-press | squat_pattern | squat | primary_strength, secondary_strength / main, accessory | quads, glutes / hamstrings | machine-leg_press | 0/1 | substantial / unknown | none | load, reps, sets, range / 1 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| bodyweight-box-squat | squat_pattern | squat | preparation, activation, secondary_strength / warmup, activation, accessory | quads, glutes / trunk | bodyweight-floor, box | 0/0 | prescription_modifiable / unknown | none | range, reps, tempo / 1 | TARGETED_METADATA_CURATION_REQUIRED |
+| dumbbell-romanian-deadlift | hinge_pattern | hinge | primary_strength, secondary_strength / main, accessory | hamstrings, glutes / trunk, mid_back | dumbbells | 0/0 | none / unknown | loaded_hinge | load, reps, sets, range / 1 | READY_AS_CURRENT_CANDIDATE |
+| cable-pull-through | hinge_pattern | hinge | activation, secondary_strength, hypertrophy_accessory / activation, accessory | glutes, hamstrings / trunk | cable-stack | 1/2 | none / unknown | loaded_hinge | load, reps, range / 1 | TARGETED_METADATA_CURATION_REQUIRED |
+| split-squat | single_leg_pattern | single_leg, squat | secondary_strength, hypertrophy_accessory / main, accessory | quads, glutes / hip_adductors, trunk | bodyweight-floor | 1/0 | prescription_modifiable / unknown | none | load, reps, range, support_reduction / 1 | READY_WITH_NONBLOCKING_UNKNOWNS |
+| step-up | single_leg_pattern | single_leg, squat | secondary_strength, hypertrophy_accessory / accessory, activation | quads, glutes / hamstrings, trunk | bodyweight-floor, box | 0/0 | prescription_modifiable / unknown | none | load, range, reps / 2 | READY_WITH_NONBLOCKING_UNKNOWNS |
+| lying-leg-curl | glute_hamstring | hinge | hypertrophy_accessory / accessory | hamstrings / none | machine-leg_curl | 0/0 | unknown / unknown | none | load, reps, sets, tempo / 0 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| glute-bridge | glute_hamstring | hinge | activation, hypertrophy_accessory / activation, accessory | glutes / hamstrings, trunk | bodyweight-floor | 1/0 | unknown / unknown | none | load, reps, sets, tempo / 1 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| dumbbell-lateral-raise | delt_accessory | vertical_push | hypertrophy_accessory / accessory | side_delts / upper_back | dumbbells | 0/0 | unknown / unknown | none | reps, sets, tempo, load / 0 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| reverse-pec-deck | delt_accessory | horizontal_pull, scapular_control | hypertrophy_accessory, activation / activation, accessory | rear_delts / upper_back, mid_back | machine-reverse_pec_deck | 1/0 | substantial / unknown | none | load, reps, sets, tempo / 1 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| band-face-pull | scapular_preparation | horizontal_pull, scapular_control | activation, hypertrophy_accessory / activation, accessory | rear_delts, upper_back / rotator_cuff | anchored-band-mid | 1/0 | none / unknown | none | reps, sets, tempo / 2 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| dumbbell-curl | arm_accessory | horizontal_pull | hypertrophy_accessory / accessory | biceps / none | dumbbells | 0/0 | unknown / unknown | none | load, reps, sets, tempo / 0 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| cable-triceps-pressdown | arm_accessory | horizontal_push | hypertrophy_accessory / accessory | triceps / none | cable-stack | 0/0 | unknown / unknown | none | load, reps, sets, tempo / 0 | ROLE_OWNERSHIP_FIX_REQUIRED |
+| pallof-press | core_control | anti_rotation_core | activation, hypertrophy_accessory / activation, accessory | trunk / glutes | pallof-load | 1/1 | none / unknown | long_lever_core | load, reps, tempo, stability / 1 | READY_WITH_NONBLOCKING_UNKNOWNS |
+| forearm-plank | core_control | anti_extension_core | activation, hypertrophy_accessory / activation, accessory | trunk / serratus, front_delts | bodyweight-floor | 1/2 | prescription_modifiable / bodyweight | upper_limb_support_loading, long_lever_core | duration, lever, support_reduction, effort / 1 | READY_AS_CURRENT_CANDIDATE |
+| forearm-side-plank | core_control | anti_lateral_flexion_core | activation, hypertrophy_accessory / activation, accessory | trunk / serratus, front_delts, hip_abductors | bodyweight-floor | 1/2 | prescription_modifiable / bodyweight | upper_limb_support_loading, lateral_trunk_loading, long_lever_core | duration, lever, support_reduction, load, effort / 1 | READY_AS_CURRENT_CANDIDATE |
+| machine-abdominal-crunch | core_control | trunk_flexion | hypertrophy_accessory, secondary_strength / accessory | trunk / none | machine-abdominal_crunch | 0/2 | substantial / machine_guided | loaded_spinal_flexion | load, reps, sets, range, tempo / 0 | READY_AS_CURRENT_CANDIDATE |
+| half-kneeling-high-to-low-cable-chop | core_control | trunk_rotation | activation, hypertrophy_accessory, secondary_strength / activation, accessory | trunk / glutes | high-cable-stack | 1/2 | none / cable_anchored | loaded_trunk_rotation | load, reps, sets, range, tempo / 1 | READY_AS_CURRENT_CANDIDATE |
+| farmer-carry | carry_load | carry, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength / main, accessory | trunk, upper_back / glutes, quads, hamstrings | farmer-carry-equipment | 1/2 | none / free_implement | loaded_gait, grip_loading, grip_intensive, heavy_axial_loading | load, distance, trips, duration, effort / 1 | READY_AS_CURRENT_CANDIDATE |
+| suitcase-carry | carry_load | carry, anti_lateral_flexion_core, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength / main, accessory | trunk / upper_back, glutes, quads, hamstrings | suitcase-carry-equipment | 1/2 | none / free_implement | loaded_gait, grip_loading, lateral_trunk_loading, grip_intensive, heavy_axial_loading | load, distance, trips, duration, effort / 2 | READY_AS_CURRENT_CANDIDATE |
+| wall-supported-suitcase-march | carry_load | loaded_bracing | activation, capacity / activation, accessory | trunk / glutes, quads | wall-supported-suitcase-march-equipment | 1/2 | prescription_modifiable / free_implement | loaded_march, grip_loading | load, steps, duration, support_reduction, effort / 1 | READY_AS_CURRENT_CANDIDATE |
+
+Row status counts: READY_AS_CURRENT_CANDIDATE=12; READY_WITH_NONBLOCKING_UNKNOWNS=7; ROLE_OWNERSHIP_FIX_REQUIRED=10; TARGETED_METADATA_CURATION_REQUIRED=8.
+
+## Full-Gym Pool Summary
+
+| Archetype | Contexts | Production legal | Truthful legal | Excluded by audit | Primary | Secondary | Support | Path/load/runway | Phase accepted | Stress alternatives | Classification |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| horizontal-push | novice, advanced, strength, hypertrophy, phase_1, phase_3, continuity | push-up, dumbbell-bench-press, machine-chest-press | push-up, dumbbell-bench-press, machine-chest-press | none | none | none | push-up, dumbbell-bench-press, machine-chest-press / unsupported=none | unknown / high, moderate / broad, usable | none | dumbbell-bench-press, machine-chest-press | SUFFICIENT_BUT_METADATA_THIN |
+| vertical-push | beginner, advanced, strength, shoulder-context | dumbbell-shoulder-press | dumbbell-shoulder-press | none | none | none | none / unsupported=dumbbell-shoulder-press | unknown / high / usable | none | none | SINGLE_CANDIDATE_DEPENDENCY |
+| horizontal-pull | novice, advanced, strength, lumbar-context, grip-context | chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row | chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row | none | none | none | chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row / unsupported=band-row | cable_anchored, free_implement, machine_guided, unknown / high, limited / broad, usable | none | chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row | SUFFICIENT_AND_DISTINCT |
+| vertical-pull | beginner, advanced, strength, grip-context | lat-pulldown, band-lat-pulldown | lat-pulldown, band-lat-pulldown | none | none | none | none / unsupported=lat-pulldown, band-lat-pulldown | unknown / high, limited / usable | none | lat-pulldown, band-lat-pulldown | SUFFICIENT_BUT_METADATA_THIN |
+| knee-dominant | novice, advanced, strength, knee-context, phase_1 | goblet-squat, leg-press, bodyweight-box-squat, split-squat, step-up | goblet-squat, bodyweight-box-squat, split-squat, step-up | leg-press | none | none | bodyweight-box-squat, split-squat, step-up / unsupported=goblet-squat | unknown / limited, moderate / broad, usable | goblet-squat, split-squat | bodyweight-box-squat, split-squat, step-up | SUFFICIENT_AND_DISTINCT |
+| hip-dominant | beginner, advanced, strength, lumbar-context | dumbbell-romanian-deadlift, cable-pull-through | dumbbell-romanian-deadlift, cable-pull-through | none | none | none | none / unsupported=dumbbell-romanian-deadlift, cable-pull-through | unknown / high, moderate / broad, usable | cable-pull-through | none | SUFFICIENT_BUT_METADATA_THIN |
+| single-leg-loaded | general_fitness, hypertrophy, unilateral-response | split-squat | split-squat | none | none | none | split-squat / unsupported=none | unknown / moderate / broad | split-squat | split-squat | SINGLE_CANDIDATE_DEPENDENCY |
+| carry | conditioning, grip-context, limited-space | farmer-carry, suitcase-carry | farmer-carry, suitcase-carry | none | none | none | none / unsupported=farmer-carry, suitcase-carry | free_implement / high / broad | farmer-carry, suitcase-carry | none | THIN_BUT_USABLE |
+| loaded-bracing | strength, capacity, time-constrained | farmer-carry, suitcase-carry | farmer-carry, suitcase-carry | none | none | none | none / unsupported=farmer-carry, suitcase-carry | free_implement / high / broad | farmer-carry, suitcase-carry | none | THIN_BUT_USABLE |
+| direct-chest | hypertrophy, time-constrained | push-up, cable-chest-fly | push-up, cable-chest-fly | none | push-up, cable-chest-fly | none | push-up / unsupported=cable-chest-fly | unknown / moderate / broad | none | cable-chest-fly | SUFFICIENT_BUT_METADATA_THIN |
+| direct-lats | hypertrophy, grip-context | band-row, band-lat-pulldown | band-row, band-lat-pulldown | none | band-row, band-lat-pulldown | none | none / unsupported=band-row, band-lat-pulldown | unknown / limited / usable | none | band-row, band-lat-pulldown | SUFFICIENT_BUT_METADATA_THIN |
+| direct-mid-upper-back | hypertrophy, posture | band-row, band-lat-pulldown, dumbbell-lateral-raise, reverse-pec-deck, band-face-pull, farmer-carry, suitcase-carry | band-row, band-face-pull, farmer-carry | band-lat-pulldown, dumbbell-lateral-raise, reverse-pec-deck, suitcase-carry | band-row, band-face-pull, farmer-carry | none | none / unsupported=band-row, band-face-pull, farmer-carry | free_implement, unknown / high, limited / broad, usable | band-face-pull, farmer-carry | band-row, band-face-pull | SUFFICIENT_AND_DISTINCT |
+| direct-front-delts | hypertrophy, time-constrained | push-up, dumbbell-bench-press, machine-chest-press, dumbbell-shoulder-press | dumbbell-shoulder-press | push-up, dumbbell-bench-press, machine-chest-press | dumbbell-shoulder-press | none | none / unsupported=dumbbell-shoulder-press | unknown / high / usable | none | none | SINGLE_CANDIDATE_DEPENDENCY |
+| direct-side-delts | hypertrophy | dumbbell-lateral-raise | dumbbell-lateral-raise | none | dumbbell-lateral-raise | none | none / unsupported=dumbbell-lateral-raise | unknown / moderate / broad | none | dumbbell-lateral-raise | SINGLE_CANDIDATE_DEPENDENCY |
+| direct-rear-delts | hypertrophy, posture | band-row, reverse-pec-deck, band-face-pull | reverse-pec-deck, band-face-pull | band-row | reverse-pec-deck, band-face-pull | none | reverse-pec-deck / unsupported=band-face-pull | unknown / limited, moderate / broad, usable | reverse-pec-deck, band-face-pull | reverse-pec-deck, band-face-pull | SUFFICIENT_AND_DISTINCT |
+| direct-biceps | hypertrophy, weak-point | band-row, band-lat-pulldown, dumbbell-curl | dumbbell-curl | band-row, band-lat-pulldown | dumbbell-curl | none | none / unsupported=dumbbell-curl | unknown / moderate / broad | none | dumbbell-curl | SINGLE_CANDIDATE_DEPENDENCY |
+| direct-triceps | hypertrophy, weak-point | push-up, cable-triceps-pressdown | cable-triceps-pressdown | push-up | cable-triceps-pressdown | none | none / unsupported=cable-triceps-pressdown | unknown / moderate / broad | none | cable-triceps-pressdown | SINGLE_CANDIDATE_DEPENDENCY |
+| direct-quads | hypertrophy, knee-context | split-squat, step-up, farmer-carry, suitcase-carry | split-squat, step-up | farmer-carry, suitcase-carry | split-squat, step-up | none | split-squat, step-up / unsupported=none | unknown / moderate / broad, usable | split-squat | split-squat, step-up | SUFFICIENT_BUT_METADATA_THIN |
+| hamstring-knee-flexion | hypertrophy, home | cable-pull-through, step-up, lying-leg-curl, glute-bridge, farmer-carry, suitcase-carry | lying-leg-curl | cable-pull-through, step-up, glute-bridge, farmer-carry, suitcase-carry | lying-leg-curl | none | none / unsupported=lying-leg-curl | unknown / high / broad | none | lying-leg-curl | DOMAIN_MODEL_BLOCKS_TRUTHFUL_POOL |
+| direct-glutes | hypertrophy, lumbar-context | cable-pull-through, split-squat, step-up, glute-bridge, pallof-press, half-kneeling-high-to-low-cable-chop, farmer-carry, suitcase-carry | cable-pull-through, split-squat, step-up, glute-bridge | pallof-press, half-kneeling-high-to-low-cable-chop, farmer-carry, suitcase-carry | cable-pull-through, split-squat, step-up, glute-bridge | none | split-squat, step-up / unsupported=cable-pull-through, glute-bridge | unknown / moderate / broad, usable | cable-pull-through, split-squat, glute-bridge | split-squat, step-up, glute-bridge | SUFFICIENT_AND_DISTINCT |
+| direct-calves | hypertrophy, general_fitness | none | none | none | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+| direct-hip-abductors | hypertrophy, unilateral-response | forearm-side-plank | none | forearm-side-plank | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+| direct-hip-adductors | hypertrophy, unilateral-response | dead-bug, split-squat | none | dead-bug, split-squat | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+| direct-serratus | posture, shoulder-context | serratus-wall-slide, forearm-plank, forearm-side-plank | serratus-wall-slide | forearm-plank, forearm-side-plank | serratus-wall-slide | none | serratus-wall-slide / unsupported=none | unknown / limited / usable | serratus-wall-slide | serratus-wall-slide | SINGLE_CANDIDATE_DEPENDENCY |
+| direct-rotator-cuff | posture, shoulder-context | band-face-pull | none | band-face-pull | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+| trunk-anti-extension | general_fitness, lumbar-context | dead-bug, push-up, forearm-plank | dead-bug, forearm-plank | push-up | dead-bug, forearm-plank | none | dead-bug, forearm-plank / unsupported=none | bodyweight, unknown / limited / broad, usable | dead-bug, forearm-plank | none | SUFFICIENT_AND_DISTINCT |
+| trunk-anti-rotation | general_fitness, unilateral-response | pallof-press | pallof-press | none | pallof-press | none | none / unsupported=pallof-press | unknown / moderate / broad | pallof-press | none | SINGLE_CANDIDATE_DEPENDENCY |
+| trunk-anti-lateral | general_fitness, capacity | forearm-side-plank, suitcase-carry | forearm-side-plank, suitcase-carry | none | forearm-side-plank, suitcase-carry | none | forearm-side-plank / unsupported=suitcase-carry | bodyweight, free_implement / high, limited / broad | forearm-side-plank, suitcase-carry | none | SUFFICIENT_AND_DISTINCT |
+| trunk-flexion | hypertrophy, lumbar-context | machine-abdominal-crunch | machine-abdominal-crunch | none | machine-abdominal-crunch | none | machine-abdominal-crunch / unsupported=none | machine_guided / high / broad | none | none | SINGLE_CANDIDATE_DEPENDENCY |
+| trunk-rotation | general_fitness, lumbar-context | half-kneeling-high-to-low-cable-chop | half-kneeling-high-to-low-cable-chop | none | half-kneeling-high-to-low-cable-chop | none | none / unsupported=half-kneeling-high-to-low-cable-chop | cable_anchored / moderate / broad | half-kneeling-high-to-low-cable-chop | none | SINGLE_CANDIDATE_DEPENDENCY |
+| prep-breathing | phase_1, pain-aware-return | ninety-ninety-breathing | ninety-ninety-breathing | none | none | none | ninety-ninety-breathing / unsupported=none | unknown / none / usable | ninety-ninety-breathing | ninety-ninety-breathing | SINGLE_CANDIDATE_DEPENDENCY |
+| prep-mobility | range-limited, loaded-session | none | none | none | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+| prep-scapular | upper-session, shoulder-context | serratus-wall-slide | serratus-wall-slide | none | none | none | serratus-wall-slide / unsupported=none | unknown / limited / usable | serratus-wall-slide | serratus-wall-slide | SINGLE_CANDIDATE_DEPENDENCY |
+| prep-serratus | vertical-push-session | serratus-wall-slide | serratus-wall-slide | none | serratus-wall-slide | none | serratus-wall-slide / unsupported=none | unknown / limited / usable | serratus-wall-slide | serratus-wall-slide | SINGLE_CANDIDATE_DEPENDENCY |
+| prep-cuff | upper-session, shoulder-context | serratus-wall-slide, band-face-pull | none | serratus-wall-slide, band-face-pull | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+| prep-trunk | loaded-session, lumbar-context | dead-bug, pallof-press, forearm-plank | dead-bug, pallof-press, forearm-plank | none | dead-bug, pallof-press, forearm-plank | none | dead-bug, forearm-plank / unsupported=pallof-press | bodyweight, unknown / limited, moderate / broad, usable | dead-bug, pallof-press, forearm-plank | none | SUFFICIENT_AND_DISTINCT |
+| prep-glute-hip | lower-session, hinge-session | bodyweight-box-squat, cable-pull-through, glute-bridge, pallof-press, half-kneeling-high-to-low-cable-chop, wall-supported-suitcase-march | bodyweight-box-squat, cable-pull-through, glute-bridge, pallof-press, half-kneeling-high-to-low-cable-chop, wall-supported-suitcase-march | none | bodyweight-box-squat, cable-pull-through, glute-bridge | pallof-press, half-kneeling-high-to-low-cable-chop, wall-supported-suitcase-march | bodyweight-box-squat, wall-supported-suitcase-march / unsupported=cable-pull-through, glute-bridge, pallof-press, half-kneeling-high-to-low-cable-chop | cable_anchored, free_implement, unknown / limited, moderate / broad, usable | cable-pull-through, glute-bridge, pallof-press, half-kneeling-high-to-low-cable-chop, wall-supported-suitcase-march | bodyweight-box-squat, glute-bridge | SUFFICIENT_AND_DISTINCT |
+| prep-squat | squat-session, phase_1 | bodyweight-box-squat | bodyweight-box-squat | none | none | none | bodyweight-box-squat / unsupported=none | unknown / limited / usable | none | bodyweight-box-squat | SINGLE_CANDIDATE_DEPENDENCY |
+| prep-hinge | hinge-session, phase_1 | none | none | none | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+| prep-single-leg | single-leg-session, unilateral-response | none | none | none | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+| capacity-loaded-gait | conditioning, full-duration | farmer-carry, suitcase-carry | farmer-carry, suitcase-carry | none | none | none | none / unsupported=farmer-carry, suitcase-carry | free_implement / high / broad | farmer-carry, suitcase-carry | none | THIN_BUT_USABLE |
+| capacity-supported-march | limited-space, pain-aware-return | farmer-carry, suitcase-carry, wall-supported-suitcase-march | farmer-carry, suitcase-carry, wall-supported-suitcase-march | none | none | none | wall-supported-suitcase-march / unsupported=farmer-carry, suitcase-carry | free_implement / high, moderate / broad | farmer-carry, suitcase-carry, wall-supported-suitcase-march | none | SUFFICIENT_AND_DISTINCT |
+| recovery-down-regulation | recovery, full-duration | ninety-ninety-breathing | ninety-ninety-breathing | none | none | none | ninety-ninety-breathing / unsupported=none | unknown / none / usable | ninety-ninety-breathing | ninety-ninety-breathing | SINGLE_CANDIDATE_DEPENDENCY |
+| recovery-pattern-relevant | loaded-session, range-limited | none | none | none | none | none | none / unsupported=none | none / none / none | none | none | BOOTSTRAP_CANDIDATE_REQUIRED |
+
+The complete ten-environment legal/rejected matrix is generated in `WHOLE_BODY_CANDIDATE_POOL_MATRIX.md`. Counts are not the sufficiency rule: one excellent candidate can pass, while redundant rows or false roles cannot.
+
+## Whole-Body Readiness Answers
+
+1. Strength: gym bootstrap **yes**, environment-complete **no**; vertical press, home pulling, and role purity remain thin.
+2. Hypertrophy: **no** for complete direct development; calves/adductors/abductors/cuff have no primary row and home knee-flexion is absent.
+3. General fitness: **conditionally yes** in gym/dumbbell environments, with explicit omissions elsewhere.
+4. Posture/movement quality: **partly**; scapular/trunk work exists, but mobility and loaded-task preparation are too thin for non-generic selection.
+5. Pain-aware complete training: **conditionally yes in richer environments**. Stress matching and support alternatives work, but some pattern/environment combinations have a single dependency.
+6. Equipment environments: **no**. Bands without anchors, loop-only, and bodyweight cannot manufacture pulling; barbell/pull-up capabilities have little or no catalog use.
+7. Stable adaptive base: **yes for current productive rows**; progression axes and response history preserve KEEP -> PROGRESS -> REPLACE WHEN JUSTIFIED.
+8. Time constrained: **candidate value can be identified**, but coordination/removal belongs to Session Composer.
+9. Direct accessories contaminate compound coverage: **yes, ten rows require role ownership disposition**.
+10. Week muscle contribution: **no**; primary/secondary arrays are a useful base but insufficient for developmental credit.
+11. Smallest blockers: clean role truth, contributor relationship, and approved P0 tranche.
+12. Safe to wait: exact set-credit policy, composition ordering, P1/P2 variations, long-form Knowledge content, and longitudinal replacement logic.
+
+## Pain, Support, Progression, and Churn
+
+Safety/response regression fingerprint: `539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562`; stable-adaptive fingerprint: `58067eee7d9e34836e15150caf8be5de1ae4d896db43199f40583dd45020c72a`. Region alone creates no intolerance; explicit matched stress remains required; one adverse realization does not ban identity; tolerated re-exposure remains visible; explicit TrainingSafety gates execution downstream without rewriting diagnostic rank.
+
+Support is a necessary candidate distinction when it materially changes setup/task identity (for example chest-supported row versus unsupported row), a prescription variant when amount can change within identity (split squat, step-up, wall march), and not a reason to clone every support amount. Current row, machine, floor, wall, seated, standing, and box options are useful but uneven.
+
+Progression runway is strongest in loaded compounds and the reviewed trunk/carry tranche; preparation rows are intentionally bounded. Exercises with zero reviewed cross-exercise transitions remain usable through same-exercise axes. Transition observations never authorize replacement.
+
+Review classifications: loaded presses, rows, squats, hinges, and loaded carries can be `ANCHOR_CAPABLE` by role/context; direct arms/delts/trunk and machine isolation can be `STABLE_SUPPORTING_WORK` or `BOUNDED_ROTATION_ELIGIBLE`; preparation/recovery rows are usually `TEMPORARY_CONTEXTUAL_TOOL`. These labels are observational only.
+
+Redundancy clusters: four horizontal rows, three horizontal presses, two vertical pulldowns, and overlapping scapular/rear-delt accessories. Diversity is useful only where support, path, equipment, response, or loadability changes selection. Under time constraint, generic/redundant accessories leave before productive anchors; multi-tag exercises still receive one slot/event.
+
+## Source Consistency
+
+Source catalog fingerprint: `903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c`. Inventory report fingerprint: `834d3790fd8a6218fd1d2be00ffd947607099496426c2d89bf4736010a316d83`. Result: **PASS_REGENERATED_FROM_CANONICAL_SOURCE**.
+
+Stale current-source fields: none. Regeneration owner: `packages/training-engine-v2/tests/helpers/candidateIntelligenceReviewReport.ts`. Historical pre-activation laboratories remain historical rather than current production inventories.
+
+## Evidence Boundary
+
+- [ACSM_2026_POSITION_STAND](https://acsm.org/resistance-training-guidelines-update-2026/) (2026-08-12): Consistency, goal-specific prescription, and equipment-mode non-superiority context.
+- [KASSIANO_2022_VARIATION_REVIEW](https://pubmed.ncbi.nlm.nih.gov/35438660/) (2026-08-12): Systematic rather than random variation and avoidance of redundant exercise rotation.
+- [SCHOENFELD_2017_VOLUME_REVIEW](https://pubmed.ncbi.nlm.nih.gov/27433992/) (2026-08-12): Weekly-volume relevance only; no exercise-specific set credits inferred.
+- [BARBALHO_2019_MULTI_SINGLE_JOINT_REVIEW](https://pubmed.ncbi.nlm.nih.gov/31336594/) (2026-08-12): Supports preserving direct-versus-compound contribution as a review question; no coefficients adopted.
+- Proposed concepts: **EXTERNAL_REFERENCE_PENDING except for general programming principles; no proposed identity is owner-approved.**
+
+## Fingerprints
+
+| Contract | Fingerprint |
+| --- | --- |
+| catalogInventory | 834d3790fd8a6218fd1d2be00ffd947607099496426c2d89bf4736010a316d83 |
+| rolePurity | a2915bd4c70a473faa7d3859d506b53160d3606ecaab0f9aaabf7cfac804e4fd |
+| muscleTargetExposure | 09d99b9dcdc2c8c1db79543f8df7137cb3cc68d71e7a9f13386734fbec73daed |
+| candidatePoolMatrix | 300f1a87923b35e8ec7c823de81ae1e54be94ffce8a730449bf82bd834761bc9 |
+| equipmentModeCoverage | a71eaa38c43b15dbebf23906f7ba2b316913151f45e9612ab60b89c5467aca10 |
+| painAwareCoverage | 950c6d4b0d9724e433ada8e9c88c4cedbbe45a6a47d36210eac84f5ef940d87b |
+| progressionContinuity | 310b9068b0dab7b091ffbe1203e719037cee013b9573f2a9e02c8e3676ae53f5 |
+| minimalExpansionProposal | 6af656e496037cc1e177c0d706d7c7e71a1413dbc93b09efb32507a564f6b392 |
+| knowledgeCompatibility | 4ae9b04a475f5243b387932d1e24da70cdaa044260156a4c17b9a346106009cf |
+| combinedWholeBodyAudit | 56059dce8eea38552d34d732ba5025c0fb357dc2fd01564df34740db9642c98b |
+
+Production ranking: `f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c`. Comprehensive behavior: `3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f`. Contextual phase: `3eaf245600d09813bd2313d0cc3a079e29f1c7aa1c6ce01f4513f404dc203216`.
+
+No production row, role, muscle group, score, weight, phase annotation, workout length, composer, automatic transition, Knowledge Layer, Library, Coaching Rail, route, CMS, or UI changed.

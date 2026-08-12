@@ -158,8 +158,13 @@ function suitabilityDetails(record: object): string {
 function phaseSuitability(exercise: ExerciseDefinition): string {
   return THREE_PHASE_FOUNDATION
     .map((phaseEntry) => {
-      const suitability = exercise.phaseSuitability[phaseEntry.id];
-      return `${phaseEntry.id}:${suitability?.suitability ?? "unspecified"}`;
+      const annotations = (exercise.phaseSuitabilityAnnotations ?? []).filter(
+        (annotation) => annotation.phaseId === phaseEntry.id,
+      );
+      const accepted = annotations.filter((annotation) => annotation.reviewStatus === "accepted");
+      return accepted.length > 0
+        ? `${phaseEntry.id}:${accepted.map((annotation) => annotation.suitability).join("+")}`
+        : `${phaseEntry.id}:abstain`;
     })
     .join(", ");
 }
@@ -167,8 +172,15 @@ function phaseSuitability(exercise: ExerciseDefinition): string {
 function phaseSuitabilityDetails(exercise: ExerciseDefinition): string {
   return THREE_PHASE_FOUNDATION
     .map((phaseEntry) => {
-      const suitability = exercise.phaseSuitability[phaseEntry.id];
-      return `${phaseEntry.id}:${suitability?.suitability ?? "unspecified"}${suitability?.reason ? ` (${suitability.reason})` : ""}`;
+      const annotations = (exercise.phaseSuitabilityAnnotations ?? []).filter(
+        (annotation) => annotation.phaseId === phaseEntry.id,
+      );
+      if (annotations.length === 0) return `${phaseEntry.id}:NO_CONTEXTUAL_MATCH`;
+      return `${phaseEntry.id}:${annotations.map((annotation) => {
+        const roles = annotation.scope.trainingRoles?.join("+") ?? "all_roles";
+        const sections = annotation.scope.sessionSections?.join("+") ?? "all_sections";
+        return `${annotation.suitability}/${annotation.reviewStatus}[${roles};${sections}] (${annotation.reason})`;
+      }).join(" + ")}`;
     })
     .join("; ");
 }
@@ -1792,6 +1804,12 @@ function buildReferenceExerciseKnowledgeReviewMarkdown(): AuditBuildResult {
   const markdown = [
     "# Reference Exercise Knowledge Review",
     "",
+    "## Production Authority",
+    "",
+    "This report presents contextual phase annotations as current production truth. Accepted matching annotations contribute a bounded component; unknown, needs-review, no-match, conflict, and incomplete provenance abstain. Legacy global `phaseSuitability` categories and mechanical phase bonuses are retained only as migration/audit material and are not rendered as current phase evidence.",
+    "",
+    "The one canonical `REFERENCE_EXERCISES` catalog contains exactly 37 stable IDs. The future Knowledge Layer, Library, Coaching Rail, Session Composer, and Week Composer remain unimplemented.",
+    "",
     "Generated from `REFERENCE_EXERCISES` by `packages/training-engine-v2/tests/helpers/candidateIntelligenceReviewReport.ts`.",
     "",
     "Scope: audit/report only. This generation does not tune ranking weights, change exercise-science calibration, add Session Composer behavior, or alter engine behavior.",
@@ -2863,8 +2881,8 @@ export function writeCandidateIntelligenceReviewDocs(rootDir = process.cwd()): {
       : `${existingRankingReview}\n\n${generatedSection}`.trimStart();
 
   mkdirSync(docsDir, { recursive: true });
-  writeFileSync(referencePath, `${referenceReview.markdown}\n`);
-  writeFileSync(rankingPath, `${nextRankingReview}\n`);
+  writeFileSync(referencePath, `${referenceReview.markdown.trimEnd()}\n`);
+  writeFileSync(rankingPath, `${nextRankingReview.trimEnd()}\n`);
 
   return {
     referencePath,
