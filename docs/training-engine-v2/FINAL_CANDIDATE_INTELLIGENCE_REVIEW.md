@@ -1,5 +1,11 @@
 # Final Candidate Intelligence Readiness Review
 
+## Current Implementation Update
+
+The canonical catalog is now 37 rows after exactly seven owner-approved trunk/carry additions. Focused phase and structured-stress owner decisions are implemented with isolated before/after fingerprints. Contextual phase scoring remains explicit but non-default: it changed three winners without accepted phase evidence on each new winner, so legacy phase scoring remains production authority. No continuity winner changed, and unknown/no-match evidence remains omitted rather than treated as poor.
+
+Knowledge compatibility is documented only. Stable exercise IDs form the future Praxis Knowledge Layer adapter seam; Praxis Library, Knowledge Layer, Coaching Rail, second catalog, UI, CMS, routes, Session/Week Composer, and whole-body audit were not implemented. The exact next dependency is owner review of the three unexplained contextual-phase winner changes before the separately authorized whole-body audit.
+
 `ENGINE_V2_BLUEPRINT.md` is authoritative. This review is audit/evidence/classification only; it does not tune weights, change exercise metadata, create Session Composer, create Week Composer, or implement production prescription progression.
 
 ## Scope

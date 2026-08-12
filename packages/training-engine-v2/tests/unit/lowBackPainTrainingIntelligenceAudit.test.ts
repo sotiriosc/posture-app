@@ -92,11 +92,13 @@ describe("low-back pain training intelligence audit", () => {
     expect(LOW_BACK_EXTERNAL_EVIDENCE.every((source) => source.url.startsWith("https://"))).toBe(true);
   });
 
-  it("keeps the seven-row tranche blocked and permits only a review-only whole-body audit", () => {
-    expect(data.blockersBeforeSevenRows).toHaveLength(3);
+  it("records the implemented seven-row tranche and defers the whole-body audit", () => {
+    expect(data.blockersBeforeSevenRows).toEqual([
+      "None. Exactly seven owner-approved rows are implemented in the canonical production catalog.",
+    ]);
     expect(data.blockersBeforeWholeBodyAudit[0]).toContain("No technical blocker");
-    expect(data.exactNextDependency).toContain("final owner decisions");
-    expect(data.exactNextDependency).toContain("contextual phase proposals");
+    expect(data.exactNextDependency).toContain("three unexplained contextual-phase winner changes");
+    expect(data.exactNextDependency).toContain("legacy phase scoring authoritative");
   });
 
   it("records implemented safety/response fingerprints and phase consequences", () => {

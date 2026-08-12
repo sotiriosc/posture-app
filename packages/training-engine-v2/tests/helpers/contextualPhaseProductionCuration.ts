@@ -17,7 +17,7 @@ import {
 } from "./sevenExerciseTrunkCarryCuration";
 
 export const CONTEXTUAL_PHASE_PRODUCTION_CURATION_CLASSIFICATION =
-  "OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL";
+  "OWNER_DECISIONS_APPLIED_CONTEXTUAL_ACTIVATION_GATE_FAILED";
 
 export type PhaseCurationDecision =
   | "PROPOSE_ACCEPT"
@@ -54,16 +54,30 @@ function scopeLabel(row: PhaseAnnotationOwnershipAuditRow): string {
 }
 
 function currentDecision(row: PhaseAnnotationOwnershipAuditRow): PhaseCurationDecision {
-  if (row.reviewStatus === "needs_review") return "PROPOSE_ACCEPT";
-  if (row.evidenceOwnerClassification === "SECTION_SPECIFIC") {
-    return "KEEP_NEEDS_REVIEW";
-  }
-  if (
-    row.evidenceOwnerClassification === "AMBIGUOUS" ||
-    row.evidenceOwnerClassification === "ARBITRARY_OR_UNDERSPECIFIED"
-  ) {
-    return "KEEP_UNKNOWN";
-  }
+  const key = `${row.exerciseId}:${row.phaseId}`;
+  const accepted = new Set([
+    "ninety-ninety-breathing:phase_1",
+    "serratus-wall-slide:phase_1",
+    "serratus-wall-slide:phase_2",
+    "dead-bug:phase_1",
+    "cable-pull-through:phase_1",
+    "split-squat:phase_2",
+    "glute-bridge:phase_1",
+    "reverse-pec-deck:phase_1",
+    "band-face-pull:phase_1",
+    "pallof-press:phase_1",
+  ]);
+  const unknown = new Set([
+    "ninety-ninety-breathing:phase_2",
+    "machine-row:phase_3",
+    "seated-cable-row:phase_3",
+    "leg-press:phase_2",
+    "cable-pull-through:phase_3",
+    "pallof-press:phase_2",
+  ]);
+  if (accepted.has(key)) return "PROPOSE_ACCEPT";
+  if (key === "cable-pull-through:phase_2") return "KEEP_NEEDS_REVIEW";
+  if (unknown.has(key)) return "KEEP_UNKNOWN";
   return "REJECT_AS_WRONG_OWNER";
 }
 
@@ -81,7 +95,7 @@ function currentRow(row: PhaseAnnotationOwnershipAuditRow): ContextualPhaseCurat
     evidenceBasis: [
       `Existing catalog annotation: ${row.currentReason}`,
       `Context ownership audit: ${row.auditFinding}`,
-      "This remains a curation proposal until explicit owner approval supplies accepted provenance.",
+      "Final owner decisions are recorded in PHASE_AND_STRESS_OWNER_DECISIONS.md.",
     ],
     notGoalFit:
       "The proposal is limited to developmental phase use in the stated role/section; the enduring CandidateRequest.goal remains independent.",
@@ -95,7 +109,7 @@ function currentRow(row: PhaseAnnotationOwnershipAuditRow): ContextualPhaseCurat
       "Productive continuity remains independently owned and cannot be reread as phase suitability.",
     ownerDecisionConsequence:
       decision === "PROPOSE_ACCEPT"
-        ? "Approval may create an accepted contextual annotation with owner provenance; rejection omits phase evidence for this context."
+        ? "Implemented as an accepted contextual annotation with complete owner provenance."
         : decision === "REJECT_AS_WRONG_OWNER"
           ? "Remove the legacy phase claim when contextual policy activates and leave the fact with its dedicated owner."
           : "Keep the annotation non-scoring until an owner supplies a narrower truthful judgment or confirms unknown.",
@@ -131,7 +145,7 @@ const SEVEN_PHASE_PROPOSALS: readonly SevenProposal[] = [
   { exerciseId: "suitcase-carry", phaseId: "phase_1", role: "capacity", section: "accessory", suitability: "possible", decision: "KEEP_NEEDS_REVIEW", rationale: "Early asymmetric carry exposure needs reviewed prescription context and cannot be inferred from nominal difficulty." },
   { exerciseId: "suitcase-carry", phaseId: "phase_2", role: "capacity", section: "main", suitability: "good", decision: "PROPOSE_ACCEPT", rationale: "A capacity-role main exposure can directly serve Phase 2 loaded gait and trunk-capacity development." },
   { exerciseId: "suitcase-carry", phaseId: "phase_3", role: "capacity", section: "accessory", suitability: "possible", decision: "KEEP_UNKNOWN", rationale: "No independent Phase 3 preference is established beyond weekly capacity intent." },
-  { exerciseId: "wall-supported-suitcase-march", phaseId: "phase_1", role: "activation", section: "activation", suitability: "good", decision: "PROPOSE_ACCEPT", rationale: "Supported stationary activation can directly serve Phase 1 position and controlled load-transfer development." },
+  { exerciseId: "wall-supported-suitcase-march", phaseId: "phase_1", role: "activation", section: "activation", suitability: "good", decision: "PROPOSE_ACCEPT", rationale: "Supported loaded bracing and stationary marching can directly serve Phase 1 position-control development without claiming gait or load-transfer mechanics." },
   { exerciseId: "wall-supported-suitcase-march", phaseId: "phase_2", role: "capacity", section: "accessory", suitability: "possible", decision: "KEEP_NEEDS_REVIEW", rationale: "Capacity use is plausible, but support-force and load-transfer uncertainty remain." },
   { exerciseId: "wall-supported-suitcase-march", phaseId: "phase_3", role: "capacity", section: "accessory", suitability: "poor", decision: "KEEP_UNKNOWN", rationale: "A poor Phase 3 vote is not justified while capacity purpose and support realization remain contextual." },
 ];
@@ -153,7 +167,7 @@ function sevenRow(proposal: SevenProposal): ContextualPhaseCurationRow {
     evidenceBasis: [
       proposal.rationale,
       `Curated identity boundary: ${exercise.identity.exactIdentity}`,
-      "Proposal remains non-production until explicit owner approval and accepted provenance.",
+      "Final owner decision is recorded in PHASE_AND_STRESS_OWNER_DECISIONS.md.",
     ],
     notGoalFit: "The proposal is scoped to developmental role/section use and does not replace the enduring goal.",
     notLoadability: "Load remains prescription and loadability evidence rather than a hidden phase bonus.",
@@ -162,20 +176,14 @@ function sevenRow(proposal: SevenProposal): ContextualPhaseCurationRow {
     notContinuity: "Continuity remains independent and may retain the exercise across phases.",
     ownerDecisionConsequence:
       proposal.decision === "PROPOSE_ACCEPT"
-        ? "Approval creates a scoped accepted annotation; rejection leaves no phase component."
+        ? "Implemented as a scoped accepted contextual annotation."
         : proposal.decision === "REJECT_AS_WRONG_OWNER"
           ? "Do not create a contextual annotation for this rationale."
           : "Retain as non-scoring review or unknown evidence.",
   };
 }
 
-export const PHASE_OWNER_QUESTIONS = [
-  "Approve, narrow, or reject each of the 16 current PROPOSE_ACCEPT annotations?",
-  "Should the five section-specific legacy claims remain needs-review, or be removed until independent evidence exists?",
-  "Do any of the six ambiguous or underspecified claims have evidence strong enough to become scoped proposals?",
-  "Approve, narrow, or reject the seven-row Phase 1 activation and Phase 2 capacity proposals?",
-  "What reviewer identity, review date, and source reference should become accepted provenance after decisions?",
-] as const;
+export const PHASE_OWNER_QUESTIONS: readonly string[] = [];
 
 export interface ContextualPhaseProductionCurationData {
   readonly classification: typeof CONTEXTUAL_PHASE_PRODUCTION_CURATION_CLASSIFICATION;
@@ -236,7 +244,7 @@ export function renderContextualPhaseProductionCuration(
     "",
     `Selected owner policy: \`${data.selectedPolicy.policyId}\`. Category values are excellent ${data.selectedPolicy.categoryValues.excellent}, good ${data.selectedPolicy.categoryValues.good}, possible ${data.selectedPolicy.categoryValues.possible}, poor ${data.selectedPolicy.categoryValues.poor}; phase-family weight ${data.selectedPolicy.phaseFamilyWeight}.`,
     "",
-    "The policy is not active in production. Proposed annotations are not accepted annotations. Unknown, needs-review, no-match and conflict omit the component and its denominator weight; accepted poor remains a bounded 5.5 preference. The contextual scorer adds no skill/stability or loadability bonus and creates no replacement effect.",
+    "Owner-approved annotations are implemented, but the contextual policy is not active in production because three winner changes lacked accepted phase evidence on the new winner. Unknown, needs-review, no-match and conflict omit the component and its denominator weight; accepted poor remains a bounded 5.5 preference. The contextual scorer adds no skill/stability or loadability bonus and creates no replacement effect.",
     "",
     `Fingerprint: \`${data.fingerprint}\`.`,
     "",
@@ -249,7 +257,7 @@ export function renderContextualPhaseProductionCuration(
       data.currentRows.map((row) => [row.exerciseId, row.phaseId, row.scope, row.suitability, row.decision, row.independentPhaseRationale, row.ownerDecisionConsequence]),
     ),
     "",
-    "## Proposed-Accept Evidence Detail",
+    "## Accepted Evidence Detail",
     "",
     table(
       ["Exercise/phase", "Exact role/section", "Suitability", "Evidence basis", "Not goal", "Not loadability", "Not skill/stability", "Not runway", "Not continuity"],
@@ -266,9 +274,9 @@ export function renderContextualPhaseProductionCuration(
       ]),
     ),
     "",
-    "## Seven Proposed Exercises",
+    "## Seven Production Exercises",
     "",
-    "These are annotation proposals only. No exercise is added to the production catalog.",
+    "Exactly seven exercises are implemented once each in the canonical production catalog. Six scoped contextual phase annotations are accepted; remaining needs-review and unknown claims stay non-scoring, and the wrong-owner machine-crunch Phase 3 claim is omitted.",
     "",
     table(
       ["Exercise", "Phase", "Exact role/section", "Suitability", "Decision", "Independent rationale", "Owner consequence"],
@@ -277,7 +285,9 @@ export function renderContextualPhaseProductionCuration(
     "",
     "## Exact Owner Questions",
     "",
-    data.ownerQuestions.map((question) => `- ${question}`).join("\n"),
+    data.ownerQuestions.length === 0
+      ? "No owner questions remain in this focused curation. Contextual activation needs review of the three unexplained winner changes."
+      : data.ownerQuestions.map((question) => `- ${question}`).join("\n"),
     "",
   ].join("\n");
 }

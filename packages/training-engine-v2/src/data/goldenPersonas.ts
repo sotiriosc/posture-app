@@ -157,6 +157,7 @@ export const FULL_GYM_EQUIPMENT: EquipmentCapabilities = {
   },
   machines: {
     availableMachineIds: [
+      "abdominal_crunch",
       "chest_press",
       "row",
       "lat_pulldown",

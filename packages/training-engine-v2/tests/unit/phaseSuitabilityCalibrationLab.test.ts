@@ -30,7 +30,7 @@ describe("phase suitability calibration laboratory", () => {
     expect(data.productionFingerprintMatches).toBe(true);
     expect(data.phaseOnlySummaries).toHaveLength(30);
     expect(data.phaseCandidateMatrix).toHaveLength(75);
-    expect(data.phaseRejectionMatrix).toHaveLength(825);
+    expect(data.phaseRejectionMatrix).toHaveLength(1035);
   });
 
   it("records the exact current phase math, normalized weight and maximum effect", () => {
@@ -89,15 +89,15 @@ describe("phase suitability calibration laboratory", () => {
     ).toBe("UNUSED_SEMANTIC");
   });
 
-  it("audits all 30 phase annotation sets without inventing provenance", () => {
-    expect(data.catalogAudit).toHaveLength(30);
-    expect(new Set(data.catalogAudit.map((row) => row.exerciseId)).size).toBe(30);
+  it("audits all 37 phase annotation sets without inventing provenance", () => {
+    expect(data.catalogAudit).toHaveLength(37);
+    expect(new Set(data.catalogAudit.map((row) => row.exerciseId)).size).toBe(37);
     expect(data.catalogAudit.every((row) =>
       row.provenanceReviewStatus.includes("not modeled")
     )).toBe(true);
-    expect(data.catalogAudit.filter((row) => row.classification === "WELL_JUSTIFIED")).toHaveLength(20);
+    expect(data.catalogAudit.filter((row) => row.classification === "WELL_JUSTIFIED")).toHaveLength(26);
     expect(data.catalogAudit.filter((row) => row.classification === "PLAUSIBLE_NEEDS_REVIEW")).toHaveLength(8);
-    expect(data.catalogAudit.filter((row) => row.classification === "ARBITRARY_OR_UNDERSPECIFIED")).toHaveLength(2);
+    expect(data.catalogAudit.filter((row) => row.classification === "ARBITRARY_OR_UNDERSPECIFIED")).toHaveLength(3);
     expect(data.catalogAudit.filter((row) => row.classification === "CONTRADICTORY")).toEqual([]);
   });
 
@@ -197,10 +197,10 @@ describe("phase suitability calibration laboratory", () => {
         .every((row) => row.assessmentTraceCount === 1 && row.oneArmAssessmentFit === 6.39),
     ).toBe(true);
     const readinessByScenario = {
-      current_discomfort: "REQUIRES_PRESCRIPTION",
-      moderate_candidate_review: "REQUIRES_CANDIDATE_REVIEW",
-      moderate_prescription_required: "REQUIRES_PRESCRIPTION",
-      moderate_role_substitution: "REQUIRES_SESSION_ROLE_SUBSTITUTION",
+      current_discomfort: "EXECUTABLE_AT_CANDIDATE_SCOPE",
+      moderate_candidate_review: "EXECUTABLE_AT_CANDIDATE_SCOPE",
+      moderate_prescription_required: "EXECUTABLE_AT_CANDIDATE_SCOPE",
+      moderate_role_substitution: "EXECUTABLE_AT_CANDIDATE_SCOPE",
     } as const;
     for (const [scenario, readiness] of Object.entries(readinessByScenario)) {
       expect(
@@ -259,11 +259,11 @@ describe("phase suitability calibration laboratory", () => {
     });
   });
 
-  it("records carry as representable but currently unallocated", () => {
+  it("records production carry candidates without inventing allocation", () => {
     expect(data.carryAudit).toEqual(
       expect.objectContaining({
         movementRoleExists: true,
-        referenceCarryExerciseIds: [],
+        referenceCarryExerciseIds: ["farmer-carry", "suitcase-carry"],
         scenarioIdsRequestingCarry: [],
         sessionOrWeeklyAllocationExists: false,
       }),

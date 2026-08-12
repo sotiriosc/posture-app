@@ -38,7 +38,7 @@ describe("trunk/core domain and coverage review", () => {
   });
 
   it("audits every reference exercise exactly once", () => {
-    expect(data.snapshot.referenceExerciseCount).toBe(30);
+    expect(data.snapshot.referenceExerciseCount).toBe(37);
     expect(data.catalogRows).toHaveLength(REFERENCE_EXERCISES.length);
     expect(new Set(data.catalogRows.map((row) => row.exerciseId))).toEqual(
       new Set(REFERENCE_EXERCISES.map((exercise) => exercise.id)),
@@ -48,24 +48,35 @@ describe("trunk/core domain and coverage review", () => {
   it("reports the exact current dedicated and direct catalog coverage", () => {
     expect(data.snapshot).toEqual(
       expect.objectContaining({
-        dedicatedCoreControlCount: 2,
+        dedicatedCoreControlCount: 6,
         breathingResetCount: 1,
-        primaryTrunkCount: 3,
+        primaryTrunkCount: 10,
         secondaryTrunkCount: 10,
-        directDevelopmentalCount: 3,
+        directDevelopmentalCount: 10,
         meaningfulSecondaryCount: 8,
         incidentalBracingCount: 10,
         noCurrentTrunkEvidenceCount: 9,
-        trunkProfileCount: 3,
-        acceptedTrunkFunctionCount: 10,
-        unknownTrunkFunctionCount: 14,
+        trunkProfileCount: 10,
+        acceptedTrunkFunctionCount: 24,
+        unknownTrunkFunctionCount: 56,
       }),
     );
     expect(
       data.catalogRows
         .filter((row) => row.exposureClass === "DIRECT_DEVELOPMENTAL")
         .map((row) => row.exerciseId),
-    ).toEqual(["ninety-ninety-breathing", "dead-bug", "pallof-press"]);
+    ).toEqual([
+      "ninety-ninety-breathing",
+      "dead-bug",
+      "pallof-press",
+      "forearm-plank",
+      "forearm-side-plank",
+      "machine-abdominal-crunch",
+      "half-kneeling-high-to-low-cable-chop",
+      "farmer-carry",
+      "suitcase-carry",
+      "wall-supported-suitcase-march",
+    ]);
     expect(
       data.catalogRows
         .filter((row) => row.exposureClass === "MEANINGFUL_SECONDARY")
@@ -82,13 +93,13 @@ describe("trunk/core domain and coverage review", () => {
     ]);
   });
 
-  it("keeps carry and capacity absence explicit", () => {
-    expect(data.snapshot.carryRoleCount).toBe(0);
-    expect(data.snapshot.capacityTrainingRoleCount).toBe(0);
+  it("records the exact carry and capacity production coverage", () => {
+    expect(data.snapshot.carryRoleCount).toBe(2);
+    expect(data.snapshot.capacityTrainingRoleCount).toBe(3);
     expect(data.functionalCoverage.find((row) => row.function === "Loaded gait / carries"))
       .toEqual(
         expect.objectContaining({
-          currentExerciseSupport: "Zero carry exercises and zero capacity-role exercises",
+          currentExerciseSupport: "Farmer and suitcase carry plus three capacity-role exercises",
         }),
       );
   });

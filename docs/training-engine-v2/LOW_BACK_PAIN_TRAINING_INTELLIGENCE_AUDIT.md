@@ -10,7 +10,7 @@ Training Engine V2 consumes normalized training, response, restriction, and safe
 
 ## Readiness Answer
 
-Can Candidate Intelligence currently be described as ready to intelligently train around reported low-back pain? **No.** Its normalized safety boundary, response receiver, progression integration, side-aware history, re-exposure evidence, phase owner policy and focused stress curation now exist. Final contextual annotation approval, stress migration decisions, production row implementation, and future composer consumption remain incomplete.
+At candidate scope, the reviewed pain/stress, safety, response, support, and seven-row catalog contracts are implemented. Full-program low-back-aware training remains incomplete because Session/Week Composer and product adapter consumption are outside this task. Contextual phase scoring also remains legacy-authoritative after the new policy failed its semantic activation gate.
 
 ## Classification Summary
 
@@ -21,7 +21,7 @@ Can Candidate Intelligence currently be described as ready to intelligently trai
 | Symptom behavior and training tolerance | READY | TrainingResponseObservation records factual response, and the deterministic receiver now distinguishes exact, related, and identity-only applicability. Exact dose, range, load, support, and laterality remain owned by linked prescription/performance records; partial historical reports preserve unknown. | Observation, linkage and owner receiver policy implemented. It routes prescription review, progression readiness and continuity without candidate scoring or automatic action. |
 | Historical injury | READY | HistoricalInjury remains observational by doctrine and regression test. It creates no score, permanent avoidance, or mechanical intolerance. Current response observations can restore contextual relevance without altering the historical record, and successful re-exposure remains positive evidence rather than erasure. | Policy implemented as non-consumption in Candidate Intelligence. Explicit restrictions remain in HardContraindication; any future historical receiver must require separate current evidence and owner review. |
 | Side and distribution | READY | Response observations can record multiple descriptive region/side locations, while the ledger resolves realization side from linked prescriptions. Left-side evidence does not automatically apply to a right-side realization. Distribution remains descriptive and cannot create diagnosis or candidate illegality. | Observation/linkage ownership implemented. Future candidate or prescription policy must still decide when side-specific evidence requests review and must preserve unknown. |
-| Exercise stress knowledge | CATALOG_KNOWLEDGE_REQUIRED | Focused curation now proposes intrinsic loaded-hinge facts only for RDL and cable pull-through, rejects legacy flexion/extension as intrinsic, and keeps lever/row/heavy-load contexts realization-dependent. Production arrays remain unchanged pending owner decisions and equivalence tests. | Owner approval and behavior-equivalent structured/legacy migration remain required. Exposure metadata must never be interpreted as danger or pathology. |
+| Exercise stress knowledge | CATALOG_KNOWLEDGE_REQUIRED | Owner decisions are implemented: RDL and cable pull-through have intrinsic structured hinge exposure, false flexion/extension legacy facts are removed, and lever/row/heavy-load contexts remain potential until realization. | Owner approval and behavior-equivalent structured/legacy migration remain required. Exposure metadata must never be interpreted as danger or pathology. |
 | Support and prescription | TARGETED_CONTRACT_REQUIRED | The new support/stance schema and prescription side/support types can represent chest support, free standing, machine support, wall support, support amount, and load/support relationship. Candidate policy still defers prefer_support/increase_support without an authoritative selection-versus-prescription-versus-progression ownership rule. | Use support as a contextual candidate differentiator when requested, realize exact support in prescription, record temporary response, and reduce support only through earned progression. Never make support a permanent destination from region or history alone. |
 | Exercise coverage | CATALOG_KNOWLEDGE_REQUIRED | The current catalog can still provide presses, pulls, squats, hinges, single-leg, glute/hamstring, anti-extension, and anti-rotation options. It lacks production anti-lateral-flexion, controlled flexion, controlled rotation, loaded bracing, and carry/capacity rows, and supported alternatives are uneven across patterns. | Add only the reviewed minimal trunk/carry tranche after the listed blockers, then run the planned whole-body candidate-pool audit for supported/unsupported diversity and progression runway rather than creating a back-pain-only routine. |
 | Response-led progression | READY | The response receiver integrates exact current evidence with progression readiness: tolerated may permit review, limited holds, aggravated requests regression/review, and mixed/unknown remains insufficient. Later tolerated re-exposure removes permanent-failure pressure while preserving prior history. | Candidate Intelligence receiver policy implemented. It selects no axis, threshold, progression, regression, replacement or score; later composition remains responsible for any actual program change. |
@@ -55,15 +55,15 @@ A stress tag describes exposure, not pathology, harm, or contraindication. Scope
 
 | Stress | Current production rows | A-E classification | Finding |
 | --- | --- | --- | --- |
-| loaded_hinge | one-arm-dumbbell-row, dumbbell-romanian-deadlift, cable-pull-through | A for hinge identities; C for setup-dependent row variants | Scope must be curated per row; the tag is not globally intrinsic. |
-| loaded_spinal_flexion | one-arm-dumbbell-row, dumbbell-romanian-deadlift | C or E pending review | Do not infer loaded spinal flexion from a hinge or row name; actual range and variant matter. |
-| loaded_spinal_extension | dumbbell-shoulder-press, glute-bridge | B, C, or E pending review | Current legacy labels cannot distinguish intended task from avoidable compensation or range. |
+| loaded_hinge | dumbbell-romanian-deadlift, cable-pull-through | A for reviewed hinge identities; C for row variants | One-arm row hinge remains variant-dependent potential and cannot match until prescription realization. |
+| loaded_spinal_flexion | machine-abdominal-crunch | A for controlled crunch identity | False row/RDL legacy flexion was removed; controlled machine flexion is truthful exposure, not a danger label. |
+| loaded_spinal_extension | none | E for reviewed current identities | Possible compensation is not intrinsic intended exposure; false shoulder-press and bridge legacy facts were removed. |
 | heavy_axial_loading | none | D | Heavy is dose-created; exercise identity alone is insufficient. |
-| loaded_trunk_rotation | none | A plus B prescription context for the proposed chop | Controlled loaded rotation is exposure, not danger; range and load remain prescription facts. |
-| lateral_trunk_loading | none | A for suitcase carry; B for supported march | Support amount changes realized exposure and must remain observable. |
-| loaded_gait | none | A for walking carries | Requires actual gait-space and walking identity; stationary march must not inherit it. |
-| loaded_march | none | A for loaded march identity | Stationary stepping is distinct from loaded gait and distance carry. |
-| long_lever_core | dead-bug, push-up, pallof-press | C | Lever is variant/prescription dependent; current legacy arrays cannot express that scope. |
+| loaded_trunk_rotation | half-kneeling-high-to-low-cable-chop | A plus B prescription context | Controlled loaded rotation is exposure, not danger; range, side, load and tempo remain prescription facts. |
+| lateral_trunk_loading | forearm-side-plank, suitcase-carry | A for reviewed identities; B for supported march | Wall-march support amount keeps lateral exposure potential and needs-review. |
+| loaded_gait | farmer-carry, suitcase-carry | A for walking carries | Requires actual gait space; stationary march does not inherit it. |
+| loaded_march | wall-supported-suitcase-march | A for stationary loaded march | Stationary stepping remains distinct from loaded gait and distance carry. |
+| long_lever_core | none | C potential on dead bug, push-up and Pallof press | Legacy arrays were removed; variant or prescription realization owns the final exposure. |
 
 ## Support And Prescription
 
@@ -78,16 +78,16 @@ The implemented support/stance model can distinguish chest-supported and unsuppo
 | squat | goblet-squat, leg-press, bodyweight-box-squat, split-squat, step-up |
 | hinge | dumbbell-romanian-deadlift, cable-pull-through, lying-leg-curl, glute-bridge |
 | single-leg | split-squat, step-up |
-| trunk anti-extension | ninety-ninety-breathing, dead-bug, push-up |
+| trunk anti-extension | ninety-ninety-breathing, dead-bug, push-up, forearm-plank |
 | anti-rotation | pallof-press |
-| anti-lateral-flexion | none |
-| controlled flexion | none |
-| controlled rotation | none |
-| loaded bracing | none |
-| carries/capacity | none |
+| anti-lateral-flexion | forearm-side-plank, suitcase-carry |
+| controlled flexion | machine-abdominal-crunch |
+| controlled rotation | half-kneeling-high-to-low-cable-chop |
+| loaded bracing | farmer-carry, suitcase-carry, wall-supported-suitcase-march |
+| carries/capacity | farmer-carry, suitcase-carry |
 | upper-body pressing | serratus-wall-slide, push-up, dumbbell-bench-press, machine-chest-press, cable-chest-fly, dumbbell-shoulder-press, dumbbell-lateral-raise, cable-triceps-pressdown |
 
-The user can receive a conventional upper/lower or full-body strength, hypertrophy, or general-fitness pool where appropriate. The major gaps are not a lack of corrective drills; they are missing production options for anti-lateral flexion, controlled flexion/rotation, loaded bracing, carries, and uneven supported alternatives. The seven-row proposal addresses several of these gaps but remains blocked.
+The catalog now includes truthful production options for anti-lateral flexion, controlled flexion and rotation, loaded bracing, walking carries, and a stationary supported loaded march. They improve candidate diversity without creating a mandatory slot, workout-length policy, substitution, or progression behavior.
 
 ## Response-Led Progression
 
@@ -103,7 +103,7 @@ The regression matrix now proves region-only, severity-only, historical injury, 
 
 ## Phase Calibration Consequences
 
-These are non-production sensitivity results from the existing calibration laboratory. The owner selected the annotation-only low-churn shape with 8.8/7.8/6.2/5.5 and weight 1.0. Production remains legacy until accepted contextual curation is approved; continuity disruptions remain zero.
+Owner-approved contextual annotations and the annotation-only low-churn shape are implemented for dual-run inspection. Production remains legacy because three winner changes lacked accepted contextual phase evidence on the new winner; no continuity winner changed, unknown/no-match stays omitted, and the contextual scorer remains explicit and non-default.
 
 | Policy | Category spacing | Phase weight | Winner changes | Close-order changes | Continuity disruptions | Unknown evidence | Accepted poor | Representative Phase 1/2/3 effects |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -128,34 +128,32 @@ Low-back-sensitive programming must emerge from the whole program. The future wh
 
 These clinician-facing guidelines inform safety boundaries, exercise-program principles, and uncertainty only. They do not establish diagnosis logic, exercise-row stress truth, arbitrary pain thresholds, or medical treatment in Praxis. Guidance version and access date are recorded because recommendations can change.
 
-## Blockers Before Seven Production Rows
+## Seven Production Row Status
 
-- Final owner approval, narrowing, or rejection of the current and seven-row contextual phase proposals.
-- Final owner decisions for current-row flexion/extension removal, hinge acceptance, long-lever scope, row support/stance scope, and dose-created heavy axial authority.
-- Behavior-equivalent structured/legacy stress migration tests and isolated fingerprints when the seven production rows are implemented.
+- None. Exactly seven owner-approved rows are implemented in the canonical production catalog.
 
 ## Blockers Before Whole-Body Audit
 
 - No technical blocker prevents the separately requested review-only whole-body audit.
-- Owner sequencing still defers it until final phase/stress decisions and seven-row implementation; this task does not start that audit.
+- Review the three unexplained contextual-phase winner changes before authorizing the deferred whole-body audit; this task does not start that audit.
 
 ## Fingerprints
 
 | Artifact | Fingerprint | Behavior meaning |
 | --- | --- | --- |
-| Production ranking | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | Unchanged |
-| Comprehensive behavior | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | Unchanged |
-| Reference catalog | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | Intentionally changed by support/stance metadata migration |
-| Support/stance contract | 76b7aa7cc14c606e597bd4ac7f2759f88585ed9e49211bcf6a68e6b24ace0181 | Intentionally changed by implementation |
-| Contextual phase laboratory | b114b80cba21918c9292fc025686fec3fe82f79cc18477fb9a6a25f893060550 | Resolver/trace contract implementation |
+| Production ranking | 237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118 | Intentionally changed by approved catalog/stress truth |
+| Comprehensive behavior | 2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02 | Intentionally changed by approved catalog/stress truth |
+| Reference catalog | 649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6 | Intentionally changed by seven rows and focused migrations |
+| Support/stance contract | 6542bc249181f0e1a010323763a7e51505dee7ee87229c4c43b65e0d2cc2963f | Intentionally changed by implementation |
+| Contextual phase laboratory | c63fd8b986e0fd485d31525eaabeac102d769beaa6ec74e559167451bb341445 | Resolver/trace contract implementation |
 | Training safety | 0a0805117529073887fe7aca94a1bc2f097e53e1de14d320b1e37093a8825048 | Independent global readiness contract |
 | Training response | 33aec8bb8433d0bf27f63b3fe76e0c6349708e4da47608a5d6957687818453ec | Exposure-linked observation and ledger contract |
 | Response receiver | 26fe112e7c0fced67912e38e9118fed1808c973d74172d78af64f2ae4b6bb7d2 | Applicability, prescription-first routing, progression and continuity policy |
-| Stable-adaptive policy | 97e6bd7ecabbbaf899e364ed779855be8b825351e5bbdea8e0b9cc84b774b7d4 | Continuity doctrine and selected contextual phase policy |
-| Focused row stress curation | 00d77d57851e2b8fec361a06ae48de85d6506d1818f87c8f0c85351f18bd56d3 | Current low-back-relevant migration decisions |
+| Stable-adaptive policy | 9fef70fb01f26cc9adf356d73392a6382f2eae97ebb5e780d738a532e7dba760 | Continuity doctrine and selected contextual phase policy |
+| Focused row stress curation | 8fada7ea2f07b7ddedea8d181a6d862e2d4d654ec74aea763766445f5db0cfc7 | Current low-back-relevant migration decisions |
 | Safety/response combined | 539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562 | Training intelligence foundation |
-| Low-back audit | 6d6686d96883356bed7880d6586b9941823d5b98c8a8a51e89ca7b8963fa6845 | Deterministic review artifact |
+| Low-back audit | 7ea487c87a4c5630db973f281ffcb1c1c0abb189fa869c05306543cbe4cf8637 | Deterministic review artifact |
 
 ## Exact Next Dependency
 
-Obtain final owner decisions on the contextual phase proposals and focused stress migration questions, then implement the seven rows with isolated behavior-equivalence fingerprints; product safety adapter wiring remains a separate integration task.
+Review the three unexplained contextual-phase winner changes (two controlled scenarios and one golden persona); keep legacy phase scoring authoritative until a revised contextual policy passes the semantic gate.

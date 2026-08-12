@@ -256,12 +256,16 @@ describe("trunk/carry training-space and equipment contract", () => {
     ).toBe(true);
   });
 
-  it("adds carry_load as a type-only family without assigning it to current exercises", () => {
+  it("assigns carry_load only to the three approved production identities", () => {
     const futureFamily: ExerciseFamily = "carry_load";
     expect(futureFamily).toBe("carry_load");
     expect(
       REFERENCE_EXERCISES.filter((exercise) => exercise.family === "carry_load"),
-    ).toEqual([]);
+    ).toEqual([
+      expect.objectContaining({ id: "farmer-carry" }),
+      expect.objectContaining({ id: "suitcase-carry" }),
+      expect.objectContaining({ id: "wall-supported-suitcase-march" }),
+    ]);
   });
 
   it("defines the six settled identities and one provisional identity exactly", () => {
@@ -452,8 +456,8 @@ describe("trunk/carry training-space and equipment contract", () => {
   });
 
   it("preserves all current equipment legality and behavior fingerprints", () => {
-    expect(data.currentNewCapabilityRequirementCount).toBe(0);
-    expect(data.currentCarryFamilyCount).toBe(0);
+    expect(data.currentNewCapabilityRequirementCount).toBe(7);
+    expect(data.currentCarryFamilyCount).toBe(3);
     expect(data.equipmentLegalityMatches).toBe(true);
     expect(data.currentEquipmentLegalityFingerprint).toBe(
       CAPTURED_CURRENT_EQUIPMENT_LEGALITY_FINGERPRINT,

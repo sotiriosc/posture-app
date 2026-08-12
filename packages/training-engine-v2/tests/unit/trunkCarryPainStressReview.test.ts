@@ -365,23 +365,23 @@ describe("trunk/carry pain-stress vocabulary and receiver review", () => {
 
   it("preserves all current behavior fingerprints from the accepted contracts", () => {
     expect(data.behaviorFingerprints.productionRankingFingerprint).toBe(
-      "d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782",
+      "237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118",
     );
     expect(data.behaviorFingerprints.productionRankingMatches).toBe(true);
     expect(data.behaviorFingerprints.comprehensiveBehaviorFingerprint).toBe(
-      "216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9",
+      "2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02",
     );
     expect(data.behaviorFingerprints.comprehensiveBehaviorMatches).toBe(true);
     expect(data.behaviorFingerprints.referenceCatalogFingerprint).toBe(
-      "124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9",
+      "649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6",
     );
     expect(data.behaviorFingerprints.referenceCatalogMatches).toBe(true);
     expect(data.behaviorFingerprints.equipmentLegalityFingerprint).toBe(
-      "50881bd4cd735954dae1d9a8574165d5a6bff40d8af990c8324a21ba8436b8e6",
+      "5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869",
     );
     expect(data.behaviorFingerprints.equipmentLegalityMatches).toBe(true);
     expect(data.behaviorFingerprints.expandedEquipmentFixtureFingerprint).toBe(
-      "98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117",
+      "bb07188480cab4134ba4f2eb36dfa4f17e5d4d62d6139b539c5603ad602b482a",
     );
     expect(data.behaviorFingerprints.expandedEquipmentFixtureMatches).toBe(true);
   });

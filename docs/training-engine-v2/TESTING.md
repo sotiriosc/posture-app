@@ -56,6 +56,7 @@ Tests should remain small and readable at the component boundary. Current respon
 - structured prescription contract report and current-behavior fingerprints;
 - structured pain-stress exposure vocabulary, annotation validation, optional pain side preservation, potential-versus-realized traces, prescription stress exposure traces, and no ID/name/prose stress inference;
 - exact seven-exercise trunk/carry curation review, including recorded owner decisions, complete proposed contracts, provenance-bearing mechanics, explicit unknown/phase and support/stance blockers, no production rows, no mandatory carry policy, no loaded-gait wall march, no hard anti-lateral wall march, and unchanged behavior fingerprints;
+- knowledge-compatible seven-row production regression covering exactly 37 canonical rows, seven stable IDs, complete owner provenance, the three failed contextual activation cases, no continuity winner change, contextual omission semantics, intrinsic-versus-potential stress, truthful role/section pools, compact fallback coaching, no second catalog/UI/Knowledge dependency, and isolated before/after fingerprints;
 - support/stance mechanics contract review, including current support consumer audit, compositional schema recommendation, seven-exercise blocking gaps, no existing support/stance lie findings, and unchanged production behavior;
 - pipeline snapshots for bug localization.
 
@@ -91,6 +92,8 @@ Green build and test results are necessary but insufficient to begin Session Com
 Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
 
 The trunk/core domain contract does not make current exercises more specific by assertion. The response receiver, progression integration, engine safety boundary, selected non-default phase scorer, 90-row phase disposition, focused low-back stress curation, and seven-row response-sensitive support/stress proposals add no production exercise. Remaining dependencies before the seven rows are final owner approval of contextual annotations and stress migration decisions, then isolated structured/legacy compatibility fingerprints. Golden-product safety adapter work remains separately `PRODUCT_ADAPTER_PENDING` and does not make the normalized engine boundary incomplete.
+
+Current status supersedes the historical pre-implementation wording above: owner decisions and exactly seven rows are implemented, taking the canonical catalog from 30 to 37. The contextual scorer remains non-default after three unexplained winner changes. Full build, full unit suite, controlled scenarios, golden personas, continuity dual-run, structured stress migration, catalog validation, candidate-pool boundaries, and knowledge-compatibility fingerprints are required gates. Session/Week Composer and whole-body audit remain outside this suite.
 
 ## Bug Localization
 

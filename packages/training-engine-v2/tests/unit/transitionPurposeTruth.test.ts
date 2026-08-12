@@ -291,17 +291,17 @@ describe("transition purpose evidence truth", () => {
     const count = (status: (typeof findings)[number]["status"]) =>
       findings.filter((finding) => finding.status === status).length;
 
-    expect(traces).toHaveLength(36);
-    expect(findings).toHaveLength(118);
+    expect(traces).toHaveLength(43);
+    expect(findings).toHaveLength(130);
     expect({
       structurally_confirmed: count("structurally_confirmed"),
       contextual_intent: count("contextual_intent"),
       unknown_metadata: count("unknown_metadata"),
       contradicted: count("contradicted"),
     }).toEqual({
-      structurally_confirmed: 63,
-      contextual_intent: 40,
-      unknown_metadata: 15,
+      structurally_confirmed: 65,
+      contextual_intent: 47,
+      unknown_metadata: 18,
       contradicted: 0,
     });
   });

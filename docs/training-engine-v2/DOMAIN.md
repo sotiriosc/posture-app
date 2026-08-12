@@ -152,6 +152,10 @@ Pain-stress tags describe modeled training exposure, not diagnosis, tissue damag
 
 `ExerciseStressAnnotation` is a generic optional contract on `ExerciseDefinition`. It records source (`joint_stress | caution | contraindicated`), exposure scope (`intrinsic | prescription_modifiable | variant_dependent | dose_created | unknown`), side scope, review status, provenance, and notes. Accepted annotations require nonempty owner, human, or external provenance with evidence basis; legacy catalog arrays remain behaviorally authoritative and unscoped.
 
+The canonical catalog now contains 37 rows: the prior 30 plus exactly `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, `suitcase-carry`, and `wall-supported-suitcase-march`. Stable exercise IDs are the only future Praxis Knowledge Layer seam; no second catalog or Library ID exists. Focused stress migration removed false intrinsic row/RDL flexion and shoulder-press/bridge extension, moved long-lever claims to potential structured scope, and retained heavy axial loading as dose-created potential without an engine threshold.
+
+Owner-approved contextual annotations have complete provenance, but contextual scoring is not production authority: three dual-run winner changes lacked accepted phase evidence on the new winner. Unknown, needs-review, conflict, and no-match omit both component and denominator weight; legacy phase scoring remains authoritative.
+
 Candidate pain matching counts accepted intrinsic structured stress as canonical facts. Prescription-modifiable, variant-dependent, dose-created, and unknown stress stays potential evidence until a prescription realizes or removes it. Potential evidence can require prescription resolution when it matches a pain signal, but it does not create pain units, joint units, hard criteria, acute criteria, or a hidden risk score.
 
 Pain signals may preserve optional side. Missing side remains null, and tags remain side-neutral. Side compatibility belongs to prescription-realized stress evaluation.

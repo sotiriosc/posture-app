@@ -21,7 +21,7 @@ export const LOW_BACK_RELEVANT_STRESS_VOCABULARY = [
 ] as const satisfies readonly JointStressTag[];
 
 export const LOW_BACK_ROW_STRESS_CURATION_CLASSIFICATION =
-  "FOCUSED_CURATION_READY_FOR_OWNER_DECISION_PRODUCTION_UNCHANGED";
+  "FOCUSED_OWNER_DECISIONS_APPLIED_PRODUCTION_MIGRATED";
 
 export type StressCurationDecision =
   | "PROPOSE_ACCEPT_STRUCTURED"
@@ -213,7 +213,7 @@ function hash(value: unknown): string {
 
 export interface LowBackRelevantRowStressCurationData {
   readonly classification: typeof LOW_BACK_ROW_STRESS_CURATION_CLASSIFICATION;
-  readonly productionBehavior: "UNCHANGED";
+  readonly productionBehavior: "INTENTIONAL_STRESS_TRUTH_CORRECTIONS";
   readonly facts: readonly LowBackStressCurationFact[];
   readonly vocabularyWithoutCurrentAcceptedRow: readonly string[];
   readonly ownerQuestions: typeof LOW_BACK_STRESS_OWNER_QUESTIONS;
@@ -235,7 +235,7 @@ export function buildLowBackRelevantRowStressCurationData(): LowBackRelevantRowS
   );
   const payload = {
     classification: LOW_BACK_ROW_STRESS_CURATION_CLASSIFICATION as typeof LOW_BACK_ROW_STRESS_CURATION_CLASSIFICATION,
-    productionBehavior: "UNCHANGED" as const,
+    productionBehavior: "INTENTIONAL_STRESS_TRUTH_CORRECTIONS" as const,
     facts,
     vocabularyWithoutCurrentAcceptedRow,
     ownerQuestions: LOW_BACK_STRESS_OWNER_QUESTIONS,

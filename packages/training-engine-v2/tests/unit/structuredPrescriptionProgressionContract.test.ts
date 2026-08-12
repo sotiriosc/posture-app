@@ -48,9 +48,15 @@ const CURRENT_AXIS_VALUES = [
   "complexity",
 ] as const;
 
-const CURRENT_EXERCISE_AXIS_VALUES = CURRENT_AXIS_VALUES.filter(
-  (axis) => axis !== "coordination",
-);
+const CURRENT_EXERCISE_AXIS_VALUES = [
+  ...CURRENT_AXIS_VALUES.filter((axis) => axis !== "coordination"),
+  "duration",
+  "distance",
+  "trips",
+  "steps",
+  "lever",
+  "effort",
+] as const;
 
 function codes(findings: readonly { readonly code: string }[]): readonly string[] {
   return findings.map((finding) => finding.code);
@@ -120,7 +126,7 @@ function readyEvidence(
 }
 
 describe("structured prescription and same-exercise progression contract", () => {
-  it("uses one canonical progression-axis vocabulary without assigning new axes to current production exercises or phases", () => {
+  it("uses one canonical progression-axis vocabulary for production exercises and phases", () => {
     expect(PROGRESSION_AXES).toEqual([
       "load",
       "reps",
@@ -154,7 +160,7 @@ describe("structured prescription and same-exercise progression contract", () =>
     ).toBe(true);
   });
 
-  it("validates every synthetic trunk/carry fixture without creating production metadata", () => {
+  it("validates every trunk/carry fixture against its implemented production identity", () => {
     for (const prescription of STRUCTURED_TRUNK_CARRY_PRESCRIPTION_FIXTURES) {
       expect(
         validateStructuredPrescriptionContext({
@@ -169,7 +175,7 @@ describe("structured prescription and same-exercise progression contract", () =>
 
     expect(
       REFERENCE_EXERCISES.map((exercise) => exercise.id),
-    ).not.toEqual(
+    ).toEqual(
       expect.arrayContaining(
         STRUCTURED_TRUNK_CARRY_PRESCRIPTION_FIXTURES.map(
           (prescription) => prescription.exerciseId,

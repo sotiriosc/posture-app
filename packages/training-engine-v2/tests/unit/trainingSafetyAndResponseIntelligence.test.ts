@@ -320,11 +320,25 @@ describe("training safety and response intelligence foundation", () => {
       .toEqual([]);
   });
 
-  it("does not turn an aggravated RDL exposure into a permanent hard block", () => {
-    const request = scenario("lower-hinge-moderate-low-back-pain");
+  it("does not turn one adverse suitcase-carry realization into a permanent hard block", () => {
+    const base = scenario("horizontal-pull-gym-neutral");
+    const request: CandidateRequest = {
+      ...base,
+      id: "suitcase-response-ranking-neutrality",
+      need: {
+        ...base.need,
+        requestedRole: "capacity",
+        requestedSection: "main",
+        targetMovementRoles: ["carry"],
+        targetMuscles: ["trunk"],
+      },
+      candidatePool: REFERENCE_EXERCISES.filter((candidate) =>
+        candidate.id === "farmer-carry" || candidate.id === "suitcase-carry"
+      ),
+    };
     const baseline = runCandidateRankingLab(request);
-    const rdl = prescription({ id: "rdl-limited", exerciseId: "dumbbell-romanian-deadlift" });
-    const aggravated = response({ id: "rdl-aggravated", occurredAt: "2026-08-01T12:00:00.000Z", prescription: rdl, tolerance: "not_tolerated", symptomChange: "worsened" });
+    const suitcase = prescription({ id: "suitcase-limited", exerciseId: "suitcase-carry", side: "left" });
+    const aggravated = response({ id: "suitcase-aggravated", occurredAt: "2026-08-01T12:00:00.000Z", prescription: suitcase, tolerance: "not_tolerated", symptomChange: "worsened", side: "left", region: "lumbar_spine" });
     const withHistory = runCandidateRankingLab({
       ...request,
       history: {
@@ -339,11 +353,11 @@ describe("training safety and response intelligence foundation", () => {
       .toEqual(baseline.hardRejectedCandidates.map((item) => item.exercise.id));
   });
 
-  it("preserves later tolerated re-exposure and mixed history without thresholds", () => {
-    const first = prescription({ id: "rdl-first", exerciseId: "dumbbell-romanian-deadlift" });
-    const later = prescription({ id: "rdl-later", exerciseId: "dumbbell-romanian-deadlift" });
-    const limited = response({ id: "rdl-limited-first", occurredAt: "2026-08-01T12:00:00.000Z", prescription: first, tolerance: "limited", symptomChange: "worsened" });
-    const tolerated = response({ id: "rdl-tolerated-later", occurredAt: "2026-08-10T12:00:00.000Z", prescription: later, tolerance: "tolerated" });
+  it("preserves later tolerated suitcase re-exposure and mixed history without thresholds", () => {
+    const first = prescription({ id: "suitcase-first", exerciseId: "suitcase-carry", side: "left" });
+    const later = prescription({ id: "suitcase-later", exerciseId: "suitcase-carry", side: "left" });
+    const limited = response({ id: "suitcase-limited-first", occurredAt: "2026-08-01T12:00:00.000Z", prescription: first, tolerance: "limited", symptomChange: "worsened", side: "left" });
+    const tolerated = response({ id: "suitcase-tolerated-later", occurredAt: "2026-08-10T12:00:00.000Z", prescription: later, tolerance: "tolerated", side: "left" });
     const ledger = buildTrainingResponseLedger({
       history: { observations: [tolerated, limited] },
       asOf: AS_OF,
@@ -358,9 +372,9 @@ describe("training safety and response intelligence foundation", () => {
     expect(ledger.evidenceStatus).toBe("MIXED_OR_CONFLICTING_HISTORY");
   });
 
-  it("keeps support contexts and future unsupported re-exposure distinct", () => {
-    const unsupported = prescription({ id: "row-unsupported", exerciseId: "one-arm-dumbbell-row", support: "none" });
-    const supported = prescription({ id: "row-supported", exerciseId: "chest-supported-dumbbell-row", support: "partial" });
+  it("does not let tolerated wall-supported march prove unsupported carry tolerance", () => {
+    const unsupported = prescription({ id: "suitcase-unsupported", exerciseId: "suitcase-carry", support: "none", side: "left" });
+    const supported = prescription({ id: "wall-march-supported", exerciseId: "wall-supported-suitcase-march", support: "partial", side: "left" });
     const limited = response({ id: "unsupported-limited", occurredAt: "2026-08-01T12:00:00.000Z", prescription: unsupported, tolerance: "limited" });
     const tolerated = response({ id: "supported-tolerated", occurredAt: "2026-08-02T12:00:00.000Z", prescription: supported, tolerance: "tolerated" });
     const laterUnsupported = response({ id: "unsupported-later-tolerated", occurredAt: "2026-08-10T12:00:00.000Z", prescription: unsupported, tolerance: "tolerated" });
@@ -374,9 +388,9 @@ describe("training safety and response intelligence foundation", () => {
       .toBe(true);
   });
 
-  it("does not apply left-side response evidence to right-side realization", () => {
-    const left = prescription({ id: "unilateral-left", exerciseId: "one-arm-dumbbell-row", side: "left" });
-    const right = prescription({ id: "unilateral-right", exerciseId: "one-arm-dumbbell-row", side: "right" });
+  it("does not apply left-side suitcase response evidence to right-side realization", () => {
+    const left = prescription({ id: "suitcase-left", exerciseId: "suitcase-carry", side: "left" });
+    const right = prescription({ id: "suitcase-right", exerciseId: "suitcase-carry", side: "right" });
     const leftResponse = response({ id: "left-response", occurredAt: "2026-08-01T12:00:00.000Z", prescription: left, tolerance: "limited", region: "lumbar_spine", side: "left" });
     const history = { observations: [leftResponse] };
 

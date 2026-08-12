@@ -35,7 +35,7 @@ import { component } from "../../src/candidate/scoring/utils";
 
 export const PHASE_CALIBRATION_FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 export const EXPECTED_PRODUCTION_RANKING_FINGERPRINT =
-  "d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782";
+  "237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118";
 
 const PHASE_IDS: readonly PhaseId[] = ["phase_1", "phase_2", "phase_3"];
 const GOALS: readonly TrainingGoal[] = [
@@ -1098,6 +1098,13 @@ const PHASE_ANNOTATION_REVIEWS: Readonly<
   "dumbbell-curl": { classification: "PLAUSIBLE_NEEDS_REVIEW", reason: "Increasing accessory relevance is plausible, but phase rather than session/goal ownership is unclear." },
   "cable-triceps-pressdown": { classification: "PLAUSIBLE_NEEDS_REVIEW", reason: "Increasing accessory relevance is plausible, but phase rather than session/goal ownership is unclear." },
   "pallof-press": { classification: "PLAUSIBLE_NEEDS_REVIEW", reason: "Continued targeted trunk work is plausible, but good Phase 3 fit needs reviewed phase-specific rationale." },
+  "forearm-plank": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 1 activation is owner-approved; later global migration values are non-authoritative." },
+  "forearm-side-plank": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 1 lateral-control activation is owner-approved; later values remain non-scoring." },
+  "machine-abdominal-crunch": { classification: "ARBITRARY_OR_UNDERSPECIFIED", reason: "No contextual annotation is accepted; direct hypertrophy utility is not independent phase evidence." },
+  "half-kneeling-high-to-low-cable-chop": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 2 controlled-rotation capacity evidence is owner-approved." },
+  "farmer-carry": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 2 capacity-main evidence is owner-approved." },
+  "suitcase-carry": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 2 unilateral capacity-main evidence is owner-approved." },
+  "wall-supported-suitcase-march": { classification: "WELL_JUSTIFIED", reason: "Scoped Phase 1 supported loaded-bracing activation is owner-approved." },
 };
 
 function suitabilityList(values: ExerciseDefinition["sectionSuitability"]): string {
@@ -2110,7 +2117,7 @@ function buildCarryAudit(): CarrySupportAudit {
     scenarioIdsRequestingCarry,
     sessionOrWeeklyAllocationExists: false,
     finding:
-      "carry is representable as a MovementRole and in generic exposure maps, but the reference catalog, Candidate Intelligence scenarios and concrete session/week allocations contain no carry implementation.",
+      "Farmer and suitcase carries now provide canonical production candidates, while controlled scenarios and concrete session/week allocation remain intentionally unimplemented.",
   };
 }
 

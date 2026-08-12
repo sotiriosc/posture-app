@@ -11,7 +11,7 @@ import type { ScoreComponent } from "./scoringContracts";
 
 export const CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY = {
   policyId: "CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN",
-  activation: "NON_DEFAULT_PENDING_ACCEPTED_CONTEXTUAL_CURATION",
+  activation: "NON_DEFAULT_ACTIVATION_GATE_FAILED_UNEXPLAINED_WINNER_CHANGES",
   categoryValues: {
     excellent: 8.8,
     good: 7.8,

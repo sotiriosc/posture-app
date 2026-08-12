@@ -30,7 +30,7 @@ import {
 
 const FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 const EXPECTED_COMPREHENSIVE_CONTRACT_FINGERPRINT =
-  "216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9";
+  "2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02";
 const NEW_TRUNK_ROLES = [
   "anti_lateral_flexion_core",
   "trunk_flexion",
@@ -217,6 +217,7 @@ describe("trunk mechanics production domain contract", () => {
         ...base,
         id: `synthetic-${role.replaceAll("_", "-")}`,
         movementRoles: [role],
+        phaseSuitabilityAnnotations: [],
       };
       const validationErrors = validateExerciseDefinition(candidate).filter(
         (finding) => finding.severity === "error",
@@ -227,17 +228,32 @@ describe("trunk mechanics production domain contract", () => {
     }
   });
 
-  it("does not add new roles and limits reference profiles to the approved trio", () => {
+  it("adds new roles only to the approved production rows", () => {
     const newRoleSet = new Set<MovementRole>(NEW_TRUNK_ROLES);
 
     for (const candidate of REFERENCE_EXERCISES) {
-      expect(candidate.movementRoles.some((role) => newRoleSet.has(role))).toBe(false);
+      if (candidate.movementRoles.some((role) => newRoleSet.has(role))) {
+        expect(candidate.id).toEqual(expect.stringMatching(
+          /^(forearm-side-plank|machine-abdominal-crunch|half-kneeling-high-to-low-cable-chop|farmer-carry|suitcase-carry|wall-supported-suitcase-march)$/,
+        ));
+      }
     }
     expect(
       REFERENCE_EXERCISES.filter(
         (candidate) => candidate.mechanics?.trunkMechanics !== undefined,
       ).map((candidate) => candidate.id),
-    ).toEqual(["ninety-ninety-breathing", "dead-bug", "pallof-press"]);
+    ).toEqual([
+      "ninety-ninety-breathing",
+      "dead-bug",
+      "pallof-press",
+      "forearm-plank",
+      "forearm-side-plank",
+      "machine-abdominal-crunch",
+      "half-kneeling-high-to-low-cable-chop",
+      "farmer-carry",
+      "suitcase-carry",
+      "wall-supported-suitcase-march",
+    ]);
   });
 
   it("requires explicit role truth even when trunk mechanics expression is high", () => {

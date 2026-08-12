@@ -293,9 +293,9 @@ const CURRENT_EQUIPMENT_FIXTURES = {
 } as const;
 
 export const CAPTURED_CURRENT_EQUIPMENT_LEGALITY_FINGERPRINT =
-  "50881bd4cd735954dae1d9a8574165d5a6bff40d8af990c8324a21ba8436b8e6";
+  "5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869";
 export const CAPTURED_EXPANDED_EQUIPMENT_FIXTURE_FINGERPRINT =
-  "98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117";
+  "bb07188480cab4134ba4f2eb36dfa4f17e5d4d62d6139b539c5603ad602b482a";
 
 function sha256(value: unknown): string {
   return createHash("sha256").update(JSON.stringify(value)).digest("hex");

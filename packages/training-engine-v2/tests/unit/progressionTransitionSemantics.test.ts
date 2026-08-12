@@ -101,7 +101,7 @@ describe("progression versus exercise transition semantics", () => {
 
     expect(unresolvedTargets).toEqual([]);
     expect(Object.fromEntries([...classificationCounts].sort())).toEqual({
-      context_dependent: 20,
+      context_dependent: 27,
       developmental: 12,
       needs_review: 2,
       questionable: 2,

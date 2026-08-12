@@ -903,6 +903,14 @@ Stress tags describe modeled exposure, not bad posture, weak core, danger, damag
 
 Future catalog expansion must prefer the smallest coherent effective exposure over redundant accumulation. More exercise knowledge should improve fit and explainability, not lengthen workouts by default.
 
+### Praxis Knowledge Compatibility
+
+The future boundary is: **Engine makes decisions; Praxis Knowledge Layer stores reusable canonical educational knowledge; App presents concise contextual versions during training; Praxis Library presents deeper public education.** The invariant is **one fact, one canonical source, multiple presentations**. Neither the Knowledge Layer nor Praxis Library is implemented in Engine V2.
+
+Engine behavior remains complete without educational content. Stable `ExerciseDefinition.id` is the future adapter seam; a conceptual `resolveExerciseKnowledge({ exerciseId, context, reasonCodes?, mechanicsIds?, stressTags? })` may later enrich presentation without affecting eligibility, ranking, identity, stress matching, progression, support, phase, response, or validation. It must consume structured output and never parse prose. `coachingFocus` remains one or two compact immediate fallback cues, not the future canonical schema. Future Coaching Rail categories are `focus`, `cues`, `setup`, `during`, `pattern`, and `watchFor`; no schema, UI, route, CMS, second catalog, or competing cue ID is approved here. See `FUTURE_PRAXIS_KNOWLEDGE_LAYER_COMPATIBILITY.md`.
+
+Exactly seven trunk/carry rows are now implemented once each in `REFERENCE_EXERCISES`, taking the catalog from 30 to 37. They add candidate knowledge only: no Composer, mandatory carry, workout-length rule, automatic substitution, or automatic progression. The contextual phase scorer remains non-default after three unexplained winner changes failed the semantic activation gate; legacy phase scoring remains production authority.
+
 ## 22. Exercise Selection Intelligence
 
 Candidate evaluation should be inspectable.

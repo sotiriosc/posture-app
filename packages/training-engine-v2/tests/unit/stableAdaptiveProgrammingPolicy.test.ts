@@ -364,10 +364,10 @@ describe("stable adaptive programming and response receivers", () => {
     const phase = buildContextualPhaseProductionCurationData();
     expect(phase.currentRows).toHaveLength(90);
     expect(phase.currentCounts).toEqual({
-      PROPOSE_ACCEPT: 16,
-      KEEP_NEEDS_REVIEW: 5,
+      PROPOSE_ACCEPT: 10,
+      KEEP_NEEDS_REVIEW: 1,
       KEEP_UNKNOWN: 6,
-      REJECT_AS_WRONG_OWNER: 63,
+      REJECT_AS_WRONG_OWNER: 73,
     });
     expect(phase.sevenRows).toHaveLength(21);
     expect(readFileSync(join(
@@ -376,7 +376,7 @@ describe("stable adaptive programming and response receivers", () => {
     ), "utf8")).toBe(renderContextualPhaseProductionCuration(phase));
 
     const stress = buildLowBackRelevantRowStressCurationData();
-    expect(stress.productionBehavior).toBe("UNCHANGED");
+    expect(stress.productionBehavior).toBe("INTENTIONAL_STRESS_TRUTH_CORRECTIONS");
     expect(stress.facts.filter((fact) => fact.decision === "PROPOSE_ACCEPT_STRUCTURED"))
       .toHaveLength(2);
     expect(readFileSync(join(
@@ -392,13 +392,13 @@ describe("stable adaptive programming and response receivers", () => {
       "26fe112e7c0fced67912e38e9118fed1808c973d74172d78af64f2ae4b6bb7d2",
     );
     expect(data.policyFingerprint).toBe(
-      "97e6bd7ecabbbaf899e364ed779855be8b825351e5bbdea8e0b9cc84b774b7d4",
+      "9fef70fb01f26cc9adf356d73392a6382f2eae97ebb5e780d738a532e7dba760",
     );
     expect(data.stressFingerprint).toBe(
-      "00d77d57851e2b8fec361a06ae48de85d6506d1818f87c8f0c85351f18bd56d3",
+      "8fada7ea2f07b7ddedea8d181a6d862e2d4d654ec74aea763766445f5db0cfc7",
     );
     expect(data.combinedFingerprint).toBe(
-      "5b236d5a64acccafa79b34ea2c0025898f316a0856763d6c25772a78f7e48fe4",
+      "f680a0342256a07634157fadf1ba910baf5c0ca96e4d285bb828dca7e80fc617",
     );
   });
 

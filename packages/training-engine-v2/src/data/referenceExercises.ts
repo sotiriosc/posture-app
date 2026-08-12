@@ -5,6 +5,11 @@ import type {
   ExerciseDemandAnnotationLevel,
   ExerciseMechanicsProfile,
   ExerciseMechanicsReviewStatus,
+  ExercisePhaseAnnotationReviewStatus,
+  ExercisePhaseSuitabilityAnnotation,
+  ExerciseStressAnnotation,
+  ExerciseStressExposureScope,
+  ExerciseStressSideScope,
   ExerciseSuitability,
   ExerciseTransitionClassification,
   ExerciseTransitionDirection,
@@ -13,9 +18,12 @@ import type {
   ScapularMechanicsProfile,
   TrunkFunctionAnnotation,
   TrunkFunctionLevel,
+  TrunkMechanicsFunction,
   TrunkMechanicsProfile,
 } from "../domain/exercise";
-import type { SessionSection } from "../domain/session";
+import type { PhaseId } from "../domain/phase";
+import type { JointStressTag } from "../domain/primitives";
+import type { SessionSection, TrainingRole } from "../domain/session";
 
 const excellent = (reason: string): ExerciseSuitability => ({ suitability: "excellent", reason });
 const good = (reason: string): ExerciseSuitability => ({ suitability: "good", reason });
@@ -49,6 +57,30 @@ const cable: EquipmentRequirement = {
   id: "cable-stack",
   label: "Cable stack",
   allOf: ["cable_stack"],
+};
+
+const highCable: EquipmentRequirement = {
+  id: "high-cable-stack",
+  label: "Cable stack with high anchor",
+  allOf: ["cable_stack", "cable_anchor_high", "floor_space"],
+};
+
+const farmerCarryEquipment: EquipmentRequirement = {
+  id: "farmer-carry-equipment",
+  label: "Dumbbell pair and loaded gait space",
+  allOf: ["dumbbell_pair", "loaded_gait_space", "stable_loaded_standing_space"],
+};
+
+const suitcaseCarryEquipment: EquipmentRequirement = {
+  id: "suitcase-carry-equipment",
+  label: "One dumbbell and loaded gait space",
+  allOf: ["dumbbells", "loaded_gait_space", "stable_loaded_standing_space"],
+};
+
+const supportedMarchEquipment: EquipmentRequirement = {
+  id: "wall-supported-suitcase-march-equipment",
+  label: "One dumbbell, wall, and stable standing space",
+  allOf: ["dumbbells", "wall", "stable_loaded_standing_space"],
 };
 
 const machine = (id: MachineId, label: string): EquipmentRequirement => ({
@@ -96,6 +128,129 @@ function unknownDemand(notes = "Reference catalog has not explicitly reviewed th
 
 const TRUNK_MECHANICS_OWNER_DECISION_REF =
   "docs/training-engine-v2/TRUNK_MECHANICS_OWNER_DECISIONS.md#approved-first-tranche";
+const PHASE_OWNER_DECISION_REF =
+  "docs/training-engine-v2/PHASE_AND_STRESS_OWNER_DECISIONS.md#approved-current-contextual-phase-annotations";
+const SEVEN_PHASE_OWNER_DECISION_REF =
+  "docs/training-engine-v2/PHASE_AND_STRESS_OWNER_DECISIONS.md#approved-seven-row-contextual-phase-annotations";
+const STRESS_OWNER_DECISION_REF =
+  "docs/training-engine-v2/PHASE_AND_STRESS_OWNER_DECISIONS.md#approved-structured-stress-decisions";
+const OWNER_REVIEWED_AT = "2026-08-12T00:00:00-04:00";
+
+function ownerPhaseAnnotation(input: {
+  readonly annotationId: string;
+  readonly exerciseId: string;
+  readonly phaseId: PhaseId;
+  readonly suitability: ExerciseSuitability["suitability"];
+  readonly reason: string;
+  readonly reviewStatus: ExercisePhaseAnnotationReviewStatus;
+  readonly sourceRef?: string;
+  readonly trainingRoles?: readonly TrainingRole[];
+  readonly sessionSections?: readonly SessionSection[];
+  readonly legalUseCoverage?: {
+    readonly trainingRoles: readonly TrainingRole[];
+    readonly sessionSections: readonly SessionSection[];
+  };
+}): ExercisePhaseSuitabilityAnnotation {
+  return {
+    annotationId: input.annotationId,
+    exerciseId: input.exerciseId,
+    phaseId: input.phaseId,
+    suitability: input.suitability,
+    scope: {
+      ...(input.trainingRoles ? { trainingRoles: input.trainingRoles } : {}),
+      ...(input.sessionSections ? { sessionSections: input.sessionSections } : {}),
+    },
+    reason: input.reason,
+    reviewStatus: input.reviewStatus,
+    provenance: {
+      sourceType: "owner_decision",
+      sourceRef: input.sourceRef ?? PHASE_OWNER_DECISION_REF,
+      evidenceBasis: [
+        input.reason,
+        "Owner disposition applies the selected contextual phase policy to the reviewed role/section scope.",
+      ],
+      reviewerId: "sotiriosc",
+      reviewedAt: OWNER_REVIEWED_AT,
+      ...(input.legalUseCoverage
+        ? { legalUseCoverage: input.legalUseCoverage }
+        : {}),
+    },
+  };
+}
+
+function ownerStressAnnotation(input: {
+  readonly tag: JointStressTag;
+  readonly exposureScope: ExerciseStressExposureScope;
+  readonly sideScope: ExerciseStressSideScope;
+  readonly notes: string;
+  readonly reviewStatus?: ExerciseStressAnnotation["reviewStatus"];
+}): ExerciseStressAnnotation {
+  return {
+    tag: input.tag,
+    source: "joint_stress",
+    exposureScope: input.exposureScope,
+    sideScope: input.sideScope,
+    reviewStatus: input.reviewStatus ?? "accepted",
+    provenance: [
+      {
+        source: "owner_decision",
+        sourceRef: STRESS_OWNER_DECISION_REF,
+        evidenceBasis: [input.notes],
+      },
+    ],
+    notes: input.notes,
+  };
+}
+
+function reviewedSevenRowTrunkFunction(
+  level: Exclude<TrunkFunctionLevel, "unknown">,
+  evidenceBasis: readonly string[],
+  notes: string,
+): TrunkFunctionAnnotation {
+  return {
+    level,
+    reviewStatus: "accepted",
+    source: "human_exercise_science_review",
+    provenance: [
+      {
+        sourceRef: STRESS_OWNER_DECISION_REF,
+        evidenceBasis,
+      },
+    ],
+    notes,
+  };
+}
+
+function reviewedSevenRowTrunkMechanics(
+  input: Partial<Record<TrunkMechanicsFunction, {
+    readonly level: Exclude<TrunkFunctionLevel, "unknown">;
+    readonly notes: string;
+  }>>,
+): TrunkMechanicsProfile {
+  const value = (functionName: TrunkMechanicsFunction): TrunkFunctionAnnotation => {
+    const reviewed = input[functionName];
+    return reviewed
+      ? reviewedSevenRowTrunkFunction(
+          reviewed.level,
+          [reviewed.notes],
+          reviewed.notes,
+        )
+      : unknownTrunkFunction(
+          `${functionName} remains unknown for this production identity.`,
+        );
+  };
+
+  return {
+    breathingPressureCoordination: value("breathingPressureCoordination"),
+    antiExtensionContribution: value("antiExtensionContribution"),
+    antiRotationContribution: value("antiRotationContribution"),
+    antiLateralFlexionContribution: value("antiLateralFlexionContribution"),
+    controlledFlexionContribution: value("controlledFlexionContribution"),
+    controlledRotationContribution: value("controlledRotationContribution"),
+    loadedBracingContribution: value("loadedBracingContribution"),
+    gaitLoadTransferContribution: value("gaitLoadTransferContribution"),
+  };
+}
 
 function reviewedTrunkFunction(
   level: Exclude<TrunkFunctionLevel, "unknown">,
@@ -224,6 +379,28 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Useful when assessment priorities remain relevant."),
       phase_3: possible("Useful as targeted preparation, not a main stimulus."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "ninety-ninety-breathing-phase-1-owner-approved",
+        exerciseId: "ninety-ninety-breathing",
+        phaseId: "phase_1",
+        suitability: "excellent",
+        reason: "Directly serves Phase 1 position, control, and repeatable-technique development.",
+        reviewStatus: "accepted",
+        legalUseCoverage: {
+          trainingRoles: ["preparation", "recovery"],
+          sessionSections: ["warmup", "cooldown"],
+        },
+      }),
+      ownerPhaseAnnotation({
+        annotationId: "ninety-ninety-breathing-phase-2-owner-unknown",
+        exerciseId: "ninety-ninety-breathing",
+        phaseId: "phase_2",
+        suitability: "good",
+        reason: "No independent Phase 2 evidence is approved; assessment priority and preparation remain separate owners.",
+        reviewStatus: "unknown",
+      }),
+    ],
     loading: {
       loadability: "none",
       loadingPotential: "low",
@@ -354,6 +531,30 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Useful as preparation before higher loading."),
       phase_3: possible("Useful when shoulder control remains a priority."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "serratus-wall-slide-phase-1-owner-approved",
+        exerciseId: "serratus-wall-slide",
+        phaseId: "phase_1",
+        suitability: "excellent",
+        reason: "Directly serves Phase 1 scapular-position and control development.",
+        reviewStatus: "accepted",
+        legalUseCoverage: {
+          trainingRoles: ["activation", "preparation"],
+          sessionSections: ["warmup", "activation"],
+        },
+      }),
+      ownerPhaseAnnotation({
+        annotationId: "serratus-wall-slide-phase-2-warmup-owner-approved",
+        exerciseId: "serratus-wall-slide",
+        phaseId: "phase_2",
+        suitability: "good",
+        reason: "Supports preparation for progressively loaded upper-body training within the Phase 2 capacity context.",
+        reviewStatus: "accepted",
+        trainingRoles: ["preparation"],
+        sessionSections: ["warmup"],
+      }),
+    ],
     loading: {
       loadability: "limited",
       loadingPotential: "low",
@@ -436,6 +637,20 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Can progress with tempo or range."),
       phase_3: possible("Useful for targeted trunk control."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "dead-bug-phase-1-owner-approved",
+        exerciseId: "dead-bug",
+        phaseId: "phase_1",
+        suitability: "excellent",
+        reason: "Directly serves Phase 1 trunk-position and repeatable-control development.",
+        reviewStatus: "accepted",
+        legalUseCoverage: {
+          trainingRoles: ["activation", "hypertrophy_accessory"],
+          sessionSections: ["activation", "accessory"],
+        },
+      }),
+    ],
     loading: {
       loadability: "limited",
       loadingPotential: "low",
@@ -445,8 +660,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       localFatigue: "low",
       systemicFatigue: "low",
       axialLoading: "low",
-      jointStressTags: ["long_lever_core"],
+      jointStressTags: [],
     },
+    stressAnnotations: [
+      ownerStressAnnotation({
+        tag: "long_lever_core",
+        exposureScope: "variant_dependent",
+        sideScope: "side_neutral",
+        notes: "Long-lever exposure is potential only and requires a realized reviewed lever variant.",
+      }),
+    ],
     mechanics: mechanics({
       support: {
         basePosition: "supine",
@@ -542,7 +765,7 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         }),
       ],
     },
-    cautionStressTags: ["long_lever_core"],
+    cautionStressTags: [],
     contraindicatedStressTags: [],
     coachingFocus: ["Move limbs without losing spine position"],
   },
@@ -583,8 +806,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       localFatigue: "moderate",
       systemicFatigue: "low",
       axialLoading: "low",
-      jointStressTags: ["horizontal_pressing", "wrist_extension_loading", "long_lever_core"],
+      jointStressTags: ["horizontal_pressing", "wrist_extension_loading"],
     },
+    stressAnnotations: [
+      ownerStressAnnotation({
+        tag: "long_lever_core",
+        exposureScope: "variant_dependent",
+        sideScope: "side_neutral",
+        notes: "Long-lever trunk exposure depends on the realized support and lever variant.",
+      }),
+    ],
     mechanics: mechanics({
       support: {
         basePosition: "prone",
@@ -986,8 +1217,17 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       localFatigue: "moderate",
       systemicFatigue: "low",
       axialLoading: "moderate",
-      jointStressTags: ["loaded_hinge", "loaded_spinal_flexion", "grip_intensive"],
+      jointStressTags: ["grip_intensive"],
     },
+    stressAnnotations: [
+      ownerStressAnnotation({
+        tag: "loaded_hinge",
+        exposureScope: "variant_dependent",
+        sideScope: "prescription_side",
+        notes: "Hinge exposure requires exact unsupported support, stance, and prescription realization; supported rows do not inherit it.",
+        reviewStatus: "needs_review",
+      }),
+    ],
     mechanics: mechanics({
       support: {
         basePosition: "standing",
@@ -1064,7 +1304,7 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         }),
       ],
     },
-    cautionStressTags: ["loaded_hinge", "loaded_spinal_flexion", "grip_intensive"],
+    cautionStressTags: ["grip_intensive"],
     contraindicatedStressTags: [],
     coachingFocus: ["Support as needed", "Keep torso position steady"],
   },
@@ -1090,6 +1330,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: excellent("Clear load progression."),
       phase_3: good("Strong stimulus if the machine path fits the athlete."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "machine-row-phase-3-owner-unknown",
+        exerciseId: "machine-row",
+        phaseId: "phase_3",
+        suitability: "good",
+        reason: "No independent Phase 3 evidence is approved beyond machine path, loadability, and stimulus owners.",
+        reviewStatus: "unknown",
+      }),
+    ],
     loading: {
       loadability: "high",
       loadingPotential: "high",
@@ -1199,6 +1449,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: excellent("Progression-friendly."),
       phase_3: good("Useful when cable station is practical."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "seated-cable-row-phase-3-owner-unknown",
+        exerciseId: "seated-cable-row",
+        phaseId: "phase_3",
+        suitability: "good",
+        reason: "No independent Phase 3 evidence is approved beyond equipment, setup, and progression owners.",
+        reviewStatus: "unknown",
+      }),
+    ],
     loading: {
       loadability: "high",
       loadingPotential: "high",
@@ -1398,8 +1658,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       localFatigue: "moderate",
       systemicFatigue: "moderate",
       axialLoading: "moderate",
-      jointStressTags: ["overhead_pressing", "loaded_spinal_extension"],
+      jointStressTags: ["overhead_pressing"],
     },
+    stressAnnotations: [
+      ownerStressAnnotation({
+        tag: "heavy_axial_loading",
+        exposureScope: "dose_created",
+        sideScope: "bilateral_or_systemic",
+        notes: "Heavy axial exposure requires explicit reviewed realized-dose authority and is not implied by shoulder-press identity.",
+      }),
+    ],
     mechanics: mechanics({
       support: {
         basePosition: "standing",
@@ -1449,7 +1717,7 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         }),
       ],
     },
-    cautionStressTags: ["overhead_pressing", "loaded_spinal_extension"],
+    cautionStressTags: ["overhead_pressing"],
     contraindicatedStressTags: [],
     coachingFocus: ["Press in pain-free range", "Avoid leaning back"],
   },
@@ -1584,6 +1852,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["deep_knee_flexion", "loaded_knee_flexion"],
     },
+    stressAnnotations: [
+      ownerStressAnnotation({
+        tag: "heavy_axial_loading",
+        exposureScope: "dose_created",
+        sideScope: "bilateral_or_systemic",
+        notes: "Heavy axial exposure requires explicit reviewed realized-dose authority and is not implied by goblet-squat identity.",
+      }),
+    ],
     mechanics: mechanics({
       support: {
         basePosition: "standing",
@@ -1655,6 +1931,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: excellent("Useful capacity builder."),
       phase_3: excellent("High-stimulus lower-body option."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "leg-press-phase-2-owner-unknown",
+        exerciseId: "leg-press",
+        phaseId: "phase_2",
+        suitability: "excellent",
+        reason: "No independent Phase 2 evidence is approved beyond support, loadability, and stimulus owners.",
+        reviewStatus: "unknown",
+      }),
+    ],
     loading: {
       loadability: "high",
       loadingPotential: "high",
@@ -1813,8 +2099,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       localFatigue: "high",
       systemicFatigue: "moderate",
       axialLoading: "moderate",
-      jointStressTags: ["loaded_hinge", "loaded_spinal_flexion", "grip_intensive"],
+      jointStressTags: ["loaded_hinge", "grip_intensive"],
     },
+    stressAnnotations: [
+      ownerStressAnnotation({
+        tag: "loaded_hinge",
+        exposureScope: "intrinsic",
+        sideScope: "bilateral_or_systemic",
+        notes: "The Romanian deadlift identity intrinsically realizes a loaded hinge; magnitude and range remain prescription facts.",
+      }),
+    ],
     mechanics: mechanics({
       support: {
         basePosition: "standing",
@@ -1848,8 +2142,8 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         }),
       ],
     },
-    cautionStressTags: ["loaded_hinge", "loaded_spinal_flexion"],
-    contraindicatedStressTags: ["loaded_spinal_flexion"],
+    cautionStressTags: ["loaded_hinge"],
+    contraindicatedStressTags: [],
     coachingFocus: ["Hips back", "Keep load close", "Stop before spine position changes"],
   },
   {
@@ -1874,6 +2168,36 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Useful accessory or hinge regression."),
       phase_3: possible("May be too setup-limited for primary work."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "cable-pull-through-phase-1-activation-owner-approved",
+        exerciseId: "cable-pull-through",
+        phaseId: "phase_1",
+        suitability: "good",
+        reason: "Provides scoped hinge-pattern teaching and control exposure within Phase 1.",
+        reviewStatus: "accepted",
+        trainingRoles: ["activation"],
+        sessionSections: ["activation"],
+      }),
+      ownerPhaseAnnotation({
+        annotationId: "cable-pull-through-phase-2-accessory-owner-review",
+        exerciseId: "cable-pull-through",
+        phaseId: "phase_2",
+        suitability: "good",
+        reason: "Accessory/regression rationale is not yet independent of role, progression, and prescription ownership.",
+        reviewStatus: "needs_review",
+        trainingRoles: ["secondary_strength"],
+        sessionSections: ["accessory"],
+      }),
+      ownerPhaseAnnotation({
+        annotationId: "cable-pull-through-phase-3-owner-unknown",
+        exerciseId: "cable-pull-through",
+        phaseId: "phase_3",
+        suitability: "possible",
+        reason: "No narrower independent Phase 3 developmental evidence is approved.",
+        reviewStatus: "unknown",
+      }),
+    ],
     loading: {
       loadability: "moderate",
       loadingPotential: "moderate",
@@ -1885,6 +2209,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       axialLoading: "low",
       jointStressTags: ["loaded_hinge"],
     },
+    stressAnnotations: [
+      ownerStressAnnotation({
+        tag: "loaded_hinge",
+        exposureScope: "intrinsic",
+        sideScope: "bilateral_or_systemic",
+        notes: "The cable pull-through identity intrinsically realizes a loaded hinge; magnitude and range remain prescription facts.",
+      }),
+    ],
     mechanics: mechanics({
       support: {
         basePosition: "standing",
@@ -1944,6 +2276,20 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Progresses single-leg strength."),
       phase_3: excellent("Strong accessory stimulus."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "split-squat-phase-2-owner-approved",
+        exerciseId: "split-squat",
+        phaseId: "phase_2",
+        suitability: "good",
+        reason: "Directly contributes to Phase 2 single-leg strength and tissue and training-capacity development.",
+        reviewStatus: "accepted",
+        legalUseCoverage: {
+          trainingRoles: ["secondary_strength", "hypertrophy_accessory"],
+          sessionSections: ["main", "accessory"],
+        },
+      }),
+    ],
     loading: {
       loadability: "moderate",
       loadingPotential: "moderate",
@@ -2137,6 +2483,18 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Can progress with load or band."),
       phase_3: possible("May need stronger loading path."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "glute-bridge-phase-1-activation-owner-approved",
+        exerciseId: "glute-bridge",
+        phaseId: "phase_1",
+        suitability: "excellent",
+        reason: "Directly serves Phase 1 pelvic and glute-control development in activation use.",
+        reviewStatus: "accepted",
+        trainingRoles: ["activation"],
+        sessionSections: ["activation"],
+      }),
+    ],
     loading: {
       loadability: "moderate",
       loadingPotential: "moderate",
@@ -2146,7 +2504,7 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       localFatigue: "moderate",
       systemicFatigue: "low",
       axialLoading: "low",
-      jointStressTags: ["loaded_spinal_extension"],
+      jointStressTags: [],
     },
     progression: {
       progressionAxes: ["load", "reps", "sets", "tempo"],
@@ -2165,7 +2523,7 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         }),
       ],
     },
-    cautionStressTags: ["loaded_spinal_extension"],
+    cautionStressTags: [],
     contraindicatedStressTags: [],
     coachingFocus: ["Finish with glutes, not low back"],
   },
@@ -2231,6 +2589,18 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Useful upper-back accessory."),
       phase_3: excellent("High-value rear-delt accessory."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "reverse-pec-deck-phase-1-activation-owner-approved",
+        exerciseId: "reverse-pec-deck",
+        phaseId: "phase_1",
+        suitability: "good",
+        reason: "Provides scoped scapular and retraction-control activation within Phase 1.",
+        reviewStatus: "accepted",
+        trainingRoles: ["activation"],
+        sessionSections: ["activation"],
+      }),
+    ],
     loading: {
       loadability: "moderate",
       loadingPotential: "moderate",
@@ -2311,6 +2681,18 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Useful between pressing volume."),
       phase_3: possible("Accessory if loadability is enough."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "band-face-pull-phase-1-activation-owner-approved",
+        exerciseId: "band-face-pull",
+        phaseId: "phase_1",
+        suitability: "excellent",
+        reason: "Directly serves Phase 1 scapular-control and preparation development.",
+        reviewStatus: "accepted",
+        trainingRoles: ["activation"],
+        sessionSections: ["activation"],
+      }),
+    ],
     loading: {
       loadability: "limited",
       loadingPotential: "low",
@@ -2484,6 +2866,26 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       phase_2: good("Useful accessory and preparation."),
       phase_3: good("Can remain as targeted trunk work."),
     },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "pallof-press-phase-1-activation-owner-approved",
+        exerciseId: "pallof-press",
+        phaseId: "phase_1",
+        suitability: "excellent",
+        reason: "Directly serves Phase 1 anti-rotation and control development.",
+        reviewStatus: "accepted",
+        trainingRoles: ["activation"],
+        sessionSections: ["activation"],
+      }),
+      ownerPhaseAnnotation({
+        annotationId: "pallof-press-phase-2-owner-unknown",
+        exerciseId: "pallof-press",
+        phaseId: "phase_2",
+        suitability: "good",
+        reason: "No independent Phase 2 evidence is approved beyond requested need, progression, and continuity owners.",
+        reviewStatus: "unknown",
+      }),
+    ],
     loading: {
       loadability: "moderate",
       loadingPotential: "moderate",
@@ -2493,8 +2895,16 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
       localFatigue: "low",
       systemicFatigue: "low",
       axialLoading: "low",
-      jointStressTags: ["long_lever_core"],
+      jointStressTags: [],
     },
+    stressAnnotations: [
+      ownerStressAnnotation({
+        tag: "long_lever_core",
+        exposureScope: "prescription_modifiable",
+        sideScope: "side_neutral",
+        notes: "Long-lever exposure requires the realized press distance, stance, and prescription context.",
+      }),
+    ],
     mechanics: mechanics({
       support: {
         basePosition: "standing",
@@ -2577,9 +2987,701 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
         }),
       ],
     },
-    cautionStressTags: ["long_lever_core"],
+    cautionStressTags: [],
     contraindicatedStressTags: [],
     coachingFocus: ["Resist rotation", "Stay tall without rib flare"],
+  },
+  {
+    id: "forearm-plank",
+    name: "Forearm Plank",
+    summary: "Stationary forearm-supported anti-extension trunk exercise.",
+    family: "core_control",
+    movementRoles: ["anti_extension_core"],
+    trainingRoles: ["activation", "hypertrophy_accessory"],
+    primaryMuscles: ["trunk"],
+    secondaryMuscles: ["serratus", "front_delts"],
+    bodyRegions: ["shoulder", "ribcage", "lumbar_spine", "pelvis"],
+    equipmentRequirements: [bodyweight],
+    optionalEquipment: [],
+    prerequisites: [
+      {
+        id: "forearm-support-setup",
+        type: "required_setup_skill",
+        description: "Requires a stable forearm-supported floor setup.",
+      },
+    ],
+    sectionSuitability: sections({
+      activation: excellent("Direct anti-extension position-control exposure."),
+      accessory: good("Adds bounded trunk-control volume."),
+    }),
+    phaseSuitability: {
+      phase_1: good("Legacy migration value for early control work."),
+      phase_2: possible("Legacy migration value for accessory use."),
+      phase_3: possible("Legacy migration value pending contextual evidence."),
+    },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({
+        annotationId: "forearm-plank-phase-1-activation-owner-approved",
+        exerciseId: "forearm-plank",
+        phaseId: "phase_1",
+        suitability: "good",
+        reason: "Provides scoped anti-extension position and control development within Phase 1.",
+        reviewStatus: "accepted",
+        sourceRef: SEVEN_PHASE_OWNER_DECISION_REF,
+        trainingRoles: ["activation"],
+        sessionSections: ["activation"],
+      }),
+      ownerPhaseAnnotation({
+        annotationId: "forearm-plank-phase-2-accessory-owner-review",
+        exerciseId: "forearm-plank",
+        phaseId: "phase_2",
+        suitability: "possible",
+        reason: "Phase 2 accessory value remains insufficiently independent of capacity and progression owners.",
+        reviewStatus: "needs_review",
+        sourceRef: SEVEN_PHASE_OWNER_DECISION_REF,
+        trainingRoles: ["hypertrophy_accessory"],
+        sessionSections: ["accessory"],
+      }),
+      ownerPhaseAnnotation({
+        annotationId: "forearm-plank-phase-3-accessory-owner-unknown",
+        exerciseId: "forearm-plank",
+        phaseId: "phase_3",
+        suitability: "possible",
+        reason: "No independent Phase 3 developmental evidence is approved.",
+        reviewStatus: "unknown",
+        sourceRef: SEVEN_PHASE_OWNER_DECISION_REF,
+        trainingRoles: ["hypertrophy_accessory"],
+        sessionSections: ["accessory"],
+      }),
+    ],
+    loading: {
+      loadability: "limited",
+      loadingPotential: "moderate",
+      skillDemand: "low",
+      stabilityDemand: "moderate",
+      coordinationDemand: "low",
+      localFatigue: "moderate",
+      systemicFatigue: "low",
+      axialLoading: "low",
+      jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "prone",
+        stance: "bilateral",
+        orientation: "prone",
+        supportContacts: [
+          { bodyRegion: "forearm", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "prescription_modifiable",
+        supportRelationship: "bilateral",
+        reviewStatus: "accepted",
+        notes: "Forearm and foot support define the standard task; knee support is a same-identity prescription variant.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight",
+        trajectoryFreedom: "low",
+        lineOfPullAdjustability: "low",
+        laterality: "bilateral_linked",
+        fitDependency: "low",
+        reviewStatus: "accepted",
+        notes: "Bodyweight support path with prescription-realized lever.",
+        provenance: [STRESS_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("high", "Anti-extension position control is the direct task."),
+        scapular_control: demand("moderate", "Forearm support requires scapular support control."),
+        stability: demand("moderate", "Full-body support creates moderate stability demand."),
+        coordination: demand("low", "Stationary support has no locomotor path."),
+        range: demand("low", "The standard prescription is a static hold."),
+        joint_control: demand("moderate", "Upper-limb support tolerance remains relevant."),
+      },
+      trunkMechanics: reviewedSevenRowTrunkMechanics({
+        antiExtensionContribution: { level: "high", notes: "Straight-body forearm support directly expresses anti-extension control." },
+        loadedBracingContribution: { level: "none", notes: "The identity contains no external load or loaded transport." },
+      }),
+    }),
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "upper_limb_support_loading", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "Forearm support intrinsically loads the upper-limb support chain." }),
+      ownerStressAnnotation({ tag: "long_lever_core", exposureScope: "variant_dependent", sideScope: "side_neutral", notes: "Long-lever exposure requires a reviewed realized lever variant." }),
+    ],
+    progression: {
+      progressionAxes: ["duration", "lever", "support_reduction", "effort"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "dead-bug", direction: "lateral", classification: "context_dependent", purposes: ["movement_pattern_development", "change_resistance_path"], notes: "Supine and prone anti-extension contexts are related but not automatic substitutions.", provenance: [STRESS_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: [],
+    contraindicatedStressTags: [],
+    coachingFocus: ["Keep ribs and pelvis organized", "Press through the forearms"],
+  },
+  {
+    id: "forearm-side-plank",
+    name: "Forearm Side Plank",
+    summary: "Forearm-supported side plank for anti-lateral-flexion control.",
+    family: "core_control",
+    movementRoles: ["anti_lateral_flexion_core"],
+    trainingRoles: ["activation", "hypertrophy_accessory"],
+    primaryMuscles: ["trunk"],
+    secondaryMuscles: ["serratus", "front_delts", "hip_abductors"],
+    bodyRegions: ["shoulder", "ribcage", "lumbar_spine", "pelvis", "hip"],
+    equipmentRequirements: [bodyweight],
+    optionalEquipment: [],
+    prerequisites: [
+      {
+        id: "side-forearm-support-setup",
+        type: "required_setup_skill",
+        description: "Requires a stable side-oriented forearm support setup.",
+      },
+    ],
+    sectionSuitability: sections({
+      activation: excellent("Direct lateral-position control exposure."),
+      accessory: good("Adds bounded side-specific trunk work."),
+    }),
+    phaseSuitability: {
+      phase_1: good("Legacy migration value for early lateral control."),
+      phase_2: possible("Legacy migration value for accessory use."),
+      phase_3: possible("Legacy migration value pending contextual evidence."),
+    },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({ annotationId: "forearm-side-plank-phase-1-activation-owner-approved", exerciseId: "forearm-side-plank", phaseId: "phase_1", suitability: "good", reason: "Provides scoped lateral-position and control development within Phase 1.", reviewStatus: "accepted", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["activation"], sessionSections: ["activation"] }),
+      ownerPhaseAnnotation({ annotationId: "forearm-side-plank-phase-2-accessory-owner-review", exerciseId: "forearm-side-plank", phaseId: "phase_2", suitability: "possible", reason: "Phase 2 accessory value remains insufficiently independent of stability and progression owners.", reviewStatus: "needs_review", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["hypertrophy_accessory"], sessionSections: ["accessory"] }),
+      ownerPhaseAnnotation({ annotationId: "forearm-side-plank-phase-3-accessory-owner-unknown", exerciseId: "forearm-side-plank", phaseId: "phase_3", suitability: "possible", reason: "No independent Phase 3 developmental evidence is approved.", reviewStatus: "unknown", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["hypertrophy_accessory"], sessionSections: ["accessory"] }),
+    ],
+    loading: {
+      loadability: "limited",
+      loadingPotential: "moderate",
+      skillDemand: "low",
+      stabilityDemand: "moderate",
+      coordinationDemand: "low",
+      localFatigue: "moderate",
+      systemicFatigue: "low",
+      axialLoading: "low",
+      jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "side_support",
+        stance: "stacked_feet",
+        orientation: "lateral",
+        supportContacts: [
+          { bodyRegion: "forearm", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+        ],
+        supportAmount: "prescription_modifiable",
+        supportRelationship: "side_neutral",
+        reviewStatus: "accepted",
+        notes: "Forearm and foot support define the standard task; bent-knee support is a same-identity variant.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight",
+        trajectoryFreedom: "low",
+        lineOfPullAdjustability: "low",
+        laterality: "unilateral",
+        fitDependency: "low",
+        reviewStatus: "accepted",
+        notes: "Side and lever are prescription-realized facts.",
+        provenance: [STRESS_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("high", "Side support directly challenges anti-lateral control."),
+        scapular_control: demand("moderate", "The support shoulder requires control."),
+        stability: demand("moderate", "The lateral support base creates stability demand."),
+        coordination: demand("low", "The standard task is a static hold."),
+        range: demand("low", "The standard task uses a static support position."),
+        joint_control: demand("moderate", "Shoulder and hip support positions matter."),
+      },
+      trunkMechanics: reviewedSevenRowTrunkMechanics({
+        antiLateralFlexionContribution: { level: "high", notes: "Side forearm support directly expresses anti-lateral-flexion control." },
+        loadedBracingContribution: { level: "none", notes: "The identity contains no external load or loaded transport." },
+      }),
+    }),
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "upper_limb_support_loading", exposureScope: "intrinsic", sideScope: "prescription_side", notes: "The support side intrinsically loads the upper-limb support chain." }),
+      ownerStressAnnotation({ tag: "lateral_trunk_loading", exposureScope: "intrinsic", sideScope: "prescription_side", notes: "Side support intrinsically creates lateral trunk loading." }),
+      ownerStressAnnotation({ tag: "long_lever_core", exposureScope: "variant_dependent", sideScope: "prescription_side", notes: "Long-lever exposure requires the realized side-support lever variant." }),
+    ],
+    progression: {
+      progressionAxes: ["duration", "lever", "support_reduction", "load", "effort"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "suitcase-carry", direction: "lateral", classification: "context_dependent", purposes: ["change_resistance_path", "stimulus_shift"], notes: "Static side support and unilateral loaded gait are distinct contexts with no automatic substitution.", provenance: [STRESS_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: [],
+    contraindicatedStressTags: [],
+    coachingFocus: ["Keep a long side line", "Press through the forearm"],
+  },
+  {
+    id: "machine-abdominal-crunch",
+    name: "Machine Abdominal Crunch",
+    summary: "Machine-guided controlled trunk-flexion exercise.",
+    family: "core_control",
+    movementRoles: ["trunk_flexion"],
+    trainingRoles: ["hypertrophy_accessory", "secondary_strength"],
+    primaryMuscles: ["trunk"],
+    secondaryMuscles: [],
+    bodyRegions: ["ribcage", "lumbar_spine", "pelvis"],
+    equipmentRequirements: [machine("abdominal_crunch", "Abdominal crunch machine")],
+    optionalEquipment: [],
+    prerequisites: [
+      {
+        id: "abdominal-crunch-machine-setup",
+        type: "required_setup_skill",
+        description: "Requires correct adjustment and entry for the specific abdominal machine.",
+      },
+    ],
+    sectionSuitability: sections({
+      accessory: excellent("Direct controlled trunk-flexion development."),
+    }),
+    phaseSuitability: {
+      phase_1: possible("Legacy migration value pending contextual evidence."),
+      phase_2: possible("Legacy migration value pending contextual evidence."),
+      phase_3: good("Legacy migration value for direct hypertrophy use."),
+    },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({ annotationId: "machine-abdominal-crunch-phase-1-owner-unknown", exerciseId: "machine-abdominal-crunch", phaseId: "phase_1", suitability: "possible", reason: "Machine guidance and nominal ease are not independent Phase 1 evidence.", reviewStatus: "unknown", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF }),
+      ownerPhaseAnnotation({ annotationId: "machine-abdominal-crunch-phase-2-accessory-owner-review", exerciseId: "machine-abdominal-crunch", phaseId: "phase_2", suitability: "possible", reason: "Controlled loaded flexion may serve Phase 2 development, but independent evidence remains under review.", reviewStatus: "needs_review", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["secondary_strength"], sessionSections: ["accessory"] }),
+    ],
+    loading: {
+      loadability: "high",
+      loadingPotential: "high",
+      skillDemand: "low",
+      stabilityDemand: "low",
+      coordinationDemand: "low",
+      localFatigue: "high",
+      systemicFatigue: "low",
+      axialLoading: "low",
+      jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "seated",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
+        reviewStatus: "accepted",
+        notes: "Machine seat and pads materially define the controlled flexion path.",
+      },
+      resistancePath: {
+        resistancePath: "machine_guided",
+        trajectoryFreedom: "low",
+        lineOfPullAdjustability: "low",
+        laterality: "bilateral_linked",
+        fitDependency: "machine_geometry",
+        reviewStatus: "accepted",
+        notes: "The specific machine geometry controls path and fit.",
+        provenance: [STRESS_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("high", "Intentional controlled flexion is the task."),
+        scapular_control: demand("low", "Scapular control is not a selection purpose."),
+        stability: demand("low", "Machine support constrains stability demand."),
+        coordination: demand("low", "The machine provides a guided path."),
+        range: demand("moderate", "Flexion range is prescription controlled."),
+        joint_control: demand("moderate", "Loaded flexion tolerance remains relevant."),
+      },
+      trunkMechanics: reviewedSevenRowTrunkMechanics({
+        controlledFlexionContribution: { level: "high", notes: "The machine-guided identity directly expresses controlled trunk flexion." },
+      }),
+    }),
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "loaded_spinal_flexion", exposureScope: "intrinsic", sideScope: "side_neutral", notes: "Controlled loaded trunk flexion is intrinsic to this identity and is not itself a danger label." }),
+    ],
+    progression: { progressionAxes: ["load", "reps", "sets", "range", "tempo"], transitionRelationships: [] },
+    cautionStressTags: [],
+    contraindicatedStressTags: [],
+    coachingFocus: ["Flex through the trunk with control", "Return without dropping the stack"],
+  },
+  {
+    id: "half-kneeling-high-to-low-cable-chop",
+    name: "Half-Kneeling High-to-Low Cable Chop",
+    summary: "Half-kneeling high-cable controlled trunk-rotation exercise.",
+    family: "core_control",
+    movementRoles: ["trunk_rotation"],
+    trainingRoles: ["activation", "hypertrophy_accessory", "secondary_strength"],
+    primaryMuscles: ["trunk"],
+    secondaryMuscles: ["glutes"],
+    bodyRegions: ["thoracic_spine", "ribcage", "lumbar_spine", "pelvis", "hip", "shoulder"],
+    equipmentRequirements: [highCable],
+    optionalEquipment: [],
+    prerequisites: [
+      {
+        id: "high-cable-half-kneeling-setup",
+        type: "required_setup_skill",
+        description: "Requires a stable high-cable and half-kneeling side setup.",
+      },
+    ],
+    sectionSuitability: sections({
+      activation: good("Provides controlled rotational preparation at a reviewed dose."),
+      accessory: excellent("Provides direct controlled loaded-rotation development."),
+    }),
+    phaseSuitability: {
+      phase_1: possible("Legacy migration value for controlled activation use."),
+      phase_2: good("Legacy migration value for loaded rotational capacity."),
+      phase_3: possible("Legacy migration value pending contextual evidence."),
+    },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({ annotationId: "cable-chop-phase-1-activation-owner-review", exerciseId: "half-kneeling-high-to-low-cable-chop", phaseId: "phase_1", suitability: "possible", reason: "Phase 1 activation requires further range and prescription review.", reviewStatus: "needs_review", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["activation"], sessionSections: ["activation"] }),
+      ownerPhaseAnnotation({ annotationId: "cable-chop-phase-2-accessory-owner-approved", exerciseId: "half-kneeling-high-to-low-cable-chop", phaseId: "phase_2", suitability: "good", reason: "Provides scoped controlled loaded-rotation capacity within Phase 2.", reviewStatus: "accepted", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["secondary_strength"], sessionSections: ["accessory"] }),
+      ownerPhaseAnnotation({ annotationId: "cable-chop-phase-3-accessory-owner-unknown", exerciseId: "half-kneeling-high-to-low-cable-chop", phaseId: "phase_3", suitability: "possible", reason: "No independent Phase 3 developmental evidence is approved.", reviewStatus: "unknown", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["hypertrophy_accessory"], sessionSections: ["accessory"] }),
+    ],
+    loading: {
+      loadability: "moderate",
+      loadingPotential: "moderate",
+      skillDemand: "moderate",
+      stabilityDemand: "moderate",
+      coordinationDemand: "moderate",
+      localFatigue: "moderate",
+      systemicFatigue: "low",
+      axialLoading: "low",
+      jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "half_kneeling",
+        stance: "half_kneeling_lead_side",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "knee", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "side_neutral",
+        reviewStatus: "accepted",
+        notes: "Half-kneeling contacts and side are explicit setup facts.",
+      },
+      resistancePath: {
+        resistancePath: "cable_anchored",
+        trajectoryFreedom: "moderate",
+        lineOfPullAdjustability: "high",
+        laterality: "unilateral",
+        fitDependency: "setup_geometry",
+        reviewStatus: "accepted",
+        notes: "High-anchor geometry and side determine the diagonal path.",
+        provenance: [STRESS_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("high", "Controlled rotation is the selected task."),
+        scapular_control: demand("low", "The arms transmit load but are not the target."),
+        stability: demand("moderate", "Half-kneeling position requires control."),
+        coordination: demand("moderate", "Trunk rotation and cable path must coordinate."),
+        range: demand("moderate", "Rotation range is prescription controlled."),
+        joint_control: demand("moderate", "Rotation tolerance and setup matter."),
+      },
+      trunkMechanics: reviewedSevenRowTrunkMechanics({
+        antiRotationContribution: { level: "none", notes: "The identity produces controlled rotation rather than resisting rotation." },
+        controlledRotationContribution: { level: "high", notes: "The high-to-low resisted path directly expresses controlled trunk rotation." },
+      }),
+    }),
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "loaded_trunk_rotation", exposureScope: "intrinsic", sideScope: "prescription_side", notes: "Controlled resisted rotation is intrinsic; range, side, load, and tempo remain prescription facts." }),
+    ],
+    progression: {
+      progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "pallof-press", direction: "lateral", classification: "context_dependent", purposes: ["feature_shift", "change_resistance_path"], notes: "Controlled rotation and anti-rotation are distinct tasks with no automatic substitution.", provenance: [STRESS_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: [],
+    contraindicatedStressTags: [],
+    coachingFocus: ["Rotate through the trunk with control", "Follow the high-to-low path"],
+  },
+  {
+    id: "farmer-carry",
+    name: "Farmer Carry",
+    summary: "Bilateral one-implement-per-hand loaded walking carry.",
+    family: "carry_load",
+    movementRoles: ["carry", "loaded_bracing"],
+    trainingRoles: ["capacity", "hypertrophy_accessory", "secondary_strength"],
+    primaryMuscles: ["trunk", "upper_back"],
+    secondaryMuscles: ["glutes", "quads", "hamstrings"],
+    bodyRegions: ["shoulder", "wrist", "lumbar_spine", "pelvis", "hip", "knee", "ankle"],
+    equipmentRequirements: [farmerCarryEquipment],
+    optionalEquipment: [],
+    prerequisites: [
+      {
+        id: "farmer-carry-loaded-gait-setup",
+        type: "required_setup_skill",
+        description: "Requires a safe paired-implement pickup, gait path, turn, and set-down setup.",
+      },
+    ],
+    sectionSuitability: sections({
+      main: good("Provides intentional loaded capacity work."),
+      accessory: good("Adds carry exposure when marginal value is real."),
+    }),
+    phaseSuitability: {
+      phase_1: possible("Legacy migration value pending contextual evidence."),
+      phase_2: good("Legacy migration value for loaded capacity."),
+      phase_3: possible("Legacy migration value pending contextual evidence."),
+    },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({ annotationId: "farmer-carry-phase-1-accessory-owner-review", exerciseId: "farmer-carry", phaseId: "phase_1", suitability: "possible", reason: "Early capacity use remains under review and cannot be inferred from load or gait skill.", reviewStatus: "needs_review", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["capacity"], sessionSections: ["accessory"] }),
+      ownerPhaseAnnotation({ annotationId: "farmer-carry-phase-2-main-owner-approved", exerciseId: "farmer-carry", phaseId: "phase_2", suitability: "good", reason: "Directly serves recoverable loaded capacity and training consistency within Phase 2.", reviewStatus: "accepted", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["capacity"], sessionSections: ["main"] }),
+      ownerPhaseAnnotation({ annotationId: "farmer-carry-phase-3-accessory-owner-unknown", exerciseId: "farmer-carry", phaseId: "phase_3", suitability: "possible", reason: "No independent Phase 3 developmental preference is approved.", reviewStatus: "unknown", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["capacity"], sessionSections: ["accessory"] }),
+    ],
+    loading: {
+      loadability: "high",
+      loadingPotential: "high",
+      skillDemand: "moderate",
+      stabilityDemand: "moderate",
+      coordinationDemand: "moderate",
+      localFatigue: "high",
+      systemicFatigue: "high",
+      axialLoading: "moderate",
+      jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing",
+        stance: "unknown",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "bilateral",
+        reviewStatus: "accepted",
+        notes: "Unsupported loaded gait with one implement per hand.",
+      },
+      resistancePath: {
+        resistancePath: "free_implement",
+        trajectoryFreedom: "high",
+        lineOfPullAdjustability: "low",
+        laterality: "bilateral_independent",
+        fitDependency: "low",
+        reviewStatus: "accepted",
+        notes: "A pair of free implements and actual walking define the identity.",
+        provenance: [STRESS_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("high", "Loaded walking requires trunk control."),
+        scapular_control: demand("moderate", "The upper quarter supports the implements."),
+        stability: demand("moderate", "Walking under load creates dynamic stability demand."),
+        coordination: demand("moderate", "Gait and load must remain coordinated."),
+        range: demand("low", "No large-range target is intrinsic."),
+        joint_control: demand("moderate", "Load and gait make control relevant."),
+      },
+      trunkMechanics: reviewedSevenRowTrunkMechanics({
+        loadedBracingContribution: { level: "high", notes: "Bilateral loaded walking directly expresses loaded bracing." },
+        gaitLoadTransferContribution: { level: "high", notes: "Walking under bilateral external load directly expresses gait and load transfer." },
+      }),
+    }),
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "loaded_gait", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "Walking under external load is intrinsic." }),
+      ownerStressAnnotation({ tag: "grip_loading", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "Holding one implement per hand intrinsically loads grip." }),
+      ownerStressAnnotation({ tag: "grip_intensive", exposureScope: "dose_created", sideScope: "bilateral_or_systemic", notes: "Grip intensity requires explicit reviewed realized-dose authority." }),
+      ownerStressAnnotation({ tag: "heavy_axial_loading", exposureScope: "dose_created", sideScope: "bilateral_or_systemic", notes: "Heavy axial exposure requires explicit reviewed realized-dose authority." }),
+    ],
+    progression: {
+      progressionAxes: ["load", "distance", "trips", "duration", "effort"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "suitcase-carry", direction: "lateral", classification: "context_dependent", purposes: ["stimulus_shift"], notes: "Bilateral and unilateral loaded carries answer distinct needs without automatic substitution.", provenance: [STRESS_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: [],
+    contraindicatedStressTags: [],
+    coachingFocus: ["Walk tall with quiet implements", "Use controlled turns and set-downs"],
+  },
+  {
+    id: "suitcase-carry",
+    name: "Suitcase Carry",
+    summary: "Unilateral side-specific loaded walking carry.",
+    family: "carry_load",
+    movementRoles: ["carry", "anti_lateral_flexion_core", "loaded_bracing"],
+    trainingRoles: ["capacity", "hypertrophy_accessory", "secondary_strength"],
+    primaryMuscles: ["trunk"],
+    secondaryMuscles: ["upper_back", "glutes", "quads", "hamstrings"],
+    bodyRegions: ["shoulder", "wrist", "lumbar_spine", "ribcage", "pelvis", "hip", "knee", "ankle"],
+    equipmentRequirements: [suitcaseCarryEquipment],
+    optionalEquipment: [],
+    prerequisites: [
+      {
+        id: "suitcase-carry-loaded-gait-setup",
+        type: "required_setup_skill",
+        description: "Requires a safe single-implement pickup, side plan, gait path, turn, and set-down setup.",
+      },
+    ],
+    sectionSuitability: sections({
+      main: good("Provides intentional unilateral loaded capacity work."),
+      accessory: good("Adds side-specific carry exposure when needed."),
+    }),
+    phaseSuitability: {
+      phase_1: possible("Legacy migration value pending contextual evidence."),
+      phase_2: good("Legacy migration value for unilateral loaded capacity."),
+      phase_3: possible("Legacy migration value pending contextual evidence."),
+    },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({ annotationId: "suitcase-carry-phase-1-accessory-owner-review", exerciseId: "suitcase-carry", phaseId: "phase_1", suitability: "possible", reason: "Early asymmetric carry exposure requires further prescription-context review.", reviewStatus: "needs_review", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["capacity"], sessionSections: ["accessory"] }),
+      ownerPhaseAnnotation({ annotationId: "suitcase-carry-phase-2-main-owner-approved", exerciseId: "suitcase-carry", phaseId: "phase_2", suitability: "good", reason: "Directly serves recoverable unilateral loaded-gait and trunk-capacity development within Phase 2.", reviewStatus: "accepted", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["capacity"], sessionSections: ["main"] }),
+      ownerPhaseAnnotation({ annotationId: "suitcase-carry-phase-3-accessory-owner-unknown", exerciseId: "suitcase-carry", phaseId: "phase_3", suitability: "possible", reason: "No independent Phase 3 developmental preference is approved.", reviewStatus: "unknown", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["capacity"], sessionSections: ["accessory"] }),
+    ],
+    loading: {
+      loadability: "high",
+      loadingPotential: "high",
+      skillDemand: "moderate",
+      stabilityDemand: "moderate",
+      coordinationDemand: "moderate",
+      localFatigue: "high",
+      systemicFatigue: "moderate",
+      axialLoading: "moderate",
+      jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing",
+        stance: "unknown",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "unknown",
+        reviewStatus: "accepted",
+        notes: "Unsupported loaded gait with one prescription-side implement.",
+      },
+      resistancePath: {
+        resistancePath: "free_implement",
+        trajectoryFreedom: "high",
+        lineOfPullAdjustability: "low",
+        laterality: "unilateral",
+        fitDependency: "low",
+        reviewStatus: "accepted",
+        notes: "The single implement and load side are prescription-realized.",
+        provenance: [STRESS_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("high", "Unilateral loaded walking requires trunk control."),
+        scapular_control: demand("moderate", "The loaded upper quarter supports the implement."),
+        stability: demand("moderate", "Walking under unilateral load creates dynamic stability demand."),
+        coordination: demand("moderate", "Gait, load side, and posture must coordinate."),
+        range: demand("low", "No large-range target is intrinsic."),
+        joint_control: demand("moderate", "Side-specific load and gait make control relevant."),
+      },
+      trunkMechanics: reviewedSevenRowTrunkMechanics({
+        antiRotationContribution: { level: "moderate", notes: "Unilateral load may require resisting unwanted rotation; magnitude remains context dependent." },
+        antiLateralFlexionContribution: { level: "high", notes: "Unilateral loaded walking directly expresses anti-lateral-flexion control." },
+        loadedBracingContribution: { level: "high", notes: "External load during gait directly expresses loaded bracing." },
+        gaitLoadTransferContribution: { level: "high", notes: "Walking under unilateral load directly expresses gait and load transfer." },
+      }),
+    }),
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "loaded_gait", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "Walking under external load is intrinsic." }),
+      ownerStressAnnotation({ tag: "grip_loading", exposureScope: "intrinsic", sideScope: "prescription_side", notes: "Holding one implement intrinsically loads the prescribed-side grip." }),
+      ownerStressAnnotation({ tag: "lateral_trunk_loading", exposureScope: "intrinsic", sideScope: "prescription_side", notes: "Unilateral loaded gait intrinsically creates lateral trunk loading." }),
+      ownerStressAnnotation({ tag: "grip_intensive", exposureScope: "dose_created", sideScope: "prescription_side", notes: "Grip intensity requires explicit reviewed realized-dose authority." }),
+      ownerStressAnnotation({ tag: "heavy_axial_loading", exposureScope: "dose_created", sideScope: "bilateral_or_systemic", notes: "Heavy axial exposure requires explicit reviewed realized-dose authority." }),
+    ],
+    progression: {
+      progressionAxes: ["load", "distance", "trips", "duration", "effort"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "forearm-side-plank", direction: "lateral", classification: "context_dependent", purposes: ["change_resistance_path", "stimulus_shift"], notes: "Static side support and unilateral loaded gait are distinct contexts.", provenance: [STRESS_OWNER_DECISION_REF] }),
+        transition({ targetExerciseId: "farmer-carry", direction: "lateral", classification: "context_dependent", purposes: ["stimulus_shift"], notes: "Unilateral and bilateral carries answer distinct needs.", provenance: [STRESS_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: [],
+    contraindicatedStressTags: [],
+    coachingFocus: ["Stay tall over each step", "Keep the load side controlled"],
+  },
+  {
+    id: "wall-supported-suitcase-march",
+    name: "Wall-Supported Suitcase March",
+    summary: "Stationary alternating loaded march with opposite-hand wall support.",
+    family: "carry_load",
+    movementRoles: ["loaded_bracing"],
+    trainingRoles: ["activation", "capacity"],
+    primaryMuscles: ["trunk"],
+    secondaryMuscles: ["glutes", "quads"],
+    bodyRegions: ["shoulder", "wrist", "lumbar_spine", "ribcage", "pelvis", "hip", "knee", "ankle"],
+    equipmentRequirements: [supportedMarchEquipment],
+    optionalEquipment: [],
+    prerequisites: [
+      {
+        id: "wall-supported-loaded-march-setup",
+        type: "required_setup_skill",
+        description: "Requires opposite-hand wall support and load-side setup without walking distance.",
+      },
+    ],
+    sectionSuitability: sections({
+      activation: excellent("Provides supported loaded-bracing position control."),
+      accessory: good("Adds stationary supported loaded-march capacity."),
+    }),
+    phaseSuitability: {
+      phase_1: good("Legacy migration value for supported control."),
+      phase_2: possible("Legacy migration value pending contextual evidence."),
+      phase_3: possible("Legacy migration remains unknown rather than poor."),
+    },
+    phaseSuitabilityAnnotations: [
+      ownerPhaseAnnotation({ annotationId: "wall-supported-suitcase-march-phase-1-activation-owner-approved", exerciseId: "wall-supported-suitcase-march", phaseId: "phase_1", suitability: "good", reason: "Provides supported loaded-bracing, position control, and controlled stationary marching within Phase 1.", reviewStatus: "accepted", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["activation"], sessionSections: ["activation"] }),
+      ownerPhaseAnnotation({ annotationId: "wall-supported-suitcase-march-phase-2-accessory-owner-review", exerciseId: "wall-supported-suitcase-march", phaseId: "phase_2", suitability: "possible", reason: "Phase 2 capacity use remains under review because support force and load transfer are unresolved.", reviewStatus: "needs_review", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["capacity"], sessionSections: ["accessory"] }),
+      ownerPhaseAnnotation({ annotationId: "wall-supported-suitcase-march-phase-3-accessory-owner-unknown", exerciseId: "wall-supported-suitcase-march", phaseId: "phase_3", suitability: "possible", reason: "No independent Phase 3 developmental evidence is approved; unknown is not poor.", reviewStatus: "unknown", sourceRef: SEVEN_PHASE_OWNER_DECISION_REF, trainingRoles: ["capacity"], sessionSections: ["accessory"] }),
+    ],
+    loading: {
+      loadability: "moderate",
+      loadingPotential: "moderate",
+      skillDemand: "low",
+      stabilityDemand: "moderate",
+      coordinationDemand: "moderate",
+      localFatigue: "moderate",
+      systemicFatigue: "moderate",
+      axialLoading: "low",
+      jointStressTags: [],
+    },
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing",
+        stance: "alternating_march",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+          { bodyRegion: "hand", source: "wall", mode: "balance_assist", side: "unknown", taskRole: "secondary" },
+        ],
+        supportAmount: "prescription_modifiable",
+        supportRelationship: "opposite_side_load",
+        reviewStatus: "accepted",
+        notes: "Wall-support force and opposite-side load relationship are prescription-realized.",
+      },
+      resistancePath: {
+        resistancePath: "free_implement",
+        trajectoryFreedom: "moderate",
+        lineOfPullAdjustability: "low",
+        laterality: "alternating",
+        fitDependency: "setup_geometry",
+        reviewStatus: "accepted",
+        notes: "One implement plus opposite wall support defines the stationary march.",
+        provenance: [STRESS_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "Support-modified unilateral load requires position control."),
+        scapular_control: demand("low", "Wall and implement positions are not scapular selection purposes."),
+        stability: demand("moderate", "Alternating stationary march retains support-modified stability demand."),
+        coordination: demand("moderate", "March, load side, and support side must coordinate."),
+        range: demand("low", "March height is prescription controlled."),
+        joint_control: demand("moderate", "Loaded marching and wall support remain relevant."),
+      },
+      trunkMechanics: reviewedSevenRowTrunkMechanics({
+        loadedBracingContribution: { level: "moderate", notes: "Holding load while marching directly expresses support-modified loaded bracing." },
+      }),
+    }),
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "loaded_march", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "Stationary loaded marching is intrinsic and does not create loaded-gait or distance truth." }),
+      ownerStressAnnotation({ tag: "grip_loading", exposureScope: "intrinsic", sideScope: "prescription_side", notes: "Holding one dumbbell intrinsically loads the prescribed-side grip." }),
+      ownerStressAnnotation({ tag: "lateral_trunk_loading", exposureScope: "prescription_modifiable", sideScope: "prescription_side", notes: "Wall support, load side, and support force must realize lateral trunk loading before it can count.", reviewStatus: "needs_review" }),
+    ],
+    progression: {
+      progressionAxes: ["load", "steps", "duration", "support_reduction", "effort"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "suitcase-carry", direction: "progression", classification: "context_dependent", purposes: ["reduce_support", "movement_pattern_development"], notes: "Removing support and adding walking changes identity; this transition has no automatic selection effect.", provenance: [STRESS_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: [],
+    contraindicatedStressTags: [],
+    coachingFocus: ["Use light wall support", "March without drifting toward the load"],
   },
 ];
 

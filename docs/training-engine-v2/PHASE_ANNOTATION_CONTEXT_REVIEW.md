@@ -6,9 +6,9 @@ The contextual annotation schema, deterministic resolver, provenance validation,
 
 Fixed evaluation time: `2026-08-10T00:00:00.000Z`.
 
-Accepted production ranking fingerprint: `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782` (matches captured HEAD dc9336e baseline).
+Accepted production ranking fingerprint: `237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118` (matches captured HEAD dc9336e baseline).
 
-Context laboratory fingerprint: `b114b80cba21918c9292fc025686fec3fe82f79cc18477fb9a6a25f893060550`.
+Context laboratory fingerprint: `c63fd8b986e0fd485d31525eaabeac102d769beaa6ec74e559167451bb341445`.
 
 Classification: **PHASE_CONTEXT_OWNER_POLICY_SELECTED_CURATION_PENDING**.
 
@@ -802,19 +802,19 @@ The following rows use Policy C only. They expose every legal candidate's rank, 
 | current discomfort / phase_2 | machine-row | 1 | 8.021 | 1/8.069 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | current discomfort / phase_2 | seated-cable-row | 2 | 8.021 | 2/8.069 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | current discomfort / phase_2 | chest-supported-dumbbell-row | 3 | 8.017 | 3/8.065 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
-| current discomfort / phase_2 | one-arm-dumbbell-row | 4 | 7.692 | 4/7.699 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | REQUIRES_PRESCRIPTION |
+| current discomfort / phase_2 | one-arm-dumbbell-row | 4 | 7.919 | 4/7.911 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | candidate review / phase_2 | machine-row | 1 | 8.021 | 1/8.069 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | candidate review / phase_2 | seated-cable-row | 2 | 8.021 | 2/8.069 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | candidate review / phase_2 | chest-supported-dumbbell-row | 3 | 8.017 | 3/8.065 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
-| candidate review / phase_2 | one-arm-dumbbell-row | 4 | 7.487 | 4/7.507 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | REQUIRES_CANDIDATE_REVIEW |
+| candidate review / phase_2 | one-arm-dumbbell-row | 4 | 7.919 | 4/7.911 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | prescription required / phase_2 | machine-row | 1 | 8.021 | 1/8.069 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | prescription required / phase_2 | seated-cable-row | 2 | 8.021 | 2/8.069 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | prescription required / phase_2 | chest-supported-dumbbell-row | 3 | 8.017 | 3/8.065 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
-| prescription required / phase_2 | one-arm-dumbbell-row | 4 | 7.487 | 4/7.507 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | REQUIRES_PRESCRIPTION |
+| prescription required / phase_2 | one-arm-dumbbell-row | 4 | 7.919 | 4/7.911 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | role substitution / phase_2 | machine-row | 1 | 8.021 | 1/8.069 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | role substitution / phase_2 | seated-cable-row | 2 | 8.021 | 2/8.069 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 | role substitution / phase_2 | chest-supported-dumbbell-row | 3 | 8.017 | 3/8.065 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
-| role substitution / phase_2 | one-arm-dumbbell-row | 4 | 7.487 | 4/7.507 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | REQUIRES_SESSION_ROLE_SUBSTITUTION |
+| role substitution / phase_2 | one-arm-dumbbell-row | 4 | 7.919 | 4/7.911 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
 
 Context Policy C order explanations:
 

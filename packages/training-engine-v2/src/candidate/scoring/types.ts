@@ -11,5 +11,6 @@ export interface ScoreComponentInput {
 
 export interface CandidateScoreComponent {
   readonly id: string;
+  readonly include?: (input: ScoreComponentInput) => boolean;
   score(input: ScoreComponentInput): ScoreComponent;
 }

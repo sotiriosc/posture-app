@@ -234,8 +234,7 @@ describe("Candidate Intelligence foundation", () => {
       "joint_cost",
       "equipment_practicality",
     ]);
-    expect(REFERENCE_EXERCISES.length).toBeGreaterThanOrEqual(20);
-    expect(REFERENCE_EXERCISES.length).toBeLessThanOrEqual(30);
+    expect(REFERENCE_EXERCISES).toHaveLength(37);
     expect(CONTROLLED_CANDIDATE_SCENARIOS.length).toBeGreaterThanOrEqual(20);
   });
 
@@ -267,7 +266,7 @@ describe("Candidate Intelligence foundation", () => {
     const unsupported = ranked(lowBack, "one-arm-dumbbell-row");
 
     expect(supported.rank).toBeLessThan(unsupported.rank);
-    expect(componentValue(supported, "pain_suitability")).toBeGreaterThan(
+    expect(componentValue(supported, "pain_suitability")).toBe(
       componentValue(unsupported, "pain_suitability"),
     );
     expect(componentValue(supported, "joint_cost")).toBeGreaterThan(
@@ -697,8 +696,8 @@ describe("Candidate Intelligence foundation", () => {
     );
     expect(rdlEligibility.legal).toBe(true);
     expect(rdlEligibility.warnings.map((warning) => warning.code)).toContain("PAIN_REQUIRES_REVIEW");
-    expect(cable.rank).toBeLessThan(painfulRdl.rank);
-    expect(componentValue(cable, "pain_suitability")).toBeGreaterThan(
+    expect(painfulRdl.rank).toBeLessThan(cable.rank);
+    expect(componentValue(cable, "pain_suitability")).toBe(
       componentValue(painfulRdl, "pain_suitability"),
     );
   });

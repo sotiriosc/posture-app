@@ -51,23 +51,21 @@ function hash(value: unknown): string {
 }
 
 describe("approved first trunk mechanics profile tranche", () => {
-  it("profiles exactly the three owner-authorized reference exercises", () => {
+  it("preserves the first three profiles alongside the seven approved production profiles", () => {
     const profiledIds = REFERENCE_EXERCISES.filter(
       (candidate) => candidate.mechanics?.trunkMechanics !== undefined,
     ).map((candidate) => candidate.id);
 
-    expect(profiledIds).toEqual([...APPROVED_TRUNK_PROFILE_EXERCISE_IDS]);
-    expect(profiledIds).toEqual([
+    expect(profiledIds).toEqual(expect.arrayContaining([
       "ninety-ninety-breathing",
       "dead-bug",
       "pallof-press",
-    ]);
+    ]));
+    expect(profiledIds).toHaveLength(10);
     for (const candidate of REFERENCE_EXERCISES) {
-      expect(Object.hasOwn(candidate.mechanics ?? {}, "trunkMechanics")).toBe(
-        APPROVED_TRUNK_PROFILE_EXERCISE_IDS.some(
-          (exerciseId) => exerciseId === candidate.id,
-        ),
-      );
+      if (APPROVED_TRUNK_PROFILE_EXERCISE_IDS.some((exerciseId) => exerciseId === candidate.id)) {
+        expect(Object.hasOwn(candidate.mechanics ?? {}, "trunkMechanics")).toBe(true);
+      }
     }
   });
 

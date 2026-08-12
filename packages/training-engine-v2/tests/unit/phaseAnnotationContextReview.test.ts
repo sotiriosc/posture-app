@@ -56,15 +56,15 @@ describe("phase annotation context and uncertainty review", () => {
     expect(data.fixedAsOf).toBe("2026-08-10T00:00:00.000Z");
     expect(data.productionFingerprintMatches).toBe(true);
     expect(data.productionRankingFingerprint).toBe(
-      "d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782",
+      "237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118",
     );
   });
 
-  it("audits every phase annotation for all 30 reference exercises", () => {
+  it("retains the complete original 30-row migration audit", () => {
     expect(PHASE_ANNOTATION_AUDIT_PLAN).toHaveLength(30);
     expect(data.ownershipAudit).toHaveLength(90);
     expect(new Set(data.ownershipAudit.map((row) => row.exerciseId))).toEqual(
-      new Set(REFERENCE_EXERCISES.map((exercise) => exercise.id)),
+      new Set(REFERENCE_EXERCISES.slice(0, 30).map((exercise) => exercise.id)),
     );
     expect(
       new Set(data.ownershipAudit.map((row) => `${row.exerciseId}:${row.phaseId}`)).size,

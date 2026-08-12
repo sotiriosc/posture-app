@@ -1,5 +1,11 @@
 # Reference Exercise Knowledge Review
 
+## Production Update
+
+Exactly seven reviewed rows are now production knowledge in the one canonical 37-row `REFERENCE_EXERCISES` catalog: `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, `suitcase-carry`, and `wall-supported-suitcase-march`. Their role, section, equipment, support/stance, mechanics, stress scope, progression, transition, and compact coaching contracts are implemented. They do not add workout slots or composition policy.
+
+The future Praxis Knowledge Layer and public Praxis Library remain unimplemented. `ExerciseDefinition.id` is the adapter seam, `coachingFocus` is only a compact fallback, and no duplicate educational catalog or cue-ID system was created. Remaining phase unknowns stay non-scoring; heavy axial and long-lever potential require reviewed realization authority.
+
 Generated from `REFERENCE_EXERCISES` by `packages/training-engine-v2/tests/helpers/candidateIntelligenceReviewReport.ts`.
 
 Scope: audit/report only. This generation does not tune ranking weights, change exercise-science calibration, add Session Composer behavior, or alter engine behavior.
@@ -628,4 +634,3 @@ P2 gaps:
 Classification: **READY_FOR_TARGETED_FIXES**
 
 Rationale: the current V2 candidate engine is deterministic, observable, and safe enough for targeted semantics fixes. Feature-specific scapular consumption is now implemented at Candidate Intelligence scope, but it is still not ready for Session Composer because row equivalence gaps, phase suitability calibration, and transition/readiness policy remain unresolved.
-

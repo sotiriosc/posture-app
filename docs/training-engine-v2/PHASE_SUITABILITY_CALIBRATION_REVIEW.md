@@ -4,9 +4,9 @@
 
 Fixed evaluation time: `2026-08-10T00:00:00.000Z`.
 
-Production 22-scenario ranking fingerprint: `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782` (matches the captured HEAD 7aa7ccd baseline).
+Production 22-scenario ranking fingerprint: `237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118` (matches the captured HEAD 7aa7ccd baseline).
 
-Experimental phase-laboratory fingerprint: `08a64ce8661cb5b4f44b8446f666d3cc3ce3756815750aa02bfcce72dc2706f3`.
+Experimental phase-laboratory fingerprint: `906eb5bedc157fc262b17be0af1503a8555cbe2579e026f77e553f40a3642aa9`.
 
 Phase audit classification: **PHASE_POLICY_READY_FOR_OWNER_DECISION**
 
@@ -91,7 +91,7 @@ The explicit Phase 3 loadability branch and Phase 1 skill/stability branch are a
 
 ## Reference-Catalog Phase Audit
 
-Catalog classifications: WELL_JUSTIFIED=20; PLAUSIBLE_NEEDS_REVIEW=8; ARBITRARY_OR_UNDERSPECIFIED=2; CONTRADICTORY=0. These are audit judgments about internal coherence, not missing provenance supplied after the fact.
+Catalog classifications: WELL_JUSTIFIED=26; PLAUSIBLE_NEEDS_REVIEW=8; ARBITRARY_OR_UNDERSPECIFIED=3; CONTRADICTORY=0. These are audit judgments about internal coherence, not missing provenance supplied after the fact.
 
 | Exercise | Training Roles | Movement Roles | Section Suitability | Phase 1 | Phase 2 | Phase 3 | Loadability | Skill | Stability | Coordination | Progression Axes | Continuity Potential | Assessment Feature Role | Phase Provenance / Review | Classification | Audit Reason |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -125,6 +125,13 @@ Catalog classifications: WELL_JUSTIFIED=20; PLAUSIBLE_NEEDS_REVIEW=8; ARBITRARY_
 | dumbbell-curl / Dumbbell Curl | hypertrophy_accessory | horizontal_pull | accessory:excellent | possible: Optional accessory. | good: Adds arm volume. | excellent: Useful hypertrophy accessory. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Increasing accessory relevance is plausible, but phase rather than session/goal ownership is unclear. |
 | cable-triceps-pressdown / Cable Triceps Pressdown | hypertrophy_accessory | horizontal_push | accessory:excellent | possible: Optional accessory. | good: Useful pressing support volume. | excellent: High-value arm accessory. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Increasing accessory relevance is plausible, but phase rather than session/goal ownership is unclear. |
 | pallof-press / Pallof Press | activation, hypertrophy_accessory | anti_rotation_core | activation:excellent, accessory:good | excellent: Strong control exercise. | good: Useful accessory and preparation. | good: Can remain as targeted trunk work. | moderate | low | moderate | low | load, reps, tempo, stability | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Continued targeted trunk work is plausible, but good Phase 3 fit needs reviewed phase-specific rationale. |
+| forearm-plank / Forearm Plank | activation, hypertrophy_accessory | anti_extension_core | activation:excellent, accessory:good | good: Legacy migration value for early control work. | possible: Legacy migration value for accessory use. | possible: Legacy migration value pending contextual evidence. | limited | low | moderate | low | duration, lever, support_reduction, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 1 activation is owner-approved; later global migration values are non-authoritative. |
+| forearm-side-plank / Forearm Side Plank | activation, hypertrophy_accessory | anti_lateral_flexion_core | activation:excellent, accessory:good | good: Legacy migration value for early lateral control. | possible: Legacy migration value for accessory use. | possible: Legacy migration value pending contextual evidence. | limited | low | moderate | low | duration, lever, support_reduction, load, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 1 lateral-control activation is owner-approved; later values remain non-scoring. |
+| machine-abdominal-crunch / Machine Abdominal Crunch | hypertrophy_accessory, secondary_strength | trunk_flexion | accessory:excellent | possible: Legacy migration value pending contextual evidence. | possible: Legacy migration value pending contextual evidence. | good: Legacy migration value for direct hypertrophy use. | high | low | low | low | load, reps, sets, range, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | ARBITRARY_OR_UNDERSPECIFIED | No contextual annotation is accepted; direct hypertrophy utility is not independent phase evidence. |
+| half-kneeling-high-to-low-cable-chop / Half-Kneeling High-to-Low Cable Chop | activation, hypertrophy_accessory, secondary_strength | trunk_rotation | activation:good, accessory:excellent | possible: Legacy migration value for controlled activation use. | good: Legacy migration value for loaded rotational capacity. | possible: Legacy migration value pending contextual evidence. | moderate | moderate | moderate | moderate | load, reps, sets, range, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 2 controlled-rotation capacity evidence is owner-approved. |
+| farmer-carry / Farmer Carry | capacity, hypertrophy_accessory, secondary_strength | carry, loaded_bracing | main:good, accessory:good | possible: Legacy migration value pending contextual evidence. | good: Legacy migration value for loaded capacity. | possible: Legacy migration value pending contextual evidence. | high | moderate | moderate | moderate | load, distance, trips, duration, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 2 capacity-main evidence is owner-approved. |
+| suitcase-carry / Suitcase Carry | capacity, hypertrophy_accessory, secondary_strength | carry, anti_lateral_flexion_core, loaded_bracing | main:good, accessory:good | possible: Legacy migration value pending contextual evidence. | good: Legacy migration value for unilateral loaded capacity. | possible: Legacy migration value pending contextual evidence. | high | moderate | moderate | moderate | load, distance, trips, duration, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 2 unilateral capacity-main evidence is owner-approved. |
+| wall-supported-suitcase-march / Wall-Supported Suitcase March | activation, capacity | loaded_bracing | activation:excellent, accessory:good | good: Legacy migration value for supported control. | possible: Legacy migration value pending contextual evidence. | possible: Legacy migration remains unknown rather than poor. | moderate | low | moderate | moderate | load, steps, duration, support_reduction, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 1 supported loaded-bracing activation is owner-approved. |
 
 No phase annotation has a phase-specific provenance or review-status field. Existing reason text cannot substitute for that contract and is not read by scoring.
 
@@ -280,6 +287,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH |
 | horizontal push main | phase_1 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -307,6 +321,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH |
 | horizontal push main | phase_2 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -334,6 +355,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH |
 | horizontal push main | phase_3 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal push main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -360,6 +388,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -386,6 +421,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -412,6 +454,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -441,6 +490,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_1 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_1 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -470,6 +526,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_2 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_2 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -499,6 +562,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_3 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_3 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -527,6 +597,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical pull secondary | phase_1 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical pull secondary | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_1 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -555,6 +632,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical pull secondary | phase_2 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical pull secondary | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_2 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -583,6 +667,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical pull secondary | phase_3 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical pull secondary | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical pull secondary | phase_3 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical pull secondary | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -611,6 +702,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -639,6 +737,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -667,6 +772,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -695,6 +807,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_1 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -723,6 +842,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_2 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -751,6 +877,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_3 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -779,6 +912,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_1 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | pallof-press | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -807,6 +947,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_2 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | pallof-press | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -835,6 +982,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_3 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | pallof-press | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_1 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | push-up | ROLE_MISMATCH, SECTION_MISMATCH |
@@ -863,6 +1017,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_1 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | forearm-plank | SETUP_IMPOSSIBLE |
+| trunk activation | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_2 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | push-up | ROLE_MISMATCH, SECTION_MISMATCH |
@@ -891,6 +1052,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_2 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | forearm-plank | SETUP_IMPOSSIBLE |
+| trunk activation | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_3 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | push-up | ROLE_MISMATCH, SECTION_MISMATCH |
@@ -919,6 +1087,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_3 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | forearm-plank | SETUP_IMPOSSIBLE |
+| trunk activation | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_1 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
@@ -945,6 +1120,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_2 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
@@ -971,6 +1153,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_3 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
@@ -997,6 +1186,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH |
 | rear-delt accessory | phase_1 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1024,6 +1220,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_1 | dumbbell-curl | TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| rear-delt accessory | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| rear-delt accessory | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH |
 | rear-delt accessory | phase_2 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1051,6 +1254,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_2 | dumbbell-curl | TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| rear-delt accessory | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| rear-delt accessory | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH |
 | rear-delt accessory | phase_3 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1078,6 +1288,13 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_3 | dumbbell-curl | TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| rear-delt accessory | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| rear-delt accessory | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 
 ## Goal-Independence Matrix
 
@@ -1172,18 +1389,18 @@ Productive, stable and ready-to-progress evidence remains active in every phase.
 | relevant_assessment | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.390 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 1 |
 | relevant_assessment | phase_2 | machine-row | 4 | 7.800 | 6.390 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 1 |
 | relevant_assessment | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.390 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 1 |
-| current_discomfort | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 6.400 | REQUIRES_PRESCRIPTION | none | 0 |
-| current_discomfort | phase_2 | machine-row | 4 | 7.800 | 6.000 | 6.400 | REQUIRES_PRESCRIPTION | none | 0 |
-| current_discomfort | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.000 | 6.400 | REQUIRES_PRESCRIPTION | none | 0 |
-| moderate_candidate_review | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 4.600 | REQUIRES_CANDIDATE_REVIEW | none | 0 |
-| moderate_candidate_review | phase_2 | machine-row | 4 | 7.800 | 6.000 | 4.600 | REQUIRES_CANDIDATE_REVIEW | none | 0 |
-| moderate_candidate_review | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.000 | 4.600 | REQUIRES_CANDIDATE_REVIEW | none | 0 |
-| moderate_prescription_required | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 4.600 | REQUIRES_PRESCRIPTION | none | 0 |
-| moderate_prescription_required | phase_2 | machine-row | 4 | 7.800 | 6.000 | 4.600 | REQUIRES_PRESCRIPTION | none | 0 |
-| moderate_prescription_required | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.000 | 4.600 | REQUIRES_PRESCRIPTION | none | 0 |
-| moderate_role_substitution | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 4.600 | REQUIRES_SESSION_ROLE_SUBSTITUTION | none | 0 |
-| moderate_role_substitution | phase_2 | machine-row | 4 | 7.800 | 6.000 | 4.600 | REQUIRES_SESSION_ROLE_SUBSTITUTION | none | 0 |
-| moderate_role_substitution | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.000 | 4.600 | REQUIRES_SESSION_ROLE_SUBSTITUTION | none | 0 |
+| current_discomfort | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| current_discomfort | phase_2 | machine-row | 4 | 7.800 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| current_discomfort | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_candidate_review | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_candidate_review | phase_2 | machine-row | 4 | 7.800 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_candidate_review | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_prescription_required | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_prescription_required | phase_2 | machine-row | 4 | 7.800 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_prescription_required | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_role_substitution | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_role_substitution | phase_2 | machine-row | 4 | 7.800 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
+| moderate_role_substitution | phase_3 | chest-supported-dumbbell-row | 4 | 9.600 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
 | productive_continuity | phase_1 | chest-supported-dumbbell-row | 4 | 6.200 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
 | productive_continuity | phase_2 | one-arm-dumbbell-row | 1 | 7.800 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
 | productive_continuity | phase_3 | one-arm-dumbbell-row | 1 | 9.600 | 6.000 | 8.200 | EXECUTABLE_AT_CANDIDATE_SCOPE | none | 0 |
@@ -1372,11 +1589,11 @@ Targets should begin from experience-level priors and adjust for enduring goal, 
 | Question | Finding |
 | --- | --- |
 | MovementRole contains carry | yes |
-| Reference carry exercises | none |
+| Reference carry exercises | farmer-carry, suitcase-carry |
 | Candidate scenarios requesting carry | none |
 | Concrete session/week carry allocation | no |
 
-carry is representable as a MovementRole and in generic exposure maps, but the reference catalog, Candidate Intelligence scenarios and concrete session/week allocations contain no carry implementation.
+Farmer and suitcase carries now provide canonical production candidates, while controlled scenarios and concrete session/week allocation remain intentionally unimplemented.
 
 A carry is not mandatory filler. Future selection should require a real need such as grip capacity, trunk capacity, loaded gait, unilateral control, work capacity, conditioning or assessment-relevant asymmetry. Placement must consider pulling grip fatigue, hinge/trunk fatigue, unilateral loading already present, next-day recovery, equipment, duration and carry-specific prescription units.
 

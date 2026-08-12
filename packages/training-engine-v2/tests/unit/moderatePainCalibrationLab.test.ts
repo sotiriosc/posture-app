@@ -78,10 +78,10 @@ describe("moderate-pain human calibration laboratory", () => {
       candidateId: "dumbbell-romanian-deadlift",
       severity: 6,
       policyId: "B_UPPER_100",
-      canonicalOverlapUnits: 2,
+      canonicalOverlapUnits: 1,
       matchedSignalCount: 1,
       preferredSignalLevelAdjustment: 1,
-      badPerTagAdjustment: 2,
+      badPerTagAdjustment: 1,
     });
 
     const cable = data.matrix.find((row) =>
@@ -108,9 +108,9 @@ describe("moderate-pain human calibration laboratory", () => {
       row.candidateId === "dumbbell-romanian-deadlift" &&
       row.requiredResponse === "avoid_aggravator"
     );
-    expect(new Set(rdlRows.map((row) => row.jointCostRaw))).toEqual(new Set([5.65]));
+    expect(new Set(rdlRows.map((row) => row.jointCostRaw))).toEqual(new Set([7.05]));
     expect(new Set(rdlRows.map((row) => row.jointCostWeightedContribution))).toEqual(
-      new Set([0.279012]),
+      new Set([0.348148]),
     );
   });
 
@@ -169,11 +169,12 @@ describe("moderate-pain human calibration laboratory", () => {
         candidateIds: [
           "chest-supported-dumbbell-row",
           "machine-row",
+          "one-arm-dumbbell-row",
           "seated-cable-row",
         ],
-        candidateMatrixRowsChanged: 108,
-        selectedProductionCasesChanged: 4,
-        selectedMatrixCellsChanged: 144,
+        candidateMatrixRowsChanged: 144,
+        selectedProductionCasesChanged: 0,
+        selectedMatrixCellsChanged: 0,
       },
       {
         requiredResponse: "reduce_load_and_range",
@@ -183,11 +184,12 @@ describe("moderate-pain human calibration laboratory", () => {
         candidateIds: [
           "chest-supported-dumbbell-row",
           "machine-row",
+          "one-arm-dumbbell-row",
           "seated-cable-row",
         ],
-        candidateMatrixRowsChanged: 108,
-        selectedProductionCasesChanged: 4,
-        selectedMatrixCellsChanged: 144,
+        candidateMatrixRowsChanged: 144,
+        selectedProductionCasesChanged: 0,
+        selectedMatrixCellsChanged: 0,
       },
       {
         requiredResponse: "substitute_role",
@@ -197,11 +199,12 @@ describe("moderate-pain human calibration laboratory", () => {
         candidateIds: [
           "chest-supported-dumbbell-row",
           "machine-row",
+          "one-arm-dumbbell-row",
           "seated-cable-row",
         ],
-        candidateMatrixRowsChanged: 108,
-        selectedProductionCasesChanged: 4,
-        selectedMatrixCellsChanged: 144,
+        candidateMatrixRowsChanged: 144,
+        selectedProductionCasesChanged: 0,
+        selectedMatrixCellsChanged: 0,
       },
     ]);
 

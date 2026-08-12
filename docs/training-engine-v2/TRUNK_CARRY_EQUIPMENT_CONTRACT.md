@@ -75,13 +75,13 @@ Every pure requirement result now exposes the requirement ID, requested capabili
 
 | Artifact | Required fingerprint/count | Current | Result |
 | --- | --- | --- | --- |
-| 240 current exercise-by-fixture equipment legality rows | 50881bd4cd735954dae1d9a8574165d5a6bff40d8af990c8324a21ba8436b8e6 | 50881bd4cd735954dae1d9a8574165d5a6bff40d8af990c8324a21ba8436b8e6 | true |
-| Expanded equipment fixture serialization | 98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117 | 98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117 | true |
-| 22-scenario ranking | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | true |
-| Comprehensive behavior including hard-rejection codes | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | true |
-| Reference catalog | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | true |
-| Current requirements using a new capability | 0 | 0 | true |
-| Current exercises using carry_load | 0 | 0 | true |
+| 240 current exercise-by-fixture equipment legality rows | 5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869 | 5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869 | true |
+| Expanded equipment fixture serialization | bb07188480cab4134ba4f2eb36dfa4f17e5d4d62d6139b539c5603ad602b482a | bb07188480cab4134ba4f2eb36dfa4f17e5d4d62d6139b539c5603ad602b482a | true |
+| 22-scenario ranking | 237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118 | 237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118 | true |
+| Comprehensive behavior including hard-rejection codes | 2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02 | 2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02 | true |
+| Reference catalog | 649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6 | 649e76af161dd206a1fe3f7fb42b24542fc25d56bcafaf1e299992d4e303a0e6 | true |
+| Current requirements using a new capability | 0 | 7 | false |
+| Current exercises using carry_load | 0 | 3 | false |
 
 The fixture fingerprint changes intentionally because every equipment fixture now serializes explicit training-space, cable-height, and dumbbell-pair truth. Exercise catalog serialization does not change.
 

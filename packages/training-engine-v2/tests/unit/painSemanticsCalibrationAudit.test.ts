@@ -58,7 +58,7 @@ describe("pain semantics and calibration audit", () => {
 
     expect(data.matrix).toHaveLength(144);
     expect(data.fieldConsumption).toHaveLength(48);
-    expect(data.stressTagAudit).toHaveLength(19);
+    expect(data.stressTagAudit).toHaveLength(15);
     expect(data.existingScenarioFingerprint).toBe(
       data.expectedExistingScenarioFingerprint,
     );
@@ -266,11 +266,11 @@ describe("pain semantics and calibration audit", () => {
       (row) => row.duplicateClassification === "NOT_APPLICABLE",
     );
 
-    expect(resolvedDuplicates).toHaveLength(16);
+    expect(resolvedDuplicates).toHaveLength(13);
     expect(resolvedDuplicates.every((row) => row.uniqueFactCount === 1)).toBe(true);
     expect(resolvedDuplicates.every((row) => row.painSuitabilityCount === 1)).toBe(true);
     expect(resolvedDuplicates.every((row) => row.jointCostCount === 1)).toBe(true);
-    expect(nonDuplicates).toHaveLength(3);
+    expect(nonDuplicates).toHaveLength(2);
     expect(nonDuplicates.every((row) => row.jointCostCount === 1)).toBe(true);
     expect(data.stressTagAudit.every((row) => row.warningResult === "warning")).toBe(true);
     expect(data.contraindicatedOnlyProbe).toEqual({
@@ -345,7 +345,7 @@ describe("pain semantics and calibration audit", () => {
     expect(hardRows).toHaveLength(28);
     const rejectedHardRows = hardRows.filter((row) => row.outcome === "rejected");
     const legalHardRows = hardRows.filter((row) => row.outcome === "legal");
-    expect(rejectedHardRows).toHaveLength(22);
+    expect(rejectedHardRows).toHaveLength(20);
     expect(
       rejectedHardRows.every((row) =>
         row.hardRejectionReason.includes("HARD_CONTRAINDICATION"),
@@ -354,10 +354,11 @@ describe("pain semantics and calibration audit", () => {
     expect(
       rejectedHardRows.every((row) => row.total === null && row.rank === null),
     ).toBe(true);
-    expect(legalHardRows).toHaveLength(6);
+    expect(legalHardRows).toHaveLength(8);
     expect([...new Set(legalHardRows.map((row) => row.candidateId))].sort()).toEqual([
       "chest-supported-dumbbell-row",
       "machine-row",
+      "one-arm-dumbbell-row",
       "seated-cable-row",
     ]);
 

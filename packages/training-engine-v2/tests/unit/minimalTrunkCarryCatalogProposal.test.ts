@@ -245,20 +245,20 @@ describe("minimal direct trunk/core and carry catalog proposal", () => {
     );
   });
 
-  it("leaves the production reference catalog and profile tranche unchanged", () => {
-    expect(REFERENCE_EXERCISES).toHaveLength(30);
+  it("retains the proposal evidence after the exact seven rows enter production", () => {
+    expect(REFERENCE_EXERCISES).toHaveLength(37);
     expect(
       REFERENCE_EXERCISES.filter(
         (exercise) => exercise.mechanics?.trunkMechanics !== undefined,
       ).map((exercise) => exercise.id),
-    ).toEqual(["ninety-ninety-breathing", "dead-bug", "pallof-press"]);
+    ).toHaveLength(10);
     expect(
       REFERENCE_EXERCISES.some((exercise) =>
         PROPOSED_TRUNK_CARRY_CANDIDATE_IDS.some(
           (candidateId) => candidateId === exercise.id,
         ),
       ),
-    ).toBe(false);
+    ).toBe(true);
     expect(data.behaviorBoundary.referenceCatalogMatches).toBe(true);
     expect(data.behaviorBoundary.referenceCatalogFingerprint).toBe(
       FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT,

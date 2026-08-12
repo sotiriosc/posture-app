@@ -38,16 +38,12 @@ import {
 } from "./trunkMechanicsCurationProposal";
 
 export const SEVEN_EXERCISE_TRUNK_CARRY_CURATION_CLASSIFICATION =
-  "SEVEN_EXERCISE_STRESS_SUPPORT_READY_FOR_FINAL_OWNER_APPROVAL";
+  "SEVEN_EXERCISE_STRESS_SUPPORT_IMPLEMENTED_IN_PRODUCTION";
 
 export const PRODUCTION_CATALOG_IMPLEMENTATION_READINESS =
-  "PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKED";
+  "PRODUCTION_CATALOG_IMPLEMENTED";
 
-export const PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKERS = [
-  "OWNER_APPROVAL_REQUIRED_FOR_CONTEXTUAL_PHASE_PROPOSALS",
-  "OWNER_APPROVAL_REQUIRED_FOR_CURRENT_AND_SEVEN_ROW_STRESS_MIGRATION",
-  "Production implementation must add isolated behavior-fingerprint tests for the rows and any structured/legacy stress compatibility.",
-] as const;
+export const PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKERS: readonly string[] = [];
 
 export const OWNER_DECISIONS_RECORDED = [
   {
@@ -66,7 +62,7 @@ export const OWNER_DECISIONS_RECORDED = [
     decision:
       "Approved production identities are `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, and `suitcase-carry`.",
     effect:
-      "These identities are owner-approved, but production rows still wait for contextual phase and support/stance contracts.",
+      "These identities are owner-approved and implemented once each in the canonical production catalog.",
   },
   {
     decision:
@@ -198,11 +194,11 @@ export interface ExecutionCriterionProposal {
 export interface PhaseContextAudit {
   readonly currentGlobalPhaseValueTruthful: "no";
   readonly roleSectionScopedEvidenceRequired: "yes";
-  readonly acceptedPhaseEvidenceAvailable: "no";
+  readonly acceptedPhaseEvidenceAvailable: "yes";
   readonly needsReview: "yes";
   readonly unknown: "yes";
   readonly productionImplementationPhaseStatus:
-    "OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL";
+    "OWNER_DECISIONS_APPLIED_CONTEXTUAL_ACTIVATION_GATE_FAILED";
 }
 
 export interface CandidatePoolEffect {
@@ -407,11 +403,11 @@ function phaseAudit(): PhaseContextAudit {
   return {
     currentGlobalPhaseValueTruthful: "no",
     roleSectionScopedEvidenceRequired: "yes",
-    acceptedPhaseEvidenceAvailable: "no",
+    acceptedPhaseEvidenceAvailable: "yes",
     needsReview: "yes",
     unknown: "yes",
     productionImplementationPhaseStatus:
-      "OWNER_POLICY_SELECTED_ANNOTATIONS_PENDING_FINAL_APPROVAL",
+      "OWNER_DECISIONS_APPLIED_CONTEXTUAL_ACTIVATION_GATE_FAILED",
   };
 }
 
@@ -1431,7 +1427,7 @@ export function buildSevenExerciseTrunkCarryCurationData(): SevenExerciseCuratio
         expandedEquipmentFixtureFingerprint === CAPTURED_EXPANDED_EQUIPMENT_FIXTURE_FINGERPRINT,
     },
     wholeBodyRoadmapHandoff:
-      "Whole-body audit is not started. Keep `WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT` scheduled after final contextual phase/stress owner decisions and truthful behavior-equivalent implementation of the seven-exercise tranche. The later audit must decide whether `MuscleGroup` should add forearm/grip or hip-flexor target status; do not add either now.",
+      "Whole-body audit is not started. The seven-row tranche and focused owner decisions are implemented; the exact next dependency is owner review of the three unexplained contextual-phase winner changes before `WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT`. The later audit must decide whether `MuscleGroup` should add forearm/grip or hip-flexor target status; do not add either now.",
   };
 }
 
@@ -1619,7 +1615,7 @@ export function renderSevenExerciseTrunkCarryCurationReport(
     "",
     "## Boundary",
     "",
-    "This is a review-only owner curation artifact. It does not add production exercises, reference-catalog rows, stress arrays, scoring behavior, phase behavior, prescription doses, Session Composer, Weekly Composer, or ledger behavior.",
+    "This curation artifact now records the seven implemented production rows. It does not add Session Composer, Week Composer, workout-length policy, automatic substitution, automatic progression, Library, Knowledge Layer, Coaching Rail, or UI behavior.",
     "",
     "Doctrine: task-appropriate alignment -> repeatable form -> appropriate dose -> observed response -> earned progression -> adaptation. More knowledge must improve selection, not inflate workout length.",
     "",
@@ -1689,7 +1685,7 @@ export function renderSevenExerciseTrunkCarryCurationReport(
     "## Owner Decision Questions",
     "",
     ...(data.ownerQuestions.length === 0
-      ? ["No unresolved owner-decision questions remain inside this seven-exercise curation artifact. Production remains blocked by contextual phase and support/stance contracts.", ""]
+      ? ["No unresolved owner-decision questions remain inside this seven-exercise curation artifact. The contextual scorer remains non-default because its semantic activation gate failed in three winner-change cases.", ""]
       : data.ownerQuestions.flatMap((question, index) => [
         `${index + 1}. ${question.question}`,
         `   Recommended option: ${question.recommendedOption}`,

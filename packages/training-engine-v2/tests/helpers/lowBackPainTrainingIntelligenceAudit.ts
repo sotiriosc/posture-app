@@ -82,7 +82,7 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
     title: "Exercise stress knowledge",
     classification: "CATALOG_KNOWLEDGE_REQUIRED",
     finding:
-      "Focused curation now proposes intrinsic loaded-hinge facts only for RDL and cable pull-through, rejects legacy flexion/extension as intrinsic, and keeps lever/row/heavy-load contexts realization-dependent. Production arrays remain unchanged pending owner decisions and equivalence tests.",
+      "Owner decisions are implemented: RDL and cable pull-through have intrinsic structured hinge exposure, false flexion/extension legacy facts are removed, and lever/row/heavy-load contexts remain potential until realization.",
     minimumContract:
       "Owner approval and behavior-equivalent structured/legacy migration remain required. Exposure metadata must never be interpreted as danger or pathology.",
   },
@@ -143,15 +143,15 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
 ] as const;
 
 export const LOW_BACK_STRESS_REVIEW = [
-  { tag: "loaded_hinge", currentRows: ["one-arm-dumbbell-row", "dumbbell-romanian-deadlift", "cable-pull-through"], classification: "A for hinge identities; C for setup-dependent row variants", finding: "Scope must be curated per row; the tag is not globally intrinsic." },
-  { tag: "loaded_spinal_flexion", currentRows: ["one-arm-dumbbell-row", "dumbbell-romanian-deadlift"], classification: "C or E pending review", finding: "Do not infer loaded spinal flexion from a hinge or row name; actual range and variant matter." },
-  { tag: "loaded_spinal_extension", currentRows: ["dumbbell-shoulder-press", "glute-bridge"], classification: "B, C, or E pending review", finding: "Current legacy labels cannot distinguish intended task from avoidable compensation or range." },
+  { tag: "loaded_hinge", currentRows: ["dumbbell-romanian-deadlift", "cable-pull-through"], classification: "A for reviewed hinge identities; C for row variants", finding: "One-arm row hinge remains variant-dependent potential and cannot match until prescription realization." },
+  { tag: "loaded_spinal_flexion", currentRows: ["machine-abdominal-crunch"], classification: "A for controlled crunch identity", finding: "False row/RDL legacy flexion was removed; controlled machine flexion is truthful exposure, not a danger label." },
+  { tag: "loaded_spinal_extension", currentRows: [], classification: "E for reviewed current identities", finding: "Possible compensation is not intrinsic intended exposure; false shoulder-press and bridge legacy facts were removed." },
   { tag: "heavy_axial_loading", currentRows: [], classification: "D", finding: "Heavy is dose-created; exercise identity alone is insufficient." },
-  { tag: "loaded_trunk_rotation", currentRows: [], classification: "A plus B prescription context for the proposed chop", finding: "Controlled loaded rotation is exposure, not danger; range and load remain prescription facts." },
-  { tag: "lateral_trunk_loading", currentRows: [], classification: "A for suitcase carry; B for supported march", finding: "Support amount changes realized exposure and must remain observable." },
-  { tag: "loaded_gait", currentRows: [], classification: "A for walking carries", finding: "Requires actual gait-space and walking identity; stationary march must not inherit it." },
-  { tag: "loaded_march", currentRows: [], classification: "A for loaded march identity", finding: "Stationary stepping is distinct from loaded gait and distance carry." },
-  { tag: "long_lever_core", currentRows: ["dead-bug", "push-up", "pallof-press"], classification: "C", finding: "Lever is variant/prescription dependent; current legacy arrays cannot express that scope." },
+  { tag: "loaded_trunk_rotation", currentRows: ["half-kneeling-high-to-low-cable-chop"], classification: "A plus B prescription context", finding: "Controlled loaded rotation is exposure, not danger; range, side, load and tempo remain prescription facts." },
+  { tag: "lateral_trunk_loading", currentRows: ["forearm-side-plank", "suitcase-carry"], classification: "A for reviewed identities; B for supported march", finding: "Wall-march support amount keeps lateral exposure potential and needs-review." },
+  { tag: "loaded_gait", currentRows: ["farmer-carry", "suitcase-carry"], classification: "A for walking carries", finding: "Requires actual gait space; stationary march does not inherit it." },
+  { tag: "loaded_march", currentRows: ["wall-supported-suitcase-march"], classification: "A for stationary loaded march", finding: "Stationary stepping remains distinct from loaded gait and distance carry." },
+  { tag: "long_lever_core", currentRows: [], classification: "C potential on dead bug, push-up and Pallof press", finding: "Legacy arrays were removed; variant or prescription realization owns the final exposure." },
 ] as const;
 
 export const LOW_BACK_EXTERNAL_EVIDENCE = [
@@ -250,17 +250,13 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
     rowStressCurationFingerprint: stableAdaptive.stressFingerprint,
     safetyAndResponseFingerprint: safetyAndResponse.combinedFingerprint,
     phaseCalibrationConsequences: safetyAndResponse.phaseCalibrationConsequences,
-    blockersBeforeSevenRows: [
-      "Final owner approval, narrowing, or rejection of the current and seven-row contextual phase proposals.",
-      "Final owner decisions for current-row flexion/extension removal, hinge acceptance, long-lever scope, row support/stance scope, and dose-created heavy axial authority.",
-      "Behavior-equivalent structured/legacy stress migration tests and isolated fingerprints when the seven production rows are implemented.",
-    ],
+    blockersBeforeSevenRows: ["None. Exactly seven owner-approved rows are implemented in the canonical production catalog."],
     blockersBeforeWholeBodyAudit: [
       "No technical blocker prevents the separately requested review-only whole-body audit.",
-      "Owner sequencing still defers it until final phase/stress decisions and seven-row implementation; this task does not start that audit.",
+      "Review the three unexplained contextual-phase winner changes before authorizing the deferred whole-body audit; this task does not start that audit.",
     ],
     exactNextDependency:
-      "Obtain final owner decisions on the contextual phase proposals and focused stress migration questions, then implement the seven rows with isolated behavior-equivalence fingerprints; product safety adapter wiring remains a separate integration task.",
+      "Review the three unexplained contextual-phase winner changes (two controlled scenarios and one golden persona); keep legacy phase scoring authoritative until a revised contextual policy passes the semantic gate.",
     fingerprint: hash(payload),
   };
 }
@@ -293,7 +289,7 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "## Readiness Answer",
     "",
-    "Can Candidate Intelligence currently be described as ready to intelligently train around reported low-back pain? **No.** Its normalized safety boundary, response receiver, progression integration, side-aware history, re-exposure evidence, phase owner policy and focused stress curation now exist. Final contextual annotation approval, stress migration decisions, production row implementation, and future composer consumption remain incomplete.",
+    "At candidate scope, the reviewed pain/stress, safety, response, support, and seven-row catalog contracts are implemented. Full-program low-back-aware training remains incomplete because Session/Week Composer and product adapter consumption are outside this task. Contextual phase scoring also remains legacy-authoritative after the new policy failed its semantic activation gate.",
     "",
     "## Classification Summary",
     "",
@@ -342,7 +338,7 @@ export function renderLowBackPainTrainingIntelligenceAudit(
       data.coverage.map((row) => [row.label, list(row.exerciseIds)]),
     ),
     "",
-    "The user can receive a conventional upper/lower or full-body strength, hypertrophy, or general-fitness pool where appropriate. The major gaps are not a lack of corrective drills; they are missing production options for anti-lateral flexion, controlled flexion/rotation, loaded bracing, carries, and uneven supported alternatives. The seven-row proposal addresses several of these gaps but remains blocked.",
+    "The catalog now includes truthful production options for anti-lateral flexion, controlled flexion and rotation, loaded bracing, walking carries, and a stationary supported loaded march. They improve candidate diversity without creating a mandatory slot, workout-length policy, substitution, or progression behavior.",
     "",
     "## Response-Led Progression",
     "",
@@ -358,7 +354,7 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "## Phase Calibration Consequences",
     "",
-    "These are non-production sensitivity results from the existing calibration laboratory. The owner selected the annotation-only low-churn shape with 8.8/7.8/6.2/5.5 and weight 1.0. Production remains legacy until accepted contextual curation is approved; continuity disruptions remain zero.",
+    "Owner-approved contextual annotations and the annotation-only low-churn shape are implemented for dual-run inspection. Production remains legacy because three winner changes lacked accepted contextual phase evidence on the new winner; no continuity winner changed, unknown/no-match stays omitted, and the contextual scorer remains explicit and non-default.",
     "",
     table(
       ["Policy", "Category spacing", "Phase weight", "Winner changes", "Close-order changes", "Continuity disruptions", "Unknown evidence", "Accepted poor", "Representative Phase 1/2/3 effects"],
@@ -388,7 +384,7 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "These clinician-facing guidelines inform safety boundaries, exercise-program principles, and uncertainty only. They do not establish diagnosis logic, exercise-row stress truth, arbitrary pain thresholds, or medical treatment in Praxis. Guidance version and access date are recorded because recommendations can change.",
     "",
-    "## Blockers Before Seven Production Rows",
+    "## Seven Production Row Status",
     "",
     ...data.blockersBeforeSevenRows.map((blocker) => `- ${blocker}`),
     "",
@@ -401,9 +397,9 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     table(
       ["Artifact", "Fingerprint", "Behavior meaning"],
       [
-        ["Production ranking", data.behaviorFingerprints.productionRanking, "Unchanged"],
-        ["Comprehensive behavior", data.behaviorFingerprints.comprehensiveBehavior, "Unchanged"],
-        ["Reference catalog", data.behaviorFingerprints.referenceCatalog, "Intentionally changed by support/stance metadata migration"],
+        ["Production ranking", data.behaviorFingerprints.productionRanking, "Intentionally changed by approved catalog/stress truth"],
+        ["Comprehensive behavior", data.behaviorFingerprints.comprehensiveBehavior, "Intentionally changed by approved catalog/stress truth"],
+        ["Reference catalog", data.behaviorFingerprints.referenceCatalog, "Intentionally changed by seven rows and focused migrations"],
         ["Support/stance contract", data.supportFingerprint, "Intentionally changed by implementation"],
         ["Contextual phase laboratory", data.phaseFingerprint, "Resolver/trace contract implementation"],
         ["Training safety", data.safetyFingerprint, "Independent global readiness contract"],

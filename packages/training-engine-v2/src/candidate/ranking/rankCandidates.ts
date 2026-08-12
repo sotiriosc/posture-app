@@ -54,13 +54,14 @@ function rankLegalCandidates(input: {
   readonly weights?: CandidateScoringWeights;
 }): readonly RankedCandidate[] {
   const scored = input.legalCandidates.map((candidate) => {
-    const components = input.scoreComponents.map((scoreComponent) =>
-      scoreComponent.score({
-        request: input.request,
-        exercise: candidate.exercise,
-        painMatchTrace: candidate.eligibility.painMatchTrace,
-      }),
-    );
+    const componentInput = {
+      request: input.request,
+      exercise: candidate.exercise,
+      painMatchTrace: candidate.eligibility.painMatchTrace,
+    };
+    const components = input.scoreComponents
+      .filter((scoreComponent) => scoreComponent.include?.(componentInput) ?? true)
+      .map((scoreComponent) => scoreComponent.score(componentInput));
     const score = aggregateCandidateScore({
       exerciseId: candidate.exercise.id,
       components,

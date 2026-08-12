@@ -1,5 +1,9 @@
 import type { CandidateScoreComponent } from "../types";
 import { component, demandValue } from "../utils";
+import {
+  buildContextualPhasePolicyScoringTrace,
+  resolveContextualPhaseAnnotation,
+} from "../../../phaseSuitability";
 
 const EXPERIENCE_TARGET_DEMAND = {
   novice: 1,
@@ -26,7 +30,7 @@ export const experienceFitComponent: CandidateScoreComponent = {
   },
 };
 
-export const phaseFitComponent: CandidateScoreComponent = {
+export const legacyPhaseFitComponent: CandidateScoreComponent = {
   id: "phase_fit",
   score({ request, exercise }) {
     const suitability = exercise.phaseSuitability[request.phase.id]?.suitability;
@@ -53,6 +57,40 @@ export const phaseFitComponent: CandidateScoreComponent = {
     });
   },
 };
+
+export const contextualPhaseFitComponent: CandidateScoreComponent = {
+  id: "phase_fit",
+  include({ request, exercise }) {
+    const resolution = resolveContextualPhaseAnnotation({
+      phaseId: request.phase.id,
+      requestedRole: request.need.requestedRole,
+      requestedSection: request.need.requestedSection ?? null,
+      exerciseId: exercise.id,
+      annotations: exercise.phaseSuitabilityAnnotations ?? [],
+    });
+
+    return buildContextualPhasePolicyScoringTrace(resolution).component !== null;
+  },
+  score({ request, exercise }) {
+    const resolution = resolveContextualPhaseAnnotation({
+      phaseId: request.phase.id,
+      requestedRole: request.need.requestedRole,
+      requestedSection: request.need.requestedSection ?? null,
+      exerciseId: exercise.id,
+      annotations: exercise.phaseSuitabilityAnnotations ?? [],
+    });
+
+    const phaseComponent = buildContextualPhasePolicyScoringTrace(resolution).component;
+    if (!phaseComponent) {
+      throw new Error("Contextual phase component was scored after omission.");
+    }
+    return phaseComponent;
+  },
+};
+
+// The activation gate switches this explicit authority only after the dual-run
+// report satisfies every owner-approved low-churn semantic invariant.
+export const phaseFitComponent = legacyPhaseFitComponent;
 
 export const stabilityFitComponent: CandidateScoreComponent = {
   id: "stability_fit",
