@@ -115,3 +115,9 @@ Focused tests verify all 45 canonical contribution projections, the role/action 
 # Session Intent Planner Validation (2026-08-12)
 
 Planner tests cover ontology and fact ownership, all nine objective mappings, allocation-required and Week-reallocation statuses, goal/context separation, assessment clustering/actions/typed range requirements, pain/safety/phase boundaries, availability provenance, anti-bloat, equivalent merge, active-need continuity, unresolved context, 18 fixed-shell users, 10+ same-experience/equipment users, real Planner-to-Candidate-to-Composer execution, 23 fingerprints, and 10,000 fixed-seed deterministic cases. Week allocation algorithms, dose, and final sequencing remain intentionally absent.
+
+# Week Allocation Design Validation (2026-08-12)
+
+Private design tests cover the pre-design ontology/ownership/context audits; intent/objective/policy contracts; reservation and current-day materialization; 19 controlled weeks; 18-user fixed shell; 12 same-experience/equipment users; fixed-split and greedy failure contrast; anti-bloat and missed-session reallocation; seven policy-consequence rows; opaque production feasibility; three-ledger separation; 10,000 fixed-seed fuzz cases; and 24 deterministic design fingerprints.
+
+The design tests use explicit timestamp `2026-08-12T18:00:00-04:00` and seed `0x086710`. Green tests establish internal determinism and invariants only. They do not approve scientific policy, production search bounds, Product Adapter truth, prescribed dose, standalone recovery sessions, or a production Week API.

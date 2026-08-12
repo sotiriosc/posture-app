@@ -17,3 +17,9 @@ Status: production authority for the Session Intent Planner, 2026-08-12.
 The fixed objective mapping is: `dominant_main` to main/primary strength; `secondary_main` to main/secondary strength; `secondary_accessory` to accessory/secondary strength; `direct_accessory` to accessory/hypertrophy accessory; `capacity_main` to main/capacity; `capacity_accessory` to accessory/capacity; `explicit_preparation` to warmup/preparation; `activation` to activation/activation; and `recovery` to cooldown/recovery.
 
 Descriptions explain a decision but cannot create or alter one. Current `WeeklyIntent` numeric maps are not directive authority. Schedule disruption is returned to the future Week owner through `requires_week_reallocation` rather than compensated for locally.
+
+## Reservation Materialization Boundary
+
+A design-only `SessionAllocationReservation` may carry weekly responsibilities against expected future opportunity facts, but it is not valid Planner input. The proposed materializer must obtain actual current availability, equipment, safety, and evaluation time; compare expected versus actual facts; preserve all weekly objective references; then either emit this existing directive or route to explicit Week reallocation/under-specification.
+
+The dominant ordinary-session responsibility is locally required in the materialized directive while retaining its separate weekly priority trace. Raw minute differences alone do not create policy. The directive contract and public API are unchanged by the Week design.

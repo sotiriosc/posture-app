@@ -198,3 +198,9 @@ History distinguishes exercise, session, and program history. Exercise history e
 # Planner Domain Addendum (2026-08-12)
 
 Planner authority uses `TrainingOutcomeGoal` separately from `ProgrammingContextMode`, and only `ordinary_training` as the authoritative session type. `SessionAllocationDirective` is mandatory. Current availability and equipment carry provenance. `AssessmentSignal.actionFunctions` and `SessionRangeRequirement` preserve structured action/range truth. Legacy `TrainingGoal`, legacy session kinds, `requiredRangeIds`, and current `WeeklyIntent` numeric maps are compatibility-only on this path.
+
+# Week Design Domain Addendum (2026-08-12)
+
+Design-only Week concepts distinguish `WeekPlanningHorizon`, `WeekTrainingOpportunity`, proposed `WeeklyIntent`, `WeeklyDevelopmentObjective`, reviewed weekly policy, `SessionAllocationReservation`, materialization, and `WeekAllocationPlan`. Their truth states are explicit: expected future fact, actual current fact, planned allocation, prescribed dose, completed performance, and observed response.
+
+Weekly development purposes are movement, muscle, direct action, capacity, conditioning, assessment priority, and recovery support. Frequency intent counts allocated opportunities only. Movement/action/capacity/muscle lanes remain separate, and muscle relationships create no fractional set credit. These types are intentionally absent from the package index pending policy and domain approval.

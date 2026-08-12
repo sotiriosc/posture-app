@@ -11,3 +11,9 @@ The Planner reuses `ExerciseSelectionNeed`; it does not select exercises. Candid
 No minute thresholds exist. Fatigue cannot erase allocation. Pain and phase cannot create needs. Prose is trace-only. Continuity is derived from history, response, equipment, and block state, and only identities serving active needs survive projection.
 
 Overall classification: `SESSION_INTENT_PLANNER_READY_FOR_WEEK_COMPOSER_DESIGN`. The ordinary-session kernel is production-ready for its bounded contract. Typed readiness, accessibility, social constraints, crowded-gym adaptation, and standalone recovery-session ontology remain explicit future-owned gaps and are not silently approximated by this Planner.
+
+## Week Design Consumer Boundary
+
+The non-production Week lab confirms the Planner consumes only a materialized `SessionAllocationDirective`, never a future reservation. Actual current facts must be supplied at materialization. The Week Composer may call the existing Planner-to-Candidate-to-Composer pipeline only as an opaque precomputed feasibility oracle and may not duplicate its rules.
+
+Capacity-only ordinary reservations currently fail the Planner's required `dominant_main` invariant. That is an explicit ontology/owner decision, not permission for the Week layer to synthesize a main strength need. Planner production behavior and fingerprint `44d959a156caa1c4d4494aaed0f30a48bf5ad3f5a6f1c6e5ffde4900217d3d13` remain frozen.

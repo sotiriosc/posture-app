@@ -16,3 +16,9 @@ The kernel is pure and deterministic. It is not connected to application UI, pro
 ## Planner Integration
 
 The upstream production Planner now emits authoritative needs-first intents. Composer consumes those needs unchanged and remains forbidden from reconstructing allocation, parsing phase or assessment prose, or applying current-minute thresholds. The optional `planAndComposeSessionSkeleton` helper performs only Planner, canonical Candidate adaptation, and this kernel. The frozen combined Composer fingerprint remains `3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9`.
+
+## Week Feasibility Oracle Boundary
+
+The Week design may precompute proposed responsibility-combination feasibility by invoking the frozen Planner, Candidate, and Composer stack as an opaque oracle. Results are evidence statuses, not permission to inspect internals, select exercises in the Week layer, or claim actual-day feasibility. The production Composer does not know about horizons, reservations, frequency intent, reallocation, or weekly ledgers.
+
+All controlled reservations selected by the design lab pass this downstream oracle after materialization under matching facts. Composer behavior, API, and fingerprint remain unchanged.

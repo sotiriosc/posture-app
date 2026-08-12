@@ -71,3 +71,9 @@ No cohort request receives all eight rows. Athlete IDs, labels, notes, coaching 
 ## Session Planner Fixed Shell
 
 The Planner adds an 18-user fixed shell and a 10+ same-experience/equipment regression. Explicit allocation, outcome, structural capacity, high-confidence relevant assessment, direct priority, and active continuity have bounded receivers. Pain, current equipment, and execution requirements may preserve identical Planner needs while changing Candidate/Composer or future Prescription behavior. Missed sessions route to Week; no directive returns an allocation-required status. Convergence is accepted when the changed fact is irrelevant or owned by another layer.
+
+## Week Design Fixed Shell
+
+The design-only Week lab adds a separate 18-user fixed shell, including 12 users sharing experience and equipment. Explicit weekly priority changes intent; current opportunities, completion, expected equipment/capacity, and productive continuity can change allocation; actual-day divergence changes materialization or requests reallocation; and downstream-only facts do not force cosmetic Week differences.
+
+The matrix reports material intent differences, material allocation differences, same responsibility in different sessions, justified convergence, policy-required, current-availability-required, reallocation, wrong-layer effects, and unresponsive material inputs. No tested row has a wrong-layer or unresponsive-material classification. This evidence remains non-production.

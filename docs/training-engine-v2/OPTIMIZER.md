@@ -73,3 +73,9 @@ Knowledge breadth must not become longer workouts or redundant accumulation. Pre
 ## Non-Goals
 
 Session Intent Planner and Session Composer production kernels are implemented. Week composition, fallback chain, repair loop, final sequencing, and Prescription generation remain unimplemented. Candidate Intelligence remains unchanged. The Planner cannot allocate a week or select exercises, and Composer cannot infer missing needs or dose.
+
+## Week Allocation Design Recommendation (2026-08-12)
+
+The non-production lab recommends complete-plan lexicographic evaluation: hard safety/legality/minimum/spacing invariants first, then continuity and opaque session feasibility, priority-frequency vectors, stress concentration, equipment/capacity coherence, preferred targets, unique optional marginal value, duplication burden, and a canonical tie-break. Additive weighted totals and fixed/greedy split allocation are rejected.
+
+Exhaustive enumeration is the small-case oracle. A future production implementation should use deterministic Pareto-frontier pruning with approved bounds and must report inconclusive or unproven optimality honestly. Allocation ledger entries always carry zero dose credit; the earlier future muscle-set language is superseded by the three-ledger boundary and remains deferred to reviewed Prescription policy.

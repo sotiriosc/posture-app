@@ -1,0 +1,36 @@
+# Week Composer Implementation Readiness
+
+Status: `WEEK_LAYER_DESIGN_READY_FOR_OWNER_POLICY_APPROVAL`.
+
+This verdict means the ontology, ownership boundaries, deterministic design fixtures, and failure evidence are coherent enough for owner review. It does not authorize production Weekly Intent Planner or Week Allocation Composer implementation.
+
+## Ready For Review
+
+- expected/current/planned/prescribed/completed/observed truth states are separate;
+- Weekly Intent, objective, horizon, opportunity, reservation, materialization, plan, evaluation, and ledger proposals are typed;
+- fixed splits are rejected as causes of allocation;
+- exhaustive small-case and recommended bounded Pareto search are defined without additive weights;
+- 19 controlled scenarios, 18-user fixed shell, 10+ same-experience/equipment regression, fixed-split matrix, anti-bloat/reallocation matrices, seven policy consequences, and 10,000 deterministic fuzz cases are executable;
+- all 24 Week design fingerprints are frozen;
+- existing production kernels and public exports are untouched.
+
+## Production Implementation Blockers
+
+- accountable owner approval of objective/frequency/spacing/assessment/soft-ceiling semantics;
+- evidence review for the six scientific policy question families;
+- Product Adapter contracts for live horizons, expected opportunities, provenance, and day-of updates;
+- explicit external-load and recovery-readiness/illness ownership;
+- decision on standalone recovery-session ontology;
+- production search bounds, inconclusive behavior, and operational observability;
+- migration/disposition plan proving legacy `WeeklyIntent` maps cannot become behavioral input;
+- API review and a separately approved implementation PR.
+
+## Prescribed Weekly Validation Blockers
+
+Prescription must define exercise-level source exposure identity, sets/reps/load/time/range/rest units, muscle-contribution relationships without double counting, realized stress and recovery burden, and planned-to-completed linkage. Longitudinal Adaptation must define response evidence and target-change authority. Until then, allocation satisfaction cannot be presented as volume, physiological stimulus, completed exposure, or adaptation.
+
+## Remaining Gaps
+
+Current production ontology has no Week owner, typed live horizon, reviewed weekly policy, external-load consequence model, acute recovery/illness adapter, standalone recovery-session contract, or prescribed/completed weekly ledgers. Capacity-only ordinary sessions also conflict with the current Planner's dominant-main requirement and need an explicit owner decision rather than a workaround.
+
+The exact next dependency is owner review and approval of the reviewed-policy question set, followed by Product Adapter horizon design. Production behavior remains unchanged.

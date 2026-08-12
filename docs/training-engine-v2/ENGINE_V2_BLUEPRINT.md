@@ -2003,3 +2003,9 @@ Candidate Intelligence consumes relevant structured athlete, need, assessment, p
 # 2026-08-12 Session Intent Planner Authority
 
 The production Session Intent Planner now converts an explicit Week or standalone session allocation into the smallest truthful needs-first `SessionIntent`. It never infers a workout from profile defaults. Outcome goal, pain-aware context, ordinary session type, current availability, and current equipment are separate contracts. Week allocation, Prescription, and final Sequencing remain future authorities; see `SESSION_INTENT_PLANNER_PRODUCTION_KERNEL.md`.
+
+# 2026-08-12 Week Layer Design Boundary
+
+The non-production Week design separates Weekly Intent objective truth, future-opportunity allocation reservations, actual-day directive materialization, Session Planner needs, Candidate evidence, Session Composer skeletons, Prescription dose, completed performance, and longitudinal response. Fixed split labels, legacy `WeeklyIntent` numeric maps, profile session counts, and prose are never causal allocation facts.
+
+The design classification is `WEEK_LAYER_DESIGN_READY_FOR_OWNER_POLICY_APPROVAL`, not production readiness. The 16 Week documents and private design lab define the review surface; production implementation remains blocked on reviewed weekly policy, live horizon/Product Adapter contracts, recovery/external-load ownership, search bounds, and later prescribed-dose ledger semantics.
