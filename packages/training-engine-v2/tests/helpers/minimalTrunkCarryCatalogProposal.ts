@@ -3842,8 +3842,8 @@ const REJECTED_LEGACY_POLICIES = [
 
 const IMPLEMENTATION_DEPENDENCIES = [
   "Project-owner approval of each selected exercise identity, role set, mechanics profile, stress mapping, prerequisites, and provenance artifact.",
-  "Equipment-contract decisions for loaded_gait_space or safe_walkway, stable loaded standing space, cable anchor height, abdominal-crunch MachineId, support side, and minimum usable load are represented as contracts, with final exercise identity still pending owner curation.",
-  "Pain-stress vocabulary and receiver review is documented in `TRUNK_CARRY_PAIN_STRESS_REVIEW.md` as `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY_FOR_OWNER_DECISION`; no new tags should be added without owner approval of source placement, side semantics, hard-authority scope, and provenance.",
+  "Equipment-contract decisions for loaded_gait_space or safe_walkway, stable loaded standing space, cable anchor height, abdominal-crunch MachineId, support side, and minimum usable load are represented as contracts. Exact exercise identity curation is now documented in `SEVEN_EXERCISE_TRUNK_CARRY_CURATION.md`.",
+  "Pain-stress vocabulary and receiver review is documented in `TRUNK_CARRY_PAIN_STRESS_REVIEW.md` and `TRUNK_CARRY_PAIN_STRESS_OWNER_DECISIONS.md` as `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY`; production stress metadata still requires owner-approved exercise-row implementation tests.",
   "Project-owner decisions for loaded trunk rotation, lateral trunk loading, loaded gait, loaded march, neutral grip loading, and sustained upper-limb support before any stress tags or pain-response requirements are added.",
   "Prescription-contract support for structured load, side, hold purpose, distance, trips, steps, turns, lever, support, gait standard, and per-side semantics is represented by `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`; final values remain owner-curated production metadata.",
   "Owner acceptance of single-candidate bootstrap limitations for trunk_flexion and trunk_rotation.",
@@ -4164,9 +4164,9 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     "The owner directionally accepts the seven-concept tranche and settles these future identities: `forearm-plank`, `forearm-side-plank`, `machine-abdominal-crunch`, `half-kneeling-high-to-low-cable-chop`, `farmer-carry`, and `suitcase-carry`.",
     "",
-    "`wall-supported-suitcase-march` remains provisional for owner curation. Structured support-side, load-side, steps/time, and stationary-gait prescription semantics now exist as a contract, but they do not approve this identity as production metadata.",
+    "`wall-supported-suitcase-march` is curated as a stationary supported loaded march with no loaded-gait or distance truth, but its `carry` movement-role status remains an owner-decision question. Structured support-side, load-side, steps/time, and stationary-march prescription semantics now exist as a contract, but they do not approve this identity as production metadata.",
     "",
-    "The separate training-space and equipment dependency is classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. The structured dose, prescription, and same-exercise progression dependency is classified `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. The pain-stress vocabulary and receiver dependency is classified `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY_FOR_OWNER_DECISION`. These reviews add contracts and synthetic future requirements but no exercise, production stress tag, or production stress metadata. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. The overall exercise tranche remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`, and the next dependency is project-owner resolution of pain-stress decisions followed by exact seven-exercise curation.",
+    "The separate training-space and equipment dependency is classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. The structured dose, prescription, and same-exercise progression dependency is classified `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. The pain-stress exposure dependency is classified `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY`. The exact seven-exercise curation artifact is classified `SEVEN_EXERCISE_TRUNK_CARRY_CURATION_READY_FOR_OWNER_APPROVAL`. These reviews add contracts and synthetic future requirements but no production exercise row or production exercise stress metadata. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. Production implementation is blocked pending owner approval and contextual phase contract resolution.",
     "",
     "## Current Gap Statement",
     "",
@@ -4492,7 +4492,7 @@ export function renderMinimalTrunkCarryCatalogProposal(
     "",
     `**${data.classification}**`,
     "",
-    "The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, and pain-stress vocabulary dependencies are resolved as separate proposal/contract reviews. Production implementation remains blocked on project-owner pain-stress decisions, followed by exact seven-exercise owner curation and production metadata. No exercise, tag, or stress metadata is implemented by this classification.",
+    "The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, pain-stress exposure, and exact seven-exercise curation dependencies are resolved as separate review artifacts. Production implementation remains blocked on owner approval of the curation decisions and contextual phase contract resolution. No production exercise row or exercise stress metadata is implemented by this classification.",
     "",
   ].join("\n");
 }

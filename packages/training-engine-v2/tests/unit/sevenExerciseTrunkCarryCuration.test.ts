@@ -1,0 +1,212 @@
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
+import {
+  REFERENCE_EXERCISES,
+} from "../../src";
+import {
+  CURATED_TRUNK_CARRY_IDS,
+  DEFERRED_TRUNK_CARRY_IDS,
+  PRODUCTION_CATALOG_IMPLEMENTATION_READINESS,
+  SEVEN_EXERCISE_TRUNK_CARRY_CURATION_CLASSIFICATION,
+  buildSevenExerciseTrunkCarryCurationData,
+  renderSevenExerciseTrunkCarryCurationReport,
+} from "../helpers/sevenExerciseTrunkCarryCuration";
+
+const data = buildSevenExerciseTrunkCarryCurationData();
+
+function exercise(id: string) {
+  const found = data.exercises.find((candidate) => candidate.id === id);
+  if (!found) {
+    throw new Error(`Missing curated exercise ${id}`);
+  }
+  return found;
+}
+
+describe("seven exercise trunk/carry curation review", () => {
+  it("renders a deterministic checked-in owner curation artifact", () => {
+    const second = buildSevenExerciseTrunkCarryCurationData();
+    const rendered = renderSevenExerciseTrunkCarryCurationReport(data);
+
+    expect(second).toEqual(data);
+    expect(renderSevenExerciseTrunkCarryCurationReport(second)).toBe(rendered);
+    expect(data.classification).toBe(
+      SEVEN_EXERCISE_TRUNK_CARRY_CURATION_CLASSIFICATION,
+    );
+    expect(data.productionReadiness).toBe(PRODUCTION_CATALOG_IMPLEMENTATION_READINESS);
+    expect(
+      readFileSync(
+        new URL(
+          "../../../../docs/training-engine-v2/SEVEN_EXERCISE_TRUNK_CARRY_CURATION.md",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    ).toBe(rendered);
+  });
+
+  it("curates exactly seven identities without adding production or deferred exercises", () => {
+    expect(data.exercises.map((candidate) => candidate.id)).toEqual([
+      ...CURATED_TRUNK_CARRY_IDS,
+    ]);
+    expect(new Set(data.exercises.map((candidate) => candidate.id)).size).toBe(7);
+    expect(REFERENCE_EXERCISES.map((candidate) => candidate.id)).not.toEqual(
+      expect.arrayContaining([...CURATED_TRUNK_CARRY_IDS]),
+    );
+    expect(data.exercises.map((candidate) => candidate.id)).not.toEqual(
+      expect.arrayContaining([...DEFERRED_TRUNK_CARRY_IDS]),
+    );
+  });
+
+  it("provides a complete proposed contract for every exercise", () => {
+    for (const candidate of data.exercises) {
+      expect(candidate.displayName).toBeTruthy();
+      expect(candidate.summary).toBeTruthy();
+      expect(candidate.family).toBeTruthy();
+      expect(candidate.movementRoles.length).toBeGreaterThan(0);
+      expect(candidate.trainingRoles.length).toBeGreaterThan(0);
+      expect(candidate.sectionSuitability.length).toBeGreaterThan(0);
+      expect(candidate.primaryMuscles.length).toBeGreaterThan(0);
+      expect(candidate.bodyRegions.length).toBeGreaterThan(0);
+      expect(candidate.equipment.length).toBeGreaterThan(0);
+      expect(candidate.genericDemands).toHaveLength(6);
+      expect(candidate.trunkMechanics).toHaveLength(8);
+      expect(candidate.structuredStress.length).toBeGreaterThan(0);
+      expect(candidate.progressionAxes.length).toBeGreaterThan(0);
+      expect(candidate.prescriptionModes.length).toBeGreaterThan(0);
+      expect(candidate.executionStandardNeeds.length).toBeGreaterThan(0);
+      expect(candidate.phaseContext.productionImplementationBlockedByCurrentPhaseSchema)
+        .toBe("PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST");
+      expect(candidate.provenance.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("requires provenance for every accepted non-unknown mechanics claim and preserves unknown", () => {
+    for (const candidate of data.exercises) {
+      for (const field of candidate.trunkMechanics) {
+        if (field.reviewStatus === "accepted" && field.level !== "unknown") {
+          expect(field.provenance.length).toBeGreaterThan(0);
+          expect(field.evidenceCluster).not.toBe("not-reviewed-for-this-identity");
+        }
+        if (field.level === "unknown") {
+          expect(field.reviewStatus).toBe("needs_review");
+          expect(field.provenance).toEqual([]);
+          expect(field.claim).toBe("No accepted curation claim.");
+        }
+      }
+    }
+  });
+
+  it("keeps role truth, mechanics, and pain stress in separate lanes", () => {
+    expect(exercise("forearm-plank").movementRoles).toEqual(["anti_extension_core"]);
+    expect(exercise("forearm-plank").movementRoles).not.toContain("loaded_bracing");
+    expect(exercise("forearm-side-plank").movementRoles).toEqual([
+      "anti_lateral_flexion_core",
+    ]);
+    expect(exercise("forearm-side-plank").movementRoles).not.toContain("carry");
+    expect(exercise("half-kneeling-high-to-low-cable-chop").movementRoles)
+      .toEqual(["trunk_rotation"]);
+    expect(exercise("half-kneeling-high-to-low-cable-chop").movementRoles)
+      .not.toContain("anti_rotation_core");
+    expect(
+      exercise("forearm-plank").structuredStress.map((stress) => stress.tag),
+    ).not.toContain("loaded_bracing" as never);
+  });
+
+  it("keeps side, lever, support, and distance boundaries explicit", () => {
+    expect(
+      exercise("forearm-plank").identity.prescriptionChangesSameIdentity,
+    ).toEqual(expect.arrayContaining(["knee-supported variant pending owner approval"]));
+    expect(exercise("forearm-plank").identity.newExerciseIdRequired)
+      .toContain("long-lever plank if owner wants separate row");
+    expect(
+      exercise("forearm-side-plank").identity.prescriptionChangesSameIdentity,
+    ).toContain("bent-knee support");
+    expect(
+      exercise("forearm-side-plank").structuredStress.find(
+        (stress) => stress.tag === "lateral_trunk_loading",
+      )?.sideScope,
+    ).toBe("prescription_side");
+    expect(exercise("wall-supported-suitcase-march").equipment)
+      .not.toContain("loaded_gait_space");
+    expect(exercise("wall-supported-suitcase-march").prescriptionModes)
+      .toEqual(["step_march"]);
+    expect(exercise("wall-supported-suitcase-march").structuredStress.map((stress) => stress.tag))
+      .not.toContain("loaded_gait");
+    expect(exercise("wall-supported-suitcase-march").progressionAxes)
+      .not.toContain("distance");
+  });
+
+  it("does not make carries statically heavy, mandatory, or universally transitional", () => {
+    for (const id of ["farmer-carry", "suitcase-carry"] as const) {
+      const candidate = exercise(id);
+      expect(candidate.legacyStressRecommendation.jointStressTags)
+        .not.toEqual(expect.arrayContaining(["grip_intensive", "heavy_axial_loading"]));
+      expect(candidate.structuredStress.find((stress) => stress.tag === "grip_intensive")
+        ?.exposureScope).toBe("dose_created");
+      expect(candidate.structuredStress.find((stress) => stress.tag === "heavy_axial_loading")
+        ?.exposureScope).toBe("dose_created");
+      expect(candidate.marginalValue.doNotAddWhen).toBeTruthy();
+      expect(candidate.marginalValue.redundancyRisk).toMatch(/not|Should not|crowd/i);
+    }
+
+    const allTransitions = data.exercises.flatMap((candidate) =>
+      candidate.transitionRelationships,
+    );
+    expect(allTransitions.every((transition) =>
+      transition.automaticSelectionEffect === "none"
+    )).toBe(true);
+    expect(allTransitions.some((transition) => transition.classification === "context_dependent"))
+      .toBe(true);
+    expect(allTransitions).toHaveLength(7);
+  });
+
+  it("reports phase uncertainty, candidate-pool effects, and no fake phase values", () => {
+    for (const candidate of data.exercises) {
+      expect(candidate.phaseContext.currentGlobalPhaseValueTruthful).toBe("no");
+      expect(candidate.phaseContext.acceptedPhaseEvidenceAvailable).toBe("no");
+      expect(candidate.phaseContext.unknown).toBe("yes");
+      expect(candidate.candidatePoolEffect.genuineDiversity).toBeTruthy();
+    }
+    expect(exercise("machine-abdominal-crunch").candidatePoolEffect.createsNewBootstrapRole)
+      .toBe(true);
+    expect(exercise("half-kneeling-high-to-low-cable-chop").candidatePoolEffect.requestedMovementRoles)
+      .toEqual(["trunk_rotation"]);
+  });
+
+  it("preserves current behavior fingerprints", () => {
+    expect(data.behaviorFingerprints.productionRankingFingerprint).toBe(
+      "d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782",
+    );
+    expect(data.behaviorFingerprints.productionRankingMatches).toBe(true);
+    expect(data.behaviorFingerprints.comprehensiveBehaviorFingerprint).toBe(
+      "216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9",
+    );
+    expect(data.behaviorFingerprints.comprehensiveBehaviorMatches).toBe(true);
+    expect(data.behaviorFingerprints.referenceCatalogFingerprint).toBe(
+      "e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c",
+    );
+    expect(data.behaviorFingerprints.referenceCatalogMatches).toBe(true);
+    expect(data.behaviorFingerprints.equipmentLegalityFingerprint).toBe(
+      "50881bd4cd735954dae1d9a8574165d5a6bff40d8af990c8324a21ba8436b8e6",
+    );
+    expect(data.behaviorFingerprints.equipmentLegalityMatches).toBe(true);
+    expect(data.behaviorFingerprints.expandedEquipmentFixtureFingerprint).toBe(
+      "98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117",
+    );
+    expect(data.behaviorFingerprints.expandedEquipmentFixtureMatches).toBe(true);
+  });
+
+  it("covers personas, owner questions, external evidence, and roadmap handoff", () => {
+    for (const candidate of data.exercises) {
+      expect(candidate.personaReview).toHaveLength(10);
+      expect(candidate.trunkMechanics.every(
+        (field) => field.externalPrimaryEvidenceStatus === "EXTERNAL_REFERENCE_PENDING",
+      )).toBe(true);
+    }
+    expect(data.ownerQuestions.length).toBeGreaterThan(0);
+    expect(data.ownerQuestions.length).toBeLessThanOrEqual(4);
+    expect(data.wholeBodyRoadmapHandoff).toContain(
+      "WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT",
+    );
+  });
+});
