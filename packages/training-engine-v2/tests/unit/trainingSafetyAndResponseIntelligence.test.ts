@@ -182,11 +182,11 @@ describe("training safety and response intelligence foundation", () => {
       row.closeOrderChanges,
     ])).toEqual([
       ["A_CURRENT", 0, 0],
-      ["B_ANNOTATION_ONLY", 1, 2],
-      ["C_NO_PHASE_COMPONENT", 7, 16],
-      ["D_WEIGHT_05", 4, 8],
-      ["E_GENTLE_GAP", 6, 12],
-      ["E_MODERATE_GAP", 2, 4],
+      ["B_ANNOTATION_ONLY", 0, 0],
+      ["C_NO_PHASE_COMPONENT", 5, 13],
+      ["D_WEIGHT_05", 3, 6],
+      ["E_GENTLE_GAP", 3, 6],
+      ["E_MODERATE_GAP", 0, 0],
     ]);
     expect(data.safetyFingerprint).toBe(
       "0a0805117529073887fe7aca94a1bc2f097e53e1de14d320b1e37093a8825048",

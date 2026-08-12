@@ -356,3 +356,6 @@ Contextual programming intent remains explicit and retains reviewed transition p
 ## Readiness Rationale
 
 The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, response-led progression and continuity semantics are separated from replacement, and TrainingSafety affects downstream readiness without changing rank. The contextual activation and seven-row milestones are complete. No technical contextual-phase blocker remains before a whole-body audit, but that audit and all composition work remain deliberately deferred until separately authorized.
+# Final Causal Personalization Disposition (2026-08-12)
+
+Candidate Intelligence now implements actual-user causal personalization from structured inputs rather than experience/equipment templates. Same outputs are valid as `JUSTIFIED_CONVERGENCE` when the changed field is irrelevant or owned by a future layer. Availability and variety remain future Composer inputs; prose, athlete IDs, and labels remain intentionally inert. The role/action/muscle production migration and exactly eight P0 proposals are documented separately; no P0 row entered production.

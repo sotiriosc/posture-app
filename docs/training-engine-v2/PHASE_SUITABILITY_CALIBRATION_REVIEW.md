@@ -4,9 +4,9 @@
 
 Fixed evaluation time: `2026-08-10T00:00:00.000Z`.
 
-Production 22-scenario ranking fingerprint: `237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118` (matches the captured HEAD 7aa7ccd baseline).
+Production 22-scenario ranking fingerprint: `70ff2f16037eed38bc6d8dddc098cfa0d6bbe3d833eaf3a1e53de61a5e252436` (matches the captured HEAD 7aa7ccd baseline).
 
-Experimental phase-laboratory fingerprint: `906eb5bedc157fc262b17be0af1503a8555cbe2579e026f77e553f40a3642aa9`.
+Experimental phase-laboratory fingerprint: `63177599c045a20d0c5fb6aa0e5cb8c7217ff19d76ac82f9d21c833071fb2094`.
 
 Phase audit classification: **PHASE_POLICY_READY_FOR_OWNER_DECISION**
 
@@ -96,12 +96,12 @@ Catalog classifications: WELL_JUSTIFIED=26; PLAUSIBLE_NEEDS_REVIEW=8; ARBITRARY_
 | Exercise | Training Roles | Movement Roles | Section Suitability | Phase 1 | Phase 2 | Phase 3 | Loadability | Skill | Stability | Coordination | Progression Axes | Continuity Potential | Assessment Feature Role | Phase Provenance / Review | Classification | Audit Reason |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | ninety-ninety-breathing / 90/90 Breathing | preparation, recovery | breathing_position, anti_extension_core | warmup:excellent, cooldown:good | excellent: Directly supports control and position. | good: Useful when assessment priorities remain relevant. | possible: Useful as targeted preparation, not a main stimulus. | none | low | low | low | tempo, range | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Control/preparation emphasis and declining main-stimulus relevance are internally coherent. |
-| serratus-wall-slide / Serratus Wall Slide | activation, preparation | scapular_control, vertical_push | warmup:good, activation:excellent | excellent: Useful for control development. | good: Useful as preparation before higher loading. | possible: Useful when shoulder control remains a priority. | limited | low | low | moderate | range, tempo | same-exercise progression runway present | serratus=high, upward_rotation=high, retraction=low, external_rotation=low, loaded_stability=low, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Control-first preparation role and limited loading support the ordered annotations. |
+| serratus-wall-slide / Serratus Wall Slide | activation, preparation | scapular_control | warmup:good, activation:excellent | excellent: Useful for control development. | good: Useful as preparation before higher loading. | possible: Useful when shoulder control remains a priority. | limited | low | low | moderate | range, tempo | same-exercise progression runway present | serratus=high, upward_rotation=high, retraction=low, external_rotation=low, loaded_stability=low, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Control-first preparation role and limited loading support the ordered annotations. |
 | dead-bug / Dead Bug | activation, hypertrophy_accessory | anti_extension_core | activation:excellent, accessory:good | excellent: Direct control exercise. | good: Can progress with tempo or range. | possible: Useful for targeted trunk control. | limited | low | moderate | moderate | range, tempo, complexity | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Control emphasis and bounded progression runway support strong early-phase fit. |
 | push-up / Push-Up | primary_strength, secondary_strength, hypertrophy_accessory | horizontal_push, anti_extension_core | main:good, accessory:good | possible: Appropriate if supported or regressed. | good: Good continuity exercise when progression remains available. | possible: May need loading or variation for sufficient stimulus. | moderate | moderate | moderate | low | reps, sets, tempo, support_reduction | same-exercise progression runway present | serratus=moderate, upward_rotation=low, retraction=low, external_rotation=low, loaded_stability=moderate, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Prerequisite/control needs and moderate load ceiling support possible-good-possible. |
 | dumbbell-bench-press / Dumbbell Bench Press | primary_strength, secondary_strength | horizontal_push | main:excellent, accessory:good | possible: Can be used with light loading and support. | excellent: Strong progression path. | excellent: Excellent continuity candidate with load or volume progression. | high | moderate | moderate | moderate | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Supported loadable pressing and clear progression support later-phase continuity. |
 | machine-chest-press / Machine Chest Press | primary_strength, secondary_strength | horizontal_push | main:good, accessory:good | good: Support can reduce coordination demand. | good: Load progression is clear. | good: Useful when machine path fits the athlete. | high | low | low | low | load, reps, sets | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | All-good treatment is plausible, but phase distinctions and machine-fit evidence are under-specified. |
-| cable-chest-fly / Cable Chest Fly | hypertrophy_accessory | horizontal_push | accessory:excellent | possible: Use cautiously if shoulder control is limited. | good: Useful accessory volume. | excellent: High-value hypertrophy accessory. | moderate | moderate | moderate | moderate | reps, sets, tempo, range | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Accessory hypertrophy role and shoulder-control caveat support increasing phase fit. |
+| cable-chest-fly / Cable Chest Fly | hypertrophy_accessory | accessory | accessory:excellent | possible: Use cautiously if shoulder control is limited. | good: Useful accessory volume. | excellent: High-value hypertrophy accessory. | moderate | moderate | moderate | moderate | reps, sets, tempo, range | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Accessory hypertrophy role and shoulder-control caveat support increasing phase fit. |
 | chest-supported-dumbbell-row / Chest-Supported Dumbbell Row | primary_strength, secondary_strength | horizontal_pull | main:excellent, accessory:good | good: Support reduces setup and trunk demand. | excellent: Clear load progression. | excellent: Strong continuity candidate. | high | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | serratus=low, upward_rotation=low, retraction=moderate, external_rotation=low, loaded_stability=moderate, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Support and progression rationale are plausible but duplicate dedicated facts and lack phase provenance. |
 | one-arm-dumbbell-row / One-Arm Dumbbell Row | primary_strength, secondary_strength | horizontal_pull | main:good, accessory:good | possible: May need support and conservative loading. | good: Progression-friendly home or gym row. | excellent: Useful loadable pull when setup fits. | high | moderate | high | moderate | load, reps, sets, tempo | same-exercise progression runway present | serratus=low, upward_rotation=low, retraction=moderate, external_rotation=low, loaded_stability=high, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Increasing fit is plausible, but high trunk/stability demand and phase rationale need review. |
 | machine-row / Machine Row | primary_strength, secondary_strength | horizontal_pull | main:excellent, accessory:good | good: Guided setup can reduce coordination demand. | excellent: Clear load progression. | good: Strong stimulus if the machine path fits the athlete. | high | low | low | low | load, reps, sets | same-exercise progression runway present | serratus=low, upward_rotation=low, retraction=moderate, external_rotation=low, loaded_stability=moderate, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | ARBITRARY_OR_UNDERSPECIFIED | Phase 2 excellent versus Phase 3 good is justified by machine fit rather than a clearly phase-specific fact. |
@@ -110,20 +110,20 @@ Catalog classifications: WELL_JUSTIFIED=26; PLAUSIBLE_NEEDS_REVIEW=8; ARBITRARY_
 | dumbbell-shoulder-press / Dumbbell Shoulder Press | primary_strength, secondary_strength | vertical_push | main:good, accessory:good | possible: Usually requires review of range and support. | good: Useful if overhead control is established. | excellent: Strong loadability for vertical push stimulus. | high | moderate | moderate | moderate | load, reps, sets | same-exercise progression runway present | serratus=moderate, upward_rotation=high, retraction=low, external_rotation=moderate, loaded_stability=high, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Range/control prerequisite and high loadability support increasing fit. |
 | lat-pulldown / Lat Pulldown | primary_strength, secondary_strength | vertical_pull | main:excellent, accessory:good | good: Stable path can support skill acquisition. | excellent: Clear progression route. | excellent: High-value back stimulus. | high | low | low | low | load, reps, sets | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Stable early acquisition and clear load progression support good-excellent-excellent, subject to the catalog-wide provenance gap. |
 | band-lat-pulldown / Band Lat Pulldown | activation, hypertrophy_accessory, secondary_strength | vertical_pull | activation:good, accessory:good | good: Accessible vertical pull pattern if anchor exists. | possible: Loadability may limit stimulus. | possible: Usually accessory or travel option. | limited | low | low | low | reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Accessible early exposure and limited loadability support later possible ratings. |
-| goblet-squat / Goblet Squat | primary_strength, secondary_strength | squat | main:excellent, accessory:good | good: Teaches squat with manageable load. | excellent: Progression-friendly until load ceiling. | possible: May be load-limited for advanced users. | moderate | low | moderate | low | load, reps, range, sets | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Manageable early loading and later load ceiling support good-excellent-possible. |
-| leg-press / Leg Press | primary_strength, secondary_strength | squat | main:excellent, accessory:good | possible: Use range and load conservatively. | excellent: Useful capacity builder. | excellent: High-stimulus lower-body option. | high | low | low | low | load, reps, sets, range | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Conservative early use and later high stimulus support possible-excellent-excellent. |
-| bodyweight-box-squat / Bodyweight Box Squat | preparation, activation, secondary_strength | squat | warmup:good, activation:good, accessory:possible | excellent: Range and support are easy to control. | possible: Often becomes too low stimulus. | possible: Mostly preparation or deload context. | limited | low | low | low | range, reps, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Controllable early range and low stimulus ceiling support excellent-possible-possible. |
+| goblet-squat / Goblet Squat | primary_strength, secondary_strength | squat, knee_dominant | main:excellent, accessory:good | good: Teaches squat with manageable load. | excellent: Progression-friendly until load ceiling. | possible: May be load-limited for advanced users. | moderate | low | moderate | low | load, reps, range, sets | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Manageable early loading and later load ceiling support good-excellent-possible. |
+| leg-press / Leg Press | primary_strength, secondary_strength | knee_dominant | main:excellent, accessory:good | possible: Use range and load conservatively. | excellent: Useful capacity builder. | excellent: High-stimulus lower-body option. | high | low | low | low | load, reps, sets, range | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Conservative early use and later high stimulus support possible-excellent-excellent. |
+| bodyweight-box-squat / Bodyweight Box Squat | preparation, activation, secondary_strength | squat, knee_dominant | warmup:good, activation:good, accessory:possible | excellent: Range and support are easy to control. | possible: Often becomes too low stimulus. | possible: Mostly preparation or deload context. | limited | low | low | low | range, reps, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Controllable early range and low stimulus ceiling support excellent-possible-possible. |
 | dumbbell-romanian-deadlift / Dumbbell Romanian Deadlift | primary_strength, secondary_strength | hinge | main:excellent, accessory:good | possible: Appropriate only if hinge control is present. | excellent: Strong progression path. | excellent: Productive posterior-chain stimulus. | high | moderate | moderate | moderate | load, reps, sets, range | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Control prerequisite and strong progression runway support later excellent fit. |
 | cable-pull-through / Cable Pull-Through | activation, secondary_strength, hypertrophy_accessory | hinge | activation:good, accessory:good | good: Good hinge teaching tool. | good: Useful accessory or hinge regression. | possible: May be too setup-limited for primary work. | moderate | low | moderate | low | load, reps, range | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Teaching value and moderate loading ceiling support good-good-possible. |
-| split-squat / Split Squat | secondary_strength, hypertrophy_accessory | single_leg, squat | main:possible, accessory:excellent | possible: Support may be needed. | good: Progresses single-leg strength. | excellent: Strong accessory stimulus. | moderate | moderate | moderate | moderate | load, reps, range, support_reduction | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scalable support and productive accessory runway support increasing phase fit. |
-| step-up / Step-Up | secondary_strength, hypertrophy_accessory | single_leg, squat | accessory:excellent, activation:possible | good: Height and support can be scaled. | good: Useful unilateral volume. | good: Useful accessory when loadability is enough. | moderate | moderate | moderate | moderate | load, range, reps | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | All-good treatment preserves continuity but does not explain phase-specific developmental preference. |
-| lying-leg-curl / Lying Leg Curl | hypertrophy_accessory | hinge | accessory:excellent | possible: Useful if simple machine setup fits. | good: Supports posterior-chain volume. | excellent: High-value hypertrophy accessory. | high | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Simple setup and direct hypertrophy role support increasing later-phase relevance. |
-| glute-bridge / Glute Bridge | activation, hypertrophy_accessory | hinge | activation:excellent, accessory:good | excellent: Accessible glute and pelvic-control option. | good: Can progress with load or band. | possible: May need stronger loading path. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Accessible control and later loading ceiling support excellent-good-possible. |
-| dumbbell-lateral-raise / Dumbbell Lateral Raise | hypertrophy_accessory | vertical_push | accessory:excellent | possible: Use light load and owned range. | good: Useful delt volume. | excellent: High-value hypertrophy accessory. | moderate | low | low | low | reps, sets, tempo, load | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Optional early use and direct later hypertrophy role support increasing fit. |
-| reverse-pec-deck / Reverse Pec Deck | hypertrophy_accessory, activation | horizontal_pull, scapular_control | activation:good, accessory:excellent | good: Stable setup for scapular work. | good: Useful upper-back accessory. | excellent: High-value rear-delt accessory. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | serratus=low, upward_rotation=low, retraction=moderate, external_rotation=low, loaded_stability=moderate, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Stable setup and hypertrophy role are plausible, but early activation versus accessory intent needs review. |
-| band-face-pull / Band Face Pull | activation, hypertrophy_accessory | horizontal_pull, scapular_control | activation:excellent, accessory:good | excellent: Strong control and preparation fit. | good: Useful between pressing volume. | possible: Accessory if loadability is enough. | limited | low | low | moderate | reps, sets, tempo | same-exercise progression runway present | serratus=low, upward_rotation=low, retraction=high, external_rotation=moderate, loaded_stability=moderate, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Preparation/control value and limited loading support declining later-phase preference. |
-| dumbbell-curl / Dumbbell Curl | hypertrophy_accessory | horizontal_pull | accessory:excellent | possible: Optional accessory. | good: Adds arm volume. | excellent: Useful hypertrophy accessory. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Increasing accessory relevance is plausible, but phase rather than session/goal ownership is unclear. |
-| cable-triceps-pressdown / Cable Triceps Pressdown | hypertrophy_accessory | horizontal_push | accessory:excellent | possible: Optional accessory. | good: Useful pressing support volume. | excellent: High-value arm accessory. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Increasing accessory relevance is plausible, but phase rather than session/goal ownership is unclear. |
+| split-squat / Split Squat | secondary_strength, hypertrophy_accessory | single_leg, knee_dominant | main:possible, accessory:excellent | possible: Support may be needed. | good: Progresses single-leg strength. | excellent: Strong accessory stimulus. | moderate | moderate | moderate | moderate | load, reps, range, support_reduction | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scalable support and productive accessory runway support increasing phase fit. |
+| step-up / Step-Up | secondary_strength, hypertrophy_accessory | single_leg, knee_dominant | accessory:excellent, activation:possible | good: Height and support can be scaled. | good: Useful unilateral volume. | good: Useful accessory when loadability is enough. | moderate | moderate | moderate | moderate | load, range, reps | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | All-good treatment preserves continuity but does not explain phase-specific developmental preference. |
+| lying-leg-curl / Lying Leg Curl | hypertrophy_accessory | accessory | accessory:excellent | possible: Useful if simple machine setup fits. | good: Supports posterior-chain volume. | excellent: High-value hypertrophy accessory. | high | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Simple setup and direct hypertrophy role support increasing later-phase relevance. |
+| glute-bridge / Glute Bridge | activation, hypertrophy_accessory | accessory | activation:excellent, accessory:good | excellent: Accessible glute and pelvic-control option. | good: Can progress with load or band. | possible: May need stronger loading path. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Accessible control and later loading ceiling support excellent-good-possible. |
+| dumbbell-lateral-raise / Dumbbell Lateral Raise | hypertrophy_accessory | accessory | accessory:excellent | possible: Use light load and owned range. | good: Useful delt volume. | excellent: High-value hypertrophy accessory. | moderate | low | low | low | reps, sets, tempo, load | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Optional early use and direct later hypertrophy role support increasing fit. |
+| reverse-pec-deck / Reverse Pec Deck | hypertrophy_accessory, activation | scapular_control | activation:good, accessory:excellent | good: Stable setup for scapular work. | good: Useful upper-back accessory. | excellent: High-value rear-delt accessory. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | serratus=low, upward_rotation=low, retraction=moderate, external_rotation=low, loaded_stability=moderate, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Stable setup and hypertrophy role are plausible, but early activation versus accessory intent needs review. |
+| band-face-pull / Band Face Pull | activation, hypertrophy_accessory | scapular_control | activation:excellent, accessory:good | excellent: Strong control and preparation fit. | good: Useful between pressing volume. | possible: Accessory if loadability is enough. | limited | low | low | moderate | reps, sets, tempo | same-exercise progression runway present | serratus=low, upward_rotation=low, retraction=high, external_rotation=moderate, loaded_stability=moderate, profile=needs_review | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Preparation/control value and limited loading support declining later-phase preference. |
+| dumbbell-curl / Dumbbell Curl | hypertrophy_accessory | accessory | accessory:excellent | possible: Optional accessory. | good: Adds arm volume. | excellent: Useful hypertrophy accessory. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Increasing accessory relevance is plausible, but phase rather than session/goal ownership is unclear. |
+| cable-triceps-pressdown / Cable Triceps Pressdown | hypertrophy_accessory | accessory | accessory:excellent | possible: Optional accessory. | good: Useful pressing support volume. | excellent: High-value arm accessory. | moderate | low | low | low | load, reps, sets, tempo | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Increasing accessory relevance is plausible, but phase rather than session/goal ownership is unclear. |
 | pallof-press / Pallof Press | activation, hypertrophy_accessory | anti_rotation_core | activation:excellent, accessory:good | excellent: Strong control exercise. | good: Useful accessory and preparation. | good: Can remain as targeted trunk work. | moderate | low | moderate | low | load, reps, tempo, stability | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | PLAUSIBLE_NEEDS_REVIEW | Continued targeted trunk work is plausible, but good Phase 3 fit needs reviewed phase-specific rationale. |
 | forearm-plank / Forearm Plank | activation, hypertrophy_accessory | anti_extension_core | activation:excellent, accessory:good | good: Legacy migration value for early control work. | possible: Legacy migration value for accessory use. | possible: Legacy migration value pending contextual evidence. | limited | low | moderate | low | duration, lever, support_reduction, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 1 activation is owner-approved; later global migration values are non-authoritative. |
 | forearm-side-plank / Forearm Side Plank | activation, hypertrophy_accessory | anti_lateral_flexion_core | activation:excellent, accessory:good | good: Legacy migration value for early lateral control. | possible: Legacy migration value for accessory use. | possible: Legacy migration value pending contextual evidence. | limited | low | moderate | low | duration, lever, support_reduction, load, effort | same-exercise progression runway present | none modeled | phase-specific provenance/review status not modeled; reason prose only | WELL_JUSTIFIED | Scoped Phase 1 lateral-control activation is owner-approved; later values remain non-scoring. |
@@ -153,9 +153,9 @@ Only `CandidateRequest.phase` changes within each three-row need group. Athlete,
 | vertical pull secondary | strength | phase_1 | lat-pulldown | band-lat-pulldown | lat-pulldown, band-lat-pulldown |
 | vertical pull secondary | strength | phase_2 | lat-pulldown | band-lat-pulldown | lat-pulldown, band-lat-pulldown |
 | vertical pull secondary | strength | phase_3 | lat-pulldown | band-lat-pulldown | lat-pulldown, band-lat-pulldown |
-| squat main | strength | phase_1 | goblet-squat | leg-press | goblet-squat, leg-press |
-| squat main | strength | phase_2 | goblet-squat | leg-press | goblet-squat, leg-press |
-| squat main | strength | phase_3 | leg-press | goblet-squat | leg-press, goblet-squat |
+| squat main | strength | phase_1 | goblet-squat | none | goblet-squat |
+| squat main | strength | phase_2 | goblet-squat | none | goblet-squat |
+| squat main | strength | phase_3 | goblet-squat | none | goblet-squat |
 | hinge secondary | strength | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | cable-pull-through, dumbbell-romanian-deadlift |
 | hinge secondary | strength | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift, cable-pull-through |
 | hinge secondary | strength | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift, cable-pull-through |
@@ -166,9 +166,9 @@ Only `CandidateRequest.phase` changes within each three-row need group. Athlete,
 | trunk activation | posture_and_movement_quality | phase_2 | pallof-press | dead-bug | pallof-press, dead-bug |
 | trunk activation | posture_and_movement_quality | phase_3 | pallof-press | dead-bug | pallof-press, dead-bug |
 | scapular activation | posture_and_movement_quality | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull, serratus-wall-slide, reverse-pec-deck, band-row |
-| scapular activation | posture_and_movement_quality | phase_2 | band-face-pull | reverse-pec-deck | band-face-pull, reverse-pec-deck, serratus-wall-slide, band-row |
+| scapular activation | posture_and_movement_quality | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull, serratus-wall-slide, reverse-pec-deck, band-row |
 | scapular activation | posture_and_movement_quality | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck, band-face-pull, serratus-wall-slide, band-row |
-| rear-delt accessory | hypertrophy | phase_1 | band-face-pull | reverse-pec-deck | band-face-pull, reverse-pec-deck, band-row |
+| rear-delt accessory | hypertrophy | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck, band-face-pull, band-row |
 | rear-delt accessory | hypertrophy | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck, band-face-pull, band-row |
 | rear-delt accessory | hypertrophy | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck, band-face-pull, band-row |
 
@@ -179,80 +179,77 @@ Vertical-push secondary has only one truthful legal reference candidate. The mat
 | Need | Phase | Candidate | Rank | Total | phase_fit | goal_fit | experience_fit | skill_fit | stability_fit | loadability | stimulus_potential | progression_value | continuity_value | assessment_fit | pain_suitability | joint_cost |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | horizontal push main | phase_1 | machine-chest-press | 1 | 7.774 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal push main | phase_1 | push-up | 2 | 7.763 | 6.200 | 8.500 | 7.590 | 7.950 | 7.200 | 8.150 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal push main | phase_1 | push-up | 2 | 7.683 | 6.200 | 8.500 | 7.590 | 7.950 | 7.200 | 8.150 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
 | horizontal push main | phase_1 | dumbbell-bench-press | 3 | 7.672 | 6.200 | 8.500 | 8.265 | 7.400 | 7.200 | 7.300 | 9.700 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
 | horizontal push main | phase_2 | dumbbell-bench-press | 1 | 7.961 | 8.800 | 8.500 | 8.265 | 7.400 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal push main | phase_2 | push-up | 2 | 7.930 | 7.800 | 8.500 | 7.590 | 7.950 | 8.500 | 9.000 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal push main | phase_2 | push-up | 2 | 7.850 | 7.800 | 8.500 | 7.590 | 7.950 | 8.500 | 9.000 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
 | horizontal push main | phase_2 | machine-chest-press | 3 | 7.846 | 7.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
 | horizontal push main | phase_3 | dumbbell-bench-press | 1 | 8.053 | 9.600 | 8.500 | 8.265 | 7.400 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
 | horizontal push main | phase_3 | machine-chest-press | 2 | 7.938 | 8.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal push main | phase_3 | push-up | 3 | 7.789 | 6.200 | 8.500 | 7.590 | 7.950 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_1 | chest-supported-dumbbell-row | 1 | 7.962 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_1 | machine-row | 2 | 7.935 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_1 | seated-cable-row | 3 | 7.935 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_1 | one-arm-dumbbell-row | 4 | 7.684 | 6.200 | 8.500 | 8.265 | 7.400 | 5.900 | 7.300 | 9.700 | 7.600 | 5.600 | 6.000 | 8.200 | 8.450 |
-| horizontal pull main | phase_2 | machine-row | 1 | 8.069 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_2 | seated-cable-row | 2 | 8.069 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_2 | chest-supported-dumbbell-row | 3 | 8.065 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_2 | one-arm-dumbbell-row | 4 | 7.911 | 7.800 | 8.500 | 8.265 | 7.400 | 7.200 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
-| horizontal pull main | phase_3 | chest-supported-dumbbell-row | 1 | 8.157 | 9.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_3 | machine-row | 2 | 8.099 | 8.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_3 | seated-cable-row | 3 | 8.099 | 8.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| horizontal pull main | phase_3 | one-arm-dumbbell-row | 4 | 8.065 | 9.600 | 8.500 | 8.265 | 7.400 | 7.200 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
-| vertical push secondary | phase_1 | dumbbell-shoulder-press | 1 | 7.675 | 6.200 | 8.500 | 8.265 | 7.400 | 7.200 | 7.300 | 9.700 | 7.050 | 5.600 | 6.000 | 8.200 | 8.450 |
-| vertical push secondary | phase_2 | dumbbell-shoulder-press | 1 | 7.933 | 7.800 | 8.500 | 8.265 | 7.400 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
-| vertical push secondary | phase_3 | dumbbell-shoulder-press | 1 | 8.086 | 9.600 | 8.500 | 8.265 | 7.400 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
+| horizontal push main | phase_3 | push-up | 3 | 7.709 | 6.200 | 8.500 | 7.590 | 7.950 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_1 | chest-supported-dumbbell-row | 1 | 7.882 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_1 | machine-row | 2 | 7.855 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_1 | seated-cable-row | 3 | 7.855 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_1 | one-arm-dumbbell-row | 4 | 7.604 | 6.200 | 8.500 | 8.265 | 7.400 | 5.900 | 7.300 | 9.700 | 7.600 | 5.600 | 6.000 | 8.200 | 8.450 |
+| horizontal pull main | phase_2 | machine-row | 1 | 7.989 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_2 | seated-cable-row | 2 | 7.989 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_2 | chest-supported-dumbbell-row | 3 | 7.985 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_2 | one-arm-dumbbell-row | 4 | 7.831 | 7.800 | 8.500 | 8.265 | 7.400 | 7.200 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
+| horizontal pull main | phase_3 | chest-supported-dumbbell-row | 1 | 8.077 | 9.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_3 | machine-row | 2 | 8.019 | 8.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_3 | seated-cable-row | 3 | 8.019 | 8.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| horizontal pull main | phase_3 | one-arm-dumbbell-row | 4 | 7.984 | 9.600 | 8.500 | 8.265 | 7.400 | 7.200 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
+| vertical push secondary | phase_1 | dumbbell-shoulder-press | 1 | 7.595 | 6.200 | 8.500 | 8.265 | 7.400 | 7.200 | 7.300 | 9.700 | 7.050 | 5.600 | 6.000 | 8.200 | 8.450 |
+| vertical push secondary | phase_2 | dumbbell-shoulder-press | 1 | 7.853 | 7.800 | 8.500 | 8.265 | 7.400 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
+| vertical push secondary | phase_3 | dumbbell-shoulder-press | 1 | 8.006 | 9.600 | 8.500 | 8.265 | 7.400 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
 | vertical pull secondary | phase_1 | lat-pulldown | 1 | 7.809 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
 | vertical pull secondary | phase_1 | band-lat-pulldown | 2 | 7.656 | 8.300 | 5.500 | 6.915 | 8.500 | 8.500 | 8.200 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
 | vertical pull secondary | phase_2 | lat-pulldown | 1 | 7.943 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
 | vertical pull secondary | phase_2 | band-lat-pulldown | 2 | 7.484 | 6.200 | 5.500 | 6.915 | 8.500 | 8.500 | 7.350 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
 | vertical pull secondary | phase_3 | lat-pulldown | 1 | 8.034 | 9.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
 | vertical pull secondary | phase_3 | band-lat-pulldown | 2 | 7.442 | 6.200 | 5.500 | 6.915 | 8.500 | 8.500 | 6.500 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| squat main | phase_1 | goblet-squat | 1 | 7.869 | 8.300 | 8.500 | 6.915 | 8.500 | 7.200 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| squat main | phase_1 | leg-press | 2 | 7.809 | 6.700 | 8.500 | 6.915 | 8.500 | 8.500 | 7.300 | 9.700 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| squat main | phase_2 | goblet-squat | 1 | 8.059 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 8.600 | 8.700 | 5.600 | 6.000 | 8.200 | 8.800 |
-| squat main | phase_2 | leg-press | 2 | 8.041 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 9.700 | 8.700 | 5.600 | 6.000 | 8.200 | 8.800 |
-| squat main | phase_3 | leg-press | 1 | 8.102 | 9.600 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| squat main | phase_3 | goblet-squat | 2 | 7.826 | 6.200 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| hinge secondary | phase_1 | cable-pull-through | 1 | 7.742 | 8.300 | 7.000 | 6.915 | 8.500 | 7.200 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| hinge secondary | phase_1 | dumbbell-romanian-deadlift | 2 | 7.682 | 6.200 | 8.500 | 8.265 | 7.400 | 7.200 | 7.300 | 9.700 | 7.600 | 5.600 | 6.000 | 8.200 | 8.450 |
-| hinge secondary | phase_2 | dumbbell-romanian-deadlift | 1 | 8.002 | 8.800 | 8.500 | 8.265 | 7.400 | 8.500 | 8.150 | 9.700 | 8.700 | 5.600 | 6.000 | 8.200 | 8.450 |
-| hinge secondary | phase_2 | cable-pull-through | 2 | 7.840 | 7.800 | 7.000 | 6.915 | 8.500 | 8.500 | 9.000 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| hinge secondary | phase_3 | dumbbell-romanian-deadlift | 1 | 8.062 | 9.600 | 8.500 | 8.265 | 7.400 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
-| hinge secondary | phase_3 | cable-pull-through | 2 | 7.669 | 6.200 | 7.000 | 6.915 | 8.500 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| single-leg accessory | phase_1 | step-up | 1 | 7.950 | 7.800 | 8.000 | 8.265 | 7.400 | 7.200 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| single-leg accessory | phase_1 | split-squat | 2 | 7.840 | 6.200 | 8.000 | 8.265 | 7.400 | 7.200 | 8.150 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| single-leg accessory | phase_2 | step-up | 1 | 8.079 | 7.800 | 8.000 | 8.265 | 7.400 | 8.500 | 9.000 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| single-leg accessory | phase_2 | split-squat | 2 | 8.037 | 7.800 | 8.000 | 8.265 | 7.400 | 8.500 | 9.000 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| single-leg accessory | phase_3 | split-squat | 1 | 8.026 | 8.800 | 8.000 | 8.265 | 7.400 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| single-leg accessory | phase_3 | step-up | 2 | 8.006 | 7.800 | 8.000 | 8.265 | 7.400 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| trunk activation | phase_1 | dead-bug | 1 | 7.779 | 9.300 | 8.500 | 7.590 | 7.950 | 7.200 | 8.800 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| trunk activation | phase_1 | pallof-press | 2 | 7.744 | 9.300 | 8.500 | 6.915 | 8.500 | 7.200 | 7.350 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| trunk activation | phase_2 | pallof-press | 1 | 7.749 | 7.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.200 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| trunk activation | phase_2 | dead-bug | 2 | 7.670 | 7.800 | 8.500 | 7.590 | 7.950 | 8.500 | 7.950 | 7.150 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
-| trunk activation | phase_3 | pallof-press | 1 | 7.738 | 7.800 | 8.500 | 6.915 | 8.500 | 8.500 | 7.350 | 7.900 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| trunk activation | phase_3 | dead-bug | 2 | 7.499 | 6.200 | 8.500 | 7.590 | 7.950 | 8.500 | 7.100 | 7.150 | 6.500 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_1 | band-face-pull | 1 | 8.175 | 9.300 | 8.500 | 7.590 | 7.950 | 8.500 | 8.800 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_1 | serratus-wall-slide | 2 | 7.977 | 9.300 | 8.500 | 7.590 | 7.950 | 8.500 | 8.800 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_1 | reverse-pec-deck | 3 | 7.859 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.350 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_1 | band-row | 4 | 7.609 | 9.300 | 6.500 | 6.915 | 8.500 | 8.500 | 8.800 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_2 | band-face-pull | 1 | 8.040 | 7.800 | 8.500 | 7.590 | 7.950 | 8.500 | 7.950 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_2 | reverse-pec-deck | 2 | 7.901 | 7.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.200 | 7.900 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_2 | serratus-wall-slide | 3 | 7.812 | 7.800 | 8.500 | 7.590 | 7.950 | 8.500 | 7.950 | 7.150 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_2 | band-row | 4 | 7.475 | 7.800 | 6.500 | 6.915 | 8.500 | 8.500 | 7.950 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_3 | reverse-pec-deck | 1 | 7.920 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 7.350 | 7.900 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_3 | band-face-pull | 2 | 7.900 | 6.200 | 8.500 | 7.590 | 7.950 | 8.500 | 7.100 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_3 | serratus-wall-slide | 3 | 7.641 | 6.200 | 8.500 | 7.590 | 7.950 | 8.500 | 7.100 | 7.150 | 6.500 | 5.600 | 6.000 | 8.200 | 8.800 |
-| scapular activation | phase_3 | band-row | 4 | 7.334 | 6.200 | 6.500 | 6.915 | 8.500 | 8.500 | 7.100 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_1 | band-face-pull | 1 | 8.029 | 9.300 | 8.000 | 7.590 | 7.950 | 8.500 | 8.200 | 7.500 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_1 | reverse-pec-deck | 2 | 7.950 | 8.300 | 8.000 | 6.915 | 8.500 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_1 | band-row | 3 | 7.720 | 9.300 | 8.000 | 6.915 | 8.500 | 8.500 | 8.200 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_2 | reverse-pec-deck | 1 | 7.991 | 7.800 | 8.000 | 6.915 | 8.500 | 8.500 | 9.000 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_2 | band-face-pull | 2 | 7.894 | 7.800 | 8.000 | 7.590 | 7.950 | 8.500 | 7.350 | 7.500 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_2 | band-row | 3 | 7.586 | 7.800 | 8.000 | 6.915 | 8.500 | 8.500 | 7.350 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_3 | reverse-pec-deck | 1 | 8.011 | 8.800 | 8.000 | 6.915 | 8.500 | 8.500 | 8.150 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_3 | band-face-pull | 2 | 7.754 | 6.200 | 8.000 | 7.590 | 7.950 | 8.500 | 6.500 | 7.500 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
-| rear-delt accessory | phase_3 | band-row | 3 | 7.445 | 6.200 | 8.000 | 6.915 | 8.500 | 8.500 | 6.500 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| squat main | phase_1 | goblet-squat | 1 | 7.789 | 8.300 | 8.500 | 6.915 | 8.500 | 7.200 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| squat main | phase_2 | goblet-squat | 1 | 7.979 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 9.000 | 8.600 | 8.700 | 5.600 | 6.000 | 8.200 | 8.800 |
+| squat main | phase_3 | goblet-squat | 1 | 7.746 | 6.200 | 8.500 | 6.915 | 8.500 | 8.500 | 8.150 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| hinge secondary | phase_1 | cable-pull-through | 1 | 7.662 | 8.300 | 7.000 | 6.915 | 8.500 | 7.200 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| hinge secondary | phase_1 | dumbbell-romanian-deadlift | 2 | 7.602 | 6.200 | 8.500 | 8.265 | 7.400 | 7.200 | 7.300 | 9.700 | 7.600 | 5.600 | 6.000 | 8.200 | 8.450 |
+| hinge secondary | phase_2 | dumbbell-romanian-deadlift | 1 | 7.921 | 8.800 | 8.500 | 8.265 | 7.400 | 8.500 | 8.150 | 9.700 | 8.700 | 5.600 | 6.000 | 8.200 | 8.450 |
+| hinge secondary | phase_2 | cable-pull-through | 2 | 7.760 | 7.800 | 7.000 | 6.915 | 8.500 | 8.500 | 9.000 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| hinge secondary | phase_3 | dumbbell-romanian-deadlift | 1 | 7.982 | 9.600 | 8.500 | 8.265 | 7.400 | 8.500 | 9.000 | 9.700 | 8.150 | 5.600 | 6.000 | 8.200 | 8.450 |
+| hinge secondary | phase_3 | cable-pull-through | 2 | 7.589 | 6.200 | 7.000 | 6.915 | 8.500 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| single-leg accessory | phase_1 | step-up | 1 | 7.752 | 7.800 | 8.000 | 8.265 | 7.400 | 7.200 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| single-leg accessory | phase_1 | split-squat | 2 | 7.643 | 6.200 | 8.000 | 8.265 | 7.400 | 7.200 | 8.150 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| single-leg accessory | phase_2 | step-up | 1 | 7.881 | 7.800 | 8.000 | 8.265 | 7.400 | 8.500 | 9.000 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| single-leg accessory | phase_2 | split-squat | 2 | 7.840 | 7.800 | 8.000 | 8.265 | 7.400 | 8.500 | 9.000 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| single-leg accessory | phase_3 | split-squat | 1 | 7.829 | 8.800 | 8.000 | 8.265 | 7.400 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| single-leg accessory | phase_3 | step-up | 2 | 7.809 | 7.800 | 8.000 | 8.265 | 7.400 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| trunk activation | phase_1 | dead-bug | 1 | 7.739 | 9.300 | 8.500 | 7.590 | 7.950 | 7.200 | 8.800 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| trunk activation | phase_1 | pallof-press | 2 | 7.704 | 9.300 | 8.500 | 6.915 | 8.500 | 7.200 | 7.350 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| trunk activation | phase_2 | pallof-press | 1 | 7.709 | 7.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.200 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| trunk activation | phase_2 | dead-bug | 2 | 7.630 | 7.800 | 8.500 | 7.590 | 7.950 | 8.500 | 7.950 | 7.150 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
+| trunk activation | phase_3 | pallof-press | 1 | 7.698 | 7.800 | 8.500 | 6.915 | 8.500 | 8.500 | 7.350 | 7.900 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| trunk activation | phase_3 | dead-bug | 2 | 7.459 | 6.200 | 8.500 | 7.590 | 7.950 | 8.500 | 7.100 | 7.150 | 6.500 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_1 | band-face-pull | 1 | 8.002 | 9.300 | 8.500 | 7.590 | 7.950 | 8.500 | 8.800 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_1 | serratus-wall-slide | 2 | 8.002 | 9.300 | 8.500 | 7.590 | 7.950 | 8.500 | 8.800 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_1 | reverse-pec-deck | 3 | 7.742 | 8.300 | 8.500 | 6.915 | 8.500 | 8.500 | 7.350 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_1 | band-row | 4 | 7.649 | 9.300 | 6.500 | 6.915 | 8.500 | 8.500 | 8.800 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_2 | band-face-pull | 1 | 7.867 | 7.800 | 8.500 | 7.590 | 7.950 | 8.500 | 7.950 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_2 | serratus-wall-slide | 2 | 7.837 | 7.800 | 8.500 | 7.590 | 7.950 | 8.500 | 7.950 | 7.150 | 7.050 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_2 | reverse-pec-deck | 3 | 7.783 | 7.800 | 8.500 | 6.915 | 8.500 | 8.500 | 8.200 | 7.900 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_2 | band-row | 4 | 7.515 | 7.800 | 6.500 | 6.915 | 8.500 | 8.500 | 7.950 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_3 | reverse-pec-deck | 1 | 7.803 | 8.800 | 8.500 | 6.915 | 8.500 | 8.500 | 7.350 | 7.900 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_3 | band-face-pull | 2 | 7.727 | 6.200 | 8.500 | 7.590 | 7.950 | 8.500 | 7.100 | 7.150 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_3 | serratus-wall-slide | 3 | 7.666 | 6.200 | 8.500 | 7.590 | 7.950 | 8.500 | 7.100 | 7.150 | 6.500 | 5.600 | 6.000 | 8.200 | 8.800 |
+| scapular activation | phase_3 | band-row | 4 | 7.374 | 6.200 | 6.500 | 6.915 | 8.500 | 8.500 | 7.100 | 7.900 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_1 | reverse-pec-deck | 1 | 7.832 | 8.300 | 8.000 | 6.915 | 8.500 | 8.500 | 8.150 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_1 | band-face-pull | 2 | 7.831 | 9.300 | 8.000 | 7.590 | 7.950 | 8.500 | 8.200 | 7.500 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_1 | band-row | 3 | 7.761 | 9.300 | 8.000 | 6.915 | 8.500 | 8.500 | 8.200 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_2 | reverse-pec-deck | 1 | 7.874 | 7.800 | 8.000 | 6.915 | 8.500 | 8.500 | 9.000 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_2 | band-face-pull | 2 | 7.697 | 7.800 | 8.000 | 7.590 | 7.950 | 8.500 | 7.350 | 7.500 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_2 | band-row | 3 | 7.626 | 7.800 | 8.000 | 6.915 | 8.500 | 8.500 | 7.350 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_3 | reverse-pec-deck | 1 | 7.894 | 8.800 | 8.000 | 6.915 | 8.500 | 8.500 | 8.150 | 8.600 | 8.150 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_3 | band-face-pull | 2 | 7.556 | 6.200 | 8.000 | 7.590 | 7.950 | 8.500 | 6.500 | 7.500 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
+| rear-delt accessory | phase_3 | band-row | 3 | 7.485 | 6.200 | 8.000 | 6.915 | 8.500 | 8.500 | 6.500 | 8.600 | 7.600 | 5.600 | 6.000 | 8.200 | 8.800 |
 
 ### Every Hard Rejection
 
@@ -263,7 +260,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal push main | phase_1 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH |
+| horizontal push main | phase_1 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | horizontal push main | phase_1 | chest-supported-dumbbell-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | one-arm-dumbbell-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | machine-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -285,7 +282,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_1 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal push main | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH |
+| horizontal push main | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | horizontal push main | phase_1 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -297,7 +294,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal push main | phase_2 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH |
+| horizontal push main | phase_2 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | horizontal push main | phase_2 | chest-supported-dumbbell-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | one-arm-dumbbell-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | machine-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -319,7 +316,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_2 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal push main | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH |
+| horizontal push main | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | horizontal push main | phase_2 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -331,7 +328,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal push main | phase_3 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH |
+| horizontal push main | phase_3 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | horizontal push main | phase_3 | chest-supported-dumbbell-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | one-arm-dumbbell-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | machine-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -353,7 +350,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal push main | phase_3 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal push main | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH |
+| horizontal push main | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | horizontal push main | phase_3 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal push main | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -376,16 +373,16 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_1 | goblet-squat | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | leg-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | bodyweight-box-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_1 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH |
+| horizontal pull main | phase_1 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | cable-pull-through | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | split-squat | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | step-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | glute-bridge | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_1 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH |
-| horizontal pull main | phase_1 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| horizontal pull main | phase_1 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -409,16 +406,16 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_2 | goblet-squat | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | leg-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | bodyweight-box-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_2 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH |
+| horizontal pull main | phase_2 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | cable-pull-through | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | split-squat | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | step-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | glute-bridge | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_2 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH |
-| horizontal pull main | phase_2 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| horizontal pull main | phase_2 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -442,16 +439,16 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_3 | goblet-squat | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | leg-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | bodyweight-box-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_3 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH |
+| horizontal pull main | phase_3 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | cable-pull-through | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | split-squat | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | step-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | glute-bridge | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_3 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH |
-| horizontal pull main | phase_3 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| horizontal pull main | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | reverse-pec-deck | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| horizontal pull main | phase_3 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| horizontal pull main | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -462,7 +459,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | horizontal pull main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | horizontal pull main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | push-up | MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_1 | dumbbell-bench-press | MOVEMENT_ROLE_MISMATCH |
@@ -484,21 +481,21 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_1 | step-up | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | lying-leg-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | glute-bridge | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_1 | dumbbell-lateral-raise | ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | dumbbell-lateral-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | reverse-pec-deck | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | band-face-pull | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_1 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| vertical push secondary | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | push-up | MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_2 | dumbbell-bench-press | MOVEMENT_ROLE_MISMATCH |
@@ -520,21 +517,21 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_2 | step-up | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | lying-leg-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | glute-bridge | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_2 | dumbbell-lateral-raise | ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | dumbbell-lateral-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | reverse-pec-deck | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | band-face-pull | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_2 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| vertical push secondary | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | push-up | MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_3 | dumbbell-bench-press | MOVEMENT_ROLE_MISMATCH |
@@ -556,14 +553,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | vertical push secondary | phase_3 | step-up | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | lying-leg-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | glute-bridge | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_3 | dumbbell-lateral-raise | ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | dumbbell-lateral-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | reverse-pec-deck | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | band-face-pull | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | vertical push secondary | phase_3 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| vertical push secondary | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| vertical push secondary | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| vertical push secondary | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| vertical push secondary | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | vertical push secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -689,11 +686,12 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_1 | dumbbell-shoulder-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | band-lat-pulldown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | leg-press | MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_1 | bodyweight-box-squat | ROLE_MISMATCH, SECTION_MISMATCH |
 | squat main | phase_1 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_1 | cable-pull-through | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_1 | split-squat | ROLE_MISMATCH |
-| squat main | phase_1 | step-up | ROLE_MISMATCH, SECTION_MISMATCH |
+| squat main | phase_1 | split-squat | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | step-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_1 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | glute-bridge | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_1 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -701,14 +699,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_1 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| squat main | phase_1 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| squat main | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -724,11 +722,12 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_2 | dumbbell-shoulder-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | band-lat-pulldown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | leg-press | MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_2 | bodyweight-box-squat | ROLE_MISMATCH, SECTION_MISMATCH |
 | squat main | phase_2 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_2 | cable-pull-through | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_2 | split-squat | ROLE_MISMATCH |
-| squat main | phase_2 | step-up | ROLE_MISMATCH, SECTION_MISMATCH |
+| squat main | phase_2 | split-squat | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | step-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_2 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | glute-bridge | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_2 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -736,14 +735,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_2 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| squat main | phase_2 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| squat main | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | dead-bug | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -759,11 +758,12 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_3 | dumbbell-shoulder-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | band-lat-pulldown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | leg-press | MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_3 | bodyweight-box-squat | ROLE_MISMATCH, SECTION_MISMATCH |
 | squat main | phase_3 | dumbbell-romanian-deadlift | MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_3 | cable-pull-through | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_3 | split-squat | ROLE_MISMATCH |
-| squat main | phase_3 | step-up | ROLE_MISMATCH, SECTION_MISMATCH |
+| squat main | phase_3 | split-squat | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | step-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_3 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | glute-bridge | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | squat main | phase_3 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -771,14 +771,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | squat main | phase_3 | band-face-pull | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| squat main | phase_3 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | pallof-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | squat main | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| squat main | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| squat main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| squat main | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| squat main | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -799,21 +799,21 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_1 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_1 | split-squat | MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_1 | step-up | MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_1 | lying-leg-curl | ROLE_MISMATCH |
-| hinge secondary | phase_1 | glute-bridge | ROLE_MISMATCH |
+| hinge secondary | phase_1 | lying-leg-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | glute-bridge | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_1 | dumbbell-lateral-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | reverse-pec-deck | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | band-face-pull | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| hinge secondary | phase_1 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| hinge secondary | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -834,21 +834,21 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_2 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_2 | split-squat | MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_2 | step-up | MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_2 | lying-leg-curl | ROLE_MISMATCH |
-| hinge secondary | phase_2 | glute-bridge | ROLE_MISMATCH |
+| hinge secondary | phase_2 | lying-leg-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | glute-bridge | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_2 | dumbbell-lateral-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | reverse-pec-deck | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | band-face-pull | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| hinge secondary | phase_2 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| hinge secondary | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | dead-bug | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -869,21 +869,21 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | hinge secondary | phase_3 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_3 | split-squat | MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_3 | step-up | MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_3 | lying-leg-curl | ROLE_MISMATCH |
-| hinge secondary | phase_3 | glute-bridge | ROLE_MISMATCH |
+| hinge secondary | phase_3 | lying-leg-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | glute-bridge | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | hinge secondary | phase_3 | dumbbell-lateral-raise | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | reverse-pec-deck | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | band-face-pull | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | dumbbell-curl | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| hinge secondary | phase_3 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | pallof-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | hinge secondary | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| hinge secondary | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| hinge secondary | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| hinge secondary | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| hinge secondary | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -900,7 +900,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_1 | lat-pulldown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | band-lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | goblet-squat | ROLE_MISMATCH |
-| single-leg accessory | phase_1 | leg-press | ROLE_MISMATCH |
+| single-leg accessory | phase_1 | leg-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_1 | bodyweight-box-squat | ROLE_MISMATCH |
 | single-leg accessory | phase_1 | dumbbell-romanian-deadlift | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_1 | cable-pull-through | MOVEMENT_ROLE_MISMATCH |
@@ -911,14 +911,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_1 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| single-leg accessory | phase_1 | pallof-press | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| single-leg accessory | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -935,7 +935,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_2 | lat-pulldown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | band-lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | goblet-squat | ROLE_MISMATCH |
-| single-leg accessory | phase_2 | leg-press | ROLE_MISMATCH |
+| single-leg accessory | phase_2 | leg-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_2 | bodyweight-box-squat | ROLE_MISMATCH |
 | single-leg accessory | phase_2 | dumbbell-romanian-deadlift | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_2 | cable-pull-through | MOVEMENT_ROLE_MISMATCH |
@@ -946,14 +946,14 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_2 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| single-leg accessory | phase_2 | pallof-press | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| single-leg accessory | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | serratus-wall-slide | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -970,7 +970,7 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_3 | lat-pulldown | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | band-lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | goblet-squat | ROLE_MISMATCH |
-| single-leg accessory | phase_3 | leg-press | ROLE_MISMATCH |
+| single-leg accessory | phase_3 | leg-press | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_3 | bodyweight-box-squat | ROLE_MISMATCH |
 | single-leg accessory | phase_3 | dumbbell-romanian-deadlift | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | single-leg accessory | phase_3 | cable-pull-through | MOVEMENT_ROLE_MISMATCH |
@@ -981,37 +981,37 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | single-leg accessory | phase_3 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| single-leg accessory | phase_3 | pallof-press | MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | single-leg accessory | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| single-leg accessory | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| single-leg accessory | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| single-leg accessory | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| single-leg accessory | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_1 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_1 | push-up | ROLE_MISMATCH, SECTION_MISMATCH |
+| trunk activation | phase_1 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | dumbbell-bench-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | machine-chest-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | chest-supported-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_1 | one-arm-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | one-arm-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | machine-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | seated-cable-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | band-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_1 | dumbbell-shoulder-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | dumbbell-shoulder-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | lat-pulldown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | band-lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_1 | goblet-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | goblet-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | leg-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_1 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_1 | dumbbell-romanian-deadlift | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_1 | cable-pull-through | MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_1 | split-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_1 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | dumbbell-romanian-deadlift | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | cable-pull-through | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | split-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_1 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_1 | glute-bridge | MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_1 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | reverse-pec-deck | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_1 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1026,27 +1026,27 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_2 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_2 | push-up | ROLE_MISMATCH, SECTION_MISMATCH |
+| trunk activation | phase_2 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | dumbbell-bench-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | machine-chest-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | chest-supported-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_2 | one-arm-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | one-arm-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | machine-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | seated-cable-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | band-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_2 | dumbbell-shoulder-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | dumbbell-shoulder-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | lat-pulldown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | band-lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_2 | goblet-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | goblet-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | leg-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_2 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_2 | dumbbell-romanian-deadlift | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_2 | cable-pull-through | MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_2 | split-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_2 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | dumbbell-romanian-deadlift | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | cable-pull-through | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | split-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_2 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_2 | glute-bridge | MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_2 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | reverse-pec-deck | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_2 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1061,27 +1061,27 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH |
 | trunk activation | phase_3 | serratus-wall-slide | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_3 | push-up | ROLE_MISMATCH, SECTION_MISMATCH |
+| trunk activation | phase_3 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | dumbbell-bench-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | machine-chest-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | chest-supported-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_3 | one-arm-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | one-arm-dumbbell-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | machine-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | seated-cable-row | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | band-row | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_3 | dumbbell-shoulder-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | dumbbell-shoulder-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | lat-pulldown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | band-lat-pulldown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_3 | goblet-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | goblet-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | leg-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_3 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_3 | dumbbell-romanian-deadlift | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_3 | cable-pull-through | MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_3 | split-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| trunk activation | phase_3 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | bodyweight-box-squat | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | dumbbell-romanian-deadlift | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | cable-pull-through | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | split-squat | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| trunk activation | phase_3 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| trunk activation | phase_3 | glute-bridge | MOVEMENT_ROLE_MISMATCH |
+| trunk activation | phase_3 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | reverse-pec-deck | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | trunk activation | phase_3 | band-face-pull | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1094,9 +1094,9 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | trunk activation | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_3 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | trunk activation | phase_3 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| scapular activation | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_1 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_1 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_1 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | dumbbell-bench-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | machine-chest-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1116,20 +1116,20 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_1 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_1 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| scapular activation | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| scapular activation | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_1 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_1 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_1 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_1 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_2 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_2 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_2 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | dumbbell-bench-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | machine-chest-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1149,20 +1149,20 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_2 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_2 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| scapular activation | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| scapular activation | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_2 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_2 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_2 | suitcase-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
 | scapular activation | phase_2 | wall-supported-suitcase-march | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_3 | ninety-ninety-breathing | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | dead-bug | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_3 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_3 | push-up | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | dumbbell-bench-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | machine-chest-press | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | cable-chest-fly | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1182,12 +1182,12 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | scapular activation | phase_3 | step-up | ROLE_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | lying-leg-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_3 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
-| scapular activation | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | dumbbell-lateral-raise | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | dumbbell-curl | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | cable-triceps-pressdown | ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| scapular activation | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
-| scapular activation | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH |
+| scapular activation | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| scapular activation | phase_3 | forearm-side-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | machine-abdominal-crunch | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | half-kneeling-high-to-low-cable-chop | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | scapular activation | phase_3 | farmer-carry | SETUP_IMPOSSIBLE, ROLE_MISMATCH, SECTION_MISMATCH, MOVEMENT_ROLE_MISMATCH |
@@ -1216,8 +1216,8 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_1 | step-up | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | lying-leg-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| rear-delt accessory | phase_1 | dumbbell-lateral-raise | MOVEMENT_ROLE_MISMATCH |
-| rear-delt accessory | phase_1 | dumbbell-curl | TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | dumbbell-lateral-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_1 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_1 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1250,8 +1250,8 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_2 | step-up | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | lying-leg-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| rear-delt accessory | phase_2 | dumbbell-lateral-raise | MOVEMENT_ROLE_MISMATCH |
-| rear-delt accessory | phase_2 | dumbbell-curl | TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | dumbbell-lateral-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_2 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_2 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1284,8 +1284,8 @@ These are expected training-need and equipment/prerequisite truth outcomes from 
 | rear-delt accessory | phase_3 | step-up | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | lying-leg-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | glute-bridge | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
-| rear-delt accessory | phase_3 | dumbbell-lateral-raise | MOVEMENT_ROLE_MISMATCH |
-| rear-delt accessory | phase_3 | dumbbell-curl | TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | dumbbell-lateral-raise | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
+| rear-delt accessory | phase_3 | dumbbell-curl | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | cable-triceps-pressdown | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | pallof-press | MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
 | rear-delt accessory | phase_3 | forearm-plank | SETUP_IMPOSSIBLE, MOVEMENT_ROLE_MISMATCH, TARGET_MUSCLE_MISMATCH |
@@ -1333,8 +1333,8 @@ Goal, phase, horizontal-push need, equipment and every other input are fixed whi
 | phase_1 | beginner | machine-chest-press | push-up | 7.860 | 8.300 | push-up, dumbbell-bench-press | machine-chest-press, push-up, dumbbell-bench-press |
 | phase_1 | intermediate | machine-chest-press | push-up | 6.915 | 8.300 | push-up, dumbbell-bench-press | machine-chest-press, push-up, dumbbell-bench-press |
 | phase_1 | advanced | machine-chest-press | push-up | 6.240 | 8.300 | push-up, dumbbell-bench-press | machine-chest-press, push-up, dumbbell-bench-press |
-| phase_2 | novice | push-up | machine-chest-press | 7.725 | 7.800 | push-up, dumbbell-bench-press | push-up, machine-chest-press, dumbbell-bench-press |
-| phase_2 | beginner | push-up | dumbbell-bench-press | 8.265 | 7.800 | push-up, dumbbell-bench-press | push-up, dumbbell-bench-press, machine-chest-press |
+| phase_2 | novice | machine-chest-press | dumbbell-bench-press | 8.400 | 7.800 | dumbbell-bench-press, push-up | machine-chest-press, dumbbell-bench-press, push-up |
+| phase_2 | beginner | dumbbell-bench-press | machine-chest-press | 7.590 | 8.800 | dumbbell-bench-press, push-up | dumbbell-bench-press, machine-chest-press, push-up |
 | phase_2 | intermediate | dumbbell-bench-press | push-up | 8.265 | 8.800 | dumbbell-bench-press, push-up | dumbbell-bench-press, push-up, machine-chest-press |
 | phase_2 | advanced | dumbbell-bench-press | push-up | 7.590 | 8.800 | dumbbell-bench-press, push-up | dumbbell-bench-press, push-up, machine-chest-press |
 | phase_3 | novice | machine-chest-press | dumbbell-bench-press | 8.400 | 8.600 | dumbbell-bench-press, push-up | machine-chest-press, dumbbell-bench-press, push-up |
@@ -1348,30 +1348,30 @@ Phase 1 does not hard-gate the pool to machines: dumbbell bench press and push-u
 
 | State | Phase | Winner | Current Rank / Total | Current phase_fit | Current continuity | Continuity Reason | Current progression | Transition Auto Effect |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| current | phase_1 | chest-supported-dumbbell-row | 1 / 8.023 | 8.300 | 6.700 | CONTINUITY_FAVORED | 7.600 | none |
-| current | phase_2 | chest-supported-dumbbell-row | 1 / 8.127 | 8.800 | 6.700 | CONTINUITY_FAVORED | 8.150 | none |
-| current | phase_3 | chest-supported-dumbbell-row | 1 / 8.218 | 9.600 | 6.700 | CONTINUITY_FAVORED | 8.150 | none |
-| productive | phase_1 | chest-supported-dumbbell-row | 1 / 8.095 | 8.300 | 8.000 | CONTINUITY_FAVORED | 7.600 | none |
-| productive | phase_2 | chest-supported-dumbbell-row | 1 / 8.199 | 8.800 | 8.000 | CONTINUITY_FAVORED | 8.150 | none |
-| productive | phase_3 | chest-supported-dumbbell-row | 1 / 8.290 | 9.600 | 8.000 | CONTINUITY_FAVORED | 8.150 | none |
-| stable | phase_1 | chest-supported-dumbbell-row | 1 / 8.062 | 8.300 | 7.400 | CONTINUITY_FAVORED | 7.600 | none |
-| stable | phase_2 | chest-supported-dumbbell-row | 1 / 8.165 | 8.800 | 7.400 | CONTINUITY_FAVORED | 8.150 | none |
-| stable | phase_3 | chest-supported-dumbbell-row | 1 / 8.257 | 9.600 | 7.400 | CONTINUITY_FAVORED | 8.150 | none |
-| ready_to_progress | phase_1 | chest-supported-dumbbell-row | 1 / 8.079 | 8.300 | 6.700 | CONTINUITY_FAVORED | 8.600 | none |
-| ready_to_progress | phase_2 | chest-supported-dumbbell-row | 1 / 8.182 | 8.800 | 6.700 | CONTINUITY_FAVORED | 9.150 | none |
-| ready_to_progress | phase_3 | chest-supported-dumbbell-row | 1 / 8.273 | 9.600 | 6.700 | CONTINUITY_FAVORED | 9.150 | none |
-| plateaued | phase_1 | machine-row | 3 / 7.873 | 8.300 | 5.200 | REPLACEMENT_JUSTIFIED | 6.400 | none |
-| plateaued | phase_2 | machine-row | 3 / 7.977 | 8.800 | 5.200 | REPLACEMENT_JUSTIFIED | 6.950 | none |
-| plateaued | phase_3 | machine-row | 3 / 8.068 | 9.600 | 5.200 | REPLACEMENT_JUSTIFIED | 6.950 | none |
-| failed_progression | phase_1 | machine-row | 3 / 7.901 | 8.300 | 5.500 | REPLACEMENT_JUSTIFIED | 6.600 | none |
-| failed_progression | phase_2 | machine-row | 3 / 8.004 | 8.800 | 5.500 | REPLACEMENT_JUSTIFIED | 7.150 | none |
-| failed_progression | phase_3 | machine-row | 3 / 8.096 | 9.600 | 5.500 | REPLACEMENT_JUSTIFIED | 7.150 | none |
-| pain_response | phase_1 | machine-row | 3 / 7.901 | 8.300 | 4.500 | REPLACEMENT_JUSTIFIED | 7.600 | none |
-| pain_response | phase_2 | machine-row | 3 / 8.004 | 8.800 | 4.500 | REPLACEMENT_JUSTIFIED | 8.150 | none |
-| pain_response | phase_3 | machine-row | 3 / 8.096 | 9.600 | 4.500 | REPLACEMENT_JUSTIFIED | 8.150 | none |
-| productive_stable_ready | phase_1 | chest-supported-dumbbell-row | 1 / 8.190 | 8.300 | 8.700 | CONTINUITY_FAVORED | 8.600 | none |
-| productive_stable_ready | phase_2 | chest-supported-dumbbell-row | 1 / 8.293 | 8.800 | 8.700 | CONTINUITY_FAVORED | 9.150 | none |
-| productive_stable_ready | phase_3 | chest-supported-dumbbell-row | 1 / 8.385 | 9.600 | 8.700 | CONTINUITY_FAVORED | 9.150 | none |
+| current | phase_1 | chest-supported-dumbbell-row | 1 / 7.943 | 8.300 | 6.700 | CONTINUITY_FAVORED | 7.600 | none |
+| current | phase_2 | chest-supported-dumbbell-row | 1 / 8.046 | 8.800 | 6.700 | CONTINUITY_FAVORED | 8.150 | none |
+| current | phase_3 | chest-supported-dumbbell-row | 1 / 8.138 | 9.600 | 6.700 | CONTINUITY_FAVORED | 8.150 | none |
+| productive | phase_1 | chest-supported-dumbbell-row | 1 / 8.015 | 8.300 | 8.000 | CONTINUITY_FAVORED | 7.600 | none |
+| productive | phase_2 | chest-supported-dumbbell-row | 1 / 8.119 | 8.800 | 8.000 | CONTINUITY_FAVORED | 8.150 | none |
+| productive | phase_3 | chest-supported-dumbbell-row | 1 / 8.210 | 9.600 | 8.000 | CONTINUITY_FAVORED | 8.150 | none |
+| stable | phase_1 | chest-supported-dumbbell-row | 1 / 7.982 | 8.300 | 7.400 | CONTINUITY_FAVORED | 7.600 | none |
+| stable | phase_2 | chest-supported-dumbbell-row | 1 / 8.085 | 8.800 | 7.400 | CONTINUITY_FAVORED | 8.150 | none |
+| stable | phase_3 | chest-supported-dumbbell-row | 1 / 8.177 | 9.600 | 7.400 | CONTINUITY_FAVORED | 8.150 | none |
+| ready_to_progress | phase_1 | chest-supported-dumbbell-row | 1 / 7.998 | 8.300 | 6.700 | CONTINUITY_FAVORED | 8.600 | none |
+| ready_to_progress | phase_2 | chest-supported-dumbbell-row | 1 / 8.102 | 8.800 | 6.700 | CONTINUITY_FAVORED | 9.150 | none |
+| ready_to_progress | phase_3 | chest-supported-dumbbell-row | 1 / 8.193 | 9.600 | 6.700 | CONTINUITY_FAVORED | 9.150 | none |
+| plateaued | phase_1 | machine-row | 3 / 7.793 | 8.300 | 5.200 | REPLACEMENT_JUSTIFIED | 6.400 | none |
+| plateaued | phase_2 | machine-row | 3 / 7.896 | 8.800 | 5.200 | REPLACEMENT_JUSTIFIED | 6.950 | none |
+| plateaued | phase_3 | machine-row | 3 / 7.988 | 9.600 | 5.200 | REPLACEMENT_JUSTIFIED | 6.950 | none |
+| failed_progression | phase_1 | machine-row | 3 / 7.821 | 8.300 | 5.500 | REPLACEMENT_JUSTIFIED | 6.600 | none |
+| failed_progression | phase_2 | machine-row | 3 / 7.924 | 8.800 | 5.500 | REPLACEMENT_JUSTIFIED | 7.150 | none |
+| failed_progression | phase_3 | machine-row | 3 / 8.015 | 9.600 | 5.500 | REPLACEMENT_JUSTIFIED | 7.150 | none |
+| pain_response | phase_1 | machine-row | 3 / 7.821 | 8.300 | 4.500 | REPLACEMENT_JUSTIFIED | 7.600 | none |
+| pain_response | phase_2 | machine-row | 3 / 7.924 | 8.800 | 4.500 | REPLACEMENT_JUSTIFIED | 8.150 | none |
+| pain_response | phase_3 | machine-row | 3 / 8.015 | 9.600 | 4.500 | REPLACEMENT_JUSTIFIED | 8.150 | none |
+| productive_stable_ready | phase_1 | chest-supported-dumbbell-row | 1 / 8.110 | 8.300 | 8.700 | CONTINUITY_FAVORED | 8.600 | none |
+| productive_stable_ready | phase_2 | chest-supported-dumbbell-row | 1 / 8.213 | 8.800 | 8.700 | CONTINUITY_FAVORED | 9.150 | none |
+| productive_stable_ready | phase_3 | chest-supported-dumbbell-row | 1 / 8.304 | 9.600 | 8.700 | CONTINUITY_FAVORED | 9.150 | none |
 
 ### Policy F - Continuity-Preserving Contrast
 
@@ -1429,15 +1429,15 @@ The relevant assessment remains independently traceable across phases. Current a
 | Policy | Rank Changes | Winner Changes | Ties Created | Ties Broken | Affected Candidates |
 | --- | --- | --- | --- | --- | --- |
 | A_CURRENT | 0 | 0 | 0 | 0 | none |
-| B_ANNOTATION_ONLY | 2 | 1 | 0 | 0 | machine-chest-press, push-up |
-| C_NO_PHASE_COMPONENT | 16 | 7 | 1 | 0 | band-face-pull, cable-pull-through, chest-supported-dumbbell-row, dumbbell-bench-press, dumbbell-romanian-deadlift, goblet-squat, leg-press, machine-chest-press, machine-row, push-up, reverse-pec-deck, seated-cable-row, split-squat, step-up |
-| D_WEIGHT_025 | 12 | 6 | 0 | 0 | band-face-pull, cable-pull-through, dumbbell-bench-press, dumbbell-romanian-deadlift, goblet-squat, leg-press, machine-chest-press, push-up, reverse-pec-deck, split-squat, step-up |
-| D_WEIGHT_05 | 8 | 4 | 0 | 0 | band-face-pull, cable-pull-through, dumbbell-romanian-deadlift, machine-chest-press, push-up, reverse-pec-deck, split-squat, step-up |
-| D_WEIGHT_075 | 4 | 2 | 0 | 0 | band-face-pull, machine-chest-press, push-up, reverse-pec-deck |
+| B_ANNOTATION_ONLY | 0 | 0 | 0 | 0 | none |
+| C_NO_PHASE_COMPONENT | 13 | 5 | 0 | 0 | band-face-pull, cable-pull-through, chest-supported-dumbbell-row, dumbbell-bench-press, dumbbell-romanian-deadlift, machine-chest-press, machine-row, push-up, reverse-pec-deck, seated-cable-row, serratus-wall-slide, split-squat, step-up |
+| D_WEIGHT_025 | 8 | 4 | 0 | 0 | band-face-pull, cable-pull-through, dumbbell-romanian-deadlift, machine-chest-press, push-up, reverse-pec-deck, split-squat, step-up |
+| D_WEIGHT_05 | 6 | 3 | 0 | 0 | band-face-pull, cable-pull-through, dumbbell-romanian-deadlift, reverse-pec-deck, split-squat, step-up |
+| D_WEIGHT_075 | 0 | 0 | 0 | 0 | none |
 | D_WEIGHT_1 | 0 | 0 | 0 | 0 | none |
-| D_WEIGHT_125 | 0 | 0 | 0 | 0 | none |
-| E_GENTLE_GAP | 12 | 6 | 0 | 0 | band-face-pull, cable-pull-through, dumbbell-bench-press, dumbbell-romanian-deadlift, goblet-squat, leg-press, machine-chest-press, push-up, reverse-pec-deck, split-squat, step-up |
-| E_MODERATE_GAP | 4 | 2 | 0 | 0 | band-face-pull, machine-chest-press, push-up, reverse-pec-deck |
+| D_WEIGHT_125 | 2 | 1 | 0 | 0 | band-face-pull, reverse-pec-deck |
+| E_GENTLE_GAP | 6 | 3 | 0 | 0 | band-face-pull, cable-pull-through, dumbbell-romanian-deadlift, reverse-pec-deck, split-squat, step-up |
+| E_MODERATE_GAP | 0 | 0 | 0 | 0 | none |
 | E_CURRENT_GAP | 0 | 0 | 0 | 0 | none |
 
 Current-control self-comparison: rank changes=0, winner changes=0. Rank movement is sensitivity evidence only; it is not evidence that a policy is better.
@@ -1446,52 +1446,38 @@ Current-control self-comparison: rank changes=0, winner changes=0. Rank movement
 
 | Policy | Need | Phase | Current Winner | Experimental Winner | Current Winner phase_fit | Experimental Winner phase_fit | Margin Before | Margin After |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| B_ANNOTATION_ONLY | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 6.200 | 0.011 | 0.020 |
-| C_NO_PHASE_COMPONENT | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 0.000 | 0.011 | 0.097 |
-| C_NO_PHASE_COMPONENT | horizontal push main | phase_2 | dumbbell-bench-press | push-up | 8.800 | 0.000 | 0.031 | 0.032 |
+| C_NO_PHASE_COMPONENT | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 0.000 | 0.091 | 0.012 |
 | C_NO_PHASE_COMPONENT | horizontal pull main | phase_3 | chest-supported-dumbbell-row | machine-row | 9.600 | 0.000 | 0.058 | 0.000 |
-| C_NO_PHASE_COMPONENT | squat main | phase_1 | goblet-squat | leg-press | 8.300 | 0.000 | 0.060 | 0.042 |
-| C_NO_PHASE_COMPONENT | hinge secondary | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | 8.300 | 0.000 | 0.060 | 0.073 |
-| C_NO_PHASE_COMPONENT | single-leg accessory | phase_3 | split-squat | step-up | 8.800 | 0.000 | 0.020 | 0.045 |
-| C_NO_PHASE_COMPONENT | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 0.000 | 0.020 | 0.148 |
-| D_WEIGHT_025 | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 6.200 | 0.011 | 0.090 |
-| D_WEIGHT_025 | horizontal push main | phase_2 | dumbbell-bench-press | push-up | 8.800 | 7.800 | 0.031 | 0.015 |
-| D_WEIGHT_025 | squat main | phase_1 | goblet-squat | leg-press | 8.300 | 6.700 | 0.060 | 0.014 |
+| C_NO_PHASE_COMPONENT | hinge secondary | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | 8.300 | 0.000 | 0.060 | 0.074 |
+| C_NO_PHASE_COMPONENT | single-leg accessory | phase_3 | split-squat | step-up | 8.800 | 0.000 | 0.020 | 0.044 |
+| C_NO_PHASE_COMPONENT | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 0.000 | 0.076 | 0.065 |
+| D_WEIGHT_025 | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 6.200 | 0.091 | 0.006 |
 | D_WEIGHT_025 | hinge secondary | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | 8.300 | 6.200 | 0.060 | 0.039 |
 | D_WEIGHT_025 | single-leg accessory | phase_3 | split-squat | step-up | 8.800 | 7.800 | 0.020 | 0.027 |
-| D_WEIGHT_025 | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 6.200 | 0.020 | 0.104 |
-| D_WEIGHT_05 | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 6.200 | 0.011 | 0.056 |
+| D_WEIGHT_025 | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 6.200 | 0.076 | 0.046 |
 | D_WEIGHT_05 | hinge secondary | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | 8.300 | 6.200 | 0.060 | 0.004 |
 | D_WEIGHT_05 | single-leg accessory | phase_3 | split-squat | step-up | 8.800 | 7.800 | 0.020 | 0.011 |
-| D_WEIGHT_05 | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 6.200 | 0.020 | 0.062 |
-| D_WEIGHT_075 | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 6.200 | 0.011 | 0.022 |
-| D_WEIGHT_075 | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 6.200 | 0.020 | 0.019 |
-| E_GENTLE_GAP | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 7.200 | 0.011 | 0.063 |
-| E_GENTLE_GAP | horizontal push main | phase_2 | dumbbell-bench-press | push-up | 8.800 | 7.600 | 0.031 | 0.005 |
-| E_GENTLE_GAP | squat main | phase_1 | goblet-squat | leg-press | 8.300 | 7.700 | 0.060 | 0.013 |
-| E_GENTLE_GAP | hinge secondary | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | 8.300 | 7.200 | 0.060 | 0.014 |
+| D_WEIGHT_05 | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 6.200 | 0.076 | 0.004 |
+| D_WEIGHT_125 | rear-delt accessory | phase_1 | reverse-pec-deck | band-face-pull | 8.300 | 9.300 | 0.001 | 0.014 |
+| E_GENTLE_GAP | hinge secondary | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | 8.300 | 7.200 | 0.060 | 0.013 |
 | E_GENTLE_GAP | single-leg accessory | phase_3 | split-squat | step-up | 8.800 | 7.600 | 0.020 | 0.017 |
-| E_GENTLE_GAP | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 7.200 | 0.020 | 0.090 |
-| E_MODERATE_GAP | horizontal push main | phase_1 | machine-chest-press | push-up | 8.300 | 6.800 | 0.011 | 0.032 |
-| E_MODERATE_GAP | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 6.800 | 0.020 | 0.041 |
+| E_GENTLE_GAP | scapular activation | phase_3 | reverse-pec-deck | band-face-pull | 8.800 | 7.200 | 0.076 | 0.034 |
 
 ### Smallest Weight Thresholds
 
 | Need | Phase | Nearest Changed Weight | Distance From 1.00 | Current Winner | Changed Winner |
 | --- | --- | --- | --- | --- | --- |
-| horizontal push main | phase_1 | 0.75 | 0.25 | machine-chest-press | push-up |
-| horizontal push main | phase_2 | 0.25 | 0.75 | dumbbell-bench-press | push-up |
-| squat main | phase_1 | 0.25 | 0.75 | goblet-squat | leg-press |
+| horizontal push main | phase_1 | 0.25 | 0.75 | machine-chest-press | push-up |
 | hinge secondary | phase_1 | 0.50 | 0.50 | cable-pull-through | dumbbell-romanian-deadlift |
 | single-leg accessory | phase_3 | 0.50 | 0.50 | split-squat | step-up |
-| scapular activation | phase_3 | 0.75 | 0.25 | reverse-pec-deck | band-face-pull |
+| scapular activation | phase_3 | 0.50 | 0.50 | reverse-pec-deck | band-face-pull |
+| rear-delt accessory | phase_1 | 1.25 | 0.25 | reverse-pec-deck | band-face-pull |
 
 ### Phase Movement Attribution
 
 Movement caused only by explicit Phase 1/3 mechanical bonuses:
 
-- horizontal push main/phase_1/machine-chest-press: current rank 1 -> annotation-only rank 2
-- horizontal push main/phase_1/push-up: current rank 2 -> annotation-only rank 1
+- None in the tested legal pools.
 
 Movement that remains with annotation-only phase_fit:
 
@@ -1501,17 +1487,13 @@ Movement that remains with annotation-only phase_fit:
 - horizontal pull main/machine-row: current=[2,1,2], annotation-only=[2,1,2]
 - horizontal pull main/seated-cable-row: current=[3,2,3], annotation-only=[3,2,3]
 - horizontal push main/dumbbell-bench-press: current=[3,1,1], annotation-only=[3,1,1]
-- horizontal push main/machine-chest-press: current=[1,3,2], annotation-only=[2,3,2]
-- horizontal push main/push-up: current=[2,2,3], annotation-only=[1,2,3]
-- rear-delt accessory/band-face-pull: current=[1,2,2], annotation-only=[1,2,2]
-- rear-delt accessory/reverse-pec-deck: current=[2,1,1], annotation-only=[2,1,1]
+- horizontal push main/machine-chest-press: current=[1,3,2], annotation-only=[1,3,2]
+- horizontal push main/push-up: current=[2,2,3], annotation-only=[2,2,3]
 - scapular activation/band-face-pull: current=[1,1,2], annotation-only=[1,1,2]
-- scapular activation/reverse-pec-deck: current=[3,2,1], annotation-only=[3,2,1]
-- scapular activation/serratus-wall-slide: current=[2,3,3], annotation-only=[2,3,3]
+- scapular activation/reverse-pec-deck: current=[3,3,1], annotation-only=[3,3,1]
+- scapular activation/serratus-wall-slide: current=[2,2,3], annotation-only=[2,2,3]
 - single-leg accessory/split-squat: current=[2,2,1], annotation-only=[2,2,1]
 - single-leg accessory/step-up: current=[1,1,2], annotation-only=[1,1,2]
-- squat main/goblet-squat: current=[1,1,2], annotation-only=[1,1,2]
-- squat main/leg-press: current=[2,2,1], annotation-only=[2,2,1]
 - trunk activation/dead-bug: current=[1,2,2], annotation-only=[1,2,2]
 - trunk activation/pallof-press: current=[2,1,1], annotation-only=[2,1,1]
 
@@ -1521,34 +1503,22 @@ Meaningful means a winner change or a top-two ordering/membership change. All su
 
 | Scenario | Enduring Goal | Experience | Phase | Current Winner | Experimental Winner | Why Current Won | Why Experimental Won | Phase Effect | Other Effects | Continuity | Assessment | Pain Readiness | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| B_ANNOTATION_ONLY / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.080247); progression_value=8.150 (advantage 0.061111); loadability=8.150 (advantage 0.041975); fatigue_cost=8.450 (advantage 0.034567) | current 8.300; experimental 6.200 | role_fit=8.000 (0.691358); pain_suitability=8.200 (0.607407); goal_fit=8.500 (0.577160) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| C_NO_PHASE_COMPONENT / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.085526); progression_value=8.150 (advantage 0.065132); loadability=8.150 (advantage 0.044736); fatigue_cost=8.450 (advantage 0.036842) | current 8.300; experimental omitted | role_fit=8.000 (0.736842); pain_suitability=8.200 (0.647368); goal_fit=8.500 (0.615132) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
-| C_NO_PHASE_COMPONENT / horizontal push main / winner change | strength | intermediate | phase_2 | dumbbell-bench-press | push-up | phase_fit=8.800 (advantage 0.061729); stimulus_potential=9.700 (advantage 0.061111); session_intent_fit=9.500 (advantage 0.046297); progression_value=8.150 (advantage 0.030556) | muscle_target_fit=8.900 (advantage 0.085526); loadability=9.000 (advantage 0.044737); fatigue_cost=8.450 (advantage 0.036842); skill_fit=7.950 (advantage 0.025329) | current 8.800; experimental omitted | role_fit=8.000 (0.736842); pain_suitability=8.200 (0.647368); goal_fit=8.500 (0.615132) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
+| C_NO_PHASE_COMPONENT / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | progression_value=8.150 (advantage 0.065132); loadability=8.150 (advantage 0.044736); fatigue_cost=8.450 (advantage 0.036842); experience_fit=7.590 (advantage 0.031085) | current 8.300; experimental omitted | role_fit=8.000 (0.736842); pain_suitability=8.200 (0.647368); goal_fit=8.500 (0.615132) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
 | C_NO_PHASE_COMPONENT / horizontal pull main / winner change | strength | intermediate | phase_3 | chest-supported-dumbbell-row | machine-row | phase_fit=9.600 (advantage 0.061729) | equipment_practicality=8.350 (advantage 0.003947) | current 9.600; experimental omitted | role_fit=8.000 (0.736842); pain_suitability=8.200 (0.647368); session_intent_fit=9.500 (0.625000) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
-| C_NO_PHASE_COMPONENT / squat main / winner change | strength | intermediate | phase_1 | goblet-squat | leg-press | phase_fit=8.300 (advantage 0.098766); loadability=8.150 (advantage 0.041975); fatigue_cost=7.650 (advantage 0.023766); equipment_practicality=8.700 (advantage 0.012963) | stimulus_potential=9.700 (advantage 0.065131); stability_fit=8.500 (advantage 0.059868) | current 8.300; experimental omitted | role_fit=8.000 (0.736842); pain_suitability=8.200 (0.647368); session_intent_fit=9.500 (0.625000) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
 | C_NO_PHASE_COMPONENT / hinge secondary / winner change | strength | intermediate | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | phase_fit=8.300 (advantage 0.129630); fatigue_cost=8.450 (advantage 0.058333); skill_fit=8.500 (advantage 0.047531); loadability=8.150 (advantage 0.041975) | goal_fit=8.500 (advantage 0.108553); stimulus_potential=9.700 (advantage 0.065131); experience_fit=8.265 (advantage 0.062171); equipment_practicality=8.700 (advantage 0.013816) | current 8.300; experimental omitted | role_fit=8.000 (0.736842); pain_suitability=8.200 (0.647368); goal_fit=8.500 (0.615132) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
-| C_NO_PHASE_COMPONENT / single-leg accessory / winner change | hypertrophy | intermediate | phase_3 | split-squat | step-up | phase_fit=8.800 (advantage 0.061729); equipment_practicality=8.700 (advantage 0.016666) | fatigue_cost=8.450 (advantage 0.062171) | current 8.800; experimental omitted | role_fit=9.000 (0.828947); session_intent_fit=10.000 (0.657895); pain_suitability=8.200 (0.647368) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
-| C_NO_PHASE_COMPONENT / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=9.800 (advantage 0.144737); session_intent_fit=10.000 (advantage 0.049342); experience_fit=7.590 (advantage 0.031085); fatigue_cost=9.000 (advantage 0.025329) | current 8.800; experimental omitted | role_fit=9.000 (0.828947); session_intent_fit=10.000 (0.657895); pain_suitability=8.200 (0.647368) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
-| D_WEIGHT_025 / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.084143); progression_value=8.150 (advantage 0.064077); loadability=8.150 (advantage 0.044012); fatigue_cost=8.450 (advantage 0.036246) | current 8.300; experimental 6.200 | role_fit=8.000 (0.724919); pain_suitability=8.200 (0.636893); goal_fit=8.500 (0.605178) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_025 / horizontal push main / winner change | strength | intermediate | phase_2 | dumbbell-bench-press | push-up | phase_fit=8.800 (advantage 0.061729); stimulus_potential=9.700 (advantage 0.061111); session_intent_fit=9.500 (advantage 0.046297); progression_value=8.150 (advantage 0.030556) | muscle_target_fit=8.900 (advantage 0.084143); loadability=9.000 (advantage 0.044013); fatigue_cost=8.450 (advantage 0.036246); skill_fit=7.950 (advantage 0.024919) | current 8.800; experimental 7.800 | role_fit=8.000 (0.724919); pain_suitability=8.200 (0.636893); goal_fit=8.500 (0.605178) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_025 / squat main / winner change | strength | intermediate | phase_1 | goblet-squat | leg-press | phase_fit=8.300 (advantage 0.098766); loadability=8.150 (advantage 0.041975); fatigue_cost=7.650 (advantage 0.023766); equipment_practicality=8.700 (advantage 0.012963) | stimulus_potential=9.700 (advantage 0.064078); stability_fit=8.500 (advantage 0.058899) | current 8.300; experimental 6.700 | role_fit=8.000 (0.724919); pain_suitability=8.200 (0.636893); session_intent_fit=9.500 (0.614887) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
+| C_NO_PHASE_COMPONENT / single-leg accessory / winner change | hypertrophy | intermediate | phase_3 | split-squat | step-up | phase_fit=8.800 (advantage 0.061729); equipment_practicality=8.700 (advantage 0.016666) | fatigue_cost=8.450 (advantage 0.062171) | current 8.800; experimental omitted | role_fit=8.000 (0.736842); pain_suitability=8.200 (0.647368); session_intent_fit=9.500 (0.625000) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
+| C_NO_PHASE_COMPONENT / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.085526); session_intent_fit=9.500 (advantage 0.049342); experience_fit=7.590 (advantage 0.031085); fatigue_cost=9.000 (advantage 0.025329) | current 8.800; experimental omitted | role_fit=8.000 (0.736842); pain_suitability=8.200 (0.647368); session_intent_fit=9.500 (0.625000) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | QUESTIONABLE |
+| D_WEIGHT_025 / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | progression_value=8.150 (advantage 0.064077); loadability=8.150 (advantage 0.044012); fatigue_cost=8.450 (advantage 0.036246); experience_fit=7.590 (advantage 0.030582) | current 8.300; experimental 6.200 | role_fit=8.000 (0.724919); pain_suitability=8.200 (0.636893); goal_fit=8.500 (0.605178) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
 | D_WEIGHT_025 / hinge secondary / winner change | strength | intermediate | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | phase_fit=8.300 (advantage 0.129630); fatigue_cost=8.450 (advantage 0.058333); skill_fit=8.500 (advantage 0.047531); loadability=8.150 (advantage 0.041975) | goal_fit=8.500 (advantage 0.106796); stimulus_potential=9.700 (advantage 0.064078); experience_fit=8.265 (advantage 0.061165); equipment_practicality=8.700 (advantage 0.013592) | current 8.300; experimental 6.200 | role_fit=8.000 (0.724919); pain_suitability=8.200 (0.636893); goal_fit=8.500 (0.605178) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_025 / single-leg accessory / winner change | hypertrophy | intermediate | phase_3 | split-squat | step-up | phase_fit=8.800 (advantage 0.061729); equipment_practicality=8.700 (advantage 0.016666) | fatigue_cost=8.450 (advantage 0.061165) | current 8.800; experimental 7.800 | role_fit=9.000 (0.815534); session_intent_fit=10.000 (0.647249); pain_suitability=8.200 (0.636893) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_025 / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=9.800 (advantage 0.142395); session_intent_fit=10.000 (advantage 0.048543); experience_fit=7.590 (advantage 0.030582); fatigue_cost=9.000 (advantage 0.024919) | current 8.800; experimental 6.200 | role_fit=9.000 (0.815534); session_intent_fit=10.000 (0.647249); pain_suitability=8.200 (0.636893) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_05 / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.082803); progression_value=8.150 (advantage 0.063057); loadability=8.150 (advantage 0.043312); fatigue_cost=8.450 (advantage 0.035669) | current 8.300; experimental 6.200 | role_fit=8.000 (0.713376); pain_suitability=8.200 (0.626752); goal_fit=8.500 (0.595541) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
+| D_WEIGHT_025 / single-leg accessory / winner change | hypertrophy | intermediate | phase_3 | split-squat | step-up | phase_fit=8.800 (advantage 0.061729); equipment_practicality=8.700 (advantage 0.016666) | fatigue_cost=8.450 (advantage 0.061165) | current 8.800; experimental 7.800 | role_fit=8.000 (0.724919); pain_suitability=8.200 (0.636893); session_intent_fit=9.500 (0.614887) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
+| D_WEIGHT_025 / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.084143); session_intent_fit=9.500 (advantage 0.048544); experience_fit=7.590 (advantage 0.030582); fatigue_cost=9.000 (advantage 0.024919) | current 8.800; experimental 6.200 | role_fit=8.000 (0.724919); pain_suitability=8.200 (0.636893); session_intent_fit=9.500 (0.614887) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
 | D_WEIGHT_05 / hinge secondary / winner change | strength | intermediate | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | phase_fit=8.300 (advantage 0.129630); fatigue_cost=8.450 (advantage 0.058333); skill_fit=8.500 (advantage 0.047531); loadability=8.150 (advantage 0.041975) | goal_fit=8.500 (advantage 0.105095); stimulus_potential=9.700 (advantage 0.063057); experience_fit=8.265 (advantage 0.060191); equipment_practicality=8.700 (advantage 0.013376) | current 8.300; experimental 6.200 | role_fit=8.000 (0.713376); pain_suitability=8.200 (0.626752); goal_fit=8.500 (0.595541) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_05 / single-leg accessory / winner change | hypertrophy | intermediate | phase_3 | split-squat | step-up | phase_fit=8.800 (advantage 0.061729); equipment_practicality=8.700 (advantage 0.016666) | fatigue_cost=8.450 (advantage 0.060191) | current 8.800; experimental 7.800 | role_fit=9.000 (0.802548); session_intent_fit=10.000 (0.636943); pain_suitability=8.200 (0.626752) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_05 / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=9.800 (advantage 0.140128); session_intent_fit=10.000 (advantage 0.047771); experience_fit=7.590 (advantage 0.030096); fatigue_cost=9.000 (advantage 0.024522) | current 8.800; experimental 6.200 | role_fit=9.000 (0.802548); session_intent_fit=10.000 (0.636943); pain_suitability=8.200 (0.626752) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_075 / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.081505); progression_value=8.150 (advantage 0.062069); loadability=8.150 (advantage 0.042633); fatigue_cost=8.450 (advantage 0.035109) | current 8.300; experimental 6.200 | role_fit=8.000 (0.702194); pain_suitability=8.200 (0.616928); goal_fit=8.500 (0.586207) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| D_WEIGHT_075 / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=9.800 (advantage 0.137931); session_intent_fit=10.000 (advantage 0.047022); experience_fit=7.590 (advantage 0.029623); fatigue_cost=9.000 (advantage 0.024138) | current 8.800; experimental 6.200 | role_fit=9.000 (0.789969); session_intent_fit=10.000 (0.626959); pain_suitability=8.200 (0.616928) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| E_GENTLE_GAP / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.080247); progression_value=8.150 (advantage 0.061111); loadability=8.150 (advantage 0.041975); fatigue_cost=8.450 (advantage 0.034567) | current 8.300; experimental 7.200 | role_fit=8.000 (0.691358); pain_suitability=8.200 (0.607407); goal_fit=8.500 (0.577160) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| E_GENTLE_GAP / horizontal push main / winner change | strength | intermediate | phase_2 | dumbbell-bench-press | push-up | phase_fit=8.800 (advantage 0.061729); stimulus_potential=9.700 (advantage 0.061111); session_intent_fit=9.500 (advantage 0.046297); progression_value=8.150 (advantage 0.030556) | muscle_target_fit=8.900 (advantage 0.080247); loadability=9.000 (advantage 0.041975); fatigue_cost=8.450 (advantage 0.034567); skill_fit=7.950 (advantage 0.023766) | current 8.800; experimental 7.600 | role_fit=8.000 (0.691358); pain_suitability=8.200 (0.607407); goal_fit=8.500 (0.577160) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| E_GENTLE_GAP / squat main / winner change | strength | intermediate | phase_1 | goblet-squat | leg-press | phase_fit=8.300 (advantage 0.098766); loadability=8.150 (advantage 0.041975); fatigue_cost=7.650 (advantage 0.023766); equipment_practicality=8.700 (advantage 0.012963) | stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173) | current 8.300; experimental 7.700 | role_fit=8.000 (0.691358); pain_suitability=8.200 (0.607407); session_intent_fit=9.500 (0.586420) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
+| D_WEIGHT_05 / single-leg accessory / winner change | hypertrophy | intermediate | phase_3 | split-squat | step-up | phase_fit=8.800 (advantage 0.061729); equipment_practicality=8.700 (advantage 0.016666) | fatigue_cost=8.450 (advantage 0.060191) | current 8.800; experimental 7.800 | role_fit=8.000 (0.713376); pain_suitability=8.200 (0.626752); session_intent_fit=9.500 (0.605096) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
+| D_WEIGHT_05 / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.082803); session_intent_fit=9.500 (advantage 0.047771); experience_fit=7.590 (advantage 0.030096); fatigue_cost=9.000 (advantage 0.024522) | current 8.800; experimental 6.200 | role_fit=8.000 (0.713376); pain_suitability=8.200 (0.626752); session_intent_fit=9.500 (0.605096) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
+| D_WEIGHT_125 / rear-delt accessory / winner change | hypertrophy | intermediate | phase_1 | reverse-pec-deck | band-face-pull | stimulus_potential=8.600 (advantage 0.061111); session_intent_fit=9.500 (advantage 0.046297); skill_fit=8.500 (advantage 0.023765) | phase_fit=9.300 (advantage 0.075988); experience_fit=7.590 (advantage 0.028724); fatigue_cost=9.000 (advantage 0.023405); equipment_practicality=8.700 (advantage 0.012766) | current 8.300; experimental 9.300 | role_fit=8.000 (0.680851); pain_suitability=8.200 (0.598176); goal_fit=8.000 (0.534954) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
 | E_GENTLE_GAP / hinge secondary / winner change | strength | intermediate | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | phase_fit=8.300 (advantage 0.129630); fatigue_cost=8.450 (advantage 0.058333); skill_fit=8.500 (advantage 0.047531); loadability=8.150 (advantage 0.041975) | goal_fit=8.500 (advantage 0.101851); stimulus_potential=9.700 (advantage 0.061111); experience_fit=8.265 (advantage 0.058334); equipment_practicality=8.700 (advantage 0.012963) | current 8.300; experimental 7.200 | role_fit=8.000 (0.691358); pain_suitability=8.200 (0.607407); goal_fit=8.500 (0.577160) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| E_GENTLE_GAP / single-leg accessory / winner change | hypertrophy | intermediate | phase_3 | split-squat | step-up | phase_fit=8.800 (advantage 0.061729); equipment_practicality=8.700 (advantage 0.016666) | fatigue_cost=8.450 (advantage 0.058333) | current 8.800; experimental 7.600 | role_fit=9.000 (0.777778); session_intent_fit=10.000 (0.617284); pain_suitability=8.200 (0.607407) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| E_GENTLE_GAP / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=9.800 (advantage 0.135802); session_intent_fit=10.000 (advantage 0.046296); experience_fit=7.590 (advantage 0.029167); fatigue_cost=9.000 (advantage 0.023766) | current 8.800; experimental 7.200 | role_fit=9.000 (0.777778); session_intent_fit=10.000 (0.617284); pain_suitability=8.200 (0.607407) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| E_MODERATE_GAP / horizontal push main / winner change | strength | intermediate | phase_1 | machine-chest-press | push-up | phase_fit=8.300 (advantage 0.129630); stimulus_potential=9.700 (advantage 0.061111); stability_fit=8.500 (advantage 0.056173); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.080247); progression_value=8.150 (advantage 0.061111); loadability=8.150 (advantage 0.041975); fatigue_cost=8.450 (advantage 0.034567) | current 8.300; experimental 6.800 | role_fit=8.000 (0.691358); pain_suitability=8.200 (0.607407); goal_fit=8.500 (0.577160) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
-| E_MODERATE_GAP / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=9.800 (advantage 0.135802); session_intent_fit=10.000 (advantage 0.046296); experience_fit=7.590 (advantage 0.029167); fatigue_cost=9.000 (advantage 0.023766) | current 8.800; experimental 6.800 | role_fit=9.000 (0.777778); session_intent_fit=10.000 (0.617284); pain_suitability=8.200 (0.607407) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
+| E_GENTLE_GAP / single-leg accessory / winner change | hypertrophy | intermediate | phase_3 | split-squat | step-up | phase_fit=8.800 (advantage 0.061729); equipment_practicality=8.700 (advantage 0.016666) | fatigue_cost=8.450 (advantage 0.058333) | current 8.800; experimental 7.600 | role_fit=8.000 (0.691358); pain_suitability=8.200 (0.607407); session_intent_fit=9.500 (0.586420) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
+| E_GENTLE_GAP / scapular activation / winner change | posture_and_movement_quality | intermediate | phase_3 | reverse-pec-deck | band-face-pull | phase_fit=8.800 (advantage 0.160494); stimulus_potential=7.900 (advantage 0.041667); progression_value=8.150 (advantage 0.030556); skill_fit=8.500 (advantage 0.023765) | muscle_target_fit=8.900 (advantage 0.080247); session_intent_fit=9.500 (advantage 0.046297); experience_fit=7.590 (advantage 0.029167); fatigue_cost=9.000 (advantage 0.023766) | current 8.800; experimental 7.200 | role_fit=8.000 (0.691358); pain_suitability=8.200 (0.607407); session_intent_fit=9.500 (0.586420) | 5.600 -> 5.600 | 6.000 -> 6.000 | EXECUTABLE_AT_CANDIDATE_SCOPE -> EXECUTABLE_AT_CANDIDATE_SCOPE | PLAUSIBLE_NEEDS_REVIEW |
 
 `QUESTIONABLE` for no-phase cases means removing developmental candidate evidence entirely needs owner justification; it is not an automatic recommendation to retain current math. Other changes remain `PLAUSIBLE_NEEDS_REVIEW` because score movement alone cannot settle coaching quality.
 

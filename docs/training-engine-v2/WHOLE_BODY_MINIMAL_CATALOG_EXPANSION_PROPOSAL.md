@@ -1,8 +1,8 @@
 # Whole-Body Minimal Catalog Expansion Proposal
 
-Proposal fingerprint: `6af656e496037cc1e177c0d706d7c7e71a1413dbc93b09efb32507a564f6b392`. This is owner curation input only; none of these concepts is production data or approval.
+Proposal fingerprint: `696fae395bd6383729493d65ac0d4e656799b8797ecf75fdaa327ba33564c5d1`. Exactly eight P0 concepts are owner-curated proposals; none is production data. P1 concepts remain review input only.
 
-P0 (8): standing-dumbbell-calf-raise, side-lying-hip-adduction, loop-band-lateral-walk, side-lying-dumbbell-external-rotation, supine-hamstring-walkout, wall-ankle-dorsiflexion-rock, bodyweight-hip-hinge-rehearsal, supported-single-leg-balance-rehearsal.
+P0 (8): standing-calf-raise, side-lying-hip-adduction, loop-band-lateral-walk, side-lying-dumbbell-external-rotation, supine-hamstring-walkout, wall-ankle-dorsiflexion-rock, bodyweight-hip-hinge-rehearsal, supported-single-leg-balance-rehearsal.
 
 P1 (9): machine-shoulder-press, assisted-pull-up, machine-leg-extension, incline-dumbbell-bench-press, suspension-row, half-kneeling-hip-flexor-mobility, side-lying-thoracic-rotation, cable-hip-adduction, cable-hip-abduction.
 
@@ -12,22 +12,22 @@ Reject/defer as duplicate or low marginal value: preacher-curl (near-duplicate a
 
 Legacy concepts are `REUSE_AS_DATA` only for stable definitional facts, `KEEP_AS_TEST_ORACLE` for observed behavior, `REIMPLEMENT_FROM_PRINCIPLE` for domain contracts, `NEEDS_REVIEW` for exercise-science judgments, and `DO_NOT_PORT` for global phase labels, automatic ladders, prose-derived mechanics, and near-duplicate variations.
 
-## P0: standing-dumbbell-calf-raise
+## P0: standing-calf-raise
 
-- Identity: **Standing Dumbbell Calf Raise**. Boundary: Standing bilateral plantar-flexion exercise; seated and machine variants are separate only if knee position or resistance path becomes selection-relevant.
-- Family/roles/sections: calf_accessory; movement=none; training=hypertrophy_accessory; sections=accessory.
-- Muscles/regions: primary=calves; secondary=none; incidental=trunk, grip; regions=ankle.
-- Equipment/setup: required=dumbbells, stable_loaded_standing_space; optional=wall; prerequisites=standing tolerance; standing, bilateral, none or light-touch wall support; path=free_implement.
-- Mechanics/stress: low skill; moderate balance and ankle range; scapular=not relevant; trunk=incidental upright stabilization only; stress=ankle loading; grip dose-created; bilateral unless prescribed otherwise.
-- Loading/progression: moderate loadability; local calf fatigue; low systemic fatigue; axes=load, reps, sets, range, tempo; runway=Broad enough for bootstrap direct calf work within dumbbell limits.; transitions=Machine/seated calf concepts remain observational and unapproved..
+- Identity: **Standing Calf Raise**. Boundary: Equipment-neutral standing bilateral plantar-flexion identity; external load and wall support are prescription/equipment realizations.
+- Family/roles/sections: calf_accessory; movement=accessory; training=hypertrophy_accessory; sections=accessory.
+- Muscles/regions: primary=calves; secondary=none; incidental=trunk; regions=ankle.
+- Equipment/setup: required=stable_loaded_standing_space; optional=dumbbells, wall; prerequisites=standing tolerance; standing, bilateral, none or light-touch wall support; path=bodyweight_or_external_load.
+- Mechanics/stress: low skill; moderate balance and ankle range; scapular=not relevant; trunk=incidental upright stabilization only; stress=ankle loading; grip only when load creates it; bilateral unless prescribed otherwise.
+- Loading/progression: limited to moderate loadability; local calf fatigue; low systemic fatigue; axes=load, reps, sets, range, tempo; runway=Broad enough for bootstrap direct calf work within available loading.; transitions=Machine/seated calf concepts remain observational and unapproved..
 - Phase/evidence: EXTERNAL_REFERENCE_PENDING; contextual phase annotation unknown; Mechanically definitional owner review required; no superiority claim.
-- Pool/environment: Creates the missing direct-calf primary pool. Gym and dumbbell-home; bodyweight-only remains limited.
+- Pool/environment: Creates the missing direct-calf primary pool. Equipment-neutral identity permits bodyweight or reviewed external-load realizations.
 - Pain/response: Wall support can change balance demand without a new identity; no safety inference. Adjust load, range, support, and unilateral realization after response review.
 - Stable-adaptive review: STABLE_SUPPORTING_WORK; possible BOUNDED_ROTATION_ELIGIBLE. Stable ID resolves future education with no engine dependency.
 - NEW_SLOT_WHEN: Direct calf development is a real program need.
 - DO_NOT_ADD_WHEN: Compound/locomotor exposure is sufficient or time pressure removes direct work.
 - WHY_CURRENT_CATALOG_CANNOT_ALREADY_SOLVE_THIS: No current row has calves as a primary target.
-- Owner decision: Approve bilateral identity and wall support as a prescription variant?
+- Owner decision: Approve equipment-neutral identity and wall support as a prescription variant?
 
 ## P0: side-lying-hip-adduction
 
@@ -303,8 +303,7 @@ Legacy concepts are `REUSE_AS_DATA` only for stable definitional facts, `KEEP_AS
 
 ## Implementation Gates
 
-- Owner approve role-purity dispositions and the hybrid action/function contract.
-- Owner approve the exact P0 identity boundaries, equipment requirements, stress scope, and primary/secondary muscle relationships.
-- Exercise-science review P0 mechanics and leave contextual phase evidence unknown unless separately accepted.
+- Separate owner authorization is required before any P0 proposal becomes a production row.
+- Exercise-science review complete P0 mechanics, stress, phase, equipment, and provenance contracts before admission.
 
-Catalog implementation must remain a separately authorized task. It must not begin Session Composer, Week Composer, automatic rotation/replacement/progression, or Knowledge UI work.
+Any proposal-to-production admission remains a separately authorized task. It must not begin Session Composer, Week Composer, automatic rotation/replacement/progression, or Knowledge UI work.

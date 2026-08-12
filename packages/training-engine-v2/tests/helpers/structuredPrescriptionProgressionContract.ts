@@ -444,7 +444,19 @@ export function syntheticExerciseForFixture(
     family:
       id.includes("carry") || id.includes("march") ? "carry_load" : "core_control",
     movementRoles: movementRolesFor(id),
+    actionFunctions: [],
     trainingRoles: ["activation", "hypertrophy_accessory", "capacity"],
+    muscleContributions: [{
+      muscle: "trunk",
+      relationship: "primary_target",
+      reviewStatus: "accepted",
+      provenance: [{
+        source: "owner_decision",
+        sourceRef: "tests/helpers/structuredPrescriptionProgressionContract.ts",
+        evidenceBasis: ["Synthetic contract fixture targets trunk."],
+      }],
+      notes: "Synthetic fixture primary target.",
+    }],
     primaryMuscles: ["trunk"],
     secondaryMuscles: [],
     bodyRegions: ["lumbar_spine", "pelvis"],

@@ -56,7 +56,7 @@ describe("phase annotation context and uncertainty review", () => {
     expect(data.fixedAsOf).toBe("2026-08-10T00:00:00.000Z");
     expect(data.productionFingerprintMatches).toBe(true);
     expect(data.productionRankingFingerprint).toBe(
-      "237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118",
+      "70ff2f16037eed38bc6d8dddc098cfa0d6bbe3d833eaf3a1e53de61a5e252436",
     );
   });
 
@@ -413,7 +413,7 @@ describe("phase annotation context and uncertainty review", () => {
         .every((policy) => !policy.includeMechanicalBonuses),
     ).toBe(true);
     expect(data.controlledScenarios).toHaveLength(35);
-    expect(data.candidateRows).toHaveLength(832);
+    expect(data.candidateRows).toHaveLength(760);
   });
 
   it("records owner policies, review-status behavior, provenance, and calibration-lab design", () => {
@@ -496,21 +496,21 @@ describe("phase annotation context and uncertainty review", () => {
     );
     expect(
       data.policySummaries.find((row) => row.policyId === "B_GLOBAL_ANNOTATION_ONLY"),
-    ).toEqual(expect.objectContaining({ rankChanges: 2, winnerChanges: 1 }));
+    ).toEqual(expect.objectContaining({ rankChanges: 0, winnerChanges: 0 }));
     expect(
       data.policySummaries.find(
         (row) => row.policyId === "C_CONTEXT_SCOPED_ANNOTATION_ONLY",
       ),
     ).toEqual(
       expect.objectContaining({
-        rankChanges: 19,
-        winnerChanges: 8,
-        tiesCreated: 1,
-        unknownCandidateRows: 94,
+        rankChanges: 15,
+        winnerChanges: 6,
+        tiesCreated: 0,
+        unknownCandidateRows: 85,
         reviewQualifiedCandidateRows: 10,
       }),
     );
-    expect(data.winnerChanges).toHaveLength(49);
+    expect(data.winnerChanges).toHaveLength(36);
   });
 
   it("preserves productive continuity and pain readiness across contextual policies", () => {

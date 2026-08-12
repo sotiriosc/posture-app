@@ -43,7 +43,7 @@ The proposal authorizes no production exercise. Equipment, structured prescripti
 | Dedicated `core_control` exercises | 6 | Dead Bug and Pallof Press |
 | Additional trunk-primary breathing resets | 1 | 90/90 Breathing |
 | Primary `trunk` exercises | 10 | 90/90 Breathing, Dead Bug, Pallof Press |
-| Secondary `trunk` exercises | 10 | Coarse anatomy; not automatic direct credit |
+| Secondary `trunk` exercises | 0 | Coarse anatomy; not automatic direct credit |
 | Direct developmental trunk exercises | 10 | Three, including one preparation/recovery drill |
 | Meaningful secondary trunk exercises | 8 | Eight catalog-supported generic-demand rows; specific functions still need human review |
 | Incidental/unreviewed bracing rows | 10 | No direct developmental credit |

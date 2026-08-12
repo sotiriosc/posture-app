@@ -73,10 +73,10 @@ The implemented support/stance model can distinguish chest-supported and unsuppo
 
 | Need | Current production candidates |
 | --- | --- |
-| horizontal pull | chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row, reverse-pec-deck, band-face-pull, dumbbell-curl |
+| horizontal pull | chest-supported-dumbbell-row, one-arm-dumbbell-row, machine-row, seated-cable-row, band-row |
 | vertical pull | lat-pulldown, band-lat-pulldown |
-| squat | goblet-squat, leg-press, bodyweight-box-squat, split-squat, step-up |
-| hinge | dumbbell-romanian-deadlift, cable-pull-through, lying-leg-curl, glute-bridge |
+| squat | goblet-squat, bodyweight-box-squat |
+| hinge | dumbbell-romanian-deadlift, cable-pull-through |
 | single-leg | split-squat, step-up |
 | trunk anti-extension | ninety-ninety-breathing, dead-bug, push-up, forearm-plank |
 | anti-rotation | pallof-press |
@@ -85,7 +85,7 @@ The implemented support/stance model can distinguish chest-supported and unsuppo
 | controlled rotation | half-kneeling-high-to-low-cable-chop |
 | loaded bracing | farmer-carry, suitcase-carry, wall-supported-suitcase-march |
 | carries/capacity | farmer-carry, suitcase-carry |
-| upper-body pressing | serratus-wall-slide, push-up, dumbbell-bench-press, machine-chest-press, cable-chest-fly, dumbbell-shoulder-press, dumbbell-lateral-raise, cable-triceps-pressdown |
+| upper-body pressing | push-up, dumbbell-bench-press, machine-chest-press, dumbbell-shoulder-press |
 
 The catalog now includes truthful production options for anti-lateral flexion, controlled flexion and rotation, loaded bracing, walking carries, and a stationary supported loaded march. They improve candidate diversity without creating a mandatory slot, workout-length policy, substitution, or progression behavior.
 
@@ -108,11 +108,11 @@ Owner-approved contextual annotations and the annotation-only low-churn shape ar
 | Policy | Category spacing | Phase weight | Winner changes | Close-order changes | Continuity disruptions | Unknown evidence | Accepted poor | Representative Phase 1/2/3 effects |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | A_CURRENT | 8.8/7.8/6.2/5.5 | 1 | 0 | 0 | 0 | legacy lab fallback=5.5; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=5.5; accepted contextual poor remains distinct but production policy is pending | No winner changes from current control. |
-| B_ANNOTATION_ONLY | 8.8/7.8/6.2/5.5 | 1 | 1 | 2 | 0 | legacy lab fallback=5.5; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=5.5; accepted contextual poor remains distinct but production policy is pending | phase_1: machine-chest-press->push-up; phase_2: none; phase_3: none |
-| C_NO_PHASE_COMPONENT | none | omitted | 7 | 16 | 0 | phase component omitted; implemented contextual unknown/no-match remains neutral and unscored | phase component omitted; accepted contextual poor remains distinct but production policy is pending | phase_1: machine-chest-press->push-up, goblet-squat->leg-press, cable-pull-through->dumbbell-romanian-deadlift; phase_2: dumbbell-bench-press->push-up; phase_3: chest-supported-dumbbell-row->machine-row, split-squat->step-up, reverse-pec-deck->band-face-pull |
-| D_WEIGHT_05 | 8.8/7.8/6.2/5.5 | 0.5 | 4 | 8 | 0 | legacy lab fallback=5.5; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=5.5; accepted contextual poor remains distinct but production policy is pending | phase_1: machine-chest-press->push-up, cable-pull-through->dumbbell-romanian-deadlift; phase_2: none; phase_3: split-squat->step-up, reverse-pec-deck->band-face-pull |
-| E_GENTLE_GAP | 8/7.6/7.2/6.8 | 1 | 6 | 12 | 0 | legacy lab fallback=6.8; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=6.8; accepted contextual poor remains distinct but production policy is pending | phase_1: machine-chest-press->push-up, goblet-squat->leg-press, cable-pull-through->dumbbell-romanian-deadlift; phase_2: dumbbell-bench-press->push-up; phase_3: split-squat->step-up, reverse-pec-deck->band-face-pull |
-| E_MODERATE_GAP | 8.4/7.7/6.8/6.2 | 1 | 2 | 4 | 0 | legacy lab fallback=6.2; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=6.2; accepted contextual poor remains distinct but production policy is pending | phase_1: machine-chest-press->push-up; phase_2: none; phase_3: reverse-pec-deck->band-face-pull |
+| B_ANNOTATION_ONLY | 8.8/7.8/6.2/5.5 | 1 | 0 | 0 | 0 | legacy lab fallback=5.5; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=5.5; accepted contextual poor remains distinct but production policy is pending | No winner changes from current control. |
+| C_NO_PHASE_COMPONENT | none | omitted | 5 | 13 | 0 | phase component omitted; implemented contextual unknown/no-match remains neutral and unscored | phase component omitted; accepted contextual poor remains distinct but production policy is pending | phase_1: machine-chest-press->push-up, cable-pull-through->dumbbell-romanian-deadlift; phase_2: none; phase_3: chest-supported-dumbbell-row->machine-row, split-squat->step-up, reverse-pec-deck->band-face-pull |
+| D_WEIGHT_05 | 8.8/7.8/6.2/5.5 | 0.5 | 3 | 6 | 0 | legacy lab fallback=5.5; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=5.5; accepted contextual poor remains distinct but production policy is pending | phase_1: cable-pull-through->dumbbell-romanian-deadlift; phase_2: none; phase_3: split-squat->step-up, reverse-pec-deck->band-face-pull |
+| E_GENTLE_GAP | 8/7.6/7.2/6.8 | 1 | 3 | 6 | 0 | legacy lab fallback=6.8; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=6.8; accepted contextual poor remains distinct but production policy is pending | phase_1: cable-pull-through->dumbbell-romanian-deadlift; phase_2: none; phase_3: split-squat->step-up, reverse-pec-deck->band-face-pull |
+| E_MODERATE_GAP | 8.4/7.7/6.8/6.2 | 1 | 0 | 0 | 0 | legacy lab fallback=6.2; implemented contextual unknown/no-match remains neutral and unscored | legacy lab fallback=6.2; accepted contextual poor remains distinct but production policy is pending | No winner changes from current control. |
 
 ## Whole-Body Interaction
 
@@ -141,18 +141,18 @@ These clinician-facing guidelines inform safety boundaries, exercise-program pri
 
 | Artifact | Fingerprint | Behavior meaning |
 | --- | --- | --- |
-| Production ranking | f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c | Intentionally changed by approved catalog/stress truth |
-| Comprehensive behavior | 3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f | Intentionally changed by approved catalog/stress truth |
-| Reference catalog | 903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c | Intentionally changed by seven rows and focused migrations |
+| Production ranking | 6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56 | Intentionally changed by approved catalog/stress truth |
+| Comprehensive behavior | fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de | Intentionally changed by approved catalog/stress truth |
+| Reference catalog | 1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8 | Intentionally changed by seven rows and focused migrations |
 | Support/stance contract | 6542bc249181f0e1a010323763a7e51505dee7ee87229c4c43b65e0d2cc2963f | Intentionally changed by implementation |
-| Contextual phase laboratory | c63fd8b986e0fd485d31525eaabeac102d769beaa6ec74e559167451bb341445 | Resolver/trace contract implementation |
+| Contextual phase laboratory | 8a1b0bdd4caf699d8b61ffb790388a518cda10699da9eec3481f50afaa1f7ef8 | Resolver/trace contract implementation |
 | Training safety | 0a0805117529073887fe7aca94a1bc2f097e53e1de14d320b1e37093a8825048 | Independent global readiness contract |
 | Training response | 33aec8bb8433d0bf27f63b3fe76e0c6349708e4da47608a5d6957687818453ec | Exposure-linked observation and ledger contract |
 | Response receiver | 26fe112e7c0fced67912e38e9118fed1808c973d74172d78af64f2ae4b6bb7d2 | Applicability, prescription-first routing, progression and continuity policy |
 | Stable-adaptive policy | 2e941653546cac2e8d8a8151c91d9470123b80dd06e8b387b734e882a83734a6 | Continuity doctrine and selected contextual phase policy |
 | Focused row stress curation | 8fada7ea2f07b7ddedea8d181a6d862e2d4d654ec74aea763766445f5db0cfc7 | Current low-back-relevant migration decisions |
 | Safety/response combined | 539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562 | Training intelligence foundation |
-| Low-back audit | a9dbd692fc406315c6786b9116ffed1de1df171dfdba4b4f9d8dbc38fed22cb5 | Deterministic review artifact |
+| Low-back audit | bc4f00a942e0041dee25af23d7e13099f450eff090e6aa91f12ed779080f7f4c | Deterministic review artifact |
 
 ## Exact Next Dependency
 

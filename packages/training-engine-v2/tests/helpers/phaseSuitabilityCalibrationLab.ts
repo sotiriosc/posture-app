@@ -36,7 +36,7 @@ import { component } from "../../src/candidate/scoring/utils";
 
 export const PHASE_CALIBRATION_FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 export const EXPECTED_PRODUCTION_RANKING_FINGERPRINT =
-  "237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118";
+  "70ff2f16037eed38bc6d8dddc098cfa0d6bbe3d833eaf3a1e53de61a5e252436";
 
 const PHASE_IDS: readonly PhaseId[] = ["phase_1", "phase_2", "phase_3"];
 const GOALS: readonly TrainingGoal[] = [

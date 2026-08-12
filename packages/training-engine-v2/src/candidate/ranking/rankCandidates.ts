@@ -113,7 +113,9 @@ export function rankCandidateRequest(
       requestedRole: request.need.requestedRole,
       requestedSection: request.need.requestedSection,
       targetMovementRoles: request.need.targetMovementRoles,
+      targetActionFunctions: request.need.targetActionFunctions,
       targetMuscles: request.need.targetMuscles,
+      muscleRequirement: request.need.muscleRequirement,
       satisfiedPrerequisiteIds: request.satisfiedPrerequisiteIds,
     });
 

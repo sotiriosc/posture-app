@@ -6,6 +6,8 @@ import {
   type MachineId,
 } from "./domain/equipment";
 import {
+  EXERCISE_ACTION_FUNCTIONS,
+  MUSCLE_CONTRIBUTION_RELATIONSHIPS,
   TRUNK_FUNCTION_EVIDENCE_SOURCES,
   TRUNK_FUNCTION_LEVELS,
   TRUNK_MECHANICS_FUNCTIONS,
@@ -292,6 +294,59 @@ export function validateExerciseDefinition(exercise: ExerciseDefinition): readon
 
   if (exercise.primaryMuscles.length === 0) {
     findings.push(finding("error", "missing_primary_muscle", "Exercise needs a primary muscle target.", exercise.id));
+  }
+
+  if (exercise.muscleContributions.length === 0) {
+    findings.push(finding("error", "missing_muscle_contributions", "Canonical muscle contributions are required.", exercise.id));
+  }
+  const contributionMuscles = new Set<string>();
+  for (const contribution of exercise.muscleContributions) {
+    if (contributionMuscles.has(contribution.muscle)) {
+      findings.push(finding("error", "duplicate_muscle_contribution", `Duplicate contribution for ${contribution.muscle}.`, exercise.id));
+    }
+    contributionMuscles.add(contribution.muscle);
+    if (!MUSCLE_GROUPS.includes(contribution.muscle)) {
+      findings.push(finding("error", "invalid_contribution_muscle", `Unknown contribution muscle ${contribution.muscle}.`, exercise.id));
+    }
+    if (!MUSCLE_CONTRIBUTION_RELATIONSHIPS.includes(contribution.relationship)) {
+      findings.push(finding("error", "invalid_muscle_relationship", `Invalid relationship for ${contribution.muscle}.`, exercise.id));
+    }
+    if (contribution.reviewStatus !== "accepted" && contribution.reviewStatus !== "needs_review") {
+      findings.push(finding("error", "invalid_muscle_contribution_review_status", `Contribution ${contribution.muscle} has an invalid review status.`, exercise.id));
+    }
+    if (contribution.notes.trim().length === 0 || contribution.provenance.length === 0 || contribution.provenance.some((entry) =>
+      entry.sourceRef.trim().length === 0 || entry.evidenceBasis.length === 0 || entry.evidenceBasis.some((basis) => basis.trim().length === 0)
+    )) {
+      findings.push(finding("error", "incomplete_muscle_contribution_review", `Contribution ${contribution.muscle} requires notes and provenance.`, exercise.id));
+    }
+  }
+  const projectedPrimary = exercise.muscleContributions
+    .filter((entry) => entry.relationship === "primary_target")
+    .map((entry) => entry.muscle);
+  const projectedSecondary = exercise.muscleContributions
+    .filter((entry) => entry.relationship === "key_secondary_target")
+    .map((entry) => entry.muscle);
+  if (JSON.stringify(exercise.primaryMuscles) !== JSON.stringify(projectedPrimary) ||
+      JSON.stringify(exercise.secondaryMuscles) !== JSON.stringify(projectedSecondary)) {
+    findings.push(finding("error", "muscle_projection_drift", "Primary/secondary projections must be derived from canonical contributions.", exercise.id));
+  }
+  const actionFunctions = new Set<string>();
+  for (const annotation of exercise.actionFunctions) {
+    if (actionFunctions.has(annotation.action)) {
+      findings.push(finding("error", "duplicate_action_function", `Duplicate action/function ${annotation.action}.`, exercise.id));
+    }
+    actionFunctions.add(annotation.action);
+    if (!EXERCISE_ACTION_FUNCTIONS.includes(annotation.action)) {
+      findings.push(finding("error", "invalid_action_function", `Invalid action/function ${annotation.action}.`, exercise.id));
+    }
+    if (annotation.reviewStatus !== "accepted" && annotation.reviewStatus !== "needs_review") {
+      findings.push(finding("error", "invalid_action_function_review_status", `Action ${annotation.action} has an invalid review status.`, exercise.id));
+    }
+    if (annotation.notes.trim().length === 0 || annotation.provenance.length === 0 || annotation.provenance.some((entry) =>
+      entry.sourceRef.trim().length === 0 || entry.evidenceBasis.length === 0 || entry.evidenceBasis.some((basis) => basis.trim().length === 0)
+    )) {
+      findings.push(finding("error", "incomplete_action_function_review", `Action ${annotation.action} requires notes and provenance.`, exercise.id));
+    }
   }
 
   for (const role of exercise.movementRoles) {

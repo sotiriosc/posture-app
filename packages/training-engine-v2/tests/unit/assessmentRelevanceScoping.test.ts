@@ -348,8 +348,8 @@ describe("assessment relevance scoping", () => {
     expect(runCandidateRankingLab(pushOff).legalCandidateCount).toBe(push.legalCandidateCount);
     expect(runCandidateRankingLab(pullOff).legalCandidateCount).toBe(pull.legalCandidateCount);
     expect(push.rankedCandidates.map((candidate) => candidate.exercise.id)).toEqual([
-      "push-up",
       "dumbbell-bench-press",
+      "push-up",
       "machine-chest-press",
     ]);
     expect(pull.rankedCandidates.map((candidate) => candidate.exercise.id)).toEqual([

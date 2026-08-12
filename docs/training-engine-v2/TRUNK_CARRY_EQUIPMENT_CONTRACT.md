@@ -77,9 +77,9 @@ Every pure requirement result now exposes the requirement ID, requested capabili
 | --- | --- | --- | --- |
 | 240 current exercise-by-fixture equipment legality rows | 5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869 | 5aa3d161faf552652caec1b6b01e22f2c2718dfc12337d74329f4a39deb38869 | true |
 | Expanded equipment fixture serialization | bb07188480cab4134ba4f2eb36dfa4f17e5d4d62d6139b539c5603ad602b482a | bb07188480cab4134ba4f2eb36dfa4f17e5d4d62d6139b539c5603ad602b482a | true |
-| 22-scenario ranking | f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c | f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c | true |
-| Comprehensive behavior including hard-rejection codes | 3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f | 3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f | true |
-| Reference catalog | 903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c | 903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c | true |
+| 22-scenario ranking | 6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56 | 6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56 | true |
+| Comprehensive behavior including hard-rejection codes | fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de | fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de | true |
+| Reference catalog | 1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8 | 1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8 | true |
 | Current requirements using a new capability | 0 | 7 | false |
 | Current exercises using carry_load | 0 | 3 | false |
 

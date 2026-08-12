@@ -33,7 +33,7 @@ import {
 const FIXED_AS_OF = "2026-08-10T00:00:00.000Z";
 const AUDIT_BASELINE_HEAD = "1449d46e122cadd8a445e07365c242983afa64eb";
 const EXPECTED_EXISTING_SCENARIO_FINGERPRINT =
-  "f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c";
+  "6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56";
 
 const EMPTY_ASSESSMENT: AssessmentState = {
   signals: [],
@@ -49,7 +49,7 @@ const KNEE_CONTROL_ASSESSMENT: AssessmentState = {
       confidence: "high",
       priority: "primary",
       region: "knee",
-      movementRole: "squat",
+      movementRole: "knee_dominant",
       muscleGroup: "glutes",
       description: "Controlled knee-alignment signal for pain-semantics auditing.",
     },
@@ -321,11 +321,12 @@ function requestWithPool(input: {
 function matrixGroups(): readonly MatrixGroup[] {
   const squatNeed: CandidateNeed = {
     id: "pain-audit-squat-accessory",
-    whyNeeded: "Controlled pain audit across legal squat-pattern accessory candidates.",
+    whyNeeded: "Controlled pain audit across legal knee-dominant accessory candidates.",
     requestedRole: "secondary_strength",
     requestedSection: "accessory",
-    targetMovementRoles: ["squat"],
+    targetMovementRoles: ["knee_dominant"],
     targetMuscles: ["quads", "glutes"],
+    muscleRequirement: "primary_preferred",
     targetBodyRegions: ["knee", "hip", "ankle"],
     goal: "pain_aware_return",
   };
@@ -334,8 +335,9 @@ function matrixGroups(): readonly MatrixGroup[] {
     whyNeeded: "Controlled pain audit across legal single-leg accessory candidates.",
     requestedRole: "secondary_strength",
     requestedSection: "accessory",
-    targetMovementRoles: ["single_leg", "squat"],
+    targetMovementRoles: ["single_leg", "knee_dominant"],
     targetMuscles: ["quads", "glutes"],
+    muscleRequirement: "primary_preferred",
     targetBodyRegions: ["knee", "hip", "ankle"],
     goal: "pain_aware_return",
   };

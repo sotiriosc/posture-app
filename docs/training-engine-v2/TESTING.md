@@ -99,3 +99,6 @@ Current status supersedes the historical pre-implementation wording above: owner
 ## Bug Localization
 
 Tests should preserve enough pipeline context to identify whether a failure came from input interpretation, assessment interpretation, phase intent, session intent, eligibility, candidate scoring, session composition, week composition, prescription, same-exercise progression, cross-exercise transition, or validation.
+# Role, Muscle, and Personalization Matrix (2026-08-12)
+
+Focused tests verify all 37 canonical contribution projections, the nine role/action corrections, the five knee-dominant rows, action hard requirements, all three muscle relationship requirements, goal authority diagnostics, and fixed-shell counterfactuals. Fingerprints are isolated for movement roles, actions, muscle migration, need requirements, personalization, role pools, unchanged phase, unchanged safety/response, 37-row identity inventory, the eight non-production P0 proposals, and the combined contract.

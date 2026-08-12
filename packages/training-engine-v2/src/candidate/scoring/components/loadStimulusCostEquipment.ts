@@ -5,6 +5,7 @@ import {
 } from "../../pain";
 import type { CandidateScoreComponent } from "../types";
 import { component, demandValue, loadabilityValue } from "../utils";
+import { resolveCandidateGoal } from "../../request";
 
 function phaseLoadingTarget(loading: "low" | "moderate" | "high"): number {
   return loading === "low" ? 1 : loading === "moderate" ? 2 : 3;
@@ -16,9 +17,9 @@ export const loadabilityComponent: CandidateScoreComponent = {
     const actual = loadabilityValue(exercise.loading.loadability);
     const target = phaseLoadingTarget(request.phase.progressionIntent.loading);
     const goalBonus =
-      (request.goal === "strength" || request.goal === "hypertrophy") && actual >= 2 ? 0.8 : 0;
+      (resolveCandidateGoal(request) === "strength" || resolveCandidateGoal(request) === "hypertrophy") && actual >= 2 ? 0.8 : 0;
     const controlBonus =
-      request.goal === "posture_and_movement_quality" && actual <= 1 ? 0.6 : 0;
+      resolveCandidateGoal(request) === "posture_and_movement_quality" && actual <= 1 ? 0.6 : 0;
     const value = 8.2 - Math.abs(actual - target) * 0.85 + goalBonus + controlBonus;
 
     return component({
@@ -39,9 +40,9 @@ export const stimulusPotentialComponent: CandidateScoreComponent = {
     const roleBonus =
       exercise.trainingRoles.includes(request.need.requestedRole) ? 0.8 : 0;
     const goalBonus =
-      request.goal === "strength" || request.goal === "hypertrophy"
+      resolveCandidateGoal(request) === "strength" || resolveCandidateGoal(request) === "hypertrophy"
         ? potential * 0.35
-        : request.goal === "pain_aware_return"
+        : resolveCandidateGoal(request) === "pain_aware_return"
           ? -Math.max(0, potential - 2) * 0.45
           : 0;
     const value = 5.6 + potential * 0.75 + roleBonus + goalBonus;
@@ -51,7 +52,7 @@ export const stimulusPotentialComponent: CandidateScoreComponent = {
       family: "stimulus_potential",
       value,
       reasonCode: "STIMULUS_MATCH",
-      reason: `${exercise.name} stimulus potential is ${exercise.loading.loadingPotential} for ${request.goal}.`,
+      reason: `${exercise.name} stimulus potential is ${exercise.loading.loadingPotential} for ${resolveCandidateGoal(request)}.`,
       source: "exercise_definition",
     });
   },

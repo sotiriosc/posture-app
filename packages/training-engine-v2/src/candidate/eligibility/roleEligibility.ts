@@ -1,4 +1,5 @@
 import type { HardEligibilityComponent } from "./types";
+import { meaningfulTargetMuscles, musclesWithRelationships } from "../../domain/exercise";
 
 function overlaps<T extends string>(left: readonly T[], right: readonly T[]): boolean {
   return left.some((value) => right.includes(value));
@@ -46,8 +47,30 @@ export const roleEligibility: HardEligibilityComponent = {
     }
 
     if (
+      context.targetActionFunctions?.length &&
+      !overlaps(
+        exercise.actionFunctions.map((annotation) => annotation.action),
+        context.targetActionFunctions,
+      )
+    ) {
+      rejectionReasons.push({
+        code: "TRAINING_NEED_MISMATCH" as const,
+        message: `${exercise.name} does not satisfy the required action/function.`,
+        source: "session_intent" as const,
+        evidence: [
+          `requested actions: ${context.targetActionFunctions.join(", ")}`,
+          `candidate actions: ${exercise.actionFunctions.map((entry) => entry.action).join(", ") || "none"}`,
+        ],
+      });
+    }
+
+    const legalMuscles = context.muscleRequirement === "primary_required"
+      ? musclesWithRelationships(exercise, ["primary_target"])
+      : meaningfulTargetMuscles(exercise);
+
+    if (
       context.targetMuscles?.length &&
-      !overlaps([...exercise.primaryMuscles, ...exercise.secondaryMuscles], context.targetMuscles)
+      !overlaps(legalMuscles, context.targetMuscles)
     ) {
       rejectionReasons.push({
         code: "TARGET_MUSCLE_MISMATCH" as const,
@@ -55,7 +78,8 @@ export const roleEligibility: HardEligibilityComponent = {
         source: "session_intent" as const,
         evidence: [
           `requested muscles: ${context.targetMuscles.join(", ")}`,
-          `candidate muscles: ${[...exercise.primaryMuscles, ...exercise.secondaryMuscles].join(", ")}`,
+          `required relationship: ${context.muscleRequirement ?? "any_meaningful_contributor"}`,
+          `candidate legal muscles: ${legalMuscles.join(", ")}`,
         ],
       });
     }

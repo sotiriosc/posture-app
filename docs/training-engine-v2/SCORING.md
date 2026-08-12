@@ -427,3 +427,6 @@ Body-region overlap alone is not enough to establish assessment relevance.
 ## Deliberately Not Done
 
 These weights are not final exercise-science tuning. No giant score matrix exists. Hard exclusions remain explicit rejection reasons rather than hidden negative scores.
+# Muscle and Personalization Addendum (2026-08-12)
+
+Muscle legality uses only primary and key-secondary contributors. `primary_preferred` retains the bounded existing primary/key-secondary distinction; `any_meaningful_contributor` gives equal bounded credit; `primary_required` excludes key secondary. No new muscle score family was introduced. Preferred/disliked exercise IDs and identity-linked tolerated/adverse response contribute bounded values through `continuity_value`; they never auto-replace or auto-progress.

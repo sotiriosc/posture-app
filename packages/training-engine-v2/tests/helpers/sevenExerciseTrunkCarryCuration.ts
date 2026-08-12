@@ -1712,12 +1712,17 @@ export function renderSevenExerciseTrunkCarryCurationReport(
   ].join("\n");
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+export function writeSevenExerciseTrunkCarryCuration(rootDir = process.cwd()): string {
   const data = buildSevenExerciseTrunkCarryCurationData();
   const outputPath = join(
-    process.cwd(),
+    rootDir,
     "docs/training-engine-v2/SEVEN_EXERCISE_TRUNK_CARRY_CURATION.md",
   );
   writeFileSync(outputPath, renderSevenExerciseTrunkCarryCurationReport(data));
+  return outputPath;
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const outputPath = writeSevenExerciseTrunkCarryCuration();
   console.log(`Wrote ${outputPath}`);
 }

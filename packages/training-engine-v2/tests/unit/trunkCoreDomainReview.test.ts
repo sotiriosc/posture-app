@@ -51,7 +51,7 @@ describe("trunk/core domain and coverage review", () => {
         dedicatedCoreControlCount: 6,
         breathingResetCount: 1,
         primaryTrunkCount: 10,
-        secondaryTrunkCount: 10,
+        secondaryTrunkCount: 0,
         directDevelopmentalCount: 10,
         meaningfulSecondaryCount: 8,
         incidentalBracingCount: 10,

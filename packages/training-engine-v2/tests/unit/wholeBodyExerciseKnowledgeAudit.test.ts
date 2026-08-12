@@ -32,20 +32,20 @@ function matrix(archetypeId: string, environmentId = "full-commercial-gym") {
 
 describe("whole-body exercise knowledge and candidate-pool audit", () => {
   it("freezes all production baselines while auditing exactly one 37-row catalog", () => {
-    expect(data.productionBehaviorChanged).toBe(false);
+    expect(data.productionBehaviorChanged).toBe(true);
     expect(data.catalogCount).toBe(37);
     expect(data.uniqueCatalogCount).toBe(37);
     expect(data.productionRankingFingerprint).toBe(PRODUCTION_RANKING_FINGERPRINT);
     expect(data.comprehensiveBehaviorFingerprint).toBe(COMPREHENSIVE_BEHAVIOR_FINGERPRINT);
     expect(data.contextualPhaseFingerprint)
-      .toBe("3eaf245600d09813bd2313d0cc3a079e29f1c7aa1c6ce01f4513f404dc203216");
+      .toBe("29266f305d501852e01b8b468f28544294d5af32bdef59836250960daf1b262b");
     expect(data.safetyResponseFingerprint)
       .toBe("539dba50cc8d0dda4dcaa28cfc9cc764d15049aba8bddace707bff5b98d2c562");
     expect(data.stableAdaptiveFingerprint)
       .toBe("58067eee7d9e34836e15150caf8be5de1ae4d896db43199f40583dd45020c72a");
   });
 
-  it("identifies every role-purity problem without applying a production correction", () => {
+  it("records every resolved role-purity problem after applying the authorized correction", () => {
     expect(data.roleProblemIds).toEqual([
       "dumbbell-curl",
       "cable-triceps-pressdown",
@@ -59,15 +59,15 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
       "leg-press",
     ]);
     expect(data.roleAudit.find((row) => row.exerciseId === "dumbbell-curl"))
-      .toEqual(expect.objectContaining({ futureCoverageDistortion: true, sectionGateIsSufficient: false }));
+      .toEqual(expect.objectContaining({ futureCoverageDistortion: false, sectionGateIsSufficient: true }));
     expect(matrix("horizontal-push").productionLegalIds).not.toContain("cable-triceps-pressdown");
     expect(matrix("vertical-push").truthfulLegalIds).toEqual(["dumbbell-shoulder-press"]);
     expect(matrix("hip-dominant").truthfulLegalIds).toEqual([
       "dumbbell-romanian-deadlift",
       "cable-pull-through",
     ]);
-    expect(exercise("dumbbell-curl").movementRoles).toEqual(["horizontal_pull"]);
-    expect(exercise("lying-leg-curl").movementRoles).toEqual(["hinge"]);
+    expect(exercise("dumbbell-curl").movementRoles).toEqual(["accessory"]);
+    expect(exercise("lying-leg-curl").movementRoles).toEqual(["accessory"]);
   });
 
   it("proves direct muscle-only slots work and exposes their exact limits", () => {
@@ -83,7 +83,8 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
     expect(matrix("direct-hip-adductors").truthfulLegalIds).toEqual([]);
     expect(matrix("direct-rotator-cuff").truthfulLegalIds).toEqual([]);
     expect(matrix("hamstring-knee-flexion").classification)
-      .toBe("DOMAIN_MODEL_BLOCKS_TRUTHFUL_POOL");
+      .toBe("SINGLE_CANDIDATE_DEPENDENCY");
+    expect(matrix("hamstring-knee-flexion").truthfulLegalIds).toEqual(["lying-leg-curl"]);
     expect(data.recommendedDomainOption)
       .toBe("OPTION_D_HYBRID_MACRO_SELECTION_ROLES_PLUS_OPTIONAL_ACTION_FUNCTION_PROFILE");
   });
@@ -115,7 +116,7 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
 
   it("keeps pain, response, support, and stable-adaptive boundaries observable", () => {
     expect(data.fingerprints.painAwareCoverage)
-      .toBe("950c6d4b0d9724e433ada8e9c88c4cedbbe45a6a47d36210eac84f5ef940d87b");
+      .toBe("244ad0e4c024dc9d39245a93a1ea90611e66effd731396c11db9bc931f5ee78e");
     expect(matrix("horizontal-pull").supportedIds).toEqual(expect.arrayContaining([
       "chest-supported-dumbbell-row",
       "machine-row",
@@ -139,16 +140,16 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
 
   it("freezes separate whole-body fingerprints and the owner proposal tranches", () => {
     expect(data.fingerprints).toEqual({
-      catalogInventory: "834d3790fd8a6218fd1d2be00ffd947607099496426c2d89bf4736010a316d83",
-      rolePurity: "a2915bd4c70a473faa7d3859d506b53160d3606ecaab0f9aaabf7cfac804e4fd",
-      muscleTargetExposure: "09d99b9dcdc2c8c1db79543f8df7137cb3cc68d71e7a9f13386734fbec73daed",
-      candidatePoolMatrix: "300f1a87923b35e8ec7c823de81ae1e54be94ffce8a730449bf82bd834761bc9",
-      equipmentModeCoverage: "a71eaa38c43b15dbebf23906f7ba2b316913151f45e9612ab60b89c5467aca10",
-      painAwareCoverage: "950c6d4b0d9724e433ada8e9c88c4cedbbe45a6a47d36210eac84f5ef940d87b",
+      catalogInventory: "ddaf455d18b6b6039afc24f72938b3e8123afa632533dff57ab19ba94ed2ae2d",
+      rolePurity: "5cc82700144df493b8b0cc22044cf68a053214aa935c5b2e9fb01830dc6b4bb8",
+      muscleTargetExposure: "2120876fef166a594b2bad0a087b6b98fd4994b7d5a9a0900fe82fe87066f09f",
+      candidatePoolMatrix: "979903c769a1a36a1f0d4d431c860e57ad1b8c1cdae304a6c1b042e21e78e71d",
+      equipmentModeCoverage: "b1f503e7d62d0d9f50729ff68659da565454bdd66fa1627ba3c0fbdecbb17ae0",
+      painAwareCoverage: "244ad0e4c024dc9d39245a93a1ea90611e66effd731396c11db9bc931f5ee78e",
       progressionContinuity: "310b9068b0dab7b091ffbe1203e719037cee013b9573f2a9e02c8e3676ae53f5",
-      minimalExpansionProposal: "6af656e496037cc1e177c0d706d7c7e71a1413dbc93b09efb32507a564f6b392",
+      minimalExpansionProposal: "696fae395bd6383729493d65ac0d4e656799b8797ecf75fdaa327ba33564c5d1",
       knowledgeCompatibility: "4ae9b04a475f5243b387932d1e24da70cdaa044260156a4c17b9a346106009cf",
-      combinedWholeBodyAudit: "56059dce8eea38552d34d732ba5025c0fb357dc2fd01564df34740db9642c98b",
+      combinedWholeBodyAudit: "9f7578381b18c5afb381049a11d703a7c79de4851ac3994f33e67da3847978e7",
     });
     expect(data.proposedConcepts.filter((row) => row.priority === "P0")).toHaveLength(8);
     expect(data.proposedConcepts.filter((row) => row.priority === "P1")).toHaveLength(9);
@@ -158,8 +159,8 @@ describe("whole-body exercise knowledge and candidate-pool audit", () => {
     const audit = renderWholeBodyExerciseKnowledgeAudit(data);
     const matrixReport = renderWholeBodyCandidatePoolMatrix(data);
     const proposal = renderWholeBodyMinimalCatalogExpansionProposal(data);
-    expect(audit).toContain("TARGETED_DOMAIN_AND_CATALOG_FIXES_REQUIRED_BEFORE_COMPOSITION");
-    expect(audit).toContain("No production row, role, muscle group, score");
+    expect(audit).toContain("ROLE_MUSCLE_CONTRACT_IMPLEMENTED_P0_PROPOSALS_CURATED");
+    expect(audit).toContain("canonical muscle");
     expect(matrixReport).toContain("Production legal");
     expect(matrixReport).toContain("EQUIPMENT_UNAVAILABLE");
     expect(proposal).toContain("NEW_SLOT_WHEN");

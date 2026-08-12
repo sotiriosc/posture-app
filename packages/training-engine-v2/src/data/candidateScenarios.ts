@@ -214,7 +214,7 @@ function need(input: {
   readonly targetBodyRegions: readonly BodyRegion[];
   readonly goal: TrainingGoal;
 }): CandidateNeed {
-  return input;
+  return { ...input, muscleRequirement: "primary_preferred" };
 }
 
 function makeRequest(input: {
@@ -302,10 +302,10 @@ const horizontalPushMain = (goal: TrainingGoal = "strength") =>
 const squatMain = (goal: TrainingGoal = "strength") =>
   need({
     id: `squat-main-${goal}`,
-    whyNeeded: "Choose a squat-pattern exercise for the lower-body main slot.",
+    whyNeeded: "Choose a knee-dominant exercise for the lower-body main slot.",
     requestedRole: "primary_strength",
     requestedSection: "main",
-    targetMovementRoles: ["squat"],
+    targetMovementRoles: ["knee_dominant"],
     targetMuscles: ["quads", "glutes"],
     targetBodyRegions: ["knee", "hip", "ankle"],
     goal,

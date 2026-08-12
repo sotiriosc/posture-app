@@ -2,7 +2,7 @@ import type { AlignmentPriority } from "../alignment";
 import type { AssessmentState } from "../domain/assessment";
 import type { AthleteProfile } from "../domain/athlete";
 import type { EquipmentCapabilities } from "../domain/equipment";
-import type { ExerciseDefinition } from "../domain/exercise";
+import type { ExerciseActionFunction, ExerciseDefinition } from "../domain/exercise";
 import type { TrainingHistory } from "../domain/history";
 import type { PainAndInjuryState } from "../domain/painInjury";
 import type { PhaseIntent } from "../domain/phase";
@@ -32,9 +32,61 @@ export interface CandidateNeed {
   readonly requestedRole: TrainingRole;
   readonly requestedSection?: SessionSection;
   readonly targetMovementRoles: readonly MovementRole[];
+  readonly targetActionFunctions?: readonly ExerciseActionFunction[];
   readonly targetMuscles: readonly MuscleGroup[];
+  readonly muscleRequirement?: MuscleRelationshipRequirement;
   readonly targetBodyRegions: readonly BodyRegion[];
   readonly goal: TrainingGoal;
+}
+
+export type MuscleRelationshipRequirement =
+  | "any_meaningful_contributor"
+  | "primary_preferred"
+  | "primary_required";
+
+export function resolveMuscleRequirement(need: CandidateNeed): MuscleRelationshipRequirement {
+  return need.muscleRequirement ?? "any_meaningful_contributor";
+}
+
+export function resolveCandidateGoal(request: CandidateRequest): TrainingGoal {
+  return request.goal;
+}
+
+export function candidateGoalConflict(request: CandidateRequest): string | null {
+  return request.goal === request.need.goal
+    ? null
+    : `CandidateRequest.goal=${request.goal} overrides legacy CandidateNeed.goal=${request.need.goal}.`;
+}
+
+export interface CandidateRequestOwnershipFinding {
+  readonly severity: "warning" | "error";
+  readonly code: "legacy_need_goal_conflict" | "conflicting_exercise_preference";
+  readonly message: string;
+}
+
+export function validateCandidateRequestOwnership(
+  request: CandidateRequest,
+): readonly CandidateRequestOwnershipFinding[] {
+  const findings: CandidateRequestOwnershipFinding[] = [];
+  const goalConflict = candidateGoalConflict(request);
+  if (goalConflict) {
+    findings.push({
+      severity: "warning",
+      code: "legacy_need_goal_conflict",
+      message: goalConflict,
+    });
+  }
+  const conflictingPreferenceIds = request.athlete.preferences.preferredExerciseIds.filter((id) =>
+    request.athlete.preferences.dislikedExerciseIds.includes(id),
+  );
+  if (conflictingPreferenceIds.length > 0) {
+    findings.push({
+      severity: "error",
+      code: "conflicting_exercise_preference",
+      message: `Exercise IDs cannot be both preferred and disliked: ${conflictingPreferenceIds.join(", ")}.`,
+    });
+  }
+  return findings;
 }
 
 export interface CandidateEvaluationContext {
@@ -71,7 +123,9 @@ export interface InterpretedCandidateContext {
   readonly requestedRole: TrainingRole;
   readonly requestedSection?: SessionSection;
   readonly targetMovementRoles: readonly MovementRole[];
+  readonly targetActionFunctions: readonly ExerciseActionFunction[];
   readonly targetMuscles: readonly MuscleGroup[];
+  readonly muscleRequirement: MuscleRelationshipRequirement;
   readonly alignmentPriorityIds: readonly string[];
   readonly relevantPainIds: readonly string[];
   readonly continuityExerciseIds: readonly string[];
@@ -81,16 +135,19 @@ export interface InterpretedCandidateContext {
 export function interpretCandidateRequest(
   request: CandidateRequest,
 ): InterpretedCandidateContext {
+  const goal = resolveCandidateGoal(request);
   return {
     requestId: request.id,
     evaluationAsOf: request.evaluationContext?.asOf,
     athleteId: request.athlete.id,
-    goal: request.goal,
+    goal,
     phaseId: request.phase.id,
     requestedRole: request.need.requestedRole,
     requestedSection: request.need.requestedSection,
     targetMovementRoles: request.need.targetMovementRoles,
+    targetActionFunctions: request.need.targetActionFunctions ?? [],
     targetMuscles: request.need.targetMuscles,
+    muscleRequirement: resolveMuscleRequirement(request.need),
     alignmentPriorityIds: request.alignmentPriorities.map((priority) => priority.id),
     relevantPainIds: [
       ...request.painAndInjury.currentDiscomforts.map((pain) => pain.id),

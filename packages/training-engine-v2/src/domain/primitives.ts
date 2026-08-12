@@ -21,6 +21,7 @@ export type TrainingGoal = (typeof TRAINING_GOALS)[number];
 export const MOVEMENT_ROLES = [
   "breathing_position",
   "mobility",
+  "accessory",
   "scapular_control",
   "anti_extension_core",
   "anti_rotation_core",
@@ -29,6 +30,7 @@ export const MOVEMENT_ROLES = [
   "trunk_rotation",
   "loaded_bracing",
   "squat",
+  "knee_dominant",
   "hinge",
   "single_leg",
   "horizontal_push",

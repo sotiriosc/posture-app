@@ -1,3 +1,5 @@
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   JOINT_STRESS_TAGS,
   NO_PAIN_OR_INJURY,
@@ -1881,4 +1883,10 @@ export function renderTrunkCarryPainStressReviewReport(
     "",
     "The contract is ready for owner decision because the smallest truthful vocabulary, source consequences, side gap, hard-authority boundary, prescription-realized stress concept, and no-production-change invariants are now explicit. Production metadata remains blocked until owner decisions and exact seven-exercise curation are complete.",
   ].join("\n") + "\n";
+}
+
+export function writeTrunkCarryPainStressReview(rootDir = process.cwd()): string {
+  const outputPath = join(rootDir, "docs/training-engine-v2/TRUNK_CARRY_PAIN_STRESS_REVIEW.md");
+  writeFileSync(outputPath, renderTrunkCarryPainStressReviewReport());
+  return outputPath;
 }

@@ -106,6 +106,73 @@ export type ExerciseDemandDimension =
 export type ExerciseDemandAnnotationLevel = DemandLevel | "unknown";
 export type ExerciseMechanicsReviewStatus = "accepted" | "needs_review";
 
+export const EXERCISE_ACTION_FUNCTIONS = [
+  "elbow_flexion",
+  "elbow_extension",
+  "shoulder_abduction",
+  "shoulder_horizontal_adduction",
+  "shoulder_horizontal_abduction",
+  "shoulder_external_rotation",
+  "scapular_retraction",
+  "scapular_upward_rotation",
+  "knee_flexion",
+  "hip_extension",
+  "hip_abduction",
+  "hip_adduction",
+  "ankle_plantar_flexion",
+  "ankle_dorsiflexion",
+  "single_leg_stance_control",
+] as const;
+
+export type ExerciseActionFunction = (typeof EXERCISE_ACTION_FUNCTIONS)[number];
+
+export const MUSCLE_CONTRIBUTION_RELATIONSHIPS = [
+  "primary_target",
+  "key_secondary_target",
+  "incidental_contributor",
+  "stabilizer_or_contextual_contributor",
+  "unknown",
+] as const;
+
+export type MuscleContributionRelationship =
+  (typeof MUSCLE_CONTRIBUTION_RELATIONSHIPS)[number];
+
+export interface ExerciseKnowledgeProvenance {
+  readonly source: "owner_decision" | "human_exercise_science_review" | "external_reference" | "unknown";
+  readonly sourceRef: string;
+  readonly evidenceBasis: readonly string[];
+}
+
+export interface ExerciseActionFunctionAnnotation {
+  readonly action: ExerciseActionFunction;
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly provenance: readonly ExerciseKnowledgeProvenance[];
+  readonly notes: string;
+}
+
+export interface ExerciseMuscleContribution {
+  readonly muscle: MuscleGroup;
+  readonly relationship: MuscleContributionRelationship;
+  readonly reviewStatus: ExerciseMechanicsReviewStatus;
+  readonly provenance: readonly ExerciseKnowledgeProvenance[];
+  readonly notes: string;
+}
+
+export function musclesWithRelationships(
+  exercise: Pick<ExerciseDefinition, "muscleContributions">,
+  relationships: readonly MuscleContributionRelationship[],
+): readonly MuscleGroup[] {
+  return exercise.muscleContributions
+    .filter((entry) => relationships.includes(entry.relationship))
+    .map((entry) => entry.muscle);
+}
+
+export function meaningfulTargetMuscles(
+  exercise: Pick<ExerciseDefinition, "muscleContributions">,
+): readonly MuscleGroup[] {
+  return musclesWithRelationships(exercise, ["primary_target", "key_secondary_target"]);
+}
+
 export const EXERCISE_STRESS_SOURCES = [
   "joint_stress",
   "caution",
@@ -501,8 +568,12 @@ export interface ExerciseDefinition {
   readonly summary: string;
   readonly family: ExerciseFamily;
   readonly movementRoles: readonly MovementRole[];
+  readonly actionFunctions: readonly ExerciseActionFunctionAnnotation[];
   readonly trainingRoles: readonly TrainingRole[];
+  readonly muscleContributions: readonly ExerciseMuscleContribution[];
+  /** Derived compatibility projection. `muscleContributions` is canonical. */
   readonly primaryMuscles: readonly MuscleGroup[];
+  /** Derived compatibility projection. `muscleContributions` is canonical. */
   readonly secondaryMuscles: readonly MuscleGroup[];
   readonly bodyRegions: readonly BodyRegion[];
   readonly equipmentRequirements: readonly EquipmentRequirement[];

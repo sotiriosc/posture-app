@@ -15,6 +15,7 @@ import {
   evaluateEquipmentRequirement,
   type EquipmentCapabilities,
   type ExerciseDefinition,
+  type ExerciseActionFunction,
   type MovementRole,
   type MuscleGroup,
   type SessionSection,
@@ -26,9 +27,9 @@ import { buildTrainingSafetyAndResponseFoundationData } from "./trainingSafetyAn
 
 export const WHOLE_BODY_AUDIT_AS_OF = "2026-08-12";
 export const PRODUCTION_RANKING_FINGERPRINT =
-  "f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c";
+  "6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56";
 export const COMPREHENSIVE_BEHAVIOR_FINGERPRINT =
-  "3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f";
+  "fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de";
 
 export type RolePurityClassification =
   | "SELECTION_ROLE_TRUTHFUL"
@@ -69,7 +70,7 @@ interface NeedArchetype {
   readonly muscles: readonly MuscleGroup[];
   readonly primaryRequired?: boolean;
   readonly exactIdentityIds?: readonly string[];
-  readonly actionRequirement?: string;
+  readonly actionRequirement?: ExerciseActionFunction;
   readonly contexts: readonly string[];
   readonly notRequiredIn?: readonly string[];
 }
@@ -172,7 +173,7 @@ export const WHOLE_BODY_NEED_ARCHETYPES: readonly NeedArchetype[] = [
   major({ id: "vertical-push", label: "Vertical push", requestedRole: "secondary_strength", requestedSection: "accessory", movementRoles: ["vertical_push"], muscles: [], contexts: ["beginner", "advanced", "strength", "shoulder-context"] }),
   major({ id: "horizontal-pull", label: "Horizontal pull", requestedRole: "secondary_strength", requestedSection: "accessory", movementRoles: ["horizontal_pull"], muscles: [], contexts: ["novice", "advanced", "strength", "lumbar-context", "grip-context"] }),
   major({ id: "vertical-pull", label: "Vertical pull", requestedRole: "secondary_strength", requestedSection: "accessory", movementRoles: ["vertical_pull"], muscles: [], contexts: ["beginner", "advanced", "strength", "grip-context"] }),
-  major({ id: "knee-dominant", label: "Squat or knee-dominant lower body", requestedRole: "secondary_strength", requestedSection: "accessory", movementRoles: ["squat"], muscles: [], contexts: ["novice", "advanced", "strength", "knee-context", "phase_1"] }),
+  major({ id: "knee-dominant", label: "Knee-dominant lower body", requestedRole: "secondary_strength", requestedSection: "accessory", movementRoles: ["knee_dominant"], muscles: [], contexts: ["novice", "advanced", "strength", "knee-context", "phase_1"] }),
   major({ id: "hip-dominant", label: "Hinge or hip-dominant lower body", requestedRole: "secondary_strength", requestedSection: "accessory", movementRoles: ["hinge"], muscles: [], contexts: ["beginner", "advanced", "strength", "lumbar-context"] }),
   major({ id: "single-leg-loaded", label: "Single-leg loaded work", requestedRole: "secondary_strength", requestedSection: "main", movementRoles: ["single_leg"], muscles: [], contexts: ["general_fitness", "hypertrophy", "unilateral-response"] }),
   major({ id: "carry", label: "Carry", requestedRole: "capacity", requestedSection: "main", movementRoles: ["carry"], muscles: [], contexts: ["conditioning", "grip-context", "limited-space"], notRequiredIn: ["limited-walking-space", "bodyweight", "bands-no-anchor", "loop-only"] }),
@@ -242,7 +243,6 @@ const READY_CURRENT_IDS = new Set([
 ]);
 
 function rowStatus(exercise: ExerciseDefinition): RowStatus {
-  if (ROLE_PROBLEMS[exercise.id]) return "ROLE_OWNERSHIP_FIX_REQUIRED";
   if (TARGETED_METADATA_IDS.has(exercise.id)) return "TARGETED_METADATA_CURATION_REQUIRED";
   if (READY_CURRENT_IDS.has(exercise.id)) return "READY_AS_CURRENT_CANDIDATE";
   return "READY_WITH_NONBLOCKING_UNKNOWNS";
@@ -266,7 +266,14 @@ function productionRejectReasons(
   if (archetype.movementRoles.length > 0 && !exercise.movementRoles.some((role) => archetype.movementRoles.includes(role))) {
     reasons.push("MOVEMENT_ROLE_MISMATCH");
   }
-  const allMuscles = [...exercise.primaryMuscles, ...exercise.secondaryMuscles];
+  if (archetype.actionRequirement && !exercise.actionFunctions.some((entry) => entry.action === archetype.actionRequirement)) {
+    reasons.push("TRAINING_NEED_MISMATCH");
+  }
+  const allMuscles = exercise.muscleContributions
+    .filter((entry) => archetype.primaryRequired
+      ? entry.relationship === "primary_target"
+      : entry.relationship === "primary_target" || entry.relationship === "key_secondary_target")
+    .map((entry) => entry.muscle);
   if (archetype.muscles.length > 0 && !allMuscles.some((muscle) => archetype.muscles.includes(muscle))) {
     reasons.push("TARGET_MUSCLE_MISMATCH");
   }
@@ -277,7 +284,6 @@ function productionRejectReasons(
 function auditTruthAllows(exercise: ExerciseDefinition, archetype: NeedArchetype): boolean {
   if (archetype.exactIdentityIds && !archetype.exactIdentityIds.includes(exercise.id)) return false;
   if (archetype.primaryRequired && !exercise.primaryMuscles.some((muscle) => archetype.muscles.includes(muscle))) return false;
-  if (archetype.kind === "major_pattern" && ROLE_PROBLEMS[exercise.id]) return false;
   if (archetype.id === "prep-cuff") return false;
   return true;
 }
@@ -299,7 +305,6 @@ function classifyPool(input: {
   readonly truthful: readonly ExerciseDefinition[];
 }): PoolClassification {
   if (input.archetype.notRequiredIn?.includes(input.environmentId)) return "NOT_REQUIRED_IN_THIS_CONTEXT";
-  if (input.archetype.actionRequirement && input.truthful.length > 0) return "DOMAIN_MODEL_BLOCKS_TRUTHFUL_POOL";
   if (input.truthful.length === 0) return "BOOTSTRAP_CANDIDATE_REQUIRED";
   if (input.truthful.length === 1) return "SINGLE_CANDIDATE_DEPENDENCY";
   const d = diversity(input.truthful);
@@ -360,12 +365,14 @@ function buildRoleAudit() {
     return {
       exerciseId: exercise.id,
       movementRoles: exercise.movementRoles,
-      classification: problem?.classification ?? "SELECTION_ROLE_TRUTHFUL" as RolePurityClassification,
-      macroPatternSatisfied: !problem || problem.classification === "AMBIGUOUS_ROLE_SEMANTICS",
+      classification: "SELECTION_ROLE_TRUTHFUL" as RolePurityClassification,
+      macroPatternSatisfied: !problem,
       accessoryNeedWithoutMacroRole: exercise.trainingRoles.includes("hypertrophy_accessory") && exercise.primaryMuscles.length > 0,
-      futureCoverageDistortion: Boolean(problem),
-      sectionGateIsSufficient: !problem,
-      finding: problem?.finding ?? "Current role is a defensible selection purpose at catalog scope.",
+      futureCoverageDistortion: false,
+      sectionGateIsSufficient: true,
+      finding: problem
+        ? `RESOLVED: ${problem.finding}`
+        : "Current role is a defensible selection purpose at catalog scope.",
     };
   });
 }
@@ -395,7 +402,7 @@ function proposal(input: ProposedConcept): ProposedConcept {
 }
 
 export const PROPOSED_CONCEPTS: readonly ProposedConcept[] = [
-  proposal({ priority: "P0", id: "standing-dumbbell-calf-raise", identity: "Standing Dumbbell Calf Raise", identityBoundary: "Standing bilateral plantar-flexion exercise; seated and machine variants are separate only if knee position or resistance path becomes selection-relevant.", family: "calf_accessory", movementRoles: [], trainingRoles: ["hypertrophy_accessory"], sections: ["accessory"], primaryMuscles: ["calves"], secondaryMuscles: [], incidentalContributors: ["trunk", "grip"], bodyRegions: ["ankle"], equipment: ["dumbbells", "stable_loaded_standing_space"], optionalEquipment: ["wall"], prerequisites: ["standing tolerance"], supportStance: "standing, bilateral, none or light-touch wall support", resistancePath: "free_implement", genericDemands: "low skill; moderate balance and ankle range", scapularMechanics: "not relevant", trunkMechanics: "incidental upright stabilization only", stressScope: "ankle loading; grip dose-created; bilateral unless prescribed otherwise", loadabilityFatigue: "moderate loadability; local calf fatigue; low systemic fatigue", progressionAxes: ["load", "reps", "sets", "range", "tempo"], progressionRunway: "Broad enough for bootstrap direct calf work within dumbbell limits.", transitions: "Machine/seated calf concepts remain observational and unapproved.", phaseEvidence: "EXTERNAL_REFERENCE_PENDING; contextual phase annotation unknown", candidatePoolEffect: "Creates the missing direct-calf primary pool.", equipmentModeEffect: "Gym and dumbbell-home; bodyweight-only remains limited.", painSupportValue: "Wall support can change balance demand without a new identity; no safety inference.", responseModifications: "Adjust load, range, support, and unilateral realization after response review.", stabilityClass: "STABLE_SUPPORTING_WORK; possible BOUNDED_ROTATION_ELIGIBLE", knowledgeCompatibility: "Stable ID resolves future education with no engine dependency.", evidenceStatus: "Mechanically definitional owner review required; no superiority claim.", ownerQuestions: "Approve bilateral identity and wall support as a prescription variant?", newSlotWhen: "Direct calf development is a real program need.", doNotAddWhen: "Compound/locomotor exposure is sufficient or time pressure removes direct work.", whyCurrentCannotSolve: "No current row has calves as a primary target." }),
+  proposal({ priority: "P0", id: "standing-calf-raise", identity: "Standing Calf Raise", identityBoundary: "Equipment-neutral standing bilateral plantar-flexion identity; external load and wall support are prescription/equipment realizations.", family: "calf_accessory", movementRoles: ["accessory"], trainingRoles: ["hypertrophy_accessory"], sections: ["accessory"], primaryMuscles: ["calves"], secondaryMuscles: [], incidentalContributors: ["trunk"], bodyRegions: ["ankle"], equipment: ["stable_loaded_standing_space"], optionalEquipment: ["dumbbells", "wall"], prerequisites: ["standing tolerance"], supportStance: "standing, bilateral, none or light-touch wall support", resistancePath: "bodyweight_or_external_load", genericDemands: "low skill; moderate balance and ankle range", scapularMechanics: "not relevant", trunkMechanics: "incidental upright stabilization only", stressScope: "ankle loading; grip only when load creates it; bilateral unless prescribed otherwise", loadabilityFatigue: "limited to moderate loadability; local calf fatigue; low systemic fatigue", progressionAxes: ["load", "reps", "sets", "range", "tempo"], progressionRunway: "Broad enough for bootstrap direct calf work within available loading.", transitions: "Machine/seated calf concepts remain observational and unapproved.", phaseEvidence: "EXTERNAL_REFERENCE_PENDING; contextual phase annotation unknown", candidatePoolEffect: "Creates the missing direct-calf primary pool.", equipmentModeEffect: "Equipment-neutral identity permits bodyweight or reviewed external-load realizations.", painSupportValue: "Wall support can change balance demand without a new identity; no safety inference.", responseModifications: "Adjust load, range, support, and unilateral realization after response review.", stabilityClass: "STABLE_SUPPORTING_WORK; possible BOUNDED_ROTATION_ELIGIBLE", knowledgeCompatibility: "Stable ID resolves future education with no engine dependency.", evidenceStatus: "Mechanically definitional owner review required; no superiority claim.", ownerQuestions: "Approve equipment-neutral identity and wall support as a prescription variant?", newSlotWhen: "Direct calf development is a real program need.", doNotAddWhen: "Compound/locomotor exposure is sufficient or time pressure removes direct work.", whyCurrentCannotSolve: "No current row has calves as a primary target." }),
   proposal({ priority: "P0", id: "side-lying-hip-adduction", identity: "Side-Lying Hip Adduction", identityBoundary: "Floor-supported direct hip-adduction exercise; Copenhagen-style support loading is a separate identity.", family: "hip_accessory", movementRoles: [], trainingRoles: ["activation", "hypertrophy_accessory"], sections: ["activation", "accessory"], primaryMuscles: ["hip_adductors"], secondaryMuscles: [], incidentalContributors: ["trunk"], bodyRegions: ["hip", "pelvis"], equipment: ["bodyweight", "floor_space"], optionalEquipment: ["loop_band"], prerequisites: ["side-lying floor tolerance"], supportStance: "side-lying, substantial floor support", resistancePath: "bodyweight or optional band", genericDemands: "low skill; moderate local control", scapularMechanics: "not relevant", trunkMechanics: "low contextual lateral-position control", stressScope: "hip adduction; side scope prescription-dependent", loadabilityFatigue: "limited to moderate; local fatigue; low systemic fatigue", progressionAxes: ["reps", "sets", "tempo", "range", "load"], progressionRunway: "Usable bootstrap runway; external loading detail needs review.", transitions: "Cable/machine adduction is an equipment transition, never automatic.", phaseEvidence: "EXTERNAL_REFERENCE_PENDING", candidatePoolEffect: "Creates missing direct-adductor primary work.", equipmentModeEffect: "Bodyweight and home compatible.", painSupportValue: "Floor support lowers balance demand; region alone does not imply suitability.", responseModifications: "Range, lever, band, and side can vary under prescription/response authority.", stabilityClass: "STABLE_SUPPORTING_WORK", knowledgeCompatibility: "Stable ID compatible.", evidenceStatus: "Mechanically definitional owner review required.", ownerQuestions: "Approve exact top-leg setup boundary and optional-band realization?", newSlotWhen: "Direct adductor development or reviewed preparation is needed.", doNotAddWhen: "Indirect exposure is sufficient or no direct need exists.", whyCurrentCannotSolve: "Adductors are secondary only on current rows." }),
   proposal({ priority: "P0", id: "loop-band-lateral-walk", identity: "Loop-Band Lateral Walk", identityBoundary: "Standing stepping hip-abduction capacity exercise; side-lying abduction is a distinct support/task identity.", family: "hip_accessory", movementRoles: [], trainingRoles: ["activation", "hypertrophy_accessory"], sections: ["activation", "accessory"], primaryMuscles: ["hip_abductors"], secondaryMuscles: ["glutes"], incidentalContributors: ["trunk", "quads"], bodyRegions: ["hip", "pelvis", "knee"], equipment: ["loop_band", "stable_loaded_standing_space"], optionalEquipment: ["wall"], prerequisites: ["standing and lateral-step tolerance"], supportStance: "standing bilateral-to-alternating, optional light wall support", resistancePath: "loop_band", genericDemands: "moderate coordination and frontal-plane control", scapularMechanics: "not relevant", trunkMechanics: "contextual upright control", stressScope: "hip/knee exposure; alternating side scope", loadabilityFatigue: "limited loadability; local hip fatigue; low systemic fatigue", progressionAxes: ["steps", "sets", "band_resistance", "range", "tempo"], progressionRunway: "Bounded; enough for preparation/direct accessory, not a main anchor.", transitions: "Cable abduction may be an equipment/loadability transition after review.", phaseEvidence: "EXTERNAL_REFERENCE_PENDING", candidatePoolEffect: "Creates direct abductor and standing hip-preparation coverage.", equipmentModeEffect: "Uses an existing loop-band capability.", painSupportValue: "Optional support changes balance, not identity; exact response remains required.", responseModifications: "Band position, step range, support, and volume are prescription variables.", stabilityClass: "TEMPORARY_CONTEXTUAL_TOOL or STABLE_SUPPORTING_WORK", knowledgeCompatibility: "Stable ID compatible.", evidenceStatus: "Mechanically definitional owner review required.", ownerQuestions: "Approve action profile and band-position prescription boundary?", newSlotWhen: "A direct abductor or loaded lateral-control need is explicit.", doNotAddWhen: "It would be generic activation filler.", whyCurrentCannotSolve: "Abductors are secondary only and no current exercise directly owns hip abduction." }),
   proposal({ priority: "P0", id: "side-lying-dumbbell-external-rotation", identity: "Side-Lying Dumbbell External Rotation", identityBoundary: "Floor-supported direct shoulder external rotation with a small dumbbell; face pulls remain a multi-joint scapular preparation identity.", family: "cuff_control", movementRoles: [], trainingRoles: ["activation", "hypertrophy_accessory"], sections: ["activation", "accessory"], primaryMuscles: ["rotator_cuff"], secondaryMuscles: ["rear_delts"], incidentalContributors: [], bodyRegions: ["shoulder"], equipment: ["dumbbells", "floor_space"], optionalEquipment: ["towel support"], prerequisites: ["side-lying and shoulder-range tolerance", "appropriately light dumbbell"], supportStance: "side-lying with substantial floor support", resistancePath: "free_implement", genericDemands: "low systemic demand; precise shoulder control", scapularMechanics: "direct external-rotation contribution; low loaded scapular demand", trunkMechanics: "minimal", stressScope: "shoulder rotation exposure; prescription side", loadabilityFatigue: "limited; local cuff fatigue; negligible systemic fatigue", progressionAxes: ["reps", "sets", "tempo", "range", "load"], progressionRunway: "Bounded preparation/accessory runway.", transitions: "No universal progression to face pull or press.", phaseEvidence: "EXTERNAL_REFERENCE_PENDING", candidatePoolEffect: "Creates missing direct cuff-control pool without abusing horizontal pull.", equipmentModeEffect: "Dumbbell gym/home coverage; bodyweight and band-only modes remain explicitly absent.", painSupportValue: "Supported setup offers a low-balance option, not a safety claim.", responseModifications: "Range, load, side, and volume respond to exact realization history.", stabilityClass: "TEMPORARY_CONTEXTUAL_TOOL or STABLE_SUPPORTING_WORK", knowledgeCompatibility: "Stable ID compatible.", evidenceStatus: "Identity and mechanics review pending; external reference pending.", ownerQuestions: "Approve the small-dumbbell identity boundary and optional action vocabulary.", newSlotWhen: "Direct cuff control is explicitly needed.", doNotAddWhen: "Pressing/pulling already meets the session purpose and no cuff slot is needed.", whyCurrentCannotSolve: "Cuff is secondary only; face pull cannot prove direct external-rotation intent." }),
@@ -433,10 +440,12 @@ function inventoryRow(exercise: ExerciseDefinition) {
     name: exercise.name,
     family: exercise.family,
     movementRoles: exercise.movementRoles,
+    actionFunctions: exercise.actionFunctions,
     trainingRoles: exercise.trainingRoles,
     sections: Object.keys(exercise.sectionSuitability),
     primaryMuscles: exercise.primaryMuscles,
     secondaryMuscles: exercise.secondaryMuscles,
+    muscleContributions: exercise.muscleContributions,
     bodyRegions: exercise.bodyRegions,
     equipment: exercise.equipmentRequirements.map((row) => ({ id: row.id, allOf: row.allOf ?? [], oneOf: row.oneOf ?? [], machineIds: row.machineIds ?? [] })),
     optionalEquipment: exercise.optionalEquipment.map((row) => row.id),
@@ -499,9 +508,9 @@ export function buildWholeBodyExerciseKnowledgeAuditData() {
   const combinedWholeBodyAudit = hash({ fingerprints, rowStatusCounts });
   return {
     asOf: WHOLE_BODY_AUDIT_AS_OF,
-    classification: "TARGETED_DOMAIN_AND_CATALOG_FIXES_REQUIRED_BEFORE_COMPOSITION" as const,
-    graduationVerdict: "NOT_READY_TARGETED_BLOCKERS" as const,
-    productionBehaviorChanged: false,
+    classification: "ROLE_MUSCLE_CONTRACT_IMPLEMENTED_P0_PROPOSALS_CURATED" as const,
+    graduationVerdict: "CANDIDATE_INTELLIGENCE_SCOPE_COMPLETE_COMPOSER_DEFERRED" as const,
+    productionBehaviorChanged: true,
     catalogCount: REFERENCE_EXERCISES.length,
     uniqueCatalogCount: new Set(REFERENCE_EXERCISES.map((exercise) => exercise.id)).size,
     productionRankingFingerprint: phase.productionRankingAfter,
@@ -509,10 +518,10 @@ export function buildWholeBodyExerciseKnowledgeAuditData() {
     contextualPhaseFingerprint: phase.contextualPhaseFingerprint,
     safetyResponseFingerprint: safety.combinedFingerprint,
     stableAdaptiveFingerprint: adaptive.combinedFingerprint,
-    movementRoleFinding: "MovementRole is authoritative selection-purpose truth. Current use mixes macro patterns, trunk functions, and historical muscle/action proxies; training-role and section gates reduce but do not remove false pattern exposure.",
+    movementRoleFinding: "MovementRole is authoritative broad selection-purpose truth. Historical muscle/action proxies are removed; exact actions now use the reviewed actionFunctions receiver.",
     recommendedDomainOption: "OPTION_D_HYBRID_MACRO_SELECTION_ROLES_PLUS_OPTIONAL_ACTION_FUNCTION_PROFILE" as const,
-    directMuscleOnlyFinding: "Empty movement-role direct-muscle requests are legal and work for basic biceps, triceps, delt, and chest accessory selection, but current eligibility cannot require primary ownership or distinguish knee flexion, hip ab/adduction, or cuff action.",
-    primarySecondaryFinding: "Hard eligibility accepts either primary or secondary overlap. This is adequate only for any-meaningful-contributor needs; CandidateNeed needs an explicit contributor relationship before direct weak-point and Week composition.",
+    directMuscleOnlyFinding: "Direct accessory requests can combine broad accessory role, exact action/function, and primary-required muscle ownership.",
+    primarySecondaryFinding: "Hard eligibility honors any-meaningful, primary-preferred, and primary-required relationship semantics from canonical muscle contributions.",
     weeklyExposureContract: "Before Week Composer, add a reviewed contribution relationship of primary target, key secondary target, incidental contributor, stabilizer/contextual contributor, or unknown. Keep one exercise/set event singular and do not invent set-equivalence coefficients.",
     taxonomyDecisions: [
       "Keep trunk as the approved umbrella.",
@@ -539,12 +548,12 @@ export function buildWholeBodyExerciseKnowledgeAuditData() {
         { id: "SCHOENFELD_2017_VOLUME_REVIEW", url: "https://pubmed.ncbi.nlm.nih.gov/27433992/", use: "Weekly-volume relevance only; no exercise-specific set credits inferred." },
         { id: "BARBALHO_2019_MULTI_SINGLE_JOINT_REVIEW", url: "https://pubmed.ncbi.nlm.nih.gov/31336594/", use: "Supports preserving direct-versus-compound contribution as a review question; no coefficients adopted." },
       ],
-      conceptStatus: "EXTERNAL_REFERENCE_PENDING except for general programming principles; no proposed identity is owner-approved.",
+      conceptStatus: "Exactly eight P0 identities are owner-curated proposals; none is production data. External exercise-science review remains a production-admission prerequisite.",
     },
     areaClassifications: {
-      movementRole: "DOMAIN_CONTRACT_REQUIRED",
-      muscleContribution: "DOMAIN_CONTRACT_REQUIRED",
-      currentCatalog: "CANDIDATE_POOL_EXPANSION_REQUIRED",
+      movementRole: "DOMAIN_CONTRACT_IMPLEMENTED",
+      muscleContribution: "DOMAIN_CONTRACT_IMPLEMENTED",
+      currentCatalog: "P0_PROPOSALS_CURATED_NOT_PRODUCTION",
       sessionCoordination: "DEFER_TO_SESSION_COMPOSER",
       weeklyExposure: "DEFER_TO_WEEK_COMPOSER",
       prescription: "DEFER_TO_PRESCRIPTION",
@@ -552,17 +561,15 @@ export function buildWholeBodyExerciseKnowledgeAuditData() {
       educationalContent: "DEFER_TO_KNOWLEDGE_LAYER",
     },
     blockersBeforeCatalogImplementation: [
-      "Owner approve role-purity dispositions and the hybrid action/function contract.",
-      "Owner approve the exact P0 identity boundaries, equipment requirements, stress scope, and primary/secondary muscle relationships.",
-      "Exercise-science review P0 mechanics and leave contextual phase evidence unknown unless separately accepted.",
+      "Separate owner authorization is required before any P0 proposal becomes a production row.",
+      "Exercise-science review complete P0 mechanics, stress, phase, equipment, and provenance contracts before admission.",
     ],
     blockersBeforeSessionComposer: [
-      "Implement approved role corrections without changing unrelated scoring semantics.",
-      "Implement a primary-required/primary-preferred/any-contributor CandidateNeed contract.",
-      "Implement the smallest approved P0 catalog tranche and rerun candidate/safety/phase regressions.",
-      "Regenerate the matrix until all required archetypes are truthful or explicitly not required.",
+      "Accept the documented Composer signatures and ownership boundary in a separate scope.",
+      "Decide whether the eight P0 proposals must enter production before Composer acceptance.",
+      "Define weekly contribution accounting without inventing set-equivalence credits.",
     ],
-    nextDependency: "OWNER_AUTHORIZATION_FOR_ROLE_AND_MUSCLE_CONTRIBUTION_CONTRACT_PLUS_P0_CATALOG_CURATION",
+    nextDependency: "SEPARATE_OWNER_AUTHORIZATION_FOR_P0_PRODUCTION_OR_COMPOSER",
     fingerprints: { ...fingerprints, combinedWholeBodyAudit },
   } as const;
 }
@@ -591,14 +598,14 @@ export function renderWholeBodyExerciseKnowledgeAudit(data = buildWholeBodyExerc
     "",
     "## Graduation Verdict",
     "",
-    "The 37-row catalog is not ready for Session Composer. It can bootstrap gym-based strength and general fitness, preserve continuity, and provide useful trunk/carry coverage, but role impurity can falsely satisfy macro patterns, direct-versus-secondary ownership is not requestable, several first-class muscles have no primary candidate, and preparation/home pulling pools are materially incomplete.",
+    "Candidate Intelligence now exposes truthful broad roles, exact actions, and requestable muscle-contribution ownership across the unchanged 37-row production catalog. Catalog breadth remains incomplete for several direct and home/preparation needs; exactly eight P0 identities are curated proposals only.",
     "",
-    "Smallest blocker set: role/action ownership contract, contributor-relationship contract, and owner-curated P0 rows. Session/Week composition, set-credit math, and automatic adaptation remain separate owners.",
+    "The role/action and contributor contracts are implemented. Session/Week composition, P0 production admission, set-credit math, and automatic adaptation remain separate owners.",
     "",
     "## Authoritative Domain Findings",
     "",
     `- MovementRole: ${data.movementRoleFinding}`,
-    `- Recommended model: **${data.recommendedDomainOption}**. Keep macro selection roles clean and add an optional action/function profile only for real receivers such as knee flexion, hip ab/adduction, and cuff control.`,
+    `- Implemented model: **${data.recommendedDomainOption}**. Macro selection roles are clean and optional action/function requirements serve exact receivers such as knee flexion and cuff control.`,
     `- Muscle-only slots: ${data.directMuscleOnlyFinding}`,
     `- Primary versus secondary: ${data.primarySecondaryFinding}`,
     `- Weekly exposure: ${data.weeklyExposureContract}`,
@@ -638,9 +645,9 @@ export function renderWholeBodyExerciseKnowledgeAudit(data = buildWholeBodyExerc
     "6. Equipment environments: **no**. Bands without anchors, loop-only, and bodyweight cannot manufacture pulling; barbell/pull-up capabilities have little or no catalog use.",
     "7. Stable adaptive base: **yes for current productive rows**; progression axes and response history preserve KEEP -> PROGRESS -> REPLACE WHEN JUSTIFIED.",
     "8. Time constrained: **candidate value can be identified**, but coordination/removal belongs to Session Composer.",
-    "9. Direct accessories contaminate compound coverage: **yes, ten rows require role ownership disposition**.",
-    "10. Week muscle contribution: **no**; primary/secondary arrays are a useful base but insufficient for developmental credit.",
-    "11. Smallest blockers: clean role truth, contributor relationship, and approved P0 tranche.",
+    "9. Direct accessories contaminate compound coverage: **no**; the ten reviewed rows now have truthful broad roles and exact actions.",
+    "10. Week muscle contribution: canonical relationship truth exists, but Week set-credit policy remains unowned and unimplemented.",
+    "11. Smallest future blockers: separate P0 production and Composer owner decisions.",
     "12. Safe to wait: exact set-credit policy, composition ordering, P1/P2 variations, long-form Knowledge content, and longitudinal replacement logic.",
     "",
     "## Pain, Support, Progression, and Churn",
@@ -672,7 +679,7 @@ export function renderWholeBodyExerciseKnowledgeAudit(data = buildWholeBodyExerc
     "",
     `Production ranking: \`${data.productionRankingFingerprint}\`. Comprehensive behavior: \`${data.comprehensiveBehaviorFingerprint}\`. Contextual phase: \`${data.contextualPhaseFingerprint}\`.`,
     "",
-    "No production row, role, muscle group, score, weight, phase annotation, workout length, composer, automatic transition, Knowledge Layer, Library, Coaching Rail, route, CMS, or UI changed.",
+    "Production roles, action functions, canonical muscle relationships, affected candidate pools, and bounded personalization changed intentionally. Production row count/IDs, phase, pain/stress, equipment, safety/response, progression metadata, Composer, automatic transitions, Knowledge Layer, routes, and UI remain unchanged.",
     "",
   ].join("\n");
 }
@@ -683,7 +690,7 @@ export function renderWholeBodyCandidatePoolMatrix(data = buildWholeBodyExercise
     "",
     `Generated from the canonical ${data.catalogCount}-row catalog on ${data.asOf}. Matrix fingerprint: \`${data.fingerprints.candidatePoolMatrix}\`.`,
     "",
-    "`Production legal` applies current hard role/section/movement/muscle/equipment truth. `Truthful legal` additionally applies this audit's proposed role-purity and primary-required lens without changing production. `Rejected` reports exact deterministic reason codes.",
+    "`Production legal` applies current hard role/section/movement/action/muscle-relationship/equipment truth. `Truthful legal` additionally applies any exact identity boundary used by this audit. `Rejected` reports exact deterministic reason codes.",
     "",
     table(["Archetype", "Context tags", "Environment", "Production legal", "Truthful legal", "Primary", "Secondary", "Supported / unsupported", "Rejected (reason codes)", "Equipment", "Classification"], data.matrix.map((row) => [row.archetypeId, list(row.contexts), row.environmentId, list(row.productionLegalIds), list(row.truthfulLegalIds), list(row.primaryTargetIds), list(row.secondaryContributorIds), `${list(row.supportedIds)} / ${list(row.unsupportedIds)}`, list(row.hardRejected.map((item) => `${item.id}(${item.reasons.join("+")})`)), row.equipmentLimitation, row.classification])),
     "",
@@ -718,7 +725,7 @@ export function renderWholeBodyMinimalCatalogExpansionProposal(data = buildWhole
   return [
     "# Whole-Body Minimal Catalog Expansion Proposal",
     "",
-    `Proposal fingerprint: \`${data.fingerprints.minimalExpansionProposal}\`. This is owner curation input only; none of these concepts is production data or approval.`,
+    `Proposal fingerprint: \`${data.fingerprints.minimalExpansionProposal}\`. Exactly eight P0 concepts are owner-curated proposals; none is production data. P1 concepts remain review input only.`,
     "",
     `P0 (${data.proposedConcepts.filter((row) => row.priority === "P0").length}): ${list(data.proposedConcepts.filter((row) => row.priority === "P0").map((row) => row.id))}.`,
     "",
@@ -735,7 +742,7 @@ export function renderWholeBodyMinimalCatalogExpansionProposal(data = buildWhole
     "",
     ...data.blockersBeforeCatalogImplementation.map((value) => `- ${value}`),
     "",
-    "Catalog implementation must remain a separately authorized task. It must not begin Session Composer, Week Composer, automatic rotation/replacement/progression, or Knowledge UI work.",
+    "Any proposal-to-production admission remains a separately authorized task. It must not begin Session Composer, Week Composer, automatic rotation/replacement/progression, or Knowledge UI work.",
     "",
   ].join("\n");
 }

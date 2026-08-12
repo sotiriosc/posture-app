@@ -29,8 +29,8 @@ describe("phase suitability calibration laboratory", () => {
     );
     expect(data.productionFingerprintMatches).toBe(true);
     expect(data.phaseOnlySummaries).toHaveLength(30);
-    expect(data.phaseCandidateMatrix).toHaveLength(75);
-    expect(data.phaseRejectionMatrix).toHaveLength(1035);
+    expect(data.phaseCandidateMatrix).toHaveLength(72);
+    expect(data.phaseRejectionMatrix).toHaveLength(1038);
   });
 
   it("records the exact current phase math, normalized weight and maximum effect", () => {
@@ -229,21 +229,18 @@ describe("phase suitability calibration laboratory", () => {
       affectedCandidateIds: [],
     });
     expect(data.policySummaries.find((row) => row.policyId === "B_ANNOTATION_ONLY")).toEqual(
-      expect.objectContaining({ rankChanges: 2, winnerChanges: 1 }),
-    );
-    expect(data.policySummaries.find((row) => row.policyId === "C_NO_PHASE_COMPONENT")).toEqual(
-      expect.objectContaining({ rankChanges: 16, winnerChanges: 7, tiesCreated: 1 }),
-    );
-    expect(data.policySummaries.find((row) => row.policyId === "D_WEIGHT_125")).toEqual(
       expect.objectContaining({ rankChanges: 0, winnerChanges: 0 }),
     );
-    expect(data.winnerChanges).toHaveLength(28);
-    expect(data.rankThresholds).toHaveLength(6);
+    expect(data.policySummaries.find((row) => row.policyId === "C_NO_PHASE_COMPONENT")).toEqual(
+      expect.objectContaining({ rankChanges: 13, winnerChanges: 5, tiesCreated: 0 }),
+    );
+    expect(data.policySummaries.find((row) => row.policyId === "D_WEIGHT_125")).toEqual(
+      expect.objectContaining({ rankChanges: 2, winnerChanges: 1 }),
+    );
+    expect(data.winnerChanges).toHaveLength(16);
+    expect(data.rankThresholds).toHaveLength(5);
     expect(Math.min(...data.rankThresholds.map((row) => row.distanceFromCurrent))).toBe(0.25);
-    expect(data.mechanicalBonusOnlyMovements).toEqual([
-      "horizontal push main/phase_1/machine-chest-press: current rank 1 -> annotation-only rank 2",
-      "horizontal push main/phase_1/push-up: current rank 2 -> annotation-only rank 1",
-    ]);
+    expect(data.mechanicalBonusOnlyMovements).toEqual([]);
     expect(data.annotationRetainedMovements.length).toBeGreaterThan(0);
   });
 

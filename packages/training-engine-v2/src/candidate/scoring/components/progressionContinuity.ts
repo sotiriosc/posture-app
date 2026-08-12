@@ -42,28 +42,47 @@ export const continuityValueComponent: CandidateScoreComponent = {
     const failedProgression = request.continuity.failedProgressionExerciseIds.includes(exercise.id);
     const painResponse = request.continuity.painResponseExerciseIds.includes(exercise.id);
     const blocked = request.history.exerciseHistory.blockedExerciseIds.includes(exercise.id);
+    const preferred = request.athlete.preferences.preferredExerciseIds.includes(exercise.id);
+    const disliked = request.athlete.preferences.dislikedExerciseIds.includes(exercise.id);
+    const responseObservations = request.history.trainingResponseHistory?.observations.filter(
+      (observation) => observation.exposure.exerciseId === exercise.id,
+    ) ?? [];
+    const toleratedResponse = responseObservations.some(
+      (observation) => observation.tolerance === "tolerated" && observation.symptomChange !== "worsened",
+    );
+    const adverseResponse = responseObservations.some(
+      (observation) => observation.tolerance === "not_tolerated" || observation.symptomChange === "worsened",
+    );
     const retentionEvidence = [
       ...(isCurrent ? ["current" as const] : []),
       ...(isPrevious ? ["previous" as const] : []),
       ...(productive ? ["productive" as const] : []),
       ...(stable ? ["stable" as const] : []),
+      ...(preferred ? ["preferred" as const] : []),
+      ...(toleratedResponse ? ["tolerated_response" as const] : []),
     ];
     const reconsiderationEvidence = [
       ...(plateaued ? ["plateaued" as const] : []),
       ...(failedProgression ? ["failed_progression" as const] : []),
       ...(painResponse ? ["pain_response" as const] : []),
       ...(blocked ? ["blocked" as const] : []),
+      ...(disliked ? ["disliked" as const] : []),
+      ...(adverseResponse ? ["adverse_response" as const] : []),
     ];
     const value =
       5.6 +
       (isCurrent ? 1.1 : 0) +
       (isPrevious ? 0.6 : 0) +
       (productive ? 1.3 : 0) +
-      (stable ? 0.7 : 0) -
+      (stable ? 0.7 : 0) +
+      (preferred ? 0.8 : 0) +
+      (toleratedResponse ? 0.8 : 0) -
       (plateaued ? 1.5 : 0) -
       (failedProgression ? 1.2 : 0) -
       (painResponse ? 2.2 : 0) -
-      (blocked ? 2.4 : 0);
+      (blocked ? 2.4 : 0) -
+      (disliked ? 1.2 : 0) -
+      (adverseResponse ? 1.8 : 0);
 
     return component({
       id: "continuity_value",

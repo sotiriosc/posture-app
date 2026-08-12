@@ -258,11 +258,11 @@ Machine Row remains winner: true. Lower ordering changed: true. Productive conti
 | Legacy production active | false |
 | Duplicate mechanical bonuses behavioral | false |
 | Ranking before | 237de4c80d45c1da2bd60b88e624ccd5ba08d32a9f58d36241e52d1ca47fc118 |
-| Ranking after | f9e22a86a99361f6fa4cd36d663a8b448ec6f25a10301cc413ecdec31c9c206c |
+| Ranking after | 6d4603fa0a2f604c13e8dde8d1758b38af0452a505c2df6c7618520524fdda56 |
 | Comprehensive before | 2553739b6ce4aef79500e6e786d279332470fb176079d17b3e9a594bdd463a02 |
-| Comprehensive after | 3a52602bd3ebcaf116a3289ff329e54c2374539a92974aca2bec33dec0b0de1f |
-| Contextual phase | 3eaf245600d09813bd2313d0cc3a079e29f1c7aa1c6ce01f4513f404dc203216 |
-| Catalog | 903e344207a91f4af6519f88c667f7baa5f2d04711579fc2e2effddc8820ef8c |
+| Comprehensive after | fb08893df66978c60edf912d58cd333e649c5b79d1bf965595b588f49db104de |
+| Contextual phase | 29266f305d501852e01b8b468f28544294d5af32bdef59836250960daf1b262b |
+| Catalog | 1f67c9616a101ea1d27c376bd0b1ca55c9eb33c12e23e50a45296a5416fc8ee8 |
 | Knowledge compatibility | 4ae9b04a475f5243b387932d1e24da70cdaa044260156a4c17b9a346106009cf |
 
 Legacy global phase data and the legacy scorer remain available only for migration and audit. Changing legacy reason prose is behaviorally inert. No Composer, automatic substitution, automatic progression, Library, Knowledge Layer, Coaching Rail, second catalog, or UI behavior was added.

@@ -1,5 +1,8 @@
 import type { CandidateScoreComponent } from "../types";
 import { component, overlapCount } from "../utils";
+import { meaningfulTargetMuscles, musclesWithRelationships } from "../../../domain/exercise";
+import { resolveMuscleRequirement } from "../../request";
+import { resolveCandidateGoal } from "../../request";
 
 export const roleFitComponent: CandidateScoreComponent = {
   id: "role_fit",
@@ -34,13 +37,14 @@ export const goalFitComponent: CandidateScoreComponent = {
     );
     let value = 6;
 
-    if (request.goal === "hypertrophy") {
+    const goal = resolveCandidateGoal(request);
+    if (goal === "hypertrophy") {
       value = exercise.trainingRoles.includes("hypertrophy_accessory") || loadable ? 8 : 5.5;
-    } else if (request.goal === "strength") {
+    } else if (goal === "strength") {
       value = exercise.trainingRoles.includes("primary_strength") && loadable ? 8.5 : loadable ? 7 : 5.5;
-    } else if (request.goal === "posture_and_movement_quality" || request.goal === "pain_aware_return") {
+    } else if (goal === "posture_and_movement_quality" || goal === "pain_aware_return") {
       value = isControl || exercise.trainingRoles.includes("preparation") ? 8.5 : 6.5;
-    } else if (request.goal === "general_fitness") {
+    } else if (goal === "general_fitness") {
       value = 7;
     }
 
@@ -49,7 +53,7 @@ export const goalFitComponent: CandidateScoreComponent = {
       family: "goal_fit",
       value,
       reasonCode: value >= 7 ? "GOAL_MATCH" : "SCORE_NEUTRAL",
-      reason: `${exercise.name} goal fit for ${request.goal}: ${value >= 7 ? "supports" : "partially supports"} the stated goal.`,
+      reason: `${exercise.name} goal fit for ${goal}: ${value >= 7 ? "supports" : "partially supports"} the stated goal.`,
       source: "training_goal",
     });
   },
@@ -71,7 +75,7 @@ export const sessionIntentFitComponent: CandidateScoreComponent = {
             : 0;
     const movementMatches = overlapCount(exercise.movementRoles, request.need.targetMovementRoles);
     const muscleMatches = overlapCount(
-      [...exercise.primaryMuscles, ...exercise.secondaryMuscles],
+      meaningfulTargetMuscles(exercise),
       request.need.targetMuscles,
     );
 
@@ -89,16 +93,25 @@ export const sessionIntentFitComponent: CandidateScoreComponent = {
 export const muscleTargetFitComponent: CandidateScoreComponent = {
   id: "muscle_target_fit",
   score({ request, exercise }) {
-    const primaryMatches = overlapCount(exercise.primaryMuscles, request.need.targetMuscles);
-    const secondaryMatches = overlapCount(exercise.secondaryMuscles, request.need.targetMuscles);
-    const value = 4.5 + primaryMatches * 2.2 + secondaryMatches * 0.9;
+    const primaryMatches = overlapCount(
+      musclesWithRelationships(exercise, ["primary_target"]),
+      request.need.targetMuscles,
+    );
+    const secondaryMatches = overlapCount(
+      musclesWithRelationships(exercise, ["key_secondary_target"]),
+      request.need.targetMuscles,
+    );
+    const requirement = resolveMuscleRequirement(request.need);
+    const value = requirement === "any_meaningful_contributor"
+      ? 4.5 + Math.min(4.4, (primaryMatches + secondaryMatches) * 1.55)
+      : 4.5 + primaryMatches * 2.2 + secondaryMatches * 0.9;
 
     return component({
       id: "muscle_target_fit",
       family: "muscle_target_fit",
       value,
       reasonCode: primaryMatches > 0 || secondaryMatches > 0 ? "MUSCLE_TARGET_MATCH" : "SCORE_NEUTRAL",
-      reason: `${exercise.name} primary target matches ${primaryMatches}, secondary target matches ${secondaryMatches}.`,
+      reason: `${exercise.name} ${requirement} matches: primary ${primaryMatches}, key secondary ${secondaryMatches}.`,
       source: "session_intent",
     });
   },

@@ -1,9 +1,10 @@
 import type { AssessmentState } from "./domain/assessment";
 import type { EquipmentCapabilities } from "./domain/equipment";
-import type { ExerciseDefinition } from "./domain/exercise";
+import type { ExerciseActionFunction, ExerciseDefinition } from "./domain/exercise";
 import type { PainAndInjuryState } from "./domain/painInjury";
 import type { MovementRole, MuscleGroup } from "./domain/primitives";
 import type { SessionSection, TrainingRole } from "./domain/session";
+import type { MuscleRelationshipRequirement } from "./candidate/request";
 import type { ReasonCode, ReasonSource } from "./reasonCodes";
 import { evaluateHardEligibilityComponents } from "./candidate/eligibility";
 import type {
@@ -49,7 +50,9 @@ export interface HardEligibilityContext {
   readonly requestedRole?: TrainingRole;
   readonly requestedSection?: SessionSection;
   readonly targetMovementRoles?: readonly MovementRole[];
+  readonly targetActionFunctions?: readonly ExerciseActionFunction[];
   readonly targetMuscles?: readonly MuscleGroup[];
+  readonly muscleRequirement?: MuscleRelationshipRequirement;
   readonly satisfiedPrerequisiteIds: readonly string[];
   readonly painMatchTrace?: CandidatePainMatchTrace;
 }

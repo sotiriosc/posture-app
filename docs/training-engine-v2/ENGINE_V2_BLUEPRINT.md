@@ -1995,3 +1995,6 @@ Every week should make sense within the phase.
 Every phase should move the athlete toward greater capability and toward their stated training goal.
 
 That is the standard for Training Engine V2.
+# 2026-08-12 Causal Personalization Doctrine
+
+Candidate Intelligence consumes relevant structured athlete, need, assessment, pain, safety, equipment, history, continuity, response, phase, and fatigue facts. It is not an experience-plus-equipment template. Equal results are acceptable only as `JUSTIFIED_CONVERGENCE`; the engine must not force cosmetic user-specific differences. Field ownership and one-variable acceptance cases are binding in `ACTUAL_USER_PERSONALIZATION_AND_COUNTERFACTUAL_CONTRACT.md`.

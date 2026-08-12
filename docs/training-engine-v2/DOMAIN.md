@@ -179,3 +179,6 @@ Sessions use:
 ## History
 
 History distinguishes exercise, session, and program history. Exercise history events include too easy, appropriate challenge, too difficult, failed target, pain response, substitution, personal block, progression success/failure, and plateau.
+# Role and Muscle Domain Addendum (2026-08-12)
+
+`MovementRole` includes broad `accessory` and `knee_dominant` purposes. Exact action/function vocabulary and reviewed provenance live on `ExerciseDefinition.actionFunctions`. `ExerciseDefinition.muscleContributions` is canonical with primary, key-secondary, incidental, stabilizer/contextual, and unknown relationships; primary/secondary arrays are derived compatibility views. Candidate muscle requirements select any meaningful, primary-preferred, or primary-required semantics.

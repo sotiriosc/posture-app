@@ -342,6 +342,10 @@ describe("feature target fit", () => {
       id: "wrong-role-strong-serratus",
       movementRoles: ["squat"],
       trainingRoles: ["primary_strength"],
+      muscleContributions: [
+        { ...acceptedStrong.muscleContributions[0], muscle: "quads", relationship: "primary_target", notes: "Synthetic wrong-role primary." },
+        { ...acceptedStrong.muscleContributions[0], muscle: "glutes", relationship: "key_secondary_target", notes: "Synthetic wrong-role secondary." },
+      ],
       primaryMuscles: ["quads"],
       secondaryMuscles: ["glutes"],
       sectionSuitability: {
