@@ -44,6 +44,7 @@ export interface ExercisePerformanceRecord {
   readonly occurredAt: ISODateTimeString;
   readonly completionStatus: CompletionStatus;
   readonly actualDose?: ExerciseDose;
+  readonly realizedStressExposureIds?: readonly string[];
   readonly qualityObservations: readonly ExecutionQualityObservation[];
   readonly unresolvedPainResponseEvidenceIds: readonly string[];
   readonly recoveryEvidenceIds: readonly string[];

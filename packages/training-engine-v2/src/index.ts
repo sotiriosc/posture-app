@@ -5,6 +5,7 @@ export * from "./decisionTrace";
 export * from "./eligibility";
 export * from "./optimizerContracts";
 export * from "./pipelineObservability";
+export * from "./prescription";
 export * from "./prescriptionProgression";
 export * from "./reasonCodes";
 export * from "./scoringContracts";

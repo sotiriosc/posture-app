@@ -342,7 +342,7 @@ Contextual programming intent remains explicit and retains reviewed transition p
 - Human curation of contextual phase annotations with accepted/needs-review/unknown status and structured provenance.
 - Implementation of the approved resolver, unknown-versus-poor semantics, mechanical-bonus removal, final coefficients and full revalidation before Session Composer.
 - Project-owner resolution of the 17 remaining trunk-mechanics proposals before any additional complete profiles or normalized trunk assessment features.
-- Owner resolution of the trunk/carry pain-stress review decisions, followed by exact seven-exercise owner curation and production metadata before any new production reference exercises are implemented.
+- Exact seven-exercise trunk/carry owner curation, followed by production reference catalog implementation before any new production reference exercises are implemented. The generic structured pain-stress exposure contract is ready and adds no production exercise rows.
 
 ### P2
 
@@ -353,4 +353,4 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ## Readiness Rationale
 
-The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, the first trunk profiles remain observability-only, and the structured prescription/progression contract is runtime-truth hardened but still not production calibrated. Contextual phase evidence still needs approval, curation, implementation and full coefficient revalidation; the remaining trunk-mechanics proposals need owner resolution before assessment expansion; and the directionally accepted trunk/carry catalog needs owner pain-stress decisions before exact seven-exercise owner curation and production implementation. The correct state remains targeted fixes before composition.
+The engine is not classified READY merely because tests are green. Legal candidate pools are truthful, deterministic ranking and DecisionTrace are strong, progression/replacement semantics are separated, the first trunk profiles remain observability-only, and the structured prescription/progression contract is runtime-truth hardened but still not production calibrated. Contextual phase evidence still needs approval, curation, implementation and full coefficient revalidation; the remaining trunk-mechanics proposals need owner resolution before assessment expansion; and the directionally accepted trunk/carry catalog now needs exact seven-exercise owner curation before production implementation. The correct state remains targeted fixes before composition.

@@ -56,7 +56,7 @@ describe("trunk/carry pain-stress vocabulary and receiver review", () => {
     expect(second).toEqual(data);
     expect(renderTrunkCarryPainStressReviewReport(second)).toBe(rendered);
     expect(data.classification).toBe(TRUNK_CARRY_PAIN_STRESS_CLASSIFICATION);
-    expect(rendered.match(/TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY_FOR_OWNER_DECISION/g))
+    expect(rendered.match(/TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY/g))
       .toHaveLength(1);
     expect(rendered).toContain("## Current Vocabulary Inventory");
     expect(rendered).toContain("## Synthetic Receiver Matrix");
@@ -72,7 +72,7 @@ describe("trunk/carry pain-stress vocabulary and receiver review", () => {
     ).toBe(rendered);
   });
 
-  it("inventories the current stress vocabulary without adding production tags or exercises", () => {
+  it("inventories the approved stress vocabulary without adding production exercises or rows", () => {
     expect(data.currentVocabulary.map((tag) => tag.tag)).toEqual([
       "deep_knee_flexion",
       "loaded_knee_flexion",
@@ -87,8 +87,14 @@ describe("trunk/carry pain-stress vocabulary and receiver review", () => {
       "high_impact",
       "grip_intensive",
       "long_lever_core",
+      "upper_limb_support_loading",
+      "loaded_trunk_rotation",
+      "lateral_trunk_loading",
+      "loaded_gait",
+      "loaded_march",
+      "grip_loading",
     ]);
-    expect(JOINT_STRESS_TAGS).not.toEqual(
+    expect(JOINT_STRESS_TAGS).toEqual(
       expect.arrayContaining([...PROPOSED_TRUNK_CARRY_STRESS_TAGS]),
     );
     expect(
@@ -130,7 +136,7 @@ describe("trunk/carry pain-stress vocabulary and receiver review", () => {
       .map((decision) => decision.proposedName);
 
     expect(accepted).toEqual([
-      "sustained_upper_limb_support_loading",
+      "upper_limb_support_loading",
       "loaded_trunk_rotation",
       "lateral_trunk_loading",
       "loaded_gait",
@@ -172,13 +178,13 @@ describe("trunk/carry pain-stress vocabulary and receiver review", () => {
     );
 
     expect(forearmPlank?.potentialNewTags).toEqual([
-      "sustained_upper_limb_support_loading",
+      "upper_limb_support_loading",
     ]);
     expect(forearmPlank?.currentTagsThatDoNotFit).toContain(
       "wrist_extension_loading",
     );
     expect(sidePlank?.potentialNewTags).toEqual([
-      "sustained_upper_limb_support_loading",
+      "upper_limb_support_loading",
       "lateral_trunk_loading",
     ]);
     expect(chop?.currentTagsThatDoNotFit).toEqual(

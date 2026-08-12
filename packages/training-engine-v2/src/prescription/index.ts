@@ -4,6 +4,7 @@ export * from "./load";
 export * from "./performanceOutcome";
 export * from "./prescription";
 export * from "./progressionEvidence";
+export * from "./stressExposure";
 export * from "./trace";
 export * from "./types";
 export * from "./validation";

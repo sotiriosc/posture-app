@@ -18,6 +18,9 @@ export function buildCandidatePainMatchTrace(input: {
       evidence,
       requestedRole: input.requestedRole,
     }),
-    responseRequirements: buildPainResponseRequirements(evidence.signalTraces),
+    responseRequirements: buildPainResponseRequirements(
+      evidence.signalTraces,
+      evidence.exerciseStressPotentialTraces,
+    ),
   };
 }

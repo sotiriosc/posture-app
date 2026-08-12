@@ -49,6 +49,7 @@ Tests should remain small and readable at the component boundary. Current respon
 - same-exercise progression-readiness blockers for form, pain response, recovery, insufficient observation, missing same-exercise productivity evidence, and missing progression-axis runway evidence;
 - prescription-only counterfactuals proving hard eligibility, ranking, phase, pain, assessment, and transition behavior remain unchanged;
 - structured prescription contract report and current-behavior fingerprints;
+- structured pain-stress exposure vocabulary, annotation validation, optional pain side preservation, potential-versus-realized traces, prescription stress exposure traces, and no ID/name/prose stress inference;
 - pipeline snapshots for bug localization.
 
 ## Current Command
@@ -82,7 +83,7 @@ Green build and test results are necessary but insufficient to begin Session Com
 
 Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
 
-The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual equipment tests use synthetic requirements; all reference exercises retain their prior equipment requirements and none uses `carry_load`. Only 90/90 Breathing, Dead Bug, and Pallof Press carry the separately approved trunk profiles. The trunk/carry equipment and structured prescription contracts add no proposed exercise; the next dependency is trunk/carry pain-stress vocabulary and receiver review before any catalog implementation.
+The trunk/core domain contract does not make current exercises more specific by assertion. Counterfactual equipment tests use synthetic requirements; all reference exercises retain their prior equipment requirements and none uses `carry_load`. Only 90/90 Breathing, Dead Bug, and Pallof Press carry the separately approved trunk profiles. The trunk/carry equipment, structured prescription, and pain-stress exposure contracts add no proposed exercise. The next dependency is exact seven-exercise trunk/carry owner curation before production catalog implementation.
 
 ## Bug Localization
 

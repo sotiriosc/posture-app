@@ -136,6 +136,16 @@ Runtime validation binds each prescription to its exercise definition and requir
 
 One prescription is one source exposure event. Structured dose and performance evidence may later feed ledgers and progression models, but this contract adds no production exercise metadata and changes no current candidate ranking, eligibility, phase, pain, assessment, or transition behavior.
 
+## Structured Pain-Stress Exposure
+
+Pain-stress tags describe modeled training exposure, not diagnosis, tissue damage, bad posture, exercise danger, or universal avoidance. The approved trunk/carry stress additions are `upper_limb_support_loading`, `loaded_trunk_rotation`, `lateral_trunk_loading`, `loaded_gait`, `loaded_march`, and `grip_loading`.
+
+`ExerciseStressAnnotation` is a generic optional contract on `ExerciseDefinition`. It records source (`joint_stress | caution | contraindicated`), exposure scope (`intrinsic | prescription_modifiable | variant_dependent | dose_created | unknown`), side scope, review status, provenance, and notes. Accepted annotations require nonempty owner, human, or external provenance with evidence basis; legacy catalog arrays remain behaviorally authoritative and unscoped.
+
+Candidate pain matching counts accepted intrinsic structured stress as canonical facts. Prescription-modifiable, variant-dependent, dose-created, and unknown stress stays potential evidence until a prescription realizes or removes it. Potential evidence can require prescription resolution when it matches a pain signal, but it does not create pain units, joint units, hard criteria, acute criteria, or a hidden risk score.
+
+Pain signals may preserve optional side. Missing side remains null, and tags remain side-neutral. Side compatibility belongs to prescription-realized stress evaluation.
+
 Each purpose in an `ExerciseTransitionTrace` has a deterministic evidence trace with status `structurally_confirmed`, `contextual_intent`, `unknown_metadata`, or `contradicted`. Direct mechanics purposes use normalized source/target deltas only. Programming intent and multidimensional support purposes remain contextual, and transition notes cannot convert missing or contradictory mechanics into structural confirmation.
 
 An `ExerciseTransitionTrace` has `automaticSelectionEffect: none`. Productive continuity favors keeping and progressing the current exercise before replacement; a transition still requires legal, contextual evidence.

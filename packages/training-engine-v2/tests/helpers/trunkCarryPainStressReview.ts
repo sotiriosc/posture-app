@@ -20,10 +20,10 @@ import {
 import type { TrunkCarryFutureIdentity } from "./trunkCarryEquipmentContract";
 
 export const TRUNK_CARRY_PAIN_STRESS_CLASSIFICATION =
-  "TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY_FOR_OWNER_DECISION";
+  "TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY";
 
 export const PROPOSED_TRUNK_CARRY_STRESS_TAGS = [
-  "sustained_upper_limb_support_loading",
+  "upper_limb_support_loading",
   "loaded_trunk_rotation",
   "lateral_trunk_loading",
   "loaded_gait",
@@ -289,6 +289,90 @@ const CURRENT_TAG_DECISIONS: Record<JointStressTag, CurrentTagDecision> = {
     classifications: ["OVERBROAD", "VARIANT_DEPENDENT"],
     recommendedTreatment: "MIGRATE_TO_STRUCTURED_SCOPE",
   },
+  upper_limb_support_loading: {
+    impliedDefinition:
+      "Upper limb bears bodyweight or external support load through the hand, forearm, elbow, or shoulder support chain.",
+    intrinsicOrDoseDependent:
+      "Can be intrinsic to forearm-support identities, while support level, lever, duration, and side remain prescription facts.",
+    variantDependentOrGeneral:
+      "Variant dependent for hand versus forearm support and for support-regressed prescriptions.",
+    sideSpecificPotential:
+      "Side belongs in prescription realization; tag is side-neutral.",
+    ambiguity:
+      "Must not be collapsed into wrist_extension_loading or long_lever_core.",
+    classifications: ["WELL_DEFINED", "VARIANT_DEPENDENT"],
+    recommendedTreatment: "UNCHANGED",
+  },
+  loaded_trunk_rotation: {
+    impliedDefinition:
+      "Intentional controlled trunk rotation against external resistance.",
+    intrinsicOrDoseDependent:
+      "Intrinsic to a reviewed resisted-rotation identity, while load, range, side, and tempo are prescription facts.",
+    variantDependentOrGeneral:
+      "Variant dependent when the movement is anti-rotation, flexion, extension, or anchor-only overhead setup rather than rotation.",
+    sideSpecificPotential:
+      "Prescription side or direction may matter; tag is side-neutral.",
+    ambiguity:
+      "Must not be inferred from anchor height, diagonal path prose, or a generic core name.",
+    classifications: ["WELL_DEFINED", "VARIANT_DEPENDENT"],
+    recommendedTreatment: "UNCHANGED",
+  },
+  lateral_trunk_loading: {
+    impliedDefinition:
+      "Side-bending or anti-lateral-flexion trunk exposure from unilateral load/support or lateral bodyweight support.",
+    intrinsicOrDoseDependent:
+      "Intrinsic for reviewed side-plank or suitcase identities; support/load/side can alter realized magnitude or remove it.",
+    variantDependentOrGeneral:
+      "Variant and prescription dependent when wall support, load side, lever, or support force materially changes exposure.",
+    sideSpecificPotential:
+      "High side relevance, but side remains a prescription-realized fact.",
+    ambiguity:
+      "Must not double count as long_lever_core or generic carry/core stress.",
+    classifications: ["WELL_DEFINED", "VARIANT_DEPENDENT"],
+    recommendedTreatment: "UNCHANGED",
+  },
+  loaded_gait: {
+    impliedDefinition:
+      "Walking while carrying external load, with distance, time, turns, and load recorded by prescription.",
+    intrinsicOrDoseDependent:
+      "Intrinsic to walking carry identities; distance, duration, and load are prescription modifiable.",
+    variantDependentOrGeneral:
+      "Absent from stationary marches and static holds.",
+    sideSpecificPotential:
+      "Load side can matter for unilateral carries; gait exposure itself is often bilateral/systemic.",
+    ambiguity:
+      "Must not be used as a loaded-locomotion umbrella for marching.",
+    classifications: ["WELL_DEFINED", "VARIANT_DEPENDENT"],
+    recommendedTreatment: "UNCHANGED",
+  },
+  loaded_march: {
+    impliedDefinition:
+      "Stationary stepping or marching while holding external load, without walking distance truth.",
+    intrinsicOrDoseDependent:
+      "Intrinsic to reviewed loaded stationary march identities; steps, time, load, support, and side are prescription facts.",
+    variantDependentOrGeneral:
+      "Variant dependent when walking distance appears or support removes the relevant exposure.",
+    sideSpecificPotential:
+      "High side relevance through load side, support side, and stepping alternation.",
+    ambiguity:
+      "Must not grant loaded_gait or distance-carry truth.",
+    classifications: ["WELL_DEFINED", "VARIANT_DEPENDENT"],
+    recommendedTreatment: "UNCHANGED",
+  },
+  grip_loading: {
+    impliedDefinition:
+      "Hand grip is loaded by holding an implement, distinct from high-intensity grip demand.",
+    intrinsicOrDoseDependent:
+      "Intrinsic to implement-holding carry identities; grip_intensive remains dose-created and threshold-pending.",
+    variantDependentOrGeneral:
+      "Variant dependent when straps, support, implement, or no-hold setup changes grip involvement.",
+    sideSpecificPotential:
+      "Side follows load side and prescription laterality.",
+    ambiguity:
+      "Must not be counted together with grip_intensive as two full realized grip exposures from one event.",
+    classifications: ["WELL_DEFINED", "DOSE_DEPENDENT"],
+    recommendedTreatment: "UNCHANGED",
+  },
 };
 
 export interface ProposedStressTagDecision {
@@ -314,7 +398,7 @@ export interface ProposedStressTagDecision {
 export const PROPOSED_STRESS_TAG_DECISIONS: readonly ProposedStressTagDecision[] = [
   {
     concept: "sustained upper-limb support loading",
-    proposedName: "sustained_upper_limb_support_loading",
+    proposedName: "upper_limb_support_loading",
     recommendation: "ACCEPT_FOR_OWNER_DECISION",
     mechanicalDefinition:
       "Sustained bodyweight support through the upper limb where shoulder and elbow support tolerance may be a receiver-owned exposure.",
@@ -506,9 +590,9 @@ export const CANDIDATE_STRESS_AUDIT: readonly CandidateStressAuditRow[] = [
     doseCreatedExposures: [],
     currentTagsThatFit: ["long_lever_core only when the prescription realizes ordinary/full lever"],
     currentTagsThatDoNotFit: ["wrist_extension_loading", "heavy_axial_loading"],
-    potentialNewTags: ["sustained_upper_limb_support_loading"],
+    potentialNewTags: ["upper_limb_support_loading"],
     sourcePlacement:
-      "sustained_upper_limb_support_loading in joint_stress after owner curation; long_lever_core only through prescription realization.",
+      "upper_limb_support_loading in joint_stress after owner curation; long_lever_core only through prescription realization.",
     receiverEffect:
       "Support tag can affect pain_suitability, joint_cost, moderate_warning, and intrinsic hard/acute criteria.",
     sideRequirement: "No side for ordinary bilateral plank; side remains null.",
@@ -530,7 +614,7 @@ export const CANDIDATE_STRESS_AUDIT: readonly CandidateStressAuditRow[] = [
     currentTagsThatFit: [],
     currentTagsThatDoNotFit: ["long_lever_core as a substitute for lateral loading", "wrist_extension_loading"],
     potentialNewTags: [
-      "sustained_upper_limb_support_loading",
+      "upper_limb_support_loading",
       "lateral_trunk_loading",
     ],
     sourcePlacement:
@@ -672,7 +756,7 @@ export const VARIANT_DOSE_COUNTERFACTUALS: readonly VariantDoseCounterfactual[] 
   {
     candidateId: "forearm-plank",
     variant: "shortened/support-regressed",
-    remains: ["sustained_upper_limb_support_loading"],
+    remains: ["upper_limb_support_loading"],
     changesMagnitude: ["duration", "effort", "support"],
     appears: [],
     disappears: ["long_lever_core"],
@@ -681,7 +765,7 @@ export const VARIANT_DOSE_COUNTERFACTUALS: readonly VariantDoseCounterfactual[] 
   {
     candidateId: "forearm-plank",
     variant: "ordinary full lever",
-    remains: ["sustained_upper_limb_support_loading"],
+    remains: ["upper_limb_support_loading"],
     changesMagnitude: ["duration", "effort"],
     appears: ["long_lever_core"],
     disappears: [],
@@ -690,7 +774,7 @@ export const VARIANT_DOSE_COUNTERFACTUALS: readonly VariantDoseCounterfactual[] 
   {
     candidateId: "forearm-plank",
     variant: "lengthened lever",
-    remains: ["sustained_upper_limb_support_loading", "long_lever_core"],
+    remains: ["upper_limb_support_loading", "long_lever_core"],
     changesMagnitude: ["lever", "duration", "effort"],
     appears: [],
     disappears: [],
@@ -699,7 +783,7 @@ export const VARIANT_DOSE_COUNTERFACTUALS: readonly VariantDoseCounterfactual[] 
   {
     candidateId: "forearm-side-plank",
     variant: "bent-knee/support-regressed",
-    remains: ["sustained_upper_limb_support_loading"],
+    remains: ["upper_limb_support_loading"],
     changesMagnitude: ["lateral_trunk_loading", "duration", "support"],
     appears: [],
     disappears: [],
@@ -708,7 +792,7 @@ export const VARIANT_DOSE_COUNTERFACTUALS: readonly VariantDoseCounterfactual[] 
   {
     candidateId: "forearm-side-plank",
     variant: "full lever",
-    remains: ["sustained_upper_limb_support_loading", "lateral_trunk_loading"],
+    remains: ["upper_limb_support_loading", "lateral_trunk_loading"],
     changesMagnitude: ["lever", "duration"],
     appears: [],
     disappears: [],
@@ -717,7 +801,7 @@ export const VARIANT_DOSE_COUNTERFACTUALS: readonly VariantDoseCounterfactual[] 
   {
     candidateId: "forearm-side-plank",
     variant: "externally loaded future state",
-    remains: ["sustained_upper_limb_support_loading", "lateral_trunk_loading"],
+    remains: ["upper_limb_support_loading", "lateral_trunk_loading"],
     changesMagnitude: ["load", "lever", "duration"],
     appears: ["possible grip_loading if held implement is introduced"],
     disappears: [],
@@ -895,7 +979,7 @@ const PRIMARY_SYNTHETIC_FACTS: Record<
   }
 > = {
   "forearm-plank": {
-    stressTag: "sustained_upper_limb_support_loading",
+    stressTag: "upper_limb_support_loading",
     prescriptionDeferralNeed:
       "lever/duration/support can change magnitude; long_lever_core remains prescription-realized.",
     sourceProvenance: "proposal:forearm-plank:upper-limb-support",
@@ -939,7 +1023,7 @@ const SECONDARY_SYNTHETIC_FACTS: Partial<
   Record<TrunkCarryFutureIdentity, SyntheticStressTag>
 > = {
   "forearm-plank": "long_lever_core",
-  "forearm-side-plank": "sustained_upper_limb_support_loading",
+  "forearm-side-plank": "upper_limb_support_loading",
   "farmer-carry": "grip_loading",
   "suitcase-carry": "loaded_gait",
   "wall-supported-suitcase-march": "grip_loading",
@@ -1313,13 +1397,13 @@ export function buildReceiverSourceConsequences(): readonly ReceiverSourceConseq
         exercise: syntheticExercise({
           exerciseId: "forearm-plank",
           facts: [{
-            tag: "sustained_upper_limb_support_loading",
+            tag: "upper_limb_support_loading",
             sources: sourcePlacement,
           }],
         }),
         painAndInjury: painState({
           kind: signalKind,
-          stressTags: ["sustained_upper_limb_support_loading"],
+          stressTags: ["upper_limb_support_loading"],
           response: "reduce_load_and_range",
         }),
         requestedRole: "activation",
@@ -1550,7 +1634,7 @@ export function renderTrunkCarryPainStressReviewReport(
     "",
     "## Boundary",
     "",
-    "This is a deterministic review and proposal-only laboratory. It adds no production exercise, production stress tag, pain signal field, stress metadata, coefficient, hard gate, ranking behavior, phase behavior, assessment behavior, prescription generation, transition behavior, Session Composer, Weekly Composer, apps/**, or packages/engine/** change.",
+    "This is a deterministic review and proposal-only laboratory updated after owner vocabulary approval. It adds no production exercise, reference-catalog exercise stress row, coefficient, hard gate, ranking behavior, phase behavior, assessment behavior, prescription generation, transition behavior, Session Composer, Weekly Composer, apps/**, or packages/engine/** change.",
     "",
     "Pain-stress metadata describes a modeled training exposure. It does not describe a diagnosis, tissue damage, universal danger, exercise quality, exercise difficulty, progression, or a reason every athlete should avoid an exercise. A mechanical function is not automatically a pain-stress fact.",
     "",
@@ -1679,13 +1763,13 @@ export function renderTrunkCarryPainStressReviewReport(
             exercise: syntheticExercise({
               exerciseId: "forearm-plank",
               facts: [{
-                tag: "sustained_upper_limb_support_loading",
+                tag: "upper_limb_support_loading",
                 sources: ["joint_stress"],
               }],
             }),
             painAndInjury: painState({
               kind: "hard_contraindication",
-              stressTags: ["sustained_upper_limb_support_loading"],
+              stressTags: ["upper_limb_support_loading"],
             }),
           }),
           "hard_contraindication",
@@ -1698,13 +1782,13 @@ export function renderTrunkCarryPainStressReviewReport(
             exercise: syntheticExercise({
               exerciseId: "forearm-plank",
               facts: [{
-                tag: "sustained_upper_limb_support_loading",
+                tag: "upper_limb_support_loading",
                 sources: ["caution"],
               }],
             }),
             painAndInjury: painState({
               kind: "acute_severe_pain",
-              stressTags: ["sustained_upper_limb_support_loading"],
+              stressTags: ["upper_limb_support_loading"],
             }),
           }),
           "acute_severe_eligibility",

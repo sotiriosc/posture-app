@@ -66,6 +66,135 @@ export type ExerciseDemandDimension =
 export type ExerciseDemandAnnotationLevel = DemandLevel | "unknown";
 export type ExerciseMechanicsReviewStatus = "accepted" | "needs_review";
 
+export const EXERCISE_STRESS_SOURCES = [
+  "joint_stress",
+  "caution",
+  "contraindicated",
+] as const;
+
+export type ExerciseStressSource = (typeof EXERCISE_STRESS_SOURCES)[number];
+
+export const EXERCISE_STRESS_EXPOSURE_SCOPES = [
+  "intrinsic",
+  "prescription_modifiable",
+  "variant_dependent",
+  "dose_created",
+  "unknown",
+] as const;
+
+export type ExerciseStressExposureScope =
+  (typeof EXERCISE_STRESS_EXPOSURE_SCOPES)[number];
+
+export const EXERCISE_STRESS_SIDE_SCOPES = [
+  "side_neutral",
+  "prescription_side",
+  "bilateral_or_systemic",
+  "unknown",
+] as const;
+
+export type ExerciseStressSideScope =
+  (typeof EXERCISE_STRESS_SIDE_SCOPES)[number];
+
+export const EXERCISE_STRESS_REVIEW_STATUSES = [
+  "accepted",
+  "needs_review",
+] as const;
+
+export type ExerciseStressReviewStatus =
+  (typeof EXERCISE_STRESS_REVIEW_STATUSES)[number];
+
+export const EXERCISE_STRESS_PROVENANCE_SOURCES = [
+  "owner_decision",
+  "human_exercise_science_review",
+  "external_reference",
+  "legacy_unscoped",
+  "unknown",
+] as const;
+
+export type ExerciseStressProvenanceSource =
+  (typeof EXERCISE_STRESS_PROVENANCE_SOURCES)[number];
+
+export interface ExerciseStressAnnotationProvenance {
+  readonly source: ExerciseStressProvenanceSource;
+  readonly sourceRef: string;
+  readonly evidenceBasis: readonly string[];
+  readonly notes?: string;
+}
+
+export interface ExerciseStressAnnotation {
+  readonly tag: JointStressTag;
+  readonly source: ExerciseStressSource;
+  readonly exposureScope: ExerciseStressExposureScope;
+  readonly sideScope: ExerciseStressSideScope;
+  readonly reviewStatus: ExerciseStressReviewStatus;
+  readonly provenance: readonly ExerciseStressAnnotationProvenance[];
+  readonly notes: string;
+}
+
+export interface ExerciseStressAnnotationValidationFinding {
+  readonly severity: "error" | "warning";
+  readonly code: string;
+  readonly message: string;
+}
+
+function includesValue<T extends readonly string[]>(
+  values: T,
+  value: string,
+): value is T[number] {
+  return values.includes(value);
+}
+
+export function validateExerciseStressAnnotation(
+  annotation: ExerciseStressAnnotation,
+): readonly ExerciseStressAnnotationValidationFinding[] {
+  const findings: ExerciseStressAnnotationValidationFinding[] = [];
+  const add = (code: string, message: string): void => {
+    findings.push({ severity: "error", code, message });
+  };
+
+  if (!includesValue(EXERCISE_STRESS_SOURCES, annotation.source)) {
+    add("invalid_source", "Exercise stress annotation source is not approved.");
+  }
+  if (!includesValue(EXERCISE_STRESS_EXPOSURE_SCOPES, annotation.exposureScope)) {
+    add("invalid_exposure_scope", "Exercise stress annotation exposure scope is not approved.");
+  }
+  if (!includesValue(EXERCISE_STRESS_SIDE_SCOPES, annotation.sideScope)) {
+    add("invalid_side_scope", "Exercise stress annotation side scope is not approved.");
+  }
+  if (!includesValue(EXERCISE_STRESS_REVIEW_STATUSES, annotation.reviewStatus)) {
+    add("invalid_review_status", "Exercise stress annotation review status is not approved.");
+  }
+  if (annotation.provenance.length === 0) {
+    add("missing_provenance", "Exercise stress annotations must expose structured provenance.");
+  }
+
+  annotation.provenance.forEach((provenance, index) => {
+    const target = `provenance[${index}]`;
+    if (!includesValue(EXERCISE_STRESS_PROVENANCE_SOURCES, provenance.source)) {
+      add("invalid_provenance_source", `${target} source is not approved.`);
+    }
+    if (provenance.sourceRef.trim().length === 0) {
+      add("missing_provenance_source_ref", `${target} sourceRef is required.`);
+    }
+    if (provenance.evidenceBasis.length === 0) {
+      add("missing_evidence_basis", `${target} evidenceBasis is required.`);
+    }
+  });
+
+  if (annotation.reviewStatus === "accepted") {
+    for (const provenance of annotation.provenance) {
+      if (provenance.source === "legacy_unscoped" || provenance.source === "unknown") {
+        add(
+          "accepted_provenance_not_authoritative",
+          "Accepted stress annotations require owner, human, or external provenance.",
+        );
+      }
+    }
+  }
+
+  return findings;
+}
+
 export const TRUNK_FUNCTION_LEVELS = [
   "unknown",
   "none",
@@ -267,6 +396,7 @@ export interface ExerciseDefinition {
   readonly phaseSuitability: Partial<Record<PhaseId, ExerciseSuitability>>;
   readonly loading: ExerciseLoadingProfile;
   readonly mechanics?: ExerciseMechanicsProfile;
+  readonly stressAnnotations?: readonly ExerciseStressAnnotation[];
   readonly progression: ExerciseProgressionProfile;
   readonly cautionStressTags: readonly JointStressTag[];
   readonly contraindicatedStressTags: readonly JointStressTag[];

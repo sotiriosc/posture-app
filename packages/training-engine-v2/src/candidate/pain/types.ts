@@ -7,12 +7,38 @@ import type {
   ModeratePainReviewUrgency,
 } from "../../domain/painInjury";
 import type { BodyRegion, JointStressTag, Side } from "../../domain/primitives";
+import type {
+  ExerciseStressAnnotationProvenance,
+  ExerciseStressExposureScope,
+  ExerciseStressReviewStatus,
+  ExerciseStressSideScope,
+  ExerciseStressSource,
+} from "../../domain/exercise";
 
-export type ExerciseStressSource = "joint_stress" | "caution" | "contraindicated";
+export type { ExerciseStressSource } from "../../domain/exercise";
 
 export interface ExerciseStressFact {
   readonly tag: JointStressTag;
   readonly sources: readonly ExerciseStressSource[];
+}
+
+export type CandidateStressReceiverEligibility =
+  | "candidate_canonical_match_eligible"
+  | "candidate_potential_only"
+  | "candidate_unknown_not_counted";
+
+export interface ExerciseStressPotentialTrace {
+  readonly candidateExerciseId: string;
+  readonly tag: JointStressTag;
+  readonly source: ExerciseStressSource;
+  readonly exposureScope: ExerciseStressExposureScope;
+  readonly sideScope: ExerciseStressSideScope;
+  readonly reviewStatus: ExerciseStressReviewStatus;
+  readonly provenance: readonly ExerciseStressAnnotationProvenance[];
+  readonly matchedPainSignalIds: readonly string[];
+  readonly candidateReceiverEligibility: CandidateStressReceiverEligibility;
+  readonly requiresPrescriptionResolution: boolean;
+  readonly reason: string;
 }
 
 export type CandidatePainSignalKind =
@@ -70,6 +96,7 @@ export interface CandidatePainSignalTrace {
 export interface CanonicalPainEvidence {
   readonly candidateExerciseId: string;
   readonly exerciseStressFacts: readonly ExerciseStressFact[];
+  readonly exerciseStressPotentialTraces: readonly ExerciseStressPotentialTrace[];
   readonly signalTraces: readonly CandidatePainSignalTrace[];
   readonly signalMatches: readonly PainStressMatchFact[];
   readonly uniqueMatchCount: number;
@@ -141,7 +168,8 @@ export type PainResponseExecutionStatus =
   | "policy_unresolved_candidate_review_required"
   | "deferred_unexecutable_at_candidate_layer"
   | "unresolved_urgent_review_required"
-  | "not_applicable_no_candidate_stress_match";
+  | "not_applicable_no_candidate_stress_match"
+  | "potential_stress_requires_prescription_resolution";
 
 export interface PainResponseRequirementTrace {
   readonly signalId: string;
@@ -151,6 +179,7 @@ export interface PainResponseRequirementTrace {
   readonly primaryFutureOwner: PainResponseOwner;
   readonly executionStatus: PainResponseExecutionStatus;
   readonly matchedStressFacts: readonly PainStressMatchFact[];
+  readonly potentialStressEvidence?: readonly ExerciseStressPotentialTrace[];
   readonly evidence: readonly string[];
 }
 

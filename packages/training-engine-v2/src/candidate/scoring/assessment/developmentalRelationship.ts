@@ -45,6 +45,17 @@ function movementRolesForStressTag(stressTag: JointStressTag): readonly Movement
       return ["horizontal_pull", "vertical_pull", "carry"];
     case "long_lever_core":
       return ["anti_extension_core", "anti_rotation_core"];
+    case "upper_limb_support_loading":
+      return ["horizontal_push", "scapular_control"];
+    case "loaded_trunk_rotation":
+      return ["trunk_rotation", "anti_rotation_core"];
+    case "lateral_trunk_loading":
+      return ["anti_lateral_flexion_core", "carry"];
+    case "loaded_gait":
+    case "loaded_march":
+      return ["carry", "single_leg"];
+    case "grip_loading":
+      return ["carry", "horizontal_pull", "vertical_pull"];
   }
 }
 

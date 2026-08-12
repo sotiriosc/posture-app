@@ -23,6 +23,7 @@ export interface HistoricalSensitivity {
   readonly kind: "historical_sensitivity";
   readonly id: string;
   readonly region: BodyRegion;
+  readonly side?: Side;
   readonly stressTags: readonly JointStressTag[];
   readonly preferredModification?: "reduce_range" | "increase_support" | "reduce_load" | "monitor";
   readonly description: string;
@@ -32,6 +33,7 @@ export interface CurrentDiscomfort {
   readonly kind: "current_discomfort";
   readonly id: string;
   readonly region: BodyRegion;
+  readonly side?: Side;
   readonly severity0To10: 1 | 2;
   readonly stressTags: readonly JointStressTag[];
   readonly effect: "monitor" | "prefer_support" | "reduce_range" | "reduce_load";
@@ -42,6 +44,7 @@ export interface ModeratePain {
   readonly kind: "moderate_pain";
   readonly id: string;
   readonly region: BodyRegion;
+  readonly side?: Side;
   readonly severity0To10: 3 | 4 | 5 | 6;
   readonly stressTags: readonly JointStressTag[];
   readonly requiredResponse: "avoid_aggravator" | "reduce_load_and_range" | "substitute_role";
@@ -56,6 +59,7 @@ export interface AcuteSeverePain {
   readonly kind: "acute_severe_pain";
   readonly id: string;
   readonly region: BodyRegion;
+  readonly side?: Side;
   readonly severity0To10: 7 | 8 | 9 | 10;
   readonly stressTags: readonly JointStressTag[];
   readonly invalidatesTrainingRoles: readonly string[];
@@ -67,6 +71,7 @@ export interface HardContraindication {
   readonly kind: "hard_contraindication";
   readonly id: string;
   readonly region?: BodyRegion;
+  readonly side?: Side;
   readonly exerciseIds?: readonly string[];
   readonly stressTags?: readonly JointStressTag[];
   readonly reason: string;

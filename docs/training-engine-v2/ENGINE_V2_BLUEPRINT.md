@@ -887,6 +887,14 @@ Direct developmental, meaningful secondary, incidental bracing, and capacity exp
 
 The approved pre-Session-Composer order is: typed roles and profile, human-reviewed catalog curation, then normalized trunk assessment features. Future core and carry phase evidence must be scoped to the exercise's actual activation, accessory, capacity, preparation, recovery, or main use. This contract adds no phase coefficient, scoring term, prescription behavior, Session Composer behavior, or Weekly Development Ledger.
 
+### Structured Pain-Stress Exposure Doctrine
+
+Pain-stress exposure follows potential -> prescription realization -> response. Exercise definitions may expose generic stress potential, prescriptions realize or remove it through actual dose/support/side facts, and performance evidence later records what happened. Candidate Intelligence may count accepted intrinsic stress, but prescription-modifiable, variant-dependent, dose-created, and unknown stress remains potential evidence until prescription resolution.
+
+Stress tags describe modeled exposure, not bad posture, weak core, danger, damage, or exercise difficulty. A function is not automatically a stress tag, and a stress tag is not a training role. Moderate pain policy, coefficients, and flat severity 3-6 behavior remain unchanged. Hard and acute authority still require explicit matching authority.
+
+Future catalog expansion must prefer the smallest coherent effective exposure over redundant accumulation. More exercise knowledge should improve fit and explainability, not lengthen workouts by default.
+
 ## 22. Exercise Selection Intelligence
 
 Candidate evaluation should be inspectable.

@@ -7,13 +7,17 @@ import type {
   ModeratePain,
   PainAndInjuryState,
 } from "../../domain/painInjury";
-import type { JointStressTag } from "../../domain/primitives";
-import { buildExerciseStressProfile } from "./exerciseStressProfile";
+import type { JointStressTag, Side } from "../../domain/primitives";
+import {
+  buildExerciseStressProfile,
+  structuredStressReceiverEligibility,
+} from "./exerciseStressProfile";
 import { reviewUrgencyForModeratePain } from "./reviewUrgency";
 import type {
   CandidatePainSignalTrace,
   CanonicalPainEvidence,
   ExerciseStressFact,
+  ExerciseStressPotentialTrace,
   PainRequestedAction,
   PainRequestedActionSource,
   PainStressMatchFact,
@@ -44,6 +48,10 @@ function severityFor(signal: MatchablePainSignal): number | null {
     case "hard_contraindication":
       return null;
   }
+}
+
+function sideFor(signal: MatchablePainSignal): Side | null {
+  return signal.side ?? null;
 }
 
 function actionFor(signal: MatchablePainSignal): {
@@ -103,7 +111,7 @@ function matchFactsFor(input: {
         signalKind: input.signal.kind,
         severity: severityFor(input.signal),
         region: input.signal.region ?? null,
-        side: null,
+        side: sideFor(input.signal),
         stressTag,
         exerciseSources: exerciseFact.sources,
         requestedAction: action.requestedAction,
@@ -124,7 +132,7 @@ function signalTraceFor(input: {
     signalKind: input.signal.kind,
     severity: severityFor(input.signal),
     region: input.signal.region ?? null,
-    side: null,
+    side: sideFor(input.signal),
     inputStressTags: [...unique(stressTagsFor(input.signal))].sort((left, right) =>
       left.localeCompare(right),
     ),
@@ -155,6 +163,48 @@ function signalTraceFor(input: {
   };
 }
 
+function exerciseStressPotentialTracesFor(input: {
+  readonly exercise: ExerciseDefinition;
+  readonly signals: readonly MatchablePainSignal[];
+}): readonly ExerciseStressPotentialTrace[] {
+  return (input.exercise.stressAnnotations ?? [])
+    .map((annotation) => {
+      const candidateReceiverEligibility = structuredStressReceiverEligibility(annotation);
+      const requiresPrescriptionResolution =
+        candidateReceiverEligibility === "candidate_potential_only";
+      const matchedPainSignalIds = input.signals
+        .filter((signal) => stressTagsFor(signal).includes(annotation.tag))
+        .map((signal) => signal.id)
+        .sort();
+      const reason =
+        candidateReceiverEligibility === "candidate_canonical_match_eligible"
+          ? "Accepted intrinsic structured stress can participate in candidate-level canonical matching."
+          : candidateReceiverEligibility === "candidate_potential_only"
+            ? "Structured stress is prescription modifiable, variant dependent, or dose created; candidate scope exposes potential evidence and requires prescription resolution before counting realized stress."
+            : "Structured stress is not accepted or has unknown scope; candidate scope exposes it without counting it as realized stress.";
+
+      return {
+        candidateExerciseId: input.exercise.id,
+        tag: annotation.tag,
+        source: annotation.source,
+        exposureScope: annotation.exposureScope,
+        sideScope: annotation.sideScope,
+        reviewStatus: annotation.reviewStatus,
+        provenance: annotation.provenance,
+        matchedPainSignalIds,
+        candidateReceiverEligibility,
+        requiresPrescriptionResolution,
+        reason,
+      };
+    })
+    .sort(
+      (left, right) =>
+        left.tag.localeCompare(right.tag) ||
+        left.source.localeCompare(right.source) ||
+        left.exposureScope.localeCompare(right.exposureScope),
+    );
+}
+
 export function buildCanonicalPainEvidence(input: {
   readonly exercise: ExerciseDefinition;
   readonly painAndInjury: PainAndInjuryState;
@@ -178,10 +228,15 @@ export function buildCanonicalPainEvidence(input: {
         left.signalKind.localeCompare(right.signalKind),
     );
   const signalMatches = signalTraces.flatMap((signal) => signal.matchedStressFacts);
+  const exerciseStressPotentialTraces = exerciseStressPotentialTracesFor({
+    exercise: input.exercise,
+    signals,
+  });
 
   return {
     candidateExerciseId: input.exercise.id,
     exerciseStressFacts,
+    exerciseStressPotentialTraces,
     signalTraces,
     signalMatches,
     uniqueMatchCount: signalMatches.length,

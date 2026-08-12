@@ -94,6 +94,12 @@ export const JOINT_STRESS_TAGS = [
   "high_impact",
   "grip_intensive",
   "long_lever_core",
+  "upper_limb_support_loading",
+  "loaded_trunk_rotation",
+  "lateral_trunk_loading",
+  "loaded_gait",
+  "loaded_march",
+  "grip_loading",
 ] as const;
 
 export type JointStressTag = (typeof JOINT_STRESS_TAGS)[number];

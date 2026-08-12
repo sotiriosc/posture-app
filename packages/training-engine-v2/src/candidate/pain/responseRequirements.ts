@@ -1,5 +1,6 @@
 import type {
   CandidatePainSignalTrace,
+  ExerciseStressPotentialTrace,
   PainRequestedAction,
   PainResponseExecutionStatus,
   PainResponseOwner,
@@ -49,6 +50,7 @@ function ownershipFor(action: PainRequestedAction): {
 
 export function buildPainResponseRequirements(
   signals: readonly CandidatePainSignalTrace[],
+  potentialTraces: readonly ExerciseStressPotentialTrace[] = [],
 ): readonly PainResponseRequirementTrace[] {
   return signals.flatMap((signal) => {
     if (!signal.requestedAction) {
@@ -56,18 +58,33 @@ export function buildPainResponseRequirements(
     }
 
     const ownership = ownershipFor(signal.requestedAction);
+    const potentialMatches = potentialTraces.filter(
+      (trace) =>
+        trace.requiresPrescriptionResolution &&
+        trace.matchedPainSignalIds.includes(signal.signalId),
+    );
     const noCandidateMatch =
       signal.matchedStressFacts.length === 0 &&
       signal.requestedAction !== "monitor" &&
       signal.requestedAction !== "urgent_review";
-    const executionStatus = noCandidateMatch
-      ? "not_applicable_no_candidate_stress_match" as const
-      : ownership.status;
+    const executionStatus = noCandidateMatch && potentialMatches.length > 0
+      ? "potential_stress_requires_prescription_resolution" as const
+      : noCandidateMatch
+        ? "not_applicable_no_candidate_stress_match" as const
+        : ownership.status;
+    const owner = noCandidateMatch && potentialMatches.length > 0
+      ? "prescription" as const
+      : ownership.owner;
     const evidence = signal.matchedStressFacts.length > 0
       ? signal.matchedStressFacts.map(
           (match) =>
             `${match.signalId} matches ${match.stressTag} through ${match.exerciseSources.join(", ")}.`,
         )
+      : potentialMatches.length > 0
+        ? potentialMatches.map(
+            (match) =>
+              `${signal.signalId} matches potential ${match.tag}; ${match.exposureScope} exposure requires prescription resolution before candidate receivers count realized stress.`,
+          )
       : signal.requestedAction === "urgent_review"
         ? [
             `${signal.signalId} explicitly recommends urgent review; no candidate stress match is required to preserve that request.`,
@@ -81,9 +98,10 @@ export function buildPainResponseRequirements(
       signalKind: signal.signalKind,
       requestedAction: signal.requestedAction,
       requestedActionSource: signal.requestedActionSource,
-      primaryFutureOwner: ownership.owner,
+      primaryFutureOwner: owner,
       executionStatus,
       matchedStressFacts: signal.matchedStressFacts,
+      potentialStressEvidence: potentialMatches.length > 0 ? potentialMatches : undefined,
       evidence,
     }];
   });

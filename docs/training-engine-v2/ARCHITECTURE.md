@@ -111,6 +111,10 @@ normalized pain inputs + structured exercise stress metadata
 
 Canonical matching owns shared evidence, not shared policy. Pain suitability counts all supported soft signal/tag facts; joint cost counts only facts with joint-stress or caution provenance; hard contraindication and acute/severe eligibility retain their narrower explicit authority filters. Moderate severity 3-6 is numerically flat and changes non-hard review urgency only. Assessment may also use structured region or movement context, but it reuses canonical facts whenever stress matching is required.
 
+Structured exercise stress annotations add a second, generic evidence lane. Accepted intrinsic annotations can become canonical candidate stress facts. Prescription-modifiable, variant-dependent, dose-created, and unknown annotations remain `ExerciseStressPotentialTrace` evidence at candidate scope. They can create explicit prescription-resolution observability, but they do not affect canonical match counts, pain suitability units, joint-cost units, hard criteria, acute criteria, or score coefficients until a prescription realizes exposure.
+
+`PrescriptionStressExposureTrace` is the realization boundary. It preserves one source exposure event and the actual prescription facts: side, load, range, support, lever, duration, distance, steps, tempo, effort, provenance, receiver eligibility, and realization state. `dose_not_yet_classified` and `unknown` remain unresolved states rather than threshold guesses.
+
 Execution readiness is candidate-specific. Non-urgent actions with `not_applicable_no_candidate_stress_match` are ignored for that candidate; explicit acute urgency remains globally visible. Result readiness reflects the selected legal candidate, exposes lower-ranked executable candidates without choosing them, and excludes hard-rejected candidates from selected-result readiness. Prescription and Session Composer requirements are visible but are not executed in Candidate Intelligence.
 
 ## Thin Orchestrators
@@ -160,7 +164,7 @@ Architecture must distinguish errors caused by:
 - cross-exercise transition;
 - validation.
 
-Full-program failures should be traceable back to smaller component outputs.
+Full-program failures should be traceable back to smaller component outputs. Pain/stress failures should identify whether the issue came from exercise stress potential, candidate canonical matching, prescription realization, or performance response evidence.
 
 ## Assessment And Alignment Influence
 
@@ -180,4 +184,4 @@ Do not impose tiny files. Do flag modules that start combining unrelated trainin
 
 ## Non-Goals In This Phase
 
-Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The structured prescription and same-exercise progression contract is ready as a type, validation, and observability boundary only; it does not calibrate prescriptions or select progressions. The direct trunk/carry candidate direction remains unimplemented. Its equipment and structured prescription dependencies are ready, and its next dependency is trunk/carry pain-stress vocabulary and receiver review; no catalog row or assessment-feature behavior is authorized by those contracts.
+Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The structured prescription and same-exercise progression contract is ready as a type, validation, and observability boundary only; it does not calibrate prescriptions or select progressions. The direct trunk/carry candidate direction remains unimplemented. Its equipment, structured prescription, and pain-stress exposure dependencies are ready. The next dependency is exact seven-exercise trunk/carry owner curation, then production reference catalog implementation; no catalog row or assessment-feature behavior is authorized by this contract.

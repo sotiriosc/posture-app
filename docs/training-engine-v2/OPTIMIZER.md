@@ -19,6 +19,8 @@ Candidate ranking is not program generation. The optimizer may compose only from
 
 Future prescription and ledger layers must consume one explicit source exposure event with structured planned dose, completed performance, execution-quality evidence, pain response, and recovery evidence. Candidate ranking does not infer those values, and the structured prescription contract does not start Session Composer.
 
+Future optimizers must keep stress potential distinct from realized exposure. A candidate may be inspectable and legal while carrying prescription-modifiable, variant-dependent, dose-created, or unknown stress potential. Search should defer those cases to prescription resolution instead of prematurely treating them as safe, absent, hard, preferred, or fully counted risk. When a prescription realizes exposure, `PrescriptionStressExposureTrace` provides the source event, side, load/range/support/lever/duration/distance/steps, provenance, receiver eligibility, and unresolved-state evidence.
+
 Session Composer work begins only after the permanent Candidate Intelligence readiness gate in `ENGINE_V2_BLUEPRINT.md` is explicitly accepted. Green tests alone do not satisfy that gate.
 
 ## Session Evaluation
@@ -57,6 +59,8 @@ Weekly Composer should eventually derive individualized minimum, target-range, a
 Those targets should begin from experience-level priors and adjust for the athlete's enduring goal, phase, pain, assessment, priority muscles, available days and time, equipment, adherence, fatigue, and longitudinal response history. Candidate Intelligence does not implement this ledger, and phase fit for one exercise must not impersonate whole-week phase coherence.
 
 A carry is not mandatory filler. Future carry allocation requires a real weekly need and must account for grip, hinge, trunk and unilateral fatigue, neighboring-session recovery, equipment, duration, and carry-specific prescription units.
+
+Knowledge breadth must not become longer workouts or redundant accumulation. Prefer the smallest coherent effective exposure that satisfies the user goal, pain/readiness context, phase, equipment, and recovery constraints.
 
 ## Non-Goals
 
