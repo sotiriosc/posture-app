@@ -14,7 +14,7 @@ The owner directionally accepts the seven-concept tranche and settles these futu
 
 `wall-supported-suitcase-march` is curated as a stationary supported loaded march with no loaded-gait or distance truth, but its `carry` movement-role status remains an owner-decision question. Structured support-side, load-side, steps/time, and stationary-march prescription semantics now exist as a contract, but they do not approve this identity as production metadata.
 
-The separate training-space and equipment dependency is classified `TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`. The structured dose, prescription, and same-exercise progression dependency is classified `STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`. The pain-stress exposure dependency is classified `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY`. The exact seven-exercise curation artifact is classified `SEVEN_EXERCISE_TRUNK_CARRY_CURATION_READY_FOR_OWNER_APPROVAL`. The support/stance dependency is classified `SUPPORT_AND_STANCE_SCHEMA_CHANGE_REQUIRED_BEFORE_SEVEN_EXERCISE_PRODUCTION_ROWS`. These reviews add contracts and synthetic future requirements but no production exercise row or production exercise stress metadata. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. Production implementation is blocked pending contextual phase contract resolution and truthful support/stance representation.
+The training-space/equipment (`TRUNK_CARRY_EQUIPMENT_CONTRACT_READY`), structured prescription/progression (`STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY`), pain-stress exposure (`TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY`), exact curation (`SEVEN_EXERCISE_TRUNK_CARRY_CURATION_READY_FOR_OWNER_APPROVAL`), compositional support/stance (`SUPPORT_AND_STANCE_SCHEMA_IMPLEMENTED`), and contextual phase-resolution (`PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING`) contracts now exist. These reviews add contracts and synthetic future requirements but no production exercise row or production exercise stress metadata. The equipment findings below remain the original proposal-time audit; `TRUNK_CARRY_EQUIPMENT_CONTRACT.md` records their resolution. Production implementation remains blocked by the low-back audit's independent safety-escalation, symptom-behavior/training-tolerance, historical policy, side/distribution, row-level stress curation, phase scoring-policy, and longitudinal-response dependencies.
 
 ## Current Gap Statement
 
@@ -3445,7 +3445,7 @@ Explicitly rejected legacy policies:
 
 | Artifact | Required fingerprint | Current fingerprint | Unchanged |
 | --- | --- | --- | --- |
-| Full serialized reference catalog after accepted first profiles | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | true |
+| Full serialized reference catalog after accepted first profiles | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | true |
 | 22-scenario production ranking | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | true |
 | Comprehensive behavior | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | true |
 
@@ -3455,4 +3455,4 @@ Current production reference-exercise count: 30. The proposal renderer reads pro
 
 **TRUNK_CARRY_CONTRACT_FIXES_REQUIRED**
 
-The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, pain-stress exposure, and exact seven-exercise curation dependencies are resolved as separate review artifacts. Production implementation remains blocked on contextual phase contract resolution and truthful support/stance representation. No production exercise row or exercise stress metadata is implemented by this classification.
+The seven-candidate tranche is accepted directionally, and its equipment, structured prescription, pain-stress exposure, exact curation, compositional support/stance, and contextual phase-resolution dependencies now exist. Production implementation remains blocked by the low-back audit's safety-escalation, symptom-behavior/training-tolerance, historical policy, side/distribution, row-level stress curation, phase scoring-policy, and longitudinal-response dependencies. No production exercise row or exercise stress metadata is implemented by this classification.

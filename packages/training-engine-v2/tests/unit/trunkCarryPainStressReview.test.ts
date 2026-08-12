@@ -373,7 +373,7 @@ describe("trunk/carry pain-stress vocabulary and receiver review", () => {
     );
     expect(data.behaviorFingerprints.comprehensiveBehaviorMatches).toBe(true);
     expect(data.behaviorFingerprints.referenceCatalogFingerprint).toBe(
-      "e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c",
+      "124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9",
     );
     expect(data.behaviorFingerprints.referenceCatalogMatches).toBe(true);
     expect(data.behaviorFingerprints.equipmentLegalityFingerprint).toBe(

@@ -1331,7 +1331,7 @@ function printHorizontalRowKnowledge(result: CandidateRankingResult): void {
       candidate.rank ? String(candidate.rank) : "rejected",
       candidate.total === null ? "-" : formatNumber(candidate.total),
       candidate.legal ? "yes" : candidate.rejectionCodes.join(", "),
-      `${candidate.support.externalSupport}/${candidate.support.bodySupport}/${candidate.support.reviewStatus}`,
+      `${candidate.support.basePosition}/${candidate.support.stance}/${candidate.support.orientation}; amount=${candidate.support.supportAmount}; contacts=${formatList(candidate.support.supportContacts)}; review=${candidate.support.reviewStatus}`,
       [
         candidate.resistancePath.resistancePath,
         `trajectory=${candidate.resistancePath.trajectoryFreedom}`,
@@ -1467,8 +1467,12 @@ function printProgressionTransitionKnowledge(
         trace.classification,
         formatList(trace.purposes),
         [
-          `external=${formatDelta(delta.support.externalSupport)}`,
-          `body=${formatDelta(delta.support.bodySupport)}`,
+          `base=${formatDelta(delta.support.basePosition)}`,
+          `stance=${formatDelta(delta.support.stance)}`,
+          `orientation=${formatDelta(delta.support.orientation)}`,
+          `amount=${formatDelta(delta.support.supportAmount)}`,
+          `relationship=${formatDelta(delta.support.supportRelationship)}`,
+          `contacts sourceOnly=${formatList(delta.support.contacts.sourceOnly)} targetOnly=${formatList(delta.support.contacts.targetOnly)}`,
         ].join("; "),
         [
           `path=${formatDelta(delta.resistancePath.resistancePath)}`,

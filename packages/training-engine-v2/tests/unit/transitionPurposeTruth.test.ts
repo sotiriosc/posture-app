@@ -218,8 +218,13 @@ describe("transition purpose evidence truth", () => {
     );
     expect(movement.evidence).toContain("review=accepted");
     expect(support.status).toBe("contextual_intent");
-    expect(support.evidence).toContain("external support: floor -> machine");
-    expect(support.evidence).toContain("body support: hands_supported -> seated_supported");
+    expect(support.evidence).toContain("base position: prone -> seated");
+    expect(support.evidence).toContain(
+      "hand:floor:weight_bearing:bilateral:primary",
+    );
+    expect(support.evidence).toContain(
+      "seat:machine:weight_bearing:side_neutral:primary",
+    );
   });
 
   it("does not let transition notes confirm contradictory mechanics", () => {

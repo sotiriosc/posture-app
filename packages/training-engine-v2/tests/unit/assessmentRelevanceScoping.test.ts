@@ -1563,8 +1563,14 @@ describe("assessment relevance scoping", () => {
       mechanics: {
         ...pallof.mechanics,
         support: {
-          externalSupport: "none" as const,
-          bodySupport: "standing" as const,
+          basePosition: "standing" as const,
+          stance: "bilateral" as const,
+          orientation: "upright" as const,
+          supportContacts: [
+            { bodyRegion: "foot" as const, source: "floor" as const, mode: "weight_bearing" as const, side: "bilateral" as const, taskRole: "primary" as const },
+          ],
+          supportAmount: "none" as const,
+          supportRelationship: "bilateral" as const,
           reviewStatus: "accepted" as const,
           notes: "Explicitly standing and unsupported despite prose.",
         },

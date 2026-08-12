@@ -1,5 +1,6 @@
 import { assessmentInfluenceForSignal } from "../../alignment";
 import { createDecisionTrace, type CandidateTrace } from "../../decisionTrace";
+import { resolveContextualPhaseAnnotation } from "../../phaseSuitability";
 import {
   appendPipelineSnapshot,
   createPipelineSnapshot,
@@ -238,6 +239,15 @@ export function rankCandidateRequest(
     score: scoresByExerciseId.get(candidate.exercise.id),
   }));
   const winner = rankedCandidates[0];
+  const phaseResolutions = evaluatedCandidates.map((candidate) =>
+    resolveContextualPhaseAnnotation({
+      phaseId: request.phase.id,
+      requestedRole: request.need.requestedRole,
+      requestedSection: request.need.requestedSection ?? null,
+      exerciseId: candidate.exercise.id,
+      annotations: candidate.exercise.phaseSuitabilityAnnotations ?? [],
+    }),
+  );
   const decisionTrace = createDecisionTrace({
     traceId: `candidate-ranking:${request.id}`,
     athlete: request.athlete,
@@ -245,6 +255,7 @@ export function rankCandidateRequest(
     selectedExerciseId: winner?.exercise.id,
     whyItWon: winner?.summary,
     painExecutionReadiness,
+    phaseResolutions,
     pipelineSnapshots: pipeline.snapshots,
   });
 

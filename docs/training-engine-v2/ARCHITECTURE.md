@@ -32,7 +32,7 @@ The package models the intended reasoning order without implementing production 
 - `domain/programming.ts`: weekly intent and planned-program contracts.
 - `domain/history.ts`: exercise, session, program, progression, and fatigue history.
 - `domain/progression.ts`: canonical same-exercise progression-axis vocabulary.
-- `domain/exercise.ts`: normalized exercise schema, structured mechanics including the optional field-reviewed trunk function profile, same-exercise progression axes, and reviewed transition relationships.
+- `domain/exercise.ts`: normalized exercise schema, compositional support/stance mechanics, contextual phase annotations, the optional field-reviewed trunk function profile, same-exercise progression axes, and reviewed transition relationships.
 - `eligibility.ts`: hard eligibility contracts.
 - `scoringContracts.ts`: inspectable score component contracts.
 - `optimizerContracts.ts`: candidate set, session candidate/evaluation, and week candidate/evaluation contracts.
@@ -48,6 +48,7 @@ The package models the intended reasoning order without implementing production 
 - `candidate/pain/*`: canonical source-aware exercise stress facts, signal/tag matching, review urgency, receiver-specific policies, candidate/result execution readiness, response ownership, and serializable pain traces.
 - `candidate/scoring/assessment/*`: modular assessment normalization, relevance, feature target, demand/capability, challenge, budget, and trace responsibilities.
 - `transitionComparison.ts`: observational structural deltas for reviewed cross-exercise transitions with no automatic selection effect.
+- `phaseSuitability.ts`: deterministic role/section contextual phase resolution, conflict handling, accepted-provenance qualification, and runtime annotation validation. Resolution is trace-only until an owner-approved scorer replaces legacy phase scoring.
 - `trunkMechanics.ts`: pure trunk-function observability; copies reviewed profile evidence or emits explicit profile-unavailable unknown traces without influencing decisions.
 
 ## Trunk Role And Mechanics Boundary
@@ -184,4 +185,4 @@ Do not impose tiny files. Do flag modules that start combining unrelated trainin
 
 ## Non-Goals In This Phase
 
-Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The structured prescription and same-exercise progression contract is ready as a type, validation, and observability boundary only; it does not calibrate prescriptions or select progressions. The direct trunk/carry candidate direction remains unimplemented. Its equipment, structured prescription, pain-stress exposure, and exact curation dependencies are ready as review artifacts, while support/stance is classified as a required schema change before production rows. The next dependency is contextual phase contract implementation plus truthful support/stance schema implementation before exact seven-exercise production metadata; no catalog row or assessment-feature behavior is authorized by this contract.
+Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The structured prescription and same-exercise progression contract is ready as a type, validation, and observability boundary only; it does not calibrate prescriptions or select progressions. The direct trunk/carry candidate direction remains unimplemented. Its equipment, structured prescription, pain-stress exposure, support/stance, exact curation, and contextual phase-resolution contracts now exist, but no catalog row or assessment-feature behavior is authorized by those contracts. Production phase scoring remains on the legacy policy pending owner review of calibration consequences. The low-back audit additionally requires independent safety-escalation and symptom-behavior/training-tolerance ownership before the exact seven exercise rows can be implemented.

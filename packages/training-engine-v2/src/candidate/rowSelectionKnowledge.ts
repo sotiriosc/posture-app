@@ -23,8 +23,12 @@ export type RowTieStatusCode =
   | "CONTEXT_REQUIRED_TO_DIFFERENTIATE";
 
 export interface RowSupportTrace {
-  readonly externalSupport: string;
-  readonly bodySupport: string;
+  readonly basePosition: string;
+  readonly stance: string;
+  readonly orientation: string;
+  readonly supportContacts: readonly string[];
+  readonly supportAmount: string;
+  readonly supportRelationship: string;
   readonly reviewStatus: string;
   readonly notes: string;
 }
@@ -55,7 +59,15 @@ export interface RowLoadingTrace {
 }
 
 interface RowMechanicalSignature {
-  readonly support: Pick<RowSupportTrace, "externalSupport" | "bodySupport">;
+  readonly support: Pick<
+    RowSupportTrace,
+    | "basePosition"
+    | "stance"
+    | "orientation"
+    | "supportContacts"
+    | "supportAmount"
+    | "supportRelationship"
+  >;
   readonly resistancePath: Pick<
     RowResistancePathTrace,
     | "resistancePath"
@@ -103,8 +115,17 @@ function supportTrace(exercise: ExerciseDefinition): RowSupportTrace {
   const support = exercise.mechanics?.support;
 
   return {
-    externalSupport: support?.externalSupport ?? "unknown",
-    bodySupport: support?.bodySupport ?? "unknown",
+    basePosition: support?.basePosition ?? "unknown",
+    stance: support?.stance ?? "unknown",
+    orientation: support?.orientation ?? "unknown",
+    supportContacts: (support?.supportContacts ?? [])
+      .map(
+        (contact) =>
+          `${contact.bodyRegion}:${contact.source}:${contact.mode}:${contact.side}:${contact.taskRole}`,
+      )
+      .sort(),
+    supportAmount: support?.supportAmount ?? "unknown",
+    supportRelationship: support?.supportRelationship ?? "unknown",
     reviewStatus: support?.reviewStatus ?? "needs_review",
     notes: support?.notes ?? "Support mechanics are not modeled.",
   };
@@ -157,8 +178,12 @@ function mechanicalSignature(exercise: ExerciseDefinition): RowMechanicalSignatu
 
   return {
     support: {
-      externalSupport: support.externalSupport,
-      bodySupport: support.bodySupport,
+      basePosition: support.basePosition,
+      stance: support.stance,
+      orientation: support.orientation,
+      supportContacts: support.supportContacts,
+      supportAmount: support.supportAmount,
+      supportRelationship: support.supportRelationship,
     },
     resistancePath: {
       resistancePath: resistancePath.resistancePath,
@@ -240,9 +265,13 @@ function contextualDifferentiators(
 
   if (
     hasCurrentLumbarDiscomfort(request) &&
-    exercise.mechanics?.support.bodySupport === "chest_supported"
+    exercise.mechanics?.support.supportContacts.some(
+      (contact) => contact.bodyRegion === "chest" && contact.taskRole === "primary",
+    )
   ) {
-    differentiators.push("structured support: chest_supported body support in lumbar-spine context");
+    differentiators.push(
+      "structured support: primary chest contact in lumbar-spine context",
+    );
   }
 
   return differentiators.length > 0 ? differentiators : ["none"];

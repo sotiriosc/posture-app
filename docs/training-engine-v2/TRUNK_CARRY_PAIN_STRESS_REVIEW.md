@@ -270,7 +270,7 @@ No migration is performed. Current production behavior remains unchanged.
 | --- | --- | --- |
 | 22-scenario production ranking | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | true |
 | Comprehensive behavior | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | true |
-| Reference catalog | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | true |
+| Reference catalog | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | true |
 | Equipment legality | 50881bd4cd735954dae1d9a8574165d5a6bff40d8af990c8324a21ba8436b8e6 | true |
 | Expanded equipment fixtures | 98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117 | true |
 

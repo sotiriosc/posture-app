@@ -43,6 +43,46 @@ export interface ExerciseSuitability {
   readonly reason: string;
 }
 
+export type ExercisePhaseAnnotationReviewStatus =
+  | "accepted"
+  | "needs_review"
+  | "unknown";
+
+export type ExercisePhaseAnnotationSourceType =
+  | "legacy_reference_catalog_migration"
+  | "owner_decision"
+  | "human_exercise_science_review"
+  | "external_reference"
+  | "unknown";
+
+export interface ExercisePhaseAnnotationScope {
+  readonly trainingRoles?: readonly TrainingRole[];
+  readonly sessionSections?: readonly SessionSection[];
+}
+
+export interface ExercisePhaseAnnotationProvenance {
+  readonly sourceType: ExercisePhaseAnnotationSourceType;
+  readonly sourceRef: string;
+  readonly evidenceBasis: readonly string[];
+  readonly reviewerId?: string;
+  readonly reviewedAt?: string;
+  readonly legalUseCoverage?: {
+    readonly trainingRoles: readonly TrainingRole[];
+    readonly sessionSections: readonly SessionSection[];
+  };
+}
+
+export interface ExercisePhaseSuitabilityAnnotation {
+  readonly annotationId: string;
+  readonly exerciseId: string;
+  readonly phaseId: PhaseId;
+  readonly suitability: ExerciseSuitability["suitability"];
+  readonly scope: ExercisePhaseAnnotationScope;
+  readonly reason: string;
+  readonly reviewStatus: ExercisePhaseAnnotationReviewStatus;
+  readonly provenance: ExercisePhaseAnnotationProvenance;
+}
+
 export interface ExerciseLoadingProfile {
   readonly loadability: Loadability;
   readonly loadingPotential: DemandLevel;
@@ -264,25 +304,101 @@ export interface ExerciseDemandAnnotation {
   readonly notes: string;
 }
 
+export type ExerciseBasePosition =
+  | "standing"
+  | "half_kneeling"
+  | "tall_kneeling"
+  | "prone"
+  | "side_support"
+  | "supine"
+  | "seated"
+  | "quadruped"
+  | "hanging"
+  | "unknown";
+
+export type ExerciseStance =
+  | "bilateral"
+  | "split"
+  | "half_kneeling_lead_side"
+  | "staggered"
+  | "stacked_feet"
+  | "bent_knee_side_support"
+  | "alternating_march"
+  | "unknown";
+
+export type ExerciseOrientation =
+  | "upright"
+  | "prone"
+  | "supine"
+  | "lateral"
+  | "diagonal"
+  | "suspended"
+  | "unknown";
+
+export type ExerciseSupportContactBodyRegion =
+  | "forearm"
+  | "hand"
+  | "foot"
+  | "knee"
+  | "chest"
+  | "back"
+  | "pelvis"
+  | "seat"
+  | "unknown";
+
+export type ExerciseSupportContactSource =
+  | "floor"
+  | "wall"
+  | "bench"
+  | "machine"
+  | "box"
+  | "unknown";
+
+export type ExerciseSupportContactMode =
+  | "weight_bearing"
+  | "balance_assist"
+  | "positioning"
+  | "unknown";
+
+export type ExerciseSupportContactSide =
+  | "left"
+  | "right"
+  | "bilateral"
+  | "alternating"
+  | "side_neutral"
+  | "unknown";
+
+export interface ExerciseSupportContact {
+  readonly bodyRegion: ExerciseSupportContactBodyRegion;
+  readonly source: ExerciseSupportContactSource;
+  readonly mode: ExerciseSupportContactMode;
+  readonly side: ExerciseSupportContactSide;
+  readonly taskRole: "primary" | "secondary" | "unknown";
+}
+
+export type ExerciseSupportAmount =
+  | "none"
+  | "light_touch"
+  | "partial"
+  | "substantial"
+  | "prescription_modifiable"
+  | "unknown";
+
+export type ExerciseSupportRelationship =
+  | "same_side_load"
+  | "opposite_side_load"
+  | "bilateral"
+  | "side_neutral"
+  | "alternating"
+  | "unknown";
+
 export interface ExerciseSupportProfile {
-  readonly externalSupport:
-    | "none"
-    | "floor"
-    | "wall"
-    | "bench"
-    | "machine"
-    | "box"
-    | "cable_or_band_anchor"
-    | "unknown";
-  readonly bodySupport:
-    | "none"
-    | "supine"
-    | "prone"
-    | "chest_supported"
-    | "seated_supported"
-    | "hands_supported"
-    | "standing"
-    | "unknown";
+  readonly basePosition: ExerciseBasePosition;
+  readonly stance: ExerciseStance;
+  readonly orientation: ExerciseOrientation;
+  readonly supportContacts: readonly ExerciseSupportContact[];
+  readonly supportAmount: ExerciseSupportAmount;
+  readonly supportRelationship: ExerciseSupportRelationship;
   readonly reviewStatus: ExerciseMechanicsReviewStatus;
   readonly notes: string;
 }
@@ -394,6 +510,7 @@ export interface ExerciseDefinition {
   readonly prerequisites: readonly ExercisePrerequisite[];
   readonly sectionSuitability: Partial<Record<SessionSection, ExerciseSuitability>>;
   readonly phaseSuitability: Partial<Record<PhaseId, ExerciseSuitability>>;
+  readonly phaseSuitabilityAnnotations?: readonly ExercisePhaseSuitabilityAnnotation[];
   readonly loading: ExerciseLoadingProfile;
   readonly mechanics?: ExerciseMechanicsProfile;
   readonly stressAnnotations?: readonly ExerciseStressAnnotation[];

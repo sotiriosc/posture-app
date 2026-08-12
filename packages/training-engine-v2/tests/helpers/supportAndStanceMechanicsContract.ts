@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { REFERENCE_EXERCISES } from "../../src";
 
 export const SUPPORT_AND_STANCE_MECHANICS_CONTRACT_CLASSIFICATION =
-  "SUPPORT_AND_STANCE_SCHEMA_CHANGE_REQUIRED_BEFORE_SEVEN_EXERCISE_PRODUCTION_ROWS";
+  "SUPPORT_AND_STANCE_SCHEMA_IMPLEMENTED";
 
 export const SUPPORT_AND_STANCE_REVIEW_FIXED_AS_OF = "2026-08-12T00:00:00.000Z";
 
@@ -11,33 +11,33 @@ export const SUPPORT_AND_STANCE_CONSUMER_AUDIT = [
     path: "packages/training-engine-v2/src/domain/exercise.ts",
     consumer: "ExerciseSupportProfile schema",
     currentUse:
-      "Defines `externalSupport` and `bodySupport` as two coarse categorical fields plus review status and notes.",
+      "Defines normalized base position, stance, orientation, contact, amount, relationship, review status, and notes.",
     migrationNeed:
-      "Replace or wrap with compositional support/stance data; preserve review status and notes/provenance.",
+      "Completed: the coarse pair was removed and explicit unknown remains legal in every dimension.",
   },
   {
     path: "packages/training-engine-v2/src/transitionComparison.ts",
     consumer: "transition mechanics delta",
     currentUse:
-      "Compares `externalSupport` and `bodySupport` with literal deltas and renders them as transition evidence.",
+      "Compares every normalized support/stance dimension and canonicalized contact sets.",
     migrationNeed:
-      "Compare base position, stance, orientation, support contacts, support side, and support amount independently.",
+      "Completed: support amount is ordinal only when known; modifiable and unknown values remain non-directional.",
   },
   {
     path: "packages/training-engine-v2/src/candidate/rowSelectionKnowledge.ts",
     consumer: "horizontal row support trace and lumbar differentiator",
     currentUse:
-      "Emits support trace fields and gives chest-supported rows a lumbar-context differentiator.",
+      "Emits the compositional profile and detects primary chest contact structurally.",
     migrationNeed:
-      "Keep chest support observable while adding truthful support contact/mode and task-changing support amount.",
+      "Completed: chest support remains observable without exercise-name inference.",
   },
   {
     path: "packages/training-engine-v2/tests/helpers/candidateIntelligenceReviewReport.ts",
     consumer: "review/report rendering",
     currentUse:
-      "Formats support fields for candidate intelligence review tables.",
+      "Formats all normalized support dimensions and explicit contact tuples.",
     migrationNeed:
-      "Render the new compositional support profile without collapsing unknown into false category labels.",
+      "Completed: unknown values render as unknown and are never replaced with inferred labels.",
   },
 ] as const;
 
@@ -118,7 +118,7 @@ export const SUPPORT_METADATA_LIE_STATUS =
 
 export interface SupportInventoryRow {
   readonly exerciseId: string;
-  readonly supportPair: string;
+  readonly supportProfile: string;
   readonly reviewStatus: string;
   readonly notes: string;
 }
@@ -132,8 +132,9 @@ export interface SupportAndStanceMechanicsContractData {
   readonly currentSupportInventory: readonly SupportInventoryRow[];
   readonly lieStatus: typeof SUPPORT_METADATA_LIE_STATUS;
   readonly currentProductionLieFindings: readonly string[];
-  readonly schemaChangeStatus: "RECOMMENDED_NOT_IMPLEMENTED";
-  readonly productionBehaviorChanged: false;
+  readonly schemaChangeStatus: "IMPLEMENTED";
+  readonly selectionBehaviorChanged: false;
+  readonly structuralTraceContractChanged: true;
   readonly fingerprint: string;
 }
 
@@ -146,7 +147,12 @@ export function buildSupportInventory(): readonly SupportInventoryRow[] {
     const support = exercise.mechanics?.support;
     return {
       exerciseId: exercise.id,
-      supportPair: `${support?.externalSupport ?? "unknown"}/${support?.bodySupport ?? "unknown"}`,
+      supportProfile: support
+        ? `${support.basePosition}/${support.stance}/${support.orientation}/${support.supportAmount}/${support.supportRelationship}; contacts=${support.supportContacts
+            .map((contact) => `${contact.bodyRegion}:${contact.source}:${contact.mode}:${contact.side}:${contact.taskRole}`)
+            .sort()
+            .join(",") || "none"}`
+        : "unknown/unknown/unknown/unknown/unknown; contacts=none",
       reviewStatus: support?.reviewStatus ?? "needs_review",
       notes: support?.notes ?? "Support mechanics are not modeled.",
     };
@@ -172,8 +178,9 @@ export function buildSupportAndStanceMechanicsContractData(): SupportAndStanceMe
     currentSupportInventory,
     lieStatus: SUPPORT_METADATA_LIE_STATUS,
     currentProductionLieFindings: [],
-    schemaChangeStatus: "RECOMMENDED_NOT_IMPLEMENTED",
-    productionBehaviorChanged: false,
+    schemaChangeStatus: "IMPLEMENTED",
+    selectionBehaviorChanged: false,
+    structuralTraceContractChanged: true,
     fingerprint: hash(payload),
   };
 }
@@ -193,8 +200,8 @@ function table(headers: readonly string[], rows: readonly (readonly string[])[])
 export function renderSupportAndStanceMechanicsContractReport(
   data = buildSupportAndStanceMechanicsContractData(),
 ): string {
-  const supportPairs = Array.from(
-    new Set(data.currentSupportInventory.map((row) => row.supportPair)),
+  const supportProfiles = Array.from(
+    new Set(data.currentSupportInventory.map((row) => row.supportProfile)),
   ).sort();
 
   return [
@@ -204,9 +211,9 @@ export function renderSupportAndStanceMechanicsContractReport(
     "",
     `Classification: **${data.classification}**.`,
     "",
-    "This focused review is a prerequisite for the seven-exercise trunk/carry production tranche. It does not change production schema, catalog rows, scoring, ranking, phase behavior, eligibility, transition behavior, prescription, Session Composer, Week Composer, or ledgers.",
+    "The approved compositional contract is implemented in production schema, catalog mechanics, validation, transition traces, row-selection knowledge, and review reports. Candidate scoring, ranking, eligibility, phase coefficients, prescription, Session Composer, Week Composer, and ledgers are unchanged.",
     "",
-    "## Current Consumer Audit",
+    "## Migrated Consumer Audit",
     "",
     table(
       ["Path", "Consumer", "Current use", "Migration need"],
@@ -218,9 +225,9 @@ export function renderSupportAndStanceMechanicsContractReport(
       ]),
     ),
     "",
-    "## Schema Recommendation",
+    "## Implemented Schema",
     "",
-    "Recommended shape: a smallest compositional support/stance profile built from base position, stance, orientation, support contacts, support amount, and support relationship. Do not create one enum per exercise, and do not add a field unless a real decision or trace consumes it.",
+    "Implemented shape: the smallest compositional support/stance profile built from base position, stance, orientation, support contacts, support amount, and support relationship. It preserves unknown and avoids one enum per exercise.",
     "",
     table(
       ["Field", "Recommendation", "Decision / trace need"],
@@ -231,7 +238,7 @@ export function renderSupportAndStanceMechanicsContractReport(
       ]),
     ),
     "",
-    "## Seven-Exercise Blocking Gaps",
+    "## Resolved Seven-Exercise Schema Requirements",
     "",
     table(
       ["Exercise", "Gap", "Required contract"],
@@ -248,15 +255,17 @@ export function renderSupportAndStanceMechanicsContractReport(
     "",
     `Current production lie findings: ${list(data.currentProductionLieFindings)}.`,
     "",
-    "The current production catalog uses coarse support labels and has some setup-dependent notes, but this focused pass did not find an existing production row that encodes half-kneeling as standing, forearm support as hands-supported, or a known task-changing support amount as a hard support category. The defect is representational insufficiency for the next rows, not a discovered production-data falsehood.",
+    "The pre-migration production catalog did not encode half-kneeling as standing, forearm support as hands-supported, or known task-changing support amounts as false hard categories. Migration separates resistance anchors from support contacts and retains unknown where the old evidence was insufficient.",
     "",
-    `Observed support pairs: ${supportPairs.join(", ")}.`,
+    `Observed normalized support profiles: ${supportProfiles.join(", ")}.`,
     "",
     "## Production Boundary",
     "",
     `Schema change status: \`${data.schemaChangeStatus}\`.`,
     "",
-    `Production behavior changed: \`${String(data.productionBehaviorChanged)}\`.`,
+    `Candidate selection behavior changed: \`${String(data.selectionBehaviorChanged)}\`.`,
+    "",
+    `Structural trace contract changed: \`${String(data.structuralTraceContractChanged)}\`.`,
     "",
     `Contract fingerprint: \`${data.fingerprint}\`.`,
     "",

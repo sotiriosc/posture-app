@@ -79,7 +79,7 @@ Every pure requirement result now exposes the requirement ID, requested capabili
 | Expanded equipment fixture serialization | 98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117 | 98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117 | true |
 | 22-scenario ranking | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | true |
 | Comprehensive behavior including hard-rejection codes | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | true |
-| Reference catalog | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | true |
+| Reference catalog | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | true |
 | Current requirements using a new capability | 0 | 0 | true |
 | Current exercises using carry_load | 0 | 0 | true |
 

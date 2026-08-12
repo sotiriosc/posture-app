@@ -2,22 +2,22 @@
 
 Fixed review time: `2026-08-12T00:00:00.000Z`.
 
-Classification: **SUPPORT_AND_STANCE_SCHEMA_CHANGE_REQUIRED_BEFORE_SEVEN_EXERCISE_PRODUCTION_ROWS**.
+Classification: **SUPPORT_AND_STANCE_SCHEMA_IMPLEMENTED**.
 
-This focused review is a prerequisite for the seven-exercise trunk/carry production tranche. It does not change production schema, catalog rows, scoring, ranking, phase behavior, eligibility, transition behavior, prescription, Session Composer, Week Composer, or ledgers.
+The approved compositional contract is implemented in production schema, catalog mechanics, validation, transition traces, row-selection knowledge, and review reports. Candidate scoring, ranking, eligibility, phase coefficients, prescription, Session Composer, Week Composer, and ledgers are unchanged.
 
-## Current Consumer Audit
+## Migrated Consumer Audit
 
 | Path | Consumer | Current use | Migration need |
 | --- | --- | --- | --- |
-| packages/training-engine-v2/src/domain/exercise.ts | ExerciseSupportProfile schema | Defines `externalSupport` and `bodySupport` as two coarse categorical fields plus review status and notes. | Replace or wrap with compositional support/stance data; preserve review status and notes/provenance. |
-| packages/training-engine-v2/src/transitionComparison.ts | transition mechanics delta | Compares `externalSupport` and `bodySupport` with literal deltas and renders them as transition evidence. | Compare base position, stance, orientation, support contacts, support side, and support amount independently. |
-| packages/training-engine-v2/src/candidate/rowSelectionKnowledge.ts | horizontal row support trace and lumbar differentiator | Emits support trace fields and gives chest-supported rows a lumbar-context differentiator. | Keep chest support observable while adding truthful support contact/mode and task-changing support amount. |
-| packages/training-engine-v2/tests/helpers/candidateIntelligenceReviewReport.ts | review/report rendering | Formats support fields for candidate intelligence review tables. | Render the new compositional support profile without collapsing unknown into false category labels. |
+| packages/training-engine-v2/src/domain/exercise.ts | ExerciseSupportProfile schema | Defines normalized base position, stance, orientation, contact, amount, relationship, review status, and notes. | Completed: the coarse pair was removed and explicit unknown remains legal in every dimension. |
+| packages/training-engine-v2/src/transitionComparison.ts | transition mechanics delta | Compares every normalized support/stance dimension and canonicalized contact sets. | Completed: support amount is ordinal only when known; modifiable and unknown values remain non-directional. |
+| packages/training-engine-v2/src/candidate/rowSelectionKnowledge.ts | horizontal row support trace and lumbar differentiator | Emits the compositional profile and detects primary chest contact structurally. | Completed: chest support remains observable without exercise-name inference. |
+| packages/training-engine-v2/tests/helpers/candidateIntelligenceReviewReport.ts | review/report rendering | Formats all normalized support dimensions and explicit contact tuples. | Completed: unknown values render as unknown and are never replaced with inferred labels. |
 
-## Schema Recommendation
+## Implemented Schema
 
-Recommended shape: a smallest compositional support/stance profile built from base position, stance, orientation, support contacts, support amount, and support relationship. Do not create one enum per exercise, and do not add a field unless a real decision or trace consumes it.
+Implemented shape: the smallest compositional support/stance profile built from base position, stance, orientation, support contacts, support amount, and support relationship. It preserves unknown and avoids one enum per exercise.
 
 | Field | Recommendation | Decision / trace need |
 | --- | --- | --- |
@@ -28,7 +28,7 @@ Recommended shape: a smallest compositional support/stance profile built from ba
 | supportAmount | Represent support magnitude only when task-changing: none, light_touch, partial, substantial, prescription_modifiable, unknown. | Keeps wall-supported suitcase march anti-lateral exposure contextual until support force/control is reviewed. |
 | supportRelationship | Represent side relationship when it changes mechanics: same_side_load, opposite_side_load, bilateral, side_neutral, alternating, unknown. | Captures suitcase-march load/support relationship without creating a new movement role. |
 
-## Seven-Exercise Blocking Gaps
+## Resolved Seven-Exercise Schema Requirements
 
 | Exercise | Gap | Required contract |
 | --- | --- | --- |
@@ -43,14 +43,16 @@ Lie status: `NO_CURRENT_PRODUCTION_SUPPORT_STANCE_LIE_DISCOVERED`.
 
 Current production lie findings: none.
 
-The current production catalog uses coarse support labels and has some setup-dependent notes, but this focused pass did not find an existing production row that encodes half-kneeling as standing, forearm support as hands-supported, or a known task-changing support amount as a hard support category. The defect is representational insufficiency for the next rows, not a discovered production-data falsehood.
+The pre-migration production catalog did not encode half-kneeling as standing, forearm support as hands-supported, or known task-changing support amounts as false hard categories. Migration separates resistance anchors from support contacts and retains unknown where the old evidence was insufficient.
 
-Observed support pairs: bench/chest_supported, bench/hands_supported, bench/supine, box/standing, cable_or_band_anchor/seated_supported, cable_or_band_anchor/standing, floor/hands_supported, floor/supine, machine/seated_supported, none/standing, unknown/unknown, wall/standing.
+Observed normalized support profiles: prone/bilateral/prone/substantial/bilateral; contacts=chest:bench:weight_bearing:side_neutral:primary,foot:floor:weight_bearing:bilateral:secondary, prone/bilateral/prone/substantial/bilateral; contacts=foot:floor:weight_bearing:bilateral:primary,hand:floor:weight_bearing:bilateral:primary, seated/bilateral/diagonal/substantial/bilateral; contacts=back:machine:positioning:side_neutral:secondary,seat:machine:weight_bearing:side_neutral:primary, seated/bilateral/upright/substantial/bilateral; contacts=back:machine:positioning:side_neutral:secondary,seat:machine:weight_bearing:side_neutral:primary, seated/bilateral/upright/substantial/bilateral; contacts=foot:floor:weight_bearing:bilateral:secondary,seat:bench:weight_bearing:side_neutral:primary, seated/bilateral/upright/substantial/bilateral; contacts=seat:machine:weight_bearing:side_neutral:primary, standing/bilateral/upright/none/bilateral; contacts=foot:floor:weight_bearing:bilateral:primary, standing/bilateral/upright/partial/bilateral; contacts=foot:floor:weight_bearing:bilateral:primary,hand:wall:positioning:bilateral:secondary, standing/bilateral/upright/prescription_modifiable/bilateral; contacts=foot:floor:weight_bearing:bilateral:primary,pelvis:box:positioning:side_neutral:secondary, standing/split/upright/prescription_modifiable/side_neutral; contacts=foot:box:weight_bearing:unknown:primary,foot:floor:weight_bearing:unknown:secondary, standing/split/upright/prescription_modifiable/side_neutral; contacts=foot:floor:weight_bearing:bilateral:primary, standing/unknown/diagonal/partial/unknown; contacts=foot:floor:weight_bearing:bilateral:primary,hand:bench:weight_bearing:unknown:secondary, supine/bilateral/supine/substantial/bilateral; contacts=back:bench:weight_bearing:side_neutral:primary,foot:floor:weight_bearing:bilateral:secondary, supine/unknown/supine/substantial/side_neutral; contacts=back:floor:weight_bearing:side_neutral:primary, unknown/unknown/unknown/unknown/unknown; contacts=none.
 
 ## Production Boundary
 
-Schema change status: `RECOMMENDED_NOT_IMPLEMENTED`.
+Schema change status: `IMPLEMENTED`.
 
-Production behavior changed: `false`.
+Candidate selection behavior changed: `false`.
 
-Contract fingerprint: `84e7f6305f0cbfb531f96760272d3fa759619f2455520a3f1d08213103ed8d18`.
+Structural trace contract changed: `true`.
+
+Contract fingerprint: `76b7aa7cc14c606e597bd4ac7f2759f88585ed9e49211bcf6a68e6b24ace0181`.

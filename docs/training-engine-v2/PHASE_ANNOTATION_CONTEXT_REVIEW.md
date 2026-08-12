@@ -2,7 +2,7 @@
 
 `ENGINE_V2_BLUEPRINT.md` remains authoritative. The accepted Phase Suitability Calibration Laboratory established bounded phase preference and exposed duplicated mechanical bonuses. This second deterministic laboratory examines whether phase evidence applies to the candidate's actual role and section and whether missing evidence remains distinct from reviewed poor fit.
 
-This work is non-production audit and sensitivity evidence. It does not change `packages/training-engine-v2/src/**`, phase scores, weights, exercise metadata, rankings, eligibility, pain, assessment, continuity, prescription, Session Composer or Weekly Composer.
+The contextual annotation schema, deterministic resolver, provenance validation, conflict semantics, and DecisionTrace support are implemented in production code. Phase scores, coefficients, mechanical bonuses, rankings, eligibility, pain, assessment, continuity, prescription, Session Composer, and Weekly Composer remain unchanged while calibration and owner policy are pending.
 
 Fixed evaluation time: `2026-08-10T00:00:00.000Z`.
 
@@ -10,9 +10,9 @@ Accepted production ranking fingerprint: `d6a6452537e1436c3ecbbc035d9ea7a3126e77
 
 Context laboratory fingerprint: `b114b80cba21918c9292fc025686fec3fe82f79cc18477fb9a6a25f893060550`.
 
-Classification: **PHASE_CONTEXT_CONTRACT_READY_FOR_OWNER_DECISION**.
+Classification: **PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING**.
 
-The contract is ready for project-owner decision. The current catalog is not being declared accepted contextual evidence, and no coefficient or production policy is selected here.
+The schema and resolver contract are implemented. The current catalog is not being declared accepted contextual evidence, and no coefficient or final production scoring policy is selected here.
 
 ## Accepted Owner Direction
 
@@ -31,7 +31,7 @@ The contract is ready for project-owner decision. The current catalog is not bei
 
 Category values and phase weight remain unapproved.
 
-## Proposed Contextual Annotation Contract
+## Implemented Contextual Annotation Contract
 
 ```ts
 interface ExercisePhaseSuitabilityAnnotation {
@@ -43,18 +43,19 @@ interface ExercisePhaseSuitabilityAnnotation {
   reason: string;
   reviewStatus: 'accepted' | 'needs_review' | 'unknown';
   provenance: {
-    sourceType: string;
+    sourceType: 'owner_decision' | 'human_exercise_science_review' | 'external_reference' | 'legacy_reference_catalog_migration' | 'unknown';
     sourceRef: string;
     evidenceBasis: string[];
     reviewerId?: string;
     reviewedAt?: string;
+    legalUseCoverage?: { trainingRoles: TrainingRole[]; sessionSections: SessionSection[] };
   };
 }
 ```
 
 More than one annotation may exist for an exercise/phase when different legal uses require different judgments. A general annotation is valid only when its evidence covers every legal training role and section. Reason prose explains selected structured evidence but is never parsed for scoring. Goal-specific annotations are excluded because they would duplicate `goal_fit`.
 
-## Deterministic Context Resolver
+## Implemented Deterministic Context Resolver
 
 | Specificity | Required Match | Rank |
 | --- | --- | --- |
@@ -908,9 +909,9 @@ A minimal enduring-principle amendment is appropriate: candidate phase evidence 
 
 ## Final Classification And Remaining P1
 
-Phase context review: **PHASE_CONTEXT_CONTRACT_READY_FOR_OWNER_DECISION**.
+Phase context review: **PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING**.
 
-The first phase laboratory is accepted. Final owner calibration remains deferred until the contextual contract is approved and the annotation catalog is reviewed with structured provenance.
+The schema and resolver are implemented. Final owner calibration remains deferred until the annotation catalog is reviewed with structured provenance and scoring consequences are approved.
 
 Remaining Candidate Intelligence P1:
 

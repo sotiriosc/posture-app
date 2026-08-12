@@ -7,7 +7,7 @@ Production implementation readiness: `PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKED`
 Production blockers:
 
 - PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST
-- PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_SUPPORT_AND_STANCE_CONTRACT_FIRST
+- PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_LOW_BACK_PAIN_TRAINING_INTELLIGENCE_AUDIT_FIRST
 - Production implementation must add isolated behavior-fingerprint tests for the rows and any structured/legacy stress compatibility.
 
 ## Owner Decisions Recorded
@@ -35,13 +35,13 @@ Doctrine: task-appropriate alignment -> repeatable form -> appropriate dose -> o
 
 | ID | Identity | Family | Movement roles | Training roles | Primary muscles | Key secondary | Equipment | Prerequisites | Principal mechanics | Accepted trunk mechanics | Unresolved trunk mechanics | Intrinsic stress | Potential/modifiable stress | Progression axes | Prescription modes | Phase status | Production blocker | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| forearm-plank | Ordinary straight-body forearm plank, stationary, bodyweight, full-lever unless prescription states a reviewed lever variant. | core_control | anti_extension_core | activation, hypertrophy_accessory | trunk | serratus, front_delts | bodyweight, floor_space | basic forearm-supported upper-limb tolerance | bodyweight | antiExtensionContribution:high, loadedBracingContribution:none | breathingPressureCoordination, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | upper_limb_support_loading | long_lever_core:variant_dependent | duration, lever, support_reduction, effort | timed_hold | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Support taxonomy lacks forearm-supported body support. | READY_FOR_OWNER_APPROVAL |
-| forearm-side-plank | Bodyweight side-oriented forearm plank with pelvis facing sideways and support through one forearm plus feet or accepted bent-knee variant. | core_control | anti_lateral_flexion_core | activation, hypertrophy_accessory | trunk | serratus, front_delts, hip_abductors | bodyweight, floor_space | side-bearing forearm support tolerance | bodyweight | antiLateralFlexionContribution:high, loadedBracingContribution:none | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | upper_limb_support_loading, lateral_trunk_loading | long_lever_core:variant_dependent | duration, lever, support_reduction, load, effort | timed_hold | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Support taxonomy lacks lateral forearm/foot support. | READY_FOR_OWNER_APPROVAL |
+| forearm-plank | Ordinary straight-body forearm plank, stationary, bodyweight, full-lever unless prescription states a reviewed lever variant. | core_control | anti_extension_core | activation, hypertrophy_accessory | trunk | serratus, front_delts | bodyweight, floor_space | basic forearm-supported upper-limb tolerance | bodyweight | antiExtensionContribution:high, loadedBracingContribution:none | breathingPressureCoordination, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | upper_limb_support_loading | long_lever_core:variant_dependent | duration, lever, support_reduction, effort | timed_hold | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | none | READY_FOR_OWNER_APPROVAL |
+| forearm-side-plank | Bodyweight side-oriented forearm plank with pelvis facing sideways and support through one forearm plus feet or accepted bent-knee variant. | core_control | anti_lateral_flexion_core | activation, hypertrophy_accessory | trunk | serratus, front_delts, hip_abductors | bodyweight, floor_space | side-bearing forearm support tolerance | bodyweight | antiLateralFlexionContribution:high, loadedBracingContribution:none | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | upper_limb_support_loading, lateral_trunk_loading | long_lever_core:variant_dependent | duration, lever, support_reduction, load, effort | timed_hold | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | none | READY_FOR_OWNER_APPROVAL |
 | machine-abdominal-crunch | Selectorized abdominal-crunch machine where pads/seat guide intentional controlled trunk flexion. | core_control | trunk_flexion | hypertrophy_accessory, secondary_strength | trunk | none | selectorized_machine | ability to set up and exit the specific machine safely | machine_guided | controlledFlexionContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledRotationContribution, loadedBracingContribution, gaitLoadTransferContribution | loaded_spinal_flexion | none | load, reps, sets, range, tempo | repetition_sets | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Equipment requirement can name abdominal_crunch machine via machineIds, but capability key itself is selectorized_machine. | READY_FOR_OWNER_APPROVAL |
-| half-kneeling-high-to-low-cable-chop | Half-kneeling stance, high cable anchor, high-to-low resisted chop with intentional controlled trunk rotation. | core_control | trunk_rotation | activation, hypertrophy_accessory, secondary_strength | trunk | glutes | cable_stack, cable_anchor_high, floor_space | ability to understand cable setup and half-kneeling side setup | cable_anchored | controlledRotationContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, loadedBracingContribution, gaitLoadTransferContribution | loaded_trunk_rotation | none | load, reps, sets, range, tempo | repetition_sets | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | bodySupport lacks half-kneeling. | READY_FOR_OWNER_APPROVAL |
+| half-kneeling-high-to-low-cable-chop | Half-kneeling stance, high cable anchor, high-to-low resisted chop with intentional controlled trunk rotation. | core_control | trunk_rotation | activation, hypertrophy_accessory, secondary_strength | trunk | glutes | cable_stack, cable_anchor_high, floor_space | ability to understand cable setup and half-kneeling side setup | cable_anchored | controlledRotationContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, loadedBracingContribution, gaitLoadTransferContribution | loaded_trunk_rotation | none | load, reps, sets, range, tempo | repetition_sets | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | none | READY_FOR_OWNER_APPROVAL |
 | farmer-carry | Upright loaded walking with one external implement in each hand and symmetrical load unless prescription states otherwise. | carry_load | carry, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength | trunk, upper_back | glutes, quads, hamstrings | dumbbell_pair, loaded_gait_space, stable_loaded_standing_space | ability to walk while holding two implements, ability to grip two implements | free_implement | loadedBracingContribution:high, gaitLoadTransferContribution:high | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution | loaded_gait, grip_loading | grip_intensive:dose_created, heavy_axial_loading:dose_created | load, distance, trips, duration, effort | distance_carry, timed_carry | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | No forearm/grip MuscleGroup; loaded gait trip/set-down standards remain prescription-detail only. | READY_FOR_OWNER_APPROVAL |
 | suitcase-carry | Upright loaded walking with one external implement held on one side. | carry_load | carry, anti_lateral_flexion_core, loaded_bracing | capacity, hypertrophy_accessory, secondary_strength | trunk | upper_back, glutes, quads, hamstrings | dumbbells, loaded_gait_space, stable_loaded_standing_space | ability to walk while holding one implement, side-specific load tolerance | free_implement | antiRotationContribution:moderate, antiLateralFlexionContribution:high, loadedBracingContribution:high, gaitLoadTransferContribution:high | breathingPressureCoordination, antiExtensionContribution, controlledFlexionContribution, controlledRotationContribution | loaded_gait, grip_loading, lateral_trunk_loading | grip_intensive:dose_created, heavy_axial_loading:dose_created | load, distance, trips, duration, effort | distance_carry, timed_carry | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | No forearm/grip MuscleGroup. | READY_FOR_OWNER_APPROVAL |
-| wall-supported-suitcase-march | One dumbbell in one hand, opposite hand supported on wall, stationary alternating march, both load sides trained across sets, no walking distance. | carry_load | loaded_bracing | activation, capacity | trunk | glutes, quads | dumbbells, wall, stable_loaded_standing_space | ability to march while supported, ability to grip one dumbbell | free_implement | loadedBracingContribution:moderate | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | loaded_march, grip_loading | lateral_trunk_loading:prescription_modifiable | load, steps, duration, support_reduction, effort | step_march | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Support-force magnitude and support-side relationship have no current typed prescription field; anti-lateral exposure remains contextual/needs_review. | READY_FOR_OWNER_APPROVAL |
+| wall-supported-suitcase-march | One dumbbell in one hand, opposite hand supported on wall, stationary alternating march, both load sides trained across sets, no walking distance. | carry_load | loaded_bracing | activation, capacity | trunk | glutes, quads | dumbbells, wall, stable_loaded_standing_space | ability to march while supported, ability to grip one dumbbell | free_implement | loadedBracingContribution:moderate | breathingPressureCoordination, antiExtensionContribution, antiRotationContribution, antiLateralFlexionContribution, controlledFlexionContribution, controlledRotationContribution, gaitLoadTransferContribution | loaded_march, grip_loading | lateral_trunk_loading:prescription_modifiable | load, steps, duration, support_reduction, effort | step_march | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST | Anti-lateral exposure remains contextual/needs_review until support-force effects receive human exercise-science review. | READY_FOR_OWNER_APPROVAL |
 
 ## Exact Identity Definitions
 
@@ -191,14 +191,14 @@ Verdict: `READY_FOR_OWNER_APPROVAL`
 | Prerequisites | basic forearm-supported upper-limb tolerance |
 | Prerequisite notes | Minimum trunk-control competency should usually be handled by prescription/support rather than a hard gate. |
 | Loading profile | Bodyweight, limited loadability, moderate local fatigue, low systemic fatigue, no external axial loading. |
-| Support mechanics | floor / prone: Current bodySupport enum cannot say forearm-supported exactly; hands_supported would be misleading, so production should document this support taxonomy gap. |
+| Support mechanics | base=prone; stance=bilateral; orientation=prone; amount=prescription_modifiable; relationship=bilateral; contacts=forearm:floor:weight_bearing:bilateral:primary, foot:floor:weight_bearing:bilateral:primary. Forearm and foot contacts define the standard task; knee support is a prescription-controlled same-identity variant. |
 | Resistance/path | bodyweight; trajectory=low; line=low; laterality=bilateral_linked; fit=low. Bodyweight support path; lever changes are prescription/variant facts. |
 | Scapular mechanics | Loaded scapular support is relevant but this is not a scapular-control selection row. |
 | Prescription modes | timed_hold |
 | Progression axes | duration, lever, support_reduction, effort |
 | Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
-| Unresolved unknowns | Forearm support cannot be represented exactly by bodySupport enum. |
-| Contract gaps | Support taxonomy lacks forearm-supported body support. |
+| Unresolved unknowns | none |
+| Contract gaps | none |
 
 Generic demands:
 
@@ -305,14 +305,14 @@ Persona review:
 | Prerequisites | side-bearing forearm support tolerance |
 | Prerequisite notes | Side support tolerance is hard-capability relevant; lever/support difficulty should be prescription-controlled. |
 | Loading profile | Bodyweight lateral support, limited loadability unless future external loading is retained. |
-| Support mechanics | floor / unknown: Current enum cannot cleanly represent lateral forearm/foot side support. |
+| Support mechanics | base=side_support; stance=stacked_feet; orientation=lateral; amount=prescription_modifiable; relationship=side_neutral; contacts=forearm:floor:weight_bearing:unknown:primary, foot:floor:weight_bearing:unknown:primary. Lateral forearm/foot support defines the standard task; bent-knee support remains a same-identity prescription variant. |
 | Resistance/path | bodyweight; trajectory=low; line=low; laterality=unilateral; fit=low. Side prescription and lever are realization facts. |
 | Scapular mechanics | Support scapular control is meaningful context, not a scapular-preparation row. |
 | Prescription modes | timed_hold |
 | Progression axes | duration, lever, support_reduction, load, effort |
 | Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
 | Unresolved unknowns | Whether foot stacking/staggered stance should be prescribed or separate variants., Whether external loading remains same identity. |
-| Contract gaps | Support taxonomy lacks lateral forearm/foot support. |
+| Contract gaps | none |
 
 Generic demands:
 
@@ -420,7 +420,7 @@ Persona review:
 | Prerequisites | ability to set up and exit the specific machine safely |
 | Prerequisite notes | Machine quality is not assumed; geometry may make a row unsuitable for some users. |
 | Loading profile | External guided load, high loadability, local trunk fatigue, low gait/systemic demand. |
-| Support mechanics | machine / seated_supported: Machine geometry and pads materially define the identity. |
+| Support mechanics | base=seated; stance=bilateral; orientation=upright; amount=substantial; relationship=bilateral; contacts=seat:machine:weight_bearing:side_neutral:primary, back:machine:positioning:side_neutral:secondary. Machine geometry and pads materially define the identity. |
 | Resistance/path | machine_guided; trajectory=low; line=low; laterality=bilateral_linked; fit=machine_geometry. Machine design may materially change path and suitability. |
 | Scapular mechanics | Not relevant beyond setup contact. |
 | Prescription modes | repetition_sets |
@@ -532,14 +532,14 @@ Persona review:
 | Prerequisites | ability to understand cable setup and half-kneeling side setup |
 | Prerequisite notes | Cable setup skill is a setup prerequisite; load/range tolerance belongs to prescription. |
 | Loading profile | Cable-guided external load, moderate loadability, controlled rotational range. |
-| Support mechanics | cable_or_band_anchor / unknown: Current bodySupport enum cannot represent half-kneeling; production must wait for support/stance representation rather than encode this as standing. |
+| Support mechanics | base=half_kneeling; stance=half_kneeling_lead_side; orientation=upright; amount=none; relationship=side_neutral; contacts=knee:floor:weight_bearing:unknown:primary, foot:floor:weight_bearing:unknown:primary. Half-kneeling contacts are explicit; the cable anchor is resistance-path metadata, not body support. |
 | Resistance/path | cable_anchored; trajectory=moderate; line=high; laterality=unilateral; fit=setup_geometry. High-anchor setup and user position determine path. |
 | Scapular mechanics | Shoulder/scapular participation is contextual, not a scapular-control row. |
 | Prescription modes | repetition_sets |
 | Progression axes | load, reps, sets, range, tempo |
 | Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
 | Unresolved unknowns | Allowed pelvis rotation amount needs owner confirmation., Half-kneeling support is not represented exactly. |
-| Contract gaps | bodySupport lacks half-kneeling. |
+| Contract gaps | none |
 
 Generic demands:
 
@@ -645,7 +645,7 @@ Persona review:
 | Prerequisites | ability to walk while holding two implements, ability to grip two implements |
 | Prerequisite notes | Not inherently heavy; grip/load limits should usually be prescription facts. |
 | Loading profile | External bilateral implement load, loadable, systemic and local grip/trunk contribution, not inherently maximal. |
-| Support mechanics | none / standing: Unsupported loaded gait; loaded_gait_space implies standing-space truth but requirement should include stable_loaded_standing_space explicitly for review clarity. |
+| Support mechanics | base=standing; stance=unknown; orientation=upright; amount=none; relationship=bilateral; contacts=foot:floor:weight_bearing:alternating:primary. Unsupported loaded gait; loaded_gait_space implies standing-space truth but requirement should include stable_loaded_standing_space explicitly for review clarity. |
 | Resistance/path | free_implement; trajectory=high; line=low; laterality=bilateral_independent; fit=low. Free implements in each hand; load symmetry is identity truth. |
 | Scapular mechanics | Upper-quarter support of implements is meaningful but not a scapular-control selection row. |
 | Prescription modes | distance_carry, timed_carry |
@@ -761,7 +761,7 @@ Persona review:
 | Prerequisites | ability to walk while holding one implement, side-specific load tolerance |
 | Prerequisite notes | Side selection and load are prescription facts; do not encode left/right in ID. |
 | Loading profile | Unilateral external implement, loaded gait, high side relevance, not inherently heavy. |
-| Support mechanics | none / standing: Unsupported loaded gait with unilateral load side. |
+| Support mechanics | base=standing; stance=unknown; orientation=upright; amount=none; relationship=unknown; contacts=foot:floor:weight_bearing:alternating:primary. Unsupported loaded gait with unilateral load side. |
 | Resistance/path | free_implement; trajectory=high; line=low; laterality=unilateral; fit=low. One implement side is prescription-realized. |
 | Scapular mechanics | Loaded upper-quarter position is context; not a scapular row. |
 | Prescription modes | distance_carry, timed_carry |
@@ -879,14 +879,14 @@ Persona review:
 | Prerequisites | ability to march while supported, ability to grip one dumbbell |
 | Prerequisite notes | Support solves much of the balance problem; do not hard-gate ordinary coaching needs. |
 | Loading profile | Stationary unilateral dumbbell march, support-modified, no distance, not inherently heavy. |
-| Support mechanics | wall / standing: Wall support force and side relationship must be prescription-realized. |
+| Support mechanics | base=standing; stance=alternating_march; orientation=upright; amount=prescription_modifiable; relationship=opposite_side_load; contacts=foot:floor:weight_bearing:alternating:primary, hand:wall:balance_assist:unknown:secondary. Wall support force and side relationship must be prescription-realized. |
 | Resistance/path | free_implement; trajectory=moderate; line=low; laterality=alternating; fit=setup_geometry. Free implement plus wall support; side relationship is essential. |
 | Scapular mechanics | Wall support is support mechanics, not scapular preparation. |
 | Prescription modes | step_march |
 | Progression axes | load, steps, duration, support_reduction, effort |
 | Phase blocker | PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST |
 | Unresolved unknowns | Lateral trunk and gait/load-transfer mechanics are support-force dependent. |
-| Contract gaps | Support-force magnitude and support-side relationship have no current typed prescription field; anti-lateral exposure remains contextual/needs_review. |
+| Contract gaps | Anti-lateral exposure remains contextual/needs_review until support-force effects receive human exercise-science review. |
 
 Generic demands:
 
@@ -1031,7 +1031,7 @@ No unresolved owner-decision questions remain inside this seven-exercise curatio
 | --- | --- | --- |
 | Production ranking fingerprint | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | true |
 | Comprehensive behavior fingerprint | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | true |
-| Reference catalog fingerprint | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | true |
+| Reference catalog fingerprint | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | true |
 | Equipment legality fingerprint | 50881bd4cd735954dae1d9a8574165d5a6bff40d8af990c8324a21ba8436b8e6 | true |
 | Expanded equipment fixture fingerprint | 98f672133e3498b84f47e81751f1fbf443faae556029835fec5b30b90d884117 | true |
 

@@ -134,10 +134,12 @@ describe("seven exercise trunk/carry curation review", () => {
       .not.toContain("loaded_gait");
     expect(exercise("wall-supported-suitcase-march").progressionAxes)
       .not.toContain("distance");
-    expect(exercise("half-kneeling-high-to-low-cable-chop").supportMechanics.bodySupport)
-      .toBe("unknown");
+    expect(exercise("half-kneeling-high-to-low-cable-chop").supportMechanics.basePosition)
+      .toBe("half_kneeling");
+    expect(exercise("half-kneeling-high-to-low-cable-chop").supportMechanics.stance)
+      .toBe("half_kneeling_lead_side");
     expect(exercise("half-kneeling-high-to-low-cable-chop").supportMechanics.notes)
-      .toContain("rather than encode this as standing");
+      .toContain("not body support");
   });
 
   it("records binding owner decisions and tightens wall-supported march", () => {
@@ -215,7 +217,7 @@ describe("seven exercise trunk/carry curation review", () => {
     );
     expect(data.behaviorFingerprints.comprehensiveBehaviorMatches).toBe(true);
     expect(data.behaviorFingerprints.referenceCatalogFingerprint).toBe(
-      "e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c",
+      "124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9",
     );
     expect(data.behaviorFingerprints.referenceCatalogMatches).toBe(true);
     expect(data.behaviorFingerprints.equipmentLegalityFingerprint).toBe(
@@ -240,7 +242,7 @@ describe("seven exercise trunk/carry curation review", () => {
       "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST",
     );
     expect(data.productionBlockers).toContain(
-      "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_SUPPORT_AND_STANCE_CONTRACT_FIRST",
+      "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_LOW_BACK_PAIN_TRAINING_INTELLIGENCE_AUDIT_FIRST",
     );
     expect(data.wholeBodyRoadmapHandoff).toContain(
       "WHOLE_BODY_EXERCISE_KNOWLEDGE_AND_CANDIDATE_POOL_AUDIT",

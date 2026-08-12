@@ -10,6 +10,7 @@ import type {
   ExerciseStressAnnotation,
   ExerciseStressExposureScope,
   ExerciseStressSideScope,
+  ExerciseSupportProfile,
   ExerciseTransitionClassification,
   ExerciseTrajectoryFreedom,
   JointStressTag,
@@ -42,7 +43,7 @@ export const PRODUCTION_CATALOG_IMPLEMENTATION_READINESS =
 
 export const PRODUCTION_CATALOG_IMPLEMENTATION_BLOCKERS = [
   "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_PHASE_CONTRACT_FIRST",
-  "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_SUPPORT_AND_STANCE_CONTRACT_FIRST",
+  "PRODUCTION_CATALOG_IMPLEMENTATION_REQUIRES_LOW_BACK_PAIN_TRAINING_INTELLIGENCE_AUDIT_FIRST",
   "Production implementation must add isolated behavior-fingerprint tests for the rows and any structured/legacy stress compatibility.",
 ] as const;
 
@@ -245,27 +246,7 @@ export interface CuratedExerciseContract {
   readonly prerequisites: readonly string[];
   readonly prerequisiteNotes: string;
   readonly loadingProfile: string;
-  readonly supportMechanics: {
-    readonly externalSupport:
-      | "none"
-      | "floor"
-      | "wall"
-      | "bench"
-      | "machine"
-      | "box"
-      | "cable_or_band_anchor"
-      | "unknown";
-    readonly bodySupport:
-      | "none"
-      | "supine"
-      | "prone"
-      | "chest_supported"
-      | "seated_supported"
-      | "hands_supported"
-      | "standing"
-      | "unknown";
-    readonly notes: string;
-  };
+  readonly supportMechanics: Omit<ExerciseSupportProfile, "reviewStatus">;
   readonly resistancePathMechanics: {
     readonly resistancePath: ExerciseResistancePathType;
     readonly trajectoryFreedom: ExerciseTrajectoryFreedom;
@@ -500,9 +481,16 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     prerequisiteNotes: "Minimum trunk-control competency should usually be handled by prescription/support rather than a hard gate.",
     loadingProfile: "Bodyweight, limited loadability, moderate local fatigue, low systemic fatigue, no external axial loading.",
     supportMechanics: {
-      externalSupport: "floor",
-      bodySupport: "prone",
-      notes: "Current bodySupport enum cannot say forearm-supported exactly; hands_supported would be misleading, so production should document this support taxonomy gap.",
+      basePosition: "prone",
+      stance: "bilateral",
+      orientation: "prone",
+      supportContacts: [
+        { bodyRegion: "forearm", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+      ],
+      supportAmount: "prescription_modifiable",
+      supportRelationship: "bilateral",
+      notes: "Forearm and foot contacts define the standard task; knee support is a prescription-controlled same-identity variant.",
     },
     resistancePathMechanics: {
       resistancePath: "bodyweight",
@@ -579,8 +567,8 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
       "low-back-sensitive user": "prescription_review_required",
     }),
     provenance: [...AUTHORITY_PROVENANCE],
-    unresolvedUnknowns: ["Forearm support cannot be represented exactly by bodySupport enum."],
-    contractGaps: ["Support taxonomy lacks forearm-supported body support."],
+    unresolvedUnknowns: [],
+    contractGaps: [],
   },
   {
     id: "forearm-side-plank",
@@ -615,9 +603,16 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     prerequisiteNotes: "Side support tolerance is hard-capability relevant; lever/support difficulty should be prescription-controlled.",
     loadingProfile: "Bodyweight lateral support, limited loadability unless future external loading is retained.",
     supportMechanics: {
-      externalSupport: "floor",
-      bodySupport: "unknown",
-      notes: "Current enum cannot cleanly represent lateral forearm/foot side support.",
+      basePosition: "side_support",
+      stance: "stacked_feet",
+      orientation: "lateral",
+      supportContacts: [
+        { bodyRegion: "forearm", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+        { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+      ],
+      supportAmount: "prescription_modifiable",
+      supportRelationship: "side_neutral",
+      notes: "Lateral forearm/foot support defines the standard task; bent-knee support remains a same-identity prescription variant.",
     },
     resistancePathMechanics: {
       resistancePath: "bodyweight",
@@ -704,7 +699,7 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     }),
     provenance: [...AUTHORITY_PROVENANCE],
     unresolvedUnknowns: ["Whether foot stacking/staggered stance should be prescribed or separate variants.", "Whether external loading remains same identity."],
-    contractGaps: ["Support taxonomy lacks lateral forearm/foot support."],
+    contractGaps: [],
   },
   {
     id: "machine-abdominal-crunch",
@@ -739,8 +734,15 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     prerequisiteNotes: "Machine quality is not assumed; geometry may make a row unsuitable for some users.",
     loadingProfile: "External guided load, high loadability, local trunk fatigue, low gait/systemic demand.",
     supportMechanics: {
-      externalSupport: "machine",
-      bodySupport: "seated_supported",
+      basePosition: "seated",
+      stance: "bilateral",
+      orientation: "upright",
+      supportContacts: [
+        { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+      ],
+      supportAmount: "substantial",
+      supportRelationship: "bilateral",
       notes: "Machine geometry and pads materially define the identity.",
     },
     resistancePathMechanics: {
@@ -853,9 +855,16 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     prerequisiteNotes: "Cable setup skill is a setup prerequisite; load/range tolerance belongs to prescription.",
     loadingProfile: "Cable-guided external load, moderate loadability, controlled rotational range.",
     supportMechanics: {
-      externalSupport: "cable_or_band_anchor",
-      bodySupport: "unknown",
-      notes: "Current bodySupport enum cannot represent half-kneeling; production must wait for support/stance representation rather than encode this as standing.",
+      basePosition: "half_kneeling",
+      stance: "half_kneeling_lead_side",
+      orientation: "upright",
+      supportContacts: [
+        { bodyRegion: "knee", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+        { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+      ],
+      supportAmount: "none",
+      supportRelationship: "side_neutral",
+      notes: "Half-kneeling contacts are explicit; the cable anchor is resistance-path metadata, not body support.",
     },
     resistancePathMechanics: {
       resistancePath: "cable_anchored",
@@ -934,7 +943,7 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     }),
     provenance: [...AUTHORITY_PROVENANCE],
     unresolvedUnknowns: ["Allowed pelvis rotation amount needs owner confirmation.", "Half-kneeling support is not represented exactly."],
-    contractGaps: ["bodySupport lacks half-kneeling."],
+    contractGaps: [],
   },
   {
     id: "farmer-carry",
@@ -969,8 +978,14 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     prerequisiteNotes: "Not inherently heavy; grip/load limits should usually be prescription facts.",
     loadingProfile: "External bilateral implement load, loadable, systemic and local grip/trunk contribution, not inherently maximal.",
     supportMechanics: {
-      externalSupport: "none",
-      bodySupport: "standing",
+      basePosition: "standing",
+      stance: "unknown",
+      orientation: "upright",
+      supportContacts: [
+        { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+      ],
+      supportAmount: "none",
+      supportRelationship: "bilateral",
       notes: "Unsupported loaded gait; loaded_gait_space implies standing-space truth but requirement should include stable_loaded_standing_space explicitly for review clarity.",
     },
     resistancePathMechanics: {
@@ -1086,8 +1101,14 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     prerequisiteNotes: "Side selection and load are prescription facts; do not encode left/right in ID.",
     loadingProfile: "Unilateral external implement, loaded gait, high side relevance, not inherently heavy.",
     supportMechanics: {
-      externalSupport: "none",
-      bodySupport: "standing",
+      basePosition: "standing",
+      stance: "unknown",
+      orientation: "upright",
+      supportContacts: [
+        { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+      ],
+      supportAmount: "none",
+      supportRelationship: "unknown",
       notes: "Unsupported loaded gait with unilateral load side.",
     },
     resistancePathMechanics: {
@@ -1216,8 +1237,15 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     prerequisiteNotes: "Support solves much of the balance problem; do not hard-gate ordinary coaching needs.",
     loadingProfile: "Stationary unilateral dumbbell march, support-modified, no distance, not inherently heavy.",
     supportMechanics: {
-      externalSupport: "wall",
-      bodySupport: "standing",
+      basePosition: "standing",
+      stance: "alternating_march",
+      orientation: "upright",
+      supportContacts: [
+        { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+        { bodyRegion: "hand", source: "wall", mode: "balance_assist", side: "unknown", taskRole: "secondary" },
+      ],
+      supportAmount: "prescription_modifiable",
+      supportRelationship: "opposite_side_load",
       notes: "Wall support force and side relationship must be prescription-realized.",
     },
     resistancePathMechanics: {
@@ -1307,7 +1335,7 @@ export const CURATED_TRUNK_CARRY_EXERCISES: readonly CuratedExerciseContract[] =
     }),
     provenance: [...AUTHORITY_PROVENANCE],
     unresolvedUnknowns: ["Lateral trunk and gait/load-transfer mechanics are support-force dependent."],
-    contractGaps: ["Support-force magnitude and support-side relationship have no current typed prescription field; anti-lateral exposure remains contextual/needs_review."],
+    contractGaps: ["Anti-lateral exposure remains contextual/needs_review until support-force effects receive human exercise-science review."],
   },
 ];
 
@@ -1423,7 +1451,7 @@ function contractSection(exercise: CuratedExerciseContract): readonly string[] {
       ["Prerequisites", list(exercise.prerequisites)],
       ["Prerequisite notes", exercise.prerequisiteNotes],
       ["Loading profile", exercise.loadingProfile],
-      ["Support mechanics", `${exercise.supportMechanics.externalSupport} / ${exercise.supportMechanics.bodySupport}: ${exercise.supportMechanics.notes}`],
+      ["Support mechanics", `base=${exercise.supportMechanics.basePosition}; stance=${exercise.supportMechanics.stance}; orientation=${exercise.supportMechanics.orientation}; amount=${exercise.supportMechanics.supportAmount}; relationship=${exercise.supportMechanics.supportRelationship}; contacts=${exercise.supportMechanics.supportContacts.map((contact) => `${contact.bodyRegion}:${contact.source}:${contact.mode}:${contact.side}:${contact.taskRole}`).join(", ") || "none"}. ${exercise.supportMechanics.notes}`],
       ["Resistance/path", `${exercise.resistancePathMechanics.resistancePath}; trajectory=${exercise.resistancePathMechanics.trajectoryFreedom}; line=${exercise.resistancePathMechanics.lineOfPullAdjustability}; laterality=${exercise.resistancePathMechanics.laterality}; fit=${exercise.resistancePathMechanics.fitDependency}. ${exercise.resistancePathMechanics.notes}`],
       ["Scapular mechanics", exercise.scapularMechanics],
       ["Prescription modes", list(exercise.prescriptionModes)],

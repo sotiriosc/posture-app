@@ -10,8 +10,10 @@ import {
   TRUNK_FUNCTION_LEVELS,
   TRUNK_MECHANICS_FUNCTIONS,
   type ExerciseDefinition,
+  type ExerciseSupportProfile,
   type TrunkMechanicsProfile,
 } from "./domain/exercise";
+import { validateExercisePhaseAnnotation } from "./phaseSuitability";
 import { THREE_PHASE_FOUNDATION } from "./domain/phase";
 import { MOVEMENT_ROLES, MUSCLE_GROUPS } from "./domain/primitives";
 import { SESSION_SECTIONS } from "./domain/session";
@@ -195,6 +197,86 @@ export function validateTrunkMechanicsProfile(
   return findings;
 }
 
+const SUPPORT_BASE_POSITIONS = new Set([
+  "standing", "half_kneeling", "tall_kneeling", "prone", "side_support",
+  "supine", "seated", "quadruped", "hanging", "unknown",
+]);
+const SUPPORT_STANCES = new Set([
+  "bilateral", "split", "half_kneeling_lead_side", "staggered", "stacked_feet",
+  "bent_knee_side_support", "alternating_march", "unknown",
+]);
+const SUPPORT_ORIENTATIONS = new Set([
+  "upright", "prone", "supine", "lateral", "diagonal", "suspended", "unknown",
+]);
+const SUPPORT_AMOUNTS = new Set([
+  "none", "light_touch", "partial", "substantial", "prescription_modifiable", "unknown",
+]);
+const SUPPORT_RELATIONSHIPS = new Set([
+  "same_side_load", "opposite_side_load", "bilateral", "side_neutral", "alternating", "unknown",
+]);
+const SUPPORT_CONTACT_BODY_REGIONS = new Set([
+  "forearm", "hand", "foot", "knee", "chest", "back", "pelvis", "seat", "unknown",
+]);
+const SUPPORT_CONTACT_SOURCES = new Set([
+  "floor", "wall", "bench", "machine", "box", "unknown",
+]);
+const SUPPORT_CONTACT_MODES = new Set([
+  "weight_bearing", "balance_assist", "positioning", "unknown",
+]);
+const SUPPORT_CONTACT_SIDES = new Set([
+  "left", "right", "bilateral", "alternating", "side_neutral", "unknown",
+]);
+const SUPPORT_CONTACT_TASK_ROLES = new Set(["primary", "secondary", "unknown"]);
+
+export function validateExerciseSupportProfile(
+  profile: ExerciseSupportProfile,
+  targetId?: string,
+): readonly ValidationFinding[] {
+  const findings: ValidationFinding[] = [];
+  const check = (valid: boolean, code: string, message: string): void => {
+    if (!valid) findings.push(finding("error", code, message, targetId));
+  };
+  const runtimeProfile = profile as unknown;
+
+  if (!isRecord(runtimeProfile)) {
+    return [
+      finding(
+        "error",
+        "invalid_support_profile",
+        "Support profile must be a structured object.",
+        targetId,
+      ),
+    ];
+  }
+
+  check(SUPPORT_BASE_POSITIONS.has(runtimeProfile.basePosition as string), "invalid_support_base_position", "Support basePosition is invalid.");
+  check(SUPPORT_STANCES.has(runtimeProfile.stance as string), "invalid_support_stance", "Support stance is invalid.");
+  check(SUPPORT_ORIENTATIONS.has(runtimeProfile.orientation as string), "invalid_support_orientation", "Support orientation is invalid.");
+  check(SUPPORT_AMOUNTS.has(runtimeProfile.supportAmount as string), "invalid_support_amount", "Support amount is invalid.");
+  check(SUPPORT_RELATIONSHIPS.has(runtimeProfile.supportRelationship as string), "invalid_support_relationship", "Support relationship is invalid.");
+  check(runtimeProfile.reviewStatus === "accepted" || runtimeProfile.reviewStatus === "needs_review", "invalid_support_review_status", "Support reviewStatus is invalid.");
+  check(typeof runtimeProfile.notes === "string" && runtimeProfile.notes.trim().length > 0, "invalid_support_notes", "Support notes are required.");
+
+  const contacts = runtimeProfile.supportContacts;
+  check(Array.isArray(contacts), "invalid_support_contacts", "Support contacts must be an array.");
+
+  if (!Array.isArray(contacts)) return findings;
+  contacts.forEach((contact, index) => {
+    const prefix = `Support contact ${index}`;
+    if (!isRecord(contact)) {
+      check(false, "invalid_support_contact", `${prefix} must be a structured object.`);
+      return;
+    }
+    check(SUPPORT_CONTACT_BODY_REGIONS.has(contact.bodyRegion as string), "invalid_support_contact_body_region", `${prefix} bodyRegion is invalid.`);
+    check(SUPPORT_CONTACT_SOURCES.has(contact.source as string), "invalid_support_contact_source", `${prefix} source is invalid.`);
+    check(SUPPORT_CONTACT_MODES.has(contact.mode as string), "invalid_support_contact_mode", `${prefix} mode is invalid.`);
+    check(SUPPORT_CONTACT_SIDES.has(contact.side as string), "invalid_support_contact_side", `${prefix} side is invalid.`);
+    check(SUPPORT_CONTACT_TASK_ROLES.has(contact.taskRole as string), "invalid_support_contact_task_role", `${prefix} taskRole is invalid.`);
+  });
+
+  return findings;
+}
+
 export function validateExerciseDefinition(exercise: ExerciseDefinition): readonly ValidationFinding[] {
   const findings: ValidationFinding[] = [];
 
@@ -238,6 +320,30 @@ export function validateExerciseDefinition(exercise: ExerciseDefinition): readon
 
   if (Object.keys(exercise.phaseSuitability).length === 0) {
     findings.push(finding("warning", "missing_phase_suitability", "Exercise should document phase suitability.", exercise.id));
+  }
+
+  const annotationIds = new Set<string>();
+  for (const annotation of exercise.phaseSuitabilityAnnotations ?? []) {
+    if (annotationIds.has(annotation.annotationId)) {
+      findings.push(
+        finding(
+          "error",
+          "duplicate_phase_annotation_id",
+          "Contextual phase annotation ids must be unique within an exercise.",
+          exercise.id,
+        ),
+      );
+    }
+    annotationIds.add(annotation.annotationId);
+    findings.push(
+      ...validateExercisePhaseAnnotation(annotation, exercise).map((candidate) =>
+        finding(candidate.severity, candidate.code, candidate.message, exercise.id),
+      ),
+    );
+  }
+
+  if (exercise.mechanics?.support) {
+    findings.push(...validateExerciseSupportProfile(exercise.mechanics.support, exercise.id));
   }
 
   if (exercise.mechanics?.trunkMechanics) {

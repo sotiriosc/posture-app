@@ -247,10 +247,11 @@ describe("progression versus exercise transition semantics", () => {
         target: "free_implement",
       }),
     );
-    expect(machineToChestSupported?.structuralDelta.support.bodySupport).toEqual(
+    expect(machineToChestSupported?.structuralDelta.support.contacts).toEqual(
       expect.objectContaining({
-        source: "seated_supported",
-        target: "chest_supported",
+        targetOnly: expect.arrayContaining([
+          "chest:bench:weight_bearing:side_neutral:primary",
+        ]),
       }),
     );
     expect(wallSlideToFacePull?.structuralDelta.assessmentFeatures).toEqual(

@@ -122,7 +122,7 @@ The first project-owner-reviewed production tranche contains complete profiles o
 - Five accepted Push-Up and supported-row judgments are approved but deferred; those exercises have no partial profile.
 - All movement roles, training roles, muscles, body regions, equipment, loading, section/phase metadata, transitions, and pain/stress tags remain unchanged.
 
-The full serialized catalog fingerprint after this intentional metadata addition is `e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c`. Removing only `mechanics.trunkMechanics` restores the prior catalog fingerprint `6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a`. Ranking and comprehensive controlled-behavior fingerprints remain `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782` and `216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9` respectively.
+After the later intentional migration to compositional support/stance mechanics, the full serialized catalog fingerprint is `124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9`. Removing only `mechanics.trunkMechanics` yields `07bbf55965a92fe5c9cc0cba54352b0a6bfa14c3d21599efe765c26874f6c505`; this retains the support/stance migration. Ranking and comprehensive controlled-behavior fingerprints remain `d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782` and `216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9` respectively.
 
 Direct developmental, meaningful secondary, incidental bracing, and capacity exposure are future contextual accounting outcomes, not permanent exercise properties. Their eventual classification depends on actual role, section, prescription, phase, and use.
 

@@ -11,14 +11,19 @@ import {
   REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
   buildExerciseTransitionTraces,
+  acceptedPhaseAnnotationHasProductionProvenance,
   deriveAlignmentPriorities,
   runCandidateRankingLab,
+  phaseResolutionCanAffectProductionScoring,
+  resolveContextualPhaseAnnotation,
   type AssessmentState,
   type CandidateNeed,
   type CandidatePainExecutionReadiness,
   type CandidateRequest,
   type ContinuityContext,
   type ExerciseDefinition,
+  type ExercisePhaseAnnotationScope,
+  type ExercisePhaseSuitabilityAnnotation,
   type ExerciseSuitability,
   type PainAndInjuryState,
   type PhaseId,
@@ -27,6 +32,9 @@ import {
   type TrainingGoal,
   type TrainingHistory,
   type TrainingRole,
+  type ContextualPhaseEvidenceStatus,
+  type ContextualPhaseResolutionTrace,
+  type ContextualPhaseSpecificity,
 } from "../../src";
 import {
   EXPECTED_PRODUCTION_RANKING_FINGERPRINT,
@@ -53,20 +61,7 @@ const EMPTY_CONTINUITY: ContinuityContext = {
 
 export type ContextualPhaseSuitability = ExerciseSuitability["suitability"];
 export type ContextualPhaseAnnotationReviewStatus =
-  | "accepted"
-  | "needs_review"
-  | "unknown";
-export type ContextualPhaseEvidenceStatus =
-  | "ACCEPTED_ANNOTATION"
-  | "REVIEW_QUALIFIED_ANNOTATION"
-  | "UNKNOWN_NO_MATCH"
-  | "CONFLICTING_ANNOTATIONS";
-export type ContextualPhaseSpecificity =
-  | "role_and_section"
-  | "section"
-  | "training_role"
-  | "general"
-  | "none";
+  ExercisePhaseSuitabilityAnnotation["reviewStatus"];
 export type PhaseReasonOwnerClassification =
   | "GENERAL_PHASE_JUDGMENT"
   | "ROLE_SPECIFIC"
@@ -76,53 +71,22 @@ export type PhaseReasonOwnerClassification =
   | "AMBIGUOUS"
   | "ARBITRARY_OR_UNDERSPECIFIED";
 export type PhaseContextReviewClassification =
-  | "PHASE_CONTEXT_CONTRACT_READY_FOR_OWNER_DECISION"
+  | "PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING"
   | "PHASE_CONTEXT_CONTRACT_FIX_REQUIRED"
   | "PHASE_ARCHITECTURE_REOPEN_REQUIRED";
 
-export interface ExercisePhaseAnnotationScope {
-  readonly trainingRoles?: readonly TrainingRole[];
-  readonly sessionSections?: readonly SessionSection[];
-}
-
-export interface ExercisePhaseAnnotationProvenance {
-  readonly sourceType:
-    | "legacy_reference_catalog_migration"
-    | "owner_decision"
-    | "human_exercise_science_review"
-    | "external_reference"
-    | "synthetic_counterfactual";
-  readonly sourceRef: string;
-  readonly evidenceBasis: readonly string[];
-  readonly reviewerId?: string;
-  readonly reviewedAt?: string;
-}
-
-export interface ExercisePhaseSuitabilityAnnotation {
-  readonly annotationId: string;
-  readonly exerciseId: string;
-  readonly phaseId: PhaseId;
-  readonly suitability: ContextualPhaseSuitability;
-  readonly scope: ExercisePhaseAnnotationScope;
-  readonly reason: string;
-  readonly reviewStatus: ContextualPhaseAnnotationReviewStatus;
-  readonly provenance: ExercisePhaseAnnotationProvenance;
-}
-
-export interface ContextualPhaseResolutionTrace {
-  readonly activePhase: PhaseId;
-  readonly requestedRole: TrainingRole;
-  readonly requestedSection: SessionSection | null;
-  readonly candidateExerciseId: string;
-  readonly consideredAnnotationIds: readonly string[];
-  readonly matchingAnnotationIds: readonly string[];
-  readonly selectedAnnotation: ExercisePhaseSuitabilityAnnotation | null;
-  readonly specificity: ContextualPhaseSpecificity;
-  readonly reviewStatus: ContextualPhaseAnnotationReviewStatus | null;
-  readonly provenance: ExercisePhaseAnnotationProvenance | null;
-  readonly unresolvedConflictIds: readonly string[];
-  readonly evidenceStatus: ContextualPhaseEvidenceStatus;
-}
+export {
+  acceptedPhaseAnnotationHasProductionProvenance,
+  phaseResolutionCanAffectProductionScoring,
+  resolveContextualPhaseAnnotation,
+};
+export type {
+  ContextualPhaseEvidenceStatus,
+  ContextualPhaseResolutionTrace,
+  ContextualPhaseSpecificity,
+  ExercisePhaseAnnotationScope,
+  ExercisePhaseSuitabilityAnnotation,
+};
 
 export const CONTEXTUAL_PHASE_OWNER_POLICIES = [
   "Phase is one bounded candidate preference downstream of hard eligibility.",
@@ -561,137 +525,6 @@ export const PHASE_ANNOTATION_AUDIT_PLAN: readonly ExerciseAuditPlan[] = [
     },
   },
 ] as const;
-
-function scopeSpecificity(scope: ExercisePhaseAnnotationScope): ContextualPhaseSpecificity {
-  const hasRole = (scope.trainingRoles?.length ?? 0) > 0;
-  const hasSection = (scope.sessionSections?.length ?? 0) > 0;
-  return hasRole && hasSection
-    ? "role_and_section"
-    : hasSection
-      ? "section"
-      : hasRole
-        ? "training_role"
-        : "general";
-}
-
-function specificityRank(specificity: ContextualPhaseSpecificity): number {
-  return specificity === "role_and_section"
-    ? 4
-    : specificity === "section"
-      ? 3
-      : specificity === "training_role"
-        ? 2
-        : specificity === "general"
-          ? 1
-          : 0;
-}
-
-function scopeMatches(input: {
-  readonly scope: ExercisePhaseAnnotationScope;
-  readonly requestedRole: TrainingRole;
-  readonly requestedSection: SessionSection | null;
-}): boolean {
-  const roleMatches =
-    !input.scope.trainingRoles || input.scope.trainingRoles.includes(input.requestedRole);
-  const sectionMatches =
-    !input.scope.sessionSections ||
-    (input.requestedSection !== null && input.scope.sessionSections.includes(input.requestedSection));
-  return roleMatches && sectionMatches;
-}
-
-function sameResolvedMeaning(
-  left: ExercisePhaseSuitabilityAnnotation,
-  right: ExercisePhaseSuitabilityAnnotation,
-): boolean {
-  return (
-    left.suitability === right.suitability &&
-    left.reviewStatus === right.reviewStatus &&
-    scopeSpecificity(left.scope) === scopeSpecificity(right.scope)
-  );
-}
-
-export function resolveContextualPhaseAnnotation(input: {
-  readonly phaseId: PhaseId;
-  readonly requestedRole: TrainingRole;
-  readonly requestedSection: SessionSection | null;
-  readonly exerciseId: string;
-  readonly annotations: readonly ExercisePhaseSuitabilityAnnotation[];
-}): ContextualPhaseResolutionTrace {
-  const considered = input.annotations
-    .filter(
-      (annotation) =>
-        annotation.exerciseId === input.exerciseId && annotation.phaseId === input.phaseId,
-    )
-    .sort((left, right) => left.annotationId.localeCompare(right.annotationId));
-  const matching = considered.filter((annotation) =>
-    scopeMatches({
-      scope: annotation.scope,
-      requestedRole: input.requestedRole,
-      requestedSection: input.requestedSection,
-    }),
-  );
-  const highestRank = Math.max(
-    0,
-    ...matching.map((annotation) => specificityRank(scopeSpecificity(annotation.scope))),
-  );
-  const finalists = matching.filter(
-    (annotation) => specificityRank(scopeSpecificity(annotation.scope)) === highestRank,
-  );
-  const conflict =
-    finalists.length > 1 &&
-    finalists.some((annotation) => !sameResolvedMeaning(annotation, finalists[0]));
-  const selected = conflict ? null : finalists[0] ?? null;
-  const evidenceStatus: ContextualPhaseEvidenceStatus = conflict
-    ? "CONFLICTING_ANNOTATIONS"
-    : selected?.reviewStatus === "accepted"
-      ? "ACCEPTED_ANNOTATION"
-      : selected?.reviewStatus === "needs_review"
-        ? "REVIEW_QUALIFIED_ANNOTATION"
-        : "UNKNOWN_NO_MATCH";
-
-  return {
-    activePhase: input.phaseId,
-    requestedRole: input.requestedRole,
-    requestedSection: input.requestedSection,
-    candidateExerciseId: input.exerciseId,
-    consideredAnnotationIds: considered.map((annotation) => annotation.annotationId),
-    matchingAnnotationIds: matching.map((annotation) => annotation.annotationId),
-    selectedAnnotation: selected,
-    specificity: selected ? scopeSpecificity(selected.scope) : "none",
-    reviewStatus: selected?.reviewStatus ?? null,
-    provenance: selected?.provenance ?? null,
-    unresolvedConflictIds: conflict
-      ? finalists.map((annotation) => annotation.annotationId).sort()
-      : [],
-    evidenceStatus,
-  };
-}
-
-export function acceptedPhaseAnnotationHasProductionProvenance(
-  annotation: ExercisePhaseSuitabilityAnnotation,
-): boolean {
-  const allowedSourceTypes = new Set<string>(
-    PHASE_ACCEPTED_PROVENANCE_CONTRACT.allowedSourceTypes,
-  );
-  return (
-    annotation.reviewStatus === "accepted" &&
-    allowedSourceTypes.has(annotation.provenance.sourceType) &&
-    annotation.provenance.sourceRef.length > 0 &&
-    annotation.provenance.evidenceBasis.length > 0 &&
-    Boolean(annotation.provenance.reviewerId) &&
-    Boolean(annotation.provenance.reviewedAt)
-  );
-}
-
-export function phaseResolutionCanAffectProductionScoring(
-  resolution: ContextualPhaseResolutionTrace,
-): boolean {
-  return (
-    resolution.evidenceStatus === "ACCEPTED_ANNOTATION" &&
-    resolution.selectedAnnotation !== null &&
-    acceptedPhaseAnnotationHasProductionProvenance(resolution.selectedAnnotation)
-  );
-}
 
 function currentExercise(exerciseId: string): ExerciseDefinition {
   const found = REFERENCE_EXERCISES.find((exercise) => exercise.id === exerciseId);
@@ -1836,7 +1669,7 @@ function syntheticAnnotation(input: {
     reason: input.reason ?? "Synthetic contextual phase evidence.",
     reviewStatus: input.reviewStatus ?? "accepted",
     provenance: {
-      sourceType: "synthetic_counterfactual",
+      sourceType: "unknown",
       sourceRef: input.provenanceRef ?? "counterfactual:default",
       evidenceBasis: ["Synthetic invariant only."],
     },
@@ -2216,7 +2049,7 @@ export function buildPhaseAnnotationContextReviewData(): PhaseAnnotationContextR
   });
 
   return {
-    classification: "PHASE_CONTEXT_CONTRACT_READY_FOR_OWNER_DECISION",
+    classification: "PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING",
     fixedAsOf: PHASE_CALIBRATION_FIXED_AS_OF,
     productionRankingFingerprint: acceptedLaboratory.productionRankingFingerprint,
     expectedProductionRankingFingerprint: EXPECTED_PRODUCTION_RANKING_FINGERPRINT,
@@ -2327,7 +2160,7 @@ export function renderPhaseAnnotationContextReview(
     "",
     "`ENGINE_V2_BLUEPRINT.md` remains authoritative. The accepted Phase Suitability Calibration Laboratory established bounded phase preference and exposed duplicated mechanical bonuses. This second deterministic laboratory examines whether phase evidence applies to the candidate's actual role and section and whether missing evidence remains distinct from reviewed poor fit.",
     "",
-    "This work is non-production audit and sensitivity evidence. It does not change `packages/training-engine-v2/src/**`, phase scores, weights, exercise metadata, rankings, eligibility, pain, assessment, continuity, prescription, Session Composer or Weekly Composer.",
+    "The contextual annotation schema, deterministic resolver, provenance validation, conflict semantics, and DecisionTrace support are implemented in production code. Phase scores, coefficients, mechanical bonuses, rankings, eligibility, pain, assessment, continuity, prescription, Session Composer, and Weekly Composer remain unchanged while calibration and owner policy are pending.",
     "",
     `Fixed evaluation time: \`${data.fixedAsOf}\`.`,
     "",
@@ -2337,7 +2170,7 @@ export function renderPhaseAnnotationContextReview(
     "",
     `Classification: **${data.classification}**.`,
     "",
-    "The contract is ready for project-owner decision. The current catalog is not being declared accepted contextual evidence, and no coefficient or production policy is selected here.",
+    "The schema and resolver contract are implemented. The current catalog is not being declared accepted contextual evidence, and no coefficient or final production scoring policy is selected here.",
     "",
     "## Accepted Owner Direction",
     "",
@@ -2345,7 +2178,7 @@ export function renderPhaseAnnotationContextReview(
     "",
     "Category values and phase weight remain unapproved.",
     "",
-    "## Proposed Contextual Annotation Contract",
+    "## Implemented Contextual Annotation Contract",
     "",
     "```ts",
     "interface ExercisePhaseSuitabilityAnnotation {",
@@ -2357,18 +2190,19 @@ export function renderPhaseAnnotationContextReview(
     "  reason: string;",
     "  reviewStatus: 'accepted' | 'needs_review' | 'unknown';",
     "  provenance: {",
-    "    sourceType: string;",
+    "    sourceType: 'owner_decision' | 'human_exercise_science_review' | 'external_reference' | 'legacy_reference_catalog_migration' | 'unknown';",
     "    sourceRef: string;",
     "    evidenceBasis: string[];",
     "    reviewerId?: string;",
     "    reviewedAt?: string;",
+    "    legalUseCoverage?: { trainingRoles: TrainingRole[]; sessionSections: SessionSection[] };",
     "  };",
     "}",
     "```",
     "",
     "More than one annotation may exist for an exercise/phase when different legal uses require different judgments. A general annotation is valid only when its evidence covers every legal training role and section. Reason prose explains selected structured evidence but is never parsed for scoring. Goal-specific annotations are excluded because they would duplicate `goal_fit`.",
     "",
-    "## Deterministic Context Resolver",
+    "## Implemented Deterministic Context Resolver",
     "",
     table(
       ["Specificity", "Required Match", "Rank"],
@@ -2714,7 +2548,7 @@ export function renderPhaseAnnotationContextReview(
     "",
     `Phase context review: **${data.classification}**.`,
     "",
-    "The first phase laboratory is accepted. Final owner calibration remains deferred until the contextual contract is approved and the annotation catalog is reviewed with structured provenance.",
+    "The schema and resolver are implemented. Final owner calibration remains deferred until the annotation catalog is reviewed with structured provenance and scoring consequences are approved.",
     "",
     "Remaining Candidate Intelligence P1:",
     "",

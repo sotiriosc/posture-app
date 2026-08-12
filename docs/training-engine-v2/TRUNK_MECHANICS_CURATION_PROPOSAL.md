@@ -292,8 +292,8 @@ Name/tag sniffing, free-text pain authority, fixed core quotas, and automatic pr
 | --- | --- | --- | --- |
 | 22-scenario production ranking | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | d6a6452537e1436c3ecbbc035d9ea7a3126e772961012e4141b3302919f11782 | true |
 | Comprehensive totals/components/rejections/pain/phase/assessment behavior | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | 216ec8c86ffc4bdf2310b6a88c03d10eca982f311df4f05fcf02485daa9c72b9 | true |
-| Full serialized reference catalog after approved profiles | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | e3f77e85e70e8e3d27d6845dd46c253f61b38629aba08580cfa757d4943fe73c | true |
-| Reference catalog with only mechanics.trunkMechanics removed | 6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a | 6c7b4f745dde7b52ce140a46a9490bc44c6655256d4b3e9d6b88fd003056ec3a | true |
+| Full serialized reference catalog after approved profiles | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | 124786e955fb411f556d0b583e127d3261a7385ccfa11175a95a9bae79bd41f9 | true |
+| Reference catalog with only mechanics.trunkMechanics removed | 07bbf55965a92fe5c9cc0cba54352b0a6bfa14c3d21599efe765c26874f6c505 | 07bbf55965a92fe5c9cc0cba54352b0a6bfa14c3d21599efe765c26874f6c505 | true |
 
 The full catalog fingerprint changes intentionally because the three profiles are serialized. Removing only `mechanics.trunkMechanics` restores the exact pre-implementation catalog fingerprint. Contract invariants prove profiles cannot alter hard eligibility, role truth, totals, ranking, pain readiness, phase, assessment, or transitions because no production consumer exists beyond validation and trace observability.
 

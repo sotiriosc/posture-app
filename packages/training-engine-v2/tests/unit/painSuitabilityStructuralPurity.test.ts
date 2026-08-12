@@ -103,7 +103,7 @@ function withStressTags(
 function withSupport(
   base: ExerciseDefinition,
   id: string,
-  bodySupport: NonNullable<ExerciseDefinition["mechanics"]>["support"]["bodySupport"],
+  supportContacts: NonNullable<ExerciseDefinition["mechanics"]>["support"]["supportContacts"],
 ): ExerciseDefinition {
   if (!base.mechanics) {
     throw new Error(`${base.id} needs mechanics for support test.`);
@@ -116,7 +116,7 @@ function withSupport(
       ...base.mechanics,
       support: {
         ...base.mechanics.support,
-        bodySupport,
+        supportContacts,
       },
       demands: {
         ...base.mechanics.demands,
@@ -164,8 +164,12 @@ describe("pain suitability structural purity", () => {
 
   it("does not reward chest-supported body support when pain stress tags are identical", () => {
     const base = exercise("machine-row");
-    const chestSupported = withSupport(base, "structured-chest-supported-row", "chest_supported");
-    const seatedSupported = withSupport(base, "structured-seated-supported-row", "seated_supported");
+    const chestSupported = withSupport(base, "structured-chest-supported-row", [
+      { bodyRegion: "chest", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+    ]);
+    const seatedSupported = withSupport(base, "structured-seated-supported-row", [
+      { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+    ]);
     const request = requestWithPool([chestSupported, seatedSupported]);
 
     expect(painSuitability(request, chestSupported.id)).toBe(

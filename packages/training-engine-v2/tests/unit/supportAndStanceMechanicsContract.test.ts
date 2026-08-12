@@ -1,6 +1,10 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { REFERENCE_EXERCISES } from "../../src";
+import {
+  REFERENCE_EXERCISES,
+  validateExerciseDefinition,
+  type ExerciseDefinition,
+} from "../../src";
 import {
   SEVEN_EXERCISE_SUPPORT_GAPS,
   SUPPORT_AND_STANCE_CONSUMER_AUDIT,
@@ -33,7 +37,7 @@ describe("support and stance mechanics contract review", () => {
     ).toBe(rendered);
   });
 
-  it("audits every current production support consumer before schema change", () => {
+  it("audits every migrated production support consumer", () => {
     expect(SUPPORT_AND_STANCE_CONSUMER_AUDIT.map((row) => row.path)).toEqual([
       "packages/training-engine-v2/src/domain/exercise.ts",
       "packages/training-engine-v2/src/transitionComparison.ts",
@@ -93,11 +97,33 @@ describe("support and stance mechanics contract review", () => {
     ).toContain("`hands_supported` would be false");
   });
 
-  it("finds no current production support or stance lie while preserving behavior", () => {
+  it("finds no current production support or stance lie while preserving selection behavior", () => {
     expect(data.currentSupportInventory).toHaveLength(REFERENCE_EXERCISES.length);
     expect(data.lieStatus).toBe("NO_CURRENT_PRODUCTION_SUPPORT_STANCE_LIE_DISCOVERED");
     expect(data.currentProductionLieFindings).toEqual([]);
-    expect(data.schemaChangeStatus).toBe("RECOMMENDED_NOT_IMPLEMENTED");
-    expect(data.productionBehaviorChanged).toBe(false);
+    expect(data.schemaChangeStatus).toBe("IMPLEMENTED");
+    expect(data.selectionBehaviorChanged).toBe(false);
+    expect(data.structuralTraceContractChanged).toBe(true);
+  });
+
+  it("rejects malformed runtime support evidence without throwing", () => {
+    const source = REFERENCE_EXERCISES[0];
+    const malformed = {
+      ...source,
+      mechanics: {
+        ...source.mechanics,
+        support: {
+          ...source.mechanics?.support,
+          supportContacts: "floor",
+          reviewStatus: "approved",
+          notes: "",
+        },
+      },
+    } as unknown as ExerciseDefinition;
+
+    const findings = validateExerciseDefinition(malformed).map((finding) => finding.code);
+    expect(findings).toContain("invalid_support_contacts");
+    expect(findings).toContain("invalid_support_review_status");
+    expect(findings).toContain("invalid_support_notes");
   });
 });

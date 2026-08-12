@@ -1042,7 +1042,14 @@ function provenanceForDemand(annotation: ExerciseDemandAnnotation | undefined): 
 function provenanceForSupport(exercise: ExerciseDefinition): Provenance {
   const support = exercise.mechanics?.support;
 
-  if (!support || support.externalSupport === "unknown" || support.bodySupport === "unknown") {
+  if (
+    !support ||
+    support.basePosition === "unknown" ||
+    support.stance === "unknown" ||
+    support.orientation === "unknown" ||
+    support.supportAmount === "unknown" ||
+    support.supportRelationship === "unknown"
+  ) {
     return "UNKNOWN";
   }
 
@@ -1080,7 +1087,15 @@ function formatSupport(exercise: ExerciseDefinition): string {
   }
 
   return withProvenance(
-    `${support.externalSupport}/${support.bodySupport}; ${support.notes}`,
+    [
+      `base=${support.basePosition}`,
+      `stance=${support.stance}`,
+      `orientation=${support.orientation}`,
+      `amount=${support.supportAmount}`,
+      `relationship=${support.supportRelationship}`,
+      `contacts=${support.supportContacts.map((contact) => `${contact.bodyRegion}:${contact.source}:${contact.mode}:${contact.side}:${contact.taskRole}`).join(", ") || "none"}`,
+      support.notes,
+    ].join("; "),
     provenance,
   );
 }
@@ -1620,7 +1635,7 @@ function renderProgressionGraphAudit(): string {
     "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
     ...rows.map((row) => {
       const delta = row.structuralDelta;
-      return `| ${md(row.sourceExerciseId)} | ${md(row.targetExerciseId)} | ${row.direction} | ${row.classification} | ${list(row.purposes)} | ${formatPurposeEvidence(row)} | ${list(delta.sharedMovementRoles)} | sourceOnly=${list(delta.sourceOnlyMovementRoles)}<br>targetOnly=${list(delta.targetOnlyMovementRoles)} | external=${formatDelta(delta.support.externalSupport)}<br>body=${formatDelta(delta.support.bodySupport)} | path=${formatDelta(delta.resistancePath.resistancePath)}<br>trajectory=${formatDelta(delta.resistancePath.trajectoryFreedom)}<br>line=${formatDelta(delta.resistancePath.lineOfPullAdjustability)}<br>laterality=${formatDelta(delta.resistancePath.laterality)}<br>fit=${formatDelta(delta.resistancePath.fitDependency)} | trunk=${formatDelta(delta.demand.trunk)}<br>stability=${formatDelta(delta.demand.stability)}<br>coordination=${formatDelta(delta.demand.coordination)} | ${formatDelta(delta.loading.loadability)} | shared=${list(delta.equipment.shared)}<br>sourceOnly=${list(delta.equipment.sourceOnly)}<br>targetOnly=${list(delta.equipment.targetOnly)} | ${formatFeatureChanges(row)} | ${row.reviewStatus}; provenance=${list(row.provenance)} | ${row.automaticSelectionEffect} | ${md(row.notes)} |`;
+      return `| ${md(row.sourceExerciseId)} | ${md(row.targetExerciseId)} | ${row.direction} | ${row.classification} | ${list(row.purposes)} | ${formatPurposeEvidence(row)} | ${list(delta.sharedMovementRoles)} | sourceOnly=${list(delta.sourceOnlyMovementRoles)}<br>targetOnly=${list(delta.targetOnlyMovementRoles)} | base=${formatDelta(delta.support.basePosition)}<br>stance=${formatDelta(delta.support.stance)}<br>orientation=${formatDelta(delta.support.orientation)}<br>amount=${formatDelta(delta.support.supportAmount)}<br>relationship=${formatDelta(delta.support.supportRelationship)}<br>contacts sourceOnly=${list(delta.support.contacts.sourceOnly)} targetOnly=${list(delta.support.contacts.targetOnly)} | path=${formatDelta(delta.resistancePath.resistancePath)}<br>trajectory=${formatDelta(delta.resistancePath.trajectoryFreedom)}<br>line=${formatDelta(delta.resistancePath.lineOfPullAdjustability)}<br>laterality=${formatDelta(delta.resistancePath.laterality)}<br>fit=${formatDelta(delta.resistancePath.fitDependency)} | trunk=${formatDelta(delta.demand.trunk)}<br>stability=${formatDelta(delta.demand.stability)}<br>coordination=${formatDelta(delta.demand.coordination)} | ${formatDelta(delta.loading.loadability)} | shared=${list(delta.equipment.shared)}<br>sourceOnly=${list(delta.equipment.sourceOnly)}<br>targetOnly=${list(delta.equipment.targetOnly)} | ${formatFeatureChanges(row)} | ${row.reviewStatus}; provenance=${list(row.provenance)} | ${row.automaticSelectionEffect} | ${md(row.notes)} |`;
     }),
     "",
     "Key reviewed relationships: `band-face-pull -> serratus-wall-slide` is a context-dependent lateral feature/equipment transition; both `reverse-pec-deck <-> band-face-pull` directions remain questionable; `pallof-press -> dead-bug` remains needs-review; `machine-row`/`seated-cable-row -> chest-supported-dumbbell-row` remain context-dependent row transitions, not universal progressions.",
@@ -2568,7 +2583,7 @@ function renderHorizontalRowTraceTable(scenario: ReviewScenario): string {
     candidate.rank ? String(candidate.rank) : "rejected",
     candidate.total === null ? "n/a" : candidate.total.toFixed(3),
     candidate.legal ? "legal" : `rejected: ${candidate.rejectionCodes.join(", ")}`,
-    `${candidate.support.externalSupport}/${candidate.support.bodySupport}/${candidate.support.reviewStatus}`,
+    `${candidate.support.basePosition}/${candidate.support.stance}/${candidate.support.orientation}; amount=${candidate.support.supportAmount}; contacts=${list(candidate.support.supportContacts)}; review=${candidate.support.reviewStatus}`,
     [
       candidate.resistancePath.resistancePath,
       `trajectory=${candidate.resistancePath.trajectoryFreedom}`,

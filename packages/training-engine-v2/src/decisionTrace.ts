@@ -8,6 +8,7 @@ import type { SessionEvaluation, WeekEvaluation } from "./optimizerContracts";
 import type { ExercisePrescription, ProgressionDecision } from "./prescriptionProgression";
 import type { CandidateScore } from "./scoringContracts";
 import type { PipelineSnapshot } from "./pipelineObservability";
+import type { ContextualPhaseResolutionTrace } from "./phaseSuitability";
 import { buildCandidatePainExecutionReadinessTrace } from "./candidate/pain";
 import type {
   CandidatePainExecutionReadinessTrace,
@@ -49,6 +50,7 @@ export interface DecisionTrace {
   readonly hardRejections: readonly CandidateEligibility[];
   readonly topCandidateScores: readonly CandidateScore[];
   readonly candidatePainSummaries: readonly CandidatePainSummaryTrace[];
+  readonly candidatePhaseResolutions: readonly ContextualPhaseResolutionTrace[];
   readonly painExecutionReadiness?: CandidatePainResultExecutionReadinessTrace;
   readonly selectedExerciseId?: string;
   readonly whyItWon?: string;
@@ -95,6 +97,7 @@ export function createDecisionTrace(input: {
   readonly selectedExerciseId?: string;
   readonly whyItWon?: string;
   readonly painExecutionReadiness?: CandidatePainResultExecutionReadinessTrace;
+  readonly phaseResolutions?: readonly ContextualPhaseResolutionTrace[];
   readonly pipelineSnapshots?: readonly PipelineSnapshot[];
 }): DecisionTrace {
   return {
@@ -115,6 +118,7 @@ export function createDecisionTrace(input: {
     candidatePainSummaries: input.candidates.map((candidate) =>
       painSummary(candidate.eligibility.painMatchTrace),
     ),
+    candidatePhaseResolutions: input.phaseResolutions ?? [],
     painExecutionReadiness: input.painExecutionReadiness,
     selectedExerciseId: input.selectedExerciseId,
     whyItWon: input.whyItWon,

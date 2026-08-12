@@ -144,8 +144,12 @@ function mechanics(input: {
 }): ExerciseMechanicsProfile {
   return {
     support: input.support ?? {
-      externalSupport: "unknown",
-      bodySupport: "unknown",
+      basePosition: "unknown",
+      stance: "unknown",
+      orientation: "unknown",
+      supportContacts: [],
+      supportAmount: "unknown",
+      supportRelationship: "unknown",
       reviewStatus: "needs_review",
       notes: "Support mechanics not yet reviewed.",
     },
@@ -233,8 +237,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "floor",
-        bodySupport: "supine",
+        basePosition: "supine",
+        stance: "unknown",
+        orientation: "supine",
+        supportContacts: [
+          { bodyRegion: "back", source: "floor", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "side_neutral",
         reviewStatus: "accepted",
         notes: "Floor-supported breathing position with minimal external load.",
       },
@@ -357,8 +367,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "wall",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+          { bodyRegion: "hand", source: "wall", mode: "positioning", side: "bilateral", taskRole: "secondary" },
+        ],
+        supportAmount: "partial",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Wall support constrains setup and reduces load demand.",
       },
@@ -432,8 +449,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "floor",
-        bodySupport: "supine",
+        basePosition: "supine",
+        stance: "unknown",
+        orientation: "supine",
+        supportContacts: [
+          { bodyRegion: "back", source: "floor", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "side_neutral",
         reviewStatus: "accepted",
         notes: "Supine floor support with long-lever progression options.",
       },
@@ -564,8 +587,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "floor",
-        bodySupport: "hands_supported",
+        basePosition: "prone",
+        stance: "bilateral",
+        orientation: "prone",
+        supportContacts: [
+          { bodyRegion: "hand", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Hands-to-floor bodyweight press with plank-like trunk control.",
       },
@@ -655,8 +685,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "bench",
-        bodySupport: "supine",
+        basePosition: "supine",
+        stance: "bilateral",
+        orientation: "supine",
+        supportContacts: [
+          { bodyRegion: "back", source: "bench", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Bench-supported external-load horizontal press.",
       },
@@ -732,8 +769,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "machine",
-        bodySupport: "seated_supported",
+        basePosition: "seated",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Machine path and seat support reduce free stability demand.",
       },
@@ -850,8 +894,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "bench",
-        bodySupport: "chest_supported",
+        basePosition: "prone",
+        stance: "bilateral",
+        orientation: "prone",
+        supportContacts: [
+          { bodyRegion: "chest", source: "bench", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Chest support intentionally reduces lumbar/trunk stabilization demand.",
       },
@@ -939,8 +990,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "bench",
-        bodySupport: "hands_supported",
+        basePosition: "standing",
+        stance: "unknown",
+        orientation: "diagonal",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+          { bodyRegion: "hand", source: "bench", mode: "weight_bearing", side: "unknown", taskRole: "secondary" },
+        ],
+        supportAmount: "partial",
+        supportRelationship: "unknown",
         reviewStatus: "accepted",
         notes: "Bench may support the free hand, but torso/trunk position remains athlete-controlled.",
       },
@@ -1045,8 +1103,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "machine",
-        bodySupport: "seated_supported",
+        basePosition: "seated",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
         reviewStatus: "needs_review",
         notes: "Generic machine-row identity implies machine support but does not guarantee chest support, grip, exact path, or anthropometric fit.",
       },
@@ -1148,8 +1212,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "cable_or_band_anchor",
-        bodySupport: "seated_supported",
+        basePosition: "seated",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "seat", source: "bench", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Seated cable setup with stable lower-body support.",
       },
@@ -1244,8 +1315,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "cable_or_band_anchor",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Anchored band provides resistance but not body support.",
       },
@@ -1325,8 +1402,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "none",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "External-load overhead press without fixed path unless bench is optionally used.",
       },
@@ -1503,8 +1586,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "none",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Free-standing loaded squat pattern.",
       },
@@ -1579,8 +1668,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "machine",
-        bodySupport: "seated_supported",
+        basePosition: "seated",
+        stance: "bilateral",
+        orientation: "diagonal",
+        supportContacts: [
+          { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Machine-guided lower-body press with trunk support.",
       },
@@ -1644,8 +1740,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "box",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+          { bodyRegion: "pelvis", source: "box", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "prescription_modifiable",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Box target constrains depth and confidence.",
       },
@@ -1714,8 +1817,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "none",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Free-standing loaded hinge.",
       },
@@ -1778,8 +1887,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "cable_or_band_anchor",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Cable load guides hinge direction with lower axial loading.",
       },
@@ -1842,8 +1957,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "none",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "split",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "prescription_modifiable",
+        supportRelationship: "side_neutral",
         reviewStatus: "accepted",
         notes: "Unilateral stance can be externally supported but is not inherently supported.",
       },
@@ -1906,8 +2027,15 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "box",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "split",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "box", mode: "weight_bearing", side: "unknown", taskRole: "primary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "unknown", taskRole: "secondary" },
+        ],
+        supportAmount: "prescription_modifiable",
+        supportRelationship: "side_neutral",
         reviewStatus: "accepted",
         notes: "Box/step height constrains range; external hand support is optional.",
       },
@@ -2116,8 +2244,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "machine",
-        bodySupport: "seated_supported",
+        basePosition: "seated",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        ],
+        supportAmount: "substantial",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Machine-supported rear-delt/scapular isolation.",
       },
@@ -2190,8 +2324,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "cable_or_band_anchor",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Anchored band resistance with standing body position.",
       },
@@ -2357,8 +2497,14 @@ export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] = [
     },
     mechanics: mechanics({
       support: {
-        externalSupport: "cable_or_band_anchor",
-        bodySupport: "standing",
+        basePosition: "standing",
+        stance: "bilateral",
+        orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        ],
+        supportAmount: "none",
+        supportRelationship: "bilateral",
         reviewStatus: "accepted",
         notes: "Standing anti-rotation drill with external cable or band resistance.",
       },

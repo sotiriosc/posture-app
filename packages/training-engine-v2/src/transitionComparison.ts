@@ -49,8 +49,12 @@ export interface ExerciseTransitionStructuralDelta {
   readonly sourceOnlyMuscles: readonly string[];
   readonly targetOnlyMuscles: readonly string[];
   readonly support: {
-    readonly externalSupport: TransitionValueDelta;
-    readonly bodySupport: TransitionValueDelta;
+    readonly basePosition: TransitionValueDelta;
+    readonly stance: TransitionValueDelta;
+    readonly orientation: TransitionValueDelta;
+    readonly contacts: TransitionSetDelta;
+    readonly supportAmount: TransitionValueDelta;
+    readonly supportRelationship: TransitionValueDelta;
   };
   readonly resistancePath: TransitionResistancePathDelta;
   readonly demand: TransitionDemandDelta;
@@ -131,6 +135,21 @@ function loadabilityValue(loadability: string): number | null {
   }
 }
 
+function supportAmountValue(amount: string): number | null {
+  switch (amount) {
+    case "none":
+      return 0;
+    case "light_touch":
+      return 1;
+    case "partial":
+      return 2;
+    case "substantial":
+      return 3;
+    default:
+      return null;
+  }
+}
+
 function ordinalDelta(source: string, target: string, value: (input: string) => number | null): TransitionValueDelta {
   const sourceValue = value(source);
   const targetValue = value(target);
@@ -156,6 +175,15 @@ function literalDelta(source: string, target: string): TransitionValueDelta {
 
 function support(exercise: ExerciseDefinition) {
   return exercise.mechanics?.support;
+}
+
+function supportContactLabels(exercise: ExerciseDefinition): readonly string[] {
+  return unique(
+    (support(exercise)?.supportContacts ?? []).map(
+      (contact) =>
+        `${contact.bodyRegion}:${contact.source}:${contact.mode}:${contact.side}:${contact.taskRole}`,
+    ),
+  );
 }
 
 function resistancePath(exercise: ExerciseDefinition) {
@@ -240,13 +268,27 @@ export function compareExerciseTransition(
     sourceOnlyMuscles: muscleDelta.sourceOnly,
     targetOnlyMuscles: muscleDelta.targetOnly,
     support: {
-      externalSupport: literalDelta(
-        sourceSupport?.externalSupport ?? "unknown",
-        targetSupport?.externalSupport ?? "unknown",
+      basePosition: literalDelta(
+        sourceSupport?.basePosition ?? "unknown",
+        targetSupport?.basePosition ?? "unknown",
       ),
-      bodySupport: literalDelta(
-        sourceSupport?.bodySupport ?? "unknown",
-        targetSupport?.bodySupport ?? "unknown",
+      stance: literalDelta(
+        sourceSupport?.stance ?? "unknown",
+        targetSupport?.stance ?? "unknown",
+      ),
+      orientation: literalDelta(
+        sourceSupport?.orientation ?? "unknown",
+        targetSupport?.orientation ?? "unknown",
+      ),
+      contacts: setDelta(supportContactLabels(source), supportContactLabels(target)),
+      supportAmount: ordinalDelta(
+        sourceSupport?.supportAmount ?? "unknown",
+        targetSupport?.supportAmount ?? "unknown",
+        supportAmountValue,
+      ),
+      supportRelationship: literalDelta(
+        sourceSupport?.supportRelationship ?? "unknown",
+        targetSupport?.supportRelationship ?? "unknown",
       ),
     },
     resistancePath: {
@@ -423,8 +465,15 @@ function movementRoleEvidence(delta: ExerciseTransitionStructuralDelta): string 
 
 function supportEvidence(delta: ExerciseTransitionStructuralDelta): string {
   return [
-    categoricalDeltaEvidence("external support", delta.support.externalSupport),
-    categoricalDeltaEvidence("body support", delta.support.bodySupport),
+    categoricalDeltaEvidence("base position", delta.support.basePosition),
+    categoricalDeltaEvidence("stance", delta.support.stance),
+    categoricalDeltaEvidence("orientation", delta.support.orientation),
+    valueDeltaEvidence("support amount", delta.support.supportAmount),
+    categoricalDeltaEvidence(
+      "support relationship",
+      delta.support.supportRelationship,
+    ),
+    `support contacts: sourceOnly=[${delta.support.contacts.sourceOnly.join(", ") || "none"}]; targetOnly=[${delta.support.contacts.targetOnly.join(", ") || "none"}]`,
   ].join("; ");
 }
 

@@ -1,6 +1,13 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { REFERENCE_EXERCISES } from "../../src";
+import {
+  REFERENCE_EXERCISES,
+  getControlledCandidateScenario,
+  runCandidateRankingLab,
+  validateExerciseDefinition,
+  type ExerciseDefinition,
+  type SessionSection,
+} from "../../src";
 import {
   CONTEXTUAL_PHASE_POLICIES,
   CONTEXTUAL_PHASE_OWNER_POLICIES,
@@ -37,7 +44,7 @@ function annotation(input: {
     reason: "Synthetic resolver test.",
     reviewStatus: input.reviewStatus ?? "accepted",
     provenance: {
-      sourceType: "synthetic_counterfactual",
+      sourceType: "owner_decision",
       sourceRef: `test:${input.annotationId}`,
       evidenceBasis: ["Resolver unit test."],
     },
@@ -154,6 +161,27 @@ describe("phase annotation context and uncertainty review", () => {
     expect(phaseResolutionCanAffectProductionScoring(poor)).toBe(false);
   });
 
+  it("keeps an explicit unknown annotation distinct from no contextual match", () => {
+    const unknownAnnotation = annotation({
+      annotationId: "explicit-unknown",
+      suitability: "possible",
+      roles: ["activation"],
+      sections: ["activation"],
+      reviewStatus: "unknown",
+    });
+    const resolution = resolveContextualPhaseAnnotation({
+      phaseId: "phase_3",
+      requestedRole: "activation",
+      requestedSection: "activation",
+      exerciseId: "band-face-pull",
+      annotations: [unknownAnnotation],
+    });
+
+    expect(resolution.evidenceStatus).toBe("UNKNOWN_ANNOTATION");
+    expect(resolution.selectedAnnotation?.annotationId).toBe("explicit-unknown");
+    expect(resolution.productionScoringEligible).toBe(false);
+  });
+
   it("requires accepted provenance before production phase scoring can use evidence", () => {
     const reviewedAccepted = annotation({
       annotationId: "accepted-owner",
@@ -221,6 +249,137 @@ describe("phase annotation context and uncertainty review", () => {
     expect(forward.evidenceStatus).toBe("CONFLICTING_ANNOTATIONS");
     expect(forward.unresolvedConflictIds).toEqual(["conflict-a", "conflict-b"]);
     expect(reverse.unresolvedConflictIds).toEqual(forward.unresolvedConflictIds);
+  });
+
+  it("requires accepted general evidence to cover every legal role and section", () => {
+    const exercise = REFERENCE_EXERCISES.find(
+      (candidate) => candidate.id === "band-face-pull",
+    );
+    if (!exercise) throw new Error("Missing band-face-pull fixture.");
+
+    const acceptedGeneral: ExercisePhaseSuitabilityAnnotation = {
+      ...annotation({ annotationId: "accepted-general", suitability: "good" }),
+      provenance: {
+        sourceType: "human_exercise_science_review",
+        sourceRef: "PHASE-GENERAL-REVIEW-2026-08-12",
+        evidenceBasis: ["Reviewed every legal role and section."],
+        reviewerId: "exercise-science-reviewer",
+        reviewedAt: "2026-08-12T00:00:00.000Z",
+      },
+    };
+    const withoutCoverage: ExerciseDefinition = {
+      ...exercise,
+      phaseSuitabilityAnnotations: [acceptedGeneral],
+    };
+    const withCoverage: ExerciseDefinition = {
+      ...exercise,
+      phaseSuitabilityAnnotations: [
+        {
+          ...acceptedGeneral,
+          provenance: {
+            ...acceptedGeneral.provenance,
+            legalUseCoverage: {
+              trainingRoles: exercise.trainingRoles,
+              sessionSections: Object.keys(
+                exercise.sectionSuitability,
+              ) as SessionSection[],
+            },
+          },
+        },
+      ],
+    };
+
+    expect(validateExerciseDefinition(withoutCoverage).map((finding) => finding.code)).toContain(
+      "general_phase_annotation_missing_legal_use_coverage",
+    );
+    expect(validateExerciseDefinition(withCoverage).map((finding) => finding.code)).not.toContain(
+      "general_phase_annotation_missing_legal_use_coverage",
+    );
+  });
+
+  it("rejects empty or illegal contextual scopes at the exercise boundary", () => {
+    const exercise = REFERENCE_EXERCISES.find(
+      (candidate) => candidate.id === "band-face-pull",
+    );
+    if (!exercise) throw new Error("Missing band-face-pull fixture.");
+
+    const malformed = {
+      ...annotation({
+        annotationId: "malformed-scope",
+        suitability: "good",
+        roles: [],
+        sections: ["main"],
+        reviewStatus: "needs_review",
+      }),
+      provenance: {
+        sourceType: "legacy_reference_catalog_migration" as const,
+        sourceRef: "legacy:phaseSuitability.phase_3",
+        evidenceBasis: ["Legacy rationale awaiting contextual review."],
+      },
+    };
+    const findings = validateExerciseDefinition({
+      ...exercise,
+      phaseSuitabilityAnnotations: [malformed],
+    }).map((finding) => finding.code);
+
+    expect(findings).toContain("empty_phase_annotation_role_scope");
+    expect(findings).toContain("phase_annotation_section_outside_legal_use");
+  });
+
+  it("adds contextual phase resolution to DecisionTrace without changing production scoring", () => {
+    const scenario = getControlledCandidateScenario("horizontal-pull-gym-neutral");
+    const exercise = REFERENCE_EXERCISES.find((candidate) => candidate.id === "machine-row");
+    if (!scenario || !exercise) throw new Error("Missing phase trace fixtures.");
+
+    const accepted: ExercisePhaseSuitabilityAnnotation = {
+      annotationId: "machine-row-reviewed-context",
+      exerciseId: exercise.id,
+      phaseId: scenario.request.phase.id,
+      suitability: "poor",
+      scope: {
+        trainingRoles: [scenario.request.need.requestedRole],
+        ...(scenario.request.need.requestedSection
+          ? { sessionSections: [scenario.request.need.requestedSection] }
+          : {}),
+      },
+      reason: "Reviewed contextual fixture; prose is trace-only.",
+      reviewStatus: "accepted",
+      provenance: {
+        sourceType: "owner_decision",
+        sourceRef: "OWNER-PHASE-TRACE-2026-08-12",
+        evidenceBasis: ["Exact role and section owner decision."],
+        reviewerId: "project-owner",
+        reviewedAt: "2026-08-12T00:00:00.000Z",
+      },
+    };
+    const annotated: ExerciseDefinition = {
+      ...exercise,
+      phaseSuitabilityAnnotations: [accepted],
+    };
+    const baseline = runCandidateRankingLab({
+      ...scenario.request,
+      candidatePool: [exercise],
+    });
+    const traced = runCandidateRankingLab({
+      ...scenario.request,
+      candidatePool: [annotated],
+    });
+
+    expect(traced.decisionTrace.candidatePhaseResolutions).toEqual([
+      expect.objectContaining({
+        candidateExerciseId: exercise.id,
+        evidenceStatus: "ACCEPTED_ANNOTATION",
+        productionScoringEligible: true,
+      }),
+    ]);
+    expect(traced.rankedCandidates[0].total).toBe(baseline.rankedCandidates[0].total);
+    expect(
+      traced.rankedCandidates[0].components.find((component) => component.id === "phase_fit")
+        ?.value,
+    ).toBe(
+      baseline.rankedCandidates[0].components.find((component) => component.id === "phase_fit")
+        ?.value,
+    );
   });
 
   it("scopes accessory rationale away from the Phase 3 activation request", () => {
@@ -369,7 +528,9 @@ describe("phase annotation context and uncertainty review", () => {
   });
 
   it("stops at owner decision with the approved future PhaseIntent treatment", () => {
-    expect(data.classification).toBe("PHASE_CONTEXT_CONTRACT_READY_FOR_OWNER_DECISION");
+    expect(data.classification).toBe(
+      "PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING",
+    );
     expect(data.primaryGoalRecommendation).toContain("developmentalEmphasis");
     expect(data.remainingP1).toHaveLength(3);
   });
@@ -381,7 +542,9 @@ describe("phase annotation context and uncertainty review", () => {
     expect(rendered).toContain("## Review Status Production Behavior");
     expect(rendered).toContain("## Accepted Evidence Provenance Contract");
     expect(rendered).toContain("## Counterfactual Contract Tests");
-    expect(rendered).toContain("**PHASE_CONTEXT_CONTRACT_READY_FOR_OWNER_DECISION**");
+    expect(rendered).toContain(
+      "**PHASE_CONTEXT_SCHEMA_AND_RESOLVER_IMPLEMENTED_POLICY_PENDING**",
+    );
     expect(
       readFileSync(
         new URL(

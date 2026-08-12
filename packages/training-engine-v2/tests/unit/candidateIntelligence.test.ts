@@ -448,7 +448,9 @@ describe("Candidate Intelligence foundation", () => {
     const chestSupported = rowVariant(base, {
       id: "structured-support-row",
       support: {
-        bodySupport: "chest_supported",
+        supportContacts: [
+          { bodyRegion: "chest", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        ],
       },
     });
 
@@ -470,14 +472,18 @@ describe("Candidate Intelligence foundation", () => {
       id: "decoy-chest-supported-name-only",
       name: "Chest Supported Name Decoy",
       support: {
-        bodySupport: "seated_supported",
+        supportContacts: [
+          { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        ],
       },
     });
     const structuredSupport = rowVariant(base, {
       id: "opaque-row-structure-only",
       name: "Opaque Row",
       support: {
-        bodySupport: "chest_supported",
+        supportContacts: [
+          { bodyRegion: "chest", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        ],
       },
     });
     const trace = buildHorizontalRowSelectionTrace(
@@ -491,7 +497,7 @@ describe("Candidate Intelligence foundation", () => {
 
     expect(textOnlyTrace?.contextualDifferentiators).toEqual(["none"]);
     expect(structuredTrace?.contextualDifferentiators).toContain(
-      "structured support: chest_supported body support in lumbar-spine context",
+      "structured support: primary chest contact in lumbar-spine context",
     );
     expect(structuredTrace?.contextualDifferentiators.join(" ")).not.toContain(
       structuredSupport.id,
