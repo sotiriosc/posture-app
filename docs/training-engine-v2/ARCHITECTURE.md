@@ -30,7 +30,8 @@ The package models the intended reasoning order without implementing production 
 - `domain/trainingResponse.ts`: exposure-linked factual tolerance, symptom-change, timing, consequence, descriptive location/side, provenance, and explicit unknown observations.
 - `domain/equipment.ts`: capability-based equipment and training-space model with pure requirement evidence.
 - `domain/phase.ts`: first-class Phase 1, Phase 2, Phase 3 intents.
-- `domain/session.ts`: warmup, activation, main, accessory, cooldown, and preparation dependencies.
+- `domain/exerciseSelectionNeed.ts`: canonical lower-level exercise-selection truth.
+- `domain/session.ts`: needs-first Session Intent, five semantic sections, structural capacity, preparation dependencies, and multiple-identity continuity evidence.
 - `domain/programming.ts`: weekly intent and planned-program contracts.
 - `domain/history.ts`: exercise, session, program, progression, and fatigue history.
 - `domain/progression.ts`: canonical same-exercise progression-axis vocabulary.
@@ -47,8 +48,7 @@ The package models the intended reasoning order without implementing production 
 - `alignment.ts`: assessment-derived alignment priority contracts.
 - `pipelineObservability.ts`: stage snapshots for debugging and bug localization.
 - `candidate/request.ts`: serializable Candidate Intelligence context, including explicit evaluation time.
-- `sessionComposer/designContracts.ts`: design-only normalized need, intent, candidate handoff, non-prescribed skeleton, evaluation, trace, and infeasibility contracts. It is intentionally absent from the package public API.
-- `tests/helpers/sessionComposerDesignLab.ts`: exhaustive controlled-pool design laboratory, greedy oracle, scenario/cohort matrices, fingerprints, and report generation. It is test infrastructure, not production composition.
+- `sessionComposer/*`: exported production candidate seam, consistency checks, canonical facts, validity, strict lexicographic evaluation, calibrated exact/bounded search, non-prescribed skeleton, and Prescription/duration/Sequencing handoffs.
 - `candidate/pain/*`: canonical source-aware exercise stress facts, signal/tag matching, review urgency, receiver-specific policies, candidate/result execution readiness, response ownership, and serializable pain traces.
 - `candidate/scoring/assessment/*`: modular assessment normalization, relevance, feature target, demand/capability, challenge, budget, and trace responsibilities.
 - `transitionComparison.ts`: observational structural deltas for reviewed cross-exercise transitions with no automatic selection effect.
@@ -201,19 +201,19 @@ V2 receives normalized typed findings; it does not interpret images or diagnose.
 
 Do not impose tiny files. Do flag modules that start combining unrelated training responsibilities. Future giant `scoring.ts` or `program.ts` modules are explicitly undesirable.
 
-## Session Composer Design Boundary
+## Session Composer Production Boundary
 
-The Session Composer design phase is authorized. Design-only contracts model required, preferred and optional needs; Candidate Intelligence remains authority for legal candidates per exact need; composition evaluates complete identity sets, shared coverage, section assignment, useful continuity, dependencies, redundancy, fatigue/stress potential, setup structure and marginal value; Sequencing owns exact within-section order; Prescription remains authority for realized dose, stress and duration.
+The exported low-level kernel consumes Planner-authored `SessionNeed[]`, builds exact Candidate Intelligence results, validates one shared context, derives canonical composition facts, and searches whole-session skeletons with the owner-approved strict lexicographic policy. Display sections create no quotas. Structural capacity is explicit and never inferred from minutes. Composition status, execution readiness, and search completeness remain separate.
 
-The laboratory is callable only from test helpers over precomputed snapshots. It is not exported, does not call Candidate Intelligence, and does not connect to product state. Display sections create no quotas. It emits ordering constraints rather than final sequence. Structural availability removes lower-priority work without inventing minute estimates. Infeasibility remains visible rather than causing fabricated coverage.
+The production search is exhaustive through 350 estimated expansions and otherwise uses a calibrated deterministic budget of 48 expansions with frontier 4. Bounded output remains visibly non-optimal or inconclusive; it never repairs, widens pools, or fabricates fallback exercises. Prescription owns dose and realized duration. Sequencing owns final within-section order. The kernel is not connected to product state or final program generation.
 
 See `SESSION_COMPOSER_DESIGN_CONTRACT.md`, `SESSION_NEED_AND_DEPENDENCY_MODEL.md`, `SESSION_COMPOSITION_EVALUATION_POLICY.md`, `SESSION_COMPOSER_SEARCH_LAB.md`, `SESSION_COMPOSER_PERSONALIZATION_MATRIX.md`, and `SESSION_COMPOSER_IMPLEMENTATION_READINESS.md`.
 
 ## Non-Goals In This Phase
 
-Candidate Intelligence does not generate workouts or compose sessions. The separate Session Composer laboratory evaluates explicit snapshots but production Session Composer wiring, production search, session-intent derivation, compose-week behavior, final phase gates, and Praxis application integration remain unimplemented. Candidate ranking is evidence for composition, not a program. The response receiver and progression integration are policy/observability boundaries; they select no dose axis or exercise. The engine input/result safety contract is complete, while golden-product adapter work is separately `PRODUCT_ADAPTER_PENDING`. The owner-selected contextual phase scorer is production authority; the focused seven-row milestone and eight-row P0 whole-body admission are complete.
+Candidate Intelligence still does not generate workouts; it supplies local evidence to the downstream production Session Composer kernel. Session Intent Planner, compose-week behavior, final phase gates, dose generation, final sequencing, and Praxis application integration remain unimplemented. Candidate ranking is evidence for composition, not a program. The response receiver and progression integration are policy/observability boundaries; they select no dose axis or exercise. The engine input/result safety contract is complete, while golden-product adapter work is separately `PRODUCT_ADAPTER_PENDING`.
 
-Current implementation update: exactly eight owner-approved P0 identities are present once each alongside the prior 37 rows in one canonical 45-row catalog. Broad roles, exact actions, canonical muscle relationships, explicit equipment legality, support/stance mechanics, and preparation dependencies determine their legal pools. `stable_support_surface` derives only from explicit support surfaces; `band_unanchored` and `prescription_dependent` preserve resistance-path truth. All eight abstain from contextual phase scoring, and cross-exercise relationships remain observational with no automatic selection effect. Candidate Intelligence is classified `CANDIDATE_INTELLIGENCE_READY_FOR_SESSION_COMPOSER_DESIGN`; the evidence-based design classification is `TARGETED_DESIGN_DECISIONS_REQUIRED`. Production optimizer policy, authoritative domain migration, exact sequencing, Prescription handoff and production wiring still require approval. The future Praxis Knowledge Layer remains an optional adapter keyed by `ExerciseDefinition.id`, not an engine dependency. Praxis Library, Coaching Rail, UI, CMS, routes, P1 rows, and automatic progression/replacement remain unimplemented.
+Current implementation classification is `SESSION_COMPOSER_PRODUCTION_KERNEL_READY_FOR_SESSION_INTENT_PLANNER`. Candidate Intelligence and the canonical 45-row catalog remain frozen. The earlier `TARGETED_DESIGN_DECISIONS_REQUIRED` result is historical laboratory evidence; owner decisions, authoritative needs-first migration, production search, and handoff contracts now supersede it. The future Praxis Knowledge Layer remains an optional adapter keyed by `ExerciseDefinition.id`, not an engine dependency. Praxis Library, Coaching Rail, UI, CMS, routes, P1 rows, and automatic progression/replacement remain unimplemented.
 # Causal Personalization Boundary (2026-08-12)
 
 Candidate ranking owns structured facts that can alter candidate legality, score, rank, readiness, or trace. Composer owns availability, weekly scheduling, and variety policy. Athlete labels, IDs, and prose remain trace-only. Identical outputs from materially equivalent active inputs are `JUSTIFIED_CONVERGENCE`; forced uniqueness is prohibited. See `ACTUAL_USER_PERSONALIZATION_AND_COUNTERFACTUAL_CONTRACT.md`.

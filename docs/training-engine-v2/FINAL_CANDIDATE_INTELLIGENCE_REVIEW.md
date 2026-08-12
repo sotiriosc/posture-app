@@ -1,6 +1,6 @@
 # Final Candidate Intelligence Readiness Review
 
-`ENGINE_V2_BLUEPRINT.md` is authoritative. This review is audit/evidence/classification only; it does not tune weights, change exercise metadata, create Session Composer, create Week Composer, or implement production prescription progression.
+`ENGINE_V2_BLUEPRINT.md` is authoritative. This historical Candidate Intelligence review is audit/evidence/classification only; the subsequent Session Composer production milestone did not tune weights, change exercise metadata, create Week Composer, or implement production Prescription progression.
 
 ## Scope
 
@@ -40,7 +40,7 @@ A deterministic proposal evaluated 24 new candidate concepts and selected Forear
 
 Historical milestone status: **SEVEN_EXERCISE_PRODUCTION_COMPLETE**. Those seven trunk/carry rows remain production knowledge with approved phase/stress, equipment, support/stance, prescription/progression, response, and safety contracts. Wall-supported suitcase march remains constrained to `loaded_bracing`; it does not satisfy `carry` or hard `anti_lateral_flexion_core`.
 
-The exact next dependency is separate owner authorization for Session Composer design over the truthful legal candidate pools. Golden-product TrainingSafety wiring remains separately classified as PRODUCT_ADAPTER_PENDING, and P1 catalog concepts remain unimplemented future improvements.
+At the time of this review, the exact next dependency was owner authorization for Session Composer design. That authorization and the later production-kernel authorization have now been exercised. Golden-product TrainingSafety wiring remains separately classified as PRODUCT_ADAPTER_PENDING, and P1 catalog concepts remain unimplemented future improvements.
 
 The 17 representative secondary-mechanics proposals remain independently unresolved. They do not block review of the new candidate concepts, and the catalog proposal does not authorize their profile implementation.
 
@@ -367,8 +367,8 @@ Contextual programming intent remains explicit and retains reviewed transition p
 
 ## Readiness Rationale
 
-Candidate Intelligence graduates because the 45-row legal pools are truthful, deterministic ranking and DecisionTrace remain inspectable, direct actions and primary-required muscles are selectable, preparation dependencies have bounded candidates, equipment gaps stay explicit, response-led continuity remains separate from replacement, TrainingSafety affects downstream readiness without changing rank, and contextual phase abstention adds no synthetic vote. P1 concepts are improvements rather than blockers. Session Composer design remains separately authorized and unimplemented.
+Candidate Intelligence graduates because the 45-row legal pools are truthful, deterministic ranking and DecisionTrace remain inspectable, direct actions and primary-required muscles are selectable, preparation dependencies have bounded candidates, equipment gaps stay explicit, response-led continuity remains separate from replacement, TrainingSafety affects downstream readiness without changing rank, and contextual phase abstention adds no synthetic vote. P1 concepts are improvements rather than blockers. This was the pre-Composer conclusion; the subsequent production milestone is recorded below.
 
-## Subsequent Session Composer Design Review
+## Subsequent Session Composer Milestones
 
-Owner authorization subsequently permitted design and whole-session laboratory work only. Candidate Intelligence remains unchanged and continues to supply exact legal per-need evidence. The design audit rejects fixed `SessionIntent.slots` as future authority and proposes normalized needs plus non-prescribed assignments. Sixteen controlled scenarios, nine greedy failures, three availability structures and an eleven-user fixed-shell cohort classify the design `TARGETED_DESIGN_DECISIONS_REQUIRED`. This does not revise the Candidate Intelligence graduation result or authorize production composition.
+The design laboratory historically classified policy gaps as `TARGETED_DESIGN_DECISIONS_REQUIRED`. The owner then approved those policies and authorized the production kernel. Candidate Intelligence remains unchanged and continues to supply exact legal per-need evidence. Fixed `SessionIntent.slots` are no longer authoritative; normalized needs, production whole-session search, non-prescribed assignments, and explicit downstream handoffs are exported. Current classification is `SESSION_COMPOSER_PRODUCTION_KERNEL_READY_FOR_SESSION_INTENT_PLANNER`, without application wiring, Week Composer, dose generation, or final sequencing.

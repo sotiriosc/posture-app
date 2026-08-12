@@ -84,15 +84,15 @@ Phase is first-class through `PhaseIntent`, `PhaseCapabilityExpectation`, `Phase
 
 The package includes Phase 1, Phase 2, and Phase 3 representations. Phase changes do not require exercise replacement; the same exercise can continue with a different prescription when productive.
 
-## Session Composer Design Domain
+## Session Composer Production Domain
 
-The future authoritative Session Intent is needs-first. A normalized `SessionNeed` preserves source evidence, required/preferred/optional priority, intended section, one canonical `CandidateNeed`, dependencies, expected prescription resolution, structured reason code and inert explanation. Existing `SessionIntent.priorityMuscles`, `priorityMovementRoles` and `slots` must not become parallel mutable truths; future compatibility projections should derive from needs.
+The authoritative `SessionIntent` is needs-first. Each `SessionNeed` owns stable identity, semantic section, required/preferred/optional priority, unique non-negative `priorityOrder`, standalone admission, source/dependency evidence, reason code, inert explanation, and one canonical `ExerciseSelectionNeed`. That lower-level selection contract contains role, movement, action, muscle relationship, and body-region truth only. Legacy `CandidateNeed` is a deterministic compatibility projection; fixed slots are no longer Session Intent authority.
 
-The design-only `SessionCompositionInput` separates normalized intent, precomputed Candidate Intelligence evidence by need, explicit evaluation time, TrainingReadiness, availability, continuity/response references and deterministic search policy. No callbacks or services cross the pure seam.
+`SessionIntent` additionally owns athlete, kind, phase, primary goal, structural capacity, available-minute context, assessment/pain-response references, fatigue, multiple-identity continuity evidence, Planner trace, and unresolved weekly references. Capacity is serialized as condensed, standard, expanded, or unknown and is never derived from minute thresholds.
 
-The proposed `PlannedSessionSkeleton` is not a workout prescription. It contains five semantic section plans, one assignment per selected stable identity, need-coverage edges, candidate and continuity evidence, dependencies, unresolved Prescription/review requirements, marginal value, redundancy, potential concentration, setup structure, structural time feasibility, ordering constraints, decision trace and truthful infeasibility. It contains no sets, reps, load, range, support, effort or rest.
+The exported `SessionSkeleton` is not a workout prescription. It contains five semantic sections, one assignment per stable identity, truthful need coverage, per-need candidate evidence, continuity, dependencies, unresolved review/Prescription requirements, marginal-value reasons, redundancy and concentration traces, ordering constraints, separated status/readiness/completeness, and truthful infeasibility. It contains no sets, reps, load, range, support, effort, rest, or final within-section order.
 
-These contracts remain design-only and are not exported from the package API. See `SESSION_COMPOSER_CURRENT_SEAM_AUDIT.md` and `SESSION_NEED_AND_DEPENDENCY_MODEL.md`.
+See `SESSION_COMPOSER_PRODUCTION_KERNEL.md` and `SESSION_NEED_AND_DEPENDENCY_MODEL.md`.
 
 ## Exercise Mechanics
 

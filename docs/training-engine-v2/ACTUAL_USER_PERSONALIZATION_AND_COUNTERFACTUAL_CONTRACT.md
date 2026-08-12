@@ -54,11 +54,11 @@ The reviewed cohort holds candidate pool, need shell, phase, and equipment const
 
 The consequence may be a legality delta, score/component delta, rank delta, readiness delta, or explicit trace delta. A winner change is not required.
 
-## Session Composer Design Acceptance
+## Session Composer Production Acceptance
 
-The authorized design laboratory now consumes availability and structured Session Intent after Candidate Intelligence. Its pure proposed seam separates normalized needs, per-need candidate evidence, explicit evaluation time, readiness, continuity/response context and deterministic search policy. It remains test-only and exports no production `composeSession` API.
+The exported production kernel consumes Planner-authored normalized needs after Candidate Intelligence. Its pure seam separates per-need candidate evidence, explicit evaluation time, readiness, continuity/response context and deterministic search policy. It exposes low-level composition and handoff APIs without application wiring.
 
-The eleven-user fixed-shell session cohort holds experience, full-gym equipment, Phase 1, evaluation time and the 45-row catalog constant. Goal, pain context, assessment, continuity, adverse response, preference, availability and fatigue create material skeleton differences, same-anchor need differences, prescription requirements or justified convergence; unresponsive-material-input failures are zero. Availability changes priority admission and structural condensation, never exercise truth or exact duration claims.
+The eleven-user fixed-shell session cohort holds experience, full-gym equipment, Phase 1, evaluation time and the 45-row catalog constant. Goal, pain context, assessment, continuity, adverse response, preference, explicit Planner capacity and fatigue create material skeleton differences, same-anchor need differences, Prescription requirements or justified convergence. Raw minutes alone never change identity admission; they pass unchanged to duration feasibility.
 
 Variety remains acceptance-contract-only: low variety may reinforce stable supporting work; moderate/high variety may make comparable accessories rotation-eligible under a future explicit budget. No randomization, rotation or productive-anchor displacement is implemented.
 

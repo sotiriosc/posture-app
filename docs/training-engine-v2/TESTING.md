@@ -61,14 +61,14 @@ Tests should remain small and readable at the component boundary. Current respon
 - P0 whole-body production regression covering exactly eight stable IDs, 37-to-45 admission, family/schema bounds, role/action/section truth, canonical muscle relationships, equipment and derived-support legality, phase abstention, sparse prerequisites, exact progression axes, four observational transitions, compact coaching, fixed-shell personalization, anti-bloat, pain/safety/response boundaries, Knowledge compatibility, and Candidate Intelligence graduation;
 - support/stance mechanics contract review, including current support consumer audit, compositional schema recommendation, seven-exercise blocking gaps, no existing support/stance lie findings, and unchanged production behavior;
 - pipeline snapshots for bug localization.
-- Session Composer current-seam field audit and public-API invariance;
-- design-only normalized SessionNeed, SessionIntent, composition-input, skeleton, satisfaction, trace and infeasibility contracts;
+- Session Composer current-seam migration and exported public API;
+- production normalized SessionNeed, SessionIntent, composition-input, skeleton, satisfaction, trace and infeasibility contracts;
 - sixteen controlled whole-session scenarios spanning strength, hypertrophy, general fitness, movement quality, pain contexts, continuity, response, availability, home equipment, P0 direct work, safety blocking and empty cooldown;
 - canonical multi-need truth, one identity/one future source event, section legality and preparation ordering constraints;
 - nine-case greedy failure oracle, anti-bloat invariants, continuity counterfactuals and no fallback/repair behavior;
-- 25/45/70-minute structural availability consequences with no invented duration estimates;
+- raw-minute invariance, Planner-owned structural-capacity consequences, and no invented duration estimates;
 - eleven-user fixed-shell session cohort with material difference, same-anchor personalization, prescription difference, justified convergence and zero unresponsive-material-input failures;
-- seventeen isolated Session Composer design fingerprints plus frozen production ranking, comprehensive, catalog and Knowledge compatibility fingerprints.
+- twenty-two isolated Session Composer production fingerprints plus frozen production ranking, comprehensive, catalog and Knowledge compatibility fingerprints.
 
 ## Current Command
 
@@ -97,13 +97,13 @@ Lower-level component failures should be diagnosable without relying on full-pro
 
 ## Candidate Intelligence Readiness
 
-Green build and test results are necessary but insufficient to begin Session Composer. Readiness also requires deterministic Candidate Lab review, legal-pool inspection, reason-code and trace audits, tie review, uncertainty review, exercise-science judgment, and explicit acceptance of the permanent gate in `ENGINE_V2_BLUEPRINT.md`.
+Green build and test results were necessary but insufficient to begin Session Composer. Deterministic Candidate Lab review, legal-pool inspection, reason-code and trace audits, tie review, uncertainty review, exercise-science judgment, and explicit owner acceptance completed that gate.
 
 Tests must not force arbitrary row differentiation. If two legal candidates have identical meaningful structured inputs, an explained tie is preferable to false precision. A new distinction requires a real request fact and reviewed exercise metadata.
 
 The trunk/core domain contract does not make current exercises more specific by assertion. The response receiver, progression integration, engine safety boundary, production contextual phase scorer, 90-row historical phase disposition, focused low-back stress curation, and seven-row response-sensitive support/stress contracts remain independently testable. Golden-product safety adapter work remains separately `PRODUCT_ADAPTER_PENDING` and does not make the normalized engine boundary incomplete.
 
-Current status supersedes the historical pre-implementation wording above: owner decisions, seven trunk/carry rows, and eight P0 whole-body rows are implemented, taking the canonical catalog from 30 to 37 and then 37 to 45. The contextual scorer is production authority, while every P0 row abstains pending accepted contextual evidence. Candidate Intelligence is `CANDIDATE_INTELLIGENCE_READY_FOR_SESSION_COMPOSER_DESIGN`. The authorized design-only Session Composer laboratory is covered, with overall result `TARGETED_DESIGN_DECISIONS_REQUIRED`; production Session Composer, Week Composer, P1 rows, Knowledge/Library/Coaching Rail, and automatic progression/replacement remain outside this suite.
+Current status supersedes historical pre-implementation wording: Candidate Intelligence remains frozen, and the production Session Composer kernel passes needs-first domain, 16-scenario, 11-user, multiple-anchor, review, Prescription, availability, anti-bloat, exhaustive/bounded, and 10,000-case deterministic tests. Classification is `SESSION_COMPOSER_PRODUCTION_KERNEL_READY_FOR_SESSION_INTENT_PLANNER`. Session Intent Planner, Week Composer, final Sequencing, Prescription generation, P1 rows, Knowledge/Library/Coaching Rail, and automatic progression/replacement remain outside this suite.
 
 ## Bug Localization
 

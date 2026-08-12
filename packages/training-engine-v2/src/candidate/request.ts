@@ -12,10 +12,20 @@ import type {
   MuscleGroup,
   TrainingGoal,
 } from "../domain/primitives";
-import type { SessionIntent, SessionSection, TrainingRole } from "../domain/session";
+import type {
+  SessionFatigueSignal,
+  SessionIntent,
+  SessionSection,
+  TrainingRole,
+} from "../domain/session";
 import type { TrainingSafetyState } from "../domain/trainingSafety";
+import type {
+  ExerciseSelectionNeed,
+  MuscleRelationshipRequirement,
+} from "../domain/exerciseSelectionNeed";
+import type { SessionNeed } from "../domain/session";
 
-export type FatigueSignal = "fresh" | "local_fatigue" | "systemic_fatigue" | "joint_stress_accumulated";
+export type FatigueSignal = SessionFatigueSignal;
 
 export interface ContinuityContext {
   readonly currentExerciseId?: string;
@@ -39,10 +49,38 @@ export interface CandidateNeed {
   readonly goal: TrainingGoal;
 }
 
-export type MuscleRelationshipRequirement =
-  | "any_meaningful_contributor"
-  | "primary_preferred"
-  | "primary_required";
+export type { MuscleRelationshipRequirement } from "../domain/exerciseSelectionNeed";
+
+export function candidateNeedFromSessionNeed(
+  need: SessionNeed,
+  goal: TrainingGoal,
+): CandidateNeed {
+  return {
+    id: need.id,
+    whyNeeded: need.explanation,
+    requestedRole: need.selection.requestedRole,
+    requestedSection: need.section,
+    targetMovementRoles: need.selection.targetMovementRoles,
+    targetActionFunctions: need.selection.targetActionFunctions,
+    targetMuscles: need.selection.targetMuscles,
+    muscleRequirement: need.selection.muscleRequirement,
+    targetBodyRegions: need.selection.targetBodyRegions,
+    goal,
+  };
+}
+
+export function exerciseSelectionNeedFromCandidateNeed(
+  need: CandidateNeed,
+): ExerciseSelectionNeed {
+  return {
+    requestedRole: need.requestedRole,
+    targetMovementRoles: need.targetMovementRoles,
+    targetActionFunctions: need.targetActionFunctions ?? [],
+    targetMuscles: need.targetMuscles,
+    muscleRequirement: resolveMuscleRequirement(need),
+    targetBodyRegions: need.targetBodyRegions,
+  };
+}
 
 export function resolveMuscleRequirement(need: CandidateNeed): MuscleRelationshipRequirement {
   return need.muscleRequirement ?? "any_meaningful_contributor";

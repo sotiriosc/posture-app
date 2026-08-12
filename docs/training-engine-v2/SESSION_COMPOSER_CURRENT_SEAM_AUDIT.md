@@ -1,135 +1,20 @@
 # Session Composer Current Seam Audit
 
-The current production domain is a useful foundation seam, not an authoritative Composer model. `SessionIntent.slots` encourages fixed exercise-count templates because each slot already implies one exercise-shaped vacancy. `PlannedExercise { exerciseId, slotId }` cannot represent multi-need coverage, section ownership independent of a slot, continuity, candidate evidence, unresolved prescription/review requirements, dependencies, marginal value, excluded high-ranked candidates, or whole-session interaction.
+The seam audit is now implemented.
 
-| Current field | Disposition |
+| Prior seam | Current authority |
 | --- | --- |
-| SessionIntent.id | KEEP_AS_AUTHORITATIVE_INPUT |
-| SessionIntent.phaseIntent | KEEP_AS_AUTHORITATIVE_INPUT |
-| SessionIntent.primaryPurpose | KEEP_AS_AUTHORITATIVE_INPUT |
-| SessionIntent.priorityMuscles | DERIVE_FROM_SESSION_NEEDS |
-| SessionIntent.priorityMovementRoles | DERIVE_FROM_SESSION_NEEDS |
-| SessionIntent.assessmentPriorityIds | KEEP_AS_AUTHORITATIVE_INPUT |
-| SessionIntent.assessmentPriorityLevel | TRACE_ONLY |
-| SessionIntent.relevantPainConstraintIds | KEEP_AS_AUTHORITATIVE_INPUT |
-| SessionIntent.fatigueConsiderations | KEEP_AS_AUTHORITATIVE_INPUT |
-| SessionIntent.slots | LEGACY_PLACEHOLDER |
-| SessionIntent.preparationDependencies | DOMAIN_CHANGE_REQUIRED |
-| TrainingSlot.id | LEGACY_PLACEHOLDER |
-| TrainingSlot.section | MOVE_TO_COMPOSITION_OUTPUT |
-| TrainingSlot.role | DERIVE_FROM_SESSION_NEEDS |
-| TrainingSlot.targetMovementRoles | DERIVE_FROM_SESSION_NEEDS |
-| TrainingSlot.targetMuscles | DERIVE_FROM_SESSION_NEEDS |
-| TrainingSlot.optional | DOMAIN_CHANGE_REQUIRED |
-| TrainingSlot.preparationDependencyIds | DOMAIN_CHANGE_REQUIRED |
-| PreparationDependency.id | KEEP_AS_AUTHORITATIVE_INPUT |
-| PreparationDependency.fromSection | MOVE_TO_COMPOSITION_OUTPUT |
-| PreparationDependency.preparesForSections | LEGACY_PLACEHOLDER |
-| PreparationDependency.preparesForExerciseIds | MOVE_TO_COMPOSITION_OUTPUT |
-| PreparationDependency.movementRoles | KEEP_AS_AUTHORITATIVE_INPUT |
-| PreparationDependency.bodyRegions | KEEP_AS_AUTHORITATIVE_INPUT |
-| PreparationDependency.assessmentSignalIds | KEEP_AS_AUTHORITATIVE_INPUT |
-| PreparationDependency.jointRangeNeeds | DOMAIN_CHANGE_REQUIRED |
-| PreparationDependency.sessionIntentId | KEEP_AS_AUTHORITATIVE_INPUT |
-| PreparationDependency.explanation | TRACE_ONLY |
-| WeeklyIntent.id | DEFER_TO_WEEK_COMPOSER |
-| WeeklyIntent.phaseIntent | KEEP_AS_AUTHORITATIVE_INPUT |
-| WeeklyIntent.primaryGoal | DEFER_TO_WEEK_COMPOSER |
-| WeeklyIntent.sessionsPerWeek | DEFER_TO_WEEK_COMPOSER |
-| WeeklyIntent.movementExposure | DEFER_TO_WEEK_COMPOSER |
-| WeeklyIntent.muscleExposure | DEFER_TO_WEEK_COMPOSER |
-| WeeklyIntent.priorityExposure | DEFER_TO_WEEK_COMPOSER |
-| WeeklyIntent.recoverySpacing | DEFER_TO_WEEK_COMPOSER |
-| WeeklyIntent.volumeIntent | DEFER_TO_WEEK_COMPOSER |
-| WeeklyIntent.phaseObjective | DEFER_TO_WEEK_COMPOSER |
-| PlannedExercise.exerciseId | MOVE_TO_COMPOSITION_OUTPUT |
-| PlannedExercise.slotId | DOMAIN_CHANGE_REQUIRED |
-| PlannedSession.sessionIntent | KEEP_AS_AUTHORITATIVE_INPUT |
-| PlannedSession.plannedExercises | DOMAIN_CHANGE_REQUIRED |
-| CandidateNeed.id | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateNeed.whyNeeded | TRACE_ONLY |
-| CandidateNeed.requestedRole | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateNeed.requestedSection | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateNeed.targetMovementRoles | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateNeed.targetActionFunctions | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateNeed.targetMuscles | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateNeed.muscleRequirement | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateNeed.targetBodyRegions | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateNeed.goal | LEGACY_PLACEHOLDER |
-| CandidateRequest.id | TRACE_ONLY |
-| CandidateRequest.evaluationContext | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.athlete | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.goal | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.phase | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.need | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.sessionIntent | LEGACY_PLACEHOLDER |
-| CandidateRequest.assessment | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.alignmentPriorities | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.painAndInjury | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.trainingSafety | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.equipment | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.history | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.continuity | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.candidatePool | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.satisfiedPrerequisiteIds | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.fatigueSignals | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRequest.notes | TRACE_ONLY |
-| CandidateRankingResult.request | TRACE_ONLY |
-| CandidateRankingResult.interpretedContext | TRACE_ONLY |
-| CandidateRankingResult.hardRejectedCandidates | TRACE_ONLY |
-| CandidateRankingResult.legalCandidateCount | TRACE_ONLY |
-| CandidateRankingResult.rankedCandidates | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRankingResult.painExecutionReadiness | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRankingResult.trainingReadiness | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidateRankingResult.assessmentInfluence | TRACE_ONLY |
-| CandidateRankingResult.alignmentPriorities | TRACE_ONLY |
-| CandidateRankingResult.decisionTrace | TRACE_ONLY |
-| CandidateRankingResult.pipeline | TRACE_ONLY |
-| TrainingReadinessTrace.status | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingReadinessTrace.downstreamTrainingAllowed | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingReadinessTrace.reviewRequiredFirst | TRACE_ONLY |
-| TrainingReadinessTrace.urgentExternalReviewRequired | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingReadinessTrace.unresolvedSignalIds | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingReadinessTrace.externallyResolvedSignalIds | TRACE_ONLY |
-| TrainingReadinessTrace.evidence | TRACE_ONLY |
-| TrainingReadinessTrace.reason | TRACE_ONLY |
-| CandidatePainExecutionReadinessTrace.candidateExerciseId | TRACE_ONLY |
-| CandidatePainExecutionReadinessTrace.readiness | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidatePainExecutionReadinessTrace.applicableRequirements | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidatePainExecutionReadinessTrace.ignoredNotApplicableRequirements | TRACE_ONLY |
-| CandidatePainExecutionReadinessTrace.urgencySignals | KEEP_AS_AUTHORITATIVE_INPUT |
-| CandidatePainExecutionReadinessTrace.reason | TRACE_ONLY |
-| TrainingResponseReceiverTrace.asOf | TRACE_ONLY |
-| TrainingResponseReceiverTrace.exerciseId | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.prescriptionId | DEFER_TO_PRESCRIPTION |
-| TrainingResponseReceiverTrace.performanceRecordId | TRACE_ONLY |
-| TrainingResponseReceiverTrace.classifications | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.nextOwner | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.continuityRecommendation | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.exactRealizationEvidence | TRACE_ONLY |
-| TrainingResponseReceiverTrace.relatedRealizationEvidence | TRACE_ONLY |
-| TrainingResponseReceiverTrace.exerciseIdentityHistory | TRACE_ONLY |
-| TrainingResponseReceiverTrace.latestExactResponse | TRACE_ONLY |
-| TrainingResponseReceiverTrace.adverseHistory | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.successfulReExposure | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.mixedOrConflictingExactEvidence | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.unknownExactEvidence | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.prescriptionReviewPrecedesReplacement | KEEP_AS_AUTHORITATIVE_INPUT |
-| TrainingResponseReceiverTrace.automaticPrescriptionChange | DEFER_TO_PRESCRIPTION |
-| TrainingResponseReceiverTrace.automaticProgressionDecision | TRACE_ONLY |
-| TrainingResponseReceiverTrace.automaticExerciseReplacement | TRACE_ONLY |
-| TrainingResponseReceiverTrace.reason | TRACE_ONLY |
-| ExercisePrescription.prescriptionId | DEFER_TO_PRESCRIPTION |
-| ExercisePrescription.sourceExposureEventId | DEFER_TO_PRESCRIPTION |
-| ExercisePrescription.exerciseId | DEFER_TO_PRESCRIPTION |
-| ExercisePrescription.phaseId | DEFER_TO_PRESCRIPTION |
-| ExercisePrescription.createdAt | DEFER_TO_PRESCRIPTION |
-| ExercisePrescription.dose | DEFER_TO_PRESCRIPTION |
-| ExercisePrescription.executionStandard | DEFER_TO_PRESCRIPTION |
-| ExercisePrescription.rationale | DEFER_TO_PRESCRIPTION |
-| ExercisePrescription.intendedProgressionAxes | TRACE_ONLY |
-| ExercisePrescription.provenance | DEFER_TO_PRESCRIPTION |
+| CandidateNeed selection fields | Canonical `ExerciseSelectionNeed`; deterministic legacy adapter only |
+| CandidateNeed goal | Removed from authoritative path; request/session goals own context |
+| CandidateNeed requestedSection | `SessionNeed.section` is sole Composer section authority |
+| SessionIntent slots | Removed from authoritative `SessionIntent` |
+| TrainingSlot | Deprecated legacy trace/optimizer type; no Composer behavior |
+| PlannedExercise slot binding | Replaced by evidence-bearing `SessionExerciseAssignment` |
+| Hand-authored composition facts | Prohibited; deterministic canonical projection |
+| One ContinuityContext | Replaced by per-identity/per-need `SessionContinuityEvidence` |
+| Overloaded status | Separate composition and execution-readiness statuses |
+| Design-only API | Approved low-level production API exported |
 
-No production domain field changes in this design phase. A future approved migration should replace slots as authority, derive compatibility projections from needs, and replace `PlannedExercise` with a non-prescribed assignment contract.
+Candidate result consistency is a hard boundary: athlete, phase, goal, assessment, pain, TrainingSafety, equipment, catalog, evaluation time, history/fatigue, need ID, section, role, action/movement/muscle truth, and session intent must agree. Mismatch throws a structured input error rather than normalizing.
 
-- currentSessionSeamAudit: `1dd78231c27b943a3b9f5a0a799f66c799494c2f4acf8d1551f9e8b3376724b8`
+Weekly allocation remains deferred to Week Composer; dose and exact duration remain deferred to Prescription; exact within-section order remains deferred to Sequencing.

@@ -4,7 +4,7 @@
 
 ## Search Shape
 
-The contracts prepare for bounded deterministic search without implementing it:
+The production Session Composer implements bounded deterministic search at session scope:
 
 1. Generate legal candidates per role/slot.
 2. Keep rejected candidates with explicit reasons.
@@ -21,13 +21,13 @@ Future prescription and ledger layers must consume one explicit source exposure 
 
 Future optimizers must keep stress potential distinct from realized exposure. A candidate may be inspectable and legal while carrying prescription-modifiable, variant-dependent, dose-created, or unknown stress potential. Search should defer those cases to prescription resolution instead of prematurely treating them as safe, absent, hard, preferred, or fully counted risk. When a prescription realizes exposure, `PrescriptionStressExposureTrace` provides the source event, side, load/range/support/lever/duration/distance/steps, provenance, receiver eligibility, and unresolved-state evidence.
 
-Candidate Intelligence has passed its design handoff gate. The authorized Session Composer work remains design/laboratory only; green tests do not authorize production wiring.
+Candidate Intelligence has passed its handoff gate. The exported Session Composer kernel is production policy authority at its low-level package boundary; product wiring and final program generation remain unauthorized.
 
 ## Session Composer Search Review
 
-The controlled laboratory exhaustively enumerates small precomputed legal pools, merges duplicate identities, prunes hard-invalid combinations, requires complete required-need coverage and applies an inspectable lexicographic vector. Candidate rank is local tie evidence only; candidate totals are never summed as session quality.
+The exhaustive oracle enumerates tractable legal pools. Production search merges compatible duplicate identities, prunes hard-invalid combinations, requires complete required-need coverage and applies an inspectable lexicographic vector. Candidate rank is local tie evidence only; candidate totals are never summed as session quality.
 
-Strict lexicographic evaluation is the smallest explainable recommendation. Pareto/non-dominated analysis is useful for owner consequence review. A bounded weighted score is contrast-only because no session coefficients are approved. Production beam search remains plausible, but beam width, pruning policy and truncation trace require owner approval. There is no randomness, repair loop or fallback exercise.
+Strict lexicographic evaluation is production authority. A bounded weighted score remains contrast-only. Exact search is used through the reviewed 350-state estimate; larger cases use budget 48 and retained frontier 4. Completeness and truncation are explicit. There is no randomness, repair loop, candidate top-K cap, or fallback exercise creation.
 
 Exact sequence and post-prescription duration optimization remain separate. See `SESSION_COMPOSER_SEARCH_LAB.md` and `SESSION_COMPOSITION_EVALUATION_POLICY.md`.
 
@@ -72,4 +72,4 @@ Knowledge breadth must not become longer workouts or redundant accumulation. Pre
 
 ## Non-Goals
 
-No beam search, session composition, week composition, fallback chain, or repair loop is implemented at Candidate Intelligence scope.
+No Session Intent Planner, week composition, fallback chain, repair loop, final sequencing, or Prescription generation is implemented. Candidate Intelligence remains unchanged and session composition stays downstream.

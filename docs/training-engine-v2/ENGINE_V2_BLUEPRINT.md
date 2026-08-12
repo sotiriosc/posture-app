@@ -1052,7 +1052,7 @@ score the complete week
 choose the strongest valid program
 ```
 
-A bounded deterministic search such as beam search remains a suitable production direction, but the authorized Session Composer design begins one step earlier: derive actual session needs rather than assuming a fixed set of slots. Warm-up, activation, main, accessory and cooldown remain useful presentation and sequencing concepts; they do not each require an exercise.
+The production Session Composer now uses exact search when tractable and a calibrated deterministic bounded search otherwise. Session needs are authoritative rather than fixed slots. Warm-up, activation, main, accessory and cooldown remain useful presentation and sequencing concepts; they do not each require an exercise.
 
 The approved handoff is:
 
@@ -1065,7 +1065,7 @@ needs-first Session Intent
 -> separate Prescription handoff
 ```
 
-The non-production laboratory uses exhaustive enumeration over small controlled pools to make consequences inspectable. Hard validity and required coverage are gates; complete skeletons are then compared lexicographically by readiness, productive-anchor continuity, required preparation, dominant purpose, preferred coverage, redundancy, potential concentration, optional marginal value, structural setup efficiency and deterministic tie evidence. Candidate totals remain local evidence and are never summed as session quality. It cannot widen a pool, repair illegality, invent coverage or duration, prescribe dose, progress, replace, rotate, finalize sequence or advance phase. See `SESSION_COMPOSER_DESIGN_CONTRACT.md`, `SESSION_COMPOSITION_EVALUATION_POLICY.md`, and `SESSION_COMPOSER_IMPLEMENTATION_READINESS.md`.
+The exhaustive oracle remains the calibration truth. Hard validity and required coverage are gates; complete skeletons are compared with the owner-approved 15-part lexicographic policy. Candidate totals remain local evidence and are never summed as session quality. Production search cannot widen a pool, repair illegality, invent coverage or duration, prescribe dose, progress, replace, rotate, finalize sequence or advance phase. See `SESSION_COMPOSER_PRODUCTION_KERNEL.md`, `SESSION_COMPOSITION_EVALUATION_POLICY.md`, and `SESSION_COMPOSER_SEARCH_CALIBRATION.md`.
 
 ## 25. Whole-Session Evaluation
 
@@ -1566,7 +1566,7 @@ Candidate Intelligence is ready to hand off to Session Composer only after expli
 
 Green builds and tests are necessary evidence, but they are not sufficient for this gate. A large test count does not replace semantic audit, manual Candidate Lab review, and explicit project-owner acceptance. Session Composer must not begin merely because automated checks pass.
 
-Current gate result (2026-08-12): **`CANDIDATE_INTELLIGENCE_READY_FOR_SESSION_COMPOSER_DESIGN`**. The 45-row whole-body matrix, fixed-shell personalization, role/action/muscle contracts, explicit equipment gaps, pain/safety/response regressions, stable-adaptive continuity, and contextual phase abstention passed the owner-authorized graduation review. This authorizes no Composer implementation by itself; the exact next dependency is separate owner authorization for Session Composer design.
+Historical Candidate Intelligence gate result (2026-08-12): **`CANDIDATE_INTELLIGENCE_READY_FOR_SESSION_COMPOSER_DESIGN`**. The 45-row whole-body matrix, fixed-shell personalization, role/action/muscle contracts, explicit equipment gaps, pain/safety/response regressions, stable-adaptive continuity, and contextual phase abstention passed the owner-authorized graduation review. The owner subsequently authorized design decisions and the low-level production kernel; current Composer classification is `SESSION_COMPOSER_PRODUCTION_KERNEL_READY_FOR_SESSION_INTENT_PLANNER`.
 
 ## 40. Candidate Ranking Laboratory
 
@@ -1633,21 +1633,11 @@ Implement:
 - ranking laboratory;
 - exercise-science review.
 
-Do not begin Session Composer or complete program optimization until the permanent Candidate Intelligence readiness gate is explicitly accepted.
+The Candidate Intelligence readiness gate was explicitly accepted before Session Composer production work began. Do not infer authorization for broader program optimization from that acceptance.
 
 ### V2 Session Composer
 
-Implement:
-
-- session intent;
-- warm-up dependencies;
-- activation dependencies;
-- main selection;
-- accessory completion;
-- cooldown relevance;
-- whole-session optimization.
-
-Verify sessions manually.
+Implemented at low-level package scope: authoritative needs-first domain, per-need Candidate Intelligence seam, candidate-result consistency, canonical composition facts, hard validity, shared coverage, multiple-anchor continuity, strict lexicographic whole-session search, non-prescribed skeletons, and Prescription/duration/Sequencing handoffs. Session Intent Planner, product wiring, dose generation, and final within-section sequencing remain separate work.
 
 ### V2 Weekly Composer
 
