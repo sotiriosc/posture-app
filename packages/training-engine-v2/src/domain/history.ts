@@ -1,4 +1,8 @@
 import type { MovementRole } from "./primitives";
+import {
+  EMPTY_TRAINING_RESPONSE_HISTORY,
+  type TrainingResponseHistory,
+} from "./trainingResponse";
 
 export type ExerciseHistoryEventType =
   | "successful_completion"
@@ -59,6 +63,7 @@ export interface TrainingHistory {
   readonly programHistory: ProgramHistory;
   readonly progressionState: ProgressionState;
   readonly fatigueState: FatigueState;
+  readonly trainingResponseHistory?: TrainingResponseHistory;
 }
 
 export const EMPTY_TRAINING_HISTORY: TrainingHistory = {
@@ -88,4 +93,5 @@ export const EMPTY_TRAINING_HISTORY: TrainingHistory = {
     overall: "low",
     byMovementRole: {},
   },
+  trainingResponseHistory: EMPTY_TRAINING_RESPONSE_HISTORY,
 };

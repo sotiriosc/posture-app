@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   REFERENCE_EXERCISES,
   type MovementRole,
@@ -6,6 +8,7 @@ import {
 import { buildPhaseAnnotationContextReviewData } from "./phaseAnnotationContextReview";
 import { buildSupportAndStanceMechanicsContractData } from "./supportAndStanceMechanicsContract";
 import { buildCurrentTrunkCurationFingerprints } from "./trunkMechanicsCurationProposal";
+import { buildTrainingSafetyAndResponseFoundationData } from "./trainingSafetyAndResponseFoundation";
 
 export const LOW_BACK_PAIN_AUDIT_FIXED_AS_OF = "2026-08-12T00:00:00.000Z";
 export const LOW_BACK_PAIN_AUDIT_OVERALL_CLASSIFICATION =
@@ -31,11 +34,11 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
   {
     id: "safety_escalation",
     title: "Safety escalation versus pain severity",
-    classification: "UPSTREAM_SAFETY_INPUT_OWNER",
+    classification: "READY",
     finding:
-      "Urgent review is currently expressible only inside AcuteSeverePain, whose type restricts severity to 7-10. HardContraindication can block known exercises or stresses, but it is not a general independent review/escalation signal. Numeric pain severity is therefore carrying authority it should not own.",
+      "TrainingSafetyState now carries explicit review or urgent-review authority independently of pain severity. Unresolved signals block result-level downstream readiness without changing candidate scores or manufacturing contraindications. The legacy AcuteSeverePain bridge reads only explicit urgentReviewRecommended authority, never severity alone.",
     minimumContract:
-      "Add a non-diagnostic reported safety/escalation signal independent of pain score, with requested review level, source type, source reference, evidence basis, reporter/reviewer identity, reportedAt, and resolution state. It must globally gate ordinary generation when unresolved. Do not add a diagnostic questionnaire or infer pathology.",
+      "Engine contract implemented. Upstream adapters must supply only explicit authority with provenance, and future execution layers must consume downstreamTrainingAllowed. Only external resolution evidence can clear a signal.",
   },
   {
     id: "region_intolerance_separation",
@@ -49,29 +52,29 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
   {
     id: "symptom_behavior_tolerance",
     title: "Symptom behavior and training tolerance",
-    classification: "TARGETED_CONTRACT_REQUIRED",
+    classification: "READY",
     finding:
-      "PainAndInjuryState can carry a region, side, stress tags, severity band, and a requested modification, but it cannot represent both aggravated and tolerated exposures, range/load sensitivity, preferred support context, repeated response, current function, or provenance with enough precision for response-led training.",
+      "TrainingResponseObservation now records tolerance, reported symptom change, onset, persistence, consequence, descriptive region/side locations, and structured provenance against a specific exposure. Exact dose, range, load, support, and laterality remain owned by linked prescription/performance records; partial historical reports preserve unknown.",
     minimumContract:
-      "Define non-diagnostic reported training-tolerance observations for aggravating and tolerated exposure, range/load/support context, current functional tolerance, response timing/distribution where relevant, and provenance. Preserve unknown and do not create directional diagnostic classifications.",
+      "Observation and linkage contract implemented. Owner-reviewed receiver policy is still required before history can request candidate review, prescription modification, continuity, or progression action.",
   },
   {
     id: "historical_injury",
     title: "Historical injury",
-    classification: "TARGETED_CONTRACT_REQUIRED",
+    classification: "READY",
     finding:
-      "Every HistoricalInjury field is currently unconsumed. That avoids permanent penalties, but recurring/managed history cannot trigger review and resolved history cannot be explicitly neutralized by successful re-exposure.",
+      "HistoricalInjury remains observational by doctrine and regression test. It creates no score, permanent avoidance, or mechanical intolerance. Current response observations can restore contextual relevance without altering the historical record, and successful re-exposure remains positive evidence rather than erasure.",
     minimumContract:
-      "Keep resolved history observational by default; route active clinician restrictions to HardContraindication; let recurring/managed history request review only when paired with current response or restriction evidence; and allow repeated successful exposure to reduce concern without erasing history.",
+      "Policy implemented as non-consumption in Candidate Intelligence. Explicit restrictions remain in HardContraindication; any future historical receiver must require separate current evidence and owner review.",
   },
   {
     id: "side_distribution",
     title: "Side and distribution",
-    classification: "TARGETED_CONTRACT_REQUIRED",
+    classification: "READY",
     finding:
-      "Side is preserved in pain-match traces but has no candidate-ranking or prescription receiver, and symptom distribution is not normalized. The engine cannot yet reliably align unilateral load, support side, split stance, or asymmetric prescription with reported response.",
+      "Response observations can record multiple descriptive region/side locations, while the ledger resolves realization side from linked prescriptions. Left-side evidence does not automatically apply to a right-side realization. Distribution remains descriptive and cannot create diagnosis or candidate illegality.",
     minimumContract:
-      "Add a reviewed side/distribution ownership contract connecting reported side to prescription side behavior and response tracking. Unknown must remain legal; unilateral or referred symptoms must never imply a diagnosis.",
+      "Observation/linkage ownership implemented. Future candidate or prescription policy must still decide when side-specific evidence requests review and must preserve unknown.",
   },
   {
     id: "exercise_stress_knowledge",
@@ -105,18 +108,18 @@ export const LOW_BACK_AUDIT_AREAS: readonly LowBackAuditArea[] = [
     title: "Response-led progression",
     classification: "LONGITUDINAL_OWNER",
     finding:
-      "Prescription and progression contracts can record dose, quality, unresolved pain-response IDs, recovery, success/failure, and repeated evidence, but cannot distinguish tolerated, improved, unchanged, transient expected discomfort, repeatedly aggravated, failed progression, or successful re-exposure.",
+      "The deterministic response ledger now orders applicable observations at explicit asOf, exposes latest and prior events, distinguishes factual tolerance/symptom outcomes, preserves conflicts/unknowns, and identifies later tolerated re-exposure after limited/not-tolerated exposure. It intentionally selects no numeric threshold or automatic action.",
     minimumContract:
-      "Create longitudinal response evidence linked to the exact exercise, variant, dose, range, load, support, side, timing, and source. Owner-reviewed policy must interpret patterns without arbitrary pain thresholds.",
+      "Evidence foundation implemented. A longitudinal owner must define interpretation and receiver policy for hold, review, re-exposure, prescription modification, and progression without arbitrary thresholds.",
   },
   {
     id: "fear_overprotection_guard",
     title: "Fear and overprotection guard",
-    classification: "TARGETED_CONTRACT_REQUIRED",
+    classification: "READY",
     finding:
-      "Current logic does not globally ban bending, hinging, loading, or gait from lumbar region alone, and it does not ignore explicit pain-response requirements. The intended graded middle path is not yet an executable invariant across future candidate, prescription, and progression layers.",
+      "Regression tests prove region/severity/history do not manufacture intolerance, safety escalation, permanent blocks, or support preference; explicit restrictions retain hard authority; one adverse response remains prescription-specific; and later tolerated re-exposure stays visible.",
     minimumContract:
-      "Add policy tests against permanent avoidance, universal core routines, pain-equals-damage messaging, and indiscriminate loading. Decisions must follow reported/observed response and explicit safety authority.",
+      "Current Candidate Intelligence invariant is implemented. Future response receivers must retain these tests before any automatic policy is approved.",
   },
   {
     id: "whole_body_interaction",
@@ -210,6 +213,7 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
   const fingerprints = buildCurrentTrunkCurationFingerprints();
   const support = buildSupportAndStanceMechanicsContractData();
   const phase = buildPhaseAnnotationContextReviewData();
+  const safetyAndResponse = buildTrainingSafetyAndResponseFoundationData();
   const payload = {
     areas: LOW_BACK_AUDIT_AREAS,
     stressReview: LOW_BACK_STRESS_REVIEW,
@@ -218,6 +222,9 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
     behaviorFingerprints: fingerprints,
     supportFingerprint: support.fingerprint,
     phaseFingerprint: phase.contextualFingerprint,
+    safetyFingerprint: safetyAndResponse.safetyFingerprint,
+    responseFingerprint: safetyAndResponse.responseFingerprint,
+    phaseCalibrationConsequences: safetyAndResponse.phaseCalibrationConsequences,
   };
 
   return {
@@ -231,21 +238,24 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
     behaviorFingerprints: fingerprints,
     supportFingerprint: support.fingerprint,
     phaseFingerprint: phase.contextualFingerprint,
+    safetyFingerprint: safetyAndResponse.safetyFingerprint,
+    responseFingerprint: safetyAndResponse.responseFingerprint,
+    safetyAndResponseFingerprint: safetyAndResponse.combinedFingerprint,
+    phaseCalibrationConsequences: safetyAndResponse.phaseCalibrationConsequences,
     blockersBeforeSevenRows: [
-      "Independent non-diagnostic safety/escalation input and global unresolved-review gate.",
-      "Reported symptom-behavior/training-tolerance contract with provenance and explicit unknown.",
-      "HistoricalInjury consumption/non-consumption policy that avoids permanent penalties.",
-      "Side/distribution ownership for unilateral load, support, and response tracking.",
+      "Wire explicit TrainingSafetyState authority into upstream adapters and require future execution layers to consume downstreamTrainingAllowed.",
+      "Owner-reviewed response receiver policy for candidate review, prescription modification, continuity, re-exposure review, and progression without a numeric score.",
       "Row-level structured low-back stress curation and legacy compatibility tests for the seven proposals.",
+      "Owner-reviewed support/prescription policy that uses exact response evidence without creating permanent support dependence.",
       "Owner-reviewed contextual phase scoring policy after calibration, or an explicit temporary policy for rows while legacy phase scoring remains authoritative.",
-      "Longitudinal response owner capable of distinguishing successful exposure from repeated aggravation without arbitrary thresholds.",
+      "Longitudinal interpretation owner for mixed history and successful re-exposure; the ledger exposes evidence but selects no threshold or action.",
     ],
     blockersBeforeWholeBodyAudit: [
       "No blocker prevents a review-only whole-body audit from starting after this task.",
-      "A production-readiness claim from that audit remains blocked by upstream safety, tolerance, side, stress-curation, and longitudinal-response ownership.",
+      "Owner sequencing still defers that audit; a production-readiness claim remains blocked by safety adapter wiring, response receiver policy, stress/support curation, phase policy, and longitudinal interpretation ownership.",
     ],
     exactNextDependency:
-      "Implement the independent reported safety/escalation contract and the non-diagnostic symptom-behavior/training-tolerance contract before adding the seven production rows or claiming low-back-pain training readiness.",
+      "Obtain owner decisions for response-history receivers and contextual phase scoring, then curate row-level stress/support policy before adding the seven production rows; separately wire explicit TrainingSafetyState into upstream and future execution adapters.",
     fingerprint: hash(payload),
   };
 }
@@ -278,7 +288,7 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "## Readiness Answer",
     "",
-    "Can Candidate Intelligence currently be described as ready to intelligently train around reported low-back pain? **No.** It has useful region/stress separation, hard-authority handling, pain-response traces, compositional support mechanics, and broad conventional exercise candidates. It still lacks an independent safety-escalation authority, sufficient symptom/tolerance evidence, side ownership, curated low-back stress scopes, and longitudinal response semantics.",
+    "Can Candidate Intelligence currently be described as ready to intelligently train around reported low-back pain? **No.** It now has independent explicit safety authority, global downstream readiness, exposure-linked response observations, side-aware history, deterministic re-exposure evidence, region/stress separation, and compositional support mechanics. It still lacks upstream/future-execution adapter wiring, owner-approved response receivers, curated low-back stress scopes, support/prescription policy, final phase policy, and longitudinal interpretation policy.",
     "",
     "## Classification Summary",
     "",
@@ -289,7 +299,9 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "## Safety Escalation Versus Pain Severity",
     "",
-    "The current global urgent-review path is technically preserved across every candidate and takes precedence over ranking, but its input authority is nested inside `AcuteSeverePain` and therefore available only at severity 7-10. This is not adequate: high pain is not itself a diagnosis, and low or moderate pain does not establish medical safety. A future upstream signal should report a requested review/escalation action without naming a condition. It should preserve who reported it, when, the source reference and evidence basis, and whether it remains unresolved.",
+    "`TrainingSafetyState` now accepts explicit review or urgent-external-review authority independently of pain severity. `TrainingReadinessTrace` reports whether downstream ordinary training is allowed, the unresolved and externally resolved signal IDs, full authority/provenance, and the required review level. Candidate ranking still runs for diagnostics and is unchanged; unresolved authority gates only result-level downstream execution. The engine never clears a signal because time passed or symptoms changed.",
+    "",
+    "For backward compatibility, `AcuteSeverePain.urgentReviewRecommended=true` is explicitly bridged into global readiness as legacy urgent authority. The bridge condition is the boolean authority field, not severity 7-10. High severity with the flag false creates no independent safety escalation and no diagnosis.",
     "",
     "`HardContraindication` remains the correct authority for explicit athlete/clinician/coach/safety restrictions on known exercises, roles, or stresses. It should not be overloaded as the only general review signal, and this task does not create a medical screening questionnaire.",
     "",
@@ -299,11 +311,11 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "## Historical Injury",
     "",
-    "`HistoricalInjury` is deliberately inert today. Resolved history should remain observational unless current response or an explicit restriction gives it renewed relevance. Managed or recurring history may justify review, but not a permanent score penalty. Repeated successful exposure should become positive longitudinal evidence. Clinician-imposed restrictions belong in `HardContraindication`, with source authority preserved.",
+    "`HistoricalInjury` remains deliberately inert in Candidate Intelligence. Resolved, managed, or recurring history creates no score, mechanical intolerance, or permanent avoidance by itself. Current response evidence can make the context relevant again without modifying history. Successful re-exposure is positive evidence rather than deletion. Explicit restrictions belong in `HardContraindication`, with source authority preserved.",
     "",
     "## Side And Distribution",
     "",
-    "Current match traces preserve left/right/bilateral/unknown where reported, but side does not drive candidate or prescription behavior. Prescription already has side, load-side, support-side, and relationship fields, so the missing piece is an ownership bridge. Distribution remains unmodeled and must never be translated into a diagnosis. Legitimate future uses are side-aware loading/support, split stance, asymmetric prescription, and response comparison.",
+    "Training response observations preserve multiple descriptive region/side locations. Exact movement, load, support, and starting side remain owned by the linked prescription. Ledger queries resolve side through that source of truth, so left-side exposure evidence does not automatically apply to a right-side realization. Distribution is descriptive only and is never translated into a diagnosis or candidate prohibition.",
     "",
     "## Exercise Stress Knowledge",
     "",
@@ -329,11 +341,34 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     "",
     "## Response-Led Progression",
     "",
-    "The intended doctrine remains: appropriate task -> tolerable starting prescription -> repeatable form -> observed symptom/performance response -> maintain or modify -> earned progression -> broader capacity. Current records can prove dose, quality, recovery, unresolved pain response, success/failure, and repeated evidence, but not the required symptom-response meanings. No numeric response threshold is selected here.",
+    "The intended doctrine remains: appropriate task -> tolerable starting prescription -> repeatable form -> observed symptom/performance response -> maintain or modify -> earned progression -> broader capacity. TrainingResponseObservation records tolerance, symptom change, onset, persistence, completion/modification consequence, locations, and provenance. ExercisePerformanceRecord references observation IDs; the completed prescription remains source of truth for dose, range, load, support, and side.",
+    "",
+    "The deterministic ledger orders applicable observations at explicit `asOf`, exposes latest and previous events, preserves unknown and mixed evidence, and identifies later tolerated exposure after earlier limited/not-tolerated exposure. It does not choose a threshold, score, hold, regression, progression, replacement, or ban.",
     "",
     "## Fear And Overprotection Guard",
     "",
     "Praxis must preserve the middle path: no universal ban on lumbar bending, hinging, loading, gait, or rotation; no universal core routine; no implication that pain or posture proves damage; and no instruction to ignore symptoms or load regardless of response. Support and reduced exposure are temporary tools when evidence supports them, with re-exposure and broader capacity available when earned.",
+    "",
+    "The regression matrix now proves region-only, severity-only, historical injury, one adverse exposure, symptom side, and notes cannot manufacture global intolerance or permanent exercise identity behavior. Explicit hard restrictions retain their existing authority.",
+    "",
+    "## Phase Calibration Consequences",
+    "",
+    "These are non-production sensitivity results from the existing calibration laboratory. Close-order changes are candidate rank changes. Continuity disruptions remain zero because no variant changes continuity evidence; contextual unknown/no-match and accepted poor remain distinguishable while final scoring policy is pending.",
+    "",
+    table(
+      ["Policy", "Category spacing", "Phase weight", "Winner changes", "Close-order changes", "Continuity disruptions", "Unknown evidence", "Accepted poor", "Representative Phase 1/2/3 effects"],
+      data.phaseCalibrationConsequences.map((row) => [
+        row.policyId,
+        row.categorySpacing,
+        row.phaseFamilyWeight,
+        String(row.winnerChanges),
+        String(row.closeOrderChanges),
+        String(row.continuityDisruptions),
+        row.unknownEvidenceBehavior,
+        row.acceptedPoorBehavior,
+        row.representativePhaseEffects,
+      ]),
+    ),
     "",
     "## Whole-Body Interaction",
     "",
@@ -366,6 +401,9 @@ export function renderLowBackPainTrainingIntelligenceAudit(
         ["Reference catalog", data.behaviorFingerprints.referenceCatalog, "Intentionally changed by support/stance metadata migration"],
         ["Support/stance contract", data.supportFingerprint, "Intentionally changed by implementation"],
         ["Contextual phase laboratory", data.phaseFingerprint, "Resolver/trace contract implementation"],
+        ["Training safety", data.safetyFingerprint, "Independent global readiness contract"],
+        ["Training response", data.responseFingerprint, "Exposure-linked observation and ledger contract"],
+        ["Safety/response combined", data.safetyAndResponseFingerprint, "Training intelligence foundation"],
         ["Low-back audit", data.fingerprint, "Deterministic review artifact"],
       ],
     ),
@@ -375,4 +413,28 @@ export function renderLowBackPainTrainingIntelligenceAudit(
     data.exactNextDependency,
     "",
   ].join("\n");
+}
+
+export function writeLowBackPainTrainingIntelligenceAudit(
+  rootDir = process.cwd(),
+): { readonly outputPath: string; readonly data: ReturnType<typeof buildLowBackPainTrainingIntelligenceAuditData> } {
+  const data = buildLowBackPainTrainingIntelligenceAuditData();
+  const outputPath = join(
+    rootDir,
+    "docs/training-engine-v2/LOW_BACK_PAIN_TRAINING_INTELLIGENCE_AUDIT.md",
+  );
+  writeFileSync(outputPath, renderLowBackPainTrainingIntelligenceAudit(data));
+  return { outputPath, data };
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const result = writeLowBackPainTrainingIntelligenceAudit();
+  console.log(`Wrote ${result.outputPath}`);
+  console.log(JSON.stringify({
+    classification: result.data.overallClassification,
+    safetyFingerprint: result.data.safetyFingerprint,
+    responseFingerprint: result.data.responseFingerprint,
+    combinedFingerprint: result.data.safetyAndResponseFingerprint,
+    auditFingerprint: result.data.fingerprint,
+  }, null, 2));
 }

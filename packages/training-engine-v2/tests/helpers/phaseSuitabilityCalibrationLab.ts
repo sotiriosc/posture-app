@@ -1421,7 +1421,9 @@ function buildContinuityStates(): readonly ContinuityStateDefinition[] {
   ];
 }
 
-function buildContinuityMatrix(): readonly ContinuityMatrixRow[] {
+function buildContinuityMatrix(
+  policy?: PhasePolicyDefinition,
+): readonly ContinuityMatrixRow[] {
   const horizontalPull = PHASE_NEEDS.find((entry) => entry.label === "horizontal pull main");
   if (!horizontalPull) {
     throw new Error("Missing horizontal-pull phase need.");
@@ -1435,27 +1437,50 @@ function buildContinuityMatrix(): readonly ContinuityMatrixRow[] {
   );
   return buildContinuityStates().flatMap((state) =>
     PHASE_IDS.map((phaseId): ContinuityMatrixRow => {
-      const result = runCandidateRankingLab(makeRequest({
-        id: `phase-continuity-${state.id}-${phaseId}`,
-        phaseId,
-        goal: "strength",
-        candidateNeed: horizontalPull.need,
-        continuity: state.continuity,
-        history: state.history,
-      }));
+      const result = runCandidateRankingLab(
+        makeRequest({
+          id: `phase-continuity-${state.id}-${phaseId}`,
+          phaseId,
+          goal: "strength",
+          candidateNeed: horizontalPull.need,
+          continuity: state.continuity,
+          history: state.history,
+        }),
+        policy ? policyOptions(policy) : {},
+      );
       const current = ranked(result, "chest-supported-dumbbell-row");
+      const phaseFit = current?.components.find((candidate) => candidate.id === "phase_fit");
+      const continuityValue = current?.components.find(
+        (candidate) => candidate.id === "continuity_value",
+      );
+      const progressionValue = current?.components.find(
+        (candidate) => candidate.id === "progression_value",
+      );
       return {
         state: state.id,
         phaseId,
         winner: winner(result)?.exercise.id ?? null,
         currentExerciseRank: current?.rank ?? null,
         currentExerciseTotal: current?.total ?? null,
-        currentPhaseFit: current ? score(current, "phase_fit").rawValue : null,
-        currentContinuityValue: current ? score(current, "continuity_value").rawValue : null,
-        currentContinuityReasonCode: current ? score(current, "continuity_value").reasonCode : null,
-        currentProgressionValue: current ? score(current, "progression_value").rawValue : null,
+        currentPhaseFit: phaseFit?.rawValue ?? null,
+        currentContinuityValue: continuityValue?.rawValue ?? null,
+        currentContinuityReasonCode: continuityValue?.reasonCode ?? null,
+        currentProgressionValue: progressionValue?.rawValue ?? null,
         transitionAutomaticSelectionEffects: transitionEffects,
       };
+    }),
+  );
+}
+
+export function buildPhasePolicyContinuityDisruptions(): Readonly<Record<string, number>> {
+  const current = buildContinuityMatrix();
+  return Object.fromEntries(
+    PHASE_CALIBRATION_POLICIES.map((policy) => {
+      const experimental = buildContinuityMatrix(policy);
+      const disruptions = current.filter(
+        (row, index) => row.winner !== experimental[index]?.winner,
+      ).length;
+      return [policy.id, disruptions] as const;
     }),
   );
 }

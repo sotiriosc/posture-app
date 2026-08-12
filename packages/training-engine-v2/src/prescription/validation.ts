@@ -847,6 +847,7 @@ export function validateExercisePerformanceRecord(
         "actualDose",
         "qualityObservations",
         "unresolvedPainResponseEvidenceIds",
+        "trainingResponseObservationIds",
         "recoveryEvidenceIds",
         "recoveryStatus",
         "substitutions",
@@ -890,6 +891,12 @@ export function validateExercisePerformanceRecord(
       record.unresolvedPainResponseEvidenceIds,
       "unresolvedPainResponseEvidenceIds",
       "invalid_performance_pain_response_id",
+      targetId,
+    ),
+    ...validateStringIdArray(
+      record.trainingResponseObservationIds,
+      "trainingResponseObservationIds",
+      "invalid_performance_training_response_observation_id",
       targetId,
     ),
     ...validateStringIdArray(

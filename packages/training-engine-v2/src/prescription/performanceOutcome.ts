@@ -47,6 +47,7 @@ export interface ExercisePerformanceRecord {
   readonly realizedStressExposureIds?: readonly string[];
   readonly qualityObservations: readonly ExecutionQualityObservation[];
   readonly unresolvedPainResponseEvidenceIds: readonly string[];
+  readonly trainingResponseObservationIds: readonly string[];
   readonly recoveryEvidenceIds: readonly string[];
   readonly recoveryStatus?:
     | "recovered_as_expected"

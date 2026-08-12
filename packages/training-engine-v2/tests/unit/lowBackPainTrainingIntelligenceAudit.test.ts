@@ -42,7 +42,6 @@ describe("low-back pain training intelligence audit", () => {
         "TARGETED_CONTRACT_REQUIRED",
         "CATALOG_KNOWLEDGE_REQUIRED",
         "LONGITUDINAL_OWNER",
-        "UPSTREAM_SAFETY_INPUT_OWNER",
         "OUT_OF_SCOPE_MEDICAL_DIAGNOSIS",
       ]),
     );
@@ -95,9 +94,25 @@ describe("low-back pain training intelligence audit", () => {
   });
 
   it("keeps the seven-row tranche blocked and permits only a review-only whole-body audit", () => {
-    expect(data.blockersBeforeSevenRows).toHaveLength(7);
+    expect(data.blockersBeforeSevenRows).toHaveLength(6);
     expect(data.blockersBeforeWholeBodyAudit[0]).toContain("review-only");
-    expect(data.exactNextDependency).toContain("safety/escalation");
-    expect(data.exactNextDependency).toContain("symptom-behavior/training-tolerance");
+    expect(data.exactNextDependency).toContain("response-history receivers");
+    expect(data.exactNextDependency).toContain("phase scoring");
+  });
+
+  it("records implemented safety/response fingerprints and phase consequences", () => {
+    expect(data.safetyFingerprint).toMatch(/^[a-f0-9]{64}$/);
+    expect(data.responseFingerprint).toMatch(/^[a-f0-9]{64}$/);
+    expect(data.safetyAndResponseFingerprint).toMatch(/^[a-f0-9]{64}$/);
+    expect(data.phaseCalibrationConsequences.map((row) => row.policyId)).toEqual([
+      "A_CURRENT",
+      "B_ANNOTATION_ONLY",
+      "C_NO_PHASE_COMPONENT",
+      "D_WEIGHT_05",
+      "E_GENTLE_GAP",
+      "E_MODERATE_GAP",
+    ]);
+    expect(data.phaseCalibrationConsequences.every((row) => row.continuityDisruptions === 0))
+      .toBe(true);
   });
 });

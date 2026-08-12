@@ -18,6 +18,8 @@ import { THREE_PHASE_FOUNDATION } from "./domain/phase";
 import { MOVEMENT_ROLES, MUSCLE_GROUPS } from "./domain/primitives";
 import { SESSION_SECTIONS } from "./domain/session";
 import type { TrainingEngineInput } from "./domain/athlete";
+import { validateTrainingSafetyState } from "./domain/trainingSafety";
+import { validateTrainingResponseHistory } from "./domain/trainingResponse";
 
 export interface ValidationFinding {
   readonly severity: "info" | "warning" | "error";
@@ -496,6 +498,26 @@ export function validateTrainingInput(input: TrainingEngineInput): readonly Vali
 
   findings.push(...input.assessment.signals.flatMap(validateAssessmentSignal));
   findings.push(...validateEquipmentCapabilities(input.equipment, input.athlete.id));
+  if (input.trainingSafety) {
+    findings.push(
+      ...validateTrainingSafetyState(input.trainingSafety).map((candidate) =>
+        finding(candidate.severity, candidate.code, candidate.message, candidate.signalId),
+      ),
+    );
+  }
+  if (input.history.trainingResponseHistory) {
+    findings.push(
+      ...validateTrainingResponseHistory(input.history.trainingResponseHistory).map(
+        (candidate) =>
+          finding(
+            candidate.severity,
+            candidate.code,
+            candidate.message,
+            candidate.observationId,
+          ),
+      ),
+    );
+  }
 
   return findings;
 }

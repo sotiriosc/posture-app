@@ -25,7 +25,7 @@ Those profiles contain ten accepted fields and fourteen explicit unknowns. Every
 
 A separate deterministic review evaluated 24 new direct trunk/core and carry concepts and selected a seven-candidate minimal tranche: Forearm Plank, Forearm Side Plank, Machine Abdominal Crunch, Half-Kneeling High-to-Low Cable Chop, Bilateral Farmer Carry, Suitcase Carry, and Wall-Supported Suitcase March.
 
-Its proposal classification remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`; the proposal authorizes no exercise. Equipment, structured prescription/progression, pain-stress, exact curation, compositional support/stance, and contextual phase-resolution contracts now exist. Production metadata remains blocked by the low-back audit's independent safety-escalation, symptom-behavior/training-tolerance, historical policy, side/distribution, row-level stress curation, phase scoring-policy, and longitudinal-response dependencies. The 17 qualified secondary-mechanics proposals remain independently unresolved.
+Its proposal classification remains `TRUNK_CARRY_CONTRACT_FIXES_REQUIRED`; the proposal authorizes no exercise. Equipment, structured prescription/progression, pain-stress, exact curation, compositional support/stance, contextual phase-resolution, training-safety, and response-history contracts now exist. Production metadata remains blocked by safety adapter wiring, response receiver policy, row-level stress/support curation, phase scoring policy, and longitudinal interpretation ownership. The 17 qualified secondary-mechanics proposals remain independently unresolved.
 
 ## Scope and Evidence
 
@@ -329,7 +329,7 @@ No phase coefficient or final suitability value is selected here. Catalog curati
 6. COMPLETED CONTRACT: Added explicit training-space, cable-height, abdominal-machine, dumbbell-pair, and carry-family types; classification TRUNK_CARRY_EQUIPMENT_CONTRACT_READY adds no exercise.
 7. COMPLETED CONTRACT: Added structured dose, prescription identity, execution quality, performance outcome, and same-exercise progression-readiness semantics; classification STRUCTURED_PRESCRIPTION_AND_PROGRESSION_CONTRACT_READY adds no exercise.
 8. COMPLETED CONTRACT: Resolved trunk/carry pain-stress vocabulary and receiver review as `TRUNK_CARRY_PAIN_STRESS_CONTRACT_READY`; this adds approved generic tags and structured contracts but no production exercise rows or calibrated pain behavior.
-9. COMPLETED CONTRACTS: Exact seven-exercise decisions, compositional support/stance mechanics, and contextual phase resolution are implemented without adding production rows or changing production scoring; independent safety-escalation and non-diagnostic symptom-behavior/training-tolerance ownership remain required before the seven production rows.
+9. COMPLETED CONTRACTS: Exact seven-exercise decisions, compositional support/stance mechanics, contextual phase resolution, independent training safety, and exposure-linked response history are implemented without adding production rows or changing production scoring; adapter wiring, response receiver policy, row stress/support curation, phase policy, and longitudinal interpretation remain required.
 10. Add normalized trunk assessment features and bounded feature-specific relevance before Session Composer consumes assessment priorities.
 11. Apply accepted role/section-scoped phase annotations and re-run cross-goal, pain, phase, history, weekly-coverage, and longitudinal counterfactuals before Session Composer.
 

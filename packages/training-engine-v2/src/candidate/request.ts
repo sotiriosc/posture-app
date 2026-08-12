@@ -13,6 +13,7 @@ import type {
   TrainingGoal,
 } from "../domain/primitives";
 import type { SessionIntent, SessionSection, TrainingRole } from "../domain/session";
+import type { TrainingSafetyState } from "../domain/trainingSafety";
 
 export type FatigueSignal = "fresh" | "local_fatigue" | "systemic_fatigue" | "joint_stress_accumulated";
 
@@ -51,6 +52,7 @@ export interface CandidateRequest {
   readonly assessment: AssessmentState;
   readonly alignmentPriorities: readonly AlignmentPriority[];
   readonly painAndInjury: PainAndInjuryState;
+  readonly trainingSafety?: TrainingSafetyState;
   readonly equipment: EquipmentCapabilities;
   readonly history: TrainingHistory;
   readonly continuity: ContinuityContext;

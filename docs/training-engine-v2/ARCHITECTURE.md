@@ -26,6 +26,8 @@ The package models the intended reasoning order without implementing production 
 - `domain/athlete.ts`: athlete, preferences, availability, current state, future engine input.
 - `domain/assessment.ts`: confidence-aware assessment signals and historical weaknesses.
 - `domain/painInjury.ts`: historical injury, sensitivity, current discomfort, moderate pain, acute pain, contraindication, and personal block.
+- `domain/trainingSafety.ts`: explicit non-diagnostic safety/review authority, external resolution evidence, legacy urgent-authority compatibility, and result-level downstream training readiness independent of candidate ranking.
+- `domain/trainingResponse.ts`: exposure-linked factual tolerance, symptom-change, timing, consequence, descriptive location/side, provenance, and explicit unknown observations.
 - `domain/equipment.ts`: capability-based equipment and training-space model with pure requirement evidence.
 - `domain/phase.ts`: first-class Phase 1, Phase 2, Phase 3 intents.
 - `domain/session.ts`: warmup, activation, main, accessory, cooldown, and preparation dependencies.
@@ -49,6 +51,7 @@ The package models the intended reasoning order without implementing production 
 - `candidate/scoring/assessment/*`: modular assessment normalization, relevance, feature target, demand/capability, challenge, budget, and trace responsibilities.
 - `transitionComparison.ts`: observational structural deltas for reviewed cross-exercise transitions with no automatic selection effect.
 - `phaseSuitability.ts`: deterministic role/section contextual phase resolution, conflict handling, accepted-provenance qualification, and runtime annotation validation. Resolution is trace-only until an owner-approved scorer replaces legacy phase scoring.
+- `trainingResponseHistory.ts`: deterministic explicit-`asOf` response ledger, prescription/performance linkage validation, side-scoped evidence, mixed-history observability, and successful later re-exposure evidence without thresholds or automatic action.
 - `trunkMechanics.ts`: pure trunk-function observability; copies reviewed profile evidence or emits explicit profile-unavailable unknown traces without influencing decisions.
 
 ## Trunk Role And Mechanics Boundary
@@ -118,6 +121,16 @@ Structured exercise stress annotations add a second, generic evidence lane. Acce
 
 Execution readiness is candidate-specific. Non-urgent actions with `not_applicable_no_candidate_stress_match` are ignored for that candidate; explicit acute urgency remains globally visible. Result readiness reflects the selected legal candidate, exposes lower-ranked executable candidates without choosing them, and excludes hard-rejected candidates from selected-result readiness. Prescription and Session Composer requirements are visible but are not executed in Candidate Intelligence.
 
+## Training Safety And Response Ownership
+
+`PainAndInjuryState` owns current reported discomfort/sensitivity, known restrictions, and explicit exercise/stress relationships. `TrainingSafetyState` separately owns externally supplied review authority. An unresolved safety signal marks ordinary downstream training unavailable at result scope while Candidate Intelligence continues to produce unchanged diagnostic rankings. It never becomes a candidate penalty, exercise rejection, stress intolerance, or diagnosis. Only explicit external resolution evidence clears the gate.
+
+`AcuteSeverePain.urgentReviewRecommended=true` remains an explicit legacy urgent-authority bridge. Severity itself is not a bridge condition. `HardContraindication` remains the separate hard authority for known exercise, role, or stress restrictions.
+
+`TrainingResponseHistory` owns what happened after a realized exposure. An observation links exercise, prescription, performance, source exposure, and realized stress IDs; the completed prescription remains source of truth for dose, range, load, support, stance/laterality, and side. Response evidence records factual tolerance, symptom change, timing/persistence, consequence, locations, and provenance. It creates no score, hard rejection, automatic modification, progression, regression, replacement, or exercise-family ban.
+
+The invariant is: exercise identity is not a realized prescription, and a realized prescription is not its observed response. Tolerance at one dose or side does not generalize to every realization. Limited exposure does not permanently poison an exercise identity. Later tolerated re-exposure is preserved alongside earlier adverse evidence rather than deleting it.
+
 ## Thin Orchestrators
 
 Future top-level functions such as `generateProgram`, `composeWeek`, `composeSession`, and `rankCandidates` must orchestrate domain modules. They should not contain hundreds of embedded exercise-science rules.
@@ -185,4 +198,4 @@ Do not impose tiny files. Do flag modules that start combining unrelated trainin
 
 ## Non-Goals In This Phase
 
-Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The structured prescription and same-exercise progression contract is ready as a type, validation, and observability boundary only; it does not calibrate prescriptions or select progressions. The direct trunk/carry candidate direction remains unimplemented. Its equipment, structured prescription, pain-stress exposure, support/stance, exact curation, and contextual phase-resolution contracts now exist, but no catalog row or assessment-feature behavior is authorized by those contracts. Production phase scoring remains on the legacy policy pending owner review of calibration consequences. The low-back audit additionally requires independent safety-escalation and symptom-behavior/training-tolerance ownership before the exact seven exercise rows can be implemented.
+Candidate Intelligence does not generate workouts, compose sessions, compose weeks, run beam search, define final phase gates, or connect to Praxis application code. Candidate ranking is evidence for later composition, not a program. The structured prescription and same-exercise progression contract is ready as a type, validation, and observability boundary only; it does not calibrate prescriptions or select progressions. The direct trunk/carry candidate direction remains unimplemented. Its equipment, structured prescription, pain-stress exposure, support/stance, exact curation, contextual phase-resolution, training-safety, and training-response contracts now exist, but no catalog row or assessment-feature behavior is authorized by those contracts. Production phase scoring remains on the legacy policy pending owner review of calibration consequences. Before the exact seven rows, the low-back audit still requires adapter wiring, owner-approved response receivers, row-level stress/support curation, phase scoring policy, and longitudinal interpretation ownership.

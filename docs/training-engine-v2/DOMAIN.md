@@ -128,6 +128,14 @@ Direct developmental, meaningful secondary, incidental bracing, and capacity exp
 
 ## Progression And Transition
 
+### Training Safety And Response
+
+Training safety authority is explicit, upstream-supplied, non-diagnostic, and independent of pain severity. A signal records review level, source authority, source reference, evidence basis, reporter identity/time, and unresolved or externally resolved state. Result-level `TrainingReadinessTrace` answers whether ordinary downstream training is allowed and exposes every causal signal without changing candidate ranking or manufacturing contraindications.
+
+Training response observations answer one question: what happened for this person after this specific exposure? They record `tolerated | limited | not_tolerated | unknown`, reported symptom change, onset, persistence, completion/modification consequence, descriptive region/side locations, and provenance. They reference prescriptions and performance records instead of copying full dose structures. Partial historical reports preserve unknown realization details.
+
+The response ledger orders applicable events at an explicit `asOf`, exposes latest/prior observations, mixed and unknown evidence, and later tolerated exposure after earlier limited/not-tolerated exposure. It chooses no threshold or action. Historical injury remains observational by default; explicit restrictions belong to existing hard authority, and successful re-exposure adds evidence without erasing history.
+
 `ExerciseProgressionProfile.progressionAxes` describes how prescription can advance while exercise identity remains the same. `transitionRelationships` describes reviewed cross-exercise possibilities with direction, classification, purpose, provenance, and structural deltas.
 
 `domain/progression.ts` owns the canonical progression-axis vocabulary. Structured prescription modules represent dose, load, laterality, support, lever, range, tempo, effort, rest, execution criteria, completed performance, and readiness evidence. A readiness trace can hold, regress/review, report insufficient evidence, or mark readiness for progression review, but it never chooses a dose increase, axis, phase change, or exercise transition.

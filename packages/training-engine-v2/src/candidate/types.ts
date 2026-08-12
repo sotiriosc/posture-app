@@ -10,6 +10,7 @@ import type {
   CandidatePainMatchTrace,
   CandidatePainResultExecutionReadinessTrace,
 } from "./pain";
+import type { TrainingReadinessTrace } from "../domain/trainingSafety";
 
 export interface LegalCandidate {
   readonly exercise: ExerciseDefinition;
@@ -40,6 +41,7 @@ export interface CandidateRankingResult {
   readonly legalCandidateCount: number;
   readonly rankedCandidates: readonly RankedCandidate[];
   readonly painExecutionReadiness: CandidatePainResultExecutionReadinessTrace;
+  readonly trainingReadiness: TrainingReadinessTrace;
   readonly assessmentInfluence: readonly AssessmentInfluence[];
   readonly alignmentPriorities: readonly AlignmentPriority[];
   readonly decisionTrace: DecisionTrace;

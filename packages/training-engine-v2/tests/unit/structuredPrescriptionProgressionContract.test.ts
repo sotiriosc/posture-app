@@ -88,6 +88,7 @@ function performanceRecord(
       },
     ],
     unresolvedPainResponseEvidenceIds: [],
+    trainingResponseObservationIds: [],
     recoveryEvidenceIds: ["fixture-recovery-1"],
     recoveryStatus: "recovered_as_expected",
     substitutions: [],

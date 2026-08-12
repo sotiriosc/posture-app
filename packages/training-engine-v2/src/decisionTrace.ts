@@ -9,6 +9,7 @@ import type { ExercisePrescription, ProgressionDecision } from "./prescriptionPr
 import type { CandidateScore } from "./scoringContracts";
 import type { PipelineSnapshot } from "./pipelineObservability";
 import type { ContextualPhaseResolutionTrace } from "./phaseSuitability";
+import type { TrainingReadinessTrace } from "./domain/trainingSafety";
 import { buildCandidatePainExecutionReadinessTrace } from "./candidate/pain";
 import type {
   CandidatePainExecutionReadinessTrace,
@@ -52,6 +53,7 @@ export interface DecisionTrace {
   readonly candidatePainSummaries: readonly CandidatePainSummaryTrace[];
   readonly candidatePhaseResolutions: readonly ContextualPhaseResolutionTrace[];
   readonly painExecutionReadiness?: CandidatePainResultExecutionReadinessTrace;
+  readonly trainingReadiness?: TrainingReadinessTrace;
   readonly selectedExerciseId?: string;
   readonly whyItWon?: string;
   readonly sessionLevelEffects?: SessionEvaluation;
@@ -97,6 +99,7 @@ export function createDecisionTrace(input: {
   readonly selectedExerciseId?: string;
   readonly whyItWon?: string;
   readonly painExecutionReadiness?: CandidatePainResultExecutionReadinessTrace;
+  readonly trainingReadiness?: TrainingReadinessTrace;
   readonly phaseResolutions?: readonly ContextualPhaseResolutionTrace[];
   readonly pipelineSnapshots?: readonly PipelineSnapshot[];
 }): DecisionTrace {
@@ -120,6 +123,7 @@ export function createDecisionTrace(input: {
     ),
     candidatePhaseResolutions: input.phaseResolutions ?? [],
     painExecutionReadiness: input.painExecutionReadiness,
+    trainingReadiness: input.trainingReadiness,
     selectedExerciseId: input.selectedExerciseId,
     whyItWon: input.whyItWon,
     pipelineSnapshots: input.pipelineSnapshots ?? [],

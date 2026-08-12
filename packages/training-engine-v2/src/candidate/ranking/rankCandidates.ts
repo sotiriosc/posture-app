@@ -26,6 +26,7 @@ import type {
   RankedCandidate,
   RejectedCandidate,
 } from "../types";
+import { buildTrainingReadinessTrace } from "../../domain/trainingSafety";
 
 export interface CandidateRankingOptions {
   readonly scoreComponents?: readonly CandidateScoreComponent[];
@@ -144,6 +145,10 @@ export function rankCandidateRequest(
       buildCandidatePainExecutionReadinessTrace(candidate.eligibility.painMatchTrace),
     ),
   });
+  const trainingReadiness = buildTrainingReadinessTrace({
+    trainingSafety: request.trainingSafety,
+    acuteSeverePain: request.painAndInjury.acuteSeverePain,
+  });
   const scoresByExerciseId = new Map(
     rankedCandidates.map((candidate) => [candidate.exercise.id, candidate.score] as const),
   );
@@ -255,6 +260,7 @@ export function rankCandidateRequest(
     selectedExerciseId: winner?.exercise.id,
     whyItWon: winner?.summary,
     painExecutionReadiness,
+    trainingReadiness,
     phaseResolutions,
     pipelineSnapshots: pipeline.snapshots,
   });
@@ -266,6 +272,7 @@ export function rankCandidateRequest(
     legalCandidateCount: legalCandidates.length,
     rankedCandidates,
     painExecutionReadiness,
+    trainingReadiness,
     assessmentInfluence,
     alignmentPriorities: request.alignmentPriorities,
     decisionTrace,
