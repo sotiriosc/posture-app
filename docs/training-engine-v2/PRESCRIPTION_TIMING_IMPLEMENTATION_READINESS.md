@@ -58,3 +58,23 @@ Before post-Prescription weekly validation: production Prescription output, fina
 Timing readiness is now a prerequisite consumed by the full Prescription design. The next blocker is no longer timing vocabulary; it is owner authorization for numeric Prescription policy tournament and production compiler activation.
 
 Full Prescription readiness: `FULL_PRESCRIPTION_DESIGN_READY_FOR_NUMERIC_POLICY_TOURNAMENT_NOT_PRODUCTION`.
+
+## Numeric Tournament Timing Evidence
+
+The executable numeric Prescription tournament now covers all seven dose modes with concrete structured targets while keeping final Sequencing unresolved:
+
+- `repetition_sets`
+- `timed_hold`
+- `breath_cycles`
+- `distance_carry`
+- `timed_carry`
+- `step_march`
+- `step_sets`
+
+Duration determinability remains explicit in the tournament reports. H1/H2 distribution and spacing are evidence-only, response-dependent sublabs, not automatic progression or Week allocation.
+
+Duration report: `PRESCRIPTION_NUMERIC_DURATION_REPORT.md`.
+
+H1/H2 distribution report: `PRESCRIPTION_NUMERIC_H1_H2_DISTRIBUTION_REPORT.md`.
+
+Spacing report: `PRESCRIPTION_NUMERIC_SPACING_REPORT.md`.

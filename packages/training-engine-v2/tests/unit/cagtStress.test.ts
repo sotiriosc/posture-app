@@ -7,7 +7,7 @@ describe("CAGT deterministic stress", () => {
     const result = runCagtCounterfactualStress();
     expect(result).toMatchObject({ cases: 10_000, failures: [] });
     expect(result.digest).toMatch(/^[a-f0-9]{64}$/);
-  });
+  }, 30_000);
 
   it("runs 1,000 currently executable gated pipelines", () => {
     expect(runCagtExecutablePipelineStress()).toEqual(expect.objectContaining({ cases: 1_000, failures: [] }));

@@ -1,0 +1,6388 @@
+{
+  "candidateManifest": {
+    "version": "1.0.0",
+    "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION",
+    "frozenAt": "2026-08-13T12:00:00-04:00",
+    "atomic": [
+      {
+        "candidateId": "PREPARATION_MINIMAL_TRUTHFUL",
+        "family": "preparation",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "warmup preparation",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 4,
+              "max": 6,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "not_prescribed",
+              "reason": "Rest not prescribed unless separation is required.",
+              "unit": "seconds"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 10,
+              "max": 20,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            }
+          },
+          "breathing": {
+            "rounds": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 3,
+              "max": 5,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            }
+          },
+          "step": {
+            "sets": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 6,
+              "max": 10,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "PREPARATION_BALANCED",
+        "family": "preparation",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "warmup preparation",
+          "dynamic": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 5,
+              "max": 8,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 15,
+              "max": 30,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            }
+          },
+          "breathing": {
+            "rounds": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 4,
+              "max": 6,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            }
+          },
+          "step": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 8,
+              "max": 12,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "PREPARATION_HIGH_COMPLEXITY_STRESS",
+        "family": "preparation",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "warmup preparation stress",
+          "dynamic": {
+            "sets": {
+              "kind": "range",
+              "min": 2,
+              "max": 3,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 8,
+              "max": 15,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "range",
+              "min": 2,
+              "max": 3,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 30,
+              "max": 45,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "breathing": {
+            "rounds": {
+              "kind": "range",
+              "min": 2,
+              "max": 3,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 6,
+              "max": 10,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            }
+          },
+          "step": {
+            "sets": {
+              "kind": "range",
+              "min": 2,
+              "max": 3,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 12,
+              "max": 20,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            }
+          },
+          "expectedRisks": [
+            "unnecessary_fatigue",
+            "section_bloat",
+            "preparation_displacing_main_work"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "PREPARATION_NO_POLICY",
+        "family": "preparation",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "warmup preparation",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "ACTIVATION_MINIMAL_TRUTHFUL",
+        "family": "activation",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "activation",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 6,
+              "max": 10,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 15,
+              "max": 45,
+              "unit": "seconds"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 10,
+              "max": 20,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            }
+          },
+          "step": {
+            "sets": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 8,
+              "max": 12,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "ACTIVATION_BALANCED",
+        "family": "activation",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "activation",
+          "dynamic": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 8,
+              "max": 12,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 15,
+              "max": 30,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            }
+          },
+          "step": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 10,
+              "max": 16,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "ACTIVATION_HIGH_COMPLEXITY_STRESS",
+        "family": "activation",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "activation stress",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 12,
+              "max": 20,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "hard"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 30,
+              "max": 45,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "hard"
+            }
+          },
+          "step": {
+            "sets": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 16,
+              "max": 25,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "hard"
+            }
+          },
+          "expectedRisks": [
+            "activation_becoming_developmental_fatigue",
+            "unnecessary_recurrence",
+            "hidden_accessory_volume"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "ACTIVATION_NO_POLICY",
+        "family": "activation",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "activation",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "MAIN_STRENGTH_MINIMAL_TRUTHFUL",
+        "family": "main_strength",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "main strength",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 2,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 3,
+              "max": 6,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 3,
+              "max": 4
+            },
+            "rest": {
+              "kind": "range",
+              "min": 120,
+              "max": 240,
+              "unit": "seconds"
+            }
+          },
+          "loadPolicy": "user_selected_by_effort",
+          "tempoIntent": "natural",
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "MAIN_STRENGTH_BALANCED",
+        "family": "main_strength",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "main strength",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 3,
+              "max": 6,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "rest": {
+              "kind": "range",
+              "min": 180,
+              "max": 300,
+              "unit": "seconds"
+            }
+          },
+          "loadPolicy": "user_selected_by_effort",
+          "tempoIntent": "natural",
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "MAIN_STRENGTH_HIGH_DOSE_STRESS",
+        "family": "main_strength",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "main strength stress",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 5,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 1,
+              "max": 5,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 0,
+              "max": 2
+            },
+            "rest": {
+              "kind": "range",
+              "min": 180,
+              "max": 360,
+              "unit": "seconds"
+            }
+          },
+          "loadPolicy": "user_selected_by_effort",
+          "expectedRisks": [
+            "excessive_burden",
+            "duration_incompatibility",
+            "over_adaptation",
+            "fatigue_concentration"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "MAIN_STRENGTH_NO_POLICY",
+        "family": "main_strength",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "main strength",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "SECONDARY_STRENGTH_MINIMAL_TRUTHFUL",
+        "family": "secondary_strength",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "secondary strength",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 2,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 5,
+              "max": 8,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 2,
+              "max": 4
+            },
+            "rest": {
+              "kind": "range",
+              "min": 90,
+              "max": 180,
+              "unit": "seconds"
+            }
+          },
+          "loadPolicy": "user_selected_by_effort",
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "SECONDARY_STRENGTH_BALANCED",
+        "family": "secondary_strength",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "secondary strength",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 5,
+              "max": 10,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "rest": {
+              "kind": "range",
+              "min": 120,
+              "max": 240,
+              "unit": "seconds"
+            }
+          },
+          "loadPolicy": "user_selected_by_effort",
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "SECONDARY_STRENGTH_HIGH_DOSE_STRESS",
+        "family": "secondary_strength",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "secondary strength stress",
+          "dynamic": {
+            "sets": {
+              "kind": "range",
+              "min": 4,
+              "max": 5,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 3,
+              "max": 8,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 0,
+              "max": 2
+            },
+            "rest": {
+              "kind": "range",
+              "min": 180,
+              "max": 300,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "fatigue_concentration",
+            "duration_incompatibility"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "SECONDARY_STRENGTH_NO_POLICY",
+        "family": "secondary_strength",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "secondary strength",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "MAIN_HYPERTROPHY_MINIMAL_TRUTHFUL",
+        "family": "main_hypertrophy",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "main hypertrophy",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 2,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 6,
+              "max": 15,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 2,
+              "max": 4
+            },
+            "rest": {
+              "kind": "range",
+              "min": 90,
+              "max": 180,
+              "unit": "seconds"
+            }
+          },
+          "loadPolicy": "user_selected_by_effort",
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "MAIN_HYPERTROPHY_BALANCED",
+        "family": "main_hypertrophy",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "main hypertrophy",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 6,
+              "max": 20,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "rest": {
+              "kind": "range",
+              "min": 90,
+              "max": 180,
+              "unit": "seconds"
+            }
+          },
+          "loadPolicy": "user_selected_by_effort",
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "MAIN_HYPERTROPHY_HIGH_DOSE_STRESS",
+        "family": "main_hypertrophy",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "main hypertrophy stress",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 5,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 6,
+              "max": 30,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 0,
+              "max": 1
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "excessive_fatigue",
+            "failure_seeking",
+            "duration_failure"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "MAIN_HYPERTROPHY_NO_POLICY",
+        "family": "main_hypertrophy",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "main hypertrophy",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "HYPERTROPHY_ACCESSORY_MINIMAL_TRUTHFUL",
+        "family": "hypertrophy_accessory",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "hypertrophy accessory",
+          "dynamic": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 8,
+              "max": 20,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 2,
+              "max": 4
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "HYPERTROPHY_ACCESSORY_BALANCED",
+        "family": "hypertrophy_accessory",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "hypertrophy accessory",
+          "dynamic": {
+            "sets": {
+              "kind": "range",
+              "min": 2,
+              "max": 3,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 8,
+              "max": 20,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "HYPERTROPHY_ACCESSORY_HIGH_DOSE_STRESS",
+        "family": "hypertrophy_accessory",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "hypertrophy accessory stress",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 4,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 10,
+              "max": 30,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 0,
+              "max": 1
+            },
+            "rest": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "accessory_bloat",
+            "failure_seeking"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "HYPERTROPHY_ACCESSORY_NO_POLICY",
+        "family": "hypertrophy_accessory",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "hypertrophy accessory",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "DIRECT_ACCESSORY_MINIMAL_TRUTHFUL",
+        "family": "direct_accessory",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "direct accessory",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 8,
+              "max": 20,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 2,
+              "max": 4
+            },
+            "rest": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "DIRECT_ACCESSORY_BALANCED",
+        "family": "direct_accessory",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "direct accessory",
+          "dynamic": {
+            "sets": {
+              "kind": "exact",
+              "value": 2,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 8,
+              "max": 20,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "DIRECT_ACCESSORY_HIGH_DOSE_STRESS",
+        "family": "direct_accessory",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "direct accessory stress",
+          "dynamic": {
+            "sets": {
+              "kind": "range",
+              "min": 3,
+              "max": 4,
+              "unit": "sets"
+            },
+            "reps": {
+              "kind": "range",
+              "min": 10,
+              "max": 30,
+              "unit": "reps"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 0,
+              "max": 1
+            },
+            "rest": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "direct_accessory_bloat",
+            "failure_seeking"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "DIRECT_ACCESSORY_NO_POLICY",
+        "family": "direct_accessory",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "direct accessory",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "TIMED_HOLD_MINIMAL_TRUTHFUL",
+        "family": "timed_hold",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "timed hold",
+          "timedHold": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 10,
+              "max": 20,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "TIMED_HOLD_BALANCED",
+        "family": "timed_hold",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "timed hold",
+          "timedHold": {
+            "sets": {
+              "kind": "range",
+              "min": 2,
+              "max": 3,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "TIMED_HOLD_HIGH_DOSE_STRESS",
+        "family": "timed_hold",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "timed hold stress",
+          "timedHold": {
+            "sets": {
+              "kind": "range",
+              "min": 3,
+              "max": 4,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 40,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "hard"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "hold_duration_bloat",
+            "hard_position_fatigue"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "TIMED_HOLD_NO_POLICY",
+        "family": "timed_hold",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "timed hold",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "BREATH_CYCLES_MINIMAL_TRUTHFUL",
+        "family": "breath_cycles",
+        "shape": "minimal_truthful",
+        "ownerLeading": true,
+        "value": {
+          "scope": "breath cycles",
+          "breathing": {
+            "rounds": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 3,
+              "max": 4,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "not_prescribed",
+              "reason": "Rest not prescribed.",
+              "unit": "seconds"
+            },
+            "cadence": "not_prescribed"
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "BREATH_CYCLES_BALANCED",
+        "family": "breath_cycles",
+        "shape": "balanced",
+        "ownerLeading": false,
+        "value": {
+          "scope": "breath cycles",
+          "breathing": {
+            "rounds": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 4,
+              "max": 6,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "cadence": "controlled"
+          },
+          "expectedRisks": [
+            "exercise_specific_numeric_policy_needed"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "BREATH_CYCLES_HIGH_DOSE_STRESS",
+        "family": "breath_cycles",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "breath cycles stress",
+          "breathing": {
+            "rounds": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 8,
+              "max": 10,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "cadence": "controlled"
+          },
+          "expectedRisks": [
+            "unnecessary_session_duration",
+            "unsupported_cadence_precision"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "BREATH_CYCLES_NO_POLICY",
+        "family": "breath_cycles",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "breath cycles",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "CARRY_MINIMAL_TRUTHFUL",
+        "family": "carry",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "carry",
+          "distanceCarry": {
+            "trips": {
+              "kind": "exact",
+              "value": 2,
+              "unit": "trips"
+            },
+            "distance": {
+              "kind": "range",
+              "min": 10,
+              "max": 20,
+              "unit": "metres"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "timedCarry": {
+            "trips": {
+              "kind": "exact",
+              "value": 2,
+              "unit": "trips"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 15,
+              "max": 25,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "CARRY_BALANCED",
+        "family": "carry",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "carry",
+          "distanceCarry": {
+            "trips": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "trips"
+            },
+            "distance": {
+              "kind": "range",
+              "min": 15,
+              "max": 30,
+              "unit": "metres"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 2,
+              "max": 3
+            },
+            "rest": {
+              "kind": "range",
+              "min": 90,
+              "max": 180,
+              "unit": "seconds"
+            }
+          },
+          "timedCarry": {
+            "trips": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "trips"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "rir",
+              "min": 2,
+              "max": 3
+            },
+            "rest": {
+              "kind": "range",
+              "min": 90,
+              "max": 180,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "CARRY_HIGH_DOSE_STRESS",
+        "family": "carry",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "carry stress",
+          "distanceCarry": {
+            "trips": {
+              "kind": "range",
+              "min": 5,
+              "max": 6,
+              "unit": "trips"
+            },
+            "distance": {
+              "kind": "range",
+              "min": 30,
+              "max": 50,
+              "unit": "metres"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "hard"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "timedCarry": {
+            "trips": {
+              "kind": "range",
+              "min": 5,
+              "max": 6,
+              "unit": "trips"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 40,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "hard"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "grip_trunk_concentration",
+            "capacity_bloat",
+            "duration_failure"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "CARRY_NO_POLICY",
+        "family": "carry",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "carry",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "STATIONARY_MARCH_MINIMAL_TRUTHFUL",
+        "family": "stationary_march",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "stationary march",
+          "stationaryMarch": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 12,
+              "max": 20,
+              "unit": "steps"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 15,
+              "max": 25,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "rest": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "STATIONARY_MARCH_BALANCED",
+        "family": "stationary_march",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "stationary march",
+          "stationaryMarch": {
+            "sets": {
+              "kind": "range",
+              "min": 2,
+              "max": 3,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "steps"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "STATIONARY_MARCH_HIGH_DOSE_STRESS",
+        "family": "stationary_march",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "stationary march stress",
+          "stationaryMarch": {
+            "sets": {
+              "kind": "range",
+              "min": 3,
+              "max": 4,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 40,
+              "max": 60,
+              "unit": "steps"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 40,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "hard"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "duration_failure",
+            "capacity_bloat"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "STATIONARY_MARCH_NO_POLICY",
+        "family": "stationary_march",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "stationary march",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "COUNTED_STEP_MINIMAL_TRUTHFUL",
+        "family": "counted_step",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "counted step",
+          "step": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 6,
+              "max": 10,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "COUNTED_STEP_BALANCED",
+        "family": "counted_step",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "counted step",
+          "step": {
+            "sets": {
+              "kind": "range",
+              "min": 2,
+              "max": 3,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 8,
+              "max": 15,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "moderate"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "COUNTED_STEP_HIGH_DOSE_STRESS",
+        "family": "counted_step",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "counted step stress",
+          "step": {
+            "sets": {
+              "kind": "range",
+              "min": 3,
+              "max": 4,
+              "unit": "sets"
+            },
+            "steps": {
+              "kind": "range",
+              "min": 15,
+              "max": 25,
+              "unit": "steps"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "hard"
+            },
+            "rest": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "step_volume_bloat",
+            "quality_decay"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "COUNTED_STEP_NO_POLICY",
+        "family": "counted_step",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "counted step",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "RECOVERY_MINIMAL_TRUTHFUL",
+        "family": "recovery_cooldown",
+        "shape": "minimal_truthful",
+        "ownerLeading": true,
+        "value": {
+          "scope": "recovery cooldown",
+          "breathing": {
+            "rounds": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 3,
+              "max": 5,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            },
+            "rest": {
+              "kind": "not_prescribed",
+              "reason": "Rest not prescribed.",
+              "unit": "seconds"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "RECOVERY_BALANCED",
+        "family": "recovery_cooldown",
+        "shape": "balanced",
+        "ownerLeading": false,
+        "value": {
+          "scope": "recovery cooldown",
+          "breathing": {
+            "rounds": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 4,
+              "max": 6,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            }
+          },
+          "expectedRisks": [
+            "explicit_recovery_scope_required"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "RECOVERY_HIGH_DOSE_STRESS",
+        "family": "recovery_cooldown",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "recovery cooldown stress",
+          "breathing": {
+            "rounds": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "breathCycles": {
+              "kind": "range",
+              "min": 8,
+              "max": 10,
+              "unit": "breath_cycles"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            }
+          },
+          "timedHold": {
+            "sets": {
+              "kind": "exact",
+              "value": 3,
+              "unit": "sets"
+            },
+            "duration": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            },
+            "effort": {
+              "kind": "qualitative",
+              "band": "easy"
+            }
+          },
+          "expectedRisks": [
+            "generic_cooldown_insertion",
+            "unnecessary_session_duration",
+            "unsupported_recovery_claim"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "RECOVERY_NO_POLICY",
+        "family": "recovery_cooldown",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "recovery cooldown",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "REST_MINIMAL_TRUTHFUL",
+        "family": "rest",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "rest bundle",
+          "restByUse": {
+            "preparation": {
+              "kind": "range",
+              "min": 15,
+              "max": 45,
+              "unit": "seconds"
+            },
+            "activation": {
+              "kind": "range",
+              "min": 15,
+              "max": 45,
+              "unit": "seconds"
+            },
+            "main_strength": {
+              "kind": "range",
+              "min": 120,
+              "max": 180,
+              "unit": "seconds"
+            },
+            "secondary_strength": {
+              "kind": "range",
+              "min": 90,
+              "max": 150,
+              "unit": "seconds"
+            },
+            "main_hypertrophy": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            },
+            "accessory": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            },
+            "special": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "REST_BALANCED",
+        "family": "rest",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "rest bundle",
+          "restByUse": {
+            "preparation": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "activation": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "main_strength": {
+              "kind": "range",
+              "min": 180,
+              "max": 300,
+              "unit": "seconds"
+            },
+            "secondary_strength": {
+              "kind": "range",
+              "min": 120,
+              "max": 240,
+              "unit": "seconds"
+            },
+            "main_hypertrophy": {
+              "kind": "range",
+              "min": 90,
+              "max": 180,
+              "unit": "seconds"
+            },
+            "accessory": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            },
+            "special": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            },
+            "breath": {
+              "kind": "range",
+              "min": 30,
+              "max": 60,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "REST_HIGH_DURATION_STRESS",
+        "family": "rest",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "rest stress",
+          "restByUse": {
+            "preparation": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            },
+            "activation": {
+              "kind": "range",
+              "min": 60,
+              "max": 120,
+              "unit": "seconds"
+            },
+            "main_strength": {
+              "kind": "range",
+              "min": 300,
+              "max": 420,
+              "unit": "seconds"
+            },
+            "secondary_strength": {
+              "kind": "range",
+              "min": 240,
+              "max": 360,
+              "unit": "seconds"
+            },
+            "main_hypertrophy": {
+              "kind": "range",
+              "min": 180,
+              "max": 300,
+              "unit": "seconds"
+            },
+            "accessory": {
+              "kind": "range",
+              "min": 120,
+              "max": 180,
+              "unit": "seconds"
+            },
+            "special": {
+              "kind": "range",
+              "min": 120,
+              "max": 240,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "session_duration_failure",
+            "excessive_structural_cost"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "REST_NO_POLICY",
+        "family": "rest",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "rest",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "EFFORT_MINIMAL_TRUTHFUL",
+        "family": "effort",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "effort bundle",
+          "effortByUse": {
+            "preparation": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "activation": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "main_strength": {
+              "kind": "rir",
+              "min": 3,
+              "max": 4
+            },
+            "secondary_strength": {
+              "kind": "rir",
+              "min": 3,
+              "max": 4
+            },
+            "main_hypertrophy": {
+              "kind": "rir",
+              "min": 2,
+              "max": 4
+            },
+            "accessory": {
+              "kind": "rir",
+              "min": 2,
+              "max": 4
+            },
+            "special": {
+              "kind": "qualitative",
+              "band": "easy"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "EFFORT_BALANCED",
+        "family": "effort",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "effort bundle",
+          "effortByUse": {
+            "preparation": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "activation": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "main_strength": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "secondary_strength": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "main_hypertrophy": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "accessory": {
+              "kind": "rir",
+              "min": 1,
+              "max": 3
+            },
+            "special": {
+              "kind": "qualitative",
+              "band": "moderate"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "EFFORT_FAILURE_STRESS",
+        "family": "effort",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "failure effort stress",
+          "effortByUse": {
+            "preparation": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "activation": {
+              "kind": "quality_limited",
+              "description": "Quality remains primary."
+            },
+            "main_strength": {
+              "kind": "rir",
+              "min": 0,
+              "max": 1
+            },
+            "secondary_strength": {
+              "kind": "rir",
+              "min": 0,
+              "max": 1
+            },
+            "main_hypertrophy": {
+              "kind": "rir",
+              "min": 0,
+              "max": 1
+            },
+            "accessory": {
+              "kind": "rir",
+              "min": 0,
+              "max": 1
+            },
+            "special": {
+              "kind": "qualitative",
+              "band": "hard"
+            }
+          },
+          "expectedRisks": [
+            "fatigue",
+            "adverse_response",
+            "inappropriate_failure_convergence"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "EFFORT_NO_POLICY",
+        "family": "effort",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "effort",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "TEMPO_INTENT_MINIMAL_TRUTHFUL",
+        "family": "tempo_intent",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "tempo intent",
+          "tempoIntent": "natural",
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "TEMPO_INTENT_GOAL_SPECIFIC_BALANCED",
+        "family": "tempo_intent",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "tempo intent",
+          "tempoIntent": "controlled",
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "TEMPO_INTENT_UNIVERSAL_CONTROL_STRESS",
+        "family": "tempo_intent",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "universal tempo intent stress",
+          "tempoIntent": "controlled",
+          "expectedRisks": [
+            "over_adaptation",
+            "loss_of_power_intent",
+            "generic_tempo_convergence"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "TEMPO_INTENT_NO_POLICY",
+        "family": "tempo_intent",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "tempo intent",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "EXACT_TEMPO_MINIMAL_TRUTHFUL",
+        "family": "exact_phase_tempo",
+        "shape": "minimal_truthful",
+        "ownerLeading": true,
+        "value": {
+          "scope": "exact phase tempo",
+          "exactTempo": {
+            "kind": "not_prescribed"
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "EXACT_TEMPO_MODERATE_TEST",
+        "family": "exact_phase_tempo",
+        "shape": "balanced",
+        "ownerLeading": false,
+        "value": {
+          "scope": "exact phase tempo test",
+          "exactTempo": {
+            "kind": "phase_tempo",
+            "eccentricSeconds": 2,
+            "concentricIntent": "controlled"
+          },
+          "expectedRisks": [
+            "test_candidate_not_default"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "EXACT_TEMPO_SLOW_PAUSE_STRESS",
+        "family": "exact_phase_tempo",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "slow exact phase tempo stress",
+          "exactTempo": {
+            "kind": "phase_tempo",
+            "eccentricSeconds": 4,
+            "lengthenedPauseSeconds": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "seconds"
+            },
+            "concentricSeconds": 2,
+            "shortenedPauseSeconds": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "unsupported_precision",
+            "duration_inflation",
+            "generic_slow_tempo_convergence"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "EXACT_TEMPO_NO_POLICY",
+        "family": "exact_phase_tempo",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "exact phase tempo",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "DURATION_MINIMAL_TRUTHFUL",
+        "family": "duration",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "duration bundle",
+          "durationByUse": {
+            "timed_hold": {
+              "kind": "range",
+              "min": 10,
+              "max": 20,
+              "unit": "seconds"
+            },
+            "timed_carry": {
+              "kind": "range",
+              "min": 15,
+              "max": 25,
+              "unit": "seconds"
+            },
+            "stationary_march": {
+              "kind": "range",
+              "min": 15,
+              "max": 25,
+              "unit": "seconds"
+            },
+            "balance": {
+              "kind": "range",
+              "min": 10,
+              "max": 20,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "DURATION_BALANCED",
+        "family": "duration",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "duration bundle",
+          "durationByUse": {
+            "timed_hold": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "seconds"
+            },
+            "timed_carry": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "seconds"
+            },
+            "stationary_march": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "seconds"
+            },
+            "balance": {
+              "kind": "range",
+              "min": 20,
+              "max": 40,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "DURATION_HIGH_STRESS",
+        "family": "duration",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "duration stress",
+          "durationByUse": {
+            "timed_hold": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            },
+            "timed_carry": {
+              "kind": "range",
+              "min": 40,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "stationary_march": {
+              "kind": "range",
+              "min": 40,
+              "max": 60,
+              "unit": "seconds"
+            },
+            "balance": {
+              "kind": "range",
+              "min": 45,
+              "max": 90,
+              "unit": "seconds"
+            }
+          },
+          "expectedRisks": [
+            "duration_failure",
+            "exercise_specific_rejection"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "DURATION_NO_POLICY",
+        "family": "duration",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "duration",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "BLOCK_STRUCTURE_MINIMAL_TRUTHFUL",
+        "family": "block_structure",
+        "shape": "minimal_truthful",
+        "ownerLeading": false,
+        "value": {
+          "scope": "block structure",
+          "blockStructure": {
+            "mainLoadedPrepBlocks": {
+              "kind": "exact",
+              "value": 0,
+              "unit": "sets"
+            },
+            "developmentalBlocks": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "backoffBlocks": {
+              "kind": "exact",
+              "value": 0,
+              "unit": "sets"
+            },
+            "mixedDoseModesAllowed": false
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "BLOCK_STRUCTURE_BALANCED",
+        "family": "block_structure",
+        "shape": "balanced",
+        "ownerLeading": true,
+        "value": {
+          "scope": "block structure",
+          "blockStructure": {
+            "mainLoadedPrepBlocks": {
+              "kind": "range",
+              "min": 1,
+              "max": 2,
+              "unit": "sets"
+            },
+            "developmentalBlocks": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "backoffBlocks": {
+              "kind": "exact",
+              "value": 0,
+              "unit": "sets"
+            },
+            "mixedDoseModesAllowed": false
+          },
+          "expectedRisks": []
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "BLOCK_STRUCTURE_HIGH_COMPLEXITY_STRESS",
+        "family": "block_structure",
+        "shape": "high_dose_or_high_complexity_stress",
+        "ownerLeading": false,
+        "value": {
+          "scope": "block structure stress",
+          "blockStructure": {
+            "mainLoadedPrepBlocks": {
+              "kind": "range",
+              "min": 2,
+              "max": 4,
+              "unit": "sets"
+            },
+            "developmentalBlocks": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "backoffBlocks": {
+              "kind": "exact",
+              "value": 1,
+              "unit": "sets"
+            },
+            "mixedDoseModesAllowed": false
+          },
+          "expectedRisks": [
+            "duration_expansion",
+            "excessive_block_count",
+            "duplicate_miscredited_exposure"
+          ]
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      },
+      {
+        "candidateId": "BLOCK_STRUCTURE_NO_POLICY",
+        "family": "block_structure",
+        "shape": "no_policy_control",
+        "ownerLeading": false,
+        "value": {
+          "scope": "block structure",
+          "expectedRisks": [
+            "missing_policy"
+          ],
+          "dynamic": {
+            "sets": {
+              "kind": "policy_required",
+              "reason": "No reviewed policy.",
+              "unit": "sets"
+            }
+          }
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION"
+      }
+    ],
+    "composite": [
+      {
+        "candidateId": "RX_COMPOSITE_M0_MINIMAL_STABILITY",
+        "ownerLeading": false,
+        "noPolicyControl": false,
+        "stressOnly": false,
+        "atomicCandidateIds": {
+          "preparation": "PREPARATION_MINIMAL_TRUTHFUL",
+          "activation": "ACTIVATION_MINIMAL_TRUTHFUL",
+          "main_strength": "MAIN_STRENGTH_MINIMAL_TRUTHFUL",
+          "secondary_strength": "SECONDARY_STRENGTH_MINIMAL_TRUTHFUL",
+          "main_hypertrophy": "MAIN_HYPERTROPHY_MINIMAL_TRUTHFUL",
+          "hypertrophy_accessory": "HYPERTROPHY_ACCESSORY_MINIMAL_TRUTHFUL",
+          "direct_accessory": "DIRECT_ACCESSORY_MINIMAL_TRUTHFUL",
+          "timed_hold": "TIMED_HOLD_MINIMAL_TRUTHFUL",
+          "breath_cycles": "BREATH_CYCLES_MINIMAL_TRUTHFUL",
+          "carry": "CARRY_MINIMAL_TRUTHFUL",
+          "stationary_march": "STATIONARY_MARCH_MINIMAL_TRUTHFUL",
+          "counted_step": "COUNTED_STEP_MINIMAL_TRUTHFUL",
+          "recovery_cooldown": "RECOVERY_MINIMAL_TRUTHFUL",
+          "rest": "REST_MINIMAL_TRUTHFUL",
+          "effort": "EFFORT_MINIMAL_TRUTHFUL",
+          "tempo_intent": "TEMPO_INTENT_MINIMAL_TRUTHFUL",
+          "exact_phase_tempo": "EXACT_TEMPO_MINIMAL_TRUTHFUL",
+          "duration": "DURATION_MINIMAL_TRUTHFUL",
+          "block_structure": "BLOCK_STRUCTURE_MINIMAL_TRUTHFUL"
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION",
+        "family": "composite"
+      },
+      {
+        "candidateId": "RX_COMPOSITE_B1_BALANCED_CAUSAL",
+        "ownerLeading": true,
+        "noPolicyControl": false,
+        "stressOnly": false,
+        "atomicCandidateIds": {
+          "preparation": "PREPARATION_BALANCED",
+          "activation": "ACTIVATION_BALANCED",
+          "main_strength": "MAIN_STRENGTH_BALANCED",
+          "secondary_strength": "SECONDARY_STRENGTH_BALANCED",
+          "main_hypertrophy": "MAIN_HYPERTROPHY_BALANCED",
+          "hypertrophy_accessory": "HYPERTROPHY_ACCESSORY_BALANCED",
+          "direct_accessory": "DIRECT_ACCESSORY_BALANCED",
+          "timed_hold": "TIMED_HOLD_BALANCED",
+          "breath_cycles": "BREATH_CYCLES_MINIMAL_TRUTHFUL",
+          "carry": "CARRY_BALANCED",
+          "stationary_march": "STATIONARY_MARCH_BALANCED",
+          "counted_step": "COUNTED_STEP_BALANCED",
+          "recovery_cooldown": "RECOVERY_MINIMAL_TRUTHFUL",
+          "rest": "REST_BALANCED",
+          "effort": "EFFORT_BALANCED",
+          "tempo_intent": "TEMPO_INTENT_GOAL_SPECIFIC_BALANCED",
+          "exact_phase_tempo": "EXACT_TEMPO_MINIMAL_TRUTHFUL",
+          "duration": "DURATION_BALANCED",
+          "block_structure": "BLOCK_STRUCTURE_BALANCED"
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION",
+        "family": "composite"
+      },
+      {
+        "candidateId": "RX_COMPOSITE_S1_STRENGTH",
+        "ownerLeading": false,
+        "noPolicyControl": false,
+        "stressOnly": false,
+        "atomicCandidateIds": {
+          "preparation": "PREPARATION_BALANCED",
+          "activation": "ACTIVATION_MINIMAL_TRUTHFUL",
+          "main_strength": "MAIN_STRENGTH_BALANCED",
+          "secondary_strength": "SECONDARY_STRENGTH_BALANCED",
+          "main_hypertrophy": "MAIN_HYPERTROPHY_MINIMAL_TRUTHFUL",
+          "hypertrophy_accessory": "HYPERTROPHY_ACCESSORY_MINIMAL_TRUTHFUL",
+          "direct_accessory": "DIRECT_ACCESSORY_MINIMAL_TRUTHFUL",
+          "timed_hold": "TIMED_HOLD_MINIMAL_TRUTHFUL",
+          "breath_cycles": "BREATH_CYCLES_MINIMAL_TRUTHFUL",
+          "carry": "CARRY_BALANCED",
+          "stationary_march": "STATIONARY_MARCH_BALANCED",
+          "counted_step": "COUNTED_STEP_MINIMAL_TRUTHFUL",
+          "recovery_cooldown": "RECOVERY_MINIMAL_TRUTHFUL",
+          "rest": "REST_BALANCED",
+          "effort": "EFFORT_BALANCED",
+          "tempo_intent": "TEMPO_INTENT_GOAL_SPECIFIC_BALANCED",
+          "exact_phase_tempo": "EXACT_TEMPO_MINIMAL_TRUTHFUL",
+          "duration": "DURATION_MINIMAL_TRUTHFUL",
+          "block_structure": "BLOCK_STRUCTURE_BALANCED"
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION",
+        "family": "composite"
+      },
+      {
+        "candidateId": "RX_COMPOSITE_H1_HYPERTROPHY",
+        "ownerLeading": false,
+        "noPolicyControl": false,
+        "stressOnly": false,
+        "atomicCandidateIds": {
+          "preparation": "PREPARATION_MINIMAL_TRUTHFUL",
+          "activation": "ACTIVATION_MINIMAL_TRUTHFUL",
+          "main_strength": "MAIN_STRENGTH_MINIMAL_TRUTHFUL",
+          "secondary_strength": "SECONDARY_STRENGTH_MINIMAL_TRUTHFUL",
+          "main_hypertrophy": "MAIN_HYPERTROPHY_BALANCED",
+          "hypertrophy_accessory": "HYPERTROPHY_ACCESSORY_BALANCED",
+          "direct_accessory": "DIRECT_ACCESSORY_BALANCED",
+          "timed_hold": "TIMED_HOLD_BALANCED",
+          "breath_cycles": "BREATH_CYCLES_MINIMAL_TRUTHFUL",
+          "carry": "CARRY_MINIMAL_TRUTHFUL",
+          "stationary_march": "STATIONARY_MARCH_MINIMAL_TRUTHFUL",
+          "counted_step": "COUNTED_STEP_BALANCED",
+          "recovery_cooldown": "RECOVERY_MINIMAL_TRUTHFUL",
+          "rest": "REST_BALANCED",
+          "effort": "EFFORT_BALANCED",
+          "tempo_intent": "TEMPO_INTENT_GOAL_SPECIFIC_BALANCED",
+          "exact_phase_tempo": "EXACT_TEMPO_MINIMAL_TRUTHFUL",
+          "duration": "DURATION_BALANCED",
+          "block_structure": "BLOCK_STRUCTURE_BALANCED"
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION",
+        "family": "composite"
+      },
+      {
+        "candidateId": "RX_COMPOSITE_Q1_QUALITY_FIRST",
+        "ownerLeading": false,
+        "noPolicyControl": false,
+        "stressOnly": false,
+        "atomicCandidateIds": {
+          "preparation": "PREPARATION_BALANCED",
+          "activation": "ACTIVATION_BALANCED",
+          "main_strength": "MAIN_STRENGTH_MINIMAL_TRUTHFUL",
+          "secondary_strength": "SECONDARY_STRENGTH_MINIMAL_TRUTHFUL",
+          "main_hypertrophy": "MAIN_HYPERTROPHY_MINIMAL_TRUTHFUL",
+          "hypertrophy_accessory": "HYPERTROPHY_ACCESSORY_MINIMAL_TRUTHFUL",
+          "direct_accessory": "DIRECT_ACCESSORY_MINIMAL_TRUTHFUL",
+          "timed_hold": "TIMED_HOLD_MINIMAL_TRUTHFUL",
+          "breath_cycles": "BREATH_CYCLES_MINIMAL_TRUTHFUL",
+          "carry": "CARRY_MINIMAL_TRUTHFUL",
+          "stationary_march": "STATIONARY_MARCH_MINIMAL_TRUTHFUL",
+          "counted_step": "COUNTED_STEP_MINIMAL_TRUTHFUL",
+          "recovery_cooldown": "RECOVERY_MINIMAL_TRUTHFUL",
+          "rest": "REST_BALANCED",
+          "effort": "EFFORT_MINIMAL_TRUTHFUL",
+          "tempo_intent": "TEMPO_INTENT_GOAL_SPECIFIC_BALANCED",
+          "exact_phase_tempo": "EXACT_TEMPO_MINIMAL_TRUTHFUL",
+          "duration": "DURATION_MINIMAL_TRUTHFUL",
+          "block_structure": "BLOCK_STRUCTURE_MINIMAL_TRUTHFUL"
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION",
+        "family": "composite"
+      },
+      {
+        "candidateId": "RX_COMPOSITE_F1_HIGH_STRESS",
+        "ownerLeading": false,
+        "noPolicyControl": false,
+        "stressOnly": true,
+        "atomicCandidateIds": {
+          "preparation": "PREPARATION_HIGH_COMPLEXITY_STRESS",
+          "activation": "ACTIVATION_HIGH_COMPLEXITY_STRESS",
+          "main_strength": "MAIN_STRENGTH_HIGH_DOSE_STRESS",
+          "secondary_strength": "SECONDARY_STRENGTH_HIGH_DOSE_STRESS",
+          "main_hypertrophy": "MAIN_HYPERTROPHY_HIGH_DOSE_STRESS",
+          "hypertrophy_accessory": "HYPERTROPHY_ACCESSORY_HIGH_DOSE_STRESS",
+          "direct_accessory": "DIRECT_ACCESSORY_HIGH_DOSE_STRESS",
+          "timed_hold": "TIMED_HOLD_HIGH_DOSE_STRESS",
+          "breath_cycles": "BREATH_CYCLES_HIGH_DOSE_STRESS",
+          "carry": "CARRY_HIGH_DOSE_STRESS",
+          "stationary_march": "STATIONARY_MARCH_HIGH_DOSE_STRESS",
+          "counted_step": "COUNTED_STEP_HIGH_DOSE_STRESS",
+          "recovery_cooldown": "RECOVERY_HIGH_DOSE_STRESS",
+          "rest": "REST_HIGH_DURATION_STRESS",
+          "effort": "EFFORT_FAILURE_STRESS",
+          "tempo_intent": "TEMPO_INTENT_UNIVERSAL_CONTROL_STRESS",
+          "exact_phase_tempo": "EXACT_TEMPO_SLOW_PAUSE_STRESS",
+          "duration": "DURATION_HIGH_STRESS",
+          "block_structure": "BLOCK_STRUCTURE_HIGH_COMPLEXITY_STRESS"
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION",
+        "family": "composite"
+      },
+      {
+        "candidateId": "RX_COMPOSITE_X0_NO_POLICY",
+        "ownerLeading": false,
+        "noPolicyControl": true,
+        "stressOnly": false,
+        "atomicCandidateIds": {
+          "preparation": "PREPARATION_NO_POLICY",
+          "activation": "ACTIVATION_NO_POLICY",
+          "main_strength": "MAIN_STRENGTH_NO_POLICY",
+          "secondary_strength": "SECONDARY_STRENGTH_NO_POLICY",
+          "main_hypertrophy": "MAIN_HYPERTROPHY_NO_POLICY",
+          "hypertrophy_accessory": "HYPERTROPHY_ACCESSORY_NO_POLICY",
+          "direct_accessory": "DIRECT_ACCESSORY_NO_POLICY",
+          "timed_hold": "TIMED_HOLD_NO_POLICY",
+          "breath_cycles": "BREATH_CYCLES_NO_POLICY",
+          "carry": "CARRY_NO_POLICY",
+          "stationary_march": "STATIONARY_MARCH_NO_POLICY",
+          "counted_step": "COUNTED_STEP_NO_POLICY",
+          "recovery_cooldown": "RECOVERY_NO_POLICY",
+          "rest": "REST_NO_POLICY",
+          "effort": "EFFORT_NO_POLICY",
+          "tempo_intent": "TEMPO_INTENT_NO_POLICY",
+          "exact_phase_tempo": "EXACT_TEMPO_NO_POLICY",
+          "duration": "DURATION_NO_POLICY",
+          "block_structure": "BLOCK_STRUCTURE_NO_POLICY"
+        },
+        "version": "1.0.0",
+        "state": "PRESCRIPTION_NUMERIC_TEST_CANDIDATE_NOT_PRODUCTION",
+        "family": "composite"
+      }
+    ]
+  },
+  "candidateManifestFingerprint": "7d96a67a80ce0b6c16f40523cd6b8f2734128953e781dcfe977dd12aba4c69a8",
+  "lockedHoldoutManifest": {
+    "version": "1.0.0",
+    "lockedAt": "2026-08-13T12:00:00-04:00",
+    "scenarios": [
+      {
+        "scenarioId": "locked-holdout-01:ninety-ninety-breathing",
+        "exerciseId": "ninety-ninety-breathing",
+        "section": "warmup",
+        "role": "preparation",
+        "goal": "strength",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "range-requirement",
+          "support-requirement",
+          "load-requirement",
+          "condensed-session",
+          "explicit-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-02:serratus-wall-slide",
+        "exerciseId": "serratus-wall-slide",
+        "section": "activation",
+        "role": "activation",
+        "goal": "hypertrophy",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-03:dead-bug",
+        "exerciseId": "dead-bug",
+        "section": "main",
+        "role": "primary_strength",
+        "goal": "general_fitness",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-04:push-up",
+        "exerciseId": "push-up",
+        "section": "accessory",
+        "role": "secondary_strength",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-05:dumbbell-bench-press",
+        "exerciseId": "dumbbell-bench-press",
+        "section": "cooldown",
+        "role": "hypertrophy_accessory",
+        "goal": "strength",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-06:machine-chest-press",
+        "exerciseId": "machine-chest-press",
+        "section": "warmup",
+        "role": "capacity",
+        "goal": "hypertrophy",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-07:cable-chest-fly",
+        "exerciseId": "cable-chest-fly",
+        "section": "activation",
+        "role": "recovery",
+        "goal": "general_fitness",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-08:chest-supported-dumbbell-row",
+        "exerciseId": "chest-supported-dumbbell-row",
+        "section": "main",
+        "role": "preparation",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "condensed-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-09:one-arm-dumbbell-row",
+        "exerciseId": "one-arm-dumbbell-row",
+        "section": "accessory",
+        "role": "activation",
+        "goal": "strength",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "explicit-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-10:machine-row",
+        "exerciseId": "machine-row",
+        "section": "cooldown",
+        "role": "primary_strength",
+        "goal": "hypertrophy",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-11:seated-cable-row",
+        "exerciseId": "seated-cable-row",
+        "section": "warmup",
+        "role": "secondary_strength",
+        "goal": "general_fitness",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-12:band-row",
+        "exerciseId": "band-row",
+        "section": "activation",
+        "role": "hypertrophy_accessory",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-13:dumbbell-shoulder-press",
+        "exerciseId": "dumbbell-shoulder-press",
+        "section": "main",
+        "role": "capacity",
+        "goal": "strength",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "range-requirement",
+          "no-support-requirement",
+          "load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-14:lat-pulldown",
+        "exerciseId": "lat-pulldown",
+        "section": "accessory",
+        "role": "recovery",
+        "goal": "hypertrophy",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-15:band-lat-pulldown",
+        "exerciseId": "band-lat-pulldown",
+        "section": "cooldown",
+        "role": "preparation",
+        "goal": "general_fitness",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "condensed-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-16:goblet-squat",
+        "exerciseId": "goblet-squat",
+        "section": "warmup",
+        "role": "activation",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-17:leg-press",
+        "exerciseId": "leg-press",
+        "section": "activation",
+        "role": "primary_strength",
+        "goal": "strength",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "explicit-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-18:bodyweight-box-squat",
+        "exerciseId": "bodyweight-box-squat",
+        "section": "main",
+        "role": "secondary_strength",
+        "goal": "hypertrophy",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-19:dumbbell-romanian-deadlift",
+        "exerciseId": "dumbbell-romanian-deadlift",
+        "section": "accessory",
+        "role": "hypertrophy_accessory",
+        "goal": "general_fitness",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-20:cable-pull-through",
+        "exerciseId": "cable-pull-through",
+        "section": "cooldown",
+        "role": "capacity",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-21:split-squat",
+        "exerciseId": "split-squat",
+        "section": "warmup",
+        "role": "recovery",
+        "goal": "strength",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-22:step-up",
+        "exerciseId": "step-up",
+        "section": "activation",
+        "role": "preparation",
+        "goal": "hypertrophy",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "condensed-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-23:lying-leg-curl",
+        "exerciseId": "lying-leg-curl",
+        "section": "main",
+        "role": "activation",
+        "goal": "general_fitness",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-24:glute-bridge",
+        "exerciseId": "glute-bridge",
+        "section": "accessory",
+        "role": "primary_strength",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-25:dumbbell-lateral-raise",
+        "exerciseId": "dumbbell-lateral-raise",
+        "section": "cooldown",
+        "role": "secondary_strength",
+        "goal": "strength",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "range-requirement",
+          "no-support-requirement",
+          "load-requirement",
+          "standard-session",
+          "explicit-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-26:reverse-pec-deck",
+        "exerciseId": "reverse-pec-deck",
+        "section": "warmup",
+        "role": "hypertrophy_accessory",
+        "goal": "hypertrophy",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-27:band-face-pull",
+        "exerciseId": "band-face-pull",
+        "section": "activation",
+        "role": "capacity",
+        "goal": "general_fitness",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-28:dumbbell-curl",
+        "exerciseId": "dumbbell-curl",
+        "section": "main",
+        "role": "recovery",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-29:cable-triceps-pressdown",
+        "exerciseId": "cable-triceps-pressdown",
+        "section": "accessory",
+        "role": "preparation",
+        "goal": "strength",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "no-support-requirement",
+          "no-load-requirement",
+          "condensed-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-30:pallof-press",
+        "exerciseId": "pallof-press",
+        "section": "cooldown",
+        "role": "activation",
+        "goal": "hypertrophy",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-31:forearm-plank",
+        "exerciseId": "forearm-plank",
+        "section": "warmup",
+        "role": "primary_strength",
+        "goal": "general_fitness",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "irrelevant-pain",
+          "support-requirement",
+          "load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-32:forearm-side-plank",
+        "exerciseId": "forearm-side-plank",
+        "section": "activation",
+        "role": "secondary_strength",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-33:machine-abdominal-crunch",
+        "exerciseId": "machine-abdominal-crunch",
+        "section": "main",
+        "role": "hypertrophy_accessory",
+        "goal": "strength",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "explicit-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-34:half-kneeling-high-to-low-cable-chop",
+        "exerciseId": "half-kneeling-high-to-low-cable-chop",
+        "section": "accessory",
+        "role": "capacity",
+        "goal": "hypertrophy",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-35:farmer-carry",
+        "exerciseId": "farmer-carry",
+        "section": "cooldown",
+        "role": "recovery",
+        "goal": "general_fitness",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-36:suitcase-carry",
+        "exerciseId": "suitcase-carry",
+        "section": "warmup",
+        "role": "preparation",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "support-requirement",
+          "no-load-requirement",
+          "condensed-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-37:wall-supported-suitcase-march",
+        "exerciseId": "wall-supported-suitcase-march",
+        "section": "activation",
+        "role": "activation",
+        "goal": "strength",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "range-requirement",
+          "no-support-requirement",
+          "load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-38:standing-calf-raise",
+        "exerciseId": "standing-calf-raise",
+        "section": "main",
+        "role": "primary_strength",
+        "goal": "hypertrophy",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-39:side-lying-hip-adduction",
+        "exerciseId": "side-lying-hip-adduction",
+        "section": "accessory",
+        "role": "secondary_strength",
+        "goal": "general_fitness",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-40:loop-band-lateral-walk",
+        "exerciseId": "loop-band-lateral-walk",
+        "section": "cooldown",
+        "role": "hypertrophy_accessory",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-41:side-lying-dumbbell-external-rotation",
+        "exerciseId": "side-lying-dumbbell-external-rotation",
+        "section": "warmup",
+        "role": "capacity",
+        "goal": "strength",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "explicit-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-42:supine-hamstring-walkout",
+        "exerciseId": "supine-hamstring-walkout",
+        "section": "activation",
+        "role": "recovery",
+        "goal": "hypertrophy",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-43:wall-ankle-dorsiflexion-rock",
+        "exerciseId": "wall-ankle-dorsiflexion-rock",
+        "section": "main",
+        "role": "preparation",
+        "goal": "general_fitness",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "load-requirement",
+          "condensed-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-44:bodyweight-hip-hinge-rehearsal",
+        "exerciseId": "bodyweight-hip-hinge-rehearsal",
+        "section": "accessory",
+        "role": "activation",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-45:single-leg-balance-rehearsal",
+        "exerciseId": "single-leg-balance-rehearsal",
+        "section": "cooldown",
+        "role": "primary_strength",
+        "goal": "strength",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-46:farmer-carry",
+        "exerciseId": "farmer-carry",
+        "section": "warmup",
+        "role": "secondary_strength",
+        "goal": "hypertrophy",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "timed-carry",
+          "explicit-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-47:suitcase-carry",
+        "exerciseId": "suitcase-carry",
+        "section": "activation",
+        "role": "hypertrophy_accessory",
+        "goal": "general_fitness",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "substitution",
+          "unilateral-requirement"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-48:dumbbell-bench-press",
+        "exerciseId": "dumbbell-bench-press",
+        "section": "main",
+        "role": "capacity",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "main-ramp-up",
+          "same-reps"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-49:goblet-squat",
+        "exerciseId": "goblet-squat",
+        "section": "accessory",
+        "role": "recovery",
+        "goal": "strength",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "range-requirement",
+          "no-support-requirement",
+          "load-requirement",
+          "standard-session",
+          "explicit-duration",
+          "main-backoff",
+          "plateau"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-50:machine-row",
+        "exerciseId": "machine-row",
+        "section": "cooldown",
+        "role": "preparation",
+        "goal": "hypertrophy",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "condensed-session",
+          "incomplete-duration",
+          "identical-meaningful-facts"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-51:forearm-plank",
+        "exerciseId": "forearm-plank",
+        "section": "warmup",
+        "role": "activation",
+        "goal": "general_fitness",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "explicit-duration",
+          "timed-hold"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-52:ninety-ninety-breathing",
+        "exerciseId": "ninety-ninety-breathing",
+        "section": "activation",
+        "role": "primary_strength",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "breath-cycles",
+          "recovery-scope"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-53:wall-supported-suitcase-march",
+        "exerciseId": "wall-supported-suitcase-march",
+        "section": "main",
+        "role": "secondary_strength",
+        "goal": "strength",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "stationary-march",
+          "unknown-equipment-increment"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-54:loop-band-lateral-walk",
+        "exerciseId": "loop-band-lateral-walk",
+        "section": "accessory",
+        "role": "hypertrophy_accessory",
+        "goal": "hypertrophy",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "counted-step"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-55:supine-hamstring-walkout",
+        "exerciseId": "supine-hamstring-walkout",
+        "section": "cooldown",
+        "role": "capacity",
+        "goal": "general_fitness",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "no-history",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "counted-step",
+          "successful-reexposure"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-56:bodyweight-hip-hinge-rehearsal",
+        "exerciseId": "bodyweight-hip-hinge-rehearsal",
+        "section": "warmup",
+        "role": "recovery",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "full_gym"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "warmup-assignment"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-57:serratus-wall-slide",
+        "exerciseId": "serratus-wall-slide",
+        "section": "activation",
+        "role": "preparation",
+        "goal": "strength",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "dumbbells"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "range-requirement",
+          "no-support-requirement",
+          "no-load-requirement",
+          "condensed-session",
+          "explicit-duration",
+          "activation-assignment"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-58:dumbbell-romanian-deadlift",
+        "exerciseId": "dumbbell-romanian-deadlift",
+        "section": "main",
+        "role": "activation",
+        "goal": "hypertrophy",
+        "phaseId": "phase_1",
+        "experience": "novice",
+        "equipment": [
+          "bands"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "pain-aware",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "adverse-response"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-59:single-leg-balance-rehearsal",
+        "exerciseId": "single-leg-balance-rehearsal",
+        "section": "accessory",
+        "role": "primary_strength",
+        "goal": "general_fitness",
+        "phaseId": "phase_2",
+        "experience": "intermediate",
+        "equipment": [
+          "bodyweight"
+        ],
+        "contextTags": [
+          "no-history",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "support-requirement",
+          "explicit-duration"
+        ]
+      },
+      {
+        "scenarioId": "locked-holdout-60:pallof-press",
+        "exerciseId": "pallof-press",
+        "section": "cooldown",
+        "role": "secondary_strength",
+        "goal": "posture_and_movement_quality",
+        "phaseId": "phase_3",
+        "experience": "advanced",
+        "equipment": [
+          "mixed_equipment"
+        ],
+        "contextTags": [
+          "productive-prior",
+          "ordinary",
+          "irrelevant-pain",
+          "no-support-requirement",
+          "no-load-requirement",
+          "standard-session",
+          "incomplete-duration",
+          "policy-conflict"
+        ]
+      }
+    ]
+  },
+  "lockedHoldoutFingerprint": "ad86a6167e5811a657918b866ba660172cae1d3cae1157081b47f60a754f2c46",
+  "calibrationScenarios": [
+    {
+      "scenarioId": "calibration:exercise-coverage-01:ninety-ninety-breathing",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "ninety-ninety-breathing",
+      "section": "warmup",
+      "role": "preparation",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:relevant-load",
+        "history",
+        "assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-02:serratus-wall-slide",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "serratus-wall-slide",
+      "section": "activation",
+      "role": "activation",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "home"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-03:dead-bug",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "dead-bug",
+      "section": "main",
+      "role": "primary_strength",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-04:push-up",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "push-up",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-05:dumbbell-bench-press",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "dumbbell-bench-press",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:relevant-load",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-06:machine-chest-press",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "machine-chest-press",
+      "section": "warmup",
+      "role": "capacity",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "home"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-07:cable-chest-fly",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "cable-chest-fly",
+      "section": "activation",
+      "role": "recovery",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-08:chest-supported-dumbbell-row",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "section": "main",
+      "role": "preparation",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-09:one-arm-dumbbell-row",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "one-arm-dumbbell-row",
+      "section": "accessory",
+      "role": "activation",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:relevant-load",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-10:machine-row",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "machine-row",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "home"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-11:seated-cable-row",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "seated-cable-row",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-12:band-row",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "band-row",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-13:dumbbell-shoulder-press",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "dumbbell-shoulder-press",
+      "section": "main",
+      "role": "capacity",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:relevant-load",
+        "no-history",
+        "assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-14:lat-pulldown",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "lat-pulldown",
+      "section": "accessory",
+      "role": "recovery",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "home"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-15:band-lat-pulldown",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "band-lat-pulldown",
+      "section": "cooldown",
+      "role": "preparation",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-16:goblet-squat",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "goblet-squat",
+      "section": "warmup",
+      "role": "activation",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-17:leg-press",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "leg-press",
+      "section": "activation",
+      "role": "primary_strength",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:relevant-load",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-18:bodyweight-box-squat",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "bodyweight-box-squat",
+      "section": "main",
+      "role": "secondary_strength",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "home"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-19:dumbbell-romanian-deadlift",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-20:cable-pull-through",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "cable-pull-through",
+      "section": "cooldown",
+      "role": "capacity",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-21:split-squat",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "split-squat",
+      "section": "warmup",
+      "role": "recovery",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:relevant-load",
+        "history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-22:step-up",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "step-up",
+      "section": "activation",
+      "role": "preparation",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "home"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-23:lying-leg-curl",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "lying-leg-curl",
+      "section": "main",
+      "role": "activation",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    },
+    {
+      "scenarioId": "calibration:exercise-coverage-24:glute-bridge",
+      "cohort": "calibration",
+      "locked": false,
+      "exerciseId": "glute-bridge",
+      "section": "accessory",
+      "role": "primary_strength",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "pain:irrelevant",
+        "no-history",
+        "no-assessment"
+      ]
+    }
+  ],
+  "lockedHoldoutScenarios": [
+    {
+      "scenarioId": "locked-holdout-01:ninety-ninety-breathing",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "ninety-ninety-breathing",
+      "section": "warmup",
+      "role": "preparation",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 20,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "range-requirement",
+        "support-requirement",
+        "load-requirement",
+        "condensed-session",
+        "explicit-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-02:serratus-wall-slide",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "serratus-wall-slide",
+      "section": "activation",
+      "role": "activation",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-03:dead-bug",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "dead-bug",
+      "section": "main",
+      "role": "primary_strength",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-04:push-up",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "push-up",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-05:dumbbell-bench-press",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "dumbbell-bench-press",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-06:machine-chest-press",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "machine-chest-press",
+      "section": "warmup",
+      "role": "capacity",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-07:cable-chest-fly",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "cable-chest-fly",
+      "section": "activation",
+      "role": "recovery",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-08:chest-supported-dumbbell-row",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "section": "main",
+      "role": "preparation",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "condensed-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-09:one-arm-dumbbell-row",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "one-arm-dumbbell-row",
+      "section": "accessory",
+      "role": "activation",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "explicit-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-10:machine-row",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "machine-row",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-11:seated-cable-row",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "seated-cable-row",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-12:band-row",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "band-row",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 20,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-13:dumbbell-shoulder-press",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "dumbbell-shoulder-press",
+      "section": "main",
+      "role": "capacity",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "range-requirement",
+        "no-support-requirement",
+        "load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-14:lat-pulldown",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "lat-pulldown",
+      "section": "accessory",
+      "role": "recovery",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 75,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-15:band-lat-pulldown",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "band-lat-pulldown",
+      "section": "cooldown",
+      "role": "preparation",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "condensed-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-16:goblet-squat",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "goblet-squat",
+      "section": "warmup",
+      "role": "activation",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-17:leg-press",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "leg-press",
+      "section": "activation",
+      "role": "primary_strength",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "explicit-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-18:bodyweight-box-squat",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "bodyweight-box-squat",
+      "section": "main",
+      "role": "secondary_strength",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-19:dumbbell-romanian-deadlift",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-20:cable-pull-through",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "cable-pull-through",
+      "section": "cooldown",
+      "role": "capacity",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-21:split-squat",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "split-squat",
+      "section": "warmup",
+      "role": "recovery",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-22:step-up",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "step-up",
+      "section": "activation",
+      "role": "preparation",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "condensed-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-23:lying-leg-curl",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "lying-leg-curl",
+      "section": "main",
+      "role": "activation",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 20,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-24:glute-bridge",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "glute-bridge",
+      "section": "accessory",
+      "role": "primary_strength",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-25:dumbbell-lateral-raise",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "dumbbell-lateral-raise",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "range-requirement",
+        "no-support-requirement",
+        "load-requirement",
+        "standard-session",
+        "explicit-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-26:reverse-pec-deck",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "reverse-pec-deck",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-27:band-face-pull",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "band-face-pull",
+      "section": "activation",
+      "role": "capacity",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 75,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-28:dumbbell-curl",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "dumbbell-curl",
+      "section": "main",
+      "role": "recovery",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-29:cable-triceps-pressdown",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "cable-triceps-pressdown",
+      "section": "accessory",
+      "role": "preparation",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "no-support-requirement",
+        "no-load-requirement",
+        "condensed-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-30:pallof-press",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "pallof-press",
+      "section": "cooldown",
+      "role": "activation",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-31:forearm-plank",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "forearm-plank",
+      "section": "warmup",
+      "role": "primary_strength",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "irrelevant-pain",
+        "support-requirement",
+        "load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-32:forearm-side-plank",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "forearm-side-plank",
+      "section": "activation",
+      "role": "secondary_strength",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-33:machine-abdominal-crunch",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "machine-abdominal-crunch",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "explicit-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-34:half-kneeling-high-to-low-cable-chop",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "section": "accessory",
+      "role": "capacity",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 20,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-35:farmer-carry",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "farmer-carry",
+      "section": "cooldown",
+      "role": "recovery",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-36:suitcase-carry",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "suitcase-carry",
+      "section": "warmup",
+      "role": "preparation",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "support-requirement",
+        "no-load-requirement",
+        "condensed-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-37:wall-supported-suitcase-march",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "wall-supported-suitcase-march",
+      "section": "activation",
+      "role": "activation",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "range-requirement",
+        "no-support-requirement",
+        "load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-38:standing-calf-raise",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "standing-calf-raise",
+      "section": "main",
+      "role": "primary_strength",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-39:side-lying-hip-adduction",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "side-lying-hip-adduction",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-40:loop-band-lateral-walk",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "loop-band-lateral-walk",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 75,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-41:side-lying-dumbbell-external-rotation",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "section": "warmup",
+      "role": "capacity",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "explicit-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-42:supine-hamstring-walkout",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "supine-hamstring-walkout",
+      "section": "activation",
+      "role": "recovery",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-43:wall-ankle-dorsiflexion-rock",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "section": "main",
+      "role": "preparation",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "load-requirement",
+        "condensed-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-44:bodyweight-hip-hinge-rehearsal",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "section": "accessory",
+      "role": "activation",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-45:single-leg-balance-rehearsal",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 20,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-46:farmer-carry",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "farmer-carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "timed-carry",
+        "explicit-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-47:suitcase-carry",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "suitcase-carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "substitution",
+        "unilateral-requirement"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-48:dumbbell-bench-press",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "dumbbell-bench-press",
+      "section": "main",
+      "role": "capacity",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "main-ramp-up",
+        "same-reps"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-49:goblet-squat",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "goblet-squat",
+      "section": "accessory",
+      "role": "recovery",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "range-requirement",
+        "no-support-requirement",
+        "load-requirement",
+        "standard-session",
+        "explicit-duration",
+        "main-backoff",
+        "plateau"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-50:machine-row",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "machine-row",
+      "section": "cooldown",
+      "role": "preparation",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "condensed-session",
+        "incomplete-duration",
+        "identical-meaningful-facts"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-51:forearm-plank",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "forearm-plank",
+      "section": "warmup",
+      "role": "activation",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "explicit-duration",
+        "timed-hold"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-52:ninety-ninety-breathing",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "ninety-ninety-breathing",
+      "section": "activation",
+      "role": "primary_strength",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "breath-cycles",
+        "recovery-scope"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-53:wall-supported-suitcase-march",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "wall-supported-suitcase-march",
+      "section": "main",
+      "role": "secondary_strength",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 75,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "stationary-march",
+        "unknown-equipment-increment"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-54:loop-band-lateral-walk",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "loop-band-lateral-walk",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "counted-step"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-55:supine-hamstring-walkout",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "supine-hamstring-walkout",
+      "section": "cooldown",
+      "role": "capacity",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "counted-step",
+        "successful-reexposure"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-56:bodyweight-hip-hinge-rehearsal",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "section": "warmup",
+      "role": "recovery",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "full_gym"
+      ],
+      "availableMinutes": 20,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "warmup-assignment"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-57:serratus-wall-slide",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "serratus-wall-slide",
+      "section": "activation",
+      "role": "preparation",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "dumbbells"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "range-requirement",
+        "no-support-requirement",
+        "no-load-requirement",
+        "condensed-session",
+        "explicit-duration",
+        "activation-assignment"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-58:dumbbell-romanian-deadlift",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "section": "main",
+      "role": "activation",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "experience": "novice",
+      "equipment": [
+        "bands"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "pain-aware",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "adverse-response"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-59:single-leg-balance-rehearsal",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "section": "accessory",
+      "role": "primary_strength",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "experience": "intermediate",
+      "equipment": [
+        "bodyweight"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "no-history",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "support-requirement",
+        "explicit-duration"
+      ]
+    },
+    {
+      "scenarioId": "locked-holdout-60:pallof-press",
+      "cohort": "holdout",
+      "locked": true,
+      "exerciseId": "pallof-press",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "experience": "advanced",
+      "equipment": [
+        "mixed_equipment"
+      ],
+      "availableMinutes": 45,
+      "contextTags": [
+        "productive-prior",
+        "ordinary",
+        "irrelevant-pain",
+        "no-support-requirement",
+        "no-load-requirement",
+        "standard-session",
+        "incomplete-duration",
+        "policy-conflict"
+      ]
+    }
+  ]
+}
