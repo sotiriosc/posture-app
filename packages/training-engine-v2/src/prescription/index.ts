@@ -1,4 +1,5 @@
 export * from "./dose";
+export * from "./designContracts";
 export * from "./executionStandard";
 export * from "./load";
 export * from "./performanceOutcome";

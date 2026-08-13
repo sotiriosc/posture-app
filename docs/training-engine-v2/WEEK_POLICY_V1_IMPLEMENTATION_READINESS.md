@@ -22,3 +22,7 @@ Production Week Planner/Composer, Prescription-informed distribution and spacing
 ## Relationship To Prescription Timing Foundation
 
 The timing foundation clarifies what future Prescription can output, but it does not close Week Policy V1 gaps. Prescription-informed muscle distribution, spacing, concentration, and no-double-count weekly ledgers still require production Prescription output, final Sequencing, explicit rest/setup/transition facts, and post-Prescription weekly validation.
+
+## Full Prescription Dependency
+
+The full Prescription design exposes the source-event and block-purpose facts needed by future H1/H2 muscle distribution and spacing decisions. It does not resolve those Week-policy gaps because no post-Prescription weekly ledger or numeric Prescription policy is production-active.

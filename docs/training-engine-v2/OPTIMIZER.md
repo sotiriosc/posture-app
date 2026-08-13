@@ -95,3 +95,7 @@ Week Policy V1 preserves lexicographic hard-gate semantics: required causal owne
 ## Prescription Timing Optimization Boundary
 
 Tempo, duration, and cadence are not optimizer rescue variables. Same-tempo convergence is legal when meaningful structured facts converge; tempo-only differences cannot rescue Week, Planner, Candidate, or Composer failures. Future optimization may compare reviewed timing policies only after a production Prescription Compiler exists and must preserve the no hidden time-under-tension, no weekly dose credit, and no prose-parsing boundaries.
+
+## Full Prescription Policy Search Boundary
+
+The Prescription policy lattice is a non-production design lab with 76 frozen candidates, 24 calibration scenarios, 39 locked holdout scenarios, 30 CAGT Prescription pairs, 10,000 deterministic combinations, and 1,000 complete pipelines. No optimizer selects a production Prescription winner in this task.

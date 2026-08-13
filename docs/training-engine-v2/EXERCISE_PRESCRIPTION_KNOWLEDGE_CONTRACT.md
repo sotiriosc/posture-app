@@ -48,3 +48,9 @@ Timing-model counts:
 | `counted_steps` | 2 |
 
 Fingerprint: `f240da336d309036d53932944d74519e985cf46ba537cc2b62c96f963fb0369a`.
+
+## Full Prescription Use
+
+Exercise knowledge continues to own legal dose modes, timing capabilities, mechanical constraints, progression axes, identity boundaries, provenance, and unknowns. Reviewed Prescription policy owns numeric and qualitative targets; the Compiler may select only legal modes exposed by this profile.
+
+The full Prescription lab validated all 45 rows and all seven dose modes without adding catalog rows.

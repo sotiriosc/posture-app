@@ -139,3 +139,7 @@ Week Policy V1 admission commands are `npm run test:cagt:week-policy-v1 --worksp
 # Prescription Timing Foundation Commands
 
 Prescription timing tests are covered by `packages/training-engine-v2/tests/unit/prescriptionTimingFoundation.test.ts` plus the existing structured Prescription, catalog, Composer, CAGT, and Week suites. The focused test locks all 45 profiles, dose-mode counts, timing-model counts, `step_sets`, incompatible-mode mutations, Tempo V2, legacy ambiguous pause migration, prescribed-versus-actual timing, CAGT timing dimensions, and metadata/behavior fingerprint separation.
+
+# Full Prescription Design Lab Commands
+
+Full Prescription design tests are covered by `packages/training-engine-v2/tests/unit/prescriptionCompilerDesignLab.test.ts`. The suite locks source exposure identity, revision semantics, ordered dose blocks, policy lattice, policy-required/conflict paths, all 45 rows, all seven dose modes, 30 CAGT Prescription pairs, 76 candidate consequences, 10,000 deterministic combinations, 1,000 complete handoff-to-design-compiler pipelines, and frozen Candidate/Planner/Composer/timing fingerprints.

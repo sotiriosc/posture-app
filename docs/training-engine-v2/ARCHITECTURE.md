@@ -245,3 +245,7 @@ The V1 admission layer adds an independently locked owner composite and holdout 
 # Prescription Timing Architecture (2026-08-13)
 
 `ExerciseDefinition.prescriptionKnowledge` is now canonical mechanical Prescription metadata. It is consumed only as capability/provenance handoff evidence and validation input. `ExerciseDoseMode` includes `step_sets`; `TempoPrescription` is discriminated; actual timing belongs to performance records. The full catalog metadata fingerprint intentionally changes to `c79c2360e5a5b39ecebbf91899c248e62a9edd7997ad29e266d4236cf9410a9e`, while behavior-facing catalog projection and Candidate fingerprints remain frozen.
+
+# Full Prescription Design Architecture (2026-08-13)
+
+`src/prescription/designContracts.ts` defines design-only source exposure, revision, dose-block, performance-linkage, reviewed-policy, compiler input/output, and duration-determinability contracts. The deterministic lab remains in tests and does not export a production compiler. The architecture selects one source exposure event per assignment with one or more ordered blocks and a legacy single-dose projection only when truthful.

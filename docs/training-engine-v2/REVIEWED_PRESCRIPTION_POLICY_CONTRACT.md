@@ -29,3 +29,9 @@ Required failures:
 - conflicting equal-authority policy: `PRESCRIPTION_POLICY_CONFLICT`.
 
 Fingerprint: `7af1893b603a8d9e02931d5cb2128cd73ec3012f048f93bda414d9d789fd91a9`.
+
+## Typed Rule Extension
+
+`ReviewedPrescriptionPolicy` now has a typed design union for dose-mode selection, block structure, counts, scalar targets, load, effort, execution modifiers, timing, context adjustments, and acclimation blocks. Missing policy returns `prescription_policy_required`; equal conflicts return `prescription_policy_conflict`.
+
+Reviewed policy fingerprint: `6254638169a9b0d833b3514e7918711e345ecfb5c051dae70b328307b91494c1`.

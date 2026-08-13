@@ -17,3 +17,9 @@ Empty warm-up and activation sections remain valid. Populated assignments requir
 ## Warm-Up And Activation Timing
 
 Warm-up and activation timing remains subordinate to downstream training purpose. The new exercise-level timing knowledge can say an exercise supports repetitions, breath cycles, timed holds, step count, or duration, but future Prescription policy still selects the exact amount. Longer preparation duration cannot create personalization success, hypertrophy credit, or a rescue after a causal failure.
+
+## Full Prescription Coherence Extension
+
+The complete-session argument now has a design-only Prescription layer: each prescribed session must explain why the session exists, why each exercise is present, why preparation/activation is dosed, which main blocks are preparatory, which blocks are developmental, which accessory dose adds unique value, which requirements remain unresolved, and why cooldown is present or empty.
+
+A downstream dose difference still cannot rescue an upstream structural failure.

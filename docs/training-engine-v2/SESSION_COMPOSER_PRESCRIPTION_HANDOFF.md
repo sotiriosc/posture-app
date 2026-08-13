@@ -9,3 +9,9 @@ It does not choose sets, reps, load, range, effort, rest, support, tempo, side, 
 ## Timing Foundation Extension
 
 Each assignment now includes `timingKnowledge` with `HANDOFF_ONLY` authority: selected exercise dose-mode knowledge, legal dose modes, tempo capability, duration capability, breathing-cadence capability, locomotor/march/step-cadence capability, unresolved timing requirement IDs, `PRESCRIPTION_POLICY_REQUIRED`, and provenance refs. Duration feasibility now also exposes `durationDeterminability`, `unknownTempoContribution`, `explicitRestSetupDependency`, and `noInventedSessionTime: true`.
+
+## Source Exposure Boundary
+
+The Prescription handoff remains `HANDOFF_ONLY`. The full Prescription lab consumes each `SessionPrescriptionAssignmentHandoff` as one expected source exposure event and creates no duplicate event for roles, muscles, needs, sets, or dose blocks.
+
+Composer behavior fingerprint remains `3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9`; timing handoff metadata is fingerprinted separately by the timing and full-Prescription labs.

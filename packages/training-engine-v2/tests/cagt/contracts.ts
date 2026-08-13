@@ -56,6 +56,37 @@ export const CAGT_TIMING_DIFFERENCE_DIMENSIONS = [
   "timing_reexposure", "duration_determinability", "unknown_tempo_contribution", "rest_setup_dependency",
 ] as const;
 export type CagtTimingDifferenceDimension = typeof CAGT_TIMING_DIFFERENCE_DIMENSIONS[number];
+export const CAGT_PRESCRIPTION_DIFFERENCE_DIMENSIONS = [
+  "source_exposure_event",
+  "prescription_revision",
+  "dose_block_structure",
+  "block_purpose",
+  "legal_dose_mode",
+  "load_policy",
+  "effort_policy",
+  "rest_policy",
+  "range_policy",
+  "support_policy",
+  "lever_policy",
+  "side_policy",
+  "timing_policy",
+  "unresolved_requirement",
+  "policy_provenance",
+  "no_downstream_rescue",
+  "block_order",
+  "preparation_before_developmental_work",
+  "rest_setup_transition_boundary",
+  "duration_determinability",
+  "planned_actual_block_truth",
+  "actual_block_dose",
+  "actual_block_timing",
+  "omitted_blocks",
+  "substitution_event",
+  "response_linkage",
+  "immutable_original_plan",
+] as const;
+export type CagtPrescriptionDifferenceDimension =
+  typeof CAGT_PRESCRIPTION_DIFFERENCE_DIMENSIONS[number];
 export const CAGT_NON_MATERIAL_DIMENSIONS: readonly CagtDifferenceDimension[] =
   ["trace_only", "prose", "label", "scenario_id", "display_order"];
 

@@ -52,3 +52,9 @@ Overall classification: `PRESCRIPTION_TIMING_FOUNDATION_READY_FOR_NON_PRODUCTION
 Before production Prescription Compiler: reviewed numeric policies, conflict resolution, source exposure event policy, post-performance timing observation policy, and owner approval of exact dose selection.
 
 Before post-Prescription weekly validation: production Prescription output, final Sequencing, explicit rest/setup/transition facts, and ledger rules for no double counting.
+
+## Full Prescription Readiness
+
+Timing readiness is now a prerequisite consumed by the full Prescription design. The next blocker is no longer timing vocabulary; it is owner authorization for numeric Prescription policy tournament and production compiler activation.
+
+Full Prescription readiness: `FULL_PRESCRIPTION_DESIGN_READY_FOR_NUMERIC_POLICY_TOURNAMENT_NOT_PRODUCTION`.

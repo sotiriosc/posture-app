@@ -15,3 +15,9 @@ The V1 admission extension adds independent owner-selection, scoped-rule, holdou
 ## Prescription Timing Pair Extension
 
 The timing extension covers 28 required timing pairs: identical facts, label/prose-only, strength versus hypertrophy, power objective, structured tempo-control assessment, pain region versus explicit pain-response requirement, planks, 90/90 breathing, carries, stationary march, counted steps, dynamic press/row, heavy-load intent, same reps/same tempo convergence, tempo-only rescue rejection, warm-up duration no-rescue, phase prose inertness, timing exposure response, prescribed-versus-actual divergence, and incomplete time-under-tension facts. Fingerprint: `5b08dcbaadbd77e7c1c1c673668cd6c38d839ed2a6bbcf5437d4756244be0c67`.
+
+## Full Prescription Pair Extension
+
+The Prescription extension adds 30 pairs covering identical facts, labels/prose, goal differences, main/accessory differences, warm-up versus activation, main ramp-up, backoff work, time constraints, pain load/range/support/side requirements, irrelevant pain convergence, continuity, insufficient progression, adverse response, successful re-exposure, all special dose modes, same reps, tempo no-rescue, duplicate exposure rejection, preparatory miscredit rejection, and substitution.
+
+Pair result: 25 pass or justified, 5 hard mutations rejected, 0 downstream rescue attempts.

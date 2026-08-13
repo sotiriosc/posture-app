@@ -461,6 +461,11 @@ export function buildProductionComposerFingerprints(): Readonly<Record<string, s
     skeleton: baselineSkeleton,
     candidateResultsByNeed: baseline.results,
   });
+  const durationFeasibility = evaluatePostPrescriptionDuration({
+    availableMinutes: baseline.intent.availableMinutes,
+    expectedExerciseIds: baselineSkeleton.assignments.map((assignment) => assignment.exerciseId),
+    durationFacts: [],
+  });
   const payloads: Record<Exclude<
   (typeof SESSION_COMPOSER_PRODUCTION_FINGERPRINT_NAMES)[number],
   "combinedSessionComposerKernel"
@@ -513,12 +518,13 @@ export function buildProductionComposerFingerprints(): Readonly<Record<string, s
       bounded: entry.bounded.search.completeness,
     })),
     prescriptionHandoff: {
-      handoff: prescriptionHandoff,
-      duration: evaluatePostPrescriptionDuration({
-        availableMinutes: baseline.intent.availableMinutes,
-        expectedExerciseIds: baselineSkeleton.assignments.map((assignment) => assignment.exerciseId),
-        durationFacts: [],
-      }),
+      handoff: composerBehaviorPrescriptionHandoffProjection(prescriptionHandoff),
+      duration: {
+        status: durationFeasibility.status,
+        knownTotalSeconds: durationFeasibility.knownTotalSeconds,
+        availableSeconds: durationFeasibility.availableSeconds,
+        missingExerciseIds: durationFeasibility.missingExerciseIds,
+      },
     },
     sequencingHandoff: buildSessionSequencingInput(baselineSkeleton),
     fixedShellPersonalization: FIXED_SHELL_PRODUCTION_USERS,
@@ -532,6 +538,29 @@ export function buildProductionComposerFingerprints(): Readonly<Record<string, s
   return {
     ...fingerprints,
     combinedSessionComposerKernel: hash(fingerprints),
+  };
+}
+
+function composerBehaviorPrescriptionHandoffProjection(
+  handoff: ReturnType<typeof buildSessionPrescriptionHandoff>,
+) {
+  return {
+    sessionIntentId: handoff.sessionIntentId,
+    assignments: handoff.assignments.map((assignment) => ({
+      handoffId: assignment.handoffId,
+      exerciseId: assignment.exerciseId,
+      phaseId: assignment.phaseId,
+      section: assignment.section,
+      role: assignment.role,
+      satisfiedNeedIds: assignment.satisfiedNeedIds,
+      continuityEvidenceRefs: assignment.continuityEvidenceRefs,
+      requiredPrescriptionResolutionIds: assignment.requiredPrescriptionResolutionIds,
+      potentialStressTags: assignment.potentialStressTags,
+      explicitRequirementRefs: assignment.explicitRequirementRefs,
+      knownRequirements: assignment.knownRequirements,
+      orderingConstraints: assignment.orderingConstraints,
+      sourceExposureEventExpected: assignment.sourceExposureEventExpected,
+    })),
   };
 }
 

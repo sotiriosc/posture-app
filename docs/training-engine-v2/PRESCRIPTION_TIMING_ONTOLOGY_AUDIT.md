@@ -38,3 +38,9 @@ The implementation separates five concepts:
 No source parses prose for behavior. Unknown is not natural. Missing pause is not zero. Prescribed tempo is not actual tempo.
 
 Fingerprint: `289711148281fd432934709d59460c0e510bc2b25a6073ce64b689f98056baea`.
+
+## Full Prescription Extension
+
+The full Prescription design lab consumes this timing foundation unchanged. Timing remains one ontology inside the larger Prescription plan; source exposure, revisions, block purposes, policy resolution, performance block linkage, and weekly ledger boundaries are added separately.
+
+Full design fingerprint: `9c32aa988525f229b8bf9d31574689fd492fc5bd7e9b3756f164c6c9f4a02805`.

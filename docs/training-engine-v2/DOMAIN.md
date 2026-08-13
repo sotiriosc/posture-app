@@ -220,3 +220,7 @@ The owner-selected causal core owns only strength, primary hypertrophy/muscle pr
 ## Prescription Timing Domain Decision
 
 Exercise knowledge owns legal dose modes and timing capabilities, not exact numbers. Prescription owns exact sets, reps, load, effort, range, support, side, tempo, duration, distance, steps, breath cycles, and rest. Sequencing owns final order and transitions. Week evaluation later owns aggregation. The current domain implements this boundary with `ExercisePrescriptionKnowledgeProfile`, `step_sets`, Tempo V2, typed breathing/locomotor cadence, and actual-timing performance observations.
+
+## Full Prescription Domain Decision
+
+The domain now distinguishes one source exposure event, immutable Prescription revisions, ordered dose blocks, block purposes, reviewed policy rules, and future performance block linkage. `ExerciseDose` stays one dose realization; complete future Prescription truth is the ordered block plan inside one source event.

@@ -2025,3 +2025,7 @@ The owner-selected S2/H1/D1/A1/C1/P0/R0 core passes final CAGT admission for its
 # Prescription Timing Foundation (2026-08-13)
 
 The engine now carries canonical exercise-level Prescription timing knowledge for all 45 rows. This tranche separates repetition tempo, total exposure duration, breathing cadence, locomotor/march/step cadence, and session duration; adds `step_sets`; upgrades TempoPrescription to a discriminated V2 contract; and extends Prescription/duration handoffs and CAGT timing dimensions. Classification: `PRESCRIPTION_TIMING_FOUNDATION_READY_FOR_NON_PRODUCTION_COMPILER_DESIGN`. Production numeric Prescription generation, Week allocation, final Sequencing, post-Prescription weekly validation, and automatic progression remain unimplemented.
+
+# Full Prescription Design Lab (2026-08-13)
+
+The next architecture layer is now documented as design-only: one assignment creates one source exposure event, one plan may contain ordered dose blocks, and a typed reviewed policy must resolve numeric and qualitative targets before production compilation. No production Prescription compiler, Week allocation, final Sequencing, UI, Knowledge Layer, or automatic progression is activated. Classification: `FULL_PRESCRIPTION_DESIGN_READY_FOR_NUMERIC_POLICY_TOURNAMENT_NOT_PRODUCTION`.

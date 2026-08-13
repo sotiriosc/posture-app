@@ -1,0 +1,43 @@
+{
+  "version": "0.1.0-design",
+  "candidateState": "PRESCRIPTION_TEST_CANDIDATE_NOT_PRODUCTION",
+  "frozenBeforeConsequenceTests": true,
+  "familyCount": 19,
+  "shapeCountPerFamily": 4,
+  "candidateCount": 76,
+  "shapes": [
+    "minimal_truthful",
+    "balanced",
+    "high_dose_or_high_complexity_stress",
+    "no_policy_control"
+  ],
+  "families": [
+    "preparation",
+    "activation",
+    "main_strength",
+    "secondary_strength",
+    "main_hypertrophy",
+    "hypertrophy_accessory",
+    "direct_accessory",
+    "timed_holds",
+    "breath_cycles",
+    "carries",
+    "stationary_marches",
+    "counted_step_work",
+    "recovery_cooldown",
+    "rest",
+    "effort",
+    "tempo_intent",
+    "exact_phase_tempo",
+    "duration",
+    "block_structure"
+  ],
+  "candidateIdRule": "PRESCRIPTION_${family.toUpperCase()}_${shape.toUpperCase()}",
+  "candidateValueRule": {
+    "ordinal": "shape index",
+    "noPolicy": "shape === no_policy_control",
+    "highComplexity": "shape === high_dose_or_high_complexity_stress",
+    "fixtureOnly": true
+  },
+  "fingerprint": "8af38098302cd08da5f33bfab663dadd4cf55cbaf43040d950c545df091b18fe"
+}

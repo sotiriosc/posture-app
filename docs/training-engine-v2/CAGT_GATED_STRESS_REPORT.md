@@ -83,3 +83,9 @@ The owner-selected S2/H1/D1/A1/C1/P0/R0 core completes 10,000 fixed-seed V1 comb
 ## Prescription Timing Extension
 
 Timing dimensions are now available for Gates 9-11 without changing gate order or production authority. Gate 9 reports dose-mode knowledge, tempo/duration/cadence capability, timing policy requirement, and provenance. Gate 10 reports duration determinability, unknown tempo contribution, and rest/setup dependency. Gate 11 preserves prescribed-versus-actual tempo and duration facts. No timing-only downstream difference can rescue an upstream failure.
+
+## Full Prescription Extension
+
+The full Prescription extension adds 27 design dimensions across Gates 9-11: source exposure, revisions, dose blocks, block purposes, legal mode, policy ownership, unresolved requirements, no rescue, block order, duration determinability, planned-versus-actual block truth, substitutions, response linkage, and immutable original plan. Gate order is unchanged.
+
+Prescription CAGT fingerprint: `f00bade643d196e1e0804c5fa682d35d146fda9d7a5910a8cd2f92a005734f95`.
