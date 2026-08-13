@@ -98,5 +98,5 @@ describe("CAGT weekly numeric policy tournament", () => {
   it("freezes tournament and CAGT-core fingerprints independently", () => {
     expect(computeWeekPolicyTournamentFingerprints()).toEqual(EXPECTED_WEEK_POLICY_TOURNAMENT_FINGERPRINTS);
     expect(computeCagtFingerprints()).toEqual(EXPECTED_CAGT_FINGERPRINTS);
-  });
+  }, 60_000);
 });

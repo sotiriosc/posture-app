@@ -78,6 +78,10 @@
     "classification": "PRESCRIPTION_NUMERIC_POLICY_FRONTIER_READY_FOR_OWNER_SELECTION",
     "numericPolicyActivated": false,
     "productionBehaviorChanged": false,
+    "currentTournamentDisposition": "SUPERSEDED_FOR_POLICY_SELECTION_BY_EVALUATOR_VALIDITY_REVIEW",
+    "currentTournamentProvisionalClassification": "PROVISIONAL_TOURNAMENT_RESULT_EVALUATOR_VALIDITY_REVIEW_REQUIRED",
+    "retainedCurrentTournamentFingerprint": "9d7366c054dd01d01de132d7c358b18d4cc506aaaea962dd48d869ea68e5ac07",
+    "disclosedRegressionCohortDisposition": "PRESCRIPTION_TOURNAMENT_V1_DISCLOSED_REGRESSION_COHORT",
     "scenarioManifest": {
       "calibration": [
         {

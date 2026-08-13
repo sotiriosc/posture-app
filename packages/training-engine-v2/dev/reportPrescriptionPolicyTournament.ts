@@ -20,6 +20,12 @@ import {
   renderPrescriptionParetoMarkdown,
   renderSimpleReport,
 } from "../tests/cagt/prescriptionPolicyTournament";
+import {
+  CURRENT_NUMERIC_TOURNAMENT_DISPOSITION,
+  CURRENT_NUMERIC_TOURNAMENT_PROVISIONAL_CLASSIFICATION,
+  CURRENT_NUMERIC_TOURNAMENT_RETAINED_FINGERPRINT,
+  DISCLOSED_REGRESSION_COHORT_DISPOSITION,
+} from "../tests/cagt/prescriptionTournamentEvaluatorHardening";
 import { digest } from "../tests/cagt/signatures";
 
 const report = buildPrescriptionNumericTournamentReport();
@@ -60,6 +66,17 @@ function candidateSummary(entry: (typeof report.tournament.atomic)[number]) {
 
 function table(rows: readonly (readonly (string | number)[])[]): string {
   return rows.map((row) => `| ${row.join(" | ")} |`).join("\n");
+}
+
+function markNumericReportProvisional(contents: string): string {
+  const notice = [
+    "> CAGT evaluator-validity update (2026-08-13): this numeric tournament output is retained as",
+    `> \`${CURRENT_NUMERIC_TOURNAMENT_PROVISIONAL_CLASSIFICATION}\`, with disposition`,
+    `> \`${CURRENT_NUMERIC_TOURNAMENT_DISPOSITION}\`. The retained tournament fingerprint is`,
+    `> \`${CURRENT_NUMERIC_TOURNAMENT_RETAINED_FINGERPRINT}\`; the prior locked holdout is now`,
+    `> \`${DISCLOSED_REGRESSION_COHORT_DISPOSITION}\`. No owner recommendation or production policy is activated here.`,
+  ].join("\n");
+  return contents.replace(/\n/, `\n\n${notice}\n`);
 }
 
 function sourceEventReport(): string {
@@ -217,6 +234,10 @@ const compactTournament = {
   classification: tournament.classification,
   numericPolicyActivated: tournament.numericPolicyActivated,
   productionBehaviorChanged: tournament.productionBehaviorChanged,
+  currentTournamentDisposition: CURRENT_NUMERIC_TOURNAMENT_DISPOSITION,
+  currentTournamentProvisionalClassification: CURRENT_NUMERIC_TOURNAMENT_PROVISIONAL_CLASSIFICATION,
+  retainedCurrentTournamentFingerprint: CURRENT_NUMERIC_TOURNAMENT_RETAINED_FINGERPRINT,
+  disclosedRegressionCohortDisposition: DISCLOSED_REGRESSION_COHORT_DISPOSITION,
   scenarioManifest: {
     calibration: buildPrescriptionNumericCalibrationScenarios(),
     lockedHoldout: buildPrescriptionNumericLockedHoldoutScenarios(),
@@ -266,7 +287,7 @@ const files: Readonly<Record<string, string>> = {
 };
 
 for (const [name, contents] of Object.entries(files)) {
-  writeFileSync(resolve(docs, name), contents);
+  writeFileSync(resolve(docs, name), name.endsWith(".md") ? markNumericReportProvisional(contents) : contents);
 }
 
 process.stdout.write(`${report.classification}: ${report.scenarioEvaluationCount} evaluations; ${report.completeDownstreamPipelines} complete pipelines; production activation false.\n`);

@@ -1,5 +1,11 @@
 # Prescription Policy Consequence Lab
 
+2026-08-13 evaluator-validity update: this consequence lab is preserved as historical numeric
+tournament evidence. Owner-leading flags, candidate labels, shapes, and risk prose are no longer
+allowed to influence evaluator metrics. The corrected blind semantic evaluator and V2 full-session
+holdout are reported in `PRESCRIPTION_TOURNAMENT_EVALUATOR_VALIDITY_AUDIT.md` and
+`PRESCRIPTION_TOURNAMENT_V2_CAUSAL_RESULTS.md`.
+
 The consequence lab evaluates all 76 frozen candidates without an additive overall score and without selecting a production winner.
 
 Reported dimensions include:

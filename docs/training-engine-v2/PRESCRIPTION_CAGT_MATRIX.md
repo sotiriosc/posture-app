@@ -1,5 +1,11 @@
 # Prescription CAGT Matrix
 
+2026-08-13 evaluator-validity update: the V2 Prescription tournament hardening keeps Gates 0-8
+frozen and treats Gates 9-11 as Prescription-only evidence. If an upstream gate fails, Gates 9-11
+remain shadow-only and unscored. The V2 counterfactual contract derives under-adaptation,
+over-adaptation, wrong-layer effects, and no-rescue status from structured semantic diffs and
+owner/gate contracts, not candidate IDs, labels, shapes, or owner-leading flags.
+
 CAGT gate order is unchanged.
 
 Prescription extension dimensions are design-only and cover Gate 9 through Gate 11:

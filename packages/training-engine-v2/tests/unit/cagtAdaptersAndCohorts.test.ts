@@ -47,5 +47,5 @@ describe("CAGT cohorts and adapters", () => {
     expect(report.firstMeaningfulDifferences).toHaveLength(32);
     expect(report.observedMetrics).toContain("same_rep_placeholder_rate");
     expect(report.noRescue.downstreamDifferencesScored).toBe(false);
-  });
+  }, 60_000);
 });

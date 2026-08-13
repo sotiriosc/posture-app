@@ -4,6 +4,11 @@ Classification: `WEEK_POLICY_V1_PARTIAL_SCOPE_READY_TARGETED_POLICY_GAPS`.
 
 Candidate state: `OWNER_SELECTED_FOR_FINAL_CAGT_ADMISSION_NOT_PRODUCTION`. Production activation: **no**.
 
+2026-08-13 Prescription tournament hardening: V2 policy evidence now requires genuine
+full-session pipelines from production Session Intent Planner, Candidate Intelligence, Session
+Composer, valid SessionSkeleton, and SessionPrescriptionHandoff objects. The prior one-exercise
+Prescription fixtures are disclosed regression pipelines only and are not counted as full sessions.
+
 Invariant: Warm-up, activation, main work, accessory work and cooldown are not independent exercise lists. They form one coherent session argument.
 
 - Scenarios: 38

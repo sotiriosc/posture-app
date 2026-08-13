@@ -2,6 +2,12 @@
 
 Classification: `CAGT_READY_FOR_POLICY_ADMISSION_USE`.
 
+2026-08-13 Prescription tournament hardening: the numeric Prescription tournament now has a
+separate blind semantic evaluator stress pass in `PRESCRIPTION_TOURNAMENT_EVALUATOR_SELF_TEST.md`
+and `PRESCRIPTION_TOURNAMENT_V2_CAUSAL_RESULTS.md`. The V2 pass preserves the existing CAGT gate
+order and keeps downstream Prescription differences from rescuing upstream Week, Session Intent,
+Candidate Intelligence, or Session Composer failures.
+
 Causal Adaptation Gate Testing is a hierarchical counterfactual testing method in which a controlled input change is assigned to its canonical owner, the earliest layer legally permitted to respond, the latest layer by which a meaningful response is required, and the output dimensions allowed to change. Upstream invariants are protected, expected convergence is distinguished from unresponsiveness, and downstream variation cannot compensate for an earlier causal failure.
 
 ## Gate Summary

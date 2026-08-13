@@ -1,0 +1,2138 @@
+{
+  "version": "2.0.0",
+  "lockedBeforeExecution": true,
+  "scenarios": [
+    {
+      "scenarioId": "v2-holdout-001-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "adverse_response",
+        "actual_tempo_differs",
+        "policy_conflict",
+        "label_blind_mutation",
+        "shape_blind_mutation"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-002-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-003-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-004-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-005-posture_movement_quality",
+      "archetype": "posture_movement_quality",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "posture_quality",
+        "warmup_and_activation",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-006-pain_aware_explicit_outcome",
+      "archetype": "pain_aware_explicit_outcome",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "pain_aware",
+        "range_requirement",
+        "condensed",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-007-activation_without_warmup",
+      "archetype": "activation_without_warmup",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "activation_without_warmup",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-008-warmup_without_activation",
+      "archetype": "warmup_without_activation",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "dumbbell-romanian-deadlift"
+      ],
+      "contextTags": [
+        "warmup_without_activation",
+        "productive_prior_prescription",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-009-no_accessory_explicit_cooldown",
+      "archetype": "no_accessory_explicit_cooldown",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "machine-row"
+      ],
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "explicit_breath_cadence",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-010-multiple_accessories_and_carry",
+      "archetype": "multiple_accessories_and_carry",
+      "assignmentCount": 4,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-curl",
+        "machine-chest-press",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "multiple_accessories",
+        "timed_carry",
+        "substitution",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-011-support_side_requirement",
+      "archetype": "support_side_requirement",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "goblet-squat",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "support_requirement",
+        "side_requirement",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-012-step_and_march_session",
+      "archetype": "step_and_march_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "machine-chest-press"
+      ],
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-013-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-014-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "label_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-015-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-016-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-017-posture_movement_quality",
+      "archetype": "posture_movement_quality",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "posture_quality",
+        "warmup_and_activation",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-018-pain_aware_explicit_outcome",
+      "archetype": "pain_aware_explicit_outcome",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "pain_aware",
+        "range_requirement",
+        "condensed",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-019-activation_without_warmup",
+      "archetype": "activation_without_warmup",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "activation_without_warmup",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-020-warmup_without_activation",
+      "archetype": "warmup_without_activation",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "dumbbell-romanian-deadlift"
+      ],
+      "contextTags": [
+        "warmup_without_activation",
+        "productive_prior_prescription",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "shape_blind_mutation"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-021-no_accessory_explicit_cooldown",
+      "archetype": "no_accessory_explicit_cooldown",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "machine-row"
+      ],
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "explicit_breath_cadence",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-022-multiple_accessories_and_carry",
+      "archetype": "multiple_accessories_and_carry",
+      "assignmentCount": 4,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-curl",
+        "machine-chest-press",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "multiple_accessories",
+        "timed_carry",
+        "substitution",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-023-support_side_requirement",
+      "archetype": "support_side_requirement",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "goblet-squat",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "support_requirement",
+        "side_requirement",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-024-step_and_march_session",
+      "archetype": "step_and_march_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "machine-chest-press"
+      ],
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-025-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-026-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-027-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "label_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-028-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-029-posture_movement_quality",
+      "archetype": "posture_movement_quality",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "posture_quality",
+        "warmup_and_activation",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-030-pain_aware_explicit_outcome",
+      "archetype": "pain_aware_explicit_outcome",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "pain_aware",
+        "range_requirement",
+        "condensed",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-031-activation_without_warmup",
+      "archetype": "activation_without_warmup",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "activation_without_warmup",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-032-warmup_without_activation",
+      "archetype": "warmup_without_activation",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "dumbbell-romanian-deadlift"
+      ],
+      "contextTags": [
+        "warmup_without_activation",
+        "productive_prior_prescription",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-033-no_accessory_explicit_cooldown",
+      "archetype": "no_accessory_explicit_cooldown",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "machine-row"
+      ],
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "explicit_breath_cadence",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-034-multiple_accessories_and_carry",
+      "archetype": "multiple_accessories_and_carry",
+      "assignmentCount": 4,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-curl",
+        "machine-chest-press",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "multiple_accessories",
+        "timed_carry",
+        "substitution",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-035-support_side_requirement",
+      "archetype": "support_side_requirement",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "goblet-squat",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "support_requirement",
+        "side_requirement",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-036-step_and_march_session",
+      "archetype": "step_and_march_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "machine-chest-press"
+      ],
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-037-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-038-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-039-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "shape_blind_mutation"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-040-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "label_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-041-posture_movement_quality",
+      "archetype": "posture_movement_quality",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "posture_quality",
+        "warmup_and_activation",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-042-pain_aware_explicit_outcome",
+      "archetype": "pain_aware_explicit_outcome",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "pain_aware",
+        "range_requirement",
+        "condensed",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-043-activation_without_warmup",
+      "archetype": "activation_without_warmup",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "activation_without_warmup",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-044-warmup_without_activation",
+      "archetype": "warmup_without_activation",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "dumbbell-romanian-deadlift"
+      ],
+      "contextTags": [
+        "warmup_without_activation",
+        "productive_prior_prescription",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-045-no_accessory_explicit_cooldown",
+      "archetype": "no_accessory_explicit_cooldown",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "machine-row"
+      ],
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "explicit_breath_cadence",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-046-multiple_accessories_and_carry",
+      "archetype": "multiple_accessories_and_carry",
+      "assignmentCount": 4,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-curl",
+        "machine-chest-press",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "multiple_accessories",
+        "timed_carry",
+        "substitution",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-047-support_side_requirement",
+      "archetype": "support_side_requirement",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "goblet-squat",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "support_requirement",
+        "side_requirement",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-048-step_and_march_session",
+      "archetype": "step_and_march_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "machine-chest-press"
+      ],
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-049-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-050-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-051-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-052-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-053-posture_movement_quality",
+      "archetype": "posture_movement_quality",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "posture_quality",
+        "warmup_and_activation",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "label_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-054-pain_aware_explicit_outcome",
+      "archetype": "pain_aware_explicit_outcome",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "pain_aware",
+        "range_requirement",
+        "condensed",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-055-activation_without_warmup",
+      "archetype": "activation_without_warmup",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "activation_without_warmup",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-056-warmup_without_activation",
+      "archetype": "warmup_without_activation",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "dumbbell-romanian-deadlift"
+      ],
+      "contextTags": [
+        "warmup_without_activation",
+        "productive_prior_prescription",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-057-no_accessory_explicit_cooldown",
+      "archetype": "no_accessory_explicit_cooldown",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "machine-row"
+      ],
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "explicit_breath_cadence",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-058-multiple_accessories_and_carry",
+      "archetype": "multiple_accessories_and_carry",
+      "assignmentCount": 4,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-curl",
+        "machine-chest-press",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "multiple_accessories",
+        "timed_carry",
+        "substitution",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "shape_blind_mutation"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-059-support_side_requirement",
+      "archetype": "support_side_requirement",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "goblet-squat",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "support_requirement",
+        "side_requirement",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-060-step_and_march_session",
+      "archetype": "step_and_march_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "machine-chest-press"
+      ],
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-061-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-062-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-063-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-064-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-065-posture_movement_quality",
+      "archetype": "posture_movement_quality",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "posture_quality",
+        "warmup_and_activation",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-066-pain_aware_explicit_outcome",
+      "archetype": "pain_aware_explicit_outcome",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "pain_aware",
+        "range_requirement",
+        "condensed",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "label_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-067-activation_without_warmup",
+      "archetype": "activation_without_warmup",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "activation_without_warmup",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-068-warmup_without_activation",
+      "archetype": "warmup_without_activation",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "dumbbell-romanian-deadlift"
+      ],
+      "contextTags": [
+        "warmup_without_activation",
+        "productive_prior_prescription",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-069-no_accessory_explicit_cooldown",
+      "archetype": "no_accessory_explicit_cooldown",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "machine-row"
+      ],
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "explicit_breath_cadence",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-070-multiple_accessories_and_carry",
+      "archetype": "multiple_accessories_and_carry",
+      "assignmentCount": 4,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-curl",
+        "machine-chest-press",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "multiple_accessories",
+        "timed_carry",
+        "substitution",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-071-support_side_requirement",
+      "archetype": "support_side_requirement",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "goblet-squat",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "support_requirement",
+        "side_requirement",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-072-step_and_march_session",
+      "archetype": "step_and_march_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "machine-chest-press"
+      ],
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-073-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-074-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-075-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-076-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-077-posture_movement_quality",
+      "archetype": "posture_movement_quality",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "posture_quality",
+        "warmup_and_activation",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "shape_blind_mutation"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-078-pain_aware_explicit_outcome",
+      "archetype": "pain_aware_explicit_outcome",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "pain_aware",
+        "range_requirement",
+        "condensed",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-079-activation_without_warmup",
+      "archetype": "activation_without_warmup",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "activation_without_warmup",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "label_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-080-warmup_without_activation",
+      "archetype": "warmup_without_activation",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "dumbbell-romanian-deadlift"
+      ],
+      "contextTags": [
+        "warmup_without_activation",
+        "productive_prior_prescription",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-081-no_accessory_explicit_cooldown",
+      "archetype": "no_accessory_explicit_cooldown",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "machine-row"
+      ],
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "explicit_breath_cadence",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-082-multiple_accessories_and_carry",
+      "archetype": "multiple_accessories_and_carry",
+      "assignmentCount": 4,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-curl",
+        "machine-chest-press",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "multiple_accessories",
+        "timed_carry",
+        "substitution",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-083-support_side_requirement",
+      "archetype": "support_side_requirement",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "goblet-squat",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "support_requirement",
+        "side_requirement",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-084-step_and_march_session",
+      "archetype": "step_and_march_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "machine-chest-press"
+      ],
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-085-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-086-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-087-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-088-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-089-posture_movement_quality",
+      "archetype": "posture_movement_quality",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "posture_quality",
+        "warmup_and_activation",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-090-pain_aware_explicit_outcome",
+      "archetype": "pain_aware_explicit_outcome",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "pain_aware",
+        "range_requirement",
+        "condensed",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 20
+    },
+    {
+      "scenarioId": "v2-holdout-091-activation_without_warmup",
+      "archetype": "activation_without_warmup",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "contextTags": [
+        "activation_without_warmup",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-092-warmup_without_activation",
+      "archetype": "warmup_without_activation",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "dumbbell-romanian-deadlift"
+      ],
+      "contextTags": [
+        "warmup_without_activation",
+        "productive_prior_prescription",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "label_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-093-no_accessory_explicit_cooldown",
+      "archetype": "no_accessory_explicit_cooldown",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "machine-row"
+      ],
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "explicit_breath_cadence",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-094-multiple_accessories_and_carry",
+      "archetype": "multiple_accessories_and_carry",
+      "assignmentCount": 4,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-curl",
+        "machine-chest-press",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "multiple_accessories",
+        "timed_carry",
+        "substitution",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-095-support_side_requirement",
+      "archetype": "support_side_requirement",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "goblet-squat",
+        "suitcase-carry"
+      ],
+      "contextTags": [
+        "support_requirement",
+        "side_requirement",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-096-step_and_march_session",
+      "archetype": "step_and_march_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "machine-chest-press"
+      ],
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "adverse_response",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "shape_blind_mutation"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-097-multi_exercise_upper_strength",
+      "archetype": "multi_exercise_upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "contextTags": [
+        "upper_strength",
+        "no_warmup",
+        "no_cooldown",
+        "same_framework_different_prescription_facts",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-098-multi_exercise_lower_strength",
+      "archetype": "multi_exercise_lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "contextTags": [
+        "lower_strength",
+        "main_ramp_up",
+        "same_skeleton_same_prescription_expected",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    },
+    {
+      "scenarioId": "v2-holdout-099-hypertrophy_session",
+      "archetype": "hypertrophy_session",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "contextTags": [
+        "hypertrophy",
+        "multiple_accessories",
+        "same_framework_different_prescription_facts",
+        "no_prior_prescription",
+        "successful_reexposure",
+        "actual_tempo_differs",
+        "no_policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 75
+    },
+    {
+      "scenarioId": "v2-holdout-100-general_fitness_session",
+      "archetype": "general_fitness_session",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "push-up"
+      ],
+      "contextTags": [
+        "general_fitness",
+        "distance_carry",
+        "same_skeleton_same_prescription_expected",
+        "productive_prior_prescription",
+        "successful_reexposure",
+        "actual_duration_differs",
+        "policy_conflict",
+        "owner_leading_blind_mutation",
+        "semantic_stability"
+      ],
+      "availableMinutes": 45
+    }
+  ]
+}

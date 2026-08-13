@@ -2,6 +2,14 @@
 
 Classification: `FULL_PRESCRIPTION_DESIGN_READY_FOR_NUMERIC_POLICY_TOURNAMENT_NOT_PRODUCTION`.
 
+2026-08-13 evaluator-validity update: the earlier numeric tournament result is retained only as
+`PROVISIONAL_TOURNAMENT_RESULT_EVALUATOR_VALIDITY_REVIEW_REQUIRED`. The current V2 follow-up
+evidence lives in `PRESCRIPTION_TOURNAMENT_V2_VALIDITY_REPORT.md`,
+`PRESCRIPTION_TOURNAMENT_V2_FULL_SESSION_REPORT.md`, and
+`PRESCRIPTION_TOURNAMENT_V2_IMPLEMENTATION_READINESS.md`. No production Prescription compiler,
+numeric policy, owner recommendation, Week allocation, sequencing, post-Prescription validation,
+or longitudinal behavior is activated by that evidence.
+
 Implemented in this task:
 
 - source exposure event identity contract

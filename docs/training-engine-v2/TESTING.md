@@ -69,12 +69,24 @@ Tests should remain small and readable at the component boundary. Current respon
 - raw-minute invariance, Planner-owned structural-capacity consequences, and no invented duration estimates;
 - eleven-user fixed-shell session cohort with material difference, same-anchor personalization, prescription difference, justified convergence and zero unresponsive-material-input failures;
 - twenty-two isolated Session Composer production fingerprints plus frozen production ranking, comprehensive, catalog and Knowledge compatibility fingerprints.
+- Prescription numeric tournament V2 evaluator-validity hardening, including blind semantic policy
+  bundles, V2 full-session holdout, counterfactual semantic-diff causality, duration intervals,
+  rest placement ontology, independent planned-vs-observed performance factories, H1/H2 and
+  spacing sublabs, and explicit supersession of owner-leading numeric recommendations.
 
 ## Current Command
 
 ```bash
 npm run build --workspace=@praxis/training-engine-v2
 npm run test --workspace=@praxis/training-engine-v2
+npm run test:cagt:prescription-evaluator-validity --workspace=@praxis/training-engine-v2
+npm run test:cagt:prescription-full-session --workspace=@praxis/training-engine-v2
+npm run test:cagt:prescription-duration-truth --workspace=@praxis/training-engine-v2
+npm run test:cagt:prescription-performance-independence --workspace=@praxis/training-engine-v2
+npm run test:cagt:prescription-policy-v2-holdout --workspace=@praxis/training-engine-v2
+npm run report:cagt:prescription-policy-v2 --workspace=@praxis/training-engine-v2
+npm run report:cagt:prescription-full-session --workspace=@praxis/training-engine-v2
+npm run report:cagt:prescription-duration-truth --workspace=@praxis/training-engine-v2
 ```
 
 ## Later Testing Direction
