@@ -851,3 +851,7 @@ P2 gaps:
 Classification: **READY_FOR_TARGETED_FIXES**
 
 Rationale: the current V2 candidate engine is deterministic, observable, and safe enough for targeted semantics fixes. Feature-specific scapular consumption is now implemented at Candidate Intelligence scope, but it is still not ready for Session Composer because row equivalence gaps, phase suitability calibration, and transition/readiness policy remain unresolved.
+
+## Prescription Knowledge Addendum
+
+All 45 reference exercises now include canonical `prescriptionKnowledge`. The profile is engine metadata only: legal dose modes, timing model, tempo/duration/cadence capabilities, timing progression axes, constraints, provenance, unknowns, and identity boundary. It does not add exercises, public Knowledge Layer copy, Library content, UI labels, or numeric prescription defaults.

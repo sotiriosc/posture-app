@@ -19,6 +19,7 @@ import {
   CAPTURED_REFERENCE_CATALOG_FINGERPRINT,
   FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT,
   buildCurrentTrunkCurationFingerprints,
+  stripPrescriptionKnowledgeFromCatalog,
   stripTrunkMechanicsFromCatalog,
 } from "../helpers/trunkMechanicsCurationProposal";
 import {
@@ -210,10 +211,13 @@ describe("approved first trunk mechanics profile tranche", () => {
     }
   });
 
-  it("changes only mechanics.trunkMechanics in the serialized catalog", () => {
-    const stripped = stripTrunkMechanicsFromCatalog(REFERENCE_EXERCISES);
+  it("changes only mechanics.trunkMechanics in the pre-prescription catalog projection", () => {
+    const prePrescription = stripPrescriptionKnowledgeFromCatalog(REFERENCE_EXERCISES);
+    const stripped = stripPrescriptionKnowledgeFromCatalog(
+      stripTrunkMechanicsFromCatalog(REFERENCE_EXERCISES),
+    );
 
-    expect(hash(REFERENCE_EXERCISES)).toBe(
+    expect(hash(prePrescription)).toBe(
       FIRST_TRANCHE_REFERENCE_CATALOG_FINGERPRINT,
     );
     expect(hash(stripped)).toBe(CAPTURED_REFERENCE_CATALOG_FINGERPRINT);

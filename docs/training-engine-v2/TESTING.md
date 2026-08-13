@@ -135,3 +135,7 @@ Numeric policy commands are `npm run test:cagt:week-policy --workspace=@praxis/t
 # Week Policy V1 Admission Commands
 
 Week Policy V1 admission commands are `npm run test:cagt:week-policy-v1 --workspace=@praxis/training-engine-v2`, `npm run test:cagt:week-policy-v1:holdout --workspace=@praxis/training-engine-v2`, `npm run test:cagt:coherent-session --workspace=@praxis/training-engine-v2`, `npm run test:cagt:warmup-activation --workspace=@praxis/training-engine-v2`, `npm run report:cagt:week-policy-v1 --workspace=@praxis/training-engine-v2`, and `npm run report:cagt:coherent-session --workspace=@praxis/training-engine-v2`. The suite locks independent V1 admission fingerprints, 40 holdout scenarios, 38 coherence scenarios, first-session canaries, all-session horizons, 10,000 combinations, and 1,000 complete pipelines.
+
+# Prescription Timing Foundation Commands
+
+Prescription timing tests are covered by `packages/training-engine-v2/tests/unit/prescriptionTimingFoundation.test.ts` plus the existing structured Prescription, catalog, Composer, CAGT, and Week suites. The focused test locks all 45 profiles, dose-mode counts, timing-model counts, `step_sets`, incompatible-mode mutations, Tempo V2, legacy ambiguous pause migration, prescribed-versus-actual timing, CAGT timing dimensions, and metadata/behavior fingerprint separation.

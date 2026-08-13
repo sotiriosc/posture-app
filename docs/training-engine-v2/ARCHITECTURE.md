@@ -241,3 +241,7 @@ The private, unexported Product Adapter contracts resolve structured factual sou
 # Week Policy V1 Admission Test Architecture (2026-08-12)
 
 The V1 admission layer adds an independently locked owner composite and holdout plus complete-session coherence adapters. It composes frozen Planner, Candidate, Composer, Prescription-handoff, and sequencing-handoff APIs as evidence without adding a runtime layer. Coherence is evaluated inside existing gate ownership, not as a new gate.
+
+# Prescription Timing Architecture (2026-08-13)
+
+`ExerciseDefinition.prescriptionKnowledge` is now canonical mechanical Prescription metadata. It is consumed only as capability/provenance handoff evidence and validation input. `ExerciseDoseMode` includes `step_sets`; `TempoPrescription` is discriminated; actual timing belongs to performance records. The full catalog metadata fingerprint intentionally changes to `c79c2360e5a5b39ecebbf91899c248e62a9edd7997ad29e266d4236cf9410a9e`, while behavior-facing catalog projection and Candidate fingerprints remain frozen.

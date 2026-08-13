@@ -212,6 +212,12 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
     ).map((exercise) => exercise.id),
   }));
   const fingerprints = buildCurrentTrunkCurationFingerprints();
+  const behaviorFingerprints = {
+    productionRanking: fingerprints.productionRanking,
+    comprehensiveBehavior: fingerprints.comprehensiveBehavior,
+    referenceCatalog: fingerprints.referenceCatalog,
+    referenceCatalogWithoutTrunkMechanics: fingerprints.referenceCatalogWithoutTrunkMechanics,
+  };
   const support = buildSupportAndStanceMechanicsContractData();
   const phase = buildPhaseAnnotationContextReviewData();
   const safetyAndResponse = buildTrainingSafetyAndResponseFoundationData();
@@ -221,7 +227,7 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
     stressReview: LOW_BACK_STRESS_REVIEW,
     coverage,
     externalEvidence: LOW_BACK_EXTERNAL_EVIDENCE,
-    behaviorFingerprints: fingerprints,
+    behaviorFingerprints,
     supportFingerprint: support.fingerprint,
     phaseFingerprint: phase.contextualFingerprint,
     safetyFingerprint: safetyAndResponse.safetyFingerprint,
@@ -240,7 +246,7 @@ export function buildLowBackPainTrainingIntelligenceAuditData() {
     stressReview: LOW_BACK_STRESS_REVIEW,
     coverage,
     externalEvidence: LOW_BACK_EXTERNAL_EVIDENCE,
-    behaviorFingerprints: fingerprints,
+    behaviorFingerprints,
     supportFingerprint: support.fingerprint,
     phaseFingerprint: phase.contextualFingerprint,
     safetyFingerprint: safetyAndResponse.safetyFingerprint,

@@ -1,4 +1,5 @@
 import type { EquipmentRequirement } from "./equipment";
+import type { ExercisePrescriptionKnowledgeProfile } from "./exercisePrescriptionKnowledge";
 import type { PhaseId } from "./phase";
 import type { ProgressionAxis } from "./progression";
 import type {
@@ -593,6 +594,7 @@ export interface ExerciseDefinition {
   readonly loading: ExerciseLoadingProfile;
   readonly mechanics?: ExerciseMechanicsProfile;
   readonly stressAnnotations?: readonly ExerciseStressAnnotation[];
+  readonly prescriptionKnowledge: ExercisePrescriptionKnowledgeProfile;
   readonly progression: ExerciseProgressionProfile;
   readonly cautionStressTags: readonly JointStressTag[];
   readonly contraindicatedStressTags: readonly JointStressTag[];

@@ -49,6 +49,13 @@ export const CAGT_DIFFERENCE_DIMENSIONS = [
   "trace_only", "prose", "label", "scenario_id", "display_order",
 ] as const;
 export type CagtDifferenceDimension = typeof CAGT_DIFFERENCE_DIMENSIONS[number];
+export const CAGT_TIMING_DIFFERENCE_DIMENSIONS = [
+  "dose_mode_knowledge", "tempo_capability", "duration_capability", "breathing_cadence_capability",
+  "locomotor_cadence_capability", "timing_policy_requirement", "timing_provenance", "prescribed_tempo",
+  "actual_tempo", "prescribed_duration", "actual_duration", "timing_control_observation",
+  "timing_reexposure", "duration_determinability", "unknown_tempo_contribution", "rest_setup_dependency",
+] as const;
+export type CagtTimingDifferenceDimension = typeof CAGT_TIMING_DIFFERENCE_DIMENSIONS[number];
 export const CAGT_NON_MATERIAL_DIMENSIONS: readonly CagtDifferenceDimension[] =
   ["trace_only", "prose", "label", "scenario_id", "display_order"];
 

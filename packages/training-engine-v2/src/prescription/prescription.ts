@@ -51,6 +51,7 @@ export function toLegacyExercisePrescription(
   prescription: ExercisePrescription,
 ): LegacyExercisePrescription {
   const dose = prescription.dose;
+  const tempo = "tempo" in dose ? dose.tempo : undefined;
   const restSeconds =
     dose.rest?.kind === "exact" && dose.rest.unit === "seconds"
       ? dose.rest.value
@@ -69,7 +70,7 @@ export function toLegacyExercisePrescription(
         ? dose.duration.value
         : undefined,
     effortTarget: dose.effort?.kind,
-    tempo: dose.tempo?.description,
+    tempo: tempo?.description,
     rangeInstruction: dose.range?.kind,
     supportInstruction: dose.support?.description ?? dose.support?.level,
     restSeconds,

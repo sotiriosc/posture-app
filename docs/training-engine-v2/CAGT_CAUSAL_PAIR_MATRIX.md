@@ -11,3 +11,7 @@ Numeric policy rows use the same immutable Gate 0-12 order. Each of 1,596 candid
 ## Week Policy V1 Coherence Extension
 
 The V1 admission extension adds independent owner-selection, scoped-rule, holdout, canary, horizon, warm-up ownership, activation ownership, dependency-to-final-selection, anti-bloat, recurrence, and complete-session-argument pairs. Coherence evidence is integrated at existing Gates 1, 2, 4, 6, 7, 8, 10, and 12; gate order is unchanged.
+
+## Prescription Timing Pair Extension
+
+The timing extension covers 28 required timing pairs: identical facts, label/prose-only, strength versus hypertrophy, power objective, structured tempo-control assessment, pain region versus explicit pain-response requirement, planks, 90/90 breathing, carries, stationary march, counted steps, dynamic press/row, heavy-load intent, same reps/same tempo convergence, tempo-only rescue rejection, warm-up duration no-rescue, phase prose inertness, timing exposure response, prescribed-versus-actual divergence, and incomplete time-under-tension facts. Fingerprint: `5b08dcbaadbd77e7c1c1c673668cd6c38d839ed2a6bbcf5437d4756244be0c67`.

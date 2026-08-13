@@ -45,6 +45,7 @@ import {
   trimResults,
   withReadiness,
 } from "../helpers/sessionComposerProduction";
+import { stripPrescriptionKnowledgeFromCatalog } from "../helpers/trunkMechanicsCurationProposal";
 
 function signature(result: ReturnType<typeof composeSessionSkeleton>) {
   return {
@@ -753,8 +754,15 @@ describe("production Session Composer kernel", () => {
 
   it("preserves the 45-row catalog and creates all 22 production fingerprints", () => {
     expect(PRODUCTION_CATALOG_ROWS).toBe(45);
-    expect(createHash("sha256").update(JSON.stringify(REFERENCE_EXERCISES)).digest("hex")).toBe(
+    expect(
+      createHash("sha256")
+        .update(JSON.stringify(stripPrescriptionKnowledgeFromCatalog(REFERENCE_EXERCISES)))
+        .digest("hex"),
+    ).toBe(
       "bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91",
+    );
+    expect(createHash("sha256").update(JSON.stringify(REFERENCE_EXERCISES)).digest("hex")).toBe(
+      "c79c2360e5a5b39ecebbf91899c248e62a9edd7997ad29e266d4236cf9410a9e",
     );
     const fingerprints = buildProductionComposerFingerprints();
     expect(Object.keys(fingerprints)).toEqual(SESSION_COMPOSER_PRODUCTION_FINGERPRINT_NAMES);

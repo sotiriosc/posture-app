@@ -276,12 +276,16 @@ describe("structured prescription and same-exercise progression contract", () =>
         validateDose({
           ...fixture("machine-abdominal-crunch").dose,
           tempo: {
-            concentricIntent: "controlled",
-            eccentricSeconds: -1,
+            kind: "repetition_phase_tempo",
+            eccentric: { kind: "exact_seconds", seconds: -1 },
+            lengthenedTransition: { kind: "not_prescribed", reason: "No pause." },
+            concentric: { kind: "intent_only", intent: "controlled" },
+            shortenedTransition: { kind: "not_prescribed", reason: "No pause." },
+            provenance: fixture("machine-abdominal-crunch").provenance,
           },
         } as ExerciseDose),
       ),
-    ).toContain("invalid_target_negative_tempo");
+    ).toContain("invalid_target_non_positive");
   });
 
   it("keeps distance carries, timed carries, and stationary marches as separate dose modes", () => {
@@ -685,8 +689,15 @@ describe("structured prescription and same-exercise progression contract", () =>
       codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, range: { kind: "intentionally_partial", description: "" } } as ExerciseDose)),
     ).toContain("invalid_range_description");
     expect(
-      codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, tempo: { concentricIntent: "warp" } } as unknown as ExerciseDose)),
-    ).toContain("invalid_tempo_concentric_intent");
+      codes(validateDose({
+        ...fixture("machine-abdominal-crunch").dose,
+        tempo: {
+          kind: "intent_only",
+          intent: "warp",
+          provenance: fixture("machine-abdominal-crunch").provenance,
+        },
+      } as unknown as ExerciseDose)),
+    ).toContain("invalid_tempo_intent");
     expect(
       codes(validateDose({ ...fixture("machine-abdominal-crunch").dose, effort: { kind: "maximalish" } } as unknown as ExerciseDose)),
     ).toContain("invalid_effort_kind");

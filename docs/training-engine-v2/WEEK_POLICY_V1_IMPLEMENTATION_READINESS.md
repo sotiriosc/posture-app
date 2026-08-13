@@ -18,3 +18,7 @@ The covered numeric core is ready for a separate production Week implementation 
 - `prescription_informed_muscle_distribution`: `WEEKLY_POLICY_REQUIRED`
 
 Production Week Planner/Composer, Prescription-informed distribution and spacing, final Sequencing, and Longitudinal Adaptation remain outside this authorization.
+
+## Relationship To Prescription Timing Foundation
+
+The timing foundation clarifies what future Prescription can output, but it does not close Week Policy V1 gaps. Prescription-informed muscle distribution, spacing, concentration, and no-double-count weekly ledgers still require production Prescription output, final Sequencing, explicit rest/setup/transition facts, and post-Prescription weekly validation.

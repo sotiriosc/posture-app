@@ -67,18 +67,201 @@ export type RangePrescription =
       readonly description?: string;
     };
 
-export interface TempoPrescription {
+export type LegacyTempoConcentricIntent =
+  | "controlled"
+  | "natural"
+  | "explosive_intent"
+  | "not_applicable"
+  | "unknown";
+
+export interface LegacyTempoPrescription {
   readonly eccentricSeconds?: number;
   readonly pauseSeconds?: number;
-  readonly concentricIntent:
-    | "controlled"
-    | "natural"
-    | "explosive_intent"
-    | "not_applicable"
-    | "unknown";
+  readonly concentricIntent: LegacyTempoConcentricIntent;
   readonly topOrEndRangePauseSeconds?: number;
   readonly description?: string;
 }
+
+export type TempoIntent =
+  | "controlled"
+  | "natural"
+  | "explosive_intent"
+  | "maximal_intent";
+
+export type MovementPhaseTempoTarget =
+  | {
+      readonly kind: "exact_seconds";
+      readonly seconds: number;
+    }
+  | {
+      readonly kind: "seconds_range";
+      readonly minSeconds: number;
+      readonly maxSeconds: number;
+    }
+  | {
+      readonly kind: "intent_only";
+      readonly intent: TempoIntent;
+    }
+  | {
+      readonly kind: "not_prescribed";
+      readonly reason: string;
+    }
+  | {
+      readonly kind: "unknown";
+      readonly reason: string;
+    };
+
+export type LegacyTempoMigrationStatus =
+  | "LEGACY_TEMPO_INTENT_ONLY_COMPATIBLE"
+  | "LEGACY_TEMPO_PHASE_INCOMPLETE"
+  | "LEGACY_TEMPO_PHASE_AMBIGUOUS";
+
+export type TempoPrescription =
+  | {
+      readonly kind: "repetition_phase_tempo";
+      readonly eccentric: MovementPhaseTempoTarget;
+      readonly lengthenedTransition: MovementPhaseTempoTarget;
+      readonly concentric: MovementPhaseTempoTarget;
+      readonly shortenedTransition: MovementPhaseTempoTarget;
+      readonly provenance: EvidenceProvenance;
+      readonly reviewedTimingStandardRef?: string;
+      readonly description?: string;
+    }
+  | {
+      readonly kind: "intent_only";
+      readonly intent: TempoIntent;
+      readonly provenance: EvidenceProvenance;
+      readonly reviewedTimingStandardRef?: string;
+      readonly description?: string;
+    }
+  | {
+      readonly kind: "not_prescribed";
+      readonly reason: string;
+      readonly provenance: EvidenceProvenance;
+      readonly description?: string;
+    }
+  | {
+      readonly kind: "not_applicable";
+      readonly reason: string;
+      readonly provenance: EvidenceProvenance;
+      readonly description?: string;
+    }
+  | {
+      readonly kind: "unknown";
+      readonly reason: string;
+      readonly provenance: EvidenceProvenance;
+      readonly description?: string;
+    }
+  | {
+      readonly kind: "legacy_compatibility";
+      readonly legacy: LegacyTempoPrescription;
+      readonly migrationStatus: LegacyTempoMigrationStatus;
+      readonly authoritative: false;
+      readonly reason: string;
+      readonly provenance: EvidenceProvenance;
+      readonly description?: string;
+    };
+
+export function adaptLegacyTempoPrescription(input: {
+  readonly legacy: LegacyTempoPrescription;
+  readonly provenance: EvidenceProvenance;
+}): TempoPrescription {
+  const hasAmbiguousPause =
+    input.legacy.pauseSeconds !== undefined ||
+    input.legacy.topOrEndRangePauseSeconds !== undefined;
+  const hasIncompletePhaseSeconds = input.legacy.eccentricSeconds !== undefined;
+  return {
+    kind: "legacy_compatibility",
+    legacy: input.legacy,
+    migrationStatus: hasAmbiguousPause
+      ? "LEGACY_TEMPO_PHASE_AMBIGUOUS"
+      : hasIncompletePhaseSeconds
+        ? "LEGACY_TEMPO_PHASE_INCOMPLETE"
+        : "LEGACY_TEMPO_INTENT_ONLY_COMPATIBLE",
+    authoritative: false,
+    reason: hasAmbiguousPause
+      ? "Legacy pause fields did not identify lengthened, shortened, midrange, or total pause authority."
+      : "Legacy tempo was preserved for compatibility and is not future behavior authority.",
+    provenance: input.provenance,
+    description: input.legacy.description,
+  };
+}
+
+export type BreathingCadencePhase =
+  | "inhale"
+  | "post_inhale_pause"
+  | "exhale"
+  | "post_exhale_pause";
+
+export type CadenceTimingTarget =
+  | {
+      readonly kind: "exact_seconds";
+      readonly seconds: number;
+    }
+  | {
+      readonly kind: "seconds_range";
+      readonly minSeconds: number;
+      readonly maxSeconds: number;
+    }
+  | {
+      readonly kind: "intent_only";
+      readonly intent: "controlled" | "natural" | "self_selected_by_reviewed_standard";
+    }
+  | {
+      readonly kind: "not_prescribed";
+      readonly reason: string;
+    }
+  | {
+      readonly kind: "unknown";
+      readonly reason: string;
+    };
+
+export type BreathingCadencePrescription =
+  | {
+      readonly kind: "structured_breathing_cadence";
+      readonly inhale: CadenceTimingTarget;
+      readonly exhale: CadenceTimingTarget;
+      readonly postInhalePause?: CadenceTimingTarget;
+      readonly postExhalePause?: CadenceTimingTarget;
+      readonly phaseSequence: readonly BreathingCadencePhase[];
+      readonly provenance: EvidenceProvenance;
+      readonly description?: string;
+    }
+  | {
+      readonly kind: "not_prescribed";
+      readonly reason: string;
+      readonly provenance: EvidenceProvenance;
+    }
+  | {
+      readonly kind: "unknown";
+      readonly reason: string;
+      readonly provenance: EvidenceProvenance;
+    };
+
+export type LocomotorCadenceIntent =
+  | "controlled"
+  | "natural"
+  | "brisk"
+  | "self_selected_by_reviewed_standard";
+
+export type LocomotorCadencePrescription =
+  | {
+      readonly kind: "locomotor_or_step_cadence";
+      readonly intent: LocomotorCadenceIntent;
+      readonly standardRef?: string;
+      readonly provenance: EvidenceProvenance;
+      readonly description?: string;
+    }
+  | {
+      readonly kind: "not_prescribed";
+      readonly reason: string;
+      readonly provenance: EvidenceProvenance;
+    }
+  | {
+      readonly kind: "unknown";
+      readonly reason: string;
+      readonly provenance: EvidenceProvenance;
+    };
 
 export type EffortRangeKind = "exact" | "range";
 

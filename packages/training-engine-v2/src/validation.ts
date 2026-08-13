@@ -15,13 +15,16 @@ import {
   type ExerciseSupportProfile,
   type TrunkMechanicsProfile,
 } from "./domain/exercise";
+import type { ExercisePrescriptionKnowledgeProfile } from "./domain/exercisePrescriptionKnowledge";
 import { validateExercisePhaseAnnotation } from "./phaseSuitability";
 import { THREE_PHASE_FOUNDATION } from "./domain/phase";
+import { isProgressionAxis } from "./domain/progression";
 import { MOVEMENT_ROLES, MUSCLE_GROUPS } from "./domain/primitives";
 import { SESSION_SECTIONS } from "./domain/session";
 import type { TrainingEngineInput } from "./domain/athlete";
 import { validateTrainingSafetyState } from "./domain/trainingSafety";
 import { validateTrainingResponseHistory } from "./domain/trainingResponse";
+import { EXERCISE_DOSE_MODES } from "./prescription/dose";
 
 export interface ValidationFinding {
   readonly severity: "info" | "warning" | "error";
@@ -41,6 +44,10 @@ function finding(
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isSyntheticContractExerciseId(value: string): boolean {
+  return value.startsWith("synthetic-");
 }
 
 function hasValidTrunkFunctionProvenance(value: unknown): boolean {
@@ -281,6 +288,101 @@ export function validateExerciseSupportProfile(
   return findings;
 }
 
+export function validateExercisePrescriptionKnowledgeProfile(
+  profile: ExercisePrescriptionKnowledgeProfile,
+  exerciseId: string,
+): readonly ValidationFinding[] {
+  const findings: ValidationFinding[] = [];
+  const runtimeProfile = profile as unknown;
+  const check = (valid: boolean, code: string, message: string): void => {
+    if (!valid) findings.push(finding("error", code, message, exerciseId));
+  };
+
+  if (!isRecord(runtimeProfile)) {
+    return [
+      finding(
+        "error",
+        "invalid_prescription_knowledge_profile",
+        "Prescription knowledge profile must be a structured object.",
+        exerciseId,
+      ),
+    ];
+  }
+
+  check(runtimeProfile.exerciseId === exerciseId, "prescription_knowledge_exercise_mismatch", "Prescription knowledge exerciseId must match the ExerciseDefinition id.");
+  check(runtimeProfile.version === "exercise_prescription_knowledge_v1", "invalid_prescription_knowledge_version", "Prescription knowledge profile version is invalid.");
+  check(typeof runtimeProfile.profileId === "string" && runtimeProfile.profileId.trim().length > 0, "missing_prescription_knowledge_profile_id", "Prescription knowledge profile requires a profileId.");
+  check(EXERCISE_DOSE_MODES.includes(runtimeProfile.primaryDoseMode as never), "invalid_primary_dose_mode", "Primary dose mode must use the canonical dose-mode vocabulary.");
+  check(Array.isArray(runtimeProfile.doseModeAnnotations), "invalid_dose_mode_annotations", "Prescription knowledge requires dose-mode annotations.");
+  check(Array.isArray(runtimeProfile.legalAlternateDoseModes), "invalid_legal_alternate_dose_modes", "Prescription knowledge requires a legal alternate dose-mode array.");
+  check(typeof runtimeProfile.timingModel === "string" && runtimeProfile.timingModel.trim().length > 0, "missing_timing_model", "Prescription knowledge requires an explicit timing model.");
+  check(Array.isArray(runtimeProfile.provenance) && runtimeProfile.provenance.length > 0, "missing_prescription_knowledge_provenance", "Prescription knowledge requires provenance.");
+  check(Array.isArray(runtimeProfile.unknowns), "invalid_prescription_knowledge_unknowns", "Prescription knowledge unknowns must be explicit as an array.");
+  check(typeof runtimeProfile.identityBoundary === "string" && runtimeProfile.identityBoundary.trim().length > 0, "missing_prescription_identity_boundary", "Prescription knowledge requires an identity boundary statement.");
+  check(Array.isArray(runtimeProfile.responseSensitiveTimingModifications), "invalid_response_sensitive_timing_modifications", "Response-sensitive timing modifications must be an array.");
+
+  if (Array.isArray(runtimeProfile.provenance)) {
+    for (const provenance of runtimeProfile.provenance) {
+      if (
+        !isRecord(provenance) ||
+        typeof provenance.sourceRef !== "string" ||
+        provenance.sourceRef.trim().length === 0 ||
+        !Array.isArray(provenance.evidenceBasis) ||
+        provenance.evidenceBasis.length === 0
+      ) {
+        findings.push(
+          finding(
+            "error",
+            "invalid_prescription_knowledge_provenance",
+            "Prescription knowledge provenance requires sourceRef and evidenceBasis.",
+            exerciseId,
+          ),
+        );
+      }
+    }
+  }
+
+  if (Array.isArray(runtimeProfile.doseModeAnnotations)) {
+    const primaryAnnotations = runtimeProfile.doseModeAnnotations.filter((annotation) =>
+      isRecord(annotation) && annotation.status === "primary");
+    check(primaryAnnotations.length === 1, "invalid_primary_dose_mode_annotation_count", "Exactly one primary dose-mode annotation is required.");
+    const annotatedModes = new Set<string>();
+    for (const annotation of runtimeProfile.doseModeAnnotations) {
+      if (!isRecord(annotation)) {
+        findings.push(finding("error", "invalid_dose_mode_annotation", "Dose-mode annotation must be structured.", exerciseId));
+        continue;
+      }
+      check(EXERCISE_DOSE_MODES.includes(annotation.mode as never), "invalid_dose_mode_annotation_mode", "Dose-mode annotation mode must use the canonical vocabulary.");
+      check(typeof annotation.identityPreservation === "string" && annotation.identityPreservation.trim().length > 0, "missing_dose_mode_identity_preservation", "Dose-mode annotation requires identity-preservation text.");
+      check(Array.isArray(annotation.provenance) && annotation.provenance.length > 0, "missing_dose_mode_provenance", "Dose-mode annotation requires provenance.");
+      if (typeof annotation.mode === "string") annotatedModes.add(annotation.mode);
+    }
+    check(annotatedModes.has(runtimeProfile.primaryDoseMode as string), "primary_dose_mode_missing_annotation", "Primary dose mode must be represented by an annotation.");
+    for (const alternate of Array.isArray(runtimeProfile.legalAlternateDoseModes)
+      ? runtimeProfile.legalAlternateDoseModes
+      : []) {
+      check(annotatedModes.has(alternate as string), "alternate_dose_mode_missing_annotation", "Legal alternate dose modes must be represented by annotations.");
+    }
+  }
+
+  for (const axis of Array.isArray(runtimeProfile.legalTimingProgressionAxes)
+    ? runtimeProfile.legalTimingProgressionAxes
+    : []) {
+    if (!isProgressionAxis(axis)) {
+      findings.push(
+        finding(
+          "error",
+          "invalid_legal_timing_progression_axis",
+          `Unknown timing progression axis: ${axis}.`,
+          exerciseId,
+        ),
+      );
+    }
+  }
+
+  return findings;
+}
+
 export function validateExerciseDefinition(exercise: ExerciseDefinition): readonly ValidationFinding[] {
   const findings: ValidationFinding[] = [];
 
@@ -401,6 +503,16 @@ export function validateExerciseDefinition(exercise: ExerciseDefinition): readon
 
   if (exercise.mechanics?.trunkMechanics) {
     findings.push(...validateTrunkMechanicsProfile(exercise.mechanics.trunkMechanics, exercise.id));
+  }
+
+  const exerciseId = exercise.id;
+  if (!isSyntheticContractExerciseId(exerciseId)) {
+    findings.push(
+      ...validateExercisePrescriptionKnowledgeProfile(
+        exercise.prescriptionKnowledge,
+        exercise.id,
+      ),
+    );
   }
 
   return findings;

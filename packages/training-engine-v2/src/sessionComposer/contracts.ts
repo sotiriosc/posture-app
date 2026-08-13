@@ -1,4 +1,11 @@
 import type { CandidateRankingResult } from "../candidate";
+import type {
+  BreathingCadenceCapability,
+  DurationCapability,
+  ExerciseDoseModeAnnotation,
+  LocomotorCadenceCapability,
+  RepetitionTempoCapability,
+} from "../domain/exercisePrescriptionKnowledge";
 import type { JointStressTag } from "../domain/primitives";
 import type { Side } from "../domain/primitives";
 import type {
@@ -175,8 +182,26 @@ export interface SessionPrescriptionAssignmentHandoff {
   readonly potentialStressTags: readonly JointStressTag[];
   readonly explicitRequirementRefs: readonly string[];
   readonly knownRequirements: SessionPrescriptionKnownRequirements;
+  readonly timingKnowledge: SessionPrescriptionTimingKnowledgeHandoff;
   readonly orderingConstraints: readonly SessionOrderingConstraint[];
   readonly sourceExposureEventExpected: true;
+}
+
+export interface SessionPrescriptionTimingKnowledgeHandoff {
+  readonly authority: "HANDOFF_ONLY";
+  readonly doseModeKnowledge: readonly Pick<
+    ExerciseDoseModeAnnotation,
+    "mode" | "status" | "reviewStatus" | "notes"
+  >[];
+  readonly primaryDoseMode: string;
+  readonly legalDoseModes: readonly string[];
+  readonly tempoCapability: RepetitionTempoCapability;
+  readonly durationCapability: DurationCapability;
+  readonly breathingCadenceCapability: BreathingCadenceCapability;
+  readonly locomotorCadenceCapability: LocomotorCadenceCapability;
+  readonly unresolvedTimingRequirementIds: readonly string[];
+  readonly timingPolicyRequirement: "PRESCRIPTION_POLICY_REQUIRED";
+  readonly timingProvenanceRefs: readonly string[];
 }
 
 export interface SessionPrescriptionSideRequirement {
@@ -219,6 +244,10 @@ export interface SessionDurationFeasibility {
   readonly knownTotalSeconds: number;
   readonly availableSeconds: number;
   readonly missingExerciseIds: readonly string[];
+  readonly durationDeterminability: "fully_explicit" | "unknown_or_incomplete";
+  readonly unknownTempoContribution: boolean;
+  readonly explicitRestSetupDependency: boolean;
+  readonly noInventedSessionTime: true;
 }
 
 export interface SessionSequencingInput {

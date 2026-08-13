@@ -25,5 +25,13 @@ export function evaluatePostPrescriptionDuration(
     knownTotalSeconds,
     availableSeconds,
     missingExerciseIds,
+    durationDeterminability: missingExerciseIds.length > 0
+      ? "unknown_or_incomplete"
+      : "fully_explicit",
+    unknownTempoContribution: true,
+    explicitRestSetupDependency: input.durationFacts.some((fact) =>
+      fact.explicitRestSeconds !== undefined ||
+      fact.explicitSetupTransitionSeconds !== undefined),
+    noInventedSessionTime: true,
   };
 }

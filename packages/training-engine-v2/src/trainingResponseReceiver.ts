@@ -139,6 +139,13 @@ function volumeShape(prescription: ExercisePrescription): unknown {
       return { trips: dose.trips, durationPerTrip: dose.durationPerTrip };
     case "step_march":
       return { steps: dose.steps, duration: dose.duration, alternation: dose.alternation };
+    case "step_sets":
+      return {
+        sets: dose.sets,
+        steps: dose.steps,
+        stepCountInterpretation: dose.stepCountInterpretation,
+        alternation: dose.alternation,
+      };
   }
 }
 
@@ -165,20 +172,16 @@ function realizationDifferences(
   compare("effort", current.dose.effort, historical.dose.effort);
   compare("rest", current.dose.rest, historical.dose.rest);
   compare("range", current.dose.range, historical.dose.range);
-  compare("tempo", current.dose.tempo, historical.dose.tempo);
+  compare(
+    "tempo",
+    "tempo" in current.dose ? current.dose.tempo : undefined,
+    "tempo" in historical.dose ? historical.dose.tempo : undefined,
+  );
   compare("support", current.dose.support, historical.dose.support);
   compare("lever", current.dose.lever, historical.dose.lever);
   compare("laterality", current.dose.laterality, historical.dose.laterality);
   compare("side_behavior", current.dose.sideBehavior, historical.dose.sideBehavior);
   return differences;
-}
-
-function performanceRecordId(
-  observation: TrainingResponseObservation,
-): string | null {
-  return "performanceRecordId" in observation.exposure
-    ? observation.exposure.performanceRecordId ?? null
-    : null;
 }
 
 function isAdverse(observation: TrainingResponseObservation): boolean {

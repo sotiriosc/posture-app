@@ -91,3 +91,7 @@ Optimization output cannot rescue an earlier causal failure. A future search or 
 ## Week Policy V1 Optimization Boundary
 
 Week Policy V1 preserves lexicographic hard-gate semantics: required causal ownership and dependency validity precede soft targets, recurrence observations, and collision metrics. Warm-up or activation cannot be inserted as filler, credited as weekly dose, or retained after its target changes. The 10,000-combination stress result selects no production search bound.
+
+## Prescription Timing Optimization Boundary
+
+Tempo, duration, and cadence are not optimizer rescue variables. Same-tempo convergence is legal when meaningful structured facts converge; tempo-only differences cannot rescue Week, Planner, Candidate, or Composer failures. Future optimization may compare reviewed timing policies only after a production Prescription Compiler exists and must preserve the no hidden time-under-tension, no weekly dose credit, and no prose-parsing boundaries.

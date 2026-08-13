@@ -25,6 +25,7 @@ import type {
   LoadTarget,
   MovementRole,
   PrescriptionSideBehavior,
+  TempoPrescription,
 } from "../../src";
 import {
   exactBreathCycles,
@@ -32,6 +33,7 @@ import {
   exactMetres,
   exactSeconds,
   exactSteps,
+  getReferenceExercise,
   validateStructuredPrescriptionContext,
 } from "../../src";
 
@@ -88,6 +90,20 @@ function qualityLimitedEffort(
     requiredCriterionIds,
     description:
       "Stop the synthetic set when required execution criteria are no longer maintained.",
+  };
+}
+
+function controlledRepetitionTempo(
+  sourceRef: string,
+): Extract<TempoPrescription, { readonly kind: "repetition_phase_tempo" }> {
+  return {
+    kind: "repetition_phase_tempo",
+    eccentric: { kind: "exact_seconds", seconds: 2 },
+    lengthenedTransition: { kind: "not_prescribed", reason: "No pause is prescribed in the synthetic fixture." },
+    concentric: { kind: "intent_only", intent: "controlled" },
+    shortenedTransition: { kind: "not_prescribed", reason: "No end-range pause is prescribed in the synthetic fixture." },
+    provenance: provenance(sourceRef),
+    description: "Synthetic controlled repetition-phase tempo.",
   };
 }
 
@@ -201,10 +217,9 @@ export const STRUCTURED_TRUNK_CARRY_PRESCRIPTION_FIXTURES: readonly ExercisePres
         description: "Artificial reviewed range for contract validation.",
       },
       tempo: {
-        eccentricSeconds: 2,
-        pauseSeconds: 0.5,
-        concentricIntent: "controlled",
-        description: "Synthetic controlled flexion tempo.",
+        ...controlledRepetitionTempo("structured-fixture:machine-abdominal-crunch:tempo"),
+        lengthenedTransition: { kind: "exact_seconds", seconds: 0.5 },
+        description: "Synthetic controlled flexion tempo with a lengthened transition.",
       },
       effort: { kind: "rir", target: { kind: "range", min: 2, max: 4 } },
       rest,
@@ -243,8 +258,7 @@ export const STRUCTURED_TRUNK_CARRY_PRESCRIPTION_FIXTURES: readonly ExercisePres
         description: "Artificial rotational path range for contract validation.",
       },
       tempo: {
-        eccentricSeconds: 2,
-        concentricIntent: "controlled",
+        ...controlledRepetitionTempo("structured-fixture:half-kneeling-high-to-low-cable-chop:tempo"),
         description: "Synthetic controlled return.",
       },
       effort: { kind: "rpe", target: { kind: "range", min: 6, max: 7 } },
@@ -436,6 +450,10 @@ export function syntheticExerciseForFixture(
   if (!requirement) {
     throw new Error(`Missing equipment requirement for ${id}`);
   }
+  const canonical = getReferenceExercise(id);
+  if (!canonical) {
+    throw new Error(`Missing canonical exercise for ${id}`);
+  }
 
   return {
     id,
@@ -489,6 +507,7 @@ export function syntheticExerciseForFixture(
     },
     cautionStressTags: [],
     contraindicatedStressTags: [],
+    prescriptionKnowledge: canonical.prescriptionKnowledge,
     coachingFocus: [],
   };
 }

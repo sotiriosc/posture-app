@@ -55,6 +55,7 @@ function durationFor(dose: ExerciseDose): TimeTarget | null {
       return dose.durationPerTrip;
     case "step_march":
       return dose.duration ?? null;
+    case "step_sets":
     case "repetition_sets":
     case "breath_cycles":
     case "distance_carry":
@@ -67,7 +68,13 @@ function distanceFor(dose: ExerciseDose): DistanceTarget | null {
 }
 
 function stepsFor(dose: ExerciseDose): StepTarget | null {
-  return dose.mode === "step_march" ? dose.steps ?? null : null;
+  return dose.mode === "step_march" || dose.mode === "step_sets"
+    ? dose.steps ?? null
+    : null;
+}
+
+function tempoFor(dose: ExerciseDose): TempoPrescription | null {
+  return "tempo" in dose ? dose.tempo ?? null : null;
 }
 
 function defaultEligibility(
@@ -113,7 +120,7 @@ export function buildPrescriptionStressExposureTrace(input: {
     duration: durationFor(dose),
     distance: distanceFor(dose),
     steps: stepsFor(dose),
-    tempo: dose.tempo ?? null,
+    tempo: tempoFor(dose),
     effort: dose.effort ?? null,
     provenance: input.provenance,
     receiverEligibility:

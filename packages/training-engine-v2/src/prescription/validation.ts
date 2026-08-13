@@ -5,12 +5,16 @@ import {
 import type { ExerciseDefinition } from "../domain/exercise";
 import { isProgressionAxis } from "../domain/progression";
 import { validateEquipmentCapabilities } from "../validation";
-import type { ExerciseDose, NumericTarget } from "./dose";
+import { EXERCISE_DOSE_MODES, type ExerciseDose, type NumericTarget } from "./dose";
 import type {
+  BreathingCadencePrescription,
+  CadenceTimingTarget,
   EffortTarget,
   ExecutionQualityCriterion,
   ExecutionStandard,
   LeverPrescription,
+  LocomotorCadencePrescription,
+  MovementPhaseTempoTarget,
   NumericEffortTarget,
   RangePrescription,
   SupportPrescription,
@@ -24,6 +28,9 @@ import type {
   NumericLoadMagnitude,
 } from "./load";
 import type {
+  ActualDurationObservation,
+  ActualTempoObservation,
+  ExercisePerformanceTimingObservation,
   ExecutionQualityObservation,
   ExercisePerformanceRecord,
   ExerciseSubstitutionRecord,
@@ -70,45 +77,40 @@ const PRESCRIPTION_EVIDENCE_SOURCES = [
   "synthetic_contract_fixture",
   "unknown",
 ] as const;
-const DOSE_MODES = [
-  "repetition_sets",
-  "timed_hold",
-  "breath_cycles",
-  "distance_carry",
-  "timed_carry",
-  "step_march",
-] as const;
+const DOSE_MODES = EXERCISE_DOSE_MODES;
 const DOSE_BASE_FIELDS = [
   "mode",
   "load",
   "effort",
   "rest",
   "range",
-  "tempo",
   "support",
   "lever",
   "laterality",
   "sideBehavior",
 ] as const;
 const DOSE_FIELDS: Record<(typeof DOSE_MODES)[number], readonly string[]> = {
-  repetition_sets: [...DOSE_BASE_FIELDS, "sets", "repetitions", "perSide"],
+  repetition_sets: [...DOSE_BASE_FIELDS, "sets", "repetitions", "perSide", "tempo"],
   timed_hold: [...DOSE_BASE_FIELDS, "sets", "duration"],
   breath_cycles: [
     ...DOSE_BASE_FIELDS,
     "rounds",
     "breathCycles",
+    "breathingCadence",
     "breathingPhaseStandard",
   ],
   distance_carry: [
     ...DOSE_BASE_FIELDS,
     "trips",
     "distancePerTrip",
+    "locomotorCadence",
     "gaitControlStandard",
   ],
   timed_carry: [
     ...DOSE_BASE_FIELDS,
     "trips",
     "durationPerTrip",
+    "locomotorCadence",
     "gaitControlStandard",
   ],
   step_march: [
@@ -117,7 +119,17 @@ const DOSE_FIELDS: Record<(typeof DOSE_MODES)[number], readonly string[]> = {
     "steps",
     "duration",
     "alternation",
+    "marchCadence",
     "marchControlStandard",
+  ],
+  step_sets: [
+    ...DOSE_BASE_FIELDS,
+    "sets",
+    "steps",
+    "stepCountInterpretation",
+    "alternation",
+    "stepCadence",
+    "tempo",
   ],
 };
 const PRESCRIPTION_SIDES = ["left", "right"] as const;
@@ -159,12 +171,72 @@ const RANGE_KINDS = [
   "custom_reviewed",
   "unknown",
 ] as const;
-const TEMPO_INTENTS = [
+const LEGACY_TEMPO_INTENTS = [
   "controlled",
   "natural",
   "explosive_intent",
   "not_applicable",
   "unknown",
+] as const;
+const TEMPO_INTENTS = [
+  "controlled",
+  "natural",
+  "explosive_intent",
+  "maximal_intent",
+] as const;
+const TEMPO_KINDS = [
+  "repetition_phase_tempo",
+  "intent_only",
+  "not_prescribed",
+  "not_applicable",
+  "unknown",
+  "legacy_compatibility",
+] as const;
+const MOVEMENT_PHASE_TARGET_KINDS = [
+  "exact_seconds",
+  "seconds_range",
+  "intent_only",
+  "not_prescribed",
+  "unknown",
+] as const;
+const LEGACY_TEMPO_MIGRATION_STATUSES = [
+  "LEGACY_TEMPO_INTENT_ONLY_COMPATIBLE",
+  "LEGACY_TEMPO_PHASE_INCOMPLETE",
+  "LEGACY_TEMPO_PHASE_AMBIGUOUS",
+] as const;
+const BREATHING_CADENCE_KINDS = [
+  "structured_breathing_cadence",
+  "not_prescribed",
+  "unknown",
+] as const;
+const BREATHING_CADENCE_PHASES = [
+  "inhale",
+  "post_inhale_pause",
+  "exhale",
+  "post_exhale_pause",
+] as const;
+const CADENCE_TARGET_KINDS = [
+  "exact_seconds",
+  "seconds_range",
+  "intent_only",
+  "not_prescribed",
+  "unknown",
+] as const;
+const CADENCE_TARGET_INTENTS = [
+  "controlled",
+  "natural",
+  "self_selected_by_reviewed_standard",
+] as const;
+const LOCOMOTOR_CADENCE_KINDS = [
+  "locomotor_or_step_cadence",
+  "not_prescribed",
+  "unknown",
+] as const;
+const LOCOMOTOR_CADENCE_INTENTS = [
+  "controlled",
+  "natural",
+  "brisk",
+  "self_selected_by_reviewed_standard",
 ] as const;
 const LOAD_KINDS = [
   "bodyweight",
@@ -240,6 +312,16 @@ const QUALITY_SOURCES = [
   "sensor",
   "future_vision_adapter",
   "unknown",
+] as const;
+const ACTUAL_TEMPO_OBSERVATION_KINDS = [
+  "observed",
+  "unknown",
+  "not_observed",
+] as const;
+const ACTUAL_DURATION_OBSERVATION_KINDS = [
+  "observed_seconds",
+  "unknown",
+  "not_observed",
 ] as const;
 const RECOVERY_STATUSES = [
   "recovered_as_expected",
@@ -550,6 +632,14 @@ export function validateDose(
           ),
         );
       }
+      if (Object.hasOwn(record, "breathingCadence")) {
+        findings.push(
+          ...validateBreathingCadence(
+            record.breathingCadence as BreathingCadencePrescription,
+            targetId,
+          ),
+        );
+      }
       break;
     case "distance_carry":
       findings.push(
@@ -571,6 +661,14 @@ export function validateDose(
           targetId,
         ),
       );
+      if (Object.hasOwn(record, "locomotorCadence")) {
+        findings.push(
+          ...validateLocomotorCadence(
+            record.locomotorCadence as LocomotorCadencePrescription,
+            targetId,
+          ),
+        );
+      }
       break;
     case "timed_carry":
       findings.push(
@@ -592,6 +690,14 @@ export function validateDose(
           targetId,
         ),
       );
+      if (Object.hasOwn(record, "locomotorCadence")) {
+        findings.push(
+          ...validateLocomotorCadence(
+            record.locomotorCadence as LocomotorCadencePrescription,
+            targetId,
+          ),
+        );
+      }
       break;
     case "step_march":
       findings.push(
@@ -652,6 +758,52 @@ export function validateDose(
             "error",
             "invalid_dose_march_alternation",
             "Step or march alternation must use a supported value.",
+            targetId,
+          ),
+        );
+      }
+      if (Object.hasOwn(record, "marchCadence")) {
+        findings.push(
+          ...validateLocomotorCadence(
+            record.marchCadence as LocomotorCadencePrescription,
+            targetId,
+          ),
+        );
+      }
+      break;
+    case "step_sets":
+      findings.push(
+        ...requireFields(record, ["sets", "steps", "stepCountInterpretation"], targetId),
+        ...validateCountTarget(record.sets, "sets", targetId),
+        ...validateStepTarget(record.steps, "steps", targetId),
+        ...requireNonEmptyString(
+          record.stepCountInterpretation,
+          "invalid_dose_step_count_interpretation",
+          "Step-set dose requires an explicit reviewed step-count interpretation.",
+          targetId,
+        ),
+      );
+      if (
+        Object.hasOwn(record, "alternation") &&
+        !isOneOf(record.alternation, [
+          "alternating",
+          "same_side_repeated",
+          "not_applicable",
+        ] as const)
+      ) {
+        findings.push(
+          prescriptionFinding(
+            "error",
+            "invalid_dose_step_set_alternation",
+            "Step-set alternation must use a supported value.",
+            targetId,
+          ),
+        );
+      }
+      if (Object.hasOwn(record, "stepCadence")) {
+        findings.push(
+          ...validateLocomotorCadence(
+            record.stepCadence as LocomotorCadencePrescription,
             targetId,
           ),
         );
@@ -845,6 +997,7 @@ export function validateExercisePerformanceRecord(
         "occurredAt",
         "completionStatus",
         "actualDose",
+        "actualTiming",
         "qualityObservations",
         "unresolvedPainResponseEvidenceIds",
         "trainingResponseObservationIds",
@@ -934,6 +1087,14 @@ export function validateExercisePerformanceRecord(
   if (Object.hasOwn(record, "actualDose")) {
     findings.push(...validateDose(record.actualDose as ExerciseDose, undefined, targetId));
   }
+  if (Object.hasOwn(record, "actualTiming")) {
+    findings.push(
+      ...validatePerformanceTimingObservation(
+        record.actualTiming as ExercisePerformanceTimingObservation,
+        targetId,
+      ),
+    );
+  }
 
   findings.push(
     ...validateQualityObservations(record.qualityObservations, targetId),
@@ -958,6 +1119,168 @@ export function validateExercisePerformanceContext(input: {
       : "VALID_PERFORMANCE_CONTEXT",
     findings,
   };
+}
+
+function validatePerformanceTimingObservation(
+  timing: ExercisePerformanceTimingObservation,
+  targetId?: string,
+): readonly PrescriptionValidationFinding[] {
+  const record = asRecord(timing);
+  if (!record) {
+    return [
+      objectFinding(
+        "invalid_performance_timing_object",
+        "Performance timing observation",
+        targetId,
+      ),
+    ];
+  }
+  const findings = validateAllowedFields(
+    record,
+    [
+      "actualTempo",
+      "actualDuration",
+      "timingControlObservationCriterionIds",
+      "prescribedTempoAssumedActual",
+      "prescribedDurationAssumedActual",
+      "notes",
+    ],
+    "invalid_performance_timing_field",
+    "Performance timing observation",
+    targetId,
+  );
+  if (record.prescribedTempoAssumedActual !== false) {
+    findings.push(
+      prescriptionFinding(
+        "error",
+        "invalid_prescribed_tempo_actual_assumption",
+        "Performance timing must not assume prescribed tempo was actual tempo.",
+        targetId,
+      ),
+    );
+  }
+  if (record.prescribedDurationAssumedActual !== false) {
+    findings.push(
+      prescriptionFinding(
+        "error",
+        "invalid_prescribed_duration_actual_assumption",
+        "Performance timing must not assume prescribed duration was actual duration.",
+        targetId,
+      ),
+    );
+  }
+  findings.push(
+    ...validateStringIdArray(
+      record.timingControlObservationCriterionIds,
+      "timingControlObservationCriterionIds",
+      "invalid_performance_timing_criterion_id",
+      targetId,
+    ),
+  );
+  if (Object.hasOwn(record, "actualTempo")) {
+    findings.push(
+      ...validateActualTempoObservation(record.actualTempo as ActualTempoObservation, targetId),
+    );
+  }
+  if (Object.hasOwn(record, "actualDuration")) {
+    findings.push(
+      ...validateActualDurationObservation(
+        record.actualDuration as ActualDurationObservation,
+        targetId,
+      ),
+    );
+  }
+  if (Object.hasOwn(record, "notes")) {
+    findings.push(...validateNotesArray(record.notes, "performance timing notes", targetId));
+  }
+  return findings;
+}
+
+function validateActualTempoObservation(
+  observation: ActualTempoObservation,
+  targetId?: string,
+): readonly PrescriptionValidationFinding[] {
+  const record = asRecord(observation);
+  if (!record) {
+    return [objectFinding("invalid_actual_tempo_object", "Actual tempo", targetId)];
+  }
+  if (!isOneOf(record.kind, ACTUAL_TEMPO_OBSERVATION_KINDS)) {
+    return [enumFinding("invalid_actual_tempo_kind", targetId)];
+  }
+  if (record.kind === "observed") {
+    return [
+      ...validateAllowedFields(
+        record,
+        ["kind", "tempo", "provenance"],
+        "invalid_actual_tempo_field",
+        "Actual tempo",
+        targetId,
+      ),
+      ...validateTempo(record.tempo as TempoPrescription, targetId),
+      ...validateEvidenceProvenance(record.provenance, "actual tempo provenance", targetId),
+    ];
+  }
+  return [
+    ...validateAllowedFields(
+      record,
+      ["kind", "reason", "provenance"],
+      "invalid_actual_tempo_field",
+      "Actual tempo",
+      targetId,
+    ),
+    ...requireNonEmptyString(
+      record.reason,
+      "invalid_actual_tempo_reason",
+      "Actual tempo unknown/not-observed states require a reason.",
+      targetId,
+    ),
+    ...validateEvidenceProvenance(record.provenance, "actual tempo provenance", targetId),
+  ];
+}
+
+function validateActualDurationObservation(
+  observation: ActualDurationObservation,
+  targetId?: string,
+): readonly PrescriptionValidationFinding[] {
+  const record = asRecord(observation);
+  if (!record) {
+    return [objectFinding("invalid_actual_duration_object", "Actual duration", targetId)];
+  }
+  if (!isOneOf(record.kind, ACTUAL_DURATION_OBSERVATION_KINDS)) {
+    return [enumFinding("invalid_actual_duration_kind", targetId)];
+  }
+  if (record.kind === "observed_seconds") {
+    return [
+      ...validateAllowedFields(
+        record,
+        ["kind", "seconds", "provenance"],
+        "invalid_actual_duration_field",
+        "Actual duration",
+        targetId,
+      ),
+      ...validateNumber(record.seconds, "actual duration seconds", targetId, {
+        integer: false,
+        positive: true,
+      }),
+      ...validateEvidenceProvenance(record.provenance, "actual duration provenance", targetId),
+    ];
+  }
+  return [
+    ...validateAllowedFields(
+      record,
+      ["kind", "reason", "provenance"],
+      "invalid_actual_duration_field",
+      "Actual duration",
+      targetId,
+    ),
+    ...requireNonEmptyString(
+      record.reason,
+      "invalid_actual_duration_reason",
+      "Actual duration unknown/not-observed states require a reason.",
+      targetId,
+    ),
+    ...validateEvidenceProvenance(record.provenance, "actual duration provenance", targetId),
+  ];
 }
 
 export function validateProgressionEvidence(
@@ -1605,6 +1928,268 @@ function validateTempo(
   if (!record) {
     return [objectFinding("invalid_tempo_object", "Tempo prescription", targetId)];
   }
+
+  if (!Object.hasOwn(record, "kind")) {
+    return [
+      prescriptionFinding(
+        "error",
+        "legacy_tempo_requires_adapter",
+        "Legacy tempo fields must be converted with adaptLegacyTempoPrescription before validation.",
+        targetId,
+      ),
+    ];
+  }
+
+  if (!isOneOf(record.kind, TEMPO_KINDS)) {
+    return [enumFinding("invalid_tempo_kind", targetId)];
+  }
+
+  switch (record.kind) {
+    case "repetition_phase_tempo": {
+      const findings = validateAllowedFields(
+        record,
+        [
+          "kind",
+          "eccentric",
+          "lengthenedTransition",
+          "concentric",
+          "shortenedTransition",
+          "provenance",
+          "reviewedTimingStandardRef",
+          "description",
+        ],
+        "invalid_tempo_field",
+        "Repetition phase tempo",
+        targetId,
+      );
+      findings.push(
+        ...validateMovementPhaseTempoTarget(record.eccentric, "eccentric", targetId),
+        ...validateMovementPhaseTempoTarget(
+          record.lengthenedTransition,
+          "lengthenedTransition",
+          targetId,
+        ),
+        ...validateMovementPhaseTempoTarget(record.concentric, "concentric", targetId),
+        ...validateMovementPhaseTempoTarget(
+          record.shortenedTransition,
+          "shortenedTransition",
+          targetId,
+        ),
+        ...validateEvidenceProvenance(record.provenance, "tempo provenance", targetId),
+      );
+      if (Object.hasOwn(record, "reviewedTimingStandardRef")) {
+        findings.push(
+          ...validateOptionalStringField(
+            record.reviewedTimingStandardRef,
+            "reviewedTimingStandardRef",
+            targetId,
+          ),
+        );
+      }
+      if (Object.hasOwn(record, "description")) {
+        findings.push(...validateOptionalStringField(record.description, "description", targetId));
+      }
+      return findings;
+    }
+    case "intent_only": {
+      const findings = validateAllowedFields(
+        record,
+        ["kind", "intent", "provenance", "reviewedTimingStandardRef", "description"],
+        "invalid_tempo_field",
+        "Intent-only tempo",
+        targetId,
+      );
+      if (!isOneOf(record.intent, TEMPO_INTENTS)) {
+        findings.push(enumFinding("invalid_tempo_intent", targetId));
+      }
+      findings.push(...validateEvidenceProvenance(record.provenance, "tempo provenance", targetId));
+      if (Object.hasOwn(record, "reviewedTimingStandardRef")) {
+        findings.push(
+          ...validateOptionalStringField(
+            record.reviewedTimingStandardRef,
+            "reviewedTimingStandardRef",
+            targetId,
+          ),
+        );
+      }
+      if (Object.hasOwn(record, "description")) {
+        findings.push(...validateOptionalStringField(record.description, "description", targetId));
+      }
+      return findings;
+    }
+    case "not_prescribed":
+    case "not_applicable":
+    case "unknown": {
+      const findings = validateAllowedFields(
+        record,
+        ["kind", "reason", "provenance", "description"],
+        "invalid_tempo_field",
+        "Non-phase tempo",
+        targetId,
+      );
+      findings.push(
+        ...requireNonEmptyString(
+          record.reason,
+          "invalid_tempo_reason",
+          "Tempo not-prescribed, not-applicable, and unknown states require an explicit reason.",
+          targetId,
+        ),
+        ...validateEvidenceProvenance(record.provenance, "tempo provenance", targetId),
+      );
+      if (Object.hasOwn(record, "description")) {
+        findings.push(...validateOptionalStringField(record.description, "description", targetId));
+      }
+      return findings;
+    }
+    case "legacy_compatibility": {
+      const findings = validateAllowedFields(
+        record,
+        [
+          "kind",
+          "legacy",
+          "migrationStatus",
+          "authoritative",
+          "reason",
+          "provenance",
+          "description",
+        ],
+        "invalid_tempo_field",
+        "Legacy compatibility tempo",
+        targetId,
+      );
+      if (record.authoritative !== false) {
+        findings.push(
+          prescriptionFinding(
+            "error",
+            "invalid_legacy_tempo_authority",
+            "Legacy tempo compatibility records must be explicitly non-authoritative.",
+            targetId,
+          ),
+        );
+      }
+      if (!isOneOf(record.migrationStatus, LEGACY_TEMPO_MIGRATION_STATUSES)) {
+        findings.push(enumFinding("invalid_legacy_tempo_migration_status", targetId));
+      }
+      findings.push(
+        ...validateLegacyTempoObject(record.legacy, targetId),
+        ...requireNonEmptyString(
+          record.reason,
+          "invalid_legacy_tempo_reason",
+          "Legacy tempo compatibility requires an explicit reason.",
+          targetId,
+        ),
+        ...validateEvidenceProvenance(record.provenance, "tempo provenance", targetId),
+      );
+      if (Object.hasOwn(record, "description")) {
+        findings.push(...validateOptionalStringField(record.description, "description", targetId));
+      }
+      return findings;
+    }
+  }
+}
+
+function validateMovementPhaseTempoTarget(
+  target: unknown,
+  label: string,
+  targetId?: string,
+): readonly PrescriptionValidationFinding[] {
+  const record = asRecord(target as MovementPhaseTempoTarget);
+  if (!record) {
+    return [objectFinding("invalid_tempo_phase_target_object", label, targetId)];
+  }
+  if (!isOneOf(record.kind, MOVEMENT_PHASE_TARGET_KINDS)) {
+    return [enumFinding("invalid_tempo_phase_target_kind", targetId)];
+  }
+  switch (record.kind) {
+    case "exact_seconds":
+      return [
+        ...validateAllowedFields(
+          record,
+          ["kind", "seconds"],
+          "invalid_tempo_phase_target_field",
+          label,
+          targetId,
+        ),
+        ...validateNumber(record.seconds, `${label} tempo seconds`, targetId, {
+          integer: false,
+          positive: true,
+        }),
+      ];
+    case "seconds_range": {
+      const findings = [
+        ...validateAllowedFields(
+          record,
+          ["kind", "minSeconds", "maxSeconds"],
+          "invalid_tempo_phase_target_field",
+          label,
+          targetId,
+        ),
+        ...validateNumber(record.minSeconds, `${label} tempo min seconds`, targetId, {
+          integer: false,
+          positive: true,
+        }),
+        ...validateNumber(record.maxSeconds, `${label} tempo max seconds`, targetId, {
+          integer: false,
+          positive: true,
+        }),
+      ];
+      if (
+        typeof record.minSeconds === "number" &&
+        typeof record.maxSeconds === "number" &&
+        record.minSeconds > record.maxSeconds
+      ) {
+        findings.push(
+          prescriptionFinding(
+            "error",
+            "invalid_tempo_phase_range_order",
+            "Tempo phase seconds range minimum cannot exceed maximum.",
+            targetId,
+          ),
+        );
+      }
+      return findings;
+    }
+    case "intent_only": {
+      const findings = validateAllowedFields(
+        record,
+        ["kind", "intent"],
+        "invalid_tempo_phase_target_field",
+        label,
+        targetId,
+      );
+      if (!isOneOf(record.intent, TEMPO_INTENTS)) {
+        findings.push(enumFinding("invalid_tempo_phase_intent", targetId));
+      }
+      return findings;
+    }
+    case "not_prescribed":
+    case "unknown":
+      return [
+        ...validateAllowedFields(
+          record,
+          ["kind", "reason"],
+          "invalid_tempo_phase_target_field",
+          label,
+          targetId,
+        ),
+        ...requireNonEmptyString(
+          record.reason,
+          "invalid_tempo_phase_reason",
+          "Tempo phase not-prescribed and unknown targets require a reason.",
+          targetId,
+        ),
+      ];
+  }
+}
+
+function validateLegacyTempoObject(
+  legacy: unknown,
+  targetId?: string,
+): readonly PrescriptionValidationFinding[] {
+  const record = asRecord(legacy);
+  if (!record) {
+    return [objectFinding("invalid_legacy_tempo_object", "Legacy tempo", targetId)];
+  }
   const findings = validateAllowedFields(
     record,
     [
@@ -1614,43 +2199,270 @@ function validateTempo(
       "topOrEndRangePauseSeconds",
       "description",
     ],
-    "invalid_tempo_field",
-    "Tempo prescription",
+    "invalid_legacy_tempo_field",
+    "Legacy tempo",
     targetId,
   );
-  if (!isOneOf(record.concentricIntent, TEMPO_INTENTS)) {
-    findings.push(enumFinding("invalid_tempo_concentric_intent", targetId));
+  if (!isOneOf(record.concentricIntent, LEGACY_TEMPO_INTENTS)) {
+    findings.push(enumFinding("invalid_legacy_tempo_concentric_intent", targetId));
   }
   for (const field of [
     "eccentricSeconds",
     "pauseSeconds",
     "topOrEndRangePauseSeconds",
   ] as const) {
-    if (!Object.hasOwn(record, field)) {
-      continue;
-    }
-    const value = record[field];
-    findings.push(
-      ...validateNumber(value, "tempo duration", targetId, {
-        integer: false,
-        positive: false,
-      }),
-    );
-    if (typeof value === "number" && Number.isFinite(value) && value < 0) {
+    if (Object.hasOwn(record, field)) {
       findings.push(
-        prescriptionFinding(
-          "error",
-          "invalid_target_negative_tempo",
-          "Tempo duration cannot be negative.",
-          targetId,
-        ),
+        ...validateNumber(record[field], "legacy tempo seconds", targetId, {
+          integer: false,
+          positive: false,
+        }),
       );
+      if (
+        typeof record[field] === "number" &&
+        Number.isFinite(record[field]) &&
+        record[field] < 0
+      ) {
+        findings.push(
+          prescriptionFinding(
+            "error",
+            "invalid_target_negative_tempo",
+            "Legacy tempo duration cannot be negative.",
+            targetId,
+          ),
+        );
+      }
     }
   }
   if (Object.hasOwn(record, "description")) {
     findings.push(...validateOptionalStringField(record.description, "description", targetId));
   }
   return findings;
+}
+
+function validateBreathingCadence(
+  cadence: BreathingCadencePrescription,
+  targetId?: string,
+): readonly PrescriptionValidationFinding[] {
+  const record = asRecord(cadence);
+  if (!record) {
+    return [objectFinding("invalid_breathing_cadence_object", "Breathing cadence", targetId)];
+  }
+  if (!isOneOf(record.kind, BREATHING_CADENCE_KINDS)) {
+    return [enumFinding("invalid_breathing_cadence_kind", targetId)];
+  }
+  if (record.kind === "structured_breathing_cadence") {
+    const findings = validateAllowedFields(
+      record,
+      [
+        "kind",
+        "inhale",
+        "exhale",
+        "postInhalePause",
+        "postExhalePause",
+        "phaseSequence",
+        "provenance",
+        "description",
+      ],
+      "invalid_breathing_cadence_field",
+      "Breathing cadence",
+      targetId,
+    );
+    findings.push(
+      ...validateCadenceTimingTarget(record.inhale, "inhale", targetId),
+      ...validateCadenceTimingTarget(record.exhale, "exhale", targetId),
+      ...validateEvidenceProvenance(record.provenance, "breathing cadence provenance", targetId),
+    );
+    if (Object.hasOwn(record, "postInhalePause")) {
+      findings.push(
+        ...validateCadenceTimingTarget(record.postInhalePause, "postInhalePause", targetId),
+      );
+    }
+    if (Object.hasOwn(record, "postExhalePause")) {
+      findings.push(
+        ...validateCadenceTimingTarget(record.postExhalePause, "postExhalePause", targetId),
+      );
+    }
+    if (
+      !Array.isArray(record.phaseSequence) ||
+      record.phaseSequence.length === 0 ||
+      !record.phaseSequence.every((phase) => isOneOf(phase, BREATHING_CADENCE_PHASES))
+    ) {
+      findings.push(
+        prescriptionFinding(
+          "error",
+          "invalid_breathing_cadence_phase_sequence",
+          "Breathing cadence requires a nonempty supported phase sequence.",
+          targetId,
+        ),
+      );
+    }
+    if (Object.hasOwn(record, "description")) {
+      findings.push(...validateOptionalStringField(record.description, "description", targetId));
+    }
+    return findings;
+  }
+  return [
+    ...validateAllowedFields(
+      record,
+      ["kind", "reason", "provenance"],
+      "invalid_breathing_cadence_field",
+      "Breathing cadence",
+      targetId,
+    ),
+    ...requireNonEmptyString(
+      record.reason,
+      "invalid_breathing_cadence_reason",
+      "Breathing cadence unknown/not-prescribed states require a reason.",
+      targetId,
+    ),
+    ...validateEvidenceProvenance(record.provenance, "breathing cadence provenance", targetId),
+  ];
+}
+
+function validateCadenceTimingTarget(
+  target: unknown,
+  label: string,
+  targetId?: string,
+): readonly PrescriptionValidationFinding[] {
+  const record = asRecord(target as CadenceTimingTarget);
+  if (!record) {
+    return [objectFinding("invalid_cadence_target_object", label, targetId)];
+  }
+  if (!isOneOf(record.kind, CADENCE_TARGET_KINDS)) {
+    return [enumFinding("invalid_cadence_target_kind", targetId)];
+  }
+  switch (record.kind) {
+    case "exact_seconds":
+      return [
+        ...validateAllowedFields(
+          record,
+          ["kind", "seconds"],
+          "invalid_cadence_target_field",
+          label,
+          targetId,
+        ),
+        ...validateNumber(record.seconds, `${label} cadence seconds`, targetId, {
+          integer: false,
+          positive: true,
+        }),
+      ];
+    case "seconds_range": {
+      const findings = [
+        ...validateAllowedFields(
+          record,
+          ["kind", "minSeconds", "maxSeconds"],
+          "invalid_cadence_target_field",
+          label,
+          targetId,
+        ),
+        ...validateNumber(record.minSeconds, `${label} cadence min seconds`, targetId, {
+          integer: false,
+          positive: true,
+        }),
+        ...validateNumber(record.maxSeconds, `${label} cadence max seconds`, targetId, {
+          integer: false,
+          positive: true,
+        }),
+      ];
+      if (
+        typeof record.minSeconds === "number" &&
+        typeof record.maxSeconds === "number" &&
+        record.minSeconds > record.maxSeconds
+      ) {
+        findings.push(
+          prescriptionFinding(
+            "error",
+            "invalid_cadence_range_order",
+            "Cadence seconds range minimum cannot exceed maximum.",
+            targetId,
+          ),
+        );
+      }
+      return findings;
+    }
+    case "intent_only": {
+      const findings = validateAllowedFields(
+        record,
+        ["kind", "intent"],
+        "invalid_cadence_target_field",
+        label,
+        targetId,
+      );
+      if (!isOneOf(record.intent, CADENCE_TARGET_INTENTS)) {
+        findings.push(enumFinding("invalid_cadence_target_intent", targetId));
+      }
+      return findings;
+    }
+    case "not_prescribed":
+    case "unknown":
+      return [
+        ...validateAllowedFields(
+          record,
+          ["kind", "reason"],
+          "invalid_cadence_target_field",
+          label,
+          targetId,
+        ),
+        ...requireNonEmptyString(
+          record.reason,
+          "invalid_cadence_target_reason",
+          "Cadence target unknown/not-prescribed states require a reason.",
+          targetId,
+        ),
+      ];
+  }
+}
+
+function validateLocomotorCadence(
+  cadence: LocomotorCadencePrescription,
+  targetId?: string,
+): readonly PrescriptionValidationFinding[] {
+  const record = asRecord(cadence);
+  if (!record) {
+    return [objectFinding("invalid_locomotor_cadence_object", "Locomotor cadence", targetId)];
+  }
+  if (!isOneOf(record.kind, LOCOMOTOR_CADENCE_KINDS)) {
+    return [enumFinding("invalid_locomotor_cadence_kind", targetId)];
+  }
+  if (record.kind === "locomotor_or_step_cadence") {
+    const findings = validateAllowedFields(
+      record,
+      ["kind", "intent", "standardRef", "provenance", "description"],
+      "invalid_locomotor_cadence_field",
+      "Locomotor cadence",
+      targetId,
+    );
+    if (!isOneOf(record.intent, LOCOMOTOR_CADENCE_INTENTS)) {
+      findings.push(enumFinding("invalid_locomotor_cadence_intent", targetId));
+    }
+    findings.push(
+      ...validateEvidenceProvenance(record.provenance, "locomotor cadence provenance", targetId),
+    );
+    if (Object.hasOwn(record, "standardRef")) {
+      findings.push(...validateOptionalStringField(record.standardRef, "standardRef", targetId));
+    }
+    if (Object.hasOwn(record, "description")) {
+      findings.push(...validateOptionalStringField(record.description, "description", targetId));
+    }
+    return findings;
+  }
+  return [
+    ...validateAllowedFields(
+      record,
+      ["kind", "reason", "provenance"],
+      "invalid_locomotor_cadence_field",
+      "Locomotor cadence",
+      targetId,
+    ),
+    ...requireNonEmptyString(
+      record.reason,
+      "invalid_locomotor_cadence_reason",
+      "Locomotor cadence unknown/not-prescribed states require a reason.",
+      targetId,
+    ),
+    ...validateEvidenceProvenance(record.provenance, "locomotor cadence provenance", targetId),
+  ];
 }
 
 function validateLoadTarget(
@@ -3181,7 +3993,12 @@ function isDoseErrorFinding(finding: PrescriptionValidationFinding): boolean {
       finding.code.startsWith("invalid_support") ||
       finding.code.startsWith("invalid_lever") ||
       finding.code.startsWith("invalid_range") ||
-      finding.code.startsWith("invalid_tempo"))
+      finding.code.startsWith("invalid_tempo") ||
+      finding.code.startsWith("legacy_tempo") ||
+      finding.code.startsWith("invalid_legacy_tempo") ||
+      finding.code.startsWith("invalid_breathing_cadence") ||
+      finding.code.startsWith("invalid_locomotor_cadence") ||
+      finding.code.startsWith("invalid_cadence"))
   );
 }
 

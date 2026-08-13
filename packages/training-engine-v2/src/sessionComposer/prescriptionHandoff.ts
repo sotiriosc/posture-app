@@ -1,7 +1,9 @@
 import type { CandidateRankingResult } from "../candidate";
+import type { ExercisePrescriptionKnowledgeProfile } from "../domain/exercisePrescriptionKnowledge";
 import type { SessionIntent } from "../domain/session";
 import type {
   SessionPrescriptionKnownRequirements,
+  SessionPrescriptionTimingKnowledgeHandoff,
   SessionPrescriptionHandoff,
   SessionSkeleton,
 } from "./contracts";
@@ -52,6 +54,34 @@ function findCandidate(
   return result.rankedCandidates.find((candidate) => candidate.exercise.id === exerciseId);
 }
 
+function timingKnowledgeHandoff(
+  profile: ExercisePrescriptionKnowledgeProfile,
+): SessionPrescriptionTimingKnowledgeHandoff {
+  return {
+    authority: "HANDOFF_ONLY",
+    doseModeKnowledge: profile.doseModeAnnotations.map((annotation) => ({
+      mode: annotation.mode,
+      status: annotation.status,
+      reviewStatus: annotation.reviewStatus,
+      notes: annotation.notes,
+    })),
+    primaryDoseMode: profile.primaryDoseMode,
+    legalDoseModes: [
+      profile.primaryDoseMode,
+      ...profile.legalAlternateDoseModes,
+    ],
+    tempoCapability: profile.repetitionTempo,
+    durationCapability: profile.duration,
+    breathingCadenceCapability: profile.breathingCadence,
+    locomotorCadenceCapability: profile.locomotorCadence,
+    unresolvedTimingRequirementIds: profile.unknowns.map((unknown, index) =>
+      `${profile.exerciseId}:timing-unknown:${index}:${unknown.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
+    ),
+    timingPolicyRequirement: "PRESCRIPTION_POLICY_REQUIRED",
+    timingProvenanceRefs: profile.provenance.map((entry) => entry.sourceRef).sort(),
+  };
+}
+
 export function buildSessionPrescriptionHandoff(input: {
   readonly intent: SessionIntent;
   readonly skeleton: SessionSkeleton;
@@ -78,6 +108,13 @@ export function buildSessionPrescriptionHandoff(input: {
           ...requirement.evidence,
         ]),
       ))].sort();
+      const selectedCandidate = candidateEvidence.find(
+        (candidate) => candidate.exercise.id === assignment.exerciseId,
+      );
+      const timingProfile = selectedCandidate?.exercise.prescriptionKnowledge;
+      if (!timingProfile) {
+        throw new Error(`Missing prescription timing profile for ${assignment.exerciseId}.`);
+      }
       return {
         handoffId: assignment.routinePrescriptionHandoffId,
         exerciseId: assignment.exerciseId,
@@ -90,6 +127,7 @@ export function buildSessionPrescriptionHandoff(input: {
         potentialStressTags,
         explicitRequirementRefs,
         knownRequirements: knownRequirements(candidateEvidence),
+        timingKnowledge: timingKnowledgeHandoff(timingProfile),
         orderingConstraints: input.skeleton.orderingConstraints.filter((edge) =>
           edge.beforeExerciseId === assignment.exerciseId || edge.afterExerciseId === assignment.exerciseId,
         ),

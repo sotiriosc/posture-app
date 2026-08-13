@@ -1223,18 +1223,35 @@ export function stripTrunkMechanicsFromCatalog(
   });
 }
 
+export function stripPrescriptionKnowledgeFromCatalog(
+  exercises: readonly ExerciseDefinition[],
+): readonly Omit<ExerciseDefinition, "prescriptionKnowledge">[] {
+  return exercises.map((exercise) => {
+    const { prescriptionKnowledge: _prescriptionKnowledge, ...rest } = exercise;
+    return rest;
+  });
+}
+
 export function buildCurrentTrunkCurationFingerprints(): {
   readonly productionRanking: string;
   readonly comprehensiveBehavior: string;
   readonly referenceCatalog: string;
   readonly referenceCatalogWithoutTrunkMechanics: string;
+  readonly referenceCatalogWithPrescriptionKnowledge: string;
+  readonly prescriptionKnowledgeMetadata: string;
 } {
   return {
     productionRanking: rankingFingerprint(),
     comprehensiveBehavior: comprehensiveBehaviorFingerprint(),
-    referenceCatalog: hash(REFERENCE_EXERCISES),
+    referenceCatalog: hash(stripPrescriptionKnowledgeFromCatalog(REFERENCE_EXERCISES)),
     referenceCatalogWithoutTrunkMechanics: hash(
-      stripTrunkMechanicsFromCatalog(REFERENCE_EXERCISES),
+      stripPrescriptionKnowledgeFromCatalog(
+        stripTrunkMechanicsFromCatalog(REFERENCE_EXERCISES),
+      ),
+    ),
+    referenceCatalogWithPrescriptionKnowledge: hash(REFERENCE_EXERCISES),
+    prescriptionKnowledgeMetadata: hash(
+      REFERENCE_EXERCISES.map((exercise) => exercise.prescriptionKnowledge),
     ),
   };
 }

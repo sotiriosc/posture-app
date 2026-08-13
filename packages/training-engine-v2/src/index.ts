@@ -24,6 +24,7 @@ export * from "./domain/assessment";
 export * from "./domain/athlete";
 export * from "./domain/equipment";
 export * from "./domain/exercise";
+export * from "./domain/exercisePrescriptionKnowledge";
 export * from "./domain/exerciseSelectionNeed";
 export * from "./domain/history";
 export * from "./domain/painInjury";

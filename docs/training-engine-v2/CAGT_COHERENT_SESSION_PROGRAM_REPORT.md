@@ -13,3 +13,7 @@ Invariant: Warm-up, activation, main work, accessory work and cooldown are not i
 - Dependency graph acyclic: yes
 
 Empty warm-up and activation sections remain valid. Populated assignments require a typed objective and active dependency to final selected work.
+
+## Warm-Up And Activation Timing
+
+Warm-up and activation timing remains subordinate to downstream training purpose. The new exercise-level timing knowledge can say an exercise supports repetitions, breath cycles, timed holds, step count, or duration, but future Prescription policy still selects the exact amount. Longer preparation duration cannot create personalization success, hypertrophy credit, or a rescue after a causal failure.

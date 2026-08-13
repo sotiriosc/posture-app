@@ -24,6 +24,12 @@ import type {
   TrunkMechanicsFunction,
   TrunkMechanicsProfile,
 } from "../domain/exercise";
+import type {
+  ExerciseDoseModeAnnotation,
+  ExercisePrescriptionKnowledgeProfile,
+  ExercisePrescriptionKnowledgeProvenance,
+  ExerciseTimingModel,
+} from "../domain/exercisePrescriptionKnowledge";
 import type { PhaseId } from "../domain/phase";
 import type { JointStressTag } from "../domain/primitives";
 import type { SessionSection, TrainingRole } from "../domain/session";
@@ -168,6 +174,25 @@ const ROLE_MUSCLE_OWNER_DECISION_REF =
   "docs/training-engine-v2/ROLE_AND_MUSCLE_CONTRIBUTION_CONTRACT.md#production-catalog-migration";
 const P0_OWNER_DECISION_REF =
   "docs/training-engine-v2/P0_WHOLE_BODY_PRODUCTION_REPORT.md#production-contract";
+const PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF =
+  "docs/training-engine-v2/EXERCISE_PRESCRIPTION_KNOWLEDGE_CONTRACT.md#production-45-row-profile";
+
+const BREATHING_IDS = new Set(["ninety-ninety-breathing"]);
+const TIMED_HOLD_IDS = new Set([
+  "forearm-plank",
+  "forearm-side-plank",
+  "single-leg-balance-rehearsal",
+]);
+const LOCOMOTOR_CARRY_IDS = new Set(["farmer-carry", "suitcase-carry"]);
+const STATIONARY_MARCH_IDS = new Set(["wall-supported-suitcase-march"]);
+const COUNTED_STEP_IDS = new Set([
+  "loop-band-lateral-walk",
+  "supine-hamstring-walkout",
+]);
+const DURATION_REVIEW_PENDING_IDS = new Set([
+  "wall-ankle-dorsiflexion-rock",
+  "supine-hamstring-walkout",
+]);
 
 function contributions(input: {
   readonly primary: readonly ExerciseMuscleContribution["muscle"][];
@@ -216,14 +241,417 @@ function actions(...values: readonly ExerciseActionFunction[]): readonly Exercis
 
 type CanonicalExerciseDefinition = Omit<
   ExerciseDefinition,
-  "actionFunctions" | "primaryMuscles" | "secondaryMuscles"
+  "actionFunctions" | "primaryMuscles" | "secondaryMuscles" | "prescriptionKnowledge"
 > & {
   readonly actionFunctions?: readonly ExerciseActionFunctionAnnotation[];
 };
 
+function prescriptionKnowledgeProvenance(
+  exerciseId: string,
+  evidence: string,
+): ExercisePrescriptionKnowledgeProvenance {
+  return {
+    source: "owner_decision",
+    sourceRef: PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF,
+    evidenceBasis: [evidence],
+    reviewerId: "sotiriosc",
+    reviewedAt: OWNER_REVIEWED_AT,
+    notes: `Prescription timing curation for ${exerciseId}.`,
+  };
+}
+
+function doseModeAnnotation(
+  input: {
+    readonly exercise: CanonicalExerciseDefinition;
+    readonly mode: ExerciseDoseModeAnnotation["mode"];
+    readonly status: ExerciseDoseModeAnnotation["status"];
+    readonly notes: string;
+  },
+): ExerciseDoseModeAnnotation {
+  return {
+    mode: input.mode,
+    status: input.status,
+    legalTrainingRoles: input.exercise.trainingRoles,
+    legalSessionSections: Object.keys(input.exercise.sectionSuitability) as SessionSection[],
+    identityPreservation:
+      `${input.exercise.id} remains one canonical exercise identity when prescribed with ${input.mode}.`,
+    reviewStatus: "accepted",
+    provenance: [
+      prescriptionKnowledgeProvenance(input.exercise.id, input.notes),
+    ],
+    notes: input.notes,
+  };
+}
+
+function timingModelFor(exerciseId: string): ExerciseTimingModel {
+  if (BREATHING_IDS.has(exerciseId)) return "breathing_cycle";
+  if (TIMED_HOLD_IDS.has(exerciseId)) return "isometric_hold";
+  if (LOCOMOTOR_CARRY_IDS.has(exerciseId)) return "locomotor_trip";
+  if (STATIONARY_MARCH_IDS.has(exerciseId)) return "stationary_march";
+  if (COUNTED_STEP_IDS.has(exerciseId)) return "counted_steps";
+  return "dynamic_repetition";
+}
+
+function prescriptionKnowledgeFor(
+  exercise: CanonicalExerciseDefinition,
+): ExercisePrescriptionKnowledgeProfile {
+  const timingModel = timingModelFor(exercise.id);
+  const hasLegacyTempoAxis = exercise.progression.progressionAxes.includes("tempo");
+  const baseProvenance = [
+    prescriptionKnowledgeProvenance(
+      exercise.id,
+      "Owner authorized canonical exercise-level Prescription timing knowledge without numeric prescription defaults.",
+    ),
+  ];
+  const noNumericDefaults = {
+    id: `${exercise.id}:no-numeric-prescription-defaults`,
+    description:
+      "Exercise-level knowledge records legal dose and timing capability only; exact sets, reps, load, tempo, duration, cadence, and rest belong to future Prescription policy/compiler authority.",
+    provenance: baseProvenance,
+  };
+
+  if (timingModel === "breathing_cycle") {
+    return {
+      profileId: `exercise-prescription-knowledge:${exercise.id}`,
+      exerciseId: exercise.id,
+      version: "exercise_prescription_knowledge_v1",
+      doseModeAnnotations: [
+        doseModeAnnotation({
+          exercise,
+          mode: "breath_cycles",
+          status: "primary",
+          notes: "Breath-cycle count is the truthful primary exposure for this breathing reset identity.",
+        }),
+      ],
+      primaryDoseMode: "breath_cycles",
+      legalAlternateDoseModes: [],
+      timingModel,
+      repetitionTempo: {
+        status: "not_applicable",
+        meaningfulPhaseTiming: false,
+        allowedKinds: ["not_applicable"],
+        notes: "Breathing cycles do not have eccentric/concentric repetition phases.",
+      },
+      duration: {
+        status: "not_applicable",
+        contexts: [],
+        notes: "Total exposure duration is not the reviewed primary dose mode for this breathing row.",
+      },
+      breathingCadence: {
+        status: "optional_structured",
+        notes: "Structured inhale/exhale cadence may be prescribed later, but prose is not executable authority.",
+      },
+      locomotorCadence: {
+        status: "not_applicable",
+        cadenceKinds: [],
+        notes: "No gait, march, or step cadence exists for this breathing task.",
+      },
+      legalTimingProgressionAxes: ["breath_cycles"],
+      constraints: [noNumericDefaults],
+      reviewStatus: "accepted",
+      provenance: baseProvenance,
+      unknowns: ["No numeric breathing cadence policy is approved."],
+      identityBoundary:
+        "90/90 Breathing remains a breath-cycle breathing reset, not a repetition-tempo exercise.",
+      responseSensitiveTimingModifications: [
+        "Actual breathing adherence and tolerance may later hold or review cadence without automatic progression.",
+      ],
+    };
+  }
+
+  if (timingModel === "isometric_hold") {
+    return {
+      profileId: `exercise-prescription-knowledge:${exercise.id}`,
+      exerciseId: exercise.id,
+      version: "exercise_prescription_knowledge_v1",
+      doseModeAnnotations: [
+        doseModeAnnotation({
+          exercise,
+          mode: "timed_hold",
+          status: "primary",
+          notes: "A timed hold is the truthful primary exposure for this stationary control identity.",
+        }),
+      ],
+      primaryDoseMode: "timed_hold",
+      legalAlternateDoseModes: [],
+      timingModel,
+      repetitionTempo: {
+        status: "not_applicable",
+        meaningfulPhaseTiming: false,
+        allowedKinds: ["not_applicable"],
+        notes: "The hold has no eccentric/concentric repetition phases during the prescribed exposure.",
+      },
+      duration: {
+        status: "primary_duration_dose",
+        contexts: [exercise.id === "single-leg-balance-rehearsal" ? "per_balance_exposure" : "per_hold"],
+        notes: "Duration is a primary exposure fact, not a hidden hypertrophy or weekly-credit score.",
+      },
+      breathingCadence: {
+        status: "not_applicable",
+        notes: "Breathing may be observed for quality only when explicitly prescribed elsewhere.",
+      },
+      locomotorCadence: {
+        status: "not_applicable",
+        cadenceKinds: [],
+        notes: "No locomotor, march, or counted-step cadence exists during the hold.",
+      },
+      legalTimingProgressionAxes: ["duration"],
+      constraints: [noNumericDefaults],
+      reviewStatus: "accepted",
+      provenance: baseProvenance,
+      unknowns: [],
+      identityBoundary:
+        `${exercise.name} remains a timed stationary control exposure; exact hold length belongs to Prescription.`,
+      responseSensitiveTimingModifications: [
+        "Completed hold duration and timing-control observations may later support hold/review decisions without automatic progression.",
+      ],
+    };
+  }
+
+  if (timingModel === "locomotor_trip") {
+    return {
+      profileId: `exercise-prescription-knowledge:${exercise.id}`,
+      exerciseId: exercise.id,
+      version: "exercise_prescription_knowledge_v1",
+      doseModeAnnotations: [
+        doseModeAnnotation({
+          exercise,
+          mode: "distance_carry",
+          status: "primary",
+          notes: "Distance-per-trip is the primary reviewed carry exposure for loaded gait.",
+        }),
+        doseModeAnnotation({
+          exercise,
+          mode: "timed_carry",
+          status: "legal_alternative",
+          notes: "Timed trips preserve carry identity when duration is explicitly selected by Prescription.",
+        }),
+      ],
+      primaryDoseMode: "distance_carry",
+      legalAlternateDoseModes: ["timed_carry"],
+      timingModel,
+      repetitionTempo: {
+        status: "not_applicable",
+        meaningfulPhaseTiming: false,
+        allowedKinds: ["not_applicable"],
+        notes: "Carries have gait/pace control, not eccentric/concentric repetition tempo.",
+      },
+      duration: {
+        status: "legal_alternative_duration_dose",
+        contexts: ["per_trip"],
+        notes: "Duration is legal when the future Prescription selects timed carry instead of distance carry.",
+      },
+      breathingCadence: {
+        status: "not_applicable",
+        notes: "Breathing cadence is not a reviewed carry dose axis.",
+      },
+      locomotorCadence: {
+        status: "optional_structured",
+        cadenceKinds: ["gait_pace"],
+        notes: "Pace/control may be prescribed qualitatively; distance and duration remain the dose.",
+      },
+      legalTimingProgressionAxes: ["duration"],
+      constraints: [noNumericDefaults],
+      reviewStatus: "accepted",
+      provenance: baseProvenance,
+      unknowns: ["No numeric gait pace policy is approved."],
+      identityBoundary:
+        `${exercise.name} remains one carry identity across distance and timed trips.`,
+      responseSensitiveTimingModifications: [
+        "Adverse timed-trip or pace response requires review and does not ban the carry identity automatically.",
+      ],
+    };
+  }
+
+  if (timingModel === "stationary_march") {
+    return {
+      profileId: `exercise-prescription-knowledge:${exercise.id}`,
+      exerciseId: exercise.id,
+      version: "exercise_prescription_knowledge_v1",
+      doseModeAnnotations: [
+        doseModeAnnotation({
+          exercise,
+          mode: "step_march",
+          status: "primary",
+          notes: "Stationary steps or duration preserve the wall-supported march identity without carry distance.",
+        }),
+      ],
+      primaryDoseMode: "step_march",
+      legalAlternateDoseModes: [],
+      timingModel,
+      repetitionTempo: {
+        status: "not_applicable",
+        meaningfulPhaseTiming: false,
+        allowedKinds: ["not_applicable"],
+        notes: "Stationary marching uses step/march cadence, not eccentric/concentric repetition tempo.",
+      },
+      duration: {
+        status: "legal_alternative_duration_dose",
+        contexts: ["per_stationary_march"],
+        notes: "Duration is legal inside the step_march mode when Prescription selects time instead of step count.",
+      },
+      breathingCadence: {
+        status: "not_applicable",
+        notes: "Breathing cadence is not a reviewed march dose axis.",
+      },
+      locomotorCadence: {
+        status: "optional_structured",
+        cadenceKinds: ["march_cadence"],
+        notes: "March cadence may be qualitatively prescribed without claiming distance.",
+      },
+      legalTimingProgressionAxes: ["steps", "duration"],
+      constraints: [
+        noNumericDefaults,
+        {
+          id: `${exercise.id}:stationary-no-distance`,
+          description: "Stationary march mode cannot claim carry distance or loaded gait distance credit.",
+          provenance: baseProvenance,
+        },
+      ],
+      reviewStatus: "accepted",
+      provenance: baseProvenance,
+      unknowns: ["No numeric march cadence policy is approved."],
+      identityBoundary:
+        "Wall-Supported Suitcase March remains stationary loaded marching, not a carry trip.",
+      responseSensitiveTimingModifications: [
+        "Timing-control response can trigger later review but cannot create automatic progression.",
+      ],
+    };
+  }
+
+  if (timingModel === "counted_steps") {
+    return {
+      profileId: `exercise-prescription-knowledge:${exercise.id}`,
+      exerciseId: exercise.id,
+      version: "exercise_prescription_knowledge_v1",
+      doseModeAnnotations: [
+        doseModeAnnotation({
+          exercise,
+          mode: "step_sets",
+          status: "primary",
+          notes: "Structured step sets preserve counted non-stationary/non-march step truth.",
+        }),
+      ],
+      primaryDoseMode: "step_sets",
+      legalAlternateDoseModes: [],
+      timingModel,
+      repetitionTempo: {
+        status: "not_applicable",
+        meaningfulPhaseTiming: false,
+        allowedKinds: ["not_applicable"],
+        notes: "Step count and step cadence are distinct from eccentric/concentric repetition tempo.",
+      },
+      duration: DURATION_REVIEW_PENDING_IDS.has(exercise.id)
+        ? {
+            status: "unknown",
+            contexts: ["per_set"],
+            notes: "Legacy duration axis exists, but no reviewed timed counted-step dose mode is approved.",
+          }
+        : {
+            status: "not_applicable",
+            contexts: [],
+            notes: "Duration is not a reviewed counted-step dose for this identity.",
+          },
+      breathingCadence: {
+        status: "not_applicable",
+        notes: "Breathing cadence is not a reviewed counted-step dose axis.",
+      },
+      locomotorCadence: {
+        status: "optional_structured",
+        cadenceKinds: ["step_cadence"],
+        notes: "Step cadence may be qualitative execution timing; steps remain the exposure dose.",
+      },
+      legalTimingProgressionAxes: ["steps"],
+      constraints: [
+        noNumericDefaults,
+        {
+          id: `${exercise.id}:not-stationary-march`,
+          description:
+            "Counted step sets must not use stationary step_march truth and must not claim distance or carry credit.",
+          provenance: baseProvenance,
+        },
+      ],
+      reviewStatus: "accepted",
+      provenance: baseProvenance,
+      unknowns: DURATION_REVIEW_PENDING_IDS.has(exercise.id)
+        ? ["Timed counted-step exposure requires future reviewed policy before production use."]
+        : [],
+      identityBoundary:
+        `${exercise.name} remains a counted-step exercise; individual steps are not silently redefined as repetitions.`,
+      responseSensitiveTimingModifications: [
+        "Observed step cadence or incomplete steps can create later review evidence without automatic replacement.",
+      ],
+    };
+  }
+
+  return {
+    profileId: `exercise-prescription-knowledge:${exercise.id}`,
+    exerciseId: exercise.id,
+    version: "exercise_prescription_knowledge_v1",
+    doseModeAnnotations: [
+      doseModeAnnotation({
+        exercise,
+        mode: "repetition_sets",
+        status: "primary",
+        notes: "Set and repetition targets preserve this dynamic exercise identity.",
+      }),
+    ],
+    primaryDoseMode: "repetition_sets",
+    legalAlternateDoseModes: [],
+    timingModel,
+    repetitionTempo: {
+      status: "applicable",
+      meaningfulPhaseTiming: true,
+      allowedKinds: [
+        "repetition_phase_tempo",
+        "intent_only",
+        "not_prescribed",
+        "unknown",
+      ],
+      notes: "Repetition phases may be timed or intent-only when later Prescription policy explicitly selects them.",
+    },
+    duration: DURATION_REVIEW_PENDING_IDS.has(exercise.id)
+      ? {
+          status: "unknown",
+          contexts: ["per_set"],
+          notes: "Legacy duration axis exists, but no reviewed timed dynamic dose mode is approved.",
+        }
+      : {
+          status: "not_applicable",
+          contexts: [],
+          notes: "Duration is not a primary or alternate reviewed dose for this dynamic repetition identity.",
+        },
+    breathingCadence: {
+      status: "not_applicable",
+      notes: "Breathing cadence is not a reviewed primary dose axis for this dynamic repetition row.",
+    },
+    locomotorCadence: {
+      status: "not_applicable",
+      cadenceKinds: [],
+      notes: "No locomotor, march, or counted-step cadence exists for this dynamic repetition row.",
+    },
+    legalTimingProgressionAxes: hasLegacyTempoAxis ? ["tempo"] : [],
+    constraints: [noNumericDefaults],
+    reviewStatus: "accepted",
+    provenance: baseProvenance,
+    unknowns: [
+      "No universal numeric repetition tempo is approved.",
+      ...(DURATION_REVIEW_PENDING_IDS.has(exercise.id)
+        ? ["Timed dynamic exposure requires future reviewed policy before production use."]
+        : []),
+    ],
+    identityBoundary:
+      `${exercise.name} remains a dynamic repetition exercise; exact repetition tempo belongs to Prescription.`,
+    responseSensitiveTimingModifications: [
+      "Observed tempo tolerance may later support hold/review evidence without automatic progression.",
+    ],
+  };
+}
+
 function defineExercise(input: CanonicalExerciseDefinition): ExerciseDefinition {
   return {
     ...input,
+    prescriptionKnowledge: prescriptionKnowledgeFor(input),
     actionFunctions: input.actionFunctions ?? [],
     primaryMuscles: input.muscleContributions
       .filter((entry) => entry.relationship === "primary_target")

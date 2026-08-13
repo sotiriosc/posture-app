@@ -26,3 +26,7 @@ All controlled reservations selected by the design lab pass this downstream orac
 ## Coherent Session CAGT Evidence
 
 The frozen production kernel was exercised as the Gate 8 authority for 38 complete-session coherence scenarios. It accepts empty preparation, preserves required dependencies under condensed capacity, enforces role/section legality and identity uniqueness, emits dependency order, and reports required gaps as infeasible. No Composer behavior or public API changed; the combined fingerprint remains `3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9`.
+
+## Prescription Timing Handoff Extension
+
+Composer selection behavior remains unchanged. Gate 9 Prescription handoff now adds handoff-only timing knowledge for each selected exercise: legal dose-mode annotations, primary/legal modes, tempo capability, duration capability, breathing cadence capability, locomotor cadence capability, timing policy requirement, unresolved timing requirements, and provenance refs. These fields do not choose dose, order, duration, or progression.

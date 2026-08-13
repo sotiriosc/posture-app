@@ -16,7 +16,10 @@ import {
   contextualPhaseFitComponent,
   legacyPhaseFitComponent,
 } from "../../src/candidate/scoring/components";
-import { buildCurrentTrunkCurationFingerprints } from "./trunkMechanicsCurationProposal";
+import {
+  buildCurrentTrunkCurationFingerprints,
+  stripPrescriptionKnowledgeFromCatalog,
+} from "./trunkMechanicsCurationProposal";
 
 export const SEVEN_PRODUCTION_EXERCISE_IDS = [
   "forearm-plank",
@@ -239,7 +242,7 @@ export function buildKnowledgeCompatibleSevenRowProductionData() {
     before: PRE_MIGRATION_LONG_LEVER,
     after: postMigrationLongLever,
   };
-  const catalogPayload = sevenRows;
+  const catalogPayload = stripPrescriptionKnowledgeFromCatalog(sevenRows);
   const supportPayload = sevenRows.map((candidate) => ({
     exerciseId: candidate.id,
     support: candidate.mechanics?.support ?? null,

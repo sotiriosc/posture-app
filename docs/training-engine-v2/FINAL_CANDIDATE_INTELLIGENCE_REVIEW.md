@@ -376,3 +376,7 @@ The design laboratory historically classified policy gaps as `TARGETED_DESIGN_DE
 ## Subsequent Session Intent Planner Milestone
 
 The production Planner now supplies explicit needs from `SessionAllocationDirective`; Candidate Intelligence still receives one canonical goal source and unchanged selection, context, and evaluation facts. Candidate ranking, comprehensive review, catalog, and Knowledge fingerprints remain frozen. Planner ontology graduates as `SESSION_INTENT_PLANNER_READY_FOR_WEEK_COMPOSER_DESIGN`; unresolved real-user contexts retain explicit future owners rather than being guessed.
+
+## Prescription Timing Metadata Addendum
+
+Candidate Intelligence behavior remains frozen after adding prescription timing metadata. Ranking fingerprint remains `d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7`; comprehensive fingerprint remains `1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e`. The new metadata is not consumed by eligibility, scoring, ranking, phase fit, or candidate readiness.

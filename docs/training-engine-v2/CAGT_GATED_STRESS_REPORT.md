@@ -79,3 +79,7 @@ The test-only tournament adds 10,000 fixed-seed policy/scenario combinations and
 ## Week Policy V1 Admission Stress
 
 The owner-selected S2/H1/D1/A1/C1/P0/R0 core completes 10,000 fixed-seed V1 combinations and 1,000 complete pipelines with zero hard failures. The 40-scenario independent holdout, 38 coherent-session scenarios, first-session stop canaries, all-session horizons, order permutations, stale/orphan preparation mutations, and main-selection changes are covered. Admission is `WEEK_POLICY_V1_PARTIAL_SCOPE_READY_TARGETED_POLICY_GAPS`; production activation remains false.
+
+## Prescription Timing Extension
+
+Timing dimensions are now available for Gates 9-11 without changing gate order or production authority. Gate 9 reports dose-mode knowledge, tempo/duration/cadence capability, timing policy requirement, and provenance. Gate 10 reports duration determinability, unknown tempo contribution, and rest/setup dependency. Gate 11 preserves prescribed-versus-actual tempo and duration facts. No timing-only downstream difference can rescue an upstream failure.

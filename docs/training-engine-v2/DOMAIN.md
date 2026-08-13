@@ -216,3 +216,7 @@ CAGT adds no production domain concepts. Test-only contracts name canonical fact
 ## Week Policy V1 Domain Decision
 
 The owner-selected causal core owns only strength, primary hypertrophy/muscle priority, explicit direct work, assessment clusters, supported capacity, advisory participation, and Prescription-pending spacing at declared priority bands. Preparation remains session-level dependency truth and never weekly dose. Unsupported weekly domains remain explicit `WEEKLY_POLICY_REQUIRED` states, including scopes whose eventual evidence depends on Prescription.
+
+## Prescription Timing Domain Decision
+
+Exercise knowledge owns legal dose modes and timing capabilities, not exact numbers. Prescription owns exact sets, reps, load, effort, range, support, side, tempo, duration, distance, steps, breath cycles, and rest. Sequencing owns final order and transitions. Week evaluation later owns aggregation. The current domain implements this boundary with `ExercisePrescriptionKnowledgeProfile`, `step_sets`, Tempo V2, typed breathing/locomotor cadence, and actual-timing performance observations.

@@ -2021,3 +2021,7 @@ CAGT is private developer tooling that assigns each controlled fact change to an
 # Week Policy V1 And Coherent Session Admission (2026-08-12)
 
 The owner-selected S2/H1/D1/A1/C1/P0/R0 core passes final CAGT admission for its declared scope and remains non-production. Session-program coherence is now an explicit invariant across existing gates: preparation may be empty, populated preparation requires an active typed dependency to final work, and later variation cannot rescue an earlier causal failure. Full Week authority remains blocked by targeted scope gaps and unimplemented production owners.
+
+# Prescription Timing Foundation (2026-08-13)
+
+The engine now carries canonical exercise-level Prescription timing knowledge for all 45 rows. This tranche separates repetition tempo, total exposure duration, breathing cadence, locomotor/march/step cadence, and session duration; adds `step_sets`; upgrades TempoPrescription to a discriminated V2 contract; and extends Prescription/duration handoffs and CAGT timing dimensions. Classification: `PRESCRIPTION_TIMING_FOUNDATION_READY_FOR_NON_PRODUCTION_COMPILER_DESIGN`. Production numeric Prescription generation, Week allocation, final Sequencing, post-Prescription weekly validation, and automatic progression remain unimplemented.
