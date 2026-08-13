@@ -2017,3 +2017,7 @@ Owner semantics, authoritative evidence review, typed policy/conflict design, Pr
 # Causal Adaptation Gate Testing V1
 
 CAGT is private developer tooling that assigns each controlled fact change to an owner and earliest/latest response window across immutable Gate 0-16 order. It distinguishes shared framework from adaptive content, hard-stops the scored path at first failure, and rejects downstream rescue. Production gates use production APIs; Week/Product results remain design evidence; Prescription/Sequencing remain handoff evidence; unavailable future gates never pass.
+
+# Week Policy V1 And Coherent Session Admission (2026-08-12)
+
+The owner-selected S2/H1/D1/A1/C1/P0/R0 core passes final CAGT admission for its declared scope and remains non-production. Session-program coherence is now an explicit invariant across existing gates: preparation may be empty, populated preparation requires an active typed dependency to final work, and later variation cannot rescue an earlier causal failure. Full Week authority remains blocked by targeted scope gaps and unimplemented production owners.

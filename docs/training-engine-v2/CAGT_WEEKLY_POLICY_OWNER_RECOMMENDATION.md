@@ -51,3 +51,7 @@ These are CAGT recommendations for owner review, not production authority.
 - Evidence: B1 is hard-gate clean but inherits unresolved H1/H2 and unproven D2/C2/R1 component choices.
 
 Production numeric policy activated: **no**.
+
+## Week Policy V1 Owner Decision
+
+The owner selected S2/H1/D1/A1/C1/P0/R0 as `WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE`. H2 is deferred pending Prescription-informed distribution evidence. D2 and C2 are deferred because neither demonstrated unique executable repeat value. The decision authorizes final CAGT admission testing only; it does not activate production policy.

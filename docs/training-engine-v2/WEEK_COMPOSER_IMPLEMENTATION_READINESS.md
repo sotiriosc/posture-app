@@ -36,3 +36,7 @@ Current production ontology has no Week owner, typed live horizon, reviewed week
 Owner semantics and Product Adapter design are now complete. The remaining production blockers are owner numeric policy selection, production search calibration, Product domain authorization/integration, future recovery/external-load/accessibility receivers, and a separate Week implementation/API review. Prescribed weekly validation still requires Prescription and Longitudinal contracts. Classification is `TARGETED_WEEK_POLICY_DECISIONS_REMAIN`; Week behavior remains non-production.
 
 The CAGT tournament provides executable design evidence but does not remove those blockers. B1 is hard-gate clean yet cannot be admitted while H1/H2 and D2/C2/R1 component consequences remain unresolved. Search costs are reported without choosing production bounds, and no design module is exported through the package API.
+
+## V1 Admission Consequence
+
+The later owner decision selects a new V1 causal core rather than B1: S2/H1/D1/A1/C1/P0/R0. Its locked holdout and downstream session horizons pass, but only covered policy scope is admitted. Production Week Composer remains unimplemented; recovery, conditioning, external load, phase overrides, Prescription-informed distribution/spacing, and production search bounds must be resolved before runtime authorization.

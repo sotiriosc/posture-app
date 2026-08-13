@@ -22,3 +22,7 @@ The upstream production Planner now emits authoritative needs-first intents. Com
 The Week design may precompute proposed responsibility-combination feasibility by invoking the frozen Planner, Candidate, and Composer stack as an opaque oracle. Results are evidence statuses, not permission to inspect internals, select exercises in the Week layer, or claim actual-day feasibility. The production Composer does not know about horizons, reservations, frequency intent, reallocation, or weekly ledgers.
 
 All controlled reservations selected by the design lab pass this downstream oracle after materialization under matching facts. Composer behavior, API, and fingerprint remain unchanged.
+
+## Coherent Session CAGT Evidence
+
+The frozen production kernel was exercised as the Gate 8 authority for 38 complete-session coherence scenarios. It accepts empty preparation, preserves required dependencies under condensed capacity, enforces role/section legality and identity uniqueness, emits dependency order, and reports required gaps as infeasible. No Composer behavior or public API changed; the combined fingerprint remains `3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9`.

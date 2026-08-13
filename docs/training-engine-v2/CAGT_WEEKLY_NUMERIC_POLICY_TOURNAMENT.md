@@ -67,3 +67,7 @@ Authority: `OWNER_REVIEW_RECOMMENDATION_ONLY`. No candidate is production policy
 - **composite:** `NO_COMPOSITE_ADMISSION_YET` - B1 is hard-gate clean but inherits unresolved H1/H2 and unproven D2/C2/R1 component choices.
 
 The balanced composite B1 is not activated. Design evidence is not production proof.
+
+## Owner-Selected V1 Admission
+
+The owner selected `WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE`: strength S2, muscle H1, direct D1, assessment A1, capacity C1, participation P0, and spacing R0. This is a new independently fingerprinted composite, not admission of B1. The result is `WEEK_POLICY_V1_PARTIAL_SCOPE_READY_TARGETED_POLICY_GAPS`; numeric production policy remains inactive.

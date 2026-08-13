@@ -212,3 +212,7 @@ Reviewed policy now has compact typed rules and deterministic required/conflict 
 # CAGT Test Domain
 
 CAGT adds no production domain concepts. Test-only contracts name canonical fact owner, materiality, response window, invariants, difference dimensions, convergence reasons, framework/adaptive relationships, authority expectation, and no-rescue requirement. Authority is explicitly `PRODUCTION`, `DESIGN_ONLY`, `HANDOFF_ONLY`, `FOUNDATION_ONLY`, or `NOT_IMPLEMENTED`.
+
+## Week Policy V1 Domain Decision
+
+The owner-selected causal core owns only strength, primary hypertrophy/muscle priority, explicit direct work, assessment clusters, supported capacity, advisory participation, and Prescription-pending spacing at declared priority bands. Preparation remains session-level dependency truth and never weekly dose. Unsupported weekly domains remain explicit `WEEKLY_POLICY_REQUIRED` states, including scopes whose eventual evidence depends on Prescription.

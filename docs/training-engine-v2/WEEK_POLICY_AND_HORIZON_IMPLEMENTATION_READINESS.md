@@ -24,3 +24,7 @@ The exact next dependency is owner numeric policy selection using the candidate 
 CAGT V1 is ready for policy-admission use: 32 curated pairs, ten four-day users, nine candidates, thirteen consequences, 23 horizon scenarios, six chains, 10,000 pair stress, and 1,000 executable pipelines pass without production changes. This removes the testing-foundation blocker but not numeric owner selection, Product integration, search calibration, Prescription/Longitudinal contracts, or separate production authorization.
 
 The numeric-policy extension executes 32 atomic and six composite candidates across 19 calibration and 23 locked holdout scenarios, totaling 1,596 evaluations and 2,060 complete downstream pipelines before stress sampling. Classification is `TARGETED_POLICY_CANDIDATE_FIXES_REQUIRED`; Product Horizon and production Week activation remain out of scope.
+
+## Week Policy V1 Admission
+
+Week Policy V1 final CAGT admission now classifies `WEEK_POLICY_V1_PARTIAL_SCOPE_READY_TARGETED_POLICY_GAPS`. The covered owner-selected core is ready only for a separate production Week implementation authorization. Product Horizon integration, the eight unresolved policy scopes, production Week search calibration, and prescribed-program validation remain blockers. No horizon or policy runtime was activated.

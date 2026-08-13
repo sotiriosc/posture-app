@@ -36,3 +36,7 @@ Owner semantics are approved, but values are not. `rules` is now a compact typed
 Before a numeric rule gains production authority it must pass CAGT weekly truth, allocation coverage, causal response, framework/adaptive separation, duplication, anti-bloat, and constrained-week gates for every applicable cohort. A green design-only gate is owner evidence, not production authorization.
 
 Candidate resolution now validates version, integer ordering, priority-aware minima, explicit scope and purpose, unsupported-conditioning exclusion, absence of phase multipliers, and missing-policy conflicts before execution. Passing candidates remain `CAGT_TEST_CANDIDATE_NOT_PRODUCTION` until a separate owner decision and production implementation authorization.
+
+## Week Policy V1 Admission Candidate
+
+The owner-selected scoped core is S2/H1/D1/A1/C1/P0/R0. Its owner state is `OWNER_SELECTED_FOR_FINAL_CAGT_ADMISSION_NOT_PRODUCTION`; its executable test adapter remains non-production. General-fitness movement, posture/movement quality, systemic conditioning, external sport load, recovery sessions, phase overrides, direct/secondary dose credit, and Prescription-informed muscle distribution remain outside this policy and must return an explicit unresolved result.

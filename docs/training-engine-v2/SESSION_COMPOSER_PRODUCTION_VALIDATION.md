@@ -38,3 +38,7 @@ Real `SessionAllocationDirective -> Planner -> Candidate -> Composer -> SessionS
 ## CAGT Gate 8
 
 Session Composer is production authority at Gate 8 for required coverage, identity selection, shared need coverage, sections/roles, anchors, marginal value, redundancy, unresolved requirements, and search completeness. CAGT uses the production composition API. Shared exercise identity may pass; random variation cannot. Composer differences never rescue failed Week, materialization, Intent, or Candidate gates.
+
+## Coherent Session Matrix
+
+The V1 coherence matrix adds warm-up/activation ownership, dependency revalidation after main-candidate change, required-preparation condensation, empty-section, assessment-lane, P0 anti-stack, recurrence, and mutation probes. All 38 scenarios classify as pass, expected infeasible, or expected mutation rejection; none produces an unclassified hard failure.

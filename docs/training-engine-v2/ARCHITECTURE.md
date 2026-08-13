@@ -237,3 +237,7 @@ The private, unexported Product Adapter contracts resolve structured factual sou
 # CAGT Developer Architecture (2026-08-12)
 
 `tests/cagt` contains contracts, canonical diffing/signatures, ordered gates, runner, thresholds, cohorts, Week-policy/Product adapters, human chains, deterministic reports, and stress tools. It imports existing helpers and production APIs but is absent from `src/index.ts` and application runtime. No later gate can score after `FAIL_STOP`; optional shadow output is diagnostic and invalid upstream context.
+
+# Week Policy V1 Admission Test Architecture (2026-08-12)
+
+The V1 admission layer adds an independently locked owner composite and holdout plus complete-session coherence adapters. It composes frozen Planner, Candidate, Composer, Prescription-handoff, and sequencing-handoff APIs as evidence without adding a runtime layer. Coherence is evaluated inside existing gate ownership, not as a new gate.

@@ -75,3 +75,7 @@ Design-only evidence is not production proof. Not-implemented gates do not pass.
 ## Weekly Numeric Policy Tournament
 
 The test-only tournament adds 10,000 fixed-seed policy/scenario combinations and audits 1,000 of 2,060 complete reservation-to-production-session pipelines. Invalid bands stop at Gate 0; no-policy stops at Gate 1; bloat, unauthorized assessment recurrence, and constrained overload stop at Gate 4. No later output rescues an earlier failure. Combined tournament fingerprint: `d16dc08712211864cc0d2dfc2762e4c20c85f6dba053c64e6599f3b08a76d905`.
+
+## Week Policy V1 Admission Stress
+
+The owner-selected S2/H1/D1/A1/C1/P0/R0 core completes 10,000 fixed-seed V1 combinations and 1,000 complete pipelines with zero hard failures. The 40-scenario independent holdout, 38 coherent-session scenarios, first-session stop canaries, all-session horizons, order permutations, stale/orphan preparation mutations, and main-selection changes are covered. Admission is `WEEK_POLICY_V1_PARTIAL_SCOPE_READY_TARGETED_POLICY_GAPS`; production activation remains false.

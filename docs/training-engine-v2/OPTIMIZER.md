@@ -87,3 +87,7 @@ Policy specificity is resolved before optimization. Explicitly declared specific
 ## CAGT Admission Boundary
 
 Optimization output cannot rescue an earlier causal failure. A future search or policy rule must pass every gate it can affect, preserve upstream invariants, expose inconclusive search honestly, and avoid diversity objectives. Framework/adaptive collision metrics remain observed distributions, not optimizer terms or additive scores.
+
+## Week Policy V1 Optimization Boundary
+
+Week Policy V1 preserves lexicographic hard-gate semantics: required causal ownership and dependency validity precede soft targets, recurrence observations, and collision metrics. Warm-up or activation cannot be inserted as filler, credited as weekly dose, or retained after its target changes. The 10,000-combination stress result selects no production search bound.

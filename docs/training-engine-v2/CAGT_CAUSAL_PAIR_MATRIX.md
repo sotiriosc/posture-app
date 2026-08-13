@@ -7,3 +7,7 @@ All 32 satisfy their intended V1 contracts. This does not mean all outputs diffe
 Mutation tests separately prove invalid fixtures, trace-only response, early wrong-layer response, late unresponsiveness, downstream rep rescue, shadow scoring, not-implemented behavior, and gate reordering cannot pass.
 
 Numeric policy rows use the same immutable Gate 0-12 order. Each of 1,596 candidate/scenario evaluations records actual Weekly Intent, allocation, reservation, materialization, Session Intent, candidate, and skeleton signatures. Gates 13-16 remain unavailable and never receive a pass classification.
+
+## Week Policy V1 Coherence Extension
+
+The V1 admission extension adds independent owner-selection, scoped-rule, holdout, canary, horizon, warm-up ownership, activation ownership, dependency-to-final-selection, anti-bloat, recurrence, and complete-session-argument pairs. Coherence evidence is integrated at existing Gates 1, 2, 4, 6, 7, 8, 10, and 12; gate order is unchanged.

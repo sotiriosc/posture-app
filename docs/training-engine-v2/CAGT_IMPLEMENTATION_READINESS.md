@@ -11,3 +11,7 @@ Limitations: Week/Product gates are design evidence; Prescription and Sequencing
 Before numeric Week policy admission, each candidate still needs owner-approved values/scopes, evidence disposition, CAGT coverage for every affected gate, production search calibration, Product domain authorization, and separate production implementation approval. The next dependency is owner numeric-policy selection through the CAGT calibration envelope.
 
 The numeric tournament foundation is now executable and classified `TARGETED_POLICY_CANDIDATE_FIXES_REQUIRED`. Assessment A1, direct D1, capacity C1, strength S2, and spacing R0 are recommended only for owner admission review. H1/H2 remain Pareto-incomparable; D2/C2/R1 lack unique executable value; no composite is admitted. Numeric production policy remains inactive.
+
+## Week Policy V1 Admission Update
+
+Owner selection resolves the causal core to S2/H1/D1/A1/C1/P0/R0. Calibration, the new 40-scenario locked holdout, 38 coherent-session scenarios, 10,000 combinations, 1,000 complete pipelines, first-session canaries, and all-session horizons pass with zero hard CAGT failures. Classification is `WEEK_POLICY_V1_PARTIAL_SCOPE_READY_TARGETED_POLICY_GAPS`; unresolved weekly scopes and production Week implementation still block activation.
