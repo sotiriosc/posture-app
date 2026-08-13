@@ -19,3 +19,5 @@ No row selects a number, credits a set, changes dose, or authorizes production s
 ## CAGT Calibration
 
 All nine candidate areas run through the CAGT policy envelope with thirteen consequence comparisons. Coverage, convergence, under/over-adaptation, duplication, recurrence, bloat, constrained-week behavior, and unresolved states are reported. Every candidate remains `NOT_SELECTED_FOR_PRODUCTION`; CAGT supplies evidence and does not choose values.
+
+The predeclared V1 numeric lattice now contains 32 atomic candidates and six fixed composites. Its source of truth is `CAGT_WEEKLY_NUMERIC_POLICY_CANDIDATES.md`, fingerprint `097a115c4e8fd156dcf02e8acc6be7452feeb5cd67c08cb308406999cbfdf6bf`. Candidate generation or tuning after holdout inspection is prohibited.

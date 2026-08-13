@@ -22,3 +22,5 @@ The exact next dependency is owner numeric policy selection using the candidate 
 ## CAGT Readiness Amendment
 
 CAGT V1 is ready for policy-admission use: 32 curated pairs, ten four-day users, nine candidates, thirteen consequences, 23 horizon scenarios, six chains, 10,000 pair stress, and 1,000 executable pipelines pass without production changes. This removes the testing-foundation blocker but not numeric owner selection, Product integration, search calibration, Prescription/Longitudinal contracts, or separate production authorization.
+
+The numeric-policy extension executes 32 atomic and six composite candidates across 19 calibration and 23 locked holdout scenarios, totaling 1,596 evaluations and 2,060 complete downstream pipelines before stress sampling. Classification is `TARGETED_POLICY_CANDIDATE_FIXES_REQUIRED`; Product Horizon and production Week activation remain out of scope.

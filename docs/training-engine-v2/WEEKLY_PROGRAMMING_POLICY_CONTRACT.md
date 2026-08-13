@@ -34,3 +34,5 @@ Owner semantics are approved, but values are not. `rules` is now a compact typed
 ## CAGT Admission Requirement
 
 Before a numeric rule gains production authority it must pass CAGT weekly truth, allocation coverage, causal response, framework/adaptive separation, duplication, anti-bloat, and constrained-week gates for every applicable cohort. A green design-only gate is owner evidence, not production authorization.
+
+Candidate resolution now validates version, integer ordering, priority-aware minima, explicit scope and purpose, unsupported-conditioning exclusion, absence of phase multipliers, and missing-policy conflicts before execution. Passing candidates remain `CAGT_TEST_CANDIDATE_NOT_PRODUCTION` until a separate owner decision and production implementation authorization.

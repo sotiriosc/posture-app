@@ -71,3 +71,7 @@ Causal Adaptation Gate Testing is a hierarchical counterfactual testing method i
 - Downstream rescue mutation: DOWNSTREAM_RESCUE_REJECTED; downstream differences scored: false.
 
 Design-only evidence is not production proof. Not-implemented gates do not pass.
+
+## Weekly Numeric Policy Tournament
+
+The test-only tournament adds 10,000 fixed-seed policy/scenario combinations and audits 1,000 of 2,060 complete reservation-to-production-session pipelines. Invalid bands stop at Gate 0; no-policy stops at Gate 1; bloat, unauthorized assessment recurrence, and constrained overload stop at Gate 4. No later output rescues an earlier failure. Combined tournament fingerprint: `d16dc08712211864cc0d2dfc2762e4c20c85f6dba053c64e6599f3b08a76d905`.

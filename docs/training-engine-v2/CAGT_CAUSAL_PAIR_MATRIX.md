@@ -5,3 +5,5 @@ The deterministic matrix contains 32 predeclared pairs. It covers inert IDs/labe
 All 32 satisfy their intended V1 contracts. This does not mean all outputs differ: inert pairs converge, one same-exercise pair uses structured justified convergence, and material pairs respond within their declared windows. The generated [gated report](CAGT_GATED_STRESS_REPORT.md) records every pair's expected window, first material difference, classification, first failure, and no-rescue state.
 
 Mutation tests separately prove invalid fixtures, trace-only response, early wrong-layer response, late unresponsiveness, downstream rep rescue, shadow scoring, not-implemented behavior, and gate reordering cannot pass.
+
+Numeric policy rows use the same immutable Gate 0-12 order. Each of 1,596 candidate/scenario evaluations records actual Weekly Intent, allocation, reservation, materialization, Session Intent, candidate, and skeleton signatures. Gates 13-16 remain unavailable and never receive a pass classification.

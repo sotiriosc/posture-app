@@ -129,3 +129,5 @@ New suites cover sole `capacity_main`, competing dominant responsibilities, sess
 # CAGT Commands And Coverage
 
 Use `npm run test:cagt --workspace=@praxis/training-engine-v2`, `npm run test:cagt:stress --workspace=@praxis/training-engine-v2`, and `npm run report:cagt --workspace=@praxis/training-engine-v2`. CAGT covers Gate 0 fixture truth, ordered authority, response windows, convergence, under/over-adaptation, no rescue, shadow diagnostics, four-day frameworks, duplication, policy/horizon adapters, human chains, 10,000 pair stress, 1,000 pipeline stress, metamorphic mutations, and 23 frozen fingerprints.
+
+Numeric policy commands are `npm run test:cagt:week-policy --workspace=@praxis/training-engine-v2`, `npm run test:cagt:week-policy:holdout --workspace=@praxis/training-engine-v2`, `npm run test:cagt:week-policy:stress --workspace=@praxis/training-engine-v2`, and `npm run report:cagt:week-policy --workspace=@praxis/training-engine-v2`. They preserve the CAGT-core fingerprint while freezing 15 independent tournament fingerprints.

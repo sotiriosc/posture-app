@@ -9,3 +9,5 @@ Validation evidence: 32 curated pairs, ten-user four-day cohort, one explicit no
 Limitations: Week/Product gates are design evidence; Prescription and Sequencing are handoff-only; human execution/response is foundation-only; post-Prescription weekly validation, full prescribed-program comparison, phase continuity, and Longitudinal decision authority are unavailable. CAGT is private developer tooling and is not exported.
 
 Before numeric Week policy admission, each candidate still needs owner-approved values/scopes, evidence disposition, CAGT coverage for every affected gate, production search calibration, Product domain authorization, and separate production implementation approval. The next dependency is owner numeric-policy selection through the CAGT calibration envelope.
+
+The numeric tournament foundation is now executable and classified `TARGETED_POLICY_CANDIDATE_FIXES_REQUIRED`. Assessment A1, direct D1, capacity C1, strength S2, and spacing R0 are recommended only for owner admission review. H1/H2 remain Pareto-incomparable; D2/C2/R1 lack unique executable value; no composite is admitted. Numeric production policy remains inactive.
