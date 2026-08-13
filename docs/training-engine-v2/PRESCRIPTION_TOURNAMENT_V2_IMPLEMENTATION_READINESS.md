@@ -10,3 +10,7 @@ Remaining evaluator limitations:
 - Evaluator remains test/developer-only and does not activate production numeric policy.
 - Duration intervals still require final Sequencing for setup and inter-exercise transitions.
 - Spacing and H1/H2 distribution remain Prescription-and-response dependent.
+
+## Prescription Policy V1 Owner Admission
+
+The blinded V2 evaluator is now authoritative evidence for owner selection. CAGT did not select the policy; the owner-selected V1 candidate passed a separate admission holdout.

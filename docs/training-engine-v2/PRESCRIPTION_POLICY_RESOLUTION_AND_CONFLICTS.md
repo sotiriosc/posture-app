@@ -35,3 +35,7 @@ Owner recommendation fingerprint: `fa7e942aff30d6dda4d572c4b6793e384820ed93026ca
 Pareto frontier fingerprint: `2133cbd7cdf7ca632c4557cce9cf83aa66d2ac588535e8413ecee1ec98803fbe`.
 
 Detailed owner-decision report: `PRESCRIPTION_NUMERIC_OWNER_RECOMMENDATION.md`.
+
+## Prescription Policy V1 Owner Admission
+
+V1 uses the 13-level specificity order. A lower rule cannot erase a higher rule, and equal-authority conflict returns `PRESCRIPTION_POLICY_CONFLICT` without weighted blending.

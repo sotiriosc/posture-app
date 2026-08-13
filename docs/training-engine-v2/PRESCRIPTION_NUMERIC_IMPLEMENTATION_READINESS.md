@@ -30,3 +30,7 @@ Post-Prescription Week validation blockers:
 - Weekly source-event ledger remains design-only.
 - H1/H2 distribution needs owner selection and response evidence.
 - Spacing remains Prescription-and-response dependent.
+
+## Prescription Policy V1 Owner Admission
+
+The frozen numeric lattice is unchanged. The owner policy resolves among its values by structured context and does not activate a production numeric policy.

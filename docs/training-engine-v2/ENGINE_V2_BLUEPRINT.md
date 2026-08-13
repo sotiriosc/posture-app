@@ -2029,3 +2029,7 @@ The engine now carries canonical exercise-level Prescription timing knowledge fo
 # Full Prescription Design Lab (2026-08-13)
 
 The next architecture layer is now documented as design-only: one assignment creates one source exposure event, one plan may contain ordered dose blocks, and a typed reviewed policy must resolve numeric and qualitative targets before production compilation. No production Prescription compiler, Week allocation, final Sequencing, UI, Knowledge Layer, or automatic progression is activated. Classification: `FULL_PRESCRIPTION_DESIGN_READY_FOR_NUMERIC_POLICY_TOURNAMENT_NOT_PRODUCTION`.
+
+## Prescription Policy V1 Owner Admission
+
+Owner Policy V1 is admitted as authorization evidence only. Production Compiler, Week allocation, Sequencing, Longitudinal Adaptation, application integration, and UI remain future milestones.

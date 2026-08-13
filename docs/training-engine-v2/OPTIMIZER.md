@@ -99,3 +99,7 @@ Tempo, duration, and cadence are not optimizer rescue variables. Same-tempo conv
 ## Full Prescription Policy Search Boundary
 
 The Prescription policy lattice is a non-production design lab with 76 frozen candidates, 24 calibration scenarios, 39 locked holdout scenarios, 30 CAGT Prescription pairs, 10,000 deterministic combinations, and 1,000 complete pipelines. No optimizer selects a production Prescription winner in this task.
+
+## Prescription Policy V1 Owner Admission
+
+CAGT evidence and owner choice remain separate. The optimizer may compare causal outcomes but does not select, activate, blend, or silently repair the owner policy.

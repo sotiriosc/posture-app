@@ -95,3 +95,7 @@ Timing dimensions are now available for Gates 9-11 without changing gate order o
 The full Prescription extension adds 27 design dimensions across Gates 9-11: source exposure, revisions, dose blocks, block purposes, legal mode, policy ownership, unresolved requirements, no rescue, block order, duration determinability, planned-versus-actual block truth, substitutions, response linkage, and immutable original plan. Gate order is unchanged.
 
 Prescription CAGT fingerprint: `f00bade643d196e1e0804c5fa682d35d146fda9d7a5910a8cd2f92a005734f95`.
+
+## Prescription Policy V1 Owner Admission
+
+V1 admission adds 10,032 blinded policy/scenario comparisons, 1,452 independent performance comparisons, permutation/metamorphic checks, and repeated deterministic runs.

@@ -224,3 +224,7 @@ Exercise knowledge owns legal dose modes and timing capabilities, not exact numb
 ## Full Prescription Domain Decision
 
 The domain now distinguishes one source exposure event, immutable Prescription revisions, ordered dose blocks, block purposes, reviewed policy rules, and future performance block linkage. `ExerciseDose` stays one dose realization; complete future Prescription truth is the ordered block plan inside one source event.
+
+## Prescription Policy V1 Owner Admission
+
+V1 preserves the existing Prescription, source-exposure, revision, performance, load, range, support, side, effort, tempo, duration, and block-domain vocabulary without adding prose-driven behavior.

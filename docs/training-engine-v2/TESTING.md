@@ -155,3 +155,7 @@ Prescription timing tests are covered by `packages/training-engine-v2/tests/unit
 # Full Prescription Design Lab Commands
 
 Full Prescription design tests are covered by `packages/training-engine-v2/tests/unit/prescriptionCompilerDesignLab.test.ts`. The suite locks source exposure identity, revision semantics, ordered dose blocks, policy lattice, policy-required/conflict paths, all 45 rows, all seven dose modes, 30 CAGT Prescription pairs, 76 candidate consequences, 10,000 deterministic combinations, 1,000 complete handoff-to-design-compiler pipelines, and frozen Candidate/Planner/Composer/timing fingerprints.
+
+## Prescription Policy V1 Owner Admission
+
+The V1 suite covers the locked 132-scenario holdout, 121 multi-assignment sessions, all five sections, seven roles, seven dose modes, 45 exercise identities across calibration/holdout, and hard-zero causal findings.

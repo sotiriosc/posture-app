@@ -28,3 +28,7 @@ Warm-up and activation timing remains subordinate to downstream training purpose
 The complete-session argument now has a design-only Prescription layer: each prescribed session must explain why the session exists, why each exercise is present, why preparation/activation is dosed, which main blocks are preparatory, which blocks are developmental, which accessory dose adds unique value, which requirements remain unresolved, and why cooldown is present or empty.
 
 A downstream dose difference still cannot rescue an upstream structural failure.
+
+## Prescription Policy V1 Owner Admission
+
+The owner holdout compiles 129 full sessions from production Planner, Candidate Intelligence, Composer, and handoff origins; support work remains bounded across the complete session.

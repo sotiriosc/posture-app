@@ -52,3 +52,7 @@ Evidence:
 CAGT outcome fingerprint: `ce33da0eeabae3a34246ea50daafb87d67bc13f216e51820023ee9e5afd45204`.
 
 Detailed gate reports: `PRESCRIPTION_NUMERIC_SOURCE_EVENT_REPORT.md`, `PRESCRIPTION_NUMERIC_BLOCK_STRUCTURE_REPORT.md`, and `PRESCRIPTION_NUMERIC_HOLDOUT_REPORT.md`.
+
+## Prescription Policy V1 Owner Admission
+
+Final owner-policy admission evaluates frozen Gates 0-8 plus Gates 9-11, full-session coherence, independent performance, load retention, rest placement, and duration truth.

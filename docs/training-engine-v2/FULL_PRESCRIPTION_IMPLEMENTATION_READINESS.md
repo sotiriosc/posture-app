@@ -108,3 +108,7 @@ Still blocked before production activation:
 - production performance block ingestion
 
 Exact next dependency: owner selection from the numeric Prescription Pareto frontier, followed by a separate production policy activation authorization.
+
+## Prescription Policy V1 Owner Admission
+
+Policy V1 is ready for a separately authorized production Compiler implementation. Final Sequencing and post-Prescription Week validation remain blocked.

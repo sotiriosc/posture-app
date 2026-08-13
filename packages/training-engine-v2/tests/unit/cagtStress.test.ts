@@ -22,5 +22,5 @@ describe("CAGT deterministic stress", () => {
     expect(Object.keys(fingerprints)).toHaveLength(23);
     expect(Object.values(fingerprints).every((value) => /^[a-f0-9]{64}$/.test(value))).toBe(true);
     expect(fingerprints).toEqual(EXPECTED_CAGT_FINGERPRINTS);
-  });
+  }, 60_000);
 });

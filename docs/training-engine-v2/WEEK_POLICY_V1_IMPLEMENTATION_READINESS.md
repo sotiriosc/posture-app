@@ -26,3 +26,7 @@ The timing foundation clarifies what future Prescription can output, but it does
 ## Full Prescription Dependency
 
 The full Prescription design exposes the source-event and block-purpose facts needed by future H1/H2 muscle distribution and spacing decisions. It does not resolve those Week-policy gaps because no post-Prescription weekly ledger or numeric Prescription policy is production-active.
+
+## Prescription Policy V1 Owner Admission
+
+Week Policy remains `MUSCLE_H1_SINGLE_FLEXIBLE`; H2 and spacing remain Prescription-and-response dependent. No Week allocation or post-Prescription validation was added.

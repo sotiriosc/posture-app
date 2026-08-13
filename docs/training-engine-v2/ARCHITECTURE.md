@@ -249,3 +249,7 @@ The V1 admission layer adds an independently locked owner composite and holdout 
 # Full Prescription Design Architecture (2026-08-13)
 
 `src/prescription/designContracts.ts` defines design-only source exposure, revision, dose-block, performance-linkage, reviewed-policy, compiler input/output, and duration-determinability contracts. The deterministic lab remains in tests and does not export a production compiler. The architecture selects one source exposure event per assignment with one or more ordered blocks and a legacy single-dose projection only when truthful.
+
+## Prescription Policy V1 Owner Admission
+
+Prescription owner policy remains a test/developer artifact. No production dependency direction, package export, application wiring, or public API changed.
